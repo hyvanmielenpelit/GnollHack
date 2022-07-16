@@ -2657,6 +2657,17 @@ register struct obj* obj;
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
+            char mcapplybuf[BUFSZ] = "";
+            if (!(objects[otyp].oc_aflags & A1_BYPASSES_MC) || (objects[otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS))
+            {
+                if (!(objects[otyp].oc_aflags & A1_BYPASSES_MC) && (objects[otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS))
+                    Strcpy(mcapplybuf, " (MC and MR checks apply)");
+                else if (objects[otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS)
+                    Strcpy(mcapplybuf, " (MR check applies)");
+                else
+                    Strcpy(mcapplybuf, " (MC check applies)");
+            }
+
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_CRITICAL_STRIKE) && (objects[otyp].oc_aflags & A1_CRITICAL_STRIKE_IS_DEADLY))
             {
                 powercnt++;
@@ -2670,20 +2681,20 @@ register struct obj* obj;
                     Sprintf(chancebuf, " at %d%% chance", critchance);
 
                 if ((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
-                    Sprintf(buf, " %2d - Disintegrates the target on hit%s", powercnt, critchance < 100 ? chancebuf : "");
+                    Sprintf(buf, " %2d - Disintegrates the target on hit%s%s", powercnt, critchance < 100 ? chancebuf : "", mcapplybuf);
                 else if ((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
-                    Sprintf(buf, " %2d - Slays the target on hit%s", powercnt, critchance < 100 ? chancebuf : "");
+                    Sprintf(buf, " %2d - Slays the target on hit%s%s", powercnt, critchance < 100 ? chancebuf : "", mcapplybuf);
                 else
-                    Sprintf(buf, " %2d - Causes lethal %s damage%s", powercnt,
+                    Sprintf(buf, " %2d - Causes lethal %s damage%s%s", powercnt,
                         get_damage_type_text((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE) ? objects[otyp].oc_extra_damagetype : AD_PHYS),
-                        critchance < 100 ? chancebuf : "");
+                        critchance < 100 ? chancebuf : "", mcapplybuf);
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_LEVEL_DRAIN))
             {
                 powercnt++;
-                Sprintf(buf, " %2d - Drains a level on hit", powercnt);
+                Sprintf(buf, " %2d - Drains a level on hit%s", powercnt, mcapplybuf);
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
