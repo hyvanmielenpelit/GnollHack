@@ -7653,7 +7653,7 @@ boolean* hintflag_ptr;
         char buf[BUFSZ];
         Sprintf(buf, "You can %s by %s%s.", pray_what ? pray_what : "", 
             base_hint ? base_hint : "", 
-            base_hint && canpray ? " or by praying " : canpray ? "praying" : "");
+            base_hint && canpray ? " or by praying" : canpray ? "praying" : "");
         hint_via_pline(buf);
     }
 }

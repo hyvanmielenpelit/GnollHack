@@ -2091,9 +2091,9 @@ boolean is_past_participle;
         else
         {
             if (is_past_participle)
-                res = "found the Vorpal Blade and Katana of Masamune";
+                res = "found the Vorpal Blade and Cleaver";
             else
-                res = "find the Vorpal Blade and Katana of Masamune";
+                res = "find the Vorpal Blade and Cleaver";
         }
         break;
     case ROLE_CAVEMAN:
@@ -2140,9 +2140,9 @@ boolean is_past_participle;
         break;
     case ROLE_SAMURAI:
         if (is_past_participle)
-            res = "found the Kusanagi";
+            res = "found the Kusanagi and the Katana of Masamune";
         else
-            res = "find the Kusanagi";
+            res = "find the Kusanagi and the Katana of Masamune";
         break;
     case ROLE_TOURIST:
         if (is_past_participle)

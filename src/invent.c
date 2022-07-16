@@ -915,7 +915,7 @@ struct obj *obj;
             {
                 if (obj->oartifact == ART_VORPAL_BLADE)
                     u.uevent.role_achievement_1 = 1;
-                if (obj->oartifact == ART_KATANA_OF_MASAMUNE)
+                if (obj->oartifact == ART_CLEAVER)
                     u.uevent.role_achievement_2 = 1;
             }
         }
@@ -940,7 +940,7 @@ struct obj *obj;
             check_achievement = TRUE;
             if (obj->oartifact == ART_KUSANAGI)
                 u.uevent.role_achievement_1 = 1;
-            if (obj->oartifact == ART_KUSANAGI)
+            if (obj->oartifact == ART_KATANA_OF_MASAMUNE)
                 u.uevent.role_achievement_2 = 1;
         }
 
