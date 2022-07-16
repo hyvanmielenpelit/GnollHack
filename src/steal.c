@@ -502,7 +502,7 @@ gotobj:
         subfrombill(otmp, shop_keeper(*u.ushops));
     freeinv(otmp);
     play_sfx_sound(SFX_STEAL_ITEM);
-    pline("%s stole %s.", named ? "She" : Monnam(mtmp), doname(otmp));
+    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s stole %s.", named ? "She" : Monnam(mtmp), doname(otmp));
     could_petrify =
         (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm]));
     (void) mpickobj(mtmp, otmp); /* may free otmp */
@@ -656,7 +656,7 @@ struct monst *mtmp;
         Strcpy(buf, doname(otmp));
         (void) mpickobj(mtmp, otmp); /* could merge and free otmp but won't */
         play_sfx_sound(SFX_STEAL_ITEM);
-        pline("%s steals %s!", Monnam(mtmp), buf);
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s steals %s!", Monnam(mtmp), buf);
         if (has_teleportation(mtmp) && !tele_restrict(mtmp))
         {
             (void)rloc2(mtmp, TRUE, TRUE);

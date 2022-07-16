@@ -2115,6 +2115,7 @@ dochat()
     struct monst *mtmp;
     int tx, ty;
     struct obj *otmp;
+    boolean elbereth_was_known = (boolean)u.uevent.elbereth_known;
 
     if (!getdir("Talk to whom? (in what direction)")) 
     {
@@ -4139,6 +4140,9 @@ dochat()
             stopsdialogue = TRUE;
     } while (i > 0 && !stopsdialogue);
     
+    if (!elbereth_was_known && u.uevent.elbereth_known)
+        standard_hint("You can engrave \'Elbereth\' on the ground to protect yourself against attacking monsters.", &u.uhint.elbereth);
+
     return result;
 }
 

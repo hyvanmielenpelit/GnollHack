@@ -258,7 +258,7 @@ struct u_hint {
     boolean got_terminal_illness;
     boolean pet_got_mummy_rot;
 
-    boolean reserved1;
+    boolean elbereth;
     boolean reserved2;
     boolean reserved3;
     boolean reserved4;
