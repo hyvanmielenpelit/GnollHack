@@ -6217,6 +6217,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     u.uinwater = 0;
     u.uundetected = 0; /* not hidden, even if means are available */
     keepdogs(context.reviving);
+    removealtarsummons();
     if (u.uswallow) /* idem */
         u.uswldtim = u.uswallow = 0;
     recalc_mapseen(); /* recalculate map overview before we leave the level */

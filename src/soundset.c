@@ -11102,6 +11102,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_NEGATIVE_EFFECT_ENDED, 1.0f},
         FALSE, SOUND_PLAY_GROUP_LONG
     },
+    {
+        "Distant Puff",
+        {GHSOUND_VANISHES_IN_PUFF_OF_SMOKE, 0.5f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

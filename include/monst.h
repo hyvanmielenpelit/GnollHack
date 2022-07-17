@@ -211,6 +211,7 @@ struct monst {
 #define MON_FLAGS_RWRAITH           0x00000001
 #define MON_FLAGS_CHAINED           0x00000002
 #define MON_FLAGS_CLONED_WIZ        0x00000004
+#define MON_FLAGS_SUMMONED_AT_ALTAR 0x00000008
 
     unsigned long mstrategy; /* for monsters with mflag3: current strategy */
 

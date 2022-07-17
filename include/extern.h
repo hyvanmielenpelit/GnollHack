@@ -2607,7 +2607,7 @@ E void FDECL(altar_wrath, (int, int));
 E int NDECL(absolution_spell);
 E int NDECL(wiz_crown);
 E int NDECL(get_artifact_replacement_item_otyp);
-
+E void NDECL(removealtarsummons);
 
 /* ### priest.c ### */
 

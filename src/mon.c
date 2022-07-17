@@ -4278,6 +4278,9 @@ boolean via_attack;
             adjalign(2);
     } else
         adjalign(-1); /* attacking peaceful monsters is bad */
+
+    mtmp->mon_flags &= ~MON_FLAGS_SUMMONED_AT_ALTAR; //Angry summoned creatures do not go back to their plane
+
     if (couldsee(mtmp->mx, mtmp->my)) {
         if (humanoid(mtmp->data) || mtmp->isshk || mtmp->isgd)
         {

@@ -2302,7 +2302,8 @@ dosacrifice()
 
                 if ((pm = dlord(altaralign)) != NON_PM && (dmon = makemon(&mons[pm], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0)
                 {
-                    context.dlords_summoned_via_altar++;
+                    if(context.dlords_summoned_via_altar < 255)
+                        context.dlords_summoned_via_altar++;
                     play_sfx_sound(SFX_SUMMON_DEMON);
                     char dbuf[BUFSZ];
                     boolean itdreadful = FALSE;
@@ -2319,10 +2320,11 @@ dosacrifice()
                     You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "have summoned %s!", dbuf);
                     if (sgn(u.ualign.type) == sgn(dmon->data->maligntyp))
                     {
-                        int rndval = (u.ualign.record >= PIOUS ? 5 : u.ualign.record >= DEVOUT ? 4 : u.ualign.record >= FERVENT ? 3 : u.ualign.record >= STRIDENT ? 2 : 1) + 2 - context.dlords_summoned_via_altar;
-                        if (context.dlords_summoned_via_altar <= 1 || (rndval > 1 && rn2(rndval)) || !rn2(context.dlords_summoned_via_altar))
+                        int rndval = (u.ualign.record >= PIOUS ? 5 : u.ualign.record >= DEVOUT ? 4 : u.ualign.record >= FERVENT ? 3 : u.ualign.record >= STRIDENT ? 2 : u.ualign.record >= 0 ? 1 : 0) + 2 - (int)context.dlords_summoned_via_altar;
+                        if (context.dlords_summoned_via_altar <= 1 || (rndval > 1 && rn2(rndval)) || !rn2(1 + context.dlords_summoned_via_altar * (u.ualign.record < 0 ? 2 : 1)))
                         {
                             dmon->mpeaceful = TRUE;
+                            dmon->mon_flags |= MON_FLAGS_SUMMONED_AT_ALTAR;
                             pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Luckily for you, %s appears to be pleased with your sacrifice.", itdreadful ? "that something" : dbuf);
                         }
                         else
@@ -2902,6 +2904,30 @@ dosacrifice()
     }
     change_luck(luck_change, TRUE);
     return 1;
+}
+
+void
+removealtarsummons(VOID_ARGS)
+{
+    int cnt = 0;
+    struct monst* mtmp, *mtmp2;
+    for (mtmp = fmon; mtmp; mtmp = mtmp2)
+    {
+        mtmp2 = mtmp->nmon; //Just in case mtmp gets deleted
+        if (DEADMONSTER(mtmp))
+            continue;
+        if (mtmp->mon_flags & MON_FLAGS_SUMMONED_AT_ALTAR)
+        {
+            //Returns to whence it came
+            mongone(mtmp);
+            cnt++;
+        }
+    }
+    if (cnt > 0 && !Deaf)
+    {
+        play_sfx_sound(SFX_DISTANT_PUFF);
+        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a distant puff.");
+    }
 }
 
 int
