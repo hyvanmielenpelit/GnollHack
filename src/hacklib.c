@@ -292,7 +292,7 @@ const char* source;
     for (bp = dest_buffer; *bp; bp++)
     {
         if ((bp == dest_buffer 
-            || (*(bp - 1) == ' ' && 
+            || ((*(bp - 1) == ' ' || *(bp - 1) == '-') &&
                 strncmp(bp, "the ", 4) && strncmp(bp, "an ", 3) && strncmp(bp, "a ", 2) && 
                 strncmp(bp, "of ", 3) && strncmp(bp, "and ", 4) && strncmp(bp, "or ", 3) &&
                 strncmp(bp, "at ", 3) && strncmp(bp, "on ", 3) && strncmp(bp, "in ", 3) && 
