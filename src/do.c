@@ -3290,7 +3290,7 @@ register struct obj* obj;
 
                 print_corpse_properties(datawin, obj->corpsenm, FALSE);
             }
-            else if (context.game_difficulty <= 0) /* Shows up on expert, too, just in case */
+            else if ((context.game_difficulty <= 0 || flags.force_hint) && flags.max_hint_difficulty >= MIN_DIFFICULTY_LEVEL) /* Shows up on expert, too, just in case, since this is GnollHack-specific */
             {
                 show_corpse_hint = TRUE;
             }
@@ -4092,7 +4092,7 @@ register struct obj* obj;
     }
 
     /* Hints */
-    boolean show_identify_hint = context.game_difficulty < 0 && obj->dknown && (!stats_known || notfullyidentified);
+    boolean show_identify_hint = (flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && obj->dknown && (!stats_known || notfullyidentified);
     if (show_identify_hint || show_corpse_hint)
     {
         int powercnt = 0;

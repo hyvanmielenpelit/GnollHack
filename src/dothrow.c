@@ -460,9 +460,12 @@ double* average_ptr;
         }
         case MULTISHOT_MELEE_TRIPLE_HEADED_FLAIL:
         {
-            multishot = max(1, skilllevel - 3);
+            int fixed = min(3, max(1, skilllevel / 2));
+            boolean has_random = skilllevel == P_SKILLED || skilllevel == P_MASTER ? 1 : 0;
+            int random = has_random ? rn2(2) : 0;
+            multishot = fixed + random;
             if (average_ptr)
-                *average_ptr = (double)multishot;
+                *average_ptr = (double)fixed + (has_random ? 0.5 : 0.0);
             break;
         }
         default:

@@ -869,7 +869,7 @@ WEAPON("aklys", "thonged club",
     O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_MISSILE_TILE | O4_TETHERED_WEAPON | O4_FLOOR_TILE, O5_NONE, O6_NONE,
     PERMITTED_ALL, ALL_TARGETS),
 WEAPON("flail", None,
-    1, 0, 0, 0, 33, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 35, 4,
+    1, 0, 0, 0, 31, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 35, 4,
     AD_PHYS, 1, 6, 1, 2, 4, 0,     AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, P1_NONE, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_GENERIC,
@@ -890,14 +890,14 @@ WEAPON("double-headed flail", None,
     O1_NONE, O2_NONE, O3_NONE, O4_NON_MYTHIC, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
     /* one-handed, strikes up to two times, -1 hit bonus (difficult to wield) */
 WEAPON("triple-headed flail", None, /* Also a base item for Triple-Headed Flail of Yeenaghu */
-    1, 0, 0, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 70, 2000,
+    1, 0, 0, 1, 2, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 70, 1000, //Note: this is now a two-handed weapon
     AD_PHYS, 1, 6, 1, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_MELEE_TRIPLE_HEADED_FLAIL,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_TRIPLE_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_NON_MYTHIC, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
     /* one-handed, strikes up to three times, -2 hit bonus (difficult to wield) */
 WEAPON("runed flail", None, /* Base item for Howling Flail */
-    1, 0, 1, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 35, 80,
+    1, 0, 1, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 35, 250,
     AD_PHYS, 1, 6, 1, 2, 4, 0, AD_PHYS, 2, 4, 0, A1_NONE, A2_NONE, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_GENERIC,

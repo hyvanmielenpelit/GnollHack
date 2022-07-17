@@ -1214,6 +1214,10 @@ mkgarden()
         return 0;
 
     /* satisfied; make a garden */
+    int levdiff = level_difficulty();
+    boolean has_statues = rn2(2);
+    int statue_base_type = levdiff >= 16 && rn2(2) ? PM_WINGED_GARGOYLE :
+        levdiff >= 13 && rn2(3) ? PM_ROCK_TROLL : levdiff >= 7 && rn2(9) ? PM_GARGOYLE : PM_GNOME;
     sroom->rtype = GARDEN;
     for (sx = sroom->lx; sx <= sroom->hx; sx++)
     {
@@ -1385,21 +1389,42 @@ mkgarden()
                     }
                 }
 
-                if (!rn2(8))
+                if (has_statues && !rn2(8))
                 {
                     // Garden gnome as statue (with a conical hat)
-                    maketrap(sx, sy, STATUE_TRAP, !rn2(15) && level_difficulty() > 4 ? PM_GNOME_KING : !rn2(5) && level_difficulty() > 2 ? PM_GNOME_LORD : PM_GNOME, MKTRAPFLAG_GARDEN_GNOME_ITEMS);
+                    int monster_type = statue_base_type;
+                    unsigned long statueflags = 0UL;
+                    switch (statue_base_type)
+                    {
+                    case PM_GNOME:
+                        if (levdiff > 9 || (levdiff > 4 && !rn2(15)))
+                            monster_type = PM_GNOME_KING;
+                        else if (levdiff > 2 && !rn2(5))
+                            monster_type = PM_GNOME_LORD;
+                        statueflags = MKTRAPFLAG_GARDEN_GNOME_ITEMS;
+                        break;
+                    case PM_GARGOYLE:
+                        if (levdiff >= 15 && rn2(2))
+                            monster_type = PM_WINGED_GARGOYLE;
+                        else if (levdiff >= 13 && !rn2(15))
+                            monster_type = PM_WINGED_GARGOYLE;
+                        break;
+                    default:
+                        break;
+                    }
+
+                    maketrap(sx, sy, STATUE_TRAP, monster_type, statueflags);
                 }
                 else if (!rn2(8))
                 {
                     /* Random ogre at high levels */
-                    struct permonst* pm = level_difficulty() >= mons[PM_OGRE_OVERLORD].difficulty ? mkclass(S_OGRE, 0) : (struct permonst*)0;
+                    struct permonst* pm = levdiff >= mons[PM_OGRE_OVERLORD].difficulty ? mkclass(S_OGRE, 0) : (struct permonst*)0;
                     
                     /* Otherwise, hobgoblins, bugbears or normal ogres + some bosses */
                     (void)makemon(!pm ? (&mons[
-                         level_difficulty() >= mons[PM_OGRE_LORD].difficulty && !rn2(4) ? PM_OGRE_LORD :
-                        (level_difficulty() >= mons[PM_OGRE].difficulty && !rn2(4)) || level_difficulty() >= (mons[PM_OGRE].difficulty + 5) ? PM_OGRE :
-                        (level_difficulty() >= mons[PM_BUGBEAR].difficulty && !rn2(4)) || level_difficulty() >= 7 ? PM_BUGBEAR :
+                         levdiff >= mons[PM_OGRE_LORD].difficulty && !rn2(4) ? PM_OGRE_LORD :
+                        (levdiff >= mons[PM_OGRE].difficulty && !rn2(4)) || levdiff >= (mons[PM_OGRE].difficulty + 5) ? PM_OGRE :
+                        (levdiff >= mons[PM_BUGBEAR].difficulty && !rn2(4)) || levdiff >= 7 ? PM_BUGBEAR :
                         PM_HOBGOBLIN]) : pm, sx, sy, MM_ASLEEP);
 
                 }

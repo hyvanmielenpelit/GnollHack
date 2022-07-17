@@ -60,7 +60,7 @@ const char* multishot_style_names[MAX_MULTISHOT_TYPES] = {
     "1+1/4 per skill level after skilled when thrown",
     "1+1/4 per skill level after basic when thrown",
     "1/1.5/2 for basic/skilled/expert in melee",
-    "1/2/3 for expert/master/grand master in melee",
+    "1+1/2 per skill level after basic in melee",
 };
 
 const char* armor_type_names[MAX_ARMOR_TYPES] = {
