@@ -953,9 +953,15 @@ place_main_monst_here:
         break;
     case MORGUE:
         level.flags.has_morgue = 1;
+        if (!level.flags.has_tileset && u.uz.dnum == main_dungeon_dnum && !Is_special(&u.uz))
+        {
+            level.flags.tileset = CMAP_UNDEAD_STYLE;
+            level.flags.has_tileset = 1;
+        }
         break;
     case SWAMP:
         level.flags.has_swamp = 1;
+        // fillzoo is not called for swamp
         break;
     case BEEHIVE:
         level.flags.has_beehive = 1;
@@ -1190,6 +1196,13 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
 
         level.flags.has_swamp = 1;
         swampnumber++;
+
+        //Change the tileset of the dungeon level
+        if (!level.flags.has_tileset && u.uz.dnum == main_dungeon_dnum && !Is_special(&u.uz))
+        {
+            level.flags.tileset = CMAP_UNDEAD_STYLE;
+            level.flags.has_tileset = 1;
+        }
     }
     return swampnumber;
 }

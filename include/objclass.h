@@ -687,6 +687,7 @@ struct objclass {
 #define oc_potion_extra_data1 oc_oc4
 #define oc_potion_breathe_dice_buc_multiplier oc_oc5
 #define oc_potion_normal_dice_buc_multiplier oc_oc6
+#define oc_potion_nutrition_dice_buc_multiplier oc_oc7
 #define oc_potion_saving_throw_adjustment oc_mc_adjustment    /* potions: potion saving throw adjustment */
 #define oc_potion_breathe_dice oc_wsdice                      /* potions: potion breathe duration no of dice */
 #define oc_potion_breathe_diesize oc_wsdam                    /* potions: potion breathe duration size of dice */
@@ -945,6 +946,9 @@ struct objclass {
 #define O5_NOT_CANCELLABLE             0x00000080UL /* Cannot be cancelled */
 /* Free bit */
 #define O5_HAS_ALTERNATIVE_APPEARANCE  0x00000200UL /* Alternative appearance available */
+#define O5_EFFECT_IS_HEALING           0x00000400UL /* (Potion) Effect data is healing */
+#define O5_EFFECT_IS_MANA              0x00000800UL /* (Potion) Effect data is mana */
+#define O5_EFFECT_FOR_BLESSED_ONLY     0x00001000UL /* (Potion) Effect data is for blessed potion only (monster detection) */
 
 #define O6_NONE                        0x00000000UL
 

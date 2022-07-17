@@ -12,6 +12,8 @@ MAZE:"medusa-1",'}'
 FLAGS: noteleport,swampy
 NAMING:"Islands",name_revealed_seeing_monster,montype:"Medusa"
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -41,6 +43,10 @@ REGION:(31,07,45,07),unlit,"ordinary"
 REGION:(35,09,41,10),unlit,"ordinary",unfilled
 REGION:(31,12,45,12),unlit,"ordinary"
 SPECIAL_REGION:(00,00,74,19),region_special_level_seen
+MONSTER_GENERATION: 20, ('B', "raven"), 'S'
+MONSTER_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
+MONSTER_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")
+
 # Teleport: down to up stairs island, up to Medusa's island
 TELEPORT_REGION:(01,01,05,17),(0,0,0,0),down
 TELEPORT_REGION:(26,04,50,15),(0,0,0,0),up
@@ -160,15 +166,13 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 
-MONSTER_GENERATION: 20, ('B', "raven"), 'S'
-MONSTER_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
-MONSTER_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")
-
 
 MAZE:"medusa-2",'}'
 FLAGS: noteleport,swampy
 NAMING:"Islands",name_revealed_seeing_monster,montype:"Medusa"
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -198,6 +202,9 @@ REGION:(61,03,72,16),unlit,"ordinary",unfilled,irregular
 REGION:(71,08,72,11),unlit,"ordinary"
 REGION:(67,08,69,11),lit,"ordinary"
 SPECIAL_REGION:(00,00,74,19),region_special_level_seen
+MONSTER_GENERATION: 20, ('B', "raven"), 'S'
+MONSTER_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
+MONSTER_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")
 
 # Teleport: down to up stairs island, up to Medusa's island
 TELEPORT_REGION:(02,03,05,16),(0,0,0,0),down
@@ -327,11 +334,6 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 
-MONSTER_GENERATION: 20, ('B', "raven"), 'S'
-MONSTER_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
-MONSTER_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")
-
-
 LEVEL:"medusa-3"
 FLAGS: noteleport,mazelevel,shortsighted,swampy
 INIT_MAP:solidfill,'}'
@@ -340,6 +342,8 @@ GEOMETRY:center,center
 #
 # Here you disturb ravens nesting in the trees.
 #
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 }}}}}}}}}},}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}},}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -370,6 +374,9 @@ REGION:(07,05,09,07),unlit,"ordinary"
 REGION:(65,04,67,06),unlit,"ordinary"
 REGION:(45,14,47,16),unlit,"ordinary"
 SPECIAL_REGION:(00,00,74,19),region_special_level_seen
+MONSTER_GENERATION: 20, ('B', "raven"), 'S'
+MONSTER_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
+MONSTER_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")
 
 # Non diggable walls
 # 4th room has diggable walls as Medusa is never placed there
@@ -479,10 +486,6 @@ LOOP [30] {
   MONSTER:('B',"raven"),random,hostile
 }
  
-MONSTER_GENERATION: 20, ('B', "raven"), 'S'
-MONSTER_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
-MONSTER_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")
-
 
 LEVEL:"medusa-4"
 FLAGS: noteleport,mazelevel,swampy
@@ -493,6 +496,8 @@ GEOMETRY:center,center
 # Here the Medusa rules some slithery monsters from her 'palace', with
 # a yellow dragon nesting in the backyard.
 #
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 }}}}}}}}}}}}}},,,,,,,,}}}}}}}}}}}}}}}}}}}}}}},,}}},,,,,}}}}}}}}}}}----|}}}}}
@@ -523,6 +528,9 @@ SHUFFLE: $place
 REGION:(00,00,74,19),lit,"ordinary"
 REGION:(13,03,18,13),lit,"ordinary",unfilled
 SPECIAL_REGION:(00,00,74,19),region_special_level_seen
+MONSTER_GENERATION: 20, ('B', "raven"), 'S'
+MONSTER_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
+MONSTER_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")
 #
 TELEPORT_REGION:(64,01,74,17),(0,0,0,0),down
 TELEPORT_REGION:(02,02,18,13),(0,0,0,0),up
@@ -637,7 +645,3 @@ LOOP [4] {
   MONSTER:('N',"black naga hatchling"), random
   MONSTER:('N',"black naga"), random
 }
-
-MONSTER_GENERATION: 20, ('B', "raven"), 'S'
-MONSTER_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
-MONSTER_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")

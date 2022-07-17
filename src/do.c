@@ -2021,6 +2021,126 @@ register struct obj* obj;
             }
         }
 
+        if (objects[otyp].oc_class == POTION_CLASS)
+        {
+            if (objects[otyp].oc_potion_normal_dice > 0 || objects[otyp].oc_potion_normal_diesize > 0 || objects[otyp].oc_potion_normal_plus != 0)
+            {
+                boolean maindiceprinted = FALSE;
+                char plusbuf[BUFSZ];
+                if(objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
+                    Sprintf(buf, "Healing amount:         ");
+                else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
+                    Sprintf(buf, "Mana restored:          ");
+                else
+                    Sprintf(buf, "Effect duration:        ");
+
+                int dice = objects[otyp].oc_potion_normal_dice + (obj->bknown ? objects[otyp].oc_potion_normal_dice_buc_multiplier * bcsign(obj) : 0);
+                if (dice > 0 && objects[otyp].oc_potion_normal_diesize > 0)
+                {
+                    maindiceprinted = TRUE;
+                    Sprintf(plusbuf, "%dd%d", dice, objects[otyp].oc_potion_normal_diesize);
+                    Strcat(buf, plusbuf);
+                }
+
+                int plus = objects[otyp].oc_potion_normal_plus + (obj->bknown ? bcsign(obj) * objects[obj->otyp].oc_potion_normal_buc_multiplier : 0);
+                if (plus != 0)
+                {
+                    if (maindiceprinted && plus > 0)
+                    {
+                        Sprintf(plusbuf, "+");
+                        Strcat(buf, plusbuf);
+                    }
+                    Sprintf(plusbuf, "%d", plus);
+                    Strcat(buf, plusbuf);
+                }
+
+                if (objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
+                    Sprintf(plusbuf, " hit point%s", (dice == 0 && objects[otyp].oc_potion_normal_diesize == 0 && plus == 1) ? "" : "s");
+                else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
+                    Sprintf(plusbuf, " mana");
+                else
+                    Sprintf(plusbuf, " round%s", (dice == 0 && objects[otyp].oc_potion_normal_diesize == 0 && plus == 1) ? "" : "s");
+                Strcat(buf, plusbuf);
+
+                if(objects[otyp].oc_flags5 & O5_EFFECT_FOR_BLESSED_ONLY)
+                    Strcat(buf, " (blessed only)");
+
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
+            }
+            if (objects[otyp].oc_potion_breathe_dice > 0 || objects[otyp].oc_potion_breathe_diesize > 0 || objects[otyp].oc_potion_breathe_plus != 0)
+            {
+                boolean maindiceprinted = FALSE;
+                char plusbuf[BUFSZ];
+                Sprintf(buf, "Breathe duration:       ");
+
+                int dice = objects[otyp].oc_potion_breathe_dice + (obj->bknown ? objects[otyp].oc_potion_breathe_dice_buc_multiplier * bcsign(obj) : 0);
+                if (dice > 0 && objects[otyp].oc_potion_breathe_diesize > 0)
+                {
+                    maindiceprinted = TRUE;
+                    Sprintf(plusbuf, "%dd%d", dice, objects[otyp].oc_potion_breathe_diesize);
+                    Strcat(buf, plusbuf);
+                }
+
+                int plus = objects[otyp].oc_potion_breathe_plus + (obj->bknown ? bcsign(obj) * objects[obj->otyp].oc_potion_breathe_buc_multiplier : 0);
+                if (plus != 0)
+                {
+                    if (maindiceprinted && plus > 0)
+                    {
+                        Sprintf(plusbuf, "+");
+                        Strcat(buf, plusbuf);
+                    }
+                    Sprintf(plusbuf, "%d", plus);
+                    Strcat(buf, plusbuf);
+                }
+
+                Sprintf(plusbuf, " round%s", (dice == 0 && objects[otyp].oc_potion_breathe_diesize == 0 && plus == 1) ? "" : "s");
+                Strcat(buf, plusbuf);
+
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
+            }
+            if (objects[otyp].oc_potion_nutrition_dice > 0 || objects[otyp].oc_potion_nutrition_diesize > 0 || objects[otyp].oc_potion_nutrition_plus != 0)
+            {
+                boolean maindiceprinted = FALSE;
+                char plusbuf[BUFSZ];
+                Sprintf(buf, "Nutrition:              ");
+
+                int dice = objects[otyp].oc_potion_nutrition_dice + (obj->bknown ? objects[otyp].oc_potion_nutrition_dice_buc_multiplier * bcsign(obj) : 0);
+                if (dice > 0 && objects[otyp].oc_potion_nutrition_diesize > 0)
+                {
+                    maindiceprinted = TRUE;
+                    Sprintf(plusbuf, "%dd%d", dice, objects[otyp].oc_potion_nutrition_diesize);
+                    Strcat(buf, plusbuf);
+                }
+
+                int plus = objects[otyp].oc_potion_nutrition_plus + (obj->bknown ? bcsign(obj) * objects[obj->otyp].oc_potion_nutrition_buc_multiplier : 0);
+                if (plus != 0)
+                {
+                    if (maindiceprinted && plus > 0)
+                    {
+                        Sprintf(plusbuf, "+");
+                        Strcat(buf, plusbuf);
+                    }
+                    Sprintf(plusbuf, "%d", plus);
+                    Strcat(buf, plusbuf);
+                }
+
+                Sprintf(plusbuf, " round%s", (dice == 0 && objects[otyp].oc_potion_nutrition_diesize == 0 && plus == 1) ? "" : "s");
+                Strcat(buf, plusbuf);
+
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
+            }
+
+            if (objects[otyp].oc_potion_saving_throw_adjustment != 0)
+            {
+                Sprintf(buf, "Saving throw modifier:  %d", objects[otyp].oc_potion_saving_throw_adjustment);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
+            }
+        }
+
         if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
             (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || objects[otyp].oc_spell_casting_penalty != 0))
         {
