@@ -3210,7 +3210,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_SLIM:
         if (negated)
             break; /* physical damage only */
-        if (!rn2(4) && !slimeproof(pd))
+        if (!rn2(4) && !resists_slime(mdef))
         {
             hit_tile = HIT_SLIMED;
             if (!munslime(mdef, TRUE) && !DEADMONSTER(mdef)) {

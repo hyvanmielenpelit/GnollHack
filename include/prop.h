@@ -186,8 +186,9 @@ enum prop_types {
     UNDEAD_CONTROL    = 163,
     CANCELLATION_RESISTANCE = 164,
     HALF_SLOW_DIGESTION = 165,
-    LAUGHING          = 166,
-    MAX_PROPS         = 167
+    SLIME_RESISTANCE = 166,
+    LAUGHING          = 167,
+    MAX_PROPS         = 168
 };
 #define LAST_PROP (MAX_PROPS - 1)
 

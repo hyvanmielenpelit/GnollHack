@@ -2878,7 +2878,7 @@ boolean tinok;
     return (boolean) (obj->corpsenm == PM_LIZARD
                       || (has_acidic_corpse(&mons[obj->corpsenm])
                           && (obj->corpsenm != PM_GREEN_SLIME
-                              || slimeproof(mon->data))));
+                              || resists_slime(mon))));
 }
 
 STATIC_OVL boolean
@@ -2926,7 +2926,7 @@ boolean by_you;
      * (via our caller) newcham()'s "mon turns into slime" feedback.
      */
 
-    if (slimeproof(mptr))
+    if (resists_slime(mon))
         return FALSE;
     if (mon->meating || !mon_can_move(mon))
         return FALSE;

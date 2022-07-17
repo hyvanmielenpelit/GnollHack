@@ -1370,7 +1370,7 @@ update_monster_timeouts()
                         break;
                     case SLIMED:
                         {
-                            if (!slimeproof(mtmp->data))
+                            if (!resists_slime(mtmp))
                             {
                                 (void)newcham(mtmp, &mons[PM_GREEN_SLIME], FALSE, TRUE);
                                 break_charm(mtmp, FALSE);
@@ -1920,7 +1920,7 @@ struct monst *mtmp;
                        && ((touch_petrifies(&mons[otmp->corpsenm])
                             && !resists_ston(mtmp))
                            || (otmp->corpsenm == PM_GREEN_SLIME
-                               && !slimeproof(mtmp->data))))) 
+                               && !resists_slime(mtmp))))) 
         {
             /* engulf */
             ++ecount;

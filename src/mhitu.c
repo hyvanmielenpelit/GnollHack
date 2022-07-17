@@ -3071,8 +3071,7 @@ register struct obj* omonwep;
             hitmsg(mtmp, mattk, -1, FALSE);
             pline_The("slime burns away!");
             damage = 0;
-        } else if (Unchanging || is_incorporeal(youmonst.data)
-                   || youmonst.data == &mons[PM_GREEN_SLIME]) {
+        } else if (Unchanging || Slime_resistance || slimeproof(youmonst.data)) {
             hitmsg(mtmp, mattk, -1, FALSE);
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             You("are unaffected.");

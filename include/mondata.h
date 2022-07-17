@@ -664,6 +664,8 @@
 #define has_bisection_resistance(mon) \
     (has_property(mon, BISECTION_RESISTANCE))
 
+#define has_slime_resistance(mon) \
+    (has_property(mon, SLIME_RESISTANCE))
 
 /* permonst resistances */
 #define pm_resists_disint(ptr) \
@@ -757,7 +759,10 @@
 
 /* other "resists" definitions */
 #define resists_bisection(mon) \
-    (has_property(mon, BISECTION_RESISTANCE) ||  is_incorporeal((mon)->data) || amorphous((mon)->data))
+    (has_bisection_resistance(mon) || is_incorporeal((mon)->data) || amorphous((mon)->data))
+
+#define resists_slime(mon) \
+    (slimeproof((mon)->data) || has_slime_resistance(mon))
 
 /* more on paralysis */
 #define is_paralyzed(mon) \

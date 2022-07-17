@@ -1992,7 +1992,7 @@ register struct obj* omonwep;
     case AD_SLIM:
         if (cancelled)
             break; /* physical damage only */
-        if (!slimeproof(pd)) 
+        if (!resists_slime(mdef)) 
         {
             hit_tile = HIT_SLIMED;
             play_sfx_sound_at_location(SFX_START_SLIMING, mdef->mx, mdef->my);
@@ -2241,7 +2241,7 @@ register struct obj* omonwep;
             {
                 (void) newcham(magr, (struct permonst *) 0, FALSE, TRUE);
             }
-            else if (pd == &mons[PM_GREEN_SLIME] && !slimeproof(pa)) 
+            else if (pd == &mons[PM_GREEN_SLIME] && !resists_slime(magr)) 
             {
                 (void) newcham(magr, &mons[PM_GREEN_SLIME], FALSE, TRUE);
             }

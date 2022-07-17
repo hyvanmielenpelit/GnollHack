@@ -1283,6 +1283,9 @@ nh_timeout()
             case DIVINE_CHARISMA:
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less charming than before.");
                 break;
+            case SLIME_RESISTANCE:
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel less fiery than before.");
+                break;
             }
         }
         else if ((upp->intrinsic & TIMEOUT) > 0)
@@ -4192,6 +4195,13 @@ boolean was_flying;
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are no longer paralyzed");
             else
                 Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "limbs are moving again!");
+        }
+        break;
+    case SLIME_RESISTANCE:
+        if (!Slime_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels less fiery than before.");
         }
         break;
     default:

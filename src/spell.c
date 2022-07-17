@@ -3105,6 +3105,9 @@ int otyp;
         case BISECTION_RESISTANCE:
             Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin feels strong as steel!");
             break;
+        case SLIME_RESISTANCE:
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin feels fiery!");
+            break;
         default:
             break;
         }

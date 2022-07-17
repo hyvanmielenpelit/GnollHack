@@ -903,7 +903,7 @@ uchar gender; /* 0 = male, 1 = female, 2 = unknown */
         return;
     }
     case PM_GREEN_SLIME:
-        if (!Slimed && !Unchanging && !slimeproof(youmonst.data)) {
+        if (!Slimed && !Unchanging && !Slime_resistance && !slimeproof(youmonst.data)) {
             play_sfx_sound(SFX_START_SLIMING);
             You("don't feel very well.");
             make_slimed(10L, (char *) 0, KILLED_BY, "eating green slime", HINT_KILLED_ATE_GREEN_SLIME);
@@ -2126,7 +2126,7 @@ struct obj *otmp;
 
     boolean stoneable = (flesh_petrifies(&mons[mnum]) && !Stone_resistance
                          && !poly_when_stoned(youmonst.data)),
-            slimeable = (mnum == PM_GREEN_SLIME && !Slimed && !Unchanging
+            slimeable = (mnum == PM_GREEN_SLIME && !Slimed && !Unchanging && !Slime_resistance
                          && !slimeproof(youmonst.data)),
             glob = otmp->globby ? TRUE : FALSE;
 
@@ -3164,7 +3164,7 @@ struct obj *otmp;
                         && !poly_when_stoned(youmonst.data));
 
         if (mnum == PM_GREEN_SLIME || otmp->otyp == GLOB_OF_GREEN_SLIME)
-            stoneorslime = (!Unchanging && !slimeproof(youmonst.data));
+            stoneorslime = (!Unchanging && !Slime_resistance && !slimeproof(youmonst.data));
 
         if (cadaver && mnum >= LOW_PM && !nonrotting_corpse(mnum))
         {

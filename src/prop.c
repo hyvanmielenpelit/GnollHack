@@ -178,6 +178,7 @@ const struct propname propertynames[] = {
     { UNDEAD_CONTROL, "controlled as undead", "undead control" },
     { CANCELLATION_RESISTANCE, "resistant to cancellation", "cancellation resistance" },
     { HALF_SLOW_DIGESTION, "digesting half slower than normal", "half slower digestion" },
+    { SLIME_RESISTANCE, "resistant to green slime", "slime resistance" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
     {  0, 0 },
 };
@@ -350,7 +351,8 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "undead-control",               1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE},  /* UNDEAD_CONTROL = 163 */
     { "cancellation-resistance",      0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE},  /* CANCELLATION_RESISTANCE = 164 */
     { "half-slow-digestion",          1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE},  /* HALF_SLOW_DIGESTION = 165 */
-    { "laughing",                     0, 0, 1,  0, 20,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE},  /* LAUGHING = 166 */
+    { "sliming-resistance",           0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE },  /* SLIME_RESISTANCE = 166 */
+    { "laughing",                     0, 0, 1,  0, 20,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE},  /* LAUGHING = 167 */
 };
 
 const char* condition_names[NUM_BL_CONDITIONS] = {

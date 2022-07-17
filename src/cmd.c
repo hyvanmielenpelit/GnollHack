@@ -4236,6 +4236,8 @@ int final;
         you_are("petrification resistant", from_what(STONE_RESISTANCE));
     if (Stun_resistance)
         you_are("stun resistant", from_what(STUN_RESISTANCE));
+    if (Slime_resistance)
+        you_are("sliming resistant", from_what(SLIME_RESISTANCE));
     if (Bisection_resistance)
         you_cannot("be bisected", from_what(BISECTION_RESISTANCE));
     if (Halluc_resistance)
