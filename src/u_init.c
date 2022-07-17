@@ -1236,15 +1236,34 @@ u_init()
         knows_object(GNOLLISH_LEATHER_ARMOR);
         knows_object(GNOLLISH_STUDDED_LEATHER_ARMOR);
         knows_object(GNOLLISH_QUARREL);
-        P_MAX_SKILL_LEVEL(P_FLAIL) = P_GRAND_MASTER;
+        switch (Role_switch)
+        {
+        case PM_BARBARIAN:
+        case PM_CAVEMAN:
+            P_MAX_SKILL_LEVEL(P_FLAIL) = P_GRAND_MASTER;
+            break;
+        case PM_ROGUE:
+            if (P_MAX_SKILL_LEVEL(P_FLAIL) < P_MASTER)
+                P_MAX_SKILL_LEVEL(P_FLAIL) = P_MASTER;
+            break;
+        case PM_PRIEST:
+        case PM_RANGER:
+            if (P_MAX_SKILL_LEVEL(P_FLAIL) < P_EXPERT)
+                P_MAX_SKILL_LEVEL(P_FLAIL) = P_EXPERT;
+            break;
+        case PM_WIZARD:
+        case PM_HEALER:
+            if (P_MAX_SKILL_LEVEL(P_FLAIL) < P_SKILLED)
+                P_MAX_SKILL_LEVEL(P_FLAIL) = P_SKILLED;
+            break;
+        default:
+            if (P_MAX_SKILL_LEVEL(P_FLAIL) < P_BASIC)
+                P_MAX_SKILL_LEVEL(P_FLAIL) = P_BASIC;
+            break;
+        }
         if (P_SKILL_LEVEL(P_FLAIL) == P_ISRESTRICTED)
             P_SKILL_LEVEL(P_FLAIL) = P_UNSKILLED;
-        if(P_MAX_SKILL_LEVEL(P_CROSSBOW) < P_SKILLED)
-            P_MAX_SKILL_LEVEL(P_CROSSBOW) = P_SKILLED;
-        if (P_SKILL_LEVEL(P_CROSSBOW) == P_ISRESTRICTED)
-            P_SKILL_LEVEL(P_CROSSBOW) = P_UNSKILLED;
         break;
-
     case PM_ORC:
         /* compensate for generally inferior equipment */
         if (!Role_if(PM_WIZARD))
