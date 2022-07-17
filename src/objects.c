@@ -2578,13 +2578,13 @@ POTION("urine",           "pale yellow", None,
            6, HI_PAPER, OBJECT_SOUNDSET_SCROLL, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4, flags5, flags6)
 SCROLL("enchant armor",              "ZELGO MER", None, 1,  60,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("destroy armor",         "JUYED AWK YACC", None, 1,  45, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL("protect armor",                   "VEX DOL", None, 1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL("protect armor",                "VEX DOL", None, 1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("confuse monster",                 "NR 9", None, 1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("scare monster",   "XIXAXA XOXAXA XUXAXA", None, 1,  35, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("remove curse",             "PRATYAVAYAH", None, 1,  65,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("enchant weapon",         "DAIYEN FOOELS", None, 1,  80,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("protect weapon",               "ZEPH NI", None, 1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL("enchant accessory",              "REX SAPH", None, 1,  30,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL("enchant accessory",           "REX SAPH", None, 1,  30,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("create monster",       "LEP GEX VEN ZEA", None, 1,  40, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("taming",                   "PRIRUTSENIE", None, 1,  15, 200, S1_SPELL_IS_NONREVERSIBLE_PERMANENT, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("genocide",                  "ELBIB YLOH", None, 1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
@@ -2625,7 +2625,7 @@ SCROLL(None,  "EIRIS SAZUN IDISI", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE,
 SCROLL(None,    "PHOL ENDE WODAN", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Merseburg Incantations */
 SCROLL(None,              "GHOTI", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* pronounced as 'fish',
                                                         George Bernard Shaw */
-SCROLL(None, "MAPIRO MAHAMA DIROMAT", None, 1, 0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Wizardry */
+SCROLL(None, "MAPIRO MAHAMA DIROMAT",None, 1, 0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Wizardry */
 SCROLL(None,  "VAS CORP BET MANI", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Ultima */
 SCROLL(None,            "XOR OTA", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Aarne Haapakoski */
 SCROLL(None, "STRC PRST SKRZ KRK", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Czech and Slovak
