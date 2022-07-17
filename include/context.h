@@ -248,6 +248,7 @@ struct context_info
     unsigned int view_pet_mid;
     boolean first_time_cmd;
     boolean starting_prayer_timeout_expired;
+    unsigned long dlords_summoned_via_altar;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
     boolean reserved_bool1;

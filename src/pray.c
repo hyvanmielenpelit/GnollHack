@@ -2302,19 +2302,32 @@ dosacrifice()
 
                 if ((pm = dlord(altaralign)) != NON_PM && (dmon = makemon(&mons[pm], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0)
                 {
+                    context.dlords_summoned_via_altar++;
                     play_sfx_sound(SFX_SUMMON_DEMON);
                     char dbuf[BUFSZ];
+                    boolean itdreadful = FALSE;
 
                     Strcpy(dbuf, a_monnam(dmon));
                     if (!strcmpi(dbuf, "it"))
+                    {
+                        itdreadful = TRUE;
                         Strcpy(dbuf, "something dreadful");
+                    }
                     else
                         dmon->mstrategy &= ~STRAT_APPEARMSG;
 
                     You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "have summoned %s!", dbuf);
                     if (sgn(u.ualign.type) == sgn(dmon->data->maligntyp))
-                        dmon->mpeaceful = TRUE;
-
+                    {
+                        int rndval = (u.ualign.record >= PIOUS ? 5 : u.ualign.record >= DEVOUT ? 4 : u.ualign.record >= FERVENT ? 3 : u.ualign.record >= STRIDENT ? 2 : 1) + 2 - context.dlords_summoned_via_altar;
+                        if (context.dlords_summoned_via_altar <= 1 || (rndval > 1 && rn2(rndval)) || !rn2(context.dlords_summoned_via_altar))
+                        {
+                            dmon->mpeaceful = TRUE;
+                            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Luckily for you, %s appears to be pleased with your sacrifice.", itdreadful ? "that something" : dbuf);
+                        }
+                        else
+                            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "you have overstayed your welcome with the Lords of the Abyss.");
+                    }
                     if (!Fear_resistance)
                     {
                         You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are terrified, and unable to move.");
