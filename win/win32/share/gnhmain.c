@@ -6,8 +6,6 @@
 #include "libproc.h"
 
 #include "dlb.h"
-#include <setjmp.h>
-
 #include <sys/stat.h>
 #include <pwd.h>
 #include <sys/types.h>
@@ -18,16 +16,16 @@
 
 #include <pthread.h>
 
-static jmp_buf env;
-
 extern struct passwd *FDECL( getpwuid, ( uid_t));
 extern struct passwd *FDECL( getpwnam, (const char *));
 
 #if 0
-static boolean NDECL( whoami);
+STATIC_DCL boolean NDECL( whoami);
 #endif
-static void FDECL( process_options, (int, char **));
-static char *make_lockname(filename, lockname)
+STATIC_DCL void FDECL( process_options, (int, char **));
+
+STATIC_OVL char*
+make_lockname(filename, lockname)
 const char *filename;
 char *lockname;
 {
@@ -42,7 +40,9 @@ char *lockname;
 	return lockname;
 }
 
-void remove_lock_file(const char *filename)
+STATIC_OVL void
+remove_lock_file(filename)
+const char* filename;
 {
 	char locknambuf[BUFSZ];
 	const char *lockname;
@@ -66,26 +66,14 @@ int code;
 #else
 	exit(code);
 #endif
-	//longjmp(env, code);
 }
 
-
-int GnollHackMain(int argc, char** argv)
+int
+GnollHackMain(argc, argv)
+int argc;
+char** argv;
 {
-	//debuglog("Starting GnollHack!");
-
-	int val;
-
-	val = setjmp(env);
-	if(val)
-	{
-		//debuglog("exiting...");
-		return 0;
-	}
-
-	//boolean exact_username;
 	FILE* fp;
-
     boolean resuming = FALSE; /* assume new game */
 
     sys_early_init();
@@ -164,57 +152,8 @@ int GnollHackMain(int argc, char** argv)
 
 	issue_gui_command(GUI_CMD_GAME_START);
 
-#if 0
-	register int fd;
-	if((fd = restore_saved_game()) >= 0)
-	{
-		/* Since wizard is actually flags.debug, restoring might
-		 * overwrite it.
-		 */
-		boolean remember_wiz_mode = wizard;
-		const char *fq_save = fqname(SAVEF, SAVEPREFIX, 1);
-
-#ifdef NEWS
-		if(iflags.news)
-		{
-			display_file(NEWS, FALSE);
-			iflags.news = FALSE; /* in case dorecover() fails */
-		}
-#endif
-		pline("Restoring save file...");
-		mark_synch(); /* flush output */
-		if(!dorecover(fd))
-			goto not_recovered;
-		resuming = TRUE;
-
-		if(!wizard && remember_wiz_mode)
-			wizard = TRUE;
-
-		check_special_room(FALSE);
-		mode_message();
-
-		if(discover || wizard || CasualMode)
-		{
-			if (CasualMode)
-				pline("Keeping the save file.");
-
-			if(!CasualMode && yn_query("Do you want to keep the save file?") == 'n')
-			{
-				(void)delete_savefile();
-			}
-			else
-			{
-				nh_compress(fq_save);
-			}
-		}
-
-		encounter_init();
-	}
-	else
-#endif
 	if(!load_saved_game(0))
 	{
-	//not_recovered: 
 		player_selection();
 		resuming = FALSE;
 
@@ -237,14 +176,16 @@ int GnollHackMain(int argc, char** argv)
 	return (0);
 }
 
-boolean authorize_wizard_mode()
+boolean 
+authorize_wizard_mode(VOID_ARGS)
 {
 	return TRUE;
 }
 
-
-static void process_options(argc, argv)
-	int argc;char *argv[];
+STATIC_OVL void 
+process_options(argc, argv)
+int argc;
+char *argv[];
 {
 	int i;
 
@@ -333,7 +274,8 @@ static void process_options(argc, argv)
 }
 
 #if 0
-static boolean whoami()
+STATIC_OVL boolean
+whoami()
 {
 	/*
 	 * Who am i? Algorithm: 1. Use name as specified in NETHACKOPTIONS
@@ -367,12 +309,14 @@ port_help()
 }
 #endif
 
+#if 0
 /*
  * Add a slash to any name not ending in /. There must
  * be room for the /
  */
-void append_slash(name)
-	char *name;
+void 
+append_slash(name)
+char *name;
 {
 	char *ptr;
 
@@ -386,6 +330,7 @@ void append_slash(name)
 	}
 	return;
 }
+#endif
 
 unsigned long
 sys_random_seed()
@@ -418,11 +363,3 @@ sys_random_seed()
     }
     return seed;
 }
-
-
-int DoSomeHackDroid()
-{
-	return (int)artilist[ART_HOWLING_FLAIL].cost;
-}
-
-

@@ -888,22 +888,6 @@ E void FDECL(update_r_symset, (struct symparse *, nhsym));
 E boolean FDECL(cursed_object_at, (int, int));
 E const char* FDECL(get_cmap_tilename, (int));
 
-/* ### droidmain.c ### */
-
-#if defined(UNIX) && defined(GNH_MOBILE)
-#ifdef PORT_HELP
-E void NDECL(port_help);
-#endif
-E boolean NDECL(authorize_wizard_mode);
-#endif /* UNIX && GNH_MOBILE */
-
-/* ### gnhunix.c ### */
-
-#if defined(UNIX) && defined(GNH_MOBILE)
-E void NDECL(getlock);
-E void NDECL(check_crash);
-#endif /* UNIX && GNH_MOBILE */
-
 /* ### dungeon.c ### */
 
 E void FDECL(save_dungeon, (int, BOOLEAN_P, BOOLEAN_P));
@@ -1218,6 +1202,22 @@ E void NDECL(drinksink);
 E const char* FDECL(fountain_type_text, (int));
 E const char* FDECL(get_fountain_name, (int, int));
 E void NDECL(init_fountains);
+
+/* ### gnhmain.c ### */
+
+#if defined(UNIX) && defined(GNH_MOBILE)
+#ifdef PORT_HELP
+E void NDECL(port_help);
+#endif
+E boolean NDECL(authorize_wizard_mode);
+#endif /* UNIX && GNH_MOBILE */
+
+/* ### gnhunix.c ### */
+
+#if defined(UNIX) && defined(GNH_MOBILE)
+E void NDECL(getlock);
+E void NDECL(check_crash);
+#endif /* UNIX && GNH_MOBILE */
 
 /* ### hack.c ### */
 

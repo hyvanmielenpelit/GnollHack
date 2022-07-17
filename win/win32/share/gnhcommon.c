@@ -10,8 +10,7 @@
 #include "date_unix.h"
 #include <sys/stat.h>
 
-extern int GnollHackMain(int argc, char** argv);
-
+extern int FDECL(GnollHackMain, (int, char**));
 extern void FDECL(set_wincaps, (unsigned long, unsigned long));
 
 void GetGlyph2Tile(int** gl2ti_ptr, int* size_ptr)
