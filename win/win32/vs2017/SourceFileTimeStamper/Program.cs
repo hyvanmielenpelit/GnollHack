@@ -38,7 +38,7 @@ namespace SourceFileTimeStamper
                     SearchPatterns = new List<string>() { "*.c", "*.cpp", "*.h", "*.hpp" },
                     DirectorySearchOption = SearchOption.AllDirectories,
                     ExcludedFiles = new List<string>() { "callback.c", "callback.h", "dllhack.c", "dllmain.c", "dllproc.c", "dllhack.h", "dllproc.h",
-                        "date_unix.h", "gnollhackdroid.h", "gnollhackios.h", "gnhcommon.h", "libproc.h", "pch.h", "gnhmain.c", "gnhunix.c", "gnhcommon.c", "gnollhackdroid.c", "gnollhackios.c", "libproc.c",
+                        "date_unix.h", "gnollhackdroid.h", "gnollhackios.h", "gnhapi.h", "libproc.h", "pch.h", "gnhmain.c", "gnhunix.c", "gnhapi.c", "gnollhackdroid.c", "gnollhackios.c", "libproc.c",
                         "soundfx.cpp", "soundfx.h", "mhwingdi.cpp", "mhwingdi.h", "resource.h", "nhresource.h" }
                 },
                 new DirectoryData()

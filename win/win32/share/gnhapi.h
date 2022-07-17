@@ -1,10 +1,10 @@
 /* 
- * gnhcommon.h 
+ * gnhapi.h 
  * Copyright (c) Janne Gustafsson, 2022
  */
 
-#ifndef GNHCOMMON_H
-#define GNHCOMMON_H
+#ifndef GNHAPI_H
+#define GNHAPI_H
 
 #include "callback.h"
 #include "tradstdc.h"

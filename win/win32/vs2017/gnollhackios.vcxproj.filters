@@ -382,7 +382,7 @@
     <ClCompile Include="$(LibShareDir)callback.c">
       <Filter>iOS Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(LibShareDir)gnhcommon.c">
+    <ClCompile Include="$(LibShareDir)gnhapi.c">
       <Filter>iOS Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -648,7 +648,7 @@
     <ClInclude Include="$(IncDir)unixconf.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(LibShareDir)gnhcommon.h">
+    <ClInclude Include="$(LibShareDir)gnhapi.h">
       <Filter>iOS Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -367,7 +367,7 @@
     <ClCompile Include="$(SysShareDir)ioctl.c" />
     <ClCompile Include="$(SysShareDir)posixregex.c" />
     <ClCompile Include="$(SysShareDir)unixtty.c" />
-    <ClCompile Include="$(LibShareDir)gnhcommon.c" />
+    <ClCompile Include="$(LibShareDir)gnhapi.c" />
     <ClCompile Include="$(LibShareDir)gnhmain.c" />
     <ClCompile Include="$(LibShareDir)gnhunix.c" />
     <ClCompile Include="$(LibShareDir)libproc.c" />
@@ -458,7 +458,7 @@
     <ClInclude Include="$(IncDir)you.h" />
     <ClInclude Include="$(IncDir)youprop.h" />
     <ClInclude Include="$(LibShareDir)callback.h" />
-    <ClInclude Include="$(LibShareDir)gnhcommon.h" />
+    <ClInclude Include="$(LibShareDir)gnhapi.h" />
     <ClInclude Include="$(LibShareDir)libproc.h" />
     <ClInclude Include="$(LibDroidDir)droidconf.h" />
     <ClInclude Include="$(LibDroidDir)gnollhackdroid.h" />

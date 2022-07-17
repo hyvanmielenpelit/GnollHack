@@ -1,8 +1,8 @@
-/* GnollHack 4.1.0 gnhcommon.c */
+/* GnollHack 4.1.0 gnhapi.c */
 /* Copyright (c) Janne Gustafsson, 2022. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
-#include "gnhcommon.h"
+#include "gnhapi.h"
 #include "hack.h"
 #include "func_tab.h"
 #include "libproc.h"
