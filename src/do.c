@@ -4101,16 +4101,20 @@ register struct obj* obj;
         txt = buf;
         putstr(datawin, ATR_HEADING, txt);
 
-        powercnt++;
-        if (!stats_known)
-            Sprintf(buf, " %2d - You can identify this item, for example, by using a scroll of identify", powercnt);
-        else
-            Sprintf(buf, " %2d - You can fully learn the statistics by identifying this item (e.g., by using a scroll of identify)", powercnt);
-        txt = buf;
-        putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        if (show_identify_hint)
+        {
+            powercnt++;
+            if (!stats_known)
+                Sprintf(buf, " %2d - You can identify this item, for example, by using a scroll of identify", powercnt);
+            else
+                Sprintf(buf, " %2d - You can fully learn the statistics by identifying this item (e.g., by using a scroll of identify)", powercnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
 
         if (show_corpse_hint)
         {
+            powercnt++;
             Sprintf(buf, " %2d - You can determine this corpse's properties by using a wand of probing on it", powercnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
