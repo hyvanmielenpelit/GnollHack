@@ -544,7 +544,7 @@ static const struct def_skill Skill_K_Max[] = {
     { P_CELESTIAL_SPELL, P_SKILLED },
     { P_ABJURATION_SPELL, P_SKILLED },
     { P_RIDING, P_EXPERT },
-    { P_TWO_WEAPON_COMBAT, P_MASTER },
+    { P_TWO_WEAPON_COMBAT, P_GRAND_MASTER },
     { P_BARE_HANDED_COMBAT, P_EXPERT },
     { P_SHIELD, P_GRAND_MASTER },
     { P_WAND, P_BASIC },

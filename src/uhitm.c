@@ -847,7 +847,7 @@ struct attack *uattk;
     if (u.twoweap && !(uwep && bimanual(uwep)) && malive && m_at(x, y) == mon) //&& !override_confirmation 
     {
         if (uarms && is_wieldable_weapon(uarms))
-            You("strike with your left-hand weapon.");
+            You("strike with your left-hand %s.", is_shield(uarms) ? "shield" : "weapon");
         else
             You("strike with your left %s%s.", uarmg ? "gloved " : "", body_part(HAND));
 

@@ -166,7 +166,7 @@ int hand;
         *unweapon_ptr = (wep->oclass == WEAPON_CLASS)
             ? is_launcher(wep) || is_ammo(wep) || is_missile(wep)
             || (is_appliable_pole_type_weapon(wep) && !is_spear(wep) && !u.usteed)
-            : !is_weptool(wep) && !is_wet_towel(wep);
+            : !is_wieldable_weapon(wep) && !is_wet_towel(wep);
     }
     else
     {
