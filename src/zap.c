@@ -5752,7 +5752,7 @@ dozap()
                     (void)uoname(obj, "empty");
 
                 if (ans == 'm')
-                    prinv((char*)0, obj, 0L);
+                    prinv("Marked empty:", obj, 0L);
             }
 
             switch (ans)

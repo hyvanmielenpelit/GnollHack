@@ -2194,7 +2194,7 @@ struct monst* mon;
         boolean cursed_plus_cursed_good = uitem->cursed && cursed_are_good;
         long applicable_enchantment = (long)(cursed_plus_cursed_good ? abs(uitem->enchantment) : uitem->enchantment);
         boolean worn = is_you ? is_obj_worn(uitem) :
-            ((!is_wielded_item(uitem) && (uitem->owornmask & ~W_WEAPON) != 0)
+            ((!is_wielded_item(uitem) && (uitem->owornmask & W_WORN_NOT_WIELDED) != 0)
                 || ((is_wielded_item(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON)));
 
         /* Following are for non-spellbooks and non-wands */
