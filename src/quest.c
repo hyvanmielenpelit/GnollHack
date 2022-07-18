@@ -11,17 +11,6 @@
 #include "quest.h"
 #include "qtext.h"
 
-struct gh_quest_base_data quest_definitions[NUM_QUESTS] = {
-    { "Amulet of Yendor",
-      "Find the Amulet of Yendor for your god",
-      { "Obtain the Silver Bell", "Obtain the Candelabrum of Invocation", "Obtain the Book of the Dead", "Perform the Invocation Ritual", 
-        "Kill the High Priest of Moloch", "Pick up the Amulet of Yendor", "Exit the Dungeon", "Find the portal to the next level",
-        "Find the High Altar of your alignment and sacrifice the Amulet of Yendor on it", 0, 0, 0},
-      0
-    },
-};
-
-
 #define Not_firsttime (on_level(&u.uz0, &u.uz))
 #define Qstat(x) (quest_status.x)
 
@@ -564,27 +553,6 @@ struct monst *mtmp;
     if (mtmp->data->msound == MS_NEMESIS)
         Qstat(in_battle) = (mon_can_move(mtmp)
                             && monnear(mtmp, u.ux, u.uy));
-}
-
-void
-quest_discovered(quest_id)
-int quest_id;
-{
-    if (quest_id < 0 || quest_id >= NUM_QUESTS)
-        return;
-
-    if (context.quest_status_info[quest_id].quest_state == QUEST_STATE_UNDISCOVERED)
-    {
-        //int title_color = CLR_YELLOW;
-        //pline_ex1(ATR_BOLD, title_color, quest_definitions[quest_id].quest_type == 0 ? "MAIN QUEST DISCOVERED" : "OPTIONAL QUEST DISCOVERED");
-        //pline_ex1(ATR_NONE, CLR_WHITE, quest_definitions[quest_id].title);
-
-        //char buf[BUFSIZ];
-        //Sprintf(buf, "- %s", quest_definitions[quest_id].description);
-        //pline_ex1(ATR_NONE, CLR_WHITE, buf);
-
-        context.quest_status_info[quest_id].quest_state = QUEST_STATE_DISCOVERED;
-    }
 }
 
 void

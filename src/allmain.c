@@ -1435,9 +1435,6 @@ newgame()
     /* GUI tips */
     show_gui_tips();
 
-    /* Main quest */
-    quest_discovered(QUEST_AMULET_OF_YENDOR);
-
     /* Check special room */
     check_special_room(FALSE);
 

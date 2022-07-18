@@ -2667,7 +2667,6 @@ E boolean FDECL(quest_chat, (struct monst *, BOOLEAN_P));
 E boolean FDECL(quest_talk, (struct monst *, BOOLEAN_P));
 E void FDECL(quest_stat_check, (struct monst *));
 E void FDECL(finish_quest, (struct obj *));
-E void FDECL(quest_discovered, (int));
 E void FDECL(achievement_gained, (const char*));
 
 /* ### questpgr.c ### */

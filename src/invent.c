@@ -843,7 +843,15 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.amulet)
             context.botl = 1;
         if (!u.uachieve.amulet)
+        {
             achievement_gained("Amulet of Yendor");
+            if (iflags.using_gui_sounds)
+            {
+                delay_output_milliseconds(500);
+                play_sfx_sound(SFX_HINT);
+            }
+            pline_ex(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE - Sacrifice the Amulet of Yendor on the Astral Plane");
+        }
         u.uachieve.amulet = 1;
     }
     else if (obj->otyp == CANDELABRUM_OF_INVOCATION) 

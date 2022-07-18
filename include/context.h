@@ -239,7 +239,6 @@ struct context_info
     boolean town_portal_return_level_set;
     d_level town_portal_return_level;
     long last_turn_when_took_damage;
-    struct gh_quest_status_data quest_status_info[NUM_QUESTS];
 
     boolean reviving;
     boolean quit_pressed;
