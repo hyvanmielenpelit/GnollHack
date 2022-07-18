@@ -1064,7 +1064,7 @@ BOW("Galadhrim bow", "ornamental long bow",
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_CLOAK, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5,flags6, powconfermask)
 #define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask) \
     ARMOR(name, desc, kn, mgc, blk, power, power2, power3, pflags, enchtype, prob, delay, wt, \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIELD, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, flags4, flags5, flags6, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIELD, P_SHIELD, metal, c, 0, soundset, flags, flags2, flags3, flags4, flags5, flags6, powconfermask)
 #define GLOVES(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_GLOVES, P_NONE, metal, c, 24, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, flags5, flags6, powconfermask)
@@ -1429,13 +1429,13 @@ WEAPONSHIELD("spiked shield", None,
     1, 0, 5, 130, 50, ENCHTYPE_GENERAL_ARMOR,
     AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 2, 0, 0, 0, 0, 0, 6, 0, 
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, P_SPEAR, MAT_IRON, HI_METAL, OBJECT_SOUNDSET_GENERIC,
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, P_SHIELD, MAT_IRON, HI_METAL, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPONSHIELD("spiked silver shield", None,
     1, 0, 2, 130, 500, ENCHTYPE_GENERAL_ARMOR,
     AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 2, 0, 0, 0, 0, 0, 6, 0, 
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, P_SPEAR, MAT_SILVER, HI_SILVER, OBJECT_SOUNDSET_GENERIC,
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, P_SHIELD, MAT_SILVER, HI_SILVER, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
 
 

@@ -2577,7 +2577,11 @@ find_ac()
     if (uarmf)
         uac_armor_bonus += ARM_AC_BONUS(uarmf, youmonst.data);
     if (uarms && (is_wielded_item(uarms)))
+    {
         uac_armor_bonus += ARM_AC_BONUS(uarms, youmonst.data); /* Only a shield and a wielded weapon can give AC; exclude wielded other armor types */
+        if (is_shield(uarms))
+            uac_armor_bonus += shield_skill_ac_bonus(P_SKILL_LEVEL(P_SHIELD));
+    }
     if (uarmg)
         uac_armor_bonus += ARM_AC_BONUS(uarmg, youmonst.data);
     if (uarmu)
@@ -2586,7 +2590,11 @@ find_ac()
         uac_armor_bonus += ARM_AC_BONUS(uarmb, youmonst.data);
 
     if (uwep && (is_wielded_item(uwep)))
+    {
         uac_armor_bonus += ARM_AC_BONUS(uwep, youmonst.data); /* A wielded weapon can give AC, also a wielded shield (in right hand) */
+        if (is_shield(uwep))
+            uac_armor_bonus += shield_skill_ac_bonus(P_SKILL_LEVEL(P_SHIELD));
+    }
 
     uac_natural -= (uac_armor_bonus / 3);
     uac_armor -= (uac_armor_bonus + ((10 - uac_natural_base) / 3));

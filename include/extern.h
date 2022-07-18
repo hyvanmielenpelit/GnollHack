@@ -3764,6 +3764,7 @@ E int FDECL(vms_get_saved_games, (const char *, char ***));
 
 E int FDECL(practice_needed_to_advance, (int, int));
 E const char *FDECL(weapon_descr, (struct obj *));
+E const char* FDECL(weapon_skill_name, (struct obj*));
 E int FDECL(m_weapon_range, (struct monst*, struct obj*, struct obj*));
 E int FDECL(weapon_range, (struct obj*, struct obj*));
 E int FDECL(basehitval, (struct obj*, struct monst*, struct monst*, int));
@@ -3815,6 +3816,8 @@ E enum p_skills FDECL(weapon_skill_type, (struct obj *));
 E enum p_skills NDECL(uwep_skill_type);
 E int FDECL(weapon_skill_hit_bonus, (struct obj *, int, BOOLEAN_P, BOOLEAN_P, int));
 E int FDECL(weapon_skill_dmg_bonus, (struct obj *, int, BOOLEAN_P, BOOLEAN_P, int));
+E int FDECL(shield_skill_ac_bonus, (int));
+E int FDECL(shield_skill_mc_bonus, (int));
 E int FDECL(wand_skill_hit_bonus, (int));
 E void FDECL(skill_init, (const struct def_skill*, const struct def_skill *));
 E int FDECL(martial_arts_multishot_percentage_chance, (int));

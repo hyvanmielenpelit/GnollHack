@@ -48,8 +48,9 @@ STATIC_DCL const char* FDECL(get_skill_range_name, (int, BOOLEAN_P));
 #define PN_BLUDGEONING_WEAPON (-22)
 #define PN_THROWN_WEAPON (-23)
 #define PN_MARTIAL_ARTS (-24)
-#define PN_WANDS (-25)
-#define NUM_PN_CATEGORIES (26)
+#define PN_SHIELDS (-25)
+#define PN_WANDS (-26)
+#define NUM_PN_CATEGORIES (27)
 
 
 NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
@@ -59,7 +60,7 @@ NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     PN_ARCANE_SPELL, PN_CLERIC_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
     PN_ABJURATION_SPELL, PN_MOVEMENT_SPELL, PN_TRANSMUTATION_SPELL, PN_ENCHANTMENT_SPELL, PN_CONJURATION_SPELL,
     PN_CELESTIAL_SPELL, PN_NATURE_SPELL, PN_NECROMANCY_SPELL,
-    PN_BARE_HANDED, PN_MARTIAL_ARTS, PN_TWO_WEAPONS, PN_WANDS, PN_RIDING, PN_DISARM_TRAP
+    PN_BARE_HANDED, PN_MARTIAL_ARTS, PN_TWO_WEAPONS, PN_SHIELDS, PN_WANDS, PN_RIDING, PN_DISARM_TRAP
 };
 
 /* note: entry [0] isn't used */
@@ -69,7 +70,7 @@ NEARDATA const char *const odd_skill_names[NUM_PN_CATEGORIES] = {
     "arcane spell", "clerical spell", "healing spell", "divination spell", "abjuration spell",
     "movement spell", "transmutation spell", "enchantment spell", "conjuration spell", 
     "celestial spell", "nature spell", "necromancy spell", "disarm trap", "sword",
-    "bludgeoning weapon", "thrown weapon", "martial arts", "wand",
+    "bludgeoning weapon", "thrown weapon", "martial arts", "shield", "wand",
 };
 
 NEARDATA const char* const odd_skill_names_plural[NUM_PN_CATEGORIES] = {
@@ -78,7 +79,7 @@ NEARDATA const char* const odd_skill_names_plural[NUM_PN_CATEGORIES] = {
     "arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
     "movement spells", "transmutation spells", "enchantment spells", "conjuration spells", 
     "celestial spells", "nature spells", "necromancy spells", "disarm traps", "swords",
-    "bludgeoning weapons", "thrown weapons", "martial arts", "wands",
+    "bludgeoning weapons", "thrown weapons", "martial arts", "shields", "wands",
 };
 
 #define P_NAME(type)                                    \
@@ -108,6 +109,18 @@ int skill;
                          : "fighting ");
 }
 
+const char*
+weapon_skill_name(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return "";
+
+    enum p_skills skill = weapon_skill_type(obj);
+    const char* descr = P_NAME(skill);
+    return descr;
+}
+
 /* weapon's skill category name for use as generalized description of weapon;
    mostly used to shorten "you drop your <weapon>" messages when slippery
    fingers or polymorph causes hero to involuntarily drop wielded weapon(s) */
@@ -115,6 +128,9 @@ const char *
 weapon_descr(obj)
 struct obj *obj;
 {
+    if (!obj)
+        return "";
+
     enum p_skills skill = weapon_skill_type(obj);
     const char *descr = P_NAME(skill);
 
@@ -1944,6 +1960,13 @@ int skill;
         P_SKILL_LEVEL(skill) >= P_MAX_SKILL_LEVEL(skill) ? "most" : "more",
         P_NAME_PLURAL(skill));
 
+    if (skill == P_SHIELD)
+    {
+        find_ac();
+        find_mc();
+        bot();
+    }
+
     if (!u.uachieve.role_achievement &&
         (
             (Role_if(PM_CAVEMAN) && skill == P_BLUDGEONING_WEAPON && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
@@ -2367,7 +2390,9 @@ int skill_id;
             char arrowbuf[BUFSZ] = "";
             char magicbuf[BUFSZ] = "";
             char savingbuf[BUFSZ] = "";
-            
+            char acbuf[BUFSZ] = "";
+            char mcbuf[BUFSZ] = "";
+
             lvlcnt++;
             int color = lvl == P_SKILL_LEVEL(skill_id) ? CLR_GREEN : NO_COLOR;
 
@@ -2432,6 +2457,13 @@ int skill_id;
                     Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                     Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
                     Sprintf(cbuf, "%d%%", criticalhitpct);
+                    if (skill_id == P_SHIELD)
+                    {
+                        int acbonus = -shield_skill_ac_bonus(lvl);
+                        int mcbonus = shield_skill_mc_bonus(lvl);
+                        Sprintf(acbuf, "%s%d", acbonus >= 0 ? "+" : "", acbonus);
+                        Sprintf(mcbuf, "%s%d", mcbonus >= 0 ? "+" : "", mcbonus);
+                    }
                 }
             }
             else if (skill_id >= P_FIRST_SPELL && skill_id <= P_LAST_SPELL)
@@ -2453,6 +2485,16 @@ int skill_id;
                 Sprintf(magicbuf, "%d%%", magictrap_chance);
             }
 
+            if (strcmp(acbuf, ""))
+            {
+                Sprintf(buf, "    * Armor class bonus %s", acbuf);
+                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+            }
+            if (strcmp(mcbuf, ""))
+            {
+                Sprintf(buf, "    * Magic cancellation bonus %s", mcbuf);
+                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+            }
             if (strcmp(hbuf, ""))
             {
                 Sprintf(buf, "    * To-hit bonus %s", hbuf);
@@ -2594,6 +2636,7 @@ enhance_weapon_skill()
 
             boolean disarmtrapslast = (P_SKILL_LEVEL(P_DISARM_TRAP) > P_ISRESTRICTED);
             boolean wandsshown = (P_SKILL_LEVEL(P_WAND) > P_ISRESTRICTED);
+            boolean shieldsshown = (P_SKILL_LEVEL(P_SHIELD) > P_ISRESTRICTED);
             boolean martialartsshown = (P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_ISRESTRICTED);
             any = zeroany;
             
@@ -2603,6 +2646,12 @@ enhance_weapon_skill()
             if (martialartsshown)
             {
                 Sprintf(buf, "to-hit/damage/double-hit-%% for martial arts,");
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+            }
+
+            if (shieldsshown)
+            {
+                Sprintf(buf, "AC bonus/MC bonus for shields,");
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
             }
 
@@ -2865,6 +2914,28 @@ enhance_weapon_skill()
                             Sprintf(nextbonusbuf, "%5s/%s", hbuf2, dbuf2);
                         }
                     }
+                    else if (i == P_SHIELD)
+                    {
+                        int acbonus = -shield_skill_ac_bonus(P_SKILL_LEVEL(i));
+                        int mcbonus = shield_skill_mc_bonus(P_SKILL_LEVEL(i));
+                        char acbuf[BUFSZ] = "";
+                        char mcbuf[BUFSZ] = "";
+                        Sprintf(acbuf, "%s%d", acbonus >= 0 ? "+" : "", acbonus);
+                        Sprintf(mcbuf, "%s%d", mcbonus >= 0 ? "+" : "", mcbonus);
+                        Sprintf(bonusbuf, "%5s/%s", acbuf, mcbuf);
+
+                        if (can_advance(i, speedy) || could_advance(i))
+                        {
+                            int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
+                            int acbonus2 = -shield_skill_ac_bonus(nextlevel);
+                            int mcbonus2 = shield_skill_mc_bonus(nextlevel);
+                            char acbuf2[BUFSZ] = "";
+                            char mcbuf2[BUFSZ] = "";
+                            Sprintf(acbuf2, "%s%d", acbonus2 >= 0 ? "+" : "", acbonus2);
+                            Sprintf(mcbuf2, "%s%d", mcbonus2 >= 0 ? "+" : "", mcbonus2);
+                            Sprintf(nextbonusbuf, "%5s/%s", acbuf2, mcbuf2);
+                        }
+                    }
                     else if (i == P_MARTIAL_ARTS)
                     {
                         int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, 0);
@@ -3119,6 +3190,12 @@ int degree;
         if (!advance_before && can_advance(skill, FALSE))
             give_may_advance_msg(skill);
         update_can_advance_any_skill();
+        if (skill == P_SHIELD && degree != 0)
+        {
+            find_ac();
+            find_mc();
+            bot();
+        }
     }
 }
 
@@ -3171,6 +3248,12 @@ int n; /* number of slots to lose; normally one */
                skill by using the refunded slots, but giving a message
                to that effect would seem pretty confusing.... */
         }
+    }
+    if (skill == P_SHIELD && n != 0)
+    {
+        find_ac();
+        find_mc();
+        bot();
     }
     update_can_advance_any_skill();
 }
@@ -3245,7 +3328,7 @@ boolean nextlevel, limit_by_twoweap;
     {
         bonus = 0;
     }
-    else if (type <= P_LAST_WEAPON)
+    else if (type <= P_LAST_WEAPON || type == P_SHIELD)
     {
         int skill_level = use_this_level > 0 ? use_this_level : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
         switch (skill_level)
@@ -3394,7 +3477,7 @@ boolean nextlevel, limit_by_twoweap;
     {
         bonus += 0;
     } 
-    else if (type <= P_LAST_WEAPON) 
+    else if (type <= P_LAST_WEAPON || type == P_SHIELD)
     {
         int skill_level = use_this_level > 0 ? use_this_level : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
         switch (skill_level)
@@ -3491,6 +3574,20 @@ boolean nextlevel, limit_by_twoweap;
     }
 
     return bonus;
+}
+
+int
+shield_skill_ac_bonus(skill_level)
+int skill_level;
+{
+    return max(0, skill_level - 1);
+}
+
+int
+shield_skill_mc_bonus(skill_level)
+int skill_level;
+{
+    return max(0, skill_level - 1);
 }
 
 

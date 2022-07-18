@@ -102,6 +102,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
@@ -178,6 +179,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
@@ -252,6 +254,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
@@ -325,6 +328,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
@@ -398,6 +402,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_BASIC, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
@@ -478,6 +483,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
@@ -552,6 +558,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
@@ -627,6 +634,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
@@ -715,6 +723,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
@@ -788,6 +797,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
@@ -861,6 +871,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
@@ -934,6 +945,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_BASIC, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
@@ -1009,6 +1021,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
@@ -1042,6 +1055,7 @@ struct Role urole = {
      0,
      0,
     {
+        SKILL_PROGRESS_NONE,
         SKILL_PROGRESS_NONE,
         SKILL_PROGRESS_NONE,
         SKILL_PROGRESS_NONE,

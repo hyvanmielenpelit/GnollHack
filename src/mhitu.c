@@ -1586,10 +1586,10 @@ struct monst *mon;
     {
         /* oc_magic_cancellation field is only applicable for armor (which must be worn), this should exclude spellbooks and wands, which use oc_oc2 for something else */
         /* omit W_SWAPWEP+W_QUIVER; W_ARTIFACT_CARRIED+W_ARTIFACT_INVOKED handled by protects() */
-        wearmask = (W_ARMOR & ~W_ARMS) | W_ACCESSORY;
+        wearmask = W_WORN_NOT_WIELDED;
 
         if (is_wielded_item(o) || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(o))
-            wearmask |= (W_WEP | W_ARMS);
+            wearmask |= W_WIELDED_WEAPON;
 
         item_mc_bonus = 0;
         int otyp = o->otyp;
@@ -1606,6 +1606,9 @@ struct monst *mon;
 
             if (o->oclass == ARMOR_CLASS || o->oclass == MISCELLANEOUS_CLASS || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(o) || (objects[o->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC))
                 item_mc_bonus += o->enchantment / 3;
+
+            if (is_shield(o))
+                item_mc_bonus += is_you ? shield_skill_mc_bonus(P_SKILL_LEVEL(P_SHIELD)) : 0;
         }
 
         if ((worn || (!worn && (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED)))

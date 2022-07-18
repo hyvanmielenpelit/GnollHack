@@ -57,13 +57,14 @@ enum p_skills {
     P_BARE_HANDED_COMBAT = 27, /* actually weaponless; gloves are ok */
     P_MARTIAL_ARTS       = 28, /* actually weaponless; gloves are ok */
     P_TWO_WEAPON_COMBAT  = 29, /* pair of weapons, one in each hand */
-    P_WAND               = 30, /* shooting rays with wands */
+    P_SHIELD             = 30, /* for increasing AC and figthing with weapon shields */
+    P_WAND               = 31, /* shooting rays with wands */
 
     /* Non-combat skills */
-    P_RIDING             = 31,    /* how well you control your steed */
-    P_DISARM_TRAP        = 32,    /* disarming traps */
+    P_RIDING             = 32,    /* how well you control your steed */
+    P_DISARM_TRAP        = 33,    /* disarming traps */
     
-    P_NUM_SKILLS         = 33
+    P_NUM_SKILLS         = 34
 };
 
 //#define P_MARTIAL_ARTS P_BARE_HANDED_COMBAT /* Role distinguishes */

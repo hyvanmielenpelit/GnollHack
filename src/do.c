@@ -1442,7 +1442,7 @@ register struct obj* obj;
         /* Skill */
         if(objects[obj->otyp].oc_skill != P_NONE)
         {
-            strcpy(buf2, weapon_descr(obj));
+            strcpy(buf2, weapon_skill_name(obj));
             *buf2 = highc(*buf2);
             Sprintf(buf, "Skill:                  %s", buf2);
             txt = buf;

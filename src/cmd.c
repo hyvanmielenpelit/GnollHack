@@ -228,7 +228,7 @@ STATIC_DCL boolean FDECL(help_dir, (CHAR_P, int, const char *));
 STATIC_DCL void FDECL(add_command_menu_items, (winid, int));
 STATIC_DCL void NDECL(check_gui_special_effect);
 STATIC_DCL void FDECL(print_monster_abilities, (winid, int*, BOOLEAN_P));
-STATIC_DCL void FDECL(print_weapon_skill_line, (struct obj*, int));
+STATIC_DCL void FDECL(print_weapon_skill_line, (struct obj*, BOOLEAN_P, int));
 
 
 static const char *readchar_queue = "";
@@ -3884,14 +3884,34 @@ int final;
     }
 
     /* report being weaponless; distinguish whether gloves are worn */
-    if (!uwep) {
-        you_are(uarmg ? "empty handed" /* gloves imply hands */
-                      : humanoid(youmonst.data)
-                         /* hands but no weapon and no gloves */
-                         ? "bare handed"
-                         /* alternate phrasing for paws or lack of hands */
-                         : "not wielding anything",
+    if (!uwep) 
+    {
+        if (!uarms)
+        {
+            you_are(uarmg ? "empty handed" /* gloves imply hands */
+                : humanoid(youmonst.data)
+                /* hands but no weapon and no gloves */
+                ? "bare handed"
+                /* alternate phrasing for paws or lack of hands */
+                : "not wielding anything",
                 "");
+        }
+        else
+        {
+            if (is_shield(uarms))
+            {
+                Sprintf(buf, "wielding a shield in your left %s", body_part(HAND));
+                you_are(buf, "");
+            }
+            else
+            {
+                const char* what = weapon_descr(uarms);
+                Sprintf(buf, "wielding %s in your left %s",
+                    (uarms->quan == 1L) ? an(what) : makeplural(what), body_part(HAND));
+                you_are(buf, "");
+            }
+
+        }
     /* two-weaponing implies hands (can't be polymorphed) and
        a weapon or wep-tool (not other odd stuff) in each hand */
     } else if (u.twoweap) {
@@ -3908,6 +3928,10 @@ int final;
         else
             Sprintf(buf, "wielding %s",
                     (uwep->quan == 1L) ? an(what) : makeplural(what));
+
+        if (uarms && is_shield(uarms))
+            Strcat(buf, " and a shield");
+
         you_are(buf, "");
     }
     /*
@@ -3916,7 +3940,7 @@ int final;
      *
      * TODO?  Maybe merge wielding line and skill line into one sentence.
      */
-    print_weapon_skill_line(uwep, final);
+    print_weapon_skill_line(uwep, TRUE, final);
 #if 0
     if ((wtype = uwep_skill_type()) != P_NONE) 
     {
@@ -3997,10 +4021,11 @@ int final;
         you_are(buf, "");
     }
 
-    if (u.twoweap) {
-        if(uarms && is_weapon(uarms))
-            print_weapon_skill_line(uarms, final);
+    if (uarms)
+        print_weapon_skill_line(uarms, u.twoweap && is_weapon(uarms), final);
 
+    if (u.twoweap) 
+    {
         wtype = P_TWO_WEAPON_COMBAT;
         char sklvlbuf[20];
         int sklvl = P_SKILL_LEVEL(wtype);
@@ -4046,8 +4071,9 @@ int final;
 
 STATIC_OVL
 void
-print_weapon_skill_line(wep, final)
+print_weapon_skill_line(wep, printweaponstats, final)
 struct obj* wep;
+boolean printweaponstats;
 int final;
 {
     char buf[BUFSZ];
@@ -4069,11 +4095,30 @@ int final;
         /* "you have no/basic/expert/master/grand-master skill with <skill>"
            or "you are unskilled/skilled in <skill>" */
 
-        int hitbonus = weapon_skill_hit_bonus(wep, wtype, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
-        int dmgbonus = weapon_skill_dmg_bonus(wep, wtype, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
+        char ebuf[BUFSZ] = "";
+        if (printweaponstats)
+        {
+            int hitbonus = weapon_skill_hit_bonus(wep, wtype, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
+            int dmgbonus = weapon_skill_dmg_bonus(wep, wtype, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
+            Sprintf(ebuf, "%s%d to hit%s%s%d to damage",
+                hitbonus >= 0 ? "+" : "", hitbonus,
+                wtype == P_SHIELD ? ", " : " and ",
+                dmgbonus >= 0 ? "+" : "", dmgbonus);
+        }
+        if (wtype == P_SHIELD)
+        {
+            int acbonus = -shield_skill_ac_bonus(P_SKILL_LEVEL(wtype));
+            int mcbonus = shield_skill_mc_bonus(P_SKILL_LEVEL(wtype));
+            if (printweaponstats)
+                Strcat(ebuf, ", ");
+            Sprintf(eos(ebuf), "%s%d to AC and %s%d to MC", acbonus >= 0 ? "+" : "", acbonus, mcbonus >= 0 ? "+" : "", mcbonus);
+        }
+        char pbuf[BUFSZ] = "";
+        if (*ebuf)
+            Sprintf(pbuf, " (%s)", ebuf);
 
-        Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
-            hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
+        Sprintf(buf, "%s %s %s%s", sklvlbuf, hav ? "skill with" : "in", 
+            skill_name(wtype, TRUE), pbuf);
 
         if (can_advance(wtype, FALSE))
             Sprintf(eos(buf), " and %s that",
