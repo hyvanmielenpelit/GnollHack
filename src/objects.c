@@ -1110,7 +1110,7 @@ BOW("Galadhrim bow", "ornamental long bow",
            hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
            wt, color, soundset, \
            0, 0, 0, 0, \
-           powconfermask,permittedtargets, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5,flags6)
+           powconfermask,permittedtargets, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5 | O5_IS_WEAPON_WHEN_WORN,flags6)
 
 #define WEAPONGLOVES(name,desc,kn,mgc,delay,prob,wt,cost,enchtype,\
             dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
@@ -1446,20 +1446,28 @@ WEAPONSHIELD("spiked silver shield", None,
  */
 GLOVES("leather gloves", "old gloves",
        0, 0,        NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_LEATHER_NONBODY_ARMOR, 8, 1, 10,  8, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-GLOVES("gauntlets of fumbling", "padded gloves",
-       0, 1, FUMBLING, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 8, 1, 10, 100, 9, 0, 0, 0, 0, 0, 6, MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+WEAPONGLOVES("gauntlets of fumbling", "padded gloves",
+    0, 1, 1, 8, 10, 100, ENCHTYPE_GENERAL_ARMOR,
+    AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
+    0, 0, 0, 1, 0, 0, 0, 0, 0, 6, 0,
+    FUMBLING, NO_POWER, NO_POWER, P1_NONE, WHACK, MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC,
+    O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
 GLOVES("gloves of haste", "brown gloves",
        0, 1, VERY_FAST, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 8, 1, 10, 100, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 GLOVES("gloves of spell casting", "deerskin gloves",
        0, 1,        0, 0, 0, P1_MANA_PERCENTAGE_BONUS, ENCHTYPE_GENERAL_ARMOR, 8, 1, 10, 100, 9, 0, 20, 0, BONUS_TO_ALL_SPELL_CASTING, 12, 0, MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 WEAPONGLOVES("gauntlets of ogre power", "riding gloves",
     0, 1, 1, 8, 30, 100, ENCHTYPE_GENERAL_ARMOR,
-    AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
+    AD_PHYS, 1, 3, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 1, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_ENCHANTMENT, STR18(100), 2, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, WHACK, MAT_IRON, CLR_BROWN, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NON_MYTHIC, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
-GLOVES("gauntlets of dexterity", "fencing gloves",
-       0, 1,        NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 8, 1, 10, 100, 9, 0, 0, 0, BONUS_TO_DEX, 0, 0, MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
+WEAPONGLOVES("gauntlets of dexterity", "fencing gloves",
+    0, 1, 1, 8, 10, 100, ENCHTYPE_GENERAL_ARMOR,
+    AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
+    0, 0, 0, 1, 0, 0, 0, BONUS_TO_DEX, 0, 0, 0,
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, WHACK, MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC,
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPONGLOVES("gauntlets of balance", "runed gloves", /* Base item for Gauntlets of Yin and Yang */
     0, 1, 1, 0, 10, 1000, ENCHTYPE_GENERAL_ARMOR,
     AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
@@ -1468,7 +1476,7 @@ WEAPONGLOVES("gauntlets of balance", "runed gloves", /* Base item for Gauntlets 
     O1_ROT_RESISTANT | O1_POLYMORPH_RESISTANT | O1_FIRE_RESISTANT,
     O2_NONE,
     O3_NO_WISH | O3_NO_GENERATION,
-    O4_NON_MYTHIC, O5_NONE, O6_NONE,
+    O4_NONE, O5_NONE, O6_NONE,
     PERMITTED_ALL, ALL_TARGETS),
 
 /* without shuffled appearances */
