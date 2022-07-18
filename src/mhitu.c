@@ -2990,7 +2990,7 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, -1, TRUE);
         if (!is_cancelled(mtmp) && !mtmp->mspec_used)
         {
-            mtmp->mspec_used = mtmp->mspec_used + ((int)ceil(damage) + rn2(6));
+            mtmp->mspec_used = mtmp->mspec_used + ((int)ceil(damage) + rn2(6)) / mon_spec_cooldown_divisor(mtmp);
             if (Confusion)
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are getting even more confused.");
             else
@@ -4022,7 +4022,7 @@ struct attack *mattk;
             } else {
                 int conf = d(3, 4);
 
-                mtmp->mspec_used = mtmp->mspec_used + (conf + rn2(6));
+                mtmp->mspec_used = mtmp->mspec_used + (conf + rn2(6)) / mon_spec_cooldown_divisor(mtmp);
                 if (!Confusion)
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s gaze confuses you!", s_suffix(Monnam(mtmp)));
                 else
@@ -4050,7 +4050,7 @@ struct attack *mattk;
                 {
                     int stun = d(2, 6);
 
-                    mtmp->mspec_used = mtmp->mspec_used + (stun + rn2(6));
+                    mtmp->mspec_used = mtmp->mspec_used + (stun + rn2(6)) / mon_spec_cooldown_divisor(mtmp);
                     if (!Stunned)
                         play_sfx_sound(SFX_ACQUIRE_STUN);
                     make_stunned((HStun & TIMEOUT) + (long)stun, TRUE);
@@ -4563,7 +4563,7 @@ struct monst *mon;
     } 
     else 
     {
-        mon->mspec_used = rnd(100); /* monster is worn out */
+        mon->mspec_used = rnd(100) / mon_spec_cooldown_divisor(mon); /* monster is worn out */
         You("seem to have enjoyed it more than %s...", noit_mon_nam(mon));
         switch (rn2(5)) {
         case 0:
@@ -4633,7 +4633,8 @@ struct monst *mon;
         }
     }
     if (!rn2(25))
-        mon->mspec_used = max(mon->mspec_used, 10 + rnd(40)); // increase_mon_property(mon, CANCELLED, 10 + rnd(40)); /* monster is worn out */
+        mon->mspec_used = max(mon->mspec_used, (10 + rnd(40)) / mon_spec_cooldown_divisor(mon)); // increase_mon_property(mon, CANCELLED, 10 + rnd(40)); /* monster is worn out */
+
     if (!tele_restrict(mon))
     {
         (void)rloc2(mon, TRUE, TRUE);

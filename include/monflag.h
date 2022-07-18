@@ -361,6 +361,7 @@
 #define M6_NON_TINNABLE             0x00010000UL /* Corpse cannot be tinned similar to riders */
 #define M6_NON_EDIBLE               0x00020000UL /* Corpse cannot be eaten similar to riders */
 #define M6_REVIVES_UPON_MEDDLING    0x00040000UL /* Revive upon corpse meddling */
+#define M6_HALF_SPEC_COOLDOWN       0x00080000UL /* Special ability cooldown are half normal */
 
 #define M7_NONE                     0x00000000UL
 #define M7_ARCHAEOLOGIST            0x00000001UL            /* monster can use archaeologist items */

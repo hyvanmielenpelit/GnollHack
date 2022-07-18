@@ -165,6 +165,7 @@ static NEARDATA struct mflag_description m6flag_descriptions[] = {
     { M6_CORPSE_EATER, "corpse-eating monster", "corpse-eating monsters" },
     { M6_SHADE, "impervious to physical weapons", "monsters impervious to physical weapons" },
     { M6_TELEPORT_HEAL_TACTICS, "using teleport and heal tactics", "monsters using teleport and heal tactics" },
+    { M6_HALF_SPEC_COOLDOWN, "energy-regenerating monster", "energy-regenerating monsters" },
     { 0 , "", "" }
 };
 

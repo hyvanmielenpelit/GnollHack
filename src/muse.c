@@ -3042,7 +3042,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         if (vis)
             pline("%s breathes fire on %sself.", Monnam(mon), mhim(mon));
         if (!rn2(3))
-            mon->mspec_used = rn1(10, 5);
+            mon->mspec_used = rn1(10, 5) / mon_spec_cooldown_divisor(mon);
         /* -21 => monster's fire breath; 1 => # of damage dice */
         damage = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, mon, 1, 8, 0, &odummyp, &zhitm_out_flags);
     }
