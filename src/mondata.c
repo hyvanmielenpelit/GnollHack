@@ -64,6 +64,7 @@ static NEARDATA struct ability_conversion_table prop2innate[] = {
     { CANCELLATION_RESISTANCE, MR_NONE, MR2_CANCELLATION_RESISTANCE, MC_NONE, -1 },
     { BISECTION_RESISTANCE, MR_NONE, MR2_BISECTION_RESISTANCE, MC_NONE, -1 },
     { SLIME_RESISTANCE, MR_NONE, MR2_SLIME_RESISTANCE, MC_NONE, -1 },
+    { ENERGY_REGENERATION, MR_NONE, MR2_ENERGY_REGENERATION, MC_NONE, -1 },
 };
 
 struct mflag_description {
@@ -165,7 +166,6 @@ static NEARDATA struct mflag_description m6flag_descriptions[] = {
     { M6_CORPSE_EATER, "corpse-eating monster", "corpse-eating monsters" },
     { M6_SHADE, "impervious to physical weapons", "monsters impervious to physical weapons" },
     { M6_TELEPORT_HEAL_TACTICS, "using teleport and heal tactics", "monsters using teleport and heal tactics" },
-    { M6_HALF_SPEC_COOLDOWN, "energy-regenerating monster", "energy-regenerating monsters" },
     { 0 , "", "" }
 };
 
