@@ -195,7 +195,7 @@ doread()
     if (scroll->oclass == SPBOOK_CLASS && scroll->cooldownleft > 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot read %s before its cooldown has expired.", the(cxname(scroll)));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot read %s before its cooldown has expired.", the(cxname(scroll)));
         return 0;
     }
 
@@ -399,7 +399,7 @@ doread()
         if (what) 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Being blind, you cannot read the %s.", what);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Being blind, you cannot read the %s.", what);
             return 0;
         }
     }

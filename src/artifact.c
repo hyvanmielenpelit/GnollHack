@@ -2471,7 +2471,7 @@ doinvoke()
     if (obj->repowerleft > 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot invoke %s before its has repowered itself.", the(cxname(obj)));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot invoke %s before its has repowered itself.", the(cxname(obj)));
         return 0;
     }
 
@@ -2505,7 +2505,7 @@ struct obj *obj;
     if ((oart->aflags & AF_INVOKE_REQUIRES_WORN) && !is_worn_correctly(obj))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("You have to wear %s before invoking.", the(cxname(obj)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You have to wear %s before invoking.", the(cxname(obj)));
         return 1;
     }
     else if ((oart->aflags & AF_INVOKE_EXPENDS_CHARGE) && obj->charges <= 0)

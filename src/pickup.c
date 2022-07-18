@@ -1474,7 +1474,7 @@ boolean telekinesis;
 
     if (obj->otyp == BOULDER && Sokoban) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot get your %s around this %s.", body_part(HAND),
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot get your %s around this %s.", body_part(HAND),
             xname(obj));
         return -1;
     }
@@ -1793,7 +1793,7 @@ boolean looting; /* loot vs tip */
         /* at present, can't loot in water even when Underwater;
            can tip underwater, but not when over--or stuck in--lava */
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot %s things that are deep in the %s.", verb,
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot %s things that are deep in the %s.", verb,
             hliquid(is_lava(x, y) ? "lava" : "water"));
         return FALSE;
     } 
@@ -2481,7 +2481,7 @@ register struct obj *obj;
     else if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        Norep("You cannot %s %s you are wearing.",
+        Norep_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s %s you are wearing.",
               Icebox ? "refrigerate" : "stash", something);
         return 0;
     }
@@ -2489,7 +2489,7 @@ register struct obj *obj;
     {
         play_sfx_sound(SFX_GENERAL_WELDED);
         obj->bknown = 1;
-        pline("%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
         return 0;
     }
     else if (
@@ -2498,7 +2498,7 @@ register struct obj *obj;
         )
     {
         play_sfx_sound(SFX_GENERAL_DOES_NOT_FIT);
-        pline("%s is not made for holding %s.", The(cxname(current_container)), obj->quan > 1 ? cxname(obj) : makeplural(cxname(obj)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not made for holding %s.", The(cxname(current_container)), obj->quan > 1 ? cxname(obj) : makeplural(cxname(obj)));
         return 0;
     }
     else if (obj->otyp == AMULET_OF_YENDOR
@@ -2513,7 +2513,7 @@ register struct obj *obj;
          * has the Amulet.  Ditto for the Candelabrum, the Bell and the Book.
          */
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s cannot be confined in such trappings.", The(xname(obj)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be confined in such trappings.", The(xname(obj)));
         return 0;
     }
     else if (obj->otyp == LEASH && obj->leashmon != 0)
@@ -2584,7 +2584,7 @@ register struct obj *obj;
          */
         play_sfx_sound(SFX_GENERAL_DOES_NOT_FIT);
         Strcpy(buf, the(xname(obj)));
-        You("cannot fit %s into %s.", buf, the(xname(current_container)));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot fit %s into %s.", buf, the(xname(current_container)));
         return 0;
     }
 
@@ -4245,7 +4245,7 @@ dostash()
 
     if (!can_stash_objs()) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You1("do not have any containers to stash items into.");
+        You_ex1(ATR_NONE, CLR_MSG_FAIL, "do not have any containers to stash items into.");
         return 0;
     }
 
@@ -4260,7 +4260,7 @@ dostash()
 
     if (Is_container(otmp)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You1("cannot stash that.");
+        You_ex1(ATR_NONE, CLR_MSG_FAIL, "cannot stash that.");
         return 0;
     }
 

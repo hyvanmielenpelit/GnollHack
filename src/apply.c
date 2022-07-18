@@ -246,7 +246,7 @@ struct obj *obj;
 
     if (Underwater) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("Using your camera underwater would void the warranty.");
+        pline_ex(ATR_NONE, NO_COLOR, "Using your camera underwater would void the warranty.");
         return 0;
     }
     if (!getdir((char *) 0))
@@ -1026,7 +1026,7 @@ struct obj *obj;
             goto got_target;
         }
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("Leash yourself?  Very funny...");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Leash yourself?  Very funny...");
         return 0;
     }
 
@@ -1037,7 +1037,7 @@ struct obj *obj;
     if (!(mtmp = m_at(cc.x, cc.y)))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        There("is no creature there.");
+        There_ex(ATR_NONE, CLR_MSG_FAIL, "is no creature there.");
         (void) unmap_invisible(cc.x, cc.y);
         return 1;
     }
@@ -1058,7 +1058,7 @@ struct obj *obj;
     else if (!is_tame(mtmp))
     {
         play_sfx_sound(SFX_FAILS_TO_LEASH);
-        pline("%s %s leashed!", Monnam(mtmp),
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s leashed!", Monnam(mtmp),
               (!obj->leashmon) ? "cannot be" : "is not");
     }
     else if (!obj->leashmon) 
@@ -1067,13 +1067,13 @@ struct obj *obj;
         if (mtmp->mleashed)
         {
             play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
-            pline("This %s is already leashed.",
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This %s is already leashed.",
                   spotmon ? l_monnam(mtmp) : "creature");
         }
         else if (!leashable(mtmp)) 
         {
             play_sfx_sound(SFX_GENERAL_DOES_NOT_FIT);
-            pline("The leash won't fit onto %s%s.", spotmon ? "your " : "",
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "The leash won't fit onto %s%s.", spotmon ? "your " : "",
                   l_monnam(mtmp));
         }
         else
@@ -1093,12 +1093,12 @@ struct obj *obj;
         if (obj->leashmon != (int) mtmp->m_id)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("This leash is not attached to that creature.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This leash is not attached to that creature.");
         }
         else if (obj->cursed) 
         {
             play_sfx_sound(SFX_GENERAL_WELDED);
-            pline_The("leash would not come off!");
+            pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "leash would not come off!");
             obj->bknown = 1;
         } 
         else
@@ -1409,7 +1409,7 @@ struct obj *obj;
     else if (mlet == S_VAMPIRE || mlet == S_GHOST || is_vampshifter(mtmp)) 
     {
         if (vis)
-            pline("%s doesn't have a reflection.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s doesn't have a reflection.", Monnam(mtmp));
     }
     else if (monable && mtmp->data == &mons[PM_MEDUSA]) 
     {
@@ -1419,7 +1419,7 @@ struct obj *obj;
             return 1;
         }
         if (vis)
-            pline("%s is turned to stone!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is turned to stone!", Monnam(mtmp));
 
         play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
         stoned = TRUE;
@@ -1913,13 +1913,13 @@ register struct obj *obj;
     if (obj->special_quality <= 0) 
     {
         play_sfx_sound(SFX_GENERAL_NOT_IN_THE_RIGHT_CONDITION);
-        pline("This %s has no %s.", xname(obj), s);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "This %s has no %s.", xname(obj), s);
         return;
     }
     if (Underwater) 
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You("cannot make fire under water.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot make fire under water.");
         return;
     }
     if (u.uswallow || obj->cursed) 
@@ -1927,7 +1927,7 @@ register struct obj *obj;
         if (!Blind)
         {
             play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
-            pline_The("%s %s for a moment, then %s.", s, vtense(s, "flicker"),
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s for a moment, then %s.", s, vtense(s, "flicker"),
                 vtense(s, "die"));
 
         }
@@ -2174,7 +2174,7 @@ struct obj **optr;
     if (!is_obj_candelabrum(otmp))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot attach candles to %s.", an(cxname(otmp)));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot attach candles to %s.", an(cxname(otmp)));
         return 1;
     }
 
@@ -2182,7 +2182,7 @@ struct obj **optr;
     if (otmp->special_quality >= max_candles)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s is already full of candles.", The(cxname(otmp)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is already full of candles.", The(cxname(otmp)));
         return 1;
     }
 
@@ -2373,7 +2373,7 @@ struct obj *obj;
     if (Underwater)
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        pline(!is_candle(obj) ? "This is not a diving lamp"
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, !is_candle(obj) ? "This is not a diving lamp"
                               : "Sorry, fire and water don't mix.");
         return;
     }
@@ -2393,7 +2393,7 @@ struct obj *obj;
     {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         if (!Blind)
-            pline("%s for a moment, then %s.", Tobjnam(obj, "flicker"),
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s for a moment, then %s.", Tobjnam(obj, "flicker"),
                   otense(obj, "die"));
     } 
     else
@@ -2514,7 +2514,7 @@ dorub()
             return 1;
         } else {
             play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
-            pline("Sorry, I don't know how to use that.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Sorry, I don't know how to use that.");
             return 0;
         }
     }
@@ -2653,7 +2653,7 @@ boolean showmsg;
         if (showmsg)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT_SEE_SPOT);
-            You("cannot see where to land!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot see where to land!");
         }
         return FALSE;
     } else {
@@ -2978,13 +2978,13 @@ struct obj *obj;
         return;
     if (corpse->oeaten) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot tin %s which is partly eaten.", something);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot tin %s which is partly eaten.", something);
         return;
     }
     if (corpse->corpsenm < LOW_PM)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("There seems to be something wrong with this corpse.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "There seems to be something wrong with this corpse.");
         return;
     }
 
@@ -3022,7 +3022,7 @@ struct obj *obj;
         else
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline_The("corpse evades your grasp.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "corpse evades your grasp.");
         }
         return;
     }
@@ -3035,13 +3035,14 @@ struct obj *obj;
         else
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("It seems oddly difficult to tin that.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "It seems oddly difficult to tin that.");
         }
         return;
     }
     if (mons[corpse->corpsenm].cnutrit == 0) 
     {
-        pline("That's too insubstantial to tin.");
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "That's too insubstantial to tin.");
         return;
     }
     consume_obj_charge(obj, TRUE);
@@ -3466,7 +3467,7 @@ boolean quietly;
         if (!quietly)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("cannot put the figurine there.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot put the figurine there.");
         }
         return FALSE;
     }
@@ -3475,7 +3476,7 @@ boolean quietly;
         if (!quietly)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("cannot place a figurine in %s!",
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot place a figurine in %s!",
                 IS_TREE(levl[x][y].typ) ? "a tree" : "solid rock");
         }
         return FALSE;
@@ -3485,7 +3486,7 @@ boolean quietly;
         if (!quietly)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("cannot fit the figurine on the boulder.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot fit the figurine on the boulder.");
         }
         return FALSE;
     }
@@ -3634,7 +3635,7 @@ struct obj* obj;
         if (otmp == obj)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("cannot use the wand on itself!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot use the wand on itself!");
             return 0;
         }
 
@@ -4899,13 +4900,13 @@ struct obj *obj;
     if (distu(cc.x, cc.y) > max_range)
     {
         play_sfx_sound(SFX_GENERAL_TOO_FAR);
-        pline("Too far!");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Too far!");
         return res;
     } 
     else if (distu(cc.x, cc.y) < min_range) 
     {
         play_sfx_sound(SFX_GENERAL_TOO_CLOSE);
-        pline("Too close!");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Too close!");
         return res;
     } 
     else if (!cansee(cc.x, cc.y) && !glyph_is_monster(glyph)
@@ -5547,7 +5548,7 @@ dobreak()
         if (nohands(youmonst.data)) 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You_cant("break %s without hands!", yname(obj));
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "break %s without hands!", yname(obj));
             return 0;
         }
         res = hero_breaks(obj, u.ux, u.uy, TRUE);
@@ -5555,7 +5556,7 @@ dobreak()
     else
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot break that!");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot break that!");
     }
 
     return res; 
@@ -5838,7 +5839,7 @@ doapply()
                 break;
             }
             play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
-            pline("Sorry, I don't know how to use that.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Sorry, I don't know how to use that.");
             nomul(0);
             return 0;
         }
@@ -6201,7 +6202,7 @@ struct obj* obj;
             && (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("have nothing to brace yourself against.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "have nothing to brace yourself against.");
             return 0;
         }
     }

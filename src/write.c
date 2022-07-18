@@ -112,7 +112,7 @@ register struct obj *pen;
 
     if (nohands(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You("need hands to be able to write!");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "need hands to be able to write!");
         return 0;
     } else if (Glib) {
         pline("%s from your %s.", Tobjnam(pen, "slip"),
@@ -134,12 +134,12 @@ register struct obj *pen;
     if (Blind) {
         if (!paper->dknown) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("don't know if that %s is blank or not.", typeword);
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't know if that %s is blank or not.", typeword);
             return 0;
         } else if (paper->oclass == SPBOOK_CLASS) {
             /* can't write a magic book while blind */
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("%s can't create braille text.",
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s can't create braille text.",
                   upstart(ysimple_name(pen)));
             return 0;
         }

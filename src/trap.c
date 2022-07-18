@@ -5074,17 +5074,17 @@ dountrap()
 {
     if (near_capacity() >= HVY_ENCUMBER) {
         play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "You're too strained to do that.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You're too strained to do that.");
         return 0;
     }
     if ((nohands(youmonst.data) && !webmaker(youmonst.data))
         || !youmonst.data->mmove) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "And just how do you expect to do that?");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "And just how do you expect to do that?");
         return 0;
     } else if (u.ustuck && sticks(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "You'll have to let go of %s first.", mon_nam(u.ustuck));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You'll have to let go of %s first.", mon_nam(u.ustuck));
         return 0;
     }
     if (u.ustuck || (welded(uwep, &youmonst) && bimanual(uwep))) {

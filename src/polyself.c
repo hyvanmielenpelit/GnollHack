@@ -1558,14 +1558,14 @@ dosteedbreathe()
     if (!u.usteed || !can_breathe(u.usteed->data))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("have no steed that use a breath weapon!");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "have no steed that use a breath weapon!");
         return 0;
     }
 
     if (u.usteed->mspec_used > 0)
     {
         play_sfx_sound(SFX_NOT_READY_YET);
-        pline("%s breath weapon is not ready yet.", s_suffix(Monnam(u.usteed)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s breath weapon is not ready yet.", s_suffix(Monnam(u.usteed)));
         return 0;
     }
 
@@ -1575,7 +1575,7 @@ dosteedbreathe()
     if (!u.dx && !u.dy && !u.dz)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        Your("steed cannot breathe at you!");
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "steed cannot breathe at you!");
         return 0;
     }
 
@@ -1696,7 +1696,7 @@ dospinweb()
     }
     if (u.utrap) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot spin webs while stuck in a trap.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot spin webs while stuck in a trap.");
         return 0;
     }
     exercise(A_DEX, TRUE);

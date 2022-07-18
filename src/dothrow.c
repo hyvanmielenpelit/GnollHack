@@ -89,7 +89,7 @@ boolean firing;
     }
     if (!u.dx && !u.dy && !u.dz) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot %s an object at yourself.", firing ? "fire" : "throw");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot %s an object at yourself.", firing ? "fire" : "throw");
         return 0;
     }
     u_wipe_engr(2);
@@ -648,13 +648,13 @@ dofire()
         if (!flags.autoquiver)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("have no ammunition readied.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "have no ammunition readied.");
         } 
         else 
         {
             autoquiver();
             if ((obj = uquiver) == 0)
-                You("have nothing appropriate for your quiver.");
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "have nothing appropriate for your quiver.");
         }
 
         /* if autoquiver is disabled or has failed, prompt for missile;
@@ -2710,7 +2710,7 @@ struct obj *obj;
 
     if (!u.dx && !u.dy && !u.dz) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot throw gold at yourself.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot throw gold at yourself.");
         return 0;
     }
     freeinv(obj);

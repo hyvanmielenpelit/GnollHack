@@ -61,7 +61,7 @@ struct obj *otmp;
     }
     if (!u.dx && !u.dy) {
         play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Saddle yourself?  Very funny...");
+        pline_ex(ATR_NONE, NO_COLOR, "Saddle yourself?  Very funny...");
         return 0;
     }
 

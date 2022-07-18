@@ -946,7 +946,7 @@ coord *cc;
         || (IS_ROCK(lev->typ) && lev->typ != SDOOR
             && (lev->wall_info & W_NONDIGGABLE) != 0)) {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
-        pline_The("%s %shere is too hard to dig in.", surface(dig_x, dig_y),
+        pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "%s %shere is too hard to dig in.", surface(dig_x, dig_y),
                   (dig_x != u.ux || dig_y != u.uy) ? "t" : "");
     } else if (is_pool_or_lava(dig_x, dig_y)) {
         play_sfx_sound(SFX_SPLASH_HIT);
@@ -961,7 +961,7 @@ coord *cc;
            closed "door" where the portcullis/mechanism is located */
         if (pit_only) {
             play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
-            pline_The("drawbridge seems too hard to dig through.");
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "drawbridge seems too hard to dig through.");
             return FALSE;
         } else {
             int x = dig_x, y = dig_y;
@@ -1008,7 +1008,7 @@ coord *cc;
              * the drawbridge.  The following is a cop-out. --dlc
              */
             play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
-            pline_The("%s %shere is too hard to dig in.",
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "%s %shere is too hard to dig in.",
                       surface(dig_x, dig_y),
                       (dig_x != u.ux || dig_y != u.uy) ? "t" : "");
             return FALSE;
@@ -1025,19 +1025,19 @@ coord *cc;
     else if (IS_THRONE(lev->typ)) 
     {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
-        pline_The("throne is too hard to break apart.");
+        pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "throne is too hard to break apart.");
 
     }
     else if (IS_ANVIL(lev->typ)) 
     {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
-        pline_The("anvil is too hard to break apart.");
+        pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "anvil is too hard to break apart.");
 
     } 
     else if (IS_ALTAR(lev->typ)) 
     {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
-        pline_The("altar is too hard to break apart.");
+        pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "altar is too hard to break apart.");
 
     } 
     else 
@@ -1195,7 +1195,7 @@ struct obj *obj;
 
     if (u.utrap && u.utraptype == TT_WEB) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s you can't %s while entangled in a web.",
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s you can't %s while entangled in a web.",
               /* res==0 => no prior message;
                  res==1 => just got "You now wield a pick-axe." message */
               !res ? "Unfortunately," : "But", verb);
@@ -3320,7 +3320,7 @@ dodig()
     if (!(lev->typ == GRASS || lev->typ == GROUND || IS_GRAVE(lev->typ)))
     {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
-        pline("It is too hard to dig here with %s.", digbuf);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "It is too hard to dig here with %s.", digbuf);
         return 0;
     }
 

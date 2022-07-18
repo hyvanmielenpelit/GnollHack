@@ -1342,7 +1342,7 @@ dokick() {
             && (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("have nothing to brace yourself against.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "have nothing to brace yourself against.");
             return 0;
         }
     }

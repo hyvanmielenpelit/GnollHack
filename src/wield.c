@@ -463,7 +463,7 @@ struct obj* wep;
             if (bimanual(uwep))
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("cannot wield another weapon while wielding a two-handed weapon.");
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot wield another weapon while wielding a two-handed weapon.");
                 return 0;
             }
             mask = W_WEP2;
@@ -473,7 +473,7 @@ struct obj* wep;
             if (bimanual(uarms))
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("cannot wield another weapon while wielding a two-handed weapon.");
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot wield another weapon while wielding a two-handed weapon.");
                 return 0;
             }
             mask = W_WEP;
@@ -529,7 +529,7 @@ struct obj* wep;
             setuqwep((struct obj*) 0);
         else if (wep->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("cannot wield that!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot wield that!");
             return 0;
         }
 
@@ -590,7 +590,7 @@ struct obj* wep;
         else if (wep->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("cannot wield that!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot wield that!");
             return 0;
         }
 
@@ -737,14 +737,14 @@ long swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original weapon
     if (wep && bimanual(wep) && altswapwep)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot ready a two-handed weapon while having something already readied for the other %s.", body_part(HAND));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot ready a two-handed weapon while having something already readied for the other %s.", body_part(HAND));
         return 0;
     }
 
     if (wep && altwep && swapwep && bimanual(swapwep))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot swap to a two-handed weapon while holding something in the other %s.", body_part(HAND));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot swap to a two-handed weapon while holding something in the other %s.", body_part(HAND));
         return 0;
     }
 
@@ -1224,7 +1224,7 @@ dowieldquiver()
     else if (newquiver->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot ready that!");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot ready that!");
         return 0;
     }
     else if (newquiver == uwep && uwep) 

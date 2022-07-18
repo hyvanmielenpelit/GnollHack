@@ -1203,7 +1203,7 @@ struct obj **optr;
     if (Blind)
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        pline("Too bad you can't see %s.", the(xname(obj)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Too bad you can't see %s.", the(xname(obj)));
         return;
     }
 
@@ -2318,7 +2318,7 @@ int which_subset; /* when not full, whether to suppress objs and/or traps */
     if ((Hallucination || Stunned || Confusion) && !full) 
     {
         play_sfx_sound(SFX_GENERAL_NOT_IN_THE_RIGHT_CONDITION);
-        You("are too disoriented for this.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are too disoriented for this.");
     } 
     else 
     {

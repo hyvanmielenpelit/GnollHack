@@ -437,7 +437,7 @@ boolean foundyou;
         }
         break;
     case AD_MAGM:
-        You("are hit by a shower of missiles!");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "are hit by a shower of missiles!");
         if (iflags.using_gui_sounds)
         {
             delay_output_milliseconds(200);
@@ -641,7 +641,7 @@ int spellnum;
         if (Antimagic_or_resistance) {
             play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
-            pline("A field of force surrounds you!");
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, "A field of force surrounds you!");
         }
         else if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY) {
             play_sfx_sound(SFX_GENERAL_RESISTS);
@@ -658,7 +658,7 @@ int spellnum;
         if (Antimagic_or_resistance) {
             play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
-            You_feel("momentarily weakened.");
+            You_feel_ex(ATR_NONE, CLR_MSG_SPELL, "momentarily weakened.");
         }
         else 
         {
@@ -694,7 +694,7 @@ int spellnum;
             if (!Stunned)
             {
                 play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
-                You_feel("momentarily disoriented.");
+                You_feel_ex(ATR_NONE, CLR_MSG_SPELL, "momentarily disoriented.");
             }
             make_stunned(1L, FALSE);
         } else {

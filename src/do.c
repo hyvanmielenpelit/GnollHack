@@ -5205,7 +5205,7 @@ const char *word;
         if (*word)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            Norep("You cannot %s %s you are wearing.", word, something);
+            Norep_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s %s you are wearing.", word, something);
         }
         return FALSE;
     }
@@ -5237,7 +5237,7 @@ const char *word;
         if (*word)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("cannot %s %s you are sitting on.", word, something);
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot %s %s you are sitting on.", word, something);
         }
         return FALSE;
     }

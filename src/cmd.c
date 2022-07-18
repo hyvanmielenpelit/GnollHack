@@ -390,12 +390,12 @@ doextcmd(VOID_ARGS)
         func = extcmdlist[idx].ef_funct;
         if (!wizard && (extcmdlist[idx].flags & WIZMODECMD)) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("can't do that.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "can't do that.");
             return 0;
         }
         if (!(wizard || discover || CasualMode) && (extcmdlist[idx].flags & CASUALMODECMD)) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("can't do that.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "can't do that.");
             return 0;
         }
         if (iflags.menu_requested && !accept_menu_prefix(func)) {
@@ -1093,7 +1093,7 @@ domonsterability(VOID_ARGS)
     if (abilitynum <= 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("don't have any monster abilities at your disposal.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have any monster abilities at your disposal.");
         destroy_nhwindow(win);
         return 0;
     }
@@ -8960,7 +8960,7 @@ dolight(VOID_ARGS)
     else
     {
         play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-        pline("There's nothing to light or snuff out.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "There's nothing to light or snuff out.");
     }
 
     return 0;

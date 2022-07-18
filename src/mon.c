@@ -5026,7 +5026,7 @@ struct monst *mon;
             }
 
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("It can't become that.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "It can't become that.");
         } while (--tryct > 0);
         if (!tryct)
             pline1(thats_enough_tries);
