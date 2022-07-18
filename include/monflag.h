@@ -100,6 +100,8 @@
 #define MR2_MAGIC_MISSILE_RESISTANCE       0x00000008UL        
 #define MR2_ACID_RESISTANCE                0x00000010UL        
 #define MR2_CANCELLATION_RESISTANCE        0x00000020UL        
+#define MR2_BISECTION_RESISTANCE           0x00000040UL        
+#define MR2_SLIME_RESISTANCE               0x00000080UL        
 
 /* conveyances: resistances, teleport, teleport control, telepathy, as well as other properties from eating the corpse */
 #define MC_NONE            0x00000000UL

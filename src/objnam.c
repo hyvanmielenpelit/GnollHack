@@ -565,85 +565,88 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     if (obj_is_pname(obj))
         goto nameit;
 
+    /* General prefixes */
+    if (is_poisonable(obj) && obj->opoisoned && dknown)
+        Strcpy(buf, "poisoned ");
+
+    if (dknown)
+    {
+        if (obj->elemental_enchantment == COLD_ENCHANTMENT)
+            Strcat(buf, "freezing ");
+        else if (obj->elemental_enchantment == FIRE_ENCHANTMENT)
+            Strcat(buf, "flaming ");
+        else if (obj->elemental_enchantment == LIGHTNING_ENCHANTMENT)
+            Strcat(buf, "electrified ");
+        else if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
+            Strcat(buf, "death-magical ");
+    }
+
+    if (obj->oclass == ARMOR_CLASS && (is_boots(obj) || is_gloves(obj) || is_bracers(obj)))
+        Strcat(buf, "pair of ");
+    else if (obj->oclass == MISCELLANEOUS_CLASS && (
+        objects[obj->otyp].oc_subtyp == MISC_EARRINGS
+        || objects[obj->otyp].oc_subtyp == MISC_EYEGLASSES
+        || objects[obj->otyp].oc_subtyp == MISC_PANTS
+        || objects[obj->otyp].oc_subtyp == MISC_BRACERS
+        || objects[obj->otyp].oc_subtyp == MISC_WINGS
+        || objects[obj->otyp].oc_subtyp == MISC_EXTRA_ARMS
+        ))
+        Strcat(buf, "pair of ");
+    else if (is_wet_towel(obj))
+        Strcat(buf, (obj->special_quality < 3) ? "moist " : "wet ");
+    else if (is_key(obj) && obj->special_quality > 0)
+    {
+        const char* desc = get_key_special_quality_description(obj);
+        if (desc && strcmp(desc, ""))
+        {
+            Strcat(buf, desc);
+            Strcat(buf, " ");
+        }
+    }
+
+    if (dknown && (obj->mythic_prefix || obj->mythic_suffix))
+    {
+        if (!mknown)
+            Strcat(buf, (obj->mythic_prefix && obj->mythic_suffix) ? "legendary " : "mythic ");
+        else if (obj->mythic_prefix)
+            Strcat(buf, mythic_prefix_qualities[obj->mythic_prefix].mythic_affix);
+    }
+
+    if (dknown)
+    {
+        if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
+            Strcat(buf, "exceptional ");
+        else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
+            Strcat(buf, "elite ");
+        else if (obj->exceptionality == EXCEPTIONALITY_CELESTIAL)
+            Strcat(buf, "celestial ");
+        else if (obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
+            Strcat(buf, "primordial ");
+        else if (obj->exceptionality == EXCEPTIONALITY_INFERNAL)
+            Strcat(buf, "infernal ");
+    }
+
     switch (obj->oclass) {
     case AMULET_CLASS:
         if (!dknown)
-            Strcpy(buf, "amulet");
+            Strcat(buf, "amulet");
         else if (typ == AMULET_OF_YENDOR || typ == FAKE_AMULET_OF_YENDOR)
             /* each must be identified individually */
-            Strcpy(buf, known ? actualn : dn);
+            Strcat(buf, known ? actualn : dn);
         else if (nn)
-            Strcpy(buf, actualn);
+            Strcat(buf, actualn);
         else if (un)
-            Sprintf(buf, "amulet called %s", un);
+            Sprintf(eos(buf), "amulet called %s", un);
         else
-            Sprintf(buf, "%s amulet", dn);
+            Sprintf(eos(buf), "%s amulet", dn);
         break;
     case WEAPON_CLASS:
-        if (is_poisonable(obj) && obj->opoisoned && dknown)
-            Strcpy(buf, "poisoned ");
-        /*FALLTHRU*/
     case VENOM_CLASS:
     case REAGENT_CLASS:
     case MISCELLANEOUS_CLASS:
     case TOOL_CLASS:
     case GEM_CLASS:
     {
-        if (dknown)
-        {
-            if (obj->elemental_enchantment == COLD_ENCHANTMENT)
-                Strcat(buf, "freezing ");
-            else if (obj->elemental_enchantment == FIRE_ENCHANTMENT)
-                Strcat(buf, "flaming ");
-            else if (obj->elemental_enchantment == LIGHTNING_ENCHANTMENT)
-                Strcat(buf, "electrified ");
-            else if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
-                Strcat(buf, "death-magical ");
-        }
-
-        if (obj->oclass == MISCELLANEOUS_CLASS && (
-            objects[obj->otyp].oc_subtyp == MISC_EARRINGS
-            || objects[obj->otyp].oc_subtyp == MISC_EYEGLASSES
-            || objects[obj->otyp].oc_subtyp == MISC_PANTS
-            || objects[obj->otyp].oc_subtyp == MISC_BRACERS
-            || objects[obj->otyp].oc_subtyp == MISC_WINGS
-            || objects[obj->otyp].oc_subtyp == MISC_EXTRA_ARMS
-            ))
-            Strcpy(buf, "pair of ");
-        else if (is_wet_towel(obj))
-            Strcpy(buf, (obj->special_quality < 3) ? "moist " : "wet ");
-        else if (is_key(obj) && obj->special_quality > 0)
-        {
-            const char* desc = get_key_special_quality_description(obj);
-            if (desc && strcmp(desc, ""))
-            {
-                Strcpy(buf, desc);
-                Strcat(buf, " ");
-            }
-        }
-
-        if (dknown && (obj->mythic_prefix || obj->mythic_suffix))
-        {
-            if (!mknown)
-                Strcat(buf, (obj->mythic_prefix && obj->mythic_suffix) ? "legendary " : "mythic ");
-            else if (obj->mythic_prefix)
-                Strcat(buf, mythic_prefix_qualities[obj->mythic_prefix].mythic_affix);
-        }
-
-        if (dknown)
-        {
-            if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
-                Strcat(buf, "exceptional ");
-            else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
-                Strcat(buf, "elite ");
-            else if (obj->exceptionality == EXCEPTIONALITY_CELESTIAL)
-                Strcat(buf, "celestial ");
-            else if (obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
-                Strcat(buf, "primordial ");
-            else if (obj->exceptionality == EXCEPTIONALITY_INFERNAL)
-                Strcat(buf, "infernal ");
-        }
-
         const char* rock = is_ore(obj) ? "nugget of ore" : is_graystone(obj) ? "stone" : (ocl->oc_material == MAT_MINERAL) ? "stone" : "gem";
         boolean isgem = (obj->oclass == GEM_CLASS);
 
@@ -694,13 +697,11 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         break;
     }
     case ARMOR_CLASS:
-        /* depends on order of the dragon scales objects */
+        /* depends on order of the dragon scales objects -- Special case, ignores the modifiers above */
         if (typ >= GRAY_DRAGON_SCALES && typ <= YELLOW_DRAGON_SCALES) {
             Sprintf(buf, "set of %s", actualn);
             break;
         }
-        if (is_boots(obj) || is_gloves(obj) || is_bracers(obj))
-            Strcpy(buf, "pair of ");
 
         if (obj->otyp >= ELVEN_SHIELD && obj->otyp <= ORCISH_SHIELD
             && !dknown) {
