@@ -713,14 +713,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             break;
         }
 
-        if (dknown && (obj->mythic_prefix || obj->mythic_suffix))
-        {
-            if (!mknown)
-                Strcat(buf, (obj->mythic_prefix && obj->mythic_suffix) ? "legendary " : "mythic ");
-            else if (obj->mythic_prefix)
-                Strcat(buf, mythic_prefix_qualities[obj->mythic_prefix].mythic_affix);
-        }
-
         if (!dknown)
             Strcat(buf, armor_class_simple_name(obj));
         else if (nn) {
