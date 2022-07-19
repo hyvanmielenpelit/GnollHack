@@ -2417,7 +2417,10 @@ boolean* obj_destroyed;
             nohandglow(mon);
             if (!is_confused(mon) && !check_ability_resistance_success(mon, A_WIS, 0))
             {
-                increase_mon_property(mon, CONFUSION, d(1, 20) + 20);
+                struct obj tempobj = { 0 };
+                tempobj.otyp = SCR_CONFUSE_MONSTER;
+                int duration = get_spell_duration(&tempobj);
+                increase_mon_property(mon, CONFUSION, duration);
                 if (!is_stunned(mon) && mon_can_move(mon)
                     && canseemon(mon))
                 {
