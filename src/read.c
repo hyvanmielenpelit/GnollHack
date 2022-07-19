@@ -2224,8 +2224,8 @@ boolean *effect_happened_ptr;
                     }
                 }
 
-                if (sblessed || wornmask || objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED
-                    || objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED
+                if (sblessed || wornmask || (objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) != 0
+                    || (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) != 0
                     || (obj->otyp == LEASH && obj->leashmon)) 
                 {
                     /* water price varies by curse/bless status */
