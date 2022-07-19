@@ -2614,6 +2614,9 @@ find_ac()
         uac -= uright->enchantment;
     */
 
+    /* Dodge Skill Bonus */
+    uac -= dodge_skill_ac_bonus(P_SKILL_LEVEL(P_DODGE));
+
     /* DEX Bonus */
     if(!Paralyzed && !Sleeping)
         uac -= dexterity_ac_bonus(ACURR(A_DEX));

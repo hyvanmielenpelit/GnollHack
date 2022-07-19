@@ -1540,8 +1540,7 @@ unsigned long mkflags;
             case TALLOW_CANDLE:
             case WAX_CANDLE:
                 otmp->special_quality = 1;
-                otmp->age = 30L * /* 600 or 300 */
-                            objects[otmp->otyp].oc_cost;
+                otmp->age = candle_starting_burn_time(otmp);
                 otmp->lamplit = 0;
                 otmp->quan = 1L + (long) (rn2(2) ? rn2(7) : 0);
                 blessorcurse(otmp, 5);
@@ -1551,7 +1550,7 @@ unsigned long mkflags;
                 otmp->lamplit = 0;
                 if (otmp->special_quality > 0)
                 {
-                    otmp->age = CANDELABRUM_STARTING_AGE;
+                    otmp->age = candlelabrum_starting_burn_time(otmp);
                 }
                 else
                 {
@@ -1562,7 +1561,7 @@ unsigned long mkflags;
             case BRASS_LANTERN:
             case OIL_LAMP:
                 otmp->special_quality = 1;
-                otmp->age = (long) rn1(500, 1000);
+                otmp->age = lamp_starting_burn_time(otmp);
                 otmp->lamplit = 0;
                 blessorcurse(otmp, 5);
                 break;
@@ -2000,7 +1999,7 @@ unsigned long mkflags;
         set_corpsenm(otmp, otmp->corpsenm);
         break;
     case POT_OIL:
-        otmp->age = MAX_OIL_IN_FLASK; /* amount of oil */
+        otmp->age = potion_starting_burn_time(otmp); /* amount of oil */
         /*FALLTHRU*/
     case POT_WATER: /* POTION_CLASS */
         otmp->speflags &= ~(SPEFLAGS_FROM_SINK); /* overloads corpsenm, which was set to NON_PM */

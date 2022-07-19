@@ -9664,7 +9664,7 @@ struct monst* mtmp;
     Sprintf(talkbuf, "%s fills %s with oil.", noittame_Monnam(mtmp), yname(otmp));
     popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
 
-    otmp->age = 1500L;
+    otmp->age = MAX_OIL_IN_LAMP;
     otmp->special_quality = 1;
     update_inventory();
 

@@ -1622,9 +1622,9 @@ struct monst *mon;
             /* Note u.umcbonus is not being used at the moment, even though it contains appropriate bonuses for you */
             if (objects[o->otyp].oc_bonus_attributes & BONUS_TO_MC)
             {
-                item_mc_bonus += objects[o->otyp].oc_attribute_bonus;
+                item_mc_bonus += objects[o->otyp].oc_attribute_bonus / ((objects[o->otyp].oc_bonus_attributes & FULL_MC_BONUS) != 0 ? 1 : 3);
                 if (!(objects[o->otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-                    item_mc_bonus += o->enchantment / 3;
+                    item_mc_bonus += o->enchantment / ((objects[o->otyp].oc_bonus_attributes & FULL_MC_BONUS) != 0 ? 1 : 3);
             }
         }
 

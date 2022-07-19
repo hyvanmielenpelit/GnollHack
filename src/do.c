@@ -1389,6 +1389,16 @@ register struct obj* obj;
         putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
+    /* Skill */
+    if (objects[obj->otyp].oc_skill != P_NONE)
+    {
+        strcpy(buf2, weapon_skill_name(obj));
+        *buf2 = highc(*buf2);
+        Sprintf(buf, "Skill:                  %s", buf2);
+        txt = buf;
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
+    }
+
     boolean weapon_stats_shown = FALSE;
     if (!uses_spell_flags && (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj)) && stats_known) || objects[obj->otyp].oc_class == GEM_CLASS))
     {
@@ -1438,17 +1448,6 @@ register struct obj* obj;
                 putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
         }
-
-        /* Skill */
-        if(objects[obj->otyp].oc_skill != P_NONE)
-        {
-            strcpy(buf2, weapon_skill_name(obj));
-            *buf2 = highc(*buf2);
-            Sprintf(buf, "Skill:                  %s", buf2);
-            txt = buf;
-            putstr(datawin, ATR_INDENT_AT_COLON, txt);
-        }
-
 
         int baserange = 0;
 
@@ -1933,12 +1932,18 @@ register struct obj* obj;
     {
         if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_wand_like_tool(obj)))
         {
+            boolean use_wand_skill = objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_skill == P_WAND;
             if (objects[otyp].oc_spell_dmg_dice > 0 || objects[otyp].oc_spell_dmg_diesize > 0 || objects[otyp].oc_spell_dmg_plus != 0)
             {
-                double dicemult = get_wand_damage_multiplier(P_SKILL_LEVEL(P_WAND));
+                double dicemult = use_wand_skill ? get_wand_damage_multiplier(P_SKILL_LEVEL(P_WAND)) : 1.0;
                 boolean maindiceprinted = FALSE;
                 char plusbuf[BUFSZ];
-                Sprintf(buf, "Wand effect damage:     ");
+                if(objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
+                    Sprintf(buf, "%s healing amount:    ", objects[otyp].oc_class == WAND_CLASS ? "Wand" : "Item");
+                else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
+                    Sprintf(buf, "Mana restored by %s:  ", objects[otyp].oc_class == WAND_CLASS ? "wand" : "item");
+                else
+                    Sprintf(buf, "%s effect damage:     ", objects[otyp].oc_class == WAND_CLASS ? "Wand" : "Item");
 
                 if (objects[otyp].oc_spell_dmg_dice > 0 && objects[otyp].oc_spell_dmg_diesize > 0)
                 {
@@ -1958,10 +1963,13 @@ register struct obj* obj;
                     Strcat(buf, plusbuf);
                 }
 
-                char slnbuf[BUFSZ] = "";
-                skill_level_name(P_WAND, slnbuf, FALSE);
-                *slnbuf = lowc(*slnbuf);
-                Sprintf(eos(buf), " (%.1fx, %s in %s)", dicemult, slnbuf, skill_name(P_WAND, TRUE));
+                if (use_wand_skill)
+                {
+                    char slnbuf[BUFSZ] = "";
+                    skill_level_name(P_WAND, slnbuf, FALSE);
+                    *slnbuf = lowc(*slnbuf);
+                    Sprintf(eos(buf), " (%.1fx, %s in %s)", dicemult, slnbuf, skill_name(P_WAND, TRUE));
+                }
 
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_COLON, txt);
@@ -1971,7 +1979,7 @@ register struct obj* obj;
             {
                 boolean maindiceprinted = FALSE;
                 char plusbuf[BUFSZ];
-                Sprintf(buf, "Wand effect duration:   ");
+                Sprintf(buf, "%s effect duration:   ", objects[otyp].oc_class == WAND_CLASS ? "Wand" : "Item");
 
                 if (objects[otyp].oc_spell_dur_dice > 0 && objects[otyp].oc_spell_dur_diesize > 0)
                 {
@@ -1999,13 +2007,13 @@ register struct obj* obj;
             }
             if (objects[otyp].oc_spell_range > 0)
             {
-                Sprintf(buf, "Wand effect range:      %ld'", objects[otyp].oc_spell_range * 5L);
+                Sprintf(buf, "%s effect range:      %ld'", objects[otyp].oc_class == WAND_CLASS ? "Wand" : "Item", objects[otyp].oc_spell_range * 5L);
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
             if (objects[otyp].oc_spell_radius > 0)
             {
-                Sprintf(buf, "Wand effect radius:     %ld'", objects[otyp].oc_spell_radius * 5L);
+                Sprintf(buf, "%s effect radius:     %ld'", objects[otyp].oc_class == WAND_CLASS ? "Wand" : "Item", objects[otyp].oc_spell_radius * 5L);
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
@@ -2338,6 +2346,34 @@ register struct obj* obj;
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
+
+    /* Light sources */
+    if (is_obj_light_source(obj))
+    {
+        Sprintf(buf, "Light radius:           %d'", 5 * obj_light_radius(obj));
+        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+
+        if (stats_known)
+        {
+            long maxburn = obj_light_maximum_burn_time(obj);
+            if (obj_burns_infinitely(obj) || maxburn < 0)
+            {
+                Strcpy(buf, "Burning time left:      Infinite");
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                Strcpy(buf, "Maximum burning time:   Infinite");
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+            else
+            {
+                long burnleft = obj_light_burn_time_left(obj);
+                Sprintf(buf, "Burning time left:      %ld turn%s", burnleft, plur(burnleft));
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                Sprintf(buf, "Maximum burning time:   %ld turn%s", maxburn, plur(maxburn));
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+        }
+    }
+
 
     /* Identification status */
     boolean notfullyidentified = FALSE;

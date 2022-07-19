@@ -950,6 +950,9 @@ struct objclass {
 #define O5_EFFECT_IS_MANA              0x00000800UL /* (Potion) Effect data is mana */
 #define O5_EFFECT_FOR_BLESSED_ONLY     0x00001000UL /* (Potion) Effect data is for blessed potion only (monster detection) */
 
+#define O5_LIGHT_SOURCE                0x00002000UL
+#define O5_BURNS_INFINITELY            0x00004000UL
+
 #define O6_NONE                        0x00000000UL
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */

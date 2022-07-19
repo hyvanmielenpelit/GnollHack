@@ -824,6 +824,98 @@ struct obj *obj;
     return (obj->blessed ? 3 : !obj->cursed ? 2 : 1);
 }
 
+
+long
+obj_light_maximum_burn_time(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    if (!is_obj_light_source(obj))
+        return 0;
+
+    long maxburntime = 0; //Normal lamps
+    if (objects[obj->otyp].oc_flags5 & O5_BURNS_INFINITELY)
+        maxburntime = -1;
+    else if (artifact_light(obj) || (obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)))
+        maxburntime = -1;
+    else if (is_candle(obj))
+        maxburntime = candle_maximum_burn_time(obj);
+    else if (is_obj_candelabrum(obj))
+        maxburntime = candlelabrum_maximum_burn_time(obj);
+    else if (obj->otyp == POTION_CLASS) //Potion of oil
+        maxburntime = potion_maximum_burn_time(obj);
+    else
+        maxburntime = lamp_maximum_burn_time(obj);
+
+    return maxburntime;
+}
+
+
+int
+obj_light_radius(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    if (!is_obj_light_source(obj))
+        return 0;
+
+    int radius = 3; //Normal lamps
+    if (is_candle(obj) || is_obj_candelabrum(obj))
+        radius = candle_light_range(obj);
+    else if (obj->otyp == POTION_CLASS) //Potion of oil
+        radius = 1;
+    else if (artifact_light(obj) || (obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)))
+        radius = arti_light_radius(obj);
+
+    return radius;
+}
+
+long
+burn_time_left_from_timer(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0L;
+
+    long timeout = peek_timer(BURN_OBJECT, obj_to_any(obj));
+
+    if (!timeout)
+        return 0L;
+
+    long howlong = monstermoves - timeout;
+    long age = obj->age - howlong;
+    return age;
+}
+
+long
+obj_light_burn_time_left(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    if (!is_obj_light_source(obj))
+        return 0;
+
+    long burntimeleft = 0;
+    if (objects[obj->otyp].oc_flags5 & O5_BURNS_INFINITELY)
+        burntimeleft = -1;
+    else if (artifact_light(obj) || (obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)))
+        burntimeleft = -1;
+    else if (!obj->lamplit)
+        burntimeleft = obj->age;
+    else
+        burntimeleft = burn_time_left_from_timer(obj);
+
+    return burntimeleft;
+}
+
+
+
 /* adverb describing lit artifact's light; depends on curse/bless state */
 const char *
 arti_light_description(obj)

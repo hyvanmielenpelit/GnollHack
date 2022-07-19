@@ -1497,6 +1497,9 @@ E int FDECL(candle_light_range, (struct obj *));
 E int FDECL(arti_light_radius, (struct obj *));
 E const char *FDECL(arti_light_description, (struct obj *));
 E int NDECL(wiz_light_sources);
+E int FDECL(obj_light_radius, (struct obj*));
+E long FDECL(obj_light_maximum_burn_time, (struct obj*));
+E long FDECL(obj_light_burn_time_left, (struct obj*));
 
 /* ### lock.c ### */
 
@@ -2654,6 +2657,7 @@ E int FDECL(smith_move, (struct monst*));
 
 /* ### prop.c ### */
 E void NDECL(props_init);
+E const char* FDECL(get_property_name, (int));
 
 /* ### quest.c ### */
 
@@ -3422,7 +3426,6 @@ E void FDECL(timer_stats, (const char *, char *, long *, size_t *));
 E void FDECL(relink_timers, (BOOLEAN_P));
 E int NDECL(wiz_timeout_queue);
 E void NDECL(timer_sanity_check);
-E const char* FDECL(get_property_name, (int));
 E void FDECL(make_sound_object, (ANY_P*, long));
 E void FDECL(property_expiry_message, (int, BOOLEAN_P));
 
@@ -3818,6 +3821,7 @@ E int FDECL(weapon_skill_hit_bonus, (struct obj *, int, BOOLEAN_P, BOOLEAN_P, in
 E int FDECL(weapon_skill_dmg_bonus, (struct obj *, int, BOOLEAN_P, BOOLEAN_P, int));
 E int FDECL(shield_skill_ac_bonus, (int));
 E int FDECL(shield_skill_mc_bonus, (int));
+E int FDECL(dodge_skill_ac_bonus, (int));
 E int FDECL(wand_skill_hit_bonus, (int));
 E void FDECL(skill_init, (const struct def_skill*, const struct def_skill *));
 E int FDECL(martial_arts_multishot_percentage_chance, (int));

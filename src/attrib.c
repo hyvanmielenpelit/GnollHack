@@ -2318,9 +2318,10 @@ struct monst* mon;
                         }
                         else if (i == A_MAX + 3)
                         {
-                            *mcbonus_ptr += (schar)(multiplier * objects[otyp].oc_attribute_bonus / 3);
+                            //Note this is not currently used, instead magic_negation recalculates this
+                            *mcbonus_ptr += (schar)(multiplier * objects[otyp].oc_attribute_bonus / ((objects[otyp].oc_bonus_attributes & FULL_MC_BONUS) != 0 ? 1 : 3));
                             if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-                                *mcbonus_ptr += (schar)(applicable_enchantment / 3);
+                                *mcbonus_ptr += (schar)(applicable_enchantment / ((objects[otyp].oc_bonus_attributes & FULL_MC_BONUS) != 0 ? 1 : 3));
                         }
                         else if (i == A_MAX + 4 && is_you)
                         {

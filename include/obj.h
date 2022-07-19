@@ -948,6 +948,21 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
 
 #define is_obj_uncurseable(o) \
     ((objects[(o)->otyp].oc_flags& O1_NOT_CURSEABLE) || has_obj_mythic_uncurseable(o))
+
+#define is_obj_light_source(o) \
+   ((objects[(o)->otyp].oc_flags5 & O5_LIGHT_SOURCE) != 0 || artifact_light(o) ||obj_shines_magical_light(o) || has_obj_mythic_magical_light(o))
+
+#define candle_starting_burn_time(o) (30L * objects[(o)->otyp].oc_cost)
+#define candle_maximum_burn_time(o) candle_starting_burn_time(o)
+#define candlelabrum_starting_burn_time(o) MAX_BURN_IN_CANDELABRUM
+#define candlelabrum_maximum_burn_time(o) candlelabrum_starting_burn_time(o)
+#define lamp_starting_burn_time(o) ((long)rn1(500, 1000))
+#define lamp_maximum_burn_time(o) MAX_OIL_IN_LAMP
+#define potion_starting_burn_time(o) MAX_OIL_IN_FLASK
+#define potion_maximum_burn_time(o) potion_starting_burn_time(o)
+#define obj_burns_infinitely(o) \
+   ((objects[(o)->otyp].oc_flags5 & O5_BURNS_INFINITELY) != 0 || artifact_light(o) || obj_shines_magical_light(o) || has_obj_mythic_magical_light(o))
+
 /* Manuals */
 enum manual_types
 {

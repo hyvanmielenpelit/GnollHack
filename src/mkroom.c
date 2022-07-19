@@ -1726,7 +1726,7 @@ mktemple()
                 if (otmp)
                 {
                     otmp->special_quality = objects[otmp->otyp].oc_special_quality;
-                    otmp->age = CANDELABRUM_STARTING_AGE;
+                    otmp->age = MAX_BURN_IN_CANDELABRUM;
                     otmp->owt = weight(otmp);
                     if (!otmp->lamplit)
                         begin_burn(otmp, FALSE);

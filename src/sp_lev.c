@@ -2325,7 +2325,7 @@ struct mkroom *croom;
     {
         otmp->special_quality = o->special_quality;
         if(is_obj_candelabrum(otmp) && otmp->special_quality > 0)
-            otmp->age = CANDELABRUM_STARTING_AGE;
+            otmp->age = MAX_BURN_IN_CANDELABRUM;
         if (otmp->oclass == SPBOOK_CLASS && otmp->special_quality >= -1)
         {
             if (objects[otmp->otyp].oc_subtyp == BOOKTYPE_NOVEL)

@@ -102,6 +102,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -179,6 +180,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -254,6 +256,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -328,6 +331,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -402,6 +406,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_INI_BASIC, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -483,6 +488,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_BASIC, /* P_DODGE */
             SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -558,6 +564,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -634,6 +641,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_BASIC, /* P_DODGE */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -723,6 +731,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -797,6 +806,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -871,6 +881,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -945,6 +956,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_INI_BASIC, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
@@ -1021,6 +1033,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */

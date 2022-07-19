@@ -2137,10 +2137,13 @@ long timeout;
  * Burn rules:
  *      potions of oil, lamps & candles:
  *              age = # of turns of fuel left
- *              enchantment = <unused>
+ *              special_quality = <unused>
  *      magic lamps:
  *              age = <unused>
- *              enchantment = 0 not lightable, 1 lightable forever
+ *              special_quality = 0 not lightable, 1 lightable forever
+ *      magic candles:
+ *              age = <unused>
+ *              special_quality = 0 not lightable, 1 lightable forever, partly used, 2 lightable forever, unused
  *      candelabrum:
  *              age = # of turns of fuel left
  *              special_quality = # of candles
@@ -2160,72 +2163,83 @@ begin_burn(obj, already_lit)
 struct obj *obj;
 boolean already_lit;
 {
-    int radius = 3;
-    long turns = 0;
-    boolean do_timer = TRUE;
-
-    if (obj->age == 0 && obj->otyp != MAGIC_LAMP && obj->otyp != MAGIC_CANDLE && !artifact_light(obj) && !obj_shines_magical_light(obj) && !has_obj_mythic_magical_light(obj))
+    if (!obj)
         return;
 
-    switch (obj->otyp) {
-    case MAGIC_LAMP:
-        obj->lamplit = 1;
+    if (obj->age == 0 && !obj_burns_infinitely(obj))
+        return;
+
+    int radius = obj_light_radius(obj);
+    long turns = 0;
+    boolean do_timer = TRUE;
+    if (obj_burns_infinitely(obj))
+    {
+        /* Infinite burn */
         do_timer = FALSE;
-        break;
-    case MAGIC_CANDLE:
         obj->lamplit = 1;
-        if (obj->special_quality == 2)
-            obj->special_quality = 1;
 
-        do_timer = FALSE;
-        break;
-    case POT_OIL:
-        turns = obj->age;
-        if (obj->odiluted)
-            turns = (3L * turns + 2L) / 4L;
-        radius = 1; /* very dim light */
-        break;
-
-    case BRASS_LANTERN:
-    case OIL_LAMP:
-        /* magic times are 150, 100, 50, 25, and 0 */
-        if (obj->age > 150L)
-            turns = obj->age - 150L;
-        else if (obj->age > 100L)
-            turns = obj->age - 100L;
-        else if (obj->age > 50L)
-            turns = obj->age - 50L;
-        else if (obj->age > 25L)
-            turns = obj->age - 25L;
-        else
-            turns = obj->age;
-        break;
-
-    case CANDELABRUM_OF_INVOCATION:
-    case LARGE_FIVE_BRANCHED_CANDELABRUM:
-    case TALLOW_CANDLE:
-    case WAX_CANDLE:
-        /* magic times are 75, 15, and 0 */
-        if (obj->age > 75L)
-            turns = obj->age - 75L;
-        else if (obj->age > 15L)
-            turns = obj->age - 15L;
-        else
-            turns = obj->age;
-        radius = candle_light_range(obj);
-        break;
-
-    default:
-        /* [ALI] Support artifact light sources */
-        if (artifact_light(obj) || (obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj))) {
-            obj->lamplit = 1;
-            do_timer = FALSE;
-            radius = arti_light_radius(obj);
-        } else {
-            impossible("begin burn: unexpected %s", xname(obj));
-            turns = obj->age;
+        if (obj->otyp == MAGIC_CANDLE)
+        {
+            if (obj->special_quality == 2)
+                obj->special_quality = 1;
         }
-        break;
+    }
+    else
+    {
+
+        switch (obj->otyp) {
+        case MAGIC_LAMP:
+            //obj->lamplit = 1;
+            //do_timer = FALSE;
+            break;
+        case MAGIC_CANDLE:
+            //obj->lamplit = 1;
+            if (obj->special_quality == 2)
+                obj->special_quality = 1;
+            //do_timer = FALSE;
+            break;
+        case POT_OIL:
+            turns = obj->age;
+            if (obj->odiluted)
+                turns = (3L * turns + 2L) / 4L;
+            //radius = 1; /* very dim light */
+            break;
+
+        case BRASS_LANTERN:
+        case OIL_LAMP:
+            /* magic times are 150, 100, 50, 25, and 0 */
+            if (obj->age > 150L)
+                turns = obj->age - 150L;
+            else if (obj->age > 100L)
+                turns = obj->age - 100L;
+            else if (obj->age > 50L)
+                turns = obj->age - 50L;
+            else if (obj->age > 25L)
+                turns = obj->age - 25L;
+            else
+                turns = obj->age;
+            break;
+
+        case CANDELABRUM_OF_INVOCATION:
+        case LARGE_FIVE_BRANCHED_CANDELABRUM:
+        case TALLOW_CANDLE:
+        case WAX_CANDLE:
+            /* magic times are 75, 15, and 0 */
+            if (obj->age > 75L)
+                turns = obj->age - 75L;
+            else if (obj->age > 15L)
+                turns = obj->age - 15L;
+            else
+                turns = obj->age;
+            //radius = candle_light_range(obj);
+            break;
+
+        default:
+            if(!is_obj_light_source(obj))
+                impossible("begin burn: unexpected %s", xname(obj));
+            turns = obj->age;
+            break;
+        }
     }
 
     if (do_timer) {
@@ -2266,7 +2280,7 @@ boolean timer_attached;
         return;
     }
 
-    if (obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE || artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj))
+    if (obj_burns_infinitely(obj))
         timer_attached = FALSE;
 
     if (!timer_attached) {
@@ -3489,22 +3503,6 @@ boolean ghostly;
         }
     }
 }
-
-const char* get_property_name(prop_index)
-int prop_index;
-{
-    int idx;
-    for (idx = 0; propertynames[idx].prop_num; idx++)
-    {
-        if (propertynames[idx].prop_num == prop_index)
-        {
-            return propertynames[idx].prop_noun;
-        }
-    }
-
-    return "";
-}
-
 
 /*
  * Timeout callback for for objects that are making noise.

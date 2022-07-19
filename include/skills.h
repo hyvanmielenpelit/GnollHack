@@ -57,14 +57,15 @@ enum p_skills {
     P_BARE_HANDED_COMBAT = 27, /* actually weaponless; gloves are ok */
     P_MARTIAL_ARTS       = 28, /* actually weaponless; gloves are ok */
     P_TWO_WEAPON_COMBAT  = 29, /* pair of weapons, one in each hand */
-    P_SHIELD             = 30, /* for increasing AC and figthing with weapon shields */
-    P_WAND               = 31, /* shooting rays with wands */
+    P_DODGE              = 30, /* increases AC */
+    P_SHIELD             = 31, /* increases AC and MC, and for figthing with weapon shields */
+    P_WAND               = 32, /* shooting rays with wands */
 
     /* Non-combat skills */
-    P_RIDING             = 32,    /* how well you control your steed */
-    P_DISARM_TRAP        = 33,    /* disarming traps */
+    P_RIDING             = 33,    /* how well you control your steed */
+    P_DISARM_TRAP        = 34,    /* disarming traps */
     
-    P_NUM_SKILLS         = 34
+    P_NUM_SKILLS         = 35
 };
 
 //#define P_MARTIAL_ARTS P_BARE_HANDED_COMBAT /* Role distinguishes */
@@ -115,6 +116,7 @@ struct skills {
 #define P_MAX_SKILL_LEVEL(type) (u.weapon_skills[type].max_skill)
 #define P_ADVANCE(type) (u.weapon_skills[type].advance)
 #define P_RESTRICTED(type) (u.weapon_skills[type].skill == P_ISRESTRICTED)
+#define P_NONTRAINABLE(type) ((type) == P_DODGE)
 
 #define P_SKILL_LIMIT 60 /* Max number of skill advancements */
 

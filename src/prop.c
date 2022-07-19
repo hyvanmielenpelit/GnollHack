@@ -417,4 +417,21 @@ props_init()
     return;
 }
 
+const char* 
+get_property_name(prop_index)
+int prop_index;
+{
+    int idx;
+    for (idx = 0; propertynames[idx].prop_num; idx++)
+    {
+        if (propertynames[idx].prop_num == prop_index)
+        {
+            return propertynames[idx].prop_noun;
+        }
+    }
+
+    return "";
+}
+
+
 /* prop.c */

@@ -1560,7 +1560,7 @@ weapon_here:
                    || obj->otyp == BRASS_LANTERN || is_candle(obj)) 
         {
             if ((is_candle(obj) && obj->otyp != MAGIC_CANDLE
-                && obj->age < 30L * objects[obj->otyp].oc_cost)
+                && obj->age < candle_maximum_burn_time(obj))
                 || (obj->otyp == MAGIC_CANDLE && obj->special_quality < 2)
                 )
                 Strcat(prefix, "partly used ");
