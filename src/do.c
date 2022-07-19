@@ -1120,10 +1120,10 @@ register struct obj* obj;
         {
             strcpy(buf2, "Weapon-like");
         }
-        if (is_wand_like_tool(obj))
-        {
-            strcpy(buf2, "Wand-like");
-        }
+        //if (is_wand_like_tool(obj))
+        //{
+        //    strcpy(buf2, "Wand-like");
+        //}
         if (is_candle(obj))
         {
             strcpy(buf3, "Candle");
