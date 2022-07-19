@@ -1560,6 +1560,38 @@ int skill_level;
     return multiplier;
 }
 
+const char*
+get_obj_saving_throw_description(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return "";
+
+    return get_otyp_saving_throw_description(obj->otyp);
+}
+
+const char*
+get_otyp_saving_throw_description(otyp)
+int otyp;
+{
+    if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_MAGIC_CANCELLATION)
+        return "magic cancellation";
+    else if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_STR)
+        return "strength";
+    else if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_DEX)
+        return "dexterity";
+    else if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_CON)
+        return "constitution";
+    else if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_INT)
+        return "intelligence";
+    else if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_WIS)
+        return "wisdom";
+    else if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_CHA)
+        return "charisma";
+    else
+        return "unknown type";
+}
+
 int
 spelldescription(spell)
 int spell;
@@ -1991,25 +2023,7 @@ int spell;
     /* Saving throw adjustment */
     if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_MASK)
     {
-        char vsbuf[BUFSZ];
-        if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_MAGIC_CANCELLATION)
-            strcpy(vsbuf, "magic cancellation");
-        else if(objects[booktype].oc_spell_flags& S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_STR)
-            strcpy(vsbuf, "strength");
-        else if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_DEX)
-            strcpy(vsbuf, "dexterity");
-        else if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_CON)
-            strcpy(vsbuf, "constitution");
-        else if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_INT)
-            strcpy(vsbuf, "intelligence");
-        else if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_WIS)
-            strcpy(vsbuf, "wisdom");
-        else if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_CHA)
-            strcpy(vsbuf, "charisma");
-        else
-            strcpy(vsbuf, "unknown type");
-
-        Sprintf(buf, "Saving throw:     Against %s", vsbuf);
+        Sprintf(buf, "Saving throw:     Against %s", get_otyp_saving_throw_description(booktype));
 
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_COLON, txt);

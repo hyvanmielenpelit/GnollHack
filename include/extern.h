@@ -3267,6 +3267,8 @@ E int NDECL(dospellview);
 E int FDECL(spell_skilltype, (int));
 E int FDECL(spelleffects, (int, BOOLEAN_P));
 E int FDECL(spelldescription, (int));
+E const char* FDECL(get_obj_saving_throw_description, (struct obj*));
+E const char* FDECL(get_otyp_saving_throw_description, (int));
 E int FDECL(setspellhotkey, (int));
 E int FDECL(forgetspell, (int));
 E int FDECL(spell_skill_base_success_bonus, (int));

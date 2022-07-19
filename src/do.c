@@ -2040,6 +2040,27 @@ register struct obj* obj;
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
+
+            if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_MAGIC_RESISTANCE_MASK)
+            {
+                boolean applies = (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_MAGIC_RESISTANCE) != 0;
+                Sprintf(buf, "Magic resistance:       %s", applies ? "Applies" : "Does not apply");
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+
+            if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_MASK)
+            {
+                Sprintf(buf, "Saving throw:           Against %s", get_otyp_saving_throw_description(otyp));
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+
+            if (objects[otyp].oc_spell_saving_throw_adjustment != 0)
+            {
+                Sprintf(buf, "Saving throw modifier:  %d", objects[otyp].oc_spell_saving_throw_adjustment);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
+            }
+
             /* Flags */
             if (objects[otyp].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
             {
@@ -2162,6 +2183,19 @@ register struct obj* obj;
 
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_COLON, txt);
+            }
+
+            if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_MAGIC_RESISTANCE_MASK)
+            {
+                boolean applies = (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_MAGIC_RESISTANCE) != 0;
+                Sprintf(buf, "Magic resistance:       %s", applies ? "Applies" : "Does not apply");
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+
+            if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_MASK)
+            {
+                Sprintf(buf, "Saving throw:           Against %s", get_otyp_saving_throw_description(otyp));
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
 
             if (objects[otyp].oc_potion_saving_throw_adjustment != 0)
