@@ -183,6 +183,19 @@ struct monst* targetmonst;
     return dmg;
 }
 
+int
+get_spell_duration(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    int otyp = obj->otyp;
+    int durdice = objects[otyp].oc_spell_dur_dice + (obj->speflags & SPEFLAGS_BEING_BROKEN ? obj->charges : 0);
+    int duration = d(durdice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus + bcsign(obj) * objects[otyp].oc_spell_dur_buc_plus;
+    return max(0, duration);
+}
+
 /*
  * Recognizing unseen wands by zapping:  in 3.4.3 and earlier, zapping
  * most wand types while blind would add that type to the discoveries
@@ -340,7 +353,7 @@ struct monst* origmonst;
     struct obj *obj;
     boolean disguised_mimic = (is_mimic(mtmp->data)
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
-    int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
+    int duration = get_spell_duration(otmp);
     int dmg = get_spell_damage(otyp, origmonst, mtmp);
     int save_adj = get_saving_throw_adjustment(otmp, mtmp, origmonst);
     boolean surpress_noeffect_message = FALSE;
@@ -717,7 +730,7 @@ struct monst* origmonst;
                 seemimic(mtmp);
 
             play_sfx_sound_at_location(SFX_ACQUIRE_SLOW, mtmp->mx, mtmp->my);
-            increase_mon_property_verbosely(mtmp, SLOWED, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+            increase_mon_property_verbosely(mtmp, SLOWED, duration);
             m_dowear(mtmp, FALSE); /* might want speed boots */
             if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) {
                 You_ex(ATR_NONE, CLR_MSG_SPELL, "disrupt %s!", mon_nam(mtmp));
@@ -823,7 +836,7 @@ struct monst* origmonst;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_ACQUIRE_HASTE, mtmp->mx, mtmp->my);
         special_effect_wait_until_action(0);
-        boolean visible_effect = increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+        boolean visible_effect = increase_mon_property_verbosely(mtmp, VERY_FAST, duration);
         if (visible_effect)
             makeknown(WAN_SPEED_MONSTER);
         m_dowear(mtmp, FALSE); /* might want speed boots */
@@ -1041,7 +1054,7 @@ struct monst* origmonst;
         {
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(0);
-            (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
+            (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, duration);
             (void)nonadditive_increase_mon_property_verbosely(mtmp, CANCELLATION_RESISTANCE, 10);
             special_effect_wait_until_end(0);
         }
@@ -1054,7 +1067,7 @@ struct monst* origmonst;
         /* Unaffected by cancellation resistance */
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
-        (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
+        (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, duration);
         special_effect_wait_until_end(0);
         break;
     case SPE_LOWER_MAGIC_RESISTANCE:
@@ -1084,7 +1097,7 @@ struct monst* origmonst;
         
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
-        increase_mon_property_verbosely(mtmp, INVISIBILITY, 100 + rn2(50));
+        increase_mon_property_verbosely(mtmp, INVISIBILITY, duration);
         special_effect_wait_until_end(0);
 
         if (!oldinvis && knowninvisible(mtmp)) {
@@ -1413,7 +1426,7 @@ cure_petrification_here:
         reveal_invis = TRUE;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
-        if (sleep_monst(mtmp, otmp, origmonst, d(1 + otmp->charges, 8), 0, TRUE))
+        if (sleep_monst(mtmp, otmp, origmonst, duration, 0, TRUE))
             slept_monst(mtmp);
         special_effect_wait_until_end(0);
         if (!Blind)
@@ -5838,7 +5851,7 @@ boolean ordinary;
 
     boolean learn_it = FALSE;
     int basedmg = get_spell_damage(obj->otyp, &youmonst, &youmonst);
-    int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
+    int duration = get_spell_duration(obj);
     double damage = 0;
     //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
     int save_adj = get_saving_throw_adjustment(obj, &youmonst, obj->oclass == SPBOOK_CLASS && !(obj->speflags & SPEFLAGS_SERVICED_SPELL) ? &youmonst : (struct monst*)0);
@@ -6113,7 +6126,7 @@ boolean ordinary;
     case WAN_DISJUNCTION:
     case SPE_DISJUNCTION:
         damage = 0;
-        (void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus);
+        (void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE, duration);
         if (obj->otyp != SPE_DISJUNCTION && obj->otyp != WAN_DISJUNCTION)
         {
             set_itimeout(&HCancellation_resistance, max(HCancellation_resistance & TIMEOUT, 10));
@@ -6154,7 +6167,7 @@ boolean ordinary;
             You_feel("rather itchy under %s.", yname(uarmo));
         }
 
-        incr_itimeout(&HInvis, 100 + rn2(50));
+        incr_itimeout(&HInvis, duration);
         refresh_u_tile_gui_info(TRUE);
 
 #if 0
@@ -6180,7 +6193,7 @@ boolean ordinary;
         damage = 0;
         //boolean was_fast = Fast;
         boolean was_very_fast = Very_fast;
-        incr_itimeout(&HVery_fast, 150 + rnd(50));
+        incr_itimeout(&HVery_fast, duration);
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
         if (Very_fast && !was_very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
@@ -6215,7 +6228,7 @@ boolean ordinary;
     case SPE_MASS_SLOW:
         damage = 0;
         boolean was_slowed = Slowed;
-        incr_itimeout(&HSlowed, obj->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(obj)) : duration);
+        incr_itimeout(&HSlowed, duration);
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
         if (Slowed && !was_slowed)
@@ -6420,7 +6433,7 @@ boolean ordinary;
         if (is_undead(youmonst.data)) {
             You_feel("frightened and %sstunned.",
                      Stunned ? "even more " : "");
-            make_stunned((HStun & TIMEOUT) + (long) rnd(30), FALSE);
+            make_stunned((HStun & TIMEOUT) + (long) rnd(30), FALSE); //Not strictly the same effect, so keep hard coding for the time being
         } else
             You("don't feel much different than you did before.");
         break;

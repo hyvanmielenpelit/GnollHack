@@ -660,7 +660,7 @@ struct objclass {
 #define EDIBLEFX_CURE_PETRIFICATION -16
 
 
-/* spells */
+/* spells, wands, scrolls */
 #define oc_spell_cooldown oc_oc1         /* books: spell cooldown time */
 #define oc_spell_level oc_oc2            /* books: spell level */
 #define oc_spell_mana_cost oc_oc3        /* books: spell mana cost */
@@ -673,12 +673,13 @@ struct objclass {
 #define oc_spell_dmg_dice oc_wsdice      /* books: spell damage no of dice */
 #define oc_spell_dmg_diesize oc_wsdam    /* books: spell damage size of dice */
 #define oc_spell_dmg_plus oc_wsdmgplus   /* books: spell damage constant added */
+#define oc_spell_per_level_dice oc_wldice       /* books: spell per level bonus no of dice (overlaps with duration, which is not allowed) */
+#define oc_spell_per_level_diesize oc_wldam     /* books: spell per level bonus size of dice (overlaps with duration, which is not allowed) */
+#define oc_spell_per_level_plus oc_wldmgplus    /* books: spell per level bonus constant added (overlaps with duration, which is not allowed) */
 #define oc_spell_dur_dice oc_wldice      /* books: spell duration no of dice */
 #define oc_spell_dur_diesize oc_wldam    /* books: spell duration size of dice */
 #define oc_spell_dur_plus oc_wldmgplus   /* books: spell duration constant added */
-#define oc_spell_per_level_dice oc_wldice       /* books: spell per level bonus no of dice */
-#define oc_spell_per_level_diesize oc_wldam     /* books: spell per level bonus size of dice */
-#define oc_spell_per_level_plus oc_wldmgplus    /* books: spell per level bonus constant added */
+#define oc_spell_dur_buc_plus oc_extra_damagetype   /* books: spell duration constant added multiplied by bcsign */
 
 /* potions */
 #define oc_potion_breathe_buc_multiplier oc_oc1
@@ -700,6 +701,21 @@ struct objclass {
 #define oc_potion_nutrition_diesize oc_wedam                  /* potions: potion nutrition size of dice */
 #define oc_potion_nutrition_plus oc_wedmgplus                 /* potions: potion nutrition constant added */
 
+/* scrolls */
+#define oc_scroll_dmg_dice oc_spell_dmg_dice                  /* scrolls: effect damage no of dice */
+#define oc_scroll_dmg_diesize oc_spell_dmg_diesize            /* scrolls: effect damage size of dice */
+#define oc_scroll_dmg_plus oc_spell_dmg_plus                  /* scrolls: effect damage constant added */
+#define oc_scroll_dur_dice oc_spell_dur_dice                  /* scrolls: effect duration no of dice */
+#define oc_scroll_dur_diesize oc_spell_dur_diesize            /* scrolls: effect duration size of dice */
+#define oc_scroll_dur_plus oc_spell_dur_plus                  /* scrolls: effect duration constant added */
+
+/* wands */
+#define oc_wand_dmg_dice oc_spell_dmg_dice                    /* wands: effect damage no of dice */
+#define oc_wand_dmg_diesize oc_spell_dmg_diesize              /* wands: effect damage size of dice */
+#define oc_wand_dmg_plus oc_spell_dmg_plus                    /* wands: effect damage constant added */
+#define oc_wand_dur_dice oc_spell_dur_dice                    /* wands: effect duration no of dice */
+#define oc_wand_dur_diesize oc_spell_dur_diesize              /* wands: effect duration size of dice */
+#define oc_wand_dur_plus oc_spell_dur_plus                    /* wands: effect duration constant added */
 
     int oc_dir_subtype;               /* spells: ID for type of ray or immediate effect, weapons: damage type */
 

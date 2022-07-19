@@ -4122,6 +4122,7 @@ E int FDECL(mon_to_zombie, (int));
 E int FDECL(mon_to_mummy, (int));
 E int FDECL(get_spell_damage, (int, struct monst*, struct monst*));
 E int FDECL(get_spell_skill_level, (int, struct monst*, struct monst*));
+E int FDECL(get_spell_duration, (struct obj*));
 E int FDECL(get_maximum_applicable_spell_damage_level, (int, struct monst*));
 E boolean FDECL(is_buzztype_breath_weapon, (int));
 E boolean FDECL(is_buzztype_eyestalk, (int));

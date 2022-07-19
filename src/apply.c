@@ -5255,6 +5255,7 @@ struct obj *obj;
     obj->oy = u.uy;
     dmg_n = obj->charges;
     affects_objects = FALSE;
+    obj->speflags |= SPEFLAGS_BEING_BROKEN;
 
     uchar hit_only_one = 1;
     if (objects[obj->otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS)
