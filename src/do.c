@@ -1120,10 +1120,6 @@ register struct obj* obj;
         {
             strcpy(buf2, "Weapon-like");
         }
-        //if (is_wand_like_tool(obj))
-        //{
-        //    strcpy(buf2, "Wand-like");
-        //}
         if (is_candle(obj))
         {
             strcpy(buf3, "Candle");
@@ -1930,7 +1926,7 @@ register struct obj* obj;
 
     if (stats_known)
     {
-        if (objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == SCROLL_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_wand_like_tool(obj)))
+        if (objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == SCROLL_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_spelltool(obj)))
         {
             boolean use_wand_skill = objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_skill == P_WAND;
             const char *itemname_hc = objects[otyp].oc_class == WAND_CLASS ? "Wand" : objects[otyp].oc_class == SCROLL_CLASS ? "Scroll" : "Item";
@@ -3306,7 +3302,7 @@ register struct obj* obj;
     {
         /* Item properties */
         if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON
-            | O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD) 
+            | O1_SPELLTOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD) 
             || (objects[otyp].oc_flags5 & (O5_MBAG_DESTROYING_ITEM | O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN))
             || otyp_shines_magical_light(otyp)
             || is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp)

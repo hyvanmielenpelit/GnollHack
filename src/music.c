@@ -31,7 +31,7 @@
 #include "hack.h"
 
 STATIC_DCL void FDECL(awaken_monsters, (int, BOOLEAN_P));
-STATIC_DCL void FDECL(put_monsters_to_sleep, (int));
+STATIC_DCL void FDECL(put_monsters_to_sleep, (int, int));
 STATIC_DCL void FDECL(charm_snakes, (int));
 STATIC_DCL void FDECL(calm_nymphs, (int));
 STATIC_DCL void FDECL(charm_monsters, (int, int));
@@ -102,16 +102,17 @@ boolean isscary;
  */
 
 STATIC_OVL void
-put_monsters_to_sleep(distance)
-int distance;
+put_monsters_to_sleep(otyp, distance)
+int otyp, distance;
 {
     register struct monst *mtmp;
+    int duration = get_otyp_spell_duration(otyp);
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
         if (distu(mtmp->mx, mtmp->my) < distance
-            && sleep_monst(mtmp, (struct obj*)0, (struct monst*)0, d(10, 10), 0, FALSE)) {
+            && sleep_monst(mtmp, (struct obj*)0, (struct monst*)0, duration, 0, FALSE)) {
             //mtmp->msleeping = 1; /* 10d10 turns + wake_nearby to rouse */
             slept_monst(mtmp);
         }
@@ -595,7 +596,7 @@ struct obj *instr;
         consume_obj_charge(instr, TRUE);
 
         You("produce %s music.", Hallucination ? "piped" : "soft");
-        put_monsters_to_sleep(u.ulevel * 5);
+        put_monsters_to_sleep(itmp.otyp, u.ulevel * 5);
         exercise(A_DEX, TRUE);
         break;
     case WOODEN_FLUTE: /* May charm snakes */

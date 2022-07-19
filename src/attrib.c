@@ -733,7 +733,7 @@ object_uses_spellbook_wand_flags_and_properties(uitem)
 struct obj* uitem;
 {
     return ((uitem->oclass == SPBOOK_CLASS)  /* && !(objects[uitem->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK) */
-        || uitem->oclass == WAND_CLASS || (uitem->oclass == TOOL_CLASS && is_wand_like_tool(uitem))
+        || uitem->oclass == WAND_CLASS || (uitem->oclass == TOOL_CLASS && is_spelltool(uitem))
         || uitem->oclass == POTION_CLASS || uitem->oclass == SCROLL_CLASS
         );
 }

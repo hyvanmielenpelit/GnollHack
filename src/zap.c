@@ -184,7 +184,7 @@ struct monst* targetmonst;
 }
 
 int
-get_spell_duration(obj)
+get_obj_spell_duration(obj)
 struct obj* obj;
 {
     if (!obj)
@@ -194,6 +194,15 @@ struct obj* obj;
     int durdice = objects[otyp].oc_spell_dur_dice + (obj->speflags & SPEFLAGS_BEING_BROKEN ? obj->charges : 0);
     int duration = d(durdice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus + bcsign(obj) * objects[otyp].oc_spell_dur_buc_plus;
     return max(0, duration);
+}
+
+int
+get_otyp_spell_duration(otyp)
+int otyp;
+{
+    struct obj tempobj = { 0 };
+    tempobj.otyp = otyp;
+    return get_obj_spell_duration(&tempobj);
 }
 
 /*
@@ -353,7 +362,7 @@ struct monst* origmonst;
     struct obj *obj;
     boolean disguised_mimic = (is_mimic(mtmp->data)
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
-    int duration = get_spell_duration(otmp);
+    int duration = get_obj_spell_duration(otmp);
     int dmg = get_spell_damage(otyp, origmonst, mtmp);
     int save_adj = get_saving_throw_adjustment(otmp, mtmp, origmonst);
     boolean surpress_noeffect_message = FALSE;
@@ -5851,7 +5860,7 @@ boolean ordinary;
 
     boolean learn_it = FALSE;
     int basedmg = get_spell_damage(obj->otyp, &youmonst, &youmonst);
-    int duration = get_spell_duration(obj);
+    int duration = get_obj_spell_duration(obj);
     double damage = 0;
     //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
     int save_adj = get_saving_throw_adjustment(obj, &youmonst, obj->oclass == SPBOOK_CLASS && !(obj->speflags & SPEFLAGS_SERVICED_SPELL) ? &youmonst : (struct monst*)0);

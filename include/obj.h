@@ -510,8 +510,8 @@ struct obj {
     is_otyp_special_praying_item((otmp)->otyp)
 
 /* Wand-like tools */
-#define is_wand_like_tool(otmp) \
-    ((objects[(otmp)->otyp].oc_flags & O1_WAND_LIKE_TOOL) != 0)
+#define is_spelltool(otmp) \
+    ((objects[(otmp)->otyp].oc_flags & O1_SPELLTOOL) != 0)
 
 /* Other tools */
 #define is_saw(otmp)                                              \

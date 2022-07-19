@@ -1762,7 +1762,7 @@ boolean *effect_happened_ptr;
 #define COST_none (-1)
     int costchange = COST_none;
     boolean altfmt = FALSE;
-    int duration = get_spell_duration(sobj);
+    int duration = get_obj_spell_duration(sobj);
     boolean is_serviced_spell = !!(sobj->speflags & SPEFLAGS_SERVICED_SPELL);
     if (objects[otyp].oc_magic)
         exercise(A_WIS, TRUE);                       /* just for trying */

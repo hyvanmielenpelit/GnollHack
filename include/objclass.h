@@ -825,7 +825,7 @@ struct objclass {
 #define O1_WEIGHT_DOES_NOT_REDUCE_RANGE      0x04000000UL            /* the object magically flies when thrown, ignoring its weight */
 #define O1_RETURNS_TO_HAND_AFTER_THROWING    0x08000000UL            /* the object returns to the owner's hand after throwing */
 #define O1_CAN_BE_THROWN_ONLY_IF_WIELDED     0x10000000UL            /* has to be wielded to be thrown, e.g., Mjollnir */
-#define O1_WAND_LIKE_TOOL                    0x20000000UL            /* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
+#define O1_SPELLTOOL                         0x20000000UL            /* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
 #define O1_NON_SPELL_SPELLBOOK               0x40000000UL            /* uses non-spellbook flags and other non-spellbook stats */
 #define O1_NOT_CURSEABLE                     0x80000000UL
 
