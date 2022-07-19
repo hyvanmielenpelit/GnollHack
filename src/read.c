@@ -1762,7 +1762,7 @@ boolean *effect_happened_ptr;
 #define COST_none (-1)
     int costchange = COST_none;
     boolean altfmt = FALSE;
-    int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
+    int duration = get_spell_duration(sobj);
     boolean is_serviced_spell = !!(sobj->speflags & SPEFLAGS_SERVICED_SPELL);
     if (objects[otyp].oc_magic)
         exercise(A_WIS, TRUE);                       /* just for trying */
@@ -2051,7 +2051,7 @@ boolean *effect_happened_ptr;
                 You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "confused.");
             }
             special_effect_wait_until_action(0);
-            make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
+            make_confused(itimeout_incr(HConfusion, duration), FALSE);
             special_effect_wait_until_end(0);
         }
         else if (confused) 
@@ -2064,7 +2064,7 @@ boolean *effect_happened_ptr;
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s begin to %s%s.", makeplural(body_part(HAND)),
                     Blind ? "tingle" : "glow ",
                     Blind ? "" : hcolor(NH_PURPLE));
-                make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
+                make_confused(itimeout_incr(HConfusion, duration), FALSE);
                 special_effect_wait_until_end(0);
             }
             else 
@@ -2136,8 +2136,7 @@ boolean *effect_happened_ptr;
                 }
                 else
                 {
-                    duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
-                    make_mon_fearful(mtmp, duration ? duration : 100 + rnd(50));
+                    make_mon_fearful(mtmp, duration);
                 }
                 if (!is_tame(mtmp))
                     ct++; /* pets don't laugh at you */
@@ -2448,7 +2447,7 @@ boolean *effect_happened_ptr;
         }
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        incr_itimeout(&HConflict, d(2, 10) + 140);
+        incr_itimeout(&HConflict, duration);
         refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         break;
@@ -3290,8 +3289,11 @@ boolean *effect_happened_ptr;
             }
         }
 
+        int dmgdice = objects[otyp].oc_spell_dmg_dice;
+        int dmgdiesize = objects[otyp].oc_spell_dmg_diesize;
+        int dmgplus = objects[otyp].oc_spell_dmg_plus;
         if (increased_damage)
-            explode(cc.x, cc.y, 11, &youmonst, 5, 6, 10, otyp, SCROLL_CLASS, EXPL_SCROLL_OF_FIRE);
+            explode(cc.x, cc.y, 11, &youmonst, dmgdice, dmgdiesize, dmgplus, otyp, SCROLL_CLASS, EXPL_SCROLL_OF_FIRE);
         else
             explode(cc.x, cc.y, 11, &youmonst, 1, 2, (4 * sbcsign + 2) / 3, otyp, SCROLL_CLASS, EXPL_SCROLL_OF_FIRE);
 
@@ -3443,8 +3445,12 @@ boolean *effect_happened_ptr;
         u.dx = cc.x - u.ux;
         update_u_facing(TRUE);
         u.dx = 0;
+        int durdice = objects[otyp].oc_spell_dur_dice;
+        int durdiesize = objects[otyp].oc_spell_dur_diesize;
+        int durplus = objects[otyp].oc_spell_dur_plus;
+        int durbucplus = objects[otyp].oc_spell_dur_buc_plus;
         (void) create_gas_cloud(cc.x, cc.y, REGION_POISON_GAS, 3 + bcsign(sobj),
-                                1, 8 + 4 * bcsign(sobj), 5);
+            durdice, durdiesize, durplus + durbucplus * bcsign(sobj));
         break;
     }
     default:

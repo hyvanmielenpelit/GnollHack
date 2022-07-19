@@ -2554,97 +2554,123 @@ POTION("urine",           "pale yellow", "A flask full of somebody's urine. It s
 #undef POTION
 
 /* scrolls ... */
-#define SCROLL(name,text,itemdesc,mgc,prob,cost,sflags,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)   \
+#define SCROLL(name,text,itemdesc,mgc,prob,cost,dmgdice,dmgdiesize,dmgplus,durdice,durdiesize,durplus,durbucplus,sflags,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)   \
     OBJECT(OBJ(name, text, None, None, itemdesc, 32, 0, 0, 0),   \
            BITS(0, 1, 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, MAT_PAPER),    \
            NO_POWER, NO_POWER, NO_POWER, P1_NONE, SCROLL_CLASS, prob, MULTIGEN_SINGLE, 0, 4, cost, \
-           AD_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sflags, S2_NONE,0, \
+           AD_NONE, dmgdice,dmgdiesize,dmgplus,durdice,durdiesize,durplus,durbucplus, 0, 0, 0, sflags, S2_NONE,0, \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
            6, HI_PAPER, OBJECT_SOUNDSET_SCROLL, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4, flags5, flags6)
 SCROLL("enchant armor",              "ZELGO MER", "Increases the enchantment of a random worn armor.",
-    1,  60,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  60,  80, 0, 0, 0, 0, 0, 0, 0,
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("destroy armor",         "JUYED AWK YACC", "Destroys a random armor.", 
-    1,  45, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  45, 100, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("protect armor",                "VEX DOL", "Makes a random worn armor proof to degrading effects.",
-    1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  30,  50, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("confuse monster",                 "NR 9", "Imbues melee attacks with a power to confuse upon hit.",
-    1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  30, 100, 0, 0, 0, 1, 50, 50, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("scare monster",   "XIXAXA XOXAXA XUXAXA", "Frightens the nearby monsters away.", 
-    1,  35, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  35, 100, 0, 0, 0, 1, 50, 100, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("remove curse",             "PRATYAVAYAH", "Removes curse from all worn items.\nA blessed scroll removes curse from all items.",
-    1,  65,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  65,  80, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("enchant weapon",         "DAIYEN FOOELS", "Increases the enchantment of a random wielded weapon.",
-    1,  80,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  80,  60, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("protect weapon",               "ZEPH NI", "Makes a random wielded weapon proof to degrading effects.",
-    1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  30,  50, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("enchant accessory",           "REX SAPH", "Increases the enchantment of a random worn ring or miscellaneous item.",
-    1,  30,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  30,  60, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("create monster",       "LEP GEX VEN ZEA", "Creates one or more monsters around the reader.",
-    1,  40, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  40, 200, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("taming",                   "PRIRUTSENIE", "Tames creatures around the reader.",
-    1,  15, 200, S1_SPELL_IS_NONREVERSIBLE_PERMANENT, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  15, 200, 0, 0, 0, 0, 0, 0, 0, 
+    S1_SPELL_IS_NONREVERSIBLE_PERMANENT, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("genocide",                  "ELBIB YLOH", "Removes a chosen creature type entirely from the game.\nA blessed scroll removes an entire class instead.",
-    1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  15, 300, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("conflict",                 "HOCUS POCUS", "Makes creatures on the dungeon level attack each other for a duration.",
-    1,  30, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  30, 300, 0, 0, 0, 2, 10, 140, 80, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("light",                 "VERR YED HORRE", "Lights up the area around the reader.",
-    1,  45,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  45,  50, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("teleportation",        "VENZAR BORGAVVE", "Teleports the reader to a random location on the dungeon level.\nCursed scroll teleports across levels instead.",
-    1,  45, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  45, 100, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("gold detection",                 "THARR", "Detects gold on the level.",
-    1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  30, 100, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("food detection",               "YUM YUM", "Detects food on the level.",
-    1,  25, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  25, 100, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("identify",                  "KERNOD WEL", "Identifies one or more items.\nA cursed scroll identifies one, uncursed two, and blessed three.",
-    1, 150,  20, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1, 150,  20, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("magic mapping",              "ELAM EBOW", "Confers the knowledge of the entire level map.",
-    1,  40, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  40, 100, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("amnesia",                   "DUAM XNAHT", "Makes the reader forgets the current level map.\nThe reader also forgets some items, spells, and other maps.",
-    1,  30, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  30, 200, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("retraining",               "NUGG YEBBEH", "Releases all allocated skill points.\nSkill points released in this way can be reallocated.",
-    1,  20, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL("fire",                  "ANDOVA BEGARIN", "Causes a tower of flame to erupt from the scroll, engulfing the reader.",
-    1,  25, 100, S1_NONE, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  20, 200, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL("fire",                  "ANDOVA BEGARIN", "Causes a tower of flame to erupt from the scroll.\nA blessed scroll conjures a great pillar of fire at target location.\nOtherwise, the flames burn the reader, causing minor fire damage.",
+    1,  25, 100, 5, 6, 10, 0, 0, 0, 0, 
+    S1_NONE, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_EFFECT_FOR_BLESSED_ONLY, O6_NONE, PERMITTED_ALL),
 SCROLL("earth",                          "KIRJE", "Causes boulders to drop from above at and around the reader's location.",
-    1,  15, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  15, 200, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("punishment",            "VE FORBRYDERNE", "Causes a heavy iron ball to be chained to the reader's foot.",
-    1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  15, 300, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("charging",                "HACKEM MUCHE", "Recharges wands and other charged items.",
-    1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  15, 300, 0, 0, 0, 0, 0, 0, 0, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("stinking cloud",             "VELOX NEB", "Creates a stinking cloud at a specified target location.",
-    1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1,  15, 300, 0, 0, 0, 1, 8, 8, 4, 
+    S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
     /* Extra descriptions, shuffled into use at start of new game.
      * Code in win/share/tilemap.c depends on SCR_STINKING_CLOUD preceding
      * these and on how many of them there are.  If a real scroll gets added
      * after stinking cloud or the number of extra descriptions changes,
      * tilemap.c must be modified to match.
      */
-SCROLL(None,      "FOOBIE BLETCH", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,              "TEMOV", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,         "GARVEN DEH", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,            "READ ME", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,      "ETAOIN SHRDLU", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,        "LOREM IPSUM", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,              "FNORD", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Illuminati */
-SCROLL(None,            "KO BATE", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Kurd Lasswitz */
-SCROLL(None,      "ABRA KA DABRA", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* traditional incantation */
-SCROLL(None,       "ASHPD SODALG", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Portal */
-SCROLL(None,            "ZLORFIK", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Zak McKracken */
-SCROLL(None,      "GNIK SISI VLE", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Zak McKracken */
-SCROLL(None,    "HAPAX LEGOMENON", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,  "EIRIS SAZUN IDISI", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Merseburg Incantations */
-SCROLL(None,    "PHOL ENDE WODAN", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Merseburg Incantations */
-SCROLL(None,              "GHOTI", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* pronounced as 'fish',
+SCROLL(None,      "FOOBIE BLETCH", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,              "TEMOV", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,         "GARVEN DEH", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,            "READ ME", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,      "ETAOIN SHRDLU", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,        "LOREM IPSUM", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,              "FNORD", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Illuminati */
+SCROLL(None,            "KO BATE", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Kurd Lasswitz */
+SCROLL(None,      "ABRA KA DABRA", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* traditional incantation */
+SCROLL(None,       "ASHPD SODALG", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Portal */
+SCROLL(None,            "ZLORFIK", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Zak McKracken */
+SCROLL(None,      "GNIK SISI VLE", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Zak McKracken */
+SCROLL(None,    "HAPAX LEGOMENON", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,  "EIRIS SAZUN IDISI", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Merseburg Incantations */
+SCROLL(None,    "PHOL ENDE WODAN", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Merseburg Incantations */
+SCROLL(None,              "GHOTI", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* pronounced as 'fish',
                                                         George Bernard Shaw */
-SCROLL(None, "MAPIRO MAHAMA DIROMAT",None, 1, 0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Wizardry */
-SCROLL(None,  "VAS CORP BET MANI", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Ultima */
-SCROLL(None,            "XOR OTA", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Aarne Haapakoski */
-SCROLL(None, "STRC PRST SKRZ KRK", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Czech and Slovak
+SCROLL(None, "MAPIRO MAHAMA DIROMAT",None, 1, 0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Wizardry */
+SCROLL(None,  "VAS CORP BET MANI", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Ultima */
+SCROLL(None,            "XOR OTA", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Aarne Haapakoski */
+SCROLL(None, "STRC PRST SKRZ KRK", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Czech and Slovak
                                                         tongue-twister */
     /* These must come last because they have special fixed descriptions.
      */
-SCROLL("mail",          "stamped", None, 0,   0,   0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL("blank paper", "unlabeled", None, 0,  25,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_OK_FOR_ILLITERATE, O6_NONE, PERMITTED_ALL),
+SCROLL("mail",          "stamped", None, 0,   0,   0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL("blank paper", "unlabeled", None, 0,  25,  60, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_OK_FOR_ILLITERATE, O6_NONE, PERMITTED_ALL),
 #undef SCROLL
 
 /* spellbooks ... */

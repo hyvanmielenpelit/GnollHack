@@ -1930,20 +1930,23 @@ register struct obj* obj;
 
     if (stats_known)
     {
-        if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_wand_like_tool(obj)))
+        if (objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == SCROLL_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_wand_like_tool(obj)))
         {
             boolean use_wand_skill = objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_skill == P_WAND;
+            const char *itemname_hc = objects[otyp].oc_class == WAND_CLASS ? "Wand" : objects[otyp].oc_class == SCROLL_CLASS ? "Scroll" : "Item";
+            const char *itemname_lc = objects[otyp].oc_class == WAND_CLASS ? "wand" : objects[otyp].oc_class == SCROLL_CLASS ? "scroll" : "item";
+            const char* itempadding = objects[otyp].oc_class == SCROLL_CLASS ? "" : "  ";
             if (objects[otyp].oc_spell_dmg_dice > 0 || objects[otyp].oc_spell_dmg_diesize > 0 || objects[otyp].oc_spell_dmg_plus != 0)
             {
                 double dicemult = use_wand_skill ? get_wand_damage_multiplier(P_SKILL_LEVEL(P_WAND)) : 1.0;
                 boolean maindiceprinted = FALSE;
                 char plusbuf[BUFSZ];
                 if(objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
-                    Sprintf(buf, "%s healing amount:    ", objects[otyp].oc_class == WAND_CLASS ? "Wand" : "Item");
+                    Sprintf(buf, "%s healing amount:  %s", itemname_hc, itempadding);
                 else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
-                    Sprintf(buf, "Mana restored by %s:  ", objects[otyp].oc_class == WAND_CLASS ? "wand" : "item");
+                    Sprintf(buf, "Mana restored by %s:%s", itemname_lc, itempadding);
                 else
-                    Sprintf(buf, "%s effect damage:     ", objects[otyp].oc_class == WAND_CLASS ? "Wand" : "Item");
+                    Sprintf(buf, "%s effect damage:   %s", itemname_hc, itempadding);
 
                 if (objects[otyp].oc_spell_dmg_dice > 0 && objects[otyp].oc_spell_dmg_diesize > 0)
                 {
@@ -1963,6 +1966,9 @@ register struct obj* obj;
                     Strcat(buf, plusbuf);
                 }
 
+                if (objects[otyp].oc_flags5 & O5_EFFECT_FOR_BLESSED_ONLY)
+                    Strcat(buf, " (blessed only)");
+
                 if (use_wand_skill)
                 {
                     char slnbuf[BUFSZ] = "";
@@ -1979,7 +1985,7 @@ register struct obj* obj;
             {
                 boolean maindiceprinted = FALSE;
                 char plusbuf[BUFSZ];
-                Sprintf(buf, "%s effect duration:   ", objects[otyp].oc_class == WAND_CLASS ? "Wand" : "Item");
+                Sprintf(buf, "%s effect duration: %s", itemname_hc, itempadding);
 
                 if (objects[otyp].oc_spell_dur_dice > 0 && objects[otyp].oc_spell_dur_diesize > 0)
                 {
@@ -1988,32 +1994,49 @@ register struct obj* obj;
                     Strcat(buf, plusbuf);
                 }
 
-                if (objects[otyp].oc_spell_dur_plus != 0)
+                int applied_plus = objects[otyp].oc_spell_dur_plus + (obj->bknown ? bcsign(obj) * objects[otyp].oc_spell_dur_buc_plus : 0);
+                if (applied_plus != 0)
                 {
-                    if (maindiceprinted && objects[otyp].oc_spell_dur_plus > 0)
+                    if (maindiceprinted && applied_plus > 0)
                     {
                         Sprintf(plusbuf, "+");
                         Strcat(buf, plusbuf);
                     }
-                    Sprintf(plusbuf, "%d", objects[otyp].oc_spell_dur_plus);
+                    Sprintf(plusbuf, "%d", applied_plus);
                     Strcat(buf, plusbuf);
                 }
 
-                Sprintf(plusbuf, " round%s", (objects[otyp].oc_spell_dur_dice == 0 && objects[otyp].oc_spell_dur_diesize == 0 && objects[otyp].oc_spell_dur_plus == 1) ? "" : "s");
+                Sprintf(plusbuf, " round%s", (objects[otyp].oc_spell_dur_dice == 0 && objects[otyp].oc_spell_dur_diesize == 0 && applied_plus == 1) ? "" : "s");
                 Strcat(buf, plusbuf);
+
+                if (objects[otyp].oc_spell_dur_buc_plus != 0 && !obj->bknown)
+                {
+                    char bucplusbuf[BUFSZ] = "";
+                    int bucplus = objects[otyp].oc_spell_dur_buc_plus;
+                    Strcat(buf, " (");
+                    if (bucplus >= 0)
+                    {
+                        Strcpy(bucplusbuf, "-/+");
+                    }
+                    else
+                    {
+                        Strcpy(bucplusbuf, "+/");
+                    }
+                    Sprintf(eos(buf), "%s%d if cursed or blessed)", bucplusbuf, bucplus);
+                }
 
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
             if (objects[otyp].oc_spell_range > 0)
             {
-                Sprintf(buf, "%s effect range:      %ld'", objects[otyp].oc_class == WAND_CLASS ? "Wand" : "Item", objects[otyp].oc_spell_range * 5L);
+                Sprintf(buf, "%s effect range:    %s%ld'", itemname_hc, itempadding, objects[otyp].oc_spell_range * 5L);
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
             if (objects[otyp].oc_spell_radius > 0)
             {
-                Sprintf(buf, "%s effect radius:     %ld'", objects[otyp].oc_class == WAND_CLASS ? "Wand" : "Item", objects[otyp].oc_spell_radius * 5L);
+                Sprintf(buf, "%s effect radius:   %s%ld'", itemname_hc, itempadding, objects[otyp].oc_spell_radius * 5L);
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }

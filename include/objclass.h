@@ -964,7 +964,7 @@ struct objclass {
 #define O5_HAS_ALTERNATIVE_APPEARANCE  0x00000200UL /* Alternative appearance available */
 #define O5_EFFECT_IS_HEALING           0x00000400UL /* (Potion) Effect data is healing */
 #define O5_EFFECT_IS_MANA              0x00000800UL /* (Potion) Effect data is mana */
-#define O5_EFFECT_FOR_BLESSED_ONLY     0x00001000UL /* (Potion) Effect data is for blessed potion only (monster detection) */
+#define O5_EFFECT_FOR_BLESSED_ONLY     0x00001000UL /* (Potion) Effect data is for blessed potion only (monster detection, scroll of fire) */
 
 #define O5_LIGHT_SOURCE                0x00002000UL
 #define O5_BURNS_INFINITELY            0x00004000UL
