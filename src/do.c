@@ -1403,7 +1403,7 @@ register struct obj* obj;
     }
 
     boolean weapon_stats_shown = FALSE;
-    if (!uses_spell_flags && (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj) || objects[otyp].oc_class == GEM_CLASS)) && stats_known))
+    if (!uses_spell_flags && (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj) || objects[otyp].oc_class == GEM_CLASS) && stats_known)))
     {
         weapon_stats_shown = TRUE;
 
