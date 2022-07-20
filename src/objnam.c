@@ -4097,7 +4097,7 @@ boolean is_wiz_wish;
         *p = 0;
         dn = p + 10;
     }
-    if ((p = strstri(bp, " of spinach")) != 0) {
+    if ((p = strstri(bp, " of spinach")) != 0 && strstri(bp, " of spinach leaves") == 0) {
         *p = 0;
         contents = CONTAINER_SPINACH;
     }
