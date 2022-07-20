@@ -3104,8 +3104,8 @@ struct obj* otmp_only;
                     && (otmp->owornmask & W_WEP))
 #endif
                 || (!strcmp(word, "ready")    /* exclude when wielded... */
-                    && ((otmp == uwep || (otmp == uarms && u.twoweap))
-                        && otmp->quan == 1L)) /* ...unless more than one */
+                    && (((otmp == uwep || (otmp == uarms && u.twoweap)) && otmp->quan == 1L)  /* ...unless more than one */
+                        || (uwep && is_launcher(uwep) && objects[uwep->otyp].oc_skill != -objects[otmp->otyp].oc_skill)))
                 || ((!strcmp(word, "dip") || !strcmp(word, "grease"))
                     && inaccessible_equipment(otmp, (const char*)0, FALSE))
                 )
