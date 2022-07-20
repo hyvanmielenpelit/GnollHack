@@ -1946,6 +1946,8 @@ register struct obj* obj;
                 char plusbuf[BUFSZ];
                 if(objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
                     Sprintf(buf, "%s healing amount:  %s", itemname_hc, itempadding);
+                else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_DAMAGE)
+                    Sprintf(buf, "%s damage:          %s", itemname_hc, itempadding);
                 else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
                     Sprintf(buf, "Mana restored by %s:%s", itemname_lc, itempadding);
                 else
@@ -2084,6 +2086,8 @@ register struct obj* obj;
                 char plusbuf[BUFSZ];
                 if(objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
                     Sprintf(buf, "Healing amount:         ");
+                else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_DAMAGE)
+                    Sprintf(buf, "Damage:                 ");
                 else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
                     Sprintf(buf, "Mana restored:          ");
                 else
@@ -2111,8 +2115,10 @@ register struct obj* obj;
 
                 if (objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
                     Sprintf(plusbuf, " hit point%s", (dice == 0 && objects[otyp].oc_potion_normal_diesize == 0 && plus == 1) ? "" : "s");
+                else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_DAMAGE)
+                    Strcpy(plusbuf, "");
                 else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
-                    Sprintf(plusbuf, " mana");
+                    Strcpy(plusbuf, " mana");
                 else
                     Sprintf(plusbuf, " round%s", (dice == 0 && objects[otyp].oc_potion_normal_diesize == 0 && plus == 1) ? "" : "s");
                 Strcat(buf, plusbuf);
@@ -2127,7 +2133,25 @@ register struct obj* obj;
             {
                 boolean maindiceprinted = FALSE;
                 char plusbuf[BUFSZ];
-                Sprintf(buf, "Breathe duration:       ");
+                const char* brtype = "duration";
+                const char* brtypepadding = "";
+                if (objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
+                {
+                    brtype = "healing";
+                    brtypepadding = " ";
+                }
+                else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_DAMAGE)
+                {
+                    brtype = "damage";
+                    brtypepadding = "  ";
+                }
+                else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
+                {
+                    brtype = "mana";
+                    brtypepadding = "    ";
+                }
+
+                Sprintf(buf, "Breathe %s:       %s", brtype, brtypepadding);
 
                 int dice = objects[otyp].oc_potion_breathe_dice + (obj->bknown ? objects[otyp].oc_potion_breathe_dice_buc_multiplier * bcsign(obj) : 0);
                 if (dice > 0 && objects[otyp].oc_potion_breathe_diesize > 0)
@@ -2149,8 +2173,18 @@ register struct obj* obj;
                     Strcat(buf, plusbuf);
                 }
 
-                Sprintf(plusbuf, " round%s", (dice == 0 && objects[otyp].oc_potion_breathe_diesize == 0 && plus == 1) ? "" : "s");
+                if (objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
+                    Sprintf(plusbuf, " hit point%s", (dice == 0 && objects[otyp].oc_potion_breathe_diesize == 0 && plus == 1) ? "" : "s");
+                else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_DAMAGE)
+                    Strcpy(plusbuf, "");
+                else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
+                    Strcpy(plusbuf, " mana");
+                else
+                    Sprintf(plusbuf, " round%s", (dice == 0 && objects[otyp].oc_potion_breathe_diesize == 0 && plus == 1) ? "" : "s");
                 Strcat(buf, plusbuf);
+
+                if (objects[otyp].oc_flags5 & O5_EFFECT_FOR_BLESSED_ONLY)
+                    Strcat(buf, " (blessed only)");
 
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_COLON, txt);
@@ -2460,7 +2494,7 @@ register struct obj* obj;
         }
     }
 
-    if (obj->repowerleft > 0)
+    if (stats_known && obj->repowerleft > 0)
     {
         Sprintf(buf, "Repowering time left:   %d rounds", obj->repowerleft);
         txt = buf;
@@ -2470,6 +2504,13 @@ register struct obj* obj;
     if (stats_known && obj->invokeon)
     {
         Sprintf(buf, "Invoked ability:        Activated");
+        txt = buf;
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
+    }
+
+    if (stats_known && obj->invokeleft > 0)
+    {
+        Sprintf(buf, "Invoke time left:       %d rounds", obj->invokeleft);
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
@@ -2875,14 +2916,16 @@ register struct obj* obj;
                 putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             char mcapplybuf[BUFSZ] = "";
-            if (!(objects[otyp].oc_aflags & A1_BYPASSES_MC) || (objects[otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS))
+            if (!(objects[otyp].oc_aflags & (A1_BYPASSES_MC)) || (objects[otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS))
             {
+                Strcpy(mcapplybuf, " (");
                 if (!(objects[otyp].oc_aflags & A1_BYPASSES_MC) && (objects[otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS))
-                    Strcpy(mcapplybuf, " (MC and MR checks apply)");
+                    Strcat(mcapplybuf, "MC and MR checks apply");
                 else if (objects[otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS)
-                    Strcpy(mcapplybuf, " (MR check applies)");
+                    Strcat(mcapplybuf, "MR check applies");
                 else
-                    Strcpy(mcapplybuf, " (MC check applies)");
+                    Strcat(mcapplybuf, "MC check applies");
+                Strcat(mcapplybuf, ")");
             }
 
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_CRITICAL_STRIKE) && (objects[otyp].oc_aflags & A1_CRITICAL_STRIKE_IS_DEADLY))
@@ -2907,6 +2950,17 @@ register struct obj* obj;
                         critchance < 100 ? chancebuf : "", mcapplybuf);
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_DASH, txt);
+
+                if (objects[otyp].oc_aflags2 & A2_REQUIRES_ARTIFACT_INVOKE_ON)
+                {
+                    Strcpy(buf, "      * Active when invoked");
+                    putstr(datawin, ATR_INDENT_AT_DASH, buf);
+                }
+                if (objects[otyp].oc_aflags2 & A2_REQUIRES_AND_EXPENDS_A_CHARGE)
+                {
+                    Strcpy(buf, "      * Expends a charge on successful hit");
+                    putstr(datawin, ATR_INDENT_AT_DASH, buf);
+                }
             }
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_LEVEL_DRAIN))
             {
@@ -3676,7 +3730,7 @@ register struct obj* obj;
                     && artilist[obj->oartifact].inv_duration_diesize == 0 
                     && artilist[obj->oartifact].inv_duration_plus == 0)
                 {
-                    strcpy(buf, "      * Effect is switchable on and off");
+                    Strcpy(buf, "      * Effect is switchable on and off");
                 }
                 else
                 {

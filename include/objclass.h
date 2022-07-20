@@ -524,6 +524,7 @@ struct objclass {
 #define A2_NONE                                                      0x00000000UL
 #define A2_HITS_ADJACENT_SQUARES                                     0x00000001UL  /* like Cleaver */
 #define A2_REQUIRES_AND_EXPENDS_A_CHARGE                             0x00000002UL  /* Nine lives stealer */
+#define A2_REQUIRES_ARTIFACT_INVOKE_ON                               0x00000004UL  /* Nine lives stealer */
 
 
 #define oc_spell_flags oc_aflags
@@ -964,7 +965,8 @@ struct objclass {
 #define O5_HAS_ALTERNATIVE_APPEARANCE  0x00000200UL /* Alternative appearance available */
 #define O5_EFFECT_IS_HEALING           0x00000400UL /* (Potion) Effect data is healing */
 #define O5_EFFECT_IS_MANA              0x00000800UL /* (Potion) Effect data is mana */
-#define O5_EFFECT_FOR_BLESSED_ONLY     0x00001000UL /* Effect data is for blessed potion only (monster detection, scroll of fire) */
+#define O5_EFFECT_IS_DAMAGE            0x00001000UL /* (Potion) Effect data is damage */
+#define O5_EFFECT_FOR_BLESSED_ONLY     0x00002000UL /* Effect data is for blessed potion only (monster detection, scroll of fire) */
 
 #define O5_LIGHT_SOURCE                0x00010000UL
 #define O5_BURNS_INFINITELY            0x00020000UL

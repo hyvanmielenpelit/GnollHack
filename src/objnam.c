@@ -1788,13 +1788,13 @@ weapon_here:
     bp = strprepend(bp, prefix);
 
     /* Mark if invoke, repower, cooling down */
-    if (obj->invokeon > 0 || obj->repowerleft > 0 || obj->cooldownleft > 0)
+    if (obj->invokeon > 0 || obj->invokeleft > 0 || obj->repowerleft > 0 || obj->cooldownleft > 0)
     {
         boolean addcomma = FALSE;
         Strcat(bp, " (");
-        if (obj->invokeon > 0)
+        if (obj->invokeon > 0 || obj->invokeleft > 0)
         {
-            Strcat(bp, "invoke on");
+            Strcat(bp, "invoked");
             addcomma = TRUE;
         }
         if (obj->repowerleft > 0)

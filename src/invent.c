@@ -2318,7 +2318,14 @@ register struct obj *objchn;
             if (!objchn->repowerleft)
                 reached_zero = TRUE;
         }
-        
+
+        if (objchn->invokeleft > 0)
+        {
+            objchn->invokeleft--;
+            if (!objchn->invokeleft)
+                reached_zero = TRUE;
+        }
+
         //If has contents, then reduce the cooldown of the contents, too
         if (Has_contents(objchn))
             reduce_item_cooldown(objchn->cobj);

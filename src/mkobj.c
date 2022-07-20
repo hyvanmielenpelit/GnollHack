@@ -1349,6 +1349,7 @@ unsigned long mkflags;
     otmp->mythic_suffix = 0;
     otmp->cooldownleft = 0;
     otmp->repowerleft = 0;
+    otmp->invokeleft = 0;
     otmp->blessed = 0;
     otmp->lamplit = 0;
     otmp->makingsound = 0;

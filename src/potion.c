@@ -2475,7 +2475,7 @@ do_illness: /* Pestilence's potion of healing effect */
                     pline1(dcbuf);
                     if (!is_silent(mon->data))
                         wake_nearto(tx, ty, mon->data->mlevel * 10);
-                    deduct_monster_hp(mon, adjust_damage(d(2, 6), &youmonst, mon, AD_CLRC, ADFLAGS_NONE));
+                    deduct_monster_hp(mon, adjust_damage(duration, &youmonst, mon, AD_CLRC, ADFLAGS_NONE));
                     /* should only be by you */
                     if (DEADMONSTER(mon))
                         killed(mon);
@@ -2490,7 +2490,7 @@ do_illness: /* Pestilence's potion of healing effect */
                         Sprintf(dcbuf, "%s looks healthier.", Monnam(mon));
                         pline1(dcbuf);
                     }
-                    deduct_monster_hp(mon, adjust_damage(-d(2, 6), &youmonst, mon, AD_CLRC, ADFLAGS_NONE));
+                    deduct_monster_hp(mon, adjust_damage(-duration, &youmonst, mon, AD_CLRC, ADFLAGS_NONE));
                     if (is_were(mon->data) && is_human(mon->data)
                         && !Protection_from_shape_changers)
                         new_were(mon); /* transform into beast */
@@ -2508,7 +2508,7 @@ do_illness: /* Pestilence's potion of healing effect */
                     Sprintf(dcbuf, "%s rusts.", Monnam(mon));
                     pline1(dcbuf);
                 }
-                deduct_monster_hp(mon, adjust_damage(d(1, 6), &youmonst, mon, AD_PHYS, ADFLAGS_NONE));
+                deduct_monster_hp(mon, adjust_damage(duration / 2, &youmonst, mon, AD_PHYS, ADFLAGS_NONE));
                 /* should only be by you */
                 if (DEADMONSTER(mon))
                     killed(mon);

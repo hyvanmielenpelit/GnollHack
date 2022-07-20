@@ -186,6 +186,7 @@ struct obj {
     short repowerleft;       /* artifact cooldown left before its invoke ability can be used again*/
     short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
     boolean invokeon;      /* the object's / artifact's invoked ability is on */
+    short invokeleft;      /* the counter for artifact's invoke ability remaining on */
     unsigned o_id_memory;  /* This is a memory object of this o_id */
     unsigned m_id_memory;  /* This is a memory object of this mimic m_id */
 

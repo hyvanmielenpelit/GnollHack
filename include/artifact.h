@@ -175,10 +175,12 @@ enum invoke_prop_types {
     ARTINVOKE_DEMON_SUMMON,
     ARTINVOKE_AIR_ELEMENTAL_SUMMON,
     ARTINVOKE_RECHARGE_ITSELF,
-    ARTINVOKE_TIME_STOP /* Keep last */
+    ARTINVOKE_INVOKE_WITH_TIMER,
+    ARTINVOKE_TIME_STOP,
+    MAX_ARTINVOKES /* this is NOT the number of artifact invokes*/
 };
 
-#define NUM_ARTINVOKES (ARTINVOKE_TIME_STOP - ARTINVOKE_TAMING + 1)
+#define NUM_ARTINVOKES (MAX_ARTINVOKES - ARTINVOKE_TAMING)
 
 extern const char* artifact_invoke_names[NUM_ARTINVOKES];
 extern NEARDATA struct artifact artilist[];

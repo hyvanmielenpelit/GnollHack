@@ -963,6 +963,7 @@ namespace GnollHackCommon
         public short repowerleft;       /* artifact cooldown left before its invoke ability can be used again*/
         public short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
         public byte invokeon;      /* the object's / artifact's invoked ability is on */
+        public short invokeleft;       /* counter for an artifact's item-specific invoke ability */
         public uint o_id_memory;  /* This is a memory object of this o_id */
         public uint m_id_memory;  /* This is a memory object of this mimic m_id */
 

@@ -604,7 +604,7 @@ CHARGEDWEAPON("sword of luckiness", "bright broadsword", /* Base item for Luck B
     PERMITTED_ALL, ALL_TARGETS),
 CHARGEDWEAPON("sword of nine lives stealing", "black-hilted long sword", // BASE ITEM FOR NINE LIVES STEALER
     0, 0, 1, CHARGED_1D8_1, RECHARGING_NINE_LIVES_STEALER, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 1350,
-    AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_CRITICAL_STRIKE | A1_CRITICAL_STRIKE_IS_DEADLY | A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK, A2_REQUIRES_AND_EXPENDS_A_CHARGE, 100,
+    AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_CRITICAL_STRIKE | A1_CRITICAL_STRIKE_IS_DEADLY | A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK, A2_REQUIRES_AND_EXPENDS_A_CHARGE | A2_REQUIRES_ARTIFACT_INVOKE_ON, 100,
     0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, CLR_BLACK, 16, OBJECT_SOUNDSET_SWORD,
     O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_FLOOR_TILE | O4_RARE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
@@ -2570,8 +2570,8 @@ POTION("poison",             "sapphire", "A potion containing dangerous poison."
     0, NO_POWER, NO_POWER, NO_POWER, 30,  50, 0, 0, 0, 0, 1, 10, 5, -5, 0, 0, 0, 0, 3, 0, 0, CLR_BLUE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 /* fixed description
  */
-POTION("water",                 "clear", None, 
-    0, NO_POWER, NO_POWER, NO_POWER, 80, 100, 0, 0, 0, 0, 2, 6, 0, 0, 1, 10, 0, 0, 0, 0, 0, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* MARKER FOR FIRST NON-SHUFFLED */
+POTION("water",                 "clear", "A flask of water.\nBlessed holy water causes damage to undead, demons, and lycanthropes.", 
+    0, NO_POWER, NO_POWER, NO_POWER, 80, 100, 2, 6, 0, 0, 2, 6, 0, 0, 1, 10, 0, 0, 0, 0, 0, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_EFFECT_FOR_BLESSED_ONLY | O5_EFFECT_IS_DAMAGE, O6_NONE, PERMITTED_ALL), /* MARKER FOR FIRST NON-SHUFFLED */
 POTION("dwarven mushroom brew","dark ruby", "A dwarven non-alcoholic drink that can cause confusion.",
     0, NO_POWER, NO_POWER, NO_POWER, 10,   5, 0, 0, 0, 0, 1, 4, 3, -3, 0, 0, 20, 0, 0, 0, 0, CLR_BLACK, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 POTION("urine",           "pale yellow", "A flask full of somebody's urine. It smells bad.", 
