@@ -250,7 +250,7 @@ NEARDATA struct artifact artilist[] = {
         AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED | AF_MONSTERS_CAN_TRACK_ARTIFACT | AF_ANGERS_DEMONS,
         AF2_NONE,
         SPFX_WIS_25 | SPFX_REFLECT, SPFX_HALRES, 0,
-        1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, PM_KNIGHT, NON_PM, 5000L,
+        1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NEUTRAL, NON_PM, NON_PM, 5000L,
         NO_COLOR, CLR_BRIGHT_GREEN, 0, OBJECT_SOUNDSET_NONE),
 
     /* Not associated with samurai to make it more useful in game play, as the samurai also have The Tsurugi of Muramasa as quest artifact  */
