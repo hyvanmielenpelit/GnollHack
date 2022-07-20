@@ -2306,7 +2306,7 @@ const char* recharge_texts[MAX_RECHARGING_TYPES] =
     "rechargeable as special magical tool",
     "rechargeable as camera",
     "rechargeable as an artifact bell",
-    "rechargeable up to five times",
+    "rechargeable up to nine times",
     "not rechargeable",
     "not rechargeable",
     "rechargeable up to seven times",
@@ -2314,6 +2314,7 @@ const char* recharge_texts[MAX_RECHARGING_TYPES] =
     "rechargeable up to five times",
     "rechargeable to fill up the jar",
     "rechargeable as a magic cube",
+    "rechargeable up to seven times",
 };
 
 const char *

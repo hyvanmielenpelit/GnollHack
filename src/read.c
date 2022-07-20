@@ -1079,24 +1079,19 @@ boolean verbose, dopopup;
             }
             break;
         }
+        case RECHARGING_RING_OF_CONFLICT:
+        case RECHARGING_WAND_OF_ORCUS:
+        case RECHARGING_HOWLING_FLAIL:
         case RECHARGING_NINE_LIVES_STEALER:
-            if (is_cursed) 
+        {
+            int rechargelim = rtype == RECHARGING_NINE_LIVES_STEALER ? 9 : 7;
+            if (is_cursed)
             {
                 strip_charges(obj, verbose, dopopup);
             }
-            else if (obj->recharged >= 5 || !rn2(max(2, 6 - obj->recharged)))
+            else if (obj->recharged >= rechargelim)
             {
-                const char* expltext = !obj->charges ? "suddenly" : "vibrates violently and";
-                int dmg = d(3, 9);
-                obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
-                if (verbose)
-                {
-                    play_sfx_sound(SFX_EXPLOSION_MAGICAL);
-                    Sprintf(effbuf, "%s %s explodes!", Yname2(obj), expltext);
-                    pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, effbuf, "Explosion", dopopup);
-                }
-                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "exploding sword", KILLED_BY_AN);
-                useup(obj);
+                goto not_chargable;
             }
             else if (obj->charges < lim)
             {
@@ -1128,6 +1123,7 @@ boolean verbose, dopopup;
                 goto not_chargable;
             }
             break;
+        }
         case RECHARGING_RING_OF_THREE_WISHES:
         case RECHARGING_LUCK_BLADE:
             /* Unchargeable */
@@ -1141,54 +1137,6 @@ boolean verbose, dopopup;
                 goto not_chargable;
             }
             break;
-        case RECHARGING_RING_OF_CONFLICT:
-        case RECHARGING_WAND_OF_ORCUS:
-        {
-            if (is_cursed)
-            {
-                strip_charges(obj, verbose, dopopup);
-                break;
-            }
-
-            if (obj->charges > lim)
-            {
-                if(verbose)
-                    play_sfx_sound(SFX_CHARGES_AT_MAXIMUM);
-                obj->charges = lim;
-                break;
-            }
-            else if (obj->charges < lim)
-            {
-                if (is_blessed)
-                {
-                    obj->charges = lim;
-                    if (verbose)
-                    {
-                        play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
-                        p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
-                        play_effect = TRUE;
-                    }
-                }
-                else if (obj->charges < lim)
-                {
-                    obj->charges += 2 + rnd(4);
-                    if (obj->charges > lim)
-                        obj->charges = lim;
-                    if (verbose)
-                    {
-                        play_sfx_sound(SFX_RECHARGE_SUCCESS);
-                        p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
-                        play_effect = TRUE;
-                    }
-                }
-            }
-            else
-            {
-                goto not_chargable;
-            }
-
-            break;
-        }
         case RECHARGING_HOLY_GRAIL:
         {
             const char* contents = (objects[obj->otyp].oc_name_known && OBJ_CONTENT_NAME(obj->otyp) != 0 ? OBJ_CONTENT_NAME(obj->otyp) : OBJ_CONTENT_DESC(obj->otyp) != 0 ? OBJ_CONTENT_DESC(obj->otyp) : "unknown contents");

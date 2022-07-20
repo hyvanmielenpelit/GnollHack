@@ -48,8 +48,8 @@
 #define AF_FAMOUS                              0x02000000UL  /* Name is always known */
 #define AF_INVOKE_REQUIRES_WORN                0x04000000UL  /* ditto */
 #define AF_INVOKE_EXPENDS_CHARGE               0x08000000UL  /* ditto */
-#define AF_INVOKE_MAY_DRAIN_ENERGY             0x10000000UL  /* ditto */
-#define AF_INVOKE_MAY_DRAIN_LIFE               0x20000000UL  /* ditto */
+/* free bit */
+/* free bit */
 #define AF_READABLE                            0x40000000UL  /* readable even if base item is not */
 #define AF_NO_WISH                             0x80000000UL  /* not wishable, not that for artifacts the base item's no wish does not apply */
 

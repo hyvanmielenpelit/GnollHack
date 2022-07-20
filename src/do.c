@@ -3770,20 +3770,6 @@ register struct obj* obj;
                 putstr(datawin, ATR_INDENT_AT_ASTR, txt);
             }
 
-            if (artilist[obj->oartifact].aflags & AF_INVOKE_MAY_DRAIN_ENERGY)
-            {
-                Sprintf(buf, "      * May drain energy upon invocation");
-                txt = buf;
-                putstr(datawin, ATR_INDENT_AT_ASTR, txt);
-            }
-
-            if (artilist[obj->oartifact].aflags & AF_INVOKE_MAY_DRAIN_LIFE)
-            {
-                Sprintf(buf, "      * May drain experience levels upon invocation");
-                txt = buf;
-                putstr(datawin, ATR_INDENT_AT_ASTR, txt);
-            }
-
             if (artilist[obj->oartifact].repower_time > 0)
             {
                 Sprintf(buf, "      * Repowers over %d round%s", artilist[obj->oartifact].repower_time, plur(artilist[obj->oartifact].repower_time));

@@ -2917,7 +2917,7 @@ struct obj *obj;
         case ARTINVOKE_TIME_STOP:
         {
             play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
-            timestop();
+            timestop(duration);
             break;
         }
         case ARTINVOKE_INVOKE_WITH_TIMER:
@@ -3016,20 +3016,6 @@ struct obj *obj;
 #endif
             break;
         }
-    }
-
-    if ((oart->aflags & AF_INVOKE_MAY_DRAIN_ENERGY) && !rn2(2))
-    {
-        u.uen = 0;
-        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s your energy!", Tobjnam(obj, "draw"));
-        context.botl = TRUE;
-    }
-
-    if ((oart->aflags & AF_INVOKE_MAY_DRAIN_LIFE) && !rn2(2))
-    {
-        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s your life energy!", Tobjnam(obj, "draw"));
-        losexp("life drainage");
-        context.botl = TRUE;
     }
 
     update_inventory();

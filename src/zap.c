@@ -4420,6 +4420,7 @@ register struct obj *obj;
     char archonbuf[BUFSZ];
     struct monst* mtmp = (struct monst*)0;
     struct obj* otmp = (struct obj*)0;
+    int duration = get_obj_spell_duration(obj);
 
     switch (obj->otyp)
     {
@@ -4524,7 +4525,7 @@ register struct obj *obj;
         break;
     case SPE_TIME_STOP:
         known = TRUE;
-        timestop();
+        timestop(duration);
         break;
     case SPE_ANIMATE_AIR:
         known = TRUE;
@@ -11696,11 +11697,12 @@ armageddon()
 
 
 void
-timestop()
+timestop(duration)
+int duration;
 {
     pline_ex(ATR_NONE, CLR_MSG_SPELL, "The flow of time seems to slow down!");
     context.time_stopped = TRUE;
-    begin_timestoptimer(d(objects[SPE_TIME_STOP].oc_spell_dur_dice, objects[SPE_TIME_STOP].oc_spell_dur_diesize) + objects[SPE_TIME_STOP].oc_spell_dur_plus);
+    begin_timestoptimer((long)duration);
 
 }
 
