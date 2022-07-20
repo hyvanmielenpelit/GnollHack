@@ -2872,7 +2872,7 @@ struct obj *otmp;
     if (otmp->oclass == FOOD_CLASS)
         return food;
 
-    if (otmp->oclass == GEM_CLASS && objects[otmp->otyp].oc_material == MAT_GLASS
+    if (otmp->oclass == GEM_CLASS && (objects[otmp->otyp].oc_material == MAT_GLASS || objects[otmp->otyp].oc_material == MAT_CRYSTAL)
         && otmp->dknown)
         makeknown(otmp->otyp);
     return foodwords[objects[otmp->otyp].oc_material];

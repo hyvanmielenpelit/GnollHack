@@ -2433,6 +2433,8 @@ int skill_id;
                 Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                 //Sprintf(cbuf, "%d%%", criticalhitpct);
                 Sprintf(dbuf, "%.1fx", dicemult);
+                int savingthrowmodifier = get_wand_skill_level_saving_throw_adjustment(lvl);
+                Sprintf(savingbuf, "%s%d", savingthrowmodifier >= 0 ? "+" : "", savingthrowmodifier);
             }
             else if (skill_id == P_MARTIAL_ARTS)
             {
@@ -2485,7 +2487,7 @@ int skill_id;
                 int successbonus = spell_skill_base_success_bonus(lvl);
                 int levelsuccessbonus = spell_skill_ulevel_success_bonus(lvl);
                 int costdiscount = (int)((spell_skill_mana_cost_multiplier(lvl) - 1.0) * 100.0);
-                int savingthrowmodifier = get_skill_level_saving_throw_adjustment(lvl);
+                int savingthrowmodifier = get_spell_skill_level_saving_throw_adjustment(lvl);
                 Sprintf(succbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
                 Sprintf(lvlsuccbuf, "%s%d%%", levelsuccessbonus >= 0 ? "+" : "", levelsuccessbonus);
                 Sprintf(discbuf, "%s%d%%", costdiscount >= 0 ? "+" : "", costdiscount);

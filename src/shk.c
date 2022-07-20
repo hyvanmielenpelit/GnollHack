@@ -2185,7 +2185,7 @@ unsigned oid;
     int res = 0, otyp = obj->otyp;
 
     if (!(obj->dknown && objects[otyp].oc_name_known)
-        && (obj->oclass != GEM_CLASS || objects[otyp].oc_material != MAT_GLASS)) {
+        && (obj->oclass != GEM_CLASS || (objects[otyp].oc_material != MAT_GLASS && objects[otyp].oc_material != MAT_CRYSTAL))) {
         res = ((oid % 4) == 0); /* id%4 ==0 -> +1, ==1..3 -> 0 */
     }
     return res;
@@ -2512,6 +2512,8 @@ register struct monst * mtmp;
         if (obj->oclass == GEM_CLASS) {
             /* different shop keepers give different prices */
             if (objects[obj->otyp].oc_material == MAT_GEMSTONE
+                || objects[obj->otyp].oc_material == MAT_HARD_CRYSTAL
+                || objects[obj->otyp].oc_material == MAT_CRYSTAL
                 || objects[obj->otyp].oc_material == MAT_GLASS) {
                 tmp = (obj->otyp % (6 - mtmp->m_id % 3));
                 tmp = (tmp + 3) * obj->quan;

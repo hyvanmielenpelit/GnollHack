@@ -530,9 +530,7 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
             * lo_p = SHIRT_OF_UNCONTROLLABLE_LAUGHTER, * hi_p = T_SHIRT;
         break;
     case WEAPON_CLASS:
-        if (otyp >= SWORD_OF_UNHOLY_DESECRATION && otyp <= NINE_LIVES_STEALER)
-            *lo_p = SWORD_OF_UNHOLY_DESECRATION, * hi_p = NINE_LIVES_STEALER;
-        else if (otyp >= STAFF_OF_THE_MAGI && otyp <= STAFF_OF_WITHERING)
+        if (otyp >= STAFF_OF_THE_MAGI && otyp <= STAFF_OF_WITHERING)
             *lo_p = STAFF_OF_THE_MAGI, * hi_p = STAFF_OF_WITHERING;
         break;
     case TOOL_CLASS:

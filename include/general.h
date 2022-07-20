@@ -243,17 +243,19 @@ enum obj_material_types {
     MAT_MITHRIL = 24,
     MAT_PLASTIC = 25,
     MAT_GLASS = 26,
-    MAT_GEMSTONE = 27,
-    MAT_MINERAL = 28,
-    MAT_MODRONITE = 29,
-    MAT_PLANARRIFT = 30,
-    MAT_FORCEFIELD = 31,
-    MAT_AIR = 32,
-    MAT_FIRE = 33,
-    MAT_ENERGY = 34,
-    MAT_INCORPOREAL = 35,
-    MAT_ICE = 36,
-    MAT_SOIL = 37,
+    MAT_CRYSTAL = 27, //Brittle like glass
+    MAT_HARD_CRYSTAL = 28, //Strong like gemstone
+    MAT_GEMSTONE = 29,
+    MAT_MINERAL = 30,
+    MAT_MODRONITE = 31,
+    MAT_PLANARRIFT = 32,
+    MAT_FORCEFIELD = 33,
+    MAT_AIR = 34,
+    MAT_FIRE = 35,
+    MAT_ENERGY = 36,
+    MAT_INCORPOREAL = 37,
+    MAT_ICE = 38,
+    MAT_SOIL = 39,
     MAX_MATERIAL_TYPES
 };
 

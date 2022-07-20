@@ -2033,7 +2033,7 @@ int spell;
         Sprintf(baseadjbuf, "%s%d", baseadj >= 0 ? "+" : "", baseadj);
 
         int skill_level = P_SKILL_LEVEL(objects[booktype].oc_skill);
-        int skilladj = get_skill_level_saving_throw_adjustment(skill_level);
+        int skilladj = get_spell_skill_level_saving_throw_adjustment(skill_level);
         char skill_level_namebuf[BUFSZ] = "";
         (void)skill_level_name(objects[booktype].oc_skill, skill_level_namebuf, FALSE);
         *skill_level_namebuf = lowc(*skill_level_namebuf);

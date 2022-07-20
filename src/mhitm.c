@@ -2310,10 +2310,8 @@ int amt, saving_throw_adjustment, tellstyle;
     int total_save_adj = saving_throw_adjustment;
     if (origobj && origmonst)
     {
-        int otyp = origobj->otyp;
-        int skill_level = get_spell_skill_level(otyp, origmonst, mon);
-        if (skill_level > P_UNSKILLED)
-            total_save_adj -= 2 * (skill_level - P_UNSKILLED);
+        //Override the input value in this special case
+        total_save_adj = get_saving_throw_adjustment(origobj, mon, origmonst);
     }
 
     if (resists_sleep(mon))

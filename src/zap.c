@@ -312,10 +312,7 @@ struct monst* targetmonst, *origmonst;
     int skill = P_NONE;
     if (otmp->oclass == SPBOOK_CLASS || otmp->oclass == WAND_CLASS || otmp->oclass == TOOL_CLASS)
     {
-        if(otmp->oclass == SPBOOK_CLASS)
-            skill = objects[otyp].oc_skill;
-        else 
-            skill = P_WAND;
+        skill = objects[otyp].oc_skill;
 
         int skill_level = P_UNSKILLED;
         if (origmonst == &youmonst)
@@ -331,19 +328,28 @@ struct monst* targetmonst, *origmonst;
             else
                 skill_level = P_BASIC;
         }
-        res += get_skill_level_saving_throw_adjustment(skill_level);
+        if(skill == P_WAND)
+            res += get_wand_skill_level_saving_throw_adjustment(skill_level);
+        else
+            res += get_spell_skill_level_saving_throw_adjustment(skill_level);
     }
 
     return res;
 }
 
 int
-get_skill_level_saving_throw_adjustment(skill_level)
+get_spell_skill_level_saving_throw_adjustment(skill_level)
 int skill_level;
 {
     return -3 * (max(0, skill_level - 1) - 1);
 }
 
+int
+get_wand_skill_level_saving_throw_adjustment(skill_level)
+int skill_level;
+{
+    return -2 * (max(0, skill_level - 1) - 0);
+}
 
 /* Routines for IMMEDIATE wands and spells. */
 /* bhitm: monster mtmp was hit by the effect of wand or spell otmp */
@@ -3274,6 +3280,10 @@ int okind;
         pm_index = PM_GLASS_GOLEM;
         material = "glassy ";
         break;
+    case MAT_CRYSTAL:
+        pm_index = PM_GLASS_GOLEM;
+        material = "crystal ";
+        break;
     case MAT_PAPER:
         pm_index = PM_PAPER_GOLEM;
         material = "paper ";
@@ -3281,6 +3291,10 @@ int okind;
     case MAT_GEMSTONE:
         pm_index = PM_GEMSTONE_GOLEM;
         material = "gemstone ";
+        break;
+    case MAT_HARD_CRYSTAL:
+        pm_index = PM_GEMSTONE_GOLEM;
+        material = "crystal ";
         break;
     case MAT_MODRONITE:
         pm_index = PM_MODRON_PENTADRONE;

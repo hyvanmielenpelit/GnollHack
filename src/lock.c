@@ -1674,6 +1674,9 @@ int x, y;
         disposition = "is mashed";
         break;
     case MAT_GLASS:
+    case MAT_CRYSTAL:
+    case MAT_GEMSTONE:
+    case MAT_HARD_CRYSTAL:
         disposition = "shatters";
         break;
     case MAT_WOOD:

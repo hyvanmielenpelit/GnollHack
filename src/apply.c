@@ -4111,7 +4111,7 @@ struct obj *tstone;
         else
         {
             /* either a ring or the touchstone was not effective */
-            if (objects[obj->otyp].oc_material == MAT_GLASS) 
+            if (objects[obj->otyp].oc_material == MAT_GLASS || objects[obj->otyp].oc_material == MAT_CRYSTAL)
             {
                 do_scratch = TRUE;
                 break;
