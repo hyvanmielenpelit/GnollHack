@@ -4194,7 +4194,7 @@ register struct obj* obj;
             {
                 Sprintf(buf, "  %s", bp);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DOUBLE_SPACE, txt);
             }
 
             if (!ebp)
