@@ -688,11 +688,22 @@ register struct obj *obj;
             switch (obj->otyp)
             {
             case POT_GAIN_ENERGY:
+            case POT_LESSER_REGENERATION:
+            case POT_LESSER_REJUVENATION:
+            case POT_SPEED:
             case POT_EXTRA_HEALING:
                 obj->otyp = POT_EXTRA_HEALING;
                 break;
-            case POT_GREATER_ENERGY:
+            case POT_REGENERATION:
+            case POT_REJUVENATION:
+            case POT_GREATER_SPEED:
             case POT_GREATER_HEALING:
+                obj->otyp = POT_GREATER_HEALING;
+                break;
+            case POT_GREATER_ENERGY:
+            case POT_GREATER_REGENERATION:
+            case POT_GREATER_REJUVENATION:
+            case POT_LIGHTNING_SPEED:
                 obj->otyp = POT_FULL_HEALING;
                 break;
             case POT_FULL_ENERGY:
@@ -759,14 +770,20 @@ register struct obj *obj;
             switch (obj->otyp)
             {
             case POT_EXTRA_HEALING:
+            case POT_REGENERATION:
+            case POT_REJUVENATION:
+            case POT_GREATER_SPEED:
+            case POT_GREATER_ENERGY:
                 obj->otyp = POT_GREATER_ENERGY;
                 break;
             case POT_GREATER_HEALING:
-            case POT_GREATER_ENERGY:
+            case POT_GREATER_REGENERATION:
+            case POT_GREATER_REJUVENATION:
+            case POT_LIGHTNING_SPEED:
+            case POT_FULL_ENERGY:
                 obj->otyp = POT_FULL_ENERGY;
                 break;
             case POT_FULL_HEALING:
-            case POT_FULL_ENERGY:
                 obj->otyp = POT_FULL_ENERGY;
                 break;
             default:
@@ -851,6 +868,31 @@ register struct obj *obj;
                 break;
             case POT_GAIN_LEVEL:
                 obj->otyp = POT_GAIN_LEVEL;
+                break;
+            case POT_LESSER_REGENERATION:
+                obj->otyp = POT_REGENERATION;
+                break;
+            case POT_REGENERATION:
+            case POT_GREATER_REGENERATION:
+                obj->otyp = POT_GREATER_REGENERATION;
+                break;
+            case POT_LESSER_REJUVENATION:
+                obj->otyp = POT_REJUVENATION;
+                break;
+            case POT_REJUVENATION:
+            case POT_GREATER_REJUVENATION:
+                obj->otyp = POT_GREATER_REJUVENATION;
+                break;
+            case POT_HEROISM:
+            case POT_SUPER_HEROISM:
+                obj->otyp = POT_SUPER_HEROISM;
+                break;
+            case POT_SPEED:
+                obj->otyp = POT_GREATER_SPEED;
+                break;
+            case POT_GREATER_SPEED:
+            case POT_LIGHTNING_SPEED:
+                obj->otyp = POT_LIGHTNING_SPEED;
                 break;
             default:
                 obj->otyp = POT_ENLIGHTENMENT;
