@@ -3376,15 +3376,18 @@ COIN("gold piece", 1000, MAT_GOLD, 1),
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
            nutr, color, soundset, \
            WEP_SLING, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4, flags5, flags6)
-#define ROCK(name,desc,itemdesc,power1,power2,power3,pflags,kn,prob,wt,gval, enchtype, sdice, sdam, splus, ldice, ldam, lplus, mgc,nutr,mohs,glass,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,stand_anim,enlarge,replacement) \
+#define GENERAL_ROCK(name,desc,itemdesc,power1,power2,power3,pflags,kn,prob,wt,gval, enchtype, sdice, sdam, splus, ldice, ldam, lplus, mgc,nutr,mohs,glass,color,height,soundset,subtyp,skill,wepsubtyp,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,stand_anim,enlarge,replacement) \
     OBJECT(OBJ(name, desc, None, None, itemdesc, height, stand_anim, enlarge, replacement),                                            \
            BITS(kn, 1, (enchtype > 0 ? 1 : 0), 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0,                           \
-                HARDGEM(mohs), 0, WEP_SLING_BULLET, -P_SLING, glass), \
+                HARDGEM(mohs), 0, subtyp, skill, glass), \
            power1, power2, power3, pflags, GEM_CLASS, prob, MULTIGEN_SINGLE, 0, wt, gval, \
            0, sdice, sdam, splus, ldice, ldam, lplus, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
            nutr, color, soundset, \
-           WEP_SLING, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4, flags5, flags6)
+           wepsubtyp, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4, flags5, flags6)
+#define ROCK(name,desc,itemdesc,power1,power2,power3,pflags,kn,prob,wt,gval, enchtype, sdice, sdam, splus, ldice, ldam, lplus, mgc,nutr,mohs,glass,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,stand_anim,enlarge,replacement) \
+    GENERAL_ROCK(name,desc,itemdesc,power1,power2,power3,pflags,kn,prob,wt,gval, enchtype, sdice, sdam, splus, ldice, ldam, lplus, mgc,nutr,mohs,glass,color,height,soundset,WEP_SLING_BULLET,-P_SLING,WEP_SLING,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,stand_anim,enlarge,replacement)
+
 GEM("dilithium crystal", "white",  2, 1, 2250, 15,  5, MAT_HARD_CRYSTAL, CLR_WHITE, 16, OBJECT_SOUNDSET_GEM, O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 GEM("diamond",           "white",  3, 1, 2000, 15,  10,MAT_GEMSTONE, CLR_WHITE, 16, OBJECT_SOUNDSET_GEM, O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 GEM("black pearl",         "black",3, 1, 1750, 15,  5, MAT_GEMSTONE, CLR_BLACK, 16, OBJECT_SOUNDSET_GEM, O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
@@ -3440,9 +3443,10 @@ ROCK("luckstone", "gray", "Confers good luck to the bearer. Cursed stone confers
     O2_GRAYSTONE, 
     O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
     NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
-ROCK("loadstone", "gray", "A cursed very heavy gray stone.\nCannot be dropped as long as it remains cursed.",
+GENERAL_ROCK("loadstone", "gray", "A cursed very heavy gray stone.\nCannot be dropped as long as it remains cursed.",
     NO_POWER, NO_POWER, NO_POWER, P1_NONE,
     0,  10, 500,  1, ENCHTYPE_NO_ENCHANTMENT, 1, 10, 0, 1, 10, 0, 1, 10, 6, MAT_MINERAL, CLR_GRAY, 24, OBJECT_SOUNDSET_STONE,
+    0, P_NONE, 0,
     O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED | O1_THROWN_WEAPON_ONLY,
     O2_GRAYSTONE | O2_CURSED_MAGIC_ITEM | O2_GENERATED_CURSED, 
     O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
@@ -3504,29 +3508,53 @@ ROCK("clay pebble", None, None,
     O4_NONE, O5_NONE, O6_NONE,
     PERMITTED_ALL,
     NO_ANIMATION, NO_ENLARGEMENT, CLAY_PEBBLE_REPLACEMENT),
-ROCK("nugget of iron ore", None, None,        //Ore startmarker
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 1,  10,  16,    50, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_STONE, O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
+GENERAL_ROCK("nugget of iron ore", None, None,        //Ore startmarker
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 
+    1,  10,  16,    50, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_STONE, 
+    0, P_NONE, 0,
+    O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
     NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
-ROCK("nugget of copper ore", None, None,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 1,   9,  16,   100, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_COPPER, HI_GOLD, 32, OBJECT_SOUNDSET_STONE, O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
+GENERAL_ROCK("nugget of copper ore", None, None,
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 
+    1,   9,  16,   100, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_COPPER, HI_GOLD, 32, OBJECT_SOUNDSET_STONE, 
+    0, P_NONE, 0,
+    O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
     NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
-ROCK("nugget of silver ore", None, None,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 1,   5,  16,   150, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_SILVER, HI_SILVER, 32, OBJECT_SOUNDSET_STONE, O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
+GENERAL_ROCK("nugget of silver ore", None, None,
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 
+    1,   5,  16,   150, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_SILVER, HI_SILVER, 32, OBJECT_SOUNDSET_STONE, 
+    0, P_NONE, 0,
+    O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
     NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
-ROCK("nugget of gold ore", None, None,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 1,   4,  16,   200, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_GOLD, HI_GOLD, 32, OBJECT_SOUNDSET_STONE, O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
+GENERAL_ROCK("nugget of gold ore", None, None,
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 
+    1,   4,  16,   200, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_GOLD, HI_GOLD, 32, OBJECT_SOUNDSET_STONE, 
+    0, P_NONE, 0,
+    O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
     NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
-ROCK("nugget of platinum ore", None, None,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 1,   3,  16,   250, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_PLATINUM, HI_SILVER, 32, OBJECT_SOUNDSET_STONE, O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
+GENERAL_ROCK("nugget of platinum ore", None, None,
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 
+    1,   3,  16,   250, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_PLATINUM, HI_SILVER, 32, OBJECT_SOUNDSET_STONE, 
+    0, P_NONE, 0,
+    O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
     NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
-ROCK("nugget of orichalcum ore", None, None,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 1,   2,  16,   400, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ORICHALCUM, HI_SILVER, 32, OBJECT_SOUNDSET_STONE, O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
+GENERAL_ROCK("nugget of orichalcum ore", None, None,
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 
+    1,   2,  16,   400, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ORICHALCUM, HI_SILVER, 32, OBJECT_SOUNDSET_STONE, 
+    0, P_NONE, 0,
+    O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
     NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
-ROCK("nugget of adamantium ore", None, None,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 1,   2,  16,   450, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ADAMANTIUM, HI_SILVER, 32, OBJECT_SOUNDSET_STONE, O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
+GENERAL_ROCK("nugget of adamantium ore", None, None,
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 
+    1,   2,  16,   450, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ADAMANTIUM, HI_SILVER, 32, OBJECT_SOUNDSET_STONE, 
+    0, P_NONE, 0,
+    O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
     NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
-ROCK("nugget of mithril ore", None, None,       //Ore endmarker
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 1,   2,  16,   350, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MITHRIL, HI_SILVER, 32, OBJECT_SOUNDSET_STONE, O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
+GENERAL_ROCK("nugget of mithril ore", None, None,       //Ore endmarker
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 
+    1,   2,  16,   350, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MITHRIL, HI_SILVER, 32, OBJECT_SOUNDSET_STONE, 
+    0, P_NONE, 0,
+    O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
     NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 
 

@@ -3844,8 +3844,7 @@ struct obj* obj;
                 else
                     pline("Nothing much happens.");
 
-                cancel_item(otmp);
-                update_inventory();
+                cancel_item(otmp, TRUE);
                 break;
             case WAN_DISINTEGRATION:
                 //Blessed enchant weapon for Black Blade

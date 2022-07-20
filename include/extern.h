@@ -4057,7 +4057,7 @@ E struct monst *FDECL(get_container_location, (struct obj * obj, int *, int *));
 E struct monst *FDECL(montraits, (struct obj *, coord *, BOOLEAN_P, int, unsigned long));
 E struct monst *FDECL(revive, (struct obj *, BOOLEAN_P, int, BOOLEAN_P));
 E int FDECL(revive_from_inventory, (struct monst *));
-E void FDECL(cancel_item, (struct obj *));
+E void FDECL(cancel_item, (struct obj *, BOOLEAN_P));
 E boolean FDECL(drain_item, (struct obj *, BOOLEAN_P));
 E struct obj *FDECL(poly_obj, (struct obj *, int));
 E boolean FDECL(obj_resists, (struct obj *, int, int));

@@ -1462,6 +1462,7 @@ register struct monst* origmonst;
             seemimic(mtmp);
     }
 
+    int duration = get_obj_spell_duration(otmp);
     switch (otmp->otyp) 
     {
     case WAN_STRIKING:
@@ -1527,14 +1528,14 @@ register struct monst* origmonst;
     case SPE_CANCELLATION:
     case WAN_DISJUNCTION:
     case SPE_DISJUNCTION:
-        (void) cancel_monst(mtmp, otmp, FALSE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
+        (void) cancel_monst(mtmp, otmp, FALSE, TRUE, FALSE, duration);
         break;
     case SPE_LOWER_MAGIC_RESISTANCE:
     case SPE_DIMINISH_MAGIC_RESISTANCE:
     case SPE_ABOLISH_MAGIC_RESISTANCE:
     case SPE_NEGATE_MAGIC_RESISTANCE:
     case SPE_FORBID_SUMMONING:
-        (void)add_temporary_property(mtmp, otmp, FALSE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
+        (void)add_temporary_property(mtmp, otmp, FALSE, TRUE, FALSE, duration);
         break;
     }
     if (reveal_invis) {

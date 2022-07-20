@@ -1386,17 +1386,24 @@ register struct obj* obj;
     }
 
     /* Skill */
-    if (objects[otyp].oc_skill != P_NONE)
+    if (stats_known && objects[otyp].oc_skill != P_NONE)
     {
-        strcpy(buf2, weapon_skill_name(obj));
-        *buf2 = highc(*buf2);
-        Sprintf(buf, "Skill:                  %s", buf2);
+        Strcpy(buf2, weapon_skill_name(obj));
+        if (objects[otyp].oc_skill < 0)
+        {
+            Sprintf(buf, "Ammunition for:         Weapons using %s skill", buf2);
+        }
+        else
+        {
+            *buf2 = highc(*buf2);
+            Sprintf(buf, "Skill:                  %s", buf2);
+        }
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     boolean weapon_stats_shown = FALSE;
-    if (!uses_spell_flags && (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj)) && stats_known) || objects[otyp].oc_class == GEM_CLASS))
+    if (!uses_spell_flags && (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj) || objects[otyp].oc_class == GEM_CLASS)) && stats_known))
     {
         weapon_stats_shown = TRUE;
 

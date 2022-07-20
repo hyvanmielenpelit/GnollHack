@@ -2994,8 +2994,9 @@ struct monst *mon;
 
 /* cancel obj, possibly carried by you or a monster */
 void
-cancel_item(obj)
+cancel_item(obj, update_inv)
 register struct obj *obj;
+boolean update_inv;
 {
     int otyp = obj->otyp;
 
@@ -3059,7 +3060,7 @@ register struct obj *obj;
     updatemaxen();
     updatemaxhp();
 
-    if (obj->where == OBJ_INVENT)
+    if (update_inv && obj->where == OBJ_INVENT)
         update_inventory();
 
     return;
@@ -4031,7 +4032,7 @@ struct monst* origmonst;
         case WAN_DISJUNCTION:
         case SPE_DISJUNCTION:
             res = 1;
-            cancel_item(obj);
+            cancel_item(obj, TRUE);
 #ifdef TEXTCOLOR
             newsym(obj->ox, obj->oy); /* might change color */
 #endif
@@ -6989,18 +6990,17 @@ int duration;
 
     if (self_cancel)
     {
-#if 0
         /* 1st cancel inventory */
         struct obj* otmp;
         for (otmp = (youdefend ? invent : mdef->minvent); otmp;
              otmp = otmp->nobj)
-            cancel_item(otmp);
+            cancel_item(otmp, FALSE);
         if (youdefend) {
             context.botl = 1; /* potential AC change */
             find_ac();
             find_mc();
+            update_inventory();
         }
-#endif
     }
 
     /* now handle special cases */
