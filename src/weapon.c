@@ -2489,7 +2489,7 @@ int skill_id;
                 Sprintf(succbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
                 Sprintf(lvlsuccbuf, "%s%d%%", levelsuccessbonus >= 0 ? "+" : "", levelsuccessbonus);
                 Sprintf(discbuf, "%s%d%%", costdiscount >= 0 ? "+" : "", costdiscount);
-                Sprintf(savingbuf, "%s%d%%", savingthrowmodifier >= 0 ? "+" : "", savingthrowmodifier);
+                Sprintf(savingbuf, "%s%d", savingthrowmodifier >= 0 ? "+" : "", savingthrowmodifier);
             }
             else if (skill_id == P_DISARM_TRAP)
             {
