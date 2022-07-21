@@ -3484,6 +3484,9 @@ sortspells(VOID_ARGS)
             spl_orderindx[i] = i;
     }
 
+    if (flags.spellorder == SORTBY_NONE)
+        return;
+
     /* Find the number of spells */
     for (n = 0; n < MAXSPELL && spellid(n) != NO_SPELL; ++n)
         continue;
@@ -3505,9 +3508,6 @@ sortspells(VOID_ARGS)
         flags.spellorder = SORTBY_NONE; /* reset */
         return;
     }
-
-    if (flags.spellorder == SORTBY_NONE)
-        return;
 
     /* usual case, sort the index rather than the spells themselves */
     qsort((genericptr_t)spl_orderindx, n, sizeof spl_orderindx[0], spell_cmp);
