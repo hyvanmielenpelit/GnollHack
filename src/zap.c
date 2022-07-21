@@ -4723,6 +4723,12 @@ register struct obj *obj;
         mtmp = summoncreature(obj->otyp, PM_ELDER_TREANT, "%s appears before you.", MM_NEUTRAL_SUMMON_ANIMATION | MM_NO_MONSTER_INVENTORY,
             SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_PACIFIST | SUMMONCREATURE_FLAGS_FAITHFUL);
         break;
+    case SPE_SUMMON_GIANT_ANT:
+    case SPE_SUMMON_SOLDIER_ANT:
+    case SPE_SUMMON_DIRE_WOLF:
+    case SPE_SUMMON_BISON:
+    case SPE_SUMMON_PEGASUS:
+    case SPE_SUMMON_ROC:
     case SPE_SUMMON_GRIZZLY_BEAR:
     case SPE_SUMMON_OWLBEAR:
     case SPE_SUMMON_OWLBEAR_PATRIARCH:
@@ -11791,6 +11797,18 @@ int otyp;
         return PM_RAVEN;
     case SPE_SUMMON_WINTER_WOLF:
         return PM_WINTER_WOLF;
+    case SPE_SUMMON_DIRE_WOLF:
+        return PM_DIREWOLF;
+    case SPE_SUMMON_GIANT_ANT:
+        return PM_GIANT_ANT;
+    case SPE_SUMMON_SOLDIER_ANT:
+        return PM_SOLDIER_ANT;
+    case SPE_SUMMON_BISON:
+        return PM_BISON;
+    case SPE_SUMMON_PEGASUS:
+        return PM_PEGASUS;
+    case SPE_SUMMON_ROC:
+        return PM_ROC;
     default:
         break;
     }

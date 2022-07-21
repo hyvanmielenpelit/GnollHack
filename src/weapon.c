@@ -1841,20 +1841,20 @@ int skill, lvl;
       *  expert -> master        2  5
       *  master -> grand master  3  5
       */
-    if (skill == P_BARE_HANDED_COMBAT)
-        return max(1, (tmp + 1) / 2);
 
-    if (skill == P_MARTIAL_ARTS)
+    switch (skill)
+    {
+    case P_BARE_HANDED_COMBAT:
+    case P_TWO_WEAPON_COMBAT:
+    case P_SHIELD:
+    case P_DODGE:
+        return max(1, (tmp + 1) / 2);
+    case P_MARTIAL_ARTS:
         return max(1, (tmp + 6) / 2);
-
-    if (skill == P_TWO_WEAPON_COMBAT)
-        return max(1, (tmp + 1) / 2);
-
-    //if (skill == P_WAND)
-    //    return max(1, (tmp + 1) / 2);
-
-    //    if (skill <= P_LAST_WEAPON || skill == P_TWO_WEAPON_COMBAT)
-    //    return tmp;
+    case P_WAND:
+    default:
+        return max(1, tmp);
+    }
 
     return max(1, tmp);
 
