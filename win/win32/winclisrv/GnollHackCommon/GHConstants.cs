@@ -1283,7 +1283,7 @@ namespace GnollHackCommon
         public const int MaxGHWindows = 32;
         public const int MapCols = 80;
         public const int MapRows = 21;
-        public const int DefaultAnimationInterval = 25;
+        public const int DelayOutputDurationInMilliseconds = 50;
         public const int MaxMessageHistoryLength = 256;
         public const float MoveDistanceThreshold = 25.0f;
         public const long MoveOrPressTimeThreshold = 200; /* Milliseconds */

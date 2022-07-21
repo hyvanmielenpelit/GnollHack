@@ -600,7 +600,7 @@ namespace GnollHackClient
         {
             if (ClientCallback_UIHasInput() > 0)
                 return;
-            Thread.Sleep(2 * GHConstants.DefaultAnimationInterval);
+            Thread.Sleep(GHConstants.DelayOutputDurationInMilliseconds);
         }
         public void ClientCallback_DelayOutputMilliseconds(int milliseconds)
         {

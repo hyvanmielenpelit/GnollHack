@@ -2168,7 +2168,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         /* Scale object to be of oc_tile_floor_height height */
                         if ((is_obj_missile || is_object) && obj_scaling_factor != 1.0)
                         {
-                            double fulltileheight = (double)GetNHApp()->mapTile_Y / (is_object && !full_sized_item ? 2.0 : 1.0);
+                            double fulltileheight = (double)GetNHApp()->mapTile_Y / ((is_object && !full_sized_item) || move_obj_to_middle ? 2.0 : 1.0);
                             double scaled_height = (obj_scaling_factor * fulltileheight);
                             double scaled_width = (obj_scaling_factor * (double)GetNHApp()->mapTile_X);
 

@@ -840,7 +840,6 @@ namespace GnollHackClient.Pages.Game
         }
 
         private bool StartingPositionsSet { get; set; }
-        private bool _useUnifromAnimationInterval = false;
         private int _subCounter = 0;
         public long GetAnimationCounterIncrement()
         {
@@ -874,21 +873,6 @@ namespace GnollHackClient.Pages.Game
                     counter_increment = 0; /* otherwise 1 */
                 _subCounter++;
                 _subCounter = _subCounter % (subCounterMax + 1);
-            }
-            if (_useUnifromAnimationInterval)
-            {
-                _animationStopwatch.Stop();
-                TimeSpan elapsed = _animationStopwatch.Elapsed;
-                long intervals_elapsed = (long)(elapsed.TotalMilliseconds / (double)GHConstants.DefaultAnimationInterval);
-                long prev_intervals_elapsed = (long)(_previousTimeSpan.TotalMilliseconds / (double)GHConstants.DefaultAnimationInterval);
-
-                counter_increment = Math.Max(1, intervals_elapsed - prev_intervals_elapsed);
-                if (intervals_elapsed >= 100000000)
-                {
-                    _animationStopwatch.Reset();
-                }
-                _previousTimeSpan = elapsed;
-                _animationStopwatch.Start();
             }
             return counter_increment;
         }
@@ -2208,8 +2192,22 @@ namespace GnollHackClient.Pages.Game
                 _menuRefresh = true;
             }
 
-            MenuGrid.IsVisible = true;
-            MainGrid.IsVisible = false;
+            if (App.IsiOS)
+            {
+                MenuGrid.ForceLayout();
+                MenuGrid.ResolveLayoutChanges();
+                Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
+                {
+                    MenuGrid.IsVisible = true;
+                    MainGrid.IsVisible = false;
+                    return false;
+                });
+            }
+            else
+            {
+                MenuGrid.IsVisible = true;
+                MainGrid.IsVisible = false;
+            }
 
             if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 canvasView.AbortAnimation("GeneralAnimationCounter");
