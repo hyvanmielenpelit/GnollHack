@@ -3296,6 +3296,7 @@ E uchar FDECL(is_obj_component_for, (int, struct obj*));
 E void NDECL(dump_spells);
 E void NDECL(sortspells);
 #endif
+E void FDECL(print_spell_level_text, (char*, int, BOOLEAN_P, UCHAR_P));
 
 /* ### steal.c ### */
 

@@ -425,8 +425,17 @@ unsigned long rndflags;
     int used_dif = mowner ? mowner->m_lev : leveldif;
     int max_spell_level = max(0, min(12, (used_dif - 1) / 2 + 3));
     int min_spell_level = max(-1, min(6, used_dif / 5 - 2));
+
+    int nonrestrschools = 0;
+    int school_id;
+    for (school_id = P_FIRST_SPELL; school_id <= P_LAST_SPELL; school_id++)
+    {
+        if (!P_RESTRICTED(school_id))
+            nonrestrschools++;;
+    }
+
     unsigned long knownspellschools = mowner ? mon_known_spell_schools(mowner) : 0UL;
-    if (!mowner && !rn2(2))
+    if (!nonrestrschools || (!mowner && !rn2(2)))
         knownspellschools = 0xFFFFFFFFUL;
 
     boolean flex_first_school = rn2(2);
@@ -435,7 +444,8 @@ unsigned long rndflags;
     int cnt = 0;
     for (round = 0; round < 5; round++)
     {
-        memset(&acceptable, 0, sizeof acceptable);
+        size_t siz = sizeof acceptable;
+        memset(&acceptable, 0, siz);
         cnt = 0;
         int i;
         for (i = FIRST_SPELL; i < FIRST_SPELL + MAXSPELL; i++)
@@ -446,7 +456,6 @@ unsigned long rndflags;
                 && (!P_RESTRICTED(objects[i].oc_skill) || mon_knows_spell_school || round >= (flex_first_school ? 1 : 2)))
             {
                 boolean alreadyknown = FALSE;
-                int j;
                 if (round < 4)
                 {
                     alreadyknown = already_learnt_spell_type(i);

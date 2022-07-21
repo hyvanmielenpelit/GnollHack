@@ -1182,6 +1182,12 @@ register struct obj* obj;
             Sprintf(eos(buf), " %s", aobjtypebuf);
         }
     }
+    if (stats_known && obj->oclass == SPBOOK_CLASS && !(objects[otyp].oc_flags & O1_NON_SPELL_SPELLBOOK))
+    {
+        print_spell_level_text(buf2, otyp, TRUE, TRUE);
+        Sprintf(eos(buf), " - %s", buf2);
+    }
+
     txt = buf;
     putstr(datawin, ATR_SUBTITLE, txt);
 
@@ -1400,6 +1406,13 @@ register struct obj* obj;
         }
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_COLON, txt);
+    }
+
+    if (stats_known && obj->oclass == SPBOOK_CLASS && !(objects[otyp].oc_flags & O1_NON_SPELL_SPELLBOOK))
+    {
+        print_spell_level_text(buf2, otyp, FALSE, TRUE);
+        Sprintf(buf, "Level:                  %s", buf2);
+        putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
     boolean weapon_stats_shown = FALSE;
