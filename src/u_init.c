@@ -2221,6 +2221,7 @@ boolean is_past_participle;
 boolean
 is_known_spell_school(knownspellschools, skill_id)
 unsigned long knownspellschools;
+int skill_id;
 {
     if (skill_id < P_FIRST_SPELL || skill_id > P_LAST_SPELL)
         return FALSE;

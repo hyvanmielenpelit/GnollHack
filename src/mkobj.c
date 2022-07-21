@@ -418,9 +418,6 @@ random_spellbook_objectid(mowner, rndflags)
 struct monst* mowner;
 unsigned long rndflags;
 {
-    int randomizationclass = rn2(4);
-    boolean unacceptable = FALSE;
-    boolean breakforloop = TRUE;
     int leveldif = level_difficulty();
     int used_dif = mowner ? mowner->m_lev : leveldif;
     int max_spell_level = max(0, min(12, (used_dif - 1) / 2 + 3));
