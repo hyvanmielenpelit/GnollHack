@@ -1667,20 +1667,30 @@ struct save_game_data* saved;
             boolean has_lvl_name = FALSE;
             if (*saved[k].gamestats.level_name)
             {
-                const char* conjunction = "in";
-                if (strstr(saved[k].gamestats.level_name, "Level"))
-                    conjunction = "of";
-                const char* addedthe = "";
-                if (strncmpi(lvlbuf, "the ", 4) && strstr(saved[k].gamestats.level_name, "Plane"))
-                    addedthe = "the ";
+                char namedlvlbuf[BUFSZ];
+                Strcpy(namedlvlbuf, saved[k].gamestats.level_name);
 
-                Sprintf(lvlbuf, "%s%s %s ", addedthe, saved[k].gamestats.level_name, conjunction);
-                if (!strncmp(lvlbuf, "The ", 4))
-                    *lvlbuf = lowc(*lvlbuf);
+                const char* lvlconjunction = "in";
+                const char* dgnconjunction = "in";
+                boolean lvl_has_level = strstr(saved[k].gamestats.level_name, "Level") != 0;
+                boolean lvl_has_plane = strstr(saved[k].gamestats.level_name, "Plane") != 0;
+                boolean lvl_has_island = strstr(saved[k].gamestats.level_name, "Island") != 0;
+                if (lvl_has_level)
+                    dgnconjunction = "of";
+                if (lvl_has_level || lvl_has_plane || lvl_has_island)
+                    lvlconjunction = "on";
+
+                const char* addedthe = "";
+                if (strncmpi(namedlvlbuf, "the ", 4) && lvl_has_plane)
+                    addedthe = "the ";
+                if (!strncmp(namedlvlbuf, "The ", 4))
+                    *namedlvlbuf = lowc(*namedlvlbuf);
+
+                Sprintf(lvlbuf, "%s %s%s %s ", lvlconjunction, addedthe, namedlvlbuf, dgnconjunction);
                 has_lvl_name = TRUE;
             }
             else
-                Sprintf(lvlbuf, "level %d of ", saved[k].gamestats.dlevel);
+                Sprintf(lvlbuf, "on level %d of ", saved[k].gamestats.dlevel);
 
             if (!has_lvl_name && saved[k].gamestats.depth != (schar)saved[k].gamestats.dlevel)
                 Sprintf(totallevelbuf, ", which is dungeon level %d", saved[k].gamestats.depth);
@@ -1694,7 +1704,7 @@ struct save_game_data* saved;
 
             Sprintf(namebuf, "%s", saved[k].playername);
             Sprintf(characterbuf, "%sLevel %d %s %s%s %s", prefix, saved[k].gamestats.ulevel, alignbuf, genderwithspacebuf, racebuf, rolebuf);
-            Sprintf(adventuringbuf, "%sAdventuring on %s%s%s", prefix, lvlbuf, dgnbuf, totallevelbuf);
+            Sprintf(adventuringbuf, "%sAdventuring %s%s%s", prefix, lvlbuf, dgnbuf, totallevelbuf);
             Sprintf(playingbuf, "%sPlaying at %s difficulty in %s mode for %ld turns", prefix, get_game_difficulty_text(saved[k].gamestats.game_difficulty),
                 get_game_mode_text_core(saved[k].gamestats.debug_mode, saved[k].gamestats.explore_mode, saved[k].gamestats.modern_mode, saved[k].gamestats.casual_mode, TRUE),
                 saved[k].gamestats.umoves);

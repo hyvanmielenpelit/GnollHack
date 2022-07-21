@@ -6715,8 +6715,8 @@ struct sp_coder* coder;
     dy2 = (xchar)SP_REGION_Y2(OV_i(area));
     typ = (int)OV_i(rtype);
 
-    get_location(&dx1, &dy1, ANY_LOC, (struct mkroom*)0);
-    get_location(&dx2, &dy2, ANY_LOC, (struct mkroom*)0);
+    get_location(&dx1, &dy1, ANY_LOC, coder->croom);
+    get_location(&dx2, &dy2, ANY_LOC, coder->croom);
 
     create_simple_permanent_region(dx1, dy1, dx2, dy2, typ);
 

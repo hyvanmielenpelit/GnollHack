@@ -788,7 +788,7 @@ init_dungeons()
     if (!check_version(&vers_info, DUNGEON_FILE, TRUE))
     {
 #ifdef GNH_MOBILE
-        impossible("Dungeon description not valid. Check that GnollHack Android files are up-to-date.");
+        impossible("Dungeon description not valid. Check that the files of your GnollHack Cross-Platform Mobile port are up-to-date.");
 #else
         panic("Dungeon description not valid.");
         return;

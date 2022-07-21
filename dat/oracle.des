@@ -8,6 +8,7 @@
 #
 
 LEVEL: "oracle"
+NAMING:"Large room with centaur statues",name_revealed_seeing_monster, montype:"Oracle"
 
 ROOM: "ordinary" , lit, (3,3), (center,center), (11,9) {
   OBJECT:('`',"statue"),(0,0),montype:'C',1
@@ -30,8 +31,9 @@ ROOM: "ordinary" , lit, (3,3), (center,center), (11,9) {
 
   MONSTER: random, random
   MONSTER: random, random
-
+  SPECIAL_REGION:(00,00,10,08),region_special_level_seen
 }
+
 
 ROOM: "ordinary" , random, random, random, random {
   STAIR: random, up
