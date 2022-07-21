@@ -569,6 +569,9 @@ learn(VOID_ARGS)
 
             incr_spell_nknow(i, 1);
             book->spestudied++;
+
+            sortspells();
+
             play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
             You_ex(ATR_NONE, CLR_MSG_POSITIVE, i > 0 ? "add %s to your repertoire." : "learn %s.", splname);
             learnsuccess = TRUE;
@@ -3298,6 +3301,7 @@ int what;
             spl_book[i].sp_skillchance = (int)objects[SPE_TELEPORT_MONSTER].oc_spell_skill_chance;
             spl_book[i].sp_amount = -1; //Infinite??
             spl_book[i].sp_know = SPELL_IS_KEEN;
+            sortspells();
             return REMOVESPELL; /* operation needed to reverse */
         }
     } else { /* spellid(i) == SPE_TELEPORT_MONSTER */
@@ -3311,6 +3315,7 @@ int what;
             save_tport.savespell = spl_book[i];
             save_tport.tport_indx = i;
             spl_book[i].sp_id = NO_SPELL;
+            sortspells();
             return UNHIDESPELL; /* operation needed to reverse */
         }
     }
@@ -3471,12 +3476,23 @@ sortspells(VOID_ARGS)
 
     if (flags.spellorder == SORTBY_CURRENT)
         return;
+
+    if (flags.spellorder != SORTRETAINORDER)
+    {
+        /* Initialize sort order */
+        for (i = 0; i < MAXSPELL; i++)
+            spl_orderindx[i] = i;
+    }
+
+    /* Find the number of spells */
     for (n = 0; n < MAXSPELL && spellid(n) != NO_SPELL; ++n)
         continue;
+
     if (n < 2)
         return; /* not enough entries to need sorting */
 
-    if (flags.spellorder == SORTRETAINORDER) {
+    if (flags.spellorder == SORTRETAINORDER) 
+    {
         struct spell tmp_book[MAXSPELL];
 
         /* sort spl_book[] rather than spl_orderindx[];
@@ -3489,9 +3505,6 @@ sortspells(VOID_ARGS)
         flags.spellorder = SORTBY_NONE; /* reset */
         return;
     }
-
-    for (i = 0; i < MAXSPELL; i++)
-        spl_orderindx[i] = i;
 
     if (flags.spellorder == SORTBY_NONE)
         return;
@@ -3584,6 +3597,8 @@ dovspell()
                 spl_tmp = spl_book[splnum];
                 spl_book[splnum] = spl_book[othnum];
                 spl_book[othnum] = spl_tmp;
+
+                sortspells();
             }
         }
     }
@@ -4587,6 +4602,7 @@ int spell;
                     break;
             }
         }
+        sortspells();
         char buf[BUFSZ] = "";
         Sprintf(buf, "You removed \'%s\' from your memory permanently.", spellnamebuf);
         pline1(buf);
