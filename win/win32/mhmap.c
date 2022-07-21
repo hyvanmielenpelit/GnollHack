@@ -2077,7 +2077,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 /* For all normal items, we use only lower part of the tile */
                                 if (otmp_round && (has_floor_tile || is_height_clipping) && !showing_detection && !Hallucination)
                                 {
-                                    source_top_added = has_floor_tile ? (int)tileHeight / 2 : 0;
+                                    source_top_added = has_floor_tile ? 0 : (int)tileHeight / 2;
                                     if (otmp_round && obj_height > 0 && obj_height < used_item_height && !showing_detection)
                                     {
                                         base_dest_added_from_source = used_item_height - obj_height;
