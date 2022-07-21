@@ -146,6 +146,7 @@ extern NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TI
 #define GLYPH_TILE_FLAG_HALF_SIZED_TILE         0x10 /* General flag to check whether the tile uses only lower half */
 #define GLYPH_TILE_FLAG_HAS_FLOOR_TILE          0x20
 #define GLYPH_TILE_FLAG_TWO_WIDE_CENTERED_TILE  0x40 /* General flag to check whether a tile with 3 tiles wide enlargement uses only middle tile and half of each side tile */
+#define GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING      0x80
 
 #define ZAP_INDEX_WITH_FIRST_TILE 48
 

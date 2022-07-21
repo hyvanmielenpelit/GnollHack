@@ -939,7 +939,7 @@ struct objclass {
 #define O4_INAPPROPRIATE_CHARACTERS_CANT_HANDLE            0x00010000UL
 #define O4_NON_MYTHIC                                      0x00020000UL
 #define O4_DOUBLE_MYTHIC_CHANCE                            0x00040000UL
-/* free bit */
+#define O4_HEIGHT_IS_CLIPPING                              0x00080000UL    /* Item graphics get clipped rather than scaled by height */
 #define O4_CONTAINER_CONTENTS_VISIBLE                      0x00100000UL    /* Can always see the contents */
 #define O4_CONTAINER_CONTENTS_USE_ON                       0x00200000UL    /* Contents are put "on" the container rather than "in" the container  */
 #define O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS        0x00400000UL    /* Only books and scrolls fit in */

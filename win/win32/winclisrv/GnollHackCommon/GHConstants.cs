@@ -294,6 +294,7 @@ namespace GnollHackCommon
         GLYPH_TILE_FLAG_HALF_SIZED_TILE = 0x10,
         GLYPH_TILE_FLAG_HAS_FLOOR_TILE = 0x20,
         GLYPH_TILE_FLAG_TWO_WIDE_CENTERED = 0x40,
+        GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING = 0x80,
     }
 
     [StructLayout(LayoutKind.Sequential)]

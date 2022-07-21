@@ -387,8 +387,10 @@ uchar* tilemapflags;
                 first_scroll_found = TRUE;
                 uchar fullsizedflag = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : 0;
                 fullsizedflag |= (objects[i].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
+                fullsizedflag |= (objects[i].oc_flags4 & O4_HEIGHT_IS_CLIPPING) ? GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING : 0;
                 uchar gtflags = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                 gtflags |= (objects[i].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
+                gtflags |= (objects[i].oc_flags4 & O4_HEIGHT_IS_CLIPPING) ? GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING : 0;
 
                 /* First, generic scroll tile */
                 if (process_style == 0)
@@ -595,8 +597,10 @@ uchar* tilemapflags;
                     {
                         fullsizedflag = (objects[SCR_MAIL].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : 0;
                         fullsizedflag |= (objects[SCR_MAIL].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
+                        fullsizedflag |= (objects[SCR_MAIL].oc_flags4 & O4_HEIGHT_IS_CLIPPING) ? GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING : 0;
                         gtflags = (objects[SCR_MAIL].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                         gtflags |= (objects[SCR_MAIL].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
+                        gtflags |= (objects[SCR_MAIL].oc_flags4 & O4_HEIGHT_IS_CLIPPING) ? GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING : 0;
 
                         /* Main tile */
                         tilemaparray[SCR_MAIL + glyph_offset] = tile_count;
@@ -654,8 +658,10 @@ uchar* tilemapflags;
             /* Full-sized item and other flags */
             uchar fullsizedflag = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : 0;
             fullsizedflag |= (objects[i].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
+            fullsizedflag |= (objects[i].oc_flags4 & O4_HEIGHT_IS_CLIPPING) ? GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING : 0;
             uchar gtflags = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
             gtflags |= (objects[i].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
+            gtflags |= (objects[i].oc_flags4 & O4_HEIGHT_IS_CLIPPING) ? GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING : 0;
 
             if (process_style == 0)
             {
@@ -885,8 +891,10 @@ uchar* tilemapflags;
 
             uchar fullsizedflag = (artilist[i].aflags2 & AF2_FULL_SIZED_ITEM) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : 0;
             fullsizedflag |= (artilist[i].aflags2 & AF2_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
+            fullsizedflag |= (artilist[i].aflags2 & AF2_HEIGHT_IS_CLIPPING) ? GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING : 0;
             uchar gtflags = (artilist[i].aflags2 & AF2_FULL_SIZED_ITEM) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
             gtflags |= (artilist[i].aflags2 & AF2_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
+            gtflags |= (artilist[i].aflags2 & AF2_HEIGHT_IS_CLIPPING) ? GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING : 0;
 
             if (process_style == 0)
             {

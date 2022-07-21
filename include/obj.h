@@ -629,6 +629,11 @@ struct obj {
 
 #define has_obj_floor_tile(o) has_otyp_floor_tile((o)->otyp)     
 
+#define has_otyp_height_clipping(otyp)                                 \
+    ((objects[(otyp)].oc_flags4 & O4_HEIGHT_IS_CLIPPING) != 0)
+
+#define has_obj_height_clipping(o) has_otyp_height_clipping((o)->otyp)     
+
 #define is_otyp_mbag_destroying(otyp)                                 \
     ((objects[(otyp)].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0)
 

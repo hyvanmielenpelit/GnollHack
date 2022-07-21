@@ -62,10 +62,14 @@
 #define AF2_NAME_IS_PROPER_NAME                0x00000020UL  /* Do not use 'The' */
 #define AF2_INDESTRUCTIBLE                     0x00000040UL  
 #define AF2_DUAL_RUNESWORD_BONUS               0x00000080UL  
+#define AF2_HEIGHT_IS_CLIPPING                 0x00000100UL  /* Height clips rather than scales the item graphics */
 
 
 #define has_artifact_floor_tile(artifact_idx) \
     ((artilist[(artifact_idx)].aflags2 & AF2_FLOOR_TILE) != 0)
+
+#define has_artifact_height_clipping(artifact_idx) \
+    ((artilist[(artifact_idx)].aflags2 & AF2_HEIGHT_IS_CLIPPING) != 0)
 
 #define has_artifact_proper_name(artifact_idx) \
     ((artilist[(artifact_idx)].aflags2 & AF2_NAME_IS_PROPER_NAME) != 0)

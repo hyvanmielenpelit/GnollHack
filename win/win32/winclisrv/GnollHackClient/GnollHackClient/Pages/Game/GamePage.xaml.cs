@@ -3477,12 +3477,14 @@ namespace GnollHackClient.Pages.Game
                                                                         bool tileflag_floortile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
                                                                         bool tileflag_normalobjmissile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0;
                                                                         bool tileflag_fullsizeditem = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
+                                                                        bool tileflag_height_is_clipping = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING) != 0;
 
                                                                         /* All items are big when showing detection */
                                                                         if (showing_detection)
                                                                         {
                                                                             obj_height = 0;
                                                                             tileflag_floortile = false;
+                                                                            tileflag_height_is_clipping = false;
                                                                         }
 
                                                                         if ((!tileflag_halfsize || monster_height > 0) && is_monster_like_layer)
@@ -3736,18 +3738,21 @@ namespace GnollHackClient.Pages.Game
                                                                                     scale *= Math.Min(1.0f, Math.Max(0.1f, 1.0f - (1.0f - (float)GHConstants.OBJECT_PIT_SCALING_FACTOR) * (float)monster_height / (float)GHConstants.SPECIAL_HEIGHT_IN_PIT));
                                                                                 }
 
-                                                                                if (tileflag_floortile)
+                                                                                if (tileflag_floortile || tileflag_height_is_clipping)
                                                                                 {
-                                                                                    if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
-                                                                                        && obj_height > 0 && obj_height < 48)
+                                                                                    if(layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
                                                                                     {
-                                                                                        source_y_added = (GHConstants.TileHeight / 2 - obj_height) / 2;
-                                                                                        source_height_deducted = GHConstants.TileHeight / 2 - obj_height;
-                                                                                        source_height = GHConstants.TileHeight / 2 - source_height_deducted;
-                                                                                        scaled_tile_width = scale * width;
-                                                                                        scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                                                        scaled_tile_height = scale * (float)source_height * height / (float)GHConstants.TileHeight;
-                                                                                        scaled_y_padding = Math.Max(0, scale * (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
+                                                                                        source_y_added = tileflag_floortile ? 0 : GHConstants.TileHeight / 2;
+                                                                                        if (obj_height > 0 && obj_height < 48)
+                                                                                        {
+                                                                                            source_y_added += (GHConstants.TileHeight / 2 - obj_height) / 2;
+                                                                                            source_height_deducted = GHConstants.TileHeight / 2 - obj_height;
+                                                                                            source_height = GHConstants.TileHeight / 2 - source_height_deducted;
+                                                                                            scaled_tile_width = scale * width;
+                                                                                            scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                                                            scaled_tile_height = scale * (float)source_height * height / (float)GHConstants.TileHeight;
+                                                                                            scaled_y_padding = Math.Max(0, scale * (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
+                                                                                        }
                                                                                     }
                                                                                     sourcerect = new SKRect(tile_x, tile_y + source_y_added, tile_x + GHConstants.TileWidth, tile_y + source_y_added + source_height);
                                                                                 }
@@ -3773,6 +3778,10 @@ namespace GnollHackClient.Pages.Game
                                                                                     if (tileflag_floortile)
                                                                                     {
                                                                                         sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
+                                                                                    }
+                                                                                    else if (tileflag_height_is_clipping)
+                                                                                    {
+                                                                                        sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                                                                                     }
                                                                                     else
                                                                                     {
@@ -3800,7 +3809,7 @@ namespace GnollHackClient.Pages.Game
                                                                                     else
                                                                                     {
                                                                                         sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                                                        if(is_missile_layer && !tileflag_floortile)
+                                                                                        if(is_missile_layer && !tileflag_floortile && !tileflag_height_is_clipping)
                                                                                         {
                                                                                             if (missile_height > 0 && missile_height < 48)
                                                                                             {
@@ -6568,13 +6577,14 @@ namespace GnollHackClient.Pages.Game
                         if (source_glyph <= 0 || source_glyph == NoGlyph)
                             continue;
                         bool has_floor_tile = (GlyphTileFlags[source_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0; // artidx > 0 ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(contained_obj);
+                        bool is_height_clipping = (GlyphTileFlags[source_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING) != 0;
                         bool fullsizeditem = (GlyphTileFlags[source_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
                         int cobj_height = contained_obj.OtypData.tile_height; // artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(contained_obj->otyp);
                         int artidx = contained_obj.ObjData.oartifact;
                         float dest_x = 0, dest_y = 0;
                         int src_x = 0, src_y = fullsizeditem || has_floor_tile ? 0 : GHConstants.TileHeight / 2;
-                        int item_width = has_floor_tile ? GHConstants.TileHeight / 2 : cobj_height > 0 ? cobj_height : GHConstants.TileHeight / 2;
-                        int item_height = has_floor_tile ? GHConstants.TileWidth : (item_width * GHConstants.TileWidth) / (GHConstants.TileHeight / 2);
+                        int item_width = has_floor_tile || is_height_clipping ? GHConstants.TileHeight / 2 : cobj_height > 0 ? cobj_height : GHConstants.TileHeight / 2;
+                        int item_height = has_floor_tile || is_height_clipping ? GHConstants.TileWidth : (item_width * GHConstants.TileWidth) / (GHConstants.TileHeight / 2);
                         int padding = (GHConstants.TileHeight / 2 - item_width) / 2;
                         int vertical_padding = (GHConstants.TileWidth - item_height) / 2;
                         if (contained_obj.ObjData.oclass != (int)obj_class_types.WEAPON_CLASS)
@@ -6603,7 +6613,7 @@ namespace GnollHackClient.Pages.Game
                         float rotated_width = original_height;
                         float rotated_height = original_width;
 
-                        float content_scale = fullsizeditem || has_floor_tile ? 1.0f : item_width / 48.0f;
+                        float content_scale = fullsizeditem || has_floor_tile || is_height_clipping ? 1.0f : item_width / 48.0f;
 
                         float target_x = tx + dest_x;
                         float target_y = ty + dest_y;

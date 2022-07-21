@@ -2039,14 +2039,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             {
                                 int otyp = (glyph - GLYPH_OBJ_MISSILE_OFF) / NUM_MISSILE_DIRS;
                                 use_floor_tile = has_otyp_floor_tile(otyp);
-                                if (!has_otyp_floor_tile(otyp) && OBJ_TILE_HEIGHT(otyp) > 0)
+                                if (!has_otyp_floor_tile(otyp) && !has_otyp_height_clipping(otyp) && OBJ_TILE_HEIGHT(otyp) > 0)
                                     obj_scaling_factor = ((double)OBJ_TILE_HEIGHT(otyp)) / 48.0;
                             }
                             else if (glyph_is_artifact_missile(glyph))
                             {
                                 int artidx = ((glyph - GLYPH_ARTIFACT_MISSILE_OFF) / NUM_MISSILE_DIRS) + 1;
                                 use_floor_tile = has_artifact_floor_tile(artidx);
-                                if (!has_artifact_floor_tile(artidx) && artilist[artidx].tile_floor_height > 0)
+                                if (!has_artifact_floor_tile(artidx) && !has_artifact_height_clipping(artidx) && artilist[artidx].tile_floor_height > 0)
                                     obj_scaling_factor = ((double)artilist[artidx].tile_floor_height) / 48.0;
                             }
 
@@ -2071,12 +2071,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int base_dest_added_from_source = 0;
                                 int artidx = otmp_round ? otmp_round->oartifact : 0;
                                 boolean has_floor_tile = !otmp_round ? FALSE : artidx ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(otmp_round);
+                                boolean is_height_clipping = !otmp_round ? FALSE : artidx ? has_artifact_height_clipping(artidx) : has_obj_height_clipping(otmp_round);
                                 int obj_height = get_obj_height(otmp_round);
 
                                 /* For all normal items, we use only lower part of the tile */
-                                if (otmp_round && has_floor_tile && !showing_detection && !Hallucination)
+                                if (otmp_round && (has_floor_tile || is_height_clipping) && !showing_detection && !Hallucination)
                                 {
-                                    source_top_added = 0;
+                                    source_top_added = has_floor_tile ? (int)tileHeight / 2 : 0;
                                     if (otmp_round && obj_height > 0 && obj_height < used_item_height && !showing_detection)
                                     {
                                         base_dest_added_from_source = used_item_height - obj_height;
@@ -2738,12 +2739,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     int artidx = contained_obj ? contained_obj->oartifact : 0;
                                     boolean has_floor_tile = !contained_obj ? FALSE : artidx ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(contained_obj);
+                                    boolean is_height_clipping = !contained_obj ? FALSE : artidx ? has_artifact_height_clipping(artidx) : has_obj_height_clipping(contained_obj);
                                     int obj_height = get_obj_height(contained_obj);
                                     int src_x = 0, src_y = ((objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) || has_floor_tile ? 0 : TILE_Y / 2);
                                     int dest_x = 0, dest_y = 0;
-                                    int item_width = has_floor_tile ? TILE_Y / 2 : obj_height ? obj_height : TILE_Y / 2;
-                                    int item_height = has_floor_tile ? TILE_X : (item_width * TILE_X) / (TILE_Y / 2);
-                                    int true_item_width = has_floor_tile && obj_height ? obj_height : item_width;
+                                    int item_width = has_floor_tile || is_height_clipping ? TILE_Y / 2 : obj_height ? obj_height : TILE_Y / 2;
+                                    int item_height = has_floor_tile || is_height_clipping ? TILE_X : (item_width * TILE_X) / (TILE_Y / 2);
+                                    int true_item_width = (has_floor_tile || is_height_clipping) && obj_height ? obj_height : item_width;
                                     int padding = (TILE_Y / 2 - rack_width) / 2;
                                     int vertical_padding = (TILE_X - item_height) / 2;
 
@@ -2878,11 +2880,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     int artidx = contained_obj ? contained_obj->oartifact : 0;
                                     boolean has_floor_tile = !contained_obj ? FALSE : artidx ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(contained_obj);
+                                    boolean is_obj_clipping = !contained_obj ? FALSE : artidx ? has_artifact_height_clipping(artidx) : has_obj_height_clipping(contained_obj);
                                     int obj_height = get_obj_height(contained_obj);
                                     int src_x = 0, src_y = ((objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) || has_floor_tile ? 0 : TILE_Y / 2);
                                     int dest_x = 0, dest_y = 0;
-                                    int item_width = has_floor_tile ? TILE_Y / 2 : obj_height ? obj_height : TILE_Y / 2;
-                                    int item_height = has_floor_tile ? TILE_X : (item_width * TILE_X) / (TILE_Y / 2);
+                                    int item_width = has_floor_tile || is_obj_clipping ? TILE_Y / 2 : obj_height ? obj_height : TILE_Y / 2;
+                                    int item_height = has_floor_tile || is_obj_clipping ? TILE_X : (item_width * TILE_X) / (TILE_Y / 2);
                                     int padding = (TILE_Y / 2 - item_width) / 2;
                                     int vertical_padding = (TILE_X - item_height) / 2;
                                     if (contained_obj->oclass != WEAPON_CLASS)
