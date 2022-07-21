@@ -2167,15 +2167,16 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         /* Scale object to be of oc_tile_floor_height height */
                         if ((is_obj_missile || is_object) && obj_scaling_factor != 1.0)
                         {
-                            double scaled_height = (obj_scaling_factor * (double)GetNHApp()->mapTile_Y / 2.0);
+                            double fulltileheight = (double)GetNHApp()->mapTile_Y / (is_object && !full_sized_item ? 2.0 : 1.0);
+                            double scaled_height = (obj_scaling_factor * fulltileheight);
                             double scaled_width = (obj_scaling_factor * (double)GetNHApp()->mapTile_X);
 
                             if(is_object)
-                                dest_top_added += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
+                                dest_top_added += (int)(applicable_scaling_factor_y * (fulltileheight - scaled_height));
                             else
-                                dest_top_added += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height) / 2.0);
+                                dest_top_added += (int)(applicable_scaling_factor_y * (fulltileheight - scaled_height) / 2.0);
 
-                            dest_height_deducted += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
+                            dest_height_deducted += (int)(applicable_scaling_factor_y * (fulltileheight - scaled_height));
                             dest_left_added += (int)(applicable_scaling_factor_x * (((double)GetNHApp()->mapTile_X - scaled_width) / 2.0));
                             dest_width_deducted += (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_X - scaled_width));
                         }

@@ -2765,6 +2765,7 @@ namespace GnollHackClient.Pages.Game
                                                 bool is_monster_or_shadow_layer = (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS);
                                                 bool is_monster_like_layer = (is_monster_or_shadow_layer || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT);
                                                 bool is_object_like_layer = (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT);
+                                                bool is_missile_layer = (layer_idx == (int)layer_types.LAYER_MISSILE);
                                                 for (int mapy = startY; mapy <= endY; mapy++)
                                                 {
                                                     for (int mapx = startX; mapx <= endX; mapx++)
@@ -3799,6 +3800,17 @@ namespace GnollHackClient.Pages.Game
                                                                                     else
                                                                                     {
                                                                                         sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                                                        if(is_missile_layer && !tileflag_floortile)
+                                                                                        {
+                                                                                            if (missile_height > 0 && missile_height < 48)
+                                                                                            {
+                                                                                                scale = ((float)missile_height) / 48.0f;
+                                                                                            }
+                                                                                            scaled_tile_width = scale * width;
+                                                                                            scaled_tile_height = scale * height;
+                                                                                            scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                                                            scaled_y_padding = (height - scaled_tile_height) / 2;
+                                                                                        }
                                                                                     }
                                                                                 }
                                                                             }
