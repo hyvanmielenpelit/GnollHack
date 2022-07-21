@@ -1367,7 +1367,7 @@ namespace GnollHackCommon
         public const int PollingInterval = 15;
         public const bool IsGPUDefault = true;
         public const double DefaultTextWindowMaxWidth = 600.0;
-        public const double WindowHideIntervals = 4.0;
+        public const double WindowHideIntervals = 5.0;
         public const uint MainCanvasAnimationTime = 250;
         public const uint AuxiliaryCanvasAnimationTime = 240;
         public const float MenuDefaultRowHeight = 30.0f;
