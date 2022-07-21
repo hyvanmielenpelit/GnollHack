@@ -281,7 +281,7 @@ struct obj* obj;
             else
             {
                 generate_random_item = TRUE;
-                otyp = random_objectid_from_class(obj->oclass, 0UL);
+                otyp = random_objectid_from_class(obj->oclass, mtmp, 0UL);
             }
         }
     }
@@ -290,7 +290,7 @@ struct obj* obj;
         if (objects[obj->otyp].oc_prob == 0 || (objects[obj->otyp].oc_flags3 & O3_NO_GENERATION))
         {
             generate_random_item = TRUE;
-            otyp = random_objectid_from_class(obj->oclass, 0UL);
+            otyp = random_objectid_from_class(obj->oclass, mtmp, 0UL);
         }
     }
 
@@ -1240,7 +1240,7 @@ register struct monst *mtmp;
         break;
     case S_DOG:
         if(!rn2(20))
-            (void)mon_gets_noinit_item(mtmp, BONE, 1);
+            (void)mongets_noinit_item(mtmp, BONE, 1);
         
         break;
     case S_HUMAN:
@@ -4100,7 +4100,7 @@ int otyp;
 }
 
 struct obj*
-mon_gets_noinit_item(mtmp, otyp, number)
+mongets_noinit_item(mtmp, otyp, number)
 struct monst* mtmp;
 int otyp;
 int number;
@@ -4125,6 +4125,20 @@ int number;
 
     return (struct obj*)0;
 }
+
+
+struct obj*
+mongets_spellbook(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return (struct obj*)0;
+    struct obj* otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
+    if (otmp)
+        (void)mpickobj(mtmp, otmp);
+    return otmp;
+}
+
 
 
 int

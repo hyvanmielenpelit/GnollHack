@@ -224,7 +224,7 @@ unsigned long mkflags;
 
     struct obj *otmp;
 
-    otmp = mkobj_with_flags(let, artif, FALSE, mkflags);
+    otmp = mkobj_with_flags(let, artif, FALSE, (struct monst*)0, mkflags);
     if (otmp)
     {
         place_object(otmp, x, y);
@@ -304,21 +304,19 @@ char oclass;
 boolean artif;
 int mkobj_type;
 {
-    return mkobj_with_flags(oclass, artif, mkobj_type, 0UL);
+    return mkobj_with_flags(oclass, artif, mkobj_type, (struct monst*)0, 0UL);
 }
 
 struct obj *
-mkobj_with_flags(oclass, artif, mkobj_type, mkflags)
+mkobj_with_flags(oclass, artif, mkobj_type, mowner, mkflags)
 char oclass;
 boolean artif;
 int mkobj_type;
+struct monst* mowner;
 unsigned long mkflags;
 {
     int tprob;
     int i = 0;
-    unsigned long rndflags = 0UL;
-    if (mkflags & MKOBJ_FLAGS_ALSO_RARE)
-        rndflags |= RNDITEM_FLAGS_ALSO_RARE;
 
     for (int try_ct = 0; try_ct < 20; try_ct++)
     {
@@ -333,7 +331,7 @@ unsigned long mkflags;
             oclass = iprobs->iclass;
         }
 
-        i = random_objectid_from_class(oclass, rndflags);
+        i = random_objectid_from_class(oclass, mowner, mkflags);
 
         if (mkobj_type == 1 && (objects[i].oc_flags2 & O2_CONTAINER)) /* No containers in containers */
             continue;
@@ -346,21 +344,20 @@ unsigned long mkflags;
 }
 
 int
-random_objectid_from_class(oclass, rndflags)
+random_objectid_from_class(oclass, mowner, rndflags)
 char oclass;
+struct monst* mowner;
 unsigned long rndflags;
 {
     int i = 0;
-    boolean also_rare = !!(rndflags & RNDITEM_FLAGS_ALSO_RARE);
-    xchar leveldif = level_difficulty();
+    boolean also_rare = !!(rndflags & MKOBJ_FLAGS_ALSO_RARE);
+    int leveldif = level_difficulty();
 
-    int randomizationclass = rn2(4);
+    if (oclass == SPBOOK_CLASS && !(rndflags & MKOBJ_FLAGS_NORMAL_SPELLBOOK))
+        return random_spellbook_objectid(mowner, rndflags);
 
     for (int tryct = 0; tryct < 50; tryct++)
     {
-        boolean unacceptable = FALSE;
-        boolean breakforloop = TRUE;
-
         int prob = rnd(1000);
         i = bases[(int)oclass];
         while ((prob -= objects[i].oc_prob) > 0)
@@ -411,83 +408,101 @@ unsigned long rndflags;
                     continue;
             }
         }
-
-        /* Special code generating more relevant spellbooks */
-        if (oclass == SPBOOK_CLASS && randomizationclass < 3)
-        {
-            switch (randomizationclass)
-            {
-            case 0: /* Disregard spell books of too low and high level, stat, and school */
-                if (P_SKILL_LEVEL(objects[i].oc_skill) < P_BASIC)
-                    unacceptable = TRUE;
-                /* FALLTHRU */
-            case 1: /* Disregard spell books of too low and high level and stat */
-                if ((Role_if(PM_WIZARD) && !(objects[i].oc_spell_attribute == A_INT
-                    || objects[i].oc_spell_attribute == A_MAX_INT_WIS
-                    || objects[i].oc_spell_attribute == A_MAX_INT_CHA
-                    || objects[i].oc_spell_attribute == A_MAX_INT_WIS_CHA
-                    || objects[i].oc_spell_attribute == A_AVG_INT_WIS
-                    || objects[i].oc_spell_attribute == A_AVG_INT_CHA
-                    || objects[i].oc_spell_attribute == A_AVG_INT_WIS_CHA
-                    ))
-                    || (Role_if(PM_PRIEST) && !(objects[i].oc_spell_attribute == A_WIS
-                        || objects[i].oc_spell_attribute == A_MAX_INT_WIS
-                        || objects[i].oc_spell_attribute == A_MAX_WIS_CHA
-                        || objects[i].oc_spell_attribute == A_MAX_INT_WIS_CHA
-                        || objects[i].oc_spell_attribute == A_AVG_INT_WIS
-                        || objects[i].oc_spell_attribute == A_AVG_WIS_CHA
-                        || objects[i].oc_spell_attribute == A_AVG_INT_WIS_CHA
-                        ))
-                    )
-                    unacceptable = TRUE;
-                /* FALLTHRU */
-            case 2: /* Disregard spell books of too low and high level */
-                if (objects[i].oc_spell_level > max(3, (u.ulevel + 1) / 2 + 2)        /* Level 1 ->  3, Level 5 ->  5, Level 11 ->  8, Level 19 -> 12*/
-                    || objects[i].oc_spell_level < min(6, (u.ulevel + 1) / 2 - 4) /* Level 1 -> -3, Level 5 -> -1, Level 11 ->  2, Level 19 -> 6 */
-                    )
-                    unacceptable = TRUE;
-                break;
-            default:
-                break;
-            }
-
-
-            if (!unacceptable)
-            {
-                boolean alreadyknown = FALSE;
-
-                for (int j = 0; i < MAXSPELL && spellid(j) != NO_SPELL; j++)
-                {
-                    if (spellid(j) == i)
-                    {
-                        alreadyknown = TRUE;
-                        break;
-                    }
-                }
-
-                if (alreadyknown)
-                {
-                    switch (rn2(3))
-                    {
-                    case 0: /* pick another item from the same randomization class */
-                        breakforloop = FALSE;
-                        break;
-                    case 1: /* pick another item from new randomized randomization class */
-                        randomizationclass = rn2(4);
-                        breakforloop = FALSE;
-                        break;
-                    case 2: /* we make a spellbook for a spell that the player already knows */
-                        breakforloop = TRUE;
-                        break;
-                    }
-                }
-            }
-        }
-        if (breakforloop)
-            break; /* stop the for loop and make the item */
     }
 
     return i;
+}
+
+int
+random_spellbook_objectid(mowner, rndflags)
+struct monst* mowner;
+unsigned long rndflags;
+{
+    int randomizationclass = rn2(4);
+    boolean unacceptable = FALSE;
+    boolean breakforloop = TRUE;
+    int leveldif = level_difficulty();
+    int used_dif = mowner ? mowner->m_lev : leveldif;
+    int max_spell_level = max(0, min(12, (used_dif - 1) / 2 + 3));
+    int min_spell_level = max(-1, min(6, used_dif / 5 - 2));
+    unsigned long knownspellschools = mowner ? mon_known_spell_schools(mowner) : 0UL;
+    if (!mowner && !rn2(2))
+        knownspellschools = 0xFFFFFFFFUL;
+
+    boolean flex_first_school = rn2(2);
+    uchar acceptable[MAXSPELL] = { 0 };
+    int round;
+    int cnt = 0;
+    for (round = 0; round < 5; round++)
+    {
+        memset(&acceptable, 0, sizeof acceptable);
+        cnt = 0;
+        int i;
+        for (i = FIRST_SPELL; i < FIRST_SPELL + MAXSPELL; i++)
+        {
+            boolean mon_knows_spell_school = is_known_spell_school(knownspellschools, objects[i].oc_skill);
+            if ((objects[i].oc_spell_level >= min_spell_level || round >= 3)
+                && (objects[i].oc_spell_level <= max_spell_level || round >= (flex_first_school ? 2 : 1))
+                && (!P_RESTRICTED(objects[i].oc_skill) || mon_knows_spell_school || round >= (flex_first_school ? 1 : 2)))
+            {
+                boolean alreadyknown = FALSE;
+                int j;
+                if (round < 4)
+                {
+                    alreadyknown = already_learnt_spell_type(i);
+                }
+
+                if (!alreadyknown)
+                {
+                    acceptable[i - FIRST_SPELL] = P_RESTRICTED(objects[i].oc_skill) ? 1 : 3;
+                    cnt++;
+                }
+            }
+        }
+        if (cnt < 5 && rn2(6 - cnt)) //If very few choices, maybe go to the next round
+            continue;
+
+        if (cnt > 0)
+            break;
+    }
+
+    int id;
+    if (cnt == 0)
+        goto random_spellbook_here;
+    else if (cnt == 1)
+    {
+        for (id = 0; id < MAXSPELL; id++)
+        {
+            if (acceptable[id])
+                return FIRST_SPELL + id;
+        }
+        goto random_spellbook_here;
+    }
+
+    int totalprob = 0;
+    for (id = 0; id < MAXSPELL; id++)
+    {
+        if (acceptable[id])
+            totalprob += (int)objects[FIRST_SPELL + id].oc_prob * (int)acceptable[id];
+    }
+
+    if (totalprob == 0)
+        goto random_spellbook_here;
+
+    int roll = rn2(totalprob);
+    for (id = 0; id < MAXSPELL; id++)
+    {
+        if (acceptable[id])
+        {
+            int obj_id = FIRST_SPELL + id;
+            roll -= (int)objects[obj_id].oc_prob * (int)acceptable[id];
+            if(roll < 0)
+                return obj_id;
+        }
+    }
+
+random_spellbook_here:
+    return random_objectid_from_class(SPBOOK_CLASS, mowner, rndflags | MKOBJ_FLAGS_NORMAL_SPELLBOOK);
 }
 
 STATIC_OVL void
@@ -3066,7 +3081,7 @@ register struct obj *obj;
     int wt = (int) objects[obj->otyp].oc_weight;
 
     if (has_obj_mythic_lightness(obj))
-        wt /= 3;
+        wt /= 8;
 
     /* glob absorpsion means that merging globs accumulates weight while
        quantity stays 1, so update 'wt' to reflect that, unless owt is 0,

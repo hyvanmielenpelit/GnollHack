@@ -693,9 +693,8 @@ enum context_menu_styles {
 #define MKOBJ_FLAGS_MONSTER_SPECIFIED                  0x00000002
 #define MKOBJ_FLAGS_ALSO_RARE                          0x00000004
 #define MKOBJ_FLAGS_SHOP_ITEM                          0x00000008
-#define MKOBJ_FLAGS_PARAM_IS_TITLE                 0x00000010
-
-#define RNDITEM_FLAGS_ALSO_RARE                        0x00000001
+#define MKOBJ_FLAGS_PARAM_IS_TITLE                     0x00000010
+#define MKOBJ_FLAGS_NORMAL_SPELLBOOK                   0x00000020
 
 #define MONDIED_FLAGS_NONE                             0x00000000
 #define MONDIED_FLAGS_NO_DEATH_ACTION                  0x00000001

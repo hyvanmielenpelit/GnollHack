@@ -1615,8 +1615,9 @@ E int FDECL(adj_lev, (struct permonst *, int));
 E struct permonst *FDECL(grow_up, (struct monst *, struct monst *));
 E void FDECL(change_mon_ability_scores, (struct monst*, int, int));
 E struct obj* FDECL(mongets, (struct monst *, int));
+E struct obj* FDECL(mongets_spellbook, (struct monst*));
 E int FDECL(mongets_return_enchantment, (struct monst*, int));
-E struct obj* FDECL(mon_gets_noinit_item, (struct monst*, int,  int));
+E struct obj* FDECL(mongets_noinit_item, (struct monst*, int,  int));
 E long FDECL(mongetsgold, (struct monst*, long));
 E int FDECL(golemhp, (int));
 E boolean FDECL(peace_minded, (struct permonst *));
@@ -1789,8 +1790,9 @@ E struct obj *FDECL(mksobj_at, (int, int, int, BOOLEAN_P, BOOLEAN_P));
 E struct obj* FDECL(mksobj_at_with_flags, (int, int, int, BOOLEAN_P, BOOLEAN_P, int, int, unsigned long));
 E struct obj *FDECL(mksobj_migr_to_species, (int, unsigned, BOOLEAN_P, BOOLEAN_P));
 E struct obj *FDECL(mkobj, (CHAR_P, BOOLEAN_P, int));
-E struct obj* FDECL(mkobj_with_flags, (CHAR_P, BOOLEAN_P, int, unsigned long));
-E int FDECL(random_objectid_from_class, (CHAR_P, unsigned long));
+E struct obj* FDECL(mkobj_with_flags, (CHAR_P, BOOLEAN_P, int, struct monst*, unsigned long));
+E int FDECL(random_objectid_from_class, (CHAR_P, struct monst*, unsigned long));
+E int FDECL(random_spellbook_objectid, (struct monst*, unsigned long));
 E int NDECL(rndmonnum);
 E boolean FDECL(bogon_is_pname, (CHAR_P));
 E struct obj *FDECL(splitobj, (struct obj *, long));
@@ -3515,6 +3517,8 @@ E int FDECL(get_shooting_trap_object, (struct trap*));
 E void NDECL(u_init);
 E void NDECL(u_skills_init);
 E const char* FDECL(get_role_achievement_description, (BOOLEAN_P));
+E unsigned long FDECL(mon_known_spell_schools, (struct monst*));
+E boolean FDECL(is_known_spell_school, (unsigned long, int));
 
 /* ### uhitm.c ### */
 

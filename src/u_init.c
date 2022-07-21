@@ -1452,7 +1452,7 @@ u_skills_init()
 
 STATIC_OVL
 void
-add_school_specific_spellbooks()
+add_school_specific_spellbooks(VOID_ARGS)
 {
     int skill;
     for (skill = P_FIRST_SPELL; skill <= P_LAST_SPELL; skill++)
@@ -1463,7 +1463,7 @@ add_school_specific_spellbooks()
             int i;
             for (i = 0; i < cnt; i++)
             {
-                struct obj* obj = mkobj(SPBOOK_CLASS, FALSE, FALSE);
+                struct obj* obj = mkobj_with_flags(SPBOOK_CLASS, FALSE, FALSE, (struct monst*)0, MKOBJ_FLAGS_NORMAL_SPELLBOOK);
                 int otyp = obj->otyp;
 
                 while (otyp == SPE_BLANK_PAPER
@@ -1492,7 +1492,7 @@ add_school_specific_spellbooks()
                         ))
                 {
                     dealloc_obj(obj);
-                    obj = mkobj(SPBOOK_CLASS, FALSE, FALSE);
+                    obj = mkobj_with_flags(SPBOOK_CLASS, FALSE, FALSE, (struct monst*)0, MKOBJ_FLAGS_NORMAL_SPELLBOOK);
                     otyp = obj->otyp;
                 }
 
@@ -2216,6 +2216,98 @@ boolean is_past_participle;
     }
 
     return res;
+}
+
+boolean
+is_known_spell_school(knownspellschools, skill_id)
+unsigned long knownspellschools;
+{
+    if (skill_id < P_FIRST_SPELL || skill_id > P_LAST_SPELL)
+        return FALSE;
+
+    unsigned long knownspellbit = 1UL << (skill_id - P_FIRST_SPELL);
+    return (knownspellschools & knownspellbit) != 0;
+}
+
+unsigned long
+mon_known_spell_schools(mon)
+struct monst* mon;
+{
+    if (!mon)
+        return FALSE;
+    unsigned long mflags = mons[mon->mnum].mflags7;
+    unsigned long knownspellschools = 0UL;
+
+    int i;
+    for (i = 0; i < NUM_ROLES; i++)
+    {
+        unsigned long bit = M7_ARCHAEOLOGIST << i; // Should be 1UL
+        if (mflags & bit)
+        {
+            const struct def_skill* maxskills = 0;
+            switch (i)
+            {
+            case ROLE_ARCHAEOLOGIST:
+                maxskills = Skill_A_Max;
+                break;
+            case ROLE_BARBARIAN:
+                maxskills = Skill_B_Max;
+                break;
+            case ROLE_CAVEMAN:
+                maxskills = Skill_C_Init;
+                break;
+            case ROLE_HEALER:
+                maxskills = Skill_H_Max;
+                break;
+            case ROLE_KNIGHT:
+                maxskills = Skill_K_Max;
+                break;
+            case ROLE_MONK:
+                maxskills = Skill_Monk_Max;
+                break;
+            case ROLE_PRIEST:
+                if (mon->malign < 0)
+                    maxskills = Skill_P_Max_Chaotic;
+                else if (mon->malign > 0)
+                    maxskills = Skill_P_Max_Lawful;
+                else
+                    maxskills = Skill_P_Max_Neutral;
+                break;
+            case ROLE_ROGUE:
+                maxskills = Skill_Rogue_Max;
+                break;
+            case ROLE_RANGER:
+                maxskills = Skill_Ranger_Max;
+                break;
+            case ROLE_SAMURAI:
+                maxskills = Skill_S_Max;
+                break;
+            case ROLE_VALKYRIE:
+                maxskills = Skill_V_Max;
+                break;
+            case ROLE_WIZARD:
+                maxskills = Skill_W_Max;
+                break;
+            default:
+                break;
+            }
+
+            if (maxskills)
+            {
+                while (maxskills->skill > P_NONE)
+                {
+                    if (maxskills->skill >= P_FIRST_SPELL && maxskills->skill <= P_LAST_SPELL)
+                    {
+                        unsigned long spbit = 1UL << (maxskills->skill - P_FIRST_SPELL);
+                        knownspellschools |= spbit;
+                    }
+                    maxskills++;
+                }
+            }
+        }
+    }
+
+    return knownspellschools;
 }
 
 /*u_init.c*/
