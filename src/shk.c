@@ -2211,7 +2211,8 @@ register struct monst *shkp; /* if angry, impose a surcharge */
         tmp = 5L;
     /* shopkeeper may notice if the player isn't very knowledgeable -
        especially when gem prices are concerned */
-    if (!obj->dknown || (!obj->oartifact && !objects[obj->otyp].oc_name_known) || (obj->oartifact && !obj->nknown))
+    if (!obj->dknown 
+        || (!obj->oartifact && !objects[obj->otyp].oc_name_known) || (obj->oartifact && !obj->nknown))
     {
         if (obj->oclass == GEM_CLASS
             && objects[obj->otyp].oc_material == MAT_GLASS) 

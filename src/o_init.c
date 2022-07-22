@@ -750,8 +750,8 @@ boolean credit_hero;
         }
         /* moves==1L => initial inventory, gameover => final disclosure */
         if (moves > 1L && !program_state.gameover) {
-            if (objects[oindx].oc_class == GEM_CLASS)
-                gem_learned(oindx); /* could affect price of unpaid gems */
+            //if (objects[oindx].oc_class == GEM_CLASS)
+            gem_learned(oindx); /* could affect price of unpaid gems -- actually of any items in shop --JG */
             update_inventory();
         }
     }
@@ -781,8 +781,8 @@ register int oindx;
         else
             impossible("named object not in disco");
 
-        if (objects[oindx].oc_class == GEM_CLASS)
-            gem_learned(oindx); /* ok, it's actually been unlearned */
+        //if (objects[oindx].oc_class == GEM_CLASS)
+        gem_learned(oindx); /* ok, it's actually been unlearned  -- actually of any items in shop --JG */
         update_inventory();
     }
 }
