@@ -2106,7 +2106,7 @@ register struct obj* obj;
                 else
                     Sprintf(buf, "Effect duration:        ");
 
-                int dice = objects[otyp].oc_potion_normal_dice + (obj->bknown ? objects[otyp].oc_potion_normal_dice_buc_multiplier * bcsign(obj) : 0);
+                int dice = objects[otyp].oc_potion_normal_dice + (obj->bknown ? (int)objects[otyp].oc_potion_normal_dice_buc_multiplier * bcsign(obj) : 0);
                 if (dice > 0 && objects[otyp].oc_potion_normal_diesize > 0)
                 {
                     maindiceprinted = TRUE;
@@ -2114,7 +2114,7 @@ register struct obj* obj;
                     Strcat(buf, plusbuf);
                 }
 
-                int plus = objects[otyp].oc_potion_normal_plus + (obj->bknown ? bcsign(obj) * objects[otyp].oc_potion_normal_buc_multiplier : 0);
+                int plus = objects[otyp].oc_potion_normal_plus + (obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_normal_buc_multiplier : 0);
                 if (plus != 0)
                 {
                     if (maindiceprinted && plus > 0)
@@ -2166,7 +2166,7 @@ register struct obj* obj;
 
                 Sprintf(buf, "Breathe %s:       %s", brtype, brtypepadding);
 
-                int dice = objects[otyp].oc_potion_breathe_dice + (obj->bknown ? objects[otyp].oc_potion_breathe_dice_buc_multiplier * bcsign(obj) : 0);
+                int dice = objects[otyp].oc_potion_breathe_dice + (obj->bknown ? (int)objects[otyp].oc_potion_breathe_dice_buc_multiplier * bcsign(obj) : 0);
                 if (dice > 0 && objects[otyp].oc_potion_breathe_diesize > 0)
                 {
                     maindiceprinted = TRUE;
@@ -2174,7 +2174,7 @@ register struct obj* obj;
                     Strcat(buf, plusbuf);
                 }
 
-                int plus = objects[otyp].oc_potion_breathe_plus + (obj->bknown ? bcsign(obj) * objects[otyp].oc_potion_breathe_buc_multiplier : 0);
+                int plus = objects[otyp].oc_potion_breathe_plus + (obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_breathe_buc_multiplier : 0);
                 if (plus != 0)
                 {
                     if (maindiceprinted && plus > 0)
@@ -2208,7 +2208,7 @@ register struct obj* obj;
                 char plusbuf[BUFSZ];
                 Sprintf(buf, "Nutrition:              ");
 
-                int dice = objects[otyp].oc_potion_nutrition_dice + (obj->bknown ? objects[otyp].oc_potion_nutrition_dice_buc_multiplier * bcsign(obj) : 0);
+                int dice = objects[otyp].oc_potion_nutrition_dice + (obj->bknown ? (int)objects[otyp].oc_potion_nutrition_dice_buc_multiplier * bcsign(obj) : 0);
                 if (dice > 0 && objects[otyp].oc_potion_nutrition_diesize > 0)
                 {
                     maindiceprinted = TRUE;
@@ -2216,7 +2216,7 @@ register struct obj* obj;
                     Strcat(buf, plusbuf);
                 }
 
-                int plus = objects[otyp].oc_potion_nutrition_plus + (obj->bknown ? bcsign(obj) * objects[otyp].oc_potion_nutrition_buc_multiplier : 0);
+                int plus = objects[otyp].oc_potion_nutrition_plus + (obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_nutrition_buc_multiplier : 0);
                 if (plus != 0)
                 {
                     if (maindiceprinted && plus > 0)

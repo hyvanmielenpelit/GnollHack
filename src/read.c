@@ -573,29 +573,31 @@ boolean verbose, dopopup;
 }
 
 void
-p_glow1(otmp, pline_attr, pline_color, dopopup)
+p_glow1(otmp, pline_attr, pline_color, title, dopopup)
 register struct obj *otmp;
 register int pline_attr, pline_color;
+const char* title;
 boolean dopopup;
 {
     char effbuf[BUFSZ];
     play_sfx_sound(SFX_AURA_GLOW);
     Sprintf(effbuf, "%s briefly.", Yobjnam2(otmp, Blind ? "vibrate" : "glow"));
-    pline_ex1_popup(pline_attr, pline_color, effbuf, Blind ? "Vibration" : "Glow", dopopup);
+    pline_ex1_popup(pline_attr, pline_color, effbuf, title ? title : Blind ? "Brief Vibration" : "Magical Glow", dopopup);
 }
 
 void
-p_glow2(otmp, color, pline_attr, pline_color, dopopup)
+p_glow2(otmp, color, pline_attr, pline_color, title, dopopup)
 register struct obj *otmp;
 register const char *color;
 register int pline_attr, pline_color;
+const char* title;
 boolean dopopup;
 {
     char effbuf[BUFSZ];
     play_sfx_sound(SFX_AURA_GLOW);
     Sprintf(effbuf, "%s%s%s for a moment.", Yobjnam2(otmp, Blind ? "vibrate" : "glow"),
           Blind ? "" : " ", Blind ? "" : hcolor(color));
-    pline_ex1_popup(pline_attr, pline_color, effbuf, Blind ? "Vibration" : "Glow", dopopup);
+    pline_ex1_popup(pline_attr, pline_color, effbuf, title ? title : Blind ? "Magical Vibration" : "Magical Glow", dopopup);
 }
 
 /* Is the object chargeable?  For purposes of inventory display; it is
@@ -626,9 +628,10 @@ struct obj *obj;
 /* recharge an object; curse_bless is -1 if the recharging implement
    was cursed, +1 if blessed, 0 otherwise. */
 void
-recharge(obj, curse_bless, verbose, dopopup)
+recharge(obj, curse_bless, verbose, title, dopopup)
 struct obj *obj;
 int curse_bless;
+const char* title;
 boolean verbose, dopopup;
 {
     if (!obj)
@@ -674,7 +677,7 @@ boolean verbose, dopopup;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
-                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                     play_effect = TRUE;
                 }
             }
@@ -686,7 +689,7 @@ boolean verbose, dopopup;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_RECHARGE_SUCCESS);
-                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                     play_effect = TRUE;
                 }
             }
@@ -758,9 +761,9 @@ boolean verbose, dopopup;
                     play_sfx_sound(SFX_RECHARGE_SUCCESS);
 
                 if (obj->charges >= lim)
-                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                 else
-                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
 
                 play_effect = TRUE;
             }
@@ -854,7 +857,7 @@ boolean verbose, dopopup;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
-                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                     play_effect = TRUE;
                 }
             }
@@ -874,7 +877,7 @@ boolean verbose, dopopup;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_RECHARGE_SUCCESS);
-                    p_glow2(obj, NH_WHITE, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow2(obj, NH_WHITE, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                     play_effect = TRUE;
                 }
             }
@@ -896,7 +899,7 @@ boolean verbose, dopopup;
                 obj->special_quality = 1;
                 obj->age = 1500;
                 if (verbose)
-                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
             }
             else {
                 obj->special_quality = 1;
@@ -904,7 +907,7 @@ boolean verbose, dopopup;
                 if (obj->age > 1500)
                     obj->age = 1500;
                 if (verbose)
-                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
             }
             break;
 #endif
@@ -920,7 +923,7 @@ boolean verbose, dopopup;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
-                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                     play_effect = TRUE;
                 }
             }
@@ -932,7 +935,7 @@ boolean verbose, dopopup;
                     if (verbose)
                     {
                         play_sfx_sound(SFX_RECHARGE_SUCCESS);
-                        p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                        p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                         play_effect = TRUE;
                     }
                 }
@@ -958,7 +961,7 @@ boolean verbose, dopopup;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
-                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                     play_effect = TRUE;
                 }
             }
@@ -970,7 +973,7 @@ boolean verbose, dopopup;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_RECHARGE_SUCCESS);
-                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                     play_effect = TRUE;
                 }
             }
@@ -1028,7 +1031,7 @@ boolean verbose, dopopup;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
-                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                     play_effect = TRUE;
                 }
             }
@@ -1040,7 +1043,7 @@ boolean verbose, dopopup;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_RECHARGE_SUCCESS);
-                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                     play_effect = TRUE;
                 }
             }
@@ -1061,7 +1064,7 @@ boolean verbose, dopopup;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
-                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                     play_effect = TRUE;
                 }
             }
@@ -1073,7 +1076,7 @@ boolean verbose, dopopup;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_RECHARGE_SUCCESS);
-                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                     play_effect = TRUE;
                 }
             }
@@ -1101,7 +1104,7 @@ boolean verbose, dopopup;
                     if (verbose)
                     {
                         play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
-                        p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                        p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                         play_effect = TRUE;
                     }
                 }
@@ -1113,7 +1116,7 @@ boolean verbose, dopopup;
                     if (verbose)
                     {
                         play_sfx_sound(SFX_RECHARGE_SUCCESS);
-                        p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, dopopup);
+                        p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, title, dopopup);
                         play_effect = TRUE;
                     }
                 }
@@ -1809,13 +1812,13 @@ boolean *effect_happened_ptr;
                     hcolor(scursed ? NH_BLACK : NH_GOLDEN),
                     scursed ? "glow"
                     : (is_shield(otmp) ? "layer" : "shield"));
-                pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, known ? "Protect Armor" : "Effect", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+                pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, known || otmp->oclass == SPBOOK_CLASS ? "Protect Armor" : "Magical Effect", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
             }
             if (new_erodeproof && (otmp->oeroded || otmp->oeroded2)) {
                 otmp->oeroded = otmp->oeroded2 = 0;
                 Sprintf(effbuf, "%s as good as new!",
                     Yobjnam2(otmp, Blind ? "feel" : "look"));
-                pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, "As Good As New", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+                pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, known || otmp->oclass == SPBOOK_CLASS ? "Protect Armor" : "Magical Repair", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
             }
             if (old_erodeproof && !new_erodeproof) {
                 /* restore old_erodeproof before shop charges */
@@ -1943,7 +1946,7 @@ boolean *effect_happened_ptr;
             old_erodeproof = (otmp->oerodeproof != 0);
             new_erodeproof = scursed;
             otmp->oerodeproof = 0; /* for messages */
-            p_glow2(otmp, NH_PURPLE, ATR_NONE, CLR_MSG_POSITIVE, sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+            p_glow2(otmp, NH_PURPLE, ATR_NONE, CLR_MSG_POSITIVE, (const char*)0, sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
             if (old_erodeproof && !new_erodeproof) {
                 /* restore old_erodeproof before shop charges */
                 otmp->oerodeproof = 1;
@@ -1956,7 +1959,7 @@ boolean *effect_happened_ptr;
         if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY)
         {
             Sprintf(effbuf, "%s the destructive energies of the scroll.", Yobjnam2(uarmc, "absorb"));
-            pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, "Effect Absorbed", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+            pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, "Cloak of Integrity", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
             makeknown(uarmc->otyp);
             known = TRUE;
             otmp = uarmc;
@@ -2336,7 +2339,7 @@ boolean *effect_happened_ptr;
                     scursed ? "mottled" : "shimmering",
                     hcolor(scursed ? NH_PURPLE : NH_GOLDEN),
                     scursed ? "glow" : "shield");
-                pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, known ? "Protect Weapon" : "Effect", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+                pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, known || otmp->oclass == SPBOOK_CLASS ? "Protect Weapon" : "Magical Effect", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
             }
 
             if (new_erodeproof && (otmp->oeroded || otmp->oeroded2)) 
@@ -2344,7 +2347,7 @@ boolean *effect_happened_ptr;
                 otmp->oeroded = otmp->oeroded2 = 0;
                 Sprintf(effbuf, "%s as good as new!",
                     Yobjnam2(otmp, Blind ? "feel" : "look"));
-                pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, "As Good As New", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+                pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, known || otmp->oclass == SPBOOK_CLASS ? "Protect Weapon" : "Magical Repair", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
             }
 
             if (old_erodeproof && !new_erodeproof)
@@ -2925,7 +2928,7 @@ boolean *effect_happened_ptr;
         otmp = getobj(all_count, "charge", 0, "");
         if (otmp)
         {
-            recharge(otmp, scursed ? -1 : sblessed ? 1 : 0, TRUE, sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+            recharge(otmp, scursed ? -1 : sblessed ? 1 : 0, TRUE, !sobj ? "Scroll of Charging" : "Recharging", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
         }
         break;
     case SCR_ENCHANT_ACCESSORY:
