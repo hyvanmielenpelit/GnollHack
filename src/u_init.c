@@ -451,6 +451,7 @@ static const struct def_skill Skill_B_Max[] = {
     { P_QUARTERSTAFF, P_EXPERT },
     { P_SPEAR, P_EXPERT },
     { P_BOW, P_EXPERT },
+    { P_CROSSBOW, P_EXPERT },
     { P_THROWN_WEAPON, P_EXPERT },
     { P_RIDING, P_BASIC },
     { P_TWO_WEAPON_COMBAT, P_EXPERT },
@@ -505,8 +506,6 @@ static const struct def_skill Skill_H_Max[] = {
     { P_SWORD, P_SKILLED },
     { P_BLUDGEONING_WEAPON, P_SKILLED },
     { P_QUARTERSTAFF, P_GRAND_MASTER },
-    { P_POLEARM, P_BASIC },
-    { P_SPEAR, P_BASIC },
     { P_SLING, P_SKILLED },
     { P_THROWN_WEAPON, P_EXPERT },
     { P_HEALING_SPELL, P_GRAND_MASTER },
@@ -529,7 +528,6 @@ static const struct def_skill Skill_H_Init[] = {
     { P_WAND, P_BASIC },
     { P_NONE, 0 }
 };
-
 
 
 static const struct def_skill Skill_K_Max[] = {
@@ -568,8 +566,7 @@ static const struct def_skill Skill_K_Init[] = {
 
 static const struct def_skill Skill_Monk_Max[] = {
     { P_QUARTERSTAFF, P_EXPERT },
-    { P_SPEAR, P_BASIC },
-    { P_CROSSBOW, P_BASIC },
+    { P_SLING, P_EXPERT },
     { P_THROWN_WEAPON, P_EXPERT },
     { P_ABJURATION_SPELL, P_GRAND_MASTER },
     { P_HEALING_SPELL, P_GRAND_MASTER },
@@ -596,11 +593,7 @@ static const struct def_skill Skill_P_Max_Chaotic[] = {
     { P_BLUDGEONING_WEAPON, P_EXPERT },
     { P_FLAIL, P_EXPERT },
     { P_QUARTERSTAFF, P_EXPERT },
-    { P_POLEARM, P_SKILLED },
-    { P_SPEAR, P_SKILLED },
-    { P_BOW, P_SKILLED },
     { P_SLING, P_EXPERT },
-    { P_CROSSBOW, P_SKILLED },
     { P_THROWN_WEAPON, P_SKILLED },
     { P_HEALING_SPELL, P_GRAND_MASTER },
     { P_DIVINATION_SPELL, P_GRAND_MASTER },
@@ -617,11 +610,7 @@ static const struct def_skill Skill_P_Max_Neutral[] = {
     { P_BLUDGEONING_WEAPON, P_EXPERT },
     { P_FLAIL, P_EXPERT },
     { P_QUARTERSTAFF, P_EXPERT },
-    { P_POLEARM, P_SKILLED },
-    { P_SPEAR, P_SKILLED },
-    { P_BOW, P_SKILLED },
     { P_SLING, P_EXPERT },
-    { P_CROSSBOW, P_SKILLED },
     { P_THROWN_WEAPON, P_SKILLED },
     { P_HEALING_SPELL, P_GRAND_MASTER },
     { P_DIVINATION_SPELL, P_GRAND_MASTER },
@@ -634,16 +623,11 @@ static const struct def_skill Skill_P_Max_Neutral[] = {
     { P_WAND, P_SKILLED },
     { P_NONE, 0 }
 };
-
 static const struct def_skill Skill_P_Max_Lawful[] = {
     { P_BLUDGEONING_WEAPON, P_EXPERT },
     { P_FLAIL, P_EXPERT },
     { P_QUARTERSTAFF, P_EXPERT },
-    { P_POLEARM, P_SKILLED },
-    { P_SPEAR, P_SKILLED },
-    { P_BOW, P_SKILLED },
     { P_SLING, P_EXPERT },
-    { P_CROSSBOW, P_SKILLED },
     { P_THROWN_WEAPON, P_SKILLED },
     { P_HEALING_SPELL, P_GRAND_MASTER },
     { P_DIVINATION_SPELL, P_GRAND_MASTER },
