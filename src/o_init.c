@@ -249,7 +249,7 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
 
 NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_POWERS] =
 {
-    { "Lightness", "Weighs one-third of normal", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
+    { "Lightness", "Weighs one-eight of normal", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Sorcery", "Incurs no spellcasting penalty", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Troll slaying", "Triple damage to trolls", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_TROLL, 0UL , MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Troll revival prevention", "Prevents revival of trolls", MYTHIC_POWER_TYPE_PREVENTS_REVIVAL, 0L, 0.0, S_TROLL, 0UL , MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },

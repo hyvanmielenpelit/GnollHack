@@ -568,6 +568,19 @@ int mtype;
             break;
         }
         case NPC_ORC_HERMIT3:
+        {
+            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+
+            int cnt = 1 + rnd(2);
+            for (i = 0; i < cnt; i++)
+            {
+                mongets(npc, SPE_MANUAL);
+            }
+
+            break;
+        }
         case NPC_HERMIT3:
         {
             struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS, MKOBJ_FLAGS_PARAM_IS_TITLE);
@@ -579,6 +592,16 @@ int mtype;
             {
                 mongets(npc, SPE_MANUAL);
             }
+
+            mongets(npc, GNOMISH_FELT_HAT);
+            cnt = 2 + rnd(2);
+            for (i = 0; i < cnt; i++)
+            {
+                otmp = mksobj_with_flags(GNOMISH_FELT_HAT, TRUE, FALSE, FALSE, 0, MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+
             break;
         }
         case NPC_ARTIFICER:

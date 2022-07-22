@@ -1340,6 +1340,7 @@ unsigned long mkflags;
     int mndx, tryct;
     struct obj *otmp;
     char let = objects[otyp].oc_class;
+    boolean forcemythic = (mkflags & MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY) != 0;
 
     otmp = newobj();
     *otmp = zeroobj;
@@ -1976,7 +1977,7 @@ unsigned long mkflags;
     }
 
     /* Mythic quality */
-    if (can_obj_have_mythic(otmp) && level_difficulty() >= 3 && mkobj_type < 2 && otmp->oartifact == 0)
+    if (can_obj_have_mythic(otmp) && (forcemythic || (level_difficulty() >= 3 && mkobj_type < 2)) && otmp->oartifact == 0)
     {
         boolean doublechance = !!(objects[otmp->otyp].oc_flags4 & O4_DOUBLE_MYTHIC_CHANCE);
         boolean makemythic = FALSE;
@@ -1991,7 +1992,7 @@ unsigned long mkflags;
         else
             makemythic = otmp->exceptionality ? !rn2(doublechance ? 6 : 12) : !rn2(doublechance ? 12 : 24);
 
-        if (makemythic)
+        if (makemythic || forcemythic)
         {
             randomize_mythic_quality(otmp, FALSE, &otmp->mythic_prefix, &otmp->mythic_suffix);
         }
