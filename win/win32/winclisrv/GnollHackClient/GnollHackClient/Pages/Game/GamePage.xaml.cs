@@ -2078,11 +2078,13 @@ namespace GnollHackClient.Pages.Game
                 if(_menuHideOn)
                 {
                     _menuHideCancelled = true;
-                    if (App.IsiOS)
-                    {
-                        menuStack.IsVisible = false;
-                    }
                 }
+            }
+
+            /* On iOS, hide menuStack to start fade in */
+            if (App.IsiOS)
+            {
+                menuStack.IsVisible = false;
             }
 
             /* Cancel delayed text hide */
@@ -2198,23 +2200,18 @@ namespace GnollHackClient.Pages.Game
 
             if (App.IsiOS)
             {
+                /* On iOS, fade in the menu. NOTE: this was originally a work-around for bad layout performance on iOS */
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
                 {
-                    if (_menuHideCancelled || _delayedTextHideCancelled)
-                    {
-                        if (menuStack.AnimationIsRunning("MenuHideAnimation"))
-                            menuStack.AbortAnimation("MenuHideAnimation");
-                        menuStack.Opacity = 0.0;
-                        menuStack.IsVisible = true;
-                        Animation menuAnimation = new Animation(v => menuStack.Opacity = (double)v, 0.0, 1.0);
-                        menuAnimation.Commit(menuStack, "MenuShowAnimation", length: 256,
-                            rate: 16, repeat: () => false);
-                    }
-                    else
-                    {
-                        menuStack.Opacity = 1.0;
-                        menuStack.IsVisible = true;
-                    }
+
+                    if (menuStack.AnimationIsRunning("MenuHideAnimation"))
+                        menuStack.AbortAnimation("MenuHideAnimation");
+                    menuStack.Opacity = 0.0;
+                    menuStack.IsVisible = true;
+                    Animation menuAnimation = new Animation(v => menuStack.Opacity = (double)v, 0.0, 1.0);
+                    menuAnimation.Commit(menuStack, "MenuShowAnimation", length: 256,
+                        rate: 16, repeat: () => false);
+
                     MenuGrid.IsVisible = true;
                     MainGrid.IsVisible = false;
                     if (dohidetext)
@@ -9220,7 +9217,7 @@ namespace GnollHackClient.Pages.Game
                     _menuHideOn = false;
                     if (_menuHideCancelled)
                     {
-                        //_menuHideCancelled = false;
+                        _menuHideCancelled = false;
                         return false;
                     }
                 }
@@ -9261,7 +9258,7 @@ namespace GnollHackClient.Pages.Game
                     _delayedTextHideOn = false;
                     if (_delayedTextHideCancelled)
                     {
-                        //_delayedTextHideCancelled = false;
+                        _delayedTextHideCancelled = false;
                         return false;
                     }
                 }
