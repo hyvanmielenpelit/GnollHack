@@ -2484,7 +2484,7 @@ boolean* obj_destroyed;
                 delay_output_milliseconds(150);
                 play_sfx_sound(SFX_WEAPON_NO_LONGER_POISONED);
             }
-            Your("%s %s no longer poisoned.", saved_oname,
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s no longer poisoned.", saved_oname,
                 vtense(saved_oname, "are"));
         }
 
@@ -2495,7 +2495,7 @@ boolean* obj_destroyed;
                 delay_output_milliseconds(150);
                 play_sfx_sound(SFX_WEAPON_NO_LONGER_ENCHANTED);
             }
-            Your("%s %s no longer enchanted.", saved_oname,
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s no longer enchanted.", saved_oname,
                 vtense(saved_oname, "are"));
         }
 

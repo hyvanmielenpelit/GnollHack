@@ -2199,7 +2199,7 @@ boolean speedy;
     start_menu_ex(win, GHMENU_STYLE_SKILL_COMMAND);
 
     /* Skill description */
-    strcpy(buf, "View skill information");
+    Strcpy(buf, "View skill information");
     any = zeroany;
     any.a_int = 1;
     add_menu(win, NO_GLYPH, &any,
@@ -2221,21 +2221,51 @@ boolean speedy;
     else
     {
         char reasonbuf[BUFSZ] = "";
-        if(P_RESTRICTED(skill_id))
-            strcpy(reasonbuf, " {Restricted skill}");
+        if (P_RESTRICTED(skill_id))
+            Strcpy(reasonbuf, " {Restricted skill}");
         else if (P_SKILL_LEVEL(skill_id) >= P_MAX_SKILL_LEVEL(skill_id))
-            strcpy(reasonbuf, " {Peaked skill}");
+        {
+            Strcpy(reasonbuf, " {Peaked skill}");
+            menuinfo.color = CLR_BLUE;
+        }
         else if (u.skills_advanced >= P_SKILL_LIMIT)
-            strcpy(reasonbuf, " {General advancement limit reached}");
+        {
+            Strcpy(reasonbuf, " {General advancement limit reached}");
+            menuinfo.color = CLR_BLUE;
+        }
         else if (urole.skill_advance_levels[skill_id][P_SKILL_LEVEL(skill_id) + 1] > 0 && u.ulevel < urole.skill_advance_levels[skill_id][P_SKILL_LEVEL(skill_id) + 1])
+        {
             Sprintf(reasonbuf, " {Experience level too low: %d/%d}", u.ulevel, urole.skill_advance_levels[skill_id][P_SKILL_LEVEL(skill_id) + 1]);
+        }
         else if (!P_NONTRAINABLE(skill_id) && urole.skill_advance_levels[skill_id][P_SKILL_LEVEL(skill_id) + 1] == 0 && (int)P_ADVANCE(skill_id) < practice_needed_to_advance(skill_id, P_SKILL_LEVEL(skill_id)))
+        {
             Sprintf(reasonbuf, " {Not enough practice: %d/%d}", (int)P_ADVANCE(skill_id), practice_needed_to_advance(skill_id, P_SKILL_LEVEL(skill_id)));
+        }
         else if (u.weapon_slots < skill_slots_needed)
-            strcpy(reasonbuf, " {Not enough slots}");
+        {
+            menuinfo.color = CLR_RED;
+            Strcpy(reasonbuf, " {Not enough slots}");
+        }
+
+        /* Use consistent colors from the previous menu, except normal case is grayed out rahter than white */
+        if (canadv)
+        {
+            menuinfo.color = CLR_GREEN;
+        }
+        else if (could_advance(skill_id))
+        {
+            menuinfo.color = CLR_BROWN;
+        }
+        else if (peaked_skill(skill_id))
+        {
+            menuinfo.color = CLR_BLUE;
+        }
+        else
+        {
+            menuinfo.color = CLR_GRAY;
+        }
 
         Sprintf(buf, "Cannot advance to %s (%d skill slot%s from %s)%s", nextlevelbuf, skill_slots_needed, plur(skill_slots_needed), skilllevelbuf, reasonbuf);
-        menuinfo.color = CLR_GRAY;
     }
     add_extended_menu(win, NO_GLYPH, &any, menuinfo,
         0, 0, ATR_NONE,
