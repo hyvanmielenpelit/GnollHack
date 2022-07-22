@@ -2075,10 +2075,13 @@ namespace GnollHackClient.Pages.Game
             /* Cancel delayed menu hide */
             lock (_menuHideCancelledLock)
             {
-                _menuHideCancelled = true;
-                if(App.IsiOS)
+                if(_menuHideOn)
                 {
-                    menuStack.IsVisible = false;
+                    _menuHideCancelled = true;
+                    if (App.IsiOS)
+                    {
+                        menuStack.IsVisible = false;
+                    }
                 }
             }
 
@@ -2197,7 +2200,7 @@ namespace GnollHackClient.Pages.Game
             {
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
                 {
-                    if(_menuHideCancelled || _delayedTextHideCancelled)
+                    if (_menuHideCancelled || _delayedTextHideCancelled)
                     {
                         if (menuStack.AnimationIsRunning("MenuHideAnimation"))
                             menuStack.AbortAnimation("MenuHideAnimation");
@@ -2218,6 +2221,7 @@ namespace GnollHackClient.Pages.Game
                     {
                         TextGrid.IsVisible = false;
                     }
+                    menuStack.ForceLayout();
                     return false;
                 });
             }
@@ -9205,7 +9209,7 @@ namespace GnollHackClient.Pages.Game
                     menuStack.AbortAnimation("MenuShowAnimation");
                 double currentOpacity = menuStack.Opacity;
                 Animation menuAnimation = new Animation(v => menuStack.Opacity = (double)v, currentOpacity, 0.0);
-                menuAnimation.Commit(menuStack, "MenuHideAnimation", length: 48,
+                menuAnimation.Commit(menuStack, "MenuHideAnimation", length: 64,
                     rate: 16, repeat: () => false);
                 //menuStack.IsVisible = false;
             }
