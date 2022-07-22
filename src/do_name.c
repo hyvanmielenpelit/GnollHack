@@ -1463,7 +1463,8 @@ register struct obj *obj;
     //short objtyp;
 
     /* Do this now because there's no point in even asking for a name */
-    if (objects[obj->otyp].oc_subtyp == BOOKTYPE_NOVEL || objects[obj->otyp].oc_subtyp == BOOKTYPE_MANUAL) {
+    if (obj->oclass == SPBOOK_CLASS && (objects[obj->otyp].oc_subtyp == BOOKTYPE_NOVEL || objects[obj->otyp].oc_subtyp == BOOKTYPE_MANUAL))
+    {
         pline("%s already has a published name.", Ysimple_name2(obj));
         return;
     }
