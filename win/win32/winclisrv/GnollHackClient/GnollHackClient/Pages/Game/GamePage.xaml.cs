@@ -1633,6 +1633,12 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
+            /* On iOS, hide TextStack to start fade in */
+            if (App.IsiOS)
+            {
+                TextStack.IsVisible = false;
+            }
+
             lock (RefreshScreenLock)
             {
                 RefreshScreen = false;
@@ -1672,16 +1678,42 @@ namespace GnollHackClient.Pages.Game
                 TextCanvas.PutStrItems = items;
             }
 
-            TextGrid.IsVisible = true;
-            MainGrid.IsVisible = false;
+            if (App.IsiOS)
+            {
+                /* On iOS, fade in the text window. NOTE: this was originally a work-around for bad layout performance on iOS */
+                Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
+                {
+                    if (TextStack.AnimationIsRunning("TextHideAnimation"))
+                        TextStack.AbortAnimation("TextHideAnimation");
+                    TextStack.Opacity = 0.0;
+                    TextStack.IsVisible = true;
+                    Animation textAnimation = new Animation(v => TextStack.Opacity = (double)v, 0.0, 1.0);
+                    textAnimation.Commit(TextStack, "TextShowAnimation", length: 256,
+                        rate: 16, repeat: () => false);
+
+                    TextGrid.IsVisible = true;
+                    MainGrid.IsVisible = false;
+                    if (dohidemenu)
+                    {
+                        MenuGrid.IsVisible = false;
+                    }
+                    TextStack.ForceLayout();
+                    return false;
+                });
+            }
+            else
+            {
+                TextGrid.IsVisible = true;
+                MainGrid.IsVisible = false;
+                if (dohidemenu)
+                {
+                    MenuGrid.IsVisible = false;
+                }
+            }
+
             if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 canvasView.AbortAnimation("GeneralAnimationCounter");
             StartTextCanvasAnimation();
-
-            if (dohidemenu)
-            {
-                MenuGrid.IsVisible = false;
-            }
         }
 
 
@@ -2081,10 +2113,10 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-            /* On iOS, hide menuStack to start fade in */
+            /* On iOS, hide MenuStack to start fade in */
             if (App.IsiOS)
             {
-                menuStack.IsVisible = false;
+                MenuStack.IsVisible = false;
             }
 
             /* Cancel delayed text hide */
@@ -2203,13 +2235,12 @@ namespace GnollHackClient.Pages.Game
                 /* On iOS, fade in the menu. NOTE: this was originally a work-around for bad layout performance on iOS */
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
                 {
-
-                    if (menuStack.AnimationIsRunning("MenuHideAnimation"))
-                        menuStack.AbortAnimation("MenuHideAnimation");
-                    menuStack.Opacity = 0.0;
-                    menuStack.IsVisible = true;
-                    Animation menuAnimation = new Animation(v => menuStack.Opacity = (double)v, 0.0, 1.0);
-                    menuAnimation.Commit(menuStack, "MenuShowAnimation", length: 256,
+                    if (MenuStack.AnimationIsRunning("MenuHideAnimation"))
+                        MenuStack.AbortAnimation("MenuHideAnimation");
+                    MenuStack.Opacity = 0.0;
+                    MenuStack.IsVisible = true;
+                    Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, 0.0, 1.0);
+                    menuAnimation.Commit(MenuStack, "MenuShowAnimation", length: 256,
                         rate: 16, repeat: () => false);
 
                     MenuGrid.IsVisible = true;
@@ -2218,7 +2249,7 @@ namespace GnollHackClient.Pages.Game
                     {
                         TextGrid.IsVisible = false;
                     }
-                    menuStack.ForceLayout();
+                    MenuStack.ForceLayout();
                     return false;
                 });
             }
@@ -9202,13 +9233,13 @@ namespace GnollHackClient.Pages.Game
             }
             if(App.IsiOS)
             {
-                if (menuStack.AnimationIsRunning("MenuShowAnimation"))
-                    menuStack.AbortAnimation("MenuShowAnimation");
-                double currentOpacity = menuStack.Opacity;
-                Animation menuAnimation = new Animation(v => menuStack.Opacity = (double)v, currentOpacity, 0.0);
-                menuAnimation.Commit(menuStack, "MenuHideAnimation", length: 64,
+                if (MenuStack.AnimationIsRunning("MenuShowAnimation"))
+                    MenuStack.AbortAnimation("MenuShowAnimation");
+                double currentOpacity = MenuStack.Opacity;
+                Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, currentOpacity, 0.0);
+                menuAnimation.Commit(MenuStack, "MenuHideAnimation", length: 64,
                     rate: 16, repeat: () => false);
-                //menuStack.IsVisible = false;
+                //MenuStack.IsVisible = false;
             }
             Device.StartTimer(TimeSpan.FromSeconds(ClientUtils.GetWindowHideSecs()), () =>
             {
@@ -9250,6 +9281,16 @@ namespace GnollHackClient.Pages.Game
             {
                 _delayedTextHideOn = true;
                 _delayedTextHideCancelled = false;
+            }
+            if (App.IsiOS)
+            {
+                if (TextStack.AnimationIsRunning("TextShowAnimation"))
+                    TextStack.AbortAnimation("TextShowAnimation");
+                double currentOpacity = TextStack.Opacity;
+                Animation textAnimation = new Animation(v => TextStack.Opacity = (double)v, currentOpacity, 0.0);
+                textAnimation.Commit(TextStack, "TextHideAnimation", length: 64,
+                    rate: 16, repeat: () => false);
+                //TextStack.IsVisible = false;
             }
             Device.StartTimer(TimeSpan.FromSeconds(ClientUtils.GetWindowHideSecs()), () =>
             {
