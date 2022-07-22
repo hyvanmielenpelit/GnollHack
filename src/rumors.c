@@ -505,16 +505,17 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
         if (mtmp && oraclesstyle == 1)
             play_voice_oracle_major_consultation(mtmp, oracle_idx - 1);
 
-        while (dlb_fgets(line, COLNO, oracles) && strcmp(line, "---\n")) {
+        while (dlb_fgets(line, COLNO, oracles) && strcmp(line, "---\n")) 
+        {
             if ((endp = index(line, '\n')) != 0)
                 *endp = 0;
-            putstr(tmpwin, 0, xcrypt(line, xbuf));
+            char* xcryptbuf = xcrypt(line, xbuf);
+            putstr(tmpwin, 0, xcryptbuf);
+            if(!u.uevent.elbereth_known && strstri(xcryptbuf, "Elbereth"))
+                u.uevent.elbereth_known = 1;
         }
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);
-
-        if (oracle_idx == (int)oracle_cnt - 1) // Elbereth is the last major consultation
-            u.uevent.elbereth_known = 1;
 
  close_oracles:
         (void) dlb_fclose(oracles);
