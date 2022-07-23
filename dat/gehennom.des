@@ -684,10 +684,10 @@ CONTAINER:('(',"chest"),trapped,locked,(12,07),keytype:('(',"ornamental key"),sp
 }
 #ENGRAVING:(12,07),burn,"Morgoth"
 # Statues in Dispater's room
-OBJECT: ('`', "statue"), (07,04), montype:"erinys", 1
-OBJECT: ('`', "statue"), (15,04), montype:"erinys", 1
-OBJECT: ('`', "statue"), (07,08), montype:"erinys", 1
-OBJECT: ('`', "statue"), (15,08), montype:"erinys", 1
+OBJECT: ('`', "statue"), (07,04), no_pickup, montype:"erinys", 1
+OBJECT: ('`', "statue"), (15,04), no_pickup, montype:"erinys", 1
+OBJECT: ('`', "statue"), (07,08), no_pickup, montype:"erinys", 1
+OBJECT: ('`', "statue"), (15,08), no_pickup, montype:"erinys", 1
 
 # Dispater's throne.
 THRONE:(11,06)
@@ -780,18 +780,18 @@ NON_DIGGABLE:(00,00,32,04)
 SPECIAL_REGION:(00,00,32,04),region_special_level_seen
 
 DOOR:closed,(32,02),subtype:door_black_gate
-OBJECT: ('`', "statue"), (00,01), montype:"pit fiend", 1
-OBJECT: ('`', "statue"), (06,01), montype:"erinys", 1
-OBJECT: ('`', "statue"), (12,01), montype:"horned devil", 1
-OBJECT: ('`', "statue"), (18,01), montype:"ice devil", 1
-OBJECT: ('`', "statue"), (24,01), montype:"barbed devil", 1
-OBJECT: ('`', "statue"), (30,01), montype:"pit fiend", 1
-OBJECT: ('`', "statue"), (00,03), montype:"pit fiend", 1
-OBJECT: ('`', "statue"), (06,03), montype:"erinys", 1
-OBJECT: ('`', "statue"), (12,03), montype:"horned devil", 1
-OBJECT: ('`', "statue"), (18,03), montype:"ice devil", 1
-OBJECT: ('`', "statue"), (24,03), montype:"barbed devil", 1
-OBJECT: ('`', "statue"), (30,03), montype:"pit fiend", 1
+OBJECT: ('`', "statue"), (00,01), no_pickup, montype:"pit fiend", 1
+OBJECT: ('`', "statue"), (06,01), no_pickup, montype:"erinys", 1
+OBJECT: ('`', "statue"), (12,01), no_pickup, montype:"horned devil", 1
+OBJECT: ('`', "statue"), (18,01), no_pickup, montype:"ice devil", 1
+OBJECT: ('`', "statue"), (24,01), no_pickup, montype:"barbed devil", 1
+OBJECT: ('`', "statue"), (30,01), no_pickup, montype:"pit fiend", 1
+OBJECT: ('`', "statue"), (00,03), no_pickup, montype:"pit fiend", 1
+OBJECT: ('`', "statue"), (06,03), no_pickup, montype:"erinys", 1
+OBJECT: ('`', "statue"), (12,03), no_pickup, montype:"horned devil", 1
+OBJECT: ('`', "statue"), (18,03), no_pickup, montype:"ice devil", 1
+OBJECT: ('`', "statue"), (24,03), no_pickup, montype:"barbed devil", 1
+OBJECT: ('`', "statue"), (30,03), no_pickup, montype:"pit fiend", 1
 
 BRAZIER: (31,01), brazier_normal, lit
 BRAZIER: (31,03), brazier_normal, lit

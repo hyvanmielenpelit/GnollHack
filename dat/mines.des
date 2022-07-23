@@ -759,7 +759,7 @@ DOOR:locked,(73,18)
 OBJECT: ('(', "chest"), (73,19)
 DOOR:locked,(50,06)
 OBJECT: '(', (50,03)
-OBJECT: ('`', "statue"), (38,15), montype:"gnome king", 1
+OBJECT: ('`', "statue"), (38,15), no_pickup, montype:"gnome king", 1
 OBJECT: ('/', "town portal"), (68,04), no_pickup
 ENGRAVING:(68,04),engrave, "Here's the wand you ordered. -Endicott"
 

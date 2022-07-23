@@ -62,7 +62,7 @@ CONTAINER:('(',"chest"),not_trapped,(06,08) {
     [50%]:OBJECT:('!',"gain ability")
 }
 # Decorations
-OBJECT: ('`', "statue"), (21,08), montype:"bison", 1
+OBJECT: ('`', "statue"), (21,08), no_pickup, montype:"bison", 1
 FOUNTAIN:(14,08),fountain_random
 FOUNTAIN:(06,07),fountain_random
 FOUNTAIN:(06,09),fountain_random

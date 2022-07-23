@@ -345,14 +345,14 @@ MONSTER:$monster[4],(30,11)
 MONSTER:$monster[5],(33,11)
 MONSTER:$monster[6],(36,11)
 MONSTER:('e',"gazer"),(37,08)
-OBJECT: ('`', "statue"), (29,06), montype:"dwarf king", 1
-OBJECT: ('`', "statue"), (35,06), montype:"elvenking", 1
-OBJECT: ('`', "statue"), (29,10), montype:"gnome king", 1
-OBJECT: ('`', "statue"), (35,10), montype:"gnoll king", 1
-OBJECT: ('(', "large five-branched candelabrum"), (27,05), special_quality:5, lit
-OBJECT: ('(', "large five-branched candelabrum"), (27,11), special_quality:5, lit
-OBJECT: ('(', "large five-branched candelabrum"), (37,05), special_quality:5, lit
-OBJECT: ('(', "large five-branched candelabrum"), (37,11), special_quality:5, lit
+OBJECT: ('`', "statue"), (29,06), no_pickup, montype:"dwarf king", 1
+OBJECT: ('`', "statue"), (35,06), no_pickup, montype:"elvenking", 1
+OBJECT: ('`', "statue"), (29,10), no_pickup, montype:"gnome king", 1
+OBJECT: ('`', "statue"), (35,10), no_pickup, montype:"gnoll king", 1
+OBJECT: ('(', "large five-branched candelabrum"), (27,05), no_pickup, special_quality:5, lit
+OBJECT: ('(', "large five-branched candelabrum"), (27,11), no_pickup, special_quality:5, lit
+OBJECT: ('(', "large five-branched candelabrum"), (37,05), no_pickup, special_quality:5, lit
+OBJECT: ('(', "large five-branched candelabrum"), (37,11), no_pickup, special_quality:5, lit
 
 # MazeWalks
 MAZEWALK:(00,10),west
