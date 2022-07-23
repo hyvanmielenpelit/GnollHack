@@ -668,21 +668,19 @@ static const struct def_skill Skill_Rogue_Max[] = {
     { P_SWORD, P_MASTER },
     { P_BLUDGEONING_WEAPON, P_EXPERT },
     { P_FLAIL, P_EXPERT },
-    { P_POLEARM, P_EXPERT },
-    { P_SPEAR, P_EXPERT },
-    { P_BOW, P_GRAND_MASTER },
-    { P_SLING, P_GRAND_MASTER },
-    { P_CROSSBOW, P_GRAND_MASTER },
-    { P_THROWN_WEAPON, P_GRAND_MASTER },
-    { P_DIVINATION_SPELL, P_EXPERT },
-    { P_MOVEMENT_SPELL, P_EXPERT },
-    { P_TRANSMUTATION_SPELL, P_EXPERT },
+    { P_BOW, P_MASTER },
+    { P_SLING, P_MASTER },
+    { P_CROSSBOW, P_MASTER },
+    { P_THROWN_WEAPON, P_MASTER },
+    { P_DIVINATION_SPELL, P_SKILLED },
+    { P_MOVEMENT_SPELL, P_SKILLED },
+    { P_TRANSMUTATION_SPELL, P_SKILLED },
     { P_RIDING, P_SKILLED },
     { P_TWO_WEAPON_COMBAT, P_MASTER },
     { P_BARE_HANDED_COMBAT, P_MASTER },
     { P_DODGE, P_GRAND_MASTER },
     { P_SHIELD, P_SKILLED },
-    { P_WAND, P_MASTER },
+    { P_WAND, P_EXPERT },
     { P_DISARM_TRAP, P_GRAND_MASTER },
     { P_NONE, 0 }
 };
@@ -700,8 +698,6 @@ static const struct def_skill Skill_Ranger_Max[] = {
     { P_AXE, P_EXPERT },
     { P_PICK_AXE, P_BASIC },
     { P_SWORD, P_EXPERT },
-    { P_FLAIL, P_SKILLED },
-    { P_BLUDGEONING_WEAPON, P_SKILLED },
     { P_QUARTERSTAFF, P_SKILLED },
     { P_POLEARM, P_SKILLED },
     { P_SPEAR, P_EXPERT },
@@ -710,9 +706,9 @@ static const struct def_skill Skill_Ranger_Max[] = {
     { P_CROSSBOW, P_GRAND_MASTER },
     { P_THROWN_WEAPON, P_GRAND_MASTER },
     { P_WHIP, P_BASIC },
-    { P_HEALING_SPELL, P_EXPERT },
-    { P_DIVINATION_SPELL, P_EXPERT },
-    { P_NATURE_SPELL, P_GRAND_MASTER },
+    { P_HEALING_SPELL, P_SKILLED },
+    { P_DIVINATION_SPELL, P_SKILLED },
+    { P_NATURE_SPELL, P_SKILLED },
     { P_RIDING, P_GRAND_MASTER },
     { P_BARE_HANDED_COMBAT, P_SKILLED },
     { P_DODGE, P_SKILLED },
@@ -761,7 +757,7 @@ static const struct def_skill Skill_S_Init[] = {
 };
 
 static const struct def_skill Skill_T_Max[] = {
-    { P_DAGGER, P_MASTER },
+    { P_DAGGER, P_EXPERT },
     { P_AXE, P_EXPERT },
     { P_PICK_AXE, P_EXPERT },
     { P_SWORD, P_EXPERT },
@@ -785,12 +781,12 @@ static const struct def_skill Skill_T_Max[] = {
     { P_MOVEMENT_SPELL, P_GRAND_MASTER },
     { P_TRANSMUTATION_SPELL, P_EXPERT },
     { P_RIDING, P_EXPERT },
-    { P_TWO_WEAPON_COMBAT, P_MASTER },
-    { P_BARE_HANDED_COMBAT, P_MASTER },
+    { P_TWO_WEAPON_COMBAT, P_EXPERT },
+    { P_BARE_HANDED_COMBAT, P_EXPERT },
     { P_DODGE, P_EXPERT },
     { P_SHIELD, P_EXPERT },
     { P_WAND, P_EXPERT },
-    { P_DISARM_TRAP, P_MASTER },
+    { P_DISARM_TRAP, P_EXPERT },
     { P_NONE, 0 }
 };
 
@@ -803,13 +799,10 @@ static const struct def_skill Skill_T_Init[] = {
 static const struct def_skill Skill_V_Max[] = {
     { P_DAGGER, P_GRAND_MASTER },
     { P_AXE, P_GRAND_MASTER },
-    { P_PICK_AXE, P_MASTER },
     { P_SWORD, P_GRAND_MASTER },
     { P_BLUDGEONING_WEAPON, P_GRAND_MASTER },
-    { P_QUARTERSTAFF, P_EXPERT },
     { P_POLEARM, P_MASTER },
     { P_SPEAR, P_MASTER },
-    { P_SLING, P_BASIC },
     { P_BOW, P_EXPERT },
     { P_CROSSBOW, P_EXPERT },
     { P_THROWN_WEAPON, P_EXPERT },
@@ -836,13 +829,8 @@ static const struct def_skill Skill_V_Init[] = {
 
 static const struct def_skill Skill_W_Max[] = {
     { P_DAGGER, P_EXPERT },
-    { P_AXE, P_BASIC },
     { P_SWORD, P_BASIC },
-    { P_BLUDGEONING_WEAPON, P_BASIC },
     { P_QUARTERSTAFF, P_EXPERT },
-    { P_POLEARM, P_BASIC },
-    { P_SPEAR, P_BASIC },
-    { P_SLING, P_BASIC },
     { P_THROWN_WEAPON, P_SKILLED },
     { P_ABJURATION_SPELL, P_EXPERT },
     { P_ARCANE_SPELL, P_GRAND_MASTER },
@@ -1239,8 +1227,22 @@ u_init()
         knows_object(DWARVISH_MITHRIL_COAT);
         knows_object(DWARVISH_CLOAK);
         knows_object(DWARVISH_ROUNDSHIELD);
+        switch (Role_switch)
+        {
+        case PM_ARCHAEOLOGIST:
+        case PM_KNIGHT:
+        case PM_CAVEMAN:
+        case PM_VALKYRIE:
+            P_MAX_SKILL_LEVEL(P_PICK_AXE) = P_GRAND_MASTER;
+            break;
+        default:
+            if (P_MAX_SKILL_LEVEL(P_FLAIL) < P_BASIC)
+                P_MAX_SKILL_LEVEL(P_FLAIL) = P_BASIC;
+            break;
+        }
+        if (P_SKILL_LEVEL(P_PICK_AXE) == P_ISRESTRICTED)
+            P_SKILL_LEVEL(P_PICK_AXE) = P_UNSKILLED;        
         break;
-
     case PM_GNOLL:
         knows_object(GNOLLISH_HAIRCLOTH_ROBE);
         knows_object(GNOLLISH_HOOD);
