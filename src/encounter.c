@@ -1405,11 +1405,11 @@ void
 create_encounter(selected_encounter, x, y)
 int selected_encounter, x, y;
 {
-    int max_attk_monsters = 2;
+    int max_attk_monsters = 1;
     if (Is_bigroom(&u.uz))
-        max_attk_monsters = 6;
+        max_attk_monsters = 4;
     else if (In_mines(&u.uz))
-        max_attk_monsters = 3;
+        max_attk_monsters = 2;
 
     /* Calculate experience first */
     long encounter_experience = 1 + encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters] * encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters];
