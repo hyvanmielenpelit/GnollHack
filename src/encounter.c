@@ -1377,7 +1377,7 @@ int x, y;
     if (totalselectedprob > 0)
     {
         int j;
-        for (int j = 1; j < MAX_ENCOUNTERS; j++)
+        for (j = 1; j < MAX_ENCOUNTERS; j++)
         {
             if(encounter_list[j].insearch)
                 totalrollprob += encounter_list[j].probability;
