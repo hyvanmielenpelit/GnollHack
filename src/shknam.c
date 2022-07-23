@@ -13,7 +13,7 @@ STATIC_DCL boolean FDECL(stock_room_goodpos, (struct mkroom *, int, int, int, in
 STATIC_DCL int NDECL(shkveg);
 STATIC_DCL void FDECL(mkveggy_at, (int, int));
 STATIC_DCL void FDECL(mkshobj_at, (const struct shclass *, int, int,
-                                   BOOLEAN_P, BOOLEAN_P));
+                                   UCHAR_P, BOOLEAN_P));
 STATIC_DCL void FDECL(nameshk, (struct monst *, const char *const *));
 STATIC_DCL int FDECL(shkinit, (const struct shclass *, struct mkroom *));
 
@@ -580,7 +580,7 @@ STATIC_OVL void
 mkshobj_at(shp, sx, sy, mkspecl, deserted)
 const struct shclass *shp;
 int sx, sy;
-boolean mkspecl;
+uchar mkspecl;
 boolean deserted;
 {
     struct monst *mtmp;
@@ -589,18 +589,37 @@ boolean deserted;
 
     if (deserted && mkspecl)
     {
-        if (!MON_AT(sx, sy) && !t_at(sx, sy)
-            && (mtmp = makemon(&mons[PM_GARGANTUAN_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) {
-            /* note: makemon will set the mimic symbol to a shop item */
-            if (rn2(10) >= depth(&u.uz)) {
-                mtmp->m_ap_type = M_AP_OBJECT;
-                mtmp->mappearance = STRANGE_OBJECT;
-            }
-            (void)mongets(mtmp, WAN_IDENTIFY);
-        }
-        else
+        if (mkspecl == 1)
         {
-            (void)mksobj_at(WAN_IDENTIFY, sx, sy, TRUE, FALSE);
+            if (!MON_AT(sx, sy) && !t_at(sx, sy)
+                && (mtmp = makemon(&mons[PM_GARGANTUAN_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) {
+                /* note: makemon will set the mimic symbol to a shop item */
+                if (rn2(10) >= depth(&u.uz)) {
+                    mtmp->m_ap_type = M_AP_OBJECT;
+                    mtmp->mappearance = STRANGE_OBJECT;
+                }
+                (void)mongets(mtmp, WAN_IDENTIFY);
+            }
+            else
+            {
+                (void)mksobj_at(WAN_IDENTIFY, sx, sy, TRUE, FALSE);
+            }
+        }
+        else if (mkspecl == 2)
+        {
+            if (!MON_AT(sx, sy) && !t_at(sx, sy)
+                && (mtmp = makemon(&mons[PM_GIANT_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) {
+                /* note: makemon will set the mimic symbol to a shop item */
+                if (rn2(10) >= depth(&u.uz)) {
+                    mtmp->m_ap_type = M_AP_OBJECT;
+                    mtmp->mappearance = STRANGE_OBJECT;
+                }
+                (void)mongets(mtmp, WAN_TOWN_PORTAL);
+            }
+            else
+            {
+                (void)mksobj_at(WAN_TOWN_PORTAL, sx, sy, TRUE, FALSE);
+            }
         }
         return;
     }
@@ -928,7 +947,7 @@ boolean deserted;
      * door get objects).
      */
     int sx = 0, sy = 0, sh = 0;
-    int stockcount = 0, specialspot = 0;
+    int stockcount = 0, specialspot = 0, specialspot2 = 0;
     char buf[BUFSZ];
     int rmno = (int) ((sroom - rooms) + ROOMOFFSET);
     const struct shclass *shp = &shtypes[shp_indx];
@@ -987,7 +1006,21 @@ boolean deserted;
             for (sy = sroom->ly; sy <= sroom->hy; sy++)
                 if (deserted || stock_room_goodpos(sroom, rmno, sh, sx,sy))
                     stockcount++;
-        specialspot = rnd(stockcount);
+        if (stockcount > 0)
+        {
+            specialspot = rnd(stockcount);
+            if (deserted && stockcount > 1)
+            {
+                int roll = rnd(stockcount - 1);
+                while (roll > 0)
+                {
+                    roll--;
+                    specialspot2++;
+                    if(specialspot2 == specialspot)
+                        specialspot2++;
+                }
+            }
+        }
         stockcount = 0;
     }
 
@@ -999,9 +1032,9 @@ boolean deserted;
 
             if (deserted || stock_room_goodpos(sroom, rmno, sh, sx,sy))
             {
+                uchar mkspecial = !stockcount ? 0 : (stockcount == specialspot) ? 1 : (stockcount == specialspot2) ? 2 : 0;
                 stockcount++;
-                mkshobj_at(shp, sx, sy,
-                           ((stockcount) && (stockcount == specialspot)), deserted);
+                mkshobj_at(shp, sx, sy, mkspecial, deserted);
             }
         }
     }
