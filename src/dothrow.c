@@ -1285,6 +1285,7 @@ struct obj *obj;
 boolean hitsroof;
 {
     const char *action;
+    boolean isinstakill = FALSE;
     boolean petrifier = ((obj->otyp == EGG || obj->otyp == CORPSE)
                          && touch_petrifies(&mons[obj->corpsenm]));
     /* note: obj->quan == 1 */
@@ -1373,7 +1374,7 @@ boolean hitsroof;
 
         if (obj->oartifact)
             /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */
-            artimsg = artifact_hit((struct monst *) 0, &youmonst, obj, &damage, rn1(18, 2));
+            artimsg = artifact_hit((struct monst *) 0, &youmonst, obj, &damage, &isinstakill, rn1(18, 2));
 
         if (damage == 0) { /* probably wasn't a weapon; base damage on weight */
             damage = adjust_damage(obj->owt / 100, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
@@ -1424,7 +1425,10 @@ boolean hitsroof;
         }
         hitfloor(obj, TRUE);
         thrownobj = 0;
-        losehp(damage, "falling object", KILLED_BY_AN);
+        if(isinstakill)
+            kill_player("falling object", KILLED_BY_AN);
+        else
+            losehp(damage, "falling object", KILLED_BY_AN);
     }
     return TRUE;
 }
@@ -1483,6 +1487,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
     boolean impaired = (Confusion || Stunned || Blind
                                      || Hallucination || Fumbling);
     boolean tethered_weapon = is_obj_tethered_weapon(obj, wep_mask);
+    boolean isinstakill = FALSE;
 
     notonhead = FALSE; /* reset potentially stale value */
     if ((obj->cursed || obj->greased) && (u.dx || u.dy) && !rn2(7))
@@ -1774,9 +1779,15 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
                               Tobjnam(obj, Blind ? "hit" : "fly"),
                               body_part(ARM));
                         if (obj->oartifact)
-                            (void) artifact_hit((struct monst *) 0, &youmonst, obj, &dmg, 0);
-                        losehp(dmg, killer_xname(obj),
-                               KILLED_BY);
+                            (void)artifact_hit((struct monst *) 0, &youmonst, obj, &dmg, &isinstakill, 0);
+                        if (isinstakill)
+                        {
+                            kill_player(killer_xname(obj), KILLED_BY);
+                        }
+                        else
+                        {
+                            losehp(dmg, killer_xname(obj), KILLED_BY);
+                        }
                     }
                     if (ship_object(obj, u.ux, u.uy, FALSE))
                     {

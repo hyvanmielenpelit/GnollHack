@@ -964,6 +964,7 @@ boolean* obj_destroyed;
         /* not grapnels; applied implies uwep */
         || (thrown == HMON_APPLIED && is_appliable_pole_type_weapon(uwep)));
     boolean hide_damage_amount = FALSE;
+    boolean isinstakilled = FALSE;
     boolean isdisintegrated = FALSE;
     int damage_increase_adtyp = AD_MAGM; /* base assumption if nothing else is set */
     boolean incorrect_weapon_use = FALSE;
@@ -1058,7 +1059,7 @@ boolean* obj_destroyed;
                 /* artifact gauntlets*/
                 int ahres = 0;
                 if (uarmg->oartifact
-                    && (ahres = artifact_hit(&youmonst, mon, uarmg, &damage, dieroll)))
+                    && (ahres = artifact_hit(&youmonst, mon, uarmg, &damage, &isinstakilled, dieroll)))
                 {
                     if (DEADMONSTER(mon)) /* artifact killed monster */
                         return FALSE;
@@ -1075,7 +1076,9 @@ boolean* obj_destroyed;
                 int special_hit_dmg = pseudo_artifact_hit(&youmonst, mon, uarmg, extratmp, dieroll, critstrikeroll, &spec_adtyp);
                 if (special_hit_dmg < 0)
                 {
-                    damage += 2 * (double)mon->mhp + 200;
+                    //damage += 2 * (double)mon->mhp + 200;
+                    //mon->mhp = 0;
+                    isinstakilled = TRUE;
                     if (special_hit_dmg == -2)
                         isdisintegrated = TRUE;
                     hide_damage_amount = TRUE;
@@ -1239,7 +1242,7 @@ boolean* obj_destroyed;
 
                 int ahres = 0;
                 if (obj->oartifact
-                    && (ahres = artifact_hit(&youmonst, mon, obj, &damage, dieroll))) 
+                    && (ahres = artifact_hit(&youmonst, mon, obj, &damage, &isinstakilled, dieroll))) 
                 {
                     if (DEADMONSTER(mon)) /* artifact killed monster */
                         return FALSE;
@@ -1256,7 +1259,9 @@ boolean* obj_destroyed;
                 int special_hit_dmg = pseudo_artifact_hit(&youmonst, mon, obj, extratmp, dieroll, critstrikeroll, &spec_adtyp);
                 if (special_hit_dmg < 0)
                 {
-                    damage += 2 * (double)mon->mhp + 200;
+                    //damage += 2 * (double)mon->mhp + 200;
+                    //mon->mhp = 0;
+                    isinstakilled = TRUE;
                     if (special_hit_dmg == -2)
                         isdisintegrated = TRUE;
                     hide_damage_amount = TRUE;
@@ -1832,21 +1837,24 @@ boolean* obj_destroyed;
         /* make sure that negative damage adjustment can't result
            in inadvertently boosting the victim's hit points */
         damage = 0;
-        if (is_shade(mdat))
+        if (!isinstakilled)
         {
-            if (!hittxt) 
+            if (is_shade(mdat))
             {
-                const char* what = *unconventional ? unconventional : "attack";
+                if (!hittxt)
+                {
+                    const char* what = *unconventional ? unconventional : "attack";
 
-                Your("%s %s harmlessly through %s.", what,
-                    vtense(what, "pass"), mon_nam(mon));
-                hittxt = TRUE;
+                    Your("%s %s harmlessly through %s.", what,
+                        vtense(what, "pass"), mon_nam(mon));
+                    hittxt = TRUE;
+                }
             }
-        }
-        else 
-        {
-            if (get_dmg_bonus)
-                damage = 1;
+            else
+            {
+                if (get_dmg_bonus)
+                    damage = 1;
+            }
         }
     }
 
@@ -1919,6 +1927,10 @@ boolean* obj_destroyed;
         }
     }
 
+    if (isinstakilled)
+    {
+        mon->mhp = 0;
+    }
 
     int mon_hp_before = mon->mhp;
 

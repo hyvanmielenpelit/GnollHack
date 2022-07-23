@@ -2789,7 +2789,6 @@ boolean pick;
                 }
                 damage = adjust_damage(d(max(1, mtmp->data->mlevel - 1), 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
                 mdamageu(mtmp, damage, TRUE);
-
             }
             break;
         default: /* monster surprises you. */
@@ -3674,6 +3673,36 @@ maybe_wail()
 }
 
 void
+you_die(knam, k_format)
+register const char* knam;
+boolean k_format;
+{
+    killer.format = k_format;
+    if (killer.name != knam) /* the thing that killed you */
+        Strcpy(killer.name, knam ? knam : "");
+    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die...");
+    done(DIED);
+}
+
+
+void
+kill_player(knam, k_format)
+register const char* knam;
+boolean k_format;
+{
+    context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
+    if (Upolyd)
+    {
+        u.mh = 0;
+        rehumanize();
+        return;
+    }
+
+    u.uhp = 0;
+    you_die(knam, k_format);
+}
+
+void
 losehp(n, knam, k_format)
 double n;
 register const char *knam;
@@ -3699,12 +3728,8 @@ boolean k_format;
 
     if (u.uhp < 1) 
     {
-        killer.format = k_format;
-        if (killer.name != knam) /* the thing that killed you */
-            Strcpy(killer.name, knam ? knam : "");
-        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die...");
-        done(DIED);
-    } 
+        you_die(knam, k_format);
+    }
     else if (n > 0 && u.uhp * 10 < u.uhpmax) 
     {
         maybe_wail();

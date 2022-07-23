@@ -769,6 +769,7 @@ register struct obj *obj;
 
             switch (obj->otyp)
             {
+            case POT_HEALING:
             case POT_EXTRA_HEALING:
             case POT_REGENERATION:
             case POT_REJUVENATION:

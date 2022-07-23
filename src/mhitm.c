@@ -1231,6 +1231,7 @@ register struct obj* omonwep;
     int num,res = MM_MISS;
     boolean cancelled;
     double poisondamage = 0;
+    boolean isinstakilled = FALSE;
     boolean isdisintegrated = FALSE;
     boolean hittxtalreadydisplayed = FALSE;
     //boolean objectshatters = FALSE;
@@ -1382,7 +1383,7 @@ register struct obj* omonwep;
 
                 if (otmp->oartifact) 
                 {
-                    (void) artifact_hit(magr, mdef, otmp, &damage, dieroll);
+                    (void) artifact_hit(magr, mdef, otmp, &damage, &isinstakilled, dieroll);
                     if (DEADMONSTER(mdef))
                         return (MM_DEF_DIED
                                 | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
@@ -1392,7 +1393,9 @@ register struct obj* omonwep;
                 if (special_hit_dmg < 0)
                 {
                     hittxtalreadydisplayed = TRUE;
-                    damage += 2 * (double)mdef->mhp + 200;
+                    isinstakilled = TRUE;
+                    //damage += 2 * (double)mdef->mhp + 200;
+                    //mdef->mhp = 0;
                     if (special_hit_dmg == -2)
                         isdisintegrated = TRUE;
                 }
@@ -2050,7 +2053,8 @@ register struct obj* omonwep;
         damage = 0;
         break;
     }
-    if (!damage)
+
+    if (!damage && !isinstakilled)
     {
         refresh_m_tile_gui_info(mdef, FALSE);
         return res;
@@ -2152,6 +2156,8 @@ register struct obj* omonwep;
         }
     }
 
+    if (isinstakilled)
+        mdef->mhp = 0;
 
     //Reduce HP
     int hp_before = mdef->mhp;

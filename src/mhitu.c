@@ -1783,6 +1783,7 @@ register struct obj* omonwep;
     struct permonst *olduasmon = youmonst.data;
     int res;
     boolean objectshatters = FALSE;
+    boolean isinstakilled = FALSE;
     boolean isdisintegrated = FALSE;
     boolean sharpness_effect = FALSE;
     int critstrikeroll = rn2(100);
@@ -2052,7 +2053,7 @@ register struct obj* omonwep;
                 int ahres = 0;
 
                 hittxt = (otmp->oartifact
-                    && (ahres = artifact_hit(mtmp, &youmonst, otmp, &damage, dieroll)));
+                    && (ahres = artifact_hit(mtmp, &youmonst, otmp, &damage, &isinstakilled, dieroll)));
 
                 if (ahres == 1)
                     displaysustain = TRUE;
@@ -2061,7 +2062,12 @@ register struct obj* omonwep;
                 int special_hit_dmg = pseudo_artifact_hit(mtmp, &youmonst, otmp, extradmg, dieroll, critstrikeroll, &spec_adtyp);
                 if (special_hit_dmg < 0)
                 {
-                    damage += (double)(2 * (Upolyd ? u.mh : u.uhp) + 200);
+                    isinstakilled = TRUE;
+                    //damage += (double)(2 * (Upolyd ? u.mh : u.uhp) + 200);
+                    //if (Upolyd)
+                    //    u.mh = 0;
+                    //else
+                    //    u.uhp = 0;
                     isdisintegrated = TRUE;
                     hittxt = TRUE; /* This means that hit text is already given */
                 }
@@ -2119,7 +2125,7 @@ register struct obj* omonwep;
                 /* this redundancy necessary because you have
                    to take the damage _before_ being cloned;
                    need to have at least 2 hp left to split */
-                if ((double)u.mh + (((double)u.mh_fraction)/10000) - damage >= 2 && (objects[otmp->otyp].oc_material == MAT_IRON
+                if (!isinstakilled && (double)u.mh + (((double)u.mh_fraction)/10000) - damage >= 2 && (objects[otmp->otyp].oc_material == MAT_IRON
                     /* relevant 'metal' objects are scalpel and tsurugi */
                     || objects[otmp->otyp].oc_material == MAT_METAL)
                     && (u.umonnum >= 0 && does_split_upon_hit(&mons[u.umonnum])))
@@ -3126,6 +3132,7 @@ register struct obj* omonwep;
         damage = 0;
         break;
     }
+
     if ((Upolyd ? u.mh : u.uhp) < 1) {
         /* already dead? call rehumanize() or done_in_by() as appropriate */
         mdamageu(mtmp, 1, FALSE);
@@ -3234,8 +3241,15 @@ register struct obj* omonwep;
         permdmg = 0;
         permdmg2 = 0;
     }
+    else if (isinstakilled)
+    {
+        if (Upolyd)
+            u.mh = 0;
+        else
+            u.uhp = 0;
+    }
 
-    if (damage > 0)
+    if (damage > 0 || isinstakilled)
     {
         if (permdmg > 0) 
         { /* Death's life force drain */

@@ -20,7 +20,7 @@ extern boolean notonhead; /* for long worms */
 const char* artifact_invoke_names[NUM_ARTINVOKES] = {
     "taming", "healing", "mana replenishment", "untrapping", "charging",
     "level teleportation", "portal creation", "enlightenment", "arrow creation", "arrow of Diana", "death ray", "blessing of contents", "wishing",
-    "summon demon", "summon air elemental", "recharge itself", "activates the artifact", "time stop"
+    "summon demon", "summon elder air elemental", "recharge itself", "activates the artifact", "time stop"
 };
 
 #define get_artifact(o) \
@@ -1370,10 +1370,11 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
  * Stormbringer it's "killed by Stormbringer" instead of "killed by an orc".
  */
 int
-artifact_hit(magr, mdef, otmp, dmgptr, dieroll)
+artifact_hit(magr, mdef, otmp, dmgptr, instakillptr, dieroll)
 struct monst *magr, *mdef;
 struct obj *otmp;
 double *dmgptr;
+boolean* instakillptr;
 int dieroll; /* needed for Magicbane and vorpal blades */
 {
     boolean youattack = (magr == &youmonst);
@@ -1488,14 +1489,16 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     /* reverse from AD&D. */
     if (artifact_has_flag(otmp, (AF_BEHEAD | AF_BISECT)))
     {
-        if (artifact_has_flag(otmp, AF_BISECT) && dieroll == 1 && !(youdefend ? Bisection_resistance : resists_bisection(mdef)))
+        if (artifact_has_flag(otmp, AF_BISECT) && dieroll == 1 && (!is_shade(mdef->data) || shade_glare(otmp)) && !(youdefend ? (Bisection_resistance || Invulnerable || is_incorporeal(mdef->data)) : resists_bisection(mdef)))
         {
             strcpy(wepdesc, The(artifact_hit_desc));
             /* not really beheading, but close */
             if (youattack && u.uswallow && mdef == u.ustuck) 
             {
                 You("slice %s wide open!", mon_nam(mdef));
-                *dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                //*dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                //mdef->mhp = 0;
+                *instakillptr = TRUE;
                 return 2;
             }
             if (!youdefend) 
@@ -1514,7 +1517,9 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     *dmgptr *= 2;
                     return 2;
                 }
-                *dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                //*dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                //mdef->mhp = 0;
+                *instakillptr = TRUE;
                 pline("%s cuts %s in half!", wepdesc, mon_nam(mdef));
                 otmp->dknown = TRUE;
                 return 2;
@@ -1534,7 +1539,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                  * value to the damage so that this reduction in
                  * damage does not prevent death.
                  */
-                *dmgptr = 2 * (double)(Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
+                //*dmgptr = 2 * (double)(Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
+                //if (Upolyd)
+                //    u.mh = 0;
+                //else
+                //    u.uhp = 0;
+                *instakillptr = TRUE;
                 pline("%s cuts you in half!", wepdesc);
                 otmp->dknown = TRUE;
                 return 2;
@@ -1560,7 +1570,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     *dmgptr = 0;
                     return (youattack || vis) * 2;
                 }
-                if (is_incorporeal(mdef->data) || amorphous(mdef->data)) 
+                if (is_incorporeal(mdef->data) || amorphous(mdef->data) || (is_shade(mdef->data) && !shade_glare(otmp)))
                 {
                     pline("%s slices through %s %s.", The(wepdesc),
                           s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
@@ -1579,7 +1589,9 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 {
                     if (mdef->heads_left > 0)
                         mdef->heads_left--;
-                    *dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                    //*dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                    //mdef->mhp = 0;
+                    *instakillptr = TRUE;
 
                     if(mdef->data->heads <= 1)
                         pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),mon_nam(mdef));
@@ -1600,7 +1612,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     *dmgptr = 0;
                     return 2;
                 }
-                if (is_incorporeal(youmonst.data) || amorphous(youmonst.data))
+                if (is_incorporeal(youmonst.data) || amorphous(youmonst.data) || (is_shade(youmonst.data) && !shade_glare(otmp)))
                 {
                     pline("%s slices through your %s.", The(wepdesc),
                           body_part(NECK));
@@ -1619,7 +1631,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 {
                     if (mdef->heads_left > 0)
                         mdef->heads_left--;
-                    *dmgptr = 2 * (double)(Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
+                    //*dmgptr = 2 * (double)(Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
+                    //if (Upolyd)
+                    //    u.mh = 0;
+                    //else
+                    //    u.uhp = 0;
+                    *instakillptr = TRUE;
 
                     if (mdef->data->heads <= 1)
                         pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), "you");
@@ -1655,7 +1672,9 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             int instakilllevel = obj_has_dual_runesword_bonus(otmp) ? 1 : 0;
             if (mdef->m_lev <= instakilllevel)
             {
-                *dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                //*dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                //mdef->mhp = 0;
+                *instakillptr = TRUE;
             }
             else
             {
