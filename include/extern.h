@@ -1005,7 +1005,7 @@ E long FDECL(get_rotted_status, (struct obj*));
 
 E void NDECL(encounter_init);
 E void FDECL(randomize_encounter, (int, int));
-E void FDECL(create_encounter, (int, int, int));
+E void FDECL(create_encounter, (int, int, int, int));
 E int NDECL(wiz_save_encounters);
 
 

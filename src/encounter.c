@@ -1323,19 +1323,21 @@ int x, y;
     int acceptable_encounter_count = 0;
     int maxmlev = 0, minmlev = 0;
 
-    int max_attk_monsters = 2;
+    int max_attk_monsters = 1;
     if (Is_bigroom(&u.uz))
-        max_attk_monsters = 6;
+        max_attk_monsters = 4;
     else if (In_mines(&u.uz))
-        max_attk_monsters = 3;
+        max_attk_monsters = 2;
 
-    for (int i = 1; i <= 1; i++)
+    int i;
+    for (i = 1; i <= 1; i++)
     {
         totalselectedprob = 0;
 
         get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, 0);
 
-        for (int j = 0; j < MAX_ENCOUNTERS && encounter_list[j].probability > 0; j++)
+        int j;
+        for (j = 0; j < MAX_ENCOUNTERS && encounter_list[j].probability > 0; j++)
         {
             encounter_list[j].insearch = FALSE;
 
@@ -1374,14 +1376,15 @@ int x, y;
 
     if (totalselectedprob > 0)
     {
-        for (int i = 1; i < MAX_ENCOUNTERS; i++)
+        int j;
+        for (int j = 1; j < MAX_ENCOUNTERS; j++)
         {
-            if(encounter_list[i].insearch)
-                totalrollprob += encounter_list[i].probability;
+            if(encounter_list[j].insearch)
+                totalrollprob += encounter_list[j].probability;
 
             if (totalrollprob >= roll)
             {
-                selected_encounter = i;
+                selected_encounter = j;
                 break;
             }
         }
@@ -1390,7 +1393,7 @@ int x, y;
     if (selected_encounter > 0)
     {
         context.encounter_appeared[encounter_list[selected_encounter].encounterdefid] = TRUE;
-        create_encounter(selected_encounter, x, y);
+        create_encounter(selected_encounter, x, y, max_attk_monsters);
     }
     else
     {
@@ -1402,19 +1405,18 @@ int x, y;
 
 
 void
-create_encounter(selected_encounter, x, y)
-int selected_encounter, x, y;
+create_encounter(selected_encounter, x, y, max_attk_monsters)
+int selected_encounter, x, y, max_attk_monsters;
 {
-    int max_attk_monsters = 1;
-    if (Is_bigroom(&u.uz))
-        max_attk_monsters = 4;
-    else if (In_mines(&u.uz))
-        max_attk_monsters = 2;
+    /* Check minimum level for encounter monsters */
+    int minlevel, maxlevel;
+    get_generated_monster_minmax_levels(2, &minlevel, &maxlevel, 1);
 
     /* Calculate experience first */
     long encounter_experience = 1 + encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters] * encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters];
     long total_monster_experience = 0;
     long total_monster_difficulty = 0;
+    int mcnt = 0;
 
     boolean upper = Is_really_rogue_level(&u.uz);
     boolean elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
@@ -1459,6 +1461,8 @@ int selected_encounter, x, y;
 
         if (mvitals[pmid].mvflags & MV_GONE)
             continue;
+        if (mons[pmid].difficulty < minlevel)
+            continue;
         if (upper && !isupper((uchar)def_monsyms[(int)mons[pmid].mlet].sym))
             continue;
         if (elemlevel && wrong_elem_type(&mons[pmid]))
@@ -1488,6 +1492,7 @@ int selected_encounter, x, y;
 
         if(mon)
         {
+            mcnt++;
             if (nx == 0 && ny == 0)
             {
                 nx = mon->mx;
@@ -1630,6 +1635,8 @@ int selected_encounter, x, y;
             }
         }
     }
+    if(!mcnt)
+        makemon((struct permonst*)0, x, y, NO_MM_FLAGS);
 }
 
 
