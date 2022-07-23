@@ -186,7 +186,7 @@ stealarm(VOID_ARGS)
                     if (otmp->unpaid)
                         subfrombill(otmp, shop_keeper(*u.ushops));
                     freeinv(otmp);
-                    pline("%s steals %s!", Monnam(mtmp), doname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s steals %s!", Monnam(mtmp), doname(otmp));
                     (void) mpickobj(mtmp, otmp); /* may free otmp */
                     /* Implies seduction, "you gladly hand over ..."
                        so we don't set mavenge bit here. */
@@ -308,9 +308,9 @@ char *objnambuf;
     nothing_to_steal:
         /* Not even a thousand men in armor can strip a naked man. */
         if (Blind)
-            pline("Somebody tries to rob you, but finds nothing to steal.");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Somebody tries to rob you, but finds nothing to steal.");
         else
-            pline("%s tries to rob you, but there is nothing to steal!",
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s tries to rob you, but there is nothing to steal!",
                   Monnam(mtmp));
         return 1; /* let her flee */
     }
@@ -392,7 +392,7 @@ gotobj:
             static const char *const how[] = { "steal", "snatch", "grab",
                                                "take" };
         cant_take:
-            pline("%s tries to %s %s%s but gives up.", Monnam(mtmp),
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s tries to %s %s%s but gives up.", Monnam(mtmp),
                   how[rn2(SIZE(how))],
                   (otmp->owornmask & W_ARMOR) ? "your " : "",
                   (otmp->owornmask & W_ARMOR) ? equipname(otmp)
@@ -417,7 +417,11 @@ gotobj:
     /* you're going to notice the theft... */
     stop_occupation();
 
-    if (otmp->owornmask & (W_ARMOR | W_ACCESSORY)) {
+    long wmask = W_WORN_NOT_WIELDED;
+    if (uarms && is_shield(uarms))
+        wmask |= W_ARMS;
+
+    if (otmp->owornmask & wmask) {
         switch (otmp->oclass) {
         case TOOL_CLASS:
         case AMULET_CLASS:
@@ -448,7 +452,7 @@ gotobj:
                     unmul((char *) 0);
                 slowly = (armordelay >= 1 || multi < 0 || Sleeping || Paralyzed_or_immobile);
                 if (flags.female)
-                    pline("%s charms you.  You gladly %s your %s.",
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s charms you.  You gladly %s your %s.",
                           !seen ? "She" : Monnam(mtmp),
                           curssv ? "let her take"
                                  : !slowly ? "hand over"
@@ -456,7 +460,7 @@ gotobj:
                                                          : "start removing",
                           equipname(otmp));
                 else
-                    pline("%s seduces you and %s off your %s.",
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s seduces you and %s off your %s.",
                           !seen ? "She" : Adjmonnam(mtmp, "beautiful"),
                           curssv
                               ? "helps you to take"
@@ -502,7 +506,7 @@ gotobj:
         subfrombill(otmp, shop_keeper(*u.ushops));
     freeinv(otmp);
     play_sfx_sound(SFX_STEAL_ITEM);
-    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s stole %s.", named ? "She" : Monnam(mtmp), doname(otmp));
+    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s stole %s.", named ? "She" : Monnam(mtmp), doname(otmp));
     could_petrify =
         (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm]));
     (void) mpickobj(mtmp, otmp); /* may free otmp */
@@ -656,7 +660,7 @@ struct monst *mtmp;
         Strcpy(buf, doname(otmp));
         (void) mpickobj(mtmp, otmp); /* could merge and free otmp but won't */
         play_sfx_sound(SFX_STEAL_ITEM);
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s steals %s!", Monnam(mtmp), buf);
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s steals %s!", Monnam(mtmp), buf);
         if (has_teleportation(mtmp) && !tele_restrict(mtmp))
         {
             (void)rloc2(mtmp, TRUE, TRUE);

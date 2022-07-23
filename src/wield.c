@@ -1479,7 +1479,7 @@ const char *verb; /* "rub",&c */
     more_than_1 = (obj->quan > 1L || strstri(what, "pair of ") != 0
                    || strstri(what, "s of ") != 0);
 
-    if (obj->owornmask & ((W_ARMOR & ~W_ARMS) | W_ACCESSORY))
+    if (obj->owornmask & W_WORN_NOT_WIELDED)
     {
         You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s while wearing %s.", verb, yname(obj),
                  more_than_1 ? "them" : "it");

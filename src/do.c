@@ -5351,7 +5351,7 @@ canletgo(obj, word)
 struct obj *obj;
 const char *word;
 {
-    if (obj->owornmask & ((W_ARMOR & ~W_ARMS) | W_ACCESSORY)) {
+    if (obj->owornmask & W_WORN_NOT_WIELDED) {
         if (*word)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);

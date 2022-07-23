@@ -1768,7 +1768,7 @@ boolean *effect_happened_ptr;
                 Sprintf(effbuf, !Blind
                     ? "%s then fades."
                     : "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
-                pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, effbuf, !Blind ? "Glow" : "Warm Feeling", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+                pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, effbuf, otyp == SPE_ENCHANT_ARMOR ? "Enchant Armor" : "Protect Armor", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
                 sobj = 0;
                 break;
             }
@@ -1891,7 +1891,9 @@ boolean *effect_happened_ptr;
             (Blind || same_color)
             ? "" : hcolor(scursed ? NH_BLACK : NH_SILVER),
             (s * s > 1) ? "while" : "moment");
-        pline_ex1_popup(ATR_NONE, scursed ? CLR_MSG_NEGATIVE : CLR_MSG_POSITIVE, effbuf, Blind ? "Vibration" : "Glow", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+        pline_ex1_popup(ATR_NONE, scursed ? CLR_MSG_NEGATIVE : CLR_MSG_POSITIVE, effbuf, 
+            known || otmp->oclass == SPBOOK_CLASS ? "Enchant Armor" : Blind ? "Magical Vibration" : "Magical Glow", 
+            sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
 
         /* [this cost handling will need updating if shop pricing is
            ever changed to care about curse/bless status of armor] */
@@ -2274,7 +2276,7 @@ boolean *effect_happened_ptr;
                 Sprintf(effbuf, !Blind
                     ? "%s then fades."
                     : "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
-                pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, effbuf, !Blind ? "Glow" : "Warm Feeling", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+                pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, effbuf, otyp == SPE_ENCHANT_WEAPON ? "Enchant Weapon" : "Protect Weapon", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
                 sobj = 0;
                 break;
             }
@@ -2855,7 +2857,7 @@ boolean *effect_happened_ptr;
                         Sprintf(effbuf, "%s with %s aura.", Yobjnam2(otmp, "glow"), an(glowcolor));
                     else
                         Sprintf(effbuf, "%s %s.", Yobjnam2(otmp, "glow"), glowcolor);
-                    pline_ex1_popup(ATR_NONE, textcolor, effbuf, "Glow", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+                    pline_ex1_popup(ATR_NONE, textcolor, effbuf, otyp == SPE_BLESS ? "Bless" : "Curse", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
                     iflags.last_msg = PLNMSG_OBJ_GLOWS;
                     otmp->bknown = !Hallucination;
                     /* potions of water are the only shop goods whose price depends
@@ -2956,7 +2958,7 @@ boolean *effect_happened_ptr;
                     Sprintf(effbuf, !Blind
                         ? "%s then fades."
                         : "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
-                pline_ex1_popup(ATR_NONE, effcolor, effbuf, !Blind ? "Glow" : "Warm Feeling", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
+                pline_ex1_popup(ATR_NONE, effcolor, effbuf, "Enchant Accessory", sobj ? (sobj->speflags & SPEFLAGS_SERVICED_SPELL) != 0 : 0);
                 sobj = 0;
                 break;
             }

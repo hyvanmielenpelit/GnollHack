@@ -7572,7 +7572,7 @@ int npc_identification_type_index;
     }
     else if (npc_identification_type_index == 2)
     {
-        if (otmp->oclass == RING_CLASS || otmp->oclass == MISCELLANEOUS_CLASS || objects[otmp->otyp].oc_charged > CHARGED_NOT_CHARGED)
+        if (otmp->oclass == AMULET_CLASS || otmp->oclass == RING_CLASS || otmp->oclass == MISCELLANEOUS_CLASS || objects[otmp->otyp].oc_charged > CHARGED_NOT_CHARGED)
             return TRUE;
         else
             return FALSE;
