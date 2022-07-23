@@ -1814,7 +1814,7 @@ boolean dopopup;
     char buf[BUFSZ] = "";
     boolean enchwepknown = FALSE;;
     if (otmp && (otmp->oclass = SPBOOK_CLASS || objects[otmp->otyp].oc_name_known))
-        enchwepknown = "Enchant Weapon";
+        enchwepknown = TRUE;
 
     if (!weapon || !((is_weapon(weapon) || is_ammo(weapon)) && objects[weapon->otyp].oc_enchantable)) 
     {
