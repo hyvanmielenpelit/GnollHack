@@ -2701,7 +2701,7 @@ register struct obj* omonwep;
             }
             if (is_animal(mtmp->data) && *buf) {
                 if (canseemon(mtmp))
-                    pline("%s tries to %s away with %s.", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s tries to %s away with %s.", Monnam(mtmp),
                           locomotion(mtmp->data, "run"), buf);
             }
             monflee(mtmp, 0, FALSE, FALSE);

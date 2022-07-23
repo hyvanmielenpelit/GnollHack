@@ -783,6 +783,7 @@ E void FDECL(adj_abon, (struct obj *, SCHAR_P));
 E boolean FDECL(inaccessible_equipment, (struct obj *, const char *, BOOLEAN_P));
 E int NDECL(get_role_AC_bonus);
 E int NDECL(get_role_MC_bonus);
+E int FDECL(armor_or_accessory_off, (struct obj*));
 
 /* ### dog.c ### */
 

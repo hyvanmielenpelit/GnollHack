@@ -238,10 +238,10 @@ namespace GnollHackClient
                     res = 1024;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
-                    res = 880;
+                    res = 550;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_OPTIONS:
-                    res = 1024;
+                    res = 660;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_HELP:
                     res = 880;

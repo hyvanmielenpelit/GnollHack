@@ -56,7 +56,6 @@ STATIC_DCL struct obj *NDECL(do_takeoff);
 STATIC_PTR int NDECL(take_off);
 STATIC_DCL int FDECL(menu_remarm, (int));
 STATIC_DCL void FDECL(count_worn_stuff, (struct obj **, BOOLEAN_P));
-STATIC_PTR int FDECL(armor_or_accessory_off, (struct obj *));
 STATIC_PTR int FDECL(accessory_or_armor_on, (struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(already_wearing, (const char *));
 #if 0
@@ -1233,7 +1232,7 @@ boolean accessorizing;
 
 /* take off one piece or armor or one accessory;
    shared by dotakeoff('T') and doremring('R') */
-STATIC_OVL int
+int
 armor_or_accessory_off(obj)
 struct obj *obj;
 {

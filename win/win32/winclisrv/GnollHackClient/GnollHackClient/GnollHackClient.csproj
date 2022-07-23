@@ -226,6 +226,7 @@
     <None Remove="Assets\UI\travel.png" />
     <None Remove="Assets\UI\twoweap.png" />
     <None Remove="Assets\UI\untrap.png" />
+    <None Remove="Assets\UI\unwield.png" />
     <None Remove="Assets\UI\viewspell.png" />
     <None Remove="Assets\UI\vitruvian-gnoll.png" />
     <None Remove="Assets\UI\wait.png" />
@@ -264,6 +265,7 @@
     <EmbeddedResource Include="Assets\main-menu-gnoll.jpg" />
     <EmbeddedResource Include="Assets\main-menu-ranger.jpg" />
     <EmbeddedResource Include="Assets\UI\autopickup.png" />
+    <EmbeddedResource Include="Assets\UI\unwield.png" />
     <Page Include="Assets\imrl.otf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />

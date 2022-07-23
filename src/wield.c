@@ -658,17 +658,25 @@ dounwield()
     else
         return 0;
 
-    if (welded(otmp, &youmonst))
+    int result;
+    if (mask == W_WEP2 && otmp == uarms && is_shield(otmp))
     {
-        weldmsg(otmp);
-        /* previously interrupted armor removal mustn't be resumed */
-        reset_remarm();
-        return 0;
+        result = armor_or_accessory_off(otmp);
+    }
+    else
+    {
+        if (welded(otmp, &youmonst))
+        {
+            weldmsg(otmp);
+            /* previously interrupted armor removal mustn't be resumed */
+            reset_remarm();
+            return 0;
+        }
+        result = ready_weapon((struct obj*)0, mask);
     }
 
-    int result = ready_weapon((struct obj*)0, mask);
     boolean unwield_succeeded = mask == W_WEP ? (uwep == (struct obj*)0) : (uwep2 == (struct obj*)0);
-    if (unwield_succeeded)
+    if (unwield_succeeded) //Note: shield unwearing may take longer
     {
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_UNWIELD);
         update_all_character_properties((struct obj*)0, TRUE);
