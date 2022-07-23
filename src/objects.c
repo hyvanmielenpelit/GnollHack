@@ -775,10 +775,10 @@ WEAPON("war hammer", None,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE,
     PERMITTED_ALL, ALL_TARGETS),
-WEAPON("heavy war hammer", "runed war hammer", /* Base object for Mjollnir */
+WEAPON("heavy war hammer", "runed war hammer", /* Base object for Mjollnir; implements return to hand after throwing for valkyries and some other minor features */
     0, 0, 1, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 100, 1000,
     AD_PHYS, 1, 8, 1, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_GENERIC,
     O1_INDESTRUCTIBLE | O1_MELEE_AND_THROWN_WEAPON | O1_WEIGHT_DOES_NOT_REDUCE_RANGE | O1_RETURNS_TO_HAND_AFTER_THROWING | O1_CAN_BE_THROWN_ONLY_IF_WIELDED,
     O2_NONE, 

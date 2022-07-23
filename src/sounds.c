@@ -9528,14 +9528,14 @@ struct monst* mtmp;
         otmp->oeroded = otmp->oeroded2 = 0;
         Sprintf(talkbuf, "%s as good as new!",
             Yobjnam2(otmp, Blind ? "feel" : "look"));
-        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "As Good As New", TRUE);
+        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "Repair Armor", TRUE);
     }
     else
     {
         otmp->oeroded = otmp->oeroded2 = 0;
         Sprintf(talkbuf, "%s as good as new, just like %s before!",
             Yobjnam2(otmp, Blind ? "feel" : "look"), otmp->quan == 1 ? "it was" : "they were");
-        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "As Good As New", TRUE);
+        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "Repair Armor", TRUE);
     }
     update_inventory();
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
@@ -9586,14 +9586,14 @@ struct monst* mtmp;
         otmp->oeroded = otmp->oeroded2 = 0;
         Sprintf(talkbuf, "%s as good as new!",
             Yobjnam2(otmp, Blind ? "feel" : "look"));
-        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "As Good As New", TRUE);
+        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "Repair Weapon", TRUE);
     }
     else
     {
         otmp->oeroded = otmp->oeroded2 = 0;
         Sprintf(talkbuf, "%s as good as new, just like %s before!",
             Yobjnam2(otmp, Blind ? "feel" : "look"), otmp->quan == 1 ? "it was" : "they were");
-        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "As Good As New", TRUE);
+        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "Repair Weapon", TRUE);
     }
     update_inventory();
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
@@ -9714,7 +9714,7 @@ struct monst* mtmp;
         delay_output_milliseconds(2000);
 #endif
 
-    dragon_scales_to_scale_mail(otmp, FALSE);
+    dragon_scales_to_scale_mail(otmp, FALSE, TRUE);
 
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
     Strcpy(talkbuf, "Thank you for using my services.");

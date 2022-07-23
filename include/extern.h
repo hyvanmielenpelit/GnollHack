@@ -2731,7 +2731,7 @@ E void FDECL(read_the_ruling_ring, (struct obj*));
 E void FDECL(strip_charges, (struct obj*, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(p_glow1, (struct obj*, int, int, const char*, BOOLEAN_P));
 E void FDECL(p_glow2, (struct obj*, const char*, int, int, const char*, BOOLEAN_P));
-E void FDECL(dragon_scales_to_scale_mail, (struct obj*, BOOLEAN_P));
+E void FDECL(dragon_scales_to_scale_mail, (struct obj*, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(get_valid_targeted_position, (int, int, int));
 E boolean FDECL(get_valid_stinking_cloud_pos, (int, int));
 E boolean FDECL(is_valid_stinking_cloud_pos, (int, int, BOOLEAN_P));

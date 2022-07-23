@@ -1867,7 +1867,7 @@ boolean *effect_happened_ptr;
 
         if (s >= 0 && is_dragon_scales(otmp)) 
         {
-            dragon_scales_to_scale_mail(otmp, sblessed);
+            dragon_scales_to_scale_mail(otmp, sblessed, FALSE);
             break;
         }
 
@@ -4506,9 +4506,9 @@ create_particular()
 }
 
 void
-dragon_scales_to_scale_mail(otmp, sblessed)
+dragon_scales_to_scale_mail(otmp, sblessed, dopopup)
 struct obj* otmp;
-boolean sblessed;
+boolean sblessed, dopopup;
 {
     if (!otmp || !is_dragon_scales(otmp))
         return;
@@ -4521,7 +4521,9 @@ boolean sblessed;
     special_effect_wait_until_action(0);
 
     /* dragon scales get turned into dragon scale mail */
-    pline("%s merges and hardens!", Yname2(otmp));
+    char buf[BUFSZ];
+    Sprintf(buf, "%s merges and hardens!", Yname2(otmp));
+    pline_ex1_popup(ATR_NONE, NO_COLOR, buf, "Dragon Scale Mail", dopopup);
 
     if(worn)
         setworn((struct obj*)0, W_ARM);
