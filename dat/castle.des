@@ -112,7 +112,9 @@ OBJECT:('(',"sarcophagus"),(70,15)
 OBJECT:('(',"sarcophagus"),(64,04)
 OBJECT:('(',"sarcophagus"),(70,04)
 OBJECT:('(',"sarcophagus"),(64,06)
-OBJECT:('(',"sarcophagus"),(70,06)
+CONTAINER:('(',"sarcophagus"),(70,06) {
+    OBJECT:('/',"town portal")
+}
 OBJECT:('(',"sarcophagus"),(64,10)
 OBJECT:('(',"sarcophagus"),(70,10)
 OBJECT:('(',"sarcophagus"),(64,12)
@@ -272,7 +274,6 @@ ENGRAVING:$place[0],burn,"Gilthoniel"
 # The treasure of the lord
 CONTAINER:('(',"chest"),trapped,locked,no_pickup,(37,08) {
     OBJECT:artifact
-    OBJECT:('/',"town portal")
     OBJECT:('(',"skeleton key")
     OBJECT:('$',"gold piece"), quantity:(500+(3d1000))
     [50%]:OBJECT:random_contents

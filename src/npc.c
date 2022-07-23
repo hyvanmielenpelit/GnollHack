@@ -613,6 +613,23 @@ int mtype;
             otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_PRINCIPLES_OF_MAGIC, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
+
+            mongets(npc, WAN_TOWN_PORTAL);
+            otmp = mkobj(WAND_CLASS, TRUE, TRUE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+            if (!rn2(2))
+            {
+                otmp = mkobj(WAND_CLASS, TRUE, TRUE);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+            if (!rn2(2))
+            {
+                otmp = mkobj(WAND_CLASS, TRUE, TRUE);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
             break;
         }
         default:

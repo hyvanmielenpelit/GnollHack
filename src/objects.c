@@ -3332,7 +3332,7 @@ WAND("ore detection", "orichalcum", None, None, "Detects nuggets of ore on the d
     CHARGED_1D4_4, RECHARGING_WAND_GENERAL, 30, 200, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_ORICHALCUM, HI_GOLD, OBJECT_SOUNDSET_WAND, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 WAND("trap detection", "mahogany", None, None, "Detects traps on the level.",
     CHARGED_1D4_4, RECHARGING_WAND_GENERAL, 30, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, OBJECT_SOUNDSET_WAND, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
-WAND("town portal", "blackwood", None, None, "Teleports to the Mine Town and back.\nFails with nearby hostile creatures and recent combat damage.",
+WAND("town portal", "blackwood", None, None, "Teleports you to Mine Town, or another waypoint, and back.\nFails with nearby hostile creatures and recent combat damage.",
     CHARGED_WAND_NORMAL_NODIR, RECHARGING_WAND_GENERAL, 25, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, CLR_BLACK, OBJECT_SOUNDSET_WAND, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 WAND("enlightenment", "crystal", None, None, "Reveals detailed information about your statistics.",
     CHARGED_WAND_NORMAL_NODIR, RECHARGING_WAND_GENERAL, 25, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_CRYSTAL, HI_GLASS, OBJECT_SOUNDSET_WAND, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
