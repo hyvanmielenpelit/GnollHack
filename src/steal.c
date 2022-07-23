@@ -129,7 +129,7 @@ register struct monst *mtmp;
         /* reduce "rear hooves/claws" to "hooves/claws" */
         if (!strncmp(what, "rear ", 5))
             what += 5;
-        pline("%s quickly snatches some gold from %s %s %s!", Monnam(mtmp),
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s quickly snatches some gold from %s %s %s!", Monnam(mtmp),
               (Levitation || Flying) ? "beneath" : "between", whose, what);
         if (!ygold || !rn2(5)) {
             if (!tele_restrict(mtmp))
@@ -152,10 +152,10 @@ register struct monst *mtmp;
 
         char ftbuf[BUFSZ];
         Sprintf(ftbuf, "-%ld gold", tmp);
-        display_floating_text(u.ux, u.uy, ftbuf, FLOATING_TEXT_GOLD_STOLEN, ATR_NONE, NO_COLOR, 0UL);
+        display_floating_text(u.ux, u.uy, ftbuf, FLOATING_TEXT_GOLD_REDUCED, ATR_NONE, NO_COLOR, 0UL);
 
         play_sfx_sound(SFX_STEAL_GOLD);
-        Your("purse feels lighter.");
+        Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "purse feels lighter.");
         if (!tele_restrict(mtmp))
         {
             (void)rloc2(mtmp, TRUE, TRUE);
