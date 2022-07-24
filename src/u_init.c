@@ -2110,9 +2110,9 @@ boolean is_past_participle;
     {
     case ROLE_ARCHAEOLOGIST:
         if(is_past_participle)
-            res = "defeated three greater mummy pharaohs";
+            res = "defeated two greater mummy pharaohs";
         else
-            res = "defeat three greater mummy pharaohs";
+            res = "defeat two greater mummy pharaohs";
         break;
     case ROLE_BARBARIAN:
         if (u.ualignbase[A_ORIGINAL] == A_CHAOTIC)

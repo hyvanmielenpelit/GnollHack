@@ -544,7 +544,7 @@ struct obj *box;
         n = 3;
         break;
     case SARCOPHAGUS:
-        n = 7;
+        n = 4;
         break;
     case SACK:
     case OILSKIN_SACK:
@@ -616,8 +616,8 @@ struct obj *box;
         }
         else if (box->otyp == SARCOPHAGUS || box->otyp == COFFIN)
         {
-            char item_classes[5] = { COIN_CLASS, GEM_CLASS, MISCELLANEOUS_CLASS, AMULET_CLASS, RING_CLASS };
-            otmp = mkobj(item_classes[rn2(5)], TRUE, TRUE);
+            char item_classes[6] = { COIN_CLASS, GEM_CLASS, MISCELLANEOUS_CLASS, AMULET_CLASS, RING_CLASS, WEAPON_CLASS };
+            otmp = mkobj(item_classes[rn2(6)], TRUE, TRUE);
             if (otmp->oclass == COIN_CLASS)
             {
                 /* 2.5 x level's usual amount; weight adjusted below */

@@ -3301,7 +3301,7 @@ unsigned long mdiedflags;
     }
 
     if (!u.uachieve.role_achievement &&
-        (      (Role_if(PM_ARCHAEOLOGIST) && mtmp->mnum == PM_GREATER_MUMMY_PHARAOH && mvitals[mtmp->mnum].died >= 3)
+        (      (Role_if(PM_ARCHAEOLOGIST) && mtmp->mnum == PM_GREATER_MUMMY_PHARAOH && mvitals[mtmp->mnum].died >= 2)
             || (Role_if(PM_ROGUE) && mtmp->mnum == PM_CROESUS)
         )
        )

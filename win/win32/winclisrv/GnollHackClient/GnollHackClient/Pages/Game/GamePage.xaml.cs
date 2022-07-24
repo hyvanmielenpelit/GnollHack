@@ -4116,8 +4116,13 @@ namespace GnollHackClient.Pages.Game
                             relativestrokewidth = _screenText.GetRelativeTextOutlineWidth(maincountervalue);
                             strokecolor = _screenText.GetTextOutlineColor(maincountervalue);
                             str = _screenText.GetText(maincountervalue);
+                            string fontsizestr;
+                            if (str.Length < 5) // Make sure the text does not become too big
+                                fontsizestr = "TestA";
+                            else
+                                fontsizestr = str;
                             textPaint.TextSize = UsedFontSize;
-                            textPaint.MeasureText(str, ref textBounds);
+                            textPaint.MeasureText(fontsizestr, ref textBounds);
                             if (textBounds.Width > 0)
                             {
                                 float relativesize = targetwidth / textBounds.Width;

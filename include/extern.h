@@ -2243,7 +2243,8 @@ E void NDECL(rename_disco);
 E void FDECL(randomize_mythic_quality, (struct obj*, UCHAR_P, uchar*, uchar*));
 E boolean FDECL(is_mythic_affix_ok, (UCHAR_P, UCHAR_P, struct obj*, UCHAR_P));
 E double FDECL(get_mythic_dmg_multiplier, (struct obj*, struct monst*, struct monst*));
-
+E int FDECL(get_obj_exceptionality_ac_bonus, (struct obj*));
+E int FDECL(get_obj_exceptionality_mc_bonus, (struct obj*));
 
 /* ### objects.c ### */
 

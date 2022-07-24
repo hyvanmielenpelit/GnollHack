@@ -1356,4 +1356,31 @@ struct monst* mattacker UNUSED;
 
     return multiplier;
 }
+
+int
+get_obj_exceptionality_ac_bonus(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    if (obj->exceptionality > 0 && (is_armor(obj) || (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)))
+    {
+        if (obj->exceptionality > EXCEPTIONALITY_ELITE)
+            return 3;
+        else
+            return obj->exceptionality;
+    }
+}
+
+int
+get_obj_exceptionality_mc_bonus(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    return get_obj_exceptionality_ac_bonus(obj) / 3;
+}
+
 /*o_init.c*/

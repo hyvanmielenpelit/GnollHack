@@ -5474,7 +5474,7 @@ dump_spells()
             Strcpy(spellnamebuf, spellname(i));
             *spellnamebuf = highc(*spellnamebuf);
 
-            Sprintf(buf, " %s - %d%% success%s", spellnamebuf, percent_success(i), castingsbuf);
+            Sprintf(buf, " %s (%d%% success%s)", spellnamebuf, percent_success(i), castingsbuf);
             putstr(0, 0, buf);
         }
     }

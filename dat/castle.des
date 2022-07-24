@@ -107,18 +107,46 @@ MONSTER:('z',"skeleton king"),(67,15)
 [50%]:OBJECT:'9',(67,15)
 OBJECT:('+',"manual"),(69,15),manual_type:manual_infernal_inhabitants
 
-OBJECT:('(',"sarcophagus"),(64,01)
-OBJECT:('(',"sarcophagus"),(70,15)
-OBJECT:('(',"sarcophagus"),(64,04)
-OBJECT:('(',"sarcophagus"),(70,04)
-OBJECT:('(',"sarcophagus"),(64,06)
-CONTAINER:('(',"sarcophagus"),(70,06) {
-    OBJECT:('/',"town portal")
+
+$sarcophagus_place = { (64,01), (70,15), (64,04), (70,04), (64,06), (70,06), (64,10), (70,10), (64,12), (70,12) }
+#SHUFFLE: $sarcophagus_place
+
+
+OBJECT:('(',"sarcophagus"),$sarcophagus_place[0]
+OBJECT:('(',"sarcophagus"),$sarcophagus_place[1]
+CONTAINER:('(',"sarcophagus"),$sarcophagus_place[2] {
+    OBJECT:('/',"nothing")
+    OBJECT:('9',"human skull")
+    OBJECT:('9',"bone")
+    IF [50%] {
+        OBJECT:('[',"royal crown")
+    }
 }
-OBJECT:('(',"sarcophagus"),(64,10)
-OBJECT:('(',"sarcophagus"),(70,10)
-OBJECT:('(',"sarcophagus"),(64,12)
-OBJECT:('(',"sarcophagus"),(70,12)
+OBJECT:('(',"sarcophagus"),$sarcophagus_place[3]
+OBJECT:('(',"sarcophagus"),$sarcophagus_place[4]
+CONTAINER:('(',"sarcophagus"),$sarcophagus_place[5] {
+    OBJECT:('/',"town portal")
+    OBJECT:('9',"human skull")
+    OBJECT:('9',"bone")
+    IF [50%] {
+        OBJECT:('[',"royal crown")
+    }
+}
+OBJECT:('(',"sarcophagus"),$sarcophagus_place[6]
+OBJECT:('(',"sarcophagus"),$sarcophagus_place[7]
+CONTAINER:('(',"sarcophagus"),$sarcophagus_place[8] {
+    OBJECT:('9',"human skull")
+    OBJECT:('9',"bone")
+    IF [50%] {
+        OBJECT:('/',"trap detection")
+    } ELSE {
+        OBJECT:('(',"crystal ball")
+    }
+    IF [50%] {
+        OBJECT:('[',"royal crown")
+    }
+}
+OBJECT:('(',"sarcophagus"),$sarcophagus_place[9]
 
 FOUNTAIN:(10,08),fountain_power
 BRAZIER:(02,08)

@@ -1529,7 +1529,7 @@ register struct obj* obj;
 
         if (obj->exceptionality)
         {
-            Sprintf(buf, "Quality:                %s", obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional (double base damage)" :
+                Sprintf(buf, "Weapon quality:         %s", obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional (double base damage)" :
                 obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite (triple base damage)" :
                 obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial (quadruple base damage)" :
                 obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial (quadruple base damage)" :
@@ -1906,26 +1906,59 @@ register struct obj* obj;
 
     boolean affectsac = (obj->oclass == ARMOR_CLASS
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
+            || has_obj_mythic_defense(obj)
             || (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_armor_class != 0)
             );
 
     boolean affectsmc = (obj->oclass == ARMOR_CLASS
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
+            || has_obj_mythic_defense(obj)
             || (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_magic_cancellation != 0)
             || (stats_known && objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
             );
 
 
+    if ((obj->oclass == ARMOR_CLASS
+        || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
+        || has_obj_mythic_defense(obj)) 
+        && obj->exceptionality)
+    {
+        const char* excep = obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional" :
+            obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite" :
+            obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial" :
+            obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial" :
+            obj->exceptionality == EXCEPTIONALITY_INFERNAL ? "Infernal" :
+            "Unknown quality";
+
+        Sprintf(buf, "Armor quality:          %s", excep);
+        int acbon = get_obj_exceptionality_ac_bonus(obj);
+        int mcbon = get_obj_exceptionality_mc_bonus(obj);
+        if (acbon > 0 || mcbon > 0)
+        {
+            Strcat(buf, " (");
+            if (acbon > 0)
+                Sprintf(eos(buf), "-%d AC", acbon);
+            if (mcbon > 0)
+            {
+                if (acbon > 0)
+                    Strcat(buf, ", ");
+                Sprintf(eos(buf), "+%d MC", mcbon);
+            }
+            Strcat(buf, ")");
+        }
+        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+    }
+
     if (affectsac)
     {
+        long shownacbonus = -objects[otyp].oc_armor_class;
         if (flags.baseacasbonus)
         {
-            long shownacbonus = -objects[otyp].oc_armor_class;
             Sprintf(buf, "Base armor class bonus: %s%ld", shownacbonus >= 0 ? "+" : "", shownacbonus);
         }
         else
         {
-            Sprintf(buf, "Base armor class:       %ld", 10L - objects[otyp].oc_armor_class);
+            Sprintf(buf, "Base armor class:       %ld", 10L + shownacbonus);
         }
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_COLON, txt);
@@ -6954,7 +6987,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             Sprintf(lvlbuf, "Level %d", u.uz.dlevel);
         }
         int curdepth = (int)depth(&u.uz);
-        if(curdepth != (int)u.uz.dlevel || special_lvl)
+        if(!In_endgame(&u.uz) && (curdepth != (int)u.uz.dlevel || special_lvl))
             Sprintf(lvlbuf2, "Dungeon Level %d", curdepth);
         else
             strcpy(lvlbuf2, "");
