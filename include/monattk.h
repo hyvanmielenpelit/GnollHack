@@ -69,7 +69,7 @@
 #define AD_SEDU 22  /* seduces & steals multiple items */
 #define AD_TLPT 23  /* teleports you (Quantum Mech.) */
 #define AD_RUST 24  /* rusts armour (Rust Monster)*/
-#define AD_CONF 25  /* confuses (Underworld Hulk) */
+#define AD_CONF 25  /* confuses (Umbral Hulk) */
 #define AD_DGST 26  /* digests opponent (trapper, etc.) */
 #define AD_HEAL 27  /* heals opponent's wounds (nurse) */
 #define AD_WRAP 28  /* special "stick" for eels */

@@ -24,6 +24,8 @@ GEOMETRY:center,center
 # portal to the next level is randomly chosen.
 # This map has no visible outer boundary, and
 # is mostly diggable "rock".
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
                                                                             
   ###                                                                       
@@ -55,7 +57,7 @@ PORTAL:(0,0,75,19),(65,13,75,19),"air"
 #  Some helpful monsters.  Making sure a
 #  pick axe and at least one wand of digging
 #  are available.
-MONSTER:('@',"Elvenking"),(67,16)
+MONSTER:('@',"Elvenking"),(67,16),maxhp,level_adjustment:10
 MONSTER:('H',"minotaur"),(67,14)
 #  An assortment of earth-appropriate nasties
 #  in each cavern.
@@ -65,7 +67,9 @@ MONSTER:('T',"rock troll"),(53,12)
 MONSTER:('H',"stone giant"),(54,12)
 #
 MONSTER:('S',"pit viper"),(70,05)
-MONSTER:('&',"barbed devil"),(69,06)
+MONSTER:('&',"barbed devil"),(69,06) {
+  OBJECT:('?', "magic mapping"),notcursed
+}
 MONSTER:('H',"stone giant"),(69,08)
 MONSTER:(''',"stone golem"),(71,08)
 MONSTER:('&',"pit fiend"),(70,09)
@@ -110,7 +114,9 @@ MONSTER:('E',"elder earth elemental"),(22,06),hostile
 MONSTER:('E',"earth elemental"),(23,06),hostile
 #
 MONSTER:('S',"pit viper"),(14,08)
-MONSTER:('&',"barbed devil"),(14,09)
+MONSTER:('&',"barbed devil"),(14,09) {
+  OBJECT:('/', "digging"),notcursed
+}
 MONSTER:('E',"elder earth elemental"),(13,10),hostile
 MONSTER:('T',"rock troll"),(12,11)
 MONSTER:('E',"elder earth elemental"),(14,12),hostile
@@ -126,6 +132,15 @@ MONSTER:('E',"elder earth elemental"),(03,16),hostile
 MONSTER:('T',"rock troll"),(02,17)
 MONSTER:('E',"earth elemental"),(04,17),hostile
 MONSTER:('E',"elder earth elemental"),(04,18),hostile
+#
+MONSTER:('h',"dwarf king"),(26,14),maxhp,level_adjustment:10 {
+  OBJECT:(')', "dwarvish axe"),notcursed
+  OBJECT:('[', "dwarvish iron helm"),notcursed
+  OBJECT:('[', "dwarvish roundshield"),notcursed
+  OBJECT:('[', "dwarvish mithril-coat"),notcursed
+  OBJECT:('(', "pick-axe"),notcursed
+  OBJECT:('?', "magic mapping"),notcursed
+}
 
 OBJECT:('`',"boulder"),random
 

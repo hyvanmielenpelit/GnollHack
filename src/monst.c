@@ -3967,7 +3967,7 @@ struct permonst _mons2[] = {
         ACTION_INFO(TARRASQUE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TARRASQUE_STATUE_ENLARGEMENT, TARRASQUE_CORPSE_ENLARGEMENT, 0),
         ACTION_INFO(TARRASQUE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TARRASQUE_STATUE_ENLARGEMENT, TARRASQUE_CORPSE_ENLARGEMENT, 0)),
     /*
-     * Underworld hulk and otyugh
+     * Umbral hulk and otyugh
      */
     ENLARGED_MON("umbral hulk", None, "large tunneling humanoid with confusing gaze", None, None, S_UNDER, LVL(9, 6, 2, 12, 0, -9), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0, 0, 0, 0UL, 0),

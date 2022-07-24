@@ -694,6 +694,7 @@ register struct obj *obj;
             case POT_EXTRA_HEALING:
                 obj->otyp = POT_EXTRA_HEALING;
                 break;
+            case POT_EXTRA_ENERGY:
             case POT_REGENERATION:
             case POT_REJUVENATION:
             case POT_GREATER_SPEED:
@@ -770,6 +771,11 @@ register struct obj *obj;
             switch (obj->otyp)
             {
             case POT_HEALING:
+            case POT_LESSER_REGENERATION:
+            case POT_LESSER_REJUVENATION:
+            case POT_EXTRA_ENERGY:
+                obj->otyp = POT_EXTRA_ENERGY;
+                break;
             case POT_EXTRA_HEALING:
             case POT_REGENERATION:
             case POT_REJUVENATION:
@@ -847,6 +853,9 @@ register struct obj *obj;
             switch (obj->otyp)
             {
             case POT_GAIN_ENERGY:
+                obj->otyp = POT_EXTRA_ENERGY;
+                break;
+            case POT_EXTRA_ENERGY:
                 obj->otyp = POT_GREATER_ENERGY;
                 break;
             case POT_GREATER_ENERGY:
@@ -896,7 +905,7 @@ register struct obj *obj;
                 obj->otyp = POT_LIGHTNING_SPEED;
                 break;
             default:
-                obj->otyp = POT_ENLIGHTENMENT;
+                obj->otyp = POT_LESSER_REJUVENATION;
                 break;
             }
             obj->dknown = 0;

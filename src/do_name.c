@@ -3836,7 +3836,7 @@ static const char* const manual_names[MAX_MANUAL_TYPES] = {
     /* Never randomly generated */
     "Guide to Dragon Scale Mails", "Guide to Altars and Sacrifice",
     "Secrets of Scare Monster", "Gurathul's Guide to Ascension", "Master Class in Wands", "Infernal Inhabitants of Gehennom",
-    "Advanced Reading in Known Monsters"
+    "Advanced Reading in Known Monsters", "Manual of the Planes"
 };
 
 const char*
@@ -4129,6 +4129,23 @@ struct obj* obj;
         putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Eating a lizard corpse or a dragon fruit will cure stoning. They will also grant 13-turn protection from further petrification.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "7. If you fall into a pit while holding a cockatrice or chickatrice corpse you will stone immediately.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "8. It is good practice to keep one lizard corpse or dragon fruit in open inventory in case you will start petrification.");
+        break;
+    case MANUAL_MANUAL_OF_THE_PLANES:
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. To reach the Astral Plane and the High Temples there, you must pass through the four Elemental Planes.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. These are the Elemental Planes of Earth, Air, Fire, and Water.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You must be sufficiently prepared to survive the alien conditions within each such Elemental Plane.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Within the Elemental Plane of Earth, tools and spells to cut off rock are critical.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. So are the means to detect small cavities within the rock, where the portal to the next elemental plane may be located.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Within the Elemental Plane of Air, you must possess the ability to levitate or fly, for it is impossible to move otherwise.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Travelling through the Elemental Plane of Fire will be greatly assisted by fire resistance.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Further, you must be capable of crossing pools of lava that will block your way.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. The last Elemental Plane is Water. The portal will create a magical air bubble, which is essential for survival.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Take utmost care to remain within the bubble and not to be dragged into the water by water creatures.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "11. Finally, the Astral Plane is accessed through a portal from the Elemental Plane of Water.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "12. The High Temples of the Aligned Gods are located on the Astral Plane, along with a great number of the minions of the gods.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "13. However, the Riders of the Apocalypse, terrifying beings personifying ancient evils, also inhabit the Plane.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "14. The three Riders are Death, Pestilence, and Famine.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "15. The Riders must be passed to reach the inner fanes of the High Temples. Great many have fallen in the attempt.");
         break;
     default:
         putstr(datawin, 0, "(This manual seems impossible.)");

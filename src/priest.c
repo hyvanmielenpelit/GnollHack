@@ -357,6 +357,13 @@ int mtype;
         set_malign(priest); /* mpeaceful may have changed */
 
         /* now his/her goodies... */
+        if (montype == PM_HIGH_PRIEST)
+        {
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_MANUAL_OF_THE_PLANES, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(priest, otmp);
+        }
+
         if (sanctum && EPRI(priest)->shralign == A_NONE
             && on_level(&sanctum_level, &u.uz)) 
         {
@@ -380,28 +387,23 @@ int mtype;
         {
             priest->mpeaceful = 1;
 
-            /* 2 to 4 spellbooks */
-            //int cnt;
-            //for (cnt = rn1(3, 2); cnt > 0; --cnt) 
-            //{
-            //    (void)mpickobj(priest, mkobj(SPBOOK_CLASS, FALSE, FALSE));
-            //}
-
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE, MKOBJ_FLAGS_PARAM_IS_TITLE);
-            if (otmp)
-                (void)mpickobj(priest, otmp);
-
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_PRAYING, MKOBJ_FLAGS_PARAM_IS_TITLE);
-            if (otmp)
-                (void)mpickobj(priest, otmp);
-
-            if (context.game_difficulty < 0)
+            if (montype != PM_HIGH_PRIEST)
             {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(priest, otmp);
-            }
 
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_PRAYING, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                if (otmp)
+                    (void)mpickobj(priest, otmp);
+
+                if (context.game_difficulty < 0)
+                {
+                    otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                    if (otmp)
+                        (void)mpickobj(priest, otmp);
+                }
+            }
         }
 
         /* robe [via makemon()] */

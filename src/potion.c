@@ -1781,6 +1781,7 @@ struct obj *otmp;
         break;
     case POT_GREATER_ENERGY:
     case POT_FULL_ENERGY:
+    case POT_EXTRA_ENERGY:
     case POT_GAIN_ENERGY:
     { /* M. Stephenson */
         int num = 0, numxtra = 0;
@@ -2961,7 +2962,7 @@ struct obj *o1, *o2;
 {
     /* cut down on the number of cases below */
     if (o1->oclass == POTION_CLASS
-        && (o2->otyp == POT_GAIN_LEVEL || o2->otyp == POT_GAIN_ENERGY || o2->otyp == POT_GREATER_ENERGY || o2->otyp == POT_FULL_ENERGY
+        && (o2->otyp == POT_GAIN_LEVEL || o2->otyp == POT_GAIN_ENERGY || o2->otyp == POT_EXTRA_ENERGY || o2->otyp == POT_GREATER_ENERGY || o2->otyp == POT_FULL_ENERGY
             || o2->otyp == POT_HEALING || o2->otyp == POT_EXTRA_HEALING || o2->otyp == POT_GREATER_HEALING
             || o2->otyp == POT_FULL_HEALING || o2->otyp == POT_ENLIGHTENMENT
             || o2->otyp == POT_FRUIT_JUICE)) {
@@ -2977,6 +2978,7 @@ struct obj *o1, *o2;
         switch (o2->otyp) {
         case POT_SPEED:
         case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
             return POT_EXTRA_HEALING;
         case POT_GREATER_ENERGY:
             return POT_GREATER_HEALING;
@@ -2989,6 +2991,7 @@ struct obj *o1, *o2;
     case POT_EXTRA_HEALING:
         switch (o2->otyp) {
         case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
             return POT_GREATER_HEALING;
         case POT_GREATER_ENERGY:
         case POT_FULL_ENERGY:
@@ -3000,6 +3003,7 @@ struct obj *o1, *o2;
     case POT_GREATER_HEALING:
         switch (o2->otyp) {
         case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
         case POT_GREATER_ENERGY:
         case POT_FULL_ENERGY:
             return POT_FULL_HEALING;
@@ -3011,6 +3015,7 @@ struct obj *o1, *o2;
         switch (o2->otyp) {
         case POT_GAIN_LEVEL:
         case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
         case POT_GREATER_ENERGY:
         case POT_FULL_ENERGY:
             return POT_GAIN_ABILITY;
@@ -3046,6 +3051,7 @@ struct obj *o1, *o2;
         }
         break;
     case POT_GAIN_ENERGY:
+    case POT_EXTRA_ENERGY:
         switch (o2->otyp) {
         case POT_CONFUSION:
             return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
@@ -3108,6 +3114,9 @@ struct obj *o1, *o2;
             return POT_ELVEN_HERBAL_BREW;
         case POT_GAIN_LEVEL:
         case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
             return POT_SEE_INVISIBLE;
         }
         break;

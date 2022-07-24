@@ -1521,7 +1521,7 @@ register struct monst *mtmp;
                 (void)mongets(mtmp, rn2(5) ? WIZARD_S_ROBE : rn2(2) ? ROBE_OF_MAGIC_RESISTANCE : ROBE_OF_PROTECTION);
 
             if (!rn2(4))
-                (void)mongets(mtmp, !rn2(5) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+                (void)mongets(mtmp, !rn2(5) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : !rn2(3) ? POT_EXTRA_ENERGY : POT_GAIN_ENERGY);
             
             //Reagents
             n = rn2(3);
@@ -1564,7 +1564,7 @@ register struct monst *mtmp;
 
         //Potion of gain energy
         if (!rn2(3))
-            (void)mongets(mtmp, !rn2(4) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+            (void)mongets(mtmp, !rn2(4) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : !rn2(3) ? POT_EXTRA_ENERGY : POT_GAIN_ENERGY);
 
         //Reagents
         n = rn2(3) + (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH] ? 1 : 0); //1...3 + 2
@@ -1717,7 +1717,7 @@ register struct monst *mtmp;
         if (ptr == &mons[PM_KOBOLD_SHAMAN])
         {
             if (!rn2(6))
-                (void)mongets(mtmp, !rn2(50) ? POT_FULL_ENERGY : !rn2(10) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+                (void)mongets(mtmp, !rn2(50) ? POT_FULL_ENERGY : !rn2(10) ? POT_GREATER_ENERGY : !rn2(3) ? POT_EXTRA_ENERGY : POT_GAIN_ENERGY);
             
             /* Some random reagants */
             n = rn2(2);
@@ -1892,7 +1892,7 @@ register struct monst *mtmp;
         if (ptr == &mons[PM_ORC_SHAMAN])
         {
             if (!rn2(5))
-                (void)mongets(mtmp, !rn2(30) ? POT_FULL_ENERGY : !rn2(8) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+                (void)mongets(mtmp, !rn2(30) ? POT_FULL_ENERGY : !rn2(8) ? POT_GREATER_ENERGY : !rn2(3) ? POT_EXTRA_ENERGY : POT_GAIN_ENERGY);
 
             if (!rn2(3))
             {
@@ -1916,7 +1916,7 @@ register struct monst *mtmp;
         {
                 //Potion of gain energy
                 if (!rn2(3))
-                    (void)mongets(mtmp, !rn2(10) ? POT_FULL_ENERGY : !rn2(4) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+                    (void)mongets(mtmp, !rn2(10) ? POT_FULL_ENERGY : !rn2(5) ? POT_GREATER_ENERGY : !rn2(3) ? POT_EXTRA_ENERGY : POT_GAIN_ENERGY);
 
                 n = rn2(3);
                 for (i = 0; i < n; i++)
@@ -2030,7 +2030,7 @@ register struct monst *mtmp;
 
             //Potion of gain energy
             if (!rn2(5))
-                (void)mongets(mtmp, !rn2(20) ? POT_FULL_ENERGY : !rn2(7) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+                (void)mongets(mtmp, !rn2(20) ? POT_FULL_ENERGY : !rn2(7) ? POT_GREATER_ENERGY : !rn2(3) ? POT_EXTRA_ENERGY : POT_GAIN_ENERGY);
 
             if (!rn2(6))
                 (void)mongets(mtmp, WAN_CREATE_MONSTER);
@@ -2058,12 +2058,12 @@ register struct monst *mtmp;
         if (ptr == &mons[PM_OGRE_MAGE])
         {
             if (!rn2(4))
-                (void)mongets(mtmp, !rn2(5) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+                (void)mongets(mtmp, !rn2(5) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : !rn2(3) ? POT_EXTRA_ENERGY : POT_GAIN_ENERGY);
         }
         else if (ptr == &mons[PM_OGRE_ARCHMAGE])
         {
             if (!rn2(3))
-                (void)mongets(mtmp, !rn2(3) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+                (void)mongets(mtmp, !rn2(3) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : !rn2(3) ? POT_EXTRA_ENERGY : POT_GAIN_ENERGY);
         }
 
         break;

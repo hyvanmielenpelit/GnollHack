@@ -3548,6 +3548,7 @@ static const struct alt_spellings {
     { "amulet of poison resistance", AMULET_VERSUS_POISON },
     { "potion of sleep", POT_SLEEPING },
     { "potion of mana", POT_GAIN_ENERGY },
+    { "potion of extra mana", POT_EXTRA_ENERGY },
     { "potion of greater mana", POT_GREATER_ENERGY },
     { "potion of full mana", POT_FULL_ENERGY },
     { "stone", STONE_PEBBLE },
