@@ -1166,64 +1166,70 @@ makelevel()
 
             /* Stash has now some random contents */
             struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
-            stash->olocked = FALSE;
-            stash->otrapped = FALSE;
-            stash->tknown = 1;
-            stash->speflags |= SPEFLAGS_NO_PICKUP;
-            char namebuf[BUFSZ];
-            Sprintf(namebuf, "%s stash", s_suffix(plname));
-            stash = uoname(stash, namebuf);
-
-            /* Stash has now some random contents */
-            struct obj* otmp = (struct obj*)0;
-
-            /* 2-3 items in stash */
-            int itemnum = 2 + (!rn2(4) ? 1 : 0);
-            for (int icnt = 0; icnt < itemnum; icnt++)
+            if (stash)
             {
-                otmp = mkobj(RANDOM_CLASS, FALSE, TRUE);
-                otmp->bknown = 1;
-                (void)add_to_container(stash, otmp);
-            }
+                stash->olocked = FALSE;
+                stash->otrapped = FALSE;
+                stash->tknown = 1;
+                stash->speflags |= SPEFLAGS_NO_PICKUP;
+                char namebuf[BUFSZ];
+                Sprintf(namebuf, "%s stash", s_suffix(plname));
+                stash = uoname(stash, namebuf);
 
-            if (context.game_difficulty < 0)
-            {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, !rn2(4) ? MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II : MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_I, MKOBJ_FLAGS_PARAM_IS_TITLE);
-                if (otmp)
+                /* Stash has now some random contents */
+                struct obj* otmp = (struct obj*)0;
+
+                /* 2-3 items in stash */
+                int itemnum = 2 + (!rn2(4) ? 1 : 0);
+                for (int icnt = 0; icnt < itemnum; icnt++)
                 {
-                    otmp->bknown = 1;
-                    (void)add_to_container(stash, otmp);
+                    otmp = mkobj(RANDOM_CLASS, FALSE, TRUE);
+                    if (otmp)
+                    {
+                        otmp->bknown = 1;
+                        (void)add_to_container(stash, otmp);
+                    }
                 }
 
-                otmp = mksobj(SPE_MANUAL, TRUE, FALSE, FALSE);
-                if (otmp)
+                if (context.game_difficulty < 0)
                 {
-                    otmp->bknown = 1;
-                    (void)add_to_container(stash, otmp);
+                    otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, !rn2(4) ? MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II : MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_I, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                    if (otmp)
+                    {
+                        otmp->bknown = 1;
+                        (void)add_to_container(stash, otmp);
+                    }
+
+                    otmp = mksobj(SPE_MANUAL, TRUE, FALSE, FALSE);
+                    if (otmp)
+                    {
+                        otmp->bknown = 1;
+                        (void)add_to_container(stash, otmp);
+                    }
                 }
-            }
 
 #if 0
-            if (!carrying(AXE) && !carrying(BATTLE_AXE))
-            {
-                otmp = mksobj(AXE, FALSE, FALSE, FALSE);
-                uncurse(otmp);
-                otmp->bknown = 1;
-                (void)add_to_container(stash, otmp);
-            }
-            else
-            {
-                otmp = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE);
-                otmp->quan = rnd(200);
-                otmp->owt = weight(otmp);
-                otmp->bknown = 1;
-                (void)add_to_container(stash, otmp);
-            }
+                if (!carrying(AXE) && !carrying(BATTLE_AXE))
+                {
+                    otmp = mksobj(AXE, FALSE, FALSE, FALSE);
+                    uncurse(otmp);
+                    otmp->bknown = 1;
+                    (void)add_to_container(stash, otmp);
+                }
+                else
+                {
+                    otmp = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE);
+                    otmp->quan = rnd(200);
+                    otmp->owt = weight(otmp);
+                    otmp->bknown = 1;
+                    (void)add_to_container(stash, otmp);
+                }
 
-            otmp = mkobj(FOOD_CLASS, FALSE, FALSE);
-            otmp->bknown = 1;
-            (void)add_to_container(stash, otmp);
+                otmp = mkobj(FOOD_CLASS, FALSE, FALSE);
+                otmp->bknown = 1;
+                (void)add_to_container(stash, otmp);
 #endif
+            }
 
             /* Add hermit */
             int stash_x = x;
