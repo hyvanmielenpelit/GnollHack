@@ -945,7 +945,6 @@ gcrownu()
     int chaotic_crowning_gift_baseitem = usegnollchaoticgift ? RUNED_FLAIL : RUNESWORD;
     enum p_skills chaotic_crowning_gift_skill = usegnollchaoticgift ? P_FLAIL : P_SWORD;
 
-    u.uachieve.crowned = 1;
     switch (u.ualign.type) {
     case A_LAWFUL:
         u.uevent.uhand_of_elbereth = 1;
@@ -1592,6 +1591,16 @@ gcrownu()
     /* lastly, confer an extra skill slot/credit beyond the
        up-to-29 you can get from gaining experience levels */
     add_weapon_skill(1);
+
+    if (u.uevent.uhand_of_elbereth > 0)
+    {
+        const char* hofe = hofe_titles[u.uevent.uhand_of_elbereth - 1];
+        if (!strncmpi(hofe, "the ", 4))
+            hofe += 4;
+
+        u.uachieve.crowned = 1;
+        achievement_gained(hofe);
+    }
     return;
 }
 

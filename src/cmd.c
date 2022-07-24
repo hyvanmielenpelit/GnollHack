@@ -5279,8 +5279,13 @@ int final;
         else if (!u.uachieve.ascended)
         {
             char goalbuf[BUFSZ];
-            Sprintf(goalbuf, "seeking to sacrifice the Amulet of Yendor on the high altar to %s on the Astral Plane", u_gname());
+            Sprintf(goalbuf, "on a mission to sacrifice the Amulet of Yendor on the high altar to %s on the Astral Plane", u_gname());
             you_are(goalbuf, "");
+            if (!u.uachieve.entered_elemental_planes && !u.uachieve.entered_astral_plane)
+            {
+                Strcpy(goalbuf, "seeking to exit the Dungeons of Doom on level 1 in order to enter the Elemental Planes");
+                you_are(goalbuf, "");
+            }
         }
         if (!u.uachieve.role_achievement)
         {
@@ -5335,6 +5340,16 @@ int final;
     if (u.uachieve.prime_codex)
     {
         you_have("found the Prime Codex", "");
+        num_achievements++;
+    }
+    if (u.uachieve.entered_astral_plane)
+    {
+        you_have("entered the Astral Plane", "");
+        num_achievements++;
+    }
+    if (u.uachieve.entered_elemental_planes)
+    {
+        you_have("entered the Elemental Planes", "");
         num_achievements++;
     }
     if (u.uachieve.enter_gehennom)

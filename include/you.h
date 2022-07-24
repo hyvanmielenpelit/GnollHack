@@ -146,6 +146,8 @@ struct u_achieve {
     Bitfield(entered_large_circular_dungeon, 1);
     Bitfield(entered_plane_of_modron, 1);
     Bitfield(entered_hellish_pastures, 1);
+    Bitfield(entered_elemental_planes, 1);
+    Bitfield(entered_astral_plane, 1);
 
     /* Other Achievements */
     Bitfield(role_achievement, 1); /* Special achievement for the role */

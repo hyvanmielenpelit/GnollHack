@@ -6790,6 +6790,14 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         u.uachieve.entered_gnomish_mines = 1;
     }
 
+    if (In_endgame(&u.uz))
+    {
+        if(Is_astralevel(&u.uz))
+            u.uachieve.entered_astral_plane = 1;
+        else
+            u.uachieve.entered_elemental_planes = 1;
+    }
+
     if (Is_minetown_level(&u.uz))
     {
         //if (!u.uachieve.entered_mine_town)

@@ -510,6 +510,14 @@ encodeachieve()
         r |= 1L << 24;
     if (u.uachieve.entered_hellish_pastures)
         r |= 1L << 25;
+    if (u.uachieve.entered_elemental_planes)
+        r |= 1L << 26;
+    if (u.uachieve.entered_astral_plane)
+        r |= 1L << 27;
+    if (u.uachieve.role_achievement)
+        r |= 1L << 28;
+    if (u.uachieve.crowned)
+        r |= 1L << 29;
 
     return r;
 }
@@ -565,6 +573,10 @@ encode_extended_achievements()
     add_achieveX(buf, "entered_large_circular_dungeon", u.uachieve.entered_large_circular_dungeon);
     add_achieveX(buf, "entered_plane_of_modron", u.uachieve.entered_plane_of_modron);
     add_achieveX(buf, "entered_hellish_pastures", u.uachieve.entered_hellish_pastures);
+    add_achieveX(buf, "entered_elemental_planes", u.uachieve.entered_elemental_planes);
+    add_achieveX(buf, "entered_astral_plane", u.uachieve.entered_astral_plane);
+    add_achieveX(buf, "role_achievement", u.uachieve.role_achievement);
+    add_achieveX(buf, "crowned", u.uachieve.crowned);
 
     return buf;
 }

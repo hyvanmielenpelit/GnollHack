@@ -853,6 +853,12 @@ struct obj *obj;
                 play_sfx_sound(SFX_HINT);
             }
             pline_ex(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE - Sacrifice the Amulet of Yendor on the Astral Plane");
+            if (iflags.using_gui_sounds)
+            {
+                delay_output_milliseconds(500);
+                play_sfx_sound(SFX_HINT);
+            }
+            pline_ex(ATR_NONE, CLR_MSG_HINT, "HINT - Exit the dungeon on level 1 to enter the Elemental Planes");
         }
         u.uachieve.amulet = 1;
     }
