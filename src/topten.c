@@ -553,8 +553,6 @@ encode_extended_achievements()
     add_achieveX(buf, "obtained_the_book_of_the_dead", u.uachieve.book);
     add_achieveX(buf, "performed_the_invocation_ritual", u.uevent.invoked);
     add_achieveX(buf, "obtained_the_amulet_of_yendor", u.uachieve.amulet);
-    add_achieveX(buf, "entered_elemental_planes", In_endgame(&u.uz));
-    add_achieveX(buf, "entered_astral_plane", In_endgame(&u.uz));
     add_achieveX(buf, "ascended", u.uachieve.ascended);
     add_achieveX(buf, "obtained_the_luckstone_from_the_mines", u.uachieve.mines_luckstone);
     add_achieveX(buf, "obtained_the_sokoban_prize", u.uachieve.finish_sokoban);
