@@ -1820,8 +1820,8 @@ boolean dopopup;
     boolean multiple;
     int otyp = STRANGE_OBJECT;
     char buf[BUFSZ] = "";
-    boolean enchwepknown = FALSE;;
-    if (otmp && (otmp->oclass = SPBOOK_CLASS || objects[otmp->otyp].oc_name_known))
+    boolean enchwepknown = FALSE;
+    if (otmp && (otmp->oclass == SPBOOK_CLASS || objects[otmp->otyp].oc_name_known))
         enchwepknown = TRUE;
 
     if (!weapon || !((is_weapon(weapon) || is_ammo(weapon)) && objects[weapon->otyp].oc_enchantable)) 
