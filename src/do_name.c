@@ -4117,8 +4117,8 @@ struct obj* obj;
         break;
     case MANUAL_INFERNAL_INHABITANTS_OF_GEHENNOM:
         putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Demons and devils are immune to death attacks.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Some devils can spawn with a bullwhip that can disarm you from your weapon. It is best to kill them from distance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Demons and devils can gate in more of their kind with their melee attack. It is often best to kill them from distance.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Some devils can spawn with a bullwhip that can disarm you from your weapon. It is best to kill them from a distance.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Demons and devils can gate in more of their kind with their melee attack. It is often best to kill them from a distance.");
         break;
     case MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS:
         putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Some sea monsters, such as eels, can drown you. It is often a good idea to kill them from a distance.");
