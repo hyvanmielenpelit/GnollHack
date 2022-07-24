@@ -936,13 +936,13 @@ boolean silent;
         while (--ct >= 0)
             if (bp->bo_id == obj->o_id) {
                 if (!obj->unpaid)
-                    pline("onbill: paid obj on bill?");
+                    impossible("onbill: paid obj on bill?");
                 return bp;
             } else
                 bp++;
     }
     if (obj->unpaid && !silent)
-        pline("onbill: unpaid obj not on bill?");
+        impossible("onbill: unpaid obj not on bill?");
     return (struct bill_x *) 0;
 }
 

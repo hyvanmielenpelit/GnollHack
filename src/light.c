@@ -860,8 +860,8 @@ struct obj* obj;
     if (!obj)
         return 0;
 
-    if (!is_obj_light_source(obj))
-        return 0;
+    //if (!is_obj_light_source(obj))
+    //    return 0;
 
     int radius = 3; //Normal lamps
     if (is_candle(obj) || is_obj_candelabrum(obj))
