@@ -3299,6 +3299,7 @@ lose_weapon_skill(n)
 int n; /* number of slots to lose; normally one */
 {
     int skill;
+    boolean shield_or_dodge_lost = FALSE;
 
     while (--n >= 0) {
         /* deduct first from unused slots then from last placed one, if any */
@@ -3316,12 +3317,14 @@ int n; /* number of slots to lose; normally one */
             /* Lost skill might have taken more than one slot; refund rest. */
             u.weapon_slots = slots_required(skill) - 1;
             u.max_weapon_slots--;
+            if (skill == P_SHIELD || skill == P_DODGE)
+                shield_or_dodge_lost = TRUE;
             /* It might now be possible to advance some other pending
                skill by using the refunded slots, but giving a message
                to that effect would seem pretty confusing.... */
         }
     }
-    if ((skill == P_SHIELD || skill == P_DODGE) && n != 0)
+    if (shield_or_dodge_lost)
     {
         find_ac();
         find_mc();
