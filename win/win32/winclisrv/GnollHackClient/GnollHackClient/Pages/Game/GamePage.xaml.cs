@@ -41,6 +41,11 @@ namespace GnollHackClient.Pages.Game
         private const float _statusbar_shieldfontsize = _statusbar_basefontsize * 32f / 42f;
         private const float _statusbar_diffontsize = _statusbar_basefontsize * 24f / 42f;
 
+        private readonly string _fontSizeString = "FontS";
+        private bool _refreshMsgHistoryRowCounts = true;
+        private readonly object _refreshMsgHistoryRowCountLock = new object();
+        private bool RefreshMsgHistoryRowCounts { get { lock (_refreshMsgHistoryRowCountLock) { return _refreshMsgHistoryRowCounts; } } set { lock (_refreshMsgHistoryRowCountLock) { _refreshMsgHistoryRowCounts = value; } } }
+
         public List<string> ExtendedCommands { get; set; }
 
         private bool _connectionAttempted = false;
@@ -2375,10 +2380,6 @@ namespace GnollHackClient.Pages.Game
         }
 
 
-        private List<string> wrappedLines = new List<string>();
-        private string longLine;
-        private string wordWithSpace;
-
         private SKMaskFilter _blur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 3.4f);
         private SKMaskFilter _lookBlur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 20.0f);
 
@@ -4116,16 +4117,12 @@ namespace GnollHackClient.Pages.Game
                             relativestrokewidth = _screenText.GetRelativeTextOutlineWidth(maincountervalue);
                             strokecolor = _screenText.GetTextOutlineColor(maincountervalue);
                             str = _screenText.GetText(maincountervalue);
-                            string fontsizestr;
-                            if (str.Length < 5) // Make sure the text does not become too big
-                                fontsizestr = "TestA";
-                            else
-                                fontsizestr = str;
+                            bool useFontSizeStr = str == null || str.Length < 5;
                             textPaint.TextSize = UsedFontSize;
-                            textPaint.MeasureText(fontsizestr, ref textBounds);
+                            textPaint.MeasureText(useFontSizeStr ? _fontSizeString : str, ref textBounds);
                             if (textBounds.Width > 0)
                             {
-                                float relativesize = targetwidth / textBounds.Width;
+                                float relativesize = targetwidth / Math.Max(1.0f, textBounds.Width);
                                 //if (relativesize > maxfontsize)
                                 //    relativesize = maxfontsize;
                                 textPaint.TextSize = UsedFontSize * relativesize;
@@ -4497,70 +4494,83 @@ namespace GnollHackClient.Pages.Game
                                             {
                                                 int j = ActualDisplayedMessages - 1, idx;
                                                 float lineLengthLimit = 0.85f * canvaswidth;
+                                                float spaceLength = textPaint.MeasureText(" ");
 
-                                                for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
+                                                lock (_refreshMsgHistoryRowCountLock)
                                                 {
-                                                    GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
-                                                    longLine = msgHistoryItem.Text;
-                                                    SKColor printColor = ClientUtils.NHColor2SKColor(msgHistoryItem.NHColor < (int)nhcolor.CLR_MAX ? msgHistoryItem.NHColor : (int)nhcolor.CLR_WHITE, msgHistoryItem.Attributes);
-
-                                                    /* attributes */
-                                                    wrappedLines.Clear();
-                                                    float lineLength = 0.0f;
-                                                    string line = "";
-                                                    foreach (string word in longLine.Split(' '))
+                                                    for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
                                                     {
-                                                        wordWithSpace = word + " ";
-                                                        float wordWithSpaceLength = textPaint.MeasureText(wordWithSpace);
-                                                        if (lineLength + wordWithSpaceLength > lineLengthLimit)
-                                                        {
-                                                            wrappedLines.Add(line);
-                                                            line = "" + wordWithSpace;
-                                                            lineLength = wordWithSpaceLength;
-                                                        }
-                                                        else
-                                                        {
-                                                            line += wordWithSpace;
-                                                            lineLength += wordWithSpaceLength;
-                                                        }
-                                                    }
-                                                    wrappedLines.Add(line);
+                                                        GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                                        //longLine = msgHistoryItem.Text;
+                                                        SKColor printColor = ClientUtils.NHColor2SKColor(msgHistoryItem.NHColor < (int)nhcolor.CLR_MAX ? msgHistoryItem.NHColor : (int)nhcolor.CLR_WHITE, msgHistoryItem.Attributes);
 
-                                                    int lineidx;
-                                                    for (lineidx = 0; lineidx < wrappedLines.Count; lineidx++)
-                                                    {
-                                                        string wrappedLine = wrappedLines[lineidx];
-                                                        int window_row_idx = j + lineidx - wrappedLines.Count + 1;
-                                                        if (window_row_idx < 0)
-                                                            continue;
-                                                        tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
-                                                        ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
-                                                        if (ForceAllMessages)
+                                                        if (_refreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
                                                         {
-                                                            lock (_mapOffsetLock)
+                                                            msgHistoryItem.WrappedTextRows.Clear();
+                                                            float lineLength = 0.0f;
+                                                            string line = "";
+                                                            string[] txtsplit = msgHistoryItem.TextSplit;
+                                                            bool firstonline = true;
+                                                            for (int widx = 0; widx < txtsplit.Length; widx++)
                                                             {
-                                                                ty += _messageOffsetY;
-                                                                if (ty + textPaint.FontMetrics.Ascent < _messageSmallestTop)
-                                                                    _messageSmallestTop = ty + textPaint.FontMetrics.Ascent;
+                                                                string word = txtsplit[widx];
+                                                                string wordWithSpace = word + " ";
+                                                                float wordLength = textPaint.MeasureText(wordWithSpace);
+                                                                float wordWithSpaceLength = wordLength + spaceLength;
+                                                                if (lineLength + wordLength > lineLengthLimit && !firstonline)
+                                                                {
+                                                                    msgHistoryItem.WrappedTextRows.Add(line);
+                                                                    line = wordWithSpace;
+                                                                    lineLength = wordWithSpaceLength;
+                                                                    firstonline = true;
+                                                                }
+                                                                else
+                                                                {
+                                                                    line += wordWithSpace;
+                                                                    lineLength += wordWithSpaceLength;
+                                                                    firstonline = false;
+                                                                }
                                                             }
+                                                            msgHistoryItem.WrappedTextRows.Add(line);
                                                         }
-                                                        if (ty + textPaint.FontMetrics.Descent < 0)
-                                                            continue;
-                                                        if (ty - textPaint.FontMetrics.Ascent > canvasheight)
-                                                            continue;
-                                                        textPaint.Style = SKPaintStyle.Stroke;
-                                                        textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth * textscale;
-                                                        textPaint.Color = SKColors.Black;
-                                                        canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                        textPaint.Style = SKPaintStyle.Fill;
-                                                        textPaint.StrokeWidth = 0;
-                                                        textPaint.Color = printColor;
-                                                        canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                        textPaint.Style = SKPaintStyle.Fill;
-                                                        textPaint.StrokeWidth = 0;
-                                                        textPaint.Color = printColor;
+
+                                                        int lineidx;
+                                                        for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
+                                                        {
+                                                            string wrappedLine = msgHistoryItem.WrappedTextRows[lineidx];
+                                                            int window_row_idx = j + lineidx - msgHistoryItem.WrappedTextRows.Count + 1;
+                                                            if (window_row_idx < 0)
+                                                                continue;
+                                                            tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
+                                                            ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
+                                                            if (ForceAllMessages)
+                                                            {
+                                                                lock (_mapOffsetLock)
+                                                                {
+                                                                    ty += _messageOffsetY;
+                                                                    if (ty + textPaint.FontMetrics.Ascent < _messageSmallestTop)
+                                                                        _messageSmallestTop = ty + textPaint.FontMetrics.Ascent;
+                                                                }
+                                                            }
+                                                            if (ty + textPaint.FontMetrics.Descent < 0)
+                                                                continue;
+                                                            if (ty - textPaint.FontMetrics.Ascent > canvasheight)
+                                                                continue;
+                                                            textPaint.Style = SKPaintStyle.Stroke;
+                                                            textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth * textscale;
+                                                            textPaint.Color = SKColors.Black;
+                                                            canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.StrokeWidth = 0;
+                                                            textPaint.Color = printColor;
+                                                            canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.StrokeWidth = 0;
+                                                            textPaint.Color = printColor;
+                                                        }
+                                                        j -= msgHistoryItem.WrappedTextRows.Count;
                                                     }
-                                                    j -= wrappedLines.Count;
+                                                    _refreshMsgHistoryRowCounts = false;
                                                 }
                                             }
                                         }
@@ -7130,6 +7140,7 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 RefreshMenuRowCounts = true;
+                RefreshMsgHistoryRowCounts = true;
                 IsSizeAllocatedProcessed = true;
             }
         }
@@ -8365,6 +8376,7 @@ namespace GnollHackClient.Pages.Game
         private bool _refreshMenuRowCounts = true;
         private readonly object _refreshMenuRowCountLock = new object();
         private bool RefreshMenuRowCounts { get { lock (_refreshMenuRowCountLock) { return _refreshMenuRowCounts; } } set { lock (_refreshMenuRowCountLock) { _refreshMenuRowCounts = value; } } }
+
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             //DebugWriteProfilingStopwatchTime("Draw Menu Canvas Start");
@@ -8435,226 +8447,230 @@ namespace GnollHackClient.Pages.Game
                             break;
                     }
 
-                    for (int idx = 0; idx < referenceCanvasView.MenuItems.Count; idx++)
+                    lock (_refreshMenuRowCountLock)
                     {
-                        GHMenuItem mi = referenceCanvasView.MenuItems[idx];
-
-                        /* Padding */
-                        bottomPadding = mi.BottomPadding * scale;
-                        topPadding = mi.TopPadding * scale;
-
-                        /* Text Size and Minimum Row Height */
-                        if ((mi.Attributes & (int)MenuItemAttributes.HalfSize) != 0)
-                            textPaint.TextSize = (mi.MinimumTouchableTextSize / 2) * scale;
-                        else
-                            textPaint.TextSize = mi.MinimumTouchableTextSize * scale;
-                        float minrowheight = mi.MinimumRowHeight(textPaint.FontSpacing, bottomPadding, topPadding, canvaswidth, canvasheight);
-
-                        x = leftmenupadding;
-                        mi.DrawBounds.Left = x;
-                        float mainfontsize = (float)mi.FontSize * scale;
-                        float relsuffixsize = (float)mi.RelativeSuffixFontSize;
-                        float suffixfontsize = relsuffixsize * mainfontsize;
-                        textPaint.Typeface = App.GetTypefaceByName(mi.FontFamily);
-                        textPaint.TextSize = mainfontsize;
-                        textPaint.TextAlign = SKTextAlign.Left;
-
-                        mi.DrawBounds.Top = y;
-                        //if (mi.DrawBounds.Top >= canvasheight)
-                        //    break;
-
-                        if (first)
+                        for (int idx = 0; idx < referenceCanvasView.MenuItems.Count; idx++)
                         {
-                            accel_fixed_width = textPaint.MeasureText("A"); // textPaint.FontMetrics.AverageCharacterWidth; // + 3 * textPaint.MeasureText(" ");
-                            _firstDrawnMenuItemIdx = idx;
-                            maintext_x_start = leftmenupadding + leftinnerpadding + (has_identifiers ? accel_fixed_width : 0) + (has_pictures ? picturepadding + picturewidth + picturepadding : accel_fixed_width /*textPaint.FontMetrics.AverageCharacterWidth*/);
-                            first = false;
-                        }
+                            GHMenuItem mi = referenceCanvasView.MenuItems[idx];
 
-                        int maintextrows = 1;
-                        int suffixtextrows = 0;
-                        int suffix2textrows = 0;
+                            /* Padding */
+                            bottomPadding = mi.BottomPadding * scale;
+                            topPadding = mi.TopPadding * scale;
 
-                        string[] maintextsplit = mi.MainTextSplit;
-                        string[] suffixtextsplit = mi.SuffixTextSplit;
-                        string[] suffix2textsplit = mi.Suffix2TextSplit;
+                            /* Text Size and Minimum Row Height */
+                            if ((mi.Attributes & (int)MenuItemAttributes.HalfSize) != 0)
+                                textPaint.TextSize = (mi.MinimumTouchableTextSize / 2) * scale;
+                            else
+                                textPaint.TextSize = mi.MinimumTouchableTextSize * scale;
+                            float minrowheight = mi.MinimumRowHeight(textPaint.FontSpacing, bottomPadding, topPadding, canvaswidth, canvasheight);
 
-                        if (RefreshMenuRowCounts || !mi.TextRowCountsSet)
-                        {
-                            maintextrows = CountTextSplitRows(maintextsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint, mi.UseSpecialSymbols);
-                            mi.MainTextRows = maintextrows;
+                            x = leftmenupadding;
+                            mi.DrawBounds.Left = x;
+                            float mainfontsize = (float)mi.FontSize * scale;
+                            float relsuffixsize = (float)mi.RelativeSuffixFontSize;
+                            float suffixfontsize = relsuffixsize * mainfontsize;
+                            textPaint.Typeface = App.GetTypefaceByName(mi.FontFamily);
+                            textPaint.TextSize = mainfontsize;
+                            textPaint.TextAlign = SKTextAlign.Left;
 
-                            textPaint.TextSize = suffixfontsize;
-                            suffixtextrows = CountTextSplitRows(suffixtextsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint, mi.UseSpecialSymbols);
-                            mi.SuffixTextRows = suffixtextrows;
+                            mi.DrawBounds.Top = y;
+                            //if (mi.DrawBounds.Top >= canvasheight)
+                            //    break;
 
-                            suffix2textrows = CountTextSplitRows(suffix2textsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint, mi.UseSpecialSymbols);
-                            mi.Suffix2TextRows = suffix2textrows;
-
-                            mi.TextRowCountsSet = true;
-                        }
-                        else
-                        {
-                            maintextrows = mi.MainTextRows;
-                            suffixtextrows = mi.SuffixTextRows;
-                            suffix2textrows = mi.Suffix2TextRows;
-                        }
-                        textPaint.TextSize = mainfontsize;
-
-                        fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                        float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontSpacing) * ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f))) / 2);
-
-                        bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
-                            referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
-
-                        float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
-                        float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
-
-                        if (y + totalRowHeight <= 0 || y >= canvasheight)
-                        {
-                            /* Just add the total row height */
-                            y += totalRowHeight;
-                            mi.DrawBounds.Right = mi.DrawBounds.Left + totalRowWidth;
-                            mi.DrawBounds.Bottom = mi.DrawBounds.Top + totalRowHeight;
-                        }
-                        else
-                        {
-                            /* Selection rectangle */
-                            SKRect selectionrect = new SKRect(x, y, x + totalRowWidth, y + totalRowHeight);
-                            if (isselected)
+                            if (first)
                             {
-                                textPaint.Color = _menuHighlightColor;
-                                textPaint.Style = SKPaintStyle.Fill;
-                                canvas.DrawRect(selectionrect, textPaint);
+                                accel_fixed_width = textPaint.MeasureText("A"); // textPaint.FontMetrics.AverageCharacterWidth; // + 3 * textPaint.MeasureText(" ");
+                                _firstDrawnMenuItemIdx = idx;
+                                maintext_x_start = leftmenupadding + leftinnerpadding + (has_identifiers ? accel_fixed_width : 0) + (has_pictures ? picturepadding + picturewidth + picturepadding : accel_fixed_width /*textPaint.FontMetrics.AverageCharacterWidth*/);
+                                first = false;
                             }
 
-                            float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontSpacing)) / 2);
-                            y += topPadding;
-                            y += generallinepadding;
-                            y += fontspacingpadding;
-                            y -= textPaint.FontMetrics.Ascent;
-                            x += leftinnerpadding;
+                            int maintextrows = 1;
+                            int suffixtextrows = 0;
+                            int suffix2textrows = 0;
 
-                            if (has_identifiers)
+                            string[] maintextsplit = mi.MainTextSplit;
+                            string[] suffixtextsplit = mi.SuffixTextSplit;
+                            string[] suffix2textsplit = mi.Suffix2TextSplit;
+
+                            if (_refreshMenuRowCounts || !mi.TextRowCountsSet)
                             {
-                                if (mi.Identifier == 0 && mi.SpecialMark != '\0')
-                                    str = mi.FormattedSpecialMark;
-                                else
-                                    str = mi.FormattedAccelerator;
-                                textPaint.Color = SKColors.Gray;
-                                str = str.Trim();
-                                float identifier_y =
-                                    mi.IsSuffixTextVisible || mi.IsSuffix2TextVisible ? (selectionrect.Top + selectionrect.Bottom) / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent
-                                    : y + singlelinepadding;
-                                if (!(y + singlelinepadding + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
-                                    canvas.DrawText(str, x, identifier_y, textPaint);
-                                x += accel_fixed_width;
-                            }
+                                maintextrows = CountTextSplitRows(maintextsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint, mi.UseSpecialSymbols);
+                                mi.MainTextRows = maintextrows;
 
-                            if (has_pictures)
-                            {
-                                x += picturepadding;
+                                textPaint.TextSize = suffixfontsize;
+                                suffixtextrows = CountTextSplitRows(suffixtextsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint, mi.UseSpecialSymbols);
+                                mi.SuffixTextRows = suffixtextrows;
 
-                                /* Icon */
-                                float glyph_start_y = mi.DrawBounds.Top + Math.Max(0, (totalRowHeight - minrowheight) / 2);
-                                if (mi.IsGlyphVisible && !(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
-                                {
-                                    using (new SKAutoCanvasRestore(canvas, true))
-                                    {
-                                        mi.GlyphImageSource.AutoSize = true;
-                                        mi.GlyphImageSource.DoAutoSize();
-                                        if (mi.GlyphImageSource.Height > 0)
-                                        {
-                                            float glyphxcenterpadding = (picturewidth - minrowheight * mi.GlyphImageSource.Width / mi.GlyphImageSource.Height) / 2;
-                                            canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
-                                            canvas.Scale(minrowheight / mi.GlyphImageSource.Height);
-                                            mi.GlyphImageSource.DrawOnCanvas(canvas);
-                                        }
-                                    }
-                                }
-                                x += picturewidth + picturepadding;
+                                suffix2textrows = CountTextSplitRows(suffix2textsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint, mi.UseSpecialSymbols);
+                                mi.Suffix2TextRows = suffix2textrows;
+
+                                mi.TextRowCountsSet = true;
                             }
                             else
                             {
-                                x += accel_fixed_width; // textPaint.FontMetrics.AverageCharacterWidth;
+                                maintextrows = mi.MainTextRows;
+                                suffixtextrows = mi.SuffixTextRows;
+                                suffix2textrows = mi.Suffix2TextRows;
                             }
+                            textPaint.TextSize = mainfontsize;
 
-                            /* Main text */
-                            SKColor maincolor = ClientUtils.NHColor2SKColorCore(mi.NHColor, mi.Attributes, MenuCanvas.RevertBlackAndWhite);
-                            textPaint.Color = maincolor;
-                            //int split_idx_on_row = -1;
-                            bool firstprintonrow = true;
-                            float start_x = x;
-                            float indent_start_x = start_x;
-                            string trimmed_maintext = mi.MainText.Trim();
-                            string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.Attributes);
-                            if (indentstr != "")
+                            fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                            float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontSpacing) * ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f))) / 2);
+
+                            bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
+                                referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
+
+                            float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
+                            float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
+
+                            if (y + totalRowHeight <= 0 || y >= canvasheight)
                             {
-                                indent_start_x += textPaint.MeasureText(indentstr);
+                                /* Just add the total row height */
+                                y += totalRowHeight;
+                                mi.DrawBounds.Right = mi.DrawBounds.Left + totalRowWidth;
+                                mi.DrawBounds.Bottom = mi.DrawBounds.Top + totalRowHeight;
                             }
-                            DrawTextSplit(canvas, maintextsplit, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, 0, 0, 0, 0);
-                            /* Rewind and next line */
-                            x = start_x;
-                            y += textPaint.FontMetrics.Descent + fontspacingpadding;
-                            firstprintonrow = true;
-
-                            /* Suffix text */
-                            if (mi.IsSuffixTextVisible)
+                            else
                             {
-                                textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
-                                textPaint.TextSize = suffixfontsize;
+                                /* Selection rectangle */
+                                SKRect selectionrect = new SKRect(x, y, x + totalRowWidth, y + totalRowHeight);
+                                if (isselected)
+                                {
+                                    textPaint.Color = _menuHighlightColor;
+                                    textPaint.Style = SKPaintStyle.Fill;
+                                    canvas.DrawRect(selectionrect, textPaint);
+                                }
+
+                                float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontSpacing)) / 2);
+                                y += topPadding;
+                                y += generallinepadding;
                                 y += fontspacingpadding;
                                 y -= textPaint.FontMetrics.Ascent;
-                                DrawTextSplit(canvas, suffixtextsplit, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, 0, 0, 0, 0);
+                                x += leftinnerpadding;
+
+                                if (has_identifiers)
+                                {
+                                    if (mi.Identifier == 0 && mi.SpecialMark != '\0')
+                                        str = mi.FormattedSpecialMark;
+                                    else
+                                        str = mi.FormattedAccelerator;
+                                    textPaint.Color = SKColors.Gray;
+                                    str = str.Trim();
+                                    float identifier_y =
+                                        mi.IsSuffixTextVisible || mi.IsSuffix2TextVisible ? (selectionrect.Top + selectionrect.Bottom) / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent
+                                        : y + singlelinepadding;
+                                    if (!(y + singlelinepadding + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
+                                        canvas.DrawText(str, x, identifier_y, textPaint);
+                                    x += accel_fixed_width;
+                                }
+
+                                if (has_pictures)
+                                {
+                                    x += picturepadding;
+
+                                    /* Icon */
+                                    float glyph_start_y = mi.DrawBounds.Top + Math.Max(0, (totalRowHeight - minrowheight) / 2);
+                                    if (mi.IsGlyphVisible && !(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
+                                    {
+                                        using (new SKAutoCanvasRestore(canvas, true))
+                                        {
+                                            mi.GlyphImageSource.AutoSize = true;
+                                            mi.GlyphImageSource.DoAutoSize();
+                                            if (mi.GlyphImageSource.Height > 0)
+                                            {
+                                                float glyphxcenterpadding = (picturewidth - minrowheight * mi.GlyphImageSource.Width / mi.GlyphImageSource.Height) / 2;
+                                                canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
+                                                canvas.Scale(minrowheight / mi.GlyphImageSource.Height);
+                                                mi.GlyphImageSource.DrawOnCanvas(canvas);
+                                            }
+                                        }
+                                    }
+                                    x += picturewidth + picturepadding;
+                                }
+                                else
+                                {
+                                    x += accel_fixed_width; // textPaint.FontMetrics.AverageCharacterWidth;
+                                }
+
+                                /* Main text */
+                                SKColor maincolor = ClientUtils.NHColor2SKColorCore(mi.NHColor, mi.Attributes, MenuCanvas.RevertBlackAndWhite);
+                                textPaint.Color = maincolor;
+                                //int split_idx_on_row = -1;
+                                bool firstprintonrow = true;
+                                float start_x = x;
+                                float indent_start_x = start_x;
+                                string trimmed_maintext = mi.MainText.Trim();
+                                string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.Attributes);
+                                if (indentstr != "")
+                                {
+                                    indent_start_x += textPaint.MeasureText(indentstr);
+                                }
+                                DrawTextSplit(canvas, maintextsplit, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, 0, 0, 0, 0);
                                 /* Rewind and next line */
                                 x = start_x;
                                 y += textPaint.FontMetrics.Descent + fontspacingpadding;
                                 firstprintonrow = true;
-                            }
 
-                            /* Suffix 2 text */
-                            if (mi.IsSuffix2TextVisible)
-                            {
-                                textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
-                                textPaint.TextSize = suffixfontsize;
-                                fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                                y += fontspacingpadding;
-                                y -= textPaint.FontMetrics.Ascent;
-                                DrawTextSplit(canvas, suffix2textsplit, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, 0, 0, 0, 0);
-                                /* Rewind and next line */
-                                x = start_x;
-                                y += textPaint.FontMetrics.Descent + fontspacingpadding;
-                                firstprintonrow = true;
-                            }
+                                /* Suffix text */
+                                if (mi.IsSuffixTextVisible)
+                                {
+                                    textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
+                                    textPaint.TextSize = suffixfontsize;
+                                    y += fontspacingpadding;
+                                    y -= textPaint.FontMetrics.Ascent;
+                                    DrawTextSplit(canvas, suffixtextsplit, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, 0, 0, 0, 0);
+                                    /* Rewind and next line */
+                                    x = start_x;
+                                    y += textPaint.FontMetrics.Descent + fontspacingpadding;
+                                    firstprintonrow = true;
+                                }
 
-                            y += generallinepadding;
+                                /* Suffix 2 text */
+                                if (mi.IsSuffix2TextVisible)
+                                {
+                                    textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
+                                    textPaint.TextSize = suffixfontsize;
+                                    fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                                    y += fontspacingpadding;
+                                    y -= textPaint.FontMetrics.Ascent;
+                                    DrawTextSplit(canvas, suffix2textsplit, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, 0, 0, 0, 0);
+                                    /* Rewind and next line */
+                                    x = start_x;
+                                    y += textPaint.FontMetrics.Descent + fontspacingpadding;
+                                    firstprintonrow = true;
+                                }
 
-                            y += bottomPadding;
-                            mi.DrawBounds.Bottom = y;
-                            mi.DrawBounds.Right = canvaswidth - rightmenupadding;
-                            _lastDrawnMenuItemIdx = idx;
+                                y += generallinepadding;
 
-                            /* Count circle */
-                            if (mi.Count > 0 && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
-                            {
-                                float circleradius = mi.DrawBounds.Height * 0.90f / 2;
-                                float circlex = mi.DrawBounds.Right - circleradius - 5;
-                                float circley = (mi.DrawBounds.Top + mi.DrawBounds.Bottom) / 2;
-                                textPaint.Color = SKColors.Red;
-                                canvas.DrawCircle(circlex, circley, circleradius, textPaint);
-                                textPaint.TextAlign = SKTextAlign.Center;
-                                textPaint.Color = SKColors.White;
-                                str = mi.Count.ToString();
-                                float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
-                                textPaint.TextSize = (float)mi.FontSize * scale;
-                                textPaint.MeasureText(str, ref textBounds);
-                                float scalex = textBounds.Width / maxsize;
-                                float scaley = textBounds.Height / maxsize;
-                                float totscale = Math.Max(scalex, scaley);
-                                textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
-                                canvas.DrawText(str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                                y += bottomPadding;
+                                mi.DrawBounds.Bottom = y;
+                                mi.DrawBounds.Right = canvaswidth - rightmenupadding;
+                                _lastDrawnMenuItemIdx = idx;
+
+                                /* Count circle */
+                                if (mi.Count > 0 && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
+                                {
+                                    float circleradius = mi.DrawBounds.Height * 0.90f / 2;
+                                    float circlex = mi.DrawBounds.Right - circleradius - 5;
+                                    float circley = (mi.DrawBounds.Top + mi.DrawBounds.Bottom) / 2;
+                                    textPaint.Color = SKColors.Red;
+                                    canvas.DrawCircle(circlex, circley, circleradius, textPaint);
+                                    textPaint.TextAlign = SKTextAlign.Center;
+                                    textPaint.Color = SKColors.White;
+                                    str = mi.Count.ToString();
+                                    float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
+                                    textPaint.TextSize = (float)mi.FontSize * scale;
+                                    textPaint.MeasureText(str, ref textBounds);
+                                    float scalex = textBounds.Width / maxsize;
+                                    float scaley = textBounds.Height / maxsize;
+                                    float totscale = Math.Max(scalex, scaley);
+                                    textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
+                                    canvas.DrawText(str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                                }
                             }
                         }
+                        _refreshMenuRowCounts = false;
                     }
                     _totalMenuHeight = y - curmenuoffset;
                 }

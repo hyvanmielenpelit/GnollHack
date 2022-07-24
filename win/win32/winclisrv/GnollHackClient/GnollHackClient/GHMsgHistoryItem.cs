@@ -9,7 +9,20 @@ namespace GnollHackClient
 {
     public class GHMsgHistoryItem
     {
-        public string Text { get; set; }
+        private string _text = "";
+        public string Text { get { return _text; } set { if (value != null) { _text = value; _textSplit = _text.Split(' '); } } }
+
+        private string[] _textSplit = null;
+        public string[] TextSplit 
+        { get
+            {
+                if (_textSplit == null)
+                    return new string[1] { "" };
+                else
+                    return _textSplit;
+            } 
+        }
+        public List<string> WrappedTextRows = new List<string>();
         public int Attributes { get; set; }
         public int NHColor { get; set; }
         public bool IsLast { get; set; }
