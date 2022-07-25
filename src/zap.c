@@ -1925,8 +1925,8 @@ struct monst* mtmp;
     struct layer_info li = isok(sx, sy) ? layers_at(sx, sy) : zerolayerinfo;
     unsigned long layerflags = li.layer_flags;
     boolean loc_is_you = mtmp == &youmonst; // (layerflags& LFLAGS_UXUY) != 0; //So you can separately see your steed stats properly
-    boolean ispeaceful = (layerflags & LFLAGS_M_PEACEFUL) != 0;
-    boolean ispet = (layerflags & LFLAGS_M_PET) != 0;
+    boolean ispeaceful = is_peaceful(mtmp) && !is_tame(mtmp); // (layerflags& LFLAGS_M_PEACEFUL) != 0;
+    boolean ispet = is_tame(mtmp); //  (layerflags& LFLAGS_M_PET) != 0;
     boolean isdetected = (layerflags & LFLAGS_M_DETECTED) != 0;
     int condition_count = 0;
 
