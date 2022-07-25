@@ -2429,6 +2429,7 @@ int skill_id;
             char savingbuf[BUFSZ] = "";
             char acbuf[BUFSZ] = "";
             char mcbuf[BUFSZ] = "";
+            char limitbuf[BUFSZ] = "";
 
             lvlcnt++;
             int color = lvl == P_SKILL_LEVEL(skill_id) ? CLR_GREEN : NO_COLOR;
@@ -2510,6 +2511,10 @@ int skill_id;
                         Sprintf(acbuf, "%s%d", acbonus >= 0 ? "+" : "", acbonus);
                         Sprintf(mcbuf, "%s%d", mcbonus >= 0 ? "+" : "", mcbonus);
                     }
+                    else if (skill_id == P_TWO_WEAPON_COMBAT)
+                    {
+                        Strcpy(limitbuf, lvlname);
+                    }
                 }
             }
             else if (skill_id >= P_FIRST_SPELL && skill_id <= P_LAST_SPELL)
@@ -2589,6 +2594,11 @@ int skill_id;
             if (strcmp(magicbuf, ""))
             {
                 Sprintf(buf, "    * Magic trap untrap chance %s", magicbuf);
+                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+            }
+            if (strcmp(limitbuf, ""))
+            {
+                Sprintf(buf, "    * Weapon skill limit %s", limitbuf);
                 putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
             }
         }
@@ -3449,19 +3459,19 @@ boolean nextlevel, limit_by_twoweap;
             bonus += -2;
             break;
         case P_BASIC:
-            bonus += -1;
+            bonus += -2;
             break;
         case P_SKILLED:
             bonus += -1;
             break;
         case P_EXPERT:
-            bonus += 0;
+            bonus += -1;
             break;
         case P_MASTER:
             bonus += 0;
             break;
         case P_GRAND_MASTER:
-            bonus += 1;
+            bonus += 0;
             break;
         }
     }
@@ -3593,19 +3603,19 @@ boolean nextlevel, limit_by_twoweap;
         default:
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus += -2;
+            bonus += -3;
             break;
         case P_BASIC:
             bonus += -2;
             break;
         case P_SKILLED:
-            bonus += -1;
+            bonus += -2;
             break;
         case P_EXPERT:
             bonus += -1;
             break;
         case P_MASTER:
-            bonus += 0;
+            bonus += -1;
             break;
         case P_GRAND_MASTER:
             bonus += 0;
