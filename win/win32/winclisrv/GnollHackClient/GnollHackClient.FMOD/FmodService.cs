@@ -49,6 +49,29 @@ namespace GnollHackClient.Unknown
         }
     };
 
+    public class LoadedBank
+    {
+        public readonly Bank Bank;
+        public readonly int SubType;
+
+        public LoadedBank(Bank bank, int subType)
+        {
+            Bank = bank;
+            SubType = subType;
+        }
+    }
+
+    public class LoadableBank
+    {
+        public readonly string FullPathName;
+        public readonly int SubType;
+        public LoadableBank(string path, int subType)
+        {
+            FullPathName = path;
+            SubType = subType;
+        }
+    }
+
 
     class FmodService : IFmodService
     {
@@ -59,7 +82,7 @@ namespace GnollHackClient.Unknown
         //private byte[] _bankBuffer1;
         //private byte[] _bankBuffer2;
 
-        List<Bank> _banks = new List<Bank>();
+        private readonly List<LoadedBank> _banks = new List<LoadedBank>();
 
         EventInstance? _testEventInstance;
 
@@ -126,41 +149,66 @@ namespace GnollHackClient.Unknown
             return _initialized && App.LoadBanks;
         }
 
-        public void UnloadBanks()
+        public void UnloadBanks(int subType)
         {
             RESULT res;
-            //res = _system.unloadAll();
-            foreach(var bank in _banks)
+            for (int i = _banks.Count - 1; i >= 0; i--)
             {
-                res = bank.unload();
-                bank.clearHandle();
+                if (_banks[i].SubType == subType)
+                {
+                    res = _banks[i].Bank.unload();
+                    _banks[i].Bank.clearHandle();
+                    _banks.RemoveAt(i);
+                }
             }
-            _banks.Clear();
+
+            //RESULT res;
+            ////res = _system.unloadAll();
+            //foreach(var loadedBank in _banks)
+            //{
+            //    res = loadedBank.Bank.unload();
+            //    loadedBank.Bank.clearHandle();
+            //}
+            //_banks.Clear();
         }
 
-        public void LoadBanks()
+        public void LoadBanks(int subType)
         {
             RESULT res;
-            foreach (string bank_path in _loadableSoundBanks)
+            foreach (LoadableBank loadableBank in _loadableSoundBanks)
             {
-                if (File.Exists(bank_path))
+                if(loadableBank.SubType == subType)
                 {
-                    Bank tmpbank = new Bank();
-                    res = _system.loadBankFile(bank_path, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
-                    _banks.Add(tmpbank);
+                    string bank_path = loadableBank.FullPathName;
+                    if (File.Exists(bank_path))
+                    {
+                        Bank tmpbank = new Bank();
+                        res = _system.loadBankFile(bank_path, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
+                        _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
+                    }
                 }
             }
         }
 
-        private List<string> _loadableSoundBanks = new List<string>();
+        private readonly List<LoadableBank> _loadableSoundBanks = new List<LoadableBank>();
 
         public void ClearLoadableSoundBanks()
         {
             _loadableSoundBanks.Clear();
         }
-        public void AddLoadableSoundBank(string fullfilepath)
+        public void AddLoadableSoundBank(string fullfilepath, int subType)
         {
-            _loadableSoundBanks.Add(fullfilepath);
+            _loadableSoundBanks.Add(new LoadableBank(fullfilepath, subType));
+        }
+
+        public void LoadIntroSoundBank()
+        {
+            LoadBanks(1);
+        }
+
+        public void UnloadIntroSoundBank()
+        {
+            UnloadBanks(1);
         }
 
         public void PlayTestSound()

@@ -523,6 +523,7 @@ struct instance_flags {
     char* wc2_master_bank_file; /* name of custom master bank file, overrides default */
     char* wc2_master_strings_bank_file; /* name of custom master strings bank file, overrides default */
     char* wc2_auxiliary_bank_file; /* name of custom auxiliary bank file, overrides default */
+    char* wc2_intro_bank_file; /* name of custom intro bank file, overrides default */
     struct autopickup_exception *autopickup_exceptions[2];
 #define AP_LEAVE 0
 #define AP_GRAB 1

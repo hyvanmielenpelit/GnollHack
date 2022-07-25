@@ -196,8 +196,9 @@ namespace GnollHackClient.Pages.Game
                 {
                     try
                     {
-                        App.FmodService.LoadBanks();
-                        if(_gamePage == null)
+                        App.FmodService.LoadBanks(0);
+                        App.FmodService.LoadBanks(2);
+                        if (_gamePage == null)
                         {
                             App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
                         }
@@ -212,7 +213,8 @@ namespace GnollHackClient.Pages.Game
                     try
                     {
                         App.FmodService.ReleaseAllSoundInstances();
-                        App.FmodService.UnloadBanks();
+                        App.FmodService.UnloadBanks(0);
+                        App.FmodService.UnloadBanks(2);
                     }
                     catch
                     {

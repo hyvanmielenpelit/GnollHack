@@ -3728,12 +3728,13 @@ mswin_init_platform(VOID_ARGS)
 
     /* FMOD Banks */
     HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
-    int rid[3] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS, IDR_RCDATA_AUXILIARY };
-    char* bfilename[3] = { 0, 0, 0 };
+    int rid[4] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS, IDR_RCDATA_AUXILIARY, IDR_RCDATA_INTRO };
+    char* bfilename[4] = { 0, 0, 0, 0 };
     bfilename[0] = iflags.wc2_master_bank_file;
     bfilename[1] = iflags.wc2_master_strings_bank_file;
     bfilename[2] = iflags.wc2_auxiliary_bank_file;
-    for (int i = 0; i < 3; i++)
+    bfilename[3] = iflags.wc2_intro_bank_file;
+    for (int i = 0; i < 4; i++)
     {
         if (bfilename[i])
         {

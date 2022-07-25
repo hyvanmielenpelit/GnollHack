@@ -1413,8 +1413,10 @@ newgame()
     status_reassess();
 
     if (flags.legacy) {
+        issue_gui_command(GUI_CMD_LOAD_INTRO_SOUND_BANK);
         flush_screen(1);
         com_pager_ex((struct monst*)0, 1, ATR_NONE, CLR_MSG_HINT, FALSE);
+        issue_gui_command(GUI_CMD_UNLOAD_INTRO_SOUND_BANK);
     }
 
     urealtime.realtime = 0L;

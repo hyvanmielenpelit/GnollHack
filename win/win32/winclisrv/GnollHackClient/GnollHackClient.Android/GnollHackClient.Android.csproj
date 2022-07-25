@@ -142,6 +142,7 @@
     <AndroidAppBundleModules Include="assetpacks\assets.zip" />
     <AndroidAsset Include="banks\Master.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
     <AndroidAsset Include="banks\Auxiliary.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+    <AndroidAsset Include="banks\Intro.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
     <AndroidAsset Include="banks\Master.strings.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
     <AndroidNativeLibrary Include="libs\arm64-v8a\libc++_shared.so" />
     <None Include="Resources\AboutResources.txt" />

@@ -427,6 +427,8 @@ IDR_RCDATA_STRINGS      RCDATA                  "Master.strings.bank"
 
 IDR_RCDATA_AUXILIARY    RCDATA                  "Auxiliary.bank"
 
+IDR_RCDATA_INTRO        RCDATA                  "Intro.bank"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

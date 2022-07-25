@@ -9,6 +9,7 @@ namespace GnollHackCommon
         public string id;
         public string name;
         public string type;
+        public int subtype_id;
         public string description;
         public string version;
         public string source_directory;

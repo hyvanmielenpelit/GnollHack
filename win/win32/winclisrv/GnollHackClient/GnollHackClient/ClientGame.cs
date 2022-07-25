@@ -1506,6 +1506,14 @@ namespace GnollHackClient
                 case (int)gui_command_types.GUI_CMD_CLEAR_GUI_EFFECTS:
                     _gamePage.ClearGuiEffects();
                     break;
+                case (int)gui_command_types.GUI_CMD_LOAD_INTRO_SOUND_BANK:
+                    if(App.LoadBanks)
+                        App.FmodService.LoadIntroSoundBank();
+                    break;
+                case (int)gui_command_types.GUI_CMD_UNLOAD_INTRO_SOUND_BANK:
+                    if (App.LoadBanks)
+                        App.FmodService.UnloadIntroSoundBank();
+                    break;
                 default:
                     break;
             }

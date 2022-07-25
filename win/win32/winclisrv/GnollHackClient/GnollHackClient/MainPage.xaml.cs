@@ -224,15 +224,15 @@ namespace GnollHackClient
             }
         }
 
-        public async Task TryLoadBanks()
+        public async Task TryLoadBanks(int subType)
         {
             try
             {
-                App.FmodService.LoadBanks();
+                App.FmodService.LoadBanks(subType);
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Loading FMOD Banks Failed", "GnollHack failed to load FMOD banks: " + ex.Message, "OK");
+                await DisplayAlert("Loading FMOD Banks Failed", "GnollHack failed to load FMOD banks of type " + subType + ": " + ex.Message, "OK");
             }
         }
 
@@ -300,7 +300,8 @@ namespace GnollHackClient
 
             if (App.LoadBanks)
             {
-                await TryLoadBanks();
+                await TryLoadBanks(0);
+                await TryLoadBanks(2);
             }
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
@@ -858,7 +859,7 @@ namespace GnollHackClient
                 {
                     string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory);
                     string sfile = Path.Combine(sdir, sf.name);
-                    App.FmodService.AddLoadableSoundBank(sfile);
+                    App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id);
                 }
 
                 if (sf == App.CurrentSecrets.files.Last<SecretsFile>())
