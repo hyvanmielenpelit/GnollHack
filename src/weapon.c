@@ -2514,6 +2514,7 @@ int skill_id;
                     else if (skill_id == P_TWO_WEAPON_COMBAT)
                     {
                         Strcpy(limitbuf, lvlname);
+                        Strcpy(cbuf, "");
                     }
                 }
             }
