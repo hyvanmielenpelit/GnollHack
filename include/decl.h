@@ -53,6 +53,7 @@ E NEARDATA int in_doagain;
 E struct dgn_topology { /* special dungeon levels for speed */
     d_level d_oracle_level;
     d_level d_bigroom_level; /* unused */
+    d_level d_treasure_island;
     d_level d_rogue_level;
     d_level d_medusa_level;
     d_level d_minotaur_level;
@@ -140,6 +141,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define bovine_level            (dungeon_topology.d_bovine_level)
 #define bovine_dnum             (dungeon_topology.d_bovine_dnum)
 #define quantum_level           (dungeon_topology.d_quantum_level)
+#define treasure_island_level   (dungeon_topology.d_treasure_island)
 #define large_circular_dgn_dnum (dungeon_topology.d_large_circular_dgn_dnum)
 #define minetown_level          (dungeon_topology.d_minetown_level)
 #define mineend_level           (dungeon_topology.d_mineend_level)

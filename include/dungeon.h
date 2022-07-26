@@ -143,6 +143,7 @@ typedef struct branch {
 #define Is_primus_modron_level(x) (on_level(x, &primus_modron_level))
 #define Is_bovine_level(x) (on_level(x, &bovine_level))
 #define Is_quantum_level(x) (on_level(x, &quantum_level))
+#define Is_treasure_island_level(x) (on_level(x, &treasure_island_level))
 #define Is_minetown_level(x) (on_level(x, &minetown_level))
 #define Is_mineend_level(x) (on_level(x, &mineend_level))
 #define Is_sokoend_level(x) (on_level(x, &sokoend_level))

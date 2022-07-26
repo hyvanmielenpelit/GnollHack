@@ -3110,6 +3110,12 @@ int level_limit, level_adjustment;
         mtmp->minvent = (struct obj *) 0; /* caller expects this */
     }
 
+    /* Add acceleration to lights in Quantum Tunnel */
+    if (Is_quantum_level(&u.uz) && mons[mtmp->mnum].mlet == S_LIGHT)
+    {
+        mtmp->mprops[!rn2(3) ? LIGHTNING_FAST : !rn2(2) ? SUPER_FAST : ULTRA_FAST] |= 500 + d(5, 100);
+    }
+
     if (ptr->mflags3 && !(mmflags & MM_NOWAIT)) 
     {
         if (ptr->mflags3 & M3_WAITFORU)
