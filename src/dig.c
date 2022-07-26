@@ -422,6 +422,7 @@ dig(VOID_ARGS)
 
         /* make pit at <u.ux,u.uy> */
         if (dighole(TRUE, FALSE, (coord *) 0)) {
+            use_skill(context.digging.skill, 1);
             context.digging.level.dnum = 0;
             context.digging.level.dlevel = -1;
         }
@@ -508,7 +509,7 @@ dig(VOID_ARGS)
                 digtxt = "You succeed in cutting away some rock.";
                 create_basic_floor_location(dpx, dpy, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floortyp : CORR, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floorsubtyp : get_initial_location_subtype(levl[dpx][dpy].floortyp), 0, FALSE);
             }
-        } 
+        }
         else if (IS_WALL(lev->typ)) 
         {
             if (shopedge) 
@@ -575,6 +576,7 @@ dig(VOID_ARGS)
 
         if (digtxt && !context.digging.quiet)
             pline1(digtxt); /* after newsym */
+
         if (dmgtxt)
             pay_for_damage(dmgtxt, FALSE);
 
@@ -607,6 +609,7 @@ dig(VOID_ARGS)
             }
         }
     cleanup:
+        use_skill(context.digging.skill, 1);
         context.digging.lastdigtime = moves;
         context.digging.quiet = FALSE;
         context.digging.level.dnum = 0;
@@ -1496,13 +1499,15 @@ struct obj *obj;
             context.digging.quiet = FALSE;
             if (context.digging.pos.x != rx || context.digging.pos.y != ry
                 || !on_level(&context.digging.level, &u.uz)
-                || context.digging.down) {
+                || context.digging.down) 
+            {
                 if (flags.autodig && dig_target == DIGTYP_ROCK
                     && !context.digging.down
                     && context.digging.pos.x == u.ux
                     && context.digging.pos.y == u.uy
                     && (moves <= context.digging.lastdigtime + 2
-                        && moves >= context.digging.lastdigtime)) {
+                        && moves >= context.digging.lastdigtime)) 
+                {
                     /* avoid messages if repeated autodigging */
                     did_dig_msg = TRUE;
                     context.digging.quiet = TRUE;
@@ -1513,6 +1518,7 @@ struct obj *obj;
                 context.digging.pos.y = ry;
                 assign_level(&context.digging.level, &u.uz);
                 context.digging.effort = 0;
+                context.digging.skill = (int)weapon_skill_type(obj);
                 if (u_action_flags(ACTION_TILE_ATTACK) & ACTION_ATTACK_FLAGS_PICK_AXE)
                 {
                     update_u_action(ACTION_TILE_ATTACK);
@@ -1606,6 +1612,7 @@ struct obj *obj;
             context.digging.pos.y = u.uy;
             assign_level(&context.digging.level, &u.uz);
             context.digging.effort = 0;
+            context.digging.skill = (int)weapon_skill_type(obj);
             if (u_action_flags(ACTION_TILE_ATTACK) & ACTION_ATTACK_FLAGS_PICK_AXE)
             {
                 update_u_action(ACTION_TILE_ATTACK);

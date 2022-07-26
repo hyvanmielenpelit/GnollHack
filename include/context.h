@@ -33,6 +33,7 @@ struct dig_info { /* apply.c, hack.c */
     coord pos;
     long lastdigtime;
     boolean down, chew, warned, quiet;
+    int skill;
 };
 
 struct tin_info {

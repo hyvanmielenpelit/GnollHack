@@ -1884,6 +1884,9 @@ boolean* obj_destroyed;
                 already_killed = TRUE;
         }
         hittxt = TRUE;
+
+        //Exercise also riding in addtion to thrusting weapon already exercised
+        use_skill(P_RIDING, 1);
     }
     else if (unarmed && damage > 1 && !thrown && !obj && !Upolyd) 
     {

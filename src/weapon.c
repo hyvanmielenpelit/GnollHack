@@ -2776,7 +2776,8 @@ enhance_weapon_skill()
             boolean shieldsshown = (P_SKILL_LEVEL(P_SHIELD) > P_ISRESTRICTED);
             boolean dodgeshown = (P_SKILL_LEVEL(P_DODGE) > P_ISRESTRICTED);
             boolean martialartsshown = (P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_ISRESTRICTED);
-            boolean diggingsshown = (P_SKILL_LEVEL(P_DIGGING) > P_ISRESTRICTED);
+            boolean diggingshown = (P_SKILL_LEVEL(P_DIGGING) > P_ISRESTRICTED);
+            boolean ridingshown = (P_SKILL_LEVEL(P_RIDING) > P_ISRESTRICTED);
             any = zeroany;
             
             Strcpy(buf, "Bonuses are to-hit/damage/critical-% for weapons and combat,");
@@ -2788,9 +2789,15 @@ enhance_weapon_skill()
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
             }
 
-            if (diggingsshown)
+            if (diggingshown)
             {
-                Strcpy(buf, "to-hit/damage/dig speed for digging,");
+                Strcpy(buf, "to-hit/damage/dig speed bonus for digging,");
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+            }
+
+            if (ridingshown)
+            {
+                Strcpy(buf, "to-hit/damage/joust bonus for riding (when riding),");
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
             }
 
@@ -3152,13 +3159,29 @@ enhance_weapon_skill()
                     }
                     else if ((i >= P_FIRST_WEAPON && i <= P_LAST_WEAPON)
                         || (i >= P_FIRST_H_TO_H && i <= P_LAST_H_TO_H)
-                        || i == P_DIGGING)
+                        || i == P_DIGGING || i == P_RIDING)
                     {
-                        int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
-                        int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
-                        int criticalhitpct = get_skill_critical_strike_chance(i, FALSE, FALSE, 0);
-                        if (i == P_DIGGING)
-                            criticalhitpct = digging_skill_speed_bonus(P_SKILL_LEVEL(P_DIGGING));
+                        int tohitbonus = 0;
+                        int dmgbonus = 0;
+                        int criticalhitpct = 0;
+                        switch (i)
+                        {
+                        case P_DIGGING:
+                            tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
+                            dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
+                            criticalhitpct = digging_skill_speed_bonus(P_SKILL_LEVEL(i));
+                            break;
+                        case P_RIDING:
+                            tohitbonus = riding_skill_hit_bonus(P_SKILL_LEVEL(i));
+                            dmgbonus = riding_skill_dmg_bonus(P_SKILL_LEVEL(i));
+                            criticalhitpct = riding_skill_jousting_bonus(P_SKILL_LEVEL(i));
+                            break;
+                        default:
+                            tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
+                            dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
+                            criticalhitpct = get_skill_critical_strike_chance(i, FALSE, FALSE, 0);
+                            break;
+                        }
                         char hbuf[BUFSZ];
                         char dbuf[BUFSZ];
                         char cbuf[BUFSZ];

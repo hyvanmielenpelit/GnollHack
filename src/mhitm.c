@@ -438,8 +438,8 @@ register struct monst *magr, *mdef;
                 poletooclose = dist2(magr->mx, magr->my, mdef->mx, mdef->my) < min_range * min_range;
             }
             if (magr->weapon_strategy == NEED_WEAPON || !MON_WEP(magr) 
-                || (poletooclose || is_launcher(MON_WEP(magr)) && !mwelded(MON_WEP(magr), magr)
-                ))
+                || ((poletooclose || is_launcher(MON_WEP(magr))) && !mwelded(MON_WEP(magr), magr))
+               )
             {
                 magr->weapon_strategy = poletooclose ? NEED_HTH_NO_POLE : NEED_HTH_WEAPON;
                 if (mon_wield_item(magr, FALSE) != 0)
