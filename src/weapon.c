@@ -1154,8 +1154,9 @@ static const NEARDATA short hwep[] =
 
 /* select a hand to hand weapon for the monster */
 struct obj *
-select_hwep(mtmp)
+select_hwep(mtmp, poleok)
 register struct monst *mtmp;
+boolean poleok;
 {
     register struct obj *otmp;
     register int i;
@@ -1183,6 +1184,8 @@ register struct monst *mtmp;
         for (i = 0; i < SIZE(hwep); i++) {
             if (hwep[i] == CORPSE && !(mtmp->worn_item_flags & W_ARMG)
                 && !resists_ston(mtmp))
+                continue;
+            if(!poleok && is_otyp_appliable_pole_type_weapon(hwep[i]))
                 continue;
             if (((strong && !wearing_shield) || !objects[hwep[i]].oc_bimanual)
                 && (objects[hwep[i]].oc_material != MAT_SILVER
@@ -1317,9 +1320,11 @@ boolean verbose_fail;
 
         return 0;
     }
+
     switch (mon->weapon_strategy) {
     case NEED_HTH_WEAPON:
-        obj = select_hwep(mon);
+    case NEED_HTH_NO_POLE:
+        obj = select_hwep(mon, mon->weapon_strategy == NEED_HTH_WEAPON);
         break;
     case NEED_RANGED_WEAPON:
         (void) select_rwep(mon);

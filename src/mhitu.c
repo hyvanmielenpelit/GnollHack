@@ -921,16 +921,23 @@ register struct monst *mtmp;
                  * teleported or whatever....
                  */
                 boolean is_nonwelded_launcher = (MON_WEP(mtmp) && (is_launcher(MON_WEP(mtmp)) && !mwelded(MON_WEP(mtmp), mtmp)));
-
-                if (mtmp->weapon_strategy == NEED_WEAPON || !MON_WEP(mtmp) || is_nonwelded_launcher)
+                int min_range = 0, max_range = 1;
+                boolean poletooclose = FALSE;
+                if (MON_WEP(mtmp) && is_appliable_pole_type_weapon(MON_WEP(mtmp)) && !mwelded(MON_WEP(mtmp), mtmp))
                 {
-                    if (is_nonwelded_launcher && !select_hwep(mtmp))
+                    get_pole_type_weapon_min_max_distances(MON_WEP(mtmp), mtmp, &min_range, &max_range);
+                    poletooclose = dist2(mtmp->mx, mtmp->my, mtmp->mx, mtmp->my) < min_range * min_range;
+                }
+
+                if (mtmp->weapon_strategy == NEED_WEAPON || !MON_WEP(mtmp) || is_nonwelded_launcher || poletooclose)
+                {
+                    if ((is_nonwelded_launcher || poletooclose) && !select_hwep(mtmp, FALSE))
                     {
                         if(canseemon(mtmp))
                             pline("%s unwields %s.", Monnam(mtmp), the(cxname(MON_WEP(mtmp))));
                         setmnotwielded(mtmp, MON_WEP(mtmp));
                     }
-                    mtmp->weapon_strategy = NEED_HTH_WEAPON;
+                    mtmp->weapon_strategy = poletooclose ? NEED_HTH_NO_POLE : NEED_HTH_WEAPON;
                     /* mon_wield_item resets weapon_strategy as appropriate */
                     if (mon_wield_item(mtmp, FALSE) != 0)
                         break;

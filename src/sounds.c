@@ -3123,7 +3123,7 @@ dochat()
 
         if (is_tame(mtmp) && mtmp->minvent && can_operate_objects(mtmp->data) && attacktype(mtmp->data, AT_WEAP) && is_peaceful(mtmp)) /*  && !mtmp->issummoned */
         {
-            if (select_hwep(mtmp))
+            if (select_hwep(mtmp, TRUE))
             {
                 Sprintf(available_chat_list[chatnum].name, "Ask to wield a hand-to-hand weapon");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_dowield_hth;

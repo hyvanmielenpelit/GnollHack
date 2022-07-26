@@ -3793,7 +3793,7 @@ E int FDECL(special_dmgval, (struct monst *, struct monst *, long, long *));
 E void FDECL(silver_sears, (struct monst *, struct monst *, long));
 E struct obj *FDECL(select_rwep, (struct monst *));
 E boolean FDECL(monmightthrowwep, (struct obj *));
-E struct obj *FDECL(select_hwep, (struct monst *));
+E struct obj *FDECL(select_hwep, (struct monst *, BOOLEAN_P));
 E struct obj* FDECL(select_multiweapon_nth_hwep, (struct monst*, int));
 E void FDECL(possibly_unwield, (struct monst *, BOOLEAN_P));
 E void FDECL(mwepgone, (struct monst *));

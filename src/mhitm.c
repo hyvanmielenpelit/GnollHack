@@ -429,9 +429,19 @@ register struct monst *magr, *mdef;
                     res[i] |= MM_AGR_DIED;
                 break;
             }
-            if (magr->weapon_strategy == NEED_WEAPON || !MON_WEP(magr) || (is_launcher(MON_WEP(magr)) && !mwelded(MON_WEP(magr), magr)))
+
+            int min_range = 0, max_range = 1;
+            boolean poletooclose = FALSE;
+            if (MON_WEP(magr) && is_appliable_pole_type_weapon(MON_WEP(magr)))
             {
-                magr->weapon_strategy = NEED_HTH_WEAPON;
+                get_pole_type_weapon_min_max_distances(MON_WEP(magr), magr, &min_range, &max_range);
+                poletooclose = dist2(magr->mx, magr->my, mdef->mx, mdef->my) < min_range * min_range;
+            }
+            if (magr->weapon_strategy == NEED_WEAPON || !MON_WEP(magr) 
+                || (poletooclose || is_launcher(MON_WEP(magr)) && !mwelded(MON_WEP(magr), magr)
+                ))
+            {
+                magr->weapon_strategy = poletooclose ? NEED_HTH_NO_POLE : NEED_HTH_WEAPON;
                 if (mon_wield_item(magr, FALSE) != 0)
                     return 0;
             }

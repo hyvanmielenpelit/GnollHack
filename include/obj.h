@@ -264,12 +264,17 @@ struct obj {
 #define is_sword(otmp)                                \
     ((otmp)->oclass == WEAPON_CLASS                     \
      && objects[(otmp)->otyp].oc_skill == P_SWORD)
-#define is_pole(otmp)                                             \
-    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_subtyp == WEP_POLEARM)
-#define is_spear(otmp) \
-    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_subtyp == WEP_SPEAR)
-#define is_lance(otmp) \
-    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_subtyp == WEP_LANCE)
+#define is_otyp_pole(otyp)                                             \
+    (objects[(otyp)].oc_class == WEAPON_CLASS && objects[(otyp)].oc_subtyp == WEP_POLEARM)
+#define is_otyp_spear(otyp) \
+    (objects[(otyp)].oc_class == WEAPON_CLASS && objects[(otyp)].oc_subtyp == WEP_SPEAR)
+#define is_otyp_lance(otyp) \
+    (objects[(otyp)].oc_class == WEAPON_CLASS && objects[(otyp)].oc_subtyp == WEP_LANCE)
+#define is_pole(o) is_otyp_pole((o)->otyp)
+#define is_spear(o) is_otyp_spear((o)->otyp)
+#define is_lance(o) is_otyp_lance((o)->otyp)
+#define is_otyp_appliable_pole_type_weapon(otyp)   \
+    (is_otyp_pole(otyp) || is_otyp_spear(otyp) || is_otyp_lance(otyp))
 #define is_appliable_pole_type_weapon(otmp)   \
     (is_pole(otmp) || is_spear(otmp) || is_lance(otmp))
 #define is_appliable_weapon(otmp) \

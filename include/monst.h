@@ -35,9 +35,10 @@ enum wpn_chk_flags {
     NEED_WEAPON         = 1,
     NEED_RANGED_WEAPON  = 2,
     NEED_HTH_WEAPON     = 3,
-    NEED_PICK_AXE       = 4,
-    NEED_AXE            = 5,
-    NEED_PICK_OR_AXE    = 6
+    NEED_HTH_NO_POLE    = 4,
+    NEED_PICK_AXE       = 5,
+    NEED_AXE            = 6,
+    NEED_PICK_OR_AXE    = 7
 };
 
 /* The following flags are used for the second argument to display_minventory

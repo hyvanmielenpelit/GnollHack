@@ -1089,7 +1089,7 @@ boolean fromspell;
                 d((int) mtmp->m_lev, 10) + 30 + rnd(30);
             update_mon_maxhp(mtmp);
             mtmp->mhp = mtmp->mhpmax;
-            if ((otmp = select_hwep(mtmp)) == 0) {
+            if ((otmp = select_hwep(mtmp, TRUE)) == 0) {
                 otmp = mksobj(SILVER_SABER, FALSE, FALSE, FALSE);
                 if (mpickobj(mtmp, otmp))
                 {
