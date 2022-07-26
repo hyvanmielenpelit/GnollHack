@@ -1302,7 +1302,7 @@ register struct obj* obj;
     if (stats_known && objects[otyp].oc_skill != P_NONE)
     {
         Strcpy(buf2, weapon_skill_name(obj));
-        if (objects[otyp].oc_skill < 0)
+        if (objects[otyp].oc_skill < 0 && objects[otyp].oc_skill != -P_THROWN_WEAPON)
         {
             Sprintf(buf, "Ammunition for:         Weapons using %s skill", buf2);
         }
