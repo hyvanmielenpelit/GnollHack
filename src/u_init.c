@@ -424,7 +424,6 @@ static const struct def_skill Skill_A_Max[] = {
     { P_DIVINATION_SPELL, P_MASTER },
     { P_TRANSMUTATION_SPELL, P_MASTER },
     { P_NECROMANCY_SPELL, P_MASTER },
-    { P_RIDING, P_MASTER },
     { P_TWO_WEAPON_COMBAT, P_MASTER },
     { P_BARE_HANDED_COMBAT, P_MASTER },
     { P_DODGE, P_EXPERT },
@@ -453,7 +452,7 @@ static const struct def_skill Skill_B_Max[] = {
     { P_BOW, P_EXPERT },
     { P_CROSSBOW, P_EXPERT },
     { P_THROWN_WEAPON, P_EXPERT },
-    { P_RIDING, P_BASIC },
+    { P_RIDING, P_MASTER },
     { P_TWO_WEAPON_COMBAT, P_EXPERT },
     { P_BARE_HANDED_COMBAT, P_MASTER },
     { P_DODGE, P_MASTER },
@@ -545,7 +544,7 @@ static const struct def_skill Skill_K_Max[] = {
     { P_CLERIC_SPELL, P_SKILLED },
     { P_CELESTIAL_SPELL, P_SKILLED },
     { P_ABJURATION_SPELL, P_SKILLED },
-    { P_RIDING, P_EXPERT },
+    { P_RIDING, P_GRAND_MASTER },
     { P_TWO_WEAPON_COMBAT, P_GRAND_MASTER },
     { P_BARE_HANDED_COMBAT, P_EXPERT },
     { P_DODGE, P_MASTER },
@@ -603,6 +602,7 @@ static const struct def_skill Skill_P_Max_Chaotic[] = {
     { P_BARE_HANDED_COMBAT, P_SKILLED },
     { P_DODGE, P_SKILLED },
     { P_SHIELD, P_MASTER },
+    { P_RIDING, P_SKILLED },
     { P_WAND, P_SKILLED },
     { P_NONE, 0 }
 };
@@ -620,6 +620,7 @@ static const struct def_skill Skill_P_Max_Neutral[] = {
     { P_BARE_HANDED_COMBAT, P_SKILLED },
     { P_DODGE, P_SKILLED },
     { P_SHIELD, P_MASTER },
+    { P_RIDING, P_SKILLED },
     { P_WAND, P_SKILLED },
     { P_NONE, 0 }
 };
@@ -637,6 +638,7 @@ static const struct def_skill Skill_P_Max_Lawful[] = {
     { P_BARE_HANDED_COMBAT, P_SKILLED },
     { P_DODGE, P_SKILLED },
     { P_SHIELD, P_MASTER },
+    { P_RIDING, P_SKILLED },
     { P_WAND, P_SKILLED },
     { P_NONE, 0 }
 };
@@ -736,7 +738,7 @@ static const struct def_skill Skill_S_Max[] = {
     { P_BOW, P_GRAND_MASTER },
     { P_CROSSBOW, P_EXPERT },
     { P_THROWN_WEAPON, P_EXPERT },
-    { P_RIDING, P_SKILLED },
+    { P_RIDING, P_EXPERT },
     { P_TWO_WEAPON_COMBAT, P_GRAND_MASTER },
     { P_BARE_HANDED_COMBAT, P_GRAND_MASTER },
     { P_MARTIAL_ARTS, P_SKILLED },
@@ -806,7 +808,7 @@ static const struct def_skill Skill_V_Max[] = {
     { P_BOW, P_EXPERT },
     { P_CROSSBOW, P_EXPERT },
     { P_THROWN_WEAPON, P_EXPERT },
-    { P_RIDING, P_SKILLED },
+    { P_RIDING, P_EXPERT },
     { P_TWO_WEAPON_COMBAT, P_GRAND_MASTER },
     { P_BARE_HANDED_COMBAT, P_GRAND_MASTER },
     { P_DODGE, P_MASTER },

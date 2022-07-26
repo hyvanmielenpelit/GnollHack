@@ -5244,6 +5244,60 @@ int skill_level;
         }
         break;
     }
+    case P_MASTER:
+    {
+        switch (trap_type)
+        {
+        case WEB:
+            probability = webmaker(youmonst.data) ? 800 : 66;
+            break;
+        case ANTI_MAGIC_TRAP:
+        case POLY_TRAP:
+        case TELEP_TRAP:
+        case LEVEL_TELEP:
+        case RUST_TRAP:
+        case FIRE_TRAP:
+        case SLP_GAS_TRAP:
+        case MAGIC_TRAP:
+            probability = 90;
+            break;
+        case ROCKTRAP:
+        case ROLLING_BOULDER_TRAP:
+            probability = 95;
+            break;
+        default:
+            probability = 97;
+            break;
+        }
+        break;
+    }
+    case P_GRAND_MASTER:
+    {
+        switch (trap_type)
+        {
+        case WEB:
+            probability = webmaker(youmonst.data) ? 1600 : 90;
+            break;
+        case ANTI_MAGIC_TRAP:
+        case POLY_TRAP:
+        case TELEP_TRAP:
+        case LEVEL_TELEP:
+        case RUST_TRAP:
+        case FIRE_TRAP:
+        case SLP_GAS_TRAP:
+        case MAGIC_TRAP:
+            probability = 95;
+            break;
+        case ROCKTRAP:
+        case ROLLING_BOULDER_TRAP:
+            probability = 100;
+            break;
+        default:
+            probability = 100;
+            break;
+        }
+        break;
+    }
     default:
         break;
     }

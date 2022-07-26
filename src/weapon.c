@@ -2438,6 +2438,8 @@ int skill_id;
             char digbuf[BUFSZ] = "";
             char whipbuf[BUFSZ] = "";
             char joustbuf[BUFSZ] = "";
+            char saddlebuf[BUFSZ] = "";
+            char mountbuf[BUFSZ] = "";
 
             lvlcnt++;
             int color = lvl == P_SKILL_LEVEL(skill_id) ? CLR_GREEN : NO_COLOR;
@@ -2571,6 +2573,17 @@ int skill_id;
                 Sprintf(arrowbuf, "%d%%", arrowtrap_chance);
                 Sprintf(magicbuf, "%d%%", magictrap_chance);
             }
+            else if (skill_id == P_RIDING)
+            {
+                int tohitbonus = riding_skill_hit_bonus(lvl);
+                int dmgbonus = riding_skill_dmg_bonus(lvl);
+                int saddlebonus = riding_skill_saddling_bonus(lvl);
+                int mountbonus = riding_skill_mount_bonus(lvl);
+                Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
+                Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
+                Sprintf(saddlebuf, "%s%d%%", saddlebonus >= 0 ? "+" : "", saddlebonus);
+                Sprintf(mountbuf, "%s%d%%", mountbonus >= 0 ? "+" : "", mountbonus);
+            }
 
             if (strcmp(digbuf, ""))
             {
@@ -2589,12 +2602,12 @@ int skill_id;
             }
             if (strcmp(hbuf, ""))
             {
-                Sprintf(buf, "    * To-hit bonus %s", hbuf);
+                Sprintf(buf, "    * To-hit bonus %s%s", hbuf, skill_id == P_RIDING ? " when riding" : "");
                 putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
             }
             if (strcmp(dbuf, ""))
             {
-                Sprintf(buf, "    * Damage bonus %s", dbuf);
+                Sprintf(buf, "    * Damage bonus %s%s", dbuf, skill_id == P_RIDING ? " when riding" : "");
                 putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
             }
             if (strcmp(mbuf, ""))
@@ -2650,6 +2663,16 @@ int skill_id;
             if (strcmp(joustbuf, ""))
             {
                 Sprintf(buf, "    * Jousting chance %s", joustbuf);
+                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+            }
+            if (strcmp(saddlebuf, ""))
+            {
+                Sprintf(buf, "    * Saddling success bonus %s", saddlebuf);
+                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+            }
+            if (strcmp(mountbuf, ""))
+            {
+                Sprintf(buf, "    * Mount success bonus %s", mountbuf);
                 putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
             }
         }
@@ -3555,29 +3578,7 @@ boolean nextlevel, limit_by_twoweap;
     /* KMH -- It's harder to hit while you are riding */
     if (!use_this_skill && u.usteed)
     {
-        switch (P_SKILL_LEVEL(P_RIDING))
-        {
-        case P_ISRESTRICTED:
-        case P_UNSKILLED:
-            bonus -= 2;
-            break;
-        case P_BASIC:
-            bonus -= 1;
-            break;
-        case P_SKILLED:
-        case P_EXPERT:
-        case P_MASTER:
-        case P_GRAND_MASTER:
-            break;
-        }
-
-        if (u.twoweap)
-        {
-            if (P_SKILL_LEVEL(P_RIDING) < P_MASTER)
-                bonus -= 2;
-            else if (P_SKILL_LEVEL(P_RIDING) == P_MASTER)
-                bonus -= 1;
-        }
+        bonus += riding_skill_hit_bonus(P_SKILL_LEVEL(P_RIDING));
     }
 
     return bonus;
@@ -3700,26 +3701,7 @@ boolean nextlevel, limit_by_twoweap;
     /* KMH -- Riding gives some thrusting damage */
     if (!use_this_skill && u.usteed && type != P_TWO_WEAPON_COMBAT)
     {
-        switch (P_SKILL_LEVEL(P_RIDING)) 
-        {
-        case P_ISRESTRICTED:
-        case P_UNSKILLED:
-            break;
-        case P_BASIC:
-            break;
-        case P_SKILLED:
-            bonus += 1;
-            break;
-        case P_EXPERT:
-            bonus += 2;
-            break;
-        case P_MASTER:
-            bonus += 3;
-            break;
-        case P_GRAND_MASTER:
-            bonus += 4;
-            break;
-        }
+        bonus += riding_skill_dmg_bonus(P_SKILL_LEVEL(P_RIDING));
     }
 
     return bonus;
@@ -3807,6 +3789,126 @@ int skill_level;
     return hit_bon;
 }
 
+int
+riding_skill_hit_bonus(skill_level)
+int skill_level;
+{
+    int bonus = 0;
+    switch (skill_level)
+    {
+    case P_ISRESTRICTED:
+    case P_UNSKILLED:
+        bonus -= 3;
+        break;
+    case P_BASIC:
+        bonus -= 2;
+        break;
+    case P_SKILLED:
+        bonus -= 2;
+        break;
+    case P_EXPERT:
+        bonus -= 1;
+        break;
+    case P_MASTER:
+        bonus -= 1;
+        break;
+    case P_GRAND_MASTER:
+        bonus -= 0;
+        break;
+    }
+    return bonus;
+}
+
+int
+riding_skill_dmg_bonus(skill_level)
+int skill_level;
+{
+    int bonus = 0;
+    switch (skill_level)
+    {
+    case P_ISRESTRICTED:
+    case P_UNSKILLED:
+        break;
+    case P_BASIC:
+        bonus += 1;
+        break;
+    case P_SKILLED:
+        bonus += 2;
+        break;
+    case P_EXPERT:
+        bonus += 3;
+        break;
+    case P_MASTER:
+        bonus += 4;
+        break;
+    case P_GRAND_MASTER:
+        bonus += 5;
+        break;
+    }
+    return bonus;
+}
+
+int
+riding_skill_saddling_bonus(skill_level)
+int skill_level;
+{
+    int chance = 0;
+    switch (skill_level)
+    {
+    case P_ISRESTRICTED:
+    case P_UNSKILLED:
+    default:
+        chance -= 0;
+        break;
+    case P_BASIC:
+        chance += 25;
+        break;
+    case P_SKILLED:
+        chance += 50;
+        break;
+    case P_EXPERT:
+        chance += 75;
+        break;
+    case P_MASTER:
+        chance += 100;
+        break;
+    case P_GRAND_MASTER:
+        chance += 125;
+        break;
+    }
+    return chance;
+}
+
+int
+riding_skill_mount_bonus(skill_level)
+int skill_level;
+{
+    int bonus = 0;
+    switch (skill_level)
+    {
+    case P_ISRESTRICTED:
+    case P_UNSKILLED:
+    default:
+        bonus -= 0;
+        break;
+    case P_BASIC:
+        bonus += 40;
+        break;
+    case P_SKILLED:
+        bonus += 80;
+        break;
+    case P_EXPERT:
+        bonus += 120;
+        break;
+    case P_MASTER:
+        bonus += 160;
+        break;
+    case P_GRAND_MASTER:
+        bonus += 200;
+        break;
+    }
+    return bonus;
+}
 
 
 /*

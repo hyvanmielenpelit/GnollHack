@@ -114,26 +114,8 @@ struct obj *otmp;
     chance += u.ulevel * (is_tame(mtmp) ? 20 : 5);
     if (!is_tame(mtmp))
         chance -= 10 * mtmp->m_lev;
-    if (Role_if(PM_KNIGHT))
-        chance += 20;
-    switch (P_SKILL_LEVEL(P_RIDING)) 
-    {
-    case P_ISRESTRICTED:
-    case P_UNSKILLED:
-    default:
-        chance -= 20;
-        break;
-    case P_BASIC:
-        break;
-    case P_SKILLED:
-        chance += 15;
-        break;
-    case P_EXPERT:
-    case P_MASTER:
-    case P_GRAND_MASTER:
-        chance += 30;
-        break;
-    }
+    chance += riding_skill_saddling_bonus(P_SKILL_LEVEL(P_RIDING));
+
     if (Confusion || Fumbling || Glib)
         chance -= 20;
     else if (uarmg && (s = OBJ_DESCR(objects[uarmg->otyp])) != (char *) 0
@@ -370,14 +352,14 @@ struct monst *mtmp; /* The animal */
     }
 
     /* Reduce tameness */
-    if (!force && mtmp->mtame > 0 && !Role_if(PM_KNIGHT) && P_SKILL_LEVEL(P_RIDING) < P_EXPERT &&
+    if (!force && mtmp->mtame > 0 && P_SKILL_LEVEL(P_RIDING) < P_EXPERT &&
         !rn2(
             P_SKILL_LEVEL(P_RIDING) < P_BASIC ? 10 : 
             P_SKILL_LEVEL(P_RIDING) == P_BASIC ? 20 : 50 /* P_SKILLED */
         )) /* must be tame at this point*/
         mtmp->mtame--; /* reduce tameness if not knight */
 
-    if (!force && !Role_if(PM_KNIGHT) && !is_tame(mtmp)) 
+    if (!force && !is_tame(mtmp)) 
     {
         /* no longer tame */
         newsym(mtmp->mx, mtmp->my);
@@ -417,9 +399,20 @@ struct monst *mtmp; /* The animal */
              uarm->oeroded ? "rusty" : "corroded", mon_nam(mtmp));
         return (FALSE);
     }
-    if (!force
-        && (Confusion || Fumbling || Glib || Wounded_legs || otmp->cursed
-            || (u.ulevel + mtmp->mtame < rnd(MAXULEV / 2 + 5))))
+
+    int chance = riding_skill_mount_bonus(P_SKILL_LEVEL(P_RIDING)) + mtmp->mtame * 5;
+    if (otmp->cursed)
+        chance -= 25;
+    if(Wounded_legs)
+        chance -= 50;
+    if (Glib)
+        chance -= 50;
+    if (Confusion)
+        chance -= 50;
+    if (Fumbling)
+        chance -= 100;
+
+    if (!force && (chance < rnd(100)))
     {
         if (Levitation) {
             play_sfx_sound(SFX_MOUNT_FAIL_SLIP_AWAY);
