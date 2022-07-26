@@ -3831,19 +3831,19 @@ int skill_level;
     case P_UNSKILLED:
         break;
     case P_BASIC:
-        bonus += 2;
+        bonus += 3;
         break;
     case P_SKILLED:
-        bonus += 4;
-        break;
-    case P_EXPERT:
         bonus += 6;
         break;
+    case P_EXPERT:
+        bonus += 9;
+        break;
     case P_MASTER:
-        bonus += 8;
+        bonus += 12;
         break;
     case P_GRAND_MASTER:
-        bonus += 10;
+        bonus += 15;
         break;
     }
     return bonus;
