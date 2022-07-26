@@ -1424,7 +1424,8 @@ register struct obj* obj;
         /* Jousting */
         if (can_obj_joust(obj)) {
 
-            Sprintf(buf, "Jousting:               Yes, at %d%% chance when riding", spear_skill_jousting_chance(P_SKILL_LEVEL(weapon_skill_type(obj))));
+            int chance = spear_skill_jousting_bonus(P_SKILL_LEVEL(weapon_skill_type(obj))) + riding_skill_jousting_bonus(P_SKILL_LEVEL(P_RIDING));
+            Sprintf(buf, "Jousting:               Yes, at %d%% chance when riding", chance);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 

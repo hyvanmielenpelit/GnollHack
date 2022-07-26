@@ -412,7 +412,7 @@ struct monst *mtmp; /* The animal */
     if (Fumbling)
         chance -= 100;
 
-    if (!force && (chance < rnd(100)))
+    if (!force && rn2(100) >= chance)
     {
         if (Levitation) {
             play_sfx_sound(SFX_MOUNT_FAIL_SLIP_AWAY);

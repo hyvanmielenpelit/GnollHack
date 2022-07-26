@@ -2591,7 +2591,7 @@ joust(mon, obj)
 struct monst *mon; /* target */
 struct obj *obj;   /* weapon */
 {
-    int skill_rating, joust_dieroll;
+    int skill_chance = 0, joust_dieroll;
 
     if (Fumbling || Stunned)
         return 0;
@@ -2599,18 +2599,18 @@ struct obj *obj;   /* weapon */
     if (obj != uwep && obj != uarms)
         return 0;
 
-    /* if using two weapons, use worse of lance and two-weapon skills */
-    skill_rating = spear_skill_jousting_rating(P_SKILL_LEVEL(weapon_skill_type(obj))); /* thrusting weapon skill */
-    if (skill_rating < 0)
-        skill_rating = 0;
-    if (u.twoweap && P_SKILL_LEVEL(P_TWO_WEAPON_COMBAT) < skill_rating)
-        skill_rating = P_SKILL_LEVEL(P_TWO_WEAPON_COMBAT);
-    if (skill_rating == P_ISRESTRICTED)
-        skill_rating = P_UNSKILLED; /* 0=>1 */
+    int skill_level = P_SKILL_LEVEL(weapon_skill_type(obj));
+    if (u.twoweap && skill_level > P_SKILL_LEVEL(P_TWO_WEAPON_COMBAT))
+        skill_level = P_SKILL_LEVEL(P_TWO_WEAPON_COMBAT);
 
-    /* odds to joust are grand master:100%, master:80%, expert:60%, skilled:40%, basic:20%, unskilled:0% */
-    if ((joust_dieroll = rn2(5)) < skill_rating) {
-        if (joust_dieroll == 0 && rnl(50) == (50 - 1) && !unsolid(mon->data) && !is_incorporeal(mon->data)
+    skill_chance += spear_skill_jousting_bonus(skill_level); /* thrusting weapon skill */
+    skill_chance += spear_skill_jousting_bonus(P_SKILL_LEVEL(P_RIDING)); /* riding skill */
+
+    if ((joust_dieroll = rn2(100)) < skill_chance)
+    {
+        int roll_threshold = 5 - min(obj->exceptionality, EXCEPTIONALITY_CELESTIAL) + 10 * greatest_erosion(obj);        
+        if (joust_dieroll < roll_threshold && rnl(50) == (50 - 1) 
+            && !unsolid(mon->data) && !is_incorporeal(mon->data)
             && !obj_resists(obj, 0, 100))
             return -1; /* hit that breaks lance */
         return 1;      /* successful joust */

@@ -2540,8 +2540,8 @@ int skill_id;
                     }
                     case P_THRUSTING_WEAPON:
                     {
-                        int joustchance = spear_skill_jousting_chance(lvl);
-                        Sprintf(joustbuf, "%d%%", joustchance);
+                        int joustbonus = spear_skill_jousting_bonus(lvl);
+                        Sprintf(joustbuf, "%s%d%%", joustbonus >= 0 ? "+" : "", joustbonus);
                         break;
                     }
                     case P_WHIP:
@@ -2579,10 +2579,12 @@ int skill_id;
                 int dmgbonus = riding_skill_dmg_bonus(lvl);
                 int saddlebonus = riding_skill_saddling_bonus(lvl);
                 int mountbonus = riding_skill_mount_bonus(lvl);
+                int joustbonus = riding_skill_jousting_bonus(lvl);
                 Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                 Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
                 Sprintf(saddlebuf, "%s%d%%", saddlebonus >= 0 ? "+" : "", saddlebonus);
                 Sprintf(mountbuf, "%s%d%%", mountbonus >= 0 ? "+" : "", mountbonus);
+                Sprintf(joustbuf, "%s%d%%", joustbonus >= 0 ? "+" : "", joustbonus);
             }
 
             if (strcmp(digbuf, ""))
@@ -2662,7 +2664,7 @@ int skill_id;
             }
             if (strcmp(joustbuf, ""))
             {
-                Sprintf(buf, "    * Jousting chance %s", joustbuf);
+                Sprintf(buf, "    * Jousting success bonus %s", joustbuf);
                 putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
             }
             if (strcmp(saddlebuf, ""))
@@ -3743,19 +3745,18 @@ int lvl;
 }
 
 int
-spear_skill_jousting_rating(lvl)
+spear_skill_jousting_bonus(lvl)
 int lvl;
 {
-    return max(0, lvl - 1);
+    return 10 * max(0, lvl - 1);
 }
 
 int
-spear_skill_jousting_chance(lvl)
+riding_skill_jousting_bonus(lvl)
 int lvl;
 {
-    return 20 * spear_skill_jousting_rating(lvl);
+    return 10 * max(0, lvl - 1);
 }
-
 
 int
 wand_skill_hit_bonus(skill_level)
@@ -3830,19 +3831,19 @@ int skill_level;
     case P_UNSKILLED:
         break;
     case P_BASIC:
-        bonus += 1;
-        break;
-    case P_SKILLED:
         bonus += 2;
         break;
-    case P_EXPERT:
-        bonus += 3;
-        break;
-    case P_MASTER:
+    case P_SKILLED:
         bonus += 4;
         break;
+    case P_EXPERT:
+        bonus += 6;
+        break;
+    case P_MASTER:
+        bonus += 8;
+        break;
     case P_GRAND_MASTER:
-        bonus += 5;
+        bonus += 10;
         break;
     }
     return bonus;
