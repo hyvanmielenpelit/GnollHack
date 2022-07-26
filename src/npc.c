@@ -526,12 +526,26 @@ int mtype;
             {
                 mongets(npc, WAN_TELEPORTATION);
             }
+            mongets(npc, SHIRT_OF_SOUND_MINDEDNESS);
+            mongets(npc, SUNGLASSES);
             mongets(npc, CUBIC_GATE);
-            mongets(npc, SPE_TELEPORT_MONSTER);
-            mongets(npc, SPE_TELEPORT_SELF);
-            if(!rn2(2))
-                mongets(npc, SPE_SPHERE_OF_ANNIHILATION);
             if (!rn2(2))
+                mongets(npc, SPE_TELEPORT_MONSTER);
+            if (!rn2(2))
+                mongets(npc, SPE_TELEPORT_SELF);
+            if (!rn2(3))
+                mongets(npc, SPE_CIRCLE_OF_TELEPORTATION);
+            if (!rn2(4))
+                mongets(npc, SPE_LEVEL_TELEPORT);
+            if (!rn2(5))
+                mongets(npc, SPE_PORTAL);
+            if (!rn2(7))
+                mongets(npc, SPE_DISINTEGRATE);
+            if (!rn2(9))
+                mongets(npc, SPE_SPHERE_OF_ANNIHILATION);
+            if (!rn2(11))
+                mongets(npc, SPE_TIME_STOP);
+            if (!rn2(13))
                 mongets(npc, SPE_BLACK_BLADE_OF_DISASTER);
             break;
         }
