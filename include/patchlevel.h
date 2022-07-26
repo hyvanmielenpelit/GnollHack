@@ -11,7 +11,7 @@
 /*
  * PATCHLEVEL is updated for each release.
  */
-#define PATCHLEVEL 1
+#define PATCHLEVEL 0
 /*
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.
@@ -25,7 +25,7 @@
  * HOTFIXLEVEL indicates the hot fix number. 
  * It does not invalidate save files and is meant to address non-save-file-breaking bugs during PRE_RELEASE
  */
-#define HOTFIXLEVEL 0
+#define HOTFIXLEVEL 1
 #define PRE_RELEASE
 
 #define COPYRIGHT_BANNER_A "GnollHack, Copyright 2022 by Sound Mind Games"
