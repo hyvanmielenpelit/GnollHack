@@ -3161,6 +3161,7 @@ enhance_weapon_skill()
                         || (i >= P_FIRST_H_TO_H && i <= P_LAST_H_TO_H)
                         || i == P_DIGGING || i == P_RIDING)
                     {
+                        boolean addplus = FALSE;
                         int tohitbonus = 0;
                         int dmgbonus = 0;
                         int criticalhitpct = 0;
@@ -3170,11 +3171,13 @@ enhance_weapon_skill()
                             tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
                             dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
                             criticalhitpct = digging_skill_speed_bonus(P_SKILL_LEVEL(i));
+                            addplus = TRUE;
                             break;
                         case P_RIDING:
                             tohitbonus = riding_skill_hit_bonus(P_SKILL_LEVEL(i));
                             dmgbonus = riding_skill_dmg_bonus(P_SKILL_LEVEL(i));
                             criticalhitpct = riding_skill_jousting_bonus(P_SKILL_LEVEL(i));
+                            addplus = TRUE;
                             break;
                         default:
                             tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
@@ -3196,17 +3199,37 @@ enhance_weapon_skill()
                             Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                             Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
                         }
-                        Sprintf(cbuf, "%d%%", criticalhitpct);
+                        Sprintf(cbuf, "%s%d%%", addplus && criticalhitpct >= 0 ? "+" : "", criticalhitpct);
                         Sprintf(bonusbuf, "%5s/%s/%s", hbuf, dbuf, cbuf);
 
                         if (can_advance(i, speedy) || could_advance(i))
                         {
+                            boolean addplus2 = FALSE;
                             int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
-                            int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
-                            int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
-                            int criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE, FALSE, 0);
-                            if (i == P_DIGGING)
-                                criticalhitpct2 = digging_skill_speed_bonus(nextlevel);
+                            int tohitbonus2 = 0;
+                            int dmgbonus2 = 0;
+                            int criticalhitpct2 = 0;
+                            switch (i)
+                            {
+                            case P_DIGGING:
+                                tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
+                                dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
+                                criticalhitpct = digging_skill_speed_bonus(nextlevel);
+                                addplus2 = TRUE;
+                                break;
+                            case P_RIDING:
+                                tohitbonus = riding_skill_hit_bonus(nextlevel);
+                                dmgbonus = riding_skill_dmg_bonus(nextlevel);
+                                criticalhitpct = riding_skill_jousting_bonus(nextlevel);
+                                addplus2 = TRUE;
+                                break;
+                            default:
+                                tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
+                                dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
+                                criticalhitpct = get_skill_critical_strike_chance(i, TRUE, FALSE, 0);
+                                break;
+                            }
+
                             char hbuf2[BUFSZ];
                             char dbuf2[BUFSZ];
                             char cbuf2[BUFSZ];
@@ -3221,7 +3244,7 @@ enhance_weapon_skill()
                                 Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
                                 Sprintf(dbuf2, "%s%d", dmgbonus2 >= 0 ? "+" : "", dmgbonus2);
                             }
-                            Sprintf(cbuf2, "%d%%", criticalhitpct2);
+                            Sprintf(cbuf2, "%s%d%%", addplus2 && criticalhitpct2 >= 0 ? "+" : "", criticalhitpct2);
                             Sprintf(nextbonusbuf, "%5s/%s/%s", hbuf2, dbuf2, cbuf2);
                         }
                     }
