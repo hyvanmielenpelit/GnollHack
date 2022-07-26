@@ -2005,7 +2005,7 @@ static const struct skill_range {
     { P_FIRST_H_TO_H, P_LAST_H_TO_H, "Combat Skills", "Combat Skill"},
     { P_FIRST_WEAPON, P_LAST_WEAPON, "Weapon Skills", "Weapon Skill" },
     { P_FIRST_SPELL, P_LAST_SPELL, "Spell Casting Skills", "Spell Casting Skill" },
-    { P_FIRST_NONCOMBAT, P_LAST_NONCOMBAT, "Non-Combat Skills", "Non-Combat Skill" },
+    { P_FIRST_NONCOMBAT, P_LAST_NONCOMBAT, "Miscellaneous Skills", "Miscellaneous Skill" },
 };
 
 /* 'S' command  */

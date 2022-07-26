@@ -60,9 +60,9 @@ enum p_skills {
     P_SHIELD,                  /* increases AC and MC, and for figthing with weapon shields */
     P_WAND,                    /* shooting rays with wands */
 
-    /* Non-combat skills */
+    /* Miscellaneous skills */
     P_RIDING,                  /* how well you control your steed */
-    P_DIGGING,
+    P_DIGGING,                 /* pick-axe and other digging tools */
     P_DISARM_TRAP,             /* disarming traps */
     
     P_NUM_SKILLS

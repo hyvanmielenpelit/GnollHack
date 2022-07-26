@@ -11,7 +11,7 @@
 /*
  * PATCHLEVEL is updated for each release.
  */
-#define PATCHLEVEL 0
+#define PATCHLEVEL 1
 /*
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.
