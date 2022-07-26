@@ -3628,7 +3628,7 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
     }
 
 
-    /* KMH -- It's harder to hit while you are riding */
+    /* KMH -- It's harder to hit while you are riding -- It is now actually easier to hit since thrust from the steed helps you penetrate enemy's armor  --JG */
     if (apply_extra_bonuses && !use_this_skill && u.usteed)
     {
         bonus += riding_skill_hit_bonus(P_SKILL_LEVEL(P_RIDING));
@@ -3850,22 +3850,22 @@ int skill_level;
     {
     case P_ISRESTRICTED:
     case P_UNSKILLED:
-        bonus -= 3;
+        bonus += 0;
         break;
     case P_BASIC:
-        bonus -= 2;
+        bonus += 2;
         break;
     case P_SKILLED:
-        bonus -= 2;
+        bonus += 4;
         break;
     case P_EXPERT:
-        bonus -= 1;
+        bonus += 6;
         break;
     case P_MASTER:
-        bonus -= 1;
+        bonus += 8;
         break;
     case P_GRAND_MASTER:
-        bonus -= 0;
+        bonus += 10;
         break;
     }
     return bonus;
