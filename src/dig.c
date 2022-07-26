@@ -1513,17 +1513,17 @@ struct obj *obj;
                 context.digging.pos.y = ry;
                 assign_level(&context.digging.level, &u.uz);
                 context.digging.effort = 0;
+                if (u_action_flags(ACTION_TILE_ATTACK) & ACTION_ATTACK_FLAGS_PICK_AXE)
+                {
+                    update_u_action(ACTION_TILE_ATTACK);
+                    action_taken = TRUE;
+                }
                 if (!context.digging.quiet)
                 {
-                    if (u_action_flags(ACTION_TILE_ATTACK) & ACTION_ATTACK_FLAGS_PICK_AXE)
-                    {
-                        update_u_action(ACTION_TILE_ATTACK);
-                        action_taken = TRUE;
-                    }
                     You("start %s.", issaw ? d_action_saw[dig_target] : d_action[dig_target]);
-                    if (action_taken)
-                        update_u_action_revert(ACTION_TILE_NO_ACTION);
                 }
+                if (action_taken)
+                    update_u_action_revert(ACTION_TILE_NO_ACTION);
             }
             else 
             {
