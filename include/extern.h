@@ -3278,6 +3278,7 @@ E const char* FDECL(get_otyp_saving_throw_description, (int));
 E int FDECL(setspellhotkey, (int));
 E int FDECL(forgetspell, (int));
 E int FDECL(spell_skill_base_success_bonus, (int));
+E double FDECL(spell_skill_ulevel_success_bonus_per_level, (int));
 E int FDECL(spell_skill_ulevel_success_bonus, (int));
 E double FDECL(spell_skill_mana_cost_multiplier, (int));
 E int NDECL(dospellmanagemenu);
@@ -3834,6 +3835,11 @@ E int FDECL(shield_skill_ac_bonus, (int));
 E int FDECL(shield_skill_mc_bonus, (int));
 E int FDECL(dodge_skill_ac_bonus, (int));
 E int FDECL(wand_skill_hit_bonus, (int));
+E int FDECL(digging_skill_speed_bonus, (int));
+E int FDECL(whip_skill_weapon_disarm_bonus, (int));
+E int FDECL(whip_skill_weapon_disarm_bonus, (int));
+E int FDECL(spear_skill_jousting_rating, (int));
+E int FDECL(spear_skill_jousting_chance, (int));
 E void FDECL(skill_init, (const struct def_skill*, const struct def_skill *));
 E int FDECL(martial_arts_multishot_percentage_chance, (int));
 E int FDECL(get_skill_critical_strike_chance, (enum p_skills, BOOLEAN_P, BOOLEAN_P, int));
@@ -3841,6 +3847,8 @@ E double FDECL(get_wand_damage_multiplier, (int));
 E int FDECL(get_exceptionality_multiplier, (UCHAR_P));
 E void FDECL(print_weapon_style_string, (char*, BOOLEAN_P));
 E int FDECL(limited_skill_level, (enum p_skills, BOOLEAN_P, BOOLEAN_P));
+E int FDECL(exceptionality_digging_speed_bonus, (struct obj*));
+E int FDECL(exceptionality_weapon_disarm_bonus, (struct obj*));
 
 
 /* ### were.c ### */

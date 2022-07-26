@@ -46,22 +46,24 @@ STATIC_DCL const char* FDECL(get_skill_range_name, (int, BOOLEAN_P));
 #define PN_DISARM_TRAP (-20)
 #define PN_SWORD (-21)
 #define PN_BLUDGEONING_WEAPON (-22)
-#define PN_THROWN_WEAPON (-23)
-#define PN_MARTIAL_ARTS (-24)
-#define PN_DODGE (-25)
-#define PN_SHIELDS (-26)
-#define PN_WANDS (-27)
-#define NUM_PN_CATEGORIES (28)
+#define PN_THRUSTING_WEAPON (-23)
+#define PN_THROWN_WEAPON (-24)
+#define PN_MARTIAL_ARTS (-25)
+#define PN_DODGE (-26)
+#define PN_SHIELDS (-27)
+#define PN_DIGGING (-28)
+#define PN_WANDS (-29)
+#define NUM_PN_CATEGORIES (30)
 
 
 NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
-    0, DAGGER, AXE, PICK_AXE, PN_SWORD, PN_BLUDGEONING_WEAPON, FLAIL,
-    QUARTERSTAFF, PN_POLEARM, SPEAR, BOW, SLING,
+    0, DAGGER, AXE, PN_SWORD, PN_BLUDGEONING_WEAPON, FLAIL,
+    QUARTERSTAFF, PN_POLEARM, PN_THRUSTING_WEAPON, BOW, SLING,
     CROSSBOW, PN_THROWN_WEAPON, PN_WHIP,
     PN_ARCANE_SPELL, PN_CLERIC_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
     PN_ABJURATION_SPELL, PN_MOVEMENT_SPELL, PN_TRANSMUTATION_SPELL, PN_ENCHANTMENT_SPELL, PN_CONJURATION_SPELL,
     PN_CELESTIAL_SPELL, PN_NATURE_SPELL, PN_NECROMANCY_SPELL,
-    PN_BARE_HANDED, PN_MARTIAL_ARTS, PN_TWO_WEAPONS, PN_DODGE, PN_SHIELDS, PN_WANDS, PN_RIDING, PN_DISARM_TRAP
+    PN_BARE_HANDED, PN_MARTIAL_ARTS, PN_TWO_WEAPONS, PN_DODGE, PN_SHIELDS, PN_WANDS, PN_RIDING, PN_DIGGING, PN_DISARM_TRAP
 };
 
 /* note: entry [0] isn't used */
@@ -71,7 +73,7 @@ NEARDATA const char *const odd_skill_names[NUM_PN_CATEGORIES] = {
     "arcane spell", "clerical spell", "healing spell", "divination spell", "abjuration spell",
     "movement spell", "transmutation spell", "enchantment spell", "conjuration spell", 
     "celestial spell", "nature spell", "necromancy spell", "disarm trap", "sword",
-    "bludgeoning weapon", "thrown weapon", "martial arts", "dodge", "shield", "wand",
+    "bludgeoning weapon", "thrusting weapon", "thrown weapon", "martial arts", "dodge", "shield", "digging", "wand",
 };
 
 NEARDATA const char* const odd_skill_names_plural[NUM_PN_CATEGORIES] = {
@@ -80,7 +82,7 @@ NEARDATA const char* const odd_skill_names_plural[NUM_PN_CATEGORIES] = {
     "arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
     "movement spells", "transmutation spells", "enchantment spells", "conjuration spells", 
     "celestial spells", "nature spells", "necromancy spells", "disarm traps", "swords",
-    "bludgeoning weapons", "thrown weapons", "martial arts", "dodge", "shields", "wands",
+    "bludgeoning weapons", "thrusting weapons", "thrown weapons", "martial arts", "dodge", "shields", "digging", "wands",
 };
 
 #define P_NAME(type)                                    \
@@ -174,7 +176,7 @@ struct obj *obj;
         if (obj->otyp == GRAPPLING_HOOK)
             descr = "hook";
         break;
-    case P_PICK_AXE:
+    case P_DIGGING:
         /* even if "dwarvish mattock" hasn't been discovered yet */
         if (obj->otyp == DWARVISH_MATTOCK)
             descr = "mattock";
@@ -1846,8 +1848,11 @@ int skill, lvl;
     {
     case P_BARE_HANDED_COMBAT:
     case P_TWO_WEAPON_COMBAT:
-    case P_SHIELD:
     case P_DODGE:
+    case P_SHIELD:
+    case P_DIGGING:
+    case P_RIDING:
+    case P_DISARM_TRAP:
         return max(1, (tmp + 1) / 2);
     case P_MARTIAL_ARTS:
         return max(1, (tmp + 6) / 2);
@@ -2430,6 +2435,9 @@ int skill_id;
             char acbuf[BUFSZ] = "";
             char mcbuf[BUFSZ] = "";
             char limitbuf[BUFSZ] = "";
+            char digbuf[BUFSZ] = "";
+            char whipbuf[BUFSZ] = "";
+            char joustbuf[BUFSZ] = "";
 
             lvlcnt++;
             int color = lvl == P_SKILL_LEVEL(skill_id) ? CLR_GREEN : NO_COLOR;
@@ -2479,7 +2487,8 @@ int skill_id;
                 Sprintf(mbuf, "%d%%", multihitpct);
             }
             else if ((skill_id >= P_FIRST_WEAPON && skill_id <= P_LAST_WEAPON)
-                || (skill_id >= P_FIRST_H_TO_H && skill_id <= P_LAST_H_TO_H))
+                || (skill_id >= P_FIRST_H_TO_H && skill_id <= P_LAST_H_TO_H)
+                || skill_id == P_DIGGING)
             {
                 int tohitbonus, dmgbonus, criticalhitpct;
                 if (skill_id == P_BARE_HANDED_COMBAT && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
@@ -2504,28 +2513,54 @@ int skill_id;
                     Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                     Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
                     Sprintf(cbuf, "%d%%", criticalhitpct);
-                    if (skill_id == P_SHIELD)
+                    switch (skill_id)
+                    {
+                    case P_SHIELD:
                     {
                         int acbonus = -shield_skill_ac_bonus(lvl);
                         int mcbonus = shield_skill_mc_bonus(lvl);
                         Sprintf(acbuf, "%s%d", acbonus >= 0 ? "+" : "", acbonus);
                         Sprintf(mcbuf, "%s%d", mcbonus >= 0 ? "+" : "", mcbonus);
+                        break;
                     }
-                    else if (skill_id == P_TWO_WEAPON_COMBAT)
+                    case P_TWO_WEAPON_COMBAT:
                     {
                         Strcpy(limitbuf, lvlname);
                         Strcpy(cbuf, "");
+                        break;
+                    }
+                    case P_DIGGING:
+                    case P_AXE:
+                    {
+                        int digbonus = digging_skill_speed_bonus(lvl);
+                        Sprintf(digbuf, "%s%d%%", digbonus >= 0 ? "+" : "", digbonus);
+                        break;
+                    }
+                    case P_THRUSTING_WEAPON:
+                    {
+                        int joustchance = spear_skill_jousting_chance(lvl);
+                        Sprintf(joustbuf, "%d%%", joustchance);
+                        break;
+                    }
+                    case P_WHIP:
+                    {
+                        int whipbonus = whip_skill_weapon_disarm_bonus(lvl);
+                        Sprintf(whipbuf, "%s%d", whipbonus >= 0 ? "+" : "", whipbonus);
+                        break;
+                    }
+                    default:
+                        break;
                     }
                 }
             }
             else if (skill_id >= P_FIRST_SPELL && skill_id <= P_LAST_SPELL)
             {
                 int successbonus = spell_skill_base_success_bonus(lvl);
-                int levelsuccessbonus = spell_skill_ulevel_success_bonus(lvl);
+                double levelsuccessbonus = spell_skill_ulevel_success_bonus_per_level(lvl);
                 int costdiscount = (int)((spell_skill_mana_cost_multiplier(lvl) - 1.0) * 100.0);
                 int savingthrowmodifier = get_spell_skill_level_saving_throw_adjustment(lvl);
                 Sprintf(succbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
-                Sprintf(lvlsuccbuf, "%s%d%%", levelsuccessbonus >= 0 ? "+" : "", levelsuccessbonus);
+                Sprintf(lvlsuccbuf, "%s%.2f%%", levelsuccessbonus >= 0 ? "+" : "", levelsuccessbonus);
                 Sprintf(discbuf, "%s%d%%", costdiscount >= 0 ? "+" : "", costdiscount);
                 Sprintf(savingbuf, "%s%d", savingthrowmodifier >= 0 ? "+" : "", savingthrowmodifier);
             }
@@ -2537,6 +2572,11 @@ int skill_id;
                 Sprintf(magicbuf, "%d%%", magictrap_chance);
             }
 
+            if (strcmp(digbuf, ""))
+            {
+                Sprintf(buf, "    * %s speed increased by %s", skill_id == P_AXE ? "Chopping" : "Digging", digbuf);
+                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+            }
             if (strcmp(acbuf, ""))
             {
                 Sprintf(buf, "    * Armor class bonus %s", acbuf);
@@ -2574,7 +2614,7 @@ int skill_id;
             }
             if (strcmp(lvlsuccbuf, ""))
             {
-                Sprintf(buf, "    * Spell success from level %s", lvlsuccbuf);
+                Sprintf(buf, "    * Spell success per level %s", lvlsuccbuf);
                 putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
             }
             if (strcmp(discbuf, ""))
@@ -2600,6 +2640,16 @@ int skill_id;
             if (strcmp(limitbuf, ""))
             {
                 Sprintf(buf, "    * Weapon skill limit %s", limitbuf);
+                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+            }
+            if (strcmp(whipbuf, ""))
+            {
+                Sprintf(buf, "    * Weapon disarm bonus %s", whipbuf);
+                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+            }
+            if (strcmp(joustbuf, ""))
+            {
+                Sprintf(buf, "    * Jousting chance %s", joustbuf);
                 putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
             }
         }
@@ -2696,6 +2746,7 @@ enhance_weapon_skill()
             boolean shieldsshown = (P_SKILL_LEVEL(P_SHIELD) > P_ISRESTRICTED);
             boolean dodgeshown = (P_SKILL_LEVEL(P_DODGE) > P_ISRESTRICTED);
             boolean martialartsshown = (P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_ISRESTRICTED);
+            boolean diggingsshown = (P_SKILL_LEVEL(P_DIGGING) > P_ISRESTRICTED);
             any = zeroany;
             
             Strcpy(buf, "Bonuses are to-hit/damage/critical-% for weapons and combat,");
@@ -2704,6 +2755,12 @@ enhance_weapon_skill()
             if (martialartsshown)
             {
                 Strcpy(buf, "to-hit/damage/double-hit-% for martial arts,");
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+            }
+
+            if (diggingsshown)
+            {
+                Strcpy(buf, "to-hit/damage/dig speed for digging,");
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
             }
 
@@ -3064,11 +3121,14 @@ enhance_weapon_skill()
 
                     }
                     else if ((i >= P_FIRST_WEAPON && i <= P_LAST_WEAPON)
-                        || (i >= P_FIRST_H_TO_H && i <= P_LAST_H_TO_H))
+                        || (i >= P_FIRST_H_TO_H && i <= P_LAST_H_TO_H)
+                        || i == P_DIGGING)
                     {
                         int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, 0);
                         int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, 0);
                         int criticalhitpct = get_skill_critical_strike_chance(i, FALSE, FALSE, 0);
+                        if (i == P_DIGGING)
+                            criticalhitpct = digging_skill_speed_bonus(P_SKILL_LEVEL(P_DIGGING));
                         char hbuf[BUFSZ];
                         char dbuf[BUFSZ];
                         char cbuf[BUFSZ];
@@ -3088,9 +3148,12 @@ enhance_weapon_skill()
 
                         if (can_advance(i, speedy) || could_advance(i))
                         {
+                            int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
                             int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, 0);
                             int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, 0);
                             int criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE, FALSE, 0);
+                            if (i == P_DIGGING)
+                                criticalhitpct2 = digging_skill_speed_bonus(nextlevel);
                             char hbuf2[BUFSZ];
                             char dbuf2[BUFSZ];
                             char cbuf2[BUFSZ];
@@ -3414,7 +3477,7 @@ boolean nextlevel, limit_by_twoweap;
     {
         bonus = 0;
     }
-    else if (type <= P_LAST_WEAPON || type == P_SHIELD)
+    else if (type <= P_LAST_WEAPON || type == P_SHIELD || type == P_DIGGING)
     {
         int skill_level = use_this_level > 0 ? use_this_level : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
         switch (skill_level)
@@ -3563,7 +3626,7 @@ boolean nextlevel, limit_by_twoweap;
     {
         bonus += 0;
     } 
-    else if (type <= P_LAST_WEAPON || type == P_SHIELD)
+    else if (type <= P_LAST_WEAPON || type == P_SHIELD || type == P_DIGGING)
     {
         int skill_level = use_this_level > 0 ? use_this_level : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
         switch (skill_level)
@@ -3681,6 +3744,34 @@ shield_skill_mc_bonus(skill_level)
 int skill_level;
 {
     return max(0, skill_level - 1);
+}
+
+int
+digging_skill_speed_bonus(skill_level)
+int skill_level;
+{
+    return 50 * (max(0, skill_level - 1));
+}
+
+int
+whip_skill_weapon_disarm_bonus(lvl)
+int lvl;
+{
+    return 2 * max(0, lvl - 1);
+}
+
+int
+spear_skill_jousting_rating(lvl)
+int lvl;
+{
+    return max(0, lvl - 1);
+}
+
+int
+spear_skill_jousting_chance(lvl)
+int lvl;
+{
+    return 20 * spear_skill_jousting_rating(lvl);
 }
 
 
@@ -4095,6 +4186,27 @@ boolean is_left_arm;
             strcpy(eos(buf), "S");
         }
     }
+}
+
+
+int
+exceptionality_digging_speed_bonus(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    return 5 * min(EXCEPTIONALITY_CELESTIAL, obj->exceptionality);
+}
+
+int
+exceptionality_weapon_disarm_bonus(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    return min(EXCEPTIONALITY_CELESTIAL, obj->exceptionality);
 }
 
 

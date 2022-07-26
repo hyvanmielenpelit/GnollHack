@@ -4384,18 +4384,9 @@ struct obj *obj;
         mtmp = m_at(rx, ry);
     }
 
-    /* fake some proficiency checks */
-    proficient = 0;
-    if (Role_if(PM_ARCHAEOLOGIST))
-        ++proficient;
-    if (ACURR(A_DEX) < 6)
-        proficient--;
-    else if (ACURR(A_DEX) >= 14)
-        proficient += (ACURR(A_DEX) - 14);
+    proficient = whip_skill_weapon_disarm_bonus(P_SKILL_LEVEL(P_WHIP)) + exceptionality_weapon_disarm_bonus(obj);
     if (Fumbling)
-        --proficient;
-    if (proficient > 3)
-        proficient = 3;
+        proficient -= 3;
     if (proficient < 0)
         proficient = 0;
 
@@ -4418,7 +4409,7 @@ struct obj *obj;
         int dam;
 
         /* Sometimes you hit your steed by mistake */
-        if (u.usteed && !rn2(proficient + 2)) {
+        if (u.usteed && proficient < 3 && !rn2(proficient + 2)) {
             You("whip %s!", mon_nam(u.usteed));
             kick_steed();
             update_u_action_revert(ACTION_TILE_NO_ACTION);
@@ -4524,7 +4515,8 @@ struct obj *obj;
         if (otmp) {
             char onambuf[BUFSZ];
             const char *mon_hand;
-            boolean gotit = proficient && (!Fumbling || !rn2(10));
+            int gotitroll = rn2(proficient * 2 + 1);
+            boolean gotit = gotitroll && (!Fumbling || !rn2(10));
 
             update_u_action(ACTION_TILE_ATTACK);
             play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
@@ -4550,7 +4542,49 @@ struct obj *obj;
                 obj_extract_self(otmp);
                 possibly_unwield(mtmp, FALSE);
                 setmnotwielded(mtmp, otmp);
+                int roll = rn2(proficient + 1);
+                if (roll / 2)
+                {
+                    /* right into your inventory */
+                    You("snatch %s!", yname(otmp));
+                    if (otmp->otyp == CORPSE
+                        && touch_petrifies(&mons[otmp->corpsenm]) && !uarmg
+                        && !Stone_resistance
+                        && !(poly_when_stoned(youmonst.data)
+                            && polymon(PM_STONE_GOLEM))) {
+                        char kbuf[BUFSZ];
 
+                        Sprintf(kbuf, "%s corpse",
+                            an(corpse_monster_name(otmp)));
+                        pline("Snatching %s is a fatal mistake.", kbuf);
+                        killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
+                        instapetrify(kbuf);
+                    }
+                    (void)hold_another_object(otmp, "You drop %s!",
+                        doname(otmp), (const char*)0);
+                }
+                else
+                {
+                    int another_roll = rn2(proficient + 2);
+                    if (another_roll)
+                    {
+                        /* to floor near you */
+                        You("yank %s to the %s!", yname(otmp),
+                            surface(u.ux, u.uy));
+                        place_object(otmp, u.ux, u.uy);
+                        stackobj(otmp);
+                    }
+                    else
+                    {
+                        /* to floor beneath mon */
+                        You("yank %s from %s %s!", the(onambuf),
+                            s_suffix(mon_nam(mtmp)), mon_hand);
+                        obj_no_longer_held(otmp);
+                        place_object(otmp, mtmp->mx, mtmp->my);
+                        stackobj(otmp);
+                    }
+                }
+#if 0
                 switch (rn2(proficient + 1)) {
                 case 2:
                     /* to floor near you */
@@ -4606,6 +4640,7 @@ struct obj *obj;
                     stackobj(otmp);
                     break;
                 }
+#endif /* 0 */
             } else {
                 pline1(msg_slipsfree);
             }

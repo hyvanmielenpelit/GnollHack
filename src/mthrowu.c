@@ -2174,7 +2174,7 @@ int whodidit;   /* 1==hero, 0=other, -1==just check whether it'll pass thru */
 
             hits = (oskill != -P_BOW && oskill != -P_CROSSBOW
                     && oskill != -P_THROWN_WEAPON
-                    && oskill != P_SPEAR); /* but not dagger */
+                    && oskill != P_THRUSTING_WEAPON); /* but not dagger */
             break;
         }
         case ARMOR_CLASS:

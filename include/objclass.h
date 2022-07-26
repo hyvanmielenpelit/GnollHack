@@ -962,7 +962,7 @@ struct objclass {
 #define O5_FULL_NAME                   0x00000020UL /* Do not append or prepend anything to the name */
 #define O5_OK_FOR_ILLITERATE           0x00000040UL /* Does not break illiterate conduct */
 #define O5_NOT_CANCELLABLE             0x00000080UL /* Cannot be cancelled */
-/* Free bit */
+#define O5_JOUSTING_WEAPON             0x00000100UL
 #define O5_HAS_ALTERNATIVE_APPEARANCE  0x00000200UL /* Alternative appearance available */
 #define O5_EFFECT_IS_HEALING           0x00000400UL /* (Potion) Effect data is healing */
 #define O5_EFFECT_IS_MANA              0x00000800UL /* (Potion) Effect data is mana */

@@ -360,10 +360,11 @@ dig(VOID_ARGS)
     }
 
     context.digging.effort +=
-        10 + rn2(5) + u_strdex_to_hit_bonus() + wep->enchantment - greatest_erosion(wep) + u.ubasedaminc + u.udaminc;
+        10 + rn2(5) + u_strdex_to_hit_bonus() + wep->enchantment + exceptionality_digging_speed_bonus(wep) - greatest_erosion(wep) + u.ubasedaminc + u.udaminc;
     
-    if (Race_if(PM_DWARF))
-        context.digging.effort *= 2;
+    int speed_bonus = digging_skill_speed_bonus(P_SKILL_LEVEL(objects[wep->otyp].oc_skill));
+    context.digging.effort = max(1, (context.digging.effort * (100 + speed_bonus)) / 100);
+
     if (has_otyp_double_digging_effort(wep->otyp))
         context.digging.effort *= 2;
 

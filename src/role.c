@@ -73,13 +73,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -150,13 +150,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -227,13 +227,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -303,13 +303,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -379,13 +379,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -462,13 +462,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -539,13 +539,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -617,13 +617,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -708,13 +708,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -784,13 +784,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -860,13 +860,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -936,13 +936,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -1013,13 +1013,13 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
             SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
             SKILL_PROGRESS_NONE, /* P_POLEARM */
-            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_THRUSTING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_BOW */
             SKILL_PROGRESS_NONE, /* P_SLING */
             SKILL_PROGRESS_NONE, /* P_CROSSBOW */
@@ -1168,7 +1168,7 @@ const struct Race races[] = {
         "Dwa",
         { 0, 0 },
         2,
-        { "Double digging speed", "Increased nutrition from cram ration", "", "", ""},
+        { "Increased nutrition from cram ration", "", "", "", ""},
         PM_DWARF,
         PM_DWARF_MUMMY,
         PM_DWARF_ZOMBIE,

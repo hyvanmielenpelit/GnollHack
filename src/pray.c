@@ -1440,7 +1440,7 @@ gcrownu()
             if (Role_if(PM_KNIGHT))
             {
                 /* acquire Rhongomyniad's skill regardless of weapon or gift */
-                unrestrict_weapon_skill(P_SPEAR);
+                unrestrict_weapon_skill(P_THRUSTING_WEAPON);
 
                 /* Summon a ki-rin as a steed, too */
                 steed_gift = summoncreature(STRANGE_OBJECT, PM_KI_RIN, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_SADDLED,

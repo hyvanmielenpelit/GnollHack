@@ -1283,7 +1283,7 @@ boolean* obj_destroyed;
                     lightobj = TRUE;
 
                 if (u.usteed && !thrown && damage > 0
-                    && obj && objects[obj->otyp].oc_subtyp == WEP_LANCE && mon != u.ustuck) 
+                    && obj && can_obj_joust(obj) && mon != u.ustuck)
                 {
                     jousting = joust(mon, obj);
                     /* exercise skill even for minimal damage hits */
@@ -2600,13 +2600,15 @@ struct obj *obj;   /* weapon */
         return 0;
 
     /* if using two weapons, use worse of lance and two-weapon skills */
-    skill_rating = P_SKILL_LEVEL(weapon_skill_type(obj)); /* lance skill */
+    skill_rating = spear_skill_jousting_rating(P_SKILL_LEVEL(weapon_skill_type(obj))); /* thrusting weapon skill */
+    if (skill_rating < 0)
+        skill_rating = 0;
     if (u.twoweap && P_SKILL_LEVEL(P_TWO_WEAPON_COMBAT) < skill_rating)
         skill_rating = P_SKILL_LEVEL(P_TWO_WEAPON_COMBAT);
     if (skill_rating == P_ISRESTRICTED)
         skill_rating = P_UNSKILLED; /* 0=>1 */
 
-    /* odds to joust are expert:80%, skilled:60%, basic:40%, unskilled:20% */
+    /* odds to joust are grand master:100%, master:80%, expert:60%, skilled:40%, basic:20%, unskilled:0% */
     if ((joust_dieroll = rn2(5)) < skill_rating) {
         if (joust_dieroll == 0 && rnl(50) == (50 - 1) && !unsolid(mon->data) && !is_incorporeal(mon->data)
             && !obj_resists(obj, 0, 100))

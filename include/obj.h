@@ -258,7 +258,9 @@ struct obj {
      && objects[(otmp)->otyp].oc_skill == P_AXE) || ((otmp)->oartifact && is_artifact_applicable_as_axe(otmp)))
 #define is_pick(otmp)                                             \
     (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
-     && objects[(otmp)->otyp].oc_skill == P_PICK_AXE)
+     && objects[(otmp)->otyp].oc_skill == P_DIGGING)
+#define is_whip(otmp)                                             \
+    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_subtyp == WEP_WHIP)
 #define is_sword(otmp)                                \
     ((otmp)->oclass == WEAPON_CLASS                     \
      && objects[(otmp)->otyp].oc_skill == P_SWORD)
@@ -271,7 +273,7 @@ struct obj {
 #define is_appliable_pole_type_weapon(otmp)   \
     (is_pole(otmp) || is_spear(otmp) || is_lance(otmp))
 #define is_appliable_weapon(otmp) \
-    ((otmp)->oclass == WEAPON_CLASS && (is_pick(otmp) || is_axe(otmp) || is_appliable_pole_type_weapon(otmp) || is_obj_appliable(otmp)))
+    ((otmp)->oclass == WEAPON_CLASS && (is_pick(otmp) || is_axe(otmp) || is_appliable_pole_type_weapon(otmp) || is_whip(otmp) || is_obj_appliable(otmp)))
 #define is_launcher(otmp)                                                  \
     ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_skill >= P_BOW \
      && objects[(otmp)->otyp].oc_skill <= P_CROSSBOW)
@@ -647,6 +649,14 @@ struct obj {
     (does_otyp_drain_instead_of_explode((obj)->otyp))
 
 #define can_obj_cause_choking(o) (obj_nutrition(o) > 50)
+
+#define can_otyp_joust(otyp)                                 \
+    ((objects[(otyp)].oc_flags5 & O5_JOUSTING_WEAPON) != 0)
+
+#define can_obj_joust(obj) \
+    (can_otyp_joust((obj)->otyp))
+
+
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
    which use that field for monster type (or other overloaded purpose) */
