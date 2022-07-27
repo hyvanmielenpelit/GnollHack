@@ -1446,6 +1446,7 @@ namespace GnollHackClient.Pages.Game
         protected void GNHThreadProc()
         {
             _clientGame = new ClientGame(this);
+            App.CurrentClientGame = _clientGame;
             _gnollHackService.StartGnollHack(_clientGame);
         }
 
@@ -1491,6 +1492,7 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.ReturnToMainMenu:
                                 ClearMap();
                                 _clientGame = null;
+                                App.CurrentClientGame = null;
                                 _mainPage.GameStarted = false;
                                 ReturnToMainMenu();
                                 break;
@@ -11080,6 +11082,30 @@ namespace GnollHackClient.Pages.Game
                         GetLineAutoComplete.Text = command;
                         break;
                     }
+                }
+            }
+        }
+
+        public void StopWaitAndResumeSavedGame()
+        {
+            if (_clientGame != null && App.GameSaved)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.StopWaitAndRestoreSavedGame));
+                }
+            }
+        }
+
+        public void SaveGameAndWaitForResume()
+        {
+            if (_clientGame != null)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.SaveGameAndWaitForResume));
                 }
             }
         }

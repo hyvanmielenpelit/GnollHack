@@ -48,5 +48,7 @@ namespace GnollHackClient
         int Chmod(string filename, uint mode);
 
         int StartGnollHack(ClientGame clientGame);
+
+        void SaveAndRestoreSavedGame();
     }
 }

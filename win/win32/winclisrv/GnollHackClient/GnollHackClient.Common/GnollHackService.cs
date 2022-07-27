@@ -254,6 +254,8 @@ namespace GnollHackClient.Unknown
         public static extern void LibSetPetMID(uint m_id);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibChmod(string filename, uint mode);
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSaveAndRestoreSavedGame();
 
 
         private void LoadNativeLibrary(string libName)
@@ -863,6 +865,11 @@ namespace GnollHackClient.Unknown
         {
             int res = LibChmod(filename, mode);
             return res;
+        }
+
+        public void SaveAndRestoreSavedGame()
+        {
+            LibSaveAndRestoreSavedGame();
         }
 
         public int StartGnollHack(ClientGame clientGame)

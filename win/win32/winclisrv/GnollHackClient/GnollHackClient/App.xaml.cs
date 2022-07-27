@@ -57,9 +57,17 @@ namespace GnollHackClient
             App.SponsorButtonVisited = Preferences.Get("SponsorButtonVisited", false);
             App.ShowSpecialEffect = Preferences.Get("ShowSpecialEffect", false);
             App.LoadBanks = Preferences.Get("LoadSoundBanks", true);
+            App.InformAboutGameTermination = Preferences.Get("WentToSleepWithGameOn", false);
+            Preferences.Set("WentToSleepWithGameOn", false);
 
             App.BackButtonPressed += App.EmptyBackButtonPressed;
         }
+
+        private static readonly object _currentClientGameLock = new object();
+        private static ClientGame _currentClientGame = null;
+        public static ClientGame CurrentClientGame { get { lock (_currentClientGameLock) { return _currentClientGame; } } set { lock (_currentClientGameLock) { _currentClientGame = value; } } }
+        public static bool InformAboutGameTermination = false;
+
 
         private static Secrets _currentSecrets = null;
         public static Secrets CurrentSecrets 
@@ -91,22 +99,66 @@ namespace GnollHackClient
             CurrentSecrets = JsonConvert.DeserializeObject<Secrets>(json);
         }
 
+        public static readonly object _cancelSaveGameLock = new object();
+        public static bool _cancelSaveGame = false;
+        public static bool CancelSaveGame { get { lock (_cancelSaveGameLock) { return _cancelSaveGame; } } set { lock (_cancelSaveGameLock) { _cancelSaveGame = value; } } }
+
+        public static readonly object _savingGameLock = new object();
+        public static bool _savingGame = false;
+        public static bool SavingGame { get { lock (_savingGameLock) { return _savingGame; } } set { lock (_savingGameLock) { _savingGame = value; } } }
+
+        public static readonly object _gameSavedLock = new object();
+        public static bool _gameSaved = false;
+        public static bool GameSaved { get { lock (_gameSavedLock) { return _gameSaved; } } set { lock (_gameSavedLock) { _gameSaved = value; } } }
+
         protected override void OnStart()
         {
-            if(PlatformService != null)
+            App.CancelSaveGame = true;
+            if (PlatformService != null)
                 PlatformService.OverrideAnimationDuration();
+
+            if (App.CurrentClientGame != null)
+            {
+                //Detect background app killing OS, check if last exit is through going to sleep, and notify player that the app probably had been terminated by OS but game has been saved
+                bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                Preferences.Set("WentToSleepWithGameOn", false);
+                if (wenttosleep && (App.GameSaved || App.SavingGame))
+                {
+                    App.CurrentClientGame.GamePage.StopWaitAndResumeSavedGame();
+                }
+            }
         }
 
         protected override void OnSleep()
         {
             if (PlatformService != null)
                 PlatformService.RevertAnimationDuration(false);
+
+            App.CancelSaveGame = false;
+            if (App.CurrentClientGame != null)
+            {
+                //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
+                Preferences.Set("WentToSleepWithGameOn", true);
+                App.CurrentClientGame.GamePage.SaveGameAndWaitForResume();
+            }
         }
 
         protected override void OnResume()
         {
             if (PlatformService != null)
                 PlatformService.OverrideAnimationDuration();
+
+            App.CancelSaveGame = true;
+            if (App.CurrentClientGame != null)
+            {
+                //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
+                bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                Preferences.Set("WentToSleepWithGameOn", false);
+                if (wenttosleep && (App.GameSaved || App.SavingGame))
+                {
+                    App.CurrentClientGame.GamePage.StopWaitAndResumeSavedGame();
+                }
+            }
         }
 
         public static void GetDependencyServices()

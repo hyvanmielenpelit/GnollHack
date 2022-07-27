@@ -1112,7 +1112,7 @@ create_gamestate_levelfile(VOID_ARGS)
 
 int
 load_saved_game(load_type)
-int load_type; // 0 = at start normally, 1 = load after saving, 2 = load otherwise
+int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after saving quietly
 {
     if (load_type > 0)
     {
@@ -1147,6 +1147,9 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load otherwi
         if (!wizard && remember_wiz_mode)
             wizard = TRUE;
 
+        if (load_type > 0)
+            flush_screen(1);
+
         if (load_type == 0)
         {
             encounter_init();
@@ -1157,24 +1160,25 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load otherwi
             pline("Save successful. Continuing the game.");
         }
 
-        check_special_room(FALSE);
-
-        if (load_type != 1)
+        if (load_type == 0)
+        {
+            check_special_room(FALSE);
             mode_message();
+        }
 
         if (discover || wizard || CasualMode)
         {
             //Note that you can be in both Casual and wizard mode
             if (CasualMode)
             {
-                if(load_type != 1)
+                if(load_type == 0)
                     pline("Keeping the save file.");
 
                 nh_compress(fq_save);
             }
             else
             {
-                if (load_type != 1 && yn_query("Do you want to keep the save file?") == 'n')
+                if (load_type == 0 && yn_query("Do you want to keep the save file?") == 'n')
                 {
                     (void)delete_savefile();
                 }

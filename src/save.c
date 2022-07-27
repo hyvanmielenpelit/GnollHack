@@ -115,7 +115,7 @@ dosave()
 #if defined(UNIX) || defined(VMS) || defined(__EMX__)
         program_state.done_hup = 0;
 #endif
-        if (dosave0())
+        if (dosave0(FALSE))
         {
             //if(contplay)
             //    display_popup_text("Game was saved successfully.", "Game Saved", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, 0UL);
@@ -136,7 +136,8 @@ dosave()
 
 /* returns 1 if save successful */
 int
-dosave0()
+dosave0(quietly)
+boolean quietly;
 {
     const char *fq_save;
     register int fd, ofd;
@@ -181,7 +182,7 @@ dosave0()
         if (fd > 0) {
             (void) nhclose(fd);
             clear_nhwindow(WIN_MESSAGE);
-            if (!CasualMode)
+            if (!quietly && !CasualMode)
             {
                 There("seems to be an old save file.");
                 if (yn_query("Overwrite the old file?") == 'n') {
@@ -202,7 +203,9 @@ dosave0()
         return 0;
     }
 
-    display_screen_text("Saving...", (const char*)0, (const char*)0, SCREEN_TEXT_SAVING, ATR_NONE, NO_COLOR, 0UL);
+    if(!quietly)
+        display_screen_text("Saving...", (const char*)0, (const char*)0, SCREEN_TEXT_SAVING, ATR_NONE, NO_COLOR, 0UL);
+
     vision_recalc(2); /* shut down vision to prevent problems
                          in the event of an impossible() call */
 

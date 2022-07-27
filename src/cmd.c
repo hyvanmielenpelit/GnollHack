@@ -8474,7 +8474,7 @@ end_of_input()
     if (!program_state.done_hup++)
 #endif
         if (program_state.something_worth_saving)
-            (void) dosave0();
+            (void) dosave0(TRUE);
     if (iflags.window_inited)
         exit_nhwindows((char *) 0);
     clearlocks();

@@ -2932,7 +2932,7 @@ E void NDECL(rumor_check);
 /* ### save.c ### */
 
 E int NDECL(dosave);
-E int NDECL(dosave0);
+E int FDECL(dosave0, (BOOLEAN_P));
 E int NDECL(check_existing_save_file);
 E boolean FDECL(tricked_fileremoved, (int, char *));
 #ifdef INSURANCE

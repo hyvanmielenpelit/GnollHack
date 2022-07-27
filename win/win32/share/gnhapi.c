@@ -335,6 +335,25 @@ LibChmod(const char* filename, unsigned int mode)
     return chmod(filename, (mode_t)mode);
 }
 
+void
+LibSaveAndRestoreSavedGame(void)
+{
+    if (dosave0(TRUE))
+    {
+        issue_gui_command(GUI_CMD_WAIT_FOR_RESUME);
+        if (!load_saved_game(2))
+        {
+            u.uhp = -1; /* universal game's over indicator */
+            /* make sure they see the Saving message */
+            display_nhwindow(WIN_MESSAGE, TRUE);
+            exit_nhwindows("Cannot continue the game...");
+            nh_terminate(EXIT_SUCCESS);
+        }
+    }
+    else
+        (void)doredraw();
+}
+
 int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
 {

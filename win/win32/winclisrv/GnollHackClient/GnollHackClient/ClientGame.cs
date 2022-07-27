@@ -30,7 +30,8 @@ namespace GnollHackClient
         private bool _characternameSet = false;
         private string _characterName = "";
         private object _characterNameLock = new object();
-        private GamePage _gamePage;
+        private readonly GamePage _gamePage;
+        public GamePage GamePage { get { return _gamePage; } }
 
         private bool _touchLocSet = false;
         private int _touchLocX;
@@ -74,6 +75,19 @@ namespace GnollHackClient
 
         private void pollResponseQueue()
         {
+            /* Makes sure that whatever is happening, the game gets saved and then restored upon sleep / restore */
+            if(_saveRequested)
+            {
+                _saveRequested = false;
+                if(!App.CancelSaveGame)
+                {
+                    App.SavingGame = true;
+                    App.GnollHackService.SaveAndRestoreSavedGame();
+                }
+                App.GameSaved = false;
+                App.SavingGame = false;
+            }
+
             ConcurrentQueue<GHResponse> queue;
             GHResponse response;
             if(ClientGame.ResponseDictionary.TryGetValue(this, out queue))
@@ -132,6 +146,12 @@ namespace GnollHackClient
                             break;
                         case GHRequestType.Message:
                             _messageFinished = true;
+                            break;
+                        case GHRequestType.SaveGameAndWaitForResume:
+                            RequestSaveGame();
+                            break;
+                        case GHRequestType.StopWaitAndRestoreSavedGame:
+                            RequestRestoreSavedGame();
                             break;
                         default:
                             break;
@@ -1514,6 +1534,17 @@ namespace GnollHackClient
                     if (App.LoadBanks)
                         App.FmodService.UnloadIntroSoundBank();
                     break;
+                case (int)gui_command_types.GUI_CMD_WAIT_FOR_RESUME:
+                    App.GameSaved = true;
+                    App.SavingGame = false;
+                    while (!_restoreRequested)
+                    {
+                        Thread.Sleep(GHConstants.PollingInterval);
+                        _saveRequested = false; //Should be the case. but just in case there is some sort of a mixup going on so that we do not save and restore again in pollResponseQueue
+                        pollResponseQueue();
+                    }
+                    _restoreRequested = false;
+                    break;
                 default:
                     break;
             }
@@ -1793,6 +1824,20 @@ namespace GnollHackClient
         public void ClientCallback_VoidIntConstCharPtrConstCharPtrBooleanDummy(int value1, string value2, string value3, byte value4)
         {
             return;
+        }
+
+
+        bool _saveRequested = false;
+        bool _restoreRequested = false;
+        /* Other functions */
+        private void RequestSaveGame()
+        {
+            _saveRequested = true;
+        }
+
+        private void RequestRestoreSavedGame()
+        {
+            _restoreRequested = true;
         }
     }
 }
