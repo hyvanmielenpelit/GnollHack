@@ -1761,6 +1761,14 @@ int fd, mode;
 }
 
 void
+reset_waterlevel(VOID_ARGS)
+{
+    xmin = ymin = xmax = ymax = 0;
+    unsetup_waterlevel();
+}
+
+
+void
 restore_waterlevel(fd)
 int fd;
 {

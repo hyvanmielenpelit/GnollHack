@@ -337,6 +337,20 @@ int fd, mode, range;
     }
 }
 
+void
+reset_light_sources(VOID_ARGS)
+{
+    light_source* curr, *next_source;
+
+    for (curr = light_base; curr; curr = next_source)
+    {
+        next_source = curr->next;
+        free((genericptr_t)curr);
+    }
+
+    light_base = 0;
+}
+
 /*
  * Pull in the structures from disk, but don't recalculate the object
  * pointers.

@@ -139,34 +139,34 @@ save_dungeon(fd, perform_write, free_data)
 int fd;
 boolean perform_write, free_data;
 {
-    branch *curr, *next;
-    mapseen *curr_ms, *next_ms;
+    branch* curr, * next;
+    mapseen* curr_ms, * next_ms;
     int count;
 
     if (perform_write) {
-        bwrite(fd, (genericptr_t) &n_dgns, sizeof n_dgns);
-        bwrite(fd, (genericptr_t) dungeons,
-               sizeof(dungeon) * (size_t) n_dgns);
-        bwrite(fd, (genericptr_t) &dungeon_topology, sizeof dungeon_topology);
-        bwrite(fd, (genericptr_t) tune, sizeof tune);
+        bwrite(fd, (genericptr_t)&n_dgns, sizeof n_dgns);
+        bwrite(fd, (genericptr_t)dungeons,
+            sizeof(dungeon) * (size_t)n_dgns);
+        bwrite(fd, (genericptr_t)&dungeon_topology, sizeof dungeon_topology);
+        bwrite(fd, (genericptr_t)tune, sizeof tune);
 
         for (count = 0, curr = branches; curr; curr = curr->next)
             count++;
-        bwrite(fd, (genericptr_t) &count, sizeof(count));
+        bwrite(fd, (genericptr_t)&count, sizeof(count));
 
         for (curr = branches; curr; curr = curr->next)
-            bwrite(fd, (genericptr_t) curr, sizeof(branch));
+            bwrite(fd, (genericptr_t)curr, sizeof(branch));
 
         count = maxledgerno();
-        bwrite(fd, (genericptr_t) &count, sizeof count);
-        bwrite(fd, (genericptr_t) level_info,
-               (size_t) count * sizeof(struct linfo));
-        bwrite(fd, (genericptr_t) &inv_pos, sizeof inv_pos);
+        bwrite(fd, (genericptr_t)&count, sizeof count);
+        bwrite(fd, (genericptr_t)level_info,
+            (size_t)count * sizeof(struct linfo));
+        bwrite(fd, (genericptr_t)&inv_pos, sizeof inv_pos);
 
         for (count = 0, curr_ms = mapseenchn; curr_ms;
-             curr_ms = curr_ms->next)
+            curr_ms = curr_ms->next)
             count++;
-        bwrite(fd, (genericptr_t) &count, sizeof(count));
+        bwrite(fd, (genericptr_t)&count, sizeof(count));
 
         for (curr_ms = mapseenchn; curr_ms; curr_ms = curr_ms->next)
             save_mapseen(fd, curr_ms);
@@ -175,17 +175,47 @@ boolean perform_write, free_data;
     if (free_data) {
         for (curr = branches; curr; curr = next) {
             next = curr->next;
-            free((genericptr_t) curr);
+            free((genericptr_t)curr);
         }
         branches = 0;
         for (curr_ms = mapseenchn; curr_ms; curr_ms = next_ms) {
             next_ms = curr_ms->next;
             if (curr_ms->custom)
-                free((genericptr_t) curr_ms->custom);
-            free((genericptr_t) curr_ms);
+                free((genericptr_t)curr_ms->custom);
+            free((genericptr_t)curr_ms);
         }
         mapseenchn = 0;
     }
+}
+
+/* Reset the dungeon structures. */
+void
+reset_dungeon(VOID_ARGS)
+{
+    branch* curr, * next;
+    mapseen* curr_ms, * next_ms;
+
+    memset((genericptr_t)dungeons, 0,
+        sizeof(dungeon) * (size_t)n_dgns);
+    memset((genericptr_t)&n_dgns, 0, sizeof n_dgns);
+    memset((genericptr_t)&dungeon_topology, 0, sizeof dungeon_topology);
+    memset((genericptr_t)tune, 0, sizeof tune);
+
+    memset((genericptr_t)level_info, 0, sizeof(level_info));
+    memset((genericptr_t)&inv_pos, 0, sizeof inv_pos);
+
+    for (curr = branches; curr; curr = next) {
+        next = curr->next;
+        free((genericptr_t)curr);
+    }
+    branches = 0;
+    for (curr_ms = mapseenchn; curr_ms; curr_ms = next_ms) {
+        next_ms = curr_ms->next;
+        if (curr_ms->custom)
+            free((genericptr_t)curr_ms->custom);
+        free((genericptr_t)curr_ms);
+    }
+    mapseenchn = 0;
 }
 
 /* Restore the dungeon structures. */

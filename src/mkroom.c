@@ -33,6 +33,7 @@ STATIC_DCL struct permonst *NDECL(squadmon);
 STATIC_DCL struct permonst* FDECL(armorymon, (BOOLEAN_P));
 STATIC_DCL void FDECL(save_room, (int, struct mkroom *));
 STATIC_DCL void FDECL(rest_room, (int, struct mkroom *));
+STATIC_DCL void FDECL(reset_room, (struct mkroom*));
 
 #define sq(x) ((x) * (x))
 
@@ -2409,6 +2410,37 @@ struct mkroom *r;
         subrooms[nsubroom++].resident = (struct monst *) 0;
     }
 }
+
+
+STATIC_OVL void
+reset_room(r)
+struct mkroom* r;
+{
+    short i;
+
+    /*
+     * Well, I really should write only useful information instead
+     * of writing the whole structure. That is I should not write
+     * the subrooms pointers, but who cares ?
+     */
+    for (i = 0; i < r->nsubrooms; i++)
+        reset_room(r->sbrooms[i]);
+
+    memset((genericptr_t)r, 0, sizeof(struct mkroom));
+}
+
+void
+reset_rooms(VOID_ARGS)
+{
+    short i;
+
+    /* First, write the number of rooms */
+    for (i = 0; i < nroom; i++)
+        reset_room(&rooms[i]);
+
+    nroom = 0;
+}
+
 
 /*
  * rest_rooms : That's for restoring rooms. Read the rooms structure from

@@ -52,6 +52,15 @@ namespace GnollHackClient
             StartLocalGameButton.TextColor = Color.Gray;
             StartLocalGoneLabel.IsVisible = true;
         }
+
+        public void ActivateLocalGameButton()
+        {
+            StartLocalGrid.IsEnabled = true;
+            StartLocalGameButton.TextColor = Color.White;
+            StartLocalGameButton.IsVisible = true;
+            StartLocalGoneLabel.IsVisible = false;
+        }
+
         private async void localButton_Clicked(object sender, EventArgs e)
         {
             StartServerGrid.IsEnabled = false;

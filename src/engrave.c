@@ -1302,6 +1302,17 @@ int fd, mode;
 }
 
 void
+reset_engravings(VOID_ARGS)
+{
+    struct engr* ep, * ep2;
+    for (ep = head_engr; ep; ep = ep2) {
+        ep2 = ep->nxt_engr;
+        dealloc_engr(ep);
+    }
+    head_engr = 0;
+}
+
+void
 rest_engravings(fd)
 int fd;
 {

@@ -439,6 +439,11 @@ int fd, mode;
         }
     }
 }
+void
+reset_oracles(VOID_ARGS)
+{
+    save_oracles(0, FREE_SAVE);
+}
 
 void
 restore_oracles(fd)

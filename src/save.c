@@ -1280,6 +1280,9 @@ register struct monst *mtmp;
         bwrite(fd, (genericptr_t) &zero, sizeof(zero));
 }
 
+
+
+
 /* save traps; ftrap is the only trap chain so the 2nd arg is superfluous */
 STATIC_OVL void
 savetrapchn(fd, trap, mode)
@@ -1327,6 +1330,13 @@ int fd, mode;
         bwrite(fd, (genericptr_t) &zerofruit, sizeof zerofruit);
     if (release_data(mode))
         ffruit = 0;
+}
+
+void
+reset_fruitchn(VOID_ARGS)
+{
+    savefruitchn(0, FREE_SAVE);
+
 }
 
 void
@@ -1481,7 +1491,7 @@ const char *suitename;
 
 /* also called by prscore(); this probably belongs in dungeon.c... */
 void
-free_dungeons()
+free_dungeons(VOID_ARGS)
 {
 #ifdef FREE_ALL_MEMORY
     savelevchn(0, FREE_SAVE);
@@ -1491,7 +1501,7 @@ free_dungeons()
 }
 
 void
-freedynamicdata()
+free_dynamic_data_A(VOID_ARGS)
 {
 #if defined(UNIX) && defined(MAIL)
     free_maildata();
@@ -1501,6 +1511,54 @@ freedynamicdata()
     free_invbuf();           /* let_to_name (invent.c) */
     free_youbuf();           /* You_buf,&c (pline.c) */
     msgtype_free();
+
+}
+
+void
+free_dynamic_data_B(VOID_ARGS)
+{
+#define free_animals() mon_animal_list(FALSE)
+    free_animals();
+    /* some pointers in iflags */
+    if (iflags.wc_font_map)
+        free(iflags.wc_font_map);
+    if (iflags.wc_font_message)
+        free(iflags.wc_font_message);
+    if (iflags.wc_font_text)
+        free(iflags.wc_font_text);
+    if (iflags.wc_font_menu)
+        free(iflags.wc_font_menu);
+    if (iflags.wc_font_status)
+        free(iflags.wc_font_status);
+    for (int i = 0; i < MAX_TILE_SHEETS; i++)
+    {
+        if (iflags.wc_tile_file[i])
+            free(iflags.wc_tile_file[i]);
+    }
+    free_autopickup_exceptions();
+
+    /* miscellaneous */
+    /* free_pickinv_cache();  --  now done from really_done()... */
+    free_symsets();
+
+}
+
+void
+free_dynamic_data_C(VOID_ARGS)
+{
+#ifdef DUMPLOG
+    dumplogfreemessages();
+#endif
+
+    /* last, because it frees data that might be used by panic() to provide
+       feedback to the user; conceivably other freeing might trigger panic */
+    sysopt_release(); /* SYSCF strings */
+}
+
+void
+freedynamicdata(VOID_ARGS)
+{
+    free_dynamic_data_A();
     tmp_at(DISP_FREEMEM, 0); /* temporary display effects */
 #ifdef FREE_ALL_MEMORY
 #define freeobjchn(X) (saveobjchn(0, X, FREE_SAVE), X = 0)
@@ -1517,7 +1575,6 @@ freedynamicdata()
 #define free_sound_sources(R) save_sound_sources(0, FREE_SAVE, R);
 #define free_engravings() save_engravings(0, FREE_SAVE)
 #define freedamage() savedamage(0, FREE_SAVE)
-#define free_animals() mon_animal_list(FALSE)
 
     /* move-specific data */
     dmonsfree(); /* release dead monsters */
@@ -1547,44 +1604,18 @@ freedynamicdata()
     freemonchn(migrating_mons);
     freemonchn(mydogs); /* ascension or dungeon escape */
     /* freelevchn();  --  [folded into free_dungeons()] */
-    free_animals();
     free_oracles();
     freefruitchn();
     freenames();
     free_waterlevel();
     free_dungeons();
 
-    /* some pointers in iflags */
-    if (iflags.wc_font_map)
-        free(iflags.wc_font_map);
-    if (iflags.wc_font_message)
-        free(iflags.wc_font_message);
-    if (iflags.wc_font_text)
-        free(iflags.wc_font_text);
-    if (iflags.wc_font_menu)
-        free(iflags.wc_font_menu);
-    if (iflags.wc_font_status)
-        free(iflags.wc_font_status);
-    for (int i = 0; i < MAX_TILE_SHEETS; i++)
-    {
-        if (iflags.wc_tile_file[i])
-            free(iflags.wc_tile_file[i]);
-    }
-    free_autopickup_exceptions();
-
-    /* miscellaneous */
-    /* free_pickinv_cache();  --  now done from really_done()... */
-    free_symsets();
+    free_dynamic_data_B();
 #endif /* FREE_ALL_MEMORY */
     if (VIA_WINDOWPORT())
         status_finish();
-#ifdef DUMPLOG
-    dumplogfreemessages();
-#endif
 
-    /* last, because it frees data that might be used by panic() to provide
-       feedback to the user; conceivably other freeing might trigger panic */
-    sysopt_release(); /* SYSCF strings */
+    free_dynamic_data_C();
     return;
 }
 

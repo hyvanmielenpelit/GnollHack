@@ -3207,13 +3207,13 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_RAISE_SKELETON_WARRIOR,
-        "2 bones, human skull",
+        "Bone, human skull",
         STRANGE_OBJECT,
-        3,
+        1,
         {
             {
                 {BONE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
-                NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 2, MATCOMP_NO_FLAGS
+                NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
             },
             {
                 {HUMAN_SKULL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -3224,12 +3224,12 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_RAISE_SKELETON_LORD,
-        "2 bones, human skull, black opal",
+        "2 bones, human skull, jet stone",
         STRANGE_OBJECT,
         2,
         {
             {
-                {BONE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
+                {BONE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
                 NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 2, MATCOMP_NO_FLAGS
             },
             {
@@ -3245,9 +3245,9 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_RAISE_SKELETON_KING,
-        "Human skull, 2 black opals",
+        "Human skull, black opal",
         STRANGE_OBJECT,
-        1,
+        2,
         {
             {
                 {HUMAN_SKULL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -3255,7 +3255,7 @@ struct materialcomponentlist matlists[] =
             },
             {
                 {BLACK_OPAL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
-                NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 2, MATCOMP_NO_FLAGS
+                NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
             },
             NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
         }

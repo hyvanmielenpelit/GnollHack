@@ -2093,11 +2093,10 @@ namespace GnollHackClient.Pages.Game
         }
         private async void ReturnToMainMenu()
         {
-            if (!App.IsServerGame)
-                _mainPage.HideLocalGameButton();
-
+            //if (!App.IsServerGame)
+            //    _mainPage.HideLocalGameButton();
+            _mainPage.ActivateLocalGameButton();
             _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
-
             await App.Current.MainPage.Navigation.PopModalAsync();
             if (App.IsServerGame)
             {

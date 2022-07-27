@@ -106,6 +106,14 @@ int fd;
 }
 
 void
+reset_artifacts(VOID_ARGS)
+{
+    memset((genericptr_t)artiexist, 0, sizeof artiexist);
+    memset((genericptr_t)artidisco, 0, sizeof artidisco);
+}
+
+
+void
 restore_artifacts(fd)
 int fd;
 {

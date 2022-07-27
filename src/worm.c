@@ -531,6 +531,27 @@ int fd, mode;
     }
 }
 
+void
+reset_worm(VOID_ARGS)
+{
+    int i;
+    struct wseg* curr, * temp;
+
+    /* Free the segments only.  reset_monchn() will take care of the
+     * monsters. */
+    for (i = 1; i < MAX_NUM_WORMS; i++) {
+        if (!(curr = wtails[i]))
+            continue;
+
+        while (curr) {
+            temp = curr->nseg;
+            dealloc_seg(curr); /* free the segment */
+            curr = temp;
+        }
+        wheads[i] = wtails[i] = (struct wseg*)0;
+    }
+}
+
 /*
  *  rest_worm()
  *

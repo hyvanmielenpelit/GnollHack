@@ -235,7 +235,7 @@ E NEARDATA long yn_number;
 
 E const char disclosure_options[];
 
-E NEARDATA int smeq[];
+E NEARDATA int smeq[MAXNROFROOMS + 1];
 E NEARDATA int doorindex;
 E NEARDATA char *save_cm;
 
@@ -322,7 +322,7 @@ E NEARDATA boolean has_strong_rngseed;
 E const int shield_static[];
 
 #include "spell.h"
-E NEARDATA struct spell spl_book[]; /* sized in decl.c */
+E NEARDATA struct spell spl_book[MAXSPELL + 1]; /* sized in decl.c */
 
 #include "color.h"
 

@@ -2116,6 +2116,7 @@ free_menu_coloring()
         tmp->origstr = 0;
         free((genericptr_t) tmp);
     }
+    menu_colorings = 0;
 }
 
 STATIC_OVL void

@@ -1021,6 +1021,7 @@ enum manual_types
 
 #define NUM_RANDOM_MANUALS MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS
 
+
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1
 #define BURIED_TOO 0x2

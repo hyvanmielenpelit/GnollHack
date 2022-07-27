@@ -14090,6 +14090,22 @@ int fd, mode, volume;
     }
 }
 
+void
+reset_sound_sources(VOID_ARGS)
+{
+    sound_source *curr, *next_source;
+
+    for (curr = sound_base; curr; curr = next_source)
+    {
+        next_source = curr->next;
+        if (delete_ambient_ghsound != 0)
+            delete_ambient_ghsound(curr);
+        free((genericptr_t)curr);
+    }
+
+    sound_base = 0;
+}
+
 /*
  * Pull in the structures from disk, but don't recalculate the object
  * pointers.

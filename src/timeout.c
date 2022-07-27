@@ -3432,6 +3432,20 @@ long adjust;     /* how much to adjust timeout */
     }
 }
 
+void
+reset_timers(VOID_ARGS)
+{
+    timer_element* curr, * next_timer = 0;
+
+    for (curr = timer_base; curr; curr = next_timer) {
+        next_timer = curr->next; /* in case curr is removed */
+        free((genericptr_t)curr);
+        /* prev stays the same */
+    }
+
+    timer_base = 0;
+}
+
 /* to support '#stats' wizard-mode command */
 void
 timer_stats(hdrfmt, hdrbuf, count, size)

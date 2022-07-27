@@ -673,9 +673,11 @@ VA_DECL(const char *, str)
     interject(INTERJECT_PANIC);
 #endif
 
+#if 0
 #if (defined(UNIX) || defined(VMS) || defined(LATTICE) || defined(WIN32)) && !defined(GNH_MOBILE)
     if (wizard)
         NH_abort(); /* generate core dump */
+#endif
 #endif
     VA_END();
     really_done(PANICKED);
@@ -2079,10 +2081,13 @@ int status;
 #endif
     /* don't bother to try to release memory if we're in panic mode, to
        avoid trouble in case that happens to be due to memory problems */
-    if (!program_state.panicking) {
-        freedynamicdata();
-        dlb_cleanup();
-    }
+    //if (!program_state.panicking) {
+    //    freedynamicdata();
+    //    dlb_cleanup();
+    //}
+
+    reset_game();
+    dlb_cleanup();
 
     /*
      *  This is liable to draw a warning if compiled with gcc, but it's
@@ -2692,6 +2697,18 @@ int mode;
             killer.next = kptr;
         }
     }
+}
+
+void
+reset_killers(VOID_ARGS)
+{
+    struct kinfo* kptr;
+    while (killer.next) {
+        kptr = killer.next->next;
+        free((genericptr_t)killer.next);
+        killer.next = kptr;
+    }
+    memset((genericptr_t)&killer, 0, sizeof(killer));
 }
 
 void
