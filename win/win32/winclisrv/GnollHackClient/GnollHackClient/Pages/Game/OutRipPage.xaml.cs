@@ -55,7 +55,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                return (Math.Abs(_glyph) > 0 && _glyph != _gamePage.NoGlyph);
+                return (Math.Abs(_glyph) > 0 && _glyph != App.NoGlyph);
             }
         }
 
