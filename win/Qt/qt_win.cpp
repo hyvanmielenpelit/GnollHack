@@ -4041,7 +4041,7 @@ void NetHackQtMainWindow::closeEvent(QCloseEvent* e)
 	{
 	    case 0:
 		// See dosave() function
-		if (dosave0()) {
+		if (dosave0(FALSE)) {
 		    u.uhp = -1;
 		    NetHackQtBind::qt_exit_nhwindows(0);
 		    nh_terminate(EXIT_SUCCESS);

@@ -488,7 +488,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         /* tell NetHack core that "hangup" is requested */
         hangup(1);
 #else
-        dosave0();
+        dosave0(TRUE);
         nh_terminate(EXIT_SUCCESS);
 #endif
     }

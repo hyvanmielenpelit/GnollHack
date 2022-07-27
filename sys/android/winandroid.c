@@ -315,7 +315,7 @@ boolean SaveAndExit()
 		program_state.done_hup = 0;
 		clear_nhwindow(WIN_MESSAGE);
 		pline("Saving...");
-		if(dosave0())
+		if(dosave0(FALSE))
 		{
 			program_state.something_worth_saving = 0;
 			u.uhp = -1;		/* universal game's over indicator */
