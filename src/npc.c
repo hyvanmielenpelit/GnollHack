@@ -526,8 +526,6 @@ int mtype;
             {
                 mongets(npc, WAN_TELEPORTATION);
             }
-            mongets(npc, SHIRT_OF_SOUND_MINDEDNESS);
-            mongets(npc, SUNGLASSES);
             mongets(npc, CUBIC_GATE);
             if (!rn2(2))
                 mongets(npc, SPE_TELEPORT_MONSTER);

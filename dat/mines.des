@@ -196,6 +196,12 @@ OBJECT:('%',"corpse"),random,montype:"watchman"
 OBJECT:('%',"corpse"),random,montype:"watch captain"
 OBJECT:('%',"corpse"),(14,13),montype:"smith"
 
+CONTAINER: ('(', "chest"),$place[6],locked,trapped,buried {
+  OBJECT: '='
+  OBJECT: ('[', "shirt of sound mindedness")
+  OBJECT: ('8', "sunglasses")
+}
+
 # Entry locations
 $entryplace = { (28,01),(35,13),(01,12),(05,01),(06,17),(20,17),(31,17) }
 SHUFFLE:$entryplace
@@ -326,6 +332,11 @@ SUBROOM: "npcroom", lit, (5,0), (2,2) {
 SUBROOM: "npcroom", unlit, (25,0), (2,2) {
   ROOMDOOR: false, closed, east, random
   NPC: npc_quantum_mechanic, random
+  CONTAINER: ('(', "chest"),random,locked,trapped,buried {
+    OBJECT: '='
+    OBJECT: ('[', "shirt of sound mindedness")
+    OBJECT: ('8', "sunglasses")
+  }
 }
 
 [75%]: SUBROOM: "ordinary", lit, (2,5), (2,2) {
@@ -491,6 +502,11 @@ SUBROOM:"npcroom",random,(16,2),(2,2) {
 SUBROOM:"npcroom",random,(19,2),(2,2) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,north,random
   NPC: npc_quantum_mechanic, random
+  CONTAINER: ('(', "chest"),random,locked,trapped,buried {
+    OBJECT: '='
+    OBJECT: ('[', "shirt of sound mindedness")
+    OBJECT: ('8', "sunglasses")
+  }
 }
 
 SUBROOM:"wand shop" [30%],lit,(19,5),(3,2) floorsubtype:floor_parquet {
@@ -601,6 +617,11 @@ SUBROOM:"ordinary",random,(17,11),(2,2) {
 SUBROOM:"npcroom",random,(20,10),(2,2) {
   ROOMDOOR:false,closed,north,random
   NPC: npc_quantum_mechanic, random
+  CONTAINER: ('(', "chest"),random,locked,trapped,buried {
+    OBJECT: '='
+    OBJECT: ('[', "shirt of sound mindedness")
+    OBJECT: ('8', "sunglasses")
+  }
 }
 
 SUBROOM:"shop" [90%],lit,(23,10),(3,3) floorsubtype:floor_parquet {
@@ -792,7 +813,11 @@ REGION:(66,14,68,15),lit,"npcroom" floorsubtype:floor_parquet
 DOOR:closed,(67,16)
 NPC:npc_quantum_mechanic,(67,14)
 MONSTER: ('g', "gnomish wizard"), (70,14)
-OBJECT: '=', (70,14)
+CONTAINER: ('(', "chest"),(70,14),locked,trapped {
+  OBJECT: '='
+  OBJECT: ('[', "shirt of sound mindedness")
+  OBJECT: ('8', "sunglasses")
+}
 
 # "Bustling Town" by Kelly Bailey
 #
@@ -859,6 +884,11 @@ NPC:npc_hermit3,(35,01)
 REGION:(09,03,11,05),lit,"npcroom" floorsubtype:floor_parquet
 DOOR:closed,(10,02)
 NPC:npc_quantum_mechanic,(10,04)
+CONTAINER: ('(', "chest"),(11,05),locked,trapped,buried {
+  OBJECT: '='
+  OBJECT: ('[', "shirt of sound mindedness")
+  OBJECT: ('8', "sunglasses")
+}
 
 DOOR:closed,(4,8)
 DOOR:closed,(10,10)
@@ -912,6 +942,11 @@ SUBROOM: "npcroom", random, (2,2), (4,2) {
 SUBROOM: "npcroom", random, (7,2), (2,2) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, north, random
   NPC: npc_quantum_mechanic, random
+  CONTAINER: ('(', "chest"),random,locked,trapped,buried {
+    OBJECT: '='
+    OBJECT: ('[', "shirt of sound mindedness")
+    OBJECT: ('8', "sunglasses")
+  }
 }
 
 SUBROOM: "ordinary", random, (7,5), (2,2) {
