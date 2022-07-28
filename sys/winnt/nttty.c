@@ -393,7 +393,7 @@ DWORD ctrltype;
     }
 }
 
-/* called by pcmain() and process_options() */
+/* called by pcmain() and process_command_line_arguments() */
 void
 nttty_open(mode)
 int mode; // unused

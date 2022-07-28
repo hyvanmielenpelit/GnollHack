@@ -3523,7 +3523,7 @@ dochat()
 
                 chatnum++;
             }
-            if(invent && count_unpaid(invent))
+            if(invent && count_unpaid(invent, FALSE))
             {
                 strcpy(available_chat_list[chatnum].name, "Pay items");
                 available_chat_list[chatnum].function_ptr = &do_chat_shk_payitems;

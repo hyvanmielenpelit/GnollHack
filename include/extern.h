@@ -1458,10 +1458,11 @@ E void NDECL(free_invbuf);
 E void NDECL(reassign);
 E int NDECL(doorganize);
 E void NDECL(free_pickinv_cache);
-E int FDECL(count_unpaid, (struct obj *));
-E int FDECL(count_buc, (struct obj *, int, boolean (*)(OBJ_P)));
+E int FDECL(count_unpaid, (struct obj *, BOOLEAN_P));
+E int FDECL(count_objects, (struct obj*, BOOLEAN_P));
+E int FDECL(count_buc, (struct obj *, int, boolean (*)(OBJ_P), BOOLEAN_P));
 E void FDECL(tally_BUCX, (struct obj *, BOOLEAN_P,
-                          int *, int *, int *, int *, int *));
+                          int *, int *, int *, int *, int *, int *));
 E long FDECL(count_contents, (struct obj *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(carry_obj_effects, (struct obj *));
 E const char *FDECL(currency, (long));
@@ -2345,9 +2346,9 @@ E char* NDECL(nextobuf);
 
 E void NDECL(reglyph_darkroom);
 E boolean FDECL(match_optname, (const char *, const char *, size_t, BOOLEAN_P));
-E void NDECL(initoptions);
-E void NDECL(initoptions_init);
-E void NDECL(initoptions_finish);
+E void NDECL(read_options);
+E void NDECL(init_options);
+E void NDECL(finish_options);
 E boolean FDECL(parseoptions, (char *, BOOLEAN_P, BOOLEAN_P));
 E int NDECL(doset);
 E int NDECL(dotogglepickup);

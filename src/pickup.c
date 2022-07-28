@@ -153,7 +153,7 @@ int *menu_on_demand;
     char qbuf[QBUFSZ];
     char ebuf[QBUFSZ];
     boolean m_seen;
-    int itemcount, bcnt, ucnt, ccnt, xcnt, ocnt;
+    int itemcount, bcnt, ucnt, ccnt, xcnt, ocnt, tcnt;
 
     oclasses[oclassct = 0] = '\0';
     *one_at_a_time = *everything = m_seen = FALSE;
@@ -176,10 +176,10 @@ int *menu_on_demand;
     }
     if (itemcount && menu_on_demand)
         ilets[iletct++] = 'm';
-    if (count_unpaid(objs))
+    if (count_unpaid(objs, here))
         ilets[iletct++] = 'u';
 
-    tally_BUCX(objs, here, &bcnt, &ucnt, &ccnt, &xcnt, &ocnt);
+    tally_BUCX(objs, here, &bcnt, &ucnt, &ccnt, &xcnt, &ocnt, &tcnt);
     if (bcnt)
         ilets[iletct++] = 'B';
     if (ucnt)
@@ -190,7 +190,12 @@ int *menu_on_demand;
         ilets[iletct++] = 'X';
     ilets[iletct] = '\0';
 
-    if (iletct > 1) {
+    if (tcnt == 1)
+    {
+        *everything = TRUE;
+    }
+    else if (iletct > 1) 
+    {
         const char *where = 0;
         char sym, oc_of_sym, *p;
 
@@ -442,7 +447,7 @@ struct obj *obj;
     /* if unpaid is expected and obj isn't unpaid, reject (treat a container
        holding any unpaid object as unpaid even if isn't unpaid itself) */
     if (shop_filter && !obj->unpaid
-        && !(Has_contents(obj) && count_unpaid(obj->cobj) > 0))
+        && !(Has_contents(obj) && count_unpaid(obj->cobj, FALSE) > 0))
         return FALSE;
     /* check for particular bless/curse state */
     if (bucx_filter) {
@@ -1104,35 +1109,36 @@ int how;               /* type of query */
     boolean do_blessed = FALSE, do_cursed = FALSE, do_uncursed = FALSE,
             do_buc_unknown = FALSE;
     int num_buc_types = 0;
+    int objcnt = count_objects(olist, (qflags & BY_NEXTHERE) != 0);
 
     *pick_list = (menu_item *) 0;
     if (!olist)
         return 0;
-    if ((qflags & UNPAID_TYPES) && count_unpaid(olist))
+    if ((qflags & UNPAID_TYPES) && count_unpaid(olist, (qflags & BY_NEXTHERE) != 0))
         do_unpaid = TRUE;
     if (qflags & WORN_TYPES)
         ofilter = is_worn;
-    if ((qflags & BUC_BLESSED) && count_buc(olist, BUC_BLESSED, ofilter)) {
+    if ((qflags & BUC_BLESSED) && count_buc(olist, BUC_BLESSED, ofilter, (qflags & BY_NEXTHERE) != 0)) {
         do_blessed = TRUE;
         num_buc_types++;
     }
-    if ((qflags & BUC_CURSED) && count_buc(olist, BUC_CURSED, ofilter)) {
+    if ((qflags & BUC_CURSED) && count_buc(olist, BUC_CURSED, ofilter, (qflags & BY_NEXTHERE) != 0)) {
         do_cursed = TRUE;
         num_buc_types++;
     }
-    if ((qflags & BUC_UNCURSED) && count_buc(olist, BUC_UNCURSED, ofilter)) {
+    if ((qflags & BUC_UNCURSED) && count_buc(olist, BUC_UNCURSED, ofilter, (qflags & BY_NEXTHERE) != 0)) {
         do_uncursed = TRUE;
         num_buc_types++;
     }
-    if ((qflags & BUC_UNKNOWN) && count_buc(olist, BUC_UNKNOWN, ofilter)) {
+    if ((qflags & BUC_UNKNOWN) && count_buc(olist, BUC_UNKNOWN, ofilter, (qflags & BY_NEXTHERE) != 0)) {
         do_buc_unknown = TRUE;
         num_buc_types++;
     }
 
     ccount = count_categories(olist, qflags);
     /* no point in actually showing a menu for a single category */
-    if (ccount == 1 && !do_unpaid && num_buc_types <= 1
-        && !(qflags & BILLED_TYPES)) {
+    if ((objcnt == 1 || ccount == 1) && !(qflags & BILLED_TYPES)) 
+    {
         for (curr = olist; curr; curr = FOLLOW(curr, qflags)) {
             if (ofilter && !(*ofilter)(curr))
                 continue;
@@ -1140,7 +1146,7 @@ int how;               /* type of query */
         }
         if (curr) {
             *pick_list = (menu_item *) alloc(sizeof(menu_item));
-            (*pick_list)->item.a_int = curr->oclass;
+            (*pick_list)->item.a_int = do_unpaid ? 'u' : curr->oclass;
             return 1;
         } else {
             debugpline0("query_category: no single object match");

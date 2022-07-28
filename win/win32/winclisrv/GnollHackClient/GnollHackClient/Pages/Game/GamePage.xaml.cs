@@ -2035,8 +2035,8 @@ namespace GnollHackClient.Pages.Game
         }
 
         private readonly object _menuDrawOnlyLock = new object();
-        private bool _menuDrawOnlyClear = false;
-        private bool _menuRefresh = true;
+        private bool _menuDrawOnlyClear = true;
+        private bool _menuRefresh = false;
 
         private void ShowMenuCanvas(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
@@ -8329,6 +8329,9 @@ namespace GnollHackClient.Pages.Game
                 if (_menuDrawOnlyClear)
                     return;
             }
+
+            if (canvaswidth <= 0 || canvasheight <= 0)
+                return;
 
             lock (MenuCanvas.MenuItemLock)
             {

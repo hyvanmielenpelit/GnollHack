@@ -3351,7 +3351,7 @@ STATIC_PTR int
 ckunpaid(otmp)
 struct obj *otmp;
 {
-    return (otmp->unpaid || (Has_contents(otmp) && count_unpaid(otmp->cobj)));
+    return (otmp->unpaid || (Has_contents(otmp) && count_unpaid(otmp->cobj, FALSE)));
 }
 
 boolean
@@ -3477,7 +3477,7 @@ int show_weights;
     }
 
     iletct = collect_obj_classes(ilets, invent, FALSE, ofilter, &itemcount);
-    unpaid = count_unpaid(invent);
+    unpaid = count_unpaid(invent, FALSE);
 
     if (ident && !iletct) {
         return -1; /* no further identifications */
@@ -3485,13 +3485,13 @@ int show_weights;
         ilets[iletct++] = ' ';
         if (unpaid)
             ilets[iletct++] = 'u';
-        if (count_buc(invent, BUC_BLESSED, ofilter))
+        if (count_buc(invent, BUC_BLESSED, ofilter, FALSE))
             ilets[iletct++] = 'B';
-        if (count_buc(invent, BUC_UNCURSED, ofilter))
+        if (count_buc(invent, BUC_UNCURSED, ofilter, FALSE))
             ilets[iletct++] = 'U';
-        if (count_buc(invent, BUC_CURSED, ofilter))
+        if (count_buc(invent, BUC_CURSED, ofilter, FALSE))
             ilets[iletct++] = 'C';
-        if (count_buc(invent, BUC_UNKNOWN, ofilter))
+        if (count_buc(invent, BUC_UNKNOWN, ofilter, FALSE))
             ilets[iletct++] = 'X';
         ilets[iletct++] = 'a';
     }
@@ -5099,8 +5099,9 @@ char avoidlet;
  * contained objects.
  */
 int
-count_unpaid(list)
+count_unpaid(list, bynexthere)
 struct obj *list;
+boolean bynexthere;
 {
     int count = 0;
 
@@ -5108,8 +5109,28 @@ struct obj *list;
         if (list->unpaid)
             count++;
         if (Has_contents(list))
-            count += count_unpaid(list->cobj);
-        list = list->nobj;
+            count += count_unpaid(list->cobj, FALSE); //Contents are always by nobj
+        if (bynexthere)
+            list = list->nexthere;
+        else
+            list = list->nobj;
+    }
+    return count;
+}
+
+int
+count_objects(list, bynexthere)
+struct obj* list;
+boolean bynexthere;
+{
+    int count = 0;
+
+    while (list) {
+        count++;
+        if(bynexthere)
+            list = list->nexthere;
+        else
+            list = list->nobj;
     }
     return count;
 }
@@ -5122,14 +5143,15 @@ struct obj *list;
  * at some point:  bknown is forced for priest[ess], like in xname().
  */
 int
-count_buc(list, type, filterfunc)
+count_buc(list, type, filterfunc, bynexthere)
 struct obj *list;
 int type;
 boolean FDECL((*filterfunc), (OBJ_P));
+boolean bynexthere;
 {
     int count = 0;
 
-    for (; list; list = list->nobj) {
+    for (; list; list = (bynexthere ? list->nexthere : list->nobj)) {
         /* priests always know bless/curse state */
         if (Role_if(PM_PRIEST))
             list->bknown = (list->oclass != COIN_CLASS);
@@ -5157,10 +5179,10 @@ boolean FDECL((*filterfunc), (OBJ_P));
 /* similar to count_buc(), but tallies all states at once
    rather than looking for a specific type */
 void
-tally_BUCX(list, by_nexthere, bcp, ucp, ccp, xcp, ocp)
+tally_BUCX(list, by_nexthere, bcp, ucp, ccp, xcp, ocp, tcp)
 struct obj *list;
 boolean by_nexthere;
-int *bcp, *ucp, *ccp, *xcp, *ocp;
+int *bcp, *ucp, *ccp, *xcp, *ocp, *tcp;
 {
     /* Future extensions:
      *  Skip current_container when list is invent, uchain when
@@ -5168,8 +5190,10 @@ int *bcp, *ucp, *ccp, *xcp, *ocp;
      *  have a function again (it was a counter for having skipped gold,
      *  but that's not skipped anymore).
      */
-    *bcp = *ucp = *ccp = *xcp = *ocp = 0;
+    *bcp = *ucp = *ccp = *xcp = *ocp = *tcp = 0;
     for ( ; list; list = (by_nexthere ? list->nexthere : list->nobj)) {
+        ++(*tcp);
+
         /* priests always know bless/curse state */
         if (Role_if(PM_PRIEST))
             list->bknown = (list->oclass != COIN_CLASS);
@@ -5181,6 +5205,7 @@ int *bcp, *ucp, *ccp, *xcp, *ocp;
                 ++(*ucp);
             continue;
         }
+
         /* ordinary items */
         if (!list->bknown)
             ++(*xcp);
@@ -5235,7 +5260,7 @@ dounpaid()
     int classcount, count, num_so_far;
     long cost, totcost;
 
-    count = count_unpaid(invent);
+    count = count_unpaid(invent, FALSE);
     otmp = marker = contnr = (struct obj *) 0;
 
     if (count == 1) {
@@ -5369,7 +5394,7 @@ dotypeinv()
     int n, i = 0;
     char *extra_types, types[BUFSZ];
     int class_count, oclass, unpaid_count, itemcount;
-    int bcnt, ccnt, ucnt, xcnt, ocnt;
+    int bcnt, ccnt, ucnt, xcnt, ocnt, tcnt;
     boolean billx = *u.ushops && doinvbill(0);
     menu_item *pick_list;
     boolean traditional = TRUE;
@@ -5379,8 +5404,8 @@ dotypeinv()
         You1("aren't carrying anything.");
         return 0;
     }
-    unpaid_count = count_unpaid(invent);
-    tally_BUCX(invent, FALSE, &bcnt, &ucnt, &ccnt, &xcnt, &ocnt);
+    unpaid_count = count_unpaid(invent, FALSE);
+    tally_BUCX(invent, FALSE, &bcnt, &ucnt, &ccnt, &xcnt, &ocnt, &tcnt);
 
     if (flags.menu_style != MENU_TRADITIONAL) {
         if (flags.menu_style == MENU_FULL
@@ -5448,7 +5473,7 @@ dotypeinv()
                 *extra_types = '\0';
             }
 
-        if (class_count > 1) {
+        if (class_count > 1 && tcnt > 1) {
             c = yn_function(prompt, types, '\0', (char*)0);
             savech(c);
             if (c == '\0') {

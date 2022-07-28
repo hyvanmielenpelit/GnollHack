@@ -49,7 +49,7 @@ main(void)
     hackpid = getpid();
 
     setrandom();
-    initoptions();
+    read_options();
     init_nhwindows(&argc, (char **) &hname);
 
     /*

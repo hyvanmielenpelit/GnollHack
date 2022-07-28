@@ -33,7 +33,7 @@ extern struct passwd *FDECL(getpwnam, (const char *));
 static void FDECL(chdirx, (const char *, BOOLEAN_P));
 #endif /* CHDIR */
 static boolean NDECL(whoami);
-static void FDECL(process_options, (int, char **));
+static void FDECL(process_command_line_arguments, (int, char **));
 
 #ifdef _M_UNIX
 extern void NDECL(check_sco_console);
@@ -154,7 +154,7 @@ char *argv[];
             chdirx(dir, 0);
 #endif
 #ifdef SYSCF
-            initoptions();
+            read_options();
 #endif
 #ifdef PANICTRACE
             ARGV0 = hname; /* save for possible stack trace */
@@ -164,7 +164,7 @@ char *argv[];
 #endif
             prscore(argc, argv);
             /* FIXME: shouldn't this be using nh_terminate() to free
-               up any memory allocated by initoptions() */
+               up any memory allocated by read_options() */
             exit(EXIT_SUCCESS);
         }
     } /* argc > 1 */
@@ -183,7 +183,7 @@ char *argv[];
 #ifdef __linux__
     check_linux_console();
 #endif
-    initoptions();
+    read_options();
 #ifdef PANICTRACE
     ARGV0 = hname; /* save for possible stack trace */
 #ifndef NO_SIGNAL
@@ -201,7 +201,7 @@ char *argv[];
     sethanguphandler((SIG_RET_TYPE) hangup);
 #endif
 
-    process_options(argc, argv); /* command line options */
+    process_command_line_arguments(argc, argv); /* command line options */
 #ifdef WINCHAIN
     commit_windowchain();
 #endif
@@ -361,7 +361,7 @@ attempt_restore:
 }
 
 static void
-process_options(argc, argv)
+process_command_line_arguments(argc, argv)
 int argc;
 char *argv[];
 {

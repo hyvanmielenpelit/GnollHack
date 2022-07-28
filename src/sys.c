@@ -22,6 +22,7 @@ struct sysopt sysopt;
 void
 sys_early_init()
 {
+    wizard = discover = ModernMode = CasualMode = FALSE;
     save_initial_objects_values();
 #ifdef SYSFLAGS
     memset((genericptr_t)&sysflags, 0, sizeof(sysflags));
@@ -36,7 +37,10 @@ sys_early_init()
     memset((genericptr_t)&level, 0, sizeof(level));
     memset((genericptr_t)&m_shot, 0, sizeof(m_shot));
     memset((genericptr_t)level_info, 0, sizeof(level_info));
-    
+    memset((genericptr_t)&chosen_windowtype, 0, sizeof(chosen_windowtype));
+    memset((genericptr_t)&smeq, 0, sizeof(smeq));
+    memset((genericptr_t)&Cmd, 0, sizeof(Cmd));
+
     WIN_MESSAGE = WIN_ERR;
     WIN_STATUS = WIN_ERR;
     WIN_MAP = WIN_ERR;
@@ -57,8 +61,6 @@ sys_early_init()
     nsubroom = 0;
     occtime = 0;
     in_doagain = 0;
-    memset((genericptr_t) &chosen_windowtype, 0, sizeof(chosen_windowtype));
-    memset((genericptr_t)&smeq, 0, sizeof(smeq));
     save_cm = 0;
     yn_number = 0;
     done_money = 0;

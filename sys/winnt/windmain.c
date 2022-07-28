@@ -21,7 +21,7 @@
 #endif
 
 #define E extern
-static void FDECL(process_options, (int argc, char **argv));
+static void FDECL(process_command_line_arguments, (int argc, char **argv));
 static void NDECL(nhusage);
 static char *FDECL(exepath, (char *));
 char *NDECL(exename);
@@ -257,7 +257,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     check_recordfile((char *) 0);
 
     iflags.windowtype_deferred = TRUE;
-    initoptions();                  
+    read_options();                  
 
     if (!validate_prefix_locations(failbuf))
     {
@@ -268,7 +268,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     if (!hackdir[0])
         Strcpy(hackdir, orgdir);
 
-    process_options(argc, argv);
+    process_command_line_arguments(argc, argv);
    
     /*
      * It seems you really want to play.
@@ -453,7 +453,7 @@ attempt_restore:
 }
 
 STATIC_OVL void
-process_options(argc, argv)
+process_command_line_arguments(argc, argv)
 int argc;
 char *argv[];
 {
@@ -500,7 +500,7 @@ char *argv[];
              */
             if (!strncmp(argv[1], "-s", 2)) {
 #ifdef SYSCF
-                initoptions();
+                read_options();
 #endif
                 prscore(argc, argv);
 

@@ -1666,6 +1666,7 @@ reset_blstats(VOID_ARGS)
         }
     }
     initalready = FALSE;
+    blinit = FALSE;
 }
 
 /*

@@ -22,7 +22,7 @@ extern struct passwd *FDECL( getpwuid, ( uid_t));
 extern struct passwd *FDECL( getpwnam, (const char *));
 
 static boolean NDECL( whoami);
-static void FDECL( process_options, (int, char **));
+static void FDECL( process_command_line_arguments, (int, char **));
 
 static void NDECL( wd_message);
 
@@ -94,7 +94,7 @@ int GnollHackMain(int argc, char** argv)
 
 	choose_windows(DEFAULT_WINDOW_SYS);
 
-	initoptions();
+	read_options();
 
 	init_nhwindows(&argc, argv);
 	//exact_username = whoami();
@@ -104,7 +104,7 @@ int GnollHackMain(int argc, char** argv)
 	 */
 	u.uhp = 1; /* prevent RIP on early quits */
 
-	process_options(argc, argv); /* command line options */
+	process_command_line_arguments(argc, argv); /* command line options */
 
 #ifdef DEF_PAGER
 	if(!(catmore = nh_getenv("HACKPAGER")) && !(catmore = nh_getenv("PAGER")))
@@ -227,7 +227,7 @@ boolean authorize_wizard_mode()
 }
 
 
-static void process_options(argc, argv)
+static void process_command_line_arguments(argc, argv)
 	int argc;char *argv[];
 {
 	int i;

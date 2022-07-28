@@ -760,9 +760,9 @@ const char *ev;
 
 /* process options, possibly including SYSCF */
 void
-initoptions()
+read_options()
 {
-    initoptions_init();
+    init_options();
 #ifdef SYSCF
 /* someday there may be other SYSCF alternatives besides text file */
 #ifdef SYSCF_FILE
@@ -785,12 +785,12 @@ initoptions()
      */
 #endif
 #endif /* SYSCF */
-    initoptions_finish();
+    finish_options();
 
 }
 
 void
-initoptions_init()
+init_options()
 {
 #if (defined(UNIX) || defined(VMS)) && defined (TTY_GRAPHICS)
     char *opts;
@@ -950,7 +950,7 @@ initoptions_init()
 }
 
 void
-initoptions_finish()
+finish_options()
 {
 #ifndef MAC
     char *opts = getenv("NETHACKOPTIONS");
@@ -2926,8 +2926,8 @@ boolean tinitial, tfrom_file;
             (void) fruitadd(pl_fruit, forig);
             pline("Fruit is now \"%s\".", pl_fruit);
         }
-        /* If initial, then initoptions is allowed to do it instead
-         * of here (initoptions always has to do it even if there's
+        /* If initial, then read_options is allowed to do it instead
+         * of here (read_options always has to do it even if there's
          * no fruit option at all.  Also, we don't want people
          * setting multiple fruits in their options.)
          */
@@ -3040,7 +3040,7 @@ boolean tinitial, tfrom_file;
              */
             iflags.bouldersym = outstr[0];
             /* for 'initial', update_bouldersym() is done in
-               initoptions_finish(), after all symset options
+               finish_options(), after all symset options
                have been processed */
             if (!initial) {
                 update_bouldersym();

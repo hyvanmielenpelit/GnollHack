@@ -869,6 +869,7 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
 #define L_INDESTRUCTIBLE    0x0100  /* Currently used just for doors */
 #define L_USES_UP_KEY       0x0200  /* Currently used just for doors */
 #define L_NON_PASSDOOR      0x0400  /* Currently used just for doors */
+#define L_INITIALLY_UNLIT   0x0800
 
 
 /*

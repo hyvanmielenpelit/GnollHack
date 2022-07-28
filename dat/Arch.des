@@ -13,6 +13,8 @@
 MAZE: "Arc-strt",'T'
 FLAGS: noteleport,hardfloor
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -74,6 +76,9 @@ DOOR:closed,(38,13)
 DOOR:locked,(24,14)
 DOOR:closed,(31,14)
 DOOR:locked,(49,14)
+# Braziers
+BRAZIER:(31,10)
+BRAZIER:(52,07)
 # Lord Carnarvon
 MONSTER:('@',"Lord Carnarvon"),(25,10)
 # The treasure of Lord Carnarvon,protector
@@ -96,13 +101,16 @@ MONSTER:(';',"giant eel"),(45,04)
 MONSTER:(';',"giant eel"),(33,16)
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)
-# Random traps
-TRAP:random,random
-TRAP:random,random
-TRAP:random,random
-TRAP:random,random
-TRAP:random,random
-TRAP:random,random
+# Bookshelves
+OBJECT:('(',"bookshelf"),(51,12)
+OBJECT:('(',"bookshelf"),(53,12)
+OBJECT:('(',"bookshelf"),(55,12)
+OBJECT:('(',"bookshelf"),(26,08)
+OBJECT:('(',"bookshelf"),(31,08)
+OBJECT:('(',"bookshelf"),(36,08)
+OBJECT:('(',"large box"),(40,08)
+OBJECT:('(',"large box"),(40,12)
+
 # Monsters on siege duty.
 MONSTER: 'S',(60,09)
 MONSTER: 'Z',(60,10)
@@ -204,18 +212,19 @@ OBJECT:('(',"sarcophagus"),(36,08)
 OBJECT:('(',"sarcophagus"),(36,12)
 OBJECT:('(',"sarcophagus"),(36,14)
 # Candelabra
-OBJECT:('(',"large five-branched candelabrum"),(53,04),special_quality:0,unlit
-OBJECT:('(',"large five-branched candelabrum"),(53,16),special_quality:0,unlit
 OBJECT:('(',"large five-branched candelabrum"),(44,06),special_quality:0,unlit
 OBJECT:('(',"large five-branched candelabrum"),(44,09),special_quality:0,unlit
 OBJECT:('(',"large five-branched candelabrum"),(44,11),special_quality:0,unlit
 OBJECT:('(',"large five-branched candelabrum"),(44,14),special_quality:0,unlit
 OBJECT:('(',"large five-branched candelabrum"),(41,09),special_quality:0,unlit
 OBJECT:('(',"large five-branched candelabrum"),(41,11),special_quality:0,unlit
-OBJECT:('(',"large five-branched candelabrum"),(46,06),special_quality:0,unlit
-OBJECT:('(',"large five-branched candelabrum"),(51,06),special_quality:0,unlit
-OBJECT:('(',"large five-branched candelabrum"),(46,09),special_quality:0,unlit
-OBJECT:('(',"large five-branched candelabrum"),(51,09),special_quality:0,unlit
+# Braziers
+BRAZIER:(53,04),brazier_normal,unlit
+BRAZIER:(53,16),brazier_normal,unlit
+BRAZIER:(46,06),brazier_normal,unlit
+BRAZIER:(51,06),brazier_normal,unlit
+BRAZIER:(46,09),brazier_normal,unlit
+BRAZIER:(51,09),brazier_normal,unlit
 # Objects
 OBJECT:random,random
 OBJECT:random,random
@@ -420,20 +429,21 @@ OBJECT:('(',"large five-branched candelabrum"),(52,08),special_quality:0,unlit,n
 OBJECT:('(',"large five-branched candelabrum"),(43,11),special_quality:0,unlit,no_pickup
 OBJECT:('(',"large five-branched candelabrum"),(52,11),special_quality:0,unlit,no_pickup
 
-OBJECT:('(',"large five-branched candelabrum"),(35,08),special_quality:0,unlit,no_pickup
-OBJECT:('(',"large five-branched candelabrum"),(41,08),special_quality:0,unlit,no_pickup
-OBJECT:('(',"large five-branched candelabrum"),(35,11),special_quality:0,unlit,no_pickup
-OBJECT:('(',"large five-branched candelabrum"),(41,11),special_quality:0,unlit,no_pickup
-
 # Chests
 OBJECT:('(',"golden chest"),(30,05),no_pickup,locked,trapped
 OBJECT:('(',"golden chest"),(46,05),no_pickup,locked,trapped
 OBJECT:('(',"golden chest"),(30,14),no_pickup,locked,trapped
 OBJECT:('(',"golden chest"),(46,14),no_pickup,locked,trapped
 
-# Statues
-OBJECT: ('`', "statue"), (28,10), no_pickup, montype:"greater mummy pharaoh", 1
-OBJECT: ('`', "statue"), (48,09), no_pickup, montype:"greater mummy pharaoh", 1
+# Braziers
+BRAZIER: (28,09), brazier_normal, unlit
+BRAZIER: (28,10), brazier_normal, unlit
+BRAZIER: (48,09), brazier_normal, unlit
+BRAZIER: (48,10), brazier_normal, unlit
+BRAZIER: (35,08), brazier_normal, unlit
+BRAZIER: (41,08), brazier_normal, unlit
+BRAZIER: (35,11), brazier_normal, unlit
+BRAZIER: (41,11), brazier_normal, unlit
 
 # Random traps
 TRAP:random,random

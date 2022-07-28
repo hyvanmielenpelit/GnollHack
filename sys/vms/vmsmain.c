@@ -12,7 +12,7 @@
 #include <signal.h>
 
 static void NDECL(whoami);
-static void FDECL(process_options, (int, char **));
+static void FDECL(process_command_line_arguments, (int, char **));
 static void NDECL(byebye);
 #ifndef SAVE_ON_FATAL_ERROR
 #ifndef __DECC
@@ -99,7 +99,7 @@ char *argv[];
                 chdirx(dir, FALSE);
 #endif
 #ifdef SYSCF
-                initoptions();
+                read_options();
 #endif
                 prscore(argc, argv);
                 exit(EXIT_SUCCESS);
@@ -116,7 +116,7 @@ char *argv[];
        and also while initializing terminal [$assign("TT:")]. */
     privoff();
 #endif
-    initoptions();
+    read_options();
     init_nhwindows(&argc, argv);
     whoami();
 #ifdef SECURE
@@ -133,7 +133,7 @@ char *argv[];
 #endif
     sethanguphandler(hangup);
 
-    process_options(argc, argv); /* command line options */
+    process_command_line_arguments(argc, argv); /* command line options */
 
     display_gamewindows();
 
@@ -232,7 +232,7 @@ attempt_restore:
 }
 
 static void
-process_options(argc, argv)
+process_command_line_arguments(argc, argv)
 int argc;
 char *argv[];
 {

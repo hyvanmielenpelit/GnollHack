@@ -9,7 +9,7 @@
 #include <fcntl.h>
 
 static void whoami(void);
-static void process_options(int argc, char **argv);
+static void process_command_line_arguments(int argc, char **argv);
 static void chdirx(const char *dir);
 static void getlock(void);
 
@@ -35,7 +35,7 @@ MAIN(int argc, char **argv)
 
     choose_windows(DEFAULT_WINDOW_SYS);
     chdirx(dir);
-    initoptions();
+    read_options();
 
     init_nhwindows(&argc, argv);
     whoami();
@@ -44,7 +44,7 @@ MAIN(int argc, char **argv)
      * It seems you really want to play.
      */
     u.uhp = 1;                   /* prevent RIP on early quits */
-    process_options(argc, argv); /* command line options */
+    process_command_line_arguments(argc, argv); /* command line options */
 
     display_gamewindows();
     set_playmode(); /* sets plname to "wizard" for wizard mode */
@@ -157,7 +157,7 @@ regularize(char *s)
 }
 
 static void
-process_options(int argc, char **argv)
+process_command_line_arguments(int argc, char **argv)
 {
     int i;
 

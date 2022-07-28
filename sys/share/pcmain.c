@@ -42,7 +42,7 @@ extern int bigscreen;
 void NDECL(preserve_icon);
 #endif
 
-STATIC_DCL void FDECL(process_options, (int argc, char **argv));
+STATIC_DCL void FDECL(process_command_line_arguments, (int argc, char **argv));
 STATIC_DCL void NDECL(nhusage);
 
 #if defined(MICRO) || defined(OS2)
@@ -267,14 +267,14 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     /*
      * If we're dealing with workbench, change the directory.  Otherwise
      * we could get "Insert disk in drive 0" messages. (Must be done
-     * before initoptions())....
+     * before read_options())....
      */
     if (argc == 0)
         chdirx(HACKDIR, 1);
 #endif
     ami_wininit_data();
 #endif
-    initoptions();
+    read_options();
 
 #ifdef NOCWD_ASSUMPTIONS
     if (!validate_prefix_locations(failbuf)) {
@@ -331,7 +331,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
                 chdirx(hackdir, 0);
 #endif
 #ifdef SYSCF
-                initoptions();
+                read_options();
 #endif
                 prscore(argc, argv);
                 gnollhack_exit(EXIT_SUCCESS);
@@ -376,7 +376,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
      * the window port. This allows settings that impact window
      * ports to be specified or read from the sys or user config files.
      */
-    process_options(argc, argv);
+    process_command_line_arguments(argc, argv);
 
 #endif /* MSDOS */
 
@@ -384,7 +384,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     init_nhwindows(&argc, argv);
 #else
     init_nhwindows(&argc, argv);
-    process_options(argc, argv);
+    process_command_line_arguments(argc, argv);
 #endif
 
 #ifdef MFLOPPY
@@ -530,7 +530,7 @@ attempt_restore:
 }
 
 STATIC_OVL void
-process_options(argc, argv)
+process_command_line_arguments(argc, argv)
 int argc;
 char *argv[];
 {

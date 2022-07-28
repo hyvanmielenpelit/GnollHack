@@ -6835,13 +6835,15 @@ boolean initial;
 
     if (initial)
     {
-        updated = 1;
+        timed_occ_fn = 0;
+        readchar_queue = "";
+        memset((genericptr_t)&clicklook_cc, 0, sizeof(clicklook_cc));
         Cmd.num_pad = FALSE;
         Cmd.pcHack_compat = Cmd.phone_layout = Cmd.swap_yz = FALSE;
         for (i = 0; i < SIZE(spkeys_binds); i++)
             Cmd.spkeys[spkeys_binds[i].nhkf] = spkeys_binds[i].key;
         commands_init();
-
+        updated = 1;
     }
     else
     {

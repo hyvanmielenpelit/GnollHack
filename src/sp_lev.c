@@ -4909,6 +4909,8 @@ struct sp_coder* coder;
         else
             levl[x][y].lamplit = rn2(2);
 
+        if (!levl[x][y].lamplit)
+            levl[x][y].flags |= L_INITIALLY_UNLIT;
     }
 
     opvar_free(gcoord);

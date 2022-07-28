@@ -785,7 +785,7 @@ unsigned int *stuckid, *steedid;
     mread(fd, (genericptr_t) pl_character, sizeof pl_character);
 
     mread(fd, (genericptr_t) pl_fruit, sizeof pl_fruit);
-    freefruitchn(ffruit); /* clean up fruit(s) made by initoptions() */
+    freefruitchn(ffruit); /* clean up fruit(s) made by read_options() */
     ffruit = loadfruitchn(fd);
 
     restnames(fd);

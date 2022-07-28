@@ -987,7 +987,7 @@ makelevel()
         if (wizard && nh_getenv("SHOPTYPE"))
             res = mkroom(SHOPBASE);
 
-        if (!res && u_depth >= 10 && u_depth <= 16 && !context.made_deserted_shop
+        if (!res && u_depth >= 10 && u_depth <= 20 && !context.made_deserted_shop
             && (nroom >= room_threshold && (rn2(2) || u_depth >= 12)))
             res = mkroom(DESERTEDSHOP);
 
@@ -2504,14 +2504,14 @@ xchar x, y;
 }
 
 void
-create_level_light_sources()
+create_level_light_sources(VOID_ARGS)
 {
     for (xchar x = 1; x < COLNO; x++)
     {
         for (xchar y = 0; y < ROWNO; y++)
         {
             int lr = get_location_light_range(x, y);
-            if (lr != 0)
+            if (lr != 0 && (levl[x][y].flags & L_INITIALLY_UNLIT) == 0) // Altars are always on by default
             {
                 anything id;
                 coord c;
@@ -2543,7 +2543,7 @@ xchar x, y;
 }
 
 void
-create_level_sound_sources()
+create_level_sound_sources(VOID_ARGS)
 {
     for (xchar x = 1; x < COLNO; x++)
     {
@@ -2552,7 +2552,7 @@ create_level_sound_sources()
             double volume = 0.0f;
             enum soundsource_ambient_subtypes subtype = SOUNDSOURCE_AMBIENT_GENERAL;
             enum ghsound_types sound_type = get_location_ambient_sound_type(x, y, &volume, &subtype);
-            if (sound_type != GHSOUND_NONE && sound_type < MAX_GHSOUNDS)
+            if (sound_type != GHSOUND_NONE && sound_type < MAX_GHSOUNDS && (levl[x][y].flags & L_INITIALLY_UNLIT) == 0)
             {
                 anything id;
                 coord c;

@@ -22,7 +22,7 @@ extern struct passwd *FDECL( getpwnam, (const char *));
 #if 0
 STATIC_DCL boolean NDECL( whoami);
 #endif
-STATIC_DCL void FDECL( process_options, (int, char **));
+STATIC_DCL void FDECL( process_command_line_arguments, (int, char **));
 
 STATIC_OVL char*
 make_lockname(filename, lockname)
@@ -96,14 +96,14 @@ char** argv;
 	/* Now initialize windows */
 	choose_windows(DEFAULT_WINDOW_SYS);
 	init_nhwindows(&argc, argv);
-	initoptions();
+	read_options();
 
 	/*
 	 * It seems you really want to play.
 	 */
 	u.uhp = 1; /* prevent RIP on early quits */
 
-	process_options(argc, argv); /* command line options */
+	process_command_line_arguments(argc, argv); /* command line options */
 
 #if defined(DUMPLOG) && defined(DUMPLOG_DIR)
     /* Make DUMPLOG_DIR if defined */
@@ -183,7 +183,7 @@ authorize_wizard_mode(VOID_ARGS)
 }
 
 STATIC_OVL void 
-process_options(argc, argv)
+process_command_line_arguments(argc, argv)
 int argc;
 char *argv[];
 {
