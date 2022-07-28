@@ -5597,7 +5597,7 @@ struct ext_func_tab extcmdlist[] = {
     { 'd', "drop", "drop an item", dodrop, SINGLE_OBJ_CMD_GENERAL, 0, getobj_drop_types, "drop"},
     { '%', "dropmany", "drop many items", dodropmany },
     { 'D', "droptype", "drop specific item types", doddrop },
-    { 'e', "eat", "eat something", doeat, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_comestibles, "eat" },
+    { 'e', "eat", "eat something", doeat, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_allobj, "eat" },
     { 'E', "engrave", "engrave writing on the floor", doengrave, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_styluses, "write with" },
     { '\0', "enhance", "advance or check weapon and spell skills",
             enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },

@@ -50,7 +50,7 @@ char msgbuf[BUFSZ];
    will be sure to reach the stage of eating where that meal is fatal */
 /* non-rotting non-corpses; unlike lizard corpses, these items will behave
    as if rotten if they are cursed (fortune cookies handled elsewhere) */
-STATIC_OVL NEARDATA const char comestibles[] = { FOOD_CLASS, 0 };
+STATIC_OVL NEARDATA const char comestibles[] = { FOOD_CLASS, REAGENT_CLASS, 0 };
 STATIC_OVL NEARDATA const char offerfodder[] = { FOOD_CLASS, AMULET_CLASS,
                                                  0 };
 
