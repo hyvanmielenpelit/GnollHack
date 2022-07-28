@@ -251,6 +251,7 @@ E int NDECL(getbones);
 
 /* ### botl.c ### */
 
+E void NDECL(reset_blstats);
 E char* FDECL(get_strength_string, (int));
 E const char* NDECL(rank);
 E char *NDECL(do_statusline1);

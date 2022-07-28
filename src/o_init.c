@@ -1663,6 +1663,7 @@ reset_remaining_dynamic_data()
     free_dynamic_data_A();
     free_dynamic_data_B();
     free_dynamic_data_C();
+    reset_blstats();
 }
 
 void

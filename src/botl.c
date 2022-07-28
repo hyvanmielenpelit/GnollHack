@@ -1609,28 +1609,34 @@ status_reassess(VOID_ARGS)
 #endif
 }
 
+static boolean initalready = FALSE;
+
 STATIC_OVL void
 init_blstats()
 {
-    static boolean initalready = FALSE;
     int i, j;
 
-    if (initalready) {
+    if (initalready)
+    {
         impossible("init_blstats called more than once.");
         return;
     }
-    for (i = 0; i <= 1; ++i) {
-        for (j = 0; j < MAXBLSTATS; ++j) {
+    for (i = 0; i <= 1; ++i) 
+    {
+        for (j = 0; j < MAXBLSTATS; ++j) 
+        {
 #ifdef STATUS_HILITES
             struct hilite_s *keep_hilite_chain = blstats[i][j].thresholds;
 #endif
 
             blstats[i][j] = initblstats[j];
             blstats[i][j].a = zeroany;
-            if (blstats[i][j].valwidth) {
+            if (blstats[i][j].valwidth) 
+            {
                 blstats[i][j].val = (char *) alloc((size_t)blstats[i][j].valwidth);
                 blstats[i][j].val[0] = '\0';
-            } else
+            } 
+            else
                 blstats[i][j].val = (char *) 0;
 #ifdef STATUS_HILITES
             blstats[i][j].thresholds = keep_hilite_chain;
@@ -1638,6 +1644,28 @@ init_blstats()
         }
     }
     initalready = TRUE;
+}
+
+
+void
+reset_blstats(VOID_ARGS)
+{
+    int i, j;
+    for (i = 0; i <= 1; ++i)
+    {
+        for (j = 0; j < MAXBLSTATS; ++j) 
+        {
+            memset((genericptr_t)&blstats[i][j], 0, sizeof(struct istat_s));
+            blstats[i][j].a = zeroany;
+            if (blstats[i][j].valwidth && blstats[i][j].val)
+                free(blstats[i][j].val);
+            blstats[i][j].val = (char*)0;
+#ifdef STATUS_HILITES
+            blstats[i][j].thresholds = 0;
+#endif
+        }
+    }
+    initalready = FALSE;
 }
 
 /*

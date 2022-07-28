@@ -207,6 +207,8 @@ OBJECT:('(',"sarcophagus"),(36,14)
 OBJECT:('(',"large five-branched candelabrum"),(53,04),special_quality:0,unlit
 OBJECT:('(',"large five-branched candelabrum"),(53,16),special_quality:0,unlit
 OBJECT:('(',"large five-branched candelabrum"),(44,06),special_quality:0,unlit
+OBJECT:('(',"large five-branched candelabrum"),(44,09),special_quality:0,unlit
+OBJECT:('(',"large five-branched candelabrum"),(44,11),special_quality:0,unlit
 OBJECT:('(',"large five-branched candelabrum"),(44,14),special_quality:0,unlit
 OBJECT:('(',"large five-branched candelabrum"),(41,09),special_quality:0,unlit
 OBJECT:('(',"large five-branched candelabrum"),(41,11),special_quality:0,unlit
@@ -287,6 +289,12 @@ MONSTER:('Z',"human mummy"),random
 MONSTER:('Z',"human mummy"),random
 MONSTER:('Z',"human mummy"),random
 MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
 
 #
 #	The "goal" level for the quest.
@@ -299,6 +307,8 @@ MONSTER:'Z',random
 MAZE: "Arc-goal", ' '
 TILESET:undead_tileset
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
                                                                             
                                   ---------                                 
@@ -368,6 +378,63 @@ OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
+# Sarcophaguses
+OBJECT:('(',"sarcophagus"),(21,08)
+OBJECT:('(',"sarcophagus"),(21,11)
+OBJECT:('(',"sarcophagus"),(24,04)
+OBJECT:('(',"sarcophagus"),(24,06)
+OBJECT:('(',"sarcophagus"),(24,13)
+OBJECT:('(',"sarcophagus"),(24,15)
+OBJECT:('(',"sarcophagus"),(52,04)
+OBJECT:('(',"sarcophagus"),(52,06)
+OBJECT:('(',"sarcophagus"),(52,13)
+OBJECT:('(',"sarcophagus"),(52,15)
+OBJECT:('(',"sarcophagus"),(55,08)
+OBJECT:('(',"sarcophagus"),(55,11)
+
+# Candelabra
+OBJECT:('(',"large five-branched candelabrum"),(26,04),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(33,04),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(26,06),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(33,06),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(26,13),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(33,13),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(26,15),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(33,15),special_quality:0,unlit,no_pickup
+
+OBJECT:('(',"large five-branched candelabrum"),(43,04),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(50,04),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(43,06),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(50,06),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(43,13),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(50,13),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(43,15),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(50,15),special_quality:0,unlit,no_pickup
+
+OBJECT:('(',"large five-branched candelabrum"),(24,08),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(33,08),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(24,11),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(33,11),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(43,08),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(52,08),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(43,11),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(52,11),special_quality:0,unlit,no_pickup
+
+OBJECT:('(',"large five-branched candelabrum"),(35,08),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(41,08),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(35,11),special_quality:0,unlit,no_pickup
+OBJECT:('(',"large five-branched candelabrum"),(41,11),special_quality:0,unlit,no_pickup
+
+# Chests
+OBJECT:('(',"golden chest"),(30,05),no_pickup,locked,trapped
+OBJECT:('(',"golden chest"),(46,05),no_pickup,locked,trapped
+OBJECT:('(',"golden chest"),(30,14),no_pickup,locked,trapped
+OBJECT:('(',"golden chest"),(46,14),no_pickup,locked,trapped
+
+# Statues
+OBJECT: ('`', "statue"), (28,10), no_pickup, montype:"greater mummy pharaoh", 1
+OBJECT: ('`', "statue"), (48,09), no_pickup, montype:"greater mummy pharaoh", 1
+
 # Random traps
 TRAP:random,random
 TRAP:random,random
@@ -404,6 +471,13 @@ MONSTER:('Z',"human mummy"),random
 MONSTER:('Z',"human mummy"),random
 MONSTER:('Z',"human mummy"),random
 MONSTER:('Z',"human mummy"),random
+MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
 MONSTER:'Z',random
 
 #

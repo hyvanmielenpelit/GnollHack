@@ -515,61 +515,72 @@ STATIC_OVL void
 mkbox_cnts(box)
 struct obj *box;
 {
+    if (!box)
+        return;
+
     register int n;
     register struct obj *otmp;
 
     //box->cobj = (struct obj *) 0; /* Box may have previous contents, such as a coffin corpse */
 
-    switch (box->otyp) 
+    if (box->oartifact)
     {
-    case ICE_BOX:
-        n = 20;
-        break;
-    case BOOKSHELF:
-        n = !rn2(100) ? 10 : (level_difficulty() >= 13) ? 5 : (level_difficulty() >= 10) ? 4 : 3;
-        break;
-    case MINE_CART:
-        n = !rn2(3) ? 0 : 8; /* At least one third of the mine carts are empty */
-        break;
-    case WEAPON_RACK:
-        n = 4;
-        break;
-    case CHEST:
-        n = box->olocked ? 7 : 5;
-        break;
-    case LARGE_BOX:
-        n = box->olocked ? 5 : 3;
-        break;
-    case COFFIN:
-        n = 3;
-        break;
-    case SARCOPHAGUS:
-        n = 4;
-        break;
-    case SACK:
-    case OILSKIN_SACK:
-    case BACKPACK:
-    case LEATHER_BAG:
-    case ORIENTAL_SILK_SACK:
-    case EXPENSIVE_HANDBAG:
-    case BAG_OF_WIZARDRY:
-    case BAG_OF_TREASURE_HAULING:
-    case BAG_OF_THE_GLUTTON:
-        /* initial inventory: sack starts out empty */
-        if (moves <= 1 && !in_mklev) {
+        n = 0;
+    }
+    else
+    {
+        switch (box->otyp)
+        {
+        case ICE_BOX:
+            n = 20;
+            break;
+        case BOOKSHELF:
+            n = !rn2(100) ? 10 : (level_difficulty() >= 13) ? 5 : (level_difficulty() >= 10) ? 4 : 3;
+            break;
+        case MINE_CART:
+            n = !rn2(3) ? 0 : 8; /* At least one third of the mine carts are empty */
+            break;
+        case WEAPON_RACK:
+            n = 4;
+            break;
+        case GOLDEN_CHEST:
+        case CHEST:
+            n = box->olocked ? 7 : 5;
+            break;
+        case LARGE_BOX:
+            n = box->olocked ? 5 : 3;
+            break;
+        case COFFIN:
+            n = 3;
+            break;
+        case SARCOPHAGUS:
+            n = 4;
+            break;
+        case SACK:
+        case OILSKIN_SACK:
+        case BACKPACK:
+        case LEATHER_BAG:
+        case ORIENTAL_SILK_SACK:
+        case EXPENSIVE_HANDBAG:
+        case BAG_OF_WIZARDRY:
+        case BAG_OF_TREASURE_HAULING:
+        case BAG_OF_THE_GLUTTON:
+            /* initial inventory: sack starts out empty */
+            if (moves <= 1 && !in_mklev) {
+                n = 0;
+                break;
+            }
+            /*FALLTHRU*/
+        case QUIVER_OF_INFINITE_ARROWS:
+        case POUCH_OF_ENDLESS_BOLTS:
+        case BAG_OF_INFINITE_SLING_BULLETS:
+        case BAG_OF_HOLDING:
+            n = 1;
+            break;
+        default:
             n = 0;
             break;
         }
-        /*FALLTHRU*/
-    case QUIVER_OF_INFINITE_ARROWS:
-    case POUCH_OF_ENDLESS_BOLTS:
-    case BAG_OF_INFINITE_SLING_BULLETS:
-    case BAG_OF_HOLDING:
-        n = 1;
-        break;
-    default:
-        n = 0;
-        break;
     }
 
     for (n = rn2(n + 1); n > 0; n--) 
@@ -3162,7 +3173,7 @@ register struct obj *obj;
          *  The macro DELTA_CWT in pickup.c also implements these
          *  weight equations.
          */
-        if (obj->otyp == BAG_OF_HOLDING || obj->otyp == GOLDEN_CHEST)
+        if (obj->otyp == BAG_OF_HOLDING)
             cwt = obj->cursed ? (cwt * 2) : obj->blessed ? ((cwt + 3) / 4)
                                                          : ((cwt + 1) / 2);
 
