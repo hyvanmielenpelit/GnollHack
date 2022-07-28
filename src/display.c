@@ -166,6 +166,7 @@ static char gbuf_stop[ROWNO];
 static const gbuf_entry nul_gbuf = { 0, nul_layerinfo };
 static boolean in_cls = 0;
 static boolean dela;
+static boolean delagr;
 static xchar lastx, lasty;
 static xchar lastswx, lastswy; /* last swallowed position */
 static int flushing = 0;
@@ -1848,8 +1849,8 @@ int first;
         register int x, y;
 
         /* Clear old location */
-        for (y = lasty - 1; y <= lasty + 1; y++)
-            for (x = lastswx - 1; x <= lastswy + 1; x++)
+        for (y = lastswy - 1; y <= lastswy + 1; y++)
+            for (x = lastswx - 1; x <= lastswx + 1; x++)
                 if (isok(x, y))
                     clear_glyph_buffer_at(x, y);
     }
@@ -1915,7 +1916,7 @@ int x, y;
 void
 reset_display(VOID_ARGS)
 {
-    dela = FALSE;
+    dela = delagr = FALSE;
     lastx = lasty = 0;
     lastswx = lastswy = 0;
     memset((genericptr_t)gbuf, 0 , sizeof(gbuf));
@@ -1987,20 +1988,18 @@ void
 under_ground(mode)
 int mode;
 {
-    static boolean dela;
-
     /* swallowing has a higher precedence than under ground */
     if (u.uswallow)
         return;
 
     /* full update */
-    if (mode == 1 || dela) {
+    if (mode == 1 || delagr) {
         cls();
-        dela = FALSE;
+        delagr = FALSE;
 
     /* delayed full update */
     } else if (mode == 2) {
-        dela = TRUE;
+        delagr = TRUE;
         return;
 
     /* limited update */
