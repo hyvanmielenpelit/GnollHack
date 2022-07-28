@@ -2153,7 +2153,6 @@ namespace GnollHackClient.Pages.Game
             }
 
             //canvasView.MenuItems = newmis;
-            RefreshMenuRowCounts = true;
             lock (MenuCanvas.MenuItemLock)
             {
                 MenuCanvas.MenuItems = newmis;
@@ -8304,6 +8303,7 @@ namespace GnollHackClient.Pages.Game
         private int _firstDrawnMenuItemIdx = -1;
         private int _lastDrawnMenuItemIdx = -1;
         private float _totalMenuHeight = 0;
+
         private bool _refreshMenuRowCounts = true;
         private readonly object _refreshMenuRowCountLock = new object();
         private bool RefreshMenuRowCounts { get { lock (_refreshMenuRowCountLock) { return _refreshMenuRowCounts; } } set { lock (_refreshMenuRowCountLock) { _refreshMenuRowCounts = value; } } }

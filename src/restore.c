@@ -1042,15 +1042,15 @@ register int fd;
     /* Set up the vision internals, after levl[] data is loaded
        but before docrt(). */
     reglyph_darkroom();
+    run_timers(); /* expire all timers that have gone off while away */
+
     vision_reset();
     vision_full_recalc = 1; /* recompute vision (not saved) */
-
-    run_timers(); /* expire all timers that have gone off while away */
     docrt();
-    restoring = FALSE;
-
     clear_nhwindow(WIN_MESSAGE);
     status_reassess();
+
+    restoring = FALSE;
 
     /* Play ambient sounds for the dungeon; check_special_room will play music */
     play_level_ambient_sounds();

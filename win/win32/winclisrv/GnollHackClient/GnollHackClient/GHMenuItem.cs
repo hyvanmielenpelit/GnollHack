@@ -238,10 +238,10 @@ namespace GnollHackClient
         public UInt64 Oid { get; set; }
         public UInt64 Mid { get; set; }
 
-        public bool TextRowCountsSet { get; set;}
-        public int MainTextRows { get; set; }
-        public int SuffixTextRows { get; set; }
-        public int Suffix2TextRows { get; set; }
+        public bool TextRowCountsSet { get; set; } = false;
+        public int MainTextRows { get; set; } = 1;
+        public int SuffixTextRows { get; set; } = 0;
+        public int Suffix2TextRows { get; set; } = 0;
 
         private string[] _mainTextSplit;
         public string[] MainTextSplit 

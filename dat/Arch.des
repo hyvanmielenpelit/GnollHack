@@ -128,6 +128,8 @@ MAZE: "Arc-loca",'T'
 FLAGS: hardfloor
 TILESET:undead_tileset
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -191,6 +193,27 @@ ALTAR:(26,10),align[1],altar
 ALTAR:(26,15),align[2],altar
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)
+# Sarcophaguses
+OBJECT:('(',"sarcophagus"),(25,05)
+OBJECT:('(',"sarcophagus"),(25,10)
+OBJECT:('(',"sarcophagus"),(25,15)
+OBJECT:('(',"sarcophagus"),(49,07)
+OBJECT:('(',"sarcophagus"),(49,14)
+OBJECT:('(',"sarcophagus"),(36,06)
+OBJECT:('(',"sarcophagus"),(36,08)
+OBJECT:('(',"sarcophagus"),(36,12)
+OBJECT:('(',"sarcophagus"),(36,14)
+# Candelabra
+OBJECT:('(',"large five-branched candelabrum"),(53,04),special_quality:0,unlit
+OBJECT:('(',"large five-branched candelabrum"),(53,16),special_quality:0,unlit
+OBJECT:('(',"large five-branched candelabrum"),(44,06),special_quality:0,unlit
+OBJECT:('(',"large five-branched candelabrum"),(44,14),special_quality:0,unlit
+OBJECT:('(',"large five-branched candelabrum"),(41,09),special_quality:0,unlit
+OBJECT:('(',"large five-branched candelabrum"),(41,11),special_quality:0,unlit
+OBJECT:('(',"large five-branched candelabrum"),(46,06),special_quality:0,unlit
+OBJECT:('(',"large five-branched candelabrum"),(51,06),special_quality:0,unlit
+OBJECT:('(',"large five-branched candelabrum"),(46,09),special_quality:0,unlit
+OBJECT:('(',"large five-branched candelabrum"),(51,09),special_quality:0,unlit
 # Objects
 OBJECT:random,random
 OBJECT:random,random

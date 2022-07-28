@@ -101,12 +101,12 @@ namespace GnollHackClient.Controls
 
         public GHWindow GHWindow { get; set; }
         public ghmenu_styles MenuStyle { get; set; }
-        public object MenuItemLock = new object();
+        public readonly object MenuItemLock = new object();
 
         private ObservableCollection<GHMenuItem> _GHMenuItems = null;
         public ObservableCollection<GHMenuItem> MenuItems { get { return _GHMenuItems; } set { _GHMenuItems = value; } }
 
-        public object TextItemLock = new object();
+        public readonly object TextItemLock = new object();
         private List<GHPutStrItem> _GHPutStrItems = null;
         public List<GHPutStrItem> PutStrItems { get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }
 
