@@ -2565,7 +2565,7 @@ boolean atme;
     case SPE_SUMMON_ELDER_TREANT:
     case SPE_SUMMON_GIANT_ANT:
     case SPE_SUMMON_SOLDIER_ANT:
-    case SPE_SUMMON_DIRE_WOLF:
+    case SPE_SUMMON_DIREWOLF:
     case SPE_SUMMON_BISON:
     case SPE_SUMMON_PEGASUS:
     case SPE_SUMMON_ROC:

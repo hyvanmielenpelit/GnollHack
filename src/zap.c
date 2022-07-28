@@ -4722,7 +4722,7 @@ register struct obj *obj;
         break;
     case SPE_SUMMON_GIANT_ANT:
     case SPE_SUMMON_SOLDIER_ANT:
-    case SPE_SUMMON_DIRE_WOLF:
+    case SPE_SUMMON_DIREWOLF:
     case SPE_SUMMON_BISON:
     case SPE_SUMMON_PEGASUS:
     case SPE_SUMMON_ROC:
@@ -11794,7 +11794,7 @@ int otyp;
         return PM_RAVEN;
     case SPE_SUMMON_WINTER_WOLF:
         return PM_WINTER_WOLF;
-    case SPE_SUMMON_DIRE_WOLF:
+    case SPE_SUMMON_DIREWOLF:
         return PM_DIREWOLF;
     case SPE_SUMMON_GIANT_ANT:
         return PM_GIANT_ANT;

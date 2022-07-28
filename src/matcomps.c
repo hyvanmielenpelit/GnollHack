@@ -1169,7 +1169,7 @@ struct materialcomponentlist matlists[] =
         }
     },
 
-    { SPE_SUMMON_DIRE_WOLF,
+    { SPE_SUMMON_DIREWOLF,
         "Mandrake root",
         STRANGE_OBJECT,
         1,
