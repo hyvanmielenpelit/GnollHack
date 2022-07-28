@@ -183,6 +183,8 @@ boolean quietly;
     return mtmp;
 }
 
+static int petname_used = 0;
+
 struct monst *
 makedog()
 {
@@ -191,7 +193,6 @@ makedog()
     const char *petname;
     const char* petname_female = "";
     int pettype;
-    static int petname_used = 0;
 
     if (preferred_pet == 'n')
         return ((struct monst *) 0);
@@ -1439,6 +1440,12 @@ struct monst *mtmp;
         if (!mtmp->mtame)
             newsym(mtmp->mx, mtmp->my);
     }
+}
+
+void
+reset_dogs(VOID_ARGS)
+{
+    petname_used = 0;
 }
 
 /*dog.c*/

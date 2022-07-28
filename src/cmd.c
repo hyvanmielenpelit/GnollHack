@@ -233,6 +233,7 @@ STATIC_DCL void FDECL(print_weapon_skill_line, (struct obj*, BOOLEAN_P, int));
 
 static const char *readchar_queue = "";
 static coord clicklook_cc;
+static boolean special_effect_shown = FALSE;
 
 STATIC_PTR int
 doprev_message(VOID_ARGS)
@@ -3380,7 +3381,7 @@ basics_enlightenment(mode, final)
 int mode UNUSED;
 int final;
 {
-    static char Power[] = "mana";
+    static const char Power[] = "mana";
     char buf[BUFSZ];
     int pw = u.uen, hp = (Upolyd ? u.mh : u.uhp),
         pwmax = u.uenmax, hpmax = (Upolyd ? u.mhmax : u.uhpmax);
@@ -6837,6 +6838,8 @@ boolean initial;
     if (initial)
     {
         backed_dir_cmd = FALSE;
+        en_via_menu = FALSE;
+        special_effect_shown = FALSE;
         timed_occ_fn = 0;
         readchar_queue = "";
         memset((genericptr_t)&clicklook_cc, 0, sizeof(clicklook_cc));
@@ -7385,7 +7388,6 @@ register char *cmd;
     return;
 }
 
-static boolean special_effect_shown = FALSE;
 
 STATIC_OVL void
 check_gui_special_effect()

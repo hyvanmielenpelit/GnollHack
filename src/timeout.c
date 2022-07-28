@@ -3444,6 +3444,7 @@ reset_timers(VOID_ARGS)
     }
 
     timer_base = 0;
+    timer_id = 1;
 }
 
 /* to support '#stats' wizard-mode command */

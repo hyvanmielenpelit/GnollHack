@@ -163,7 +163,13 @@ typedef struct {
 static gbuf_entry gbuf[ROWNO][COLNO];
 static char gbuf_start[ROWNO];
 static char gbuf_stop[ROWNO];
-static gbuf_entry nul_gbuf = { 0, nul_layerinfo };
+static const gbuf_entry nul_gbuf = { 0, nul_layerinfo };
+static boolean in_cls = 0;
+static boolean dela;
+static xchar lastx, lasty;
+static xchar lastswx, lastswy; /* last swallowed position */
+static int flushing = 0;
+static int delay_flushing = 0;
 
 //{ base_cmap_to_glyph(S_unexplored), NO_GLYPH, { NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH }, 0UL, (genericptr_t)0, 0}
 
@@ -1830,7 +1836,6 @@ int first;
     if (!u.ustuck)
         return;
 
-    static xchar lastx, lasty; /* last swallowed position */
     int swallower, left_ok, rght_ok;
 
     if (first)
@@ -1844,7 +1849,7 @@ int first;
 
         /* Clear old location */
         for (y = lasty - 1; y <= lasty + 1; y++)
-            for (x = lastx - 1; x <= lastx + 1; x++)
+            for (x = lastswx - 1; x <= lastswy + 1; x++)
                 if (isok(x, y))
                     clear_glyph_buffer_at(x, y);
     }
@@ -1886,8 +1891,8 @@ int first;
     }
 
     /* Update the swallowed position. */
-    lastx = u.ux;
-    lasty = u.uy;
+    lastswx = u.ux;
+    lastswy = u.uy;
 
     play_environment_ambient_sounds();
 }
@@ -1907,6 +1912,20 @@ int x, y;
     }
 }
 
+void
+reset_display(VOID_ARGS)
+{
+    dela = FALSE;
+    lastx = lasty = 0;
+    lastswx = lastswy = 0;
+    memset((genericptr_t)gbuf, 0 , sizeof(gbuf));
+    memset((genericptr_t)gbuf_start, 0, sizeof(gbuf_start));
+    memset((genericptr_t)gbuf_stop, 0, sizeof(gbuf_stop));
+    in_cls = 0;
+    flushing = 0;
+    delay_flushing = 0;
+}
+
 /*
  * under_water()
  *
@@ -1917,8 +1936,6 @@ void
 under_water(mode)
 int mode;
 {
-    static xchar lastx, lasty;
-    static boolean dela;
     register int x, y;
 
     /* swallowing has a higher precedence than under water */
@@ -3386,8 +3403,6 @@ int start, stop, y;
 void
 cls()
 {
-    static boolean in_cls = 0;
-
     if (in_cls)
         return;
     in_cls = TRUE;
@@ -3446,8 +3461,7 @@ int cursor_on_u;
     /* Prevent infinite loops on errors:
      *      flush_screen->print_glyph->impossible->pline->flush_screen
      */
-    static int flushing = 0;
-    static int delay_flushing = 0;
+
     register int x, y;
 
     if (cursor_on_u == -1)

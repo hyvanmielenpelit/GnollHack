@@ -2278,7 +2278,7 @@ struct monst* mon;
 
                                     /* Take the lowest maximum (most constraining) */
                                     if (afixmaxcandidate < *afixmax_ptr[i])
-                                        *afixmax_ptr[i] = (schar)min(125, afixmaxcandidate);
+                                        *afixmax_ptr[i] = (schar)min(i == A_STR ? 125 : 25, afixmaxcandidate);
                                 }
                                 else
                                 {
@@ -2288,7 +2288,7 @@ struct monst* mon;
 
                                     /* Take the highest minimum (most constraining) */
                                     if (afixmincandidate > *afixmin_ptr[i])
-                                        *afixmin_ptr[i] = (schar)min(125, afixmincandidate);
+                                        *afixmin_ptr[i] = (schar)min(i == A_STR ? 125 : 25, afixmincandidate);
                                 }
                             }
                             else

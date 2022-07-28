@@ -462,7 +462,7 @@ void
 readmail(otmp)
 struct obj *otmp UNUSED;
 {
-    static char *junk[] = {
+    static const char *junk[] = {
         NULL, /* placeholder for "Report bugs to <devteam@GnollHack.org>.", */
         "Please disregard previous letter.", "Welcome to GnollHack.",
 #ifdef AMIGA

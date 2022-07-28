@@ -52,6 +52,8 @@ STATIC_OVL int spec_dbon_applies = 0;
 static boolean artiexist[1 + NUM_ARTIFACTS + 1];
 /* and a discovery list for them (no dummy first entry here) */
 STATIC_OVL short artidisco[NUM_ARTIFACTS];
+static int nesting = 0; /* recursion control */
+static int mkot_trap_warn_count = 0;
 
 STATIC_DCL void NDECL(hack_artifacts);
 STATIC_DCL boolean FDECL(artifact_attack_type, (int, struct obj *));
@@ -110,6 +112,9 @@ reset_artifacts(VOID_ARGS)
 {
     memset((genericptr_t)artiexist, 0, sizeof artiexist);
     memset((genericptr_t)artidisco, 0, sizeof artidisco);
+    mkot_trap_warn_count = 0;
+    nesting = 0;
+    spec_dbon_applies = 0;
 }
 
 
@@ -3758,16 +3763,15 @@ boolean drop_untouchable;
     return FALSE;
 }
 
+
 /* check all items currently in use (mostly worn) for touchability */
 void
 retouch_equipment(dropflag)
 int dropflag; /* 0==don't drop, 1==drop all, 2==drop weapon */
 {
-    static int nesting = 0; /* recursion control */
     struct obj *obj;
     boolean dropit, had_gloves = (uarmg != 0);
     int had_rings = (!!uleft + !!uright);
-
     /*
      * We can potentially be called recursively if losing/unwearing
      * an item causes worn helm of opposite alignment to come off or
@@ -3827,7 +3831,6 @@ int dropflag; /* 0==don't drop, 1==drop all, 2==drop weapon */
         clear_bypasses(); /* reset upon final exit */
 }
 
-static int mkot_trap_warn_count = 0;
 
 STATIC_OVL int
 count_surround_traps(x, y)

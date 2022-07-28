@@ -2427,6 +2427,7 @@ long allowflags;
         (void)memset((genericptr_t)travel, 0, sizeof travel);
         travelstepx[0][0] = tx;
         travelstepy[0][0] = ty;
+        const int ordered[] = { 0, 2, 4, 6, 1, 3, 5, 7 };
 
         while (n != 0)
         {
@@ -2437,7 +2438,6 @@ long allowflags;
                 int dir;
                 int x = travelstepx[set][i];
                 int y = travelstepy[set][i];
-                static int ordered[] = { 0, 2, 4, 6, 1, 3, 5, 7 };
                 /* no diagonal movement for grid bugs */
                 int dirmax = NODIAG(mon->mnum) ? 4 : 8;
                 boolean alreadyrepeated = FALSE;

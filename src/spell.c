@@ -5485,4 +5485,11 @@ dump_spells()
 }
 #endif
 
+void
+reset_spells(VOID_ARGS)
+{
+    docast_spell_no = -1;
+    domix_spell_no = -1;
+}
+
 /*spell.c*/

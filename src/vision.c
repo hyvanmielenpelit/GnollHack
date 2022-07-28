@@ -503,6 +503,8 @@ int row, col;
  *      + Right after the hero is swallowed. [gulpmu()]
  *      + Just before bubbles are moved. [movebubbles()]
  */
+static unsigned char colbump[COLNO + 1]; /* cols to bump sv */
+
 void
 vision_recalc(control)
 int control;
@@ -521,7 +523,6 @@ int control;
     register struct rm *lev; /* pointer to current pos */
     struct rm *flev; /* pointer to position in "front" of current pos */
     extern unsigned char seenv_matrix[3][3]; /* from display.c */
-    static unsigned char colbump[COLNO + 1]; /* cols to bump sv */
     unsigned char *sv;                       /* ptr to seen angle bits */
     int oldseenv;                            /* previous seenv value */
 
@@ -2870,6 +2871,12 @@ struct monst *mon;
         how_seen |= MONSEEN_WARNMON;
 
     return how_seen;
+}
+
+void
+reset_vision()
+{
+    memset((genericptr_t)&colbump, 0, sizeof(colbump));
 }
 
 /*vision.c*/

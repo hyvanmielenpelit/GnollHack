@@ -797,6 +797,7 @@ init_options()
 #endif
     int i;
 
+    n_menu_mapped = 0;
     /* set up the command parsing */
     reset_commands(TRUE); /* init */
 
@@ -2942,7 +2943,7 @@ boolean tinitial, tfrom_file;
             iflags.getpos_coords = GPCOORDS_NONE;
             return retval;
         } else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0) {
-            static char gpcoords[] = { GPCOORDS_NONE, GPCOORDS_COMPASS,
+            static const char gpcoords[] = { GPCOORDS_NONE, GPCOORDS_COMPASS,
                                        GPCOORDS_COMFULL, GPCOORDS_MAP,
                                        GPCOORDS_SCREEN, '\0' };
             char c = lowc(*op);
@@ -3465,7 +3466,7 @@ boolean tinitial, tfrom_file;
         num = 0;
         prefix_val = -1;
         while (*op && num < sizeof flags.end_disclose - 1) {
-            static char valid_settings[] = {
+            static const char valid_settings[] = {
                 DISCLOSE_PROMPT_DEFAULT_YES, DISCLOSE_PROMPT_DEFAULT_NO,
                 DISCLOSE_PROMPT_DEFAULT_SPECIAL,
                 DISCLOSE_YES_WITHOUT_PROMPT, DISCLOSE_NO_WITHOUT_PROMPT,

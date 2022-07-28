@@ -579,6 +579,7 @@ E void FDECL(refresh_u_tile_gui_info, (BOOLEAN_P));
 E void FDECL(refresh_m_tile_gui_info, (struct monst*, BOOLEAN_P));
 E void FDECL(set_obj_glyph, (struct obj*));
 E int FDECL(get_seen_monster_glyph, (struct monst*));
+E void NDECL(reset_display);
 
 /* ### do.c ### */
 
@@ -806,7 +807,7 @@ E boolean FDECL(tamedog, (struct monst *, struct obj *, UCHAR_P, int, UNSIGNED_S
 E void FDECL(abuse_dog, (struct monst *));
 E void FDECL(wary_dog, (struct monst *, BOOLEAN_P));
 E void FDECL(break_charm, (struct monst*, BOOLEAN_P));
-
+E void NDECL(reset_dogs);
 
 /* ### dogmove.c ### */
 
@@ -1004,6 +1005,7 @@ E unsigned FDECL(obj_nutrition, (struct obj*));
 E void FDECL(display_nutrition_floating_text, (int, int, int));
 E void FDECL(display_famine_floating_text, (int, int, int));
 E long FDECL(get_rotted_status, (struct obj*));
+E void NDECL(reset_hunger_status);
 
 /* ### encounter.c ### */
 
@@ -1280,6 +1282,7 @@ E struct extended_menu_info NDECL(menu_heading_info);
 E struct extended_menu_info FDECL(menu_group_heading_info, (CHAR_P));
 E struct extended_menu_info FDECL(menu_special_mark_info, (CHAR_P, int));
 E const char* FDECL(get_cmap_or_cmap_variation_glyph_explanation, (int));
+E void NDECL(reset_hack);
 
 /* ### hacklib.c ### */
 
@@ -1467,8 +1470,9 @@ E long FDECL(count_contents, (struct obj *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(carry_obj_effects, (struct obj *));
 E const char *FDECL(currency, (long));
 E void FDECL(silly_thing, (const char *, struct obj *));
-E void print_things_here_to_window(VOID_ARGS);
-E void update_here_window(VOID_ARGS);
+E void NDECL(print_things_here_to_window);
+E void NDECL(update_here_window);
+E void NDECL(reset_inventory);
 
 /* ### ioctl.c ### */
 
@@ -3320,6 +3324,7 @@ E void NDECL(dump_spells);
 E void NDECL(sortspells);
 #endif
 E void FDECL(print_spell_level_text, (char*, int, BOOLEAN_P, UCHAR_P));
+E void NDECL(reset_spells);
 
 /* ### steal.c ### */
 
@@ -3713,6 +3718,7 @@ E boolean FDECL(clear_path, (int, int, int, int));
 E void FDECL(do_clear_area, (int, int, int,
                              void (*)(int, int, genericptr), genericptr_t));
 E unsigned FDECL(howmonseen, (struct monst *));
+E void NDECL(reset_vision);
 
 #ifdef VMS
 

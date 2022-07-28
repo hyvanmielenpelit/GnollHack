@@ -3198,7 +3198,7 @@ register struct obj *obj;
     return (wt ? wt * (int) obj->quan : ((int) obj->quan + 1) >> 1);
 }
 
-static int treefruits[] = { APPLE, ORANGE, PEAR, BANANA, POMEGRANATE, EUCALYPTUS_LEAF, FIG, DRAGON_FRUIT };
+static const int treefruits[] = { APPLE, ORANGE, PEAR, BANANA, POMEGRANATE, EUCALYPTUS_LEAF, FIG, DRAGON_FRUIT };
 
 struct obj *
 rnd_treefruit_at(x, y)
@@ -4370,7 +4370,7 @@ sanity_check_worn(obj)
 struct obj *obj;
 {
 #if defined(BETA) || defined(DEBUG)
-    static unsigned long wearbits[] = {
+    static const unsigned long wearbits[] = {
         W_ARM,    W_ARMC,   W_ARMH,    W_ARMS,     W_ARMG, W_ARMF,  W_ARMU,  W_ARMO,      W_ARMB,
         W_WEP,    W_QUIVER, W_SWAPWEP, W_SWAPWEP2, W_AMUL, W_RINGL, W_RINGR, W_BLINDFOLD,
         W_MISC,   W_MISC2,  W_MISC3,   W_MISC4,    W_MISC5,

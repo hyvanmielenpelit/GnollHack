@@ -4050,14 +4050,22 @@ reset_faint()
         unmul("You revive.");
 }
 
+static unsigned save_hs;
+static boolean saved_hs = FALSE;
+
+void
+reset_hunger_status(VOID_ARGS)
+{
+    save_hs = 0;
+    saved_hs = FALSE;
+}
+
 /* compute and comment on your (new?) hunger status */
 void
 update_hunger_status(incr)
 boolean incr;
 {
     unsigned newhs;
-    static unsigned save_hs;
-    static boolean saved_hs = FALSE;
     int h = u.uhunger;
 
     newhs = (h > 1000)

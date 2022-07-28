@@ -22,6 +22,7 @@ STATIC_DCL void FDECL(maybe_smudge_engr, (int, int, int, int));
 STATIC_DCL void NDECL(domove_core);
 
 #define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
+static int skates = 0;
 
 static anything tmp_anything;
 
@@ -1277,6 +1278,7 @@ int mode;
         (void) memset((genericptr_t) travel, 0, sizeof travel);
         travelstepx[0][0] = tx;
         travelstepy[0][0] = ty;
+        const int ordered[] = { 0, 2, 4, 6, 1, 3, 5, 7 };
 
         while (n != 0) {
             int nn = 0;
@@ -1285,7 +1287,6 @@ int mode;
                 int dir;
                 int x = travelstepx[set][i];
                 int y = travelstepy[set][i];
-                static int ordered[] = { 0, 2, 4, 6, 1, 3, 5, 7 };
                 /* no diagonal movement for grid bugs */
                 int dirmax = NODIAG(u.umonnum) ? 4 : 8;
                 boolean alreadyrepeated = FALSE;
@@ -1786,8 +1787,6 @@ domove_core()
         on_ice = !Levitation && is_ice(u.ux, u.uy);
         if (on_ice)
         {
-            static int skates = 0;
-
             if (!skates)
                 skates = find_skates();
             if ((uarmf && uarmf->otyp == skates) || is_mon_immune_to_cold(&youmonst)
@@ -2628,15 +2627,16 @@ boolean newspot;             /* true if called by spoteffects */
     return FALSE;
 }
 
+static int inspoteffects = 0;
+static coord spotloc;
+static int spotterrain;
+static struct trap* spottrap = (struct trap*)0;
+static unsigned spottraptyp = NO_TRAP;
+
 void
 spoteffects(pick)
 boolean pick;
 {
-    static int inspoteffects = 0;
-    static coord spotloc;
-    static int spotterrain;
-    static struct trap *spottrap = (struct trap *) 0;
-    static unsigned spottraptyp = NO_TRAP;
 
     struct monst *mtmp;
     struct trap *trap = t_at(u.ux, u.uy);
@@ -3641,7 +3641,7 @@ const char *msg_override;
 STATIC_OVL void
 maybe_wail()
 {
-    static short powers[] = { TELEPORT, SEE_INVISIBLE, POISON_RESISTANCE, COLD_IMMUNITY,
+    static const short powers[] = { TELEPORT, SEE_INVISIBLE, POISON_RESISTANCE, COLD_IMMUNITY,
                               SHOCK_IMMUNITY, FIRE_IMMUNITY, SLEEP_RESISTANCE, DISINTEGRATION_RESISTANCE,
                               TELEPORT_CONTROL, STEALTH, FAST, INVISIBILITY };
 
@@ -4005,6 +4005,18 @@ adjusted_delay_output()
     {
         delay_output();
     }
+}
+
+void
+reset_hack(VOID_ARGS)
+{
+    skates = 0;
+    inspoteffects = 0;
+    memset((genericptr_t)&spotloc, 0 , sizeof(spotloc));
+    spotterrain = 0;
+    spottrap = (struct trap*)0;
+    spottraptyp = NO_TRAP;
+    wc = 0;
 }
 
 

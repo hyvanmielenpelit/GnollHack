@@ -186,7 +186,7 @@ int x1, y1, x2, y2;
      * so even though this table says VWALL, we actually leave whatever
      * typ was there alone.
      */
-    static xchar spine_array[16] = { VWALL, HWALL,    HWALL,    HWALL,
+    static const xchar spine_array[16] = { VWALL, HWALL,    HWALL,    HWALL,
                                      VWALL, TRCORNER, TLCORNER, TDWALL,
                                      VWALL, BRCORNER, BLCORNER, TUWALL,
                                      VWALL, TLWALL,   TRWALL,   CROSSWALL };

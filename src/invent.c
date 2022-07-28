@@ -7114,4 +7114,12 @@ struct obj* first_obj_here;
     return 1;
 }
 
+void
+reset_inventory(VOID_ARGS)
+{
+    lastinvnr = 51;
+    this_type = 0;
+    sortlootmode = 0;
+}
+
 /*invent.c*/

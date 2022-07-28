@@ -1198,7 +1198,7 @@ u_init()
          * get only non-magic instruments.
          */
         if (Role_if(PM_PRIEST) || Role_if(PM_WIZARD)) {
-            static int trotyp[] = { WOODEN_FLUTE, BRASS_HORN,  WOODEN_HARP,
+            const int trotyp[] = { WOODEN_FLUTE, BRASS_HORN,  WOODEN_HARP,
                                     BELL,         BUGLE,       LEATHER_DRUM };
             Instrument[0].trotyp = trotyp[rn2(SIZE(trotyp))];
             ini_inv(Instrument);

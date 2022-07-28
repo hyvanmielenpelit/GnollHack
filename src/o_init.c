@@ -300,6 +300,7 @@ STATIC_DCL void NDECL(reset_levchn);
 STATIC_DCL void NDECL(reset_damage);
 STATIC_OVL void NDECL(reset_msghistory);
 STATIC_OVL void NDECL(reset_remaining_dynamic_data);
+STATIC_OVL void NDECL(reset_remaining_static_variables);
 
 #ifdef USE_TILES
 STATIC_DCL void NDECL(shuffle_tiles);
@@ -627,16 +628,16 @@ STATIC_OVL void
 shuffle_all()
 {
     /* entire classes; obj_shuffle_range() handles their exceptions */
-    static char shuffle_classes[] = {
+    static const char shuffle_classes[] = {
         AMULET_CLASS, POTION_CLASS, SCROLL_CLASS,
         SPBOOK_CLASS, VENOM_CLASS,  
     };
     /* armor sub-class type ranges (one item from each group) */
-    static short shuffle_types[] = {
+    static const short shuffle_types[] = {
         HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, SWORD_OF_HOLY_VENGEANCE, STAFF_OF_THE_MAGI, LEATHER_BAG,
         TALLOW_CANDLE, OIL_LAMP, TIN_WHISTLE, WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP, LEATHER_DRUM, JAR_OF_EXTRA_HEALING_SALVE
     };
-    static short shuffle_types_with_material[] = {
+    static const short shuffle_types_with_material[] = {
          WAN_LIGHT, MEDIEVAL_ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION,
          LENSES, GOGGLES_OF_NIGHT, LEATHER_BELT, ROYAL_CROWN, CORNUTHAUM, CHAMPIGNON, 
          RIN_ADORNMENT
@@ -835,7 +836,7 @@ register int i;
 }
 
 /* items that should stand out once they're known */
-static short uniq_objs[] = {
+static const short uniq_objs[] = {
     AMULET_OF_YENDOR, SPE_BOOK_OF_THE_DEAD, CANDELABRUM_OF_INVOCATION,
     BELL_OF_OPENING,
 };
@@ -1658,6 +1659,18 @@ reset_gamestate(VOID_ARGS)
 }
 
 STATIC_DCL void
+reset_remaining_static_variables()
+{
+    reset_hunger_status();
+    reset_display();
+    reset_dogs();
+    reset_hack();
+    reset_inventory();
+    reset_spells();
+    reset_vision();
+}
+
+STATIC_DCL void
 reset_remaining_dynamic_data()
 {
     free_dynamic_data_A();
@@ -1676,6 +1689,7 @@ reset_game(VOID_ARGS)
     reset_rooms(); /* no dynamic memory to reclaim */
     reset_gamestate();
     n_game_recoveries = 0;
+    reset_remaining_static_variables();
     reset_remaining_dynamic_data();
 }
 

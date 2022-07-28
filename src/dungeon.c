@@ -27,6 +27,7 @@ struct proto_dungeon {
     int n_brs;  /* number of tmpbranch entries */
 };
 
+static int branch_id = 0;
 int n_dgns;     /* number of dungeons (also used in mklev.c and do.c) */
 static branch *branches = (branch *) 0;        /* dungeon branch list */
 
@@ -216,6 +217,8 @@ reset_dungeon(VOID_ARGS)
         free((genericptr_t)curr_ms);
     }
     mapseenchn = 0;
+
+    branch_id = 0;
 }
 
 /* Restore the dungeon structures. */
@@ -531,7 +534,6 @@ int dgn;
 int child_entry_level;
 struct proto_dungeon *pd;
 {
-    static int branch_id = 0;
     int branch_num;
     branch *new_branch;
 
