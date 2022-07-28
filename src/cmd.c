@@ -6814,6 +6814,8 @@ boolean condition;
     wait_synch();
 }
 
+static boolean backed_dir_cmd = FALSE;
+
 /* called at startup and after number_pad is twiddled */
 void
 reset_commands(initial)
@@ -6831,13 +6833,16 @@ boolean initial;
     const struct ext_func_tab *cmdtmp;
     boolean flagtemp;
     int c, i, updated = 0;
-    static boolean backed_dir_cmd = FALSE;
 
     if (initial)
     {
+        backed_dir_cmd = FALSE;
         timed_occ_fn = 0;
         readchar_queue = "";
         memset((genericptr_t)&clicklook_cc, 0, sizeof(clicklook_cc));
+        struct ext_func_tab* efp;
+        for (efp = extcmdlist; efp->ef_txt; efp++)
+            efp->bound_key = 0;
         Cmd.num_pad = FALSE;
         Cmd.pcHack_compat = Cmd.phone_layout = Cmd.swap_yz = FALSE;
         for (i = 0; i < SIZE(spkeys_binds); i++)

@@ -967,7 +967,7 @@ makelevel()
             ++room_threshold;
             fill_room(&rooms[nroom - 1], FALSE);
             mk_knox_portal(vault_x + w, vault_y + h);
-            if (!level.flags.noteleport && !rn2(3))
+            if (!level.flags.noteleport && !rn2(2))
                 makevtele();
         } else if (rnd_rect() && create_vault()) {
             vault_x = rooms[nroom].lx;
@@ -2473,7 +2473,7 @@ xchar x, y;
     extern int n_dgns; /* from dungeon.c */
     d_level *source;
     branch *br;
-    schar u_depth;
+    schar u_depth = depth(&u.uz);
 
     br = dungeon_branch("Fort Ludios");
     if (on_level(&knox_level, &br->end1)) {
@@ -2486,12 +2486,12 @@ xchar x, y;
     }
 
     /* Already set or 2/3 chance of deferring until a later level. */
-    if (source->dnum < n_dgns || (rn2(3) && !wizard))
+    if (source->dnum < n_dgns || (u_depth > 18 || rn2(3)))
         return;
 
     if (!(u.uz.dnum == oracle_level.dnum      /* in main dungeon */
           && !at_dgn_entrance("The Quest")    /* but not Quest's entry */
-          && (u_depth = depth(&u.uz)) > 10    /* beneath 10 */
+          && u_depth > 10    /* beneath 10 */
           && u_depth < depth(&medusa_level))) /* and above Medusa */
         return;
 
