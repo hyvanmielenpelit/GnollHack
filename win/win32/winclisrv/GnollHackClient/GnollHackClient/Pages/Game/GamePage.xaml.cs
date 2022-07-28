@@ -2469,8 +2469,14 @@ namespace GnollHackClient.Pages.Game
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
+            float canvaswidth = canvasView.CanvasSize.Width;
+            float canvasheight = canvasView.CanvasSize.Height;
 
             canvas.Clear(SKColors.Black);
+
+            if (canvaswidth <= 16 || canvasheight <= 16)
+                return;
+
             double canvas_scale = GetCanvasScale();
             float inverse_canvas_scale = canvas_scale == 0 ? 0.0f : 1.0f / (float)canvas_scale;
             long generalcountervalue, maincountervalue;
@@ -2558,8 +2564,6 @@ namespace GnollHackClient.Pages.Game
 
 
                 /* Map */
-                float canvaswidth = canvasView.CanvasSize.Width;
-                float canvasheight = canvasView.CanvasSize.Height;
                 float textscale = GetTextScale();
                 float UsedFontSize = ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
                 textPaint.Typeface = App.DejaVuSansMonoTypeface;
@@ -8330,7 +8334,7 @@ namespace GnollHackClient.Pages.Game
                     return;
             }
 
-            if (canvaswidth <= 0 || canvasheight <= 0)
+            if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
 
             lock (MenuCanvas.MenuItemLock)
@@ -9412,6 +9416,9 @@ namespace GnollHackClient.Pages.Game
 
             canvas.Clear();
 
+            if (canvaswidth <= 16 || canvasheight <= 16)
+                return;
+
             lock (TextCanvas.MenuItemLock)
             {
                 if (TextCanvas.PutStrItems == null || TextCanvas.PutStrItems.Count == 0)
@@ -9724,6 +9731,9 @@ namespace GnollHackClient.Pages.Game
             bool isLandscape = canvaswidth > canvasheight;
 
             canvas.Clear();
+            if (canvaswidth <= 16 || canvasheight <= 16)
+                return;
+
             CmdBtnMatrixRect = new SKRect();
 
             using (SKPaint textPaint = new SKPaint())
