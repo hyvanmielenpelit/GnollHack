@@ -228,14 +228,6 @@ register int otyp;
                 Strcpy(buf, "book");
             nn = 0;
         }
-#if 0
-        if (otyp != SPE_NOVEL) {
-            Strcpy(buf, "spellbook");
-        } else {
-            Strcpy(buf, !nn ? "book" : "novel");
-            nn = 0;
-        }
-#endif
         break;
     case RING_CLASS:
         Strcpy(buf, "ring");
@@ -721,24 +713,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Strcat(buf, actualn);
         } else if (un) {
             Strcat(buf, dn);
-#if 0
-            if (is_boots(obj))
-                Strcat(buf, "boots");
-            else if (is_gloves(obj))
-                Strcat(buf, "gloves");
-            else if (is_cloak(obj))
-                Strcpy(buf, "cloak");
-            else if (is_robe(obj))
-                Strcpy(buf, "robe");
-            else if (is_bracers(obj))
-                Strcpy(buf, "bracers");
-            else if (is_helmet(obj))
-                Strcpy(buf, "helmet");
-            else if (is_shield(obj))
-                Strcpy(buf, "shield");
-            else
-                Strcpy(buf, "armor");
-#endif
             Strcat(buf, " called ");
             Strcat(buf, un);
         } else
@@ -1864,15 +1838,7 @@ weapon_here:
         printweight(weightbuf, objweight_oz, TRUE, TRUE);
         char buf[BUFSZ];
         Sprintf(buf, "%s - %s", weightbuf, bp);
-#if 0
-        if (objweight >= 1000)
-            Sprintf(buf, "%3.0f cwt - %s", objweight / 100, bp);
-        else if (objweight >= 10)
-            Sprintf(buf, "%3.0f lbs - %s", objweight, bp);
-        else
-            Sprintf(buf, "%1.1f %s - %s", objweight, objweight == 1 ? "lb " : "lbs", bp);
-#endif
-        strcpy(bp, buf);
+        Strcpy(bp, buf);
 
     }
     
@@ -1882,13 +1848,7 @@ weapon_here:
         printweight(weightbuf, objweight_oz, FALSE, FALSE);
         char buf[BUFSZ];
         Sprintf(buf, "%s (%s)", bp, weightbuf);
-#if 0
-        if (objweight >= 10)// || ((int)(objweight / 10)) * 10 == (int)objweight)
-            Sprintf(buf, "%s (%3.0f %s)", bp, (int)objweight, objweight == 1 ? "lb" : "lbs");
-        else
-            Sprintf(buf, "%s (%.1f %s)", bp, objweight, objweight == 1 ? "lb" : "lbs");
-#endif
-        strcpy(bp, buf);
+        Strcpy(bp, buf);
     }
 
     return bp;
@@ -4977,17 +4937,6 @@ boolean is_wiz_wish;
     }
     else 
     {
-#if 0
-        if (oclass == WAND_CLASS) {
-            if (enchantment > 1 && spesgn == -1)
-                enchantment = 1;
-        } else {
-            if (enchantment > 0 && spesgn == -1)
-                enchantment = 0;
-        }
-        if (enchantment > otmp->enchantment)
-            enchantment = otmp->enchantment;
-#endif
         if (enchantment > 0 && spesgn == -1)
             enchantment = 0;
         if (enchantment > otmp->enchantment)

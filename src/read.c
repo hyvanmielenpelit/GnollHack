@@ -609,20 +609,11 @@ struct obj *obj;
     if (obj->oclass == WAND_CLASS)
         return TRUE;
 
-    /* known && !oc_name_known is possible after amnesia/tentacled one */
-//    if (obj->oclass == RING_CLASS)
-        return (boolean) (objects[obj->otyp].oc_charged
-                          && (obj->known
-                              || (obj->dknown
-                                  && objects[obj->otyp].oc_name_known)));
+    return (boolean) (objects[obj->otyp].oc_charged
+                        && (obj->known
+                            || (obj->dknown
+                                && objects[obj->otyp].oc_name_known)));
 
-#if 0
-    if (is_weptool(obj)) /* specific check before general tools */
-        return FALSE;
-    if (obj->oclass == TOOL_CLASS)
-        return (boolean) (objects[obj->otyp].oc_charged != 0);
-    return FALSE; /* why are weapons/armor considered charged anyway? */
-#endif
 }
 
 /* recharge an object; curse_bless is -1 if the recharging implement

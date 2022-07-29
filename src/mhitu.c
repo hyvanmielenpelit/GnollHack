@@ -1460,95 +1460,6 @@ int adjustment_to_roll;
 
     percentage = 5 * adjscore - 30;
 
-#if 0
-    if (adjscore < 1)
-        percentage = 0;
-    else if (adjscore > 25)
-        percentage = 100;
-    else
-    {
-        switch (adjscore)
-        {
-        case 1:
-            percentage = 1;
-            break;
-        case 2:
-            percentage = 2;
-            break;
-        case 3:
-            percentage = 3;
-            break;
-        case 4:
-            percentage = 4;
-            break;
-        case 5:
-            percentage = 5;
-            break;
-        case 6:
-            percentage = 7;
-            break;
-        case 7:
-            percentage = 10;
-            break;
-        case 8:
-            percentage = 15;
-            break;
-        case 9:
-            percentage = 20;
-            break;
-        case 10:
-            percentage = 30;
-            break;
-        case 11:
-            percentage = 40;
-            break;
-        case 12:
-            percentage = 50;
-            break;
-        case 13:
-            percentage = 55;
-            break;
-        case 14:
-            percentage = 60;
-            break;
-        case 15:
-            percentage = 65;
-            break;
-        case 16:
-            percentage = 70;
-            break;
-        case 17:
-            percentage = 75;
-            break;
-        case 18:
-            percentage = 80;
-            break;
-        case 19:
-            percentage = 84;
-            break;
-        case 20:
-            percentage = 87;
-            break;
-        case 21:
-            percentage = 90;
-            break;
-        case 22:
-            percentage = 93;
-            break;
-        case 23:
-            percentage = 95;
-            break;
-        case 24:
-            percentage = 97;
-            break;
-        case 25:
-            percentage = 99;
-            break;
-        default:
-            break;
-        }
-    }
-#endif
     boolean success = (rn2(100) < percentage);
     return success;
 }
@@ -1916,27 +1827,6 @@ register struct obj* omonwep;
         }
     }
 
-#if 0
-    if ((mattk->adtyp == AD_PHYS && mattk->aatyp == AT_HUGS && !sticks(youmonst.data)))
-    {
-        //Do nothing
-    } 
-    else    
-    {
-        if (damage > 0)
-        {
-            if (Half_physical_damage
-                || (Half_physical_damage_against_undead_and_demons
-                    && (is_undead(mtmp->data) || is_demon(mtmp->data)
-                        || is_vampshifter(mtmp))))
-                damage = damage / 2;
-        }
-    }
-
-    if (Invulnerable)
-        damage = 0; /* should be redundant */
-#endif
-
     /*  Now, adjust damages via resistances or specific attacks */
     int damagedealt = (int)damage + ((damage - (double)((int)damage) - ((double)(Upolyd ? u.mh_fraction : u.uhp_fraction) / 10000)) > 0 ? 1 : 0);
     switch (mattk->adtyp)
@@ -2041,20 +1931,6 @@ register struct obj* omonwep;
                     if (damage < 1)
                         damage = 1;
                 }
-#if 0
-                if (dmg)
-                {
-                    if (Half_physical_damage
-                        || (Half_physical_damage_against_undead_and_demons
-                            && (is_undead(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp)))
-                        )
-                        dmg = (dmg + 1) / 2;
-                }
-
-
-                if (Invulnerable)
-                    dmg = 0;
-#endif
                 boolean hittxt = FALSE;
                 boolean displaysustain = FALSE;
                 int ahres = 0;
@@ -2070,11 +1946,6 @@ register struct obj* omonwep;
                 if (special_hit_dmg < 0)
                 {
                     isinstakilled = TRUE;
-                    //damage += (double)(2 * (Upolyd ? u.mh : u.uhp) + 200);
-                    //if (Upolyd)
-                    //    u.mh = 0;
-                    //else
-                    //    u.uhp = 0;
                     isdisintegrated = TRUE;
                     hittxt = TRUE; /* This means that hit text is already given */
                 }
@@ -2395,12 +2266,6 @@ register struct obj* omonwep;
                 context.botl = context.botlx = 1;
                 refresh_u_tile_gui_info(TRUE);
                 standard_hint("Get free action as early as possible. Avoid engaging in close combat with paralyzing monsters before that.", &u.uhint.paralyzed_by_monster);
-#if 0
-                nomovemsg = You_can_move_again;
-                nomul(-(rnd(8) + 2));
-                multi_reason = "paralyzed by a monster";
-                exercise(A_DEX, FALSE);
-#endif
                 /* No new paralysis for a while */
                 set_itimeout(&HFree_action, 20);
                 refresh_u_tile_gui_info(TRUE);
@@ -2753,17 +2618,6 @@ register struct obj* omonwep;
             if (damage > tmphp)
             {
                 damage = (double)(tmphp - 1);
-
-#if 0
-            if ((Half_physical_damage ? (dmg - 1) / 2 : dmg)
-                >= (tmphp = (Upolyd ? u.mh : u.uhp))) {
-                dmg = tmphp - 1;
-                if (Half_physical_damage)
-                    dmg *= 2; /* doesn't actually increase damage; we only
-                               * get here if half the original damage would
-                               * would have been fatal, so double reduced
-                               * damage will be less than original damage */
-#endif 
                 if (damage < 1)
                 { /* implies (tmphp <= 1) */
                     damage = 1;
@@ -3146,14 +3000,6 @@ register struct obj* omonwep;
         damage = 0;
     }
 
-#if 0
-    //Black blade damage adjustment
-    if (mattk->aatyp == AT_WEAP && omonwep && omonwep->otyp == BLACK_BLADE_OF_DISINTEGRATION &&
-        !(Disint_resistance || is_incorporeal(youmonst.data) || Invulnerable)) {
-        damage = 0; //Black blade does not do ordinary damage to disintegrateable monsters, to resistant monsters it inflicts normal damage
-    }
-#endif
-
     int permdmg2 = 0;
     int crit_strike_probability = get_critical_strike_percentage_chance(omonwep, &youmonst, mtmp);
     int crit_strike_die_roll_threshold = crit_strike_probability / 5;
@@ -3335,42 +3181,6 @@ register struct obj* omonwep;
     //Add special enchantments
     if (mattk->aatyp == AT_WEAP && omonwep) 
     {
-#if 0
-        if (omonwep->otyp == BLACK_BLADE_OF_DISINTEGRATION)
-        {
-            if (Disint_resistance || is_incorporeal(youmonst.data) || Invulnerable) {                    // if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
-                You("are not disintegrated.");
-            }
-            else if (uarms) {
-                /* destroy shield; other possessions are safe */
-                (void)destroy_arm(uarms);
-            }
-            else if (uarm) {
-                /* destroy suit; if present, cloak and robe go too */
-                if (uarmc)
-                    (void)destroy_arm(uarmc);
-                if (uarmo)
-                    (void)destroy_arm(uarmo);
-                (void)destroy_arm(uarm);
-            }
-            else
-            {
-                /* no shield or suit, you're dead; wipe out cloak
-                    and/or shirt in case of life-saving or bones */
-                if (uarmc)
-                    (void)destroy_arm(uarmc);
-                if (uarmo)
-                    (void)destroy_arm(uarmo);
-                if (uarmu)
-                    (void)destroy_arm(uarmu);
-                killer.format = KILLED_BY_AN;
-                Strcpy(killer.name, killer_xname(omonwep));
-                /* when killed by disintegration breath, don't leave corpse */
-                u.ugrave_arise = -3;
-                done(DIED);
-            }
-        }
-#endif
         if (omonwep->elemental_enchantment > 0)
         {
             char onmbuf[BUFSZ], knmbuf[BUFSZ];

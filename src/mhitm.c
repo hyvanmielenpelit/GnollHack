@@ -2294,14 +2294,6 @@ boolean verbosely;
     else
         nonadditive_increase_mon_property(mon, PARALYZED, amt);
 
-#if 0
-    if (amt > 127)
-        amt = 127;
-
-    mon->mcanmove = 0;
-    mon->mfrozen = amt;
-#endif
-
     mon->meating = 0; /* terminate any meal-in-progress */
     mon->mstrategy &= ~STRAT_WAITFORU;
     refresh_m_tile_gui_info(mon, FALSE);

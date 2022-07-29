@@ -1194,8 +1194,6 @@ int max_attk_monsters;
     long maxdifficulty = 0;
     long mindifficulty = 0;
     long pointdifficulty = 0;
-    //double totaldifficulty = 0;
-    //double totalsquareddifficulty = 0;
     double totalcubeddifficulty = 0;
     double totalthreehalvespowerdifficulty = 0;
     double totalpowdifficulty = 0;
@@ -1228,8 +1226,6 @@ int max_attk_monsters;
         if (pmid == NON_PM)
             break;
         double monster_difficulty = (double)max(1, mons[pmid].difficulty); // Treat level 0 monsters as level 1
-        //totaldifficulty += (double)monster_difficulty;
-        //totalsquareddifficulty += (double)monster_difficulty * (double)monster_difficulty;
         totalcubeddifficulty += pow(monster_difficulty, 3.0);
         totalthreehalvespowerdifficulty += pow(monster_difficulty, 1.5);
         totalpowdifficulty += pow(monster_difficulty, 1.0 / power);
@@ -1247,68 +1243,6 @@ int max_attk_monsters;
 
     encounter_list[encounter_index].difficulty_max = (int)maxdifficulty;
     encounter_list[encounter_index].difficulty_min = (int)mindifficulty;
-
-    /* Calculate Tommi's point estimate */
-    /* This currently assumes that encounter definitions list monsters in descending order of difficulty,
-     * or at least in the order they are assumed to be killed in combet;
-     * otherwise, they need to be sorted into descending order 
-     */
-    //int max_attacking_monsters = max_attk_monsters;
-    //double combatvalue = 0;
-    //double difficulty_point_estimate = 0;
-
-#if 0
-    for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
-    {
-        int pmid = encounter_list[encounter_index].encounter_monsters[i].permonstid;
-        if (pmid == NON_PM)
-            break;
-
-        int current_monster_difficulty = max(1, mons[pmid].difficulty);
-
-        double ehp = (double)current_monster_difficulty;
-        double dptu = 0;
-        for (int j = i; j < MAX_ENCOUNTER_MONSTERS && j <= i + max_attacking_monsters ; j++)
-        {
-            int dpmid = encounter_list[encounter_index].encounter_monsters[j].permonstid;
-            if (dpmid == NON_PM)
-                break;
-            int dptu_monster_difficulty = max(1, mons[dpmid].difficulty);
-            dptu += (double)dptu_monster_difficulty;
-        }
-        combatvalue += dptu * ehp;
-    }
-#endif
-
-#if 0
-    double sum = 0;
-    long totaldifficulty_of_removed_monsters = 0;
-
-    for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
-    {
-        int pmid = encounter_list[encounter_index].encounter_monsters[i].permonstid;
-        if (pmid == NON_PM)
-            break;
-
-        int current_monster_difficulty = max(1, mons[pmid].difficulty);
-
-        sum += ((double)totaldifficulty - (double)totaldifficulty_of_removed_monsters) * ((double)current_monster_difficulty / (double)totaldifficulty);
-
-        /* Move to next and mark this as 'removed' */
-        totaldifficulty_of_removed_monsters += (long)current_monster_difficulty;
-    }
-
-    combatvalue = sum * (double)totaldifficulty;
-#endif
-#if 0
-    if (max_attk_monsters >= 8)
-        difficulty_point_estimate = maxdifficulty;
-    else if (max_attk_monsters <= 1)
-        difficulty_point_estimate = mindifficulty;
-    else
-        difficulty_point_estimate = mindifficulty + (((double)max_attk_monsters - 1.0) / 7.0) * (maxdifficulty - mindifficulty); // round(sqrt(combatvalue));
-#endif
-
     encounter_list[encounter_index].difficulty_point_estimate[max_attk_monsters] = (int)pointdifficulty;
 }
 

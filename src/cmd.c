@@ -2313,17 +2313,6 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_BODY_OFF:
                 header = "MON_BODY_OFF";
                 break;
-#if 0
-            case GLYPH_PET_OFF:
-                header = "MON_PET_OFF";
-                break;
-            case GLYPH_DETECT_OFF:
-                header = "MON_DETECT_OFF";
-                break;
-            case GLYPH_RIDDEN_OFF:
-                header = "MON_RIDDEN_OFF";
-                break;
-#endif
             case GLYPH_ATTACK_OFF:
                 header = "MON_ATTACK_OFF";
                 break;
@@ -2357,17 +2346,6 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_FEMALE_MON_OFF:
                 header = "FEMALE_MON_OFF";
                 break;
-#if 0
-            case GLYPH_FEMALE_PET_OFF:
-                header = "FEMALE_PET_MON_OFF";
-                break;
-            case GLYPH_FEMALE_DETECT_OFF:
-                header = "FEMALE_DETECT_MON_OFF";
-                break;
-            case GLYPH_FEMALE_RIDDEN_OFF:
-                header = "FEMALE_RIDDEN_MON_OFF";
-                break;
-#endif
             case GLYPH_FEMALE_BODY_OFF:
                 header = "FEMALE_BODY_MON_OFF";
                 break;
@@ -3942,38 +3920,6 @@ int final;
      * TODO?  Maybe merge wielding line and skill line into one sentence.
      */
     print_weapon_skill_line(uwep, TRUE, final);
-#if 0
-    if ((wtype = uwep_skill_type()) != P_NONE) 
-    {
-        if (wtype == P_MARTIAL_ARTS)
-            wtype = P_BARE_HANDED_COMBAT; /* Martial arts is separately below */
-
-        char sklvlbuf[20];
-        int sklvl = P_SKILL_LEVEL(wtype);
-        boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
-
-        if (sklvl == P_ISRESTRICTED)
-            Strcpy(sklvlbuf, "no");
-        else
-            (void) lcase(skill_level_name(wtype, sklvlbuf, FALSE));
-        /* "you have no/basic/expert/master/grand-master skill with <skill>"
-           or "you are unskilled/skilled in <skill>" */
-
-        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
-        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
-
-        Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
-                hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >=0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
-
-        if (can_advance(wtype, FALSE))
-            Sprintf(eos(buf), " and %s that",
-                    !final ? "can enhance" : "could have enhanced");
-        if (hav)
-            you_have(buf, "");
-        else
-            you_are(buf, "");
-    }
-#endif
 
     if (!uwep && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
     {
@@ -4012,7 +3958,7 @@ int final;
             wtype = P_BARE_HANDED_COMBAT;
 
         char mbuf[BUFSZ];
-        strcpy(mbuf, "");
+        Strcpy(mbuf, "");
         if (martial_bonus())
         {
             int multihitchance = martial_arts_multishot_percentage_chance(limited_skill_level(wtype, FALSE, TRUE));

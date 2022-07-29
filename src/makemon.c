@@ -698,26 +698,6 @@ register struct monst *mtmp;
             {
                 int weaptype = !rn2(3) || is_lord(ptr) || is_prince(ptr) ? SWORD_OF_HOLY_VENGEANCE : !rn2(3) ? LONG_SWORD : SILVER_LONG_SWORD;
                 short artifacttype = 0;
-
-#if 0
-                if (!rn2(4))
-                {
-                    switch (rn2(2))
-                    {
-                    case 0:
-                        weaptype = LONG_SWORD;
-                        artifacttype = ART_SUNSWORD;
-                        break;
-                    case 1:
-                        weaptype = SILVER_LONG_SWORD;
-                        artifacttype = ART_DEMONBANE;
-                        break;
-                    default:
-                        break;
-                    }
-                }
-#endif
-
                 otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
 
                 /* maybe make it special */
@@ -2328,28 +2308,16 @@ int
 monbasehp_per_lvl(mon)
 struct monst* mon;
 {
-    //struct permonst* ptr = mon->data;
+    if (!mon)
+        return 1;
+
     int hp = rnd(8); /* default is d8 */
 
-#if 0
-    /* like newmonhp, but home elementals are ignored, riders use normal d8 */
-    if (is_golem(ptr)) {
-        /* draining usually won't be applicable for these critters */
-        hp = golemhp(monsndx(ptr)) / (int)ptr->mlevel;
-        //    } else if (ptr->mlevel > MAX_MONSTER_LEVEL) {
-                /* arbitrary; such monsters won't be involved in draining anyway */
-        //        hp = 4 + rnd(4); /* 5..8 */
-        //    } else if (ptr->mlet == S_DRAGON && monsndx(ptr) >= PM_GRAY_DRAGON) {
-                /* adult dragons; newmonhp() uses In_endgame(&u.uz) ? 8 : 4 + rnd(4)
-                 */
-                 //        hp = rnd(8) + constitution_hp_bonus(mon->mcon); /* 4..8 */
+    if (!mon->m_lev) {
+        /* level 0 monsters use 1d4 instead of Nd8 */
+        hp = rnd(4);
     }
-    else
-#endif        
-        if (!mon->m_lev) {
-            /* level 0 monsters use 1d4 instead of Nd8 */
-            hp = rnd(4);
-        }
+
     if (hp < 1)
         hp = 1;
 
@@ -2384,34 +2352,11 @@ unsigned long mmflags;
     struct permonst *ptr = &mons[mndx];
     boolean use_maxhp = !!(mmflags & MM_MAX_HP);
     boolean use_normalhd = !!(mmflags & MM_NORMAL_HIT_DICE);
-
-    mon->m_lev = use_normalhd ? ptr->mlevel : adj_lev(ptr, level_adjustment);
-
     boolean dragonmaxhp = !!(ptr->mlet == S_DRAGON && mndx >= PM_GRAY_DRAGON && In_endgame(&u.uz));
-
-#if 0
-    /*
-    if (is_golem(ptr)) 
-    {
-        mon->mhpmax = mon->mhp = golemhp(mndx);
-    } else */
-    if (is_rider(ptr)) {
-        /* we want low HP, but a high mlevel so they can attack well */
-        mon->mhpmax = mon->mhp = d(10, 8);
- //   } else if (ptr->mlevel > MAX_MONSTER_LEVEL) {
-        /* "special" fixed hp monster
-         * the hit points are encoded in the mlevel in a somewhat strange
-         * way to fit in the 50..127 positive range of a signed character
-         * above the 1..49 that indicate "normal" monster levels */
-        //ABOVE is obsolete, since hp's are now ints
-//        mon->mhpmax = mon->mhp = 2 * (ptr->mlevel - 6);
-//        mon->m_lev = mon->mhp / 4; /* approximation */
-}
-    else
-#endif
-
     int hp = 0;
     int basemaxhp = 0;
+
+    mon->m_lev = use_normalhd ? ptr->mlevel : adj_lev(ptr, level_adjustment);
 
     if (mon->m_lev <= 0) 
     {
@@ -2423,14 +2368,6 @@ unsigned long mmflags;
         basemaxhp = (int)mon->m_lev * 8; // +mon->m_lev * constitution_hp_bonus(m_acurr(mon, A_CON));
         hp = use_maxhp || dragonmaxhp ? basemaxhp : d((int)mon->m_lev, 8); // +mon->m_lev * constitution_hp_bonus(m_acurr(mon, A_CON));
     }
-
-#if 0
-    /* Override hp if adjusting */
-    if (adj_existing_hp && mon->max_hp_percentage > 0)
-    {
-        hp = (mon->max_hp_percentage * basemaxhp) / 100;
-    }
-#endif
 
     if (hp < 1)
         hp = 1;
@@ -2448,17 +2385,6 @@ unsigned long mmflags;
     update_mon_maxhp(mon);
 
     mon->mhp = mon->mhpmax;
-
-#if 0
-    /* If adjusting, new hp = old_hp proportionally to old and new mhpmax's */
-    if (adj_existing_hp && old_hp > 0 && old_maxhp > 0 && mon->mhpmax > 0)
-    {
-        unsigned long result = ((unsigned long)old_hp * (unsigned long)mon->mhpmax) / (unsigned long)old_maxhp;
-        mon->mhp = (int)result;
-    }
-    else
-        mon->mhp = mon->mhpmax;
-#endif
 
     if (mon->mhp < 1)
         mon->mhp = 1;
@@ -3527,29 +3453,16 @@ int difficulty_level_adjustment;
         /* Try first with a tighter range */
         minmlev = (int)min(25.0, max(0.0, (zlevel_formin + (double)u.ulevel) * min_multiplier / 1.66 - 1.0));
         maxmlev = (int)max(1.0, (zlevel_formax + (double)u.ulevel) * max_multiplier + 0.5);
-#if 0
-        midmlev = (zlevel * 2 + u.ulevel) / 3;
-        maxmlev = ((zlevel * 2 + u.ulevel) * max_multiplier) / (2 * max_divisor);
-        minmlev = (max(0, midmlev - (maxmlev - midmlev)) * min_multiplier) / min_divisor; //equates to midmlev/2 = (2z+c)/6
-#endif
     }
     else if (i == 2)
     {
         minmlev = (int)min(15.0, max(0.0, (zlevel_formin + (double)u.ulevel) * min_multiplier / 2.5 - 1.0));
         maxmlev = (int)max(1.0, (zlevel_formax + (double)u.ulevel) * 1.189 * max_multiplier + 0.5);
-#if 0
-        minmlev = ((zlevel * 2 + u.ulevel) * min_multiplier) / (12 * min_divisor);
-        maxmlev = ((zlevel * 2 + u.ulevel) * max_multiplier) / (2 * max_divisor);
-#endif
     }
     else
     {
         minmlev = 0;
         maxmlev = (int)max(1.0, (zlevel_formax + (double)u.ulevel) * 1.414 * max_multiplier + 0.5);
-#if 0
-        minmlev = 0;
-        maxmlev = max((zlevel * 2 + u.ulevel), ((zlevel * 2 + u.ulevel) * max_multiplier) / (max_divisor));
-#endif
     }
 
     *minlvl = minmlev;
@@ -3828,12 +3741,6 @@ struct monst *mtmp, *victim;
         hp_threshold = mtmp->m_lev * 8; /* normal limit */
         if (!mtmp->m_lev)
             hp_threshold = 4;
-#if 0
-        else if (is_golem(ptr)) /* strange creatures */
-            hp_threshold = ((mtmp->mhpmax / 10) + 1) * 10 - 1;
-        else if (is_home_elemental(ptr))
-            hp_threshold *= 2;
-#endif
 
         lev_limit = 3 * (int) ptr->mlevel / 2; /* same as adj_lev() */
         /* If they can grow up, be sure the level is high enough for that */

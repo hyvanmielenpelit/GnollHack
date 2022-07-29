@@ -1244,12 +1244,6 @@ struct obj *otmp;
             context.botl = context.botlx = 1;
             refresh_u_tile_gui_info(TRUE);
             standard_hint("Identify potions before drinking.", &u.uhint.drank_potion_of_paralysis_or_sleep);
-#if 0
-            nomul(-d(5 - 2 * bcsign(otmp), 4)); // (rn1(9 - 6 * bcsign(otmp), 8 - 4 * bcsign(otmp))));
-            multi_reason = "frozen by a potion";
-            nomovemsg = You_can_move_again;
-            exercise(A_DEX, FALSE);
-#endif
         }
         break;
     case POT_SLEEPING:
@@ -1804,21 +1798,6 @@ struct obj *otmp;
          */
         num = duration;
         numxtra = extra_data1;
-#if 0
-        if(otmp->otyp == POT_GAIN_ENERGY)
-            num = d(6, 6) + 20;
-        else if (otmp->otyp == POT_GREATER_ENERGY)
-            num = d(12, 6) + 60;
-        else if (otmp->otyp == POT_FULL_ENERGY)
-            num = d(24, 6) + 400;
-
-        if (otmp->otyp == POT_GAIN_ENERGY)
-            numxtra = 1;
-        else if (otmp->otyp == POT_GREATER_ENERGY)
-            numxtra = 2;
-        else if (otmp->otyp == POT_FULL_ENERGY)
-            numxtra = 3;
-#endif
         if (otmp->cursed)
         {
             /* subtract instead of add when cursed */
@@ -2791,12 +2770,6 @@ const char* introline;
             pline1(dcbuf);
             fall_asleep(-duration, FALSE);
             standard_hint("You should acquire sleep resistance as early as possible. Keep pets around to protect you while sleeping.", &u.uhint.paralyzed_by_thrown_potion);
-#if 0
-            nomul(-d(3 - 1 * bcsign(obj), 4));
-            multi_reason = "sleeping off a magical draught";
-            nomovemsg = You_can_move_again;
-            exercise(A_DEX, FALSE);
-#endif
         }
         else
         {

@@ -616,17 +616,6 @@ struct monst *summoner;
     {
         count = 0;
         s_cls = summoner ? summoner->data->mlet : 0;
-        /*
-        if (summoner)
-        {
-            if(summoner == &youmonst)
-                tmp = max(1, (int)u.ulevel / 8);
-            else
-                tmp = max(1, (int)summoner->m_lev / 8);
-        }
-        else
-            tmp = max(1, u.ulevel / 3);
-            */
         if (summoner)
         {
             if (summoner != &youmonst && (summoner->iswiz || summoner->m_lev >= 50))
@@ -645,29 +634,6 @@ struct monst *summoner;
         bypos.y = u.uy;
         for (i = 1; i <= summon_num; i++)
         {
-#if 0
-            /* Of the 42 nasties[], 10 are lawful, 14 are chaotic,
-             * and 18 are neutral.
-             *
-             * Neutral caster, used for late-game harrassment,
-             * has 18/42 chance to stop the inner loop on each
-             * critter, 24/42 chance for another iteration.
-             * Lawful caster has 28/42 chance to stop unless the
-             * summoner is an angel or demon, in which case the
-             * chance is 26/42.
-             * Chaotic or unaligned caster has 32/42 chance to
-             * stop, so will summon fewer creatures on average.
-             *
-             * The outer loop potentially gives chaotic/unaligned
-             * a chance to even things up since others will hit
-             * MAXNASTIES sooner, but its number of iterations is
-             * randomized so it won't always do so.
-             */
-
-            /* Don't create more spellcasters of the monsters' level or
-                * higher--avoids chain summoners filling up the level.
-                */
-#endif
             do
             {
                 makeindex = pick_nasty((summoner && summoner != &youmonst) ? summoner->data->difficulty : u.ulevel);
@@ -706,13 +672,6 @@ struct monst *summoner;
                 mtmp->mspecialsummon_used = 30;
                 context.makemon_spef_idx++;
                 count++;
-
-#if 0
-                if (++count >= MAXNASTIES
-                    || mtmp->data->maligntyp == 0
-                    || sgn(mtmp->data->maligntyp) == castalign)
-                    break;
-#endif 
             }
         }
     }

@@ -615,17 +615,6 @@ struct obj* wep;
             else if (oldwep)
                 play_simple_object_sound(oldwep, OBJECT_SOUND_TYPE_UNWIELD);
         }
-
-#if 0
-        if (uwep && (!oldwep || uwep != oldwep) && is_launcher(uwep) && P_SKILL_LEVEL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
-        {
-            /* The player should be able to fire multishots */
-            if (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str)
-            {
-                pline("%s requires the strength of %s or more to fire multiple times.", The(xname(uwep)), get_strength_string(objects[uwep->otyp].oc_multishot_str));
-            }
-        }
-#endif
     }
 
     update_all_character_properties((struct obj*)0, TRUE);
@@ -796,71 +785,6 @@ long swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original weapon
         else if (!(curswapwep2 && bimanual(curswapwep2)))
             You("have no %s %s alternate weapon readied.", swap_wep_mask == W_SWAPWEP ? "right" : "left", body_part(HAND));
     }
-
-#if 0
-    if(swap_wep_mask == W_SWAPWEP)
-    {
-        setuswapwep((struct obj*)0, swap_wep_mask);
-        /* Set your new secondary weapon */
-        result = ready_weapon(oldswap, swap_target_mask);
-        if (uwep == oldwep) 
-        {
-            /* Wield failed for some reason */
-            setuswapwep(oldswap, swap_wep_mask);
-        }
-        else
-        {
-            struct obj* curwep = (swap_target_mask == W_WEP ? uwep : uarms);
-            if (curwep == oldswap)
-            {
-                /* Wield succeeded */
-                play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
-            }
-
-            setuswapwep(oldwep, swap_wep_mask);
-            struct obj* curswapwep = (swap_wep_mask == W_SWAPWEP ? uswapwep : uswapwep2);
-            struct obj* curswapwep2 = (swap_wep_mask == W_SWAPWEP ? uswapwep2 : uswapwep);
-            if (curswapwep)
-                prinv((char*)0, curswapwep, 0L);
-            else if (!(curswapwep2 && bimanual(curswapwep2)))
-                You("have no %s %s alternate weapon readied.", swap_wep_mask == W_SWAPWEP ? "right" : "left", body_part(HAND));
-        }
-    }
-    else
-    {
-        setuswapwep((struct obj*)0, swap_wep_mask);
-        /* Set your new secondary weapon */
-        result = ready_weapon(oldswap, swap_target_mask);
-        if (uarms == oldwep) 
-        {
-            /* Wield failed for some reason */
-            setuswapwep(oldswap, swap_wep_mask);
-        }
-        else 
-        {
-            if (uarms == oldswap)
-            {
-                /* Wield succeeded */
-                play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
-            }
-
-            setuswapwep(oldwep, swap_wep_mask);
-            if (uswapwep2)
-                prinv((char*)0, uswapwep2, 0L);
-            else if (!(uswapwep && bimanual(uswapwep)))
-                You("have no left hand alternate weapon readied.");
-        }
-    }
-
-    if (mask == W_WEP && uwep && (!oldweapon || uwep != oldweapon) && is_launcher(uwep) && P_SKILL_LEVEL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
-    {
-        /* The player should be able to fire multishots */
-        if (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str)
-        {
-            pline("%s requires the strength of %s or more to fire multiple times.", The(xname(uwep)), get_strength_string(objects[uwep->otyp].oc_multishot_str));
-        }
-    }
-#endif
 
     if (result)
     {
@@ -1141,16 +1065,6 @@ doswapweapon()
         }
     }
 
-#if 0
-    if (uwep && (!oldweapon || uwep != oldweapon) && is_launcher(uwep) && P_SKILL_LEVEL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
-    {
-        /* The player should be able to fire multishots */
-        if (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str)
-        {
-            pline("%s requires the strength of %s or more to fire multiple times.", The(xname(uwep)), get_strength_string(objects[uwep->otyp].oc_multishot_str));
-        }
-    }
-#endif
     if (result || result2)
     {
         /* Do nothing */
@@ -1632,59 +1546,9 @@ const char *verb; /* "rub",&c */
     if (wep != obj)
         return FALSE; /* rewielded old object after dying */
 
-
-    /* applying weapon or tool that gets wielded ends two-weapon combat */
-    //if (u.twoweap)
-    //    untwoweapon();
-    //if (obj->oclass != WEAPON_CLASS)
-    //    unweapon = TRUE;
-
     return TRUE;
 }
 
-
-/* obsolete */
-int
-can_twoweapon()
-{
-#if 0
-    struct obj *otmp;
-
-#define NOT_WEAPON(obj) (!is_weptool(obj) && obj->oclass != WEAPON_CLASS)
-    if (!could_twoweap(youmonst.data)) {
-        if (Upolyd)
-            You_cant("use two weapons in your current form.");
-        else
-            pline("%s aren't able to use two weapons at once.",
-                  makeplural((flags.female && urole.name.f) ? urole.name.f
-                                                            : urole.name.m));
-    } else if (!uwep || !uswapwep)
-        Your("%s%s%s empty.", uwep ? "left " : uswapwep ? "right " : "",
-             body_part(HAND), (!uwep && !uswapwep) ? "s are" : " is");
-    else if (NOT_WEAPON(uwep) || NOT_WEAPON(uswapwep)) {
-        otmp = NOT_WEAPON(uwep) ? uwep : uswapwep;
-        pline("%s %s.", Yname2(otmp),
-              is_plural(otmp) ? "aren't weapons" : "isn't a weapon");
-    } else if (bimanual(uwep) || bimanual(uswapwep)) {
-        otmp = bimanual(uwep) ? uwep : uswapwep;
-        pline("%s isn't one-handed.", Yname2(otmp));
-    } else if (uarms)
-        You_cant("use two weapons while wearing a shield.");
-    else if (uswapwep->oartifact)
-        pline("%s being held second to another weapon!",
-              Yobjnam2(uswapwep, "resist"));
-    else if (uswapwep->otyp == CORPSE && cant_wield_corpse(uswapwep)) {
-        /* [Note: NOT_WEAPON() check prevents ever getting here...] */
-        ; /* must be life-saved to reach here; return FALSE */
-    } else if (Glib || uswapwep->cursed) {
-        if (!Glib)
-            uswapwep->bknown = TRUE;
-        drop_uswapwep();
-    } else
-        return TRUE;
-#endif
-    return FALSE;
-}
 
 void
 drop_uswapwep()

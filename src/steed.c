@@ -27,19 +27,7 @@ struct monst *mtmp;
     if (!mtmp)
         return FALSE;
 
-    struct permonst *ptr = mtmp->data;
-    return is_steed(ptr);
-
-#if 0
-    /* Monsters that might be ridden */
-    static NEARDATA const char steeds[] = { S_QUADRUPED, S_UNICORN, S_ANGEL,
-                                            S_CENTAUR,   S_DRAGON,  S_JABBERWOCK,
-                                            '\0' };
-
-    return (index(steeds, ptr->mlet) && (ptr->msize >= MZ_MEDIUM)
-            && (!humanoid(ptr) || ptr->mlet == S_CENTAUR) && !amorphous(ptr)
-            && !is_incorporeal(ptr) && !is_whirly(ptr) && !unsolid(ptr));
-#endif
+    return is_steed(mtmp->data);
 }
 
 int

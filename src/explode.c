@@ -579,16 +579,7 @@ int expltype;
                        gets hit by double damage */
                     if (grabbed && mtmp == u.ustuck && distu(x, y) <= 2)
                         mdam *= 2;
-#if 0
-                    /* being resistant to opposite type of damage makes
-                       target more vulnerable to current type of damage
-                       (when target is also resistant to current type,
-                       we won't get here) */
-                    if (is_mon_immune_to_cold(mtmp) && adtyp == AD_FIRE)
-                        mdam *= 2;
-                    else if (is_mon_immune_to_fire(mtmp) && adtyp == AD_COLD)
-                        mdam *= 2;
-#endif
+
                     if (instadeath)
                         mtmp->mhp = 0;
                     else

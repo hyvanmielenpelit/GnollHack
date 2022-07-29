@@ -15,12 +15,6 @@ static NEARDATA const char c_armor[] = "armor", c_suit[] = "suit",
                            c_weapon[] = "weapon", c_sword[] = "sword",
                            c_axe[] = "axe", c_that_[] = "that";
 
-#if 0
-static NEARDATA const char see_yourself[] = "see yourself";
-static NEARDATA const char unknown_type[] = "Unknown type of %s (%d)";
-static NEARDATA const char c_helmet[] = "helmet";
-#endif
-
 static NEARDATA const long takeoff_order[] = {
     WORN_BLINDF,  W_WEP,      WORN_SHIELD, WORN_GLOVES, LEFT_RING,
     RIGHT_RING,   W_MISC,     W_MISC2,     W_MISC3,     W_MISC4,      W_MISC5,  
@@ -58,9 +52,6 @@ STATIC_DCL int FDECL(menu_remarm, (int));
 STATIC_DCL void FDECL(count_worn_stuff, (struct obj **, BOOLEAN_P));
 STATIC_PTR int FDECL(accessory_or_armor_on, (struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(already_wearing, (const char *));
-#if 0
-STATIC_DCL void FDECL(already_wearing2, (const char *, const char *));
-#endif
 STATIC_DCL void FDECL(item_change_sex_and_useup, (struct obj*));
 STATIC_DCL int FDECL(already_wearing_with_exchange_prompt, (const char*, struct obj*, struct obj*));
 STATIC_DCL int FDECL(exchange_worn_item, (struct obj*, struct obj*, long));
@@ -1694,16 +1685,6 @@ long bit;
     return 1;
 }
 
-
-#if 0
-STATIC_OVL void
-already_wearing2(cc1, cc2)
-const char *cc1, *cc2;
-{
-    play_sfx_sound(SFX_GENERAL_CANNOT);
-    You_cant("wear %s because you're wearing %s there already.", cc1, cc2);
-}
-#endif
 
 /*
  * canwearobj checks to see whether the player can wear a piece of armor

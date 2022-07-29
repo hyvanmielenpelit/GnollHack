@@ -2433,15 +2433,6 @@ domove_core()
                 delay_output_milliseconds(flags.crawl_interval_in_milliseconds <= 0 ? DEFAULT_CRAWL_INTERVAL : flags.crawl_interval_in_milliseconds);
             else
                 delay_output_milliseconds(flags.move_interval_in_milliseconds <= 0 ? DEFAULT_MOVE_INTERVAL : flags.move_interval_in_milliseconds);
-#if 0
-            adjusted_delay_output();
-            if (flags.runmode == RUN_CRAWL) {
-                adjusted_delay_output();
-                adjusted_delay_output();
-                adjusted_delay_output();
-                adjusted_delay_output();
-            }
-#endif
         }
     }
 }

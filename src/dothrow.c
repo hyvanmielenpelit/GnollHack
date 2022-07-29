@@ -123,117 +123,7 @@ boolean firing;
                          : (obj->oclass == WEAPON_CLASS && !is_launcher(obj)))
         && !(Confusion || Stunned)) 
     {
-#if 0
-        /* some roles don't get a volley bonus until becoming expert */
-        weakmultishot = (Role_if(PM_WIZARD) || Role_if(PM_PRIEST)
-                         || (Role_if(PM_HEALER) && skill != P_DAGGER)
-                         || (Role_if(PM_TOURIST) && skill != -P_DART)
-                         /* poor dexterity also inhibits multishot */
-                         || Fumbling || ACURR(A_DEX) <= 6);
-        /* Bonus if the player is proficient in this weapon... */
-        /*
-        switch (P_SKILL_LEVEL(weapon_skill_type(obj))) {
-        case P_EXPERT:
-            if (!weakmultishot)
-                multishot++;
-            break;
-        case P_SKILLED:
-            if (!weakmultishot)
-                multishotrndextra++;
-            break;
-        default:
-            break;
-        }
-        */
-#endif
-
-        multishot = get_multishot_stats(&youmonst, obj, uwep, TRUE, (double*)0);
-
-#if 0
-        struct obj* otmpmulti = (struct obj*)0;
-        if(obj && is_ammo(obj) && uwep && matching_launcher(obj, uwep))
-            otmpmulti = uwep;
-        else if(obj)
-            otmpmulti = obj;
-
-        if (otmpmulti && objects[otmpmulti->otyp].oc_multishot_style > 1)
-        {
-            int skilllevel = P_SKILL_LEVEL(weapon_skill_type(otmpmulti));
-            boolean multishotok = TRUE;
-
-            /*
-            if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL && skilllevel < P_EXPERT)
-                multishotok = FALSE;
-            else if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL && skilllevel < P_SKILLED)
-                multishotok = FALSE;
-            else if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_BASIC_SKILL && skilllevel < P_BASIC)
-                multishotok = FALSE;
-            */
-
-            if (multishotok)
-            {
-                multishot = (int)objects[otmpmulti->otyp].oc_multishot_style;
-            }
-        }
-#endif
-
-
-#if 0
-        /* ...or is using a special weapon for their role... */
-        switch (Role_switch) {
-        case PM_MONK:
-            /* allow higher volley count despite skill limitation */
-            if (skill == -P_THROWN_WEAPON && !weakmultishot)
-                multishot++;
-            break;
-        default:
-            break; /* No bonus */
-        }
-        /* ...or using their race's special bow; no bonus for spears */
-        /*
-        if (!weakmultishot)
-            switch (Race_switch) {
-            case PM_ELF:
-                if (obj->otyp == ELVEN_ARROW && uwep
-                    && uwep->otyp == ELVEN_LONG_BOW)
-                    multishot++;
-                break;
-            case PM_ORC:
-                if (obj->otyp == ORCISH_ARROW && uwep
-                    && uwep->otyp == ORCISH_SHORT_BOW)
-                    multishot++;
-                break;
-            case PM_GNOLL:
-                if (obj->otyp == CROSSBOW_BOLT && uwep
-                    && uwep->otyp == CROSSBOW)
-                    multishot++;
-                break;
-            case PM_HUMAN:
-            case PM_DWARF:
-            default:
-                break; 
-            }
-        */
-        /* crossbows are slow to load and probably shouldn't allow multiple
-           shots at all, but that would result in players never using them;
-           instead, high strength is necessary to load and shoot quickly */
-
-        /*
-        if (multishot > 1)
-        {
-            if (
-                (obj && uwep && ammo_and_launcher(obj, uwep)
-                && (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str))
-                    || (obj && throwing_weapon(obj) && objects[obj->otyp].oc_multishot_str > 0 && ACURR(A_STR) < objects[obj->otyp].oc_multishot_str)
-                    )
-            {
-                multishot = 1;
-                multishotrndextra = 0;
-            }
-        }
-        */
-#endif
-     
+        multishot = get_multishot_stats(&youmonst, obj, uwep, TRUE, (double*)0);     
         if ((long) multishot > obj->quan)
             multishot = (int) obj->quan;
         if (shotlimit > 0 && multishot > shotlimit)
@@ -631,15 +521,6 @@ dofire()
      * and alt-wielded item is excluded because switching slots
      * would end two-weapon combat even if throw gets aborted.]
      */
-#if 0
-    if (!uwep || !is_launcher(uwep))
-    {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("are not wielding a ranged weapon that fires ammunition.");
-        return 0;
-    }
-#endif
-
     if (!ok_to_throw(&shotlimit))
         return 0;
 

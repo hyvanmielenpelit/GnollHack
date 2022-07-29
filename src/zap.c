@@ -3358,17 +3358,6 @@ struct obj *obj;
     delobj(obj);
 }
 
-#if 0
-// OBSOLETE -- JG
-/* classes of items whose current charge count carries over across polymorph
- */
-static const char charged_objs[] = { WAND_CLASS, 
-                                     '\0' };
-
-static const char enchanted_objs[] = { WEAPON_CLASS, ARMOR_CLASS,
-                                     '\0' };
-#endif
-
 /*
  * Polymorph the object to the given object ID.  If the ID is STRANGE_OBJECT
  * then pick random object from the source's class (this is the standard
@@ -11095,47 +11084,6 @@ int dmg, adtyp, tell;
         resisted = FALSE;
     else
     {
-#if 0
-        /* attack level */
-        switch (oclass) {
-        case WAND_CLASS:
-            alev = 12;
-            break;
-        case TOOL_CLASS:
-            alev = 10;
-            break; /* instrument */
-        case WEAPON_CLASS:
-            alev = 10;
-            break; /* artifact */
-        case SCROLL_CLASS:
-            alev = 9;
-            break;
-        case POTION_CLASS:
-            alev = 6;
-            break;
-        case RING_CLASS:
-            alev = 5;
-            break;
-        case ILLOBJ_CLASS:
-            alev = lvl;
-            break;
-        default:
-            alev = u.ulevel;
-            break; /* spell */
-        }
-        /* defense level */
-        if (is_you)
-            dlev = u.ulevel;
-        else
-        {
-            dlev = (int) mtmp->m_lev;
-            if (dlev > 50)
-                dlev = 50;
-            else if (dlev < 1)
-                dlev = 1; //  is_mplayer(mtmp->data) ? u.ulevel : 1;
-        }
-#endif
-
         boolean nomr = is_you ? No_magic_resistance : has_no_magic_resistance(mtmp);
         boolean quartermr = is_you ? One_fourth_magic_resistance : has_one_fourth_magic_resistance(mtmp);
         boolean halfmr = is_you ? Half_magic_resistance : has_half_magic_resistance(mtmp);
@@ -11157,15 +11105,6 @@ int dmg, adtyp, tell;
             applicable_mr = max(0, mtmp->data->mr - 50);
         else if (threequartersmr)
             applicable_mr = max(0, mtmp->data->mr - 25);
-
-#if 0
-        if (otmp && (oclass == SPBOOK_CLASS || oclass == WAND_CLASS))
-        {
-            if ((objects[otmp->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
-                && (mtmp->data->geno & G_UNIQ) && !(objects[otmp->otyp].oc_aflags & S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE))
-                applicable_mr = max(0, applicable_mr - mtmp->data->mr / 2);
-        }
-#endif
 
         if (applicable_mr <= 0)
             resisted = FALSE;

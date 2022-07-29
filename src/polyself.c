@@ -300,13 +300,6 @@ change_sex()
     u.umonster = urole.monsternum;
     if (!already_polyd) {
         u.umonnum = u.umonster;
-#if 0
-    } else if (u.umonnum == PM_SUCCUBUS || u.umonnum == PM_INCUBUS) {
-        flags.female = !flags.female;
-        /* change monster type to match new sex */
-        u.umonnum = (u.umonnum == PM_SUCCUBUS) ? PM_INCUBUS : PM_SUCCUBUS;
-        set_uasmon();
-#endif
     }
 }
 
@@ -2573,12 +2566,6 @@ double dam;
     if (heal && (u.mh < u.mhmax)) 
     {
         deduct_player_hp(-heal);
-#if 0
-        u.mh += heal;
-        if (u.mh > u.mhmax)
-            u.mh = u.mhmax;
-        context.botl = 1;
-#endif
         pline("Strangely, you feel better than before.");
         exercise(A_STR, TRUE);
     }
@@ -2595,11 +2582,6 @@ int atyp;
     case SILVER_DRAGON_SCALE_MAIL:
     case SILVER_DRAGON_SCALES:
         return PM_SILVER_DRAGON;
-#if 0 /* DEFERRED */
-    case SHIMMERING_DRAGON_SCALE_MAIL:
-    case SHIMMERING_DRAGON_SCALES:
-        return PM_SHIMMERING_DRAGON;
-#endif
     case RED_DRAGON_SCALE_MAIL:
     case RED_DRAGON_SCALES:
         return PM_RED_DRAGON;

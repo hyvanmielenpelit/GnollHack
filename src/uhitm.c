@@ -285,56 +285,10 @@ int *attk_count, *role_roll_penalty;
     else if (weaponskill == P_MARTIAL_ARTS && !uarm && !uarms)
     {
         skill_multiplier = 1.0;
-#if 0
-        switch (skill_level)
-        {
-        case P_ISRESTRICTED:
-        case P_UNSKILLED:
-            skill_multiplier = 0.75;
-            break;
-        case P_BASIC:
-            skill_multiplier = 0.875;
-            break;
-        case P_SKILLED:
-            skill_multiplier = 1.0;
-            break;
-        case P_EXPERT:
-            skill_multiplier = 1.125;
-            break;
-        case P_MASTER:
-            skill_multiplier = 1.25;
-            break;
-        case P_GRAND_MASTER:
-            skill_multiplier = 1.375;
-            break;
-        default:
-            break;
-        }
-#endif
     }
     else if(weaponskill != P_NONE)
     {
         skill_multiplier = TO_HIT_LEVEL_MULTIPLIER;
-#if 0
-        switch (skill_level)
-        {
-        case P_ISRESTRICTED:
-        case P_UNSKILLED:
-            skill_multiplier = 0.334;
-            break;
-        case P_BASIC:
-            skill_multiplier = 0.5;
-            break;
-        case P_SKILLED:
-            skill_multiplier = (weaponskill == P_BARE_HANDED_COMBAT ? 0.625 : 0.75);
-            break;
-        case P_EXPERT:
-            skill_multiplier = (weaponskill == P_BARE_HANDED_COMBAT ? 0.75 : 1.0);
-            break;
-        default:
-            break;
-        }
-#endif
     }
     *role_roll_penalty = 0; /* default is `none' */
 
@@ -1909,15 +1863,6 @@ boolean* obj_destroyed;
         }
     }
 
-#if 0
-    //Black blade adjustment for disintegrateable creatures - No damage
-    if (obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !(resists_disint(mon) || is_incorporeal(mon->data)))
-    {
-        damage = 0;
-        hide_damage_amount = TRUE;
-    }
-#endif
-
     /* Skill-based critical strike */
     boolean skill_critical_success = FALSE;
     if (damage > 0 && !incorrect_weapon_use)
@@ -2275,70 +2220,6 @@ boolean* obj_destroyed;
        (via 'thrownobj'; if swallowed, it gets added to engulfer's
        minvent and might merge with a stack that's already there)] */
     
-#if 0
-    //Black Blade effect
-    boolean bladedisintegratedmon = FALSE;
-    if (obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !DEADMONSTER(mon))
-    {
-        struct obj* otmp2 = (struct obj*) 0;
-
-        if (resists_disint(mon) || is_incorporeal(mon->data)) {
-            m_shieldeff(mon);
-        }
-        else if (mon->worn_item_flags & W_ARMS) {
-            /* destroy shield; victim survives */
-            if ((otmp2 = which_armor(mon, W_ARMS)) != 0)
-                m_useup(mon, otmp2);
-        }
-        else if (mon->worn_item_flags & W_ARM) {
-            /* destroy body armor, also cloak if present */
-            if ((otmp2 = which_armor(mon, W_ARM)) != 0)
-                m_useup(mon, otmp2);
-            if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
-                m_useup(mon, otmp2);
-            if ((otmp2 = which_armor(mon, W_ARMO)) != 0)
-                m_useup(mon, otmp2);
-        }
-        else {
-            /* no body armor, victim dies; destroy cloak
-                and shirt now in case target gets life-saved */
-            if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
-                m_useup(mon, otmp2);
-            if ((otmp2 = which_armor(mon, W_ARMU)) != 0)
-                m_useup(mon, otmp2);
-            if ((otmp2 = which_armor(mon, W_ARMO)) != 0)
-                m_useup(mon, otmp2);
-
-            if (is_rider(mon->data)) {
-                if (canseemon(mon)) {
-                    pline("%s disintegrates.", Monnam(mon));
-                    pline("%s body reintegrates before your %s!",
-                        s_suffix(Monnam(mon)),
-                        (eyecount(youmonst.data) == 1)
-                        ? body_part(EYE)
-                        : makeplural(body_part(EYE)));
-                    pline("%s resurrects!", Monnam(mon));
-                }
-                mon->mhp = mon->mhpmax;
-            }
-            else { /* disintegration */
-                disintegrate_mon(mon, 1, xname(obj));
-                bladedisintegratedmon = TRUE;
-                destroyed = TRUE;
-            }
-
-        }
-        if (mon && !DEADMONSTER(mon) && otmp2) {
-            /* some armor was destroyed*/
-            if (canseemon(mon))
-                pline("%s %s is disintegrated!",
-                    s_suffix(Monnam(mon)),
-                    distant_name(otmp2, xname));
-            m_useup(mon, otmp2);
-        }
-    }
-#endif
-
     if (mon)
     {
 
@@ -4451,11 +4332,6 @@ boolean wep_was_destroyed;
                         context.botl = context.botlx = 1;
                         refresh_u_tile_gui_info(TRUE);
                         standard_hint("Do not hit floating eyes in melee unless you wear a blindfold or a towel. Use ranged weapons against them.", &u.uhint.paralyzed_by_floating_eye);
-#if 0
-                        nomul((ACURR(A_WIS) > 12 || rn2(4)) ? -tmp : -127);
-                        multi_reason = "frozen by a monster's gaze";
-                        nomovemsg = 0;
-#endif
                     }
                 } else {
                     pline("%s cannot defend itself.",
@@ -4473,12 +4349,6 @@ boolean wep_was_destroyed;
                 context.botl = context.botlx = 1;
                 refresh_u_tile_gui_info(TRUE);
                 standard_hint("Get free action as early as possible. Use ranged weapons to attack monsters with paralyzing passive defense.", &u.uhint.paralyzed_by_cube);
-#if 0
-                nomovemsg = You_can_move_again;
-                nomul(-tmp);
-                multi_reason = "frozen by a monster";
-                exercise(A_DEX, FALSE);
-#endif
             }
             break;
         case AD_COLD: /* brown mold or blue jelly */

@@ -1207,28 +1207,6 @@ makelevel()
                         (void)add_to_container(stash, otmp);
                     }
                 }
-
-#if 0
-                if (!carrying(AXE) && !carrying(BATTLE_AXE))
-                {
-                    otmp = mksobj(AXE, FALSE, FALSE, FALSE);
-                    uncurse(otmp);
-                    otmp->bknown = 1;
-                    (void)add_to_container(stash, otmp);
-                }
-                else
-                {
-                    otmp = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE);
-                    otmp->quan = rnd(200);
-                    otmp->owt = weight(otmp);
-                    otmp->bknown = 1;
-                    (void)add_to_container(stash, otmp);
-                }
-
-                otmp = mkobj(FOOD_CLASS, FALSE, FALSE);
-                otmp->bknown = 1;
-                (void)add_to_container(stash, otmp);
-#endif
             }
 
             /* Add hermit */

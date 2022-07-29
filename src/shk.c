@@ -1523,25 +1523,6 @@ dopay()
             }
             
             (void)ask_shk_reconciliation(shkp);
-#if 0
-            if (umoney < 1000L) {
-                if (!umoney)
-                    pline(no_money, stashed_gold ? " seem to" : "");
-                else
-                    pline(not_enough_money, noit_mhim(shkp));
-                return 1;
-            }
-            You("try to appease %s by giving %s 1000 gold pieces.",
-                canspotmon(shkp)
-                    ? x_monnam(shkp, ARTICLE_THE, "angry", 0, FALSE)
-                    : shkname(shkp),
-                noit_mhim(shkp));
-            pay(1000L, shkp);
-            if (strncmp(eshkp->customer, plname, PL_NSIZ) || rn2(3))
-                make_happy_shk(shkp, FALSE);
-            else
-                pline("But %s is as angry as ever.", shkname(shkp));
-#endif
         }
         return 1;
     }

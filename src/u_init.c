@@ -277,11 +277,6 @@ static struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0, 0, 0 },
 static struct trobj DeathQuarrel[] = { { BONE_QUARREL, 0, WEAPON_CLASS,
                                         1, 0, DEATH_ENCHANTMENT, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0 } };
-#if 0
-static struct trobj LightningQuarrel[] = { { GNOLLISH_QUARREL, 0, WEAPON_CLASS,
-                                        2, 0, LIGHTNING_ENCHANTMENT, 0 },
-                                { 0, 0, 0, 0, 0, 0, 0 } };
-#endif
 static struct trobj LightningArrow[] = { { ARROW, 0, WEAPON_CLASS,
                                         2, 0, LIGHTNING_ENCHANTMENT, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0 } };

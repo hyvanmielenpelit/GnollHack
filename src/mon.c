@@ -175,9 +175,6 @@ int mndx;
     case PM_VAMPIRE:
     case PM_VAMPIRE_LORD:
     case PM_VAMPIRE_MAGE:
-#if 0 /* DEFERRED */
-    case PM_VAMPIRE_MAGE:
-#endif
     case PM_HUMAN_ZOMBIE:
     case PM_HUMAN_MUMMY:
         mndx = PM_HUMAN;
@@ -2146,23 +2143,6 @@ struct monst *mtmp;
      * and human weights.  Corpseless monsters are given a capacity
      * proportional to their size instead of weight.
      */
-
-#if 0
-    if (!mtmp->data->cwt)
-        maxload = (MAX_CARR_CAP * (long) mtmp->data->msize) / MZ_HUMAN;
-    else if (!strongmonst(mtmp->data)
-             || (strongmonst(mtmp->data) && (mtmp->data->cwt > WT_HUMAN)))
-        maxload = (MAX_CARR_CAP * (long) mtmp->data->cwt) / WT_HUMAN;
-    else
-        maxload = MAX_CARR_CAP; //strong monsters w/cwt <= WT_HUMAN
-
-    if (!strongmonst(mtmp->data))
-        maxload /= 2;
-
-    if (maxload < 1)
-        maxload = 1;
-#endif
-
     carrcap = 50 * (m_acurr(mtmp, A_STR) + m_acurr(mtmp, A_CON)) + 50;
     if (mtmp->data->mlet == S_NYMPH)
         carrcap = MAX_CARR_CAP;

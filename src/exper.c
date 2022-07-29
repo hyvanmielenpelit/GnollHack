@@ -10,8 +10,6 @@
 #include <limits.h>
 #endif
 
-//STATIC_DCL int FDECL(enermod, (int));
-
 long
 newuexp(lev)
 int lev;
@@ -66,36 +64,7 @@ int lev;
         total_level_exp = (total_level_exp / 10) * 10;
 
     return total_level_exp;
-
-    /*
-    if (lev < 10)
-        return (10L * (1L << lev));
-    if (lev < 20)
-        return (10000L * (1L << (lev - 10)));
-    return (10000000L * ((long) (lev - 19)));
-    */
 }
-
-#if 0
-STATIC_OVL int
-enermod(en)
-int en;
-{
-    switch (Role_switch) {
-    case PM_PRIEST:
-    case PM_WIZARD:
-        return (2 * en);
-    case PM_HEALER:
-    case PM_KNIGHT:
-        return ((3 * en) / 2);
-    case PM_BARBARIAN:
-    case PM_VALKYRIE:
-        return ((3 * en) / 4);
-    default:
-        return en;
-    }
-}
-#endif
 
 /* calculate spell power/energy points for new level */
 int
@@ -193,8 +162,6 @@ updatemaxen()
     return;
 }
 
-
-
 /* return # of exp points for mtmp after nk killed */
 int
 experience(mtmp, nk)
@@ -215,55 +182,6 @@ register int nk;
         tmp = (tmp / 10) * 10;
     else if (ptr->difficulty >= 5)
         tmp = (tmp / 5) * 5;
-
-#if 0
-    /*  For higher ac values, give extra experience */
-    if ((i = find_mac(mtmp)) < 3)
-        tmp += (7 - i) * ((i < 0) ? 2 : 1);
-
-    /*  For very fast monsters, give extra experience */
-    if (ptr->mmove > NORMAL_SPEED)
-        tmp += (ptr->mmove > (3 * NORMAL_SPEED / 2)) ? 5 : 3;
-
-    /*  For each "special" attack type give extra experience */
-    for (i = 0; i < NATTK; i++) {
-        tmp2 = ptr->mattk[i].aatyp;
-        if (tmp2 > AT_BUTT) {
-            if (tmp2 == AT_WEAP)
-                tmp += 5;
-            else if (tmp2 == AT_MAGC)
-                tmp += 10;
-            else if (tmp2 == AT_SMMN)
-                tmp += 10;
-            else
-                tmp += 3;
-        }
-    }
-
-    /*  For each "special" damage type give extra experience */
-    for (i = 0; i < NATTK; i++) {
-        tmp2 = ptr->mattk[i].adtyp;
-        if (tmp2 > AD_PHYS && tmp2 < AD_BLND)
-            tmp += 2 * mtmp->m_lev;
-        else if ((tmp2 == AD_DRLI) || (tmp2 == AD_STON) || (tmp2 == AD_SLIM))
-            tmp += 50;
-        else if (tmp2 != AD_PHYS)
-            tmp += mtmp->m_lev;
-        /* extra heavy damage bonus */
-        if ((int) (ptr->mattk[i].damd * ptr->mattk[i].damn) > 23)
-            tmp += mtmp->m_lev;
-        if (tmp2 == AD_WRAP && ptr->mlet == S_EEL && !Amphibious)
-            tmp += 1000;
-    }
-
-    /*  For certain "extra nasty" monsters, give even more */
-    if (extra_nasty(ptr))
-        tmp += (7 * mtmp->m_lev);
-
-    /*  For higher level monsters, an additional bonus is given */
-    if (mtmp->m_lev > 8)
-        tmp += 50;
-#endif
 
 #ifdef MAIL
     /* Mail daemons put up no fight. */

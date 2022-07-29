@@ -423,15 +423,6 @@ boolean digest_meal;
 
     if (mon->mhpmax > 0 && mon->mhp < mon->mhpmax)
     {
-#if 0
-        int basispointchancetogetextrahp = (10000 * (mon->mhpmax % roundstofull)) / roundstofull;
-        mon->mhp += fixedhpperround;
-        if (basispointchancetogetextrahp > 0 && rn2(10000) < basispointchancetogetextrahp)
-            mon->mhp += 1;
-
-        if (mon->mhp > mon->mhpmax)
-            mon->mhp = mon->mhpmax;
-#endif
         mon->mhp += fixedhpperround;
         mon->mhp_fraction += fractional_hp;
         if (mon->mhp_fraction >= 10000 || mon->mhp_fraction < 0)

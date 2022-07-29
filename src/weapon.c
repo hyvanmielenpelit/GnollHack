@@ -197,90 +197,6 @@ struct obj* launcher;
         return 0;
 
     return m_weapon_range(&youmonst, ammo, launcher);
-
-#if 0
-    int baserange = 0, range = 0;
-    boolean thrown = TRUE;
-
-    /* Ammunition range */
-    if (!ammo && launcher && is_launcher(launcher)) {
-        if(objects[launcher->otyp].oc_range > 0)
-            baserange = objects[launcher->otyp].oc_range;                                        /* Crossbows and the like */
-        else if (objects[launcher->otyp].oc_range < 0)
-            baserange = max(1, (int)((ACURRSTR * -objects[launcher->otyp].oc_range) /100));        /* Bows */
-
-        /* No more info supplied */
-        range = baserange;
-    }
-    else if (ammo && is_ammo(ammo) && launcher && ammo_and_launcher(ammo, launcher)) {
-            thrown = FALSE;
-            if (objects[launcher->otyp].oc_range > 0)
-                baserange = objects[launcher->otyp].oc_range;                                        /* Crossbows and the like */
-            else if (objects[launcher->otyp].oc_range < 0)
-                baserange = max(1, (int)((ACURRSTR * -objects[launcher->otyp].oc_range) / 100));        /* Bows */
-
-            range = baserange;
-            if(!(objects[launcher->otyp].oc_flags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE || objects[ammo->otyp].oc_flags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE))
-                range = range - (int)(ammo->owt / 100);
-    }
-    else if(ammo) //Normal thrown weapons are half distance
-    {
-        boolean overriden = FALSE;
-
-        /* oc_range can be used to override usual throwing range for non-launchers */
-        if (!is_launcher(ammo) && objects[ammo->otyp].oc_range != 0)
-        {
-            overriden = TRUE;
-            if (objects[ammo->otyp].oc_range > 0)
-                baserange = objects[ammo->otyp].oc_range;                                        /* Crossbows and the like */
-            else if (objects[ammo->otyp].oc_range < 0)
-                baserange = max(1, (int)((ACURRSTR * -objects[ammo->otyp].oc_range) / 100));        /* Bows */
-        }
-
-        if(!overriden)
-        {
-            if(objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON_ONLY)
-                baserange = (int)(ACURRSTR / 2);
-            else
-                baserange = (int)(ACURRSTR / 3);
-        }
-
-        //Weight of the object reduces range
-        if (objects[ammo->otyp].oc_flags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE)
-            range = baserange;
-        else
-        {
-            if (objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON_ONLY)
-                range = baserange - (int)(ammo->owt / 100);
-            else
-                range = baserange - (int)(ammo->owt / 40);
-        }
-    }
-
-    if (ammo && uball && ammo == uball) {
-        if (u.ustuck || (u.utrap && u.utraptype == TT_INFLOOR))
-            range = 1;
-        else if (range >= 5)
-            range = 5;
-    }
-
-#if 0
-    /* Kludges removed by JG; Items and monsters should have the right weight and strength */
-    if (ammo->otyp == BOULDER)
-        if (throws_rocks(youmonst.data))
-            range = 20; /* you must be giant */
-        else
-            range = 10; /* non-giant */
-    else if (ammo->oartifact == ART_MJOLLNIR)
-        range = (range + 1) / 2; /* it's heavy */
-#endif
-
-    if (range < 1)
-        range = 1;
-
-
-    return range;
-#endif
 }
 
 
@@ -4021,39 +3937,6 @@ const struct def_skill* class_skill_max;
         if (skill != P_NONE && P_SKILL_LEVEL(skill) < P_BASIC && P_MAX_SKILL_LEVEL(skill) != P_ISRESTRICTED)
             P_SKILL_LEVEL(skill) = min(P_MAX_SKILL_LEVEL(skill), P_BASIC);
     }
-
-#if 0
-    /* High potential fighters already know how to use their hands. */
-    if (P_MAX_SKILL_LEVEL(P_BARE_HANDED_COMBAT) > P_EXPERT)
-        P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) = P_BASIC;
-
-    /* Roles that start with a horse know how to ride it */
-    if (urole.petnum == PM_PONY)
-        P_SKILL_LEVEL(P_RIDING) = P_BASIC;
-
-    /* Rogues and rangers know how to disarm traps */
-    if (Role_if(PM_ROGUE) || Role_if(PM_RANGER))
-        P_SKILL_LEVEL(P_DISARM_TRAP) = P_BASIC;
-
-
-    /* set skills for magic */
-    if (Role_if(PM_HEALER) || Role_if(PM_MONK)) {
-        P_SKILL_LEVEL(P_HEALING_SPELL) = P_BASIC;
-    }
-    else if (Role_if(PM_PRIEST))
-    {
-        if (u.ualign.type == A_CHAOTIC)
-            P_SKILL_LEVEL(P_NECROMANCY_SPELL) = P_BASIC;
-        else
-            P_SKILL_LEVEL(P_HEALING_SPELL) = P_BASIC;
-
-        P_SKILL_LEVEL(P_CLERIC_SPELL) = P_BASIC;
-    }
-    else if (Role_if(PM_WIZARD)) {
-        P_SKILL_LEVEL(P_ARCANE_SPELL) = P_BASIC;
-        P_SKILL_LEVEL(P_ENCHANTMENT_SPELL) = P_BASIC;
-    }
-#endif
 
     /*
      * Make sure we haven't missed setting the max on a skill
