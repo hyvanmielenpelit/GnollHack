@@ -879,6 +879,7 @@ register struct monst *mtmp;
                 m_initthrow(mtmp, !rn2(5) ? SILVER_SLING_BULLET : !rn2(2) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 10, 12, FALSE, -1, -1);
             }
             (void)mongets(mtmp, SCIMITAR);
+            break;
         case PM_GOBLIN:
         case PM_HOBGOBLIN:
             if (!rn2(mm == PM_GOBLIN ? 6 : 3))
