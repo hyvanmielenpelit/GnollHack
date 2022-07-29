@@ -1158,7 +1158,9 @@ struct attack *mattk;
                   s_suffix(mon_nam(mtmp)));
         return 0;
     }
-    if (m_lined_up(mtarg, mtmp, TRUE, mattk->adtyp, FALSE, range)) {
+    if (m_lined_up(mtarg, mtmp, TRUE, mattk->adtyp, FALSE, range)
+        && !is_immune(mtarg, mattk->adtyp))
+    {
         update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
 
         switch (mattk->adtyp) {
@@ -1213,7 +1215,8 @@ struct attack  *mattk;
     int typ = get_ray_adtyp(mattk->adtyp); // Does not include death ray
     int range = mattk->range ? mattk->range : M_BREATH_WEAPON_RANGE;
 
-    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, range))
+    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, range)
+        && (typ != mattk->adtyp || !is_immune(mtarg, typ)))
     {
         update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
         if (is_cancelled(mtmp))
@@ -1270,7 +1273,8 @@ struct attack* mattk;
     int typ = get_ray_adtyp(mattk->adtyp);
     int range = mattk->range ? mattk->range : M_RAY_RANGE;
 
-    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, range))
+    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, range)
+        && (typ != mattk->adtyp || !is_immune(mtarg, typ)))
     {
         update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
         if (is_cancelled(mtmp) || is_blinded(mtmp))
@@ -1690,7 +1694,8 @@ struct attack *mattk;
                   s_suffix(mon_nam(mtmp)));
         return 0;
     }
-    if (lined_up(mtmp, TRUE, mattk->adtyp, FALSE, range))
+    if (lined_up(mtmp, TRUE, mattk->adtyp, FALSE, range)
+        && !is_immune(&youmonst, mattk->adtyp))
     {
         update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
         switch (mattk->adtyp)
@@ -1749,7 +1754,8 @@ struct attack *mattk;
     int typ = get_ray_adtyp(mattk->adtyp);
     int range = mattk->range ? mattk->range : M_RAY_RANGE;
 
-    if (lined_up(mtmp, TRUE, typ, TRUE, range))
+    if (lined_up(mtmp, TRUE, typ, TRUE, range)
+        && (typ != mattk->adtyp || !is_immune(&youmonst, typ)))
     {
         update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
         if (is_cancelled(mtmp) || is_blinded(mtmp))
@@ -1800,7 +1806,8 @@ struct attack* mattk;
     int typ = get_ray_adtyp(mattk->adtyp); //NOTE: Does not include death ray
     int range = mattk->range ? mattk->range : M_BREATH_WEAPON_RANGE;
 
-    if (lined_up(mtmp, TRUE, typ, TRUE, range))
+    if (lined_up(mtmp, TRUE, typ, TRUE, range) 
+        && (typ != mattk->adtyp || !is_immune(&youmonst, typ)))
     {
         update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
         if (is_cancelled(mtmp))

@@ -957,6 +957,9 @@ is_immune(mtmp, dmgtype)
 struct monst* mtmp;
 int dmgtype;
 {
+    if (!mtmp)
+        return FALSE;
+
     boolean yours = (mtmp == &youmonst);
 
     switch (dmgtype)
@@ -995,10 +998,10 @@ int dmgtype;
     case AD_PLYS:
         return (yours ? Free_action : resists_paralysis(mtmp));
     case AD_PHYS:
-        return 0;
+        return FALSE;
     }
 
-    return 0;
+    return FALSE;
 
 }
 /* return the M2 flags of monster that an artifact's special attacks apply
