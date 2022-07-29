@@ -4775,6 +4775,10 @@ nextclass:
     return ret;
 }
 
+const char* burdentype[] = { "unencumbered", "burdened",
+                                     "stressed",     "strained",
+                                     "overtaxed",    "overloaded" };
+
 void
 add_weight_summary(win, total_ounce_weight, show_weights)
 winid win;
@@ -4817,10 +4821,6 @@ int show_weights;
         printweight(carryingbuf, yourweight, FALSE, FALSE);
 
         //        double totalweight = ((double)total_ounce_weight) / 16; //ounces to lbs
-
-        const char* burdentype[] = { "unencumbered", "burdened",
-                                             "stressed",     "strained",
-                                             "overtaxed",    "overloaded" };
 
         const char* verb = burdentype[yourenclevel];
 
@@ -4940,10 +4940,6 @@ int show_weights;
         printweight(curlevelmaxbuf, curlevelmaxweight, FALSE, FALSE);
 
         yourweight = iw + wc;
-
-        const char* burdentype[] = { "unencumbered", "burdened",
-                                             "stressed",     "strained",
-                                             "overtaxed",    "overloaded" };
 
         const char* verb = burdentype[yourenclevel];
 

@@ -366,7 +366,7 @@ void
 savech(ch)
 char ch;
 {
-    if (!in_doagain) {
+    if (!in_doagain && !skip_savech) {
         if (!ch)
             phead = ptail = shead = stail = 0;
         else if (shead < BSIZE)

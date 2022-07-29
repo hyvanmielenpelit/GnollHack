@@ -2236,14 +2236,19 @@ boolean atme;
     if (spellamount(spell) == 0) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "do not have the spell's material components prepared.");
+        skip_savech = 1;
         char ans = yn_query_ex(ATR_NONE, CLR_MSG_FAIL, "No Components Mixed", "Do you want to mix the spell's material components now?");
         if (ans == 'y')
         {
             in_doagain = 0;
-            return domaterialcomponentsmenu(spell);
+            res = domaterialcomponentsmenu(spell);
+            skip_savech = 0;
+            return res;
         }
-        else
-            return 0; /* no time elapses */
+
+        skip_savech = 0;
+        return 0; /* no time elapses */
+
     }
 
     if (spellcooldownleft(spell) > 0) {
@@ -2851,6 +2856,17 @@ boolean atme;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound_at_location(SFX_GENERAL_GAIN_ABILITY_SPELL, u.ux, u.uy);
         special_effect_wait_until_action(0);
+        switch (otyp)
+        {
+        case SPE_MASS_CONFLICT:
+            play_sfx_sound(SFX_CONFLICT);
+            break;
+        case SPE_MIRROR_IMAGE:
+            play_sfx_sound(SFX_MIRROR_IMAGE);
+            break;
+        default:
+            break;
+        }
         You_ex(ATR_NONE, CLR_MSG_SPELL, "successfully cast \"%s\".", spellname(spell));
         addspellintrinsictimeout(otyp);
         special_effect_wait_until_end(0);

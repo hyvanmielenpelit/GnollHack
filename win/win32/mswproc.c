@@ -204,6 +204,10 @@ mswin_init_nhwindows(int *argc, char **argv)
     /* Set menu check mark for interface mode */
     mswin_menu_check_intf_mode();
 
+    /* GUI tiles and sounds on */
+    iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
+    iflags.using_gui_sounds = TRUE;
+
     /* check default values */
     if (iflags.wc_fontsiz_status < NHFONT_SIZE_MIN
         || iflags.wc_fontsiz_status > NHFONT_SIZE_MAX)

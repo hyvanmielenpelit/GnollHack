@@ -4050,7 +4050,6 @@ struct monst* origmonst;
         case SPE_POWER_WORD_BLIND:
         case SPE_SUNLIGHT_BEAM:
         case SPE_RAY_OF_RADIANCE:
-            //Effect moved to resurrection
             break;
         case WAN_RESURRECTION:
         case SPE_RESURRECTION:
@@ -4090,7 +4089,7 @@ struct monst* origmonst;
                             if (newcorpsetype && corpsname && strcmp(corpsname, ""))
                                 Sprintf(cbuf, " from %s", the(corpsname));
 
-                            pline("%s is resurrected%s!",
+                            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s is resurrected%s!",
                                 upstart(noname_monnam(mtmp, newcorpsetype ? ARTICLE_A : ARTICLE_THE)),
                                 cbuf);
 
@@ -4142,7 +4141,7 @@ struct monst* origmonst;
                 }
                 else
                 {
-                    pline("%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
                 }
             }
             break;
@@ -4158,7 +4157,7 @@ struct monst* origmonst;
                 }
                 else
                 {
-                    pline("%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
                 }
             }
             break;
@@ -4174,7 +4173,7 @@ struct monst* origmonst;
                 }
                 else
                 {
-                    pline("%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
                 }
             }
             break;
@@ -4190,7 +4189,7 @@ struct monst* origmonst;
                 }
                 else
                 {
-                    pline("%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
                 }
             }
             break;
@@ -4215,7 +4214,7 @@ struct monst* origmonst;
                 }
                 else
                 {
-                    pline("%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
                 }
             }
             break;
@@ -4237,7 +4236,7 @@ struct monst* origmonst;
                 }
                 else
                 {
-                    pline("%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
                 }
             }
             break;
@@ -11236,7 +11235,6 @@ int dmg, adtyp, tell;
                     killed(mtmp);
             }
         }
-
     }
 
     return 0;

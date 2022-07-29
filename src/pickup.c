@@ -33,11 +33,21 @@ STATIC_DCL int FDECL(lift_object, (struct obj *, struct obj *, long *,
                                    BOOLEAN_P));
 STATIC_DCL boolean FDECL(mbag_explodes, (struct obj *, struct obj*, int));
 STATIC_DCL long FDECL(boh_loss, (struct obj *container, int));
+STATIC_PTR int FDECL(in_container_core, (struct obj*, BOOLEAN_P));
+STATIC_PTR int FDECL(out_container_core, (struct obj*, BOOLEAN_P));
+STATIC_PTR int FDECL(move_container_core, (struct obj*, BOOLEAN_P));
+STATIC_PTR int FDECL(out_container_and_drop_core, (struct obj*, BOOLEAN_P));
+STATIC_PTR int FDECL(pickup_and_in_container_core, (struct obj*, BOOLEAN_P));
 STATIC_PTR int FDECL(in_container, (struct obj*));
 STATIC_PTR int FDECL(out_container, (struct obj*));
 STATIC_PTR int FDECL(move_container, (struct obj*));
 STATIC_PTR int FDECL(out_container_and_drop, (struct obj*));
 STATIC_PTR int FDECL(pickup_and_in_container, (struct obj*));
+STATIC_PTR int FDECL(in_container_nobot, (struct obj*));
+STATIC_PTR int FDECL(out_container_nobot, (struct obj*));
+STATIC_PTR int FDECL(move_container_nobot, (struct obj*));
+STATIC_PTR int FDECL(out_container_and_drop_nobot, (struct obj*));
+STATIC_PTR int FDECL(pickup_and_in_container_nobot, (struct obj*));
 STATIC_DCL void FDECL(removed_from_icebox, (struct obj *));
 STATIC_DCL long FDECL(mbag_item_gone, (int, struct obj *));
 STATIC_DCL void FDECL(explain_container_prompt, (BOOLEAN_P));
@@ -2465,7 +2475,22 @@ struct obj* obj, *container;
 /* Returns: -1 to stop, 1 item was inserted, 0 item was not inserted. */
 STATIC_PTR int
 in_container(obj)
+register struct obj* obj;
+{
+    return in_container_core(obj, TRUE);
+}
+
+STATIC_PTR int
+in_container_nobot(obj)
+register struct obj* obj;
+{
+    return in_container_core(obj, FALSE);
+}
+
+STATIC_PTR int
+in_container_core(obj, dobot)
 register struct obj *obj;
+boolean dobot;
 {
     if (!current_container) 
     {
@@ -2720,7 +2745,8 @@ register struct obj *obj;
      * the encumbrance to disappear from the status, so just always
      * update status immediately.
      */
-    bot();
+    if(dobot)
+        bot();
     return (current_container ? 1 : -1);
 }
 
@@ -2741,12 +2767,27 @@ STATIC_PTR int
 move_container(obj)
 register struct obj* obj;
 {
+    return move_container_core(obj, TRUE);
+}
+
+STATIC_PTR int
+move_container_nobot(obj)
+register struct obj* obj;
+{
+    return move_container_core(obj, FALSE);
+}
+
+STATIC_PTR int
+move_container_core(obj, dobot)
+register struct obj* obj;
+boolean dobot;
+{
     if (!obj || !move_target_container)
         return -1;
 
     obj->nomerge = 1;
     int res = 0;
-    if ((res = out_container(obj)) <= 0)
+    if ((res = out_container_core(obj, dobot)) <= 0)
     {
         obj->nomerge = 0;
         return res;
@@ -2765,7 +2806,7 @@ register struct obj* obj;
 
     struct obj* savedcontainer = current_container;
     current_container = move_target_container;
-    res = in_container(obj);
+    res = in_container_core(obj, dobot);
     current_container = savedcontainer;
     return res;
 }
@@ -2775,12 +2816,27 @@ STATIC_PTR int
 out_container_and_drop(obj)
 register struct obj* obj;
 {
+    return out_container_and_drop_core(obj, TRUE);
+}
+
+STATIC_PTR int
+out_container_and_drop_nobot(obj)
+register struct obj* obj;
+{
+    return out_container_and_drop_core(obj, FALSE);
+}
+
+STATIC_PTR int
+out_container_and_drop_core(obj, dobot)
+register struct obj* obj;
+boolean dobot;
+{
     if (!obj)
         return -1;
 
     obj->nomerge = 1;
     int res = 0;
-    if ((res = out_container(obj)) <= 0)
+    if ((res = out_container_core(obj, dobot)) <= 0)
     {
         obj->nomerge = 0;
         return res;
@@ -2802,6 +2858,21 @@ STATIC_PTR int
 pickup_and_in_container(obj)
 register struct obj* obj;
 {
+    return pickup_and_in_container_core(obj, TRUE);
+}
+
+STATIC_PTR int
+pickup_and_in_container_nobot(obj)
+register struct obj* obj;
+{
+    return pickup_and_in_container_core(obj, FALSE);
+}
+
+STATIC_PTR int
+pickup_and_in_container_core(obj, dobot)
+register struct obj* obj;
+boolean dobot;
+{
     if (!obj)
         return -1;
 
@@ -2818,9 +2889,7 @@ register struct obj* obj;
     if (obj->where != OBJ_INVENT)
         return 0;
 
-
-    res = in_container(obj);
-
+    res = in_container_core(obj, dobot);
     return res;
 }
 
@@ -2828,7 +2897,22 @@ register struct obj* obj;
 /* Returns: -1 to stop, 1 item was removed, 0 item was not removed. */
 STATIC_PTR int
 out_container(obj)
+register struct obj* obj;
+{
+    return out_container_core(obj, TRUE);
+}
+
+STATIC_PTR int
+out_container_nobot(obj)
+register struct obj* obj;
+{
+    return out_container_core(obj, FALSE);
+}
+
+STATIC_PTR int
+out_container_core(obj, dobot)
 register struct obj *obj;
+boolean dobot;
 {
     register struct obj *otmp;
     boolean is_gold = (obj->oclass == COIN_CLASS);
@@ -2887,7 +2971,7 @@ register struct obj *obj;
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_PICK_UP);
         delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
     }
-    if (is_gold) 
+    if (dobot && is_gold) 
     {
         bot(); /* update character's gold piece count immediately */
     }
@@ -3633,11 +3717,15 @@ struct obj* other_container UNUSED;
             for (otmp = current_container->cobj; otmp; otmp = otmp2)
             {
                 otmp2 = otmp->nobj;
-                res = out_container(otmp);
+                res = out_container_nobot(otmp);
                 if (res < 0)
+                {
+                    bot();
                     break;
+                }
                 n_looted += res;
             }
+            bot();
             if (res == -2 && flags.knapsack_prompt)
                 more_action = handle_knapsack_full();
             break;
@@ -3645,44 +3733,60 @@ struct obj* other_container UNUSED;
             for (otmp = invent; otmp && current_container; otmp = otmp2)
             {
                 otmp2 = otmp->nobj;
-                res = in_container(otmp);
+                res = in_container_nobot(otmp);
                 if (res < 0)
+                {
+                    bot();
                     break;
+                }
                 n_looted += res;
             }
+            bot();
             break;
         case 2:
             current_container->cknown = 1;
             for (otmp = current_container->cobj; otmp; otmp = otmp2)
             {
                 otmp2 = otmp->nobj;
-                res = move_container(otmp);
+                res = move_container_nobot(otmp);
                 if (res < 0)
+                {
+                    bot();
                     break;
+                }
                 n_looted += res;
             }
+            bot();
             break;
         case 3:
             current_container->cknown = 1;
             for (otmp = current_container->cobj; otmp; otmp = otmp2)
             {
                 otmp2 = otmp->nobj;
-                res = move_container(otmp);
+                res = move_container_nobot(otmp);
                 if (res < 0)
+                {
+                    bot();
                     break;
+                }
                 n_looted += res;
             }
+            bot();
             break;
         case 4:
             current_container->cknown = 1;
             for (otmp = current_container->cobj; otmp; otmp = otmp2)
             {
                 otmp2 = otmp->nobj;
-                res = out_container_and_drop(otmp);
+                res = out_container_and_drop_nobot(otmp);
                 if (res < 0)
+                {
+                    bot();
                     break;
+                }
                 n_looted += res;
             }
+            bot();
             break;
         case 5:
             current_container->cknown = 1;
@@ -3691,9 +3795,13 @@ struct obj* other_container UNUSED;
                 otmp2 = otmp->nexthere;
                 res = pickup_and_in_container(otmp);
                 if (res < 0)
+                {
+                    bot();
                     break;
+                }
                 n_looted += res;
             }
+            bot();
             break;
         default:
             break;
@@ -3736,24 +3844,27 @@ struct obj* other_container UNUSED;
                 switch (command_id)
                 {
                 case 0:
-                    res = out_container(otmp);
+                    res = out_container_nobot(otmp);
                     if (res == -2 && flags.knapsack_prompt)
+                    {
+                        bot();
                         more_action = handle_knapsack_full();
+                    }
                     break;
                 case 1:
-                    res = in_container(otmp);
+                    res = in_container_nobot(otmp);
                     break;
                 case 2:
-                    res = move_container(otmp);
+                    res = move_container_nobot(otmp);
                     break;
                 case 3:
-                    res = move_container(otmp);
+                    res = move_container_nobot(otmp);
                     break;
                 case 4:
-                    res = out_container_and_drop(otmp);
+                    res = out_container_and_drop_nobot(otmp);
                     break;
                 case 5:
-                    res = pickup_and_in_container(otmp);
+                    res = pickup_and_in_container_nobot(otmp);
                     break;
                 default:
                     res = -1;
@@ -3781,6 +3892,7 @@ struct obj* other_container UNUSED;
             }
             free((genericptr_t) pick_list);
             context.quit_pressed = FALSE;
+            bot();
         }
     }
 

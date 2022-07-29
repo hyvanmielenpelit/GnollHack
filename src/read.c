@@ -1556,6 +1556,7 @@ struct monst* origmonst;
             {
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
                 special_effect_wait_until_action(0);
+                play_sfx_sound_at_location(SFX_TAMING, mtmp->mx, mtmp->my);
                 special_effect_wait_until_end(0);
             }
         }
@@ -2389,6 +2390,7 @@ boolean *effect_happened_ptr;
             You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like a rabble-rouser.");
             known = TRUE;
         }
+        play_sfx_sound(SFX_CONFLICT);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         incr_itimeout(&HConflict, duration);

@@ -545,8 +545,10 @@ dofire()
             /* in case we're using ^A to repeat prior 'f' command, don't
                use direction of previous throw as getobj()'s choice here */
             in_doagain = 0;
+            skip_savech = 1;
             /* choose something from inventory, then usually quiver it */
             obj = getobj(uslinging() ? bullets : toss_objs, "fire", 0, "");
+            skip_savech = 0;
 
             /* Q command doesn't allow gold in quiver */
             if (obj && !obj->owornmask && obj->oclass != COIN_CLASS)

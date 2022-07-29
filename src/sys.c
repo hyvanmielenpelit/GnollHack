@@ -197,6 +197,7 @@ reset_global_variables(VOID_ARGS)
     nsubroom = 0;
     occtime = 0;
     in_doagain = 0;
+    skip_savech = 0;
     save_cm = 0;
     yn_number = 0;
     done_money = 0;

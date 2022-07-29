@@ -894,6 +894,11 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Action/Tumble in Air", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Protection End Warning", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Negative Effect Ended", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Invoke On", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Invoke Off", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Conflict", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Mirror Image", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Artifact/Howling Flail Howl", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/SFX/Enter/Zoo", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Enter/Swamp", 1.0f },
@@ -5223,8 +5228,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_GENERIC_ITEM_UNQUIVER, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_GENERIC_ITEM_INVOKE_ON, 1.0f},
+            {GHSOUND_GENERIC_ITEM_INVOKE_OFF, 1.0f},
             {GHSOUND_SFX_QUAFF, 1.0f},
             {GHSOUND_SFX_READ, 1.0f},
             {GHSOUND_GENERIC_ENGRAVE, 1.0f},
@@ -7881,9 +7886,9 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f}, /* Unwield */
             {MAX_GHSOUNDS, 0.0f}, /* Quiver */
             {MAX_GHSOUNDS, 0.0f}, /* Unquiver */
-            {MAX_GHSOUNDS, 1.0f}, /* Apply */
+            {MAX_GHSOUNDS, 0.0f}, /* Apply */
             {MAX_GHSOUNDS, 0.0f}, /* Apply 2 */
-            {GHSOUND_AGGRAVATE_MONSTER, 1.0f}, /* Invoke */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke */
             {MAX_GHSOUNDS, 0.0f}, /* Invoke 2 */
             {MAX_GHSOUNDS, 0.0f}, /* Quaff */
             {MAX_GHSOUNDS, 0.0f}, /* Read */
@@ -11106,6 +11111,21 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         "Distant Puff",
         {GHSOUND_VANISHES_IN_PUFF_OF_SMOKE, 0.5f},
         TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_CONFLICT",
+        {GHSOUND_CONFLICT, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_MIRROR_IMAGE",
+        {GHSOUND_MIRROR_IMAGE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_HOWLING_FLAIL_HOWL",
+        {GHSOUND_HOWLING_FLAIL_HOWL, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
 };
 

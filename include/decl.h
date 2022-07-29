@@ -49,6 +49,7 @@ E int x_maze_max, y_maze_max;
 E int otg_temp;
 
 E NEARDATA int in_doagain;
+E NEARDATA int skip_savech;
 
 E struct dgn_topology { /* special dungeon levels for speed */
     d_level d_oracle_level;

@@ -8288,15 +8288,15 @@ long minor_id_cost;
         return 0;
     }
 
-    context.shop_identify_type = id_idx;
+    context.npc_identify_type = id_idx;
     if (count_unidentified(invent) == 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex1_popup("have nothing to identify.", "Nothing to Identify", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
-        context.shop_identify_type = 0;
+        context.npc_identify_type = 0;
         return 0;
     }
-    context.shop_identify_type = 0;
+    context.npc_identify_type = 0;
 
     char qbuf[QBUFSZ];
     int res = 0;

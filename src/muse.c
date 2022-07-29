@@ -2424,7 +2424,15 @@ struct obj *obj;
         if (typ == AMULET_OF_LIFE_SAVING)
             return (boolean) !(is_not_living(mon->data) || is_vampshifter(mon));
         if (typ == AMULET_OF_REFLECTION)
+            return !is_reflecting(mon);
+        if (typ == AMULET_OF_UNCHANGING)
             return TRUE;
+        if (typ == AMULET_VERSUS_PETRIFICATION)
+            return !resists_ston(mon);
+        if (typ == AMULET_VERSUS_UNDEATH)
+            return !resists_death(mon) && !resists_drain(mon);
+        if (typ == AMULET_VERSUS_POISON)
+            return !resists_poison(mon);
         break;
     case RING_CLASS:
         if ((mon->worn_item_flags & W_RING) == W_RING)

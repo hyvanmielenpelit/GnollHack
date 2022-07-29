@@ -3005,7 +3005,10 @@ struct obj *obj;
         switch (oart->inv_prop) {
         case CONFLICT:
             if ((!temporary_effect && switch_on) || temporary_effect)
+            {
+                play_sfx_sound(SFX_CONFLICT);
                 You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like a rabble-rouser.");
+            }
             else
                 You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "the tension decrease around you.");
             break;
@@ -3013,14 +3016,20 @@ struct obj *obj;
             if (obj->oartifact == ART_MAGIC_MIRROR_OF_MERLIN)
             {
                 if ((!temporary_effect && switch_on) || temporary_effect)
+                {
+                    play_sfx_sound(SFX_MIRROR_IMAGE);
                     pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s an illusionary image of yourself near you.", Tobjnam(obj, "project"));
+                }
                 else
                     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "illusionary double disappears.");
             }
             else
             {
                 if ((!temporary_effect && switch_on) || temporary_effect)
+                {
+                    play_sfx_sound(SFX_MIRROR_IMAGE);
                     You_feel_ex(ATR_NONE, CLR_MSG_SUCCESS, "your image becomes displaced.");
+                }
                 else
                     You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "your image is in its right place again.");
             }
@@ -3062,6 +3071,9 @@ struct obj* obj;
     if (obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_INVOKED)))
     {
         play_sfx_sound(SFX_ARTIFACT_NAME_KNOWN);
+        if(obj->oartifact == ART_HOWLING_FLAIL)
+            play_sfx_sound(SFX_HOWLING_FLAIL_HOWL);
+
         pline_ex(ATR_NONE, CLR_MSG_HINT, "As you invoke %s, %syou become aware that %s named %s!", the(cxname(obj)),
             obj->oartifact == ART_HOWLING_FLAIL ? "it lets loose a majestic howl and " : "",
             (pair_of(obj) || obj->quan > 1) ? "they are" : "it is", bare_artifactname(obj));
