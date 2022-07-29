@@ -1352,6 +1352,7 @@ unsigned long mkflags;
     struct obj *otmp;
     char let = objects[otyp].oc_class;
     boolean forcemythic = (mkflags & MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY) != 0;
+    boolean forcelegendary = (mkflags & MKOBJ_FLAGS_FORCE_LEGENDARY) != 0;
 
     otmp = newobj();
     *otmp = zeroobj;
@@ -1921,7 +1922,11 @@ unsigned long mkflags;
     /* Exceptionality */
     if (can_have_exceptionality(otmp) && !(objects[otmp->otyp].oc_flags4 & O4_NEVER_GENERATED_WITH_EXCEPTIONALITY) && mkobj_type < 2 && otmp->oartifact == 0)
     {
-        if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_CELESTIAL)
+        if ((mkflags & MKOBJ_FLAGS_PARAM_IS_EXCEPTIONALITY) && param >= 0)
+        {
+            otmp->exceptionality = (uchar) param;
+        }
+        else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_CELESTIAL)
         {
             otmp->exceptionality = EXCEPTIONALITY_CELESTIAL;
         }
@@ -1988,7 +1993,7 @@ unsigned long mkflags;
     }
 
     /* Mythic quality */
-    if (can_obj_have_mythic(otmp) && (forcemythic || (level_difficulty() >= 3 && mkobj_type < 2)) && otmp->oartifact == 0)
+    if (can_obj_have_mythic(otmp) && (forcemythic || forcelegendary || (level_difficulty() >= 3 && mkobj_type < 2)) && otmp->oartifact == 0)
     {
         boolean doublechance = !!(objects[otmp->otyp].oc_flags4 & O4_DOUBLE_MYTHIC_CHANCE);
         boolean makemythic = FALSE;
@@ -2003,9 +2008,9 @@ unsigned long mkflags;
         else
             makemythic = otmp->exceptionality ? !rn2(doublechance ? 6 : 12) : !rn2(doublechance ? 12 : 24);
 
-        if (makemythic || forcemythic)
+        if (makemythic || forcemythic || forcelegendary)
         {
-            randomize_mythic_quality(otmp, FALSE, &otmp->mythic_prefix, &otmp->mythic_suffix);
+            randomize_mythic_quality(otmp, forcelegendary ? 2 : 0, &otmp->mythic_prefix, &otmp->mythic_suffix);
         }
     }
 

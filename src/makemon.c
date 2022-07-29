@@ -1555,14 +1555,13 @@ register struct monst *mtmp;
         }
         else if (ptr == &mons[PM_VLAD_THE_IMPALER])
         {
-            otmp = mongets(mtmp, SWORD_OF_UNHOLY_DESECRATION);
+            otmp = mksobj_with_flags(SPEAR, TRUE, FALSE, 0, EXCEPTIONALITY_INFERNAL, MKOBJ_FLAGS_FORCE_LEGENDARY | MKOBJ_FLAGS_PARAM_IS_EXCEPTIONALITY);
             if (otmp)
             {
-                otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
                 otmp->enchantment = 4 + rn2(4);
                 curse(otmp);
+                (void)mpickobj(mtmp, otmp);
             }
-            (void) mongets(mtmp, POT_FULL_HEALING);
             (void) mongets(mtmp, POT_FULL_HEALING);
             (void) mongets(mtmp, POT_SPEED);
             (void) mongets(mtmp, AMULET_OF_REFLECTION);
