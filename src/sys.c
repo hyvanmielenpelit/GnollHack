@@ -19,109 +19,12 @@
 
 struct sysopt sysopt;
 
+STATIC_DCL void NDECL(reset_global_variables);
+
 void
 sys_early_init()
 {
-    wizard = discover = ModernMode = CasualMode = FALSE;
-    save_initial_objects_values();
-#ifdef SYSFLAGS
-    memset((genericptr_t)&sysflags, 0, sizeof(sysflags));
-#endif
-    memset((genericptr_t)&program_state, 0, sizeof(program_state));
-    memset((genericptr_t)&iflags, 0, sizeof(iflags));    
-    memset((genericptr_t)&youmonst, 0, sizeof(youmonst));
-    memset((genericptr_t)&bhitpos, 0, sizeof(bhitpos));
-    memset((genericptr_t)&urealtime, 0, sizeof(urealtime));
-    memset((genericptr_t)&hearing_array, 0, sizeof(hearing_array));
-    memset((genericptr_t)&fqn_prefix, 0, sizeof(fqn_prefix));
-    memset((genericptr_t)&level, 0, sizeof(level));
-    memset((genericptr_t)&m_shot, 0, sizeof(m_shot));
-    memset((genericptr_t)level_info, 0, sizeof(level_info));
-    memset((genericptr_t)&chosen_windowtype, 0, sizeof(chosen_windowtype));
-    memset((genericptr_t)&smeq, 0, sizeof(smeq));
-    memset((genericptr_t)&Cmd, 0, sizeof(Cmd));
-
-    WIN_MESSAGE = WIN_ERR;
-    WIN_STATUS = WIN_ERR;
-    WIN_MAP = WIN_ERR;
-    WIN_INVEN = WIN_ERR;
-    WIN_HERE = WIN_ERR;
-
-    restoring = FALSE;
-    ransacked = FALSE;
-    occupation = 0;
-    occsoundset = 0;
-    occtyp = 0;
-    afternmv = 0;
-    hname = 0;
-    hackpid = 0;
-    multi = 0;
-    multi_reason = 0;
-    nroom = 0;
-    nsubroom = 0;
-    occtime = 0;
-    in_doagain = 0;
-    save_cm = 0;
-    yn_number = 0;
-    done_money = 0;
-    nomovemsg = 0;
-    tbx = tby = 0;
-    defer_see_monsters = FALSE;
-    in_mklev = FALSE;
-    stoned = FALSE; /* done to monsters hit by 'c' */
-    unweapon1 = FALSE;
-    unweapon2 = FALSE;
-    mrg_to_wielded = FALSE;
-    in_steed_dismounting = FALSE;
-    has_strong_rngseed = FALSE;
-    ubirthday = 0;
-    invent = (struct obj*)0;
-    uwep = (struct obj*)0;
-    uarm = (struct obj*)0;
-    uswapwep = (struct obj*)0;
-    uswapwep2 = (struct obj*)0;
-    uquiver = (struct obj*)0;       /* quiver */
-    uarmu = (struct obj*)0;     /* under-wear, so to speak */
-    uarmo = (struct obj*)0;     /* over-wear, so to speak */
-    uarmb = (struct obj*)0;     /* bracers */
-    uskin = (struct obj*)0; /* dragon armor, if a dragon */
-    uarmc = (struct obj*)0;
-    uarmh = (struct obj*)0;
-    uarms = (struct obj*)0;
-    uarmg = (struct obj*)0;
-    uarmf = (struct obj*)0;
-    uamul = (struct obj*)0;
-    umisc = (struct obj*)0;
-    umisc2 = (struct obj*)0;
-    umisc3 = (struct obj*)0;
-    umisc4 = (struct obj*)0;
-    umisc5 = (struct obj*)0;     /* miscellaneous */
-    uright = (struct obj*)0;
-    uleft = (struct obj*)0;
-    ublindf = (struct obj*)0;
-    uchain = (struct obj*)0;
-    uball = (struct obj*)0;
-    current_wand = 0;  /* wand currently zapped/applied */
-    thrownobj = 0;     /* object in flight due to throwing */
-    kickedobj = 0;     /* object in flight due to kicking */
-    moves = 1L;
-    monstermoves = 1L;
-    wailmsg = 0L;
-    disallow_keyboard_commands_in_wait_loop = FALSE;
-    *dogname = 0;
-    *catname = 0;
-    *horsename = 0;
-    *ramname = 0;
-    *luggagename = 0;
-    *wolfname = 0;
-    preferred_pet = 0;
-    domove_attempting = 0L;
-    domove_succeeded = 0L;
-    vision_full_recalc = 0;
-    viz_array = 0;
-    hearing_full_recalc = 0;
-    *toplines = 0;
-    upstairs_room = dnstairs_room = sstairs_room = 0;
+    reset_global_variables();
 
     sysopt.support = (char *) 0;
     sysopt.recover = (char *) 0;
@@ -249,6 +152,112 @@ int val;
     nhUse(val);
 #endif /*0*/
     return;
+}
+
+
+STATIC_OVL void
+reset_global_variables(VOID_ARGS)
+{
+    wizard = discover = ModernMode = CasualMode = FALSE;
+    save_initial_objects_values();
+#ifdef SYSFLAGS
+    memset((genericptr_t)&sysflags, 0, sizeof(sysflags));
+#endif
+    memset((genericptr_t)&program_state, 0, sizeof(program_state));
+    memset((genericptr_t)&iflags, 0, sizeof(iflags));
+    memset((genericptr_t)&youmonst, 0, sizeof(youmonst));
+    memset((genericptr_t)&bhitpos, 0, sizeof(bhitpos));
+    memset((genericptr_t)&urealtime, 0, sizeof(urealtime));
+    memset((genericptr_t)&hearing_array, 0, sizeof(hearing_array));
+    memset((genericptr_t)&fqn_prefix, 0, sizeof(fqn_prefix));
+    memset((genericptr_t)&level, 0, sizeof(level));
+    memset((genericptr_t)&m_shot, 0, sizeof(m_shot));
+    memset((genericptr_t)&level_info, 0, sizeof(level_info));
+    memset((genericptr_t)&chosen_windowtype, 0, sizeof(chosen_windowtype));
+    memset((genericptr_t)&smeq, 0, sizeof(smeq));
+    memset((genericptr_t)&Cmd, 0, sizeof(Cmd));
+
+    WIN_MESSAGE = WIN_ERR;
+    WIN_STATUS = WIN_ERR;
+    WIN_MAP = WIN_ERR;
+    WIN_INVEN = WIN_ERR;
+    WIN_HERE = WIN_ERR;
+
+    restoring = FALSE;
+    ransacked = FALSE;
+    occupation = 0;
+    occsoundset = 0;
+    occtyp = 0;
+    afternmv = 0;
+    hname = 0;
+    hackpid = 0;
+    multi = 0;
+    multi_reason = 0;
+    nroom = 0;
+    nsubroom = 0;
+    occtime = 0;
+    in_doagain = 0;
+    save_cm = 0;
+    yn_number = 0;
+    done_money = 0;
+    nomovemsg = 0;
+    tbx = tby = 0;
+    defer_see_monsters = FALSE;
+    in_mklev = FALSE;
+    stoned = FALSE; /* done to monsters hit by 'c' */
+    unweapon1 = FALSE;
+    unweapon2 = FALSE;
+    mrg_to_wielded = FALSE;
+    in_steed_dismounting = FALSE;
+    has_strong_rngseed = FALSE;
+    ubirthday = 0;
+    invent = (struct obj*)0;
+    uwep = (struct obj*)0;
+    uarm = (struct obj*)0;
+    uswapwep = (struct obj*)0;
+    uswapwep2 = (struct obj*)0;
+    uquiver = (struct obj*)0;       /* quiver */
+    uarmu = (struct obj*)0;     /* under-wear, so to speak */
+    uarmo = (struct obj*)0;     /* over-wear, so to speak */
+    uarmb = (struct obj*)0;     /* bracers */
+    uskin = (struct obj*)0; /* dragon armor, if a dragon */
+    uarmc = (struct obj*)0;
+    uarmh = (struct obj*)0;
+    uarms = (struct obj*)0;
+    uarmg = (struct obj*)0;
+    uarmf = (struct obj*)0;
+    uamul = (struct obj*)0;
+    umisc = (struct obj*)0;
+    umisc2 = (struct obj*)0;
+    umisc3 = (struct obj*)0;
+    umisc4 = (struct obj*)0;
+    umisc5 = (struct obj*)0;     /* miscellaneous */
+    uright = (struct obj*)0;
+    uleft = (struct obj*)0;
+    ublindf = (struct obj*)0;
+    uchain = (struct obj*)0;
+    uball = (struct obj*)0;
+    current_wand = 0;  /* wand currently zapped/applied */
+    thrownobj = 0;     /* object in flight due to throwing */
+    kickedobj = 0;     /* object in flight due to kicking */
+    moves = 1L;
+    monstermoves = 1L;
+    wailmsg = 0L;
+    disallow_keyboard_commands_in_wait_loop = FALSE;
+    *dogname = 0;
+    *catname = 0;
+    *horsename = 0;
+    *ramname = 0;
+    *luggagename = 0;
+    *wolfname = 0;
+    preferred_pet = 0;
+    domove_attempting = 0L;
+    domove_succeeded = 0L;
+    vision_full_recalc = 0;
+    viz_array = 0;
+    hearing_full_recalc = 0;
+    *toplines = 0;
+    upstairs_room = dnstairs_room = sstairs_room = 0;
 }
 
 /*sys.c*/

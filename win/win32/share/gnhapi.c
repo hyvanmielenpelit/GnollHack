@@ -323,11 +323,6 @@ int LibZapGlyphToCornerGlyph(int adjglyph, unsigned long adjflags, int source_di
     return zap_glyph_to_corner_glyph(adjglyph, adjflags, source_dir);
 }
 
-void
-LibSwitchDemoVersion(int state)
-{
-    In_Demo = (state != 0);
-}
 
 int
 LibChmod(const char* filename, unsigned int mode)
@@ -563,16 +558,11 @@ int RunGnollHack(
         Strcat(cmdbuf, "-C");
     }
 
-
-    /* Set directly, as other parts of GnollHack do not set these */
+    /* Set directly, as other parts of GnollHack do not purposedly set this */
     if (recovery_name && strcmp(recovery_name, ""))
     {
         strncpy(recovery_plname, recovery_name, PL_NSIZ - 1);
         recovery_plname[PL_NSIZ - 1] = '\0';
-    }
-    if (!(runflags & GHRUNFLAGS_FULL_VERSION))
-    {
-        In_Demo = TRUE;
     }
 
     /* Set callback function pointers here */

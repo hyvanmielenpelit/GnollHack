@@ -459,8 +459,7 @@ struct instance_flags {
     boolean wizweight;       /* display weight of everything in wizard mode */
 
     /* Is the system in demo version */
-    boolean demo_version;  /* in demo version mode */
-#define In_Demo iflags.demo_version
+    boolean demo_version;  /* OBSOLETE */
 
     /*
      * Window capability support.

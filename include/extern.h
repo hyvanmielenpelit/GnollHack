@@ -1054,6 +1054,7 @@ void and_you_die();
 E long NDECL(get_current_game_score);
 E int NDECL(wiz_dumplog);
 E void FDECL(print_selfies, (winid));
+E void NDECL(reset_game);
 
 
 /* ### engrave.c ### */
@@ -2242,7 +2243,6 @@ E void NDECL(nttty_exit);
 
 /* ### o_init.c ### */
 
-E void NDECL(reset_game);
 E void NDECL(save_initial_objects_values);
 E void NDECL(init_objects);
 E void FDECL(obj_shuffle_range, (int, int *, int *));

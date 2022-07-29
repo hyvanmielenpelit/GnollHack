@@ -249,14 +249,11 @@ namespace GnollHackClient.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
         [DllImport(PlatformConstants.dll)]
-        public static extern void LibSwitchDemoVersion(int state);
-        [DllImport(PlatformConstants.dll)]
         public static extern void LibSetPetMID(uint m_id);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibChmod(string filename, uint mode);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSaveAndRestoreSavedGame();
-
 
         private void LoadNativeLibrary(string libName)
         {
@@ -849,11 +846,6 @@ namespace GnollHackClient.Unknown
             List<string> ret = GHUtils.GetAllStringsFromZeroTerminatedArray(LibGetExtendedCommands(), 256);
             ret.Sort();
             return ret;
-        }
-
-        public void SwitchDemoVersion(bool active)
-        {
-            LibSwitchDemoVersion(active ? 1 : 0);
         }
 
         public void SetPetMID(uint m_id)
