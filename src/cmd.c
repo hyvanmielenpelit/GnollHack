@@ -7590,7 +7590,8 @@ const char *msg;
      */
     dothat = "do that";
     how = " at"; /* for "<action> at yourself"; not used for up/down */
-    switch (spkey) {
+    switch (spkey) 
+    {
     case NHKF_NOPICKUP:
         dothat = "move";
         break;
@@ -7623,11 +7624,14 @@ const char *msg;
        note: '-' for hands (inventory form of 'self') is not handled here */
     if (prefixhandling
         && (sym == Cmd.spkeys[NHKF_GETDIR_SELF]
-            || (Cmd.num_pad && sym == Cmd.spkeys[NHKF_GETDIR_SELF2]))) {
+            || (Cmd.num_pad && sym == Cmd.spkeys[NHKF_GETDIR_SELF2]))) 
+    {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         Sprintf(buf, "You can't %s%s yourself.", dothat, how);
     /* for movement prefix followed by up or down */
-    } else if (prefixhandling && (sym == '<' || sym == '>')) {
+    } 
+    else if (prefixhandling && (sym == '<' || sym == '>')) 
+    {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         Sprintf(buf, "You can't %s %s.", dothat,
                 /* was "upwards" and "downwards", but they're considered
@@ -7637,8 +7641,10 @@ const char *msg;
 
     /* if '!cmdassist', display via pline() and we're done (note: asking
        for help at getdir() prompt forces cmdassist for this operation) */
-    if (!viawindow) {
-        if (prefixhandling) {
+    if (!viawindow) 
+    {
+        if (prefixhandling) 
+        {
             if (!*buf)
                 Sprintf(buf, "Invalid direction for '%s' prefix.",
                         visctrl(Cmd.spkeys[spkey]));
@@ -7649,72 +7655,88 @@ const char *msg;
         return FALSE;
     }
 
-    win = create_nhwindow(NHW_TEXT);
-    if (!win)
-        return FALSE;
+    /* open_special_view may open a more appropriate screen; if not, do a normal window */
+    struct special_view_info info = { 0 };
+    info.viewtype = SPECIAL_VIEW_HELP_DIR;
+    info.text = *buf ? buf : msg;
+    info.title = "Invalid Direction";
+    if (!open_special_view(info))
+    {
 
-    if (*buf) {
-        /* show bad-prefix message instead of general invalid-direction one */
-        putstr(win, 0, buf);
-        putstr(win, 0, "");
-    } else if (msg) {
-        Sprintf(buf, "cmdassist: %s", msg);
-        putstr(win, 0, buf);
-        putstr(win, 0, "");
-    }
+        win = create_nhwindow(NHW_TEXT);
+        if (!win)
+            return FALSE;
 
-    if (!prefixhandling && (letter(sym) || sym == '[')) {
-        /* '[': old 'cmdhelp' showed ESC as ^[ */
-        sym = highc(sym); /* @A-Z[ (note: letter() accepts '@') */
-        ctrl = (sym - 'A') + 1; /* 0-27 (note: 28-31 aren't applicable) */
-        if ((explain = dowhatdoes_core(ctrl, buf2)) != 0
-            && (!index(wiz_only_list, sym) || wizard)) {
-            Sprintf(buf, "Are you trying to use ^%c%s?", sym,
-                    index(wiz_only_list, sym) ? ""
-                        : " as specified in the Guidebook");
-            putstr(win, 0, buf);
-            putstr(win, 0, "");
-            putstr(win, 0, explain);
-            putstr(win, 0, "");
-            putstr(win, 0,
-                  "To use that command, hold down the <Ctrl> key as a shift");
-            Sprintf(buf, "and press the <%c> key.", sym);
+        if (*buf) 
+        {
+            /* show bad-prefix message instead of general invalid-direction one */
             putstr(win, 0, buf);
             putstr(win, 0, "");
         }
-    }
+        else if (msg) 
+        {
+            Sprintf(buf, "cmdassist: %s", msg);
+            putstr(win, 0, buf);
+            putstr(win, 0, "");
+        }
 
-    Sprintf(buf, "Valid direction keys%s%s%s are:",
+        if (!prefixhandling && (letter(sym) || sym == '[')) 
+        {
+            /* '[': old 'cmdhelp' showed ESC as ^[ */
+            sym = highc(sym); /* @A-Z[ (note: letter() accepts '@') */
+            ctrl = (sym - 'A') + 1; /* 0-27 (note: 28-31 aren't applicable) */
+            if ((explain = dowhatdoes_core(ctrl, buf2)) != 0
+                && (!index(wiz_only_list, sym) || wizard)) 
+            {
+                Sprintf(buf, "Are you trying to use ^%c%s?", sym,
+                    index(wiz_only_list, sym) ? ""
+                    : " as specified in the Guidebook");
+                putstr(win, 0, buf);
+                putstr(win, 0, "");
+                putstr(win, 0, explain);
+                putstr(win, 0, "");
+                putstr(win, 0,
+                    "To use that command, hold down the <Ctrl> key as a shift");
+                Sprintf(buf, "and press the <%c> key.", sym);
+                putstr(win, 0, buf);
+                putstr(win, 0, "");
+            }
+        }
+
+        Sprintf(buf, "Valid direction keys%s%s%s are:",
             prefixhandling ? " to " : "", prefixhandling ? dothat : "",
             NODIAG(u.umonnum) ? " in your current form" : "");
-    putstr(win, 0, buf);
-    show_direction_keys(win, !prefixhandling ? '.' : ' ', NODIAG(u.umonnum));
+        putstr(win, 0, buf);
+        show_direction_keys(win, !prefixhandling ? '.' : ' ', NODIAG(u.umonnum));
 
-    if (!prefixhandling || spkey == NHKF_NOPICKUP) {
-        /* NOPICKUP: unlike the other prefix keys, 'm' allows up/down for
-           stair traversal; we won't get here when "m<" or "m>" has been
-           given but we include up and down for 'm'+invalid_direction;
-           self is excluded as a viable direction for every prefix */
-        putstr(win, 0, "");
-        putstr(win, 0, "          <  up");
-        putstr(win, 0, "          >  down");
-        if (!prefixhandling) {
-            int selfi = Cmd.num_pad ? NHKF_GETDIR_SELF2 : NHKF_GETDIR_SELF;
+        if (!prefixhandling || spkey == NHKF_NOPICKUP) 
+        {
+            /* NOPICKUP: unlike the other prefix keys, 'm' allows up/down for
+               stair traversal; we won't get here when "m<" or "m>" has been
+               given but we include up and down for 'm'+invalid_direction;
+               self is excluded as a viable direction for every prefix */
+            putstr(win, 0, "");
+            putstr(win, 0, "          <  up");
+            putstr(win, 0, "          >  down");
+            if (!prefixhandling) {
+                int selfi = Cmd.num_pad ? NHKF_GETDIR_SELF2 : NHKF_GETDIR_SELF;
 
-            Sprintf(buf,   "       %4s  direct at yourself",
+                Sprintf(buf, "       %4s  direct at yourself",
                     visctrl(Cmd.spkeys[selfi]));
-            putstr(win, 0, buf);
+                putstr(win, 0, buf);
+            }
         }
-    }
 
-    if (msg) {
-        /* non-null msg means that this wasn't an explicit user request */
-        putstr(win, 0, "");
-        putstr(win, 0,
-               "(Suppress this message with !cmdassist in config file.)");
+        if (msg) 
+        {
+            /* non-null msg means that this wasn't an explicit user request */
+            putstr(win, 0, "");
+            putstr(win, 0,
+                "(Suppress this message with !cmdassist in config file.)");
+        }
+        display_nhwindow(win, FALSE);
+        destroy_nhwindow(win);
     }
-    display_nhwindow(win, FALSE);
-    destroy_nhwindow(win);
     return TRUE;
 }
 

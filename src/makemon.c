@@ -873,20 +873,25 @@ register struct monst *mtmp;
                 (void)mongets(mtmp, GINSENG_ROOT);
             break;
         case PM_GOBLIN_KING:
-        case PM_GOBLIN:
-            if (!rn2(mm == PM_GOBLIN_KING ? 2 : 3))
+            if (!rn2(2))
             {
-                (void)mongets(mtmp, !rn2(7) ? STAFF_SLING : SLING);
-                m_initthrow(mtmp, mm == PM_GOBLIN_KING && !rn2(5) ? SILVER_SLING_BULLET : !rn2(5) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 10, 12, FALSE, -1, -1);
+                (void)mongets(mtmp, !rn2(2) ? STAFF_SLING : SLING);
+                m_initthrow(mtmp, !rn2(5) ? SILVER_SLING_BULLET : !rn2(2) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 10, 12, FALSE, -1, -1);
+            }
+            (void)mongets(mtmp, SCIMITAR);
+        case PM_GOBLIN:
+        case PM_HOBGOBLIN:
+            if (!rn2(mm == PM_GOBLIN ? 6 : 3))
+            {
+                (void)mongets(mtmp, !rn2( 6) ? STAFF_SLING : SLING);
+                m_initthrow(mtmp, !rn2(5) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 10, 12, FALSE, -1, -1);
             }
             if (rn2(2))
-                (void)mongets(mtmp, ORCISH_DAGGER);
+                (void)mongets(mtmp, (mm == PM_GOBLIN || !rn2(2)) ? ORCISH_DAGGER : SCIMITAR);
             break;
         default:
             if (mm != PM_ORC_SHAMAN && rn2(2))
-                (void) mongets(mtmp, (mm == PM_GOBLIN || rn2(2) == 0)
-                                         ? ORCISH_DAGGER
-                                         : SCIMITAR);
+                (void) mongets(mtmp, (mm == PM_GOBLIN || !rn2(2)) ? ORCISH_DAGGER : SCIMITAR);
         }
         break;
     case S_OGRE:
@@ -1547,6 +1552,20 @@ register struct monst *mtmp;
                 (void)mpickobj(mtmp, otmp);
             }
 
+        }
+        else if (ptr == &mons[PM_VLAD_THE_IMPALER])
+        {
+            otmp = mongets(mtmp, SWORD_OF_UNHOLY_DESECRATION);
+            if (otmp)
+            {
+                otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+                otmp->enchantment = 4 + rn2(4);
+                curse(otmp);
+            }
+            (void) mongets(mtmp, POT_FULL_HEALING);
+            (void) mongets(mtmp, POT_FULL_HEALING);
+            (void) mongets(mtmp, POT_SPEED);
+            (void) mongets(mtmp, AMULET_OF_REFLECTION);
         }
         break;
     case S_LICH:

@@ -1786,14 +1786,7 @@ struct save_game_data* saved;
             char qbuf[BUFSZ], tbuf[BUFSZ];
             Sprintf(qbuf, "Are you sure to delete the saved game for \'%s\'?", plname);
             Strcpy(tbuf, "Delete Saved Game?");
-            //char ans = yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
-            struct special_view_info info = { 0 };
-            info.viewtype = SPECIAL_VIEW_YN_DIALOG;
-            info.text = qbuf;
-            info.title = tbuf;
-            info.attr = ATR_NONE;
-            info.color = CLR_RED;
-            int ans = open_special_view(info); //Replaces yn_function, since appriate window for yn_function may not be initialized
+            int ans = yn_query_ex(ATR_NONE, CLR_RED, tbuf, qbuf);
             if (ans == 'y')
             {
                 set_savefile_name(TRUE);

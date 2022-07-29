@@ -2020,7 +2020,9 @@ register int after;
                 newsym(mtmp->mx, mtmp->my);
         }
 
-        if (OBJ_AT(mtmp->mx, mtmp->my) && mon_can_move(mtmp) && !mtmp->issummoned && mon_can_reach_floor(mtmp) && !onnopickup(mtmp->mx, mtmp->my, mtmp))
+        struct obj* objhere = o_at(mtmp->mx, mtmp->my);
+        if (OBJ_AT(mtmp->mx, mtmp->my) && mon_can_move(mtmp) && !mtmp->issummoned && mon_can_reach_floor(mtmp) && !onnopickup(mtmp->mx, mtmp->my, mtmp)
+            && !(couldsee(mtmp->mx, mtmp->my) && objhere && objhere->was_thrown)) //Do not pick up ammo or other stuff that the player shoots / throws (this checks just the first item, but that's probably good enough)
         {
             /* recompute the likes tests, in case we polymorphed
              * or if the "likegold" case got taken above */

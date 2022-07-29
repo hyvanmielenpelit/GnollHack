@@ -460,8 +460,6 @@ struct special_view_info info;
     {
     case SPECIAL_VIEW_CHAT_MESSAGE:
         break;
-    case SPECIAL_VIEW_YN_DIALOG:
-        return 'y';
     default:
         break;
     }

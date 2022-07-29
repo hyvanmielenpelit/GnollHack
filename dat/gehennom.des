@@ -1043,6 +1043,28 @@ MONSTER:('&',"Yeenaghu"),(10,06) {
 REGION:(13,09,19,10),unlit,"smithy" montype:"pit fiend"
 ANVIL:(16,10),montype:"flind lord"
 
+# Some treasure
+CONTAINER:('(', "chest"),(02,02), locked, trapped, no_pickup {
+   OBJECT:('$',"gold piece"),quantity:(1000+(1d1000))
+   [10%]:OBJECT:artifact
+   [20%]:OBJECT:class_treasure_weapon
+   [20%]:OBJECT:class_treasure_armor
+   OBJECT:random_contents
+   OBJECT:random_contents
+   [50%]:OBJECT:random_contents
+   [50%]:OBJECT:random_contents
+}
+CONTAINER:('(', "chest"),(18,02), locked, trapped, no_pickup {
+   OBJECT:('$',"gold piece"),quantity:(1000+(1d1000))
+   [10%]:OBJECT:artifact
+   [20%]:OBJECT:class_treasure_weapon
+   [20%]:OBJECT:class_treasure_armor
+   OBJECT:random_contents
+   OBJECT:random_contents
+   [50%]:OBJECT:random_contents
+   [50%]:OBJECT:random_contents
+}
+
 # Some random weapons and armor.
 OBJECT:'[',random
 OBJECT:'[',random

@@ -1671,34 +1671,12 @@ namespace GnollHackClient
 
                         break;
                     }
-                case (int)special_view_types.SPECIAL_VIEW_YN_DIALOG:
-                    {
-                        ConcurrentQueue<GHRequest> queue;
-                        string responses = "yn";
-                        string descriptions = "Yes\nNo";
-                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
-                        {
-                            queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, (int)yn_function_styles.YN_STYLE_GENERAL, attr, color, App.NoGlyph, title, text, responses, descriptions, null, 0UL));
-                        }
-                        else
-                            return 27;
-
-                        int val = ClientCallback_nhgetch();
-                        string res = Char.ConvertFromUtf32(val);
-                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
-                        {
-                            queue.Enqueue(new GHRequest(this, GHRequestType.HideYnResponses));
-                        }
-                        if (responses.Contains(res))
-                            return val;
-                        else
-                            return 27;
-
-                    }
+                case (int)special_view_types.SPECIAL_VIEW_HELP_DIR:
+                    break;
                 default:
                     break;
             }
-            return 1;
+            return 0;
         }
 
 
