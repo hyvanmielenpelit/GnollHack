@@ -870,8 +870,10 @@ int otyp, exceptionality;
 /* TODO: have monsters use aklys' throw-and-return */
 static NEARDATA const int rwep[] = {
     DWARVISH_SPEAR, SILVER_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, JAVELIN,
-    SHURIKEN, YA, SILVER_ARROW, ELVEN_ARROW, ARROW, ORCISH_ARROW,
-    CROSSBOW_BOLT, SILVER_DAGGER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, BONE_DAGGER, KNIFE,
+    SHURIKEN, YA, SILVER_ARROW, BONE_ARROW, ELVEN_ARROW, ARROW, ORCISH_ARROW,
+    SILVER_CROSSBOW_BOLT, BONE_QUARREL, CROSSBOW_BOLT, GNOLLISH_QUARREL, 
+    SILVER_SLING_BULLET, IRON_SLING_BULLET, LEADEN_SLING_BULLET,
+    SILVER_DAGGER, BONE_DAGGER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, SILVER_KNIFE, KNIFE,
     FLINT, ROCK, STONE_PEBBLE, CLAY_PEBBLE, LOADSTONE, LUCKSTONE, DART,
     /* BOOMERANG, */ CREAM_PIE
 };
@@ -991,7 +993,9 @@ register struct monst *mtmp;
                         propellor = oselect_with_exceptionality(mtmp, ORCISH_SHORT_BOW, exc);
                     break;
                 case P_SLING:
-                    propellor = oselect_with_exceptionality(mtmp, SLING, exc);
+                    propellor = oselect_with_exceptionality(mtmp, STAFF_SLING, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, SLING, exc);
                     break;
                 case P_CROSSBOW:
                     propellor = oselect_with_exceptionality(mtmp, REPEATING_HEAVY_CROSSBOW, exc);

@@ -5194,7 +5194,7 @@ struct permonst _mons2[] = {
         20, CLR_GRAY, MONSTER_SOUNDSET_HUMANLIKE_DEMON, MONSTER_SOUNDSET_HUMANLIKE_DEMONESS),
     MON("barbed devil", None, "lesser male devil that can summon other devils", None, None, S_DEMON, LVL(13, 12, 0, 0, 35, 8),
         (G_HELL | G_NOCORPSE | G_SGROUP | 2),
-        A(ATTK(AT_CLAW, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0),
+        A(ATTK(AT_WEAP, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_STNG, AD_PHYS, 3, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 0, 10, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_SILENT, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(STR19(19), 13, 18, 11, 8, 12), 
         MR_POISON | MR_FIRE,

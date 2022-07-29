@@ -43,7 +43,7 @@ STATIC_DCL boolean NDECL(spellsortmenu);
 STATIC_DCL boolean FDECL(dospellmenu, (const char *, int, int *));
 STATIC_DCL boolean FDECL(dotradspellmenu, (const char*, int, int*));
 STATIC_DCL boolean FDECL(doaltspellmenu, (const char*, int, int*));
-STATIC_DCL int FDECL(percent_success, (int));
+STATIC_DCL int FDECL(percent_success, (int, BOOLEAN_P));
 STATIC_DCL int FDECL(attribute_value_for_spellbook, (int));
 #if 0
 STATIC_DCL char *FDECL(spellretention, (int, char *));
@@ -1182,10 +1182,10 @@ int* spell_no;
 
             if (OBJ_ITEM_DESC(spellid(splnum)))
             {
-                strcpy(descbuf, OBJ_ITEM_DESC(spellid(splnum)));
+                Strcpy(descbuf, OBJ_ITEM_DESC(spellid(splnum)));
             }
             else
-                strcpy(descbuf, nodesc);
+                Strcpy(descbuf, nodesc);
 
             boolean inactive = FALSE;
             struct extended_menu_info info = { 0 };
@@ -1619,7 +1619,6 @@ int spell;
         return 0;
     }
 
-
     winid datawin = WIN_ERR;
     int glyph = spell_to_glyph(spell);
     datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SPELL_DESCRIPTION_SCREEN, glyph, extended_create_window_info_from_spell(spell, TRUE));
@@ -1630,85 +1629,82 @@ int spell;
     char buf3[BUFSZ];
 
     /* Name */
-    strcpy(buf, spellname(spell));
-    *buf = highc(*buf);
-    
+    Strcpy(buf, spellname(spell));
+    *buf = highc(*buf);    
     putstr(datawin, ATR_TITLE, buf);
 
     /* Level & category*/
-    print_spell_level_text(buf, booktype, TRUE, TRUE);
-
-    
+    print_spell_level_text(buf, booktype, TRUE, TRUE);    
     putstr(datawin, ATR_SUBTITLE, buf);
 
     /* One empty line here */
-    strcpy(buf, "");
-    
+    Strcpy(buf, "");    
     putstr(datawin, 0, buf);
 
     /* Attributes*/
     if (objects[booktype].oc_spell_attribute >= 0)
     {
         char statbuf[BUFSZ];
-
         switch (objects[booktype].oc_spell_attribute)
         {
         case A_STR:
-            strcpy(statbuf, "Strength");
+            Strcpy(statbuf, "Strength");
             break;
         case A_DEX:
-            strcpy(statbuf, "Dexterity");
+            Strcpy(statbuf, "Dexterity");
             break;
         case A_CON:
-            strcpy(statbuf, "Constitution");
+            Strcpy(statbuf, "Constitution");
             break;
         case A_INT:
-            strcpy(statbuf, "Intelligence");
+            Strcpy(statbuf, "Intelligence");
             break;
         case A_WIS:
-            strcpy(statbuf, "Wisdom");
+            Strcpy(statbuf, "Wisdom");
             break;
         case A_CHA:
-            strcpy(statbuf, "Charisma");
+            Strcpy(statbuf, "Charisma");
             break;
         case A_MAX_INT_WIS:
-            strcpy(statbuf, "Higher of intelligence and wisdom");
+            Strcpy(statbuf, "Higher of intelligence and wisdom");
             break;
         case A_MAX_INT_CHA:
-            strcpy(statbuf, "Higher of intelligence and charisma");
+            Strcpy(statbuf, "Higher of intelligence and charisma");
             break;
         case A_MAX_WIS_CHA:
-            strcpy(statbuf, "Higher of wisdom and charisma");
+            Strcpy(statbuf, "Higher of wisdom and charisma");
             break;
         case A_MAX_INT_WIS_CHA:
-            strcpy(statbuf, "Higher of intelligence, wisdom, and charisma");
+            Strcpy(statbuf, "Higher of intelligence, wisdom, and charisma");
             break;
         case A_AVG_INT_WIS:
-            strcpy(statbuf, "Average of intelligence and wisdom");
+            Strcpy(statbuf, "Average of intelligence and wisdom");
             break;
         case A_AVG_INT_CHA:
-            strcpy(statbuf, "Average of intelligence and charisma");
+            Strcpy(statbuf, "Average of intelligence and charisma");
             break;
         case A_AVG_WIS_CHA:
-            strcpy(statbuf, "Average of wisdom and charisma");
+            Strcpy(statbuf, "Average of wisdom and charisma");
             break;
         case A_AVG_INT_WIS_CHA:
-            strcpy(statbuf, "Average of intelligence, wisdom, and charisma");
+            Strcpy(statbuf, "Average of intelligence, wisdom, and charisma");
             break;
         default:
-            strcpy(statbuf, "Not applicable");
+            Strcpy(statbuf, "Not applicable");
             break;
         }
 
-        Sprintf(buf, "Attributes:       %s", statbuf);
-        
+        Sprintf(buf, "Attributes:       %s", statbuf);        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
     /* Success percentage */
-    int successpct = percent_success(spell);
-    Sprintf(buf, "Success chance:   %d%%", successpct);
-    
+    int successpct = percent_success(spell, TRUE);
+    int successpct_unlimited = percent_success(spell, FALSE);
+    Strcpy(buf2, "");
+    if(successpct_unlimited < 0 || successpct_unlimited > 100)
+        Sprintf(buf2, " (base %d%%)", successpct_unlimited);
+    Sprintf(buf, "Success chance:   %d%%%s", successpct, buf2);
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Mana cost*/
@@ -1720,20 +1716,18 @@ int spell;
     }
     else
     {
-        strcpy(buf2, "None");
+        Strcpy(buf2, "None");
     }
-    Sprintf(buf, "Mana cost:        %s", buf2);
-    
+    Sprintf(buf, "Mana cost:        %s", buf2);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Casting time*/
     if(objects[booktype].oc_spell_flags & S1_DOES_NOT_TAKE_A_TURN)
-        strcpy(buf2, "0 rounds");
+        Strcpy(buf2, "0 rounds");
     else
-        strcpy(buf2, "1 round");
+        Strcpy(buf2, "1 round");
 
-    Sprintf(buf, "Casting time:     %s", buf2);
-    
+    Sprintf(buf, "Casting time:     %s", buf2);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Cooldown */
@@ -1746,46 +1740,44 @@ int spell;
         Sprintf(buf2, "None");
     }
 
-
-    Sprintf(buf, "Cooldown:         %s", buf2);
-    
+    Sprintf(buf, "Cooldown:         %s", buf2);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* DirType */
     if (objects[booktype].oc_dir > 0)
     {
-        strcpy(buf2, "");
+        Strcpy(buf2, "");
         switch (objects[booktype].oc_dir)
         {
         case NODIR:
-            strcpy(buf2, "None");
+            Strcpy(buf2, "None");
             break;
         case IMMEDIATE:
-            strcpy(buf2, "One target in selected direction");
+            Strcpy(buf2, "One target in selected direction");
             break;
         case RAY:
             if(objects[booktype].oc_spell_flags & S1_SPELL_EXPLOSION_EFFECT)
-                strcpy(buf2, "Ray that explodes on hit");
+                Strcpy(buf2, "Ray that explodes on hit");
             else
-                strcpy(buf2, "Ray in selected direction");
+                Strcpy(buf2, "Ray in selected direction");
             break;
         case TARGETED:
-            strcpy(buf2, "Target selected on screen");
+            Strcpy(buf2, "Target selected on screen");
             break;
         case TOUCH:
-            strcpy(buf2, "Touch");
+            Strcpy(buf2, "Touch");
             break;
         case IMMEDIATE_MULTIPLE_TARGETS:
-            strcpy(buf2, "Multiple targets in selected direction");
+            Strcpy(buf2, "Multiple targets in selected direction");
             break;
         case IMMEDIATE_ONE_TO_THREE_TARGETS:
-            strcpy(buf2, "1/2/3 targets in selected direction depending on blessedness");
+            Strcpy(buf2, "1/2/3 targets in selected direction depending on blessedness");
             break;
         case IMMEDIATE_ONE_TO_SEVEN_TARGETS:
-            strcpy(buf2, "1/4/7 targets in selected direction depending on blessedness");
+            Strcpy(buf2, "1/4/7 targets in selected direction depending on blessedness");
             break;
         case IMMEDIATE_TWO_TO_SIX_TARGETS:
-            strcpy(buf2, "2/4/6 targets in selected direction depending on blessedness");
+            Strcpy(buf2, "2/4/6 targets in selected direction depending on blessedness");
             break;
         default:
             break;
@@ -1797,16 +1789,14 @@ int spell;
     /* Range */
     if (objects[booktype].oc_spell_range > 0)
     {
-        Sprintf(buf, "Range:            %ld'", objects[booktype].oc_spell_range * 5L);
-        
+        Sprintf(buf, "Range:            %ld'", objects[booktype].oc_spell_range * 5L);        
         putstr(datawin, 0, buf);
     }
 
     /* Radius */
     if (objects[booktype].oc_spell_radius > 0)
     {
-        Sprintf(buf, "Radius:           %ld'", objects[booktype].oc_spell_radius * 5L);
-        
+        Sprintf(buf, "Radius:           %ld'", objects[booktype].oc_spell_radius * 5L);        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
@@ -1880,7 +1870,6 @@ int spell;
                 Sprintf(eos(buf), " per caster level");
             else
                 Sprintf(eos(buf), " per %ld caster levels", objects[booktype].oc_spell_per_level_step);
-
             
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
@@ -1895,12 +1884,10 @@ int spell;
                 char skilllevelnamebuf[BUFSZ];
 
                 (void)skill_level_name(skill_type, skilllevelnamebuf, FALSE);
-                strcpy(skillnamebuf, skill_name(skill_type, TRUE));
+                Strcpy(skillnamebuf, skill_name(skill_type, TRUE));
                 //*skilllevelnamebuf = lowc(*skilllevelnamebuf);
 
-                Sprintf(buf, "Level limit:      %d (%s at %s)", max_level, skilllevelnamebuf, skillnamebuf);
-
-                
+                Sprintf(buf, "Level limit:      %d (%s at %s)", max_level, skilllevelnamebuf, skillnamebuf);                
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
         }
@@ -1911,12 +1898,11 @@ int spell;
     {
         damagetypeprinted = TRUE;
         char dmgttext[BUFSZ] = "";
-        strcpy(dmgttext, get_damage_type_text(objects[booktype].oc_damagetype));
+        Strcpy(dmgttext, get_damage_type_text(objects[booktype].oc_damagetype));
         *dmgttext = highc(*dmgttext);
         if (strcmp(dmgttext, "") != 0)
         {
-            Sprintf(buf, "Damage type:      %s", dmgttext);
-            
+            Sprintf(buf, "Damage type:      %s", dmgttext);            
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
     }
@@ -1925,53 +1911,53 @@ int spell;
     {
         if (objects[booktype].oc_dir == RAY && !damagetypeprinted)
         {
-            strcpy(buf2, "");
-            strcpy(buf3, "Effect");
+            Strcpy(buf2, "");
+            Strcpy(buf3, "Effect");
             switch (objects[booktype].oc_dir_subtype)
             {
             case RAY_MAGIC_MISSILE:
-                strcpy(buf2, "Force damage");
-                strcpy(buf3, "Damage");
+                Strcpy(buf2, "Force damage");
+                Strcpy(buf3, "Damage");
                 break;
             case RAY_FIRE:
-                strcpy(buf2, "Fire damage");
-                strcpy(buf3, "Damage");
+                Strcpy(buf2, "Fire damage");
+                Strcpy(buf3, "Damage");
                 break;
             case RAY_COLD:
-                strcpy(buf2, "Cold damage");
-                strcpy(buf3, "Damage");
+                Strcpy(buf2, "Cold damage");
+                Strcpy(buf3, "Damage");
                 break;
             case RAY_SLEEP:
-                strcpy(buf2, "Sleeping");
-                strcpy(buf3, "Effect");
+                Strcpy(buf2, "Sleeping");
+                Strcpy(buf3, "Effect");
                 break;
             case RAY_DISINTEGRATION:
-                strcpy(buf2, "Disintegration");
-                strcpy(buf3, "Effect");
+                Strcpy(buf2, "Disintegration");
+                Strcpy(buf3, "Effect");
                 break;
             case RAY_LIGHTNING:
-                strcpy(buf2, "Lightning damage");
-                strcpy(buf3, "Damage");
+                Strcpy(buf2, "Lightning damage");
+                Strcpy(buf3, "Damage");
                 break;
             case RAY_POISON_GAS:
-                strcpy(buf2, "Poison gas");
-                strcpy(buf3, "Damage");
+                Strcpy(buf2, "Poison gas");
+                Strcpy(buf3, "Damage");
                 break;
             case RAY_ACID:
-                strcpy(buf2, "Acid damage");
-                strcpy(buf3, "Damage");
+                Strcpy(buf2, "Acid damage");
+                Strcpy(buf3, "Damage");
                 break;
             case RAY_DEATH:
-                strcpy(buf2, "Death");
-                strcpy(buf3, "Effect");
+                Strcpy(buf2, "Death");
+                Strcpy(buf3, "Effect");
                 break;
             case RAY_DIGGING:
-                strcpy(buf2, "Digs stone");
-                strcpy(buf3, "Effect");
+                Strcpy(buf2, "Digs stone");
+                Strcpy(buf3, "Effect");
                 break;
             case RAY_EVAPORATION:
-                strcpy(buf2, "Evaporates water");
-                strcpy(buf3, "Effect");
+                Strcpy(buf2, "Evaporates water");
+                Strcpy(buf3, "Effect");
                 break;
             default:
                 break;
@@ -1981,14 +1967,14 @@ int spell;
         }
         else if (objects[booktype].oc_dir == NODIR)
         {
-            strcpy(buf2, "");
-            strcpy(buf3, "Effect");
+            Strcpy(buf2, "");
+            Strcpy(buf3, "Effect");
             int j;
             for(j = 0; propertynames[j].prop_num; j++)
             { 
                 if (propertynames[j].prop_num == objects[booktype].oc_dir_subtype)
                 {
-                    strcpy(buf2, propertynames[j].prop_name);
+                    Strcpy(buf2, propertynames[j].prop_name);
                     *buf2 = highc(*buf2);
                     break;
                 }
@@ -1999,7 +1985,6 @@ int spell;
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
         }
-
     }
 
     /* Duration */
@@ -2028,18 +2013,14 @@ int spell;
             Strcat(buf, plusbuf);
         }
         Sprintf(plusbuf, " round%s", (objects[booktype].oc_spell_dur_dice == 0 && objects[booktype].oc_spell_dur_diesize == 0 && objects[booktype].oc_spell_dur_plus == 1) ? "" : "s");
-        Strcat(buf, plusbuf);
-
-        
+        Strcat(buf, plusbuf);        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
     /* Saving throw adjustment */
     if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_MASK)
     {
-        Sprintf(buf, "Saving throw:     Against %s", get_otyp_saving_throw_description(booktype));
-
-        
+        Sprintf(buf, "Saving throw:     Against %s", get_otyp_saving_throw_description(booktype));        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
         char baseadjbuf[BUFSZ];
@@ -2059,9 +2040,7 @@ int spell;
         char totaladjbuf[BUFSZ];
         Sprintf(totaladjbuf, "%s%d", totaladj >= 0 ? "+" : "", totaladj);
 
-        Sprintf(buf, "Save adjustment:  %s (%s base, %s %s skill)", totaladjbuf, baseadjbuf, skilladjbuf, skill_level_namebuf);
-
-        
+        Sprintf(buf, "Save adjustment:  %s (%s base, %s %s skill)", totaladjbuf, baseadjbuf, skilladjbuf, skill_level_namebuf);        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
@@ -2072,14 +2051,12 @@ int spell;
         Sprintf(buf, "Magic resistance: %s by magic resistance", 
             (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_MAGIC_RESISTANCE) ? "Affected" : 
             (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_DOES_NOT_USE_MAGIC_RESISTANCE) ? "Unaffected" : "Unknown if affected");
-
         
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
     /* Skill chance */
-    Sprintf(buf, "Train chance:     %ld%%", objects[booktype].oc_spell_skill_chance);
-    
+    Sprintf(buf, "Train chance:     %ld%%", objects[booktype].oc_spell_skill_chance);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Flags */
@@ -2093,31 +2070,30 @@ int spell;
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    strcpy(buf2, "");
+    Strcpy(buf2, "");
     if (!(objects[booktype].oc_spell_flags & S1_NO_VERBAL_COMPONENT))
-        strcpy(buf2, "Verbal");
+        Strcpy(buf2, "Verbal");
 
     if (!(objects[booktype].oc_spell_flags & S1_NO_SOMATIC_COMPONENT))
     {
         if (strcmp(buf2,""))
-            strcpy(eos(buf2), ", ");
+            Strcpy(eos(buf2), ", ");
 
-        strcpy(eos(buf2), "Somatic");
+        Strcpy(eos(buf2), "Somatic");
     }
 
     if (objects[booktype].oc_material_components > 0)
     {
         if (strcmp(buf2, ""))
-            strcpy(eos(buf2), ", ");
+            Strcpy(eos(buf2), ", ");
 
-        strcpy(eos(buf2), "Material");
+        Strcpy(eos(buf2), "Material");
     }
 
     if (!strcmp(buf2, ""))
-        strcpy(buf2, "None");
+        Strcpy(buf2, "None");
 
-    Sprintf(buf, "Components:       %s", buf2);
-    
+    Sprintf(buf, "Components:       %s", buf2);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
 
@@ -2127,8 +2103,7 @@ int spell;
         Sprintf(buf2, "%d casting%s", matlists[objects[booktype].oc_material_components].spellsgained,
             matlists[objects[booktype].oc_material_components].spellsgained == 1 ? "" : "s");
 
-        Sprintf(buf, "Material components - %s:", buf2);
-        
+        Sprintf(buf, "Material components - %s:", buf2);        
         putstr(datawin, ATR_HEADING, buf);
 
         int j;
@@ -2139,22 +2114,19 @@ int spell;
             
             putstr(datawin, ATR_INDENT_AT_DASH, buf);
         }
-
     }
 
     /* Statistics */
     if (damageprinted)
     {
         int cnt = 1;
-        strcpy(buf, "Spell statistics:");
-        
+        Strcpy(buf, "Spell statistics:");        
         putstr(datawin, ATR_HEADING, buf);
 
         if (damageprinted)
         {
             double avg = baseavg + perlevelavg * ((double)used_bonuses);
-            Sprintf(buf, "  %d - Average damage is %.1f", cnt, avg);
-            
+            Sprintf(buf, "  %d - Average damage is %.1f", cnt, avg);            
             putstr(datawin, ATR_INDENT_AT_DASH, buf);
             cnt++;
         }
@@ -2165,16 +2137,15 @@ int spell;
     {
 #if 0
         /* One empty line here */
-        strcpy(buf, "");
-        
+        Strcpy(buf, "");        
         putstr(datawin, 0, buf);
 #endif
-        strcpy(buf, "Description:");
+        Strcpy(buf, "Description:");
         putstr(datawin, ATR_INDENT_AT_DOUBLE_SPACE | ATR_HEADING, buf);
         //Sprintf(buf, "  %s", OBJ_ITEM_DESC(booktype));
         //putstr(datawin, 0, buf);
         char descbuf[8 * BUFSZ];
-        strcpy(descbuf, OBJ_ITEM_DESC(booktype));
+        Strcpy(descbuf, OBJ_ITEM_DESC(booktype));
         char* bp = descbuf;
         char* ebp;
         while (bp && *bp)
@@ -2186,7 +2157,6 @@ int spell;
             if (strlen(bp) > 0)
             {
                 Sprintf(buf, "  %s", bp);
-
                 putstr(datawin, ATR_INDENT_AT_DOUBLE_SPACE, buf);
             }
 
@@ -2403,7 +2373,7 @@ boolean atme;
         spellcooldownleft(spell) = 0;
 
     //Now check if successful
-    chance = percent_success(spell);
+    chance = percent_success(spell, TRUE);
     if (confused || (rnd(100) > chance)) 
     {
         update_u_action(ACTION_TILE_CAST_NODIR);
@@ -4174,7 +4144,7 @@ int splaction;
             "%s%s {%s &success; %d%% &mana; %.1f &cool; %s%d &casts; %s}" : "%s%s {%s Success %d%% Mana %.1f Cool %s%d Casts %s}";
         Sprintf(buf, fmt, fullname, descbuf,
             levelbuf,
-            percent_success(splnum),
+            percent_success(splnum, TRUE),
             displayed_manacost,
             extrabuf, getspellcooldown(splnum),
             availablebuf);
@@ -4397,7 +4367,7 @@ boolean usehotkey;
             categorybuf,
             displayed_manacost >= 100 ? 0 : 1, displayed_manacost,
             statbuf,
-            100 - percent_success(splnum),
+            100 - percent_success(splnum, TRUE),
             spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
             availablebuf);  //spellretention(splnum, retentionbuf));
 
@@ -4643,20 +4613,19 @@ int spell;
 }
 
 STATIC_OVL int
-percent_success(spell)
+percent_success(spell, limited)
 int spell;
+boolean limited;
 {
     /* Intrinsic and learned ability are combined to calculate
      * the probability of player's success at cast a given spell.
      */
     int chance, statused = A_INT;
     long armor_penalty;
-//    int difficulty;
     int skill;
 
     /* Calculate intrinsic ability (armor_penalty) */
     armor_penalty = 0L; // urole.spelbase;
-    //special = urole.spelheal;
     statused = attribute_value_for_spellbook(spellid(spell));
 
     if (!(objects[spellid(spell)].oc_spell_flags & S1_NO_SOMATIC_COMPONENT))
@@ -4699,20 +4668,10 @@ int spell;
             armor_penalty += objects[uwep->otyp].oc_spell_casting_penalty;
     }
 
-//    if (spellid(spell) == urole.spelspec)
-//        armor_penalty += urole.spelsbon;
-
-
     /* Calculate success chance */
-
     chance = -130;
     chance += -60 * (spellev(spell) + 0);
 
-    /*
-     * High level spells are harder.  Easier for higher level casters.
-     * The difficulty is based on the hero's level and their skill level
-     * in that spell type.
-     */
     skill = P_SKILL_LEVEL(spell_skilltype(spellid(spell)));
 
     long bonus = 0L;
@@ -4722,62 +4681,17 @@ int spell;
     bonus += (skill == P_ISRESTRICTED ? 0L : 5L * (long)u.uspellcastingbonus_unrestricted); /* items */
     bonus += 5L * (long)u.uspellcastingbonus_all; /* items */
 
-//    long armor_multiplier = max(0L, 100L - 5L * armor_penalty);
-//    chance += (int)((bonus * armor_multiplier) / 100L);
-
     chance += (int)bonus;
     chance -= (int)(ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER * armor_penalty);
 
-//    if (difficulty > 0) {
-        /* Player is too low level or unskilled. */
-//        chance -= isqrt(900 * difficulty + 2000);
-//    } else {
-        /* Player is above level.  Learning continues, but the
-         * law of diminishing returns sets in quickly for
-         * low-level spells.  That is, a player quickly gains
-         * no advantage for raising level.
-         */
-//        int learning = 15 * -difficulty / spellev(spell);
-//        chance += learning > 20 ? 20 : learning;
-//    }
-
-    /* Clamp the chance: >18 stat and advanced learning only help
-     * to a limit, while chances below "hopeless" only raise the
-     * specter of overflowing 16-bit ints (and permit wearing a
-     * shield to raise the chances :-).
-     */
-    /*
-    if (chance < 0)
-        chance = 0;
-    if (chance > 500)
-        chance = 500;
-    */
-    /* Wearing anything but a light shield makes it very awkward
-     * to cast a spell.  The penalty is not quite so bad for the
-     * player's role-specific spell.
-     */
-    /*
-    if (uarms && weight(uarms) > (int) objects[SMALL_SHIELD].oc_weight) {
-        if (spellid(spell) == urole.spelspec) {
-            chance *= 0.75;
-        } else {
-            chance /= 2;
-        }
-    }*/
-
-    /* Finally, chance (based on player intell/wisdom and level) is
-     * combined with ability (based on player intrinsics and
-     * encumbrances).  No matter how intelligent/wise and advanced
-     * a player is, intrinsics and encumbrance can prevent casting;
-     * and no matter how able, learning is always required.
-     */
-    // chance = chance * (20 - armor_penalty) / 15 - armor_penalty;
-
-    /* Clamp to percentile */
-    if (chance > 100)
-        chance = 100;
-    if (chance < 0)
-        chance = 0;
+    if (limited)
+    {
+        /* Clamp to percentile */
+        if (chance > 100)
+            chance = 100;
+        if (chance < 0)
+            chance = 0;
+    }
 
     return chance;
 }
@@ -5494,7 +5408,7 @@ dump_spells()
             Strcpy(spellnamebuf, spellname(i));
             *spellnamebuf = highc(*spellnamebuf);
 
-            Sprintf(buf, " %s (%d%% success%s)", spellnamebuf, percent_success(i), castingsbuf);
+            Sprintf(buf, " %s (%d%% success%s)", spellnamebuf, percent_success(i, TRUE), castingsbuf);
             putstr(0, 0, buf);
         }
     }
