@@ -2258,9 +2258,9 @@ struct monst* mon;
                 maxskills = Skill_Monk_Max;
                 break;
             case ROLE_PRIEST:
-                if (mon->malign < 0)
+                if (mon->data->maligntyp < 0)
                     maxskills = Skill_P_Max_Chaotic;
-                else if (mon->malign > 0)
+                else if (mon->data->maligntyp > 0)
                     maxskills = Skill_P_Max_Lawful;
                 else
                     maxskills = Skill_P_Max_Neutral;

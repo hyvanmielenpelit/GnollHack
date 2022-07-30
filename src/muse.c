@@ -126,7 +126,7 @@ struct obj *obj;
                     play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_FREED_ME);
                     verbalize("You freed me!");
                     mtmp->mpeaceful = 1;
-                    set_malign(mtmp);
+                    set_mhostility(mtmp);
                     newsym(mtmp->mx, mtmp->my);
                 } else {
                     play_monster_special_dialogue_line(mtmp, DJINN_LINE_IT_IS_ABOUT_TIME);

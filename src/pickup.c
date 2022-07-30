@@ -3045,7 +3045,7 @@ boolean makecat, givemsg;
         if (livecat) 
         {
             livecat->mpeaceful = 1;
-            set_malign(livecat);
+            set_mhostility(livecat);
             if (givemsg) 
             {
                 if (!canspotmon(livecat))

@@ -354,7 +354,7 @@ int mtype;
         priest->ispriest = 1;
         priest->isminion = 0;
         priest->msleeping = 0;
-        set_malign(priest); /* mpeaceful may have changed */
+        set_mhostility(priest); /* mpeaceful may have changed */
 
         /* now his/her goodies... */
         if (montype == PM_HIGH_PRIEST)
@@ -537,7 +537,7 @@ int mtype;
         smith->mpeaceful = 1;
         smith->issmith = 1;
         smith->msleeping = 0;
-        set_malign(smith); /* mpeaceful may have changed */
+        set_mhostility(smith); /* mpeaceful may have changed */
 
         (void)mongetsgold(smith, 3000L + (long)rn2(6) * 500L);
         struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS, MKOBJ_FLAGS_PARAM_IS_TITLE);
@@ -776,7 +776,7 @@ int roomno;
                 spdl_id2 = PRIEST_SPECIAL_DIALOGUE_HIGH_BE_GONE;
                 priest->mpeaceful = 0;
                 /* became angry voluntarily; no penalty for attacking him */
-                set_malign(priest);
+                set_mhostility(priest);
             } 
             else 
             {
@@ -875,7 +875,7 @@ int roomno;
             else
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "sense a presence close by!");
             mtmp->mpeaceful = 0;
-            set_malign(mtmp);
+            set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
             if (flags.verbose)
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frightened to death, and unable to move.");
@@ -1181,7 +1181,7 @@ boolean peaceful;
     roamer->mtrapseen = ~0; /* traps are known */
     roamer->mpeaceful = peaceful;
     roamer->msleeping = 0;
-    set_malign(roamer); /* peaceful may have changed */
+    set_mhostility(roamer); /* peaceful may have changed */
 
     /* MORE TO COME */
     return roamer;
@@ -1202,7 +1202,7 @@ register struct monst *roamer;
         roamer->mpeaceful = roamer->mtame = 0;
         if (!roamer->mtame)
             roamer->ispartymember = FALSE;
-        set_malign(roamer);
+        set_mhostility(roamer);
     }
     newsym(roamer->mx, roamer->my);
 }

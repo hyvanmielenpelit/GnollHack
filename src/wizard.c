@@ -654,7 +654,7 @@ struct monst *summoner;
             if ((mtmp = makemon(&mons[makeindex], bypos.x, bypos.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL))) != 0)
             {
                 mtmp->msleeping = mtmp->mpeaceful = mtmp->mtame = 0;
-                set_malign(mtmp);
+                set_mhostility(mtmp);
                 newsym(mtmp->mx, mtmp->my);
             }
             else /* random monster to substitute for geno'd selection */
@@ -820,7 +820,7 @@ resurrect()
 
     if (mtmp) {
         mtmp->mtame = mtmp->mpeaceful = 0; /* paranoia */
-        set_malign(mtmp);
+        set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
         check_boss_fight(mtmp);
         if (!Deaf) {

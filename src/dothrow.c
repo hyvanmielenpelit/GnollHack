@@ -2419,7 +2419,7 @@ xchar x, y;
                                          ? An(rndmonnam(NULL))
                                          : "The picture-painting demon");
         mtmp->mpeaceful = !obj->cursed;
-        set_malign(mtmp);
+        set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
     }
 }

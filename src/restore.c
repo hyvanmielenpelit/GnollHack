@@ -1241,7 +1241,7 @@ boolean ghostly;
         if (!u.uz.dlevel)
             continue;
         if (ghostly) {
-            /* reset peaceful/malign relative to new character;
+            /* reset peaceful/mhostility relative to new character;
                shopkeepers will reset based on name */
             if (!mtmp->isshk)
                 mtmp->mpeaceful =
@@ -1249,7 +1249,7 @@ boolean ghostly;
                      && sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))
                         ? TRUE
                         : peace_minded(mtmp->data);
-            set_malign(mtmp);
+            set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
         } else if (elapsed > 0L) {
             mon_catchup_elapsed_time(mtmp, elapsed);

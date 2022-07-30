@@ -433,7 +433,7 @@ int x,y;
     if (mon) {
         //mon->msleeping = 1;
         mon->mpeaceful = 0;
-        set_malign(mon);
+        set_mhostility(mon);
         /* Give him a sceptre to pound in judgment */
         (void) mongets(mon, MACE);
     }
@@ -666,7 +666,7 @@ place_main_monst_here:
                 if (type == COURT && is_peaceful(mon))
                 {
                     mon->mpeaceful = 0;
-                    set_malign(mon);
+                    set_mhostility(mon);
                 }
             }
 

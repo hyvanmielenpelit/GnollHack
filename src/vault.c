@@ -389,7 +389,7 @@ invault()
             return;
         guard->isgd = 1;
         guard->mpeaceful = 1;
-        set_malign(guard);
+        set_mhostility(guard);
         EGD(guard)->gddone = 0;
         EGD(guard)->ogx = x;
         EGD(guard)->ogy = y;

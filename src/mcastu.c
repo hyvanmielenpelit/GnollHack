@@ -894,7 +894,7 @@ int spellnum;
                 mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
                 if (!mtmp2->mtame)
                     mtmp2->ispartymember = FALSE;
-                set_malign(mtmp2);
+                set_mhostility(mtmp2);
                 difficulty += mtmp2->data->difficulty;
                 summon_quan++;
             }

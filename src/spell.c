@@ -294,7 +294,7 @@ struct obj *book2;
                         || (mtmp = makemon(&mons[PM_NALFESHNEE], u.ux, u.uy,
                                            MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0)) {
             mtmp->mpeaceful = 0;
-            set_malign(mtmp);
+            set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
         }
         /* next handle the affect on things you're carrying */

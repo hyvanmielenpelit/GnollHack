@@ -849,7 +849,7 @@ register struct monst *mtmp;
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gets angry!", Amonnam(mtmp));
                 mtmp->mpeaceful = 0;
                 newsym(mtmp->mx, mtmp->my);
-                set_malign(mtmp);
+                set_mhostility(mtmp);
                 update_game_music();
                 /* since no way is an image going to pay it off */
             }

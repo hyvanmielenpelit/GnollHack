@@ -3289,7 +3289,7 @@ doturn()
                     if (u.ulevel >= xlev && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, NOTELL)) {
                         if (u.ualign.type == A_CHAOTIC) {
                             mtmp->mpeaceful = 1;
-                            set_malign(mtmp);
+                            set_mhostility(mtmp);
                             newsym(mtmp->mx, mtmp->my);
                         } else { /* damn them */
                             killed(mtmp);

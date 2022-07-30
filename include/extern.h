@@ -1636,7 +1636,7 @@ E struct obj* FDECL(mongets_noinit_item, (struct monst*, int,  int));
 E long FDECL(mongetsgold, (struct monst*, long));
 E int FDECL(golemhp, (int));
 E boolean FDECL(peace_minded, (struct permonst *));
-E void FDECL(set_malign, (struct monst *));
+E void FDECL(set_mhostility, (struct monst *));
 E void FDECL(newmcorpsenm, (struct monst *));
 E void FDECL(freemcorpsenm, (struct monst *));
 E void FDECL(set_mimic_sym, (struct monst *));

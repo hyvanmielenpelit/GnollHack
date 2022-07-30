@@ -794,7 +794,7 @@ int *fail_reason;
         mon->mtame = 0; /* (might be petrified pet tossed onto trap) */
         mon->mpeaceful = 0;
         mon->ispartymember = FALSE;
-        set_malign(mon);
+        set_mhostility(mon);
     }
 
     if (isok(mon->mx, mon->my))
@@ -5514,7 +5514,7 @@ struct monst *mtmp;
             && mtmp->data->mlet != S_HUMAN)
         {
             mtmp->mpeaceful = 1;
-            set_malign(mtmp); /* reset alignment */
+            set_mhostility(mtmp); /* reset alignment */
             newsym(mtmp->mx, mtmp->my);
             pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s is grateful.", Monnam(mtmp));
         }
@@ -5843,7 +5843,7 @@ boolean stuff;
             && rnl(10) < 3) 
         {
             mtmp->mpeaceful = 1;
-            set_malign(mtmp); /* reset alignment */
+            set_mhostility(mtmp); /* reset alignment */
             newsym(mtmp->mx, mtmp->my);
             pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s thinks it was nice of you to try.", Monnam(mtmp));
         }

@@ -156,7 +156,7 @@ register boolean special;
             (void) mongets(mtmp, FAKE_AMULET_OF_YENDOR);
         }
         mtmp->mpeaceful = 0;
-        set_malign(mtmp); /* peaceful may have changed again */
+        set_mhostility(mtmp); /* peaceful may have changed again */
 
         /* default equipment; much of it will be overridden below */
         weapon = !rn2(2) ? LONG_SWORD : rnd_class(SPEAR, BULLWHIP);

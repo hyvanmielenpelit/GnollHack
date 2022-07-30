@@ -1938,8 +1938,8 @@ struct mkroom *croom;
         if (m->peaceful >= 0)
         {
             mtmp->mpeaceful = m->peaceful;
-            /* changed mpeaceful again; have to reset malign */
-            set_malign(mtmp);
+            /* changed mpeaceful again; have to reset mhostility */
+            set_mhostility(mtmp);
         }
 
         if (m->asleep >= 0) 

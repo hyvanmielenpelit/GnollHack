@@ -718,7 +718,7 @@ boolean talk;
             mon->mstrategy &= ~STRAT_APPEARMSG;
         }
         mon->mpeaceful = FALSE;
-        /* don't call set_malign(); player was naughty */
+        /* don't call set_mhostility(); player was naughty */
     }
 }
 
@@ -740,7 +740,7 @@ struct monst *mtmp;
         if (!mtmp->mtame)
             mtmp->ispartymember = FALSE;
 
-        set_malign(mtmp);
+        set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
         return 0;
     }
@@ -833,7 +833,7 @@ struct monst *mtmp;
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "Seeing you, %s gets angry...", Amonnam(mtmp));
             mtmp->mpeaceful = 0;
-            set_malign(mtmp);
+            set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
             update_game_music();
             return 0;
@@ -848,7 +848,7 @@ struct monst *mtmp;
 
         if (!demand || multi < 0 || Sleeping || Paralyzed_or_immobile) { /* you have no gold or can't move */
             mtmp->mpeaceful = 0;
-            set_malign(mtmp);
+            set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
             return 0;
         }
@@ -887,7 +887,7 @@ struct monst *mtmp;
                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gets angry...", Amonnam(mtmp));
                 mtmp->mpeaceful = 0;
-                set_malign(mtmp);
+                set_mhostility(mtmp);
                 newsym(mtmp->mx, mtmp->my);
                 update_game_music();
                 return 0;

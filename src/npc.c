@@ -468,7 +468,7 @@ int mtype;
         npc->mpeaceful = 1;
         npc->isnpc = 1;
         npc->msleeping = 0;
-        set_malign(npc); /* mpeaceful may have changed */
+        set_mhostility(npc); /* mpeaceful may have changed */
 
         if ((npc_subtype_definitions[npctype].start_money_d > 0 && npc_subtype_definitions[npctype].start_money_n > 0) || npc_subtype_definitions[npctype].start_money_p > 0)
         {

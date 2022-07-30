@@ -3685,7 +3685,7 @@ struct obj *obj;
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_FREED_ME);
         verbalize("You freed me!");
         mtmp->mpeaceful = TRUE;
-        set_malign(mtmp);
+        set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
         break;
     case 3:
@@ -3703,7 +3703,7 @@ struct obj *obj;
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_DISTURBED);
         verbalize("You disturbed me, fool!");
         mtmp->mpeaceful = FALSE;
-        set_malign(mtmp);
+        set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
         break;
     }

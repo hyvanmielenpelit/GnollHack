@@ -845,7 +845,7 @@ struct mkroom *sroom;
 
     eshkp = ESHK(shk); /* makemon(...,MM_ESHK) allocates this */
     shk->isshk = shk->mpeaceful = 1;
-    set_malign(shk);
+    set_mhostility(shk);
     shk->msleeping = 0;
     shk->mtrapseen = ~0; /* we know all the traps already */
     eshkp->shoproom = (schar) ((sroom - rooms) + ROOMOFFSET);

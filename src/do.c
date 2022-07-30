@@ -6078,7 +6078,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     flush_screen(-1);       /* ensure all map flushes are postponed */
     char wakeupbuf[BUFSZ] = "";
     boolean displaywakeup = FALSE;
-    //boolean displaydeathhint = (at_location & 2) != 0;
+
     if (portal == 1 && !In_endgame(&u.uz))
     {
         /* find the portal on the new level */
@@ -6304,9 +6304,6 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, wakeupbuf);
         display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_REVIVAL, ATR_NONE, CLR_MSG_SUCCESS, NO_GLYPH, POPUP_FLAGS_NONE);
     }
-
-    //if(displaydeathhint)
-    //    death_hint();
 
     /* special levels can have a custom arrival message */
     deliver_splev_message();

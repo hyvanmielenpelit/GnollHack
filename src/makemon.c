@@ -149,7 +149,7 @@ int x, y, n, mmflags;
             {
                 mon->mpeaceful = FALSE;
                 mon->mavenge = 0;
-                set_malign(mon);
+                set_mhostility(mon);
                 /* Undo the second peace_minded() check in makemon(); if the
                  * monster turned out to be peaceful the first time we
                  * didn't create it at all; we don't want a second check.
@@ -2279,7 +2279,7 @@ boolean origin_at_mon;
     else
         m2->isminion = FALSE;
 
-    set_malign(m2);
+    set_mhostility(m2);
 
     if (!m2->mtame)
         m2->ispartymember = FALSE;
@@ -3041,7 +3041,7 @@ int level_limit, level_adjustment;
                               : eminp->renegade;
     }
 
-    set_malign(mtmp); /* having finished peaceful changes */
+    set_mhostility(mtmp); /* having finished peaceful changes */
 
 #if 0
     if (anymon && !(mmflags & MM_NOGRP)) { //Small and large groups deactivated due to new encounter system -- JG
@@ -4186,12 +4186,11 @@ register struct permonst *ptr;
      * hostile.  This chance is greater if the player has strayed
      * (u.ualign.record negative) or the monster is not strongly aligned.
      */
-    return (boolean) (!!rn2(16 + (u.ualign.record < -15 ? -15
-                                                        : u.ualign.record))
+    return (boolean) (!!rn2(16 + (u.ualign.record < -15 ? -15 : u.ualign.record))
                       && !!rn2(2 + abs(mal)));
 }
 
-/* Set malign to have the proper effect on player alignment if monster is
+/* Set mhostility to have the proper effect on player alignment if monster is
  * killed.  Negative numbers mean it's bad to kill this monster; positive
  * numbers mean it's good.  Since there are more hostile monsters than
  * peaceful monsters, the penalty for killing a peaceful monster should be
@@ -4202,7 +4201,7 @@ register struct permonst *ptr;
  *   it's never bad to kill a hostile monster, although it may not be good.
  */
 void
-set_malign(mtmp)
+set_mhostility(mtmp)
 struct monst *mtmp;
 {
     schar mal = mtmp->data->maligntyp;
@@ -4224,41 +4223,41 @@ struct monst *mtmp;
     coaligned = (sgn(mal) == sgn(u.ualign.type));
     if (mtmp->data->msound == MS_LEADER)
     {
-        mtmp->malign = -20;
+        mtmp->mhostility = -20;
     } 
     else if (mal == A_NONE) 
     {
         if (is_peaceful(mtmp))
-            mtmp->malign = 0;
+            mtmp->mhostility = 0;
         else
-            mtmp->malign = 20; /* really hostile */
+            mtmp->mhostility = 20; /* really hostile */
     }
     else if (always_peaceful(mtmp->data))
     {
         int absmal = abs(mal);
         if (is_peaceful(mtmp))
-            mtmp->malign = -3 * max(5, absmal);
+            mtmp->mhostility = -3 * max(5, absmal);
         else
-            mtmp->malign = 3 * max(5, absmal); /* renegade */
+            mtmp->mhostility = 3 * max(5, absmal); /* renegade */
     } 
     else if (always_hostile(mtmp->data)) 
     {
         int absmal = abs(mal);
         if (coaligned)
-            mtmp->malign = 0;
+            mtmp->mhostility = 0;
         else
-            mtmp->malign = max(5, absmal);
+            mtmp->mhostility = max(5, absmal);
     }
     else if (coaligned) 
     {
         int absmal = abs(mal);
         if (is_peaceful(mtmp))
-            mtmp->malign = -3 * max(3, absmal);
+            mtmp->mhostility = -3 * max(3, absmal);
         else /* renegade */
-            mtmp->malign = max(3, absmal);
+            mtmp->mhostility = max(3, absmal);
     } 
     else /* not coaligned and therefore hostile */
-        mtmp->malign = abs(mal);
+        mtmp->mhostility = abs(mal);
 }
 
 /* allocate a new mcorpsenm field for a monster; only need mextra itself */

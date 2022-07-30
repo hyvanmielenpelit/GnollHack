@@ -1080,9 +1080,9 @@ struct obj* uitem;
         if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_MASK)
         {
             if (
-                ((objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_LAWFUL) && monster->malign > 0)
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_NEUTRAL) && monster->malign == 0)
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_CHAOTIC) && monster->malign < 0)
+                ((objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_LAWFUL) && monster->data->maligntyp > 0)
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_NEUTRAL) && monster->data->maligntyp == 0)
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_CHAOTIC) && monster->data->maligntyp < 0)
                 )
             {
                 // Ok

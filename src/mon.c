@@ -3809,15 +3809,15 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 
 cleanup:
     /* punish bad behaviour */
-    if (is_human(mdat) && !is_undead(mdat) && !is_were(mdat) 
+    if (is_human(mdat) && !is_not_living(mdat) && !is_were(mdat) 
         && !(mtmp->ispriest && has_epri(mtmp) && EPRI(mtmp)->shralign == A_NONE) /* Killing Moloch's (high) priests do not make you murderer */
-        && (!always_hostile(mdat) && mtmp->malign <= 0)
+        && (!always_hostile(mdat) && mtmp->mhostility <= 0)
         && (mndx < PM_ARCHAEOLOGIST || mndx > PM_WIZARD)
         && u.ualign.type != A_CHAOTIC) 
     {
         HTelepat &= ~INTRINSIC;
         HBlind_telepat &= ~INTRINSIC;
-        You("murderer!");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "murderer!");
         if (Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters))
             see_monsters(); /* Can't sense monsters any more. */
         luck_change += -2;
@@ -3892,8 +3892,8 @@ cleanup:
     else if (is_peaceful(mtmp))
         adjalign(-5);
 
-    /* malign was already adjusted for u.ualign.type and randomization */
-    adjalign(mtmp->malign);
+    /* mhostility was already adjusted for u.ualign.type and randomization */
+    adjalign(mtmp->mhostility);
 }
 
 /* changes the monster into a stone monster of the same type

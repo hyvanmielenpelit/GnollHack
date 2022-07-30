@@ -531,27 +531,27 @@ rndcurse()
 
 /* remove a random INTRINSIC ability */
 void
-attrcurse()
+attrcurse(VOID_ARGS)
 {
-    switch (rnd(11)) {
+    switch (rnd(12)) {
     case 1:
         if (HFire_immunity & INTRINSIC) {
             HFire_immunity &= ~INTRINSIC;
-            You_feel("warmer.");
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "warmer.");
             break;
         }
         /*FALLTHRU*/
     case 2:
         if (HTeleportation & INTRINSIC) {
             HTeleportation &= ~INTRINSIC;
-            You_feel("less jumpy.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "less jumpy.");
             break;
         }
         /*FALLTHRU*/
     case 3:
         if (HPoison_resistance & INTRINSIC) {
             HPoison_resistance &= ~INTRINSIC;
-            You_feel("a little sick!");
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "a little sick!");
             break;
         }
         /*FALLTHRU*/
@@ -560,7 +560,7 @@ attrcurse()
             HBlind_telepat &= ~INTRINSIC;
             if (Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters))
                 see_monsters(); /* Can't sense mons anymore! */
-            Your("senses fail!");
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "senses fail!");
             break;
         }
         /*FALLTHRU*/
@@ -568,28 +568,29 @@ attrcurse()
         if (HTelepat & INTRINSIC) {
             HTelepat &= ~INTRINSIC;
             see_monsters(); /* Can't sense mons anymore! */
-            Your("senses fail!");
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "senses fail!");
             break;
         }
         /*FALLTHRU*/
     case 6:
         if (HCold_immunity & INTRINSIC) {
             HCold_immunity &= ~INTRINSIC;
-            You_feel("cooler.");
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "cooler.");
             break;
         }
         /*FALLTHRU*/
     case 7:
         if (HInvis & INTRINSIC) {
             HInvis &= ~INTRINSIC;
-            You_feel("paranoid.");
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "paranoid.");
             break;
         }
         /*FALLTHRU*/
     case 8:
         if (HSee_invisible & INTRINSIC) {
             HSee_invisible &= ~INTRINSIC;
-            You("%s!", Hallucination ? "tawt you taw a puttie tat"
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, 
+                "%s!", Hallucination ? "tawt you taw a puttie tat"
                                      : "thought you saw something");
             break;
         }
@@ -597,14 +598,14 @@ attrcurse()
     case 9:
         if (HFast & INTRINSIC) {
             HFast &= ~INTRINSIC;
-            You_feel("slower.");
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "slower.");
             break;
         }
         /*FALLTHRU*/
     case 10:
         if (HStealth & INTRINSIC) {
             HStealth &= ~INTRINSIC;
-            You_feel("clumsy.");
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "clumsy.");
             break;
         }
         /*FALLTHRU*/
@@ -612,14 +613,14 @@ attrcurse()
         /* intrinsic protection is just disabled, not set back to 0 */
         if (HMagical_protection & INTRINSIC) {
             HMagical_protection &= ~INTRINSIC;
-            You_feel("vulnerable.");
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "vulnerable.");
             break;
         }
         /*FALLTHRU*/
     case 12:
         if (HAggravate_monster & INTRINSIC) {
             HAggravate_monster &= ~INTRINSIC;
-            You_feel("less attractive.");
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "less attractive.");
             break;
         }
         /*FALLTHRU*/
