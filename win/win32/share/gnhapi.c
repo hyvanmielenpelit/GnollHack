@@ -333,7 +333,7 @@ LibChmod(const char* filename, unsigned int mode)
 void
 LibSaveAndRestoreSavedGame(void)
 {
-    if (program_state.something_worth_saving 
+    if (!CasualMode && program_state.something_worth_saving 
         && !program_state.gameover && !program_state.panicking 
         && !program_state.exiting && !program_state.freeing_dynamic_data)
     {

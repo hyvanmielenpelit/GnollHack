@@ -590,7 +590,6 @@ int expltype;
                             if (!check_rider_death_absorption(mtmp, (const char*)0))
                             {
                                 mtmp->mhp = 0;
-                                pline("%s is slain!", Monnam(mtmp));
                             }
                         }
                     }
@@ -694,7 +693,7 @@ int expltype;
         item_destruction_hint((int)adtyp, FALSE);
 
         ugolemeffects((int) adtyp, damu);
-        if (uhurt == 2 && damu) 
+        if (uhurt == 2 && (damu || instadeath)) 
         {
             /* if poly'd hero is grabbing another victim, hero takes
                double damage (note: don't rely on u.ustuck here because
@@ -705,9 +704,7 @@ int expltype;
 
             if (instadeath)
             {
-                if (instadeath && adtyp == AD_DRAY)
-                    You("are slain!");
-                else if (instadeath && adtyp == AD_DISN)
+                if (instadeath && adtyp == AD_DISN)
                     You("are disintegrated!");
             }
             else
@@ -721,7 +718,7 @@ int expltype;
             }
         }
 
-        if (u.uhp <= 0 || (Upolyd && u.mh <= 0) || instadeath) 
+        if ((!Upolyd && u.uhp <= 0) || (Upolyd && u.mh <= 0) || (instadeath && uhurt == 2))
         {
             if (olet == MON_EXPLODE)
             {
