@@ -777,7 +777,11 @@ int expltype;
     }
 
     /* explosions are noisy */
-    i = damui * damui;
+    if (instadeath)
+        i = 100;
+    else
+        i = damui * damui;
+
     if (i < 50)
         i = 50; /* in case random damage is very small */
     if (inside_engulfer)
