@@ -54,15 +54,15 @@ int expltype;
     coord grabxy;
     char hallu_buf[BUFSZ], killr_buf[BUFSZ];
     short exploding_wand_typ = objtype;
-    struct obj* otmp = (struct obj*)0;
-    struct obj tempobj = { 0 };
+    //struct obj* otmp = (struct obj*)0;
+    //struct obj tempobj = { 0 };
 
-    if (objtype > STRANGE_OBJECT)
-    {
-        tempobj.otyp = objtype;
-        tempobj.oclass = objects[objtype].oc_class;
-        otmp = &tempobj;
-    }
+    //if (objtype > STRANGE_OBJECT)
+    //{
+    //    tempobj.otyp = objtype;
+    //    tempobj.oclass = objects[objtype].oc_class;
+    //    otmp = &tempobj;
+    //}
 
     /* muse_unslime: SCR_FIRE */
     if (expltype < 0) {
