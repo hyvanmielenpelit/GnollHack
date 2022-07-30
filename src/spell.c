@@ -1700,10 +1700,10 @@ int spell;
 
     /* Success percentage */
     int successpct = percent_success(spell, TRUE);
-    //int successpct_unlimited = percent_success(spell, FALSE);
+    int successpct_unlimited = percent_success(spell, FALSE);
     Strcpy(buf2, "");
-    //if(successpct_unlimited < 0 || successpct_unlimited > 100)
-    //    Sprintf(buf2, " (base %d%%)", successpct_unlimited);
+    if(successpct_unlimited < 0 || successpct_unlimited > 100)
+        Sprintf(buf2, " (base %d%%)", successpct_unlimited);
     Sprintf(buf, "Success chance:   %d%%%s", successpct, buf2);
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
@@ -5397,26 +5397,22 @@ dump_spells()
         char buf[BUFSZ];
         char spellnamebuf[BUFSZ];
         char castingsbuf[BUFSZ] = "";
-        char basebuf[BUFSZ] = "";
+        char successbuf[BUFSZ] = "";
         putstr(0, 0, "Spells in your repertoire:");
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
         {
             int pct_lim = percent_success(i, TRUE);
-            int pct_unlim = percent_success(i, FALSE);
-            if (pct_lim != pct_unlim)
-                Sprintf(basebuf, ", %d%% base", pct_unlim);
-            else
-                Strcpy(basebuf, "");
 
             if (spellamount(i) >= 0)
-                Sprintf(castingsbuf, ", %d casting%s left", spellamount(i), plur(spellamount(i)));
+                Sprintf(castingsbuf, " %d casting%s left", spellamount(i), plur(spellamount(i)));
             else
                 Strcpy(castingsbuf, "");
 
             Strcpy(spellnamebuf, spellname(i));
             *spellnamebuf = highc(*spellnamebuf);
+            Sprintf(successbuf, "%d%% success", pct_lim);
 
-            Sprintf(buf, " %-34s %d%% success%s%s", spellnamebuf, pct_lim, basebuf, castingsbuf);
+            Sprintf(buf, " %-34s %-13s%s", spellnamebuf, successbuf, castingsbuf);
             putstr(0, 0, buf);
         }
     }
