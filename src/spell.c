@@ -1700,10 +1700,10 @@ int spell;
 
     /* Success percentage */
     int successpct = percent_success(spell, TRUE);
-    int successpct_unlimited = percent_success(spell, FALSE);
+    //int successpct_unlimited = percent_success(spell, FALSE);
     Strcpy(buf2, "");
-    if(successpct_unlimited < 0 || successpct_unlimited > 100)
-        Sprintf(buf2, " (base %d%%)", successpct_unlimited);
+    //if(successpct_unlimited < 0 || successpct_unlimited > 100)
+    //    Sprintf(buf2, " (base %d%%)", successpct_unlimited);
     Sprintf(buf, "Success chance:   %d%%%s", successpct, buf2);
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
