@@ -3674,7 +3674,7 @@ boolean was_flying;
         if (!Sick_resistance)
         {
             play_sfx_sound(SFX_PROTECTION_END_WARNING);
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel like you might be catching a cold.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel like you might be catching a cold easier now.");
         }
         break;
     case INVULNERABLE:

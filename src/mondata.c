@@ -1123,6 +1123,8 @@ int* fem_ptr;
             { "mummy high priest", PM_GREATER_MUMMY_HIGH_PRIEST, 0 },
             { "leocrotta", PM_LEUCROTTA, 0 },
             { "archeologist", PM_ARCHAEOLOGIST, 0 },
+            { "dire wolf", PM_DIREWOLF, 0 },
+            { "dire wolf cub", PM_DIREWOLF_CUB, 0 },
             { "hobbit", PM_HALFLING, 0 },
             { "balrog", PM_BALOR, 0 },
             { "ent", PM_TREANT, 0 },
