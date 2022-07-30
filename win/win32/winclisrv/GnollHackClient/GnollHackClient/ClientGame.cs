@@ -1060,7 +1060,7 @@ namespace GnollHackClient
 
         public void ClientCallback_ReportPlayTime(long realtime)
         {
-            long playedalready = Preferences.Get("RealPlayTime", 0);
+            long playedalready = Preferences.Get("RealPlayTime", 0L);
             long totaltime = playedalready + realtime;
             Preferences.Set("RealPlayTime", totaltime);
         }
