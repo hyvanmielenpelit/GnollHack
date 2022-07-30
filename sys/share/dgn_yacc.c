@@ -96,11 +96,7 @@
 #endif
 
 #include "config.h"
-#if defined(GNH_MOBILE)
-#include "date_unix.h"
-#else
 #include "date.h"
-#endif
 #include "dgn_file.h"
 #include "hack.h"
 

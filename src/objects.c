@@ -4645,7 +4645,7 @@ SPELL("finger of death",  "leather bound", None, "ancient necromantic magic", "S
     O1_NONE, O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE),
 SPELL("deathspell",  "morbid", "death field", "ancient necromantic magic", "Kills the targets in the area of effect",
     P_NECROMANCY_SPELL,5, 10, 0,
-    10, 150, A_MAX_WIS_CHA, 12, 1, 100, 0, 1, RAY, RAY_DEATH, 0, 0, 0, 0, 0, 0, 0,
+    10, 150, A_MAX_WIS_CHA, 12, 1, 100, 0, 1, TARGETED, RAY_DEATH, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT | S1_SPELL_EXPLOSION_EFFECT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_DRAY, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE),
 SPELL("power word kill",   "preposterous", None, "ancient necromantic magic", "Kills the target",

@@ -5072,8 +5072,6 @@ get_current_cmap_type_index()
         return CMAP_UNDEAD_STYLE;
     else if (In_modron_level(&u.uz))
         return CMAP_MODRON;
-    else if (Is_bovine_level(&u.uz))
-        return CMAP_BOVINE;
     else if (In_sokoban(&u.uz))
         return CMAP_SOKOBAN;
     else if (On_W_tower_level(&u.uz))
@@ -5081,7 +5079,7 @@ get_current_cmap_type_index()
     else if (Is_astralevel(&u.uz))
         return CMAP_ASTRAL;
     else if (In_endgame(&u.uz))
-        return CMAP_ASTRAL;
+        return CMAP_ELEMENTAL_PLANES;
     else if (Inhell)
         return CMAP_GEHENNOM;
     else

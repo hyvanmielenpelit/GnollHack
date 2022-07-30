@@ -6639,6 +6639,18 @@ namespace GnollHackClient.Pages.Game
                 else if (App._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CANDELABRUM_CANDLES && otmp_round != null)
                 {
                     float y_start = scaled_y_padding;
+                    if (!is_inventory)
+                    {
+                        if (tileflag_normalobjmissile)
+                        {
+                            if (!tileflag_fullsizeditem)
+                                y_start += (height - scaled_tile_height) / 2;
+                        }
+                        else if (tileflag_halfsize)
+                        {
+                            y_start += height / 2;
+                        }
+                    }
                     float x_start = scaled_x_padding;
                     int x_padding = 13;
                     int item_width = 6;

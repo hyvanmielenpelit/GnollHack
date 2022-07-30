@@ -2436,7 +2436,6 @@ boolean atme;
     case SPE_FLAME_BURST:
     case SPE_THUNDERSTRIKE:
     case SPE_GREATER_FROST_RAY:
-    case SPE_DEATHSPELL:
     case SPE_DISINTEGRATE:
     case SPE_SLEEP:
     case SPE_MAGIC_MISSILE:
@@ -2724,6 +2723,7 @@ boolean atme;
     case SPE_MAGIC_MAPPING:
     case SPE_DETECT_TRAPS:
     case SPE_FLAME_STRIKE:
+    case SPE_DEATHSPELL:
     case SPE_STINKING_CLOUD:
     case SPE_CREATE_MONSTER:
         if (objects[otyp].oc_dir != TARGETED)

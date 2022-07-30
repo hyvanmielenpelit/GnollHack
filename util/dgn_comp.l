@@ -121,6 +121,7 @@ sokoban_tileset 			{ yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
 elemental_tileset 			{ yylval.i=CMAP_ELEMENTAL_PLANES; return CMAP_TYPE; }
 astral_tileset 				{ yylval.i=CMAP_ASTRAL; return CMAP_TYPE; }
 gehennom_cavernous_tileset 	{ yylval.i=CMAP_GEHENNOM_CAVERNOUS; return CMAP_TYPE; }
+garden_tileset 				{ yylval.i=CMAP_GARDEN; return CMAP_TYPE; }
 BRANCH		return(BRANCH);
 CHAINBRANCH	return(CHBRANCH);
 LEVEL		return(LEVEL);

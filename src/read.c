@@ -3366,7 +3366,50 @@ boolean *effect_happened_ptr;
             u_wait_until_action();
             u.dx = 0;
         }
-        (void)explode(cc.x, cc.y, RAY_FIRE, &youmonst, 6, 6, 0, otyp, SPBOOK_CLASS, EXPL_FIERY);
+        (void)explode(cc.x, cc.y, RAY_FIRE, &youmonst, objects[otyp].oc_wsdice, objects[otyp].oc_wsdam, objects[otyp].oc_wsdmgplus, otyp, SPBOOK_CLASS, EXPL_FIERY);
+        break;
+    }
+    case SPE_DEATHSPELL:
+    {
+        coord cc;
+        known = TRUE;
+        pline("Where do you want to center the deathspell?");
+        cc.x = u.ux;
+        cc.y = u.uy;
+        int trycnt = 0;
+        while (trycnt < 10)
+        {
+
+            if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0) {
+                pline1(Never_mind);
+                break;
+            }
+            if (!get_valid_targeted_position(cc.x, cc.y, otyp))
+            {
+                play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
+                pline("Not a valid target position.");
+                if (trycnt > 4)
+                {
+                    cc.x = u.ux;
+                    cc.y = u.uy;
+                    break;
+                }
+            }
+            else
+                break;
+
+            trycnt++;
+        }
+        if (objects[otyp].oc_dir == TARGETED)
+        {
+            u.dx = cc.x - u.ux;
+            update_u_facing(TRUE);
+            update_u_action(ACTION_TILE_CAST_NODIR);
+            play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+            u_wait_until_action();
+            u.dx = 0;
+        }
+        (void)explode(cc.x, cc.y, RAY_DEATH, &youmonst, objects[otyp].oc_wsdice, objects[otyp].oc_wsdam, objects[otyp].oc_wsdmgplus, otyp, SPBOOK_CLASS, EXPL_MAGICAL);
         break;
     }
     case SPE_STINKING_CLOUD:

@@ -9817,7 +9817,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
         }
 
         if (origobj)
-            explode(sx, sy, type, origmonst, objects[origobj_copy.otyp].oc_wsdice, objects[origobj_copy.otyp].oc_wsdam, objects[origobj_copy.otyp].oc_wsdice, otyp, oclass, expltype);
+            explode(sx, sy, type, origmonst, objects[origobj_copy.otyp].oc_wsdice, objects[origobj_copy.otyp].oc_wsdam, objects[origobj_copy.otyp].oc_wsdmgplus, otyp, oclass, expltype);
         else
             explode(sx, sy, type, origmonst, dmgdice, dicesize, dmgplus, otyp, oclass, expltype);
     }
