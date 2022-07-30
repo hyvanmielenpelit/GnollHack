@@ -2505,7 +2505,6 @@ invocation_message()
 void
 switch_terrain()
 {
-    struct rm *lev = &levl[u.ux][u.uy];
     boolean blocklev = loc_blocks_flying_and_leviation(u.ux, u.uy),
             was_levitating = !!Levitation, was_flying = !!Flying;
 

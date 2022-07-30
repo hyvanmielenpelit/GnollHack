@@ -150,6 +150,7 @@ namespace GnollHackClient.Unknown
 
             FreeMemoryCallback callback_free_memory,
             ReportPlayerNameCallback callback_report_player_name,
+            ReportPlayTimeCallback callback_report_play_time,
             SendObjectDataCallback callback_send_object_data,
             SendMonsterDataCallback callback_send_monster_data
         );
@@ -974,6 +975,7 @@ namespace GnollHackClient.Unknown
 
                 clientGame.ClientCallback_FreeMemory,
                 clientGame.ClientCallback_ReportPlayerName,
+                clientGame.ClientCallback_ReportPlayTime,
                 clientGame.ClientCallback_SendObjectData,
                 clientGame.ClientCallback_SendMonsterData
                 );

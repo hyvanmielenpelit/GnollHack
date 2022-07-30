@@ -117,7 +117,7 @@ namespace GnollHackClient
             if (PlatformService != null)
                 PlatformService.OverrideAnimationDuration();
 
-            if (App.CurrentClientGame != null)
+            if (App.CurrentClientGame != null && !App.CurrentClientGame.CasualMode)
             {
                 //Detect background app killing OS, check if last exit is through going to sleep, and notify player that the app probably had been terminated by OS but game has been saved
                 bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
@@ -135,7 +135,7 @@ namespace GnollHackClient
                 PlatformService.RevertAnimationDuration(false);
 
             App.CancelSaveGame = false;
-            if (App.CurrentClientGame != null)
+            if (App.CurrentClientGame != null && !App.CurrentClientGame.CasualMode)
             {
                 //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                 Preferences.Set("WentToSleepWithGameOn", true);
@@ -149,7 +149,7 @@ namespace GnollHackClient
                 PlatformService.OverrideAnimationDuration();
 
             App.CancelSaveGame = true;
-            if (App.CurrentClientGame != null)
+            if (App.CurrentClientGame != null && !App.CurrentClientGame.CasualMode)
             {
                 //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
                 bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);

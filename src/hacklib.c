@@ -1106,6 +1106,27 @@ time_t date;
     return datestr;
 }
 
+void
+print_realtime(buf, realtime)
+char* buf;
+long realtime;
+{
+    if (!buf)
+        return;
+
+    long hours = realtime / (60 * 60);
+    long minutes = (realtime % (60 * 60)) / 60;
+    long seconds = realtime - hours * 60 * 60 - minutes * 60;
+
+    char hourbuf[BUFSZ] = "", minutebuf[BUFSZ] = "";
+    if (hours > 0)
+        Sprintf(hourbuf, "%ld hour%s ", hours, plur(hours));
+    if (minutes > 0)
+        Sprintf(minutebuf, "%s%ld minute%s ", *hourbuf ? ", " : "", minutes, plur(minutes));
+
+    Sprintf(buf, "%s%s%s%ld second%s", hourbuf, minutebuf, *hourbuf || *minutebuf ? "and " : "", seconds, plur(seconds));
+}
+
 time_t
 time_from_yyyymmddhhmmss(buf)
 char *buf;

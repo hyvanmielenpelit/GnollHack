@@ -127,6 +127,7 @@ DLL int WINAPI RunGnollHack(
 
     FreeMemoryCallback callback_free_memory,
     ReportPlayerNameCallback callback_report_player_name,
+    ReportPlayTimeCallback callback_report_play_time,
     SendObjectDataCallback callback_send_object_data,
     SendMonsterDataCallback callback_send_monster_data
 )
@@ -227,6 +228,7 @@ DLL int WINAPI RunGnollHack(
 
     dll_callbacks.callback_free_memory = callback_free_memory;
     dll_callbacks.callback_report_player_name = callback_report_player_name;
+    dll_callbacks.callback_report_play_time = callback_report_play_time;
     dll_callbacks.callback_send_object_data = callback_send_object_data;
     dll_callbacks.callback_send_monster_data = callback_send_monster_data;
 

@@ -344,8 +344,6 @@ register int fd, mode;
     bwrite(fd, yyyymmddhhmmss(ubirthday), 14);
     bwrite(fd, (genericptr_t) &urealtime.realtime, sizeof urealtime.realtime);
     bwrite(fd, yyyymmddhhmmss(urealtime.start_timing), 14);  /** Why? **/
-    /* this is the value to use for the next update of urealtime.realtime */
-    urealtime.start_timing = urealtime.finish_time;
     save_killers(fd, mode);
 
     /* must come before migrating_objs and migrating_mons are freed */
@@ -393,6 +391,10 @@ register int fd, mode;
     save_waterlevel(fd, mode);
     save_msghistory(fd, mode);
     bflush(fd);
+
+    issue_gui_command(GUI_CMD_REPORT_PLAY_TIME);
+    /* this is the value to use for the next update of urealtime.realtime */
+    urealtime.start_timing = urealtime.finish_time;
 }
 
 /* returns 1 if save file exists, otherwise 0 */

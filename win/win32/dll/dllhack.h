@@ -143,6 +143,7 @@ DLL int RunGnollHack(
 
     FreeMemoryCallback callback_free_memory,
     ReportPlayerNameCallback callback_report_player_name,
+    ReportPlayTimeCallback callback_report_play_time,
     SendObjectDataCallback callback_send_object_data,
     SendMonsterDataCallback callback_send_monster_data
 

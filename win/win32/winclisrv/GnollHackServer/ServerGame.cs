@@ -114,6 +114,7 @@ namespace GnollHackServer
 
             FreeMemoryCallback callback_free_memory,
             ReportPlayerNameCallback callback_report_player_name,
+            ReportPlayTimeCallback callback_report_play_time,
             SendObjectDataCallback callback_send_object_data,
             SendMonsterDataCallback callback_send_monster_data
         );
@@ -274,6 +275,7 @@ namespace GnollHackServer
                 //GameCallback_VoidIntDummy,
                 GameCallback_FreeMemory,
                 GameCallback_ReportPlayerName,
+                GameCallback_ReportPlayTime,
                 GameCallback_SendObjectData,
                 GameCallback_SendMonsterData
             );
@@ -388,6 +390,11 @@ namespace GnollHackServer
         }
 
         protected void GameCallback_ReportPlayerName(string used_player_name)
+        {
+
+        }
+
+        protected void GameCallback_ReportPlayTime(long realtime)
         {
 
         }

@@ -152,6 +152,7 @@ typedef VoidIntCallback OutRipBeginCallback;
 typedef VoidIntCallback OutRipEndCallback;
 typedef void(__callconv* FreeMemoryCallback)(long long**);
 typedef void (__callconv* ReportPlayerNameCallback)(char*);
+typedef void (__callconv* ReportPlayTimeCallback)(long);
 typedef void(__callconv* SendObjectDataCallback)(int, int, struct obj*, int, int, struct objclassdata*, unsigned long);
 typedef void(__callconv* SendMonsterDataCallback)(int, int, int, struct monst_info*, unsigned long);
 
@@ -250,6 +251,7 @@ struct callback_procs {
 
     FreeMemoryCallback callback_free_memory;
     ReportPlayerNameCallback callback_report_player_name;
+    ReportPlayTimeCallback callback_report_play_time;
     SendObjectDataCallback callback_send_object_data;
     SendMonsterDataCallback callback_send_monster_data;
 };

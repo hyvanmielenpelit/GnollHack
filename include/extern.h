@@ -1339,6 +1339,7 @@ E int NDECL(getyear);
 #if 0
 E char *FDECL(yymmdd, (time_t));
 #endif
+E void FDECL(print_realtime, (char*, long));
 E long FDECL(yyyymmdd, (time_t));
 E long FDECL(hhmmss, (time_t));
 E char *FDECL(yyyymmddhhmmss, (time_t));

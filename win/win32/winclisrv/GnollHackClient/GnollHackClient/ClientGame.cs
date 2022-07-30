@@ -1058,6 +1058,13 @@ namespace GnollHackClient
                 Preferences.Set("LastUsedPlayerName", used_player_name);
         }
 
+        public void ClientCallback_ReportPlayTime(long realtime)
+        {
+            long playedalready = Preferences.Get("RealPlayTime", 0);
+            long totaltime = playedalready + realtime;
+            Preferences.Set("RealPlayTime", totaltime);
+        }
+
         public void ClientCallback_SendObjectData(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags)
         {
             obj otmp = otmp_ptr == IntPtr.Zero ? new obj() : (obj)Marshal.PtrToStructure(otmp_ptr, typeof(obj));

@@ -546,11 +546,19 @@ void lib_issue_gui_command(int initid)
         }
         break;
     }
+    case GUI_CMD_REPORT_PLAY_TIME:
+    {
+        long timepassed = (long)(urealtime.finish_time - urealtime.start_timing);
+        lib_callbacks.callback_report_play_time(timepassed);
+        break;
+    }
     case GUI_CMD_GAME_START:
     {
         lib_callbacks.callback_report_player_name(plname);
         break;
     }
+    case GUI_CMD_GAME_ENDED:
+        break;
     default:
         break;
     }

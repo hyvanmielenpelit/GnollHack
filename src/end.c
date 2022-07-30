@@ -790,11 +790,9 @@ time_t when; /* date+time at end of game */
             &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
     Strcpy(datetimebuf, yyyymmddhhmmss(when));
-    Sprintf(eos(pbuf), ", ended %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s.",
+    Sprintf(eos(pbuf), ", ended %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s",
             &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
-    putstr(0, 0, pbuf);
-    putstr(0, 0, "");
 
     /* character name and basic role info */
     Sprintf(pbuf, "%s, %s %s %s %s", plname,
@@ -1490,6 +1488,7 @@ int how;
        time or even day if player is slow responding to --More-- */
     urealtime.finish_time = endtime = getnow();
     urealtime.realtime += (long) (endtime - urealtime.start_timing);
+    issue_gui_command(GUI_CMD_REPORT_PLAY_TIME);
 
     /* Write dumplog */
     if(disclose_and_dumplog_ok)
@@ -1930,8 +1929,11 @@ int how;
         Sprintf(pbuf, "and %ld piece%s of gold, after %ld move%s.", umoney,
             plur(umoney), moves, plur(moves));
         dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
-        Sprintf(pbuf, "You played on %s difficulty in %s mode.", get_game_difficulty_text(context.game_difficulty),
-            get_game_mode_text(TRUE));
+
+        char realtimebuf[BUFSZ] = "";
+        print_realtime(realtimebuf, urealtime.realtime);
+        Sprintf(pbuf, "You played on %s difficulty in %s mode for %s.", get_game_difficulty_text(context.game_difficulty),
+            get_game_mode_text(TRUE), realtimebuf);
         dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
         if (!n_game_recoveries)
             Strcpy(pbuf, "The dungeon never collapsed on you.");
@@ -1961,6 +1963,8 @@ int how;
 
     if (CasualMode && how == ASCENDED && has_existing_save_file)
         (void)delete_savefile(); /* The casual mode character gets deleted only upon ascension */
+
+    issue_gui_command(GUI_CMD_GAME_ENDED);
 
     if (have_windows)
         exit_nhwindows((char*)0);

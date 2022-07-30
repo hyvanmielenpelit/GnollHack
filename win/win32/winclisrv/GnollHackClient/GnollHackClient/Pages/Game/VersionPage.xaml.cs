@@ -30,7 +30,10 @@ namespace GnollHackClient.Pages.Game
             ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
             ulong TotalDiskSpaceInBytes = App.PlatformService.GetDeviceTotalDiskSpaceInBytes();
             ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
-
+            long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
+            long PlayHours = TotalPlayTime / 3600;
+            long PlayMinutes = (TotalPlayTime % 3600) / 60;
+            long PlaySeconds = TotalPlayTime - PlayHours * 3600 - PlayMinutes * 60;
 
             PortVersionTitleLabel.Text = Device.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = Device.RuntimePlatform + " Port Build:";
@@ -43,6 +46,8 @@ namespace GnollHackClient.Pages.Game
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
             TotalMemoryLabel.Text = TotalMemInMB + " MB";
             DiskSpaceLabel.Text = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
+            PlayTimeLabel.Text = PlayHours + " h " + PlayMinutes + " min " + PlaySeconds + " s";
+            //PlayTimeLabel.Text = PlayHours + " hour" + (PlayHours == 1 ? "" : "s") + " " + PlayMinutes + " minute" + (PlayMinutes == 1 ? "" : "s") + " " + PlaySeconds + " seconds" + (PlaySeconds == 1 ? "" : "s");
 
             //text += Environment.NewLine + VersionTracking.CurrentVersion;
             //text += Environment.NewLine + VersionTracking.CurrentBuild;
