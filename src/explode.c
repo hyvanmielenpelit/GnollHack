@@ -551,6 +551,7 @@ int expltype;
                 {
                     golemeffects(mtmp, (int) adtyp, ddam + idamres);
                     deduct_monster_hp(mtmp, idamnonres);
+                    instadeath = FALSE;
                 } 
                 else
                 {
@@ -560,6 +561,7 @@ int expltype;
                      */
                     double mdam = ddam;
 
+#if 0
                     if (check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, FALSE, 0, 0, FALSE)) 
                     {
                         /* inside_engulfer: <i+x-1,j+y-1> == <u.ux,u.uy> */
@@ -574,6 +576,7 @@ int expltype;
                         }
                     }
                     else
+#endif
                     /* if grabber is reaching into hero's spot and
                        hero's spot is within explosion radius, grabber
                        gets hit by double damage */
@@ -581,7 +584,16 @@ int expltype;
                         mdam *= 2;
 
                     if (instadeath)
-                        mtmp->mhp = 0;
+                    {
+                        if (adtyp == AD_DRAY)
+                        {
+                            if (!check_rider_death_absorption(mtmp, (const char*)0))
+                            {
+                                mtmp->mhp = 0;
+                                pline("%s is slain!", Monnam(mtmp));
+                            }
+                        }
+                    }
                     else
                     {
                         int hp_before = mtmp->mhp;
@@ -595,7 +607,12 @@ int expltype;
                         //mtmp->mhp -= (idamres + idamnonres);
                     }
                 }
-                if (DEADMONSTER(mtmp))
+
+                if (instadeath && adtyp == AD_DISN)
+                {
+                    maybe_disintegrate_mon(mtmp, 0 , str);
+                }
+                else if (DEADMONSTER(mtmp))
                 {
                     int xkflg = ((adtyp == AD_FIRE
                                   && completelyburns(mtmp->data))
@@ -688,51 +705,57 @@ int expltype;
 
             if (instadeath)
             {
-                if (Upolyd)
-                    damu = (double)u.mh + 1;
-                else
-                    damu = (double)u.uhp + 1;
+                if (instadeath && adtyp == AD_DRAY)
+                    You("are slain!");
+                else if (instadeath && adtyp == AD_DISN)
+                    You("are disintegrated!");
             }
-
-            int hp_before = Upolyd ? u.mh : u.uhp;
-            deduct_player_hp(damu);
-            int hp_after = Upolyd ? u.mh : u.uhp;
-            int damage_dealt = hp_before - hp_after;
-            if (damage_dealt > 0)
-                You("sustain %d damage!", damage_dealt);
+            else
+            {
+                int hp_before = Upolyd ? u.mh : u.uhp;
+                deduct_player_hp(damu);
+                int hp_after = Upolyd ? u.mh : u.uhp;
+                int damage_dealt = hp_before - hp_after;
+                if (damage_dealt > 0)
+                    You("sustain %d damage!", damage_dealt);
+            }
         }
 
-        if (u.uhp <= 0 || (Upolyd && u.mh <= 0)) 
+        if (u.uhp <= 0 || (Upolyd && u.mh <= 0) || instadeath) 
         {
-            if (Upolyd) 
+            if (olet == MON_EXPLODE)
+            {
+                if (generic) /* explosion was unseen; str=="explosion", */
+                    ;        /* killer.name=="gas spore's explosion"    */
+                else if (str != killer.name && str != hallu_buf)
+                    Strcpy(killer.name, str);
+                killer.format = KILLED_BY_AN;
+            }
+            else if (type >= 0 && olet != SCROLL_CLASS)
+            {
+                killer.format = NO_KILLER_PREFIX;
+                Sprintf(killer.name, "caught %sself in %s own %s", uhim(),
+                    uhis(), str);
+            }
+            else
+            {
+                killer.format = (!strcmpi(str, "tower of flame")
+                    || !strcmpi(str, "fireball"))
+                    ? KILLED_BY_AN
+                    : KILLED_BY;
+                Strcpy(killer.name, str);
+            }
+
+            if (instadeath)
+            {
+                kill_player(killer.name, killer.format);
+            }
+            else if (Upolyd)
             {
                 rehumanize();
             }
             else
             {
-                if (olet == MON_EXPLODE) 
-                {
-                    if (generic) /* explosion was unseen; str=="explosion", */
-                        ;        /* killer.name=="gas spore's explosion"    */
-                    else if (str != killer.name && str != hallu_buf)
-                        Strcpy(killer.name, str);
-                    killer.format = KILLED_BY_AN;
-                } 
-                else if (type >= 0 && olet != SCROLL_CLASS) 
-                {
-                    killer.format = NO_KILLER_PREFIX;
-                    Sprintf(killer.name, "caught %sself in %s own %s", uhim(),
-                            uhis(), str);
-                } 
-                else 
-                {
-                    killer.format = (!strcmpi(str, "tower of flame")
-                                     || !strcmpi(str, "fireball"))
-                                        ? KILLED_BY_AN
-                                        : KILLED_BY;
-                    Strcpy(killer.name, str);
-                }
-
                 if (iflags.last_msg == PLNMSG_CAUGHT_IN_EXPLOSION
                     || iflags.last_msg == PLNMSG_TOWER_OF_FLAME) /*seffects()*/
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "It is fatal.");

@@ -728,7 +728,7 @@ struct materialcomponentlist matlists[] =
     { SPE_CONTROL_UNDEAD,
         "Mandrake root",
         STRANGE_OBJECT,
-        12,
+        6,
         {
             {
                 {MANDRAKE_ROOT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},

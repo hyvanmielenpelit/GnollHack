@@ -5396,10 +5396,18 @@ dump_spells()
         int i;
         char buf[BUFSZ];
         char spellnamebuf[BUFSZ];
-        char castingsbuf[BUFSZ];
+        char castingsbuf[BUFSZ] = "";
+        char basebuf[BUFSZ] = "";
         putstr(0, 0, "Spells in your repertoire:");
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
         {
+            int pct_lim = percent_success(i, TRUE);
+            int pct_unlim = percent_success(i, FALSE);
+            if (pct_lim != pct_unlim)
+                Sprintf(basebuf, ", %d%% base", pct_unlim);
+            else
+                Strcpy(basebuf, "");
+
             if (spellamount(i) >= 0)
                 Sprintf(castingsbuf, ", %d casting%s left", spellamount(i), plur(spellamount(i)));
             else
@@ -5408,7 +5416,7 @@ dump_spells()
             Strcpy(spellnamebuf, spellname(i));
             *spellnamebuf = highc(*spellnamebuf);
 
-            Sprintf(buf, " %s (%d%% success%s)", spellnamebuf, percent_success(i, TRUE), castingsbuf);
+            Sprintf(buf, " %s (%d%% success%s%s)", spellnamebuf, pct_lim, basebuf, castingsbuf);
             putstr(0, 0, buf);
         }
     }

@@ -4250,5 +4250,30 @@ struct obj* obj;
     return min(EXCEPTIONALITY_CELESTIAL, obj->exceptionality);
 }
 
+void
+dump_skills(VOID_ARGS)
+{
+    int i;
+    char buf[BUFSZ];
+    char skillnamebufC[BUFSZ];
+    char skilllevelbuf[BUFSZ];
+    char skillmaxbuf[BUFSZ];
+    putstr(0, 0, "Skills:");
+    for (i = 1; i < P_NUM_SKILLS; i++)
+    {
+        if (P_RESTRICTED(i))
+            continue;
+
+        Strcpy(skillnamebufC, P_NAME(i));
+        *skillnamebufC = highc(*skillnamebufC);
+        (void)skill_level_name(i, skilllevelbuf, FALSE);
+        (void)skill_level_name(i, skillmaxbuf, TRUE);
+
+        Sprintf(buf, "  %s: %s / %s", skillnamebufC, skilllevelbuf, skillmaxbuf);
+        putstr(0, 0, buf);
+    }
+    Sprintf(buf, "You had %d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
+    putstr(0, 0, buf);
+}
 
 /*weapon.c*/

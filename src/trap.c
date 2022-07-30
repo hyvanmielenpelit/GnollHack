@@ -3900,7 +3900,7 @@ long hmask, emask; /* might cancel timeout */
          * Use knowledge of the two routines as a hack -- this
          * should really be handled differently -dlc
          */
-        if (is_pool(u.ux, u.uy) && !Wwalking && !Swimming && !u.uinwater)
+        if (is_pool(u.ux, u.uy) && !Walks_on_water && !Swimming && !u.uinwater)
             no_msg = drown();
 
         if (is_lava(u.ux, u.uy)) {
@@ -7304,7 +7304,7 @@ lava_effects()
     if (likes_lava(youmonst.data))
         return FALSE;
 
-    usurvive = Fire_immunity || (Wwalking && dmg < u.uhp);
+    usurvive = Fire_immunity || (Walks_on_water && dmg < u.uhp);
     /*
      * A timely interrupt might manage to salvage your life
      * but not your gear.  For scrolls and potions this
@@ -7339,7 +7339,7 @@ lava_effects()
 
     if (!Fire_immunity)
     {
-        if (Wwalking) 
+        if (Walks_on_water)
         {
             pline_The("%s here burns you!", hliquid("lava"));
             if (usurvive) 
@@ -7411,7 +7411,7 @@ lava_effects()
         You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find yourself back on solid %s.", surface(u.ux, u.uy));
         return TRUE;
     } 
-    else if (!Wwalking && (!u.utrap || u.utraptype != TT_LAVA)) 
+    else if (!Walks_on_water && (!u.utrap || u.utraptype != TT_LAVA))
     {
         boil_away = !Fire_immunity;
         /* if not fire resistant, sink_into_lava() will quickly be fatal;

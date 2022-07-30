@@ -866,7 +866,7 @@ int x, y;
          * and also that the next spot doesn't contain an obstacle */
         && !(mon->mundetected && hides_under(mon) && (Flying || Levitation))
         && !(mon->mundetected && mon->data->mlet == S_EEL
-             && (Flying || Levitation || Wwalking))
+             && (Flying || Levitation || Walks_on_water))
 #endif
         )
     {
@@ -935,7 +935,7 @@ int x, y;
     if (is_pool(x, y) && !u.uinwater) 
     {
         if ((Is_waterlevel(&u.uz) && levl[x][y].typ == WATER)
-            || !(Levitation || Flying || Wwalking)) 
+            || !(Levitation || Flying || Walks_on_water))
         {
             multi = 0; /* can move, so drown() allows crawling out of water */
             (void) drown();

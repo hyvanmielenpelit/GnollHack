@@ -3016,7 +3016,7 @@ walking_on_water()
 {
     if (u.uinwater || Levitation || Flying)
         return FALSE;
-    return (boolean) (Wwalking
+    return (boolean) (Walks_on_water
                       && (is_pool(u.ux, u.uy) || is_lava(u.ux, u.uy)));
 }
 
@@ -4424,7 +4424,7 @@ int final;
         }
     }
     /* actively walking on water handled earlier as a status condition */
-    if (Wwalking && !walking_on_water())
+    if (Wwalking)
         you_can("walk on water", from_what(WATER_WALKING));
     /* actively swimming (in water but not under it) handled earlier */
     if (Swimming && (Underwater || !u.uinwater))

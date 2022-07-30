@@ -420,7 +420,7 @@ int x, y;
     if (is_incorporeal(etmp->edata))
         return TRUE;
     if (is_pool(x, y))
-        return (boolean) ((is_u(etmp) && (Wwalking || Amphibious || Swimming
+        return (boolean) ((is_u(etmp) && (Walks_on_water || Amphibious || Swimming
                                           || Flying || Levitation))
                           || is_swimmer(etmp->edata)
                           || is_flyer(etmp->edata)

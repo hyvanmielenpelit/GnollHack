@@ -1266,9 +1266,9 @@ E boolean FDECL(crawl_destination, (int, int));
 E int NDECL(monster_nearby);
 E void FDECL(nomul, (int));
 E void FDECL(unmul, (const char *));
-E void FDECL(you_die, (const char*, BOOLEAN_P));
-E void FDECL(kill_player, (const char*, BOOLEAN_P));
-E void FDECL(losehp, (double, const char *, BOOLEAN_P));
+E void FDECL(you_die, (const char*, int));
+E void FDECL(kill_player, (const char*, int));
+E void FDECL(losehp, (double, const char *, int));
 E int NDECL(weight_cap);
 E int NDECL(inv_weight);
 E int NDECL(near_capacity);
@@ -3878,6 +3878,7 @@ E void FDECL(print_weapon_style_string, (char*, BOOLEAN_P));
 E int FDECL(limited_skill_level, (enum p_skills, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(exceptionality_digging_speed_bonus, (struct obj*));
 E int FDECL(exceptionality_weapon_disarm_bonus, (struct obj*));
+E void NDECL(dump_skills);
 
 
 /* ### were.c ### */

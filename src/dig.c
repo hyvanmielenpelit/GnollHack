@@ -914,7 +914,7 @@ const char *fillmsg;
     if (u_spot && !(Levitation || Flying)) {
         if (typ == LAVAPOOL)
             (void) lava_effects();
-        else if (!Wwalking)
+        else if (!Walks_on_water)
             (void) drown();
     }
 }

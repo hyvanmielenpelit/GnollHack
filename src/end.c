@@ -818,6 +818,8 @@ time_t when; /* date+time at end of game */
     enlightenment((BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
                   (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(0, 0, "");
+    dump_skills();
+    putstr(0, 0, "");
     dump_spells();
     putstr(0, 0, "");
     list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */

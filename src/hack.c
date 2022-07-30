@@ -1887,27 +1887,28 @@ domove_core()
 
         if(levl[x][y].seenv && !Stunned && !Confusion && !Hallucination && !m_at(x, y))
         {
+            boolean blocksflying = loc_blocks_flying_and_leviation(x, y);
             if (is_pool_or_lava(x, y))
             {
                 if (
                     (is_pool(x, y) && 
-                        (Wwalking 
+                        (Walks_on_water
                             || Amphibious 
                             || Breathless
                             || Swimming
-                            || Flying 
-                            || Levitation
+                            || (Flying && !blocksflying)
+                            || (Levitation && !blocksflying)
                             || is_swimmer(youmonst.data)
-                            || is_flyer(youmonst.data)
-                            || is_floater(youmonst.data)
+                            || (is_flyer(youmonst.data) && !blocksflying)
+                            || (is_floater(youmonst.data) && !blocksflying)
                         )
                     )
                     || 
                     (is_lava(x, y) && 
-                        (Levitation 
-                            || Flying
+                        ((Levitation && !blocksflying)
+                            || (Flying && !blocksflying)
                             || likes_lava(youmonst.data)
-                            || is_flyer(youmonst.data)
+                            || (is_flyer(youmonst.data) && !blocksflying)
                         )
                     )
                 )
@@ -1919,9 +1920,9 @@ domove_core()
                     /* If blind, you still get the question */
 
                     char ynqbuf[BUFSZ] = "";
-                    Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? "pool" : is_lava(x, y) ? "lava" : "location");
+                    Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? (Is_waterlevel(&u.uz) ? "water" : "pool") : is_lava(x, y) ? "lava" : "location");
                     char tbuf[BUFSZ] = "";
-                    Sprintf(tbuf, "Entering %s?", is_pool(x, y) ? "Pool" : is_lava(x, y) ? "Lava" : "Location");
+                    Sprintf(tbuf, "Entering %s?", is_pool(x, y) ? (Is_waterlevel(&u.uz) ? "Water" : "Pool") : is_lava(x, y) ? "Lava" : "Location");
 
                     if (!paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidWater, tbuf, ynqbuf))
                     {
@@ -2505,8 +2506,7 @@ void
 switch_terrain()
 {
     struct rm *lev = &levl[u.ux][u.uy];
-    boolean blocklev = (IS_ROCK(lev->typ) || closed_door(u.ux, u.uy)
-                        || (Is_waterlevel(&u.uz) && lev->typ == WATER)),
+    boolean blocklev = loc_blocks_flying_and_leviation(u.ux, u.uy),
             was_levitating = !!Levitation, was_flying = !!Flying;
 
     if (blocklev) {
@@ -2564,7 +2564,7 @@ boolean newspot;             /* true if called by spoteffects */
             You("pop out of the %s like a cork!", hliquid("water"));
         } else if (Flying) {
             You("fly out of the %s.", hliquid("water"));
-        } else if (Wwalking) {
+        } else if (Walks_on_water) {
             You("slowly rise above the surface.");
         } else {
             still_inwater = TRUE;
@@ -2609,7 +2609,7 @@ boolean newspot;             /* true if called by spoteffects */
         if (is_lava(u.ux, u.uy)) {
             if (lava_effects())
                 return TRUE;
-        } else if (!Wwalking
+        } else if (!Walks_on_water
                    && (newspot || !u.uinwater || !(Swimming || Amphibious))) {
             if (drown())
                 return TRUE;
@@ -3220,7 +3220,7 @@ pickup_checks()
         }
     }
     if (is_pool(u.ux, u.uy)) {
-        if (Wwalking || is_floater(youmonst.data) || is_clinger(youmonst.data)
+        if (Walks_on_water || is_floater(youmonst.data) || is_clinger(youmonst.data)
             || (Flying && !Breathless)) {
             play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
             You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot dive into the %s to pick things up.",
@@ -3233,7 +3233,7 @@ pickup_checks()
         }
     }
     if (is_lava(u.ux, u.uy)) {
-        if (Wwalking || is_floater(youmonst.data) || is_clinger(youmonst.data)
+        if (Walks_on_water || is_floater(youmonst.data) || is_clinger(youmonst.data)
             || (Flying && !Breathless)) {
             play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
             You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "reach the bottom to pick things up.");
@@ -3666,7 +3666,7 @@ maybe_wail()
 void
 you_die(knam, k_format)
 register const char* knam;
-boolean k_format;
+int k_format;
 {
     killer.format = k_format;
     if (killer.name != knam) /* the thing that killed you */
@@ -3679,7 +3679,7 @@ boolean k_format;
 void
 kill_player(knam, k_format)
 register const char* knam;
-boolean k_format;
+int k_format;
 {
     context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
     if (Upolyd)
@@ -3697,7 +3697,7 @@ void
 losehp(n, knam, k_format)
 double n;
 register const char *knam;
-boolean k_format;
+int k_format;
 {
     if (Invulnerable) //Note you must set damage to zero so it does not get displayed to the player
         return;

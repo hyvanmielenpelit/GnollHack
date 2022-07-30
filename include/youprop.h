@@ -471,7 +471,8 @@
 
 #define HWwalking u.uprops[WATER_WALKING].intrinsic
 #define EWwalking u.uprops[WATER_WALKING].extrinsic
-#define Wwalking ((EWwalking || HWwalking) && !Is_waterlevel(&u.uz))
+#define Wwalking (EWwalking || HWwalking)
+#define Walks_on_water (Wwalking&& !Is_waterlevel(&u.uz))
 /* Don't get wet, can't go under water; overrides others except levitation */
 /* Wwalking is meaningless on water level */
 

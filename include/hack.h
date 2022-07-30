@@ -634,7 +634,7 @@ enum bodypart_types {
 #define is_objpile(x,y) (!Hallucination && level.objects[(x)][(y)] \
                          && level.objects[(x)][(y)]->nexthere)
 
-
+#define loc_blocks_flying_and_leviation(x, y) ((IS_ROCK(levl[x][y].typ) || closed_door(x, y) || (Is_waterlevel(&u.uz) && levl[x][y].typ == WATER)))
 
 
 #if defined(MICRO) && !defined(__DJGPP__)

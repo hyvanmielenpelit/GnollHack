@@ -67,7 +67,7 @@ unsigned long gpflags;
         if (is_pool(x, y) && !ignorewater) 
         {
             if (mtmp == &youmonst)
-                return (Levitation || Flying || Wwalking || Swimming
+                return (Levitation || Flying || Walks_on_water || Swimming
                         || Amphibious);
             else
                 return ((is_flying(mtmp) || is_levitating(mtmp) || has_swimming(mtmp) || amphibious(mdat)
@@ -88,7 +88,7 @@ unsigned long gpflags;
         {
             if (mtmp == &youmonst)
                 return (Levitation || Flying
-                        || (Fire_immunity && Wwalking && uarmf
+                        || (Fire_immunity && Walks_on_water && uarmf
                             && uarmf->oerodeproof)
                         || (Upolyd && likes_lava(youmonst.data)));
             else

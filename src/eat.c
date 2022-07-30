@@ -4189,7 +4189,7 @@ int corpsecheck; /* 0, no check, 1, corpses, 2, tinnable corpses */
     if (iflags.menu_requested /* command was preceded by 'm' prefix */
         || !can_reach_floor(TRUE) || (feeding && u.usteed)
         || (is_pool_or_lava(u.ux, u.uy)
-            && (Wwalking || is_clinger(youmonst.data)
+            && (Walks_on_water || is_clinger(youmonst.data)
                 || (Flying && !Breathless))))
         goto skipfloor;
 
