@@ -2280,6 +2280,7 @@ namespace GnollHackClient.Pages.Game
             else
             {
                 var menu = new GameMenuPage(this);
+                TallyRealTime();
                 await App.Current.MainPage.Navigation.PushModalAsync(menu);
             }
 
@@ -2288,6 +2289,7 @@ namespace GnollHackClient.Pages.Game
         public async void ShowGameMenu(object sender, EventArgs e)
         {
             var menu = new GameMenuPage(this);
+            TallyRealTime();
             await App.Current.MainPage.Navigation.PushModalAsync(menu);
         }
 
@@ -10748,6 +10750,18 @@ namespace GnollHackClient.Pages.Game
                 if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
                 {
                     queue.Enqueue(new GHResponse(_clientGame, GHRequestType.SaveGameAndWaitForResume));
+                }
+            }
+        }
+
+        public void TallyRealTime()
+        {
+            if (_clientGame != null)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.TallyRealTime));
                 }
             }
         }

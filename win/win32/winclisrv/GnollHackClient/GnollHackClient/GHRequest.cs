@@ -51,6 +51,7 @@ namespace GnollHackClient
         RestoreTravelModeOnLevel,
         SaveGameAndWaitForResume,
         StopWaitAndRestoreSavedGame,
+        TallyRealTime,
     }
 
     public struct AddContextMenuData

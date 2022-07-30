@@ -335,7 +335,7 @@ namespace GnollHackClient.Pages.Game
         {
             CreditsTableView.IsEnabled = false;
             App.PlayButtonClickedSound();
-            var verPage = new VersionPage();
+            var verPage = new VersionPage(null);
             await App.Current.MainPage.Navigation.PushModalAsync(verPage);
             CreditsTableView.IsEnabled = true;
 

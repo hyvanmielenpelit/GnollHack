@@ -394,7 +394,7 @@ namespace GnollHackServer
 
         }
 
-        protected void GameCallback_ReportPlayTime(long realtime)
+        protected void GameCallback_ReportPlayTime(long timePassed, long currentPlayTime)
         {
 
         }

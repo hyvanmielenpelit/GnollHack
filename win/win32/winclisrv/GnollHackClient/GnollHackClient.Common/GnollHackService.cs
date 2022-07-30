@@ -255,6 +255,8 @@ namespace GnollHackClient.Unknown
         public static extern int LibChmod(string filename, uint mode);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSaveAndRestoreSavedGame();
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibTallyRealTime();
 
         private void LoadNativeLibrary(string libName)
         {
@@ -863,6 +865,10 @@ namespace GnollHackClient.Unknown
         public void SaveAndRestoreSavedGame()
         {
             LibSaveAndRestoreSavedGame();
+        }
+        public void TallyRealTime()
+        {
+            LibTallyRealTime();
         }
 
         public int StartGnollHack(ClientGame clientGame)

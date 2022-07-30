@@ -49,5 +49,6 @@ namespace GnollHackClient
         int StartGnollHack(ClientGame clientGame);
 
         void SaveAndRestoreSavedGame();
+        void TallyRealTime();
     }
 }

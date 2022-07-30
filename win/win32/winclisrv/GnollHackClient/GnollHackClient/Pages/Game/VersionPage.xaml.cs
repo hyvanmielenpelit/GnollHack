@@ -14,10 +14,14 @@ namespace GnollHackClient.Pages.Game
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class VersionPage : ContentPage
     {
-        public VersionPage()
+        private GamePage _gamePage = null;
+        public VersionPage(GamePage gamePage)
         {
             InitializeComponent();
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+
+            _gamePage = gamePage;
+
             //string platver = App.PlatformService.GetVersionString();
             //string text = "";
             string manufacturer = DeviceInfo.Manufacturer;
@@ -31,9 +35,25 @@ namespace GnollHackClient.Pages.Game
             ulong TotalDiskSpaceInBytes = App.PlatformService.GetDeviceTotalDiskSpaceInBytes();
             ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
             long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
-            long PlayHours = TotalPlayTime / 3600;
-            long PlayMinutes = (TotalPlayTime % 3600) / 60;
-            long PlaySeconds = TotalPlayTime - PlayHours * 3600 - PlayMinutes * 60;
+            long TotalPlayHours = TotalPlayTime / 3600;
+            long TotalPlayMinutes = (TotalPlayTime % 3600) / 60;
+            long TotalPlaySeconds = TotalPlayTime - TotalPlayHours * 3600 - TotalPlayMinutes * 60;
+
+            if(_gamePage != null && _gamePage.ClientGame != null)
+            {
+                long CurrentPlayTime = _gamePage.ClientGame.GamePlayTime;
+                long CurrentPlayHours = CurrentPlayTime / 3600;
+                long CurrentPlayMinutes = (CurrentPlayTime % 3600) / 60;
+                long CurrentPlaySeconds = CurrentPlayTime - CurrentPlayHours * 3600 - CurrentPlayMinutes * 60;
+                CurrentTimeLabel.Text = CurrentPlayHours + " h " + CurrentPlayMinutes + " min " + CurrentPlaySeconds + " s";
+            }
+            else
+            {
+                CurrentTimeLabel.Text = "";
+                CurrentTimeLabel.IsVisible = false;
+                CurrentTitleLabel.IsVisible = false;
+                VersionInfoGrid.RowDefinitions.Remove(CurrentPlayTimeRowDefinition);
+            }
 
             PortVersionTitleLabel.Text = Device.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = Device.RuntimePlatform + " Port Build:";
@@ -46,8 +66,7 @@ namespace GnollHackClient.Pages.Game
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
             TotalMemoryLabel.Text = TotalMemInMB + " MB";
             DiskSpaceLabel.Text = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
-            PlayTimeLabel.Text = PlayHours + " h " + PlayMinutes + " min " + PlaySeconds + " s";
-            //PlayTimeLabel.Text = PlayHours + " hour" + (PlayHours == 1 ? "" : "s") + " " + PlayMinutes + " minute" + (PlayMinutes == 1 ? "" : "s") + " " + PlaySeconds + " seconds" + (PlaySeconds == 1 ? "" : "s");
+            PlayTimeLabel.Text = TotalPlayHours + " h " + TotalPlayMinutes + " min " + TotalPlaySeconds + " s";
 
             //text += Environment.NewLine + VersionTracking.CurrentVersion;
             //text += Environment.NewLine + VersionTracking.CurrentBuild;

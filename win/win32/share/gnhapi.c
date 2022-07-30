@@ -354,6 +354,12 @@ LibSaveAndRestoreSavedGame(void)
     }
 }
 
+void
+LibTallyRealTime()
+{
+    tally_realtime();
+}
+
 int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
 {

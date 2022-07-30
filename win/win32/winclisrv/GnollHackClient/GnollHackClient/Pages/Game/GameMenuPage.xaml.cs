@@ -168,7 +168,7 @@ namespace GnollHackClient.Pages.Game
         {
             MainLayout.IsEnabled = false;
             App.PlayButtonClickedSound();
-            var verPage = new VersionPage();
+            var verPage = new VersionPage(_gamePage);
             await App.Current.MainPage.Navigation.PushModalAsync(verPage);
             MainLayout.IsEnabled = true;
         }

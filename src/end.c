@@ -3149,4 +3149,13 @@ reset_game(VOID_ARGS)
     dlb_cleanup();
 }
 
+void
+tally_realtime(VOID_ARGS)
+{
+    urealtime.finish_time = getnow();
+    urealtime.realtime += (long)(urealtime.finish_time - urealtime.start_timing);
+    issue_gui_command(GUI_CMD_REPORT_PLAY_TIME);
+    urealtime.start_timing = urealtime.finish_time;
+}
+
 /*end.c*/

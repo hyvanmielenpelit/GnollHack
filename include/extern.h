@@ -1055,6 +1055,7 @@ E long NDECL(get_current_game_score);
 E int NDECL(wiz_dumplog);
 E void FDECL(print_selfies, (winid));
 E void NDECL(reset_game);
+E void NDECL(tally_realtime);
 
 
 /* ### engrave.c ### */
