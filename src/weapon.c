@@ -4258,18 +4258,18 @@ dump_skills(VOID_ARGS)
     char skillnamebufC[BUFSZ];
     char skilllevelbuf[BUFSZ];
     char skillmaxbuf[BUFSZ];
-    putstr(0, 0, "Skills:");
+    putstr(0, 0, "Final Skills:");
     for (i = 1; i < P_NUM_SKILLS; i++)
     {
         if (P_RESTRICTED(i))
             continue;
 
-        Strcpy(skillnamebufC, P_NAME(i));
+        Sprintf(skillnamebufC, "%s", P_NAME(i));
         *skillnamebufC = highc(*skillnamebufC);
         (void)skill_level_name(i, skilllevelbuf, FALSE);
         (void)skill_level_name(i, skillmaxbuf, TRUE);
 
-        Sprintf(buf, "  %s: %s / %s", skillnamebufC, skilllevelbuf, skillmaxbuf);
+        Sprintf(buf, " %-34s %s / %s", skillnamebufC, skilllevelbuf, skillmaxbuf);
         putstr(0, 0, buf);
     }
     Sprintf(buf, "You had %d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
