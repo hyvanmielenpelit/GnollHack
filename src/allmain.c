@@ -1400,15 +1400,16 @@ newgame()
         obj_delivery(FALSE); /* finish wizkit */
     vision_reset();          /* set up internals for level (after mklev) */
     
+    if (MON_AT(u.ux, u.uy))
+        mnexto(m_at(u.ux, u.uy));
+    (void) makedog();
+
     /* Change to intro music */
     update_game_music();
 
     /* Mark game as started; check special room plays intro here */
     context.game_started = TRUE;
 
-    if (MON_AT(u.ux, u.uy))
-        mnexto(m_at(u.ux, u.uy));
-    (void) makedog();
     docrt();
     status_reassess();
 

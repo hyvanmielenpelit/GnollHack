@@ -333,20 +333,25 @@ LibChmod(const char* filename, unsigned int mode)
 void
 LibSaveAndRestoreSavedGame(void)
 {
-    if (dosave0(TRUE))
+    if (program_state.something_worth_saving 
+        && !program_state.gameover && !program_state.panicking 
+        && !program_state.exiting && !program_state.freeing_dynamic_data)
     {
-        issue_gui_command(GUI_CMD_WAIT_FOR_RESUME);
-        if (!load_saved_game(2))
+        if (dosave0(TRUE))
         {
-            u.uhp = -1; /* universal game's over indicator */
-            /* make sure they see the Saving message */
-            display_nhwindow(WIN_MESSAGE, TRUE);
-            exit_nhwindows("Cannot continue the game...");
-            nh_terminate(EXIT_SUCCESS);
+            issue_gui_command(GUI_CMD_WAIT_FOR_RESUME);
+            if (!load_saved_game(2))
+            {
+                u.uhp = -1; /* universal game's over indicator */
+                /* make sure they see the Saving message */
+                display_nhwindow(WIN_MESSAGE, TRUE);
+                exit_nhwindows("Cannot continue the game...");
+                nh_terminate(EXIT_SUCCESS);
+            }
         }
+        else
+            (void)doredraw();
     }
-    else
-        (void)doredraw();
 }
 
 int GnollHackStart(cmdlineargs)
