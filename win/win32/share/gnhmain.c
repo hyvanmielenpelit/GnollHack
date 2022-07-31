@@ -58,6 +58,8 @@ int code;
 	if (exit_hack)
 		exit_hack(code);
 
+	reset_blstats(); //Since they are set very early in display_gamewindows
+
 #if defined(EXIT_THREAD_ON_EXIT)
 	char retbuf[BUFSZ];
 	Sprintf(retbuf, "GnollHack thread exit with value %d", code);

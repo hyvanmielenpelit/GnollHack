@@ -517,6 +517,8 @@ int code;
     if (exit_hack)
         exit_hack(code);
 
+    reset_blstats();
+
     if (!GUILaunched) {
         windowprocs = *get_safe_procs(1);
         /* use our custom version which works

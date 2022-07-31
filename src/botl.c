@@ -1660,11 +1660,11 @@ reset_blstats(VOID_ARGS)
     {
         for (j = 0; j < MAXBLSTATS; ++j) 
         {
-            memset((genericptr_t)&blstats[i][j], 0, sizeof(struct istat_s));
-            blstats[i][j].a = zeroany;
             if (blstats[i][j].valwidth && blstats[i][j].val)
                 free(blstats[i][j].val);
             blstats[i][j].val = (char*)0;
+            memset((genericptr_t)&blstats[i][j], 0, sizeof(struct istat_s));
+            blstats[i][j].a = zeroany;
 #ifdef STATUS_HILITES
             blstats[i][j].thresholds = 0;
 #endif
