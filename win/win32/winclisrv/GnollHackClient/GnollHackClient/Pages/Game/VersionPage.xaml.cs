@@ -61,19 +61,19 @@ namespace GnollHackClient.Pages.Game
             }
             else
             {
-                SessionTimeLabel.Text = "";
-                SessionTimeLabel.IsVisible = false;
-                SessionTitleLabel.IsVisible = false;
-                VersionInfoGrid.Children.Remove(SessionTimeLabel);
-                VersionInfoGrid.Children.Remove(SessionTitleLabel);
-                VersionInfoGrid.RowDefinitions.Remove(SessionPlayTimeRowDefinition);
-
                 CurrentTimeLabel.Text = "";
                 CurrentTimeLabel.IsVisible = false;
                 CurrentTitleLabel.IsVisible = false;
                 VersionInfoGrid.Children.Remove(CurrentTimeLabel);
                 VersionInfoGrid.Children.Remove(CurrentTitleLabel);
                 VersionInfoGrid.RowDefinitions.Remove(CurrentPlayTimeRowDefinition);
+
+                SessionTimeLabel.Text = "";
+                SessionTimeLabel.IsVisible = false;
+                SessionTitleLabel.IsVisible = false;
+                VersionInfoGrid.Children.Remove(SessionTimeLabel);
+                VersionInfoGrid.Children.Remove(SessionTitleLabel);
+                VersionInfoGrid.RowDefinitions.Remove(SessionPlayTimeRowDefinition);
             }
 
             PortVersionTitleLabel.Text = Device.RuntimePlatform + " Port Version:";
