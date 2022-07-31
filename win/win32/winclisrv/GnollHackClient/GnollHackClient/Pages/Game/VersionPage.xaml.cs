@@ -34,24 +34,45 @@ namespace GnollHackClient.Pages.Game
             ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
             ulong TotalDiskSpaceInBytes = App.PlatformService.GetDeviceTotalDiskSpaceInBytes();
             ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
+
             long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
             long TotalPlayHours = TotalPlayTime / 3600;
             long TotalPlayMinutes = (TotalPlayTime % 3600) / 60;
             long TotalPlaySeconds = TotalPlayTime - TotalPlayHours * 3600 - TotalPlayMinutes * 60;
 
-            if(_gamePage != null && _gamePage.ClientGame != null)
+            long OngoingPlayTime = App.AggregateSessionPlayTime;
+            long OngoingPlayHours = OngoingPlayTime / 3600;
+            long OngoingPlayMinutes = (OngoingPlayTime % 3600) / 60;
+            long OngoingPlaySeconds = OngoingPlayTime - OngoingPlayHours * 3600 - OngoingPlayMinutes * 60;
+
+            if (_gamePage != null && _gamePage.ClientGame != null)
             {
                 long CurrentPlayTime = _gamePage.ClientGame.GamePlayTime;
                 long CurrentPlayHours = CurrentPlayTime / 3600;
                 long CurrentPlayMinutes = (CurrentPlayTime % 3600) / 60;
                 long CurrentPlaySeconds = CurrentPlayTime - CurrentPlayHours * 3600 - CurrentPlayMinutes * 60;
                 CurrentTimeLabel.Text = CurrentPlayHours + " h " + CurrentPlayMinutes + " min " + CurrentPlaySeconds + " s";
+
+                long SessionPlayTime = _gamePage.ClientGame.SessionPlayTime;
+                long SessionPlayHours = SessionPlayTime / 3600;
+                long SessionPlayMinutes = (SessionPlayTime % 3600) / 60;
+                long SessionPlaySeconds = SessionPlayTime - SessionPlayHours * 3600 - SessionPlayMinutes * 60;
+                SessionTimeLabel.Text = SessionPlayHours + " h " + SessionPlayMinutes + " min " + SessionPlaySeconds + " s";
             }
             else
             {
+                SessionTimeLabel.Text = "";
+                SessionTimeLabel.IsVisible = false;
+                SessionTitleLabel.IsVisible = false;
+                VersionInfoGrid.Children.Remove(SessionTimeLabel);
+                VersionInfoGrid.Children.Remove(SessionTitleLabel);
+                VersionInfoGrid.RowDefinitions.Remove(SessionPlayTimeRowDefinition);
+
                 CurrentTimeLabel.Text = "";
                 CurrentTimeLabel.IsVisible = false;
                 CurrentTitleLabel.IsVisible = false;
+                VersionInfoGrid.Children.Remove(CurrentTimeLabel);
+                VersionInfoGrid.Children.Remove(CurrentTitleLabel);
                 VersionInfoGrid.RowDefinitions.Remove(CurrentPlayTimeRowDefinition);
             }
 
@@ -66,7 +87,8 @@ namespace GnollHackClient.Pages.Game
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
             TotalMemoryLabel.Text = TotalMemInMB + " MB";
             DiskSpaceLabel.Text = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
-            PlayTimeLabel.Text = TotalPlayHours + " h " + TotalPlayMinutes + " min " + TotalPlaySeconds + " s";
+            TotalPlayTimeLabel.Text = TotalPlayHours + " h " + TotalPlayMinutes + " min " + TotalPlaySeconds + " s";
+            OngoingPlayTimeLabel.Text = OngoingPlayHours + " h " + OngoingPlayMinutes + " min " + OngoingPlaySeconds + " s";
 
             //text += Environment.NewLine + VersionTracking.CurrentVersion;
             //text += Environment.NewLine + VersionTracking.CurrentBuild;

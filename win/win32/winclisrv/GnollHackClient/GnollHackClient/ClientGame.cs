@@ -1068,7 +1068,18 @@ namespace GnollHackClient
 
         private readonly object _gamePlayTimeLock = new object();
         private long _gamePlayTime = 0;
-        public long GamePlayTime { get { lock (_gamePlayTimeLock) { return _gamePlayTime; } } set { lock (_gamePlayTimeLock) { _gamePlayTime = value; } } }  
+        public long GamePlayTime { get { lock (_gamePlayTimeLock) { return _gamePlayTime; } } set { lock (_gamePlayTimeLock) { _gamePlayTime = value; } } }
+
+        private readonly object _sessionPlayTimeLock = new object();
+        private long _sessionPlayTime = 0L;
+        public long SessionPlayTime { get { lock (_sessionPlayTimeLock) { return _sessionPlayTime; } } set { lock (_sessionPlayTimeLock) { _sessionPlayTime = value; } } }
+        public void AddSessionPlayTime(long addition)
+        {
+            lock (_sessionPlayTimeLock)
+            {
+                _sessionPlayTime = _sessionPlayTime + addition;
+            }
+        }
 
         public void ClientCallback_ReportPlayTime(long timePassed, long currentPlayTime)
         {
@@ -1076,6 +1087,8 @@ namespace GnollHackClient
             long totaltime = playedalready + timePassed;
             Preferences.Set("RealPlayTime", totaltime);
             GamePlayTime = currentPlayTime;
+            AddSessionPlayTime(timePassed);
+            App.AddAggragateSessionPlayTime(timePassed);
         }
 
         public void ClientCallback_SendObjectData(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags)
