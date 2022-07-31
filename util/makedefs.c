@@ -1177,17 +1177,22 @@ make_version()
      * Value used for compiler (word size/field alignment/padding) check.
      */
     version.struct_sizes1 =
-        (((unsigned long) sizeof(struct context_info) << 24)
-         | ((unsigned long) sizeof(struct obj) << 17)
-         | ((unsigned long) sizeof(struct monst) << 10)
+        (((unsigned long) sizeof(struct obj) << 22)
+         | ((unsigned long) sizeof(struct monst) << 12)
          | ((unsigned long) sizeof(struct you)));
-    version.struct_sizes2 = (((unsigned long) sizeof(struct flag) << 10) |
-/* free bits in here */
+    version.struct_sizes2 = (
 #ifdef SYSFLAGS
-                             ((unsigned long) sizeof(struct sysflag)));
+        ((unsigned long)sizeof(struct sysflag) << 24)
 #else
-                             ((unsigned long) 0L));
+        ((unsigned long)0L)
 #endif
+        | ((unsigned long)sizeof(struct flag) << 14)
+        | ((unsigned long)sizeof(struct context_info)));
+
+    version.short_size = (unsigned char)sizeof(short);
+    version.int_size = (unsigned char)sizeof(int);
+    version.long_size = (unsigned char)sizeof(long);
+    version.ptr_size = (unsigned char)sizeof(char*);
     return;
 }
 
@@ -1435,6 +1440,10 @@ do_date()
             ul_sfx);
     Fprintf(ofp, "#define VERSION_SANITY3 0x%08lx%s\n", version.struct_sizes2,
             ul_sfx);
+    Fprintf(ofp, "#define VERSION_SHORTSIZE %u\n", version.short_size);
+    Fprintf(ofp, "#define VERSION_INTSIZE %u\n", version.int_size);
+    Fprintf(ofp, "#define VERSION_LONGSIZE %u\n", version.long_size);
+    Fprintf(ofp, "#define VERSION_PTRSIZE %u\n", version.ptr_size);
     Fprintf(ofp, "\n");
     Fprintf(ofp, "#define VERSION_STRING \"%s\"\n", version_string(buf, "."));
     Fprintf(ofp, "#define VERSION_ID \\\n \"%s\"\n",

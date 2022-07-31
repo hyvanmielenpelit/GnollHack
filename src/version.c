@@ -270,16 +270,24 @@ boolean complain;
     unsigned long vsan2 = VERSION_SANITY2;
     unsigned long vsan3 = VERSION_SANITY3;
 
-    if (
+    unsigned char shortsize = VERSION_SHORTSIZE;
+    unsigned char intsize = VERSION_INTSIZE;
+    unsigned char longsize = VERSION_LONGSIZE;
+    unsigned char ptrsize = VERSION_PTRSIZE;
+
+    unsigned long versioncompat = 0UL;
 #ifdef VERSION_COMPATIBILITY
-        version_data->incarnation < VERSION_COMPATIBILITY
-        || version_data->incarnation > VERSION_NUMBER
+    versioncompat = VERSION_NUMBER;
 #else
-        version_data->incarnation != VERSION_NUMBER
+    versioncompat = VERSION_COMPATIBILITY;
 #endif
+
+    if (
+        version_data->incarnation < versioncompat
+        || version_data->incarnation > VERSION_NUMBER
         ) {
         if (complain)
-            pline("Version mismatch for file \"%s\".", filename);
+            pline("Version mismatch for file \"%s\" (%lu, %lu, %lu).", filename, version_data->incarnation, VERSION_NUMBER, versioncompat);
         return FALSE;
     } 
     else if (
@@ -293,8 +301,9 @@ boolean complain;
         || version_data->struct_sizes1 != vsan2
         || version_data->struct_sizes2 != vsan3) {
         if (complain)
-            pline("Configuration incompatibility for file \"%s\". (%lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu)", filename, 
-                (version_data->feature_set & ~IGNORED_FEATURES), (VERSION_FEATURES & ~IGNORED_FEATURES), version_data->entity_count, vsan1, version_data->struct_sizes1, vsan2, version_data->struct_sizes2, vsan3);
+            pline("Configuration incompatibility for file \"%s\". (feat %lu, %lu, ecnt %lu, %lu, str1 %lu, %lu, str2 %lu, %lu, short %u, %u, int %u, %u, long %u, %u, ptr %u, %u)", filename, 
+                (version_data->feature_set & ~IGNORED_FEATURES), (VERSION_FEATURES & ~IGNORED_FEATURES), version_data->entity_count, vsan1, version_data->struct_sizes1, vsan2, version_data->struct_sizes2, vsan3,
+                version_data->short_size, shortsize, version_data->int_size, intsize, version_data->long_size, longsize, version_data->ptr_size, ptrsize);
         return FALSE;
     }
     return TRUE;

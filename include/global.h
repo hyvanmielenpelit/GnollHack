@@ -317,6 +317,10 @@ struct version_info {
     unsigned long entity_count;  /* # of monsters and objects */
     unsigned long struct_sizes1; /* size of key structs */
     unsigned long struct_sizes2; /* size of more key structs */
+    unsigned char short_size;
+    unsigned char int_size;
+    unsigned char long_size;
+    unsigned char ptr_size;
 };
 
 struct savefile_info {
