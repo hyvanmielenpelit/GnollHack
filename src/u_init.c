@@ -326,7 +326,7 @@ static const struct trobj ScrollOfRemoveCurse[] = { { SCR_REMOVE_CURSE, 0, SCROL
 
 /* race-based substitutions for initial inventory;
    the weaker cloak for elven rangers is intentional--they shoot better */
-static struct inv_sub {
+static const struct inv_sub {
     short race_pm, item_otyp, subs_otyp;
 } inv_subs[] = {
     { PM_ELF, DAGGER, ELVEN_DAGGER },

@@ -2086,18 +2086,25 @@ int show_weights;
 /* should be called with either EXIT_SUCCESS or EXIT_FAILURE */
 /* called between displaying gamewindows and before newgame / restore, after getlock doclearlocks must be set to TRUE */
 void
-nh_early_bail(status, mesg, doclearlocks)
+nh_bail(status, mesg, fullterminate)
 int status;
 const char* mesg;
-boolean doclearlocks;
+boolean fullterminate;
 {
-    if(doclearlocks)
-        clearlocks();
-    if (VIA_WINDOWPORT()) {
-        reset_blstats();
-    }
+    clearlocks();
     exit_nhwindows(mesg);
-    gnollhack_exit(status); 
+    if (fullterminate)
+    {
+        //nh_terminate resets blstats
+        nh_terminate(status);
+    }
+    else
+    {
+        if (VIA_WINDOWPORT()) {
+            reset_blstats();
+        }
+        gnollhack_exit(status);
+    }
 }
 
 /* should be called with either EXIT_SUCCESS or EXIT_FAILURE */
@@ -3138,6 +3145,7 @@ reset_remaining_static_variables()
     reset_dogs();
     reset_hack();
     reset_inventory();
+    reset_traps();
     reset_spells();
     reset_vision();
     reset_urolerace();
@@ -3162,6 +3170,7 @@ reset_game(VOID_ARGS)
     reset_gamestate();
     n_game_recoveries = 0;
     reset_blstats();
+    reset_occupations();
     reset_remaining_static_variables();
     reset_remaining_dynamic_data();
     dlb_cleanup();

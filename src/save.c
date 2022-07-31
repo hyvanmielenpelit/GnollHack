@@ -1292,7 +1292,7 @@ int fd;
 register struct trap *trap;
 int mode;
 {
-    static struct trap zerotrap;
+    static const struct trap zerotrap;
     register struct trap *trap2;
 
     while (trap) {
@@ -1316,7 +1316,7 @@ void
 savefruitchn(fd, mode)
 int fd, mode;
 {
-    static struct fruit zerofruit = { { 0 }, 0, 0 };
+    static const struct fruit zerofruit = { { 0 }, 0, 0 };
     register struct fruit *f2, *f1;
 
     f1 = ffruit;

@@ -7558,4 +7558,11 @@ struct trap* trap;
     return 0;
 }
 
+void
+reset_traps(VOID_ARGS)
+{
+    memset((genericptr_t)&launchplace, 0, sizeof(launchplace));
+    memset((genericptr_t)&acid_ctx, 0, sizeof(acid_ctx));
+}
+
 /*trap.c*/

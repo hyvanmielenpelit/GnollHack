@@ -2002,7 +2002,7 @@ int idx;
 
 struct hilite_s status_hilites[MAXBLSTATS];
 
-static struct fieldid_t {
+static const struct fieldid_t {
     const char *fieldname;
     enum statusfields fldid;
 } fieldids_alias[] = {

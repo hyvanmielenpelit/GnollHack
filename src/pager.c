@@ -2221,7 +2221,7 @@ domenucontrols(VOID_ARGS)
 }
 
 /* data for dohelp() */
-static struct {
+static const struct {
     void NDECL((*f));
     const char *text;
 } help_menu_items[] = {

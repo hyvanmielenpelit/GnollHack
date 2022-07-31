@@ -1031,10 +1031,10 @@ E void FDECL(container_contents, (struct obj *, BOOLEAN_P,
                                   BOOLEAN_P, BOOLEAN_P, int));
 #ifdef VMS
 E void FDECL(nh_terminate, (int));
-E void FDECL(nh_early_bail, (int, const char*, BOOLEAN_P));
+E void FDECL(nh_bail, (int, const char*, BOOLEAN_P));
 #else
 E void FDECL(nh_terminate, (int)) NORETURN;
-E void FDECL(nh_early_bail, (int, const char*, BOOLEAN_P)) NORETURN;
+E void FDECL(nh_bail, (int, const char*, BOOLEAN_P)) NORETURN;
 #endif
 E int NDECL(dovanquished);
 E int NDECL(dokilledmonsters);
@@ -3547,6 +3547,7 @@ E int FDECL(untrap_probability, (int, int));
 E const char* FDECL(get_trap_name, (int));
 E const char* FDECL(get_trap_explanation, (struct trap*));
 E int FDECL(get_shooting_trap_object, (struct trap*));
+E void NDECL(reset_traps);
 
 /* ### u_init.c ### */
 

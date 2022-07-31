@@ -7624,7 +7624,7 @@ char *class_select;
     return ret;
 }
 
-static struct wc_Opt wc_options[] = {
+static const struct wc_Opt wc_options[] = {
     { "ascii_map", WC_ASCII_MAP },
     { "color", WC_COLOR },
     { "eight_bit_tty", WC_EIGHT_BIT_IN },
@@ -7661,7 +7661,7 @@ static struct wc_Opt wc_options[] = {
     { "mouse_support", WC_MOUSE_SUPPORT },
     { (char *) 0, 0L }
 };
-static struct wc_Opt wc2_options[] = {
+static const struct wc_Opt wc2_options[] = {
     { "fullscreen", WC2_FULLSCREEN },
     { "softkeyboard", WC2_SOFTKEYBOARD },
     { "wraptext", WC2_WRAPTEXT },

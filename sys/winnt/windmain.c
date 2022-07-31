@@ -920,7 +920,7 @@ getlock()
         unlock_file(HLOCK);
         Sprintf(oops, "Cannot open %s", fq_lock);
         raw_print(oops);
-        nh_early_bail(EXIT_FAILURE, (const char*)0, FALSE);
+        nh_bail(EXIT_FAILURE, (const char*)0, FALSE);
     }
 
     (void) nhclose(fd);

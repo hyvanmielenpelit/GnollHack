@@ -166,6 +166,7 @@ reset_global_variables(VOID_ARGS)
 #endif
     memset((genericptr_t)&program_state, 0, sizeof(program_state));
     memset((genericptr_t)&iflags, 0, sizeof(iflags));
+    memset((genericptr_t)&flags, 0, sizeof(flags)); // Just in case
     memset((genericptr_t)&youmonst, 0, sizeof(youmonst));
     memset((genericptr_t)&bhitpos, 0, sizeof(bhitpos));
     memset((genericptr_t)&urealtime, 0, sizeof(urealtime));

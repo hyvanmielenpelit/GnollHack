@@ -1318,7 +1318,7 @@ choose_game_difficulty()
         if (selected->item.a_int == QUIT_DUMMY)
         {
             /* Quit */
-            nh_early_bail(EXIT_SUCCESS, "Until next time, then...", TRUE);
+            nh_bail(EXIT_SUCCESS, "Until next time, then...", TRUE);
         }
         context.game_difficulty = selected->item.a_int + MIN_DIFFICULTY_LEVEL - 1;
         free((genericptr_t)selected);
@@ -1326,7 +1326,7 @@ choose_game_difficulty()
     else
     {
         /* Quit upon ESC, too */
-        nh_early_bail(EXIT_SUCCESS, "Until next time, then...", TRUE);
+        nh_bail(EXIT_SUCCESS, "Until next time, then...", TRUE);
     }
 }
 
@@ -1566,7 +1566,7 @@ const char *msg;
  *
  */
 
-static struct early_opt earlyopts[] = {
+static const struct early_opt earlyopts[] = {
     {ARG_DEBUG, "debug", 5, TRUE},
     {ARG_VERSION, "version", 4, TRUE},
 #ifdef WIN32

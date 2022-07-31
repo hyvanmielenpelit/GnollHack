@@ -1957,7 +1957,7 @@ genericptr_t distance;
     }
 }
 
-static struct qmchoices {
+static const struct qmchoices {
     int mndx;             /* type of pet, 0 means any  */
     char mlet;            /* symbol of pet, 0 means any */
     unsigned mappearance; /* mimic this */

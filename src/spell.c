@@ -3260,16 +3260,17 @@ int otyp;
 }
 #endif
 
+static struct tport_hideaway {
+    struct spell savespell;
+    int tport_indx;
+} save_tport;
+
 /* add/hide/remove/unhide teleport-away on behalf of dotelecmd() to give
    more control to behavior of ^T when used in wizard mode */
 int
 tport_spell(what)
 int what;
 {
-    static struct tport_hideaway {
-        struct spell savespell;
-        int tport_indx;
-    } save_tport;
     int i;
 /* also defined in teleport.c */
 #define NOOP_SPELL  0
@@ -5424,6 +5425,7 @@ reset_spells(VOID_ARGS)
 {
     docast_spell_no = -1;
     domix_spell_no = -1;
+    memset((genericptr_t)&save_tport, 0, sizeof(save_tport));
 }
 
 /*spell.c*/

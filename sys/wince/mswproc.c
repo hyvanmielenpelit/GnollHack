@@ -1768,9 +1768,7 @@ mswin_main_loop()
 void
 bail(const char *mesg)
 {
-    clearlocks();
-    mswin_exit_nhwindows(mesg);
-    nh_terminate(EXIT_SUCCESS);
+    nh_bail(EXIT_SUCCESS, mesg, TRUE);
     /*NOTREACHED*/
 }
 
