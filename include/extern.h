@@ -1031,8 +1031,10 @@ E void FDECL(container_contents, (struct obj *, BOOLEAN_P,
                                   BOOLEAN_P, BOOLEAN_P, int));
 #ifdef VMS
 E void FDECL(nh_terminate, (int));
+E void FDECL(nh_early_bail, (int, const char*, BOOLEAN_P));
 #else
 E void FDECL(nh_terminate, (int)) NORETURN;
+E void FDECL(nh_early_bail, (int, const char*, BOOLEAN_P)) NORETURN;
 #endif
 E int NDECL(dovanquished);
 E int NDECL(dokilledmonsters);

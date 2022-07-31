@@ -1318,9 +1318,7 @@ choose_game_difficulty()
         if (selected->item.a_int == QUIT_DUMMY)
         {
             /* Quit */
-            clearlocks();
-            exit_nhwindows((char*)0);
-            gnollhack_exit(EXIT_SUCCESS);
+            nh_early_bail(EXIT_SUCCESS, "Until next time, then...", TRUE);
         }
         context.game_difficulty = selected->item.a_int + MIN_DIFFICULTY_LEVEL - 1;
         free((genericptr_t)selected);
@@ -1328,9 +1326,7 @@ choose_game_difficulty()
     else
     {
         /* Quit upon ESC, too */
-        clearlocks();
-        exit_nhwindows((char*)0);
-        gnollhack_exit(EXIT_SUCCESS);
+        nh_early_bail(EXIT_SUCCESS, "Until next time, then...", TRUE);
     }
 }
 

@@ -2084,6 +2084,23 @@ int show_weights;
 }
 
 /* should be called with either EXIT_SUCCESS or EXIT_FAILURE */
+/* called between displaying gamewindows and before newgame / restore, after getlock doclearlocks must be set to TRUE */
+void
+nh_early_bail(status, mesg, doclearlocks)
+int status;
+const char* mesg;
+boolean doclearlocks;
+{
+    if(doclearlocks)
+        clearlocks();
+    if (VIA_WINDOWPORT()) {
+        reset_blstats();
+    }
+    exit_nhwindows(mesg);
+    gnollhack_exit(status); 
+}
+
+/* should be called with either EXIT_SUCCESS or EXIT_FAILURE */
 void
 nh_terminate(status)
 int status;

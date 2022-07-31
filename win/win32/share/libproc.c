@@ -1359,9 +1359,7 @@ lib_ui_has_input(VOID_ARGS)
 /* Helper functions */
 void lib_bail(const char* mesg)
 {
-    clearlocks();
-    lib_exit_nhwindows(mesg);
-    gnollhack_exit(EXIT_SUCCESS);
+    nh_early_bail(EXIT_SUCCESS, mesg, TRUE);
 }
 
 void lib_init_platform(VOID_ARGS)
