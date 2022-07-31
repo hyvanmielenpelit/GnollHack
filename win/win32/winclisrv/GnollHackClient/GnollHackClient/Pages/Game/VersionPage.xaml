@@ -61,7 +61,7 @@
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
                             <Label Grid.Row="10" Text="Session Play Time:" x:Name="SessionTitleLabel" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
-                            <Label Grid.Row="11" Text="Current Play Time:" x:Name="CurrentTitleLabel" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                            <Label Grid.Row="11" Text="Game Duration:" x:Name="CurrentTitleLabel" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
 
                             <Label Grid.Row="0" Grid.Column="1" x:Name="GnollHackVersionLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
