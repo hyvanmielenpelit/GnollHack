@@ -2933,6 +2933,8 @@ E int FDECL(death_glyph_to_player_mon, (int));
 E int FDECL(passive_defense_glyph_to_player_mon, (int));
 E int FDECL(special_attack2_glyph_to_player_mon, (int));
 E int FDECL(special_attack3_glyph_to_player_mon, (int));
+E void NDECL(save_initial_urolerace_values);
+E void NDECL(reset_urolerace);
 
 /* ### rumors.c ### */
 

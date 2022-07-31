@@ -160,6 +160,7 @@ reset_global_variables(VOID_ARGS)
 {
     wizard = discover = ModernMode = CasualMode = FALSE;
     save_initial_objects_values();
+    save_initial_urolerace_values();
 #ifdef SYSFLAGS
     memset((genericptr_t)&sysflags, 0, sizeof(sysflags));
 #endif

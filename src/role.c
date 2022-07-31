@@ -3119,4 +3119,32 @@ special_attack2_glyph_to_player_mon(int glyph)
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_SPECIAL_ATTACK_2_OFF + GLYPH_PLAYER_OFF);
 }
 
+NEARDATA struct Role saved_urole;
+NEARDATA struct Race saved_urace;
+static boolean urolerace_values_saved = FALSE;
+
+void
+save_initial_urolerace_values(VOID_ARGS)
+{
+    if (!urolerace_values_saved)
+    {
+        memcpy((genericptr_t)&saved_urole, (genericptr_t)&urole,
+            sizeof(struct Role));
+        memcpy((genericptr_t)&saved_urace, (genericptr_t)&urace,
+            sizeof(struct Race));
+        urolerace_values_saved = TRUE;
+    }
+
+}
+
+void
+reset_urolerace(VOID_ARGS)
+{
+    memcpy((genericptr_t)&urole, (genericptr_t)&saved_urole,
+        sizeof(struct Role));
+    memcpy((genericptr_t)&urace, (genericptr_t)&saved_urace,
+        sizeof(struct Race));
+}
+
+
 /* role.c */

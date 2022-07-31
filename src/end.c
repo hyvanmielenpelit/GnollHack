@@ -3123,6 +3123,7 @@ reset_remaining_static_variables()
     reset_inventory();
     reset_spells();
     reset_vision();
+    reset_urolerace();
 }
 
 STATIC_DCL void
