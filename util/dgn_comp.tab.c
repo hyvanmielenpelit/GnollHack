@@ -96,7 +96,11 @@
 #endif
 
 #include "config.h"
+#if defined(GNH_MOBILE)
+#include "date_unix.h"
+#else
 #include "date.h"
+#endif
 #include "dgn_file.h"
 #include "hack.h"
 
@@ -138,7 +142,7 @@ extern FILE *yyin, *yyout;	/* from dgn_lex.c */
 
 
 /* Line 189 of yacc.c  */
-#line 142 "dgn_comp.tab.c"
+#line 146 "dgn_comp.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -198,7 +202,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 70 "dgn_comp.y"
+#line 74 "dgn_comp.y"
 
 	int	i;
 	char*	str;
@@ -206,7 +210,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 210 "dgn_comp.tab.c"
+#line 214 "dgn_comp.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -218,7 +222,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 222 "dgn_comp.tab.c"
+#line 226 "dgn_comp.tab.c"
 
 #ifdef short
 # undef short
@@ -527,12 +531,12 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    84,    84,    85,    91,    92,    95,    96,    97,    98,
-     101,   114,   117,   123,   124,   125,   128,   134,   137,   144,
-     151,   163,   170,   171,   172,   173,   174,   177,   189,   204,
-     217,   233,   240,   249,   264,   282,   298,   317,   318,   321,
-     335,   352,   355,   359,   363,   367,   374,   377,   383,   396,
-     397,   419,   456
+       0,    88,    88,    89,    95,    96,    99,   100,   101,   102,
+     105,   118,   121,   127,   128,   129,   132,   138,   141,   148,
+     155,   167,   174,   175,   176,   177,   178,   181,   193,   208,
+     221,   237,   244,   253,   268,   286,   302,   321,   322,   325,
+     339,   356,   359,   363,   367,   371,   378,   381,   387,   400,
+     401,   423,   460
 };
 #endif
 
@@ -1504,7 +1508,7 @@ yyreduce:
         case 3:
 
 /* Line 1455 of yacc.c  */
-#line 86 "dgn_comp.y"
+#line 90 "dgn_comp.y"
     {
 			output_dgn();
 		  ;}
@@ -1513,7 +1517,7 @@ yyreduce:
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 102 "dgn_comp.y"
+#line 106 "dgn_comp.y"
     {
 			init_dungeon();
 			Strcpy(tmpdungeon[n_dgns].name, (yyvsp[(3) - (6)].str));
@@ -1528,7 +1532,7 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 114 "dgn_comp.y"
+#line 118 "dgn_comp.y"
     {
 			(yyval.i) = 0;
 		  ;}
@@ -1537,7 +1541,7 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 118 "dgn_comp.y"
+#line 122 "dgn_comp.y"
     {
 			(yyval.i) = (yyvsp[(1) - (1)].i);
 		  ;}
@@ -1546,7 +1550,7 @@ yyreduce:
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 129 "dgn_comp.y"
+#line 133 "dgn_comp.y"
     {
 			tmpdungeon[n_dgns].entry_lev = (yyvsp[(3) - (3)].i);
 		  ;}
@@ -1555,7 +1559,7 @@ yyreduce:
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 138 "dgn_comp.y"
+#line 142 "dgn_comp.y"
     {
 			if((yyvsp[(3) - (3)].i) <= TOWN || (yyvsp[(3) - (3)].i) >= D_ALIGN_CHAOTIC)
 			    yyerror("Illegal description - ignoring!");
@@ -1567,7 +1571,7 @@ yyreduce:
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 145 "dgn_comp.y"
+#line 149 "dgn_comp.y"
     {
 			if((yyvsp[(3) - (3)].i) && (yyvsp[(3) - (3)].i) < D_ALIGN_CHAOTIC)
 			    yyerror("Illegal alignment - ignoring!");
@@ -1579,7 +1583,7 @@ yyreduce:
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 152 "dgn_comp.y"
+#line 156 "dgn_comp.y"
     {
 			if((yyvsp[(3) - (3)].i) && ((yyvsp[(3) - (3)].i) < 0 || (yyvsp[(3) - (3)].i) >= MAX_CMAP_TYPES))
 			    yyerror("Illegal tileset - ignoring!");
@@ -1594,7 +1598,7 @@ yyreduce:
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 164 "dgn_comp.y"
+#line 168 "dgn_comp.y"
     {
 			Strcpy(tmpdungeon[n_dgns].protoname, (yyvsp[(3) - (3)].str));
 			Free((yyvsp[(3) - (3)].str));
@@ -1604,7 +1608,7 @@ yyreduce:
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 178 "dgn_comp.y"
+#line 182 "dgn_comp.y"
     {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (7)].str));
@@ -1621,7 +1625,7 @@ yyreduce:
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 190 "dgn_comp.y"
+#line 194 "dgn_comp.y"
     {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (8)].str));
@@ -1639,7 +1643,7 @@ yyreduce:
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 205 "dgn_comp.y"
+#line 209 "dgn_comp.y"
     {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (8)].str));
@@ -1657,7 +1661,7 @@ yyreduce:
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 218 "dgn_comp.y"
+#line 222 "dgn_comp.y"
     {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (9)].str));
@@ -1676,7 +1680,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 234 "dgn_comp.y"
+#line 238 "dgn_comp.y"
     {
 			if((yyvsp[(3) - (3)].i) >= D_ALIGN_CHAOTIC)
 			    yyerror("Illegal description - ignoring!");
@@ -1688,7 +1692,7 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 241 "dgn_comp.y"
+#line 245 "dgn_comp.y"
     {
 			if((yyvsp[(3) - (3)].i) && (yyvsp[(3) - (3)].i) < D_ALIGN_CHAOTIC)
 			    yyerror("Illegal alignment - ignoring!");
@@ -1700,7 +1704,7 @@ yyreduce:
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 250 "dgn_comp.y"
+#line 254 "dgn_comp.y"
     {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (8)].str));
@@ -1720,7 +1724,7 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 265 "dgn_comp.y"
+#line 269 "dgn_comp.y"
     {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (9)].str));
@@ -1741,7 +1745,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 283 "dgn_comp.y"
+#line 287 "dgn_comp.y"
     {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (9)].str));
@@ -1762,7 +1766,7 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 299 "dgn_comp.y"
+#line 303 "dgn_comp.y"
     {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (10)].str));
@@ -1784,7 +1788,7 @@ yyreduce:
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 322 "dgn_comp.y"
+#line 326 "dgn_comp.y"
     {
 			init_branch();
 			Strcpy(tmpbranch[n_brs].name, (yyvsp[(3) - (7)].str));
@@ -1801,7 +1805,7 @@ yyreduce:
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 336 "dgn_comp.y"
+#line 340 "dgn_comp.y"
     {
 			init_branch();
 			Strcpy(tmpbranch[n_brs].name, (yyvsp[(3) - (8)].str));
@@ -1820,7 +1824,7 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 352 "dgn_comp.y"
+#line 356 "dgn_comp.y"
     {
 			(yyval.i) = TBR_STAIR;	/* two way stair */
 		  ;}
@@ -1829,7 +1833,7 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 356 "dgn_comp.y"
+#line 360 "dgn_comp.y"
     {
 			(yyval.i) = TBR_STAIR;	/* two way stair */
 		  ;}
@@ -1838,7 +1842,7 @@ yyreduce:
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 360 "dgn_comp.y"
+#line 364 "dgn_comp.y"
     {
 			(yyval.i) = TBR_NO_UP;	/* no up staircase */
 		  ;}
@@ -1847,7 +1851,7 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 364 "dgn_comp.y"
+#line 368 "dgn_comp.y"
     {
 			(yyval.i) = TBR_NO_DOWN;	/* no down staircase */
 		  ;}
@@ -1856,7 +1860,7 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 368 "dgn_comp.y"
+#line 372 "dgn_comp.y"
     {
 			(yyval.i) = TBR_PORTAL;	/* portal connection */
 		  ;}
@@ -1865,7 +1869,7 @@ yyreduce:
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 374 "dgn_comp.y"
+#line 378 "dgn_comp.y"
     {
 			(yyval.i) = 0;	/* defaults to down */
 		  ;}
@@ -1874,7 +1878,7 @@ yyreduce:
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 378 "dgn_comp.y"
+#line 382 "dgn_comp.y"
     {
 			(yyval.i) = (yyvsp[(1) - (1)].i);
 		  ;}
@@ -1883,7 +1887,7 @@ yyreduce:
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 384 "dgn_comp.y"
+#line 388 "dgn_comp.y"
     {
 			char *p = (yyvsp[(1) - (1)].str);
 			if (strlen(p) != 1) {
@@ -1899,7 +1903,7 @@ yyreduce:
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 420 "dgn_comp.y"
+#line 424 "dgn_comp.y"
     {
 			if ((yyvsp[(2) - (5)].i) < -MAXLEVEL || (yyvsp[(2) - (5)].i) > MAXLEVEL) {
 			    yyerror("Abs base out of dlevel range - zeroing!");
@@ -1919,7 +1923,7 @@ yyreduce:
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 457 "dgn_comp.y"
+#line 461 "dgn_comp.y"
     {
 			if ((yyvsp[(2) - (5)].i) < -MAXLEVEL || (yyvsp[(2) - (5)].i) > MAXLEVEL) {
 			    yyerror("Rel base out of dlevel range - zeroing!");
@@ -1934,7 +1938,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 1938 "dgn_comp.tab.c"
+#line 1942 "dgn_comp.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2146,7 +2150,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 467 "dgn_comp.y"
+#line 471 "dgn_comp.y"
 
 
 void

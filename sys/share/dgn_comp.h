@@ -72,7 +72,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 70 "dgn_comp.y"
+#line 74 "dgn_comp.y"
 
 	int	i;
 	char*	str;

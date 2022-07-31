@@ -40,7 +40,7 @@ static const struct trobj Archaeologist[] = {
     { BULLWHIP, 3, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { LEATHER_JACKET, 2, ARMOR_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { HAND_CROSSBOW, 0, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
-    { CROSSBOW_BOLT, 0, WEAPON_CLASS, 15, 0, UNDEF_BLESS, 0, 0 },
+    { CROSSBOW_BOLT, 0, WEAPON_CLASS, 12, 8, UNDEF_BLESS, 0, 0 },
     { CROSSBOW_BOLT, 0, WEAPON_CLASS, 6, 0, UNDEF_BLESS, LIGHTNING_ENCHANTMENT, 0 },
     { FEDORA, 0, ARMOR_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0, 0, 0 },
@@ -71,8 +71,7 @@ static const struct trobj BarbarianAlternative[] = {
 static const struct trobj Cave_man[] = {
     { CLUB, 3, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { SLING, 1, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
-    { FLINT, 0, GEM_CLASS, 10, 11, UNDEF_BLESS, 0, 0 },
-    { STONE_PEBBLE, 0, GEM_CLASS, 3, 0, 0, 0, 0 },             /* yields 18..33 */
+    { FLINT, 0, GEM_CLASS, 10, 10, UNDEF_BLESS, 0, 0 },
     { PRAYERSTONE, 0, GEM_CLASS, 1, 0, 1, 0, 0 },
     { UNDEF_TYP, UNDEF_SPE, AMULET_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { SACK, UNDEF_SPE, TOOL_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
@@ -154,8 +153,8 @@ static const struct trobj Priest[] = {
 static const struct trobj Ranger[] = {
     { DAGGER, 1, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { SHORT_BOW, 0, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
-    { ARROW, 1, WEAPON_CLASS, 15, 11, UNDEF_BLESS, 0, 0 },
-    { ARROW, 0, WEAPON_CLASS, 26, 25, UNDEF_BLESS, 0, 0 },
+    { ARROW, 1, WEAPON_CLASS, 15, 10, UNDEF_BLESS, 0, 0 },
+    { ARROW, 0, WEAPON_CLASS, 25, 25, UNDEF_BLESS, 0, 0 },
     { LEATHER_BRACERS, 0, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { CLOAK_OF_PROTECTION, 1, ARMOR_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { BACKPACK, 0, TOOL_CLASS, 1, 0, 0, 0, 0 },
@@ -163,11 +162,10 @@ static const struct trobj Ranger[] = {
     { 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 static const struct trobj Rogue[] = {
-#define R_DAGGERS 1
     { SHORT_SWORD, 0, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
-    { DAGGER, 0, WEAPON_CLASS, 6, 5, 0, 0, 0 }, /* quan is variable */
+    { DAGGER, 0, WEAPON_CLASS, 5, 5, 0, 0, 0 }, /* quan is variable */
     { HAND_CROSSBOW, 1, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
-    { CROSSBOW_BOLT, 1, WEAPON_CLASS, 15, 0, UNDEF_BLESS, 0, 0 },
+    { CROSSBOW_BOLT, 1, WEAPON_CLASS, 12, 8, UNDEF_BLESS, 0, 0 },
     { LEATHER_ARMOR, 1, ARMOR_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { COTTON_HOOD, 0, ARMOR_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { POT_POISON, 0, POTION_CLASS, 1, 0, 0, 0, 0 },
@@ -176,19 +174,17 @@ static const struct trobj Rogue[] = {
     { 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 static const struct trobj Samurai[] = {
-#define S_ARROWS 3
     { KATANA, 0, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { SHORT_SWORD, 0, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 }, /* wakizashi */
     { YUMI, 0, WEAPON_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
-    { YA, 0, WEAPON_CLASS, 26, 20, UNDEF_BLESS, 0, 0 }, /* variable quan */
+    { YA, 0, WEAPON_CLASS, 25, 20, UNDEF_BLESS, 0, 0 }, /* variable quan */
     { SPLINT_MAIL, 0, ARMOR_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { ORIENTAL_SILK_SACK, 0, TOOL_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0, 0, 0 },
     { 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 static const struct trobj Tourist[] = {
-#define T_DARTS 0
-    { DART, 3, WEAPON_CLASS, 21, 20, UNDEF_BLESS, 0, 0 }, /* quan is variable */
+    { DART, 3, WEAPON_CLASS, 20, 20, UNDEF_BLESS, 0, 0 }, /* quan is variable */
     { GOLF_CLUB, 3, TOOL_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { POT_EXTRA_HEALING, 0, POTION_CLASS, 2, 0, UNDEF_BLESS, 0, 0 },
     { SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, 0, UNDEF_BLESS, 0, 0 },
@@ -1561,10 +1557,10 @@ register const struct trobj * trop;
 
     while (trop->trclass) 
     {
-        otyp = (int) trop->trotyp;
         quan = (long)trop->trquan + (long)(trop->trquan_rnd > 0 ? rn2((int)trop->trquan_rnd + 1) : 0);
         while (quan > 0)
         {
+            otyp = (int)trop->trotyp;
             if (otyp != UNDEF_TYP)
             {
                 obj = mksobj(otyp, TRUE, FALSE, FALSE);
@@ -1594,7 +1590,7 @@ register const struct trobj * trop;
                     || otyp == AMULET_OF_LIFE_SAVING
                     /* 'useless' items */
                     || is_cursed_magic_item(obj)
-                    || objects[otyp].oc_flags2 & O2_GENERATED_CURSED
+                    || (objects[otyp].oc_flags2 & O2_GENERATED_CURSED)
                     || otyp == POT_HALLUCINATION
                     || otyp == POT_ACID
                     || otyp == POT_URINE
