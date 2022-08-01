@@ -535,7 +535,7 @@ struct obj *box;
             n = 20;
             break;
         case BOOKSHELF:
-            n = !rn2(100) ? 10 : (level_difficulty() >= 13) ? 5 : (level_difficulty() >= 10) ? 4 : 3;
+            n = !rn2(50) ? 10 : 5;
             break;
         case MINE_CART:
             n = !rn2(3) ? 0 : 8; /* At least one third of the mine carts are empty */
