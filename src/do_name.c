@@ -3936,6 +3936,9 @@ unsigned long cflags;
         if (objects[i].oc_class != objectclass)
             break;
 
+        if (!OBJ_NAME(objects[i]) || !*OBJ_NAME(objects[i]))
+            continue;
+
         if(((objects[i].oc_flags3 & (O3_NO_WISH | O3_NO_GENERATION)) || (objects[i].oc_flags5 & O5_NO_CATALOGUE)))
             continue;
         
@@ -4043,14 +4046,21 @@ struct obj* obj;
 
     qsort((genericptr_t)sorted_citems, cnt, sizeof(short), artilistsortcmp);
 
+    int nowishcnt = 0;
     for (i = 0; i < cnt; i++)
     {
         const char* aname = artilist[sorted_citems[i]].name;
         if (aname && !strncmpi(aname, "The ", 4))
             aname += 4;
         Strcpy(objbuf, aname);
-        Sprintf(buf, "%3d - %s", i + 1, objbuf);
+        if (artilist[sorted_citems[i]].aflags & AF_NO_WISH)
+            nowishcnt++;
+        Sprintf(buf, "%3d - %s%s", i + 1, objbuf, (artilist[sorted_citems[i]].aflags & AF_NO_WISH) ? "*" : "");
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
+    }
+    if (nowishcnt > 0)
+    {
+        putstr(datawin, ATR_INDENT_AT_DASH, "* Not wishable");
     }
 }
 
@@ -4101,6 +4111,9 @@ struct obj* obj;
                 break;
             case MANUAL_CATALOGUE_OF_POTIONS:
                 itemclass = POTION_CLASS;
+                break;
+            case MANUAL_CATALOGUE_OF_WANDS:
+                itemclass = WAND_CLASS;
                 break;
             case MANUAL_CATALOGUE_OF_SCROLLS:
                 itemclass = SCROLL_CLASS;
