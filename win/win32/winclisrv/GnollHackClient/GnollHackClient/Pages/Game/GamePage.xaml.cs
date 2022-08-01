@@ -10791,22 +10791,4 @@ namespace GnollHackClient.Pages.Game
         }
     }
 
-    public class TouchEntry 
-    {
-        public SKPoint Location;
-        public DateTime PressTime;
-        public SKPoint OriginalLocation;
-
-        public TouchEntry()
-        {
-
-        }
-        public TouchEntry(SKPoint loc, DateTime time)
-        {
-            Location = loc;
-            PressTime = time;
-            OriginalLocation = loc;
-        }
-    }
-
 }

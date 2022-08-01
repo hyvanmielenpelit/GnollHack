@@ -785,4 +785,22 @@ namespace GnollHackClient
             return 0.05 + ((double)GHConstants.PollingInterval) / 1000 * GHConstants.WindowHideIntervals;
         }
     }
+
+    public class TouchEntry
+    {
+        public SKPoint Location;
+        public DateTime PressTime;
+        public SKPoint OriginalLocation;
+
+        public TouchEntry()
+        {
+
+        }
+        public TouchEntry(SKPoint loc, DateTime time)
+        {
+            Location = loc;
+            PressTime = time;
+            OriginalLocation = loc;
+        }
+    }
 }
