@@ -397,6 +397,10 @@ int mtype;
                 if (otmp)
                     (void)mpickobj(priest, otmp);
 
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_CLERICAL_SPELLS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                if (otmp)
+                    (void)mpickobj(priest, otmp);
+
                 if (context.game_difficulty < 0)
                 {
                     otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS, MKOBJ_FLAGS_PARAM_IS_TITLE);
@@ -541,6 +545,14 @@ int mtype;
 
         (void)mongetsgold(smith, 3000L + (long)rn2(6) * 500L);
         struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+        if (otmp)
+            (void)mpickobj(smith, otmp);
+
+        otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_WEAPONS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+        if (otmp)
+            (void)mpickobj(smith, otmp);
+
+        otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_ARMOR, MKOBJ_FLAGS_PARAM_IS_TITLE);
         if (otmp)
             (void)mpickobj(smith, otmp);
 

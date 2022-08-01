@@ -503,6 +503,10 @@ int mtype;
                 mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
             }
 
+            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_GEMS_AND_STONES, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+
             /* Sling bullets */
             mongets(npc, LEADEN_SLING_BULLET);
             mongets(npc, IRON_SLING_BULLET);
@@ -545,6 +549,32 @@ int mtype;
                 mongets(npc, SPE_TIME_STOP);
             if (!rn2(13))
                 mongets(npc, SPE_BLACK_BLADE_OF_DISASTER);
+
+            struct obj* otmp;
+            if (!rn2(2))
+            {
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_SCROLLS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+            if (!rn2(2))
+            {
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_WANDS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+            if (!rn2(2))
+            {
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_MISCELLANEOUS_MAGIC_ITEMS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+            if (!rn2(2))
+            {
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_MAGIC_SPELLS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
             break;
         }
         case NPC_ELVEN_BARD:
@@ -555,6 +585,13 @@ int mtype;
             if (roll & 2)
                 mongets(npc, !rn2(10) ? MAGIC_FLUTE : WOODEN_FLUTE);
             mongets(npc, ELVEN_WAYBREAD);
+            if (!rn2(10))
+            {
+                struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_ARTIFACTS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+
             break;
         }
         case NPC_HERMIT:
@@ -572,6 +609,10 @@ int mtype;
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_RINGS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+
             int cnt = 1 + rnd(2);
             for (i = 0; i < cnt; i++)
             {
@@ -586,15 +627,21 @@ int mtype;
         }
         case NPC_ORC_HERMIT3:
         {
-            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_TOOLS, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
-            int cnt = 1 + rnd(2);
-            for (i = 0; i < cnt; i++)
-            {
-                mongets(npc, SPE_MANUAL);
-            }
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_MAGIC_SPELLS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_WANDS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_ARTIFACTS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
 
             break;
         }
@@ -610,6 +657,10 @@ int mtype;
                 mongets(npc, SPE_MANUAL);
             }
 
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_TOOLS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+
             mongets(npc, GNOMISH_FELT_HAT);
             cnt = 2 + rnd(2);
             for (i = 0; i < cnt; i++)
@@ -618,7 +669,6 @@ int mtype;
                 if (otmp)
                     (void)mpickobj(npc, otmp);
             }
-
             break;
         }
         case NPC_ARTIFICER:
@@ -630,6 +680,26 @@ int mtype;
             otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_PRINCIPLES_OF_MAGIC, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
+
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_MAGIC_SPELLS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_WANDS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+            if (!rn2(2))
+            {
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_SCROLLS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+            if (!rn2(2))
+            {
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_POTIONS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
 
             mongets(npc, WAN_TOWN_PORTAL);
             otmp = mkobj(WAND_CLASS, TRUE, TRUE);
@@ -652,7 +722,6 @@ int mtype;
         default:
             break;
         }
-
 
         if (npc_subtype_definitions[npctype].service_flags & NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS)
         {

@@ -601,7 +601,12 @@ struct obj *box;
         }
         else if (box->otyp == BOOKSHELF) 
         {
-            if (rn2(3))
+            if (!rn2(7))
+            {
+                /* A random catalogue */
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, FIRST_CATALOGUE + rn2(NUM_CATALOGUES), MKOBJ_FLAGS_PARAM_IS_TITLE);
+            }
+            else if (rn2(3))
                 otmp = mkobj(SCROLL_CLASS, FALSE, TRUE);
             else
                 otmp = mkobj(SPBOOK_CLASS, FALSE, TRUE);
