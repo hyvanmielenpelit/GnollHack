@@ -4004,6 +4004,11 @@ unsigned long cflags;
             Sprintf(buf, "%s", objbuf);
             putstr(datawin, ATR_HEADING, buf);
         }
+        else if (objectclass == GEM_CLASS && objects[sorted_citems[i]].oc_skill != skill && objects[sorted_citems[i]].oc_skill == P_NONE)
+        {
+            strcpy_capitalized_for_title(buf, "Non-Projectile Rocks");
+            putstr(datawin, ATR_HEADING, buf);
+        }
         skill = objects[sorted_citems[i]].oc_skill;
         subtyp = objects[sorted_citems[i]].oc_subtyp;
         magiccnt += (int)objects[sorted_citems[i]].oc_magic;
@@ -4143,6 +4148,7 @@ struct obj* obj;
             }
             char tbuf[BUFSZ];
             Sprintf(tbuf, "The manual contains a list of %s found in Yendor:", 
+                itemclass == GEM_CLASS ? "gems and rocks" :
                 itemclass == SPBOOK_CLASS ? (cflags & 1 ? "wizard spells" : cflags & 2 ? "clerical spells" : "spells") : def_oc_syms[itemclass].name);
             putstr(datawin, 0, tbuf);
             putstr(datawin, 0, "");
