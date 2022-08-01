@@ -4103,7 +4103,6 @@ struct obj* obj;
         }
         else
         {
-            char typebuf[BUFSZ] = "items";
             int itemclass = ILLOBJ_CLASS;
             unsigned long cflags = 0UL;
             switch (mnlidx)
