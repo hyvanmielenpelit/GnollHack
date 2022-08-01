@@ -1493,20 +1493,12 @@ namespace GnollHackClient
                     break;
                 case (int)gui_command_types.GUI_CMD_MUTE_SOUNDS:
                     _gamePage.MuteSounds = true;
-                    App.FmodService.AdjustVolumes(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+                    App.MuteSounds();
                     break;
                 case (int)gui_command_types.GUI_CMD_UNMUTE_SOUNDS:
-                    {
-                        float generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
-                        float musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
-                        float ambientVolume = Preferences.Get("AmbientVolume", GHConstants.DefaultAmbientVolume);
-                        float dialogueVolume = Preferences.Get("DialogueVolume", GHConstants.DefaultDialogueVolume);
-                        float effectsVolume = Preferences.Get("EffectsVolume", GHConstants.DefaultEffectsVolume);
-                        float UIVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
-                        _gamePage.MuteSounds = false;
-                        App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
-                        break;
-                    }
+                    _gamePage.MuteSounds = false;
+                    App.UnmuteSounds();
+                    break;
                 case (int)gui_command_types.GUI_CMD_ACTIVATE_QUIETER_MODE:
                     App.FmodService.SetQuieterMode(true);
                     break;

@@ -3843,7 +3843,7 @@ static const char* const manual_names[MAX_MANUAL_TYPES] = {
     "Secrets of Scare Monster", "Gurathul's Guide to Ascension", "Master Class in Wands", "Infernal Inhabitants of Gehennom",
     "Advanced Reading in Known Monsters", "Manual of the Planes",
     /* Catalogues */
-    "Catalogue of Weapons", "Catalogue of Armor", "Catalogue of Rings", "Catalogue of Potions", "Catalogue of Scrolls", "Catalogue of Wands",
+    "Catalogue of Weapons", "Catalogue of Armors", "Catalogue of Rings", "Catalogue of Potions", "Catalogue of Scrolls", "Catalogue of Wands",
     "Catalogue of Miscellaneous Magic Items", "Catalogue of Tools", "Catalogue of Magic Spells", "Catalogue of Clerical Spells",
     "Catalogue of Comestibles", "Catalogue of Gems and Stones", "Catalogue of Artifacts",
 };
@@ -4086,14 +4086,15 @@ struct obj* obj;
 
     u.uconduct.literate++;
 
-    winid datawin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_KEEP_LINE_BREAKS, NO_GLYPH, zerocreatewindowinfo);
+    winid datawin;
     char buf[BUFSZ];
 
     if (mnlidx >= FIRST_CATALOGUE)
     {
+        datawin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_GENERAL, NO_GLYPH, zerocreatewindowinfo);
         if (mnlidx == MANUAL_CATALOGUE_OF_ARTIFACTS)
         {
-            putstr(datawin, 0, "The manual contains a list of artifacts found in Yendor:");
+            putstr(datawin, ATR_HEADING, "The manual contains a list of artifacts found in Yendor:");
             putstr(datawin, 0, "");
             print_artifact_catalogue(datawin, obj);
 
@@ -4150,13 +4151,14 @@ struct obj* obj;
             Sprintf(tbuf, "The manual contains a list of %s found in Yendor:", 
                 itemclass == GEM_CLASS ? "gems and rocks" :
                 itemclass == SPBOOK_CLASS ? (cflags & 1 ? "wizard spells" : cflags & 2 ? "clerical spells" : "spells") : def_oc_syms[itemclass].name);
-            putstr(datawin, 0, tbuf);
+            putstr(datawin, ATR_HEADING, tbuf);
             putstr(datawin, 0, "");
             print_catalogue(datawin, obj, itemclass, cflags);
         }        
     }
     else
     {
+        datawin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_KEEP_LINE_BREAKS, NO_GLYPH, zerocreatewindowinfo);
         putstr(datawin, 0, "The manual contains several instructions:");
         putstr(datawin, 0, "");
         switch (mnlidx)
@@ -4447,7 +4449,7 @@ struct obj* obj;
     putstr(datawin, 0, "");
 
     Sprintf(buf, "[%s]", manual_names[mnlidx]);
-    putstr(datawin, 0, buf);
+    putstr(datawin, ATR_HEADING, buf);
     display_nhwindow(datawin, TRUE);
     destroy_nhwindow(datawin);
 

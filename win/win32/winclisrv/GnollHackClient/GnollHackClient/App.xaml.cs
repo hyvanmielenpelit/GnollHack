@@ -126,10 +126,11 @@ namespace GnollHackClient
 
         protected override void OnStart()
         {
-            App.CancelSaveGame = true;
             if (PlatformService != null)
                 PlatformService.OverrideAnimationDuration();
 
+            App.CancelSaveGame = true;
+            App.UnmuteSounds();
             if (App.CurrentClientGame != null && !App.CurrentClientGame.CasualMode)
             {
                 //Detect background app killing OS, check if last exit is through going to sleep, and notify player that the app probably had been terminated by OS but game has been saved
@@ -148,6 +149,7 @@ namespace GnollHackClient
                 PlatformService.RevertAnimationDuration(false);
 
             App.CancelSaveGame = false;
+            App.MuteSounds();
             if (App.CurrentClientGame != null && !App.CurrentClientGame.CasualMode)
             {
                 //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
@@ -162,6 +164,7 @@ namespace GnollHackClient
                 PlatformService.OverrideAnimationDuration();
 
             App.CancelSaveGame = true;
+            App.UnmuteSounds();
             if (App.CurrentClientGame != null && !App.CurrentClientGame.CasualMode)
             {
                 //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
@@ -170,6 +173,43 @@ namespace GnollHackClient
                 if (wenttosleep && (App.GameSaved || App.SavingGame))
                 {
                     App.CurrentClientGame.GamePage.StopWaitAndResumeSavedGame();
+                }
+            }
+        }
+
+        public static void MuteSounds()
+        {
+            try
+            {
+                if (FmodService != null)
+                    FmodService.AdjustVolumes(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        public static void UnmuteSounds()
+        {
+            if (FmodService != null)
+            {
+                if (CurrentClientGame != null && CurrentClientGame.GamePage != null && CurrentClientGame.GamePage.MuteSounds)
+                    return;
+
+                try
+                {
+                    float generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
+                    float musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
+                    float ambientVolume = Preferences.Get("AmbientVolume", GHConstants.DefaultAmbientVolume);
+                    float dialogueVolume = Preferences.Get("DialogueVolume", GHConstants.DefaultDialogueVolume);
+                    float effectsVolume = Preferences.Get("EffectsVolume", GHConstants.DefaultEffectsVolume);
+                    float UIVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
+                    FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
                 }
             }
         }
