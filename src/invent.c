@@ -6515,7 +6515,7 @@ unsigned long newsym_flags;
  * Conversion from a class to a string for printing.
  * This must match the object class order.
  */
-STATIC_VAR NEARDATA const char *names[] = {
+STATIC_VAR NEARDATA const char *names[MAX_OBJECT_CLASSES] = {
     0, "Illegal objects", "Weapons", "Armor", "Rings", "Amulets", "Tools",
     "Comestibles", "Potions", "Scrolls", "Books", "Wands", "Coins",
     "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms", "Reagents",  "Miscellaneous"
@@ -6531,8 +6531,8 @@ let_to_name(let, unpaid, showsym)
 char let;
 boolean unpaid, showsym;
 {
-    const char *ocsymfmt = "  ('%c')";
-    const size_t invbuf_sympadding = 8; /* arbitrary */
+    const char *ocsymfmt = " '%c'";
+    const size_t invbuf_sympadding = 0; /* arbitrary */
     const char *class_name;
     const char *pos;
     int oclass = (let >= 1 && let < MAX_OBJECT_CLASSES) ? let : 0;
@@ -6559,7 +6559,7 @@ boolean unpaid, showsym;
         Strcpy(invbuf, class_name);
     if ((oclass != 0) && showsym) {
         char *bp = eos(invbuf);
-        size_t mlen = invbuf_sympadding - strlen(class_name);
+        long mlen = (long)invbuf_sympadding - (long)strlen(class_name);
         while (--mlen > 0) {
             *bp = ' ';
             bp++;
