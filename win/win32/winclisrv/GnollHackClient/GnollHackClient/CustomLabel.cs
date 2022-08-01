@@ -728,6 +728,10 @@ namespace GnollHackClient
                 SplitRows();
                 TextAreaSize = CalculateTextAreaSize((float)Width * App.DisplayScale);
                 UpdateScrollable(IsScrollable);
+                lock(_textOffsetLock)
+                {
+                    _textOffsetY = 0;
+                }
                 if (IsVisible)
                     InvalidateSurface();
                 //if (IsVisible)
