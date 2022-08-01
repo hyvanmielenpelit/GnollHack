@@ -3812,6 +3812,8 @@ E int FDECL(vms_get_saved_games, (const char *, char ***));
 E int FDECL(practice_needed_to_advance, (int, int));
 E const char *FDECL(weapon_descr, (struct obj *));
 E const char* FDECL(weapon_skill_name, (struct obj*));
+E const char* FDECL(get_skill_name, (int));
+E const char* FDECL(get_skill_plural_name, (int));
 E int FDECL(m_weapon_range, (struct monst*, struct obj*, struct obj*));
 E int FDECL(weapon_range, (struct obj*, struct obj*));
 E int FDECL(basehitval, (struct obj*, struct monst*, struct monst*, int));

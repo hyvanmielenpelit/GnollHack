@@ -20,6 +20,10 @@ STATIC_DCL void FDECL(do_uoname, (struct obj *));
 STATIC_PTR char *FDECL(docall_xname, (struct obj *));
 STATIC_DCL void NDECL(namefloorobj);
 STATIC_DCL char *FDECL(bogusmon, (char *,char *));
+STATIC_DCL void FDECL(print_catalogue, (winid, struct obj*, int, unsigned long));
+STATIC_DCL void FDECL(print_artifact_catalogue, (winid, struct obj*));
+STATIC_DCL int FDECL(CFDECLSPEC citemsortcmp, (const void*, const void*));
+STATIC_DCL int FDECL(CFDECLSPEC artilistsortcmp, (const void*, const void*));
 
 extern const char what_is_an_unknown_object[]; /* from pager.c */
 
@@ -3827,6 +3831,7 @@ short* novidx;
 
 
 static const char* const manual_names[MAX_MANUAL_TYPES] = {
+    /* Manuals */
     "Wands 101", "Armor 101", "Weapons 101", "Gray Stones 101",
     "Basics of Kicking", "Basics of Enchantment", "Basics of Eating and Drinking", "Introduction to Dangerous Monsters",
     "Introduction to Blessed and Cursed Items", "Guide to Praying", "Essential Survival Tips",
@@ -3836,7 +3841,11 @@ static const char* const manual_names[MAX_MANUAL_TYPES] = {
     /* Never randomly generated */
     "Guide to Dragon Scale Mails", "Guide to Altars and Sacrifice",
     "Secrets of Scare Monster", "Gurathul's Guide to Ascension", "Master Class in Wands", "Infernal Inhabitants of Gehennom",
-    "Advanced Reading in Known Monsters", "Manual of the Planes"
+    "Advanced Reading in Known Monsters", "Manual of the Planes",
+    /* Catalogues */
+    "Catalogue of Weapons", "Catalogue of Armor", "Catalogue of Rings", "Catalogue of Potions", "Catalogue of Scrolls", "Catalogue of Wands",
+    "Catalogue of Miscellaneous Magic Items", "Catalogue of Tools", "Catalogue of Magic Spells", "Catalogue of Clerical Spells",
+    "Catalogue of Comestibles", "Catalogue of Artifacts",
 };
 
 const char*
@@ -3853,6 +3862,196 @@ short* mnlidx;
             j = *mnlidx;
     }
     return manual_names[j];
+}
+
+/* qsort comparison routine */
+STATIC_OVL int
+citemsortcmp(p, q)
+const void* p;
+const void* q;
+{
+    short sp = *(short*)p;
+    short sq = *(short*)q;
+    int oclsp = objects[sp].oc_class;
+    int oclsq = objects[sq].oc_class;
+    int ocldiff = oclsp - oclsq;
+    int skillp = objects[sp].oc_skill;
+    int skillq = objects[sq].oc_skill;
+    int skilldiff = skillp - skillq;
+    int subtypp = objects[sp].oc_subtyp;
+    int subtypq = objects[sq].oc_subtyp;
+    int subtypdiff = subtypp - subtypq;
+    const char* namep = OBJ_NAME(objects[sp]);
+    const char* nameq = OBJ_NAME(objects[sq]);
+    int namediff = namep && nameq ? strcmpi(namep, nameq) : namep ? 1 : nameq ? -1 : 0;
+
+    return ocldiff ? ocldiff : skilldiff ? skilldiff : subtypdiff ? subtypdiff : namediff;
+}
+
+/* qsort comparison routine */
+STATIC_OVL int
+artilistsortcmp(p, q)
+const void* p;
+const void* q;
+{
+    short sp = *(short*)p;
+    short sq = *(short*)q;
+    const char* namep = artilist[sp].name;
+    const char* nameq = artilist[sq].name;
+    if (namep && !strncmpi(namep, "The ", 4))
+        namep += 4;
+    if (nameq && !strncmpi(nameq, "The ", 4))
+        nameq += 4;
+    int namediff = namep && nameq ? strcmpi(namep, nameq) : namep ? 1 : nameq ? -1 : 0;
+
+    return namediff;
+}
+
+static short sorted_citems[NUM_OBJECTS];
+
+#define CATALOGUE_MAGICAL 1
+#define CATALOGUE_CLERICAL 2
+
+STATIC_OVL void
+print_catalogue(datawin, obj, objectclass, cflags)
+winid datawin;
+struct obj* obj;
+int objectclass;
+unsigned long cflags;
+{
+    int i, cnt = 0;
+    char buf[BUFSZ];
+    char objbuf[BUFSZ];
+    const char magicschools[8] = {
+        P_ARCANE_SPELL,
+        P_MOVEMENT_SPELL,
+        P_TRANSMUTATION_SPELL,
+        P_ENCHANTMENT_SPELL,
+        P_CONJURATION_SPELL,
+        0
+    };
+
+    for (i = bases[objectclass]; i < NUM_OBJECTS; i++) 
+    {
+        if (objects[i].oc_class != objectclass)
+            break;
+
+        if(((objects[i].oc_flags3 & (O3_NO_WISH | O3_NO_GENERATION)) || (objects[i].oc_flags5 & O5_NO_CATALOGUE)))
+            continue;
+        
+        if (objectclass == SPBOOK_CLASS && objects[i].oc_skill == P_NONE)
+            continue;
+
+        if ((cflags & CATALOGUE_MAGICAL) && index(magicschools, objects[i].oc_skill) == 0)
+            continue;
+
+        if ((cflags & CATALOGUE_CLERICAL) && index(magicschools, objects[i].oc_skill))
+            continue;
+
+        if (obj && obj->cursed && (
+            (i % 3) == (obj->o_id % 3)
+            || ((i + obj->o_id) % 7) == 0
+            || ((i + obj->o_id + 1) % 11) == 0
+            ))
+            continue;
+
+        sorted_citems[cnt] = i;
+        cnt++;
+
+    }
+
+    qsort((genericptr_t)sorted_citems, cnt, sizeof(short), citemsortcmp);
+
+    int subtyp = -1;
+    int skill = -1;
+    int magiccnt = 0;
+    boolean checkmagic = FALSE;
+    if (objectclass == WEAPON_CLASS || objectclass == WEAPON_CLASS)
+        checkmagic = TRUE;
+
+    for (i = 0; i < cnt; i++) 
+    {
+        if ((objectclass == WEAPON_CLASS || objectclass == SPBOOK_CLASS) && objects[sorted_citems[i]].oc_skill != skill && objects[sorted_citems[i]].oc_skill != P_NONE)
+        {
+            strcpy_capitalized_for_title(objbuf, get_skill_plural_name(objects[sorted_citems[i]].oc_skill));
+            Sprintf(buf, "%s%s", abs(objects[sorted_citems[i]].oc_skill) != P_THROWN_WEAPON && objects[sorted_citems[i]].oc_skill < 0 ? "Projectiles for " : "", objbuf);
+            putstr(datawin, ATR_HEADING, buf);
+        }
+        else if (objectclass == ARMOR_CLASS && objects[sorted_citems[i]].oc_subtyp != subtyp)
+        {
+            strcpy_capitalized_for_title(objbuf, makeplural(armor_type_names[objects[sorted_citems[i]].oc_subtyp]));
+            Sprintf(buf, "%s", objbuf);
+            putstr(datawin, ATR_HEADING, buf);
+        }
+        else if (objectclass == FOOD_CLASS && objects[sorted_citems[i]].oc_subtyp != subtyp)
+        {
+            strcpy_capitalized_for_title(objbuf, makeplural(food_type_names[objects[sorted_citems[i]].oc_subtyp]));
+            Sprintf(buf, "%s", objbuf);
+            putstr(datawin, ATR_HEADING, buf);
+        }
+        else if (objectclass == TOOL_CLASS && objects[sorted_citems[i]].oc_subtyp != subtyp)
+        {
+            strcpy_capitalized_for_title(objbuf, makeplural(tool_type_names[objects[sorted_citems[i]].oc_subtyp]));
+            Sprintf(buf, "%s", objbuf);
+            putstr(datawin, ATR_HEADING, buf);
+        }
+        else if (objectclass == MISCELLANEOUS_CLASS && objects[sorted_citems[i]].oc_subtyp != subtyp)
+        {
+            strcpy_capitalized_for_title(objbuf, makeplural(misc_type_names[objects[sorted_citems[i]].oc_subtyp]));
+            Sprintf(buf, "%s", objbuf);
+            putstr(datawin, ATR_HEADING, buf);
+        }
+        skill = objects[sorted_citems[i]].oc_skill;
+        subtyp = objects[sorted_citems[i]].oc_subtyp;
+        magiccnt += (int)objects[sorted_citems[i]].oc_magic;
+        Sprintf(objbuf, "%s", OBJ_NAME(objects[sorted_citems[i]]));
+        *objbuf = highc(*objbuf);
+        Sprintf(buf, "%4d - %s%s", i + 1, objbuf, checkmagic && objects[sorted_citems[i]].oc_magic ? "*" : "");
+        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+    }
+    if (checkmagic && magiccnt > 0)
+    {
+        putstr(datawin, ATR_INDENT_AT_DASH, "* Magical item");
+    }
+}
+
+STATIC_OVL void
+print_artifact_catalogue(datawin, obj)
+winid datawin;
+struct obj* obj;
+{
+    int i, cnt = 0;
+    char buf[BUFSZ];
+    char objbuf[BUFSZ];
+
+    for (i = 1; i < NUM_ARTIFACTS; i++)
+    {
+        if (artilist[i].aflags2 & AF2_NO_CATALOGUE)
+            continue;
+
+        if (obj && obj->cursed && (
+            (i % 3) == (obj->o_id % 3)
+            || ((i + obj->o_id) % 7) == 0
+            || ((i + obj->o_id + 1) % 11) == 0
+            ))
+            continue;
+
+        sorted_citems[cnt] = i;
+        cnt++;
+
+    }
+
+    qsort((genericptr_t)sorted_citems, cnt, sizeof(short), artilistsortcmp);
+
+    for (i = 0; i < cnt; i++)
+    {
+        const char* aname = artilist[sorted_citems[i]].name;
+        if (aname && !strncmpi(aname, "The ", 4))
+            aname += 4;
+        Strcpy(objbuf, aname);
+        Sprintf(buf, "%3d - %s", i + 1, objbuf);
+        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+    }
 }
 
 void
@@ -3875,291 +4074,353 @@ struct obj* obj;
     winid datawin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_KEEP_LINE_BREAKS, NO_GLYPH, zerocreatewindowinfo);
     char buf[BUFSZ];
 
-    putstr(datawin, 0, "The manual contains several instructions:");
-    putstr(datawin, 0, "");
-    switch (mnlidx)
+    if (mnlidx >= FIRST_CATALOGUE)
     {
-    case MANUAL_WANDS_101:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can zap wands at monsters and items.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can zap wands even at yourself, as well as upwards and downwards.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can also apply wands on an item. It applies the wand's effect on to the item.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. For example, you can use a wand of cancellation to remove a curse from an item.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. If you put a wand of cancellation or a Rod of Disjunction in a bag of holding, it will explode.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. It is advisable to put wands of cancellation into ordinary bags to avoid putting them accidently into a magic bag.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can zap a wand of digging downwards to create a hole to flee from a dangerous situation.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. If you are engulfed by a monster, you can zap a wand of digging at it. It will spit you out and it is reduced to 1 HP.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. A wand of create monster is useful for generating monsters for sacrificing at an altar.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Wands make a good offensive ranged weapon choice for classes that can use them well.");
-        break;
-    case MANUAL_ARMOR_101:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Armor gives Armor Class (AC), which reduces the chance of a monster in hitting you. The lower the AC the better the armor.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Total AC below 0 also reduces damage.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Armor also gives Magic Cancellation (MC), which reduces the success chance of touch-based special attacks. The higher the MC the better the protection.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Robe is a special armor slot that does not stack with body armor. The game uses the superior AC and MC of the body armor and the robe.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Armor may also give you spell casting penalty, which reduces the chance of casting somatic spells. It does not affect non-somatic spells.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. A crystal plate mail gives you reflection.");
-        break;
-    case MANUAL_WEAPONS_101:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can ready an alternate weapon by swapping weapons and then readying the alternate weapon.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Switching between weapons by swapping two readied sets of weapons does not cost you a turn.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can also fight with two weapons at once, but this comes a penalty to hit and damage, which depends on your skill level.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You gain weapon skill points by hitting with the weapon successfully.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You gain two-weapon-fighting skill points when you it hit successfully with your off-hand weapon.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Ranged weapons incur a -30 to hit penalty when thrown or fired in melee combat.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Weapons may be enchanted to be flaming, freezing, and electrified, which all cost extra damage. The enchantment may dissipate upon hit.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Glass and bone weapons can be enchanted to be death-magical, which slays the target instantly upon hit. The enchantment is consequently dispelled.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Weapons may have exceptional, elite, and celestial/primordial/infernal qualities.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Exceptional weapons do double base damage, elite weapons triple base damage, and celestial/primordial/infernal weapons quadruple base damage.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "11. Celestial weapons can only be used by lawful characters, primordial weapons only by neutral characters, and infernal weapons only by chaotic characters.");
-        break;
-    case MANUAL_GRAY_STONES_101:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can identify any gem or stone by applying an uncursed or blessed touchstone (one of the gray stones) unto it.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Beware of the cursed loadstone (one of the gray stones). It is cursed and you cannot drop it once you have picked it up. And it's very heavy.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can identify a loadstone by kicking it while on the floor. If it does not move, it is a loadstone.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. If you have unidentified gray stones in a container on the floor, you may pick it up and tip it so that its contents drop on the ground.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. This way you do not need to put its contents - and a possible loadstone - into your inventory.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Beware of the cursed jinxstone. It will cause mishaps to happen and once you have picked it up, you cannot drop it.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Jinxstones are best identified by letting your pet stand upon it. If the pet does not step upon the stone, it is cursed.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. A luckstone, one of the gray stones, increase your luck if kept in the open inventory.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Luck will disappear over time, but a blessed luckstone will prevent this.");
-        break;
-    case MANUAL_BASICS_OF_KICKING:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can kick closed doors open.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Do not kick shop doors, or the shopkeeper will get angry.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can break the locks of locked chests by kicking them. This may destroy glass items in the chest, though.");
-        break;
-    case MANUAL_BASICS_OF_ENCHANTMENT:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can enchant weapons and armor to make them better.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. If you enchant an armor or a weapon too much, it may explode.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You may examine a fully identified item to determine its maximum safe enchantable level.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You can magically protect weapons and armor to prevent them from corroding.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Mythic weapons and armor have one special power. The special powers are named as a prefix and suffix to the name of the weapon or armor.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Legendary weapons and armor have two special powers, one prefix ability and one suffix ability.");
-        break;
-    case MANUAL_BASICS_OF_EATING_AND_DRINKING:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Do not eat too much, or you may choke to death.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Corpses rot very fast. Do not eat rotten corpses or you will be food poisoned and die.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Gnolls can smell which corpses are safe to eat and which are not.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Some corpses may give you intrinsic abilities when eaten, or increase your ability scores.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You should eat corpses that are safe to eat and which give good abilities. Do not eat dangerous corpses.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Do not eat corpses left by undead creatures, except wraith corpses.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Undead corpses are rotten, except for wraith corpses, which will give you an experience level.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Some fruits give you ability score bonuses, when eaten.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. You can probe monsters and corpses with a wand of probing to determine what abilities they have and if the corpses are safe to eat.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Rings and amulets consume nutrition periodically when worn. If you are low on food, it may be wise not to wear them.");
-        break;
-    case MANUAL_INTRODUCTION_TO_DANGEROUS_MONSTERS:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Hitting a floating eye in melee will paralyse you. Do not do it.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Watch out for nymphs and harpies. They can steal your items.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Leprechauns will steal your money that is in open inventory.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. There are many dangerous monsters that should be killed from far away.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. For example, werecreatures may bite you and cause you to contract lycanthropy.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Mummies cause mummy rot on touch. It prevents you from healing over time and reduces your constitution and charisma slowly.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Some snakes can constrict you. It is often a good idea to kill them from a distance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Some monsters, such as owlbears, can grab you. You need to kill the grabbed monster first before doing anything else.");
-        break;
-    case MANUAL_ESSENTIAL_SURVIVAL_TIPS:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can cure a disease, such as mummy rot or food poisoning, by eating a fig.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Also, a priest can cure your disease for a fee. Furthermore, praying can cure a disease as well.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can cure lycanthropy by drinking a potion of holy water or by eating a sprig of wolfsbane.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Blessed potions of healing increase your maximum hit points if you drink them at full health.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. It is a good practice to drink many blessed potions of healing early on to maximise your hit points.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You cannot swim. Do not try to enter deep water, such as moat, or you may drown.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Monsters cannot engulf and digest you, if you are wearing a ring of slow digestion.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Tentacled ones cannot eat your brain, if you are wearing a ring of sustain ability. They also cannot cause amnesia.");
-        break;
-    case MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Items can be blessed, uncursed, or cursed. You cannot remove cursed items if you equip them.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can remove a curse from an item if you bless them item using a potion of holy water or by paying to a priest to do so.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can also do so by reading a blessed or uncursed scroll of remove curse.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. It is good practice to identify items before using them. At least you should make sure that the item is not cursed, when you equip it.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. An uncursed scroll of remove curse will remove curses from equipped items.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. A blessed scroll will remove curses from all items in the open inventory.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Dropping items on the altar will reveal their blessed/uncursed/cursed status.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Dipping items into holy water will make uncursed items blessed and cursed items uncursed.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Dipping items into unholy water will make uncursed items cursed and blessed items uncursed.");
-        break;
-    case MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. If you polymorph while wearing a dragon scale mail, you will turn into a dragon and your dragon scale mail will revert to mere scales again.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can turn dragon scales into a dragon scale mail by enchanting them or by asking a smith to forge them into a mail.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. An orange dragon scale mail gives you sleep resistance and free action.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. A green dragon scale mail gives you poison resistance and sickness resistance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. A yellow dragon scale mail gives you acid resistance and petrification resistance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. A gray dragon scale mail gives you magic resistance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. A silver dragon scale mail gives you reflection.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. A red dragon scale mail gives you full fire resistance, protection from green slime, and regeneration.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. A white dragon scale mail gives you full cold resistance, protection from bisection, and energy regeneration.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "10. A blue dragon scale mail gives you full shock resistance and very fast speed.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "11. A black dragon scale mail gives you disintegration, death, and drain resistances.");
-        break;
-    case MANUAL_GUIDE_TO_PRAYING:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You may pray on turn 301 earliest.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Praying at low hit points or in a severe condition will heal you, if your God is not angry with you.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. After successfully praying, it is good practice to wait 1000 turns before praying again.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. If you pray too often, your God gets angry and your adventure is ruined.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. A blessed prayerstone will shimmer when it is safe to pray.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You can make a prayerstone blessed by sacrificing on the altar while the stone is in open inventory.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Praying does not work in Gehennom.");
-        break;
-    case MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Dropping items on the altar will reveal their blessed/uncursed/cursed status.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Sacrificing a corpse on the altar may increase your luck. The corpse needs to be a high level monster.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Sacrificing a corpse on the altar may grant you an artifact.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. If you drop potions of water on the altar and pray, they will be converted into holy water.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You can sacrifice on an altar of another god than yours to convert it to your deity. The success chance depends on your level.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Do not sacrifice on an altar of another god than yours, if it is attended by a priest. Doing so will anger him or her.");
-        break;
-    case MANUAL_ASSORTED_TIPS_AND_TRICKS:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can dip potions twice into a fountain, moat, or a sink to dilute them into potions of water.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can write scrolls and spellbooks with a magic marker.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can wash scrolls and spellbooks clean by dipping them into a fountain, moat, or a sink.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You can use a pick-axe or a similar tool to dig through walls. You can also dig through the floor.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Disarming traps may generate useful items, such as darts or wands.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Searching can reveal secret doors. But it does not succeed always, so you should do it several times.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can search chests for traps.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Engraving with a dagger or another weapon will make it dull, that is, reduce its enchantment.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Engraving a text with a wand may produce effects on bugs on the ground, which may help you identify the wand.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Engraving text with fingers is not permanent. The text will disappear soon.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "11. Engraving with a dagger is a good way to make a permanent engraving. Just dispose the dagger afterwards.");
-        break;
-    case MANUAL_ELEMENTARY_MECHANICS:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Your encumbrance limit is based on your strength and constitution.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. If you are burdened, your speed will drop by 25%.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Your speed determines how fast you can move and attack.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Skills increase your chance of hitting with an armor or casting a spell. You receive a skill slot for each level above 1.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Skills typically require 1/2/3/4/5 skill slots to increase them to the next level at Unskilled/Basic/Skilled/Expert/Master level.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You can reassign your skill points if you read a scroll of retraining.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. High strength gives you bonus to hit and to damage and more carrying capacity.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. High dexterity gives you bonus to hit and to AC.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. High consitution gives you bonus hit points and more carrying capacity.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "10. High intelligence gives you more mana and helps you to cast some spells better.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "11. High wisdom gives you more mana and helps you to cast some spells better.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "12. High charisma allows you to get discount on sold items and services. It also helps you to cast some spells better.");
-        break;
-    case MANUAL_PRINCIPLES_OF_MAGIC:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You need to mix spells before you can cast them.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Mixing spells requires material components, which you will find in the dungeon.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Spells come in 14 levels: Minor cantrip (c), major cantrip (C), and levels 1-12. Higher level spells are more difficult to cast.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. To cast spells well, you need to put skill points into magic schools and acquire items that increase your chance of casting spells.");
-        break;
-    case MANUAL_UNDERSTANDING_PETS_AND_HIRELINGS:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Starting pets do not step voluntarily on cursed items.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. This is a great way to identify whether an item is cursed or not.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. If a pet steps relucatantly on an item, that item is cursed.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You can yell for your pet, if it is far away, and it will come to you.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. When you go up or down the stairs, your pet needs to be at your side or at most two squares away for it to join you.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You can chat to your pet to give it commands or to feed it with food.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can hire some peaceful monsters to join your party for a fee.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. You can equip your hirelings with items by chatting to them.");
-        break;
-    case MANUAL_ITEM_IDENTIFICATION_101:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You need to identify items before you know what they do.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. The items can be blessed, uncursed, or cursed. Uncursed items are normal.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Blessed items usually grant an additional bonus.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Cursed items have adverse effects and you cannot remove them once equipped.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Equipment can also have positive or negative enchantment bonuses.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Equipment with positive enchantment bonuses work better, while those with negative enchantment work worse.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. A scroll of identify identifies 1-3 items; 3 if the scroll is blessed, 2 if uncursed, and 1 if cursed.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. You can drop items on an altar to identify their blessed/uncursed/cursed status.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Some pets do not step on cursed items.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "10. You can talk to shopkeepers and the Oracle to identify items for a fee.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "11. You can talk to many NPCs, such as artificers, to identify some item classes for a fee.");
-        break;
-    case MANUAL_ITEM_IDENTIFICATION_102:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can use a touchstone to identify gems.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can use a wand of identify to identify items, 1 per charge.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can cast the Identify spell to identify items.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You can cast the Detect Blessedness spell to determine the blessed/uncursed/cursed status of an item.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You can try to kick a gray stone, to see if it moves. If not, it is a cursed loadstone.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You can engrave with a wand a single letter on the ground, to see what it does.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can see what the price of an item is in a shop and then try to figure it out, what the item is.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. You can equip blessed and uncursed items to see what they do. Sometimes it is not obvious.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. You can zap a wand of probing at corpses to see what they do when eaten.");
-        break;
-    case MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_I:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You should acquire various resistances to better withstand the challenges ahead.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Most critical resistances are magic resistance, reflection, and free action.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Also poison, sleep, sickness, petrification, and death resistances are important for survival.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Certain magic items may bestow you with some of these resistances.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Your role and race can also confer you resistances as you advance in experience levels.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. A suitable cloak, robe, or ioun stone will confer you magic resistance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can obtain reflection from an appropriate amulet, pair of bracers, or shield.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Free action is conferred only by a ring or a mythic weapon or armor of a suitable type.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Get poison resistance early on. Look for a ring or an amulet, or eat a suitable monster corpse.");
-        break;
-    case MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You should acquire various resistances to better withstand the challenges ahead.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Some resistances such as sleep, sickness, and petrification resistances can be somewhat hard to come by.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. It is important to get sleep resistance early on. Look for an elf or gelatinous cube corpse.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. A healer's beak mask can confer you sickness resistance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. An amulet versus petrification will grant you petrification resistance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Look for an appropriate amulet, a ring, or a gown to get death resistance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. There are also resistances against brain damaging and blinding attacks.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. A nose ring of cerebral safeguarding will protect your brain.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Certain eyeglasses and goggles can confer you protection against blinding attacks.");
-        break;
-    case MANUAL_SECRETS_OF_SCARE_MONSTER:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can stand on a scroll of scare monster and monsters cannot attack you.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. A cursed scroll of scare monster will turn to dust if picked up.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. A scroll of scare monster will lose one level of the blessed/uncursed/cursed status when dropped on the ground.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. If you attack while standing on a scroll of scare monster, the scroll will become cursed.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. It is good practice to bless scrolls of scare monster, so that you can drop them on the ground and pick up again.");
-        break;
-    case MANUAL_GURATHULS_GUIDE_TO_ASCENSION:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. It is good practice to genocide dangerous monsters with a blessed scroll of genocide. This will prevent them appearing later in the game.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can create multiple monsters of your choice with a cursed scroll of genocide.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Wizard of Yendor may replace your amulet with a cheap plastic imitation. It is good practice to name the real amulet as soon as you get it.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. It is essential for survival that you get good protective equipment.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You need at least magic resistance, reflection, free action, sleep resistance, and death resistance to survive some nasty attacks.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Magic resistance will protect you from polymorph traps and some spell caster spells.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Reflection will protect you from rays.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Free action will protect you from thrown potion of paralysis and paralysing monsters, such as gelatinous cube.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Sleep resistance will protect you from sleep gas traps and thrown potions of sleep.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Death resistance will protect you from some instant death attacks, such as the touch of death spell of a greater mummy high priest.");
-        break;
-    case MANUAL_MASTER_CLASS_IN_WANDS:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can charge a wand of wishing only once.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Be sure to use a blessed scroll of charging or a fully charging service on the wand to get maximum number of wishes.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. It is often useful to wish for a wand of disintegration, a wand of petrification, or a wand of death to deal with arch-devils and the Wizard of Yendor in Gehennom.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. If you are being slimed by a green slime, you can zap a wand of fire at yourself, and it will cure your sliming. Alternatively, you can use a scroll of fire.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You can polymorph objects with a wand of polymorph. One charge affects 7/4/1 items based on the wand's blessed/uncursed/cursed status.");
-        break;
-    case MANUAL_INFERNAL_INHABITANTS_OF_GEHENNOM:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Demons and devils are immune to death attacks.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Some devils can spawn with a bullwhip that can disarm you from your weapon. It is best to kill them from a distance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Demons and devils can gate in more of their kind with their melee attack. It is often best to kill them from a distance.");
-        break;
-    case MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Some sea monsters, such as eels, can drown you. It is often a good idea to kill them from a distance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Some monsters, such as trolls, regenerate and revive after being killed. It is often best to use a tinning kit on them to get rid of their corpses. Eating the corpses is another possibility.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. If you are bare-handed and wearing no armor, nurses will heal you. They can also increase your maximum hit points.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Cockatrices and chickatrices can petrify you if they touch you successfully.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Touching bare-handed or eating a cockatrice or chickatrice corpse will stone you.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Eating a lizard corpse or a dragon fruit will cure stoning. They will also grant 13-turn protection from further petrification.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. If you fall into a pit while holding a cockatrice or chickatrice corpse you will stone immediately.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. It is good practice to keep one lizard corpse or dragon fruit in open inventory in case you will start petrification.");
-        break;
-    case MANUAL_MANUAL_OF_THE_PLANES:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. To reach the Astral Plane and the High Temples there, you must pass through the four Elemental Planes.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. These are the Elemental Planes of Earth, Air, Fire, and Water.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Within each of these Elemental Planes, there is a secret portal to the next Elemental Plane you must find.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You must be sufficiently prepared to survive the alien conditions within each such Elemental Plane.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Within the Elemental Plane of Earth, tools and spells to cut off rock are critical.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. So are the means to detect small cavities within the rock, where the portal to the next Elemental Plane may be located.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Within the Elemental Plane of Air, you must possess the ability to levitate or fly, for it is impossible to move otherwise.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Travelling through the Elemental Plane of Fire will be greatly assisted by fire resistance.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Further, you must be capable of crossing pools of lava that will block your way.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "10. The last Elemental Plane is Water. The portal will create a magical air bubble, which is essential for survival.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "11. Take utmost care to remain within the bubble and not to be dragged into the water by aquatic creatures.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "12. Finally, the Astral Plane is accessed through a portal from the Elemental Plane of Water.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "13. The High Temples of the Aligned Gods are located on the Astral Plane, along with a great number of minions of the gods.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "14. However, the Riders of the Apocalypse, terrifying beings personifying ancient evils, also inhabit the Plane.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "15. The three Riders are Death, Pestilence, and Famine.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "16. The Riders must be passed to reach the inner fanes of the High Temples. Great many have fallen in the attempt.");
-        break;
-    default:
-        putstr(datawin, 0, "(This manual seems impossible.)");
-        break;
+        if (mnlidx == MANUAL_CATALOGUE_OF_ARTIFACTS)
+        {
+            putstr(datawin, 0, "The manual contains a list of artifacts found in Yendor:");
+            putstr(datawin, 0, "");
+            print_artifact_catalogue(datawin, obj);
+
+        }
+        else
+        {
+            char typebuf[BUFSZ] = "items";
+            int itemclass = ILLOBJ_CLASS;
+            unsigned long cflags = 0UL;
+            switch (mnlidx)
+            {
+            case MANUAL_CATALOGUE_OF_WEAPONS:
+                itemclass = WEAPON_CLASS;
+                break;
+            case MANUAL_CATALOGUE_OF_ARMORS:
+                itemclass = ARMOR_CLASS;
+                break;
+            case MANUAL_CATALOGUE_OF_RINGS:
+                itemclass = RING_CLASS;
+                break;
+            case MANUAL_CATALOGUE_OF_POTIONS:
+                itemclass = POTION_CLASS;
+                break;
+            case MANUAL_CATALOGUE_OF_SCROLLS:
+                itemclass = SCROLL_CLASS;
+                break;
+            case MANUAL_CATALOGUE_OF_MISCELLANEOUS_MAGIC_ITEMS:
+                itemclass = MISCELLANEOUS_CLASS;
+                break;
+            case MANUAL_CATALOGUE_OF_TOOLS:
+                itemclass = TOOL_CLASS;
+                break;
+            case MANUAL_CATALOGUE_OF_MAGIC_SPELLS:
+                itemclass = SPBOOK_CLASS;
+                cflags = 1;
+                break;
+            case MANUAL_CATALOGUE_OF_CLERICAL_SPELLS:
+                itemclass = SPBOOK_CLASS;
+                cflags = 2;
+                break;
+            case MANUAL_CATALOGUE_OF_COMESTIBLES:
+                itemclass = FOOD_CLASS;
+                break;
+            default:
+                break;
+            }
+            char tbuf[BUFSZ];
+            Sprintf(tbuf, "The manual contains a list of %s found in Yendor:", 
+                itemclass == SPBOOK_CLASS ? (cflags & 1 ? "wizard spells" : cflags & 2 ? "clerical spells" : "spells") : def_oc_syms[itemclass].name);
+            putstr(datawin, 0, tbuf);
+            putstr(datawin, 0, "");
+            print_catalogue(datawin, obj, itemclass, cflags);
+        }        
+    }
+    else
+    {
+        putstr(datawin, 0, "The manual contains several instructions:");
+        putstr(datawin, 0, "");
+        switch (mnlidx)
+        {
+        case MANUAL_WANDS_101:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can zap wands at monsters and items.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can zap wands even at yourself, as well as upwards and downwards.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can also apply wands on an item. It applies the wand's effect on to the item.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. For example, you can use a wand of cancellation to remove a curse from an item.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. If you put a wand of cancellation or a Rod of Disjunction in a bag of holding, it will explode.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. It is advisable to put wands of cancellation into ordinary bags to avoid putting them accidently into a magic bag.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can zap a wand of digging downwards to create a hole to flee from a dangerous situation.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. If you are engulfed by a monster, you can zap a wand of digging at it. It will spit you out and it is reduced to 1 HP.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. A wand of create monster is useful for generating monsters for sacrificing at an altar.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Wands make a good offensive ranged weapon choice for classes that can use them well.");
+            break;
+        case MANUAL_ARMOR_101:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Armor gives Armor Class (AC), which reduces the chance of a monster in hitting you. The lower the AC the better the armor.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Total AC below 0 also reduces damage.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Armor also gives Magic Cancellation (MC), which reduces the success chance of touch-based special attacks. The higher the MC the better the protection.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Robe is a special armor slot that does not stack with body armor. The game uses the superior AC and MC of the body armor and the robe.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Armor may also give you spell casting penalty, which reduces the chance of casting somatic spells. It does not affect non-somatic spells.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. A crystal plate mail gives you reflection.");
+            break;
+        case MANUAL_WEAPONS_101:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can ready an alternate weapon by swapping weapons and then readying the alternate weapon.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Switching between weapons by swapping two readied sets of weapons does not cost you a turn.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can also fight with two weapons at once, but this comes a penalty to hit and damage, which depends on your skill level.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You gain weapon skill points by hitting with the weapon successfully.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You gain two-weapon-fighting skill points when you it hit successfully with your off-hand weapon.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Ranged weapons incur a -30 to hit penalty when thrown or fired in melee combat.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Weapons may be enchanted to be flaming, freezing, and electrified, which all cost extra damage. The enchantment may dissipate upon hit.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Glass and bone weapons can be enchanted to be death-magical, which slays the target instantly upon hit. The enchantment is consequently dispelled.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Weapons may have exceptional, elite, and celestial/primordial/infernal qualities.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Exceptional weapons do double base damage, elite weapons triple base damage, and celestial/primordial/infernal weapons quadruple base damage.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "11. Celestial weapons can only be used by lawful characters, primordial weapons only by neutral characters, and infernal weapons only by chaotic characters.");
+            break;
+        case MANUAL_GRAY_STONES_101:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can identify any gem or stone by applying an uncursed or blessed touchstone (one of the gray stones) unto it.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Beware of the cursed loadstone (one of the gray stones). It is cursed and you cannot drop it once you have picked it up. And it's very heavy.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can identify a loadstone by kicking it while on the floor. If it does not move, it is a loadstone.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. If you have unidentified gray stones in a container on the floor, you may pick it up and tip it so that its contents drop on the ground.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. This way you do not need to put its contents - and a possible loadstone - into your inventory.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Beware of the cursed jinxstone. It will cause mishaps to happen and once you have picked it up, you cannot drop it.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Jinxstones are best identified by letting your pet stand upon it. If the pet does not step upon the stone, it is cursed.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. A luckstone, one of the gray stones, increase your luck if kept in the open inventory.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Luck will disappear over time, but a blessed luckstone will prevent this.");
+            break;
+        case MANUAL_BASICS_OF_KICKING:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can kick closed doors open.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Do not kick shop doors, or the shopkeeper will get angry.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can break the locks of locked chests by kicking them. This may destroy glass items in the chest, though.");
+            break;
+        case MANUAL_BASICS_OF_ENCHANTMENT:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can enchant weapons and armor to make them better.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. If you enchant an armor or a weapon too much, it may explode.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You may examine a fully identified item to determine its maximum safe enchantable level.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You can magically protect weapons and armor to prevent them from corroding.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Mythic weapons and armor have one special power. The special powers are named as a prefix and suffix to the name of the weapon or armor.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Legendary weapons and armor have two special powers, one prefix ability and one suffix ability.");
+            break;
+        case MANUAL_BASICS_OF_EATING_AND_DRINKING:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Do not eat too much, or you may choke to death.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Corpses rot very fast. Do not eat rotten corpses or you will be food poisoned and die.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Gnolls can smell which corpses are safe to eat and which are not.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Some corpses may give you intrinsic abilities when eaten, or increase your ability scores.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You should eat corpses that are safe to eat and which give good abilities. Do not eat dangerous corpses.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Do not eat corpses left by undead creatures, except wraith corpses.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Undead corpses are rotten, except for wraith corpses, which will give you an experience level.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Some fruits give you ability score bonuses, when eaten.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. You can probe monsters and corpses with a wand of probing to determine what abilities they have and if the corpses are safe to eat.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Rings and amulets consume nutrition periodically when worn. If you are low on food, it may be wise not to wear them.");
+            break;
+        case MANUAL_INTRODUCTION_TO_DANGEROUS_MONSTERS:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Hitting a floating eye in melee will paralyse you. Do not do it.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Watch out for nymphs and harpies. They can steal your items.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Leprechauns will steal your money that is in open inventory.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. There are many dangerous monsters that should be killed from far away.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. For example, werecreatures may bite you and cause you to contract lycanthropy.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Mummies cause mummy rot on touch. It prevents you from healing over time and reduces your constitution and charisma slowly.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Some snakes can constrict you. It is often a good idea to kill them from a distance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Some monsters, such as owlbears, can grab you. You need to kill the grabbed monster first before doing anything else.");
+            break;
+        case MANUAL_ESSENTIAL_SURVIVAL_TIPS:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can cure a disease, such as mummy rot or food poisoning, by eating a fig.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Also, a priest can cure your disease for a fee. Furthermore, praying can cure a disease as well.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can cure lycanthropy by drinking a potion of holy water or by eating a sprig of wolfsbane.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Blessed potions of healing increase your maximum hit points if you drink them at full health.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. It is a good practice to drink many blessed potions of healing early on to maximise your hit points.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You cannot swim. Do not try to enter deep water, such as moat, or you may drown.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Monsters cannot engulf and digest you, if you are wearing a ring of slow digestion.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Tentacled ones cannot eat your brain, if you are wearing a ring of sustain ability. They also cannot cause amnesia.");
+            break;
+        case MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Items can be blessed, uncursed, or cursed. You cannot remove cursed items if you equip them.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can remove a curse from an item if you bless them item using a potion of holy water or by paying to a priest to do so.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can also do so by reading a blessed or uncursed scroll of remove curse.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. It is good practice to identify items before using them. At least you should make sure that the item is not cursed, when you equip it.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. An uncursed scroll of remove curse will remove curses from equipped items.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. A blessed scroll will remove curses from all items in the open inventory.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Dropping items on the altar will reveal their blessed/uncursed/cursed status.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Dipping items into holy water will make uncursed items blessed and cursed items uncursed.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Dipping items into unholy water will make uncursed items cursed and blessed items uncursed.");
+            break;
+        case MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. If you polymorph while wearing a dragon scale mail, you will turn into a dragon and your dragon scale mail will revert to mere scales again.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can turn dragon scales into a dragon scale mail by enchanting them or by asking a smith to forge them into a mail.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. An orange dragon scale mail gives you sleep resistance and free action.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. A green dragon scale mail gives you poison resistance and sickness resistance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. A yellow dragon scale mail gives you acid resistance and petrification resistance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. A gray dragon scale mail gives you magic resistance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. A silver dragon scale mail gives you reflection.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. A red dragon scale mail gives you full fire resistance, protection from green slime, and regeneration.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. A white dragon scale mail gives you full cold resistance, protection from bisection, and energy regeneration.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "10. A blue dragon scale mail gives you full shock resistance and very fast speed.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "11. A black dragon scale mail gives you disintegration, death, and drain resistances.");
+            break;
+        case MANUAL_GUIDE_TO_PRAYING:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You may pray on turn 301 earliest.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Praying at low hit points or in a severe condition will heal you, if your God is not angry with you.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. After successfully praying, it is good practice to wait 1000 turns before praying again.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. If you pray too often, your God gets angry and your adventure is ruined.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. A blessed prayerstone will shimmer when it is safe to pray.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You can make a prayerstone blessed by sacrificing on the altar while the stone is in open inventory.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Praying does not work in Gehennom.");
+            break;
+        case MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Dropping items on the altar will reveal their blessed/uncursed/cursed status.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Sacrificing a corpse on the altar may increase your luck. The corpse needs to be a high level monster.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Sacrificing a corpse on the altar may grant you an artifact.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. If you drop potions of water on the altar and pray, they will be converted into holy water.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You can sacrifice on an altar of another god than yours to convert it to your deity. The success chance depends on your level.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Do not sacrifice on an altar of another god than yours, if it is attended by a priest. Doing so will anger him or her.");
+            break;
+        case MANUAL_ASSORTED_TIPS_AND_TRICKS:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can dip potions twice into a fountain, moat, or a sink to dilute them into potions of water.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can write scrolls and spellbooks with a magic marker.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can wash scrolls and spellbooks clean by dipping them into a fountain, moat, or a sink.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You can use a pick-axe or a similar tool to dig through walls. You can also dig through the floor.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Disarming traps may generate useful items, such as darts or wands.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Searching can reveal secret doors. But it does not succeed always, so you should do it several times.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can search chests for traps.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Engraving with a dagger or another weapon will make it dull, that is, reduce its enchantment.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Engraving a text with a wand may produce effects on bugs on the ground, which may help you identify the wand.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Engraving text with fingers is not permanent. The text will disappear soon.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "11. Engraving with a dagger is a good way to make a permanent engraving. Just dispose the dagger afterwards.");
+            break;
+        case MANUAL_ELEMENTARY_MECHANICS:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Your encumbrance limit is based on your strength and constitution.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. If you are burdened, your speed will drop by 25%.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Your speed determines how fast you can move and attack.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Skills increase your chance of hitting with an armor or casting a spell. You receive a skill slot for each level above 1.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Skills typically require 1/2/3/4/5 skill slots to increase them to the next level at Unskilled/Basic/Skilled/Expert/Master level.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You can reassign your skill points if you read a scroll of retraining.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. High strength gives you bonus to hit and to damage and more carrying capacity.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. High dexterity gives you bonus to hit and to AC.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. High consitution gives you bonus hit points and more carrying capacity.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "10. High intelligence gives you more mana and helps you to cast some spells better.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "11. High wisdom gives you more mana and helps you to cast some spells better.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "12. High charisma allows you to get discount on sold items and services. It also helps you to cast some spells better.");
+            break;
+        case MANUAL_PRINCIPLES_OF_MAGIC:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You need to mix spells before you can cast them.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Mixing spells requires material components, which you will find in the dungeon.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Spells come in 14 levels: Minor cantrip (c), major cantrip (C), and levels 1-12. Higher level spells are more difficult to cast.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. To cast spells well, you need to put skill points into magic schools and acquire items that increase your chance of casting spells.");
+            break;
+        case MANUAL_UNDERSTANDING_PETS_AND_HIRELINGS:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Starting pets do not step voluntarily on cursed items.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. This is a great way to identify whether an item is cursed or not.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. If a pet steps relucatantly on an item, that item is cursed.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You can yell for your pet, if it is far away, and it will come to you.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. When you go up or down the stairs, your pet needs to be at your side or at most two squares away for it to join you.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You can chat to your pet to give it commands or to feed it with food.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can hire some peaceful monsters to join your party for a fee.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. You can equip your hirelings with items by chatting to them.");
+            break;
+        case MANUAL_ITEM_IDENTIFICATION_101:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You need to identify items before you know what they do.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. The items can be blessed, uncursed, or cursed. Uncursed items are normal.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Blessed items usually grant an additional bonus.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Cursed items have adverse effects and you cannot remove them once equipped.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Equipment can also have positive or negative enchantment bonuses.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Equipment with positive enchantment bonuses work better, while those with negative enchantment work worse.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. A scroll of identify identifies 1-3 items; 3 if the scroll is blessed, 2 if uncursed, and 1 if cursed.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. You can drop items on an altar to identify their blessed/uncursed/cursed status.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Some pets do not step on cursed items.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "10. You can talk to shopkeepers and the Oracle to identify items for a fee.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "11. You can talk to many NPCs, such as artificers, to identify some item classes for a fee.");
+            break;
+        case MANUAL_ITEM_IDENTIFICATION_102:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can use a touchstone to identify gems.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can use a wand of identify to identify items, 1 per charge.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can cast the Identify spell to identify items.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You can cast the Detect Blessedness spell to determine the blessed/uncursed/cursed status of an item.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You can try to kick a gray stone, to see if it moves. If not, it is a cursed loadstone.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You can engrave with a wand a single letter on the ground, to see what it does.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can see what the price of an item is in a shop and then try to figure it out, what the item is.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. You can equip blessed and uncursed items to see what they do. Sometimes it is not obvious.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. You can zap a wand of probing at corpses to see what they do when eaten.");
+            break;
+        case MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_I:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You should acquire various resistances to better withstand the challenges ahead.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Most critical resistances are magic resistance, reflection, and free action.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Also poison, sleep, sickness, petrification, and death resistances are important for survival.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Certain magic items may bestow you with some of these resistances.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Your role and race can also confer you resistances as you advance in experience levels.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. A suitable cloak, robe, or ioun stone will confer you magic resistance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can obtain reflection from an appropriate amulet, pair of bracers, or shield.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Free action is conferred only by a ring or a mythic weapon or armor of a suitable type.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Get poison resistance early on. Look for a ring or an amulet, or eat a suitable monster corpse.");
+            break;
+        case MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You should acquire various resistances to better withstand the challenges ahead.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Some resistances such as sleep, sickness, and petrification resistances can be somewhat hard to come by.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. It is important to get sleep resistance early on. Look for an elf or gelatinous cube corpse.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. A healer's beak mask can confer you sickness resistance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. An amulet versus petrification will grant you petrification resistance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Look for an appropriate amulet, a ring, or a gown to get death resistance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. There are also resistances against brain damaging and blinding attacks.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. A nose ring of cerebral safeguarding will protect your brain.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Certain eyeglasses and goggles can confer you protection against blinding attacks.");
+            break;
+        case MANUAL_SECRETS_OF_SCARE_MONSTER:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can stand on a scroll of scare monster and monsters cannot attack you.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. A cursed scroll of scare monster will turn to dust if picked up.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. A scroll of scare monster will lose one level of the blessed/uncursed/cursed status when dropped on the ground.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. If you attack while standing on a scroll of scare monster, the scroll will become cursed.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. It is good practice to bless scrolls of scare monster, so that you can drop them on the ground and pick up again.");
+            break;
+        case MANUAL_GURATHULS_GUIDE_TO_ASCENSION:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. It is good practice to genocide dangerous monsters with a blessed scroll of genocide. This will prevent them appearing later in the game.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can create multiple monsters of your choice with a cursed scroll of genocide.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Wizard of Yendor may replace your amulet with a cheap plastic imitation. It is good practice to name the real amulet as soon as you get it.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. It is essential for survival that you get good protective equipment.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You need at least magic resistance, reflection, free action, sleep resistance, and death resistance to survive some nasty attacks.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Magic resistance will protect you from polymorph traps and some spell caster spells.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Reflection will protect you from rays.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Free action will protect you from thrown potion of paralysis and paralysing monsters, such as gelatinous cube.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Sleep resistance will protect you from sleep gas traps and thrown potions of sleep.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Death resistance will protect you from some instant death attacks, such as the touch of death spell of a greater mummy high priest.");
+            break;
+        case MANUAL_MASTER_CLASS_IN_WANDS:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can charge a wand of wishing only once.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Be sure to use a blessed scroll of charging or a fully charging service on the wand to get maximum number of wishes.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. It is often useful to wish for a wand of disintegration, a wand of petrification, or a wand of death to deal with arch-devils and the Wizard of Yendor in Gehennom.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. If you are being slimed by a green slime, you can zap a wand of fire at yourself, and it will cure your sliming. Alternatively, you can use a scroll of fire.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You can polymorph objects with a wand of polymorph. One charge affects 7/4/1 items based on the wand's blessed/uncursed/cursed status.");
+            break;
+        case MANUAL_INFERNAL_INHABITANTS_OF_GEHENNOM:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Demons and devils are immune to death attacks.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Some devils can spawn with a bullwhip that can disarm you from your weapon. It is best to kill them from a distance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Demons and devils can gate in more of their kind with their melee attack. It is often best to kill them from a distance.");
+            break;
+        case MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Some sea monsters, such as eels, can drown you. It is often a good idea to kill them from a distance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Some monsters, such as trolls, regenerate and revive after being killed. It is often best to use a tinning kit on them to get rid of their corpses. Eating the corpses is another possibility.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. If you are bare-handed and wearing no armor, nurses will heal you. They can also increase your maximum hit points.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Cockatrices and chickatrices can petrify you if they touch you successfully.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Touching bare-handed or eating a cockatrice or chickatrice corpse will stone you.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Eating a lizard corpse or a dragon fruit will cure stoning. They will also grant 13-turn protection from further petrification.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. If you fall into a pit while holding a cockatrice or chickatrice corpse you will stone immediately.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. It is good practice to keep one lizard corpse or dragon fruit in open inventory in case you will start petrification.");
+            break;
+        case MANUAL_MANUAL_OF_THE_PLANES:
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. To reach the Astral Plane and the High Temples there, you must pass through the four Elemental Planes.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "2. These are the Elemental Planes of Earth, Air, Fire, and Water.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Within each of these Elemental Planes, there is a secret portal to the next Elemental Plane you must find.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You must be sufficiently prepared to survive the alien conditions within each such Elemental Plane.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Within the Elemental Plane of Earth, tools and spells to cut off rock are critical.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. So are the means to detect small cavities within the rock, where the portal to the next Elemental Plane may be located.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Within the Elemental Plane of Air, you must possess the ability to levitate or fly, for it is impossible to move otherwise.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Travelling through the Elemental Plane of Fire will be greatly assisted by fire resistance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Further, you must be capable of crossing pools of lava that will block your way.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "10. The last Elemental Plane is Water. The portal will create a magical air bubble, which is essential for survival.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "11. Take utmost care to remain within the bubble and not to be dragged into the water by aquatic creatures.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "12. Finally, the Astral Plane is accessed through a portal from the Elemental Plane of Water.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "13. The High Temples of the Aligned Gods are located on the Astral Plane, along with a great number of minions of the gods.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "14. However, the Riders of the Apocalypse, terrifying beings personifying ancient evils, also inhabit the Plane.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "15. The three Riders are Death, Pestilence, and Famine.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "16. The Riders must be passed to reach the inner fanes of the High Temples. Great many have fallen in the attempt.");
+            break;
+        default:
+            putstr(datawin, 0, "(This manual seems impossible.)");
+            break;
+        }
     }
     putstr(datawin, 0, "");
 

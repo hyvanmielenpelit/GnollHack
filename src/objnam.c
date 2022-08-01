@@ -79,12 +79,12 @@ const char* weapon_type_names[MAX_WEAPON_TYPES] = {
 };
 
 const char* food_type_names[MAX_FOOD_TYPES] = {
-    "general food", "ration", "fruit", "vegetable", "nuts", "seeds", "leaf", "kelp",  "bread",
+    "general food", "ration", "fruit", "vegetable", "nut", "seed", "leaf", "kelp",  "bread",
     "cake", "candy", "mushroom", "mold", "glob", "egg", "meat", "jelly", "corpse",  "tin"
 };
 
 const char* misc_type_names[MAX_MISC_TYPES] = {
-    "", "set of wings", "pair of pants", "skirt", "wrist watch",
+    "general item", "set of wings", "pair of pants", "skirt", "wrist watch",
     "nose ring", "headband", "pair of earrings",
     "ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf", "set of extra arms", "brooch", "mask", "necktie"
 };

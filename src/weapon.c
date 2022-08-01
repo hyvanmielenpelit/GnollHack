@@ -113,6 +113,29 @@ int skill;
 }
 
 const char*
+get_skill_name(skill_id)
+int skill_id;
+{
+    int absid = abs(skill_id);
+    if (absid >= P_NUM_SKILLS)
+        return "";
+    else
+        return P_NAME(absid);
+}
+
+const char*
+get_skill_plural_name(skill_id)
+int skill_id;
+{
+    int absid = abs(skill_id);
+    if (absid >= P_NUM_SKILLS)
+        return "";
+    else
+        return P_NAME_PLURAL(absid);
+}
+
+
+const char*
 weapon_skill_name(obj)
 struct obj* obj;
 {

@@ -63,6 +63,7 @@
 #define AF2_INDESTRUCTIBLE                     0x00000040UL  
 #define AF2_DUAL_RUNESWORD_BONUS               0x00000080UL  
 #define AF2_HEIGHT_IS_CLIPPING                 0x00000100UL  /* Height clips rather than scales the item graphics */
+#define AF2_NO_CATALOGUE                       0x00000200UL  
 
 
 #define has_artifact_floor_tile(artifact_idx) \

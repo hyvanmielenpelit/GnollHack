@@ -699,7 +699,7 @@ WEAPON("bill-guisarme", "hooked polearm",
     O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE,
     PERMITTED_ALL, ALL_TARGETS),
 WEAPON("ancus", "black ornamental hooked polearm",
-    0, 0, 1, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 100, 100,
+    0, 0, 0, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 100, 100,
     AD_PHYS, 1, 6, 1, 1, 8, 1, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, P | S, WEP_POLEARM, P_POLEARM, MAT_IRON, CLR_BLACK, 28, OBJECT_SOUNDSET_GENERIC,
@@ -1228,7 +1228,7 @@ HELM("helm of telepathy", "visored helmet",
  */
 #define DRGN_ARMR(name,mgc,power,power2,power3,pflags,cost,ac,mc,manabon,hpbon,bonusattrs,attrbonus,splcastpen,color,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, None, 1, mgc, 1, power, power2, power3, pflags, ENCHTYPE_GENERAL_ARMOR, 0, 5, 550,  \
-          cost, ac, mc, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SUIT, P_NONE, MAT_DRAGON_HIDE, color, 0, soundset, flags, flags2, flags3, O4_NON_MYTHIC | flags4, flags5, flags6, powconfermask)
+          cost, ac, mc, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SUIT, P_NONE, MAT_DRAGON_HIDE, color, 0, soundset, flags, flags2, flags3, O4_NON_MYTHIC | flags4, O5_NO_CATALOGUE | flags5, flags6, powconfermask)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
 DRGN_ARMR("gray dragon scale mail",    
@@ -2940,7 +2940,7 @@ FOOD("tripe ration",        None, None, FOODTYPE_RATION, 1,
 FOOD("corpse",                None, None, FOODTYPE_CORPSE, 1,
     0, MULTIGEN_SINGLE, 1,  0, 0, MAT_FLESH, EDIBLETYPE_NORMAL, EDIBLEFX_NO_EFFECT, 0, 0, 0, 0, 
     0, CLR_BROWN, 0, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE /*| O4_FULL_SIZED_BITMAP*/, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE /*| O4_FULL_SIZED_BITMAP*/, O5_NO_CATALOGUE, O6_NONE, PERMITTED_ALL),
 FOOD("egg",                    None, None, FOODTYPE_EGG, 1,
     85, MULTIGEN_SINGLE, 1,  1, 1, MAT_FLESH, EDIBLETYPE_NORMAL, EDIBLEFX_EGG, 100, 0, 0, 0, 
     80, CLR_WHITE, 16, OBJECT_SOUNDSET_GENERIC, 
