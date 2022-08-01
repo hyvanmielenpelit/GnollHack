@@ -3875,8 +3875,8 @@ const void* q;
     int oclsp = objects[sp].oc_class;
     int oclsq = objects[sq].oc_class;
     int ocldiff = oclsp - oclsq;
-    int skillp = objects[sp].oc_skill;
-    int skillq = objects[sq].oc_skill;
+    int skillp = objects[sp].oc_class == ARMOR_CLASS ? 0 : objects[sp].oc_skill;
+    int skillq = objects[sq].oc_class == ARMOR_CLASS ? 0 : objects[sq].oc_skill;
     int skilldiff = skillp - skillq;
     int subtypp = objects[sp].oc_subtyp;
     int subtypq = objects[sq].oc_subtyp;
@@ -3969,7 +3969,7 @@ unsigned long cflags;
     int skill = -1;
     int magiccnt = 0;
     boolean checkmagic = FALSE;
-    if (objectclass == WEAPON_CLASS || objectclass == WEAPON_CLASS)
+    if (objectclass == WEAPON_CLASS || objectclass == ARMOR_CLASS)
         checkmagic = TRUE;
 
     for (i = 0; i < cnt; i++) 
