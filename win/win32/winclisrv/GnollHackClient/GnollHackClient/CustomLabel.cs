@@ -146,7 +146,7 @@ namespace GnollHackClient
         public bool IsScrollable
         {
             get { return (bool)GetValue(IsScrollableProperty); }
-            set { SetValue(IsScrollableProperty, value); UpdateScrollable(value); }
+            set { UpdateScrollable(value, value && !IsScrollable); SetValue(IsScrollableProperty, value); }
         }
         public static readonly BindableProperty WordWrapSeparatorProperty = BindableProperty.Create(
             "WordWrapSeparator", typeof(char), typeof(CustomLabel), ' ');
@@ -194,12 +194,16 @@ namespace GnollHackClient
         {
             InvalidateSurface();
             InvalidateMeasure();
-            UpdateScrollable(IsScrollable);
         }
 
-        private void UpdateScrollable(bool val)
+        private void UpdateScrollable(bool newval, bool updaterows)
         {
-            this.EnableTouchEvents = val;
+            this.EnableTouchEvents = newval;
+            if (updaterows)
+            {
+                SplitRows();
+                TextAreaSize = CalculateTextAreaSize((float)Width * App.DisplayScale);
+            }
         }
 
         float CalculateTextPartWidth(string textPart, SKPaint textPaint)
@@ -487,14 +491,21 @@ namespace GnollHackClient
             float scale2 = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
 
             canvas.Clear();
-            TextAreaSize textAreaSize = TextAreaSize;
+            TextAreaSize textAreaSize;
+            if (!(IsScrollable && _touchMoved))
+                TextAreaSize = CalculateTextAreaSize((float)Width * scale);
+
+            textAreaSize = TextAreaSize;
 
             using (SKPaint textPaint = new SKPaint())
             {
                 float x = 0, y = 0;
                 textPaint.Typeface = GetFontTypeface();
                 textPaint.TextSize = (float)FontSize * scale;
-                string[] textRows = TextRows; // SplitTextWithConstraint(Text, (float)Width * scale, textPaint);
+                string[] textRows;
+                if (!(IsScrollable && _touchMoved))
+                    SplitRows();
+                textRows = TextRows;
                 float usedTextOffset = 0;
                 switch (VerticalTextAlignment)
                 {
@@ -734,9 +745,7 @@ namespace GnollHackClient
             {
                 _currentWidth = width;
                 _currentHeight = height;
-                SplitRows();
-                TextAreaSize = CalculateTextAreaSize((float)Width * App.DisplayScale);
-                UpdateScrollable(IsScrollable);
+                UpdateScrollable(IsScrollable, true);
                 lock(_textOffsetLock)
                 {
                     _textOffsetY = 0;
