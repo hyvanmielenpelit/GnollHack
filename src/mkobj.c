@@ -535,7 +535,7 @@ struct obj *box;
             n = 20;
             break;
         case BOOKSHELF:
-            n = !rn2(50) ? 10 : 5;
+            n = !rn2(50) ? 10 : 6;
             break;
         case MINE_CART:
             n = !rn2(3) ? 0 : 8; /* At least one third of the mine carts are empty */
@@ -601,7 +601,7 @@ struct obj *box;
         }
         else if (box->otyp == BOOKSHELF) 
         {
-            if (!rn2(5))
+            if (!rn2(4))
             {
                 /* A random catalogue */
                 otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, FIRST_CATALOGUE + rn2(NUM_CATALOGUES), MKOBJ_FLAGS_PARAM_IS_TITLE);
