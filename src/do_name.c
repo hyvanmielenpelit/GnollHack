@@ -3919,7 +3919,7 @@ struct obj* obj;
 int objectclass;
 unsigned long cflags;
 {
-    int i, cnt = 0;
+    short i, cnt = 0;
     char buf[BUFSZ];
     char objbuf[BUFSZ];
     const char magicschools[8] = {
@@ -3952,9 +3952,9 @@ unsigned long cflags;
             continue;
 
         if (obj && obj->cursed && (
-            (i % 3) == (obj->o_id % 3)
-            || ((i + obj->o_id) % 7) == 0
-            || ((i + obj->o_id + 1) % 11) == 0
+            (i % 3) == (short)(obj->o_id % 3)
+            || (((unsigned int)i + obj->o_id) % 7) == 0
+            || (((unsigned int)i + obj->o_id + 1) % 11) == 0
             ))
             continue;
 
@@ -4029,7 +4029,7 @@ print_artifact_catalogue(datawin, obj)
 winid datawin;
 struct obj* obj;
 {
-    int i, cnt = 0;
+    short i, cnt = 0;
     char buf[BUFSZ];
     char objbuf[BUFSZ];
 
@@ -4039,9 +4039,9 @@ struct obj* obj;
             continue;
 
         if (obj && obj->cursed && (
-            (i % 3) == (obj->o_id % 3)
-            || ((i + obj->o_id) % 7) == 0
-            || ((i + obj->o_id + 1) % 11) == 0
+            (i % 3) == (short)(obj->o_id % 3)
+            || (((unsigned int)i + obj->o_id) % 7) == 0
+            || (((unsigned int)i + obj->o_id + 1) % 11) == 0
             ))
             continue;
 
