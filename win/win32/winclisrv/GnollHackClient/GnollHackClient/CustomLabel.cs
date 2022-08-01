@@ -198,11 +198,12 @@ namespace GnollHackClient
 
         private void UpdateScrollable(bool newval, bool updaterows)
         {
-            this.EnableTouchEvents = newval;
+            EnableTouchEvents = newval;
             if (updaterows)
             {
-                SplitRows();
-                TextAreaSize = CalculateTextAreaSize((float)Width * App.DisplayScale);
+                IsFirst = true;
+                if(IsVisible)
+                    InvalidateSurface();
             }
         }
 
@@ -489,115 +490,121 @@ namespace GnollHackClient
             float canvasheight = this.CanvasSize.Height;
             float scale = App.DisplayScale;
             float scale2 = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
+            float usedTextOffset = 0;
 
             canvas.Clear();
-            TextAreaSize textAreaSize;
-            if (!(IsScrollable && _touchMoved))
-                TextAreaSize = CalculateTextAreaSize((float)Width * scale);
-
-            textAreaSize = TextAreaSize;
-
-            using (SKPaint textPaint = new SKPaint())
+            lock (_textOffsetLock)
             {
-                float x = 0, y = 0;
-                textPaint.Typeface = GetFontTypeface();
-                textPaint.TextSize = (float)FontSize * scale;
-                string[] textRows;
-                if (!(IsScrollable && _touchMoved))
-                    SplitRows();
-                textRows = TextRows;
-                float usedTextOffset = 0;
-                switch (VerticalTextAlignment)
-                {
-                    case TextAlignment.Start:
-                        y = 0;
-                        break;
-                    default:
-                    case TextAlignment.Center:
-                        y = (canvasheight - textPaint.FontSpacing * textRows.Length) / 2;
-                        break;
-                    case TextAlignment.End:
-                        y = canvasheight - textPaint.FontSpacing * textRows.Length;
-                        break;
-                }
+                usedTextOffset = _textOffsetY;
+            }
 
-                lock(_textOffsetLock)
-                {
-                    y += _textOffsetY;
-                    usedTextOffset = _textOffsetY;
-                }
-                float generalpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                textPaint.TextAlign = SKTextAlign.Left;
-                for (int i = 0; i < textRows.Length; i++)
-                {
-                    string textRow = textRows[i];
-                    y += generalpadding;
-                    y += -textPaint.FontMetrics.Ascent;
+            lock (_isFirstLock)
+            {
+                TextAreaSize textAreaSize;
+                if (!(IsScrollable && TouchMoved) || _isFirst)
+                    TextAreaSize = CalculateTextAreaSize((float)Width * scale);
 
-                    if (y + textPaint.FontMetrics.Ascent >= canvasheight || y + textPaint.FontMetrics.Descent < 0)
+                textAreaSize = TextAreaSize;
+
+                using (SKPaint textPaint = new SKPaint())
+                {
+                    float x = 0, y = 0;
+                    textPaint.Typeface = GetFontTypeface();
+                    textPaint.TextSize = (float)FontSize * scale;
+                    string[] textRows;
+                    if (!(IsScrollable && TouchMoved) || _isFirst)
+                        SplitRows();
+                    textRows = TextRows;
+                    switch (VerticalTextAlignment)
                     {
-                        // Nothing, just calculate the height
+                        case TextAlignment.Start:
+                            y = 0;
+                            break;
+                        default:
+                        case TextAlignment.Center:
+                            y = (canvasheight - textPaint.FontSpacing * textRows.Length) / 2;
+                            break;
+                        case TextAlignment.End:
+                            y = canvasheight - textPaint.FontSpacing * textRows.Length;
+                            break;
                     }
-                    else
+
+                    y += usedTextOffset;
+
+                    float generalpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                    textPaint.TextAlign = SKTextAlign.Left;
+                    for (int i = 0; i < textRows.Length; i++)
                     {
-                        string[] textParts = textRow.Split(' ');
-                        float textWidth = textAreaSize.GetRowWidth(i);
-                        switch (HorizontalTextAlignment)
+                        string textRow = textRows[i];
+                        y += generalpadding;
+                        y += -textPaint.FontMetrics.Ascent;
+
+                        if (y + textPaint.FontMetrics.Ascent >= canvasheight || y + textPaint.FontMetrics.Descent < 0)
                         {
-                            default:
-                            case TextAlignment.Start:
-                                x = 0;
-                                break;
-                            case TextAlignment.Center:
-                                x = canvaswidth / 2 - textWidth / 2;
-                                break;
-                            case TextAlignment.End:
-                                x = canvaswidth - textWidth;
-                                break;
+                            // Nothing, just calculate the height
                         }
-
-                        int cnt = 0;
-                        foreach (string textPart in textParts)
+                        else
                         {
-                            SKBitmap symbolbitmap;
-                            SKRect source_rect = new SKRect();
-                            if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart, out source_rect)) != null)
+                            string[] textParts = textRow.Split(' ');
+                            float textWidth = textAreaSize.GetRowWidth(i);
+                            switch (HorizontalTextAlignment)
                             {
-                                float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
-                                float bmpwidth = bmpheight * source_rect.Width / Math.Max(1f, source_rect.Height);
-                                float bmpmargin = bmpheight / 8;
-
-                                float bmpx = x;
-                                float bmpy = y + textPaint.FontMetrics.Ascent;
-                                SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
-                                canvas.DrawBitmap(symbolbitmap, source_rect, bmptargetrect, textPaint);
-                                x += bmpwidth + bmpmargin;
+                                default:
+                                case TextAlignment.Start:
+                                    x = 0;
+                                    break;
+                                case TextAlignment.Center:
+                                    x = canvaswidth / 2 - textWidth / 2;
+                                    break;
+                                case TextAlignment.End:
+                                    x = canvaswidth - textWidth;
+                                    break;
                             }
-                            else
+
+                            int cnt = 0;
+                            foreach (string textPart in textParts)
                             {
-                                string printedString = cnt == textParts.Length - 1 ? textPart : textPart + " ";
-                                if (OutlineWidth > 0)
+                                SKBitmap symbolbitmap;
+                                SKRect source_rect = new SKRect();
+                                if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart, out source_rect)) != null)
                                 {
-                                    textPaint.Style = SKPaintStyle.Stroke;
-                                    textPaint.StrokeWidth = (float)OutlineWidth * scale;
-                                    SKColor outlinecolor = new SKColor((byte)(255 * OutlineColor.R), (byte)(255 * OutlineColor.G), (byte)(255 * OutlineColor.B), (byte)(255 * OutlineColor.A));
-                                    textPaint.Color = outlinecolor;
-                                    canvas.DrawText(printedString, x, y, textPaint);
-                                }
+                                    float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
+                                    float bmpwidth = bmpheight * source_rect.Width / Math.Max(1f, source_rect.Height);
+                                    float bmpmargin = bmpheight / 8;
 
-                                textPaint.Style = SKPaintStyle.Fill;
-                                SKColor fillcolor = new SKColor((byte)(255 * TextColor.R), (byte)(255 * TextColor.G), (byte)(255 * TextColor.B), (byte)(255 * TextColor.A));
-                                textPaint.Color = fillcolor;
-                                canvas.DrawText(printedString, x, y, textPaint);
-                                x += textPaint.MeasureText(printedString);
+                                    float bmpx = x;
+                                    float bmpy = y + textPaint.FontMetrics.Ascent;
+                                    SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
+                                    canvas.DrawBitmap(symbolbitmap, source_rect, bmptargetrect, textPaint);
+                                    x += bmpwidth + bmpmargin;
+                                }
+                                else
+                                {
+                                    string printedString = cnt == textParts.Length - 1 ? textPart : textPart + " ";
+                                    if (OutlineWidth > 0)
+                                    {
+                                        textPaint.Style = SKPaintStyle.Stroke;
+                                        textPaint.StrokeWidth = (float)OutlineWidth * scale;
+                                        SKColor outlinecolor = new SKColor((byte)(255 * OutlineColor.R), (byte)(255 * OutlineColor.G), (byte)(255 * OutlineColor.B), (byte)(255 * OutlineColor.A));
+                                        textPaint.Color = outlinecolor;
+                                        canvas.DrawText(printedString, x, y, textPaint);
+                                    }
+
+                                    textPaint.Style = SKPaintStyle.Fill;
+                                    SKColor fillcolor = new SKColor((byte)(255 * TextColor.R), (byte)(255 * TextColor.G), (byte)(255 * TextColor.B), (byte)(255 * TextColor.A));
+                                    textPaint.Color = fillcolor;
+                                    canvas.DrawText(printedString, x, y, textPaint);
+                                    x += textPaint.MeasureText(printedString);
+                                }
+                                cnt++;
                             }
-                            cnt++;
                         }
+                        y += textPaint.FontMetrics.Descent;
+                        y += generalpadding;
                     }
-                    y += textPaint.FontMetrics.Descent;
-                    y += generalpadding;
+                    TextHeight = y - usedTextOffset;
                 }
-                TextHeight = y - usedTextOffset;
+                _isFirst = false;
             }
         }
 
@@ -609,7 +616,14 @@ namespace GnollHackClient
         private object _textHeightLock = new object();
         private float _textHeight = 0;
         private float TextHeight { get { lock(_textHeightLock) { return _textHeight; } } set { lock (_textHeightLock) { _textHeight = value; } } }
+        private readonly object _touchMovedLock = new object();
         private bool _touchMoved = false;
+        private bool TouchMoved { get { lock (_touchMovedLock) { return _touchMoved; } } set { lock (_touchMovedLock) { _touchMoved = value; } } }
+
+        private readonly object _isFirstLock = new object();
+        private bool _isFirst = false;
+        private bool IsFirst { get { lock (_isFirstLock) { return _isFirst; } } set { lock (_isFirstLock) { _isFirst = value; } } }
+
         private object _savedSender = null;
         private SKTouchEventArgs _savedEventArgs = null;
 
@@ -630,7 +644,7 @@ namespace GnollHackClient
                         TouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
 
                     if (TouchDictionary.Count > 1)
-                        _touchMoved = true;
+                        TouchMoved = true;
 
                     e.Handled = true;
                     break;
@@ -671,7 +685,7 @@ namespace GnollHackClient
                                                 InvalidateSurface();
                                         }
                                         TouchDictionary[e.Id].Location = e.Location;
-                                        _touchMoved = true;
+                                        TouchMoved = true;
                                     }
                                 }
 
@@ -682,7 +696,7 @@ namespace GnollHackClient
                                 _savedEventArgs = null;
 
                                 TouchDictionary[e.Id].Location = e.Location;
-                                _touchMoved = true;
+                                TouchMoved = true;
                             }
                         }
                         e.Handled = true;
@@ -710,7 +724,7 @@ namespace GnollHackClient
                             TouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
                         if (TouchDictionary.Count == 0)
-                            _touchMoved = false;
+                            TouchMoved = false;
 
                         e.Handled = true;
                     }
@@ -745,15 +759,11 @@ namespace GnollHackClient
             {
                 _currentWidth = width;
                 _currentHeight = height;
-                UpdateScrollable(IsScrollable, true);
-                lock(_textOffsetLock)
+                lock (_textOffsetLock)
                 {
                     _textOffsetY = 0;
                 }
-                if (IsVisible)
-                    InvalidateSurface();
-                //if (IsVisible)
-                //    UpdateLabel();
+                UpdateScrollable(IsScrollable, true);
             }
         }
 
