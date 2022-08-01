@@ -4019,6 +4019,7 @@ unsigned long cflags;
     }
     if (checkmagic && magiccnt > 0)
     {
+        putstr(datawin, 0, "");
         putstr(datawin, ATR_INDENT_AT_DASH, "* Magical item");
     }
 }
@@ -4065,6 +4066,7 @@ struct obj* obj;
     }
     if (nowishcnt > 0)
     {
+        putstr(datawin, 0, "");
         putstr(datawin, ATR_INDENT_AT_DASH, "* Not wishable");
     }
 }
