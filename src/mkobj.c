@@ -601,7 +601,7 @@ struct obj *box;
         }
         else if (box->otyp == BOOKSHELF) 
         {
-            if (!rn2(7))
+            if (!rn2(5))
             {
                 /* A random catalogue */
                 otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, FIRST_CATALOGUE + rn2(NUM_CATALOGUES), MKOBJ_FLAGS_PARAM_IS_TITLE);
