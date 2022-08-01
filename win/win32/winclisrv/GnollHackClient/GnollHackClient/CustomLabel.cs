@@ -182,7 +182,10 @@ namespace GnollHackClient
                 textPaint.Typeface = GetFontTypeface();
                 lock (_textRowLock)
                 {
-                    _textRows = SplitTextWithConstraint(Text, (float)Width * scale, textPaint);
+                    if (Text != null)
+                        _textRows = SplitTextWithConstraint(Text.Replace("\r", ""), (float)Width * scale, textPaint);
+                    else
+                        _textRows = null;
                 }
             }
         }
@@ -222,6 +225,9 @@ namespace GnollHackClient
 
         public string[] SplitTextWithConstraint(string text, float widthConstraint, SKPaint textPaint)
         {
+            if (text == null)
+                return null;
+
             char separator = WordWrapSeparator;
             bool displayseparator = DisplayWrapSeparator;
             List<string> result = new List<string>();
@@ -316,6 +322,9 @@ namespace GnollHackClient
 
         private TextAreaSize CalculateTextAreaSize(float widthConstraint)
         {
+            if (Text == null)
+                return new TextAreaSize(0, 0, new List<float>());
+
             float longestwidth = 0;
             float totalheight = 0;
             List<float> rowWidths = new List<float>();

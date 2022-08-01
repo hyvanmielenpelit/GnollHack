@@ -105,7 +105,7 @@ MONSTER:('z',"skeleton king"),(67,15)
 [50%]:OBJECT:')',(67,15)
 [50%]:OBJECT:'[',(67,15)
 [50%]:OBJECT:'9',(67,15)
-OBJECT:('+',"manual"),(69,15),manual_type:manual_infernal_inhabitants
+OBJECT:'+',(69,15)
 
 
 $sarcophagus_place = { (64,01), (70,15), (64,04), (70,04), (64,06), (70,06), (64,10), (70,10), (64,12), (70,12) }
