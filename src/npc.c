@@ -617,12 +617,7 @@ int mtype;
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
-            int cnt = 1 + rnd(2);
-            for (i = 0; i < cnt; i++)
-            {
-                mongets(npc, SPE_MANUAL);
-            }
-
+            mongets(npc, SPE_MANUAL);
             mongets(npc, RIN_LEVITATION);
             mongets(npc, RIN_FIRE_RESISTANCE);
             mongets(npc, RIN_PROTECTION_FROM_UNDEATH);
