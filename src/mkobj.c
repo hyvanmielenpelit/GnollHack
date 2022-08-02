@@ -1400,8 +1400,9 @@ unsigned long mkflags;
     if ((objects[otmp->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && (mkflags & MKOBJ_FLAGS_OPEN_COFFIN))
         otmp->speflags |= SPEFLAGS_LID_OPENED;
 
+    int leveldiff = level_difficulty();
     /* Change type before init if need be*/
-    if (mkobj_type == 0 && (In_mines(&u.uz) || level_difficulty() < 10))
+    if (mkobj_type == 0 && (In_mines(&u.uz) || leveldiff < 10))
     {
         if (otyp == FROST_HORN || otyp == FIRE_HORN)
             otmp->otyp = !rn2(3) ? HORN_OF_CHAOS : !rn2(2) ? BRASS_HORN : TOOLED_HORN;
@@ -1415,7 +1416,7 @@ unsigned long mkflags;
             otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
     }
 
-    if (mkobj_type >= 0 && mkobj_type < 2 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5))
+    if (mkobj_type >= 0 && mkobj_type < 2 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || leveldiff < 5))
     {
         if (otmp->otyp == WAN_WISHING)
             otmp->otyp = WAN_POLYMORPH;
@@ -1470,7 +1471,7 @@ unsigned long mkflags;
                 else
                 {
                     otmp->elemental_enchantment = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) ? COLD_ENCHANTMENT :
-                        level_difficulty() > 11 ? (!rn2(7) ? COLD_ENCHANTMENT : !rn2(3) ? LIGHTNING_ENCHANTMENT  : FIRE_ENCHANTMENT) :
+                        leveldiff > 11 ? (!rn2(7) ? COLD_ENCHANTMENT : !rn2(3) ? LIGHTNING_ENCHANTMENT  : FIRE_ENCHANTMENT) :
                         (!rn2(3) ? LIGHTNING_ENCHANTMENT : FIRE_ENCHANTMENT);
 
                     if (is_multigen(otmp))
@@ -1635,16 +1636,16 @@ unsigned long mkflags;
                             cnm = NON_PM;
                         else
                         {
-                            boolean low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_LICH].difficulty);
+                            boolean low_level = ((leveldiff + u.ulevel) / 2 < mons[PM_LICH].difficulty);
                             int classmonster = NON_PM;
                             ptr = mkclass(rn2(3) || low_level ? S_GREATER_UNDEAD : S_LICH, 0);
                             if (ptr)
                                 classmonster = monsndx(ptr);
 
                             int tmp = ((low_level || rn2(3)) && classmonster > NON_PM ? classmonster :
-                                ((level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_WARRIOR].difficulty - 2 ? PM_SKELETON :
-                                    !rn2(2) || (level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR :
-                                    !rn2(2) || (level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING));
+                                ((leveldiff + u.ulevel) / 2 < mons[PM_SKELETON_WARRIOR].difficulty - 2 ? PM_SKELETON :
+                                    !rn2(2) || (leveldiff + u.ulevel) / 2 < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR :
+                                    !rn2(2) || (leveldiff + u.ulevel) / 2 < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING));
 
                             if (tmp >= LOW_PM && !(mvitals[tmp].mvflags & MV_GONE))
                                 cnm = tmp;
@@ -1672,8 +1673,8 @@ unsigned long mkflags;
                                 cnm = NON_PM;
                             else
                             {
-                                boolean low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_VAMPIRE].difficulty);
-                                boolean very_low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_BARROW_WIGHT].difficulty - 1);
+                                boolean low_level = ((leveldiff + u.ulevel) / 2 < mons[PM_VAMPIRE].difficulty);
+                                boolean very_low_level = ((leveldiff + u.ulevel) / 2 < mons[PM_BARROW_WIGHT].difficulty - 1);
                                 ptr = mkclass(rn2(3) && !low_level ? S_VAMPIRE : S_LESSER_UNDEAD, 0);
                                 if (ptr)
                                     classmonster = monsndx(ptr);
@@ -1894,7 +1895,7 @@ unsigned long mkflags;
                 }
 
                 if (!verysmall(&mons[otmp->corpsenm])
-                    && rn2(level_difficulty() / 2 + 10) > 10)
+                    && rn2(leveldiff / 2 + 10) > 10)
                     (void) add_to_container(otmp, mkobj(SPBOOK_CLASS, FALSE, TRUE));
             }
             break;
@@ -1953,52 +1954,58 @@ unsigned long mkflags;
         }
         else
         {
+            boolean doublechance = !!(objects[otmp->otyp].oc_flags5 & O5_DOUBLE_EXCEPTIONALITY_CHANCE);
             if (In_endgame(&u.uz))
             {
-                if (!rn2(4))
+                if (!rn2(doublechance ? 2 : 4))
                     otmp->exceptionality = (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
-                else if (!rn2(3))
+                else if (doublechance ? rn2(3) : !rn2(3))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (!rn2(2))
+                else if (doublechance ? rn2(8) : rn2(4))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
             else if (Inhell)
             {
-                if (!rn2(10) && objects[otmp->otyp].oc_material != MAT_SILVER)
+                if (!rn2(doublechance ? 5 : 10) && objects[otmp->otyp].oc_material != MAT_SILVER)
                     otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
-                else if (!rn2(4))
+                else if (!rn2(doublechance ? 3 : 4))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (!rn2(2))
+                else if (doublechance ? rn2(4) : rn2(2))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
-            else if (depth(&u.uz) >= 20)
+            else if (leveldiff >= 20)
             {
-                if (!rn2(Is_stronghold(&u.uz) ? 20 : 40))
+                if (!rn2(doublechance ? (Is_stronghold(&u.uz) ? 10 : 20) : Is_stronghold(&u.uz) ? 20 : 40))
                     otmp->exceptionality = (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
-                else if (!rn2(6))
+                else if (!rn2(doublechance ? 3 : 6))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (!rn2(3))
+                else if (doublechance ? rn2(3) : !rn2(3))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
-            else if (depth(&u.uz) >= 10)
+            else if (leveldiff >= 10)
             {
-                if (!rn2(20))
+                if (!rn2(doublechance ? 10 : 20))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (!rn2(4))
+                else if (!rn2(doublechance ? 3 : 6))
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+            }
+            else if (leveldiff < 2)
+            {
+                if (!rn2(doublechance ? 100 : 200))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
             else
             {
-                if (!rn2(100))
+                if (!rn2(doublechance ? 100 : 200))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (!rn2(20))
+                else if (!rn2(doublechance ? 15 : 30))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
         }
     }
 
     /* Mythic quality */
-    if (can_obj_have_mythic(otmp) && (forcemythic || forcelegendary || (level_difficulty() >= 3 && mkobj_type < 2)) && otmp->oartifact == 0)
+    if (can_obj_have_mythic(otmp) && (forcemythic || forcelegendary || (leveldiff >= 3 && mkobj_type < 2)) && otmp->oartifact == 0)
     {
         boolean doublechance = !!(objects[otmp->otyp].oc_flags4 & O4_DOUBLE_MYTHIC_CHANCE);
         boolean makemythic = FALSE;
@@ -2006,10 +2013,12 @@ unsigned long mkflags;
             makemythic = otmp->exceptionality || otmp->oclass == ARMOR_CLASS ? !rn2(doublechance ? 2 : 4) : !rn2(doublechance ? 4 : 8);
         else if (Inhell)
             makemythic = otmp->exceptionality || otmp->oclass == ARMOR_CLASS ? !rn2(doublechance ? 3 : 5) : !rn2(doublechance ? 5 : 10);
-        else if (level_difficulty() >= 20)
+        else if (leveldiff >= 20)
             makemythic = otmp->exceptionality || otmp->oclass == ARMOR_CLASS ? !rn2(doublechance ? 3 : 6) : !rn2(doublechance ? 6 : 12);
-        else if (level_difficulty() >= 10)
+        else if (leveldiff >= 10)
             makemythic = otmp->exceptionality ? !rn2(doublechance ? 4 : 8) : !rn2(doublechance ? 8 : 16);
+        else if (leveldiff < 2)
+            makemythic = otmp->exceptionality ? !rn2(doublechance ? 100 : 200) : !rn2(doublechance ? 200 : 400);
         else
             makemythic = otmp->exceptionality ? !rn2(doublechance ? 6 : 12) : !rn2(doublechance ? 12 : 24);
 
