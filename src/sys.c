@@ -161,6 +161,7 @@ reset_global_variables(VOID_ARGS)
     wizard = discover = ModernMode = CasualMode = FALSE;
     save_initial_objects_values();
     save_initial_urolerace_values();
+    save_initial_artifact_values();
 #ifdef SYSFLAGS
     memset((genericptr_t)&sysflags, 0, sizeof(sysflags));
 #endif
@@ -219,11 +220,11 @@ reset_global_variables(VOID_ARGS)
     uarm = (struct obj*)0;
     uswapwep = (struct obj*)0;
     uswapwep2 = (struct obj*)0;
-    uquiver = (struct obj*)0;       /* quiver */
-    uarmu = (struct obj*)0;     /* under-wear, so to speak */
-    uarmo = (struct obj*)0;     /* over-wear, so to speak */
-    uarmb = (struct obj*)0;     /* bracers */
-    uskin = (struct obj*)0; /* dragon armor, if a dragon */
+    uquiver = (struct obj*)0; 
+    uarmu = (struct obj*)0; 
+    uarmo = (struct obj*)0; 
+    uarmb = (struct obj*)0;  
+    uskin = (struct obj*)0; 
     uarmc = (struct obj*)0;
     uarmh = (struct obj*)0;
     uarms = (struct obj*)0;
@@ -234,7 +235,7 @@ reset_global_variables(VOID_ARGS)
     umisc2 = (struct obj*)0;
     umisc3 = (struct obj*)0;
     umisc4 = (struct obj*)0;
-    umisc5 = (struct obj*)0;     /* miscellaneous */
+    umisc5 = (struct obj*)0;     
     uright = (struct obj*)0;
     uleft = (struct obj*)0;
     ublindf = (struct obj*)0;

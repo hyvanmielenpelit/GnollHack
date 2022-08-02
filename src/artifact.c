@@ -107,11 +107,26 @@ int fd;
     bwrite(fd, (genericptr_t) artidisco, sizeof artidisco);
 }
 
+
+static boolean artivaluessaved = FALSE;
+static struct artifact saved_artilist[NUM_ARTIFACTS + 2];
+
+void
+save_initial_artifact_values(VOID_ARGS)
+{
+    if (!artivaluessaved)
+    {
+        memcpy((genericptr_t)saved_artilist, (genericptr_t)artilist, sizeof(struct artifact) * (NUM_ARTIFACTS + 2));
+        artivaluessaved = TRUE;
+    }
+}
+
 void
 reset_artifacts(VOID_ARGS)
 {
     memset((genericptr_t)artiexist, 0, sizeof artiexist);
     memset((genericptr_t)artidisco, 0, sizeof artidisco);
+    memcpy((genericptr_t)artilist, (genericptr_t)saved_artilist, sizeof(struct artifact) * (NUM_ARTIFACTS + 2));
     mkot_trap_warn_count = 0;
     nesting = 0;
     spec_dbon_applies = 0;

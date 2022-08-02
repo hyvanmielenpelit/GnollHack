@@ -37,8 +37,8 @@ typedef struct align { /* alignment & record */
 #define AM_SPLEV_NONCO 7
 
 #define Amask2align(x)                                          \
-    ((aligntyp)((!(x)) ? A_NONE : ((x) == AM_LAWFUL) ? A_LAWFUL \
-                                                     : ((int) x) - 2))
+    ((aligntyp)((!((x) & AM_MASK)) ? A_NONE : (((x) & AM_MASK) == AM_LAWFUL) ? A_LAWFUL \
+                                                     : ((int) ((x) & AM_MASK)) - 2))
 #define Align2amask(x) \
     (((x) == A_NONE) ? AM_NONE : ((x) == A_LAWFUL) ? AM_LAWFUL : (x) + 2)
 

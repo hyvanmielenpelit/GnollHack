@@ -181,6 +181,7 @@ E const char* FDECL(get_artifact_invoke_name, (int));
 E boolean FDECL(is_artifact_applicable_as_axe, (struct obj*));
 E int FDECL(artifact_to_obj, (int));
 E void FDECL(artifact_taken_away, (int));
+E void NDECL(save_initial_artifact_values);
 
 
 /* ### attrib.c ### */
