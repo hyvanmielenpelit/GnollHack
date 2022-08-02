@@ -976,6 +976,7 @@ struct objclass {
 #define O5_BURNS_INFINITELY            0x00020000UL
 #define O5_NO_CATALOGUE                0x00040000UL
 #define O5_DOUBLE_EXCEPTIONALITY_CHANCE 0x00080000UL
+#define O5_HALF_EXCEPTIONALITY_CHANCE  0x00100000UL
 
 #define O6_NONE                        0x00000000UL
 

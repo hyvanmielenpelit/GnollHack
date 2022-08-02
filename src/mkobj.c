@@ -1954,29 +1954,33 @@ unsigned long mkflags;
         }
         else
         {
+            boolean halfchance = !!(objects[otmp->otyp].oc_flags5 & O5_HALF_EXCEPTIONALITY_CHANCE);
             boolean doublechance = !!(objects[otmp->otyp].oc_flags5 & O5_DOUBLE_EXCEPTIONALITY_CHANCE);
+            uchar ownerimpliedexcep = (mkflags & MKOBJ_FLAGS_OWNER_IS_LAWFUL) ? EXCEPTIONALITY_CELESTIAL :
+                (mkflags & MKOBJ_FLAGS_OWNER_IS_NEUTRAL) ? EXCEPTIONALITY_PRIMORDIAL : (mkflags & MKOBJ_FLAGS_OWNER_IS_LAWFUL) ? EXCEPTIONALITY_INFERNAL : 
+                (mkflags & MKOBJ_FLAGS_OWNER_IS_UNKNOWN_OR_EVIL) ? EXCEPTIONALITY_ELITE : 0;
             if (In_endgame(&u.uz))
             {
-                if (!rn2(doublechance ? 2 : 4))
-                    otmp->exceptionality = (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
-                else if (doublechance ? rn2(3) : !rn2(3))
+                if (!rn2(halfchance ? 8 : doublechance ? 2 : 4))
+                    otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                else if (halfchance ? !rn2(6) : doublechance ? rn2(3) : !rn2(3))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (doublechance ? rn2(8) : rn2(4))
+                else if (halfchance ? rn2(2) : doublechance ? rn2(8) : rn2(4))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
             else if (Inhell)
             {
-                if (!rn2(doublechance ? 5 : 10) && objects[otmp->otyp].oc_material != MAT_SILVER)
-                    otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
-                else if (!rn2(doublechance ? 3 : 4))
+                if (!rn2(halfchance ? 24 : doublechance ? 6 : 12))
+                    otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                else if (!rn2(halfchance ? 8 : doublechance ? 2 : 4))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
                 else if (doublechance ? rn2(4) : rn2(2))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
             else if (leveldiff >= 20)
             {
-                if (!rn2(doublechance ? (Is_stronghold(&u.uz) ? 10 : 20) : Is_stronghold(&u.uz) ? 20 : 40))
-                    otmp->exceptionality = (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                if (!rn2(halfchance ? (Is_stronghold(&u.uz) ? 40 : 80) : doublechance ? (Is_stronghold(&u.uz) ? 10 : 20) : Is_stronghold(&u.uz) ? 20 : 40))
+                    otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
                 else if (!rn2(doublechance ? 3 : 6))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
                 else if (doublechance ? rn2(3) : !rn2(3))
@@ -1984,21 +1988,21 @@ unsigned long mkflags;
             }
             else if (leveldiff >= 10)
             {
-                if (!rn2(doublechance ? 10 : 20))
+                if (!rn2(halfchance ? 40 : doublechance ? 10 : 20))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (!rn2(doublechance ? 3 : 6))
+                else if (!rn2(halfchance ? 12 : doublechance ? 3 : 6))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
             else if (leveldiff < 2)
             {
-                if (!rn2(doublechance ? 100 : 200))
+                if (!rn2(halfchance ? 400 : doublechance ? 100 : 200))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
             else
             {
-                if (!rn2(doublechance ? 100 : 200))
+                if (!rn2(halfchance ? 400 : doublechance ? 100 : 200))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (!rn2(doublechance ? 15 : 30))
+                else if (!rn2(halfchance ? 60 : doublechance ? 15 : 30))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
         }

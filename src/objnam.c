@@ -5140,15 +5140,28 @@ boolean is_wiz_wish;
     {
         if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
         {
-            if(wiz_wishing || exceptionality <= EXCEPTIONALITY_ELITE)
+            if(wiz_wishing)
                 otmp->exceptionality = (uchar)exceptionality;
             else
             {
-                /* Celestial / Primordial / Infernal */
-                if (rn2(3) && Luck >= 0)
-                    otmp->exceptionality = (uchar)exceptionality;
+                if (is_weapon(otmp))
+                {
+                    if (exceptionality < EXCEPTIONALITY_ELITE)
+                        otmp->exceptionality = (uchar)exceptionality;
+                    else if (exceptionality == EXCEPTIONALITY_ELITE)
+                        otmp->exceptionality = (uchar)(rn2(5) && Luck >= 0 ? exceptionality : EXCEPTIONALITY_NORMAL);
+                    else
+                        otmp->exceptionality = (uchar)(!rn2(4) && Luck >= 0 ? exceptionality : EXCEPTIONALITY_NORMAL);
+                }
                 else
-                    otmp->exceptionality = EXCEPTIONALITY_NORMAL;
+                {
+                    if (exceptionality < EXCEPTIONALITY_ELITE)
+                        otmp->exceptionality = (uchar)(!rn2(2) && Luck >= 0 ? exceptionality : EXCEPTIONALITY_NORMAL);
+                    else if (exceptionality == EXCEPTIONALITY_ELITE)
+                        otmp->exceptionality = (uchar)(!rn2(4) && Luck >= 0 ? exceptionality : EXCEPTIONALITY_NORMAL);
+                    else
+                        otmp->exceptionality = (uchar)(!rn2(20) && Luck >= 0 ? exceptionality : EXCEPTIONALITY_NORMAL);
+                }
             }
         }
     }
