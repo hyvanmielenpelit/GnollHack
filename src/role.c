@@ -73,7 +73,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -106,6 +105,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
@@ -150,7 +150,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -183,7 +182,8 @@ const struct Role roles[] = {
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
-            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
     { { "Caveman", "Cavewoman" },
@@ -227,7 +227,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -260,7 +259,8 @@ const struct Role roles[] = {
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
-            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
     { { "Healer", 0 },
@@ -303,7 +303,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -336,7 +335,8 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
-            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */       
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
     { { "Knight", 0 },
@@ -379,7 +379,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -412,7 +411,8 @@ const struct Role roles[] = {
             SKILL_PROGRESS_INI_BASIC, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
-            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
     { { "Monk", 0 },
@@ -462,7 +462,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -495,7 +494,8 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
-            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
     { { "Priest", "Priestess" },
@@ -539,7 +539,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -572,7 +571,8 @@ const struct Role roles[] = {
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
-            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
     /* Note:  Rogue precedes Ranger so that use of `-R' on the command line
@@ -617,7 +617,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -650,7 +649,8 @@ const struct Role roles[] = {
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
-            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
     { { "Ranger", 0 },
@@ -708,7 +708,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -741,7 +740,8 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
-            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
     { { "Samurai", 0 },
@@ -784,7 +784,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -817,7 +816,8 @@ const struct Role roles[] = {
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
-            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
     { { "Tourist", 0 },
@@ -860,7 +860,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -893,7 +892,8 @@ const struct Role roles[] = {
             SKILL_PROGRESS_INI_UNSKILLED, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
-            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
     { { "Valkyrie", 0 },
@@ -936,7 +936,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -969,6 +968,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_INI_BASIC, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
@@ -1013,7 +1013,6 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_NONE */
             SKILL_PROGRESS_NONE, /* P_DAGGER */
             SKILL_PROGRESS_NONE, /* P_AXE */
-            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE, /* P_SWORD */
             SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
             SKILL_PROGRESS_NONE, /* P_FLAIL */
@@ -1046,6 +1045,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE, /* P_DIGGING */
             SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     },
