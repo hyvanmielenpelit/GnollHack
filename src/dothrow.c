@@ -24,7 +24,7 @@ static NEARDATA const char toss_objs[] = { ALLOW_COUNT, COIN_CLASS,
                                            ALL_CLASSES, WEAPON_CLASS, 0 };
 /* different default choices when wielding a sling (gold must be included) */
 static NEARDATA const char bullets[] = { ALLOW_COUNT, COIN_CLASS, ALL_CLASSES,
-                                         GEM_CLASS, 0 };
+                                         GEM_CLASS, WEAPON_CLASS, 0 };
 
 /* thrownobj (decl.c) tracks an object until it lands */
 
