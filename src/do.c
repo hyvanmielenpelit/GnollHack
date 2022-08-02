@@ -1643,12 +1643,15 @@ register struct obj* obj;
             );
 
 
-    if ((obj->oclass == ARMOR_CLASS
+    boolean nonexpeptionalarmor = nonexceptionality_armor(obj);
+
+    if (((obj->oclass == ARMOR_CLASS
         || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
         || has_obj_mythic_defense(obj)) 
-        && obj->exceptionality)
+        && obj->exceptionality) || nonexpeptionalarmor)
     {
-        const char* excep = obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional" :
+        const char* excep = nonexpeptionalarmor ? "Cannot have quality" : 
+            obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional" :
             obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite" :
             obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial" :
             obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial" :
@@ -1656,20 +1659,23 @@ register struct obj* obj;
             "Unknown quality";
 
         Sprintf(buf, "Armor quality:          %s", excep);
-        int acbon = get_obj_exceptionality_ac_bonus(obj);
-        int mcbon = get_obj_exceptionality_mc_bonus(obj);
-        if (acbon > 0 || mcbon > 0)
+        if (!nonexpeptionalarmor)
         {
-            Strcat(buf, " (");
-            if (acbon > 0)
-                Sprintf(eos(buf), "-%d AC", acbon);
-            if (mcbon > 0)
+            int acbon = get_obj_exceptionality_ac_bonus(obj);
+            int mcbon = get_obj_exceptionality_mc_bonus(obj);
+            if (acbon > 0 || mcbon > 0)
             {
+                Strcat(buf, " (");
                 if (acbon > 0)
-                    Strcat(buf, ", ");
-                Sprintf(eos(buf), "+%d MC", mcbon);
+                    Sprintf(eos(buf), "-%d AC", acbon);
+                if (mcbon > 0)
+                {
+                    if (acbon > 0)
+                        Strcat(buf, ", ");
+                    Sprintf(eos(buf), "+%d MC", mcbon);
+                }
+                Strcat(buf, ")");
             }
-            Strcat(buf, ")");
         }
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }

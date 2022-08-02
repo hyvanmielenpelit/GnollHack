@@ -652,8 +652,8 @@ place_main_monst_here:
                                          ? &mons[PM_LEPRECHAUN]
                                          : (type == COCKNEST)
                                             ? (sx == tx && sy == ty
-                                                ? (hd >= 24 ? &mons[PM_GARGANTUAN_COCKATRICE] : &mons[PM_GIANT_COCKATRICE])
-                                                : (hd >= 24 && !rn2(4) ? &mons[PM_GIANT_COCKATRICE] : &mons[PM_COCKATRICE]))
+                                                ? (hd >= 23 ? &mons[PM_GARGANTUAN_COCKATRICE] : &mons[PM_GIANT_COCKATRICE])
+                                                : (hd >= 23 && !rn2(4) ? &mons[PM_GIANT_COCKATRICE] : &mons[PM_COCKATRICE]))
                                              : (type == ANTHOLE)
                                                  ? antholemon()
                                                  : (struct permonst *) 0,

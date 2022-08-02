@@ -1024,22 +1024,22 @@ makelevel()
             res = mkroom(COURT);
         if (!res && u_depth > 7 && !rn2(7))
             res = mkroom(LIBRARY);
-        if (!res && u_depth > 9 && u_depth < 20 && !rn2(6)
+        if (!res && u_depth > 8 && u_depth < 15 && !rn2(6)
             && !(mvitals[PM_KILLER_BEE].mvflags & MV_GONE))
             res = mkroom(BEEHIVE);
-        if (!res && u_depth > 10 && u_depth < 21 && !rn2(8) && antholemon())
+        if (!res && u_depth > 9 && u_depth < 16 && !rn2(6) && antholemon())
             res = mkroom(ANTHOLE);
         if (!res && u_depth > 11 && !rn2(6))
             res = mkroom(MORGUE);
-        if (!res && u_depth > 14 && !rn2(6)
+        if (!res && u_depth > 12 && !rn2(6)
             && !(mvitals[PM_SOLDIER].mvflags & MV_GONE))
             res = mkroom(BARRACKS);
-        if (!res && u_depth > 15 && !rn2(6))
+        if (!res && u_depth > 13 && !rn2(6))
             res = mkroom(SWAMP);
-        if (!res && u_depth > 16 && !rn2(8)
+        if (!res && u_depth > 14 && !rn2(8)
             && !(mvitals[PM_COCKATRICE].mvflags & MV_GONE))
             res = mkroom(COCKNEST);
-        if (!res && u_depth > 20 && !rn2(5))
+        if (!res && u_depth > 15 && !rn2(5))
             res = mkroom(DRAGONLAIR);
 
         if (u_depth >= 2 && u_depth < depth(&medusa_level) && !rn2(6))

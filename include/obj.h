@@ -344,6 +344,7 @@ struct obj {
 
 /* Unusual definition to account for weapons appropriately */
 #define can_have_exceptionality(o)     (is_weapon(o) || can_otyp_have_exceptionality((o)->otyp))
+#define nonexceptionality_armor(o)     (is_armor(o) && !can_have_exceptionality(o))
 
 #define otyp_allows_specially_dipping_into(otyp) (objects[(otyp)].oc_flags4 & O4_ALLOWS_DIPPING_INTO)
 #define otyp_allows_object_to_be_dipped_into_it(otyp) (objects[(otyp)].oc_class == POTION_CLASS || otyp_allows_specially_dipping_into(otyp))

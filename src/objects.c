@@ -1063,6 +1063,12 @@ BOW("Galadhrim bow", "ornamental long bow",
               cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)                   \
         GENERAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
               cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,0,0,0)
+
+#define SUIT(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
+          cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)                   \
+    ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
+          cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,ARM_SUIT,P_NONE,metal,c,height,soundset,flags,flags2,flags3,flags4 | O4_CAN_HAVE_EXCEPTIONALITY,flags5,flags6,powconfermask)
+
 #define HELM(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,floor_height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, metal, c, floor_height, soundset, flags, flags2, flags3, flags4, flags5, flags6, powconfermask)
@@ -1071,13 +1077,13 @@ BOW("Galadhrim bow", "ornamental long bow",
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_CLOAK, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5,flags6, powconfermask)
 #define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask) \
     ARMOR(name, desc, kn, mgc, blk, power, power2, power3, pflags, enchtype, prob, delay, wt, \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIELD, P_SHIELD, metal, c, 0, soundset, flags, flags2, flags3, flags4, flags5, flags6, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIELD, P_SHIELD, metal, c, 0, soundset, flags, flags2, flags3, flags4 | O4_CAN_HAVE_EXCEPTIONALITY, flags5, flags6, powconfermask)
 #define GLOVES(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_GLOVES, P_NONE, metal, c, 24, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, flags5, flags6, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_GLOVES, P_NONE, metal, c, 24, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE | O4_CAN_HAVE_EXCEPTIONALITY, flags5, flags6, powconfermask)
 #define GENERAL_BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,anim,enl,repl)  \
     GENERAL_ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BOOTS, P_NONE, metal, c, 32, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5, flags6, powconfermask,anim,enl,repl)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BOOTS, P_NONE, metal, c, 32, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_CAN_HAVE_EXCEPTIONALITY, flags5, flags6, powconfermask,anim,enl,repl)
 #define BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     GENERAL_BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,0,0,0)
 #define SHIRT(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
@@ -1103,7 +1109,7 @@ BOW("Galadhrim bow", "ornamental long bow",
            hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
            wt, color, soundset,\
            0, 0, 0, 0, \
-           powconfermask,permittedtargets, O1_IS_WEAPON_WHEN_WIELDED | flags, flags2, flags3, flags4, flags5, flags6)
+           powconfermask,permittedtargets, O1_IS_WEAPON_WHEN_WIELDED | flags, flags2, flags3, flags4 | O4_CAN_HAVE_EXCEPTIONALITY, flags5, flags6)
 
 #define WEAPONBOOTS(name,desc,kn,mgc,delay,prob,wt,cost,enchtype,\
             dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
@@ -1117,7 +1123,7 @@ BOW("Galadhrim bow", "ornamental long bow",
            hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
            wt, color, soundset, \
            0, 0, 0, 0, \
-           powconfermask,permittedtargets, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5 | O5_IS_WEAPON_WHEN_WORN,flags6)
+           powconfermask,permittedtargets, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_CAN_HAVE_EXCEPTIONALITY, flags5 | O5_IS_WEAPON_WHEN_WORN,flags6)
 
 #define WEAPONGLOVES(name,desc,kn,mgc,delay,prob,wt,cost,enchtype,\
             dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
@@ -1131,7 +1137,7 @@ BOW("Galadhrim bow", "ornamental long bow",
            hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
            wt, color, soundset,\
            0, 0, 0, 0, \
-           powconfermask,permittedtargets, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, flags5 | O5_IS_WEAPON_WHEN_WORN, flags6)
+           powconfermask,permittedtargets, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE | O4_CAN_HAVE_EXCEPTIONALITY, flags5 | O5_IS_WEAPON_WHEN_WORN, flags6)
 
 
 /* helmets */
@@ -1308,124 +1314,126 @@ DRGN_ARMR("yellow dragon scales",
     O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 #undef DRGN_ARMR
 /* other suits */
-ARMOR("adamantium full plate mail", None, 
+SUIT("adamantium full plate mail", None, 
     1, 0, 1, DISINTEGRATION_RESISTANCE, BISECTION_RESISTANCE, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR,
     5, 7, 960, 4000, -1, 5, 0, 0, 0, 0, 15, 
-    ARM_SUIT, P_NONE, MAT_ADAMANTIUM, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
+    MAT_ADAMANTIUM, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
     O1_INDESTRUCTIBLE | O1_DISINTEGRATION_RESISTANT | O1_CORROSION_RESISTANT | O1_RUST_RESISTANT, 
     O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("mithril full plate mail", None, 
+        SUIT("mithril full plate mail", None,
     1, 0, 1, BISECTION_RESISTANCE, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR,
     5, 7, 550, 4000, 0, 8, 0, 0, 0, 0, 13, 
-    ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
+    MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
     O1_CORROSION_RESISTANT | O1_RUST_RESISTANT, 
     O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("orichalcum full plate mail", None, 
+SUIT("orichalcum full plate mail", None, 
     1, 0, 1, ANTIMAGIC, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR,
     5, 7, 960, 5000, 1, 12, 0, 0, 0, 0, 19, 
-    ARM_SUIT, P_NONE, MAT_ORICHALCUM, HI_GOLD, 0, OBJECT_SOUNDSET_GENERIC,
+    MAT_ORICHALCUM, HI_GOLD, 0, OBJECT_SOUNDSET_GENERIC,
     O1_CORROSION_RESISTANT | O1_RUST_RESISTANT, 
     O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("full plate mail", None, 
+SUIT("full plate mail", None, 
     1, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     10, 7, 960, 2000, 1, 5, 0, 0, 0, 0, 14, 
-    ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_RARE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("field plate mail", None, 
+SUIT("field plate mail", None, 
     1, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     20, 6, 840, 1000, 2, 4, 0, 0, 0, 0, 12, 
-    ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_RARE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("plate mail", None, 
+SUIT("plate mail", None, 
     1, 0, 1,NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     30, 5, 720, 600, 3, 3, 0, 0, 0, 0, 10, 
-    ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("crystal plate mail", None, 
+SUIT("crystal plate mail", None, 
     1, 0, 1, REFLECTING, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     5, 5, 640,3000,  3, 3, 0, 0, 0, 0, 2, 
-    ARM_SUIT, P_NONE, MAT_HARD_CRYSTAL, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_HARD_CRYSTAL, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("bronze plate mail", None,
+SUIT("bronze plate mail", None,
     1, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     20, 5, 800, 150,  4, 8, 0, 0, 0, 0, 10, 
-    ARM_SUIT, P_NONE, MAT_COPPER, HI_COPPER, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_COPPER, HI_COPPER, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("splint mail", None,
+SUIT("splint mail", None,
     1, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     30, 5, 640, 125,  4, 3, 0, 0, 0, 0, 7, 
-    ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("banded mail", None,
+SUIT("banded mail", None,
     1, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     30, 5, 560, 200,  4, 3, 0, 0, 0, 0, 6, 
-    ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("gnollish bone mail", "crude bone armor",
+SUIT("gnollish bone mail", "crude bone armor",
     0, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     10, 5, 420, 100,  5, 3, 0, 0, 0, 0, 4, 
-    ARM_SUIT, P_NONE, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
-ARMOR("dwarvish mithril-coat", None,
+SUIT("dwarvish mithril-coat", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     10, 1, 250, 750,  4, 6, 0, 0, 0, 0, 3, 
-    ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_DWARVEN_ITEM, O3_NONE, O4_RARE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
-ARMOR("elven mithril-coat", None,
+SUIT("elven mithril-coat", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_ELVEN_ARMOR, 
     15, 1, 150, 250,  5, 4, 0, 0, 0, 0, 2, 
-    ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
+    MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
     O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_ELVEN_ITEM, O3_NONE, O4_RARE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
-ARMOR("chain mail", None,
+SUIT("chain mail", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     30, 5, 480,  75,  5, 3, 0, 0, 0, 0, 5, 
-    ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("orcish chain mail", "crude chain mail",
+SUIT("orcish chain mail", "crude chain mail",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     20, 5, 450,  40,  6, 3, 0, 0, 0, 0, 5, 
-    ARM_SUIT, P_NONE, MAT_IRON, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_IRON, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
-ARMOR("scale mail", None,
+SUIT("scale mail", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     30, 5, 500,  45,  6, 3, 0, 0, 0, 0, 4, 
-    ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("studded leather armor", None,
+SUIT("studded leather armor", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_LEATHER_BODY_ARMOR, 
     30, 3, 200,  15,  7, 3, 0, 0, 0, 0, 2, 
-    ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, 40, OBJECT_SOUNDSET_GENERIC, 
+    MAT_LEATHER, HI_LEATHER, 40, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("gnollish studded leather armor", "crude studded leather armor",
+SUIT("gnollish studded leather armor", "crude studded leather armor",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_LEATHER_BODY_ARMOR, 
     20, 3, 175,  15,  8, 3, 0, 0, 0, 0, 2, 
-    ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, 40, OBJECT_SOUNDSET_GENERIC, 
+    MAT_LEATHER, HI_LEATHER, 40, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
-ARMOR("ring mail", None,
+SUIT("ring mail", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     35, 5, 500,  30,  7, 2, 0, 0, 0, 0, 3, 
-    ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
+    MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("orcish ring mail", "crude ring mail",
+SUIT("orcish ring mail", "crude ring mail",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     20, 5, 450,  15,  8, 2, 0, 0, 0, 0, 3, 
-    ARM_SUIT, P_NONE, MAT_IRON, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, 
+    MAT_IRON, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
-ARMOR("leather armor", None,
+SUIT("leather armor", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_LEATHER_BODY_ARMOR, 
     35, 3, 150,   5,  8, 2, 0, 0, 0, 0, 1, 
-    ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, 40, OBJECT_SOUNDSET_GENERIC, 
+    MAT_LEATHER, HI_LEATHER, 40, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NONE, O6_NONE, PERMITTED_ALL),
-ARMOR("gnollish leather armor", "crude leather armor",
+SUIT("gnollish leather armor", "crude leather armor",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_LEATHER_BODY_ARMOR, 
     20, 3, 125,   3,  9, 2, 0, 0, 0, 0, 1, 
-    ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, 40, OBJECT_SOUNDSET_GENERIC, 
+    MAT_LEATHER, HI_LEATHER, 40, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
-ARMOR("leather jacket", None,
+SUIT("leather jacket", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_LEATHER_BODY_ARMOR, 
     10, 0,  30,  10,  9, 1, 0, 0, 0, 0, 0, 
-    ARM_SUIT, P_NONE, MAT_LEATHER, CLR_BLACK, 40, OBJECT_SOUNDSET_GENERIC, 
+    MAT_LEATHER, CLR_BLACK, 40, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NONE, O6_NONE, PERMITTED_ALL),
+
+/* special */
 ARMOR("force field armor", "armor-shaped force field",
     0, 1, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     0,  0,   0,   4,  4, 6, 0, 0, 0, 0, 0, 
@@ -1643,50 +1651,50 @@ BRACERS("bracers of reflection", "silver bracers", //ENDMARKER FOR BRACER CLASS
 /* shields */
 SHIELD("small shield", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
-    6, 0,  80,  3, 9, 0, 0, 0, 0, 0, 3, 
+    6, 0,  80,  3, 8, 0, 0, 0, 0, 0, 3, 
     MAT_WOOD, HI_WOOD, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SHIELD("elven shield", "blue and green shield",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_ELVEN_ARMOR, 
-    2, 0,  140,  7, 8, 0, 0, 0, 0, 0, 2, 
+    2, 0,  140,  7, 7, 0, 0, 0, 0, 0, 2, 
     MAT_WOOD, CLR_GREEN, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
 SHIELD("great orcish shield", "large black shield",
     0, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
-    2, 0,  160,  7, 8, 0, 0, 0, 0, 0, 4, 
+    2, 0,  160,  7, 6, 0, 0, 0, 0, 0, 4, 
     MAT_IRON, CLR_BLACK, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
 SHIELD("orcish shield", "black shield",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
-    2, 0,  100,  7, 9, 0, 0, 0, 0, 0, 4, 
+    2, 0,  100,  7, 7, 0, 0, 0, 0, 0, 4, 
     MAT_IRON, CLR_BLACK, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
 SHIELD("large shield", None,
     1, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
-    5, 0, 160, 10, 8, 0, 0, 0, 0, 0,  5, 
+    5, 0, 160, 10, 4, 0, 0, 0, 0, 0,  5, 
     MAT_IRON, HI_METAL, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SHIELD("dwarvish roundshield", "large round shield",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
-    4, 0, 150, 10, 8, 0, 0, 0, 0, 0,  6, 
+    4, 0, 150, 10, 7, 0, 0, 0, 0, 0,  6, 
     MAT_IRON, HI_METAL, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
 SHIELD("shield of reflection", "polished silver shield",
     0, 1, 0, REFLECTING, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 3, 0, 
-    70, 750, 8, 0, 0, 0, 0, 0,  5, 
+    70, 750, 7, 0, 0, 0, 0, 0,  5, 
     MAT_SILVER, HI_SILVER, OBJECT_SOUNDSET_GENERIC, 
     O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 
 WEAPONSHIELD("spiked shield", None,
     1, 0, 5, 130, 50, ENCHTYPE_GENERAL_ARMOR,
     AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
-    0, 0, 0, 2, 0, 0, 0, 0, 0, 6, 0, 
+    0, 0, 0, 3, 0, 0, 0, 0, 0, 6, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, P_SHIELD, MAT_IRON, HI_METAL, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPONSHIELD("spiked silver shield", None,
     1, 0, 2, 130, 500, ENCHTYPE_GENERAL_ARMOR,
     AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
-    0, 0, 0, 2, 0, 0, 0, 0, 0, 6, 0, 
+    0, 0, 0, 3, 0, 0, 0, 0, 0, 6, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, P_SHIELD, MAT_SILVER, HI_SILVER, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
 
@@ -1859,6 +1867,7 @@ WEAPONBOOTS("spiked silver boots", None,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
 
 
+#undef SUIT
 #undef HELM
 #undef CLOAK
 #undef SHIELD

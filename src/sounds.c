@@ -4558,10 +4558,12 @@ struct monst* mtmp;
     }
 
     char ansbuf[BUFSZ];
-    char rumorbuf[BUFSZ];
-    char* rumor = getrumor(0, rumorbuf, TRUE);
+    char rumorbuf[BUFSZ] = "";
+    (void)getrumor(0, rumorbuf, TRUE);
+    if (*rumorbuf)
+        (void) strip_newline(rumorbuf);
         
-    if (mtmp->rumorsleft == 0 || !rumor)
+    if (mtmp->rumorsleft == 0 || !*rumorbuf)
     {
         play_voice_monster_advice(mtmp, FALSE);
         pline("%s answers:", noittame_Monnam(mtmp));
@@ -4585,8 +4587,8 @@ struct monst* mtmp;
             pline("(%s hands a note over to you.)  It reads:", noittame_Monnam(mtmp));
             u.uconduct.literate++;
         }
-        verbalize("%s", rumor);
-        display_popup_text(rumor, "Advice", POPUP_TEXT_ADVICE, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
+        verbalize("%s", rumorbuf);
+        display_popup_text(rumorbuf, "Advice", POPUP_TEXT_ADVICE, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
 
         mtmp->told_rumor = TRUE;
     }
