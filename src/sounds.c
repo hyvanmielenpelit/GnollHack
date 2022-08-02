@@ -10142,6 +10142,8 @@ struct monst* mtmp;
         spl_book[i].sp_skillchance = (int)objects[booktype].oc_spell_skill_chance;
 
         incr_spell_nknow(i, 1);
+        sortspells();
+
         play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
         Sprintf(learnbuf, i > 0 ? "You add %s to your repertoire." : "You learn %s.", OBJ_NAME(objects[booktype]));
         pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, learnbuf);
