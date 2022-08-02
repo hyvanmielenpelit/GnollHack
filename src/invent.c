@@ -6516,7 +6516,7 @@ unsigned long newsym_flags;
  * This must match the object class order.
  */
 STATIC_VAR NEARDATA const char *names[MAX_OBJECT_CLASSES] = {
-    0, "Illegal objects", "Weapons", "Armor", "Rings", "Amulets", "Tools",
+    "Random objects", "Illegal objects", "Weapons", "Armor", "Rings", "Amulets", "Tools",
     "Comestibles", "Potions", "Scrolls", "Books", "Wands", "Coins",
     "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms", "Reagents",  "Miscellaneous"
 };
