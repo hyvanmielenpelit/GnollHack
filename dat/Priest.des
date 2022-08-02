@@ -249,6 +249,7 @@ MAZE: "Pri-loca",'T'
 FLAGS: hardfloor
 # This is a kludge to init the level as a lit field.
 INIT_MAP: mines, ',' , ',' , false , false , lit , false
+TILESET: undead_tileset
 GEOMETRY:center,center
 MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -323,6 +324,7 @@ TRAP:random,random
 
 MAZE: "Pri-goal", ' '
 INIT_MAP: mines, 'L' , ':' , false , false , unlit , false
+TILESET: gehennom_cavernous_tileset
 GEOMETRY:center,center
 MAP
 xxxxxx::xxxxxx:::xxxxxxxxx
@@ -407,6 +409,7 @@ MONSTER:'W',random
 #
 
 LEVEL: "Pri-fila"
+TILESET: undead_tileset
 #
 ROOM: "ordinary" , random, random, random, random {
   STAIR: random, up
@@ -447,6 +450,7 @@ ROOM: "morgue" , random, random, random, random {
 RANDOM_CORRIDORS
 
 LEVEL: "Pri-filb"
+TILESET: undead_tileset
 #
 ROOM: "ordinary" , random, random, random, random {
   STAIR: random, up
