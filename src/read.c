@@ -1750,7 +1750,8 @@ boolean *effect_happened_ptr;
             otmp = getobj(enchant_armor_objects, otyp == SPE_ENCHANT_ARMOR ? "enchant" : "protect", 0, "");
             if (!otmp)
             {
-                pline1(Never_mind);
+                if(!is_serviced_spell)
+                    pline1(Never_mind);
                 *effect_happened_ptr = 0;
                 return 0;
             }
@@ -2254,7 +2255,8 @@ boolean *effect_happened_ptr;
             otmp = getobj(enchant_weapon_objects, otyp == SPE_ENCHANT_WEAPON ? "enchant" : "protect", 0, "");
             if (!otmp)
             {
-                pline1(Never_mind);
+                if (!is_serviced_spell)
+                    pline1(Never_mind);
                 *effect_happened_ptr = 0;
                 return 0;
             }
@@ -2777,7 +2779,8 @@ boolean *effect_happened_ptr;
             }
             else
             {
-                pline1(Never_mind);
+                if (!is_serviced_spell)
+                    pline1(Never_mind);
                 *effect_happened_ptr = 0;
                 return 0;
             }
@@ -2883,7 +2886,8 @@ boolean *effect_happened_ptr;
             }
             else
             {
-                pline1(Never_mind);
+                if (!is_serviced_spell)
+                    pline1(Never_mind);
                 *effect_happened_ptr = 0;
                 return 0;
             }
@@ -2943,7 +2947,8 @@ boolean *effect_happened_ptr;
         }
         else
         {
-            pline1(Never_mind);
+            if (!is_serviced_spell)
+                pline1(Never_mind);
             *effect_happened_ptr = 0;
             return 0;
         }
@@ -2956,7 +2961,8 @@ boolean *effect_happened_ptr;
             otmp = getobj(enchant_accessory_objects, "enchant", 0, "");
             if (!otmp)
             {
-                pline1(Never_mind);
+                if (!is_serviced_spell)
+                    pline1(Never_mind);
                 *effect_happened_ptr = 0;
                 return 0;
             }
@@ -3360,8 +3366,10 @@ boolean *effect_happened_ptr;
         while (trycnt < 10)
         {
 
-            if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0) {
-                pline1(Never_mind);
+            if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0) 
+            {
+                if (!is_serviced_spell)
+                    pline1(Never_mind);
                 break;
             }
             if (!get_valid_targeted_position(cc.x, cc.y, otyp))
@@ -3403,8 +3411,10 @@ boolean *effect_happened_ptr;
         while (trycnt < 10)
         {
 
-            if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0) {
-                pline1(Never_mind);
+            if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0) 
+            {
+                if (!is_serviced_spell)
+                    pline1(Never_mind);
                 break;
             }
             if (!get_valid_targeted_position(cc.x, cc.y, otyp))
@@ -3448,8 +3458,10 @@ boolean *effect_happened_ptr;
         cc.y = u.uy;
         getpos_sethilite(display_stinking_cloud_positions,
                          get_valid_stinking_cloud_pos);
-        if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0) {
-            pline1(Never_mind);
+        if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0) 
+        {
+            if (!is_serviced_spell)
+                pline1(Never_mind);
             break;
         }
         if (!is_valid_stinking_cloud_pos(cc.x, cc.y, TRUE))
