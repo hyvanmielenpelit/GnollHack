@@ -4478,7 +4478,7 @@ struct monst* mtmp;
     }
     else if (msound == MS_QUANTUM)
     {
-        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+        play_monster_standard_dialogue_line(mtmp, !is_peaceful(mtmp) ? MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU_SCUM : MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         if (has_mname(mtmp))
         {
             Sprintf(ansbuf, "I am %s, %s at the University of Yendor%s.", MNAME(mtmp), an(mtmp->data->mname), !is_peaceful(mtmp) ? ", scum" : "");
@@ -5137,7 +5137,7 @@ struct monst* mtmp;
     }
     else
     {
-        pline1("Nevermind.");
+        pline1(Never_mind);
     }
 
     return (n_given > 0);
@@ -5278,7 +5278,7 @@ struct monst* mtmp;
     }
     else
     {
-        pline1("Nevermind.");
+        pline1(Never_mind);
     }
 
     return (n_given > 0);
@@ -7545,7 +7545,7 @@ struct monst* mtmp;
     if (!portal_res)
     {
         money2u(mtmp, u_pay);
-        pline1("Nevermind.");
+        pline1(Never_mind);
         return 0;
     }
     else
@@ -7740,6 +7740,7 @@ struct monst* mtmp;
     else if (!m_speak_check(mtmp))
         return 0;
 
+    play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_RESEARCH_SUPPORT);
     Sprintf(qbuf, "%s asks for a research support of %ld %s.  Agree?", noittame_Monnam(mtmp), reconcile_cost, currency(reconcile_cost));
 
     switch (yn_query(qbuf)) {
@@ -7764,11 +7765,13 @@ struct monst* mtmp;
     play_sfx_sound(SFX_BUY_FROM_NPC);
     if (is_peaceful(mtmp))
     {
+        play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_THANK_YOU_FOR_YOUR_SUPPOORT);
         pline("%s thanks you for your support.", noittame_Monnam(mtmp));
 
     }
     else
     {
+        play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_THATS_NOT_WHAT_I_WAS_EXPECTING);
         pline("%s seems mysteriously disappointed.", noittame_Monnam(mtmp));
     }
 
@@ -7802,6 +7805,8 @@ struct monst* mtmp;
 
     if (mtmp->mspec_used)
     {
+        
+        play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_WAVE_FUNCTION_ALREADY_COLLAPSED);
         pline("%s explains something about your wave function having already collapsed.", noittame_Monnam(mtmp));
         pline1("It all sounds pretty serious!");
         return 0;
@@ -7809,6 +7814,7 @@ struct monst* mtmp;
 
     if (!is_tame(mtmp))
     {
+        play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_OBSERVE_POSITION);
         Sprintf(qbuf, "%s asks for %ld %s to observe your exact position.  Agree?", noittame_Monnam(mtmp), observe_cost, currency(observe_cost));
 
         switch (yn_query(qbuf)) {
@@ -7851,6 +7857,7 @@ struct monst* mtmp;
     {
         play_sfx_sound(SFX_BUY_FROM_NPC);
     }
+    play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_POSITION_EXACTLY_WHERE_YOU_ARE);
     pline("%s tells that your position was observed to be exactly where you are.", noittame_Monnam(mtmp));
 
     return 1;
@@ -7889,6 +7896,7 @@ struct monst* mtmp;
 
     if (!is_tame(mtmp))
     {
+        play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_OBSERVE_SPEED);
         Sprintf(qbuf, "%s asks for %ld %s to observe your exact speed.  Agree?", noittame_Monnam(mtmp), observe_cost, currency(observe_cost));
 
         switch (yn_query(qbuf)) {
@@ -7920,8 +7928,11 @@ struct monst* mtmp;
     {
         play_sfx_sound(SFX_BUY_FROM_NPC);
     }
-    if(canspotmon(mtmp) && m_canseeu(mtmp))
-            pline("%s tells that your speed was observed to be zero.", noittame_Monnam(mtmp));
+    if (canspotmon(mtmp) && m_canseeu(mtmp))
+    {
+        play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_SPEED_IS_ZERO);
+        pline("%s tells that your speed was observed to be zero.", noittame_Monnam(mtmp));
+    }
 
     return 1;
 }

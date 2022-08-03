@@ -1618,8 +1618,38 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Teleportation Wand", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Chat", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Item Trading", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Death", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Male/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Male/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Male/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Male/Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Male/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Male/Death", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Female/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Female/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Female/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Female/Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Female/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Quantum Mechanic/Female/Death", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Death", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Female/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Female/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Female/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Female/Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Female/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Female/Death", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Monster/Yeenaghu/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Yeenaghu/Special Dialogue", 1.0f },
@@ -1740,22 +1770,6 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Costly Alteration/Alter Pay", 1.0f },
 
 };
-/*
-
-    GHSOUND_HERMIT3_GNOMISH_MINES,
-    GHSOUND_HERMIT3_LUCKSTONE,
-    GHSOUND_HERMIT3_STANDARD_DIALOGUE,
-    GHSOUND_HERMIT3_SPECIAL_DIALOGUE,
-    GHSOUND_HERMIT3_ITEM_TRADING,
-    GHSOUND_HERMIT3_DEATH,
-
-    GHSOUND_ORC_HERMIT3_GNOMISH_MINES,
-    GHSOUND_ORC_HERMIT3_LUCKSTONE,
-    GHSOUND_ORC_HERMIT3_STANDARD_DIALOGUE,
-    GHSOUND_ORC_HERMIT3_SPECIAL_DIALOGUE,
-    GHSOUND_ORC_HERMIT3_ITEM_TRADING,
-    GHSOUND_ORC_HERMIT3_DEATH,
-*/
 
 NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS] =
 {
@@ -5036,7 +5050,7 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CREATION */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
-            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {GHSOUND_QUANTUM_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_COUGH */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */
@@ -5058,7 +5072,7 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CURSE */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MUMBLED_CURSE */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_YELL */
-            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CHAT */
+            {GHSOUND_QUANTUM_CHAT, 1.0f}, /* MONSTER_SOUND_TYPE_CHAT */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
             {GHSOUND_QUANTUM_DEATH, 5.0f} /* MONSTER_SOUND_TYPE_DEATH */
@@ -5118,6 +5132,231 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
             {GHSOUND_YEENAGHU_DEATH, 5.0f} /* MONSTER_SOUND_TYPE_DEATH */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OBJECT_SOUNDSET_HUMAN_BAREHANDED,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_HUMAN_BAREFOOTED
+        }
+    },
+
+    {
+        "Quantum Mechanic Male",
+        MONSTER_SOUNDSET_HUMAN_MALE,
+        {
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SWALLOW_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME */
+            {GHSOUND_QUANTUM_MECHANIC_MALE_ITEM_TRADING, 1.0f}, /* MONSTER_SOUND_TYPE_ITEM_TRADING */
+            {GHSOUND_QUANTUM_MECHANIC_MALE_STANDARD_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
+            {GHSOUND_QUANTUM_MECHANIC_MALE_SPECIAL_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CREATION */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {GHSOUND_QUANTUM_MECHANIC_MALE_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_COUGH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_1 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_2 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_3 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_OUCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_FLOUNDER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_4 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_5 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_6 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_BUMP_INTO */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SEARCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CAST */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_HAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_LAUGHTER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RANDOM_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_7 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MUMBLED_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_YELL */
+            {GHSOUND_QUANTUM_MECHANIC_MALE_CHAT, 1.0f}, /* MONSTER_SOUND_TYPE_CHAT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
+            {GHSOUND_QUANTUM_MECHANIC_MALE_DEATH, 5.0f} /* MONSTER_SOUND_TYPE_DEATH */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OBJECT_SOUNDSET_HUMAN_BAREHANDED,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_HUMAN_BAREFOOTED
+        }
+    },
+    {
+        "Quantum Mechanic Female",
+        MONSTER_SOUNDSET_HUMAN_FEMALE,
+        {
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SWALLOW_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME */
+            {GHSOUND_QUANTUM_MECHANIC_FEMALE_ITEM_TRADING, 1.0f}, /* MONSTER_SOUND_TYPE_ITEM_TRADING */
+            {GHSOUND_QUANTUM_MECHANIC_FEMALE_STANDARD_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
+            {GHSOUND_QUANTUM_MECHANIC_FEMALE_SPECIAL_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CREATION */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {GHSOUND_QUANTUM_MECHANIC_FEMALE_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_COUGH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_1 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_2 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_3 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_OUCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_FLOUNDER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_4 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_5 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_6 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_BUMP_INTO */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SEARCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CAST */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_HAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_LAUGHTER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RANDOM_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_7 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MUMBLED_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_YELL */
+            {GHSOUND_QUANTUM_MECHANIC_FEMALE_CHAT, 1.0f}, /* MONSTER_SOUND_TYPE_CHAT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
+            {GHSOUND_QUANTUM_MECHANIC_FEMALE_DEATH, 5.0f} /* MONSTER_SOUND_TYPE_DEATH */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OBJECT_SOUNDSET_HUMAN_BAREHANDED,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_HUMAN_BAREFOOTED
+        }
+    },
+    {
+        "Elder Quantum Mechanic Male",
+        MONSTER_SOUNDSET_HUMAN_MALE,
+        {
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SWALLOW_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_MALE_ITEM_TRADING, 1.0f}, /* MONSTER_SOUND_TYPE_ITEM_TRADING */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_MALE_STANDARD_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_MALE_SPECIAL_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CREATION */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_MALE_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_COUGH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_1 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_2 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_3 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_OUCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_FLOUNDER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_4 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_5 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_6 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_BUMP_INTO */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SEARCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CAST */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_HAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_LAUGHTER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RANDOM_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_7 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MUMBLED_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_YELL */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_MALE_CHAT, 1.0f}, /* MONSTER_SOUND_TYPE_CHAT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_MALE_DEATH, 5.0f} /* MONSTER_SOUND_TYPE_DEATH */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OBJECT_SOUNDSET_HUMAN_BAREHANDED,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_HUMAN_BAREFOOTED
+        }
+    },
+    {
+        "Elder Quantum Mechanic Female",
+        MONSTER_SOUNDSET_HUMAN_FEMALE,
+        {
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SWALLOW_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_FEMALE_ITEM_TRADING, 1.0f}, /* MONSTER_SOUND_TYPE_ITEM_TRADING */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_FEMALE_STANDARD_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_FEMALE_SPECIAL_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CREATION */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_FEMALE_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_COUGH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_1 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_2 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_3 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_OUCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_FLOUNDER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_4 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_5 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_6 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_BUMP_INTO */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SEARCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CAST */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_HAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_LAUGHTER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RANDOM_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_7 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MUMBLED_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_YELL */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_FEMALE_CHAT, 1.0f}, /* MONSTER_SOUND_TYPE_CHAT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_FEMALE_DEATH, 5.0f} /* MONSTER_SOUND_TYPE_DEATH */
         },
         SOUNDSOURCE_AMBIENT_GENERAL,
         {
@@ -12020,7 +12259,7 @@ enum object_sound_types sound_type;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -12065,7 +12304,7 @@ enum object_sound_types sound_type;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -12163,7 +12402,7 @@ enum container_sound_types sound_type;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -12410,7 +12649,7 @@ boolean is_underwater;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 }
 
@@ -12478,7 +12717,7 @@ struct obj* container;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 }
 
@@ -12531,7 +12770,7 @@ enum location_sound_types sound_type;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -12587,7 +12826,7 @@ unsigned long play_flags;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
     immediateinfo.play_flags = play_flags;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -12642,7 +12881,7 @@ enum immediate_sound_types sfx_sound_type;
     immediateinfo.play_group = play_group;
     immediateinfo.dialogue_mid = youmonst.m_id;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -12690,7 +12929,7 @@ enum player_voice_types sound_type;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_LONG;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -12767,7 +13006,7 @@ unsigned long play_flags;
     immediateinfo.dialogue_mid = mon->m_id;
     immediateinfo.play_flags = play_flags;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -12840,7 +13079,7 @@ enum object_sound_types sound_type;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -12896,7 +13135,7 @@ enum object_sound_types sound_type;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 }
 
@@ -13132,7 +13371,7 @@ xchar x, y;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -13217,7 +13456,7 @@ xchar x, y;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -13253,7 +13492,7 @@ unsigned long play_flags;
     immediateinfo.play_group = sfx_sounds[sfx_sound_id].play_group;
     immediateinfo.play_flags = play_flags;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 }
 
@@ -13274,7 +13513,7 @@ enum ui_sound_types ui_sound_id;
     immediateinfo.sound_type = IMMEDIATE_SOUND_UI;
     immediateinfo.play_group = ui_sounds[ui_sound_id].play_group;
 
-    if (soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 }
 
@@ -13318,7 +13557,7 @@ double min_volume_d;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = sfx_sounds[sfx_sound_id].play_group;
 
-    if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > 0.0f)
+    if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 }
 
@@ -13360,7 +13599,7 @@ int x, y;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = instrument_soundsets[typ].sounds[instrument_sound_type].play_group;
 
-    if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > 0.0f)
+    if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 }
 
@@ -13392,7 +13631,7 @@ int x, y;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > 0.0f)
+    if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 }
 
@@ -13520,7 +13759,7 @@ int x, y;
     info.volume = min(1.0f, occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].volume * hearing_volume);
     info.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (info.volume > 0.0f)
+    if (info.volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(info);
 }
 
