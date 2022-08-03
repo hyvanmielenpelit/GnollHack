@@ -1308,7 +1308,7 @@ namespace GnollHackCommon
         public const int MaxLeashed = 2;
         public const int MaxPlayedSpecialEffects = 12;
         public const int MaxPlayedZapAnimations = 16;
-        public const int MaxNormalImmediateSoundInstances = 24;
+        public const int MaxNormalImmediateSoundInstances = 36;
         public const int MaxLongImmediateSoundInstances = 48;
         //public const int DefaultPanTime = 5;
         public const int PIT_BOTTOM_BORDER = 2;
