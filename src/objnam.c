@@ -5144,23 +5144,25 @@ boolean is_wiz_wish;
                 otmp->exceptionality = (uchar)exceptionality;
             else
             {
+                boolean halfchance = !!(objects[otmp->otyp].oc_flags5 & O5_HALF_EXCEPTIONALITY_CHANCE);
+                boolean doublechance = !!(objects[otmp->otyp].oc_flags5 & O5_DOUBLE_EXCEPTIONALITY_CHANCE);
                 if (is_weapon(otmp))
                 {
                     if (exceptionality < EXCEPTIONALITY_ELITE)
                         otmp->exceptionality = (uchar)exceptionality;
                     else if (exceptionality == EXCEPTIONALITY_ELITE)
-                        otmp->exceptionality = (uchar)(rn2(5) && Luck >= 0 ? exceptionality : EXCEPTIONALITY_NORMAL);
+                        otmp->exceptionality = (uchar)(((rn2(100) < (halfchance ? 40 : doublechance ? 100 : 80)) && (Luck >= 0 || doublechance)) ? exceptionality : EXCEPTIONALITY_NORMAL);
                     else
-                        otmp->exceptionality = (uchar)(!rn2(4) && Luck >= 0 ? exceptionality : EXCEPTIONALITY_NORMAL);
+                        otmp->exceptionality = (uchar)((!rn2(halfchance ? 8 : doublechance ? 2 : 4) && Luck >= 0) ? exceptionality : EXCEPTIONALITY_NORMAL);
                 }
                 else
                 {
                     if (exceptionality < EXCEPTIONALITY_ELITE)
-                        otmp->exceptionality = (uchar)(!rn2(2) && Luck >= 0 ? exceptionality : EXCEPTIONALITY_NORMAL);
+                        otmp->exceptionality = (uchar)((doublechance || (!rn2(2) && Luck >= 0)) ? exceptionality : EXCEPTIONALITY_NORMAL);
                     else if (exceptionality == EXCEPTIONALITY_ELITE)
-                        otmp->exceptionality = (uchar)(!rn2(4) && Luck >= 0 ? exceptionality : EXCEPTIONALITY_NORMAL);
+                        otmp->exceptionality = (uchar)((!rn2(halfchance ? 8 : doublechance ? 2 : 4) && Luck >= 0) ? exceptionality : EXCEPTIONALITY_NORMAL);
                     else
-                        otmp->exceptionality = (uchar)(!rn2(20) && Luck >= 0 ? exceptionality : EXCEPTIONALITY_NORMAL);
+                        otmp->exceptionality = (uchar)((!rn2(halfchance ? 40 : doublechance ? 10 : 20) && Luck >= 0) ? exceptionality : EXCEPTIONALITY_NORMAL);
                 }
             }
         }
