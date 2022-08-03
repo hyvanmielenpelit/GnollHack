@@ -277,9 +277,9 @@ boolean complain;
 
     unsigned long versioncompat = 0UL;
 #ifdef VERSION_COMPATIBILITY
-    versioncompat = VERSION_NUMBER;
-#else
     versioncompat = VERSION_COMPATIBILITY;
+#else
+    versioncompat = VERSION_NUMBER;
 #endif
 
     if (

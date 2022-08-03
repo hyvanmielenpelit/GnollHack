@@ -1216,6 +1216,7 @@ struct save_game_stats* stats_ptr;
 {
     int fd;
     char *result = 0;
+    boolean dodeletefile = FALSE;
 
     Strcpy(SAVEF, filename);
 #ifdef COMPRESS_EXTENSION
@@ -1229,10 +1230,20 @@ struct save_game_stats* stats_ptr;
             get_save_game_stats_from_file(fd, stats_ptr);
             result = dupstr(tplname);
         }
+        else
+        {
+            dodeletefile = TRUE;
+        }
         (void) nhclose(fd);
     }
     nh_compress(SAVEF);
 
+    //Delete mismathcing save files, so they do not hang around for nothing
+    if (dodeletefile)
+    {
+        pline("Deleting an invalid save file \"%s\".", filename);
+        delete_savefile();
+    }
     return result;
 #if 0
 /* --------- obsolete - used to be ifndef STORE_PLNAME_IN_FILE ----*/
