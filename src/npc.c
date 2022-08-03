@@ -619,8 +619,10 @@ int mtype;
 
             mongets(npc, SPE_MANUAL);
             mongets(npc, RIN_LEVITATION);
-            mongets(npc, RIN_FIRE_RESISTANCE);
-            mongets(npc, RIN_PROTECTION_FROM_UNDEATH);
+            if (!rn2(2))
+                mongets(npc, RIN_FIRE_RESISTANCE);
+            if (!rn2(2))
+                mongets(npc, RIN_PROTECTION_FROM_UNDEATH);
             mongets(npc, WAN_UNDEAD_TURNING);
             break;
         }
