@@ -4481,7 +4481,10 @@ struct monst* mtmp;
         play_monster_standard_dialogue_line(mtmp, !is_peaceful(mtmp) ? MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU_SCUM : MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         if (has_mname(mtmp))
         {
-            Sprintf(ansbuf, "I am %s, %s at the University of Yendor%s.", MNAME(mtmp), an(mtmp->data->mname), !is_peaceful(mtmp) ? ", scum" : "");
+            if(iflags.using_gui_sounds)
+                Sprintf(ansbuf, "I am %s at the University of Yendor%s. (The name tag indicates %s name is %s.)", an(mtmp->data->mname), !is_peaceful(mtmp) ? ", scum" : "", mhis(mtmp), MNAME(mtmp));
+            else
+                Sprintf(ansbuf, "I am %s, %s at the University of Yendor%s.", MNAME(mtmp), an(mtmp->data->mname), !is_peaceful(mtmp) ? ", scum" : "");
             popup_talk_line(mtmp, ansbuf);
             mtmp->u_know_mname = 1;
         }
@@ -5551,12 +5554,14 @@ struct monst* mtmp;
     else if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) )
     {
         pline("%s first %s, but then says:", noittame_Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_I_CAN_JOIN_YOU_AGGRESSIVE);
         Sprintf(qbuf, "\"You shall pay me a tribute of %ld %s.\" Do you yield to this demand?", join_cost, currency(join_cost));
     }
     else
     {
         pline("%s looks at you and replies:", noittame_Monnam(mtmp));
-        Sprintf(qbuf, "\"I can join you for a fee of %ld %s. Acceptable?\"", join_cost, currency(join_cost));
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_I_CAN_JOIN_YOU);
+        Sprintf(qbuf, "\"I can join you for a fee of %ld %s. Is this acceptable?\"", join_cost, currency(join_cost));
     }
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
@@ -5632,11 +5637,13 @@ struct monst* mtmp;
     if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10))
     {
         pline("%s first %s, but then says:", noittame_Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_I_CAN_EXPLAIN_MY_STATISTICS_AGGRESSIVE);
         Sprintf(qbuf, "\"You shall pay me %ld %s for learning my statistics.\" Do you accept?", explain_cost, currency(explain_cost));
     }
     else
     {
         pline("%s looks at you and then says:", noittame_Monnam(mtmp));
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_I_CAN_EXPLAIN_MY_STATISTICS);
         Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %ld %s. Do you accept?\"", explain_cost, currency(explain_cost));
     }
     switch (yn_query_mon(mtmp, qbuf))
@@ -7805,7 +7812,6 @@ struct monst* mtmp;
 
     if (mtmp->mspec_used)
     {
-        
         play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_WAVE_FUNCTION_ALREADY_COLLAPSED);
         pline("%s explains something about your wave function having already collapsed.", noittame_Monnam(mtmp));
         pline1("It all sounds pretty serious!");
