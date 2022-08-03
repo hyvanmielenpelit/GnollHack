@@ -232,50 +232,41 @@ register struct monst* mtmp;
 
     if (has_enpc(mtmp) && npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_name != 0)
         christen_monst(mtmp, npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_name);
-
-    if (is_mname_proper_name(mtmp->data))
+    else if (is_mname_proper_name(mtmp->data))
         return;
-
-    if (is_dwarf(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
+    else if (mtmp->mnum == PM_ORACLE && !has_mname(mtmp))
+        christen_monst(mtmp, "Pythia");
+    else if (is_dwarf(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_dwarf_name(mnamebuf)));
-
-    if (is_orc(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
+    else if (is_orc(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(rndorcname(mnamebuf)));
-
-    if (is_elf(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
+    else if (is_elf(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_elf_name(mnamebuf)));
-
-    if (is_gnome(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
+    else if (is_gnome(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_gnome_name(mnamebuf)));
-
-    if (is_undead(mtmp->data) && (mtmp->data->mlet == S_LICH || mtmp->data == &mons[PM_DEATH_FLAYER] || mtmp->data == &mons[PM_VAMPIRE_MAGE]) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
+    else if (is_undead(mtmp->data) && (mtmp->data->mlet == S_LICH || mtmp->data == &mons[PM_DEATH_FLAYER] || mtmp->data == &mons[PM_VAMPIRE_MAGE]) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_undead_spellcaster_name(mnamebuf)));
-
-    if ((mtmp->data == &mons[PM_ANGEL] || mtmp->data == &mons[PM_ARCHON]) && !has_mname(mtmp))
+    else if ((mtmp->data == &mons[PM_ANGEL] || mtmp->data == &mons[PM_ARCHON]) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_angel_name(mnamebuf)));
-
-    if (is_modron(mtmp->data) && !has_mname(mtmp))
+    else if (is_modron(mtmp->data) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_modron_name(mnamebuf)));
-
-    if (is_gnoll(mtmp->data) && !has_mname(mtmp))
+    else if (is_gnoll(mtmp->data) && !has_mname(mtmp))
     {
         if (mtmp->data == &mons[PM_FLIND] || mtmp->data == &mons[PM_FLIND_LORD])
             christen_monst(mtmp, upstart(randomize_flind_name(mnamebuf)));
         else
             christen_monst(mtmp, upstart(randomize_gnoll_name(mnamebuf)));
     }
-
-    if (is_demon(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
+    else if (is_demon(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_demon_name(mnamebuf)));
-
-    if ((is_human(mtmp->data) || is_quantum_mechanic(mtmp->data)) && !has_mname(mtmp))
+    else if ((is_human(mtmp->data) || is_quantum_mechanic(mtmp->data)) && !has_mname(mtmp))
     {
         if (mtmp->female)
             christen_monst(mtmp, upstart(randomize_female_human_name(mnamebuf)));
         else
             christen_monst(mtmp, upstart(randomize_male_human_name(mnamebuf)));
     }
-    if (mtmp->data == &mons[PM_HALFLING] && !has_mname(mtmp))
+    else if (mtmp->data == &mons[PM_HALFLING] && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_hobbit_name(mnamebuf)));
 }
 

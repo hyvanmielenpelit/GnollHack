@@ -976,8 +976,8 @@ boolean break_the_rules; /* True: wizard mode ^T */
         boolean castit = FALSE;
         register int sp_no = 0, energy = 0;
 
-        if (!Teleportation || (u.ulevel < (Role_if(PM_WIZARD) ? 8 : 12)
-                               && !has_innate_teleportation(youmonst.data)))
+        if (!break_the_rules && (!Teleportation || (u.ulevel < (Role_if(PM_WIZARD) ? 8 : 12)
+                               && !has_innate_teleportation(youmonst.data))))
         {
             /* Try to use teleport away spell.
                3.6.2: this used to require that you know the spellbook
@@ -990,7 +990,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
 
             /* casting isn't inhibited by being Stunned (...it ought to be) */
             castit = (sp_no < MAXSPELL && !Confusion);
-            if (!castit && !break_the_rules) 
+            if (!castit) 
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You_ex(ATR_NONE, CLR_MSG_FAIL, "%s.",

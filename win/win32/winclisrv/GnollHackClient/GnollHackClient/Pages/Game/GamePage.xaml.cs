@@ -275,23 +275,30 @@ namespace GnollHackClient.Pages.Game
         /* Persistent temporary bitmap */
         SKBitmap _tempBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
 
-        private readonly object _rectLock = new object(); /* This is to make sure that tipView does not draw something between clearing the rect and setting it, or when getting rect in Touched */
-        private readonly object _youRectLock = new object(); /* Same as _rectLock for _youRect */
-
+        private readonly object _skillRectLock = new object(); 
         private SKRect _skillRect = new SKRect();
-        public SKRect SkillRect { get { return _skillRect;  } set { _skillRect = value; } }
+        public SKRect SkillRect { get { lock (_skillRectLock) { return _skillRect; } } set { lock (_skillRectLock) { _skillRect = value; } } }
+        private bool _skillRectDrawn = false;
 
+        private readonly object _healthRectLock = new object();
         private SKRect _healthRect = new SKRect();
-        public SKRect HealthRect { get { return _healthRect; } set { _healthRect = value; } }
+        public SKRect HealthRect { get { lock (_healthRectLock) { return _healthRect; } } set { lock (_healthRectLock) { _healthRect = value; } } }
+        private bool _healthRectDrawn = false;
 
+        private readonly object _manaRectLock = new object();
         private SKRect _manaRect = new SKRect();
-        public SKRect ManaRect { get { return _manaRect; } set { _manaRect = value; } }
+        public SKRect ManaRect { get { lock (_manaRectLock) { return _manaRect; } } set { lock (_manaRectLock) { _manaRect = value; } } }
+        private bool _manaRectDrawn = false;
 
+        private readonly object _statusBarRectLock = new object(); 
         private SKRect _statusBarRect = new SKRect();
-        public SKRect StatusBarRect { get { return _statusBarRect; } set { _statusBarRect = value; } }
+        public SKRect StatusBarRect { get { lock (_statusBarRectLock) { return _statusBarRect; } } set { lock (_statusBarRectLock) { _statusBarRect = value; } } }
+        private bool _statusBarRectDrawn = false;
 
+        private readonly object _youRectLock = new object();
         private SKRect _youRect = new SKRect();
-        public SKRect YouRect { get { return _youRect; } set { _youRect = value; } }
+        public SKRect YouRect { get { lock (_youRectLock) { return _youRect; } } set { lock (_youRectLock) { _youRect = value; } } }
+        private bool _youRectDrawn = false;
 
         public readonly object TargetClipLock = new object();
         public float _originMapOffsetWithNewClipX;
@@ -4525,416 +4532,508 @@ namespace GnollHackClient.Pages.Game
                         statusfieldsok = StatusFields != null;
                     }
 
-                    lock (_rectLock)
+                    _statusBarRectDrawn = false;
+                    _healthRectDrawn = false;
+                    _manaRectDrawn = false;
+                    _skillRectDrawn = false;
+                    float orbleft = 5.0f;
+                    float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
+
+                    if (statusfieldsok && !ForceAllMessages)
                     {
-                        StatusBarRect = new SKRect();
-                        HealthRect = new SKRect();
-                        ManaRect = new SKRect();
-                        SkillRect = new SKRect();
-                        float orbleft = 5.0f;
-                        float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
-
-                        if (statusfieldsok && !ForceAllMessages)
+                        float statusbarheight = 0;
+                        if (!ClassicStatusBar)
                         {
-                            float statusbarheight = 0;
-                            if (!ClassicStatusBar)
+                            float hmargin = _statusbar_hmargin;
+                            float vmargin = _statusbar_vmargin;
+                            float rowmargin = _statusbar_rowmargin;
+                            float basefontsize = _statusbar_basefontsize * textscale;
+                            float shieldfontsize = _statusbar_shieldfontsize * textscale;
+                            float diffontsize = _statusbar_diffontsize * textscale;
+
+                            float curx = hmargin;
+                            float cury = vmargin;
+                            textPaint.TextSize = basefontsize;
+                            textPaint.Color = SKColors.Black.WithAlpha(128);
+                            float rowheight = textPaint.FontSpacing;
+                            float stdspacing = rowheight / 3;
+                            float innerspacing = rowheight / 20;
+                            statusbarheight = rowheight * 2 + vmargin * 2 + rowmargin;
+                            SKRect darkenrect = new SKRect(0, 0, canvaswidth, statusbarheight);
+                            StatusBarRect = darkenrect;
+                            _statusBarRectDrawn = true;
+                            _canvasButtonRect.Top = StatusBarRect.Bottom + 1.25f * inverse_canvas_scale * (float)ESCButton.Width;
+                            canvas.DrawRect(darkenrect, textPaint);
+                            textPaint.Color = SKColors.White;
+                            textPaint.TextAlign = SKTextAlign.Left;
+                            textPaint.Typeface = App.LatoRegular;
+                            float target_scale = rowheight / App._statusWizardBitmap.Height; // All are 64px high
+
+                            string valtext;
+                            SKRect statusDest;
+                            SKRect bounds = new SKRect();
+
+
+                            valtext = "";
+                            lock (StatusFieldLock)
                             {
-                                float hmargin = _statusbar_hmargin;
-                                float vmargin = _statusbar_vmargin;
-                                float rowmargin = _statusbar_rowmargin;
-                                float basefontsize = _statusbar_basefontsize * textscale;
-                                float shieldfontsize = _statusbar_shieldfontsize * textscale;
-                                float diffontsize = _statusbar_diffontsize * textscale;
+                                if (StatusFields[(int)statusfields.BL_MODE] != null && StatusFields[(int)statusfields.BL_MODE].IsEnabled && StatusFields[(int)statusfields.BL_MODE].Text != null)
+                                {
+                                    valtext = StatusFields[(int)statusfields.BL_MODE].Text;
+                                }
+                            }
 
-                                float curx = hmargin;
-                                float cury = vmargin;
-                                textPaint.TextSize = basefontsize;
-                                textPaint.Color = SKColors.Black.WithAlpha(128);
-                                float rowheight = textPaint.FontSpacing;
-                                float stdspacing = rowheight / 3;
-                                float innerspacing = rowheight / 20;
-                                statusbarheight = rowheight * 2 + vmargin * 2 + rowmargin;
-                                SKRect darkenrect = new SKRect(0, 0, canvaswidth, statusbarheight);
-                                StatusBarRect = darkenrect;
-                                _canvasButtonRect.Top = StatusBarRect.Bottom + 1.25f * inverse_canvas_scale * (float)ESCButton.Width;
-                                canvas.DrawRect(darkenrect, textPaint);
-                                textPaint.Color = SKColors.White;
+                            float target_width = 0;
+                            float target_height = 0;
+                            if (valtext.StartsWith("W"))
+                            {
+                                target_width = target_scale * App._statusWizardBitmap.Width;
+                                target_height = target_scale * App._statusWizardBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusWizardBitmap, statusDest, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                            }
+                            else if (valtext.StartsWith("C"))
+                            {
+                                target_width = target_scale * App._statusCasualBitmap.Width;
+                                target_height = target_scale * App._statusCasualBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusCasualBitmap, statusDest, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                            }
+                            else if (valtext.StartsWith("R"))
+                            {
+                                target_width = target_scale * App._statusCasualClassicBitmap.Width;
+                                target_height = target_scale * App._statusCasualClassicBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusCasualClassicBitmap, statusDest, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                            }
+                            else if (valtext.StartsWith("M"))
+                            {
+                                target_width = target_scale * App._statusModernBitmap.Width;
+                                target_height = target_scale * App._statusModernBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusModernBitmap, statusDest, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                            }
+
+                            SKBitmap difbmp = App._statusDifficultyBitmap;
+                            string diftext = "";
+                            if (valtext.Contains("s"))
+                            {
+                                diftext = "s";
+                                difbmp = App._statusDifficultyVeryEasyBitmap;
+                            }
+                            else if (valtext.Contains("e"))
+                            {
+                                diftext = "e";
+                                difbmp = App._statusDifficultyEasyBitmap;
+                            }
+                            else if (valtext.Contains("a"))
+                            {
+                                diftext = "a";
+                                difbmp = App._statusDifficultyAverageBitmap;
+                            }
+                            else if (valtext.Contains("v"))
+                            {
+                                diftext = "v";
+                                difbmp = App._statusDifficultyHardBitmap;
+                            }
+                            else if (valtext.Contains("x"))
+                            {
+                                diftext = "x";
+                                difbmp = App._statusDifficultyExpertBitmap;
+                            }
+                            else if (valtext.Contains("m"))
+                            {
+                                diftext = "m";
+                                difbmp = App._statusDifficultyMasterBitmap;
+                            }
+                            else if (valtext.Contains("g"))
+                            {
+                                diftext = "g";
+                                difbmp = App._statusDifficultyGrandMasterBitmap;
+                            }
+
+                            if (diftext != "")
+                            {
+                                target_width = target_scale * difbmp.Width;
+                                target_height = target_scale * difbmp.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(difbmp, statusDest, textPaint);
+                                textPaint.MeasureText(diftext, ref bounds);
+                                textPaint.TextAlign = SKTextAlign.Center;
+                                textPaint.Color = SKColors.Black;
+                                textPaint.TextSize = diffontsize;
+                                canvas.DrawText(diftext, curx + target_width / 2, cury + (rowheight - (textPaint.FontSpacing)) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += target_width;
+                                curx += stdspacing;
                                 textPaint.TextAlign = SKTextAlign.Left;
-                                textPaint.Typeface = App.LatoRegular;
-                                float target_scale = rowheight / App._statusWizardBitmap.Height; // All are 64px high
+                                textPaint.Color = SKColors.White;
+                                textPaint.TextSize = basefontsize;
+                            }
 
-                                string valtext;
-                                SKRect statusDest;
-                                SKRect bounds = new SKRect();
+                            valtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_XP] != null && StatusFields[(int)statusfields.BL_XP].IsEnabled && StatusFields[(int)statusfields.BL_XP].Text != null)
+                                {
+                                    valtext = StatusFields[(int)statusfields.BL_XP].Text;
+                                }
+                            }
+                            if (valtext != "")
+                            {
+                                target_width = target_scale * App._statusXPLevelBitmap.Width;
+                                target_height = target_scale * App._statusXPLevelBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusXPLevelBitmap, statusDest, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                                float print_width = textPaint.MeasureText(valtext);
+                                canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += print_width + stdspacing;
+                            }
 
+                            valtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_HD] != null && StatusFields[(int)statusfields.BL_HD].IsEnabled && StatusFields[(int)statusfields.BL_HD].Text != null)
+                                {
+                                    valtext = StatusFields[(int)statusfields.BL_HD].Text;
+                                }
+                            }
+                            if (valtext != "")
+                            {
+                                target_width = target_scale * App._statusHDBitmap.Width;
+                                target_height = target_scale * App._statusHDBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusHDBitmap, statusDest, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                                float print_width = textPaint.MeasureText(valtext);
+                                canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += print_width + stdspacing;
+                            }
 
-                                valtext = "";
-                                lock (StatusFieldLock)
+                            valtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_AC] != null && StatusFields[(int)statusfields.BL_AC].IsEnabled && StatusFields[(int)statusfields.BL_AC].Text != null)
                                 {
-                                    if (StatusFields[(int)statusfields.BL_MODE] != null && StatusFields[(int)statusfields.BL_MODE].IsEnabled && StatusFields[(int)statusfields.BL_MODE].Text != null)
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_MODE].Text;
-                                    }
+                                    valtext = StatusFields[(int)statusfields.BL_AC].Text;
                                 }
+                            }
+                            if (valtext != "")
+                            {
+                                target_width = target_scale * App._statusACBitmap.Width;
+                                target_height = target_scale * App._statusACBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusACBitmap, statusDest, textPaint);
+                                textPaint.TextAlign = SKTextAlign.Center;
+                                textPaint.Color = SKColors.Black;
+                                textPaint.TextSize = shieldfontsize;
+                                canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += target_width;
+                                curx += stdspacing;
+                                textPaint.TextAlign = SKTextAlign.Left;
+                                textPaint.Color = SKColors.White;
+                                textPaint.TextSize = basefontsize;
+                            }
 
-                                float target_width = 0;
-                                float target_height = 0;
-                                if (valtext.StartsWith("W"))
+                            valtext = "";
+                            string valtext2 = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].IsEnabled && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
                                 {
-                                    target_width = target_scale * App._statusWizardBitmap.Width;
-                                    target_height = target_scale * App._statusWizardBitmap.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusWizardBitmap, statusDest, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
+                                    valtext = StatusFields[(int)statusfields.BL_MC_LVL].Text;
                                 }
-                                else if (valtext.StartsWith("C"))
+                                if (StatusFields[(int)statusfields.BL_MC_PCT] != null && StatusFields[(int)statusfields.BL_MC_PCT].IsEnabled && StatusFields[(int)statusfields.BL_MC_PCT].Text != null)
                                 {
-                                    target_width = target_scale * App._statusCasualBitmap.Width;
-                                    target_height = target_scale * App._statusCasualBitmap.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusCasualBitmap, statusDest, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
+                                    valtext2 = StatusFields[(int)statusfields.BL_MC_PCT].Text;
                                 }
-                                else if (valtext.StartsWith("R"))
-                                {
-                                    target_width = target_scale * App._statusCasualClassicBitmap.Width;
-                                    target_height = target_scale * App._statusCasualClassicBitmap.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusCasualClassicBitmap, statusDest, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
-                                }
-                                else if (valtext.StartsWith("M"))
-                                {
-                                    target_width = target_scale * App._statusModernBitmap.Width;
-                                    target_height = target_scale * App._statusModernBitmap.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusModernBitmap, statusDest, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
-                                }
+                            }
+                            if (valtext != "")
+                            {
+                                target_width = target_scale * App._statusMCBitmap.Width;
+                                target_height = target_scale * App._statusMCBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusMCBitmap, statusDest, textPaint);
+                                textPaint.TextAlign = SKTextAlign.Center;
+                                textPaint.Color = SKColors.Black;
+                                textPaint.TextSize = shieldfontsize;
+                                canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                                textPaint.TextAlign = SKTextAlign.Left;
+                                textPaint.Color = SKColors.White;
+                                textPaint.TextSize = basefontsize;
+                                string printtext = valtext2 + "%";
+                                float print_width = textPaint.MeasureText(printtext);
+                                canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += print_width + stdspacing;
+                            }
 
-                                SKBitmap difbmp = App._statusDifficultyBitmap;
-                                string diftext = "";
-                                if (valtext.Contains("s"))
+                            valtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_MOVE] != null && StatusFields[(int)statusfields.BL_MOVE].IsEnabled && StatusFields[(int)statusfields.BL_MOVE].Text != null)
                                 {
-                                    diftext = "s";
-                                    difbmp = App._statusDifficultyVeryEasyBitmap;
+                                    valtext = StatusFields[(int)statusfields.BL_MOVE].Text;
                                 }
-                                else if (valtext.Contains("e"))
-                                {
-                                    diftext = "e";
-                                    difbmp = App._statusDifficultyEasyBitmap;
-                                }
-                                else if (valtext.Contains("a"))
-                                {
-                                    diftext = "a";
-                                    difbmp = App._statusDifficultyAverageBitmap;
-                                }
-                                else if (valtext.Contains("v"))
-                                {
-                                    diftext = "v";
-                                    difbmp = App._statusDifficultyHardBitmap;
-                                }
-                                else if (valtext.Contains("x"))
-                                {
-                                    diftext = "x";
-                                    difbmp = App._statusDifficultyExpertBitmap;
-                                }
-                                else if (valtext.Contains("m"))
-                                {
-                                    diftext = "m";
-                                    difbmp = App._statusDifficultyMasterBitmap;
-                                }
-                                else if (valtext.Contains("g"))
-                                {
-                                    diftext = "g";
-                                    difbmp = App._statusDifficultyGrandMasterBitmap;
-                                }
+                            }
+                            if (valtext != "")
+                            {
+                                target_width = target_scale * App._statusMoveBitmap.Width;
+                                target_height = target_scale * App._statusMoveBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusMoveBitmap, statusDest, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                                float print_width = textPaint.MeasureText(valtext);
+                                canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += print_width + stdspacing;
+                            }
 
-                                if (diftext != "")
+                            valtext = "";
+                            valtext2 = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].IsEnabled && StatusFields[(int)statusfields.BL_UWEP].Text != null)
                                 {
-                                    target_width = target_scale * difbmp.Width;
-                                    target_height = target_scale * difbmp.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(difbmp, statusDest, textPaint);
-                                    textPaint.MeasureText(diftext, ref bounds);
-                                    textPaint.TextAlign = SKTextAlign.Center;
-                                    textPaint.Color = SKColors.Black;
-                                    textPaint.TextSize = diffontsize;
-                                    canvas.DrawText(diftext, curx + target_width / 2, cury + (rowheight - (textPaint.FontSpacing)) / 2 - textPaint.FontMetrics.Ascent, textPaint);
-                                    curx += target_width;
-                                    curx += stdspacing;
-                                    textPaint.TextAlign = SKTextAlign.Left;
-                                    textPaint.Color = SKColors.White;
-                                    textPaint.TextSize = basefontsize;
+                                    valtext = StatusFields[(int)statusfields.BL_UWEP].Text;
                                 }
-
-                                valtext = "";
-                                lock (StatusFieldLock)
+                                if (StatusFields[(int)statusfields.BL_UWEP2] != null && StatusFields[(int)statusfields.BL_UWEP2].IsEnabled && StatusFields[(int)statusfields.BL_UWEP2].Text != null)
                                 {
-                                    if (StatusFields[(int)statusfields.BL_XP] != null && StatusFields[(int)statusfields.BL_XP].IsEnabled && StatusFields[(int)statusfields.BL_XP].Text != null)
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_XP].Text;
-                                    }
+                                    valtext2 = StatusFields[(int)statusfields.BL_UWEP2].Text;
                                 }
+                            }
+                            if (valtext != "" || valtext2 != "")
+                            {
+                                target_width = target_scale * App._statusWeaponStyleBitmap.Width;
+                                target_height = target_scale * App._statusWeaponStyleBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusWeaponStyleBitmap, statusDest, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                                float print_width = 0;
                                 if (valtext != "")
                                 {
-                                    target_width = target_scale * App._statusXPLevelBitmap.Width;
-                                    target_height = target_scale * App._statusXPLevelBitmap.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusXPLevelBitmap, statusDest, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
-                                    float print_width = textPaint.MeasureText(valtext);
-                                    canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    curx += print_width + stdspacing;
-                                }
-
-                                valtext = "";
-                                lock (StatusFieldLock)
-                                {
-                                    if (StatusFields[(int)statusfields.BL_HD] != null && StatusFields[(int)statusfields.BL_HD].IsEnabled && StatusFields[(int)statusfields.BL_HD].Text != null)
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_HD].Text;
-                                    }
-                                }
-                                if (valtext != "")
-                                {
-                                    target_width = target_scale * App._statusHDBitmap.Width;
-                                    target_height = target_scale * App._statusHDBitmap.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusHDBitmap, statusDest, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
-                                    float print_width = textPaint.MeasureText(valtext);
-                                    canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    curx += print_width + stdspacing;
-                                }
-
-                                valtext = "";
-                                lock (StatusFieldLock)
-                                {
-                                    if (StatusFields[(int)statusfields.BL_AC] != null && StatusFields[(int)statusfields.BL_AC].IsEnabled && StatusFields[(int)statusfields.BL_AC].Text != null)
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_AC].Text;
-                                    }
-                                }
-                                if (valtext != "")
-                                {
-                                    target_width = target_scale * App._statusACBitmap.Width;
-                                    target_height = target_scale * App._statusACBitmap.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusACBitmap, statusDest, textPaint);
-                                    textPaint.TextAlign = SKTextAlign.Center;
-                                    textPaint.Color = SKColors.Black;
-                                    textPaint.TextSize = shieldfontsize;
-                                    canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
-                                    curx += target_width;
-                                    curx += stdspacing;
-                                    textPaint.TextAlign = SKTextAlign.Left;
-                                    textPaint.Color = SKColors.White;
-                                    textPaint.TextSize = basefontsize;
-                                }
-
-                                valtext = "";
-                                string valtext2 = "";
-                                lock (StatusFieldLock)
-                                {
-                                    if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].IsEnabled && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_MC_LVL].Text;
-                                    }
-                                    if (StatusFields[(int)statusfields.BL_MC_PCT] != null && StatusFields[(int)statusfields.BL_MC_PCT].IsEnabled && StatusFields[(int)statusfields.BL_MC_PCT].Text != null)
-                                    {
-                                        valtext2 = StatusFields[(int)statusfields.BL_MC_PCT].Text;
-                                    }
-                                }
-                                if (valtext != "")
-                                {
-                                    target_width = target_scale * App._statusMCBitmap.Width;
-                                    target_height = target_scale * App._statusMCBitmap.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusMCBitmap, statusDest, textPaint);
-                                    textPaint.TextAlign = SKTextAlign.Center;
-                                    textPaint.Color = SKColors.Black;
-                                    textPaint.TextSize = shieldfontsize;
-                                    canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
-                                    textPaint.TextAlign = SKTextAlign.Left;
-                                    textPaint.Color = SKColors.White;
-                                    textPaint.TextSize = basefontsize;
-                                    string printtext = valtext2 + "%";
-                                    float print_width = textPaint.MeasureText(printtext);
-                                    canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    curx += print_width + stdspacing;
-                                }
-
-                                valtext = "";
-                                lock (StatusFieldLock)
-                                {
-                                    if (StatusFields[(int)statusfields.BL_MOVE] != null && StatusFields[(int)statusfields.BL_MOVE].IsEnabled && StatusFields[(int)statusfields.BL_MOVE].Text != null)
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_MOVE].Text;
-                                    }
-                                }
-                                if (valtext != "")
-                                {
-                                    target_width = target_scale * App._statusMoveBitmap.Width;
-                                    target_height = target_scale * App._statusMoveBitmap.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusMoveBitmap, statusDest, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
-                                    float print_width = textPaint.MeasureText(valtext);
-                                    canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    curx += print_width + stdspacing;
-                                }
-
-                                valtext = "";
-                                valtext2 = "";
-                                lock (StatusFieldLock)
-                                {
-                                    if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].IsEnabled && StatusFields[(int)statusfields.BL_UWEP].Text != null)
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_UWEP].Text;
-                                    }
-                                    if (StatusFields[(int)statusfields.BL_UWEP2] != null && StatusFields[(int)statusfields.BL_UWEP2].IsEnabled && StatusFields[(int)statusfields.BL_UWEP2].Text != null)
-                                    {
-                                        valtext2 = StatusFields[(int)statusfields.BL_UWEP2].Text;
-                                    }
-                                }
-                                if (valtext != "" || valtext2 != "")
-                                {
-                                    target_width = target_scale * App._statusWeaponStyleBitmap.Width;
-                                    target_height = target_scale * App._statusWeaponStyleBitmap.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusWeaponStyleBitmap, statusDest, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
-                                    float print_width = 0;
-                                    if (valtext != "")
-                                    {
-                                        print_width = textPaint.MeasureText(valtext);
-                                        canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                        curx += print_width;
-                                    }
-                                    if (valtext2 != "")
-                                    {
-                                        string printtext = "/" + valtext2;
-                                        print_width = textPaint.MeasureText(printtext);
-                                        canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                        curx += print_width;
-                                    }
-                                    curx += stdspacing;
-                                }
-
-                                /* Right aligned */
-                                float turnsleft = canvaswidth - hmargin;
-
-                                /* Turns */
-                                valtext = "";
-                                lock (StatusFieldLock)
-                                {
-                                    if (StatusFields[(int)statusfields.BL_TIME] != null && StatusFields[(int)statusfields.BL_TIME].IsEnabled && StatusFields[(int)statusfields.BL_TIME].Text != null)
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_TIME].Text;
-                                    }
-                                }
-                                if (valtext != "")
-                                {
-                                    target_width = target_scale * App._statusTurnsBitmap.Width;
-                                    target_height = target_scale * App._statusTurnsBitmap.Height;
-                                    float print_width = textPaint.MeasureText(valtext);
-                                    curx = canvaswidth - hmargin - print_width - innerspacing - target_width;
-                                    turnsleft = curx;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusTurnsBitmap, statusDest, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
+                                    print_width = textPaint.MeasureText(valtext);
                                     canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
                                     curx += print_width;
                                 }
-
-                                /* Gold */
-                                valtext = "";
-                                lock (StatusFieldLock)
+                                if (valtext2 != "")
                                 {
-                                    if (StatusFields[(int)statusfields.BL_GOLD] != null && StatusFields[(int)statusfields.BL_GOLD].IsEnabled && StatusFields[(int)statusfields.BL_GOLD].Text != null)
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_GOLD].Text;
-                                    }
-                                }
-                                if (valtext != "")
-                                {
-                                    string printtext;
-                                    if (valtext.Substring(0, 1) == "\\" && valtext.Length > 11)
-                                        printtext = valtext.Substring(11);
-                                    else
-                                        printtext = valtext;
-
-                                    target_width = target_scale * App._statusGoldBitmap.Width;
-                                    target_height = target_scale * App._statusGoldBitmap.Height;
-                                    float print_width = textPaint.MeasureText(printtext);
-                                    curx = turnsleft - stdspacing - print_width - innerspacing - target_width;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusGoldBitmap, statusDest, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
+                                    string printtext = "/" + valtext2;
+                                    print_width = textPaint.MeasureText(printtext);
                                     canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
                                     curx += print_width;
                                 }
+                                curx += stdspacing;
+                            }
 
+                            /* Right aligned */
+                            float turnsleft = canvaswidth - hmargin;
 
-                                /* Second row */
-                                curx = hmargin;
-                                cury += rowheight + rowmargin;
-
-                                /* Title */
-                                valtext = "";
-                                lock (StatusFieldLock)
+                            /* Turns */
+                            valtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_TIME] != null && StatusFields[(int)statusfields.BL_TIME].IsEnabled && StatusFields[(int)statusfields.BL_TIME].Text != null)
                                 {
-                                    if (StatusFields[(int)statusfields.BL_TITLE] != null && StatusFields[(int)statusfields.BL_TITLE].IsEnabled && StatusFields[(int)statusfields.BL_TITLE].Text != null)
+                                    valtext = StatusFields[(int)statusfields.BL_TIME].Text;
+                                }
+                            }
+                            if (valtext != "")
+                            {
+                                target_width = target_scale * App._statusTurnsBitmap.Width;
+                                target_height = target_scale * App._statusTurnsBitmap.Height;
+                                float print_width = textPaint.MeasureText(valtext);
+                                curx = canvaswidth - hmargin - print_width - innerspacing - target_width;
+                                turnsleft = curx;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusTurnsBitmap, statusDest, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                                canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += print_width;
+                            }
+
+                            /* Gold */
+                            valtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_GOLD] != null && StatusFields[(int)statusfields.BL_GOLD].IsEnabled && StatusFields[(int)statusfields.BL_GOLD].Text != null)
+                                {
+                                    valtext = StatusFields[(int)statusfields.BL_GOLD].Text;
+                                }
+                            }
+                            if (valtext != "")
+                            {
+                                string printtext;
+                                if (valtext.Substring(0, 1) == "\\" && valtext.Length > 11)
+                                    printtext = valtext.Substring(11);
+                                else
+                                    printtext = valtext;
+
+                                target_width = target_scale * App._statusGoldBitmap.Width;
+                                target_height = target_scale * App._statusGoldBitmap.Height;
+                                float print_width = textPaint.MeasureText(printtext);
+                                curx = turnsleft - stdspacing - print_width - innerspacing - target_width;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusGoldBitmap, statusDest, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                                canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += print_width;
+                            }
+
+
+                            /* Second row */
+                            curx = hmargin;
+                            cury += rowheight + rowmargin;
+
+                            /* Title */
+                            valtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_TITLE] != null && StatusFields[(int)statusfields.BL_TITLE].IsEnabled && StatusFields[(int)statusfields.BL_TITLE].Text != null)
+                                {
+                                    valtext = StatusFields[(int)statusfields.BL_TITLE].Text;
+                                }
+                            }
+                            valtext = valtext.Trim();
+                            if (valtext != "")
+                            {
+                                canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                float textprint_length = textPaint.MeasureText(valtext);
+                                curx += textprint_length;
+                                curx += stdspacing;
+                            }
+
+                            {
+                                /* Condition, status and buff marks */
+                                float marksize = rowheight * 0.80f;
+                                float markpadding = marksize / 8;
+                                ulong status_bits;
+                                lock (_uLock)
+                                {
+                                    status_bits = _u_status_bits;
+                                }
+                                if (status_bits != 0)
+                                {
+                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                    int mglyph = (int)game_ui_tile_types.STATUS_MARKS + App.UITileOff;
+                                    int mtile = App.Glyph2Tile[mglyph];
+                                    int sheet_idx = App.TileSheetIdx(mtile);
+                                    int tile_x = App.TileSheetX(mtile);
+                                    int tile_y = App.TileSheetY(mtile);
+                                    foreach (int status_mark in _statusmarkorder)
                                     {
-                                        valtext = StatusFields[(int)statusfields.BL_TITLE].Text;
+                                        ulong statusbit = 1UL << status_mark;
+                                        if ((status_bits & statusbit) != 0)
+                                        {
+                                            int within_tile_x = status_mark % tiles_per_row;
+                                            int within_tile_y = status_mark / tiles_per_row;
+                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                            SKRect source_rt = new SKRect();
+                                            source_rt.Left = c_x;
+                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                            source_rt.Top = c_y;
+                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                            SKRect target_rt = new SKRect();
+                                            target_rt.Left = curx;
+                                            target_rt.Right = target_rt.Left + marksize;
+                                            target_rt.Top = cury + (rowheight - marksize) / 2;
+                                            target_rt.Bottom = target_rt.Top + marksize;
+
+                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                            curx += marksize;
+                                            curx += markpadding;
+                                        }
                                     }
                                 }
-                                valtext = valtext.Trim();
-                                if (valtext != "")
+
+                                ulong condition_bits;
+                                lock (_uLock)
                                 {
-                                    canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    float textprint_length = textPaint.MeasureText(valtext);
-                                    curx += textprint_length;
-                                    curx += stdspacing;
+                                    condition_bits = _u_condition_bits;
+                                }
+                                if (condition_bits != 0)
+                                {
+                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                    int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + App.UITileOff;
+                                    int mtile = App.Glyph2Tile[mglyph];
+                                    int sheet_idx = App.TileSheetIdx(mtile);
+                                    int tile_x = App.TileSheetX(mtile);
+                                    int tile_y = App.TileSheetY(mtile);
+                                    for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
+                                    {
+                                        ulong conditionbit = 1UL << condition_mark;
+                                        if ((condition_bits & conditionbit) != 0)
+                                        {
+                                            int within_tile_x = condition_mark % tiles_per_row;
+                                            int within_tile_y = condition_mark / tiles_per_row;
+                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                            SKRect source_rt = new SKRect();
+                                            source_rt.Left = c_x;
+                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                            source_rt.Top = c_y;
+                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                            SKRect target_rt = new SKRect();
+                                            target_rt.Left = curx;
+                                            target_rt.Right = target_rt.Left + marksize;
+                                            target_rt.Top = cury + (rowheight - marksize) / 2;
+                                            target_rt.Bottom = target_rt.Top + marksize;
+
+                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                            curx += marksize;
+                                            curx += markpadding;
+                                        }
+                                    }
                                 }
 
+                                ulong buff_bits;
+                                for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
                                 {
-                                    /* Condition, status and buff marks */
-                                    float marksize = rowheight * 0.80f;
-                                    float markpadding = marksize / 8;
-                                    ulong status_bits;
                                     lock (_uLock)
                                     {
-                                        status_bits = _u_status_bits;
+                                        buff_bits = _u_buff_bits[buff_ulong];
                                     }
-                                    if (status_bits != 0)
+                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                    if (buff_bits != 0)
                                     {
-                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                        int mglyph = (int)game_ui_tile_types.STATUS_MARKS + App.UITileOff;
-                                        int mtile = App.Glyph2Tile[mglyph];
-                                        int sheet_idx = App.TileSheetIdx(mtile);
-                                        int tile_x = App.TileSheetX(mtile);
-                                        int tile_y = App.TileSheetY(mtile);
-                                        foreach (int status_mark in _statusmarkorder)
+                                        for (int buff_idx = 0; buff_idx < 32; buff_idx++)
                                         {
-                                            ulong statusbit = 1UL << status_mark;
-                                            if ((status_bits & statusbit) != 0)
+                                            ulong buffbit = 1UL << buff_idx;
+                                            if ((buff_bits & buffbit) != 0)
                                             {
-                                                int within_tile_x = status_mark % tiles_per_row;
-                                                int within_tile_y = status_mark / tiles_per_row;
+                                                int propidx = buff_ulong * 32 + buff_idx;
+                                                if (propidx > GHConstants.LAST_PROP)
+                                                    break;
+                                                int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + App.BuffTileOff;
+                                                int mtile = App.Glyph2Tile[mglyph];
+                                                int sheet_idx = App.TileSheetIdx(mtile);
+                                                int tile_x = App.TileSheetX(mtile);
+                                                int tile_y = App.TileSheetY(mtile);
+
+                                                int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                                                int within_tile_x = buff_mark % tiles_per_row;
+                                                int within_tile_y = buff_mark / tiles_per_row;
                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
                                                 int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
 
@@ -4957,270 +5056,264 @@ namespace GnollHackClient.Pages.Game
                                             }
                                         }
                                     }
+                                }
 
-                                    ulong condition_bits;
-                                    lock (_uLock)
+                                bool colorfound = false;
+                                for (int i = (int)nhcolor.CLR_BLACK + 1; i < (int)nhcolor.CLR_WHITE; i++)
+                                {
+                                    if (i == (int)nhcolor.NO_COLOR || i == (int)nhcolor.CLR_GRAY)
+                                        continue;
+
+                                    colorfound = false;
+                                    for (int j = 0; j < 6; j++)
                                     {
-                                        condition_bits = _u_condition_bits;
-                                    }
-                                    if (condition_bits != 0)
-                                    {
-                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                        int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + App.UITileOff;
-                                        int mtile = App.Glyph2Tile[mglyph];
-                                        int sheet_idx = App.TileSheetIdx(mtile);
-                                        int tile_x = App.TileSheetX(mtile);
-                                        int tile_y = App.TileSheetY(mtile);
-                                        for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
+                                        lock (StatusFieldLock)
                                         {
-                                            ulong conditionbit = 1UL << condition_mark;
-                                            if ((condition_bits & conditionbit) != 0)
+                                            if (StatusFields[(int)statusfields.BL_STR + j] != null && StatusFields[(int)statusfields.BL_STR + j].IsEnabled && StatusFields[(int)statusfields.BL_STR + j].Text != null)
                                             {
-                                                int within_tile_x = condition_mark % tiles_per_row;
-                                                int within_tile_y = condition_mark / tiles_per_row;
-                                                int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                                int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                                SKRect source_rt = new SKRect();
-                                                source_rt.Left = c_x;
-                                                source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                                source_rt.Top = c_y;
-                                                source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                                SKRect target_rt = new SKRect();
-                                                target_rt.Left = curx;
-                                                target_rt.Right = target_rt.Left + marksize;
-                                                target_rt.Top = cury + (rowheight - marksize) / 2;
-                                                target_rt.Bottom = target_rt.Top + marksize;
-
-                                                canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-
-                                                curx += marksize;
-                                                curx += markpadding;
-                                            }
-                                        }
-                                    }
-
-                                    ulong buff_bits;
-                                    for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
-                                    {
-                                        lock (_uLock)
-                                        {
-                                            buff_bits = _u_buff_bits[buff_ulong];
-                                        }
-                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                        if (buff_bits != 0)
-                                        {
-                                            for (int buff_idx = 0; buff_idx < 32; buff_idx++)
-                                            {
-                                                ulong buffbit = 1UL << buff_idx;
-                                                if ((buff_bits & buffbit) != 0)
+                                                if (StatusFields[(int)statusfields.BL_STR + j].Color == i)
                                                 {
-                                                    int propidx = buff_ulong * 32 + buff_idx;
-                                                    if (propidx > GHConstants.LAST_PROP)
-                                                        break;
-                                                    int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + App.BuffTileOff;
+                                                    colorfound = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (colorfound)
+                                    {
+                                        SKColor dotcolor = ClientUtils.NHColor2SKColorCore(i, 0, true);
+                                        SKPoint dotpoint = new SKPoint(curx + marksize / 4, cury + (rowheight - marksize) / 2 + marksize / 2);
+                                        float dotradius = marksize / 8;
+                                        textPaint.Color = dotcolor;
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        canvas.DrawCircle(dotpoint, dotradius, textPaint);
+                                        curx += marksize / 2;
+                                        curx += markpadding;
+                                    }
+                                }
+                                textPaint.Color = SKColors.White;
+                            }
+
+                            /* Dungeon level */
+                            valtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_LEVELDESC] != null && StatusFields[(int)statusfields.BL_LEVELDESC].IsEnabled && StatusFields[(int)statusfields.BL_LEVELDESC].Text != null)
+                                {
+                                    valtext = StatusFields[(int)statusfields.BL_LEVELDESC].Text;
+                                }
+                            }
+                            if (valtext != "")
+                            {
+                                string printtext;
+                                if (valtext.Substring(0, 3) == "DL:" && valtext.Length > 3)
+                                    printtext = valtext.Substring(3);
+                                else
+                                    printtext = valtext;
+
+                                target_width = target_scale * App._statusDungeonLevelBitmap.Width;
+                                target_height = target_scale * App._statusDungeonLevelBitmap.Height;
+                                float print_width = textPaint.MeasureText(printtext);
+                                curx = canvaswidth - hmargin - print_width - innerspacing - target_width;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(App._statusDungeonLevelBitmap, statusDest, textPaint);
+                                curx += target_width;
+                                curx += innerspacing;
+                                canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += print_width;
+                            }
+
+                            /* Pets */
+                            if (ShowPets)
+                            {
+                                lock (_petDataLock)
+                                {
+                                    textPaint.Color = SKColors.White;
+                                    textPaint.Typeface = App.LatoRegular;
+                                    textPaint.TextSize = 36;
+                                    float pet_target_height = inverse_canvas_scale * (float)(ESCButton.Height + lAbilitiesButton.Width) / 2;
+                                    //float pet_name_target_height = pet_target_height * 0.4f;
+                                    float pet_picture_target_height = pet_target_height * 0.56f;
+                                    float pet_hp_target_height = pet_target_height * 0.24f;
+                                    float pet_status_target_height = pet_target_height * 0.2f;
+                                    //float pet_name_size = textPaint.TextSize * pet_name_target_height / textPaint.FontSpacing;
+                                    float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing; //pet_name_size * pet_hp_target_height / pet_name_target_height;
+                                                                                                                            //textPaint.TextSize = pet_name_size;
+                                                                                                                            //string pet_test_text = "Large Dog";
+                                                                                                                            //float pet_target_width = textPaint.MeasureText(pet_test_text);
+                                                                                                                            //pet_target_width += textPaint.FontSpacing; // For picture
+                                    float pet_target_width = pet_target_height; // inverse_canvas_scale * (float)ESCButton.Width;
+
+                                    SKRect menubuttonrect = GetViewScreenRect(GameMenuButton);
+                                    SKRect canvasrect = GetViewScreenRect(canvasView);
+                                    SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
+                                    float menu_button_left = adjustedrect.Left;
+                                    float pet_tx_start = orbleft + orbbordersize * 1.1f;
+                                    tx = pet_tx_start;
+                                    ty = statusbarheight + 5.0f;
+                                    int petrownum = 0;
+
+                                    foreach (GHPetDataItem pdi in _petData)
+                                    {
+                                        monst_info mi = pdi.Data;
+                                        using (new SKAutoCanvasRestore(canvas, true))
+                                        {
+                                            canvas.ClipRect(new SKRect(tx - 1, ty - 1, tx + pet_target_width + 1, ty + pet_target_height + 2));
+                                            pdi.Rect = new SKRect(tx, ty, tx + pet_target_width, ty + pet_target_height);
+
+                                            float petpicturewidth = 0f;
+                                            float petpictureheight = 0f;
+                                            using (new SKAutoCanvasRestore(canvas, true))
+                                            {
+                                                GlyphImageSource gis = new GlyphImageSource();
+                                                gis.ReferenceGamePage = this;
+                                                gis.UseUpperSide = false; /* Monsters are generally full-sized */
+                                                gis.AutoSize = true;
+                                                gis.Glyph = Math.Abs(mi.gui_glyph);
+                                                gis.DoAutoSize();
+                                                float pet_scale = Math.Min(gis.Width == 0 ? 1.0f : pet_target_width / gis.Width, gis.Height == 0 ? 1.0f : pet_picture_target_height / gis.Height);
+                                                petpicturewidth = pet_scale * gis.Width;
+                                                petpictureheight = pet_scale * gis.Height;
+                                                canvas.Translate(tx + (pet_target_width - petpicturewidth) / 2, ty + (pet_picture_target_height - petpictureheight));
+                                                canvas.Scale(pet_scale);
+                                                gis.DrawOnCanvas(canvas);
+                                            }
+
+                                            float curpety = ty + pet_picture_target_height;
+                                            textPaint.TextSize = pet_hp_size;
+                                            textPaint.TextAlign = SKTextAlign.Center;
+                                            float petHPHeight = textPaint.FontSpacing;
+                                            float barpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                                            SKRect petHPRect = new SKRect(tx, curpety, tx + pet_target_width, curpety + petHPHeight);
+                                            float petpct = mi.mhpmax <= 0 ? 0.0f : (float)mi.mhp / (float)mi.mhpmax;
+                                            SKRect petHPFill = new SKRect(tx, curpety, tx + pet_target_width * petpct, curpety + petHPHeight);
+                                            textPaint.Color = SKColors.Red.WithAlpha(144);
+                                            canvas.DrawRect(petHPFill, textPaint);
+                                            SKRect petHPNonFill = new SKRect(tx + pet_target_width * petpct, curpety, tx + pet_target_width, curpety + petHPHeight);
+                                            textPaint.Color = SKColors.Gray.WithAlpha(144);
+                                            canvas.DrawRect(petHPNonFill, textPaint);
+                                            textPaint.Color = SKColors.Black.WithAlpha(144);
+                                            textPaint.Style = SKPaintStyle.Stroke;
+                                            textPaint.StrokeWidth = 2;
+                                            canvas.DrawRect(petHPRect, textPaint);
+
+                                            curpety += barpadding - textPaint.FontMetrics.Ascent;
+                                            textPaint.Style = SKPaintStyle.Fill;
+                                            textPaint.Color = SKColors.White;
+                                            canvas.DrawText(mi.mhp + "(" + mi.mhpmax + ")", tx + pet_target_width / 2, curpety, textPaint);
+
+                                            {
+                                                /* Condition, status and buff marks */
+                                                curx = tx;
+                                                cury = petHPRect.Bottom;
+                                                rowheight = pet_status_target_height;
+
+                                                float marksize = rowheight * 0.95f;
+                                                float markpadding = marksize / 8;
+                                                ulong status_bits;
+                                                status_bits = mi.status_bits;
+                                                if (status_bits != 0)
+                                                {
+                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                    int mglyph = (int)game_ui_tile_types.STATUS_MARKS + App.UITileOff;
                                                     int mtile = App.Glyph2Tile[mglyph];
                                                     int sheet_idx = App.TileSheetIdx(mtile);
                                                     int tile_x = App.TileSheetX(mtile);
                                                     int tile_y = App.TileSheetY(mtile);
-
-                                                    int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
-                                                    int within_tile_x = buff_mark % tiles_per_row;
-                                                    int within_tile_y = buff_mark / tiles_per_row;
-                                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                                    SKRect source_rt = new SKRect();
-                                                    source_rt.Left = c_x;
-                                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                                    source_rt.Top = c_y;
-                                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                                    SKRect target_rt = new SKRect();
-                                                    target_rt.Left = curx;
-                                                    target_rt.Right = target_rt.Left + marksize;
-                                                    target_rt.Top = cury + (rowheight - marksize) / 2;
-                                                    target_rt.Bottom = target_rt.Top + marksize;
-
-                                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-
-                                                    curx += marksize;
-                                                    curx += markpadding;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    bool colorfound = false;
-                                    for (int i = (int)nhcolor.CLR_BLACK + 1; i < (int)nhcolor.CLR_WHITE; i++)
-                                    {
-                                        if (i == (int)nhcolor.NO_COLOR || i == (int)nhcolor.CLR_GRAY)
-                                            continue;
-
-                                        colorfound = false;
-                                        for (int j = 0; j < 6; j++)
-                                        {
-                                            lock (StatusFieldLock)
-                                            {
-                                                if (StatusFields[(int)statusfields.BL_STR + j] != null && StatusFields[(int)statusfields.BL_STR + j].IsEnabled && StatusFields[(int)statusfields.BL_STR + j].Text != null)
-                                                {
-                                                    if (StatusFields[(int)statusfields.BL_STR + j].Color == i)
+                                                    foreach (int status_mark in _statusmarkorder)
                                                     {
-                                                        colorfound = true;
-                                                        break;
+                                                        ulong statusbit = 1UL << status_mark;
+                                                        if ((status_bits & statusbit) != 0)
+                                                        {
+                                                            int within_tile_x = status_mark % tiles_per_row;
+                                                            int within_tile_y = status_mark / tiles_per_row;
+                                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                            SKRect source_rt = new SKRect();
+                                                            source_rt.Left = c_x;
+                                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                            source_rt.Top = c_y;
+                                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                            SKRect target_rt = new SKRect();
+                                                            target_rt.Left = curx;
+                                                            target_rt.Right = target_rt.Left + marksize;
+                                                            target_rt.Top = cury + (rowheight - marksize) / 2;
+                                                            target_rt.Bottom = target_rt.Top + marksize;
+
+                                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                                            curx += marksize;
+                                                            curx += markpadding;
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        }
-                                        if (colorfound)
-                                        {
-                                            SKColor dotcolor = ClientUtils.NHColor2SKColorCore(i, 0, true);
-                                            SKPoint dotpoint = new SKPoint(curx + marksize / 4, cury + (rowheight - marksize) / 2 + marksize / 2);
-                                            float dotradius = marksize / 8;
-                                            textPaint.Color = dotcolor;
-                                            textPaint.Style = SKPaintStyle.Fill;
-                                            canvas.DrawCircle(dotpoint, dotradius, textPaint);
-                                            curx += marksize / 2;
-                                            curx += markpadding;
-                                        }
-                                    }
-                                    textPaint.Color = SKColors.White;
-                                }
 
-                                /* Dungeon level */
-                                valtext = "";
-                                lock (StatusFieldLock)
-                                {
-                                    if (StatusFields[(int)statusfields.BL_LEVELDESC] != null && StatusFields[(int)statusfields.BL_LEVELDESC].IsEnabled && StatusFields[(int)statusfields.BL_LEVELDESC].Text != null)
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_LEVELDESC].Text;
-                                    }
-                                }
-                                if (valtext != "")
-                                {
-                                    string printtext;
-                                    if (valtext.Substring(0, 3) == "DL:" && valtext.Length > 3)
-                                        printtext = valtext.Substring(3);
-                                    else
-                                        printtext = valtext;
-
-                                    target_width = target_scale * App._statusDungeonLevelBitmap.Width;
-                                    target_height = target_scale * App._statusDungeonLevelBitmap.Height;
-                                    float print_width = textPaint.MeasureText(printtext);
-                                    curx = canvaswidth - hmargin - print_width - innerspacing - target_width;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawBitmap(App._statusDungeonLevelBitmap, statusDest, textPaint);
-                                    curx += target_width;
-                                    curx += innerspacing;
-                                    canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    curx += print_width;
-                                }
-
-                                /* Pets */
-                                if (ShowPets)
-                                {
-                                    lock (_petDataLock)
-                                    {
-                                        textPaint.Color = SKColors.White;
-                                        textPaint.Typeface = App.LatoRegular;
-                                        textPaint.TextSize = 36;
-                                        float pet_target_height = inverse_canvas_scale * (float)(ESCButton.Height + lAbilitiesButton.Width) / 2;
-                                        //float pet_name_target_height = pet_target_height * 0.4f;
-                                        float pet_picture_target_height = pet_target_height * 0.56f;
-                                        float pet_hp_target_height = pet_target_height * 0.24f;
-                                        float pet_status_target_height = pet_target_height * 0.2f;
-                                        //float pet_name_size = textPaint.TextSize * pet_name_target_height / textPaint.FontSpacing;
-                                        float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing; //pet_name_size * pet_hp_target_height / pet_name_target_height;
-                                                                                                                               //textPaint.TextSize = pet_name_size;
-                                                                                                                               //string pet_test_text = "Large Dog";
-                                                                                                                               //float pet_target_width = textPaint.MeasureText(pet_test_text);
-                                                                                                                               //pet_target_width += textPaint.FontSpacing; // For picture
-                                        float pet_target_width = pet_target_height; // inverse_canvas_scale * (float)ESCButton.Width;
-
-                                        SKRect menubuttonrect = GetViewScreenRect(GameMenuButton);
-                                        SKRect canvasrect = GetViewScreenRect(canvasView);
-                                        SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
-                                        float menu_button_left = adjustedrect.Left;
-                                        float pet_tx_start = orbleft + orbbordersize * 1.1f;
-                                        tx = pet_tx_start;
-                                        ty = statusbarheight + 5.0f;
-                                        int petrownum = 0;
-
-                                        foreach (GHPetDataItem pdi in _petData)
-                                        {
-                                            monst_info mi = pdi.Data;
-                                            using (new SKAutoCanvasRestore(canvas, true))
-                                            {
-                                                canvas.ClipRect(new SKRect(tx - 1, ty - 1, tx + pet_target_width + 1, ty + pet_target_height + 2));
-                                                pdi.Rect = new SKRect(tx, ty, tx + pet_target_width, ty + pet_target_height);
-
-                                                float petpicturewidth = 0f;
-                                                float petpictureheight = 0f;
-                                                using (new SKAutoCanvasRestore(canvas, true))
+                                                ulong condition_bits;
+                                                condition_bits = mi.condition_bits;
+                                                if (condition_bits != 0)
                                                 {
-                                                    GlyphImageSource gis = new GlyphImageSource();
-                                                    gis.ReferenceGamePage = this;
-                                                    gis.UseUpperSide = false; /* Monsters are generally full-sized */
-                                                    gis.AutoSize = true;
-                                                    gis.Glyph = Math.Abs(mi.gui_glyph);
-                                                    gis.DoAutoSize();
-                                                    float pet_scale = Math.Min(gis.Width == 0 ? 1.0f : pet_target_width / gis.Width, gis.Height == 0 ? 1.0f : pet_picture_target_height / gis.Height);
-                                                    petpicturewidth = pet_scale * gis.Width;
-                                                    petpictureheight = pet_scale * gis.Height;
-                                                    canvas.Translate(tx + (pet_target_width - petpicturewidth) / 2, ty + (pet_picture_target_height - petpictureheight));
-                                                    canvas.Scale(pet_scale);
-                                                    gis.DrawOnCanvas(canvas);
+                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                    int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + App.UITileOff;
+                                                    int mtile = App.Glyph2Tile[mglyph];
+                                                    int sheet_idx = App.TileSheetIdx(mtile);
+                                                    int tile_x = App.TileSheetX(mtile);
+                                                    int tile_y = App.TileSheetY(mtile);
+                                                    for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
+                                                    {
+                                                        ulong conditionbit = 1UL << condition_mark;
+                                                        if ((condition_bits & conditionbit) != 0)
+                                                        {
+                                                            int within_tile_x = condition_mark % tiles_per_row;
+                                                            int within_tile_y = condition_mark / tiles_per_row;
+                                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                            SKRect source_rt = new SKRect();
+                                                            source_rt.Left = c_x;
+                                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                            source_rt.Top = c_y;
+                                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                            SKRect target_rt = new SKRect();
+                                                            target_rt.Left = curx;
+                                                            target_rt.Right = target_rt.Left + marksize;
+                                                            target_rt.Top = cury + (rowheight - marksize) / 2;
+                                                            target_rt.Bottom = target_rt.Top + marksize;
+
+                                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                                            curx += marksize;
+                                                            curx += markpadding;
+                                                        }
+                                                    }
                                                 }
 
-                                                float curpety = ty + pet_picture_target_height;
-                                                textPaint.TextSize = pet_hp_size;
-                                                textPaint.TextAlign = SKTextAlign.Center;
-                                                float petHPHeight = textPaint.FontSpacing;
-                                                float barpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                                                SKRect petHPRect = new SKRect(tx, curpety, tx + pet_target_width, curpety + petHPHeight);
-                                                float petpct = mi.mhpmax <= 0 ? 0.0f : (float)mi.mhp / (float)mi.mhpmax;
-                                                SKRect petHPFill = new SKRect(tx, curpety, tx + pet_target_width * petpct, curpety + petHPHeight);
-                                                textPaint.Color = SKColors.Red.WithAlpha(144);
-                                                canvas.DrawRect(petHPFill, textPaint);
-                                                SKRect petHPNonFill = new SKRect(tx + pet_target_width * petpct, curpety, tx + pet_target_width, curpety + petHPHeight);
-                                                textPaint.Color = SKColors.Gray.WithAlpha(144);
-                                                canvas.DrawRect(petHPNonFill, textPaint);
-                                                textPaint.Color = SKColors.Black.WithAlpha(144);
-                                                textPaint.Style = SKPaintStyle.Stroke;
-                                                textPaint.StrokeWidth = 2;
-                                                canvas.DrawRect(petHPRect, textPaint);
-
-                                                curpety += barpadding - textPaint.FontMetrics.Ascent;
-                                                textPaint.Style = SKPaintStyle.Fill;
-                                                textPaint.Color = SKColors.White;
-                                                canvas.DrawText(mi.mhp + "(" + mi.mhpmax + ")", tx + pet_target_width / 2, curpety, textPaint);
-
+                                                ulong buff_bits;
+                                                for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
                                                 {
-                                                    /* Condition, status and buff marks */
-                                                    curx = tx;
-                                                    cury = petHPRect.Bottom;
-                                                    rowheight = pet_status_target_height;
-
-                                                    float marksize = rowheight * 0.95f;
-                                                    float markpadding = marksize / 8;
-                                                    ulong status_bits;
-                                                    status_bits = mi.status_bits;
-                                                    if (status_bits != 0)
+                                                    buff_bits = mi.buff_bits[buff_ulong];
+                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                    if (buff_bits != 0)
                                                     {
-                                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                                        int mglyph = (int)game_ui_tile_types.STATUS_MARKS + App.UITileOff;
-                                                        int mtile = App.Glyph2Tile[mglyph];
-                                                        int sheet_idx = App.TileSheetIdx(mtile);
-                                                        int tile_x = App.TileSheetX(mtile);
-                                                        int tile_y = App.TileSheetY(mtile);
-                                                        foreach (int status_mark in _statusmarkorder)
+                                                        for (int buff_idx = 0; buff_idx < 32; buff_idx++)
                                                         {
-                                                            ulong statusbit = 1UL << status_mark;
-                                                            if ((status_bits & statusbit) != 0)
+                                                            ulong buffbit = 1UL << buff_idx;
+                                                            if ((buff_bits & buffbit) != 0)
                                                             {
-                                                                int within_tile_x = status_mark % tiles_per_row;
-                                                                int within_tile_y = status_mark / tiles_per_row;
+                                                                int propidx = buff_ulong * 32 + buff_idx;
+                                                                if (propidx > GHConstants.LAST_PROP)
+                                                                    break;
+                                                                int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + App.BuffTileOff;
+                                                                int mtile = App.Glyph2Tile[mglyph];
+                                                                int sheet_idx = App.TileSheetIdx(mtile);
+                                                                int tile_x = App.TileSheetX(mtile);
+                                                                int tile_y = App.TileSheetY(mtile);
+
+                                                                int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                                                                int within_tile_x = buff_mark % tiles_per_row;
+                                                                int within_tile_y = buff_mark / tiles_per_row;
                                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
                                                                 int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
 
@@ -5243,209 +5336,133 @@ namespace GnollHackClient.Pages.Game
                                                             }
                                                         }
                                                     }
-
-                                                    ulong condition_bits;
-                                                    condition_bits = mi.condition_bits;
-                                                    if (condition_bits != 0)
-                                                    {
-                                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                                        int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + App.UITileOff;
-                                                        int mtile = App.Glyph2Tile[mglyph];
-                                                        int sheet_idx = App.TileSheetIdx(mtile);
-                                                        int tile_x = App.TileSheetX(mtile);
-                                                        int tile_y = App.TileSheetY(mtile);
-                                                        for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
-                                                        {
-                                                            ulong conditionbit = 1UL << condition_mark;
-                                                            if ((condition_bits & conditionbit) != 0)
-                                                            {
-                                                                int within_tile_x = condition_mark % tiles_per_row;
-                                                                int within_tile_y = condition_mark / tiles_per_row;
-                                                                int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                                                int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                                                SKRect source_rt = new SKRect();
-                                                                source_rt.Left = c_x;
-                                                                source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                                                source_rt.Top = c_y;
-                                                                source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                                                SKRect target_rt = new SKRect();
-                                                                target_rt.Left = curx;
-                                                                target_rt.Right = target_rt.Left + marksize;
-                                                                target_rt.Top = cury + (rowheight - marksize) / 2;
-                                                                target_rt.Bottom = target_rt.Top + marksize;
-
-                                                                canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-
-                                                                curx += marksize;
-                                                                curx += markpadding;
-                                                            }
-                                                        }
-                                                    }
-
-                                                    ulong buff_bits;
-                                                    for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
-                                                    {
-                                                        buff_bits = mi.buff_bits[buff_ulong];
-                                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                                        if (buff_bits != 0)
-                                                        {
-                                                            for (int buff_idx = 0; buff_idx < 32; buff_idx++)
-                                                            {
-                                                                ulong buffbit = 1UL << buff_idx;
-                                                                if ((buff_bits & buffbit) != 0)
-                                                                {
-                                                                    int propidx = buff_ulong * 32 + buff_idx;
-                                                                    if (propidx > GHConstants.LAST_PROP)
-                                                                        break;
-                                                                    int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + App.BuffTileOff;
-                                                                    int mtile = App.Glyph2Tile[mglyph];
-                                                                    int sheet_idx = App.TileSheetIdx(mtile);
-                                                                    int tile_x = App.TileSheetX(mtile);
-                                                                    int tile_y = App.TileSheetY(mtile);
-
-                                                                    int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
-                                                                    int within_tile_x = buff_mark % tiles_per_row;
-                                                                    int within_tile_y = buff_mark / tiles_per_row;
-                                                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                                                    SKRect source_rt = new SKRect();
-                                                                    source_rt.Left = c_x;
-                                                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                                                    source_rt.Top = c_y;
-                                                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                                                    SKRect target_rt = new SKRect();
-                                                                    target_rt.Left = curx;
-                                                                    target_rt.Right = target_rt.Left + marksize;
-                                                                    target_rt.Top = cury + (rowheight - marksize) / 2;
-                                                                    target_rt.Bottom = target_rt.Top + marksize;
-
-                                                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-
-                                                                    curx += marksize;
-                                                                    curx += markpadding;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
                                                 }
-
-                                                /* Next pet */
-                                                tx += pet_target_width;
-                                                if (tx + pet_target_width * 1.08f > menu_button_left)
-                                                {
-                                                    tx = pet_tx_start;
-                                                    ty += pet_target_height + textPaint.FontSpacing / 2;
-                                                    petrownum++;
-                                                    if (petrownum >= NumDisplayedPetRows)
-                                                        break;
-                                                }
-                                                else
-                                                    tx += pet_target_width * 0.08f;
                                             }
 
-                                            textPaint.TextAlign = SKTextAlign.Left;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    lock (_petDataLock)
-                                    {
-                                        foreach (GHPetDataItem pdi in _petData)
-                                        {
-                                            pdi.Rect = new SKRect();
-                                        }
-                                    }
-                                }
-                            }
-
-                            bool orbsok = false;
-                            bool skillbuttonok = false;
-                            lock (StatusFieldLock)
-                            {
-                                orbsok = StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "" && StatusFields[(int)statusfields.BL_HPMAX].Text != "0";
-                                skillbuttonok = StatusFields[(int)statusfields.BL_SKILL] != null && StatusFields[(int)statusfields.BL_SKILL].Text != null && StatusFields[(int)statusfields.BL_SKILL].Text == "Skill";
-                            }
-
-                            float lastdrawnrecty = ClassicStatusBar ? Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing) : statusbarheight;
-                            tx = orbleft;
-                            ty = lastdrawnrecty + 5.0f;
-
-                            /* HP and MP */
-                            if ((ShowOrbs | !ClassicStatusBar) && orbsok)
-                            {
-                                float orbfillpercentage = 0.0f;
-                                string valtext = "";
-                                string maxtext = "";
-                                lock (StatusFieldLock)
-                                {
-                                    bool pctset = false;
-                                    if (StatusFields[(int)statusfields.BL_HP] != null && StatusFields[(int)statusfields.BL_HP].Text != null && StatusFields[(int)statusfields.BL_HP].Text != "" && StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "")
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_HP].Text;
-                                        maxtext = StatusFields[(int)statusfields.BL_HPMAX].Text;
-                                        int hp = 0, hpmax = 1;
-                                        if (int.TryParse(StatusFields[(int)statusfields.BL_HP].Text, out hp) && int.TryParse(StatusFields[(int)statusfields.BL_HPMAX].Text, out hpmax))
-                                        {
-                                            if (hpmax > 0)
+                                            /* Next pet */
+                                            tx += pet_target_width;
+                                            if (tx + pet_target_width * 1.08f > menu_button_left)
                                             {
-                                                orbfillpercentage = (float)hp / (float)hpmax;
-                                                pctset = true;
+                                                tx = pet_tx_start;
+                                                ty += pet_target_height + textPaint.FontSpacing / 2;
+                                                petrownum++;
+                                                if (petrownum >= NumDisplayedPetRows)
+                                                    break;
                                             }
+                                            else
+                                                tx += pet_target_width * 0.08f;
                                         }
-                                        if (!pctset)
-                                            orbfillpercentage = ((float)StatusFields[(int)statusfields.BL_HP].Percent) / 100.0f;
-                                    }
-                                }
-                                SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
-                                HealthRect = orbBorderDest;
-                                DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb);
 
-                                orbfillpercentage = 0.0f;
-                                valtext = "";
-                                maxtext = "";
-                                lock (StatusFieldLock)
-                                {
-                                    if (StatusFields[(int)statusfields.BL_ENE] != null && StatusFields[(int)statusfields.BL_ENE].Text != null && StatusFields[(int)statusfields.BL_ENEMAX] != null && StatusFields[(int)statusfields.BL_ENE].Text != "" && StatusFields[(int)statusfields.BL_ENEMAX].Text != null && StatusFields[(int)statusfields.BL_ENEMAX].Text != "")
-                                    {
-                                        valtext = StatusFields[(int)statusfields.BL_ENE].Text;
-                                        maxtext = StatusFields[(int)statusfields.BL_ENEMAX].Text;
-                                        int en = 0, enmax = 1;
-                                        if (int.TryParse(StatusFields[(int)statusfields.BL_ENE].Text, out en) && int.TryParse(StatusFields[(int)statusfields.BL_ENEMAX].Text, out enmax))
-                                        {
-                                            if (enmax > 0)
-                                            {
-                                                orbfillpercentage = (float)en / (float)enmax;
-                                            }
-                                        }
+                                        textPaint.TextAlign = SKTextAlign.Left;
                                     }
                                 }
-                                orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
-                                ManaRect = orbBorderDest;
-                                DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage, ShowMaxManaInOrb);
-                                lastdrawnrecty = orbBorderDest.Bottom;
                             }
-
-                            if (skillbuttonok)
+                            else
                             {
-                                SKRect skillDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
-                                SkillRect = skillDest;
-                                textPaint.Color = SKColors.White;
-                                textPaint.Typeface = App.LatoRegular;
-                                textPaint.TextSize = 9.5f * skillDest.Width / 50.0f;
-                                textPaint.TextAlign = SKTextAlign.Center;
-                                canvas.DrawBitmap(App._skillBitmap, skillDest, textPaint);
-                                float text_x = (skillDest.Left + skillDest.Right) / 2;
-                                float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
-                                canvas.DrawText("Skills", text_x, text_y, textPaint);
-                                textPaint.TextAlign = SKTextAlign.Left;
+                                lock (_petDataLock)
+                                {
+                                    foreach (GHPetDataItem pdi in _petData)
+                                    {
+                                        pdi.Rect = new SKRect();
+                                    }
+                                }
                             }
                         }
+
+                        bool orbsok = false;
+                        bool skillbuttonok = false;
+                        lock (StatusFieldLock)
+                        {
+                            orbsok = StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "" && StatusFields[(int)statusfields.BL_HPMAX].Text != "0";
+                            skillbuttonok = StatusFields[(int)statusfields.BL_SKILL] != null && StatusFields[(int)statusfields.BL_SKILL].Text != null && StatusFields[(int)statusfields.BL_SKILL].Text == "Skill";
+                        }
+
+                        float lastdrawnrecty = ClassicStatusBar ? Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing) : statusbarheight;
+                        tx = orbleft;
+                        ty = lastdrawnrecty + 5.0f;
+
+                        /* HP and MP */
+                        if ((ShowOrbs | !ClassicStatusBar) && orbsok)
+                        {
+                            float orbfillpercentage = 0.0f;
+                            string valtext = "";
+                            string maxtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                bool pctset = false;
+                                if (StatusFields[(int)statusfields.BL_HP] != null && StatusFields[(int)statusfields.BL_HP].Text != null && StatusFields[(int)statusfields.BL_HP].Text != "" && StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "")
+                                {
+                                    valtext = StatusFields[(int)statusfields.BL_HP].Text;
+                                    maxtext = StatusFields[(int)statusfields.BL_HPMAX].Text;
+                                    int hp = 0, hpmax = 1;
+                                    if (int.TryParse(StatusFields[(int)statusfields.BL_HP].Text, out hp) && int.TryParse(StatusFields[(int)statusfields.BL_HPMAX].Text, out hpmax))
+                                    {
+                                        if (hpmax > 0)
+                                        {
+                                            orbfillpercentage = (float)hp / (float)hpmax;
+                                            pctset = true;
+                                        }
+                                    }
+                                    if (!pctset)
+                                        orbfillpercentage = ((float)StatusFields[(int)statusfields.BL_HP].Percent) / 100.0f;
+                                }
+                            }
+                            SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
+                            HealthRect = orbBorderDest;
+                            _healthRectDrawn = true;
+                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb);
+
+                            orbfillpercentage = 0.0f;
+                            valtext = "";
+                            maxtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_ENE] != null && StatusFields[(int)statusfields.BL_ENE].Text != null && StatusFields[(int)statusfields.BL_ENEMAX] != null && StatusFields[(int)statusfields.BL_ENE].Text != "" && StatusFields[(int)statusfields.BL_ENEMAX].Text != null && StatusFields[(int)statusfields.BL_ENEMAX].Text != "")
+                                {
+                                    valtext = StatusFields[(int)statusfields.BL_ENE].Text;
+                                    maxtext = StatusFields[(int)statusfields.BL_ENEMAX].Text;
+                                    int en = 0, enmax = 1;
+                                    if (int.TryParse(StatusFields[(int)statusfields.BL_ENE].Text, out en) && int.TryParse(StatusFields[(int)statusfields.BL_ENEMAX].Text, out enmax))
+                                    {
+                                        if (enmax > 0)
+                                        {
+                                            orbfillpercentage = (float)en / (float)enmax;
+                                        }
+                                    }
+                                }
+                            }
+                            orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
+                            ManaRect = orbBorderDest;
+                            _manaRectDrawn = true;
+                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage, ShowMaxManaInOrb);
+                            lastdrawnrecty = orbBorderDest.Bottom;
+                        }
+
+                        if (skillbuttonok)
+                        {
+                            SKRect skillDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
+                            SkillRect = skillDest;
+                            _skillRectDrawn = true;
+                            textPaint.Color = SKColors.White;
+                            textPaint.Typeface = App.LatoRegular;
+                            textPaint.TextSize = 9.5f * skillDest.Width / 50.0f;
+                            textPaint.TextAlign = SKTextAlign.Center;
+                            canvas.DrawBitmap(App._skillBitmap, skillDest, textPaint);
+                            float text_x = (skillDest.Left + skillDest.Right) / 2;
+                            float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
+                            canvas.DrawText("Skills", text_x, text_y, textPaint);
+                            textPaint.TextAlign = SKTextAlign.Left;
+                        }
                     }
+                    
+                    if(!_statusBarRectDrawn)
+                        StatusBarRect = new SKRect();
+                    if (!_healthRectDrawn)
+                        HealthRect = new SKRect();
+                    if (!_manaRectDrawn)
+                        ManaRect = new SKRect();
+                    if (!_skillRectDrawn)
+                        SkillRect = new SKRect();
 
                     /* Number Pad and Direction Arrows */
                     _canvasButtonRect.Right = canvaswidth * (float)(0.8);
@@ -5610,420 +5627,522 @@ namespace GnollHackClient.Pages.Game
                     textPaint.Style = SKPaintStyle.Fill;
                 }
 
-
-                lock (_youRectLock)
+                _youRectDrawn = false;
+                /* Status Screen */
+                if (ShowExtendedStatusBar)
                 {
-                    YouRect = new SKRect();
-                    /* Status Screen */
-                    if (ShowExtendedStatusBar)
+                    textPaint.Style = SKPaintStyle.Fill;
+                    textPaint.Color = SKColors.Black.WithAlpha(200);
+                    canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint);
+                    textPaint.Color = SKColors.White;
+
+                    float box_left = canvaswidth < canvasheight ? 1.25f * inverse_canvas_scale * (float)ESCButton.Width :
+                        3.25f * inverse_canvas_scale * (float)ESCButton.Width;
+                    float box_right = canvaswidth - box_left;
+                    if (box_right < box_left)
+                        box_right = box_left;
+                    float box_top = canvaswidth < canvasheight ? GetStatusBarSkiaHeight() + 1.25f * inverse_canvas_scale * (float)ESCButton.Height :
+                        GetStatusBarSkiaHeight() + 0.25f * inverse_canvas_scale * (float)ESCButton.Height;
+                    float box_bottom = canvasheight - 1.25f * inverse_canvas_scale * (float)ButtonRowStack.Height;
+                    if (box_bottom < box_top)
+                        box_bottom = box_top;
+
+                    /* Window Background */
+                    textPaint.Color = SKColors.Black;
+                    SKRect bkgrect = new SKRect(box_left, box_top, box_right, box_bottom);
+                    canvas.DrawBitmap(App.ScrollBitmap, bkgrect, textPaint);
+
+                    float youmargin = Math.Min((box_right - box_left), (box_bottom - box_top)) / 14;
+                    float yousize = Math.Min((box_right - box_left), (box_bottom - box_top)) / 8;
+                    float youtouchsize = Math.Min((box_right - box_left), (box_bottom - box_top)) / 6;
+                    float youtouchmargin = Math.Max(0, (youtouchsize - yousize) / 2);
+                    SKRect urect = new SKRect(box_right - youmargin - yousize, box_top + youmargin, box_right - youmargin, box_top + youmargin + yousize);
+                    SKRect utouchrect = new SKRect(urect.Left - youtouchmargin, urect.Top - youtouchmargin, urect.Right + youtouchmargin, urect.Bottom + youtouchmargin);
+                    canvas.DrawBitmap(App.YouBitmap, urect, textPaint);
+                    YouRect = utouchrect;
+                    _youRectDrawn = true;
+
+                    textPaint.Style = SKPaintStyle.Fill;
+                    textPaint.Typeface = App.UnderwoodTypeface;
+                    textPaint.Color = SKColors.Black;
+                    textPaint.TextSize = 36;
+
+                    float twidth = textPaint.MeasureText("Strength");
+                    float theight = textPaint.FontSpacing;
+                    float tscale_one_column = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 21) / theight));
+                    float tscale_two_columns = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 18) / theight));
+                    //float strwidth_one_column = twidth * tscale_one_column;
+                    float strwidth_two_columns = twidth * tscale_two_columns;
+                    //float indentation_one_column = strwidth_one_column * 20f / 8f;
+                    float indentation_two_columns = strwidth_two_columns * 20f / 8f;
+                    bool use_two_columns = bkgrect.Width - bkgrect.Width * 2f / 12.6f >= indentation_two_columns * 2.5f;
+
+                    float tscale = use_two_columns ? tscale_two_columns : tscale_one_column;
+                    float basefontsize = textPaint.TextSize * tscale;
+                    textPaint.TextSize = basefontsize;
+                    float strwidth = twidth * tscale;
+                    float indentation = strwidth * 20f / 8f;
+
+                    string valtext, valtext2;
+                    ty = bkgrect.Top + bkgrect.Height / 8.5f - textPaint.FontMetrics.Ascent;
+                    float base_ty = ty;
+                    float box_bottom_draw_threshold = box_bottom - bkgrect.Height / 8.5f;
+                    float icon_height = textPaint.FontSpacing * 0.85f;
+                    float icon_max_width = icon_height * 2f;
+                    float icon_base_left = bkgrect.Left - icon_max_width; //bkgrect.Right - bkgrect.Width * 1f / 12.6f - icon_max_width
+                    float icon_tx = icon_base_left;
+                    float icon_ty;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
+                    float icon_width = icon_height;
+                    SKRect icon_rect = new SKRect(tx, ty, tx + icon_width, ty + icon_height);
+                    int valcolor = (int)nhcolor.CLR_WHITE;
+
+                    valtext = "";
+                    lock (StatusFieldLock)
                     {
-                        textPaint.Style = SKPaintStyle.Fill;
-                        textPaint.Color = SKColors.Black.WithAlpha(200);
-                        canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint);
-                        textPaint.Color = SKColors.White;
-
-                        float box_left = canvaswidth < canvasheight ? 1.25f * inverse_canvas_scale * (float)ESCButton.Width :
-                            3.25f * inverse_canvas_scale * (float)ESCButton.Width;
-                        float box_right = canvaswidth - box_left;
-                        if (box_right < box_left)
-                            box_right = box_left;
-                        float box_top = canvaswidth < canvasheight ? GetStatusBarSkiaHeight() + 1.25f * inverse_canvas_scale * (float)ESCButton.Height :
-                            GetStatusBarSkiaHeight() + 0.25f * inverse_canvas_scale * (float)ESCButton.Height;
-                        float box_bottom = canvasheight - 1.25f * inverse_canvas_scale * (float)ButtonRowStack.Height;
-                        if (box_bottom < box_top)
-                            box_bottom = box_top;
-
-                        /* Window Background */
-                        textPaint.Color = SKColors.Black;
-                        SKRect bkgrect = new SKRect(box_left, box_top, box_right, box_bottom);
-                        canvas.DrawBitmap(App.ScrollBitmap, bkgrect, textPaint);
-
-                        float youmargin = Math.Min((box_right - box_left), (box_bottom - box_top)) / 14;
-                        float yousize = Math.Min((box_right - box_left), (box_bottom - box_top)) / 8;
-                        float youtouchsize = Math.Min((box_right - box_left), (box_bottom - box_top)) / 6;
-                        float youtouchmargin = Math.Max(0, (youtouchsize - yousize) / 2);
-                        SKRect urect = new SKRect(box_right - youmargin - yousize, box_top + youmargin, box_right - youmargin, box_top + youmargin + yousize);
-                        SKRect utouchrect = new SKRect(urect.Left - youtouchmargin, urect.Top - youtouchmargin, urect.Right + youtouchmargin, urect.Bottom + youtouchmargin);
-                        canvas.DrawBitmap(App.YouBitmap, urect, textPaint);
-                        YouRect = utouchrect;
-
-                        textPaint.Style = SKPaintStyle.Fill;
+                        if (StatusFields[(int)statusfields.BL_TITLE] != null && StatusFields[(int)statusfields.BL_TITLE].IsEnabled && StatusFields[(int)statusfields.BL_TITLE].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_TITLE].Text.Trim();
+                        }
+                    }
+                    if (valtext != "")
+                    {
+                        textPaint.Typeface = App.ImmortalTypeface;
+                        textPaint.TextSize = basefontsize * 1.1f;
+                        tx = (bkgrect.Left + bkgrect.Right) / 2;
+                        textPaint.TextAlign = SKTextAlign.Center;
+                        canvas.DrawText(valtext, tx, ty, textPaint);
+                        textPaint.TextAlign = SKTextAlign.Left;
                         textPaint.Typeface = App.UnderwoodTypeface;
-                        textPaint.Color = SKColors.Black;
-                        textPaint.TextSize = 36;
-
-                        float twidth = textPaint.MeasureText("Strength");
-                        float theight = textPaint.FontSpacing;
-                        float tscale_one_column = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 21) / theight));
-                        float tscale_two_columns = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 18) / theight));
-                        //float strwidth_one_column = twidth * tscale_one_column;
-                        float strwidth_two_columns = twidth * tscale_two_columns;
-                        //float indentation_one_column = strwidth_one_column * 20f / 8f;
-                        float indentation_two_columns = strwidth_two_columns * 20f / 8f;
-                        bool use_two_columns = bkgrect.Width - bkgrect.Width * 2f / 12.6f >= indentation_two_columns * 2.5f;
-
-                        float tscale = use_two_columns ? tscale_two_columns : tscale_one_column;
-                        float basefontsize = textPaint.TextSize * tscale;
                         textPaint.TextSize = basefontsize;
-                        float strwidth = twidth * tscale;
-                        float indentation = strwidth * 20f / 8f;
+                        tx = bkgrect.Left + bkgrect.Width / 12.6f;
+                        ty += textPaint.FontSpacing;
+                        ty += textPaint.FontSpacing * 0.5f;
+                    }
 
-                        string valtext, valtext2;
-                        ty = bkgrect.Top + bkgrect.Height / 8.5f - textPaint.FontMetrics.Ascent;
-                        float base_ty = ty;
-                        float box_bottom_draw_threshold = box_bottom - bkgrect.Height / 8.5f;
-                        float icon_height = textPaint.FontSpacing * 0.85f;
-                        float icon_max_width = icon_height * 2f;
-                        float icon_base_left = bkgrect.Left - icon_max_width; //bkgrect.Right - bkgrect.Width * 1f / 12.6f - icon_max_width
-                        float icon_tx = icon_base_left;
-                        float icon_ty;
-                        icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
-                        float icon_width = icon_height;
-                        SKRect icon_rect = new SKRect(tx, ty, tx + icon_width, ty + icon_height);
-                        int valcolor = (int)nhcolor.CLR_WHITE;
+                    using (new SKAutoCanvasRestore(canvas, true))
+                    {
+                        SKRect cliprect = new SKRect(0, ty + textPaint.FontMetrics.Ascent, canvaswidth, bkgrect.Bottom - bkgrect.Height / 8.5f);
+                        canvas.ClipRect(cliprect);
+
+                        ty += _statusOffsetY;
+                        base_ty = ty;
+
+                        lock (_mapOffsetLock)
+                        {
+                            _statusClipBottom = cliprect.Bottom;
+                        }
+                        for (int i = 0; i < 6; i++)
+                        {
+                            valtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_STR + i] != null && StatusFields[(int)statusfields.BL_STR + i].IsEnabled && StatusFields[(int)statusfields.BL_STR + i].Text != null)
+                                {
+                                    valtext = StatusFields[(int)statusfields.BL_STR + i].Text;
+                                    valcolor = StatusFields[(int)statusfields.BL_STR + i].Color;
+                                }
+                            }
+                            if (valtext != "" && ty < box_bottom_draw_threshold)
+                            {
+                                string[] statstring = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
+                                string printtext = statstring[i] + ":";
+                                canvas.DrawText(printtext, tx, ty, textPaint);
+                                textPaint.Color = ClientUtils.NHColor2SKColorCore(valcolor, 0, true);
+                                canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                                textPaint.Color = SKColors.Black;
+                                ty += textPaint.FontSpacing;
+                            }
+                        }
+                        ty += textPaint.FontSpacing * 0.5f;
 
                         valtext = "";
                         lock (StatusFieldLock)
                         {
-                            if (StatusFields[(int)statusfields.BL_TITLE] != null && StatusFields[(int)statusfields.BL_TITLE].IsEnabled && StatusFields[(int)statusfields.BL_TITLE].Text != null)
+                            if (StatusFields[(int)statusfields.BL_XP] != null && StatusFields[(int)statusfields.BL_XP].IsEnabled && StatusFields[(int)statusfields.BL_XP].Text != null)
                             {
-                                valtext = StatusFields[(int)statusfields.BL_TITLE].Text.Trim();
+                                valtext = StatusFields[(int)statusfields.BL_XP].Text;
+                            }
+                        }
+                        if (valtext != "" && ty < box_bottom_draw_threshold)
+                        {
+                            canvas.DrawText("Level:", tx, ty, textPaint);
+                            canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                            icon_width = icon_height * (float)App._statusXPLevelBitmap.Width / (float)App._statusXPLevelBitmap.Height;
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawBitmap(App._statusXPLevelBitmap, icon_rect);
+                            ty += textPaint.FontSpacing;
+                        }
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_EXP] != null && StatusFields[(int)statusfields.BL_EXP].IsEnabled && StatusFields[(int)statusfields.BL_EXP].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_EXP].Text;
+                            }
+                        }
+                        if (valtext != "" && ty < box_bottom_draw_threshold)
+                        {
+                            canvas.DrawText("Experience:", tx, ty, textPaint);
+                            canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                            ty += textPaint.FontSpacing;
+                        }
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_HD] != null && StatusFields[(int)statusfields.BL_HD].IsEnabled && StatusFields[(int)statusfields.BL_HD].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_HD].Text;
+                            }
+                        }
+                        if (valtext != "" && ty < box_bottom_draw_threshold)
+                        {
+                            canvas.DrawText("Hit dice:", tx, ty, textPaint);
+                            canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                            icon_width = icon_height * (float)App._statusHDBitmap.Width / (float)App._statusHDBitmap.Height;
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawBitmap(App._statusHDBitmap, icon_rect);
+                            ty += textPaint.FontSpacing;
+                        }
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_ALIGN] != null && StatusFields[(int)statusfields.BL_ALIGN].IsEnabled && StatusFields[(int)statusfields.BL_ALIGN].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_ALIGN].Text;
+                            }
+                        }
+                        if (valtext != "" && ty < box_bottom_draw_threshold)
+                        {
+                            canvas.DrawText("Alignment:", tx, ty, textPaint);
+                            canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                            ty += textPaint.FontSpacing;
+                        }
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_SCORE] != null && StatusFields[(int)statusfields.BL_SCORE].IsEnabled && StatusFields[(int)statusfields.BL_SCORE].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_SCORE].Text;
+                            }
+                        }
+                        if (valtext != "" && ty < box_bottom_draw_threshold)
+                        {
+                            canvas.DrawText("Score:", tx, ty, textPaint);
+                            canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                            ty += textPaint.FontSpacing;
+                        }
+
+                        ty += textPaint.FontSpacing * 0.5f;
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_AC] != null && StatusFields[(int)statusfields.BL_AC].IsEnabled && StatusFields[(int)statusfields.BL_AC].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_AC].Text;
                             }
                         }
                         if (valtext != "")
                         {
-                            textPaint.Typeface = App.ImmortalTypeface;
-                            textPaint.TextSize = basefontsize * 1.1f;
-                            tx = (bkgrect.Left + bkgrect.Right) / 2;
-                            textPaint.TextAlign = SKTextAlign.Center;
-                            canvas.DrawText(valtext, tx, ty, textPaint);
-                            textPaint.TextAlign = SKTextAlign.Left;
-                            textPaint.Typeface = App.UnderwoodTypeface;
-                            textPaint.TextSize = basefontsize;
-                            tx = bkgrect.Left + bkgrect.Width / 12.6f;
-                            ty += textPaint.FontSpacing;
-                            ty += textPaint.FontSpacing * 0.5f;
-                        }
-
-                        using (new SKAutoCanvasRestore(canvas, true))
-                        {
-                            SKRect cliprect = new SKRect(0, ty + textPaint.FontMetrics.Ascent, canvaswidth, bkgrect.Bottom - bkgrect.Height / 8.5f);
-                            canvas.ClipRect(cliprect);
-
-                            ty += _statusOffsetY;
-                            base_ty = ty;
-
                             lock (_mapOffsetLock)
                             {
-                                _statusClipBottom = cliprect.Bottom;
+                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
-                            for (int i = 0; i < 6; i++)
+                            canvas.DrawText("Armor class:", tx, ty, textPaint);
+                            canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                            icon_width = icon_height * (float)App._statusACBitmap.Width / (float)App._statusACBitmap.Height;
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawBitmap(App._statusACBitmap, icon_rect);
+                            ty += textPaint.FontSpacing;
+                        }
+
+                        valtext = "";
+                        valtext2 = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].IsEnabled && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
                             {
-                                valtext = "";
-                                lock (StatusFieldLock)
+                                valtext = StatusFields[(int)statusfields.BL_MC_LVL].Text;
+                            }
+                            if (StatusFields[(int)statusfields.BL_MC_PCT] != null && StatusFields[(int)statusfields.BL_MC_PCT].IsEnabled && StatusFields[(int)statusfields.BL_MC_PCT].Text != null)
+                            {
+                                valtext2 = StatusFields[(int)statusfields.BL_MC_PCT].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            lock (_mapOffsetLock)
+                            {
+                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                            }
+                            canvas.DrawText("Magic cancellation:", tx, ty, textPaint);
+                            string printtext = valtext2 != "" ? valtext + "/" + valtext2 + "%" : valtext;
+                            canvas.DrawText(printtext, tx + indentation, ty, textPaint);
+                            icon_width = icon_height * (float)App._statusMCBitmap.Width / (float)App._statusMCBitmap.Height;
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawBitmap(App._statusMCBitmap, icon_rect);
+                            ty += textPaint.FontSpacing;
+                        }
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_MOVE] != null && StatusFields[(int)statusfields.BL_MOVE].IsEnabled && StatusFields[(int)statusfields.BL_MOVE].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_MOVE].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            lock (_mapOffsetLock)
+                            {
+                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                            }
+                            canvas.DrawText("Move:", tx, ty, textPaint);
+                            canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                            icon_width = icon_height * (float)App._statusMoveBitmap.Width / (float)App._statusMoveBitmap.Height;
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawBitmap(App._statusMoveBitmap, icon_rect);
+                            ty += textPaint.FontSpacing;
+                        }
+
+                        valtext = "";
+                        valtext2 = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].IsEnabled && StatusFields[(int)statusfields.BL_UWEP].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_UWEP].Text;
+                            }
+                            if (StatusFields[(int)statusfields.BL_UWEP2] != null && StatusFields[(int)statusfields.BL_UWEP2].IsEnabled && StatusFields[(int)statusfields.BL_UWEP2].Text != null)
+                            {
+                                valtext2 = StatusFields[(int)statusfields.BL_UWEP2].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            lock (_mapOffsetLock)
+                            {
+                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                            }
+                            canvas.DrawText("Weapon style:", tx, ty, textPaint);
+                            string printtext = valtext2 != "" ? valtext + "/" + valtext2 : valtext;
+                            canvas.DrawText(printtext, tx + indentation, ty, textPaint);
+                            icon_width = icon_height * (float)App._statusWeaponStyleBitmap.Width / (float)App._statusWeaponStyleBitmap.Height;
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawBitmap(App._statusWeaponStyleBitmap, icon_rect);
+                            ty += textPaint.FontSpacing;
+                        }
+
+                        ty += textPaint.FontSpacing * 0.5f;
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_GOLD] != null && StatusFields[(int)statusfields.BL_GOLD].IsEnabled && StatusFields[(int)statusfields.BL_GOLD].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_GOLD].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            lock (_mapOffsetLock)
+                            {
+                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                            }
+                            string printtext;
+                            if (valtext.Substring(0, 1) == "\\" && valtext.Length > 11)
+                                printtext = valtext.Substring(11);
+                            else
+                                printtext = valtext;
+
+                            canvas.DrawText("Gold:", tx, ty, textPaint);
+                            canvas.DrawText(printtext, tx + indentation, ty, textPaint);
+                            icon_width = icon_height * (float)App._statusGoldBitmap.Width / (float)App._statusGoldBitmap.Height;
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawBitmap(App._statusGoldBitmap, icon_rect);
+                            ty += textPaint.FontSpacing;
+                        }
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_TIME] != null && StatusFields[(int)statusfields.BL_TIME].IsEnabled && StatusFields[(int)statusfields.BL_TIME].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_TIME].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            lock (_mapOffsetLock)
+                            {
+                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                            }
+                            canvas.DrawText("Turns:", tx, ty, textPaint);
+                            canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                            icon_width = icon_height * (float)App._statusTurnsBitmap.Width / (float)App._statusTurnsBitmap.Height;
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawBitmap(App._statusTurnsBitmap, icon_rect);
+                            ty += textPaint.FontSpacing;
+                        }
+
+                        ty += textPaint.FontSpacing * 0.5f;
+
+                        /* Condition, status and buff marks */
+                        if (use_two_columns)
+                        {
+                            tx += indentation * 1.75f;
+                            ty = base_ty;
+                        }
+
+                        float marksize = textPaint.FontSpacing * 0.85f;
+                        float markpadding = marksize / 4;
+                        ulong status_bits;
+                        lock (_uLock)
+                        {
+                            status_bits = _u_status_bits;
+                        }
+                        if (status_bits != 0)
+                        {
+                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                            int mglyph = (int)game_ui_tile_types.STATUS_MARKS + App.UITileOff;
+                            int mtile = App.Glyph2Tile[mglyph];
+                            int sheet_idx = App.TileSheetIdx(mtile);
+                            int tile_x = App.TileSheetX(mtile);
+                            int tile_y = App.TileSheetY(mtile);
+                            foreach (int status_mark in _statusmarkorder)
+                            {
+                                ulong statusbit = 1UL << status_mark;
+                                if ((status_bits & statusbit) != 0)
                                 {
-                                    if (StatusFields[(int)statusfields.BL_STR + i] != null && StatusFields[(int)statusfields.BL_STR + i].IsEnabled && StatusFields[(int)statusfields.BL_STR + i].Text != null)
+                                    string statusname = _status_names[status_mark];
+                                    int within_tile_x = status_mark % tiles_per_row;
+                                    int within_tile_y = status_mark / tiles_per_row;
+                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                    SKRect source_rt = new SKRect();
+                                    source_rt.Left = c_x;
+                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                    source_rt.Top = c_y;
+                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                    SKRect target_rt = new SKRect();
+                                    target_rt.Left = tx;
+                                    target_rt.Right = target_rt.Left + marksize;
+                                    target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
+                                    target_rt.Bottom = target_rt.Top + marksize;
+
+                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                    canvas.DrawText(statusname, tx + marksize + markpadding, ty, textPaint);
+                                    lock (_mapOffsetLock)
                                     {
-                                        valtext = StatusFields[(int)statusfields.BL_STR + i].Text;
-                                        valcolor = StatusFields[(int)statusfields.BL_STR + i].Color;
+                                        _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                                     }
-                                }
-                                if (valtext != "" && ty < box_bottom_draw_threshold)
-                                {
-                                    string[] statstring = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
-                                    string printtext = statstring[i] + ":";
-                                    canvas.DrawText(printtext, tx, ty, textPaint);
-                                    textPaint.Color = ClientUtils.NHColor2SKColorCore(valcolor, 0, true);
-                                    canvas.DrawText(valtext, tx + indentation, ty, textPaint);
-                                    textPaint.Color = SKColors.Black;
                                     ty += textPaint.FontSpacing;
                                 }
                             }
-                            ty += textPaint.FontSpacing * 0.5f;
+                        }
 
-                            valtext = "";
-                            lock (StatusFieldLock)
+                        ulong condition_bits;
+                        lock (_uLock)
+                        {
+                            condition_bits = _u_condition_bits;
+                        }
+                        if (condition_bits != 0)
+                        {
+                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                            int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + App.UITileOff;
+                            int mtile = App.Glyph2Tile[mglyph];
+                            int sheet_idx = App.TileSheetIdx(mtile);
+                            int tile_x = App.TileSheetX(mtile);
+                            int tile_y = App.TileSheetY(mtile);
+                            for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
                             {
-                                if (StatusFields[(int)statusfields.BL_XP] != null && StatusFields[(int)statusfields.BL_XP].IsEnabled && StatusFields[(int)statusfields.BL_XP].Text != null)
+                                ulong conditionbit = 1UL << condition_mark;
+                                if ((condition_bits & conditionbit) != 0)
                                 {
-                                    valtext = StatusFields[(int)statusfields.BL_XP].Text;
-                                }
-                            }
-                            if (valtext != "" && ty < box_bottom_draw_threshold)
-                            {
-                                canvas.DrawText("Level:", tx, ty, textPaint);
-                                canvas.DrawText(valtext, tx + indentation, ty, textPaint);
-                                icon_width = icon_height * (float)App._statusXPLevelBitmap.Width / (float)App._statusXPLevelBitmap.Height;
-                                icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                                icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                                icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                                canvas.DrawBitmap(App._statusXPLevelBitmap, icon_rect);
-                                ty += textPaint.FontSpacing;
-                            }
+                                    string conditionname = _condition_names[condition_mark];
+                                    int within_tile_x = condition_mark % tiles_per_row;
+                                    int within_tile_y = condition_mark / tiles_per_row;
+                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
 
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)statusfields.BL_EXP] != null && StatusFields[(int)statusfields.BL_EXP].IsEnabled && StatusFields[(int)statusfields.BL_EXP].Text != null)
-                                {
-                                    valtext = StatusFields[(int)statusfields.BL_EXP].Text;
-                                }
-                            }
-                            if (valtext != "" && ty < box_bottom_draw_threshold)
-                            {
-                                canvas.DrawText("Experience:", tx, ty, textPaint);
-                                canvas.DrawText(valtext, tx + indentation, ty, textPaint);
-                                ty += textPaint.FontSpacing;
-                            }
+                                    SKRect source_rt = new SKRect();
+                                    source_rt.Left = c_x;
+                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                    source_rt.Top = c_y;
+                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
 
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)statusfields.BL_HD] != null && StatusFields[(int)statusfields.BL_HD].IsEnabled && StatusFields[(int)statusfields.BL_HD].Text != null)
-                                {
-                                    valtext = StatusFields[(int)statusfields.BL_HD].Text;
-                                }
-                            }
-                            if (valtext != "" && ty < box_bottom_draw_threshold)
-                            {
-                                canvas.DrawText("Hit dice:", tx, ty, textPaint);
-                                canvas.DrawText(valtext, tx + indentation, ty, textPaint);
-                                icon_width = icon_height * (float)App._statusHDBitmap.Width / (float)App._statusHDBitmap.Height;
-                                icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                                icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                                icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                                canvas.DrawBitmap(App._statusHDBitmap, icon_rect);
-                                ty += textPaint.FontSpacing;
-                            }
+                                    SKRect target_rt = new SKRect();
+                                    target_rt.Left = tx;
+                                    target_rt.Right = target_rt.Left + marksize;
+                                    target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
+                                    target_rt.Bottom = target_rt.Top + marksize;
 
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)statusfields.BL_ALIGN] != null && StatusFields[(int)statusfields.BL_ALIGN].IsEnabled && StatusFields[(int)statusfields.BL_ALIGN].Text != null)
-                                {
-                                    valtext = StatusFields[(int)statusfields.BL_ALIGN].Text;
+                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                    canvas.DrawText(conditionname, tx + marksize + markpadding, ty, textPaint);
+                                    lock (_mapOffsetLock)
+                                    {
+                                        _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                    }
+                                    ty += textPaint.FontSpacing;
                                 }
                             }
-                            if (valtext != "" && ty < box_bottom_draw_threshold)
-                            {
-                                canvas.DrawText("Alignment:", tx, ty, textPaint);
-                                canvas.DrawText(valtext, tx + indentation, ty, textPaint);
-                                ty += textPaint.FontSpacing;
-                            }
+                        }
 
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)statusfields.BL_SCORE] != null && StatusFields[(int)statusfields.BL_SCORE].IsEnabled && StatusFields[(int)statusfields.BL_SCORE].Text != null)
-                                {
-                                    valtext = StatusFields[(int)statusfields.BL_SCORE].Text;
-                                }
-                            }
-                            if (valtext != "" && ty < box_bottom_draw_threshold)
-                            {
-                                canvas.DrawText("Score:", tx, ty, textPaint);
-                                canvas.DrawText(valtext, tx + indentation, ty, textPaint);
-                                ty += textPaint.FontSpacing;
-                            }
-
-                            ty += textPaint.FontSpacing * 0.5f;
-
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)statusfields.BL_AC] != null && StatusFields[(int)statusfields.BL_AC].IsEnabled && StatusFields[(int)statusfields.BL_AC].Text != null)
-                                {
-                                    valtext = StatusFields[(int)statusfields.BL_AC].Text;
-                                }
-                            }
-                            if (valtext != "")
-                            {
-                                lock (_mapOffsetLock)
-                                {
-                                    _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                                }
-                                canvas.DrawText("Armor class:", tx, ty, textPaint);
-                                canvas.DrawText(valtext, tx + indentation, ty, textPaint);
-                                icon_width = icon_height * (float)App._statusACBitmap.Width / (float)App._statusACBitmap.Height;
-                                icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                                icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                                icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                                canvas.DrawBitmap(App._statusACBitmap, icon_rect);
-                                ty += textPaint.FontSpacing;
-                            }
-
-                            valtext = "";
-                            valtext2 = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].IsEnabled && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
-                                {
-                                    valtext = StatusFields[(int)statusfields.BL_MC_LVL].Text;
-                                }
-                                if (StatusFields[(int)statusfields.BL_MC_PCT] != null && StatusFields[(int)statusfields.BL_MC_PCT].IsEnabled && StatusFields[(int)statusfields.BL_MC_PCT].Text != null)
-                                {
-                                    valtext2 = StatusFields[(int)statusfields.BL_MC_PCT].Text;
-                                }
-                            }
-                            if (valtext != "")
-                            {
-                                lock (_mapOffsetLock)
-                                {
-                                    _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                                }
-                                canvas.DrawText("Magic cancellation:", tx, ty, textPaint);
-                                string printtext = valtext2 != "" ? valtext + "/" + valtext2 + "%" : valtext;
-                                canvas.DrawText(printtext, tx + indentation, ty, textPaint);
-                                icon_width = icon_height * (float)App._statusMCBitmap.Width / (float)App._statusMCBitmap.Height;
-                                icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                                icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                                icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                                canvas.DrawBitmap(App._statusMCBitmap, icon_rect);
-                                ty += textPaint.FontSpacing;
-                            }
-
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)statusfields.BL_MOVE] != null && StatusFields[(int)statusfields.BL_MOVE].IsEnabled && StatusFields[(int)statusfields.BL_MOVE].Text != null)
-                                {
-                                    valtext = StatusFields[(int)statusfields.BL_MOVE].Text;
-                                }
-                            }
-                            if (valtext != "")
-                            {
-                                lock (_mapOffsetLock)
-                                {
-                                    _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                                }
-                                canvas.DrawText("Move:", tx, ty, textPaint);
-                                canvas.DrawText(valtext, tx + indentation, ty, textPaint);
-                                icon_width = icon_height * (float)App._statusMoveBitmap.Width / (float)App._statusMoveBitmap.Height;
-                                icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                                icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                                icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                                canvas.DrawBitmap(App._statusMoveBitmap, icon_rect);
-                                ty += textPaint.FontSpacing;
-                            }
-
-                            valtext = "";
-                            valtext2 = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].IsEnabled && StatusFields[(int)statusfields.BL_UWEP].Text != null)
-                                {
-                                    valtext = StatusFields[(int)statusfields.BL_UWEP].Text;
-                                }
-                                if (StatusFields[(int)statusfields.BL_UWEP2] != null && StatusFields[(int)statusfields.BL_UWEP2].IsEnabled && StatusFields[(int)statusfields.BL_UWEP2].Text != null)
-                                {
-                                    valtext2 = StatusFields[(int)statusfields.BL_UWEP2].Text;
-                                }
-                            }
-                            if (valtext != "")
-                            {
-                                lock (_mapOffsetLock)
-                                {
-                                    _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                                }
-                                canvas.DrawText("Weapon style:", tx, ty, textPaint);
-                                string printtext = valtext2 != "" ? valtext + "/" + valtext2 : valtext;
-                                canvas.DrawText(printtext, tx + indentation, ty, textPaint);
-                                icon_width = icon_height * (float)App._statusWeaponStyleBitmap.Width / (float)App._statusWeaponStyleBitmap.Height;
-                                icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                                icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                                icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                                canvas.DrawBitmap(App._statusWeaponStyleBitmap, icon_rect);
-                                ty += textPaint.FontSpacing;
-                            }
-
-                            ty += textPaint.FontSpacing * 0.5f;
-
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)statusfields.BL_GOLD] != null && StatusFields[(int)statusfields.BL_GOLD].IsEnabled && StatusFields[(int)statusfields.BL_GOLD].Text != null)
-                                {
-                                    valtext = StatusFields[(int)statusfields.BL_GOLD].Text;
-                                }
-                            }
-                            if (valtext != "")
-                            {
-                                lock (_mapOffsetLock)
-                                {
-                                    _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                                }
-                                string printtext;
-                                if (valtext.Substring(0, 1) == "\\" && valtext.Length > 11)
-                                    printtext = valtext.Substring(11);
-                                else
-                                    printtext = valtext;
-
-                                canvas.DrawText("Gold:", tx, ty, textPaint);
-                                canvas.DrawText(printtext, tx + indentation, ty, textPaint);
-                                icon_width = icon_height * (float)App._statusGoldBitmap.Width / (float)App._statusGoldBitmap.Height;
-                                icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                                icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                                icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                                canvas.DrawBitmap(App._statusGoldBitmap, icon_rect);
-                                ty += textPaint.FontSpacing;
-                            }
-
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)statusfields.BL_TIME] != null && StatusFields[(int)statusfields.BL_TIME].IsEnabled && StatusFields[(int)statusfields.BL_TIME].Text != null)
-                                {
-                                    valtext = StatusFields[(int)statusfields.BL_TIME].Text;
-                                }
-                            }
-                            if (valtext != "")
-                            {
-                                lock (_mapOffsetLock)
-                                {
-                                    _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                                }
-                                canvas.DrawText("Turns:", tx, ty, textPaint);
-                                canvas.DrawText(valtext, tx + indentation, ty, textPaint);
-                                icon_width = icon_height * (float)App._statusTurnsBitmap.Width / (float)App._statusTurnsBitmap.Height;
-                                icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                                icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                                icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                                canvas.DrawBitmap(App._statusTurnsBitmap, icon_rect);
-                                ty += textPaint.FontSpacing;
-                            }
-
-                            ty += textPaint.FontSpacing * 0.5f;
-
-                            /* Condition, status and buff marks */
-                            if (use_two_columns)
-                            {
-                                tx += indentation * 1.75f;
-                                ty = base_ty;
-                            }
-
-                            float marksize = textPaint.FontSpacing * 0.85f;
-                            float markpadding = marksize / 4;
-                            ulong status_bits;
+                        ulong buff_bits;
+                        for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
+                        {
                             lock (_uLock)
                             {
-                                status_bits = _u_status_bits;
+                                buff_bits = _u_buff_bits[buff_ulong];
                             }
-                            if (status_bits != 0)
+                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                            if (buff_bits != 0)
                             {
-                                int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                int mglyph = (int)game_ui_tile_types.STATUS_MARKS + App.UITileOff;
-                                int mtile = App.Glyph2Tile[mglyph];
-                                int sheet_idx = App.TileSheetIdx(mtile);
-                                int tile_x = App.TileSheetX(mtile);
-                                int tile_y = App.TileSheetY(mtile);
-                                foreach (int status_mark in _statusmarkorder)
+                                for (int buff_idx = 0; buff_idx < 32; buff_idx++)
                                 {
-                                    ulong statusbit = 1UL << status_mark;
-                                    if ((status_bits & statusbit) != 0)
+                                    ulong buffbit = 1UL << buff_idx;
+                                    if ((buff_bits & buffbit) != 0)
                                     {
-                                        string statusname = _status_names[status_mark];
-                                        int within_tile_x = status_mark % tiles_per_row;
-                                        int within_tile_y = status_mark / tiles_per_row;
+                                        int propidx = buff_ulong * 32 + buff_idx;
+                                        if (propidx > GHConstants.LAST_PROP)
+                                            break;
+                                        string propname = App.GnollHackService.GetPropertyName(propidx);
+                                        if (propname != null && propname.Length > 0)
+                                            propname = propname[0].ToString().ToUpper() + (propname.Length == 1 ? "" : propname.Substring(1));
+
+                                        int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + App.BuffTileOff;
+                                        int mtile = App.Glyph2Tile[mglyph];
+                                        int sheet_idx = App.TileSheetIdx(mtile);
+                                        int tile_x = App.TileSheetX(mtile);
+                                        int tile_y = App.TileSheetY(mtile);
+
+                                        int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                                        int within_tile_x = buff_mark % tiles_per_row;
+                                        int within_tile_y = buff_mark / tiles_per_row;
                                         int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
                                         int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
 
@@ -6040,123 +6159,21 @@ namespace GnollHackClient.Pages.Game
                                         target_rt.Bottom = target_rt.Top + marksize;
 
                                         canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-                                        canvas.DrawText(statusname, tx + marksize + markpadding, ty, textPaint);
+                                        if (propname != null)
+                                            canvas.DrawText(propname, tx + marksize + markpadding, ty, textPaint);
                                         lock (_mapOffsetLock)
                                         {
                                             _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                                         }
                                         ty += textPaint.FontSpacing;
-                                    }
-                                }
-                            }
-
-                            ulong condition_bits;
-                            lock (_uLock)
-                            {
-                                condition_bits = _u_condition_bits;
-                            }
-                            if (condition_bits != 0)
-                            {
-                                int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + App.UITileOff;
-                                int mtile = App.Glyph2Tile[mglyph];
-                                int sheet_idx = App.TileSheetIdx(mtile);
-                                int tile_x = App.TileSheetX(mtile);
-                                int tile_y = App.TileSheetY(mtile);
-                                for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
-                                {
-                                    ulong conditionbit = 1UL << condition_mark;
-                                    if ((condition_bits & conditionbit) != 0)
-                                    {
-                                        string conditionname = _condition_names[condition_mark];
-                                        int within_tile_x = condition_mark % tiles_per_row;
-                                        int within_tile_y = condition_mark / tiles_per_row;
-                                        int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                        int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                        SKRect source_rt = new SKRect();
-                                        source_rt.Left = c_x;
-                                        source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                        source_rt.Top = c_y;
-                                        source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                        SKRect target_rt = new SKRect();
-                                        target_rt.Left = tx;
-                                        target_rt.Right = target_rt.Left + marksize;
-                                        target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
-                                        target_rt.Bottom = target_rt.Top + marksize;
-
-                                        canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-                                        canvas.DrawText(conditionname, tx + marksize + markpadding, ty, textPaint);
-                                        lock (_mapOffsetLock)
-                                        {
-                                            _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                                        }
-                                        ty += textPaint.FontSpacing;
-                                    }
-                                }
-                            }
-
-                            ulong buff_bits;
-                            for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
-                            {
-                                lock (_uLock)
-                                {
-                                    buff_bits = _u_buff_bits[buff_ulong];
-                                }
-                                int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                if (buff_bits != 0)
-                                {
-                                    for (int buff_idx = 0; buff_idx < 32; buff_idx++)
-                                    {
-                                        ulong buffbit = 1UL << buff_idx;
-                                        if ((buff_bits & buffbit) != 0)
-                                        {
-                                            int propidx = buff_ulong * 32 + buff_idx;
-                                            if (propidx > GHConstants.LAST_PROP)
-                                                break;
-                                            string propname = App.GnollHackService.GetPropertyName(propidx);
-                                            if (propname != null && propname.Length > 0)
-                                                propname = propname[0].ToString().ToUpper() + (propname.Length == 1 ? "" : propname.Substring(1));
-
-                                            int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + App.BuffTileOff;
-                                            int mtile = App.Glyph2Tile[mglyph];
-                                            int sheet_idx = App.TileSheetIdx(mtile);
-                                            int tile_x = App.TileSheetX(mtile);
-                                            int tile_y = App.TileSheetY(mtile);
-
-                                            int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
-                                            int within_tile_x = buff_mark % tiles_per_row;
-                                            int within_tile_y = buff_mark / tiles_per_row;
-                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                            SKRect source_rt = new SKRect();
-                                            source_rt.Left = c_x;
-                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                            source_rt.Top = c_y;
-                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                            SKRect target_rt = new SKRect();
-                                            target_rt.Left = tx;
-                                            target_rt.Right = target_rt.Left + marksize;
-                                            target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
-                                            target_rt.Bottom = target_rt.Top + marksize;
-
-                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-                                            if (propname != null)
-                                                canvas.DrawText(propname, tx + marksize + markpadding, ty, textPaint);
-                                            lock (_mapOffsetLock)
-                                            {
-                                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                                            }
-                                            ty += textPaint.FontSpacing;
-                                        }
                                     }
                                 }
                             }
                         }
-                    }
+                    }                   
+
+                    if(!_youRectDrawn)
+                        YouRect = new SKRect();
                 }
 
                 if (ShowWaitIcon)
@@ -7287,52 +7304,46 @@ namespace GnollHackClient.Pages.Game
                             _touchMoved = true;
                         else if (!ForceAllMessages && !ShowExtendedStatusBar)
                         {
-                            lock (_rectLock)
+                            uint m_id = 0;
+                            if (SkillRect.Contains(e.Location))
                             {
-                                uint m_id = 0;
-                                if (SkillRect.Contains(e.Location))
+                                _touchWithinSkillButton = true;
+                            }
+                            else if (HealthRect.Contains(e.Location))
+                            {
+                                _touchWithinHealthOrb = true;
+                            }
+                            else if (ManaRect.Contains(e.Location))
+                            {
+                                _touchWithinManaOrb = true;
+                            }
+                            else if (StatusBarRect.Contains(e.Location))
+                            {
+                                _touchWithinStatusBar = true;
+                            }
+                            else if (!_showDirections && !_showNumberPad && ShowPets && (m_id = PetRectContains(e.Location)) != 0)
+                            {
+                                _touchWithinPet = m_id;
+                            }
+                            else if (!MapLookMode && !MapTravelMode)
+                            {
+                                _savedSender = sender;
+                                _savedEventArgs = e;
+                                Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MoveByHoldingDownThreshold), () =>
                                 {
-                                    _touchWithinSkillButton = true;
-                                }
-                                else if (HealthRect.Contains(e.Location))
-                                {
-                                    _touchWithinHealthOrb = true;
-                                }
-                                else if (ManaRect.Contains(e.Location))
-                                {
-                                    _touchWithinManaOrb = true;
-                                }
-                                else if (StatusBarRect.Contains(e.Location))
-                                {
-                                    _touchWithinStatusBar = true;
-                                }
-                                else if (!_showDirections && !_showNumberPad && ShowPets && (m_id = PetRectContains(e.Location)) != 0)
-                                {
-                                    _touchWithinPet = m_id;
-                                }
-                                else if (!MapLookMode && !MapTravelMode)
-                                {
-                                    _savedSender = sender;
-                                    _savedEventArgs = e;
-                                    Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MoveByHoldingDownThreshold), () =>
-                                    {
-                                        if (_savedSender == null || _savedEventArgs == null)
-                                            return false;
+                                    if (_savedSender == null || _savedEventArgs == null)
+                                        return false;
 
-                                        IssueNHCommandViaTouch(_savedSender, _savedEventArgs);
-                                        return true; /* Continue until cancelled */
-                                    });
-                                }
+                                    IssueNHCommandViaTouch(_savedSender, _savedEventArgs);
+                                    return true; /* Continue until cancelled */
+                                });
                             }
                         }
                         else if (ShowExtendedStatusBar)
                         {
-                            lock (_youRectLock)
+                            if (YouRect.Contains(e.Location))
                             {
-                                if (YouRect.Contains(e.Location))
-                                {
-                                    _touchWithinYouButton = true;
-                                }
+                                _touchWithinYouButton = true;
                             }
                         }
                         e.Handled = true;
@@ -10258,16 +10269,10 @@ namespace GnollHackClient.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
                         break;
                     case 12:
-                        lock(_rectLock)
-                        {
-                            PaintTipButtonByRect(canvas, textPaint, HealthRect, "This orb shows your hit points.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
-                        }
+                        PaintTipButtonByRect(canvas, textPaint, HealthRect, "This orb shows your hit points.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
                         break;
                     case 13:
-                        lock (_rectLock)
-                        {
-                            PaintTipButtonByRect(canvas, textPaint, ManaRect, "And this one your mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
-                        }
+                        PaintTipButtonByRect(canvas, textPaint, ManaRect, "And this one your mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
                         break;
                     case 14:
                         textPaint.TextSize = 36;

@@ -4198,10 +4198,9 @@ struct monst* mtmp;
             Sprintf(eos(ansbuf), " I run %s.", shopbuf);
             play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_I_RUN_THIS_STORE);
         }
-        popup_talk_line(mtmp, ansbuf);
         if (iflags.using_gui_sounds && !mtmp->u_know_mname)
-            pline("The name tag shows that %s name is %s.", mhis(mtmp), shkname(mtmp));
-
+            Sprintf(eos(ansbuf), " (The name tag shows that %s name is %s.)", mhis(mtmp), shkname(mtmp));
+        popup_talk_line(mtmp, ansbuf);
         mtmp->u_know_mname = 1;
     }
     else if (mtmp->ispriest || msound == MS_PRIEST)
@@ -4216,8 +4215,6 @@ struct monst* mtmp;
                     Sprintf(ansbuf, "I am a %s%s of %s.", mtmp->mnum == PM_HIGH_PRIEST ? "high " : "", mtmp->female ? "priestess" : "priest", Moloch);
                 else
                     Sprintf(ansbuf, "I am a local %s%s. (The name tag indicates that %s name is %s.)", mtmp->mnum == PM_HIGH_PRIEST ? "high " : "", mtmp->female ? "priestess" : "priest", mhis(mtmp), MNAME(mtmp));
-
-                mtmp->u_know_mname = 1;
             }
             else
             {
@@ -4229,7 +4226,6 @@ struct monst* mtmp;
             if (has_mname(mtmp))
             {
                 Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), noit_mon_nam(mtmp));
-                mtmp->u_know_mname = 1;
             }
             else
             {
@@ -4237,25 +4233,20 @@ struct monst* mtmp;
             }
         }
         popup_talk_line_with_know_mname(mtmp, ansbuf, saved_know_mname);
+        if (has_mname(mtmp))
+            mtmp->u_know_mname = 1;
     }
     else if (mtmp->mnum == PM_ORACLE || msound == MS_ORACLE)
     {
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         Sprintf(ansbuf, "I am the Oracle of Delphi.");
+        if (has_mname(mtmp))
+        {
+            Sprintf(eos(ansbuf), " (The name tag indicates %s name is %s.)", mhis(mtmp), MNAME(mtmp));
+        }
         popup_talk_line(mtmp, ansbuf);
-
-        if (iflags.using_gui_sounds)
-        {
-            Sprintf(ansbuf, "(The name tag indicates %s name is %s.)", mhis(mtmp), MNAME(mtmp));
-            pline1(ansbuf);
+        if (has_mname(mtmp))
             mtmp->u_know_mname = 1;
-        }
-        else
-        {
-            Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
-            popup_talk_line(mtmp, ansbuf);
-            mtmp->u_know_mname = 1;
-        }
     }
     else if (msound == MS_ARREST)
     {
@@ -4269,20 +4260,13 @@ struct monst* mtmp;
         {
             play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU_SECONDARY);
             Sprintf(ansbuf, "I work for the DDPD.");
+            if (has_mname(mtmp))
+            {
+                Sprintf(eos(ansbuf), " (The name tag indicate that %s name is %s.)", mhis(mtmp), MNAME(mtmp));
+            }
             popup_talk_line(mtmp, ansbuf);
-
-            if (iflags.using_gui_sounds)
-            {
-                Sprintf(ansbuf, "(The name tag indicate that %s name is %s.)", mhis(mtmp), MNAME(mtmp));
-                pline1(ansbuf);
+            if (has_mname(mtmp))
                 mtmp->u_know_mname = 1;
-            }
-            else
-            {
-                Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
-                popup_talk_line(mtmp, ansbuf);
-                mtmp->u_know_mname = 1;
-            }
         }
     }
     else if (is_watch(mtmp->data))
@@ -4319,7 +4303,8 @@ struct monst* mtmp;
                     Sprintf(ansbuf, "I am a local %s.", mon_monster_name(mtmp));
             }
             popup_talk_line(mtmp, ansbuf);
-            mtmp->u_know_mname = 1;
+            if (has_mname(mtmp))
+                mtmp->u_know_mname = 1;
         }
     }
     else if (mtmp->m_id == quest_status.leader_m_id && msound > MS_ANIMAL)
@@ -4341,7 +4326,6 @@ struct monst* mtmp;
             if (has_mname(mtmp))
             {
                 Sprintf(ansbuf, "I am a local smith. (The name tag indicates that %s name is %s.)", mhis(mtmp), MNAME(mtmp));
-                mtmp->u_know_mname = 1;
             }
             else
             {
@@ -4353,7 +4337,6 @@ struct monst* mtmp;
             if (has_mname(mtmp))
             {
                 Sprintf(ansbuf, "I am %s, a local smith.", MNAME(mtmp));
-                mtmp->u_know_mname = 1;
             }
             else
             {
@@ -4361,6 +4344,8 @@ struct monst* mtmp;
             }
         }
         popup_talk_line_with_know_mname(mtmp, ansbuf, saved_know_mname);
+        if (has_mname(mtmp))
+            mtmp->u_know_mname = 1;
     }
     else if (mtmp->isgd)
     {
@@ -4393,8 +4378,6 @@ struct monst* mtmp;
                 else
                     Sprintf(ansbuf, "I am a local %s. (The name tag indicates that %s name is %s.)", 
                         npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name, mhis(mtmp), MNAME(mtmp));
-
-                mtmp->u_know_mname = 1;
             }
             else
             {
@@ -4406,7 +4389,6 @@ struct monst* mtmp;
             if (has_mname(mtmp))
             {
                 Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), an(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name));
-                mtmp->u_know_mname = 1;
             }
             else
                 Sprintf(ansbuf, "I am a local %s.", npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name);
@@ -4417,6 +4399,9 @@ struct monst* mtmp;
             Sprintf(eos(ansbuf), "  %s", npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation);
 
         popup_talk_line_with_know_mname(mtmp, ansbuf, saved_know_mname);
+        if (has_mname(mtmp))
+            mtmp->u_know_mname = 1;
+
     }
     else if (msound == MS_GUARDIAN)
     {
@@ -4457,13 +4442,13 @@ struct monst* mtmp;
                 Sprintf(namebuf, "%s, ", MNAME(mtmp));
             else
                 Sprintf(endbuf, " (The name tag shows %s name is %s.)", mhis(mtmp), MNAME(mtmp));
-
-            mtmp->u_know_mname = 1;
         }
 
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         Sprintf(ansbuf, "I am %s%s.%s", namebuf, titlebuf, endbuf);
         popup_talk_line(mtmp, ansbuf);
+        if (has_mname(mtmp))
+            mtmp->u_know_mname = 1;
     }
     else if (msound == MS_NEMESIS)
     {
