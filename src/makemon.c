@@ -188,7 +188,6 @@ boolean poisoned;
 int elemental_enchantment, exceptionality;
 {
     register struct obj *otmp;
-    unsigned long mkflags = 0UL;
 
     otmp = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, 0, mkobj_ownerflags(mtmp));
     if(!(oquan_const == 0 && oquan_rnd == 0))
