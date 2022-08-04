@@ -108,7 +108,7 @@
                             <controls:LabeledImageButton Grid.Column="3" x:Name="lDropManyButton" LblText="Drop Items" BtnLetter="%" ImgSourcePath="resource://GnollHackClient.Assets.UI.dropmany.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="4" x:Name="lChatButton" LblText="Chat" BtnLetter="C" ImgSourcePath="resource://GnollHackClient.Assets.UI.chat.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="5" x:Name="lKickButton" LblText="Kick" BtnLetter="k" ImgSourcePath="resource://GnollHackClient.Assets.UI.kick.png" BtnClicked="GHButton_Clicked" />
-                            <controls:LabeledImageButton Grid.Column="6" x:Name="lApplyButton" LblText="Apply" BtnLetter="a" ImgSourcePath="resource://GnollHackClient.Assets.UI.apply.png" BtnClicked="GHButton_Clicked" />
+                            <controls:LabeledImageButton Grid.Column="6" x:Name="lRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackClient.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
                         </Grid>
                         <Grid x:Name="LowerCmdGrid" HeightRequest="60" HorizontalOptions="CenterAndExpand">
                             <Grid.RowDefinitions>
@@ -128,7 +128,7 @@
                             <controls:LabeledImageButton Grid.Column="2" x:Name="lThrowButton" LblText="Throw" BtnLetter="t" ImgSourcePath="resource://GnollHackClient.Assets.UI.throw.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="3" x:Name="lCastButton" LblText="Cast" BtnLetter="Z" ImgSourcePath="resource://GnollHackClient.Assets.UI.cast.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="4" x:Name="lZapButton" LblText="Zap" BtnLetter="z" ImgSourcePath="resource://GnollHackClient.Assets.UI.zap.png" BtnClicked="GHButton_Clicked" />
-                            <controls:LabeledImageButton Grid.Column="5" x:Name="lRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackClient.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
+                            <controls:LabeledImageButton Grid.Column="5" x:Name="lApplyButton" LblText="Apply" BtnLetter="a" ImgSourcePath="resource://GnollHackClient.Assets.UI.apply.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="6" x:Name="lMoreButton" LblText="More" ImgSourcePath="resource://GnollHackClient.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
                         </Grid>
                     </StackLayout>

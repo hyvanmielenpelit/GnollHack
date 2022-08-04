@@ -776,7 +776,7 @@ register struct monst *mtmp;
                 break;
             }
             case 2:
-                (void) mongets(mtmp, !rn2(7) ? STAFF_SLING : SLING);
+                (void) mongets(mtmp, !rn2(20) ? STAFF_SLING : SLING);
                 (void) mongets(mtmp, !rn2(20) ? SILVER_SLING_BULLET : !rn2(5) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET);
                 break;
             }
@@ -887,16 +887,16 @@ register struct monst *mtmp;
             if (!rn2(2))
             {
                 (void)mongets(mtmp, !rn2(2) ? STAFF_SLING : SLING);
-                m_initthrow(mtmp, !rn2(5) ? SILVER_SLING_BULLET : !rn2(2) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 10, 12, FALSE, -1, -1);
+                m_initthrow(mtmp, !rn2(5) ? SILVER_SLING_BULLET : !rn2(2) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 8, 12, FALSE, -1, -1);
             }
             (void)mongets(mtmp, SCIMITAR);
             break;
         case PM_GOBLIN:
         case PM_HOBGOBLIN:
-            if (!rn2(mm == PM_GOBLIN ? 6 : 3))
+            if (!rn2(mm == PM_GOBLIN ? 7 : 4))
             {
-                (void)mongets(mtmp, !rn2( 6) ? STAFF_SLING : SLING);
-                m_initthrow(mtmp, !rn2(5) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 10, 12, FALSE, -1, -1);
+                (void)mongets(mtmp, !rn2(10) ? STAFF_SLING : SLING);
+                m_initthrow(mtmp, !rn2(8) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 6, 8, FALSE, -1, -1);
             }
             if (rn2(2))
                 (void)mongets(mtmp, (mm == PM_GOBLIN || !rn2(2)) ? ORCISH_DAGGER : SCIMITAR);
@@ -1032,10 +1032,10 @@ register struct monst *mtmp;
         }
         break;
     case S_MODRON:
-        if (mm < PM_MODRON_QUINTON && !rn2(3))
+        if (mm < PM_MODRON_QUINTON && !rn2(6))
         {
-            (void)mongets(mtmp, !rn2(2) ? STAFF_SLING : SLING);
-            m_initthrow(mtmp, !rn2(15) ? SILVER_SLING_BULLET : IRON_SLING_BULLET, 10, 12, FALSE, -1, -1);
+            (void)mongets(mtmp, !rn2(3) ? STAFF_SLING : SLING);
+            m_initthrow(mtmp, !rn2(10) ? SILVER_SLING_BULLET : IRON_SLING_BULLET, 8, 8, FALSE, -1, -1);
             goto default_equipment_here;
         }
         break;
@@ -1076,10 +1076,10 @@ register struct monst *mtmp;
             (void) mongets(mtmp, rn2(4) ? TRIDENT : BULLWHIP);
             break;
         case PM_BARBED_DEVIL:
-            if (!rn2(3))
+            if (!rn2(4))
             {
-                (void)mongets(mtmp, !rn2(2) ? STAFF_SLING : SLING);
-                m_initthrow(mtmp, IRON_SLING_BULLET, 10, 12, FALSE, -1, -1);
+                (void)mongets(mtmp, !rn2(3) ? STAFF_SLING : SLING);
+                m_initthrow(mtmp, IRON_SLING_BULLET, 8, 8, FALSE, -1, -1);
             }
             break;
         case PM_MARILITH:
