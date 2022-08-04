@@ -2872,7 +2872,7 @@ int old_range;
 {
     char buf[BUFSZ];
     xchar ox, oy;
-    int new_range = arti_light_radius(obj), delta = new_range - old_range;
+    int new_range = current_arti_light_radius(obj), delta = new_range - old_range;
 
     /* radius of light emitting artifact varies by curse/bless state
        so will change after blessing or cursing */
@@ -2955,7 +2955,7 @@ register struct obj *otmp;
     if (otmp->oclass == COIN_CLASS)
         return;
     if (otmp->lamplit)
-        old_light = arti_light_radius(otmp);
+        old_light = current_arti_light_radius(otmp);
     if (otmp->makingsound)
         old_volume = obj_ambient_sound_volume(otmp);
     otmp->cursed = 0;
@@ -2984,7 +2984,7 @@ register struct obj *otmp;
     double old_volume = 0;
 
     if (otmp->lamplit)
-        old_light = arti_light_radius(otmp);
+        old_light = current_arti_light_radius(otmp);
     if (otmp->makingsound)
         old_volume = obj_ambient_sound_volume(otmp);
     otmp->blessed = 0;
@@ -3012,7 +3012,7 @@ register struct obj *otmp;
     if (otmp->oclass == COIN_CLASS)
         return;
     if (otmp->lamplit)
-        old_light = arti_light_radius(otmp);
+        old_light = current_arti_light_radius(otmp);
     if (otmp->makingsound)
         old_volume = obj_ambient_sound_volume(otmp);
     already_cursed = otmp->cursed;
@@ -3062,7 +3062,7 @@ register struct obj *otmp;
     double old_volume = 0;
 
     if (otmp->lamplit)
-        old_light = arti_light_radius(otmp);
+        old_light = current_arti_light_radius(otmp);
     if (otmp->makingsound)
         old_volume = obj_ambient_sound_volume(otmp);
     otmp->cursed = 0;

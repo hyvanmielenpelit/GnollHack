@@ -973,7 +973,7 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
     ((objects[(o)->otyp].oc_flags& O1_NOT_CURSEABLE) || has_obj_mythic_uncurseable(o))
 
 #define is_obj_light_source(o) \
-   ((objects[(o)->otyp].oc_flags5 & O5_LIGHT_SOURCE) != 0 || artifact_light(o) ||obj_shines_magical_light(o) || has_obj_mythic_magical_light(o))
+   ((objects[(o)->otyp].oc_flags5 & O5_LIGHT_SOURCE) != 0 || artifact_light(o) || obj_shines_magical_light(o) || has_obj_mythic_magical_light(o))
 
 #define candle_starting_burn_time(o) (30L * objects[(o)->otyp].oc_cost)
 #define candle_maximum_burn_time(o) candle_starting_burn_time(o)
