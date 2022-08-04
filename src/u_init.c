@@ -217,7 +217,7 @@ static const struct trobj Valkyrie[] = {
 };
 static const struct trobj Wizard[] = 
 {
-    { QUARTERSTAFF, 1, WEAPON_CLASS, 1, 1, 0, 0 },
+    { QUARTERSTAFF, 1, WEAPON_CLASS, 1, 0, 1, 0, 0 },
     { CLOAK_OF_MAGIC_RESISTANCE, 0, ARMOR_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { WIZARD_S_ROBE, 1, ARMOR_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
     { BAG_OF_WIZARDRY, 0, TOOL_CLASS, 1, 0, UNDEF_BLESS, 0, 0 },
@@ -252,8 +252,7 @@ static const struct trobj WizardAlternate[] =
 
 static const struct trobj Tinopener[] = { { TIN_OPENER, 0, TOOL_CLASS, 1, 0, 0, 0, 0 },
                                     { 0, 0, 0, 0, 0, 0, 0, 0 } };
-static const struct trobj Magicmarker[] = { { MAGIC_MARKER, UNDEF_SPE, TOOL_CLASS,
-                                        1, 0, 0, 0, 0 },
+static const struct trobj Magicmarker[] = { { MAGIC_MARKER, UNDEF_SPE, TOOL_CLASS, 1, 0, 0, 0, 0 },
                                       { 0, 0, 0, 0, 0, 0, 0, 0 } };
 static const struct trobj Lamp[] = { { OIL_LAMP, 1, TOOL_CLASS, 1, 0, 0, 0, 0 },
                                { 0, 0, 0, 0, 0, 0, 0, 0 } };
@@ -270,20 +269,16 @@ static const struct trobj OreDetection[] = { { WAN_ORE_DETECTION, UNDEF_SPE, WAN
 static const struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0, 0, 0, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0, 0 } };
 
-static const struct trobj DeathQuarrel[] = { { BONE_QUARREL, 0, WEAPON_CLASS,
-                                        1, 0, 0, DEATH_ENCHANTMENT, 0 },
+static const struct trobj DeathQuarrel[] = { { BONE_QUARREL, 0, WEAPON_CLASS, 1, 0, 0, DEATH_ENCHANTMENT, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0, 0 } };
-static const struct trobj LightningArrow[] = { { ARROW, 0, WEAPON_CLASS,
-                                        2, 0, 0, LIGHTNING_ENCHANTMENT, 0 },
+static const struct trobj LightningArrow[] = { { ARROW, 0, WEAPON_CLASS, 2, 0, 0, LIGHTNING_ENCHANTMENT, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0, 0 } };
-static const struct trobj LightningElvenArrow[] = { { ELVEN_ARROW, 0, WEAPON_CLASS,
-                                        2, 0, 0, LIGHTNING_ENCHANTMENT, 0 },
+static const struct trobj LightningElvenArrow[] = { { ELVEN_ARROW, 0, WEAPON_CLASS, 2, 0, 0, LIGHTNING_ENCHANTMENT, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0, 0 } };
-static const struct trobj LightningOrcishArrow[] = { { ORCISH_ARROW, 0, WEAPON_CLASS,
-                                        2, 0, 0, LIGHTNING_ENCHANTMENT, 0 },
+static const struct trobj LightningOrcishArrow[] = { { ORCISH_ARROW, 0, WEAPON_CLASS, 2, 0, 0, LIGHTNING_ENCHANTMENT, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0, 0 } };
 
-static const struct trobj PriestSilverMace[] = { { SILVER_MACE, 2, WEAPON_CLASS, 1,0,  1, 0, 0 },
+static const struct trobj PriestSilverMace[] = { { SILVER_MACE, 2, WEAPON_CLASS, 1, 0, 1, 0, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0, 0 } };
 static const struct trobj PriestNormalMace[] = { { MACE, 3, WEAPON_CLASS, 1, 0, 1, 0, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0, 0 } };
