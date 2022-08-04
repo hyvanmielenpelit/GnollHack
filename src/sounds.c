@@ -8628,7 +8628,7 @@ merge_obj_back:
                 obj = otmp;
                 if (!obj)
                 {
-                    panic("sell_to_npc: null obj after merge");
+                    impossible("sell_to_npc: null obj after merge");
                     return res;
                 }
                 break;

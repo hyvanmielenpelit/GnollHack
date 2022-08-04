@@ -2071,7 +2071,7 @@ mk_obj_in_container_known(container, itemtype)
 struct obj* container;
 int itemtype;
 {
-    struct obj* otmp = add_to_container(container, mksobj(itemtype, FALSE, FALSE, TRUE));
+    struct obj* otmp = mksobj(itemtype, FALSE, FALSE, TRUE);
     if (otmp)
     {
         otmp->bknown = 1;
@@ -2083,6 +2083,7 @@ int itemtype;
             else
                 otmp->speflags &= ~SPEFLAGS_ALTERNATIVE_APPEARANCE;
         }
+        add_to_container(container, otmp);
     }
 
     return otmp;
