@@ -7437,6 +7437,8 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
          * to verify that it is in invent and has that bit set.
          */
         bypass_objlist(invent, TRUE);
+        if (n > 1)
+            all_pressed = (yn_query("Itemized selling?") != 'y');
         for (i = 0; i < n; i++)
         {
             otmp = pick_list[i].item.a_obj;
@@ -8582,7 +8584,7 @@ boolean auto_yes;
         (void)safe_qbuf(qbuf, qbuf, qsfx, obj, xname, simpleonames,
             one ? "that" : "those");
 
-        char ans = auto_yes ? 'y' : items_left_in_list > 1 ? ynq(qbuf) : yn_query(qbuf);
+        char ans = auto_yes ? 'y' : items_left_in_list > 1 ? ynaq(qbuf) : yn_query(qbuf);
 
         switch (ans)
         {
