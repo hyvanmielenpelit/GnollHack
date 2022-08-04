@@ -892,14 +892,22 @@ register struct monst *mtmp;
             (void)mongets(mtmp, SCIMITAR);
             break;
         case PM_GOBLIN:
-        case PM_HOBGOBLIN:
-            if (!rn2(mm == PM_GOBLIN ? 7 : 4))
+            if (!rn2(20))
             {
-                (void)mongets(mtmp, !rn2(10) ? STAFF_SLING : SLING);
-                m_initthrow(mtmp, !rn2(8) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 6, 8, FALSE, -1, -1);
+                (void)mongets(mtmp, SLING);
+                m_initthrow(mtmp, !rn2(20) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 6, 8, FALSE, -1, -1);
             }
             if (rn2(2))
-                (void)mongets(mtmp, (mm == PM_GOBLIN || !rn2(2)) ? ORCISH_DAGGER : SCIMITAR);
+                (void)mongets(mtmp, ORCISH_DAGGER);
+            break;
+        case PM_HOBGOBLIN:
+            if (!rn2(4))
+            {
+                (void)mongets(mtmp, !rn2(20)? STAFF_SLING : SLING);
+                m_initthrow(mtmp, !rn2(10) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 6, 8, FALSE, -1, -1);
+            }
+            if (rn2(2))
+                (void)mongets(mtmp, !rn2(2) ? ORCISH_DAGGER : SCIMITAR);
             break;
         default:
             if (mm != PM_ORC_SHAMAN && rn2(2))
