@@ -1795,7 +1795,6 @@ int skill, lvl;
     switch (skill)
     {
     case P_BARE_HANDED_COMBAT:
-    case P_TWO_WEAPON_COMBAT:
     case P_DODGE:
     case P_SHIELD:
     case P_DIGGING:
@@ -1804,6 +1803,7 @@ int skill, lvl;
         return max(1, (tmp + 1) / 2);
     case P_MARTIAL_ARTS:
         return max(1, (tmp + 6) / 2);
+    case P_TWO_WEAPON_COMBAT:
     case P_WAND:
     default:
         return max(1, tmp);
