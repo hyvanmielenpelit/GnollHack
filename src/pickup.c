@@ -2492,36 +2492,40 @@ in_container_core(obj, dobot)
 register struct obj *obj;
 boolean dobot;
 {
+    int res = 0;
+    if (!dobot)
+        context.skip_botl = TRUE;
+
     if (!current_container) 
     {
         impossible("<in> no current_container?");
-        return 0;
+        goto default_incontainer_end_here;
     } 
     else if (obj == uball || obj == uchain) 
     {
         play_sfx_sound(SFX_GENERAL_THATS_SILLY);
         You("must be kidding.");
-        return 0;
+        goto default_incontainer_end_here;
     }
     else if (obj == current_container)
     {
         play_sfx_sound(SFX_GENERAL_THATS_SILLY);
         pline("That would be an interesting topological exercise.");
-        return 0;
+        goto default_incontainer_end_here;
     }
     else if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         Norep_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s %s you are wearing.",
               Icebox ? "refrigerate" : "stash", something);
-        return 0;
+        goto default_incontainer_end_here;
     }
     else if ((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) 
     {
         play_sfx_sound(SFX_GENERAL_WELDED);
         obj->bknown = 1;
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
-        return 0;
+        goto default_incontainer_end_here;
     }
     else if (
         ((objects[current_container->otyp].oc_flags4 & O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS) && !(obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS))
@@ -2530,13 +2534,12 @@ boolean dobot;
     {
         play_sfx_sound(SFX_GENERAL_DOES_NOT_FIT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not made for holding %s.", The(cxname(current_container)), obj->quan > 1 ? cxname(obj) : makeplural(cxname(obj)));
-        return 0;
+        goto default_incontainer_end_here;
     }
     else if (obj->otyp == AMULET_OF_YENDOR
                || obj->otyp == CANDELABRUM_OF_INVOCATION
                || obj->otyp == BELL_OF_OPENING
                || obj->otyp == SPE_BOOK_OF_THE_DEAD
-               || obj->otyp == SPE_BOOK_OF_MODRON
         )
     {
         /* Prohibit Amulets in containers; if you allow it, monsters can't
@@ -2545,20 +2548,20 @@ boolean dobot;
          */
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be confined in such trappings.", The(xname(obj)));
-        return 0;
+        goto default_incontainer_end_here;
     }
     else if (obj->otyp == LEASH && obj->leashmon != 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s attached to your pet.", Tobjnam(obj, "are"));
-        return 0;
+        goto default_incontainer_end_here;
     }
     else if (obj == uwep) 
     {
         if (welded(obj, &youmonst))
         {
             weldmsg(obj);
-            return 0;
+            goto default_incontainer_end_here;
         }
         setuwep((struct obj *) 0, W_WEP);
         /* This uwep check is obsolete.  It dates to 3.0 and earlier when
@@ -2566,14 +2569,14 @@ boolean dobot;
          * fire resistance.  Life-saving would force it to be re-wielded.
          */
         if (uwep)
-            return 0; /* unwielded, died, rewielded */
+            goto default_incontainer_end_here; /* unwielded, died, rewielded */
     }
     else if (u.twoweap && obj == uarms) 
     {
         if (welded(obj, &youmonst))
         {
             weldmsg(obj);
-            return 0;
+            goto default_incontainer_end_here;
         }
         setuwep((struct obj*) 0, W_WEP2);
         /* This uwep check is obsolete.  It dates to 3.0 and earlier when
@@ -2581,7 +2584,7 @@ boolean dobot;
          * fire resistance.  Life-saving would force it to be re-wielded.
          */
         if (uarms)
-            return 0; /* unwielded, died, rewielded */
+            goto default_incontainer_end_here; /* unwielded, died, rewielded */
     }
     else if (obj == uswapwep)
     {
@@ -2597,7 +2600,10 @@ boolean dobot;
     }
 
     if (fatal_corpse_mistake(obj, FALSE))
-        return -1;
+    {
+        res = -1;
+        goto default_incontainer_end_here;
+    }
 
     boolean floor_container = !carried(current_container);
     boolean was_unpaid = FALSE;
@@ -2747,7 +2753,10 @@ boolean dobot;
      */
     if(dobot)
         bot();
-    return (current_container ? 1 : -1);
+    res = (current_container ? 1 : -1);
+default_incontainer_end_here:
+    context.skip_botl = FALSE;
+    return res;
 }
 
 /* askchain() filter used by in_container();
@@ -2847,7 +2856,10 @@ boolean dobot;
     if (obj->where != OBJ_INVENT)
         return 0;
 
+    if(!dobot)
+        context.skip_botl = TRUE;
     res = drop(obj);
+    context.skip_botl = FALSE;
 
     return res;
 }
@@ -2878,7 +2890,11 @@ boolean dobot;
 
     obj->nomerge = 1;
     int res = 0;
-    if ((res = pickup_object(obj, obj->quan, FALSE)) <= 0)
+    if (!dobot)
+        context.skip_botl = TRUE;
+    res = pickup_object(obj, obj->quan, FALSE);
+    context.skip_botl = FALSE;
+    if (res <= 0)
     {
         obj->nomerge = 0;
         return res;
@@ -2916,28 +2932,33 @@ boolean dobot;
 {
     register struct obj *otmp;
     boolean is_gold = (obj->oclass == COIN_CLASS);
-    int res, loadlev;
+    int res = 0, loadlev;
     long count;
+    if (!dobot)
+        context.skip_botl = TRUE;
 
     if (!current_container) 
     {
         impossible("<out> no current_container?");
-        return -1;
-    } 
+        res = -1;
+        goto default_outcountainer_end;
+    }
     else if (is_gold)
     {
         obj->owt = weight(obj);
     }
 
     if (obj->oartifact && !touch_artifact(obj, &youmonst))
-        return 0;
+        goto default_outcountainer_end;
 
     if (fatal_corpse_mistake(obj, FALSE))
-        return -1;
-
+    {
+        res = -1;
+        goto default_outcountainer_end;
+    }
     count = obj->quan;
     if ((res = lift_object(obj, current_container, &count, FALSE)) <= 0)
-        return res;
+        goto default_outcountainer_end;
 
     if (obj->quan != count && !(objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))
         obj = splitobj(obj, count);
@@ -2975,7 +2996,10 @@ boolean dobot;
     {
         bot(); /* update character's gold piece count immediately */
     }
-    return 1;
+    res = 1;
+default_outcountainer_end:
+    context.skip_botl = FALSE;
+    return res;
 }
 
 /* taking a corpse out of an ice box needs a couple of adjustments */
@@ -3094,7 +3118,8 @@ container_gone(fn)
 int FDECL((*fn), (OBJ_P));
 {
     /* result is only meaningful while use_container() is executing */
-    return ((fn == in_container || fn == out_container || fn == move_container)
+    return ((fn == in_container || fn == out_container || fn == move_container || fn == pickup_and_in_container || fn == out_container_and_drop
+        || fn == in_container_nobot || fn == out_container_nobot || fn == move_container_nobot || fn == pickup_and_in_container_nobot || fn == out_container_and_drop_nobot)
             && !current_container);
 }
 
@@ -3719,10 +3744,7 @@ struct obj* other_container UNUSED;
                 otmp2 = otmp->nobj;
                 res = out_container_nobot(otmp);
                 if (res < 0)
-                {
-                    bot();
                     break;
-                }
                 n_looted += res;
             }
             bot();
@@ -3735,10 +3757,7 @@ struct obj* other_container UNUSED;
                 otmp2 = otmp->nobj;
                 res = in_container_nobot(otmp);
                 if (res < 0)
-                {
-                    bot();
                     break;
-                }
                 n_looted += res;
             }
             bot();
@@ -3750,10 +3769,7 @@ struct obj* other_container UNUSED;
                 otmp2 = otmp->nobj;
                 res = move_container_nobot(otmp);
                 if (res < 0)
-                {
-                    bot();
                     break;
-                }
                 n_looted += res;
             }
             bot();
@@ -3765,10 +3781,7 @@ struct obj* other_container UNUSED;
                 otmp2 = otmp->nobj;
                 res = move_container_nobot(otmp);
                 if (res < 0)
-                {
-                    bot();
                     break;
-                }
                 n_looted += res;
             }
             bot();

@@ -317,6 +317,9 @@ do_statusline2()
 void
 bot()
 {
+    if (context.skip_botl)
+        return;
+
     /* dosave() flags completion by setting u.uhp to -1 */
     if ((u.uhp != -1) && youmonst.data && iflags.status_updates) {
         if (VIA_WINDOWPORT()) {
