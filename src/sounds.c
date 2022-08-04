@@ -5114,7 +5114,6 @@ struct monst* mtmp;
                         if (*u.ushops || otmp->unpaid)
                             check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE);
 
-                        otmp->bypass = FALSE;
                         (void)mpickobj(mtmp, otmp);
                     }
                 }
