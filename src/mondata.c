@@ -196,7 +196,7 @@ unsigned long mflag_bit;
 boolean plural;
 uchar mindex;
 {
-    struct mflag_description* mtable = m1flag_descriptions;
+    const struct mflag_description* mtable = m1flag_descriptions;
 
     if (mindex == 2)
         mtable = m2flag_descriptions;
