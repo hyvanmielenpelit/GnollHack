@@ -3145,6 +3145,7 @@ reset_remaining_static_variables()
     reset_dogs();
     reset_hack();
     reset_inventory();
+    reset_pickup();
     reset_traps();
     reset_spells();
     reset_vision();
@@ -3169,6 +3170,7 @@ reset_game(VOID_ARGS)
     reset_rooms(); /* no dynamic memory to reclaim */
     reset_gamestate();
     n_game_recoveries = 0;
+    reset_rndmonst(NON_PM);
     reset_blstats();
     reset_occupations();
     reset_remaining_static_variables();

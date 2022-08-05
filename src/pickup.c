@@ -4433,4 +4433,11 @@ dostash()
     return 1;
 }
 
+void
+reset_pickup(VOID_ARGS)
+{
+    current_container = 0;
+    move_target_container = 0;
+    abort_looting = FALSE;
+}
 /*pickup.c*/

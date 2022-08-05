@@ -20,7 +20,7 @@ struct ability_conversion_table {
 };
 
 
-static NEARDATA struct ability_conversion_table prop2innate[] = {
+static const NEARDATA struct ability_conversion_table prop2innate[] = {
     { FIRE_IMMUNITY, MR_FIRE, MR2_NONE, MC_NONE, AD_FIRE },
     { COLD_IMMUNITY, MR_COLD, MR2_NONE, MC_NONE, AD_COLD },
     { SLEEP_RESISTANCE, MR_SLEEP, MR2_NONE, MC_SLEEP, AD_SLEE },
@@ -73,7 +73,7 @@ struct mflag_description {
     const char* plural_noun;
 };
 
-static NEARDATA struct mflag_description m1flag_descriptions[] = {
+static const NEARDATA struct mflag_description m1flag_descriptions[] = {
     { M1_AMORPHOUS, "amorphous", "amorphous monsters" },
     { M1_AMPHIBIOUS, "amphibious", "amphibious monsters" },
     { M1_BREATHLESS, "breathless", "breathless monsters" },
@@ -106,7 +106,7 @@ static NEARDATA struct mflag_description m1flag_descriptions[] = {
     { 0 , "", "" }
 };
 
-static NEARDATA struct mflag_description m2flag_descriptions[] = {
+static const NEARDATA struct mflag_description m2flag_descriptions[] = {
     { M2_DEMON, "demon", "demons" },
     { M2_ANGEL, "angelic being", "angelic beings" },
     { M2_DWARF, "dwarf", "dwarves" },
@@ -127,7 +127,7 @@ static NEARDATA struct mflag_description m2flag_descriptions[] = {
     { 0 , "", "" }
 };
 
-static NEARDATA struct mflag_description m3flag_descriptions[] = {
+static const NEARDATA struct mflag_description m3flag_descriptions[] = {
     { M3_CONSTRICTOR, "constrictor", "constrictors" },
     { M3_INFRAVISION, "infravision", "monsters with infravision" },
     { M3_INCORPOREAL, "incorporeal", "incorporeal monsters" },
@@ -138,7 +138,7 @@ static NEARDATA struct mflag_description m3flag_descriptions[] = {
     { 0 , "", "" }
 };
 
-static NEARDATA struct mflag_description m4flag_descriptions[] = {
+static const NEARDATA struct mflag_description m4flag_descriptions[] = {
     { M4_PITWALK, "pitwalking", "pitwalkers" },
     { M4_SLURPS_ITEMS, "item-engulfing", "item-engulfing monsters" },
     { M4_STONY, "stony", "monsters made of stone" },
@@ -156,12 +156,12 @@ static NEARDATA struct mflag_description m4flag_descriptions[] = {
     { 0 , "", "" }
 };
 
-static NEARDATA struct mflag_description m5flag_descriptions[] = {
+static const NEARDATA struct mflag_description m5flag_descriptions[] = {
     { M5_HATES_LIGHT, "vulnerable to light", "monsters vulnerable to light" },
     { 0 , "", "" }
 };
 
-static NEARDATA struct mflag_description m6flag_descriptions[] = {
+static const NEARDATA struct mflag_description m6flag_descriptions[] = {
     { M6_NON_EATER, "non-eating living monster", "non-eating living monsters" },
     { M6_CORPSE_EATER, "corpse-eating monster", "corpse-eating monsters" },
     { M6_SHADE, "impervious to physical weapons", "monsters impervious to physical weapons" },
@@ -169,7 +169,7 @@ static NEARDATA struct mflag_description m6flag_descriptions[] = {
     { 0 , "", "" }
 };
 
-static NEARDATA struct mflag_description m7flag_descriptions[] = {
+static const NEARDATA struct mflag_description m7flag_descriptions[] = {
     { M7_ARCHAEOLOGIST, "archaeologist", "archaeologists" },
     { M7_BARBARIAN, "barbarian", "barbarians" },
     { M7_CAVEMAN, "cavaman", "cavamen" },
@@ -186,7 +186,7 @@ static NEARDATA struct mflag_description m7flag_descriptions[] = {
     { 0 , "", "" }
 };
 
-static NEARDATA struct mflag_description m8flag_descriptions[] = {
+static const NEARDATA struct mflag_description m8flag_descriptions[] = {
     { 0 , "", "" }
 };
 

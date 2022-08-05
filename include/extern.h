@@ -2512,6 +2512,7 @@ E int NDECL(dostash);
 E boolean NDECL(can_stash_objs);
 E void NDECL(set_current_container_to_dummyobj);
 E void NDECL(set_current_container_to_null);
+E void NDECL(reset_pickup);
 
 /* ### pline.c ### */
 
