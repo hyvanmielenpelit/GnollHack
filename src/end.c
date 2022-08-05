@@ -3141,15 +3141,23 @@ STATIC_DCL void
 reset_remaining_static_variables()
 {
     reset_hunger_status();
+    reset_drawbridge();
+    reset_dig();
     reset_display();
     reset_dogs();
     reset_hack();
     reset_inventory();
+    reset_kick();
+    reset_mhitm();
     reset_pickup();
+    reset_potion();
+    reset_throw();
     reset_traps();
+    reset_shk();
     reset_spells();
     reset_vision();
     reset_urolerace();
+    reset_zap();
 }
 
 STATIC_DCL void
@@ -3170,7 +3178,7 @@ reset_game(VOID_ARGS)
     reset_rooms(); /* no dynamic memory to reclaim */
     reset_gamestate();
     n_game_recoveries = 0;
-    reset_rndmonst(NON_PM);
+    reset_makemon();
     reset_blstats();
     reset_occupations();
     reset_remaining_static_variables();

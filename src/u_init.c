@@ -31,6 +31,11 @@ STATIC_DCL struct obj* FDECL(mk_obj_in_container_known, (struct obj*, int));
 #define UNDEF_SPE '\177'
 #define UNDEF_BLESS 2
 
+static NEARDATA short nocreate = STRANGE_OBJECT;
+static NEARDATA short nocreate2 = STRANGE_OBJECT;
+static NEARDATA short nocreate3 = STRANGE_OBJECT;
+static NEARDATA short nocreate4 = STRANGE_OBJECT;
+
 /*
  *      Initial inventory for the various roles.
  */
@@ -932,7 +937,12 @@ u_init()
     u.uhp_fraction = 0;
     u.mh_fraction = 0;
     u.uen_fraction = 0;
-    
+
+    nocreate = STRANGE_OBJECT;
+    nocreate2 = STRANGE_OBJECT;
+    nocreate3 = STRANGE_OBJECT;
+    nocreate4 = STRANGE_OBJECT;
+
     adjabil(0, 1);
     u.ulevel = u.ulevelmax = 1;
 
@@ -1562,10 +1572,6 @@ register const struct trobj * trop;
             }
             else
             { /* UNDEF_TYP */
-                static NEARDATA short nocreate = STRANGE_OBJECT;
-                static NEARDATA short nocreate2 = STRANGE_OBJECT;
-                static NEARDATA short nocreate3 = STRANGE_OBJECT;
-                static NEARDATA short nocreate4 = STRANGE_OBJECT;
                 /*
                  * For random objects, do not create certain overly powerful
                  * items: wand of wishing, ring of levitation, or the

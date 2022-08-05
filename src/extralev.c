@@ -371,4 +371,10 @@ makerogueghost()
     }
 }
 
+void
+reset_extralev(VOID_ARGS)
+{
+    memset((genericptr_t)&r, 0, sizeof(r));
+}
+
 /*extralev.c*/

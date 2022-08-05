@@ -30,6 +30,7 @@
 STATIC_VAR boolean alt_esc = FALSE;
 #endif
 STATIC_VAR boolean escape_sequence_key_start_allowed = FALSE;
+static NEARDATA int last_multi;
 
 struct cmd Cmd = { 0 }; /* flag.h */
 
@@ -6783,6 +6784,8 @@ boolean initial;
 
     if (initial)
     {
+        last_multi = 0;
+        phead = ptail = shead = stail = 0;
         backed_dir_cmd = FALSE;
         en_via_menu = FALSE;
         special_effect_shown = FALSE;
@@ -8026,8 +8029,6 @@ boolean doit;
     return ch;
 }
 
-
-static NEARDATA int last_multi;
 
 /*
  * convert a MAP window position into a movecmd

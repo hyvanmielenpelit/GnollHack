@@ -2744,4 +2744,12 @@ int aatyp;
     return w_mask;
 }
 
+void
+reset_mhitm(VOID_ARGS)
+{
+    vis = far_noise = FALSE;
+    noisetime = 0L;
+    otmp = 0;
+}
+
 /*mhitm.c*/

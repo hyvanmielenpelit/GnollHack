@@ -747,6 +747,8 @@ char *enterstring;
 }
 
 /* called when removing a pick-axe or mattock from a container */
+static NEARDATA long pickmovetime = 0L;
+
 void
 pick_pick(obj)
 struct obj *obj;
@@ -757,7 +759,6 @@ struct obj *obj;
         return;
     shkp = shop_keeper(*u.ushops);
     if (shkp && inhishop(shkp)) {
-        static NEARDATA long pickmovetime = 0L;
 
         /* if you bring a sack of N picks into a shop to sell,
            don't repeat this N times when they're taken out */
@@ -5526,6 +5527,12 @@ struct obj* obj;
 struct monst* shkp;
 {
     return !!onbill(obj, shkp, FALSE);
+}
+
+void
+reset_shk()
+{
+    pickmovetime = 0L;
 }
 
 #ifdef __SASC

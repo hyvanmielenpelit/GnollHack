@@ -11750,4 +11750,11 @@ int otyp;
 
 }
 
+void
+reset_zap(VOID_ARGS)
+{
+    obj_zapped = FALSE;
+    poly_zapped = 0;
+}
+
 /*zap.c*/

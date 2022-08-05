@@ -3286,19 +3286,20 @@ int mndx;
  *      comparing the dungeon alignment and monster alignment.
  *      return an integer in the range of 0-5.
  */
+static NEARDATA long oldmoves = 0L; /* != 1, starting value of moves */
+static NEARDATA s_level* align_lev;
+
 STATIC_OVL int
 align_shift(ptr)
 register struct permonst *ptr;
 {
-    static NEARDATA long oldmoves = 0L; /* != 1, starting value of moves */
-    static NEARDATA s_level *lev;
     register int alshift;
 
     if (oldmoves != moves) {
-        lev = Is_special(&u.uz);
+        align_lev = Is_special(&u.uz);
         oldmoves = moves;
     }
-    switch ((lev) ? lev->flags.align : dungeons[u.uz.dnum].flags.align) {
+    switch ((align_lev) ? align_lev->flags.align : dungeons[u.uz.dnum].flags.align) {
     default: /* just in case */
     case AM_NONE:
         alshift = 0;
@@ -4309,7 +4310,7 @@ struct monst *mtmp;
         MCORPSENM(mtmp) = NON_PM;
 }
 
-static NEARDATA char syms[] = {
+static const NEARDATA char syms[] = {
     MAX_OBJECT_CLASSES,  MAX_OBJECT_CLASSES + 1, RING_CLASS,   WAND_CLASS,   WEAPON_CLASS,
     FOOD_CLASS,   COIN_CLASS,      SCROLL_CLASS, POTION_CLASS, ARMOR_CLASS,
     AMULET_CLASS, TOOL_CLASS,      ROCK_CLASS,   GEM_CLASS,    SPBOOK_CLASS,  
@@ -4568,5 +4569,13 @@ struct monst*
 make_level_monster_anywhere(VOID_ARGS)
 {
     return make_level_monster(0, 0, NO_MM_FLAGS);
+}
+
+void
+reset_makemon(VOID_ARGS)
+{
+    oldmoves = 0L;
+    align_lev = 0;
+    reset_rndmonst(NON_PM);
 }
 /*makemon.c*/

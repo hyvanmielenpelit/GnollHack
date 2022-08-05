@@ -11,7 +11,8 @@
     ((martial_bonus() && (Magical_kicking || !(uarmf && is_metallic(uarmf)))) || is_bigfoot(youmonst.data) \
      || Magical_kicking)
 
-static NEARDATA struct rm *maploc, nowhere;
+static NEARDATA struct rm* maploc;
+static NEARDATA struct rm nowhere;
 static NEARDATA const char *gate_str;
 
 /* kickedobj (decl.c) tracks a kicked object until placed or destroyed */
@@ -2469,4 +2470,10 @@ xchar x, y;
     return MIGR_NOWHERE;
 }
 
+void
+reset_kick(VOID_ARGS)
+{
+    maploc = 0;
+    gate_str = 0;
+}
 /*dokick.c*/

@@ -3373,5 +3373,9 @@ int x, y;
     }
 }
 
-
+void
+reset_dig(VOID_ARGS)
+{
+    did_dig_msg = 0;
+}
 /*dig.c*/

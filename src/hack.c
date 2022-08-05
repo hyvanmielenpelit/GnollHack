@@ -140,6 +140,10 @@ const char *msg;
     return revived;
 }
 
+#ifndef LINT /* static long lastmovetime; */
+static NEARDATA long lastmovetime;
+#endif
+
 STATIC_OVL int
 moverock()
 {
@@ -374,9 +378,6 @@ moverock()
 #ifdef LINT /* static long lastmovetime; */
                 long lastmovetime;
                 lastmovetime = 0;
-#else
-                /* note: reset to zero after save/restore cycle */
-                static NEARDATA long lastmovetime;
 #endif
  dopush:
                 play_object_floor_sound(otmp, OBJECT_SOUND_TYPE_PUSH, FALSE);
@@ -4007,6 +4008,9 @@ reset_hack(VOID_ARGS)
     spottrap = (struct trap*)0;
     spottraptyp = NO_TRAP;
     wc = 0;
+#ifndef LINT /* static long lastmovetime; */
+    lastmovetime = 0;
+#endif
 }
 
 

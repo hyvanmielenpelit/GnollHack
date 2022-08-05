@@ -1127,4 +1127,11 @@ boolean is_disintegrated;
     nokiller();
 }
 
+
+void
+reset_drawbridge(VOID_ARGS)
+{
+    memset((genericptr_t)&occupants, 0, sizeof(occupants));
+}
+
 /*dbridge.c*/

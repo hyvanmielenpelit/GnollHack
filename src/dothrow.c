@@ -2424,6 +2424,9 @@ xchar x, y;
     }
 }
 
+static NEARDATA long lastmovetime = 0L;
+static NEARDATA boolean peaceful_shk = FALSE;
+
 /*
  * Unconditionally break an object. Assumes all resistance checks
  * and break messages have been delivered prior to getting here.
@@ -2498,8 +2501,6 @@ boolean from_invent;
             struct monst *shkp = shop_keeper(*o_shop);
 
             if (shkp) { /* (implies *o_shop != '\0') */
-                static NEARDATA long lastmovetime = 0L;
-                static NEARDATA boolean peaceful_shk = FALSE;
                 /*  We want to base shk actions on her peacefulness
                     at start of this turn, so that "simultaneous"
                     multiple breakage isn't drastically worse than
@@ -2666,6 +2667,13 @@ struct obj *obj;
     stackobj(obj);
     newsym(bhitpos.x, bhitpos.y);
     return 1;
+}
+
+void
+reset_throw(VOID_ARGS)
+{
+    peaceful_shk = FALSE;
+    lastmovetime = 0;
 }
 
 /*dothrow.c*/

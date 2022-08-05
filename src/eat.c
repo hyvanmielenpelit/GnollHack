@@ -781,13 +781,14 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
     return result;
 }
 
+static NEARDATA long ate_brains = 0L;
+
 /* eating a corpse or egg of one's own species is usually naughty */
 STATIC_OVL boolean
 maybe_cannibal(pm, allowmsg)
 int pm;
 boolean allowmsg;
 {
-    static NEARDATA long ate_brains = 0L;
     struct permonst *fptr = &mons[pm]; /* food type */
 
     /* when poly'd into a tentacled one, multiple tentacle hits in one
@@ -4003,6 +4004,7 @@ reset_hunger_status(VOID_ARGS)
 {
     save_hs = 0;
     saved_hs = FALSE;
+    ate_brains = 0L;
 }
 
 /* compute and comment on your (new?) hunger status */
@@ -4475,5 +4477,6 @@ int threat;
     }
     return FALSE;
 }
+
 
 /*eat.c*/

@@ -3755,4 +3755,10 @@ struct monst *mon,  /* monster being split */
     return mtmp2;
 }
 
+void
+reset_potion(VOID_ARGS)
+{
+    nothing = unkn = 0;
+}
+
 /*potion.c*/
