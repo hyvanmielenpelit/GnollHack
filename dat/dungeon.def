@@ -16,7 +16,7 @@
 #		number of choices for its branch level _first_.
 #
 
-DUNGEON:	"The Dungeons of Doom" "D" (29, 3)
+DUNGEON:	"The Dungeons of Doom" "D" (24, 2)
 TILESET:    dungeons_of_doom_tileset
 ALIGNMENT:	unaligned
 BRANCH:		"The Gnomish Mines" @ (2, 3)
@@ -28,7 +28,7 @@ CHAINBRANCH:	"Sokoban" "oracle" + (1, 0) up
 RNDLEVEL:	"Big Room" "bigrm" "B" @ (10, 3) 40 10
 CHAINBRANCH:	"The Quest" "oracle" + (6, 2) portal
 CHAINLEVEL:		"Treasure Island" "treasure1" "I" "oracle" + (9, 2)
-BRANCH:		"Fort Ludios" @ (18, 4) portal
+BRANCH:		"Fort Ludios" @ (12, 9) portal
 RNDLEVEL:	"Medusa's Island" "medusa" "none" @ (-3, 0) 4
 LEVALIGN:	chaotic
 LEVEL:		"Minotaur Maze" "minotaur" "N" @ (-2, 0)
@@ -85,7 +85,7 @@ DESCRIPTION:	mazelike
 RNDLEVEL:	"Mine Town" "minetn" "T" @ (3, 2) 7
 LEVELDESC:	town
 RNDLEVEL:	"Mines' End" "minend" "E" @ (-1, 0) 3
-CHAINBRANCH:	"The Large Circular Dungeon" "minetn" + (1, 1) portal
+CHAINBRANCH:	"The Large Circular Dungeon" "minetn" + (1, 2) portal
 
 #
 #	The Large Circular Dungeon
