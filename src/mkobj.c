@@ -1926,7 +1926,7 @@ unsigned long mkflags;
         curse(otmp);
 
     /* Exceptionality */
-    if (can_have_exceptionality(otmp) && !(objects[otmp->otyp].oc_flags4 & O4_NEVER_GENERATED_WITH_EXCEPTIONALITY) && mkobj_type < 2 && otmp->oartifact == 0)
+    if (can_have_exceptionality(otmp) && mkobj_type < 2 && otmp->oartifact == 0)
     {
         if ((mkflags & MKOBJ_FLAGS_PARAM_IS_EXCEPTIONALITY) && param >= 0)
         {
@@ -1958,7 +1958,7 @@ unsigned long mkflags;
             boolean doublechance = !!(objects[otmp->otyp].oc_flags5 & O5_DOUBLE_EXCEPTIONALITY_CHANCE);
             uchar ownerimpliedexcep = (mkflags & MKOBJ_FLAGS_OWNER_IS_LAWFUL) ? EXCEPTIONALITY_CELESTIAL :
                 (mkflags & MKOBJ_FLAGS_OWNER_IS_NEUTRAL) ? EXCEPTIONALITY_PRIMORDIAL : (mkflags & MKOBJ_FLAGS_OWNER_IS_LAWFUL) ? EXCEPTIONALITY_INFERNAL : 
-                (mkflags & MKOBJ_FLAGS_OWNER_IS_UNKNOWN_OR_EVIL) ? EXCEPTIONALITY_ELITE : 0;
+                (mkflags & MKOBJ_FLAGS_OWNER_IS_NONALIGNED) ? EXCEPTIONALITY_ELITE : 0;
             if (In_endgame(&u.uz))
             {
                 if (!rn2(halfchance ? 8 : doublechance ? 2 : 4))

@@ -44,12 +44,15 @@ struct monst* mtmp;
     if (!mtmp)
         return 0UL;
 
+    aligntyp align = mon_aligntyp(mtmp);
     unsigned long mkflags = 0UL;
-    if (mtmp->data->maligntyp > 0)
+    if (align == A_NONE || is_mercenary(mtmp->data) || mtmp->isgd)
+        mkflags |= MKOBJ_FLAGS_OWNER_IS_NONALIGNED;
+    else if (align == A_LAWFUL)
         mkflags |= MKOBJ_FLAGS_OWNER_IS_LAWFUL;
-    else if (mtmp->data->maligntyp == 0)
+    else if (align == A_NEUTRAL)
         mkflags |= MKOBJ_FLAGS_OWNER_IS_NEUTRAL;
-    else if (mtmp->data->maligntyp < 0)
+    else if (align == A_CHAOTIC)
         mkflags |= MKOBJ_FLAGS_OWNER_IS_CHAOTIC;
 
     return mkflags;

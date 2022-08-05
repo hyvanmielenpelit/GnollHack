@@ -701,7 +701,7 @@ enum context_menu_styles {
 #define MKOBJ_FLAGS_OWNER_IS_LAWFUL                    0x00000200
 #define MKOBJ_FLAGS_OWNER_IS_NEUTRAL                   0x00000400
 #define MKOBJ_FLAGS_OWNER_IS_CHAOTIC                   0x00000800
-#define MKOBJ_FLAGS_OWNER_IS_UNKNOWN_OR_EVIL           0x00001000
+#define MKOBJ_FLAGS_OWNER_IS_NONALIGNED                0x00001000
 
 #define MONDIED_FLAGS_NONE                             0x00000000
 #define MONDIED_FLAGS_NO_DEATH_ACTION                  0x00000001

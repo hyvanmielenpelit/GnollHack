@@ -937,7 +937,7 @@ struct objclass {
 #define O4_GENERATED_CELESTIAL         0x00000800UL
 #define O4_GENERATED_PRIMORDIAL        0x00001000UL
 #define O4_GENERATED_INFERNAL          0x00002000UL
-#define O4_NEVER_GENERATED_WITH_EXCEPTIONALITY             0x00004000UL
+#define O4_NON_EXCEPTIONAL             0x00004000UL
 #define O4_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS        0x00008000UL    /* deals damage when wielded like artifacts */
 #define O4_INAPPROPRIATE_CHARACTERS_CANT_HANDLE            0x00010000UL
 #define O4_NON_MYTHIC                                      0x00020000UL

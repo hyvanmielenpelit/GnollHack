@@ -339,11 +339,14 @@ struct obj {
 
 #define is_death_enchantable(o)  (is_elemental_enchantable(o) && is_otyp_material_death_enchantable((o)->otyp))
 
-#define can_otyp_have_exceptionality(otyp)     \
-    (objects[(otyp)].oc_flags4 & O4_CAN_HAVE_EXCEPTIONALITY)
+#define is_otyp_specially_exceptional(otyp)     \
+    ((objects[(otyp)].oc_flags4 & O4_CAN_HAVE_EXCEPTIONALITY))
+
+#define is_otyp_non_exceptional(otyp)     \
+    ((objects[(otyp)].oc_flags4 & O4_NON_EXCEPTIONAL))
 
 /* Unusual definition to account for weapons appropriately */
-#define can_have_exceptionality(o)     (is_weapon(o) || can_otyp_have_exceptionality((o)->otyp))
+#define can_have_exceptionality(o)     ((is_weapon(o) || is_otyp_specially_exceptional((o)->otyp)) && !is_otyp_non_exceptional((o)->otyp))
 #define nonexceptionality_armor(o)     (is_armor(o) && !can_have_exceptionality(o))
 
 #define otyp_allows_specially_dipping_into(otyp) (objects[(otyp)].oc_flags4 & O4_ALLOWS_DIPPING_INTO)
