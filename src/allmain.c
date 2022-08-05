@@ -417,6 +417,7 @@ boolean resuming;
         }
 
         /* Update the statusline */
+        context.skip_botl = FALSE; /* Shouldn't happen, but just for insurance */
         if (context.botl || context.botlx) 
         {
             bot();
