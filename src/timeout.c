@@ -1747,7 +1747,7 @@ laugh_uncontrollably()
         }
 }
 
-/* give a fumble message */
+/* give an odd idea message */
 STATIC_OVL void
 get_odd_idea()
 {
@@ -1766,7 +1766,7 @@ get_odd_idea()
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "suddenly feel that the radiation inside the dungeon is getting stronger.");
         break;
     case 4:
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are suddenly even more conviced that the government is controlled by...");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are suddenly even more convinced that the government is controlled by...");
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "...squid-faced, brain-sucking aliens from inside the hollow earth.");
         break;
     case 5:
