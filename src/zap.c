@@ -11247,7 +11247,7 @@ STATIC_OVL void
 wishcmdassist(triesleft)
 int triesleft;
 {
-    STATIC_VAR NEARDATA const char *
+    static NEARDATA const char *
         wishinfo[] = {
   "Wish details:",
   "",

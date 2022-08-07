@@ -3626,7 +3626,7 @@ struct obj *obj;
 const char *verb; /* "dip" or "grease", or null to avoid messages */
 boolean only_if_known_cursed; /* ignore covering unless known to be cursed */
 {
-    STATIC_VAR NEARDATA const char need_to_take_off_outer_armor[] =
+    static NEARDATA const char need_to_take_off_outer_armor[] =
         "need to take off %s to %s %s.";
     char buf[BUFSZ];
     boolean anycovering = !only_if_known_cursed; /* more comprehensible... */

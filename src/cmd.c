@@ -425,7 +425,7 @@ doextlist(VOID_ARGS)
     int n, pass;
     int menumode = 0, menushown[3], onelist = 0;
     boolean redisplay = TRUE, search = FALSE;
-    STATIC_VAR const char *headings[] = { "Extended commands",
+    static const char *headings[] = { "Extended commands",
                                       "Casual Extended Commands",
                                       "Debugging Extended Commands",
                                       };
@@ -2658,8 +2658,8 @@ wiz_intrinsic(VOID_ARGS)
 {
     if (wizard) 
     {
-        STATIC_VAR const char wizintrinsic[] = "#wizintrinsic";
-        STATIC_VAR const char fmt[] = "You are%s %s.";
+        static const char wizintrinsic[] = "#wizintrinsic";
+        static const char fmt[] = "You are%s %s.";
         winid win;
         anything any;
         char buf[BUFSZ];
@@ -3360,7 +3360,7 @@ basics_enlightenment(mode, final)
 int mode UNUSED;
 int final;
 {
-    STATIC_VAR const char Power[] = "mana";
+    static const char Power[] = "mana";
     char buf[BUFSZ];
     int pw = u.uen, hp = (Upolyd ? u.mh : u.uhp),
         pwmax = u.uenmax, hpmax = (Upolyd ? u.mhmax : u.uhpmax);
@@ -3411,7 +3411,7 @@ int final;
     /* gold; similar to doprgold(#seegold) but without shop billing info;
        same amount as shown on status line which ignores container contents */
     {
-        STATIC_VAR const char Your_wallet[] = "Your wallet ";
+        static const char Your_wallet[] = "Your wallet ";
         long umoney = money_cnt(invent);
 
         if (!umoney) {
@@ -4085,7 +4085,7 @@ attributes_enlightenment(unused_mode, final)
 int unused_mode UNUSED;
 int final;
 {
-    STATIC_VAR NEARDATA const char if_surroundings_permitted[] =
+    static NEARDATA const char if_surroundings_permitted[] =
         " if surroundings permitted";
     int ltmp;
     char buf[BUFSZ];
@@ -4842,12 +4842,12 @@ minimal_enlightenment()
     anything any;
     int genidx, n;
     char buf[BUFSZ], buf2[BUFSZ];
-    STATIC_VAR const char untabbed_fmtstr[] = "%-15s: %-12s";
-    STATIC_VAR const char untabbed_deity_fmtstr[] = "%-17s%s";
-    STATIC_VAR const char tabbed_fmtstr[] = "%s:\t%-12s";
-    STATIC_VAR const char tabbed_deity_fmtstr[] = "%s\t%s";
-    STATIC_VAR const char *fmtstr;
-    STATIC_VAR const char *deity_fmtstr;
+    static const char untabbed_fmtstr[] = "%-15s: %-12s";
+    static const char untabbed_deity_fmtstr[] = "%-17s%s";
+    static const char tabbed_fmtstr[] = "%s:\t%-12s";
+    static const char tabbed_deity_fmtstr[] = "%s\t%s";
+    static const char *fmtstr;
+    static const char *deity_fmtstr;
 
     fmtstr = iflags.menu_tab_sep ? tabbed_fmtstr : untabbed_fmtstr;
     deity_fmtstr = iflags.menu_tab_sep ? tabbed_deity_fmtstr
@@ -5966,11 +5966,11 @@ dokeylist(VOID_ARGS)
     boolean keys_used[256] = {0};
     winid datawin;
     int i;
-    STATIC_VAR const char
+    static const char
         run_desc[] = "Prefix: run until something very interesting is seen",
         forcefight_desc[] =
                      "Prefix: force fight even if you don't see a monster";
-    STATIC_VAR const struct {
+    static const struct {
         int nhkf;
         const char *desc;
         boolean numpad;
@@ -6769,12 +6769,12 @@ void
 reset_commands(initial)
 boolean initial;
 {
-    STATIC_VAR const char sdir[] = "hykulnjb><",
+    static const char sdir[] = "hykulnjb><",
                       sdir_swap_yz[] = "hzkulnjb><",
                       ndir[] = "47896321><",
                       ndir_phone_layout[] = "41236987><",
                       gnhdir[] = "4y8u6j2h><";
-    STATIC_VAR const int ylist[] = {
+    static const int ylist[] = {
         'y', 'Y', C('y'), M('y'), M('Y'), M(C('y'))
     };
     static struct ext_func_tab *back_dir_cmd[8];
@@ -7580,7 +7580,7 @@ char sym;
 int spkey; /* NHKF_ code for prefix key, if one was used, or for ESC */
 const char *msg;
 {
-    STATIC_VAR const char wiz_only_list[] = "EFGIVW";
+    static const char wiz_only_list[] = "EFGIVW";
     char ctrl;
     winid win;
     char buf[BUFSZ], buf2[BUFSZ], *explain;
@@ -7761,12 +7761,12 @@ const char *
 directionname(dir)
 int dir;
 {
-    STATIC_VAR NEARDATA const char *const dirnames[] = {
+    static NEARDATA const char *const dirnames[] = {
         "west",      "northwest", "north",     "northeast", "east",
         "southeast", "south",     "southwest", "down",      "up",
     };
 
-    STATIC_VAR NEARDATA const char invalidname[] = "invalid";
+    static NEARDATA const char invalidname[] = "invalid";
 
     if (dir < 0 || dir >= SIZE(dirnames))
         return invalidname;

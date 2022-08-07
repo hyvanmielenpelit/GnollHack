@@ -1087,7 +1087,7 @@ const char *cp; /* might be 'tp', updating in place */
 void *tp; /* result is never longer than 'cp' */
 boolean tp_is_nhsym;
 {
-    STATIC_VAR NEARDATA const char oct[] = "01234567", dec[] = "0123456789",
+    static NEARDATA const char oct[] = "01234567", dec[] = "0123456789",
                                hex[] = "00112233445566778899aAbBcCdDeEfF";
     const char *dp;
     long cval, dcount;

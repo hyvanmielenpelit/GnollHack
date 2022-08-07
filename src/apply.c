@@ -4034,9 +4034,9 @@ struct obj *tstone;
     boolean do_scratch;
     const char *streak_color, *choices;
     char stonebuf[QBUFSZ];
-    STATIC_VAR const char scritch[] = "\"scritch, scritch\"";
-    STATIC_VAR const char allowall[3] = { COIN_CLASS, ALL_CLASSES, 0 };
-    STATIC_VAR const char coins_gems[3] = { COIN_CLASS, GEM_CLASS, 0 };
+    static const char scritch[] = "\"scritch, scritch\"";
+    static const char allowall[3] = { COIN_CLASS, ALL_CLASSES, 0 };
+    static const char coins_gems[3] = { COIN_CLASS, GEM_CLASS, 0 };
 
     /* in case it was acquired while blinded */
     if (!Blind)
@@ -5224,7 +5224,7 @@ STATIC_OVL int
 do_break_wand(obj)
 struct obj *obj;
 {
-    STATIC_VAR const char nothing_else_happens[] = "But nothing else happens...";
+    static const char nothing_else_happens[] = "But nothing else happens...";
     register int i, x, y;
     register struct monst *mon;
     int dmg_n = 0, dmg_d = 6;

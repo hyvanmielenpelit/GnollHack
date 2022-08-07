@@ -375,7 +375,7 @@ boolean female;
     register const struct Role *role;
     register int i;
 
-    STATIC_VAR NEARDATA const char player_name[] = "Player";
+    static NEARDATA const char player_name[] = "Player";
 
     /* Find the role */
     for (role = roles; role->name.m; role++)
@@ -2634,13 +2634,13 @@ boolean from_configfile;
     enum statusfields fld = BL_FLUSH;
     struct hilite_s hilite;
     char tmpbuf[BUFSZ];
-    STATIC_VAR const char *aligntxt[] = { "chaotic", "neutral", "lawful" };
+    static const char *aligntxt[] = { "chaotic", "neutral", "lawful" };
     /* hu_stat[] from eat.c has trailing spaces which foul up comparisons */
-    STATIC_VAR const char *hutxt[] = { "Satiated", "", "Hungry", "Weak",
+    static const char *hutxt[] = { "Satiated", "", "Hungry", "Weak",
                                    "Fainting", "Fainted", "Starved" };
 
-    STATIC_VAR const char* sktxt[] = { "", "Skill" };
-    STATIC_VAR const char* twoweaptxt[] = { "", "2Weap" };
+    static const char* sktxt[] = { "", "Skill" };
+    static const char* twoweaptxt[] = { "", "2Weap" };
 
     /* Examples:
         3.6.1:
@@ -4005,7 +4005,7 @@ choose_value:
             hilite.rel = TXT_VALUE;
             Strcpy(hilite.textmatch, enc_stat[rv]);
         } else if (fld == BL_ALIGN) {
-            STATIC_VAR const char *aligntxt[] = { "chaotic", "neutral", "lawful" };
+            static const char *aligntxt[] = { "chaotic", "neutral", "lawful" };
             int rv = query_arrayvalue(qry_buf,
                                       aligntxt, 0, 2 + 1);
 
@@ -4015,7 +4015,7 @@ choose_value:
             hilite.rel = TXT_VALUE;
             Strcpy(hilite.textmatch, aligntxt[rv]);
         } else if (fld == BL_HUNGER) {
-            STATIC_VAR const char *hutxt[] = { "Satiated", (char *) 0, "Hungry",
+            static const char *hutxt[] = { "Satiated", (char *) 0, "Hungry",
                                            "Weak", "Fainting", "Fainted",
                                            "Starved" };
             int rv = query_arrayvalue(qry_buf,
@@ -4029,7 +4029,7 @@ choose_value:
             Strcpy(hilite.textmatch, hutxt[rv]);
         }
         else if (fld == BL_SKILL) {
-            STATIC_VAR const char* sktxt[] = { (char*)0, "Skill" };
+            static const char* sktxt[] = { (char*)0, "Skill" };
             int rv = query_arrayvalue(qry_buf,
                 sktxt,
                 0, 1 + 1);
@@ -4041,7 +4041,7 @@ choose_value:
             Strcpy(hilite.textmatch, sktxt[rv]);
         }
         else if (fld == BL_2WEP) {
-            STATIC_VAR const char* twoweaptxt[] = { (char*)0, "2Weap" };
+            static const char* twoweaptxt[] = { (char*)0, "2Weap" };
             int rv = query_arrayvalue(qry_buf,
                 twoweaptxt,
                 0, 1 + 1);

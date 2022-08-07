@@ -2364,7 +2364,7 @@ mbodypart(mon, part)
 struct monst *mon;
 int part;
 {
-    STATIC_VAR NEARDATA const char
+    static NEARDATA const char
         *humanoid_parts[] = { "arm",       "eye",  "face",         "finger",
                               "fingertip", "foot", "hand",         "handed",
                               "head",      "leg",  "light headed", "neck",

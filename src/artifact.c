@@ -1416,7 +1416,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                   || (youattack && u.uswallow && mdef == u.ustuck && !Blind);
     boolean realizes_damage;
     char wepdesc[BUFSIZ] ="";
-    STATIC_VAR const char you[] = "you";
+    static const char you[] = "you";
     char hittee[BUFSZ];
 
     Strcpy(hittee, youdefend ? you : mon_nam(mdef));
@@ -1585,7 +1585,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
         else if (artifact_has_flag(otmp, AF_BEHEAD)
                    && (dieroll == 1 || has_vorpal_vulnerability(mdef->data))) 
         {
-            STATIC_VAR const char *const behead_msg[2] = { "%s beheads %s!",
+            static const char *const behead_msg[2] = { "%s beheads %s!",
                                                        "%s decapitates %s!" };
 
             if (youattack && u.uswallow && mdef == u.ustuck)
@@ -1792,7 +1792,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
         || (youattack && u.uswallow && mdef == u.ustuck && !Blind);
     boolean realizes_damage;
     boolean extradamagedone = (extradmg > 0);
-    STATIC_VAR const char you[] = "you";
+    static const char you[] = "you";
     char hittee[BUFSZ];
     int totaldamagedone = 0;
     boolean lethaldamage = FALSE;
@@ -2104,7 +2104,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                     )
                 )
             {
-                STATIC_VAR const char* const behead_msg[3] = { "%s beheads %s!",
+                static const char* const behead_msg[3] = { "%s beheads %s!",
                                                             "%s decapitates %s!",
                                                             "%s cuts off the last head of %s!" };
 
@@ -3912,7 +3912,7 @@ int x, y;
 void
 mkot_trap_warn()
 {
-    STATIC_VAR const char *const heat[7] = {
+    static const char *const heat[7] = {
         "cool", "slightly warm", "warm", "very warm",
         "hot", "very hot", "like fire"
     };

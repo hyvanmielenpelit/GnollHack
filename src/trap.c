@@ -193,7 +193,7 @@ const char *ostr;
 int type;
 int ef_flags;
 {
-    STATIC_VAR NEARDATA const char
+    static NEARDATA const char
         *const action[] = { "smoulder", "rust", "rot", "corrode" },
         *const msg[] = { "burnt", "rusted", "rotten", "corroded" },
         *const bythe[] = { "heat", "oxidation", "decay", "corrosion" };

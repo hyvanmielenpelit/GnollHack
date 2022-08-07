@@ -98,7 +98,7 @@ getpos_help(force, goal)
 boolean force;
 const char *goal;
 {
-    STATIC_VAR const char *const fastmovemode[2] = { "8 units at a time",
+    static const char *const fastmovemode[2] = { "8 units at a time",
                                                  "skipping same glyphs" };
     char sbuf[BUFSZ];
     boolean doing_what_is;

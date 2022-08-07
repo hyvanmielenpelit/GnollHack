@@ -1993,7 +1993,7 @@ int rolenum, racenum, gendnum, alignnum;
 {
     int k, gendercount = 0, aligncount = 0;
     char buf[BUFSZ];
-    STATIC_VAR char err_ret[] = " character's";
+    static char err_ret[] = " character's";
     boolean donefirst = FALSE;
     int maxroles = sizeof(roles) / sizeof(roles[0]);
     int maxraces = sizeof(races) / sizeof(races[0]);
@@ -2380,7 +2380,7 @@ int which;
 winid where;
 boolean preselect;
 {
-    STATIC_VAR NEARDATA const char RS_menu_let[] = {
+    static NEARDATA const char RS_menu_let[] = {
         '=',  /* name */
         '?',  /* role */
         '/',  /* race */
