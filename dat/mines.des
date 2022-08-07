@@ -1140,7 +1140,7 @@ OBJECT:('*',"ruby"),$place[4]
 OBJECT:('*',"loadstone"),$place[4]
 OBJECT:('*',"ruby"),$place[5]
 OBJECT:('*',"worthless piece of red glass"),$place[5]
-OBJECT:('*',"luckstone"),$place[5],name:"The Gladstone"
+OBJECT:('*',"luckstone"),$place[5],no_pickup,name:"The Gladstone"
 # Random objects
 OBJECT:'*',random
 OBJECT:'*',random
@@ -1307,7 +1307,7 @@ OBJECT:('*',"ruby"),(70,05)
 OBJECT:('*',"amethyst"),(70,05)
 OBJECT:'*',(70,05)
 OBJECT:('*',"amethyst"),(70,05)
-OBJECT:('*',"luckstone"),(70,05),name:"The Gladstone"
+OBJECT:('*',"luckstone"),(70,05),no_pickup,name:"The Gladstone"
 # Scattered gems...
 OBJECT:'*',random
 OBJECT:'*',random
@@ -1429,10 +1429,10 @@ OBJECT:('*',"ruby"),random
 OBJECT:('*',"amethyst"),random
 OBJECT:'*',random
 OBJECT:('*',"amethyst"),random
-OBJECT:('*',"luckstone"),$place[0],name:"The Gladstone"
+OBJECT:('*',"luckstone"),$place[0],no_pickup,name:"The Gladstone"
 OBJECT:('*',"flint"),$place[1]
-OBJECT:class_treasure_weapon,$place[2],notcursed
-OBJECT: ('[', "royal crown"),$place[2],cursed
+OBJECT:class_treasure_weapon,$place[2],no_pickup,notcursed
+OBJECT: ('[', "royal crown"),$place[2],no_pickup,cursed
 OBJECT:'?',random
 OBJECT:'?',random
 OBJECT:'?',random
