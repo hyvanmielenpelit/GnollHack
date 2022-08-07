@@ -1176,7 +1176,7 @@ TRAP:random,random
 TRAP:random,random
 TRAP:random,random
 # Random monsters
-MONSTER:('g',"gnome king"),random,hostile {
+MONSTER:('g',"gnome king"),random,maxhp,hostile {
   OBJECT: class_treasure_weapon, notcursed
   OBJECT: ('[', "royal crown")
 }
@@ -1343,7 +1343,7 @@ TRAP:random,random
 TRAP:random,random
 TRAP:random,random
 # Random monsters.
-MONSTER:('g',"gnome king"),random,hostile {
+MONSTER:('g',"gnome king"),random,maxhp,hostile {
   OBJECT: class_treasure_weapon, notcursed
   OBJECT: ('[', "royal crown")
 }

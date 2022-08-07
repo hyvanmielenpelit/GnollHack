@@ -1961,36 +1961,36 @@ unsigned long mkflags;
                 (mkflags & MKOBJ_FLAGS_OWNER_IS_NONALIGNED) ? EXCEPTIONALITY_ELITE : 0;
             if (In_endgame(&u.uz))
             {
-                if (!rn2(halfchance ? 8 : doublechance ? 2 : 4))
+                if (doublechance || !rn2(halfchance ? 4 : 2))
                     otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
-                else if (halfchance ? !rn2(6) : doublechance ? rn2(3) : !rn2(3))
+                else if (!rn2(halfchance ? 4 : 2))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
                 else if (halfchance ? rn2(2) : doublechance ? rn2(8) : rn2(4))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
             else if (Inhell)
             {
-                if (!rn2(halfchance ? 24 : doublechance ? 6 : 12))
+                if (!rn2(halfchance ? 20 : doublechance ? 5 : 10))
                     otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
                 else if (!rn2(halfchance ? 8 : doublechance ? 2 : 4))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (doublechance ? rn2(4) : rn2(2))
+                else if (halfchance ? !rn2(4) : doublechance ? rn2(4) : !rn2(2))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
-            else if (leveldiff >= 20)
+            else if (leveldiff >= 16)
             {
-                if (!rn2(halfchance ? (Is_stronghold(&u.uz) ? 40 : 80) : doublechance ? (Is_stronghold(&u.uz) ? 10 : 20) : Is_stronghold(&u.uz) ? 20 : 40))
+                if (!rn2(halfchance ? 400 : doublechance ? 100 : 200))
                     otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
-                else if (!rn2(doublechance ? 3 : 6))
+                else if (!rn2(halfchance ? 20 : doublechance ? 5 : 10))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (doublechance ? rn2(3) : !rn2(3))
+                else if (!rn2(halfchance ? 8 : doublechance ? 2 : 4))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
-            else if (leveldiff >= 10)
+            else if (leveldiff >= 8)
             {
-                if (!rn2(halfchance ? 40 : doublechance ? 10 : 20))
+                if (!rn2(halfchance ? 100 : doublechance ? 25 : 50))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (!rn2(halfchance ? 12 : doublechance ? 3 : 6))
+                else if (!rn2(halfchance ? 16 : doublechance ? 4 : 8))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
             else if (leveldiff < 2)
@@ -2002,7 +2002,7 @@ unsigned long mkflags;
             {
                 if (!rn2(halfchance ? 400 : doublechance ? 100 : 200))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                else if (!rn2(halfchance ? 60 : doublechance ? 15 : 30))
+                else if (!rn2(halfchance ? 40 : doublechance ? 10 : 20))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
         }
