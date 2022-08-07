@@ -28,7 +28,7 @@ STATIC_DCL int FDECL(shkinit, (const struct shclass *, struct mkroom *));
  *  Personal names do not receive the honorific prefix "Mr." or "Ms.".
  */
 
-static const char *const shkliquors[] = {
+STATIC_VAR const char *const shkliquors[] = {
     /* Ukraine */
     "Njezjin", "Tsjernigof", "Ossipewsk", "Gorlowka",
     /* Belarus */
@@ -43,7 +43,7 @@ static const char *const shkliquors[] = {
     "Vals", "Schuls", "Zum Loch", 0
 };
 
-static const char *const shkbooks[] = {
+STATIC_VAR const char *const shkbooks[] = {
     /* Eire */
     "Skibbereen",  "Kanturk",   "Rath Luirc",     "Ennistymon",
     "Lahinch",     "Kinnegad",  "Lugnaquillia",   "Enniscorthy",
@@ -54,7 +54,7 @@ static const char *const shkbooks[] = {
     "Inishbofin",  "Kesh",      0
 };
 
-static const char *const shkarmors[] = {
+STATIC_VAR const char *const shkarmors[] = {
     /* Turquie */
     "Demirci",    "Kalecik",    "Boyabai",    "Yildizeli", "Gaziantep",
     "Siirt",      "Akhalataki", "Tirebolu",   "Aksaray",   "Ermenak",
@@ -65,7 +65,7 @@ static const char *const shkarmors[] = {
     0
 };
 
-static const char *const shkwands[] = {
+STATIC_VAR const char *const shkwands[] = {
     /* Wales */
     "Yr Wyddgrug", "Trallwng", "Mallwyd", "Pontarfynach", "Rhaeader",
     "Llandrindod", "Llanfair-ym-muallt", "Y-Fenni", "Maesteg", "Rhydaman",
@@ -76,7 +76,7 @@ static const char *const shkwands[] = {
     "Sgurr na Ciche", "Cannich", "Gairloch", "Kyleakin", "Dunvegan", 0
 };
 
-static const char *const shkrings[] = {
+STATIC_VAR const char *const shkrings[] = {
     /* Hollandse familienamen */
     "Feyfer",     "Flugi",         "Gheel",      "Havic",   "Haynin",
     "Hoboken",    "Imbyze",        "Juyn",       "Kinsky",  "Massis",
@@ -88,7 +88,7 @@ static const char *const shkrings[] = {
     "Oeloe",      "Kajaani",       "Fauske",     0
 };
 
-static const char *const shkfoods[] = {
+STATIC_VAR const char *const shkfoods[] = {
     /* Indonesia */
     "Djasinga",    "Tjibarusa",   "Tjiwidej",      "Pengalengan",
     "Bandjar",     "Parbalingga", "Bojolali",      "Sarangan",
@@ -101,7 +101,7 @@ static const char *const shkfoods[] = {
     0
 };
 
-static const char *const shkweapons[] = {
+STATIC_VAR const char *const shkweapons[] = {
     /* Perigord */
     "Voulgezac",   "Rouffiac",   "Lerignac",   "Touverac",  "Guizengeard",
     "Melac",       "Neuvicq",    "Vanzac",     "Picq",      "Urignac",
@@ -112,7 +112,7 @@ static const char *const shkweapons[] = {
     "Labouheyre",  0
 };
 
-static const char *const shktools[] = {
+STATIC_VAR const char *const shktools[] = {
     /* Spmi */
     "Ymla", "Eed-morra", "Elan Lapinski", "Cubask", "Nieb", "Bnowr Falr",
     "Sperc", "Noskcirdneh", "Yawolloh", "Hyeghu", "Niskal", "Trahnil",
@@ -147,7 +147,7 @@ static const char *const shktools[] = {
     0
 };
 
-static const char *const shklight[] = {
+STATIC_VAR const char *const shklight[] = {
     /* Romania */
     "Zarnesti", "Slanic", "Nehoiasu", "Ludus", "Sighisoara", "Nisipitu",
     "Razboieni", "Bicaz", "Dorohoi", "Vaslui", "Fetesti", "Tirgu Neamt",
@@ -158,7 +158,7 @@ static const char *const shklight[] = {
     "Lovech", "Sliven", 0
 };
 
-static const char *const shkgeneral[] = {
+STATIC_VAR const char *const shkgeneral[] = {
     /* Suriname */
     "Hebiwerie",    "Possogroenoe", "Asidonhopo",   "Manlobbi",
     "Adjama",       "Pakka Pakka",  "Kabalebo",     "Wonotobo",
@@ -174,7 +174,7 @@ static const char *const shkgeneral[] = {
     "Bordeyri",     "Holmavik",     0
 };
 
-static const char* const shkreagents[] = {
+STATIC_VAR const char* const shkreagents[] = {
     /* AD&D mages and others */
     "Merlin",    "Mordenkainen", "Leomund",   "Rary",
     "Bigby",     "Otiluke",  "Tenser", "Elminster",
@@ -182,7 +182,7 @@ static const char* const shkreagents[] = {
     "Gandalf",   "Saruman",     0
 };
 
-static const char* const shkmodron[] = {
+STATIC_VAR const char* const shkmodron[] = {
     /* Modron names */
     "Alphadron",    "Betagon",    "Gammadron",   "Deltadron",
     "Iotadron",     "Omegadron",  "Kappagon",    "Lambdadron",
@@ -191,7 +191,7 @@ static const char* const shkmodron[] = {
 };
 
 
-static const char *const shkhealthfoods[] = {
+STATIC_VAR const char *const shkhealthfoods[] = {
     /* Tibet */
     "Ga'er",    "Zhangmu",   "Rikaze",   "Jiangji",     "Changdu",
     "Linzhi",   "Shigatse",  "Gyantse",  "Ganden",      "Tsurphu",

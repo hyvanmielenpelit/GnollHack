@@ -10,7 +10,7 @@
 #include <ctype.h>
 
 /* part of the output on gain or loss of attribute */
-static const char
+STATIC_VAR const char
     *const plusattr[] = { "strong", "smart", "wise",
                           "agile",  "tough", "charismatic" },
     *const minusattr[] = { "weak",    "stupid",
@@ -21,7 +21,7 @@ const char
     *const attrname[] = { "strength", "intelligence", "wisdom",
                           "dexterity", "constitution", "charisma" };
 
-static const struct innate 
+STATIC_VAR const struct innate 
   arc_abil[] = { { 1, STEALTH, "", "" }, /* &(HStealth) */
                  { 1, FAST, "", "" },
                  { 10, SEARCHING, "perceptive", "" },
@@ -374,7 +374,7 @@ register int num;
 }
 
 
-static const struct poison_effect_message {
+STATIC_VAR const struct poison_effect_message {
     void VDECL((*delivery_func), (const char *, ...));
     const char *effect_msg;
 } poiseff[] = {
@@ -1332,7 +1332,7 @@ exerper()
 
 /* exercise/abuse text (must be in attribute order, not botl order);
    phrased as "You must have been [][0]." or "You haven't been [][1]." */
-static NEARDATA const char *const exertext[A_MAX][2] = {
+STATIC_VAR NEARDATA const char *const exertext[A_MAX][2] = {
     { "exercising diligently", "exercising properly" },           /* Str */
     { 0, 0 },                                                     /* Int */
     { "very observant", "paying attention" },                     /* Wis */
@@ -1742,7 +1742,7 @@ int propidx; /* OBSOLETE: special cases can have negative values */
      */
     //if (wizard) // Always true
     {
-        static NEARDATA const char because_of[] = " because of %s";
+        STATIC_VAR NEARDATA const char because_of[] = " because of %s";
 
         if (propidx >= 0) 
         {

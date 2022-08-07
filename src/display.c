@@ -160,17 +160,17 @@ typedef struct {
     struct layer_info layers;
 } gbuf_entry;
 
-static gbuf_entry gbuf[ROWNO][COLNO];
-static char gbuf_start[ROWNO];
-static char gbuf_stop[ROWNO];
-static const gbuf_entry nul_gbuf = { 0, nul_layerinfo };
-static boolean in_cls = 0;
-static boolean dela;
-static boolean delagr;
-static xchar lastx, lasty;
-static xchar lastswx, lastswy; /* last swallowed position */
-static int flushing = 0;
-static int delay_flushing = 0;
+STATIC_VAR gbuf_entry gbuf[ROWNO][COLNO];
+STATIC_VAR char gbuf_start[ROWNO];
+STATIC_VAR char gbuf_stop[ROWNO];
+STATIC_VAR const gbuf_entry nul_gbuf = { 0, nul_layerinfo };
+STATIC_VAR boolean in_cls = 0;
+STATIC_VAR boolean dela;
+STATIC_VAR boolean delagr;
+STATIC_VAR xchar lastx, lasty;
+STATIC_VAR xchar lastswx, lastswy; /* last swallowed position */
+STATIC_VAR int flushing = 0;
+STATIC_VAR int delay_flushing = 0;
 
 //{ base_cmap_to_glyph(S_unexplored), NO_GLYPH, { NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH }, 0UL, (genericptr_t)0, 0}
 
@@ -1619,7 +1619,7 @@ int x, y;
 
 #define TMP_AT_MAX_GLYPHS (COLNO * 2)
 
-static struct tmp_glyph {
+STATIC_VAR struct tmp_glyph {
     coord saved[TMP_AT_MAX_GLYPHS]; /* previously updated positions */
     int sidx;                       /* index of next unused slot in saved[] */
     int style; /* either DISP_BEAM or DISP_FLASH or DISP_ALWAYS */
@@ -4381,19 +4381,19 @@ xchar x, y;
 
 #ifdef WA_VERBOSE
 
-static const char *FDECL(type_to_name, (int));
-static void FDECL(error4, (int, int, int, int, int, int));
+STATIC_DCL const char *FDECL(type_to_name, (int));
+STATIC_DCL void FDECL(error4, (int, int, int, int, int, int));
 
-static int bad_count[MAX_TYPE]; /* count of positions flagged as bad */
+STATIC_VAR int bad_count[MAX_TYPE]; /* count of positions flagged as bad */
 
-static const char *
+STATIC_DCL const char *
 type_to_name(type)
 int type;
 {
     return (type < 0 || type >= MAX_TYPE) ? "unknown" : location_type_definitions[type].name;
 }
 
-static void
+STATIC_DCL void
 error4(x, y, a, b, c, dd)
 int x, y, a, b, c, dd;
 {
@@ -4685,7 +4685,7 @@ int x0, y0, x1, y1; /* from, to; abs(x1-x0)==1 && abs(y0-y1)==1 */
 #define T_hwall 3
 #define T_tdwall 4
 
-static const int wall_matrix[4][5] = {
+STATIC_VAR const int wall_matrix[4][5] = {
     { S_stone, S_tlcorn, S_trcorn, S_hwall, S_tdwall }, /* tdwall */
     { S_stone, S_trcorn, S_brcorn, S_vwall, S_tlwall }, /* tlwall */
     { S_stone, S_brcorn, S_blcorn, S_hwall, S_tuwall }, /* tuwall */
@@ -4713,7 +4713,7 @@ static const int wall_matrix[4][5] = {
 #define C_tuwall 4
 #define C_crwall 5
 
-static const int cross_matrix[4][6] = {
+STATIC_VAR const int cross_matrix[4][6] = {
     { S_brcorn, S_blcorn, S_tlcorn, S_tuwall, S_trwall, S_crwall },
     { S_blcorn, S_tlcorn, S_trcorn, S_trwall, S_tdwall, S_crwall },
     { S_tlcorn, S_trcorn, S_brcorn, S_tdwall, S_tlwall, S_crwall },
@@ -4725,7 +4725,7 @@ STATIC_OVL void
 t_warn(lev)
 struct rm *lev;
 {
-    static const char warn_str[] = "wall_angle: %s: case %d: seenv = 0x%x";
+    STATIC_VAR const char warn_str[] = "wall_angle: %s: case %d: seenv = 0x%x";
     const char *wname;
 
     if (lev->typ == TUWALL)

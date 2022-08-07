@@ -28,7 +28,7 @@ struct icp {
     char iclass; /* item class */
 };
 
-static const struct icp mkobjprobs[] = { { 12, WEAPON_CLASS },
+STATIC_VAR const struct icp mkobjprobs[] = { { 12, WEAPON_CLASS },
                                          { 12, ARMOR_CLASS },
                                          { 11, FOOD_CLASS },
                                          { 5, TOOL_CLASS },
@@ -42,7 +42,7 @@ static const struct icp mkobjprobs[] = { { 12, WEAPON_CLASS },
                                          { 5, MISCELLANEOUS_CLASS },
                                          { 2, AMULET_CLASS } };
 
-static const struct icp boxiprobs[] = { { 12, GEM_CLASS },
+STATIC_VAR const struct icp boxiprobs[] = { { 12, GEM_CLASS },
                                         { 12, FOOD_CLASS },
                                         { 10, POTION_CLASS },
                                         { 12, SCROLL_CLASS },
@@ -54,7 +54,7 @@ static const struct icp boxiprobs[] = { { 12, GEM_CLASS },
                                            { 6, MISCELLANEOUS_CLASS },
                                         { 2, AMULET_CLASS } };
 
-static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
+STATIC_VAR const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
                                          { 12, ARMOR_CLASS },
                                          { 22, FOOD_CLASS },
                                          { 22, POTION_CLASS },
@@ -62,7 +62,7 @@ static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
                                          { 5, WAND_CLASS },
                                          { 5, RING_CLASS } };
 
-static const struct icp hellprobs[] = { { 15, WEAPON_CLASS },
+STATIC_VAR const struct icp hellprobs[] = { { 15, WEAPON_CLASS },
                                         { 15, ARMOR_CLASS },
                                         { 12, FOOD_CLASS },
                                         { 12, TOOL_CLASS },
@@ -1215,7 +1215,7 @@ int x, y;
 }
 
 /* alteration types; must match COST_xxx macros in hack.h */
-static const char *const alteration_verbs[] = {
+STATIC_VAR const char *const alteration_verbs[] = {
     "cancel", "drain", "uncharge", "unbless", "uncurse", "disenchant",
     "degrade", "dilute", "erase", "burn", "neutralize", "destroy", "splatter",
     "bite", "open", "break the lock on", "rust", "rot", "tarnish"
@@ -1328,7 +1328,7 @@ int alter_type;
 }
 
 /* These are the classes where dknown is zero by default! */
-static const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS, ARMOR_CLASS, MISCELLANEOUS_CLASS, REAGENT_CLASS,
+STATIC_VAR const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS, ARMOR_CLASS, MISCELLANEOUS_CLASS, REAGENT_CLASS,
                                 SCROLL_CLASS, GEM_CLASS,  SPBOOK_CLASS,
                                 WEAPON_CLASS, TOOL_CLASS, FOOD_CLASS, 0 };
 
@@ -3221,7 +3221,7 @@ register struct obj *obj;
     return (wt ? wt * (int) obj->quan : ((int) obj->quan + 1) >> 1);
 }
 
-static const int treefruits[] = { APPLE, ORANGE, PEAR, BANANA, POMEGRANATE, EUCALYPTUS_LEAF, FIG, DRAGON_FRUIT };
+STATIC_VAR const int treefruits[] = { APPLE, ORANGE, PEAR, BANANA, POMEGRANATE, EUCALYPTUS_LEAF, FIG, DRAGON_FRUIT };
 
 struct obj *
 rnd_treefruit_at(x, y)
@@ -3359,7 +3359,7 @@ unsigned mid;
     return obj;
 }
 
-static struct obj *
+STATIC_OVL struct obj *
 save_mtraits(obj, mtmp)
 struct obj *obj;
 struct monst *mtmp;
@@ -4135,7 +4135,7 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
 
 /* support for wizard-mode's `sanity_check' option */
 
-static const char NEARDATA /* pline formats for insane_object() */
+STATIC_VAR const char NEARDATA /* pline formats for insane_object() */
     ofmt0[] = "%s obj %s %s: %s",
     ofmt3[] = "%s [not null] %s %s: %s",
     /* " held by mon %p (%s)" will be appended, filled by M,mon_nam(M) */
@@ -4285,7 +4285,7 @@ const char *mesg;
 }
 
 /* This must stay consistent with the defines in obj.h. */
-static const char *obj_state_names[NOBJ_STATES] = { "free",      "floor",
+STATIC_VAR const char *obj_state_names[NOBJ_STATES] = { "free",      "floor",
                                                     "contained", "invent",
                                                     "minvent",   "migrating",
                                                     "buried",    "onbill",

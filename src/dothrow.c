@@ -20,10 +20,10 @@ STATIC_DCL boolean FDECL(toss_up, (struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(sho_obj_return_to_u, (struct obj * obj));
 STATIC_DCL boolean FDECL(mhurtle_step, (genericptr_t, int, int));
 
-static NEARDATA const char toss_objs[] = { ALLOW_COUNT, COIN_CLASS,
+STATIC_VAR NEARDATA const char toss_objs[] = { ALLOW_COUNT, COIN_CLASS,
                                            ALL_CLASSES, WEAPON_CLASS, 0 };
 /* different default choices when wielding a sling (gold must be included) */
-static NEARDATA const char bullets[] = { ALLOW_COUNT, COIN_CLASS, ALL_CLASSES,
+STATIC_VAR NEARDATA const char bullets[] = { ALLOW_COUNT, COIN_CLASS, ALL_CLASSES,
                                          GEM_CLASS, WEAPON_CLASS, 0 };
 
 /* thrownobj (decl.c) tracks an object until it lands */
@@ -424,7 +424,7 @@ dothrow()
 
 /* KMH -- Automatically fill quiver */
 /* Suggested by Jeffrey Bay <jbay@convex.hp.com> */
-static void
+STATIC_OVL void
 autoquiver()
 {
     struct obj *otmp, *oammo = 0, *omissile = 0, *omisc = 0, *altammo = 0;
@@ -2268,11 +2268,11 @@ register struct obj *obj;
     boolean is_gem = objects[obj->otyp].oc_material == MAT_GEMSTONE;
     int ret = 0;
     int luck_change = 0;
-    static NEARDATA const char nogood[] = " is not interested in your junk.";
-    static NEARDATA const char acceptgift[] = " accepts your gift.";
-    static NEARDATA const char maybeluck[] = " hesitatingly";
-    static NEARDATA const char noluck[] = " graciously";
-    static NEARDATA const char addluck[] = " gratefully";
+    STATIC_VAR NEARDATA const char nogood[] = " is not interested in your junk.";
+    STATIC_VAR NEARDATA const char acceptgift[] = " accepts your gift.";
+    STATIC_VAR NEARDATA const char maybeluck[] = " hesitatingly";
+    STATIC_VAR NEARDATA const char noluck[] = " graciously";
+    STATIC_VAR NEARDATA const char addluck[] = " gratefully";
 
     Strcpy(buf, Monnam(mon));
     mon->mpeaceful = 1;
@@ -2424,8 +2424,8 @@ xchar x, y;
     }
 }
 
-static NEARDATA long lastmovetime = 0L;
-static NEARDATA boolean peaceful_shk = FALSE;
+STATIC_VAR NEARDATA long lastmovetime = 0L;
+STATIC_VAR NEARDATA boolean peaceful_shk = FALSE;
 
 /*
  * Unconditionally break an object. Assumes all resistance checks

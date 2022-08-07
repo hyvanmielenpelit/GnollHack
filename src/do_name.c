@@ -43,8 +43,8 @@ nextmbuf()
 /* function for getpos() to highlight desired map locations.
  * parameter value 0 = initialize, 1 = highlight, 2 = done
  */
-static void FDECL((*getpos_hilitefunc), (int)) = (void FDECL((*), (int))) 0;
-static boolean FDECL((*getpos_getvalid), (int, int)) =
+STATIC_DCL void FDECL((*getpos_hilitefunc), (int)) = (void FDECL((*), (int))) 0;
+STATIC_DCL boolean FDECL((*getpos_getvalid), (int, int)) =
                                            (boolean FDECL((*), (int, int))) 0;
 
 void
@@ -56,7 +56,7 @@ boolean FDECL((*gp_getvalidf), (int, int));
     getpos_getvalid = gp_getvalidf;
 }
 
-static const char *const gloc_descr[NUM_GLOCS][4] = {
+STATIC_VAR const char *const gloc_descr[NUM_GLOCS][4] = {
     { "any monsters", "monster", "next/previous monster", "monsters" },
     { "any items", "item", "next/previous object", "objects" },
     { "any doors", "door", "next/previous door or doorway", "doors or doorways" },
@@ -68,7 +68,7 @@ static const char *const gloc_descr[NUM_GLOCS][4] = {
       "valid locations" }
 };
 
-static const char *const gloc_filtertxt[NUM_GFILTER] = {
+STATIC_VAR const char *const gloc_filtertxt[NUM_GFILTER] = {
     "",
     " in view",
     " in this area"
@@ -98,7 +98,7 @@ getpos_help(force, goal)
 boolean force;
 const char *goal;
 {
-    static const char *const fastmovemode[2] = { "8 units at a time",
+    STATIC_VAR const char *const fastmovemode[2] = { "8 units at a time",
                                                  "skipping same glyphs" };
     char sbuf[BUFSZ];
     boolean doing_what_is;
@@ -250,13 +250,13 @@ const void *b;
      && generic_glyph_to_cmap(levl[(x)][(y)].hero_memory_layers.glyph) == S_unexplored  \
      && !levl[(x)][(y)].seenv)
 
-static struct opvar *gloc_filter_map = (struct opvar *) 0;
+STATIC_VAR struct opvar *gloc_filter_map = (struct opvar *) 0;
 
 #define GLOC_SAME_AREA(x,y)                                     \
     (isok((x), (y))                                             \
      && (selection_getpoint((x),(y), gloc_filter_map)))
 
-static int gloc_filter_floodfill_match_glyph;
+STATIC_VAR int gloc_filter_floodfill_match_glyph;
 
 int
 gloc_filter_classify_glyph(glyph)
@@ -1600,7 +1600,7 @@ const char* name;
     return obj;
 }
 
-static NEARDATA const char callable[] = {
+STATIC_VAR NEARDATA const char callable[] = {
     SCROLL_CLASS, POTION_CLASS, WAND_CLASS,  RING_CLASS, AMULET_CLASS, FOOD_CLASS,
     GEM_CLASS, SPBOOK_CLASS, ARMOR_CLASS, TOOL_CLASS, MISCELLANEOUS_CLASS, WEAPON_CLASS, 0
 };
@@ -1929,7 +1929,7 @@ namefloorobj()
     }
 }
 
-static const char *const ghostnames[] = {
+STATIC_VAR const char *const ghostnames[] = {
     /* these names should have length < PL_NSIZ */
     /* Capitalize the names for aesthetics -dgk */
     "Adri",    "Andries",       "Andreas",     "Bert",    "David",  "Dirk",
@@ -2447,7 +2447,7 @@ roguename()
                   : "Glenn Wichman";
 }
 
-static NEARDATA const char *const hcolors[] = {
+STATIC_VAR NEARDATA const char *const hcolors[] = {
     "ultraviolet", "infrared", "bluish-orange", "reddish-green", "dark white",
     "light black", "sky blue-pink", "salty", "sweet", "sour", "bitter",
     "striped", "spiral", "swirly", "plaid", "checkered", "argyle", "paisley",
@@ -2477,7 +2477,7 @@ rndcolor()
                                            : c_obj_colors[k];
 }
 
-static NEARDATA const char *const hliquids[] = {
+STATIC_VAR NEARDATA const char *const hliquids[] = {
     "yoghurt", "oobleck", "clotted blood", "diluted water", "purified water",
     "instant coffee", "tea", "herbal infusion", "liquid rainbow",
     "creamy foam", "mulled wine", "bouillon", "nectar", "grog", "flubber",
@@ -2497,7 +2497,7 @@ const char *liquidpref;
 
 /* Aliases for road-runner nemesis
  */
-static const char *const coynames[] = {
+STATIC_VAR const char *const coynames[] = {
     "Carnivorous Vulgaris", "Road-Runnerus Digestus", "Eatibus Anythingus",
     "Famishus-Famishus", "Eatibus Almost Anythingus", "Eatius Birdius",
     "Famishius Fantasticus", "Eternalii Famishiis", "Famishus Vulgarus",
@@ -3798,7 +3798,7 @@ const char *gang, *other;
 }
 
 /* make sure "The Colour of Magic" remains the first entry in here */
-static const char *const sir_Terry_novels[] = {
+STATIC_VAR const char *const sir_Terry_novels[] = {
     "The Colour of Magic", "The Light Fantastic", "Equal Rites", "Mort",
     "Sourcery", "Wyrd Sisters", "Pyramids", "Guards! Guards!", "Eric",
     "Moving Pictures", "Reaper Man", "Witches Abroad", "Small Gods",
@@ -3830,7 +3830,7 @@ short* novidx;
 
 
 
-static const char* const manual_names[MAX_MANUAL_TYPES] = {
+STATIC_VAR const char* const manual_names[MAX_MANUAL_TYPES] = {
     /* Manuals */
     "Wands 101", "Armor 101", "Weapons 101", "Gray Stones 101",
     "Basics of Kicking", "Basics of Enchantment", "Basics of Eating and Drinking", "Introduction to Dangerous Monsters",
@@ -3907,7 +3907,7 @@ const void* q;
     return namediff;
 }
 
-static short sorted_citems[NUM_OBJECTS];
+STATIC_VAR short sorted_citems[NUM_OBJECTS];
 
 #define CATALOGUE_MAGICAL 1
 #define CATALOGUE_CLERICAL 2

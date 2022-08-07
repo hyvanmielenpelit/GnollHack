@@ -1087,7 +1087,7 @@ const char *cp; /* might be 'tp', updating in place */
 void *tp; /* result is never longer than 'cp' */
 boolean tp_is_nhsym;
 {
-    static NEARDATA const char oct[] = "01234567", dec[] = "0123456789",
+    STATIC_VAR NEARDATA const char oct[] = "01234567", dec[] = "0123456789",
                                hex[] = "00112233445566778899aAbBcCdDeEfF";
     const char *dp;
     long cval, dcount;
@@ -5071,17 +5071,17 @@ char* bindings;
     return TRUE;
 }
 
-static NEARDATA const char *menutype[] = { "traditional", "combination",
+STATIC_VAR NEARDATA const char *menutype[] = { "traditional", "combination",
                                            "full", "partial" };
 
-static NEARDATA const char *burdentype[] = { "unencumbered", "burdened",
+STATIC_VAR NEARDATA const char *burdentype[] = { "unencumbered", "burdened",
                                              "stressed",     "strained",
                                              "overtaxed",    "overloaded" };
 
-static NEARDATA const char *runmodes[] = { "teleport", "run", "walk",
+STATIC_VAR NEARDATA const char *runmodes[] = { "teleport", "run", "walk",
                                            "crawl" };
 
-static NEARDATA const char *sortltype[] = { "none", "loot", "full" };
+STATIC_VAR NEARDATA const char *sortltype[] = { "none", "loot", "full" };
 
 /*
  * Convert the given string of object classes to a string of default object

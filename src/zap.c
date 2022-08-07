@@ -15,8 +15,8 @@
  */
 #define DISINTEGRATION_DUMMY_DAMAGE 5000
 
-static NEARDATA boolean obj_zapped;
-static NEARDATA int poly_zapped;
+STATIC_VAR NEARDATA boolean obj_zapped;
+STATIC_VAR NEARDATA int poly_zapped;
 
 extern boolean notonhead; /* for long worms */
 
@@ -5699,7 +5699,7 @@ struct obj *otmp;
     useup(otmp);
 }
 
-static NEARDATA const char zap_syms[] = { WAND_CLASS, 0 };
+STATIC_VAR NEARDATA const char zap_syms[] = { WAND_CLASS, 0 };
 
 /* 'z' command (or 'y' if numbed_pad==-1) */
 int
@@ -11247,7 +11247,7 @@ STATIC_OVL void
 wishcmdassist(triesleft)
 int triesleft;
 {
-    static NEARDATA const char *
+    STATIC_VAR NEARDATA const char *
         wishinfo[] = {
   "Wish details:",
   "",

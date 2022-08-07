@@ -48,15 +48,15 @@ STATIC_DCL void FDECL(init_oracles, (dlb *));
 STATIC_DCL void FDECL(couldnt_open_file, (const char *));
 
 /* rumor size variables are signed so that value -1 can be used as a flag */
-static long true_rumor_size = 0L, false_rumor_size;
+STATIC_VAR long true_rumor_size = 0L, false_rumor_size;
 /* rumor start offsets are unsigned because they're handled via %lx format */
-static unsigned long true_rumor_start, false_rumor_start;
+STATIC_VAR unsigned long true_rumor_start, false_rumor_start;
 /* rumor end offsets are signed because they're compared with [dlb_]ftell() */
-static long true_rumor_end, false_rumor_end;
+STATIC_VAR long true_rumor_end, false_rumor_end;
 /* oracles are handled differently from rumors... */
-static int oracle_flg = 0; /* -1=>don't use, 0=>need init, 1=>init done */
-static size_t oracle_cnt = 0;
-static unsigned long *oracle_loc = 0;
+STATIC_VAR int oracle_flg = 0; /* -1=>don't use, 0=>need init, 1=>init done */
+STATIC_VAR size_t oracle_cnt = 0;
+STATIC_VAR unsigned long *oracle_loc = 0;
 
 STATIC_OVL void
 init_rumors(fp)

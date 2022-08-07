@@ -20,11 +20,11 @@ STATIC_DCL int FDECL(menu_drop, (int));
 STATIC_DCL int NDECL(currentlevel_rewrite);
 STATIC_DCL void NDECL(final_level);
 STATIC_DCL void FDECL(print_corpse_properties, (winid, int, BOOLEAN_P));
-/* static boolean FDECL(badspot, (XCHAR_P,XCHAR_P)); */
+/* STATIC_DCL boolean FDECL(badspot, (XCHAR_P,XCHAR_P)); */
 
 extern int n_dgns; /* number of dungeons, from dungeon.c */
 
-static NEARDATA const char drop_types[] = { ALLOW_COUNT, COIN_CLASS,
+STATIC_VAR NEARDATA const char drop_types[] = { ALLOW_COUNT, COIN_CLASS,
                                             ALL_CLASSES, 0 };
 
 /* 'd' command: drop one inventory item */
@@ -361,7 +361,7 @@ docharacterstatistics()
 }
 
 
-static NEARDATA const char item_description_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
+STATIC_VAR NEARDATA const char item_description_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
 
 /* the M('x') command - Item descriptions*/
 int
@@ -3997,7 +3997,7 @@ register struct obj* obj;
 
 
 
-static const char* damage_type_names[] = {
+STATIC_VAR const char* damage_type_names[] = {
     "physical", "magic", "fire", "cold", "sleep",
     "disintegrating", "electrical", "poisonous", "acidic", "deadly",
     "petrifying", "blinding", "stunning", "slowing", "paralyzing",
@@ -4011,7 +4011,7 @@ static const char* damage_type_names[] = {
 
 };
 
-static const char* damage_type_names_high[] = {
+STATIC_VAR const char* damage_type_names_high[] = {
     "fire or poison gas", "disintegration or cold", "ancient gold dragon", "celestial", "magic",
     "random draconic", "demon", "controlled creatures", "gnolls", "ghouls",
     "undead", "minotaurs", "random eye stalk", "random eye stalk", "bison",
@@ -4030,7 +4030,7 @@ short damagetype;
     return damage_type_names[damagetype];
 }
 
-static const char* defense_type_names[] = {
+STATIC_VAR const char* defense_type_names[] = {
     "physical damage resistance", "magic resistance", "fire resistance", "cold resistance", "",
     "", "", "shock resistance", "", "",
     "", "", "stun resistance", "", "",
@@ -4281,7 +4281,7 @@ register struct monst* mon;
 }
 
 
-static const char* monster_size_names[] = {
+STATIC_VAR const char* monster_size_names[] = {
     "tiny", "small", "medium-sized", "large", "huge",
     "gigantic", "gigantic", "gigantic",
 };
@@ -4296,7 +4296,7 @@ int monsize;
 }
 
 
-static const char* attack_type_names[] = {
+STATIC_VAR const char* attack_type_names[] = {
     "none", "claw", "bite", "kick", "ram",
     "tail", "butt", "touch", "sting", "grab", "spit",
     "engulf", "breath weapon", "explosion", "explosion",
@@ -5483,7 +5483,7 @@ int retry;
 }
 
 /* on a ladder, used in goto_level */
-static NEARDATA boolean at_ladder = FALSE;
+STATIC_VAR NEARDATA boolean at_ladder = FALSE;
 
 /* the '>' command */
 int
@@ -5777,7 +5777,7 @@ save_currentstate()
 #endif
 
 /*
-static boolean
+STATIC_OVL boolean
 badspot(x, y)
 register xchar x, y;
 {
@@ -6404,12 +6404,12 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
     if (familiar) 
     {
-        static const char *const fam_msgs[4] = {
+        STATIC_VAR const char *const fam_msgs[4] = {
             "You have a sense of deja vu.",
             "You feel like you've been here before.",
             "This place %s familiar...", 0 /* no message */
         };
-        static const char *const halu_fam_msgs[4] = {
+        STATIC_VAR const char *const halu_fam_msgs[4] = {
             "Whoa!  Everything %s different.",
             "You are surrounded by twisty little passages, all alike.",
             "Gee, this %s like uncle Conan's place...", 0 /* no message */
@@ -6599,7 +6599,7 @@ final_level()
     gain_guardian_angel(FALSE);
 }
 
-static char *dfr_pre_msg = 0,  /* pline() before level change */
+STATIC_VAR char *dfr_pre_msg = 0,  /* pline() before level change */
             *dfr_post_msg = 0; /* pline() after level change */
 
 /* change levels at the end of this turn, after monsters finish moving */

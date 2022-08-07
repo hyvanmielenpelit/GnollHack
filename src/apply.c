@@ -48,7 +48,7 @@ STATIC_DCL boolean FDECL(find_poleable_mon, (coord *, int, int));
 void FDECL(amii_speaker, (struct obj *, char *, int));
 #endif
 
-static const char no_elbow_room[] =
+STATIC_VAR const char no_elbow_room[] =
     "don't have enough elbow-room to maneuver.";
 
 STATIC_OVL int
@@ -624,7 +624,7 @@ int rx, ry, *resp;
     return FALSE; /* no corpse or statue */
 }
 
-static const char hollow_str[] = "a hollow sound.  This must be a secret %s!";
+STATIC_VAR const char hollow_str[] = "a hollow sound.  This must be a secret %s!";
 
 /* Strictly speaking it makes no sense for usage of a stethoscope to
    not take any time; however, unless it did, the stethoscope would be
@@ -770,7 +770,7 @@ register struct obj *obj;
     return res;
 }
 
-static const char whistle_str[] = "produce a %s whistling sound.";
+STATIC_VAR const char whistle_str[] = "produce a %s whistling sound.";
 
 STATIC_OVL void
 use_whistle(obj)
@@ -975,7 +975,7 @@ unleash_all()
  *  This ought to exclude various other things, such as lights and gas
  *  spore, is_whirly() critters, ethereal creatures, possibly others.
  */
-static boolean
+STATIC_OVL boolean
 leashable(mtmp)
 struct monst *mtmp;
 {
@@ -1263,7 +1263,7 @@ beautiful()
                : "ugly");
 }
 
-static const char look_str[] = "look %s.";
+STATIC_VAR const char look_str[] = "look %s.";
 
 STATIC_OVL int
 use_mirror(obj)
@@ -2501,7 +2501,7 @@ struct obj **optr;
     *optr = obj;
 }
 
-static NEARDATA const char cuddly[] = { TOOL_CLASS, GEM_CLASS, 0 };
+STATIC_VAR NEARDATA const char cuddly[] = { TOOL_CLASS, GEM_CLASS, 0 };
 
 int
 dorub()
@@ -2706,7 +2706,7 @@ boolean showmsg;
     return TRUE;
 }
 
-static int jumping_is_magic;
+STATIC_VAR int jumping_is_magic;
 
 STATIC_OVL boolean
 get_valid_jump_position(x,y)
@@ -3049,7 +3049,7 @@ struct obj *obj;
 
     if ((can = mksobj(TIN, FALSE, FALSE, FALSE)) != 0) 
     {
-        static const char you_buy_it[] = "You tin it, you bought it!";
+        STATIC_VAR const char you_buy_it[] = "You tin it, you bought it!";
 
         can->corpsenm = corpse->corpsenm;
         can->cursed = obj->cursed;
@@ -3534,7 +3534,7 @@ struct obj **optr;
     *optr = 0;
 }
 
-static NEARDATA const char lubricables[] = { ALL_CLASSES, ALLOW_NONE, 0 };
+STATIC_VAR NEARDATA const char lubricables[] = { ALL_CLASSES, ALLOW_NONE, 0 };
 
 STATIC_OVL void
 use_grease(obj)
@@ -3602,7 +3602,7 @@ struct obj *obj;
     update_inventory();
 }
 
-static NEARDATA const char wand_application_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
+STATIC_VAR NEARDATA const char wand_application_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
 
 STATIC_OVL int 
 use_wand_on_object(obj)
@@ -4034,9 +4034,9 @@ struct obj *tstone;
     boolean do_scratch;
     const char *streak_color, *choices;
     char stonebuf[QBUFSZ];
-    static const char scritch[] = "\"scritch, scritch\"";
-    static const char allowall[3] = { COIN_CLASS, ALL_CLASSES, 0 };
-    static const char coins_gems[3] = { COIN_CLASS, GEM_CLASS, 0 };
+    STATIC_VAR const char scritch[] = "\"scritch, scritch\"";
+    STATIC_VAR const char allowall[3] = { COIN_CLASS, ALL_CLASSES, 0 };
+    STATIC_VAR const char coins_gems[3] = { COIN_CLASS, GEM_CLASS, 0 };
 
     /* in case it was acquired while blinded */
     if (!Blind)
@@ -4179,7 +4179,7 @@ struct obj *tstone;
     return;
 }
 
-static struct trapinfo {
+STATIC_VAR struct trapinfo {
     struct obj *tobj;
     xchar tx, ty;
     int time_needed;
@@ -4678,7 +4678,7 @@ struct obj *obj;
     return 1;
 }
 
-static const char
+STATIC_VAR const char
     not_enough_room[] = "There's not enough room here to use that.",
     where_to_hit[] = "Where do you want to hit?",
     cant_see_spot[] = "won't hit anything if you can't see that spot.",
@@ -4730,8 +4730,8 @@ int min_range, max_range;
     return TRUE;
 }
 
-static int polearm_range_min = -1;
-static int polearm_range_max = -1;
+STATIC_VAR int polearm_range_min = -1;
+STATIC_VAR int polearm_range_max = -1;
 
 STATIC_OVL boolean
 get_valid_polearm_position(x, y)
@@ -5224,7 +5224,7 @@ STATIC_OVL int
 do_break_wand(obj)
 struct obj *obj;
 {
-    static const char nothing_else_happens[] = "But nothing else happens...";
+    STATIC_VAR const char nothing_else_happens[] = "But nothing else happens...";
     register int i, x, y;
     register struct monst *mon;
     int dmg_n = 0, dmg_d = 6;
@@ -5487,7 +5487,7 @@ char class;
     Strcat(cl, tmp);
 }
 
-static const char tools[] = { TOOL_CLASS, WEAPON_CLASS, WAND_CLASS, 0 };
+STATIC_VAR const char tools[] = { TOOL_CLASS, WEAPON_CLASS, WAND_CLASS, 0 };
 
 /* augment tools[] if various items are carried */
 void

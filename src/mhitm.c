@@ -10,11 +10,11 @@
 
 extern boolean notonhead;
 
-static NEARDATA boolean vis, far_noise;
-static NEARDATA long noisetime;
-static NEARDATA struct obj *otmp;
+STATIC_VAR NEARDATA boolean vis, far_noise;
+STATIC_VAR NEARDATA long noisetime;
+STATIC_VAR NEARDATA struct obj *otmp;
 
-static const char brief_feeling[] =
+STATIC_VAR const char brief_feeling[] =
     "have a %s feeling for a moment, then it passes.";
 
 STATIC_DCL char *FDECL(mon_nam_too, (char *, struct monst *, struct monst *));
@@ -38,7 +38,7 @@ STATIC_DCL int FDECL(passivemm, (struct monst *, struct monst *,
  * If we use this a lot it should probably be a parameter to mdamagem()
  * instead of a global variable.
  */
-static int dieroll;
+STATIC_VAR int dieroll;
 
 /* returns mon_nam(mon) relative to other_mon; normal name unless they're
    the same, in which case the reference is to {him|her|it} self */

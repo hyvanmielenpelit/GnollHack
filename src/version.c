@@ -223,7 +223,7 @@ extern const char regex_id[];
  * that of the substituted value since we don't do phrase-splitting/line-
  * wrapping when displaying it.
  */
-static const struct rt_opt {
+STATIC_VAR const struct rt_opt {
     const char *token, *value;
 } rt_opts[] = {
     { ":PATMATCH:", regex_id },

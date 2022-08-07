@@ -13,7 +13,7 @@
 extern lev_region *lregions;
 extern int num_lregions;
 /* for preserving the insect legs when wallifying baalz level */
-static lev_region bughack = { {COLNO, ROWNO, 0, 0}, {COLNO, ROWNO, 0, 0} };
+STATIC_VAR lev_region bughack = { {COLNO, ROWNO, 0, 0}, {COLNO, ROWNO, 0, 0} };
 
 STATIC_DCL int FDECL(iswall, (int, int));
 STATIC_DCL int FDECL(iswall_or_stone, (int, int));
@@ -482,7 +482,7 @@ baalz_fixup()
     bughack.inarea.y2 = bughack.delarea.y2 = 0;
 }
 
-static boolean was_waterlevel; /* ugh... this shouldn't be needed */
+STATIC_VAR boolean was_waterlevel; /* ugh... this shouldn't be needed */
 
 /* this is special stuff that the level compiler cannot (yet) handle */
 void
@@ -665,7 +665,7 @@ char *s;
 }
 
 #define ORC_LEADER 1
-static const char *orcfruit[] = { "paddle cactus", "dwarven root" };
+STATIC_VAR const char *orcfruit[] = { "paddle cactus", "dwarven root" };
 
 void
 migrate_orc(mtmp, mflags)
@@ -1528,10 +1528,10 @@ fumaroles()
  * other source files, but they are all so nicely encapsulated here.
  */
 
-static struct bubble *bbubbles, *ebubbles;
+STATIC_VAR struct bubble *bbubbles, *ebubbles;
 
-static struct trap *wportal;
-static int xmin, ymin, xmax, ymax; /* level boundaries */
+STATIC_VAR struct trap *wportal;
+STATIC_VAR int xmin, ymin, xmax, ymax; /* level boundaries */
 /* bubble movement boundaries */
 #define bxmin (xmin + 1)
 #define bymin (ymin + 1)

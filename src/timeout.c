@@ -25,9 +25,9 @@ STATIC_DCL void NDECL(sick_dialogue);
 STATIC_DCL void NDECL(food_poisoned_dialogue);
 STATIC_DCL void NDECL(mummy_rot_dialogue);
 
-static boolean alternate_sick_text = FALSE;
+STATIC_VAR boolean alternate_sick_text = FALSE;
 
-static NEARDATA const char* const sick_texts[] = {
+STATIC_VAR NEARDATA const char* const sick_texts[] = {
     "You are starting to feel badly feverish.",        /* 8 */
     "Your fever is rising very high.",    /* 7 */
     "You are feeling extremely feverish.",          /* 6 */
@@ -85,7 +85,7 @@ sick_dialogue()
 }
 
 
-static NEARDATA const char* const food_poisoned_texts[] = {
+STATIC_VAR NEARDATA const char* const food_poisoned_texts[] = {
     "You are feeling very feverish.",        /* 8 */
     "Your stomach is hurting terribly.",    /* 7 */
     "You are feeling extremely feverish.",          /* 6 */
@@ -229,7 +229,7 @@ mummy_rot_dialogue()
 
 
 /* He is being petrified - dialogue by inmet!tower */
-static NEARDATA const char *const stoned_texts[] = {
+STATIC_VAR NEARDATA const char *const stoned_texts[] = {
     "You are slowing down.",            /* 5 */
     "Your limbs are stiffening.",       /* 4 */
     "Your limbs have turned to stone.", /* 3 */
@@ -292,7 +292,7 @@ stoned_dialogue()
 }
 
 /* hero is getting sicker and sicker prior to vomiting */
-static NEARDATA const char *const vomiting_texts[] = {
+STATIC_VAR NEARDATA const char *const vomiting_texts[] = {
     "are feeling mildly nauseated.", /* 14 */
     "feel slightly confused.",       /* 11 */
     "can't seem to think straight.", /* 8 */
@@ -365,7 +365,7 @@ vomiting_dialogue()
     exercise(A_CON, FALSE);
 }
 
-static NEARDATA const char *const choke_texts[] = {
+STATIC_VAR NEARDATA const char *const choke_texts[] = {
     "You find it hard to breathe.",
     "You're gasping for air.",
     "You can no longer breathe.",
@@ -373,7 +373,7 @@ static NEARDATA const char *const choke_texts[] = {
     "You suffocate."
 };
 
-static NEARDATA const char *const choke_texts2[] = {
+STATIC_VAR NEARDATA const char *const choke_texts2[] = {
     "Your %s is becoming constricted.",
     "Your blood is having trouble reaching your brain.",
     "The pressure on your %s increases.",
@@ -401,7 +401,7 @@ choke_dialogue()
     exercise(A_STR, FALSE);
 }
 
-static NEARDATA const char *const levi_texts[] = {
+STATIC_VAR NEARDATA const char *const levi_texts[] = {
     "You float slightly lower.",
     "You wobble unsteadily %s the %s."
 };
@@ -433,7 +433,7 @@ levitation_dialogue()
     }
 }
 
-static NEARDATA const char *const slime_texts[] = {
+STATIC_VAR NEARDATA const char *const slime_texts[] = {
     "You are turning a little %s.",   /* 5 */
     "Your limbs are getting oozy.",   /* 4 */
     "Your skin begins to peel away.", /* 3 */
@@ -570,7 +570,7 @@ struct kinfo *kptr;
    Message given is "you feel much slimmer" as a joke hint that you can
    move between things which are closely packed--like the substance of
    solid rock! */
-static NEARDATA const char *const phaze_texts[] = {
+STATIC_VAR NEARDATA const char *const phaze_texts[] = {
     "You start to feel bloated.",
     "You are feeling rather flabby.",
 };
@@ -2629,8 +2629,8 @@ STATIC_DCL boolean FDECL(timer_is_local, (timer_element *));
 STATIC_DCL int FDECL(maybe_write_timer, (int, int, BOOLEAN_P));
 
 /* ordered timer list */
-static timer_element *timer_base; /* "active" */
-static unsigned long timer_id = 1;
+STATIC_VAR timer_element *timer_base; /* "active" */
+STATIC_VAR unsigned long timer_id = 1;
 
 /* If defined, then include names when printing out the timer queue */
 #define VERBOSE_TIMER
@@ -2652,7 +2652,7 @@ typedef struct {
 } ttable;
 
 /* table of timeout functions */
-static const ttable timeout_funcs[NUM_TIME_FUNCS] = {
+STATIC_VAR const ttable timeout_funcs[NUM_TIME_FUNCS] = {
     TTAB(rot_organic, (timeout_proc) 0, "rot_organic"),
     TTAB(rot_corpse, (timeout_proc) 0, "rot_corpse"),
     TTAB(revive_mon, (timeout_proc) 0, "revive_mon"),

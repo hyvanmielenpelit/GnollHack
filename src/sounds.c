@@ -183,7 +183,7 @@ STATIC_DCL boolean FDECL(maybe_gem, (struct obj*));
 STATIC_DCL boolean FDECL(maybe_spellbook, (struct obj*));
 STATIC_DCL boolean FDECL(maybe_dragon_scales, (struct obj*));
 STATIC_DCL boolean FDECL(maybe_otyp, (struct obj*));
-static int otyp_for_maybe_otyp = 0;
+STATIC_VAR int otyp_for_maybe_otyp = 0;
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -791,7 +791,7 @@ dosounds()
     }
 }
 
-static const char *const h_sounds[] = {
+STATIC_VAR const char *const h_sounds[] = {
     "beep",   "boing",   "sing",   "belche", "creak",   "cough",
     "rattle", "ululate", "pop",    "jingle", "sniffle", "tinkle",
     "eep",    "clatter", "hum",    "sizzle", "twitter", "wheeze",
@@ -9267,7 +9267,7 @@ typedef struct audio_mapping_rec {
     struct audio_mapping_rec *next;
 } audio_mapping;
 
-static audio_mapping *soundmap = 0;
+STATIC_VAR audio_mapping *soundmap = 0;
 
 char *sounddir = ".";
 

@@ -20,15 +20,15 @@
     strcat((YouPrefix(pointer, prefix, text), pointer), text)
 
 
-static int pline_attr = 0;
-static int pline_color = NO_COLOR;
-static unsigned pline_flags = 0;
-static char prevmsg[BUFSZ];
+STATIC_VAR int pline_attr = 0;
+STATIC_VAR int pline_color = NO_COLOR;
+STATIC_VAR unsigned pline_flags = 0;
+STATIC_VAR char prevmsg[BUFSZ];
 
-static void FDECL(putmesg, (const char *));
-static char *FDECL(You_buf, (size_t));
+STATIC_DCL void FDECL(putmesg, (const char *));
+STATIC_DCL char *FDECL(You_buf, (size_t));
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
-static void FDECL(execplinehandler, (const char *));
+STATIC_DCL void FDECL(execplinehandler, (const char *));
 #endif
 
 #ifdef DUMPLOG
@@ -79,7 +79,7 @@ dumplogfreemessages()
 #endif
 
 /* keeps windowprocs usage out of pline() */
-static void
+STATIC_OVL void
 putmesg(line)
 const char *line;
 {
@@ -105,7 +105,7 @@ const char *line;
  */
 
 #if defined(USE_STDARG) || defined(USE_VARARGS)
-static void FDECL(vpline, (const char *, va_list));
+STATIC_DCL void FDECL(vpline, (const char *, va_list));
 
 /*VARARGS1*/
 void
@@ -119,10 +119,10 @@ VA_DECL(const char *, line)
 }
 
 # ifdef USE_STDARG
-static void
+STATIC_OVL void
 vpline(const char *line, va_list the_args)
 # else
-static void
+STATIC_OVL void
 vpline(line, the_args)
 const char *line;
 va_list the_args;
@@ -465,10 +465,10 @@ VA_DECL3(int, attr, int, color, const char*, line)
 }
 
 /* work buffer for You(), &c and verbalize() */
-static char *you_buf = 0;
-static size_t you_buf_siz = 0;
+STATIC_VAR char *you_buf = 0;
+STATIC_VAR size_t you_buf_siz = 0;
 
-static char *
+STATIC_OVL char *
 You_buf(siz)
 size_t siz;
 {
@@ -631,7 +631,7 @@ VA_DECL(const char *, line)
  */
 
 #if defined(USE_STDARG) || defined(USE_VARARGS)
-static void FDECL(vraw_printf, (const char *, va_list));
+STATIC_DCL void FDECL(vraw_printf, (const char *, va_list));
 
 void raw_printf
 VA_DECL(const char *, line)
@@ -643,10 +643,10 @@ VA_DECL(const char *, line)
 }
 
 # ifdef USE_STDARG
-static void
+STATIC_OVL void
 vraw_printf(const char *line, va_list the_args)
 # else
-static void
+STATIC_OVL void
 vraw_printf(line, the_args)
 const char *line;
 va_list the_args;
@@ -715,9 +715,9 @@ VA_DECL(const char *, s)
 }
 
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
-static boolean use_pline_handler = TRUE;
+STATIC_VAR boolean use_pline_handler = TRUE;
 
-static void
+STATIC_OVL void
 execplinehandler(line)
 const char *line;
 {
@@ -760,7 +760,7 @@ const char *line;
  * varargs handling for files.c
  */
 #if defined(USE_STDARG) || defined(USE_VARARGS)
-static void FDECL(vconfig_error_add, (const char *, va_list));
+STATIC_DCL void FDECL(vconfig_error_add, (const char *, va_list));
 
 /*VARARGS1*/
 void
@@ -774,10 +774,10 @@ VA_DECL(const char *, str)
 }
 
 # ifdef USE_STDARG
-static void
+STATIC_OVL void
 vconfig_error_add(const char *str, va_list the_args)
 # else
-static void
+STATIC_OVL void
 vconfig_error_add(str, the_args)
 const char *str;
 va_list the_args;

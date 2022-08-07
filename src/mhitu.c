@@ -27,7 +27,7 @@ STATIC_DCL void FDECL(hitmsg, (struct monst *, struct attack *, int, BOOLEAN_P))
 
 /* See comment in mhitm.c.  If we use this a lot it probably should be */
 /* changed to a parameter to mhitu. */
-static int dieroll;
+STATIC_VAR int dieroll;
 
 STATIC_OVL void
 hitmsg(mtmp, mattk, damage, display_hit_tile)

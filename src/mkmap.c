@@ -21,9 +21,9 @@ STATIC_DCL void FDECL(finish_map, (lev_init*));
 STATIC_DCL void FDECL(remove_room, (unsigned));
 void FDECL(mkmap, (lev_init *));
 
-static char *new_locations;
+STATIC_VAR char *new_locations;
 int min_rx, max_rx, min_ry, max_ry; /* rectangle bounds for regions */
-static int n_loc_filled;
+STATIC_VAR int n_loc_filled;
 
 STATIC_OVL void
 init_map(init_lev)
@@ -81,7 +81,7 @@ schar bg_typ;
     return levl[col][row].typ;
 }
 
-static const int dirs[16] = { -1, -1 /**/, -1, 0 /**/,  -1, 1 /**/, 0, -1 /**/,
+STATIC_VAR const int dirs[16] = { -1, -1 /**/, -1, 0 /**/,  -1, 1 /**/, 0, -1 /**/,
                         0,  1 /**/,  1,  -1 /**/, 1,  0 /**/, 1, 1 };
 
 STATIC_OVL void

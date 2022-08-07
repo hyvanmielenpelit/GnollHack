@@ -67,7 +67,7 @@ STATIC_DCL int FDECL(count_matcomp_alternatives, (struct materialcomponent*));
 STATIC_DCL struct extended_create_window_info FDECL(extended_create_window_info_from_spell, (int, BOOLEAN_P));
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
-static const char explodes[] = "radiates explosive energy";
+STATIC_VAR const char explodes[] = "radiates explosive energy";
 
 NEARDATA const char* spl_sortchoices[NUM_SPELL_SORTBY] = {
     "no sorting, by casting letter",
@@ -1297,7 +1297,7 @@ int* spell_no;
 
 
 
-static int docast_spell_no = -1;
+STATIC_VAR int docast_spell_no = -1;
 
 /* the 'Z' command -- cast a spell */
 int
@@ -3260,7 +3260,7 @@ int otyp;
 }
 #endif
 
-static struct tport_hideaway {
+STATIC_VAR struct tport_hideaway {
     struct spell savespell;
     int tport_indx;
 } save_tport;
@@ -4850,7 +4850,7 @@ struct obj *obj;
 
 
 /* Mixing starts here*/
-static int domix_spell_no = -1;
+STATIC_VAR int domix_spell_no = -1;
 /* the 'X' command, two-weapon moved to M(x) */
 int
 domix()

@@ -16,7 +16,7 @@ STATIC_DCL void FDECL(mk_mplayer_armor, (struct monst *, SHORT_P));
  * Keep in alphabetical order within teams.
  * Same first name is entered once within each team.
  */
-static const char *developers[] = {
+STATIC_VAR const char *developers[] = {
     /* devteam */
     "Alex",    "Dave",   "Dean",    "Derek",   "Eric",    "Izchak",
     "Janet",   "Jessie", "Ken",     "Kevin",   "Michael", "Mike",

@@ -13,7 +13,7 @@
 #define NAMELIST_ARCH_LICH 3
 #define NAMELIST_QUANTUM_MECHANIC 4
 
-static const char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] = 
+STATIC_VAR const char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] = 
 {
     {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
     {"Urok", "Golluk", "Grimsh", "Urum", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1019,9 +1019,9 @@ struct encounterdef encounter_definitions[] =
 };
 
 
-static struct encounter zeroencounter = { 0 };
+STATIC_VAR struct encounter zeroencounter = { 0 };
 #define MAX_ENCOUNTERS 2048
-static struct encounter encounter_list[MAX_ENCOUNTERS];
+STATIC_VAR struct encounter encounter_list[MAX_ENCOUNTERS];
 
 
 

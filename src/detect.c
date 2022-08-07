@@ -1128,17 +1128,17 @@ d_level *where;
     register schar ll = depth(&u.uz) - depth(where);
     register boolean indun = (u.uz.dnum == where->dnum);
 
-    static const char far_away[] = "far away";
-    static const char far_below[] = "far below";
-    static const char away_below_you[] = "away below you";
-    static const char below_you[] = "below you";
-    static const char in_the_distance[] = "in the distance";
-    static const char just_below[] = "just below";
-    static const char far_above[] = "far above";
-    static const char away_above_you[] = "away above you";
-    static const char above_you[] = "above you";
-    static const char just_above[] = "just above";
-    static const char near_you[] = "near you";
+    STATIC_VAR const char far_away[] = "far away";
+    STATIC_VAR const char far_below[] = "far below";
+    STATIC_VAR const char away_below_you[] = "away below you";
+    STATIC_VAR const char below_you[] = "below you";
+    STATIC_VAR const char in_the_distance[] = "in the distance";
+    STATIC_VAR const char just_below[] = "just below";
+    STATIC_VAR const char far_above[] = "far above";
+    STATIC_VAR const char away_above_you[] = "away above you";
+    STATIC_VAR const char above_you[] = "above you";
+    STATIC_VAR const char just_above[] = "just above";
+    STATIC_VAR const char near_you[] = "near you";
 
     if (ll < 0) {
         if (ll < (-8 - rn2(3)))
@@ -1176,7 +1176,7 @@ d_level *where;
         return near_you;
 }
 
-static const struct {
+STATIC_VAR const struct {
     const char *what;
     d_level *where;
 } level_detects[] = {

@@ -79,7 +79,7 @@
 #define Static static
 #endif
 
-static boolean FDECL(pmatch_internal, (const char *, const char *,
+STATIC_DCL boolean FDECL(pmatch_internal, (const char *, const char *,
                                        BOOLEAN_P, const char *));
 
 
@@ -726,7 +726,7 @@ int x0, y0, x1, y1;
 
 /* guts of pmatch(), pmatchi(), and pmatchz();
    match a string against a pattern */
-static boolean
+STATIC_OVL boolean
 pmatch_internal(patrn, strng, ci, sk)
 const char *patrn, *strng;
 boolean ci;     /* True => case-insensitive, False => case-sensitive */
@@ -926,7 +926,7 @@ STATIC_DCL struct tm *NDECL(getlt);
 /* Sets the seed for the random number generator */
 #ifdef USE_ISAAC64
 
-static void
+STATIC_OVL void
 set_random(seed, fn)
 unsigned long seed;
 int FDECL((*fn), (int));
@@ -937,7 +937,7 @@ int FDECL((*fn), (int));
 #else /* USE_ISAAC64 */
 
 /*ARGSUSED*/
-static void
+STATIC_OVL void
 set_random(seed, fn)
 unsigned long seed;
 int FDECL((*fn), (int)) UNUSED;

@@ -193,7 +193,7 @@ const char *ostr;
 int type;
 int ef_flags;
 {
-    static NEARDATA const char
+    STATIC_VAR NEARDATA const char
         *const action[] = { "smoulder", "rust", "rot", "corrode" },
         *const msg[] = { "burnt", "rusted", "rotten", "corroded" },
         *const bythe[] = { "heat", "oxidation", "decay", "corrosion" };
@@ -2177,7 +2177,7 @@ struct trap *trap;
  * prevent them from vanishing if you are killed. They
  * will reappear at the launchplace in bones files.
  */
-static struct {
+STATIC_VAR struct {
     struct obj *obj;
     xchar x, y;
 } launchplace;
@@ -4546,7 +4546,7 @@ struct obj *obj;
 /* context for water_damage(), managed by water_damage_chain();
    when more than one stack of potions of acid explode while processing
    a chain of objects, use alternate phrasing after the first message */
-static struct h2o_ctx {
+STATIC_VAR struct h2o_ctx {
     int dkn_boom, unk_boom; /* track dknown, !dknown separately */
     boolean ctx_valid;
 } acid_ctx = { 0, 0, FALSE };
@@ -5734,7 +5734,7 @@ struct trap *ttmp;
 
 /* getobj will filter down to cans of grease and known potions of oil */
 #if 0
-static NEARDATA const char oil[] = { ALL_CLASSES, TOOL_CLASS, POTION_CLASS,
+STATIC_VAR NEARDATA const char oil[] = { ALL_CLASSES, TOOL_CLASS, POTION_CLASS,
                                      0 };
 #endif
 
@@ -7291,7 +7291,7 @@ unconscious()
                               || !strncmp(nomovemsg, "You are consci", 14))));
 }
 
-static const char lava_killer[] = "molten lava";
+STATIC_VAR const char lava_killer[] = "molten lava";
 
 boolean
 lava_effects()

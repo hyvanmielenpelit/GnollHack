@@ -16,9 +16,11 @@
 #if defined(OVERLAY)
 #define STATIC_DCL extern
 #define STATIC_OVL
+#define STATIC_VAR
 #else /* !OVERLAY */
 #define STATIC_DCL static
 #define STATIC_OVL static
+#define STATIC_VAR static
 #endif /* OVERLAY */
 
 #ifdef DLB
@@ -61,7 +63,7 @@ extern FILE *FDECL(fopen_datafile, (const char *, const char *, int));
  */
 
 #define MAX_LIBS 4
-static library dlb_libs[MAX_LIBS];
+STATIC_VAR library dlb_libs[MAX_LIBS];
 
 STATIC_DCL boolean FDECL(readlibdir, (library * lp));
 STATIC_DCL boolean FDECL(find_file, (const char *name, library **lib,
@@ -436,8 +438,8 @@ const dlb_procs_t rsrc_dlb_procs = { rsrc_dlb_init,  rsrc_dlb_cleanup,
 #define do_dlb_fgetc (*dlb_procs->dlb_fgetc_proc)
 #define do_dlb_ftell (*dlb_procs->dlb_ftell_proc)
 
-static const dlb_procs_t *dlb_procs;
-static boolean dlb_initialized = FALSE;
+STATIC_VAR const dlb_procs_t *dlb_procs;
+STATIC_VAR boolean dlb_initialized = FALSE;
 
 boolean
 dlb_init()

@@ -2248,7 +2248,7 @@ courtmon()
 
 #define NSTYPES (PM_CAPTAIN - PM_SOLDIER + 1)
 
-static const struct {
+STATIC_VAR const struct {
     unsigned pm;
     unsigned prob;
 } squadprob[NSTYPES] = { { PM_SOLDIER, 80 },

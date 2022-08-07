@@ -2364,7 +2364,7 @@ mbodypart(mon, part)
 struct monst *mon;
 int part;
 {
-    static NEARDATA const char
+    STATIC_VAR NEARDATA const char
         *humanoid_parts[] = { "arm",       "eye",  "face",         "finger",
                               "fingertip", "foot", "hand",         "handed",
                               "head",      "leg",  "light headed", "neck",
@@ -2609,7 +2609,7 @@ int atyp;
 }
 
 /* some species have awareness of other species */
-static void
+STATIC_OVL void
 polysense()
 {
     short warnidx = NON_PM;

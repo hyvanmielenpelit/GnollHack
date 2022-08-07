@@ -96,7 +96,7 @@ NEARDATA const char* const odd_skill_names_plural[NUM_PN_CATEGORIES] = {
                : odd_skill_names_plural[-skill_names_indices[type]])
 
 
-static NEARDATA const char kebabable[] = { S_XORN, S_DRAGON, S_JABBERWOCK,
+STATIC_VAR NEARDATA const char kebabable[] = { S_XORN, S_DRAGON, S_JABBERWOCK,
                                            S_NAGA, S_GIANT,  '\0' };
 
 STATIC_OVL void
@@ -891,7 +891,7 @@ int otyp, exceptionality;
 }
 
 /* TODO: have monsters use aklys' throw-and-return */
-static NEARDATA const int rwep[] = {
+STATIC_VAR NEARDATA const int rwep[] = {
     DWARVISH_SPEAR, SILVER_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, JAVELIN,
     SHURIKEN, YA, SILVER_ARROW, BONE_ARROW, ELVEN_ARROW, ARROW, ORCISH_ARROW,
     SILVER_CROSSBOW_BOLT, BONE_QUARREL, CROSSBOW_BOLT, GNOLLISH_QUARREL, 
@@ -901,13 +901,13 @@ static NEARDATA const int rwep[] = {
     /* BOOMERANG, */ CREAM_PIE
 };
 
-static NEARDATA const int pwep[] = { HALBERD,  BARDICHE, SPETUM,
+STATIC_VAR NEARDATA const int pwep[] = { HALBERD,  BARDICHE, SPETUM,
                                      BILL_GUISARME, VOULGE,   RANSEUR,
                                      GUISARME,      GLAIVE,   LUCERN_HAMMER,
                                      BEC_DE_CORBIN, FAUCHARD, PARTISAN,
                                      LANCE };
 
-static struct obj *propellor;
+STATIC_VAR struct obj *propellor;
 
 /* select a ranged weapon for the monster */
 struct obj *
@@ -1076,7 +1076,7 @@ struct obj *obj;
 }
 
 /* Weapons in order of preference */
-static const NEARDATA short hwep[] = 
+STATIC_VAR const NEARDATA short hwep[] = 
 {
     BLACK_BLADE_OF_DISINTEGRATION, GLASS_SWORD, SWORD_OF_NINE_LIVES_STEALING, WRAITHBLADE,
     TSURUGI, RUNESWORD,  RUNED_FLAIL, HEAVENLY_OAK_MACE, 
@@ -1940,7 +1940,7 @@ int skill;
     update_can_advance_any_skill();
 }
 
-static const struct skill_range {
+STATIC_VAR const struct skill_range {
     short first, last;
     const char *name;
     const char* singular;

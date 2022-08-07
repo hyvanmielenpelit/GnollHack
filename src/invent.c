@@ -3434,7 +3434,7 @@ struct obj *obj;
                    safeq_xprn_ctx.dot, 0L, 0L);
 }
 
-static NEARDATA const char removeables[] = { ARMOR_CLASS, WEAPON_CLASS,
+STATIC_VAR NEARDATA const char removeables[] = { ARMOR_CLASS, WEAPON_CLASS,
                                              RING_CLASS,  AMULET_CLASS,
                                              TOOL_CLASS,  0 };
 

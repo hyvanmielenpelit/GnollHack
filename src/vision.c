@@ -84,16 +84,16 @@ char *viz_rmin, *viz_rmax; /* current vision cs bounds */
 
 /*------ local variables ------*/
 
-static char could_see[2][ROWNO][COLNO]; /* vision work space */
-static char *cs_rows0[ROWNO], *cs_rows1[ROWNO];
-static char cs_rmin0[ROWNO], cs_rmax0[ROWNO];
-static char cs_rmin1[ROWNO], cs_rmax1[ROWNO];
+STATIC_VAR char could_see[2][ROWNO][COLNO]; /* vision work space */
+STATIC_VAR char *cs_rows0[ROWNO], *cs_rows1[ROWNO];
+STATIC_VAR char cs_rmin0[ROWNO], cs_rmax0[ROWNO];
+STATIC_VAR char cs_rmin1[ROWNO], cs_rmax1[ROWNO];
 
-static char viz_clear[ROWNO][COLNO]; /* vision clear/blocked map */
-static char *viz_clear_rows[ROWNO];
+STATIC_VAR char viz_clear[ROWNO][COLNO]; /* vision clear/blocked map */
+STATIC_VAR char *viz_clear_rows[ROWNO];
 
-static char left_ptrs[ROWNO][COLNO]; /* LOS algorithm helpers */
-static char right_ptrs[ROWNO][COLNO];
+STATIC_VAR char left_ptrs[ROWNO][COLNO]; /* LOS algorithm helpers */
+STATIC_VAR char right_ptrs[ROWNO][COLNO];
 
 /* Forward declarations. */
 STATIC_DCL void FDECL(fill_point, (int, int));
@@ -503,7 +503,7 @@ int row, col;
  *      + Right after the hero is swallowed. [gulpmu()]
  *      + Just before bubbles are moved. [movebubbles()]
  */
-static unsigned char colbump[COLNO + 1]; /* cols to bump sv */
+STATIC_VAR unsigned char colbump[COLNO + 1]; /* cols to bump sv */
 
 void
 vision_recalc(control)
@@ -1139,15 +1139,15 @@ int row, col;
 /*
  * Variables local to both Algorithms C and D.
  */
-static int start_row;
-static int start_col;
-static int step;
-static char **cs_rows;
-static char *cs_left;
-static char *cs_right;
+STATIC_VAR int start_row;
+STATIC_VAR int start_col;
+STATIC_VAR int step;
+STATIC_VAR char **cs_rows;
+STATIC_VAR char *cs_left;
+STATIC_VAR char *cs_right;
 
-static void FDECL((*vis_func), (int, int, genericptr_t));
-static genericptr_t varg;
+STATIC_DCL void FDECL((*vis_func), (int, int, genericptr_t));
+STATIC_VAR genericptr_t varg;
 
 /*
  * Both Algorithms C and D use the following macros.
@@ -1651,8 +1651,8 @@ cleardone:
 #include "vis_tab.h"
 
 /* 3D table pointers. */
-static close2d *close_dy[CLOSE_MAX_BC_DY];
-static far2d *far_dy[FAR_MAX_BC_DY];
+STATIC_VAR close2d *close_dy[CLOSE_MAX_BC_DY];
+STATIC_VAR far2d *far_dy[FAR_MAX_BC_DY];
 
 STATIC_DCL void FDECL(right_side,  (int, int, int, int, int,
                                     int, int, char *));

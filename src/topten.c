@@ -26,7 +26,7 @@
  * which reads the scores will ignore it.
  */
 #ifdef UPDATE_RECORD_IN_PLACE
-static long final_fpos;
+STATIC_VAR long final_fpos;
 #endif
 
 #define done_stopprint program_state.stopprint
@@ -88,7 +88,7 @@ STATIC_DCL void FDECL(nsb_mung_line, (char *));
 STATIC_DCL void FDECL(nsb_unmung_line, (char *));
 #endif
 
-static winid toptenwin = WIN_ERR;
+STATIC_VAR winid toptenwin = WIN_ERR;
 
 /* "killed by",&c ["an"] 'killer.name' */
 void
@@ -98,7 +98,7 @@ size_t siz;
 int how;
 boolean incl_helpless;
 {
-    static NEARDATA const char *const killed_by_prefix[NUM_GAME_END_TYPES] = {
+    STATIC_VAR NEARDATA const char *const killed_by_prefix[NUM_GAME_END_TYPES] = {
         /* DIED, CHOKING, POISONING, STARVING, */
         "killed by ", "choked on ", "poisoned by ", "died of ",
         /* DROWNING, DROWNED, BURNING, DISSOLVED, CRUSHING, STRANGULATION, SUFFOCATION,*/

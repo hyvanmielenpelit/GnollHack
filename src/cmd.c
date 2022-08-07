@@ -30,7 +30,7 @@
 STATIC_VAR boolean alt_esc = FALSE;
 #endif
 STATIC_VAR boolean escape_sequence_key_start_allowed = FALSE;
-static NEARDATA int last_multi;
+STATIC_VAR NEARDATA int last_multi;
 
 struct cmd Cmd = { 0 }; /* flag.h */
 
@@ -140,7 +140,7 @@ extern int NDECL(doorganize);         /**/
 extern void NDECL(quit_possible);
 #endif
 
-static int NDECL((*timed_occ_fn));
+STATIC_DCL int NDECL((*timed_occ_fn));
 
 STATIC_PTR int NDECL(dosuspend_core);
 STATIC_PTR int NDECL(dosh_core);
@@ -232,9 +232,9 @@ STATIC_DCL void FDECL(print_monster_abilities, (winid, int*, BOOLEAN_P));
 STATIC_DCL void FDECL(print_weapon_skill_line, (struct obj*, BOOLEAN_P, int));
 
 
-static const char *readchar_queue = "";
-static coord clicklook_cc;
-static boolean special_effect_shown = FALSE;
+STATIC_VAR const char *readchar_queue = "";
+STATIC_VAR coord clicklook_cc;
+STATIC_VAR boolean special_effect_shown = FALSE;
 
 STATIC_PTR int
 doprev_message(VOID_ARGS)
@@ -317,8 +317,8 @@ STATIC_DCL char NDECL(popch);
  * TRUE, no keystrokes can be saved into the saveq.
  */
 #define BSIZE 20
-static char pushq[BSIZE], saveq[BSIZE];
-static NEARDATA int phead, ptail, shead, stail;
+STATIC_VAR char pushq[BSIZE], saveq[BSIZE];
+STATIC_VAR NEARDATA int phead, ptail, shead, stail;
 
 STATIC_OVL char
 popch()
@@ -425,7 +425,7 @@ doextlist(VOID_ARGS)
     int n, pass;
     int menumode = 0, menushown[3], onelist = 0;
     boolean redisplay = TRUE, search = FALSE;
-    static const char *headings[] = { "Extended commands",
+    STATIC_VAR const char *headings[] = { "Extended commands",
                                       "Casual Extended Commands",
                                       "Debugging Extended Commands",
                                       };
@@ -758,7 +758,7 @@ struct available_ability
     struct monst* target_mtmp;
 };
 
-static struct available_ability available_ability_list[MAXABILITYNUM] = { {"", 0, 0, 0} };
+STATIC_VAR struct available_ability available_ability_list[MAXABILITYNUM] = { {"", 0, 0, 0} };
 
 int
 doability(VOID_ARGS)
@@ -2523,7 +2523,7 @@ wiz_save_quest_texts(VOID_ARGS) /* Save a csv file for monsters */
 
 /* temporary? hack, since level type codes aren't the same as screen
    symbols and only the latter have easily accessible descriptions */
-static const char *levltyp[MAX_TYPE + 2] = {
+STATIC_VAR const char *levltyp[MAX_TYPE + 2] = {
     "stone", 
     "vertical wall", 
     "horizontal wall", 
@@ -2658,8 +2658,8 @@ wiz_intrinsic(VOID_ARGS)
 {
     if (wizard) 
     {
-        static const char wizintrinsic[] = "#wizintrinsic";
-        static const char fmt[] = "You are%s %s.";
+        STATIC_VAR const char wizintrinsic[] = "#wizintrinsic";
+        STATIC_VAR const char fmt[] = "You are%s %s.";
         winid win;
         anything any;
         char buf[BUFSZ];
@@ -2894,12 +2894,12 @@ doterrain(VOID_ARGS)
 }
 
 /* -enlightenment and conduct- */
-static winid en_win = WIN_ERR;
-static boolean en_via_menu = FALSE;
-static const char You_[] = "You ", are[] = "are ", were[] = "were ",
+STATIC_VAR winid en_win = WIN_ERR;
+STATIC_VAR boolean en_via_menu = FALSE;
+STATIC_VAR const char You_[] = "You ", are[] = "are ", were[] = "were ",
                   have[] = "have ", had[] = "had ", can[] = "can ",
                   could[] = "could ", cannot[] = "cannot ", could_not[] = "could not ";
-static const char have_been[] = "have been ", have_never[] = "have never ", have_not[] = "have not ", had_not[] = "had not ",
+STATIC_VAR const char have_been[] = "have been ", have_never[] = "have never ", have_not[] = "have not ", had_not[] = "had not ",
                   never[] = "never ";
 
 #define enl_msg(prefix, present, past, suffix, ps) \
@@ -2918,7 +2918,7 @@ static const char have_been[] = "have been ", have_never[] = "have never ", have
 #define you_have_X(something) \
     enl_msg(You_, have, (const char *) "", something, "")
 
-static void
+STATIC_OVL void
 enlght_out(buf, attr)
 const char *buf;
 int attr;
@@ -2932,7 +2932,7 @@ int attr;
         putstr(en_win, attr, buf);
 }
 
-static void
+STATIC_OVL void
 enlght_line(start, middle, end, ps, parentheses)
 const char *start, *middle, *end, *ps;
 boolean parentheses;
@@ -2944,7 +2944,7 @@ boolean parentheses;
 }
 
 /* format increased chance to hit or damage or defense (Protection) */
-static char *
+STATIC_OVL char *
 enlght_combatinc(inctyp, incamt, final, outbuf)
 const char *inctyp;
 int incamt, final;
@@ -3360,7 +3360,7 @@ basics_enlightenment(mode, final)
 int mode UNUSED;
 int final;
 {
-    static const char Power[] = "mana";
+    STATIC_VAR const char Power[] = "mana";
     char buf[BUFSZ];
     int pw = u.uen, hp = (Upolyd ? u.mh : u.uhp),
         pwmax = u.uenmax, hpmax = (Upolyd ? u.mhmax : u.uhpmax);
@@ -3411,7 +3411,7 @@ int final;
     /* gold; similar to doprgold(#seegold) but without shop billing info;
        same amount as shown on status line which ignores container contents */
     {
-        static const char Your_wallet[] = "Your wallet ";
+        STATIC_VAR const char Your_wallet[] = "Your wallet ";
         long umoney = money_cnt(invent);
 
         if (!umoney) {
@@ -4085,7 +4085,7 @@ attributes_enlightenment(unused_mode, final)
 int unused_mode UNUSED;
 int final;
 {
-    static NEARDATA const char if_surroundings_permitted[] =
+    STATIC_VAR NEARDATA const char if_surroundings_permitted[] =
         " if surroundings permitted";
     int ltmp;
     char buf[BUFSZ];
@@ -4842,12 +4842,12 @@ minimal_enlightenment()
     anything any;
     int genidx, n;
     char buf[BUFSZ], buf2[BUFSZ];
-    static const char untabbed_fmtstr[] = "%-15s: %-12s";
-    static const char untabbed_deity_fmtstr[] = "%-17s%s";
-    static const char tabbed_fmtstr[] = "%s:\t%-12s";
-    static const char tabbed_deity_fmtstr[] = "%s\t%s";
-    static const char *fmtstr;
-    static const char *deity_fmtstr;
+    STATIC_VAR const char untabbed_fmtstr[] = "%-15s: %-12s";
+    STATIC_VAR const char untabbed_deity_fmtstr[] = "%-17s%s";
+    STATIC_VAR const char tabbed_fmtstr[] = "%s:\t%-12s";
+    STATIC_VAR const char tabbed_deity_fmtstr[] = "%s\t%s";
+    STATIC_VAR const char *fmtstr;
+    STATIC_VAR const char *deity_fmtstr;
 
     fmtstr = iflags.menu_tab_sep ? tabbed_fmtstr : untabbed_fmtstr;
     deity_fmtstr = iflags.menu_tab_sep ? tabbed_deity_fmtstr
@@ -5966,11 +5966,11 @@ dokeylist(VOID_ARGS)
     boolean keys_used[256] = {0};
     winid datawin;
     int i;
-    static const char
+    STATIC_VAR const char
         run_desc[] = "Prefix: run until something very interesting is seen",
         forcefight_desc[] =
                      "Prefix: force fight even if you don't see a monster";
-    static const struct {
+    STATIC_VAR const struct {
         int nhkf;
         const char *desc;
         boolean numpad;
@@ -6103,9 +6103,9 @@ int NDECL((*fn));
  * wizard mode sanity_check code
  */
 
-static const char template[] = "%-27s  %4ld  %6zu";
-static const char stats_hdr[] = "                             count  bytes";
-static const char stats_sep[] = "---------------------------  ----- -------";
+STATIC_VAR const char template[] = "%-27s  %4ld  %6zu";
+STATIC_VAR const char stats_hdr[] = "                             count  bytes";
+STATIC_VAR const char stats_sep[] = "---------------------------  ----- -------";
 
 STATIC_OVL size_t
 size_obj(otmp)
@@ -6436,7 +6436,7 @@ size_t *total_size;
 /*
  * Display memory usage of all monsters and objects on the level.
  */
-static int
+STATIC_OVL int
 wiz_show_stats()
 {
     char buf[BUFSZ];
@@ -6531,7 +6531,7 @@ sanity_check()
 }
 
 #ifdef DEBUG_MIGRATING_MONS
-static int
+STATIC_OVL int
 wiz_migrate_mons()
 {
     int mcount = 0;
@@ -6762,19 +6762,19 @@ boolean condition;
     wait_synch();
 }
 
-static boolean backed_dir_cmd = FALSE;
+STATIC_VAR boolean backed_dir_cmd = FALSE;
 
 /* called at startup and after number_pad is twiddled */
 void
 reset_commands(initial)
 boolean initial;
 {
-    static const char sdir[] = "hykulnjb><",
+    STATIC_VAR const char sdir[] = "hykulnjb><",
                       sdir_swap_yz[] = "hzkulnjb><",
                       ndir[] = "47896321><",
                       ndir_phone_layout[] = "41236987><",
                       gnhdir[] = "4y8u6j2h><";
-    static const int ylist[] = {
+    STATIC_VAR const int ylist[] = {
         'y', 'Y', C('y'), M('y'), M('Y'), M(C('y'))
     };
     static struct ext_func_tab *back_dir_cmd[8];
@@ -7580,7 +7580,7 @@ char sym;
 int spkey; /* NHKF_ code for prefix key, if one was used, or for ESC */
 const char *msg;
 {
-    static const char wiz_only_list[] = "EFGIVW";
+    STATIC_VAR const char wiz_only_list[] = "EFGIVW";
     char ctrl;
     winid win;
     char buf[BUFSZ], buf2[BUFSZ], *explain;
@@ -7761,12 +7761,12 @@ const char *
 directionname(dir)
 int dir;
 {
-    static NEARDATA const char *const dirnames[] = {
+    STATIC_VAR NEARDATA const char *const dirnames[] = {
         "west",      "northwest", "north",     "northeast", "east",
         "southeast", "south",     "southwest", "down",      "up",
     };
 
-    static NEARDATA const char invalidname[] = "invalid";
+    STATIC_VAR NEARDATA const char invalidname[] = "invalid";
 
     if (dir < 0 || dir >= SIZE(dirnames))
         return invalidname;

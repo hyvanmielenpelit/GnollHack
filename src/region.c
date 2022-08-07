@@ -13,9 +13,9 @@
  * structure eventually.
  */
 
-static NhRegion **regions;
-static int n_regions = 0;
-static int max_regions = 0;
+STATIC_VAR NhRegion **regions;
+STATIC_VAR int n_regions = 0;
+STATIC_VAR int max_regions = 0;
 
 boolean FDECL(enter_special_level_seen, (genericptr, genericptr));
 boolean FDECL(enter_special_level_true_nature_revealed, (genericptr, genericptr));

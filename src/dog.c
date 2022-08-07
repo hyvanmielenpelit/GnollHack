@@ -183,7 +183,7 @@ boolean quietly;
     return mtmp;
 }
 
-static int petname_used = 0;
+STATIC_VAR int petname_used = 0;
 
 struct monst *
 makedog()

@@ -4628,8 +4628,8 @@ struct monst *mon;
     }
 }
 
-static short *animal_list = 0; /* list of PM values for animal monsters */
-static int animal_list_count;
+STATIC_VAR short *animal_list = 0; /* list of PM values for animal monsters */
+STATIC_VAR int animal_list_count;
 
 void
 mon_animal_list(construct)

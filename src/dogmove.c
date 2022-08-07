@@ -170,7 +170,7 @@ struct monst* mon;
 
 
 
-static NEARDATA const char nofetch[] = { BALL_CLASS, CHAIN_CLASS, ROCK_CLASS,
+STATIC_VAR NEARDATA const char nofetch[] = { BALL_CLASS, CHAIN_CLASS, ROCK_CLASS,
                                          0 };
 
 STATIC_VAR xchar gtyp, gx, gy; /* type and position of dog's current goal */
@@ -1957,7 +1957,7 @@ genericptr_t distance;
     }
 }
 
-static const struct qmchoices {
+STATIC_VAR const struct qmchoices {
     int mndx;             /* type of pet, 0 means any  */
     char mlet;            /* symbol of pet, 0 means any */
     unsigned mappearance; /* mimic this */

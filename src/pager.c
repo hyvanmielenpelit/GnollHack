@@ -1641,7 +1641,7 @@ boolean do_mons; /* True => monsters, False => objects */
     destroy_nhwindow(win);
 }
 
-static const char *suptext1[] = {
+STATIC_VAR const char *suptext1[] = {
     "%s is a member of a marauding horde of orcs",
     "rumored to have brutally attacked and plundered",
     "the ordinarily sheltered town that is located ",
@@ -1653,7 +1653,7 @@ static const char *suptext1[] = {
     (char *) 0,
 };
 
-static const char *suptext2[] = {
+STATIC_VAR const char *suptext2[] = {
     "\"%s\" is the common dungeon name of",
     "a nefarious orc who is known to acquire property",
     "from thieves and sell it off for profit.",
@@ -2221,7 +2221,7 @@ domenucontrols(VOID_ARGS)
 }
 
 /* data for dohelp() */
-static const struct {
+STATIC_VAR const struct {
     void NDECL((*f));
     const char *text;
 } help_menu_items[] = {

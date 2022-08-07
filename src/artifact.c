@@ -51,14 +51,14 @@ STATIC_DCL void FDECL(check_arti_name_discovery, (struct obj*));
 #define FATAL_DAMAGE_MODIFIER 200
 
 /* coordinate effects from spec_dbon() with messages in artifact_hit() */
-STATIC_OVL int spec_dbon_applies = 0;
+STATIC_VAR int spec_dbon_applies = 0;
 
 /* flags including which artifacts have already been created */
-static boolean artiexist[1 + NUM_ARTIFACTS + 1];
+STATIC_VAR boolean artiexist[1 + NUM_ARTIFACTS + 1];
 /* and a discovery list for them (no dummy first entry here) */
-STATIC_OVL short artidisco[NUM_ARTIFACTS];
-static int nesting = 0; /* recursion control */
-static int mkot_trap_warn_count = 0;
+STATIC_VAR short artidisco[NUM_ARTIFACTS];
+STATIC_VAR int nesting = 0; /* recursion control */
+STATIC_VAR int mkot_trap_warn_count = 0;
 
 STATIC_DCL void NDECL(hack_artifacts);
 STATIC_DCL boolean FDECL(artifact_attack_type, (int, struct obj *));
@@ -113,8 +113,8 @@ int fd;
 }
 
 
-static boolean artivaluessaved = FALSE;
-static struct artifact saved_artilist[NUM_ARTIFACTS + 2];
+STATIC_VAR boolean artivaluessaved = FALSE;
+STATIC_VAR struct artifact saved_artilist[NUM_ARTIFACTS + 2];
 
 void
 save_initial_artifact_values(VOID_ARGS)
@@ -1185,7 +1185,7 @@ enum mb_effect_indices {
 };
 
 #define MB_MAX_DIEROLL 8 /* rolls above this aren't magical */
-static const char *const mb_verb[2][NUM_MB_INDICES] = {
+STATIC_VAR const char *const mb_verb[2][NUM_MB_INDICES] = {
     { "probe", "stun", "scare", "cancel" },
     { "prod", "amaze", "tickle", "purge" },
 };
@@ -1416,7 +1416,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                   || (youattack && u.uswallow && mdef == u.ustuck && !Blind);
     boolean realizes_damage;
     char wepdesc[BUFSIZ] ="";
-    static const char you[] = "you";
+    STATIC_VAR const char you[] = "you";
     char hittee[BUFSZ];
 
     Strcpy(hittee, youdefend ? you : mon_nam(mdef));
@@ -1585,7 +1585,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
         else if (artifact_has_flag(otmp, AF_BEHEAD)
                    && (dieroll == 1 || has_vorpal_vulnerability(mdef->data))) 
         {
-            static const char *const behead_msg[2] = { "%s beheads %s!",
+            STATIC_VAR const char *const behead_msg[2] = { "%s beheads %s!",
                                                        "%s decapitates %s!" };
 
             if (youattack && u.uswallow && mdef == u.ustuck)
@@ -1792,7 +1792,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
         || (youattack && u.uswallow && mdef == u.ustuck && !Blind);
     boolean realizes_damage;
     boolean extradamagedone = (extradmg > 0);
-    static const char you[] = "you";
+    STATIC_VAR const char you[] = "you";
     char hittee[BUFSZ];
     int totaldamagedone = 0;
     boolean lethaldamage = FALSE;
@@ -2104,7 +2104,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                     )
                 )
             {
-                static const char* const behead_msg[3] = { "%s beheads %s!",
+                STATIC_VAR const char* const behead_msg[3] = { "%s beheads %s!",
                                                             "%s decapitates %s!",
                                                             "%s cuts off the last head of %s!" };
 
@@ -2518,8 +2518,8 @@ short* adtyp_ptr; /* return value is the type of damage caused */
     return (isdisintegrated ? -2 : lethaldamage ? -1 : totaldamagedone);
 }
 
-static NEARDATA const char recharge_type[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
-static NEARDATA const char invoke_types[] = { ALL_CLASSES, 0 };
+STATIC_VAR NEARDATA const char recharge_type[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
+STATIC_VAR NEARDATA const char invoke_types[] = { ALL_CLASSES, 0 };
 /* #invoke: an "ugly check" filters out most objects */
 
 /* the #invoke command */
@@ -3319,7 +3319,7 @@ uchar adtyp_index;
     return 0;
 }
 
-static const struct abil2spfx_tag {
+STATIC_VAR const struct abil2spfx_tag {
     int prop;
     unsigned long spfx;
 } abil2spfx[] = {
@@ -3556,7 +3556,7 @@ int arti_indx;
 }
 
 /* glow verb; [0] holds the value used when blind */
-static const char *glow_verbs[] = {
+STATIC_VAR const char *glow_verbs[] = {
     "quiver", "flicker", "glimmer", "gleam"
 };
 
@@ -3912,7 +3912,7 @@ int x, y;
 void
 mkot_trap_warn()
 {
-    static const char *const heat[7] = {
+    STATIC_VAR const char *const heat[7] = {
         "cool", "slightly warm", "warm", "very warm",
         "hot", "very hot", "like fire"
     };

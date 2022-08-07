@@ -28,12 +28,12 @@ struct valuable_data {
     int typ;
 };
 
-static struct valuable_data
+STATIC_VAR struct valuable_data
     gems[LAST_GEM + 1 - FIRST_GEM + 1], /* 1 extra for glass */
     amulets[LAST_AMULET + 1 - FIRST_AMULET],
     miscellaneousitems[LAST_MISCITEM + 1 - FIRST_MISCITEM];
 
-static struct val_list {
+STATIC_VAR struct val_list {
     struct valuable_data *list;
     int size;
 } valuables[] = { { gems, sizeof gems / sizeof *gems },
@@ -45,7 +45,7 @@ static struct val_list {
 #ifndef NO_SIGNAL
 STATIC_PTR void FDECL(done_intr, (int));
 #if defined(UNIX) || defined(VMS) || defined(__EMX__)
-static void FDECL(done_hangup, (int));
+STATIC_DCL void FDECL(done_hangup, (int));
 #endif
 #endif
 STATIC_DCL void FDECL(disclose, (int, BOOLEAN_P));
@@ -128,12 +128,12 @@ STATIC_OVL void NDECL(reset_remaining_static_variables);
 #endif
 #endif
 
-static void NDECL(NH_abort);
+STATIC_DCL void NDECL(NH_abort);
 #ifndef NO_SIGNAL
-static void FDECL(panictrace_handler, (int));
+STATIC_DCL void FDECL(panictrace_handler, (int));
 #endif
-static boolean NDECL(NH_panictrace_libc);
-static boolean NDECL(NH_panictrace_gdb);
+STATIC_DCL boolean NDECL(NH_panictrace_libc);
+STATIC_DCL boolean NDECL(NH_panictrace_gdb);
 
 #ifndef NO_SIGNAL
 /* called as signal() handler, so sent at least one arg */
@@ -187,12 +187,12 @@ boolean set;
 }
 #endif /* NO_SIGNAL */
 
-static void
+STATIC_VAR boolean aborting = FALSE;
+STATIC_OVL void
 NH_abort()
 {
     int gdb_prio = SYSOPT_PANICTRACE_GDB;
     int libc_prio = SYSOPT_PANICTRACE_LIBC;
-    static boolean aborting = FALSE;
 
     if (aborting)
         return;
@@ -223,7 +223,7 @@ NH_abort()
     NH_abort_();
 }
 
-static boolean
+STATIC_OVL boolean
 NH_panictrace_libc()
 {
 #ifdef PANICTRACE_LIBC
@@ -258,7 +258,7 @@ NH_panictrace_libc()
 #endif /* SYSCF */
 #endif /* PANICTRACE_GDB */
 
-static boolean
+STATIC_OVL boolean
 NH_panictrace_gdb()
 {
 #ifdef PANICTRACE_GDB
@@ -296,7 +296,7 @@ NH_panictrace_gdb()
 /*
  * The order of these needs to match the macros in hack.h.
  */
-static NEARDATA const char *deaths[NUM_GAME_END_TYPES] = {
+STATIC_VAR NEARDATA const char *deaths[NUM_GAME_END_TYPES] = {
     /* the array of death */
     "died", "choked", "poisoned", "starvation", "drowning", "drowned", "burning",
     "dissolving under the heat and pressure", "crushed", "strangled", "suffocated", "turned to stone", "disintegrated",
@@ -304,7 +304,7 @@ static NEARDATA const char *deaths[NUM_GAME_END_TYPES] = {
     "escaped", "ascended"
 };
 
-static NEARDATA const char *ends[NUM_GAME_END_TYPES] = {
+STATIC_VAR NEARDATA const char *ends[NUM_GAME_END_TYPES] = {
     /* "when you %s" */
     "died", "choked", "were poisoned",
     "starved", "drowned", "were drowned", "burned",
@@ -315,7 +315,7 @@ static NEARDATA const char *ends[NUM_GAME_END_TYPES] = {
     "escaped", "ascended"
 };
 
-static boolean Schroedingers_cat = FALSE;
+STATIC_VAR boolean Schroedingers_cat = FALSE;
 
 /*ARGSUSED*/
 void
@@ -413,7 +413,7 @@ int sig_unused UNUSED;
 
 #if (defined(UNIX) || defined(VMS) || defined(__EMX__))  && !defined(GNH_MOBILE)
 /* signal() handler */
-static void
+STATIC_OVL void
 done_hangup(sig)
 int sig;
 {
@@ -564,7 +564,7 @@ int how;
 }
 
 /* some special cases for overriding while-helpless reason */
-static const struct {
+STATIC_VAR const struct {
     int why, unmulti;
     const char *exclude, *include;
 } death_fixups[] = {
@@ -2160,7 +2160,7 @@ enum vanq_order_modes {
 };
 
 
-static const char *vanqorders[NUM_VANQ_ORDER_MODES] = {
+STATIC_VAR const char *vanqorders[NUM_VANQ_ORDER_MODES] = {
     "traditional: by monster level, by internal monster index",
     "by monster toughness, by internal monster index",
     "alphabetically, first unique monsters, then others",
@@ -2170,7 +2170,7 @@ static const char *vanqorders[NUM_VANQ_ORDER_MODES] = {
     "by count, high to low, by internal index within tied count",
     "by count, low to high, by internal index within tied count",
 };
-static int vanq_sortmode = VANQ_MLVL_MNDX;
+STATIC_VAR int vanq_sortmode = VANQ_MLVL_MNDX;
 
 STATIC_PTR int CFDECLSPEC
 vanqsort_cmp(vptr1, vptr2)
@@ -2764,7 +2764,7 @@ int fd;
     }
 }
 
-static int
+STATIC_OVL int
 wordcount(p)
 char *p;
 {
@@ -2781,7 +2781,7 @@ char *p;
     return words;
 }
 
-static void
+STATIC_OVL void
 bel_copy1(inp, out)
 char **inp, *out;
 {
@@ -3140,6 +3140,9 @@ reset_gamestate(VOID_ARGS)
 STATIC_DCL void
 reset_remaining_static_variables()
 {
+#ifdef PANICTRACE
+    aborting = FALSE;
+#endif
     reset_hunger_status();
     reset_drawbridge();
     reset_dig();

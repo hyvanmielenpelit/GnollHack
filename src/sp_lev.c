@@ -236,23 +236,23 @@ extern struct engr *head_engr;
 extern int min_rx, max_rx, min_ry, max_ry; /* from mkmap.c */
 
 /* positions touched by level elements explicitly defined in the des-file */
-static char SpLev_Map[COLNO][ROWNO];
+STATIC_VAR char SpLev_Map[COLNO][ROWNO];
 
-static aligntyp ralign[3] = { AM_CHAOTIC, AM_NEUTRAL, AM_LAWFUL };
-static NEARDATA xchar xstart, ystart;
-static NEARDATA char xsize, ysize;
+STATIC_VAR aligntyp ralign[3] = { AM_CHAOTIC, AM_NEUTRAL, AM_LAWFUL };
+STATIC_VAR NEARDATA xchar xstart, ystart;
+STATIC_VAR NEARDATA char xsize, ysize;
 
 char *lev_message = 0;
 lev_region *lregions = 0;
 int num_lregions = 0;
 
-static boolean splev_init_present = FALSE;
-static boolean icedpools = FALSE;
-static int mines_prize_count = 0, soko_prize_count = 0; /* achievements */
+STATIC_VAR boolean splev_init_present = FALSE;
+STATIC_VAR boolean icedpools = FALSE;
+STATIC_VAR int mines_prize_count = 0, soko_prize_count = 0; /* achievements */
 
-static struct obj *container_obj[MAX_CONTAINMENT];
-static int container_idx = 0;
-static struct monst *invent_carrying_monster = NULL;
+STATIC_VAR struct obj *container_obj[MAX_CONTAINMENT];
+STATIC_VAR int container_idx = 0;
+STATIC_VAR struct monst *invent_carrying_monster = NULL;
 
 #define SPLEV_STACK_RESERVE 128
 
@@ -3722,7 +3722,7 @@ struct sp_coder *coder;
     opvar_free(op);
 }
 
-static const monster emptymons; /* Initialized to zero automatically */
+STATIC_VAR const monster emptymons; /* Initialized to zero automatically */
 
 void
 spo_monster(coder)
@@ -3897,7 +3897,7 @@ struct sp_coder *coder;
 }
 
 
-static const object emptyobject; /* Initialized to zero automatically */
+STATIC_VAR const object emptyobject; /* Initialized to zero automatically */
 
 void
 spo_object(coder)

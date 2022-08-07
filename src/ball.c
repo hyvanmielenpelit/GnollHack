@@ -748,7 +748,7 @@ xchar x, y;
     }
 
     if (x != u.ux || y != u.uy) {
-        static const char *pullmsg = "The ball pulls you out of the %s!";
+        STATIC_VAR const char *pullmsg = "The ball pulls you out of the %s!";
         struct trap *t;
         long side;
 

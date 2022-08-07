@@ -169,8 +169,8 @@ register const char *pref;
 }
 
 /* manage a pool of BUFSZ buffers, so callers don't have to */
-static char NEARDATA obufs[NUMOBUF][BUFSZ];
-static int obufidx = 0;
+STATIC_VAR char NEARDATA obufs[NUMOBUF][BUFSZ];
+STATIC_VAR int obufidx = 0;
 
 char *
 nextobuf()
@@ -307,7 +307,7 @@ struct obj *obj;
 /* used by distant_name() to pass extra information to xname_flags();
    it would be much cleaner if this were a parameter, but that would
    require all of the xname() and doname() calls to be modified */
-static int distantname = 0;
+STATIC_VAR int distantname = 0;
 
 /* Give the name of an object seen at a distance.  Unlike xname/doname,
  * we don't want to set dknown if it's not set already.
@@ -2672,13 +2672,13 @@ struct obj *obj;
     return outbuf;
 }
 
-static const char *wrp[] = {
+STATIC_VAR const char *wrp[] = {
     "wand",   "ring",      "potion",     "scroll", "gem",
     "amulet", "spellbook", "spell book",
     /* for non-specific wishes */
     "weapon", "armor",     "tool",  "reagent",  "miscellaneous item",   "miscellaneous",     "food",   "comestible",
 };
-static const char wrpsym[] = { WAND_CLASS,   RING_CLASS,   POTION_CLASS,
+STATIC_VAR const char wrpsym[] = { WAND_CLASS,   RING_CLASS,   POTION_CLASS,
                                SCROLL_CLASS, GEM_CLASS,    AMULET_CLASS,
                                SPBOOK_CLASS, SPBOOK_CLASS, WEAPON_CLASS,
                                ARMOR_CLASS,  TOOL_CLASS, REAGENT_CLASS, MISCELLANEOUS_CLASS, MISCELLANEOUS_CLASS,
@@ -2707,7 +2707,7 @@ const char *verb;
 
 /* various singular words that vtense would otherwise categorize as plural;
    also used by makesingular() to catch some special cases */
-static const char *const special_subjs[] = {
+STATIC_VAR const char *const special_subjs[] = {
     "erinys",  "manes", /* this one is ambiguous */
     "Cyclops", "Hippocrates",     "Pelias",    "aklys",
     "amnesia", "detect monsters", "paralysis", "shape changers",
@@ -2821,7 +2821,7 @@ struct sing_plur {
 /* word pairs that don't fit into formula-based transformations;
    also some suffices which have very few--often one--matches or
    which aren't systematically reversible (knives, staves) */
-static const struct sing_plur one_off[] = {
+STATIC_VAR const struct sing_plur one_off[] = {
     { "child",
       "children" },      /* (for wise guys who give their food funny names) */
     { "cubus", "cubi" }, /* in-/suc-cubus */
@@ -2847,7 +2847,7 @@ static const struct sing_plur one_off[] = {
     { 0, 0 }
 };
 
-static const char *const as_is[] = {
+STATIC_VAR const char *const as_is[] = {
     /* makesingular() leaves these plural due to how they're used */
     "boots",   "shoes",     "gloves",    "lenses", "goggles", "glasses", "eye glasses", "scales",
     "eyes",    "gauntlets", "iron bars", "bracers", "wings", "earrings",
@@ -3325,7 +3325,7 @@ const char *u_str;      /* from user, so might be variant spelling */
 const char *o_str;      /* from objects[], so is in canonical form */
 boolean retry_inverted; /* optional extra "of" handling */
 {
-    static NEARDATA const char detect_SP[] = "detect ",
+    STATIC_VAR NEARDATA const char detect_SP[] = "detect ",
                                SP_detection[] = " detection";
     char *p, buf[BUFSZ];
 
@@ -3466,7 +3466,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
    absence of spaces and/or hyphens (such as "pickaxe" vs "pick axe"
    vs "pick-axe") then there is no need for inclusion in this list;
    likewise for ``"of" inversions'' ("boots of speed" vs "speed boots") */
-static const struct alt_spellings {
+STATIC_VAR const struct alt_spellings {
     const char *sp;
     int ob;
 } spellings[] = {

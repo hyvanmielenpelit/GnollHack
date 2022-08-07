@@ -7,7 +7,7 @@
 
 #include "hack.h"
 
-static NEARDATA boolean did_dig_msg;
+STATIC_VAR NEARDATA boolean did_dig_msg;
 
 STATIC_DCL boolean NDECL(rm_waslit);
 STATIC_DCL void FDECL(mkcavepos,
@@ -618,7 +618,7 @@ dig(VOID_ARGS)
     } 
     else 
     { /* not enough effort has been spent yet */
-        static const char *const d_target[6] = { "",        "rock", "statue",
+        STATIC_VAR const char *const d_target[6] = { "",        "rock", "statue",
                                                  "boulder", "door", "tree" };
         int dig_target = dig_typ(wep, dpx, dpy);
 
@@ -1474,21 +1474,21 @@ struct obj *obj;
         }
         else 
         {
-            static const char *const d_action[6] = { "swinging", 
+            STATIC_VAR const char *const d_action[6] = { "swinging", 
                                                      "digging",
                                                      "chipping the statue",
                                                      "hitting the boulder",
                                                      "chopping at the door",
                                                      "cutting the tree" };
 
-            static const char* const d_action_saw[6] = { "positioning the saw",
+            STATIC_VAR const char* const d_action_saw[6] = { "positioning the saw",
                                          "cutting",
                                          "cutting the statue",
                                          "cutting the boulder",
                                          "cutting at the door",
                                          "cutting the tree" };
 
-            static const int /*enum object_occupation_types*/ d_action_soundset[6] = { OCCUPATION_SWINGING,
+            STATIC_VAR const int /*enum object_occupation_types*/ d_action_soundset[6] = { OCCUPATION_SWINGING,
                                          OCCUPATION_DIGGING_ROCK,
                                          OCCUPATION_DIGGING_ROCK,
                                          OCCUPATION_DIGGING_ROCK,
@@ -1919,7 +1919,7 @@ boolean unexpected;
         } else {
             /* "marching" is deliberately ambiguous; it might mean drills
                 after entering military service or mean engaging in protests */
-            static const char *draft_reaction[] = {
+            STATIC_VAR const char *draft_reaction[] = {
                 "enlisting", "marching", "protesting", "fleeing",
             };
             int dridx;

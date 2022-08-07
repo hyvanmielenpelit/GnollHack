@@ -153,7 +153,7 @@ init_uhunger()
 }
 
 /* tin types [SPINACH_TIN = -1, overrides corpsenm, nut==600] */
-static const struct {
+STATIC_VAR const struct {
     const char *txt;                      /* description */
     int nut;                              /* nutrition */
     Bitfield(fodder, 1);                  /* stocked by health food shops */
@@ -176,7 +176,7 @@ static const struct {
                 { "", 0, 0, 0 } };
 #define TTSZ SIZE(tintxts)
 
-static char *eatmbuf = 0; /* set by corpse_after_effect() */
+STATIC_VAR char *eatmbuf = 0; /* set by corpse_after_effect() */
 
 /* called after mimicing is over */
 STATIC_PTR int
@@ -708,7 +708,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 
         if (adjresult >= 2)
         {
-            static NEARDATA const char brainlessness[] = "brainlessness";
+            STATIC_VAR NEARDATA const char brainlessness[] = "brainlessness";
 
             if (Lifesaved)
             {
@@ -781,7 +781,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
     return result;
 }
 
-static NEARDATA long ate_brains = 0L;
+STATIC_VAR NEARDATA long ate_brains = 0L;
 
 /* eating a corpse or egg of one's own species is usually naughty */
 STATIC_OVL boolean
@@ -2798,7 +2798,7 @@ eatspecial()
 
 /* NOTE: the order of these words exactly corresponds to the
    order of oc_material values #define'd in objclass.h. */
-static const char *foodwords[] = {
+STATIC_VAR const char *foodwords[] = {
     "meal",    "liquid",  "wax",       "food",  "meat",       "food",       "paper",
     "cloth",   "silk",    "leather",   "wood",  "bone",       "scale",      "metal",
     "metal",   "copper",  "silver",    "gold",  "platinum",   "orichalcum", "adamantium", "mithril",
@@ -3996,8 +3996,8 @@ reset_faint()
         unmul("You revive.");
 }
 
-static unsigned save_hs;
-static boolean saved_hs = FALSE;
+STATIC_VAR unsigned save_hs;
+STATIC_VAR boolean saved_hs = FALSE;
 
 void
 reset_hunger_status(VOID_ARGS)

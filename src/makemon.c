@@ -3286,8 +3286,8 @@ int mndx;
  *      comparing the dungeon alignment and monster alignment.
  *      return an integer in the range of 0-5.
  */
-static NEARDATA long oldmoves = 0L; /* != 1, starting value of moves */
-static NEARDATA s_level* align_lev;
+STATIC_VAR NEARDATA long oldmoves = 0L; /* != 1, starting value of moves */
+STATIC_VAR NEARDATA s_level* align_lev;
 
 STATIC_OVL int
 align_shift(ptr)
@@ -3317,7 +3317,7 @@ register struct permonst *ptr;
     return alshift;
 }
 
-static NEARDATA struct {
+STATIC_VAR NEARDATA struct {
     int choice_count;
     char mchoices[SPECIAL_PM]; /* value range is 0..127 */
 } rndmonst_state = { -1, { 0 } };
@@ -4310,7 +4310,7 @@ struct monst *mtmp;
         MCORPSENM(mtmp) = NON_PM;
 }
 
-static const NEARDATA char syms[] = {
+STATIC_VAR const NEARDATA char syms[] = {
     MAX_OBJECT_CLASSES,  MAX_OBJECT_CLASSES + 1, RING_CLASS,   WAND_CLASS,   WEAPON_CLASS,
     FOOD_CLASS,   COIN_CLASS,      SCROLL_CLASS, POTION_CLASS, ARMOR_CLASS,
     AMULET_CLASS, TOOL_CLASS,      ROCK_CLASS,   GEM_CLASS,    SPBOOK_CLASS,  

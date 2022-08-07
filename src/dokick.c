@@ -11,9 +11,9 @@
     ((martial_bonus() && (Magical_kicking || !(uarmf && is_metallic(uarmf)))) || is_bigfoot(youmonst.data) \
      || Magical_kicking)
 
-static NEARDATA struct rm* maploc;
-static NEARDATA struct rm nowhere;
-static NEARDATA const char *gate_str;
+STATIC_VAR NEARDATA struct rm* maploc;
+STATIC_VAR NEARDATA struct rm nowhere;
+STATIC_VAR NEARDATA const char *gate_str;
 
 /* kickedobj (decl.c) tracks a kicked object until placed or destroyed */
 
@@ -28,7 +28,7 @@ STATIC_DCL char *FDECL(kickstr, (char *, const char *));
 STATIC_DCL void FDECL(otransit_msg, (struct obj *, BOOLEAN_P, long));
 STATIC_DCL void FDECL(drop_to, (coord *, SCHAR_P));
 
-static const char kick_passes_thru[] = "kick passes harmlessly through";
+STATIC_VAR const char kick_passes_thru[] = "kick passes harmlessly through";
 
 /* kicking damage when not poly'd into a form with a kick attack */
 STATIC_OVL void
@@ -1012,7 +1012,7 @@ boolean is_golf_swing;
         {
             if (rn2(20)) 
             {
-                static NEARDATA const char *const flyingcoinmsg[] = {
+                STATIC_VAR NEARDATA const char *const flyingcoinmsg[] = {
                     "scatter the coins", "knock coins all over the place",
                     "send coins flying in all directions",
                 };

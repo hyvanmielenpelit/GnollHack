@@ -19,8 +19,8 @@ STATIC_DCL boolean FDECL(intersect, (NhRect *, NhRect *, NhRect *));
 #define XLIM 4
 #define YLIM 3
 
-static NhRect rect[MAXRECT + 1];
-static int rect_cnt;
+STATIC_VAR NhRect rect[MAXRECT + 1];
+STATIC_VAR int rect_cnt;
 
 /*
  * Initialisation of internal structures. Should be called for every

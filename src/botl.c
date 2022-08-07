@@ -23,8 +23,8 @@ STATIC_DCL void FDECL(compose_partystatline, (char*, char*, char*, char*, char*)
 STATIC_DCL char* FDECL(conditionbitmask2str, (unsigned long));
 
 
-static struct _status_hilite_line_str* status_hilite_str = 0;
-static int status_hilite_str_id = 0;
+STATIC_VAR struct _status_hilite_line_str* status_hilite_str = 0;
+STATIC_VAR int status_hilite_str_id = 0;
 
 char*
 get_strength_string(st)
@@ -375,7 +375,7 @@ boolean female;
     register const struct Role *role;
     register int i;
 
-    static NEARDATA const char player_name[] = "Player";
+    STATIC_VAR NEARDATA const char player_name[] = "Player";
 
     /* Find the role */
     for (role = roles; role->name.m; role++)
@@ -652,10 +652,10 @@ STATIC_VAR const struct istat_s initblstats[MAXBLSTATS] = {
 #undef INIT_THRESH
 
 struct istat_s blstats[2][MAXBLSTATS];
-static boolean blinit = FALSE, update_all = FALSE;
-static boolean valset[MAXBLSTATS];
+STATIC_VAR boolean blinit = FALSE, update_all = FALSE;
+STATIC_VAR boolean valset[MAXBLSTATS];
 #ifdef STATUS_HILITES
-static long bl_hilite_moves = 0L;
+STATIC_VAR long bl_hilite_moves = 0L;
 #endif
 
 /* we don't put this next declaration in #ifdef STATUS_HILITES.
@@ -665,8 +665,8 @@ static long bl_hilite_moves = 0L;
  * the final argument of status_update, with or
  * without STATUS_HILITES.
  */
-static unsigned long cond_hilites[BL_ATTCLR_MAX];
-static int now_or_before_idx = 0; /* 0..1 for array[2][] first index */
+STATIC_VAR unsigned long cond_hilites[BL_ATTCLR_MAX];
+STATIC_VAR int now_or_before_idx = 0; /* 0..1 for array[2][] first index */
 
 void
 bot_via_windowport()
@@ -1363,8 +1363,8 @@ stat_update_time()
     return;
 }
 
-static int oldrndencode = 0;
-static nhsym oldgoldsym = 0;
+STATIC_VAR int oldrndencode = 0;
+STATIC_VAR nhsym oldgoldsym = 0;
 
 STATIC_OVL boolean
 eval_notify_windowport_field(fld, valsetlist, idx)
@@ -1617,7 +1617,7 @@ status_reassess(VOID_ARGS)
 #endif
 }
 
-static boolean initalready = FALSE;
+STATIC_VAR boolean initalready = FALSE;
 
 STATIC_OVL void
 init_blstats()
@@ -2005,7 +2005,7 @@ int idx;
 
 struct hilite_s status_hilites[MAXBLSTATS];
 
-static const struct fieldid_t {
+STATIC_VAR const struct fieldid_t {
     const char *fieldname;
     enum statusfields fldid;
 } fieldids_alias[] = {
@@ -2040,7 +2040,7 @@ static const struct fieldid_t {
 };
 
 /* format arguments */
-static const char threshold_value[] = "hilite_status threshold ",
+STATIC_VAR const char threshold_value[] = "hilite_status threshold ",
                   is_out_of_range[] = " is out of range";
 
 
@@ -2634,13 +2634,13 @@ boolean from_configfile;
     enum statusfields fld = BL_FLUSH;
     struct hilite_s hilite;
     char tmpbuf[BUFSZ];
-    static const char *aligntxt[] = { "chaotic", "neutral", "lawful" };
+    STATIC_VAR const char *aligntxt[] = { "chaotic", "neutral", "lawful" };
     /* hu_stat[] from eat.c has trailing spaces which foul up comparisons */
-    static const char *hutxt[] = { "Satiated", "", "Hungry", "Weak",
+    STATIC_VAR const char *hutxt[] = { "Satiated", "", "Hungry", "Weak",
                                    "Fainting", "Fainted", "Starved" };
 
-    static const char* sktxt[] = { "", "Skill" };
-    static const char* twoweaptxt[] = { "", "2Weap" };
+    STATIC_VAR const char* sktxt[] = { "", "Skill" };
+    STATIC_VAR const char* twoweaptxt[] = { "", "2Weap" };
 
     /* Examples:
         3.6.1:
@@ -4005,7 +4005,7 @@ choose_value:
             hilite.rel = TXT_VALUE;
             Strcpy(hilite.textmatch, enc_stat[rv]);
         } else if (fld == BL_ALIGN) {
-            static const char *aligntxt[] = { "chaotic", "neutral", "lawful" };
+            STATIC_VAR const char *aligntxt[] = { "chaotic", "neutral", "lawful" };
             int rv = query_arrayvalue(qry_buf,
                                       aligntxt, 0, 2 + 1);
 
@@ -4015,7 +4015,7 @@ choose_value:
             hilite.rel = TXT_VALUE;
             Strcpy(hilite.textmatch, aligntxt[rv]);
         } else if (fld == BL_HUNGER) {
-            static const char *hutxt[] = { "Satiated", (char *) 0, "Hungry",
+            STATIC_VAR const char *hutxt[] = { "Satiated", (char *) 0, "Hungry",
                                            "Weak", "Fainting", "Fainted",
                                            "Starved" };
             int rv = query_arrayvalue(qry_buf,
@@ -4029,7 +4029,7 @@ choose_value:
             Strcpy(hilite.textmatch, hutxt[rv]);
         }
         else if (fld == BL_SKILL) {
-            static const char* sktxt[] = { (char*)0, "Skill" };
+            STATIC_VAR const char* sktxt[] = { (char*)0, "Skill" };
             int rv = query_arrayvalue(qry_buf,
                 sktxt,
                 0, 1 + 1);
@@ -4041,7 +4041,7 @@ choose_value:
             Strcpy(hilite.textmatch, sktxt[rv]);
         }
         else if (fld == BL_2WEP) {
-            static const char* twoweaptxt[] = { (char*)0, "2Weap" };
+            STATIC_VAR const char* twoweaptxt[] = { (char*)0, "2Weap" };
             int rv = query_arrayvalue(qry_buf,
                 twoweaptxt,
                 0, 1 + 1);

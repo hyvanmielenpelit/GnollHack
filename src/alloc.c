@@ -98,7 +98,7 @@ const genericptr ptr;
 
 /* If ${NH_HEAPLOG} is defined and we can create a file by that name,
    then we'll log the allocation and release information to that file. */
-static void
+STATIC_OVL void
 heapmon_init()
 {
     char *logname = getenv("NH_HEAPLOG");

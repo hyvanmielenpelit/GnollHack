@@ -27,9 +27,9 @@ struct proto_dungeon {
     int n_brs;  /* number of tmpbranch entries */
 };
 
-static int branch_id = 0;
+STATIC_VAR int branch_id = 0;
 int n_dgns;     /* number of dungeons (also used in mklev.c and do.c) */
-static branch *branches = (branch *) 0;        /* dungeon branch list */
+STATIC_VAR branch *branches = (branch *) 0;        /* dungeon branch list */
 
 mapseen *mapseenchn = (struct mapseen *) 0; /*DUNGEON_OVERVIEW*/
 
@@ -41,7 +41,7 @@ struct lchoice {
     char menuletter;
 };
 
-static void FDECL(Fread, (genericptr_t, long, long, dlb *));
+STATIC_DCL void FDECL(Fread, (genericptr_t, long, long, dlb *));
 STATIC_DCL xchar FDECL(dname_to_dnum, (const char *));
 STATIC_DCL int FDECL(find_branch, (const char *, struct proto_dungeon *));
 STATIC_DCL xchar FDECL(parent_dnum, (const char *, struct proto_dungeon *));
@@ -273,7 +273,7 @@ int fd;
     }
 }
 
-static void
+STATIC_OVL void
 Fread(ptr, size, nitems, stream)
 genericptr_t ptr;
 long size, nitems;
@@ -664,9 +664,9 @@ int nth;
 }
 
 #ifdef DDEBUG
-static void FDECL(indent, (int));
+STATIC_DCL void FDECL(indent, (int));
 
-static void
+STATIC_OVL void
 indent(d)
 int d;
 {
@@ -1895,7 +1895,7 @@ boolean unplaced;
     return FALSE;
 }
 
-static void
+STATIC_OVL void
 tport_menu(win, entry, lchoices, lvl_p, unreachable)
 winid win;
 char *entry;

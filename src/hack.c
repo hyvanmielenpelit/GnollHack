@@ -22,9 +22,9 @@ STATIC_DCL void FDECL(maybe_smudge_engr, (int, int, int, int));
 STATIC_DCL void NDECL(domove_core);
 
 #define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
-static int skates = 0;
+STATIC_VAR int skates = 0;
 
-static anything tmp_anything;
+STATIC_VAR anything tmp_anything;
 
 anything *
 uint_to_any(ui)
@@ -141,7 +141,7 @@ const char *msg;
 }
 
 #ifndef LINT /* static long lastmovetime; */
-static NEARDATA long lastmovetime;
+STATIC_VAR NEARDATA long lastmovetime;
 #endif
 
 STATIC_OVL int
@@ -739,7 +739,7 @@ register xchar ox, oy;
     newsym(ox, oy);
 }
 
-static NEARDATA const char fell_on_sink[] = "fell onto a sink";
+STATIC_VAR NEARDATA const char fell_on_sink[] = "fell onto a sink";
 
 STATIC_OVL void
 dosinkfall()
@@ -2618,11 +2618,11 @@ boolean newspot;             /* true if called by spoteffects */
     return FALSE;
 }
 
-static int inspoteffects = 0;
-static coord spotloc;
-static int spotterrain;
-static struct trap* spottrap = (struct trap*)0;
-static unsigned spottraptyp = NO_TRAP;
+STATIC_VAR int inspoteffects = 0;
+STATIC_VAR coord spotloc;
+STATIC_VAR int spotterrain;
+STATIC_VAR struct trap* spottrap = (struct trap*)0;
+STATIC_VAR unsigned spottraptyp = NO_TRAP;
 
 void
 spoteffects(pick)
@@ -3814,7 +3814,7 @@ weight_cap()
     return (int) carrcap;
 }
 
-static int wc; /* current weight_cap(); valid after call to inv_weight() */
+STATIC_VAR int wc; /* current weight_cap(); valid after call to inv_weight() */
 
 /* returns how far beyond the normal capacity the player is currently. */
 /* inv_weight() is negative if the player is below normal capacity. */

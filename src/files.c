@@ -66,7 +66,7 @@ const
 
 #ifdef PREFIXES_IN_USE
 #define FQN_NUMBUF 4
-static char fqn_filename_buffer[FQN_NUMBUF][FQN_MAX_FILENAME];
+STATIC_VAR char fqn_filename_buffer[FQN_NUMBUF][FQN_MAX_FILENAME];
 #endif
 
 #if !defined(MFLOPPY) && !defined(VMS) && !defined(WIN32)
@@ -128,14 +128,14 @@ struct level_ftrack {
 #endif /*HOLD_LOCKFILE_OPEN*/
 
 #define WIZKIT_MAX 128
-static char wizkit[WIZKIT_MAX];
+STATIC_VAR char wizkit[WIZKIT_MAX];
 STATIC_DCL FILE *NDECL(fopen_wizkit_file);
 STATIC_DCL void FDECL(wizkit_addinv, (struct obj *));
 
 #ifdef AMIGA
 extern char PATH[]; /* see sys/amiga/amidos.c */
 extern char bbs_id[];
-static int lockptr;
+STATIC_VAR int lockptr;
 #ifdef __SASC_60
 #include <proto/dos.h>
 #endif
@@ -145,7 +145,7 @@ extern void FDECL(amii_set_text_font, (char *, int));
 #endif
 
 #if defined(WIN32) || defined(MSDOS)
-static int lockptr;
+STATIC_VAR int lockptr;
 #ifdef MSDOS
 #define Delay(a) msleep(a)
 #endif
@@ -219,8 +219,8 @@ STATIC_DCL int FDECL(open_levelfile_exclusively, (const char *, int, int));
 
 #define INBUF_SIZ 4 * BUFSIZ
 
-static char config_section_chosen[INBUF_SIZ]; // = (char*)0;
-static char config_section_current[INBUF_SIZ]; // = (char*)0;
+STATIC_VAR char config_section_chosen[INBUF_SIZ]; // = (char*)0;
+STATIC_VAR char config_section_current[INBUF_SIZ]; // = (char*)0;
 
 /*
  * fname_encode()
@@ -1850,10 +1850,10 @@ boolean uncomp;
 
 /* ----------  BEGIN FILE LOCKING HANDLING ----------- */
 
-static int nesting = 0;
+STATIC_VAR int nesting = 0;
 
 #if defined(NO_FILE_LINKS) || defined(USE_FCNTL) /* implies UNIX */
-static int lockfd; /* for lock_file() to pass to unlock_file() */
+STATIC_VAR int lockfd; /* for lock_file() to pass to unlock_file() */
 #endif
 #ifdef USE_FCNTL
 struct flock sflock; /* for unlocking, same as above */
@@ -3161,7 +3161,7 @@ struct _config_error_frame {
     struct _config_error_frame *next;
 };
 
-static struct _config_error_frame *config_error_data = 0;
+STATIC_VAR struct _config_error_frame *config_error_data = 0;
 
 void
 config_error_init(from_file, sourcename, secure)
@@ -3610,9 +3610,9 @@ extern struct symsetentry *symset_list;  /* options.c */
 extern struct symparse loadsyms[];       /* drawing.c */
 extern const char *known_handling[];     /* drawing.c */
 extern const char *known_restrictions[]; /* drawing.c */
-static int symset_count = 0;             /* for pick-list building only */
-static boolean chosen_symset_start = FALSE, chosen_symset_end = FALSE;
-static int symset_which_set = 0;
+STATIC_VAR int symset_count = 0;             /* for pick-list building only */
+STATIC_VAR boolean chosen_symset_start = FALSE, chosen_symset_end = FALSE;
+STATIC_VAR int symset_which_set = 0;
 
 STATIC_OVL
 FILE *
@@ -4415,11 +4415,11 @@ boolean wildcards;
 
 #define MAXPASSAGES SIZE(context.novel.pasg) /* 20 */
 
-static int FDECL(choose_passage, (int, unsigned));
+STATIC_DCL int FDECL(choose_passage, (int, unsigned));
 
 /* choose a random passage that hasn't been chosen yet; once all have
    been chosen, reset the tracking to make all passages available again */
-static int
+STATIC_OVL int
 choose_passage(passagecnt, oid)
 int passagecnt; /* total of available passages */
 unsigned oid; /* book.o_id, used to determine whether re-reading same book */

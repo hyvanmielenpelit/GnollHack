@@ -72,12 +72,12 @@ STATIC_DCL void FDECL(tipcontainer, (struct obj *));
 /* A variable set in use_container(), to be used by the callback routines
    in_container() and out_container() from askchain() and use_container().
    Also used by menu_loot() and container_gone(). */
-static NEARDATA struct obj *current_container;
-static NEARDATA struct obj* move_target_container;
-static NEARDATA boolean abort_looting;
+STATIC_VAR NEARDATA struct obj *current_container;
+STATIC_VAR NEARDATA struct obj* move_target_container;
+STATIC_VAR NEARDATA boolean abort_looting;
 #define Icebox (current_container->otyp == ICE_BOX)
 
-static const char
+STATIC_VAR const char
         moderateloadmsg[] = "You have a little trouble lifting",
         nearloadmsg[] = "You have much trouble lifting",
         overloadmsg[] = "You have extreme difficulty lifting";
@@ -339,7 +339,7 @@ boolean picked_some;
 }
 
 /* Value set by query_objlist() for n_or_more(). */
-static long val_for_n_or_more;
+STATIC_VAR long val_for_n_or_more;
 
 /* query_objlist callback: return TRUE if obj's count is >= reference value */
 STATIC_OVL boolean
@@ -353,8 +353,8 @@ struct obj *obj;
 
 /* list of valid menu classes for query_objlist() and allow_category callback
    (with room for all object classes, 'u'npaid, BUCX, and terminator) */
-static char valid_menu_classes[MAX_OBJECT_CLASSES + 1 + 4 + 1];
-static boolean class_filter, bucx_filter, shop_filter;
+STATIC_VAR char valid_menu_classes[MAX_OBJECT_CLASSES + 1 + 4 + 1];
+STATIC_VAR boolean class_filter, bucx_filter, shop_filter;
 
 /* check valid_menu_classes[] for an entry; also used by askchain() */
 boolean
@@ -3045,7 +3045,7 @@ observe_quantum_cat(box, makecat, givemsg)
 struct obj *box;
 boolean makecat, givemsg;
 {
-    static NEARDATA const char sc[] = "Schroedinger's Cat";
+    STATIC_VAR NEARDATA const char sc[] = "Schroedinger's Cat";
     struct obj *deadcat;
     struct monst *livecat = 0;
     xchar ox, oy;
@@ -3171,7 +3171,7 @@ u_handsy()
     return TRUE;
 }
 
-static const char stashable[] = { ALLOW_COUNT, COIN_CLASS, ALL_CLASSES, 0 };
+STATIC_VAR const char stashable[] = { ALLOW_COUNT, COIN_CLASS, ALL_CLASSES, 0 };
 
 int
 use_container(objp, held, more_containers)
@@ -4034,7 +4034,7 @@ boolean outokay, inokay, alreadyused, more_containers;
     return (n == 0 && more_containers) ? 'n' : 'q'; /* next or quit */
 }
 
-static const char tippables[] = { ALL_CLASSES, TOOL_CLASS, 0 };
+STATIC_VAR const char tippables[] = { ALL_CLASSES, TOOL_CLASS, 0 };
 
 /* #tip command -- empty container contents onto floor */
 int
@@ -4353,7 +4353,7 @@ can_stash_objs()
     return FALSE;
 }
 
-static struct obj dummy_container = { 0 };
+STATIC_VAR struct obj dummy_container = { 0 };
 
 void
 set_current_container_to_dummyobj()

@@ -1273,7 +1273,7 @@ const struct Align aligns[] = {
 };
 
 /* Filters */
-static struct {
+STATIC_VAR struct {
     boolean roles[SIZE(roles)];
     unsigned long mask;
 } rfilter;
@@ -1284,7 +1284,7 @@ STATIC_DCL int FDECL(role_gendercount, (int));
 STATIC_DCL int FDECL(race_alignmentcount, (int));
 
 /* used by str2XXX() */
-static char NEARDATA randomstr[] = "random";
+STATIC_VAR const char NEARDATA randomstr[] = "random";
 
 boolean
 validrole(rolenum)
@@ -1930,7 +1930,8 @@ clearrolefilter()
 #define BP_ROLE 3
 #define NUM_BP 4
 
-STATIC_VAR char pa[NUM_BP], post_attribs;
+STATIC_VAR char pa[NUM_BP];
+STATIC_VAR char post_attribs;
 
 STATIC_OVL char *
 promptsep(buf, num_post_attribs)
@@ -1992,7 +1993,7 @@ int rolenum, racenum, gendnum, alignnum;
 {
     int k, gendercount = 0, aligncount = 0;
     char buf[BUFSZ];
-    static char err_ret[] = " character's";
+    STATIC_VAR char err_ret[] = " character's";
     boolean donefirst = FALSE;
     int maxroles = sizeof(roles) / sizeof(roles[0]);
     int maxraces = sizeof(races) / sizeof(races[0]);
@@ -2379,7 +2380,7 @@ int which;
 winid where;
 boolean preselect;
 {
-    static NEARDATA const char RS_menu_let[] = {
+    STATIC_VAR NEARDATA const char RS_menu_let[] = {
         '=',  /* name */
         '?',  /* role */
         '/',  /* race */
@@ -3121,7 +3122,7 @@ special_attack2_glyph_to_player_mon(int glyph)
 
 NEARDATA struct Role saved_urole;
 NEARDATA struct Race saved_urace;
-static boolean urolerace_values_saved = FALSE;
+STATIC_VAR boolean urolerace_values_saved = FALSE;
 
 void
 save_initial_urolerace_values(VOID_ARGS)

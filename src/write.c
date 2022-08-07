@@ -93,7 +93,7 @@ struct obj *objlist;
     return FALSE;
 }
 
-static NEARDATA const char write_on[] = { SCROLL_CLASS, SPBOOK_CLASS, 0 };
+STATIC_VAR NEARDATA const char write_on[] = { SCROLL_CLASS, SPBOOK_CLASS, 0 };
 
 /* write -- applying a magic marker */
 int

@@ -45,14 +45,14 @@ STATIC_DCL boolean FDECL(blocked_boulder, (int, int));
  *      responsible for the theft of the Amulet from Marduk, the Creator.
  *      Moloch is unaligned.
  */
-static const char *godvoices[] = {
+STATIC_VAR const char *godvoices[] = {
     "booms out", "thunders", "rings out", "booms",
 };
 
 /* values calculated when prayer starts, and used when completed */
-static aligntyp p_aligntyp;
-static int p_trouble;
-static int p_type; /* (-1)-3: (-1)=really naughty, 3=really good */
+STATIC_VAR aligntyp p_aligntyp;
+STATIC_VAR int p_trouble;
+STATIC_VAR int p_type; /* (-1)-3: (-1)=really naughty, 3=really good */
 
 #define PIOUS 20
 #define DEVOUT 14
@@ -388,7 +388,7 @@ int trouble;
     int i;
     struct obj *otmp = 0;
     const char *what = (const char *) 0;
-    static NEARDATA const char leftglow[] = "Your left ring softly glows",
+    STATIC_VAR NEARDATA const char leftglow[] = "Your left ring softly glows",
                                rightglow[] = "Your right ring softly glows";
 
     switch (trouble) {
@@ -891,7 +891,7 @@ aligntyp resp_god;
 }
 
 /* helper to print "str appears at your feet", or appropriate */
-static void
+STATIC_OVL void
 at_your_feet(str)
 const char *str;
 {
@@ -1886,7 +1886,7 @@ aligntyp g_align;
         }
         case 5: 
         {
-            static NEARDATA const char msg[] =
+            STATIC_VAR NEARDATA const char msg[] =
                 "\"and thus I grant thee the gift of %s!\"";
 
             play_sfx_sound(SFX_PRAY_GIFT);
@@ -2199,7 +2199,7 @@ register struct obj *otmp;
 int
 dosacrifice()
 {
-    static NEARDATA const char cloud_of_smoke[] =
+    STATIC_VAR NEARDATA const char cloud_of_smoke[] =
         "A cloud of %s smoke surrounds you...";
     register struct obj* otmp;
     int value = 0, pm;
@@ -3445,7 +3445,7 @@ u_ghisher()
 }
 
 
-static const char *hallu_gods[] = {
+STATIC_VAR const char *hallu_gods[] = {
     "the Flying Spaghetti Monster", /* Church of the FSM */
     "Eris",                         /* Discordianism */
     "the Martians",                 /* every science fiction ever */

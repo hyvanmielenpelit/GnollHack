@@ -20,8 +20,8 @@
 /* from sp_lev.c, for deliver_splev_message() */
 extern char *lev_message;
 
-static void NDECL(dump_qtlist);
-static void FDECL(Fread, (genericptr_t, long, long, dlb *));
+STATIC_DCL void NDECL(dump_qtlist);
+STATIC_DCL void FDECL(Fread, (genericptr_t, long, long, dlb *));
 STATIC_DCL struct qtmsg *FDECL(construct_qtlist, (long));
 STATIC_DCL const char *NDECL(intermed);
 STATIC_DCL struct obj *FDECL(find_qarti, (struct obj *));
@@ -39,16 +39,16 @@ STATIC_DCL void FDECL(file_write_pager, (dlb*, struct qtmsg*, int, int));
 STATIC_DCL boolean FDECL(skip_pager, (BOOLEAN_P));
 
 
-static char cvt_buf[64];
-static struct qtlists qt_list;
-static dlb *msg_file;
+STATIC_VAR char cvt_buf[64];
+STATIC_VAR struct qtlists qt_list;
+STATIC_VAR dlb *msg_file;
 /* used by ldrname() and neminame(), then copied into cvt_buf */
-static char nambuf[sizeof cvt_buf];
+STATIC_VAR char nambuf[sizeof cvt_buf];
 
 /* dump the character msg list to check appearance;
    build with DEBUG enabled and use DEBUGFILES=questpgr.c
    in sysconf file or environment */
-static void
+STATIC_OVL void
 dump_qtlist()
 {
 #ifdef DEBUG
@@ -65,7 +65,7 @@ dump_qtlist()
     return;
 }
 
-static void
+STATIC_OVL void
 Fread(ptr, size, nitems, stream)
 genericptr_t ptr;
 long size, nitems;

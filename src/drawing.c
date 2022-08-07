@@ -1307,7 +1307,7 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
 };
 
 /* default rogue level symbols */
-static const uchar def_r_oc_syms[MAX_OBJECT_CLASSES] = {
+STATIC_VAR const uchar def_r_oc_syms[MAX_OBJECT_CLASSES] = {
 /* 0*/ '\0', ILLOBJ_SYM, WEAPON_SYM, ']', /* armor */
        RING_SYM,
 /* 5*/ ',',                     /* amulet */

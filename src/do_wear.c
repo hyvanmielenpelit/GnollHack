@@ -7,7 +7,7 @@
 
 #include "hack.h"
 
-static NEARDATA const char c_armor[] = "armor", c_suit[] = "suit",
+STATIC_VAR NEARDATA const char c_armor[] = "armor", c_suit[] = "suit",
                            c_shirt[] = "shirt", c_robe[] = "robe",
                            c_bracers[] = "bracers", c_cloak[] = "cloak",
                            c_gloves[] = "gloves", c_boots[] = "boots",
@@ -15,14 +15,14 @@ static NEARDATA const char c_armor[] = "armor", c_suit[] = "suit",
                            c_weapon[] = "weapon", c_sword[] = "sword",
                            c_axe[] = "axe", c_that_[] = "that";
 
-static NEARDATA const long takeoff_order[] = {
+STATIC_VAR NEARDATA const long takeoff_order[] = {
     WORN_BLINDF,  W_WEP,      WORN_SHIELD, WORN_GLOVES, LEFT_RING,
     RIGHT_RING,   W_MISC,     W_MISC2,     W_MISC3,     W_MISC4,      W_MISC5,  
     WORN_BRACERS, WORN_CLOAK, WORN_HELMET, WORN_AMUL,   WORN_ROBE,   WORN_ARMOR,
     WORN_SHIRT,   WORN_BOOTS, W_SWAPWEP,   W_SWAPWEP2,   W_QUIVER,    0L
 };
 
-static NEARDATA const long wear_order[] = {
+STATIC_VAR NEARDATA const long wear_order[] = {
     WORN_SHIRT,   WORN_ARMOR,  WORN_ROBE,    WORN_SHIELD,  WORN_CLOAK,
     WORN_HELMET,  WORN_BOOTS,  WORN_GLOVES,  WORN_BRACERS, LEFT_RING,
     RIGHT_RING,   W_MISC,      W_MISC2,      W_MISC3,      W_MISC4,      W_MISC5,
@@ -92,7 +92,7 @@ struct obj *otmp;
 
 /* starting equipment gets auto-worn at beginning of new game,
    and we don't want stealth or displacement feedback then */
-static boolean initial_don = FALSE; /* manipulated in set_wear() */
+STATIC_VAR boolean initial_don = FALSE; /* manipulated in set_wear() */
 
 /* putting on or taking off an item which confers stealth;
    give feedback and discover it iff stealth state is changing */
@@ -1167,10 +1167,10 @@ struct obj *stolenobj; /* no message if stolenobj is already being doffing */
 
 /* both 'clothes' and 'accessories' now include both armor and accessories;
    TOOL_CLASS is for eyewear, FOOD_CLASS is for MEAT_RING */
-static NEARDATA const char clothes[] = {
+STATIC_VAR NEARDATA const char clothes[] = {
     ARMOR_CLASS, RING_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, TOOL_CLASS, FOOD_CLASS, 0
 };
-static NEARDATA const char accessories[] = {
+STATIC_VAR NEARDATA const char accessories[] = {
     RING_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, TOOL_CLASS, FOOD_CLASS, ARMOR_CLASS, 0
 };
 STATIC_VAR NEARDATA int Narmorpieces, Naccessories;
@@ -3626,7 +3626,7 @@ struct obj *obj;
 const char *verb; /* "dip" or "grease", or null to avoid messages */
 boolean only_if_known_cursed; /* ignore covering unless known to be cursed */
 {
-    static NEARDATA const char need_to_take_off_outer_armor[] =
+    STATIC_VAR NEARDATA const char need_to_take_off_outer_armor[] =
         "need to take off %s to %s %s.";
     char buf[BUFSZ];
     boolean anycovering = !only_if_known_cursed; /* more comprehensible... */

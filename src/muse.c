@@ -39,7 +39,7 @@ STATIC_DCL boolean FDECL(muse_unslime, (struct monst *, struct obj *,
 STATIC_DCL int FDECL(cures_sliming, (struct monst *, struct obj *));
 STATIC_DCL boolean FDECL(green_mon, (struct monst *));
 
-static struct musable {
+STATIC_VAR struct musable {
     struct obj *offensive;
     struct obj *defensive;
     struct obj *misc;
@@ -48,8 +48,8 @@ static struct musable {
      * If it's an object, the object is also set (it's 0 otherwise).
      */
 } m;
-static int trapx, trapy;
-static boolean zap_oseen; /* for wands which use mbhitm and are zapped at
+STATIC_VAR int trapx, trapy;
+STATIC_VAR boolean zap_oseen; /* for wands which use mbhitm and are zapped at
                            * players.  We usually want an oseen local to
                            * the function, but this is impossible since the
                            * function mbhitm has to be compatible with the
@@ -2043,7 +2043,7 @@ struct monst *mtmp;
 
 /* type of monster to polymorph into; defaults to one suitable for the
    current level rather than the totally arbitrary choice of newcham() */
-static struct permonst *
+STATIC_OVL struct permonst *
 muse_newcham_mon(mon)
 struct monst *mon;
 {

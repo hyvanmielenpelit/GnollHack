@@ -41,7 +41,7 @@ STATIC_OVL void FDECL(restore_msghistory, (int));
 STATIC_DCL void FDECL(reset_oattached_mids, (BOOLEAN_P));
 STATIC_DCL void FDECL(rest_levl, (int, BOOLEAN_P));
 
-static struct restore_procs {
+STATIC_VAR struct restore_procs {
     const char *name;
     int mread_flags;
     void NDECL((*restore_minit));
@@ -71,8 +71,8 @@ struct bucket {
 STATIC_DCL void NDECL(clear_id_mapping);
 STATIC_DCL void FDECL(add_id_mapping, (unsigned, unsigned));
 
-static int n_ids_mapped = 0;
-static struct bucket *id_map = 0;
+STATIC_VAR int n_ids_mapped = 0;
+STATIC_VAR struct bucket *id_map = 0;
 
 #ifdef AMII_GRAPHICS
 void FDECL(amii_setpens, (int)); /* use colors from save file */
@@ -82,8 +82,8 @@ extern int amii_numcolors;
 #include "display.h"
 
 boolean restoring = FALSE;
-static NEARDATA struct fruit *oldfruit;
-static NEARDATA long omoves;
+STATIC_VAR NEARDATA struct fruit *oldfruit;
+STATIC_VAR NEARDATA long omoves;
 
 #define Is_IceBox(o) ((o)->otyp == ICE_BOX ? TRUE : FALSE)
 
@@ -1994,11 +1994,11 @@ const char *suitename;
 #ifndef ZEROCOMP_BUFSIZ
 #define ZEROCOMP_BUFSIZ BUFSZ
 #endif
-static NEARDATA unsigned char inbuf[ZEROCOMP_BUFSIZ];
-static NEARDATA unsigned short inbufp = 0;
-static NEARDATA unsigned short inbufsz = 0;
-static NEARDATA short inrunlength = -1;
-static NEARDATA int mreadfd;
+STATIC_VAR NEARDATA unsigned char inbuf[ZEROCOMP_BUFSIZ];
+STATIC_VAR NEARDATA unsigned short inbufp = 0;
+STATIC_VAR NEARDATA unsigned short inbufsz = 0;
+STATIC_VAR NEARDATA short inrunlength = -1;
+STATIC_VAR NEARDATA int mreadfd;
 
 STATIC_OVL int
 zerocomp_mgetc()

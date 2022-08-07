@@ -45,7 +45,7 @@
 #define LSF_NEEDS_FIXUP 0x2 /* need oid fixup */
 #define LSF_DARKNESS_SOURCE 0x4 /* emits darkness rather than light */
 
-static light_source *light_base = 0;
+STATIC_VAR light_source *light_base = 0;
 
 STATIC_DCL void FDECL(write_ls, (int, light_source *));
 STATIC_DCL int FDECL(maybe_write_ls, (int, int, BOOLEAN_P));

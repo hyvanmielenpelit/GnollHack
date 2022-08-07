@@ -13778,7 +13778,7 @@ dosetsoundvolume()
     adjust_ghsound_general_volumes();
 }
 
-static float prev_hearing_array[COLNO][ROWNO];
+STATIC_VAR float prev_hearing_array[COLNO][ROWNO];
 
 void
 update_hearing_array(mode)

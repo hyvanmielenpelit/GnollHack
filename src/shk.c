@@ -71,7 +71,7 @@ STATIC_DCL const char *FDECL(cad, (BOOLEAN_P));
                     obj->quan <= bp->bquan
  */
 
-static const char *angrytexts[] = { "quite upset", "ticked off", "furious" };
+STATIC_VAR const char *angrytexts[] = { "quite upset", "ticked off", "furious" };
 
 /*
  *  Transfer money from inventory to monster when paying
@@ -747,7 +747,7 @@ char *enterstring;
 }
 
 /* called when removing a pick-axe or mattock from a container */
-static NEARDATA long pickmovetime = 0L;
+STATIC_VAR NEARDATA long pickmovetime = 0L;
 
 void
 pick_pick(obj)
@@ -1823,7 +1823,7 @@ boolean itemize;
     return buy;
 }
 
-static struct repo { /* repossession context */
+STATIC_VAR struct repo { /* repossession context */
     struct monst *shopkeeper;
     coord location;
 } repo;
@@ -3258,11 +3258,11 @@ boolean peaceful, silent;
 }
 
 /* auto-response flag for/from "sell foo?" 'a' => 'y', 'q' => 'n' */
-static char sell_response = 'a';
-static int sell_how = SELL_NORMAL;
+STATIC_VAR char sell_response = 'a';
+STATIC_VAR int sell_how = SELL_NORMAL;
 /* can't just use sell_response='y' for auto_credit because the 'a' response
    shouldn't carry over from ordinary selling to credit selling */
-static boolean auto_credit = FALSE;
+STATIC_VAR boolean auto_credit = FALSE;
 
 void
 sellobj_state(deliberate)

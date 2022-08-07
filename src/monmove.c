@@ -1097,14 +1097,14 @@ struct monst* mtmp;
 }
 
 
-static NEARDATA const char practical[] = { WEAPON_CLASS, ARMOR_CLASS,
+STATIC_VAR NEARDATA const char practical[] = { WEAPON_CLASS, ARMOR_CLASS,
                                            GEM_CLASS, FOOD_CLASS, MISCELLANEOUS_CLASS, 0 };
-static NEARDATA const char magical[] = { AMULET_CLASS, POTION_CLASS,
+STATIC_VAR NEARDATA const char magical[] = { AMULET_CLASS, POTION_CLASS,
                                          SCROLL_CLASS, WAND_CLASS,
                                          RING_CLASS,   SPBOOK_CLASS, MISCELLANEOUS_CLASS, 0 };
-static NEARDATA const char indigestion[] = { BALL_CLASS, ROCK_CLASS, 0 };
-static NEARDATA const char boulder_class[] = { ROCK_CLASS, 0 };
-static NEARDATA const char gem_class[] = { GEM_CLASS, 0 };
+STATIC_VAR NEARDATA const char indigestion[] = { BALL_CLASS, ROCK_CLASS, 0 };
+STATIC_VAR NEARDATA const char boulder_class[] = { ROCK_CLASS, 0 };
+STATIC_VAR NEARDATA const char gem_class[] = { GEM_CLASS, 0 };
 
 boolean
 itsstuck(mtmp)

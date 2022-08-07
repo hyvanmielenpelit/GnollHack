@@ -9,8 +9,8 @@
 
 boolean notonhead = FALSE;
 
-static NEARDATA int nothing, unkn;
-static NEARDATA const char beverages[] = { POTION_CLASS, TOOL_CLASS, 0 };
+STATIC_VAR NEARDATA int nothing, unkn;
+STATIC_VAR NEARDATA const char beverages[] = { POTION_CLASS, TOOL_CLASS, 0 };
 
 STATIC_DCL long FDECL(itimeout, (long));
 STATIC_DCL void NDECL(ghost_from_bottle);
@@ -445,8 +445,8 @@ boolean talk;
             You_feel_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "much less nauseated now.");
 }
 
-static const char vismsg[] = "vision seems to %s for a moment but is %s now.";
-static const char eyemsg[] = "%s momentarily %s.";
+STATIC_VAR const char vismsg[] = "vision seems to %s for a moment but is %s now.";
+STATIC_VAR const char eyemsg[] = "%s momentarily %s.";
 
 void
 make_blinded(xtime, talk)
@@ -3110,11 +3110,11 @@ struct obj *o1, *o2;
     return STRANGE_OBJECT;
 }
 
+STATIC_VAR const char Dip_[] = "Dip ";
 /* #dip command */
 int
 dodip()
 {
-    static const char Dip_[] = "Dip ";
     struct obj *potion, *obj;
     struct obj *singlepotion;
     uchar here;

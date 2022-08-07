@@ -290,7 +290,7 @@ STATIC_DCL void NDECL(shuffle_all);
 STATIC_DCL boolean FDECL(interesting_to_discover, (int));
 STATIC_DCL char *FDECL(oclass_to_name, (CHAR_P, char *));
 
-static NEARDATA short disco[NUM_OBJECTS] = DUMMY;
+STATIC_VAR NEARDATA short disco[NUM_OBJECTS] = DUMMY;
 
 
 #ifdef USE_TILES
@@ -827,7 +827,7 @@ register int i;
 }
 
 /* items that should stand out once they're known */
-static const short uniq_objs[] = {
+STATIC_VAR const short uniq_objs[] = {
     AMULET_OF_YENDOR, SPE_BOOK_OF_THE_DEAD, CANDELABRUM_OF_INVOCATION,
     BELL_OF_OPENING,
 };
@@ -909,7 +909,7 @@ char *buf;
 int
 doclassdisco()
 {
-    static NEARDATA const char
+    STATIC_VAR NEARDATA const char
         prompt[] = "View discoveries for which sort of objects?",
         havent_discovered_any[] = "haven't discovered any %s yet.",
         unique_items[] = "unique items",
@@ -1415,7 +1415,7 @@ struct obj* obj;
 }
 
 
-static boolean object_init_values_saved = FALSE;
+STATIC_VAR boolean object_init_values_saved = FALSE;
 
 void
 save_initial_objects_values(VOID_ARGS)
