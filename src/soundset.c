@@ -14870,8 +14870,8 @@ struct obj* obj;
 }
 
 enum ghsound_types
-    obj_ambient_sound(obj)
-    struct obj* obj;
+obj_ambient_sound(obj)
+struct obj* obj;
 {
     if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
         return GHSOUND_NONE;
