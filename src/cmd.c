@@ -6784,6 +6784,10 @@ boolean initial;
 
     if (initial)
     {
+#ifdef ALTMETA
+        alt_esc = FALSE;
+#endif
+        escape_sequence_key_start_allowed = FALSE;
         last_multi = 0;
         phead = ptail = shead = stail = 0;
         backed_dir_cmd = FALSE;

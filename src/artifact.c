@@ -17,6 +17,11 @@
 
 extern boolean notonhead; /* for long worms */
 
+/* touch_artifact()'s return value isn't sufficient to tell whether it
+   dished out damage, and tracking changes to u.uhp, u.mh, Lifesaved
+   when trying to avoid second wounding is too cumbersome */
+STATIC_VAR boolean touch_blasted; /* for retouch_object() */
+
 const char* artifact_invoke_names[NUM_ARTINVOKES] = {
     "taming", "healing", "mana replenishment", "untrapping", "charging",
     "level teleportation", "portal creation", "enlightenment", "arrow creation", "arrow of Diana", "death ray", "blessing of contents", "wishing",
@@ -130,6 +135,7 @@ reset_artifacts(VOID_ARGS)
     mkot_trap_warn_count = 0;
     nesting = 0;
     spec_dbon_applies = 0;
+    touch_blasted = 0;
 }
 
 
@@ -734,11 +740,6 @@ long wp_mask;
     }
 
 }
-
-/* touch_artifact()'s return value isn't sufficient to tell whether it
-   dished out damage, and tracking changes to u.uhp, u.mh, Lifesaved
-   when trying to avoid second wounding is too cumbersome */
-STATIC_VAR boolean touch_blasted; /* for retouch_object() */
 
 /*
  * creature (usually hero) tries to touch (pick up or wield) an artifact obj.

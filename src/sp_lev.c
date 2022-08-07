@@ -8316,6 +8316,31 @@ give_up:
     return result;
 }
 
+void
+reset_splev(VOID_ARGS)
+{
+    selection_flood_check_func = 0;
+    floodfillchk_match_under_typ = 0;
+    xsize = ysize = 0;
+    xstart = ystart = 0;
+    memset((genericptr_t)&SpLev_Map, 0, sizeof(SpLev_Map));
+    ralign[0] = AM_CHAOTIC;
+    ralign[1] = AM_NEUTRAL;
+    ralign[2] = AM_LAWFUL;
+
+    lev_message = 0;
+    lregions = 0;
+    num_lregions = 0;
+
+    splev_init_present = FALSE;
+    icedpools = FALSE;
+    mines_prize_count = 0, soko_prize_count = 0; /* achievements */
+
+    memset((genericptr_t)&container_obj, 0, sizeof(container_obj));
+    container_idx = 0;
+    invent_carrying_monster = NULL;
+}
+
 
 #ifdef _MSC_VER
  #pragma warning(pop)

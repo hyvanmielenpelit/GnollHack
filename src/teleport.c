@@ -2188,4 +2188,10 @@ boolean give_feedback;
     }
 }
 
+void
+reset_teleport(VOID_ARGS)
+{
+    telescroll = 0;
+}
+
 /*teleport.c*/

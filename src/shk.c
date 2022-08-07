@@ -5533,6 +5533,7 @@ void
 reset_shk()
 {
     pickmovetime = 0L;
+    followmsg = 0;
 }
 
 #ifdef __SASC

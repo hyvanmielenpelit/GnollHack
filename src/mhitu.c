@@ -4948,4 +4948,10 @@ enum action_tile_types action;
     return has_action_tile;
 }
 
+void
+reset_mhitu(VOID_ARGS)
+{
+    mon_currwep = 0;
+}
+
 /*mhitu.c*/

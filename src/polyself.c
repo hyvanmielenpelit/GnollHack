@@ -2661,4 +2661,10 @@ udeadinside()
                  : "empty";    /* golems plus vortices */
 }
 
+void
+reset_polyself(VOID_ARGS)
+{
+    sex_change_ok = 0;
+}
+
 /*polyself.c*/

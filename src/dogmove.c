@@ -2055,4 +2055,10 @@ struct monst *mtmp;
     }
 }
 
+void
+reset_dogmove(VOID_ARGS)
+{
+    gtyp = gx = gy = 0;
+}
+
 /*dogmove.c*/

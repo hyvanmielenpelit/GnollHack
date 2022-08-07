@@ -3713,4 +3713,11 @@ boolean only_if_known_cursed; /* ignore covering unless known to be cursed */
     return FALSE;
 }
 
+void
+reset_dowear(VOID_ARGS)
+{
+    Narmorpieces = 0;
+    Naccessories = 0;
+}
+
 /*do_wear.c*/

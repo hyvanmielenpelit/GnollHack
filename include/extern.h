@@ -733,6 +733,7 @@ E char* FDECL(randomize_modron_name, (char*));
 E void FDECL(and_getlin_log, (const char*, char*));
 #endif
 E void FDECL(read_manual, (struct obj*));
+E void NDECL(reset_doname);
 
 /* ### do_wear.c ### */
 
@@ -790,6 +791,7 @@ E boolean FDECL(inaccessible_equipment, (struct obj *, const char *, BOOLEAN_P))
 E int NDECL(get_role_AC_bonus);
 E int NDECL(get_role_MC_bonus);
 E int FDECL(armor_or_accessory_off, (struct obj*));
+E void NDECL(reset_dowear);
 
 /* ### dog.c ### */
 
@@ -828,6 +830,7 @@ E boolean FDECL(could_reach_item, (struct monst*, XCHAR_P, XCHAR_P));
 E void FDECL(m_gainstr, (struct monst*, struct obj*, int, BOOLEAN_P));
 E void FDECL(dog_food_after_effect, (struct monst*, struct obj*, BOOLEAN_P));
 E boolean FDECL(dog_wants_to_eat, (struct monst*));
+E void NDECL(reset_dogmove);
 
 /* ### dokick.c ### */
 
@@ -1713,6 +1716,7 @@ E void FDECL(update_m_facing, (struct monst*, int, BOOLEAN_P));
 E int FDECL(get_pm_attack_index, (struct permonst*, struct attack*));
 E enum hit_tile_types FDECL(get_hit_tile_by_adtyp, (int));
 boolean FDECL(should_display_m_action_tile, (struct monst*, enum action_tile_types action));
+E void NDECL(reset_mhitu);
 
 /* ### minion.c ### */
 
@@ -1998,6 +2002,7 @@ E const char* FDECL(pm_general_name, (struct permonst*, UCHAR_P));
 E boolean FDECL(is_female_corpse_or_statue, (struct obj*));
 E boolean FDECL(is_corpse_or_statue_facing_right, (struct obj*));
 E int FDECL(count_mon_runeswords, (struct monst*));
+E void NDECL(reset_mon);
 
 /* ### mondata.c ### */
 
@@ -2183,6 +2188,7 @@ E boolean FDECL(hits_bars, (struct obj **, int, int, int, int, int, int));
 E const char* FDECL(get_eyestalk_ray_name, (int));
 E const char* FDECL(get_breath_weapon_name, (int));
 E void FDECL(set_m_ray_spell_stats, (struct monst*, struct attack*, struct monst*, int*, int*, int*, int*));
+E void NDECL(reset_mthrowu);
 
 /* ### muse.c ### */
 
@@ -2587,6 +2593,7 @@ E void FDECL(ugolemeffects, (int, double));
 E boolean NDECL(ugenocided);
 E const char *NDECL(udeadinside);
 E int FDECL(get_ray_adtyp, (UCHAR_P));
+E void NDECL(reset_polyself);
 
 /* ### potion.c ### */
 
@@ -2769,6 +2776,7 @@ E boolean FDECL(get_valid_targeted_position, (int, int, int));
 E boolean FDECL(get_valid_stinking_cloud_pos, (int, int));
 E boolean FDECL(is_valid_stinking_cloud_pos, (int, int, BOOLEAN_P));
 E void FDECL(display_stinking_cloud_positions, (int));
+E void NDECL(reset_read);
 
 /* ### rect.c ### */
 
@@ -3294,6 +3302,7 @@ E struct opvar *FDECL(selection_opvar, (char *));
 E void FDECL(opvar_free_x, (struct opvar *));
 E void FDECL(set_selection_floodfillchk, (int FDECL((*), (int,int))));
 E void FDECL(selection_floodfill, (struct opvar *, int, int, BOOLEAN_P));
+E void NDECL(reset_splev);
 
 /* ### spell.c ### */
 
@@ -3412,6 +3421,7 @@ E int FDECL(mlevel_tele_trap, (struct monst *, struct trap *,
 E boolean FDECL(rloco, (struct obj *));
 E int NDECL(random_teleport_level);
 E boolean FDECL(u_teleport_mon, (struct monst *, BOOLEAN_P));
+E void NDECL(reset_teleport);
 
 
 /* ### tile.c ### */
@@ -3494,6 +3504,7 @@ E struct obj *FDECL(tt_oname, (struct obj *));
 E void NDECL(initrack);
 E void NDECL(settrack);
 E coord *FDECL(gettrack, (int, int));
+E void NDECL(reest_track);
 
 /* ### trap.c ### */
 

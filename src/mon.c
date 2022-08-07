@@ -6006,4 +6006,10 @@ struct monst* mon;
     return cnt;
 }
 
+void
+reset_mon(VOID_ARGS)
+{
+    vamp_rise_msg = disintegested = 0;
+}
+
 /*mon.c*/

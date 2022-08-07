@@ -2134,4 +2134,11 @@ int whodidit;   /* 1==hero, 0=other, -1==just check whether it'll pass thru */
     return hits;
 }
 
+void
+reset_mthrowu(VOID_ARGS)
+{
+    mesg_given = 0;
+    notonhead = FALSE;
+}
+
 /*mthrowu.c*/

@@ -4507,4 +4507,10 @@ short* idx;
     return (const char*)0;
 }
 
+void
+reset_doname(VOID_ARGS)
+{
+    via_naming = 0;
+}
+
 /*do_name.c*/

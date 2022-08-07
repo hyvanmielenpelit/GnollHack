@@ -7116,6 +7116,7 @@ reset_inventory(VOID_ARGS)
     lastinvnr = 51;
     this_type = 0;
     sortlootmode = 0;
+    memset((genericptr_t)&safeq_xprn_ctx, 0, sizeof(safeq_xprn_ctx));
 }
 
 /*invent.c*/

@@ -4619,4 +4619,10 @@ boolean sblessed, dopopup;
 
     special_effect_wait_until_end(0);
 }
+
+void
+reset_read(VOID_ARGS)
+{
+    memset((genericptr_t)&gremlins, 0, sizeof(gremlins));
+}
 /*read.c*/

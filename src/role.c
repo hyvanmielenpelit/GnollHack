@@ -3144,6 +3144,8 @@ reset_urolerace(VOID_ARGS)
         sizeof(struct Role));
     memcpy((genericptr_t)&urace, (genericptr_t)&saved_urace,
         sizeof(struct Race));
+    memset((genericptr_t)&pa, 0, sizeof(pa));
+    post_attribs = 0;
 }
 
 

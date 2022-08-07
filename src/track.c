@@ -62,4 +62,11 @@ register int x, y;
     return (coord *) 0;
 }
 
+void
+reest_track(VOID_ARGS)
+{
+    memset((genericptr_t)&utrack, 0, sizeof(utrack));
+    utcnt = utpnt = 0;
+}
+
 /*track.c*/
