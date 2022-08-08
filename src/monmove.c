@@ -180,10 +180,15 @@ struct monst* mon;
                         char itembuf[BUFSZ];
                         char someitembuf[BUFSZ];
                         struct obj* otmp;
-                        if (cnt == 1 && (otmp = get_first_sellable_item(mon)) != 0)
+                        if (cnt == 1 && !iflags.using_gui_sounds && (otmp = get_first_sellable_item(mon)) != 0)
                         {
                             strcpy(itembuf, otmp->quan == 1 ? an(cxname(otmp)) : cxname(otmp));
                             strcpy(someitembuf, itembuf);
+                        }
+                        else if (cnt == 1)
+                        {
+                            strcpy(itembuf, "item");
+                            strcpy(someitembuf, "an item");
                         }
                         else
                         {
@@ -197,18 +202,22 @@ struct monst* mon;
                         switch (mon->talkstate_item_trading)
                         {
                         case 0:
+                            play_monster_item_trading_line(mon, cnt == 1 ? MONSTER_ITEM_TRADING_LINE_TRADING_HELLO_HOW_ARE_YOU_I_HAVE_AN_ITEM_FOR_SALE : MONSTER_ITEM_TRADING_LINE_TRADING_HELLO_HOW_ARE_YOU_I_HAVE_SOME_ITEMS_FOR_SALE);
                             Sprintf(yellbuf, "Hello, adventurer! How are you? I have %s for sale.", someitembuf);
                             mon_yells(mon, yellbuf, "say", "politely", TRUE);
                             break;
                         case 1:
+                            play_monster_item_trading_line(mon, cnt == 1 ? MONSTER_ITEM_TRADING_LINE_TRADING_HELLO_AGAIN_I_STILL_HAVE_AN_ITEM_FOR_SALE : MONSTER_ITEM_TRADING_LINE_TRADING_HELLO_AGAIN_I_STILL_HAVE_SOME_ITEMS_FOR_SALE);
                             Sprintf(yellbuf, "Hello again, I still have %s for sale.", someitembuf);
                             mon_yells(mon, yellbuf, "say", "politely", TRUE);
                             break;
                         case 2:
-                            Sprintf(yellbuf, "How is your adventuring going? Would you still have interest in %s?", someitembuf);
+                            play_monster_item_trading_line(mon, cnt == 1 ? MONSTER_ITEM_TRADING_LINE_TRADING_HOW_IS_YOUR_ADVENTURING_GOING_WOULD_YOU_PERHAPS_HAVE_NOW_INTEREST_IN_BUYING_AN_ITEM : MONSTER_ITEM_TRADING_LINE_TRADING_HOW_IS_YOUR_ADVENTURING_GOING_WOULD_YOU_PERHAPS_HAVE_NOW_INTEREST_IN_BUYING_SOME_ITEMS);
+                            Sprintf(yellbuf, "How is your adventuring going? Would you perhaps have now interest in buying %s?", someitembuf);
                             mon_yells(mon, yellbuf, "say", "inquisitively", TRUE);
                             break;
                         case 3:
+                            play_monster_item_trading_line(mon, cnt == 1 ? MONSTER_ITEM_TRADING_LINE_TRADING_HELLO_THERE_AGAIN_ANY_INTEREST_IN_MY_ITEM : MONSTER_ITEM_TRADING_LINE_TRADING_HELLO_THERE_AGAIN_ANY_INTEREST_IN_MY_ITEMS);
                             Sprintf(yellbuf, "Hello there again! Any interest in my %s?", itembuf);
                             mon_yells(mon, yellbuf, "say", "politely", TRUE);
                             break;

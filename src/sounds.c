@@ -5756,16 +5756,22 @@ struct monst* mtmp;
     }
     else
     {
-        if (!Deaf && !mtmp->isshk && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) ))
+        if (!Deaf && is_speaking_monster(mtmp->data) && !mtmp->isshk && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) ))
         {
-            verbalize("%sI'm willing to trade the following items.", is_undead(mtmp->data) || is_demon(mtmp->data) ? "Greetings, mortal. " : "");
+            if(is_undead(mtmp->data) || is_demon(mtmp->data))
+                play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_TRADING_GREETINGS_MORTAL);
+            play_monster_item_trading_line(mtmp, sellable_item_count == 1 ? MONSTER_ITEM_TRADING_LINE_TRADING_IM_WILLING_TO_TRADE_THE_FOLLOWING_ITEM : MONSTER_ITEM_TRADING_LINE_TRADING_IM_WILLING_TO_TRADE_THE_FOLLOWING_ITEMS);
+            verbalize("%sI'm willing to trade the following item%s.", is_undead(mtmp->data) || is_demon(mtmp->data) ? "Greetings, mortal. " : "", plur(sellable_item_count));
+            play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_BUT_BE_QUICK_MY_PATIENCE_IS_LIMITED);
             verbalize("But be quick, my patience is limited.");
         }
         else if (!Deaf && is_speaking_monster(mtmp->data))
         {
             char itembuf[BUFSZ];
-            if (sellable_item_count == 1 && (otmp = get_first_sellable_item(mtmp)) != 0)
-                strcpy(itembuf, iflags.using_gui_sounds ? "item" : cxname(otmp));
+            if (sellable_item_count == 1 && !iflags.using_gui_sounds && (otmp = get_first_sellable_item(mtmp)) != 0)
+                strcpy(itembuf, cxname(otmp));
+            else if (sellable_item_count == 1)
+                strcpy(itembuf,"item");
             else
                 strcpy(itembuf, "items");
 
