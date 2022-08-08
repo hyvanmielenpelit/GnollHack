@@ -5628,7 +5628,7 @@ struct monst* mtmp;
     {
         pline("%s looks at you and then says:", noittame_Monnam(mtmp));
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_I_CAN_EXPLAIN_MY_STATISTICS);
-        Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %ld %s. Do you accept?\"", explain_cost, currency(explain_cost));
+        Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %ld %s.\" Do you accept?", explain_cost, currency(explain_cost));
     }
     switch (yn_query_mon(mtmp, qbuf))
     {

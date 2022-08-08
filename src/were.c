@@ -40,7 +40,12 @@ register struct monst *mon;
                     break;
                 }
                 if (howler)
-                    You_hear("a %s howling at the moon.", howler);
+                {
+                    context.global_minimum_volume = 0.2f;
+                    play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_HOWL);
+                    context.global_minimum_volume = 0.0f;
+                    You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "a %s howling at the moon.", howler);
+                }
             }
         }
     } else if (!rn2(30) || Protection_from_shape_changers) {
