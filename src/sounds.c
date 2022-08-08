@@ -5747,7 +5747,6 @@ struct monst* mtmp;
 #endif
     end_menu_ex(win, "What do you want to buy?", txt);
 
-
     if (sellable_item_count <= 0)
     {
         pline("%s doesn't have anything to sell.", noittame_Monnam(mtmp));
@@ -5781,7 +5780,6 @@ struct monst* mtmp;
         else
             pline("%s shows you %s merchandise.", noittame_Monnam(mtmp), mhis(mtmp));
     }
-
 
     /* Now generate the menu */
     int pick_count = 0;
