@@ -4423,11 +4423,13 @@ register struct obj *obj;
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Sword of Cold and Darkness, free yourself from the heaven's bonds.");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Become one with my power, one with my body,");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "And let us walk the path of destruction together!");
+        play_sfx_sound(SFX_ITEM_APPEARS);
         pline_ex(ATR_NONE, CLR_MSG_SPELL, "A sword-shaped planar rift forms before you!");
         summonblackblade(obj);
         break;
     case SPE_MAGE_ARMOR:
         known = TRUE;
+        play_sfx_sound(SFX_ITEM_APPEARS);
         pline_ex(ATR_NONE, CLR_MSG_SPELL, "An armor-shaped force field forms before you!");
         summonmagearmor(obj);
         break;
@@ -4435,8 +4437,12 @@ register struct obj *obj;
     {
         known = TRUE;
         otmp = mksobj(FOOD_RATION, FALSE, FALSE, FALSE);
-        (void)hold_another_object(otmp, "You drop %s!",
-            doname(otmp), "A delicious food ration forms before you!");
+        if (otmp)
+        {
+            play_sfx_sound(SFX_ITEM_APPEARS);
+            (void)hold_another_object(otmp, "You drop %s!",
+                doname(otmp), "A delicious food ration forms before you!");
+        }
         break;
     }
     case SPE_CREATE_FRUITS:
@@ -4481,18 +4487,26 @@ register struct obj *obj;
         }
 
         otmp = mksobj(fruittype, FALSE, FALSE, FALSE);
-        otmp->quan = fruitnum;
-        otmp->owt = weight(otmp);
-        (void)hold_another_object(otmp, "You drop %s!",
-            doname(otmp), fruitnum == 1 ? "A delicious fruit appears out of nowhere!" : "Delicious fruits appear out of nowhere!");
+        if (otmp)
+        {
+            play_sfx_sound(SFX_ITEM_APPEARS);
+            otmp->quan = fruitnum;
+            otmp->owt = weight(otmp);
+            (void)hold_another_object(otmp, "You drop %s!",
+                doname(otmp), fruitnum == 1 ? "A delicious fruit appears out of nowhere!" : "Delicious fruits appear out of nowhere!");
+        }
         break;
     }
     case SPE_CREATE_WATER:
     {
         known = TRUE;
         otmp = mksobj(POT_WATER, FALSE, FALSE, FALSE);
-        (void)hold_another_object(otmp, "You drop %s!",
-            doname(otmp), "A potion appears out of thin air!");
+        if (otmp)
+        {
+            play_sfx_sound(SFX_ITEM_APPEARS);
+            (void)hold_another_object(otmp, "You drop %s!",
+                doname(otmp), "A potion appears out of thin air!");
+        }
         break;
     }
     case SPE_ARMAGEDDON:

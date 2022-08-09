@@ -505,6 +505,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Location/Lava/Lava Hardens", 1.0f },
     { SOUND_BANK_MASTER, "event:/Ambience/Environment/Underwater", 0.2f },
     { SOUND_BANK_MASTER, "event:/Monster/Dust Vortex/Swallow Ambient", 0.04f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Item Appears", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Item Vanishes", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Genocide", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Item Crumbles To Dust", 1.0f },
@@ -10086,6 +10087,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         "GHSOUND_KEY_DOES_NOT_FIT",
         {GHSOUND_KEY_DOES_NOT_FIT, 5.0f},
         TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_ITEM_APPEARS",
+        {GHSOUND_ITEM_APPEARS, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ITEM_VANISHES",

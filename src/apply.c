@@ -6022,7 +6022,7 @@ int arrowtype, quan; //ObjID and quantity
 {
     struct obj* otmp;
     otmp = mksobj(arrowtype, FALSE, FALSE, FALSE);
-    if (otmp && otmp != &zeroobj) 
+    if (otmp) 
     {
         otmp->quan = quan;
         otmp->owt = weight(otmp);
@@ -6067,6 +6067,7 @@ int arrowtype, quan; //ObjID and quantity
             }
         }
 
+        play_sfx_sound(SFX_ITEM_APPEARS);
         You("pull %s out of %s.", doname(otmp), yname(bag));
         makeknown(bag->otyp);
         bag->cooldownleft = objects[bag->otyp].oc_item_cooldown;
