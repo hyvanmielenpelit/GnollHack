@@ -62,6 +62,8 @@ REGION:(22,14,24,15),lit,"ordinary"
 STAIR:(09,09),down
 # Portal arrival point
 BRANCH:(62,02,62,02),(0,0,0,0)
+# Brazier
+BRAZIER:(16,07)
 # Doors
 DOOR:locked,(12,05)
 DOOR:locked,(12,09)
@@ -181,6 +183,11 @@ DOOR:locked,(55,06)
 # Stairs
 STAIR:(05,02),up
 STAIR:(70,13),down
+# Braziers
+BRAZIER:(37,04)
+BRAZIER:(37,07)
+BRAZIER:(49,04)
+BRAZIER:(49,07)
 # Objects
 OBJECT:random,(42,03)
 OBJECT:random,(42,03)
@@ -197,6 +204,12 @@ OBJECT:random,(42,08)
 OBJECT:random,(71,13)
 OBJECT:random,(71,13)
 OBJECT:random,(71,13)
+# Some items in huts
+$place = { (26,04),(33,09),(37,15) }
+SHUFFLE: $place
+OBJECT:('(', "chest"), $place[0]
+OBJECT:('(', "large box"), $place[1]
+OBJECT:')', $place[2]
 # Random traps
 TRAP:"spiked pit",(10,13)
 TRAP:"spiked pit",(21,07)
