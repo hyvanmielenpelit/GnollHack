@@ -8101,13 +8101,36 @@ int x, y, mod;
                 {
                     if (!x || !y || abs(x) == abs(y)) /* straight line or diagonal */
                     {
-                        //clickfire_cc.x = target_x;
-                        //clickfire_cc.y = target_y;
-                        cmd[0] = Cmd.spkeys[NHKF_CLICKFIRE];
-                        x = sgn(x), y = sgn(y);
-                        dir = xytod(x, y);
-                        cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
-                        cmd[2] = '\0';
+                        boolean path_is_clear = clear_path(u.ux, u.uy, target_x, target_y);
+                        struct monst* mtmpinway = spotted_linedup_monster_in_way(u.ux, u.uy, target_x, target_y);
+                        if (path_is_clear && !mtmpinway)
+                        {
+                            //clickfire_cc.x = target_x;
+                            //clickfire_cc.y = target_y;
+                            cmd[0] = Cmd.spkeys[NHKF_CLICKFIRE];
+                            x = sgn(x), y = sgn(y);
+                            dir = xytod(x, y);
+                            cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
+                            cmd[2] = '\0';
+                        }
+                        else if(!path_is_clear)
+                        {
+                            play_sfx_sound(SFX_GENERAL_CANNOT);
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; the path to it is not clear.", is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                            cmd[0] = '\0';
+                        }
+                        else if (mtmpinway)
+                        {
+                            play_sfx_sound(SFX_GENERAL_CANNOT);
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; %s is in the way.", is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp), mon_nam(mtmpinway));
+                            cmd[0] = '\0';
+                        }
+                        else
+                        {
+                            play_sfx_sound(SFX_GENERAL_CANNOT);
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; there is something in the way.", is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                            cmd[0] = '\0';
+                        }
                     }
                     else
                     {
@@ -9251,6 +9274,47 @@ dounmarkautostash()
         obj->speflags &= ~SPEFLAGS_AUTOSTASH;
         pline("%s was unmarked as an auto-stash.", The(cxname(obj)));
     }
+
+    return 0;
+}
+
+struct monst*
+spotted_linedup_monster_in_way(x1, y1, x2, y2)
+int x1, y1, x2, y2;
+{
+    if(!isok(x1, y1) || !isok(x2,y2))
+        return 0;
+
+    if (x1 == x2 && y1 == y2)
+        return 0;
+
+    int dx = x2 - x1;
+    int dy = y2 - y1;
+    if (!(!dy || !dy || abs(dy) == abs(dy)))
+        return 0;
+
+    int sx = sgn(dx);
+    int sy = sgn(dy);
+
+    int x = x1;
+    int y = y1;
+    struct monst* mtmp = 0;
+
+    while(TRUE)
+    {
+        x += sx;
+        y += sy;
+        if (x == x2 && y == y2)
+            break;
+        if (!isok(x, y))
+            break;
+
+        mtmp = m_at(x, y);
+        if (mtmp && canspotmon(mtmp))
+        {
+            return mtmp;
+        }
+    };
 
     return 0;
 }

@@ -382,6 +382,7 @@ E void FDECL(create_context_menu, (enum create_context_menu_types));
 E int NDECL(doviewpet);
 E int NDECL(domarkautostash);
 E int NDECL(dounmarkautostash);
+E struct monst* FDECL(spotted_linedup_monster_in_way, (int, int, int, int));
 
 /* ### dbridge.c ### */
 
