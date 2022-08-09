@@ -454,6 +454,7 @@ struct instance_flags {
     boolean vt_tiledata;     /* output console codes for tile support in TTY */
 #endif
     boolean clicklook;       /* allow right-clicking for look */
+    boolean clickfire;       /* allow right-clicking for look */
     boolean cmdassist;       /* provide detailed assistance for some comnds */
     boolean time_botl;       /* context.botl for 'time' (moves) only */
     boolean wizweight;       /* display weight of everything in wizard mode */
@@ -676,6 +677,7 @@ enum nh_keyfunc {
     NHKF_TRAVEL,
     NHKF_TRAVEL_ATTACK,
     NHKF_TRAVEL_WALK,
+    NHKF_CLICKFIRE,
     NHKF_CLICKLOOK,
 
     NHKF_REDRAW,

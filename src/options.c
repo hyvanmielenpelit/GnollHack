@@ -119,6 +119,7 @@ static struct Bool_Opt {
 #endif
     { "classic_statue_symbol", &flags.classic_statue_symbol, FALSE, SET_IN_GAME },
     { "classic_colors", &flags.classic_colors, FALSE, SET_IN_GAME },
+    { "clickfire", &iflags.clickfire, TRUE, SET_IN_GAME },
     { "clicklook", &iflags.clicklook, TRUE, SET_IN_GAME },
     { "cmdassist", &iflags.cmdassist, TRUE, SET_IN_GAME },
 #if defined(MICRO) || defined(WIN32) || defined(ANDROID) ||  defined(GNH_MOBILE) || defined(CURSES_GRAPHICS)

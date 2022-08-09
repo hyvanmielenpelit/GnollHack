@@ -51,6 +51,7 @@ extern const char *enc_stat[]; /* encumbrance status from botl.c */
 #define CMD_CLICKLOOK (char) 0xFD //0x8F
 #define CMD_TRAVEL_ATTACK (char) 0xFE
 #define CMD_TRAVEL_WALK (char) 0xFB
+#define CMD_CLICKFIRE (char) 0xE0 //(Meta-0x60)
 
 #ifdef DEBUG
 extern int NDECL(wiz_debug_cmd_bury);
@@ -234,6 +235,7 @@ STATIC_DCL void FDECL(print_weapon_skill_line, (struct obj*, BOOLEAN_P, int));
 
 STATIC_VAR const char *readchar_queue = "";
 STATIC_VAR coord clicklook_cc;
+//STATIC_VAR coord clickfire_cc;
 STATIC_VAR boolean special_effect_shown = FALSE;
 
 STATIC_PTR int
@@ -6586,6 +6588,7 @@ struct {
     { NHKF_TRAVEL,           CMD_TRAVEL, (char *) 0 }, /* no binding */
     { NHKF_TRAVEL_ATTACK,    CMD_TRAVEL_ATTACK, (char*)0 }, /* no binding */
     { NHKF_TRAVEL_WALK,      CMD_TRAVEL_WALK, (char*)0 }, /* no binding */
+    { NHKF_CLICKFIRE,        CMD_CLICKFIRE, (char*)0 }, /* no binding */
     { NHKF_CLICKLOOK,        CMD_CLICKLOOK, (char *) 0 }, /* no binding */
     { NHKF_REDRAW,           C('r'), "redraw" },
     { NHKF_REDRAW2,          C('l'), "redraw.numpad" },
@@ -6796,6 +6799,7 @@ boolean initial;
         timed_occ_fn = 0;
         readchar_queue = "";
         memset((genericptr_t)&clicklook_cc, 0, sizeof(clicklook_cc));
+        //memset((genericptr_t)&clickfire_cc, 0, sizeof(clickfire_cc));
         struct ext_func_tab* efp;
         for (efp = extcmdlist; efp->ef_txt; efp++)
             efp->bound_key = 0;
@@ -7166,6 +7170,14 @@ register char *cmd;
         if (iflags.clicklook) {
             context.move = FALSE;
             do_look(2, &clicklook_cc);
+        }
+        return;
+    case NHKF_CLICKFIRE:
+        if (iflags.clickfire) {
+            context.move = FALSE;
+            int fireres = dofire();
+            if (!fireres)
+                readchar_queue = ""; //Prevent movement if firing failed.
         }
         return;
     case NHKF_TRAVEL:
@@ -8044,11 +8056,14 @@ int x, y, mod;
     int dir;
     static char cmd[4];
     cmd[1] = 0;
+    int target_x = x;
+    int target_y = y;
+    memset(cmd, 0, sizeof(cmd));
 
     if (iflags.clicklook && mod == CLICK_2) 
     {
-        clicklook_cc.x = x;
-        clicklook_cc.y = y;
+        clicklook_cc.x = target_x;
+        clicklook_cc.y = target_y;
         cmd[0] = Cmd.spkeys[NHKF_CLICKLOOK];
         return cmd;
     }
@@ -8074,22 +8089,48 @@ int x, y, mod;
         }
         else 
         {
-            u.tx = u.ux + x;
-            u.ty = u.uy + y;
             struct monst* mtmp = 0;
-            //struct obj* otmp = 0;
-
-            if (isok(u.tx, u.ty))
+            if (isok(target_x, target_y))
             {
-                mtmp = m_at(u.tx, u.ty);
-                //otmp = cansee(u.tx, u.ty) ? level.objects[u.tx][u.ty] : 0;
+                mtmp = m_at(target_x, target_y);
             }
 
-            if(mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp))
-                cmd[0] = Cmd.spkeys[NHKF_TRAVEL_ATTACK];
+            if (mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp))
+            {
+                if (iflags.clickfire && uwep && (is_launcher(uwep) || is_thrown_weapon_only(uwep)) && dist2(u.ux, u.uy, target_x, target_y) > 2)
+                {
+                    if (!x || !y || abs(x) == abs(y)) /* straight line or diagonal */
+                    {
+                        //clickfire_cc.x = target_x;
+                        //clickfire_cc.y = target_y;
+                        cmd[0] = Cmd.spkeys[NHKF_CLICKFIRE];
+                        x = sgn(x), y = sgn(y);
+                        dir = xytod(x, y);
+                        cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
+                        cmd[2] = '\0';
+                    }
+                    else
+                    {
+                        play_sfx_sound(SFX_GENERAL_CANNOT);
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; it is not lined up.", is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                        cmd[0] = '\0';
+                    }
+                }
+                else
+                {
+                    u.tx = target_x;
+                    u.ty = target_y;
+                    cmd[0] = Cmd.spkeys[NHKF_TRAVEL_ATTACK];
+                }
+            }
             else
+            {
+                /* Normal travel */
+                u.tx = target_x;
+                u.ty = target_y;
+                //struct obj* otmp = 0;
                 cmd[0] = Cmd.spkeys[NHKF_TRAVEL_WALK];
-
+            }
             return cmd;
         }
 
