@@ -7885,6 +7885,7 @@ struct monst* mtmp;
 
     if (mtmp->mspec_used)
     {
+        play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_WAVE_FUNCTION_ALREADY_COLLAPSED);
         pline("%s explains something about your wave function having already collapsed.", noittame_Monnam(mtmp));
         pline1("It all sounds pretty serious!");
         return 0;
