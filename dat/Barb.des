@@ -14,6 +14,8 @@ MAZE: "Bar-strt",'T'
 FLAGS: noteleport,hardfloor,arboreal,desert
 FOREST: forest_desert
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 ::::::::::::::::::::::::::::::::::PP::::::::::::::::::::::::::::::::::::::::
 :::::::::::::::::::::::::::::::::::PP:::::::::::::::::::::::::::::::::::::::
@@ -102,6 +104,13 @@ MONSTER:('O',"ogre"),(42,07),hostile
 MONSTER:('O',"ogre"),(42,08),hostile
 MONSTER:('O',"ogre"),(42,09),hostile
 MONSTER:('O',"ogre"),(42,10),hostile
+
+# Some items in huts
+$place = { (04,14),(15,14),(23,15),(28,11),(31,06) }
+SHUFFLE: $place
+OBJECT:('(', "chest"), $place[0]
+OBJECT:('(', "chest"), $place[1]
+OBJECT:')', $place[2]
 
 #
 #	The "locate" level for the quest.
