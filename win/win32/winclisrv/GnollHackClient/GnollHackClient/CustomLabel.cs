@@ -638,9 +638,6 @@ namespace GnollHackClient
         private bool _isFirst = false;
         private bool IsFirst { get { lock (_isFirstLock) { return _isFirst; } } set { lock (_isFirstLock) { _isFirst = value; } } }
 
-        private object _savedSender = null;
-        private SKTouchEventArgs _savedEventArgs = null;
-
         private void Base_Touch(object sender, SKTouchEventArgs e)
         {
             float textHeight = TextHeight;
@@ -649,9 +646,6 @@ namespace GnollHackClient
                 case SKTouchAction.Entered:
                     break;
                 case SKTouchAction.Pressed:
-                    _savedSender = null;
-                    _savedEventArgs = null;
-
                     if (TouchDictionary.ContainsKey(e.Id))
                         TouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
                     else
@@ -706,9 +700,6 @@ namespace GnollHackClient
                             }
                             else if (TouchDictionary.Count == 2)
                             {
-                                _savedSender = null;
-                                _savedEventArgs = null;
-
                                 TouchDictionary[e.Id].Location = e.Location;
                                 TouchMoved = true;
                             }
@@ -718,9 +709,6 @@ namespace GnollHackClient
                     break;
                 case SKTouchAction.Released:
                     {
-                        _savedSender = null;
-                        _savedEventArgs = null;
-
                         TouchEntry entry;
                         bool res = TouchDictionary.TryGetValue(e.Id, out entry);
                         if (res)
