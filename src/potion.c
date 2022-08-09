@@ -543,6 +543,9 @@ toggle_blindness()
     vision_recalc(0);
     if (Blind_telepat || Unblind_telepat || Infravision || Warn_of_mon || Warning || Any_warning)
         see_monsters(); /* also counts EWarn_of_mon monsters */
+
+    flush_screen(1);
+
     /*
      * Avoid either of the sequences
      * "Sting starts glowing", [become blind], "Sting stops quivering" or

@@ -609,6 +609,20 @@ namespace GnollHackClient
         }
 
 
+        public double MeasureWidth(string str)
+        {
+            float scale = App.DisplayScale;
+            if (scale == 0)
+                return 0;
+            float skwidth = 0;
+            using (SKPaint textPaint = new SKPaint())
+            {
+                textPaint.Typeface = GetFontTypeface();
+                textPaint.TextSize = (float)FontSize * scale;
+                skwidth = textPaint.MeasureText(str);
+            }
+            return (double)skwidth / scale;
+        }
 
         private Dictionary<long, TouchEntry> TouchDictionary = new Dictionary<long, TouchEntry>();
         private readonly object _textOffsetLock = new object();

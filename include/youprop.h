@@ -184,7 +184,7 @@
 
 #define HBlindfolded u.uprops[BLINDFOLDED].intrinsic
 #define EBlindfolded u.uprops[BLINDFOLDED].extrinsic
-#define Blindfolded (HBlindfolded|| EBlindfolded)
+#define Blindfolded (HBlindfolded || EBlindfolded)
 
 /* Certain troubles act as timers only */
 #define Blinded u.uprops[BLINDED].intrinsic

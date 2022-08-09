@@ -933,7 +933,6 @@ struct obj *otmp;
             You_ex(ATR_NONE, CLR_MSG_WARNING, "still cannot see.");
         }
     }
-
 }
 
 /* called in moveloop()'s prologue to set side-effects of worn start-up items;

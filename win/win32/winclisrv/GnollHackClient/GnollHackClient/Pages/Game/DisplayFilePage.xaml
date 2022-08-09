@@ -25,7 +25,7 @@
                         FontFamily="DejaVuSansMono" FontSize="13" IsReadOnly="true" >
                 </gnollhackclient:GHEditor>-->
                 <!--IsVisible="false"-->
-                <gnollhackclient:CustomLabel Grid.Row="1" x:Name="TextLabel" VerticalTextAlignment="Start" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                <gnollhackclient:CustomLabel Grid.Row="1" x:Name="TextLabel" VerticalTextAlignment="Start" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
                         FontFamily="DejaVuSansMono" FontSize="13" IsScrollable="True" />
                 <!--<ScrollView x:Name="TextScrollView" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                     <Label x:Name="TextLabel" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"

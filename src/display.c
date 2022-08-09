@@ -2092,7 +2092,7 @@ see_monsters()
      * Make Sting and other similar objects glow blue or stop glowing if required.
      */
     struct obj* uitem;
-     for (uitem = invent; uitem; uitem = uitem->nobj)
+    for (uitem = invent; uitem; uitem = uitem->nobj)
     {
         if (!object_uses_spellbook_wand_flags_and_properties(uitem))
         {
