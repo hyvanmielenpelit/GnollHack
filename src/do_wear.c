@@ -1531,7 +1531,7 @@ struct obj* obj, *curobj;
         Sprintf(tbuf, "Already Wearing %s", abuf);
 
         char qbuf[BUFSIZ] = "";
-        Sprintf(qbuf, "You are currently wearing %s. Exchange it for %s?", an(cxname(curobj)), the(cxname(obj)));
+        Sprintf(qbuf, "You are currently wearing %s. Exchange it for %s?", acxname(curobj), the(cxname(obj)));
         char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
         if (ans == 'y')
             return exchange_worn_item(obj, curobj, curobj->owornmask);
@@ -1961,7 +1961,7 @@ boolean noisy;
                         Sprintf(tbuf, "Cannot Wear Shirt Over %s", many ? "Covering Armor" : uarm ? "Suit" : uarmo ? "Robe" : "Cloak");
 
                         char qbuf[BUFSIZ];
-                        Sprintf(qbuf, "You cannot wear %s over %s. Take %s off and then wear the shirt?", an(cxname(otmp)), cbuf, many ? "them" : "it");
+                        Sprintf(qbuf, "You cannot wear %s over %s. Take %s off and then wear the shirt?", acxname(otmp), cbuf, many ? "them" : "it");
                         char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
 
                         if (ans == 'y')
@@ -2004,7 +2004,7 @@ boolean noisy;
                         Sprintf(tbuf, "%s", "Cannot Wear Robe Over Cloak");
 
                         char qbuf[BUFSIZ];
-                        Sprintf(qbuf, "You cannot wear %s over %s. Take it off and then wear the robe?", an(cxname(otmp)), cbuf);
+                        Sprintf(qbuf, "You cannot wear %s over %s. Take it off and then wear the robe?", acxname(otmp), cbuf);
                         char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
                         if (ans == 'y')
                         {
@@ -2066,7 +2066,7 @@ boolean noisy;
                     Sprintf(tbuf, "Cannot Wear Suit Over %s", many ? "Robe and Cloak" : uarmo ? "Robe" : "Cloak");
 
                     char qbuf[BUFSIZ];
-                    Sprintf(qbuf, "You cannot wear %s over %s. Take %s off and then wear the armor?", an(cxname(otmp)), cbuf, many ? "them" : "it");
+                    Sprintf(qbuf, "You cannot wear %s over %s. Take %s off and then wear the armor?", acxname(otmp), cbuf, many ? "them" : "it");
                     char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
                     if (ans == 'y')
                     {
@@ -2175,7 +2175,7 @@ boolean in_takeoff_wear;
                         humanoid(youmonst.data) ? "Ring-" : "",
                         makeplural(body_part(FINGER)));
 
-                    You("have %s on the left %s and %s on the right.", an(cxname(uleft)), body_part(FINGER), an(cxname(uright)));
+                    You("have %s on the left %s and %s on the right.", acxname(uleft), body_part(FINGER), acxname(uright));
 
                     Sprintf(qbuf, "Remove Left or Right ring?");
                     answer = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, "lrq", '\0', "Left\nRight\nCancel", (const char*)0);

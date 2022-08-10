@@ -2317,6 +2317,7 @@ E char* FDECL(doname_with_price_and_weight_last, (struct obj*, BOOLEAN_P));
 E boolean FDECL(not_fully_identified, (struct obj *));
 E char *FDECL(corpse_xname, (struct obj *, const char *, unsigned));
 E char *FDECL(cxname, (struct obj *));
+E char* FDECL(acxname, (struct obj*));
 E char *FDECL(cxname_singular, (struct obj *));
 E char *FDECL(killer_xname, (struct obj *));
 E char* FDECL(killer_xname_flags, (struct obj*, unsigned));

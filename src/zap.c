@@ -6694,7 +6694,7 @@ boolean ordinary;
         while(otmp)
         {
             char qbuf[BUFSZ];
-            Sprintf(qbuf, "There is %s here. Probe it?", an(cxname(otmp)));
+            Sprintf(qbuf, "There is %s here. Probe it?", acxname(otmp));
             int ans = cnt > 1 ? ynq(qbuf) : yn_query(qbuf);
             switch (ans)
             {

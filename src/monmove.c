@@ -182,7 +182,7 @@ struct monst* mon;
                         struct obj* otmp;
                         if (cnt == 1 && !iflags.using_gui_sounds && (otmp = get_first_sellable_item(mon)) != 0)
                         {
-                            strcpy(itembuf, otmp->quan == 1 ? an(cxname(otmp)) : cxname(otmp));
+                            strcpy(itembuf, otmp->quan == 1 ? acxname(otmp) : cxname(otmp));
                             strcpy(someitembuf, itembuf);
                         }
                         else if (cnt == 1)

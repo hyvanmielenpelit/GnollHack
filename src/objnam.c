@@ -2131,6 +2131,15 @@ struct obj *obj;
     return xname(obj);
 }
 
+char*
+acxname(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return corpse_xname(obj, (const char*)0, CXN_ARTICLE);
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : an(xname(obj));
+}
+
 /* like cxname, but ignores quantity */
 char *
 cxname_singular(obj)

@@ -835,7 +835,7 @@ struct monst *mon;
                 dmg += rnd(10);
             damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
 
-            Sprintf(buf, "touching %s", (oart ? oart->name : an(cxname(obj))));
+            Sprintf(buf, "touching %s", (oart ? oart->name : acxname(obj)));
             losehp(damage, buf, KILLED_BY); /* magic damage, not physical */
             exercise(A_WIS, FALSE);
     }
@@ -2794,8 +2794,8 @@ struct obj *obj;
         case ARTINVOKE_WAND_OF_DEATH:
         {
             struct obj pseudo = zeroobj;
-            pseudo.otyp = SPE_FINGER_OF_DEATH;
-            pseudo.quan = 20L; /* do not let useup get it */
+            pseudo.otyp = WAN_DEATH;
+            pseudo.quan = 1L; /* do not let useup get it */
             double damage = 0;
 
             if (!getdir((char*)0)) 

@@ -21,6 +21,7 @@ boolean m_using = FALSE;
 STATIC_DCL struct permonst *FDECL(muse_newcham_mon, (struct monst *));
 STATIC_DCL int FDECL(precheck, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(mzapmsg, (struct monst *, struct obj *, BOOLEAN_P));
+STATIC_DCL void FDECL(minvokemsg, (struct monst*, struct obj*, BOOLEAN_P));
 STATIC_DCL void FDECL(mreadmsg, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(mquaffmsg, (struct monst *, struct obj *));
 STATIC_DCL boolean FDECL(m_use_healing, (struct monst *));
@@ -196,6 +197,55 @@ boolean self;
               doname(otmp));
     } else {
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s zaps %s!", Monnam(mtmp), an(xname(otmp)));
+        stop_occupation();
+    }
+}
+
+STATIC_OVL void
+minvokemsg(mtmp, otmp, self)
+struct monst* mtmp;
+struct obj* otmp;
+boolean self;
+{
+    if (!mtmp || !otmp)
+        return;
+
+    if (!otmp->oartifact)
+    {
+        mzapmsg(mtmp, otmp, self);
+        return;
+    }
+
+
+    context.global_minimum_volume = 0.15f;
+    play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_INVOKE);
+    context.global_minimum_volume = 0.0f;
+
+    const char* powertxt = "";
+    switch (artilist[otmp->oartifact].inv_prop)
+    {
+    case ARTINVOKE_WAND_OF_DEATH:
+        powertxt = " a death ray from";
+        break;
+    default:
+        break;
+    }
+
+    if (!canseemon(mtmp))
+    {
+        int range = couldsee(mtmp->mx, mtmp->my) /* 9 or 5 */
+            ? NEARBY_CUTOFF_RANGE_CAN_SEE : NEARBY_CUTOFF_RANGE_CANNOT_SEE;
+
+        You_hear("someone invoking%s an artifact %s.", powertxt, (distu(mtmp->mx, mtmp->my) <= range * range)
+            ? "nearby" : "at a distance");
+    }
+    else if (self) 
+    {
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s invokes%s %s at %sself!", Monnam(mtmp), powertxt, the(cxname(otmp)), mhim(mtmp));
+    }
+    else 
+    {
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s invokes%s %s!", Monnam(mtmp), powertxt, acxname(otmp));
         stop_occupation();
     }
 }
@@ -1234,6 +1284,7 @@ try_again:
 #define MUSE_SCR_EARTH 17
 #define MUSE_WAN_DISINTEGRATION 18
 #define MUSE_WAN_PETRIFICATION 19
+#define MUSE_WAN_ORCUS 20
 
 /* Select an offensive item/action for a monster.  Returns TRUE iff one is
  * found.
@@ -1289,11 +1340,18 @@ struct monst *mtmp;
         if (!reflection_skip) 
         {
             nomore(MUSE_WAN_DEATH);
-            if (obj->otyp == WAN_DEATH && obj->charges > 0 && !is_cancelled(mtmp) && !death_resistant_skip && !level_skip_powerful_wand
+            if (obj->oartifact == WAN_DEATH && obj->charges > 0 && !is_cancelled(mtmp) && !death_resistant_skip && !level_skip_powerful_wand
                 && lined_up(mtmp, TRUE, AD_DRAY, TRUE, M_RAY_RANGE)) 
             {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_DEATH;
+            }
+            nomore(MUSE_WAN_ORCUS);
+            if (obj->oartifact == ART_WAND_OF_ORCUS && obj->charges > 0 && obj->repowerleft == 0 && !death_resistant_skip && !level_skip_powerful_wand
+                && lined_up(mtmp, TRUE, AD_DRAY, TRUE, M_RAY_RANGE))
+            {
+                m.offensive = obj;
+                m.has_offense = MUSE_WAN_ORCUS;
             }
             nomore(MUSE_WAN_DISINTEGRATION);
             if (obj->otyp == WAN_DISINTEGRATION && obj->charges > 0 && !is_cancelled(mtmp) && !disintegration_resistant_skip && ((!uarm && !uarms && !level_skip_powerful_wand) || ((uarm || uarms) && !level_skip_normal_wand))
@@ -1682,6 +1740,29 @@ struct monst *mtmp;
 
         buzz(raytype, otmp, mtmp, 0, 0, 0, mtmp->mx, mtmp->my,
              sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
+        m_using = FALSE;
+        return (DEADMONSTER(mtmp)) ? 1 : 2;
+    case MUSE_WAN_ORCUS:
+        if (!otmp)
+            return 2;
+
+        minvokemsg(mtmp, otmp, FALSE);
+        if (otmp->oartifact > 0 && artilist[otmp->oartifact].repower_time > 0) /* Override below if effect failed */
+            otmp->repowerleft = artilist[otmp->oartifact].repower_time;
+        otmp->charges--;
+        if (oseen && otmp->oartifact)
+        {
+            makeknown(otmp->otyp);
+            otmp->aknown = otmp->nknown = 1;
+        }
+        m_using = TRUE;
+
+        raytype = -40 - objects[WAN_DEATH].oc_dir_subtype; //-40...-48;
+        struct obj pseudo = { 0 };
+        pseudo.otyp = WAN_DEATH;
+        pseudo.quan = 1L;
+        buzz(raytype, &pseudo, mtmp, 0, 0, 0, mtmp->mx, mtmp->my,
+            sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
         m_using = FALSE;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
     case MUSE_FIRE_HORN:

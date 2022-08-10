@@ -9936,7 +9936,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality;
             craftedobj->exceptionality = exceptionality;
         }
         fully_identify_obj(craftedobj);
-        Sprintf(talkbuf, "%s hands %s to you.", noittame_Monnam(mtmp), an(cxname(craftedobj)));
+        Sprintf(talkbuf, "%s hands %s to you.", noittame_Monnam(mtmp), acxname(craftedobj));
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         hold_another_object(craftedobj, "Oops!  %s out of your grasp!",
             The(aobjnam(craftedobj, "slip")),

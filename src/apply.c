@@ -2174,7 +2174,7 @@ struct obj **optr;
     if (!is_obj_candelabrum(otmp))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot attach candles to %s.", an(cxname(otmp)));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot attach candles to %s.", acxname(otmp));
         return 1;
     }
 

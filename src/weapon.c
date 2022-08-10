@@ -1343,7 +1343,7 @@ boolean verbose_fail;
                     pline("%s cannot wield that %s.", mon_nam(mon),
                           xname(obj));
                 } else {
-                    pline("%s tries to wield %s.", Monnam(mon), doname(obj));
+                    pline("%s tries to wield %s.", Monnam(mon), acxname(obj));
                     pline("%s %s!", Yname2(mw_tmp), welded_buf);
                 }
                 mw_tmp->bknown = 1;
@@ -1355,7 +1355,7 @@ boolean verbose_fail;
         setmnotwielded(mon, mw_tmp);
         mon->weapon_strategy = NEED_WEAPON;
         if (canseemon(mon)) {
-            pline("%s wields %s!", Monnam(mon), doname(obj));
+            pline("%s wields %s!", Monnam(mon), acxname(obj));
             if (mwelded(mw_tmp, mon)) {
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s to %s %s!", Tobjnam(obj, "weld"),
                       is_plural(obj) ? "themselves" : "itself",
