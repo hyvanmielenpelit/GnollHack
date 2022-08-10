@@ -1053,6 +1053,12 @@ register struct monst *mtmp;
     case S_TREANT:
         break;
     case S_DEMON:
+        /* prevent djinn and mail daemons from leaving objects when
+         * they vanish
+         */
+        if (!is_demon(ptr))
+            break;
+
         switch (mm) 
         {
         case PM_BALOR:
@@ -1163,13 +1169,10 @@ register struct monst *mtmp;
                 (void)mpickobj(mtmp, otmp);
             }
             break;
+        default:
+            goto default_equipment_here;
         }
-        /* prevent djinn and mail daemons from leaving objects when
-         * they vanish
-         */
-        if (!is_demon(ptr))
-            break;
-        /*FALLTHRU*/
+        break;
 default_equipment_here:
     default:
         /*
