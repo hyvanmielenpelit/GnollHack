@@ -77,24 +77,19 @@
   <Import Project="console.props" />
   <Import Project="dirs.props" />
   <Import Project="files.props" />
-
   <Target Name="Sub">
-    <XmlPeek NameSpaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003%27/&gt;" 
-             XmlInputPath="..\winclisrv\GnollHackClient\GnollHackClient.Android\GnollHackClient.Android.csproj" 
-             Query="(/msb:Project/msb:PropertyGroup[contains(@Condition, '$(Configuration)')]/msb:AndroidPackageFormat/text())[1]">
-        <Output TaskParameter="Result" ItemName="ItemValue" />
+    <XmlPeek NameSpaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003%27/&gt;" XmlInputPath="..\winclisrv\GnollHackClient\GnollHackClient.Android\GnollHackClient.Android.csproj" Query="(/msb:Project/msb:PropertyGroup[contains(@Condition, '$(Configuration)')]/msb:AndroidPackageFormat/text())[1]">
+      <Output TaskParameter="Result" ItemName="ItemValue" />
     </XmlPeek>
     <Message Text="Using AndroidPackageFormat @(ItemValue)." Importance="high" />
     <WriteLinesToFile Lines="@(ItemValue)" Overwrite="true" File="C:\wsl-in\assetpack\androidpackageformat.txt" />
   </Target>
-
   <Target Name="BeforeBuild">
-        <CallTarget Targets="Sub" />
+    <CallTarget Targets="Sub" />
   </Target>
   <Target Name="BeforeRebuild">
-        <CallTarget Targets="Sub" />
+    <CallTarget Targets="Sub" />
   </Target>
-
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(IncDir);$(LibDroidDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
