@@ -51,7 +51,9 @@ OBJECT:('(',"coffin"),(07,05),open
 
 OBJECT:('(',"coffin"),$niches[0],open
 OBJECT:('(',"coffin"),$niches[1],open
-OBJECT:('(',"coffin"),$niches[2],open
+CONTAINER:('(',"coffin"),$niches[2],montype:"vampire mage" {
+  OBJECT:('=', "levitation")
+}
 OBJECT:('(',"coffin"),$niches[3],montype:"vampire lord"
 CONTAINER:('(',"coffin"),$niches[4],montype:"vampire" {
   OBJECT:('(', "wax candle"), quantity:4d2

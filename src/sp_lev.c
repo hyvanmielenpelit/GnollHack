@@ -1996,7 +1996,8 @@ struct mkroom *croom;
         }
 
         if (m->has_invent) {
-            discard_minvent(mtmp);
+            if(!m->keep_original_invent)
+                discard_minvent(mtmp);
             invent_carrying_monster = mtmp;
         }
     }
@@ -3751,6 +3752,7 @@ struct sp_coder *coder;
     tmpmons.stunned = 0;
     tmpmons.confused = 0;
     tmpmons.waitforu = 0;
+    tmpmons.keep_original_invent = 0;
     tmpmons.protector = 0;
     tmpmons.seentraps = 0;
     tmpmons.has_invent = 0;
@@ -3804,6 +3806,10 @@ struct sp_coder *coder;
         case SP_M_V_WAITFORU:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpmons.waitforu = OV_i(parm);
+            break;
+        case SP_M_V_KEEP_ORIGINAL_INVENTORY:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpmons.keep_original_invent = OV_i(parm);
             break;
         case SP_M_V_PROTECTOR:
             if (OV_typ(parm) == SPOVAR_INT)

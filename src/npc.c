@@ -618,7 +618,6 @@ int mtype;
                 (void)mpickobj(npc, otmp);
 
             mongets(npc, SPE_MANUAL);
-            mongets(npc, RIN_LEVITATION);
             if (!rn2(2))
                 mongets(npc, RIN_FIRE_RESISTANCE);
             if (!rn2(2))

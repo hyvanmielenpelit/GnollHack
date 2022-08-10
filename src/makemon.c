@@ -1130,6 +1130,39 @@ register struct monst *mtmp;
             (void)mongets(mtmp, !rn2(2) ? NOSE_RING_OF_BULL_STRENGTH : NOSE_RING_OF_BULLHEADEDNESS);
 
             break;
+        case PM_ORCUS:
+            otmp = mksobj_with_flags(MACE_OF_THE_UNDERWORLD, TRUE, FALSE, FALSE, 0, mkobj_ownerflags(mtmp));
+            if(otmp)
+                otmp = oname(otmp, artiname(ART_WAND_OF_ORCUS));
+
+            if (otmp)
+            {
+                otmp->oerodeproof = TRUE;
+                spe2 = 2 + rnd(3);
+                otmp->enchantment = max(otmp->enchantment, spe2);
+                curse(otmp);
+                (void)mpickobj(mtmp, otmp);
+            }
+
+            if (!otmp || !otmp->oartifact)
+            {
+                (void)mongets(mtmp, WAN_DEATH);
+            }
+            break;
+        case PM_YEENAGHU:
+            otmp = mksobj_with_flags(TRIPLE_HEADED_FLAIL, TRUE, FALSE, FALSE, 0, mkobj_ownerflags(mtmp));
+            if (otmp)
+                otmp = oname(otmp, artiname(ART_TRIPLE_HEADED_FLAIL_OF_YEENAGHU));
+
+            if (otmp)
+            {
+                otmp->oerodeproof = TRUE;
+                spe2 = 2 + rnd(4);
+                otmp->enchantment = max(otmp->enchantment, spe2);
+                curse(otmp);
+                (void)mpickobj(mtmp, otmp);
+            }
+            break;
         }
         /* prevent djinn and mail daemons from leaving objects when
          * they vanish
@@ -1184,7 +1217,7 @@ default_equipment_here:
         break;
     }
 
-    if ((int) mtmp->m_lev > rn2(75))
+    if ((int) mtmp->m_lev > rn2(75) && !(is_demon(mtmp->data) && (is_lord(mtmp->data) || is_prince(mtmp->data))))
         (void) mongets(mtmp, rnd_offensive_item(mtmp));
 }
 

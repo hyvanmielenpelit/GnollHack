@@ -286,6 +286,7 @@ waitforu	ST_RET(WAITFORU_ID);
 protector	ST_RET(PROTECTOR_ID);
 maxhp		ST_RET(MAXHP_ID);
 level_adjustment  ST_RET(LEVEL_ADJUSTMENT_ID);
+keep_original_inventory	ST_RET(KEEP_ORIGINAL_INVENTORY_ID);
 switchable	ST_RET(SWITCHABLE_ID);
 secret_door	ST_RET(SECRET_DOOR_ID);
 uses_up_key	ST_RET(USES_UP_KEY_ID);
