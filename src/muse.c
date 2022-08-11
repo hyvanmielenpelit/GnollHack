@@ -1340,7 +1340,7 @@ struct monst *mtmp;
         if (!reflection_skip) 
         {
             nomore(MUSE_WAN_DEATH);
-            if (obj->oartifact == WAN_DEATH && obj->charges > 0 && !is_cancelled(mtmp) && !death_resistant_skip && !level_skip_powerful_wand
+            if (obj->otyp == WAN_DEATH && obj->charges > 0 && !is_cancelled(mtmp) && !death_resistant_skip && !level_skip_powerful_wand
                 && lined_up(mtmp, TRUE, AD_DRAY, TRUE, M_RAY_RANGE)) 
             {
                 m.offensive = obj;
