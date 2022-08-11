@@ -355,8 +355,6 @@ register struct monst *mtmp;
     if (has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_ITEMS) != 0)
         return;
 
-    boolean isdemonlordorprince = (is_demon(ptr) && (is_lord(ptr) || is_prince(ptr)));
-
     /*
      *  First a few special cases:
      *          giants get a boulder to throw sometimes
@@ -1222,7 +1220,7 @@ default_equipment_here:
         break;
     }
 
-    if ((int) mtmp->m_lev > rn2(75) && !isdemonlordorprince)
+    if ((int) mtmp->m_lev > rn2(75))
         (void) mongets(mtmp, rnd_offensive_item(mtmp));
 }
 
@@ -1260,9 +1258,6 @@ register struct monst *mtmp;
 
     if (has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_ITEMS) != 0)
         return;
-
-
-    boolean isdemonlordorprince = (is_demon(ptr) && (is_lord(ptr) || is_prince(ptr)));
 
     /* Add saddle for relevant monsters */
     if (is_steed(mtmp->data) && may_start_with_saddle(mtmp->data) && !rn2(4))
@@ -2190,9 +2185,9 @@ register struct monst *mtmp;
     if (ptr == &mons[PM_SOLDIER] && rn2(13))
         return;
 
-    if (!rn2(2) && (int) mtmp->m_lev > rn2(50) && !isdemonlordorprince)
+    if (!rn2(2) && (int) mtmp->m_lev > rn2(50))
         (void) mongets(mtmp, rnd_defensive_item(mtmp));
-    if ((int) mtmp->m_lev > rn2(100) && !isdemonlordorprince)
+    if ((int) mtmp->m_lev > rn2(100))
         (void) mongets(mtmp, rnd_misc_item(mtmp));
     if (likes_gold(ptr) && !findgold(mtmp->minvent) && !rn2(5))
         mkmonmoney(mtmp,
