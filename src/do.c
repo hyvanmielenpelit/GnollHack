@@ -6213,8 +6213,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         }
 
         set_itimeout(&HInvulnerable, 0L);
+        heal_ailments_upon_revival();
         displaywakeup = TRUE;
-
         if (isok(altar_x, altar_y))
         {
             u_on_newpos(altar_x, altar_y);
@@ -7820,5 +7820,19 @@ death_hint(VOID_ARGS)
     }
 }
 
+void
+heal_ailments_upon_revival(VOID_ARGS)
+{
+    make_blinded(0L, FALSE);
+    make_mummy_rotted(0L, (char*)0, FALSE, 0);
+    make_stunned(0L, FALSE);
+    make_confused(0L, FALSE);
+    make_deaf(0L, FALSE);
+    make_mummy_rotted(0L, (char*)0, FALSE, 0);
+    make_slimed(0L, (char*)0, 0, FALSE, 0);
+    make_sick(0L, (char*)0, FALSE, 0);
+    make_food_poisoned(0L, (char*)0, FALSE, 0);
+    make_hallucinated(0L, FALSE, 0L);
+}
 
 /*do.c*/

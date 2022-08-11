@@ -662,6 +662,7 @@ E void FDECL(pray_hint, (const char*, const char*, boolean*));
 E void NDECL(death_hint);
 E void NDECL(check_mobbed_hint);
 E void FDECL(item_destruction_hint, (int, BOOLEAN_P));
+E void NDECL(heal_ailments_upon_revival);
 
 /* ### do_name.c ### */
 
