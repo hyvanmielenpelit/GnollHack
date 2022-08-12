@@ -663,7 +663,7 @@ struct monst *summoner;
             if (mtmp)
             {
                 /* delay first use of spell or breath attack */
-                mtmp->mspec_used = (3 + rnd(3)) / mon_spec_cooldown_divisor(mtmp);
+                mtmp->mspec_used = (3 + rnd(3));
                 mtmp->mmagespell_used = mtmp->mspec_used;
                 mtmp->mmageultimate_used = mtmp->mspec_used;
                 mtmp->mclericspell_used = mtmp->mspec_used;
@@ -744,7 +744,7 @@ struct monst* summoner;
         if (mtmp)
         {
             /* delay first use of spell or breath attack */
-            mtmp->mspec_used = (3 + rnd(3)) / mon_spec_cooldown_divisor(mtmp);
+            mtmp->mspec_used = (3 + rnd(3));
             mtmp->mmagespell_used = mtmp->mspec_used;
             mtmp->mmageintermediate_used = mtmp->mspec_used;
             mtmp->mmageultimate_used = mtmp->mspec_used;

@@ -692,6 +692,23 @@ long nmv; /* number of moves */
         mtmp->meating -= imv;
 
     /* reduce spec_used */
+    /* recover lost energy */
+    int repidest_enreg_dur = !has_rapidest_regeneration(mtmp) ? 0 : (mtmp->mprops[RAPIDEST_REGENERATION] & M_TIMEOUT) ? (mtmp->mprops[RAPIDEST_REGENERATION] & M_TIMEOUT) : imv;
+    int repider_enreg_dur = !has_rapider_regeneration(mtmp) ? 0 : (mtmp->mprops[RAPIDER_REGENERATION] & M_TIMEOUT) ? (mtmp->mprops[RAPIDER_REGENERATION] & M_TIMEOUT) : imv;
+    int repid_enreg_dur = !has_rapider_regeneration(mtmp) ? 0 : (mtmp->mprops[RAPID_REGENERATION] & M_TIMEOUT) ? (mtmp->mprops[RAPID_REGENERATION] & M_TIMEOUT) : imv;
+    int enreg_dur = !has_regeneration(mtmp) ? 0 : (mtmp->mprops[REGENERATION] & M_TIMEOUT) ? (mtmp->mprops[REGENERATION] & M_TIMEOUT) : imv;
+    int eff_repidest_enreg_dur = max(0, repidest_enreg_dur);
+    int eff_repider_enreg_dur = max(0, repider_enreg_dur - repidest_enreg_dur);
+    int eff_repid_enreg_dur = max(0, repid_enreg_dur - repider_enreg_dur - repidest_enreg_dur);
+    int eff_enreg_dur = max(0, enreg_dur - repid_enreg_dur - repider_enreg_dur - repidest_enreg_dur);
+    int eff_normal_enreg_dur = max(0, imv - enreg_dur - repid_enreg_dur - repider_enreg_dur - repidest_enreg_dur);
+
+    int enrecovered = eff_normal_enreg_dur * 1;
+    enrecovered += (eff_repidest_enreg_dur ? eff_repidest_enreg_dur * 5 : 0);
+    enrecovered += (eff_repider_enreg_dur ? eff_repider_enreg_dur * 4 : 0);
+    enrecovered += (eff_repid_enreg_dur ? eff_repid_enreg_dur * 3 : 0);
+    enrecovered += (eff_enreg_dur ? eff_enreg_dur * 2 : 0);
+
     if (imv > mtmp->mspec_used)
         mtmp->mspec_used = 0;
     else
@@ -760,7 +777,7 @@ long nmv; /* number of moves */
     /* check to see if it would have died as a pet; if so, go wild instead
      * of dying the next time we call dog_move()
      */
-    if (mtmp->mtame && !mtmp->isminion && !is_non_eater(mtmp->data))
+    if (mtmp->mtame && has_edog(mtmp) && !mtmp->isminion && !is_non_eater(mtmp->data))
     {
         struct edog *edog = EDOG(mtmp);
 
@@ -781,12 +798,42 @@ long nmv; /* number of moves */
     }
 
     /* recover lost hit points */
-    if (!has_regeneration(mtmp))
-        imv /= 20;
-    if (mtmp->mhp + imv >= mtmp->mhpmax)
+    int divine_reg_dur = !has_divine_regeneration(mtmp) ? 0 : (mtmp->mprops[DIVINE_REGENERATION] & M_TIMEOUT) ? (mtmp->mprops[DIVINE_REGENERATION] & M_TIMEOUT) : imv;
+    int repidest_reg_dur = !has_rapidest_regeneration(mtmp) ? 0 : (mtmp->mprops[RAPIDEST_REGENERATION] & M_TIMEOUT) ? (mtmp->mprops[RAPIDEST_REGENERATION] & M_TIMEOUT) : imv;
+    int repider_reg_dur = !has_rapider_regeneration(mtmp) ? 0 : (mtmp->mprops[RAPIDER_REGENERATION] & M_TIMEOUT) ? (mtmp->mprops[RAPIDER_REGENERATION] & M_TIMEOUT) : imv;
+    int repid_reg_dur = !has_rapider_regeneration(mtmp) ? 0 : (mtmp->mprops[RAPID_REGENERATION] & M_TIMEOUT) ? (mtmp->mprops[RAPID_REGENERATION] & M_TIMEOUT) : imv;
+    int reg_dur = !has_regeneration(mtmp) ? 0 : (mtmp->mprops[REGENERATION] & M_TIMEOUT) ? (mtmp->mprops[REGENERATION] & M_TIMEOUT) : imv;
+    int eff_divine_reg_dur = divine_reg_dur;
+    int eff_repidest_reg_dur = max(0, repidest_reg_dur - divine_reg_dur);
+    int eff_repider_reg_dur = max(0, repider_reg_dur - repidest_reg_dur - divine_reg_dur);
+    int eff_repid_reg_dur = max(0, repid_reg_dur - repider_reg_dur - repidest_reg_dur - divine_reg_dur);
+    int eff_reg_dur = max(0, reg_dur - repid_reg_dur - repider_reg_dur - repidest_reg_dur - divine_reg_dur);
+    int eff_normal_reg_dur = max(0, imv - reg_dur - repid_reg_dur - repider_reg_dur - repidest_reg_dur - divine_reg_dur);
+
+    int hprecovered = eff_normal_reg_dur / 20;
+    hprecovered += (eff_divine_reg_dur ? eff_divine_reg_dur * max(1, min(mtmp->mhpmax / 16, 10)) : 0);
+    hprecovered += (eff_repidest_reg_dur ? eff_repidest_reg_dur * max(1, min(mtmp->mhpmax / 8, 20)) : 0);
+    hprecovered += (eff_repider_reg_dur ? eff_repider_reg_dur * max(1, min(mtmp->mhpmax / 4, 40)) : 0);
+    hprecovered += (eff_repid_reg_dur ? eff_repid_reg_dur * max(1, min(mtmp->mhpmax / 2, 80)) : 0);
+    hprecovered += (eff_reg_dur ? eff_reg_dur * max(1, min(mtmp->mhpmax, 160)) : 0);
+
+    if (mtmp->mhp + hprecovered >= mtmp->mhpmax)
         mtmp->mhp = mtmp->mhpmax;
     else
-        mtmp->mhp += imv;
+        mtmp->mhp += hprecovered;
+
+    int i;
+    for (i = 1; i <= LAST_PROP; i++)
+    {
+        unsigned short tim = (mtmp->mprops[i] & M_TIMEOUT);
+        if (tim)
+        {
+            if (imv > tim)
+                mtmp->mprops[i] = (mtmp->mprops[i] & ~M_TIMEOUT) | 1;
+            else
+                mtmp->mprops[i] = (mtmp->mprops[i] & ~M_TIMEOUT) | tim;
+        }
+    }
 
     if (imv != 0 && iflags.wc2_statuslines > 3 && is_tame(mtmp))
         context.botl = 1;

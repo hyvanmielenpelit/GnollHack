@@ -468,29 +468,45 @@ boolean digest_meal;
         }
     }
 
-
     /* Spec_used */
-    if (mon->mspec_used)
-        mon->mspec_used--;
+    /* Counters using energy regeneration */
+    int enregmult = mon_spec_cooldown_divisor(mon);
+    if (mon->mspec_used > enregmult)
+        mon->mspec_used -= enregmult;
+    else
+        mon->mspec_used = 0;
 
-    if (mon->mmagespell_used)
-        mon->mmagespell_used--;
+    if (mon->mmagespell_used > enregmult)
+        mon->mmagespell_used -= enregmult;
+    else
+        mon->mmagespell_used = 0;
 
-    if (mon->mmageintermediate_used)
-        mon->mmageintermediate_used--;
+    if (mon->mmageintermediate_used > enregmult)
+        mon->mmageintermediate_used -= enregmult;
+    else
+        mon->mmageintermediate_used = 0;
 
-    if (mon->mmageultimate_used)
-        mon->mmageultimate_used--;
+    if (mon->mmageultimate_used > enregmult)
+        mon->mmageultimate_used -= enregmult;
+    else
+        mon->mmageultimate_used = 0;
 
-    if (mon->mclericspell_used)
-        mon->mclericspell_used--;
+    if (mon->mclericspell_used > enregmult)
+        mon->mclericspell_used -= enregmult;
+    else
+        mon->mclericspell_used = 0;
 
-    if (mon->mclericintermediate_used)
-        mon->mclericintermediate_used--;
+    if (mon->mclericintermediate_used > enregmult)
+        mon->mclericintermediate_used -= enregmult;
+    else
+        mon->mclericintermediate_used = 0;
 
-    if (mon->mclericultimate_used)
-        mon->mclericultimate_used--;
+    if (mon->mclericultimate_used > enregmult)
+        mon->mclericultimate_used -= enregmult;
+    else
+        mon->mclericultimate_used = 0;
 
+    /* Counters not using energy regeneration */
     if (mon->mdemonsummon_used)
         mon->mdemonsummon_used--;
 

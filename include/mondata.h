@@ -800,11 +800,8 @@
     (has_innate_regeneration((mon)->data) || has_property(mon, REGENERATION))
 #define has_energy_regeneration(mon) \
     (has_innate_energy_regeneration((mon)->data) || has_property(mon, ENERGY_REGENERATION))
-#define has_half_spec_cooldown(mon) has_energy_regeneration(mon)
-#define has_one_third_spec_cooldown(mon) \
-    (has_property(mon, RAPID_ENERGY_REGENERATION) || has_property(mon, RAPIDER_ENERGY_REGENERATION) || has_property(mon, RAPIDEST_ENERGY_REGENERATION))
 #define mon_spec_cooldown_divisor(mon) \
-    (has_one_third_spec_cooldown(mon) ? 3 : has_half_spec_cooldown(mon) ? 2 : 1)
+    (has_property(mon, RAPIDEST_ENERGY_REGENERATION) ? 5 : has_property(mon, RAPIDER_ENERGY_REGENERATION) ? 4 : has_property(mon, RAPID_ENERGY_REGENERATION) ? 3 : has_energy_regeneration(mon) ? 2 : 1)
 #define has_teleportation(mon) \
     (has_innate_teleportation((mon)->data) || has_property(mon, TELEPORT))
 #define has_teleport_control(mon) \

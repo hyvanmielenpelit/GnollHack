@@ -3386,7 +3386,7 @@ register struct monst *mtmp;
                 if (!is_cancelled(mtmp) && (attacktype(mptr, AT_MAGC)
                                     || attacktype(mptr, AT_BREA))) 
                 {
-                    mtmp->mspec_used += d(2, 20) / mon_spec_cooldown_divisor(mtmp);
+                    mtmp->mspec_used += d(2, 20);
                     if (in_sight && can_see_trap)
                     {
                         seetrap(trap);

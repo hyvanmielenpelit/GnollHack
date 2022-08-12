@@ -1241,7 +1241,7 @@ struct attack  *mattk;
                 /* breath runs out sometimes. Also, give monster some
                  * cunning; don't breath if the target fell asleep.
                  */
-                mtmp->mspec_used = (5 + rn2(10)) / mon_spec_cooldown_divisor(mtmp);
+                mtmp->mspec_used = (5 + rn2(10));
 
                 /* If this is a pet, it'll get hungry. Minions and
                  * spell beings won't hunger */
@@ -1847,10 +1847,10 @@ struct attack* mattk;
                  * cunning; don't breath if the player fell asleep.
                  */
                 //if (!rn2(3))
-                mtmp->mspec_used = (5 + rn2(10)) / mon_spec_cooldown_divisor(mtmp);
+                mtmp->mspec_used = (5 + rn2(10));
                 
                 if (typ == AD_SLEE && !Sleep_resistance)
-                    mtmp->mspec_used += rnd(20) / mon_spec_cooldown_divisor(mtmp);
+                    mtmp->mspec_used += rnd(20);
                 
                 if (action_taken)
                     update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);

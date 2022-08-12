@@ -312,7 +312,7 @@ boolean foundyou;
         return (0);
     }
 
-    *appr_spec_ptr = (is_ultimate ? d(3, 20) + 60 : is_intermediate ? d(1, 6) + 14 : rnd(2) + 1) / mon_spec_cooldown_divisor(mtmp);
+    *appr_spec_ptr = (is_ultimate ? d(3, 20) + 60 : is_intermediate ? d(1, 6) + 14 : rnd(2) + 1);
 
     /* monster can cast spells, but is casting a directed spell at the
        wrong place?  If so, give a message, and return.  Do this *after*
@@ -1331,7 +1331,7 @@ register struct attack *mattk;
                 pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s casts \'%s\' at you!", Monnam(mtmp),
                       flash_types[ad_to_typ(adtyp)]);
             buzz(-ad_to_typ(adtyp), (struct obj*)0, mtmp, damn, damd, damp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby));
-            *appr_spec_ptr = (is_ultimate ? d(2, 8) + 100 : d(2, 4) + 10) / mon_spec_cooldown_divisor(mtmp);
+            *appr_spec_ptr = (is_ultimate ? d(2, 8) + 100 : d(2, 4) + 10);
         }
         else
             impossible("Monster spell %d cast", mattk->adtyp - 1);

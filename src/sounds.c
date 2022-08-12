@@ -7833,7 +7833,7 @@ struct monst* mtmp;
         bot();
     }
 
-    mtmp->mspec_used = 100 / mon_spec_cooldown_divisor(mtmp);
+    mtmp->mspec_used = 100;
     refresh_m_tile_gui_info(mtmp, TRUE);
     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "velocity suddenly seems very uncertain!");
     if (rn2(2)) 
@@ -7916,7 +7916,7 @@ struct monst* mtmp;
         bot();
     }
 
-    mtmp->mspec_used = 100 / mon_spec_cooldown_divisor(mtmp);
+    mtmp->mspec_used = 100;
     refresh_m_tile_gui_info(mtmp, TRUE);
 
     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "position suddenly seems %suncertain!",
