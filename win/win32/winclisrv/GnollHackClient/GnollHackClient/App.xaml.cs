@@ -282,6 +282,8 @@ namespace GnollHackClient
 
         public static string GHVersionId { get; set; }
         public static string GHVersionString { get; set; }
+        public static string SkiaVersionString { get; set; }
+        public static string SkiaSharpVersionString { get; set; }
         public static string FMODVersionString { get; set; }
         public static string GHPath { get; set; }
         //public static readonly string LogFile = "console.log";

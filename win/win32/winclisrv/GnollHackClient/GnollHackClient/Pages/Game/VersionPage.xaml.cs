@@ -83,6 +83,7 @@ namespace GnollHackClient.Pages.Game
             PortVersionLabel.Text = VersionTracking.CurrentVersion;
             PortBuildLabel.Text = VersionTracking.CurrentBuild;
             FMODVersionLabel.Text = App.FMODVersionString;
+            SkiaVersionLabel.Text = App.SkiaVersionString + " (# " + App.SkiaSharpVersionString + ")";
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
             TotalMemoryLabel.Text = TotalMemInMB + " MB";

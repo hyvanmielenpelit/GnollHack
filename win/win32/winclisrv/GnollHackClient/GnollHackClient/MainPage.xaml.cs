@@ -265,12 +265,34 @@ namespace GnollHackClient
             string verid = "?";
             string path = ".";
             string fmodverstr = "?";
+            string skiaverstr = "?";
+            string skiasharpverstr = "?";
             try
             {
                 verstr = App.GnollHackService.GetVersionString();
                 verid = App.GnollHackService.GetVersionId();
                 path = App.GnollHackService.GetGnollHackPath();
                 fmodverstr = App.FmodService.GetVersionString();
+                skiaverstr = SkiaSharpVersion.Native.ToString();
+                Assembly skiaSharpAssem = typeof(SkiaSharpVersion).Assembly;
+                AssemblyName skiaSharpAssemName = skiaSharpAssem.GetName();
+                Version ver = skiaSharpAssemName.Version;
+                skiasharpverstr = ver.Major + "." + ver.Minor;
+                var attr = skiaSharpAssem
+                    .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)
+                    as AssemblyInformationalVersionAttribute[];
+                if (attr != null && attr.Length > 0)
+                {
+                    string fullverid = attr[0].InformationalVersion;
+                    if (!string.IsNullOrWhiteSpace(fullverid))
+                    {
+                        int dashpos = fullverid.IndexOf("-");
+                        if (dashpos >= 0)
+                            skiasharpverstr = fullverid.Substring(0, dashpos);
+                        else
+                            skiasharpverstr = fullverid;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -280,6 +302,8 @@ namespace GnollHackClient
             App.GHVersionId = verid;
             App.GHPath = path;
             App.FMODVersionString = fmodverstr;
+            App.SkiaVersionString = skiaverstr;
+            App.SkiaSharpVersionString = skiasharpverstr;
 
             VersionLabel.Text = verid;
             GnollHackLabel.Text = "GnollHack";
