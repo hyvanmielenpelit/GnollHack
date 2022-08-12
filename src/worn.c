@@ -725,6 +725,8 @@ boolean silently;
         break;
     }
 
+    refresh_m_tile_gui_info(mtmp, !silently);
+
     if (silently)
         return FALSE;
 

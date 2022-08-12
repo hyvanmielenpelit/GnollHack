@@ -333,6 +333,13 @@ struct obj *otmp;
 #define MUSE_POT_FULL_HEALING 19
 #define MUSE_LIZARD_CORPSE 20
 #define MUSE_DRAGON_FRUIT 21
+#define MUSE_POT_LESSER_REJUVENATION 22
+#define MUSE_POT_REJUVENATION 23
+#define MUSE_POT_GREATER_REJUVENATION 24
+#define MUSE_POT_LESSER_REGENERATION 25
+#define MUSE_POT_REGENERATION 26
+#define MUSE_POT_GREATER_REGENERATION 27
+#define MUSE_POT_SICKNESS 28
 
  /*
 #define MUSE_INNATE_TPT 9999
@@ -365,6 +372,36 @@ struct monst *mtmp;
     if ((obj = m_carrying(mtmp, POT_HEALING)) != 0) {
         m.defensive = obj;
         m.has_defense = MUSE_POT_HEALING;
+        return TRUE;
+    }
+    if ((obj = m_carrying(mtmp, POT_GREATER_REGENERATION)) != 0) {
+        m.defensive = obj;
+        m.has_defense = MUSE_POT_GREATER_REGENERATION;
+        return TRUE;
+    }
+    if ((obj = m_carrying(mtmp, POT_GREATER_REJUVENATION)) != 0) {
+        m.defensive = obj;
+        m.has_defense = MUSE_POT_GREATER_REJUVENATION;
+        return TRUE;
+    }
+    if ((obj = m_carrying(mtmp, POT_REGENERATION)) != 0) {
+        m.defensive = obj;
+        m.has_defense = MUSE_POT_REGENERATION;
+        return TRUE;
+    }
+    if ((obj = m_carrying(mtmp, POT_REJUVENATION)) != 0) {
+        m.defensive = obj;
+        m.has_defense = MUSE_POT_REJUVENATION;
+        return TRUE;
+    }
+    if ((obj = m_carrying(mtmp, POT_LESSER_REGENERATION)) != 0) {
+        m.defensive = obj;
+        m.has_defense = MUSE_POT_LESSER_REGENERATION;
+        return TRUE;
+    }
+    if ((obj = m_carrying(mtmp, POT_LESSER_REJUVENATION)) != 0) {
+        m.defensive = obj;
+        m.has_defense = MUSE_POT_LESSER_REJUVENATION;
         return TRUE;
     }
     return FALSE;
@@ -709,14 +746,50 @@ struct monst *mtmp;
                 m.defensive = obj;
                 m.has_defense = MUSE_POT_HEALING;
             }
+            nomore(MUSE_POT_GREATER_REGENERATION);
+            if (obj->otyp == POT_GREATER_REGENERATION)
+            {
+                m.defensive = obj;
+                m.has_defense = MUSE_POT_GREATER_REGENERATION;
+            }
+            nomore(MUSE_POT_GREATER_REJUVENATION);
+            if (obj->otyp == POT_GREATER_REJUVENATION)
+            {
+                m.defensive = obj;
+                m.has_defense = MUSE_POT_GREATER_REJUVENATION;
+            }
+            nomore(MUSE_POT_REGENERATION);
+            if (obj->otyp == POT_REGENERATION)
+            {
+                m.defensive = obj;
+                m.has_defense = MUSE_POT_REGENERATION;
+            }
+            nomore(MUSE_POT_REJUVENATION);
+            if (obj->otyp == POT_REJUVENATION)
+            {
+                m.defensive = obj;
+                m.has_defense = MUSE_POT_REJUVENATION;
+            }
+            nomore(MUSE_POT_LESSER_REGENERATION);
+            if (obj->otyp == POT_LESSER_REGENERATION)
+            {
+                m.defensive = obj;
+                m.has_defense = MUSE_POT_LESSER_REGENERATION;
+            }
+            nomore(MUSE_POT_LESSER_REJUVENATION);
+            if (obj->otyp == POT_LESSER_REJUVENATION)
+            {
+                m.defensive = obj;
+                m.has_defense = MUSE_POT_LESSER_REJUVENATION;
+            }
         }
         else
         { /* Pestilence */
-            nomore(MUSE_POT_FULL_HEALING);
+            nomore(MUSE_POT_SICKNESS);
             if (obj->otyp == POT_SICKNESS) 
             {
                 m.defensive = obj;
-                m.has_defense = MUSE_POT_FULL_HEALING;
+                m.has_defense = MUSE_POT_SICKNESS;
             }
             nomore(MUSE_WAN_CREATE_MONSTER);
             if (obj->otyp == WAN_CREATE_MONSTER && obj->charges > 0 && !is_cancelled(mtmp))
@@ -755,6 +828,21 @@ struct monst *mtmp;
 
     if ((i = precheck(mtmp, otmp)) != 0)
         return i;
+
+    int duration = 0, dicebuc = 0, extra_data1 = 0;
+    if (otmp)
+    {
+        int otyp = otmp->otyp;
+        if (mtmp->mnum == PM_PESTILENCE && otyp == POT_SICKNESS)
+            otyp = POT_FULL_HEALING;
+        dicebuc = (int)(otmp->oclass == POTION_CLASS ? objects[otyp].oc_potion_normal_dice_buc_multiplier : 0);
+        duration =
+            (int)max(0,
+                otmp->oclass == POTION_CLASS ? (objects[otyp].oc_potion_normal_diesize == 0 ? 0 : d(max(0, objects[otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)), max(1, objects[otyp].oc_potion_normal_diesize))) + objects[otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otyp].oc_potion_normal_buc_multiplier :
+                d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus
+            );
+        extra_data1 = otmp->oclass == POTION_CLASS ? (int)objects[otyp].oc_potion_extra_data1 : 0;
+    }
     vis = cansee(mtmp->mx, mtmp->my);
     vismon = canseemon(mtmp);
     oseen = otmp && vismon;
@@ -1131,10 +1219,9 @@ struct monst *mtmp;
         if (!otmp)
             return 2;
         mquaffmsg(mtmp, otmp);
-        i = d(6 + 2 * bcsign(otmp), 4);
-        mtmp->mhp += i;
+        deduct_monster_hp(mtmp, (double)(-duration));
         if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 1 : 0));
+            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? extra_data1 : 0));
         if (!otmp->cursed && is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
         if (vismon)
@@ -1147,10 +1234,9 @@ struct monst *mtmp;
         if (!otmp)
             return 2;
         mquaffmsg(mtmp, otmp);
-        i = d(6 + 2 * bcsign(otmp), 8);
-        mtmp->mhp += i;
+        deduct_monster_hp(mtmp, (double)(-duration));
         if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 2 : 0));
+            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? extra_data1 : 0));
         if (is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
         if (is_mummy_rotted(mtmp))
@@ -1165,10 +1251,9 @@ struct monst *mtmp;
         if (!otmp)
             return 2;
         mquaffmsg(mtmp, otmp);
-        i = d(10 + 2 * bcsign(otmp), 8) + 8;
-        mtmp->mhp += i;
+        deduct_monster_hp(mtmp, (double)(-duration));
         if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 3 : 0));
+            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? extra_data1 : 0));
         if (is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
         if (is_mummy_rotted(mtmp))
@@ -1179,13 +1264,24 @@ struct monst *mtmp;
             makeknown(POT_GREATER_HEALING);
         m_useup(mtmp, otmp);
         return 2;
+    case MUSE_POT_SICKNESS: /* Pestilence */
+        if (!otmp)
+            return 2;
+        if (mtmp->mnum != PM_PESTILENCE)
+        {
+            /* Should not happen */
+            mquaffmsg(mtmp, otmp);
+            m_useup(mtmp, otmp);
+            break;
+        }
+        /* FALLTHRU */
     case MUSE_POT_FULL_HEALING:
         if (!otmp)
             return 2;
         mquaffmsg(mtmp, otmp);
-        if (otmp->otyp == POT_SICKNESS)
-            unbless(otmp); /* Pestilence */
-        mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 8 : 4));
+        deduct_monster_hp(mtmp, (double)(-duration));
+        if (mtmp->mhp > mtmp->mhpmax)
+            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? extra_data1 : 0));
         if (is_blinded(mtmp) && otmp->otyp != POT_SICKNESS)
             mcureblindness(mtmp, vismon);
         if (is_mummy_rotted(mtmp) && otmp->otyp != POT_SICKNESS)
@@ -1194,6 +1290,23 @@ struct monst *mtmp;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks completely healed.", Monnam(mtmp));
         if (oseen)
             makeknown(otmp->otyp);
+        m_useup(mtmp, otmp);
+        return 2;
+    case MUSE_POT_GREATER_REGENERATION:
+    case MUSE_POT_REGENERATION:
+    case MUSE_POT_LESSER_REGENERATION:
+    case MUSE_POT_GREATER_REJUVENATION:
+    case MUSE_POT_REJUVENATION:
+    case MUSE_POT_LESSER_REJUVENATION:
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
+        if(objects[otmp->otyp].oc_oprop > 0)
+            (void)increase_mon_property_verbosely(mtmp, objects[otmp->otyp].oc_oprop, duration);
+        if (objects[otmp->otyp].oc_oprop2 > 0)
+            (void)increase_mon_property_verbosely(mtmp, objects[otmp->otyp].oc_oprop2, duration);
+        if (objects[otmp->otyp].oc_oprop3 > 0)
+            (void)increase_mon_property_verbosely(mtmp, objects[otmp->otyp].oc_oprop3, duration);
         m_useup(mtmp, otmp);
         return 2;
     case MUSE_DRAGON_FRUIT:
@@ -1983,6 +2096,13 @@ struct monst *mtmp;
 #define MUSE_WAN_SPEED_MONSTER 9
 #define MUSE_BULLWHIP 10
 #define MUSE_POT_POLYMORPH 11
+#define MUSE_POT_GAIN_ENERGY 12
+#define MUSE_POT_EXTRA_ENERGY 13
+#define MUSE_POT_GREATER_ENERGY 14
+#define MUSE_POT_FULL_ENERGY 15
+#define MUSE_POT_HEROISM 16
+#define MUSE_POT_SUPER_HEROISM 17
+#define MUSE_POT_TITAN_STRENGTH 18
 
 boolean
 find_misc(mtmp)
@@ -2105,6 +2225,56 @@ struct monst *mtmp;
             m.misc = obj;
             m.has_misc = MUSE_POT_LIGHTNING_SPEED;
         }
+        nomore(MUSE_POT_GAIN_ENERGY);
+        if (obj->otyp == POT_GAIN_ENERGY
+            && (mtmp->mspec_used > 0 || mtmp->mmagespell_used || mtmp->mmageintermediate_used || mtmp->mmageultimate_used
+                || mtmp->mclericspell_used || mtmp->mclericintermediate_used || mtmp->mclericultimate_used))
+        {
+            m.misc = obj;
+            m.has_misc = MUSE_POT_GAIN_ENERGY;
+        }
+        nomore(MUSE_POT_EXTRA_ENERGY);
+        if (obj->otyp == POT_EXTRA_ENERGY
+            && (mtmp->mspec_used > 0 || ((mtmp->mmagespell_used || mtmp->mclericspell_used) && !rn2(2))
+                || ((mtmp->mmageintermediate_used || mtmp->mclericintermediate_used))
+                || mtmp->mmageultimate_used || mtmp->mclericultimate_used))
+        {
+            m.misc = obj;
+            m.has_misc = MUSE_POT_EXTRA_ENERGY;
+        }
+        nomore(MUSE_POT_GREATER_ENERGY);
+        if (obj->otyp == POT_GREATER_ENERGY
+            && (mtmp->mspec_used > 0 || ((mtmp->mmagespell_used || mtmp->mclericspell_used) && !rn2(4))
+                || ((mtmp->mmageintermediate_used || mtmp->mclericintermediate_used) && !rn2(2))
+                || mtmp->mmageultimate_used || mtmp->mclericultimate_used))
+        {
+            m.misc = obj;
+            m.has_misc = MUSE_POT_GREATER_ENERGY;
+        }
+        nomore(MUSE_POT_FULL_ENERGY);
+        if (obj->otyp == POT_FULL_ENERGY
+            && (mtmp->mspec_used > 0 || ((mtmp->mmagespell_used || mtmp->mclericspell_used) && !rn2(6)) 
+                || ((mtmp->mmageintermediate_used || mtmp->mclericintermediate_used) && !rn2(3)) 
+                || mtmp->mmageultimate_used || mtmp->mclericultimate_used))
+        {
+            m.misc = obj;
+            m.has_misc = MUSE_POT_FULL_ENERGY;
+        }
+        nomore(MUSE_POT_TITAN_STRENGTH);
+        if (obj->otyp == POT_TITAN_STRENGTH && !has_titan_strength(mtmp) && M_ACURRSTR(mtmp) < 25 && !mtmp->isgd) {
+            m.misc = obj;
+            m.has_misc = MUSE_POT_TITAN_STRENGTH;
+        }
+        nomore(MUSE_POT_SUPER_HEROISM);
+        if (obj->otyp == POT_SUPER_HEROISM && !has_super_heroism(mtmp) && !mtmp->isgd) {
+            m.misc = obj;
+            m.has_misc = MUSE_POT_SUPER_HEROISM;
+        }
+        nomore(MUSE_POT_HEROISM);
+        if (obj->otyp == POT_HEROISM && !has_super_heroism(mtmp) && !has_heroism(mtmp) && !mtmp->isgd) {
+            m.misc = obj;
+            m.has_misc = MUSE_POT_HEROISM;
+        }
         nomore(MUSE_WAN_POLYMORPH);
         if (obj->otyp == WAN_POLYMORPH && obj->charges > 0 && !is_cancelled(mtmp)
             && (mtmp->cham == NON_PM) && mons[mtmp->mnum].difficulty < 6) {
@@ -2153,6 +2323,19 @@ struct monst *mtmp;
 
     if ((i = precheck(mtmp, otmp)) != 0)
         return i;
+
+    int duration = 0, dicebuc = 0, extra_data1 = 0;
+    if (otmp)
+    {
+        dicebuc = (int)(otmp->oclass == POTION_CLASS ? objects[otmp->otyp].oc_potion_normal_dice_buc_multiplier : 0);
+        duration =
+            (int)max(0,
+                otmp->oclass == POTION_CLASS ? (objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 : d(max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)), max(1, objects[otmp->otyp].oc_potion_normal_diesize))) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
+                d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus
+            );
+        extra_data1 = otmp->oclass == POTION_CLASS ? (int)objects[otmp->otyp].oc_potion_extra_data1 : 0;
+    }
+
     vis = cansee(mtmp->mx, mtmp->my);
     vismon = canseemon(mtmp);
     oseen = otmp && vismon;
@@ -2221,7 +2404,7 @@ struct monst *mtmp;
             mquaffmsg(mtmp, otmp);
         /* format monster's name before altering its visibility */
         Strcpy(nambuf, mon_nam(mtmp));
-        increase_mon_property(mtmp, INVISIBILITY, otmp->otyp == WAN_MAKE_INVISIBLE ? 100 + rn2(50): d(10, 10) + 400);
+        increase_mon_property(mtmp, INVISIBILITY, duration);
         if (vismon && is_invisible(mtmp)) { /* was seen, now invisible */
             if (canspotmon(mtmp)) {
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s body takes on a %s transparency.",
@@ -2246,27 +2429,75 @@ struct monst *mtmp;
             return 2;
         mzapmsg(mtmp, otmp, TRUE);
         otmp->charges--;
-        (void)increase_mon_property_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
+        (void)increase_mon_property_verbosely(mtmp, VERY_FAST, duration);
         return 2;
     case MUSE_POT_SPEED:
-        if (!otmp)
-            return 2;
-        mquaffmsg(mtmp, otmp);
-        (void)increase_mon_property_verbosely(mtmp, ULTRA_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
-        m_useup(mtmp, otmp);
-        return 2;
     case MUSE_POT_GREATER_SPEED:
+    case MUSE_POT_LIGHTNING_SPEED:
+    case MUSE_POT_HEROISM:
+    case MUSE_POT_SUPER_HEROISM:
+    case MUSE_POT_TITAN_STRENGTH:
         if (!otmp)
             return 2;
         mquaffmsg(mtmp, otmp);
-        (void)increase_mon_property_verbosely(mtmp, SUPER_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
+        if (objects[otmp->otyp].oc_oprop > 0)
+            (void)increase_mon_property_verbosely(mtmp, objects[otmp->otyp].oc_oprop, duration);
+        if (objects[otmp->otyp].oc_oprop2 > 0)
+            (void)increase_mon_property_verbosely(mtmp, objects[otmp->otyp].oc_oprop2, duration);
+        if (objects[otmp->otyp].oc_oprop3 > 0)
+            (void)increase_mon_property_verbosely(mtmp, objects[otmp->otyp].oc_oprop3, duration);
         m_useup(mtmp, otmp);
         return 2;
-    case MUSE_POT_LIGHTNING_SPEED:
+    case MUSE_POT_GAIN_ENERGY:
         if (!otmp)
             return 2;
         mquaffmsg(mtmp, otmp);
-        (void)increase_mon_property_verbosely(mtmp, LIGHTNING_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
+        mtmp->mspec_used = 0;
+        mtmp->mmagespell_used = 0;
+        mtmp->mclericspell_used = 0;
+        mtmp->mmageintermediate_used /= 4;
+        mtmp->mclericintermediate_used /= 4;
+        mtmp->mmageultimate_used /= 2;
+        mtmp->mclericultimate_used /= 2;
+        m_useup(mtmp, otmp);
+        return 2;
+    case MUSE_POT_EXTRA_ENERGY:
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
+        mtmp->mspec_used = 0;
+        mtmp->mmagespell_used = 0;
+        mtmp->mclericspell_used = 0;
+        mtmp->mmageintermediate_used /= 8;
+        mtmp->mclericintermediate_used /= 8;
+        mtmp->mmageultimate_used /= 4;
+        mtmp->mclericultimate_used /= 4;
+        m_useup(mtmp, otmp);
+        return 2;
+    case MUSE_POT_GREATER_ENERGY:
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
+        mtmp->mspec_used = 0;
+        mtmp->mmagespell_used = 0;
+        mtmp->mclericspell_used = 0;
+        mtmp->mmageintermediate_used = 0;
+        mtmp->mclericintermediate_used = 0;
+        mtmp->mmageultimate_used /= 8;
+        mtmp->mclericultimate_used /= 8;
+        m_useup(mtmp, otmp);
+        return 2;
+    case MUSE_POT_FULL_ENERGY:
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
+        mtmp->mspec_used = 0;
+        mtmp->mmagespell_used = 0;
+        mtmp->mclericspell_used = 0;
+        mtmp->mmageintermediate_used = 0;
+        mtmp->mclericintermediate_used = 0;
+        mtmp->mmageultimate_used = 0;
+        mtmp->mclericultimate_used = 0;
         m_useup(mtmp, otmp);
         return 2;
     case MUSE_WAN_POLYMORPH:
