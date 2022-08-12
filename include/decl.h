@@ -254,6 +254,7 @@ E NEARDATA struct kinfo {
 E NEARDATA struct obj* getobj_autoselect_obj;
 E NEARDATA const char getobj_comestibles[];
 E NEARDATA const char getobj_offerfodder[];
+E NEARDATA const char getobj_all_count[];
 E NEARDATA const char getobj_allobj[];
 E NEARDATA const char getobj_styluses[];
 E NEARDATA const char getobj_drop_types[];

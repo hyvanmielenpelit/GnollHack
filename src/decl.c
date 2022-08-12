@@ -289,8 +289,8 @@ NEARDATA struct obj* getobj_autoselect_obj = (struct obj*)0;
 
 /* getobj class definitions */
 NEARDATA const char getobj_comestibles[] = { FOOD_CLASS, REAGENT_CLASS, 0 };
-NEARDATA const char getobj_offerfodder[] = { FOOD_CLASS, AMULET_CLASS,
-                                                 0 };
+NEARDATA const char getobj_offerfodder[] = { FOOD_CLASS, AMULET_CLASS, 0 };
+NEARDATA const char getobj_all_count[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
 
 /* Gold must come first for getobj(). */
 NEARDATA const char getobj_allobj[] = {

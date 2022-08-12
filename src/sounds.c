@@ -155,6 +155,9 @@ STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
 STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, long, const char*, int));
 STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, long, const char*, int));
 STATIC_DCL int FDECL(general_service_query_with_extra, (struct monst*, int (*)(struct monst*), const char*, long, const char*, int, const char*, int));
+STATIC_DCL int FDECL(general_service_query_with_item_cost_adjustment_and_extra, (struct monst*, int (*)(struct monst*, struct obj*), const char*, const char*, long, long, long, const char*, int, const char*, int));
+STATIC_DCL int FDECL(recharge_item_func, (struct monst*, struct obj*));
+STATIC_DCL int FDECL(blessed_recharge_item_func, (struct monst*, struct obj*));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
@@ -8022,7 +8025,8 @@ struct monst* mtmp;
         return 0;
 
     long cost = max(1L, (long)((1200 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return spell_service_query(mtmp, SCR_CHARGING, 0, "recharge an item", cost, "recharging an item", NPC_LINE_WOULD_YOU_LIKE_TO_RECHARGE_AN_ITEM);
+    //return spell_service_query(mtmp, SCR_CHARGING, 0, "recharge an item", cost, "recharging an item", NPC_LINE_WOULD_YOU_LIKE_TO_RECHARGE_AN_ITEM);
+    return general_service_query_with_item_cost_adjustment_and_extra(mtmp, recharge_item_func, "charge", "recharging", cost, objects[WAN_WISHING].oc_cost, 50L, "recharging an item", QUERY_STYLE_COMPONENTS, (char*)0, NPC_LINE_WHAT_WOULD_YOU_LIKE_TO_CHARGE);
 }
 
 
@@ -8034,7 +8038,8 @@ struct monst* mtmp;
         return 0;
 
     long cost = max(1L, (long)((4000 + 200 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return spell_service_query(mtmp, SCR_CHARGING, 1, "fully recharge an item", cost, "fully recharging an item", NPC_LINE_WOULD_YOU_LIKE_TO_FULLY_RECHARGE_AN_ITEM);
+    //return spell_service_query(mtmp, SCR_CHARGING, 1, "fully recharge an item", cost, "fully recharging an item", NPC_LINE_WOULD_YOU_LIKE_TO_FULLY_RECHARGE_AN_ITEM);
+    return general_service_query_with_item_cost_adjustment_and_extra(mtmp, blessed_recharge_item_func, "charge", "fully recharging", cost, objects[WAN_WISHING].oc_cost, 50L, "recharging an item", QUERY_STYLE_COMPONENTS, (char*)0, NPC_LINE_WHAT_WOULD_YOU_LIKE_TO_CHARGE);
 }
 
 STATIC_OVL int
@@ -9492,6 +9497,104 @@ int special_dialogue_sound_id;
         money2mon(mtmp, u_pay);
         bot();
     }
+
+    return 1;
+}
+
+STATIC_OVL int
+general_service_query_with_item_cost_adjustment_and_extra(mtmp, service_item_func, service_verb, service_verb_ing, service_base_cost, item_cost_at_base, minimum_cost, no_mood_string, query_style, extra_string, special_dialogue_sound_id)
+struct monst* mtmp;
+int (*service_item_func)(struct monst*, struct obj*);
+const char* service_verb, *service_verb_ing;
+long service_base_cost, item_cost_at_base, minimum_cost;
+const char* no_mood_string;
+int query_style;
+const char* extra_string;
+int special_dialogue_sound_id;
+{
+
+    long umoney = money_cnt(invent);
+    long u_pay;
+    char qbuf[QBUFSZ];
+
+    if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
+        return 0;
+    else if (!umoney)
+    {
+        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        return 0;
+    }
+    if (special_dialogue_sound_id > 0)
+    {
+        if (query_style == QUERY_STYLE_SPELL)
+            play_monster_standard_dialogue_line(mtmp, special_dialogue_sound_id);
+        else
+            play_monster_special_dialogue_line(mtmp, special_dialogue_sound_id);
+    }
+    struct obj* otmp = getobj(getobj_all_count, service_verb, 0, "");
+    if (!otmp)
+        return 0;
+
+    long service_cost = !item_cost_at_base ? service_base_cost : max(minimum_cost, (service_base_cost * objects[otmp->otyp].oc_cost) / max(1L, item_cost_at_base));
+    char ingbuf[BUFSZ] = "";
+    Strcpy(ingbuf, service_verb_ing);
+    *ingbuf = highc(*ingbuf);
+
+    if (extra_string)
+        Sprintf(qbuf, "%s %s costs %ld %s and %s. Proceed?", ingbuf, the(cxname(otmp)), service_cost, currency(service_cost), extra_string);
+    else
+        Sprintf(qbuf, "%s %s costs %ld %s. Proceed?", ingbuf, the(cxname(otmp)), service_cost, currency(service_cost));
+
+    switch (yn_query_mon(mtmp, qbuf))
+    {
+    default:
+        return 0;
+    case 'y':
+        if (umoney < service_cost)
+        {
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+            You("don't have enough money for that!");
+            return 0;
+        }
+        u_pay = service_cost;
+        break;
+    }
+
+    int res = service_item_func(mtmp, otmp);
+    if (res)
+    {
+        money2mon(mtmp, u_pay);
+        bot();
+    }
+
+    return 1;
+}
+
+STATIC_OVL int
+recharge_item_func(mtmp, otmp)
+struct monst* mtmp UNUSED;
+struct obj* otmp;
+{
+
+    if (otmp)
+        recharge(otmp, 0, TRUE, "Recharging", TRUE);
+    else
+        return 0;
+
+    return 1;
+}
+
+STATIC_OVL int
+blessed_recharge_item_func(mtmp, otmp)
+struct monst* mtmp UNUSED;
+struct obj* otmp;
+{
+
+    if (otmp)
+        recharge(otmp, 1, TRUE, "Recharging", TRUE);
+    else
+        return 0;
 
     return 1;
 }
