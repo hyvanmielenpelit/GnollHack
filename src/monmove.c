@@ -749,10 +749,8 @@ register struct monst *mtmp;
 
     mdat = mtmp->data;
 
-    if (mtmp->data == &mons[PM_VLAD_THE_IMPALER])
-        tmp = 0;
-
-    if (mtmp->mstrategy & STRAT_ARRIVE) {
+    if (mtmp->mstrategy & STRAT_ARRIVE) 
+    {
         int res = m_arrival(mtmp);
         if (res >= 0)
             return res;
@@ -843,7 +841,8 @@ register struct monst *mtmp;
     {
         if (use_defensive(mtmp) != 0)
             return 1;
-    } else if (find_misc(mtmp))
+    } 
+    else if (find_misc(mtmp))
     {
         if (use_misc(mtmp) != 0)
             return 1;
