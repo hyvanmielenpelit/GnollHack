@@ -1675,7 +1675,7 @@ struct monst* mtmp;
 
                 Strcat(endbuf, "extrinsic");
             }
-#if 0
+
             if (has_instrinsic_acquired)
             {
                 if (strcmp(endbuf, ""))
@@ -1683,7 +1683,7 @@ struct monst* mtmp;
 
                 Strcat(endbuf, "acquired");
             }
-#endif
+
             if (has_temporary)
             {
                 if (strcmp(endbuf, ""))
@@ -1694,6 +1694,7 @@ struct monst* mtmp;
 
             if (strcmp(endbuf, ""))
             {
+                *endbuf = highc(*endbuf);
                 Sprintf(endbuf2, " (%s)", endbuf);
             }
 
