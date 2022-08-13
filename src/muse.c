@@ -2065,6 +2065,10 @@ struct monst *mtmp;
 #define MUSE_POT_SEE_INVISIBLE 26
 #define MUSE_POT_FRUIT_JUICE 27
 #define MUSE_POT_LEVITATION 28
+#define MUSE_POT_FIRE_IMMUNITY 29
+#define MUSE_POT_COLD_IMMUNITY 30
+#define MUSE_POT_SHOCK_IMMUNITY 31
+#define MUSE_POT_MAGIC_RESISTANCE 32
 
 boolean
 set_misc_potion(mtmp, obj)
@@ -2156,6 +2160,18 @@ struct obj* obj;
         break;
     case POT_LEVITATION:
         m.has_misc = MUSE_POT_LEVITATION;
+        break;
+    case POT_FIRE_IMMUNITY:
+        m.has_misc = MUSE_POT_FIRE_IMMUNITY;
+        break;
+    case POT_SHOCK_IMMUNITY:
+        m.has_misc = MUSE_POT_SHOCK_IMMUNITY;
+        break;
+    case POT_COLD_IMMUNITY:
+        m.has_misc = MUSE_POT_COLD_IMMUNITY;
+        break;
+    case POT_MAGIC_RESISTANCE:
+        m.has_misc = MUSE_POT_MAGIC_RESISTANCE;
         break;
     default:
         break;
@@ -2432,6 +2448,30 @@ struct monst *mtmp;
             //m.misc = obj;
             //m.has_misc = MUSE_POT_LEVITATION;
         }
+        nomore(MUSE_POT_FIRE_IMMUNITY);
+        if (obj->otyp == POT_FIRE_IMMUNITY)
+        {
+            //m.misc = obj;
+            //m.has_misc = MUSE_POT_FIRE_IMMUNITY;
+        }
+        nomore(MUSE_POT_SHOCK_IMMUNITY);
+        if (obj->otyp == POT_SHOCK_IMMUNITY)
+        {
+            //m.misc = obj;
+            //m.has_misc = MUSE_POT_SHOCK_IMMUNITY;
+        }
+        nomore(MUSE_POT_COLD_IMMUNITY);
+        if (obj->otyp == POT_COLD_IMMUNITY)
+        {
+            //m.misc = obj;
+            //m.has_misc = MUSE_POT_COLD_IMMUNITY;
+        }
+        nomore(MUSE_POT_MAGIC_RESISTANCE);
+        if (obj->otyp == POT_MAGIC_RESISTANCE)
+        {
+            //m.misc = obj;
+            //m.has_misc = MUSE_POT_MAGIC_RESISTANCE;
+        }
         nomore(MUSE_POT_SEE_INVISIBLE);
         if (obj->otyp == POT_SEE_INVISIBLE && !is_peaceful(mtmp) && Invis && !has_see_invisible(mtmp) 
             && isok(mtmp->mux, mtmp->muy) && m_cansee(mtmp, mtmp->mux, mtmp->muy)) 
@@ -2624,6 +2664,10 @@ struct monst *mtmp;
     case MUSE_POT_LESSER_REJUVENATION:
     case MUSE_POT_SEE_INVISIBLE:
     case MUSE_POT_LEVITATION:
+    case MUSE_POT_FIRE_IMMUNITY:
+    case MUSE_POT_COLD_IMMUNITY:
+    case MUSE_POT_SHOCK_IMMUNITY:
+    case MUSE_POT_MAGIC_RESISTANCE:
         if (!otmp)
             return 2;
         mquaffmsg(mtmp, otmp);
