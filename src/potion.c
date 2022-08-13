@@ -956,6 +956,29 @@ struct obj *otmp;
         0);
 
     int extra_data1 = otmp->oclass == POTION_CLASS ? (int)objects[otmp->otyp].oc_potion_extra_data1 : 0;
+    boolean cures_sick = FALSE;
+    boolean cures_blind = FALSE;
+    boolean cures_hallucination = FALSE;
+    boolean cures_stun = FALSE;
+    boolean cures_confusion = FALSE;
+    if (objects[otmp->otyp].oc_flags5 & O5_EFFECT_FLAGS_ARE_HEALING)
+    {
+        cures_sick = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS) :
+            otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_SICKNESS) :
+            !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_SICKNESS);
+        cures_blind = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_BLINDNESS) :
+            otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_BLINDNESS) :
+            !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_BLINDNESS);
+        cures_hallucination = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_HALLUCINATION) :
+            otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_HALLUCINATION) :
+            !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_HALLUCINATION);
+        cures_stun = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_STUN) :
+            otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_STUN) :
+            !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_STUN);
+        cures_confusion = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_CONFUSION) :
+            otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_CONFUSION) :
+            !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_CONFUSION);
+    }
 
     switch (otmp->otyp) {
     case POT_RESTORE_ABILITY:
@@ -1664,7 +1687,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "better.");
         healup(duration, otmp->blessed ? extra_data1 : 0,
-               otmp->blessed, !otmp->cursed, FALSE, FALSE, FALSE);
+               cures_sick, cures_blind, cures_hallucination, cures_stun, cures_confusion);
         exercise(A_CON, TRUE);
         special_effect_wait_until_end(0);
         break;
@@ -1673,9 +1696,8 @@ struct obj *otmp;
         play_sfx_sound(SFX_HEALING);
         special_effect_wait_until_action(0);
         You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much better.");
-        healup(duration,
-               otmp->blessed ? extra_data1 : 0, otmp->blessed /* !otmp->cursed */,
-               TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
+        healup(duration, otmp->blessed ? extra_data1 : 0,
+            cures_sick, cures_blind, cures_hallucination, cures_stun, cures_confusion);
         exercise(A_CON, TRUE);
         exercise(A_STR, TRUE);
         special_effect_wait_until_end(0);
@@ -1685,9 +1707,8 @@ struct obj *otmp;
         play_sfx_sound(SFX_HEALING);
         special_effect_wait_until_action(0);
         You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much, much better.");
-        healup(duration,
-            otmp->blessed ? extra_data1 : 0, !otmp->cursed,
-            TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
+        healup(duration, otmp->blessed ? extra_data1 : 0,
+            cures_sick, cures_blind, cures_hallucination, cures_stun, cures_confusion);
         exercise(A_CON, TRUE);
         exercise(A_STR, TRUE);
         special_effect_wait_until_end(0);
@@ -1697,7 +1718,8 @@ struct obj *otmp;
         play_sfx_sound(SFX_FULL_HEALING);
         special_effect_wait_until_action(0);
         You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "completely healed.");
-        healup(duration, otmp->blessed ? extra_data1 : 0, !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
+        healup(duration, otmp->blessed ? extra_data1 : 0,
+            cures_sick, cures_blind, cures_hallucination, cures_stun, cures_confusion);
         /* Restore one lost level if blessed */
         if (otmp->blessed && u.ulevel < u.ulevelmax) {
             /* when multiple levels have been lost, drinking

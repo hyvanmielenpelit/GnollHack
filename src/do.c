@@ -1957,6 +1957,99 @@ register struct obj* obj;
 
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
+
+            if (objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
+            {
+                int extra_data1 = (int)objects[obj->otyp].oc_potion_extra_data1;
+                if (extra_data1 > 0)
+                {
+                    Sprintf(buf, "Maximum HP gained:      +%d (if%s at max HP)", extra_data1, obj->bknown && obj->blessed ? "" : " blessed" );
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                }
+            }
+
+            if (objects[otyp].oc_flags5 & O5_EFFECT_FLAGS_ARE_HEALING)
+            {
+                if (obj->bknown)
+                {
+                    boolean cures_sick = FALSE;
+                    boolean cures_blind = FALSE;
+                    boolean cures_hallucination = FALSE;
+                    boolean cures_stun = FALSE;
+                    boolean cures_confusion = FALSE;
+                    cures_sick = obj->blessed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS) :
+                        obj->cursed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_SICKNESS) :
+                        !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_SICKNESS);
+                    cures_blind = obj->blessed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_BLINDNESS) :
+                        obj->cursed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_BLINDNESS) :
+                        !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_BLINDNESS);
+                    cures_hallucination = obj->blessed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_HALLUCINATION) :
+                        obj->cursed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_HALLUCINATION) :
+                        !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_HALLUCINATION);
+                    cures_stun = obj->blessed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_STUN) :
+                        obj->cursed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_STUN) :
+                        !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_STUN);
+                    cures_confusion = obj->blessed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_CONFUSION) :
+                        obj->cursed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_CONFUSION) :
+                        !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_CONFUSION);
+
+                    Sprintf(buf, "Cures sickness:         %s", cures_sick ? "Yes" : "No");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    Sprintf(buf, "Cures blindness:        %s", cures_blind ? "Yes" : "No");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    Sprintf(buf, "Cures hallucination:    %s", cures_hallucination ? "Yes" : "No");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    Sprintf(buf, "Cures stun:             %s", cures_stun ? "Yes" : "No");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    Sprintf(buf, "Cures confusion:        %s", cures_confusion ? "Yes" : "No");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                }
+                else
+                {
+                    boolean cures_sick_blessed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS);
+                    boolean cures_sick_uncursed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_SICKNESS);
+                    boolean cures_sick_cursed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_SICKNESS);
+                    boolean cures_sick_noncursed = (objects[otyp].oc_potion_effect_flags & POTFLAGS_NONCURSED_CURE_SICKNESS) == POTFLAGS_NONCURSED_CURE_SICKNESS;
+                    boolean cures_sick_all = (objects[otyp].oc_potion_effect_flags & POTFLAGS_ALL_CURE_SICKNESS) == POTFLAGS_ALL_CURE_SICKNESS;
+
+                    boolean cures_blindness_blessed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_BLINDNESS);
+                    boolean cures_blindness_uncursed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_BLINDNESS);
+                    boolean cures_blindness_cursed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_BLINDNESS);
+                    boolean cures_blindness_noncursed = (objects[otyp].oc_potion_effect_flags & POTFLAGS_NONCURSED_CURE_BLINDNESS) == POTFLAGS_NONCURSED_CURE_BLINDNESS;
+                    boolean cures_blindness_all = (objects[otyp].oc_potion_effect_flags & POTFLAGS_ALL_CURE_BLINDNESS) == POTFLAGS_ALL_CURE_BLINDNESS;
+
+                    boolean cures_hallucination_blessed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_HALLUCINATION);
+                    boolean cures_hallucination_uncursed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_HALLUCINATION);
+                    boolean cures_hallucination_cursed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_HALLUCINATION);
+                    boolean cures_hallucination_noncursed = (objects[otyp].oc_potion_effect_flags & POTFLAGS_NONCURSED_CURE_HALLUCINATION) == POTFLAGS_NONCURSED_CURE_HALLUCINATION;
+                    boolean cures_hallucination_all = (objects[otyp].oc_potion_effect_flags & POTFLAGS_ALL_CURE_HALLUCINATION) == POTFLAGS_ALL_CURE_HALLUCINATION;
+
+                    boolean cures_stun_blessed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_STUN);
+                    boolean cures_stun_uncursed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_STUN);
+                    boolean cures_stun_cursed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_STUN);
+                    boolean cures_stun_noncursed = (objects[otyp].oc_potion_effect_flags & POTFLAGS_NONCURSED_CURE_STUN) == POTFLAGS_NONCURSED_CURE_STUN;
+                    boolean cures_stun_all = (objects[otyp].oc_potion_effect_flags & POTFLAGS_ALL_CURE_STUN) == POTFLAGS_ALL_CURE_STUN;
+
+                    boolean cures_confusion_blessed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_CONFUSION);
+                    boolean cures_confusion_uncursed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_CONFUSION);
+                    boolean cures_confusion_cursed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_CONFUSION);
+                    boolean cures_confusion_noncursed = (objects[otyp].oc_potion_effect_flags & POTFLAGS_NONCURSED_CURE_CONFUSION) == POTFLAGS_NONCURSED_CURE_CONFUSION;
+                    boolean cures_confusion_all = (objects[otyp].oc_potion_effect_flags & POTFLAGS_ALL_CURE_CONFUSION) == POTFLAGS_ALL_CURE_CONFUSION;
+
+                    Sprintf(buf, "Cures sickness:         %s", cures_sick_all ? "Yes" : cures_sick_noncursed ? "If not cursed" : cures_sick_blessed ? "If blessed" : cures_sick_uncursed ? "If uncursed" : cures_sick_cursed ? "If cursed" : "No");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    Sprintf(buf, "Cures blindness:        %s", cures_blindness_all ? "Yes" : cures_blindness_noncursed ? "If not cursed" : cures_blindness_blessed ? "If blessed" : cures_blindness_uncursed ? "If uncursed" : cures_blindness_cursed ? "If cursed" : "No");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    Sprintf(buf, "Cures hallucination:    %s", cures_hallucination_all ? "Yes" : cures_hallucination_noncursed ? "If not cursed" : cures_hallucination_blessed ? "If blessed" : cures_hallucination_uncursed ? "If uncursed" : cures_hallucination_cursed ? "If cursed" : "No");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    Sprintf(buf, "Cures stun:             %s", cures_stun_all ? "Yes" : cures_stun_noncursed ? "If not cursed" : cures_stun_blessed ? "If blessed" : cures_stun_uncursed ? "If uncursed" : cures_stun_cursed ? "If cursed" : "No");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    Sprintf(buf, "Cures confusion:        %s", cures_confusion_all ? "Yes" : cures_confusion_noncursed ? "If not cursed" : cures_confusion_blessed ? "If blessed" : cures_confusion_uncursed ? "If uncursed" : cures_confusion_cursed ? "If cursed" : "No");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                }
+            }
+
+
             if (objects[otyp].oc_potion_nutrition_dice > 0 || objects[otyp].oc_potion_nutrition_diesize > 0 || objects[otyp].oc_potion_nutrition_plus != 0)
             {
                 boolean maindiceprinted = FALSE;

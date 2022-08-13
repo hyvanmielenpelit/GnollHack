@@ -1305,25 +1305,10 @@ cure_petrification_here:
         {
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             wake = FALSE; /* wakeup() makes the target angry */
-            if (otyp == SPE_FULL_HEALING)
-            {
-                play_sfx_sound_at_location(SFX_FULL_HEALING, mtmp->mx, mtmp->my);
-                special_effect_wait_until_action(0);
-                deduct_monster_hp(mtmp, -1000);  //mtmp->mhp = mtmp->mhpmax;
-            }
-            else
-            {
-                play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
-                special_effect_wait_until_action(0);
-                deduct_monster_hp(mtmp, -(d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus));
-            }
 
-            /* plain healing must be blessed to cure blindness; extra
-               healing only needs to not be cursed, so spell always cures
-               [potions quaffed by monsters behave slightly differently;
-               we use the rules for the hero here...] */
-            if (skilled_spell || (otyp != SPE_MINOR_HEALING && otyp != SPE_HEALING))
-                mcureblindness(mtmp, canseemon(mtmp));
+            play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
+            special_effect_wait_until_action(0);
+            deduct_monster_hp(mtmp, -(d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus));
 
             if (canseemon(mtmp)) {
                 if (disguised_mimic) {

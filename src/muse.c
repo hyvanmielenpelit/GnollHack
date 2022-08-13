@@ -343,6 +343,41 @@ struct obj *otmp;
  * that if you polymorph into one you teleport at will.
  */
 
+boolean
+set_defensive_potion(mtmp, obj)
+struct monst* mtmp;
+struct obj* obj;
+{
+    m.defensive = (struct obj*)0;
+    m.has_defense = 0;
+    if (!mtmp || !obj)
+        return FALSE;
+
+    int otyp = obj->otyp;
+    switch (otyp)
+    {
+    case POT_FULL_HEALING:
+        m.has_defense = MUSE_POT_FULL_HEALING;
+        break;
+    case POT_GREATER_HEALING:
+        m.has_defense = MUSE_POT_GREATER_HEALING;
+        break;
+    case POT_EXTRA_HEALING:
+        m.has_defense = MUSE_POT_EXTRA_HEALING;
+        break;
+    case POT_HEALING:
+        m.has_defense = MUSE_POT_HEALING;
+        break;
+    default:
+        break;
+    }
+    if (m.has_defense != 0)
+        m.defensive = obj;
+    return (m.has_defense != 0);
+}
+
+
+
 STATIC_OVL boolean
 m_use_healing(mtmp)
 struct monst *mtmp;
@@ -758,6 +793,11 @@ struct monst *mtmp;
         return i;
 
     int duration = 0, dicebuc = 0, extra_data1 = 0;
+    boolean cures_sick = FALSE;
+    boolean cures_blind = FALSE;
+    boolean cures_hallucination = FALSE;
+    boolean cures_stun = FALSE;
+    boolean cures_confusion = FALSE;
     if (otmp)
     {
         int otyp = otmp->otyp;
@@ -770,6 +810,24 @@ struct monst *mtmp;
                 d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus
             );
         extra_data1 = otmp->oclass == POTION_CLASS ? (int)objects[otyp].oc_potion_extra_data1 : 0;
+        if (objects[otmp->otyp].oc_flags5 & O5_EFFECT_FLAGS_ARE_HEALING)
+        {
+            cures_sick = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS) :
+                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_SICKNESS) :
+                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_SICKNESS);
+            cures_blind = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_BLINDNESS) :
+                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_BLINDNESS) :
+                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_BLINDNESS);
+            cures_hallucination = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_HALLUCINATION) :
+                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_HALLUCINATION) :
+                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_HALLUCINATION);
+            cures_stun = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_STUN) :
+                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_STUN) :
+                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_STUN);
+            cures_confusion = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_CONFUSION) :
+                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_CONFUSION) :
+                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_CONFUSION);
+        }
     }
     vis = cansee(mtmp->mx, mtmp->my);
     vismon = canseemon(mtmp);
@@ -1143,55 +1201,6 @@ struct monst *mtmp;
         newsym(trapx, trapy);
 
         goto mon_tele;
-    case MUSE_POT_HEALING:
-        if (!otmp)
-            return 2;
-        mquaffmsg(mtmp, otmp);
-        deduct_monster_hp(mtmp, (double)(-duration));
-        if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? extra_data1 : 0));
-        if (!otmp->cursed && is_blinded(mtmp))
-            mcureblindness(mtmp, vismon);
-        if (vismon)
-            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : NO_COLOR, "%s looks better.", Monnam(mtmp));
-        if (oseen)
-            makeknown(POT_HEALING);
-        m_useup(mtmp, otmp);
-        return 2;
-    case MUSE_POT_EXTRA_HEALING:
-        if (!otmp)
-            return 2;
-        mquaffmsg(mtmp, otmp);
-        deduct_monster_hp(mtmp, (double)(-duration));
-        if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? extra_data1 : 0));
-        if (is_blinded(mtmp))
-            mcureblindness(mtmp, vismon);
-        if (is_mummy_rotted(mtmp))
-            mtmp->mprops[MUMMY_ROT] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
-        if (vismon)
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks much better.", Monnam(mtmp));
-        if (oseen)
-            makeknown(POT_EXTRA_HEALING);
-        m_useup(mtmp, otmp);
-        return 2;
-    case MUSE_POT_GREATER_HEALING:
-        if (!otmp)
-            return 2;
-        mquaffmsg(mtmp, otmp);
-        deduct_monster_hp(mtmp, (double)(-duration));
-        if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? extra_data1 : 0));
-        if (is_blinded(mtmp))
-            mcureblindness(mtmp, vismon);
-        if (is_mummy_rotted(mtmp))
-            mtmp->mprops[MUMMY_ROT] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
-        if (vismon)
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks much, much better.", Monnam(mtmp));
-        if (oseen)
-            makeknown(POT_GREATER_HEALING);
-        m_useup(mtmp, otmp);
-        return 2;
     case MUSE_POT_SICKNESS: /* Pestilence */
         if (!otmp)
             return 2;
@@ -1203,22 +1212,54 @@ struct monst *mtmp;
             break;
         }
         /* FALLTHRU */
+    case MUSE_POT_HEALING:
+    case MUSE_POT_EXTRA_HEALING:
+    case MUSE_POT_GREATER_HEALING:
     case MUSE_POT_FULL_HEALING:
         if (!otmp)
             return 2;
         mquaffmsg(mtmp, otmp);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
+        play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
+        special_effect_wait_until_action(0);
         deduct_monster_hp(mtmp, (double)(-duration));
         if (mtmp->mhp > mtmp->mhpmax)
             mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? extra_data1 : 0));
-        if (is_blinded(mtmp) && otmp->otyp != POT_SICKNESS)
+        if (cures_blind && is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
-        if (is_mummy_rotted(mtmp) && otmp->otyp != POT_SICKNESS)
-            mtmp->mprops[MUMMY_ROT] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
+        if (cures_sick)
+            mcuresickness(mtmp, vismon);
+        if (cures_stun)
+            mcurestun(mtmp, vismon);
+        if (cures_hallucination)
+            mcurehallucination(mtmp, vismon);
+        if (cures_confusion)
+            mcureconfusion(mtmp, vismon);
         if (vismon)
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks completely healed.", Monnam(mtmp));
+        {
+            const char* fmt = "%s looks better.";
+            switch(otmp->otyp)
+            {
+            case POT_HEALING:
+                fmt = "%s looks better.";
+                break;
+            case POT_EXTRA_HEALING:
+                fmt = "%s looks much better.";
+                break;
+            case POT_GREATER_HEALING:
+                fmt = "%s looks much, much better.";
+                break;
+            case POT_SICKNESS: /* Pestilence */
+            case POT_FULL_HEALING:
+                fmt = "%s looks completely healed.";
+                break;
+            }
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : NO_COLOR, "%s looks better.", Monnam(mtmp));
+        }
         if (oseen)
             makeknown(otmp->otyp);
         m_useup(mtmp, otmp);
+        special_effect_wait_until_end(0);
         return 2;
     case MUSE_DRAGON_FRUIT:
     case MUSE_LIZARD_CORPSE:
@@ -2020,6 +2061,109 @@ struct monst *mtmp;
 #define MUSE_POT_LESSER_REGENERATION 22
 #define MUSE_POT_REGENERATION 23
 #define MUSE_POT_GREATER_REGENERATION 24
+#define MUSE_POT_WATER 25
+#define MUSE_POT_SEE_INVISIBLE 26
+#define MUSE_POT_FRUIT_JUICE 27
+#define MUSE_POT_LEVITATION 28
+
+boolean
+set_misc_potion(mtmp, obj)
+struct monst* mtmp;
+struct obj* obj;
+{
+    m.misc = (struct obj*)0;
+    m.has_misc = 0;
+    if (!mtmp || !obj)
+        return FALSE;
+
+    int otyp = obj->otyp;
+    switch (otyp)
+    {
+    case POT_GAIN_LEVEL:
+        m.has_misc = MUSE_POT_GAIN_LEVEL;
+        break;
+    case WAN_MAKE_INVISIBLE:
+        m.has_misc = MUSE_WAN_MAKE_INVISIBLE;
+        break;
+    case POT_INVISIBILITY:
+        m.has_misc = MUSE_POT_INVISIBILITY;
+        break;
+    case WAN_POLYMORPH:
+        m.has_misc = MUSE_WAN_POLYMORPH;
+        break;
+    case POT_SPEED:
+        m.has_misc = MUSE_POT_SPEED;
+        break;
+    case POT_GREATER_SPEED:
+        m.has_misc = MUSE_POT_GREATER_SPEED;
+        break;
+    case POT_LIGHTNING_SPEED:
+        m.has_misc = MUSE_POT_LIGHTNING_SPEED;
+        break;
+    case WAN_SPEED_MONSTER:
+        m.has_misc = MUSE_WAN_SPEED_MONSTER;
+        break;
+    case POT_POLYMORPH:
+        m.has_misc = MUSE_POT_POLYMORPH;
+        break;
+    case POT_GAIN_ENERGY:
+        m.has_misc = MUSE_POT_GAIN_ENERGY;
+        break;
+    case POT_EXTRA_ENERGY:
+        m.has_misc = MUSE_POT_EXTRA_ENERGY;
+        break;
+    case POT_GREATER_ENERGY:
+        m.has_misc = MUSE_POT_GREATER_ENERGY;
+        break;
+    case POT_FULL_ENERGY:
+        m.has_misc = MUSE_POT_FULL_ENERGY;
+        break;
+    case POT_HEROISM:
+        m.has_misc = MUSE_POT_HEROISM;
+        break;
+    case POT_SUPER_HEROISM:
+        m.has_misc = MUSE_POT_SUPER_HEROISM;
+        break;
+    case POT_TITAN_STRENGTH:
+        m.has_misc = MUSE_POT_TITAN_STRENGTH;
+        break;
+    case POT_LESSER_REJUVENATION:
+        m.has_misc = MUSE_POT_LESSER_REJUVENATION;
+        break;
+    case POT_REJUVENATION:
+        m.has_misc = MUSE_POT_REJUVENATION;
+        break;
+    case POT_GREATER_REJUVENATION:
+        m.has_misc = MUSE_POT_GREATER_REJUVENATION;
+        break;
+    case POT_LESSER_REGENERATION:
+        m.has_misc = MUSE_POT_LESSER_REGENERATION;
+        break;
+    case POT_REGENERATION:
+        m.has_misc = MUSE_POT_REGENERATION;
+        break;
+    case POT_GREATER_REGENERATION:
+        m.has_misc = MUSE_POT_GREATER_REGENERATION;
+        break;
+    case POT_WATER:
+        m.has_misc = MUSE_POT_WATER;
+        break;
+    case POT_SEE_INVISIBLE:
+        m.has_misc = MUSE_POT_SEE_INVISIBLE;
+        break;
+    case POT_FRUIT_JUICE:
+        m.has_misc = MUSE_POT_FRUIT_JUICE;
+        break;
+    case POT_LEVITATION:
+        m.has_misc = MUSE_POT_LEVITATION;
+        break;
+    default:
+        break;
+    }
+    if (m.has_misc != 0)
+        m.misc = obj;
+    return (m.has_misc != 0);
+}
 
 boolean
 find_misc(mtmp)
@@ -2270,6 +2414,31 @@ struct monst *mtmp;
             m.misc = obj;
             m.has_misc = MUSE_POT_POLYMORPH;
         }
+        nomore(MUSE_POT_WATER);
+        if (obj->otyp == POT_WATER)
+        {
+            //m.misc = obj;
+            //m.has_misc = MUSE_POT_WATER;
+        }
+        nomore(MUSE_POT_FRUIT_JUICE);
+        if (obj->otyp == POT_FRUIT_JUICE)
+        {
+            //m.misc = obj;
+            //m.has_misc = MUSE_POT_FRUIT_JUICE;
+        }
+        nomore(MUSE_POT_LEVITATION);
+        if (obj->otyp == POT_LEVITATION)
+        {
+            //m.misc = obj;
+            //m.has_misc = MUSE_POT_LEVITATION;
+        }
+        nomore(MUSE_POT_SEE_INVISIBLE);
+        if (obj->otyp == POT_SEE_INVISIBLE && !is_peaceful(mtmp) && Invis && !has_see_invisible(mtmp) 
+            && isok(mtmp->mux, mtmp->muy) && m_cansee(mtmp, mtmp->mux, mtmp->muy)) 
+        {
+            m.misc = obj;
+            m.has_misc = MUSE_POT_SEE_INVISIBLE;
+        }
     }
     return (boolean) !!m.has_misc;
 #undef nomore
@@ -2308,6 +2477,13 @@ struct monst *mtmp;
         return i;
 
     int duration = 0, dicebuc = 0, extra_data1 = 0;
+    boolean cures_sick = FALSE;
+    boolean cures_blind = FALSE;
+    boolean cures_hallucination = FALSE;
+    boolean cures_stun = FALSE;
+    boolean cures_confusion = FALSE;
+    int sfx = 0;
+
     if (otmp)
     {
         dicebuc = (int)(otmp->oclass == POTION_CLASS ? objects[otmp->otyp].oc_potion_normal_dice_buc_multiplier : 0);
@@ -2317,6 +2493,26 @@ struct monst *mtmp;
                 d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus
             );
         extra_data1 = otmp->oclass == POTION_CLASS ? (int)objects[otmp->otyp].oc_potion_extra_data1 : 0;
+
+        if (objects[otmp->otyp].oc_flags5 & O5_EFFECT_FLAGS_ARE_HEALING)
+        {
+            cures_sick = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS) :
+                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_SICKNESS) :
+                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_SICKNESS);
+            cures_blind = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_BLINDNESS) :
+                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_BLINDNESS) :
+                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_BLINDNESS);
+            cures_hallucination = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_HALLUCINATION) :
+                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_HALLUCINATION) :
+                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_HALLUCINATION);
+            cures_stun = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_STUN) :
+                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_STUN) :
+                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_STUN);
+            cures_confusion = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_CONFUSION) :
+                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_CONFUSION) :
+                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_CONFUSION);
+        }
+
     }
 
     vis = cansee(mtmp->mx, mtmp->my);
@@ -2426,6 +2622,8 @@ struct monst *mtmp;
     case MUSE_POT_GREATER_REJUVENATION:
     case MUSE_POT_REJUVENATION:
     case MUSE_POT_LESSER_REJUVENATION:
+    case MUSE_POT_SEE_INVISIBLE:
+    case MUSE_POT_LEVITATION:
         if (!otmp)
             return 2;
         mquaffmsg(mtmp, otmp);
@@ -2435,8 +2633,34 @@ struct monst *mtmp;
             (void)increase_mon_property_verbosely(mtmp, objects[otmp->otyp].oc_oprop2, duration);
         if (objects[otmp->otyp].oc_oprop3 > 0)
             (void)increase_mon_property_verbosely(mtmp, objects[otmp->otyp].oc_oprop3, duration);
+
+        switch (objects[otmp->otyp].oc_oprop)
+        {
+        case VERY_FAST:
+        case ULTRA_FAST:
+        case SUPER_FAST:
+        case LIGHTNING_FAST:
+            sfx = SFX_ACQUIRE_HASTE;
+            break;
+        }
+        if(sfx > 0)
+        play_sfx_sound_at_location(sfx, mtmp->mx, mtmp->my);
         m_useup(mtmp, otmp);
         return 2;
+    case MUSE_POT_WATER:
+    case MUSE_POT_FRUIT_JUICE:
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
+        if (has_edog(mtmp))
+        {
+            obj_extract_self(otmp);
+            place_object(otmp, mtmp->mx, mtmp->my);
+            dog_eat(mtmp, otmp, mtmp->mx, mtmp->my, FALSE);
+            /* It's gone now */
+            otmp = 0;
+        }
+        break;
     case MUSE_POT_GAIN_ENERGY:
         if (!otmp)
             return 2;
@@ -3065,6 +3289,74 @@ boolean verbos;
         mon->mprops[BLINDED] = 0;
         if (verbos && haseyes(mon->data))
             pline("%s can see again.", Monnam(mon));
+    }
+}
+
+void
+mcuresickness(mtmp, verbos)
+struct monst* mtmp;
+boolean verbos;
+{
+    if (!mtmp)
+        return;
+
+    if (has_sick(mtmp))
+    {
+        (void)set_mon_property_b(mtmp, SICK, 0, verbos && canseemon(mtmp));
+    }
+    if (has_food_poisoned(mtmp))
+    {
+        (void)set_mon_property_b(mtmp, FOOD_POISONED, 0, verbos && canseemon(mtmp));
+    }
+    if (has_mummy_rot(mtmp))
+    {
+        (void)set_mon_property_b(mtmp, MUMMY_ROT, -3, verbos && canseemon(mtmp));
+    }
+    if (has_vomiting(mtmp))
+    {
+        (void)set_mon_property_b(mtmp, VOMITING, 0, verbos && canseemon(mtmp));
+    }
+}
+
+void
+mcurehallucination(mtmp, verbos)
+struct monst* mtmp;
+boolean verbos;
+{
+    if (!mtmp)
+        return;
+
+    if (has_hallucination(mtmp))
+    {
+        (void)set_mon_property_b(mtmp, HALLUC, 0, verbos && canseemon(mtmp));
+    }
+}
+
+void
+mcureconfusion(mtmp, verbos)
+struct monst* mtmp;
+boolean verbos;
+{
+    if (!mtmp)
+        return;
+
+    if (has_confused(mtmp))
+    {
+        (void)set_mon_property_b(mtmp, CONFUSION, 0, verbos && canseemon(mtmp));
+    }
+}
+
+void
+mcurestun(mtmp, verbos)
+struct monst* mtmp;
+boolean verbos;
+{
+    if (!mtmp)
+        return;
+
+    if (has_stunned(mtmp))
+    {
+        (void)set_mon_property_b(mtmp, STUNNED, 0, verbos && canseemon(mtmp));
     }
 }
 

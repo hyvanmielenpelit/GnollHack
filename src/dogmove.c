@@ -194,7 +194,30 @@ dog_nutrition(mtmp, obj)
 struct monst *mtmp;
 struct obj *obj;
 {
-    int nutrit;
+    int nutrit, nutr_size_mult = 1;
+
+    switch (mtmp->data->msize)
+    {
+    case MZ_TINY:
+        nutr_size_mult = 4;
+        break;
+    case MZ_SMALL:
+        nutr_size_mult = 2;
+        break;
+    default:
+    case MZ_MEDIUM:
+        nutr_size_mult = 1;
+        break;
+    case MZ_LARGE:
+        nutr_size_mult = 1;
+        break;
+    case MZ_HUGE:
+        nutr_size_mult = 1;
+        break;
+    case MZ_GIGANTIC:
+        nutr_size_mult = 1;
+        break;
+    }
 
     /*
      * It is arbitrary that the pet takes the same length of time to eat
@@ -217,28 +240,8 @@ struct obj *obj;
             else if(objects[obj->otyp].oc_material == MAT_VEGGY)
                 is_veg = TRUE;
         }
-        switch (mtmp->data->msize)
-        {
-        case MZ_TINY:
-            nutrit *= 4;
-            break;
-        case MZ_SMALL:
-            nutrit *= 2;
-            break;
-        default:
-        case MZ_MEDIUM:
-            nutrit *= 1;
-            break;
-        case MZ_LARGE:
-            nutrit *= 1;
-            break;
-        case MZ_HUGE:
-            nutrit *= 1;
-            break;
-        case MZ_GIGANTIC:
-            nutrit *= 1;
-            break;
-        }
+
+        nutrit *= nutr_size_mult;
 
         if(herbivorous(mtmp->data) && is_veg)
             nutrit *= 4;
@@ -248,7 +251,8 @@ struct obj *obj;
             mtmp->meating = eaten_stat(mtmp->meating, obj);
             nutrit = eaten_stat(nutrit, obj);
         }
-    } else if (obj->oclass == COIN_CLASS) 
+    } 
+    else if (obj->oclass == COIN_CLASS) 
     {
         mtmp->meating = (int) (obj->quan / 2000) + 1;
         if (mtmp->meating < 0)
@@ -257,7 +261,18 @@ struct obj *obj;
         if (nutrit < 0)
             nutrit = 0;
     }
-    else 
+    else if (obj->oclass == POTION_CLASS)
+    {
+        mtmp->meating = 1;
+        int nutrdicebuc = (int)objects[obj->otyp].oc_potion_nutrition_dice_buc_multiplier;
+        int nutrition = (int)d(max(0, objects[obj->otyp].oc_potion_nutrition_dice + nutrdicebuc * bcsign(obj)), 
+            max(1, objects[obj->otyp].oc_potion_nutrition_diesize)) 
+            + objects[obj->otyp].oc_potion_nutrition_plus + bcsign(obj) * objects[obj->otyp].oc_potion_nutrition_buc_multiplier;
+        nutrit = nutrition * nutr_size_mult;
+        if (nutrit < 0)
+            nutrit = 0;
+    }
+    else
     {
         /* Unusual pet such as gelatinous cube eating odd stuff.
          * meating made consistent with wild monsters in mon.c.
@@ -621,22 +636,8 @@ boolean verbose;
         }
         break;
     case EDIBLEFX_CURE_SICKNESS:
-        if (has_sick(mtmp) && !otmp->cursed)
-        {
-            (void)set_mon_property_b(mtmp, SICK, 0, canseemon(mtmp));
-        }
-        if (has_food_poisoned(mtmp) && !otmp->cursed)
-        {
-            (void)set_mon_property_b(mtmp, FOOD_POISONED, 0, canseemon(mtmp));
-        }
-        if (has_mummy_rot(mtmp) && !otmp->cursed)
-        {
-            (void)set_mon_property_b(mtmp, MUMMY_ROT, -3, canseemon(mtmp));
-        }
-        if (has_vomiting(mtmp) && !otmp->cursed)
-        {
-            (void)set_mon_property_b(mtmp, VOMITING, 0, canseemon(mtmp));
-        }
+        if(!otmp->cursed)
+            mcuresickness(mtmp, TRUE);
         break;
     case EDIBLEFX_APPLE:
         /* Nothing */

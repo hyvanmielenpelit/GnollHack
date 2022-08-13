@@ -98,6 +98,7 @@ STATIC_DCL int FDECL(do_chat_pet_dowield_pickaxe, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dowield_axe, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dounwield, (struct monst*));
 STATIC_DCL int FDECL(do_chat_feed, (struct monst*));
+STATIC_DCL int FDECL(do_chat_quaff, (struct monst*));
 STATIC_DCL int FDECL(do_chat_buy_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_join_party, (struct monst*));
 STATIC_DCL int FDECL(do_chat_explain_statistics, (struct monst*));
@@ -3051,6 +3052,20 @@ dochat()
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
+
+            Sprintf(available_chat_list[chatnum].name, "Open a potion for %s", noittame_mon_nam(mtmp));
+            available_chat_list[chatnum].function_ptr = &do_chat_quaff;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+            available_chat_list[chatnum].stops_dialogue = TRUE;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
         }
 
         if (is_tame(mtmp) && invent && is_peaceful(mtmp)) /*  && !mtmp->issummoned */
@@ -5274,7 +5289,142 @@ struct monst* mtmp;
     return (n_given > 0);
 }
 
+STATIC_OVL int
+do_chat_quaff(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return 0;
 
+    int n, i, n_given = 0;
+    long cnt;
+    struct obj* otmp, * otmp2;
+    menu_item* pick_list;
+    char qbuf[BUFSIZ] = "";
+    Sprintf(qbuf, "What would you like to open for %s to drink?", noittame_mon_nam(mtmp));
+
+    add_valid_menu_class(0); /* clear any classes already there */
+    add_valid_menu_class(POTION_CLASS);
+
+    n = query_objlist(qbuf, &invent,
+        (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ONE,
+        allow_category, 3);
+
+    boolean res = 0;
+    if (n > 0)
+    {
+        bypass_objlist(invent, TRUE);
+        for (i = 0; i < n; i++)
+        {
+            otmp = pick_list[i].item.a_obj;
+
+            for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
+                if (otmp2 == otmp)
+                    break;
+            if (!otmp2 || !otmp2->bypass)
+                continue;
+
+            /* found next selected invent item */
+            cnt = pick_list[i].count;
+            /* only one food item or potion can be fed at a time*/
+            if (cnt > 1)
+                cnt = 1;
+
+            int tasty = 0;
+            if (set_defensive_potion(mtmp, otmp))
+            {
+                tasty = 1;
+            }
+            else if (set_misc_potion(mtmp, otmp))
+            {
+                tasty = 2;
+            }
+            boolean willquaff = tasty > 0;
+            if (cnt < otmp->quan)
+            {
+                if (welded(otmp, &youmonst)
+                    || !willquaff
+                    || !mon_can_move(mtmp)
+                    || mtmp->meating
+                    || (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
+                    )
+                {
+                    ; /* don't split */
+                }
+                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed)
+                {
+                    /* same kludge as getobj(), for canletgo()'s use */
+                    otmp->corpsenm = (int)cnt; /* don't split */
+                }
+                else
+                {
+                    otmp = splitobj(otmp, cnt);
+
+                    //Need to reset set_defensive/misc
+                    if (tasty == 1)
+                    {
+                        (void)set_defensive_potion(mtmp, otmp);
+                    }
+                    else if (tasty == 2)
+                    {
+                        (void)set_misc_potion(mtmp, otmp);
+                    }
+                }
+            }
+
+            /* Drink here */
+            if (otmp)
+            {
+                if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    You("cannot pass %s over to %s. You are wearing it.", an(singular(otmp, cxname)), noittame_mon_nam(mtmp));
+                }
+                else
+                {
+                    You("offer %s to %s.", an(singular(otmp, cxname)), noittame_mon_nam(mtmp));
+                    n_given++;
+                    int releasesuccess = TRUE;
+                    if (mon_can_move(mtmp) && !mtmp->meating
+                        && willquaff
+                        && (releasesuccess = release_item_from_hero_inventory(otmp)))
+                    {
+                        if (*u.ushops || otmp->unpaid)
+                            check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE);
+                        (void)mpickobj(mtmp, otmp);
+                        if (tasty == 1)
+                            res |= use_defensive(mtmp);
+                        else if (tasty == 2)
+                            res |= use_misc(mtmp);
+
+                        /* otmp is now gone! */
+                        otmp = 0;
+                    }
+                    else
+                    {
+                        if (!mon_can_move(mtmp))
+                            pline("%s does not seem to be able to move in order to drink %s.", noittame_Monnam(mtmp), the(singular(otmp, cxname)));
+                        else if (mtmp->meating)
+                            pline("%s is eating something and cannot drink at the same time.", noittame_Monnam(mtmp));
+                        else if (!releasesuccess)
+                            ; /* Nothing here */
+                        else
+                            pline("%s refuses to drink %s.", noittame_Monnam(mtmp), the(singular(otmp, cxname)));
+
+                    }
+                }
+            }
+        }
+        bypass_objlist(invent, FALSE); /* reset invent to normal */
+        free((genericptr_t)pick_list);
+    }
+    else
+    {
+        pline1(Never_mind);
+    }
+
+    return (n_given > 0) && res;
+}
 
 int
 release_item_from_hero_inventory(obj)

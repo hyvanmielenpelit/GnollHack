@@ -2194,6 +2194,7 @@ E void NDECL(reset_mthrowu);
 
 /* ### muse.c ### */
 
+E boolean FDECL(set_defensive_potion, (struct monst*, struct obj*));
 E boolean FDECL(find_defensive, (struct monst *));
 E int FDECL(use_defensive, (struct monst *));
 E int FDECL(rnd_defensive_item, (struct monst *));
@@ -2203,13 +2204,18 @@ E int FDECL(mbhitm, (struct monst *, struct obj *, struct monst*));
 #endif
 E int FDECL(use_offensive, (struct monst *));
 E int FDECL(rnd_offensive_item, (struct monst *));
-E boolean FDECL(find_misc, (struct monst *));
+E boolean FDECL(set_misc_potion, (struct monst *, struct obj *));
+E boolean FDECL(find_misc, (struct monst*));
 E int FDECL(use_misc, (struct monst *));
 E int FDECL(rnd_misc_item, (struct monst *));
 E boolean FDECL(searches_for_item, (struct monst *, struct obj *));
 E boolean FDECL(mon_reflects, (struct monst *, const char *));
 E boolean FDECL(ureflects, (const char *, const char *));
 E void FDECL(mcureblindness, (struct monst *, BOOLEAN_P));
+E void FDECL(mcuresickness, (struct monst*, BOOLEAN_P));
+E void FDECL(mcurehallucination, (struct monst*, BOOLEAN_P));
+E void FDECL(mcurestun, (struct monst*, BOOLEAN_P));
+E void FDECL(mcureconfusion, (struct monst*, BOOLEAN_P));
 E boolean FDECL(munstone, (struct monst *, BOOLEAN_P));
 E boolean FDECL(munslime, (struct monst *, BOOLEAN_P));
 
