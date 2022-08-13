@@ -583,6 +583,7 @@ attrcurse(VOID_ARGS)
         if (HInvis & INTRINSIC) {
             HInvis &= ~INTRINSIC;
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "paranoid.");
+            newsym(u.ux, u.uy);
             break;
         }
         /*FALLTHRU*/
@@ -627,6 +628,7 @@ attrcurse(VOID_ARGS)
     default:
         break;
     }
+    refresh_u_tile_gui_info(TRUE);
 }
 
 /* remove a random INTRINSIC ability */
@@ -636,6 +638,12 @@ struct monst* mon;
 {
     if (!mon)
         return;
+
+    if (mon == &youmonst)
+    {
+        attrcurse();
+        return;
+    }
 
     switch (rnd(12)) {
     case 1:
