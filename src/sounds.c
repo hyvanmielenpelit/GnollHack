@@ -3053,7 +3053,7 @@ dochat()
 
             chatnum++;
 
-            Sprintf(available_chat_list[chatnum].name, "Open a potion for %s", noittame_mon_nam(mtmp));
+            Sprintf(available_chat_list[chatnum].name, "Give a potion to %s to drink", noittame_mon_nam(mtmp));
             available_chat_list[chatnum].function_ptr = &do_chat_quaff;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -5160,6 +5160,25 @@ struct monst* mtmp;
     long cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list;
+
+    boolean appritemfound = FALSE;
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+    {
+        if (is_obj_normally_edible(otmp))
+        {
+            appritemfound = TRUE;
+            break;
+        }
+    }
+    if (!appritemfound)
+    {
+        char fbuf[BUFSZ];
+        Sprintf(fbuf, "don't have anything suitable to feed to %s.", mon_nam(mtmp));
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex1_popup(fbuf, "Nothing to Feed", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+        return 0;
+    }
+
     char qbuf[BUFSIZ] = "";
     Sprintf(qbuf, "What would you like to feed to %s?", noittame_mon_nam(mtmp));
 
@@ -5300,8 +5319,27 @@ struct monst* mtmp;
     long cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list;
+
+    boolean appritemfound = FALSE;
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->oclass == POTION_CLASS)
+        {
+            appritemfound = TRUE;
+            break;
+        }
+    }
+    if (!appritemfound)
+    {
+        char fbuf[BUFSZ];
+        Sprintf(fbuf, "don't have anything suitable to give to %s to drink.", mon_nam(mtmp));
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex1_popup(fbuf, "Nothing to Give to Drink", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+        return 0;
+    }
+
     char qbuf[BUFSIZ] = "";
-    Sprintf(qbuf, "What would you like to open for %s to drink?", noittame_mon_nam(mtmp));
+    Sprintf(qbuf, "What would you like to give to %s to drink?", noittame_mon_nam(mtmp));
 
     add_valid_menu_class(0); /* clear any classes already there */
     add_valid_menu_class(POTION_CLASS);
