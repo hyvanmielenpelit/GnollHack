@@ -269,6 +269,8 @@
 #define has_brain_protection(mon) \
     has_property(mon, BRAIN_PROTECTION)
 
+#define has_unchanging(mon) \
+    has_property(mon, UNCHANGING)
 
 /* slow, stoning, and sliming */
 #define has_slowed(mon) \
@@ -381,6 +383,9 @@
 
 #define is_stunned(mon) \
     (has_stunned(mon))
+
+#define has_stun_resistance(mon) \
+    has_property(mon, STUN_RESISTANCE)
 
 #define has_confused(mon) \
     has_property(mon, CONFUSION)
@@ -792,6 +797,10 @@
     (((ptr)->mconveys & MC_CHARISMA) != 0)
 #define conveys_level(ptr) \
     (((ptr)->mconveys & MC_LEVEL_GAIN) != 0)
+#define conveys_invisibility(ptr) \
+    (((ptr)->mconveys & MC_INVISIBILITY) != 0)
+#define conveys_see_invisible(ptr) \
+    (((ptr)->mconveys & MC_SEE_INVISIBLE) != 0)
 
 
 #define has_see_invisible(mon) \
@@ -811,6 +820,7 @@
 #define has_telepathy(mon) \
     (has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
 
+#define has_stunning_corpse(ptr) (((ptr)->mconveys & MC_STUNNING_CORPSE) != 0L)
 #define has_acidic_corpse(ptr) (((ptr)->mconveys & MC_ACIDIC_CORPSE) != 0L)
 #define has_poisonous_corpse(ptr) (((ptr)->mconveys & MC_POISONOUS_CORPSE) != 0L)
 #define has_hallucinating_corpse(ptr) (((ptr)->mconveys & MC_HALLUCINATING_CORPSE) != 0L)
@@ -857,8 +867,10 @@
 /* Used for conduct with corpses, tins, and digestion attacks */
 /* G_NOCORPSE monsters might still be swallowed as a purple worm */
 /* Maybe someday this could be in mflags... */
+#define incorporeal_food(ptr) is_incorporeal(ptr)
+
 #define vegan(ptr)                                                 \
-    (is_vegan_food(ptr) || is_incorporeal(ptr))
+    (is_vegan_food(ptr) || incorporeal_food(ptr))
 
 #define vegetarian(ptr) \
     (vegan(ptr) || is_vegetarian_food(ptr))

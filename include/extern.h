@@ -1015,6 +1015,7 @@ E void FDECL(display_nutrition_floating_text, (int, int, int));
 E void FDECL(display_famine_floating_text, (int, int, int));
 E long FDECL(get_rotted_status, (struct obj*));
 E void NDECL(reset_hunger_status);
+E boolean FDECL(intrinsic_possible, (int, struct permonst*));
 
 /* ### encounter.c ### */
 
@@ -3115,6 +3116,7 @@ E void NDECL(take_gold);
 E int NDECL(dosit);
 E void NDECL(rndcurse);
 E void NDECL(attrcurse);
+E void FDECL(m_attrcurse, (struct monst*));
 
 /* ### sounds.c ### */
 

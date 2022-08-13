@@ -1108,6 +1108,7 @@ register struct obj *obj;
                  && mptr->mlet != S_FUNGUS)
                 || (has_acidic_corpse(fptr) && !(is_mon_immune_to_acid(mon) || mon_resists_acid_weakly(mon)))
                 || (has_poisonous_corpse(fptr) && !resists_poison(mon))
+                || (has_stunning_corpse(fptr) && !resists_stun(mon))
                 || (has_sickening_corpse(fptr) && !resists_sickness(mon))
                 || (has_mummy_rotted_corpse(fptr) && !resists_sickness(mon))
                 )
@@ -1115,6 +1116,8 @@ register struct obj *obj;
             /* turning into slime is preferable to starvation */
             else if (fptr == &mons[PM_GREEN_SLIME] && !slimeproof(mon->data))
                 return starving ? ACCFOOD : POISON;
+            else if (incorporeal_food(fptr))
+                return MANFOOD;
             else if (vegan(fptr))
                 return herbi ? CADAVER : MANFOOD;
             /* most humanoids will avoid cannibalism unless starving;

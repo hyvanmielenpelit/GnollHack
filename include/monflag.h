@@ -117,23 +117,23 @@
 #define MC_DEATH           0x00000100UL            /* confers death resistance */
 #define MC_DRAIN           0x00000200UL            /* confers life draining resistance */
 #define MC_CHARM           0x00000400UL            /* confers charm resistance */
-#define MC_FEAR            0x00000800UL            /* confers fear resistance */
-#define MC_SICK            0x00001000UL            /* confers sickness resistance */
-#define MC_FREE_ACTION     0x00002000UL            /* confers paralysis resistance */
-/* free bit */
-/* free bit */
-#define MC_STRENGTH        0x00010000UL            /* confers strength */
-#define MC_DEXTERITY       0x00020000UL            /* confers dexterity */
-#define MC_CONSTITUTION    0x00040000UL            /* confers constitution */
-#define MC_INTELLIGENCE    0x00080000UL            /* confers intelligence */
-#define MC_WISDOM          0x00100000UL            /* confers wisdom */
-#define MC_CHARISMA        0x00200000UL            /* confers charisma */
-#define MC_LEVEL_GAIN      0x00400000UL            /* confers experience levels */
-#define MC_TELEPORT            0x00800000UL        /* confers teleportiis */
-#define MC_TELEPORT_CONTROL    0x01000000UL        /* confers teleport control */
-#define MC_BLIND_TELEPATHY     0x02000000UL        /* confers blind telepathy */
-#define MC_TELEPATHY           0x04000000UL        /* confers telepathy */
+#define MC_SICK            0x00000800UL            /* confers sickness resistance */
+#define MC_FREE_ACTION     0x00001000UL            /* confers paralysis resistance */
+#define MC_INVISIBILITY    0x00002000UL            /* confers invisibility */
+#define MC_SEE_INVISIBLE   0x00004000UL            /* confers see invisible */
+#define MC_STRENGTH        0x00008000UL            /* confers strength */
+#define MC_DEXTERITY       0x00010000UL            /* confers dexterity */
+#define MC_CONSTITUTION    0x00020000UL            /* confers constitution */
+#define MC_INTELLIGENCE    0x00040000UL            /* confers intelligence */
+#define MC_WISDOM          0x00080000UL            /* confers wisdom */
+#define MC_CHARISMA        0x00100000UL            /* confers charisma */
+#define MC_LEVEL_GAIN      0x00200000UL            /* confers experience levels */
+#define MC_TELEPORT            0x00400000UL        /* confers teleportiis */
+#define MC_TELEPORT_CONTROL    0x00800000UL        /* confers teleport control */
+#define MC_BLIND_TELEPATHY     0x01000000UL        /* confers blind telepathy */
+#define MC_TELEPATHY           0x02000000UL        /* confers telepathy */
 /* edible effects */
+#define MC_STUNNING_CORPSE         0x04000000UL    /* the corpse is stunning to eat */
 #define MC_POISONOUS_CORPSE        0x08000000UL    /* the corpse is poisonous to eat */
 #define MC_ACIDIC_CORPSE           0x10000000UL    /* the corpse is acidic to eat */
 #define MC_HALLUCINATING_CORPSE    0x20000000UL    /* the corpse is hallucinating to eat */

@@ -20,7 +20,6 @@ STATIC_DCL struct obj *FDECL(touchfood, (struct obj *));
 STATIC_DCL void NDECL(do_reset_eat);
 STATIC_DCL void FDECL(done_eating, (BOOLEAN_P));
 STATIC_DCL void FDECL(corpse_pre_effect, (int, UCHAR_P));
-STATIC_DCL boolean FDECL(intrinsic_possible, (int, struct permonst *));
 STATIC_DCL void FDECL(givit, (int, struct permonst *));
 STATIC_DCL void FDECL(temporary_givit, (int, int));
 STATIC_DCL void FDECL(corpse_after_effect, (int, UCHAR_P));
@@ -944,7 +943,7 @@ fix_petrification()
  */
 
 /* intrinsic_possible() returns TRUE iff a monster can give an intrinsic. */
-STATIC_OVL boolean
+boolean
 intrinsic_possible(type, ptr)
 int type;
 register struct permonst *ptr;
@@ -1219,6 +1218,76 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
     if (eatmbuf)
         (void) eatmdone();
 
+    if (pm < LOW_PM || pm >= NUM_MONSTERS)
+        return;
+
+    struct permonst* ptr = &mons[pm];
+    boolean donotcheckfurther = FALSE;
+    if (has_hallucinating_corpse(ptr))
+    {
+        pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Oh wow!  Great stuff!");
+        play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
+        (void)make_hallucinated((HHallucination & TIMEOUT) + 200L, FALSE,
+            0L);
+        donotcheckfurther = TRUE;
+    }
+
+    if (has_stunning_corpse(ptr))
+    {
+        if (!Stunned)
+            play_sfx_sound(SFX_ACQUIRE_STUN);
+        make_stunned((HStun & TIMEOUT) + mons[pm].mlevel * 2 + 5 + rnd(20), FALSE);
+        standard_hint("Some corpses make you stunned. You can also check this out by using a wand of probing.", &u.uhint.ate_stunning_corpse);
+        donotcheckfurther = TRUE;
+    }
+
+    if (conveys_see_invisible(ptr))
+    {
+        if (!See_invisible)
+        {
+            //First temporary
+            set_itimeout(&HSee_invisible, (long)rn1(100, 50));
+        }
+        else
+        {
+            //Then permanent
+            HSee_invisible |= FROM_ACQUIRED;
+        }
+        refresh_u_tile_gui_info(FALSE);
+        set_mimic_blocking(); /* do special mimic handling */
+        see_monsters();       /* see invisible monsters */
+        newsym(u.ux, u.uy);   /* see yourself! */
+        donotcheckfurther = TRUE;
+    }
+
+    if (conveys_invisibility(ptr))
+    {
+        if (!Invis)
+        {
+            //First temporary
+            set_itimeout(&HInvis, (long)rn1(100, 50));
+            if (!Blind && !Blocks_Invisibility)
+                self_invis_message();
+        }
+        else
+        {
+            //Then permanent
+            if (!(HInvis & INTRINSIC))
+                You_feel("hidden!");
+            HInvis |= FROM_ACQUIRED;
+            HSee_invisible |= FROM_ACQUIRED;
+        }
+        refresh_u_tile_gui_info(FALSE);
+        newsym(u.ux, u.uy);
+        donotcheckfurther = TRUE;
+    }
+
+    if (donotcheckfurther)
+    {
+        flush_screen(1);
+        return;
+    }
+
     switch (pm) {
     case PM_NEWT:
         /* MRKR: "eye of newt" may give small magical energy boost */
@@ -1258,33 +1327,6 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         make_blinded(0L, !u.ucreamed);
         context.botl = 1;
         check_intrinsics = TRUE; /* might also convey poison resistance */
-        break;
-    case PM_STALKER:
-        if (!Invis) {
-            set_itimeout(&HInvis, (long) rn1(100, 50));
-            refresh_u_tile_gui_info(TRUE);
-            if (!Blind && !Blocks_Invisibility)
-                self_invis_message();
-        } else {
-            if (!(HInvis & INTRINSIC))
-                You_feel("hidden!");
-            HInvis |= FROM_ACQUIRED;
-            HSee_invisible |= FROM_ACQUIRED;
-        }
-        newsym(u.ux, u.uy);
-        /*FALLTHRU*/
-    case PM_YELLOW_LIGHT:
-    case PM_HELL_BAT:
-    case PM_GIANT_BAT:
-        if (!Stunned)
-            play_sfx_sound(SFX_ACQUIRE_STUN);
-        make_stunned((HStun & TIMEOUT) + 30L, FALSE);
-        /*FALLTHRU*/
-    case PM_BAT:
-        if (!Stunned)
-            play_sfx_sound(SFX_ACQUIRE_STUN);
-        make_stunned((HStun & TIMEOUT) + 30L, FALSE);
-        standard_hint("Some corpses make you stunned. You can also check this out by using a wand of probing.", &u.uhint.ate_stunning_corpse);
         break;
     case PM_CHAOS_MIMIC:
         tmp += 10;
@@ -1384,7 +1426,6 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         break;
     }
 
-    struct permonst* ptr = &mons[pm];
     /* Level gain has been moved here, 100% chance */
     if (conveys_level(ptr))
     {
@@ -1402,14 +1443,6 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         boolean conveys_WIS = conveys_wisdom(ptr);
         boolean conveys_CHA = conveys_charisma(ptr);
         int i, count;
-
-        if (has_hallucinating_corpse(ptr))
-        {
-            pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Oh wow!  Great stuff!");
-            play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
-            (void)make_hallucinated((HHallucination & TIMEOUT) + 200L, FALSE,
-                0L);
-        }
 
         /* Check the monster for all of the intrinsics.  If this
          * monster can give more than one, pick one to try to give
@@ -1561,6 +1594,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         set_ulycn(catch_lycanthropy);
         retouch_equipment(2);
     }
+    flush_screen(1);
     return;
 }
 
@@ -3176,7 +3210,18 @@ struct obj *otmp;
             return 2;
     }
 
-    if (otmp->otyp == APPLE && otmp->cursed && !Sleep_resistance) 
+    if ((cadaver && mnum >= LOW_PM && has_stunning_corpse(&mons[mnum]) && !Stun_resistance))
+    {
+        /* poisonous */
+        Sprintf(buf, "%s like %s might make you stunned!  %s", foodsmell,
+            it_or_they, eat_it_anyway);
+        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_NEGATIVE, (const char*)0, buf, ynchars, 'n', yndescs, (const char*)0) == 'n')
+            return 1;
+        else
+            return 2;
+    }
+
+    if (otmp->otyp == APPLE && otmp->cursed && !Sleep_resistance)
     {
         /* causes sleep, for long enough to be dangerous */
         Sprintf(buf, "%s like %s might have been poisoned.  %s", foodsmell,

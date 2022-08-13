@@ -629,4 +629,115 @@ attrcurse(VOID_ARGS)
     }
 }
 
+/* remove a random INTRINSIC ability */
+void
+m_attrcurse(mon)
+struct monst* mon;
+{
+    if (!mon)
+        return;
+
+    switch (rnd(12)) {
+    case 1:
+        if (mon->mprops[FIRE_IMMUNITY] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[FIRE_IMMUNITY] &= ~M_INTRINSIC_ACQUIRED;
+            if(canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems warmer.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    case 2:
+        if (mon->mprops[TELEPORT] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[TELEPORT] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s seems less jumpy.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    case 3:
+        if (mon->mprops[POISON_RESISTANCE] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[POISON_RESISTANCE] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems a little sick.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    case 4:
+        if (mon->mprops[BLIND_TELEPATHY] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[BLIND_TELEPATHY] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems senseless for a moment.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    case 5:
+        if (mon->mprops[TELEPAT] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[TELEPAT] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems senseless for a moment.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    case 6:
+        if (mon->mprops[COLD_IMMUNITY] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[COLD_IMMUNITY] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems cooler.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    case 7:
+        if (mon->mprops[INVISIBILITY] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[INVISIBILITY] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems paranoid.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    case 8:
+        if (mon->mprops[SEE_INVISIBLE] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[SEE_INVISIBLE] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems like having seen something.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    case 9:
+        if (mon->mprops[FAST] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[FAST] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems slower.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    case 10:
+        if (mon->mprops[STEALTH] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[STEALTH] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems clumsy.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    case 11:
+        /* intrinsic protection is just disabled, not set back to 0 */
+        if (mon->mprops[MAGICAL_PROTECTION] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[MAGICAL_PROTECTION] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems vulnerable.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    case 12:
+        if (mon->mprops[AGGRAVATE_MONSTER] & M_INTRINSIC_ACQUIRED) {
+            mon->mprops[AGGRAVATE_MONSTER] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems less attractive.", Monnam(mon));
+            break;
+        }
+        /*FALLTHRU*/
+    default:
+        break;
+    }
+}
+
 /*sit.c*/

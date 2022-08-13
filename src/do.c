@@ -581,20 +581,6 @@ boolean isprobing UNUSED;
             putstr(datawin, ATR_INDENT_AT_DASH, buf);
         }
 
-        if (is_bat(ptr) || mnum == PM_STALKER)
-        {
-            cnt++;
-            Sprintf(buf, "  %d - Causes stun", cnt);
-            putstr(datawin, ATR_INDENT_AT_DASH, buf);
-        }
-
-        if (mnum == PM_STALKER)
-        {
-            cnt++;
-            Sprintf(buf, "  %d - Confers invisibility", cnt);
-            putstr(datawin, ATR_INDENT_AT_DASH, buf);
-        }
-
         if (flesh_petrifies(ptr))
         {
             cnt++;
@@ -623,6 +609,12 @@ boolean isprobing UNUSED;
             putstr(datawin, ATR_INDENT_AT_DASH, buf);
         }
 
+        if (has_stunning_corpse(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Stunning", cnt);
+            putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        }
         if (has_poisonous_corpse(ptr))
         {
             cnt++;

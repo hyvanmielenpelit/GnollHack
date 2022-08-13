@@ -21,6 +21,8 @@ STATIC_DCL long FDECL(score_targ, (struct monst *, struct monst *));
 STATIC_DCL boolean FDECL(can_reach_location, (struct monst *, XCHAR_P,
                                               XCHAR_P, XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(quickmimic, (struct monst *));
+STATIC_DCL void FDECL(dog_corpse_after_effect, (struct monst*, struct obj*, UCHAR_P));
+STATIC_DCL void FDECL(m_givit, (struct monst*, int, struct permonst*));
 
 
 /* pick a carried item for pet to drop */
@@ -308,8 +310,8 @@ boolean devour;
     nutrit = dog_nutrition(mtmp, obj);
 
     deadmimic = (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && is_mimic(&mons[obj->corpsenm]));
-    slimer = (obj->otyp == CORPSE && obj->corpsenm == PM_GREEN_SLIME);
-    poly = polyfodder(obj);
+    slimer = (obj->otyp == CORPSE && obj->corpsenm == PM_GREEN_SLIME) && !has_unchanging(mtmp) && !resists_slime(mtmp);
+    poly = polyfodder(obj) && !has_unchanging(mtmp);
     grow = mlevelgain(obj);
     heal = mhealup(obj);
     curepetrification = mcurepetrification(obj);
@@ -436,7 +438,10 @@ boolean devour;
     else 
     {
         /* Dog food after effects */
-        dog_food_after_effect(mtmp, obj, canseemon(mtmp));
+        if (is_obj_rotting_corpse(obj))
+            dog_corpse_after_effect(mtmp, obj, (uchar)is_female_corpse_or_statue(obj));
+        else
+            dog_food_after_effect(mtmp, obj, canseemon(mtmp));
 
         if (obj->unpaid)
         {
@@ -478,7 +483,6 @@ boolean devour;
     if (poly || slimer)
     {
         struct permonst *ptr = slimer ? &mons[PM_GREEN_SLIME] : 0;
-
         (void) newcham(mtmp, ptr, FALSE, cansee(mtmp->mx, mtmp->my));
     }
 
@@ -658,6 +662,492 @@ boolean verbose;
     }
     return;
 }
+
+STATIC_OVL void
+m_givit(mon, type, ptr)
+struct monst* mon;
+int type;
+register struct permonst* ptr;
+{
+    if (!mon || type < 1 || type > LAST_PROP)
+        return;
+
+    if (ptr)
+    {
+        register int chance;
+
+        debugpline1("Attempting to give intrinsic %d", type);
+        /* some intrinsics are easier to get than others */
+        switch (type) {
+        case POISON_RESISTANCE:
+            if ((ptr == &mons[PM_KILLER_BEE] || ptr == &mons[PM_SCORPION])
+                && !rn2(4))
+                chance = 1;
+            else
+                chance = 15;
+            break;
+        case TELEPORT:
+            chance = 10;
+            break;
+        case TELEPORT_CONTROL:
+            chance = 12;
+            break;
+        case BLIND_TELEPATHY:
+            chance = 1;
+            break;
+        case TELEPAT:
+            chance = 15;
+            break;
+        default:
+            chance = 15;
+            break;
+        }
+
+        if (ptr->mlevel <= rn2(chance))
+            return; /* failed die roll */
+    }
+
+    if (!(mon->mprops[type] & M_INTRINSIC_ACQUIRED))
+        mon->mprops[type] |= M_INTRINSIC_ACQUIRED;
+    else
+        return;
+
+    if (!canspotmon(mon))
+        return;
+
+    switch (type) 
+    {
+    case FIRE_RESISTANCE:
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_FIRE_RESISTANCE, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "%s seems to be chillin'." : "%s seems to feel cold for a moment.", Monnam(mon));
+        break;
+    case SLEEP_RESISTANCE:
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_SLEEP_RESISTANCE, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems wide awake.", Monnam(mon));
+        break;
+    case COLD_RESISTANCE:
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_COLD_RESISTANCE, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems hot inside.", Monnam(mon));
+        break;
+    case ACID_RESISTANCE:
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_ACID_RESISTANCE, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems less soluble.", Monnam(mon));
+        break;
+    case DISINTEGRATION_RESISTANCE:
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_DISINTEGRATION_RESISTANCE, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "%s seems totally together, man." : "%s seems very firm.", Monnam(mon));
+        break;
+    case SHOCK_RESISTANCE: /* shock (electricity) resistance */
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_SHOCK_RESISTANCE, mon->mx, mon->my);
+        if (Hallucination)
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems more grounded in reality.", Monnam(mon));
+        else
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s health currently seems a bit more amplified!", s_suffix(Monnam(mon)));
+        break;
+    case DEATH_RESISTANCE: /* death resistance */
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_DEATH_RESISTANCE, mon->mx, mon->my);
+        if (Hallucination)
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems immortal.", Monnam(mon));
+        else
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s life force seems firmer!", s_suffix(Monnam(mon)));
+        break;
+    case CHARM_RESISTANCE: /* charm resistance */
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_CHARM_RESISTANCE, mon->mx, mon->my);
+        if (Hallucination)
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s understanding of the world seems to have improved!", s_suffix(Monnam(mon)));
+        else
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems more firm about %s own motivations.", Monnam(mon), mhis(mon));
+        break;
+    case FEAR_RESISTANCE: /* fear resistance */
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_FEAR_RESISTANCE, mon->mx, mon->my);
+        if (Hallucination)
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems like Thelma and Louise!", Monnam(mon));
+        else
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems courageous.", Monnam(mon));
+        break;
+    case MIND_SHIELDING: /* mind shielding */
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_MIND_SHIELDING, mon->mx, mon->my);
+        if (Hallucination)
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems more secure!", Monnam(mon));
+        else
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems more shielded.", Monnam(mon));
+        break;
+    case LYCANTHROPY_RESISTANCE: /* immunity to lycanthropy */
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_LYCANTHROPY_RESISTANCE, mon->mx, mon->my);
+        if (Hallucination)
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems unbothered by bugs!", Monnam(mon));
+        else
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems less lunatic.", Monnam(mon));
+        break;
+    case CURSE_RESISTANCE: /* protection from curses */
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_CURSE_RESISTANCE, mon->mx, mon->my);
+        if (Hallucination)
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems unbothered by auras!", Monnam(mon));
+        else
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems protected from curses.", Monnam(mon));
+        break;
+    case POISON_RESISTANCE:
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_CURSE_RESISTANCE, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, Poison_resistance ? "%s seems especially healthy." : "%s seems healthy.", Monnam(mon));
+        break;
+    case STONE_RESISTANCE:
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_STONE_RESISTANCE, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, Stone_resistance ? "%s seems especially limber." : "%s seems limber.", Monnam(mon));
+        break;
+    case TELEPORT:
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_TELEPORT, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "%s seems diffuse." : "%s seems very jumpy.", Monnam(mon));
+        break;
+    case TELEPORT_CONTROL:
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_TELEPORT_CONTROL, mon->mx, mon->my);
+        if (Hallucination)
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems centered in %s personal space.", Monnam(mon), mhis(mon));
+        else
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems in control of %self.", Monnam(mon), mhim(mon));
+        break;
+    case BLIND_TELEPATHY:
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_BLIND_TELEPATHY, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "%s seems to be in touch with the cosmos." : "%s seems to experience a strange mental acuity.", Monnam(mon));
+        break;
+    case TELEPAT:
+        play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_TELEPATHY, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "%s seems to be in touch with the cosmos." : "%s seems to experience a peculiar mental acuity.", Monnam(mon));
+        break;
+    default:
+        break;
+    }
+}
+
+
+/* called after completely consuming a corpse */
+STATIC_OVL void
+dog_corpse_after_effect(mon, obj, gender)
+struct monst* mon;
+struct obj* obj;
+uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
+{
+    if (!mon || !obj)
+        return;
+
+    int tmp = 0;
+    int catch_lycanthropy = NON_PM;
+    boolean check_intrinsics = FALSE;
+    int pm = obj->corpsenm;
+
+    if (pm < LOW_PM || pm >= NUM_MONSTERS)
+        return;
+
+    struct permonst* ptr = &mons[pm];
+    boolean donotcheckfurther = FALSE;
+    if (has_hallucinating_corpse(ptr))
+    {
+        if (canspotmon(mon))
+        {
+            play_sfx_sound_at_location(SFX_ACQUIRE_HALLUCINATION, mon->mx, mon->my);
+            pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "%s seems hallucinated.", Monnam(mon));
+        }
+        increase_mon_property_b(mon, HALLUC, 200L, canspotmon(mon));
+        donotcheckfurther = TRUE;
+    }
+
+    if (has_stunning_corpse(ptr) && !has_stun_resistance(mon))
+    {
+        if (!is_stunned(mon))
+            play_sfx_sound_at_location(SFX_ACQUIRE_STUN, mon->mx, mon->my);
+        increase_mon_property_b(mon, STUNNED, mons[pm].mlevel * 2 + 5 + rnd(20), canspotmon(mon));
+        donotcheckfurther = TRUE;
+    }
+
+    if (conveys_see_invisible(ptr))
+    {
+        if (!has_see_invisible(mon))
+        {
+            //First temporary
+            set_mon_property_b(mon, SEE_INVISIBLE, (long)rn1(100, 50), canspotmon(mon));
+        }
+        else
+        {
+            //Then permanent
+            set_mon_property_b(mon, SEE_INVISIBLE, -1, canspotmon(mon));
+        }
+        donotcheckfurther = TRUE;
+    }
+
+    if (conveys_invisibility(ptr))
+    {
+        if (!has_invisibility(mon))
+        {
+            //First temporary
+            set_mon_property_b(mon, INVISIBILITY, (long)rn1(100, 50), canspotmon(mon));
+        }
+        else
+        {
+            //Then permanent
+            set_mon_property_b(mon, INVISIBILITY, -1, canspotmon(mon));
+        }
+        newsym(mon->mx, mon->my);
+        donotcheckfurther = TRUE;
+    }
+
+    if (donotcheckfurther)
+        return;
+
+    switch (pm) {
+    case PM_NEWT:
+        /* Nothing for monsters */
+        break;
+    case PM_HUMAN_WERERAT:
+        catch_lycanthropy = PM_WERERAT;
+        break;
+    case PM_HUMAN_WEREJACKAL:
+        catch_lycanthropy = PM_WEREJACKAL;
+        break;
+    case PM_HUMAN_WEREWOLF:
+        catch_lycanthropy = PM_WEREWOLF;
+        break;
+    case PM_HUMAN_WEREBEAR:
+        catch_lycanthropy = PM_WEREBEAR;
+        break;
+    case PM_NURSE:
+        deduct_monster_hp(mon, -1000);
+        mcureblindness(mon, canspotmon(mon));
+        refresh_m_tile_gui_info(mon, TRUE);
+        check_intrinsics = TRUE; /* might also convey poison resistance */
+        break;
+    case PM_CHAOS_MIMIC:
+        tmp += 10;
+        /*FALLTHRU*/
+    case PM_GARGANTUAN_MIMIC:
+        tmp += 10;
+        /*FALLTHRU*/
+    case PM_GIANT_MIMIC:
+        tmp += 10;
+        /*FALLTHRU*/
+    case PM_LARGE_MIMIC:
+        tmp += 20;
+        /*FALLTHRU*/
+    case PM_SMALL_MIMIC:
+        tmp += 20;
+        if (!is_mimic(mon->data) && !has_unchanging(mon)) {
+            //Handled in the calling function
+            //char buf[BUFSZ];
+
+            //if(canspotmon(mon))
+            //    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s can't resist the temptation to mimic %s.", Monnam(mon),
+            //        has_hallucination(mon) ? "an orange" : "a pile of gold");
+            ///* A pile of gold can't ride. */
+            ///* ??? what if this was set before? */
+            //newcham(mon, pm, FALSE, FALSE);
+            //mon->m_ap_type = M_AP_OBJECT;
+            //mon->mappearance = has_hallucination(mon) ? ORANGE : GOLD_PIECE;
+            //newsym(mon->mx, mon->my);
+        }
+        break;
+    case PM_QUANTUM_MECHANIC:
+    case PM_ELDER_QUANTUM_MECHANIC:
+        if (canspotmon(mon))
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The velocity of %s suddenly seems very uncertain!", mon_nam(mon));
+        if (mon->mprops[FAST] & M_INTRINSIC_ACQUIRED) 
+        {
+            mon->mprops[FAST] &= ~M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems slower.", Monnam(mon));
+        }
+        else 
+        {
+            mon->mprops[FAST] |= M_INTRINSIC_ACQUIRED;
+            if (canspotmon(mon))
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems faster.", Monnam(mon));
+        }
+        break;
+    case PM_LIZARD:
+        if ((mon->mprops[STUNNED] & M_TIMEOUT) > 2)
+            set_mon_property(mon, STUNNED, 2L);
+        if ((mon->mprops[CONFUSION] & M_TIMEOUT) > 2)
+            set_mon_property(mon, CONFUSION, 2L);
+        break;
+    case PM_CHAMELEON:
+    case PM_DOPPELGANGER:
+    case PM_SANDESTIN: /* moot--they don't leave corpses */
+        // Handled in the calling function
+        //if (canspotmon(mon) && has_unchanging(mon)) 
+        //{
+        //    pline("%s seems momentarily different.", Monnam(mon)); /* same as poly trap */
+        //}
+        //else 
+        //{
+        //    newcham(mon, (struct permonst*)0, FALSE, TRUE);
+        //}
+        break;
+    case PM_DISENCHANTER:
+        /* picks an intrinsic at random and removes it; there's
+           no feedback if hero already lacks the chosen ability */
+        debugpline0("using m_attrcurse to strip an intrinsic");
+        m_attrcurse(mon);
+        break;
+    default:
+        check_intrinsics = TRUE;
+        break;
+    }
+
+    /* Level gain has been moved here, 100% chance */
+    // Handled in the calling function
+    //if (conveys_level(ptr))
+    //{
+    //    grow_up(mon, (struct monst*)0);
+    //    check_intrinsics = FALSE;
+    //}
+
+    /* Possibly convey an intrinsic */
+    if (check_intrinsics)
+    {
+        boolean conveys_STR = conveys_strength(ptr);
+        boolean conveys_DEX = conveys_dexterity(ptr);
+        boolean conveys_CON = conveys_constitution(ptr);
+        boolean conveys_INT = conveys_intelligence(ptr);
+        boolean conveys_WIS = conveys_wisdom(ptr);
+        boolean conveys_CHA = conveys_charisma(ptr);
+        int i, count;
+
+        /* Check the monster for all of the intrinsics.  If this
+         * monster can give more than one, pick one to try to give
+         * from among all it can give.
+         *
+         * Strength from giants is now treated like an intrinsic
+         * rather than being given unconditionally.
+         */
+        count = 0; /* number of possible intrinsics */
+        tmp = 0;   /* which one we will try to give */
+
+        int mdifficulty = ptr->difficulty;
+        int percent = 1;
+
+        if (ptr->mlet == S_NYMPH)
+            percent = 25;
+        else if (ptr->mlet == S_GIANT)
+            percent = 50;
+        else if (ptr->mlet == S_OGRE)
+            percent = 25;
+        else if (ptr->mlet == S_SNAKE)
+            percent = 10;
+        else if (ptr->mlet == S_YETI)
+            percent = 20;
+        else if (ptr == &mons[PM_FLOATING_EYE])
+            percent = 100;
+        else if (is_tentacled_one(ptr))
+            percent = 25;
+        else
+            percent = min(30, max(1, mdifficulty));
+
+        if (conveys_STR && rn2(100) < percent)
+        {
+            count = 1;
+            tmp = -1; /* use -1 as fake prop index for STR */
+            debugpline1("\"Intrinsic\" strength, %d", tmp);
+        }
+
+        if (conveys_DEX && rn2(100) < percent) {
+            if (count == 0 || !rn2(2))
+            {
+                count = 1;
+                tmp = -2;
+                debugpline1("\"Intrinsic\" dexterity, %d", tmp);
+            }
+        }
+
+        if (conveys_CON && rn2(100) < percent)
+        {
+            if (count == 0 || !rn2(2))
+            {
+                count = 1;
+                tmp = -3;
+                debugpline1("\"Intrinsic\" constitution, %d", tmp);
+            }
+        }
+
+        if (conveys_INT && rn2(100) < percent)
+        {
+            if (count == 0 || !rn2(2))
+            {
+                count = 1;
+                tmp = -4;
+                debugpline1("\"Intrinsic\" intelligence, %d", tmp);
+            }
+        }
+
+        if (conveys_WIS && rn2(100) < percent)
+        {
+            if (count == 0 || !rn2(2))
+            {
+                count = 1;
+                tmp = -5;
+                debugpline1("\"Intrinsic\" wisdom, %d", tmp);
+            }
+        }
+
+        if (conveys_CHA && rn2(100) < percent)
+        {
+            if (count == 0 || !rn2(2))
+            {
+                count = 1;
+                tmp = -6;
+                debugpline1("\"Intrinsic\" charisma, %d", tmp);
+            }
+        }
+
+
+        for (i = 1; i <= LAST_PROP; i++) {
+            if (!intrinsic_possible(i, ptr))
+                continue;
+            ++count;
+            /* a 1 in count chance of replacing the old choice
+               with this one, and a count-1 in count chance
+               of keeping the old choice (note that 1 in 1 and
+               0 in 1 are what we want for the first candidate) */
+            if (!rn2(count)) {
+                debugpline2("Intrinsic %d replacing %d", i, tmp);
+                tmp = i;
+            }
+        }
+
+        /* if something was chosen, give it now (givit() might fail) */
+        if (tmp == -1)
+            m_gainstr(mon, (struct obj*)0, 1, canspotmon(mon));
+        else if (tmp == -2)
+        {
+            play_sfx_sound_at_location(SFX_GAIN_ABILITY, mon->mx, mon->my);
+            (void)m_adjattrib(mon, A_DEX, 1, canspotmon(mon));
+        }
+        else if (tmp == -3)
+        {
+            play_sfx_sound_at_location(SFX_GAIN_ABILITY, mon->mx, mon->my);
+            (void)m_adjattrib(mon, A_CON, 1, canspotmon(mon));
+        }
+        else if (tmp == -4)
+        {
+            play_sfx_sound_at_location(SFX_GAIN_ABILITY, mon->mx, mon->my);
+            (void)m_adjattrib(mon, A_INT, 1, canspotmon(mon));
+        }
+        else if (tmp == -5)
+        {
+            play_sfx_sound_at_location(SFX_GAIN_ABILITY, mon->mx, mon->my);
+            (void)m_adjattrib(mon, A_WIS, 1, canspotmon(mon));
+        }
+        else if (tmp == -6)
+        {
+            play_sfx_sound_at_location(SFX_GAIN_ABILITY, mon->mx, mon->my);
+            (void)m_adjattrib(mon, A_CHA, 1, canspotmon(mon));
+        }
+        else if (tmp > 0)
+            m_givit(mon, tmp, ptr);
+    } /* check_intrinsics */
+
+    if (catch_lycanthropy >= LOW_PM && !resists_lycanthropy(mon)) {
+        //Currently pets cannot catch lycanthropy
+    }
+    return;
+}
+
 
 void
 m_gainstr(mtmp, otmp, num, verbose)
