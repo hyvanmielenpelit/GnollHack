@@ -688,9 +688,16 @@ struct monst* mon;
         /*FALLTHRU*/
     case 7:
         if (mon->mprops[INVISIBILITY] & M_INTRINSIC_ACQUIRED) {
+            boolean couldspot = canspotmon(mon);
             mon->mprops[INVISIBILITY] &= ~M_INTRINSIC_ACQUIRED;
             if (canspotmon(mon))
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems paranoid.", Monnam(mon));
+            {
+                if(couldspot)
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems less trasparent.", Monnam(mon));
+                else
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly appears out of thin air.", Monnam(mon));
+            }
+            newsym(mon->mx, mon->my);
             break;
         }
         /*FALLTHRU*/
@@ -738,6 +745,7 @@ struct monst* mon;
     default:
         break;
     }
+    refresh_m_tile_gui_info(mon, TRUE);
 }
 
 /*sit.c*/

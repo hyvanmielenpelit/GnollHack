@@ -3212,7 +3212,7 @@ struct obj *otmp;
 
     if ((cadaver && mnum >= LOW_PM && has_stunning_corpse(&mons[mnum]) && !Stun_resistance))
     {
-        /* poisonous */
+        /* stunning */
         Sprintf(buf, "%s like %s might make you stunned!  %s", foodsmell,
             it_or_they, eat_it_anyway);
         if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_NEGATIVE, (const char*)0, buf, ynchars, 'n', yndescs, (const char*)0) == 'n')
