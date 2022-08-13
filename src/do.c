@@ -2016,29 +2016,29 @@ register struct obj* obj;
                         !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_CONFUSION);
 
                     Sprintf(buf, "Cures sickness:         %s (%s)", cures_sick ? "Yes" : "No",
-                        cures_sick_all ? "Always" : cures_sick_noncursed ? (cures_sick ? "When not cursed" : "Yes if not cursed") : 
-                        cures_sick_blessed ? (cures_sick ? "When blessed" : "Yes if blessed") : cures_sick_uncursed ? (cures_sick ? "When uncursed" : "Yes if uncursed") : 
-                        cures_sick_cursed ? (cures_sick ? "When cursed" : "Yes if cursed") : "Never");
+                        cures_sick_all ? "always" : cures_sick_noncursed ? (cures_sick ? "when not cursed" : "yes if not cursed") : 
+                        cures_sick_blessed ? (cures_sick ? "when blessed" : "yes if blessed") : cures_sick_uncursed ? (cures_sick ? "when uncursed" : "yes if uncursed") : 
+                        cures_sick_cursed ? (cures_sick ? "when cursed" : "yes if cursed") : "never");
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                     Sprintf(buf, "Cures blindness:        %s (%s)", cures_blind ? "Yes" : "No",
-                        cures_blindness_all ? "Always" : cures_blindness_noncursed ? (cures_blind ? "When not cursed" : "Yes if not cursed") :
-                        cures_blindness_blessed ? (cures_blind ? "When blessed" : "Yes if blessed") : cures_blindness_uncursed ? (cures_blind ? "When uncursed" : "Yes if uncursed") :
-                        cures_blindness_cursed ? (cures_blind ? "When cursed" : "Yes if cursed") : "Never");
+                        cures_blindness_all ? "always" : cures_blindness_noncursed ? (cures_blind ? "when not cursed" : "yes if not cursed") :
+                        cures_blindness_blessed ? (cures_blind ? "when blessed" : "yes if blessed") : cures_blindness_uncursed ? (cures_blind ? "when uncursed" : "yes if uncursed") :
+                        cures_blindness_cursed ? (cures_blind ? "when cursed" : "yes if cursed") : "never");
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                     Sprintf(buf, "Cures hallucination:    %s (%s)", cures_hallucination ? "Yes" : "No",
-                        cures_hallucination_all ? "Always" : cures_hallucination_noncursed ? (cures_hallucination ? "When not cursed" : "Yes if not cursed") :
-                        cures_hallucination_blessed ? (cures_hallucination ? "When blessed" : "Yes if blessed") : cures_hallucination_uncursed ? (cures_hallucination ? "When uncursed" : "Yes if uncursed") :
-                        cures_hallucination_cursed ? (cures_hallucination ? "When cursed" : "Yes if cursed") : "Never");
+                        cures_hallucination_all ? "always" : cures_hallucination_noncursed ? (cures_hallucination ? "when not cursed" : "yes if not cursed") :
+                        cures_hallucination_blessed ? (cures_hallucination ? "when blessed" : "yes if blessed") : cures_hallucination_uncursed ? (cures_hallucination ? "when uncursed" : "yes if uncursed") :
+                        cures_hallucination_cursed ? (cures_hallucination ? "when cursed" : "yes if cursed") : "never");
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                     Sprintf(buf, "Cures stun:             %s (%s)", cures_stun ? "Yes" : "No",
-                        cures_stun_all ? "Always" : cures_stun_noncursed ? (cures_stun ? "When not cursed" : "Yes if not cursed") :
-                        cures_stun_blessed ? (cures_stun ? "When blessed" : "Yes if blessed") : cures_stun_uncursed ? (cures_stun ? "When uncursed" : "Yes if uncursed") :
-                        cures_stun_cursed ? (cures_stun ? "When cursed" : "Yes if cursed") : "Never");
+                        cures_stun_all ? "always" : cures_stun_noncursed ? (cures_stun ? "when not cursed" : "yes if not cursed") :
+                        cures_stun_blessed ? (cures_stun ? "when blessed" : "yes if blessed") : cures_stun_uncursed ? (cures_stun ? "when uncursed" : "yes if uncursed") :
+                        cures_stun_cursed ? (cures_stun ? "when cursed" : "yes if cursed") : "never");
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                     Sprintf(buf, "Cures confusion:        %s (%s)", cures_confusion ? "Yes" : "No",
-                        cures_confusion_all ? "Always" : cures_confusion_noncursed ? (cures_confusion ? "When not cursed" : "Yes if not cursed") : 
-                        cures_confusion_blessed ? (cures_confusion ? "When blessed" : "Yes if blessed") : cures_confusion_uncursed ? (cures_confusion ? "When uncursed" : "Yes if uncursed") : 
-                        cures_confusion_cursed ? (cures_confusion ? "When cursed" : "Yes if cursed") : "Never");
+                        cures_confusion_all ? "always" : cures_confusion_noncursed ? (cures_confusion ? "when not cursed" : "yes if not cursed") : 
+                        cures_confusion_blessed ? (cures_confusion ? "when blessed" : "yes if blessed") : cures_confusion_uncursed ? (cures_confusion ? "when uncursed" : "yes if uncursed") : 
+                        cures_confusion_cursed ? (cures_confusion ? "when cursed" : "yes if cursed") : "never");
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 }
                 else
