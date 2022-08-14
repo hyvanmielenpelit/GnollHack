@@ -52,8 +52,10 @@ extern char *viz_rmax;            /* max could see indices */
  */
 #define m_cansee(mtmp, x2, y2) clear_path((mtmp)->mx, (mtmp)->my, (x2), (y2))
 #define m_has_active_telepathy(m) (has_telepathy(m) || (has_blind_telepathy(m) && is_blinded(m)) || has_detect_monsters(m))
-#define m_senseu_telepathically(m) (((has_telepathy(m) || (has_blind_telepathy(m) && is_blinded(m))) && !Mind_shielding) || has_detect_monsters(m))
-#define m_sense_m_telepathically(m, mtarg) (((has_telepathy(m) || (has_blind_telepathy(m) && is_blinded(m))) && !(has_mind_shielding(mtarg) || mindless((mtarg)->data))) || has_detect_monsters(m))
+#define m_senseu_telepathically(m) \
+    ((((has_telepathy(m) && dist2(u.ux, u.uy, (m)->mx, (m)->my) <= (TELEPATHY_RANGE * TELEPATHY_RANGE)) || ((has_blind_telepathy(m) || has_telepathy(m)) && is_blinded(m))) && !Mind_shielding) || has_detect_monsters(m))
+#define m_sense_m_telepathically(m, mtarg) \
+    ((((has_telepathy(m) && dist2((mtarg)->mx, (mtarg)->my, (m)->mx, (m)->my) <= (TELEPATHY_RANGE * TELEPATHY_RANGE)) || ((has_blind_telepathy(m) || has_telepathy(m)) && is_blinded(m))) && !mon_has_no_apparent_mind(m)) || has_detect_monsters(m))
 #define m_cannotsenseu(m) \
     ((is_blinded(m) || (Invis && !has_see_invisible(m)) || u.uundetected) && !m_senseu_telepathically(m))
 #define m_cannotsense_m(m, mtarg) \

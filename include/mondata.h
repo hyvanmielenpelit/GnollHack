@@ -272,6 +272,13 @@
 #define has_unchanging(mon) \
     has_property(mon, UNCHANGING)
 
+/* mind shielding */
+#define has_mind_shielding(mon) \
+    has_property(mon, MIND_SHIELDING)
+
+#define mon_has_no_apparent_mind(mon) \
+    (has_mind_shielding(mon) || mindless((mon)->data))
+
 /* slow, stoning, and sliming */
 #define has_slowed(mon) \
     has_property(mon, SLOWED)
@@ -461,7 +468,7 @@
     has_property(mon, UNDEAD_CONTROL)
 
 #define is_charmed(mon) \
-    ((has_charmed(mon) && !has_charm_resistance(mon) && !is_undead((mon)->data) && !is_vampshifter(mon) && !mindless((mon)->data)) \
+    ((has_charmed(mon) && !has_charm_resistance(mon) && !is_undead((mon)->data) && !is_vampshifter(mon) && !mon_has_no_apparent_mind(mon)) \
      || (has_undead_control(mon) && (is_undead((mon)->data) || is_vampshifter(mon))) \
     )
 
@@ -481,7 +488,7 @@
     (has_innate_or_property(mon, FEAR_RESISTANCE))
 
 #define is_fearful(mon) \
-    (has_fearful(mon) && !has_fear_resistance(mon) && !is_undead((mon)->data) && !mindless((mon)->data) && !is_vampshifter(mon))
+    (has_fearful(mon) && !has_fear_resistance(mon) && !is_undead((mon)->data) && !mon_has_no_apparent_mind(mon) && !is_vampshifter(mon))
 
 #define is_fleeing(mon) \
     (is_fearful(mon) || (mon)->mflee)
@@ -607,9 +614,6 @@
 
 #define has_crazed(mon) \
     has_property(mon, CRAZED)
-
-#define has_mind_shielding(mon) \
-    has_property(mon, MIND_SHIELDING)
 
 #define is_crazed(mon) \
     (has_crazed(mon) && !has_mind_shielding(mon))
@@ -747,9 +751,9 @@
 #define resists_magic(mon) \
     (has_innate((mon)->data, MR_MAGIC) || has_property(mon, ANTIMAGIC))
 #define resists_charm(mon) \
-    (has_innate((mon)->data, MR_CHARM) || has_property(mon, CHARM_RESISTANCE) || is_undead((mon)->data) || mindless((mon)->data))
+    (has_innate((mon)->data, MR_CHARM) || has_property(mon, CHARM_RESISTANCE) || is_undead((mon)->data) || mon_has_no_apparent_mind(mon))
 #define resists_fear(mon) \
-    (has_innate((mon)->data, MR_FEAR) || has_property(mon, FEAR_RESISTANCE) || is_undead((mon)->data) || mindless((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_FEAR) || has_property(mon, FEAR_RESISTANCE) || is_undead((mon)->data) || mon_has_no_apparent_mind(mon) || is_vampshifter(mon))
 #define is_reflecting(mon) \
     (has_innate((mon)->data, MR_REFLECTING) || has_property(mon, REFLECTING))
 #define resists_drain(mon) \

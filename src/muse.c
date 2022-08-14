@@ -2970,6 +2970,8 @@ struct obj *obj;
             return !is_reflecting(mon);
         if (typ == AMULET_OF_UNCHANGING)
             return TRUE;
+        if (typ == AMULET_OF_ESP)
+            return !has_telepathy(mon);
         if (typ == AMULET_VERSUS_PETRIFICATION)
             return !resists_ston(mon);
         if (typ == AMULET_VERSUS_UNDEATH)

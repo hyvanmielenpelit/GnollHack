@@ -2610,7 +2610,7 @@ boolean *effect_happened_ptr;
                         }
                         if (res == 0)
                         {
-                            if (!mindless(mtmp->data) && !is_stunned(mtmp))
+                            if (!resists_stun(mtmp) && !is_stunned(mtmp))
                             {
                                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
                                 special_effect_wait_until_action(0);
