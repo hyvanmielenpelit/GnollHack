@@ -9290,7 +9290,7 @@ int x1, y1, x2, y2;
 
     int dx = x2 - x1;
     int dy = y2 - y1;
-    if (!(!dy || !dy || abs(dy) == abs(dy)))
+    if (!(!dx || !dy || abs(dx) == abs(dy)))
         return 0;
 
     int sx = sgn(dx);

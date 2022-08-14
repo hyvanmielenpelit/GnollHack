@@ -1254,7 +1254,7 @@ struct monst *mtmp;
                 fmt = "%s looks completely healed.";
                 break;
             }
-            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : NO_COLOR, "%s looks better.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : NO_COLOR, fmt, Monnam(mtmp));
         }
         if (oseen)
             makeknown(otmp->otyp);
