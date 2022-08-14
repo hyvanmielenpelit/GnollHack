@@ -2195,8 +2195,9 @@ register struct obj* obj;
             {
                 Strcpy(buf, "");
 
-                char bonusbuf[BUFSZ];
-                Strcpy(bonusbuf, "");
+                char bonusbuf[BUFSZ] = "";
+                boolean display_ac = affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC);
+                boolean display_mc = affectsmc || (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC);
 
                 if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
                 {
@@ -2216,34 +2217,44 @@ register struct obj* obj;
                         wep_all_extra_avg_dmg += enchplus;
                     }
                     if (tohitplus == dmgplus)
-                        Sprintf(bonusbuf, " (%s%d to hit and damage)", tohitplus >= 0 ? "+" : "", tohitplus);
+                        Sprintf(bonusbuf, " (%s%d to hit and damage", tohitplus >= 0 ? "+" : "", tohitplus);
                     else
-                        Sprintf(bonusbuf, " (%s%d to hit and %s%d to damage)", tohitplus >= 0 ? "+" : "", tohitplus, dmgplus >= 0 ? "+" : "", dmgplus);
+                        Sprintf(bonusbuf, " (%s%d to hit and %s%d to damage", tohitplus >= 0 ? "+" : "", tohitplus, dmgplus >= 0 ? "+" : "", dmgplus);
                 }
 
-                if (affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC) && (affectsmc || (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)))
+                if (display_ac || display_mc)
                 {
-                    Sprintf(eos(bonusbuf), " (%s%d to AC and %s%d to MC)",
+                    if (!*bonusbuf)
+                        Strcpy(bonusbuf, " (");
+                    else
+                        Strcat(bonusbuf, ", ");
+                }
+
+                if (display_ac && display_mc)
+                {
+                    Sprintf(eos(bonusbuf), "%s%d to AC and %s%d to MC",
                         obj->enchantment <= 0 ? "+" : "",
                         -obj->enchantment,
                         obj->enchantment / 3 >= 0 ? "+" : "",
                         obj->enchantment / 3
                     );
                 }
-                else if (affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC))
+                else if (display_ac)
                 {
-                    Sprintf(eos(bonusbuf), " (%s%d %s to AC)",
+                    Sprintf(eos(bonusbuf), "%s%d %s to AC",
                         obj->enchantment <= 0 ? "+" : "",
                         -obj->enchantment,
                         obj->enchantment >= 0 ? "bonus" : "penalty");
                 }
-                else if (affectsmc || (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC))
+                else if (display_mc)
                 {
-                    Sprintf(eos(bonusbuf), " (%s%d %s to MC)",
+                    Sprintf(eos(bonusbuf), "%s%d %s to MC",
                         obj->enchantment / 3 >= 0 ? "+" : "",
                         obj->enchantment / 3,
                         obj->enchantment / 3 >= 0 ? "bonus" : "penalty");
                 }
+                if (*bonusbuf)
+                    Strcat(bonusbuf, ")");
 
                 Sprintf(buf, "Enchantment status:     %s%d%s", obj->enchantment >= 0 ? "+" : "", obj->enchantment, bonusbuf);
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
