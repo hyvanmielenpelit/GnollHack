@@ -251,7 +251,7 @@ register struct monst *mtmp;
     int x, y;
 
     if (is_peaceful(mtmp) && in_town(u.ux + u.dx, u.uy + u.dy)
-        && !is_blinded(mtmp) && m_canseeu(mtmp) && !rn2(3)) {
+        && !m_cannotsenseu(mtmp) && m_canseeu(mtmp) && !rn2(3)) {
         if (picking_lock(&x, &y) && IS_DOOR(levl[x][y].typ)
             && (levl[x][y].doormask & D_LOCKED)) {
             if (couldsee(mtmp->mx, mtmp->my)) {
@@ -701,7 +701,7 @@ int *inrange, *nearby, *scared;
      * running into you by accident but possibly attacking the spot
      * where it guesses you are.
      */
-    if (is_blinded(mtmp) || (Invis && !has_see_invisible(mtmp))) {
+    if (m_cannotsenseu(mtmp)) {
         seescaryx = mtmp->mux;
         seescaryy = mtmp->muy;
     } else {
@@ -1414,9 +1414,8 @@ register int after;
                               && (levl[gx][gy].lit || !levl[omx][omy].lit)
                               && (dist2(omx, omy, gx, gy) <= 36));
 
-        if (is_blinded(mtmp)
-            || (should_see && Invis && !has_see_invisible(mtmp) && rn2(11))
-            || is_obj_mappear(&youmonst,STRANGE_OBJECT) || u.uundetected
+        if ((should_see && m_cannotsenseu(mtmp) && rn2(11))
+            || is_obj_mappear(&youmonst,STRANGE_OBJECT)
             || (is_obj_mappear(&youmonst,GOLD_PIECE) && !likes_gold(ptr))
             || (is_peaceful(mtmp) && !mtmp->isshk) /* allow shks to follow */
             || ((mtmp->mnum == PM_STALKER || ptr->mlet == S_BAT
@@ -2184,7 +2183,8 @@ register struct monst *mtmp;
     if (mx == u.ux && my == u.uy)
         goto found_you;
 
-    notseen = (is_blinded(mtmp) || (Invis && !has_see_invisible(mtmp)));
+    notseen = m_cannotsenseu(mtmp);
+
     /* add cases as required.  eg. Displacement ... */
     if (notseen || Underwater) {
         /* Xorns can smell quantities of valuable metal

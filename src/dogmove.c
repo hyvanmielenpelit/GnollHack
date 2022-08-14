@@ -498,7 +498,7 @@ boolean devour;
             context.botl = 1;
 
     }
-    if ((eyes || heal) && is_blinded(mtmp))
+    if ((eyes || heal) && has_blinded(mtmp))
         mcureblindness(mtmp, canseemon(mtmp));
     if (deadmimic)
         quickmimic(mtmp);
@@ -1608,11 +1608,13 @@ int maxdist;
 
         if ((targ = m_at(curx, cury)) != 0) {
             /* Is the monster visible to the pet? */
-            if ((!is_invisible(targ) || has_see_invisible(mtmp))
-                && !targ->mundetected)
+            if (m_cannotsense_m(mtmp, targ))
+            {
+                /* If the pet can't see it, it assumes it aint there */
+                targ = 0;
+            }
+            else
                 break;
-            /* If the pet can't see it, it assumes it aint there */
-            targ = 0;
         }
     }
     return targ;
@@ -1651,7 +1653,7 @@ int    maxdist;
         if (pal) {
             if (pal->mtame) {
                 /* Pet won't notice invisible pets */
-                if (!is_invisible(pal) || has_see_invisible(mtmp))
+                if (!m_cannotsense_m(mtmp, pal)) //!is_invisible(pal) || has_see_invisible(mtmp)
                     return 1;
             } else {
                 /* Quest leaders and guardians are always seen */
@@ -1779,7 +1781,7 @@ struct monst *mtmp;   /* Pet */
         return 0;
 
     /* If the pet is blind, it's not going to see any target */
-    if (is_blinded(mtmp))
+    if (is_blinded(mtmp) && !m_has_active_telepathy(mtmp))
         return 0;
 
     /* Search for any monsters lined up with the pet, within an arbitrary

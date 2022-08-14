@@ -410,7 +410,6 @@
 #define is_deaf(mon) \
     (has_property(mon, DEAF))
 
-
 /* hallucination */
 #define has_hallucination(mon) \
     has_property(mon, HALLUC)
@@ -819,6 +818,8 @@
     (has_innate_blind_telepathy((mon)->data) || has_property(mon, BLIND_TELEPATHY))
 #define has_telepathy(mon) \
     (has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
+#define has_detect_monsters(mon) \
+    (has_property(mon, DETECT_MONSTERS))
 
 #define has_stunning_corpse(ptr) (((ptr)->mconveys & MC_STUNNING_CORPSE) != 0L)
 #define has_acidic_corpse(ptr) (((ptr)->mconveys & MC_ACIDIC_CORPSE) != 0L)

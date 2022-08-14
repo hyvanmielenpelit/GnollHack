@@ -51,6 +51,13 @@ extern char *viz_rmax;            /* max could see indices */
  *          hero.
  */
 #define m_cansee(mtmp, x2, y2) clear_path((mtmp)->mx, (mtmp)->my, (x2), (y2))
+#define m_has_active_telepathy(m) (has_telepathy(m) || (has_blind_telepathy(m) && is_blinded(m)) || has_detect_monsters(m))
+#define m_senseu_telepathically(m) (((has_telepathy(m) || (has_blind_telepathy(m) && is_blinded(m))) && !Mind_shielding) || has_detect_monsters(m))
+#define m_sense_m_telepathically(m, mtarg) (((has_telepathy(m) || (has_blind_telepathy(m) && is_blinded(m))) && !(has_mind_shielding(mtarg) || mindless((mtarg)->data))) || has_detect_monsters(m))
+#define m_cannotsenseu(m) \
+    ((is_blinded(m) || (Invis && !has_see_invisible(m)) || u.uundetected) && !m_senseu_telepathically(m))
+#define m_cannotsense_m(m, mtarg) \
+    ((is_blinded(m) || (is_invisible(mtarg) && !has_see_invisible(m)) || (mtarg)->mundetected) && !m_sense_m_telepathically(m,mtarg))
 
 #define m_canseeu(m)                                       \
     ((!Invis || has_see_invisible(m)) && !is_blinded(m)    \
