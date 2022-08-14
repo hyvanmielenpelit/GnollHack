@@ -1385,8 +1385,7 @@ cure_petrification_here:
 
             if (mtmp->mhp > mtmp->mhpmax)
                 mtmp->mhp = mtmp->mhpmax;
-            if (skilled_spell || otyp == SPE_GREATER_UNDEATH_REPLENISHMENT)
-                mcureblindness(mtmp, canseemon(mtmp));
+
             if (canseemon(mtmp))
             {
                 if (disguised_mimic) 

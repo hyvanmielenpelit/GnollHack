@@ -1950,16 +1950,50 @@ register struct obj* obj;
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
 
+            /* Impact on maximums */
+            int extra_data1 = (int)objects[obj->otyp].oc_potion_extra_data1;
             if (objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
             {
-                int extra_data1 = (int)objects[obj->otyp].oc_potion_extra_data1;
                 if (extra_data1 > 0)
                 {
-                    Sprintf(buf, "Maximum HP gained:      +%d (if%s at max HP)", extra_data1, obj->bknown && obj->blessed ? "" : " blessed" );
+                    char maxhpbuf[BUFSZ] = "";
+                    if (obj->bknown)
+                    {
+                        if (obj->blessed)
+                            Sprintf(maxhpbuf, "+%d (if at max health)", extra_data1);
+                        else
+                            Sprintf(maxhpbuf, "0 (+%d if blessed at max)", extra_data1);
+                    }
+                    else
+                        Sprintf(maxhpbuf, "+%d if blessed at max", extra_data1);
+
+                    Sprintf(buf, "Maximum health gained:  %s", maxhpbuf);
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                }
+            }
+            else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
+            {
+                if (extra_data1 > 0)
+                {
+                    char maxmanabuf[BUFSZ] = "";
+                    if (obj->bknown)
+                    {
+                        if(obj->blessed)
+                            Sprintf(maxmanabuf, "+%d (if at max mana)", extra_data1);
+                        else if (obj->cursed)
+                            Sprintf(maxmanabuf, "-%d (+%d if blessed at max mana)", extra_data1, extra_data1);
+                        else
+                            Sprintf(maxmanabuf, "0 (+/-%d if blessed at max or cursed)", extra_data1);
+                    }
+                    else
+                        Sprintf(maxmanabuf, "+/-%d if blessed at max or cursed", extra_data1);
+
+                    Sprintf(buf, "Maximum mana gained:    %s", maxmanabuf);
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 }
             }
 
+            /* Special cures on healing */
             if (objects[otyp].oc_flags5 & O5_EFFECT_FLAGS_ARE_HEALING)
             {
                 boolean cures_sick_blessed = !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS);

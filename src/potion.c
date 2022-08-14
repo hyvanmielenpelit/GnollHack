@@ -1845,15 +1845,7 @@ struct obj *otmp;
 
         int mana_before = u.uen;
         u.uen += num;
-
         updatemaxen();
-        if (u.uenmax <= 0)
-            u.uenmax = 0;
-        if (u.uen > u.uenmax)
-            u.uen = u.uenmax;
-        else if (u.uen <= 0)
-            u.uen = 0;
-
         int mana_after = u.uen;
         int mana_gain = mana_after - mana_before;
         if (mana_gain > 0)
