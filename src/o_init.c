@@ -1395,7 +1395,7 @@ struct obj* obj;
 
     if (obj->exceptionality > 0 && (is_armor(obj) || (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)))
     {
-        int multiplier = has_obj_mythic_defense(obj) ? 4 : is_suit(obj) ? 4 : is_shield(obj) ? 3 : 2;
+        int multiplier = is_suit(obj) ? 4 : has_obj_mythic_defense(obj) ? 3 : is_shield(obj) ? 3 : 2;
         if (obj->exceptionality > EXCEPTIONALITY_ELITE)
             return 3 * multiplier;
         else
