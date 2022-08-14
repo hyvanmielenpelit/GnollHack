@@ -1,3 +1,5 @@
+﻿/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+
 /* ======================================================================================== */
 /* FMOD Studio API - Common C/C++ header file.                                              */
 /* Copyright (c), Firelight Technologies Pty, Ltd. 2004-2020.                               */

@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-06-13 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
 
 /* GnollHack 4.0    muse.c    $NHDT-Date: 1547025167 2019/01/09 09:12:47 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.92 $ */
 /*      Copyright (C) 1990 by Ken Arromdee                         */
@@ -2516,12 +2516,7 @@ struct monst *mtmp;
     if ((i = precheck(mtmp, otmp)) != 0)
         return i;
 
-    int duration = 0, dicebuc = 0, extra_data1 = 0;
-    boolean cures_sick = FALSE;
-    boolean cures_blind = FALSE;
-    boolean cures_hallucination = FALSE;
-    boolean cures_stun = FALSE;
-    boolean cures_confusion = FALSE;
+    int duration = 0, dicebuc = 0;
     int sfx = 0;
 
     if (otmp)
@@ -2532,27 +2527,6 @@ struct monst *mtmp;
                 otmp->oclass == POTION_CLASS ? (objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 : d(max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)), max(1, objects[otmp->otyp].oc_potion_normal_diesize))) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
                 d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus
             );
-        extra_data1 = otmp->oclass == POTION_CLASS ? (int)objects[otmp->otyp].oc_potion_extra_data1 : 0;
-
-        if (objects[otmp->otyp].oc_flags5 & O5_EFFECT_FLAGS_ARE_HEALING)
-        {
-            cures_sick = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS) :
-                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_SICKNESS) :
-                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_SICKNESS);
-            cures_blind = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_BLINDNESS) :
-                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_BLINDNESS) :
-                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_BLINDNESS);
-            cures_hallucination = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_HALLUCINATION) :
-                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_HALLUCINATION) :
-                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_HALLUCINATION);
-            cures_stun = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_STUN) :
-                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_STUN) :
-                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_STUN);
-            cures_confusion = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_CONFUSION) :
-                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_CONFUSION) :
-                !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_CONFUSION);
-        }
-
     }
 
     vis = cansee(mtmp->mx, mtmp->my);

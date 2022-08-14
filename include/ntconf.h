@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
 
 /* GnollHack 4.0    ntconf.h    $NHDT-Date: 1447424077 2015/11/13 14:14:37 $  $NHDT-Branch: master $:$NHDT-Revision: 1.48 $ */
 /* Copyright (c) GnollHack PC Development Team 1993, 1994.  */
