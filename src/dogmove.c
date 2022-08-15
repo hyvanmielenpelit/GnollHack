@@ -269,7 +269,7 @@ struct obj *obj;
         int nutrdicebuc = (int)objects[obj->otyp].oc_potion_nutrition_dice_buc_multiplier;
         int nutrition = (int)d(max(0, objects[obj->otyp].oc_potion_nutrition_dice + nutrdicebuc * bcsign(obj)), 
             max(1, objects[obj->otyp].oc_potion_nutrition_diesize)) 
-            + objects[obj->otyp].oc_potion_nutrition_plus + bcsign(obj) * objects[obj->otyp].oc_potion_nutrition_buc_multiplier;
+            + objects[obj->otyp].oc_potion_nutrition_plus + bcsign(obj) * (int)objects[obj->otyp].oc_potion_nutrition_buc_multiplier;
         nutrit = nutrition * nutr_size_mult;
         if (nutrit < 0)
             nutrit = 0;
@@ -863,7 +863,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         if (!has_see_invisible(mon))
         {
             //First temporary
-            set_mon_property_b(mon, SEE_INVISIBLE, (long)rn1(100, 50), canspotmon(mon));
+            set_mon_property_b(mon, SEE_INVISIBLE, rn1(100, 50), canspotmon(mon));
         }
         else
         {
@@ -878,7 +878,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         if (!has_invisibility(mon))
         {
             //First temporary
-            set_mon_property_b(mon, INVISIBILITY, (long)rn1(100, 50), canspotmon(mon));
+            set_mon_property_b(mon, INVISIBILITY, rn1(100, 50), canspotmon(mon));
         }
         else
         {

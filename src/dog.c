@@ -709,41 +709,43 @@ long nmv; /* number of moves */
     enrecovered += (eff_repid_enreg_dur ? eff_repid_enreg_dur * 3 : 0);
     enrecovered += (eff_enreg_dur ? eff_enreg_dur * 2 : 0);
 
-    if (imv > mtmp->mspec_used)
+    /* Using enrecovered */
+    if (enrecovered > mtmp->mspec_used)
         mtmp->mspec_used = 0;
     else
-        mtmp->mspec_used -= imv;
+        mtmp->mspec_used -= enrecovered;
 
-    if (imv > mtmp->mmagespell_used)
+    if (enrecovered > mtmp->mmagespell_used)
         mtmp->mmagespell_used = 0;
     else
-        mtmp->mmagespell_used -= imv;
+        mtmp->mmagespell_used -= enrecovered;
 
-    if (imv > mtmp->mmageintermediate_used)
+    if (enrecovered > mtmp->mmageintermediate_used)
         mtmp->mmageintermediate_used = 0;
     else
-        mtmp->mmageintermediate_used -= imv;
+        mtmp->mmageintermediate_used -= enrecovered;
 
-    if (imv > mtmp->mmageultimate_used)
+    if (enrecovered > mtmp->mmageultimate_used)
         mtmp->mmageultimate_used = 0;
     else
-        mtmp->mmageultimate_used -= imv;
+        mtmp->mmageultimate_used -= enrecovered;
 
-    if (imv > mtmp->mclericspell_used)
+    if (enrecovered > mtmp->mclericspell_used)
         mtmp->mclericspell_used = 0;
     else
-        mtmp->mclericspell_used -= imv;
+        mtmp->mclericspell_used -= enrecovered;
 
-    if (imv > mtmp->mclericintermediate_used)
+    if (enrecovered > mtmp->mclericintermediate_used)
         mtmp->mclericintermediate_used = 0;
     else
-        mtmp->mclericintermediate_used -= imv;
+        mtmp->mclericintermediate_used -= enrecovered;
 
-    if (imv > mtmp->mclericultimate_used)
+    if (enrecovered > mtmp->mclericultimate_used)
         mtmp->mclericultimate_used = 0;
     else
-        mtmp->mclericultimate_used -= imv;
+        mtmp->mclericultimate_used -= enrecovered;
 
+    /* Using imv only */
     if (imv > mtmp->mdemonsummon_used)
         mtmp->mdemonsummon_used = 0;
     else
