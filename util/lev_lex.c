@@ -2031,8 +2031,7 @@ YY_MALLOC_DECL
 void FDECL(init_yyin, (FILE *));
 void FDECL(init_yyout, (FILE *));
 
-long NDECL(handle_varstring_check);
-long FDECL(corefunc_str_check, (char *, long));
+int NDECL(handle_varstring_check);
 
 extern void VDECL(lc_error, (const char *, ...));
 extern struct lc_vardefs *FDECL(vardef_defined,(struct lc_vardefs *,char *, int));
@@ -2064,7 +2063,7 @@ FILE *orig_yyin = NULL;
 
 #define MAPC 1
 
-#line 2068 "lex.yy.c"
+#line 2067 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -2218,9 +2217,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 117 "lev_comp.l"
+#line 116 "lev_comp.l"
 
-#line 2224 "lex.yy.c"
+#line 2223 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -2306,7 +2305,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 118 "lev_comp.l"
+#line 117 "lev_comp.l"
 {
 		  savetoken(yytext);
 		  BEGIN(INITIAL);
@@ -2319,7 +2318,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 127 "lev_comp.l"
+#line 126 "lev_comp.l"
 {
 		  size_t len = yyleng < 0 ? 0 : (size_t)yyleng;
 		  savetoken(yytext);
@@ -2335,1907 +2334,1907 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 139 "lev_comp.l"
+#line 138 "lev_comp.l"
 { savetoken(yytext); newline(); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 140 "lev_comp.l"
+#line 139 "lev_comp.l"
 ST_RET(MESSAGE_ID);
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 141 "lev_comp.l"
+#line 140 "lev_comp.l"
 ST_RET(NOMAP_ID);
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 142 "lev_comp.l"
+#line 141 "lev_comp.l"
 ST_RET(MAZE_ID);
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 143 "lev_comp.l"
+#line 142 "lev_comp.l"
 ST_RET(LEVEL_ID);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 144 "lev_comp.l"
+#line 143 "lev_comp.l"
 ST_RET(LEV_INIT_ID);
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 145 "lev_comp.l"
+#line 144 "lev_comp.l"
 ST_RET(TILESET_ID);
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 146 "lev_comp.l"
+#line 145 "lev_comp.l"
 ST_RET(SPECIAL_TILESET_ID);
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 147 "lev_comp.l"
+#line 146 "lev_comp.l"
 ST_RET(BOUNDARY_TYPE_ID);
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 148 "lev_comp.l"
+#line 147 "lev_comp.l"
 ST_RET(FOREST_ID);
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 149 "lev_comp.l"
+#line 148 "lev_comp.l"
 ST_RET(FLOOR_SUBTYPE_ID);
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 150 "lev_comp.l"
+#line 149 "lev_comp.l"
 ST_RET(FLOOR_TYPE_ID);
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 151 "lev_comp.l"
+#line 150 "lev_comp.l"
 ST_RET(MAZE_GRID_ID);
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 152 "lev_comp.l"
+#line 151 "lev_comp.l"
 ST_RET(SOLID_FILL_ID);
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 153 "lev_comp.l"
+#line 152 "lev_comp.l"
 ST_RET(MINES_ID);
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 154 "lev_comp.l"
+#line 153 "lev_comp.l"
 ST_RET(ROGUELEV_ID);
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 155 "lev_comp.l"
+#line 154 "lev_comp.l"
 ST_RET(FLAGS_ID);
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 156 "lev_comp.l"
+#line 155 "lev_comp.l"
 ST_RET(GEOMETRY_ID);
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 157 "lev_comp.l"
+#line 156 "lev_comp.l"
 { savetoken(yytext); BEGIN(MAPC); newline(); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 158 "lev_comp.l"
+#line 157 "lev_comp.l"
 ST_RET(object_ID);
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 159 "lev_comp.l"
+#line 158 "lev_comp.l"
 ST_RET(OBJECT_ID);
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 160 "lev_comp.l"
+#line 159 "lev_comp.l"
 ST_RET(COBJECT_ID);
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 161 "lev_comp.l"
+#line 160 "lev_comp.l"
 ST_RET(MONSTER_ID);
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 162 "lev_comp.l"
+#line 161 "lev_comp.l"
 ST_RET(monster_ID);
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 163 "lev_comp.l"
+#line 162 "lev_comp.l"
 ST_RET(MONSTER_GENERATION_ID);
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 164 "lev_comp.l"
+#line 163 "lev_comp.l"
 ST_RET(KEYTYPE_ID);
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 165 "lev_comp.l"
+#line 164 "lev_comp.l"
 ST_RET(TRAP_ID);
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 166 "lev_comp.l"
+#line 165 "lev_comp.l"
 ST_RET(DOOR_ID);
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 167 "lev_comp.l"
+#line 166 "lev_comp.l"
 ST_RET(ROOMDOOR_ID);
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 168 "lev_comp.l"
+#line 167 "lev_comp.l"
 ST_RET(DRAWBRIDGE_ID);
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 169 "lev_comp.l"
+#line 168 "lev_comp.l"
 ST_RET(MAZEWALK_ID);
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 170 "lev_comp.l"
+#line 169 "lev_comp.l"
 ST_RET(WALLIFY_ID);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 171 "lev_comp.l"
+#line 170 "lev_comp.l"
 ST_RET(REGION_ID);
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 172 "lev_comp.l"
+#line 171 "lev_comp.l"
 ST_RET(SPECIAL_REGION_ID);
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 173 "lev_comp.l"
+#line 172 "lev_comp.l"
 ST_RET(SPECIAL_LEVREGION_ID);
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 174 "lev_comp.l"
+#line 173 "lev_comp.l"
 ST_RET(NAMING_ID);
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 175 "lev_comp.l"
+#line 174 "lev_comp.l"
 ST_RET(ALTAR_ID);
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 176 "lev_comp.l"
+#line 175 "lev_comp.l"
 ST_RET(ANVIL_ID);
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 177 "lev_comp.l"
+#line 176 "lev_comp.l"
 ST_RET(NPC_ID);
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 178 "lev_comp.l"
+#line 177 "lev_comp.l"
 ST_RET(LADDER_ID);
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 179 "lev_comp.l"
+#line 178 "lev_comp.l"
 ST_RET(STAIR_ID);
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 180 "lev_comp.l"
+#line 179 "lev_comp.l"
 ST_RET(PORTAL_ID);
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 181 "lev_comp.l"
+#line 180 "lev_comp.l"
 ST_RET(LEVER_ID);
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 182 "lev_comp.l"
+#line 181 "lev_comp.l"
 ST_RET(TELEPRT_ID);
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 183 "lev_comp.l"
+#line 182 "lev_comp.l"
 ST_RET(BRANCH_ID);
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 184 "lev_comp.l"
+#line 183 "lev_comp.l"
 ST_RET(FOUNTAIN_ID);
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 185 "lev_comp.l"
+#line 184 "lev_comp.l"
 ST_RET(FLOOR_ID);
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 186 "lev_comp.l"
+#line 185 "lev_comp.l"
 ST_RET(THRONE_ID);
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 187 "lev_comp.l"
+#line 186 "lev_comp.l"
 ST_RET(MODRON_PORTAL_ID);
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 188 "lev_comp.l"
+#line 187 "lev_comp.l"
 ST_RET(SINK_ID);
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 189 "lev_comp.l"
+#line 188 "lev_comp.l"
 ST_RET(POOL_ID);
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 190 "lev_comp.l"
+#line 189 "lev_comp.l"
 ST_RET(NON_DIGGABLE_ID);
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 191 "lev_comp.l"
+#line 190 "lev_comp.l"
 ST_RET(NON_PASSWALL_ID);
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 192 "lev_comp.l"
+#line 191 "lev_comp.l"
 ST_RET(IF_ID);
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 193 "lev_comp.l"
+#line 192 "lev_comp.l"
 ST_RET(ELSE_ID);
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 194 "lev_comp.l"
+#line 193 "lev_comp.l"
 ST_RET(EXIT_ID);
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 195 "lev_comp.l"
+#line 194 "lev_comp.l"
 ST_RET(ROOM_ID);
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 196 "lev_comp.l"
+#line 195 "lev_comp.l"
 ST_RET(SUBROOM_ID);
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 197 "lev_comp.l"
+#line 196 "lev_comp.l"
 ST_RET(SUBTYPE_ID);
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 198 "lev_comp.l"
+#line 197 "lev_comp.l"
 ST_RET(RAND_CORRIDOR_ID);
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 199 "lev_comp.l"
+#line 198 "lev_comp.l"
 ST_RET(CORRIDOR_ID);
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 200 "lev_comp.l"
+#line 199 "lev_comp.l"
 ST_RET(TERRAIN_ID);
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 201 "lev_comp.l"
+#line 200 "lev_comp.l"
 ST_RET(terrain_ID);
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 202 "lev_comp.l"
+#line 201 "lev_comp.l"
 ST_RET(REPLACE_TERRAIN_ID);
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 203 "lev_comp.l"
+#line 202 "lev_comp.l"
 ST_RET(GOLD_ID);
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 204 "lev_comp.l"
+#line 203 "lev_comp.l"
 ST_RET(GRAVE_ID);
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 205 "lev_comp.l"
+#line 204 "lev_comp.l"
 ST_RET(BRAZIER_ID);
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 206 "lev_comp.l"
+#line 205 "lev_comp.l"
 ST_RET(SIGNPOST_ID);
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 207 "lev_comp.l"
+#line 206 "lev_comp.l"
 ST_RET(TREE_ID);
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 208 "lev_comp.l"
+#line 207 "lev_comp.l"
 ST_RET(ENGRAVING_ID);
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 209 "lev_comp.l"
+#line 208 "lev_comp.l"
 ST_RET(MINERALIZE_ID);
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 210 "lev_comp.l"
+#line 209 "lev_comp.l"
 ST_RET(NAME_ID);
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 211 "lev_comp.l"
+#line 210 "lev_comp.l"
 ST_RET(FOR_ID);
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 212 "lev_comp.l"
+#line 211 "lev_comp.l"
 ST_RET(TO_ID);
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 213 "lev_comp.l"
+#line 212 "lev_comp.l"
 ST_RET(LOOP_ID);
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 214 "lev_comp.l"
+#line 213 "lev_comp.l"
 ST_RET(SWITCH_ID);
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 215 "lev_comp.l"
+#line 214 "lev_comp.l"
 ST_RET(CASE_ID);
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 216 "lev_comp.l"
+#line 215 "lev_comp.l"
 ST_RET(BREAK_ID);
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 217 "lev_comp.l"
+#line 216 "lev_comp.l"
 ST_RET(DEFAULT_ID);
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 218 "lev_comp.l"
+#line 217 "lev_comp.l"
 ST_RET(FUNCTION_ID);
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 219 "lev_comp.l"
+#line 218 "lev_comp.l"
 ST_RET(SHUFFLE_ID);
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 220 "lev_comp.l"
+#line 219 "lev_comp.l"
 ST_RET(MONTYPE_ID);
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 221 "lev_comp.l"
+#line 220 "lev_comp.l"
 ST_RET(OBJTYPE_ID);
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 222 "lev_comp.l"
+#line 221 "lev_comp.l"
 ST_RET(TRAPTYPE_ID);
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 223 "lev_comp.l"
+#line 222 "lev_comp.l"
 ST_RET(TARGET_ID);
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 224 "lev_comp.l"
+#line 223 "lev_comp.l"
 ST_RET(TERTYPE_ID);
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 225 "lev_comp.l"
+#line 224 "lev_comp.l"
 ST_RET(TERTYPE2_ID);
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 226 "lev_comp.l"
+#line 225 "lev_comp.l"
 ST_RET(EFFECT_FLAG_ID);
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 227 "lev_comp.l"
+#line 226 "lev_comp.l"
 ST_RET(ARTIFACT_NAME_ID)
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 228 "lev_comp.l"
+#line 227 "lev_comp.l"
 ST_RET(selection_ID);
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 229 "lev_comp.l"
+#line 228 "lev_comp.l"
 ST_RET(rect_ID);
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 230 "lev_comp.l"
+#line 229 "lev_comp.l"
 ST_RET(fillrect_ID);
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 231 "lev_comp.l"
+#line 230 "lev_comp.l"
 ST_RET(line_ID);
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 232 "lev_comp.l"
+#line 231 "lev_comp.l"
 ST_RET(randline_ID);
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 233 "lev_comp.l"
+#line 232 "lev_comp.l"
 ST_RET(grow_ID);
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 234 "lev_comp.l"
+#line 233 "lev_comp.l"
 ST_RET(flood_ID);
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 235 "lev_comp.l"
+#line 234 "lev_comp.l"
 ST_RET(rndcoord_ID);
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 236 "lev_comp.l"
+#line 235 "lev_comp.l"
 ST_RET(circle_ID);
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 237 "lev_comp.l"
+#line 236 "lev_comp.l"
 ST_RET(ellipse_ID);
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 238 "lev_comp.l"
+#line 237 "lev_comp.l"
 ST_RET(filter_ID);
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 239 "lev_comp.l"
+#line 238 "lev_comp.l"
 ST_RET(gradient_ID);
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 240 "lev_comp.l"
+#line 239 "lev_comp.l"
 ST_RET(complement_ID);
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 241 "lev_comp.l"
+#line 240 "lev_comp.l"
 { savetoken(yytext); yylval.i=SEL_GRADIENT_RADIAL;  return GRADIENT_TYPE; }
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 242 "lev_comp.l"
+#line 241 "lev_comp.l"
 { savetoken(yytext); yylval.i=SEL_GRADIENT_SQUARE;  return GRADIENT_TYPE; }
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 243 "lev_comp.l"
+#line 242 "lev_comp.l"
 { savetoken(yytext); yylval.i=DRY;  return HUMIDITY_TYPE; }
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 244 "lev_comp.l"
+#line 243 "lev_comp.l"
 { savetoken(yytext); yylval.i=WET;  return HUMIDITY_TYPE; }
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 245 "lev_comp.l"
+#line 244 "lev_comp.l"
 { savetoken(yytext); yylval.i=HOT;  return HUMIDITY_TYPE; }
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 246 "lev_comp.l"
+#line 245 "lev_comp.l"
 { savetoken(yytext); yylval.i=SOLID;  return HUMIDITY_TYPE; }
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 247 "lev_comp.l"
+#line 246 "lev_comp.l"
 { savetoken(yytext); yylval.i=ANY_LOC;  return HUMIDITY_TYPE; }
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 248 "lev_comp.l"
+#line 247 "lev_comp.l"
 { savetoken(yytext); yylval.i=ICELOC;  return HUMIDITY_TYPE; }
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 249 "lev_comp.l"
+#line 248 "lev_comp.l"
 { savetoken(yytext); yylval.i=AIRLOC;  return HUMIDITY_TYPE; }
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 250 "lev_comp.l"
+#line 249 "lev_comp.l"
 { savetoken(yytext); yylval.i=FLOORLOC;  return HUMIDITY_TYPE; }
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 251 "lev_comp.l"
+#line 250 "lev_comp.l"
 ST_RET(LEV);
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-#line 252 "lev_comp.l"
+#line 251 "lev_comp.l"
 ST_RET(QUANTITY_ID);
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 253 "lev_comp.l"
+#line 252 "lev_comp.l"
 ST_RET(ELEMENTAL_ENCHANTMENT_ID);
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 254 "lev_comp.l"
+#line 253 "lev_comp.l"
 ST_RET(EXCEPTIONALITY_ID);
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 255 "lev_comp.l"
+#line 254 "lev_comp.l"
 ST_RET(MYTHIC_PREFIX_ID);
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 256 "lev_comp.l"
+#line 255 "lev_comp.l"
 ST_RET(MYTHIC_SUFFIX_ID);
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 257 "lev_comp.l"
+#line 256 "lev_comp.l"
 ST_RET(ENCHANTMENT_ID);
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 258 "lev_comp.l"
+#line 257 "lev_comp.l"
 ST_RET(CHARGES_ID);
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 259 "lev_comp.l"
+#line 258 "lev_comp.l"
 ST_RET(SPECIAL_QUALITY_ID);
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 260 "lev_comp.l"
+#line 259 "lev_comp.l"
 ST_RET(MANUAL_TYPE_ID);
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 261 "lev_comp.l"
+#line 260 "lev_comp.l"
 ST_RET(SPEFLAGS_ID);
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 262 "lev_comp.l"
+#line 261 "lev_comp.l"
 ST_RET(AGE_ID);
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 263 "lev_comp.l"
+#line 262 "lev_comp.l"
 ST_RET(BURIED_ID);
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 264 "lev_comp.l"
+#line 263 "lev_comp.l"
 ST_RET(ERODED_ID);
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
-#line 265 "lev_comp.l"
+#line 264 "lev_comp.l"
 ST_RET(ERODEPROOF_ID);
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 266 "lev_comp.l"
+#line 265 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return TRAPPED_STATE; }
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 267 "lev_comp.l"
+#line 266 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return TRAPPED_STATE; }
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 268 "lev_comp.l"
+#line 267 "lev_comp.l"
 ST_RET(RECHARGED_ID);
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 269 "lev_comp.l"
+#line 268 "lev_comp.l"
 ST_RET(INVIS_ID);
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 270 "lev_comp.l"
+#line 269 "lev_comp.l"
 ST_RET(GREASED_ID);
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 271 "lev_comp.l"
+#line 270 "lev_comp.l"
 ST_RET(INDESTRUCTIBLE_ID);
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 272 "lev_comp.l"
+#line 271 "lev_comp.l"
 ST_RET(LEVEL_TELEPORTER_ID);
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 273 "lev_comp.l"
+#line 272 "lev_comp.l"
 ST_RET(NO_PICKUP_ID);
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 274 "lev_comp.l"
+#line 273 "lev_comp.l"
 ST_RET(FEMALE_ID);
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 275 "lev_comp.l"
+#line 274 "lev_comp.l"
 ST_RET(MALE_ID);
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 276 "lev_comp.l"
+#line 275 "lev_comp.l"
 ST_RET(CANCELLED_ID);
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 277 "lev_comp.l"
+#line 276 "lev_comp.l"
 ST_RET(REVIVED_ID);
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 278 "lev_comp.l"
+#line 277 "lev_comp.l"
 ST_RET(AVENGE_ID);
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 279 "lev_comp.l"
+#line 278 "lev_comp.l"
 ST_RET(FLEEING_ID);
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 280 "lev_comp.l"
+#line 279 "lev_comp.l"
 ST_RET(BLINDED_ID);
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 281 "lev_comp.l"
+#line 280 "lev_comp.l"
 ST_RET(PARALYZED_ID);
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 282 "lev_comp.l"
+#line 281 "lev_comp.l"
 ST_RET(STUNNED_ID);
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 283 "lev_comp.l"
+#line 282 "lev_comp.l"
 ST_RET(CONFUSED_ID);
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 284 "lev_comp.l"
+#line 283 "lev_comp.l"
 ST_RET(SEENTRAPS_ID);
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-#line 285 "lev_comp.l"
+#line 284 "lev_comp.l"
 ST_RET(WAITFORU_ID);
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-#line 286 "lev_comp.l"
+#line 285 "lev_comp.l"
 ST_RET(PROTECTOR_ID);
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
-#line 287 "lev_comp.l"
+#line 286 "lev_comp.l"
 ST_RET(MAXHP_ID);
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 288 "lev_comp.l"
+#line 287 "lev_comp.l"
 ST_RET(LEVEL_ADJUSTMENT_ID);
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 289 "lev_comp.l"
+#line 288 "lev_comp.l"
 ST_RET(KEEP_ORIGINAL_INVENTORY_ID);
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 290 "lev_comp.l"
+#line 289 "lev_comp.l"
 ST_RET(SWITCHABLE_ID);
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
-#line 291 "lev_comp.l"
+#line 290 "lev_comp.l"
 ST_RET(SECRET_DOOR_ID);
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
-#line 292 "lev_comp.l"
+#line 291 "lev_comp.l"
 ST_RET(USES_UP_KEY_ID);
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-#line 293 "lev_comp.l"
+#line 292 "lev_comp.l"
 ST_RET(NON_PASSDOOR_ID);
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 294 "lev_comp.l"
+#line 293 "lev_comp.l"
 ST_RET(CONTINUOUSLY_USABLE_ID);
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
-#line 295 "lev_comp.l"
+#line 294 "lev_comp.l"
 ST_RET(LOCATION_SUBTYPE_ID);
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
-#line 296 "lev_comp.l"
+#line 295 "lev_comp.l"
 ST_RET(ALL_ID);
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-#line 297 "lev_comp.l"
+#line 296 "lev_comp.l"
 ST_RETF((yylval.i=1), HORIZ_OR_VERT);
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-#line 298 "lev_comp.l"
+#line 297 "lev_comp.l"
 { savetoken(yytext); yylval.i=2; return HORIZ_OR_VERT; }
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 299 "lev_comp.l"
+#line 298 "lev_comp.l"
 { savetoken(yytext); yylval.i=D_ISOPEN; return DOOR_STATE; }
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 300 "lev_comp.l"
+#line 299 "lev_comp.l"
 { savetoken(yytext); yylval.i=D_CLOSED; return DOOR_STATE; }
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 301 "lev_comp.l"
+#line 300 "lev_comp.l"
 { savetoken(yytext); yylval.i=D_LOCKED; return DOOR_STATE; }
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 302 "lev_comp.l"
+#line 301 "lev_comp.l"
 { savetoken(yytext); yylval.i=D_NODOOR; return DOOR_STATE; }
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 303 "lev_comp.l"
+#line 302 "lev_comp.l"
 { savetoken(yytext); yylval.i=D_BROKEN; return DOOR_STATE; }
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 304 "lev_comp.l"
+#line 303 "lev_comp.l"
 { savetoken(yytext); yylval.i=D_SECRET; return DOOR_STATE; }
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 305 "lev_comp.l"
+#line 304 "lev_comp.l"
 { savetoken(yytext); yylval.i=W_NORTH; return DIRECTION; }
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-#line 306 "lev_comp.l"
+#line 305 "lev_comp.l"
 { savetoken(yytext); yylval.i=W_EAST; return DIRECTION; }
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 307 "lev_comp.l"
+#line 306 "lev_comp.l"
 { savetoken(yytext); yylval.i=W_SOUTH; return DIRECTION; }
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 308 "lev_comp.l"
+#line 307 "lev_comp.l"
 { savetoken(yytext); yylval.i=W_WEST; return DIRECTION; }
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 309 "lev_comp.l"
+#line 308 "lev_comp.l"
 { savetoken(yytext); yylval.i = -1; return RANDOM_TYPE; }
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 310 "lev_comp.l"
+#line 309 "lev_comp.l"
 { savetoken(yytext); yylval.i = -1; return RANDOM_TYPE_BRACKET; }
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 311 "lev_comp.l"
+#line 310 "lev_comp.l"
 { savetoken(yytext); yylval.i = -2; return NONE; }
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 312 "lev_comp.l"
+#line 311 "lev_comp.l"
 ST_RET(A_REGISTER);
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 313 "lev_comp.l"
+#line 312 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return LEFT_OR_RIGHT; }
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-#line 314 "lev_comp.l"
+#line 313 "lev_comp.l"
 { savetoken(yytext); yylval.i=2; return LEFT_OR_RIGHT; }
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 315 "lev_comp.l"
+#line 314 "lev_comp.l"
 { savetoken(yytext); yylval.i=3; return CENTER; }
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-#line 316 "lev_comp.l"
+#line 315 "lev_comp.l"
 { savetoken(yytext); yylval.i=4; return LEFT_OR_RIGHT; }
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
-#line 317 "lev_comp.l"
+#line 316 "lev_comp.l"
 { savetoken(yytext); yylval.i=5; return LEFT_OR_RIGHT; }
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-#line 318 "lev_comp.l"
+#line 317 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return TOP_OR_BOT; }
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
-#line 319 "lev_comp.l"
+#line 318 "lev_comp.l"
 { savetoken(yytext); yylval.i=5; return TOP_OR_BOT; }
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 320 "lev_comp.l"
+#line 319 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return LIGHT_STATE; }
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 321 "lev_comp.l"
+#line 320 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return LIGHT_STATE; }
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 322 "lev_comp.l"
+#line 321 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return FILLING; }
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 323 "lev_comp.l"
+#line 322 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return FILLING; }
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 324 "lev_comp.l"
+#line 323 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return IRREGULAR; }
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-#line 325 "lev_comp.l"
+#line 324 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return IRREGULAR; }
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
-#line 326 "lev_comp.l"
+#line 325 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return JOINED; }
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-#line 327 "lev_comp.l"
+#line 326 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return JOINED; }
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
-#line 328 "lev_comp.l"
+#line 327 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return LIMITED; }
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
-#line 329 "lev_comp.l"
+#line 328 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return LIMITED; }
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
-#line 330 "lev_comp.l"
+#line 329 "lev_comp.l"
 { savetoken(yytext); yylval.i= AM_NONE; return ALIGNMENT; }
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-#line 331 "lev_comp.l"
+#line 330 "lev_comp.l"
 { savetoken(yytext); yylval.i= AM_LAWFUL; return ALIGNMENT; }
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-#line 332 "lev_comp.l"
+#line 331 "lev_comp.l"
 { savetoken(yytext); yylval.i= AM_NEUTRAL; return ALIGNMENT; }
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-#line 333 "lev_comp.l"
+#line 332 "lev_comp.l"
 { savetoken(yytext); yylval.i= AM_CHAOTIC; return ALIGNMENT; }
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
-#line 334 "lev_comp.l"
+#line 333 "lev_comp.l"
 { savetoken(yytext); yylval.i= AM_SPLEV_CO; return ALIGNMENT; }
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-#line 335 "lev_comp.l"
+#line 334 "lev_comp.l"
 { savetoken(yytext); yylval.i= AM_SPLEV_NONCO; return ALIGNMENT; }
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-#line 336 "lev_comp.l"
+#line 335 "lev_comp.l"
 { savetoken(yytext); yylval.i= ALTAR_SUBTYPE_NORMAL; return ALTAR_SUBTYPE; }
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-#line 337 "lev_comp.l"
+#line 336 "lev_comp.l"
 { savetoken(yytext); yylval.i= ALTAR_SUBTYPE_HIGH; return ALTAR_SUBTYPE; }
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 338 "lev_comp.l"
+#line 337 "lev_comp.l"
 { savetoken(yytext); yylval.i= ALTAR_SUBTYPE_MOLOCH; return ALTAR_SUBTYPE; }
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 339 "lev_comp.l"
+#line 338 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return MON_ATTITUDE; }
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-#line 340 "lev_comp.l"
+#line 339 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return MON_ATTITUDE; }
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-#line 341 "lev_comp.l"
+#line 340 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return MON_ALERTNESS; }
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 342 "lev_comp.l"
+#line 341 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return MON_ALERTNESS; }
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 343 "lev_comp.l"
+#line 342 "lev_comp.l"
 { savetoken(yytext); yylval.i= M_AP_FURNITURE; return MON_APPEARANCE; }
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 344 "lev_comp.l"
+#line 343 "lev_comp.l"
 { savetoken(yytext); yylval.i= M_AP_MONSTER;   return MON_APPEARANCE; }
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 345 "lev_comp.l"
+#line 344 "lev_comp.l"
 { savetoken(yytext); yylval.i= M_AP_OBJECT;    return MON_APPEARANCE; }
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 346 "lev_comp.l"
+#line 345 "lev_comp.l"
 { savetoken(yytext); yylval.i=2; return ALTAR_TYPE; }
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 347 "lev_comp.l"
+#line 346 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return ALTAR_TYPE; }
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
-#line 348 "lev_comp.l"
+#line 347 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return ALTAR_TYPE; }
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-#line 349 "lev_comp.l"
+#line 348 "lev_comp.l"
 { savetoken(yytext); yylval.i=2; return UP_OR_DOWN; }
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-#line 350 "lev_comp.l"
+#line 349 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return UP_OR_DOWN; }
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
-#line 351 "lev_comp.l"
+#line 350 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return UP_OR_DOWN; }
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-#line 352 "lev_comp.l"
+#line 351 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return ACTIVE_OR_INACTIVE; }
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
-#line 353 "lev_comp.l"
+#line 352 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return ACTIVE_OR_INACTIVE; }
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-#line 354 "lev_comp.l"
+#line 353 "lev_comp.l"
 { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_BASE; return MODRON_PORTAL_TYPE; }
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
-#line 355 "lev_comp.l"
+#line 354 "lev_comp.l"
 { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_SPHERICAL; return MODRON_PORTAL_TYPE; }
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
-#line 356 "lev_comp.l"
+#line 355 "lev_comp.l"
 { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_CYLINDRICAL; return MODRON_PORTAL_TYPE; }
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
-#line 357 "lev_comp.l"
+#line 356 "lev_comp.l"
 { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_TETRAHEDRAL; return MODRON_PORTAL_TYPE; }
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-#line 358 "lev_comp.l"
+#line 357 "lev_comp.l"
 { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_CUBICAL; return MODRON_PORTAL_TYPE; }
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 359 "lev_comp.l"
+#line 358 "lev_comp.l"
 { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_OCTAHEDRAL; return MODRON_PORTAL_TYPE; }
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
-#line 360 "lev_comp.l"
+#line 359 "lev_comp.l"
 { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_DODECAHEDRAL; return MODRON_PORTAL_TYPE; }
 	YY_BREAK
 case 225:
 YY_RULE_SETUP
-#line 361 "lev_comp.l"
+#line 360 "lev_comp.l"
 { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_ICOSAHEDRAL; return MODRON_PORTAL_TYPE; }
 	YY_BREAK
 case 226:
 YY_RULE_SETUP
-#line 362 "lev_comp.l"
+#line 361 "lev_comp.l"
 { savetoken(yytext); yylval.i=MAX_NPC_SUBTYPES; return NPC_TYPE; }
 	YY_BREAK
 case 227:
 YY_RULE_SETUP
-#line 363 "lev_comp.l"
+#line 362 "lev_comp.l"
 { savetoken(yytext); yylval.i=NPC_ARTIFICER; return NPC_TYPE; }
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
-#line 364 "lev_comp.l"
+#line 363 "lev_comp.l"
 { savetoken(yytext); yylval.i=NPC_GEOLOGIST; return NPC_TYPE; }
 	YY_BREAK
 case 229:
 YY_RULE_SETUP
-#line 365 "lev_comp.l"
+#line 364 "lev_comp.l"
 { savetoken(yytext); yylval.i=NPC_WARP_ENGINEER; return NPC_TYPE; }
 	YY_BREAK
 case 230:
 YY_RULE_SETUP
-#line 366 "lev_comp.l"
+#line 365 "lev_comp.l"
 { savetoken(yytext); yylval.i=NPC_HERMIT; return NPC_TYPE; }
 	YY_BREAK
 case 231:
 YY_RULE_SETUP
-#line 367 "lev_comp.l"
+#line 366 "lev_comp.l"
 { savetoken(yytext); yylval.i=NPC_HERMIT2; return NPC_TYPE; }
 	YY_BREAK
 case 232:
 YY_RULE_SETUP
-#line 368 "lev_comp.l"
+#line 367 "lev_comp.l"
 { savetoken(yytext); yylval.i=NPC_HERMIT3; return NPC_TYPE; }
 	YY_BREAK
 case 233:
 YY_RULE_SETUP
-#line 369 "lev_comp.l"
+#line 368 "lev_comp.l"
 { savetoken(yytext); yylval.i=NPC_ORC_HERMIT3; return NPC_TYPE; }
 	YY_BREAK
 case 234:
 YY_RULE_SETUP
-#line 370 "lev_comp.l"
+#line 369 "lev_comp.l"
 { savetoken(yytext); yylval.i=NPC_QUANTUM_MECHANIC; return NPC_TYPE; }
 	YY_BREAK
 case 235:
 YY_RULE_SETUP
-#line 371 "lev_comp.l"
+#line 370 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOUNTAIN_NATURAL; return FOUNTAIN_TYPE; }
 	YY_BREAK
 case 236:
 YY_RULE_SETUP
-#line 372 "lev_comp.l"
+#line 371 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOUNTAIN_MAGIC; return FOUNTAIN_TYPE; }
 	YY_BREAK
 case 237:
 YY_RULE_SETUP
-#line 373 "lev_comp.l"
+#line 372 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOUNTAIN_HEALING; return FOUNTAIN_TYPE; }
 	YY_BREAK
 case 238:
 YY_RULE_SETUP
-#line 374 "lev_comp.l"
+#line 373 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOUNTAIN_MANA; return FOUNTAIN_TYPE; }
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
-#line 375 "lev_comp.l"
+#line 374 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOUNTAIN_POWER; return FOUNTAIN_TYPE; }
 	YY_BREAK
 case 240:
 YY_RULE_SETUP
-#line 376 "lev_comp.l"
+#line 375 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOUNTAIN_POISON; return FOUNTAIN_TYPE; }
 	YY_BREAK
 case 241:
 YY_RULE_SETUP
-#line 377 "lev_comp.l"
+#line 376 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOUNTAIN_WATER; return FOUNTAIN_TYPE; }
 	YY_BREAK
 case 242:
 YY_RULE_SETUP
-#line 378 "lev_comp.l"
+#line 377 "lev_comp.l"
 { savetoken(yytext); yylval.i=MAX_FOUNTAIN_SUBTYPES; return FOUNTAIN_TYPE; }
 	YY_BREAK
 case 243:
 YY_RULE_SETUP
-#line 379 "lev_comp.l"
+#line 378 "lev_comp.l"
 { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_WEAPON; return SPECIAL_OBJECT_TYPE; }
 	YY_BREAK
 case 244:
 YY_RULE_SETUP
-#line 380 "lev_comp.l"
+#line 379 "lev_comp.l"
 { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_ARMOR; return SPECIAL_OBJECT_TYPE; }
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
-#line 381 "lev_comp.l"
+#line 380 "lev_comp.l"
 { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_ARTIFACT; return SPECIAL_OBJECT_TYPE; }
 	YY_BREAK
 case 246:
 YY_RULE_SETUP
-#line 382 "lev_comp.l"
+#line 381 "lev_comp.l"
 { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_CLASS_ARTIFACT; return SPECIAL_OBJECT_TYPE; }
 	YY_BREAK
 case 247:
 YY_RULE_SETUP
-#line 383 "lev_comp.l"
+#line 382 "lev_comp.l"
 { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_ORC_ARTIFACT; return SPECIAL_OBJECT_TYPE; }
 	YY_BREAK
 case 248:
 YY_RULE_SETUP
-#line 384 "lev_comp.l"
+#line 383 "lev_comp.l"
 { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_RANDOM_CONTENTS; return SPECIAL_OBJECT_TYPE; }
 	YY_BREAK
 case 249:
 YY_RULE_SETUP
-#line 385 "lev_comp.l"
+#line 384 "lev_comp.l"
 { savetoken(yytext); yylval.i=CMAP_NORMAL; return CMAP_TYPE; }
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
-#line 386 "lev_comp.l"
+#line 385 "lev_comp.l"
 { savetoken(yytext); yylval.i=CMAP_GNOMISH_MINES; return CMAP_TYPE; }
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 387 "lev_comp.l"
+#line 386 "lev_comp.l"
 { savetoken(yytext); yylval.i=CMAP_GEHENNOM; return CMAP_TYPE; }
 	YY_BREAK
 case 252:
 YY_RULE_SETUP
-#line 388 "lev_comp.l"
+#line 387 "lev_comp.l"
 { savetoken(yytext); yylval.i=CMAP_UNDEAD_STYLE; return CMAP_TYPE; }
 	YY_BREAK
 case 253:
 YY_RULE_SETUP
-#line 389 "lev_comp.l"
+#line 388 "lev_comp.l"
 { savetoken(yytext); yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
-#line 390 "lev_comp.l"
+#line 389 "lev_comp.l"
 { savetoken(yytext); yylval.i=CMAP_ELEMENTAL_PLANES; return CMAP_TYPE; }
 	YY_BREAK
 case 255:
 YY_RULE_SETUP
-#line 391 "lev_comp.l"
+#line 390 "lev_comp.l"
 { savetoken(yytext); yylval.i=CMAP_ASTRAL; return CMAP_TYPE; }
 	YY_BREAK
 case 256:
 YY_RULE_SETUP
-#line 392 "lev_comp.l"
+#line 391 "lev_comp.l"
 { savetoken(yytext); yylval.i=CMAP_GEHENNOM_CAVERNOUS; return CMAP_TYPE; }
 	YY_BREAK
 case 257:
 YY_RULE_SETUP
-#line 393 "lev_comp.l"
+#line 392 "lev_comp.l"
 { savetoken(yytext); yylval.i=CMAP_GARDEN; return CMAP_TYPE; }
 	YY_BREAK
 case 258:
 YY_RULE_SETUP
-#line 394 "lev_comp.l"
+#line 393 "lev_comp.l"
 { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_NORMAL; return FLOOR_SUBTYPE; }
 	YY_BREAK
 case 259:
 YY_RULE_SETUP
-#line 395 "lev_comp.l"
+#line 394 "lev_comp.l"
 { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_MARBLE; return FLOOR_SUBTYPE; }
 	YY_BREAK
 case 260:
 YY_RULE_SETUP
-#line 396 "lev_comp.l"
+#line 395 "lev_comp.l"
 { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_PARQUET; return FLOOR_SUBTYPE; }
 	YY_BREAK
 case 261:
 YY_RULE_SETUP
-#line 397 "lev_comp.l"
+#line 396 "lev_comp.l"
 { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_COBBLESTONE; return FLOOR_SUBTYPE; }
 	YY_BREAK
 case 262:
 YY_RULE_SETUP
-#line 398 "lev_comp.l"
+#line 397 "lev_comp.l"
 { savetoken(yytext); yylval.i=GRASS_SUBTYPE_NORMAL; return FLOOR_SUBTYPE; }
 	YY_BREAK
 case 263:
 YY_RULE_SETUP
-#line 399 "lev_comp.l"
+#line 398 "lev_comp.l"
 { savetoken(yytext); yylval.i=GRASS_SUBTYPE_SWAMPY; return FLOOR_SUBTYPE; }
 	YY_BREAK
 case 264:
 YY_RULE_SETUP
-#line 400 "lev_comp.l"
+#line 399 "lev_comp.l"
 { savetoken(yytext); yylval.i=GROUND_SUBTYPE_NORMAL; return FLOOR_SUBTYPE; }
 	YY_BREAK
 case 265:
 YY_RULE_SETUP
-#line 401 "lev_comp.l"
+#line 400 "lev_comp.l"
 { savetoken(yytext); yylval.i=GROUND_SUBTYPE_SWAMPY; return FLOOR_SUBTYPE; }
 	YY_BREAK
 case 266:
 YY_RULE_SETUP
-#line 402 "lev_comp.l"
+#line 401 "lev_comp.l"
 { savetoken(yytext); yylval.i=GROUND_SUBTYPE_DESERT_SAND; return FLOOR_SUBTYPE; }
 	YY_BREAK
 case 267:
 YY_RULE_SETUP
-#line 403 "lev_comp.l"
+#line 402 "lev_comp.l"
 { savetoken(yytext); yylval.i=ROOM; return FLOOR_TYPE; }
 	YY_BREAK
 case 268:
 YY_RULE_SETUP
-#line 404 "lev_comp.l"
+#line 403 "lev_comp.l"
 { savetoken(yytext); yylval.i=CORR; return FLOOR_TYPE; }
 	YY_BREAK
 case 269:
 YY_RULE_SETUP
-#line 405 "lev_comp.l"
+#line 404 "lev_comp.l"
 { savetoken(yytext); yylval.i=GRASS; return FLOOR_TYPE; }
 	YY_BREAK
 case 270:
 YY_RULE_SETUP
-#line 406 "lev_comp.l"
+#line 405 "lev_comp.l"
 { savetoken(yytext); yylval.i=GROUND; return FLOOR_TYPE; }
 	YY_BREAK
 case 271:
 YY_RULE_SETUP
-#line 407 "lev_comp.l"
+#line 406 "lev_comp.l"
 { savetoken(yytext); yylval.i=FIRE_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 	YY_BREAK
 case 272:
 YY_RULE_SETUP
-#line 408 "lev_comp.l"
+#line 407 "lev_comp.l"
 { savetoken(yytext); yylval.i=COLD_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 	YY_BREAK
 case 273:
 YY_RULE_SETUP
-#line 409 "lev_comp.l"
+#line 408 "lev_comp.l"
 { savetoken(yytext); yylval.i=LIGHTNING_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 	YY_BREAK
 case 274:
 YY_RULE_SETUP
-#line 410 "lev_comp.l"
+#line 409 "lev_comp.l"
 { savetoken(yytext); yylval.i=DEATH_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 	YY_BREAK
 case 275:
 YY_RULE_SETUP
-#line 411 "lev_comp.l"
+#line 410 "lev_comp.l"
 { savetoken(yytext); yylval.i=EXCEPTIONALITY_NORMAL; return EXCEPTIONALITY_TYPE; }
 	YY_BREAK
 case 276:
 YY_RULE_SETUP
-#line 412 "lev_comp.l"
+#line 411 "lev_comp.l"
 { savetoken(yytext); yylval.i=EXCEPTIONALITY_EXCEPTIONAL; return EXCEPTIONALITY_TYPE; }
 	YY_BREAK
 case 277:
 YY_RULE_SETUP
-#line 413 "lev_comp.l"
+#line 412 "lev_comp.l"
 { savetoken(yytext); yylval.i=EXCEPTIONALITY_ELITE; return EXCEPTIONALITY_TYPE; }
 	YY_BREAK
 case 278:
 YY_RULE_SETUP
-#line 414 "lev_comp.l"
+#line 413 "lev_comp.l"
 { savetoken(yytext); yylval.i=EXCEPTIONALITY_CELESTIAL; return EXCEPTIONALITY_TYPE; }
 	YY_BREAK
 case 279:
 YY_RULE_SETUP
-#line 415 "lev_comp.l"
+#line 414 "lev_comp.l"
 { savetoken(yytext); yylval.i=EXCEPTIONALITY_PRIMORDIAL; return EXCEPTIONALITY_TYPE; }
 	YY_BREAK
 case 280:
 YY_RULE_SETUP
-#line 416 "lev_comp.l"
+#line 415 "lev_comp.l"
 { savetoken(yytext); yylval.i=EXCEPTIONALITY_INFERNAL; return EXCEPTIONALITY_TYPE; }
 	YY_BREAK
 case 281:
 YY_RULE_SETUP
-#line 417 "lev_comp.l"
+#line 416 "lev_comp.l"
 { savetoken(yytext); yylval.i=MYTHIC_PREFIX_NONE; return MYTHIC_PREFIX_TYPE; }
 	YY_BREAK
 case 282:
 YY_RULE_SETUP
-#line 418 "lev_comp.l"
+#line 417 "lev_comp.l"
 { savetoken(yytext); yylval.i=MYTHIC_SUFFIX_NONE; return MYTHIC_SUFFIX_TYPE; }
 	YY_BREAK
 case 283:
 YY_RULE_SETUP
-#line 419 "lev_comp.l"
+#line 418 "lev_comp.l"
 { savetoken(yytext); yylval.i=REGION_GENERAL; return SPECIAL_REGION_TYPE; }
 	YY_BREAK
 case 284:
 YY_RULE_SETUP
-#line 420 "lev_comp.l"
+#line 419 "lev_comp.l"
 { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_SEEN; return SPECIAL_REGION_TYPE; }
 	YY_BREAK
 case 285:
 YY_RULE_SETUP
-#line 421 "lev_comp.l"
+#line 420 "lev_comp.l"
 { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_TRUE_NATURE_REVEALED; return SPECIAL_REGION_TYPE; }
 	YY_BREAK
 case 286:
 YY_RULE_SETUP
-#line 422 "lev_comp.l"
+#line 421 "lev_comp.l"
 { savetoken(yytext); yylval.i=SPECIAL_LEVEL_NAMING_REVEALED_NEVER; return NAMING_TYPE; }
 	YY_BREAK
 case 287:
 YY_RULE_SETUP
-#line 423 "lev_comp.l"
+#line 422 "lev_comp.l"
 { savetoken(yytext); yylval.i=SPECIAL_LEVEL_NAMING_REVEALED_ON_ARRIVAL; return NAMING_TYPE; }
 	YY_BREAK
 case 288:
 YY_RULE_SETUP
-#line 424 "lev_comp.l"
+#line 423 "lev_comp.l"
 { savetoken(yytext); yylval.i=SPECIAL_LEVEL_NAMING_REVEALED_ON_SEEING_MONSTER; return NAMING_TYPE; }
 	YY_BREAK
 case 289:
 YY_RULE_SETUP
-#line 425 "lev_comp.l"
+#line 424 "lev_comp.l"
 { savetoken(yytext); yylval.i=LEVER_EFFECT_NONE; return LEVER_EFFECT_TYPE; }
 	YY_BREAK
 case 290:
 YY_RULE_SETUP
-#line 426 "lev_comp.l"
+#line 425 "lev_comp.l"
 { savetoken(yytext); yylval.i=LEVER_EFFECT_OPEN_DOOR; return LEVER_EFFECT_TYPE; }
 	YY_BREAK
 case 291:
 YY_RULE_SETUP
-#line 427 "lev_comp.l"
+#line 426 "lev_comp.l"
 { savetoken(yytext); yylval.i=LEVER_EFFECT_LOCK_DOOR; return LEVER_EFFECT_TYPE; }
 	YY_BREAK
 case 292:
 YY_RULE_SETUP
-#line 428 "lev_comp.l"
+#line 427 "lev_comp.l"
 { savetoken(yytext); yylval.i=LEVER_EFFECT_OPEN_LOCK_DOOR; return LEVER_EFFECT_TYPE; }
 	YY_BREAK
 case 293:
 YY_RULE_SETUP
-#line 429 "lev_comp.l"
+#line 428 "lev_comp.l"
 { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_CLOSED_DOOR; return LEVER_EFFECT_TYPE; }
 	YY_BREAK
 case 294:
 YY_RULE_SETUP
-#line 430 "lev_comp.l"
+#line 429 "lev_comp.l"
 { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_LOCATION_TYPE; return LEVER_EFFECT_TYPE; }
 	YY_BREAK
 case 295:
 YY_RULE_SETUP
-#line 431 "lev_comp.l"
+#line 430 "lev_comp.l"
 { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE; return LEVER_EFFECT_TYPE; }
 	YY_BREAK
 case 296:
 YY_RULE_SETUP
-#line 432 "lev_comp.l"
+#line 431 "lev_comp.l"
 { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_TRAP; return LEVER_EFFECT_TYPE; }
 	YY_BREAK
 case 297:
 YY_RULE_SETUP
-#line 433 "lev_comp.l"
+#line 432 "lev_comp.l"
 { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_OBJECT; return LEVER_EFFECT_TYPE; }
 	YY_BREAK
 case 298:
 YY_RULE_SETUP
-#line 434 "lev_comp.l"
+#line 433 "lev_comp.l"
 { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_MONSTER; return LEVER_EFFECT_TYPE; }
 	YY_BREAK
 case 299:
 YY_RULE_SETUP
-#line 435 "lev_comp.l"
+#line 434 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_WOODEN; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 300:
 YY_RULE_SETUP
-#line 436 "lev_comp.l"
+#line 435 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_WOODEN_WINDOWED; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 301:
 YY_RULE_SETUP
-#line 437 "lev_comp.l"
+#line 436 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_IRON; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 302:
 YY_RULE_SETUP
-#line 438 "lev_comp.l"
+#line 437 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_IRON_WINDOWED; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 303:
 YY_RULE_SETUP
-#line 439 "lev_comp.l"
+#line 438 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_IRON_BARS; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 304:
 YY_RULE_SETUP
-#line 440 "lev_comp.l"
+#line 439 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_MAGIC; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 305:
 YY_RULE_SETUP
-#line 441 "lev_comp.l"
+#line 440 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_MAGIC_WINDOWED; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 306:
 YY_RULE_SETUP
-#line 442 "lev_comp.l"
+#line 441 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_MODRON; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 307:
 YY_RULE_SETUP
-#line 443 "lev_comp.l"
+#line 442 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_REINFORCED; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 308:
 YY_RULE_SETUP
-#line 444 "lev_comp.l"
+#line 443 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_STONE; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 309:
 YY_RULE_SETUP
-#line 445 "lev_comp.l"
+#line 444 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_OBSIDIAN; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 310:
 YY_RULE_SETUP
-#line 446 "lev_comp.l"
+#line 445 "lev_comp.l"
 { savetoken(yytext); yylval.i=DOOR_SUBTYPE_BLACK_GATE; return DOOR_SUBTYPE; }
 	YY_BREAK
 case 311:
 YY_RULE_SETUP
-#line 447 "lev_comp.l"
+#line 446 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_NORMAL; return TREE_SUBTYPE; }
 	YY_BREAK
 case 312:
 YY_RULE_SETUP
-#line 448 "lev_comp.l"
+#line 447 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_OAK; return TREE_SUBTYPE; }
 	YY_BREAK
 case 313:
 YY_RULE_SETUP
-#line 449 "lev_comp.l"
+#line 448 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_SPRUCE; return TREE_SUBTYPE; }
 	YY_BREAK
 case 314:
 YY_RULE_SETUP
-#line 450 "lev_comp.l"
+#line 449 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_FIR; return TREE_SUBTYPE; }
 	YY_BREAK
 case 315:
 YY_RULE_SETUP
-#line 451 "lev_comp.l"
+#line 450 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_DATE_PALM; return TREE_SUBTYPE; }
 	YY_BREAK
 case 316:
 YY_RULE_SETUP
-#line 452 "lev_comp.l"
+#line 451 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_APPLE; return TREE_SUBTYPE; }
 	YY_BREAK
 case 317:
 YY_RULE_SETUP
-#line 453 "lev_comp.l"
+#line 452 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_FIG; return TREE_SUBTYPE; }
 	YY_BREAK
 case 318:
 YY_RULE_SETUP
-#line 454 "lev_comp.l"
+#line 453 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_BANANA; return TREE_SUBTYPE; }
 	YY_BREAK
 case 319:
 YY_RULE_SETUP
-#line 455 "lev_comp.l"
+#line 454 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_ORANGE; return TREE_SUBTYPE; }
 	YY_BREAK
 case 320:
 YY_RULE_SETUP
-#line 456 "lev_comp.l"
+#line 455 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_PITAYA; return TREE_SUBTYPE; }
 	YY_BREAK
 case 321:
 YY_RULE_SETUP
-#line 457 "lev_comp.l"
+#line 456 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_SMALL; return TREE_SUBTYPE; }
 	YY_BREAK
 case 322:
 YY_RULE_SETUP
-#line 458 "lev_comp.l"
+#line 457 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_SUBTYPE_FIR_SNOWY; return TREE_SUBTYPE; }
 	YY_BREAK
 case 323:
 YY_RULE_SETUP
-#line 459 "lev_comp.l"
+#line 458 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return INITIALIZE_TYPE; }
 	YY_BREAK
 case 324:
 YY_RULE_SETUP
-#line 460 "lev_comp.l"
+#line 459 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return INITIALIZE_TYPE; }
 	YY_BREAK
 case 325:
 YY_RULE_SETUP
-#line 461 "lev_comp.l"
+#line 460 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOREST_TYPE_NORMAL; return FOREST_TYPE; }
 	YY_BREAK
 case 326:
 YY_RULE_SETUP
-#line 462 "lev_comp.l"
+#line 461 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOREST_TYPE_DECIDUOUS; return FOREST_TYPE; }
 	YY_BREAK
 case 327:
 YY_RULE_SETUP
-#line 463 "lev_comp.l"
+#line 462 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOREST_TYPE_CONIFEROUS; return FOREST_TYPE; }
 	YY_BREAK
 case 328:
 YY_RULE_SETUP
-#line 464 "lev_comp.l"
+#line 463 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOREST_TYPE_TROPICAL; return FOREST_TYPE; }
 	YY_BREAK
 case 329:
 YY_RULE_SETUP
-#line 465 "lev_comp.l"
+#line 464 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOREST_TYPE_DESERT; return FOREST_TYPE; }
 	YY_BREAK
 case 330:
 YY_RULE_SETUP
-#line 466 "lev_comp.l"
+#line 465 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOREST_TYPE_GARDEN; return FOREST_TYPE; }
 	YY_BREAK
 case 331:
 YY_RULE_SETUP
-#line 467 "lev_comp.l"
+#line 466 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOREST_TYPE_SWAMP; return FOREST_TYPE; }
 	YY_BREAK
 case 332:
 YY_RULE_SETUP
-#line 468 "lev_comp.l"
+#line 467 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOREST_TYPE_ISLANDS; return FOREST_TYPE; }
 	YY_BREAK
 case 333:
 YY_RULE_SETUP
-#line 469 "lev_comp.l"
+#line 468 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOREST_TYPE_UNDEAD; return FOREST_TYPE; }
 	YY_BREAK
 case 334:
 YY_RULE_SETUP
-#line 470 "lev_comp.l"
+#line 469 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOREST_TYPE_GEHENNOM; return FOREST_TYPE; }
 	YY_BREAK
 case 335:
 YY_RULE_SETUP
-#line 471 "lev_comp.l"
+#line 470 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOREST_TYPE_SNOWY; return FOREST_TYPE; }
 	YY_BREAK
 case 336:
 YY_RULE_SETUP
-#line 472 "lev_comp.l"
+#line 471 "lev_comp.l"
 { savetoken(yytext); yylval.i=MANUAL_INFERNAL_INHABITANTS_OF_GEHENNOM; return MANUAL_TYPE; }
 	YY_BREAK
 case 337:
 YY_RULE_SETUP
-#line 473 "lev_comp.l"
+#line 472 "lev_comp.l"
 { savetoken(yytext); yylval.i=-1; return LEVEL_TELEPORT_DIRECTION_TYPE; }
 	YY_BREAK
 case 338:
 YY_RULE_SETUP
-#line 474 "lev_comp.l"
+#line 473 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return LEVEL_TELEPORT_DIRECTION_TYPE; }
 	YY_BREAK
 case 339:
 YY_RULE_SETUP
-#line 475 "lev_comp.l"
+#line 474 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return LEVEL_TELEPORT_END_TYPE; }
 	YY_BREAK
 case 340:
 YY_RULE_SETUP
-#line 476 "lev_comp.l"
+#line 475 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return LEVEL_TELEPORT_END_TYPE; }
 	YY_BREAK
 case 341:
 YY_RULE_SETUP
-#line 477 "lev_comp.l"
+#line 476 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return BOOLEAN; }
 	YY_BREAK
 case 342:
 YY_RULE_SETUP
-#line 478 "lev_comp.l"
+#line 477 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return BOOLEAN; }
 	YY_BREAK
 case 343:
 YY_RULE_SETUP
-#line 479 "lev_comp.l"
+#line 478 "lev_comp.l"
 { savetoken(yytext); yylval.i=DUST; return ENGRAVING_TYPE; }
 	YY_BREAK
 case 344:
 YY_RULE_SETUP
-#line 480 "lev_comp.l"
+#line 479 "lev_comp.l"
 { savetoken(yytext); yylval.i=ENGRAVE; return ENGRAVING_TYPE; }
 	YY_BREAK
 case 345:
 YY_RULE_SETUP
-#line 481 "lev_comp.l"
+#line 480 "lev_comp.l"
 { savetoken(yytext); yylval.i=BURN; return ENGRAVING_TYPE; }
 	YY_BREAK
 case 346:
 YY_RULE_SETUP
-#line 482 "lev_comp.l"
+#line 481 "lev_comp.l"
 { savetoken(yytext); yylval.i=MARK; return ENGRAVING_TYPE; }
 	YY_BREAK
 case 347:
 YY_RULE_SETUP
-#line 483 "lev_comp.l"
+#line 482 "lev_comp.l"
 { savetoken(yytext); yylval.i=ENGR_BLOOD; return ENGRAVING_TYPE; }
 	YY_BREAK
 case 348:
 YY_RULE_SETUP
-#line 484 "lev_comp.l"
+#line 483 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return CURSE_TYPE; }
 	YY_BREAK
 case 349:
 YY_RULE_SETUP
-#line 485 "lev_comp.l"
+#line 484 "lev_comp.l"
 { savetoken(yytext); yylval.i=2; return CURSE_TYPE; }
 	YY_BREAK
 case 350:
 YY_RULE_SETUP
-#line 486 "lev_comp.l"
+#line 485 "lev_comp.l"
 { savetoken(yytext); yylval.i=3; return CURSE_TYPE; }
 	YY_BREAK
 case 351:
 YY_RULE_SETUP
-#line 487 "lev_comp.l"
+#line 486 "lev_comp.l"
 { savetoken(yytext); yylval.i=4; return CURSE_TYPE; }
 	YY_BREAK
 case 352:
 YY_RULE_SETUP
-#line 488 "lev_comp.l"
+#line 487 "lev_comp.l"
 { savetoken(yytext); yylval.i=5; return CURSE_TYPE; }
 	YY_BREAK
 case 353:
 YY_RULE_SETUP
-#line 489 "lev_comp.l"
+#line 488 "lev_comp.l"
 { savetoken(yytext); yylval.i=0; return MYTHIC_TYPE; }
 	YY_BREAK
 case 354:
 YY_RULE_SETUP
-#line 490 "lev_comp.l"
+#line 489 "lev_comp.l"
 { savetoken(yytext); yylval.i=1; return MYTHIC_TYPE; }
 	YY_BREAK
 case 355:
 YY_RULE_SETUP
-#line 491 "lev_comp.l"
+#line 490 "lev_comp.l"
 { savetoken(yytext); yylval.i=2; return MYTHIC_TYPE; }
 	YY_BREAK
 case 356:
 YY_RULE_SETUP
-#line 492 "lev_comp.l"
+#line 491 "lev_comp.l"
 { savetoken(yytext); yylval.i=NOTELEPORT; return FLAG_TYPE; }
 	YY_BREAK
 case 357:
 YY_RULE_SETUP
-#line 493 "lev_comp.l"
+#line 492 "lev_comp.l"
 { savetoken(yytext); yylval.i=HARDFLOOR; return FLAG_TYPE; }
 	YY_BREAK
 case 358:
 YY_RULE_SETUP
-#line 494 "lev_comp.l"
+#line 493 "lev_comp.l"
 { savetoken(yytext); yylval.i=NOMMAP; return FLAG_TYPE; }
 	YY_BREAK
 case 359:
 YY_RULE_SETUP
-#line 495 "lev_comp.l"
+#line 494 "lev_comp.l"
 { savetoken(yytext); yylval.i=ARBOREAL; return FLAG_TYPE; } /* KMH */
 	YY_BREAK
 case 360:
 YY_RULE_SETUP
-#line 496 "lev_comp.l"
+#line 495 "lev_comp.l"
 { savetoken(yytext); yylval.i=SWAMPY; return FLAG_TYPE; } /* JG */
 	YY_BREAK
 case 361:
 YY_RULE_SETUP
-#line 497 "lev_comp.l"
+#line 496 "lev_comp.l"
 { savetoken(yytext); yylval.i=DESERT; return FLAG_TYPE; } /* JG */
 	YY_BREAK
 case 362:
 YY_RULE_SETUP
-#line 498 "lev_comp.l"
+#line 497 "lev_comp.l"
 { savetoken(yytext); yylval.i=THRONE_ON_GROUND; return FLAG_TYPE; } /* JG */
 	YY_BREAK
 case 363:
 YY_RULE_SETUP
-#line 499 "lev_comp.l"
+#line 498 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOUNTAIN_ON_GRASS; return FLAG_TYPE; } /* JG */
 	YY_BREAK
 case 364:
 YY_RULE_SETUP
-#line 500 "lev_comp.l"
+#line 499 "lev_comp.l"
 { savetoken(yytext); yylval.i=FOUNTAIN_ON_GROUND; return FLAG_TYPE; } /* JG */
 	YY_BREAK
 case 365:
 YY_RULE_SETUP
-#line 501 "lev_comp.l"
+#line 500 "lev_comp.l"
 { savetoken(yytext); yylval.i=TREE_ON_GROUND; return FLAG_TYPE; } /* JG */
 	YY_BREAK
 case 366:
 YY_RULE_SETUP
-#line 502 "lev_comp.l"
+#line 501 "lev_comp.l"
 { savetoken(yytext); yylval.i=MAPPING_DOES_NOT_REVEAL_SPECIAL; return FLAG_TYPE; } /* JG */
 	YY_BREAK
 case 367:
 YY_RULE_SETUP
-#line 503 "lev_comp.l"
+#line 502 "lev_comp.l"
 { savetoken(yytext); yylval.i=SHORTSIGHTED; return FLAG_TYPE; }
 	YY_BREAK
 case 368:
 YY_RULE_SETUP
-#line 504 "lev_comp.l"
+#line 503 "lev_comp.l"
 { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_NORMAL; return BRAZIER_SUBTYPE; }
 	YY_BREAK
 case 369:
 YY_RULE_SETUP
-#line 505 "lev_comp.l"
+#line 504 "lev_comp.l"
 { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_1; return BRAZIER_SUBTYPE; }
 	YY_BREAK
 case 370:
 YY_RULE_SETUP
-#line 506 "lev_comp.l"
+#line 505 "lev_comp.l"
 { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_2; return BRAZIER_SUBTYPE; }
 	YY_BREAK
 case 371:
 YY_RULE_SETUP
-#line 507 "lev_comp.l"
+#line 506 "lev_comp.l"
 { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_NORMAL; return SIGNPOST_SUBTYPE; }
 	YY_BREAK
 case 372:
 YY_RULE_SETUP
-#line 508 "lev_comp.l"
+#line 507 "lev_comp.l"
 { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_1; return SIGNPOST_SUBTYPE; }
 	YY_BREAK
 case 373:
 YY_RULE_SETUP
-#line 509 "lev_comp.l"
+#line 508 "lev_comp.l"
 { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_2; return SIGNPOST_SUBTYPE; }
 	YY_BREAK
 case 374:
 YY_RULE_SETUP
-#line 510 "lev_comp.l"
+#line 509 "lev_comp.l"
 { savetoken(yytext); yylval.i=MAZELEVEL; return FLAG_TYPE; }
 	YY_BREAK
 case 375:
 YY_RULE_SETUP
-#line 511 "lev_comp.l"
+#line 510 "lev_comp.l"
 { savetoken(yytext); yylval.i=PREMAPPED; return FLAG_TYPE; }
 	YY_BREAK
 case 376:
 YY_RULE_SETUP
-#line 512 "lev_comp.l"
+#line 511 "lev_comp.l"
 { savetoken(yytext); yylval.i=SHROUD; return FLAG_TYPE; }
 	YY_BREAK
 case 377:
 YY_RULE_SETUP
-#line 513 "lev_comp.l"
+#line 512 "lev_comp.l"
 { savetoken(yytext); yylval.i=GRAVEYARD; return FLAG_TYPE; }
 	YY_BREAK
 case 378:
 YY_RULE_SETUP
-#line 514 "lev_comp.l"
+#line 513 "lev_comp.l"
 { savetoken(yytext); yylval.i=ICEDPOOLS; return FLAG_TYPE; }
 	YY_BREAK
 case 379:
 YY_RULE_SETUP
-#line 515 "lev_comp.l"
+#line 514 "lev_comp.l"
 { savetoken(yytext); yylval.i=SOLIDIFY; return FLAG_TYPE; }
 	YY_BREAK
 case 380:
 YY_RULE_SETUP
-#line 516 "lev_comp.l"
+#line 515 "lev_comp.l"
 { savetoken(yytext); yylval.i=CORRMAZE; return FLAG_TYPE; }
 	YY_BREAK
 case 381:
 YY_RULE_SETUP
-#line 517 "lev_comp.l"
+#line 516 "lev_comp.l"
 { savetoken(yytext); yylval.i=CHECK_INACCESSIBLES; return FLAG_TYPE; }
 	YY_BREAK
 case 382:
 YY_RULE_SETUP
-#line 518 "lev_comp.l"
+#line 517 "lev_comp.l"
 { savetoken(yytext); yylval.i=NO_MAP_PADDING; return FLAG_TYPE; }
 	YY_BREAK
 case 383:
 YY_RULE_SETUP
-#line 519 "lev_comp.l"
+#line 518 "lev_comp.l"
 { char *p = index(yytext, 'd');
 		  savetoken(yytext);
 		  if (p) {
@@ -4250,7 +4249,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 384:
 YY_RULE_SETUP
-#line 530 "lev_comp.l"
+#line 529 "lev_comp.l"
 { savetoken(yytext); yylval.i = atoi(yytext + 1);
 		     if (yylval.i < 0 || yylval.i > 100)
 			lc_error("Unexpected percentile '%li%%'", yylval.i);
@@ -4258,17 +4257,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 385:
 YY_RULE_SETUP
-#line 534 "lev_comp.l"
+#line 533 "lev_comp.l"
 { savetoken(yytext); yylval.i=atoi(yytext); return MINUS_INTEGER; }
 	YY_BREAK
 case 386:
 YY_RULE_SETUP
-#line 535 "lev_comp.l"
+#line 534 "lev_comp.l"
 { savetoken(yytext); yylval.i=atoi(yytext); return PLUS_INTEGER; }
 	YY_BREAK
 case 387:
 YY_RULE_SETUP
-#line 536 "lev_comp.l"
+#line 535 "lev_comp.l"
 { savetoken(yytext); yylval.i = atoi(yytext);
 		  if (yylval.i < 0 || yylval.i > 100)
 		     lc_error("Unexpected percentile '%li%%'", yylval.i);
@@ -4276,12 +4275,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 388:
 YY_RULE_SETUP
-#line 540 "lev_comp.l"
+#line 539 "lev_comp.l"
 { savetoken(yytext); yylval.i=atoi(yytext); return INTEGER; }
 	YY_BREAK
 case 389:
 YY_RULE_SETUP
-#line 541 "lev_comp.l"
+#line 540 "lev_comp.l"
 { savetoken(yytext);
 		  yytext[yyleng - 1] = '\0'; /* discard the trailing \" */
 		  yylval.map = dupstr(yytext + 1); /* skip the first \" */
@@ -4289,80 +4288,80 @@ YY_RULE_SETUP
 	YY_BREAK
 case 390:
 YY_RULE_SETUP
-#line 545 "lev_comp.l"
+#line 544 "lev_comp.l"
 { savetoken(yytext); return handle_varstring_check(); }
 	YY_BREAK
 case 391:
 YY_RULE_SETUP
-#line 546 "lev_comp.l"
+#line 545 "lev_comp.l"
 { savetoken(yytext); yylval.i = SPO_JE; return COMPARE_TYPE; }
 	YY_BREAK
 case 392:
 YY_RULE_SETUP
-#line 547 "lev_comp.l"
+#line 546 "lev_comp.l"
 { savetoken(yytext); yylval.i = SPO_JNE; return COMPARE_TYPE; }
 	YY_BREAK
 case 393:
 YY_RULE_SETUP
-#line 548 "lev_comp.l"
+#line 547 "lev_comp.l"
 { savetoken(yytext); yylval.i = SPO_JNE; return COMPARE_TYPE; }
 	YY_BREAK
 case 394:
 YY_RULE_SETUP
-#line 549 "lev_comp.l"
+#line 548 "lev_comp.l"
 { savetoken(yytext); yylval.i = SPO_JLE; return COMPARE_TYPE; }
 	YY_BREAK
 case 395:
 YY_RULE_SETUP
-#line 550 "lev_comp.l"
+#line 549 "lev_comp.l"
 { savetoken(yytext); yylval.i = SPO_JGE; return COMPARE_TYPE; }
 	YY_BREAK
 case 396:
 YY_RULE_SETUP
-#line 551 "lev_comp.l"
+#line 550 "lev_comp.l"
 { savetoken(yytext); yylval.i = SPO_JL; return COMPARE_TYPE; }
 	YY_BREAK
 case 397:
 YY_RULE_SETUP
-#line 552 "lev_comp.l"
+#line 551 "lev_comp.l"
 { savetoken(yytext); yylval.i = SPO_JG; return COMPARE_TYPE; }
 	YY_BREAK
 case 398:
 YY_RULE_SETUP
-#line 553 "lev_comp.l"
+#line 552 "lev_comp.l"
 { newline(); }
 	YY_BREAK
 case 399:
 YY_RULE_SETUP
-#line 554 "lev_comp.l"
+#line 553 "lev_comp.l"
 { advancepos(yytext); }
 	YY_BREAK
 case 400:
 YY_RULE_SETUP
-#line 555 "lev_comp.l"
+#line 554 "lev_comp.l"
 { savetoken(yytext); yylval.i = yytext[2]; return CHAR; }
 	YY_BREAK
 case 401:
 YY_RULE_SETUP
-#line 556 "lev_comp.l"
+#line 555 "lev_comp.l"
 { savetoken(yytext); yylval.i = yytext[1]; return CHAR; }
 	YY_BREAK
 case 402:
 YY_RULE_SETUP
-#line 557 "lev_comp.l"
+#line 556 "lev_comp.l"
 ST_RET(UNKNOWN_TYPE);
 	YY_BREAK
 case 403:
 YY_RULE_SETUP
-#line 558 "lev_comp.l"
+#line 557 "lev_comp.l"
 { savetoken(yytext); return yytext[0]; }
 	YY_BREAK
 case 404:
 YY_RULE_SETUP
-#line 559 "lev_comp.l"
+#line 558 "lev_comp.l"
 ECHO;
 	YY_BREAK
-#line 4366 "lex.yy.c"
+#line 4365 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(MAPC):
 	yyterminate();
@@ -5251,7 +5250,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 559 "lev_comp.l"
+#line 558 "lev_comp.l"
 
 #ifdef	AMIGA
 long *
@@ -5285,7 +5284,7 @@ FILE *output_f;
     yyout = output_f;
 }
 
-long
+int
 handle_varstring_check()
 {
     struct lc_vardefs *vd;

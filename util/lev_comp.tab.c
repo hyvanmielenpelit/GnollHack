@@ -161,7 +161,7 @@ extern void FDECL(vardef_used, (struct lc_vardefs *, char *));
 extern struct lc_vardefs *FDECL(add_vardef_type, (struct lc_vardefs *,
                                                   char *, long));
 
-extern int FDECL(reverse_jmp_opcode, (int));
+extern int FDECL(reverse_jmp_opcode, (long));
 
 struct coord {
     long x;
@@ -6935,7 +6935,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 3012 "lev_comp.y"
     {
-			      long len = strlen( (yyvsp[(1) - (3)].map) );
+			      size_t len = strlen( (yyvsp[(1) - (3)].map) );
 			      char *tmp = (char *) alloc(len + 2);
 			      sprintf(tmp, "%c%s", (char) (yyvsp[(3) - (3)].i), (yyvsp[(1) - (3)].map) );
 			      Free( (yyvsp[(1) - (3)].map) );

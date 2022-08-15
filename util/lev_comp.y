@@ -90,7 +90,7 @@ extern void FDECL(vardef_used, (struct lc_vardefs *, char *));
 extern struct lc_vardefs *FDECL(add_vardef_type, (struct lc_vardefs *,
                                                   char *, long));
 
-extern int FDECL(reverse_jmp_opcode, (int));
+extern int FDECL(reverse_jmp_opcode, (long));
 
 struct coord {
     long x;
@@ -3010,7 +3010,7 @@ func_call_param_list   	: func_call_param_part
 			  }
 			| func_call_param_list ',' func_call_param_part
 			  {
-			      long len = strlen( $1 );
+			      size_t len = strlen( $1 );
 			      char *tmp = (char *) alloc(len + 2);
 			      sprintf(tmp, "%c%s", (char) $3, $1 );
 			      Free( $1 );

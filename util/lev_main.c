@@ -152,7 +152,7 @@ void FDECL(vardef_used, (struct lc_vardefs *, char *));
 void FDECL(check_vardef_type, (struct lc_vardefs *, char *, long));
 struct lc_vardefs *FDECL(add_vardef_type,
                          (struct lc_vardefs *, char *, long));
-long FDECL(reverse_jmp_opcode, (long));
+int FDECL(reverse_jmp_opcode, (long));
 struct opvar *FDECL(opvar_clone, (struct opvar *));
 void FDECL(start_level_def, (sp_lev **, char *));
 
@@ -1066,7 +1066,7 @@ long vartype;
     return vd;
 }
 
-long
+int
 reverse_jmp_opcode(opcode)
 long opcode;
 {
@@ -1085,7 +1085,7 @@ long opcode;
         return SPO_JL;
     default:
         lc_error("Cannot reverse comparison jmp opcode %ld.",
-                 VA_PASS1((long) opcode));
+                 VA_PASS1(opcode));
         return SPO_NULL;
     }
 }
