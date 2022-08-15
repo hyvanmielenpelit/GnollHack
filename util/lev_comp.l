@@ -99,10 +99,10 @@ void FDECL(advancepos, (char *));
 extern YYSTYPE yylval;
 
 int nh_line_number = 1;
-int token_start_pos = 0;
+size_t token_start_pos = 0;
 char curr_token[512];
 static char map[4096];
-static int map_cnt = 0;
+static size_t map_cnt = 0;
 
 FILE *orig_yyin = NULL;
 
@@ -125,7 +125,7 @@ FILE *orig_yyin = NULL;
 		  return MAP_ID;
 		}
 <MAPC>[-|}{+xABCISHKPLWTF\\#.,: 0123456789]*\r?\n	{
-		  int len = yyleng;
+		  size_t len = yyleng < 0 ? 0 : (size_t)yyleng;
 		  savetoken(yytext);
 		  /* convert \r\n to \n */
 		  if (len >= 2 && yytext[len - 2] == '\r')

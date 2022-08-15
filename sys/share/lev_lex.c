@@ -1952,7 +1952,7 @@ char *yytext;
 #line 1 "lev_comp.l"
 #define INITIAL 0
 #line 2 "lev_comp.l"
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-06-05 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
 
 /* GnollHack 4.0  lev_comp.l	$NHDT-Date: 1543371690 2018/11/28 02:21:30 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.25 $ */
 /*	Copyright (c) 1989 by Jean-Christophe Collet */
@@ -2052,10 +2052,10 @@ void FDECL(advancepos, (char *));
 extern YYSTYPE yylval;
 
 int nh_line_number = 1;
-int token_start_pos = 0;
+size_t token_start_pos = 0;
 char curr_token[512];
 static char map[4096];
-static int map_cnt = 0;
+static size_t map_cnt = 0;
 
 FILE *orig_yyin = NULL;
 
@@ -2321,7 +2321,7 @@ case 2:
 YY_RULE_SETUP
 #line 127 "lev_comp.l"
 {
-		  int len = yyleng;
+		  size_t len = yyleng < 0 ? 0 : (size_t)yyleng;
 		  savetoken(yytext);
 		  /* convert \r\n to \n */
 		  if (len >= 2 && yytext[len - 2] == '\r')

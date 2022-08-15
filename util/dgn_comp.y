@@ -159,7 +159,7 @@ desc		: DESCRIPTION ':' DESCRIPTOR
 			else
 			{
 			    tmpdungeon[n_dgns].has_tileset = 1;
-			    tmpdungeon[n_dgns].tileset = $<i>3 ;
+			    tmpdungeon[n_dgns].tileset = (uchar)$<i>3 ;
 			}
 		  }
 		;
@@ -431,8 +431,8 @@ acouple		: '(' INTEGER ',' INTEGER ')'
 			    yyerror("Abs range out of dlevel range - zeroing!");
 			    couple.base = couple.rand = 0;
 			} else {
-			    couple.base = $2;
-			    couple.rand = $4;
+			    couple.base = (short)$2;
+			    couple.rand = (short)$4;
 			}
 		  }
 		;
@@ -463,8 +463,8 @@ rcouple		: '(' INTEGER ',' INTEGER ')'
 			    yyerror("Rel base out of dlevel range - zeroing!");
 			    couple.base = couple.rand = 0;
 			} else {
-			    couple.base = $2;
-			    couple.rand = $4;
+			    couple.base = (short)$2;
+			    couple.rand = (short)$4;
 			}
 		  }
 		;

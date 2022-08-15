@@ -70,7 +70,7 @@
 /* Line 189 of yacc.c  */
 #line 1 "dgn_comp.y"
 
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
 
 /* GnollHack 4.0  dgn_comp.y	$NHDT-Date: 1432512785 2015/05/25 00:13:05 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
 /*	Copyright (c) 1989 by Jean-Christophe Collet */
@@ -1590,7 +1590,7 @@ yyreduce:
 			else
 			{
 			    tmpdungeon[n_dgns].has_tileset = 1;
-			    tmpdungeon[n_dgns].tileset = (yyvsp[(3) - (3)].i) ;
+			    tmpdungeon[n_dgns].tileset = (uchar)(yyvsp[(3) - (3)].i) ;
 			}
 		  ;}
     break;
@@ -1914,8 +1914,8 @@ yyreduce:
 			    yyerror("Abs range out of dlevel range - zeroing!");
 			    couple.base = couple.rand = 0;
 			} else {
-			    couple.base = (yyvsp[(2) - (5)].i);
-			    couple.rand = (yyvsp[(4) - (5)].i);
+			    couple.base = (short)(yyvsp[(2) - (5)].i);
+			    couple.rand = (short)(yyvsp[(4) - (5)].i);
 			}
 		  ;}
     break;
@@ -1929,8 +1929,8 @@ yyreduce:
 			    yyerror("Rel base out of dlevel range - zeroing!");
 			    couple.base = couple.rand = 0;
 			} else {
-			    couple.base = (yyvsp[(2) - (5)].i);
-			    couple.rand = (yyvsp[(4) - (5)].i);
+			    couple.base = (short)(yyvsp[(2) - (5)].i);
+			    couple.rand = (short)(yyvsp[(4) - (5)].i);
 			}
 		  ;}
     break;
