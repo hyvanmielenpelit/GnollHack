@@ -605,7 +605,3 @@ CONTAINER:('(',"golden chest"),locked,keytype:('(',"geometric key"),special_qual
 }
 OBJECT:random,(04,07)
 OBJECT:random,(28,07)
-
-¤ Unused test cases
-#LEVER:(01,01),lever_effect_create_trap,target:(02,02),switchable,continuously_usable,traptype:"modron portal",subtype:octahedral
-#LEVER:(01,01),lever_effect_create_object,target:(02,02),switchable,continuously_usable,objtype:"geometric key",special_quality:3

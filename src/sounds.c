@@ -1298,7 +1298,7 @@ boolean dopopup, fromchatmenu;
                 Sprintf(verbuf, "%s!  Your silver sheen does not frighten me!",
                         youmonst.data == &mons[PM_SILVER_DRAGON] || youmonst.data == &mons[PM_ANCIENT_SILVER_DRAGON]
                             ? "Fool"
-                            : "Young Fool");
+                            : "Young fool");
                 verbl_msg = verbuf;
             } else {
                 vampindex = rn2(SIZE(vampmsg));
@@ -1317,7 +1317,7 @@ boolean dopopup, fromchatmenu;
     } break;
     case MS_WERE:
         if (flags.moonphase == FULL_MOON && (night() ^ !rn2(13))) {
-            chat_line = 1;
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_HOWL);
             pline("%s throws back %s head and lets out a blood curdling %s!",
                   fromchatmenu ? noittame_Monnam(mtmp) : Monnam(mtmp), mhis(mtmp),
                   ptr == &mons[PM_HUMAN_WERERAT] ? "shriek" : ptr == &mons[PM_HUMAN_WEREBEAR] ? "growl" : "howl");
@@ -1325,17 +1325,17 @@ boolean dopopup, fromchatmenu;
         }
         else
         {
+            play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_IN_AUDIBLE_WHISPER);
             pline_msg =
                 "whispers inaudibly.  All you can make out is \"moon\".";
-            chat_line = 0;
         }
         break;
     case MS_BARK:
 bark_here:
         if (flags.moonphase == FULL_MOON && night())
         {
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_HOWL);
             pline_msg = "howls.";
-            chat_line = 4;
         }
         else if (is_peaceful(mtmp)) 
         {

@@ -12839,11 +12839,12 @@ unsigned long play_flags;
 }
 
 void
-play_player_line_indexed_sound(sound_type, line_id, play_group, sfx_sound_type)
+play_player_line_indexed_sound(sound_type, line_id, play_group, sfx_sound_type, pflags)
 enum monster_sound_types sound_type;
 int line_id;
 enum sound_play_groups play_group;
 enum immediate_sound_types sfx_sound_type;
+unsigned long pflags;
 {
     /* Do not use for hit sounds */
 
@@ -12887,6 +12888,7 @@ enum immediate_sound_types sfx_sound_type;
     immediateinfo.sound_type = sfx_sound_type;
     immediateinfo.play_group = play_group;
     immediateinfo.dialogue_mid = youmonst.m_id;
+    immediateinfo.play_flags = pflags;
 
     if (soundid > GHSOUND_NONE && immediateinfo.volume > GENERAL_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
@@ -12898,7 +12900,7 @@ void
 play_player_ouch_sound(line_id)
 enum monster_ouch_sounds line_id;
 {
-    play_player_line_indexed_sound(MONSTER_SOUND_TYPE_OUCH, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX);
+    play_player_line_indexed_sound(MONSTER_SOUND_TYPE_OUCH, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0UL);
 }
 
 
@@ -17268,6 +17270,14 @@ enum monster_flounder_sounds line_id;
 }
 
 void
+play_monster_pissed_sound(mtmp, line_id)
+struct monst* mtmp;
+enum monster_pissed_sounds line_id;
+{
+    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_PISSED, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.0f, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED);
+}
+
+void
 play_monster_chat_sound(mtmp, line_id)
 struct monst* mtmp;
 int line_id;
@@ -17279,7 +17289,14 @@ void
 play_player_flounder_sound(line_id)
 enum monster_flounder_sounds line_id;
 {
-    play_player_line_indexed_sound(MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX);
+    play_player_line_indexed_sound(MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0UL);
+}
+
+void
+play_player_pissed_sound(line_id)
+enum monster_flounder_sounds line_id;
+{
+    play_player_line_indexed_sound(MONSTER_SOUND_TYPE_PISSED, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED);
 }
 
 
