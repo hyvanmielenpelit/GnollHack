@@ -2498,6 +2498,8 @@ E boolean FDECL(menu_class_present, (int));
 E void FDECL(add_valid_menu_class, (int));
 E boolean FDECL(allow_all, (struct obj *));
 E boolean FDECL(allow_category, (struct obj *));
+E boolean FDECL(is_potion_of_water, (struct obj*));
+E boolean FDECL(is_scroll_of_remove_curse, (struct obj*));
 E boolean FDECL(is_worn_by_type, (struct obj *));
 E int FDECL(ck_bag, (struct obj *));
 E int FDECL(stash_obj_in_container, (struct obj*, struct obj*));
@@ -2636,6 +2638,7 @@ E void FDECL(djinni_from_bottle, (struct obj *));
 E struct monst *FDECL(split_mon, (struct monst *, struct monst *));
 E const char *NDECL(bottlename);
 E void NDECL(reset_potion);
+E boolean FDECL(H2Opotion_dip, (struct obj*, struct obj*, BOOLEAN_P, const char*));
 
 /* ### pray.c ### */
 
@@ -2761,7 +2764,7 @@ E void FDECL(forget_objects, (int));
 E void FDECL(forget_levels, (int));
 E void NDECL(forget_traps);
 E void FDECL(forget_map, (int));
-E int FDECL(seffects, (struct obj *, boolean*));
+E int FDECL(seffects, (struct obj *, boolean*, struct monst*));
 E void FDECL(drop_boulder_on_player,
              (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(drop_boulder_on_monster, (int, int, BOOLEAN_P, BOOLEAN_P));
@@ -2786,6 +2789,8 @@ E boolean FDECL(get_valid_targeted_position, (int, int, int));
 E boolean FDECL(get_valid_stinking_cloud_pos, (int, int));
 E boolean FDECL(is_valid_stinking_cloud_pos, (int, int, BOOLEAN_P));
 E void FDECL(display_stinking_cloud_positions, (int));
+E int FDECL(bless_or_curse, (struct obj*, struct monst*, boolean));
+E int FDECL(remove_curse, (struct obj*, struct monst*, boolean));
 E void NDECL(reset_read);
 
 /* ### rect.c ### */
@@ -3331,7 +3336,7 @@ E int NDECL(docast);
 E int NDECL(dospellmanage);
 E int NDECL(dospellview);
 E int FDECL(spell_skilltype, (int));
-E int FDECL(spelleffects, (int, BOOLEAN_P));
+E int FDECL(spelleffects, (int, BOOLEAN_P, struct monst*));
 E int FDECL(spelldescription, (int));
 E const char* FDECL(get_obj_saving_throw_description, (struct obj*));
 E const char* FDECL(get_otyp_saving_throw_description, (int));

@@ -1305,13 +1305,13 @@ docast()
 {
     if (in_doagain && docast_spell_no > -1)
     {
-        return spelleffects(docast_spell_no, FALSE);
+        return spelleffects(docast_spell_no, FALSE, &youmonst);
     }
     else
     {
         docast_spell_no = -1;
         if (getspell(&docast_spell_no, 0))
-            return spelleffects(docast_spell_no, FALSE);
+            return spelleffects(docast_spell_no, FALSE, &youmonst);
     }
     docast_spell_no = -1;
     return 0;
@@ -2174,9 +2174,10 @@ int spell;
 }
 
 int
-spelleffects(spell, atme)
+spelleffects(spell, atme, targetmonst)
 int spell;
 boolean atme;
+struct monst* targetmonst;
 {
     double damage = 0;
     int chance, n; // , intell;
@@ -2732,7 +2733,7 @@ boolean atme;
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
             u_wait_until_action();
         }
-        (void) seffects(pseudo, &effect_happened);
+        (void) seffects(pseudo, &effect_happened, targetmonst);
         break;
 
     /* these are all duplicates of potion effects */

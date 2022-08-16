@@ -99,6 +99,7 @@ STATIC_DCL int FDECL(do_chat_pet_dowield_axe, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dounwield, (struct monst*));
 STATIC_DCL int FDECL(do_chat_feed, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quaff, (struct monst*));
+STATIC_DCL int FDECL(do_chat_uncurse_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_buy_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_join_party, (struct monst*));
 STATIC_DCL int FDECL(do_chat_explain_statistics, (struct monst*));
@@ -3108,6 +3109,21 @@ dochat()
 
         if (is_tame(mtmp) && mtmp->minvent && is_peaceful(mtmp)) /*  && !mtmp->issummoned */
         {
+            Sprintf(available_chat_list[chatnum].name, "Uncurse or bless %s items", s_suffix(noittame_mon_nam(mtmp)));
+            available_chat_list[chatnum].function_ptr = &do_chat_uncurse_items;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+            available_chat_list[chatnum].stops_dialogue = TRUE;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+
+
             if(m_has_wearable_armor_or_accessory(mtmp))
             {
                 Sprintf(available_chat_list[chatnum].name, "Ask to wear a piece of armor or accessory");
@@ -5316,6 +5332,208 @@ struct monst* mtmp;
 }
 
 STATIC_OVL int
+do_chat_uncurse_items(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return 0;
+
+    char nbuf[BUFSIZ];
+    menu_item* pick_list = (menu_item*)0;
+    winid win;
+    anything any;
+    int cnt = 0;
+
+    any = zeroany;
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
+    start_menu_ex(win, GHMENU_STYLE_CHAT);
+
+    boolean itemfound = FALSE;
+    struct obj* otmp;
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->otyp == POT_WATER)
+        {
+            itemfound = TRUE;
+            break;
+        }
+    }
+
+    if (itemfound)
+    {
+        any = zeroany;
+        any.a_int = 1;
+        Sprintf(nbuf, "Cast a bless on %s item", s_suffix(mon_nam(mtmp)));
+        add_menu(win, POT_WATER + GLYPH_OBJ_OFF, &any, 0, 0, ATR_NONE, "Dip an item in a potion of water", MENU_UNSELECTED);
+        cnt++;
+    }
+
+    itemfound = FALSE;
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->otyp == SCR_REMOVE_CURSE)
+        {
+            itemfound = TRUE;
+            break;
+        }
+    }
+
+    if (objects[SCR_REMOVE_CURSE].oc_name_known && itemfound && mon_is_literate(mtmp))
+    {
+        any = zeroany;
+        any.a_int = 2;
+        Sprintf(nbuf, "Ask %s to read a scroll of remove curse", mon_nam(mtmp));
+        add_menu(win, SCR_REMOVE_CURSE + GLYPH_OBJ_OFF, &any, 0, 0, ATR_NONE, nbuf, MENU_UNSELECTED);
+        cnt++;
+    }
+
+    int spellid = -1;
+    int i;
+    for (i = 0; i < MAXSPELL; i++)
+        if (spellid(i) == NO_SPELL)
+            break;
+        else if (spellid(i) == SPE_BLESS)
+        {
+            spellid = i;
+            break;
+        }
+
+    if (spellid >= 0)
+    {
+        any = zeroany;
+        any.a_int = 3;
+        Sprintf(nbuf, "Cast a bless spell on %s item", s_suffix(mon_nam(mtmp)));
+        add_menu(win, SPE_BLESS - FIRST_SPELL + GLYPH_SPELL_TILE_OFF, &any, 0, 0, ATR_NONE, nbuf, MENU_UNSELECTED);
+        cnt++;
+    }
+
+    struct monst* priest = 0;
+    int x, y;
+    for (x = u.ux - 1; x <= u.ux + 1; x++)
+    {
+        for (y = u.uy - 1; y <= u.uy + 1; y++)
+        {
+            if (x == u.ux && y == u.uy)
+                continue;
+
+            if (isok(x, y))
+            {
+                struct monst* mon = m_at(x, y);
+                if (mon)
+                {
+                    if (mon->ispriest && has_epri(mon) && is_peaceful(mon))
+                    {
+                        priest = mon;
+                    }
+                }
+            }
+            if (priest)
+                break;
+        }
+        if (priest)
+            break;
+    }
+
+    if (priest)
+    {
+        any = zeroany;
+        any.a_int = 4;
+        Sprintf(nbuf, "Ask %s to bless %s item", mon_nam(priest), s_suffix(mon_nam(mtmp)));
+        add_menu(win, mon_to_glyph(priest, rn2_on_display_rng), &any, 0, 0, ATR_NONE, nbuf, MENU_UNSELECTED);
+        cnt++;
+    }
+
+
+    /* Finish the menu */
+    end_menu(win, "How do you want to uncurse or bless items?");
+
+
+    if (cnt <= 0)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        char errbuf[BUFSZ];
+        Sprintf(errbuf, "You don't have any means to uncurse or bless %s items.", s_suffix(mon_nam(mtmp)));
+        pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, errbuf, "Nothing to Uncurse or Bless", TRUE);
+        destroy_nhwindow(win);
+        return 0;
+    }
+
+    int selidx = 0;
+    /* Now generate the menu */
+    if (select_menu(win, PICK_ONE, &pick_list) > 0)
+    {
+        selidx = pick_list->item.a_int;
+        free((genericptr_t)pick_list);
+        pick_list = 0;
+    }
+    destroy_nhwindow(win);
+
+    char qbuf[BUFSZ];
+    int n;
+    switch (selidx)
+    {
+    case 1:
+        Strcpy(qbuf, "Which potion would you like to dip items into?");
+        n = query_objlist(qbuf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT),
+            &pick_list, PICK_ONE, is_potion_of_water, 0);
+        if (n && pick_list && pick_list[0].item.a_obj)
+        {
+            otmp = pick_list[0].item.a_obj;
+            free((genericptr_t)pick_list);
+            pick_list = 0;
+            Sprintf(qbuf, "What would you like to dip into %s?", the(cxname(otmp)));
+            n = query_objlist(qbuf, &mtmp->minvent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT),
+                &pick_list, PICK_ONE, allow_all, 0);
+            if (n && pick_list && pick_list[0].item.a_obj)
+            {
+                struct obj* obj = pick_list[0].item.a_obj;
+                free((genericptr_t)pick_list);
+                pick_list = 0;
+                const char* obj_glows = Yobjnam2(obj, "glow");
+                if (H2Opotion_dip(otmp, obj, TRUE, obj_glows))
+                {
+                    useup(otmp);
+                    return 1;
+                }
+            }
+        }
+        break;
+    case 2:
+        Sprintf(qbuf, "Which scroll would you like to have %s read?", mon_nam(mtmp));
+        n = query_objlist(qbuf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT),
+            &pick_list, PICK_ONE, is_scroll_of_remove_curse, 0);
+        if (n && pick_list && pick_list[0].item.a_obj)
+        {
+            otmp = pick_list[0].item.a_obj;
+            free((genericptr_t)pick_list);
+            pick_list = 0;
+            if (otmp->otyp == SCR_REMOVE_CURSE)
+            {
+                (void)remove_curse(otmp, mtmp, !!mtmp->mprops[CONFUSION]);
+                useup(otmp);
+                otmp = 0;
+            }
+        }
+        break;
+    case 3:
+        if(spellid >= 0)
+            spelleffects(spellid, FALSE, mtmp);
+        break;
+    case 4:
+        if (priest)
+        {
+            iflags.spell_target_monster = mtmp;
+            do_chat_priest_blesscurse(priest);
+            iflags.spell_target_monster = 0;
+        }
+        break;
+    default:
+        break;
+    }
+
+    return 0;
+}
+STATIC_OVL int
 do_chat_quaff(mtmp)
 struct monst* mtmp;
 {
@@ -6459,7 +6677,7 @@ struct monst* mtmp;
     pseudo->quan = 20L; /* do not let useup get it */
     pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
     boolean effect_happened = 0;
-    (void)seffects(pseudo, &effect_happened);
+    (void)seffects(pseudo, &effect_happened, iflags.spell_target_monster ? iflags.spell_target_monster : &youmonst);
     obfree(pseudo, (struct obj*)0);
 
     if (effect_happened)
@@ -9603,7 +9821,7 @@ int special_dialogue_sound_id;
     pseudo->quan = 20L; /* do not let useup get it */
     pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
     boolean effect_happened = 0;
-    (void)seffects(pseudo, &effect_happened);
+    (void)seffects(pseudo, &effect_happened, &youmonst);
     if (effect_happened)
     {
         money2mon(mtmp, u_pay);

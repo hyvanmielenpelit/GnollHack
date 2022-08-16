@@ -3223,7 +3223,7 @@ doturn()
             if (spl_book[sp_no].sp_id == NO_SPELL)
                 break;
             else if (spl_book[sp_no].sp_id == SPE_TURN_UNDEAD)
-                return spelleffects(sp_no, FALSE);
+                return spelleffects(sp_no, FALSE, &youmonst);
         }
         play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
         You("don't know how to turn undead!");

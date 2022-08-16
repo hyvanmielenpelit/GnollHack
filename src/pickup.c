@@ -487,6 +487,21 @@ struct obj *obj;
 }
 #endif
 
+boolean
+is_potion_of_water(obj)
+struct obj* obj;
+{
+    return (obj && obj->otyp == POT_WATER);
+}
+
+boolean
+is_scroll_of_remove_curse(obj)
+struct obj* obj;
+{
+    return (obj && obj->otyp == SCR_REMOVE_CURSE);
+}
+
+
 /* query_objlist callback: return TRUE if valid class and worn */
 boolean
 is_worn_by_type(otmp)

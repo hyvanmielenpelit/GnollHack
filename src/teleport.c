@@ -1057,7 +1057,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
         {
             /* energy cost is deducted in spelleffects() */
             exercise(A_WIS, TRUE);
-            if (spelleffects(sp_no, TRUE))
+            if (spelleffects(sp_no, TRUE, &youmonst))
                 return 1;
             else if (!break_the_rules)
                 return 0;

@@ -553,22 +553,7 @@ struct instance_flags {
                                     it in the midst of options processing */
     boolean obsolete;  /* obsolete options can point at this, it isn't used */
 
-    /* Emergency reserved booleans to make non-save-game-breaking changes */
-    boolean reserved_bool1;
-    boolean reserved_bool2;
-    boolean reserved_bool3;
-    boolean reserved_bool4;
-
-    /* Emergency reserved variables to make non-save-game-breaking changes */
-    char reserved_char1;
-    char reserved_char2;
-    short reserved_short1;
-    short reserved_short2;
-    int reserved_int1;
-    int reserved_int2;
-    unsigned long reserved_ulong1;
-    unsigned long reserved_ulong2;
-
+    struct monst* spell_target_monster;
 };
 
 /*

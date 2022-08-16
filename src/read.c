@@ -479,7 +479,7 @@ doread()
         }
     }
 
-    if (!(gone = seffects(scroll, &effect_happened))) 
+    if (!(gone = seffects(scroll, &effect_happened, &youmonst)))
     {
         if (!objects[scroll->otyp].oc_name_known)
         {
@@ -1689,16 +1689,17 @@ int state;
 /* scroll effects; return 1 if we use up the scroll and possibly make it
    become discovered, 0 if caller should take care of those side-effects */
 int
-seffects(sobj, effect_happened_ptr)
+seffects(sobj, effect_happened_ptr, targetmonst)
 struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 boolean *effect_happened_ptr;
+struct monst* targetmonst;
 {
     int cval, otyp = sobj->otyp;
     boolean confused = (Confusion != 0), sblessed = sobj->blessed, sbcsign = bcsign(sobj),
             scursed = sobj->cursed, already_known, old_erodeproof,
             new_erodeproof;
     struct obj *otmp;
-    char allowall[2];
+    char allowall[2] = { ALL_CLASSES, 0 };
     void FDECL((*func), (OBJ_P)) = 0;
     const char* glowcolor = 0;
 #define COST_alter (-2)
@@ -1712,6 +1713,7 @@ boolean *effect_happened_ptr;
     already_known = (sobj->oclass == SPBOOK_CLASS /* spell */
                      || objects[otyp].oc_name_known);
     char effbuf[BUFSZ] = "";
+    boolean isyou = !targetmonst || targetmonst == &youmonst;
 
     switch (otyp) {
     case SCR_MAIL:
@@ -1763,7 +1765,6 @@ boolean *effect_happened_ptr;
                     ? "%s then fades."
                     : "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
                 pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, effbuf, otyp == SPE_ENCHANT_ARMOR ? "Enchant Armor" : "Protect Armor", is_serviced_spell);
-                sobj = 0;
                 break;
             }
         }
@@ -2113,121 +2114,7 @@ boolean *effect_happened_ptr;
     case SCR_REMOVE_CURSE:
     case SPE_REMOVE_CURSE: 
     {
-        register struct obj* obj;
-
-        You_feel_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : !confused && !scursed ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, !Hallucination
-            ? (!confused ? "like someone is helping you."
-                : "like you need some help.")
-            : (!confused ? "in touch with the Universal Oneness."
-                : "the power of the Force against you!"));
-
-        if (scursed) {
-            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "scroll disintegrates.");
-        }
-        else
-        {
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
-            special_effect_wait_until_end(0);
-            for (obj = invent; obj; obj = obj->nobj)
-            {
-                long wornmask;
-
-                /* gold isn't subject to cursing and blessing */
-                if (obj->oclass == COIN_CLASS)
-                    continue;
-                wornmask = (obj->owornmask & ~(W_BALL | W_ARTIFACT_CARRIED | W_ARTIFACT_INVOKED));
-                if (wornmask && !sblessed)
-                {
-                    /* handle a couple of special cases; we don't
-                       allow auxiliary weapon slots to be used to
-                       artificially increase number of worn items */
-                    if (obj == uswapwep || obj == uswapwep2) 
-                    {
-                        wornmask = 0L;
-                    }
-                    else if (obj == uquiver)
-                    {
-                        if (obj->oclass == WEAPON_CLASS) 
-                        {
-                            /* mergeable weapon test covers ammo,
-                               missiles, spears, daggers & knives */
-                            if (!objects[obj->otyp].oc_merge)
-                                wornmask = 0L;
-                        }
-                        else if (obj->oclass == GEM_CLASS)
-                        {
-                            /* possibly ought to check whether
-                               alternate weapon is a sling... */
-                            if (!uslinging())
-                                wornmask = 0L;
-                        }
-                        else 
-                        {
-                            /* weptools don't merge and aren't
-                               reasonable quivered weapons */
-                            wornmask = 0L;
-                        }
-                    }
-                }
-
-                if (sblessed || wornmask || (objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) != 0
-                    || (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) != 0
-                    || (obj->otyp == LEASH && obj->leashmon)) 
-                {
-                    /* water price varies by curse/bless status */
-                    boolean shop_h2o = (obj->unpaid && obj->otyp == POT_WATER);
-
-                    if (confused) 
-                    {
-                        if (!(obj->blessed || obj->cursed))
-                        {
-                            if (!rn2(2)) 
-                            {
-                                if (!rn2(2))
-                                {
-                                    play_sfx_sound(SFX_CURSE_ITEM_SUCCESS);
-                                    curse(obj);
-                                }
-                                else 
-                                {
-                                    play_sfx_sound(SFX_BLESS_ITEM_SUCCESS);
-                                    bless(obj);
-                                }
-                            }
-                        }
-                        //blessorcurse(obj, 2);
-                        /* lose knowledge of this object's curse/bless
-                           state (even if it didn't actually change) */
-                        obj->bknown = 0;
-                        /* blessorcurse() only affects uncursed items
-                           so no need to worry about price of water
-                           going down (hence no costly_alteration) */
-                        if (shop_h2o && (obj->cursed || obj->blessed))
-                            alter_cost(obj, 0L); /* price goes up */
-                    }
-                    else if (obj->cursed) 
-                    {
-                        if (shop_h2o)
-                            costly_alteration(obj, COST_UNCURS);
-                        play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
-                        uncurse(obj);
-                    }
-                }
-            }
-            special_effect_wait_until_end(0);
-        }
-        if (Punished && !confused)
-        {
-            play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
-            unpunish();
-        }
-        if (u.utrap && u.utraptype == TT_BURIEDBALL) 
-        {
-            buried_ball_to_freedom();
-            play_sfx_sound(SFX_ITEM_VANISHES);
-            pline_The_ex(ATR_NONE, CLR_MSG_POSITIVE, "clasp on your %s vanishes.", body_part(LEG));
-        }
-        update_inventory();
+        (void)remove_curse(sobj, &youmonst, confused);
         break;
     }
     case SCR_CREATE_MONSTER:
@@ -2273,7 +2160,6 @@ boolean *effect_happened_ptr;
                     ? "%s then fades."
                     : "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
                 pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, effbuf, otyp == SPE_ENCHANT_WEAPON ? "Enchant Weapon" : "Protect Weapon", is_serviced_spell);
-                sobj = 0;
                 break;
             }
         }
@@ -2302,7 +2188,6 @@ boolean *effect_happened_ptr;
                 play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
                 Sprintf(effbuf, "Your %s tingle for a moment.", makeplural(body_part(FINGER)));
                 pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, effbuf, "Tingling", is_serviced_spell);
-                sobj = 0;
                 break;
             }
         }
@@ -2743,8 +2628,6 @@ boolean *effect_happened_ptr;
         }
         break;
     case SPE_DETECT_BLESSEDNESS:
-        allowall[0] = ALL_CLASSES;
-        allowall[1] = '\0';
         if (invent && (is_serviced_spell || !confused || !rn2(2)))
         {
             otmp = getobj(allowall, "detect blessedness for", 0, "");
@@ -2795,111 +2678,8 @@ boolean *effect_happened_ptr;
         break;
     case SPE_CURSE:
     case SPE_BLESS:
-        allowall[0] = ALL_CLASSES;
-        allowall[1] = '\0';
-        if (invent) 
+        if (!bless_or_curse(sobj, targetmonst, isyou))
         {
-            otmp = getobj(allowall, (otyp == SPE_BLESS ? "bless" : "curse"), 0, "");
-            if (otmp)
-            {
-                u.uconduct.gnostic++;
-                enum sfx_sound_types soundid = SFX_BLESS_ITEM_SUCCESS;
-                int textcolor = CLR_MSG_ATTENTION;
-                if ((otyp == SPE_BLESS && (is_serviced_spell || !confused)) || (otyp == SPE_CURSE && !is_serviced_spell && confused))
-                {
-                    if (otmp->cursed) 
-                    {
-                        func = uncurse;
-                        textcolor = CLR_MSG_POSITIVE;
-                        glowcolor = NH_AMBER;
-                        costchange = COST_UNCURS;
-                        soundid = SFX_UNCURSE_ITEM_SUCCESS;
-                    }
-                    else if (!otmp->blessed) 
-                    {
-                        func = bless;
-                        textcolor = CLR_MSG_POSITIVE;
-                        glowcolor = NH_LIGHT_BLUE;
-                        costchange = COST_alter;
-                        altfmt = TRUE; /* "with a <color> aura" */
-                        soundid = SFX_BLESS_ITEM_SUCCESS;
-                    }
-                }
-                else  
-                { //Curse
-                    if (otmp->blessed) 
-                    {
-                        func = unbless;
-                        textcolor = CLR_MSG_WARNING;
-                        glowcolor = "brown";
-                        costchange = COST_UNBLSS;
-                        soundid = SFX_UNBLESS_ITEM_SUCCESS;
-                    }
-                    else if (!otmp->cursed)
-                    {
-                        func = curse;
-                        textcolor = CLR_MSG_NEGATIVE;
-                        glowcolor = NH_BLACK;
-                        costchange = COST_alter;
-                        altfmt = TRUE;
-                        soundid = SFX_CURSE_ITEM_SUCCESS;
-                    }
-                }
-                if (func) 
-                {
-                    /* finally, change curse/bless state */
-                    play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
-                    play_sfx_sound(soundid);
-                    special_effect_wait_until_action(0);
-
-                    /* give feedback before altering the target object;
-                       this used to set obj->bknown even when not seeing
-                       the effect; now hero has to see the glow, and bknown
-                       is cleared instead of set if perception is distorted */
-                    glowcolor = hcolor(glowcolor);
-                    if (altfmt)
-                        Sprintf(effbuf, "%s with %s aura.", Yobjnam2(otmp, "glow"), an(glowcolor));
-                    else
-                        Sprintf(effbuf, "%s %s.", Yobjnam2(otmp, "glow"), glowcolor);
-                    pline_ex1_popup(ATR_NONE, textcolor, effbuf, otyp == SPE_BLESS ? "Bless" : "Curse", is_serviced_spell);
-                    iflags.last_msg = PLNMSG_OBJ_GLOWS;
-                    otmp->bknown = !Hallucination;
-                    /* potions of water are the only shop goods whose price depends
-                       on their curse/bless state */
-                    if (otmp->unpaid && otmp->otyp == POT_WATER) 
-                    {
-                        if (costchange == COST_alter)
-                            /* added blessing or cursing; update shop
-                               bill to reflect item's new higher price */
-                            alter_cost(otmp, 0L);
-                        else if (costchange != COST_none)
-                            /* removed blessing or cursing; you
-                               degraded it, now you'll have to buy it... */
-                            costly_alteration(otmp, costchange);
-                    }
-
-                    (*func)(otmp);
-
-                    special_effect_wait_until_end(0);
-                }
-                update_inventory();
-            }
-            else
-            {
-                if (!is_serviced_spell)
-                    pline1(Never_mind);
-                *effect_happened_ptr = 0;
-                return 0;
-            }
-        }
-        else
-        {
-            /* when casting a spell we know we're not confused,
-               so inventory must be empty (another message has
-               already been given above if reading a scroll) */
-            play_sfx_sound(SFX_GENERAL_CANNOT);
-            Sprintf(effbuf, "You're not carrying anything to be %s.", (otyp == SPE_BLESS ? "blessed" : "cursed"));
-            pline_ex1_popup(ATR_NONE, NO_COLOR, effbuf, "", is_serviced_spell);
             *effect_happened_ptr = 0;
             return 0;
         }
@@ -2981,7 +2761,6 @@ boolean *effect_happened_ptr;
                         ? "%s then fades."
                         : "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
                 pline_ex1_popup(ATR_NONE, effcolor, effbuf, "Enchant Accessory", is_serviced_spell);
-                sobj = 0;
                 break;
             }
         }
@@ -4618,6 +4397,287 @@ boolean sblessed, dopopup;
         alter_cost(otmp, 0L); /* shop bill */
 
     special_effect_wait_until_end(0);
+}
+
+int
+bless_or_curse(sobj, mtmp, confused)
+struct obj* sobj;
+struct monst* mtmp;
+boolean confused; /* Is caster confused */
+{
+    if (!mtmp || !sobj)
+        return 0;
+
+    boolean scursed = sobj->cursed;
+    boolean sblessed = sobj->blessed;
+    boolean isyou = (mtmp == &youmonst);
+    struct obj* objchn = isyou ? invent : mtmp->minvent;
+    struct obj* otmp;
+    int otyp = sobj->otyp;
+    boolean is_serviced_spell = !!(sobj->speflags & SPEFLAGS_SERVICED_SPELL);
+    const char* glowcolor = 0;
+    int costchange = COST_none;
+    void FDECL((*func), (OBJ_P)) = 0;
+    boolean altfmt = FALSE;
+    char effbuf[BUFSZ];
+    int n;
+    menu_item* pick_list = (menu_item*)0;
+    xchar tx = isyou ? u.ux : mtmp->mx;
+    xchar ty = isyou ? u.uy : mtmp->my;
+
+    if (objchn)
+    {
+        char qbuf[BUFSZ];
+        Sprintf(qbuf, "What would you like to %s?", (otyp == SPE_BLESS ? "bless" : "curse"));
+        n = query_objlist(qbuf, &objchn, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT),
+            &pick_list, PICK_ONE, allow_all, 0);
+        if (n && pick_list && pick_list[0].item.a_obj)
+        {
+            otmp = pick_list[0].item.a_obj;
+            free((genericptr_t)pick_list);
+            if(!(is_serviced_spell && !isyou))
+                u.uconduct.gnostic++;
+            enum sfx_sound_types soundid = SFX_BLESS_ITEM_SUCCESS;
+            int textcolor = CLR_MSG_ATTENTION;
+            if ((otyp == SPE_BLESS && (is_serviced_spell || !confused)) || (otyp == SPE_CURSE && !is_serviced_spell && confused))
+            {
+                if (otmp->cursed)
+                {
+                    func = uncurse;
+                    textcolor = CLR_MSG_POSITIVE;
+                    glowcolor = NH_AMBER;
+                    costchange = COST_UNCURS;
+                    soundid = SFX_UNCURSE_ITEM_SUCCESS;
+                }
+                else if (!otmp->blessed)
+                {
+                    func = bless;
+                    textcolor = CLR_MSG_POSITIVE;
+                    glowcolor = NH_LIGHT_BLUE;
+                    costchange = COST_alter;
+                    altfmt = TRUE; /* "with a <color> aura" */
+                    soundid = SFX_BLESS_ITEM_SUCCESS;
+                }
+            }
+            else
+            { //Curse
+                if (otmp->blessed)
+                {
+                    func = unbless;
+                    textcolor = CLR_MSG_WARNING;
+                    glowcolor = "brown";
+                    costchange = COST_UNBLSS;
+                    soundid = SFX_UNBLESS_ITEM_SUCCESS;
+                }
+                else if (!otmp->cursed)
+                {
+                    func = curse;
+                    textcolor = CLR_MSG_NEGATIVE;
+                    glowcolor = NH_BLACK;
+                    costchange = COST_alter;
+                    altfmt = TRUE;
+                    soundid = SFX_CURSE_ITEM_SUCCESS;
+                }
+            }
+            if (func)
+            {
+                /* finally, change curse/bless state */
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, tx, ty, FALSE);
+                play_sfx_sound_at_location(soundid, tx, ty);
+                special_effect_wait_until_action(0);
+
+                /* give feedback before altering the target object;
+                   this used to set obj->bknown even when not seeing
+                   the effect; now hero has to see the glow, and bknown
+                   is cleared instead of set if perception is distorted */
+                glowcolor = hcolor(glowcolor);
+                if (altfmt)
+                    Sprintf(effbuf, "%s with %s aura.", isyou ? Yobjnam2(otmp, "glow") : Tobjnam(otmp, "glow"), an(glowcolor));
+                else
+                    Sprintf(effbuf, "%s %s.", isyou ? Yobjnam2(otmp, "glow") : Tobjnam(otmp, "glow"), glowcolor);
+                pline_ex1_popup(ATR_NONE, textcolor, effbuf, otyp == SPE_BLESS ? "Bless" : "Curse", is_serviced_spell);
+                iflags.last_msg = PLNMSG_OBJ_GLOWS;
+                otmp->bknown = !Hallucination;
+                /* potions of water are the only shop goods whose price depends
+                   on their curse/bless state */
+                if (otmp->unpaid && otmp->otyp == POT_WATER)
+                {
+                    if (costchange == COST_alter)
+                        /* added blessing or cursing; update shop
+                           bill to reflect item's new higher price */
+                        alter_cost(otmp, 0L);
+                    else if (costchange != COST_none)
+                        /* removed blessing or cursing; you
+                           degraded it, now you'll have to buy it... */
+                        costly_alteration(otmp, costchange);
+                }
+
+                (*func)(otmp);
+
+                special_effect_wait_until_end(0);
+            }
+            if(isyou)
+                update_inventory();
+        }
+        else
+        {
+            if (!is_serviced_spell)
+                pline1(Never_mind);
+            return 0;
+        }
+    }
+    else
+    {
+        /* when casting a spell we know we're not confused,
+           so inventory must be empty (another message has
+           already been given above if reading a scroll) */
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        Sprintf(effbuf, "%s %s not carrying anything to be %s.", isyou ? "You" : Monnam(mtmp), isyou ? "are" : "is", (otyp == SPE_BLESS ? "blessed" : "cursed"));
+        pline_ex1_popup(ATR_NONE, NO_COLOR, effbuf, "", is_serviced_spell);
+        return 0;
+    }
+    return 1;
+}
+
+int
+remove_curse(sobj, mtmp, confused)
+struct obj* sobj;
+struct monst* mtmp;
+boolean confused; /* Is caster confused */
+{
+    if (!mtmp || !sobj)
+        return 0;
+
+    boolean scursed = sobj->cursed;
+    boolean sblessed = sobj->blessed;
+    boolean isyou = (mtmp == &youmonst);
+    struct obj* objchn = isyou ? invent : mtmp->minvent;
+    register struct obj* obj;
+    xchar tx = isyou ? u.ux : mtmp->mx;
+    xchar ty = isyou ? u.uy : mtmp->my;
+
+    if(isyou)
+        You_feel_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : !confused && !scursed ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, !Hallucination
+            ? (!confused ? "like someone is helping you."
+                : "like you need some help.")
+            : (!confused ? "in touch with the Universal Oneness."
+                : "the power of the Force against you!"));
+    else
+        You_feel_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : !confused && !scursed ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, !Hallucination
+            ? (!confused ? "like someone is helping %s."
+                : "like %s needs some help.")
+            : (!confused ? "%s is in touch with the Universal Oneness."
+                : "the power of the Force against %s!"), 
+            mon_nam(mtmp));
+
+    if (scursed)
+    {
+        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "scroll disintegrates.");
+    }
+    else
+    {
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, tx, ty, FALSE);
+        special_effect_wait_until_end(0);
+        for (obj = objchn; obj; obj = obj->nobj)
+        {
+            long wornmask;
+
+            /* gold isn't subject to cursing and blessing */
+            if (obj->oclass == COIN_CLASS)
+                continue;
+            wornmask = (obj->owornmask & ~(W_BALL | W_ARTIFACT_CARRIED | W_ARTIFACT_INVOKED | W_SWAP_WEAPON));
+            if (wornmask && !sblessed)
+            {
+                /* handle a couple of special cases; we don't
+                    allow auxiliary weapon slots to be used to
+                    artificially increase number of worn items */
+                if (obj->owornmask & W_QUIVER)
+                {
+                    if (obj->oclass == WEAPON_CLASS)
+                    {
+                        /* mergeable weapon test covers ammo,
+                            missiles, spears, daggers & knives */
+                        if (!objects[obj->otyp].oc_merge)
+                            wornmask = 0L;
+                    }
+                    else if (obj->oclass == GEM_CLASS)
+                    {
+                        /* possibly ought to check whether
+                            alternate weapon is a sling... */
+                        if (!((isyou && uslinging()) || (!isyou && MON_WEP(mtmp) && objects[MON_WEP(mtmp)->otyp].oc_skill == P_SLING)))
+                            wornmask = 0L;
+                    }
+                    else
+                    {
+                        /* weptools don't merge and aren't
+                            reasonable quivered weapons */
+                        wornmask = 0L;
+                    }
+                }
+            }
+
+            if (sblessed || wornmask || (objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) != 0
+                || (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) != 0
+                || (obj->otyp == LEASH && obj->leashmon))
+            {
+                /* water price varies by curse/bless status */
+                boolean shop_h2o = (obj->unpaid && obj->otyp == POT_WATER);
+
+                if (confused)
+                {
+                    if (!(obj->blessed || obj->cursed))
+                    {
+                        if (!rn2(2))
+                        {
+                            if (!rn2(2))
+                            {
+                                play_sfx_sound_at_location(SFX_CURSE_ITEM_SUCCESS, tx, ty);
+                                curse(obj);
+                            }
+                            else
+                            {
+                                play_sfx_sound_at_location(SFX_BLESS_ITEM_SUCCESS, tx, ty);
+                                bless(obj);
+                            }
+                        }
+                    }
+                    //blessorcurse(obj, 2);
+                    /* lose knowledge of this object's curse/bless
+                        state (even if it didn't actually change) */
+                    obj->bknown = 0;
+                    /* blessorcurse() only affects uncursed items
+                        so no need to worry about price of water
+                        going down (hence no costly_alteration) */
+                    if (shop_h2o && (obj->cursed || obj->blessed))
+                        alter_cost(obj, 0L); /* price goes up */
+                }
+                else if (obj->cursed)
+                {
+                    if (shop_h2o)
+                        costly_alteration(obj, COST_UNCURS);
+                    play_sfx_sound_at_location(SFX_UNCURSE_ITEM_SUCCESS, tx, ty);
+                    uncurse(obj);
+                }
+            }
+        }
+        special_effect_wait_until_end(0);
+    }
+    if (isyou)
+    {
+        if (Punished && !confused)
+        {
+            play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
+            unpunish();
+        }
+        if (u.utrap && u.utraptype == TT_BURIEDBALL)
+        {
+            buried_ball_to_freedom();
+            play_sfx_sound(SFX_ITEM_VANISHES);
+            pline_The_ex(ATR_NONE, CLR_MSG_POSITIVE, "clasp on your %s vanishes.", body_part(LEG));
+        }
+        update_inventory();
+    }
+    return 1;
 }
 
 void
