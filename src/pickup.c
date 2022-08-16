@@ -3370,7 +3370,8 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
         { /* note: will set obj->cknown */
             if (!current_container->cknown)
                 used = 1; /* gaining info */
-            container_contents(current_container, FALSE, FALSE, TRUE, 1);
+            display_cinventory(current_container);
+            //container_contents(current_container, FALSE, FALSE, TRUE, 1);
         } 
         else
             break;
