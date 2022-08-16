@@ -264,6 +264,7 @@ struct context_info
     int reserved_int1;
     int reserved_int2;
     unsigned long reserved_ulong1;
+    unsigned long reserved_ulong2;
 
 };
 
