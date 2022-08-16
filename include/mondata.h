@@ -220,7 +220,6 @@
 #define is_non_eater(ptr) \
     ((is_not_living(ptr) || is_angel(ptr) || is_demon(ptr) || has_mflag_is_non_eater(ptr) || (!carnivorous(ptr) && !herbivorous(ptr) && !metallivorous(ptr))) && !is_corpse_eater(ptr))
 
-#define corpse_crumbles_to_dust(ptr) (((ptr)->mflags3 & M3_CORPSE_CRUMBLES_TO_DUST) != 0L)
 #define mon_is_literate(m) (is_speaking_monster((m)->data) && !mindless((m)->data) && haseyes((m)->data))
 
 /* Resistances and properties */
