@@ -1408,7 +1408,10 @@ bark_here:
             chat_line = 1;
         }
         else
+        {
             pline_msg = "squawks.";
+            chat_line = 0;
+        }
         break;
     case MS_HISS:
         if (!is_peaceful(mtmp))
@@ -3073,7 +3076,7 @@ dochat()
             Sprintf(available_chat_list[chatnum].name, "Give items to %s", noittame_mon_nam(mtmp));
             available_chat_list[chatnum].function_ptr = &do_chat_pet_giveitems;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
-            available_chat_list[chatnum].stops_dialogue = TRUE;
+            available_chat_list[chatnum].stops_dialogue = FALSE;
 
             any = zeroany;
             any.a_char = available_chat_list[chatnum].charnum;
@@ -5069,6 +5072,7 @@ struct monst* mtmp;
     menu_item* pick_list;
 
     char qbuf[BUFSIZ] = "";
+    char pbuf[BUFSIZ] = "";
     Sprintf(qbuf, "What would you like to give to %s?", noittame_mon_nam(mtmp));
 
     /* should coordinate with perm invent, maybe not show worn items */
@@ -5110,12 +5114,14 @@ struct monst* mtmp;
                 if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    You("cannot give %s to %s. You are wearing it.", doname(otmp), noittame_mon_nam(mtmp));
+                    Sprintf(pbuf, "You cannot give %s to %s. You are wearing it.", doname(otmp), noittame_mon_nam(mtmp));
+                    pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Cannot Give Item", TRUE);
                 }
                 else if (carryamt == 0 || carryamt < otmp->quan)
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    pline("%s cannot carry %s.", noittame_Monnam(mtmp), yname(otmp));
+                    Sprintf(pbuf, "%s cannot carry %s.", noittame_Monnam(mtmp), yname(otmp));
+                    pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Cannot Carry Item", TRUE);
                 }
                 else
                 {
@@ -5126,7 +5132,8 @@ struct monst* mtmp;
                         if (flags.verbose)
                         {
                             play_simple_object_sound_at_location(otmp, u.ux, u.uy, OBJECT_SOUND_TYPE_GIVE);
-                            You("give %s to %s.", doname(otmp), noittame_mon_nam(mtmp));
+                            Sprintf(pbuf, "You give %s to %s.", doname(otmp), noittame_mon_nam(mtmp));
+                            pline_ex1_popup(ATR_NONE, NO_COLOR, pbuf, "Item Given", TRUE);
                         }
 
                         if (*u.ushops || otmp->unpaid)

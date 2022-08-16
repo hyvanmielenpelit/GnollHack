@@ -6977,7 +6977,7 @@ int duration;
                   : check_magic_resistance_and_inflict_damage(mdef, obj, youattack ? &youmonst : (struct monst*)0, FALSE, 0, 0, NOTELL))
         return FALSE; /* resisted cancellation */
 
-    if (self_cancel)
+    if (self_cancel || (youattack && is_tame(mdef)) || (!youattack && !is_peaceful(mdef)))
     {
         /* 1st cancel inventory */
         struct obj* otmp;
