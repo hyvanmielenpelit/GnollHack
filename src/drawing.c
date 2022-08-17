@@ -71,7 +71,7 @@ const struct class_sym def_monsyms[MAX_MONSTER_CLASSES] = {
     { DEF_EYE, "eyes and spheres", "eye or sphere" },
     { DEF_FELINE, "cats and other felines", "cat or other feline" },
     { DEF_GNOME, "gnomes, gremlins, and gargoyles", "gnome, gremlin, or gargoyle" },
-    { DEF_HUMANOID, "humanoids", "humanoid" },
+    { DEF_HUMANOID, "dwarves, humanoids, and tentacled ones", "dwarf, humanoid, or tentacled one" },
     { DEF_IMP, "imps and other minor demons", "imp or minor demon" },
     { DEF_JELLY, "jellies", "jelly" },
     { DEF_KOBOLD, "kobolds", "kobold" },
