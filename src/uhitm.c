@@ -827,9 +827,9 @@ struct attack *uattk;
         wep = (uarms ? uarms : uarmg ? uarmg : (struct obj*)0);
         wepbefore = wep;
 
-        struct multishot_result msres = get_multishot_stats(&youmonst, wep, wep, FALSE);
-        int wieldermultistrike2 = msres.wielder_attacks;
-        int multistrike2 = msres.weapon_attacks;
+        struct multishot_result msres2 = get_multishot_stats(&youmonst, wep, wep, FALSE);
+        int wieldermultistrike2 = msres2.wielder_attacks;
+        int multistrike2 = msres2.weapon_attacks;
         int wielderstrike2index;
         int strike2index;
         for (wielderstrike2index = 0; wielderstrike2index < wieldermultistrike2; wielderstrike2index++)
