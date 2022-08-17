@@ -441,6 +441,7 @@ STATIC_VAR const struct def_skill Skill_B_Max[] = {
     { P_QUARTERSTAFF, P_EXPERT },
     { P_THRUSTING_WEAPON, P_EXPERT },
     { P_BOW, P_EXPERT },
+    { P_SLING, P_EXPERT },
     { P_CROSSBOW, P_EXPERT },
     { P_THROWN_WEAPON, P_EXPERT },
     { P_RIDING, P_MASTER },

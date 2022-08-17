@@ -1742,7 +1742,29 @@ int
 two_handed_weapon_multishot_percentage_chance(skill_level)
 int skill_level;
 {
-    return martial_arts_multishot_percentage_chance(skill_level);
+    int percentage = 0;
+    switch (skill_level)
+    {
+    case P_BASIC:
+        percentage = 10;
+        break;
+    case P_SKILLED:
+        percentage = 25;
+        break;
+    case P_EXPERT:
+        percentage = 45;
+        break;
+    case P_MASTER:
+        percentage = 70;
+        break;
+    case P_GRAND_MASTER:
+        percentage = 100;
+        break;
+    default:
+        break;
+    }
+
+    return percentage;
 }
 
 int
