@@ -17,6 +17,7 @@ STATIC_DCL boolean FDECL(m_general_talk_check, (struct monst*, const char*));
 STATIC_DCL int NDECL(dochat);
 STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
+STATIC_DCL struct monst* FDECL(ask_target_monster, (struct monst*));
 
 STATIC_DCL void FDECL(hermit_talk, (struct monst*, const char**, enum ghsound_types));
 #if 0
@@ -5419,7 +5420,7 @@ struct monst* mtmp;
             if (isok(x, y))
             {
                 struct monst* mon = m_at(x, y);
-                if (mon)
+                if (mon && !DEADMONSTER(mon))
                 {
                     if (mon->ispriest && has_epri(mon) && is_peaceful(mon))
                     {
@@ -6625,6 +6626,10 @@ struct monst* mtmp;
         return 0;
     }
 
+    struct monst* targetmonst = ask_target_monster(mtmp);
+    if(!targetmonst)
+        return 0;
+
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_BLESS_AN_ITEM);
     Sprintf(qbuf, "Would you like to bless an item? (%ld %s)", bless_cost, currency(bless_cost));
     switch (ynq_mon(mtmp, qbuf)) {
@@ -6677,7 +6682,7 @@ struct monst* mtmp;
     pseudo->quan = 20L; /* do not let useup get it */
     pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
     boolean effect_happened = 0;
-    (void)seffects(pseudo, &effect_happened, iflags.spell_target_monster ? iflags.spell_target_monster : &youmonst);
+    (void)seffects(pseudo, &effect_happened, targetmonst);
     obfree(pseudo, (struct obj*)0);
 
     if (effect_happened)
@@ -6710,6 +6715,10 @@ struct monst* mtmp;
         return 0;
     }
 
+    struct monst* targetmonst = ask_target_monster(mtmp);
+    if (!targetmonst)
+        return 0;
+
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_STANDARD_HEALING);
     Sprintf(qbuf, "Would you like to have a standard healing? (%ld %s)", extrahealing_cost, currency(extrahealing_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
@@ -6727,15 +6736,17 @@ struct monst* mtmp;
     money2mon(mtmp, u_pay);
     bot();
 
-    int otyp = POT_EXTRA_HEALING;
-
-    struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
-    pseudo->blessed = pseudo->cursed = 0;
-    pseudo->quan = 20L; /* do not let useup get it */
-    pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
-    peffects(pseudo);
-    obfree(pseudo, (struct obj*)0);
-    u.uconduct.gnostic++;
+    struct obj pseudo = { 0 };
+    pseudo.otyp = SPE_EXTRA_HEALING;
+    pseudo.quan = 1L;
+    pseudo.speflags = SPEFLAGS_SERVICED_SPELL;
+    if (targetmonst == &youmonst)
+    {
+        zapyourself(&pseudo, TRUE);
+        u.uconduct.gnostic++;
+    }
+    else
+        bhitm(targetmonst, &pseudo, mtmp);
 
     return 1;
 }
@@ -6758,6 +6769,10 @@ struct monst* mtmp;
         return 0;
     }
 
+    struct monst* targetmonst = ask_target_monster(mtmp);
+    if (!targetmonst)
+        return 0;
+
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FULL_HEALING);
     Sprintf(qbuf, "Would you like to have a full healing? (%ld %s)", fullhealing_cost, currency(fullhealing_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
@@ -6775,15 +6790,17 @@ struct monst* mtmp;
     money2mon(mtmp, u_pay);
     bot();
 
-    int otyp = POT_FULL_HEALING;
-
-    struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
-    pseudo->blessed = pseudo->cursed = 0;
-    pseudo->quan = 20L; /* do not let useup get it */
-    pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
-    peffects(pseudo);
-    obfree(pseudo, (struct obj*)0);
-    u.uconduct.gnostic++;
+    struct obj pseudo = { 0 };
+    pseudo.otyp = SPE_FULL_HEALING;
+    pseudo.quan = 1L;
+    pseudo.speflags = SPEFLAGS_SERVICED_SPELL;
+    if (targetmonst == &youmonst)
+    {
+        zapyourself(&pseudo, TRUE);
+        u.uconduct.gnostic++;
+    }
+    else
+        bhitm(targetmonst, &pseudo, mtmp);
 
     return 1;
 }
@@ -6806,6 +6823,10 @@ struct monst* mtmp;
         return 0;
     }
 
+    struct monst* targetmonst = ask_target_monster(mtmp);
+    if (!targetmonst)
+        return 0;
+
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_SICKNESS_CURED);
     Sprintf(qbuf, "Would you like to have your sickness cured? (%ld %s)", cure_sickness_cost, currency(cure_sickness_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
@@ -6823,15 +6844,17 @@ struct monst* mtmp;
     money2mon(mtmp, u_pay);
     bot();
 
-    int otyp = SPE_CURE_SICKNESS;
-
-    struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
-    pseudo->blessed = pseudo->cursed = 0;
-    pseudo->quan = 20L; /* do not let useup get it */
-    pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
-    zapyourself(pseudo, TRUE);
-    obfree(pseudo, (struct obj*)0);
-    u.uconduct.gnostic++;
+    struct obj pseudo = { 0 };
+    pseudo.otyp = SPE_CURE_SICKNESS;
+    pseudo.quan = 1L;
+    pseudo.speflags = SPEFLAGS_SERVICED_SPELL;
+    if (targetmonst == &youmonst)
+    {
+        zapyourself(&pseudo, TRUE);
+        u.uconduct.gnostic++;
+    }
+    else
+        bhitm(targetmonst, &pseudo, mtmp);
 
     return 1;
 }
@@ -10677,6 +10700,89 @@ struct monst* mtmp;
     }
 
     return 1;
+}
+
+STATIC_OVL
+struct monst*
+ask_target_monster(mtmp)
+struct monst* mtmp;
+{
+    if (iflags.spell_target_monster)
+        return iflags.spell_target_monster;
+
+    if (!mtmp || !isok(mtmp->mx, mtmp->my))
+        return 0;
+
+    struct monst* nearbymon[10] = { 0 };
+    int cnt = 0;
+    int x, y;
+    nearbymon[0] = &youmonst;
+    cnt++;
+    for (x = mtmp->mx - 1; x <= mtmp->mx + 1; x++)
+    {
+        for (y = mtmp->my - 1; y <= mtmp->my + 1; y++)
+        {
+            if (isok(x, y))
+            {
+                struct monst* mon = m_at(x, y);
+                if (mon && !DEADMONSTER(mon))
+                {
+                    if (is_tame(mon))
+                    {
+                        nearbymon[cnt] = mon;
+                        cnt++;
+                    }
+                }
+            }
+        }
+    }
+
+    if (cnt > 1)
+    {
+        menu_item* pick_list = (menu_item*)0;
+        winid win;
+        anything any;
+        char nbuf[BUFSIZ];
+
+        any = zeroany;
+        win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
+        start_menu_ex(win, GHMENU_STYLE_CHAT);
+
+        int i;
+        for (i = 0; i < cnt; i++)
+        {
+            boolean isyou = nearbymon[i] == &youmonst;
+            any = zeroany;
+            any.a_monst = nearbymon[i];
+            if (isyou)
+                Strcpy(nbuf, "You");
+            else if (nearbymon[i])
+                Strcpy(nbuf, Monnam(nearbymon[i]));
+            else
+                continue;
+            add_menu(win, isyou ? u_to_glyph() : mon_to_glyph(nearbymon[i], rn2_on_display_rng), &any, 0, 0, ATR_NONE, nbuf, MENU_UNSELECTED);
+        }
+
+        /* Finish the menu */
+        end_menu(win, "Choose target");
+
+        if (cnt <= 0)
+            return &youmonst;
+
+        struct monst* selmon = 0;
+        /* Now generate the menu */
+        if (select_menu(win, PICK_ONE, &pick_list) > 0)
+        {
+            selmon = pick_list->item.a_monst;
+            free((genericptr_t)pick_list);
+            pick_list = 0;
+        }
+        destroy_nhwindow(win);
+
+        return selmon;
+    }
+    else
+        return &youmonst;
 }
 
 /*sounds.c*/
