@@ -6677,13 +6677,13 @@ struct monst* mtmp;
         break;
     }
 
-    struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
-    pseudo->blessed = pseudo->cursed = 0;
-    pseudo->quan = 20L; /* do not let useup get it */
-    pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
+    struct obj pseudo = { 0 };
+    pseudo.otyp = otyp;
+    pseudo.quan = 20L;
+    pseudo.speflags = SPEFLAGS_SERVICED_SPELL;
+
     boolean effect_happened = 0;
-    (void)seffects(pseudo, &effect_happened, targetmonst);
-    obfree(pseudo, (struct obj*)0);
+    (void)seffects(&pseudo, &effect_happened, targetmonst);
 
     if (effect_happened)
     {
