@@ -17294,7 +17294,7 @@ enum monster_flounder_sounds line_id;
 
 void
 play_player_pissed_sound(line_id)
-enum monster_flounder_sounds line_id;
+enum monster_pissed_sounds line_id;
 {
     play_player_line_indexed_sound(MONSTER_SOUND_TYPE_PISSED, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED);
 }
