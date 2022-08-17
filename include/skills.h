@@ -55,7 +55,8 @@ enum p_skills {
     /* Other types of combat */
     P_BARE_HANDED_COMBAT,      /* actually weaponless; gloves are ok */
     P_MARTIAL_ARTS,            /* actually weaponless; gloves are ok */
-    P_TWO_WEAPON_COMBAT,       /* pair of weapons, one in each hand */
+    P_DUAL_WEAPON_COMBAT,      /* pair of weapons, one in each hand */
+    P_TWO_HANDED_WEAPON,       /* two-handed weapons */
     P_DODGE,                   /* increases AC */
     P_SHIELD,                  /* increases AC and MC, and for figthing with weapon shields */
     P_WAND,                    /* shooting rays with wands */

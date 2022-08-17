@@ -234,8 +234,8 @@ struct obj *otmp, *mwep;
                : otmp->oclass == WEAPON_CLASS)
         && !is_confused(mtmp)) 
     {
-
-        multishot = get_multishot_stats(mtmp, otmp, mwep, TRUE, (double*)0);
+        struct multishot_result msres = get_multishot_stats(mtmp, otmp, mwep, TRUE);
+        multishot = msres.wielder_attacks * msres.weapon_attacks;
     }
 
     if (otmp->quan < multishot)

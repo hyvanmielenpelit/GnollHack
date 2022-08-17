@@ -874,7 +874,7 @@ E boolean FDECL(walk_path, (coord *, coord *,
 E boolean FDECL(hurtle_jump, (genericptr_t, int, int));
 E boolean FDECL(hurtle_step, (genericptr_t, int, int));
 
-E int FDECL(get_multishot_stats, (struct monst*, struct obj*, struct obj*, BOOLEAN_P, double*));
+E struct multishot_result FDECL(get_multishot_stats, (struct monst*, struct obj*, struct obj*, BOOLEAN_P));
 E void FDECL(check_shop_obj, (struct obj*, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E void NDECL(reset_throw);
 
@@ -3919,6 +3919,7 @@ E int FDECL(riding_skill_saddling_bonus, (int));
 E int FDECL(riding_skill_mount_bonus, (int));
 E void FDECL(skill_init, (const struct def_skill*, const struct def_skill *));
 E int FDECL(martial_arts_multishot_percentage_chance, (int));
+E int FDECL(two_handed_weapon_multishot_percentage_chance, (int));
 E int FDECL(get_skill_critical_strike_chance, (enum p_skills, BOOLEAN_P, BOOLEAN_P, int));
 E double FDECL(get_wand_damage_multiplier, (int));
 E int FDECL(get_exceptionality_multiplier, (UCHAR_P));

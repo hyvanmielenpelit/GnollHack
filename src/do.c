@@ -4065,8 +4065,8 @@ register struct obj* obj;
         Sprintf(buf, " %2d - You have 50%% chance to hit AC %d and 5%% AC %d", powercnt, ac_with_50_chance, ac_with_5_chance);
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
 
-        double average_multi_shot_times = 1.0;
-        (void)get_multishot_stats(&youmonst, obj, uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj, (is_ammo(obj) || throwing_weapon(obj)), &average_multi_shot_times);
+        struct multishot_result msres = get_multishot_stats(&youmonst, obj, uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj, (is_ammo(obj) || throwing_weapon(obj)));
+        double average_multi_shot_times = msres.average;
 
         powercnt++;
         const char* applicable_verb = throwing_weapon(obj) ? "throw" : ammo_and_launcher(obj, applicable_launcher) ? "fire" : "strike";

@@ -21,7 +21,7 @@ STATIC_DCL int FDECL(hitmu, (struct monst *, struct attack *, struct obj*));
 STATIC_DCL int FDECL(gulpmu, (struct monst *, struct attack *));
 STATIC_DCL int FDECL(explmu, (struct monst *, struct attack *, BOOLEAN_P));
 STATIC_DCL void FDECL(missmu, (struct monst *, BOOLEAN_P, struct attack *));
-STATIC_DCL void FDECL(mswings, (struct monst *, struct obj *));
+STATIC_DCL void FDECL(mswings, (struct monst *, struct obj *, int));
 STATIC_DCL void FDECL(wildmiss, (struct monst *, struct attack *));
 STATIC_DCL void FDECL(hitmsg, (struct monst *, struct attack *, int, BOOLEAN_P));
 
@@ -181,15 +181,17 @@ struct attack *mattk;
 
 /* monster swings obj */
 STATIC_OVL void
-mswings(mtmp, otemp)
+mswings(mtmp, otemp, strikeindex)
 struct monst *mtmp;
 struct obj *otemp;
+int strikeindex;
 {
     if (flags.verbose && !Blind && mon_visible(mtmp)) 
     {
-        pline("%s %s %s%s %s.", Monnam(mtmp),
+        pline("%s %s %s%s %s%s.", Monnam(mtmp),
               (objects[otemp->otyp].oc_dir & PIERCE) ? "thrusts" : "swings",
-              (otemp->quan > 1L) ? "one of " : "", mhis(mtmp), xname(otemp));
+              (otemp->quan > 1L) ? "one of " : "", mhis(mtmp), xname(otemp),
+            !strikeindex ? "" : strikeindex == 1 ? " a second time" : strikeindex == 2 ? " a third time" : " once more");
     }
 }
 
@@ -958,40 +960,49 @@ register struct monst *mtmp;
                         mon_currwep = MON_WEP(mtmp);
 
                     int multistrike = 1;
+                    int wieldermultistrike = 1;
 
                     if (mon_currwep) 
                     {
                         hittmp = weapon_to_hit_value(mon_currwep, &youmonst, mtmp, 0);
                         tmp += hittmp;
 
-                        multistrike = get_multishot_stats(mtmp, mon_currwep, mon_currwep, FALSE, (double*)0);
-
+                        struct multishot_result msres = get_multishot_stats(mtmp, mon_currwep, mon_currwep, FALSE);
+                        wieldermultistrike = msres.wielder_attacks;
+                        multistrike = msres.weapon_attacks;
                     }
-
-                    for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
+                    int strikeindex;
+                    int wielderstrikeindex;
+                    for (wielderstrikeindex = 0; wielderstrikeindex < wieldermultistrike; wielderstrikeindex++)
                     {
                         play_monster_simple_weapon_sound(mtmp, i, mon_currwep, OBJECT_SOUND_TYPE_SWING_MELEE);
-                        if (mon_currwep)
+                        if (mon_currwep && flags.verbose && !Blind && mon_visible(mtmp))
                         {
-                            if (strikeindex == 0)
-                                mswings(mtmp, mon_currwep);
-                            else
-                                if (flags.verbose && !Blind && mon_visible(mtmp))
+                            mswings(mtmp, mon_currwep, wielderstrikeindex);
+                        }
+
+                        for (strikeindex = 0; strikeindex < multistrike; strikeindex++)
+                        {
+                            //play_monster_simple_weapon_sound(mtmp, i, mon_currwep, OBJECT_SOUND_TYPE_SWING_MELEE);
+                            if (mon_currwep)
+                            {
+                                if (flags.verbose && !Blind && mon_visible(mtmp) && strikeindex > 0)
                                 {
                                     /* To be consistent with mswings */
                                     pline("%s %s %s!", s_suffix(Monnam(mtmp)), aobjnam(mon_currwep, "strike"), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
                                 }
+                            }
+
+                            if (strikeindex == 0)
+                                m_wait_until_action();
+
+                            //TO-HIT IS DONE HERE
+                            if (tmp > (j = dieroll = rnd(20 + i)))
+                                sum[i] = hitmu(mtmp, mattk, mon_currwep);
+                            else
+                                missmu(mtmp, (tmp == j), mattk);
+
                         }
-
-                        if(strikeindex == 0)
-                            m_wait_until_action();
-
-                        //TO-HIT IS DONE HERE
-                        if (tmp > (j = dieroll = rnd(20 + i)))
-                            sum[i] = hitmu(mtmp, mattk, mon_currwep);
-                        else
-                            missmu(mtmp, (tmp == j), mattk);
-
                     }
                 } 
                 else

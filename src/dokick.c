@@ -405,7 +405,8 @@ xchar x, y;
         return;
     }
 
-    int multistrike = get_multishot_stats(&youmonst, (struct obj*)0, (struct obj*)0, FALSE, (double*)0);
+    struct multishot_result msres = get_multishot_stats(&youmonst, (struct obj*)0, (struct obj*)0, FALSE);
+    int multistrike = msres.wielder_attacks * msres.weapon_attacks;
 
     for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
     {

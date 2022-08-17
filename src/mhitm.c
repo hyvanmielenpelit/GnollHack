@@ -27,7 +27,7 @@ STATIC_DCL int FDECL(explmm, (struct monst *, struct monst *,
                               struct attack *));
 STATIC_DCL int FDECL(mdamagem, (struct monst *, struct monst *, struct attack *, struct obj*));
 STATIC_DCL void FDECL(mswingsm, (struct monst *, struct monst *,
-                                 struct obj *));
+                                 struct obj *, int));
 STATIC_DCL void FDECL(noises, (struct monst *, struct attack *));
 STATIC_DCL void FDECL(missmm, (struct monst *, struct monst *,
                                struct attack *));
@@ -415,6 +415,7 @@ register struct monst *magr, *mdef;
         otmp = (struct obj *) 0;
         attk = 1;
         int multistrike = 1;
+        int wieldermultistrike = 1;
 
         switch (mattk->aatyp)
         {
@@ -457,12 +458,14 @@ register struct monst *magr, *mdef;
             if (otmp) 
             {
                 if (vis)
-                    mswingsm(magr, mdef, otmp);
+                    mswingsm(magr, mdef, otmp, 0);
                 tmp += weapon_to_hit_value(otmp, mdef, magr, 0);
 
             }
 
-            multistrike = get_multishot_stats(magr, otmp, otmp, FALSE, (double*)0);
+            struct multishot_result msres = get_multishot_stats(magr, otmp, otmp, FALSE);
+            wieldermultistrike = msres.wielder_attacks;
+            multistrike = msres.weapon_attacks;
 
             /*FALLTHRU*/
         case AT_CLAW:
@@ -508,111 +511,124 @@ register struct monst *magr, *mdef;
             update_m_action(magr, action);
             play_monster_simple_weapon_sound(magr, i, otmp, OBJECT_SOUND_TYPE_SWING_MELEE);
             m_wait_until_action();
-            for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
+            int wielderstrikeindex;
+            int strikeindex;
+            for (wielderstrikeindex = 0; wielderstrikeindex < wieldermultistrike; wielderstrikeindex++)
             {
                 boolean endforloop = FALSE;
-
                 if (otmp)
                 {
-                    if (strikeindex == 0)
+                    if (wielderstrikeindex == 0)
                         ; //Swinging message is already done above
                     else
-                    {
                         if (flags.verbose && !Blind && vis)
-                            pline("%s %s %s!", 
-                                s_suffix(Monnam(magr)), 
-                                aobjnam(otmp, "strike"), 
-                                strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
-
-                    }
+                            mswingsm(magr, mdef, otmp, wielderstrikeindex);
                 }
 
-                //TO-HIT IS DETERMINED HERE
-                dieroll = rnd(20 + i);
-                strike = (tmp > dieroll);
-
-                if (strike)
+                for (strikeindex = 0; strikeindex < multistrike; strikeindex++)
                 {
-                    struct obj* omonwep = otmp;
-                    res[i] = hitmm(magr, mdef, mattk, otmp);
-                    boolean uses_spell_flags = omonwep ? object_uses_spellbook_wand_flags_and_properties(omonwep) : FALSE;
-
-                    /* Check if the weapon shatters */
-                    /* Check if the object should shatter */
-
-                    if (omonwep && omonwep->where == OBJ_MINVENT && is_fragile(omonwep)
-                        && !is_obj_indestructible(omonwep)
-                        && !is_quest_artifact(omonwep)
-                        && !omonwep->oartifact
-                        )
+                    if (otmp)
                     {
-                        /* Shattering is done below, here just the message*/
-                        boolean set_to_zero = FALSE;
-                        if (omonwep->quan == 1)
-                        {
-                            set_to_zero = TRUE;
-                            if(canseemon(magr))
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s shatters from the blow!", s_suffix(Monnam(magr)), xname(omonwep));
-                        }
+                        if (strikeindex == 0)
+                            ; //Swinging message is already done above
                         else
                         {
-                            if (canseemon(magr))
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s %s shatters from the blow!", s_suffix(mon_nam(magr)), xname(omonwep));
+                            if (flags.verbose && !Blind && vis)
+                                pline("%s %s %s!",
+                                    s_suffix(Monnam(magr)),
+                                    aobjnam(otmp, "strike"),
+                                    strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+
                         }
-                        m_useup(magr, omonwep);
-                        if (set_to_zero)
+                    }
+
+                    //TO-HIT IS DETERMINED HERE
+                    dieroll = rnd(20 + i);
+                    strike = (tmp > dieroll);
+
+                    if (strike)
+                    {
+                        struct obj* omonwep = otmp;
+                        res[i] = hitmm(magr, mdef, mattk, otmp);
+                        boolean uses_spell_flags = omonwep ? object_uses_spellbook_wand_flags_and_properties(omonwep) : FALSE;
+
+                        /* Check if the weapon shatters */
+                        /* Check if the object should shatter */
+
+                        if (omonwep && omonwep->where == OBJ_MINVENT && is_fragile(omonwep)
+                            && !is_obj_indestructible(omonwep)
+                            && !is_quest_artifact(omonwep)
+                            && !omonwep->oartifact
+                            )
                         {
+                            /* Shattering is done below, here just the message*/
+                            boolean set_to_zero = FALSE;
+                            if (omonwep->quan == 1)
+                            {
+                                set_to_zero = TRUE;
+                                if (canseemon(magr))
+                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s shatters from the blow!", s_suffix(Monnam(magr)), xname(omonwep));
+                            }
+                            else
+                            {
+                                if (canseemon(magr))
+                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s %s shatters from the blow!", s_suffix(mon_nam(magr)), xname(omonwep));
+                            }
+                            m_useup(magr, omonwep);
+                            if (set_to_zero)
+                            {
+                                omonwep = 0;
+                                otmp = 0;
+                                MON_WEP(magr) = 0;
+                            }
+                            endforloop = TRUE;
+                        }
+                        else if (omonwep && !uses_spell_flags && (objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
+                            && (
+                                !(objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET)
+                                || ((objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET) && eligible_for_extra_damage(omonwep, mdef, magr))
+                                )
+                            )
+                        {
+                            if (omonwep->where == OBJ_MINVENT)
+                                m_useup(magr, omonwep);
+                            else if (omonwep->where == OBJ_FREE)
+                                obfree(omonwep, (struct obj*)0);
+
                             omonwep = 0;
                             otmp = 0;
                             MON_WEP(magr) = 0;
+
+                            endforloop = TRUE;
                         }
-                        endforloop = TRUE;
-                    }
-                    else if (omonwep && !uses_spell_flags && (objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
-                        && (
-                            !(objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET)
-                            || ((objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET) && eligible_for_extra_damage(omonwep, mdef, magr))
-                            )
-                        )
-                    {
-                        if (omonwep->where == OBJ_MINVENT)
-                            m_useup(magr, omonwep);
-                        else if (omonwep->where == OBJ_FREE)
-                            obfree(omonwep, (struct obj*)0);
-
-                        omonwep = 0;
-                        otmp = 0;
-                        MON_WEP(magr) = 0;
-
-                        endforloop = TRUE;
-                    }
-                    if (does_split_upon_hit(mdef->data)
-                        && (otmp && (objects[otmp->otyp].oc_material == MAT_IRON
-                            || objects[otmp->otyp].oc_material == MAT_METAL))
-                        && mdef->mhp > 1
-                        && !is_cancelled(mdef)) 
-                    {
-                        struct monst* mclone;
-                        if ((mclone = clone_mon(mdef, 0, 0, TRUE)) != 0) 
+                        if (does_split_upon_hit(mdef->data)
+                            && (otmp && (objects[otmp->otyp].oc_material == MAT_IRON
+                                || objects[otmp->otyp].oc_material == MAT_METAL))
+                            && mdef->mhp > 1
+                            && !is_cancelled(mdef))
                         {
-                            if (vis && canspotmon(mdef)) 
+                            struct monst* mclone;
+                            if ((mclone = clone_mon(mdef, 0, 0, TRUE)) != 0)
                             {
-                                char buf[BUFSZ];
+                                if (vis && canspotmon(mdef))
+                                {
+                                    char buf[BUFSZ];
 
-                                Strcpy(buf, Monnam(mdef));
-                                if (canseemon(mdef))
-                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s divides as %s hits it!", buf, mon_nam(magr));
+                                    Strcpy(buf, Monnam(mdef));
+                                    if (canseemon(mdef))
+                                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s divides as %s hits it!", buf, mon_nam(magr));
+                                }
+                                mintrap(mclone);
                             }
-                            mintrap(mclone);
                         }
                     }
+                    else
+                        missmm(magr, mdef, mattk);
+
+                    if (endforloop || DEADMONSTER(mdef) || DEADMONSTER(magr) || m_at(mdef_x, mdef_y) != mdef)
+                        break;
                 }
-                else
-                    missmm(magr, mdef, mattk);
-
-
-
-                if(endforloop || DEADMONSTER(mdef) || DEADMONSTER(magr) || m_at(mdef_x, mdef_y) != mdef)
+                if (endforloop || DEADMONSTER(mdef) || DEADMONSTER(magr) || m_at(mdef_x, mdef_y) != mdef)
                     break;
             }
             update_m_action_revert(magr, ACTION_TILE_NO_ACTION);
@@ -2418,16 +2434,17 @@ struct obj *obj;
 }
 
 STATIC_OVL void
-mswingsm(magr, mdef, otemp)
+mswingsm(magr, mdef, otemp, strikeindex)
 struct monst *magr, *mdef;
 struct obj *otemp;
+int strikeindex;
 {
     if (flags.verbose && !Blind && mon_visible(magr)) 
     {
-        pline("%s %s %s%s %s at %s.", Monnam(magr),
+        pline("%s %s %s%s %s at %s%s.", Monnam(magr),
               (objects[otemp->otyp].oc_dir & PIERCE) ? "thrusts" : "swings",
               (otemp->quan > 1L) ? "one of " : "", mhis(magr), xname(otemp),
-              mon_nam(mdef));
+              mon_nam(mdef), !strikeindex ? "" : strikeindex == 1 ? " a second time" : strikeindex == 2 ? " a third time" : " once more");
     }
 }
 

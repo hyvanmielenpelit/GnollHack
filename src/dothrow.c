@@ -123,7 +123,8 @@ boolean firing;
                          : (obj->oclass == WEAPON_CLASS && !is_launcher(obj)))
         && !(Confusion || Stunned)) 
     {
-        multishot = get_multishot_stats(&youmonst, obj, uwep, TRUE, (double*)0);     
+        struct multishot_result msres = get_multishot_stats(&youmonst, obj, uwep, TRUE);     
+        multishot = msres.wielder_attacks * msres.weapon_attacks;
         if ((long) multishot > obj->quan)
             multishot = (int) obj->quan;
         if (shotlimit > 0 && multishot > shotlimit)
@@ -178,26 +179,26 @@ boolean firing;
     return 1;
 }
 
-int
-get_multishot_stats(magr, otmp, weapon, thrown, average_ptr)
+struct multishot_result
+get_multishot_stats(magr, otmp, weapon, thrown)
 struct monst* magr;
 struct obj* otmp;
 struct obj* weapon;
 boolean thrown;
-double* average_ptr;
 {
+    struct multishot_result res = { 1, 1, 1.0 };
     if (!magr)
-        return 1;
+        return res;
 
+    boolean isyou = magr == &youmonst;
     int multishot = 1;
-    if (average_ptr)
-        *average_ptr = 1.0;
-
+    int wieldermultishot = 1;
+    double average = 1.0;
     if (!otmp || otmp == uarmg)
     {
         int skilllevel = 0;
         /* martial arts */
-        if (magr == &youmonst)
+        if (isyou)
         {
             skilllevel = limited_skill_level(P_MARTIAL_ARTS, FALSE, TRUE);
         }
@@ -223,12 +224,14 @@ double* average_ptr;
         }
 
         if (rn2(100) < martial_arts_multishot_percentage_chance(skilllevel))
-            multishot++;
+            wieldermultishot++;
 
-        if (average_ptr)
-            *average_ptr = 1.0 + martial_arts_multishot_percentage_chance(skilllevel) / 100.0;
+        average = 1.0 + martial_arts_multishot_percentage_chance(skilllevel) / 100.0;
 
-        return multishot;
+        res.wielder_attacks = wieldermultishot;
+        res.average = average;
+
+        return res;
     }
 
     boolean isammo = is_ammo(otmp);
@@ -253,7 +256,7 @@ double* average_ptr;
     }
 
     /* Find skill level */
-    if (magr == &youmonst)
+    if (isyou)
     {
         skilllevel = P_SKILL_LEVEL(weapon_skill_type(otmpmulti));
     }
@@ -286,13 +289,11 @@ double* average_ptr;
         {
         case MULTISHOT_LAUNCHER_MULTISHOT_BOW:
             multishot = 1 + (skilllevel > P_BASIC ? (rn2(100) < (skilllevel - 2) * 25 ? 1 : 0) : 0);
-            if (average_ptr)
-                *average_ptr = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 2) * 0.25 : 0.0);
+            average = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 2) * 0.25 : 0.0);
             break; 
         case MULTISHOT_LAUNCHER_REPEATING_CROSSBOW:
             multishot = 2;
-            if (average_ptr)
-                *average_ptr = 2.0;
+            average = 2.0;
             break;
         case MULTISHOT_LAUNCHER_STAFF_SLING:
         {
@@ -300,8 +301,7 @@ double* average_ptr;
             boolean has_random = skilllevel == P_SKILLED ? TRUE : FALSE;
             int random = has_random ? rn2(2) : 0;
             multishot = fixed + random;
-            if (average_ptr)
-                *average_ptr = (double)fixed + (has_random ? 0.5 : 0.0);
+            average = (double)fixed + (has_random ? 0.5 : 0.0);
             break;
         }
         default:
@@ -316,18 +316,15 @@ double* average_ptr;
         {
         case MULTISHOT_THROWN_DART:
             multishot = 1 + (skilllevel > P_SKILLED ? (rn2(100) < (skilllevel - 3) * 25 ? 1 : 0) : 0);
-            if (average_ptr)
-                *average_ptr = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 3) * 0.25 : 0.0);
+            average = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 3) * 0.25 : 0.0);
             break;
         case MULTISHOT_THROWN_SHURIKEN:
             multishot = 1 + (skilllevel > P_BASIC ? (rn2(100) < (skilllevel - 2) * 25 ? 1 : 0) : 0);
-            if (average_ptr)
-                *average_ptr = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 2) * 0.25 : 0.0);
+            average = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 2) * 0.25 : 0.0);
             break;
         case MULTISHOT_THROWN_DAGGER:
             multishot = 1 + (skilllevel > P_EXPERT ? (rn2(100) < (skilllevel - 4) * 25 ? 1 : 0) : 0);
-            if (average_ptr)
-                *average_ptr = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 4) * 0.25 : 0.0);
+            average = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 4) * 0.25 : 0.0);
             break;
         default:
             break;
@@ -344,8 +341,7 @@ double* average_ptr;
             boolean has_random = skilllevel == P_SKILLED ? 1 : 0;
             int random = has_random ? rn2(2) : 0;
             multishot = fixed + random;
-            if (average_ptr)
-                *average_ptr = (double)fixed + (has_random ? 0.5 : 0.0);
+            average = (double)fixed + (has_random ? 0.5 : 0.0);
             break;
         }
         case MULTISHOT_MELEE_TRIPLE_HEADED_FLAIL:
@@ -354,8 +350,7 @@ double* average_ptr;
             boolean has_random = skilllevel == P_SKILLED || skilllevel == P_MASTER ? 1 : 0;
             int random = has_random ? rn2(2) : 0;
             multishot = fixed + random;
-            if (average_ptr)
-                *average_ptr = (double)fixed + (has_random ? 0.5 : 0.0);
+            average = (double)fixed + (has_random ? 0.5 : 0.0);
             break;
         }
         default:
@@ -363,7 +358,33 @@ double* average_ptr;
         }
     }
 
-    return multishot;
+    /* Find two-handed weapon skill level */
+    if (otmp && otmp == uwep && two_handed_bonus_applies(otmp))
+    {
+        if (isyou)
+        {
+            skilllevel = P_SKILL_LEVEL(P_TWO_HANDED_WEAPON);
+        }
+        else
+        {
+            if (is_prince(magr->data))
+                skilllevel = P_SKILLED;
+            else if (is_lord(magr->data))
+                skilllevel = P_BASIC;
+            else
+                skilllevel = P_UNSKILLED;
+        }
+
+        if (rn2(100) < two_handed_weapon_multishot_percentage_chance(skilllevel))
+            wieldermultishot++;
+
+        average *= 1.0 + two_handed_weapon_multishot_percentage_chance(skilllevel) / 100.0;
+    }
+    res.wielder_attacks = wieldermultishot;
+    res.weapon_attacks = multishot;
+    res.average = average;
+
+    return res;
 }
 
 

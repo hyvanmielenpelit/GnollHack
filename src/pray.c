@@ -1538,7 +1538,7 @@ gcrownu()
             }
             /* Acquire two-weapon combat for dual-wielding Stormbringer and Mournblade  */
             if (chaotic_crowning_gift_oartifact == ART_STORMBRINGER || chaotic_crowning_gift_oartifact == ART_MOURNBLADE)
-                unrestrict_weapon_skill(P_TWO_WEAPON_COMBAT);
+                unrestrict_weapon_skill(P_DUAL_WEAPON_COMBAT);
             /* acquire weapon skill regardless of weapon or gift */
             unrestrict_weapon_skill(chaotic_crowning_gift_skill);
             if (obj && obj->oartifact == chaotic_crowning_gift_oartifact)

@@ -309,6 +309,7 @@ struct obj {
 #define bimanual(otmp)                                            \
     (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
      && objects[(otmp)->otyp].oc_bimanual)
+#define two_handed_bonus_applies(o) ((o) && bimanual(o) && is_weapon(o) && !is_launcher(o))
 #define is_multigen(otmp)                           \
     (objects[(otmp)->otyp].oc_multigen_type > MULTIGEN_SINGLE)
 

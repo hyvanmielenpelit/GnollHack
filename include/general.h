@@ -852,6 +852,12 @@ enum spl_sort_types {
     NUM_SPELL_SORTBY
 };
 
+struct multishot_result {
+    int wielder_attacks; /* Multishot due to the wielder skill */
+    int weapon_attacks; /* Multishot due to the weapon */
+    double average;
+};
+
 
 #define AD_MODULO 4
 

@@ -230,8 +230,8 @@ STATIC_DCL boolean FDECL(help_dir, (CHAR_P, int, const char *));
 STATIC_DCL void FDECL(add_command_menu_items, (winid, int));
 STATIC_DCL void NDECL(check_gui_special_effect);
 STATIC_DCL void FDECL(print_monster_abilities, (winid, int*, BOOLEAN_P));
+STATIC_DCL void FDECL(print_weapon_skill_line_core, (enum p_skills, BOOLEAN_P, int));
 STATIC_DCL void FDECL(print_weapon_skill_line, (struct obj*, BOOLEAN_P, int));
-
 
 STATIC_VAR const char *readchar_queue = "";
 STATIC_VAR coord clicklook_cc;
@@ -3924,6 +3924,9 @@ int final;
      */
     print_weapon_skill_line(uwep, TRUE, final);
 
+    if (two_handed_bonus_applies(uwep))
+        print_weapon_skill_line_core(P_TWO_HANDED_WEAPON, TRUE, final);
+
     if (!uwep && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
     {
         wtype = P_MARTIAL_ARTS;
@@ -3971,12 +3974,12 @@ int final;
         you_are(buf, "");
     }
 
-    if (uarms)
+    if (uarms && (!uwep || (weapon_skill_type(uwep) != weapon_skill_type(uarms))))
         print_weapon_skill_line(uarms, u.twoweap && is_weapon(uarms), final);
 
     if (u.twoweap) 
     {
-        wtype = P_TWO_WEAPON_COMBAT;
+        wtype = P_DUAL_WEAPON_COMBAT;
         char sklvlbuf[20];
         int sklvl = P_SKILL_LEVEL(wtype);
         boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
@@ -4021,14 +4024,12 @@ int final;
 
 STATIC_OVL
 void
-print_weapon_skill_line(wep, printweaponstats, final)
-struct obj* wep;
+print_weapon_skill_line_core(wtype, printweaponstats, final)
+enum p_skills wtype;
 boolean printweaponstats;
 int final;
 {
     char buf[BUFSZ];
-
-    enum p_skills wtype = weapon_skill_type(wep);
     if (wtype != P_NONE)
     {
         if (wtype == P_MARTIAL_ARTS)
@@ -4048,12 +4049,18 @@ int final;
         char ebuf[BUFSZ] = "";
         if (printweaponstats)
         {
-            int hitbonus = weapon_skill_hit_bonus(wep, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
-            int dmgbonus = weapon_skill_dmg_bonus(wep, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
+            int hitbonus = weapon_skill_hit_bonus((struct obj*)0, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
+            int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
             Sprintf(ebuf, "%s%d to hit%s%s%d to damage",
                 hitbonus >= 0 ? "+" : "", hitbonus,
                 wtype == P_SHIELD ? ", " : " and ",
                 dmgbonus >= 0 ? "+" : "", dmgbonus);
+            if (wtype == P_TWO_HANDED_WEAPON)
+            {
+                int multishotchance = two_handed_weapon_multishot_percentage_chance(P_SKILL_LEVEL(wtype));
+                Strcat(ebuf, ", ");
+                Sprintf(eos(ebuf), "%d%% double-hit chance", multishotchance);
+            }
         }
         if (wtype == P_SHIELD)
         {
@@ -4067,7 +4074,7 @@ int final;
         if (*ebuf)
             Sprintf(pbuf, " (%s)", ebuf);
 
-        Sprintf(buf, "%s %s %s%s", sklvlbuf, hav ? "skill with" : "in", 
+        Sprintf(buf, "%s %s %s%s", sklvlbuf, hav ? "skill with" : "in",
             skill_name(wtype, TRUE), pbuf);
 
         if (can_advance(wtype, FALSE))
@@ -4078,6 +4085,19 @@ int final;
         else
             you_are(buf, "");
     }
+}
+
+STATIC_OVL
+void
+print_weapon_skill_line(wep, printweaponstats, final)
+struct obj* wep;
+boolean printweaponstats;
+int final;
+{
+    if (!wep)
+        return;
+    enum p_skills wtype = weapon_skill_type(wep);
+    print_weapon_skill_line_core(wtype, printweaponstats, final);
 }
 
 
