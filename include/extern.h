@@ -2789,8 +2789,8 @@ E boolean FDECL(get_valid_targeted_position, (int, int, int));
 E boolean FDECL(get_valid_stinking_cloud_pos, (int, int));
 E boolean FDECL(is_valid_stinking_cloud_pos, (int, int, BOOLEAN_P));
 E void FDECL(display_stinking_cloud_positions, (int));
-E int FDECL(bless_or_curse, (struct obj*, struct monst*, boolean));
-E int FDECL(remove_curse, (struct obj*, struct monst*, boolean));
+E int FDECL(bless_or_curse, (struct obj*, struct monst*, BOOLEAN_P));
+E int FDECL(remove_curse, (struct obj*, struct monst*, BOOLEAN_P));
 E void NDECL(reset_read);
 
 /* ### rect.c ### */

@@ -1699,13 +1699,6 @@ struct monst* targetmonst;
             scursed = sobj->cursed, already_known, old_erodeproof,
             new_erodeproof;
     struct obj *otmp;
-    char allowall[2] = { ALL_CLASSES, 0 };
-    void FDECL((*func), (OBJ_P)) = 0;
-    const char* glowcolor = 0;
-#define COST_alter (-2)
-#define COST_none (-1)
-    int costchange = COST_none;
-    boolean altfmt = FALSE;
     int duration = get_obj_spell_duration(sobj);
     boolean is_serviced_spell = !!(sobj->speflags & SPEFLAGS_SERVICED_SPELL);
     if (objects[otyp].oc_magic)
@@ -2630,7 +2623,7 @@ struct monst* targetmonst;
     case SPE_DETECT_BLESSEDNESS:
         if (invent && (is_serviced_spell || !confused || !rn2(2)))
         {
-            otmp = getobj(allowall, "detect blessedness for", 0, "");
+            otmp = getobj(getobj_allowall, "detect blessedness for", 0, "");
             if (otmp)
             {
                 if (otmp->oclass != COIN_CLASS) 
@@ -4399,6 +4392,10 @@ boolean sblessed, dopopup;
     special_effect_wait_until_end(0);
 }
 
+
+#define COST_alter (-2)
+#define COST_none (-1)
+
 int
 bless_or_curse(sobj, mtmp, confused)
 struct obj* sobj;
@@ -4408,8 +4405,6 @@ boolean confused; /* Is caster confused */
     if (!mtmp || !sobj)
         return 0;
 
-    boolean scursed = sobj->cursed;
-    boolean sblessed = sobj->blessed;
     boolean isyou = (mtmp == &youmonst);
     struct obj* objchn = isyou ? invent : mtmp->minvent;
     struct obj* otmp;

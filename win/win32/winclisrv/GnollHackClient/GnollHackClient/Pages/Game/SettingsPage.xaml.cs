@@ -44,6 +44,8 @@ namespace GnollHackClient.Pages.Game
             RefreshRatePicker.ItemsSource = list;
 
             SetInitialValues();
+
+            ClassicStatusBarSwitch_Toggled(null, new ToggledEventArgs(ClassicStatusBarSwitch.IsToggled));
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -375,6 +377,39 @@ namespace GnollHackClient.Pages.Game
             ShowExtendedStatusBarSwitch.IsToggled = showexstatus;
 
             _doChangeVolume = _gamePage == null ? true : !_gamePage.MuteSounds;
+        }
+
+        private void ClassicStatusBarSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (ClassicStatusBarSwitch.IsToggled)
+            {
+                OrbSwitch.IsEnabled = true;
+                OrbsLabel.TextColor = Color.Black;
+            }
+            else
+            {
+                OrbSwitch.IsEnabled = false;
+                OrbsLabel.TextColor = Color.Gray;
+            }
+            OrbSwitch_Toggled(sender, new ToggledEventArgs(OrbSwitch.IsToggled));
+        }
+
+        private void OrbSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (!ClassicStatusBarSwitch.IsToggled || OrbSwitch.IsToggled)
+            {
+                MaxHealthInOrbSwitch.IsEnabled = true;
+                MaxHealthInOrbLabel.TextColor = Color.Black;
+                MaxManaInOrbSwitch.IsEnabled = true;
+                MaxManaInOrbLabel.TextColor = Color.Black;
+            }
+            else
+            {
+                MaxHealthInOrbSwitch.IsEnabled = false;
+                MaxHealthInOrbLabel.TextColor = Color.Gray;
+                MaxManaInOrbSwitch.IsEnabled = false;
+                MaxManaInOrbLabel.TextColor = Color.Gray;
+            }
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
