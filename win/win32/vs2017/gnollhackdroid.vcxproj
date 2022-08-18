@@ -190,9 +190,6 @@
     <Link>
       <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
     </Link>
-    <PostBuildEvent>
-      <Command>..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\copy-assetpack.bat</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
@@ -224,9 +221,6 @@
     <Link>
       <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
     </Link>
-    <PostBuildEvent>
-      <Command>..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\copy-assetpack.bat</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
