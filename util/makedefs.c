@@ -186,6 +186,7 @@ static FILE *FDECL(getfp, (const char *, const char *, const char *));
 static void FDECL(do_ext_makedefs, (int, char **));
 
 static void NDECL(make_version);
+static void FDECL(print_beta_string, (char*));
 static char *FDECL(version_string, (char *, const char *));
 static char *FDECL(version_id_string, (char *, const char *));
 static char *FDECL(bannerc_string, (char *, const char *));
@@ -1199,6 +1200,38 @@ make_version()
 /* REPRODUCIBLE_BUILD will change this to TRUE */
 static boolean date_via_env = FALSE;
 
+static void
+print_beta_string(outbuf)
+char* outbuf;
+{
+    if (!outbuf)
+        return;
+
+    outbuf[0] = '\0';
+
+    char betaflagbuf[64] = "";
+    char editbuf[64] = "";
+    char hotfixbuf[64] = "";
+
+#ifdef PRE_RELEASE
+#ifdef BETA
+    Strcpy(betaflagbuf, "*");
+#endif
+    if (EDITLEVEL > 0)
+        Sprintf(editbuf, "%d", EDITLEVEL > 20 ? EDITLEVEL - 20 : EDITLEVEL % 10);
+    if (HOTFIXLEVEL > 0)
+        Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
+
+    if (EDITLEVEL > 20)
+        Sprintf(outbuf, "%s%s%s%s", " Beta ", editbuf, betaflagbuf, hotfixbuf);
+    else if (EDITLEVEL > 10)
+        Sprintf(outbuf, "%s%s%s%s", " Alpha ", editbuf, betaflagbuf, hotfixbuf);
+    else if (EDITLEVEL > 0)
+        Sprintf(outbuf, "%s%s%s%s", " Pre-Alpha ", editbuf, betaflagbuf, hotfixbuf);
+#endif   
+
+}
+
 static char *
 version_string(outbuf, delim)
 char *outbuf;
@@ -1206,7 +1239,9 @@ const char *delim;
 {
     Sprintf(outbuf, "%d%s%d%s%d", VERSION_MAJOR, delim, VERSION_MINOR, delim,
             PATCHLEVEL);
-#if 0 // defined (BETA)
+#if defined(PRE_RELEASE)
+    print_beta_string(eos(outbuf));
+#elif defined (BETA)
     Sprintf(eos(outbuf), "-%d", EDITLEVEL);
 #endif
     return outbuf;
@@ -1218,41 +1253,14 @@ char *outbuf;
 const char *build_date;
 {
     char subbuf[64], versbuf[64];
-    char betabuf[64];
-    char betaflagbuf[64];
-    char editbuf[64];
-    char hotfixbuf[64];
-
-    editbuf[0] = '\0';
-    hotfixbuf[0] = '\0';
-    betabuf[0] = '\0';
-    betaflagbuf[0] = '\0';
-
-#ifdef PRE_RELEASE
-#ifdef BETA
-    strcpy(betaflagbuf, "*");
-#endif
-    if (EDITLEVEL > 0)
-        Sprintf(editbuf, "%d", EDITLEVEL > 20 ? EDITLEVEL - 20 : EDITLEVEL % 10);
-    if (HOTFIXLEVEL > 0)
-        Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
-
-    if (EDITLEVEL > 20)
-        Sprintf(betabuf, "%s%s%s%s", " Beta ", editbuf, betaflagbuf, hotfixbuf);
-    else if (EDITLEVEL > 10)
-        Sprintf(betabuf, "%s%s%s%s", " Alpha ", editbuf, betaflagbuf, hotfixbuf);
-    else if (EDITLEVEL > 0)
-        Sprintf(betabuf, "%s%s%s%s", " Pre-Alpha ", editbuf, betaflagbuf, hotfixbuf);
-#endif
-
     subbuf[0] = '\0';
 #ifdef PORT_SUB_ID
     subbuf[0] = ' ';
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
 
-    Sprintf(outbuf, "%s GnollHack%s Version %s%s - last %s %s.", PORT_ID,
-            subbuf, version_string(versbuf, "."), betabuf,
+    Sprintf(outbuf, "%s GnollHack%s Version %s - last %s %s.", PORT_ID,
+            subbuf, version_string(versbuf, "."),
             date_via_env ? "revision" : "build", build_date);
     return outbuf;
 }
@@ -1262,46 +1270,17 @@ bannerc_string(outbuf, build_date)
 char *outbuf;
 const char *build_date;
 {
-    char subbuf[64], versbuf[64], betabuf[64], editbuf[64], hotfixbuf[64];
-    char betaflagbuf[64];
-
+    char subbuf[64], versbuf[64];
     subbuf[0] = '\0';
-    editbuf[0] = '\0';
-    hotfixbuf[0] = '\0';
-    betabuf[0] = '\0';
-    betaflagbuf[0] = '\0';
 #ifdef PORT_SUB_ID
     subbuf[0] = ' ';
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
 
-#ifdef PRE_RELEASE
-#ifdef BETA
-    strcpy(betaflagbuf, "*");
-#endif
-    if (EDITLEVEL > 0)
-        Sprintf(editbuf, "%d", EDITLEVEL > 20 ? EDITLEVEL - 20 : EDITLEVEL % 10);
-    if (HOTFIXLEVEL > 0)
-        Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
-
-    if (EDITLEVEL > 20)
-        Sprintf(betabuf, "%s%s%s%s", " Beta ", editbuf, betaflagbuf, hotfixbuf);
-    else if (EDITLEVEL > 10)
-        Sprintf(betabuf, "%s%s%s%s", " Alpha ", editbuf, betaflagbuf, hotfixbuf);
-    else if (EDITLEVEL > 0)
-        Sprintf(betabuf, "%s%s%s%s", " Pre-Alpha ", editbuf, betaflagbuf, hotfixbuf);
-#endif
-
-    Strcat(subbuf, betabuf);
-
     Sprintf(outbuf, "         Version %s %s%s, %s %s.",
             version_string(versbuf, "."), PORT_ID, subbuf,
             date_via_env ? "revised" : "built", &build_date[4]);
-#if 0
-    Sprintf(outbuf, "%s GnollHack%s %s Copyright 1985-%s (built %s)",
-            PORT_ID, subbuf, version_string(versbuf,"."), RELEASE_YEAR,
-            &build_date[4]);
-#endif
+
     return outbuf;
 }
 
