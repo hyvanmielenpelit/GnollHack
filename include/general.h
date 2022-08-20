@@ -229,8 +229,8 @@ enum obj_material_types {
     MAT_LEATHER = 10, /* Flimsy materials stop here */
     MAT_WOOD = 11, /* Organics stop here */
     MAT_BONE = 12,
-    MAT_CHITIN = 13,
-    MAT_TOOTH = 14, /* Hard bone-like materials stop here */
+    MAT_CHITIN = 13, /* Chitin in insects' exoskeleton, or keratin in nails and horns */
+    MAT_IVORY = 14, /* Worm tooth, ivory, etc. Hard bone-like materials stop here */
     MAT_DRAGON_HIDE = 15, /* not leather! */
     MAT_IRON = 16, /* Fe - includes steel */
     MAT_METAL = 17, /* Sn, &c. */

@@ -3245,6 +3245,7 @@ int okind;
         pm_index = PM_ROPE_GOLEM;
         material = "cloth ";
         break;
+    case MAT_IVORY:
     case MAT_CHITIN:
     case MAT_BONE:
         pm_index = PM_BONE_GOLEM;
