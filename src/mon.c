@@ -1781,7 +1781,7 @@ register struct monst *mtmp;
                         pline("%s eats %s!", Monnam(mtmp),
                             distant_name(otmp, doname));
                     else
-                        You_hear("a screeching sound.");
+                        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a screeching sound.");
                 }
                 mtmp->meating = otmp->owt / 2 + 1;
                 /* Heal up to the object's weight in hp */
@@ -1881,7 +1881,7 @@ register struct monst* mtmp;
             continue;
 
         /* Don't eat indigestible/choking/inappropriate objects */
-        if ((otmp->otyp == RIN_SLOW_DIGESTION))
+        if (otmp->otyp == RIN_SLOW_DIGESTION)
             continue;
 
         if (is_obj_stony(otmp) && !obj_resists(otmp, 5, 95)
@@ -1896,7 +1896,7 @@ register struct monst* mtmp;
                     pline("%s eats %s!", Monnam(mtmp),
                         distant_name(otmp, doname));
                 else
-                    You_hear("a crunching sound.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a crunching sound.");
             }
             mtmp->meating = otmp->owt / 2 + 1;
             /* Heal up to the object's weight in hp */

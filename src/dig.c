@@ -1797,7 +1797,7 @@ register struct monst *mtmp;
             context.global_minimum_volume = 0.15f;
             play_simple_location_sound(mtmp->mx, mtmp->my, LOCATION_SOUND_TYPE_BREAK);
             context.global_minimum_volume = 0.0f;
-            You_hear("crashing rock.");
+            You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "crashing rock.");
         }
         if (*in_rooms(mtmp->mx, mtmp->my, SHOPBASE))
             add_damage(mtmp->mx, mtmp->my, 0L);
@@ -1908,19 +1908,19 @@ boolean unexpected;
 
     if (unexpected) {
         if (!Hallucination)
-            You_feel("an unexpected draft.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "an unexpected draft.");
         else
             /* U.S. classification system uses 1-A for eligible to serve
                and 4-F for ineligible due to physical or mental defect;
                some intermediate values exist but are rarely seen */
-            You_feel("like you are %s.",
+            You_feel_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "like you are %s.",
                      (ACURR(A_STR) < 6 || ACURR(A_DEX) < 6
                       || ACURR(A_CON) < 6 || ACURR(A_CHA) < 6
                       || ACURR(A_INT) < 6 || ACURR(A_WIS) < 6) ? "4-F"
                                                                : "1-A");
     } else {
         if (!Hallucination) {
-            You_feel("a draft.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a draft.");
         } else {
             /* "marching" is deliberately ambiguous; it might mean drills
                 after entering military service or mean engaging in protests */
@@ -1934,7 +1934,7 @@ boolean unexpected;
             if (u.ualign.record < STRIDENT)
                 /* L: +(0..2), N: +(-1..1), C: +(-2..0); all: 0..3 */
                 dridx += rn1(3, sgn(u.ualign.type) - 1);
-            You_feel("like %s.", draft_reaction[dridx]);
+            You_feel_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "like %s.", draft_reaction[dridx]);
         }
     }
 }
