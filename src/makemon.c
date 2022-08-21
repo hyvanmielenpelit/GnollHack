@@ -3605,7 +3605,7 @@ boolean ispoly;
         return FALSE;
     if (ispoly)
     {
-        if (ptr->mflags2 & M2_NOPOLY)
+        if (!polyok(ptr))
             return FALSE;
     }
     else

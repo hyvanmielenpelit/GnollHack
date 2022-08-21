@@ -1851,6 +1851,124 @@ register struct monst *mtmp;
     return 0;
 }
 
+/*
+ * Maybe eat a rocky or stony object.
+ * Return value: 0 => nothing happened, 1 => monster ate something,
+ * 2 => monster died (it must have grown into a genocided form, but
+ * that can't happen at present because nothing which eats objects
+ * has young and old forms).
+ */
+int
+meatrock(mtmp)
+register struct monst* mtmp;
+{
+    register struct obj* otmp;
+    struct permonst* ptr;
+    int poly, grow, heal, mstone;
+
+    /* If a pet, eating is handled separately, in dog.c */
+    if (is_tame(mtmp))
+        return 0;
+
+    if (rn2(4)) /* Avoid eating all the rocks and boulders on the level */
+        return 0;
+
+    /* Eats topmost rocky object if it is there */
+    for (otmp = level.objects[mtmp->mx][mtmp->my]; otmp;
+        otmp = otmp->nexthere)
+    {
+        if (is_obj_no_pickup(otmp))
+            continue;
+
+        /* Don't eat indigestible/choking/inappropriate objects */
+        if ((otmp->otyp == RIN_SLOW_DIGESTION))
+            continue;
+
+        if (is_obj_stony(otmp) && !obj_resists(otmp, 5, 95)
+            && touch_artifact(otmp, mtmp))
+        {
+            boolean isrock = otmp->otyp == ROCK;
+            boolean isstatue = otmp->otyp == STATUE;
+            if (flags.verbose)
+            {
+                play_sfx_sound_at_location_with_minimum_volume(SFX_CRUNCHING_SOUND, mtmp->mx, mtmp->my, 0.25);
+                if (cansee(mtmp->mx, mtmp->my))
+                    pline("%s eats %s!", Monnam(mtmp),
+                        distant_name(otmp, doname));
+                else
+                    You_hear("a crunching sound.");
+            }
+            mtmp->meating = otmp->owt / 2 + 1;
+            /* Heal up to the object's weight in hp */
+            if (mtmp->mhp < mtmp->mhpmax)
+            {
+                mtmp->mhp += objects[otmp->otyp].oc_weight;
+                if (mtmp->mhp > mtmp->mhpmax)
+                    mtmp->mhp = mtmp->mhpmax;
+            }
+            if (otmp == uball)
+            {
+                unpunish();
+                delobj(otmp);
+            }
+            else if (otmp == uchain)
+            {
+                unpunish(); /* frees uchain */
+            }
+            else if (isstatue)
+            {
+                (void) break_statue(otmp);
+            }
+            else
+            {
+                poly = polyfodder(otmp);
+                grow = mlevelgain(otmp);
+                heal = mhealup(otmp);
+                mstone = mstoning(otmp);
+                delobj(otmp);
+                ptr = mtmp->data;
+                if (poly)
+                {
+                    if (newcham(mtmp, (struct permonst*)0, FALSE, FALSE))
+                        ptr = mtmp->data;
+                }
+                else if (grow)
+                {
+                    ptr = grow_up(mtmp, (struct monst*)0);
+                }
+                else if (mstone)
+                {
+                    if (poly_when_stoned(ptr))
+                    {
+                        mon_to_stone(mtmp);
+                        ptr = mtmp->data;
+                    }
+                    else if (!resists_ston(mtmp))
+                    {
+                        play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
+                        if (canseemon(mtmp))
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to stone!", Monnam(mtmp));
+                        monstone(mtmp);
+                        ptr = (struct permonst*)0;
+                    }
+                }
+                else if (heal)
+                {
+                    mtmp->mhp = mtmp->mhpmax;
+                }
+                if (!ptr)
+                    return 2; /* it died */
+            }
+            /* Left behind a pile? */
+            if (!isrock && (isstatue || rnd(25) < 3))
+                (void)mksobj_at(ROCK, mtmp->mx, mtmp->my, TRUE, FALSE);
+            newsym(mtmp->mx, mtmp->my);
+            return 1;
+        }
+    }
+    return 0;
+}
+
 /* monster eats a pile of objects */
 int
 meatobj(mtmp) /* for gelatinous cubes */

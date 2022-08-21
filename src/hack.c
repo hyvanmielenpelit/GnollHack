@@ -515,6 +515,7 @@ xchar x, y;
             || (IS_DOOR_OR_SDOOR(lev->typ) && !is_door_diggable_at_ptr(lev))
             )) 
     {
+        play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
         You("hurt your teeth on the %s.",
             (lev->typ == IRONBARS)
                 ? "bars"
@@ -537,6 +538,16 @@ xchar x, y;
         /* solid rock takes more work & time to dig through */
         context.digging.effort =
             (IS_ROCK(lev->typ) && !IS_TREE(lev->typ) ? 30 : 60) + u.ubasedaminc + u.udaminc;
+
+        enum object_soundset_types oss = 0;
+        if (!Upolyd || u.umonnum < LOW_PM)
+        {
+            enum player_soundset_types pss = get_player_soundset();
+            oss = player_soundsets[pss].attack_soundsets[PLAYER_ATTACK_SOUNDSET_BAREHANDED];
+        }
+        else
+            oss = monster_soundsets[flags.female ? mons[u.umonnum].female_soundset : mons[u.umonnum].soundset].attack_soundsets[0];
+        play_occupation_immediate_sound(oss, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
         You("start chewing %s %s.",
             (boulder || IS_TREE(lev->typ) || lev->typ == IRONBARS)
                 ? "on a"
@@ -555,6 +566,15 @@ xchar x, y;
     }
     else if ((context.digging.effort += (30 + u.ubasedaminc + u.udaminc)) <= 100)
     {
+        enum object_soundset_types oss = 0;
+        if (!Upolyd || u.umonnum < LOW_PM)
+        {
+            enum player_soundset_types pss = get_player_soundset();
+            oss = player_soundsets[pss].attack_soundsets[PLAYER_ATTACK_SOUNDSET_BAREHANDED];
+        }
+        else
+            oss = monster_soundsets[flags.female ? mons[u.umonnum].female_soundset : mons[u.umonnum].soundset].attack_soundsets[0];
+        play_occupation_immediate_sound(oss, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
         if (flags.verbose)
             You("%s chewing on the %s.",
                 context.digging.chew ? "continue" : "begin",

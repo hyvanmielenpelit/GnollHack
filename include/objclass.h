@@ -77,6 +77,7 @@ struct material_definition {
     Bitfield(death_enchantable, 1);
     Bitfield(flimsy, 1);
     Bitfield(metallic, 1);
+    Bitfield(mineral, 1);
 
     Bitfield(gemstone, 1);
     Bitfield(organic, 1);
@@ -85,6 +86,8 @@ struct material_definition {
 
     Bitfield(fragile, 1);
     Bitfield(destroyed_in_lava, 1);
+
+    const char* foodword;
 };
 extern struct material_definition material_definitions[MAX_MATERIAL_TYPES]; /* in objnam.c */
 
@@ -402,6 +405,7 @@ struct objclass {
 #define melts_in_lava(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].destroyed_in_lava != 0)
 #define is_metallic(otmp)  (material_definitions[objects[(otmp)->otyp].oc_material].metallic != 0) 
 #define is_fragile(otmp)  (material_definitions[objects[(otmp)->otyp].oc_material].fragile != 0) 
+#define is_obj_stony(otmp)  (material_definitions[objects[(otmp)->otyp].oc_material].mineral != 0) 
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */

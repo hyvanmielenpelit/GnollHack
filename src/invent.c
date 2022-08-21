@@ -1989,7 +1989,6 @@ int x, y;
 }
 
 /* destroy object in fobj chain (if unpaid, it remains on the bill) */
-/* destroy object in fobj chain (if unpaid, it remains on the bill) */
 void
 delobj(obj)
 register struct obj* obj;

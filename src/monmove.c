@@ -2071,6 +2071,13 @@ register int after;
                     return 2; /* it died */
             }
 
+            /* Maybe a rock mole just ate some metal object */
+            if (is_rock_eater(ptr))
+            {
+                if (meatrock(mtmp) == 2)
+                    return 2; /* it died */
+            }
+
             if (g_at(mtmp->mx, mtmp->my) && likegold)
                 mpickgold(mtmp);
 

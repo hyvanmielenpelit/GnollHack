@@ -87,6 +87,9 @@ register struct obj *obj;
         && (!rust_causing_and_ironvorous(youmonst.data) || is_rustprone(obj)))
         return TRUE;
 
+    if (is_rock_eater(youmonst.data) && is_obj_stony(obj))
+        return TRUE;
+
     /* Ghouls only eat non-veggy corpses or eggs (see dogfood()) */
     if (u.umonnum == PM_GHOUL)
         return (boolean)((obj->otyp == CORPSE
@@ -2824,21 +2827,13 @@ eatspecial()
         unpunish();
     if (otmp == uchain)
         unpunish(); /* but no useup() */
+    else if (otmp->otyp == STATUE)
+        break_statue(otmp);
     else if (carried(otmp))
         useup(otmp);
     else
         useupf(otmp, 1L);
 }
-
-/* NOTE: the order of these words exactly corresponds to the
-   order of oc_material values #define'd in objclass.h. */
-STATIC_VAR const char *foodwords[] = {
-    "meal",    "liquid",  "wax",       "food",  "meat",       "food",       "paper",
-    "cloth",   "silk",    "leather",   "wood",  "bone",       "scale",      "metal",
-    "metal",   "copper",  "silver",    "gold",  "platinum",   "orichalcum", "adamantium", "mithril",
-    "plastic", "glass",   "rich food", "stone", "alien food", "void food",  "magic food"
-};
-
 
 STATIC_OVL const char *
 foodword(otmp)
@@ -2855,7 +2850,7 @@ struct obj *otmp;
     if (otmp->oclass == GEM_CLASS && (objects[otmp->otyp].oc_material == MAT_GLASS || objects[otmp->otyp].oc_material == MAT_CRYSTAL)
         && otmp->dknown)
         makeknown(otmp->otyp);
-    return foodwords[objects[otmp->otyp].oc_material];
+    return material_definitions[objects[otmp->otyp].oc_material].foodword;
 }
 
 /* called after consuming (non-corpse) food */

@@ -5437,6 +5437,62 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
+    {
+        "Rock mole",
+        MONSTER_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_AMBIENT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_SWALLOW_AMBIENT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_ITEM_TRADING */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_CREATION */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_COUGH */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_HOWL */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_PISSED */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_3 */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_OUCH */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_FLOUNDER */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_4 */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_5 */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_6 */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_BUMP_INTO */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_SEARCH */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_CAST */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_HAPPY */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_LAUGHTER */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RANDOM_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_7 */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_CURSE */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MUMBLED_CURSE */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_YELL */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_CHAT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
+            {MAX_GHSOUNDS, 1.0f} /* MONSTER_SOUND_TYPE_DEATH */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OBJECT_SOUNDSET_BITE,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC
+        }
+    }, 
 };
 
 NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS] =
@@ -8236,6 +8292,76 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_SWINGING,
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
+        },
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE,
+        OBJECT_CONTAINER_SOUNDSET_GENERIC
+    }, 
+    {
+        "bite",
+        OBJECT_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 0.0f}, /* Ambient */
+            {MAX_GHSOUNDS, 0.0f}, /* Melee Swing */
+            {MAX_GHSOUNDS, 0.0f}, /* Melee Hit */
+            {MAX_GHSOUNDS, 0.0f}, /* Throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Fire */
+            {MAX_GHSOUNDS, 0.0f}, /* Ranged Hit */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Pick up */
+            {MAX_GHSOUNDS, 0.0f}, /* Drop */
+            {MAX_GHSOUNDS, 0.0f}, /* Drop after throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Wear */
+            {MAX_GHSOUNDS, 0.0f}, /* Take off */
+            {MAX_GHSOUNDS, 0.0f}, /* Wield */
+            {MAX_GHSOUNDS, 0.0f}, /* Unwield */
+            {MAX_GHSOUNDS, 0.0f}, /* Quiver */
+            {MAX_GHSOUNDS, 0.0f}, /* Unquiver */
+            {MAX_GHSOUNDS, 0.0f}, /* Apply */
+            {MAX_GHSOUNDS, 0.0f}, /* Apply 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Quaff */
+            {MAX_GHSOUNDS, 0.0f}, /* Read */
+            {MAX_GHSOUNDS, 0.0f}, /* Engrave */
+            {MAX_GHSOUNDS, 0.0f}, /* Zap */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Break */
+            {MAX_GHSOUNDS, 0.0f}, /* Burnt */
+            {MAX_GHSOUNDS, 0.0f}, /* Frozen */
+            {MAX_GHSOUNDS, 0.0f}, /* Electrocuted */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rusts */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Burns */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Corrodes */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rots */
+            {MAX_GHSOUNDS, 0.0f}, /* General effect */
+            {MAX_GHSOUNDS, 0.0f}, /* General effect 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Push */
+            {MAX_GHSOUNDS, 0.0f}, /* Bump into */
+            {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Walk */
+            {MAX_GHSOUNDS, 0.0f}, /* Fly */
+            {MAX_GHSOUNDS, 0.0f}, /* Levitation */
+            {MAX_GHSOUNDS, 0.0f}  /* Swim */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_SWINGING,
+            OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
+            OCCUPATION_SOUNDSET_GENERIC_EATING
         },
         OBJECT_RAY_SOUNDSET_NONE,
         OBJECT_INSTRUMENT_SOUNDSET_NONE,

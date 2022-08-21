@@ -234,7 +234,9 @@ struct obj *obj;
             nutrit = mons[obj->corpsenm].cnutrit;
             if (obj->corpsenm >= LOW_PM && (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm])))
                 is_veg = TRUE;
-        } else {
+        } 
+        else 
+        {
             mtmp->meating = objects[obj->otyp].oc_delay;
             nutrit = objects[obj->otyp].oc_nutrition;
             if(obj->otyp == TIN && (obj->special_quality == 1 || (obj->corpsenm >= LOW_PM && (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm])))))
@@ -260,8 +262,7 @@ struct obj *obj;
         if (mtmp->meating < 0)
             mtmp->meating = 1;
         nutrit = (int) (obj->quan / 2);
-        if (nutrit < 0)
-            nutrit = 0;
+        nutrit *= nutr_size_mult;
     }
     else if (obj->oclass == POTION_CLASS)
     {
@@ -271,8 +272,6 @@ struct obj *obj;
             max(1, objects[obj->otyp].oc_potion_nutrition_diesize)) 
             + objects[obj->otyp].oc_potion_nutrition_plus + bcsign(obj) * (int)objects[obj->otyp].oc_potion_nutrition_buc_multiplier;
         nutrit = nutrition * nutr_size_mult;
-        if (nutrit < 0)
-            nutrit = 0;
     }
     else
     {
@@ -282,8 +281,10 @@ struct obj *obj;
          * eat.c.  (This also applies to pets eating gold.)
          */
         mtmp->meating = obj->owt / 20 + 1;
-        nutrit = 1 * objects[obj->otyp].oc_nutrition;
+        nutrit = nutr_size_mult * objects[obj->otyp].oc_nutrition;
     }
+    if (nutrit < 0)
+        nutrit = 0;
     return nutrit;
 }
 
@@ -380,9 +381,9 @@ boolean devour;
            pet eats visible food. */
         if (sawpet || (seeobj && canspotmon(mtmp)))
         {
-            if (tunnels(mtmp->data))
-                pline("%s digs in.", noit_Monnam(mtmp));
-            else
+            //if (tunnels(mtmp->data))
+            //    pline("%s digs in.", noit_Monnam(mtmp));
+            //else
             {
                 pline("%s %s %s.", noit_Monnam(mtmp),
                     devour ? "devours" : "eats", distant_name(obj, doname));
