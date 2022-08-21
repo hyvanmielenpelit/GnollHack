@@ -934,7 +934,7 @@ register struct obj* obj;
         /* Nutritinal value */
         if (is_edible(obj))
         {
-            Sprintf(buf2, "%d rounds", obj->oeaten ? obj->oeaten : obj_nutrition(obj));
+            Sprintf(buf2, "%d rounds", obj->oeaten ? obj->oeaten : obj_nutrition(obj, &youmonst));
             Sprintf(buf, "Nutritional value:      %s", buf2);            
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }

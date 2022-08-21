@@ -1793,7 +1793,12 @@ register struct monst *mtmp;
     {
         /* KMH -- Okay on arboreal levels (room walls are still stone) */
         if (flags.verbose && !rn2(5))
+        {
+            context.global_minimum_volume = 0.15f;
+            play_simple_location_sound(mtmp->mx, mtmp->my, LOCATION_SOUND_TYPE_BREAK);
+            context.global_minimum_volume = 0.0f;
             You_hear("crashing rock.");
+        }
         if (*in_rooms(mtmp->mx, mtmp->my, SHOPBASE))
             add_damage(mtmp->mx, mtmp->my, 0L);
 

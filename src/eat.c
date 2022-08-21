@@ -87,7 +87,7 @@ register struct obj *obj;
         && (!rust_causing_and_ironvorous(youmonst.data) || is_rustprone(obj)))
         return TRUE;
 
-    if (is_rock_eater(youmonst.data) && is_obj_stony(obj))
+    if (lithivore(youmonst.data) && is_obj_stony(obj))
         return TRUE;
 
     /* Ghouls only eat non-veggy corpses or eggs (see dogfood()) */
@@ -342,23 +342,57 @@ reset_eat()
     return;
 }
 
+unsigned
+mon_nutrition_size_multiplier(mtmp)
+struct monst* mtmp;
+{
+    unsigned nutr_size_mult = 1;
+    switch (mtmp->data->msize)
+    {
+    case MZ_TINY:
+        nutr_size_mult = 4;
+        break;
+    case MZ_SMALL:
+        nutr_size_mult = 2;
+        break;
+    default:
+    case MZ_MEDIUM:
+        nutr_size_mult = 1;
+        break;
+    case MZ_LARGE:
+        nutr_size_mult = 1;
+        break;
+    case MZ_HUGE:
+        nutr_size_mult = 1;
+        break;
+    case MZ_GIGANTIC:
+        nutr_size_mult = 1;
+        break;
+    }
+
+    return nutr_size_mult;
+}
+
 /* base nutrition of a food-class object */
 unsigned
-obj_nutrition(otmp)
-struct obj *otmp;
+obj_nutrition(otmp, mtmp)
+struct obj* otmp;
+struct monst* mtmp;
 {
-    if (!otmp || (otmp->otyp == CORPSE && otmp->corpsenm < LOW_PM))
+    if (!otmp || !mtmp || (otmp->otyp == CORPSE && otmp->corpsenm < LOW_PM))
         return 0;
 
+    boolean isyou = mtmp == &youmonst;
     unsigned nut = (otmp->otyp == CORPSE) ? mons[otmp->corpsenm].cnutrit
+        : (otmp->otyp == STATUE) ? ((otmp->owt * objects[ROCK].oc_nutrition) / (max(1, otmp->quan * objects[ROCK].oc_weight)))
                       : otmp->globby ? otmp->owt
-                         : (unsigned) objects[otmp->otyp].oc_nutrition;
+                         : objects[otmp->otyp].oc_nutrition;
 
     if (otmp->otyp == ELVEN_WAYBREAD) 
     {
-        if (maybe_polyd(is_elf(youmonst.data), Race_if(PM_ELF)))
+        if (isyou ? maybe_polyd(is_elf(mtmp->data), Race_if(PM_ELF)) : is_elf(mtmp->data))
             nut += nut / 4; /* 800 -> 1000 */
-        else if (maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC)))
+        else if (isyou ? maybe_polyd(is_orc(mtmp->data), Race_if(PM_ORC)) : is_orc(mtmp->data))
             nut -= nut / 4; /* 800 -> 600 */
         /* prevent polymorph making a partly eaten wafer
            become more nutritious than an untouched one */
@@ -368,12 +402,12 @@ struct obj *otmp;
     } 
     else if (otmp->otyp == CRAM_RATION) 
     {
-        if (maybe_polyd(is_dwarf(youmonst.data), Race_if(PM_DWARF)))
+        if (isyou ? maybe_polyd(is_dwarf(mtmp->data), Race_if(PM_DWARF)) : is_dwarf(mtmp->data))
             nut += nut / 6; /* 600 -> 700 */
     }
     else if (otmp->otyp == TRIPE_RATION) 
     {
-        if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+        if (isyou ? maybe_polyd(is_gnoll(mtmp->data), Race_if(PM_GNOLL)) : is_gnoll(mtmp->data))
             nut += nut * 2; /* 200 -> 600 */
     }
     return nut;
@@ -393,7 +427,7 @@ struct obj *otmp;
 
     if (!otmp->oeaten) {
         costly_alteration(otmp, COST_BITE);
-        otmp->oeaten = obj_nutrition(otmp);
+        otmp->oeaten = obj_nutrition(otmp, &youmonst);
     }
 
     if (carried(otmp)) {
@@ -3746,7 +3780,7 @@ doeat()
     }
 
     /* re-calc the nutrition */
-    basenutrit = (int) obj_nutrition(otmp);
+    basenutrit = (int) obj_nutrition(otmp, & youmonst);
 
     if (!objects[otmp->otyp].oc_name_known && (objects[otmp->otyp].oc_flags3 & O3_EATING_IDENTIFIES) && !hadhallucination)
     {
@@ -3841,7 +3875,8 @@ bite()
 
     if (context.victual.nmod < 0) 
     {
-        lesshungry(-context.victual.nmod);
+        int amt = -context.victual.nmod * (int)mon_nutrition_size_multiplier(&youmonst);
+        lesshungry(amt);
         consume_oeaten(context.victual.piece,
                        context.victual.nmod); /* -= -nmod */
     } 
@@ -4394,7 +4429,7 @@ struct obj *obj;
     long uneaten_amt, full_amount;
 
     /* get full_amount first; obj_nutrition() might modify obj->oeaten */
-    full_amount = (long) obj_nutrition(obj);
+    full_amount = (long) obj_nutrition(obj, &youmonst);
     uneaten_amt = (long) obj->oeaten;
     if (uneaten_amt > full_amount) {
         impossible(

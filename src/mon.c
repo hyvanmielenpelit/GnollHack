@@ -1776,12 +1776,12 @@ register struct monst *mtmp;
             {
                 if (flags.verbose)
                 {
-                    play_sfx_sound_at_location_with_minimum_volume(SFX_CRUNCHING_SOUND, mtmp->mx, mtmp->my, 0.25);
+                    play_sfx_sound_at_location_with_minimum_volume(SFX_SCREECHING_SOUND, mtmp->mx, mtmp->my, 0.25);
                     if (cansee(mtmp->mx, mtmp->my))
                         pline("%s eats %s!", Monnam(mtmp),
                             distant_name(otmp, doname));
                     else
-                        You_hear("a crunching sound.");
+                        You_hear("a screeching sound.");
                 }
                 mtmp->meating = otmp->owt / 2 + 1;
                 /* Heal up to the object's weight in hp */

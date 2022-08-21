@@ -1173,7 +1173,7 @@ register struct obj *obj;
             return (is_rustprone(obj) && !obj->oerodeproof) ? DOGFOOD
                                                             : ACCFOOD;
         }
-        if (is_rock_eater(mptr) && is_obj_stony(obj))
+        if (lithivore(mptr) && is_obj_stony(obj))
             return (obj->speflags & SPEFLAGS_NO_PICKUP) ? TABU : obj->cursed ? ACCFOOD : DOGFOOD;
         if (!obj->cursed
             && obj->oclass != BALL_CLASS

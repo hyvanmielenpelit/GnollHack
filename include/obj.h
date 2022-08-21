@@ -658,7 +658,7 @@ struct obj {
 #define does_obj_drain_instead_of_explode(obj) \
     (does_otyp_drain_instead_of_explode((obj)->otyp))
 
-#define can_obj_cause_choking(o) (obj_nutrition(o) > 50)
+#define can_obj_cause_choking(o) (obj_nutrition(o, &youmonst) > 50)
 
 #define can_otyp_joust(otyp)                                 \
     ((objects[(otyp)].oc_flags5 & O5_JOUSTING_WEAPON) != 0)

@@ -196,30 +196,8 @@ dog_nutrition(mtmp, obj)
 struct monst *mtmp;
 struct obj *obj;
 {
-    int nutrit, nutr_size_mult = 1;
-
-    switch (mtmp->data->msize)
-    {
-    case MZ_TINY:
-        nutr_size_mult = 4;
-        break;
-    case MZ_SMALL:
-        nutr_size_mult = 2;
-        break;
-    default:
-    case MZ_MEDIUM:
-        nutr_size_mult = 1;
-        break;
-    case MZ_LARGE:
-        nutr_size_mult = 1;
-        break;
-    case MZ_HUGE:
-        nutr_size_mult = 1;
-        break;
-    case MZ_GIGANTIC:
-        nutr_size_mult = 1;
-        break;
-    }
+    int nutrit;
+    int nutr_size_mult = (int)mon_nutrition_size_multiplier(mtmp);
 
     /*
      * It is arbitrary that the pet takes the same length of time to eat
@@ -281,7 +259,7 @@ struct obj *obj;
          * eat.c.  (This also applies to pets eating gold.)
          */
         mtmp->meating = obj->owt / 20 + 1;
-        nutrit = nutr_size_mult * objects[obj->otyp].oc_nutrition;
+        nutrit = nutr_size_mult * (int)obj_nutrition(obj, mtmp); // objects[obj->otyp].oc_nutrition;
     }
     if (nutrit < 0)
         nutrit = 0;
