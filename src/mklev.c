@@ -1027,7 +1027,7 @@ makelevel()
         if (!res && u_depth > 8 && u_depth < 15 && !rn2(6)
             && !(mvitals[PM_KILLER_BEE].mvflags & MV_GONE))
             res = mkroom(BEEHIVE);
-        if (!res && u_depth > 9 && u_depth < 16 && !rn2(6) && antholemon())
+        if (!res && u_depth > 9 && u_depth < 16 && !rn2(8) && antholemon())
             res = mkroom(ANTHOLE);
         if (!res && u_depth > 11 && !rn2(6))
             res = mkroom(MORGUE);

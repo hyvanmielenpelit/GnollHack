@@ -17350,8 +17350,10 @@ struct monst* mtmp;
         }
         return isfemale ? mtmp->data->female_soundset : mtmp->data->soundset;
     }
-    else if ((mtmp->mnum == PM_ALIGNED_PRIEST || mtmp->mnum == PM_HIGH_PRIEST) && mon_aligntyp(mtmp) == A_NONE)
+    else if ((mtmp->mnum == PM_ALIGNED_PRIEST || mtmp->mnum == PM_HIGH_PRIEST || (is_human(mtmp->data) && mtmp->ispriest)) && mon_aligntyp(mtmp) == A_NONE)
         return isfemale ? MONSTER_SOUNDSET_PRIESTESS_OF_MOLOCH : MONSTER_SOUNDSET_PRIEST_OF_MOLOCH;
+    else if (is_human(mtmp->data) && mtmp->ispriest)
+        return isfemale ? MONSTER_SOUNDSET_ALIGNED_PRIESTESS : MONSTER_SOUNDSET_ALIGNED_PRIEST;
     else if ((mtmp->mnum == PM_ANGEL) && mon_aligntyp(mtmp) == A_NONE)
         return isfemale ? MONSTER_SOUNDSET_HUMANLIKE_DEMONESS : MONSTER_SOUNDSET_HUMANLIKE_DEMON;
     else

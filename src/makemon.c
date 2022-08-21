@@ -1045,8 +1045,8 @@ register struct monst *mtmp;
     case S_MODRON:
         if (mm < PM_MODRON_QUINTON && !rn2(6))
         {
-            (void)mongets(mtmp, !rn2(3) ? STAFF_SLING : SLING);
-            m_initthrow(mtmp, !rn2(10) ? SILVER_SLING_BULLET : IRON_SLING_BULLET, 8, 8, FALSE, -1, -1);
+            //(void)mongets(mtmp, !rn2(3) ? STAFF_SLING : SLING);
+            //m_initthrow(mtmp, !rn2(10) ? SILVER_SLING_BULLET : IRON_SLING_BULLET, 8, 8, FALSE, -1, -1);
             goto default_equipment_here;
         }
         break;

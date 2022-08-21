@@ -1233,6 +1233,17 @@ mkgarden()
     int statue_base_type = levdiff >= 16 && rn2(2) ? PM_WINGED_GARGOYLE :
         levdiff >= 13 && rn2(3) ? PM_ROCK_TROLL : levdiff >= 7 && rn2(9) ? PM_GARGOYLE : PM_GNOME;
     sroom->rtype = GARDEN;
+    for (sx = sroom->lx - 1; sx <= sroom->hx + 1; sx++)
+    {
+        for (sy = sroom->ly - 1; sy <= sroom->hy + 1; sy++)
+        {
+            if (isok(sx, sy))
+            {
+                levl[sx][sy].use_special_tileset = TRUE;
+                levl[sx][sy].special_tileset = CMAP_GARDEN;
+            }
+        }
+    }
     for (sx = sroom->lx; sx <= sroom->hx; sx++)
     {
         for (sy = sroom->ly; sy <= sroom->hy; sy++)
