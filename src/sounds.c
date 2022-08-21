@@ -3991,7 +3991,7 @@ dochat()
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_DILITHIUM_CRYSTALS)
                 {
                     char sbuf[BUFSIZ];
-                    Sprintf(sbuf, "Sell dilithium crystals to %s", noittame_mon_nam(mtmp));
+                    Sprintf(sbuf, "Sell dilithium crystals and other gems to %s", noittame_mon_nam(mtmp));
                     strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_dilithium_crystals;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -8660,11 +8660,11 @@ struct obj* otmp;
 {
     if (!otmp)
         return FALSE;
-    if(objects[otmp->otyp].oc_name_known)
-        return (otmp->otyp == DILITHIUM_CRYSTAL);
-    else
-        return (otmp->oclass == GEM_CLASS && !objects[otmp->otyp].oc_name_known && objects[otmp->otyp].oc_color == objects[DILITHIUM_CRYSTAL].oc_color);
 
+    //if(objects[otmp->otyp].oc_name_known)
+    //    return (otmp->otyp == DILITHIUM_CRYSTAL);
+
+    return maybe_gem(otmp);
 }
 
 STATIC_OVL int

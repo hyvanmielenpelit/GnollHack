@@ -2167,7 +2167,7 @@ NEARDATA struct permonst mons[] = {
         15, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
         ACTION_INFO(COUATL_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, COUATL_STATUE_ENLARGEMENT, 0, 0),
         ACTION_INFO(COUATL_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, COUATL_STATUE_ENLARGEMENT, 0, 0)),
-    MON("Aleax", None, "angelic being that embodies divine punishment by god", None, None, S_ANGEL, LVL(13, 12, 0, 20, 100, 7), (G_NOHELL | G_NOCORPSE | G_STRAYED | 3),
+    MON("Aleax", None, "angelic being that embodies divine punishment by god", None, None, S_ANGEL, LVL(13, 12, 0, 20, 100, 7), (G_NOHELL | G_NOCORPSE | G_STRAYED | 7),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_KICK, AD_PHYS, 1, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_ALEAX, MZ_HUMAN, 1, 3, MAT_FLESH), STATS(STR19(19), 19, 25, 19, 19, 19),

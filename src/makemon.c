@@ -15,9 +15,9 @@
     (mptr->mlet == S_HUMAN && Role_if(role_pm)   \
      && (mptr->msound == MS_LEADER || mptr->msound == MS_NEMESIS))
 
-STATIC_DCL boolean FDECL(uncommon, (int));
+STATIC_DCL boolean FDECL(ungeneratable_monster_type, (int));
 STATIC_DCL int FDECL(align_shift, (struct permonst *));
-STATIC_DCL boolean FDECL(mk_gen_ok, (int, int, int));
+STATIC_DCL boolean FDECL(mk_gen_ok, (int, UCHAR_P, unsigned long, BOOLEAN_P));
 #if 0
 STATIC_DCL void FDECL(m_initgrp, (struct monst *, int, int, int, int));
 #endif
@@ -3301,20 +3301,19 @@ boolean neverask;
 }
 
 STATIC_OVL boolean
-uncommon(mndx)
+ungeneratable_monster_type(mndx)
 int mndx;
 {
-    if (mons[mndx].geno & (G_NOGEN | G_UNIQ))
-        return TRUE;
-    if (mvitals[mndx].mvflags & MV_GONE)
-        return TRUE;
+    return !mk_gen_ok(mndx, MV_GONE, (G_NOGEN | G_UNIQ), FALSE);
 
-    boolean strayed_appearance_ok = (!(mons[mndx].geno & G_STRAYED) || ((mons[mndx].geno & G_STRAYED) && u.ualign.type != u.ualignbase[A_ORIGINAL]));
-
-    if (Inhell)
-        return (boolean) ((mons[mndx].maligntyp > A_NEUTRAL) && strayed_appearance_ok);
-    else
-        return (boolean) ((mons[mndx].geno & G_HELL) != 0 && strayed_appearance_ok);
+    //if (mons[mndx].geno & (G_NOGEN | G_UNIQ))
+    //    return TRUE;
+    //if (mvitals[mndx].mvflags & MV_GONE)
+    //    return TRUE;
+    //if (Inhell)
+    //    return (boolean) ((mons[mndx].maligntyp > A_NEUTRAL));
+    //else
+    //    return (boolean) ((mons[mndx].geno & G_HELL) != 0);
 }
 
 /*
@@ -3398,9 +3397,9 @@ int level_limit;
 
 
     /* Normal case */
-    if (rndmonst_state.choice_count < 0) { /* need to recalculate */
+    if (rndmonst_state.choice_count < 0) 
+    { /* need to recalculate */
         int minmlev = 0, maxmlev = 0;
-        boolean elemlevel;
         boolean upper;
 
         for (int i = 1; i <= 3; i++)
@@ -3409,7 +3408,7 @@ int level_limit;
             /* look for first common monster */
             for (mndx = LOW_PM; mndx < SPECIAL_PM; mndx++) 
             {
-                if (!uncommon(mndx))
+                if (!ungeneratable_monster_type(mndx))
                     break;
                 rndmonst_state.mchoices[mndx] = 0;
             }
@@ -3432,7 +3431,6 @@ int level_limit;
             }
 
             upper = Is_really_rogue_level(&u.uz);
-            elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
 
             /*
              * Find out how many monsters exist in the range we have selected.
@@ -3443,15 +3441,9 @@ int level_limit;
                 rndmonst_state.mchoices[mndx] = 0;
                 if (tooweak(mndx, minmlev) || toostrong(mndx, maxmlev))
                     continue;
-                if (upper && !isupper((uchar) def_monsyms[(int) ptr->mlet].sym))
+                if (upper && !isupper((uchar) def_monsyms[(int) ptr->mlet].sym)) /* Left here, because influences the whole class; you can thus force lower case monsters with mkclass on rogue level */
                     continue;
-                if (elemlevel && wrong_elem_type(ptr))
-                    continue;
-                if (uncommon(mndx))
-                    continue;
-                if (Inhell && (ptr->geno & G_NOHELL))
-                    continue;
-                if (In_mines(&u.uz) && (ptr->geno & G_NOMINES))
+                if (ungeneratable_monster_type(mndx))
                     continue;
                 ct = (int) (ptr->geno & G_FREQ) + align_shift(ptr);
                 if (ct < 0 || ct > 127)
@@ -3486,7 +3478,7 @@ int level_limit;
         if ((ct -= (int) rndmonst_state.mchoices[mndx]) <= 0)
             break;
 
-    if (mndx == SPECIAL_PM || uncommon(mndx) || mndx < LOW_PM || mndx >= NUM_MONSTERS) 
+    if (mndx == SPECIAL_PM || ungeneratable_monster_type(mndx) || mndx < LOW_PM || mndx >= NUM_MONSTERS) 
     { /* shouldn't happen */
         impossible("rndmonst: bad `mndx' [#%d]", mndx);
         return (struct permonst *) 0;
@@ -3601,30 +3593,55 @@ int mndx; /* particular species that can no longer be created */
 
 /* decide whether it's ok to generate a candidate monster by mkclass() */
 STATIC_OVL boolean
-mk_gen_ok(mndx, mvflagsmask, genomask)
-int mndx, mvflagsmask, genomask;
+mk_gen_ok(mndx, mvflagsmask, genomask, ispoly)
+int mndx;
+uchar mvflagsmask;
+unsigned long genomask;
+boolean ispoly;
 {
     struct permonst *ptr = &mons[mndx];
 
     if (mvitals[mndx].mvflags & mvflagsmask)
         return FALSE;
-    if (is_placeholder(ptr))
-        return FALSE;
-    if ((ptr->geno & G_MODRON) && (ptr->geno & G_NOGEN) && u.uz.dnum != modron_dnum)
-        return FALSE;
-    if ((ptr->geno & G_YACC) && (ptr->geno & G_NOGEN) && u.uz.dnum != bovine_dnum)
-        return FALSE;
-    if ((ptr->geno & G_MODRON) && u.uz.dnum == modron_dnum)
-        return TRUE;
-    if ((ptr->geno & G_YACC) && u.uz.dnum == bovine_dnum)
-        return TRUE;
-    if ((ptr->geno & G_NOMINES) && In_mines(&u.uz))
-        return FALSE;
+    if (ispoly)
+    {
+        if (ptr->mflags2 & M2_NOPOLY)
+            return FALSE;
+    }
+    else
+    {
+        if (is_placeholder(ptr))
+            return FALSE;
+        if ((mons[mndx].geno & G_STRAYED) && u.ualign.type == u.ualignbase[A_ORIGINAL]) /* Does not appear if you are on the right path */
+            return FALSE;
+        if ((ptr->geno & G_MODRON) && (ptr->geno & G_NOGEN) && u.uz.dnum != modron_dnum)
+            return FALSE;
+        if ((ptr->geno & G_YACC) && (ptr->geno & G_NOGEN) && u.uz.dnum != bovine_dnum)
+            return FALSE;
+        if ((ptr->geno & G_MODRON) && u.uz.dnum == modron_dnum) /* Overrides G_NOGEN */
+            return TRUE;
+        if ((ptr->geno & G_YACC) && u.uz.dnum == bovine_dnum) /* Overrides G_NOGEN */
+            return TRUE;
+        if ((ptr->geno & G_NOMINES) && In_mines(&u.uz))
+            return FALSE;
+        if ((ptr->geno & G_NOHELL) && Inhell)
+            return FALSE;
+        if ((ptr->geno & G_HELL) && !Inhell)
+            return FALSE;
+        if (In_endgame(&u.uz) && !Is_astralevel(&u.uz) && wrong_elem_type(ptr))
+            return FALSE;
+        if (Inhell && (ptr->maligntyp <= A_NEUTRAL))
+            return FALSE;
+    }
+
+    /* Note that G_MODRON and G_YACC override G_NOGEN */
     if (ptr->geno & genomask)
         return FALSE;
+
     /* special levels might ask for random demon type; reject this one */
     if (ptr == &mons[PM_MAIL_DAEMON])
         return FALSE;
+
     return TRUE;
 }
 
@@ -3711,7 +3728,7 @@ int difficulty_adj;
     {
         if (atyp != A_NONE && sgn(mons[last].maligntyp) != sgn(atyp))
             continue;
-        if (mk_gen_ok(last, MV_GONE, mask))
+        if (mk_gen_ok(last, MV_GONE, mask, FALSE))
         {
             /* consider it; don't reject a toostrong() monster if we
                don't have anything yet (num==0) or if it is the same
@@ -3772,13 +3789,13 @@ int mclass;
         return NON_PM;
 
     for (last = first; last < SPECIAL_PM && mons[last].mlet == mclass; last++)
-        if (mk_gen_ok(last, MV_GENOCIDED, (G_NOGEN | G_UNIQ)))
+        if (mk_gen_ok(last, MV_GENOCIDED, (G_NOGEN | G_UNIQ), TRUE))
             num += (int)(mons[last].geno & G_FREQ);
     if (!num)
         return NON_PM;
 
     for (num = rnd(num); num > 0; first++)
-        if (mk_gen_ok(first, MV_GENOCIDED, (G_NOGEN | G_UNIQ)))
+        if (mk_gen_ok(first, MV_GENOCIDED, (G_NOGEN | G_UNIQ), TRUE))
             num -= (int)(mons[first].geno & G_FREQ);
     first--; /* correct an off-by-one error */
 
