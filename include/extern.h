@@ -4193,6 +4193,7 @@ E void FDECL(start_melt_ice_timeout, (XCHAR_P, XCHAR_P, long));
 E void FDECL(melt_ice_away, (ANY_P *, long));
 E int FDECL(zap_over_floor, (XCHAR_P, XCHAR_P, int, boolean *, SHORT_P));
 E void FDECL(fracture_rock, (struct obj *, BOOLEAN_P));
+E boolean FDECL(pre_break_statue, (struct obj*));
 E boolean FDECL(break_statue, (struct obj *));
 E void FDECL(destroy_item, (int, int));
 E int FDECL(destroy_mitem, (struct monst *, int, int));

@@ -453,6 +453,9 @@ boolean devour;
                   currency(oprice));
             /* delobj->obfree will handle actual shop billing update */
         }
+        if (obj->otyp == STATUE)
+            pre_break_statue(obj);
+
         delobj(obj);
     }
 

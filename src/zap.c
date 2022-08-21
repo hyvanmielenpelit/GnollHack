@@ -10485,12 +10485,12 @@ boolean verbose;
 
 /* handle statue hit by striking/force bolt/pick-axe */
 boolean
-break_statue(obj)
-register struct obj *obj;
+pre_break_statue(obj)
+register struct obj* obj;
 {
     /* [obj is assumed to be on floor, so no get_obj_location() needed] */
-    struct trap *trap = t_at(obj->ox, obj->oy);
-    struct obj *item;
+    struct trap* trap = t_at(obj->ox, obj->oy);
+    struct obj* item;
     boolean by_you = !context.mon_moving;
 
     if (trap && trap->ttyp == STATUE_TRAP
@@ -10508,8 +10508,21 @@ register struct obj *obj;
         adjalign(-1);
     }
     obj->speflags &= ~SPEFLAGS_STATUE_HISTORIC;
-    fracture_rock(obj, TRUE);
     return TRUE;
+}
+
+/* handle statue hit by striking/force bolt/pick-axe */
+boolean
+break_statue(obj)
+register struct obj *obj;
+{
+    if (pre_break_statue(obj))
+    {
+        fracture_rock(obj, TRUE); /* Make it into a rubble */
+        return TRUE;
+    }
+    else
+        return FALSE;
 }
 
 /*

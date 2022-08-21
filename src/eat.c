@@ -2749,6 +2749,23 @@ struct obj *otmp;
     }
 }
 
+STATIC_OVL boolean
+eat_statue(obj)
+struct obj* obj;
+{
+    if (pre_break_statue(obj))
+    {
+        if (carried(obj))
+            useup(obj);
+        else
+            useupf(obj, 1L);
+        return TRUE;
+    }
+    else
+        return FALSE;
+
+}
+
 /* called after eating non-food */
 STATIC_OVL void
 eatspecial()
@@ -2828,7 +2845,7 @@ eatspecial()
     if (otmp == uchain)
         unpunish(); /* but no useup() */
     else if (otmp->otyp == STATUE)
-        break_statue(otmp);
+        (void)eat_statue(otmp);
     else if (carried(otmp))
         useup(otmp);
     else

@@ -1915,16 +1915,14 @@ register struct monst* mtmp;
             {
                 unpunish(); /* frees uchain */
             }
-            else if (isstatue)
-            {
-                (void) break_statue(otmp);
-            }
             else
             {
                 poly = polyfodder(otmp);
                 grow = mlevelgain(otmp);
                 heal = mhealup(otmp);
                 mstone = mstoning(otmp);
+                if (isstatue)
+                    (void)pre_break_statue(otmp);
                 delobj(otmp);
                 ptr = mtmp->data;
                 if (poly)

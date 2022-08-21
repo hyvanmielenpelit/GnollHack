@@ -503,6 +503,14 @@ xchar x, y;
     struct obj *boulder = sobj_at(BOULDER, x, y);
     const char *digtxt = (char *) 0, *dmgtxt = (char *) 0;
     boolean no_unblock = FALSE;
+    enum object_soundset_types oss = 0;
+    if (!Upolyd || u.umonnum < LOW_PM)
+    {
+        enum player_soundset_types pss = get_player_soundset();
+        oss = player_soundsets[pss].attack_soundsets[PLAYER_ATTACK_SOUNDSET_BAREHANDED];
+    }
+    else
+        oss = monster_soundsets[flags.female ? mons[u.umonnum].female_soundset : mons[u.umonnum].soundset].attack_soundsets[0];
 
     if (context.digging.down) /* not continuing previous dig (w/ pick-axe) */
         (void) memset((genericptr_t) &context.digging, 0,
@@ -539,14 +547,6 @@ xchar x, y;
         context.digging.effort =
             (IS_ROCK(lev->typ) && !IS_TREE(lev->typ) ? 30 : 60) + u.ubasedaminc + u.udaminc;
 
-        enum object_soundset_types oss = 0;
-        if (!Upolyd || u.umonnum < LOW_PM)
-        {
-            enum player_soundset_types pss = get_player_soundset();
-            oss = player_soundsets[pss].attack_soundsets[PLAYER_ATTACK_SOUNDSET_BAREHANDED];
-        }
-        else
-            oss = monster_soundsets[flags.female ? mons[u.umonnum].female_soundset : mons[u.umonnum].soundset].attack_soundsets[0];
         play_occupation_immediate_sound(oss, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
         You("start chewing %s %s.",
             (boulder || IS_TREE(lev->typ) || lev->typ == IRONBARS)
@@ -566,14 +566,6 @@ xchar x, y;
     }
     else if ((context.digging.effort += (30 + u.ubasedaminc + u.udaminc)) <= 100)
     {
-        enum object_soundset_types oss = 0;
-        if (!Upolyd || u.umonnum < LOW_PM)
-        {
-            enum player_soundset_types pss = get_player_soundset();
-            oss = player_soundsets[pss].attack_soundsets[PLAYER_ATTACK_SOUNDSET_BAREHANDED];
-        }
-        else
-            oss = monster_soundsets[flags.female ? mons[u.umonnum].female_soundset : mons[u.umonnum].soundset].attack_soundsets[0];
         play_occupation_immediate_sound(oss, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
         if (flags.verbose)
             You("%s chewing on the %s.",
@@ -596,8 +588,10 @@ xchar x, y;
     u.uconduct.food++;
     u.uhunger += rnd(20);
 
-    if (boulder) 
+    play_occupation_immediate_sound(oss, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_FINISH);
+    if (boulder)
     {
+        play_occupation_immediate_sound(oss, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
         delobj(boulder);         /* boulder goes bye-bye */
         You("eat the boulder."); /* yum */
 
