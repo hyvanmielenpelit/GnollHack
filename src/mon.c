@@ -1881,7 +1881,7 @@ register struct monst* mtmp;
             continue;
 
         /* Don't eat indigestible/choking/inappropriate objects */
-        if (otmp->otyp == RIN_SLOW_DIGESTION)
+        if (otmp->otyp == RIN_SLOW_DIGESTION || (In_sokoban(&u.uz) && otmp->otyp == BOULDER))
             continue;
 
         if (is_obj_stony(otmp) && !obj_resists(otmp, 5, 95)

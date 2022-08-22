@@ -87,7 +87,7 @@ register struct obj *obj;
         && (!rust_causing_and_ironvorous(youmonst.data) || is_rustprone(obj)))
         return TRUE;
 
-    if (lithivore(youmonst.data) && is_obj_stony(obj))
+    if (lithovore(youmonst.data) && is_obj_stony(obj) && !((In_sokoban(&u.uz) && obj->otyp == BOULDER)))
         return TRUE;
 
     /* Ghouls only eat non-veggy corpses or eggs (see dogfood()) */
@@ -2728,7 +2728,17 @@ struct obj *otmp;
                 RIN_PROTECTION);
             //u.ublessed = bounded_increase(u.ublessed, otmp->enchantment,
             //                              RIN_PROTECTION);
+            find_ac();
             context.botl = 1;
+            break;
+        case RIN_FORTITUDE:
+            u.ubasehpmax += d(1, 4);
+            updatemaxhp();
+            break;
+        case RIN_THE_SERPENT_GOD:
+        case RIN_WIZARDRY:
+            u.ubaseenmax += d(1, 4);
+            updatemaxen();
             break;
         case RIN_FREE_ACTION:
             /* Give sleep resistance instead */

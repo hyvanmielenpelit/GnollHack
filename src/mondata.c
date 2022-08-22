@@ -164,7 +164,7 @@ STATIC_VAR const NEARDATA struct mflag_description m5flag_descriptions[] = {
 STATIC_VAR const NEARDATA struct mflag_description m6flag_descriptions[] = {
     { M6_NON_EATER, "non-eating living monster", "non-eating living monsters" },
     { M6_CORPSE_EATER, "corpse-eating monster", "corpse-eating monsters" },
-    { M6_LITHIVORE, "lithivore", "lithivores" },
+    { M6_LITHOVORE, "lithovore", "lithovores" },
     { M6_SHADE, "impervious to physical weapons", "monsters impervious to physical weapons" },
     { M6_TELEPORT_HEAL_TACTICS, "using teleport and heal tactics", "monsters using teleport and heal tactics" },
     { 0 , "", "" }
