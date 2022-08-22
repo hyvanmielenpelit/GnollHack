@@ -10,9 +10,6 @@
     <ContentPage.Content>
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <!--<ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
-                            Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />-->
-
             <Grid BackgroundColor="Transparent" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -172,6 +169,16 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
+                                    <Label Text="Silent Mode"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="SilentModeSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SilentModeSwitch_Toggled" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
                                     <Label Text="Default Auto-Center"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -321,16 +328,6 @@
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
                                     <Switch x:Name="WalkArrowSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                                </StackLayout>
-                            </ViewCell>
-                            <ViewCell>
-                                <StackLayout Orientation="Horizontal">
-                                    <Label Text="Silent Mode"
-                                           FontFamily="Underwood" TextColor="Black"
-                                           FontSize="15"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="Start" />
-                                    <Switch x:Name="SilentModeSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SilentModeSwitch_Toggled" />
                                 </StackLayout>
                             </ViewCell>
                             <ViewCell>
