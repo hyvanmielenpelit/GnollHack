@@ -1333,7 +1333,7 @@ namespace GnollHackClient
 
         public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, ulong play_flags)
         {
-            if(App.FmodService != null && !_gamePage.MuteSounds)
+            if(App.FmodService != null && !App.IsMuted)
             {
                 return App.FmodService.PlayImmediateSound(ghsound, eventPath, bankid, (float)eventVolume, (float)soundVolume, parameterNames, parameterValues, arraysize, sound_type, play_group, dialogue_mid, play_flags);
             }
@@ -1492,12 +1492,10 @@ namespace GnollHackClient
                     _gamePage.ForceAscii = false;
                     break;
                 case (int)gui_command_types.GUI_CMD_MUTE_SOUNDS:
-                    _gamePage.MuteSounds = true;
-                    App.MuteSounds();
+                    App.GameMuteMode = true;
                     break;
                 case (int)gui_command_types.GUI_CMD_UNMUTE_SOUNDS:
-                    _gamePage.MuteSounds = false;
-                    App.UnmuteSounds();
+                    App.GameMuteMode = false;
                     break;
                 case (int)gui_command_types.GUI_CMD_ACTIVATE_QUIETER_MODE:
                     App.FmodService.SetQuieterMode(true);

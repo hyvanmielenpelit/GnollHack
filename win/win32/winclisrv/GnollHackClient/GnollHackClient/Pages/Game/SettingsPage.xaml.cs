@@ -149,6 +149,10 @@ namespace GnollHackClient.Pages.Game
             Preferences.Set("DeveloperMode", App.DeveloperMode);
 
             Preferences.Set("DefaultMapNoClipMode", !YesClipNormalSwitch.IsToggled);
+
+            App.SilentMode = SilentModeSwitch.IsToggled;
+            Preferences.Set("SilentMode", App.SilentMode);
+
             Preferences.Set("GeneralVolume", (float)GeneralVolumeSlider.Value);
             Preferences.Set("MusicVolume", (float)MusicVolumeSlider.Value);
             Preferences.Set("AmbientVolume", (float)AmbientVolumeSlider.Value);
@@ -156,7 +160,7 @@ namespace GnollHackClient.Pages.Game
             Preferences.Set("EffectsVolume", (float)EffectsVolumeSlider.Value);
             Preferences.Set("UIVolume", (float)UIVolumeSlider.Value);
 
-            if(_gamePage == null || !_gamePage.MuteSounds)
+            if(!App.IsMuted)
                 App.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
 
             int res = GHConstants.DefaultMessageRows, tryres = 0;
@@ -245,10 +249,11 @@ namespace GnollHackClient.Pages.Game
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool devmode = GHConstants.DefaultDeveloperMode, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
-            bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode;
+            bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             //bool altnoclipmode = GHConstants.DefaultMapAlternateNoClipMode, zoomchangecenter = GHConstants.DefaultZoomChangeCenterMode;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
 
+            silentmode = Preferences.Get("SilentMode", false);
             generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
             musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
             ambientVolume = Preferences.Get("AmbientVolume", GHConstants.DefaultAmbientVolume);
@@ -335,6 +340,7 @@ namespace GnollHackClient.Pages.Game
             MonsterTargetingSwitch.IsToggled = monstertargeting;
             WalkArrowSwitch.IsToggled = walkarrows;
             YesClipNormalSwitch.IsToggled = !noclipmode;
+            SilentModeSwitch.IsToggled = silentmode;
             //YesClipAlternateSwitch.IsToggled = !altnoclipmode;
             //ZoomChangeCenterSwitch.IsToggled = zoomchangecenter;
             MemorySwitch.IsToggled = mem;
@@ -376,7 +382,7 @@ namespace GnollHackClient.Pages.Game
             ForceMaxMessageSwitch.IsToggled = forcemaxmsg;
             ShowExtendedStatusBarSwitch.IsToggled = showexstatus;
 
-            _doChangeVolume = _gamePage == null ? true : !_gamePage.MuteSounds;
+            _doChangeVolume = !App.IsMuted;
         }
 
         private void ClassicStatusBarSwitch_Toggled(object sender, ToggledEventArgs e)
@@ -410,6 +416,12 @@ namespace GnollHackClient.Pages.Game
                 MaxManaInOrbSwitch.IsEnabled = false;
                 MaxManaInOrbLabel.TextColor = Color.Gray;
             }
+        }
+
+        private void SilentModeSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            App.SilentMode = SilentModeSwitch.IsToggled;
+            _doChangeVolume = !App.IsMuted;
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -450,6 +462,5 @@ namespace GnollHackClient.Pages.Game
                 CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }
         }
-
     }
 }

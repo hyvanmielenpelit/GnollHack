@@ -155,10 +155,6 @@ namespace GnollHackClient.Pages.Game
         private bool _showExtendedStatusBar = false;
         public bool ShowExtendedStatusBar { get { lock (_showExtendedStatusBarLock) { return _showExtendedStatusBar; } } set { lock (_showExtendedStatusBarLock) { _showExtendedStatusBar = value; } } }
 
-        private readonly object _muteSoundsLock = new object();
-        private bool _muteSounds = false;
-        public bool MuteSounds { get { lock (_muteSoundsLock) { return _muteSounds; } } set { lock (_muteSoundsLock) { _muteSounds = value; } } }
-
         public readonly object RefreshScreenLock = new object();
         private bool _refreshScreen = true;
         public bool RefreshScreen
@@ -2030,6 +2026,8 @@ namespace GnollHackClient.Pages.Game
             //    _mainPage.HideLocalGameButton();
             _mainPage.ActivateLocalGameButton();
             _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
+            if (App.GameMuteMode)
+                App.GameMuteMode = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
             if (App.IsServerGame)
             {

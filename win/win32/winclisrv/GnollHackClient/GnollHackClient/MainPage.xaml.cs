@@ -354,6 +354,9 @@ namespace GnollHackClient
                 App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
                 if (App.LoadBanks)
                     App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+
+                /* Check silent mode; this also mutes everything if need be */
+                App.SilentMode = Preferences.Get("SilentMode", false);
             }
             catch (Exception ex)
             {
