@@ -2524,7 +2524,7 @@ register struct obj* omonwep;
 
     case AD_SSEX:
         if (SYSOPT_SEDUCE) {
-            if (could_seduce(mtmp, &youmonst, mattk) == 1 && uncancelled && !resists_charm(&youmonst) && !Charm_resistance)
+            if (could_seduce(mtmp, &youmonst, mattk) == 1 && uncancelled && !resists_charm(&youmonst) && !Charm_resistance && !Mind_shielding)
                 if (doseduce(mtmp))
                     return 3;
             break;
@@ -2534,7 +2534,6 @@ register struct obj* omonwep;
     case AD_SEDU:
     {
         boolean nymphcancelled = !uncancelled;
-
         if (is_animal(mtmp->data))
         {
             hitmsg(mtmp, mattk, -1, TRUE);
@@ -2559,7 +2558,7 @@ register struct obj* omonwep;
             }
             return 3;
         } 
-        else if (nymphcancelled || resists_charm(&youmonst) || Charm_resistance) 
+        else if (nymphcancelled || resists_charm(&youmonst) || Charm_resistance || Mind_shielding) 
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             if (!Blind)

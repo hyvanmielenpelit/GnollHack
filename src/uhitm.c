@@ -831,9 +831,9 @@ struct attack *uattk;
         int wieldermultistrike2 = msres2.wielder_attacks;
         int multistrike2 = msres2.weapon_attacks;
         int wielderstrike2index;
-        int strike2index;
         for (wielderstrike2index = 0; wielderstrike2index < wieldermultistrike2; wielderstrike2index++)
         {
+            boolean breakloop = FALSE;
             if (wielderstrike2index > 0)
             {
                 char wielderstrikebuf[BUFSIZ] = "";
@@ -845,6 +845,7 @@ struct attack *uattk;
                 pline("%s %s!", wielderstrikebuf, wielderstrike2index == 1 ? "a second time" : wielderstrike2index == 2 ? "a third time" : "once more");
             }
 
+            int strike2index;
             for (strike2index = 0; strike2index < multistrike2; strike2index++)
             {
                 update_u_action(ACTION_TILE_ATTACK);
@@ -885,9 +886,12 @@ struct attack *uattk;
                 update_u_action_revert(ACTION_TILE_NO_ACTION);
 
                 if (!malive || m_at(x, y) != mon || wep_was_destroyed)
+                {
+                    breakloop = TRUE;
                     break;
+                }
             }
-            if (!malive || m_at(x, y) != mon || wep_was_destroyed)
+            if (breakloop)
                 break;
         }
     }
