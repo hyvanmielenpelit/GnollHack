@@ -2877,6 +2877,20 @@ struct materialcomponentlist matlists[] =
         }
     },
 
+    { SPE_PROTECTION_FROM_CHARM,
+    "Mandrake root",
+    STRANGE_OBJECT,
+    3,
+        {
+            {
+                {MANDRAKE_ROOT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
+                NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
+            },
+            NO_MATCOMP,
+            NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+        }
+    },
+
     { SPE_PROTECTION_FROM_LIFE_DRAINING,
     "Clove of garlic",
     STRANGE_OBJECT,
