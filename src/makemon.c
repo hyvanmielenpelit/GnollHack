@@ -2325,7 +2325,7 @@ boolean origin_at_mon;
         if (mon->isminion)
         {
             newemin(m2);
-            if (mon->mextra && EMIN(mon))
+            if (has_emin(mon))
                 *(EMIN(m2)) = *(EMIN(mon));
         }
         else
