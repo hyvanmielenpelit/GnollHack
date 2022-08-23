@@ -3843,7 +3843,7 @@ STATIC_VAR const char* const manual_names[MAX_MANUAL_TYPES] = {
     "Secrets of Scare Monster", "Gurathul's Guide to Ascension", "Master Class in Wands", "Infernal Inhabitants of Gehennom",
     "Advanced Reading in Known Monsters", "Manual of the Planes",
     /* Catalogues */
-    "Catalogue of Weapons", "Catalogue of Armors", "Catalogue of Rings", "Catalogue of Potions", "Catalogue of Scrolls", "Catalogue of Wands",
+    "Catalogue of Weapons", "Catalogue of Armor", "Catalogue of Rings", "Catalogue of Potions", "Catalogue of Scrolls", "Catalogue of Wands",
     "Catalogue of Miscellaneous Magic Items", "Catalogue of Tools", "Catalogue of Magic Spells", "Catalogue of Clerical Spells",
     "Catalogue of Comestibles", "Catalogue of Gems and Stones", "Catalogue of Artifacts",
 };
