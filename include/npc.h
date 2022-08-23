@@ -95,7 +95,7 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_NO_ITEMS                  0x00000200UL
 #define NPC_FLAGS_DISPLAY_NAME_ONLY         0x00000400UL /* When name is known */
 #define NPC_FLAGS_COMMENTS_ON_REVIVAL       0x00000800UL
-/* free flag */
+#define NPC_FLAGS_HAS_TRUE_RUMORS           0x00001000UL
 #define NPC_FLAGS_NO_TITLE_ARTICLE          0x00002000UL
 #define NPC_FLAGS_MAJORITY_NORMAL_HELLO     0x00004000UL
 #define NPC_FLAGS_MALE                      0x00008000UL

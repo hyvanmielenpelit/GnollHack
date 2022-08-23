@@ -4616,7 +4616,12 @@ struct monst* mtmp;
 
     char ansbuf[BUFSZ];
     char rumorbuf[BUFSZ] = "";
-    (void)getrumor(0, rumorbuf, TRUE);
+    int truth_core = mtmp->isshk || mtmp->issmith || (mtmp->isnpc && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_HAS_TRUE_RUMORS) != 0) ? 1 
+        : (mtmp->ispriest && has_epri(mtmp) && EPRI(mtmp)->shralign == A_NONE) || (mtmp->isminion && has_emin(mtmp) && EMIN(mtmp)->min_align == A_NONE) || is_demon(mtmp->data) ? -1
+        : mtmp->ispriest || mtmp->isminion ? 1 : 0;
+    int truth = min(is_peaceful(mtmp), truth_core);
+
+    (void)getrumor(truth, rumorbuf, TRUE);
     if (*rumorbuf)
         (void) strip_newline(rumorbuf);
         
