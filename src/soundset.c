@@ -1636,6 +1636,8 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Teleportation Wand", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Mollified", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Advice", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Chat", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Item Trading", 1.0f },
@@ -1657,6 +1659,8 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
 
     { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Mollified", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Advice", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Chat", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Elder Quantum Mechanic/Male/Item Trading", 1.0f },
@@ -5122,8 +5126,8 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CREATION */
-            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
-            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {GHSOUND_QUANTUM_GET_ANGRY, 1.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {GHSOUND_QUANTUM_MOLLIFIED, 1.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
             {GHSOUND_QUANTUM_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_COUGH */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
@@ -5347,8 +5351,8 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CREATION */
-            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
-            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_MALE_GET_ANGRY, 1.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {GHSOUND_ELDER_QUANTUM_MECHANIC_MALE_MOLLIFIED, 1.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
             {GHSOUND_ELDER_QUANTUM_MECHANIC_MALE_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_COUGH */
             {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */

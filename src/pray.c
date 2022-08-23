@@ -2341,6 +2341,7 @@ dosacrifice()
                     }
                     if (!Fear_resistance)
                     {
+                        play_sfx_sound(SFX_ACQUIRE_FEAR);
                         You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are terrified, and unable to move.");
                         nomul(-3);
                         multi_reason = "being terrified of a demon";

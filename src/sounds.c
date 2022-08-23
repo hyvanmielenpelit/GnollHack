@@ -1180,13 +1180,11 @@ boolean dopopup, fromchatmenu;
         {
             play_monster_special_dialogue_line(mtmp, SMITH_LINE_WELCOME_TO_MY_SMITHY_ADVENTURER);
             Sprintf(verbuf, "Welcome to my smithy, adventurer!");
-            chat_line = 0;
         }
         else
         {
             play_monster_special_dialogue_line(mtmp, SMITH_LINE_BEGONE_YOU_ROTTEN_VANDAL);
             Sprintf(verbuf, "Begone, you rotten vandal!");
-            chat_line = 1;
         }
         verbl_msg = verbuf;
         break;
@@ -1198,22 +1196,18 @@ boolean dopopup, fromchatmenu;
                 int npctype = ENPC(mtmp)->npc_typ;
                 play_monster_special_dialogue_line(mtmp, NPC_LINE_WELCOME_TO_MY_RESIDENCE_ADVENTURER);
                 Sprintf(verbuf, "Welcome to %s %s, adventurer!", (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_NO_MY) ? "the" : "my", npc_subtype_definitions[ENPC(mtmp)->npc_typ].room_name);
-                chat_line = 0;
             }
             else
             {
                 play_monster_special_dialogue_line(mtmp, NPC_LINE_WELCOME_TO_MY_RESIDENCE_ADVENTURER);
                 Sprintf(verbuf, "Welcome to my residence, adventurer!");
-                chat_line = 1;
             }
         }
         else
         {
             play_monster_special_dialogue_line(mtmp, NPC_LINE_BEGONE_YOU_ROTTEN_VANDAL);
             Sprintf(verbuf, "Begone, you rotten vandal!");
-            chat_line = 2;
         }
-
         verbl_msg = verbuf;
         break;
     case MS_MODRON:
@@ -1240,7 +1234,6 @@ boolean dopopup, fromchatmenu;
             Sprintf(verbuf, "Begone, you geometric anomaly!");
             chat_line = 3;
         }
-
         verbl_msg = verbuf;
         break;
     case MS_VAMPIRE: {
@@ -4671,6 +4664,20 @@ struct monst* mtmp;
         }
         Sprintf(pbuf, "%s gives you the paw%s!", noittame_Monnam(mtmp), tamenessadded ? ", and seems happier than before" : "");
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, tamenessadded ? CLR_MSG_POSITIVE : CLR_MSG_SUCCESS, TRUE, FALSE);
+
+        if (touch_petrifies(mtmp->data) && !Stone_resistance && !uarmg)
+        {
+            char kbuf[BUFSZ];
+            if (poly_when_stoned(youmonst.data))
+                You("touch %s %s without wearing gloves.", s_suffix(mon_nam(mtmp)), body_part(HAND));
+            else
+            {
+                pline("Touching %s %s without wearing gloves is a fatal mistake...", s_suffix(mon_nam(mtmp)), body_part(HAND));
+                Sprintf(kbuf, "touching %s %s without gloves", s_suffix(mon_nam(mtmp)), body_part(HAND));
+            }
+            killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE;
+            instapetrify(kbuf);
+        }
     }
     else
     {
@@ -4746,6 +4753,20 @@ struct monst* mtmp;
         return 0;
 
     char pbuf[BUFSZ] = "";
+    if (touch_petrifies(mtmp->data) && !Stone_resistance && !uarmg)
+    {
+        char kbuf[BUFSZ];
+        if (poly_when_stoned(youmonst.data))
+            You("touch %s without wearing gloves.", mon_nam(mtmp));
+        else 
+        {
+            pline("Touching %s without wearing gloves is a fatal mistake...", mon_nam(mtmp));
+            Sprintf(kbuf, "trying to pet %s without gloves", mon_nam(mtmp));
+        }
+        killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE;
+        instapetrify(kbuf);
+    }
+
     if (is_animal(mtmp->data) && !is_peaceful(mtmp))
     {
         int color = NO_COLOR;
@@ -5925,10 +5946,12 @@ struct monst* mtmp;
     umoney = money_cnt(invent);
 
 
-    if (!m_general_talk_check(mtmp, "joining") || !m_speak_check(mtmp)) {
+    if (!m_general_talk_check(mtmp, "joining") || !m_speak_check(mtmp)) 
+    {
         return 0;
     }
-    else if (is_tame(mtmp)) {
+    else if (is_tame(mtmp)) 
+    {
         if(mtmp->ispartymember)
             pline("%s is already in your party.", noittame_Monnam(mtmp));
         else
@@ -5938,7 +5961,9 @@ struct monst* mtmp;
 
     if (Deaf)
     {
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", noittame_Monnam(mtmp));
+        char jbuf[BUFSZ];
+        Sprintf(jbuf, "%s says something but you cannot hear anything.", noittame_Monnam(mtmp));
+        popup_talk_line_ex(mtmp, jbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
         return 1;
     }
 
@@ -5987,12 +6012,16 @@ struct monst* mtmp;
         {
             mtmp->ispartymember = TRUE;
             play_sfx_sound(SFX_TAMING);
-            pline("%s joins your party!", noittame_Monnam(mtmp));
+            char jbuf[BUFSZ];
+            Sprintf(jbuf, "%s joins your party!", noittame_Monnam(mtmp));
+            popup_talk_line_ex(mtmp, jbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         }
         else if (!is_tame(mtmp))
         {
             play_sfx_sound(SFX_SURPRISE_ATTACK);
-            pline("%s takes your money but refuses join your party after all!", noittame_Monnam(mtmp));
+            char jbuf[BUFSZ];
+            Sprintf(jbuf, "%s takes your money but refuses join your party after all!", noittame_Monnam(mtmp));
+            popup_talk_line_ex(mtmp, jbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         }
         return 1;
 
@@ -6031,7 +6060,9 @@ struct monst* mtmp;
 
     if (Deaf)
     {
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", noittame_Monnam(mtmp));
+        char jbuf[BUFSZ];
+        Sprintf(jbuf, "%s says something but you cannot hear anything.", noittame_Monnam(mtmp));
+        popup_talk_line_ex(mtmp, jbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
         return 1;
     }
 
@@ -9245,7 +9276,7 @@ struct monst* mtmp;
     const char* linearray[4] = {
         "Deep underneath this town, my colleagues are conducting delicate quantum experiments in the Large Circular Dungeon.",
         "But beware, it takes but a minuscule disturbance to ruin their carefully constructed entanglements.",
-        "Nothing would anger them more than somebody making them lose years of research.",
+        "Nothing would anger them more than someone making them lose years of research.",
         0 };
 
     hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_EXPERIMENTS);
