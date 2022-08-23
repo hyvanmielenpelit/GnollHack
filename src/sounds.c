@@ -145,6 +145,8 @@ STATIC_DCL int FDECL(do_chat_npc_sell_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_forge_sling_bullets, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_dilithium_crystals, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_spellbooks, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_forge_cubic_gate, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_forge_artificial_wings, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_branch_portal, (struct monst*));
 STATIC_DCL int FDECL(sell_to_npc, (struct obj*, struct monst*, int, BOOLEAN_P));
 STATIC_DCL int FDECL(sell_many_to_npc, (struct monst*, boolean FDECL((*), (OBJ_P))));
@@ -164,7 +166,9 @@ STATIC_DCL int FDECL(blessed_recharge_item_func, (struct monst*, struct obj*));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
-STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int, int, int, int));
+STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int, int, int, int, BOOLEAN_P));
+STATIC_DCL int FDECL(forge_cubic_gate_func, (struct monst*));
+STATIC_DCL int FDECL(forge_artificial_wings_func, (struct monst*));
 STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_shield_of_reflection_func, (struct monst*));
 STATIC_DCL int FDECL(forge_crystal_plate_mail_func, (struct monst*));
@@ -3968,6 +3972,40 @@ dochat()
                 {
                     Sprintf(available_chat_list[chatnum].name, "Forge sling-bullets");
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_forge_sling_bullets;
+                    available_chat_list[chatnum].charnum = 'a' + chatnum;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
+
+                    any = zeroany;
+                    any.a_char = available_chat_list[chatnum].charnum;
+
+                    add_menu(win, NO_GLYPH, &any,
+                        any.a_char, 0, ATR_NONE,
+                        available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+                    chatnum++;
+                }
+
+                if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_FORGE_CUBIC_GATE)
+                {
+                    Sprintf(available_chat_list[chatnum].name, "Forge a cubic gate");
+                    available_chat_list[chatnum].function_ptr = &do_chat_npc_forge_cubic_gate;
+                    available_chat_list[chatnum].charnum = 'a' + chatnum;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
+
+                    any = zeroany;
+                    any.a_char = available_chat_list[chatnum].charnum;
+
+                    add_menu(win, NO_GLYPH, &any,
+                        any.a_char, 0, ATR_NONE,
+                        available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+                    chatnum++;
+                }
+
+                if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_FORGE_ARTIFICIAL_WINGS)
+                {
+                    Sprintf(available_chat_list[chatnum].name, "Forge a pair of artificial wings");
+                    available_chat_list[chatnum].function_ptr = &do_chat_npc_forge_artificial_wings;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
                     available_chat_list[chatnum].stops_dialogue = FALSE;
 
@@ -7828,6 +7866,27 @@ struct monst* mtmp;
     return 0;
 }
 
+STATIC_OVL int
+do_chat_npc_forge_cubic_gate(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
+        return 0;
+
+    long cost = max(1L, (long)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    return general_service_query_with_extra(mtmp, forge_cubic_gate_func, "forge a cubic gate", cost, "forging any cubic gates", QUERY_STYLE_COMPONENTS, "a dilithium crystal", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CUBIC_GATE);
+}
+
+STATIC_OVL int
+do_chat_npc_forge_artificial_wings(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
+        return 0;
+
+    long cost = max(1L, (long)((500 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    return general_service_query_with_extra(mtmp, forge_artificial_wings_func, "forge a pair of artificial wings", cost, "forging any artificial wings", QUERY_STYLE_COMPONENTS, "12 feathers", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_A_PAIR_OF_ARTIFICIAL_WINGS);
+}
 
 STATIC_OVL boolean
 maybe_forgeable_ore(otmp)
@@ -10255,6 +10314,20 @@ struct monst* mtmp;
 }
 
 STATIC_OVL int
+forge_cubic_gate_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 1, CUBIC_GATE, 0, 0, TRUE);
+}
+
+STATIC_OVL int
+forge_artificial_wings_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, FEATHER, 12, WINGS_OF_FLYING, 0, 0, FALSE);
+}
+
+STATIC_OVL int
 forge_dragon_scale_mail_func(mtmp)
 struct monst* mtmp;
 {
@@ -10306,112 +10379,113 @@ STATIC_OVL int
 forge_orichalcum_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_ORICHALCUM_ORE, 4, ORICHALCUM_FULL_PLATE_MAIL, 0, 0);
+    return forge_special_func(mtmp, NUGGET_OF_ORICHALCUM_ORE, 4, ORICHALCUM_FULL_PLATE_MAIL, 0, 0, FALSE);
 }
 
 STATIC_OVL int
 forge_crystal_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 2, CRYSTAL_PLATE_MAIL, 0, 0);
+    return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 2, CRYSTAL_PLATE_MAIL, 0, 0, FALSE);
 }
 
 STATIC_OVL int
 forge_shield_of_reflection_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 8, SHIELD_OF_REFLECTION, 0, 0);
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 8, SHIELD_OF_REFLECTION, 0, 0, FALSE);
 }
 
 STATIC_OVL int
 forge_adamantium_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_ADAMANTIUM_ORE, 4, ADAMANTIUM_FULL_PLATE_MAIL, 0, 0);
+    return forge_special_func(mtmp, NUGGET_OF_ADAMANTIUM_ORE, 4, ADAMANTIUM_FULL_PLATE_MAIL, 0, 0, FALSE);
 }
 
 STATIC_OVL int
 forge_mithril_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_MITHRIL_ORE, 4, MITHRIL_FULL_PLATE_MAIL, 0, 0);
+    return forge_special_func(mtmp, NUGGET_OF_MITHRIL_ORE, 4, MITHRIL_FULL_PLATE_MAIL, 0, 0, FALSE);
 }
 
 STATIC_OVL int
 forge_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, PLATE_MAIL, 0, 0);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, PLATE_MAIL, 0, 0, FALSE);
 }
 
 STATIC_OVL int
 forge_bronze_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_COPPER_ORE, 4, BRONZE_PLATE_MAIL, 0, 0);
+    return forge_special_func(mtmp, NUGGET_OF_COPPER_ORE, 4, BRONZE_PLATE_MAIL, 0, 0, FALSE);
 }
 
 STATIC_OVL int
 forge_field_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 6, FIELD_PLATE_MAIL, 0, 0);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 6, FIELD_PLATE_MAIL, 0, 0, FALSE);
 }
 
 STATIC_OVL int
 forge_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 8, FULL_PLATE_MAIL, 0, 0);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 8, FULL_PLATE_MAIL, 0, 0, FALSE);
 }
 
 STATIC_OVL int
 forge_iron_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 2, IRON_SLING_BULLET, 10, EXCEPTIONALITY_NORMAL);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 2, IRON_SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, FALSE);
 }
 
 STATIC_OVL int
 forge_ex_iron_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 3, IRON_SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 3, IRON_SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, FALSE);
 }
 
 STATIC_OVL int
 forge_el_iron_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, IRON_SLING_BULLET, 10, EXCEPTIONALITY_ELITE);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, IRON_SLING_BULLET, 10, EXCEPTIONALITY_ELITE, FALSE);
 }
 
 STATIC_OVL int
 forge_silver_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 2, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_NORMAL);
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 2, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, FALSE);
 }
 
 STATIC_OVL int
 forge_ex_silver_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 3, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL);
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 3, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, FALSE);
 }
 
 STATIC_OVL int
 forge_el_silver_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 4, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_ELITE);
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 4, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_ELITE, FALSE);
 }
 
 
 STATIC_OVL int
-forge_special_func(mtmp, forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality)
+forge_special_func(mtmp, forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality, initialize)
 struct monst* mtmp;
 int forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality;
+boolean initialize;
 {
     char talkbuf[BUFSZ];
     char forge_objects[3] = { 0, 0, 0 };
@@ -10493,7 +10567,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality;
         otmp = 0;
     }
 
-    struct obj* craftedobj = mksobj(forge_dest_otyp, FALSE, FALSE, 3);
+    struct obj* craftedobj = mksobj(forge_dest_otyp, initialize, FALSE, 3);
     if (craftedobj)
     {
         if (quan > 0)
@@ -10505,6 +10579,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality;
         {
             craftedobj->exceptionality = exceptionality;
         }
+        craftedobj->cursed = craftedobj->blessed = 0;
         fully_identify_obj(craftedobj);
         Sprintf(talkbuf, "%s hands %s to you.", noittame_Monnam(mtmp), acxname(craftedobj));
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
