@@ -65,7 +65,7 @@ win/win32/winclisrv/GnollHackClient/gnollhackios/download*.bat
 *.csv
 *.wav
 *.mp3
-*.mp4
+# *.mp4
 *.ogg
 *.bank
 *.psd
