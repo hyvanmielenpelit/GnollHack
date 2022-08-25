@@ -603,7 +603,8 @@ int mtype;
                 struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, exclusionbits, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
                 if (otmp)
                 {
-                    exclusionbits |= 1L << otmp->manualidx;
+                    if (otmp->manualidx < 32)
+                        exclusionbits |= 1L << otmp->manualidx;
                     (void)mpickobj(npc, otmp);
                 }
             }
@@ -661,10 +662,11 @@ int mtype;
             long exclusionbits = 0L;
             for (i = 0; i < cnt; i++)
             {
-                struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, exclusionbits, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, exclusionbits, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
                 if (otmp)
                 {
-                    exclusionbits |= 1L << otmp->manualidx;
+                    if(otmp->manualidx < 32)
+                        exclusionbits |= 1L << otmp->manualidx;
                     (void)mpickobj(npc, otmp);
                 }
             }
