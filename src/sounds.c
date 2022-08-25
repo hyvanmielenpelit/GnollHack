@@ -1880,7 +1880,7 @@ bark_here:
         if (ms_Death && !context.tribute.Deathnotice
             && (book = u_have_novel()) != 0) 
         {
-            if ((tribtitle = noveltitle(&book->novelidx)) != 0) 
+            if ((tribtitle = noveltitle(&book->novelidx, 0UL)) != 0) 
             {
                 Sprintf(verbuf, "Ah, so you have a copy of /%s/.", tribtitle);
                 /* no Death featured in these two, so exclude them */

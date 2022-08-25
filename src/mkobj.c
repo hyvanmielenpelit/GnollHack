@@ -251,13 +251,14 @@ mksobj_at(otyp, x, y, init, artif)
 int otyp, x, y;
 boolean init, artif;
 {
-    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, 0, 0UL);
+    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, 0L, 0UL);
 }
 
 struct obj*
 mksobj_at_with_flags(otyp, x, y, init, artif, mkobj_type, param, mkflags)
-int otyp, x, y, mkobj_type, param;
+int otyp, x, y, mkobj_type;
 boolean init, artif;
+long param;
 unsigned long mkflags;
 {
     if (!isok(x, y))
@@ -340,7 +341,7 @@ unsigned long mkflags;
         else
             break;
     }
-    return mksobj_with_flags(i, TRUE, artif, mkobj_type, 0, mkflags);
+    return mksobj_with_flags(i, TRUE, artif, mkobj_type, 0L, mkflags);
 }
 
 int
@@ -1341,7 +1342,7 @@ boolean init;
 boolean artif;
 int mkobj_type;
 {
-    return mksobj_with_flags(otyp, init, artif, mkobj_type, 0, 0UL);
+    return mksobj_with_flags(otyp, init, artif, mkobj_type, 0L, 0UL);
 }
 
 struct obj *
@@ -1350,7 +1351,7 @@ int otyp;
 boolean init;
 boolean artif;
 int mkobj_type; /* 0 = floor, 1 = box, 2 = wishing, -1 = special level preset item */
-int param;
+long param;
 unsigned long mkflags;
 {
     int mndx, tryct;
@@ -1358,6 +1359,9 @@ unsigned long mkflags;
     char let = objects[otyp].oc_class;
     boolean forcemythic = (mkflags & MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY) != 0;
     boolean forcelegendary = (mkflags & MKOBJ_FLAGS_FORCE_LEGENDARY) != 0;
+    unsigned long excludedtitles = 0UL;
+    if (mkflags & MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS)
+        excludedtitles = (unsigned long)param;
 
     otmp = newobj();
     *otmp = zeroobj;
@@ -2069,7 +2073,7 @@ unsigned long mkflags;
             otmp->novelidx = (short)param;
         else
             otmp->novelidx = -1; /* "none of the above"; will be changed */
-        otmp = oname(otmp, noveltitle(&otmp->novelidx));
+        otmp = oname(otmp, noveltitle(&otmp->novelidx, excludedtitles));
         otmp->nknown = TRUE;
         break;
     case SPE_MANUAL:
@@ -2077,7 +2081,8 @@ unsigned long mkflags;
             otmp->manualidx = (short)param;
         else
             otmp->manualidx = -1; /* "none of the above"; will be changed */
-        otmp = oname(otmp, manualtitle(&otmp->manualidx));
+
+        otmp = oname(otmp, manualtitle(&otmp->manualidx, excludedtitles));
         otmp->nknown = TRUE;
         otmp->cursed = otmp->blessed = 0; /* Never blessed or cursed */
         break;

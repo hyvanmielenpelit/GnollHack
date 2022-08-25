@@ -2207,7 +2207,7 @@ struct mkroom *croom;
         unsigned long mkflags = o->open ? MKOBJ_FLAGS_OPEN_COFFIN : 0UL;
         mkflags |= o->corpsenm > NON_PM ? MKOBJ_FLAGS_MONSTER_SPECIFIED : 0UL;
         
-        otmp = mksobj_at_with_flags(o->id, x, y, TRUE, !named, -1, 0, mkflags);
+        otmp = mksobj_at_with_flags(o->id, x, y, TRUE, !named, -1, 0L, mkflags);
     }
     else {
         /*
@@ -2331,7 +2331,7 @@ struct mkroom *croom;
         {
             if (objects[otmp->otyp].oc_subtyp == BOOKTYPE_NOVEL)
             {
-                const char* ntitle = noveltitle(&otmp->novelidx);
+                const char* ntitle = noveltitle(&otmp->novelidx, 0UL);
                 if (ntitle)
                 {
                     otmp = oname(otmp, ntitle);
@@ -2339,7 +2339,7 @@ struct mkroom *croom;
             }
             else if (objects[otmp->otyp].oc_subtyp == BOOKTYPE_MANUAL)
             {
-                const char* mtitle = manualtitle(&otmp->manualidx);
+                const char* mtitle = manualtitle(&otmp->manualidx, 0UL);
                 if (mtitle)
                 {
                     otmp = oname(otmp, mtitle);

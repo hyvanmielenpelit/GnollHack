@@ -1012,7 +1012,7 @@ enum manual_types
     MANUAL_ITEM_IDENTIFICATION_101,
     MANUAL_ITEM_IDENTIFICATION_102,
     MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_I,
-    MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II,
+    MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II, /* There must be at most 32 random manuals due to exclusion bit use in mksobj */
     /* Non-randomly generated below */
     MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS, /* Start marker */
     MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE,

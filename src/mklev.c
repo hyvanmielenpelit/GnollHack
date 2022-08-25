@@ -1193,14 +1193,17 @@ makelevel()
 
                 if (context.game_difficulty < 0)
                 {
+                    long bits = 0L;
                     otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, !rn2(4) ? MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II : MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_I, MKOBJ_FLAGS_PARAM_IS_TITLE);
                     if (otmp)
                     {
                         otmp->bknown = 1;
                         (void)add_to_container(stash, otmp);
+                        if(otmp->manualidx < 32)
+                            bits |= 1L << otmp->special_quality;
                     }
 
-                    otmp = mksobj(SPE_MANUAL, TRUE, FALSE, FALSE);
+                    otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, bits, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
                     if (otmp)
                     {
                         otmp->bknown = 1;

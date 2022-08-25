@@ -4905,7 +4905,7 @@ boolean is_wiz_wish;
     if (open && typ > 0 && Is_otyp_container_with_lid(typ))
         mkflags |= MKOBJ_FLAGS_OPEN_COFFIN;
 
-    otmp = typ ? mksobj_with_flags(typ, TRUE, FALSE, 2, 0, mkflags) : mkobj(oclass, FALSE, 2);
+    otmp = typ ? mksobj_with_flags(typ, TRUE, FALSE, 2, 0L, mkflags) : mkobj(oclass, FALSE, 2);
     typ = otmp->otyp, oclass = otmp->oclass; /* what we actually got */
 
     if (islit && (typ == OIL_LAMP || typ == MAGIC_LAMP || typ == BRASS_LANTERN

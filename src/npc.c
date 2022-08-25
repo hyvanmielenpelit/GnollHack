@@ -597,9 +597,15 @@ int mtype;
         case NPC_HERMIT:
         {
             int cnt = 1 + rnd(2);
+            long exclusionbits = 0L;
             for (i = 0; i < cnt; i++)
             {
-                mongets(npc, SPE_MANUAL);
+                struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, exclusionbits, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
+                if (otmp)
+                {
+                    exclusionbits |= 1L << otmp->manualidx;
+                    (void)mpickobj(npc, otmp);
+                }
             }
             break;
         }
@@ -652,9 +658,15 @@ int mtype;
                 (void)mpickobj(npc, otmp);
 
             int cnt = 1 + rnd(2);
+            long exclusionbits = 0L;
             for (i = 0; i < cnt; i++)
             {
-                mongets(npc, SPE_MANUAL);
+                struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, exclusionbits, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
+                if (otmp)
+                {
+                    exclusionbits |= 1L << otmp->manualidx;
+                    (void)mpickobj(npc, otmp);
+                }
             }
 
             otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_TOOLS, MKOBJ_FLAGS_PARAM_IS_TITLE);

@@ -3813,13 +3813,49 @@ STATIC_VAR const char *const sir_Terry_novels[] = {
 };
 
 const char *
-noveltitle(novidx)
+noveltitle(novidx, excludedtitles)
 short* novidx;
+unsigned long excludedtitles; /* Requires a 64-bit long to work for more than 32 novels */
 {
     short j, k = (short)SIZE(sir_Terry_novels);
+    if (excludedtitles)
+    {
+        int i;
+        for (i = 0; i < 32; i++)
+        {
+            unsigned long bit = 1UL << i;
+            if (excludedtitles & bit)
+            {
+                k--;
+            }
+        }
+    }
 
-    j = (short)rn2((int)k);
-    if (novidx) {
+    if (k < 1)
+        j = 0;
+    else
+    {
+        short roll = (short)rn2((int)k);
+        if (excludedtitles)
+        {
+            for (j = 0; j < (short)SIZE(sir_Terry_novels); j++)
+            {
+                unsigned long bit = 0UL;
+                if(j < 32)
+                    bit = 1UL << j;
+                if (excludedtitles & bit)
+                    continue;
+                if (!roll)
+                    break;
+                roll--;
+            }
+        }
+        else
+            j = roll;
+    }
+
+    if (novidx)
+    {
         if (*novidx == -1)
             *novidx = j;
         else if (*novidx >= 0 && *novidx < k)
@@ -3849,13 +3885,49 @@ STATIC_VAR const char* const manual_names[MAX_MANUAL_TYPES] = {
 };
 
 const char*
-manualtitle(mnlidx)
+manualtitle(mnlidx, excludedtitles)
 short* mnlidx;
+unsigned long excludedtitles;
 {
     short j, k = NUM_RANDOM_MANUALS; /* Number of randomly generated manuals */ //SIZE(manual_names);
+    if (excludedtitles)
+    {
+        int i;
+        for (i = 0; i < 32; i++)
+        {
+            unsigned long bit = 1UL << i;
+            if (excludedtitles & bit)
+            {
+                k--;
+            }
+        }
+    }
 
-    j = (short)rn2((int)k);
-    if (mnlidx) {
+    if (k < 1)
+        j = 0;
+    else
+    {
+        short roll = (short)rn2((int)k);
+        if (excludedtitles)
+        {
+            for(j = 0; j < NUM_RANDOM_MANUALS; j++)
+            {
+                unsigned long bit = 0UL;
+                if (j < 32)
+                    bit = 1UL << j;
+                if (excludedtitles & bit)
+                    continue;
+                if (!roll)
+                    break;
+                roll--;
+            }
+        }
+        else
+            j = roll;
+    }
+
+    if (mnlidx) 
+    {
         if (*mnlidx == -1)
             *mnlidx = j;
         else if (*mnlidx >= 0 && *mnlidx < SIZE(manual_names))
