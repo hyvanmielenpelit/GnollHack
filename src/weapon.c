@@ -1098,9 +1098,10 @@ STATIC_VAR const NEARDATA short hwep[] =
 
 /* select a hand to hand weapon for the monster */
 struct obj *
-select_hwep(mtmp, poleok)
+select_hwep(mtmp, poleok, tx, ty)
 register struct monst *mtmp;
 boolean poleok;
+xchar tx, ty;
 {
     register struct obj *otmp;
     register int i;
@@ -1129,8 +1130,22 @@ boolean poleok;
             if (hwep[i] == CORPSE && !(mtmp->worn_item_flags & W_ARMG)
                 && !resists_ston(mtmp))
                 continue;
-            if(!poleok && is_otyp_appliable_pole_type_weapon(hwep[i]))
-                continue;
+            if (is_otyp_appliable_pole_type_weapon(hwep[i]))
+            {
+                if (!poleok)
+                    continue;
+
+                if (isok(tx, ty))
+                {
+                    int min_range = 0, max_range = 1;
+                    struct obj poledummy = { 0 };
+                    poledummy.otyp = hwep[i];
+                    get_pole_type_weapon_min_max_distances(&poledummy, mtmp, &min_range, &max_range);
+                    boolean poletooclose = dist2(mtmp->mx, mtmp->my, tx, ty) < min_range * min_range;
+                    if (poletooclose)
+                        continue;
+                }
+            }
             if (((strong && !wearing_shield) || !objects[hwep[i]].oc_bimanual)
                 && (objects[hwep[i]].oc_material != MAT_SILVER
                     || !mon_hates_silver(mtmp)))
@@ -1247,9 +1262,10 @@ boolean polyspot;
  * Returns 1 if the monster took time to do it, 0 if it did not.
  */
 int
-mon_wield_item(mon, verbose_fail)
+mon_wield_item(mon, verbose_fail, tx, ty)
 register struct monst *mon;
 boolean verbose_fail;
+xchar tx, ty;
 {
     if (!mon)
         return 0;
@@ -1268,7 +1284,7 @@ boolean verbose_fail;
     switch (mon->weapon_strategy) {
     case NEED_HTH_WEAPON:
     case NEED_HTH_NO_POLE:
-        obj = select_hwep(mon, mon->weapon_strategy == NEED_HTH_WEAPON);
+        obj = select_hwep(mon, mon->weapon_strategy == NEED_HTH_WEAPON, tx, ty);
         break;
     case NEED_RANGED_WEAPON:
         (void) select_rwep(mon);

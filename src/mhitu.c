@@ -928,12 +928,12 @@ register struct monst *mtmp;
                 if (MON_WEP(mtmp) && is_appliable_pole_type_weapon(MON_WEP(mtmp)) && !mwelded(MON_WEP(mtmp), mtmp))
                 {
                     get_pole_type_weapon_min_max_distances(MON_WEP(mtmp), mtmp, &min_range, &max_range);
-                    poletooclose = dist2(mtmp->mx, mtmp->my, mtmp->mx, mtmp->my) < min_range * min_range;
+                    poletooclose = distu(mtmp->mx, mtmp->my) < min_range * min_range;
                 }
 
                 if (mtmp->weapon_strategy == NEED_WEAPON || !MON_WEP(mtmp) || is_nonwelded_launcher || poletooclose)
                 {
-                    if ((is_nonwelded_launcher || poletooclose) && !select_hwep(mtmp, FALSE))
+                    if ((is_nonwelded_launcher || poletooclose) && !select_hwep(mtmp, FALSE, u.ux, u.uy))
                     {
                         if(canseemon(mtmp))
                             pline("%s unwields %s.", Monnam(mtmp), the(cxname(MON_WEP(mtmp))));
@@ -941,7 +941,7 @@ register struct monst *mtmp;
                     }
                     mtmp->weapon_strategy = poletooclose ? NEED_HTH_NO_POLE : NEED_HTH_WEAPON;
                     /* mon_wield_item resets weapon_strategy as appropriate */
-                    if (mon_wield_item(mtmp, FALSE) != 0)
+                    if (mon_wield_item(mtmp, FALSE, u.ux, u.uy) != 0)
                         break;
                 }
 

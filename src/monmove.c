@@ -981,7 +981,7 @@ register struct monst *mtmp;
             && !(mtmp->mtrapped && !nearby && select_rwep(mtmp))) 
         {
             mtmp->weapon_strategy = NEED_HTH_WEAPON;
-            if (mon_wield_item(mtmp, FALSE) != 0)
+            if (mon_wield_item(mtmp, FALSE, u.ux, u.uy) != 0)
                 return 0;
         }
     }
@@ -1211,7 +1211,7 @@ xchar nix,niy;
             if (!(mw_tmp = MON_WEP(mtmp)) || !is_pick(mw_tmp))
                 mtmp->weapon_strategy = NEED_PICK_AXE;
         }
-        if (mtmp->weapon_strategy >= NEED_PICK_AXE && mon_wield_item(mtmp, FALSE))
+        if (mtmp->weapon_strategy >= NEED_PICK_AXE && mon_wield_item(mtmp, FALSE, nix, niy))
             return TRUE;
     }
     return FALSE;

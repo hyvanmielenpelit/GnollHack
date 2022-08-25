@@ -1101,7 +1101,7 @@ struct monst *mtmp, *mtarg;
     if (mtmp->weapon_strategy == NEED_WEAPON || !MON_WEP(mtmp)) {
         mtmp->weapon_strategy = NEED_RANGED_WEAPON;
         /* mon_wield_item resets weapon_strategy as appropriate */
-        if (mon_wield_item(mtmp, FALSE) != 0)
+        if (mon_wield_item(mtmp, FALSE, mtarg->mx, mtarg->my) != 0)
             return 0;
     }
 
@@ -1597,7 +1597,7 @@ struct monst *mtmp;
     if (mtmp->weapon_strategy == NEED_WEAPON || !MON_WEP(mtmp)) {
         mtmp->weapon_strategy = NEED_RANGED_WEAPON;
         /* mon_wield_item resets weapon_strategy as appropriate */
-        if (mon_wield_item(mtmp, FALSE) != 0)
+        if (mon_wield_item(mtmp, FALSE, u.ux, u.uy) != 0)
             return;
     }
 

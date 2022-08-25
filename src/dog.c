@@ -178,7 +178,7 @@ boolean quietly;
     /* must wield weapon immediately since pets will otherwise drop it */
     if (is_tame(mtmp) && attacktype(mtmp->data, AT_WEAP)) {
         mtmp->weapon_strategy = NEED_HTH_WEAPON;
-        (void) mon_wield_item(mtmp, FALSE);
+        (void) mon_wield_item(mtmp, FALSE, 0, 0);
     }
     return mtmp;
 }
@@ -1343,7 +1343,7 @@ boolean thrown;
     if (attacktype(mtmp->data, AT_WEAP))
     {
         mtmp->weapon_strategy = NEED_HTH_WEAPON;
-        (void) mon_wield_item(mtmp, FALSE);
+        (void) mon_wield_item(mtmp, FALSE, 0, 0);
     }
     return TRUE;
 }

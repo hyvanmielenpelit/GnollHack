@@ -3158,7 +3158,7 @@ dochat()
 
         if (is_tame(mtmp) && mtmp->minvent && can_operate_objects(mtmp->data) && attacktype(mtmp->data, AT_WEAP) && is_peaceful(mtmp)) /*  && !mtmp->issummoned */
         {
-            if (select_hwep(mtmp, TRUE))
+            if (select_hwep(mtmp, TRUE, 0, 0))
             {
                 Sprintf(available_chat_list[chatnum].name, "Ask to wield a hand-to-hand weapon");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_dowield_hth;
@@ -5897,7 +5897,7 @@ struct monst* mtmp;
 
     mtmp->weapon_strategy = NEED_HTH_WEAPON;
 
-    boolean wielded = mon_wield_item(mtmp, TRUE);
+    boolean wielded = mon_wield_item(mtmp, TRUE, 0, 0);
     return wielded;
 }
 
@@ -5909,7 +5909,7 @@ struct monst* mtmp;
         return 0;
 
     mtmp->weapon_strategy = NEED_RANGED_WEAPON;
-    boolean wielded = mon_wield_item(mtmp, TRUE);
+    boolean wielded = mon_wield_item(mtmp, TRUE, 0, 0);
     return wielded;
 }
 
@@ -5921,7 +5921,7 @@ struct monst* mtmp;
         return 0;
 
     mtmp->weapon_strategy = NEED_PICK_AXE;
-    boolean wielded = mon_wield_item(mtmp, TRUE);
+    boolean wielded = mon_wield_item(mtmp, TRUE, 0, 0);
     return wielded;
 
 }
@@ -5934,7 +5934,7 @@ struct monst* mtmp;
         return 0;
 
     mtmp->weapon_strategy = NEED_AXE;
-    boolean wielded = mon_wield_item(mtmp, TRUE);
+    boolean wielded = mon_wield_item(mtmp, TRUE, 0, 0);
     return wielded;
 
 }

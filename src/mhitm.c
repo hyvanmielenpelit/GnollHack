@@ -443,7 +443,7 @@ register struct monst *magr, *mdef;
                )
             {
                 magr->weapon_strategy = poletooclose ? NEED_HTH_NO_POLE : NEED_HTH_WEAPON;
-                if (mon_wield_item(magr, FALSE) != 0)
+                if (mon_wield_item(magr, FALSE, mdef->mx, mdef->my) != 0)
                     return 0;
             }
             possibly_unwield(magr, FALSE);

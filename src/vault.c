@@ -508,7 +508,7 @@ invault()
                 if (!MON_WEP(guard)) 
                 {
                     guard->weapon_strategy = NEED_HTH_WEAPON;
-                    (void) mon_wield_item(guard, FALSE);
+                    (void) mon_wield_item(guard, FALSE, u.ux, u.uy);
                 }
             }
             return;
