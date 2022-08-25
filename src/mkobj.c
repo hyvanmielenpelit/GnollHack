@@ -251,14 +251,14 @@ mksobj_at(otyp, x, y, init, artif)
 int otyp, x, y;
 boolean init, artif;
 {
-    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, 0L, 0UL);
+    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, 0L, 0L, 0UL);
 }
 
 struct obj*
-mksobj_at_with_flags(otyp, x, y, init, artif, mkobj_type, param, mkflags)
+mksobj_at_with_flags(otyp, x, y, init, artif, mkobj_type, param, param2, mkflags)
 int otyp, x, y, mkobj_type;
 boolean init, artif;
-long param;
+long param, param2;
 unsigned long mkflags;
 {
     if (!isok(x, y))
@@ -266,7 +266,7 @@ unsigned long mkflags;
 
     struct obj* otmp;
 
-    otmp = mksobj_with_flags(otyp, init, artif, mkobj_type, param, mkflags);
+    otmp = mksobj_with_flags(otyp, init, artif, mkobj_type, param, param2, mkflags);
     if (otmp)
     {
         place_object(otmp, x, y);
@@ -341,7 +341,7 @@ unsigned long mkflags;
         else
             break;
     }
-    return mksobj_with_flags(i, TRUE, artif, mkobj_type, 0L, mkflags);
+    return mksobj_with_flags(i, TRUE, artif, mkobj_type, 0L, 0L, mkflags);
 }
 
 int
@@ -605,7 +605,7 @@ struct obj *box;
             if (!rn2(4))
             {
                 /* A random catalogue */
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, FIRST_CATALOGUE + rn2(NUM_CATALOGUES), MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, FIRST_CATALOGUE + rn2(NUM_CATALOGUES), 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             }
             else if (rn2(3))
                 otmp = mkobj(SCROLL_CLASS, FALSE, TRUE);
@@ -1342,16 +1342,16 @@ boolean init;
 boolean artif;
 int mkobj_type;
 {
-    return mksobj_with_flags(otyp, init, artif, mkobj_type, 0L, 0UL);
+    return mksobj_with_flags(otyp, init, artif, mkobj_type, 0L, 0L, 0UL);
 }
 
 struct obj *
-mksobj_with_flags(otyp, init, artif, mkobj_type, param, mkflags)
+mksobj_with_flags(otyp, init, artif, mkobj_type, param, param2, mkflags)
 int otyp;
 boolean init;
 boolean artif;
 int mkobj_type; /* 0 = floor, 1 = box, 2 = wishing, -1 = special level preset item */
-long param;
+long param, param2;
 unsigned long mkflags;
 {
     int mndx, tryct;
@@ -1359,9 +1359,12 @@ unsigned long mkflags;
     char let = objects[otyp].oc_class;
     boolean forcemythic = (mkflags & MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY) != 0;
     boolean forcelegendary = (mkflags & MKOBJ_FLAGS_FORCE_LEGENDARY) != 0;
-    unsigned long excludedtitles = 0UL;
+    unsigned long excludedtitles = 0UL, excludedtitles2 = 0UL;
     if (mkflags & MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS)
+    {
         excludedtitles = (unsigned long)param;
+        excludedtitles2 = (unsigned long)param2;
+    }
 
     otmp = newobj();
     *otmp = zeroobj;
@@ -2073,7 +2076,7 @@ unsigned long mkflags;
             otmp->novelidx = (short)param;
         else
             otmp->novelidx = -1; /* "none of the above"; will be changed */
-        otmp = oname(otmp, noveltitle(&otmp->novelidx, excludedtitles));
+        otmp = oname(otmp, noveltitle(&otmp->novelidx, excludedtitles, excludedtitles2));
         otmp->nknown = TRUE;
         break;
     case SPE_MANUAL:
@@ -2082,7 +2085,7 @@ unsigned long mkflags;
         else
             otmp->manualidx = -1; /* "none of the above"; will be changed */
 
-        otmp = oname(otmp, manualtitle(&otmp->manualidx, excludedtitles));
+        otmp = oname(otmp, manualtitle(&otmp->manualidx, excludedtitles, excludedtitles2));
         otmp->nknown = TRUE;
         otmp->cursed = otmp->blessed = 0; /* Never blessed or cursed */
         break;

@@ -24,6 +24,7 @@ STATIC_DCL void FDECL(print_catalogue, (winid, struct obj*, int, unsigned long))
 STATIC_DCL void FDECL(print_artifact_catalogue, (winid, struct obj*));
 STATIC_DCL int FDECL(CFDECLSPEC citemsortcmp, (const void*, const void*));
 STATIC_DCL int FDECL(CFDECLSPEC artilistsortcmp, (const void*, const void*));
+STATIC_DCL const char* FDECL(gettitle, (short*, const char* const*, int, int, unsigned long, unsigned long));
 
 extern const char what_is_an_unknown_object[]; /* from pager.c */
 
@@ -3812,19 +3813,36 @@ STATIC_VAR const char *const sir_Terry_novels[] = {
     "Raising Steam", "The Shepherd's Crown"
 };
 
-const char *
-noveltitle(novidx, excludedtitles)
-short* novidx;
-unsigned long excludedtitles; /* Requires a 64-bit long to work for more than 32 novels */
+STATIC_OVL
+const char*
+gettitle(titleidx, titlearray, arraysize, numrandomized, excludedtitles, excludedtitles2)
+short* titleidx;
+const char* const* titlearray;
+int arraysize;
+int numrandomized; /* Only this first elements are included in randomization */
+unsigned long excludedtitles, excludedtitles2; /* Requires a 64-bit long to work for more than 32 novels */
 {
-    short j, k = (short)SIZE(sir_Terry_novels);
+    short num = (short)min(arraysize, numrandomized); /* num is the titles randomized before exclusions */
+    short j, k = num; /* k is the titles randomized after exclusions */
     if (excludedtitles)
     {
         int i;
-        for (i = 0; i < 32; i++)
+        for (i = 0; i < 32 && i < num; i++)
         {
             unsigned long bit = 1UL << i;
             if (excludedtitles & bit)
+            {
+                k--;
+            }
+        }
+    }
+    if (excludedtitles2)
+    {
+        int i;
+        for (i = 32; i < 64 && i < num; i++)
+        {
+            unsigned long bit = 1UL << (i - 32);
+            if (excludedtitles2 & bit)
             {
                 k--;
             }
@@ -3836,15 +3854,23 @@ unsigned long excludedtitles; /* Requires a 64-bit long to work for more than 32
     else
     {
         short roll = (short)rn2((int)k);
-        if (excludedtitles)
+        if (excludedtitles || excludedtitles2)
         {
-            for (j = 0; j < (short)SIZE(sir_Terry_novels); j++)
+            for (j = 0; j < num; j++)
             {
                 unsigned long bit = 0UL;
-                if(j < 32)
+                if (j < 32)
+                {
                     bit = 1UL << j;
-                if (excludedtitles & bit)
-                    continue;
+                    if (excludedtitles & bit)
+                        continue;
+                }
+                else if (j < 64)
+                {
+                    bit = 1UL << (j - 32);
+                    if (excludedtitles2 & bit)
+                        continue;
+                }
                 if (!roll)
                     break;
                 roll--;
@@ -3854,16 +3880,23 @@ unsigned long excludedtitles; /* Requires a 64-bit long to work for more than 32
             j = roll;
     }
 
-    if (novidx)
+    if (titleidx)  /* Randomized or non-randomized if titleidx != 0 */
     {
-        if (*novidx == -1)
-            *novidx = j;
-        else if (*novidx >= 0 && *novidx < k)
-            j = *novidx;
+        if (*titleidx == -1)
+            *titleidx = j; /* Randomized, set titleidx to the randomized index */
+        else if (*titleidx >= 0 && *titleidx < arraysize)
+            j = *titleidx;  /* Set to value determined by titleidx */
     }
-    return sir_Terry_novels[j];
+    return titlearray[j];
 }
 
+const char *
+noveltitle(novidx, excludedtitles, excludedtitles2)
+short* novidx;
+unsigned long excludedtitles, excludedtitles2;
+{
+    return gettitle(novidx, sir_Terry_novels, SIZE(sir_Terry_novels), SIZE(sir_Terry_novels), excludedtitles, excludedtitles2);
+}
 
 
 STATIC_VAR const char* const manual_names[MAX_MANUAL_TYPES] = {
@@ -3885,55 +3918,11 @@ STATIC_VAR const char* const manual_names[MAX_MANUAL_TYPES] = {
 };
 
 const char*
-manualtitle(mnlidx, excludedtitles)
+manualtitle(mnlidx, excludedtitles, excludedtitles2)
 short* mnlidx;
-unsigned long excludedtitles;
+unsigned long excludedtitles, excludedtitles2;
 {
-    short j, k = NUM_RANDOM_MANUALS; /* Number of randomly generated manuals */ //SIZE(manual_names);
-    if (excludedtitles)
-    {
-        int i;
-        for (i = 0; i < 32; i++)
-        {
-            unsigned long bit = 1UL << i;
-            if (excludedtitles & bit)
-            {
-                k--;
-            }
-        }
-    }
-
-    if (k < 1)
-        j = 0;
-    else
-    {
-        short roll = (short)rn2((int)k);
-        if (excludedtitles)
-        {
-            for(j = 0; j < NUM_RANDOM_MANUALS; j++)
-            {
-                unsigned long bit = 0UL;
-                if (j < 32)
-                    bit = 1UL << j;
-                if (excludedtitles & bit)
-                    continue;
-                if (!roll)
-                    break;
-                roll--;
-            }
-        }
-        else
-            j = roll;
-    }
-
-    if (mnlidx) 
-    {
-        if (*mnlidx == -1)
-            *mnlidx = j;
-        else if (*mnlidx >= 0 && *mnlidx < SIZE(manual_names))
-            j = *mnlidx;
-    }
-    return manual_names[j];
+    return gettitle(mnlidx, manual_names, SIZE(manual_names), NUM_RANDOM_MANUALS, excludedtitles, excludedtitles2);
 }
 
 /* qsort comparison routine */

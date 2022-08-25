@@ -801,7 +801,7 @@ register struct obj *spellbook;
         if (objects[booktype].oc_subtyp == BOOKTYPE_NOVEL) 
         {
             /* Obtain current Terry Pratchett book title */
-            const char *tribtitle = noveltitle(&spellbook->novelidx, 0UL);
+            const char *tribtitle = noveltitle(&spellbook->novelidx, 0UL, 0UL);
 
             if (read_tribute("books", tribtitle, 0, (char *) 0, 0,
                              spellbook->o_id))
