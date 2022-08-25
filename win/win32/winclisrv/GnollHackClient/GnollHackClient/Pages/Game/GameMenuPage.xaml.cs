@@ -25,6 +25,12 @@ namespace GnollHackClient.Pages.Game
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 
             _gamePage = gamePage;
+
+            if (gamePage.EnableCasualMode)
+            {
+                btnSave.Text = "Save";
+            }
+
             _gcViewCell = GCViewCell;
             _optionsViewCell = OptionsViewCell;
             if (!App.DeveloperMode)
