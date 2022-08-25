@@ -28,7 +28,8 @@ namespace GnollHackClient.Pages.Game
 
             if (gamePage.EnableCasualMode)
             {
-                btnSave.Text = "Save";
+                btnSave.Text = "Save Game";
+                btnQuit.Text = "Quit Game";
             }
 
             _gcViewCell = GCViewCell;
