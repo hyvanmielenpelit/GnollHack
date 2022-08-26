@@ -868,17 +868,17 @@ struct objclass {
 
 
 /* Flags 2 */
-#define O2_NONE                    0x00000000UL
-#define O2_ELVEN_ITEM              0x00000001UL
-#define O2_DWARVEN_ITEM            0x00000002UL
-#define O2_ORCISH_ITEM             0x00000004UL
-#define O2_GNOLLISH_ITEM           0x00000008UL
-#define O2_DRAGON_ITEM             0x00000010UL
-#define O2_DEMON_ITEM              0x00000020UL
-#define O2_ANGELIC_ITEM            0x00000040UL
-#define O2_MODRON_ITEM             0x00000080UL
-#define O2_GNOMISH_ITEM            0x00000100UL
-    /* free bit */
+#define O2_NONE                   0x00000000UL
+#define O2_ELVEN_ITEM             0x00000001UL
+#define O2_DWARVEN_ITEM           0x00000002UL
+#define O2_ORCISH_ITEM            0x00000004UL
+#define O2_GNOLLISH_ITEM          0x00000008UL
+#define O2_DRAGON_ITEM            0x00000010UL
+#define O2_DEMON_ITEM             0x00000020UL
+#define O2_ANGELIC_ITEM           0x00000040UL
+#define O2_MODRON_ITEM            0x00000080UL
+#define O2_GNOMISH_ITEM           0x00000100UL
+#define O2_UNDEAD_ITEM            0x00000200UL
 
 #define O2_CONTAINER              0x00000400UL    
 #define O2_CONTAINER_BOX          0x00000800UL    

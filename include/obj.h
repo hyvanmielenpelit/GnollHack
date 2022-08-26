@@ -503,6 +503,8 @@ struct obj {
 /* Angel gear */
 #define is_angel_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_ANGEL_ITEM) != 0 || (otmp)->exceptionality == EXCEPTIONALITY_CELESTIAL)
 
+/* Demon gear */
+#define is_undead_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_UNDEAD_ITEM) != 0)
 
 /* Light sources */
 #define is_otyp_candle(otyp) \
