@@ -379,6 +379,47 @@ namespace GnollHackClient
             return res;
         }
 
+        public static Color MenuHeaderTextColor(ghmenu_styles style)
+        {
+            Color res = Color.Black;
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                    res = Color.Beige;
+                    break;
+                default:
+                    break;
+            }
+            return res;
+        }
+
+        public static double MenuHeaderOutlineWidth(ghmenu_styles style)
+        {
+            double res = 0;
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                    res = 4.0;
+                    break;
+                default:
+                    break;
+            }
+            return res;
+        }
+
+        public static Color MenuHeaderOutlineColor(ghmenu_styles style)
+        {
+            Color res = Color.Black;
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                    break;
+                default:
+                    break;
+            }
+            return res;
+        }
+
         public static string MenuSubtitleFontFamily(ghmenu_styles style)
         {
             string res = "Immortal";

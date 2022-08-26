@@ -2086,16 +2086,18 @@ namespace GnollHackClient.Pages.Game
             {
                 MenuHeaderLabel.IsVisible = true;
                 MenuHeaderLabel.Text = " ";
-                MenuHeaderLabel.FontFamily = ClientUtils.MenuHeaderFontFamily(menuinfo.Style);
-                MenuHeaderLabel.FontSize = ClientUtils.MenuHeaderFontSize(menuinfo.Style);
+                MenuHeaderLabel.OutlineWidth = 0;
             }
             else
             {
                 MenuHeaderLabel.IsVisible = true;
                 MenuHeaderLabel.Text = menuinfo.Header;
-                MenuHeaderLabel.FontFamily = ClientUtils.MenuHeaderFontFamily(menuinfo.Style);
-                MenuHeaderLabel.FontSize = ClientUtils.MenuHeaderFontSize(menuinfo.Style);
+                MenuHeaderLabel.OutlineWidth = ClientUtils.MenuHeaderOutlineWidth(menuinfo.Style);
             }
+            MenuHeaderLabel.FontFamily = ClientUtils.MenuHeaderFontFamily(menuinfo.Style);
+            MenuHeaderLabel.FontSize = ClientUtils.MenuHeaderFontSize(menuinfo.Style);
+            MenuHeaderLabel.TextColor = ClientUtils.MenuHeaderTextColor(menuinfo.Style);
+            MenuHeaderLabel.OutlineColor = ClientUtils.MenuHeaderOutlineColor(menuinfo.Style);
 
             if (menuinfo.Subtitle == null)
             {

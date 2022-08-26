@@ -6906,12 +6906,9 @@ const char *hdr, *txt;
 
     any = zeroany;
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
-    add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, hdr,
-             MENU_UNSELECTED);
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+    start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
     add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, txt, MENU_UNSELECTED);
-    end_menu(win, (char *) 0);
+    end_menu(win, hdr);
     if (select_menu(win, PICK_NONE, &selected) > 0)
         free((genericptr_t) selected);
     destroy_nhwindow(win);
