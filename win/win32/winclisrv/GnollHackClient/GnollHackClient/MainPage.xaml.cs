@@ -798,7 +798,8 @@ namespace GnollHackClient
                     {
                         FileInfo file = new FileInfo(sfile);
                         DateTime moddate = Preferences.Get("Verify_" + f.id + "_LastWriteTime", DateTime.MinValue);
-                        if (moddate != file.LastWriteTimeUtc || file.Length != f.length)
+                        string version = Preferences.Get("Verify_" + f.id + "_Version", "");
+                        if (version != f.version || moddate != file.LastWriteTimeUtc || file.Length != f.length)
                         {
                             File.Delete(sfile);
                             if (Preferences.ContainsKey("Verify_" + f.id + "_Version"))
