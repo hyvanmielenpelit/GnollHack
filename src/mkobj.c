@@ -2013,6 +2013,13 @@ unsigned long mkflags;
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
         }
+
+        if ((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_CELESTIAL) && otmp->exceptionality == EXCEPTIONALITY_CELESTIAL)
+            otmp->exceptionality = EXCEPTIONALITY_ELITE;
+        else if ((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_PRIMORDIAL) && otmp->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
+            otmp->exceptionality = EXCEPTIONALITY_ELITE;
+        else if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_INFERNAL) || objects[otmp->otyp].oc_material == MAT_SILVER) && otmp->exceptionality == EXCEPTIONALITY_INFERNAL)
+            otmp->exceptionality = EXCEPTIONALITY_ELITE;
     }
 
     /* Mythic quality */

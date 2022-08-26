@@ -1003,14 +1003,17 @@ struct objclass {
 #define O5_EFFECT_IS_MANA              0x00000800UL /* (Potion) Effect data is mana */
 #define O5_EFFECT_IS_DAMAGE            0x00001000UL /* (Potion) Effect data is damage */
 #define O5_EFFECT_FOR_BLESSED_ONLY     0x00002000UL /* Effect data is for blessed potion only (monster detection, scroll of fire) */
-
+#define O5_EFFECT_FLAGS_ARE_HEALING    0x00004000UL /* aflags2 bits determine what ailments the effect cures */
+/* free bit */
 #define O5_LIGHT_SOURCE                0x00010000UL
 #define O5_BURNS_INFINITELY            0x00020000UL
 #define O5_NO_CATALOGUE                0x00040000UL
 #define O5_DOUBLE_EXCEPTIONALITY_CHANCE 0x00080000UL
 #define O5_HALF_EXCEPTIONALITY_CHANCE  0x00100000UL
+#define O5_CANNOT_BE_CELESTIAL         0x00200000UL
+#define O5_CANNOT_BE_PRIMORDIAL        0x00400000UL
+#define O5_CANNOT_BE_INFERNAL          0x00800000UL
 
-#define O5_EFFECT_FLAGS_ARE_HEALING    0x00200000UL /* aflags2 bits determine what ailments the effect cures */
 
 #define O6_NONE                        0x00000000UL
 
