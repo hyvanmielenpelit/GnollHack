@@ -15,6 +15,7 @@ STATIC_VAR NEARDATA const char beverages[] = { POTION_CLASS, TOOL_CLASS, 0 };
 STATIC_DCL long FDECL(itimeout, (long));
 STATIC_DCL void NDECL(ghost_from_bottle);
 STATIC_DCL short FDECL(mixtype, (struct obj *, struct obj *));
+STATIC_DCL short FDECL(mixtype_core, (struct obj*, struct obj*));
 
 /* force `val' to be within valid range for intrinsic timeout value */
 STATIC_OVL long
@@ -2946,21 +2947,19 @@ const char* introline;
 /* returns the potion type when o1 is dipped in o2 */
 STATIC_OVL short
 mixtype(o1, o2)
+struct obj* o1, * o2;
+{
+    short mixtyp = mixtype_core(o1, o2);
+    /* try the other way around for potions */
+    if (mixtyp == STRANGE_OBJECT && (o1->oclass == POTION_CLASS && o2->oclass == POTION_CLASS))
+        mixtyp = mixtype_core(o2, o1);
+    return mixtyp;
+}
+
+STATIC_OVL short
+mixtype_core(o1, o2)
 struct obj *o1, *o2;
 {
-    /* cut down on the number of cases below */
-    if ((o1->oclass == POTION_CLASS
-        && (o2->otyp == POT_GAIN_LEVEL || o2->otyp == POT_GAIN_ENERGY || o2->otyp == POT_EXTRA_ENERGY || o2->otyp == POT_GREATER_ENERGY || o2->otyp == POT_FULL_ENERGY
-            || o2->otyp == POT_HEALING || o2->otyp == POT_EXTRA_HEALING || o2->otyp == POT_GREATER_HEALING
-            || o2->otyp == POT_FULL_HEALING || o2->otyp == POT_ENLIGHTENMENT
-            || o2->otyp == POT_FRUIT_JUICE))) {
-        struct obj *swp;
-
-        swp = o1;
-        o1 = o2;
-        o2 = swp;
-    }
-
     switch (o1->otyp) {
     case POT_POISON:
     case POT_SICKNESS:
@@ -2970,6 +2969,7 @@ struct obj *o1, *o2;
         case JAR_OF_GREATER_HEALING_SALVE:
         case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case GRAIL_OF_HEALING:
+        case POT_RESTORE_ABILITY:
             return POT_WATER;
         case JAR_OF_BASILISK_BLOOD:
             return POT_PARALYSIS;
@@ -2980,12 +2980,266 @@ struct obj *o1, *o2;
         case JAR_OF_MEDICINAL_SALVE:
             return POT_WATER;
         case JAR_OF_EXTRA_HEALING_SALVE:
-            return POT_EXTRA_HEALING;
+            return POT_HEALING;
         case JAR_OF_GREATER_HEALING_SALVE:
-            return POT_GREATER_HEALING;
+            return POT_EXTRA_HEALING;
         case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+            return POT_GREATER_HEALING;
         case GRAIL_OF_HEALING:
             return POT_FULL_HEALING;
+        default:
+            if (o1->oclass == POTION_CLASS && o2->oclass == POTION_CLASS)
+                return o2->otyp; /* Becomes diluted version of the potion dipped into */
+        }
+        break;
+    case POT_LESSER_REGENERATION:
+        switch (o2->otyp) {
+        case JAR_OF_MEDICINAL_SALVE:
+            return POT_RESTORE_ABILITY;
+        case POT_LESSER_REJUVENATION:
+        case POT_GAIN_ENERGY:
+            return POT_LESSER_REJUVENATION;
+        case POT_REJUVENATION:
+        case POT_EXTRA_ENERGY:
+            return POT_REJUVENATION;
+        case POT_GREATER_REJUVENATION:
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+            return POT_GREATER_REJUVENATION;
+        case POT_HEALING:
+            return POT_LESSER_REGENERATION;
+        case POT_SPEED:
+        case POT_EXTRA_HEALING:
+        case JAR_OF_EXTRA_HEALING_SALVE:
+            return POT_REGENERATION;
+        case POT_GREATER_SPEED:
+        case POT_LIGHTNING_SPEED:
+        case JAR_OF_GREATER_HEALING_SALVE:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case POT_GREATER_HEALING:
+        case POT_FULL_HEALING:
+        case GRAIL_OF_HEALING:
+            return POT_GREATER_REGENERATION;
+        case POT_GAIN_LEVEL:
+        case POT_RESTORE_ABILITY:
+            return POT_GAIN_ABILITY;
+        }
+        break;
+    case POT_REGENERATION:
+        switch (o2->otyp) {
+        case JAR_OF_MEDICINAL_SALVE:
+            return POT_RESTORE_ABILITY;
+        case POT_GAIN_ENERGY:
+            return POT_LESSER_REJUVENATION;
+        case POT_LESSER_REJUVENATION:
+        case POT_EXTRA_ENERGY:
+            return POT_REJUVENATION;
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+        case POT_REJUVENATION:
+        case POT_GREATER_REJUVENATION:
+            return POT_GREATER_REJUVENATION;
+        case POT_LESSER_REGENERATION:
+        case POT_HEALING:
+        case POT_EXTRA_HEALING:
+        case JAR_OF_EXTRA_HEALING_SALVE:
+            return POT_REGENERATION;
+        case POT_SPEED:
+        case POT_GREATER_SPEED:
+        case POT_LIGHTNING_SPEED:
+        case POT_GREATER_HEALING:
+        case JAR_OF_GREATER_HEALING_SALVE:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
+        case POT_FULL_HEALING:
+        case POT_GREATER_REGENERATION:
+            return POT_GREATER_REGENERATION;
+        case POT_GAIN_LEVEL:
+        case POT_RESTORE_ABILITY:
+            return POT_GAIN_ABILITY;
+        }
+        break;    
+    case POT_GREATER_REGENERATION:
+        switch (o2->otyp) {
+        case JAR_OF_MEDICINAL_SALVE:
+            return POT_RESTORE_ABILITY;
+        case POT_GAIN_ENERGY:
+        case POT_LESSER_REJUVENATION:
+            return POT_REJUVENATION;
+        case POT_EXTRA_ENERGY:
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+        case POT_REJUVENATION:
+        case POT_GREATER_REJUVENATION:
+            return POT_GREATER_REJUVENATION;
+        case POT_SPEED:
+        case POT_GREATER_SPEED:
+        case POT_LIGHTNING_SPEED:
+        case JAR_OF_EXTRA_HEALING_SALVE:
+        case JAR_OF_GREATER_HEALING_SALVE:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
+        case POT_HEALING:
+        case POT_EXTRA_HEALING:
+        case POT_GREATER_HEALING:
+        case POT_FULL_HEALING:
+            return POT_GREATER_REGENERATION;
+        case POT_GAIN_LEVEL:
+        case POT_RESTORE_ABILITY:
+            return POT_GAIN_ABILITY;
+        }
+        break;
+    case POT_LESSER_REJUVENATION:
+        switch (o2->otyp) {
+        case JAR_OF_MEDICINAL_SALVE:
+            return POT_RESTORE_ABILITY;
+        case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
+        case POT_REJUVENATION:
+        case POT_REGENERATION:
+        case POT_GREATER_REGENERATION:
+            return POT_REJUVENATION;
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+        case POT_GREATER_REJUVENATION:
+            return POT_GREATER_REJUVENATION;
+        case POT_HEALING:
+            return POT_LESSER_REGENERATION;
+        case JAR_OF_EXTRA_HEALING_SALVE:
+        case POT_EXTRA_HEALING:
+        case JAR_OF_GREATER_HEALING_SALVE:
+        case POT_GREATER_HEALING:
+            return POT_REGENERATION;
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
+        case POT_FULL_HEALING:
+            return POT_GREATER_REGENERATION;
+        case POT_SPEED:
+            return POT_REJUVENATION;
+        case POT_GREATER_SPEED:
+        case POT_LIGHTNING_SPEED:
+            return POT_GREATER_REJUVENATION;
+        case POT_GAIN_LEVEL:
+        case POT_RESTORE_ABILITY:
+            return POT_GAIN_ABILITY;
+        }
+        break;
+    case POT_REJUVENATION:
+        switch (o2->otyp) {
+        case JAR_OF_MEDICINAL_SALVE:
+            return POT_RESTORE_ABILITY;
+        case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
+        case POT_REJUVENATION:
+        case POT_REGENERATION:
+        case POT_GREATER_REGENERATION:
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+        case POT_GREATER_REJUVENATION:
+            return POT_GREATER_REJUVENATION;
+        case POT_HEALING:
+        case JAR_OF_EXTRA_HEALING_SALVE:
+        case POT_EXTRA_HEALING:
+            return POT_REGENERATION;
+        case JAR_OF_GREATER_HEALING_SALVE:
+        case POT_GREATER_HEALING:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
+        case POT_FULL_HEALING:
+            return POT_GREATER_REGENERATION;
+        case POT_SPEED:
+        case POT_GREATER_SPEED:
+        case POT_LIGHTNING_SPEED:
+            return POT_GREATER_REJUVENATION;
+        case POT_GAIN_LEVEL:
+        case POT_RESTORE_ABILITY:
+            return POT_GAIN_ABILITY;
+        }
+        break;
+    case POT_GREATER_REJUVENATION:
+        switch (o2->otyp) {
+        case JAR_OF_MEDICINAL_SALVE:
+            return POT_RESTORE_ABILITY;
+        case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
+        case POT_REJUVENATION:
+        case POT_REGENERATION:
+        case POT_GREATER_REGENERATION:
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+        case POT_GREATER_REJUVENATION:
+            return POT_GREATER_REJUVENATION;
+        case POT_HEALING:
+        case JAR_OF_EXTRA_HEALING_SALVE:
+        case POT_EXTRA_HEALING:
+        case JAR_OF_GREATER_HEALING_SALVE:
+        case POT_GREATER_HEALING:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
+        case POT_FULL_HEALING:
+            return POT_GREATER_REGENERATION;
+        case POT_SPEED:
+        case POT_GREATER_SPEED:
+        case POT_LIGHTNING_SPEED:
+            return POT_GREATER_REJUVENATION;
+        case POT_GAIN_LEVEL:
+        case POT_RESTORE_ABILITY:
+            return POT_GAIN_ABILITY;
+        }
+        break;
+    case POT_HEROISM:
+        switch (o2->otyp) {
+        case POT_GAIN_ENERGY:
+        case POT_SPEED:
+            return POT_HEROISM;
+        case POT_EXTRA_ENERGY:
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+        case POT_GREATER_SPEED:
+        case POT_LIGHTNING_SPEED:
+        case POT_GAIN_LEVEL:
+        case POT_SUPER_HEROISM:
+            return POT_SUPER_HEROISM;
+        }
+        break;
+    case POT_SUPER_HEROISM:
+        switch (o2->otyp) {
+        case POT_GAIN_ENERGY:
+        case POT_SPEED:
+        case POT_EXTRA_ENERGY:
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+        case POT_GREATER_SPEED:
+        case POT_LIGHTNING_SPEED:
+        case POT_GAIN_LEVEL:
+        case POT_HEROISM:
+        case POT_SUPER_HEROISM:
+            return POT_SUPER_HEROISM;
+        }
+        break;
+    case POT_SPEED:
+        switch (o2->otyp) {
+        case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
+        case POT_GREATER_SPEED:
+            return POT_GREATER_SPEED;
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+        case POT_GAIN_LEVEL:
+        case POT_LIGHTNING_SPEED:
+            return POT_LIGHTNING_SPEED;
+        }
+        break;
+    case POT_LIGHTNING_SPEED:
+        switch (o2->otyp) {
+        case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
+        case POT_GREATER_SPEED:
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+        case POT_GAIN_LEVEL:
+        case POT_LIGHTNING_SPEED:
+            return POT_LIGHTNING_SPEED;
         }
         break;
     case POT_HEALING:
@@ -2994,15 +3248,20 @@ struct obj *o1, *o2;
         case POT_GAIN_ENERGY:
         case JAR_OF_EXTRA_HEALING_SALVE:
         case POT_EXTRA_ENERGY:
+        case POT_EXTRA_HEALING:
             return POT_EXTRA_HEALING;
         case JAR_OF_MEDICINAL_SALVE:
             return POT_RESTORE_ABILITY;
         case JAR_OF_GREATER_HEALING_SALVE:
         case POT_GREATER_ENERGY:
+        case POT_GREATER_SPEED:
+        case POT_GREATER_HEALING:
             return POT_GREATER_HEALING;
         case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case GRAIL_OF_HEALING:
         case POT_FULL_ENERGY:
+        case POT_LIGHTNING_SPEED:
+        case POT_FULL_HEALING:
             return POT_FULL_HEALING;
         case POT_GAIN_LEVEL:
             return POT_GAIN_ABILITY;
@@ -3011,17 +3270,23 @@ struct obj *o1, *o2;
     case POT_EXTRA_HEALING:
         switch (o2->otyp) {
         case JAR_OF_EXTRA_HEALING_SALVE:
+        case POT_HEALING:
             return POT_EXTRA_HEALING;
         case POT_GAIN_ENERGY:
         case POT_EXTRA_ENERGY:
         case JAR_OF_MEDICINAL_SALVE:
             return POT_RESTORE_ABILITY;
         case JAR_OF_GREATER_HEALING_SALVE:
+        case POT_SPEED:
+        case POT_GREATER_HEALING:
             return POT_GREATER_HEALING;
         case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case GRAIL_OF_HEALING:
         case POT_GREATER_ENERGY:
         case POT_FULL_ENERGY:
+        case POT_GREATER_SPEED:
+        case POT_LIGHTNING_SPEED:
+        case POT_FULL_HEALING:
             return POT_FULL_HEALING;
         case POT_GAIN_LEVEL:
             return POT_GAIN_ABILITY;
@@ -3033,6 +3298,8 @@ struct obj *o1, *o2;
             return POT_RESTORE_ABILITY;
         case JAR_OF_EXTRA_HEALING_SALVE:
         case JAR_OF_GREATER_HEALING_SALVE:
+        case POT_HEALING:
+        case POT_EXTRA_HEALING:
             return POT_GREATER_HEALING;
         case POT_GAIN_ENERGY:
         case POT_EXTRA_ENERGY:
@@ -3040,6 +3307,7 @@ struct obj *o1, *o2;
         case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case GRAIL_OF_HEALING:
         case POT_FULL_ENERGY:
+        case POT_FULL_HEALING:
             return POT_FULL_HEALING;
         case POT_GAIN_LEVEL:
             return POT_GAIN_ABILITY;
@@ -3053,6 +3321,9 @@ struct obj *o1, *o2;
         case JAR_OF_GREATER_HEALING_SALVE:
         case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case GRAIL_OF_HEALING:
+        case POT_HEALING:
+        case POT_EXTRA_HEALING:
+        case POT_GREATER_HEALING:
             return POT_FULL_HEALING;
         case POT_GAIN_LEVEL:
         case POT_GAIN_ENERGY:
@@ -3091,6 +3362,7 @@ struct obj *o1, *o2;
         case POT_EXTRA_HEALING:
         case POT_GREATER_HEALING:
         case POT_FULL_HEALING:
+        case POT_RESTORE_ABILITY:
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
             return POT_SEE_INVISIBLE;
@@ -3104,6 +3376,7 @@ struct obj *o1, *o2;
         case POT_CONFUSION:
             return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
         case JAR_OF_MEDICINAL_SALVE:
+        case POT_RESTORE_ABILITY:
             return POT_RESTORE_ABILITY;
         case JAR_OF_EXTRA_HEALING_SALVE:
         case POT_HEALING:
@@ -3142,6 +3415,7 @@ struct obj *o1, *o2;
             return POT_FULL_HEALING;
         case POT_GREATER_HEALING:
             return POT_FULL_HEALING;
+        case POT_RESTORE_ABILITY:
         case POT_FULL_HEALING:
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
@@ -3170,6 +3444,7 @@ struct obj *o1, *o2;
             return POT_FULL_HEALING;
         case POT_GREATER_HEALING:
             return POT_FULL_HEALING;
+        case POT_RESTORE_ABILITY:
         case POT_FULL_HEALING:
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
@@ -3193,15 +3468,32 @@ struct obj *o1, *o2;
         case POT_GREATER_ENERGY:
         case POT_FULL_ENERGY:
             return POT_SEE_INVISIBLE;
+        }
+        break;
+    case POT_RESTORE_ABILITY:
+        switch (o2->otyp) {
+        case POT_SICKNESS:
+        case POT_POISON:
+            return POT_WATER;
+        case POT_GREATER_SPEED:
+        case POT_LIGHTNING_SPEED:
+        case POT_GAIN_LEVEL:
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+            return POT_GAIN_ABILITY;
+        case POT_SPEED:
+        case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
+        case POT_HEALING:
+        case POT_EXTRA_HEALING:
+        case POT_GREATER_HEALING:
+        case POT_FULL_HEALING:
         case JAR_OF_MEDICINAL_SALVE:
-            return POT_RESTORE_ABILITY;
         case JAR_OF_EXTRA_HEALING_SALVE:
-            return POT_EXTRA_HEALING;
         case JAR_OF_GREATER_HEALING_SALVE:
-            return POT_GREATER_HEALING;
         case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case GRAIL_OF_HEALING:
-            return POT_FULL_HEALING;
+            return POT_RESTORE_ABILITY;
         }
         break;
     case POT_ENLIGHTENMENT:
@@ -3795,6 +4087,7 @@ dodip()
         return 1;
     }
 
+    play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
     pline("Interesting...");
     return 1;
 
