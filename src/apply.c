@@ -408,6 +408,7 @@ struct obj *obj;
         {
         case 2:
             old = Glib;
+            play_sfx_sound(SFX_ACQUIRE_GLIB);
             incr_itimeout(&Glib, rn1(10, 3));
             refresh_u_tile_gui_info(TRUE);
             Your("%s %s!", makeplural(body_part(HAND)),
@@ -3573,10 +3574,12 @@ struct obj *obj;
 
         if (otmp != &zeroobj)
         {
+            play_sfx_sound(SFX_GREASE_COATING);
             You("cover %s with a thick layer of grease.", yname(otmp));
             otmp->greased = 1;
             if (obj->cursed && !nohands(youmonst.data)) 
             {
+                play_sfx_sound(SFX_ACQUIRE_GLIB);
                 incr_itimeout(&Glib, rnd(15));
                 refresh_u_tile_gui_info(TRUE);
                 pline("Some of the grease gets all over your %s.",
@@ -3585,6 +3588,7 @@ struct obj *obj;
         }
         else
         {
+            play_sfx_sound(SFX_ACQUIRE_GLIB);
             incr_itimeout(&Glib, rnd(15));
             refresh_u_tile_gui_info(TRUE);
             You("coat your %s with grease.", makeplural(body_part(FINGER)));

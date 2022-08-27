@@ -983,6 +983,7 @@ struct obj *obj;
        are required in order for xname() to yield a sensible result */
     bareobj = zeroobj;
     bareobj.otyp = otyp;
+    bareobj.oartifact = obj->oartifact;
     bareobj.oclass = obj->oclass;
     bareobj.dknown = obj->dknown;
     /* suppress known except for amulets (needed for fakes and real A-of-Y) */

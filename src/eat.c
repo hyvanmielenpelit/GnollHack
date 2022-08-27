@@ -1879,6 +1879,7 @@ const char *mesg;
         if (tintxts[r].greasy) 
         {
             /* Assume !Glib, because you can't open tins when Glib. */
+            play_sfx_sound(SFX_ACQUIRE_GLIB);
             incr_itimeout(&Glib, rnd(15));
             refresh_u_tile_gui_info(TRUE);
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "Eating %s food made your %s very slippery.",

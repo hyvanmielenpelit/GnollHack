@@ -12,8 +12,8 @@
       "version": "41",
       "source_directory": "banks",
       "source_url": "https://download.gnollhack.com/gnollhack-xu5yROO95006WNM/v41/Master.bank",
-      "length": 81894144,
-      "sha256": "e5a7edf67550d5cd622d697e360a7f0e0bf2a452afef50971a0983fb48c3996d",
+      "length": 81896672,
+      "sha256": "d8bc5f83f9219a826af1da0f2dfc4cb02b79454c8862edf0c24c91fdf816f113",
       "target_directory": "bank",
       "flags": 0
     },
@@ -26,8 +26,8 @@
       "version": "41",
       "source_directory": "banks",
       "source_url": "https://download.gnollhack.com/gnollhack-xu5yROO95006WNM/v41/Master.strings.bank",
-      "length": 85382,
-      "sha256": "bbb7a2fd120bb24d14c319a7f91c28d7df0f2e4cd457fcfe6f0e54f43539ec63",
+      "length": 85522,
+      "sha256": "174008f09d9167d0f3663425dc0db3e1d9883eefdeea36676eb153f2181229cb",
       "target_directory": "bank",
       "flags": 0
     },

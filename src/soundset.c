@@ -425,6 +425,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Cancellation", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Silence", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Grab", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Glib", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Mummy Rot", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Lycanthropy", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Gain Ability", 0.5f },
@@ -692,6 +693,8 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
 
     { SOUND_BANK_MASTER, "event:/SFX/General/Potion Dilutes", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Poison Dissolves", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Poison Coating", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Grease Coating", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Flames Extinquished", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Electricity Crackles", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Icy Coating Forms", 1.0f },
@@ -12116,6 +12119,21 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_WATER_BOILS, 1.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     }, 
+    {
+        "GHSOUND_ACQUIRE_GLIB",
+        {GHSOUND_ACQUIRE_GLIB, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_POISON_COATING",
+        {GHSOUND_POISON_COATING, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_GREASE_COATING",
+        {GHSOUND_GREASE_COATING, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

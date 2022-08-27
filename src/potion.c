@@ -2980,8 +2980,11 @@ struct obj *o1, *o2;
         case JAR_OF_EXTRA_HEALING_SALVE:
         case POT_EXTRA_ENERGY:
             return POT_EXTRA_HEALING;
+        case JAR_OF_GREATER_HEALING_SALVE:
         case POT_GREATER_ENERGY:
             return POT_GREATER_HEALING;
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
         case POT_FULL_ENERGY:
             return POT_FULL_HEALING;
         case POT_GAIN_LEVEL:
@@ -2992,8 +2995,10 @@ struct obj *o1, *o2;
         switch (o2->otyp) {
         case POT_GAIN_ENERGY:
         case POT_EXTRA_ENERGY:
-            return POT_GREATER_HEALING;
         case JAR_OF_GREATER_HEALING_SALVE:
+            return POT_GREATER_HEALING;
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
         case POT_GREATER_ENERGY:
         case POT_FULL_ENERGY:
             return POT_FULL_HEALING;
@@ -3046,10 +3051,6 @@ struct obj *o1, *o2;
         case POT_EXTRA_HEALING:
         case POT_GREATER_HEALING:
         case POT_FULL_HEALING:
-        case JAR_OF_EXTRA_HEALING_SALVE:
-        case JAR_OF_GREATER_HEALING_SALVE:
-        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
-        case GRAIL_OF_HEALING:
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
             return POT_SEE_INVISIBLE;
@@ -3062,16 +3063,16 @@ struct obj *o1, *o2;
         switch (o2->otyp) {
         case POT_CONFUSION:
             return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
+        case JAR_OF_EXTRA_HEALING_SALVE:
         case POT_HEALING:
             return POT_EXTRA_HEALING;
-        case JAR_OF_EXTRA_HEALING_SALVE:
+        case JAR_OF_GREATER_HEALING_SALVE:
         case POT_EXTRA_HEALING:
             return POT_GREATER_HEALING;
-        case JAR_OF_GREATER_HEALING_SALVE:
-        case POT_GREATER_HEALING:
-            return POT_FULL_HEALING;
         case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case GRAIL_OF_HEALING:
+        case POT_GREATER_HEALING:
+            return POT_FULL_HEALING;
         case POT_FULL_HEALING:
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
@@ -3084,15 +3085,16 @@ struct obj *o1, *o2;
         switch (o2->otyp) {
         case POT_CONFUSION:
             return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
+        case JAR_OF_EXTRA_HEALING_SALVE:
+            return POT_EXTRA_HEALING;
+        case JAR_OF_GREATER_HEALING_SALVE:
         case POT_HEALING:
             return POT_GREATER_HEALING;
-        case JAR_OF_EXTRA_HEALING_SALVE:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
         case POT_EXTRA_HEALING:
             return POT_FULL_HEALING;
-        case JAR_OF_GREATER_HEALING_SALVE:
-        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case POT_GREATER_HEALING:
-        case GRAIL_OF_HEALING:
             return POT_FULL_HEALING;
         case POT_FULL_HEALING:
             return POT_GAIN_ABILITY;
@@ -3106,16 +3108,18 @@ struct obj *o1, *o2;
         switch (o2->otyp) {
         case POT_CONFUSION:
             return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
+        case JAR_OF_EXTRA_HEALING_SALVE:
+            return POT_EXTRA_HEALING;
+        case JAR_OF_GREATER_HEALING_SALVE:
+            return POT_GREATER_HEALING;
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
         case POT_HEALING:
             return POT_FULL_HEALING;
-        case JAR_OF_EXTRA_HEALING_SALVE:
         case POT_EXTRA_HEALING:
             return POT_FULL_HEALING;
-        case JAR_OF_GREATER_HEALING_SALVE:
-        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case POT_GREATER_HEALING:
             return POT_FULL_HEALING;
-        case GRAIL_OF_HEALING:
         case POT_FULL_HEALING:
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
@@ -3280,7 +3284,7 @@ dodip()
     if (potion == obj && potion->quan == 1L)
     {
         play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-        pline("That is a potion bottle, not a Klein bottle!");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "That is a potion bottle, not a Klein bottle!");
         return 0;
     }
     potion->in_use = TRUE; /* assume it will be used up */
@@ -3361,7 +3365,8 @@ dodip()
         }
         else
         {
-            pline("Nothing seems to happen.");
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot dip %s into %s.", acxname(obj), acxname(potion));
             return 1;
         }
     }
@@ -3396,16 +3401,23 @@ dodip()
         Sprintf(dcbuf, "%s %s %s with %s%s%s...", qbuf, simpleonames(obj),
               otense(obj, "mix"), useupliquidonly ? "the liquid inside " : "", 
               (potion->quan > 1L) ? "one of " : "",
-              potion->oartifact ? the(cxname(potion)) : thesimpleoname(potion));
-        pline1(dcbuf);
+              thesimpleoname(potion));
+        pline_ex1(ATR_NONE, NO_COLOR, dcbuf);
 
         if (useupliquidonly)
-            potion->charges = 0;
+        {
+            if (obj->quan > (long)potion->charges)
+                potion->charges = 0;
+            else
+                potion->charges -= (short)obj->quan;
+        }
 
         /* Mixing potions is dangerous...
            KMH, balance patch -- acid is particularly unstable */
         if (obj->cursed || obj->otyp == POT_ACID || !rn2(10)) 
         {
+            if (useupliquidonly)
+                potion->charges = 0;
             if (!potion->oartifact && !is_obj_indestructible(potion))
                 useup(potion); /* now gone */
 
@@ -3419,7 +3431,7 @@ dodip()
             play_sfx_sound(SFX_EXPLOSION_MAGICAL);
             obj->in_use = 1;
             Strcpy(dcbuf2, "BOOM!  They explode!");
-            pline1(dcbuf2);
+            pline_ex1(ATR_NONE, CLR_MSG_NEGATIVE, dcbuf2);
             Sprintf(dcbuf3, "%s %s", dcbuf, dcbuf2);
             wake_nearto(u.ux, u.uy, EXPLOSION_SOUND_RADIUS * EXPLOSION_SOUND_RADIUS);
             exercise(A_STR, FALSE);
@@ -3458,7 +3470,6 @@ dodip()
                 break;
             case 4: {
                 struct obj *otmp = mkobj(POTION_CLASS, FALSE, FALSE);
-
                 obj->otyp = otmp->otyp;
                 obfree(otmp, (struct obj *) 0);
                 break;
@@ -3468,7 +3479,7 @@ dodip()
                 if (!Blind)
                 {
                     play_sfx_sound(SFX_SOME_WATER_EVAPORATES);
-                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "mixture glows brightly and evaporates.");
+                    pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "mixture glows brightly and evaporates.");
                 }
                 return 1;
             }
@@ -3478,11 +3489,12 @@ dodip()
         if (obj->otyp == POT_WATER && !Hallucination) 
         {
             play_sfx_sound(SFX_STEAMY_BUBBLES);
-            pline_The("mixture bubbles%s.", Blind ? "" : ", then clears");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "mixture bubbles%s.", Blind ? "" : ", then clears");
         }
         else if (!Blind) 
         {
-            pline_The("mixture looks %s.",
+            play_sfx_sound(SFX_MIXING_SUCCESS);
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "mixture looks %s.",
                       hcolor(OBJ_DESCR(objects[obj->otyp])));
         }
 
@@ -3501,7 +3513,7 @@ dodip()
     if (potion->otyp == POT_ACID && obj->otyp == CORPSE
         && (obj->corpsenm == PM_LICHEN || obj->corpsenm == PM_WHITE_LICHEN || obj->corpsenm == PM_BLACK_LICHEN) && !Blind) 
     {
-        pline("%s %s %s around the edges.", The(cxname(obj)),
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s %s around the edges.", The(cxname(obj)),
               otense(obj, "turn"),
               potion->odiluted ? hcolor(NH_ORANGE) : hcolor(NH_RED));
         potion->in_use = FALSE; /* didn't go poof */
@@ -3510,7 +3522,7 @@ dodip()
 
     if (potion->otyp == POT_WATER && obj->otyp == TOWEL) 
     {
-        pline_The("towel soaks it up!");
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "towel soaks it up!");
         /* wetting towel already done via water_damage() in H2Opotion_dip */
         goto poof;
     }
@@ -3526,7 +3538,8 @@ dodip()
             else
                 Strcpy(buf, The(xname(potion)));
 
-            pline("%s forms a coating on %s.", buf, the(xname(obj)));
+            play_sfx_sound(SFX_POISON_COATING);
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s forms a coating on %s.", buf, the(xname(obj)));
             obj->opoisoned = TRUE;
             goto poof;
         } 
@@ -3537,7 +3550,8 @@ dodip()
                                       || potion->otyp == JAR_OF_MEDICINAL_SALVE
             ))
         {
-            pline("A coating wears off %s.", the(xname(obj)));
+            play_sfx_sound(SFX_POISON_DISSOLVES);
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "A coating wears off %s.", the(xname(obj)));
             obj->opoisoned = 0;
             goto poof;
         }
@@ -3558,7 +3572,8 @@ dodip()
         } 
         else if (potion->cursed) 
         {
-            pline_The("potion spills and covers your %s with oil.",
+            play_sfx_sound(SFX_ACQUIRE_GLIB);
+            pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "potion spills and covers your %s with oil.",
                       makeplural(body_part(FINGER)));
             incr_itimeout(&Glib, d(2, 10));
             refresh_u_tile_gui_info(TRUE);
@@ -3576,12 +3591,12 @@ dodip()
                    || is_ammo(obj) || (!obj->oeroded && !obj->oeroded2))
         {
             /* uses up potion, doesn't set obj->greased */
-            pline("%s %s with an oily sheen.", Yname2(obj),
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s %s with an oily sheen.", Yname2(obj),
                   otense(obj, "gleam"));
         } 
         else
         {
-            pline("%s %s less %s.", Yname2(obj), otense(obj, "are"),
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s %s less %s.", Yname2(obj), otense(obj, "are"),
                   (obj->oeroded && obj->oeroded2)
                       ? "corroded and rusty"
                       : obj->oeroded ? "rusty" : "corroded");
@@ -3617,13 +3632,14 @@ dodip()
         }
         if (obj->age > 1000L) 
         {
-            pline("%s %s full.", Yname2(obj), otense(obj, "are"));
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s full.", Yname2(obj), otense(obj, "are"));
             potion->in_use = FALSE; /* didn't go poof */
         } 
         else 
         {
             play_sfx_sound(SFX_FILL_OIL_UP);
-            You("fill %s with oil.", yname(obj));
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "fill %s with oil.", yname(obj));
             check_unpaid(potion);        /* Yendorian Fuel Tax */
             /* burns more efficiently in a lamp than in a bottle;
                diluted potion provides less benefit but we don't attempt
@@ -3682,7 +3698,7 @@ dodip()
             else
                 Sprintf(newbuf, "turns %s",
                         hcolor(OBJ_DESCR(objects[mixture])));
-            pline_The("%spotion%s %s.", oldbuf,
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%spotion%s %s.", oldbuf,
                       more_than_one ? " that you dipped into" : "", newbuf);
             if (!objects[old_otyp].oc_uname
                 && !objects[old_otyp].oc_name_known && old_dknown) {

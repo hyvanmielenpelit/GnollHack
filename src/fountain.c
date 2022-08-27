@@ -969,6 +969,7 @@ register struct obj *obj;
 
         if (obj && is_weapon(obj) && is_poisonable(obj) && !obj->opoisoned)
         {
+            play_sfx_sound(SFX_POISON_COATING);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The fountain forms a coating on %s.", the(xname(obj)));
             obj->opoisoned = TRUE;
             identified = TRUE;
