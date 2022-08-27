@@ -2894,7 +2894,7 @@ GENERAL_SPELLTOOL("jar of medicinal salve", "crystalline jar", "medicinal salve"
     20, 15, 150, TOUCH, TOUCH_NONE, AD_HEAL, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     P_NONE, MAT_CRYSTAL, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
     S1_NONE, S2_NONE,
-    O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO, O5_EFFECT_IS_HEALING, O6_NONE),
+    O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO, O5_EFFECT_IS_HEALING | O5_MIXTURE_CLEARS, O6_NONE),
 GENERAL_SPELLTOOL("jar of prodigious healing salve", "transparent jar", "healing salve", "violet ointment", "Heals a target for a prodigious amount of hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_VIOLET_REPLACEMENT,
     TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_SALVE,  //ENDMARKER for salves and shuffled jars
     5, 15, 500, TOUCH, TOUCH_NONE, AD_HEAL, 48, 6, 0, 0, 0, 0, 0, 0, 0,
@@ -3233,7 +3233,7 @@ POTION("gain ability",       "ruby", "Increases a random ability score by one.\n
 POTION("restore ability",    "pink", "Restores lost ability scores and experience levels.",
     1, NO_POWER, NO_POWER, NO_POWER, 
     30, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_MAGENTA, POTFLAGS_NONE,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MIXTURE_CLEARS, O6_NONE, PERMITTED_ALL),
 POTION("confusion",        "orange", "Causes confusion for a duration.", 
     1, CONFUSION, NO_POWER, NO_POWER, 
     30, 100, 4, 8, 0, 0, 6, 8, 0, 0, 0, 0, 0, 0, 0, -1, -2, CLR_ORANGE, POTFLAGS_NONE,

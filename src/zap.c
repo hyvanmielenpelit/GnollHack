@@ -5779,7 +5779,10 @@ dozap()
                     (void)uoname(obj, "empty");
 
                 if (ans == 'm')
+                {
                     prinv("Marked empty:", obj, 0L);
+                    update_inventory();
+                }
             }
 
             switch (ans)

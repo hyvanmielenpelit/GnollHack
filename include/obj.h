@@ -353,6 +353,9 @@ struct obj {
 #define otyp_allows_specially_dipping_into(otyp) (objects[(otyp)].oc_flags4 & O4_ALLOWS_DIPPING_INTO)
 #define otyp_allows_object_to_be_dipped_into_it(otyp) (objects[(otyp)].oc_class == POTION_CLASS || otyp_allows_specially_dipping_into(otyp))
 #define obj_allows_object_to_be_dipped_into_it(o) otyp_allows_object_to_be_dipped_into_it((o)->otyp)
+#define otyp_expends_charges_when_dipped_into(otyp) (otyp_allows_specially_dipping_into(otyp) && objects[otyp].oc_charged > CHARGED_NOT_CHARGED)
+#define obj_currently_allows_object_to_be_dipped_into_it(o) \
+    (otyp_allows_object_to_be_dipped_into_it((o)->otyp) && (!otyp_expends_charges_when_dipped_into((o)->otyp) || (o)->charges > 0))
 
 #define is_cursed_magic_item(otmp)                                            \
     (objects[(otmp)->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM)
