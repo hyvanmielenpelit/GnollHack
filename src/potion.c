@@ -2949,11 +2949,11 @@ mixtype(o1, o2)
 struct obj *o1, *o2;
 {
     /* cut down on the number of cases below */
-    if (o1->oclass == POTION_CLASS
+    if ((o1->oclass == POTION_CLASS
         && (o2->otyp == POT_GAIN_LEVEL || o2->otyp == POT_GAIN_ENERGY || o2->otyp == POT_EXTRA_ENERGY || o2->otyp == POT_GREATER_ENERGY || o2->otyp == POT_FULL_ENERGY
             || o2->otyp == POT_HEALING || o2->otyp == POT_EXTRA_HEALING || o2->otyp == POT_GREATER_HEALING
             || o2->otyp == POT_FULL_HEALING || o2->otyp == POT_ENLIGHTENMENT
-            || o2->otyp == POT_FRUIT_JUICE)) {
+            || o2->otyp == POT_FRUIT_JUICE))) {
         struct obj *swp;
 
         swp = o1;
@@ -2962,10 +2962,22 @@ struct obj *o1, *o2;
     }
 
     switch (o1->otyp) {
+    case POT_WATER:
+        switch (o2->otyp) {
+        case JAR_OF_EXTRA_HEALING_SALVE:
+            return POT_EXTRA_HEALING;
+        case JAR_OF_GREATER_HEALING_SALVE:
+            return POT_GREATER_HEALING;
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
+            return POT_FULL_HEALING;
+        }
+        break;
     case POT_HEALING:
         switch (o2->otyp) {
         case POT_SPEED:
         case POT_GAIN_ENERGY:
+        case JAR_OF_EXTRA_HEALING_SALVE:
         case POT_EXTRA_ENERGY:
             return POT_EXTRA_HEALING;
         case POT_GREATER_ENERGY:
@@ -2981,6 +2993,7 @@ struct obj *o1, *o2;
         case POT_GAIN_ENERGY:
         case POT_EXTRA_ENERGY:
             return POT_GREATER_HEALING;
+        case JAR_OF_GREATER_HEALING_SALVE:
         case POT_GREATER_ENERGY:
         case POT_FULL_ENERGY:
             return POT_FULL_HEALING;
@@ -2993,6 +3006,8 @@ struct obj *o1, *o2;
         case POT_GAIN_ENERGY:
         case POT_EXTRA_ENERGY:
         case POT_GREATER_ENERGY:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
         case POT_FULL_ENERGY:
             return POT_FULL_HEALING;
         case POT_GAIN_LEVEL:
@@ -3031,6 +3046,10 @@ struct obj *o1, *o2;
         case POT_EXTRA_HEALING:
         case POT_GREATER_HEALING:
         case POT_FULL_HEALING:
+        case JAR_OF_EXTRA_HEALING_SALVE:
+        case JAR_OF_GREATER_HEALING_SALVE:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
             return POT_SEE_INVISIBLE;
@@ -3045,10 +3064,14 @@ struct obj *o1, *o2;
             return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
         case POT_HEALING:
             return POT_EXTRA_HEALING;
+        case JAR_OF_EXTRA_HEALING_SALVE:
         case POT_EXTRA_HEALING:
             return POT_GREATER_HEALING;
+        case JAR_OF_GREATER_HEALING_SALVE:
         case POT_GREATER_HEALING:
             return POT_FULL_HEALING;
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
         case POT_FULL_HEALING:
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
@@ -3063,9 +3086,13 @@ struct obj *o1, *o2;
             return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
         case POT_HEALING:
             return POT_GREATER_HEALING;
+        case JAR_OF_EXTRA_HEALING_SALVE:
         case POT_EXTRA_HEALING:
             return POT_FULL_HEALING;
+        case JAR_OF_GREATER_HEALING_SALVE:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case POT_GREATER_HEALING:
+        case GRAIL_OF_HEALING:
             return POT_FULL_HEALING;
         case POT_FULL_HEALING:
             return POT_GAIN_ABILITY;
@@ -3081,10 +3108,14 @@ struct obj *o1, *o2;
             return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
         case POT_HEALING:
             return POT_FULL_HEALING;
+        case JAR_OF_EXTRA_HEALING_SALVE:
         case POT_EXTRA_HEALING:
             return POT_FULL_HEALING;
+        case JAR_OF_GREATER_HEALING_SALVE:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case POT_GREATER_HEALING:
             return POT_FULL_HEALING;
+        case GRAIL_OF_HEALING:
         case POT_FULL_HEALING:
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
@@ -3106,6 +3137,13 @@ struct obj *o1, *o2;
         case POT_GREATER_ENERGY:
         case POT_FULL_ENERGY:
             return POT_SEE_INVISIBLE;
+        case JAR_OF_EXTRA_HEALING_SALVE:
+            return POT_EXTRA_HEALING;
+        case JAR_OF_GREATER_HEALING_SALVE:
+            return POT_GREATER_HEALING;
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case GRAIL_OF_HEALING:
+            return POT_FULL_HEALING;
         }
         break;
     case POT_ENLIGHTENMENT:
@@ -3299,12 +3337,40 @@ dodip()
         }
         potion->in_use = FALSE; /* didn't go poof */
         return 1;
-    } 
-    else if (obj->oclass == POTION_CLASS && obj->otyp != potion->otyp) 
+    }
+    else if (obj->oclass == POTION_CLASS && potion->oclass != POTION_CLASS 
+        && !(potion->oclass == TOOL_CLASS && (objects[potion->otyp].oc_subtyp == TOOLTYPE_JAR || objects[potion->otyp].oc_subtyp == TOOLTYPE_GRAIL) && potion->charges > 0)) /* Jars and grails mix like potions if they have charges */
+    {
+        /* Dipping a potion into an empty Holy Grail, an empty jar, or into a lamp etc. */
+        if (obj->otyp == POT_OIL && is_refillable_with_oil(potion))
+        {
+            /* Switch these around */
+            struct obj* obj_temp = obj;
+            obj = potion;
+            potion = obj_temp;
+        }
+        else if (Is_proper_container(potion) && !potion->olocked)
+        {
+            if (!stash_obj_in_container(obj, potion))
+            {
+                /* couldn't put selected item into container for some
+                   reason; might need to undo splitobj() */
+                (void)unsplitobj(obj);
+            }
+            return 1;
+        }
+        else
+        {
+            pline("Nothing seems to happen.");
+            return 1;
+        }
+    }
+    else if (obj->oclass == POTION_CLASS && obj->otyp != potion->otyp)
     {
         int amt = (int) obj->quan;
         boolean magic;
         char dcbuf[BUFSZ] = "";
+        boolean useupliquidonly = potion->oclass == TOOL_CLASS && (objects[potion->otyp].oc_subtyp == TOOLTYPE_JAR || objects[potion->otyp].oc_subtyp == TOOLTYPE_GRAIL) && potion->charges > 0;
 
         mixture = mixtype(obj, potion);
 
@@ -3327,21 +3393,30 @@ dodip()
             }
         }
         /* [N of] the {obj(s)} mix(es) with [one of] {the potion}... */
-        Sprintf(dcbuf, "%s %s %s with %s%s...", qbuf, simpleonames(obj),
-              otense(obj, "mix"), (potion->quan > 1L) ? "one of " : "",
-              thesimpleoname(potion));
+        Sprintf(dcbuf, "%s %s %s with %s%s%s...", qbuf, simpleonames(obj),
+              otense(obj, "mix"), useupliquidonly ? "the liquid inside " : "", 
+              (potion->quan > 1L) ? "one of " : "",
+              potion->oartifact ? the(cxname(potion)) : thesimpleoname(potion));
         pline1(dcbuf);
-        /* get rid of 'dippee' before potential perm_invent updates */
-        useup(potion); /* now gone */
+
+        if (useupliquidonly)
+            potion->charges = 0;
+
         /* Mixing potions is dangerous...
            KMH, balance patch -- acid is particularly unstable */
-        if (obj->cursed || obj->otyp == POT_ACID || !rn2(10)) {
+        if (obj->cursed || obj->otyp == POT_ACID || !rn2(10)) 
+        {
+            if (!potion->oartifact && !is_obj_indestructible(potion))
+                useup(potion); /* now gone */
+
             char dcbuf2[BUFSZ] = "";
             char dcbuf3[BUFSZ * 2] = "";
             /* it would be better to use up the whole stack in advance
                of the message, but we can't because we need to keep it
                around for potionbreathe() [and we can't set obj->in_use
                to 'amt' because that's not implemented] */
+
+            play_sfx_sound(SFX_EXPLOSION_MAGICAL);
             obj->in_use = 1;
             Strcpy(dcbuf2, "BOOM!  They explode!");
             pline1(dcbuf2);
@@ -3355,6 +3430,10 @@ dodip()
                    "alchemic blast", KILLED_BY_AN);
             return 1;
         }
+
+        /* get rid of 'dippee' before potential perm_invent updates */
+        if (!useupliquidonly && !potion->oartifact && !is_obj_indestructible(potion))
+            useup(potion); /* now gone */
 
         obj->blessed = obj->cursed = obj->bknown = 0;
         if (Blind || Hallucination)
@@ -3387,7 +3466,10 @@ dodip()
             default:
                 useupall(obj);
                 if (!Blind)
+                {
+                    play_sfx_sound(SFX_SOME_WATER_EVAPORATES);
                     pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "mixture glows brightly and evaporates.");
+                }
                 return 1;
             }
         }
@@ -3395,6 +3477,7 @@ dodip()
 
         if (obj->otyp == POT_WATER && !Hallucination) 
         {
+            play_sfx_sound(SFX_STEAMY_BUBBLES);
             pline_The("mixture bubbles%s.", Blind ? "" : ", then clears");
         }
         else if (!Blind) 
