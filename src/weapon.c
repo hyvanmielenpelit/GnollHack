@@ -70,7 +70,7 @@ NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
 /* note: entry [0] isn't used */
 NEARDATA const char *const odd_skill_names[NUM_PN_CATEGORIES] = {
     "no skill", "bare handed combat", /* use barehands_or_martial[] instead */
-    "dual weapon combat", "riding", "polearm", "saber", "hammer", "whip",
+    "dual wielding", "riding", "polearm", "saber", "hammer", "whip",
     "arcane spell", "clerical spell", "healing spell", "divination spell", "abjuration spell",
     "movement spell", "transmutation spell", "enchantment spell", "conjuration spell", 
     "celestial spell", "nature spell", "necromancy spell", "disarm trap", "sword",
@@ -79,7 +79,7 @@ NEARDATA const char *const odd_skill_names[NUM_PN_CATEGORIES] = {
 
 NEARDATA const char* const odd_skill_names_plural[NUM_PN_CATEGORIES] = {
     "no skill", "bare handed combat", /* use barehands_or_martial[] instead */
-    "dual weapon combat", "riding", "polearms", "sabers", "hammers", "whips",
+    "dual wielding", "riding", "polearms", "sabers", "hammers", "whips",
     "arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
     "movement spells", "transmutation spells", "enchantment spells", "conjuration spells", 
     "celestial spells", "nature spells", "necromancy spells", "disarm traps", "swords",

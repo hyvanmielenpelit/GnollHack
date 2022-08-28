@@ -1569,7 +1569,7 @@ dotwoweapon()
     if (u.twoweap) 
     {
         play_ui_sound(UI_SOUND_STOP_TWO_WEAPON_COMBAT);
-        You("stop dual weapon fighting.");
+        You("stop two weapon fighting.");
         u.twoweap = 0;
     }
     else
@@ -1577,11 +1577,11 @@ dotwoweapon()
         if (P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT) == P_ISRESTRICTED)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("do not have the dual weapon combat skill.");
+            You("do not have the dual wielding skill.");
             return 0;
         }
         play_ui_sound(UI_SOUND_START_TWO_WEAPON_COMBAT);
-        You("begin dual weapon fighting.");
+        You("begin two weapon fighting.");
         u.twoweap = 1;
     }
 

@@ -12,6 +12,7 @@
 #
 MAZE: "Ran-strt",','
 FLAGS: noteleport,hardfloor,arboreal
+TILESET: garden_tileset
 INIT_MAP:mines,',',',',true,true,lit,false
 REPLACE_TERRAIN:(0,0,76,19),',', 'T', 5%
 GEOMETRY:left,center
