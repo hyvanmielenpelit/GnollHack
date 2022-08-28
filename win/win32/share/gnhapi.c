@@ -369,7 +369,7 @@ char* cmdlineargs;
     Strcpy(cmdbuf, cmdlineargs);
     char parambufs[MAX_CMD_PARAMS][PL_NSIZ + 10] = { "" };
 
-	Strcpy(parambufs[0], "gnollhack");
+    Strcpy(parambufs[0], "gnollhack");
 
     int curparamcnt = 1;
     if (cmdlineargs)
@@ -411,7 +411,7 @@ char* cmdlineargs;
         params[i] = parambufs[i];
     }    
 
-	return GnollHackMain(curparamcnt, params);
+    return GnollHackMain(curparamcnt, params);
 }
 
 extern struct callback_procs lib_callbacks;

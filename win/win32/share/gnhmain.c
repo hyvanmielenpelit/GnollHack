@@ -30,41 +30,41 @@ const char *filename;
 char *lockname;
 {
 #  ifdef NO_FILE_LINKS
-	Strcpy(lockname, LOCKDIR);
-	Strcat(lockname, "/");
-	Strcat(lockname, filename);
+    Strcpy(lockname, LOCKDIR);
+    Strcat(lockname, "/");
+    Strcat(lockname, filename);
 #  else
-	Strcpy(lockname, filename);
+    Strcpy(lockname, filename);
 #  endif
-	Strcat(lockname, "_lock");
-	return lockname;
+    Strcat(lockname, "_lock");
+    return lockname;
 }
 
 STATIC_OVL void
 remove_lock_file(filename)
 const char* filename;
 {
-	char locknambuf[BUFSZ];
-	const char *lockname;
+    char locknambuf[BUFSZ];
+    const char *lockname;
 
-	lockname = make_lockname(filename, locknambuf);
-	unlink(lockname);
+    lockname = make_lockname(filename, locknambuf);
+    unlink(lockname);
 }
 
 void
 gnollhack_exit(code)
 int code;
 {
-	if (exit_hack)
-		exit_hack(code);
+    if (exit_hack)
+        exit_hack(code);
 
 #if defined(EXIT_THREAD_ON_EXIT)
-	char retbuf[BUFSZ];
-	Sprintf(retbuf, "GnollHack thread exit with value %d", code);
+    char retbuf[BUFSZ];
+    Sprintf(retbuf, "GnollHack thread exit with value %d", code);
 
-	pthread_exit(retbuf);
+    pthread_exit(retbuf);
 #else
-	exit(code);
+    exit(code);
 #endif
 }
 
@@ -73,113 +73,113 @@ GnollHackMain(argc, argv)
 int argc;
 char** argv;
 {
-	FILE* fp;
+    FILE* fp;
     boolean resuming = FALSE; /* assume new game */
 
     sys_early_init();
-	lib_init_platform();
+    lib_init_platform();
 
-	hname = argv[0];
-	hackpid = getpid();
-	(void)umask(0777 & ~FCMASK);
+    hname = argv[0];
+    hackpid = getpid();
+    (void)umask(0777 & ~FCMASK);
 
-	// hack
-	// remove dangling locks
-	remove_lock_file(RECORD);
-	remove_lock_file(HLOCK);
-	// make sure RECORD exists
-	fp = fopen_datafile(RECORD, "a", SCOREPREFIX);
-	fclose(fp);
+    // hack
+    // remove dangling locks
+    remove_lock_file(RECORD);
+    remove_lock_file(HLOCK);
+    // make sure RECORD exists
+    fp = fopen_datafile(RECORD, "a", SCOREPREFIX);
+    fclose(fp);
 
-	check_recordfile((char*)0);
+    check_recordfile((char*)0);
 
-	/* Now initialize windows */
-	choose_windows(DEFAULT_WINDOW_SYS);
-	init_nhwindows(&argc, argv);
-	read_options();
+    /* Now initialize windows */
+    choose_windows(DEFAULT_WINDOW_SYS);
+    init_nhwindows(&argc, argv);
+    read_options();
 
-	/*
-	 * It seems you really want to play.
-	 */
-	u.uhp = 1; /* prevent RIP on early quits */
+    /*
+     * It seems you really want to play.
+     */
+    u.uhp = 1; /* prevent RIP on early quits */
 
-	process_command_line_arguments(argc, argv); /* command line options */
+    process_command_line_arguments(argc, argv); /* command line options */
 
 #if defined(DUMPLOG) && defined(DUMPLOG_DIR)
     /* Make DUMPLOG_DIR if defined */
-	struct stat st = { 0 };
+    struct stat st = { 0 };
 
-	if (stat(DUMPLOG_DIR, &st) == -1) {
-		mkdir(DUMPLOG_DIR, 0700);
-	}
+    if (stat(DUMPLOG_DIR, &st) == -1) {
+        mkdir(DUMPLOG_DIR, 0700);
+    }
 #endif
 
 #ifdef DEF_PAGER
-	if(!(catmore = nh_getenv("HACKPAGER")) && !(catmore = nh_getenv("PAGER")))
-	catmore = DEF_PAGER;
+    if(!(catmore = nh_getenv("HACKPAGER")) && !(catmore = nh_getenv("PAGER")))
+    catmore = DEF_PAGER;
 #endif
 
 //#ifdef MAIL
-//	getmailstatus();
+//    getmailstatus();
 //#endif
-	display_gamewindows();
-	check_crash();
-	plnamesuffix(); /* strip suffix from name; calls askname() */
-					/* again if suffix was whole name */
-					/* accepts any suffix */
+    display_gamewindows();
+    check_crash();
+    plnamesuffix(); /* strip suffix from name; calls askname() */
+                    /* again if suffix was whole name */
+                    /* accepts any suffix */
 
-	set_playmode(); /* sets plname to "wizard" for wizard mode */
+    set_playmode(); /* sets plname to "wizard" for wizard mode */
 
-	if (!wizard)
-		Sprintf(lock, "%d%s", (int)getuid(), plname);
-	getlock();
+    if (!wizard)
+        Sprintf(lock, "%d%s", (int)getuid(), plname);
+    getlock();
 
-	create_gamestate_levelfile();
+    create_gamestate_levelfile();
 
-	dlb_init(); /* must be before newgame() */
+    dlb_init(); /* must be before newgame() */
 
-	/*
-	 * Initialization of the boundaries of the mazes
-	 * Both boundaries have to be even.
-	 */
-	maze_init();
+    /*
+     * Initialization of the boundaries of the mazes
+     * Both boundaries have to be even.
+     */
+    maze_init();
 
-	/*
-	 *  Initialize the vision system.  This must be before mklev() on a
-	 *  new game or before a level restore on a saved game.
-	 */
-	vision_init();
+    /*
+     *  Initialize the vision system.  This must be before mklev() on a
+     *  new game or before a level restore on a saved game.
+     */
+    vision_init();
 
-	issue_gui_command(GUI_CMD_GAME_START);
+    issue_gui_command(GUI_CMD_GAME_START);
 
-	if(!load_saved_game(0))
-	{
-		player_selection();
-		resuming = FALSE;
+    if(!load_saved_game(0))
+    {
+        player_selection();
+        resuming = FALSE;
 
-		/* CHOOSE DIFFICULTY */
-		choose_game_difficulty();
+        /* CHOOSE DIFFICULTY */
+        choose_game_difficulty();
 
-		newgame();
-		mode_message();
-	}
+        newgame();
+        mode_message();
+    }
 
-	if(wizard)
-		issue_gui_command(GUI_CMD_ENABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
+    if(wizard)
+        issue_gui_command(GUI_CMD_ENABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
 
-	if (CasualMode)
-		issue_gui_command(GUI_CMD_ENABLE_CASUAL_MODE); /* Notification may be needed if loaded a casual mode saved game */
+    if (CasualMode)
+        issue_gui_command(GUI_CMD_ENABLE_CASUAL_MODE); /* Notification may be needed if loaded a casual mode saved game */
 
-	moveloop(resuming);
+    moveloop(resuming);
     exit(EXIT_SUCCESS);
 
-	return (0);
+    return (0);
 }
 
 boolean 
 authorize_wizard_mode(VOID_ARGS)
 {
-	return TRUE;
+    return TRUE;
 }
 
 STATIC_OVL void 
@@ -187,113 +187,113 @@ process_command_line_arguments(argc, argv)
 int argc;
 char *argv[];
 {
-	int i;
+    int i;
 
-	/*
-	 * Process options.
-	 */
-	while(argc > 1 && argv[1][0] == '-')
-	{
-		argv++;
-		argc--;
-		switch(argv[0][1])
-		{
-		case 'D':
-			wizard = TRUE, discover = FALSE;
-			break;
-		/* otherwise fall thru to discover */
-		case 'X':
-			discover = TRUE, wizard = FALSE;
-			break;
-		case 'M':
-			ModernMode = TRUE;
-			break;
-		case 'C':
-			CasualMode = TRUE;
-			break;
+    /*
+     * Process options.
+     */
+    while(argc > 1 && argv[1][0] == '-')
+    {
+        argv++;
+        argc--;
+        switch(argv[0][1])
+        {
+        case 'D':
+            wizard = TRUE, discover = FALSE;
+            break;
+        /* otherwise fall thru to discover */
+        case 'X':
+            discover = TRUE, wizard = FALSE;
+            break;
+        case 'M':
+            ModernMode = TRUE;
+            break;
+        case 'C':
+            CasualMode = TRUE;
+            break;
 #ifdef NEWS
-			case 'n':
-			iflags.news = FALSE;
-			break;
+            case 'n':
+            iflags.news = FALSE;
+            break;
 #endif
-		case 'u':
-			if(!*plname)
-			{
-				if(argv[0][2])
-					(void)strncpy(plname, argv[0] + 2, sizeof(plname) - 1);
-				else if(argc > 1)
-				{
-					argc--;
-					argv++;
-					(void)strncpy(plname, argv[0], sizeof(plname) - 1);
-				}
-				else
-					raw_print("Player name expected after -u");
-			}
-		break;
-		case 'p': /* profession (role) */
-			if(argv[0][2])
-			{
-				if((i = str2role(&argv[0][2])) >= 0)
-					flags.initrole = i;
-			}
-			else if(argc > 1)
-			{
-				argc--;
-				argv++;
-				if((i = str2role(argv[0])) >= 0)
-					flags.initrole = i;
-			}
-		break;
-		case 'r': /* race */
-			if(argv[0][2])
-			{
-				if((i = str2race(&argv[0][2])) >= 0)
-					flags.initrace = i;
-			}
-			else if(argc > 1)
-			{
-				argc--;
-				argv++;
-				if((i = str2race(argv[0])) >= 0)
-					flags.initrace = i;
-			}
-		break;
-		case '@':
-			flags.randomall = 1;
-		break;
-		default:
-			if((i = str2role(&argv[0][1])) >= 0)
-			{
-				flags.initrole = i;
-				break;
-			}
-			/* else raw_printf("Unknown option: %s", *argv); */
-		}
-	}
+        case 'u':
+            if(!*plname)
+            {
+                if(argv[0][2])
+                    (void)strncpy(plname, argv[0] + 2, sizeof(plname) - 1);
+                else if(argc > 1)
+                {
+                    argc--;
+                    argv++;
+                    (void)strncpy(plname, argv[0], sizeof(plname) - 1);
+                }
+                else
+                    raw_print("Player name expected after -u");
+            }
+        break;
+        case 'p': /* profession (role) */
+            if(argv[0][2])
+            {
+                if((i = str2role(&argv[0][2])) >= 0)
+                    flags.initrole = i;
+            }
+            else if(argc > 1)
+            {
+                argc--;
+                argv++;
+                if((i = str2role(argv[0])) >= 0)
+                    flags.initrole = i;
+            }
+        break;
+        case 'r': /* race */
+            if(argv[0][2])
+            {
+                if((i = str2race(&argv[0][2])) >= 0)
+                    flags.initrace = i;
+            }
+            else if(argc > 1)
+            {
+                argc--;
+                argv++;
+                if((i = str2race(argv[0])) >= 0)
+                    flags.initrace = i;
+            }
+        break;
+        case '@':
+            flags.randomall = 1;
+        break;
+        default:
+            if((i = str2role(&argv[0][1])) >= 0)
+            {
+                flags.initrole = i;
+                break;
+            }
+            /* else raw_printf("Unknown option: %s", *argv); */
+        }
+    }
 }
 
 #if 0
 STATIC_OVL boolean
 whoami()
 {
-	/*
-	 * Who am i? Algorithm: 1. Use name as specified in NETHACKOPTIONS
-	 *			2. Use getlogin()		(if 1. fails)
-	 * The resulting name is overridden by command line options.
-	 * If everything fails, or if the resulting name is some generic
-	 * account like "games", "play", "player", "hack" then eventually
-	 * we'll ask him.
-	 * Note that we trust the user here; it is possible to play under
-	 * somebody else's name.
-	 */
-	register char *s;
+    /*
+     * Who am i? Algorithm: 1. Use name as specified in NETHACKOPTIONS
+     *            2. Use getlogin()        (if 1. fails)
+     * The resulting name is overridden by command line options.
+     * If everything fails, or if the resulting name is some generic
+     * account like "games", "play", "player", "hack" then eventually
+     * we'll ask him.
+     * Note that we trust the user here; it is possible to play under
+     * somebody else's name.
+     */
+    register char *s;
 
-	if(*plname)
-		return FALSE;
-	if((s = getlogin()))
-		(void)strncpy(plname, s, sizeof(plname) - 1);
-	return TRUE;
+    if(*plname)
+        return FALSE;
+    if((s = getlogin()))
+        (void)strncpy(plname, s, sizeof(plname) - 1);
+    return TRUE;
 }
 #endif
 
@@ -301,11 +301,11 @@ whoami()
 void
 port_help()
 {
-	/*
-	 * Display unix-specific help.   Just show contents of the helpfile
-	 * named by PORT_HELP.
-	 */
-	display_file(PORT_HELP, TRUE);
+    /*
+     * Display unix-specific help.   Just show contents of the helpfile
+     * named by PORT_HELP.
+     */
+    display_file(PORT_HELP, TRUE);
 }
 #endif
 
@@ -318,17 +318,17 @@ void
 append_slash(name)
 char *name;
 {
-	char *ptr;
+    char *ptr;
 
-	if(!*name)
-		return;
-	ptr = name + (strlen(name) - 1);
-	if(*ptr != '/')
-	{
-		*++ptr = '/';
-		*++ptr = '\0';
-	}
-	return;
+    if(!*name)
+        return;
+    ptr = name + (strlen(name) - 1);
+    if(*ptr != '/')
+    {
+        *++ptr = '/';
+        *++ptr = '\0';
+    }
+    return;
 }
 #endif
 

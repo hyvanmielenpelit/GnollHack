@@ -11,7 +11,7 @@
 
   <!--
   <Target Name="AfterBuild">
-    <Exec Command="$(ProjectDir)$(OutputPath)$(AssemblyName).$(OutputType)" />  	
+    <Exec Command="$(ProjectDir)$(OutputPath)$(AssemblyName).$(OutputType)" />      
   </Target>
   -->
 </Project>

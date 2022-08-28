@@ -13,20 +13,20 @@ const char *getPlatformABI()
 #if defined(__arm__)
 #if defined(__ARM_ARCH_7A__)
 #if defined(__ARM_NEON__)
-	#define ABI "armeabi-v7a/NEON"
+    #define ABI "armeabi-v7a/NEON"
 #else
-	#define ABI "armeabi-v7a"
+    #define ABI "armeabi-v7a"
 #endif
 #else
-	#define ABI "armeabi"
+    #define ABI "armeabi"
 #endif
 #elif defined(__i386__)
-	#define ABI "x86"
+    #define ABI "x86"
 #else
-	#define ABI "unknown"
+    #define ABI "unknown"
 #endif
-	LOGI("This dynamic shared library is compiled with ABI: %s", ABI);
-	return "This native library is compiled with ABI: %s" ABI ".";
+    LOGI("This dynamic shared library is compiled with ABI: %s", ABI);
+    return "This native library is compiled with ABI: %s" ABI ".";
 }
 
 void gnollhackdroid(void)

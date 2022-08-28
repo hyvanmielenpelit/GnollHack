@@ -74,7 +74,7 @@ struct window_procs lib_procs = {
     lib_exit_hack,
 };
 
-struct callback_procs lib_callbacks = { 0 }; /* To be set by RunGnollHack in gnollhackdroid.c */
+struct callback_procs lib_callbacks = { 0 }; /* To be set by RunGnollHack in gnhapi.c */
 
 char convert_gnhch(int ch);
 void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks);
@@ -868,11 +868,11 @@ int hl_attridx_to_attrmask(int idx)
 {
     switch (idx)
     {
-    case HL_ATTCLR_DIM: 	return (1 << ATR_DIM);
-    case HL_ATTCLR_BLINK:	return (1 << ATR_BLINK);
+    case HL_ATTCLR_DIM:     return (1 << ATR_DIM);
+    case HL_ATTCLR_BLINK:    return (1 << ATR_BLINK);
     case HL_ATTCLR_ULINE:   return (1 << ATR_ULINE);
-    case HL_ATTCLR_INVERSE:	return (1 << ATR_INVERSE);
-    case HL_ATTCLR_BOLD:	return (1 << ATR_BOLD);
+    case HL_ATTCLR_INVERSE:    return (1 << ATR_INVERSE);
+    case HL_ATTCLR_BOLD:    return (1 << ATR_BOLD);
     }
     return 0;
 }
@@ -1032,7 +1032,7 @@ void print_status_field(int idx, boolean first_field)
             }
         }
         lib_putstr_ex(WIN_STATUS, hl_attrmask_to_attrmask(attr), val, 0, color);
-        //	debuglog("field %d: %s color %s", idx+1, val, colname(color));
+        //    debuglog("field %d: %s color %s", idx+1, val, colname(color));
     }
 }
 
@@ -1386,7 +1386,7 @@ void lib_exit_platform(int status)
 
 void play_usersound(const char* filename, int volume)
 {
-	return;
+    return;
 }
 
 #endif

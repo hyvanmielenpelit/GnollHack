@@ -3230,8 +3230,22 @@ struct obj *o1, *o2;
             return POT_LIGHTNING_SPEED;
         }
         break;
+    case POT_GREATER_SPEED:
+        switch (o2->otyp) {
+        case POT_SPEED:
+            return POT_GREATER_SPEED;
+        case POT_GAIN_ENERGY:
+        case POT_EXTRA_ENERGY:
+        case POT_GREATER_ENERGY:
+        case POT_FULL_ENERGY:
+        case POT_GAIN_LEVEL:
+        case POT_LIGHTNING_SPEED:
+            return POT_LIGHTNING_SPEED;
+        }
+        break;
     case POT_LIGHTNING_SPEED:
         switch (o2->otyp) {
+        case POT_SPEED:
         case POT_GAIN_ENERGY:
         case POT_EXTRA_ENERGY:
         case POT_GREATER_SPEED:

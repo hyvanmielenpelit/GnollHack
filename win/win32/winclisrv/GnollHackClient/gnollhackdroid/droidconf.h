@@ -1,6 +1,6 @@
 /* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
 
-/*	SCCS Id: @(#)droidconf.h	3.4	2011/03/31	*/
+/*    SCCS Id: @(#)droidconf.h    3.4    2011/03/31    */
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1990, 1991, 1992, 1993. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -12,8 +12,8 @@
 
 #define NO_FILE_LINKS /* if no hard links */
 #define LOCKDIR "." /* where to put locks */ 
-//#define HOLD_LOCKFILE_OPEN	/* Keep an exclusive lock on the .0 file */
-#define SELF_RECOVER		/* Allow the game itself to recover from an aborted game */ 
+//#define HOLD_LOCKFILE_OPEN    /* Keep an exclusive lock on the .0 file */
+#define SELF_RECOVER        /* Allow the game itself to recover from an aborted game */ 
 
 #ifdef getchar
 #undef getchar
@@ -23,7 +23,7 @@
 #define tgetch nhgetch
 #define getuid() 1
 
-#undef SHELL				/* we do not support the '!' command */
+#undef SHELL                /* we do not support the '!' command */
 
 #ifdef DUMPLOG
 #undef DUMPLOG_FILE
