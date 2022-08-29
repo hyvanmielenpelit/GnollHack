@@ -391,13 +391,18 @@ namespace GnollHackClient.Pages.Game
             {
                 OrbSwitch.IsEnabled = true;
                 OrbsLabel.TextColor = Color.Black;
+                PetSwitch.IsEnabled = false;
+                PetsLabel.TextColor = Color.Gray;
             }
             else
             {
                 OrbSwitch.IsEnabled = false;
                 OrbsLabel.TextColor = Color.Gray;
+                PetSwitch.IsEnabled = true;
+                PetsLabel.TextColor = Color.Black;
             }
             OrbSwitch_Toggled(sender, new ToggledEventArgs(OrbSwitch.IsToggled));
+            PetSwitch_Toggled(sender, new ToggledEventArgs(PetSwitch.IsToggled));
         }
 
         private void OrbSwitch_Toggled(object sender, ToggledEventArgs e)
@@ -415,6 +420,20 @@ namespace GnollHackClient.Pages.Game
                 MaxHealthInOrbLabel.TextColor = Color.Gray;
                 MaxManaInOrbSwitch.IsEnabled = false;
                 MaxManaInOrbLabel.TextColor = Color.Gray;
+            }
+        }
+
+        private void PetSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (!ClassicStatusBarSwitch.IsToggled && PetSwitch.IsToggled)
+            {
+                PetRowPicker.IsEnabled = true;
+                PetRowsLabel.TextColor = Color.Black;
+            }
+            else
+            {
+                PetRowPicker.IsEnabled = false;
+                PetRowsLabel.TextColor = Color.Gray;
             }
         }
 
