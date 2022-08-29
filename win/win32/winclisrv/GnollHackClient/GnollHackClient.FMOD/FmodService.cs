@@ -141,6 +141,11 @@ namespace GnollHackClient.Unknown
             if (res != RESULT.OK)
                 return;
 
+#if __IOS__
+            AVAudioSession si = AVAudioSession.SharedInstance();
+            if(si != null)
+                si.SetCategory(AVAudioSessionCategory.Ambient);
+#endif
             _initialized = true;
         }
 
