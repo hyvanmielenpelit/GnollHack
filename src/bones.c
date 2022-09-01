@@ -436,11 +436,14 @@ make_bones:
     program_state.in_bones = 1; /* Stays on until program termination */
     unleash_all();
     /* in case these characters are not in their home bases */
+    int minmlev = 0, maxmlev = 0;
+    get_generated_monster_minmax_levels(0, &minmlev, &maxmlev, 0);
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
         mptr = mtmp->data;
-        if (mtmp->iswiz || mptr == &mons[PM_MEDUSA]
+        if (mptr->difficulty > maxmlev || (mptr->geno & G_UNIQ) != 0 
+            || mtmp->iswiz || mptr == &mons[PM_MEDUSA]
             || mptr->msound == MS_NEMESIS || mptr->msound == MS_LEADER
             || mptr == &mons[PM_VLAD_THE_IMPALER]
             || (mptr == &mons[PM_ORACLE] && !fixuporacle(mtmp)))
