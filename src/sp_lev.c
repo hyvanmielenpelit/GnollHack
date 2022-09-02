@@ -1776,6 +1776,9 @@ struct mkroom *croom;
             mtmp = christen_monst(mtmp, m->name.str);
             mtmp->u_know_mname = 1; /* On special levels you know all generated monsters -- maybe should be specified later */
         }
+
+        mtmp->mon_flags |= MON_FLAGS_SPLEVEL_RESIDENT; /* Created specifically for the special level; don't remove in bones if staying on the level */
+
         /*
          * This doesn't complain if an attempt is made to give a
          * non-mimic/non-shapechanger an appearance or to give a

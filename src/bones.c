@@ -442,7 +442,12 @@ make_bones:
         if (DEADMONSTER(mtmp))
             continue;
         mptr = mtmp->data;
-        if (mptr->difficulty > maxmlev || (mptr->geno & G_UNIQ) != 0 
+        if (((mptr->difficulty > maxmlev || (mptr->geno & G_UNIQ) != 0)
+            && !(mtmp->mon_flags & MON_FLAGS_SPLEVEL_RESIDENT)
+            && !(Invocation_lev(&u.uz) && mptr == &mons[PM_BAPHOMET])
+            && !(Inhell && mptr == &mons[PM_DEMOGORGON])
+            && !(Inhell && mptr == &mons[PM_ASMODEUS])
+            )
             || mtmp->iswiz || mptr == &mons[PM_MEDUSA]
             || mptr->msound == MS_NEMESIS || mptr->msound == MS_LEADER
             || mptr == &mons[PM_VLAD_THE_IMPALER]

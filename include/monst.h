@@ -212,6 +212,7 @@ struct monst {
 #define MON_FLAGS_CHAINED           0x00000002
 #define MON_FLAGS_CLONED_WIZ        0x00000004
 #define MON_FLAGS_SUMMONED_AT_ALTAR 0x00000008
+#define MON_FLAGS_SPLEVEL_RESIDENT  0x00000010
 
     unsigned long mstrategy; /* for monsters with mflag3: current strategy */
 

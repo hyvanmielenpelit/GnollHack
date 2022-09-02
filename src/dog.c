@@ -1021,6 +1021,7 @@ coord *cc;   /* optional destination coordinates */
     mtmp->mux = new_lev.dnum;
     mtmp->muy = new_lev.dlevel;
     mtmp->mx = mtmp->my = 0; /* this implies migration */
+    mtmp->mon_flags &= ~MON_FLAGS_SPLEVEL_RESIDENT; /* Not level's original resident anymore */
     if (mtmp == context.polearm.hitmon)
         context.polearm.hitmon = (struct monst *) 0;
 }
