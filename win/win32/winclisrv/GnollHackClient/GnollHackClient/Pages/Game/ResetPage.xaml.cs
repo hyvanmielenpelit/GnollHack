@@ -63,6 +63,18 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private async void btnDeleteBones_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+            bool answer = await DisplayAlert("Delete Bones Files?", "Are you sure to delete all bones files?", "Yes", "No");
+            if (answer)
+            {
+                App.GnollHackService.ClearBones();
+                btnDeleteBones.Text = "Done";
+                btnDeleteBones.TextColor = Color.Red;
+            }
+        }
+
         private async void btnDeleteAllMainFiles_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();

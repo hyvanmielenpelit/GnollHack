@@ -16,6 +16,7 @@ namespace GnollHackClient
         void ClearTopScores();
         void ClearSavedGames();
         void ClearDumplogs();
+        void ClearBones();
         void ClearAllFilesInMainDirectory();
         void ResetDefaultsFile();
         void GetGlyphArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size);

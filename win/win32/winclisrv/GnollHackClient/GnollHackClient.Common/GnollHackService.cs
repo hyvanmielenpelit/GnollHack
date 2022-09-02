@@ -380,6 +380,18 @@ namespace GnollHackClient.Unknown
             }
         }
 
+        public void ClearBones()
+        {
+            string filesdir = GetGnollHackPath();
+            DirectoryInfo di = new DirectoryInfo(filesdir);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                if(file.Name.Length > 4 && file.Name.Substring(0, 4) == "bon-")
+                {
+                    file.Delete();
+                }
+            }
+        }
 
         public void ResetDefaultsFile()
         {
