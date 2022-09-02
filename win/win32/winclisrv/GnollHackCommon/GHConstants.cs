@@ -1293,6 +1293,11 @@ namespace GnollHackCommon
         public const float MoveDistanceThreshold = 25.0f;
         public const long MoveOrPressTimeThreshold = 200; /* Milliseconds */
         public const long SwipeTimeThreshold = 300; /* Milliseconds */
+        public const long FreeScrollingTime = 200; /* Milliseconds */
+        public const long ScrollRecordThreshold = 200; /* Milliseconds */
+        public const float ScrollDeceleration = 0.5f; /* pixels in % of screen height per second squared */
+        public const float ScrollSpeedDeceleration = 2.0f; /* % of speed per second */
+        public const float ScrollSpeedThreshold = 0.1f; /* pixels in % of screen height per second */
         public const double MoveByHoldingDownThreshold = 0.20; /* Seconds */
         public const double LongMenuTapThreshold = 0.75; /* Seconds */
         public const int TileWidth = 64;

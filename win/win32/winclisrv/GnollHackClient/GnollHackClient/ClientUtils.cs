@@ -830,8 +830,9 @@ namespace GnollHackClient
     public class TouchEntry
     {
         public SKPoint Location;
-        public DateTime PressTime;
         public SKPoint OriginalLocation;
+        public DateTime UpdateTime;
+        public DateTime PressTime;
 
         public TouchEntry()
         {
@@ -840,8 +841,27 @@ namespace GnollHackClient
         public TouchEntry(SKPoint loc, DateTime time)
         {
             Location = loc;
-            PressTime = time;
             OriginalLocation = loc;
+            UpdateTime = time;
+            PressTime = time;
+        }
+    }
+
+    public class TouchSpeedRecord
+    {
+        public float Distance;
+        public float Duration;
+        public DateTime TimeStamp;
+
+        public TouchSpeedRecord()
+        {
+
+        }
+        public TouchSpeedRecord(float distance, float duration, DateTime time)
+        {
+            Distance = distance;
+            Duration = duration;
+            TimeStamp = time;
         }
     }
 }

@@ -736,7 +736,39 @@ namespace GnollHackClient.Pages.Game
                     refresh = _menuRefresh;
                 }
                 if (refresh)
+                {
                     MenuCanvas.InvalidateSurface();
+                    lock (MenuScrollLock)
+                    {
+                        float speed = _menuScrollSpeed; /* pixels per second */
+                        if (speed != 0 && _menuScrollSpeedOn)
+                        {
+                            float delta = speed / ClientUtils.GetAuxiliaryCanvasAnimationFrequency(); /* pixels */
+                            _menuScrollOffset += delta;
+                            if (_menuScrollOffset > 0)
+                                _menuScrollOffset = 0;
+                            else if (_menuScrollOffset < MenuCanvas.CanvasSize.Height - _totalMenuHeight)
+                                _menuScrollOffset = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
+                            else
+                            {
+                                if(_menuScrollSpeedReleaseStamp != null)
+                                {
+                                    long millisecs_elapsed = (DateTime.Now.Ticks - _menuScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                    if (millisecs_elapsed > GHConstants.FreeScrollingTime)
+                                    {
+                                        int sgn = Math.Sign(_menuScrollSpeed);
+                                        float deceleration1 = (float)MenuCanvas.CanvasSize.Height * GHConstants.ScrollDeceleration;
+                                        float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
+                                        float deceleration_per_second = deceleration1 + deceleration2;
+                                        _menuScrollSpeed += - 1.0f * (float)sgn * ((deceleration_per_second * (float)ClientUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
+                                        if (sgn == 0 || (sgn > 0 && _menuScrollSpeed < 0) || (sgn < 0 && _menuScrollSpeed > 0))
+                                            _menuScrollSpeed = 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -2080,6 +2112,11 @@ namespace GnollHackClient.Pages.Game
 
             App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas Start");
             MenuTouchDictionary.Clear();
+            lock(MenuScrollLock)
+            {
+                _menuScrollSpeed = 0;
+                _menuScrollSpeedOn = false;
+            }
 
             /* Set headers */
             if (menuinfo.Header == null)
@@ -8860,6 +8897,14 @@ namespace GnollHackClient.Pages.Game
 
         private readonly object MenuScrollLock = new object();
         private float _menuScrollOffset = 0;
+        //private float MenuScrollOffset { get { lock (MenuScrollLock) { return _menuScrollOffset; } } set { lock (MenuScrollLock) {  _menuScrollOffset = value; } } }
+        private float _menuScrollSpeed = 0; /* pixels per second */
+        //private float MenuScrollSpeed { get { lock (MenuScrollLock) { return _menuScrollSpeed; } } set { lock (MenuScrollLock) { _menuScrollSpeed = value; } } }
+        private bool _menuScrollSpeedRecordOn = false;
+        private DateTime _menuScrollSpeedStamp;
+        List<TouchSpeedRecord> _menuScrollSpeedRecords = new List<TouchSpeedRecord>();
+        private bool _menuScrollSpeedOn = false;
+        private DateTime _menuScrollSpeedReleaseStamp;
 
         private Dictionary<long, TouchEntry> MenuTouchDictionary = new Dictionary<long, TouchEntry>();
         private object _savedMenuSender = null;
@@ -8887,6 +8932,14 @@ namespace GnollHackClient.Pages.Game
                         MenuTouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
                     else
                         MenuTouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
+
+                    lock(MenuScrollLock)
+                    {
+                        _menuScrollSpeed = 0;
+                        _menuScrollSpeedOn = false;
+                        _menuScrollSpeedRecordOn = false;
+                        _menuScrollSpeedRecords.Clear();
+                    }
 
                     if (MenuTouchDictionary.Count > 1)
                         _menuTouchMoved = true;
@@ -8927,8 +8980,10 @@ namespace GnollHackClient.Pages.Game
                                 /* Just one finger => Scroll the menu */
                                 if (diffX != 0 || diffY != 0)
                                 {
+                                    DateTime now = DateTime.Now;
                                     /* Do not scroll within button press time threshold, unless large move */
-                                    if (dist > GHConstants.MoveDistanceThreshold || (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond > GHConstants.MoveOrPressTimeThreshold)
+                                    long millisecs_elapsed = (now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+                                    if (dist > GHConstants.MoveDistanceThreshold || millisecs_elapsed > GHConstants.MoveOrPressTimeThreshold)
                                     {
                                         lock (MenuScrollLock)
                                         {
@@ -8937,8 +8992,56 @@ namespace GnollHackClient.Pages.Game
                                                 _menuScrollOffset = 0;
                                             else if (_menuScrollOffset < MenuCanvas.CanvasSize.Height - _totalMenuHeight)
                                                 _menuScrollOffset = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
+                                            else
+                                            {
+                                                /* Calculate duration since last touch move */
+                                                float duration = 0;
+                                                if (!_menuScrollSpeedRecordOn)
+                                                {
+                                                    duration = (float)millisecs_elapsed / 1000f;
+                                                    _menuScrollSpeedRecordOn = true;
+                                                }
+                                                else
+                                                {
+                                                    duration = ((float)(now.Ticks - _menuScrollSpeedStamp.Ticks) / TimeSpan.TicksPerMillisecond) / 1000f;
+                                                }
+                                                _menuScrollSpeedStamp = now;
+
+                                                /* Discard speed records to the opposite direction */
+                                                if (_menuScrollSpeedRecords.Count > 0)
+                                                {
+                                                    int prevsgn = Math.Sign(_menuScrollSpeedRecords[0].Distance);
+                                                    if (diffY != 0 && prevsgn != 0 && Math.Sign(diffY) != prevsgn)
+                                                        _menuScrollSpeedRecords.Clear();
+                                                }
+
+                                                /* Add a new speed record */
+                                                _menuScrollSpeedRecords.Insert(0, new TouchSpeedRecord(diffY, duration, now));
+
+                                                /* Discard too old records */
+                                                while (_menuScrollSpeedRecords.Count > 0)
+                                                {
+                                                    long lastrecord_ms = (now.Ticks - _menuScrollSpeedRecords[_menuScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                                    if (lastrecord_ms > GHConstants.ScrollRecordThreshold)
+                                                        _menuScrollSpeedRecords.RemoveAt(_menuScrollSpeedRecords.Count - 1);
+                                                    else
+                                                        break;
+                                                }
+
+                                                /* Sum up the distances and durations of current records to get an average */
+                                                float totaldistance = 0;
+                                                float totalsecs = 0;
+                                                foreach(TouchSpeedRecord r in _menuScrollSpeedRecords)
+                                                {
+                                                    totaldistance += r.Distance;
+                                                    totalsecs += r.Duration;
+                                                }
+                                                _menuScrollSpeed = totaldistance / Math.Max(0.001f, totalsecs);
+                                                _menuScrollSpeedOn = false;
+                                            }
                                         }
                                         MenuTouchDictionary[e.Id].Location = e.Location;
+                                        MenuTouchDictionary[e.Id].UpdateTime = DateTime.Now;
                                         if (dist > GHConstants.MoveDistanceThreshold)
                                         {  /* Cancel any press, if long move */
                                             _menuTouchMoved = true;
@@ -8973,7 +9076,35 @@ namespace GnollHackClient.Pages.Game
                                 MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
                             if (MenuTouchDictionary.Count == 0)
+                            {
+                                lock(MenuScrollLock)
+                                {
+                                    long lastrecord_ms = 0;
+                                    if(_menuScrollSpeedRecords.Count > 0)
+                                    {
+                                        lastrecord_ms = (DateTime.Now.Ticks - _menuScrollSpeedRecords[_menuScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                    }
+
+                                    if(lastrecord_ms > GHConstants.ScrollRecordThreshold)
+                                    {
+                                        _menuScrollSpeedOn = false;
+                                        _menuScrollSpeed = 0;
+                                    }
+                                    else if (Math.Abs(_menuScrollSpeed) >= GHConstants.ScrollSpeedThreshold * MenuCanvas.CanvasSize.Height)
+                                    {
+                                        _menuScrollSpeedOn = true;
+                                        _menuScrollSpeedReleaseStamp = DateTime.Now;
+                                    }
+                                    else
+                                    {
+                                        _menuScrollSpeedOn = false;
+                                        _menuScrollSpeed = 0;
+                                    }
+                                    _menuScrollSpeedRecordOn = false;
+                                    _menuScrollSpeedRecords.Clear();
+                                }
                                 _menuTouchMoved = false;
+                            }
                         }
                         e.Handled = true;
                     }
@@ -9152,7 +9283,12 @@ namespace GnollHackClient.Pages.Game
                 _menuDrawOnlyClear = true;
             }
 
-            _menuScrollOffset = 0;
+            lock (MenuScrollLock)
+            {
+                _menuScrollOffset = 0;
+                _menuScrollSpeed = 0;
+                _menuScrollSpeedOn = false;
+            }
 
             ConcurrentQueue<GHResponse> queue;
             List<GHMenuItem> resultlist = new List<GHMenuItem>();
@@ -9198,7 +9334,12 @@ namespace GnollHackClient.Pages.Game
                 _menuDrawOnlyClear = true;
             }
 
-            _menuScrollOffset = 0;
+            lock (MenuScrollLock)
+            {
+                _menuScrollOffset = 0;
+                _menuScrollSpeed = 0;
+                _menuScrollSpeedOn = false;
+            }
 
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
