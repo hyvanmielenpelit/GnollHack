@@ -2084,10 +2084,18 @@ namespace GnollHackClient.Pages.Game
         {
             // Set focus to GameViewPage
         }
+
+        public bool MainPageBackgroundNeedsUpdate { get; set; }
+
         private async void ReturnToMainMenu()
         {
             //if (!App.IsServerGame)
             //    _mainPage.HideLocalGameButton();
+            if(MainPageBackgroundNeedsUpdate)
+            {
+                _mainPage.UpdateMainScreenBackgroundStyle();
+                MainPageBackgroundNeedsUpdate = false;
+            }
             _mainPage.ActivateLocalGameButton();
             _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
             if (App.GameMuteMode)

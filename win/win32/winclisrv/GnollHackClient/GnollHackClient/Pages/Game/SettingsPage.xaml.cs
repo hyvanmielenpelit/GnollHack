@@ -201,9 +201,12 @@ namespace GnollHackClient.Pages.Game
                 bool oldCarousel = App.UsesCarousel;
                 App.UsesCarousel = CarouselSwitch.IsToggled;
                 Preferences.Set("UsesCarousel", CarouselSwitch.IsToggled);
-                if(oldCarousel != App.UsesCarousel && _mainPage != null)
+                if(oldCarousel != App.UsesCarousel)
                 {
-                    _mainPage.UpdateMainScreenBackgroundStyle();
+                    if (_mainPage != null)
+                        _mainPage.UpdateMainScreenBackgroundStyle();
+                    else if (_gamePage != null)
+                        _gamePage.MainPageBackgroundNeedsUpdate = true;
                 }
             }
             if (App.UsesCarousel && _mainPage != null)
