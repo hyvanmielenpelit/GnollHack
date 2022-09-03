@@ -741,14 +741,47 @@ namespace GnollHackClient.Pages.Game
                     lock (MenuScrollLock)
                     {
                         float speed = _menuScrollSpeed; /* pixels per second */
+                        float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
                         if (speed != 0 && _menuScrollSpeedOn)
                         {
+                            int sgn = Math.Sign(_menuScrollSpeed);
                             float delta = speed / ClientUtils.GetAuxiliaryCanvasAnimationFrequency(); /* pixels */
                             _menuScrollOffset += delta;
-                            if (_menuScrollOffset > 0)
+                            if (_menuScrollOffset < 0 && _menuScrollOffset - delta > 0)
+                            {
                                 _menuScrollOffset = 0;
-                            else if (_menuScrollOffset < MenuCanvas.CanvasSize.Height - _totalMenuHeight)
-                                _menuScrollOffset = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
+                                _menuScrollSpeed = 0;
+                                _menuScrollSpeedOn = false;
+                            }
+                            else if (_menuScrollOffset > bottomScrollLimit && _menuScrollOffset - delta < bottomScrollLimit)
+                            {
+                                _menuScrollOffset = bottomScrollLimit;
+                                _menuScrollSpeed = 0;
+                                _menuScrollSpeedOn = false;
+                            }
+                            else if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
+                            {
+                                float deceleration1 = MenuCanvas.CanvasSize.Height * GHConstants.ScrollDeceleration;
+                                float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
+                                float deceleration_per_second = deceleration1 + deceleration2;
+                                float distance_from_edge = _menuScrollOffset > 0 ? _menuScrollOffset : _menuScrollOffset - bottomScrollLimit;
+                                float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * MenuCanvas.CanvasSize.Height) * GHConstants.ScrollOverEdgeDeceleration;
+                                float arb_distance = MenuCanvas.CanvasSize.Height * GHConstants.ScrollDistanceAnchorFactor;
+                                float target_speed_at_distance = GHConstants.ScrollTargetSpeedAtDistanceAnchor;
+                                float target_speed_at_edge = GHConstants.ScrollTargetSpeedAtEdge;
+                                float dist_factor = Math.Abs(distance_from_edge) / arb_distance;
+                                float target_speed = -1.0f * (float)Math.Sign(distance_from_edge) * (dist_factor * (target_speed_at_distance - target_speed_at_edge) + target_speed_at_edge) * MenuCanvas.CanvasSize.Height;
+                                if (_menuScrollOffset > 0 ? _menuScrollSpeed <= 0 : _menuScrollSpeed >= 0)
+                                {
+                                    _menuScrollSpeed += (-1.0f * deceleration3) * (float)ClientUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                                    if(dist_factor < 1.0f)
+                                    {
+                                        _menuScrollSpeed = _menuScrollSpeed * dist_factor + target_speed * (1.0f - dist_factor);
+                                    }
+                                }
+                                else
+                                    _menuScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)ClientUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                            }
                             else
                             {
                                 if(_menuScrollSpeedReleaseStamp != null)
@@ -756,7 +789,6 @@ namespace GnollHackClient.Pages.Game
                                     long millisecs_elapsed = (DateTime.Now.Ticks - _menuScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                     if (millisecs_elapsed > GHConstants.FreeScrollingTime)
                                     {
-                                        int sgn = Math.Sign(_menuScrollSpeed);
                                         float deceleration1 = (float)MenuCanvas.CanvasSize.Height * GHConstants.ScrollDeceleration;
                                         float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
                                         float deceleration_per_second = deceleration1 + deceleration2;
