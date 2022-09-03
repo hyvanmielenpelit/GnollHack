@@ -1297,9 +1297,11 @@ namespace GnollHackCommon
         public const long ScrollRecordThreshold = 200; /* Milliseconds */
         public const float ScrollDeceleration = 0.5f; /* pixels in % of screen height per second squared */
         public const float ScrollSpeedDeceleration = 2.0f; /* % of speed per second */
+        public const float ScrollDecelerationOverEdgeMultiplier = 10f; /* multiplier for ScrollSpeedDeceleration when over edge */
+        public const float ScrollSpeedDecelerationOverEdgeMultiplier = 5.0f; /* % multiplier for ScrollSpeedDeceleration when over edge */
         public const float ScrollOverEdgeDeceleration = 128f; /* constant multiplying distance in pixels from edge */
         public const float ScrollDistanceAnchorFactor = 0.1f; /* % of screen height */
-        public const float ScrollTargetSpeedAtDistanceAnchor = 1.0f; /* % of screen height per second */
+        public const float ScrollTargetSpeedAtDistanceAnchor = 0.3f; /* % of screen height per second */
         public const float ScrollTargetSpeedAtEdge = 0.1f; /* % of screen height per second */
         public const float ScrollDistanceEdgeConstant = 0.05f; /* pixels in % of screen height added to distance in pixels from edge to determine acceleration */
         public const float ScrollSpeedThreshold = 0.1f; /* pixels in % of screen height per second */

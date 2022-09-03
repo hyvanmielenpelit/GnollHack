@@ -762,15 +762,15 @@ namespace GnollHackClient.Pages.Game
                             }
                             else if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
                             {
-                                float deceleration1 = MenuCanvas.CanvasSize.Height * GHConstants.ScrollDeceleration * 10;
-                                float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration * 5;
+                                float deceleration1 = MenuCanvas.CanvasSize.Height * GHConstants.ScrollDeceleration * GHConstants.ScrollDecelerationOverEdgeMultiplier;
+                                float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration * GHConstants.ScrollSpeedDecelerationOverEdgeMultiplier;
                                 float deceleration_per_second = deceleration1 + deceleration2;
                                 float distance_from_edge = _menuScrollOffset > 0 ? _menuScrollOffset : _menuScrollOffset - bottomScrollLimit;
                                 float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * MenuCanvas.CanvasSize.Height) * GHConstants.ScrollOverEdgeDeceleration;
-                                float arb_distance = MenuCanvas.CanvasSize.Height * GHConstants.ScrollDistanceAnchorFactor;
+                                float anchor_distance = MenuCanvas.CanvasSize.Height * GHConstants.ScrollDistanceAnchorFactor;
                                 float target_speed_at_distance = GHConstants.ScrollTargetSpeedAtDistanceAnchor;
                                 float target_speed_at_edge = GHConstants.ScrollTargetSpeedAtEdge;
-                                float dist_factor = Math.Abs(distance_from_edge) / arb_distance;
+                                float dist_factor = Math.Abs(distance_from_edge) / anchor_distance;
                                 float target_speed = -1.0f * (float)Math.Sign(distance_from_edge) * (dist_factor * (target_speed_at_distance - target_speed_at_edge) + target_speed_at_edge) * MenuCanvas.CanvasSize.Height;
                                 if (_menuScrollOffset > 0 ? _menuScrollSpeed <= 0 : _menuScrollSpeed >= 0)
                                 {
