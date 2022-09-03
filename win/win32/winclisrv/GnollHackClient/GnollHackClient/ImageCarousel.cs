@@ -44,8 +44,10 @@ namespace GnollHackClient
         private bool _inited = false;
         public void Init()
         {
-            Assembly assembly = GetType().GetTypeInfo().Assembly;
+            if (_inited)
+                return;
 
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
             for (int i = 0; i < _caruselBitmaps.Length; i++)
             {
                 using (Stream stream = assembly.GetManifestResourceStream(_caruselBitmaps[i].ResourcePath))

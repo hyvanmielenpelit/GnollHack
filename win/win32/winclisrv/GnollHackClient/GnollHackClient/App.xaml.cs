@@ -59,6 +59,7 @@ namespace GnollHackClient
             App.LoadBanks = Preferences.Get("LoadSoundBanks", true);
             App.InformAboutGameTermination = Preferences.Get("WentToSleepWithGameOn", false);
             Preferences.Set("WentToSleepWithGameOn", false);
+            App.UsesCarousel = App.IsiOS || Preferences.Get("UsesCarousel", App.IsiOS);
 
             App.BackButtonPressed += App.EmptyBackButtonPressed;
         }
@@ -350,6 +351,8 @@ namespace GnollHackClient
         public static readonly float DisplayScale = DeviceDisplay.MainDisplayInfo.Density <= 0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
         public static readonly float DisplayWidth = (float)DeviceDisplay.MainDisplayInfo.Width * DisplayScale;
         public static readonly float DisplayHeight = (float)DeviceDisplay.MainDisplayInfo.Height * DisplayScale;
+
+        public static bool UsesCarousel { get; set; }
 
         public static async Task<bool> OnBackButtonPressed()
         {
