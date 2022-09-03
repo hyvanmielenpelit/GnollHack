@@ -1303,6 +1303,7 @@ namespace GnollHackCommon
         public const float ScrollTargetSpeedAtEdge = 0.1f; /* % of screen height per second */
         public const float ScrollDistanceEdgeConstant = 0.05f; /* pixels in % of screen height added to distance in pixels from edge to determine acceleration */
         public const float ScrollSpeedThreshold = 0.1f; /* pixels in % of screen height per second */
+        public const float ScrollStretchLimit = 0.15f; /* pixels in % of screen height */
         public const double MoveByHoldingDownThreshold = 0.20; /* Seconds */
         public const double LongMenuTapThreshold = 0.75; /* Seconds */
         public const int TileWidth = 64;

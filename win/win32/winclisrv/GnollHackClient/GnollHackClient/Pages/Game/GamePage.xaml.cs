@@ -742,7 +742,7 @@ namespace GnollHackClient.Pages.Game
                     {
                         float speed = _menuScrollSpeed; /* pixels per second */
                         float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
-                        if (speed != 0 && _menuScrollSpeedOn)
+                        if (_menuScrollSpeedOn)
                         {
                             int sgn = Math.Sign(_menuScrollSpeed);
                             float delta = speed / ClientUtils.GetAuxiliaryCanvasAnimationFrequency(); /* pixels */
@@ -8951,6 +8951,7 @@ namespace GnollHackClient.Pages.Game
                     return;
             }
 
+            float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
             switch (e?.ActionType)
             {
                 case SKTouchAction.Entered:
@@ -9019,11 +9020,20 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         lock (MenuScrollLock)
                                         {
-                                            _menuScrollOffset += diffY;
+                                            float stretchLimit = GHConstants.ScrollStretchLimit * MenuCanvas.CanvasSize.Height;
+                                            float adj_factor = 1.0f;
                                             if (_menuScrollOffset > 0)
-                                                _menuScrollOffset = 0;
-                                            else if (_menuScrollOffset < MenuCanvas.CanvasSize.Height - _totalMenuHeight)
-                                                _menuScrollOffset = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
+                                                adj_factor = _menuScrollOffset >= stretchLimit ? 0 : (1 - _menuScrollOffset / stretchLimit);
+                                            else if (_menuScrollOffset < bottomScrollLimit)
+                                                adj_factor = _menuScrollOffset < bottomScrollLimit - stretchLimit ? 0 : (1 - (bottomScrollLimit - _menuScrollOffset) / stretchLimit); ;
+                                            
+                                            float adj_diffY = diffY * adj_factor;
+                                            _menuScrollOffset += adj_diffY;
+                                            
+                                            if (_menuScrollOffset > stretchLimit)
+                                                _menuScrollOffset = stretchLimit;
+                                            else if (_menuScrollOffset < bottomScrollLimit - stretchLimit)
+                                                _menuScrollOffset = bottomScrollLimit - stretchLimit;
                                             else
                                             {
                                                 /* Calculate duration since last touch move */
@@ -9117,7 +9127,16 @@ namespace GnollHackClient.Pages.Game
                                         lastrecord_ms = (DateTime.Now.Ticks - _menuScrollSpeedRecords[_menuScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                     }
 
-                                    if(lastrecord_ms > GHConstants.ScrollRecordThreshold)
+                                    if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
+                                    {
+                                        if(lastrecord_ms > GHConstants.ScrollRecordThreshold
+                                            || Math.Abs(_menuScrollSpeed) < GHConstants.ScrollSpeedThreshold * MenuCanvas.CanvasSize.Height)
+                                            _menuScrollSpeed = 0;
+
+                                        _menuScrollSpeedOn = true;
+                                        _menuScrollSpeedReleaseStamp = DateTime.Now;
+                                    }
+                                    else if(lastrecord_ms > GHConstants.ScrollRecordThreshold)
                                     {
                                         _menuScrollSpeedOn = false;
                                         _menuScrollSpeed = 0;
@@ -9146,6 +9165,23 @@ namespace GnollHackClient.Pages.Game
                         MenuTouchDictionary.Remove(e.Id);
                     else
                         MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+
+                    if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
+                    {
+                        long lastrecord_ms = 0;
+                        if (_menuScrollSpeedRecords.Count > 0)
+                        {
+                            lastrecord_ms = (DateTime.Now.Ticks - _menuScrollSpeedRecords[_menuScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                        }
+
+                        if (lastrecord_ms > GHConstants.ScrollRecordThreshold
+                            || Math.Abs(_menuScrollSpeed) < GHConstants.ScrollSpeedThreshold * MenuCanvas.CanvasSize.Height)
+                            _menuScrollSpeed = 0;
+
+                        _menuScrollSpeedOn = true;
+                        _menuScrollSpeedReleaseStamp = DateTime.Now;
+                    }
+
                     e.Handled = true;
                     break;
                 case SKTouchAction.Exited:
