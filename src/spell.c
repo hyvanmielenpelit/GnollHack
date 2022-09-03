@@ -1086,7 +1086,7 @@ int spell_list_type;
     if (spellid(0) == NO_SPELL) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("don't know any spells right now.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "don't know any spells right now.");
         return FALSE;
     }
 
