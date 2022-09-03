@@ -741,7 +741,8 @@ namespace GnollHackClient.Pages.Game
                     lock (MenuScrollLock)
                     {
                         float speed = _menuScrollSpeed; /* pixels per second */
-                        float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
+                        float bottomScrollLimit = 0;
+                        bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - TotalMenuHeight);
                         if (_menuScrollSpeedOn)
                         {
                             int sgn = Math.Sign(_menuScrollSpeed);
@@ -8410,7 +8411,9 @@ namespace GnollHackClient.Pages.Game
         private SKColor _menuHighlightColor = new SKColor(0xFF, 0x88, 0x00, 0x88);
         private int _firstDrawnMenuItemIdx = -1;
         private int _lastDrawnMenuItemIdx = -1;
+        private readonly object _totalMenuHeightLock = new object();
         private float _totalMenuHeight = 0;
+        private float TotalMenuHeight { get { lock (_totalMenuHeightLock) { return _totalMenuHeight; } } set { lock (_totalMenuHeightLock) { _totalMenuHeight = value; } } }
 
         private bool _refreshMenuRowCounts = true;
         private readonly object _refreshMenuRowCountLock = new object();
@@ -8714,7 +8717,7 @@ namespace GnollHackClient.Pages.Game
                         }
                         _refreshMenuRowCounts = false;
                     }
-                    _totalMenuHeight = y - curmenuoffset;
+                    TotalMenuHeight = y - curmenuoffset;
                 }
             }
 
@@ -8958,8 +8961,7 @@ namespace GnollHackClient.Pages.Game
                 if (_menuDrawOnlyClear)
                     return;
             }
-
-            float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
+            float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - TotalMenuHeight);
             switch (e?.ActionType)
             {
                 case SKTouchAction.Entered:
