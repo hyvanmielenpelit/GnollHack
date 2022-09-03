@@ -1170,7 +1170,7 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_SUMMON_DIREWOLF,
-        "Mandrake root",
+        "Bone and bat guano",
         STRANGE_OBJECT,
         1,
         {
