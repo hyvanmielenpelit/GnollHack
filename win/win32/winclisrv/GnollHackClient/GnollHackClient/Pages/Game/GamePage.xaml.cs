@@ -762,8 +762,8 @@ namespace GnollHackClient.Pages.Game
                             }
                             else if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
                             {
-                                float deceleration1 = MenuCanvas.CanvasSize.Height * GHConstants.ScrollDeceleration;
-                                float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
+                                float deceleration1 = MenuCanvas.CanvasSize.Height * GHConstants.ScrollDeceleration * 10;
+                                float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration * 5;
                                 float deceleration_per_second = deceleration1 + deceleration2;
                                 float distance_from_edge = _menuScrollOffset > 0 ? _menuScrollOffset : _menuScrollOffset - bottomScrollLimit;
                                 float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * MenuCanvas.CanvasSize.Height) * GHConstants.ScrollOverEdgeDeceleration;
