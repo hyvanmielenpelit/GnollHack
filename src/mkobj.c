@@ -2438,6 +2438,7 @@ int spe_type_index;
         initspe = 0;
         break;
     case ENCHTYPE_GENERAL_WEAPON:
+    case ENCHTYPE_GENERAL_WEAPON_ARMOR:
         initspe = Inhell ? rngh(2, 6) : rngh(3, 3);
         break;
     case ENCHTYPE_GENERAL_ARMOR:
@@ -2530,6 +2531,7 @@ int spe_type_index;
         break;
     case ENCHTYPE_GENERAL_WEAPON:
     case ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0:
+    case ENCHTYPE_GENERAL_WEAPON_ARMOR:
         maxspe = 10;
         break;
     case ENCHTYPE_GENERAL_ARMOR:
