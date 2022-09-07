@@ -2715,6 +2715,7 @@ E int FDECL(smith_move, (struct monst*));
 /* ### prop.c ### */
 E void NDECL(props_init);
 E const char* FDECL(get_property_name, (int));
+E const char* FDECL(get_status_name, (struct monst*, int));
 
 /* ### quest.c ### */
 

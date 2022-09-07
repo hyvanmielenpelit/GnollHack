@@ -4172,6 +4172,9 @@ struct _create_particular_data *d;
     if (!strncmpi(bufp, "tame ", 5)) {
         bufp += 5;
         d->maketame = TRUE;
+    } else if (!strncmpi(bufp, "allied ", 7)) {
+        bufp += 7;
+        d->maketame = TRUE;
     } else if (!strncmpi(bufp, "peaceful ", 9)) {
         bufp += 9;
         d->makepeaceful = TRUE;

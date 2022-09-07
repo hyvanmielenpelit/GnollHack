@@ -304,7 +304,7 @@ int x, y;
     strcpy(tmpbuf, "");
     Sprintf(tmpbuf, "%s%s%s",
         (is_tame(mtmp) && accurate)
-        ? "tame "
+        ? (call_mon_tame(mtmp) ? "tame " : "allied ")
         : (is_peaceful(mtmp) && accurate)
         ? "peaceful "
         : "",
@@ -743,6 +743,8 @@ char *supplemental_name;
         dbase_str += 8;
     if (!strncmp(dbase_str, "tame ", 5))
         dbase_str += 5;
+    else if (!strncmp(dbase_str, "allied ", 7))
+        dbase_str += 7;
     else if (!strncmp(dbase_str, "peaceful ", 9))
         dbase_str += 9;
     if (!strncmp(dbase_str, "invisible ", 10))

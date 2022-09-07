@@ -1922,7 +1922,8 @@ struct monst* mtmp;
     for (int statusorder_idx = 0; statusorder_idx < SIZE(statusmarkorder); statusorder_idx++)
     {
         int status_mark = (int)statusmarkorder[statusorder_idx];
-        if (status_mark < MAX_STATUS_MARKS && status_names[status_mark])
+        const char* statusname = 0;
+        if (status_mark < MAX_STATUS_MARKS && (statusname = get_status_name(mtmp, status_mark)) != 0)
         {
             unsigned long status_bit = 1UL << status_mark;
             if(m_status_bits & status_bit)
@@ -1933,7 +1934,7 @@ struct monst* mtmp;
                 else
                     *sbuf = 0;
 
-                Sprintf(buf, " %2d - %s%s", condition_count, status_names[status_mark], sbuf);
+                Sprintf(buf, " %2d - %s%s", condition_count, statusname, sbuf);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
         }

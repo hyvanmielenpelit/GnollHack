@@ -1652,7 +1652,7 @@ boolean showheads;
     /* avoid "Status of the invisible newt ..., invisible" */
     /* and unlike a normal mon_nam, use "saddled" even if it has a name */
     char adjbuf[BUFSZ], alignbuf[BUFSZ];
-    Sprintf(adjbuf, "level %d%s", mtmp->data->difficulty, is_tame(mtmp) ? " tame" : is_peaceful(mtmp) ? " peaceful" : "");
+    Sprintf(adjbuf, "level %d%s", mtmp->data->difficulty, is_tame(mtmp) ? (call_mon_tame(mtmp) ? " tame" : " allied") : is_peaceful(mtmp) ? " peaceful" : "");
     strcpy(alignbuf, align_str(alignment));
     *alignbuf = highc(*alignbuf);
 

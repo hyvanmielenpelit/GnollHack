@@ -198,7 +198,7 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
             play_sfx_sound(SFX_WAS_HIDING);
             if (!Blind && Hallucination)
                 pline("A %s %s appeared!",
-                      is_tame(mtmp) ? "tame" : "wild", l_monnam(mtmp));
+                      is_tame(mtmp) ? (call_mon_tame(mtmp) ? "allied" : "tame") : "wild", l_monnam(mtmp));
             else if (Blind || (is_pool(mtmp->mx, mtmp->my) && !Underwater))
                 pline("Wait!  There's a hidden monster there!");
             else if ((obj = level.objects[mtmp->mx][mtmp->my]) != 0)
