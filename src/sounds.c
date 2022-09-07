@@ -421,7 +421,7 @@ dosounds()
                 {
                 case 0:
                     if (is_sleeping(mtmp))
-                        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "ominiously threatened.");
+                        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "ominously threatened.");
                     else
                         You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "coins being assembled.");
                     break;
