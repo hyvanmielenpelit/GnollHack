@@ -9041,11 +9041,12 @@ namespace GnollHackClient.Pages.Game
                                         lock (MenuScrollLock)
                                         {
                                             float stretchLimit = GHConstants.ScrollStretchLimit * MenuCanvas.CanvasSize.Height;
+                                            float stretchConstant = GHConstants.ScrollConstantStretch * MenuCanvas.CanvasSize.Height;
                                             float adj_factor = 1.0f;
                                             if (_menuScrollOffset > 0)
-                                                adj_factor = _menuScrollOffset >= stretchLimit ? 0 : (1 - _menuScrollOffset / stretchLimit);
+                                                adj_factor = _menuScrollOffset >= stretchLimit ? 0 : (1 - ((_menuScrollOffset + stretchConstant) / (stretchLimit + stretchConstant)));
                                             else if (_menuScrollOffset < bottomScrollLimit)
-                                                adj_factor = _menuScrollOffset < bottomScrollLimit - stretchLimit ? 0 : (1 - (bottomScrollLimit - _menuScrollOffset) / stretchLimit); ;
+                                                adj_factor = _menuScrollOffset < bottomScrollLimit - stretchLimit ? 0 : (1 - ((bottomScrollLimit - (_menuScrollOffset - stretchConstant)) / (stretchLimit + stretchConstant)));
                                             
                                             float adj_diffY = diffY * adj_factor;
                                             _menuScrollOffset += adj_diffY;
