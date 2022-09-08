@@ -316,6 +316,29 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private async void btnViewPanicLog_Clicked(object sender, EventArgs e)
+        {
+            CreditsTableView.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            string fulltargetpath = Path.Combine(App.GHPath, "paniclog");
+            var displFilePage = new DisplayFilePage(fulltargetpath, "Panic Log");
+            string errormsg = "";
+            if (!File.Exists(fulltargetpath))
+            {
+                await DisplayAlert("No Panic Log", "Panic Log does not exist.", "OK");
+            }
+            else if (!displFilePage.ReadFile(out errormsg))
+            {
+                await DisplayAlert("Error Opening File", "GnollHack cannot open the paniclog file.", "OK");
+            }
+            else
+            {
+                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+            }
+            CreditsTableView.IsEnabled = true;
+        }
+
+
         private double _currentPageWidth = 0;
         private double _currentPageHeight = 0;
         protected override void OnSizeAllocated(double width, double height)
