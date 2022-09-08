@@ -51,7 +51,7 @@ STATIC_VAR const struct icp boxiprobs[] = { { 12, GEM_CLASS },
                                         { 12, WAND_CLASS },
                                         { 6, RING_CLASS },
                                         { 4, REAGENT_CLASS },
-                                           { 6, MISCELLANEOUS_CLASS },
+                                        { 6, MISCELLANEOUS_CLASS },
                                         { 2, AMULET_CLASS } };
 
 STATIC_VAR const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
@@ -350,6 +350,9 @@ char oclass;
 struct monst* mowner;
 unsigned long rndflags;
 {
+    if (oclass < 0 || oclass >= MAX_OBJECT_CLASSES)
+        oclass = RANDOM_CLASS;
+
     int i = 0;
     boolean also_rare = !!(rndflags & MKOBJ_FLAGS_ALSO_RARE);
     int leveldif = level_difficulty();
