@@ -1298,7 +1298,7 @@ namespace GnollHackCommon
         public const float ScrollConstantDeceleration = 0.5f; /* pixels in % of screen height per second squared */
         public const float ScrollSpeedDeceleration = 2.0f; /* % of speed per second */
         public const float ScrollConstantDecelerationOverEdgeMultiplier = 10f; /* multiplier for ScrollSpeedDeceleration when over edge */
-        public const float ScrollSpeedDecelerationOverEdgeMultiplier = 30f; /* % multiplier for ScrollSpeedDeceleration when over edge */
+        public const float ScrollSpeedDecelerationOverEdgeMultiplier = 25f; /* % multiplier for ScrollSpeedDeceleration when over edge */
         public const float ScrollOverEdgeDeceleration = 64f; /* constant multiplying distance in pixels from edge */
         public const float ScrollDistanceAnchorFactor = 0.10f; /* % of screen height */
         public const float ScrollCloseAnchorFactor = 0.025f; /* % of screen height */
@@ -1308,7 +1308,7 @@ namespace GnollHackCommon
         public const float ScrollDistanceEdgeConstant = 0.05f; /* pixels in % of screen height added to distance in pixels from edge to determine acceleration */
         public const float ScrollSpeedThreshold = 0.1f; /* pixels in % of screen height per second */
         public const float ScrollStretchLimit = 0.10f; /* pixels in % of screen height */
-        public const float ScrollConstantStretch = 0.10f; /* pixels in % of screen height */
+        public const float ScrollConstantStretch = 0.075f; /* pixels in % of screen height */
         public const double MoveByHoldingDownThreshold = 0.20; /* Seconds */
         public const double LongMenuTapThreshold = 0.75; /* Seconds */
         public const int TileWidth = 64;
