@@ -433,6 +433,7 @@ static struct Comp_Opt {
     { "paranoid_confirmation", "extra prompting in certain situations", 28,
       SET_IN_GAME },
     { "petattr",  "attributes for highlighting pets", 88, SET_IN_GAME },
+    { "petgender", "your preferred initial pet gender", 4, DISP_IN_GAME },
     { "pettype", "your preferred initial pet type", 4, DISP_IN_GAME },
     { "pickup_burden", "maximum burden picked up before prompt", 20,
       SET_IN_GAME },
@@ -2403,7 +2404,7 @@ boolean tinitial, tfrom_file;
     }
 
     fullname = "catname";
-    if (match_optname(opts, fullname, 3, TRUE)) {
+    if (match_optname(opts, fullname, 7, TRUE)) {
         if (duplicate)
             complain_about_duplicate(opts, 1);
         if (negated) {
@@ -2418,7 +2419,7 @@ boolean tinitial, tfrom_file;
     }
 
     fullname = "dogname";
-    if (match_optname(opts, fullname, 3, TRUE)) {
+    if (match_optname(opts, fullname, 7, TRUE)) {
         if (duplicate)
             complain_about_duplicate(opts, 1);
         if (negated) {
@@ -2433,7 +2434,7 @@ boolean tinitial, tfrom_file;
     }
 
     fullname = "horsename";
-    if (match_optname(opts, fullname, 5, TRUE)) {
+    if (match_optname(opts, fullname, 9, TRUE)) {
         if (duplicate)
             complain_about_duplicate(opts, 1);
         if (negated) {
@@ -2448,7 +2449,7 @@ boolean tinitial, tfrom_file;
     }
 
     fullname = "ramname";
-    if (match_optname(opts, fullname, 5, TRUE)) {
+    if (match_optname(opts, fullname, 7, TRUE)) {
         if (duplicate)
             complain_about_duplicate(opts, 1);
         if (negated) {
@@ -2465,7 +2466,7 @@ boolean tinitial, tfrom_file;
     }
 
     fullname = "luggagename";
-    if (match_optname(opts, fullname, 5, TRUE)) {
+    if (match_optname(opts, fullname, 11, TRUE)) {
         if (duplicate)
             complain_about_duplicate(opts, 1);
         if (negated) {
@@ -2482,7 +2483,7 @@ boolean tinitial, tfrom_file;
     }
 
     fullname = "wolfname";
-    if (match_optname(opts, fullname, 5, TRUE)) {
+    if (match_optname(opts, fullname, 8, TRUE)) {
         if (duplicate)
             complain_about_duplicate(opts, 1);
         if (negated) {
@@ -2495,6 +2496,146 @@ boolean tinitial, tfrom_file;
         else
             return FALSE;
         sanitize_name(wolfname);
+        return retval;
+    }
+
+    fullname = "doggender";
+    if (match_optname(opts, fullname, 9, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        if ((op = string_for_env_opt(fullname, opts, negated)) != 0) {
+            switch (lowc(*op)) {
+            case 'f': /* female */
+                doggender = 2;
+                break;
+            case 'm': /* male */
+                doggender = 1;
+                break;
+            case '*': /* random */
+                doggender = 0;
+                break;
+            default:
+                config_error_add("Unrecognized dog gender '%s'.", op);
+                return FALSE;
+                break;
+            }
+        }
+        return retval;
+    }
+
+    fullname = "catgender";
+    if (match_optname(opts, fullname, 9, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        if ((op = string_for_env_opt(fullname, opts, negated)) != 0) {
+            switch (lowc(*op)) {
+            case 'f': /* female */
+                catgender = 2;
+                break;
+            case 'm': /* male */
+                catgender = 1;
+                break;
+            case '*': /* random */
+                catgender = 0;
+                break;
+            default:
+                config_error_add("Unrecognized cat gender '%s'.", op);
+                return FALSE;
+                break;
+            }
+        }
+        return retval;
+    }
+
+    fullname = "horsegender";
+    if (match_optname(opts, fullname, 11, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        if ((op = string_for_env_opt(fullname, opts, negated)) != 0) {
+            switch (lowc(*op)) {
+            case 'f': /* female */
+                horsegender = 2;
+                break;
+            case 'm': /* male */
+                horsegender = 1;
+                break;
+            case '*': /* random */
+                horsegender = 0;
+                break;
+            default:
+                config_error_add("Unrecognized horse gender '%s'.", op);
+                return FALSE;
+                break;
+            }
+        }
+        return retval;
+    }
+
+    fullname = "ramgender";
+    if (match_optname(opts, fullname, 9, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        if ((op = string_for_env_opt(fullname, opts, negated)) != 0) {
+            switch (lowc(*op)) {
+            case 'f': /* female */
+                ramgender = 2;
+                break;
+            case 'm': /* male */
+                ramgender = 1;
+                break;
+            case '*': /* random */
+                ramgender = 0;
+                break;
+            default:
+                config_error_add("Unrecognized ram gender '%s'.", op);
+                return FALSE;
+                break;
+            }
+        }
+        return retval;
+    }
+
+    fullname = "wolfgender";
+    if (match_optname(opts, fullname, 10, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        if ((op = string_for_env_opt(fullname, opts, negated)) != 0) {
+            switch (lowc(*op)) {
+            case 'f': /* female */
+                wolfgender = 2;
+                break;
+            case 'm': /* male */
+                wolfgender = 1;
+                break;
+            case '*': /* random */
+                wolfgender = 0;
+                break;
+            default:
+                config_error_add("Unrecognized wolf gender '%s'.", op);
+                return FALSE;
+                break;
+            }
+        }
         return retval;
     }
 
@@ -6731,6 +6872,26 @@ char *buf;
                            : (preferred_pet == 'd') ? "dog"
                              : (preferred_pet == 'h') ? "horse"
                                : (preferred_pet == 'n') ? "none"
+                                 : "random");
+    } else if (!strcmp(optname, "doggender")) {
+        Sprintf(buf, "%s", (doggender == 1) ? "male"
+                           : (doggender == 2) ? "female"
+                                 : "random");
+    } else if (!strcmp(optname, "catgender")) {
+        Sprintf(buf, "%s", (catgender == 1) ? "male"
+                           : (catgender == 2) ? "female"
+                                 : "random");
+    } else if (!strcmp(optname, "horsegender")) {
+        Sprintf(buf, "%s", (horsegender == 1) ? "male"
+                           : (horsegender == 2) ? "female"
+                                 : "random");
+    } else if (!strcmp(optname, "ramgender")) {
+        Sprintf(buf, "%s", (ramgender == 1) ? "male"
+                           : (ramgender == 2) ? "female"
+                                 : "random");
+    } else if (!strcmp(optname, "wolfgender")) {
+        Sprintf(buf, "%s", (wolfgender == 1) ? "male"
+                           : (wolfgender == 2) ? "female"
                                  : "random");
     } else if (!strcmp(optname, "pickup_burden")) {
         Sprintf(buf, "%s", burdentype[flags.pickup_burden]);

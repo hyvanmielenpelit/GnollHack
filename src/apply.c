@@ -2040,7 +2040,7 @@ struct obj **optr;
     {
         boolean objsplitted = FALSE;
         struct obj* lightedcandle = (struct obj*)0;
-        char qbuf2[BUFSIZ];
+        char qbuf2[QBUFSZ];
         Sprintf(qbuf2, "%s only one?", obj->lamplit ? "Snuff out" : "Light");
 
         if (obj->quan > 1L && yn_query(qbuf2) == 'y') 

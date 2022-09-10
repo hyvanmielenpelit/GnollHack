@@ -151,7 +151,7 @@ moverock()
     register struct obj *otmp;
     register struct trap *ttmp;
     register struct monst *mtmp;
-    char pushbuf[BUFSZ * 2] = "";
+    char pushbuf[QBUFSZ + BUFSZ * 2] = "";
     int pushcolor = NO_COLOR;
 
     play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_PUSH_EFFORT);

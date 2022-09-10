@@ -355,6 +355,8 @@ NEARDATA char ramname[PL_PSIZ] = DUMMY;
 NEARDATA char luggagename[PL_PSIZ] = DUMMY;
 NEARDATA char wolfname[PL_PSIZ] = DUMMY;
 char preferred_pet; /* '\0', 'c', 'd', 'n' (none) */
+short doggender, catgender, horsegender, ramgender, wolfgender; /* 0 = random, 1 = male, 2 = female */
+
 /* monsters that went down/up together with @ */
 NEARDATA struct monst *mydogs = (struct monst *) 0;
 /* monsters that are moving to another dungeon level */

@@ -69,14 +69,16 @@ pet_type()
         if (urole.petnum == PM_PONY && urace.monsternum == PM_DWARF)
             return PM_RAM;
         else
-            return  urole.petnum;
+            return urole.petnum;
     }
     else if (preferred_pet == 'c')
-        return  PM_KITTEN;
+        return PM_KITTEN;
     else if (preferred_pet == 'd')
-        return  PM_LITTLE_DOG;
+        return PM_LITTLE_DOG;
+    else if (preferred_pet == 'h')
+        return urace.monsternum == PM_DWARF ? PM_RAM : PM_PONY;
     else
-        return  rn2(2) ? PM_KITTEN : PM_LITTLE_DOG;
+        return rn2(2) ? PM_KITTEN : PM_LITTLE_DOG;
 }
 
 struct monst *
@@ -193,23 +195,47 @@ makedog()
     const char *petname;
     const char* petname_female = "";
     int pettype;
+    short petgender;
+    boolean ismale = FALSE;
+    boolean isfemale = FALSE;
+    boolean isneuter = FALSE;
 
     if (preferred_pet == 'n')
         return ((struct monst *) 0);
 
     pettype = pet_type();
     if (pettype == PM_LITTLE_DOG)
+    {
         petname = dogname;
+        petgender = doggender;
+    }
     else if (pettype == PM_PONY)
+    {
         petname = horsename;
+        petgender = horsegender;
+    }
     else if (pettype == PM_RAM)
+    {
         petname = ramname;
+        petgender = ramgender;
+    }
     else if (pettype == PM_SMALL_LUGGAGE)
+    {
         petname = luggagename;
+        petgender = 0;
+        isneuter = TRUE;
+        /* luggages are always neuter */
+    }
     else if (pettype == PM_DIREWOLF_CUB)
+    {
         petname = wolfname;
+        petgender = wolfgender;
+    }
     else
+    {
         petname = catname;
+        petgender = catgender;
+    }
 
     /* default pet names */
     if (!*petname && pettype == PM_LITTLE_DOG)
@@ -227,18 +253,24 @@ makedog()
         else
         {
             if (Role_if(PM_CAVEMAN))
-                petname = "Slasher";        /* The Warrior */
+                petname = "Slasher";         /* The Warrior */
             if (Role_if(PM_SAMURAI))
-                petname = "Hachiko";        /* Shibuya Station */
+            {
+                petname = "Hachiko";         /* Shibuya Station */
+                ismale = TRUE;
+            }
             if (Role_if(PM_BARBARIAN))
-                petname = "Idefix";            /* Obelix */
+            {
+                petname = "Idefix";          /* Obelix */
+                ismale = TRUE;
+            }
             if (Role_if(PM_TOURIST))
             {
                 petname = "Pepe";            /* Tribute to a male Welsh springer spaniel -- JG */
-                petname_female = "Luna";    /* Tribute to a female Finnish Lapphund -- JG */
+                petname_female = "Luna";     /* Tribute to a female Finnish Lapphund -- JG */
             }
             if (Role_if(PM_RANGER))
-                petname = "Sirius";            /* Orion's dog */
+                petname = "Sirius";          /* Orion's dog */
         }
     }
     else if(!*petname && pettype == PM_DIREWOLF_CUB) 
@@ -246,19 +278,47 @@ makedog()
         if (Role_if(PM_VALKYRIE))
         {
             petname = "Ghost";                /* Game of Thrones */
-            petname_female = "Nymeria";        /* Game of Thrones */
+            petname_female = "Nymeria";       /* Game of Thrones */
         }
     }
 
-    mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_MONSTER_INVENTORY);
+    if (petgender == 1 && !isfemale && !isneuter)
+        ismale = TRUE;
+    else if (petgender == 2 && !ismale && !isneuter)
+        isfemale = TRUE;
+
+    if (*petname == '+' || *petname == '_')
+    {
+        petname++;
+        if(!ismale && !isneuter)
+            isfemale = TRUE;
+    }
+    else if (*petname == '>')
+    {
+        petname++;
+        if (!isfemale && !isneuter)
+            ismale = TRUE;
+    }
+
+    unsigned long extrammflags = 0UL;
+    if (isfemale && !isneuter)
+    {
+        petname_female = petname;
+        extrammflags = MM_FEMALE;
+    }
+    else if (ismale && !isneuter)
+    {
+        extrammflags = MM_MALE;
+    }
+
+    mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_MONSTER_INVENTORY | extrammflags);
 
     if (!mtmp)
         return ((struct monst *) 0); /* pets were genocided */
 
     if (pettype == PM_LITTLE_DOG && Role_if(PM_SAMURAI))
     {
-        mtmp->female = FALSE;
-        mtmp->isfaithful = 1; /* Hachiko is well-known for its faithfulness -- JG */
+        mtmp->isfaithful = 1; /* Hachiko is well-known for his faithfulness -- JG */
     }
 
     context.startingpet_mid = mtmp->m_id;

@@ -287,6 +287,12 @@ E NEARDATA char horsename[];
 E NEARDATA char ramname[];
 E NEARDATA char luggagename[];
 E NEARDATA char wolfname[];
+E short doggender;
+E short catgender;
+E short horsegender;
+E short ramgender;
+/* No luggagegender, because luggages are neuter */
+E short wolfgender;
 E char preferred_pet;
 
 E NEARDATA unsigned long n_game_recoveries;

@@ -1673,7 +1673,7 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
 {
     char ch;
     char yn_esc_map = '\033';
-    char message[BUFSZ];
+    char message[BUFSZ + QBUFSZ];
     char res_ch[2];
     int createcaret;
     boolean digit_ok, allow_num;

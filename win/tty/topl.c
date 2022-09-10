@@ -388,7 +388,7 @@ unsigned long ynflags UNUSED;
     boolean digit_ok, allow_num, preserve_case = FALSE;
     struct WinDesc *cw = wins[WIN_MESSAGE];
     boolean doprev = 0;
-    char prompt[BUFSZ];
+    char prompt[BUFSZ + QBUFSZ];
 
     yn_number = 0L;
     if (ttyDisplay->toplin == 1 && !(cw->flags & WIN_STOP))

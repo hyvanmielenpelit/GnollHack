@@ -5950,7 +5950,7 @@ boolean *keys_used; /* boolean keys_used[256] */
 {
     int i;
     char buf[BUFSZ];
-    char buf2[QBUFSZ];
+    char buf2[BUFSZ];
     int count = 0;
 
     for (i = 0; i < 256; i++) {
