@@ -254,6 +254,11 @@ reset_global_variables(VOID_ARGS)
     *ramname = 0;
     *luggagename = 0;
     *wolfname = 0;
+    doggender = 0;
+    catgender = 0;
+    horsegender = 0;
+    ramgender = 0;
+    wolfgender = 0;
     preferred_pet = 0;
     domove_attempting = 0L;
     domove_succeeded = 0L;
