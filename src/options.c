@@ -2515,6 +2515,8 @@ boolean tinitial, tfrom_file;
             case 'm': /* male */
                 doggender = 1;
                 break;
+            case 'n': /* neuter or none */
+            case 'r': /* random */
             case '*': /* random */
                 doggender = 0;
                 break;
@@ -2543,6 +2545,8 @@ boolean tinitial, tfrom_file;
             case 'm': /* male */
                 catgender = 1;
                 break;
+            case 'n': /* neuter or none */
+            case 'r': /* random */
             case '*': /* random */
                 catgender = 0;
                 break;
@@ -2571,6 +2575,8 @@ boolean tinitial, tfrom_file;
             case 'm': /* male */
                 horsegender = 1;
                 break;
+            case 'n': /* neuter or none */
+            case 'r': /* random */
             case '*': /* random */
                 horsegender = 0;
                 break;
@@ -2599,6 +2605,8 @@ boolean tinitial, tfrom_file;
             case 'm': /* male */
                 ramgender = 1;
                 break;
+            case 'n': /* neuter or none */
+            case 'r': /* random */
             case '*': /* random */
                 ramgender = 0;
                 break;
@@ -2627,6 +2635,8 @@ boolean tinitial, tfrom_file;
             case 'm': /* male */
                 wolfgender = 1;
                 break;
+            case 'n': /* neuter or none */
+            case 'r': /* random */
             case '*': /* random */
                 wolfgender = 0;
                 break;
