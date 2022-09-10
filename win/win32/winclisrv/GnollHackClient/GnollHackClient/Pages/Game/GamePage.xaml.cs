@@ -738,7 +738,7 @@ namespace GnollHackClient.Pages.Game
                 if (refresh)
                 {
                     MenuCanvas.InvalidateSurface();
-                    lock (MenuScrollLock)
+                    lock (_menuScrollLock)
                     {
                         float speed = _menuScrollSpeed; /* pixels per second */
                         float bottomScrollLimit = 0;
@@ -820,6 +820,79 @@ namespace GnollHackClient.Pages.Game
             if (TextGrid.IsVisible)
             {
                 TextCanvas.InvalidateSurface();
+                lock (_textScrollLock)
+                {
+                    float speed = _textScrollSpeed; /* pixels per second */
+                    float bottomScrollLimit = 0;
+                    bottomScrollLimit = Math.Min(0, TextCanvas.CanvasSize.Height - TotalTextHeight);
+                    if (_textScrollSpeedOn)
+                    {
+                        int sgn = Math.Sign(_textScrollSpeed);
+                        float delta = speed / ClientUtils.GetAuxiliaryCanvasAnimationFrequency(); /* pixels */
+                        _textScrollOffset += delta;
+                        if (_textScrollOffset < 0 && _textScrollOffset - delta > 0)
+                        {
+                            _textScrollOffset = 0;
+                            _textScrollSpeed = 0;
+                            _textScrollSpeedOn = false;
+                        }
+                        else if (_textScrollOffset > bottomScrollLimit && _textScrollOffset - delta < bottomScrollLimit)
+                        {
+                            _textScrollOffset = bottomScrollLimit;
+                            _textScrollSpeed = 0;
+                            _textScrollSpeedOn = false;
+                        }
+                        else if (_textScrollOffset > 0 || _textScrollOffset < bottomScrollLimit)
+                        {
+                            float deceleration1 = MenuCanvas.CanvasSize.Height * GHConstants.ScrollConstantDeceleration * GHConstants.ScrollConstantDecelerationOverEdgeMultiplier;
+                            float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration * GHConstants.ScrollSpeedDecelerationOverEdgeMultiplier;
+                            float deceleration_per_second = deceleration1 + deceleration2;
+                            float distance_from_edge = _textScrollOffset > 0 ? _textScrollOffset : _textScrollOffset - bottomScrollLimit;
+                            float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * MenuCanvas.CanvasSize.Height) * GHConstants.ScrollOverEdgeDeceleration;
+                            float distance_anchor_distance = MenuCanvas.CanvasSize.Height * GHConstants.ScrollDistanceAnchorFactor;
+                            float close_anchor_distance = MenuCanvas.CanvasSize.Height * GHConstants.ScrollCloseAnchorFactor;
+                            float target_speed_at_distance = GHConstants.ScrollTargetSpeedAtDistanceAnchor;
+                            float target_speed_at_close = GHConstants.ScrollTargetSpeedAtCloseAnchor;
+                            float target_speed_at_edge = GHConstants.ScrollTargetSpeedAtEdge;
+                            float dist_factor = (Math.Abs(distance_from_edge) - close_anchor_distance) / (distance_anchor_distance - close_anchor_distance);
+                            float close_factor = Math.Abs(distance_from_edge) / close_anchor_distance;
+                            float target_speed = -1.0f * (float)Math.Sign(distance_from_edge)
+                                * (
+                                Math.Max(0f, dist_factor) * (target_speed_at_distance - target_speed_at_close)
+                                + Math.Min(1f, close_factor) * (target_speed_at_close - target_speed_at_edge)
+                                + target_speed_at_edge
+                                )
+                                * MenuCanvas.CanvasSize.Height;
+                            if (_textScrollOffset > 0 ? _textScrollSpeed <= 0 : _textScrollSpeed >= 0)
+                            {
+                                float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
+                                _textScrollSpeed += (-1.0f * deceleration3) * (float)ClientUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                                if (target_factor < 1.0f)
+                                {
+                                    _textScrollSpeed = _textScrollSpeed * target_factor + target_speed * (1.0f - target_factor);
+                                }
+                            }
+                            else
+                                _textScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)ClientUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                        }
+                        else
+                        {
+                            if (_textScrollSpeedReleaseStamp != null)
+                            {
+                                long millisecs_elapsed = (DateTime.Now.Ticks - _textScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                if (millisecs_elapsed > GHConstants.FreeScrollingTime)
+                                {
+                                    float deceleration1 = (float)MenuCanvas.CanvasSize.Height * GHConstants.ScrollConstantDeceleration;
+                                    float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
+                                    float deceleration_per_second = deceleration1 + deceleration2;
+                                    _textScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)ClientUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
+                                    if (sgn == 0 || (sgn > 0 && _textScrollSpeed < 0) || (sgn < 0 && _textScrollSpeed > 0))
+                                        _textScrollSpeed = 0;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -1655,9 +1728,12 @@ namespace GnollHackClient.Pages.Game
                 RefreshScreen = false;
             }
 
-            lock (TextScrollLock)
+            lock (_textScrollLock)
             {
                 _textScrollOffset = 0;
+                _textScrollSpeed = 0;
+                _textScrollSpeedOn = false;
+                _textScrollSpeedRecords.Clear();
             }
 
             TextWindowGlyphImage.Source = null;
@@ -2163,10 +2239,11 @@ namespace GnollHackClient.Pages.Game
 
             App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas Start");
             MenuTouchDictionary.Clear();
-            lock(MenuScrollLock)
+            lock(_menuScrollLock)
             {
                 _menuScrollSpeed = 0;
                 _menuScrollSpeedOn = false;
+                _menuScrollSpeedRecords.Clear();
             }
 
             /* Set headers */
@@ -8468,7 +8545,7 @@ namespace GnollHackClient.Pages.Game
                 float picturepadding = 9 * scale;
                 float leftinnerpadding = 5;
                 float curmenuoffset = 0;
-                lock (MenuScrollLock)
+                lock (_menuScrollLock)
                 {
                     curmenuoffset = _menuScrollOffset;
                 }
@@ -8948,11 +9025,9 @@ namespace GnollHackClient.Pages.Game
         }
 
 
-        private readonly object MenuScrollLock = new object();
+        private readonly object _menuScrollLock = new object();
         private float _menuScrollOffset = 0;
-        //private float MenuScrollOffset { get { lock (MenuScrollLock) { return _menuScrollOffset; } } set { lock (MenuScrollLock) {  _menuScrollOffset = value; } } }
         private float _menuScrollSpeed = 0; /* pixels per second */
-        //private float MenuScrollSpeed { get { lock (MenuScrollLock) { return _menuScrollSpeed; } } set { lock (MenuScrollLock) { _menuScrollSpeed = value; } } }
         private bool _menuScrollSpeedRecordOn = false;
         private DateTime _menuScrollSpeedStamp;
         List<TouchSpeedRecord> _menuScrollSpeedRecords = new List<TouchSpeedRecord>();
@@ -8986,7 +9061,7 @@ namespace GnollHackClient.Pages.Game
                     else
                         MenuTouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
 
-                    lock(MenuScrollLock)
+                    lock(_menuScrollLock)
                     {
                         _menuScrollSpeed = 0;
                         _menuScrollSpeedOn = false;
@@ -9038,7 +9113,7 @@ namespace GnollHackClient.Pages.Game
                                     long millisecs_elapsed = (now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
                                     if (dist > GHConstants.MoveDistanceThreshold || millisecs_elapsed > GHConstants.MoveOrPressTimeThreshold)
                                     {
-                                        lock (MenuScrollLock)
+                                        lock (_menuScrollLock)
                                         {
                                             float stretchLimit = GHConstants.ScrollStretchLimit * MenuCanvas.CanvasSize.Height;
                                             float stretchConstant = GHConstants.ScrollConstantStretch * MenuCanvas.CanvasSize.Height;
@@ -9140,7 +9215,7 @@ namespace GnollHackClient.Pages.Game
 
                             if (MenuTouchDictionary.Count == 0)
                             {
-                                lock(MenuScrollLock)
+                                lock(_menuScrollLock)
                                 {
                                     long lastrecord_ms = 0;
                                     if(_menuScrollSpeedRecords.Count > 0)
@@ -9187,20 +9262,23 @@ namespace GnollHackClient.Pages.Game
                     else
                         MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
-                    if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
+                    lock(_menuScrollLock)
                     {
-                        long lastrecord_ms = 0;
-                        if (_menuScrollSpeedRecords.Count > 0)
+                        if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
                         {
-                            lastrecord_ms = (DateTime.Now.Ticks - _menuScrollSpeedRecords[_menuScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                            long lastrecord_ms = 0;
+                            if (_menuScrollSpeedRecords.Count > 0)
+                            {
+                                lastrecord_ms = (DateTime.Now.Ticks - _menuScrollSpeedRecords[_menuScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                            }
+
+                            if (lastrecord_ms > GHConstants.ScrollRecordThreshold
+                                || Math.Abs(_menuScrollSpeed) < GHConstants.ScrollSpeedThreshold * MenuCanvas.CanvasSize.Height)
+                                _menuScrollSpeed = 0;
+
+                            _menuScrollSpeedOn = true;
+                            _menuScrollSpeedReleaseStamp = DateTime.Now;
                         }
-
-                        if (lastrecord_ms > GHConstants.ScrollRecordThreshold
-                            || Math.Abs(_menuScrollSpeed) < GHConstants.ScrollSpeedThreshold * MenuCanvas.CanvasSize.Height)
-                            _menuScrollSpeed = 0;
-
-                        _menuScrollSpeedOn = true;
-                        _menuScrollSpeedReleaseStamp = DateTime.Now;
                     }
 
                     e.Handled = true;
@@ -9372,7 +9450,7 @@ namespace GnollHackClient.Pages.Game
                 _menuDrawOnlyClear = true;
             }
 
-            lock (MenuScrollLock)
+            lock (_menuScrollLock)
             {
                 _menuScrollOffset = 0;
                 _menuScrollSpeed = 0;
@@ -9423,7 +9501,7 @@ namespace GnollHackClient.Pages.Game
                 _menuDrawOnlyClear = true;
             }
 
-            lock (MenuScrollLock)
+            lock (_menuScrollLock)
             {
                 _menuScrollOffset = 0;
                 _menuScrollSpeed = 0;
@@ -9521,6 +9599,12 @@ namespace GnollHackClient.Pages.Game
                 }
                 TextGrid.IsVisible = false;
                 MainGrid.IsVisible = true;
+                lock (_textScrollLock)
+                {
+                    _textScrollOffset = 0;
+                    _textScrollSpeed = 0;
+                    _textScrollSpeedOn = false;
+                }
                 if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                     TextCanvas.AbortAnimation("GeneralAnimationCounter");
                 lock (RefreshScreenLock)
@@ -9648,11 +9732,19 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-
+        private readonly object _totalTextHeightLock = new object();
         private float _totalTextHeight = 0;
+        private float TotalTextHeight { get { lock (_totalTextHeightLock) { return _totalTextHeight; } } set { lock (_totalTextHeightLock) { _totalTextHeight = value; } } }
 
-        private readonly object TextScrollLock = new object();
+
+        private readonly object _textScrollLock = new object();
         private float _textScrollOffset = 0;
+        private float _textScrollSpeed = 0; /* pixels per second */
+        private bool _textScrollSpeedRecordOn = false;
+        private DateTime _textScrollSpeedStamp;
+        List<TouchSpeedRecord> _textScrollSpeedRecords = new List<TouchSpeedRecord>();
+        private bool _textScrollSpeedOn = false;
+        private DateTime _textScrollSpeedReleaseStamp;
 
         private Dictionary<long, TouchEntry> TextTouchDictionary = new Dictionary<long, TouchEntry>();
         private object _savedTextSender = null;
@@ -9690,7 +9782,7 @@ namespace GnollHackClient.Pages.Game
                 float minrowheight = textPaint.FontSpacing;
                 float leftinnerpadding = 5;
                 float curmenuoffset = 0;
-                lock (TextScrollLock)
+                lock (_textScrollLock)
                 {
                     curmenuoffset = _textScrollOffset;
                 }
@@ -9826,7 +9918,7 @@ namespace GnollHackClient.Pages.Game
                         j++;
                         y += textPaint.FontMetrics.Descent + fontspacingpadding;
                     }
-                    _totalTextHeight = y - curmenuoffset;
+                    TotalTextHeight = y - curmenuoffset;
                 }
             }
         }
@@ -9835,6 +9927,7 @@ namespace GnollHackClient.Pages.Game
         {
             lock (TextCanvas.TextItemLock)
             {
+                float bottomScrollLimit = Math.Min(0, TextCanvas.CanvasSize.Height - TotalTextHeight);
                 switch (e?.ActionType)
                 {
                     case SKTouchAction.Entered:
@@ -9848,6 +9941,14 @@ namespace GnollHackClient.Pages.Game
                             TextTouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
                         else
                             TextTouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
+
+                        lock (_textScrollLock)
+                        {
+                            _textScrollSpeed = 0;
+                            _textScrollSpeedOn = false;
+                            _textScrollSpeedRecordOn = false;
+                            _textScrollSpeedRecords.Clear();
+                        }
 
                         if (TextTouchDictionary.Count > 1)
                             _textTouchMoved = true;
@@ -9880,17 +9981,89 @@ namespace GnollHackClient.Pages.Game
                                         /* Just one finger => Move the map */
                                         if (diffX != 0 || diffY != 0)
                                         {
-                                            lock (TextScrollLock)
+                                            //lock (_textScrollLock)
+                                            //{
+                                            //    _textScrollOffset += diffY;
+                                            //    if (_textScrollOffset > 0)
+                                            //        _textScrollOffset = 0;
+                                            //    else if (_textScrollOffset < bottomScrollLimit)
+                                            //        _textScrollOffset = bottomScrollLimit;
+                                            //}
+
+                                            DateTime now = DateTime.Now;
+                                            /* Do not scroll within button press time threshold, unless large move */
+                                            long millisecs_elapsed = (now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+                                            if (dist > GHConstants.MoveDistanceThreshold || millisecs_elapsed > GHConstants.MoveOrPressTimeThreshold)
                                             {
-                                                _textScrollOffset += diffY;
-                                                if (_textScrollOffset > 0)
-                                                    _textScrollOffset = 0;
-                                                else if (_textScrollOffset < TextCanvas.CanvasSize.Height - _totalTextHeight)
-                                                    _textScrollOffset = Math.Min(0, TextCanvas.CanvasSize.Height - _totalTextHeight);
+                                                lock (_menuScrollLock)
+                                                {
+                                                    float stretchLimit = GHConstants.ScrollStretchLimit * MenuCanvas.CanvasSize.Height;
+                                                    float stretchConstant = GHConstants.ScrollConstantStretch * MenuCanvas.CanvasSize.Height;
+                                                    float adj_factor = 1.0f;
+                                                    if (_textScrollOffset > 0)
+                                                        adj_factor = _textScrollOffset >= stretchLimit ? 0 : (1 - ((_textScrollOffset + stretchConstant) / (stretchLimit + stretchConstant)));
+                                                    else if (_textScrollOffset < bottomScrollLimit)
+                                                        adj_factor = _textScrollOffset < bottomScrollLimit - stretchLimit ? 0 : (1 - ((bottomScrollLimit - (_textScrollOffset - stretchConstant)) / (stretchLimit + stretchConstant)));
+
+                                                    float adj_diffY = diffY * adj_factor;
+                                                    _textScrollOffset += adj_diffY;
+
+                                                    if (_textScrollOffset > stretchLimit)
+                                                        _textScrollOffset = stretchLimit;
+                                                    else if (_textScrollOffset < bottomScrollLimit - stretchLimit)
+                                                        _textScrollOffset = bottomScrollLimit - stretchLimit;
+                                                    else
+                                                    {
+                                                        /* Calculate duration since last touch move */
+                                                        float duration = 0;
+                                                        if (!_textScrollSpeedRecordOn)
+                                                        {
+                                                            duration = (float)millisecs_elapsed / 1000f;
+                                                            _textScrollSpeedRecordOn = true;
+                                                        }
+                                                        else
+                                                        {
+                                                            duration = ((float)(now.Ticks - _textScrollSpeedStamp.Ticks) / TimeSpan.TicksPerMillisecond) / 1000f;
+                                                        }
+                                                        _textScrollSpeedStamp = now;
+
+                                                        /* Discard speed records to the opposite direction */
+                                                        if (_textScrollSpeedRecords.Count > 0)
+                                                        {
+                                                            int prevsgn = Math.Sign(_textScrollSpeedRecords[0].Distance);
+                                                            if (diffY != 0 && prevsgn != 0 && Math.Sign(diffY) != prevsgn)
+                                                                _textScrollSpeedRecords.Clear();
+                                                        }
+
+                                                        /* Add a new speed record */
+                                                        _textScrollSpeedRecords.Insert(0, new TouchSpeedRecord(diffY, duration, now));
+
+                                                        /* Discard too old records */
+                                                        while (_textScrollSpeedRecords.Count > 0)
+                                                        {
+                                                            long lastrecord_ms = (now.Ticks - _textScrollSpeedRecords[_textScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                                            if (lastrecord_ms > GHConstants.ScrollRecordThreshold)
+                                                                _textScrollSpeedRecords.RemoveAt(_textScrollSpeedRecords.Count - 1);
+                                                            else
+                                                                break;
+                                                        }
+
+                                                        /* Sum up the distances and durations of current records to get an average */
+                                                        float totaldistance = 0;
+                                                        float totalsecs = 0;
+                                                        foreach (TouchSpeedRecord r in _textScrollSpeedRecords)
+                                                        {
+                                                            totaldistance += r.Distance;
+                                                            totalsecs += r.Duration;
+                                                        }
+                                                        _textScrollSpeed = totaldistance / Math.Max(0.001f, totalsecs);
+                                                        _textScrollSpeedOn = false;
+                                                    }
+                                                }
+                                                TextTouchDictionary[e.Id].Location = e.Location;
+                                                _textTouchMoved = true;
+                                                _savedTextTimeStamp = DateTime.Now;
                                             }
-                                            TextTouchDictionary[e.Id].Location = e.Location;
-                                            _textTouchMoved = true;
-                                            _savedTextTimeStamp = DateTime.Now;
                                         }
                                     }
                                 }
@@ -9921,8 +10094,48 @@ namespace GnollHackClient.Pages.Game
                                 else
                                     TextTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
+                                //if (TextTouchDictionary.Count == 0)
+                                //    _textTouchMoved = false;
+
                                 if (TextTouchDictionary.Count == 0)
+                                {
+                                    lock (_textScrollLock)
+                                    {
+                                        long lastrecord_ms = 0;
+                                        if (_textScrollSpeedRecords.Count > 0)
+                                        {
+                                            lastrecord_ms = (DateTime.Now.Ticks - _textScrollSpeedRecords[_textScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                        }
+
+                                        if (_textScrollOffset > 0 || _textScrollOffset < bottomScrollLimit)
+                                        {
+                                            if (lastrecord_ms > GHConstants.ScrollRecordThreshold
+                                                || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * TextCanvas.CanvasSize.Height)
+                                                _textScrollSpeed = 0;
+
+                                            _textScrollSpeedOn = true;
+                                            _textScrollSpeedReleaseStamp = DateTime.Now;
+                                        }
+                                        else if (lastrecord_ms > GHConstants.ScrollRecordThreshold)
+                                        {
+                                            _textScrollSpeedOn = false;
+                                            _textScrollSpeed = 0;
+                                        }
+                                        else if (Math.Abs(_textScrollSpeed) >= GHConstants.ScrollSpeedThreshold * TextCanvas.CanvasSize.Height)
+                                        {
+                                            _textScrollSpeedOn = true;
+                                            _textScrollSpeedReleaseStamp = DateTime.Now;
+                                        }
+                                        else
+                                        {
+                                            _textScrollSpeedOn = false;
+                                            _textScrollSpeed = 0;
+                                        }
+                                        _textScrollSpeedRecordOn = false;
+                                        _textScrollSpeedRecords.Clear();
+                                    }
                                     _textTouchMoved = false;
+                                }
                             }
                             e.Handled = true;
                         }
@@ -9932,6 +10145,26 @@ namespace GnollHackClient.Pages.Game
                             TextTouchDictionary.Remove(e.Id);
                         else
                             TextTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+
+                        lock (_textScrollLock)
+                        {
+                            if (_textScrollOffset > 0 || _textScrollOffset < bottomScrollLimit)
+                            {
+                                long lastrecord_ms = 0;
+                                if (_textScrollSpeedRecords.Count > 0)
+                                {
+                                    lastrecord_ms = (DateTime.Now.Ticks - _textScrollSpeedRecords[_textScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                }
+
+                                if (lastrecord_ms > GHConstants.ScrollRecordThreshold
+                                    || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * TextCanvas.CanvasSize.Height)
+                                    _textScrollSpeed = 0;
+
+                                _textScrollSpeedOn = true;
+                                _textScrollSpeedReleaseStamp = DateTime.Now;
+                            }
+                        }
+
                         e.Handled = true;
                         break;
                     case SKTouchAction.Exited:
