@@ -341,11 +341,13 @@ static struct Comp_Opt {
     { "boulder", "deprecated (use S_boulder in sym file instead)", 1,
       SET_IN_GAME },
 #endif
+    { "catgender", "the name of your (first) cat (e.g., catgender:female)", 7, DISP_IN_GAME },
     { "catname", "the name of your (first) cat (e.g., catname:Tabby)",
       PL_PSIZ, DISP_IN_GAME },
     { "crawl_interval", "crawl movement interval in milliseconds", 3, SET_IN_GAME },
     { "disclose", "the kinds of information to disclose at end of game",
       sizeof flags.end_disclose * 2, SET_IN_GAME },
+    { "doggender", "the name of your (first) dog (e.g., dogname:male)", 7, DISP_IN_GAME },
     { "dogname", "the name of your (first) dog (e.g., dogname:Fang)", PL_PSIZ,
       DISP_IN_GAME },
     { "dungeon", "the symbols to use in drawing the dungeon map",
@@ -376,6 +378,7 @@ static struct Comp_Opt {
       "number of rows in the here window",
       20, SET_IN_GAME
     }, /*WC2*/
+    { "horsegender", "the name of your (first) horse (e.g., horsegender:female)", 7, DISP_IN_GAME },
     { "horsename", "the name of your (first) horse (e.g., horsename:Silver)",
       PL_PSIZ, DISP_IN_GAME },
     { "last_item_show_duration", "duration for showing last item in context menu", 3,
@@ -433,7 +436,6 @@ static struct Comp_Opt {
     { "paranoid_confirmation", "extra prompting in certain situations", 28,
       SET_IN_GAME },
     { "petattr",  "attributes for highlighting pets", 88, SET_IN_GAME },
-    { "petgender", "your preferred initial pet gender", 4, DISP_IN_GAME },
     { "pettype", "your preferred initial pet type", 4, DISP_IN_GAME },
     { "pickup_burden", "maximum burden picked up before prompt", 20,
       SET_IN_GAME },
@@ -451,6 +453,7 @@ static struct Comp_Opt {
 #endif
     { "race", "your starting race (e.g., Human, Elf)", PL_CSIZ,
       DISP_IN_GAME },
+    { "ramgender", "the name of your (first) ram (e.g., ramgender:male)", 7, DISP_IN_GAME },
     { "ramname", "the name of your (first) ram (e.g., ramname:Silver)",
       PL_PSIZ, DISP_IN_GAME },
     { "role", "your starting role (e.g., Barbarian, Valkyrie)", PL_CSIZ,
@@ -544,7 +547,8 @@ static struct Comp_Opt {
 #ifdef WINCHAIN
     { "windowchain", "window processor to use", WINTYPELEN, SET_IN_SYS },
 #endif
-      { "wolfname", "the name of your (first) wolf (e.g., wolfname:Shadow)",
+    { "wolfgender", "the name of your (first) direwolf (e.g., wolfgender:female)", 7, DISP_IN_GAME },
+    { "wolfname", "the name of your (first) wolf (e.g., wolfname:Shadow)",
         PL_PSIZ, DISP_IN_GAME },
 #ifdef BACKWARD_COMPAT
     { "DECgraphics", "load DECGraphics display symbols", 70, SET_IN_FILE },
