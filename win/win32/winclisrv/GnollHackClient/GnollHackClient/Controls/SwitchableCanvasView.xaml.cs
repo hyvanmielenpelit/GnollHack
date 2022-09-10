@@ -146,16 +146,7 @@ namespace GnollHackClient.Controls
                 {
                     case CanvasTypes.MainCanvas:
                         {
-                            bool refresh = true;
-                            lock (_gamePage.RefreshScreenLock)
-                            {
-                                refresh = _gamePage.RefreshScreen;
-                            }
-
-                            _gamePage.IncrementCounters();
-
-                            if (refresh)
-                                InvalidateSurface();
+                            _gamePage.UpdateMainCanvas();
                             break;
                         }
                     case CanvasTypes.CommandCanvas:
