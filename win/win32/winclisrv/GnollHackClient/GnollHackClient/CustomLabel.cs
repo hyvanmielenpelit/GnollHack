@@ -166,6 +166,17 @@ namespace GnollHackClient
             set { SetValue(DisplayWrapSeparatorProperty, value); UpdateLabel(); }
         }
 
+        public static readonly BindableProperty GeneralAnimationCounterProperty = BindableProperty.Create(
+            "GeneralAnimationCounter", typeof(long), typeof(CustomLabel), 0L);
+
+        public long GeneralAnimationCounter
+        {
+            get { return (long)GetValue(GeneralAnimationCounterProperty); }
+            set { SetValue(GeneralAnimationCounterProperty, value); UpdateLabelScroll(); }
+        }
+
+
+
         private object _textRowLock = new object();
         private string[] _textRows = null;
         private string[] TextRows
@@ -493,9 +504,9 @@ namespace GnollHackClient
             float usedTextOffset = 0;
 
             canvas.Clear();
-            lock (_textOffsetLock)
+            lock (_textScrollLock)
             {
-                usedTextOffset = _textOffsetY;
+                usedTextOffset = _textScrollOffset;
             }
 
             lock (_isFirstLock)
@@ -625,14 +636,65 @@ namespace GnollHackClient
         }
 
         private Dictionary<long, TouchEntry> TouchDictionary = new Dictionary<long, TouchEntry>();
-        private readonly object _textOffsetLock = new object();
-        private float _textOffsetY = 0;
+        private readonly object _textScrollLock = new object();
+        private float _textScrollOffset = 0;
+        private float _textScrollSpeed = 0; /* pixels per second */
+        private bool _textScrollSpeedRecordOn = false;
+        private DateTime _textScrollSpeedStamp;
+        List<TouchSpeedRecord> _textScrollSpeedRecords = new List<TouchSpeedRecord>();
+        private uint _auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / ClientUtils.GetAuxiliaryCanvasAnimationInterval();
+        private bool _textScrollSpeedOn = false;
+        private bool TextScrollSpeedOn 
+        { 
+            get 
+            { 
+                return _textScrollSpeedOn; 
+            } 
+            set
+            {
+                _textScrollSpeedOn = value;
+                if(value)
+                {
+                    Animation commandAnimation = new Animation(v => GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
+                    commandAnimation.Commit(this, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
+                        rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => true);
+                }
+                else
+                {
+                    if (this.AnimationIsRunning("GeneralAnimationCounter"))
+                        this.AbortAnimation("GeneralAnimationCounter");
+                }
+            }
+        }
+
+        protected override void OnPropertyChanged(string propertyName = null)
+        {
+            base.OnPropertyChanged(propertyName);
+            if (!IsVisible)
+                return;
+            if (propertyName == nameof(GeneralAnimationCounter))
+                UpdateLabelScroll();
+            else if (propertyName == nameof(IsVisible))
+            {
+                lock (_textScrollLock)
+                {
+                    _textScrollOffset = 0;
+                    _textScrollSpeed = 0;
+                    TextScrollSpeedOn = false;
+                    _textScrollSpeedRecords.Clear();
+                }
+            }
+        }
+
+        private DateTime _textScrollSpeedReleaseStamp;
+
         private object _textHeightLock = new object();
         private float _textHeight = 0;
         private float TextHeight { get { lock(_textHeightLock) { return _textHeight; } } set { lock (_textHeightLock) { _textHeight = value; } } }
         private readonly object _touchMovedLock = new object();
         private bool _touchMoved = false;
         private bool TouchMoved { get { lock (_touchMovedLock) { return _touchMoved; } } set { lock (_touchMovedLock) { _touchMoved = value; } } }
+        private DateTime _savedTimeStamp;
 
         private readonly object _isFirstLock = new object();
         private bool _isFirst = false;
@@ -641,6 +703,7 @@ namespace GnollHackClient
         private void Base_Touch(object sender, SKTouchEventArgs e)
         {
             float textHeight = TextHeight;
+            float bottomScrollLimit = Math.Min(0, CanvasSize.Height - textHeight);
             switch (e?.ActionType)
             {
                 case SKTouchAction.Entered:
@@ -670,26 +733,99 @@ namespace GnollHackClient
 
                             if (TouchDictionary.Count == 1)
                             {
-
                                 if ((dist > GHConstants.MoveDistanceThreshold ||
                                     (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond > GHConstants.MoveOrPressTimeThreshold
                                        ))
                                 {
                                     if (diffX != 0 || diffY != 0)
                                     {
-                                        lock (_textOffsetLock)
+                                        lock (_textScrollLock)
                                         {
-                                            float oldoffset = _textOffsetY;
-                                            _textOffsetY += diffY;
-                                            if (_textOffsetY < -(textHeight - CanvasSize.Height))
+                                            float oldoffset = _textScrollOffset;
+                                            //_textScrollOffset += diffY;
+                                            //if (_textScrollOffset < -(textHeight - CanvasSize.Height))
+                                            //{
+                                            //    _textScrollOffset = -(textHeight - CanvasSize.Height);
+                                            //}
+                                            //if (_textScrollOffset > 0)
+                                            //{
+                                            //    _textScrollOffset = 0;
+                                            //}
+
+                                            DateTime now = DateTime.Now;
+                                            /* Do not scroll within button press time threshold, unless large move */
+                                            long millisecs_elapsed = (now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+
+                                            lock (_textScrollLock)
                                             {
-                                                _textOffsetY = -(textHeight - CanvasSize.Height);
+                                                float stretchLimit = GHConstants.ScrollStretchLimit * CanvasSize.Height;
+                                                float stretchConstant = GHConstants.ScrollConstantStretch * CanvasSize.Height;
+                                                float adj_factor = 1.0f;
+                                                if (_textScrollOffset > 0)
+                                                    adj_factor = _textScrollOffset >= stretchLimit ? 0 : (1 - ((_textScrollOffset + stretchConstant) / (stretchLimit + stretchConstant)));
+                                                else if (_textScrollOffset < bottomScrollLimit)
+                                                    adj_factor = _textScrollOffset < bottomScrollLimit - stretchLimit ? 0 : (1 - ((bottomScrollLimit - (_textScrollOffset - stretchConstant)) / (stretchLimit + stretchConstant)));
+
+                                                float adj_diffY = diffY * adj_factor;
+                                                _textScrollOffset += adj_diffY;
+
+                                                if (_textScrollOffset > stretchLimit)
+                                                    _textScrollOffset = stretchLimit;
+                                                else if (_textScrollOffset < bottomScrollLimit - stretchLimit)
+                                                    _textScrollOffset = bottomScrollLimit - stretchLimit;
+                                                else
+                                                {
+                                                    /* Calculate duration since last touch move */
+                                                    float duration = 0;
+                                                    if (!_textScrollSpeedRecordOn)
+                                                    {
+                                                        duration = (float)millisecs_elapsed / 1000f;
+                                                        _textScrollSpeedRecordOn = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        duration = ((float)(now.Ticks - _textScrollSpeedStamp.Ticks) / TimeSpan.TicksPerMillisecond) / 1000f;
+                                                    }
+                                                    _textScrollSpeedStamp = now;
+
+                                                    /* Discard speed records to the opposite direction */
+                                                    if (_textScrollSpeedRecords.Count > 0)
+                                                    {
+                                                        int prevsgn = Math.Sign(_textScrollSpeedRecords[0].Distance);
+                                                        if (diffY != 0 && prevsgn != 0 && Math.Sign(diffY) != prevsgn)
+                                                            _textScrollSpeedRecords.Clear();
+                                                    }
+
+                                                    /* Add a new speed record */
+                                                    _textScrollSpeedRecords.Insert(0, new TouchSpeedRecord(diffY, duration, now));
+
+                                                    /* Discard too old records */
+                                                    while (_textScrollSpeedRecords.Count > 0)
+                                                    {
+                                                        long lastrecord_ms = (now.Ticks - _textScrollSpeedRecords[_textScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                                        if (lastrecord_ms > GHConstants.ScrollRecordThreshold)
+                                                            _textScrollSpeedRecords.RemoveAt(_textScrollSpeedRecords.Count - 1);
+                                                        else
+                                                            break;
+                                                    }
+
+                                                    /* Sum up the distances and durations of current records to get an average */
+                                                    float totaldistance = 0;
+                                                    float totalsecs = 0;
+                                                    foreach (TouchSpeedRecord r in _textScrollSpeedRecords)
+                                                    {
+                                                        totaldistance += r.Distance;
+                                                        totalsecs += r.Duration;
+                                                    }
+                                                    _textScrollSpeed = totaldistance / Math.Max(0.001f, totalsecs);
+                                                    TextScrollSpeedOn = false;
+                                                }
                                             }
-                                            if (_textOffsetY > 0)
-                                            {
-                                                _textOffsetY = 0;
-                                            }
-                                            if (_textOffsetY != oldoffset)
+                                            TouchDictionary[e.Id].Location = e.Location;
+                                            _touchMoved = true;
+                                            _savedTimeStamp = DateTime.Now;
+
+                                            if (_textScrollOffset != oldoffset)
                                                 InvalidateSurface();
                                         }
                                         TouchDictionary[e.Id].Location = e.Location;
@@ -726,8 +862,44 @@ namespace GnollHackClient
                             TouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
                         if (TouchDictionary.Count == 0)
-                            TouchMoved = false;
+                        {
+                            lock (_textScrollLock)
+                            {
+                                long lastrecord_ms = 0;
+                                if (_textScrollSpeedRecords.Count > 0)
+                                {
+                                    lastrecord_ms = (DateTime.Now.Ticks - _textScrollSpeedRecords[_textScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                }
 
+                                if (_textScrollOffset > 0 || _textScrollOffset < bottomScrollLimit)
+                                {
+                                    if (lastrecord_ms > GHConstants.ScrollRecordThreshold
+                                        || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * CanvasSize.Height)
+                                        _textScrollSpeed = 0;
+
+                                    TextScrollSpeedOn = true;
+                                    _textScrollSpeedReleaseStamp = DateTime.Now;
+                                }
+                                else if (lastrecord_ms > GHConstants.ScrollRecordThreshold)
+                                {
+                                    TextScrollSpeedOn = false;
+                                    _textScrollSpeed = 0;
+                                }
+                                else if (Math.Abs(_textScrollSpeed) >= GHConstants.ScrollSpeedThreshold * CanvasSize.Height)
+                                {
+                                    TextScrollSpeedOn = true;
+                                    _textScrollSpeedReleaseStamp = DateTime.Now;
+                                }
+                                else
+                                {
+                                    TextScrollSpeedOn = false;
+                                    _textScrollSpeed = 0;
+                                }
+                                _textScrollSpeedRecordOn = false;
+                                _textScrollSpeedRecords.Clear();
+                            }
+                            TouchMoved = false;
+                        }
                         e.Handled = true;
                     }
                     break;
@@ -736,6 +908,25 @@ namespace GnollHackClient
                         TouchDictionary.Remove(e.Id);
                     else
                         TouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+
+                    lock (_textScrollLock)
+                    {
+                        if (_textScrollOffset > 0 || _textScrollOffset < bottomScrollLimit)
+                        {
+                            long lastrecord_ms = 0;
+                            if (_textScrollSpeedRecords.Count > 0)
+                            {
+                                lastrecord_ms = (DateTime.Now.Ticks - _textScrollSpeedRecords[_textScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                            }
+
+                            if (lastrecord_ms > GHConstants.ScrollRecordThreshold
+                                || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * CanvasSize.Height)
+                                _textScrollSpeed = 0;
+
+                            TextScrollSpeedOn = true;
+                            _textScrollSpeedReleaseStamp = DateTime.Now;
+                        }
+                    }
                     e.Handled = true;
                     break;
                 case SKTouchAction.Exited:
@@ -744,6 +935,81 @@ namespace GnollHackClient
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void UpdateLabelScroll()
+        {
+            InvalidateSurface();
+            lock (_textScrollLock)
+            {
+                float speed = _textScrollSpeed; /* pixels per second */
+                float bottomScrollLimit = 0;
+                bottomScrollLimit = Math.Min(0, CanvasSize.Height - TextHeight);
+                int sgn = Math.Sign(_textScrollSpeed);
+                float delta = speed / ClientUtils.GetAuxiliaryCanvasAnimationFrequency(); /* pixels */
+                _textScrollOffset += delta;
+                if (_textScrollOffset < 0 && _textScrollOffset - delta > 0)
+                {
+                    _textScrollOffset = 0;
+                    _textScrollSpeed = 0;
+                    TextScrollSpeedOn = false;
+                }
+                else if (_textScrollOffset > bottomScrollLimit && _textScrollOffset - delta < bottomScrollLimit)
+                {
+                    _textScrollOffset = bottomScrollLimit;
+                    _textScrollSpeed = 0;
+                    TextScrollSpeedOn = false;
+                }
+                else if (_textScrollOffset > 0 || _textScrollOffset < bottomScrollLimit)
+                {
+                    float deceleration1 = CanvasSize.Height * GHConstants.ScrollConstantDeceleration * GHConstants.ScrollConstantDecelerationOverEdgeMultiplier;
+                    float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration * GHConstants.ScrollSpeedDecelerationOverEdgeMultiplier;
+                    float deceleration_per_second = deceleration1 + deceleration2;
+                    float distance_from_edge = _textScrollOffset > 0 ? _textScrollOffset : _textScrollOffset - bottomScrollLimit;
+                    float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * CanvasSize.Height) * GHConstants.ScrollOverEdgeDeceleration;
+                    float distance_anchor_distance = CanvasSize.Height * GHConstants.ScrollDistanceAnchorFactor;
+                    float close_anchor_distance = CanvasSize.Height * GHConstants.ScrollCloseAnchorFactor;
+                    float target_speed_at_distance = GHConstants.ScrollTargetSpeedAtDistanceAnchor;
+                    float target_speed_at_close = GHConstants.ScrollTargetSpeedAtCloseAnchor;
+                    float target_speed_at_edge = GHConstants.ScrollTargetSpeedAtEdge;
+                    float dist_factor = (Math.Abs(distance_from_edge) - close_anchor_distance) / (distance_anchor_distance - close_anchor_distance);
+                    float close_factor = Math.Abs(distance_from_edge) / close_anchor_distance;
+                    float target_speed = -1.0f * (float)Math.Sign(distance_from_edge)
+                        * (
+                        Math.Max(0f, dist_factor) * (target_speed_at_distance - target_speed_at_close)
+                        + Math.Min(1f, close_factor) * (target_speed_at_close - target_speed_at_edge)
+                        + target_speed_at_edge
+                        )
+                        * CanvasSize.Height;
+                    if (_textScrollOffset > 0 ? _textScrollSpeed <= 0 : _textScrollSpeed >= 0)
+                    {
+                        float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
+                        _textScrollSpeed += (-1.0f * deceleration3) * (float)ClientUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                        if (target_factor < 1.0f)
+                        {
+                            _textScrollSpeed = _textScrollSpeed * target_factor + target_speed * (1.0f - target_factor);
+                        }
+                    }
+                    else
+                        _textScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)ClientUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                }
+                else
+                {
+                    if (_textScrollSpeedReleaseStamp != null)
+                    {
+                        long millisecs_elapsed = (DateTime.Now.Ticks - _textScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                        if (millisecs_elapsed > GHConstants.FreeScrollingTime)
+                        {
+                            float deceleration1 = (float)CanvasSize.Height * GHConstants.ScrollConstantDeceleration;
+                            float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
+                            float deceleration_per_second = deceleration1 + deceleration2;
+                            _textScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)ClientUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
+                            if (sgn == 0 || (sgn > 0 && _textScrollSpeed < 0) || (sgn < 0 && _textScrollSpeed > 0))
+                                _textScrollSpeed = 0;
+                        }
+                    }
+                }
             }
         }
 
@@ -761,13 +1027,12 @@ namespace GnollHackClient
             {
                 _currentWidth = width;
                 _currentHeight = height;
-                lock (_textOffsetLock)
+                lock (_textScrollLock)
                 {
-                    _textOffsetY = 0;
+                    _textScrollOffset = 0;
                 }
                 UpdateScrollable(IsScrollable, true);
             }
         }
-
     }
 }
