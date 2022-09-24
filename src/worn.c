@@ -103,7 +103,7 @@ boolean verbose_and_update_stats;
             {
                 oobj = *(wp->w_obj);
                 if (oobj && !(oobj->owornmask & wp->w_mask))
-                    impossible("Setworn: mask = %ld.", wp->w_mask);
+                    impossible("Setworn: mask = %ld, oworn = %ld, update = %d.", wp->w_mask, oobj->owornmask, verbose_and_update_stats);
 
                 /* If old object remove wornmask */
                 if (oobj) 
