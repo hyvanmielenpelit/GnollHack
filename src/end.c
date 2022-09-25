@@ -3190,6 +3190,7 @@ reset_game(VOID_ARGS)
     dmonsfree();
     *plname = 0;
     *recovery_plname = 0;
+    plname_from_error_savefile = FALSE;
     reset_lev();
     reset_rooms(); /* no dynamic memory to reclaim */
     reset_gamestate();

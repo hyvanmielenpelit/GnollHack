@@ -1595,9 +1595,9 @@ long timeout;
             char monnambuf[BUFSZ] = "";
             char qbuf[QBUFSZ] = "";
             /* Give true name to the hatch child */
-            Sprintf(qbuf, "Which true name do you want to give to %s?",
+            Sprintf(qbuf, "Which name do you want to give to %s?",
                 distant_monnam(mon, ARTICLE_THE, monnambuf));
-            getlin_ex(GETLINE_ASK_NAME, ATR_NONE, NO_COLOR, qbuf, buf, "type the name", (char*)0, (char*)0);
+            getlin_ex(GETLINE_ASK_NAME, ATR_NONE, NO_COLOR, qbuf, buf, "type the name", (char*)0, "You have gained offspring.");
             if (!*buf || *buf == '\033')
             {
                 //Nothing
@@ -1606,9 +1606,9 @@ long timeout;
             {
                 /* strip leading and trailing spaces; unnames monster if all spaces */
                 (void)mungspaces(buf);
-                if ((mon->data->geno & G_UNIQ) || mon->isshk || mon->ispriest || mon->isminion || mon->isshk || mon->issmith || mon->isnpc)
+                if ((mon->data->geno & G_UNIQ) || mon->ispriest || mon->isminion || mon->isshk || mon->issmith || mon->isnpc)
                 {
-                    pline("%s will not accept the name %s.", upstart(monnambuf), buf);
+                    pline("Unfortunately, %s will not accept the name %s.", monnambuf, buf);
                 }
                 else
                 {

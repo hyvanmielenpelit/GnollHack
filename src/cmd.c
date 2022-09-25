@@ -162,7 +162,9 @@ STATIC_PTR int NDECL(wiz_files);
 STATIC_PTR int NDECL(wiz_genesis);
 STATIC_PTR int NDECL(wiz_where);
 STATIC_PTR int NDECL(wiz_detect);
+#if defined(DEBUG)
 STATIC_PTR int NDECL(wiz_panic);
+#endif
 STATIC_PTR int NDECL(wiz_polyself);
 STATIC_PTR int NDECL(wiz_level_tele);
 STATIC_PTR int NDECL(wiz_level_change);
@@ -1806,6 +1808,7 @@ wiz_level_change(VOID_ARGS)
 }
 
 /* #panic command - test program's panic handling */
+#if defined(DEBUG)
 STATIC_PTR int
 wiz_panic(VOID_ARGS)
 {
@@ -1818,6 +1821,7 @@ wiz_panic(VOID_ARGS)
         panic("Crash test.");
     return 0;
 }
+#endif
 
 /* #polyself command - change hero's form */
 STATIC_PTR int
@@ -5625,8 +5629,10 @@ struct ext_func_tab extcmdlist[] = {
             doset, IFBURIED | GENERALCMD },
     { C('o'), "overview", "show a summary of the explored dungeon",
             dooverview, IFBURIED | AUTOCOMPLETE },
+#if defined(DEBUG)
     { '\0', "panic", "test panic routine (fatal to game)",
-            wiz_panic, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+            wiz_panic, IFBURIED },
+#endif
     { 'p', "pay", "pay your shopping bill", dopay },
     { ',', "pickup", "pick up things at the current location", dopickup },
     { M(1), "polyself", "polymorph self", /* Special hotkey launchable from GUI */

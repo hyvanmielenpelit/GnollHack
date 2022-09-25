@@ -131,6 +131,9 @@ struct level_ftrack {
 STATIC_VAR char wizkit[WIZKIT_MAX];
 STATIC_DCL FILE *NDECL(fopen_wizkit_file);
 STATIC_DCL void FDECL(wizkit_addinv, (struct obj *));
+#ifndef MICRO
+STATIC_DCL void FDECL(print_error_savefile_extension, (char*));
+#endif
 
 #ifdef AMIGA
 extern char PATH[]; /* see sys/amiga/amidos.c */
@@ -970,6 +973,8 @@ boolean regularize_it;
 #endif /* WIN32 */
 #endif /* MICRO */
 #endif /* VMS   */
+    if (plname_from_error_savefile)
+        set_error_savefile();
 }
 
 #ifdef INSURANCE
@@ -982,25 +987,31 @@ int fd;
 #endif
 
 #ifndef MICRO
-/* change pre-existing savefile name to indicate an error savefile */
-void
-set_error_savefile()
+STATIC_OVL void
+print_error_savefile_extension(printbuf)
+char* printbuf;
 {
 #ifdef VMS
     {
-        char *semi_colon = rindex(SAVEF, ';');
+        char* semi_colon = rindex(printbuf, ';');
 
         if (semi_colon)
             *semi_colon = '\0';
     }
-    Strcat(SAVEF, ".e;1");
+    Strcat(printbuf, ".e;1");
 #else
 #ifdef MAC
-    Strcat(SAVEF, "-e");
+    Strcat(printbuf, "-e");
 #else
-    Strcat(SAVEF, ".e");
+    Strcat(printbuf, ".e");
 #endif
 #endif
+}
+/* change pre-existing savefile name to indicate an error savefile */
+void
+set_error_savefile()
+{
+    print_error_savefile_extension(SAVEF);
 }
 #endif
 
@@ -1189,6 +1200,12 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
             }
         }
 
+        if (plname_from_error_savefile)
+        {
+            plname_from_error_savefile = FALSE;
+            set_savefile_name(TRUE);
+        }
+
         return 1;
     }
     return 0;
@@ -1197,13 +1214,15 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
 
 #if defined(SELECTSAVED)
 struct save_game_data 
-newsavegamedata(playername, gamestats, is_running, is_error_savefile)
+newsavegamedata(playername, filename, gamestats, is_running, is_error_savefile)
 char* playername;
+char* filename;
 struct save_game_stats gamestats;
 boolean is_running, is_error_savefile;
 {
     struct save_game_data svgd = { 0 };
     svgd.playername = playername;
+    Strcpy(svgd.filename, filename ? filename : "");
     svgd.is_running = is_running;
     svgd.is_error_save_file = is_error_savefile;
     svgd.gamestats = gamestats;
@@ -1276,11 +1295,29 @@ struct save_game_stats* stats_ptr;
 /* --------- end of obsolete code ----*/
 #endif /* 0 - WAS STORE_PLNAME_IN_FILE*/
 }
+
 #if defined(ANDROID) || defined(GNH_MOBILE)
 int filter_running(entry)
 const struct dirent* entry;
 {
     return *entry->d_name && entry->d_name[strlen(entry->d_name) - 1] == '0';
+}
+int filter_error(entry)
+const struct dirent* entry;
+{
+    size_t dlen = strlen(entry->d_name);
+    char buf[BUFSZ] = "";
+    print_error_savefile_extension(buf);
+    size_t elen = strlen(buf);
+    if (dlen <= elen)
+        return FALSE;
+
+    size_t i;
+    for (i = 0; i < elen; i++)
+        if (entry->d_name[dlen - 1 - i] != buf[elen - 1 - i])
+            return FALSE;
+
+    return TRUE;
 }
 char*
 plname_from_running(filename, stats_ptr)
@@ -1335,6 +1372,7 @@ get_saved_games()
     {
         char *foundfile;
         const char *fq_save;
+        char fq_save_ebuf[BUFSZ];
 
         Strcpy(plname, "*");
         set_savefile_name(FALSE);
@@ -1342,26 +1380,54 @@ get_saved_games()
         Strcat(SAVEF, COMPRESS_EXTENSION);
 #endif
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+        Strcpy(fq_save_ebuf, fq_save);
+#ifndef MICRO
+        print_error_savefile_extension(fq_save_ebuf);
+#endif
 
         int n = 0;
+        int n2 = 0;
         foundfile = foundfile_buffer();
         if (findfirst((char *) fq_save)) {
             do {
                 ++n;
             } while (findnext());
         }
-        if (n > 0) {
-            result = (struct save_game_data*) alloc(((size_t)n + 1) * sizeof(struct save_game_data)); /* at most */
-            (void) memset((genericptr_t) result, 0, ((size_t)n + 1) * sizeof(struct save_game_data));
-            if (findfirst((char *) fq_save)) {
-                j = n = 0;
-                do {
-                    char *r;
-                    r = plname_from_file(foundfile, &gamestats);
-                    if (r)
-                        result[j++] = newsavegamedata(r, gamestats, FALSE, FALSE);
-                    ++n;
-                } while (findnext());
+#ifndef MICRO
+        if (findfirst((char*)fq_save_ebuf)) {
+            do {
+                ++n2;
+            } while (findnext());
+        }
+#endif
+        if (n > 0 || n2 > 0) {
+            result = (struct save_game_data*) alloc(((size_t)n + (size_t)n2 + 1) * sizeof(struct save_game_data)); /* at most */
+            (void) memset((genericptr_t) result, 0, ((size_t)n + (size_t)n2 + 1) * sizeof(struct save_game_data));
+            if (n > 0)
+            {
+                if (findfirst((char*)fq_save)) {
+                    j = n = 0;
+                    do {
+                        char* r;
+                        r = plname_from_file(foundfile, &gamestats);
+                        if (r)
+                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, FALSE);
+                        ++n;
+                    } while (findnext());
+                }
+            }
+            if (n2 > 0)
+            {
+                if (findfirst((char*)fq_save_ebuf)) {
+                    n2 = 0;
+                    do {
+                        char* r;
+                        r = plname_from_file(foundfile, &gamestats);
+                        if (r)
+                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, TRUE);
+                        ++n2;
+                    } while (findnext());
+                }
             }
         }
     }
@@ -1397,7 +1463,7 @@ get_saved_games()
                         Sprintf(filename, "save/%d%s", uid, name);
                         r = plname_from_file(filename, &gamestats);
                         if (r)
-                            result[j++] = newsavegamedata(r, gamestats, FALSE, FALSE);
+                            result[j++] = newsavegamedata(r, filename, gamestats, FALSE, FALSE);
                     }
                 }
             }
@@ -1408,15 +1474,17 @@ get_saved_games()
     int myuid = getuid();
     struct dirent** namelist;
     struct dirent** namelist2;
+    struct dirent** namelist3;
     int n1 = scandir("save", &namelist, 0, 0);
     int n2 = scandir(".", &namelist2, filter_running, 0);
+    int n3 = scandir("save", &namelist3, filter_error, 0);
     if (n1 < 0) n1 = 0;
     if (n2 < 0) n2 = 0;
     int i, uid;
     char name[64]; /* more than PL_NSIZ */
-    if (n1 > 0 || n2 > 0) {
-        result = (struct save_game_data*)alloc((n1 + n2 + 1) * sizeof(struct save_game_data)); /* at most */
-        (void)memset((genericptr_t)result, 0, (n1 + n2 + 1) * sizeof(struct save_game_data));
+    if (n1 > 0 || n2 > 0 || n3 > 0) {
+        result = (struct save_game_data*)alloc((n1 + n2 + n3 + 1) * sizeof(struct save_game_data)); /* at most */
+        (void)memset((genericptr_t)result, 0, (n1 + n2 + n3 + 1) * sizeof(struct save_game_data));
     }
     for (i = 0; i < n1; i++) {
         if (sscanf(namelist[i]->d_name, "%d%63s", &uid, name) == 2) {
@@ -1427,7 +1495,7 @@ get_saved_games()
                 r = plname_from_file(filename, &gamestats);
                 if (r)
                 {
-                    result[j++] = newsavegamedata(r, gamestats, FALSE, FALSE);
+                    result[j++] = newsavegamedata(r, filename, gamestats, FALSE, FALSE);
                 }
             }
         }
@@ -1438,7 +1506,21 @@ get_saved_games()
                 char* r;
                 r = plname_from_running(namelist2[i]->d_name, &gamestats);
                 if (r)
-                    result[j++] = newsavegamedata(r, gamestats, TRUE, FALSE);
+                    result[j++] = newsavegamedata(r, namelist2[i]->d_name, gamestats, TRUE, FALSE);
+            }
+        }
+    }
+    for (i = 0; i < n3; i++) {
+        if (sscanf(namelist[i]->d_name, "%d%63s.e", &uid, name) == 2) {
+            if (uid == myuid) {
+                char filename[BUFSZ];
+                char* r;
+                Sprintf(filename, "save/%d%s.e", uid, name);
+                r = plname_from_file(filename, &gamestats);
+                if (r)
+                {
+                    result[j++] = newsavegamedata(r, filename, gamestats, FALSE, TRUE);
+                }
             }
         }
     }

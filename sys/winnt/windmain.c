@@ -407,6 +407,12 @@ attempt_restore:
                 }
             }
         }
+
+        if (plname_from_error_savefile)
+        {
+            plname_from_error_savefile = FALSE;
+            set_savefile_name(TRUE);
+        }
     }
 
     if (!resuming) 

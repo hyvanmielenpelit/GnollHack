@@ -281,6 +281,7 @@ E NEARDATA const char getobj_unmark_autostashs[];
 E long done_money;
 E NEARDATA char plname[PL_NSIZ];
 E NEARDATA char recovery_plname[PL_NSIZ];
+E NEARDATA boolean plname_from_error_savefile;
 E NEARDATA char dogname[];
 E NEARDATA char catname[];
 E NEARDATA char horsename[];

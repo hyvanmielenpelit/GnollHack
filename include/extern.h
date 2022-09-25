@@ -1185,7 +1185,7 @@ E void FDECL(testinglog, (const char *, const char *, const char *));
 E int FDECL(validate_prefix_locations, (char *));
 #ifdef SELECTSAVED
 E char *FDECL(plname_from_file, (const char *, struct save_game_stats*));
-E struct save_game_data FDECL(newsavegamedata, (char*, struct save_game_stats, BOOLEAN_P, BOOLEAN_P));
+E struct save_game_data FDECL(newsavegamedata, (char*, char*, struct save_game_stats, BOOLEAN_P, BOOLEAN_P));
 #endif
 E struct save_game_data *NDECL(get_saved_games);
 E void FDECL(free_saved_games, (struct save_game_data *));

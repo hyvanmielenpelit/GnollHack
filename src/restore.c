@@ -1702,7 +1702,7 @@ struct save_game_data* saved;
             char prefix[8] = "";
     #endif
 
-            Sprintf(namebuf, "%s", saved[k].playername);
+            Sprintf(namebuf, "%s%s", saved[k].playername, saved[k].is_error_save_file ? " [Saved upon Error]" : "");
             Sprintf(characterbuf, "%sLevel %d %s %s%s %s", prefix, saved[k].gamestats.ulevel, alignbuf, genderwithspacebuf, racebuf, rolebuf);
             Sprintf(adventuringbuf, "%sAdventuring %s%s%s", prefix, lvlbuf, dgnbuf, totallevelbuf);
             Sprintf(playingbuf, "%sPlaying at %s difficulty in %s mode for %ld turns", prefix, get_game_difficulty_text(saved[k].gamestats.game_difficulty),
@@ -1764,6 +1764,7 @@ struct save_game_data* saved;
             if (ch > 0 && saved[ch - 1].playername > 0)
             {
                 Strcpy(plname, saved[ch - 1].playername);
+                plname_from_error_savefile = saved[ch - 1].is_error_save_file;
                 if (style == 1)
                 {
                     shoulddelete = TRUE;

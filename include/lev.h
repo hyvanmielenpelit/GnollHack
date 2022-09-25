@@ -100,6 +100,7 @@ struct save_game_stats {
 
 struct save_game_data {
     char* playername;
+    char filename[256];
     boolean is_running;
     boolean is_error_save_file;
     struct save_game_stats gamestats;
