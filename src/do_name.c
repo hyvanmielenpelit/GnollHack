@@ -1425,7 +1425,7 @@ do_mname()
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s will not accept the name %s.", upstart(monnambuf), buf);
     }
-    else if((!has_mname(mtmp) || (mtmp->mon_flags & MON_FLAGS_YOUR_CHILD) || (is_tame(mtmp) && !is_charmed(mtmp))) && is_animal(mtmp->data) && is_peaceful(mtmp))
+    else if(((!has_mname(mtmp) || (is_tame(mtmp) && !is_charmed(mtmp))) && is_animal(mtmp->data) && is_peaceful(mtmp)) || (mtmp->mon_flags & MON_FLAGS_YOUR_CHILD))
     {
         /* Peaceful animals who do not have names and tame animals can be named, others do not accept your naming */
         (void)christen_monst(mtmp, buf);
