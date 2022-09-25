@@ -172,7 +172,7 @@ STATIC_PTR int NDECL(wiz_smell);
 STATIC_PTR int NDECL(wiz_intrinsic);
 STATIC_PTR int NDECL(wiz_show_wmodes);
 STATIC_DCL void NDECL(wiz_map_levltyp);
-#ifndef GNH_MOBILE
+#if !defined(GNH_MOBILE) && defined(DEBUG)
 STATIC_DCL int NDECL(wiz_save_monsters);
 STATIC_DCL int NDECL(wiz_save_tiledata);
 STATIC_DCL int NDECL(wiz_count_tiles);
@@ -2521,7 +2521,6 @@ wiz_save_quest_texts(VOID_ARGS) /* Save a csv file for monsters */
     return 0;
 }
 #endif /* ifndef GNH_MOBILE */
-
 
 /* temporary? hack, since level type codes aren't the same as screen
    symbols and only the latter have easily accessible descriptions */
@@ -5791,7 +5790,7 @@ struct ext_func_tab extcmdlist[] = {
             wiz_makemap, IFBURIED | WIZMODECMD },
     { C('f'), "wizmap", "map the level",
             wiz_map, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-#ifndef GNH_MOBILE
+#if !defined(GNH_MOBILE) && defined(DEBUG)
     { '\0', "wizsavemon", "save monsters into a file",
             wiz_save_monsters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsaveenc", "save encounters into a file",

@@ -2354,7 +2354,7 @@ dochat()
 
         if(is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && !non_advicing_npc)
         {
-            if (!mtmp->isgd && (is_izchak(mtmp, TRUE) || mtmp->rumorsleft >= 0))
+            if (!mtmp->isgd && !(mtmp->data->mflags6 & M6_HATCHLING) && (is_izchak(mtmp, TRUE) || mtmp->rumorsleft >= 0))
             {
                 if(is_izchak(mtmp, TRUE))
                     strcpy(available_chat_list[chatnum].name, mtmp->told_rumor ? "Ask what is further on his mind" : "Ask what is on his mind");
@@ -4567,7 +4567,10 @@ struct monst* mtmp;
     }
     else
     {
-        Sprintf(ansbuf, "My name is none of your business.");
+        if(mtmp->mon_flags & MON_FLAGS_YOUR_CHILD)
+            Sprintf(ansbuf, "I do not know my name%s.", flags.female ? ", mommy" : ", daddy");
+        else
+            Sprintf(ansbuf, "My name is none of your business.");
         popup_talk_line(mtmp, ansbuf);
     }
 
@@ -4616,7 +4619,7 @@ struct monst* mtmp;
 
     char ansbuf[BUFSZ];
     char rumorbuf[BUFSZ] = "";
-    int truth_core = mtmp->isshk || mtmp->issmith || (mtmp->isnpc && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_HAS_TRUE_RUMORS) != 0) ? 1 
+    int truth_core = mtmp->isshk || mtmp->issmith || (mtmp->data->mflags6 & M6_ELDER) || is_angel(mtmp->data) || (mtmp->isnpc && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_HAS_TRUE_RUMORS) != 0) ? 1
         : (mtmp->ispriest && has_epri(mtmp) && EPRI(mtmp)->shralign == A_NONE) || (mtmp->isminion && has_emin(mtmp) && EMIN(mtmp)->min_align == A_NONE) || is_demon(mtmp->data) ? -1
         : mtmp->ispriest || mtmp->isminion ? 1 : 0;
     int truth = min(is_peaceful(mtmp), truth_core);

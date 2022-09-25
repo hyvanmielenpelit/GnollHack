@@ -1197,14 +1197,15 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
 
 #if defined(SELECTSAVED)
 struct save_game_data 
-newsavegamedata(playername, gamestats, is_running)
+newsavegamedata(playername, gamestats, is_running, is_error_savefile)
 char* playername;
 struct save_game_stats gamestats;
-boolean is_running;
+boolean is_running, is_error_savefile;
 {
     struct save_game_data svgd = { 0 };
     svgd.playername = playername;
     svgd.is_running = is_running;
+    svgd.is_error_save_file = is_error_savefile;
     svgd.gamestats = gamestats;
     return svgd;
 }
@@ -1358,7 +1359,7 @@ get_saved_games()
                     char *r;
                     r = plname_from_file(foundfile, &gamestats);
                     if (r)
-                        result[j++] = newsavegamedata(r, gamestats, FALSE);
+                        result[j++] = newsavegamedata(r, gamestats, FALSE, FALSE);
                     ++n;
                 } while (findnext());
             }
@@ -1396,7 +1397,7 @@ get_saved_games()
                         Sprintf(filename, "save/%d%s", uid, name);
                         r = plname_from_file(filename, &gamestats);
                         if (r)
-                            result[j++] = newsavegamedata(r, gamestats, FALSE);
+                            result[j++] = newsavegamedata(r, gamestats, FALSE, FALSE);
                     }
                 }
             }
@@ -1426,7 +1427,7 @@ get_saved_games()
                 r = plname_from_file(filename, &gamestats);
                 if (r)
                 {
-                    result[j++] = newsavegamedata(r, gamestats, FALSE);
+                    result[j++] = newsavegamedata(r, gamestats, FALSE, FALSE);
                 }
             }
         }
@@ -1437,7 +1438,7 @@ get_saved_games()
                 char* r;
                 r = plname_from_running(namelist2[i]->d_name, &gamestats);
                 if (r)
-                    result[j++] = newsavegamedata(r, gamestats, TRUE);
+                    result[j++] = newsavegamedata(r, gamestats, TRUE, FALSE);
             }
         }
     }

@@ -1425,7 +1425,7 @@ long timeout;
     struct monst *mon, *mon2;
     coord cc;
     xchar x, y;
-    boolean yours, silent, knows_egg = FALSE;
+    boolean yours, tamed, silent, knows_egg = FALSE;
     boolean cansee_hatchspot = FALSE;
     int i, mnum, hatchcount = 0;
 
@@ -1437,7 +1437,8 @@ long timeout;
     mon = mon2 = (struct monst *) 0;
     mnum = big_to_little(egg->corpsenm);
     /* The identity of one's father is learned, not innate */
-    yours = ((egg->speflags & SPEFLAGS_YOURS) || (!flags.female && carried(egg) && !rn2(2)));
+    yours = (egg->speflags & SPEFLAGS_YOURS) != 0;
+    tamed = yours || (!flags.female && carried(egg) && !rn2(2));
     silent = (timeout != monstermoves); /* hatched while away */
 
     /* only can hatch when in INVENT, FLOOR, MINVENT */
@@ -1453,12 +1454,18 @@ long timeout;
                 /* tame if your own egg hatches while you're on the
                    same dungeon level, or any dragon egg which hatches
                    while it's in your inventory */
-                if ((yours && !silent)
+                if ((tamed && !silent)
                     || (carried(egg) && mon->data->mlet == S_DRAGON)) {
                     if (tamedog(mon, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE)) {
                         if (carried(egg) && mon->data->mlet != S_DRAGON)
                             mon->mtame = 20;
                     }
+                }
+                if (mon) /* Hatched monsters do not have rumors obviously */
+                {
+                    mon->rumorsleft = 0;
+                    if (yours)
+                        mon->mon_flags |= MON_FLAGS_YOUR_CHILD;
                 }
                 if (mvitals[mnum].mvflags & MV_EXTINCT)
                     break;  /* just made last one */
@@ -1521,10 +1528,10 @@ long timeout;
             else
                 You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s out of your pack!", monnambuf,
                         locomotion(mon->data, "drop"));
-            if (yours) {
+            if (tamed) {
                 pline("%s cries sound like \"%s%s\"",
                       siblings ? "Their" : "Its",
-                      flags.female ? "mommy" : "daddy", (egg->speflags & SPEFLAGS_YOURS) ? "." : "?");
+                      flags.female ? "mommy" : "daddy", yours ? "." : "?");
             } else if (mon->data->mlet == S_DRAGON && !Deaf) {
                 verbalize("Gleep!"); /* Mything eggs :-) */
             }
@@ -1581,6 +1588,38 @@ long timeout;
         }
         if (redraw)
             newsym(x, y);
+
+        if (mon && yours && !has_mname(mon) && is_tame(mon) && cansee_hatchspot)
+        {
+            char buf[BUFSZ] = "";
+            char monnambuf[BUFSZ] = "";
+            char qbuf[QBUFSZ] = "";
+            /* Give true name to the hatch child */
+            Sprintf(qbuf, "Which true name do you want to give to %s?",
+                distant_monnam(mon, ARTICLE_THE, monnambuf));
+            getlin_ex(GETLINE_ASK_NAME, ATR_NONE, NO_COLOR, qbuf, buf, "type the name", (char*)0, (char*)0);
+            if (!*buf || *buf == '\033')
+            {
+                //Nothing
+            }
+            else
+            {
+                /* strip leading and trailing spaces; unnames monster if all spaces */
+                (void)mungspaces(buf);
+                if ((mon->data->geno & G_UNIQ) || mon->isshk || mon->ispriest || mon->isminion || mon->isshk || mon->issmith || mon->isnpc)
+                {
+                    pline("%s will not accept the name %s.", upstart(monnambuf), buf);
+                }
+                else
+                {
+                    (void)christen_monst(mon, buf);
+                    mon->u_know_mname = 1;
+                    /* Clear out umname */
+                    if (has_umname(mon))
+                        free_umname(mon);
+                }
+            }
+        }
     }
 }
 

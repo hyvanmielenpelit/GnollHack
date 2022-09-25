@@ -213,6 +213,7 @@ struct monst {
 #define MON_FLAGS_CLONED_WIZ        0x00000004UL
 #define MON_FLAGS_SUMMONED_AT_ALTAR 0x00000008UL
 #define MON_FLAGS_SPLEVEL_RESIDENT  0x00000010UL
+#define MON_FLAGS_YOUR_CHILD        0x00000020UL
 
     unsigned long mstrategy; /* for monsters with mflag3: current strategy */
 
