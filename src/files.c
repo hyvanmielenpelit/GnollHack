@@ -1297,28 +1297,42 @@ struct save_game_stats* stats_ptr;
 }
 
 #if defined(ANDROID) || defined(GNH_MOBILE)
-int filter_running(entry)
-const struct dirent* entry;
+int is_error_savefile_name(savefilename)
+char* savefilename;
 {
-    return *entry->d_name && entry->d_name[strlen(entry->d_name) - 1] == '0';
-}
-int filter_error(entry)
-const struct dirent* entry;
-{
-    size_t dlen = strlen(entry->d_name);
-    char buf[BUFSZ] = "";
-    print_error_savefile_extension(buf);
-    size_t elen = strlen(buf);
+    size_t dlen = strlen(savefilename);
+    char ebuf[BUFSZ] = "";
+    print_error_savefile_extension(ebuf);
+    size_t elen = strlen(ebuf);
     if (dlen <= elen)
         return FALSE;
 
     size_t i;
     for (i = 0; i < elen; i++)
-        if (entry->d_name[dlen - 1 - i] != buf[elen - 1 - i])
+        if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
             return FALSE;
 
     return TRUE;
 }
+
+int filter_running(entry)
+const struct dirent* entry;
+{
+    return *entry->d_name && entry->d_name[strlen(entry->d_name) - 1] == '0';
+}
+
+int filter_error(entry)
+const struct dirent* entry;
+{
+    return is_error_savefile_name(entry->d_name);
+}
+
+int filter_noerror(entry)
+const struct dirent* entry;
+{
+    return !filter_error(entry);
+}
+
 char*
 plname_from_running(filename, stats_ptr)
 const char* filename;
@@ -1474,17 +1488,15 @@ get_saved_games()
     int myuid = getuid();
     struct dirent** namelist;
     struct dirent** namelist2;
-    struct dirent** namelist3;
     int n1 = scandir("save", &namelist, 0, 0);
     int n2 = scandir(".", &namelist2, filter_running, 0);
-    int n3 = scandir("save", &namelist3, filter_error, 0);
     if (n1 < 0) n1 = 0;
     if (n2 < 0) n2 = 0;
     int i, uid;
     char name[64]; /* more than PL_NSIZ */
-    if (n1 > 0 || n2 > 0 || n3 > 0) {
-        result = (struct save_game_data*)alloc((n1 + n2 + n3 + 1) * sizeof(struct save_game_data)); /* at most */
-        (void)memset((genericptr_t)result, 0, (n1 + n2 + n3 + 1) * sizeof(struct save_game_data));
+    if (n1 > 0 || n2 > 0) {
+        result = (struct save_game_data*)alloc((n1 + n2 + 1) * sizeof(struct save_game_data)); /* at most */
+        (void)memset((genericptr_t)result, 0, (n1 + n2 + 1) * sizeof(struct save_game_data));
     }
     for (i = 0; i < n1; i++) {
         if (sscanf(namelist[i]->d_name, "%d%63s", &uid, name) == 2) {
@@ -1495,7 +1507,8 @@ get_saved_games()
                 r = plname_from_file(filename, &gamestats);
                 if (r)
                 {
-                    result[j++] = newsavegamedata(r, filename, gamestats, FALSE, FALSE);
+                    boolean iserrorfile = !!filter_error(namelist[i]);
+                    result[j++] = newsavegamedata(r, filename, gamestats, FALSE, iserrorfile);
                 }
             }
         }
@@ -1507,20 +1520,6 @@ get_saved_games()
                 r = plname_from_running(namelist2[i]->d_name, &gamestats);
                 if (r)
                     result[j++] = newsavegamedata(r, namelist2[i]->d_name, gamestats, TRUE, FALSE);
-            }
-        }
-    }
-    for (i = 0; i < n3; i++) {
-        if (sscanf(namelist[i]->d_name, "%d%63s.e", &uid, name) == 2) {
-            if (uid == myuid) {
-                char filename[BUFSZ];
-                char* r;
-                Sprintf(filename, "save/%d%s.e", uid, name);
-                r = plname_from_file(filename, &gamestats);
-                if (r)
-                {
-                    result[j++] = newsavegamedata(r, filename, gamestats, FALSE, TRUE);
-                }
             }
         }
     }
