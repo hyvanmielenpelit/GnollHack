@@ -5,9 +5,9 @@ using Xamarin.Forms;
 
 namespace GnollHackClient
 {
-    // Pull request test. Thanks for the help Janne! Please delete this.
     public class AnimatedButton : Button
     {
+        string pullRequestTest = "Please remove";
         public AnimatedButton()
         {
 
