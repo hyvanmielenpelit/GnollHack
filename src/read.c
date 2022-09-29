@@ -1745,8 +1745,6 @@ struct monst* targetmonst;
             otmp = getobj(enchant_armor_objects, otyp == SPE_ENCHANT_ARMOR ? "enchant" : "protect", 0, "");
             if (!otmp)
             {
-                if(!is_serviced_spell)
-                    pline1(Never_mind);
                 *effect_happened_ptr = 0;
                 return 0;
             }
@@ -2135,8 +2133,6 @@ struct monst* targetmonst;
             otmp = getobj(enchant_weapon_objects, otyp == SPE_ENCHANT_WEAPON ? "enchant" : "protect", 0, "");
             if (!otmp)
             {
-                if (!is_serviced_spell)
-                    pline1(Never_mind);
                 *effect_happened_ptr = 0;
                 return 0;
             }
@@ -2655,8 +2651,6 @@ struct monst* targetmonst;
             }
             else
             {
-                if (!is_serviced_spell)
-                    pline1(Never_mind);
                 *effect_happened_ptr = 0;
                 return 0;
             }
@@ -2720,10 +2714,10 @@ struct monst* targetmonst;
         }
         else
         {
-            if (!is_serviced_spell)
-                pline1(Never_mind);
             *effect_happened_ptr = 0;
-            return 0;
+            if (!sobj)
+                update_inventory();
+            return sobj ? 0 : 1;
         }
         break;
     case SCR_ENCHANT_ACCESSORY:
