@@ -111,6 +111,14 @@ namespace GnollHackClient.Pages.Game
             CreditsTableView.IsEnabled = true;
         }
 
+        private async void btnSponsor_Clicked(object sender, EventArgs e)
+        {
+            CreditsTableView.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            await OpenBrowser(new Uri(GHConstants.GnollHackSponsorPage));
+            CreditsTableView.IsEnabled = true;
+        }
+
         //private async void btnSourceCode_Clicked(object sender, EventArgs e)
         //{
         //    CreditsTableView.IsEnabled = false;

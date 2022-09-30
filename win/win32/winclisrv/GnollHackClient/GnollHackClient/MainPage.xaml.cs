@@ -151,7 +151,7 @@ namespace GnollHackClient
             UpperButtonGrid.IsEnabled = true;
             LogoGrid.IsEnabled = true;
 
-            if(App.ShowSpecialEffect && !App.SponsorButtonVisited)
+            if(App.ShowSpecialEffect && !App.SponsorButtonVisited && SponsorButton.IsVisible)
             {
                 SponsorButton.AbortAnimation("AnimationCounter");
                 _sponsorAnimation = new Animation(v => SponsorButton.AnimationCounter = (long)v, 1, 120);
