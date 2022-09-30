@@ -1340,7 +1340,14 @@ unsigned doname_flags;
 
     /* charges */
     if (objects[obj->otyp].oc_charged && known)
-        Sprintf(eos(bp), " (%d:%d)", (int)obj->recharged, (int)obj->charges);
+    {
+        if (flags.long_charge_text)
+        {
+            Sprintf(eos(bp), " (%d charge%s, %d recharging%s)", (int)obj->charges, plur(obj->charges), (int)obj->recharged, plur(obj->recharged));
+        }
+        else
+            Sprintf(eos(bp), " (%d:%d)", (int)obj->recharged, (int)obj->charges);
+    }
 
     /* post and prefixes */
     switch (is_weptool(obj) ? WEAPON_CLASS : obj->oclass) {

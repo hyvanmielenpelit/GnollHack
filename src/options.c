@@ -186,6 +186,7 @@ static struct Bool_Opt {
     { "large_font", &iflags.obsolete, FALSE, SET_IN_FILE }, /* OBSOLETE */
     { "legacy", &flags.legacy, TRUE, DISP_IN_GAME },
     { "lit_corridor", &flags.lit_corridor, FALSE, SET_IN_GAME },
+    { "long_charge_text", &flags.long_charge_text, FALSE, SET_IN_GAME },
     { "lootabc", &flags.lootabc, FALSE, SET_IN_GAME },
 #ifdef MAIL
     { "mail", &flags.biff, TRUE, SET_IN_GAME },

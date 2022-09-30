@@ -77,6 +77,7 @@ struct flag {
     boolean classic_colors; /* use normal coloring scheme */
     boolean blinking_cursor_on_tiles;    /* cursor blinks on tiles */
     boolean detailed_weights; /* use ounces and grams instead of lbs and kg */
+    boolean long_charge_text; /* long charge / recharge text used on mobile */
     boolean show_cursor_on_u; /* force show cursor on you even with tiles */
     boolean force_paint_at_cursor; /* force paint at cursor (normally, because the cursor appears on you) */
     uchar active_cursor_style;
