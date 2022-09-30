@@ -10,6 +10,7 @@ namespace GnollHackClient
         public string ResponseStringValue { get; set; }
         public int ResponseIntValue { get; set; }
         public uint ResponseUIntValue { get; set; }
+        public bool ResponseBoolValue { get; set; }
         public List<GHMenuItem> SelectedMenuItems { get; set; }
         public ClientGame RequestingClientGame { get; }
         public GHWindow RequestingGHWindow { get; }
@@ -45,12 +46,13 @@ namespace GnollHackClient
             RequestType = requesttype;
             ResponseUIntValue = responseuintvalue;
         }
-        public GHResponse(ClientGame clientgame, GHRequestType requesttype, GHWindow window, List<GHMenuItem> responselist)
+        public GHResponse(ClientGame clientgame, GHRequestType requesttype, GHWindow window, List<GHMenuItem> responselist, bool wasCancelled)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             RequestingGHWindow = window;
             SelectedMenuItems = responselist;
+            ResponseBoolValue = wasCancelled;
         }
         public GHResponse(ClientGame clientgame, GHRequestType requesttype, int x, int y, int mod)
         {

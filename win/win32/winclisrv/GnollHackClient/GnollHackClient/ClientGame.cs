@@ -127,6 +127,8 @@ namespace GnollHackClient
                                     response.RequestingGHWindow.SelectedMenuItems = response.SelectedMenuItems;
                                 else
                                     response.RequestingGHWindow.SelectedMenuItems = new List<GHMenuItem>(); /* Empty selection */
+
+                                response.RequestingGHWindow.WasCancelled = response.ResponseBoolValue;
                             }
                             else
                             {
@@ -965,7 +967,10 @@ namespace GnollHackClient
                     SelectionMode smode = (SelectionMode)how;
                     _ghWindows[winid].MenuInfo.SelectionHow = smode;
 
-                    _ghWindows[winid].SelectedMenuItems = null; /* Clear menu response */
+                    /* Clear menu response */
+                    _ghWindows[winid].SelectedMenuItems = null;
+                    _ghWindows[winid].WasCancelled = false;
+
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.ShowMenuPage, _ghWindows[winid], _ghWindows[winid].MenuInfo));
@@ -1012,7 +1017,7 @@ namespace GnollHackClient
 
             lock (_ghWindowsLock)
             {
-                if (_ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null)
+                if (_ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].WasCancelled)
                     cnt = -1;
                 else if (_ghWindows[winid].SelectedMenuItems.Count <= 0)
                     cnt = 0;

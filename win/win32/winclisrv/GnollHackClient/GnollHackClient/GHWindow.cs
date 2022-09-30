@@ -194,6 +194,8 @@ namespace GnollHackClient
             set { lock (_selectedMenuItemsLock) { _selectedMenuItems = value; } }
         }
 
+        public bool WasCancelled { get; set; } = false;
+
         public GHWindow(GHWinType winType, ghwindow_styles winStyle, int glyph, bool useUpperSide, bool useSpecialSymbols, ObjectDataItem objdata, GamePage gamePage, int winid)
         {
             _winType = winType;

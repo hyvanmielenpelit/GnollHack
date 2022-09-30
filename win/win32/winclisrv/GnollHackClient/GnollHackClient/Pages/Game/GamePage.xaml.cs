@@ -2546,7 +2546,7 @@ namespace GnollHackClient.Pages.Game
                 ConcurrentQueue<GHResponse> queue;
                 if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
+                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(), true));
                 }
                 MenuGrid.IsVisible = false;
                 MainGrid.IsVisible = true;
@@ -9799,7 +9799,7 @@ namespace GnollHackClient.Pages.Game
 
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist));
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist, false));
             }
 
             if(!ClientUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
@@ -9825,7 +9825,7 @@ namespace GnollHackClient.Pages.Game
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(), true));
             }
 
             if (!ClientUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
