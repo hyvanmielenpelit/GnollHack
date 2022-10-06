@@ -1324,7 +1324,7 @@ const struct dirent* entry;
 int filter_error(entry)
 const struct dirent* entry;
 {
-    return is_error_savefile_name(entry->d_name);
+    return is_error_savefile_name((char *)entry->d_name);
 }
 
 int filter_noerror(entry)
