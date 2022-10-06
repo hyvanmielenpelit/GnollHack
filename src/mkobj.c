@@ -351,7 +351,7 @@ struct monst* mowner;
 unsigned long rndflags;
 {
     if (oclass < 0 || oclass >= MAX_OBJECT_CLASSES)
-        oclass = RANDOM_CLASS;
+        oclass = WEAPON_CLASS;
 
     int i = 0;
     boolean also_rare = !!(rndflags & MKOBJ_FLAGS_ALSO_RARE);
