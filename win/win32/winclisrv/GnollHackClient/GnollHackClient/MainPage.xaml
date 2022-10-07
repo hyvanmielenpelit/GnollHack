@@ -67,11 +67,11 @@
             <StackLayout>
                 <ff:CachedImage Grid.Row="0" x:Name="MainLogoImage" HeightRequest="100" WidthRequest="100" Aspect="AspectFill"
                    HorizontalOptions="Center" VerticalOptions="End"/>
-                <local:CustomLabel x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
-                   TextColor="White" OutlineWidth="3"
+                <Label x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
+                   TextColor="White"
                    FontFamily="ARChristy" FontSize="27" />
-                <local:CustomLabel x:Name="MobileVersionLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
-                   Text="Mobile Version" TextColor="White" OutlineWidth="3"
+                <Label x:Name="MobileVersionLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
+                   Text="Mobile Version" TextColor="White"
                    FontFamily="ARChristy" FontSize="18" />
                 <Grid x:Name="SponsorGrid"  WidthRequest="120" IsVisible="False">
                     <ff:CachedImage x:Name="BuyNowImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" WidthRequest="120" HeightRequest="50"/>

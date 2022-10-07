@@ -630,6 +630,11 @@ namespace GnollHackClient
             {
                 textPaint.Typeface = GetFontTypeface();
                 textPaint.TextSize = (float)FontSize * scale;
+                if(OutlineWidth > 0)
+                {
+                    textPaint.StrokeWidth = (float)OutlineWidth * scale;
+                    textPaint.Style = SKPaintStyle.Stroke;
+                }
                 skwidth = textPaint.MeasureText(str);
             }
             return (double)skwidth / scale;
