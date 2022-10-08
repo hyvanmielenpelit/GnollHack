@@ -3365,6 +3365,7 @@ int id;
     long old_wornmask, new_wornmask = 0L;
     boolean can_merge = (id == STRANGE_OBJECT);
     int obj_location = obj->where;
+    Strcpy(debug_buf_4, "poly_obj");
 
     if (obj->otyp == BOULDER)
         sokoban_guilt();

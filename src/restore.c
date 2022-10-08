@@ -621,6 +621,7 @@ unsigned int *stuckid, *steedid;
     char timebuf[15];
     unsigned long uid;
     boolean defer_perm_invent;
+    Strcpy(debug_buf_4, "restgamestate");
 
     mread(fd, (genericptr_t) &uid, sizeof uid);
     if (SYSOPT_CHECK_SAVE_UID
@@ -918,6 +919,7 @@ register int fd;
     int rtmp;
     struct obj *otmp;
     struct save_game_stats dummy_stats = { 0 };
+    Strcpy(debug_buf_4, "dorecover_saved_game");
 
     restoring = TRUE;
     get_plname_from_file(fd, plname);

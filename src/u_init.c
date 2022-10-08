@@ -1568,6 +1568,7 @@ register const struct trobj * trop;
     int otyp;
     long quan;
     Strcpy(debug_buf_2, "ini_inv");
+    Strcpy(debug_buf_4, "ini_inv");
 
     while (trop->trclass) 
     {

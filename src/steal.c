@@ -217,6 +217,7 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
         cancel_don();
     if (!obj->owornmask)
         return;
+    Strcpy(debug_buf_4, "remove_worn_item");
 
     if (obj->owornmask & W_ARMOR) {
         if (obj == uskin) {

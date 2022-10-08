@@ -49,6 +49,7 @@ setworn(obj, mask)
 register struct obj* obj;
 long mask;
 {
+    Sprintf(debug_buf_3, "setworn, hasobj=%d", obj != 0);
     setworncore(obj, mask, TRUE);
 }
 
@@ -58,6 +59,7 @@ setwornquietly(obj, mask)
 register struct obj* obj;
 long mask;
 {
+    Sprintf(debug_buf_3, "setwornquietly, hasobj=%d", obj != 0);
     setworncore(obj, mask, FALSE);
 }
 
@@ -103,8 +105,10 @@ boolean verbose_and_update_stats;
             {
                 oobj = *(wp->w_obj);
                 if (oobj && !(oobj->owornmask & wp->w_mask))
-                    impossible("Setworn: mask = %ld, oworn = %ld, update = %d.", wp->w_mask, oobj->owornmask, verbose_and_update_stats);
-
+                {
+                    impossible("Setworn: mask = %ld, oworn = %ld, update = %d, buf3 = %s, buf4 = %s.", wp->w_mask, oobj->owornmask, verbose_and_update_stats, debug_buf_3, debug_buf_4);
+                    *debug_buf_3 = *debug_buf_4 = 0;
+                }
                 /* If old object remove wornmask */
                 if (oobj) 
                 {

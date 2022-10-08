@@ -728,6 +728,7 @@ merged(potmp, pobj)
 struct obj **potmp, **pobj;
 {
     register struct obj *otmp = *potmp, *obj = *pobj;
+    Strcpy(debug_buf_4, "merged");
 
     if (mergable(otmp, obj)) {
         /* Approximate age: we do it this way because if we were to

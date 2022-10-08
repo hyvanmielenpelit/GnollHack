@@ -4173,6 +4173,7 @@ struct monst *mon;
     boolean seewho, naked; /* True iff no armor */
     int attr_tot, tried_gloves = 0;
     char qbuf[QBUFSZ], Who[QBUFSZ];
+    Strcpy(debug_buf_4, "doseduce");
 
     if (is_cancelled(mon) || mon->mspec_used) {
         pline("%s acts as though %s has got a %sheadache.", Monnam(mon),

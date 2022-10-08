@@ -1156,6 +1156,7 @@ STATIC_OVL void
 break_armor()
 {
     register struct obj *otmp;
+    Strcpy(debug_buf_4, "break_armor");
 
     //Suit, cloak, robe, shirt
     if (breakarm(youmonst.data)) 
