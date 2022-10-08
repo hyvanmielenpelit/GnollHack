@@ -647,6 +647,7 @@ boolean deserted;
         }
     } else if(!deserted || !rn2(2)) {
         atype = get_shop_item((int) (shp - shtypes));
+        Sprintf(debug_buf_2, "mkshobj_at, atype=%d", atype);
         if (atype == VEGETARIAN_CLASS)
             mkveggy_at(sx, sy);
         else if (atype < 0)

@@ -609,6 +609,12 @@ E const char cmdnotavail[];
 E const char* const hofe_titles[3];
 
 E unsigned long file_end_marker;
+
+E char debug_buf_1[BUFSIZ];
+E char debug_buf_2[BUFSIZ];
+E char debug_buf_3[BUFSIZ];
+E char debug_buf_4[BUFSIZ];
+
 #undef E
 
 #endif /* DECL_H */

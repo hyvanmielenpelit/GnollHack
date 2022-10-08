@@ -287,7 +287,8 @@ struct obj* obj;
 
     int otyp = obj->otyp;
     boolean generate_random_item = FALSE;
-    
+    Strcpy(debug_buf_1, "m_inityour");
+
     if (obj->oartifact)
     {
         if (objects[obj->otyp].oc_prob == 0 || (objects[obj->otyp].oc_flags3 & O3_NO_GENERATION))
@@ -1252,6 +1253,7 @@ register struct monst *mtmp;
     int mndx = mtmp->mnum;
     int n = 0;
     int i;
+    Sprintf(debug_buf_2, "m_initinv, mnum=%d", mtmp->mnum);
 
     if (Is_really_rogue_level(&u.uz))
         return;
@@ -4380,6 +4382,7 @@ register struct monst *mtmp;
     int s_sym;
     struct obj *otmp;
     int mx, my;
+    int roll = -1;
 
     if (!mtmp || Protection_from_shape_changers)
         return;
@@ -4454,11 +4457,15 @@ register struct monst *mtmp;
             appear = -s_sym;
         } else {
             if (s_sym == RANDOM_CLASS)
-                s_sym = syms[rn2((int) sizeof(syms) - 2) + 2];
+            {
+                roll = rn2((int)sizeof(syms) - 2) + 2;
+                s_sym = syms[roll];
+            }
             goto assign_sym;
         }
     } else {
-        s_sym = syms[rn2((int) sizeof(syms))];
+        roll = rn2((int)sizeof(syms));
+        s_sym = syms[roll];
  assign_sym:
         if (s_sym == MAX_OBJECT_CLASSES || s_sym == MAX_OBJECT_CLASSES + 1) {
             ap_type = M_AP_FURNITURE;
@@ -4470,6 +4477,7 @@ register struct monst *mtmp;
             } else if (s_sym == COIN_CLASS) {
                 appear = GOLD_PIECE;
             } else {
+                Sprintf(debug_buf_2, "set_mimic_sym, s_sym=%d,roll=%d", s_sym, roll);
                 otmp = mkobj((char) s_sym, FALSE, FALSE);
                 appear = otmp->otyp;
                 /* make sure container contents are free'ed */

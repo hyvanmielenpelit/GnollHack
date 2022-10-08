@@ -318,6 +318,7 @@ unsigned long mkflags;
 {
     int tprob;
     int i = 0;
+    Strcpy(debug_buf_1, "mkobj_with_flags");
 
     for (int try_ct = 0; try_ct < 20; try_ct++)
     {
@@ -351,7 +352,11 @@ struct monst* mowner;
 unsigned long rndflags;
 {
     if (oclass < 0 || oclass >= MAX_OBJECT_CLASSES)
+    {
+        impossible("probtype error, oclass=%d, buf1=%s, buf1=%s", (int)oclass, debug_buf_1, debug_buf_2);
         oclass = WEAPON_CLASS;
+    }
+    *debug_buf_1 = *debug_buf_2 = 0;
 
     int i = 0;
     boolean also_rare = !!(rndflags & MKOBJ_FLAGS_ALSO_RARE);
@@ -512,6 +517,7 @@ unsigned long rndflags;
     }
 
 random_spellbook_here:
+    Strcpy(debug_buf_1, "random_spellbook_objectid");
     return random_objectid_from_class(SPBOOK_CLASS, mowner, rndflags | MKOBJ_FLAGS_NORMAL_SPELLBOOK);
 }
 
@@ -636,6 +642,7 @@ struct obj *box;
         }
         else if (box->otyp == SARCOPHAGUS || box->otyp == COFFIN)
         {
+            Sprintf(debug_buf_2, "mkbox_cnts, otyp=%d", box->otyp);
             char item_classes[6] = { COIN_CLASS, GEM_CLASS, MISCELLANEOUS_CLASS, AMULET_CLASS, RING_CLASS, WEAPON_CLASS };
             otmp = mkobj(item_classes[rn2(6)], TRUE, TRUE);
             if (otmp->oclass == COIN_CLASS)
@@ -652,6 +659,7 @@ struct obj *box;
 
             for (tprob = rnd(100); (tprob -= iprobs->iprob) > 0; iprobs++)
                 ;
+            Sprintf(debug_buf_2, "mkbox_cnts iprobs, otyp=%d", box->otyp);
             if (!(otmp = mkobj(iprobs->iclass, TRUE, TRUE)))
                 continue;
 

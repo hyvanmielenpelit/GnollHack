@@ -5657,6 +5657,7 @@ struct trap* ttmp;
             genotyp = WAN_POLYMORPH;
             break;
         case MAGIC_TRAP:
+            Strcpy(debug_buf_1, "disarm_magical_trap");
             genotyp = random_objectid_from_class(WAND_CLASS, (struct monst*)0, 0UL);
             break;
         case LEVEL_TELEP:

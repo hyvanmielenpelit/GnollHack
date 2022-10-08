@@ -1930,6 +1930,7 @@ coord *tm;
                 break;
             }
 
+            Strcpy(debug_buf_2, "mktrap");
             otmp = mkobj(poss_class, FALSE, FALSE);
             /* these items are always cursed, both for flavour (owned
                by a dead adventurer, bones-pile-style) and for balance

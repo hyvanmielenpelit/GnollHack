@@ -3383,6 +3383,7 @@ int id;
         {
             if (otmp)
                 delobj(otmp);
+            Strcpy(debug_buf_2, "polyobj");
             otmp = mkobj(obj->oclass, FALSE, FALSE);
         } while (--try_limit > 0
                  && objects[otmp->otyp].oc_magic != magic_obj);

@@ -2018,6 +2018,7 @@ struct mkroom *croom;
     schar x, y;
     char c;
     boolean named; /* has a name been supplied in level description? */
+    Strcpy(debug_buf_2, "create_object, oclass=%d, id=%d", o->class, o->id);
 
     named = o->name.str ? TRUE : FALSE;
 
