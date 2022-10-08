@@ -1127,6 +1127,10 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
 {
     if (load_type > 0)
     {
+        /* Reset game state */
+        //reset_gamestate_ex();
+        reset_item_global_variables();
+
         /* Functions that would have been run at start */
         create_gamestate_levelfile();
     }

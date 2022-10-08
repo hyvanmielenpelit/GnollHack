@@ -3191,17 +3191,23 @@ reset_game(VOID_ARGS)
     *plname = 0;
     *recovery_plname = 0;
     plname_from_error_savefile = FALSE;
-    reset_lev();
-    reset_rooms(); /* no dynamic memory to reclaim */
-    reset_gamestate();
+    reset_gamestate_ex();
     n_game_recoveries = 0;
-    reset_makemon();
     reset_blstats();
     reset_occupations();
     reset_pick();
     reset_remaining_static_variables();
     reset_remaining_dynamic_data();
     dlb_cleanup();
+}
+
+void
+reset_gamestate_ex(VOID_ARGS)
+{
+    reset_lev();
+    reset_rooms(); /* no dynamic memory to reclaim */
+    reset_gamestate();
+    reset_makemon();
 }
 
 void

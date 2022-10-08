@@ -1068,6 +1068,7 @@ E long NDECL(get_current_game_score);
 E int NDECL(wiz_dumplog);
 E void FDECL(print_selfies, (winid));
 E void NDECL(reset_game);
+E void NDECL(reset_gamestate_ex);
 E void NDECL(tally_realtime);
 
 
@@ -3301,6 +3302,8 @@ E void FDECL(play_hermit_dialogue_line, (struct monst*, enum ghsound_types, UCHA
 E void NDECL(sys_early_init);
 E void NDECL(sysopt_release);
 E void FDECL(sysopt_seduce_set, (int));
+E void NDECL(reset_global_variables);
+E void NDECL(reset_item_global_variables);
 
 /* ### sys/msdos/sound.c ### */
 
