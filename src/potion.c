@@ -3544,7 +3544,7 @@ dodip()
     allowall[1] = '\0';
     if (!(obj = getobj(allowall, "dip", 0, "")))
         return 0;
-    if (inaccessible_equipment(obj, "dip", FALSE))
+    if (inaccessible_equipment(obj, "dip", FALSE, FALSE))
         return 0;
 
     shortestname = (is_plural(obj) || pair_of(obj)) ? "them" : "it";

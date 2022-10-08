@@ -2865,7 +2865,7 @@ struct monst* targetmonst;
             "enchant");
 
         otmp = getobj(enchant_objects, buf, 0, "");
-        if (!otmp || inaccessible_equipment(otmp, buf, FALSE))
+        if (!otmp || inaccessible_equipment(otmp, buf, FALSE, FALSE))
         {
             return 0;
         }

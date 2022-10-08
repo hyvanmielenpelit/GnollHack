@@ -1693,10 +1693,11 @@ long bit;
  * output: mask (otmp's armor type)
  */
 int
-canwearobj(otmp, mask, noisy)
+canwearobj(otmp, mask, noisy, constructing_letters)
 struct obj *otmp;
 long *mask;
 boolean noisy;
+boolean constructing_letters;
 {
     int err = 0;
     const char *which;
@@ -1750,7 +1751,7 @@ boolean noisy;
 
     if (is_helmet(otmp)) 
     {
-        if (uarmh) 
+        if (uarmh && !constructing_letters)
         {
             if (noisy)
             {
@@ -1785,7 +1786,8 @@ boolean noisy;
     } 
     else if (is_shield(otmp)) 
     {
-        if (uarms) {
+        if (uarms && !constructing_letters)
+        {
             if (noisy)
             {
                 if (is_shield(uarms))
@@ -1817,7 +1819,7 @@ boolean noisy;
     } 
     else if (is_boots(otmp)) 
     {
-        if (uarmf) 
+        if (uarmf && !constructing_letters)
         {
             if (noisy)
                 (void)already_wearing_with_exchange_prompt(c_boots, otmp, uarmf);
@@ -1882,7 +1884,7 @@ boolean noisy;
     }
     else if (is_gloves(otmp)) 
     {
-        if (uarmg) 
+        if (uarmg && !constructing_letters)
         {
             if (noisy)
                 (void)!already_wearing_with_exchange_prompt(c_gloves, otmp, uarmg);
@@ -1902,7 +1904,7 @@ boolean noisy;
     }
     else if (is_bracers(otmp)) 
     {
-        if (uarmb) 
+        if (uarmb && !constructing_letters)
         {
             if (noisy)
                 (void)already_wearing_with_exchange_prompt(c_bracers, otmp, uarmb);
@@ -1914,10 +1916,9 @@ boolean noisy;
     } 
     else if (is_shirt(otmp)) 
     {
-        if (uarm || uarmc || uarmu || uarmo) 
+        if ((uarm || uarmc || uarmu || uarmo) && !constructing_letters)
         {
-
-            if (uarmu) 
+            if (uarmu)
             {
                 if (noisy)
                     (void)already_wearing_with_exchange_prompt(an(c_shirt), otmp, uarmu);
@@ -1984,7 +1985,7 @@ boolean noisy;
     }
     else if (is_robe(otmp)) 
 {
-        if (uarmc || uarmo) 
+        if ((uarmc || uarmo) && !constructing_letters)
         {
             if (uarmo) 
             {
@@ -2025,7 +2026,7 @@ boolean noisy;
     }
     else if (is_cloak(otmp)) 
     {
-        if (uarmc) 
+        if (uarmc && !constructing_letters)
         {
             if (noisy)
                 (void)already_wearing_with_exchange_prompt(an(cloak_simple_name(uarmc)), otmp, uarmc);
@@ -2036,7 +2037,7 @@ boolean noisy;
     } 
     else if (is_suit(otmp)) 
     {
-        if (uarm)
+        if (uarm && !constructing_letters)
         {
             if (noisy)
             {
@@ -2044,7 +2045,7 @@ boolean noisy;
             }
             err++;
         }
-        else if (uarmc || uarmo)
+        else if ((uarmc || uarmo) && !constructing_letters)
         {
             if (noisy)
             {
@@ -2129,7 +2130,7 @@ boolean in_takeoff_wear;
     /* checks which are performed prior to actually touching the item */
     if (armor) 
     {
-        if (!canwearobj(obj, &mask, TRUE))
+        if (!canwearobj(obj, &mask, TRUE, FALSE))
             return 0;
 
         if (obj->otyp == HELM_OF_OPPOSITE_ALIGNMENT
@@ -3620,10 +3621,11 @@ register schar delta;
    used for dipping into liquid and applying grease;
    some criteria are different than select_off()'s */
 boolean
-inaccessible_equipment(obj, verb, only_if_known_cursed)
+inaccessible_equipment(obj, verb, only_if_known_cursed, constructing_letters_for_takeoff)
 struct obj *obj;
 const char *verb; /* "dip" or "grease", or null to avoid messages */
 boolean only_if_known_cursed; /* ignore covering unless known to be cursed */
+boolean constructing_letters_for_takeoff;
 {
     static NEARDATA const char need_to_take_off_outer_armor[] =
         "need to take off %s to %s %s.";
@@ -3631,7 +3633,7 @@ boolean only_if_known_cursed; /* ignore covering unless known to be cursed */
     boolean anycovering = !only_if_known_cursed; /* more comprehensible... */
 #define BLOCKSACCESS(x) (anycovering || ((x)->cursed && (x)->bknown))
 
-    if (!obj || !obj->owornmask)
+    if (!obj || !obj->owornmask || constructing_letters_for_takeoff)
         return FALSE; /* not inaccessible */
 
     /* check for robe covered by cloak */

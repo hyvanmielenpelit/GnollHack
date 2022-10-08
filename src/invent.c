@@ -2606,7 +2606,7 @@ boolean (*validitemfunc)(struct obj*);
                  && ((otmp == uwep || (otmp == uarms && u.twoweap))
                      && otmp->quan == 1L)) /* ...unless more than one */
              || ((!strcmp(word, "dip") || !strcmp(word, "grease"))
-                 && inaccessible_equipment(otmp, (const char *) 0, FALSE))
+                 && inaccessible_equipment(otmp, (const char *) 0, FALSE, FALSE))
              ) 
             {
                 foo--;
@@ -2689,7 +2689,7 @@ boolean (*validitemfunc)(struct obj*);
             else if (
              /* ugly check for unworn armor that can't be worn */
                 (putting_on(word) && *let == ARMOR_CLASS
-                 && !canwearobj(otmp, &dummymask, FALSE))
+                 && !canwearobj(otmp, &dummymask, FALSE, TRUE))
              /* or armor with 'P' or 'R' or accessory with 'W' or 'T' */
              || ((putting_on(word) || taking_off(word))
                  && ((*let == ARMOR_CLASS) ^ (otmp->oclass == ARMOR_CLASS)))
@@ -2707,7 +2707,7 @@ boolean (*validitemfunc)(struct obj*);
                 or accessory (ring) covered by cursed worn armor (gloves) */
              || (taking_off(word)
                  && inaccessible_equipment(otmp, (const char *) 0,
-                                      (boolean) (otmp->oclass == RING_CLASS)))
+                                      (boolean) (otmp->oclass == RING_CLASS), TRUE))
              || (!strcmp(word, "write on")
                  && (!(otyp == SCR_BLANK_PAPER || otyp == SPE_BLANK_PAPER)
                      || !otmp->dknown || !objects[otyp].oc_name_known))
@@ -3119,7 +3119,7 @@ struct obj* otmp_only;
                     && (((otmp == uwep || (otmp == uarms && u.twoweap)) && otmp->quan == 1L)  /* ...unless more than one */
                         || (uwep && is_launcher(uwep) && objects[uwep->otyp].oc_skill != -objects[otmp->otyp].oc_skill)))
                 || ((!strcmp(word, "dip") || !strcmp(word, "grease"))
-                    && inaccessible_equipment(otmp, (const char*)0, FALSE))
+                    && inaccessible_equipment(otmp, (const char*)0, FALSE, FALSE))
                 )
             {
                 foo--;
@@ -3206,7 +3206,7 @@ struct obj* otmp_only;
             else if (
                 /* ugly check for unworn armor that can't be worn */
                 (putting_on(word) && *let == ARMOR_CLASS
-                    && (!flags.exchange_prompt && !canwearobj(otmp, &dummymask, FALSE)))
+                    && (!flags.exchange_prompt && !canwearobj(otmp, &dummymask, FALSE, TRUE)))
                 /* or armor with 'P' or 'R' or accessory with 'W' or 'T' */
                 || ((putting_on(word) || taking_off(word))
                     && ((*let == ARMOR_CLASS) ^ (otmp->oclass == ARMOR_CLASS)))
@@ -3224,7 +3224,7 @@ struct obj* otmp_only;
                    or accessory (ring) covered by cursed worn armor (gloves) */
                 || (taking_off(word)
                     && inaccessible_equipment(otmp, (const char*)0,
-                        (boolean)(otmp->oclass == RING_CLASS)))
+                        (boolean)(otmp->oclass == RING_CLASS), TRUE))
                 || (!strcmp(word, "write on")
                     && (!(otyp == SCR_BLANK_PAPER || otyp == SPE_BLANK_PAPER)
                         || !otmp->dknown || !objects[otyp].oc_name_known))

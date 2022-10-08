@@ -3565,7 +3565,7 @@ struct obj *obj;
         otmp = getobj(lubricables, objects[obj->otyp].oc_name_known ? "grease" : "apply viscous fluid on", 0, "");
         if (!otmp)
             return;
-        if (inaccessible_equipment(otmp, objects[obj->otyp].oc_name_known ? "grease" : "apply viscous fluid on", FALSE))
+        if (inaccessible_equipment(otmp, objects[obj->otyp].oc_name_known ? "grease" : "apply viscous fluid on", FALSE, FALSE))
             return;
 
         consume_obj_charge(obj, TRUE);
@@ -3643,7 +3643,7 @@ struct obj* obj;
             return 0;
         }
 
-        if (inaccessible_equipment(otmp, "use wand on", FALSE))
+        if (inaccessible_equipment(otmp, "use wand on", FALSE, FALSE))
             return 0;
 
         consume_obj_charge(obj, TRUE);
