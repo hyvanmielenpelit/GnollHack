@@ -27,6 +27,8 @@ namespace GnollHackClient
         private bool _guiTipsFinished = false;
         private bool _panicFinished = false;
         private bool _messageFinished = false;
+        private bool _ynConfirmationFinished = false;
+        private bool _ynConfirmationResult = false;
         private bool _characternameSet = false;
         private string _characterName = "";
         private object _characterNameLock = new object();
@@ -153,6 +155,10 @@ namespace GnollHackClient
                             break;
                         case GHRequestType.Message:
                             _messageFinished = true;
+                            break;
+                        case GHRequestType.YnConfirmation:
+                            _ynConfirmationResult = response.ResponseBoolValue;
+                            _ynConfirmationFinished = true;
                             break;
                         case GHRequestType.SaveGameAndWaitForResume:
                             RequestSaveGame();
@@ -1701,6 +1707,22 @@ namespace GnollHackClient
                     }
                 case (int)special_view_types.SPECIAL_VIEW_HELP_DIR:
                     break;
+                case (int)special_view_types.SPECIAL_VIEW_GUI_YN_CONFIRMATION:
+                    {
+                        ConcurrentQueue<GHRequest> queue;
+                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            _ynConfirmationFinished = false;
+                            queue.Enqueue(new GHRequest(this, GHRequestType.YnConfirmation, title, text, "Yes", "No"));
+                            while (!_ynConfirmationFinished)
+                            {
+                                Thread.Sleep(GHConstants.PollingInterval);
+                                pollResponseQueue();
+                            }
+                            return _ynConfirmationResult ? 1 : 0;
+                        }
+                        break;
+                    }
                 default:
                     break;
             }

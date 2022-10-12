@@ -46,6 +46,12 @@ namespace GnollHackClient
             RequestType = requesttype;
             ResponseUIntValue = responseuintvalue;
         }
+        public GHResponse(ClientGame clientgame, GHRequestType requesttype, bool responseboolvalue)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            ResponseBoolValue = responseboolvalue;
+        }
         public GHResponse(ClientGame clientgame, GHRequestType requesttype, GHWindow window, List<GHMenuItem> responselist, bool wasCancelled)
         {
             RequestingClientGame = clientgame;

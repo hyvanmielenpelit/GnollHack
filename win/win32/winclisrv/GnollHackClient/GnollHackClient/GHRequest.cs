@@ -52,6 +52,7 @@ namespace GnollHackClient
         SaveGameAndWaitForResume,
         StopWaitAndRestoreSavedGame,
         TallyRealTime,
+        YnConfirmation,
     }
 
     public struct AddContextMenuData
@@ -203,6 +204,15 @@ namespace GnollHackClient
             RequestType = requesttype;
             RequestString = requeststring;
             RequestString2 = requeststring2;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string titlestring, string requeststring, string acceptstring, string cancelstring)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            TitleString = titlestring;
+            RequestString = requeststring;
+            RequestString2 = acceptstring;
+            DefValueString = cancelstring;
         }
         public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, int requestint, int requestint2)
         {

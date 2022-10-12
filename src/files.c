@@ -1262,11 +1262,22 @@ struct save_game_stats* stats_ptr;
     }
     nh_compress(SAVEF);
 
-    //Delete mismathcing save files, so they do not hang around for nothing
+    //Delete mismatching save files, so they do not hang around for nothing
     if (dodeletefile)
     {
-        pline("Deleting an invalid save file \"%s\".", filename);
-        delete_savefile();
+        //Confirmation
+        struct special_view_info info = { 0 };
+        char txtbuf[BUFSZ * 4] = "";
+        info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION;
+        info.title = "Delete Invalid Save File";
+        Sprintf(txtbuf, "Save file \"%s\" is invalid. Delete it?", filename);
+        info.text = txtbuf;
+        int res = open_special_view(info);
+        if (res)
+        {
+            pline("Deleting an invalid save file \"%s\".", filename);
+            delete_savefile();
+        }
     }
     return result;
 #if 0

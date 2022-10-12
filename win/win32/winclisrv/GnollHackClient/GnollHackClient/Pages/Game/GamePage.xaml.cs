@@ -1753,6 +1753,9 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.Message:
                                 ShowMessage(req.RequestString);
                                 break;
+                            case GHRequestType.YnConfirmation:
+                                YnConfirmation(req.TitleString, req.RequestString, req.RequestString2, req.DefValueString);
+                                break;
                             case GHRequestType.DisplayConditionText:
                                 DisplayConditionText(req.ConditionTextData);
                                 break;
@@ -11369,6 +11372,18 @@ namespace GnollHackClient.Pages.Game
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.Message));
+            }
+        }
+
+        public async void YnConfirmation(string title, string text, string accept, string cancel)
+        {
+            bool res = await DisplayAlert(title != null ? title : "Confirmation", text != null ? text : "Confirm?",
+                accept != null ? accept : "Yes", cancel != null ? cancel : "No");
+
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.YnConfirmation, res));
             }
         }
 
