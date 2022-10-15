@@ -59,7 +59,8 @@ namespace GnollHackClient.Pages.Game
                 return;
             }
 
-            if (!ValidationExpression.IsMatch(eName.Text))
+            string usedName = eName.Text.Trim();
+            if (!ValidationExpression.IsMatch(usedName))
             {
                 lblError.TextColor = Color.Red;
                 lblError.Text = "Name is invalid.";
@@ -71,7 +72,7 @@ namespace GnollHackClient.Pages.Game
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, eName.Text));
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, usedName));
                 await _gamePage.Navigation.PopModalAsync();
             }
         }
