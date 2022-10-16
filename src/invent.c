@@ -5901,7 +5901,7 @@ boolean picked_some, explicit_cmd;
     }
     else
     {
-        if (explicit_cmd) // No here window
+        if (explicit_cmd || flags.pile_limit == 0) // No here window
         {
             char buf[BUFSZ];
             char buf2[BUFSZ];
