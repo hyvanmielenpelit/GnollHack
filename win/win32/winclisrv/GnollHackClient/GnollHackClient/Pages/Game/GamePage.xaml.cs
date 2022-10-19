@@ -208,7 +208,16 @@ namespace GnollHackClient.Pages.Game
         }
 
         public bool ShowMemoryUsage { get; set; }
-        public bool UseMainGLCanvas { get { return canvasView.UseGL; } set { canvasView.UseGL = value; } }
+        public bool UseMainGLCanvas 
+        { 
+            get { return canvasView.UseGL; } 
+            set { 
+                canvasView.UseGL = value; 
+                MenuCanvas.UseGL = value;
+                TextCanvas.UseGL = value;
+                CommandCanvas.UseGL = value;
+            } 
+        }
         public bool ShowFPS { get; set; }
         private double _fps;
         private long _counterValueDiff;

@@ -35,7 +35,6 @@ namespace GnollHackClient.Controls
         public SwitchableCanvasView()
         {
             InitializeComponent();
-            UseGL = GHConstants.IsGPUDefault;
         }
 
         public SKSize CanvasSize { get { return UseGL ? internalGLView.CanvasSize : internalCanvasView.CanvasSize; } }
