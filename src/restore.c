@@ -1769,6 +1769,7 @@ struct save_game_data* saved;
             {
                 Strcpy(plname, saved[ch - 1].playername);
                 plname_from_error_savefile = saved[ch - 1].is_error_save_file;
+                plname_from_imported_savefile = saved[ch - 1].is_imported_save_file;
                 if (style == 1)
                 {
                     shoulddelete = TRUE;

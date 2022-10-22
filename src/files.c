@@ -132,7 +132,9 @@ STATIC_VAR char wizkit[WIZKIT_MAX];
 STATIC_DCL FILE *NDECL(fopen_wizkit_file);
 STATIC_DCL void FDECL(wizkit_addinv, (struct obj *));
 #ifndef MICRO
+STATIC_DCL void FDECL(print_special_savefile_extension, (char*, const char*));
 STATIC_DCL void FDECL(print_error_savefile_extension, (char*));
+STATIC_DCL void FDECL(print_imported_savefile_extension, (char*));
 #endif
 
 #ifdef AMIGA
@@ -975,6 +977,8 @@ boolean regularize_it;
 #endif /* VMS   */
     if (plname_from_error_savefile)
         set_error_savefile();
+    if (plname_from_imported_savefile)
+        set_imported_savefile();
 }
 
 #ifdef INSURANCE
@@ -988,8 +992,9 @@ int fd;
 
 #ifndef MICRO
 STATIC_OVL void
-print_error_savefile_extension(printbuf)
+print_special_savefile_extension(printbuf, ext)
 char* printbuf;
+const char* ext;
 {
 #ifdef VMS
     {
@@ -998,20 +1003,56 @@ char* printbuf;
         if (semi_colon)
             *semi_colon = '\0';
     }
-    Strcat(printbuf, ".e;1");
+    Sprintf(eos(printbuf), ".%s;1", ext);
 #else
 #ifdef MAC
-    Strcat(printbuf, "-e");
+    Sprintf(eos(printbuf), "-%s", ext);
 #else
-    Strcat(printbuf, ".e");
+    Sprintf(eos(printbuf), ".%s", ext);
 #endif
 #endif
 }
+
+STATIC_OVL void
+print_error_savefile_extension(printbuf)
+char* printbuf;
+{
+    print_special_savefile_extension(printbuf, "e");
+//#ifdef VMS
+//    {
+//        char* semi_colon = rindex(printbuf, ';');
+//
+//        if (semi_colon)
+//            *semi_colon = '\0';
+//    }
+//    Strcat(printbuf, ".e;1");
+//#else
+//#ifdef MAC
+//    Strcat(printbuf, "-e");
+//#else
+//    Strcat(printbuf, ".e");
+//#endif
+//#endif
+}
+
+STATIC_OVL void
+print_imported_savefile_extension(printbuf)
+char* printbuf;
+{
+    print_special_savefile_extension(printbuf, "i");
+}
+
 /* change pre-existing savefile name to indicate an error savefile */
 void
-set_error_savefile()
+set_error_savefile(VOID_ARGS)
 {
     print_error_savefile_extension(SAVEF);
+}
+
+void
+set_imported_savefile(VOID_ARGS)
+{
+    print_imported_savefile_extension(SAVEF);
 }
 #endif
 
@@ -1209,9 +1250,15 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
             }
         }
 
-        if (plname_from_error_savefile)
+        if (plname_from_error_savefile || plname_from_imported_savefile)
         {
+            if (plname_from_imported_savefile)
+            {
+                //Set game to be non-scoring
+                flags.debug;
+            }
             plname_from_error_savefile = FALSE;
+            plname_from_imported_savefile = FALSE;
             set_savefile_name(TRUE);
         }
 
@@ -1224,17 +1271,18 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
 
 #if defined(SELECTSAVED)
 struct save_game_data 
-newsavegamedata(playername, filename, gamestats, is_running, is_error_savefile)
+newsavegamedata(playername, filename, gamestats, is_running, is_error_savefile, is_imported_savefile)
 char* playername;
 char* filename;
 struct save_game_stats gamestats;
-boolean is_running, is_error_savefile;
+boolean is_running, is_error_savefile, is_imported_savefile;
 {
     struct save_game_data svgd = { 0 };
     svgd.playername = playername;
     Strcpy(svgd.filename, filename ? filename : "");
     svgd.is_running = is_running;
     svgd.is_error_save_file = is_error_savefile;
+    svgd.is_imported_save_file = is_imported_savefile;
     svgd.gamestats = gamestats;
     return svgd;
 }
@@ -1336,6 +1384,24 @@ char* savefilename;
     return TRUE;
 }
 
+int is_imported_savefile_name(savefilename)
+char* savefilename;
+{
+    size_t dlen = strlen(savefilename);
+    char ebuf[BUFSZ] = "";
+    print_imported_savefile_extension(ebuf);
+    size_t elen = strlen(ebuf);
+    if (dlen <= elen)
+        return FALSE;
+
+    size_t i;
+    for (i = 0; i < elen; i++)
+        if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
+            return FALSE;
+
+    return TRUE;
+}
+
 int filter_running(entry)
 const struct dirent* entry;
 {
@@ -1348,10 +1414,10 @@ const struct dirent* entry;
     return is_error_savefile_name((char *)entry->d_name);
 }
 
-int filter_noerror(entry)
+int filter_imported(entry)
 const struct dirent* entry;
 {
-    return !filter_error(entry);
+    return is_imported_savefile_name((char*)entry->d_name);
 }
 
 char*
@@ -1408,6 +1474,7 @@ get_saved_games()
         char *foundfile;
         const char *fq_save;
         char fq_save_ebuf[BUFSZ];
+        char fq_save_ibuf[BUFSZ];
 
         Strcpy(plname, "*");
         set_savefile_name(FALSE);
@@ -1416,12 +1483,15 @@ get_saved_games()
 #endif
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(fq_save_ebuf, fq_save);
+        Strcpy(fq_save_ibuf, fq_save);
 #ifndef MICRO
         print_error_savefile_extension(fq_save_ebuf);
+        print_imported_savefile_extension(fq_save_ibuf);
 #endif
 
         int n = 0;
         int n2 = 0;
+        int n3 = 0;
         foundfile = foundfile_buffer();
         if (findfirst((char *) fq_save)) {
             do {
@@ -1434,10 +1504,15 @@ get_saved_games()
                 ++n2;
             } while (findnext());
         }
+        if (findfirst((char*)fq_save_ibuf)) {
+            do {
+                ++n3;
+            } while (findnext());
+        }
 #endif
-        if (n > 0 || n2 > 0) {
-            result = (struct save_game_data*) alloc(((size_t)n + (size_t)n2 + 1) * sizeof(struct save_game_data)); /* at most */
-            (void) memset((genericptr_t) result, 0, ((size_t)n + (size_t)n2 + 1) * sizeof(struct save_game_data));
+        if (n > 0 || n2 > 0 || n3 > 0) {
+            result = (struct save_game_data*) alloc(((size_t)n + (size_t)n2 + (size_t)n3 + 1) * sizeof(struct save_game_data)); /* at most */
+            (void) memset((genericptr_t) result, 0, ((size_t)n + (size_t)n2 + (size_t)n3 + 1) * sizeof(struct save_game_data));
             if (n > 0)
             {
                 if (findfirst((char*)fq_save)) {
@@ -1446,7 +1521,7 @@ get_saved_games()
                         char* r;
                         r = plname_from_file(foundfile, &gamestats);
                         if (r)
-                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, FALSE);
+                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, FALSE, FALSE);
                         ++n;
                     } while (findnext());
                 }
@@ -1459,8 +1534,21 @@ get_saved_games()
                         char* r;
                         r = plname_from_file(foundfile, &gamestats);
                         if (r)
-                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, TRUE);
+                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, TRUE, FALSE);
                         ++n2;
+                    } while (findnext());
+                }
+            }
+            if (n3 > 0)
+            {
+                if (findfirst((char*)fq_save_ibuf)) {
+                    n3 = 0;
+                    do {
+                        char* r;
+                        r = plname_from_file(foundfile, &gamestats);
+                        if (r)
+                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, FALSE, TRUE);
+                        ++n3;
                     } while (findnext());
                 }
             }
@@ -1529,7 +1617,8 @@ get_saved_games()
                 if (r)
                 {
                     boolean iserrorfile = !!filter_error(namelist[i]);
-                    result[j++] = newsavegamedata(r, filename, gamestats, FALSE, iserrorfile);
+                    boolean isimportedfile = !!filter_imported(namelist[i]);
+                    result[j++] = newsavegamedata(r, filename, gamestats, FALSE, iserrorfile, isimportedfile);
                 }
             }
         }

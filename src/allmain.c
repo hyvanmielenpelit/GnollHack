@@ -1220,9 +1220,9 @@ boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmo
             return display_nonscoring ? "non-scoring reloadable" : "reloadable";
     }
     else if (ismodernmode)
-        return "modern";
+        return display_nonscoring && flags.non_scoring ? "non-scoring modern" : "modern";
     else
-        return "classic";
+        return display_nonscoring && flags.non_scoring ? "non-scoring classic" : "classic";
 }
 
 const char*

@@ -56,6 +56,7 @@ const char *nomovemsg = 0;
 NEARDATA char plname[PL_NSIZ] = DUMMY; /* player name */
 NEARDATA char recovery_plname[PL_NSIZ] = DUMMY;  /* Set at program start to check for recoverable games before ask_name */
 NEARDATA boolean plname_from_error_savefile = FALSE;
+NEARDATA boolean plname_from_imported_savefile = FALSE;
 NEARDATA char pl_character[PL_CSIZ] = DUMMY;
 NEARDATA char pl_race = '\0';
 

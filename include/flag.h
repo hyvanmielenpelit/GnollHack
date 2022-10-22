@@ -237,9 +237,9 @@ struct flag {
     int runmode;       /* update screen display during run moves */
     uchar spellorder;
     schar max_hint_difficulty; /* Maximum difficulty level where hints are shown */
+    boolean non_scoring; /* The game has been, for example, loaded from an imported save file and has thereby become non-scoring */
 
     /* Emergency reserved variables to make non-save-game-breaking changes */
-    char reserved_char1;
     char reserved_char2;
     short reserved_short1;
     short reserved_short2;

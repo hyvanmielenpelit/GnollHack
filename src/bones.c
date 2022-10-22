@@ -392,7 +392,7 @@ can_make_bones()
         return FALSE;
     /* don't let multiple restarts generate multiple copies of objects
        in bones files */
-    if (discover || ModernMode || CasualMode) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
+    if (discover || ModernMode || CasualMode || flags.non_scoring) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
         return FALSE;
     return TRUE;
 }

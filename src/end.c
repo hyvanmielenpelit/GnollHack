@@ -1960,6 +1960,7 @@ int how;
     if (have_windows && !iflags.toptenwin)
         exit_nhwindows((char*)0), have_windows = FALSE;
 
+    //Should exclude games from imported files?
     if(((!discover && !CasualMode) || (CasualMode && how == ASCENDED)) && (!wizard || yn_query("Write a top score entry?") == 'y'))
         topten(how, endtime);
 
@@ -2856,7 +2857,7 @@ get_current_game_score()
         utotal = LONG_MAX; /* wrap around */
     return utotal;
 #endif
-    if (discover || CasualMode)
+    if (discover || CasualMode || flags.non_scoring)
         return 0L;
 
     long utotal = 0;
@@ -3191,6 +3192,7 @@ reset_game(VOID_ARGS)
     *plname = 0;
     *recovery_plname = 0;
     plname_from_error_savefile = FALSE;
+    plname_from_imported_savefile = FALSE;
     reset_gamestate_ex();
     n_game_recoveries = 0;
     reset_blstats();
