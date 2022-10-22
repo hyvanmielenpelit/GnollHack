@@ -5369,7 +5369,7 @@ static void dirtyAll(PNHMapWindow data)
 
 static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
 {
-    if (program_state.freeing_dynamic_data == 1 || program_state.exiting > 0 || reseting || in_mklev || program_state.in_bones)
+    if (program_state.freeing_dynamic_data == 1 || program_state.exiting > 0 || reseting || restoring || in_mklev || program_state.in_bones)
         return;
 
     data->mapDirty[x][y] = TRUE;
