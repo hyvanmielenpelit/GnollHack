@@ -395,7 +395,7 @@ const struct shclass shtypes[] = {
         "reagents and gems",
         3,
         D_SHOP,
-        { { 50, REAGENT_CLASS },
+        { { 60, REAGENT_CLASS },
           { 30, GEM_CLASS },
           { 1, -BONE_DAGGER },
           { 2, -HOLY_SYMBOL },

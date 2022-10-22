@@ -275,7 +275,8 @@ boolean quietly;
     u.ustuck = (struct monst *) 0;
     u.usteed = (struct monst *) 0;
 
-    for (ltmp = (xchar) 1; ltmp <= maxledgerno(); ltmp++) {
+    xchar maxnoofledgers = maxledgerno();
+    for (ltmp = (xchar) 1; ltmp <= maxnoofledgers; ltmp++) {
         if (ltmp == ledger_no(&uz_save))
             continue;
         if (!(level_info[ltmp].flags & LFILE_EXISTS))
