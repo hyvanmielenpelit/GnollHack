@@ -1520,9 +1520,23 @@ namespace GnollHackClient
                     _gamePage.EnableWizardMode = true;
                     _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
                     break;
+                case (int)gui_command_types.GUI_CMD_DISABLE_WIZARD_MODE:
+                    if(_gamePage.EnableWizardMode)
+                    {
+                        _gamePage.EnableWizardMode = false;
+                        _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
+                    }
+                    break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_CASUAL_MODE:
                     _gamePage.EnableCasualMode = true;
                     _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
+                    break;
+                case (int)gui_command_types.GUI_CMD_DISABLE_CASUAL_MODE:
+                    if (_gamePage.EnableCasualMode)
+                    {
+                        _gamePage.EnableCasualMode = false;
+                        _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_PET_DATA:
                     _gamePage.ClearPetData();
