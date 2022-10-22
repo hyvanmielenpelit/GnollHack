@@ -82,6 +82,8 @@ extern int amii_numcolors;
 #include "display.h"
 
 boolean restoring = FALSE;
+boolean reseting = FALSE;
+
 STATIC_VAR NEARDATA struct fruit *oldfruit;
 STATIC_VAR NEARDATA long omoves;
 

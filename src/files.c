@@ -1125,10 +1125,12 @@ int
 load_saved_game(load_type)
 int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after saving quietly
 {
+    reseting = TRUE;
     if (load_type > 0)
     {
         /* Reset game state */
-        //reset_gamestate_ex();
+        dmonsfree();
+        reset_gamestate_ex();
         reset_item_global_variables();
 
         /* Functions that would have been run at start */
@@ -1157,11 +1159,14 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
             mark_synch(); /* flush output */
         }
         if (!dorecover_saved_game(fd)) //This deletes the save file in normal modes
+        {
+            reseting = FALSE;
             return 0;
-
+        }
         if (!wizard && remember_wiz_mode)
             wizard = TRUE;
 
+        reseting = FALSE;
         if (load_type > 0)
             flush_screen(1);
 
@@ -1212,6 +1217,7 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
 
         return 1;
     }
+    reseting = FALSE;
     return 0;
 }
 
