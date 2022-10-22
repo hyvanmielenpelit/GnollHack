@@ -168,7 +168,22 @@
                         </Grid.ColumnDefinitions>
                         <Grid x:Name="MenuOKGrid" HorizontalOptions="End" WidthRequest="215" HeightRequest="60" Grid.Column="0">
                             <ff:CachedImage x:Name="MenuOKButtonImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="215" HeightRequest="60" />
-                            <Button Text="OK" x:Name="MenuOKButton" Clicked="MenuOKButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  />
+                            <Button Text="OK" x:Name="MenuOKButton" Clicked="MenuOKButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="TextColor" Value="White" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Property="TextColor" Value="Gray" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Button>
                         </Grid>
                         <Grid x:Name="MenuCancelGrid" HorizontalOptions="Start" WidthRequest="215" HeightRequest="60" Grid.Column="1">
                             <ff:CachedImage x:Name="MenuCancelButtonImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="215" HeightRequest="60" />

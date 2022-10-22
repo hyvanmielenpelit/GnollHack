@@ -2424,6 +2424,7 @@ namespace GnollHackClient.Pages.Game
             if (MenuCanvas.SelectionHow == SelectionMode.Single)
             {
                 int idx = -1;
+                bool selectedFound = false;
                 foreach (GHMenuItem mi in menuinfo.MenuItems)
                 {
                     idx++;
@@ -2431,8 +2432,15 @@ namespace GnollHackClient.Pages.Game
                     {
                         mi.Selected = false; /* Clear out, with single selection we are using SelectionIndex */
                         MenuCanvas.SelectionIndex = idx;
+                        selectedFound = true;
+                        break;
                     }
                 }
+                MenuOKButton.IsEnabled = selectedFound;
+            }
+            else
+            {
+                MenuOKButton.IsEnabled = true;
             }
 
             ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
@@ -9755,6 +9763,8 @@ namespace GnollHackClient.Pages.Game
                                     MenuCanvas.MenuItems[idx].Count = -1;
 
                                 /* Else keep the current selection number */
+                                if(!MenuOKButton.IsEnabled)
+                                    MenuOKButton.IsEnabled = true;
                             }
                         }
                         break;
