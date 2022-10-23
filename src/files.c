@@ -288,6 +288,26 @@ int bufsz;
     return callerbuf;
 }
 
+
+int is_imported_error_savefile_name(savefilename)
+char* savefilename;
+{
+    size_t dlen = strlen(savefilename);
+    char ebuf[BUFSZ] = "";
+    print_error_savefile_extension(ebuf);
+    print_imported_savefile_extension(ebuf);
+    size_t elen = strlen(ebuf);
+    if (dlen <= elen)
+        return FALSE;
+
+    size_t i;
+    for (i = 0; i < elen; i++)
+        if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
+            return FALSE;
+
+    return TRUE;
+}
+
 /*
  * fname_decode()
  *
@@ -1419,6 +1439,12 @@ const struct dirent* entry;
     return is_imported_savefile_name((char*)entry->d_name);
 }
 
+int filter_imported_error(entry)
+const struct dirent* entry;
+{
+    return is_imported_error_savefile_name((char*)entry->d_name);
+}
+
 char*
 plname_from_running(filename, stats_ptr)
 const char* filename;
@@ -1546,7 +1572,10 @@ get_saved_games()
                         char* r;
                         r = plname_from_file(foundfile, &gamestats);
                         if (r)
-                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, FALSE, TRUE);
+                        {
+                            boolean isimportederror = is_imported_error_savefile_name(foundfile);
+                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, isimportederror, TRUE);
+                        }
                         ++n3;
                     } while (findnext());
                 }
@@ -1615,8 +1644,8 @@ get_saved_games()
                 r = plname_from_file(filename, &gamestats);
                 if (r)
                 {
-                    boolean iserrorfile = !!filter_error(namelist[i]);
                     boolean isimportedfile = !!filter_imported(namelist[i]);
+                    boolean iserrorfile = filter_error(namelist[i]) || filter_imported_error(namelist[i]);
                     result[j++] = newsavegamedata(r, filename, gamestats, FALSE, iserrorfile, isimportedfile);
                 }
             }

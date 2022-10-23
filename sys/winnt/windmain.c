@@ -408,9 +408,15 @@ attempt_restore:
             }
         }
 
-        if (plname_from_error_savefile)
+        /* This must be added to main if the GnollHack port is using dorecover without load_saved_game */
+        if (plname_from_error_savefile || plname_from_imported_savefile)
         {
+            if (plname_from_imported_savefile)
+            {
+                flags.non_scoring = TRUE;
+            }
             plname_from_error_savefile = FALSE;
+            plname_from_imported_savefile = FALSE;
             set_savefile_name(TRUE);
         }
     }
