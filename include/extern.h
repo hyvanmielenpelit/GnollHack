@@ -1210,7 +1210,7 @@ E boolean FDECL(read_tribute, (const char *, const char *, int,
                                char *, int, unsigned));
 E boolean FDECL(Death_quote, (char *, int));
 E void NDECL(list_files);
-
+E void FDECL(reset_save_file_name, (BOOLEAN_P));
 
 /* ### fountain.c ### */
 

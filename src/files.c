@@ -1247,6 +1247,7 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
             mode_message();
         }
 
+        boolean savefilekept = FALSE;
         if (discover || wizard || CasualMode)
         {
             //Note that you can be in both Casual and wizard mode
@@ -1255,6 +1256,7 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
                 if(load_type == 0)
                     pline("Keeping the save file.");
 
+                savefilekept = TRUE;
                 nh_compress(fq_save);
             }
             else
@@ -1265,26 +1267,40 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
                 }
                 else
                 {
+                    savefilekept = TRUE;
                     nh_compress(fq_save);
                 }
             }
         }
 
-        if (plname_from_error_savefile || plname_from_imported_savefile)
-        {
-            if (plname_from_imported_savefile)
-            {
-                flags.non_scoring = TRUE;
-            }
-            plname_from_error_savefile = FALSE;
-            plname_from_imported_savefile = FALSE;
-            set_savefile_name(TRUE);
-        }
-
+        reset_save_file_name(savefilekept);
         return 1;
     }
     reseting = FALSE;
     return 0;
+}
+
+void
+reset_save_file_name(savefilekept)
+boolean savefilekept;
+{
+    if (plname_from_error_savefile || plname_from_imported_savefile)
+    {
+        if (plname_from_imported_savefile)
+        {
+            flags.non_scoring = TRUE;
+        }
+        char oldsavef[SAVESIZE];
+        Strcpy(oldsavef, SAVEF);
+        plname_from_error_savefile = FALSE;
+        plname_from_imported_savefile = FALSE;
+        set_savefile_name(TRUE);
+        if (savefilekept && strcmp(SAVEF, oldsavef))
+        {
+            (void)remove(SAVEF); //If it happens to exist
+            (void)rename(oldsavef, SAVEF);
+        }
+    }
 }
 
 

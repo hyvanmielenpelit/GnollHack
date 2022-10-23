@@ -391,6 +391,7 @@ attempt_restore:
         if (dorecover(fd))
         {
             resuming = TRUE; /* not starting new game */
+            boolean savefilekept = FALSE;
             if (discover || CasualMode)
                 You_ex(ATR_NONE, CLR_MSG_HINT, "are in %s mode.", get_game_mode_text(TRUE));
 
@@ -403,21 +404,13 @@ attempt_restore:
                     (void) delete_savefile();
                 else 
                 {
+                    savefilekept = TRUE;
                     nh_compress(fqname(SAVEF, SAVEPREFIX, 0));
                 }
             }
-        }
 
-        /* This must be added to main if the GnollHack port is using dorecover without load_saved_game */
-        if (plname_from_error_savefile || plname_from_imported_savefile)
-        {
-            if (plname_from_imported_savefile)
-            {
-                flags.non_scoring = TRUE;
-            }
-            plname_from_error_savefile = FALSE;
-            plname_from_imported_savefile = FALSE;
-            set_savefile_name(TRUE);
+            /* This must be added to main if the GnollHack port is using dorecover without load_saved_game */
+            reset_save_file_name(savefilekept);
         }
     }
 
