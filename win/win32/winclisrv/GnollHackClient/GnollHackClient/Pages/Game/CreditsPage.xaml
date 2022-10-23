@@ -95,13 +95,6 @@
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center" >
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnDumplogs" Text="Dumplogs" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnDumplogs_Clicked" />
-                                </Grid>
-                            </ViewCell>
-                            <ViewCell>
-                                <Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
                                     <Button x:Name="btnImportSavedGames" Text="Import Saved Games" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnImportSavedGames_Clicked" />
                                 </Grid>
@@ -111,6 +104,13 @@
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
                                     <Button x:Name="btnSavedGames" Text="Export Saved Games" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnSavedGames_Clicked" />
+                                </Grid>
+                            </ViewCell>
+                            <ViewCell>
+                                <Grid WidthRequest="320" HorizontalOptions="Center" >
+                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                                    <Button x:Name="btnDumplogs" Text="Dumplogs" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnDumplogs_Clicked" />
                                 </Grid>
                             </ViewCell>
                             <ViewCell>
