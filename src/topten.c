@@ -390,6 +390,7 @@ int how;
     Fprintf(rfile, "%cflags=0x%lx", XLOG_SEP, encodexlogflags());
     Fprintf(rfile, "%cdifficulty=%d", XLOG_SEP, (int)context.game_difficulty);
     Fprintf(rfile, "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : CasualMode ? (ModernMode ? "casual" : "reloadable") : ModernMode ? "modern" : "normal");
+    Fprintf(rfile, "%cscoring=%s", XLOG_SEP, discover || CasualMode || flags.non_scoring ? "no" : "yes");
     Fprintf(rfile, "\n");
 #undef XLOG_SEP
 }
@@ -409,6 +410,8 @@ encodexlogflags()
         e |= 1L << 3;
     if (CasualMode)
         e |= 1L << 4;
+    if (flags.non_scoring)
+        e |= 1L << 5;
 
     return e;
 }
