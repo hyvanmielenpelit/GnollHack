@@ -360,6 +360,26 @@ LibTallyRealTime()
     tally_realtime();
 }
 
+int
+LibValidateSaveFile(const char* filename)
+{
+    int fd;
+    int res = 0;
+    Strcpy(SAVEF, filename);
+#ifdef COMPRESS_EXTENSION
+    SAVEF[strlen(SAVEF) - strlen(COMPRESS_EXTENSION)] = '\0';
+#endif
+    nh_uncompress(SAVEF);
+    if ((fd = open_savefile()) >= 0) {
+        if (validate(fd, filename) == 0) {
+            res = 1;
+        }
+        (void)nhclose(fd);
+    }
+    nh_compress(SAVEF);
+    return res;
+}
+
 int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
 {

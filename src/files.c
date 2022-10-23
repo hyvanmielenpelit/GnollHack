@@ -1254,8 +1254,7 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
         {
             if (plname_from_imported_savefile)
             {
-                //Set game to be non-scoring
-                flags.debug;
+                flags.non_scoring = TRUE;
             }
             plname_from_error_savefile = FALSE;
             plname_from_imported_savefile = FALSE;
@@ -1586,7 +1585,7 @@ get_saved_games()
                         Sprintf(filename, "save/%d%s", uid, name);
                         r = plname_from_file(filename, &gamestats);
                         if (r)
-                            result[j++] = newsavegamedata(r, filename, gamestats, FALSE, FALSE);
+                            result[j++] = newsavegamedata(r, filename, gamestats, FALSE, FALSE, FALSE);
                     }
                 }
             }
@@ -1629,7 +1628,7 @@ get_saved_games()
                 char* r;
                 r = plname_from_running(namelist2[i]->d_name, &gamestats);
                 if (r)
-                    result[j++] = newsavegamedata(r, namelist2[i]->d_name, gamestats, TRUE, FALSE);
+                    result[j++] = newsavegamedata(r, namelist2[i]->d_name, gamestats, TRUE, FALSE, FALSE);
             }
         }
     }

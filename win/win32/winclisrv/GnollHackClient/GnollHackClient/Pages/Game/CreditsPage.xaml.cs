@@ -10,6 +10,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
+using static System.Net.WebRequestMethods;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -235,7 +236,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void ShareFile(string filename, string title)
         {
-            if(!File.Exists(filename))
+            if(!System.IO.File.Exists(filename))
             {
                 await DisplayAlert("File Sharing Failure", "GnollHack cannot find file \'" + filename + "\'" , "OK");
                 return;
@@ -331,7 +332,7 @@ namespace GnollHackClient.Pages.Game
             string fulltargetpath = Path.Combine(App.GHPath, "paniclog");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Panic Log");
             string errormsg = "";
-            if (!File.Exists(fulltargetpath))
+            if (!System.IO.File.Exists(fulltargetpath))
             {
                 await DisplayAlert("No Panic Log", "Panic Log does not exist.", "OK");
             }
@@ -370,6 +371,107 @@ namespace GnollHackClient.Pages.Game
             await App.Current.MainPage.Navigation.PushModalAsync(verPage);
             CreditsTableView.IsEnabled = true;
 
+        }
+
+        private async void btnImportSavedGames_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+            await CheckAndRequestWritePermission();
+            await CheckAndRequestReadPermission();
+            try
+            {
+                FileResult file = await FilePicker.PickAsync();
+
+                if (file != null)
+                {
+                    using (Stream s = await file.OpenReadAsync())
+                    {
+                        if (s != null)
+                        {
+                            string gnhpath = App.GHPath;
+                            if (file.FileName.EndsWith("zip", StringComparison.OrdinalIgnoreCase))
+                            {
+                                string savedirpath = Path.Combine(gnhpath, "save");
+                                App.CheckCreateDirectory(savedirpath);
+
+                                string tempdirpath = Path.Combine(gnhpath, "save", "temp");
+                                if (Directory.Exists(tempdirpath))
+                                    Directory.Delete(tempdirpath, true);
+                                App.CheckCreateDirectory(tempdirpath);
+    
+                                string temp2dirpath = Path.Combine(gnhpath, "save", "zip");
+                                if (Directory.Exists(temp2dirpath))
+                                    Directory.Delete(temp2dirpath, true);
+                                App.CheckCreateDirectory(temp2dirpath);
+
+                                string ziptargetfilename = file.FileName;
+                                string fulltargetpath = Path.Combine(tempdirpath, ziptargetfilename);
+                                string fulltargetpath2 = Path.Combine(savedirpath, ziptargetfilename);
+                                if(System.IO.File.Exists(fulltargetpath2))
+                                    System.IO.File.Delete(fulltargetpath2);
+
+                                using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
+                                {
+                                    s.CopyTo(t);
+                                }
+                                using (ZipArchive ziparch = ZipFile.OpenRead(fulltargetpath))
+                                {
+                                    ziparch.ExtractToDirectory(temp2dirpath);
+                                }
+                                string[] extractedfiles = Directory.GetFiles(temp2dirpath);
+                                if(extractedfiles != null)
+                                {
+                                    foreach(string filestr in extractedfiles)
+                                    {
+                                        if(System.IO.File.Exists(filestr))
+                                        {
+                                            if(App.GnollHackService.ValidateSaveFile(filestr))
+                                            {
+                                                FileInfo fileInfo = new FileInfo(filestr);
+                                                string finalname = Path.Combine(savedirpath, fileInfo.Name + ".i");
+                                                if (System.IO.File.Exists(finalname))
+                                                    System.IO.File.Delete(finalname);
+                                                System.IO.File.Move(filestr, finalname);
+                                            }
+                                            else
+                                            {
+                                                await DisplayAlert("Invalid Save Game in Zip", "Saved game \'" + filestr + "\' is invalid.", "OK");
+                                            }
+                                        }
+                                    }
+                                }
+                                Directory.Delete(tempdirpath, true);
+                                Directory.Delete(temp2dirpath, true);
+                                await DisplayAlert("Games Saved from Zip", "Saved games from \'" + ziptargetfilename + "\' have been saved to the save directory as non-scoring imported saved games.", "OK");
+                            }
+                            else
+                            {
+                                if (App.GnollHackService.ValidateSaveFile(file.FullPath))
+                                {
+                                    string targetfilename = file.FileName + ".i";
+                                    string savedirpath = Path.Combine(gnhpath, "save");
+                                    App.CheckCreateDirectory(savedirpath);
+
+                                    string fulltargetpath = Path.Combine(savedirpath, targetfilename);
+                                    using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
+                                    {
+                                        s.CopyTo(t);
+                                    }
+                                    await DisplayAlert("Game Saved", "Saved game \'" + file.FileName + "\' has been saved to the save directory as a non-scoring imported saved game.", "OK");
+                                }
+                                else
+                                {
+                                    await DisplayAlert("Invalid Saved Game", "Saved game \'" + file.FullPath + "\' is invalid.", "OK");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", "An error occurred while trying to import a saved game: " + ex.Message, "OK");
+            }
         }
 
         private async void btnSavedGames_Clicked(object sender, EventArgs e)
