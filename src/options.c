@@ -276,6 +276,7 @@ static struct Bool_Opt {
     { "standout", &flags.standout, FALSE, SET_IN_GAME },
     { "status_updates", &iflags.status_updates, TRUE, DISP_IN_GAME },
     { "swap_rhand_only", &flags.swap_rhand_only, FALSE, SET_IN_GAME },
+    { "takeoff_uses_all", &iflags.takeoff_uses_all, TRUE, SET_IN_GAME },
     { "tellexp", &flags.tellexp, TRUE, SET_IN_GAME },
     { "tiled_map", &iflags.wc_tiled_map, PREFER_TILED, DISP_IN_GAME }, /*WC*/
     { "time", &flags.time, FALSE, SET_IN_GAME },

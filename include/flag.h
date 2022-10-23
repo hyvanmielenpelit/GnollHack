@@ -459,6 +459,7 @@ struct instance_flags {
     boolean cmdassist;       /* provide detailed assistance for some comnds */
     boolean time_botl;       /* context.botl for 'time' (moves) only */
     boolean wizweight;       /* display weight of everything in wizard mode */
+    boolean takeoff_uses_all;/* takeoff command is implemented using takeoffall command with a single item */
 
     /* Is the system in demo version */
     boolean demo_version;  /* OBSOLETE */
@@ -555,6 +556,7 @@ struct instance_flags {
     boolean obsolete;  /* obsolete options can point at this, it isn't used */
 
     struct monst* spell_target_monster;
+
 };
 
 /*
