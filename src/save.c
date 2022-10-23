@@ -1389,6 +1389,7 @@ int fd;
     gamestats.explore_mode = discover;
     gamestats.modern_mode = ModernMode;
     gamestats.casual_mode = CasualMode;
+    gamestats.non_scoring = flags.non_scoring;
     gamestats.time_stamp = getnow();
     gamestats.num_recoveries = n_game_recoveries;
 

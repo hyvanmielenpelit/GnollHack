@@ -418,6 +418,7 @@ namespace GnollHackClient.Pages.Game
                                 {
                                     ziparch.ExtractToDirectory(temp2dirpath);
                                 }
+                                int nextracted = 0;
                                 string[] extractedfiles = Directory.GetFiles(temp2dirpath);
                                 if(extractedfiles != null)
                                 {
@@ -432,6 +433,7 @@ namespace GnollHackClient.Pages.Game
                                                 if (System.IO.File.Exists(finalname))
                                                     System.IO.File.Delete(finalname);
                                                 System.IO.File.Move(filestr, finalname);
+                                                nextracted++;
                                             }
                                             else
                                             {
@@ -442,7 +444,12 @@ namespace GnollHackClient.Pages.Game
                                 }
                                 Directory.Delete(tempdirpath, true);
                                 Directory.Delete(temp2dirpath, true);
-                                await DisplayAlert("Games Saved from Zip", "Saved games from \'" + ziptargetfilename + "\' have been saved to the save directory as non-scoring imported saved games.", "OK");
+                                if(extractedfiles.Length == 0)
+                                    await DisplayAlert("No Files in Zip", "There are no files in \'" + ziptargetfilename + "\'.", "OK");
+                                else if (nextracted > 0)
+                                    await DisplayAlert("Games Saved from Zip", "Saved games from \'" + ziptargetfilename + "\' have been saved to the save directory as non-scoring imported saved games.", "OK");
+                                else
+                                    await DisplayAlert("No Games Saved in Zip", "No saved games from \'" + ziptargetfilename + "\' were saved to the save directory.", "OK");
                             }
                             else
                             {
@@ -453,6 +460,8 @@ namespace GnollHackClient.Pages.Game
                                     App.CheckCreateDirectory(savedirpath);
 
                                     string fulltargetpath = Path.Combine(savedirpath, targetfilename);
+                                    if (System.IO.File.Exists(fulltargetpath))
+                                        System.IO.File.Delete(fulltargetpath);
                                     using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
                                     {
                                         s.CopyTo(t);

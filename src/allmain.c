@@ -1154,12 +1154,12 @@ const char*
 get_game_mode_text(display_nonscoring)
 boolean display_nonscoring;
 {
-    return get_game_mode_text_core(wizard, discover, ModernMode, CasualMode, display_nonscoring);
+    return get_game_mode_text_core(wizard, discover, ModernMode, CasualMode, flags.non_scoring, display_nonscoring);
 }
 
 const char*
-get_game_mode_text_core(iswizardmode, isexporemode, ismodernmode, iscasualmode, display_nonscoring)
-boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmode;
+get_game_mode_text_core(iswizardmode, isexporemode, ismodernmode, iscasualmode, isnonscoring, display_nonscoring)
+boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmode, isnonscoring;
 {
     if (iswizardmode)
     {
@@ -1220,9 +1220,9 @@ boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmo
             return display_nonscoring ? "non-scoring reloadable" : "reloadable";
     }
     else if (ismodernmode)
-        return display_nonscoring && flags.non_scoring ? "non-scoring modern" : "modern";
+        return display_nonscoring && isnonscoring ? "non-scoring modern" : "modern";
     else
-        return display_nonscoring && flags.non_scoring ? "non-scoring classic" : "classic";
+        return display_nonscoring && isnonscoring ? "non-scoring classic" : "classic";
 }
 
 const char*

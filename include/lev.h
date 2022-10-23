@@ -92,6 +92,7 @@ struct save_game_stats {
     boolean explore_mode;
     boolean modern_mode;
     boolean casual_mode;
+    boolean non_scoring;
     time_t time_stamp;
 
     /* Other information */
