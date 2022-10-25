@@ -1592,11 +1592,11 @@ long timeout;
         if (mon && yours && !has_mname(mon) && is_tame(mon) && cansee_hatchspot)
         {
             char buf[BUFSZ] = "";
-            char monnambuf[BUFSZ] = "";
+            char hatchedmonnambuf[BUFSZ] = "";
             char qbuf[QBUFSZ] = "";
             /* Give true name to the hatch child */
             Sprintf(qbuf, "Which name do you want to give to %s?",
-                distant_monnam(mon, ARTICLE_THE, monnambuf));
+                distant_monnam(mon, ARTICLE_THE, hatchedmonnambuf));
             getlin_ex(GETLINE_ASK_NAME, ATR_NONE, NO_COLOR, qbuf, buf, "type the name", (char*)0, "You have gained offspring.");
             if (!*buf || *buf == '\033')
             {
@@ -1608,7 +1608,7 @@ long timeout;
                 (void)mungspaces(buf);
                 if ((mon->data->geno & G_UNIQ) || mon->ispriest || mon->isminion || mon->isshk || mon->issmith || mon->isnpc)
                 {
-                    pline("Unfortunately, %s will not accept the name %s.", monnambuf, buf);
+                    pline("Unfortunately, %s will not accept the name %s.", hatchedmonnambuf, buf);
                 }
                 else
                 {
