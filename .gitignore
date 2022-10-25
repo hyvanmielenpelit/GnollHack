@@ -18,8 +18,13 @@ src/Sysunix
 src/config.h-t
 src/hack.h-t
 util/dgn_comp
+util/dgn_lex.c
+util/dgn_yacc.c
 util/dlb
 util/lev_comp
+util/lev_lex.c
+util/lev_yacc.c
+util/lex.yy.c
 util/makedefs
 util/recover
 util/tilemap
@@ -29,6 +34,7 @@ dat/options
 dat/quest.dat
 dat/dungeon.pdf
 include/date.h
+include/lev_comp.h
 include/onames.h
 include/pm.h
 include/animoff.h
