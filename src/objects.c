@@ -2767,7 +2767,7 @@ GENERAL_TOOL("figurine",        None, None, None, None,
     /* FIGURINE REMOVED FROM THE GAME -- JG -- monster type specified by obj->corpsenm */
 TOOL("magic marker",    None, None, None, "Magical writing tool that can be used to write scrolls and spellbooks on scrolls of blank paper.",
     TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT,
-    CHARGED_MAGIC_MARKER, RECHARGING_MAGIC_MARKER, 25,  2, 50, 0, 0, 0, 0, 0, 0,
+    CHARGED_MAGIC_MARKER, RECHARGING_MAGIC_MARKER, 25,  2, 125, 0, 0, 0, 0, 0, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_PLASTIC, CLR_RED, 24, OBJECT_SOUNDSET_MAGIC_MARKER, 
     O1_NONE, O2_NONE, O3_READABLE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("cubic gate",    "small runed cube", None, None, "Allows the user to level teleport.", 
