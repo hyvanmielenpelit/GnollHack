@@ -1,0 +1,70 @@
+#
+# GnollHack 4.0  linux $NHDT-Date: 1432512814 2015/05/25 00:13:34 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $
+# Copyright (c) Kenneth Lorber, Kensington, Maryland, 2007.
+# GnollHack may be freely redistributed.  See license for details. 
+#
+#-PRE
+# Linux hints file
+# This hints file provides a single-user tty build for Linux, specifically
+# for Ubuntu dapper.
+
+
+PREFIX=/opt/gnollhack/server.gnollhack.com
+#PREFIX=$(wildcard ~)/nh/install
+#HACKDIR=$(PREFIX)/games/lib/$(GAME)dir
+HACKDIR=/gnh
+#SHELLDIR = $(PREFIX)
+#SHELLDIR = $(HACKDIR)/..
+INSTDIR = $(HACKDIR)
+VARDIR = $(HACKDIR)/var
+
+
+
+POSTINSTALL=cp -n sys/unix/sysconfdgl $(INSTDIR)/sysconf; $(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf; $(CHGRP) $(GAMEGRP) $(INSTDIR)/sysconf; chmod $(VARFILEPERM) $(INSTDIR)/sysconf;
+
+CFLAGS=-g -O0 -I../include -DNOTPARMDECL
+CFLAGS+=-DDLB
+CFLAGS+=-DCOMPRESS=\"/bin/gzip\" -DCOMPRESS_EXTENSION=\".gz\"
+CFLAGS+=-DGCC_WARN -Wall -Wextra -Wformat=2 #-Werror
+CFLAGS+=-Wimplicit -Wreturn-type -Wunused -Wswitch -Wshadow -Wwrite-strings
+CFLAGS+=-Wno-format-nonliteral
+CFLAGS+=-Wno-stringop-truncation
+CFLAGS+=-Wno-missing-field-initializers
+CFLAGS+=-Wno-format-overflow
+CFLAGS+=-DSYSCF -DSYSCF_FILE=\"$(HACKDIR)/sysconf\" -DSECURE
+CFLAGS+=-DTIMED_DELAY
+CFLAGS+=-DHACKDIR=\"$(HACKDIR)\"
+CFLAGS+=-DVAR_PLAYGROUND=\"$(HACKDIR)/var\"
+CFLAGS+=-DCONFIG_ERROR_SECURE=FALSE
+CFLAGS+=-DCURSES_GRAPHICS
+CFLAGS+=-DPANICLOG_FMT2
+CFLAGS+=-DTTY_TILES_ESCCODES
+CFLAGS+=-DDGAMELAUNCH
+CFLAGS+=-DLIVELOG_ENABLE
+CFLAGS+=-DDUMPLOG
+CFLAGS+=-DDUMPHTML
+CFLAGS+=-DNOCWD_ASSUMPTIONS
+
+LINK=$(CC)
+# Only needed for GLIBC stack trace:
+LFLAGS=-lm -rdynamic -no-pie
+
+WINSRC = $(WINTTYSRC) $(WINCURSESSRC)
+WINOBJ = $(WINTTYOBJ) $(WINCURSESOBJ)
+WINLIB = $(WINTTYLIB) $(WINCURSESLIB)
+
+# if TTY_TILES_ESCCODES
+#WINSRC += tile.c
+#WINOBJ += tile.o
+
+WINTTYLIB=-lcurses
+
+CHOWN=true
+CHGRP=true
+
+GAMEUID=games
+GAMEGRP=games
+
+VARDIRPERM = 0755
+VARFILEPERM = 0600
+GAMEPERM = 0755
