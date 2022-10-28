@@ -313,7 +313,7 @@ port_help()
 }
 #endif
 
-#if 0
+#ifdef NOCWD_ASSUMPTIONS
 /*
  * Add a slash to any name not ending in /. There must
  * be room for the /

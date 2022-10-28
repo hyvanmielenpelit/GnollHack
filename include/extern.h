@@ -2470,6 +2470,8 @@ E void FDECL(getreturn, (const char *));
 E void VDECL(msmsg, (const char *, ...));
 #endif
 E FILE *FDECL(fopenp, (const char *, const char *));
+#elif defined(UNIX) && defined(NOCWD_ASSUMPTIONS)
+E void FDECL(append_slash, (char*));
 #endif /* MICRO || WIN32 */
 
 /* ### pctty.c ### */
