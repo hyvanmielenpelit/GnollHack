@@ -74,9 +74,11 @@ STATIC_DCL void FDECL(reset_trapchn, (struct trap*));
 STATIC_DCL void NDECL(reset_lev);
 STATIC_DCL void NDECL(reset_levchn);
 STATIC_DCL void NDECL(reset_damage);
-STATIC_OVL void NDECL(reset_msghistory);
-STATIC_OVL void NDECL(reset_remaining_dynamic_data);
-STATIC_OVL void NDECL(reset_remaining_static_variables);
+STATIC_DCL void NDECL(reset_msghistory);
+STATIC_DCL void NDECL(reset_remaining_dynamic_data);
+STATIC_DCL void NDECL(reset_remaining_static_variables);
+
+STATIC_DCL char FDECL(special_yn_query, (const char*, const char*));
 
 #define done_stopprint program_state.stopprint
 
@@ -1961,7 +1963,7 @@ int how;
         exit_nhwindows((char*)0), have_windows = FALSE;
 
     //Should exclude games from imported files?
-    if(((!discover && !CasualMode) || (CasualMode && how == ASCENDED)) && (!wizard || yn_query("Write a top score entry?") == 'y'))
+    if(((!discover && !CasualMode) || (CasualMode && how == ASCENDED)) && (!wizard || special_yn_query("Write Top Scores", "Write a top score entry?") == 'y'))
         topten(how, endtime);
 
     if (CasualMode && how == ASCENDED && has_existing_save_file)
@@ -3219,6 +3221,22 @@ tally_realtime(VOID_ARGS)
     urealtime.realtime += (long)(urealtime.finish_time - urealtime.start_timing);
     issue_gui_command(GUI_CMD_REPORT_PLAY_TIME);
     urealtime.start_timing = urealtime.finish_time;
+}
+
+/* yes/no question via GUI when the game windows may already have been closed */
+STATIC_OVL char
+special_yn_query(title, query)
+const char* title;
+const char* query;
+{
+    struct special_view_info info = { 0 };
+    info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION;
+    info.title = title;
+    info.text = query;
+    info.attr = ATR_NONE;
+    info.color = NO_COLOR;
+    int res = open_special_view(info);
+    return (char)res;
 }
 
 /*end.c*/

@@ -1362,7 +1362,7 @@ struct save_game_stats* stats_ptr;
         Sprintf(txtbuf, "Save file \"%s\" is invalid. Delete it?", filename);
         info.text = txtbuf;
         int res = open_special_view(info);
-        if (res)
+        if (res == 'y')
         {
             pline("Deleting an invalid save file \"%s\".", filename);
             delete_savefile();

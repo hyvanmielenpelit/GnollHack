@@ -1733,7 +1733,7 @@ namespace GnollHackClient
                                 Thread.Sleep(GHConstants.PollingInterval);
                                 pollResponseQueue();
                             }
-                            return _ynConfirmationResult ? 1 : 0;
+                            return _ynConfirmationResult ? 'y' : 'n';
                         }
                         break;
                     }

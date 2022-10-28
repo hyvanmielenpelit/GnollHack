@@ -3835,6 +3835,10 @@ struct special_view_info info;
     case SPECIAL_VIEW_CHAT_MESSAGE:
         genl_chat_message();
         break;
+    case SPECIAL_VIEW_GUI_YN_CONFIRMATION:
+        /* Implementation needed */
+        //return (int)tty_yn_function_ex(0, info.attr, info.color, 0, info.title, info.text, ynchars, "n", "Yes\nNo", (char*)0, 0UL);
+        break;
     default:
         break;
     }
