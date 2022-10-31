@@ -4570,7 +4570,10 @@ struct monst* mtmp;
         if(mtmp->mon_flags & MON_FLAGS_YOUR_CHILD)
             Sprintf(ansbuf, "I do not know my name%s.", flags.female ? ", mommy" : ", daddy");
         else
+        {
+            play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_NAME_NONE_OF_YOUR_BUSINESS);
             Sprintf(ansbuf, "My name is none of your business.");
+        }
         popup_talk_line(mtmp, ansbuf);
     }
 
