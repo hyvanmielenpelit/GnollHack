@@ -4835,7 +4835,7 @@ struct permonst _mons2[] = {
         M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY,
         M4_PRINCE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
         13, HI_LORD, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE,
-        ACTION_INFO(HUMAN_KING_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HUMAN_KING_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(NO_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NO_ENLARGEMENT, 0, 0),
         ACTION_INFO(NO_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NO_ENLARGEMENT, 0, 0)),
     MON("Oracle", "human seer", "powerful unique human capable of many divinations", None, None, S_HUMAN, LVL(12, 0, 0, 10, 50, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_PASV, AD_MAGM, 0, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
