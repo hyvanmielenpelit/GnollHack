@@ -1957,7 +1957,7 @@ int skill;
     u.skill_record[u.skills_advanced++] = skill;
     /* subtly change the advance message to indicate no more advancement */
     play_sfx_sound(SFX_SKILL_ADVANCED);
-    You("are now %s skilled in %s.",
+    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are now %s skilled in %s.",
         P_SKILL_LEVEL(skill) >= P_MAX_SKILL_LEVEL(skill) ? "most" : "more",
         P_NAME_PLURAL(skill));
 

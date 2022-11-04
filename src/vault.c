@@ -1197,6 +1197,7 @@ register struct monst *grd;
                     grd->isgd ? " attempt" : "");
         if (!semi_dead && (in_fcorridor(grd, u.ux, u.uy) || cansee(x, y))) 
         {
+            play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, x, y);
             if (!disappear_msg_seen && see_guard)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s disappears.", noit_mon_nam(grd));
             return 1;
