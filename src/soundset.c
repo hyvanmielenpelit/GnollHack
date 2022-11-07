@@ -15663,6 +15663,13 @@ enum player_soundset_types
             else
                 return PLAYER_SOUNDSET_DWARF_MALE;
         }
+        else if (is_human(&mons[u.umonnum]))
+        {
+            if (flags.female)
+                return PLAYER_SOUNDSET_HUMAN_FEMALE;
+            else
+                return PLAYER_SOUNDSET_HUMAN_MALE;
+        }
         else
         {
             if (flags.female)
@@ -15679,6 +15686,13 @@ enum player_soundset_types
                 return PLAYER_SOUNDSET_DWARF_FEMALE;
             else
                 return PLAYER_SOUNDSET_DWARF_MALE;
+        }
+        else if (Race_if(PM_HUMAN))
+        {
+            if (flags.female)
+                return PLAYER_SOUNDSET_HUMAN_FEMALE;
+            else
+                return PLAYER_SOUNDSET_HUMAN_MALE;
         }
         else
         {
