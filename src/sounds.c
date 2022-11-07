@@ -1324,7 +1324,7 @@ boolean dopopup, fromchatmenu;
         }
         else
         {
-            play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_IN_AUDIBLE_WHISPER);
+            chat_line = 1;
             pline_msg =
                 "whispers inaudibly.  All you can make out is \"moon\".";
         }
@@ -1530,30 +1530,25 @@ bark_here:
         {
             play_monster_special_dialogue_line(mtmp, DJINN_LINE_SORRY_OUT_OF_WISHES);
             verbl_msg = "Sorry, I'm all out of wishes.";
-            chat_line = 0;
         }
         else if (is_peaceful(mtmp)) 
         {
             play_monster_special_dialogue_line(mtmp, DJINN_LINE_IM_FREE);
             verbl_msg = "I'm free!";
-            chat_line = 0;
         }
         else 
         {
             play_monster_special_dialogue_line(mtmp, DJINN_LINE_THIS_WILL_TEACH_YOU);
             verbl_msg = "This will teach you not to disturb me!";
-            chat_line = 0;
         }
         break;
     case MS_PRISONER:
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_IM_FREE);
         verbl_msg = "I'm free!";
-        chat_line = 0;
         break;
     case MS_WATER_DEMON:
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_GURGLES);
         pline_msg = "gurgles.";
-        chat_line = 0;
         break;
     case MS_BOAST: /* giants */
         if (!is_peaceful(mtmp)) {
@@ -1635,7 +1630,7 @@ bark_here:
         else if (is_elf(ptr))
         {
             pline_msg = "curses orcs.";
-            chat_line = 10;
+            chat_line = 11;
         }
         else if (is_dwarf(ptr))
         {
@@ -1645,12 +1640,12 @@ bark_here:
         else if (likes_magic(ptr))
         {
             pline_msg = "talks about spellcraft.";
-            chat_line = 12;
+            chat_line = 10;
         }
         else if (ptr->mlet == S_CENTAUR)
         {
             pline_msg = "discusses hunting.";
-            chat_line = 13;
+            chat_line = 11;
         }
         else
             switch (mtmp->mnum)
@@ -1661,33 +1656,33 @@ bark_here:
                         ? "complains about unpleasant dungeon conditions."
                         : "asks you about the Ruling Ring of Yendor.";
 
-                chat_line = 14 + ((mtmp->mhpmax - mtmp->mhp >= 10) ? 1 : 0);
+                chat_line = 11 + ((mtmp->mhpmax - mtmp->mhp >= 10) ? 1 : 0);
                 break;
             case PM_ARCHAEOLOGIST:
                 pline_msg =
                 "describes a recent article in \"Spelunker Today\" magazine.";
-                chat_line = 16;
+                chat_line = 11;
                 break;
             case PM_TOURIST:
                 verbl_msg = "Aloha.";
-                chat_line = 17;
+                chat_line = 11;
                 break;
             case PM_ABBOT:
             case PM_MONK:
                 if (In_modron_level(&u.uz))
                 {
                     pline_msg = "discusses the ways of the Modron.";
-                    chat_line = 18;
+                    chat_line = 11;
                 }
                 else
                 {
                     pline_msg = "advises you on meditation.";
-                    chat_line = 19;
+                    chat_line = 12;
                 }
                 break;
             default:
                 pline_msg = "discusses dungeon exploration.";
-                chat_line = 20;
+                chat_line = 11;
                 break;
             }
         break;
@@ -1771,7 +1766,6 @@ bark_here:
         {
             play_monster_special_dialogue_line(mtmp, flags.female ? KOP_LINE_JUST_THE_FACTS_MAAM : KOP_LINE_JUST_THE_FACTS_SIR);
             verbalize("Just the facts, %s.", flags.female ? "Ma'am" : "Sir");
-            chat_line = flags.female ? 4 : 3;
         }
         else 
         {
@@ -1782,7 +1776,6 @@ bark_here:
             int roll = rn2(3);
             play_monster_special_dialogue_line(mtmp, roll + KOP_LINE_ANYTHING_YOU_SAY_CAN_BE_USED);
             verbl_msg = arrest_msg[roll];
-            chat_line = 0;
         }
         break;
     case MS_BRIBE:
@@ -1797,13 +1790,20 @@ bark_here:
         if (!is_peaceful(mtmp))
             cuss(mtmp);
         else if (is_lminion(mtmp))
+        {
             verbl_msg = "It's not too late.";
+            chat_line = 16;
+        }
         else
+        {
             verbl_msg = "We're all doomed.";
+            chat_line = 17;
+        }
         break;
     case MS_SPELL:
         /* deliberately vague, since it's not actually casting any spell */
         pline_msg = "seems to mutter a cantrip.";
+        chat_line = 15;
         break;
     case MS_NURSE:
         verbl_msg_mcan = "I hate this job!";
@@ -1840,13 +1840,11 @@ bark_here:
         {
             play_monster_special_dialogue_line(mtmp, VAULT_GUARD_LINE_PLEASE_DROP_THAT_GOLD_AND_FOLLOW_ME);
             verbl_msg = "Please drop that gold and follow me.";
-            chat_line = 0;
         }
         else
         {
             play_monster_special_dialogue_line(mtmp, VAULT_GUARD_LINE_PLEASE_FOLLOW_ME);
             verbl_msg = "Please follow me.";
-            chat_line = 0;
         }
         break;
     case MS_SOLDIER: {
@@ -1864,8 +1862,6 @@ bark_here:
         int roll = rn2(3);
         int dialogue_line = (is_watch(mtmp->data) ? WATCHMAN_LINE_RESISTANCE_IS_USELESS : 1)  + (is_peaceful(mtmp) ? roll + 3 : roll);
         play_monster_special_dialogue_line(mtmp, dialogue_line);
-
-        chat_line = 0; // is_peaceful(mtmp) ? roll + 3 : roll;
         verbl_msg = is_peaceful(mtmp) ? soldier_pax_msg[roll]
                                     : soldier_foe_msg[roll];
         break;
@@ -1930,6 +1926,8 @@ bark_here:
     }
     else if (is_cancelled(mtmp) && verbl_msg_mcan)
     {
+        if (chat_line >= 0)
+            play_monster_chat_sound(mtmp, chat_line);
         if (dopopup)
             popup_talk_line(mtmp, verbl_msg_mcan);
         else
@@ -4555,23 +4553,27 @@ struct monst* mtmp;
         if (mtmp->data->mtitle && strcmp(mtmp->data->mtitle, ""))
             Sprintf(titlebuf, ", %s", mtmp->data->mtitle);
 
-        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+        play_monster_switchable_who_sound(mtmp, MONSTER_WHO_SOUND_ANSWER_WHO_ARE_YOU, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         Sprintf(ansbuf, "I am %s%s.", mon_monster_name(mtmp), titlebuf);
         popup_talk_line(mtmp, ansbuf);
     }
     else if (has_mname(mtmp))
     {
+        play_monster_who_sound(mtmp, MONSTER_WHO_SOUND_MY_NAME_IS);
         Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
         popup_talk_line(mtmp, ansbuf);
         mtmp->u_know_mname = 1;
     }
     else
     {
-        if(mtmp->mon_flags & MON_FLAGS_YOUR_CHILD)
-            Sprintf(ansbuf, "I do not know my name%s.", flags.female ? ", mommy" : ", daddy");
+        if (mtmp->mon_flags & MON_FLAGS_YOUR_CHILD)
+        {
+            play_monster_who_sound(mtmp, flags.female ? MONSTER_WHO_SOUND_I_DONT_KNOW_MY_NAME_MOMMY : MONSTER_WHO_SOUND_I_DONT_KNOW_MY_NAME_DADDY);
+            Sprintf(ansbuf, "I don't know my name%s.", flags.female ? ", mommy" : ", daddy");
+        }
         else
         {
-            play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_NAME_NONE_OF_YOUR_BUSINESS);
+            play_monster_switchable_who_sound(mtmp, MONSTER_WHO_SOUND_MY_NAME_IS_NONE_OF_YOUR_BUSINESS, MONSTER_STANDARD_DIALOGUE_LINE_NAME_NONE_OF_YOUR_BUSINESS);
             Sprintf(ansbuf, "My name is none of your business.");
         }
         popup_talk_line(mtmp, ansbuf);

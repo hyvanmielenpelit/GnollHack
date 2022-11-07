@@ -3285,6 +3285,8 @@ E void FDECL(play_monster_standard_sound, (struct monst*, enum monster_standard_
 E void FDECL(play_monster_special_sound_with_flags, (struct monst*, int, unsigned long));
 E void FDECL(play_monster_special_sound, (struct monst*, int));
 E void FDECL(play_monster_ouch_sound, (struct monst*, enum monster_ouch_sounds));
+E void FDECL(play_monster_who_sound, (struct monst*, enum monster_who_sounds));
+E void FDECL(play_monster_switchable_who_sound, (struct monst*, enum monster_who_sounds, enum monster_standard_dialogue_lines));
 E void FDECL(play_monster_happy_sound, (struct monst*, enum monster_happy_sounds));
 E void FDECL(play_monster_unhappy_sound, (struct monst*, enum monster_unhappy_sounds));
 E void FDECL(play_monster_flounder_sound, (struct monst*, enum monster_flounder_sounds));
