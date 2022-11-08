@@ -15680,22 +15680,19 @@ enum player_soundset_types
     }
     else
     {
-        if (Race_if(PM_DWARF))
+        switch (Race_switch)
         {
+        case PM_DWARF:
             if (flags.female)
                 return PLAYER_SOUNDSET_DWARF_FEMALE;
             else
                 return PLAYER_SOUNDSET_DWARF_MALE;
-        }
-        else if (Race_if(PM_HUMAN))
-        {
+        case PM_HUMAN:
             if (flags.female)
                 return PLAYER_SOUNDSET_HUMAN_FEMALE;
             else
                 return PLAYER_SOUNDSET_HUMAN_MALE;
-        }
-        else
-        {
+        default:
             if (flags.female)
                 return PLAYER_SOUNDSET_FEMALE;
             else
