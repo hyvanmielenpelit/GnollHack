@@ -49,6 +49,7 @@ char FDECL(windows_yn_function_ex, (int, int, int, int, const char *, const char
 static void FDECL(windows_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 extern int NDECL(windows_console_custom_nhgetch);
 void NDECL(safe_routines);
+static void NDECL(windows_init_platform);
 
 char orgdir[PATHLEN];
 char *dir;
@@ -101,6 +102,8 @@ char *argv[];
      */
     safe_routines();
     sys_early_init();
+    windows_init_platform();
+
 #ifdef _MSC_VER
 # ifdef DEBUG
     /* set these appropriately for VS debugging */
@@ -1031,5 +1034,15 @@ gotlock:
     }
 }
 #endif /* PC_LOCKING */
+
+static void
+windows_init_platform(VOID_ARGS)
+{
+    /* Tiles */
+#ifdef USE_TILES
+    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
+#endif
+
+}
 
 /*windmain.c*/

@@ -3756,13 +3756,6 @@ mswin_init_platform(VOID_ARGS)
             return;
         }
     }
-
-    /* Tiles */
-#ifdef USE_TILES
-    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
-#endif
-
-
 }
 
 void
