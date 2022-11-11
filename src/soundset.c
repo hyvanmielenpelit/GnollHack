@@ -1008,6 +1008,27 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Werewolf/Female/Chat", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Werewolf/Female/Howl", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Death", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Cough", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Push Effort", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Ouch", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Flounder", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Bump Into", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Search", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Cast", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Mumbled Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Yell", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Shudder", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Male/Pray", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Female/Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Female/Get Angry", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Dwarf/Female/Mollified", 1.0f },
@@ -1977,15 +1998,48 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
         "Player Dwarf Male",
         PLAYER_SOUNDSET_GENERAL,
         {
-            {GHSOUND_NONE, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_PUSH_EFFORT, 1.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_OUCH_MALE, 1.0f}, {GHSOUND_GENERIC_FLOUNDER_MALE, 1.0f}, {GHSOUND_NONE, 1.0f}, {GHSOUND_NONE, 1.0f},
-            {GHSOUND_NONE, 1.0f}, {GHSOUND_GENERIC_BUMP_INTO, 1.0f}, {GHSOUND_GENERIC_SEARCH_MALE, 1.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {MAX_GHSOUNDS, 1.0f},
-            {GHSOUND_GENERIC_LAUGHTER, 10.0f},  {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_YELL_MALE, 1.0f}, {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_MALE_SHUDDER, 1.0f}, {GHSOUND_GENERIC_PLAYER_MALE_DEATH, 1.0f}
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_AMBIENT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_SWALLOW_AMBIENT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME */
+            {GHSOUND_DWARF_MALE_ITEM_TRADING, 1.0f}, /* MONSTER_SOUND_TYPE_ITEM_TRADING */
+            {GHSOUND_DWARF_MALE_STANDARD_DIALOGUE_LINE, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
+            {GHSOUND_DWARF_MALE_SPECIAL_DIALOGUE_LINE, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_CREATION */
+            {GHSOUND_DWARF_MALE_GET_ANGRY, 1.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {GHSOUND_DWARF_MALE_MOLLIFIED, 1.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {GHSOUND_DWARF_MALE_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {GHSOUND_DWARF_MALE_COUGH, 1.0f}, /* MONSTER_SOUND_TYPE_COUGH */
+            {GHSOUND_DWARF_MALE_PUSH_EFFORT, 1.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_HOWL */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_PISSED */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_3 */
+            {GHSOUND_DWARF_MALE_OUCH, 1.0f}, /* MONSTER_SOUND_TYPE_OUCH */
+            {GHSOUND_DWARF_MALE_FLOUNDER, 1.0f}, /* MONSTER_SOUND_TYPE_FLOUNDER */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_4 */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_5 */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_6 */
+            {GHSOUND_DWARF_MALE_BUMP_INTO, 1.0f}, /* MONSTER_SOUND_TYPE_BUMP_INTO */
+            {GHSOUND_DWARF_MALE_SEARCH, 1.0f}, /* MONSTER_SOUND_TYPE_SEARCH */
+            {GHSOUND_DWARF_MALE_CAST, 1.0f}, /* MONSTER_SOUND_TYPE_CAST */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_HAPPY */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_LAUGHTER */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RANDOM_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_7 */
+            {GHSOUND_DWARF_MALE_CURSE, 1.0f}, /* MONSTER_SOUND_TYPE_CURSE */
+            {GHSOUND_DWARF_MALE_MUMBLED_CURSE, 1.0f}, /* MONSTER_SOUND_TYPE_MUMBLED_CURSE */
+            {GHSOUND_DWARF_MALE_YELL, 1.0f}, /* MONSTER_SOUND_TYPE_YELL */
+            {GHSOUND_DWARF_MALE_CHAT, 1.0f}, /* MONSTER_SOUND_TYPE_CHAT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
+            {GHSOUND_DWARF_MALE_SHUDDER, 1.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
+            {GHSOUND_DWARF_MALE_DEATH, 1.0f} /* MONSTER_SOUND_TYPE_DEATH */        
         },
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f},  {GHSOUND_GENERIC_PLAYER_MALE_PRAY, 1.0f}}
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f},  {GHSOUND_DWARF_MALE_PRAY, 1.0f}}
     },
     {
         "Player Dwarf Female",
@@ -15663,7 +15717,7 @@ enum player_soundset_types
             else
                 return PLAYER_SOUNDSET_DWARF_MALE;
         }
-        else if (is_human(&mons[u.umonnum]))
+        else if (is_human(&mons[u.umonnum]) || is_elf(&mons[u.umonnum]))
         {
             if (flags.female)
                 return PLAYER_SOUNDSET_HUMAN_FEMALE;
@@ -15688,6 +15742,7 @@ enum player_soundset_types
             else
                 return PLAYER_SOUNDSET_DWARF_MALE;
         case PM_HUMAN:
+        case PM_ELF:
             if (flags.female)
                 return PLAYER_SOUNDSET_HUMAN_FEMALE;
             else
