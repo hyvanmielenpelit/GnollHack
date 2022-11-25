@@ -836,7 +836,7 @@ struct obj* uitem;
     if (orig_sex != poly_gender()) {
         makeknown(uitem->otyp);
         play_sfx_sound(SFX_SEX_CHANGE);
-        Sprintf(dcbuf, "are suddenly very %s!",
+        Sprintf(dcbuf, "You are suddenly very %s!",
             flags.female ? "feminine" : "masculine");
         pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         context.botl = 1;
