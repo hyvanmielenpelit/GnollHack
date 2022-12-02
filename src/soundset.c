@@ -19576,7 +19576,6 @@ struct monst* mtmp;
 enum monster_who_sounds who_line_id;
 enum monster_standard_dialogue_lines standard_line_id;
 {
-    struct ghsound_immediate_info info = { 0 };
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
     enum monster_soundset_types mss = get_monster_soundset(mtmp);
