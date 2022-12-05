@@ -706,6 +706,17 @@ enum signpost_subtypes
 #define is_wall_variation(idx) (defsym_variations[(idx)].base_screen_symbol >= S_vwall && defsym_variations[(idx)].base_screen_symbol <= S_trwall) // ((idx) >= HWALL_VARIATION_OFFSET && (idx) < FLOOR_VARIATION_OFFSET)
 #define is_base_cmap_variation(idx) (defsym_variations[(idx)].base_screen_symbol >= S_stone && defsym_variations[(idx)].base_screen_symbol <= S_dnladder) // ((idx) >= HWALL_VARIATION_OFFSET && (idx) < ALTAR_VARIATION_OFFSET)
 
+struct doodad_definition {
+    const char* name;
+    const char* description;
+    short /*enum replacement_types*/ replacement;
+    short /*enum animation_types*/ animation;
+    short /*enum enlargement_types*/ enlargement;
+};
+extern NEARDATA const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES];
+extern NEARDATA const struct doodad_definition rotatable_doodads[MAX_ROTATABLE_DOODAD_TILES];
+
+
 struct symparse {
     unsigned range;
 #define SYM_CONTROL 1 /* start/finish markers */

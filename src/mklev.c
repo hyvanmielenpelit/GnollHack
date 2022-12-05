@@ -221,6 +221,13 @@ int floortyp, floorsubtyp, mtype;
             levl[hix + 1][lowy - 1].vartyp = levl[hix + 1][lowy - 1].vartyp; /* Retain the vartyp setting from stone */
             levl[lowx - 1][hiy + 1].vartyp = levl[lowx - 1][hiy + 1].vartyp; /* Retain the vartyp setting from stone */
             levl[hix + 1][hiy + 1].vartyp = levl[hix + 1][hiy + 1].vartyp; /* Retain the vartyp setting from stone */
+
+#if 0
+            if(IS_WALL(levl[lowx][lowy - 1].typ) && !rn2(4))
+                levl[lowx][lowy - 1].feature_doodad = 0 + DOODAD_COBWEB * NUM_DOODAD_ROTATIONS + GLYPH_ROTATABLE_DOODAD_OFF;
+            if (IS_WALL(levl[hix][lowy - 1].typ) && !rn2(4))
+                levl[hix][lowy - 1].feature_doodad = 1 + DOODAD_COBWEB * NUM_DOODAD_ROTATIONS + GLYPH_ROTATABLE_DOODAD_OFF;
+#endif
         }
         else 
         { /* a subroom */
