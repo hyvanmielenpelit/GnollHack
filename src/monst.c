@@ -702,7 +702,7 @@ NEARDATA struct permonst mons[] = {
         M2_GNOLL | M2_MAGIC | M2_FEMALE, 
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_SMELLS_BURIED_SEARCHABLE, 
-        M5_FEMALE_TILE, M6_NONE, M7_PRIEST, M8_NONE,
+        M5_FEMALE_TILE | M5_CORPSE_TILE, M6_NONE, M7_PRIEST, M8_NONE,
         6, HI_ZAP, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
                     
     MON("gnoll lord", None, "hyena-headed humanoid in a leadership position", "gnoll lady", "gnoll noble", S_GNOLL, LVL(4, 9, 7, 0, 0, -5), (G_GENO | 2 | G_GENDER_ONE_FOURTH),
