@@ -8062,6 +8062,7 @@ struct monst* mtmp;
         return 0;
     }
 
+    play_monster_special_dialogue_line(mtmp, NPC_LINE_WOULD_YOU_LIKE_TO_OPEN_A_BRANCH_PORTAL);
     Sprintf(qbuf, "Would you like to %s? (%ld %s)", "open a branch portal", service_cost, currency(service_cost));
     switch (yn_query_mon(mtmp, qbuf))
     {
