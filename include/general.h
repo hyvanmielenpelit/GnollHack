@@ -345,7 +345,8 @@ enum simple_doodad_tile_types
 
 enum rotatable_doodad_tile_types
 {
-    DOODAD_COBWEB = 0,
+    DOODAD_COBWEB_NORMAL = 0,
+    DOODAD_COBWEB_CORNER,
     MAX_ROTATABLE_DOODAD_TILES
 };
 #define NUM_DOODAD_ROTATIONS 4

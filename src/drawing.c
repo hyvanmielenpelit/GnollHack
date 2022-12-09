@@ -1313,7 +1313,8 @@ const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
 
 const struct doodad_definition rotatable_doodads[MAX_ROTATABLE_DOODAD_TILES] =
 {
-    {"cobweb-corner-default", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-normal", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 

@@ -224,10 +224,18 @@ int floortyp, floorsubtyp, mtype;
 
 #if 0
             if(IS_WALL(levl[lowx][lowy - 1].typ) && !rn2(4))
-                levl[lowx][lowy - 1].feature_doodad = 0 + DOODAD_COBWEB * NUM_DOODAD_ROTATIONS + GLYPH_ROTATABLE_DOODAD_OFF;
+                levl[lowx][lowy - 1].feature_doodad = 0 + DOODAD_COBWEB_CORNER * NUM_DOODAD_ROTATIONS + GLYPH_ROTATABLE_DOODAD_OFF;
             if (IS_WALL(levl[hix][lowy - 1].typ) && !rn2(4))
-                levl[hix][lowy - 1].feature_doodad = 1 + DOODAD_COBWEB * NUM_DOODAD_ROTATIONS + GLYPH_ROTATABLE_DOODAD_OFF;
+                levl[hix][lowy - 1].feature_doodad = 1 + DOODAD_COBWEB_CORNER * NUM_DOODAD_ROTATIONS + GLYPH_ROTATABLE_DOODAD_OFF;
+
+            if (lowx + 1 < hix)
+            {
+                int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ) && !rn2(4))
+                    levl[lowx + roll + 1][lowy - 1].feature_doodad = rn2(2) + DOODAD_COBWEB_NORMAL * NUM_DOODAD_ROTATIONS + GLYPH_ROTATABLE_DOODAD_OFF;
+            }
 #endif
+
         }
         else 
         { /* a subroom */
