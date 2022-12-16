@@ -825,8 +825,16 @@ boolean ghostly; /* If a bones file restore */
         mread(fd, (genericptr_t) &regions[i]->lamplit, sizeof(boolean));
         mread(fd, (genericptr_t) &regions[i]->makingsound, sizeof(boolean));
     }
+    //remove expired regions moved away from here, since it will cause sound and light source id relink etc. to fail
+}
+
+void
+remove_expired_regions(ghostly)
+boolean ghostly;
+{
+    int i;
     /* remove expired regions, do not trigger the expire_f callback (yet!);
-       also update monster lists if this data is coming from a bones file */
+   also update monster lists if this data is coming from a bones file */
     for (i = n_regions - 1; i >= 0; i--)
         if (regions[i]->time_to_live == 0L)
             remove_region(regions[i]);

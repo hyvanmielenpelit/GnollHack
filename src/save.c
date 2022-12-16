@@ -75,6 +75,7 @@ STATIC_VAR struct save_procs {
 
 /* need to preserve these during save to avoid accessing freed memory */
 STATIC_VAR unsigned ustuck_id = 0, usteed_id = 0;
+boolean saving = FALSE;
 
 int
 dosave()
@@ -174,6 +175,8 @@ boolean quietly;
         return 0;
 #endif
 
+    saving = TRUE;
+
 #ifndef ANDROID
     HUP if (iflags.window_inited)
     {
@@ -187,6 +190,7 @@ boolean quietly;
                 There("seems to be an old save file.");
                 if (yn_query("Overwrite the old file?") == 'n') {
                     nh_compress(fq_save);
+                    saving = FALSE;
                     return 0;
                 }
             }
@@ -200,6 +204,7 @@ boolean quietly;
     if (fd < 0) {
         HUP pline("Cannot open save file.");
         (void) delete_savefile(); /* ab@unido */
+        saving = FALSE;
         return 0;
     }
 
@@ -246,6 +251,7 @@ boolean quietly;
             flushout();
             (void) nhclose(fd);
             (void) delete_savefile();
+            saving = FALSE;
             return 0;
         }
 
@@ -299,6 +305,7 @@ boolean quietly;
             (void) delete_savefile();
             HUP Strcpy(killer.name, whynot);
             HUP done(TRICKED);
+            saving = FALSE;
             return 0;
         }
         minit(); /* ZEROCOMP */
@@ -318,6 +325,7 @@ boolean quietly;
     nh_compress(fq_save);
     /* this should probably come sooner... */
     program_state.something_worth_saving = 0;
+    saving = FALSE;
     return 1;
 }
 

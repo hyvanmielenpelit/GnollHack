@@ -1735,7 +1735,7 @@ weapon_here:
 
     /* treat 'restoring' like suppress_price because shopkeeper and
        bill might not be available yet while restore is in progress */
-    if (iflags.suppress_price || restoring) {
+    if (iflags.suppress_price || restoring || saving) {
         ; /* don't attempt to obtain any stop pricing, even if 'with_price' */
     } else if (is_unpaid(obj)) { /* in inventory or in container in invent */
         long quotedprice = unpaid_cost(obj, TRUE);
