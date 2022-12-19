@@ -1311,10 +1311,15 @@ const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
     {"stalagmite-default", "stalagmite", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
-const struct doodad_definition rotatable_doodads[MAX_ROTATABLE_DOODAD_TILES] =
+const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =
 {
     {"cobweb-normal", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-double", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"cobweb-corner", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-2", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-3", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-4", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-5", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 

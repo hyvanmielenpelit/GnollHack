@@ -714,7 +714,7 @@ struct doodad_definition {
     short /*enum enlargement_types*/ enlargement;
 };
 extern NEARDATA const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES];
-extern NEARDATA const struct doodad_definition rotatable_doodads[MAX_ROTATABLE_DOODAD_TILES];
+extern NEARDATA const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES];
 
 
 struct symparse {
