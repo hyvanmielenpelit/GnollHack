@@ -226,13 +226,13 @@ register int show;
 
     int new_floor_glyph = NO_GLYPH;
     int new_floor_gui_glyph = NO_GLYPH;
-    int new_floor_doodad_glyph = get_floor_doodad_layer_glyph(x, y);
+    int new_floor_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_floor_doodad_layer_glyph(x, y);
     int new_floor_doodad_gui_glyph = maybe_get_replaced_glyph(new_floor_doodad_glyph, x, y, data_to_replacement_info(new_floor_doodad_glyph, LAYER_FLOOR_DOODAD, (struct obj*)0, (struct monst*)0, 0UL));
     int new_feature_glyph = NO_GLYPH;
     int new_feature_gui_glyph = NO_GLYPH;
     int new_cover_feature_glyph = NO_GLYPH;
     int new_cover_feature_gui_glyph = NO_GLYPH;
-    int new_feature_doodad_glyph = get_feature_doodad_layer_glyph(x, y);
+    int new_feature_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_feature_doodad_layer_glyph(x, y);
     int new_feature_doodad_gui_glyph = maybe_get_replaced_glyph(new_feature_doodad_glyph, x, y, data_to_replacement_info(new_feature_doodad_glyph, LAYER_FEATURE_DOODAD, (struct obj*)0, (struct monst*)0, 0UL));
 
     if (defsyms[symbol_index].layer != LAYER_FLOOR)
