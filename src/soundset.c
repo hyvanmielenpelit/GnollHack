@@ -19503,7 +19503,7 @@ boolean has_advice;
     set_simple_monster_sound_id_and_volume(mss, MONSTER_SOUND_TYPE_ADVICE, &soundid, &volume);
     info.ghsound = soundid;
     info.parameter_names[0] = "LineIndex";
-    info.parameter_values[0] = (float)(has_advice ? (mtmp->told_rumor ? 2 : 3) : (mtmp->told_rumor ? 1 : 0));
+    info.parameter_values[0] = (float)(has_advice ? (mtmp->told_rumor ? ADVICE_LET_ME_THINK : ADVICE_YES_HERES_A_PIECE_OF_ADVICE) : (mtmp->told_rumor ? ADVICE_NO_FURTHER_ADVICE : ADVICE_NO_USEFUL_ADVICE));
     info.parameter_names[1] = (char*)0;
 
     volume *= 1.5;

@@ -3721,6 +3721,13 @@ enum quantum_mechanic_special_dialogue_lines
     QUANTUM_MECHANIC_LINE_POSITION_EXACTLY_WHERE_YOU_ARE,
 };
 
+enum advice_dialogue_lines
+{
+    ADVICE_NO_USEFUL_ADVICE = 0,
+    ADVICE_NO_FURTHER_ADVICE,
+    ADVICE_LET_ME_THINK,
+    ADVICE_YES_HERES_A_PIECE_OF_ADVICE,
+};
 
 #define BACKGROUND_MUSIC_VOLUME 0.08f
 #define SIMPLE_STEALTH_VOLUME 0.08f

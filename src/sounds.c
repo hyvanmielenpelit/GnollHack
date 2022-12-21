@@ -1681,7 +1681,7 @@ bark_here:
                 }
                 break;
             default:
-                pline_msg = "discusses dungeon exploration.";
+                pline_msg = "greets you.";
                 chat_line = 11;
                 break;
             }
