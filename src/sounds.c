@@ -6355,6 +6355,7 @@ struct monst* mtmp;
                     You("%s", qbuf);
 
                     money2mon(mtmp, item_cost);
+                    umoney = money_cnt(invent);
                     if(itemized)
                         bot();
 
