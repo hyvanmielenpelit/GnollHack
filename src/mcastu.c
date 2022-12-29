@@ -506,10 +506,10 @@ struct monst *mtmp;
 double damage;
 int spellnum;
 {
-    if (damage == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
-        impossible("cast directed wizard spell (%d) with damage=0?", spellnum);
-        return;
-    }
+    //if (damage == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
+    //    impossible("cast directed wizard spell (%d) with damage=0?", spellnum);
+    //    return;
+    //}
     enum hit_tile_types hit_tile = HIT_GENERAL;
     switch (spellnum) 
     {
@@ -774,10 +774,10 @@ int spellnum;
     if (!mtmp)
         return;
 
-    if (damage == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
-        impossible("cast directed cleric spell (%d) with damage=0?", spellnum);
-        return;
-    }
+    //if (damage == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
+    //    impossible("cast directed cleric spell (%d) with damage=0?", spellnum);
+    //    return;
+    //}
 
     enum hit_tile_types hit_tile = HIT_GENERAL;
 
