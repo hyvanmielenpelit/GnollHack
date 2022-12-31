@@ -3686,7 +3686,7 @@ dochat()
                 chatnum++;
 
                 char sbuf[BUFSIZ];
-                Sprintf(sbuf, "Sell nuggets of ore to %s", noittame_mon_nam(mtmp));
+                Sprintf(sbuf, "Sell nuggets of armor ore to %s", noittame_mon_nam(mtmp));
                 strcpy(available_chat_list[chatnum].name, sbuf);
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_sell_ore;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
