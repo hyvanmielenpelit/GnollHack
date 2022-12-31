@@ -240,7 +240,7 @@ docharacterstatistics()
 
 
     /* Current intrinsics */
-    Sprintf(buf, "Intrinsic and extrinsic abilities:");
+    Sprintf(buf, "Intrinsic and known extrinsic abilities:");
     putstr(datawin, ATR_HEADING, buf);
 
     int intrinsic_count = 0;
