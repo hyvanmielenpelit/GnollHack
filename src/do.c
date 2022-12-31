@@ -248,6 +248,7 @@ docharacterstatistics()
     {
         struct obj* obj = 0;
         long innate_intrinsic = u.uprops[i].intrinsic & (INTRINSIC | FROM_FORM);
+        long temporary_intrinsic = u.uprops[i].intrinsic & TIMEOUT;
         long extrinsic = u.uprops[i].extrinsic;
         boolean o_stats_known = FALSE;
         if (extrinsic)
@@ -256,7 +257,7 @@ docharacterstatistics()
             if (obj)
                 o_stats_known = object_stats_known(obj);
         }
-        if (innate_intrinsic || o_stats_known)
+        if (innate_intrinsic || o_stats_known || temporary_intrinsic)
         {
             intrinsic_count++;
 
@@ -298,6 +299,14 @@ docharacterstatistics()
                     Sprintf(eos(dbuf3), ", ");
 
                 Sprintf(eos(dbuf3), "%s", cxname(obj));
+            }
+            
+            if (temporary_intrinsic)
+            {
+                if (strcmp(dbuf3, ""))
+                    Sprintf(eos(dbuf3), ", ");
+
+                Sprintf(eos(dbuf3), "temporary effect");
             }
 
             if (strcmp(dbuf3, ""))
