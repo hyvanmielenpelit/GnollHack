@@ -226,15 +226,28 @@ int floortyp, floorsubtyp, mtype;
             if (level.flags.tileset == CMAP_NORMAL || level.flags.tileset == CMAP_UNDEAD_STYLE)
             {
                 if (IS_WALL(levl[lowx][lowy - 1].typ) && !levl[lowx][lowy - 1].use_special_tileset && !rn2(5))
-                    levl[lowx][lowy - 1].feature_doodad = 0 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                {
+                    levl[lowx][lowy - 1].decoration_typ = DECORATION_COBWEB_CORNER; // 0 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                    levl[lowx][lowy - 1].decoration_subtyp = decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes > 1 ? rn2(decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes) : 0;
+                    levl[lowx][lowy - 1].decoration_dir = 0;
+                }
                 if (IS_WALL(levl[hix][lowy - 1].typ) && !levl[hix][lowy - 1].use_special_tileset && !rn2(5))
-                    levl[hix][lowy - 1].feature_doodad = 1 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                {
+                    levl[hix][lowy - 1].decoration_typ = DECORATION_COBWEB_CORNER; // 1 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                    levl[hix][lowy - 1].decoration_subtyp = decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes > 1 ? rn2(decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes) : 0;
+                    levl[hix][lowy - 1].decoration_dir = 1;
+                }
 
                 if (lowx + 1 < hix && !rn2(7))
                 {
                     int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                     if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ) && !levl[lowx + roll + 1][lowy - 1].use_special_tileset)
-                        levl[lowx + roll + 1][lowy - 1].feature_doodad = rn2(2) + (DOODAD_COBWEB_NORMAL) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                    {
+                        //levl[lowx + roll + 1][lowy - 1].feature_doodad = rn2(2) + (DOODAD_COBWEB_NORMAL)*NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                        levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_COBWEB;
+                        levl[lowx + roll + 1][lowy - 1].decoration_subtyp = 0;
+                        levl[lowx + roll + 1][lowy - 1].decoration_dir = rn2(2);
+                    }
                 }
             }
 #endif
@@ -488,7 +501,8 @@ uchar dmask;
     levl[x][y].typ = type;
     levl[x][y].subtyp = 0;
     levl[x][y].floor_doodad = 0;
-    levl[x][y].feature_doodad = 0;
+    //levl[x][y].feature_doodad = 0;
+    delete_decoration(x, y);
     if (type == DOOR) {
         if (dmask != 0)
         {
@@ -767,7 +781,7 @@ STATIC_OVL void
 clear_level_structures()
 {
     static struct rm zerorm = { nul_layerinfo,
-                                0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0 };
+                                0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0 };
     register int x, y;
     register struct rm *lev;
 

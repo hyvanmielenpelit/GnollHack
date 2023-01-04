@@ -259,6 +259,40 @@ enum levl_typ_types {
     INVALID_TYPE = 127
 };
 
+enum decoration_types {
+    DECORATION_NONE = 0,
+    DECORATION_COBWEB,
+    DECORATION_COBWEB_CORNER,
+    DECORATION_TORCH,
+    DECORATION_LANTERN,
+    MAX_DECORATIONS
+};
+
+struct decoration_type_definition {
+    const char* name;
+    const char* description;
+    const char* description_filled;
+    int first_doodad;
+    int num_subtypes;
+    int lootable_item;
+    int color;
+    enum location_soundset_types soundset;
+    short animation;
+    short enlargement;
+    short replacement;
+    unsigned short dflags;
+};
+
+extern struct decoration_type_definition decoration_type_definitions[MAX_DECORATIONS];
+
+#define DECORATION_TYPE_FLAGS_NONE               0x0000
+#define DECORATION_TYPE_FLAGS_LOOTABLE           0x0001
+#define DECORATION_TYPE_FLAGS_LIGHTABLE          0x0002
+#define DECORATION_TYPE_FLAGS_UNDERSCORE         0x0004
+#define DECORATION_TYPE_FLAGS_ALL_SIDES          0x0008
+#define DECORATION_TYPE_FLAGS_CORNERS            0x0010
+#define DECORATION_TYPE_FLAGS_MIRRORABLE         0x0020
+
 struct location_type_definition {
     const char* name;
     enum screen_symbols base_screen_symbol;
@@ -901,7 +935,12 @@ struct rm {
     schar floorvartyp;       /* variation type for floortyp / floorsubtyp combination, normally set at random */
 
     int floor_doodad;        /* a floor doodad layer glyph: previously broken typ, etc., which appears on the broken feature layer above the floor layer */
-    int feature_doodad;      /* a feature doodad layer glyph, which appears on the doodad layer above the dungeon feature */
+    //int feature_doodad;      /* a feature doodad layer glyph, which appears on the doodad layer above the dungeon feature */
+
+    schar decoration_typ;
+    schar decoration_subtyp;
+    schar decoration_dir;
+    uchar decoration_flags;
 
     short key_otyp;            /* For doors, the otyp that unlocks the door */
     short special_quality;     /* For doors, the special quality of the key that unlocks the door */

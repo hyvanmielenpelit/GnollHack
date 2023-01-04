@@ -252,7 +252,8 @@ gottype:
             if(isok(x, y))
             {
                 levl[x][y].floor_doodad = 0;
-                levl[x][y].feature_doodad = 0;
+                //levl[x][y].feature_doodad = 0;
+                delete_decoration(x, y);
             }
 
     /* set room bits before stocking the shop */
@@ -395,7 +396,8 @@ int type;
                 if (isok(x, y))
                 {
                     levl[x][y].floor_doodad = 0;
-                    levl[x][y].feature_doodad = 0;
+                    //levl[x][y].feature_doodad = 0;
+                    delete_decoration(x, y);
                 }
 
         /* Change floor for some randomly generated zoo rooms */
@@ -1270,7 +1272,8 @@ mkgarden()
             if (isok(sx, sy))
             {
                 levl[sx][sy].floor_doodad = 0;
-                levl[sx][sy].feature_doodad = 0;
+                //levl[sx][sy].feature_doodad = 0;
+                delete_decoration(sx, sy);
             }
 
 
@@ -1746,7 +1749,8 @@ mktemple()
             if (isok(x, y))
             {
                 levl[x][y].floor_doodad = 0;
-                levl[x][y].feature_doodad = 0;
+                //levl[x][y].feature_doodad = 0;
+                delete_decoration(x, y);
             }
 
 
@@ -1842,7 +1846,8 @@ mksmithy()
             if (isok(x, y))
             {
                 levl[x][y].floor_doodad = 0;
-                levl[x][y].feature_doodad = 0;
+                //levl[x][y].feature_doodad = 0;
+                delete_decoration(x, y);
             }
 
     return 1;
@@ -1966,7 +1971,8 @@ int npctyp;
             if (isok(x, y))
             {
                 levl[x][y].floor_doodad = 0;
-                levl[x][y].feature_doodad = 0;
+                //levl[x][y].feature_doodad = 0;
+                delete_decoration(x, y);
             }
 
 
