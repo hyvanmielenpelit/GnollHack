@@ -1306,6 +1306,23 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                /* tree */
 };
 
+const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
+{
+    {"stalagmite-default", "stalagmite", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+};
+
+const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =
+{
+    {"cobweb-normal", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-double", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-2", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-3", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-4", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-5", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+};
+
+
 /* default rogue level symbols */
 STATIC_VAR const uchar def_r_oc_syms[MAX_OBJECT_CLASSES] = {
 /* 0*/ '\0', ILLOBJ_SYM, WEAPON_SYM, ']', /* armor */

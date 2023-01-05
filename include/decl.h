@@ -209,6 +209,7 @@ E NEARDATA struct sinfo {
 } program_state;
 
 E boolean restoring;
+E boolean saving;
 E boolean reseting;
 E boolean ransacked;
 
@@ -495,6 +496,7 @@ E NEARDATA winid WIN_MAP, WIN_INVEN, WIN_HERE;
 #define Your_ex1(a, b, cstr) Your_ex(a, b, "%s", cstr)
 #define You_ex1(a, b, cstr) You_ex(a, b, "%s", cstr)
 #define You_hear_ex1(a, b, cstr) You_hear_ex(a, b, "%s", cstr)
+#define You_cant_ex1(a, b, cstr) You_cant_ex(a, b, "%s", cstr)
 #define verbalize_ex1(a, b, cstr) verbalize_ex(a, b, "%s", cstr)
 
 #define pline_ex1_popup(a, b, cstr, title, dopop) pline_ex1(a, b, cstr); if (dopop) display_popup_text(cstr, title, POPUP_TEXT_GENERAL, a, b, NO_GLYPH, 0)

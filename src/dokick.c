@@ -110,14 +110,14 @@ boolean clumsy;
         dmg = 0;
 
     /* attacking a shade is normally useless */
-    if (is_shade(mon->data))
+    if (is_shade(mon->data) && !shade_glare(uarmf))
         dmg = 0;
 
     long silverhit = 0;
     specialdmg = special_dmgval(&youmonst, mon, W_ARMF, &silverhit);
     dmg += specialdmg;
 
-    if (is_shade(mon->data) && !specialdmg) {
+    if (is_shade(mon->data) && !shade_glare(uarmf) && !specialdmg) {
         pline_The("%s.", kick_passes_thru);
         /* doesn't exercise skill or abuse alignment or frighten pet,
            and shades have no passive counterattack */
@@ -376,7 +376,7 @@ xchar x, y;
 
             kickdieroll = rnd(20);
             specialdmg = special_dmgval(&youmonst, mon, W_ARMF, (long *) 0);
-            if (is_shade(mon->data) && !specialdmg) {
+            if (is_shade(mon->data) && !shade_glare(uarmf) && !specialdmg) {
                 /* doesn't matter whether it would have hit or missed,
                    and shades have no passive counterattack */
                 Your("%s %s.", kick_passes_thru, mon_nam(mon));

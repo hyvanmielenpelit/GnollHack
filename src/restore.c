@@ -1327,6 +1327,7 @@ boolean ghostly;
     relink_light_sources(ghostly);
     relink_sound_sources(ghostly);
     reset_oattached_mids(ghostly);
+    remove_expired_regions(ghostly);
 
     if (ghostly)
         clear_id_mapping();

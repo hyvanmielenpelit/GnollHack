@@ -1681,7 +1681,7 @@ bark_here:
                 }
                 break;
             default:
-                pline_msg = "discusses dungeon exploration.";
+                pline_msg = "greets you.";
                 chat_line = 11;
                 break;
             }
@@ -3686,7 +3686,7 @@ dochat()
                 chatnum++;
 
                 char sbuf[BUFSIZ];
-                Sprintf(sbuf, "Sell nuggets of ore to %s", noittame_mon_nam(mtmp));
+                Sprintf(sbuf, "Sell nuggets of armor ore to %s", noittame_mon_nam(mtmp));
                 strcpy(available_chat_list[chatnum].name, sbuf);
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_sell_ore;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -6355,6 +6355,7 @@ struct monst* mtmp;
                     You("%s", qbuf);
 
                     money2mon(mtmp, item_cost);
+                    umoney = money_cnt(invent);
                     if(itemized)
                         bot();
 
@@ -8062,6 +8063,7 @@ struct monst* mtmp;
         return 0;
     }
 
+    play_monster_special_dialogue_line(mtmp, NPC_LINE_WOULD_YOU_LIKE_TO_OPEN_A_BRANCH_PORTAL);
     Sprintf(qbuf, "Would you like to %s? (%ld %s)", "open a branch portal", service_cost, currency(service_cost));
     switch (yn_query_mon(mtmp, qbuf))
     {

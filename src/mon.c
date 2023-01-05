@@ -565,7 +565,7 @@ boolean createcorpse;
     case PM_RED_MOLD:
     {
         sporequan++;
-        if (!istame && !isquestmonster && !mtmp->mcloned && (!rn2(3) || mndx == PM_MUCILAGINOUS_CUBE))
+        if (!istame && !isquestmonster && !mtmp->mcloned && (!rn2(2) || mndx == PM_MUCILAGINOUS_CUBE))
         {
             obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
             obj->quan = sporequan > 1 ? rnd(sporequan) : 1;
@@ -827,7 +827,7 @@ boolean createcorpse;
         /* we have to do this here because most other places
            expect there to be an object coming back; not this one */
            /* first, make some powder */
-        if (!istame && !isquestmonster && !mtmp->mcloned && !rn2(3))
+        if (!istame && !isquestmonster && !mtmp->mcloned && !rn2(2))
         {
             obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
             obj->quan = 1;

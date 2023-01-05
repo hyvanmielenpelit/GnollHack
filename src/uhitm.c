@@ -983,7 +983,7 @@ boolean* obj_destroyed;
         /* All gloves give bonuses when fighting 'bare-handed'. -- JG
            So do silver rings.  Note:  rings are worn under gloves, so you don't
            get both bonuses, and two silver rings don't give double bonus. */
-        if (is_shade(mdat))
+        if (is_shade(mdat) && !(obj && shade_glare(obj)))
             damage = 0;
         else
         {

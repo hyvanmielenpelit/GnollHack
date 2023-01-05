@@ -1735,7 +1735,7 @@ weapon_here:
 
     /* treat 'restoring' like suppress_price because shopkeeper and
        bill might not be available yet while restore is in progress */
-    if (iflags.suppress_price || restoring) {
+    if (iflags.suppress_price || restoring || saving) {
         ; /* don't attempt to obtain any stop pricing, even if 'with_price' */
     } else if (is_unpaid(obj)) { /* in inventory or in container in invent */
         long quotedprice = unpaid_cost(obj, TRUE);
@@ -4710,7 +4710,7 @@ boolean is_wiz_wish;
             int floorsubtype = IS_FLOOR(lev->typ) ? lev->subtyp : get_initial_location_subtype(ROOM);
             int floorvartype = IS_FLOOR(lev->typ) ? lev->vartyp : get_initial_location_vartype(ROOM, floorsubtype);
 
-            full_location_transform(x, y, FOUNTAIN, lsubtype, lvartype, lflags, 0, 0, floortype, floorsubtype, floorvartype, FALSE, lhorizontal, 0, 0, FALSE);
+            full_location_transform(x, y, FOUNTAIN, lsubtype, lvartype, lflags, 0, 0, 0, 0, 0, floortype, floorsubtype, floorvartype, FALSE, lhorizontal, 0, 0, FALSE);
 
             int ftyp = lev->subtyp; // (lev->fountainmask & FOUNTAIN_TYPE_MASK);
             pline("A %s.", ftyp == FOUNTAIN_MAGIC && lev->blessedftn ? "enchanted fountain" : fountain_type_text(ftyp));

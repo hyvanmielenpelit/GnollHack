@@ -246,6 +246,16 @@ gottype:
             }
         }
 
+    /* Remove doodads */
+    for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+        for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+            if(isok(x, y))
+            {
+                levl[x][y].floor_doodad = 0;
+                //levl[x][y].feature_doodad = 0;
+                delete_decoration(x, y);
+            }
+
     /* set room bits before stocking the shop */
 #ifdef SPECIALIZATION
     topologize(sroom, FALSE); /* doesn't matter - this is a special room */
@@ -374,11 +384,22 @@ mkzoo(type)
 int type;
 {
     register struct mkroom *sroom;
+    int x, y;
 
     if ((sroom = pick_room(FALSE)) != 0) {
         sroom->rtype = type;
         fill_zoo(sroom);
         
+        /* Remove doodads */
+        for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+            for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+                if (isok(x, y))
+                {
+                    levl[x][y].floor_doodad = 0;
+                    //levl[x][y].feature_doodad = 0;
+                    delete_decoration(x, y);
+                }
+
         /* Change floor for some randomly generated zoo rooms */
         int floorsubtype = 0;
         switch (sroom->rtype)
@@ -396,8 +417,8 @@ int type;
         if (floorsubtype > 0)
         {
             int rmno = (int)((sroom - rooms) + ROOMOFFSET);
-            for (int x = sroom->lx; x <= sroom->hx; x++)
-                for (int y = sroom->ly; y <= sroom->hy; y++)
+            for (x = sroom->lx; x <= sroom->hx; x++)
+                for (y = sroom->ly; y <= sroom->hy; y++)
                     if (!sroom->irregular || (sroom->irregular && levl[x][y].roomno == rmno))
                     {
                         if (levl[x][y].typ == ROOM)
@@ -1244,6 +1265,18 @@ mkgarden()
             }
         }
     }
+
+    /* Remove doodads */
+    for (sx = sroom->lx - 1; sx <= sroom->hx + 1; sx++)
+        for (sy = sroom->ly - 1; sy <= sroom->hy + 1; sy++)
+            if (isok(sx, sy))
+            {
+                levl[sx][sy].floor_doodad = 0;
+                //levl[sx][sy].feature_doodad = 0;
+                delete_decoration(sx, sy);
+            }
+
+
     for (sx = sroom->lx; sx <= sroom->hx; sx++)
     {
         for (sy = sroom->ly; sy <= sroom->hy; sy++)
@@ -1710,6 +1743,17 @@ mktemple()
             }
         }
 
+    /* Remove doodads */
+    for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+        for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+            if (isok(x, y))
+            {
+                levl[x][y].floor_doodad = 0;
+                //levl[x][y].feature_doodad = 0;
+                delete_decoration(x, y);
+            }
+
+
      /* Altar */
     shrine_spot = shrine_pos((int) ((sroom - rooms) + ROOMOFFSET));
     lev = &levl[shrine_spot->x][shrine_spot->y];
@@ -1795,6 +1839,16 @@ mksmithy()
                 levl[x][y].lit = 1;
         sroom->rlit = 1;
     }
+
+    /* Remove doodads */
+    for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+        for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+            if (isok(x, y))
+            {
+                levl[x][y].floor_doodad = 0;
+                //levl[x][y].feature_doodad = 0;
+                delete_decoration(x, y);
+            }
 
     return 1;
 }
@@ -1898,10 +1952,10 @@ int npctyp;
     level.flags.has_npc_room = 1;
     context.npc_made |= (1UL << (unsigned long)npctype);
 
+    int x, y;
     if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_LIGHTS_ON)
     {
         /* The NPC has lights turned on */
-        int x, y;
         if (!sroom->rlit) {
 
             for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
@@ -1910,6 +1964,18 @@ int npctyp;
             sroom->rlit = 1;
         }
     }
+
+    /* Remove doodads */
+    for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+        for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+            if (isok(x, y))
+            {
+                levl[x][y].floor_doodad = 0;
+                //levl[x][y].feature_doodad = 0;
+                delete_decoration(x, y);
+            }
+
+
     return 1;
 }
 

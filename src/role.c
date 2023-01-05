@@ -27,8 +27,8 @@
  * God names use a leading underscore to flag goddesses.
  */
 #define SKILL_PROGRESS_INI_UNSKILLED  {0, 0, 3, 7, 13, 21, 31}
-#define SKILL_PROGRESS_INI_BASIC      {0, 0, 0, 4,  9, 16, 25}
-#define SKILL_PROGRESS_INI_SKILLED    {0, 0, 0, 0,  5, 11, 19}
+#define SKILL_PROGRESS_INI_BASIC      {0, 0, 1, 4,  9, 16, 25}
+#define SKILL_PROGRESS_INI_SKILLED    {0, 0, 1, 1,  5, 11, 19}
 #define SKILL_PROGRESS_NONE           {0, 0, 0, 0,  0,  0,  0}
 
 const struct Role roles[] = {
@@ -496,7 +496,7 @@ const struct Role roles[] = {
             SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
             SKILL_PROGRESS_NONE, /* P_DUAL_WEAPON_COMBAT */
             SKILL_PROGRESS_NONE, /* P_TWO_HANDED_WEAPON */
-            SKILL_PROGRESS_INI_BASIC, /* P_DODGE */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DODGE */
             SKILL_PROGRESS_NONE, /* P_SHIELD */
             SKILL_PROGRESS_NONE, /* P_WAND */
             SKILL_PROGRESS_NONE, /* P_RIDING */

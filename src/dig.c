@@ -761,7 +761,11 @@ int ttyp;
 
     /* Remove doodads */
     levl[x][y].floor_doodad = 0;
-    levl[x][y].feature_doodad = 0;
+    //levl[x][y].feature_doodad = 0;
+    levl[x][y].decoration_typ = 0;
+    levl[x][y].decoration_subtyp = 0;
+    levl[x][y].decoration_dir = 0;
+    levl[x][y].decoration_flags = 0;
 
     if (ttyp == PIT) {
         if (madeby_u) {

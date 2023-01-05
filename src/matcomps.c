@@ -126,7 +126,7 @@ struct materialcomponentlist matlists[] =
     {SPE_CIRCLE_OF_MAGIC,
         "Nugget of platinum ore",
         STRANGE_OBJECT,
-        60,
+        120,
         {
             {
                 {NUGGET_OF_PLATINUM_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -139,7 +139,7 @@ struct materialcomponentlist matlists[] =
     {SPE_CIRCLE_OF_FIRE,
         "Sulfurous ash, sporal powder",
         STRANGE_OBJECT,
-        45,
+        90,
         {
             {
                 {PINCH_OF_SULFUROUS_ASH, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -156,7 +156,7 @@ struct materialcomponentlist matlists[] =
     {SPE_CIRCLE_OF_LIGHTNING,
         "Copper ore, sporal powder",
         STRANGE_OBJECT,
-        25,
+        50,
         {
             {
                 {NUGGET_OF_COPPER_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -173,7 +173,7 @@ struct materialcomponentlist matlists[] =
     { SPE_CIRCLE_OF_FROST,
         "Iron ore, sporal powder",
         STRANGE_OBJECT,
-        20,
+        40,
         {
             {
                 {NUGGET_OF_IRON_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2008,7 +2008,7 @@ struct materialcomponentlist matlists[] =
     { SPE_GREATER_MAGIC_MISSILE,
     "Nugget of platinum ore",
     STRANGE_OBJECT,
-    30,
+    60,
         {
             {
                 {NUGGET_OF_PLATINUM_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -2035,7 +2035,7 @@ struct materialcomponentlist matlists[] =
     { SPE_FORCE_STRIKE,
     "2 crossbow bolts of any kind, platinum ore",
     STRANGE_OBJECT,
-    30,
+    60,
         {
             {
                 {CROSSBOW_BOLT, SILVER_CROSSBOW_BOLT, GNOLLISH_QUARREL, BONE_QUARREL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -2052,7 +2052,7 @@ struct materialcomponentlist matlists[] =
     { SPE_LIGHTNING_BOLT,
     "Nugget of copper ore",
     STRANGE_OBJECT,
-    25,
+    50,
         {
             {{NUGGET_OF_COPPER_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS},
             NO_MATCOMP,
@@ -2063,7 +2063,7 @@ struct materialcomponentlist matlists[] =
     { SPE_THUNDERSTRIKE,
     "2 copper ores, turquoise",
     STRANGE_OBJECT,
-    50,
+    100,
         {
             {
                 {NUGGET_OF_COPPER_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2080,7 +2080,7 @@ struct materialcomponentlist matlists[] =
     { SPE_THUNDERSTORM,
     "Nugget of copper ore, feather",
     STRANGE_OBJECT,
-    20,
+    40,
         {
             {
                 {NUGGET_OF_COPPER_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2097,7 +2097,7 @@ struct materialcomponentlist matlists[] =
     { SPE_MAGICAL_IMPLOSION,
     "Nugget of platinum ore",
     STRANGE_OBJECT,
-    70,
+    140,
         {
             {
                 {NUGGET_OF_PLATINUM_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2111,7 +2111,7 @@ struct materialcomponentlist matlists[] =
     { SPE_MAGIC_STORM,
     "Platinum ore, feather",
     STRANGE_OBJECT,
-    35,
+    70,
         {
             {
                 {NUGGET_OF_PLATINUM_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2170,7 +2170,7 @@ struct materialcomponentlist matlists[] =
     { SPE_FIRE_BOLT,
     "Pinch of sulfurous ash",
     STRANGE_OBJECT,
-    50,
+    100,
         {
             {
                 {PINCH_OF_SULFUROUS_ASH, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -2184,7 +2184,7 @@ struct materialcomponentlist matlists[] =
     { SPE_FLAME_BURST,
     "2 sulfurous ash, ruby",
     STRANGE_OBJECT,
-    75,
+    150,
         {
             {
                 {PINCH_OF_SULFUROUS_ASH, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -2202,7 +2202,7 @@ struct materialcomponentlist matlists[] =
     { SPE_FIREBALL,
     "Sulfurous ash, wood",
     STRANGE_OBJECT,
-    50,
+    100,
         {
             {
                 {PINCH_OF_SULFUROUS_ASH, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2219,7 +2219,7 @@ struct materialcomponentlist matlists[] =
     { SPE_FIRE_STORM,
     "Sulfurous ash, wood, feather",
     STRANGE_OBJECT,
-    30,
+    60,
         {
             {
                 {PINCH_OF_SULFUROUS_ASH, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2240,7 +2240,7 @@ struct materialcomponentlist matlists[] =
     { SPE_METEOR_SWARM,
     "4 stone pebbles, 2 sulfurous ash",
     STRANGE_OBJECT,
-    25,
+    50,
         {
             {
                 {STONE_PEBBLE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2269,7 +2269,7 @@ struct materialcomponentlist matlists[] =
     { SPE_CONE_OF_COLD,
     "Nugget of iron ore",
     STRANGE_OBJECT,
-    15,
+    30,
         {
             {{NUGGET_OF_IRON_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS},
             NO_MATCOMP,
@@ -2280,7 +2280,7 @@ struct materialcomponentlist matlists[] =
     { SPE_GREATER_FROST_RAY,
     "2 iron ores, sapphire",
     STRANGE_OBJECT,
-    40,
+    80,
         {
             {
                 {NUGGET_OF_IRON_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2297,7 +2297,7 @@ struct materialcomponentlist matlists[] =
     { SPE_ICE_STORM,
     "Nugget of iron ore, feather",
     STRANGE_OBJECT,
-    35,
+    70,
         {
             {
                 {NUGGET_OF_IRON_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2967,7 +2967,7 @@ struct materialcomponentlist matlists[] =
     { SPE_SHOCKING_TOUCH,
     "Nugget of copper ore",
     STRANGE_OBJECT,
-    25,
+    50,
         {
             {
                 {NUGGET_OF_COPPER_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2981,7 +2981,7 @@ struct materialcomponentlist matlists[] =
     { SPE_BURNING_HANDS,
     "Pinch of sulfurous ash",
     STRANGE_OBJECT,
-    50,
+    100,
         {
             {
                 {PINCH_OF_SULFUROUS_ASH, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2995,7 +2995,7 @@ struct materialcomponentlist matlists[] =
     { SPE_FREEZING_TOUCH,
     "Nugget of iron ore",
     STRANGE_OBJECT,
-    20,
+    40,
         {
             {
                 {NUGGET_OF_IRON_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -3009,7 +3009,7 @@ struct materialcomponentlist matlists[] =
     { SPE_ELECTROCUTE,
     "2 copper ores, turquoise",
     STRANGE_OBJECT,
-    65,
+    130,
         {
             {
                 {NUGGET_OF_COPPER_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -3026,7 +3026,7 @@ struct materialcomponentlist matlists[] =
     { SPE_INCINERATE,
     "2 sulfurous ash, ruby",
     STRANGE_OBJECT,
-    75,
+    150,
         {
             {
                 {PINCH_OF_SULFUROUS_ASH, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -3043,7 +3043,7 @@ struct materialcomponentlist matlists[] =
     { SPE_GLACIAL_GRASP,
     "2 iron ores, sapphire",
     STRANGE_OBJECT,
-    50,
+    100,
         {
             {
                 {NUGGET_OF_IRON_ORE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -3251,7 +3251,7 @@ struct materialcomponentlist matlists[] =
                 NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
             },
             {
-                {BLACK_OPAL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
+                {JET, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
                 NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
             },
             NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP

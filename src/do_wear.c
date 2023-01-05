@@ -1411,6 +1411,18 @@ dotakeoff()
         if (context.takeoff.command == TAKEOFF_WEAR_CMD_TAKEOFF && context.takeoff.mask && context.takeoff.mask == otmp->owornmask)
             return doddoremarm();
 
+        if (!(otmp->owornmask & (W_ARMOR | W_ACCESSORY))) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You_ex1(ATR_NONE, CLR_MSG_FAIL, "are not wearing that.");
+            return 0;
+        }
+        else if (otmp == uskin)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You_cant_ex1(ATR_NONE, CLR_MSG_FAIL, "take that off; it's embedded.");
+            return 0;
+        }
+
         if (is_armor_covered(otmp))
         {
             char what[BUFSZ] = "", why[BUFSZ], qbuf[BUFSZ * 2], tbuf[BUFSZ];

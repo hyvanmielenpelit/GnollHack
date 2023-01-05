@@ -115,6 +115,13 @@ SPECIAL_REGION:(03,01,15,15),region_special_level_seen
 SPECIAL_REGION:(02,02,16,14),region_special_level_seen
 SPECIAL_REGION:(01,03,17,13),region_special_level_seen
 SPECIAL_REGION:(00,04,18,12),region_special_level_seen
+
+SPECIAL_TILESET:fillrect(06,00,12,16), garden_tileset
+SPECIAL_TILESET:fillrect(03,01,15,15), garden_tileset
+SPECIAL_TILESET:fillrect(02,02,16,14), garden_tileset
+SPECIAL_TILESET:fillrect(01,03,17,13), garden_tileset
+SPECIAL_TILESET:fillrect(00,04,18,12), garden_tileset
+
 CONTAINER:('(',"chest"),buried,(09,08) {
   OBJECT:('$',"gold piece"),quantity:(4000+(4d500))
   [50%]:OBJECT:'*'
@@ -132,6 +139,7 @@ CONTAINER:('(',"chest"),buried,(09,08) {
   }
   OBJECT:class_treasure_armor, notcursed
   OBJECT:('/',"cold")
+  OBJECT:('?',"retraining")
 }
 ENGRAVING: (09,08), engrave, "X"
 SPECIAL_REGION:(09,08,09,08),region_special_level_true_nature_revealed

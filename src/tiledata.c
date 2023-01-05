@@ -1785,6 +1785,59 @@ uchar* tilemapflags;
         tile_count++;
     }
 
+    set_name = "simple-doodad";
+    for (i = 0; i < MAX_SIMPLE_DOODAD_TILES; i++)
+    {
+        if (process_style == 0)
+        {
+            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, simple_doodads[i].name);
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (process_style == 1)
+        {
+            glyph_offset = GLYPH_SIMPLE_DOODAD_OFF;
+            tilemaparray[i + glyph_offset] = tile_count;
+        }
+        tile_count++;
+    }
+
+    set_name = "rotatable-doodad";
+    for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
+    {
+        if (process_style == 0)
+        {
+            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, mirrorable_doodads[i].name);
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (process_style == 1)
+        {
+            glyph_offset = GLYPH_MIRRORABLE_DOODAD_OFF;
+            for (j = 0; j < NUM_DOODAD_MIRRORINGS; j++)
+            {
+                int glyphidx = j + i * NUM_DOODAD_MIRRORINGS + glyph_offset;
+                tilemaparray[glyphidx] = tile_count;
+                switch (j)
+                {
+                default:
+                case 0:
+                    glyphtileflags[glyphidx] |= 0;
+                    break;
+                case 1:
+                    glyphtileflags[glyphidx] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                    break;
+                case 2:
+                    glyphtileflags[glyphidx] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                    break;
+                case 3:
+                    glyphtileflags[glyphidx] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY | GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                    break;
+                }
+            }
+        }
+        tile_count++;
+    }
+
+
     set_name = "cursor";
     for (i = 0; i < MAX_CURSORS; i++)
     {
@@ -2575,6 +2628,44 @@ uchar* tilemapflags;
             }
         }
 
+        /* Simple Doodads */
+        for (i = 0; i < MAX_SIMPLE_DOODAD_TILES; i++)
+        {
+            if (simple_doodads[i].replacement)
+            {
+                int glyph = i + GLYPH_SIMPLE_DOODAD_OFF;
+                int tile = glyph2tile[glyph];
+                int repl = simple_doodads[i].replacement;
+                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
+                }
+            }
+        }
+
+        /* Rotatable Doodads */
+        for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
+        {
+            if (mirrorable_doodads[i].replacement)
+            {
+                int glyph = i * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                int tile = glyph2tile[glyph];
+                int repl = mirrorable_doodads[i].replacement;
+                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
+                }
+            }
+        }
+
         /* Cursors */
         for (i = 0; i < MAX_CURSORS; i++)
         {
@@ -2891,6 +2982,28 @@ uchar* tilemapflags;
             }
         }
 
+        /* Simple Doodads */
+        for (i = 0; i < MAX_SIMPLE_DOODAD_TILES; i++)
+        {
+            if (simple_doodads[i].animation)
+            {
+                int glyph = i + GLYPH_SIMPLE_DOODAD_OFF;
+                int tile = glyph2tile[glyph];
+                tile2animation[tile] = simple_doodads[i].animation;
+            }
+        }
+
+        /* Rotatable Doodads */
+        for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
+        {
+            if (mirrorable_doodads[i].animation)
+            {
+                int glyph = i * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                int tile = glyph2tile[glyph];
+                tile2animation[tile] = mirrorable_doodads[i].animation;
+            }
+        }
+
         /* Cursors */
         for (i = 0; i < MAX_CURSORS; i++)
         {
@@ -3106,6 +3219,29 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_SPECIAL_EFFECT_OFF;
                 int tile = glyph2tile[glyph];
                 tile2enlargement[tile] = special_effects[i].enlargement;
+            }
+        }
+
+        /* Simple Doodads */
+        for (i = 0; i < MAX_SIMPLE_DOODAD_TILES; i++)
+        {
+            if (simple_doodads[i].enlargement)
+            {
+                int glyph = i + GLYPH_SIMPLE_DOODAD_OFF;
+                int tile = glyph2tile[glyph];
+                tile2enlargement[tile] = simple_doodads[i].enlargement;
+            }
+        }
+
+
+        /* Rotatable Doodads */
+        for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
+        {
+            if (mirrorable_doodads[i].enlargement)
+            {
+                int glyph = i + GLYPH_MIRRORABLE_DOODAD_OFF;
+                int tile = glyph2tile[glyph];
+                tile2enlargement[tile] = mirrorable_doodads[i].enlargement;
             }
         }
 

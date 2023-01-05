@@ -791,7 +791,8 @@ void
 undiscover_object(oindx)
 register int oindx;
 {
-    if (!objects[oindx].oc_name_known) {
+    if (!objects[oindx].oc_name_known) // Checks that this object's oc_name_known has been already been set to false by the calling function
+    {
         register int dindx, acls = objects[oindx].oc_class;
         register boolean found = FALSE;
 
