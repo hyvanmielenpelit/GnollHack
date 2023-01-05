@@ -339,7 +339,8 @@ enum special_level_naming_types {
 
 enum simple_doodad_tile_types
 {
-    DOODAD_STALAGMITE = 0,
+    DOODAD_TORCH_HOLDER = 0,
+    DOODAD_LANTERN_HOLDER,
     MAX_SIMPLE_DOODAD_TILES
 };
 

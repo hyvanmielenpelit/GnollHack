@@ -234,6 +234,9 @@ register int show;
     int new_cover_feature_gui_glyph = NO_GLYPH;
     int new_feature_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_feature_doodad_layer_glyph(x, y);
     int new_feature_doodad_gui_glyph = maybe_get_replaced_glyph(new_feature_doodad_glyph, x, y, data_to_replacement_info(new_feature_doodad_glyph, LAYER_FEATURE_DOODAD, (struct obj*)0, (struct monst*)0, 0UL));
+    unsigned long new_layer_flags = 0UL;
+    if (symbol_index > S_stone && levl[x][y].decoration_typ > 0 && (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_UNDERSCORE) != 0)
+        new_layer_flags |= LFLAGS_C_DECORATION;
 
     if (defsyms[symbol_index].layer != LAYER_FLOOR)
     {
@@ -278,6 +281,8 @@ register int show;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_FEATURE] = new_feature_gui_glyph;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_gui_glyph;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_gui_glyph;
+
+        levl[x][y].hero_memory_layers.layer_flags = new_layer_flags;
     }
 
     if (show)
@@ -306,6 +311,8 @@ register int show;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_FEATURE] = new_feature_gui_glyph;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_gui_glyph;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_gui_glyph;
+
+        gbuf[y][x].layers.layer_flags = new_layer_flags;
 
         if (floor_glyph_before != new_floor_glyph || floor_doodad_glyph_before != new_floor_doodad_glyph
             || feature_glyph_before != new_feature_glyph || feature_doodad_glyph_before != new_feature_doodad_glyph
@@ -3866,6 +3873,11 @@ xchar x, y;
     /* Braziers are even bigger */
     if (IS_BRAZIER(lev->typ))
         return 5;
+
+    if (lev->decoration_typ > 0 && (decoration_type_definitions[lev->decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
+    {
+        return 2;
+    }
 
     return 0;
 }

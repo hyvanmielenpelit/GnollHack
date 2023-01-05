@@ -1308,18 +1308,19 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
 
 const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
 {
-    {"stalagmite-default", "stalagmite", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"torch-holder", TORCH_HOLDER_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"lantern-holder", LANTERN_HOLDER_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =
 {
-    {"cobweb-normal", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-double", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-corner", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-corner-2", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-corner-3", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-corner-4", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-corner-5", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-normal", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-double", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-2", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-3", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-4", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-5", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 

@@ -5689,6 +5689,13 @@ int x, y;
 
     if (cmap >= 0)
         dfeature = defsyms[cmap].explanation;
+    else if (levl[x][y].decoration_typ > 0)
+    {
+        if((levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0 && decoration_type_definitions[levl[x][y].decoration_typ].description_filled)
+            dfeature = decoration_type_definitions[levl[x][y].decoration_typ].description_filled;
+        else
+            dfeature = decoration_type_definitions[levl[x][y].decoration_typ].description;
+    }
     else if (levl[x][y].floor_doodad && iflags.using_gui_tiles)
     {
         dfeature = get_floor_doodad_explanation_at(x, y);

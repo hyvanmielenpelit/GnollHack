@@ -113,12 +113,14 @@ struct simple_layer_info {
 #define LFLAGS_M_WORM_TAIL              0x00001000UL
 #define LFLAGS_M_WORM_SEEN              0x00002000UL
 #define LFLAGS_M_KILLED                 0x00004000UL
+/* free bit */
 #define LFLAGS_M_MASK                   0x0000FFFFUL
 
 /* These are flags for showing extra stuff in graphical interfaces */
 #define LFLAGS_O_PILE                   0x00010000UL
 #define LFLAGS_O_IN_PIT                 0x00020000UL
 #define LFLAGS_O_CHAIN                  0x00040000UL
+/* free bit */
 #define LFLAGS_O_MASK                   0x000F0000UL
 
 #define LFLAGS_ZAP_LEADING_EDGE         0x00100000UL /* First (leading) tile in a zap */
@@ -127,7 +129,9 @@ struct simple_layer_info {
 
 /* Traps */
 #define LFLAGS_T_TRAPPED                0x00400000UL
-/* free bit */
+
+/* Cmap */
+#define LFLAGS_C_DECORATION             0x00800000UL
 
 /* Important general flags */
 #define LFLAGS_SHOWING_MEMORY           0x01000000UL /* also implies that you cannot see the location (and hence showing memory) */

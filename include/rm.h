@@ -277,9 +277,6 @@ struct decoration_type_definition {
     int lootable_item;
     int color;
     enum location_soundset_types soundset;
-    short animation;
-    short enlargement;
-    short replacement;
     unsigned short dflags;
 };
 
@@ -742,7 +739,6 @@ enum signpost_subtypes
 
 struct doodad_definition {
     const char* name;
-    const char* description;
     short /*enum replacement_types*/ replacement;
     short /*enum animation_types*/ animation;
     short /*enum enlargement_types*/ enlargement;
@@ -964,6 +960,8 @@ struct rm {
     Bitfield(click_kick_ok, 1); /* No query when clicking to kick  */
 };
 
+#define DECORATION_FLAGS_NONE               0x00
+#define DECORATION_FLAGS_ITEM_IN_HOLDER     0x01
 
 #define SET_TYPLIT(x, y, ttyp, tsubtyp, llit)                              \
     {                                                             \

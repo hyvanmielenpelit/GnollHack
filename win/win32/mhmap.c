@@ -1030,6 +1030,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     boolean monster_darkened = FALSE;
     boolean draw_monster_shadow = FALSE;
     boolean monster_shadow_drawn = FALSE;
+    boolean hasdecoration = !!(data->map[i][j].layer_flags & LFLAGS_C_DECORATION);
 
     for (int idx = 0; idx < MAX_SHOWN_OBJECTS; idx++)
     {

@@ -3660,7 +3660,7 @@ struct layer_info layers;
         reverse_on = TRUE;
     }
 
-    if (!reverse_on && (special & MG_PEACEFUL) && flags.underline_peaceful)
+    if (!reverse_on && (((special & MG_PEACEFUL) && flags.underline_peaceful) || (special & MG_DECORATION)))
     {
         term_start_attr(ATR_ULINE);
         underline_on = TRUE;

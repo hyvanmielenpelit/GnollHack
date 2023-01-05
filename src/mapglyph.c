@@ -262,6 +262,9 @@ unsigned long *ospecial;
         int cmap_type_idx = 0;
         int cmap_offset = 0;
         int variation_index = 0;
+        boolean has_decoration = (layers.layer_flags & LFLAGS_C_DECORATION) != 0;
+        if(has_decoration)
+            special |= MG_DECORATION;
 
         if (is_variation)
         {
