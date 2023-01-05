@@ -263,7 +263,7 @@ unsigned long *ospecial;
         int cmap_offset = 0;
         int variation_index = 0;
         boolean has_decoration = (layers.layer_flags & LFLAGS_C_DECORATION) != 0;
-        if(has_decoration)
+        if(has_decoration && levl[x][y].decoration_typ > 0 && (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_UNDERSCORE) != 0)
             special |= MG_DECORATION;
 
         if (is_variation)
@@ -350,6 +350,13 @@ unsigned long *ospecial;
                         cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
                 }
             }
+        }
+
+        if (iflags.use_color)
+        {
+            if (has_decoration && levl[x][y].decoration_typ > 0 && decoration_type_definitions[levl[x][y].decoration_typ].color != NO_COLOR)
+                color = decoration_type_definitions[levl[x][y].decoration_typ].color;
+
         }
     } 
     else if ((offset = (glyph - GLYPH_OBJ_MISSILE_OFF)) >= 0 

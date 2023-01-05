@@ -634,16 +634,22 @@ char *buf, *monbuf;
             if (!explanation)
                 explanation = get_cmap_or_cmap_variation_glyph_explanation(glyph);
 
-            strcpy(buf, explanation); // defsyms[cmap].explanation);
+            const char* dec_descr = get_decoration_description(x, y);
+            if (dec_descr)
+                Sprintf(buf, "%s on %s", dec_descr, explanation);
+            else
+                Strcpy(buf, explanation); // defsyms[cmap].explanation);
             if (is_cmap_door(gl) && IS_DOOR(levl[x][y].typ))
             {
                 print_lock_with_buf(eos(buf), levl[x][y].key_otyp, levl[x][y].special_quality, is_door_normally_without_lock_at(x, y));
             }
-            if (is_cmap_brazier(gl) && IS_BRAZIER(levl[x][y].typ) && cansee(x, y))
+            if (((is_cmap_brazier(gl) && IS_BRAZIER(levl[x][y].typ)) || 
+                (dec_descr && levl[x][y].decoration_typ > 0 && (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE)) != 0
+                ) && cansee(x, y))
             {
                 char buf2[BUFSIZ];
                 Sprintf(buf2, "%s%s", levl[x][y].lamplit ? "lit " : "unlit ", buf);
-                strcpy(buf, buf2);
+                Strcpy(buf, buf2);
             }
             break;
         }
@@ -1155,8 +1161,11 @@ struct permonst **for_supplement;
             if (alt_i++ == 2)
                 i = 0; /* undo loop increment */
             
-            x_str = i == S_fountain ? get_fountain_name(cc.x, cc.y) : defsyms[i].explanation;
-            
+            if (i == S_fountain)
+                x_str = get_fountain_name(cc.x, cc.y);
+            else
+                x_str = defsyms[i].explanation;
+
             if (submerged && !strcmp(x_str, defsyms[0].explanation))
                 x_str = "land"; /* replace "dark part of a room" */
             /* alt_i is now 3 or more and no longer of interest */

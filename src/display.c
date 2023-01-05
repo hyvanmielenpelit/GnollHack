@@ -235,7 +235,7 @@ register int show;
     int new_feature_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_feature_doodad_layer_glyph(x, y);
     int new_feature_doodad_gui_glyph = maybe_get_replaced_glyph(new_feature_doodad_glyph, x, y, data_to_replacement_info(new_feature_doodad_glyph, LAYER_FEATURE_DOODAD, (struct obj*)0, (struct monst*)0, 0UL));
     unsigned long new_layer_flags = 0UL;
-    if (symbol_index > S_stone && levl[x][y].decoration_typ > 0 && (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_UNDERSCORE) != 0)
+    if (symbol_index > S_stone && levl[x][y].decoration_typ > 0)
         new_layer_flags |= LFLAGS_C_DECORATION;
 
     if (defsyms[symbol_index].layer != LAYER_FLOOR)
@@ -5201,6 +5201,27 @@ struct monst* mtmp;
     int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL));
 
     return iflags.using_gui_tiles ? gui_glyph : glyph;
+}
+
+const char*
+get_decoration_description(x, y)
+int x, y;
+{
+    if (isok(x, y))
+    {
+        if ((gbuf[y][x].layers.layer_flags & LFLAGS_C_DECORATION) != 0 && levl[x][y].decoration_typ > 0)
+        {
+            if ((levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0 && decoration_type_definitions[levl[x][y].decoration_typ].description_filled != 0)
+            {
+                return decoration_type_definitions[levl[x][y].decoration_typ].description_filled;
+            }
+            else
+            {
+                return decoration_type_definitions[levl[x][y].decoration_typ].description;
+            }
+        }
+    }
+    return 0;
 }
 
 /*display.c*/
