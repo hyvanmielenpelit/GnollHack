@@ -340,9 +340,13 @@ enum special_level_naming_types {
 enum simple_doodad_tile_types
 {
     DOODAD_TORCH_HOLDER = 0,
+    DOODAD_TORCH_HOLDER_LEFT,
+    DOODAD_TORCH_HOLDER_RIGHT,
+    DOODAD_TORCH_HOLDER_BOTTOM,
     DOODAD_LANTERN_HOLDER,
     MAX_SIMPLE_DOODAD_TILES
 };
+#define NUM_DOODAD_DIRECTIONS 4
 
 enum mirrorable_doodad_tile_types
 {

@@ -1790,7 +1790,13 @@ uchar* tilemapflags;
     {
         if (process_style == 0)
         {
-            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, simple_doodads[i].name);
+            int doodad_enl = simple_doodads[i].enlargement;
+            Sprintf(buf, "%s,%s,%s", tile_section_name, set_name, simple_doodads[i].name);
+            if(doodad_enl > 0)
+                Sprintf(eos(buf), ",%d,%d,%d", enlargements[doodad_enl].width_in_tiles, enlargements[doodad_enl].height_in_tiles, enlargements[doodad_enl].main_tile_x_coordinate);
+            else
+                Strcat(buf, ",1,1,0");
+            Strcat(buf, "\n");
             (void)write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
@@ -1806,7 +1812,13 @@ uchar* tilemapflags;
     {
         if (process_style == 0)
         {
-            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, mirrorable_doodads[i].name);
+            int doodad_enl = mirrorable_doodads[i].enlargement;
+            Sprintf(buf, "%s,%s,%s", tile_section_name, set_name, mirrorable_doodads[i].name);
+            if (doodad_enl > 0)
+                Sprintf(eos(buf), ",%d,%d,%d", enlargements[doodad_enl].width_in_tiles, enlargements[doodad_enl].height_in_tiles, enlargements[doodad_enl].main_tile_x_coordinate);
+            else
+                Strcat(buf, ",1,1,0");
+            Strcat(buf, "\n");
             (void)write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
@@ -2647,7 +2659,7 @@ uchar* tilemapflags;
             }
         }
 
-        /* Rotatable Doodads */
+        /* Mirrorable Doodads */
         for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
         {
             if (mirrorable_doodads[i].replacement)
@@ -3234,7 +3246,7 @@ uchar* tilemapflags;
         }
 
 
-        /* Rotatable Doodads */
+        /* Mirrorable Doodads */
         for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
         {
             if (mirrorable_doodads[i].enlargement)

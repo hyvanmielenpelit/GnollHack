@@ -272,7 +272,7 @@ struct decoration_type_definition {
     const char* name;
     const char* description;
     const char* description_filled;
-    int first_doodad;
+    int first_doodad[NUM_DOODAD_DIRECTIONS]; //For each of four directions
     int num_subtypes;
     int lootable_item;
     int color;

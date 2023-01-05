@@ -4384,13 +4384,13 @@ xchar x, y;
     if (!isok(x, y))
         return NO_GLYPH;
 
-    if (levl[x][y].decoration_typ)
+    if (levl[x][y].decoration_typ > 0)
     {
         int glyph = NO_GLYPH;
         if(decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_MIRRORABLE)
-            glyph = levl[x][y].decoration_dir + (decoration_type_definitions[levl[x][y].decoration_typ].first_doodad + levl[x][y].decoration_subtyp) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+            glyph = levl[x][y].decoration_dir + (decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir] + levl[x][y].decoration_subtyp) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
         else
-            glyph = decoration_type_definitions[levl[x][y].decoration_typ].first_doodad + levl[x][y].decoration_subtyp + GLYPH_SIMPLE_DOODAD_OFF;
+            glyph = decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir] + levl[x][y].decoration_subtyp + GLYPH_SIMPLE_DOODAD_OFF;
         return glyph;
     }
     else

@@ -262,6 +262,30 @@ int floortyp, floorsubtyp, mtype;
                         levl[lowx + roll + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                     }
                 }
+                if (lowy + 1 < hiy && !rn2(4))
+                {
+                    int roll = hiy - lowy - 1 <= 1 ? 0 : rn2(hiy - lowy - 1);
+                    if (IS_WALL(levl[lowx - 1][lowy + roll + 1].typ) && !levl[lowx - 1][lowy + roll + 1].use_special_tileset)
+                    {
+                        //levl[lowx + roll + 1][lowy - 1].feature_doodad = rn2(2) + (DOODAD_COBWEB_NORMAL)*NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                        levl[lowx - 1][lowy + roll + 1].decoration_typ = DECORATION_TORCH;
+                        levl[lowx - 1][lowy + roll + 1].decoration_subtyp = 0;
+                        levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
+                        levl[lowx - 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                    }
+                }
+                if (lowy + 1 < hiy && !rn2(4))
+                {
+                    int roll = hiy - lowy - 1 <= 1 ? 0 : rn2(hiy - lowy - 1);
+                    if (IS_WALL(levl[hix + 1][lowy + roll + 1].typ) && !levl[hix + 1][lowy + roll + 1].use_special_tileset)
+                    {
+                        //levl[lowx + roll + 1][lowy - 1].feature_doodad = rn2(2) + (DOODAD_COBWEB_NORMAL)*NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                        levl[hix + 1][lowy + roll + 1].decoration_typ = DECORATION_TORCH;
+                        levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;
+                        levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
+                        levl[hix + 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                    }
+                }
             }
 #endif
 

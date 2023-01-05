@@ -3191,6 +3191,19 @@ short animidx;
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
     }
 
+    for (i = 0; i < MAX_SIMPLE_DOODAD_TILES; i++)
+    {
+        if (simple_doodads[i].animation == animidx)
+            return glyph2tile[i + GLYPH_SIMPLE_DOODAD_OFF];
+    }
+
+    for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
+    {
+        if (mirrorable_doodads[i].animation == animidx)
+            return glyph2tile[i + GLYPH_MIRRORABLE_DOODAD_OFF];
+    }
+
+
 #if 0
     /* Spell tiles */
     for (i = 0; i < MAXSPELL; i++)
@@ -3329,6 +3342,19 @@ short enlidx, enl_anim_tile_idx;
         if (ui_tile_component_array[i].enlargement == enlidx)
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
     }
+
+    for (i = 0; i < MAX_SIMPLE_DOODAD_TILES; i++)
+    {
+        if (simple_doodads[i].enlargement == enlidx)
+            return glyph2tile[i + GLYPH_SIMPLE_DOODAD_OFF];
+    }
+
+    for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
+    {
+        if (mirrorable_doodads[i].enlargement == enlidx)
+            return glyph2tile[i + GLYPH_MIRRORABLE_DOODAD_OFF];
+    }
+
 
 #if 0
     /* Spell tiles */
@@ -3494,6 +3520,19 @@ short replacement_idx;
         if (ui_tile_component_array[i].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
     }
+
+    for (i = 0; i < MAX_SIMPLE_DOODAD_TILES; i++)
+    {
+        if (simple_doodads[i].replacement == replacement_idx)
+            return glyph2tile[i + GLYPH_SIMPLE_DOODAD_OFF];
+    }
+
+    for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
+    {
+        if (mirrorable_doodads[i].replacement == replacement_idx)
+            return glyph2tile[i + GLYPH_MIRRORABLE_DOODAD_OFF];
+    }
+
 
 #if 0
     /* Spell tiles */
