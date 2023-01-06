@@ -354,9 +354,36 @@ unsigned long *ospecial;
 
         if (iflags.use_color)
         {
-            if (has_decoration && levl[x][y].decoration_typ > 0 && decoration_type_definitions[levl[x][y].decoration_typ].color != NO_COLOR)
-                color = decoration_type_definitions[levl[x][y].decoration_typ].color;
-
+            if (has_decoration && levl[x][y].decoration_typ > 0)
+            {
+                int dcolor = NO_COLOR;
+                if (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE)
+                {
+                    if (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER)
+                    {
+                        if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0 && levl[x][y].lamplit)
+                            dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color_filled_lit;
+                        else
+                            dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color_filled;
+                    }
+                    else
+                    {
+                        if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0 && levl[x][y].lamplit)
+                            dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color_lit;
+                        else
+                            dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color;
+                    }
+                }
+                else
+                {
+                    if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0 && levl[x][y].lamplit)
+                        dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color_lit;
+                    else
+                        dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color;
+                }
+                if (dcolor != NO_COLOR)
+                    color = dcolor;
+            }
         }
     } 
     else if ((offset = (glyph - GLYPH_OBJ_MISSILE_OFF)) >= 0 

@@ -275,7 +275,10 @@ struct decoration_type_definition {
     int first_doodad[NUM_DOODAD_DIRECTIONS]; //For each of four directions
     int num_subtypes;
     int lootable_item;
-    int color;
+    short color;
+    short color_lit;
+    short color_filled;
+    short color_filled_lit;
     enum location_soundset_types soundset;
     unsigned short dflags;
 };
