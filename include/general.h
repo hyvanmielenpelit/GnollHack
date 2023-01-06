@@ -134,6 +134,7 @@ struct replacement_info {
     struct obj* object;
     struct monst* monster;
     unsigned long layer_flags;
+    unsigned long missile_flags;
 };
 
 struct skill_menu_info

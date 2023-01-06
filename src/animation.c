@@ -1470,7 +1470,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 struct replacement_info
-data_to_replacement_info(signed_glyph, layer, otmp, mtmp, layer_flags)
+data_to_replacement_info(signed_glyph, layer, otmp, mtmp, layer_flags, missile_flags)
 int signed_glyph, layer;
 struct obj* otmp;
 struct monst* mtmp;
@@ -1482,6 +1482,7 @@ unsigned long layer_flags;
     info.object = otmp;
     info.monster = mtmp;
     info.layer_flags = layer_flags;
+    info.missile_flags = missile_flags;
 
     return info;
 }
@@ -1497,6 +1498,7 @@ enum autodraw_types* autodraw_ptr;
     struct obj* otmp = info.object;
     struct monst* mtmp = info.monster;
     unsigned long layer_flags = info.layer_flags;
+    boolean is_lit_missile = info.layer == LAYER_MISSILE && (info.missile_flags & MISSILE_FLAGS_LIT) != 0;
     short replacement_idx = tile2replacement[ntile];
     if (replacement_idx > 0)
     {
@@ -1661,10 +1663,10 @@ enum autodraw_types* autodraw_ptr;
         }
         case REPLACEMENT_ACTION_OBJECT_LIT:
         {
-            if (!otmp)
+            if (!otmp && !is_lit_missile)
                 return ntile;
 
-            if (is_obj_activated(otmp))
+            if (is_lit_missile || is_obj_activated(otmp))
             {
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].general_autodraw;
@@ -1854,13 +1856,13 @@ enum autodraw_types* autodraw_ptr;
         }
         case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_LIT:
         {
-            if (!otmp)
+            if (!otmp && !is_lit_missile)
                 return ntile;
 
             if (autodraw_ptr)
                 *autodraw_ptr = replacements[replacement_idx].general_autodraw;
 
-            if (is_obj_activated(otmp))
+            if (is_lit_missile || is_obj_activated(otmp))
             {
                 if (replacements[replacement_idx].number_of_tiles < 1)
                     return ntile;
@@ -2200,6 +2202,7 @@ struct replacement_info info;
     struct obj* otmp = info.object;
     struct monst* mtmp = info.monster;
     unsigned long layer_flags = info.layer_flags;
+    boolean is_lit_missile = info.layer == LAYER_MISSILE && (info.missile_flags & MISSILE_FLAGS_LIT) != 0;
     short replacement_idx = glyph2replacement[absglyph];
     if (replacement_idx > 0)
     {
@@ -2327,10 +2330,10 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_OBJECT_LIT:
         {
-            if (!otmp)
+            if (!otmp && !is_lit_missile)
                 return glyph;
 
-            if (is_obj_activated(otmp))
+            if (is_lit_missile || is_obj_activated(otmp))
             {
                 /* Return the first tile with index 0 */
                 return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
@@ -2454,10 +2457,10 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_LIT:
         {
-            if (!otmp)
+            if (!otmp && !is_lit_missile)
                 return glyph;
 
-            if (is_obj_activated(otmp))
+            if (is_lit_missile || is_obj_activated(otmp))
             {
                 /* Return the first tile with index 0 */
                 return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);

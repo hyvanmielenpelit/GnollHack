@@ -60,7 +60,7 @@ E int FDECL(get_tile_animation_index_from_glyph, (int));
 E int FDECL(get_replacement_base_tile, (SHORT_P));
 E int FDECL(get_animation_base_tile, (SHORT_P));
 E int FDECL(get_enlargement_base_tile, (SHORT_P, SHORT_P));
-E struct replacement_info FDECL(data_to_replacement_info, (int, int, struct obj*, struct monst*, unsigned long));
+E struct replacement_info FDECL(data_to_replacement_info, (int, int, struct obj*, struct monst*, unsigned long, unsigned long));
 E int FDECL(get_animation_frame_with_tile, (int, int));
 E void FDECL(play_special_effect_at, (enum special_effect_types, int, int, int, BOOLEAN_P));
 E void FDECL(special_effect_wait_until_action, (int));

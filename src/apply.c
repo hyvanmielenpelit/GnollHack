@@ -6041,7 +6041,7 @@ boolean useonlyautostashes;
             xchar x = 0, y = 0;
             get_obj_location(otmp, &x, &y, CONTAINED_TOO | BURIED_TOO);
             int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-            int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL));
+            int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL));
 
             add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
                 applied_invlet,

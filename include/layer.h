@@ -160,6 +160,7 @@ struct simple_layer_info {
 #define MISSILE_FLAGS_ERODEPROOF    0x00000010UL
 #define MISSILE_FLAGS_POISONABLE    0x00000020UL
 #define MISSILE_FLAGS_TETHERED      0x00000040UL /* Missile is tethered */
+#define MISSILE_FLAGS_LIT           0x00000080UL
 
 
 struct monst_info {
