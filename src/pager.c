@@ -643,8 +643,12 @@ char *buf, *monbuf;
             {
                 print_lock_with_buf(eos(buf), levl[x][y].key_otyp, levl[x][y].special_quality, is_door_normally_without_lock_at(x, y));
             }
-            if (((is_cmap_brazier(gl) && IS_BRAZIER(levl[x][y].typ)) || 
-                (dec_descr && levl[x][y].decoration_typ > 0 && (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE)) != 0
+            if ((
+                (is_cmap_brazier(gl) && IS_BRAZIER(levl[x][y].typ)) || 
+                    (dec_descr && levl[x][y].decoration_typ > 0 
+                        && (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0
+                        && ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) == 0 || (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0)
+                    )
                 ) && cansee(x, y))
             {
                 char buf2[BUFSIZ];

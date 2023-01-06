@@ -57,7 +57,7 @@ STATIC_DCL char FDECL(in_or_out_menu, (const char *, struct obj *, BOOLEAN_P,
                                        BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL boolean FDECL(able_to_loot, (int, int, BOOLEAN_P));
 STATIC_DCL boolean NDECL(reverse_loot);
-STATIC_DCL boolean FDECL(mon_beside, (int, int));
+//STATIC_DCL boolean FDECL(mon_beside, (int, int));
 STATIC_DCL int FDECL(do_loot_cont, (struct obj **, int, int));
 STATIC_DCL void FDECL(tipcontainer, (struct obj *));
 
@@ -1846,6 +1846,7 @@ boolean looting; /* loot vs tip */
     return TRUE;
 }
 
+#if 0
 STATIC_OVL boolean
 mon_beside(x, y)
 int x, y;
@@ -1861,6 +1862,7 @@ int x, y;
         }
     return FALSE;
 }
+#endif
 
 int
 do_loot_cont(cobjp, cindex, ccount)
@@ -2044,6 +2046,7 @@ doloot()
     boolean prev_loot = FALSE;
     int num_conts = 0;
     boolean did_something = FALSE;
+    boolean got_something = FALSE;
 
     abort_looting = FALSE;
 
@@ -2166,7 +2169,7 @@ doloot()
      * 3.3.1 introduced directional looting for some things.
      */
  lootmon:
-    if (c != 'y' && mon_beside(u.ux, u.uy))
+    if (c != 'y' /* && mon_beside(u.ux, u.uy) */)
     {
         if (!get_adjacent_loc("Loot in what direction?",
             "Invalid loot location", u.ux, u.uy, &cc))
@@ -2209,11 +2212,88 @@ doloot()
         if (Confusion || Stunned)
             timepassed = 1;
 
+        if (levl[cc.x][cc.y].decoration_typ > 0 && (decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE) != 0)
+        {
+            boolean is_lootable_dir = FALSE;
+            switch (levl[cc.x][cc.y].decoration_dir)
+            {
+            case 0:
+                is_lootable_dir = u.uy > cc.y;
+                break;
+            case 1:
+                is_lootable_dir = u.ux > cc.x;
+                break;
+            case 2:
+                is_lootable_dir = u.ux < cc.x;
+                break;
+            case 3:
+                is_lootable_dir = u.uy < cc.y;
+                break;
+            default:
+                break;
+            }
+            if (is_lootable_dir)
+            {
+                if (levl[cc.x][cc.y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER)
+                {
+                    did_something = TRUE;
+                    levl[cc.x][cc.y].decoration_flags &= ~DECORATION_FLAGS_ITEM_IN_HOLDER;
+                    boolean itemlit = FALSE;
+                    if ((decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
+                    {
+                        if (levl[cc.x][cc.y].lamplit)
+                        {
+                            itemlit = TRUE;
+                            del_light_source(LS_LOCATION, xy_to_any(cc.x, cc.y));
+                            levl[cc.x][cc.y].lamplit = 0;
+                        }
+                        if (levl[cc.x][cc.y].makingsound)
+                        {
+                            del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(cc.x, cc.y));
+                            levl[cc.x][cc.y].makingsound = 0;
+                        }
+                    }
+                    if (decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item != STRANGE_OBJECT)
+                    {
+                        struct obj* newobj = mksobj(decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item, TRUE, FALSE, 0);
+                        if (newobj)
+                        {
+                            got_something = TRUE;
+                            place_object(newobj, u.ux, u.uy);
+                            //Light it up
+                            if (itemlit && !newobj->lamplit)
+                            {
+                                begin_burn(newobj, FALSE);
+                            }
+                            obj_extract_self(newobj);
+                            newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
+                                The(aobjnam(newobj, "slip")),  (const char*)0);
+                        }
+                    }
+                    newsym(cc.x, cc.y);
+                    newsym(u.ux, u.uy);
+                    vision_full_recalc = 1;
+                }
+                else
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is empty.", The(decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].description));
+                    return timepassed;
+                }
+            }
+            else
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
+                You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "loot anything there from this direction.");
+                return timepassed;
+            }
+        }
+
         /* Preserve pre-3.3.1 behaviour for containers.
          * Adjust this if-block to allow container looting
          * from one square away to change that in the future.
          */
-        if (!underfoot) 
+        if (!underfoot && !got_something) 
         {
             did_something = TRUE;
             if (container_at(cc.x, cc.y, FALSE))

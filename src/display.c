@@ -3876,7 +3876,10 @@ xchar x, y;
     if (IS_BRAZIER(lev->typ))
         return 5;
 
-    if (lev->decoration_typ > 0 && (decoration_type_definitions[lev->decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
+    if (lev->decoration_typ > 0 
+        && (decoration_type_definitions[lev->decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0 
+        && ((decoration_type_definitions[lev->decoration_typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE) == 0 || (lev->decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0)
+       )
     {
         return 2;
     }

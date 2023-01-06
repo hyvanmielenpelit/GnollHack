@@ -1474,7 +1474,7 @@ data_to_replacement_info(signed_glyph, layer, otmp, mtmp, layer_flags, missile_f
 int signed_glyph, layer;
 struct obj* otmp;
 struct monst* mtmp;
-unsigned long layer_flags;
+unsigned long layer_flags, missile_flags;
 {
     struct replacement_info info = { 0 };
     info.signed_glyph = signed_glyph;
