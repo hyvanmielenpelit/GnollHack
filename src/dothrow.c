@@ -1622,7 +1622,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         {
 //            if (rn2(100)) {
                 if (tethered_weapon)
-                    tmp_at_with_obj(DISP_END, BACKTRACK, obj);
+                    tmp_at_with_obj(DISP_END, BACKTRACK, obj, get_missile_flags(obj, TRUE));
                 else
                     sho_obj_return_to_u(obj); /* display its flight */
 

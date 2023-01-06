@@ -1631,6 +1631,7 @@ STATIC_VAR struct tmp_glyph {
     int sidx;                       /* index of next unused slot in saved[] */
     int style; /* either DISP_BEAM or DISP_FLASH or DISP_ALWAYS */
     int glyph; /* glyph to use when printing */
+    int gui_glyph; /* gui glyph to use when printing */
     int obj_tile_height;
     struct tmp_glyph *prev;
 } tgfirst;
@@ -1639,13 +1640,22 @@ void
 tmp_at(x, y)
 int x, y;
 {
-    tmp_at_with_obj(x, y, (struct obj*)0);
+    tmp_at_with_obj(x, y, (struct obj*)0, 0UL);
 }
 
 void
-tmp_at_with_obj(x, y, obj)
+tmp_at_with_missile_flags(x, y, missile_flags)
+int x, y;
+unsigned long missile_flags;
+{
+    tmp_at_with_obj(x, y, (struct obj*)0, missile_flags);
+}
+
+void
+tmp_at_with_obj(x, y, obj, missile_flags)
 int x, y;
 struct obj* obj;
+unsigned long missile_flags;
 {
     static struct tmp_glyph *tglyph = (struct tmp_glyph *) 0;
     struct tmp_glyph *tmp;
@@ -1666,6 +1676,7 @@ struct obj* obj;
         tglyph->sidx = 0;
         tglyph->style = x;
         tglyph->glyph = y;
+        tglyph->gui_glyph = maybe_get_replaced_glyph(y, 0, 0, data_to_replacement_info(y, LAYER_MISSILE, obj, (struct monst*)0, 0UL, missile_flags));
         context.tether_x = 0;
         context.tether_y = 0;
         flush_screen(1); /* flush buffered glyphs */
@@ -1695,6 +1706,7 @@ struct obj* obj;
     switch (x) {
     case DISP_CHANGE:
         tglyph->glyph = y;
+        tglyph->gui_glyph = maybe_get_replaced_glyph(y, 0, 0, data_to_replacement_info(y, LAYER_MISSILE, obj, (struct monst*)0, 0UL, missile_flags));
         break;
 
     case DISP_END:
@@ -1713,8 +1725,8 @@ struct obj* obj;
                     context.tether_x = tglyph->saved[i - 1].x;
                     context.tether_y = tglyph->saved[i - 1].y;
                     newsym(tglyph->saved[i].x, tglyph->saved[i].y);
-                    show_glyph_on_layer_and_ascii(tglyph->saved[i - 1].x,
-                               tglyph->saved[i - 1].y, tglyph->glyph, LAYER_MISSILE);
+                    show_gui_glyph_on_layer_and_ascii(tglyph->saved[i - 1].x,
+                               tglyph->saved[i - 1].y, tglyph->glyph, tglyph->gui_glyph, LAYER_MISSILE);
                     if(obj)
                         show_missile_info(tglyph->saved[i - 1].x, tglyph->saved[i - 1].y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
 
@@ -1788,7 +1800,7 @@ struct obj* obj;
             tglyph->sidx = 1;
         }
 
-        show_glyph_on_layer_and_ascii(x, y, tglyph->glyph, 
+        show_gui_glyph_on_layer_and_ascii(x, y, tglyph->glyph, tglyph->gui_glyph,
             tglyph->style == DISP_BEAM || tglyph->style == DISP_BEAM_DIG || tglyph->style == DISP_ALL ? LAYER_ZAP : LAYER_MISSILE); /* show it */
 
         if (obj)
@@ -2458,6 +2470,16 @@ enum layer_types layer_idx;
 }
 
 void
+show_gui_glyph_on_layer_and_ascii(x, y, glyph, gui_glyph, layer_idx)
+int x, y, gui_glyph, glyph;
+enum layer_types layer_idx;
+{
+    show_gui_glyph_on_layer(x, y, glyph, gui_glyph, layer_idx);
+    show_glyph_ascii(x, y, glyph);
+
+}
+
+void
 show_glyph_on_layer(x, y, glyph, layer_idx)
 int x, y, glyph;
 enum layer_types layer_idx;
@@ -3055,7 +3077,7 @@ boolean remove;
         else if (glyph_is_zap(glyph))
         {
             if(!remove)
-                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_ZAP, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
+                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_ZAP, (struct obj*)0, (struct monst*)0, 0UL, gbuf[y][x].layers.missile_flags));
 
             gbuf[y][x].layers.layer_glyphs[LAYER_ZAP] = remove ? NO_GLYPH : glyph;
             gbuf[y][x].layers.layer_gui_glyphs[LAYER_ZAP] = remove ? NO_GLYPH : gui_glyph;
