@@ -6226,7 +6226,7 @@ register struct obj *otmp, *obj;
     if (is_candle(obj) && obj->age / 25 != otmp->age / 25)
         return FALSE;
 
-    if (is_torch(obj) && obj->age / 25 != otmp->age / 25 && !obj->lamplit) /* Only unlit torches are mergeable */
+    if (is_torch(obj) && (obj->age / 25 != otmp->age / 25 || obj->lamplit)) /* Only unlit torches are mergeable */
         return FALSE;
 
     /* burning potions of oil never merge */
