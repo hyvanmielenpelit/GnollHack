@@ -2271,6 +2271,87 @@ struct obj *otmp;
     return FALSE;
 }
 
+int
+use_torch(optr)
+struct obj** optr;
+{
+    register struct obj* obj = *optr;
+
+    if (u.uswallow)
+    {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, no_elbow_room);
+        return 1;
+    }
+
+    boolean objsplitted = FALSE;
+    struct obj* lightedcandle = (struct obj*)0;
+
+    if (obj->quan > 1L)
+    {
+        objsplitted = TRUE;
+        if (!carried(obj))
+        {
+            (void)splitobj(obj, obj->quan - 1);
+            lightedcandle = obj;
+        }
+        else
+            lightedcandle = splitobj(obj, 1);
+        debugpline0("split object,");
+    }
+    else
+        lightedcandle = obj;
+
+    if (lightedcandle)
+    {
+        use_lamp(lightedcandle);
+    }
+
+    if (lightedcandle && carried(lightedcandle) && objsplitted)
+    {
+        freeinv(lightedcandle);
+        if (inv_cnt(FALSE) >= 52)
+        {
+            pline("Oops! %s from your %s.", Tobjnam(lightedcandle, "slip"), body_part(HAND));
+            sellobj_state(SELL_DONTSELL);
+            dropy(lightedcandle);
+            sellobj_state(SELL_NORMAL);
+        }
+        else
+        {
+            lightedcandle->nomerge = 1; /* used to prevent merge */
+            lightedcandle = addinv(lightedcandle);
+            lightedcandle->nomerge = 0;
+        }
+    }
+
+    update_inventory();
+    return 1;
+}
+
+/* call in drop, throw, and put in box, etc. */
+boolean
+snuff_torch(otmp)
+struct obj* otmp;
+{
+    boolean istorch = is_torch(otmp);
+
+    if (istorch && otmp->lamplit)
+    {
+        char buf[BUFSZ];
+        xchar x, y;
+        boolean many = otmp->quan > 1L;
+
+        (void)get_obj_location(otmp, &x, &y, 0);
+        if (otmp->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
+            pline("%storch%s flame%s extinguished.", Shk_Your(buf, otmp),
+                (many ? "es'" : "'s"), (many ? "s are" : " is"));
+        end_burn(otmp, TRUE);
+        return TRUE;
+    }
+    return FALSE;
+}
+
 /* called when lit lamp is hit by water or put into a container or
    you've been swallowed by a monster; obj might be in transit while
    being thrown or dropped so don't assume that its location is valid */
@@ -2280,17 +2361,26 @@ struct obj *obj;
 {
     xchar x, y;
 
-    if (obj->lamplit) {
-        if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
-            || obj->otyp == BRASS_LANTERN || obj->otyp == POT_OIL) {
+    if (obj->lamplit) 
+    {
+        if (is_lamp(obj) || obj->otyp == POT_OIL) 
+        {
             (void) get_obj_location(obj, &x, &y, 0);
             if (obj->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
                 pline("%s %s out!", Yname2(obj), otense(obj, "go"));
             end_burn(obj, TRUE);
             return TRUE;
         }
-        if (snuff_candle(obj))
-            return TRUE;
+        else if (is_torch(obj))
+        {
+            if (snuff_torch(obj))
+                return TRUE;
+        }
+        else
+        {
+            if (snuff_candle(obj))
+                return TRUE;
+        }
     }
     return FALSE;
 }
@@ -2315,8 +2405,7 @@ struct obj *obj;
             return FALSE;
         if (is_obj_candelabrum(obj) && obj->cursed)
             return FALSE;
-        if ((obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
-             || obj->otyp == BRASS_LANTERN) && obj->cursed && !rn2(2))
+        if (is_lamp(obj) && obj->cursed && !rn2(2))
             return FALSE;
         if (obj->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
             pline("%s %s light!", Yname2(obj), otense(obj, "catch"));
@@ -2358,8 +2447,7 @@ struct obj *obj;
     if (obj->lamplit) 
     {
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
-        if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
-            || obj->otyp == BRASS_LANTERN)
+        if (is_lamp(obj))
         {
             pline("%slamp is now off.", Shk_Your(buf, obj));
         }
@@ -2374,13 +2462,13 @@ struct obj *obj;
     if (Underwater)
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        pline_ex(ATR_NONE, CLR_MSG_FAIL, !is_candle(obj) ? "This is not a diving lamp"
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, !is_candle_or_torch(obj) ? "This is not a diving lamp"
                               : "Sorry, fire and water don't mix.");
         return;
     }
 
     /* magic lamps with an enchantment == 0 (wished for) cannot be lit */
-    if ((!is_candle(obj) && obj->age == 0)
+    if ((!is_candle_or_torch(obj) && obj->age == 0)
         || (obj->otyp == MAGIC_LAMP && obj->special_quality  == 0))
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
@@ -2400,8 +2488,7 @@ struct obj *obj;
     else
     {
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
-        if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
-            || obj->otyp == BRASS_LANTERN) 
+        if (is_lamp(obj))
         {
             check_unpaid(obj);
             pline("%slamp is now on.", Shk_Your(buf, obj));
@@ -3759,7 +3846,7 @@ struct obj* obj;
                     (void)erode_obj(otmp, xname(otmp), ERODE_BURN,
                         EF_GREASE | EF_VERBOSE);
                 }
-                else if (is_candle(otmp))
+                else if (is_candle_or_torch(otmp))
                 {
                     wandknown = TRUE;
                     if (!otmp->lamplit)
@@ -5794,6 +5881,9 @@ doapply()
         case TALLOW_CANDLE:
         case MAGIC_CANDLE:
             res = use_candle(&obj);
+            break;
+        case TORCH:
+            res = use_torch(&obj);
             break;
         case OIL_LAMP:
         case MAGIC_LAMP:

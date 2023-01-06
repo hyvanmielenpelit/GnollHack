@@ -89,6 +89,7 @@ E const char *NDECL(beautiful);
 E void FDECL(check_leash, (XCHAR_P, XCHAR_P));
 E boolean FDECL(um_dist, (XCHAR_P, XCHAR_P, XCHAR_P));
 E boolean FDECL(snuff_candle, (struct obj *));
+E boolean FDECL(snuff_torch, (struct obj*));
 E boolean FDECL(snuff_lit, (struct obj *));
 E boolean FDECL(catch_lit, (struct obj *));
 E void FDECL(use_unicorn_horn, (struct obj *));
@@ -113,6 +114,7 @@ E void FDECL(setapplyclasses, (char*));
 E void FDECL(setbreakclasses, (char*));
 E void FDECL(use_candelabrum, (struct obj*));
 E int FDECL(use_candle, (struct obj**));
+E int FDECL(use_torch, (struct obj**));
 E void FDECL(use_lamp, (struct obj*));
 E void FDECL(light_cocktail, (struct obj**));
 

@@ -2634,8 +2634,7 @@ boolean (*validitemfunc)(struct obj*);
              || (!strcmp(word, "tin")
                  && (otyp != CORPSE || !tinnable(otmp)))
              || (!strcmp(word, "rub")
-                 && ((otmp->oclass == TOOL_CLASS && otyp != OIL_LAMP
-                      && otyp != MAGIC_LAMP && otyp != BRASS_LANTERN)
+                 && ((otmp->oclass == TOOL_CLASS && !is_otyp_lamp(otyp))
                      || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
                 || (!strcmp(word, "use or apply")
                  /* Picks, axes, pole-weapons, bullwhips */
@@ -3148,8 +3147,7 @@ struct obj* otmp_only;
                 || (!strcmp(word, "tin")
                     && (otyp != CORPSE || !tinnable(otmp)))
                 || (!strcmp(word, "rub")
-                    && ((otmp->oclass == TOOL_CLASS && otyp != OIL_LAMP
-                        && otyp != MAGIC_LAMP && otyp != BRASS_LANTERN)
+                    && ((otmp->oclass == TOOL_CLASS && !is_otyp_lamp(otyp))
                         || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
                 || (!strcmp(word, "use or apply")
                     /* Picks, axes, pole-weapons, bullwhips */
@@ -6226,6 +6224,9 @@ register struct obj *otmp, *obj;
     /* allow candle merging only if their ages are close */
     /* see begin_burn() for a reference for the magic "25" */
     if (is_candle(obj) && obj->age / 25 != otmp->age / 25)
+        return FALSE;
+
+    if (is_torch(obj) && obj->age / 25 != otmp->age / 25)
         return FALSE;
 
     /* burning potions of oil never merge */

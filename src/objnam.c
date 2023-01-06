@@ -96,7 +96,7 @@ const char* misc_type_worn_texts[MAX_MISC_TYPES] = {
 
 const char* tool_type_names[MAX_TOOL_TYPES] = {
     "tool", "box", "chest", "bag", "pick-axe", "shovel", "long club-headed weapon", "hook", "horn", "candelabrum", "bell",
-    "candle", "lamp", "lantern", "whistle", "flute", "harp", "drum", "saw", "jar", "can", "grail"
+    "candle", "lamp", "lantern", "whistle", "flute", "harp", "drum", "saw", "jar", "can", "grail", "torch"
 };
 
 const char* book_type_names[MAX_BOOK_TYPES] = {
@@ -1539,12 +1539,12 @@ weapon_here:
                         !obj->lamplit ? " attached" : ", lit");
             break;
         } 
-        else if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
-                   || obj->otyp == BRASS_LANTERN || is_candle(obj)) 
+        else if (is_lamp(obj) || is_candle(obj) || is_torch(obj))
         {
             if ((is_candle(obj) && obj->otyp != MAGIC_CANDLE
                 && obj->age < candle_maximum_burn_time(obj))
                 || (obj->otyp == MAGIC_CANDLE && obj->special_quality < 2)
+                || (is_torch(obj) && obj->age < torch_maximum_burn_time(obj))
                 )
                 Strcat(prefix, "partly used ");
             if (obj->lamplit)
@@ -4916,8 +4916,7 @@ boolean is_wiz_wish;
     otmp = typ ? mksobj_with_flags(typ, TRUE, FALSE, 2, 0L, 0L, mkflags) : mkobj(oclass, FALSE, 2);
     typ = otmp->otyp, oclass = otmp->oclass; /* what we actually got */
 
-    if (islit && (typ == OIL_LAMP || typ == MAGIC_LAMP || typ == BRASS_LANTERN
-                  || is_candle(otmp) || is_obj_candelabrum(otmp) || typ == POT_OIL)) 
+    if (islit && (is_lamp(otmp) || is_candle(otmp) || is_torch(otmp) || is_obj_candelabrum(otmp) || typ == POT_OIL))
     {
         place_object(otmp, u.ux, u.uy); /* make it viable light source */
         begin_burn(otmp, FALSE);

@@ -481,82 +481,92 @@ struct obj {
 #define is_dragon_obj(obj) ((objects[(obj)->otyp].oc_flags2 & O2_DRAGON_ITEM) != 0)
 
 /* Elven gear */
-#define is_elven_weapon(otmp)                                             \
-    ((otmp)->oclass == WEAPON_CLASS && is_elven_obj(otmp))
-#define is_elven_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_ELVEN_ITEM) != 0)
+#define is_elven_weapon(o)                                             \
+    ((o)->oclass == WEAPON_CLASS && is_elven_obj(o))
+#define is_elven_obj(o) ((objects[(o)->otyp].oc_flags2 & O2_ELVEN_ITEM) != 0)
 
 /* Orcish gear */
-#define is_orcish_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_ORCISH_ITEM) != 0)
+#define is_orcish_obj(o) ((objects[(o)->otyp].oc_flags2 & O2_ORCISH_ITEM) != 0)
 
 /* Dwarvish gear */
-#define is_dwarvish_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_DWARVEN_ITEM) != 0)
+#define is_dwarvish_obj(o) ((objects[(o)->otyp].oc_flags2 & O2_DWARVEN_ITEM) != 0)
 
 /* Gnomish gear */
-#define is_gnomish_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_GNOMISH_ITEM) != 0)
+#define is_gnomish_obj(o) ((objects[(o)->otyp].oc_flags2 & O2_GNOMISH_ITEM) != 0)
 
 /* Gnollish gear */
-#define is_gnollish_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_GNOLLISH_ITEM) != 0)
+#define is_gnollish_obj(o) ((objects[(o)->otyp].oc_flags2 & O2_GNOLLISH_ITEM) != 0)
 
 /* Modron gear */
-#define is_modron_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_MODRON_ITEM) != 0)
+#define is_modron_obj(o) ((objects[(o)->otyp].oc_flags2 & O2_MODRON_ITEM) != 0)
 
 /* Demon gear */
-#define is_demon_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_DEMON_ITEM) != 0 || (otmp)->exceptionality == EXCEPTIONALITY_INFERNAL)
+#define is_demon_obj(o) ((objects[(o)->otyp].oc_flags2 & O2_DEMON_ITEM) != 0 || (o)->exceptionality == EXCEPTIONALITY_INFERNAL)
 
 /* Angel gear */
-#define is_angel_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_ANGEL_ITEM) != 0 || (otmp)->exceptionality == EXCEPTIONALITY_CELESTIAL)
+#define is_angel_obj(o) ((objects[(o)->otyp].oc_flags2 & O2_ANGEL_ITEM) != 0 || (o)->exceptionality == EXCEPTIONALITY_CELESTIAL)
 
 /* Demon gear */
-#define is_undead_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_UNDEAD_ITEM) != 0)
+#define is_undead_obj(o) ((objects[(o)->otyp].oc_flags2 & O2_UNDEAD_ITEM) != 0)
 
 /* Light sources */
 #define is_otyp_candle(otyp) \
     ((objects[(otyp)].oc_flags2 & O2_CANDLE) != 0)
-#define is_candle(otmp) \
-    is_otyp_candle((otmp)->otyp)
+#define is_candle(o) \
+    is_otyp_candle((o)->otyp)
+#define is_otyp_torch(otyp) \
+    ((objects[(otyp)].oc_flags5 & O5_TORCH) != 0)
+#define is_torch(o) \
+    is_otyp_torch((o)->otyp)
+#define is_candle_or_torch(o) \
+    (is_candle(o) || is_torch(o))
 #define is_otyp_candelabrum(otyp) \
     ((objects[(otyp)].oc_flags4 & O4_CANDELABRUM) != 0)
-#define is_obj_candelabrum(otmp) \
-    is_otyp_candelabrum((otmp)->otyp)
+#define is_obj_candelabrum(o) \
+    is_otyp_candelabrum((o)->otyp)
+#define is_otyp_lamp(otyp) \
+    ((objects[(otyp)].oc_flags5 & O5_LAMP) != 0)
+#define is_lamp(o) \
+    is_otyp_lamp((o)->otyp)
 #define otyp_shines_magical_light(otyp)                                             \
     ((objects[(otyp)].oc_flags2 & O2_SHINES_MAGICAL_LIGHT) != 0)
-#define obj_shines_magical_light(otmp)     \
-    otyp_shines_magical_light((otmp)->otyp)
+#define obj_shines_magical_light(o)     \
+    otyp_shines_magical_light((o)->otyp)
 #define is_otyp_special_praying_item(otyp)                                             \
     ((objects[(otyp)].oc_flags2 & O2_SPECIAL_PRAYING_ITEM) != 0)
-#define is_obj_special_praying_item(otmp)     \
-    is_otyp_special_praying_item((otmp)->otyp)
+#define is_obj_special_praying_item(o)     \
+    is_otyp_special_praying_item((o)->otyp)
 
 /* Wand-like tools */
-#define is_spelltool(otmp) \
-    ((objects[(otmp)->otyp].oc_flags & O1_SPELLTOOL) != 0)
+#define is_spelltool(o) \
+    ((objects[(o)->otyp].oc_flags & O1_SPELLTOOL) != 0)
 
 /* Other tools */
-#define is_saw(otmp)                                              \
-    ((otmp)->oclass == TOOL_CLASS \
-     && objects[(otmp)->otyp].oc_subtyp == TOOLTYPE_SAW)
+#define is_saw(o)                                              \
+    ((o)->oclass == TOOL_CLASS \
+     && objects[(o)->otyp].oc_subtyp == TOOLTYPE_SAW)
 
 #define MAX_OIL_IN_FLASK 400 /* maximum amount of oil in a potion of oil */
 
 /* MAGIC_LAMP intentionally excluded below */
 /* age field of this is relative age rather than absolute */
-#define age_is_relative(otmp)                                       \
-    ((objects[(otmp)->otyp].oc_flags3 & O3_RELATIVE_AGE) != 0)
+#define age_is_relative(o)                                       \
+    ((objects[(o)->otyp].oc_flags3 & O3_RELATIVE_AGE) != 0)
 
 /* object can be ignited */
 #define is_otyp_ignitable(otyp)                                             \
     ((objects[(otyp)].oc_flags3 & O3_IGNITABLE) != 0)
 
-#define is_obj_ignitable(otmp)                                             \
-    (is_otyp_ignitable((otmp)->otyp))
+#define is_obj_ignitable(o)                                             \
+    (is_otyp_ignitable((o)->otyp))
 
 /* object can be refilled with oil */
-#define is_refillable_with_oil(otmp)                                             \
-    ((objects[(otmp)->otyp].oc_flags3 & O3_REFILLABLE_WITH_OIL) != 0)
+#define is_refillable_with_oil(o)                                             \
+    ((objects[(o)->otyp].oc_flags3 & O3_REFILLABLE_WITH_OIL) != 0)
 
 /* things that can be read */
-#define is_readable(otmp)                                                    \
-    ((objects[(otmp)->otyp].oc_flags3 & O3_READABLE) || ((otmp)->oartifact && artilist[(otmp)->oartifact].aflags & AF_READABLE))
+#define is_readable(o)                                                    \
+    ((objects[(o)->otyp].oc_flags3 & O3_READABLE) || ((o)->oartifact && artilist[(o)->oartifact].aflags & AF_READABLE))
 
 /* special stones */
 #define is_otyp_rock(otyp)                                 \
@@ -988,6 +998,8 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
 #define candle_maximum_burn_time(o) candle_starting_burn_time(o)
 #define candlelabrum_starting_burn_time(o) MAX_BURN_IN_CANDELABRUM
 #define candlelabrum_maximum_burn_time(o) candlelabrum_starting_burn_time(o)
+#define torch_starting_burn_time(o) (500)
+#define torch_maximum_burn_time(o) torch_starting_burn_time(o)
 #define lamp_starting_burn_time(o) ((long)rn1(500, 1000))
 #define lamp_maximum_burn_time(o) MAX_OIL_IN_LAMP
 #define potion_starting_burn_time(o) MAX_OIL_IN_FLASK

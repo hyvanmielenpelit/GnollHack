@@ -9041,6 +9041,8 @@ dolight(VOID_ARGS)
                         {
                             if (is_candle(otmp))
                                 return use_candle(&otmp);
+                            else if (is_torch(otmp))
+                                return use_torch(&otmp);
                             else if (is_obj_candelabrum(otmp))
                                 use_candelabrum(otmp);
                             else if (otmp->otyp == POT_OIL)

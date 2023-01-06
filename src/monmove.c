@@ -2308,7 +2308,7 @@ struct monst *mtmp;
             && obj->oclass != VENOM_CLASS && typ != SACK && typ != ORIENTAL_SILK_SACK && typ != LEATHER_BAG && typ != BACKPACK
             && typ != EXPENSIVE_HANDBAG
             && typ != BAG_OF_HOLDING && typ != BAG_OF_WIZARDRY && typ != BAG_OF_TREASURE_HAULING && typ != BAG_OF_THE_GLUTTON && typ != BAG_OF_TRICKS
-            && !is_candle(obj) && typ != OILSKIN_SACK && typ != LEASH
+            && !is_candle_or_torch(obj) && typ != OILSKIN_SACK && typ != LEASH
             && typ != STETHOSCOPE && typ != BLINDFOLD && typ != TOWEL
             && typ != TIN_WHISTLE && typ != MAGIC_WHISTLE
             && typ != MAGIC_MARKER && typ != TIN_OPENER && typ != SKELETON_KEY
