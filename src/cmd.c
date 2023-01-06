@@ -2467,6 +2467,39 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_PLAYER_DEATH_OFF:
                 header = "PLAYER_DEATH_OFF";
                 break;
+            case GLYPH_SPECIAL_EFFECT_OFF:
+                header = "SPECIAL_EFFECT_OFF";
+                break;
+            case GLYPH_SIMPLE_DOODAD_OFF:
+                header = "SIMPLE_DOODAD_OFF";
+                break;
+            case GLYPH_MIRRORABLE_DOODAD_OFF:
+                header = "MIRRORABLE_DOODAD_OFF";
+                break;
+            case GLYPH_CURSOR_OFF:
+                header = "CURSOR_OFF";
+                break;
+            case GLYPH_HIT_TILE_OFF:
+                header = "GENERAL_HIT_TILE_OFF";
+                break;
+            case GLYPH_GENERAL_TILE_OFF:
+                header = "GENERAL_TILE_OFF";
+                break;
+            case GLYPH_UI_TILE_OFF:
+                header = "GENERAL_UI_TILE_OFF";
+                break;
+            case GLYPH_SPELL_TILE_OFF:
+                header = "GENERAL_SPELL_TILE_OFF";
+                break;
+            case GLYPH_SKILL_TILE_OFF:
+                header = "GENERAL_SKILL_TILE_OFF";
+                break;
+            case GLYPH_BUFF_OFF:
+                header = "BUFF_OFF";
+                break;
+            case GLYPH_REPLACEMENT_OFF:
+                header = "REPLACEMENT_OFF";
+                break;
             case GLYPH_ANIMATION_OFF:
                 header = "ANIMATION_OFF";
                 break;

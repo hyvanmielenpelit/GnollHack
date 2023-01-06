@@ -1895,7 +1895,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     int tile_animation_idx = get_tile_animation_index_from_glyph(glyph);
                     boolean skip_drawing = FALSE;
                     boolean full_sized_item = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM) || glyph_is_monster(glyph); /* hallucinated statue */
-                    boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !full_sized_item);
+                    boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && base_layer == LAYER_MISSILE && !full_sized_item);
                     boolean does_not_cause_monster_shadow = FALSE;
                     boolean is_dropping_piercer = mtmp && (data->map[enl_i][enl_j].layer_flags & LFLAGS_M_DROPPING_PIERCER);
 
