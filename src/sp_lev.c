@@ -6165,7 +6165,7 @@ struct sp_coder* coder;
     tmpdecoration.typ = (schar)OV_i(typ_opvar);
     tmpdecoration.subtyp = (schar)OV_i(subtyp_opvar);
     tmpdecoration.dir = (schar)OV_i(dir_opvar);
-    tmpdecoration.item_in_holder = (uchar)OV_i(flags_opvar);
+    tmpdecoration.item_in_holder = (boolean)OV_i(flags_opvar);
     tmpdecoration.lit = (boolean)OV_i(lit_opvar);
 
     create_decoration(&tmpdecoration, coder->croom);
