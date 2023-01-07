@@ -460,6 +460,7 @@ struct instance_flags {
     boolean time_botl;       /* context.botl for 'time' (moves) only */
     boolean wizweight;       /* display weight of everything in wizard mode */
     boolean takeoff_uses_all;/* takeoff command is implemented using takeoffall command with a single item */
+    boolean show_decorations;/* show decorations on the walls etc. in ASCII */
 
     /* Is the system in demo version */
     boolean demo_version;  /* OBSOLETE */
