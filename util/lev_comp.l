@@ -182,6 +182,7 @@ TELEPORT_REGION	ST_RET(TELEPRT_ID);
 BRANCH		ST_RET(BRANCH_ID);
 FOUNTAIN	ST_RET(FOUNTAIN_ID);
 FLOOR	    ST_RET(FLOOR_ID);
+DECORATION  ST_RET(DECORATION_ID);
 THRONE	    ST_RET(THRONE_ID);
 MODRON_PORTAL	ST_RET(MODRON_PORTAL_ID);
 SINK		ST_RET(SINK_ID);
@@ -358,6 +359,16 @@ cubical		{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_CUBICAL; return MOD
 octahedral	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_OCTAHEDRAL; return MODRON_PORTAL_TYPE; }
 dodecahedral { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_DODECAHEDRAL; return MODRON_PORTAL_TYPE; }
 icosahedral { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_ICOSAHEDRAL; return MODRON_PORTAL_TYPE; }
+decoration_cobweb { savetoken(yytext); yylval.i=DECORATION_COBWEB; return DECORATION_TYPE; }
+decoration_cobweb_corner { savetoken(yytext); yylval.i=DECORATION_COBWEB_CORNER; return DECORATION_TYPE; }
+decoration_torch { savetoken(yytext); yylval.i=DECORATION_TORCH; return DECORATION_TYPE; }
+decoration_lantern { savetoken(yytext); yylval.i=DECORATION_LANTERN; return DECORATION_TYPE; }
+direction_top { savetoken(yytext); yylval.i=0; return DECORATION_DIR; }
+direction_left { savetoken(yytext); yylval.i=1; return DECORATION_DIR; }
+direction_right { savetoken(yytext); yylval.i=2; return DECORATION_DIR; }
+direction_bottom { savetoken(yytext); yylval.i=3; return DECORATION_DIR; }
+empty_holder { savetoken(yytext); yylval.i=0; return DECORATION_ITEM_STATE; }
+item_in_holder { savetoken(yytext); yylval.i=1; return DECORATION_ITEM_STATE; }
 npc_random { savetoken(yytext); yylval.i=MAX_NPC_SUBTYPES; return NPC_TYPE; }
 npc_artificer { savetoken(yytext); yylval.i=NPC_ARTIFICER; return NPC_TYPE; }
 npc_geologist { savetoken(yytext); yylval.i=NPC_GEOLOGIST; return NPC_TYPE; }

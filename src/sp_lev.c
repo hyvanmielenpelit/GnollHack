@@ -86,6 +86,7 @@ STATIC_DCL void FDECL(create_object, (object *, struct mkroom *));
 STATIC_DCL void FDECL(create_lever, (spllever*, struct mkroom*));
 STATIC_DCL void FDECL(create_altar, (altar *, struct mkroom *));
 STATIC_DCL void FDECL(create_anvil, (anvil*, struct mkroom*));
+STATIC_DCL void FDECL(create_decoration, (decoration*, struct mkroom*));
 STATIC_DCL void FDECL(create_modron_portal, (modron_portal*, struct mkroom*));
 STATIC_DCL void FDECL(create_npc, (npc_create_info*, struct mkroom*));
 STATIC_DCL void FDECL(replace_terrain, (replaceterrain *, struct mkroom *));
@@ -183,6 +184,7 @@ STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_feature, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_fountain, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_anvil, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_decoration, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_floor, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_subtype, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_npc, (struct sp_coder*));
@@ -2730,6 +2732,31 @@ struct mkroom* croom;
 
     smithini(&u.uz, croom, x, y, 0, a->mtype);
     level.flags.has_smithy = TRUE;
+}
+
+/*
+ * Create a decoration in a room.
+ */
+STATIC_OVL void
+create_decoration(d, croom)
+decoration* d;
+struct mkroom* croom;
+{
+    schar x = -1, y = -1;
+
+    get_location_coord(&x, &y, ANY_LOC, croom, d->coord);
+
+    if (isok(x, y) && d->typ > 0 && d->typ < MAX_DECORATIONS)
+    {
+        levl[x][y].decoration_typ = d->typ;
+        levl[x][y].decoration_subtyp = d->subtyp;
+        levl[x][y].decoration_dir = max(0, min(3, d->dir));
+        levl[x][y].decoration_flags = 0;
+        if(d->item_in_holder && (decoration_type_definitions[d->typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE) != 0)
+            levl[x][y].decoration_flags |= DECORATION_FLAGS_ITEM_IN_HOLDER;
+        if (!d->lit && (decoration_type_definitions[d->typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
+            levl[x][y].flags |= L_INITIALLY_UNLIT;  //This uses normal flags, since lamplit is shared as well
+    }
 }
 
 
@@ -6124,6 +6151,33 @@ struct sp_coder* coder;
     opvar_free(acoord);
 }
 
+void spo_decoration(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_decoration";
+    struct opvar* acoord, *typ_opvar, *subtyp_opvar, *dir_opvar, *flags_opvar, *lit_opvar;
+    decoration tmpdecoration;
+
+    if (!OV_pop_i(typ_opvar) || !OV_pop_i(subtyp_opvar) || !OV_pop_i(dir_opvar) || !OV_pop_i(flags_opvar) || !OV_pop_i(lit_opvar) || !OV_pop_c(acoord))
+        return;
+
+    tmpdecoration.coord = OV_i(acoord);
+    tmpdecoration.typ = (schar)OV_i(typ_opvar);
+    tmpdecoration.subtyp = (schar)OV_i(subtyp_opvar);
+    tmpdecoration.dir = (schar)OV_i(dir_opvar);
+    tmpdecoration.item_in_holder = (uchar)OV_i(flags_opvar);
+    tmpdecoration.lit = (boolean)OV_i(lit_opvar);
+
+    create_decoration(&tmpdecoration, coder->croom);
+
+    opvar_free(typ_opvar);
+    opvar_free(subtyp_opvar);
+    opvar_free(dir_opvar);
+    opvar_free(flags_opvar);
+    opvar_free(lit_opvar);
+    opvar_free(acoord);
+}
+
 void
 spo_floor(coder)
 struct sp_coder* coder;
@@ -7701,6 +7755,9 @@ sp_lev *lvl;
             break;
         case SPO_ANVIL:
             spo_anvil(coder);
+            break;
+        case SPO_DECORATION:
+            spo_decoration(coder);
             break;
         case SPO_FLOOR:
             spo_floor(coder);
