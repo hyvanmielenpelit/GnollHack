@@ -264,6 +264,17 @@ int floortyp, floorsubtyp, mtype;
                         levl[lowx + roll + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                     }
                 }
+                if (lowx + 1 < hix && !rn2(lvl_depth / 3 + 3))
+                {
+                    int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                    if (IS_WALL(levl[lowx + roll + 1][hiy + 1].typ) && !levl[lowx + roll + 1][hiy + 1].use_special_tileset)
+                    {
+                        levl[lowx + roll + 1][hiy + 1].decoration_typ = DECORATION_TORCH;
+                        levl[lowx + roll + 1][hiy + 1].decoration_subtyp = 0;
+                        levl[lowx + roll + 1][hiy + 1].decoration_dir = 3;
+                        levl[lowx + roll + 1][hiy + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                    }
+                }
                 if (lowy + 1 < hiy && !rn2(lvl_depth / 3 + 3))
                 {
                     int roll = hiy - lowy - 1 <= 1 ? 0 : rn2(hiy - lowy - 1);
