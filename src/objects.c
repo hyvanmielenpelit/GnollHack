@@ -1461,7 +1461,7 @@ ARMOR("force field armor", "armor-shaped force field",
 ARMOR("Hawaiian shirt", None, 
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     8, 0, 5,  5, 10, 1, 0, 0, 0, 0, 0, 
-    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_MAGENTA, 32, OBJECT_SOUNDSET_GENERIC, 
+    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_MAGENTA, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_READABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 /* with shuffled appearances... */
 ARMOR("shirt of uncontrollable laughter", "funny T-shirt", //STARTMARKER 2
