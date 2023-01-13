@@ -3091,7 +3091,7 @@ short animidx;
 
     for (i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
     {
-        if(obj_descr[objects[i].oc_descr_idx].stand_animation == animidx)
+        if(obj_descr[i /*objects[i].oc_descr_idx*/].stand_animation == animidx)
             return glyph2tile[i + GLYPH_OBJ_OFF];
     }
 

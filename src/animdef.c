@@ -3557,6 +3557,17 @@ NEARDATA const struct animation_definition animations[MAX_ANIMATIONS] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "shield-of-reflection-sparkle-animation", ANIMATION_TYPE_NORMAL, SHIELD_OF_REFLECTION_SPARKLE_ANIMATION_TILES,
+      SHIELD_OF_REFLECTION_SPARKLE_ANIMATION_FRAMES,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 28, 29, 30, 31 },
+      -1, -1,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
 };
 
 NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
