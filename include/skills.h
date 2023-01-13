@@ -105,6 +105,7 @@ enum skill_levels {
 
 #define is_magic_skill(skill) ((skill) >= P_ARCANE_SPELL && (skill) <= P_NECROMANCY_SPELL)
 #define practice_needed_to_advance_for_normal_skill(level) ((level) * (level) * 20)
+#define RIDING_TURNS_TO_EXERCISE_SKILL 50
 
 /* The hero's skill in various weapons. */
 struct skills {
