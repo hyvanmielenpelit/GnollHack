@@ -238,6 +238,15 @@ reset_global_variables(VOID_ARGS)
     upstairs_room = dnstairs_room = sstairs_room = 0;
 
     reset_item_global_variables();
+
+    /* This needs to be setup already here early due to tiledata processing */
+    int i;
+    for (i = 0; i < NUM_OBJECTS; i++)
+    {
+        /* initialize object descriptions */
+        objects[i].oc_name_idx = objects[i].oc_descr_idx = i;
+    }
+
 }
 
 void
