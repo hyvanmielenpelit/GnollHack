@@ -4733,7 +4733,9 @@ register struct obj *obj;
         break;
     case SPE_GUARDIAN_ANGEL:
         You_ex(ATR_NONE, CLR_MSG_SPELL, "recite an ancient prayer to %s.", u_gname());
-        gain_guardian_angel(TRUE);
+        //gain_guardian_angel(TRUE);
+        mtmp = summoncreature(obj->otyp, PM_ANGEL, "%s descends from the heavens.", MM_EMIN_COALIGNED | MM_LAWFUL_SUMMON_ANIMATION,
+            SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_PACIFIST | SUMMONCREATURE_FLAGS_FAITHFUL);
         break;
     case SPE_SUMMON_ARCHON:
         mtmp = summoncreature(obj->otyp, PM_ARCHON, "%s descends from the heavens.", MM_EMIN_COALIGNED | MM_LAWFUL_SUMMON_ANIMATION,
