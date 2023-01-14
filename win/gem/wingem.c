@@ -48,7 +48,7 @@ struct window_procs Gem_procs = {
     0L, Gem_init_nhwindows, Gem_player_selection, Gem_askname,
     Gem_get_nh_event, Gem_exit_nhwindows, Gem_suspend_nhwindows,
     Gem_resume_nhwindows, Gem_create_nhwindow_ex, Gem_clear_nhwindow,
-    Gem_display_nhwindow, Gem_destroy_nhwindow, Gem_curs, Gem_putstr_ex,
+    Gem_display_nhwindow, Gem_destroy_nhwindow, Gem_curs, Gem_putstr_ex, Gem_putstr_ex2,
     genl_putmixed_ex, Gem_display_file, Gem_start_menu_ex, Gem_add_menu, Gem_add_extended_menu,
     Gem_end_menu_ex, Gem_select_menu, genl_message_menu, Gem_update_inventory,
     Gem_mark_synch, Gem_wait_synch,
@@ -718,6 +718,15 @@ const char *str;
         mar_putstr_text(window, attr, str);
         break;
     } /* endswitch win_type */
+}
+
+void
+Gem_putstr_ex2(window, str, attrs, colors, app)
+winid window;
+int app;
+const char* str, * attrs, * colors;
+{
+    Gem_putstr_ex(window, attrs[0], str, app, colors[0]);
 }
 
 void

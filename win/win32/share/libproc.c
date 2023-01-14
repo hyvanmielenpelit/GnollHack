@@ -23,7 +23,7 @@ struct window_procs lib_procs = {
     lib_init_nhwindows, lib_player_selection, lib_askname,
     lib_get_nh_event, lib_exit_nhwindows, lib_suspend_nhwindows,
     lib_resume_nhwindows, lib_create_nhwindow_ex, lib_clear_nhwindow,
-    lib_display_nhwindow, lib_destroy_nhwindow, lib_curs, lib_putstr_ex,
+    lib_display_nhwindow, lib_destroy_nhwindow, lib_curs, lib_putstr_ex, lib_putstr_ex2,
     genl_putmixed_ex, lib_display_file, lib_start_menu_ex, lib_add_menu, lib_add_extended_menu,
     lib_end_menu_ex, lib_select_menu,
     genl_message_menu, /* no need for X-specific handling */
@@ -255,12 +255,20 @@ void lib_curs(winid wid, int x, int y)
 }
 
 /* text is supposed to be in CP437; if text is UTF8 encoding, call callback_putstr_ex directly */
-void lib_putstr_ex(winid wid, int attr, const char* text, int param, int color)
+void lib_putstr_ex(winid wid, int attr, const char* text, int append, int color)
 {
     char buf[BUFSIZ];
     if (text)
         write_text2buf_utf8(buf, BUFSIZ, text);
-    lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, param, color);
+    lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, append, color);
+}
+
+void lib_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int append)
+{
+    char buf[BUFSIZ];
+    if (text)
+        write_text2buf_utf8(buf, BUFSIZ, text);
+    lib_callbacks.callback_putstr_ex2(wid, text ? buf : 0, attrs, colors, append);
 }
 
 void lib_display_file(const char* filename, BOOLEAN_P must_exist)

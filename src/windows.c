@@ -90,6 +90,7 @@ STATIC_DCL void FDECL(dump_add_extended_menu, (winid, int, const ANY_P*, struct 
 STATIC_DCL void FDECL(dump_end_menu_ex, (winid, const char *, const char*));
 STATIC_DCL int FDECL(dump_select_menu, (winid, int, MENU_ITEM_P **));
 STATIC_DCL void FDECL(dump_putstr_ex, (winid, int, const char *, int, int));
+STATIC_DCL void FDECL(dump_putstr_ex2, (winid, const char*, const char*, const char*, int));
 #endif /* DUMPLOG */
 
 #ifdef HANGUPHANDLING
@@ -736,6 +737,7 @@ STATIC_DCL void FDECL(hup_add_extended_menu, (winid, int, const anything*, struc
     int, const char*, BOOLEAN_P));
 STATIC_DCL void FDECL(hup_end_menu_ex, (winid, const char *, const char*));
 STATIC_DCL void FDECL(hup_putstr_ex, (winid, int, const char *, int, int));
+STATIC_DCL void FDECL(hup_putstr_ex2, (winid, const char*, const char*, const char*, int));
 STATIC_DCL void FDECL(hup_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
 STATIC_DCL void FDECL(hup_issue_gui_command, (int));
 STATIC_DCL void FDECL(hup_outrip, (winid, int, time_t));
@@ -770,7 +772,7 @@ STATIC_VAR struct window_procs hup_procs = {
     hup_void_ndecl,                                    /* resume_nhwindows */
     hup_create_nhwindow_ex, hup_void_fdecl_winid,         /* clear_nhwindow */
     hup_display_nhwindow, hup_void_fdecl_winid,        /* destroy_nhwindow */
-    hup_curs, hup_putstr_ex, hup_putstr_ex,            /* putmixed */
+    hup_curs, hup_putstr_ex, hup_putstr_ex2, hup_putstr_ex,            /* putmixed */
     hup_display_file, hup_start_menu_ex,               /* start_menu */
     hup_add_menu, hup_add_extended_menu, hup_end_menu_ex, hup_select_menu, genl_message_menu,
     hup_void_ndecl,                                    /* update_inventory */
@@ -979,6 +981,16 @@ hup_putstr_ex(window, attr, text, app, color)
 winid window UNUSED;
 int attr UNUSED, app UNUSED, color UNUSED;
 const char *text UNUSED;
+{
+    return;
+}
+
+/*ARGSUSED*/
+STATIC_OVL void
+hup_putstr_ex2(window, text, attrs, colors, app)
+winid window UNUSED;
+int app UNUSED;
+const char* text UNUSED, *attrs UNUSED, *colors UNUSED;
 {
     return;
 }
@@ -1570,6 +1582,16 @@ const char *str;
         fprintf(dumplog_file, "%s\n", buf);
 }
 
+/*ARGSUSED*/
+STATIC_OVL void
+dump_putstr_ex2(win, str, attrs, colors, app)
+winid win;
+int app;
+const char* str, *attrs, *colors;
+{
+    dump_putstr_ex(win, attrs[0], str, app, colors[0]);
+}
+
 #ifdef DUMPLOG
 /*ARGSUSED*/
 void
@@ -1730,6 +1752,7 @@ boolean onoff_flag;
             windowprocs.win_end_menu_ex = dump_end_menu_ex;
             windowprocs.win_select_menu = dump_select_menu;
             windowprocs.win_putstr_ex = dump_putstr_ex;
+            windowprocs.win_putstr_ex2 = dump_putstr_ex2;
         } else {
             windowprocs = dumplog_windowprocs_backup;
         }

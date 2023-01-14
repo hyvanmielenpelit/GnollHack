@@ -23,6 +23,7 @@ static void FDECL(and_dismiss_nhwindow, (winid));
 static void FDECL(and_destroy_nhwindow, (winid));
 static void FDECL(and_curs, (winid,int,int));
 static void FDECL(and_putstr_ex, (winid, int, const char *, int, int));
+static void FDECL(and_putstr_ex2, (winid, const char*, const char*, const char*, int));
 static void FDECL(and_putmixed_ex, (winid, int, const char *, int, int));
 static void FDECL(and_display_file, (const char *, BOOLEAN_P));
 static void FDECL(and_start_menu_ex, (winid, int));
@@ -89,6 +90,7 @@ struct window_procs and_procs = {
 	and_destroy_nhwindow,
 	and_curs,
 	and_putstr_ex,
+	and_putstr_ex2,
 	and_putmixed_ex,
 	and_display_file,
 	and_start_menu_ex,
@@ -782,6 +784,11 @@ void and_putstr_ex(winid wid, int attr, const char *str, int append, int nhcolor
 	jbyteArray jstr = create_bytearray(str);
 	JNICallV(jPutString, wid, attr, jstr, append, nhcolor_to_RGB(nhcolor));
 	destroy_jobject(jstr);
+}
+
+void and_putstr_ex2(winid wid, const char* str, const char* attrs, const char* colors, int append)
+{
+	and_putstr_ex(wid, attrs[0], str, append, colors[0]);
 }
 
 void and_putstr(winid wid, int attr, const char *str)

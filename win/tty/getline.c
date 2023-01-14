@@ -51,7 +51,7 @@ boolean skip_utf8 = FALSE;
 
 STATIC_OVL void
 hooked_tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, introline, hook)
-int style UNUSED, attr UNUSED, color UNUSED;
+int style UNUSED, attr, color;
 const char *query;
 register char *bufp;
 const char* placeholder;
@@ -64,6 +64,11 @@ getlin_hook_proc hook;
     struct WinDesc *cw = wins[WIN_MESSAGE];
     boolean doprev = 0;
     char promptbuf[BUFSZ] = "";
+    char promptcolors[BUFSZ];
+    char promptattrs[BUFSZ];
+    memset(promptcolors, color, sizeof(promptcolors));
+    memset(promptattrs, attr, sizeof(promptattrs));
+
     //Do not show introline
     if (query)
         Sprintf(promptbuf, "%s", query);
@@ -82,7 +87,7 @@ getlin_hook_proc hook;
 #ifdef EDIT_GETLIN
     /* bufp is input/output; treat current contents (presumed to be from
        previous getlin()) as default input */
-    addtopl(obufp);
+    addtopl(obufp, attr, color);
     bufp = eos(obufp);
 #else
     /* !EDIT_GETLIN: bufp is output only; init it to empty */
@@ -93,6 +98,8 @@ getlin_hook_proc hook;
     for (;;) {
         (void) fflush(stdout);
         Strcat(strcat(strcpy(toplines, promptbuf), " "), obufp);
+        memcpy(toplinecolors, promptcolors, min(sizeof(toplinecolors), sizeof(promptcolors)));
+        memcpy(toplineattrs, promptattrs, min(sizeof(toplineattrs), sizeof(promptattrs)));
         c = pgetchar();
         if (c == '\033' || c == EOF) {
 #ifdef UNIX
@@ -104,9 +111,9 @@ getlin_hook_proc hook;
                 bufp = obufp;
                 tty_clear_nhwindow(WIN_MESSAGE);
                 cw->maxcol = cw->maxrow;
-                addtopl(promptbuf);
-                addtopl(" ");
-                addtopl(obufp);
+                addtopl(promptbuf, attr, color);
+                addtopl(" ", attr, color);
+                addtopl(obufp, attr, color);
 #ifdef UNIX
             } else if (c == 91 && tty_arrow_key_support_enabled()) {
                 c = pgetchar(); /* Get third one */
@@ -147,10 +154,10 @@ getlin_hook_proc hook;
                 ttyDisplay->inread = sav;
                 tty_clear_nhwindow(WIN_MESSAGE);
                 cw->maxcol = cw->maxrow;
-                addtopl(promptbuf);
-                addtopl(" ");
+                addtopl(promptbuf, attr, color);
+                addtopl(" ", attr, color);
                 *bufp = 0;
-                addtopl(obufp);
+                addtopl(obufp, attr, color);
             } else {
                 if (!doprev)
                     (void) tty_doprev_message(); /* need two initially */
@@ -162,10 +169,10 @@ getlin_hook_proc hook;
             tty_clear_nhwindow(WIN_MESSAGE);
             cw->maxcol = cw->maxrow;
             doprev = 0;
-            addtopl(promptbuf);
-            addtopl(" ");
+            addtopl(promptbuf, attr, color);
+            addtopl(" ", attr, color);
             *bufp = 0;
-            addtopl(obufp);
+            addtopl(obufp, attr, color);
         }
         if (c == erase_char || c == '\b') {
             if (bufp != obufp) {
@@ -201,10 +208,10 @@ getlin_hook_proc hook;
 #endif /* NEWAUTOCOMP */
             *bufp = c;
             bufp[1] = 0;
-            putsyms(bufp);
+            putsyms_ex(bufp, promptcolors, promptattrs);
             bufp++;
             if (hook && (*hook)(obufp)) {
-                putsyms(bufp);
+                putsyms_ex(bufp, promptcolors, promptattrs);
 #ifndef NEWAUTOCOMP
                 bufp = eos(bufp);
 #else  /* NEWAUTOCOMP */
@@ -246,6 +253,8 @@ getlin_hook_proc hook;
         /* prevent next message from pushing current promptbuf+answer into
            tty message history */
         *toplines = '\0';
+        memset(toplinecolors, NO_COLOR, sizeof(toplinecolors));
+        memset(toplineattrs, ATR_NONE, sizeof(toplineattrs));
 #ifdef DUMPLOG
     } else {
         /* needed because we've bypassed pline() */

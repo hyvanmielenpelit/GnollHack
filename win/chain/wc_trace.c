@@ -317,6 +317,29 @@ const char *str;
 }
 
 void
+trace_putstr_ex2(vp, window, str, attrs, colors, app)
+void* vp;
+winid window;
+int app;
+const char* str, *attrs, *colors;
+{
+    struct trace_data* tdp = vp;
+
+    if (str) {
+        fprintf(wc_tracelogf, "%sputstr_ex2(%d, %d, '%s'(%d))\n", INDENT, window,
+            attrs[0], str, (int)strlen(str));
+    }
+    else {
+        fprintf(wc_tracelogf, "%sputstr_ex2(%d, %d, NULL)\n", INDENT, window,
+            attrs[0]);
+    }
+
+    PRE;
+    (*tdp->nprocs->win_putstr_ex2)(tdp->ndata, window, str, attrs, colors, app);
+    POST;
+}
+
+void
 trace_putmixed_ex(vp, window, attr, str, app, color)
 void *vp;
 winid window;
@@ -1206,7 +1229,7 @@ struct chain_procs trace_procs = {
     trace_player_selection, trace_askname, trace_get_nh_event,
     trace_exit_nhwindows, trace_suspend_nhwindows, trace_resume_nhwindows,
     trace_create_nhwindow_ex, trace_clear_nhwindow, trace_display_nhwindow,
-    trace_destroy_nhwindow, trace_curs, trace_putstr_ex, trace_putmixed_ex,
+    trace_destroy_nhwindow, trace_curs, trace_putstr_ex, trace_putstr_ex2, trace_putmixed_ex,
     trace_display_file, trace_start_menu_ex, trace_add_menu, trace_add_extended_menu, trace_end_menu_ex,
     trace_select_menu, trace_message_menu, trace_update_inventory,
     trace_mark_synch, trace_wait_synch,

@@ -41,6 +41,7 @@ struct window_procs curses_procs = {
     curses_destroy_nhwindow,
     curses_curs,
     curses_putstr_ex,
+    curses_putstr_ex2,
     genl_putmixed_ex,
     curses_display_file,
     curses_start_menu_ex,
@@ -450,6 +451,12 @@ curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int colo
         curses_attr = curses_convert_attr(attr);
         curses_puts(wid, curses_attr, text);
     }
+}
+
+void
+curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app)
+{
+    curses_putstr_ex(wid, attrs[0], text, app, colors[0]);
 }
 
 /* Display the file named str.  Complain about missing files

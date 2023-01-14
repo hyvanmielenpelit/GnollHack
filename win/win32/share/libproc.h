@@ -21,6 +21,7 @@ void lib_display_nhwindow(winid wid, BOOLEAN_P block);
 void lib_destroy_nhwindow(winid wid);
 void lib_curs(winid wid, int x, int y);
 void lib_putstr_ex(winid wid, int attr, const char* text, int app, int color);
+void lib_putstr_ex2(winid wid,const char* text, const char* attrs, const char* colors, int app);
 void lib_display_file(const char* filename, BOOLEAN_P must_exist);
 void lib_start_menu_ex(winid wid, int style);
 void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,

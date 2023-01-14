@@ -227,6 +227,7 @@ E void FDECL(mac_display_nhwindow, (winid, BOOLEAN_P));
 E void FDECL(mac_destroy_nhwindow, (winid));
 E void FDECL(mac_curs, (winid, int, int));
 E void FDECL(mac_putstr_ex, (winid, int, const char *, int, int));
+E void FDECL(mac_putstr_ex2, (winid, const char*, const char*, const char*, int));
 #define mac_putstr(x, y, z) mac_putstr_ex(x, y, z, 0, 0)
 E void FDECL(mac_start_menu_ex, (winid, int));
 E void FDECL(mac_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P, int,

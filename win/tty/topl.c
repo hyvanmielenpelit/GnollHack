@@ -16,11 +16,40 @@
 #define C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
 #endif
 
-STATIC_DCL void FDECL(redotoplin, (const char *));
+STATIC_DCL void FDECL(redotoplin, (const char *, const char*, const char*));
 STATIC_DCL void FDECL(topl_putsym, (int));
 STATIC_DCL void FDECL(removetopl, (int));
 STATIC_DCL void FDECL(msghistory_snapshot, (BOOLEAN_P));
 STATIC_DCL void FDECL(free_msghistory_snapshot, (BOOLEAN_P));
+STATIC_DCL void FDECL(toggle_topl_attr, (BOOLEAN_P, int, int));
+
+/* support for topline colors */
+STATIC_OVL void
+toggle_topl_attr(on, color, attr)
+boolean on;
+int color, attr;
+{
+    if (on) {
+        if (attr != ATR_NONE)
+            term_start_attr(attr);
+#ifdef TEXTCOLOR
+        if (color != NO_COLOR)
+            term_start_color(color);
+#endif
+    }
+    else {
+#ifdef TEXTCOLOR
+        if (color != NO_COLOR)
+            term_end_color();
+#endif
+        if (attr != ATR_NONE)
+            term_end_attr(attr);
+    }
+
+#ifndef TEXTCOLOR
+    nhUse(color);
+#endif
+}
 
 int
 tty_doprev_message()
@@ -39,10 +68,10 @@ tty_doprev_message()
             i = cw->maxcol;
             do {
                 if (cw->data[i] && strcmp(cw->data[i], ""))
-                    putstr(prevmsg_win, 0, cw->data[i]);
+                    putstr_ex2(prevmsg_win, cw->data[i], cw->data3[i], cw->data2[i], 0);
                 i = (i + 1) % cw->rows;
             } while (i != cw->maxcol);
-            putstr(prevmsg_win, 0, toplines);
+            putstr_ex2(prevmsg_win, toplines, toplineattrs, toplinecolors, 0);
             display_nhwindow(prevmsg_win, TRUE);
             destroy_nhwindow(prevmsg_win);
         } else if (iflags.prevmsg_window == 'c') { /* combination */
@@ -50,7 +79,7 @@ tty_doprev_message()
                 morc = 0;
                 if (cw->maxcol == cw->maxrow) {
                     ttyDisplay->dismiss_more = C('p'); /* ^P ok at --More-- */
-                    redotoplin(toplines);
+                    redotoplin(toplines, toplinecolors, toplineattrs);
                     cw->maxcol--;
                     if (cw->maxcol < 0)
                         cw->maxcol = cw->rows - 1;
@@ -58,7 +87,7 @@ tty_doprev_message()
                         cw->maxcol = cw->maxrow;
                 } else if (cw->maxcol == (cw->maxrow - 1)) {
                     ttyDisplay->dismiss_more = C('p'); /* ^P ok at --More-- */
-                    redotoplin(cw->data[cw->maxcol]);
+                    redotoplin(cw->data[cw->maxcol], cw->data2[cw->maxcol], cw->data3[cw->maxcol]);
                     cw->maxcol--;
                     if (cw->maxcol < 0)
                         cw->maxcol = cw->rows - 1;
@@ -72,10 +101,11 @@ tty_doprev_message()
                     i = cw->maxcol;
                     do {
                         if (cw->data[i] && strcmp(cw->data[i], ""))
-                            putstr(prevmsg_win, 0, cw->data[i]);
+                            putstr_ex2(prevmsg_win, cw->data[i], cw->data3[i], cw->data2[i], 0);
                         i = (i + 1) % cw->rows;
                     } while (i != cw->maxcol);
-                    putstr(prevmsg_win, 0, toplines);
+                    /* Do recursion here for colors */
+                    putstr_ex2(prevmsg_win, toplines, toplineattrs, toplinecolors, 0);
                     display_nhwindow(prevmsg_win, TRUE);
                     destroy_nhwindow(prevmsg_win);
                 }
@@ -92,7 +122,7 @@ tty_doprev_message()
             if (cw->maxcol < 0)
                 cw->maxcol = cw->rows - 1;
             do {
-                putstr(prevmsg_win, 0, cw->data[cw->maxcol]);
+                putstr_ex2(prevmsg_win, cw->data[cw->maxcol], cw->data3[cw->maxcol], cw->data2[cw->maxcol], 0);
                 cw->maxcol--;
                 if (cw->maxcol < 0)
                     cw->maxcol = cw->rows - 1;
@@ -110,9 +140,9 @@ tty_doprev_message()
         do {
             morc = 0;
             if (cw->maxcol == cw->maxrow)
-                redotoplin(toplines);
+                redotoplin(toplines, toplinecolors, toplineattrs);
             else if (cw->data[cw->maxcol])
-                redotoplin(cw->data[cw->maxcol]);
+                redotoplin(cw->data[cw->maxcol], cw->data2[cw->maxcol], cw->data3[cw->maxcol]);
             cw->maxcol--;
             if (cw->maxcol < 0)
                 cw->maxcol = cw->rows - 1;
@@ -125,8 +155,8 @@ tty_doprev_message()
 }
 
 STATIC_OVL void
-redotoplin(str)
-const char *str;
+redotoplin(str, colors, attrs)
+const char *str, *colors, *attrs;
 {
     int otoplin = ttyDisplay->toplin;
 
@@ -138,7 +168,7 @@ const char *str;
         ttyDisplay->curx++;
     }
     end_glyphout(); /* in case message printed during graphics output */
-    putsyms(str);
+    putsyms_ex(str, colors, attrs);
     cl_end();
     ttyDisplay->toplin = 1;
     if (ttyDisplay->cury && otoplin != 3)
@@ -147,8 +177,9 @@ const char *str;
 
 /* for use by tty_putstr() */
 void
-show_topl(str)
+show_topl(str, attr, color)
 const char *str;
+int attr, color;
 {
     struct WinDesc *cw = wins[WIN_MESSAGE];
 
@@ -156,7 +187,7 @@ const char *str;
         cw->curx = cw->cury = 0;
         home();
         cl_end();
-        addtopl(str);
+        addtopl(str, attr, color);
     }
 }
 
@@ -174,23 +205,39 @@ remember_topl()
     if (len > (size_t) cw->datlen[idx]) {
         if (cw->data[idx])
             free(cw->data[idx]);
+        if (cw->data2[idx])
+            free(cw->data2[idx]);
+        if (cw->data3[idx])
+            free(cw->data3[idx]);
         len += (8 - (len & 7)); /* pad up to next multiple of 8 */
         cw->data[idx] = (char *) alloc(len);
+        cw->data2[idx] = (char*) alloc(len);
+        cw->data3[idx] = (char*) alloc(len);
         cw->datlen[idx] = (short) len;
     }
     Strcpy(cw->data[idx], toplines);
+    memcpy(cw->data2[idx], toplinecolors, len);
+    memcpy(cw->data3[idx], toplineattrs, len);
     *toplines = '\0';
+    memset(toplinecolors, NO_COLOR, sizeof(toplinecolors));
+    memset(toplineattrs, ATR_NONE, sizeof(toplineattrs));
     cw->maxcol = cw->maxrow = (idx + 1) % cw->rows;
 }
 
 void
-addtopl(s)
+addtopl(s, attr, color)
 const char *s;
+int attr, color;
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
 
     tty_curs(BASE_WINDOW, cw->curx + 1, cw->cury);
+
+    end_glyphout(); /* in case message printed during graphics output */
+    toggle_topl_attr(TRUE, color, attr);
     putsyms(s);
+    toggle_topl_attr(FALSE, color, attr);
+
     cl_end();
     ttyDisplay->toplin = 1;
 }
@@ -237,8 +284,9 @@ more()
 }
 
 void
-update_topl(bp)
+update_topl(bp, attr, color)
 register const char *bp;
+int attr, color;
 {
     register char *tl, *otl;
     register int n0;
@@ -256,7 +304,7 @@ register const char *bp;
         Strcat(toplines, bp);
         cw->curx += 2;
         if (!(cw->flags & WIN_STOP))
-            addtopl(bp);
+            addtopl(bp, attr, color);
         return;
     } else if (!(cw->flags & WIN_STOP)) {
         if (ttyDisplay->toplin == 1) {
@@ -269,6 +317,8 @@ register const char *bp;
     remember_topl();
     (void) strncpy(toplines, bp, TBUFSZ);
     toplines[TBUFSZ - 1] = 0;
+    memset(toplinecolors, color, strlen(toplines));
+    memset(toplineattrs, attr, strlen(toplineattrs));
 
     for (tl = toplines; n0 >= CO; ) {
         otl = tl;
@@ -287,7 +337,7 @@ register const char *bp;
     if (!notdied)
         cw->flags &= ~WIN_STOP;
     if (!(cw->flags & WIN_STOP))
-        redotoplin(toplines);
+        redotoplin(toplines, toplinecolors, toplineattrs);
 }
 
 STATIC_OVL
@@ -351,6 +401,30 @@ const char *str;
 {
     while (*str)
         topl_putsym(*str++);
+}
+
+void
+putsyms_ex(str, attrs, colors)
+const char* str, *attrs, *colors;
+{
+    int attr = ATR_NONE, color = NO_COLOR;
+    while (*str)
+    {
+        if (*attrs != attr || color != *colors)
+        {
+            if(attr != ATR_NONE || color != NO_COLOR)
+                toggle_topl_attr(FALSE, attr, color);
+            attr = *attrs;
+            color = *colors;
+            toggle_topl_attr(TRUE, attr, color);
+        }
+        topl_putsym(*str);
+        str++;
+        attrs++;
+        colors++;
+    }
+    if (attr != ATR_NONE || color != NO_COLOR)
+        toggle_topl_attr(FALSE, attr, color);
 }
 
 STATIC_OVL void
@@ -420,12 +494,16 @@ unsigned long ynflags UNUSED;
         /* not pline("%s ", prompt);
            trailing space is wanted here in case of reprompt */
         Strcat(prompt, " ");
+        toggle_topl_attr(TRUE, color, attr);
         custompline(OVERRIDE_MSGTYPE | SUPPRESS_HISTORY, "%s", prompt);
+        toggle_topl_attr(FALSE, color, attr);
     } else {
         /* no restriction on allowed response, so always preserve case */
         /* preserve_case = TRUE; -- moot since we're jumping to the end */
         Sprintf(prompt, "%s ", query);
+        toggle_topl_attr(TRUE, color, attr);
         custompline(OVERRIDE_MSGTYPE | SUPPRESS_HISTORY, "%s", prompt);
+        toggle_topl_attr(FALSE, color, attr);
         q = readchar();
         goto clean_up;
     }
@@ -442,7 +520,7 @@ unsigned long ynflags UNUSED;
                 ttyDisplay->inread = sav;
                 tty_clear_nhwindow(WIN_MESSAGE);
                 cw->maxcol = cw->maxrow;
-                addtopl(prompt);
+                addtopl(prompt, attr, color);
             } else {
                 if (!doprev)
                     (void) tty_doprev_message(); /* need two initially */
@@ -458,7 +536,7 @@ unsigned long ynflags UNUSED;
             tty_clear_nhwindow(WIN_MESSAGE);
             cw->maxcol = cw->maxrow;
             doprev = 0;
-            addtopl(prompt);
+            addtopl(prompt, attr, color);
             q = '\0'; /* force another loop iteration */
             continue;
         }
@@ -483,11 +561,11 @@ unsigned long ynflags UNUSED;
             int n_len = 0;
             long value = 0;
 
-            addtopl("#"), n_len++;
+            addtopl("#", attr, color), n_len++;
             digit_string[1] = '\0';
             if (q != '#') {
                 digit_string[0] = q;
-                addtopl(digit_string), n_len++;
+                addtopl(digit_string, attr, color), n_len++;
                 value = q - '0';
                 q = '#';
             }
@@ -500,7 +578,7 @@ unsigned long ynflags UNUSED;
                     if (value < 0)
                         break; /* overflow: try again */
                     digit_string[0] = z;
-                    addtopl(digit_string), n_len++;
+                    addtopl(digit_string, attr, color), n_len++;
                 } else if (z == 'y' || index(quitchars, z)) {
                     if (z == '\033')
                         value = -1; /* abort */
@@ -535,8 +613,10 @@ unsigned long ynflags UNUSED;
         Sprintf(rtmp, "#%ld", yn_number);
     else
         (void) key2txt(q, rtmp);
-    /* addtopl(rtmp); -- rewrite toplines instead */
+    /* addtopl(rtmp, attr, color); -- rewrite toplines instead */
     Sprintf(toplines, "%s%s", prompt, rtmp);
+    memset(toplinecolors, color, strlen(toplines));
+    memset(toplineattrs, attr, strlen(toplines));
 #ifdef DUMPLOG
     dumplogmsg(toplines);
 #endif
@@ -552,6 +632,8 @@ unsigned long ynflags UNUSED;
 
 /* shared by tty_getmsghistory() and tty_putmsghistory() */
 static char **snapshot_mesgs = 0;
+static char** snapshot_mesg_colors = 0;
+static char** snapshot_mesg_attrs = 0;
 
 /* collect currently available message history data into a sequential array;
    optionally, purge that data from the active circular buffer set as we go */
@@ -559,7 +641,7 @@ STATIC_OVL void
 msghistory_snapshot(purge)
 boolean purge; /* clear message history buffer as we copy it */
 {
-    char *mesg;
+    char *mesg, *mesg_color, * mesg_attr;
     int i, inidx, outidx;
     struct WinDesc *cw;
 
@@ -577,23 +659,36 @@ boolean purge; /* clear message history buffer as we copy it */
         cw->flags |= WIN_LOCKHISTORY;
 
     snapshot_mesgs = (char **) alloc(((size_t)cw->rows + 1) * sizeof(char *));
+    snapshot_mesg_colors = (char**)alloc(((size_t)cw->rows + 1) * sizeof(char*));
+    snapshot_mesg_attrs = (char**)alloc(((size_t)cw->rows + 1) * sizeof(char*));
     outidx = 0;
     inidx = cw->maxrow;
     for (i = 0; i < cw->rows; ++i) {
         snapshot_mesgs[i] = (char *) 0;
+        snapshot_mesg_colors[i] = (char *)0;
+        snapshot_mesg_attrs[i] = (char *)0;
         mesg = cw->data[inidx];
+        mesg_color = cw->data2[inidx];
+        mesg_attr = cw->data3[inidx];
         if (mesg && *mesg) {
-            snapshot_mesgs[outidx++] = mesg;
+            snapshot_mesgs[outidx] = mesg;
+            snapshot_mesg_colors[outidx] = mesg_color;
+            snapshot_mesg_attrs[outidx] = mesg_attr;
+            outidx++;
             if (purge) {
                 /* we're taking this pointer away; subsequest history
                    updates will eventually allocate a new one to replace it */
                 cw->data[inidx] = (char *) 0;
+                cw->data2[inidx] = (char*) 0;
+                cw->data3[inidx] = (char*) 0;
                 cw->datlen[inidx] = 0;
             }
         }
         inidx = (inidx + 1) % cw->rows;
     }
     snapshot_mesgs[cw->rows] = (char *) 0; /* sentinel */
+    snapshot_mesg_colors[cw->rows] = (char*)0; /* sentinel */
+    snapshot_mesg_attrs[cw->rows] = (char*)0; /* sentinel */
 
     /* for a destructive snapshot, history is now completely empty */
     if (purge)
@@ -611,7 +706,9 @@ boolean purged; /* True: took history's pointers, False: just cloned them */
             int i;
 
             for (i = 0; snapshot_mesgs[i]; ++i)
-                free((genericptr_t) snapshot_mesgs[i]);
+            {
+                free((genericptr_t)snapshot_mesgs[i]);
+            }
         }
 
         free((genericptr_t) snapshot_mesgs), snapshot_mesgs = (char **) 0;
@@ -619,6 +716,32 @@ boolean purged; /* True: took history's pointers, False: just cloned them */
         /* history can resume being updated at will now... */
         if (!purged)
             wins[WIN_MESSAGE]->flags &= ~WIN_LOCKHISTORY;
+    }
+    if (snapshot_mesg_colors) {
+        /* snapshot pointers are no longer in use */
+        if (purged) {
+            int i;
+            for (i = 0; snapshot_mesg_colors[i]; ++i)
+            {
+                free((genericptr_t)snapshot_mesg_colors[i]);
+            }
+        }
+
+        free((genericptr_t)snapshot_mesg_colors), snapshot_mesg_colors = (char**)0;
+
+    }
+    if (snapshot_mesg_colors) {
+        /* snapshot pointers are no longer in use */
+        if (purged) {
+            int i;
+
+            for (i = 0; snapshot_mesg_attrs[i]; ++i)
+            {
+                free((genericptr_t)snapshot_mesg_attrs[i]);
+            }
+        }
+
+        free((genericptr_t)snapshot_mesg_attrs), snapshot_mesg_attrs = (char**)0;
     }
 }
 
@@ -652,12 +775,18 @@ boolean init;
     }
 
     if (snapshot_mesgs) {
-        nextmesg = snapshot_mesgs[nxtidx++];
+        nextmesg = snapshot_mesgs[nxtidx];
         if (nextmesg) {
             result = (char *) nextmesg;
+            if (attr_ptr && snapshot_mesg_attrs && snapshot_mesg_attrs[nxtidx][0] != ATR_NONE)
+                *attr_ptr = snapshot_mesg_attrs[nxtidx][0];
+            if (color_ptr && snapshot_mesg_colors && snapshot_mesg_colors[nxtidx][0] != NO_COLOR)
+                *color_ptr = snapshot_mesg_colors[nxtidx][0];
+
         } else {
             free_msghistory_snapshot(FALSE);
         }
+        nxtidx++;
     }
     return result;
 }
@@ -709,6 +838,8 @@ boolean restoring_msghist;
         /* move most recent message to history, make this become most recent */
         remember_topl();
         Strcpy(toplines, msg);
+        memset(toplinecolors, color, min(sizeof(toplinecolors), strlen(msg)));
+        memset(toplineattrs, attr, min(sizeof(toplineattrs), strlen(msg)));
 #ifdef DUMPLOG
         dumplogmsg(toplines);
 #endif
@@ -717,6 +848,8 @@ boolean restoring_msghist;
         for (idx = 0; snapshot_mesgs[idx]; ++idx) {
             remember_topl();
             Strcpy(toplines, snapshot_mesgs[idx]);
+            memcpy(toplinecolors, snapshot_mesg_colors[idx], min(sizeof(toplinecolors), sizeof(snapshot_mesg_colors[idx])));
+            memcpy(toplineattrs, snapshot_mesg_attrs[idx], min(sizeof(toplineattrs), sizeof(snapshot_mesg_attrs[idx])));
 #ifdef DUMPLOG
             dumplogmsg(toplines);
 #endif

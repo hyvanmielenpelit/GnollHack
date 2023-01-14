@@ -20,6 +20,7 @@ char *dirname(char *str);
 
 /* winstr.c */
 void amii_putstr_ex(winid window, int attr, const char *str, int app, int color);
+void amii_putstr_ex2(winid window, const char* str, const char* attrs, const char* colors, int app);
 void outmore(struct amii_WinDesc *cw);
 void outsubstr(struct amii_WinDesc *cw, char *str, int len, int fudge);
 void amii_putsym(winid st, int i, int y, CHAR_P c);

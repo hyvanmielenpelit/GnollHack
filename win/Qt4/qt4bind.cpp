@@ -330,6 +330,12 @@ void NetHackQtBind::qt_putstr_ex(winid wid, int attr, const char *text, int app,
     window->PutStr(attr,QString::fromLatin1(text));
 }
 
+void NetHackQtBind::qt_putstr_ex(winid wid, const char* text, const char* attrs, const char* colors, int app)
+{
+    NetHackQtWindow* window = id_to_window[(int)wid];
+    window->PutStr(attr, QString::fromLatin1(text));
+}
+
 void NetHackQtBind::qt_putstr(winid wid, int attr, const std::string& text)
 {
     NetHackQtWindow* window=id_to_window[(int)wid];
@@ -789,6 +795,7 @@ struct window_procs Qt_procs = {
     nethack_qt4::NetHackQtBind::qt_destroy_nhwindow,
     nethack_qt4::NetHackQtBind::qt_curs,
     nethack_qt4::NetHackQtBind::qt_putstr_ex,
+    nethack_qt4::NetHackQtBind::qt_putstr_ex2,
     genl_putmixed_ex,
     nethack_qt4::NetHackQtBind::qt_display_file,
     nethack_qt4::NetHackQtBind::qt_start_menu_ex,

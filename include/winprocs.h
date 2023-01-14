@@ -34,6 +34,7 @@ struct window_procs {
     void FDECL((*win_destroy_nhwindow), (winid));
     void FDECL((*win_curs), (winid, int, int));
     void FDECL((*win_putstr_ex), (winid, int, const char *, int, int));
+    void FDECL((*win_putstr_ex2), (winid, const char*, const char*, const char*, int));
     void FDECL((*win_putmixed_ex), (winid, int, const char *, int, int));
     void FDECL((*win_display_file), (const char *, BOOLEAN_P));
     void FDECL((*win_start_menu_ex), (winid, int));
@@ -144,6 +145,7 @@ extern
 #define destroy_nhwindow (*windowprocs.win_destroy_nhwindow)
 #define curs (*windowprocs.win_curs)
 #define putstr_ex (*windowprocs.win_putstr_ex)
+#define putstr_ex2 (*windowprocs.win_putstr_ex2)
 #define putstr(x, y, z) putstr_ex(x, y, z, 0, NO_COLOR)
 #define putmixed_ex (*windowprocs.win_putmixed_ex)
 #define putmixed(x, y, z) putmixed_ex(x, y, z, 0, NO_COLOR)
@@ -413,6 +415,7 @@ struct chain_procs {
     void FDECL((*win_destroy_nhwindow), (CARGS, winid));
     void FDECL((*win_curs), (CARGS, winid, int, int));
     void FDECL((*win_putstr_ex), (CARGS, winid, int, const char *, int, int));
+    void FDECL((*win_putstr_ex2), (CARGS, winid, const char*, const char*, const char*, int));
     void FDECL((*win_putmixed_ex), (CARGS, winid, int, const char *, int, int));
     void FDECL((*win_display_file), (CARGS, const char *, BOOLEAN_P));
     void FDECL((*win_start_menu_ex), (CARGS, winid, int));
@@ -518,6 +521,7 @@ extern void FDECL(safe_display_nhwindow, (winid, BOOLEAN_P));
 extern void FDECL(safe_destroy_nhwindow, (winid));
 extern void FDECL(safe_curs, (winid, int, int));
 extern void FDECL(safe_putstr_ex, (winid, int, const char *, int, int));
+extern void FDECL(safe_putstr_ex2, (winid, const char*, const char*, const char*, int));
 extern void FDECL(safe_putmixed_ex, (winid, int, const char *, int, int));
 extern void FDECL(safe_display_file, (const char *, BOOLEAN_P));
 extern void FDECL(safe_start_menu_ex, (winid, int));

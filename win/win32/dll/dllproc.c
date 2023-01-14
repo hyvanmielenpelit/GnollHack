@@ -73,7 +73,7 @@ struct window_procs dll_procs = {
     WC2_PREFERRED_SCREEN_SCALE, dll_init_nhwindows, dll_player_selection, dll_askname,
     dll_get_nh_event, dll_exit_nhwindows, dll_suspend_nhwindows,
     dll_resume_nhwindows, dll_create_nhwindow_ex, dll_clear_nhwindow,
-    dll_display_nhwindow, dll_destroy_nhwindow, dll_curs, dll_putstr_ex,
+    dll_display_nhwindow, dll_destroy_nhwindow, dll_curs, dll_putstr_ex, dll_putstr_ex2,
     genl_putmixed_ex, dll_display_file, dll_start_menu_ex, dll_add_menu, dll_add_extended_menu,
     dll_end_menu_ex, dll_select_menu,
     genl_message_menu, /* no need for X-specific handling */
@@ -1070,6 +1070,12 @@ dll_putstr_ex(winid wid, int attr, const char *text, int app, int color)
         strcat(GetNHApp()->saved_text, text);
     }
 #endif
+}
+
+void
+dll_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app)
+{
+    dll_callbacks.callback_putstr_ex2((int)wid, text, attrs, colors, app);
 }
 
 /* Display the file named str.  Complain about missing files

@@ -27,6 +27,8 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void PutStrExColorCallback(int value1, int value2, [MarshalAs(UnmanagedType.LPStr)] string value3, int value4, int value5);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void PutStrEx2ColorCallback(int value1, [MarshalAs(UnmanagedType.LPStr)] string value2, IntPtr value3, IntPtr value4, int value5);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidConstCharIntCallback([MarshalAs(UnmanagedType.LPStr)] string value1, int value2);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidConstCharBooleanCallback([MarshalAs(UnmanagedType.LPStr)] string value1, byte value2);

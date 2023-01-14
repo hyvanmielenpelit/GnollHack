@@ -161,6 +161,15 @@ const char *str;
 }
 
 void
+chainin_putstr_ex2(window, str, attrs, colors, app)
+winid window;
+int app;
+const char* str, *attrs, *colors;
+{
+    (*cibase->nprocs->win_putstr_ex2)(cibase->ndata, window, str, attrs, colors, app);
+}
+
+void
 chainin_putmixed_ex(window, attr, str, app, color)
 winid window;
 int attr, app, color;
@@ -570,7 +579,7 @@ struct window_procs chainin_procs = {
     chainin_exit_nhwindows, chainin_suspend_nhwindows,
     chainin_resume_nhwindows, chainin_create_nhwindow_ex, chainin_clear_nhwindow,
     chainin_display_nhwindow, chainin_destroy_nhwindow, chainin_curs,
-    chainin_putstr_ex, chainin_putmixed_ex, chainin_display_file,
+    chainin_putstr_ex, chainin_putstr_ex2, chainin_putmixed_ex, chainin_display_file,
     chainin_start_menu_ex, chainin_add_menu, chainin_add_extended_menu, chainin_end_menu_ex,
     chainin_select_menu, chainin_message_menu, chainin_update_inventory,
     chainin_mark_synch, chainin_wait_synch,

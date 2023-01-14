@@ -41,6 +41,8 @@ struct WinDesc {
     /* tracking the ^P command */
     short *datlen;         /* allocation size for *data */
     char **data;           /* window data [row][column] */
+    char **data2;           /* window data2 [row][column] */
+    char **data3;           /* window data3 [row][column] */
     char *morestr;         /* string to display instead of default */
     tty_menu_item *mlist;  /* menu information (MENU) */
     tty_menu_item **plist; /* menu page pointers (MENU) */
@@ -157,12 +159,13 @@ E int FDECL(has_color, (int color));
 
 /* ### topl.c ### */
 
-E void FDECL(show_topl, (const char *));
+E void FDECL(show_topl, (const char *, int, int));
 E void NDECL(remember_topl);
-E void FDECL(addtopl, (const char *));
+E void FDECL(addtopl, (const char*, int, int));
 E void NDECL(more);
-E void FDECL(update_topl, (const char *));
+E void FDECL(update_topl, (const char *, int, int));
 E void FDECL(putsyms, (const char *));
+E void FDECL(putsyms_ex, (const char*, const char*, const char*));
 
 /* ### wintty.c ### */
 #ifdef CLIPPING
@@ -190,6 +193,7 @@ E void FDECL(tty_dismiss_nhwindow, (winid));
 E void FDECL(tty_destroy_nhwindow, (winid));
 E void FDECL(tty_curs, (winid, int, int));
 E void FDECL(tty_putstr_ex, (winid, int, const char *, int, int));
+E void FDECL(tty_putstr_ex2, (winid, const char*, const char*, const char*, int));
 #define tty_putstr(x, y, z) tty_putstr_ex(x, y, z, 0, NO_COLOR);
 E void FDECL(tty_display_file, (const char *, BOOLEAN_P));
 E void FDECL(tty_start_menu_ex, (winid, int));

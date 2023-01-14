@@ -192,6 +192,19 @@ const char *str;
     (*tdp->nprocs->win_putstr_ex)(window, attr, str, app, color);
 }
 
+
+void
+chainout_putstr_ex2(vp, window, str, attrs, colors, app)
+void* vp;
+winid window;
+int app;
+const char* str, *attrs, *colors;
+{
+    struct chainout_data* tdp = vp;
+
+    (*tdp->nprocs->win_putstr_ex2)(window, str, attrs, colors, app);
+}
+
 void
 chainout_putmixed_ex(vp, window, attr, str, app, color)
 void *vp;
@@ -715,7 +728,7 @@ struct chain_procs chainout_procs = {
     chainout_exit_nhwindows, chainout_suspend_nhwindows,
     chainout_resume_nhwindows, chainout_create_nhwindow_ex,
     chainout_clear_nhwindow, chainout_display_nhwindow,
-    chainout_destroy_nhwindow, chainout_curs, chainout_putstr_ex,
+    chainout_destroy_nhwindow, chainout_curs, chainout_putstr_ex,chainout_putstr_ex2,
     chainout_putmixed_ex, chainout_display_file, chainout_start_menu_ex,
     chainout_add_menu, chainout_end_menu_ex, chainout_select_menu,
     chainout_message_menu, chainout_update_inventory, chainout_mark_synch,

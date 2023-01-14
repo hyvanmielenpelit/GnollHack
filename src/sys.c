@@ -235,6 +235,8 @@ reset_global_variables(VOID_ARGS)
     viz_array = 0;
     hearing_full_recalc = 0;
     *toplines = 0;
+    memset(toplinecolors, NO_COLOR, sizeof(toplinecolors));
+    memset(toplineattrs, ATR_NONE, sizeof(toplineattrs));
     upstairs_room = dnstairs_room = sstairs_room = 0;
 
     reset_item_global_variables();
