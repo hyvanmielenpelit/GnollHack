@@ -494,16 +494,12 @@ unsigned long ynflags UNUSED;
         /* not pline("%s ", prompt);
            trailing space is wanted here in case of reprompt */
         Strcat(prompt, " ");
-        toggle_topl_attr(TRUE, color, attr);
-        custompline(OVERRIDE_MSGTYPE | SUPPRESS_HISTORY, "%s", prompt);
-        toggle_topl_attr(FALSE, color, attr);
+        custompline_ex(attr, color, OVERRIDE_MSGTYPE | SUPPRESS_HISTORY, "%s", prompt);
     } else {
         /* no restriction on allowed response, so always preserve case */
         /* preserve_case = TRUE; -- moot since we're jumping to the end */
         Sprintf(prompt, "%s ", query);
-        toggle_topl_attr(TRUE, color, attr);
-        custompline(OVERRIDE_MSGTYPE | SUPPRESS_HISTORY, "%s", prompt);
-        toggle_topl_attr(FALSE, color, attr);
+        custompline_ex(attr, color, OVERRIDE_MSGTYPE | SUPPRESS_HISTORY, "%s", prompt);
         q = readchar();
         goto clean_up;
     }

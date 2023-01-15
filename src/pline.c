@@ -254,6 +254,22 @@ VA_DECL2(unsigned, pflags, const char *, line)
     return;
 }
 
+void custompline_ex
+VA_DECL4(int, attr, int, color, unsigned, pflags, const char*, line)
+{
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    pline_flags = pflags;
+    vpline(line, VA_ARGS);
+    pline_attr = ATR_NONE;
+    pline_color = NO_COLOR;
+    pline_flags = 0;
+    VA_END();
+    return;
+}
+
 void pline_ex
 VA_DECL3(int, attr, int, color, const char*, line)
 {
@@ -262,7 +278,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     pline_attr = attr;
     pline_color = color;
     vpline(line, VA_ARGS);
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
     return;
