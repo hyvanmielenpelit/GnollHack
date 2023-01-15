@@ -247,8 +247,8 @@ E void NDECL(tty_end_screen);
 
 E void FDECL(genl_outrip, (winid, int, time_t));
 
-E char *FDECL(tty_getmsghistory_ex, (int*, int*, BOOLEAN_P));
-E void FDECL(tty_putmsghistory_ex, (const char *, int, int, BOOLEAN_P));
+E char *FDECL(tty_getmsghistory_ex, (char**, char**, BOOLEAN_P));
+E void FDECL(tty_putmsghistory_ex, (const char *, const char *, const char *, BOOLEAN_P));
 E int FDECL(tty_open_special_view, (struct special_view_info));
 
 #ifdef NO_TERMS

@@ -12,6 +12,7 @@
 /* Global declarations */
 
 void curses_message_win_puts(const char *message, boolean recursed);
+void curses_message_win_puts_ex(const char* message, const char* attrs, const char* colors, int attr, int color, boolean recursed);
 void curses_got_input(void);
 int curses_block(boolean require_tab);
 int curses_more(void);
@@ -21,7 +22,7 @@ void curses_last_messages(void);
 void curses_init_mesg_history(void);
 void curses_prev_mesg(void);
 void curses_count_window(const char *count_text);
-char *curses_getmsghistory_ex(int*, int*, BOOLEAN_P);
-void curses_putmsghistory_ex(const char *, int, int, BOOLEAN_P);
+char *curses_getmsghistory_ex(char**, char**, BOOLEAN_P);
+void curses_putmsghistory_ex(const char *, const char *, const char *, BOOLEAN_P);
 
 #endif /* CURSMESG_H */

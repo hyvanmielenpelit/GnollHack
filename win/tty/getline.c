@@ -63,11 +63,12 @@ getlin_hook_proc hook;
     register int c;
     struct WinDesc *cw = wins[WIN_MESSAGE];
     boolean doprev = 0;
-    char promptbuf[BUFSZ] = "";
-    char promptcolors[BUFSZ];
-    char promptattrs[BUFSZ];
-    memset(promptcolors, color, sizeof(promptcolors));
-    memset(promptattrs, attr, sizeof(promptattrs));
+    char promptbuf[BUFSZ * 2] = "";
+    char promptattrs[BUFSZ * 2];
+    char promptcolors[BUFSZ * 2];
+    memset(promptattrs, attr, sizeof(promptattrs) - 1);
+    memset(promptcolors, color, sizeof(promptcolors) - 1);
+    promptattrs[sizeof(promptattrs) - 1] = promptcolors[sizeof(promptcolors) - 1] = 0;
 
     //Do not show introline
     if (query)

@@ -743,9 +743,9 @@ void lib_preference_update(const char* pref)
     }
 }
 
-char* lib_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
+char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 {
-    char* res = lib_callbacks.callback_getmsghistory(attr_ptr, color_ptr, (int)init);
+    char* res = lib_callbacks.callback_getmsghistory(attrs_ptr, colors_ptr, (int)init);
     static char buf[BUFSIZ] = "";
     if (res)
     {
@@ -755,9 +755,9 @@ char* lib_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
     return res ? buf : 0;
 }
 
-void lib_putmsghistory_ex(const char* msg, int attr, int color, BOOLEAN_P is_restoring)
+void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors, BOOLEAN_P is_restoring)
 {
-    lib_callbacks.callback_putmsghistory(msg, attr, color, is_restoring);
+    lib_callbacks.callback_putmsghistory(msg, attrs, colors, is_restoring);
 }
 
 

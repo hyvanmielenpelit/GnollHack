@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using Xamarin.Essentials;
+using System.Drawing;
 
 namespace GnollHackClient
 {
@@ -618,6 +619,16 @@ namespace GnollHackClient
                 queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, sendlist));
             }
         }
+        public void RawPrintEx2(string str, byte[] attrs, byte[] colors)
+        {
+            int attr = 0, color = (int)nhcolor.NO_COLOR;
+            if (attrs != null && attrs.Length > 0)
+                attr = attrs[0];
+            if (colors != null && colors.Length > 0)
+                color = colors[0];
+
+            RawPrintEx(str, attr, color);
+        }
         public void ClientCallback_PutStrEx(int win_id, int attributes, string str, int append, int color)
         {
             if (win_id < 0)
@@ -868,36 +879,58 @@ namespace GnollHackClient
         }
 
         private int _msgIndex = 0;
-        public string ClientCallback_GetMsgHistory(IntPtr attr, IntPtr color, byte init)
+        public string ClientCallback_GetMsgHistory(IntPtr attrs, IntPtr colors, byte init)
         {
             if (init != 0)
                 _msgIndex = 0;
-
-            if (attr != IntPtr.Zero)
-                Marshal.WriteInt32(attr, 0);
-            if (color != IntPtr.Zero)
-                Marshal.WriteInt32(color, (int)nhcolor.NO_COLOR);
 
             string res = null;
             if (_msgIndex < _message_history.Count)
             {
                 res = _message_history[_msgIndex].Text;
-                if (attr != IntPtr.Zero)
-                    Marshal.WriteInt32(attr, _message_history[_msgIndex].Attributes);
-                if (color != IntPtr.Zero)
-                    Marshal.WriteInt32(color, _message_history[_msgIndex].NHColor);
+                byte[] tmparray = new byte[res.Length + 1];
+                if (attrs != IntPtr.Zero)
+                {
+                    tmparray.SetValue(tmparray, _message_history[_msgIndex].Attributes, res.Length);
+                    tmparray[res.Length] = 0;
+                    Marshal.Copy(tmparray, 0, attrs, res.Length + 1);
+                }
+                if (colors != IntPtr.Zero)
+                {
+                    tmparray.SetValue(tmparray, (byte)_message_history[_msgIndex].NHColor, res.Length);
+                    tmparray[res.Length] = 0;
+                    Marshal.Copy(tmparray, 0, colors, res.Length + 1);
+                }
                 _msgIndex++;
                 if (_msgIndex < 0)
                     _msgIndex = 0;
+            }
+            else
+            {
+                //Do nothing
             }
 
             return res;
         }
 
-        public void ClientCallback_PutMsgHistory(string msg, int attr, int color, byte is_restoring)
+        public void ClientCallback_PutMsgHistory(string msg, IntPtr attrs, IntPtr colors, byte is_restoring)
         {
             if(msg != null)
-                RawPrintEx(msg, attr, color);
+            {
+                byte[] tmpattrs = msg.Length > 0 ? new byte[msg.Length + 1] : null;
+                byte[] tmpcolors = msg.Length > 0 ? new byte[msg.Length + 1] : null;
+                if(tmpattrs != null)
+                {
+                    Marshal.Copy(attrs, tmpattrs, 0, msg.Length);
+                    tmpattrs[msg.Length] = 0;
+                }
+                if (tmpcolors != null)
+                {
+                    Marshal.Copy(colors, tmpcolors, 0, msg.Length);
+                    tmpcolors[msg.Length] = 0;
+                }
+                RawPrintEx2(msg, tmpattrs, tmpcolors);
+            }
         }
 
         public void ClientCallback_StartMenu(int winid, int style)

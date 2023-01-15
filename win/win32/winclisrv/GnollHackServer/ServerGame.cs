@@ -373,17 +373,14 @@ namespace GnollHackServer
 
         }
 
-        public string GameCallback_GetMsgHistory(IntPtr attr, IntPtr color, byte init)
+        public string GameCallback_GetMsgHistory(IntPtr attrs, IntPtr colors, byte init)
         {
-            if(attr != IntPtr.Zero)
-                Marshal.WriteInt32(attr, 0);
-            if (color != IntPtr.Zero)
-                Marshal.WriteInt32(color, (int)nhcolor.NO_COLOR);
             return null;
         }
 
-        public void GameCallback_PutMsgHistory(string msg, int attr, int color, byte is_restoring)
+        public void GameCallback_PutMsgHistory(string msg, IntPtr attrs, IntPtr colors, byte is_restoring)
         {
+
         }
 
         protected void GameCallback_FreeMemory(ref IntPtr ptr)

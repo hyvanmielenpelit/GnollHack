@@ -481,7 +481,13 @@ curses_get_window_orientation(winid wid)
    and text attributes */
 
 void
-curses_puts(winid wid, int attr, const char *text)
+curses_puts(winid wid, int attr, const char* text)
+{
+    curses_puts_ex(wid, attr, NO_COLOR, text);
+}
+
+void
+curses_puts_ex(winid wid, int attr, int color, const char *text)
 {
     anything Id;
     WINDOW *win = NULL;
@@ -491,7 +497,7 @@ curses_puts(winid wid, int attr, const char *text)
     }
 
     if (wid == MESSAGE_WIN) {
-        curses_message_win_puts(text, FALSE);
+        curses_message_win_puts_ex(text, (char*)0, (char*)0, attr, color, FALSE);
         return;
     }
 

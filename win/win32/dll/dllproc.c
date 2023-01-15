@@ -2196,12 +2196,12 @@ dll_preference_update(const char *pref)
 
 #define TEXT_BUFFER_SIZE 4096
 char *
-dll_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
+dll_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 {
-    if (attr_ptr)
-        *attr_ptr = ATR_NONE;
-    if (color_ptr)
-        *color_ptr = NO_COLOR;
+    if (attrs_ptr)
+        *attrs_ptr = (char*)0;
+    if (colors_ptr)
+        *colors_ptr = (char*)0;
 
     return (char*)0; // dll_callbacks.callback_getmsghistory(init);
 
@@ -2246,9 +2246,9 @@ dll_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
 }
 
 void
-dll_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P restoring)
+dll_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring)
 {
-    dll_callbacks.callback_putmsghistory(msg, attr, color, restoring);
+    dll_callbacks.callback_putmsghistory(msg, attrs, colors, restoring);
 #if 0
     BOOL save_sound_opt;
 

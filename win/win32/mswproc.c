@@ -2293,12 +2293,12 @@ mswin_preference_update(const char *pref)
 
 #define TEXT_BUFFER_SIZE 4096
 char *
-mswin_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
+mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 {
-    if (attr_ptr)
-        *attr_ptr = ATR_NONE;
-    if (color_ptr)
-        *color_ptr = NO_COLOR;
+    if (attrs_ptr)
+        *attrs_ptr = (char*)0;
+    if (colors_ptr)
+        *colors_ptr = (char*)0;
 
     static PMSNHMsgGetText text = 0;
     static char *next_message = 0;
@@ -2339,7 +2339,7 @@ mswin_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
 }
 
 void
-mswin_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P restoring)
+mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring)
 {
     BOOL save_sound_opt;
 
@@ -2351,7 +2351,7 @@ mswin_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P restoring
     save_sound_opt = GetNHApp()->bNoSounds;
     GetNHApp()->bNoSounds =
         TRUE; /* disable sounds while restoring message history */
-    mswin_putstr_ex(WIN_MESSAGE, attr, msg, 0, color);
+    mswin_putstr_ex2(WIN_MESSAGE, msg, attrs, colors, 0);
     clear_nhwindow(WIN_MESSAGE); /* it is in fact end-of-turn indication so
                                     each message will print on the new line */
     GetNHApp()->bNoSounds = save_sound_opt; /* restore sounds option */

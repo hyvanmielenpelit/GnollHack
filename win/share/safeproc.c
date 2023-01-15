@@ -726,21 +726,21 @@ const char *pref UNUSED;
 }
 
 char*
-safe_getmsghistory_ex(attr_ptr, color_ptr, init)
-int* attr_ptr, * color_ptr;
+safe_getmsghistory_ex(attrs_ptr, colors_ptr, init)
+char** attrs_ptr, ** colors_ptr;
 boolean init UNUSED;
 {
-    if (attr_ptr)
-        *attr_ptr = ATR_NONE;
-    if (color_ptr)
-        *color_ptr = NO_COLOR;
+    if (attrs_ptr)
+        *attrs_ptr = (char*)0;
+    if (colors_ptr)
+        *colors_ptr = (char*)0;
     return (char *) 0;
 }
 
 void
-safe_putmsghistory_ex(msg, attr, color, is_restoring)
+safe_putmsghistory_ex(msg, attrs, colors, is_restoring)
 const char *msg UNUSED;
-int attr UNUSED, color UNUSED;
+const char* attrs UNUSED, *colors UNUSED;
 boolean is_restoring UNUSED;
 {
 }

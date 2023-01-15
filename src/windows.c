@@ -661,14 +661,14 @@ const char *pref UNUSED;
 }
 
 char *
-genl_getmsghistory_ex(attr_ptr, color_ptr, init)
-int* attr_ptr, * color_ptr;
+genl_getmsghistory_ex(attrs_ptr, colors_ptr, init)
+char** attrs_ptr, **colors_ptr;
 boolean init UNUSED;
 {
-    if (attr_ptr)
-        *attr_ptr = ATR_NONE;
-    if (color_ptr)
-        *color_ptr = NO_COLOR;
+    if (attrs_ptr)
+        *attrs_ptr = (char*)0;
+    if (colors_ptr)
+        *colors_ptr = (char*)0;
 
     /* window ports can provide
        their own getmsghistory() routine to
@@ -685,9 +685,9 @@ boolean init UNUSED;
 }
 
 void
-genl_putmsghistory_ex(msg, attr, color, is_restoring)
+genl_putmsghistory_ex(msg, attrs, colors, is_restoring)
 const char *msg;
-int attr, color;
+const char* attrs, *colors;
 boolean is_restoring;
 {
     /* window ports can provide
@@ -712,7 +712,7 @@ boolean is_restoring;
        previous session's messages upon restore, but it does put the quest
        message summary lines there by treating them as ordinary messages */
     if (!is_restoring)
-        pline_ex(attr, color, "%s", msg);
+        pline_ex(attrs[0], colors[0], "%s", msg);
     return;
 }
 
@@ -820,7 +820,7 @@ STATIC_VAR void FDECL((*previnterface_exit_nhwindows), (const char *)) = 0;
 void
 nhwindows_hangup()
 {
-    char *FDECL((*previnterface_getmsghistory_ex), (int*, int*, BOOLEAN_P)) = 0;
+    char *FDECL((*previnterface_getmsghistory_ex), (char**, char**, BOOLEAN_P)) = 0;
 
 #ifdef ALTMETA
     /* command processor shouldn't look for 2nd char after seeing ESC */

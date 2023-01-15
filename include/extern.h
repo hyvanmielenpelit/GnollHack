@@ -4004,8 +4004,8 @@ E boolean NDECL(genl_can_suspend_no);
 E boolean NDECL(genl_can_suspend_yes);
 E char FDECL(genl_message_menu, (CHAR_P, int, const char *));
 E void FDECL(genl_preference_update, (const char *));
-E char *FDECL(genl_getmsghistory_ex, (int*, int*, BOOLEAN_P));
-E void FDECL(genl_putmsghistory_ex, (const char *, int, int, BOOLEAN_P));
+E char *FDECL(genl_getmsghistory_ex, (char**, char**, BOOLEAN_P));
+E void FDECL(genl_putmsghistory_ex, (const char *, const char*, const char*, BOOLEAN_P));
 #ifdef HANGUPHANDLING
 E void NDECL(nhwindows_hangup);
 #endif

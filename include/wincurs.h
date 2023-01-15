@@ -151,6 +151,7 @@ extern boolean curses_window_exists(winid wid);
 extern int curses_get_window_orientation(winid wid);
 extern void curses_get_window_xy(winid wid, int *x, int *y);
 extern void curses_puts(winid wid, int attr, const char *text);
+extern void curses_puts_ex(winid wid, int attr, int color, const char* text);
 extern void curses_clear_nhwin(winid wid);
 extern void curses_alert_win_border(winid wid, boolean onoff);
 extern void curses_alert_main_borders(boolean onoff);
@@ -228,6 +229,7 @@ extern void curses_cleanup(void);
 /* cursmesg.c */
 
 extern void curses_message_win_puts(const char *message, boolean recursed);
+extern void curses_message_win_puts_ex(const char* message, const char* attrs, const char* colors, int attr, int color, boolean recursed);
 extern void curses_got_input(void);
 extern int curses_block(boolean require_tab); /* for MSGTYPE=STOP */
 extern int curses_more(void);
@@ -239,8 +241,8 @@ extern void curses_init_mesg_history(void);
 extern void curses_teardown_messages(void);
 extern void curses_prev_mesg(void);
 extern void curses_count_window(const char *count_text);
-char *curses_getmsghistory_ex(int*, int*, BOOLEAN_P);
-void curses_putmsghistory_ex(const char *, int, int, BOOLEAN_P);
+char *curses_getmsghistory_ex(char**, char**, BOOLEAN_P);
+void curses_putmsghistory_ex(const char *, const char*, const char*, BOOLEAN_P);
 
 #endif  /* WINCURS_H */
 

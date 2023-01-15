@@ -1357,8 +1357,10 @@ STATIC_OVL void
 restore_msghistory(fd)
 register int fd;
 {
-    int msgsize, msgcount = 0, attr, color;
+    int msgsize, msgcount = 0;
     char msg[BUFSZ];
+    char attrs[BUFSZ];
+    char colors[BUFSZ];
 
     while (1) {
         mread(fd, (genericptr_t) &msgsize, sizeof(msgsize));
@@ -1371,9 +1373,11 @@ register int fd;
         }
         mread(fd, (genericptr_t) msg, msgsize);
         msg[msgsize] = '\0';
-        mread(fd, (genericptr_t) &attr, sizeof(attr));
-        mread(fd, (genericptr_t) &color, sizeof(color));
-        putmsghistory_ex(msg, attr, color, TRUE);
+        mread(fd, (genericptr_t) attrs, msgsize);
+        attrs[msgsize] = '\0';
+        mread(fd, (genericptr_t) colors, msgsize);
+        colors[msgsize] = '\0';
+        putmsghistory_ex(msg, attrs, colors, TRUE);
         ++msgcount;
     }
     if (msgcount)

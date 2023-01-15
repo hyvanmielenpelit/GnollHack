@@ -665,7 +665,7 @@ void NetHackQtBind::qt_outrip(winid wid, int how, time_t when)
     window->UseRIP(how, when);
 }
 
-char * NetHackQtBind::qt_getmsghistory_ex(int *attr_ptr, int *color_ptr, BOOLEAN_P init)
+char * NetHackQtBind::qt_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, BOOLEAN_P init)
 {
     NetHackQtMessageWindow* window = main->GetMessageWindow();
     if (window)
@@ -673,7 +673,7 @@ char * NetHackQtBind::qt_getmsghistory_ex(int *attr_ptr, int *color_ptr, BOOLEAN
     return NULL;
 }
 
-void NetHackQtBind::qt_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P is_restoring)
+void NetHackQtBind::qt_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P is_restoring)
 {
     NetHackQtMessageWindow* window = main->GetMessageWindow();
     if (!window)

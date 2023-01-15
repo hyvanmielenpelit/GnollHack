@@ -633,29 +633,29 @@ const char *pref;
 }
 
 char *
-chainout_getmsghistory_ex(vp, attr_ptr, color_ptr, init)
+chainout_getmsghistory_ex(vp, attrs_ptr, colors_ptr, init)
 void *vp;
-int* attr_ptr, *color_ptr;
+char** attrs_ptr, **colors_ptr;
 boolean init;
 {
     struct chainout_data *tdp = vp;
     char *rv;
 
-    rv = (*tdp->nprocs->win_getmsghistory_ex)(attr_ptr, color_ptr, init);
+    rv = (*tdp->nprocs->win_getmsghistory_ex)(attrs_ptr, colors_ptr, init);
 
     return rv;
 }
 
 void
-chainout_putmsghistory_ex(vp, msg, attr, color, is_restoring)
+chainout_putmsghistory_ex(vp, msg, attrs, colors, is_restoring)
 void *vp;
 const char *msg;
-int attr, color;
+const char* attrs, *colors;
 boolean is_restoring;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_putmsghistory_ex)(msg, attr, color, is_restoring);
+    (*tdp->nprocs->win_putmsghistory_ex)(msg, attrs, colors, is_restoring);
 }
 
 void

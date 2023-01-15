@@ -88,8 +88,8 @@ public:
 	static void qt_start_screen();
 	static void qt_end_screen();
 
-        static char *qt_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init);
-        static void qt_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P is_restoring);
+        static char *qt_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init);
+        static void qt_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P is_restoring);
 
 	static void qt_outrip(winid wid, int how, time_t when);
 	static int qt_kbhit();

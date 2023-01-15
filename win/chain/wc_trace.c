@@ -1078,9 +1078,9 @@ const char *pref;
 }
 
 char *
-trace_getmsghistory_ex(vp, attr_ptr, color_ptr, init)
+trace_getmsghistory_ex(vp, attrs_ptr, colors_ptr, init)
 void *vp;
-int* attr, *color;
+char** attrs, **colors;
 boolean init;
 {
     struct trace_data *tdp = vp;
@@ -1089,7 +1089,7 @@ boolean init;
     fprintf(wc_tracelogf, "%sgetmsghistory(%d)\n", INDENT, init);
 
     PRE;
-    rv = (*tdp->nprocs->win_getmsghistory_ex)(tdp->ndata, attr_ptr, color_ptr, init);
+    rv = (*tdp->nprocs->win_getmsghistory_ex)(tdp->ndata, attrs_ptr, colors_ptr, init);
     POST;
 
     if (rv) {
@@ -1103,10 +1103,10 @@ boolean init;
 }
 
 void
-trace_putmsghistory_ex(vp, msg, attr, color, is_restoring)
+trace_putmsghistory_ex(vp, msg, attrs, colors, is_restoring)
 void *vp;
 const char *msg;
-int attr, color;
+const char* attrs, *colors;
 boolean is_restoring;
 {
     struct trace_data *tdp = vp;
@@ -1120,7 +1120,7 @@ boolean is_restoring;
     }
 
     PRE;
-    (*tdp->nprocs->win_putmsghistory)(tdp->ndata, msg, attr, color, is_restoring);
+    (*tdp->nprocs->win_putmsghistory)(tdp->ndata, msg, attrs, colors, is_restoring);
     POST;
 }
 

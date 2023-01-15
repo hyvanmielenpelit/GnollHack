@@ -291,23 +291,32 @@ int attr, color;
 {
     register char *tl, *otl;
     register int n0;
+    size_t len;
     int notdied = 1;
     struct WinDesc *cw = wins[WIN_MESSAGE];
 
     /* If there is room on the line, print message on same line */
     /* But messages like "You die..." deserve their own line */
     n0 = (int)strlen(bp);
+    len = strlen(toplines);
+
     if ((ttyDisplay->toplin == 1 || (cw->flags & WIN_STOP))
         && cw->cury == 0
-        && n0 + (int) strlen(toplines) + 3 < CO - 8 /* room for --More-- */
-        && (notdied = strncmp(bp, "You die", 7)) != 0) {
+        && n0 + (int)len + 3 < CO - 8 /* room for --More-- */
+        && (notdied = strncmp(bp, "You die", 7)) != 0) 
+    {
         Strcat(toplines, "  ");
         Strcat(toplines, bp);
+        memset(toplineattrs + len, attr, 2 + n0);
+        memset(toplinecolors + len, color, 2 + n0);
+        toplineattrs[len + 2 + n0] = toplinecolors[len + 2 + n0] = 0;
         cw->curx += 2;
         if (!(cw->flags & WIN_STOP))
             addtopl(bp, attr, color);
         return;
-    } else if (!(cw->flags & WIN_STOP)) {
+    } 
+    else if (!(cw->flags & WIN_STOP)) 
+    {
         if (ttyDisplay->toplin == 1) {
             more();
         } else if (cw->cury) { /* for when flags.toplin == 2 && cury > 1 */
@@ -318,7 +327,7 @@ int attr, color;
     remember_topl();
     (void) strncpy(toplines, bp, TBUFSZ);
     toplines[TBUFSZ - 1] = 0;
-    size_t len = strlen(toplines);
+    len = strlen(toplines);
     memset(toplineattrs, attr, len);
     memset(toplinecolors, color, len);
     toplineattrs[len] = toplinecolors[len] = 0;
@@ -413,7 +422,7 @@ const char* str, *attrs, *colors;
     int attr = ATR_NONE, color = NO_COLOR;
     while (*str)
     {
-        if (*attrs != attr || color != *colors)
+        if ((attrs && *attrs != attr) || (colors && color != *colors))
         {
             if(attr != ATR_NONE || color != NO_COLOR)
                 toggle_topl_attr(FALSE, attr, color);
@@ -758,34 +767,38 @@ boolean purged; /* True: took history's pointers, False: just cloned them */
  * included among the output of the subsequent calls.
  */
 char*
-tty_getmsghistory_ex(attr_ptr, color_ptr, init)
-int* attr_ptr, * color_ptr;
+tty_getmsghistory_ex(attrs_ptr, colors_ptr, init)
+char** attrs_ptr, ** colors_ptr;
 boolean init;
 {
     static int nxtidx;
     char *nextmesg;
     char *result = 0;
 
-    if (attr_ptr)
-        *attr_ptr = ATR_NONE;
-    if (color_ptr)
-        *color_ptr = NO_COLOR;
+    if (attrs_ptr)
+        *attrs_ptr = (char*)0;
+    if (colors_ptr)
+        *colors_ptr = (char*)0;
 
-    if (init) {
+    if (init) 
+    {
         msghistory_snapshot(FALSE);
         nxtidx = 0;
     }
 
-    if (snapshot_mesgs) {
+    if (snapshot_mesgs) 
+    {
         nextmesg = snapshot_mesgs[nxtidx];
-        if (nextmesg) {
+        if (nextmesg) 
+        {
             result = (char *) nextmesg;
-            if (attr_ptr && snapshot_mesg_attrs && snapshot_mesg_attrs[nxtidx][0] != ATR_NONE)
-                *attr_ptr = snapshot_mesg_attrs[nxtidx][0];
-            if (color_ptr && snapshot_mesg_colors && snapshot_mesg_colors[nxtidx][0] != NO_COLOR)
-                *color_ptr = snapshot_mesg_colors[nxtidx][0];
-
-        } else {
+            if (attrs_ptr && snapshot_mesg_attrs && snapshot_mesg_attrs[nxtidx] != 0)
+                *attrs_ptr = snapshot_mesg_attrs[nxtidx];
+            if (colors_ptr && snapshot_mesg_colors && snapshot_mesg_colors[nxtidx] != 0)
+                *colors_ptr = snapshot_mesg_colors[nxtidx];
+        } 
+        else 
+        {
             free_msghistory_snapshot(FALSE);
         }
         nxtidx++;
@@ -811,9 +824,9 @@ boolean init;
  * into message history for ^P recall without having displayed it.
  */
 void
-tty_putmsghistory_ex(msg, attr, color, restoring_msghist)
+tty_putmsghistory_ex(msg, attrs, colors, restoring_msghist)
 const char *msg;
-int attr UNUSED, color UNUSED;
+const char* attrs UNUSED, *colors UNUSED;
 boolean restoring_msghist;
 {
     static boolean initd = FALSE;
@@ -845,9 +858,18 @@ boolean restoring_msghist;
         size_t len = strlen(msg);
         size_t len_attrs = min(max(0, sizeof(toplineattrs) - 1), len);
         size_t len_colors = min(max(0, sizeof(toplinecolors) - 1), len);
-        memset(toplineattrs, attr, len_attrs);
-        memset(toplinecolors, color, len_colors);
+        if(attrs)
+            memcpy(toplineattrs, attrs, len_attrs);
+        else
+            memset(toplineattrs, ATR_NONE, len_attrs);
+        if(colors)
+            memcpy(toplinecolors, colors, len_colors);
+        else
+            memset(toplinecolors, NO_COLOR, len_colors);
         toplineattrs[len_attrs] = toplinecolors[len_colors] = 0;
+        //memset(toplineattrs, attr, len_attrs);
+        //memset(toplinecolors, color, len_colors);
+        //toplineattrs[len_attrs] = toplinecolors[len_colors] = 0;
 #ifdef DUMPLOG
         dumplogmsg(toplines);
 #endif
@@ -859,9 +881,9 @@ boolean restoring_msghist;
         {
             remember_topl();
             Strcpy(toplines, snapshot_mesgs[idx]);
-            size_t len = strlen(snapshot_mesgs[idx]);
-            size_t len_attrs = min(max(0, min(sizeof(toplineattrs), sizeof(snapshot_mesg_attrs[idx])) - 1), len);
-            size_t len_colors = min(max(0, min(sizeof(toplinecolors), sizeof(snapshot_mesg_colors[idx])) - 1), len);
+            size_t len = strlen(toplines);
+            size_t len_attrs = min(max(0, sizeof(toplineattrs) - 1), len);
+            size_t len_colors = min(max(0, sizeof(toplinecolors) - 1), len);
             memcpy(toplineattrs, snapshot_mesg_attrs[idx], len_attrs);
             memcpy(toplinecolors, snapshot_mesg_colors[idx], len_colors);
             toplineattrs[len_attrs] = toplinecolors[len_colors] = 0;

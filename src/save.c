@@ -1412,15 +1412,15 @@ STATIC_OVL void
 save_msghistory(fd, mode)
 int fd, mode;
 {
-    char *msg;
+    char *msg, *attrs, *colors;
     int msgcount = 0;
-    int msglen = 0, attr = ATR_NONE, color = NO_COLOR;
+    int msglen = 0;
     int minusone = -1;
     boolean init = TRUE;
 
     if (perform_bwrite(mode)) {
         /* ask window port for each message in sequence */
-        while ((msg = getmsghistory_ex(&attr, &color, init)) != 0) {
+        while ((msg = getmsghistory_ex(&attrs, &colors, init)) != 0) {
             init = FALSE;
             msglen = (int)strlen(msg);
             if (msglen < 1)
@@ -1431,10 +1431,9 @@ int fd, mode;
                 msglen = BUFSZ - 1;
             bwrite(fd, (genericptr_t) &msglen, sizeof(msglen));
             bwrite(fd, (genericptr_t) msg, msglen);
-            bwrite(fd, (genericptr_t) &attr, sizeof(attr));
-            bwrite(fd, (genericptr_t) &color, sizeof(color));
+            bwrite(fd, (genericptr_t) attrs, msglen);
+            bwrite(fd, (genericptr_t) colors, msglen);
             ++msgcount;
-            attr = ATR_NONE, color = NO_COLOR;
         }
         bwrite(fd, (genericptr_t) &minusone, sizeof(int));
     }

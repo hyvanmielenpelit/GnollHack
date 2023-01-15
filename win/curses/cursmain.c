@@ -436,7 +436,7 @@ putstr(window, attr, str)
                    by calling more() or displaying both on the same line.
 */
 void
-curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int color UNUSED)
+curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int color)
 {
     int mesgflags, curses_attr;
 
@@ -449,7 +449,7 @@ curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int colo
     } else {
         /* We need to convert NetHack attributes to curses attributes */
         curses_attr = curses_convert_attr(attr);
-        curses_puts(wid, curses_attr, text);
+        curses_puts_ex(wid, curses_attr, color, text);
     }
 }
 
