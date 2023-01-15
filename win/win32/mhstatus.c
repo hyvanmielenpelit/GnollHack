@@ -207,6 +207,10 @@ StatusWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PMSNHMsgGetText msg_data = (PMSNHMsgGetText) lParam;
             msg_data->buffer[0] = '\0';
+            memset(&msg_data->attrs[0], ATR_NONE, msg_data->max_size);
+            memset(&msg_data->colors[0], NO_COLOR, msg_data->max_size);
+            msg_data->attrs[msg_data->max_size] = msg_data->colors[msg_data->max_size] = 0;
+
             size_t space_remaining = msg_data->max_size;
 
             for (int line = 0; line < iflags.wc2_statuslines; line++) 

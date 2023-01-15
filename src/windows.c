@@ -1589,7 +1589,7 @@ winid win;
 int app;
 const char* str, *attrs, *colors;
 {
-    dump_putstr_ex(win, attrs[0], str, app, colors[0]);
+    dump_putstr_ex(win, attrs ? attrs[0] : ATR_NONE, str, app, colors ? colors[0] : NO_COLOR);
 }
 
 #ifdef DUMPLOG

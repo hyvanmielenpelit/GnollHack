@@ -2828,8 +2828,8 @@ const char *str, *attrs, *colors;
 
     print_vt_code2(AVTC_SELECT_WINDOW, window);
 
-    int attr = attrs[0];
-    int color = colors[0];
+    int attr = attrs ? attrs[0] : ATR_NONE;
+    int color = colors ? colors[0] : NO_COLOR;
 
     switch (cw->type) {
     case NHW_MESSAGE: {
@@ -2990,8 +2990,14 @@ const char *str, *attrs, *colors;
         *ob++ = (char) (attr + 1); /* avoid nuls, for convenience */
         Strcpy(ob, str);
         size_t len = strlen(ob);
-        memcpy(cw->datattrs[cw->cury], attrs, len);
-        memcpy(cw->datcolors[cw->cury], colors, len);
+        if(attrs)
+            memcpy(cw->datattrs[cw->cury], attrs, len);
+        else
+            memset(cw->datattrs[cw->cury], attr, len);
+        if (colors)
+            memcpy(cw->datcolors[cw->cury], colors, len);
+        else
+            memset(cw->datcolors[cw->cury], color, len);
         cw->datattrs[cw->cury][len] = 0;
         cw->datcolors[cw->cury][len] = 0;
 
@@ -3005,7 +3011,7 @@ const char *str, *attrs, *colors;
                 i--;
             if (i) {
                 cw->data[cw->cury - 1][++i] = '\0';
-                tty_putstr_ex2(window, &str[i], &attrs[i], &colors[i], app);
+                tty_putstr_ex2(window, &str[i], attrs ? &attrs[i] : attrs, colors ? &colors[i] : colors, app);
             }
         }
         break;

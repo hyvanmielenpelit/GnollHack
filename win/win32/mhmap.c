@@ -924,6 +924,8 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                                     &special, col, row);
                 }
                 msg_data->buffer[index] = mgch;
+                msg_data->attrs[index] = 0; /* special handling here */
+                msg_data->colors[index] = (char)color;
                 index++;
             }
             if (index >= msg_data->max_size - 1)

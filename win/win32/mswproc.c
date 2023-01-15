@@ -1180,7 +1180,7 @@ mswin_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 void
 mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app)
 {
-    mswin_putstr_ex(wid, attrs[0], text, app, colors[0]);
+    mswin_putstr_ex(wid, attrs ? attrs[0] : ATR_NONE, text, app, colors ? colors[0]: NO_COLOR);
 }
 
 /* Display the file named str.  Complain about missing files
@@ -2291,7 +2291,6 @@ mswin_preference_update(const char *pref)
 
 }
 
-#define TEXT_BUFFER_SIZE 4096
 char *
 mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 {
@@ -2302,10 +2301,11 @@ mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 
     static PMSNHMsgGetText text = 0;
     static char *next_message = 0;
+    static char* next_message_attrs = 0;
+    static char* next_message_colors = 0;
 
     if (init) {
-        text = (PMSNHMsgGetText) malloc(sizeof(MSNHMsgGetText)
-                                        + TEXT_BUFFER_SIZE);
+        text = (PMSNHMsgGetText) malloc(sizeof(MSNHMsgGetText));
 
         if (!text)
             return (char*)0;
@@ -2315,25 +2315,50 @@ mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
             - 1; /* make sure we always have 0 at the end of the buffer */
 
         ZeroMemory(text->buffer, TEXT_BUFFER_SIZE);
+        FillMemory(text->attrs, ATR_NONE, TEXT_BUFFER_SIZE);
+        FillMemory(text->colors, NO_COLOR, TEXT_BUFFER_SIZE);
         SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_GETTEXT, (LPARAM) text);
 
         next_message = text->buffer;
+        next_message_attrs = text->attrs;
+        next_message_colors = text->colors;
     }
 
-    if (!(next_message && next_message[0])) {
+    if (!(next_message && next_message[0])) 
+    {
         free(text);
         next_message = 0;
+        next_message_attrs = 0;
+        next_message_colors = 0;
+        *attrs_ptr = (char*)0;
+        *colors_ptr = (char*)0;
         return (char *) 0;
-    } else {
+    } 
+    else
+    {
         char *retval = next_message;
+        *attrs_ptr = next_message_attrs;
+        *colors_ptr = next_message_colors;
+
         char *p;
         next_message = p = strchr(next_message, '\n');
         if (next_message)
+        {
             next_message++;
+            next_message_attrs += next_message - retval;
+            next_message_colors += next_message - retval;
+        }
+        else
+        {
+            next_message_attrs = 0;
+            next_message_colors = 0;
+        }
+
         if (p)
             while (p >= retval && isspace((uchar) *p))
                 *p-- = (char) 0; /* delete trailing whitespace */
+
         return retval;
     }
 }

@@ -421,19 +421,28 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
         buflen = 0;
         for (i = 0; i < MSG_LINES; i++)
-            if (*data->window_text[i].text) {
+            if (*data->window_text[i].text) 
+            {
                 strncpy(&msg_data->buffer[buflen], data->window_text[i].text,
                         msg_data->max_size - buflen);
+                memset(&msg_data->attrs[buflen], data->window_text[i].attr, msg_data->max_size - buflen);
+                memset(&msg_data->colors[buflen], data->window_text[i].color, msg_data->max_size - buflen);
+
                 buflen += strlen(data->window_text[i].text);
                 if (buflen >= msg_data->max_size)
                     break;
 
                 strncpy(&msg_data->buffer[buflen], "\r\n",
                         msg_data->max_size - buflen);
+                memset(&msg_data->attrs[buflen], data->window_text[i].attr, msg_data->max_size - buflen);
+                memset(&msg_data->colors[buflen], data->window_text[i].color, msg_data->max_size - buflen);
+
                 buflen += 2;
                 if (buflen > msg_data->max_size)
                     break;
             }
+
+        msg_data->buffer[msg_data->max_size] = msg_data->attrs[msg_data->max_size] = msg_data->colors[msg_data->max_size] = 0;
     } break;
 
     case MSNH_MSG_RANDOM_INPUT:

@@ -648,13 +648,25 @@ namespace GnollHackClient
             if (win_id < 0)
                 return;
 
+            int attributes = 0;
+            if (attributes_ptr != IntPtr.Zero)
+            {
+                attributes = Marshal.ReadByte(attributes_ptr);
+            }
+
+            int color = (int)nhcolor.NO_COLOR;
+            if (colors_ptr != IntPtr.Zero)
+            {
+                color = Marshal.ReadByte(colors_ptr);
+            }
+
             if (_ghWindows[win_id].WindowPrintStyle == GHWindowPrintLocations.RawPrint)
             {
                 ClientCallback_RawPrint(str);
             }
             else
             {
-                _ghWindows[win_id].PutStrEx(0, str, append, (int)nhcolor.NO_COLOR);
+                _ghWindows[win_id].PutStrEx(attributes, str, append, color);
             }
         }
         public void ClientCallback_DelayOutput()
