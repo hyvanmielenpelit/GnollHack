@@ -221,6 +221,7 @@ remember_topl()
     *toplines = '\0';
     memset(toplineattrs, ATR_NONE, sizeof(toplineattrs));
     memset(toplinecolors, NO_COLOR, sizeof(toplinecolors));
+    toplineattrs[sizeof(toplineattrs) - 1] = toplinecolors[sizeof(toplinecolors) - 1] = 0;
     cw->maxcol = cw->maxrow = (idx + 1) % cw->rows;
 }
 
@@ -295,7 +296,7 @@ int attr, color;
 
     /* If there is room on the line, print message on same line */
     /* But messages like "You die..." deserve their own line */
-    n0 = strlen(bp);
+    n0 = (int)strlen(bp);
     if ((ttyDisplay->toplin == 1 || (cw->flags & WIN_STOP))
         && cw->cury == 0
         && n0 + (int) strlen(toplines) + 3 < CO - 8 /* room for --More-- */
@@ -317,8 +318,10 @@ int attr, color;
     remember_topl();
     (void) strncpy(toplines, bp, TBUFSZ);
     toplines[TBUFSZ - 1] = 0;
-    memset(toplineattrs, attr, strlen(toplines));
-    memset(toplinecolors, color, strlen(toplines));
+    size_t len = strlen(toplines);
+    memset(toplineattrs, attr, len);
+    memset(toplinecolors, color, len);
+    toplineattrs[len] = toplinecolors[len] = 0;
 
     for (tl = toplines; n0 >= CO; ) {
         otl = tl;

@@ -100,6 +100,7 @@ getlin_hook_proc hook;
         Strcat(strcat(strcpy(toplines, promptbuf), " "), obufp);
         memcpy(toplineattrs, promptattrs, min(sizeof(toplineattrs), sizeof(promptattrs)));
         memcpy(toplinecolors, promptcolors, min(sizeof(toplinecolors), sizeof(promptcolors)));
+        toplineattrs[sizeof(toplineattrs) - 1] = toplinecolors[sizeof(toplinecolors) - 1] = 0;
         c = pgetchar();
         if (c == '\033' || c == EOF) {
 #ifdef UNIX
@@ -253,8 +254,9 @@ getlin_hook_proc hook;
         /* prevent next message from pushing current promptbuf+answer into
            tty message history */
         *toplines = '\0';
-        memset(toplinecolors, NO_COLOR, sizeof(toplinecolors));
         memset(toplineattrs, ATR_NONE, sizeof(toplineattrs));
+        memset(toplinecolors, NO_COLOR, sizeof(toplinecolors));
+        toplineattrs[sizeof(toplineattrs) - 1] = toplinecolors[sizeof(toplinecolors) - 1] = 0;
 #ifdef DUMPLOG
     } else {
         /* needed because we've bypassed pline() */
