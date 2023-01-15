@@ -1426,7 +1426,6 @@ mswin_apply_window_style_all() {
 }
 
 // returns strdup() created pointer - callee assumes the ownership
-#define TEXT_BUFFER_SIZE 4096
 char *
 nh_compose_ascii_screenshot()
 {
@@ -1435,8 +1434,7 @@ nh_compose_ascii_screenshot()
 
     retval = (char *) malloc(3 * TEXT_BUFFER_SIZE);
 
-    text =
-        (PMSNHMsgGetText) malloc(sizeof(MSNHMsgGetText) + TEXT_BUFFER_SIZE);
+    text = (PMSNHMsgGetText) malloc(sizeof(MSNHMsgGetText));
 
     if (!text || !retval)
         return "";
@@ -1446,16 +1444,22 @@ nh_compose_ascii_screenshot()
         - 1; /* make sure we always have 0 at the end of the buffer */
 
     ZeroMemory(text->buffer, TEXT_BUFFER_SIZE);
+    FillMemory(text->attrs, ATR_NONE, TEXT_BUFFER_SIZE);
+    FillMemory(text->colors, NO_COLOR, TEXT_BUFFER_SIZE);
     SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                 (WPARAM) MSNH_MSG_GETTEXT, (LPARAM) text);
     strcpy(retval, text->buffer);
 
     ZeroMemory(text->buffer, TEXT_BUFFER_SIZE);
+    FillMemory(text->attrs, ATR_NONE, TEXT_BUFFER_SIZE);
+    FillMemory(text->colors, NO_COLOR, TEXT_BUFFER_SIZE);
     SendMessage(mswin_hwnd_from_winid(WIN_MAP), WM_MSNH_COMMAND,
                 (WPARAM) MSNH_MSG_GETTEXT, (LPARAM) text);
     strcat(retval, text->buffer);
 
     ZeroMemory(text->buffer, TEXT_BUFFER_SIZE);
+    FillMemory(text->attrs, ATR_NONE, TEXT_BUFFER_SIZE);
+    FillMemory(text->colors, NO_COLOR, TEXT_BUFFER_SIZE);
     SendMessage(mswin_hwnd_from_winid(WIN_STATUS), WM_MSNH_COMMAND,
                 (WPARAM) MSNH_MSG_GETTEXT, (LPARAM) text);
     strcat(retval, text->buffer);

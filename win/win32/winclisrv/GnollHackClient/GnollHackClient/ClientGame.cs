@@ -903,13 +903,15 @@ namespace GnollHackClient
                 byte[] tmparray = new byte[res.Length + 1];
                 if (attrs != IntPtr.Zero)
                 {
-                    tmparray.SetValue(tmparray, _message_history[_msgIndex].Attributes, res.Length);
+                    for (int i = 0; i < res.Length; i++)
+                        tmparray[i] = (byte)_message_history[_msgIndex].Attributes;
                     tmparray[res.Length] = 0;
                     Marshal.Copy(tmparray, 0, attrs, res.Length + 1);
                 }
                 if (colors != IntPtr.Zero)
                 {
-                    tmparray.SetValue(tmparray, (byte)_message_history[_msgIndex].NHColor, res.Length);
+                    for (int i = 0; i < res.Length; i++)
+                        tmparray[i] = (byte)_message_history[_msgIndex].NHColor;
                     tmparray[res.Length] = 0;
                     Marshal.Copy(tmparray, 0, colors, res.Length + 1);
                 }

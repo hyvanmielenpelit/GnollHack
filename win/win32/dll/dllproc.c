@@ -2194,7 +2194,6 @@ dll_preference_update(const char *pref)
     dll_callbacks.callback_preference_update(pref);
 }
 
-#define TEXT_BUFFER_SIZE 4096
 char *
 dll_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 {
