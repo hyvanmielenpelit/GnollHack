@@ -268,7 +268,8 @@ void lib_putstr_ex2(winid wid, const char* text, const char* attrs, const char* 
     char buf[BUFSIZ];
     if (text)
         write_text2buf_utf8(buf, BUFSIZ, text);
-    lib_callbacks.callback_putstr_ex2(wid, text ? buf : 0, attrs, colors, append);
+    lib_callbacks.callback_putstr_ex(wid, attrs ? attrs[0] : ATR_NONE, text ? buf : 0, append, colors ? colors[0] : NO_COLOR);
+    //lib_callbacks.callback_putstr_ex2(wid, text ? buf : 0, attrs, colors, append);
 }
 
 void lib_display_file(const char* filename, BOOLEAN_P must_exist)
@@ -745,19 +746,35 @@ void lib_preference_update(const char* pref)
 
 char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 {
-    char* res = lib_callbacks.callback_getmsghistory(attrs_ptr, colors_ptr, (int)init);
+    int attr = ATR_NONE, color = NO_COLOR;
+    char* res = lib_callbacks.callback_getmsghistory(&attr, &color, (int)init);
     static char buf[BUFSIZ] = "";
+    static char attrs[BUFSIZ];
+    static char colors[BUFSIZ];
     if (res)
     {
         strncpy(buf, res, BUFSIZ - 1);
         buf[BUFSIZ - 1] = '\0';
+        size_t len = strlen(buf);
+        if (attrs_ptr)
+        {
+            memset(attrs, (char)attr, len);
+            attrs[len] = 0;
+            *attrs_ptr = attrs;
+        }
+        if (colors_ptr)
+        {
+            memset(colors, (char)color, len);
+            colors[len] = 0;
+            *colors_ptr = attrs;
+        }
     }
     return res ? buf : 0;
 }
 
 void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors, BOOLEAN_P is_restoring)
 {
-    lib_callbacks.callback_putmsghistory(msg, attrs, colors, is_restoring);
+    lib_callbacks.callback_putmsghistory(msg, attrs ? attrs[0] : ATR_NONE, colors ? colors[0] : NO_COLOR, is_restoring);
 }
 
 

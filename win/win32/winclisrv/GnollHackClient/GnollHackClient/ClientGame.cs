@@ -891,7 +891,7 @@ namespace GnollHackClient
         }
 
         private int _msgIndex = 0;
-        public string ClientCallback_GetMsgHistory(IntPtr attrs, IntPtr colors, byte init)
+        public string ClientCallback_GetMsgHistory(IntPtr attr, IntPtr color, byte init)
         {
             if (init != 0)
                 _msgIndex = 0;
@@ -900,21 +900,30 @@ namespace GnollHackClient
             if (_msgIndex < _message_history.Count)
             {
                 res = _message_history[_msgIndex].Text;
-                byte[] tmparray = new byte[res.Length + 1];
-                if (attrs != IntPtr.Zero)
+                if (attr != IntPtr.Zero)
                 {
-                    for (int i = 0; i < res.Length; i++)
-                        tmparray[i] = (byte)_message_history[_msgIndex].Attributes;
-                    tmparray[res.Length] = 0;
-                    Marshal.Copy(tmparray, 0, attrs, res.Length + 1);
+                    Marshal.WriteInt32(attr, _message_history[_msgIndex].Attributes);
                 }
-                if (colors != IntPtr.Zero)
+                if (color != IntPtr.Zero)
                 {
-                    for (int i = 0; i < res.Length; i++)
-                        tmparray[i] = (byte)_message_history[_msgIndex].NHColor;
-                    tmparray[res.Length] = 0;
-                    Marshal.Copy(tmparray, 0, colors, res.Length + 1);
+                    Marshal.WriteInt32(attr, _message_history[_msgIndex].NHColor);
                 }
+
+                //byte[] tmparray = new byte[res.Length + 1];
+                //if (attrs != IntPtr.Zero)
+                //{
+                //    for (int i = 0; i < res.Length; i++)
+                //        tmparray[i] = (byte)_message_history[_msgIndex].Attributes;
+                //    tmparray[res.Length] = 0;
+                //    Marshal.Copy(tmparray, 0, attrs, res.Length + 1);
+                //}
+                //if (colors != IntPtr.Zero)
+                //{
+                //    for (int i = 0; i < res.Length; i++)
+                //        tmparray[i] = (byte)_message_history[_msgIndex].NHColor;
+                //    tmparray[res.Length] = 0;
+                //    Marshal.Copy(tmparray, 0, colors, res.Length + 1);
+                //}
                 _msgIndex++;
                 if (_msgIndex < 0)
                     _msgIndex = 0;
@@ -927,23 +936,24 @@ namespace GnollHackClient
             return res;
         }
 
-        public void ClientCallback_PutMsgHistory(string msg, IntPtr attrs, IntPtr colors, byte is_restoring)
+        public void ClientCallback_PutMsgHistory(string msg, int attr, int color, byte is_restoring)
         {
             if(msg != null)
             {
-                byte[] tmpattrs = msg.Length > 0 ? new byte[msg.Length + 1] : null;
-                byte[] tmpcolors = msg.Length > 0 ? new byte[msg.Length + 1] : null;
-                if(tmpattrs != null)
-                {
-                    Marshal.Copy(attrs, tmpattrs, 0, msg.Length);
-                    tmpattrs[msg.Length] = 0;
-                }
-                if (tmpcolors != null)
-                {
-                    Marshal.Copy(colors, tmpcolors, 0, msg.Length);
-                    tmpcolors[msg.Length] = 0;
-                }
-                RawPrintEx2(msg, tmpattrs, tmpcolors);
+                //byte[] tmpattrs = msg.Length > 0 ? new byte[msg.Length + 1] : null;
+                //byte[] tmpcolors = msg.Length > 0 ? new byte[msg.Length + 1] : null;
+                //if(tmpattrs != null)
+                //{
+                //    Marshal.Copy(attrs, tmpattrs, 0, msg.Length);
+                //    tmpattrs[msg.Length] = 0;
+                //}
+                //if (tmpcolors != null)
+                //{
+                //    Marshal.Copy(colors, tmpcolors, 0, msg.Length);
+                //    tmpcolors[msg.Length] = 0;
+                //}
+                //RawPrintEx2(msg, tmpattrs, tmpcolors);
+                RawPrintEx(msg, attr, color);
             }
         }
 
