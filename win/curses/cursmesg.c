@@ -54,7 +54,7 @@ static int last_messages = 0;
 void
 curses_message_win_puts(const char* message, boolean recursed)
 {
-    curses_message_win_puts_ex(message, (char*)0, (char*)0, ATR_NONE, NO_COLOR, boolean recursed);
+    curses_message_win_puts_ex(message, (char*)0, (char*)0, ATR_NONE, NO_COLOR, recursed);
 }
 
 void
@@ -747,7 +747,7 @@ mesg_add_line_ex(const char *mline, const char* attrs, const char* colors)
                 memset(current_mesg->attrs, ATR_NONE, len);
 
             if (colors)
-                memcpy(current_mesg->colrs, colors, len);
+                memcpy(current_mesg->colors, colors, len);
             else
                 memset(current_mesg->colors, NO_COLOR, len);
 
@@ -826,7 +826,7 @@ get_msg_line(boolean reverse, int mindex)
    that is taking place, the results are likely to be scrambled */
 char*
 curses_getmsghistory_ex(attrs_ptr, colors_ptr, init)
-char** attrs_ptr, *colors_ptr;
+char** attrs_ptr, **colors_ptr;
 boolean init;
 {
     static int nxtidx;
