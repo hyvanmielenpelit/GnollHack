@@ -235,9 +235,9 @@ int attr, color;
     tty_curs(BASE_WINDOW, cw->curx + 1, cw->cury);
 
     end_glyphout(); /* in case message printed during graphics output */
-    toggle_topl_attr(TRUE, color, attr);
+    toggle_topl_attr(TRUE, attr, color);
     putsyms(s);
-    toggle_topl_attr(FALSE, color, attr);
+    toggle_topl_attr(FALSE, attr, color);
 
     cl_end();
     ttyDisplay->toplin = 1;
@@ -466,6 +466,7 @@ unsigned long ynflags UNUSED;
     struct WinDesc *cw = wins[WIN_MESSAGE];
     boolean doprev = 0;
     char prompt[BUFSZ + QBUFSZ];
+    size_t len;
 
     yn_number = 0L;
     if (ttyDisplay->toplin == 1 && !(cw->flags & WIN_STOP))
@@ -614,8 +615,10 @@ unsigned long ynflags UNUSED;
         (void) key2txt(q, rtmp);
     /* addtopl(rtmp, attr, color); -- rewrite toplines instead */
     Sprintf(toplines, "%s%s", prompt, rtmp);
-    memset(toplineattrs, attr, strlen(toplines));
-    memset(toplinecolors, color, strlen(toplines));
+    len = strlen(toplines);
+    memset(toplineattrs, attr, len);
+    memset(toplinecolors, color, len);
+    toplineattrs[len] = toplinecolors[len] = 0;
 #ifdef DUMPLOG
     dumplogmsg(toplines);
 #endif
@@ -819,7 +822,8 @@ boolean restoring_msghist;
     extern unsigned saved_pline_index; /* pline.c */
 #endif
 
-    if (restoring_msghist && !initd) {
+    if (restoring_msghist && !initd) 
+    {
         /* we're restoring history from the previous session, but new
            messages have already been issued this session ("Restoring...",
            for instance); collect current history (ie, those new messages),
@@ -833,22 +837,34 @@ boolean restoring_msghist;
 #endif
     }
 
-    if (msg) {
+    if (msg) 
+    {
         /* move most recent message to history, make this become most recent */
         remember_topl();
         Strcpy(toplines, msg);
-        memset(toplineattrs, attr, min(sizeof(toplineattrs), strlen(msg)));
-        memset(toplinecolors, color, min(sizeof(toplinecolors), strlen(msg)));
+        size_t len = strlen(msg);
+        size_t len_attrs = min(max(0, sizeof(toplineattrs) - 1), len);
+        size_t len_colors = min(max(0, sizeof(toplinecolors) - 1), len);
+        memset(toplineattrs, attr, len_attrs);
+        memset(toplinecolors, color, len_colors);
+        toplineattrs[len_attrs] = toplinecolors[len_colors] = 0;
 #ifdef DUMPLOG
         dumplogmsg(toplines);
 #endif
-    } else if (snapshot_mesgs) {
+    } 
+    else if (snapshot_mesgs) 
+    {
         /* done putting arbitrary messages in; put the snapshot ones back */
-        for (idx = 0; snapshot_mesgs[idx]; ++idx) {
+        for (idx = 0; snapshot_mesgs[idx]; ++idx) 
+        {
             remember_topl();
             Strcpy(toplines, snapshot_mesgs[idx]);
-            memcpy(toplineattrs, snapshot_mesg_attrs[idx], min(sizeof(toplineattrs), sizeof(snapshot_mesg_attrs[idx])));
-            memcpy(toplinecolors, snapshot_mesg_colors[idx], min(sizeof(toplinecolors), sizeof(snapshot_mesg_colors[idx])));
+            size_t len = strlen(snapshot_mesgs[idx]);
+            size_t len_attrs = min(max(0, min(sizeof(toplineattrs), sizeof(snapshot_mesg_attrs[idx])) - 1), len);
+            size_t len_colors = min(max(0, min(sizeof(toplinecolors), sizeof(snapshot_mesg_colors[idx])) - 1), len);
+            memcpy(toplineattrs, snapshot_mesg_attrs[idx], len_attrs);
+            memcpy(toplinecolors, snapshot_mesg_colors[idx], len_colors);
+            toplineattrs[len_attrs] = toplinecolors[len_colors] = 0;
 #ifdef DUMPLOG
             dumplogmsg(toplines);
 #endif
