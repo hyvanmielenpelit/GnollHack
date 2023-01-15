@@ -1584,19 +1584,19 @@ struct extended_create_window_info info UNUSED;
 
     if (newwin->maxrow) {
         newwin->data = (char **) alloc(((size_t)newwin->maxrow * sizeof (char *)));
-        newwin->data2 = (char**) alloc(((size_t)newwin->maxrow * sizeof(char*)));
-        newwin->data3 = (char**) alloc(((size_t)newwin->maxrow * sizeof(char*)));
+        newwin->datattrs = (char**)alloc(((size_t)newwin->maxrow * sizeof(char*)));
+        newwin->datcolors = (char**) alloc(((size_t)newwin->maxrow * sizeof(char*)));
         newwin->datlen = (short *) alloc(((size_t)newwin->maxrow * sizeof (short)));
         for (i = 0; i < newwin->maxrow; i++) {
             if (newwin->maxcol) { /* WIN_STATUS */
                 newwin->data[i] = (char *) alloc((size_t)newwin->maxcol);
-                newwin->data2[i] = (char*) alloc((size_t)newwin->maxcol);
-                newwin->data3[i] = (char*) alloc((size_t)newwin->maxcol);
+                newwin->datattrs[i] = (char*)alloc((size_t)newwin->maxcol);
+                newwin->datcolors[i] = (char*) alloc((size_t)newwin->maxcol);
                 newwin->datlen[i] = (short) newwin->maxcol;
             } else {
                 newwin->data[i] = (char *) 0;
-                newwin->data2[i] = (char*)0;
-                newwin->data3[i] = (char*)0;
+                newwin->datattrs[i] = (char*)0;
+                newwin->datcolors[i] = (char*)0;
                 newwin->datlen[i] = 0;
             }
         }
@@ -1604,8 +1604,8 @@ struct extended_create_window_info info UNUSED;
             newwin->maxrow = 0;
     } else {
         newwin->data = (char **) 0;
-        newwin->data2 = (char**) 0;
-        newwin->data3 = (char**) 0;
+        newwin->datattrs = (char**)0;
+        newwin->datcolors = (char **) 0;
         newwin->datlen = (short *) 0;
     }
 
@@ -2360,7 +2360,7 @@ struct WinDesc *cw;
                 ++ttyDisplay->curx;
             }
             //term_start_attr(attr);
-            for (cp = &cw->data[i][1], ccp = &cw->data2[i][0], cap = &cw->data3[i][0], linestart = TRUE;
+            for (cp = &cw->data[i][1], ccp = &cw->datcolors[i][0], cap = &cw->datattrs[i][0], linestart = TRUE;
 #ifndef WIN32CON
                  *cp && (int) ++ttyDisplay->curx < (int) ttyDisplay->cols;
                  cp++, ccp++, cap++
@@ -2385,22 +2385,30 @@ struct WinDesc *cw;
                         if(ccolor != NO_COLOR)
                             term_end_color();
                         ccolor = *ccp;
-                        term_start_color(ccolor);
+                        if (ccolor != NO_COLOR)
+                            term_start_color(ccolor);
                     }
                     if (cattr != *cap)
                     {
                         if (cattr != ATR_NONE)
                             term_end_attr(cattr);
                         cattr = *cap;
-                        term_start_attr(cattr);
+                        if (cattr != ATR_NONE)
+                            term_start_attr(cattr);
                     }
                     (void) doputchar((nhsym)((unsigned char)(*cp)), TRUE);
                 }
             }
             if (ccolor != NO_COLOR)
+            {
                 term_end_color();
+                ccolor = NO_COLOR;
+            }
             if (cattr != ATR_NONE)
+            {
                 term_end_attr(cattr);
+                cattr = ATR_NONE;
+            }
             //term_end_attr(attr);
         }
     }
@@ -2927,13 +2935,13 @@ const char *str, *attrs, *colors;
                     free((genericptr_t)cw->data[i]);
                     cw->data[i] = 0;
                 }
-                if (cw->data2[i]) {
-                    free((genericptr_t)cw->data2[i]);
-                    cw->data2[i] = 0;
+                if (cw->datcolors[i]) {
+                    free((genericptr_t)cw->datcolors[i]);
+                    cw->datcolors[i] = 0;
                 }
-                if (cw->data3[i]) {
-                    free((genericptr_t)cw->data3[i]);
-                    cw->data3[i] = 0;
+                if (cw->datattrs[i]) {
+                    free((genericptr_t)cw->datattrs[i]);
+                    cw->datattrs[i] = 0;
                 }
             }
             cw->maxrow = cw->cury = 0;
@@ -2949,40 +2957,43 @@ const char *str, *attrs, *colors;
             for (i = 0; i < cw->maxrow; i++)
             {
                 tmp[i] = cw->data[i];
-                tmp2[i] = cw->data2[i];
-                tmp3[i] = cw->data3[i];
+                tmp2[i] = cw->datcolors[i];
+                tmp3[i] = cw->datattrs[i];
             }
             if (cw->data)
                 free((genericptr_t) cw->data);
-            if (cw->data2)
-                free((genericptr_t)cw->data2);
-            if (cw->data3)
-                free((genericptr_t)cw->data3);
+            if (cw->datcolors)
+                free((genericptr_t)cw->datcolors);
+            if (cw->datattrs)
+                free((genericptr_t)cw->datattrs);
             cw->data = tmp;
-            cw->data2 = tmp2;
-            cw->data3 = tmp3;
+            cw->datcolors = tmp2;
+            cw->datattrs = tmp3;
 
             for (i = cw->maxrow; i < cw->rows; i++)
             {
                 cw->data[i] = 0;
-                cw->data2[i] = 0;
-                cw->data3[i] = 0;
+                cw->datcolors[i] = 0;
+                cw->datattrs[i] = 0;
             }
         }
         if (cw->data[cw->cury])
             free((genericptr_t) cw->data[cw->cury]);
-        if (cw->data2[cw->cury])
-            free((genericptr_t)cw->data2[cw->cury]);
-        if (cw->data3[cw->cury])
-            free((genericptr_t)cw->data3[cw->cury]);
+        if (cw->datattrs[cw->cury])
+            free((genericptr_t)cw->datattrs[cw->cury]);
+        if (cw->datcolors[cw->cury])
+            free((genericptr_t)cw->datcolors[cw->cury]);
         n0 = (long) strlen(str) + 1L;
         ob = cw->data[cw->cury] = (char *) alloc((size_t)n0 + 1);
-        cw->data2[cw->cury] = (char*)alloc((size_t)n0 + 1);
-        cw->data3[cw->cury] = (char*)alloc((size_t)n0 + 1);
+        cw->datattrs[cw->cury] = (char*)alloc((size_t)n0 + 1);
+        cw->datcolors[cw->cury] = (char*)alloc((size_t)n0 + 1);
         *ob++ = (char) (attr + 1); /* avoid nuls, for convenience */
         Strcpy(ob, str);
-        memcpy(cw->data2[cw->cury], colors, strlen(ob));
-        memcpy(cw->data3[cw->cury], attrs, strlen(ob));
+        size_t len = strlen(ob);
+        memcpy(cw->datattrs[cw->cury], attrs, len);
+        memcpy(cw->datcolors[cw->cury], colors, len);
+        cw->datattrs[cw->cury][len] = 0;
+        cw->datcolors[cw->cury][len] = 0;
 
         if (n0 > cw->maxcol)
             cw->maxcol = n0;

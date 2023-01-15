@@ -98,8 +98,8 @@ getlin_hook_proc hook;
     for (;;) {
         (void) fflush(stdout);
         Strcat(strcat(strcpy(toplines, promptbuf), " "), obufp);
-        memcpy(toplinecolors, promptcolors, min(sizeof(toplinecolors), sizeof(promptcolors)));
         memcpy(toplineattrs, promptattrs, min(sizeof(toplineattrs), sizeof(promptattrs)));
+        memcpy(toplinecolors, promptcolors, min(sizeof(toplinecolors), sizeof(promptcolors)));
         c = pgetchar();
         if (c == '\033' || c == EOF) {
 #ifdef UNIX
@@ -208,10 +208,10 @@ getlin_hook_proc hook;
 #endif /* NEWAUTOCOMP */
             *bufp = c;
             bufp[1] = 0;
-            putsyms_ex(bufp, promptcolors, promptattrs);
+            putsyms_ex(bufp, promptattrs, promptcolors);
             bufp++;
             if (hook && (*hook)(obufp)) {
-                putsyms_ex(bufp, promptcolors, promptattrs);
+                putsyms_ex(bufp, promptattrs, promptcolors);
 #ifndef NEWAUTOCOMP
                 bufp = eos(bufp);
 #else  /* NEWAUTOCOMP */

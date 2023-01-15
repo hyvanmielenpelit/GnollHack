@@ -502,8 +502,8 @@ E NEARDATA winid WIN_MAP, WIN_INVEN, WIN_HERE;
 #define pline_ex1_popup(a, b, cstr, title, dopop) pline_ex1(a, b, cstr); if (dopop) display_popup_text(cstr, title, POPUP_TEXT_GENERAL, a, b, NO_GLYPH, 0)
 
 E char toplines[TBUFSZ];
-E char toplinecolors[TBUFSZ];
 E char toplineattrs[TBUFSZ];
+E char toplinecolors[TBUFSZ];
 
 #ifndef TCAP_H
 E struct tc_gbl_data {   /* also declared in tcap.h */
