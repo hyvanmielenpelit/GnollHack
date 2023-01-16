@@ -90,7 +90,7 @@ curses_read_char()
 }
 
 void 
-curses_print_text_ex(WINDOW* win, int* mx_ptr, int* my_ptr, const char* text, const char* attrs, const char* colors, char extra_attrs)
+curses_print_text_ex(WINDOW* win, int* mx_ptr, int* my_ptr, const char* text, const char* attrs, const char* colors, int attr, int color, char extra_attrs)
 {
     if (!mx_ptr || !my_ptr || !text)
         return;
@@ -100,37 +100,39 @@ curses_print_text_ex(WINDOW* win, int* mx_ptr, int* my_ptr, const char* text, co
 
     while (*text)
     {
-        if (attrs)
+        if (attrs || attr != ATR_NONE)
         {
-            if (cattr != *attrs)
+            char used_attr = attrs ? *attrs : (char)attr;
+            if (cattr != used_attr)
             {
                 if (cattr != ATR_NONE)
                 {
                     int curses_attr = curses_atr2cursesattr((int)cattr);
                     curses_toggle_color_attr(win, NONE, curses_attr, OFF);
                 }
-                int new_attrs = extra_attrs | (int)*attrs;
+                int new_attrs = extra_attrs | (int)used_attr;
                 if (new_attrs != ATR_NONE)
                 {
                     int curses_attr = curses_atr2cursesattr((int)new_attrs);
                     curses_toggle_color_attr(win, NONE, curses_attr, ON);
                 }
-                cattr = *attrs;
+                cattr = used_attr;
             }
         }
-        if (colors)
+        if (colors || color != NO_COLOR)
         {
-            if (ccolor != *colors)
+            char used_color = colors ? *colors : (char)color;
+            if (ccolor != used_color)
             {
                 if (ccolor != NO_COLOR)
                 {
                     curses_toggle_color_attr(win, ccolor, NONE, OFF);
                 }
-                if (*colors != NO_COLOR)
+                if (used_color != NO_COLOR)
                 {
-                    curses_toggle_color_attr(win, *colors, NONE, ON);
+                    curses_toggle_color_attr(win, used_color, NONE, ON);
                 }
-                ccolor = *colors;
+                ccolor = used_color;
             }
         }
         mvwprintw(win, *my_ptr, *mx_ptr, "%c", *text);

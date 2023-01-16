@@ -164,7 +164,7 @@ curses_message_win_puts_ex(const char *message, const char* attrs, const char* c
     {
         /* split needed */
         tmpstr = curses_break_str(message, (width - 2), 1);
-        curses_print_text_ex(win, &mx, &my, message, attrs, colors, bold ? ATR_BOLD : ATR_NONE);
+        curses_print_text_ex(win, &mx, &my, tmpstr, attrs, colors, attr, color, bold ? ATR_BOLD : ATR_NONE);
         //mvwprintw(win, my, mx, "%s", tmpstr);
         //mx += (int)strlen(tmpstr);
         /* one space to separate first part of message from rest [is this
@@ -175,7 +175,7 @@ curses_message_win_puts_ex(const char *message, const char* attrs, const char* c
         //if (bold)
         //    curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
         tmpstr = curses_str_remainder(message, (width - 2), 1);
-        curses_message_win_puts(tmpstr, TRUE);
+        curses_message_win_puts_ex(tmpstr, attrs, colors, attr, color, TRUE);
         free(tmpstr);
     } 
     else 
