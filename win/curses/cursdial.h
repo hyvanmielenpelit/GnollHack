@@ -16,7 +16,7 @@ int curses_character_input_dialog(int attr UNUSED, int color UNUSED, const char 
 int curses_ext_cmd(void);
 void curses_create_nhmenu(winid wid);
 void curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
-                            CHAR_P accelerator, CHAR_P group_accel, int attr,
+                            CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
                             const char *str, BOOLEAN_P presel);
 void curs_menu_set_bottom_heavy(winid);
 void curses_finalize_nhmenu(winid wid, const char *prompt, const char *subtitle);

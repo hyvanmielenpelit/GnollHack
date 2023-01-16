@@ -60,7 +60,8 @@ typedef struct nhmi {
     anything identifier;        /* Value returned if item selected */
     CHAR_P accelerator;         /* Character used to select item from menu */
     CHAR_P group_accel;         /* Group accelerator for menu item, if any */
-    int attr;                   /* Text attributes for item */
+    attr_t attr;                   /* Text attributes for item */
+    int color;                  /* Text color for item */
     const char *str;            /* Text of menu item */
     BOOLEAN_P presel;           /* Whether menu item should be preselected */
     boolean selected;           /* Whether item is currently selected */
@@ -572,6 +573,7 @@ curs_new_menu_item(winid wid, const char *str)
     new_item->accelerator = '\0';;
     new_item->group_accel = '\0';
     new_item->attr = 0;
+    new_item->color = NO_COLOR;
     new_item->str = new_str;
     new_item->presel = FALSE;
     new_item->selected = FALSE;
@@ -586,11 +588,12 @@ curs_new_menu_item(winid wid, const char *str)
 
 void
 curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
-                       CHAR_P accelerator, CHAR_P group_accel, int attr,
+                       CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
                        const char *str, BOOLEAN_P presel)
 {
     nhmenu_item *new_item, *current_items, *menu_item_ptr;
     nhmenu *current_menu = get_menu(wid);
+    attr_t curses_attr = curses_convert_attr(attr);
 
     if (current_menu == NULL) {
         impossible(
@@ -607,7 +610,8 @@ curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
     new_item->identifier = *identifier;
     new_item->accelerator = accelerator;
     new_item->group_accel = group_accel;
-    new_item->attr = attr;
+    new_item->attr = curses_attr;
+    new_item->color = color;
     new_item->presel = presel;
 
     current_items = current_menu->entries;
@@ -1079,7 +1083,8 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
     char *tmpstr;
     boolean first_accel = TRUE;
     int color = NO_COLOR;
-    int attr = A_NORMAL;
+    int attr = ATR_NONE;
+    attr_t curses_attr = A_NORMAL;
     boolean menu_color = FALSE;
 
     /* Cycle through entries until we are on the correct page */
@@ -1168,15 +1173,20 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
             start_col += 2;
         }
 #endif
-        if (iflags.use_menu_color
-            && (menu_color = get_menu_coloring(menu_item_ptr->str,
-                                               &color, &attr)) != 0) {
-            if (color != NO_COLOR) {
+        if (iflags.use_menu_color)
+        {
+
+            menu_color = get_menu_coloring(menu_item_ptr->str, &color, &attr);
+            if (!menu_color)
+                color = menu_item_ptr->color;
+            if (color != NO_COLOR) 
+            {
                 curses_toggle_color_attr(win, color, NONE, ON);
             }
-            attr = curses_convert_attr(attr);
-            if (attr != A_NORMAL) {
-                menu_item_ptr->attr = menu_item_ptr->attr | attr;
+            curses_attr = curses_convert_attr(attr);
+            if (curses_attr != A_NORMAL)
+            {
+                menu_item_ptr->attr = menu_item_ptr->attr | curses_attr;
             }
         }
         curses_toggle_color_attr(win, NONE, menu_item_ptr->attr, ON);
@@ -1192,7 +1202,7 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
                 free(tmpstr);
             }
         }
-        if (menu_color && (color != NO_COLOR)) {
+        if (/*menu_color &&*/ (color != NO_COLOR)) {
             curses_toggle_color_attr(win, color, NONE, OFF);
         }
         curses_toggle_color_attr(win, NONE, menu_item_ptr->attr, OFF);

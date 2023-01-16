@@ -438,7 +438,7 @@ putstr(window, attr, str)
 void
 curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int color)
 {
-    int mesgflags, curses_attr;
+    int mesgflags;
 
     mesgflags = attr & (ATR_URGENT | ATR_NOHISTORY);
     attr &= ~mesgflags;
@@ -448,8 +448,7 @@ curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int colo
         curses_count_window(text);
     } else {
         /* We need to convert NetHack attributes to curses attributes */
-        curses_attr = curses_convert_attr(attr);
-        curses_puts_ex(wid, curses_attr, color, text);
+        curses_puts_ex(wid, attr, color, text);
     }
 }
 
@@ -518,10 +517,7 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
                 CHAR_P accelerator, CHAR_P group_accel, int attr,
                 const char *str, BOOLEAN_P presel)
 {
-    int curses_attr;
-
     attr &= ~(ATR_URGENT | ATR_NOHISTORY);
-    curses_attr = curses_convert_attr(attr);
 
     if (inv_update) {
         int height = 0, width = 0;
@@ -531,23 +527,37 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
         int applied_y = 1 + inv_update - (has_border ? 0 : 1);
         if (applied_y <= applicable_height)
         {
-            curses_add_inv(applied_y, glyph, accelerator, curses_attr, str);
+            curses_add_inv(applied_y, glyph, accelerator, attr, NO_COLOR, str);
             inv_update++;
         }
     }
 
     curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
-                           curses_attr, str, presel);
+        attr, NO_COLOR, str, presel);
 }
 
 void
-curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info UNUSED,
+curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    curses_add_menu(wid, glyph, identifier,
-        accelerator, group_accel, attr,
-        str, presel);
+    attr &= ~(ATR_URGENT | ATR_NOHISTORY);
+
+    if (inv_update) {
+        int height = 0, width = 0;
+        curses_get_window_size(INV_WIN, &height, &width);
+        boolean has_border = curses_window_has_border(INV_WIN);
+        int applicable_height = height - (has_border ? 0 : 1);
+        int applied_y = 1 + inv_update - (has_border ? 0 : 1);
+        if (applied_y <= applicable_height)
+        {
+            curses_add_inv(applied_y, glyph, accelerator, attr, info.color, str);
+            inv_update++;
+        }
+    }
+
+    curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
+        attr, info.color, str, presel);
 }
 
 

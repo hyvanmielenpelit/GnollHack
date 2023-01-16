@@ -7,6 +7,7 @@
 #include "general.h"
 #include "layer.h"
 #include "obj.h"
+#include "curses.h"
 
 #ifndef WINCURS_H
 #define WINCURS_H
@@ -180,7 +181,7 @@ extern void curses_posthousekeeping(void);
 extern void curses_view_file(const char *filename, boolean must_exist);
 extern void curses_rtrim(char *str);
 extern int curses_get_count(int first_digit);
-extern int curses_convert_attr(int attr);
+extern attr_t curses_convert_attr(int attr);
 extern int curses_read_attrs(const char *attrs);
 extern char *curses_fmt_attrs(char *);
 extern int curses_convert_keys(int key);
@@ -196,7 +197,7 @@ extern int curses_ext_cmd(void);
 extern void curses_create_nhmenu(winid wid);
 extern void curses_add_nhmenu_item(winid wid, int glyph,
                                    const ANY_P *identifier, CHAR_P accelerator,
-                                   CHAR_P group_accel, int attr,
+                                   CHAR_P group_accel, int attr, int color,
                                    const char *str, BOOLEAN_P presel);
 extern void curs_menu_set_bottom_heavy(winid);
 extern void curses_finalize_nhmenu(winid wid, const char *prompt, const char* subtitle);
@@ -214,7 +215,7 @@ extern void curses_status_update(int, genericptr_t, int, int, int,
 /* cursinvt.c */
 
 extern void curses_update_inv(void);
-extern void curses_add_inv(int, int, CHAR_P, attr_t, const char *);
+extern void curses_add_inv(int, int, CHAR_P, attr_t, int, const char *);
 extern void curses_finalize_inv(const char*, const char*);
 
 /* cursinit.c */

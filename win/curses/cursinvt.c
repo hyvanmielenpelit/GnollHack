@@ -59,11 +59,12 @@ curses_update_inv(void)
 void
 curses_add_inv(int y,
                int glyph UNUSED,
-               CHAR_P accelerator, attr_t attr, const char *str)
+               CHAR_P accelerator, int attr, int nhcolor, const char *str)
 {
     WINDOW *win = curses_get_nhwin(INV_WIN);
     int color = NO_COLOR;
     int x = 0;
+    attr_t curses_attr = curses_convert_attr(attr);
 
     /* Figure out where to draw the line */
     if (curses_window_has_border(INV_WIN)) {
@@ -101,14 +102,15 @@ curses_add_inv(int y,
         Strcpy(str_mutable, str);
         attr = 0;
         get_menu_coloring(str_mutable, &color, (int *) &attr);
-        attr = curses_convert_attr(attr);
+        curses_attr = curses_convert_attr(attr);
     }
+    if (color == NO_COLOR) color = nhcolor;
     if (color == NO_COLOR) color = NONE;
-    curses_toggle_color_attr(win, color, attr, ON);
-    /* wattron(win, attr); */
+    curses_toggle_color_attr(win, color, curses_attr, ON);
+    /* wattron(win, curses_attr); */
     wprintw(win, "%s", str);
-    /* wattroff(win, attr); */
-    curses_toggle_color_attr(win, color, attr, OFF);
+    /* wattroff(win, curses_attr); */
+    curses_toggle_color_attr(win, color, curses_attr, OFF);
     wclrtoeol(win);
 }
 
