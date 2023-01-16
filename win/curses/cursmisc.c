@@ -102,7 +102,7 @@ curses_print_text_ex(WINDOW* win, int* mx_ptr, int* my_ptr, const char* text, co
     {
         if (attrs || attr != ATR_NONE || extra_attrs != ATR_NONE)
         {
-            char used_attr = (attrs ? *attrs : attr) | (char)extra_attrs;
+            char used_attr = (attrs ? *attrs : (char)attr) | (char)extra_attrs;
             if (cattr != used_attr)
             {
                 if (cattr != ATR_NONE)
