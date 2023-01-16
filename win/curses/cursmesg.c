@@ -182,7 +182,7 @@ curses_message_win_puts_ex(const char *message, const char* attrs, const char* c
     {
         //mvwprintw(win, my, mx, "%s", message);
         //mx += message_length;
-        curses_print_text_ex(win, &mx, &my, message, attrs, colors, bold ? ATR_BOLD : ATR_NONE);
+        curses_print_text_ex(win, &mx, &my, message, attrs, colors, attr, color, bold ? ATR_BOLD : ATR_NONE);
         /* two spaces to separate this message from next one if they happen
            to fit on the same line; (FIXME:  it would be better if this was
            done at start of next message rather than end of this one since
