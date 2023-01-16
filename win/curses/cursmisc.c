@@ -89,8 +89,91 @@ curses_read_char()
     return ch;
 }
 
-/* Turn on or off the specified color and / or attribute */
+void 
+curses_print_text_ex(WINDOW* win, int* mx_ptr, int* my_ptr, const char* text, const char* attrs, const char* colors, char extra_attrs)
+{
+    if (!mx_ptr || !my_ptr || !text)
+        return;
 
+    char cattr = ATR_NONE;
+    char ccolor = NO_COLOR;
+
+    while (*text)
+    {
+        if (attrs)
+        {
+            if (cattr != *attrs)
+            {
+                if (cattr != ATR_NONE)
+                {
+                    int curses_attr = curses_atr2cursesattr((int)cattr);
+                    curses_toggle_color_attr(win, NONE, curses_attr, OFF);
+                }
+                int new_attrs = extra_attrs | (int)*attrs;
+                if (new_attrs != ATR_NONE)
+                {
+                    int curses_attr = curses_atr2cursesattr((int)new_attrs);
+                    curses_toggle_color_attr(win, NONE, curses_attr, ON);
+                }
+                cattr = *attrs;
+            }
+        }
+        if (colors)
+        {
+            if (ccolor != *colors)
+            {
+                if (ccolor != NO_COLOR)
+                {
+                    curses_toggle_color_attr(win, ccolor, NONE, OFF);
+                }
+                if (*colors != NO_COLOR)
+                {
+                    curses_toggle_color_attr(win, *colors, NONE, ON);
+                }
+                ccolor = *colors;
+            }
+        }
+        mvwprintw(win, *my_ptr, *mx_ptr, "%c", *text);
+        text++;
+        if (attrs)
+            attrs++;
+        if (colors)
+            colors++;
+        (*mx_ptr)++;
+    }
+    if (cattr != ATR_NONE)
+    {
+        int curses_attr = curses_atr2cursesattr((int)cattr);
+        curses_toggle_color_attr(win, NONE, curses_attr, OFF);
+    }
+    if (ccolor != NO_COLOR)
+    {
+        curses_toggle_color_attr(win, ccolor, NONE, OFF);
+    }
+}
+
+int
+curses_atr2cursesattr(int atr)
+{
+    if (atr == ATR_NONE)
+        return A_NORMAL;
+
+    int result = 0;
+    if (atr & ATR_BOLD)
+        result |= A_BOLD;
+    if (atr & ATR_INVERSE)
+        result |= A_REVERSE;
+    if (atr & ATR_ULINE)
+        result |= A_UNDERLINE;
+    if (atr & ATR_BLINK)
+        result |= A_BLINK;
+    if (atr & ATR_DIM)
+        result |= A_DIM;
+
+    return result;
+}
+
+/* Turn on or off the specified color and / or attribute */
 void
 curses_toggle_color_attr(WINDOW *win, int color, int attr, int onoff)
 {

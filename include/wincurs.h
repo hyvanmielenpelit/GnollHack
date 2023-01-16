@@ -162,8 +162,9 @@ extern boolean curses_map_borders(int *sx, int *sy, int *ex, int *ey,
 /* cursmisc.c */
 
 extern int curses_read_char(void);
-extern void curses_toggle_color_attr(WINDOW *win, int color, int attr,
-                                     int onoff);
+extern int curses_atr2cursesattr(int atr);
+extern void curses_toggle_color_attr(WINDOW *win, int color, int attr, int onoff);
+extern void curses_print_text_ex(WINDOW* win, int* mx, int* my, const char* text, const char* attrs, const char* colors, char extra_attrs);
 extern void curses_bail(const char *mesg);
 extern winid curses_get_wid(int type);
 extern char *curses_copy_of(const char *s);

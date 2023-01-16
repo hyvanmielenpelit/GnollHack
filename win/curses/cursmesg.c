@@ -156,29 +156,33 @@ curses_message_win_puts_ex(const char *message, const char* attrs, const char* c
     }
 
     bold = (height > 1 && !last_messages);
-    if (bold)
-        curses_toggle_color_attr(win, NONE, A_BOLD, ON);
+    //if (bold)
+    //    curses_toggle_color_attr(win, NONE, A_BOLD, ON);
 
     /* will this message fit as-is or do we need to split it? */
     if (mx == border_space && message_length > width - 2) 
     {
         /* split needed */
         tmpstr = curses_break_str(message, (width - 2), 1);
-        mvwprintw(win, my, mx, "%s", tmpstr), mx += (int) strlen(tmpstr);
+        curses_print_text_ex(win, &mx, &my, message, attrs, colors, bold ? ATR_BOLD : ATR_NONE);
+        //mvwprintw(win, my, mx, "%s", tmpstr);
+        //mx += (int)strlen(tmpstr);
         /* one space to separate first part of message from rest [is this
            actually useful?] */
         if (mx < width - 2)
             ++mx;
         free(tmpstr);
-        if (bold)
-            curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
+        //if (bold)
+        //    curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
         tmpstr = curses_str_remainder(message, (width - 2), 1);
         curses_message_win_puts(tmpstr, TRUE);
         free(tmpstr);
     } 
     else 
     {
-        mvwprintw(win, my, mx, "%s", message), mx += message_length;
+        //mvwprintw(win, my, mx, "%s", message);
+        //mx += message_length;
+        curses_print_text_ex(win, &mx, &my, message, attrs, colors, bold ? ATR_BOLD : ATR_NONE);
         /* two spaces to separate this message from next one if they happen
            to fit on the same line; (FIXME:  it would be better if this was
            done at start of next message rather than end of this one since
@@ -188,8 +192,8 @@ curses_message_win_puts_ex(const char *message, const char* attrs, const char* c
             if (++mx < width - 2)
                 ++mx;
         }
-        if (bold)
-            curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
+        //if (bold)
+        //    curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
     }
     wrefresh(win);
 }
