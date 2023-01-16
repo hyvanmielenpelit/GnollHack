@@ -90,7 +90,7 @@ curses_read_char()
 }
 
 void 
-curses_print_text_ex(WINDOW* win, int* mx_ptr, int* my_ptr, const char* text, const char* attrs, const char* colors, int attr, int color, char extra_attrs)
+curses_print_text_ex(WINDOW* win, int* mx_ptr, int* my_ptr, const char* text, const char* attrs, const char* colors, int attr, int color, int extra_attrs)
 {
     if (!mx_ptr || !my_ptr || !text)
         return;
