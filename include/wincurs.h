@@ -98,6 +98,9 @@ extern void curses_start_menu_ex(winid wid, int style);
 extern void curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
                             CHAR_P accelerator, CHAR_P group_accel, int attr,
                             const char *str, BOOLEAN_P presel);
+extern void curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
+    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
+    const char* str, BOOLEAN_P presel);
 extern void curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel);
