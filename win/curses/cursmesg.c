@@ -894,7 +894,7 @@ boolean init;
 void
 curses_putmsghistory_ex(msg, attrs, colors, restoring_msghist)
 const char *msg;
-const char* attrs UNUSED, *colors UNUSED;
+const char* attrs, *colors;
 boolean restoring_msghist;
 {
     static boolean initd = FALSE;
@@ -912,7 +912,7 @@ boolean restoring_msghist;
     }
 
     if (msg) {
-        mesg_add_line_ex(msg, attrs, colors);
+        mesg_add_line_ex(msg, attrs, colors, ATR_NONE, NO_COLOR);
         /* treat all saved and restored messages as turn #1 */
         last_mesg->turn = 1L;
     } else if (stash_count) {
@@ -931,7 +931,7 @@ boolean restoring_msghist;
             stash_head = mesg->next_mesg;
             --stash_count;
             mesg_turn = mesg->turn;
-            mesg_add_line_ex(mesg->str, mesg->attrs, mesg->colors);
+            mesg_add_line_ex(mesg->str, mesg->attrs, mesg->colors, ATR_NONE, NO_COLOR);
             /* added line became new tail */
             last_mesg->turn = mesg_turn;
             free((genericptr_t) mesg->str);
