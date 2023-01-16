@@ -160,16 +160,22 @@ curses_atr2cursesattr(int atr)
         return A_NORMAL;
 
     int result = 0;
-    if (atr & ATR_BOLD)
-        result |= A_BOLD;
-    if (atr & ATR_INVERSE)
-        result |= A_REVERSE;
-    if (atr & ATR_ULINE)
-        result |= A_UNDERLINE;
-    if (atr & ATR_BLINK)
-        result |= A_BLINK;
-    if (atr & ATR_DIM)
-        result |= A_DIM;
+    if ((atr & ATR_INVERSE) == ATR_INVERSE)
+        result |= A_REVERSE, nobold = TRUE;
+    else
+    {
+        if ((atr & ATR_BLINK) == ATR_BLINK)
+            result |= A_BLINK, nobold = TRUE;
+        else
+        {
+            if (atr & ATR_BOLD)
+                result |= A_BOLD;
+            if (atr & ATR_DIM)
+                result |= A_DIM;
+            if (atr & ATR_ULINE)
+                result |= A_UNDERLINE;
+        }
+    }
 
     return result;
 }
