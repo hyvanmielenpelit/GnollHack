@@ -37,7 +37,7 @@ static void scroll_window(winid wid);
 static void unscroll_window(winid wid);
 static void directional_scroll(winid wid, int nlines);
 static void mesg_add_line(const char* mline);
-static void mesg_add_line_ex(const char *mline, const char* attrs, const char* colors);
+static void mesg_add_line_ex(const char *mline, const char* attrs, const char* colors, int attr, int color);
 static nhprev_mesg *get_msg_line(boolean reverse, int mindex);
 
 static int turn_lines = 0;
@@ -118,7 +118,7 @@ curses_message_win_puts_ex(const char *message, const char* attrs, const char* c
 
         toplineattrs[len] = toplinecolors[len] = 0;
 
-        mesg_add_line_ex(message, attrs, colors);
+        mesg_add_line_ex(message, attrs, colors, attr, color);
     }
 
     linespace = width - 3 - (mx - border_space);
@@ -713,11 +713,11 @@ directional_scroll(winid wid, int nlines)
 static void
 mesg_add_line(const char* mline)
 {
-    mesg_add_line_ex(mline, (const char*)0, (const char*)0);
+    mesg_add_line_ex(mline, (const char*)0, (const char*)0, ATR_NONE, NO_COLOR);
 }
 
 static void
-mesg_add_line_ex(const char *mline, const char* attrs, const char* colors)
+mesg_add_line_ex(const char *mline, const char* attrs, const char* colors, int attr, int color)
 {
     nhprev_mesg *current_mesg;
 
@@ -730,8 +730,8 @@ mesg_add_line_ex(const char *mline, const char* attrs, const char* colors)
         /* create a new list element */
         current_mesg = (nhprev_mesg *) alloc((unsigned) sizeof (nhprev_mesg));
         current_mesg->str = dupstr(mline);
-        current_mesg->attrs = attrs ? cpystr(mline, attrs) : setstr(mline, ATR_NONE);
-        current_mesg->colors = colors ? cpystr(mline, colors) : setstr(mline, NO_COLOR);
+        current_mesg->attrs = attrs ? cpystr(mline, attrs) : setstr(mline, attr);
+        current_mesg->colors = colors ? cpystr(mline, colors) : setstr(mline, color);
     }
     else 
     {
@@ -748,12 +748,12 @@ mesg_add_line_ex(const char *mline, const char* attrs, const char* colors)
             if(attrs)
                 memcpy(current_mesg->attrs, attrs, len);
             else
-                memset(current_mesg->attrs, ATR_NONE, len);
+                memset(current_mesg->attrs, attr, len);
 
             if (colors)
                 memcpy(current_mesg->colors, colors, len);
             else
-                memset(current_mesg->colors, NO_COLOR, len);
+                memset(current_mesg->colors, color, len);
 
             current_mesg->attrs[len] = current_mesg->colors[len] = 0;
         }
@@ -763,8 +763,8 @@ mesg_add_line_ex(const char *mline, const char* attrs, const char* colors)
             free((genericptr_t) current_mesg->attrs);
             free((genericptr_t) current_mesg->colors);
             current_mesg->str = dupstr(mline);
-            current_mesg->attrs = attrs ? cpystr(mline, attrs) : setstr(mline, ATR_NONE);
-            current_mesg->colors = colors ? cpystr(mline, colors) : setstr(mline, NO_COLOR);
+            current_mesg->attrs = attrs ? cpystr(mline, attrs) : setstr(mline, attr);
+            current_mesg->colors = colors ? cpystr(mline, colors) : setstr(mline, color);
         }
     }
     current_mesg->turn = moves;
