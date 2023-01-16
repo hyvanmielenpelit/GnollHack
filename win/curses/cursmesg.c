@@ -303,8 +303,19 @@ curses_clear_unhighlight_message_window()
         mx = mw + brdroffset; /* Force new line on new turn */
 
         for (count = 0; count < mh; count++)
-            mvwchgat(win, count + brdroffset, brdroffset,
-                     mw, COLOR_PAIR(8), A_NORMAL, NULL);
+        {
+            // mvwchgat(win, count + brdroffset, brdroffset,
+            //          mw, COLOR_PAIR(8), A_NORMAL, NULL);
+
+            int x = 0;
+            for (x = 0; x < mw; x++)
+            {
+                if (wmove(win, count + brdroffset, brdroffset + x) != ERR)
+                {
+                    wattr_off(win, A_BOLD, NULL);
+                }
+            }
+        }
         wnoutrefresh(win);
     }
     wmove(win, my, mx);
