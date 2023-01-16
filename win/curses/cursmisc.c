@@ -161,11 +161,11 @@ curses_atr2cursesattr(int atr)
 
     int result = 0;
     if ((atr & ATR_INVERSE) == ATR_INVERSE)
-        result |= A_REVERSE, nobold = TRUE;
+        result |= A_REVERSE;
     else
     {
         if ((atr & ATR_BLINK) == ATR_BLINK)
-            result |= A_BLINK, nobold = TRUE;
+            result |= A_BLINK;
         else
         {
             if (atr & ATR_BOLD)
