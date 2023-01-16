@@ -100,9 +100,9 @@ curses_print_text_ex(WINDOW* win, int* mx_ptr, int* my_ptr, const char* text, co
 
     while (*text)
     {
-        if (attrs || attr != ATR_NONE)
+        if (attrs || attr != ATR_NONE || extra_attrs != ATR_NONE)
         {
-            char used_attr = attrs ? *attrs : (char)attr;
+            char used_attr = (attrs ? *attrs : attr) | (char)extra_attrs;
             if (cattr != used_attr)
             {
                 if (cattr != ATR_NONE)
@@ -110,10 +110,9 @@ curses_print_text_ex(WINDOW* win, int* mx_ptr, int* my_ptr, const char* text, co
                     int curses_attr = curses_atr2cursesattr((int)cattr);
                     curses_toggle_color_attr(win, NONE, curses_attr, OFF);
                 }
-                int new_attrs = extra_attrs | (int)used_attr;
-                if (new_attrs != ATR_NONE)
+                if (used_attr != ATR_NONE)
                 {
-                    int curses_attr = curses_atr2cursesattr((int)new_attrs);
+                    int curses_attr = curses_atr2cursesattr((int)used_attr);
                     curses_toggle_color_attr(win, NONE, curses_attr, ON);
                 }
                 cattr = used_attr;
