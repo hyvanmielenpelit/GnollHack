@@ -270,13 +270,13 @@ curses_character_input_dialog(int attr, int color, const char *prompt, const cha
 
     if (iflags.wc_popup_dialog /*|| curses_stupid_hack*/) {
         askwin = curses_create_window(prompt_width, prompt_height, UP);
-        curses_toggle_color_attr(win, color == NO_COLOR ? NONE : color, attr == ATR_NONE ? NONE : curses_attr, ON);
+        curses_toggle_color_attr(askwin, color == NO_COLOR ? NONE : color, attr == ATR_NONE ? NONE : curses_attr, ON);
         for (count = 0; count < prompt_height; count++) {
             linestr = curses_break_str(askstr, maxwidth, count + 1);
             mvwaddstr(askwin, count + 1, 1, linestr);
             free(linestr);
         }
-        curses_toggle_color_attr(win, color == NO_COLOR ? NONE : color, attr == ATR_NONE ? NONE : curses_attr, OFF);
+        curses_toggle_color_attr(askwin, color == NO_COLOR ? NONE : color, attr == ATR_NONE ? NONE : curses_attr, OFF);
 
         wrefresh(askwin);
     } else {
