@@ -194,7 +194,7 @@ static struct Bool_Opt {
     { "mail", (boolean *) 0, TRUE, SET_IN_FILE },
 #endif
     { "mention_walls", &iflags.mention_walls, FALSE, SET_IN_GAME },
-#ifdef ANDROID
+#if defined(ANDROID) || defined(GNH_MOBILE)
     { "menucolors", &iflags.use_menu_color, TRUE, SET_IN_GAME },
 #else
     { "menucolors", &iflags.use_menu_color, FALSE, SET_IN_GAME },

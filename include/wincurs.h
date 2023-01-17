@@ -194,7 +194,7 @@ extern int curses_get_mouse(int *mousex, int *mousey, int *mod);
 
 extern void curses_line_input_dialog(int style UNUSED, int attr, int color, const char *prompt,
                                      char *answer, int buffer);
-extern int curses_character_input_dialog(int attr UNUSED, int color UNUSED, const char *prompt,
+extern int curses_character_input_dialog(int attr, int color, const char *prompt,
                                          const char *choices, CHAR_P def);
 extern int curses_ext_cmd(void);
 extern void curses_create_nhmenu(winid wid);

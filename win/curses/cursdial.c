@@ -195,7 +195,7 @@ curses_line_input_dialog(int style UNUSED, int attr, int color, const char *prom
 /* Get a single character response from the player, such as a y/n prompt */
 
 int
-curses_character_input_dialog(int attr UNUSED, int color UNUSED, const char *prompt, const char *choices,
+curses_character_input_dialog(int attr, int color, const char *prompt, const char *choices,
                               CHAR_P def)
 {
     WINDOW *askwin = NULL;
@@ -210,6 +210,7 @@ curses_character_input_dialog(int attr UNUSED, int color UNUSED, const char *pro
     int prompt_height = 1;
     boolean any_choice = FALSE;
     boolean accept_count = FALSE;
+    int curses_attr = curses_atr2cursesattr(attr);
 
     /* if messages were being suppressed for the remainder of the turn,
        re-activate them now that input is being requested */
@@ -269,17 +270,19 @@ curses_character_input_dialog(int attr UNUSED, int color UNUSED, const char *pro
 
     if (iflags.wc_popup_dialog /*|| curses_stupid_hack*/) {
         askwin = curses_create_window(prompt_width, prompt_height, UP);
+        curses_toggle_color_attr(win, color == NO_COLOR ? NONE : color, attr == ATR_NONE ? NONE : curses_attr, ON);
         for (count = 0; count < prompt_height; count++) {
             linestr = curses_break_str(askstr, maxwidth, count + 1);
             mvwaddstr(askwin, count + 1, 1, linestr);
             free(linestr);
         }
+        curses_toggle_color_attr(win, color == NO_COLOR ? NONE : color, attr == ATR_NONE ? NONE : curses_attr, OFF);
 
         wrefresh(askwin);
     } else {
         /* TODO: add SUPPRESS_HISTORY flag, then after getting a response,
            append it and use put_msghistory() on combined prompt+answer */
-        custompline(OVERRIDE_MSGTYPE, "%s", askstr);
+        custompline_ex(attr, color, OVERRIDE_MSGTYPE, "%s", askstr);
         curs_set(1);
     }
 
@@ -351,7 +354,7 @@ curses_character_input_dialog(int attr UNUSED, int color UNUSED, const char *pro
         /* Kludge to make prompt visible after window is dismissed
            when inputting a number */
         if (digit(answer)) {
-            custompline(OVERRIDE_MSGTYPE, "%s", askstr);
+            custompline_ex(attr, color, OVERRIDE_MSGTYPE, "%s", askstr);
             curs_set(1);
         }
 
@@ -1175,7 +1178,6 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
 #endif
         if (iflags.use_menu_color)
         {
-
             menu_color = get_menu_coloring(menu_item_ptr->str, &color, &attr);
             if (!menu_color)
                 color = menu_item_ptr->color;
