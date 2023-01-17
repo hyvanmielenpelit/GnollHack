@@ -307,7 +307,7 @@ curses_clear_unhighlight_message_window()
         for (count = 0; count < mh; count++)
         {
              mvwchgat(win, count + brdroffset, brdroffset,
-                      mw, 0 /*COLOR_PAIR(8)*/, A_NORMAL, NULL);
+                      mw, -1 /*COLOR_PAIR(8)*/, A_NORMAL, NULL);
         }
         wnoutrefresh(win);
     }
