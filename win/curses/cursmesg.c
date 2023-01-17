@@ -312,7 +312,7 @@ curses_clear_unhighlight_message_window()
             {
                 chtype ch = mvwinch(win, count + brdroffset, brdroffset + x);
                 ch &= ~A_BOLD; /* Remove highlight */
-                mvwaddch(win, count + brdroffset, brdroffset + x, ch);
+                waddch(win, ch);
             }
         }
         wnoutrefresh(win);
