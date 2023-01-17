@@ -303,12 +303,19 @@ curses_clear_unhighlight_message_window()
     else 
     {
         mx = mw + brdroffset; /* Force new line on new turn */
-        //for (count = 0; count < mh; count++)
-        //{
-        //     mvwchgat(win, count + brdroffset, brdroffset,
-        //              mw, COLOR_PAIR(8), A_NORMAL, NULL);
-        //}
-        //wnoutrefresh(win);
+        for (count = 0; count < mh; count++)
+        {
+             //mvwchgat(win, count + brdroffset, brdroffset,
+             //         mw, COLOR_PAIR(8), A_NORMAL, NULL);
+            int x;
+            for (x = 0; x < mw; x++)
+            {
+                chtype ch = mvwinch(win, count + brdroffset, brdroffset + x);
+                ch &= ~A_BOLD; /* Remove highlight */
+                mvwaddch(win, count + brdroffset, brdroffset + x, ch);
+            }
+        }
+        wnoutrefresh(win);
     }
     wmove(win, my, mx);
 }
