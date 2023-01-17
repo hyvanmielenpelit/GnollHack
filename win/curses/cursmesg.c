@@ -285,7 +285,6 @@ curses_more()
 
 
 /* Clear the message window if one line; otherwise unhighlight old messages */
-
 void
 curses_clear_unhighlight_message_window()
 {
@@ -296,11 +295,19 @@ curses_clear_unhighlight_message_window()
     turn_lines = 0;
     curses_get_window_size(MESSAGE_WIN, &mh, &mw);
 
-    if (mh == 1) {
+    if (mh == 1) 
+    {
         curses_clear_nhwin(MESSAGE_WIN);
         mx = my = brdroffset;
-    } else {
+    }
+    else 
+    {
         mx = mw + brdroffset; /* Force new line on new turn */
+
+        cchar_t wcval = 0;
+        wchar_t wch = 0;
+        attr_t attrs = A_NORMAL;
+        short color_pair = 0;
 
         for (count = 0; count < mh; count++)
         {
@@ -312,7 +319,10 @@ curses_clear_unhighlight_message_window()
             {
                 if (wmove(win, count + brdroffset, brdroffset + x) != ERR)
                 {
-                    wattr_off(win, A_BOLD, NULL);
+                    if (getcchar(&wcval, &wch, &attrs, &color_pair, NULL) != ERR && attrs != A_NORMAL)
+                    {
+                        (void)setcchar(&wcval, &wch, A_NORMAL, color_pair, NULL);
+                    }
                 }
             }
         }
