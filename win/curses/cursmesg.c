@@ -311,20 +311,8 @@ curses_clear_unhighlight_message_window()
 
         for (count = 0; count < mh; count++)
         {
-            // mvwchgat(win, count + brdroffset, brdroffset,
-            //          mw, COLOR_PAIR(8), A_NORMAL, NULL);
-
-            int x = 0;
-            for (x = 0; x < mw; x++)
-            {
-                if (wmove(win, count + brdroffset, brdroffset + x) != ERR)
-                {
-                    if (getcchar(&wcval, &wch, &attrs, &color_pair, NULL) != ERR && attrs != A_NORMAL)
-                    {
-                        (void)setcchar(&wcval, &wch, A_NORMAL, color_pair, NULL);
-                    }
-                }
-            }
+             mvwchgat(win, count + brdroffset, brdroffset,
+                      mw, 0 /*COLOR_PAIR(8)*/, A_NORMAL, NULL);
         }
         wnoutrefresh(win);
     }
