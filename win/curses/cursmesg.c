@@ -304,11 +304,6 @@ curses_clear_unhighlight_message_window()
     {
         mx = mw + brdroffset; /* Force new line on new turn */
 
-        cchar_t wcval = 0;
-        wchar_t wch = 0;
-        attr_t attrs = A_NORMAL;
-        short color_pair = 0;
-
         for (count = 0; count < mh; count++)
         {
              mvwchgat(win, count + brdroffset, brdroffset,
