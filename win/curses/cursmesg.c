@@ -302,14 +302,15 @@ curses_clear_unhighlight_message_window()
     }
     else 
     {
+        curses_last_messages();
         mx = mw + brdroffset; /* Force new line on new turn */
 
-        for (count = 0; count < mh; count++)
-        {
-             mvwchgat(win, count + brdroffset, brdroffset,
-                      mw, -1 /*COLOR_PAIR(8)*/, A_NORMAL, NULL);
-        }
-        wnoutrefresh(win);
+        //for (count = 0; count < mh; count++)
+        //{
+        //     mvwchgat(win, count + brdroffset, brdroffset,
+        //              mw, COLOR_PAIR(8), A_NORMAL, NULL);
+        //}
+        //wnoutrefresh(win);
     }
     wmove(win, my, mx);
 }
