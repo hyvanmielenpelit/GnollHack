@@ -192,7 +192,7 @@ extern int curses_get_mouse(int *mousex, int *mousey, int *mod);
 
 /* cursdial.c */
 
-extern void curses_line_input_dialog(int style UNUSED, int attr UNUSED, int color UNUSED, const char *prompt,
+extern void curses_line_input_dialog(int style UNUSED, int attr, int color, const char *prompt,
                                      char *answer, int buffer);
 extern int curses_character_input_dialog(int attr UNUSED, int color UNUSED, const char *prompt,
                                          const char *choices, CHAR_P def);
@@ -239,7 +239,7 @@ extern void curses_got_input(void);
 extern int curses_block(boolean require_tab); /* for MSGTYPE=STOP */
 extern int curses_more(void);
 extern void curses_clear_unhighlight_message_window(void);
-extern void curses_message_win_getline(const char *prompt,
+extern void curses_message_win_getline(int attr, int color, const char *prompt,
                                        char *answer, int buffer);
 extern void curses_last_messages(void);
 extern void curses_init_mesg_history(void);

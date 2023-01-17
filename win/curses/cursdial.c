@@ -116,7 +116,7 @@ static nhmenu *nhmenus = NULL;  /* NetHack menu array */
    or a wish */
 
 void
-curses_line_input_dialog(int style UNUSED, int attr UNUSED, int color UNUSED, const char *prompt, char *answer, int buffer)
+curses_line_input_dialog(int style UNUSED, int attr, int color, const char *prompt, char *answer, int buffer)
 {
     int map_height, map_width, maxwidth, remaining_buf, winx, winy, count;
     WINDOW *askwin, *bwin;
@@ -136,7 +136,7 @@ curses_line_input_dialog(int style UNUSED, int attr UNUSED, int color UNUSED, co
 
     if (iflags.window_inited) {
         if (!iflags.wc_popup_dialog) {
-            curses_message_win_getline(prompt, answer, buffer);
+            curses_message_win_getline(attr, color, prompt, answer, buffer);
             return;
         }
         curses_get_window_size(MAP_WIN, &map_height, &map_width);

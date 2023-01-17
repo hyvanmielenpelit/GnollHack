@@ -467,7 +467,7 @@ curses_count_window(const char *count_text)
 
 /* Gets a "line" (buffer) of input. */
 void
-curses_message_win_getline(const char *prompt, char *answer, int buffer)
+curses_message_win_getline(int attr, int color, const char *prompt, char *answer, int buffer)
 {
     int height, width; /* of window */
     char *tmpbuf, *p_answer; /* combined prompt + answer */
@@ -482,6 +482,7 @@ curses_message_win_getline(const char *prompt, char *answer, int buffer)
     int border_space = 0;
     int len = 0; /* of answer string */
     boolean border = curses_window_has_border(MESSAGE_WIN);
+    int curses_attr = curses_atr2cursesattr(attr);
 
     *answer = '\0';
     orig_cursor = curs_set(0);
@@ -516,7 +517,7 @@ curses_message_win_getline(const char *prompt, char *answer, int buffer)
         mx = border_space;
     }
 
-    curses_toggle_color_attr(win, NONE, A_BOLD, ON);
+    curses_toggle_color_attr(win, color == NO_COLOR ? NONE : color, curses_attr | A_BOLD, ON);
 
     for (i = 0; i < nlines - 1; i++) {
         tmpstr = curses_break_str(linestarts[i], width - 1, 1);
@@ -614,7 +615,7 @@ curses_message_win_getline(const char *prompt, char *answer, int buffer)
             free(tmpbuf);
             free(linestarts);
             curs_set(orig_cursor);
-            curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
+            curses_toggle_color_attr(win, color == NO_COLOR ? NONE : color, curses_attr | A_BOLD, OFF);
             return;
         case '\r':
         case '\n':
@@ -625,7 +626,7 @@ curses_message_win_getline(const char *prompt, char *answer, int buffer)
             mesg_add_line(tmpbuf);
             free(tmpbuf);
             curs_set(orig_cursor);
-            curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
+            curses_toggle_color_attr(win, color == NO_COLOR ? NONE : color, curses_attr | A_BOLD, OFF);
             if (++my > maxy) {
                 scroll_window(MESSAGE_WIN);
                 my--;
