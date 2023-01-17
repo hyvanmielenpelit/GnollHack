@@ -302,9 +302,7 @@ curses_clear_unhighlight_message_window()
     }
     else 
     {
-        curses_last_messages();
         mx = mw + brdroffset; /* Force new line on new turn */
-
         //for (count = 0; count < mh; count++)
         //{
         //     mvwchgat(win, count + brdroffset, brdroffset,
