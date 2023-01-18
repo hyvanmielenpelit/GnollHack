@@ -311,8 +311,11 @@ curses_clear_unhighlight_message_window()
             for (x = 0; x < mw; x++)
             {
                 chtype ch = mvwinch(win, count + brdroffset, brdroffset + x);
-                ch &= ~A_BOLD; /* Remove highlight */
-                waddch(win, ch);
+                if (ch & A_BOLD) /* has highlight */
+                {
+                    ch &= ~A_BOLD; /* Remove highlight */
+                    waddch(win, ch);
+                }
             }
         }
         wnoutrefresh(win);
