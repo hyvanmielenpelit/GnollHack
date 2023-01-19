@@ -1519,10 +1519,9 @@ NEARDATA struct permonst mons[] = {
         A(ATTK(AT_BITE, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(30, 30, MS_SILENT, MZ_SMALL, 1, 0, MAT_FLESH), STATS(6, 9, 6, 2, 2, 1), MR_NONE, MR2_NONE, MC_NONE,
-        M1_TUNNEL /*LOGGING*/ | M1_ANIMAL | M1_NOHANDS | M1_SWIM
-            | M1_HERBIVORE,
+        M1_TUNNEL /*LOGGING*/ | M1_ANIMAL | M1_NOHANDS | M1_SWIM | M1_HERBIVORE,
         /* In reality, they tunnel instead of cutting lumber.  Oh, well. */
-        M2_WANDER | M2_HOSTILE, M3_INFRAVISIBLE, M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
+        M2_WANDER | M2_HOSTILE, M3_INFRAVISIBLE, M4_NONE, M5_ATTACK_TILE, M6_NONE, M7_NONE, M8_NONE,
         1, CLR_ORANGE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("rabid rat", None, "long-tailed rodent with a constitution draining attack", None, None, S_RODENT, LVL(2, 12, 6, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRCO, 2, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
