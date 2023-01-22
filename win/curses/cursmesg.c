@@ -180,7 +180,7 @@ curses_message_win_puts_ex(const char *message, const char* attrs, const char* c
         tmpstr = curses_str_remainder(message, (width - 2), 1);
         const char* remainder_attrs = attrs;
         const char* remainder_colors = colors;
-        if (tmpstr)
+        if (tmpstr && (remainder_attrs || remainder_colors))
         {
             char* p = strstr(message, tmpstr);
             if (p)
@@ -190,8 +190,10 @@ curses_message_win_puts_ex(const char *message, const char* attrs, const char* c
                 int rlen = message_length - tlen;
                 if (rlen > 0 && offset > 0 && rlen + offset <= message_length)
                 {
-                    remainder_attrs += offset;
-                    remainder_colors += offset;
+                    if(remainder_attrs)
+                        remainder_attrs += offset;
+                    if (remainder_colors)
+                        remainder_colors += offset;
                 }
             }
         }
