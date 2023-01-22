@@ -60,6 +60,9 @@ curses_message_win_puts(const char* message, boolean recursed)
 void
 curses_message_win_puts_ex(const char *message, const char* attrs, const char* colors, int attr, int color, boolean recursed)
 {
+    if (!message)
+        return;
+
     int height, width, border_space, linespace;
     char *tmpstr;
     WINDOW *win = curses_get_nhwin(MESSAGE_WIN);
@@ -175,7 +178,24 @@ curses_message_win_puts_ex(const char *message, const char* attrs, const char* c
         //if (bold)
         //    curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
         tmpstr = curses_str_remainder(message, (width - 2), 1);
-        curses_message_win_puts_ex(tmpstr, attrs, colors, attr, color, TRUE);
+        const char* remainder_attrs = attrs;
+        const char* remainder_colors = colors;
+        if (tmpstr)
+        {
+            char* p = strstr(message, tmpstr);
+            if (p)
+            {
+                int offset = (int)(p - message);
+                int tlen = (int)strlen(tmpstr);
+                int rlen = message_length - tlen;
+                if (rlen > 0 && offset > 0 && rlen + offset <= message_length)
+                {
+                    remainder_attrs += offset;
+                    remainder_colors += offset;
+                }
+            }
+        }
+        curses_message_win_puts_ex(tmpstr, remainder_attrs, remainder_colors, attr, color, TRUE);
         free(tmpstr);
     } 
     else 
