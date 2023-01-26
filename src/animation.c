@@ -2178,6 +2178,23 @@ break;
             }
             break;
         }
+        case REPLACEMENT_ACTION_FIREPLACE:
+        {
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            if (isok(x, y) && levl[x][y].decoration_typ > 0 && get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+            {
+                int glyph_idx = 0;
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
         default:
             break;
         }
@@ -2642,6 +2659,17 @@ struct replacement_info info;
                 int glyph_idx = 0;
                 if (get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
                     glyph_idx = 1;
+
+                /* Return the first tile with index 0 */
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_FIREPLACE:
+        {
+            if (isok(x, y) && levl[x][y].decoration_typ > 0 && get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+            {
+                int glyph_idx = 0;
 
                 /* Return the first tile with index 0 */
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
