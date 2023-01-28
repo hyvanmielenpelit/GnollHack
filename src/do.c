@@ -7695,10 +7695,11 @@ const char* hint_text;
 {
     if (hint_text)
     {
-        char hintbuf[BUFSZ];
-        Sprintf(hintbuf, "HINT - %s", hint_text);
+        //char hintbuf[BUFSZ];
+        //Sprintf(hintbuf, "HINT - %s", hint_text);
         play_sfx_sound(SFX_HINT);
-        pline_ex1(ATR_NONE, CLR_MSG_HINT, hintbuf);
+        //pline_ex1(ATR_NONE, CLR_MSG_HINT, hintbuf);
+        custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "HINT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "%s", hint_text);
     }
 }
 
