@@ -430,7 +430,7 @@ curses_prev_mesg()
         if (turn != mesg->turn && count != 0) {
             curses_add_menu(wid, NO_GLYPH, &Id, 0, 0, ATR_NONE, "---", FALSE);
         }
-        curses_add_menu_ex(wid, NO_GLYPH, &Id, 0, 0, mesg->attrs ? mesg->attrs[0] : ATR_NONE, mesg->colors ? mesg->colors[0] : NO_COLOR, mesg->str, FALSE);
+        curses_add_menu_ex(wid, NO_GLYPH, &Id, 0, 0, mesg->attrs ? mesg->attrs[0] : ATR_NONE, mesg->colors ? mesg->colors[0] : NO_COLOR, mesg->str, mesg->attrs, mesg->colors, FALSE);
         turn = mesg->turn;
     }
     if (!count)

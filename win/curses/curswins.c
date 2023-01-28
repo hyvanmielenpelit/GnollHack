@@ -522,7 +522,7 @@ curses_puts_ex2(winid wid, const char* text, const char* attrs, const char* colo
             return;
         }
         Id = zeroany;
-        curses_add_nhmenu_item(wid, NO_GLYPH, &Id, 0, 0, attrs ? attrs[0] : attr, colors ? colors[0] : color, text, FALSE);
+        curses_add_nhmenu_item(wid, NO_GLYPH, &Id, 0, 0, attr, color, text, attrs, colors, FALSE);
     }
     else {
         waddstr(win, text);

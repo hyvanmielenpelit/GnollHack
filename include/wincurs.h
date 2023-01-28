@@ -100,7 +100,7 @@ extern void curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
                             const char *str, BOOLEAN_P presel);
 extern void curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel);
+    const char* str, const char* attrs, const char* colors, BOOLEAN_P presel);
 extern void curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel);
@@ -173,6 +173,7 @@ extern void curses_print_text_ex(WINDOW* win, int* mx, int* my, const char* text
 extern void curses_bail(const char *mesg);
 extern winid curses_get_wid(int type);
 extern char *curses_copy_of(const char *s);
+extern char* curses_cpystr(const char* s, const char* vals, int val);
 extern int curses_num_lines(const char *str, int width);
 extern char *curses_break_str(const char *str, int width, int line_num);
 extern char *curses_str_remainder(const char *str, int width, int line_num);
@@ -202,7 +203,7 @@ extern void curses_create_nhmenu(winid wid);
 extern void curses_add_nhmenu_item(winid wid, int glyph,
                                    const ANY_P *identifier, CHAR_P accelerator,
                                    CHAR_P group_accel, int attr, int color,
-                                   const char *str, BOOLEAN_P presel);
+                                   const char *str, const char* attrs, const char* colors, BOOLEAN_P presel);
 extern void curs_menu_set_bottom_heavy(winid);
 extern void curses_finalize_nhmenu(winid wid, const char *prompt, const char* subtitle);
 extern int curses_display_nhmenu(winid wid, int how, MENU_ITEM_P **_selected);
@@ -219,7 +220,7 @@ extern void curses_status_update(int, genericptr_t, int, int, int,
 /* cursinvt.c */
 
 extern void curses_update_inv(void);
-extern void curses_add_inv(int, int, CHAR_P, int, int, const char *);
+extern void curses_add_inv(int, int, CHAR_P, int, int, const char *, const char*, const char*);
 extern void curses_finalize_inv(const char*, const char*);
 
 /* cursinit.c */

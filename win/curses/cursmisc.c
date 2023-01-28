@@ -332,6 +332,18 @@ curses_copy_of(const char *s)
     return dupstr(s);
 }
 
+char*
+curses_cpystr(const char* s, const char* vals, int val)
+{
+    if (!s)
+        s = "";
+
+    if (vals)
+        return cpystr(s, vals);
+    else
+        return setstr(s, (char)val);
+}
+
 
 /* Determine the number of lines needed for a string for a dialog window
    of the given width */

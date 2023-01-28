@@ -60,9 +60,13 @@ typedef struct nhmi {
     anything identifier;        /* Value returned if item selected */
     CHAR_P accelerator;         /* Character used to select item from menu */
     CHAR_P group_accel;         /* Group accelerator for menu item, if any */
-    attr_t attr;                   /* Text attributes for item */
+    attr_t attr;                /* Text attributes for item */
     int color;                  /* Text color for item */
     const char *str;            /* Text of menu item */
+    const char* attrs;          /* Text attributes of menu item */
+    const char* colors;         /* Text colors of menu item */
+    boolean has_attrs;
+    boolean has_colors;
     BOOLEAN_P presel;           /* Whether menu item should be preselected */
     boolean selected;           /* Whether item is currently selected */
     int page_num;               /* Display page number for entry */
@@ -93,7 +97,7 @@ typedef enum menu_op_type {
     INVERT
 } menu_op;
 
-static nhmenu_item *curs_new_menu_item(winid, const char *);
+static nhmenu_item *curs_new_menu_item(winid, const char *, const char*, const char*, int, int);
 static void curs_pad_menu(nhmenu *, boolean);
 static nhmenu *get_menu(winid wid);
 static char menu_get_accel(boolean first);
@@ -519,10 +523,14 @@ curses_create_nhmenu(winid wid)
             while (menu_item_ptr->next_item != NULL) {
                 tmp_menu_item = menu_item_ptr->next_item;
                 free((genericptr_t) menu_item_ptr->str);
+                free((genericptr_t) menu_item_ptr->attrs);
+                free((genericptr_t) menu_item_ptr->colors);
                 free((genericptr_t) menu_item_ptr);
                 menu_item_ptr = tmp_menu_item;
             }
             free((genericptr_t) menu_item_ptr->str);
+            free((genericptr_t) menu_item_ptr->attrs);
+            free((genericptr_t) menu_item_ptr->colors);
             free((genericptr_t) menu_item_ptr); /* Last entry */
             new_menu->entries = NULL;
         }
@@ -562,12 +570,14 @@ curses_create_nhmenu(winid wid)
 }
 
 static nhmenu_item *
-curs_new_menu_item(winid wid, const char *str)
+curs_new_menu_item(winid wid, const char *str, const char* attrs, const char* colors, int attr, int color)
 {
-    char *new_str;
+    char *new_str, *new_attrs, *new_colors;
     nhmenu_item *new_item;
 
     new_str = curses_copy_of(str);
+    new_attrs = curses_cpystr(str, attrs, attr);
+    new_colors = curses_cpystr(str, colors, color);
     curses_rtrim(new_str);
     new_item = (nhmenu_item *) alloc((unsigned) sizeof (nhmenu_item));
     new_item->wid = wid;
@@ -578,6 +588,10 @@ curs_new_menu_item(winid wid, const char *str)
     new_item->attr = 0;
     new_item->color = NO_COLOR;
     new_item->str = new_str;
+    new_item->attrs = new_attrs;
+    new_item->colors = new_colors;
+    new_item->has_attrs = attrs != 0;
+    new_item->has_colors = colors != 0;
     new_item->presel = FALSE;
     new_item->selected = FALSE;
     new_item->page_num = 0;
@@ -592,7 +606,7 @@ curs_new_menu_item(winid wid, const char *str)
 void
 curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
                        CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-                       const char *str, BOOLEAN_P presel)
+                       const char *str, const char* attrs, const char* colors, BOOLEAN_P presel)
 {
     nhmenu_item *new_item, *current_items, *menu_item_ptr;
     nhmenu *current_menu = get_menu(wid);
@@ -608,7 +622,7 @@ curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
         return;
     }
 
-    new_item = curs_new_menu_item(wid, str);
+    new_item = curs_new_menu_item(wid, str, attrs, colors, attr, color);
     new_item->glyph = glyph;
     new_item->identifier = *identifier;
     new_item->accelerator = accelerator;
@@ -650,7 +664,7 @@ curs_pad_menu(nhmenu *current_menu, boolean do_pad UNUSED)
        with every insertion instead of trying to calculate the number
        of them to add */
     do {
-        menu_item_ptr = curs_new_menu_item(current_menu->wid, "");
+        menu_item_ptr = curs_new_menu_item(current_menu->wid, "", (char*)0, (char*)0, ATR_NONE, NO_COLOR);
         menu_item_ptr->next_item = current_menu->entries;
         current_menu->entries->prev_item = menu_item_ptr;
         current_menu->entries = menu_item_ptr;
@@ -835,10 +849,14 @@ curses_del_menu(winid wid, boolean del_wid_too)
         while (menu_item_ptr->next_item != NULL) {
             tmp_menu_item = menu_item_ptr->next_item;
             free((genericptr_t) menu_item_ptr->str);
+            free((genericptr_t) menu_item_ptr->attrs);
+            free((genericptr_t) menu_item_ptr->colors);
             free(menu_item_ptr);
             menu_item_ptr = tmp_menu_item;
         }
         free((genericptr_t) menu_item_ptr->str);
+        free((genericptr_t) menu_item_ptr->attrs);
+        free((genericptr_t) menu_item_ptr->colors);
         free(menu_item_ptr);    /* Last entry */
         current_menu->entries = NULL;
     }
@@ -1176,38 +1194,111 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
             start_col += 2;
         }
 #endif
-        if (iflags.use_menu_color)
+        if (menu_item_ptr->has_attrs || menu_item_ptr->has_colors)
         {
-            menu_color = get_menu_coloring(menu_item_ptr->str, &color, &attr);
-            if (!menu_color)
-                color = menu_item_ptr->color;
-            if (color != NO_COLOR) 
+            size_t len = strlen(menu_item_ptr->str);
+            num_lines = curses_num_lines(menu_item_ptr->str, entry_cols);
+            
+            for (count = 0; count < num_lines; count++) 
             {
-                curses_toggle_color_attr(win, color, NONE, ON);
+                if (menu_item_ptr->str && *menu_item_ptr->str) 
+                {
+                    tmpstr = curses_break_str(menu_item_ptr->str, entry_cols, count + 1);
+
+                    char* p = strstr(menu_item_ptr->str, tmpstr);
+                    int offset = 0;
+                    if (p && p - menu_item_ptr->str >= 0 && p - menu_item_ptr->str < len)
+                    {
+                        offset = p - menu_item_ptr->str;
+                    }
+
+                    const char* tp = tmpstr;
+                    const char* ap = menu_item_ptr->attrs + offset;
+                    const char* cp = menu_item_ptr->colors + offset;
+                    int mx = 0;
+
+                    while (*tp)
+                    {
+                        if (color != NO_COLOR)
+                        {
+                            curses_toggle_color_attr(win, color, NONE, OFF);
+                        }
+                        if (curses_attr != A_NORMAL)
+                        {
+                            curses_toggle_color_attr(win, NONE, curses_attr, OFF);
+                        }
+
+                        attr = *ap;
+                        color = *cp;
+                        curses_attr = curses_convert_attr(attr);
+
+                        if (color != NO_COLOR)
+                        {
+                            curses_toggle_color_attr(win, color, NONE, ON);
+                        }
+                        if (curses_attr != A_NORMAL)
+                        {
+                            curses_toggle_color_attr(win, NONE, curses_attr, ON);
+                        }
+                        mvwprintw(win, menu_item_ptr->line_num + count + 1, start_col + mx,
+                            "%c", *tp);
+
+                        tp++:
+                        ap++;
+                        cp++;
+                        mx++;
+                    }
+                    if (color != NO_COLOR)
+                    {
+                        curses_toggle_color_attr(win, color, NONE, OFF);
+                    }
+                    if (curses_attr != A_NORMAL)
+                    {
+                        curses_toggle_color_attr(win, NONE, curses_attr, OFF);
+                    }
+                    attr = ATR_NONE;
+                    color = NO_COLOR;
+                    free(tmpstr);
+                }
             }
-            curses_attr = curses_convert_attr(attr);
-            if (curses_attr != A_NORMAL)
+
+        }
+        else
+        {
+            if (iflags.use_menu_color)
             {
-                menu_item_ptr->attr = menu_item_ptr->attr | curses_attr;
+                menu_color = get_menu_coloring(menu_item_ptr->str, &color, &attr);
+                if (!menu_color)
+                    color = menu_item_ptr->color;
+                if (color != NO_COLOR)
+                {
+                    curses_toggle_color_attr(win, color, NONE, ON);
+                }
+                curses_attr = curses_convert_attr(attr);
+                if (curses_attr != A_NORMAL)
+                {
+                    menu_item_ptr->attr = menu_item_ptr->attr | curses_attr;
+                }
             }
-        }
-        curses_toggle_color_attr(win, NONE, menu_item_ptr->attr, ON);
+            curses_toggle_color_attr(win, NONE, menu_item_ptr->attr, ON);
 
-        num_lines = curses_num_lines(menu_item_ptr->str, entry_cols);
+            num_lines = curses_num_lines(menu_item_ptr->str, entry_cols);
 
-        for (count = 0; count < num_lines; count++) {
-            if (menu_item_ptr->str && *menu_item_ptr->str) {
-                tmpstr = curses_break_str(menu_item_ptr->str,
-                                          entry_cols, count + 1);
-                mvwprintw(win, menu_item_ptr->line_num + count + 1, start_col,
-                          "%s", tmpstr);
-                free(tmpstr);
+            for (count = 0; count < num_lines; count++) {
+                if (menu_item_ptr->str && *menu_item_ptr->str) {
+                    tmpstr = curses_break_str(menu_item_ptr->str,
+                        entry_cols, count + 1);
+                    mvwprintw(win, menu_item_ptr->line_num + count + 1, start_col,
+                        "%s", tmpstr);
+                    free(tmpstr);
+                }
             }
+            if (/*menu_color &&*/ (color != NO_COLOR)) {
+                curses_toggle_color_attr(win, color, NONE, OFF);
+            }
+            curses_toggle_color_attr(win, NONE, menu_item_ptr->attr, OFF);
         }
-        if (/*menu_color &&*/ (color != NO_COLOR)) {
-            curses_toggle_color_attr(win, color, NONE, OFF);
-        }
-        curses_toggle_color_attr(win, NONE, menu_item_ptr->attr, OFF);
+
         menu_item_ptr = menu_item_ptr->next_item;
     }
 

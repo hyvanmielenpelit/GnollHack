@@ -557,22 +557,24 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
         int applied_y = 1 + inv_update - (has_border ? 0 : 1);
         if (applied_y <= applicable_height)
         {
-            curses_add_inv(applied_y, glyph, accelerator, attr, NO_COLOR, str);
+            curses_add_inv(applied_y, glyph, accelerator, attr, NO_COLOR, str, (char*)0, (char*)0);
             inv_update++;
         }
     }
 
     curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
-        attr, NO_COLOR, str, presel);
+        attr, NO_COLOR, str, (char*)0, (char*)0, presel);
 }
 
 void
 curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel)
+    const char* str, const char* attrs, const char* colors, BOOLEAN_P presel)
 {
     struct extended_menu_info info = { 0 };
     info.color = color;
+    info.attrs = attrs;
+    info.colors = colors;
     curses_add_extended_menu(wid, glyph, identifier, info,
         accelerator, group_accel, attr, str, presel);
 }
@@ -592,13 +594,13 @@ curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct e
         int applied_y = 1 + inv_update - (has_border ? 0 : 1);
         if (applied_y <= applicable_height)
         {
-            curses_add_inv(applied_y, glyph, accelerator, attr, info.color, str);
+            curses_add_inv(applied_y, glyph, accelerator, attr, info.color, str, info.attrs, info.colors);
             inv_update++;
         }
     }
 
     curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
-        attr, info.color, str, presel);
+        attr, info.color, str, info.attrs, info.colors, presel);
 }
 
 
