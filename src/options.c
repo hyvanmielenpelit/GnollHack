@@ -7278,7 +7278,7 @@ dotoggledecorations()
     else {
         Strcpy(buf, "OFF");
     }
-    pline("Displying decorations: %s.", buf);
+    pline("Displaying decorations: %s.", buf);
     (void)doredraw();
 
     return 0;

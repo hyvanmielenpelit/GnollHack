@@ -1228,21 +1228,27 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
                     {
                         attr_t newcursesattr = curses_convert_attr(*ap);
                         
-                        if (curses_attr != A_NORMAL && curses_attr != newcursesattr)
+                        if (curses_attr != newcursesattr)
                         {
-                            curses_toggle_color_attr(win, NONE, curses_attr, OFF);
+                            if (curses_attr != A_NORMAL)
+                            {
+                                curses_toggle_color_attr(win, NONE, curses_attr, OFF);
+                            }
+                            if (newcursesattr != A_NORMAL)
+                            {
+                                curses_toggle_color_attr(win, NONE, newcursesattr, ON);
+                            }
                         }
-                        if (color != NO_COLOR && color != *cp)
+                        if (color != *cp)
                         {
-                            curses_toggle_color_attr(win, color, NONE, OFF);
-                        }
-                        if (newcursesattr != A_NORMAL && curses_attr != newcursesattr)
-                        {
-                            curses_toggle_color_attr(win, NONE, newcursesattr, ON);
-                        }
-                        if (*cp != NO_COLOR && color != *cp)
-                        {
-                            curses_toggle_color_attr(win, *cp, NONE, ON);
+                            if (color != NO_COLOR)
+                            {
+                                curses_toggle_color_attr(win, color, NONE, OFF);
+                            }
+                            if (*cp != NO_COLOR)
+                            {
+                                curses_toggle_color_attr(win, *cp, NONE, ON);
+                            }
                         }
 
                         attr = *ap;
@@ -1266,6 +1272,7 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
                     }
                     attr = ATR_NONE;
                     color = NO_COLOR;
+                    curses_attr = A_NORMAL;
                     free(tmpstr);
                 }
             }
