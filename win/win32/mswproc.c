@@ -1180,7 +1180,42 @@ mswin_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 void
 mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app)
 {
-    mswin_putstr_ex(wid, attrs ? attrs[0] : ATR_NONE, text, app, colors ? colors[0]: NO_COLOR);
+    //mswin_putstr_ex(wid, attrs ? attrs[0] : ATR_NONE, text, app, colors ? colors[0]: NO_COLOR);
+    if ((wid >= 0) && (wid < MAXWINDOWS)) {
+        if (GetNHApp()->windowlist[wid].win == NULL
+            && GetNHApp()->windowlist[wid].type == NHW_MENU) {
+            GetNHApp()->windowlist[wid].win =
+                mswin_init_menu_window(MENU_TYPE_TEXT);
+            GetNHApp()->windowlist[wid].dead = 0;
+        }
+
+        if (GetNHApp()->windowlist[wid].win != NULL) {
+            MSNHMsgPutstr data;
+            ZeroMemory(&data, sizeof(data));
+            data.attr = attrs ? attrs[0] : ATR_NONE;
+            data.text = text;
+            data.append = app;
+            data.color = colors ? colors[0] : NO_COLOR;
+            data.attrs = attrs;
+            data.colors = colors;
+            SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
+                (WPARAM)MSNH_MSG_PUTSTR, (LPARAM)&data);
+        }
+        /* yield a bit so it gets done immediately */
+        mswin_get_nh_event();
+    }
+    else {
+        // build text to display later in message box
+        char* tempchar_ptr = (char*)
+            realloc(GetNHApp()->saved_text,
+                strlen(text) + strlen(GetNHApp()->saved_text) + 1);
+        if (!tempchar_ptr)
+            return;
+        else
+            GetNHApp()->saved_text = tempchar_ptr;
+
+        strcat(GetNHApp()->saved_text, text);
+    }
 }
 
 /* Display the file named str.  Complain about missing files
