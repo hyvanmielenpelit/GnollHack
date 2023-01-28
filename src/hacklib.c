@@ -1120,11 +1120,11 @@ long realtime;
 
     char hourbuf[BUFSZ] = "", minutebuf[BUFSZ] = "";
     if (hours > 0)
-        Sprintf(hourbuf, "%ld hour%s ", hours, plur(hours));
+        Sprintf(hourbuf, "%ld hour%s", hours, plur(hours));
     if (minutes > 0)
-        Sprintf(minutebuf, "%s%ld minute%s ", *hourbuf ? ", " : "", minutes, plur(minutes));
+        Sprintf(minutebuf, "%s%ld minute%s", *hourbuf ? ", " : "", minutes, plur(minutes));
 
-    Sprintf(buf, "%s%s%s%ld second%s", hourbuf, minutebuf, *hourbuf || *minutebuf ? "and " : "", seconds, plur(seconds));
+    Sprintf(buf, "%s%s%s%ld second%s", hourbuf, minutebuf, *hourbuf || *minutebuf ? " and " : "", seconds, plur(seconds));
 }
 
 time_t

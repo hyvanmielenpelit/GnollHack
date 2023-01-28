@@ -101,6 +101,7 @@ extern int NDECL(dodiscovered);       /**/
 extern int NDECL(doclassdisco);       /**/
 extern int NDECL(doset);              /**/
 extern int NDECL(dotogglepickup);     /**/
+extern int NDECL(dotoggledecorations);/**/
 extern int NDECL(dowhatis);           /**/
 extern int NDECL(doquickwhatis);      /**/
 extern int NDECL(dowhatdoes);         /**/
@@ -5594,6 +5595,7 @@ struct ext_func_tab extcmdlist[] = {
             docommandmenu, IFBURIED | GENERALCMD | AUTOCOMPLETE },
     { M(3) /*M('c')*/, "conduct", "list voluntary challenges you have maintained",
             doconduct, IFBURIED | AUTOCOMPLETE },
+    { '\0', "decorations", "toggle display of decorations on and off", dotoggledecorations, IFBURIED | AUTOCOMPLETE },
     { M(6), "deletesavedgame", "delete saved game if it exists",
             dodeletesavedgame, IFBURIED | CASUALMODECMD | AUTOCOMPLETE },
     { C('g'), "dig", "dig the ground", dodig, INCMDMENU },

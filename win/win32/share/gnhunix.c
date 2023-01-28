@@ -1,5 +1,5 @@
 /* 
- * droidunix.c
+ * gnhunix.c
  * based on unixunix.c
  */
 

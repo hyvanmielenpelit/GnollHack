@@ -260,7 +260,7 @@ static struct Bool_Opt {
     { "showscore", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
     { "show_buff_timer", &flags.show_buff_timer, FALSE, SET_IN_GAME },
-    { "show_decorations", &iflags.show_decorations, TRUE, SET_IN_GAME },
+    { "show_decorations", &flags.show_decorations, TRUE, SET_IN_GAME },
     { "show_grid", &flags.show_grid, FALSE, SET_IN_GAME },
     { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME },
     { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
@@ -5077,7 +5077,7 @@ boolean tinitial, tfrom_file;
                     need_redraw = TRUE;
                     need_issue_gui_command = TRUE;
             }
-            else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors || boolopt[i].addr == &iflags.show_decorations)
+            else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors || boolopt[i].addr == &flags.show_decorations)
             {
                 need_redraw = TRUE;
             }
@@ -7264,6 +7264,24 @@ struct autopickup_exception *whichape;
             ape = ape->next;
         }
     }
+}
+
+int
+dotoggledecorations()
+{
+    char buf[BUFSZ];
+
+    flags.show_decorations = !flags.show_decorations;
+    if (flags.show_decorations) {
+        Strcpy(buf, "ON");
+    }
+    else {
+        Strcpy(buf, "OFF");
+    }
+    pline("Displying decorations: %s.", buf);
+    (void)doredraw();
+
+    return 0;
 }
 
 STATIC_OVL int

@@ -105,7 +105,7 @@ struct window_procs tty_procs = {
     tty_init_nhwindows, tty_player_selection, tty_askname, tty_get_nh_event,
     tty_exit_nhwindows, tty_suspend_nhwindows, tty_resume_nhwindows,
     tty_create_nhwindow_ex, tty_clear_nhwindow, tty_display_nhwindow,
-    tty_destroy_nhwindow, tty_curs, tty_putstr_ex, tty_putstr_ex2,genl_putmixed_ex,
+    tty_destroy_nhwindow, tty_curs, tty_putstr_ex, tty_putstr_ex2, genl_putmixed_ex,
     tty_display_file, tty_start_menu_ex, tty_add_menu, tty_add_extended_menu, tty_end_menu_ex,
     tty_select_menu, tty_message_menu, tty_update_inventory, tty_mark_synch,
     tty_wait_synch,
@@ -2796,7 +2796,7 @@ const char* str;
 }
 
 void
-tty_putstr_ex2(window,str, attrs, colors, app)
+tty_putstr_ex2(window, str, attrs, colors, app)
 winid window;
 int app;
 const char *str, *attrs, *colors;

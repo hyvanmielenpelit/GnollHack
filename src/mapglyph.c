@@ -352,7 +352,7 @@ unsigned long *ospecial;
             }
         }
 
-        if (iflags.use_color && iflags.show_decorations)
+        if (iflags.use_color && flags.show_decorations)
         {
             if (has_decoration && levl[x][y].decoration_typ > 0)
             {

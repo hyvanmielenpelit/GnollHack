@@ -135,12 +135,12 @@ struct flag {
     boolean verbose;         /* max battle info */
     boolean wiz_mstatusline; /* extra information on monsters */
     boolean wiz_alwaysenc;   /* creates always an encounter */
+    boolean show_decorations;/* show decorations on the walls etc. in ASCII */
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
     boolean reserved_bool1;
     boolean reserved_bool2;
     boolean reserved_bool3;
-    boolean reserved_bool4;
 
     int animation_frame_interval_in_milliseconds; /* custom animation frame interval in milliseconds. If 0, then the default at 25 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
     int move_interval_in_milliseconds; /* custom move step interval in milliseconds. If 0, then the default at 50 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
@@ -460,7 +460,6 @@ struct instance_flags {
     boolean time_botl;       /* context.botl for 'time' (moves) only */
     boolean wizweight;       /* display weight of everything in wizard mode */
     boolean takeoff_uses_all;/* takeoff command is implemented using takeoffall command with a single item */
-    boolean show_decorations;/* show decorations on the walls etc. in ASCII */
 
     /* Is the system in demo version */
     boolean demo_version;  /* OBSOLETE */

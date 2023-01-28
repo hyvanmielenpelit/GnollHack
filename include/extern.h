@@ -2392,6 +2392,7 @@ E void NDECL(init_options);
 E void NDECL(finish_options);
 E boolean FDECL(parseoptions, (char *, BOOLEAN_P, BOOLEAN_P));
 E int NDECL(doset);
+E int NDECL(dotoggledecorations);
 E int NDECL(dotogglepickup);
 E void NDECL(option_help);
 E void FDECL(next_opt, (winid, const char *));
