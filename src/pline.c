@@ -23,9 +23,16 @@
 STATIC_VAR int pline_attr = 0;
 STATIC_VAR int pline_color = NO_COLOR;
 STATIC_VAR unsigned pline_flags = 0;
+STATIC_VAR int pline_prefix_attr = 0;
+STATIC_VAR int pline_prefix_color = NO_COLOR;
+STATIC_VAR const char* pline_prefix_text = 0;
+STATIC_VAR int pline_separator_attr = 0;
+STATIC_VAR int pline_separator_color = NO_COLOR;
+STATIC_VAR const char* pline_separator_text = 0;
 STATIC_VAR char prevmsg[BUFSZ];
 
 STATIC_DCL void FDECL(putmesg, (const char *));
+STATIC_DCL void FDECL(putmesg_ex2, (const char*, const char*, const char*));
 STATIC_DCL char *FDECL(You_buf, (size_t));
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
 STATIC_DCL void FDECL(execplinehandler, (const char *));
@@ -98,6 +105,38 @@ const char *line;
     color = pline_color;
 
     putstr_ex(WIN_MESSAGE, attr, line, 0, color);
+}
+
+STATIC_OVL void
+putmesg_ex2(line, attrs, colors)
+const char* line, *attrs, *colors;
+{
+    if (!line)
+        return;
+
+    char attrbuf[BUFSIZ];
+    const char* used_attrs = attrs;
+    if (attrs)
+    {
+        size_t len = strlen(line);
+        if (len > 0 && len < BUFSIZ)
+        {
+            memcpy(attrbuf, attrs, len);
+            attrbuf[BUFSIZ - 1] = 0;
+            if ((pline_flags & URGENT_MESSAGE) != 0
+                && (windowprocs.wincap2 & WC2_URGENT_MESG) != 0)
+                attrbuf[0] |= ATR_URGENT;
+            if ((pline_flags & SUPPRESS_HISTORY) != 0
+                && (windowprocs.wincap2 & WC2_SUPPRESS_HIST) != 0)
+                attrbuf[0] |= ATR_NOHISTORY;
+            if ((pline_flags & STAY_ON_LINE) != 0)
+                attrbuf[0] |= ATR_STAY_ON_LINE;
+
+            used_attrs = attrbuf;
+        }
+    }
+
+    putstr_ex2(WIN_MESSAGE, line, used_attrs, colors, 0);
 }
 
 /* Note that these declarations rely on knowledge of the internals
@@ -215,7 +254,41 @@ VA_DECL(const char *, line)
     }
     if (u.ux)
         flush_screen(!flags.show_cursor_on_u); // show_cursor_on_u actually indicates that there is a getpos going on, in which case the cursor should not be returned to the player
-    putmesg(line);
+
+    if (pline_prefix_text || pline_separator_text)
+    {
+        char combined_line[BIGBUFSZ], attrs[BIGBUFSZ], colors[BIGBUFSZ];
+        Sprintf(combined_line, "%s%s%s", pline_prefix_text ? pline_prefix_text : "", pline_separator_text ? pline_separator_text : "", line);
+        size_t line_len = strlen(line);
+        size_t prefix_len = pline_prefix_text ? strlen(pline_prefix_text) : 0;
+        size_t separator_len = pline_separator_text ? strlen(pline_separator_text) : 0;
+        char* attr_p = attrs;
+        char* color_p = colors;
+        if (prefix_len > 0)
+        {
+            memset(attr_p, pline_prefix_attr, prefix_len);
+            attr_p += prefix_len;
+            memset(color_p, pline_prefix_color, prefix_len);
+            color_p += prefix_len;
+        }
+        if (separator_len > 0)
+        {
+            memset(attr_p, pline_separator_attr, separator_len);
+            attr_p += separator_len;
+            memset(color_p, pline_separator_color, separator_len);
+            color_p += separator_len;
+        }
+        memset(attr_p, pline_attr, line_len);
+        attr_p += line_len;
+        *attr_p = 0;
+        memset(color_p, pline_color, line_len);
+        color_p += line_len;
+        *color_p = 0;
+
+        putmesg_ex2(combined_line, attrs, colors);
+    }
+    else
+        putmesg(line);
 
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
     execplinehandler(line);
@@ -237,6 +310,7 @@ VA_DECL(const char *, line)
     VA_END();
 #endif
 }
+
 
 /* pline() variant which can override MSGTYPE handling or suppress
    message history (tty interface uses pline() to issue prompts and
@@ -269,6 +343,35 @@ VA_DECL4(int, attr, int, color, unsigned, pflags, const char*, line)
     VA_END();
     return;
 }
+
+void custompline_ex_prefix
+VA_DECL10(int, prefix_attr, int, prefix_color, const char*, prefix_line, int, separator_attr, int, separator_color, const char*, separator_line, int, attr, int, color, unsigned, pflags, const char*, line)
+{
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_prefix_attr = prefix_attr;
+    pline_prefix_color = prefix_color;
+    pline_prefix_text = prefix_line;
+    pline_separator_attr = separator_attr;
+    pline_separator_color = separator_color;
+    pline_separator_text = separator_line;
+    pline_attr = attr;
+    pline_color = color;
+    pline_flags = pflags;
+    vpline(line, VA_ARGS);
+    pline_attr = ATR_NONE;
+    pline_color = NO_COLOR;
+    pline_flags = 0;
+    pline_prefix_attr = ATR_NONE;
+    pline_prefix_color = NO_COLOR;
+    pline_prefix_text = 0;
+    pline_separator_attr = ATR_NONE;
+    pline_separator_color = NO_COLOR;
+    pline_separator_text = 0;
+    VA_END();
+    return;
+}
+
 
 void pline_ex
 VA_DECL3(int, attr, int, color, const char*, line)

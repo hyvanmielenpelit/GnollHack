@@ -104,6 +104,10 @@
     (typ1 var1, typ2 var2, typ3 var3, typ4 var4, ...)          \
     {                                    \
         va_list the_args;
+#define VA_DECL10(typ1, var1, typ2, var2, typ3, var3, typ4, var4, typ5, var5, typ6, var6, typ7, var7, typ8, var8, typ9, var9, typ10, var10) \
+    (typ1 var1, typ2 var2, typ3 var3, typ4 var4, typ5 var5, typ6 var6, typ7 var7, typ8 var8, typ9 var9, typ10 var10, ...)          \
+    {                                    \
+        va_list the_args;
 #define VA_INIT(var1, typ1)
 #define VA_NEXT(var1, typ1) (var1 = va_arg(the_args, typ1))
 #define VA_ARGS the_args

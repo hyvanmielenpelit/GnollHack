@@ -156,6 +156,7 @@ extern int curses_get_window_orientation(winid wid);
 extern void curses_get_window_xy(winid wid, int *x, int *y);
 extern void curses_puts(winid wid, int attr, const char *text);
 extern void curses_puts_ex(winid wid, int attr, int color, const char* text);
+extern void curses_puts_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color);
 extern void curses_clear_nhwin(winid wid);
 extern void curses_alert_win_border(winid wid, boolean onoff);
 extern void curses_alert_main_borders(boolean onoff);

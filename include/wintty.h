@@ -160,10 +160,13 @@ E int FDECL(has_color, (int color));
 /* ### topl.c ### */
 
 E void FDECL(show_topl, (const char *, int, int));
+E void FDECL(show_topl2, (const char*, const char*, const char*, int, int));
 E void NDECL(remember_topl);
 E void FDECL(addtopl, (const char*, int, int));
+E void FDECL(addtopl2, (const char*, const char*, const char*, int, int));
 E void NDECL(more);
-E void FDECL(update_topl, (const char *, int, int));
+E void FDECL(update_topl, (const char*, int, int));
+E void FDECL(update_topl2, (const char *, const char*, const char*, int, int));
 E void FDECL(putsyms, (const char *));
 E void FDECL(putsyms_ex, (const char*, const char*, const char*));
 

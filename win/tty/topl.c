@@ -181,15 +181,27 @@ show_topl(str, attr, color)
 const char *str;
 int attr, color;
 {
-    struct WinDesc *cw = wins[WIN_MESSAGE];
+    show_topl2(str, (char*)0, (char*)0, attr, color);
+}
+
+/* for use by tty_putstr() */
+void
+show_topl2(str, attrs, colors, attr, color)
+const char* str;
+const char* attrs;
+const char* colors;
+int attr, color;
+{
+    struct WinDesc* cw = wins[WIN_MESSAGE];
 
     if (!(cw->flags & WIN_STOP)) {
         cw->curx = cw->cury = 0;
         home();
         cl_end();
-        addtopl(str, attr, color);
+        addtopl2(str, attrs, colors, attr, color);
     }
 }
+
 
 /* used by update_topl(); also by tty_putstr() */
 void
@@ -227,7 +239,15 @@ remember_topl()
 
 void
 addtopl(s, attr, color)
-const char *s;
+const char* s;
+int attr, color;
+{
+    addtopl2(s, (char*)0, (char*)0, attr, color);
+}
+
+void
+addtopl2(s, attrs, colors, attr, color)
+const char *s, *attrs, *colors;
 int attr, color;
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
@@ -235,9 +255,33 @@ int attr, color;
     tty_curs(BASE_WINDOW, cw->curx + 1, cw->cury);
 
     end_glyphout(); /* in case message printed during graphics output */
-    toggle_topl_attr(TRUE, attr, color);
-    putsyms(s);
-    toggle_topl_attr(FALSE, attr, color);
+
+    if (attrs && colors)
+    {
+        int cattr = ATR_NONE;
+        int ccolor = NO_COLOR;
+        while (*s)
+        {
+            if(cattr != ATR_NONE)
+                toggle_topl_attr(FALSE, cattr, NO_COLOR);
+            if (ccolor != NO_COLOR)
+                toggle_topl_attr(FALSE, ATR_NONE, ccolor);
+            cattr = (int)*attrs;
+            ccolor = (int)*colors;
+            toggle_topl_attr(TRUE, cattr, ccolor);
+            topl_putsym(*s);
+            s++;
+            attrs++;
+            colors++;
+        }
+        toggle_topl_attr(FALSE, cattr, ccolor);
+    }
+    else
+    {
+        toggle_topl_attr(TRUE, attr, color);
+        putsyms(s);
+        toggle_topl_attr(FALSE, attr, color);
+    }
 
     cl_end();
     ttyDisplay->toplin = 1;
@@ -285,8 +329,18 @@ more()
 }
 
 void
-update_topl(bp, attr, color)
-register const char *bp;
+update_topl(bp,  attr, color)
+register const char* bp;
+int attr, color;
+{
+    update_topl2(bp, (char*)0, (char*)0, attr, color);
+}
+
+void
+update_topl2(bp, attrs, colors, attr, color)
+const char *bp;
+const char* attrs;
+const char* colors;
 int attr, color;
 {
     register char *tl, *otl;
@@ -307,12 +361,27 @@ int attr, color;
     {
         Strcat(toplines, "  ");
         Strcat(toplines, bp);
-        memset(toplineattrs + len, attr, 2 + n0);
-        memset(toplinecolors + len, color, 2 + n0);
+
+        memset(toplineattrs + len, ATR_NONE, 2);
+        if (attrs)
+        {
+            memcpy(toplineattrs + len + 2, attrs, n0);
+        }
+        else
+            memset(toplineattrs + len + 2, attr, n0);
+
+        memset(toplinecolors + len, NO_COLOR, 2);
+        if (colors)
+        {
+            memcpy(toplinecolors + len + 2, colors, n0);
+        }
+        else
+            memset(toplinecolors + len + 2, color, n0);
+
         toplineattrs[len + 2 + n0] = toplinecolors[len + 2 + n0] = 0;
         cw->curx += 2;
         if (!(cw->flags & WIN_STOP))
-            addtopl(bp, attr, color);
+            addtopl2(bp, attrs, colors, attr, color);
         return;
     } 
     else if (!(cw->flags & WIN_STOP)) 
@@ -328,8 +397,16 @@ int attr, color;
     (void) strncpy(toplines, bp, TBUFSZ);
     toplines[TBUFSZ - 1] = 0;
     len = strlen(toplines);
-    memset(toplineattrs, attr, len);
-    memset(toplinecolors, color, len);
+    if (attrs)
+        memcpy(toplineattrs, attrs, len);
+    else
+        memset(toplineattrs, attr, len);
+
+    if(colors)
+        memcpy(toplinecolors, colors, len);
+    else
+        memset(toplinecolors, color, len);
+
     toplineattrs[len] = toplinecolors[len] = 0;
 
     for (tl = toplines; n0 >= CO; ) {

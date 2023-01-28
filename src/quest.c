@@ -560,7 +560,7 @@ achievement_gained(achievement_name)
 const char* achievement_name;
 {
     play_sfx_sound(SFX_ACHIEVEMENT);
-    pline_ex(ATR_NONE, CLR_MSG_HINT, "ACHIEVEMENT - %s", achievement_name);
+    custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "ACHIEVEMENT", ATR_NONE, NO_COLOR, " - ", ATR_NONE, NO_COLOR, 0U, "%s", achievement_name);
 }
 
 /*quest.c*/

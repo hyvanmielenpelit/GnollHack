@@ -2846,12 +2846,12 @@ const char *str, *attrs, *colors;
         if (!suppress_history) {
             /* normal output; add to current top line if room, else flush
                whatever is there to history and then write this */
-            update_topl(str, attr, color);
+            update_topl2(str, attrs, colors, attr, color);
         } else {
             /* put anything already on top line into history */
             remember_topl();
             /* write to top line without remembering what we're writing */
-            show_topl(str, attr, color);
+            show_topl2(str, attrs, colors, attr, color);
         }
         break;
     }

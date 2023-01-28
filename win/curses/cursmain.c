@@ -443,10 +443,13 @@ curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int colo
     mesgflags = attr & (ATR_URGENT | ATR_NOHISTORY);
     attr &= ~mesgflags;
 
-    if (wid == WIN_MESSAGE && (mesgflags & ATR_NOHISTORY) != 0) {
+    if (wid == WIN_MESSAGE && (mesgflags & ATR_NOHISTORY) != 0) 
+    {
         /* display message without saving it in recall history */
         curses_count_window(text);
-    } else {
+    } 
+    else 
+    {
         /* We need to convert NetHack attributes to curses attributes */
         curses_puts_ex(wid, attr, color, text);
     }
@@ -455,7 +458,34 @@ curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int colo
 void
 curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app)
 {
-    curses_putstr_ex(wid, attrs[0], text, app, colors[0]);
+    if (!text)
+        return;
+
+    int mesgflags = 0;
+    char attrbuf[BUFSZ * 5] = "";
+    if (attrs)
+    {
+        size_t len = strlen(text);
+        if (len >= sizeof(attrbuf))
+            len = sizeof(attrbuf) - 1;
+
+        memcpy(attrbuf, attrs, len);
+        attrbuf[len] = 0;
+        
+        mesgflags = attrbuf[0] & (ATR_URGENT | ATR_NOHISTORY);
+        attrbuf[0] &= ~mesgflags;
+    }
+
+    if (wid == WIN_MESSAGE && (mesgflags & ATR_NOHISTORY) != 0)
+    {
+        /* display message without saving it in recall history */
+        curses_count_window(text);
+    }
+    else 
+    {
+        /* We need to convert NetHack attributes to curses attributes */
+        curses_puts_ex2(wid, text, attrs ? attrbuf : attrs, colors, ATR_NONE, NO_COLOR);
+    }
 }
 
 /* Display the file named str.  Complain about missing files
