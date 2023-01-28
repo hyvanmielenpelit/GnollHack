@@ -1105,6 +1105,8 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
     boolean first_accel = TRUE;
     int color = NO_COLOR;
     int attr = ATR_NONE;
+    int mcolor = NO_COLOR;
+    int mattr = ATR_NONE;
     attr_t curses_attr = A_NORMAL;
     boolean menu_color = FALSE;
 
@@ -1194,7 +1196,12 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
             start_col += 2;
         }
 #endif
-        if (menu_item_ptr->has_attrs || menu_item_ptr->has_colors)
+        if (iflags.use_menu_color)
+        {
+            menu_color = get_menu_coloring(menu_item_ptr->str, &mcolor, &mattr);
+        }
+
+        if ((menu_item_ptr->has_attrs || menu_item_ptr->has_colors) && !menu_color)
         {
             size_t len = strlen(menu_item_ptr->str);
             num_lines = curses_num_lines(menu_item_ptr->str, entry_cols);
@@ -1240,10 +1247,9 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
                         {
                             curses_toggle_color_attr(win, NONE, curses_attr, ON);
                         }
-                        mvwprintw(win, menu_item_ptr->line_num + count + 1, start_col + mx,
-                            "%c", *tp);
+                        mvwprintw(win, menu_item_ptr->line_num + count + 1, start_col + mx, "%c", *tp);
 
-                        tp++:
+                        tp++;
                         ap++;
                         cp++;
                         mx++;
@@ -1267,7 +1273,8 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
         {
             if (iflags.use_menu_color)
             {
-                menu_color = get_menu_coloring(menu_item_ptr->str, &color, &attr);
+                color = mcolor;
+                attr = mattr;
                 if (!menu_color)
                     color = menu_item_ptr->color;
                 if (color != NO_COLOR)
