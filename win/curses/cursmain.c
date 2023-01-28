@@ -456,7 +456,7 @@ curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int colo
 }
 
 void
-curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app)
+curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app UNUSED)
 {
     if (!text)
         return;

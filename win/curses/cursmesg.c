@@ -110,12 +110,12 @@ curses_message_win_puts_ex(const char *message, const char* attrs, const char* c
         strcpy(toplines, message);
         size_t len = strlen(message);
         if(attrs)
-            memcpy(toplineattrs, attrs, len + 1);
+            memcpy(toplineattrs, attrs, len);
         else
             memset(toplineattrs, attr, len);
 
-        if (attrs)
-            memcpy(toplinecolors, colors, len + 1);
+        if (colors)
+            memcpy(toplinecolors, colors, len);
         else
             memset(toplinecolors, color, len);
 
