@@ -30,6 +30,7 @@ boolean curses_window_exists(winid wid);
 int curses_get_window_orientation(winid wid);
 void curses_puts(winid wid, int attr, const char *text);
 void curses_puts_ex(winid wid, int attr, int color, const char* text);
+void curses_puts_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color);
 void curses_clear_nhwin(winid wid);
 void curses_alert_win_border(winid wid, boolean onoff);
 void curses_alert_main_borders(boolean onoff);
