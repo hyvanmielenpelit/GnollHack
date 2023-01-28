@@ -1226,27 +1226,29 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
 
                     while (*tp)
                     {
-                        if (color != NO_COLOR)
+                        attr_t newcursesattr = curses_convert_attr(*ap);
+                        
+                        if (curses_attr != A_NORMAL && curses_attr != newcursesattr)
+                        {
+                            curses_toggle_color_attr(win, NONE, curses_attr, OFF);
+                        }
+                        if (color != NO_COLOR && color != *cp)
                         {
                             curses_toggle_color_attr(win, color, NONE, OFF);
                         }
-                        if (curses_attr != A_NORMAL)
+                        if (newcursesattr != A_NORMAL && curses_attr != newcursesattr)
                         {
-                            curses_toggle_color_attr(win, NONE, curses_attr, OFF);
+                            curses_toggle_color_attr(win, NONE, newcursesattr, ON);
+                        }
+                        if (*cp != NO_COLOR && color != *cp)
+                        {
+                            curses_toggle_color_attr(win, *cp, NONE, ON);
                         }
 
                         attr = *ap;
                         color = *cp;
-                        curses_attr = curses_convert_attr(attr);
+                        curses_attr = newcursesattr;
 
-                        if (color != NO_COLOR)
-                        {
-                            curses_toggle_color_attr(win, color, NONE, ON);
-                        }
-                        if (curses_attr != A_NORMAL)
-                        {
-                            curses_toggle_color_attr(win, NONE, curses_attr, ON);
-                        }
                         mvwprintw(win, menu_item_ptr->line_num + count + 1, start_col + mx, "%c", *tp);
 
                         tp++;
