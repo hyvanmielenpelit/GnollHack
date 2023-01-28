@@ -1214,7 +1214,7 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
 
                     char* p = strstr(menu_item_ptr->str, tmpstr);
                     int offset = 0;
-                    if (p && p - menu_item_ptr->str >= 0 && p - menu_item_ptr->str < len)
+                    if (p && p - menu_item_ptr->str >= 0 && p - menu_item_ptr->str < (int)len)
                     {
                         offset = p - menu_item_ptr->str;
                     }

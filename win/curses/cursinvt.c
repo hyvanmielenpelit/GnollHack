@@ -59,7 +59,7 @@ curses_update_inv(void)
 void
 curses_add_inv(int y,
                int glyph UNUSED,
-               CHAR_P accelerator, int attr, int nhcolor, const char *str, const char* attrs, const char* colors)
+               CHAR_P accelerator, int attr, int nhcolor, const char *str, const char* attrs UNUSED, const char* colors UNUSED)
 {
     WINDOW *win = curses_get_nhwin(INV_WIN);
     int color = NO_COLOR;
