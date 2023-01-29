@@ -49,7 +49,7 @@ namespace GnollHackCommon
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [return: MarshalAs(UnmanagedType.LPStr)]
-    public delegate string GetMsgHistoryCallback(IntPtr attributes_ptr_ptr, IntPtr colors_ptr_ptr, byte value1);
+    public delegate string GetMsgHistoryCallback(IntPtr attributes_ptr, IntPtr colors_ptr, byte value1);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void PutMsgHistoryCallback([MarshalAs(UnmanagedType.LPStr)] string value1, IntPtr attributes_ptr, IntPtr colors_ptr, byte value2);

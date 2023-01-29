@@ -916,7 +916,7 @@ namespace GnollHackClient
         }
 
         private int _msgIndex = 0;
-        public string ClientCallback_GetMsgHistory(IntPtr attributes_ptr_ptr, IntPtr colors_ptr_ptr, byte init)
+        public string ClientCallback_GetMsgHistory(IntPtr attributes_ptr, IntPtr colors_ptr, byte init)
         {
             if (init != 0)
                 _msgIndex = 0;
@@ -926,29 +926,29 @@ namespace GnollHackClient
             {
                 res = _message_history[_msgIndex].Text;
                 int msgLength = res.Length;
-                if (attributes_ptr_ptr != IntPtr.Zero)
+                if (attributes_ptr != IntPtr.Zero)
                 {
                     if(_message_history[_msgIndex].Attributes != null)
                     {
-                        Marshal.Copy(_message_history[_msgIndex].Attributes, 0, attributes_ptr_ptr, msgLength);
+                        Marshal.Copy(_message_history[_msgIndex].Attributes, 0, attributes_ptr, msgLength);
                     }
                     else
                     {
                         for (int i = 0; i < msgLength; i++)
-                            Marshal.WriteByte(colors_ptr_ptr, i, (byte)_message_history[_msgIndex].Attribute);
+                            Marshal.WriteByte(colors_ptr, i, (byte)_message_history[_msgIndex].Attribute);
                     }
                     //Marshal.WriteInt32(attr, _message_history[_msgIndex].Attribute);
                 }
-                if (colors_ptr_ptr != IntPtr.Zero)
+                if (colors_ptr != IntPtr.Zero)
                 {
                     if (_message_history[_msgIndex].Colors != null)
                     {
-                        Marshal.Copy(_message_history[_msgIndex].Colors, 0, colors_ptr_ptr, msgLength);
+                        Marshal.Copy(_message_history[_msgIndex].Colors, 0, colors_ptr, msgLength);
                     }
                     else
                     {
                         for(int i = 0; i < msgLength; i++)
-                            Marshal.WriteByte(colors_ptr_ptr, i, (byte)_message_history[_msgIndex].NHColor);
+                            Marshal.WriteByte(colors_ptr, i, (byte)_message_history[_msgIndex].NHColor);
                     }
                     //Marshal.WriteInt32(attr, _message_history[_msgIndex].NHColor);
                 }

@@ -378,7 +378,7 @@ namespace GnollHackServer
             return null;
         }
 
-        public void GameCallback_PutMsgHistory(string msg, IntPtr attributes_ptr_ptr, IntPtr colors_ptr_ptr, byte is_restoring)
+        public void GameCallback_PutMsgHistory(string msg, IntPtr attributes_ptr, IntPtr colors_ptr, byte is_restoring)
         {
 
         }
