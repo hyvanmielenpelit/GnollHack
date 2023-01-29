@@ -4737,7 +4737,9 @@ namespace GnollHackClient.Pages.Game
                                                     {
                                                         GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
                                                         //longLine = msgHistoryItem.Text;
-                                                        SKColor printColor = ClientUtils.NHColor2SKColor(msgHistoryItem.NHColor < (int)nhcolor.CLR_MAX ? msgHistoryItem.NHColor : (int)nhcolor.CLR_WHITE, msgHistoryItem.Attributes);
+                                                        SKColor printColor = ClientUtils.NHColor2SKColor(
+                                                            msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 ? msgHistoryItem.Colors[0] : msgHistoryItem.NHColor < (int)nhcolor.CLR_MAX ? msgHistoryItem.NHColor : (int)nhcolor.CLR_WHITE, 
+                                                            msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 ? msgHistoryItem.Attributes[0] : msgHistoryItem.Attribute);
 
                                                         if (_refreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
                                                         {

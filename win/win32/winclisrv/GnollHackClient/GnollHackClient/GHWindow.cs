@@ -465,6 +465,11 @@ namespace GnollHackClient
             }
         }
 
+        public void PutStrEx2(string str, byte[] attributes, byte[] colors, int attribute, int color, int append)
+        {
+            PutStrEx(attributes != null ? attributes[0] : attribute, str, append, colors != null ? colors[0] : color);
+        }
+
         public double TextWindowMaximumWidth
         {
             get
