@@ -1791,7 +1791,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 else if (base_layer == LAYER_CHAIN && enlarg_idx == -1 && tile_move_idx == 0 && source_dir_idx == 0 && (data->map[adj_x][adj_y].layer_flags & LFLAGS_O_CHAIN))
                     signed_glyph = GENERAL_TILE_CHAIN_MAIN + GLYPH_GENERAL_TILE_OFF;
                 else if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
-                    signed_glyph = otmp_round->glyph == NO_GLYPH || otmp_round->glyph == 0 ? NO_GLYPH : otmp_round->glyph;
+                    signed_glyph = otmp_round->glyph;
                 else
                     signed_glyph = data->map[enl_i][enl_j].layer_glyphs[base_layer];
 

@@ -795,8 +795,6 @@ onPaint(HWND hWnd)
             TCHAR* wp = wbuf;
             char* ap = data->window_text[i].attrs;
             char* cp = data->window_text[i].colors;
-            int current_attr = ATR_NONE;
-            int current_color = NO_COLOR;
             TCHAR* wp2 = wp;
             char* ap2 = ap;
             char* cp2 = cp;
@@ -815,12 +813,8 @@ onPaint(HWND hWnd)
 
             while (*wp)
             {
-                if (*ap != current_attr)
-                {
-                    current_attr = *ap;
-                }
+                /* set attribute on based on *ap */
                 setMsgTextColor(hdc, i < (MSG_LINES - data->lines_last_turn), *cp /* data->window_text[i].color */);
-                current_color = *cp;
                 /* Go forward until a different attribute or color */
                 do
                 {
