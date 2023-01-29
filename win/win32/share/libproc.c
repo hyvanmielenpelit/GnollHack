@@ -746,27 +746,21 @@ void lib_preference_update(const char* pref)
 
 char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 {
-    int attr = ATR_NONE, color = NO_COLOR;
-    char* res = lib_callbacks.callback_getmsghistory(&attr, &color, (int)init);
-    static char buf[BUFSIZ] = "";
-    static char attrs[BUFSIZ];
-    static char colors[BUFSIZ];
+    static char buf[BUFSIZ * 2] = "";
+    static char attrs[BUFSIZ * 2] = "";
+    static char colors[BUFSIZ * 2] = "";
+    char* res = lib_callbacks.callback_getmsghistory(attrs, colors, (int)init);
     if (res)
     {
-        strncpy(buf, res, BUFSIZ - 1);
-        buf[BUFSIZ - 1] = '\0';
-        size_t len = strlen(buf);
+        strncpy(buf, res, BUFSIZ * 2 - 1);
+        buf[BUFSIZ * 2 - 1] = '\0';
         if (attrs_ptr)
         {
-            memset(attrs, (char)attr, len);
-            attrs[len] = 0;
             *attrs_ptr = attrs;
         }
         if (colors_ptr)
         {
-            memset(colors, (char)color, len);
-            colors[len] = 0;
-            *colors_ptr = attrs;
+            *colors_ptr = colors;
         }
     }
     return res ? buf : 0;
@@ -774,7 +768,7 @@ char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 
 void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors, BOOLEAN_P is_restoring)
 {
-    lib_callbacks.callback_putmsghistory(msg, attrs ? attrs[0] : ATR_NONE, colors ? colors[0] : NO_COLOR, is_restoring);
+    lib_callbacks.callback_putmsghistory(msg, attrs, colors, is_restoring);
 }
 
 

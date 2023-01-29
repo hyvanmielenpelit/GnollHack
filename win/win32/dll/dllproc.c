@@ -2247,7 +2247,7 @@ dll_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 void
 dll_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring)
 {
-    dll_callbacks.callback_putmsghistory(msg, attrs ? attrs[0] : ATR_NONE, colors ? colors[0] : NO_COLOR, restoring);
+    dll_callbacks.callback_putmsghistory(msg, attrs, colors, restoring);
 #if 0
     BOOL save_sound_opt;
 
