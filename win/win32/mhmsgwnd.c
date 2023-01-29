@@ -771,6 +771,8 @@ onPaint(HWND hWnd)
                 data->yPos
                     - (client_rt.bottom - ps.rcPaint.bottom) / data->yChar);
         y = min(ps.rcPaint.bottom, client_rt.bottom);
+        LONG client_width = client_rt.right - LINE_PADDING_RIGHT(data) - LINE_PADDING_LEFT(data);
+
         for (i = LastLine; i >= FirstLine; i--) 
         {
             char tmptext[MAXWINDOWTEXT + 1];
@@ -779,7 +781,7 @@ onPaint(HWND hWnd)
             draw_rt.right = client_rt.right - LINE_PADDING_RIGHT(data);
             draw_rt.top = y - data->yChar;
             draw_rt.bottom = y;
-
+            
             cached_font * font = mswin_get_font(NHW_MESSAGE, data->window_text[i].attr, hdc, FALSE);
             oldFont = SelectObject(hdc, font->hFont);
 
@@ -799,6 +801,18 @@ onPaint(HWND hWnd)
             char* ap2 = ap;
             char* cp2 = cp;
             LONG x = 0;
+            /* Calculate the length of the whole line */
+            DrawText(hdc, wbuf, wlen, &draw_rt, DT_NOPREFIX | DT_CALCRECT);
+            if (draw_rt.right > client_rt.right - LINE_PADDING_RIGHT(data))
+            {
+                LONG width = max(1, draw_rt.right - draw_rt.left);
+                LONG mult = max(1, client_width / width);
+                y -= mult * (draw_rt.bottom - draw_rt.top);
+            }
+
+            LONG line_height = draw_rt.bottom - draw_rt.top;
+            LONG line_start_y = y;
+
             while (*wp)
             {
                 if (*ap != current_attr)
@@ -849,14 +863,16 @@ onPaint(HWND hWnd)
                     //DrawText(hdc, wp /* wbuf */, wlen2, &draw_rt, DT_NOPREFIX | DT_WORDBREAK | DT_CALCRECT);
                     DrawText(hdc, wp3, wlen3, &draw_rt, DT_NOPREFIX | DT_CALCRECT);
 
-                    /* move that rectangle up, so that the bottom remains at the same
-                        * height */
                     if (draw_rt.right > client_rt.right - LINE_PADDING_RIGHT(data))
                     {
+                        x = 0;
                         y += (draw_rt.bottom - draw_rt.top);
+                        LONG tmp_width = draw_rt.right - draw_rt.left;
                         draw_rt.left = LINE_PADDING_LEFT(data);
-                        draw_rt.right = client_rt.right - LINE_PADDING_RIGHT(data);
+                        draw_rt.right = draw_rt.left + tmp_width;
                     }
+
+                    /* move that rectangle up, so that the bottom remains at the same height */
                     draw_rt.top = y - (draw_rt.bottom - draw_rt.top);
                     draw_rt.bottom = y;
 
@@ -936,7 +952,7 @@ onPaint(HWND hWnd)
             SetCaretPos(draw_rt.left + size.cx, draw_rt.bottom - data->yChar);
 #endif
             SelectObject(hdc, oldFont);
-            y -= draw_rt.bottom - draw_rt.top;
+            y = line_start_y - line_height;
         }
     }
     SetTextColor(hdc, OldFg);
