@@ -1925,9 +1925,9 @@ mac_putstr_ex(winid win, int attr, const char *str, int app, int color)
 }
 
 void
-mac_putstr_ex2(winid win, const char* str, const char* attrs, const char* colors, int app)
+mac_putstr_ex2(winid win, const char* str, const char* attrs, const char* colors, int attr, int color, int app)
 {
-    mac_putstr_ex(win, attrs[0], str, app, colors[0]);
+    mac_putstr_ex(win, attrs ? attrs[0] : attr, str, app, colors ? colors[0] : color);
 }
 
 void

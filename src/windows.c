@@ -90,7 +90,7 @@ STATIC_DCL void FDECL(dump_add_extended_menu, (winid, int, const ANY_P*, struct 
 STATIC_DCL void FDECL(dump_end_menu_ex, (winid, const char *, const char*));
 STATIC_DCL int FDECL(dump_select_menu, (winid, int, MENU_ITEM_P **));
 STATIC_DCL void FDECL(dump_putstr_ex, (winid, int, const char *, int, int));
-STATIC_DCL void FDECL(dump_putstr_ex2, (winid, const char*, const char*, const char*, int));
+STATIC_DCL void FDECL(dump_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 #endif /* DUMPLOG */
 
 #ifdef HANGUPHANDLING
@@ -737,7 +737,7 @@ STATIC_DCL void FDECL(hup_add_extended_menu, (winid, int, const anything*, struc
     int, const char*, BOOLEAN_P));
 STATIC_DCL void FDECL(hup_end_menu_ex, (winid, const char *, const char*));
 STATIC_DCL void FDECL(hup_putstr_ex, (winid, int, const char *, int, int));
-STATIC_DCL void FDECL(hup_putstr_ex2, (winid, const char*, const char*, const char*, int));
+STATIC_DCL void FDECL(hup_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 STATIC_DCL void FDECL(hup_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
 STATIC_DCL void FDECL(hup_issue_gui_command, (int));
 STATIC_DCL void FDECL(hup_outrip, (winid, int, time_t));
@@ -987,9 +987,9 @@ const char *text UNUSED;
 
 /*ARGSUSED*/
 STATIC_OVL void
-hup_putstr_ex2(window, text, attrs, colors, app)
+hup_putstr_ex2(window, text, attrs, colors, attr, color, app)
 winid window UNUSED;
-int app UNUSED;
+int attr UNUSED, color UNUSED, app UNUSED;
 const char* text UNUSED, *attrs UNUSED, *colors UNUSED;
 {
     return;
@@ -1584,12 +1584,12 @@ const char *str;
 
 /*ARGSUSED*/
 STATIC_OVL void
-dump_putstr_ex2(win, str, attrs, colors, app)
+dump_putstr_ex2(win, str, attrs, colors, attr, color, app)
 winid win;
-int app;
+int attr, color, app;
 const char* str, *attrs, *colors;
 {
-    dump_putstr_ex(win, attrs ? attrs[0] : ATR_NONE, str, app, colors ? colors[0] : NO_COLOR);
+    dump_putstr_ex(win, attrs ? attrs[0] : attr, str, app, colors ? colors[0] : color);
 }
 
 #ifdef DUMPLOG

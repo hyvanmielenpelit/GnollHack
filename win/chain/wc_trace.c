@@ -317,25 +317,25 @@ const char *str;
 }
 
 void
-trace_putstr_ex2(vp, window, str, attrs, colors, app)
+trace_putstr_ex2(vp, window, str, attrs, colors, attr, color, app)
 void* vp;
 winid window;
-int app;
+int attr, color, app;
 const char* str, *attrs, *colors;
 {
     struct trace_data* tdp = vp;
 
     if (str) {
         fprintf(wc_tracelogf, "%sputstr_ex2(%d, %d, '%s'(%d))\n", INDENT, window,
-            attrs[0], str, (int)strlen(str));
+            attrs ? attrs[0] : attr, str, (int)strlen(str));
     }
     else {
         fprintf(wc_tracelogf, "%sputstr_ex2(%d, %d, NULL)\n", INDENT, window,
-            attrs[0]);
+            attrs ? attrs[0] : attr);
     }
 
     PRE;
-    (*tdp->nprocs->win_putstr_ex2)(tdp->ndata, window, str, attrs, colors, app);
+    (*tdp->nprocs->win_putstr_ex2)(tdp->ndata, window, str, attrs, colors, attr, color, app);
     POST;
 }
 

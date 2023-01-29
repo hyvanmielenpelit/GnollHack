@@ -1073,9 +1073,9 @@ dll_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 }
 
 void
-dll_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app)
+dll_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app)
 {
-    dll_callbacks.callback_putstr_ex2((int)wid, text, attrs, colors, app);
+    dll_callbacks.callback_putstr_ex2((int)wid, text, attrs, colors, attr, color, app);
 }
 
 /* Display the file named str.  Complain about missing files

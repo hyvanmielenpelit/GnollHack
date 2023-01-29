@@ -263,13 +263,13 @@ void lib_putstr_ex(winid wid, int attr, const char* text, int append, int color)
     lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, append, color);
 }
 
-void lib_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int append)
+void lib_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int append)
 {
     char buf[BUFSIZ];
     if (text)
         write_text2buf_utf8(buf, BUFSIZ, text);
-    lib_callbacks.callback_putstr_ex(wid, attrs ? attrs[0] : ATR_NONE, text ? buf : 0, append, colors ? colors[0] : NO_COLOR);
-    //lib_callbacks.callback_putstr_ex2(wid, text ? buf : 0, attrs, colors, append);
+    lib_callbacks.callback_putstr_ex(wid, attrs ? attrs[0] : attr, text ? buf : 0, append, colors ? colors[0] : color);
+    //lib_callbacks.callback_putstr_ex2(wid, text ? buf : 0, attrs, colors, attr, color, append);
 }
 
 void lib_display_file(const char* filename, BOOLEAN_P must_exist)

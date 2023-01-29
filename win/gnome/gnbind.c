@@ -609,9 +609,9 @@ gnome_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 }
 
 void
-gnome_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app)
+gnome_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app)
 {
-    gnome_putstr_ex(wid, attrs[0], text, app, colors[0]);
+    gnome_putstr_ex(wid, attrs ? attrs[0] : attr, text, app, colors ? colors[0] : color);
 }
 
 /* Display the file named str.  Complain about missing files

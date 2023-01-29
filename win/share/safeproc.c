@@ -249,9 +249,9 @@ const char *str;
 }
 
 void
-safe_putstr_ex2(window, str, attrs, colors, app)
+safe_putstr_ex2(window, str, attrs, colors, attr, color, app)
 winid window;
-int app;
+int attr, color, app;
 const char* str, *attrs, *colors;
 {
     return;

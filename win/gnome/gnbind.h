@@ -55,7 +55,7 @@ void gnome_destroy_nhwindow(winid wid);
 void gnome_curs(winid wid, int x, int y);
 void gnome_putstr(winid wid, int attr, const char *text);
 void gnome_putstr_ex(winid wid, int attr, const char* text, int app, int color);
-void gnome_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app);
+void gnome_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app);
 void gnome_display_file(const char *filename, BOOLEAN_P must_exist);
 void gnome_start_menu_ex(winid wid, int style);
 void gnome_add_menu(winid wid, int glyph, const ANY_P *identifier,

@@ -2786,19 +2786,13 @@ const char* str;
 {
     if (!str)
         return;
-    char attrs[BUFSIZ];
-    char colors[BUFSIZ];
-    size_t len = min(strlen(str), sizeof(attrs) - 1);
-    memset(colors, color, len);
-    memset(attrs, attr, len);
-    colors[len] = attrs[len] = 0;
-    tty_putstr_ex2(window, str, attrs, colors, app);
+    tty_putstr_ex2(window, str, (char*)0, (char*)0, attr, color, app);
 }
 
 void
-tty_putstr_ex2(window, str, attrs, colors, app)
+tty_putstr_ex2(window, str, attrs, colors, attr, color, app)
 winid window;
-int app;
+int attr, color, app;
 const char *str, *attrs, *colors;
 {
     register struct WinDesc *cw = 0;
@@ -2828,8 +2822,7 @@ const char *str, *attrs, *colors;
 
     print_vt_code2(AVTC_SELECT_WINDOW, window);
 
-    int attr = attrs ? attrs[0] : ATR_NONE;
-    int color = colors ? colors[0] : NO_COLOR;
+    int used_attr = attrs ? attrs[0] : attr;
 
     switch (cw->type) {
     case NHW_MESSAGE: {
@@ -2890,7 +2883,7 @@ const char *str, *attrs, *colors;
 #endif /* STATUS_HILITES */
     case NHW_MAP:
         tty_curs(window, cw->curx + 1, cw->cury);
-        term_start_attr(attr);
+        term_start_attr(used_attr);
         while (*str && (int) ttyDisplay->curx < (int) ttyDisplay->cols - 1) {
             (void) doputchar((nhsym)*str, TRUE);
             str++;
@@ -2898,11 +2891,11 @@ const char *str, *attrs, *colors;
         }
         cw->curx = 0;
         cw->cury++;
-        term_end_attr(attr);
+        term_end_attr(used_attr);
         break;
     case NHW_BASE:
         tty_curs(window, cw->curx + 1, cw->cury);
-        term_start_attr(attr);
+        term_start_attr(used_attr);
         while (*str) {
             if ((int) ttyDisplay->curx >= (int) ttyDisplay->cols - 1) {
                 cw->curx = 0;
@@ -2915,7 +2908,7 @@ const char *str, *attrs, *colors;
         }
         cw->curx = 0;
         cw->cury++;
-        term_end_attr(attr);
+        term_end_attr(used_attr);
         break;
     case NHW_MENU:
     case NHW_TEXT:
@@ -2987,7 +2980,7 @@ const char *str, *attrs, *colors;
         ob = cw->data[cw->cury] = (char *) alloc((size_t)n0 + 1);
         cw->datattrs[cw->cury] = (char*)alloc((size_t)n0 + 1);
         cw->datcolors[cw->cury] = (char*)alloc((size_t)n0 + 1);
-        *ob++ = (char) (attr + 1); /* avoid nuls, for convenience */
+        *ob++ = (char) (used_attr + 1); /* avoid nuls, for convenience */
         Strcpy(ob, str);
         size_t len = strlen(ob);
         if(attrs)
@@ -3011,7 +3004,7 @@ const char *str, *attrs, *colors;
                 i--;
             if (i) {
                 cw->data[cw->cury - 1][++i] = '\0';
-                tty_putstr_ex2(window, &str[i], attrs ? &attrs[i] : attrs, colors ? &colors[i] : colors, app);
+                tty_putstr_ex2(window, &str[i], attrs ? &attrs[i] : attrs, colors ? &colors[i] : colors, attr, color, app);
             }
         }
         break;

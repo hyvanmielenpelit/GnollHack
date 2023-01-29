@@ -643,18 +643,18 @@ namespace GnollHackClient
                 _ghWindows[win_id].PutStrEx(attributes, str, append, color);
             }
         }
-        public void ClientCallback_PutStrEx2(int win_id, string str, IntPtr attributes_ptr, IntPtr colors_ptr, int append)
+        public void ClientCallback_PutStrEx2(int win_id, string str, IntPtr attributes_ptr, IntPtr colors_ptr, int attr, int color, int append)
         {
             if (win_id < 0)
                 return;
 
-            int attributes = 0;
+            int attributes = attr;
             if (attributes_ptr != IntPtr.Zero)
             {
                 attributes = Marshal.ReadByte(attributes_ptr);
             }
 
-            int color = (int)nhcolor.NO_COLOR;
+            int used_color = color;
             if (colors_ptr != IntPtr.Zero)
             {
                 color = Marshal.ReadByte(colors_ptr);
@@ -666,7 +666,7 @@ namespace GnollHackClient
             }
             else
             {
-                _ghWindows[win_id].PutStrEx(attributes, str, append, color);
+                _ghWindows[win_id].PutStrEx(attributes, str, append, used_color);
             }
         }
         public void ClientCallback_DelayOutput()

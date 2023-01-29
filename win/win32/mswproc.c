@@ -1178,7 +1178,7 @@ mswin_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 }
 
 void
-mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app)
+mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app)
 {
     //mswin_putstr_ex(wid, attrs ? attrs[0] : ATR_NONE, text, app, colors ? colors[0]: NO_COLOR);
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
@@ -1192,10 +1192,10 @@ mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* col
         if (GetNHApp()->windowlist[wid].win != NULL) {
             MSNHMsgPutstr data;
             ZeroMemory(&data, sizeof(data));
-            data.attr = attrs ? attrs[0] : ATR_NONE;
+            data.attr = attrs ? attrs[0] : attr;
             data.text = text;
             data.append = app;
-            data.color = colors ? colors[0] : NO_COLOR;
+            data.color = colors ? colors[0] : color;
             data.attrs = attrs;
             data.colors = colors;
             SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
@@ -2411,7 +2411,7 @@ mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, B
     save_sound_opt = GetNHApp()->bNoSounds;
     GetNHApp()->bNoSounds =
         TRUE; /* disable sounds while restoring message history */
-    mswin_putstr_ex2(WIN_MESSAGE, msg, attrs, colors, 0);
+    mswin_putstr_ex2(WIN_MESSAGE, msg, attrs, colors, ATR_NONE, NO_COLOR, 0);
     clear_nhwindow(WIN_MESSAGE); /* it is in fact end-of-turn indication so
                                     each message will print on the new line */
     GetNHApp()->bNoSounds = save_sound_opt; /* restore sounds option */

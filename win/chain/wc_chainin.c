@@ -161,12 +161,12 @@ const char *str;
 }
 
 void
-chainin_putstr_ex2(window, str, attrs, colors, app)
+chainin_putstr_ex2(window, str, attrs, colors, attr, color, app)
 winid window;
-int app;
+int attr, color, app;
 const char* str, *attrs, *colors;
 {
-    (*cibase->nprocs->win_putstr_ex2)(cibase->ndata, window, str, attrs, colors, app);
+    (*cibase->nprocs->win_putstr_ex2)(cibase->ndata, window, str, attrs, colors, attr, color, app);
 }
 
 void

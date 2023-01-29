@@ -991,12 +991,12 @@ const char *str;
 }
 
 void
-X11_putstr_ex2(window, str, attrs, colors, app)
+X11_putstr_ex2(window, str, attrs, colors, attr, color, app)
 winid window;
-int app;
+int attr, color, app;
 const char* str, *attrs, *colors;
 {
-    X11_putstr_ex(window, attrs[0], str, app, colors[0]);
+    X11_putstr_ex(window, attrs ? attrs[0] : attr, str, app, colors ? colors[0] : color);
 }
 
 /* We do event processing as a callback, so this is a null routine. */

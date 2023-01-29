@@ -90,6 +90,9 @@ STATIC_OVL void
 putmesg(line)
 const char *line;
 {
+    if (!line)
+        return;
+
     int attr = ATR_NONE, color = NO_COLOR;
 
     if ((pline_flags & URGENT_MESSAGE) != 0
@@ -114,29 +117,18 @@ const char* line, *attrs, *colors;
     if (!line)
         return;
 
-    char attrbuf[BUFSIZ];
-    const char* used_attrs = attrs;
-    if (attrs)
-    {
-        size_t len = strlen(line);
-        if (len > 0 && len < BUFSIZ)
-        {
-            memcpy(attrbuf, attrs, len);
-            attrbuf[BUFSIZ - 1] = 0;
-            if ((pline_flags & URGENT_MESSAGE) != 0
-                && (windowprocs.wincap2 & WC2_URGENT_MESG) != 0)
-                attrbuf[0] |= ATR_URGENT;
-            if ((pline_flags & SUPPRESS_HISTORY) != 0
-                && (windowprocs.wincap2 & WC2_SUPPRESS_HIST) != 0)
-                attrbuf[0] |= ATR_NOHISTORY;
-            if ((pline_flags & STAY_ON_LINE) != 0)
-                attrbuf[0] |= ATR_STAY_ON_LINE;
+    int attr = ATR_NONE, color = NO_COLOR;
 
-            used_attrs = attrbuf;
-        }
-    }
+    if ((pline_flags & URGENT_MESSAGE) != 0
+        && (windowprocs.wincap2 & WC2_URGENT_MESG) != 0)
+        attr |= ATR_URGENT;
+    if ((pline_flags & SUPPRESS_HISTORY) != 0
+        && (windowprocs.wincap2 & WC2_SUPPRESS_HIST) != 0)
+        attr |= ATR_NOHISTORY;
+    if ((pline_flags & STAY_ON_LINE) != 0)
+        attr |= ATR_STAY_ON_LINE;
 
-    putstr_ex2(WIN_MESSAGE, line, used_attrs, colors, 0);
+    putstr_ex2(WIN_MESSAGE, line, attrs, colors, attr, color, 0);
 }
 
 /* Note that these declarations rely on knowledge of the internals

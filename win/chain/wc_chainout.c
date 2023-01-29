@@ -194,15 +194,15 @@ const char *str;
 
 
 void
-chainout_putstr_ex2(vp, window, str, attrs, colors, app)
+chainout_putstr_ex2(vp, window, str, attrs, colors, attr, color, app)
 void* vp;
 winid window;
-int app;
+int attr, color, app;
 const char* str, *attrs, *colors;
 {
     struct chainout_data* tdp = vp;
 
-    (*tdp->nprocs->win_putstr_ex2)(window, str, attrs, colors, app);
+    (*tdp->nprocs->win_putstr_ex2)(window, str, attrs, colors, attr, color, app);
 }
 
 void

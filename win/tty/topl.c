@@ -68,10 +68,10 @@ tty_doprev_message()
             i = cw->maxcol;
             do {
                 if (cw->data[i] && strcmp(cw->data[i], ""))
-                    putstr_ex2(prevmsg_win, cw->data[i], cw->datattrs[i], cw->datcolors[i], 0);
+                    putstr_ex2(prevmsg_win, cw->data[i], cw->datattrs[i], cw->datcolors[i], ATR_NONE, NO_COLOR, 0);
                 i = (i + 1) % cw->rows;
             } while (i != cw->maxcol);
-            putstr_ex2(prevmsg_win, toplines, toplineattrs, toplinecolors, 0);
+            putstr_ex2(prevmsg_win, toplines, toplineattrs, toplinecolors, ATR_NONE, NO_COLOR, 0);
             display_nhwindow(prevmsg_win, TRUE);
             destroy_nhwindow(prevmsg_win);
         } else if (iflags.prevmsg_window == 'c') { /* combination */
@@ -101,11 +101,11 @@ tty_doprev_message()
                     i = cw->maxcol;
                     do {
                         if (cw->data[i] && strcmp(cw->data[i], ""))
-                            putstr_ex2(prevmsg_win, cw->data[i], cw->datattrs[i], cw->datcolors[i], 0);
+                            putstr_ex2(prevmsg_win, cw->data[i], cw->datattrs[i], cw->datcolors[i], ATR_NONE, NO_COLOR, 0);
                         i = (i + 1) % cw->rows;
                     } while (i != cw->maxcol);
                     /* Do recursion here for colors */
-                    putstr_ex2(prevmsg_win, toplines, toplineattrs, toplinecolors, 0);
+                    putstr_ex2(prevmsg_win, toplines, toplineattrs, toplinecolors, ATR_NONE, NO_COLOR, 0);
                     display_nhwindow(prevmsg_win, TRUE);
                     destroy_nhwindow(prevmsg_win);
                 }
@@ -122,7 +122,7 @@ tty_doprev_message()
             if (cw->maxcol < 0)
                 cw->maxcol = cw->rows - 1;
             do {
-                putstr_ex2(prevmsg_win, cw->data[cw->maxcol], cw->datattrs[cw->maxcol], cw->datcolors[cw->maxcol], 0);
+                putstr_ex2(prevmsg_win, cw->data[cw->maxcol], cw->datattrs[cw->maxcol], cw->datcolors[cw->maxcol], ATR_NONE, NO_COLOR, 0);
                 cw->maxcol--;
                 if (cw->maxcol < 0)
                     cw->maxcol = cw->rows - 1;

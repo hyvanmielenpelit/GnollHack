@@ -438,9 +438,10 @@ putstr(window, attr, str)
 void
 curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int color)
 {
-    int mesgflags;
+    if (!text)
+        return;
 
-    mesgflags = attr & (ATR_URGENT | ATR_NOHISTORY);
+    int mesgflags = attr & (ATR_URGENT | ATR_NOHISTORY);
     attr &= ~mesgflags;
 
     if (wid == WIN_MESSAGE && (mesgflags & ATR_NOHISTORY) != 0) 
@@ -456,25 +457,13 @@ curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int colo
 }
 
 void
-curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app UNUSED)
+curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app UNUSED)
 {
     if (!text)
         return;
 
-    int mesgflags = 0;
-    char attrbuf[BUFSZ * 5] = "";
-    if (attrs)
-    {
-        size_t len = strlen(text);
-        if (len >= sizeof(attrbuf))
-            len = sizeof(attrbuf) - 1;
-
-        memcpy(attrbuf, attrs, len);
-        attrbuf[len] = 0;
-        
-        mesgflags = attrbuf[0] & (ATR_URGENT | ATR_NOHISTORY);
-        attrbuf[0] &= ~mesgflags;
-    }
+    int mesgflags = attr & (ATR_URGENT | ATR_NOHISTORY);
+    attr &= ~mesgflags;
 
     if (wid == WIN_MESSAGE && (mesgflags & ATR_NOHISTORY) != 0)
     {
@@ -484,7 +473,7 @@ curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* co
     else 
     {
         /* We need to convert NetHack attributes to curses attributes */
-        curses_puts_ex2(wid, text, attrs ? attrbuf : attrs, colors, ATR_NONE, NO_COLOR);
+        curses_puts_ex2(wid, text, attrs, colors, attr, color);
     }
 }
 

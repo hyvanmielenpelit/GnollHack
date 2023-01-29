@@ -23,7 +23,7 @@ static void FDECL(and_dismiss_nhwindow, (winid));
 static void FDECL(and_destroy_nhwindow, (winid));
 static void FDECL(and_curs, (winid,int,int));
 static void FDECL(and_putstr_ex, (winid, int, const char *, int, int));
-static void FDECL(and_putstr_ex2, (winid, const char*, const char*, const char*, int));
+static void FDECL(and_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 static void FDECL(and_putmixed_ex, (winid, int, const char *, int, int));
 static void FDECL(and_display_file, (const char *, BOOLEAN_P));
 static void FDECL(and_start_menu_ex, (winid, int));
@@ -786,9 +786,9 @@ void and_putstr_ex(winid wid, int attr, const char *str, int append, int nhcolor
 	destroy_jobject(jstr);
 }
 
-void and_putstr_ex2(winid wid, const char* str, const char* attrs, const char* colors, int append)
+void and_putstr_ex2(winid wid, const char* str, const char* attrs, const char* colors, int attr, int color, int append)
 {
-	and_putstr_ex(wid, attrs[0], str, append, colors[0]);
+	and_putstr_ex(wid, attrs ? attrs[0] : attr, str, append, colors ? colors[0] : color);
 }
 
 void and_putstr(winid wid, int attr, const char *str)

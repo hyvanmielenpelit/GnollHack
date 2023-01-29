@@ -4770,10 +4770,10 @@ void NetHackQtBind::qt_putstr_ex(winid wid, int attr, const char *text, int app,
     window->PutStr(attr, text);
 }
 
-void NetHackQtBind::qt_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int app)
+void NetHackQtBind::qt_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app)
 {
     NetHackQtWindow* window = id_to_window[wid];
-    window->PutStr(attr, text);
+    window->PutStr(attrs ? attrs[0] : attr, text);
 }
 
 void NetHackQtBind::qt_display_file(const char *filename, BOOLEAN_P must_exist)
