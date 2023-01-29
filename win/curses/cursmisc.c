@@ -788,7 +788,7 @@ curses_convert_attr(int attr)
 
     /* first, strip off control flags masked onto the display attributes
        (caller should have already done this...) */
-    attr &= ~(ATR_URGENT | ATR_NOHISTORY);
+    attr &= ~(ATR_LINE_MSG_MASK);
 
     switch (attr) {
     case ATR_NONE:

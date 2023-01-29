@@ -103,6 +103,9 @@ typedef struct mi {
 #define ATR_ULINE           0x0004
 #define ATR_BLINK           0x0005
 #define ATR_INVERSE         0x0007
+#define ATR_ALT_COLORS      0x0008
+#define ATR_ATTR_MASK       0x000F
+
 /* not a display attribute but passed to putstr() as an attribute;
    can be masked with one regular display attribute */
 #define ATR_URGENT          0x0010
@@ -126,7 +129,7 @@ typedef struct mi {
 #define ATR_ALIGN_RIGHT     0x00020000
 #define ATR_INACTIVE        0x00040000
 #define ATR_HALF_SIZE       0x00080000
-#define ATR_ALT_COLORS      0x00100000
+#define ATR_LINE_MSG_MASK   0xFFFFFFF0
 
 /* nh_poskey() modifier types */
 #define CLICK_1 1

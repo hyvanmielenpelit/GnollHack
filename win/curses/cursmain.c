@@ -441,7 +441,7 @@ curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int colo
     if (!text)
         return;
 
-    int mesgflags = attr & (ATR_URGENT | ATR_NOHISTORY);
+    int mesgflags = attr & (ATR_LINE_MSG_MASK);
     attr &= ~mesgflags;
 
     if (wid == WIN_MESSAGE && (mesgflags & ATR_NOHISTORY) != 0) 
@@ -462,7 +462,7 @@ curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* co
     if (!text)
         return;
 
-    int mesgflags = attr & (ATR_URGENT | ATR_NOHISTORY);
+    int mesgflags = attr & (ATR_LINE_MSG_MASK);
     attr &= ~mesgflags;
 
     if (wid == WIN_MESSAGE && (mesgflags & ATR_NOHISTORY) != 0)
@@ -536,7 +536,7 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
                 CHAR_P accelerator, CHAR_P group_accel, int attr,
                 const char *str, BOOLEAN_P presel)
 {
-    attr &= ~(ATR_URGENT | ATR_NOHISTORY);
+    attr &= ~(ATR_LINE_MSG_MASK);
 
     if (inv_update) {
         int height = 0, width = 0;
@@ -573,7 +573,7 @@ curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct e
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    attr &= ~(ATR_URGENT | ATR_NOHISTORY);
+    attr &= ~(ATR_LINE_MSG_MASK);
 
     if (inv_update) {
         int height = 0, width = 0;
