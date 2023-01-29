@@ -1192,10 +1192,10 @@ mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* col
         if (GetNHApp()->windowlist[wid].win != NULL) {
             MSNHMsgPutstr data;
             ZeroMemory(&data, sizeof(data));
-            data.attr = attrs ? attrs[0] : attr;
+            data.attr = attr;
             data.text = text;
             data.append = app;
-            data.color = colors ? colors[0] : color;
+            data.color = color;
             data.attrs = attrs;
             data.colors = colors;
             SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
