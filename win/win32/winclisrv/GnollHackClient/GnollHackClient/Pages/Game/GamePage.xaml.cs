@@ -4810,9 +4810,6 @@ namespace GnollHackClient.Pages.Game
                                                             }
                                                             else
                                                             {
-                                                                if (lineidx > 0)
-                                                                    char_idx++;
-
                                                                 int charidx_start = 0;
 
                                                                 while (char_idx < msgHistoryItem.Text.Length && charidx_start < wrappedLine.Length)
