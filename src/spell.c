@@ -7,6 +7,7 @@
 #include "hack.h"
 #include <math.h>
 
+
 /* spellmenu arguments; 0 thru n-1 used as spl_book[] index when swapping */
 #define SPELLMENU_DETAILS (-4)
 #define SPELLMENU_PREPARE (-3)
@@ -53,7 +54,7 @@ STATIC_DCL boolean FDECL(spell_aim_step, (genericptr_t, int, int));
 #endif
 STATIC_DCL const char* FDECL(get_spell_type, (int));
 STATIC_DCL const char* FDECL(get_attribute, (int));
-STATIC_DCL const char* FDECL(get_targeting, (int));
+STATIC_DCL const char* FDECL(get_targeting, (unsigned int));
 STATIC_DCL const char* FDECL(get_spell_level_bonus, (int));
 STATIC_DCL const char* FDECL(get_components, (int));
 STATIC_DCL const char* FDECL(get_material_components, (int));
@@ -1761,7 +1762,7 @@ int skill;
     char plusbuf[BUFSIZ];
     boolean maindiceprinted = FALSE;
     
-    Sprintf(buf, "Level bonus:  ");
+    Sprintf(buf, "- **Level bonus:**  ");
 
     if ((objects[skill].oc_spell_flags & S1_LDMG_IS_PER_LEVEL_DMG_INCREASE) && objects[skill].oc_spell_per_level_step > 0)      // TODO: Bitwise AND needed here?
     {
@@ -1784,16 +1785,15 @@ int skill;
         }
 
         if (objects[skill].oc_spell_per_level_step == 1)
-            Sprintf(plusbuf, " per caster level\n");
+            Sprintf(plusbuf, " per caster level");
         else
-            Sprintf(plusbuf, " per %ld caster levels\n", objects[skill].oc_spell_per_level_step);
+            Sprintf(plusbuf, " per %ld caster levels", objects[skill].oc_spell_per_level_step);
 
         Strcat(buf, plusbuf);
     }
     else
     {
-        Sprintf(plusbuf, "              Null\n");
-        Strcat(buf, plusbuf);
+        Sprintf(buf, "");
     }
     
     return buf;
@@ -1837,7 +1837,7 @@ int skill;
     if (!strcmp(buf2, ""))
         Strcpy(buf2, "None");
 
-    Sprintf(buf, "Components:               %s\n", buf2);
+    Sprintf(buf, "Components:               %s", buf2);
     
     return buf;
 }
@@ -1854,120 +1854,138 @@ int skill;
         Sprintf(buf2, "%d casting%s", matlists[objects[skill].oc_material_components].spellsgained,
             matlists[objects[skill].oc_material_components].spellsgained == 1 ? "" : "s");
 
-        Sprintf(buf, "Material components - %s:\n", buf2);
+        Sprintf(buf, "Material components - %s:  \n", buf2);
 
         for (int i = 0; matlists[objects[skill].oc_material_components].matcomp[i].objectid[0] > 0; i++)
         {
-            Sprintf(buf2, " %2d - %s%s", (i + 1), domatcompname(&matlists[objects[skill].oc_material_components].matcomp[i]),
+            Sprintf(buf2, "%d\. %s%s  \n", (i+1), domatcompname(&matlists[objects[skill].oc_material_components].matcomp[i]),
                 ((matlists[objects[skill].oc_material_components].matcomp[i].flags & MATCOMP_NOT_SPENT) ? " as a catalyst" : ""));
             
-            Strcat(buf, buf2);
+            (void)strcat(buf, buf2);
         }
     }
     else
-        Sprintf(buf, "%s", "No material components");
+        Sprintf(buf, "%s  \n", "No material components");
 
     return buf;
 }
 
-export_spells_for_wiki(){        // Copied mostly from spelldescription(), below
-    
-    pline("Starting writing spells.md...");
-    const char* fq_save = "spells.md";
-    int fd;
+int
+export_spells_for_wiki() {                              // Copied mostly from spelldescription(), below
 
-    (void)remove(fq_save);
+    pline("Starting writing spells...");
+
+    (void)mkdir("\\spells_for_wiki\\");                 // TODO: Is it needed to have something checking if the folder exists?
+
+    char* cwd[BUFSIZ];
+    char fq_save[BUFSIZ];
+    char name[BUFSIZ];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        (void)strcat(cwd, "\\spells_for_wiki\\");
+        //pline("Current working dir: %s\n", cwd);
+    }
+    else {
+        pline("getcwd() error");
+        return 0;
+    }
+
+    for (int i = FIRST_SPELL; i <= SPE_BOOK_OF_THE_DEAD; i++) {
+
+        name[0] = '\0';
+        (void)strcat(name, obj_descr[objects[i].oc_name_idx].oc_name);
+        for (int j = 0; j < strlen(name); j++) {
+
+            if (name[j] == ' ') name[j] = '-';
+        }
+
+        *name = highc(*name);
+
+        fq_save[0] = '\0';
+        (void)strcat(fq_save, cwd);
+        (void)strcat(fq_save, name);
+        (void)strcat(fq_save, ".md");
+
+        int fd;
+
+        (void)remove(fq_save);
 
 #ifdef MAC
-    fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
 #else
-    fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
 #endif
-    char buf[BUFSIZ];
-    char plusbuf[BUFSIZ];
-
-    int j = 0;
-    for (int i = FIRST_SPELL; i <= SPE_BOOK_OF_THE_DEAD; i++) {
-        Sprintf(buf, "\n%d.\n", ++j);
-        (void)write(fd, buf, strlen(buf));
-
-        // Spell name
-        //Sprintf(buf, "Spell name:               %s\n", obj_descr[objects[i].oc_name_idx].oc_name);
-        Sprintf(buf, "%s\n", obj_descr[objects[i].oc_name_idx].oc_name);
-        //Sprintf(buf, "%s\n", highc(obj_descr[objects[i].oc_name_idx].oc_name));
-        *buf = highc(*buf);
-        (void)write(fd, buf, strlen(buf));
+        char buf[BUFSIZ];
+        char plusbuf[BUFSIZ];
 
         // Spell level
         if (objects[i].oc_spell_level == -1) {
-            Sprintf(buf, "Minor %s cantrip\n\n", get_spell_type(objects[i].oc_skill));
+            Sprintf(buf, "## Minor %s cantrip\n\n", get_spell_type(objects[i].oc_skill));
             (void)write(fd, buf, strlen(buf));
         }
         else if (objects[i].oc_spell_level == 0) {
-            Sprintf(buf, "Major %s cantrip\n\n", get_spell_type(objects[i].oc_skill));
+            Sprintf(buf, "## Major %s cantrip\n\n", get_spell_type(objects[i].oc_skill));
             (void)write(fd, buf, strlen(buf));
         }
         else if (objects[i].oc_spell_level > 0) {
-            Sprintf(buf, "Level %ld %s spell\n\n", objects[i].oc_spell_level, get_spell_type(objects[i].oc_skill));
+            Sprintf(buf, "## Level %ld %s spell\n\n", objects[i].oc_spell_level, get_spell_type(objects[i].oc_skill));
             (void)write(fd, buf, strlen(buf));
         }
         else {
-            Sprintf(buf, "Spell of inappropriate level\n\n");
+            Sprintf(buf, "## Spell of inappropriate level\n\n");
             (void)write(fd, buf, strlen(buf));
         }
 
         // Spell primary casting attribute
-        Sprintf(buf, "Attribute:                %s\n", get_attribute(objects[i].oc_spell_attribute));       
+        Sprintf(buf, "- **Attribute:**                %s  \n", get_attribute(objects[i].oc_spell_attribute));
         (void)write(fd, buf, strlen(buf));
 
-        // Spell success percentage
-        int successpct_unlimited = percent_success(i, FALSE);                                               // TODO: is this calculation enough?
-        Sprintf(buf, "Success chance:           %d\%% \n", successpct_unlimited);
-        (void)write(fd, buf, strlen(buf));
-            
         // Spell mana cost
-        Sprintf(buf, "Mana cost:                %.1f\n", (double)objects[i].oc_spell_mana_cost);            // TODO: does this need further calculation, as in spell.c?        
+        Sprintf(buf, "- **Mana cost:**                %.1f  \n", (double)objects[i].oc_spell_mana_cost);    // TODO: does this need further calculation?        
         (void)write(fd, buf, strlen(buf));
 
         // Spell casting time
         if (objects[i].oc_spell_flags & S1_DOES_NOT_TAKE_A_TURN)                                            // TODO: S1_DOES_NOT_TAKE_A_TURN necessary?
-            Sprintf(buf, "Casting time:             0 rounds\n");
+            Sprintf(buf, "- **Casting time:**             0 rounds  \n");
         else
-            Sprintf(buf, "Casting time:             1 round\n");
+            Sprintf(buf, "- **Casting time:**             1 round  \n");
 
         (void)write(fd, buf, strlen(buf));
 
         // Spell cooldown
-        if (objects[i].oc_spell_cooldown > 0)                                                               
-            Sprintf(buf, "Spell cooldown:           %ld round%s\n", objects[i].oc_spell_cooldown, objects[i].oc_spell_cooldown == 1 ? "" : "s");
+        if (objects[i].oc_spell_cooldown > 0)
+            Sprintf(buf, "- **Spell cooldown:**        %ld round%s  \n", objects[i].oc_spell_cooldown, objects[i].oc_spell_cooldown == 1 ? "" : "s");
         else
-            Sprintf(buf, "Spell cooldown:           None\n");
+            Sprintf(buf, "- **Spell cooldown:**           None  \n");
 
         (void)write(fd, buf, strlen(buf));
 
         // Spell targeting direction
-        Sprintf(buf, "Targeting:                %s\n", get_targeting(objects[i].oc_dir));                 
+        Sprintf(buf, "- **Targeting:**                %s  \n", get_targeting(objects[i].oc_dir));
         (void)write(fd, buf, strlen(buf));
 
         // Spell range
-        if (objects[i].oc_spell_range > 0)                                                 
-            Sprintf(buf, "Range:                    %ld'\n", objects[i].oc_spell_range * 5L);
+        if (objects[i].oc_spell_range > 0)
+            Sprintf(buf, "- **Range:**                    %ld'  \n", objects[i].oc_spell_range * 5L);
         else
-            Sprintf(buf, "Range:                    0'\n");
+            Sprintf(buf, "- **Range:**                     0'  \n");
         (void)write(fd, buf, strlen(buf));
 
         // Damage or healing
-        if (objects[i].oc_skill == P_HEALING_SPELL)
-            Sprintf(buf, "Healing:                  ");
-        else
-            Sprintf(buf, "Damage:                   ");
+        if (objects[i].oc_spell_dmg_dice != 0 && objects[i].oc_spell_dmg_diesize != 0) {
+            if (objects[i].oc_skill == P_HEALING_SPELL)
+                Sprintf(buf, "- **Healing:**                  ");
+            else
+                Sprintf(buf, "- **Damage:**                   ");
 
-        Sprintf(plusbuf, "%dd%d\n", objects[i].oc_spell_dmg_dice, objects[i].oc_spell_dmg_diesize);
-        Strcat(buf, plusbuf);
-        (void)write(fd, buf, strlen(buf));
+            Sprintf(plusbuf, "%dd%d  \n", objects[i].oc_spell_dmg_dice, objects[i].oc_spell_dmg_diesize);
+            (void)strcat(buf, plusbuf);
+            (void)write(fd, buf, strlen(buf));
+        }
 
         // Spell level bonus
         Sprintf(buf, get_spell_level_bonus(i));
+        Sprintf(plusbuf, "  \n");
+        (void)strcat(buf, plusbuf);
         (void)write(fd, buf, strlen(buf));
 
         // Spell damage type
@@ -1978,38 +1996,36 @@ export_spells_for_wiki(){        // Copied mostly from spelldescription(), below
             *dmgttext = highc(*dmgttext);
             if (strcmp(dmgttext, "") != 0)
             {
-                Sprintf(buf, "Damage type:              %s\n", dmgttext);
+                Sprintf(buf, "- **Damage type:**              %s  \n", dmgttext);
                 (void)write(fd, buf, strlen(buf));
             }
         }
 
         // Spell skill chance
-        Sprintf(buf, "Train chance:             %ld%% \n", objects[i].oc_spell_skill_chance);
+        Sprintf(buf, "- **Train chance:**             %ld%%  \n", objects[i].oc_spell_skill_chance);
+        (void)write(fd, buf, strlen(buf));
+
+        // Spell components
+        Sprintf(buf, "### %s  \n", get_components(i));
         (void)write(fd, buf, strlen(buf));
 
         // Spell material components
-        Sprintf(buf, get_components(i));
-        (void)write(fd, buf, strlen(buf));
-        Sprintf(buf, "%s\n", get_material_components(i));
-        (void)write(fd, buf, strlen(buf));
-
-        // Spell statistics
-        double baseavg = 0.0f;
-        if (objects[i].oc_spell_dmg_dice > 0 && objects[i].oc_spell_dmg_diesize > 0)
-            baseavg = (double)objects[i].oc_spell_dmg_dice * (double)(1.0 + objects[i].oc_spell_dmg_diesize) / 2.0;
-        Strcpy(buf, "Spell statistics:");
-        (void)write(fd, buf, strlen(buf));
-        Sprintf(buf, " Average damage is %.1f\n", baseavg);                
+        Sprintf(buf, "### ");
+        Sprintf(plusbuf, "%s", get_material_components(i));
+        (void)strcat(buf, plusbuf);
         (void)write(fd, buf, strlen(buf));
 
         // Spell description
-        Sprintf(buf, "Item description:         %s\n", obj_descr[objects[i].oc_name_idx].oc_item_description);
+        Sprintf(buf, "## Description:  \n");
+        Sprintf(plusbuf, "%s", obj_descr[objects[i].oc_name_idx].oc_item_description);
         (void)write(fd, buf, strlen(buf));
+        (void)write(fd, plusbuf, strlen(plusbuf));
+        
+        (void)close(fd);
     }
-    (void)close(fd);
 
     pline("Done!");
-    
+
     return 0;
 }
 
