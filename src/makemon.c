@@ -2296,8 +2296,7 @@ boolean origin_at_mon;
     place_monster(m2, m2->mx, m2->my);
 
     if (emitted_light_range(m2->data))
-        new_light_source(m2->mx, m2->my, emitted_light_range(m2->data), LS_MONSTER,
-                         monst_to_any(m2));
+        new_light_source(m2->mx, m2->my, emitted_light_range(m2->data), LS_MONSTER, monst_to_any(m2), 0);
 
     if (mon_ambient_sound(m2->data))
         new_sound_source(m2->mx, m2->my, mon_ambient_sound(m2->data), (double)mon_ambient_volume(m2->data), SOUNDSOURCE_MONSTER, mon_ambient_subtype(m2->data),
@@ -2987,8 +2986,7 @@ int level_limit, level_adjustment;
     }
 
     if ((ct = emitted_light_range(mtmp->data)) != 0)
-        new_light_source(mtmp->mx, mtmp->my, ct, LS_MONSTER,
-                         monst_to_any(mtmp));
+        new_light_source(mtmp->mx, mtmp->my, ct, LS_MONSTER, monst_to_any(mtmp), 0);
 
     if ((ct = mon_ambient_sound(mtmp->data)) != 0)
         new_sound_source(mtmp->mx, mtmp->my, ct, (double)mon_ambient_volume(mtmp->data), SOUNDSOURCE_MONSTER, mon_ambient_subtype(mtmp->data),

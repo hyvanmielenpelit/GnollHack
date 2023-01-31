@@ -723,8 +723,7 @@ made_change:
         if (new_light == 1)
             ++new_light; /* otherwise it's undetectable */
         if (new_light)
-            new_light_source(u.ux, u.uy, new_light, LS_MONSTER,
-                             monst_to_any(&youmonst));
+            new_light_source(u.ux, u.uy, new_light, LS_MONSTER, monst_to_any(&youmonst), 0);
     }
     new_ambient = mon_ambient_sound(youmonst.data);
     if (old_ambient != new_ambient)

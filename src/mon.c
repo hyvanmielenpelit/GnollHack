@@ -2831,7 +2831,7 @@ struct monst *mtmp, *mtmp2;
     if (emitted_light_range(mtmp2->data)) 
     {
         /* since this is so rare, we don't have any `mon_move_light_source' */
-        new_light_source(mtmp2->mx, mtmp2->my, emitted_light_range(mtmp2->data), LS_MONSTER, monst_to_any(mtmp2));
+        new_light_source(mtmp2->mx, mtmp2->my, emitted_light_range(mtmp2->data), LS_MONSTER, monst_to_any(mtmp2), 0);
         /* here we rely on fact that `mtmp' hasn't actually been deleted */
         del_light_source(LS_MONSTER, monst_to_any(mtmp));
     }
@@ -5317,8 +5317,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         if (emitted_light_range(olddata))
             del_light_source(LS_MONSTER, monst_to_any(mtmp));
         if (emitted_light_range(mtmp->data))
-            new_light_source(mtmp->mx, mtmp->my, emitted_light_range(mtmp->data),
-                             LS_MONSTER, monst_to_any(mtmp));
+            new_light_source(mtmp->mx, mtmp->my, emitted_light_range(mtmp->data), LS_MONSTER, monst_to_any(mtmp), 0);
     }
 
     if (mon_ambient_sound(olddata) != mon_ambient_sound(mtmp->data))

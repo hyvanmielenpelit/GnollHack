@@ -56,9 +56,9 @@ extern char circle_start[];
 
 /* Create a new light source.  */
 void
-new_light_source(x, y, range, type, id)
+new_light_source(x, y, range, type, id, sidedness)
 xchar x, y;
-int range, type;
+int range, type, sidedness;
 anything *id;
 {
     light_source *ls;
@@ -80,10 +80,11 @@ anything *id;
     ls->next = light_base;
     ls->x = x;
     ls->y = y;
-    ls->range = absrange;
-    ls->type = type;
+    ls->range = (short)absrange;
+    ls->type = (short)type;
     ls->id = *id;
     ls->flags = range < 0 ? LSF_DARKNESS_SOURCE : 0;
+    ls->sidedness = (short)sidedness;
     light_base = ls;
 
     vision_full_recalc = 1; /* make the source show up */
@@ -228,9 +229,11 @@ char **cs_rows;
                         if (row[x] & COULD_SEE)
                             row[x] |= ((ls->flags & LSF_DARKNESS_SOURCE) ? TEMP_MAGICAL_DARKNESS : TEMP_LIT);
                 } else {
+                    int sidedness_x = ls->sidedness == 2 ? 1 : ls->sidedness == 3 ? -1 : 0;
+                    int sidedness_y = ls->sidedness == 1 ? 1 : ls->sidedness == 4 ? -1 : 0;
                     for (x = min_x; x <= max_x; x++)
                         if ((ls->x == x && ls->y == y)
-                            || clear_path((int) ls->x, (int) ls->y, x, y))
+                            || clear_path((int) ls->x + sidedness_x, (int) ls->y + sidedness_y, x, y))
                             row[x] |= ((ls->flags & LSF_DARKNESS_SOURCE) ? TEMP_MAGICAL_DARKNESS : TEMP_LIT);
                 }
             }

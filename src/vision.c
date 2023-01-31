@@ -1610,6 +1610,9 @@ boolean
 clear_path(col1, row1, col2, row2)
 int col1, row1, col2, row2;
 {
+    if (!isok(col1, row1) || !isok(col2, row2))
+        return FALSE;
+
     int result;
 
     if (col1 < col2) {

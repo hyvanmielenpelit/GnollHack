@@ -3912,6 +3912,34 @@ xchar x, y;
     return 0;
 }
 
+int
+get_location_light_sidedness(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return 0;
+
+    struct rm* lev = &levl[x][y];
+
+    /* Altars have candles */
+    if (IS_ALTAR(lev->typ))
+        return 0;
+
+    /* Braziers are even bigger */
+    if (IS_BRAZIER(lev->typ))
+        return 0;
+
+    if (lev->decoration_typ > 0
+        && (decoration_type_definitions[lev->decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0
+        && ((decoration_type_definitions[lev->decoration_typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE) == 0 || (lev->decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0)
+        )
+    {
+        return 1 + lev->decoration_dir;
+    }
+
+    return 0;
+}
+
 
 /*
  * swallow_to_glyph()

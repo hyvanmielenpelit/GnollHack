@@ -1913,7 +1913,7 @@ struct mkroom *croom;
                         if (emitted_light_range(mtmp->data))
                             new_light_source(mtmp->mx, mtmp->my,
                                              emitted_light_range(mtmp->data),
-                                             LS_MONSTER, (genericptr_t) mtmp);
+                                             LS_MONSTER, (genericptr_t) mtmp, 0);
                     }
 
                     if (mon_ambient_sound(olddata) != mon_ambient_sound(mtmp->data))
