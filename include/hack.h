@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    hack.h    $NHDT-Date: 1549327459 2019/02/05 00:44:19 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.102 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -154,8 +154,9 @@ enum dismount_types {
 #define MG_SADDLED  0x00000200UL
 #define MG_FEMALE   0x00000400UL
 #define MG_H_FLIP   0x00000800UL /* Flipped horizontally */
-#define MG_STONE_INVERSE  0x00001000UL /* ' ' is inversed if it has color */
-#define MG_ALT_COLORS   0x00002000UL /* Uses alternative colors */
+#define MG_STONE_INVERSE    0x00001000UL /* ' ' is inversed if it has color */
+#define MG_ALT_COLORS       0x00002000UL /* Uses alternative colors */
+#define MG_DECORATION       0x00004000UL
 
 
 /* sellobj_state() states */

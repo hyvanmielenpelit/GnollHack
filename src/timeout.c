@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    timeout.c    $NHDT-Date: 1545182148 2018/12/19 01:15:48 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.89 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -2018,6 +2018,103 @@ long timeout;
             begin_burn(obj, TRUE);
 
         break;
+    case TORCH:
+        switch (obj->age) {
+        case 75:
+            if (canseeit)
+                switch (obj->where) {
+                case OBJ_INVENT:
+                case OBJ_MINVENT:
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%storch%s getting burnt out.", whose,
+                        many ? "es are" : " is");
+                    break;
+                case OBJ_FLOOR:
+                    You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%storch%s getting burnt out.",
+                        many ? "some "
+                        : "a ",
+                        many ? "s" : "");
+                    break;
+                }
+            break;
+
+        case 15:
+            if (canseeit)
+                switch (obj->where) {
+                case OBJ_INVENT:
+                case OBJ_MINVENT:
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%storch%s flame%s flicker%s low!", whose,
+                        many ? "es'" : "'s",
+                        many ? "s" : "", many ? "" : "s");
+                    break;
+                case OBJ_FLOOR:
+                    You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%storch%s flame%s flicker low!",
+                        many ? "some " : "a ",
+                        many ? "es'" : "'s", many ? "s" : "");
+                    break;
+                }
+            break;
+
+        case 0:
+            /* we know even if blind and in our inventory */
+            if (canseeit || obj->where == OBJ_INVENT) 
+            {
+                switch (obj->where) {
+                case OBJ_INVENT:
+                    /* no need_invupdate for update_inventory() necessary;
+                        useupall() -> freeinv() handles it */
+                        /*FALLTHRU*/
+                case OBJ_MINVENT:
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s consumed!", Yname2(obj),
+                        many ? "are" : "is");
+                    break;
+                case OBJ_FLOOR:
+                    /*
+                        You see some wax candles consumed!
+                        You see a wax candle consumed!
+                        */
+                    You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%s consumed!", many ? "some " : "",
+                        many ? xname(obj) : an(xname(obj)));
+                    need_newsym = TRUE;
+                    break;
+                }
+
+                /* post message */
+                pline(Hallucination
+                    ? (many ? "They shriek!" : "It shrieks!")
+                    : Blind ? "" : (many ? "Their flames die."
+                        : "Its flame dies."));
+                
+            }
+            end_burn(obj, FALSE);
+
+            if (carried(obj)) 
+            {
+                useupall(obj);
+            }
+            else
+            {
+                /* clear migrating obj's destination code
+                    so obfree won't think this item is worn */
+                if (obj->where == OBJ_MIGRATING)
+                    obj->owornmask = 0L;
+                obj_extract_self(obj);
+                obfree(obj, (struct obj*)0);
+            }
+            obj = (struct obj*)0;
+            break; /* case [age ==] 0 */
+
+        default:
+            /*
+             * Someone added fuel (candles) to the menorah while
+             * it was lit.  Just fall through and let begin burn
+             * handle the new age.
+             */
+            break;
+        }
+
+        if (obj && obj->age)
+            begin_burn(obj, TRUE);
+        break; /* case [otyp ==] candelabrum|tallow_candle|wax_candle */
 
     case CANDELABRUM_OF_INVOCATION:
     case LARGE_FIVE_BRANCHED_CANDELABRUM:
@@ -2238,6 +2335,16 @@ boolean already_lit;
                 turns = obj->age - 50L;
             else if (obj->age > 25L)
                 turns = obj->age - 25L;
+            else
+                turns = obj->age;
+            break;
+
+        case TORCH:
+            /* magic times are 75, 15, and 0 */
+            if (obj->age > 75L)
+                turns = obj->age - 75L;
+            else if (obj->age > 15L)
+                turns = obj->age - 15L;
             else
                 turns = obj->age;
             break;

@@ -462,7 +462,7 @@ exercise_steed()
         return;
 
     /* It takes many turns of riding to exercise skill */
-    if (++u.urideturns >= 100) {
+    if (++u.urideturns >= RIDING_TURNS_TO_EXERCISE_SKILL) {
         u.urideturns = 0;
         use_skill(P_RIDING, 1);
     }

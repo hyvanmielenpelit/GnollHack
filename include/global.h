@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    global.h    $NHDT-Date: 1557254325 2019/05/07 18:38:45 $  $NHDT-Branch: GnollHack-3.6.2 $:$NHDT-Revision: 1.71 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -308,6 +308,8 @@ extern char *FDECL(nhdupstr, (const char *, const char *, int));
 extern long *FDECL(alloc, (size_t));  /* alloc.c */
 extern char *FDECL(dupstr, (const char *)); /* ditto */
 #endif
+extern char* FDECL(setstr, (const char*, CHAR_P)); /* ditto */
+extern char* FDECL(cpystr, (const char*, const char*)); /* ditto */
 
 /* Used for consistency checks of various data files; declare it here so
    that utility programs which include config.h but not hack.h can see it. */

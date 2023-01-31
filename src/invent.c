@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-28 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    invent.c    $NHDT-Date: 1555196229 2019/04/13 22:57:09 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.253 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -853,13 +853,13 @@ struct obj *obj;
                 delay_output_milliseconds(500);
                 play_sfx_sound(SFX_HINT);
             }
-            pline_ex(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE - Sacrifice the Amulet of Yendor on the Astral Plane");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Sacrifice the Amulet of Yendor on the Astral Plane");
             if (iflags.using_gui_sounds)
             {
                 delay_output_milliseconds(500);
                 play_sfx_sound(SFX_HINT);
             }
-            pline_ex(ATR_NONE, CLR_MSG_HINT, "HINT - Exit the dungeon on level 1 to enter the Elemental Planes");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "HINT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "%s", "Exit the dungeon on level 1 to enter the Elemental Planes");
         }
         u.uachieve.amulet = 1;
     }
@@ -2634,8 +2634,7 @@ boolean (*validitemfunc)(struct obj*);
              || (!strcmp(word, "tin")
                  && (otyp != CORPSE || !tinnable(otmp)))
              || (!strcmp(word, "rub")
-                 && ((otmp->oclass == TOOL_CLASS && otyp != OIL_LAMP
-                      && otyp != MAGIC_LAMP && otyp != BRASS_LANTERN)
+                 && ((otmp->oclass == TOOL_CLASS && !is_otyp_lamp(otyp))
                      || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
                 || (!strcmp(word, "use or apply")
                  /* Picks, axes, pole-weapons, bullwhips */
@@ -3148,8 +3147,7 @@ struct obj* otmp_only;
                 || (!strcmp(word, "tin")
                     && (otyp != CORPSE || !tinnable(otmp)))
                 || (!strcmp(word, "rub")
-                    && ((otmp->oclass == TOOL_CLASS && otyp != OIL_LAMP
-                        && otyp != MAGIC_LAMP && otyp != BRASS_LANTERN)
+                    && ((otmp->oclass == TOOL_CLASS && !is_otyp_lamp(otyp))
                         || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
                 || (!strcmp(word, "use or apply")
                     /* Picks, axes, pole-weapons, bullwhips */
@@ -4153,7 +4151,7 @@ long pickcnt;
     xchar x = 0, y = 0;
     get_obj_location(otmp, &x, &y, CONTAINED_TOO | BURIED_TOO);
     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL));
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_COMMAND_MENU, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_obj(otmp));
@@ -4663,7 +4661,7 @@ nextclass:
             char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
 
             int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-            int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL));
+            int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL));
             add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, obj_to_extended_menu_info(otmp), ilet,
                 applied_class_accelerator,
                      ATR_NONE, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED);
@@ -5067,7 +5065,7 @@ char avoidlet;
                     }
                     any.a_char = ilet;
                     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-                    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL));
+                    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL));
                     add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph,
                              &any, obj_to_extended_menu_info(otmp), ilet, 0, ATR_NONE,
                              (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE) : doname_with_weight_first(otmp, TRUE)), MENU_UNSELECTED);
@@ -5689,6 +5687,13 @@ int x, y;
 
     if (cmap >= 0)
         dfeature = defsyms[cmap].explanation;
+    else if (levl[x][y].decoration_typ > 0)
+    {
+        if((levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0 && decoration_type_definitions[levl[x][y].decoration_typ].description_filled)
+            dfeature = decoration_type_definitions[levl[x][y].decoration_typ].description_filled;
+        else
+            dfeature = decoration_type_definitions[levl[x][y].decoration_typ].description;
+    }
     else if (levl[x][y].floor_doodad && iflags.using_gui_tiles)
     {
         dfeature = get_floor_doodad_explanation_at(x, y);
@@ -6219,6 +6224,9 @@ register struct obj *otmp, *obj;
     /* allow candle merging only if their ages are close */
     /* see begin_burn() for a reference for the magic "25" */
     if (is_candle(obj) && obj->age / 25 != otmp->age / 25)
+        return FALSE;
+
+    if (is_torch(obj) && (obj->age / 25 != otmp->age / 25 || obj->lamplit)) /* Only unlit torches are mergeable */
         return FALSE;
 
     /* burning potions of oil never merge */

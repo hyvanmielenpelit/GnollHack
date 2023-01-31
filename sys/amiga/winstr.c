@@ -283,6 +283,15 @@ const char *str;
 }
 
 void
+amii_putstr_ex2(window, str, attrs, colors, attr, color, app)
+winid window;
+int attr, color, app;
+const char* str, attrs, colors;
+{
+    amii_putstr_ex(window, attrs ? attrs[0] : attr, str, app, colors ? colors[0] : color);
+}
+
+void
 amii_scrollmsg(w, cw)
 register struct Window *w;
 register struct amii_WinDesc *cw;

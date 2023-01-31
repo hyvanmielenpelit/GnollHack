@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-28 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    extern.h    $NHDT-Date: 1557088399 2019/05/05 20:33:19 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.703 $ */
 /* Copyright (c) Steve Creps, 1988.                  */
@@ -60,7 +60,7 @@ E int FDECL(get_tile_animation_index_from_glyph, (int));
 E int FDECL(get_replacement_base_tile, (SHORT_P));
 E int FDECL(get_animation_base_tile, (SHORT_P));
 E int FDECL(get_enlargement_base_tile, (SHORT_P, SHORT_P));
-E struct replacement_info FDECL(data_to_replacement_info, (int, int, struct obj*, struct monst*, unsigned long));
+E struct replacement_info FDECL(data_to_replacement_info, (int, int, struct obj*, struct monst*, unsigned long, unsigned long));
 E int FDECL(get_animation_frame_with_tile, (int, int));
 E void FDECL(play_special_effect_at, (enum special_effect_types, int, int, int, BOOLEAN_P));
 E void FDECL(special_effect_wait_until_action, (int));
@@ -89,6 +89,7 @@ E const char *NDECL(beautiful);
 E void FDECL(check_leash, (XCHAR_P, XCHAR_P));
 E boolean FDECL(um_dist, (XCHAR_P, XCHAR_P, XCHAR_P));
 E boolean FDECL(snuff_candle, (struct obj *));
+E boolean FDECL(snuff_torch, (struct obj*));
 E boolean FDECL(snuff_lit, (struct obj *));
 E boolean FDECL(catch_lit, (struct obj *));
 E void FDECL(use_unicorn_horn, (struct obj *));
@@ -113,6 +114,7 @@ E void FDECL(setapplyclasses, (char*));
 E void FDECL(setbreakclasses, (char*));
 E void FDECL(use_candelabrum, (struct obj*));
 E int FDECL(use_candle, (struct obj**));
+E int FDECL(use_torch, (struct obj**));
 E void FDECL(use_lamp, (struct obj*));
 E void FDECL(light_cocktail, (struct obj**));
 
@@ -507,7 +509,8 @@ E void FDECL(force_redraw_at, (int, int));
 E void FDECL(shieldeff, (XCHAR_P, XCHAR_P));
 E void FDECL(talkeff, (XCHAR_P, XCHAR_P));
 E void FDECL(tmp_at, (int, int));
-E void FDECL(tmp_at_with_obj, (int, int, struct obj*));
+E void FDECL(tmp_at_with_missile_flags, (int, int, unsigned long));
+E void FDECL(tmp_at_with_obj, (int, int, struct obj*, unsigned long));
 E void FDECL(swallowed, (int));
 E void FDECL(under_ground, (int));
 E void FDECL(under_water, (int));
@@ -527,6 +530,7 @@ E void FDECL(show_gui_glyph_on_layer, (int, int, int, int, enum layer_types));
 E void FDECL(show_glyph_on_layer, (int, int, int, enum layer_types));
 E void FDECL(show_glyph_ascii, (int, int, int));
 E void FDECL(show_glyph_on_layer_and_ascii, (int, int, int, enum layer_types));
+E void FDECL(show_gui_glyph_on_layer_and_ascii, (int, int, int, int, enum layer_types));
 E void FDECL(clear_glyph_buffer_at, (int, int));
 E void FDECL(show_monster_glyph_with_extra_info, (int, int, int, struct monst*, unsigned long, int, int));
 E void FDECL(show_monster_glyph_with_extra_info_choose_ascii, (int, int, int, struct monst*, int, int, unsigned long, int, int, BOOLEAN_P));
@@ -584,6 +588,7 @@ E void FDECL(refresh_m_tile_gui_info, (struct monst*, BOOLEAN_P));
 E void FDECL(set_obj_glyph, (struct obj*));
 E int FDECL(get_seen_monster_glyph, (struct monst*));
 E void NDECL(reset_display);
+E const char* FDECL(get_decoration_description, (int, int));
 
 /* ### do.c ### */
 
@@ -2387,6 +2392,7 @@ E void NDECL(init_options);
 E void NDECL(finish_options);
 E boolean FDECL(parseoptions, (char *, BOOLEAN_P, BOOLEAN_P));
 E int NDECL(doset);
+E int NDECL(dotoggledecorations);
 E int NDECL(dotogglepickup);
 E void NDECL(option_help);
 E void FDECL(next_opt, (winid, const char *));
@@ -2552,6 +2558,8 @@ E void NDECL(dumplogfreemessages);
 #endif
 E void VDECL(pline, (const char *, ...)) PRINTF_F(1, 2);
 E void VDECL(custompline, (unsigned, const char *, ...)) PRINTF_F(2, 3);
+E void VDECL(custompline_ex, (int, int, unsigned, const char*, ...)) PRINTF_F(4, 5);
+E void VDECL(custompline_ex_prefix, (int, int, const char*, int, int, const char*, int, int, unsigned, const char*, ...)) PRINTF_F(10, 11);
 E void VDECL(pline_ex, (int, int, const char*, ...)) PRINTF_F(3, 4);
 E void VDECL(Norep, (const char *, ...)) PRINTF_F(1, 2);
 E void VDECL(Norep_ex, (int, int, const char*, ...)) PRINTF_F(3, 4);
@@ -3999,8 +4007,8 @@ E boolean NDECL(genl_can_suspend_no);
 E boolean NDECL(genl_can_suspend_yes);
 E char FDECL(genl_message_menu, (CHAR_P, int, const char *));
 E void FDECL(genl_preference_update, (const char *));
-E char *FDECL(genl_getmsghistory_ex, (int*, int*, BOOLEAN_P));
-E void FDECL(genl_putmsghistory_ex, (const char *, int, int, BOOLEAN_P));
+E char *FDECL(genl_getmsghistory_ex, (char**, char**, BOOLEAN_P));
+E void FDECL(genl_putmsghistory_ex, (const char *, const char*, const char*, BOOLEAN_P));
 #ifdef HANGUPHANDLING
 E void NDECL(nhwindows_hangup);
 #endif

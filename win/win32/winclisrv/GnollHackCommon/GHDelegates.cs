@@ -27,6 +27,8 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void PutStrExColorCallback(int value1, int value2, [MarshalAs(UnmanagedType.LPStr)] string value3, int value4, int value5);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void PutStrEx2ColorCallback(int value1, [MarshalAs(UnmanagedType.LPStr)] string value2, IntPtr value3, IntPtr value4, int value5, int value6, int value7);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidConstCharIntCallback([MarshalAs(UnmanagedType.LPStr)] string value1, int value2);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidConstCharBooleanCallback([MarshalAs(UnmanagedType.LPStr)] string value1, byte value2);
@@ -47,10 +49,10 @@ namespace GnollHackCommon
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [return: MarshalAs(UnmanagedType.LPStr)]
-    public delegate string GetMsgHistoryCallback(IntPtr attr, IntPtr color, byte value1);
+    public delegate string GetMsgHistoryCallback(IntPtr attributes_ptr, IntPtr colors_ptr, byte value1);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void PutMsgHistoryCallback([MarshalAs(UnmanagedType.LPStr)] string value1, int attr, int color, byte value2);
+    public delegate void PutMsgHistoryCallback([MarshalAs(UnmanagedType.LPStr)] string value1, IntPtr attributes_ptr, IntPtr colors_ptr, byte value2);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int CreateGHWindowCallback(int winid, int style, int glyph, byte dataflags, IntPtr objdata_ptr, IntPtr otypdata_ptr);

@@ -23,7 +23,7 @@ struct window_procs lib_procs = {
     lib_init_nhwindows, lib_player_selection, lib_askname,
     lib_get_nh_event, lib_exit_nhwindows, lib_suspend_nhwindows,
     lib_resume_nhwindows, lib_create_nhwindow_ex, lib_clear_nhwindow,
-    lib_display_nhwindow, lib_destroy_nhwindow, lib_curs, lib_putstr_ex,
+    lib_display_nhwindow, lib_destroy_nhwindow, lib_curs, lib_putstr_ex, lib_putstr_ex2,
     genl_putmixed_ex, lib_display_file, lib_start_menu_ex, lib_add_menu, lib_add_extended_menu,
     lib_end_menu_ex, lib_select_menu,
     genl_message_menu, /* no need for X-specific handling */
@@ -255,12 +255,21 @@ void lib_curs(winid wid, int x, int y)
 }
 
 /* text is supposed to be in CP437; if text is UTF8 encoding, call callback_putstr_ex directly */
-void lib_putstr_ex(winid wid, int attr, const char* text, int param, int color)
+void lib_putstr_ex(winid wid, int attr, const char* text, int append, int color)
 {
     char buf[BUFSIZ];
     if (text)
         write_text2buf_utf8(buf, BUFSIZ, text);
-    lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, param, color);
+    lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, append, color);
+}
+
+void lib_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int append)
+{
+    char buf[BUFSIZ];
+    if (text)
+        write_text2buf_utf8(buf, BUFSIZ, text);
+    //lib_callbacks.callback_putstr_ex(wid, attrs ? attrs[0] : attr, text ? buf : 0, append, colors ? colors[0] : color);
+    lib_callbacks.callback_putstr_ex2(wid, text ? buf : 0, attrs, colors, attr, color, append);
 }
 
 void lib_display_file(const char* filename, BOOLEAN_P must_exist)
@@ -461,7 +470,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
                     mimic_obj.oy = y;
                     mimic_obj.glyph = obj_to_glyph(&mimic_obj, newsym_rn2);
                     mimic_obj.gui_glyph = maybe_get_replaced_glyph(mimic_obj.glyph, x, y, data_to_replacement_info(mimic_obj.glyph,
-                        is_obj_drawn_in_front(&mimic_obj) ? LAYER_COVER_OBJECT : LAYER_OBJECT, &mimic_obj, (struct monst*)0, 0UL));
+                        is_obj_drawn_in_front(&mimic_obj) ? LAYER_COVER_OBJECT : LAYER_OBJECT, &mimic_obj, (struct monst*)0, 0UL, 0UL));
                 }
             }
             if (has_obj_mimic)
@@ -735,21 +744,31 @@ void lib_preference_update(const char* pref)
     }
 }
 
-char* lib_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
+char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 {
-    char* res = lib_callbacks.callback_getmsghistory(attr_ptr, color_ptr, (int)init);
-    static char buf[BUFSIZ] = "";
+    static char buf[BUFSIZ * 2] = "";
+    static char attrs[BUFSIZ * 2] = "";
+    static char colors[BUFSIZ * 2] = "";
+    char* res = lib_callbacks.callback_getmsghistory(attrs, colors, (int)init);
     if (res)
     {
-        strncpy(buf, res, BUFSIZ - 1);
-        buf[BUFSIZ - 1] = '\0';
+        strncpy(buf, res, BUFSIZ * 2 - 1);
+        buf[BUFSIZ * 2 - 1] = '\0';
+        if (attrs_ptr)
+        {
+            *attrs_ptr = attrs;
+        }
+        if (colors_ptr)
+        {
+            *colors_ptr = colors;
+        }
     }
     return res ? buf : 0;
 }
 
-void lib_putmsghistory_ex(const char* msg, int attr, int color, BOOLEAN_P is_restoring)
+void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors, BOOLEAN_P is_restoring)
 {
-    lib_callbacks.callback_putmsghistory(msg, attr, color, is_restoring);
+    lib_callbacks.callback_putmsghistory(msg, attrs, colors, is_restoring);
 }
 
 
@@ -826,7 +845,7 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
         return;
 
     mi_ptr->glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
-    mi_ptr->gui_glyph = maybe_get_replaced_glyph(mi_ptr->glyph, mtmp->mx, mtmp->my, data_to_replacement_info(mi_ptr->glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL));
+    mi_ptr->gui_glyph = maybe_get_replaced_glyph(mi_ptr->glyph, mtmp->mx, mtmp->my, data_to_replacement_info(mi_ptr->glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL));
 
     char tempbuf[BUFSIZ] = "";
     if (mtmp->mextra && UMNAME(mtmp))

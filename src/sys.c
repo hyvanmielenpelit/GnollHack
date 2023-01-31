@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    sys.c    $NHDT-Date: 1547118632 2019/01/10 11:10:32 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.43 $ */
 /* Copyright (c) Kenneth Lorber, Kensington, Maryland, 2008. */
@@ -235,9 +235,21 @@ reset_global_variables(VOID_ARGS)
     viz_array = 0;
     hearing_full_recalc = 0;
     *toplines = 0;
+    memset(toplineattrs, ATR_NONE, sizeof(toplineattrs));
+    memset(toplinecolors, NO_COLOR, sizeof(toplinecolors));
+    toplineattrs[sizeof(toplineattrs) - 1] = toplinecolors[sizeof(toplinecolors) - 1] = 0;
     upstairs_room = dnstairs_room = sstairs_room = 0;
 
     reset_item_global_variables();
+
+    /* This needs to be setup already here early due to tiledata processing */
+    int i;
+    for (i = 0; i < NUM_OBJECTS; i++)
+    {
+        /* initialize object descriptions */
+        objects[i].oc_name_idx = objects[i].oc_descr_idx = i;
+    }
+
 }
 
 void

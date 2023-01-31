@@ -598,7 +598,7 @@ struct qtmsg *qt_msg;
 int attr, color, how;
 {
     long size;
-    char in_line[BUFSZ], out_line[BUFSZ];
+    char in_line[BUFSZ], out_line[BUFSZ], attrs[BUFSZ], colors[BUFSZ];
     boolean qtdump = (how == NHW_MAP);
     winid datawin = create_nhwindow_ex(qtdump ? NHW_TEXT : how, GHWINDOW_STYLE_PAGER_GENERAL, NO_GLYPH, zerocreatewindowinfo);
 
@@ -640,7 +640,13 @@ int attr, color, how;
 #endif
     }
     if (*out_line)
-        putmsghistory_ex(out_line, attr, color, FALSE);
+    {
+        size_t len = strlen(out_line);
+        memset(attrs, attr, len);
+        memset(colors, color, len);
+        attrs[len] = colors[len] = 0;
+        putmsghistory_ex(out_line, attrs, colors, FALSE);
+    }
 }
 
 boolean

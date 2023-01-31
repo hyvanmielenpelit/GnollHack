@@ -3766,7 +3766,7 @@ namespace GnollHackClient.Pages.Game
                                                                             bool tileflag_vflip = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_VERTICALLY) != 0;
                                                                             bool tileflag_halfsize = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
                                                                             bool tileflag_floortile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
-                                                                            bool tileflag_normalobjmissile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0;
+                                                                            bool tileflag_normalobjmissile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0 && layer_idx == (int)layer_types.LAYER_MISSILE;
                                                                             bool tileflag_fullsizeditem = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
                                                                             bool tileflag_height_is_clipping = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING) != 0;
 
@@ -4016,7 +4016,7 @@ namespace GnollHackClient.Pages.Game
                                                                                 int source_height = tileflag_halfsize ? GHConstants.TileHeight / 2 : GHConstants.TileHeight;
 
                                                                                 float scale = 1.0f;
-                                                                                if (tileflag_halfsize)
+                                                                                if (tileflag_halfsize && !tileflag_normalobjmissile)
                                                                                 {
                                                                                     if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
                                                                                     {
@@ -4058,7 +4058,6 @@ namespace GnollHackClient.Pages.Game
                                                                                         scaled_tile_height = scale * height / 2;
                                                                                         scaled_x_padding = (width - scaled_tile_width) / 2;
                                                                                         scaled_y_padding = Math.Max(0, height / 2 - scaled_tile_height - pit_border);
-
                                                                                         sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                                                                                     }
                                                                                 }
@@ -4149,7 +4148,7 @@ namespace GnollHackClient.Pages.Game
                                                                                     canvas.Translate(tx + (hflip_glyph ? width : 0), ty + (vflip_glyph ? height : 0));
                                                                                     canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
                                                                                     SKRect targetrect;
-                                                                                    if (tileflag_halfsize)
+                                                                                    if (tileflag_halfsize && !tileflag_normalobjmissile)
                                                                                     {
                                                                                         targetrect = new SKRect(scaled_x_padding, height / 2 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 2 + scaled_y_padding + scaled_tile_height);
                                                                                     }
@@ -4738,7 +4737,12 @@ namespace GnollHackClient.Pages.Game
                                                     {
                                                         GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
                                                         //longLine = msgHistoryItem.Text;
-                                                        SKColor printColor = ClientUtils.NHColor2SKColor(msgHistoryItem.NHColor < (int)nhcolor.CLR_MAX ? msgHistoryItem.NHColor : (int)nhcolor.CLR_WHITE, msgHistoryItem.Attributes);
+                                                        SKColor printColor = ClientUtils.NHColor2SKColor(
+                                                            msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 ? msgHistoryItem.Colors[0] : msgHistoryItem.NHColor < (int)nhcolor.CLR_MAX ? msgHistoryItem.NHColor : (int)nhcolor.CLR_WHITE, 
+                                                            msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 ? msgHistoryItem.Attributes[0] : msgHistoryItem.Attribute);
+
+                                                        bool use_one_color = msgHistoryItem.Colors == null && msgHistoryItem.Attributes == null;
+                                                        int char_idx = 0;
 
                                                         if (_refreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
                                                         {
@@ -4788,17 +4792,63 @@ namespace GnollHackClient.Pages.Game
                                                                 continue;
                                                             if (ty - textPaint.FontMetrics.Ascent > canvasheight)
                                                                 continue;
-                                                            textPaint.Style = SKPaintStyle.Stroke;
-                                                            textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth * textscale;
-                                                            textPaint.Color = SKColors.Black;
-                                                            canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                            textPaint.Style = SKPaintStyle.Fill;
-                                                            textPaint.StrokeWidth = 0;
-                                                            textPaint.Color = printColor;
-                                                            canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                            textPaint.Style = SKPaintStyle.Fill;
-                                                            textPaint.StrokeWidth = 0;
-                                                            textPaint.Color = printColor;
+
+                                                            if(use_one_color)
+                                                            {
+                                                                textPaint.Style = SKPaintStyle.Stroke;
+                                                                textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth * textscale;
+                                                                textPaint.Color = SKColors.Black;
+                                                                canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                                textPaint.StrokeWidth = 0;
+                                                                textPaint.Color = printColor;
+                                                                canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                                textPaint.StrokeWidth = 0;
+                                                                textPaint.Color = SKColors.White;
+                                                                char_idx += wrappedLine.Length;
+                                                            }
+                                                            else
+                                                            {
+                                                                int charidx_start = 0;
+
+                                                                while (char_idx < msgHistoryItem.Text.Length && charidx_start < wrappedLine.Length)
+                                                                {
+                                                                    int charidx_len = 0;
+                                                                    int new_nhcolor = msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 && char_idx < msgHistoryItem.Colors.Length ? msgHistoryItem.Colors[char_idx] : msgHistoryItem.NHColor < (int)nhcolor.CLR_MAX ? msgHistoryItem.NHColor : (int)nhcolor.CLR_WHITE;
+                                                                    int new_nhattr = msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 && char_idx < msgHistoryItem.Attributes.Length ? msgHistoryItem.Attributes[char_idx] : msgHistoryItem.Attribute;
+                                                                    int char_idx2 = char_idx;
+                                                                    int new_nhcolor2 = new_nhcolor;
+                                                                    int new_nhattr2 = new_nhattr;
+
+                                                                    while (char_idx2 < msgHistoryItem.Text.Length && charidx_start + charidx_len < wrappedLine.Length && new_nhcolor == new_nhcolor2 && new_nhattr == new_nhattr2)
+                                                                    {
+                                                                        char_idx2++;
+                                                                        new_nhcolor2 = msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 && char_idx2 < msgHistoryItem.Colors.Length ? msgHistoryItem.Colors[char_idx2] : msgHistoryItem.NHColor < (int)nhcolor.CLR_MAX ? msgHistoryItem.NHColor : (int)nhcolor.CLR_WHITE;
+                                                                        new_nhattr2 = msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 && char_idx2 < msgHistoryItem.Attributes.Length ? msgHistoryItem.Attributes[char_idx2] : msgHistoryItem.Attribute;
+                                                                        charidx_len = char_idx2 - char_idx;
+                                                                    }
+
+                                                                    SKColor new_skcolor = ClientUtils.NHColor2SKColor(new_nhcolor, new_nhattr);
+                                                                    string printedsubline = wrappedLine.Substring(charidx_start, charidx_len);
+                                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                                    textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth * textscale;
+                                                                    textPaint.Color = SKColors.Black;
+                                                                    canvas.DrawText(printedsubline, tx, ty, textPaint);
+                                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                                    textPaint.StrokeWidth = 0;
+                                                                    textPaint.Color = new_skcolor;
+                                                                    canvas.DrawText(printedsubline, tx, ty, textPaint);
+                                                                    float twidth = textPaint.MeasureText(printedsubline);
+                                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                                    textPaint.StrokeWidth = 0;
+                                                                    textPaint.Color = SKColors.White;
+
+                                                                    tx += twidth;
+                                                                    char_idx += charidx_len;
+                                                                    charidx_start += charidx_len;
+                                                                }
+                                                            }
                                                         }
                                                         j -= msgHistoryItem.WrappedTextRows.Count;
                                                     }

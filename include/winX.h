@@ -400,8 +400,8 @@ E void FDECL(hilight_value, (Widget));
 E void FDECL(swap_fg_bg, (Widget));
 
 /* external declarations */
-E char *FDECL(X11_getmsghistory, (int*, int*, BOOLEAN_P));
-E void FDECL(X11_putmsghistory, (const char *, int, int, BOOLEAN_P));
+E char *FDECL(X11_getmsghistory, (char**, char**, BOOLEAN_P));
+E void FDECL(X11_putmsghistory, (const char *, const char *, const char *, BOOLEAN_P));
 E void FDECL(X11_init_nhwindows, (int *, char **));
 E void NDECL(X11_player_selection);
 E void NDECL(X11_askname);
@@ -415,6 +415,7 @@ E void FDECL(X11_display_nhwindow, (winid, BOOLEAN_P));
 E void FDECL(X11_destroy_nhwindow, (winid));
 E void FDECL(X11_curs, (winid, int, int));
 E void FDECL(X11_putstr_ex, (winid, int, const char *, int, int));
+E void FDECL(X11_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 #define X11_putstr(x, y, z) X11_putstr_ex(x, y, z, 0 , 0)
 E void FDECL(X11_display_file, (const char *, BOOLEAN_P));
 E void FDECL(X11_start_menu_ex, (winid, int));

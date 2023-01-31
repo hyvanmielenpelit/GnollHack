@@ -73,7 +73,7 @@ struct window_procs dll_procs = {
     WC2_PREFERRED_SCREEN_SCALE, dll_init_nhwindows, dll_player_selection, dll_askname,
     dll_get_nh_event, dll_exit_nhwindows, dll_suspend_nhwindows,
     dll_resume_nhwindows, dll_create_nhwindow_ex, dll_clear_nhwindow,
-    dll_display_nhwindow, dll_destroy_nhwindow, dll_curs, dll_putstr_ex,
+    dll_display_nhwindow, dll_destroy_nhwindow, dll_curs, dll_putstr_ex, dll_putstr_ex2,
     genl_putmixed_ex, dll_display_file, dll_start_menu_ex, dll_add_menu, dll_add_extended_menu,
     dll_end_menu_ex, dll_select_menu,
     genl_message_menu, /* no need for X-specific handling */
@@ -1070,6 +1070,12 @@ dll_putstr_ex(winid wid, int attr, const char *text, int app, int color)
         strcat(GetNHApp()->saved_text, text);
     }
 #endif
+}
+
+void
+dll_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app)
+{
+    dll_callbacks.callback_putstr_ex2((int)wid, text, attrs, colors, attr, color, app);
 }
 
 /* Display the file named str.  Complain about missing files
@@ -2188,14 +2194,13 @@ dll_preference_update(const char *pref)
     dll_callbacks.callback_preference_update(pref);
 }
 
-#define TEXT_BUFFER_SIZE 4096
 char *
-dll_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
+dll_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 {
-    if (attr_ptr)
-        *attr_ptr = ATR_NONE;
-    if (color_ptr)
-        *color_ptr = NO_COLOR;
+    if (attrs_ptr)
+        *attrs_ptr = (char*)0;
+    if (colors_ptr)
+        *colors_ptr = (char*)0;
 
     return (char*)0; // dll_callbacks.callback_getmsghistory(init);
 
@@ -2240,9 +2245,9 @@ dll_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
 }
 
 void
-dll_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P restoring)
+dll_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring)
 {
-    dll_callbacks.callback_putmsghistory(msg, attr, color, restoring);
+    dll_callbacks.callback_putmsghistory(msg, attrs, colors, restoring);
 #if 0
     BOOL save_sound_opt;
 

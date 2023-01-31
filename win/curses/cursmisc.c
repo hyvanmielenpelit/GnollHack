@@ -89,8 +89,98 @@ curses_read_char()
     return ch;
 }
 
-/* Turn on or off the specified color and / or attribute */
+void 
+curses_print_text_ex(WINDOW* win, int* mx_ptr, int* my_ptr, const char* text, const char* attrs, const char* colors, int attr, int color, int extra_attrs)
+{
+    if (!mx_ptr || !my_ptr || !text)
+        return;
 
+    char cattr = ATR_NONE;
+    char ccolor = NO_COLOR;
+
+    while (*text)
+    {
+        if (attrs || attr != ATR_NONE || extra_attrs != ATR_NONE)
+        {
+            char used_attr = (attrs ? *attrs : (char)attr) | (char)extra_attrs;
+            if (cattr != used_attr)
+            {
+                if (cattr != ATR_NONE)
+                {
+                    int curses_attr = curses_atr2cursesattr((int)cattr);
+                    curses_toggle_color_attr(win, NONE, curses_attr, OFF);
+                }
+                if (used_attr != ATR_NONE)
+                {
+                    int curses_attr = curses_atr2cursesattr((int)used_attr);
+                    curses_toggle_color_attr(win, NONE, curses_attr, ON);
+                }
+                cattr = used_attr;
+            }
+        }
+        if (colors || color != NO_COLOR)
+        {
+            char used_color = colors ? *colors : (char)color;
+            if (ccolor != used_color)
+            {
+                if (ccolor != NO_COLOR)
+                {
+                    curses_toggle_color_attr(win, ccolor, NONE, OFF);
+                }
+                if (used_color != NO_COLOR)
+                {
+                    curses_toggle_color_attr(win, used_color, NONE, ON);
+                }
+                ccolor = used_color;
+            }
+        }
+        mvwprintw(win, *my_ptr, *mx_ptr, "%c", *text);
+        text++;
+        if (attrs)
+            attrs++;
+        if (colors)
+            colors++;
+        (*mx_ptr)++;
+    }
+    if (cattr != ATR_NONE)
+    {
+        int curses_attr = curses_atr2cursesattr((int)cattr);
+        curses_toggle_color_attr(win, NONE, curses_attr, OFF);
+    }
+    if (ccolor != NO_COLOR)
+    {
+        curses_toggle_color_attr(win, ccolor, NONE, OFF);
+    }
+}
+
+int
+curses_atr2cursesattr(int atr)
+{
+    if (atr == ATR_NONE)
+        return A_NORMAL;
+
+    int result = 0;
+    if ((atr & ATR_INVERSE) == ATR_INVERSE)
+        result |= A_REVERSE;
+    else
+    {
+        if ((atr & ATR_BLINK) == ATR_BLINK)
+            result |= A_BLINK;
+        else
+        {
+            if (atr & ATR_BOLD)
+                result |= A_BOLD;
+            if (atr & ATR_DIM)
+                result |= A_DIM;
+            if (atr & ATR_ULINE)
+                result |= A_UNDERLINE;
+        }
+    }
+
+    return result;
+}
+
+/* Turn on or off the specified color and / or attribute */
 void
 curses_toggle_color_attr(WINDOW *win, int color, int attr, int onoff)
 {
@@ -240,6 +330,18 @@ curses_copy_of(const char *s)
     if (!s)
         s = "";
     return dupstr(s);
+}
+
+char*
+curses_cpystr(const char* s, const char* vals, int val)
+{
+    if (!s)
+        s = "";
+
+    if (vals)
+        return cpystr(s, vals);
+    else
+        return setstr(s, (char)val);
 }
 
 
@@ -679,14 +781,14 @@ curses_get_count(int first_digit)
 /* Convert the given NetHack text attributes into the format curses
    understands, and return that format mask. */
 
-int
+attr_t
 curses_convert_attr(int attr)
 {
-    int curses_attr;
+    attr_t curses_attr;
 
     /* first, strip off control flags masked onto the display attributes
        (caller should have already done this...) */
-    attr &= ~(ATR_URGENT | ATR_NOHISTORY);
+    attr &= ~(ATR_LINE_MSG_MASK);
 
     switch (attr) {
     case ATR_NONE:

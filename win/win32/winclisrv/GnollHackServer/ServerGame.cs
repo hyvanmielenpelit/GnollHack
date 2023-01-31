@@ -34,6 +34,7 @@ namespace GnollHackServer
             VoidIntCallback callback_destroy_nhwindow,
             VoidIntIntIntCallback callback_curs,
             PutStrExColorCallback callback_putstr_ex,
+            PutStrEx2ColorCallback callback_putstr_ex2,
             PutStrExColorCallback callback_putmixed_ex,
             VoidConstCharBooleanCallback callback_display_file,
             StartMenuCallback callback_start_menu_ex,
@@ -196,6 +197,7 @@ namespace GnollHackServer
                 GameCallback_VoidIntDummy,
                 GameCallback_VoidIntIntIntDummy,
                 GameCallback_PutStrExColor,
+                GameCallback_PutStrEx2Color,
                 GameCallback_PutStrExColor,
                 GameCallback_VoidConstCharBooleanDummy,
                 GameCallback_StartMenu,
@@ -371,17 +373,14 @@ namespace GnollHackServer
 
         }
 
-        public string GameCallback_GetMsgHistory(IntPtr attr, IntPtr color, byte init)
+        public string GameCallback_GetMsgHistory(IntPtr attributes_ptr, IntPtr colors_ptr, byte init)
         {
-            if(attr != IntPtr.Zero)
-                Marshal.WriteInt32(attr, 0);
-            if (color != IntPtr.Zero)
-                Marshal.WriteInt32(color, (int)nhcolor.NO_COLOR);
             return null;
         }
 
-        public void GameCallback_PutMsgHistory(string msg, int attr, int color, byte is_restoring)
+        public void GameCallback_PutMsgHistory(string msg, IntPtr attributes_ptr, IntPtr colors_ptr, byte is_restoring)
         {
+
         }
 
         protected void GameCallback_FreeMemory(ref IntPtr ptr)
@@ -519,6 +518,10 @@ namespace GnollHackServer
 
         }
         protected void GameCallback_PutStrExColor(int value1, int value2, string value3, int value4, int value5)
+        {
+
+        }
+        protected void GameCallback_PutStrEx2Color(int value1, string value2, IntPtr value3, IntPtr value4, int value5, int value6, int value7)
         {
 
         }

@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-28 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    objclass.h    $NHDT-Date: 1547255901 2019/01/12 01:18:21 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.20 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -238,6 +238,7 @@ enum obj_tool_types {
     TOOLTYPE_JAR = 19,
     TOOLTYPE_CAN = 20,
     TOOLTYPE_GRAIL = 21,
+    TOOLTYPE_TORCH = 22,
     MAX_TOOL_TYPES
 };
 extern const char* tool_type_names[MAX_TOOL_TYPES]; /* in objnam.c */
@@ -1015,6 +1016,8 @@ struct objclass {
 #define O5_CANNOT_BE_PRIMORDIAL        0x00400000UL
 #define O5_CANNOT_BE_INFERNAL          0x00800000UL
 #define O5_MIXTURE_CLEARS              0x01000000UL
+#define O5_TORCH                       0x02000000UL
+#define O5_LAMP                        0x04000000UL
 
 
 #define O6_NONE                        0x00000000UL

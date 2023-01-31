@@ -157,6 +157,7 @@ void mswin_destroy_nhwindow(winid wid);
 void mswin_curs(winid wid, int x, int y);
 void mswin_putstr(winid wid, int attr, const char *text);
 void mswin_putstr_ex(winid wid, int attr, const char *text, int app, int color);
+void mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app);
 void mswin_display_file(const char *filename, BOOLEAN_P must_exist);
 void mswin_start_menu_ex(winid wid, int style);
 void mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
@@ -193,8 +194,8 @@ void mswin_start_screen(void);
 void mswin_end_screen(void);
 void mswin_outrip(winid wid, int how, time_t when);
 void mswin_preference_update(const char *pref);
-char *mswin_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init);
-void mswin_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P restoring);
+char *mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init);
+void mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring);
 
 void mswin_status_init(void);
 void mswin_statuslines_init(void);

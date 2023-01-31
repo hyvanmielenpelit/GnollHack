@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-28 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    dothrow.c    $NHDT-Date: 1556201496 2019/04/25 14:11:36 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.160 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -1622,7 +1622,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         {
 //            if (rn2(100)) {
                 if (tethered_weapon)
-                    tmp_at_with_obj(DISP_END, BACKTRACK, obj);
+                    tmp_at_with_obj(DISP_END, BACKTRACK, obj, get_missile_flags(obj, TRUE));
                 else
                     sho_obj_return_to_u(obj); /* display its flight */
 

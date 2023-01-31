@@ -53,6 +53,7 @@ void dll_destroy_nhwindow(winid wid);
 void dll_curs(winid wid, int x, int y);
 void dll_putstr(winid wid, int attr, const char *text);
 void dll_putstr_ex(winid wid, int attr, const char *text, int, int);
+void dll_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app);
 void dll_display_file(const char *filename, BOOLEAN_P must_exist);
 void dll_start_menu_ex(winid wid, int style);
 void dll_add_menu(winid wid, int glyph, const ANY_P *identifier,
@@ -89,8 +90,8 @@ void dll_start_screen(void);
 void dll_end_screen(void);
 void dll_outrip(winid wid, int how, time_t when);
 void dll_preference_update(const char *pref);
-char *dll_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init);
-void dll_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P restoring);
+char *dll_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init);
+void dll_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring);
 
 void dll_status_init(void);
 void dll_status_finish(void);

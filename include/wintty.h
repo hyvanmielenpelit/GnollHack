@@ -41,6 +41,8 @@ struct WinDesc {
     /* tracking the ^P command */
     short *datlen;         /* allocation size for *data */
     char **data;           /* window data [row][column] */
+    char **datattrs;       /* window datattrs [row][column] */
+    char **datcolors;      /* window datcolors [row][column] */
     char *morestr;         /* string to display instead of default */
     tty_menu_item *mlist;  /* menu information (MENU) */
     tty_menu_item **plist; /* menu page pointers (MENU) */
@@ -157,12 +159,16 @@ E int FDECL(has_color, (int color));
 
 /* ### topl.c ### */
 
-E void FDECL(show_topl, (const char *));
+E void FDECL(show_topl, (const char *, int, int));
+E void FDECL(show_topl2, (const char*, const char*, const char*, int, int));
 E void NDECL(remember_topl);
-E void FDECL(addtopl, (const char *));
+E void FDECL(addtopl, (const char*, int, int));
+E void FDECL(addtopl2, (const char*, const char*, const char*, int, int));
 E void NDECL(more);
-E void FDECL(update_topl, (const char *));
+E void FDECL(update_topl, (const char*, int, int));
+E void FDECL(update_topl2, (const char *, const char*, const char*, int, int));
 E void FDECL(putsyms, (const char *));
+E void FDECL(putsyms_ex, (const char*, const char*, const char*));
 
 /* ### wintty.c ### */
 #ifdef CLIPPING
@@ -190,6 +196,7 @@ E void FDECL(tty_dismiss_nhwindow, (winid));
 E void FDECL(tty_destroy_nhwindow, (winid));
 E void FDECL(tty_curs, (winid, int, int));
 E void FDECL(tty_putstr_ex, (winid, int, const char *, int, int));
+E void FDECL(tty_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 #define tty_putstr(x, y, z) tty_putstr_ex(x, y, z, 0, NO_COLOR);
 E void FDECL(tty_display_file, (const char *, BOOLEAN_P));
 E void FDECL(tty_start_menu_ex, (winid, int));
@@ -243,8 +250,8 @@ E void NDECL(tty_end_screen);
 
 E void FDECL(genl_outrip, (winid, int, time_t));
 
-E char *FDECL(tty_getmsghistory_ex, (int*, int*, BOOLEAN_P));
-E void FDECL(tty_putmsghistory_ex, (const char *, int, int, BOOLEAN_P));
+E char *FDECL(tty_getmsghistory_ex, (char**, char**, BOOLEAN_P));
+E void FDECL(tty_putmsghistory_ex, (const char *, const char *, const char *, BOOLEAN_P));
 E int FDECL(tty_open_special_view, (struct special_view_info));
 
 #ifdef NO_TERMS

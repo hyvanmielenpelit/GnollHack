@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-28 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    monst.c    $NHDT-Date: 1547118631 2019/01/10 11:10:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.62 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -691,7 +691,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_SMELLS_BURIED_SEARCHABLE, 
         M5_FEMALE_TILE | M5_CORPSE_TILE, M6_NONE, M7_NONE, M8_NONE,
-        3, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        3, CLR_BROWN, MONSTER_SOUNDSET_GNOLL_MALE, MONSTER_SOUNDSET_GNOLL_FEMALE),
 
     MON("gnoll warden", None, "spell-casting hyena-headed humanoid", None, None, S_GNOLL, LVL(5, 10, 2, 5, 0, -7), (G_GENO | 1),
         A(ATTK(AT_MAGC, AD_CLRC, 0, 0, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK,
@@ -703,7 +703,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_SMELLS_BURIED_SEARCHABLE, 
         M5_FEMALE_TILE | M5_CORPSE_TILE, M6_NONE, M7_PRIEST, M8_NONE,
-        6, HI_ZAP, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        6, HI_ZAP, MONSTER_SOUNDSET_GNOLL_MALE, MONSTER_SOUNDSET_GNOLL_FEMALE),
                     
     MON("gnoll lord", None, "hyena-headed humanoid in a leadership position", "gnoll lady", "gnoll noble", S_GNOLL, LVL(4, 9, 7, 0, 0, -5), (G_GENO | 2 | G_GENDER_ONE_FOURTH),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 10, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
@@ -712,7 +712,7 @@ NEARDATA struct permonst mons[] = {
         M2_GNOLL | M2_GREEDY | M2_JEWELS | M2_COLLECT,
         M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, M4_SMELLS_BURIED_SEARCHABLE | M4_LORD, M5_FEMALE_TILE | M5_CORPSE_TILE, 
         M6_NONE, M7_NONE, M8_NONE,
-        6, CLR_BLUE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        6, CLR_BLUE, MONSTER_SOUNDSET_GNOLL_MALE, MONSTER_SOUNDSET_GNOLL_FEMALE),
 
     MON("gnoll king", None, "strong hyena-headed humanoid in a top leadership position", "gnoll queen", "gnoll royal", S_GNOLL, LVL(8, 9, 7, 0, 0, -6), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
@@ -724,7 +724,7 @@ NEARDATA struct permonst mons[] = {
         M2_GNOLL | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, M4_SMELLS_BURIED_SEARCHABLE | M4_PRINCE, M5_FEMALE_TILE | M5_CORPSE_TILE, 
         M6_NONE, M7_NONE, M8_NONE,
-        12, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        12, HI_LORD, MONSTER_SOUNDSET_GNOLL_MALE, MONSTER_SOUNDSET_GNOLL_FEMALE),
 
     MON("gnoll supreme warden", None, "spell-casting hyena-headed humanoid", None, None, S_GNOLL, LVL(11, 12, 0, 10, 0, -9), (G_GENO | 1),
         A(ATTK(AT_MAGC, AD_CLRC, 0, 0, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK,
@@ -736,7 +736,7 @@ NEARDATA struct permonst mons[] = {
         M4_SMELLS_BURIED_SEARCHABLE, 
         M5_FEMALE_TILE | M5_CORPSE_TILE, 
         M6_NONE, M7_PRIEST, M8_NONE,
-        13, CLR_BRIGHT_MAGENTA, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        13, CLR_BRIGHT_MAGENTA, MONSTER_SOUNDSET_GNOLL_MALE, MONSTER_SOUNDSET_GNOLL_FEMALE),
                     
     MON("flind", None, "demonic hyena-headed humanoid", None, None, S_GNOLL, LVL(12, 10, -2, 8, 30, -10), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
@@ -747,7 +747,7 @@ NEARDATA struct permonst mons[] = {
         M2_MAGIC | M2_GNOLL | M2_DEMON | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_COLLECT,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_SMELLS_BURIED_SEARCHABLE | M4_LORD, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
-        14, CLR_ORANGE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        14, CLR_ORANGE, MONSTER_SOUNDSET_FLIND_MALE, MONSTER_SOUNDSET_FLIND_FEMALE),
 
     MON("flind lord", None, "powerful demonic hyena-headed humanoid", "flind lady", "flind noble", S_GNOLL, LVL(16, 10, -3, 12, 40, -12), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 3, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
@@ -760,7 +760,7 @@ NEARDATA struct permonst mons[] = {
         M2_GNOLL | M2_DEMON | M2_STALK | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_BRAVE | M4_SMELLS_BURIED_SEARCHABLE | M4_PRINCE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
-        20, CLR_RED, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        20, CLR_RED, MONSTER_SOUNDSET_FLIND_MALE, MONSTER_SOUNDSET_FLIND_FEMALE),
 
 
     /*
@@ -775,7 +775,7 @@ NEARDATA struct permonst mons[] = {
         M4_NONE, 
         M5_FEMALE_TILE | M5_CORPSE_TILE, 
         M6_NONE, M7_NONE, M8_NONE,
-        1, CLR_BROWN, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
+        1, CLR_BROWN, MONSTER_SOUNDSET_GNOME_MALE, MONSTER_SOUNDSET_GNOME_FEMALE),
     MON("gnome lord", None, "small humanoid in a leadership position", "gnome lady", "gnome noble", S_GNOME, LVL(3, 8, 10, 0, 4, 0), (G_GENO | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
             NO_ATTK, NO_ATTK, NO_ATTK),
@@ -784,7 +784,7 @@ NEARDATA struct permonst mons[] = {
         M2_COLLECT | M2_GNOME,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, M4_LORD, M5_FEMALE_TILE | M5_CORPSE_TILE, 
         M6_NONE, M7_NONE, M8_NONE,
-        3, CLR_BLUE, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
+        3, CLR_BLUE, MONSTER_SOUNDSET_GNOME_MALE, MONSTER_SOUNDSET_GNOME_FEMALE),
     MON("gnomish wizard", None, "small humanoid spell-caster", None, None, S_GNOME, LVL(3, 10, 4, 5, 10, 0), (G_GENO | 1),
         A(ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 1, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK,
             NO_ATTK, NO_ATTK, NO_ATTK),
@@ -793,7 +793,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_CHAT_CAN_JOIN_PARTY | M3_SPEAKING, 
         M4_NONE, 
         M5_FEMALE_TILE | M5_CORPSE_TILE, M6_NONE, M7_WIZARD, M8_NONE,
-        3, HI_ZAP, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
+        3, HI_ZAP, MONSTER_SOUNDSET_GNOME_MALE, MONSTER_SOUNDSET_GNOME_FEMALE),
     MON("gnome king", None, "strong small humanoid in a top leadership position", "gnome queen", "gnome royal", S_GNOME, LVL(5, 10, 10, 0, 20, 0), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
             NO_ATTK, NO_ATTK, NO_ATTK),
@@ -804,7 +804,7 @@ NEARDATA struct permonst mons[] = {
         M2_MAGIC | M2_COLLECT | M2_GNOME,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_PRINCE, M5_FEMALE_TILE | M5_CORPSE_TILE, M6_NONE, M7_NONE, M8_NONE,
-        5, HI_LORD, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
+        5, HI_LORD, MONSTER_SOUNDSET_GNOME_MALE, MONSTER_SOUNDSET_GNOME_FEMALE),
     MON("gremlin", None, "small monstrous humanoid that can steal abilities and multiplies in water", None, None, S_GNOME, LVL(5, 12, 2, 0, 25, -9), (G_GENO | G_NOMINES | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_BITE, AD_PHYS, 1, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_CURS, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
@@ -816,7 +816,7 @@ NEARDATA struct permonst mons[] = {
         M2_STALK, 
         M3_INFRAVISIBLE, 
         M4_NONE, M5_HATES_LIGHT, M6_NONE, M7_NONE, M8_NONE,
-        7, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        7, CLR_GREEN, MONSTER_SOUNDSET_LEPRECHAUN_MALE, MONSTER_SOUNDSET_LEPRECHAUN_FEMALE),
     MON("gargoyle", None, "stony creature resembling a monstrous statue", None, None, S_GNOME, LVL(6, 10, -4, 10, 0, -9), (G_GENO | G_NOMINES | 2 | G_GENDER_ONE_FOURTH),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_BITE, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -844,7 +844,7 @@ NEARDATA struct permonst mons[] = {
         M2_COLLECT, 
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_NONE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE, 
-        1, CLR_GREEN, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
+        1, CLR_GREEN, MONSTER_SOUNDSET_HALFLING_MALE, MONSTER_SOUNDSET_HALFLING_FEMALE),
     MON("dwarf", None, "short sturdy humanoid", None, None, S_HUMANOID, LVL(2, 6, 10, 0, 10, 4), (G_GENO | 3),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1072,7 +1072,7 @@ NEARDATA struct permonst mons[] = {
         SIZ(60, 30, MS_LAUGH, MZ_TINY, 1, 0, MAT_FLESH), STATS(3, 14, 14, 15, 9, 14), 
         MR_TELEPORT, MR2_NONE, MC_TELEPORT, M1_HUMANOID,
         M2_HOSTILE | M2_GREEDY, M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-        3, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        3, CLR_GREEN, MONSTER_SOUNDSET_LEPRECHAUN_MALE, MONSTER_SOUNDSET_LEPRECHAUN_FEMALE),
     /*
      * mimics
      */
@@ -1519,10 +1519,9 @@ NEARDATA struct permonst mons[] = {
         A(ATTK(AT_BITE, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(30, 30, MS_SILENT, MZ_SMALL, 1, 0, MAT_FLESH), STATS(6, 9, 6, 2, 2, 1), MR_NONE, MR2_NONE, MC_NONE,
-        M1_TUNNEL /*LOGGING*/ | M1_ANIMAL | M1_NOHANDS | M1_SWIM
-            | M1_HERBIVORE,
+        M1_TUNNEL /*LOGGING*/ | M1_ANIMAL | M1_NOHANDS | M1_SWIM | M1_HERBIVORE,
         /* In reality, they tunnel instead of cutting lumber.  Oh, well. */
-        M2_WANDER | M2_HOSTILE, M3_INFRAVISIBLE, M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
+        M2_WANDER | M2_HOSTILE, M3_INFRAVISIBLE, M4_NONE, M5_ATTACK_TILE, M6_NONE, M7_NONE, M8_NONE,
         1, CLR_ORANGE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("rabid rat", None, "long-tailed rodent with a constitution draining attack", None, None, S_RODENT, LVL(2, 12, 6, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRCO, 2, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,

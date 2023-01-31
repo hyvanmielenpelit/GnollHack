@@ -330,6 +330,12 @@ void NetHackQtBind::qt_putstr_ex(winid wid, int attr, const char *text, int app,
     window->PutStr(attr,QString::fromLatin1(text));
 }
 
+void NetHackQtBind::qt_putstr_ex(winid wid, const char* text, const char* attrs, const char* colors, int app)
+{
+    NetHackQtWindow* window = id_to_window[(int)wid];
+    window->PutStr(attr, QString::fromLatin1(text));
+}
+
 void NetHackQtBind::qt_putstr(winid wid, int attr, const std::string& text)
 {
     NetHackQtWindow* window=id_to_window[(int)wid];
@@ -659,7 +665,7 @@ void NetHackQtBind::qt_outrip(winid wid, int how, time_t when)
     window->UseRIP(how, when);
 }
 
-char * NetHackQtBind::qt_getmsghistory_ex(int *attr_ptr, int *color_ptr, BOOLEAN_P init)
+char * NetHackQtBind::qt_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, BOOLEAN_P init)
 {
     NetHackQtMessageWindow* window = main->GetMessageWindow();
     if (window)
@@ -667,7 +673,7 @@ char * NetHackQtBind::qt_getmsghistory_ex(int *attr_ptr, int *color_ptr, BOOLEAN
     return NULL;
 }
 
-void NetHackQtBind::qt_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P is_restoring)
+void NetHackQtBind::qt_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P is_restoring)
 {
     NetHackQtMessageWindow* window = main->GetMessageWindow();
     if (!window)
@@ -789,6 +795,7 @@ struct window_procs Qt_procs = {
     nethack_qt4::NetHackQtBind::qt_destroy_nhwindow,
     nethack_qt4::NetHackQtBind::qt_curs,
     nethack_qt4::NetHackQtBind::qt_putstr_ex,
+    nethack_qt4::NetHackQtBind::qt_putstr_ex2,
     genl_putmixed_ex,
     nethack_qt4::NetHackQtBind::qt_display_file,
     nethack_qt4::NetHackQtBind::qt_start_menu_ex,

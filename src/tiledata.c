@@ -95,7 +95,7 @@ uchar* tilemapflags;
     const char* fq_save = save_file_name;
     const char* tile_section_name;
     const char* set_name;
-    int fd, i, j;
+    int fd, i, j, k;
     int tile_count = 0;
     char buf[BUFSIZ];
     strcpy(buf, "");
@@ -836,7 +836,7 @@ uchar* tilemapflags;
                     {
                         for (gender = 0; gender <= 1; gender++)
                         {
-                            for (int k = LOW_PM; k < NUM_MONSTERS; k++)
+                            for (k = LOW_PM; k < NUM_MONSTERS; k++)
                             {
                                 if (i == CORPSE && tsd->corpse_tile_style == 2 && (mons[k].mflags5 & M5_CORPSE_TILE))
                                     continue;
@@ -1344,7 +1344,7 @@ uchar* tilemapflags;
                 if (!first_found && process_style == 1)
                 {
                     first_found = TRUE;
-                    for (int k = 0; k < NUM_MONSTERS; k++)
+                    for (k = 0; k < NUM_MONSTERS; k++)
                     {
                         for (int m = 0; m < MAX_SWALLOW_CHARS; m++)
                         {
@@ -1668,7 +1668,7 @@ uchar* tilemapflags;
                                 {
                                     if (alignment == A_CHAOTIC && !(roles[roleidx].allow & ROLE_ALIGNMENT_TILES))
                                     {
-                                        for (int k = A_CHAOTIC; k <= A_LAWFUL; k++)
+                                        for (k = A_CHAOTIC; k <= A_LAWFUL; k++)
                                         {
                                             int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, k, glevel);
                                             int player_glyph = player_glyph_index + player_glyph_offset;
@@ -1790,7 +1790,13 @@ uchar* tilemapflags;
     {
         if (process_style == 0)
         {
-            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, simple_doodads[i].name);
+            int doodad_enl = simple_doodads[i].enlargement;
+            Sprintf(buf, "%s,%s,%s", tile_section_name, set_name, simple_doodads[i].name);
+            if(doodad_enl > 0)
+                Sprintf(eos(buf), ",%d,%d,%d", enlargements[doodad_enl].width_in_tiles, enlargements[doodad_enl].height_in_tiles, enlargements[doodad_enl].main_tile_x_coordinate);
+            else
+                Strcat(buf, ",1,1,0");
+            Strcat(buf, "\n");
             (void)write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
@@ -1806,7 +1812,13 @@ uchar* tilemapflags;
     {
         if (process_style == 0)
         {
-            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, mirrorable_doodads[i].name);
+            int doodad_enl = mirrorable_doodads[i].enlargement;
+            Sprintf(buf, "%s,%s,%s", tile_section_name, set_name, mirrorable_doodads[i].name);
+            if (doodad_enl > 0)
+                Sprintf(eos(buf), ",%d,%d,%d", enlargements[doodad_enl].width_in_tiles, enlargements[doodad_enl].height_in_tiles, enlargements[doodad_enl].main_tile_x_coordinate);
+            else
+                Strcat(buf, ",1,1,0");
+            Strcat(buf, "\n");
             (void)write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
@@ -2055,7 +2067,7 @@ uchar* tilemapflags;
                     {
                         glyph_offset = GLYPH_ANIMATION_OFF;
                         int n_frames = min(animations[i].number_of_frames, MAX_FRAMES_PER_ANIMATION);
-                        for (int k = 0; k < n_frames; k++)  /* frame number */
+                        for (k = 0; k < n_frames; k++)  /* frame number */
                         {
                             if (animations[i].frame2tile[k] == j || animations[i].frame2tile[k] == -1)
                             {
@@ -2100,7 +2112,7 @@ uchar* tilemapflags;
                             {
                                 glyph_offset = GLYPH_ANIMATION_OFF;
                                 int n_frames = min(animations[i].number_of_frames, MAX_FRAMES_PER_ANIMATION);
-                                for (int k = 0; k < n_frames; k++)  /* frame number */
+                                for (k = 0; k < n_frames; k++)  /* frame number */
                                 {
                                     if (animations[i].frame2tile[k] == j || animations[i].frame2tile[k] == -1)
                                     {
@@ -2151,7 +2163,7 @@ uchar* tilemapflags;
                             {
                                 glyph_offset = GLYPH_ANIMATION_OFF;
                                 int n_frames = min(animations[i].number_of_frames, MAX_FRAMES_PER_ANIMATION);
-                                for (int k = 0; k < n_frames; k++)  /* frame number */
+                                for (k = 0; k < n_frames; k++)  /* frame number */
                                 {
                                     if (animations[i].frame2tile[k] == j || animations[i].frame2tile[k] == -1)
                                     {
@@ -2191,7 +2203,7 @@ uchar* tilemapflags;
                 const char* position_names[NUM_POSITIONS_IN_ENLARGEMENT] = { "top-left", "top", "top-right", "left", "right" };
 
                 int position = -1;
-                for (int k = 0; k < NUM_POSITIONS_IN_ENLARGEMENT; k++) /* position number */
+                for (k = 0; k < NUM_POSITIONS_IN_ENLARGEMENT; k++) /* position number */
                 {
                     if (enlargements[i].position2tile[k] == j)
                     {
@@ -2257,7 +2269,7 @@ uchar* tilemapflags;
                     }
 
 #if 0
-                    for (int k = 0; k < min(enlargements[i].number_of_enlargement_tiles, NUM_POSITIONS_IN_ENLARGEMENT); k++)  /* frame number */
+                    for (k = 0; k < min(enlargements[i].number_of_enlargement_tiles, NUM_POSITIONS_IN_ENLARGEMENT); k++)  /* frame number */
                     {
                         if (enlargements[i].position2tile[k] == j)
                             tilemaparray[k + addedindex + enlargement_offsets[i] /* enlargements[i].glyph_offset */ + GLYPH_ENLARGEMENT_OFF] = tile_count;
@@ -2454,6 +2466,19 @@ uchar* tilemapflags;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
+                for (j = 0; j < NUM_MISSILE_DIRS; j++)
+                {
+                    int mglyph = j + i * NUM_MISSILE_DIRS + GLYPH_OBJ_MISSILE_OFF;
+                    if (glyphtileflags[mglyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE)
+                    {
+                        glyph2replacement[mglyph] = repl;
+                        for (k = 0; k < replacements[repl].number_of_tiles; k++)
+                        {
+                            int rglyph = k + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                            glyphtileflags[rglyph] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                        }
+                    }
+                }
             }
         }
 
@@ -2462,7 +2487,7 @@ uchar* tilemapflags;
         {
             if (artilist[i].replacement)
             {
-                int glyph = objnum_to_glyph(i);
+                int glyph = i - 1 + GLYPH_ARTIFACT_OFF;
                 int tile = glyph2tile[glyph];
                 int repl = artilist[i].replacement;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
@@ -2472,6 +2497,19 @@ uchar* tilemapflags;
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
+                }
+                for (j = 0; j < NUM_MISSILE_DIRS; j++)
+                {
+                    int mglyph = j + (i - 1) * NUM_MISSILE_DIRS + GLYPH_ARTIFACT_MISSILE_OFF;
+                    if (glyphtileflags[mglyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE)
+                    {
+                        glyph2replacement[mglyph] = repl;
+                        for (k = 0; k < replacements[repl].number_of_tiles; k++)
+                        {
+                            int rglyph = k + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                            glyphtileflags[rglyph] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                        }
+                    }
                 }
             }
         }
@@ -2647,7 +2685,7 @@ uchar* tilemapflags;
             }
         }
 
-        /* Rotatable Doodads */
+        /* Mirrorable Doodads */
         for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
         {
             if (mirrorable_doodads[i].replacement)
@@ -3234,7 +3272,7 @@ uchar* tilemapflags;
         }
 
 
-        /* Rotatable Doodads */
+        /* Mirrorable Doodads */
         for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
         {
             if (mirrorable_doodads[i].enlargement)

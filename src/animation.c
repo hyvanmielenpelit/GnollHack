@@ -1470,11 +1470,11 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 struct replacement_info
-data_to_replacement_info(signed_glyph, layer, otmp, mtmp, layer_flags)
+data_to_replacement_info(signed_glyph, layer, otmp, mtmp, layer_flags, missile_flags)
 int signed_glyph, layer;
 struct obj* otmp;
 struct monst* mtmp;
-unsigned long layer_flags;
+unsigned long layer_flags, missile_flags;
 {
     struct replacement_info info = { 0 };
     info.signed_glyph = signed_glyph;
@@ -1482,6 +1482,7 @@ unsigned long layer_flags;
     info.object = otmp;
     info.monster = mtmp;
     info.layer_flags = layer_flags;
+    info.missile_flags = missile_flags;
 
     return info;
 }
@@ -1497,6 +1498,7 @@ enum autodraw_types* autodraw_ptr;
     struct obj* otmp = info.object;
     struct monst* mtmp = info.monster;
     unsigned long layer_flags = info.layer_flags;
+    boolean is_lit_missile = info.layer == LAYER_MISSILE && (info.missile_flags & MISSILE_FLAGS_LIT) != 0;
     short replacement_idx = tile2replacement[ntile];
     if (replacement_idx > 0)
     {
@@ -1661,10 +1663,10 @@ enum autodraw_types* autodraw_ptr;
         }
         case REPLACEMENT_ACTION_OBJECT_LIT:
         {
-            if (!otmp)
+            if (!otmp && !is_lit_missile)
                 return ntile;
 
-            if (is_obj_activated(otmp))
+            if (is_lit_missile || is_obj_activated(otmp))
             {
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].general_autodraw;
@@ -1854,13 +1856,13 @@ enum autodraw_types* autodraw_ptr;
         }
         case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_LIT:
         {
-            if (!otmp)
+            if (!otmp && !is_lit_missile)
                 return ntile;
 
             if (autodraw_ptr)
                 *autodraw_ptr = replacements[replacement_idx].general_autodraw;
 
-            if (is_obj_activated(otmp))
+            if (is_lit_missile || is_obj_activated(otmp))
             {
                 if (replacements[replacement_idx].number_of_tiles < 1)
                     return ntile;
@@ -2070,25 +2072,25 @@ enum autodraw_types* autodraw_ptr;
                 *autodraw_ptr = replacements[replacement_idx].general_autodraw;
 
             if (replacements[replacement_idx].number_of_tiles < 1)
-                return ntile;
+return ntile;
 
-            struct monst* mtmp2 = get_mtraits(otmp, FALSE);
-            if (mtmp2 && has_epri(mtmp2))
-            {
-                int glyph_idx = 0;
-                switch (EPRI(mtmp2)->shralign)
-                {
-                case A_NONE:
-                    glyph_idx = 0;
-                    break;
-                default:
-                    return ntile;
-                }
-                if (autodraw_ptr)
-                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
-                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
-            }
-            break;
+struct monst* mtmp2 = get_mtraits(otmp, FALSE);
+if (mtmp2 && has_epri(mtmp2))
+{
+    int glyph_idx = 0;
+    switch (EPRI(mtmp2)->shralign)
+    {
+    case A_NONE:
+        glyph_idx = 0;
+        break;
+    default:
+        return ntile;
+    }
+    if (autodraw_ptr)
+        *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+    return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+}
+break;
         }
         case REPLACEMENT_ACTION_PRISONER:
         {
@@ -2156,6 +2158,43 @@ enum autodraw_types* autodraw_ptr;
                 *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
             return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
         }
+        case REPLACEMENT_ACTION_TORCH_HOLDER:
+        {
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            if (isok(x, y) && levl[x][y].decoration_typ > 0 && (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0)
+            {
+                int glyph_idx = 0;
+                if (get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+                    glyph_idx = 1;
+
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_FIREPLACE:
+        {
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            if (isok(x, y) && levl[x][y].decoration_typ > 0 && get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+            {
+                int glyph_idx = 0;
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
         default:
             break;
         }
@@ -2180,6 +2219,7 @@ struct replacement_info info;
     struct obj* otmp = info.object;
     struct monst* mtmp = info.monster;
     unsigned long layer_flags = info.layer_flags;
+    boolean is_lit_missile = info.layer == LAYER_MISSILE && (info.missile_flags & MISSILE_FLAGS_LIT) != 0;
     short replacement_idx = glyph2replacement[absglyph];
     if (replacement_idx > 0)
     {
@@ -2307,10 +2347,10 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_OBJECT_LIT:
         {
-            if (!otmp)
+            if (!otmp && !is_lit_missile)
                 return glyph;
 
-            if (is_obj_activated(otmp))
+            if (is_lit_missile || is_obj_activated(otmp))
             {
                 /* Return the first tile with index 0 */
                 return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
@@ -2434,10 +2474,10 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_LIT:
         {
-            if (!otmp)
+            if (!otmp && !is_lit_missile)
                 return glyph;
 
-            if (is_obj_activated(otmp))
+            if (is_lit_missile || is_obj_activated(otmp))
             {
                 /* Return the first tile with index 0 */
                 return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
@@ -2610,6 +2650,30 @@ struct replacement_info info;
                 return glyph;
             }
             return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            break;
+        }
+        case REPLACEMENT_ACTION_TORCH_HOLDER:
+        {
+            if (isok(x, y) && levl[x][y].decoration_typ > 0 && (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0)
+            {
+                int glyph_idx = 0;
+                if (get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+                    glyph_idx = 1;
+
+                /* Return the first tile with index 0 */
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_FIREPLACE:
+        {
+            if (isok(x, y) && levl[x][y].decoration_typ > 0 && get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+            {
+                int glyph_idx = 0;
+
+                /* Return the first tile with index 0 */
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
             break;
         }
         default:
@@ -3158,6 +3222,19 @@ short animidx;
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
     }
 
+    for (i = 0; i < MAX_SIMPLE_DOODAD_TILES; i++)
+    {
+        if (simple_doodads[i].animation == animidx)
+            return glyph2tile[i + GLYPH_SIMPLE_DOODAD_OFF];
+    }
+
+    for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
+    {
+        if (mirrorable_doodads[i].animation == animidx)
+            return glyph2tile[i + GLYPH_MIRRORABLE_DOODAD_OFF];
+    }
+
+
 #if 0
     /* Spell tiles */
     for (i = 0; i < MAXSPELL; i++)
@@ -3296,6 +3373,19 @@ short enlidx, enl_anim_tile_idx;
         if (ui_tile_component_array[i].enlargement == enlidx)
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
     }
+
+    for (i = 0; i < MAX_SIMPLE_DOODAD_TILES; i++)
+    {
+        if (simple_doodads[i].enlargement == enlidx)
+            return glyph2tile[i + GLYPH_SIMPLE_DOODAD_OFF];
+    }
+
+    for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
+    {
+        if (mirrorable_doodads[i].enlargement == enlidx)
+            return glyph2tile[i + GLYPH_MIRRORABLE_DOODAD_OFF];
+    }
+
 
 #if 0
     /* Spell tiles */
@@ -3461,6 +3551,19 @@ short replacement_idx;
         if (ui_tile_component_array[i].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
     }
+
+    for (i = 0; i < MAX_SIMPLE_DOODAD_TILES; i++)
+    {
+        if (simple_doodads[i].replacement == replacement_idx)
+            return glyph2tile[i + GLYPH_SIMPLE_DOODAD_OFF];
+    }
+
+    for (i = 0; i < MAX_MIRRORABLE_DOODAD_TILES; i++)
+    {
+        if (mirrorable_doodads[i].replacement == replacement_idx)
+            return glyph2tile[i + GLYPH_MIRRORABLE_DOODAD_OFF];
+    }
+
 
 #if 0
     /* Spell tiles */

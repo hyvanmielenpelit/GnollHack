@@ -317,6 +317,29 @@ const char *str;
 }
 
 void
+trace_putstr_ex2(vp, window, str, attrs, colors, attr, color, app)
+void* vp;
+winid window;
+int attr, color, app;
+const char* str, *attrs, *colors;
+{
+    struct trace_data* tdp = vp;
+
+    if (str) {
+        fprintf(wc_tracelogf, "%sputstr_ex2(%d, %d, '%s'(%d))\n", INDENT, window,
+            attrs ? attrs[0] : attr, str, (int)strlen(str));
+    }
+    else {
+        fprintf(wc_tracelogf, "%sputstr_ex2(%d, %d, NULL)\n", INDENT, window,
+            attrs ? attrs[0] : attr);
+    }
+
+    PRE;
+    (*tdp->nprocs->win_putstr_ex2)(tdp->ndata, window, str, attrs, colors, attr, color, app);
+    POST;
+}
+
+void
 trace_putmixed_ex(vp, window, attr, str, app, color)
 void *vp;
 winid window;
@@ -1055,9 +1078,9 @@ const char *pref;
 }
 
 char *
-trace_getmsghistory_ex(vp, attr_ptr, color_ptr, init)
+trace_getmsghistory_ex(vp, attrs_ptr, colors_ptr, init)
 void *vp;
-int* attr, *color;
+char** attrs, **colors;
 boolean init;
 {
     struct trace_data *tdp = vp;
@@ -1066,7 +1089,7 @@ boolean init;
     fprintf(wc_tracelogf, "%sgetmsghistory(%d)\n", INDENT, init);
 
     PRE;
-    rv = (*tdp->nprocs->win_getmsghistory_ex)(tdp->ndata, attr_ptr, color_ptr, init);
+    rv = (*tdp->nprocs->win_getmsghistory_ex)(tdp->ndata, attrs_ptr, colors_ptr, init);
     POST;
 
     if (rv) {
@@ -1080,10 +1103,10 @@ boolean init;
 }
 
 void
-trace_putmsghistory_ex(vp, msg, attr, color, is_restoring)
+trace_putmsghistory_ex(vp, msg, attrs, colors, is_restoring)
 void *vp;
 const char *msg;
-int attr, color;
+const char* attrs, *colors;
 boolean is_restoring;
 {
     struct trace_data *tdp = vp;
@@ -1097,7 +1120,7 @@ boolean is_restoring;
     }
 
     PRE;
-    (*tdp->nprocs->win_putmsghistory)(tdp->ndata, msg, attr, color, is_restoring);
+    (*tdp->nprocs->win_putmsghistory)(tdp->ndata, msg, attrs, colors, is_restoring);
     POST;
 }
 
@@ -1206,7 +1229,7 @@ struct chain_procs trace_procs = {
     trace_player_selection, trace_askname, trace_get_nh_event,
     trace_exit_nhwindows, trace_suspend_nhwindows, trace_resume_nhwindows,
     trace_create_nhwindow_ex, trace_clear_nhwindow, trace_display_nhwindow,
-    trace_destroy_nhwindow, trace_curs, trace_putstr_ex, trace_putmixed_ex,
+    trace_destroy_nhwindow, trace_curs, trace_putstr_ex, trace_putstr_ex2, trace_putmixed_ex,
     trace_display_file, trace_start_menu_ex, trace_add_menu, trace_add_extended_menu, trace_end_menu_ex,
     trace_select_menu, trace_message_menu, trace_update_inventory,
     trace_mark_synch, trace_wait_synch,

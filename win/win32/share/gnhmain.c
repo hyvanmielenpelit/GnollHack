@@ -1,5 +1,5 @@
 /* 
- * droidmain.c
+ * gnhmain.c
  */
 
 #include "hack.h"

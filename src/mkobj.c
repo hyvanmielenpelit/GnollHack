@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-28 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    mkobj.c    $NHDT-Date: 1548978605 2019/01/31 23:50:05 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.142 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -1045,7 +1045,7 @@ register struct obj *otmp;
     copy_oextra(dummy, otmp);
     if (has_omid(dummy))
         free_omid(dummy); /* only one association with m_id*/
-    if (is_candle(dummy))
+    if (is_candle(dummy) || is_torch(dummy))
         dummy->lamplit = 0;
     dummy->makingsound = 0;
     dummy->owornmask = 0L; /* dummy object is not worn */
@@ -1602,6 +1602,13 @@ unsigned long mkflags;
                 otmp->age = candle_starting_burn_time(otmp);
                 otmp->lamplit = 0;
                 otmp->quan = 1L + (long) (rn2(2) ? rn2(7) : 0);
+                blessorcurse(otmp, 5);
+                break;
+            case TORCH:
+                otmp->special_quality = 1;
+                otmp->age = torch_starting_burn_time(otmp);
+                otmp->lamplit = 0;
+                otmp->quan = 1L;
                 blessorcurse(otmp, 5);
                 break;
             case LARGE_FIVE_BRANCHED_CANDELABRUM:
@@ -3502,11 +3509,11 @@ register struct obj *otmp;
     int otyp = otmp->otyp;
     int omat = objects[otyp].oc_material;
 
-    /* Candles can be burned, but they're not flammable in the sense that
+    /* Candles and torches can be burned, but they're not flammable in the sense that
      * they can't get fire damage and it makes no sense for them to be
      * fireproofed.
      */
-    if (is_candle(otmp))
+    if (is_candle(otmp) || is_torch(otmp))
         return FALSE;
 
     if ((objects[otyp].oc_flags & O1_FIRE_RESISTANT) != 0)

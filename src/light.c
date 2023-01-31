@@ -870,6 +870,8 @@ struct obj* obj;
         maxburntime = -1;
     else if (is_candle(obj))
         maxburntime = candle_maximum_burn_time(obj);
+    else if (is_torch(obj))
+        maxburntime = torch_maximum_burn_time(obj);
     else if (is_obj_candelabrum(obj))
         maxburntime = candlelabrum_maximum_burn_time(obj);
     else if (obj->otyp == POTION_CLASS) //Potion of oil
@@ -891,7 +893,7 @@ struct obj* obj;
     //if (!is_obj_light_source(obj))
     //    return 0;
 
-    int radius = 3; //Normal lamps
+    int radius = 3; //Normal lamps and torches
     if (is_candle(obj) || is_obj_candelabrum(obj))
         radius = candle_light_range(obj);
     else if (obj->otyp == POTION_CLASS) //Potion of oil

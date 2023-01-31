@@ -26,6 +26,8 @@ long curs_mesg_suppress_turn = -1;
 
 typedef struct nhpm {
     char *str;                  /* Message text */
+    char* attrs;                /* Message attributes */
+    char* colors;               /* Message colors */
     long turn;                  /* Turn number for message */
     struct nhpm *prev_mesg;     /* Pointer to previous message */
     struct nhpm *next_mesg;     /* Pointer to next message */
@@ -34,7 +36,8 @@ typedef struct nhpm {
 static void scroll_window(winid wid);
 static void unscroll_window(winid wid);
 static void directional_scroll(winid wid, int nlines);
-static void mesg_add_line(const char *mline);
+static void mesg_add_line(const char* mline);
+static void mesg_add_line_ex(const char *mline, const char* attrs, const char* colors, int attr, int color);
 static nhprev_mesg *get_msg_line(boolean reverse, int mindex);
 
 static int turn_lines = 0;
@@ -49,8 +52,17 @@ static int last_messages = 0;
 /* Write string to the message window.  Attributes set by calling function. */
 
 void
-curses_message_win_puts(const char *message, boolean recursed)
+curses_message_win_puts(const char* message, boolean recursed)
 {
+    curses_message_win_puts_ex(message, (char*)0, (char*)0, ATR_NONE, NO_COLOR, recursed);
+}
+
+void
+curses_message_win_puts_ex(const char *message, const char* attrs, const char* colors, int attr, int color, boolean recursed)
+{
+    if (!message)
+        return;
+
     int height, width, border_space, linespace;
     char *tmpstr;
     WINDOW *win = curses_get_nhwin(MESSAGE_WIN);
@@ -93,29 +105,52 @@ curses_message_win_puts(const char *message, boolean recursed)
         return;
     }
 
-    if (!recursed) {
+    if (!recursed) 
+    {
         strcpy(toplines, message);
-        mesg_add_line(message);
+        size_t len = strlen(message);
+        if(attrs)
+            memcpy(toplineattrs, attrs, len);
+        else
+            memset(toplineattrs, attr, len);
+
+        if (colors)
+            memcpy(toplinecolors, colors, len);
+        else
+            memset(toplinecolors, color, len);
+
+        toplineattrs[len] = toplinecolors[len] = 0;
+
+        mesg_add_line_ex(message, attrs, colors, attr, color);
     }
 
     linespace = width - 3 - (mx - border_space);
 
-    if (linespace < message_length) {
-        if (my - border_space >= height - 1) {
+    if (linespace < message_length) 
+    {
+        if (my - border_space >= height - 1) 
+        {
             /* bottom of message win */
-            if (++turn_lines >= height) { /* || height == 1) */
+            if (++turn_lines >= height) 
+            { /* || height == 1) */
                 /* Pause until key is hit - Esc suppresses any further
                    messages that turn */
-                if (curses_more() == '\033') {
+                if (curses_more() == '\033') 
+                {
                     curs_mesg_suppress_turn = moves;
                     return;
                 }
                 /* turn_lines reset to 0 by more()->block()->got_input() */
-            } else {
+            } 
+            else 
+            {
                 scroll_window(MESSAGE_WIN);
             }
-        } else {
-            if (mx != border_space) {
+        }
+        else
+        {
+            if (mx != border_space) 
+            {
                 my++;
                 mx = border_space;
                 ++turn_lines;
@@ -124,36 +159,63 @@ curses_message_win_puts(const char *message, boolean recursed)
     }
 
     bold = (height > 1 && !last_messages);
-    if (bold)
-        curses_toggle_color_attr(win, NONE, A_BOLD, ON);
+    //if (bold)
+    //    curses_toggle_color_attr(win, NONE, A_BOLD, ON);
 
     /* will this message fit as-is or do we need to split it? */
-    if (mx == border_space && message_length > width - 2) {
+    if (mx == border_space && message_length > width - 2) 
+    {
         /* split needed */
         tmpstr = curses_break_str(message, (width - 2), 1);
-        mvwprintw(win, my, mx, "%s", tmpstr), mx += (int) strlen(tmpstr);
+        curses_print_text_ex(win, &mx, &my, tmpstr, attrs, colors, attr, color, bold ? ATR_BOLD : ATR_NONE);
+        //mvwprintw(win, my, mx, "%s", tmpstr);
+        //mx += (int)strlen(tmpstr);
         /* one space to separate first part of message from rest [is this
            actually useful?] */
         if (mx < width - 2)
             ++mx;
         free(tmpstr);
-        if (bold)
-            curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
+        //if (bold)
+        //    curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
         tmpstr = curses_str_remainder(message, (width - 2), 1);
-        curses_message_win_puts(tmpstr, TRUE);
+        const char* remainder_attrs = attrs;
+        const char* remainder_colors = colors;
+        if (tmpstr && (remainder_attrs || remainder_colors))
+        {
+            char* p = strstr(message, tmpstr);
+            if (p)
+            {
+                int offset = (int)(p - message);
+                int tlen = (int)strlen(tmpstr);
+                int rlen = message_length - tlen;
+                if (rlen > 0 && offset > 0 && rlen + offset <= message_length)
+                {
+                    if(remainder_attrs)
+                        remainder_attrs += offset;
+                    if (remainder_colors)
+                        remainder_colors += offset;
+                }
+            }
+        }
+        curses_message_win_puts_ex(tmpstr, remainder_attrs, remainder_colors, attr, color, TRUE);
         free(tmpstr);
-    } else {
-        mvwprintw(win, my, mx, "%s", message), mx += message_length;
+    } 
+    else 
+    {
+        //mvwprintw(win, my, mx, "%s", message);
+        //mx += message_length;
+        curses_print_text_ex(win, &mx, &my, message, attrs, colors, attr, color, bold ? ATR_BOLD : ATR_NONE);
         /* two spaces to separate this message from next one if they happen
            to fit on the same line; (FIXME:  it would be better if this was
            done at start of next message rather than end of this one since
            it impacts placement of "More>>") */
-        if (mx < width - 2) {
+        if (mx < width - 2) 
+        {
             if (++mx < width - 2)
                 ++mx;
         }
-        if (bold)
-            curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
+        //if (bold)
+        //    curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
     }
     wrefresh(win);
 }
@@ -245,7 +307,6 @@ curses_more()
 
 
 /* Clear the message window if one line; otherwise unhighlight old messages */
-
 void
 curses_clear_unhighlight_message_window()
 {
@@ -256,15 +317,29 @@ curses_clear_unhighlight_message_window()
     turn_lines = 0;
     curses_get_window_size(MESSAGE_WIN, &mh, &mw);
 
-    if (mh == 1) {
+    if (mh == 1) 
+    {
         curses_clear_nhwin(MESSAGE_WIN);
         mx = my = brdroffset;
-    } else {
+    }
+    else 
+    {
         mx = mw + brdroffset; /* Force new line on new turn */
-
         for (count = 0; count < mh; count++)
-            mvwchgat(win, count + brdroffset, brdroffset,
-                     mw, COLOR_PAIR(8), A_NORMAL, NULL);
+        {
+             //mvwchgat(win, count + brdroffset, brdroffset,
+             //         mw, COLOR_PAIR(8), A_NORMAL, NULL);
+            int x;
+            for (x = 0; x < mw; x++)
+            {
+                chtype ch = mvwinch(win, count + brdroffset, brdroffset + x);
+                if (ch & A_BOLD) /* has highlight */
+                {
+                    ch &= ~A_BOLD; /* Remove highlight */
+                    waddch(win, ch);
+                }
+            }
+        }
         wnoutrefresh(win);
     }
     wmove(win, my, mx);
@@ -292,9 +367,9 @@ curses_last_messages()
     for (j = 0, i = num_messages - 1; i > 0 && j < height; --i, ++j) {
         mesg = get_msg_line(TRUE, i);
         if (mesg && mesg->str && *mesg->str)
-            curses_message_win_puts(mesg->str, TRUE);
+            curses_message_win_puts_ex(mesg->str, mesg->attrs, mesg->colors, ATR_NONE, NO_COLOR, TRUE);
     }
-    curses_message_win_puts(toplines, TRUE);
+    curses_message_win_puts_ex(toplines, toplineattrs, toplinecolors, ATR_NONE, NO_COLOR, TRUE);
     --last_messages;
 }
 
@@ -325,6 +400,8 @@ curses_teardown_messages(void)
     while ((current_mesg = first_mesg) != 0) {
         first_mesg = current_mesg->next_mesg;
         free(current_mesg->str);
+        free(current_mesg->attrs);
+        free(current_mesg->colors);
         free(current_mesg);
     }
     last_mesg = (nhprev_mesg *) 0;
@@ -351,13 +428,13 @@ curses_prev_mesg()
     for (count = 0; count < num_messages; ++count) {
         mesg = get_msg_line(do_lifo, count);
         if (turn != mesg->turn && count != 0) {
-            curses_add_menu(wid, NO_GLYPH, &Id, 0, 0, A_NORMAL, "---", FALSE);
+            curses_add_menu(wid, NO_GLYPH, &Id, 0, 0, ATR_NONE, "---", FALSE);
         }
-        curses_add_menu(wid, NO_GLYPH, &Id, 0, 0, A_NORMAL, mesg->str, FALSE);
+        curses_add_menu_ex(wid, NO_GLYPH, &Id, 0, 0, mesg->attrs ? mesg->attrs[0] : ATR_NONE, mesg->colors ? mesg->colors[0] : NO_COLOR, mesg->str, mesg->attrs, mesg->colors, FALSE);
         turn = mesg->turn;
     }
     if (!count)
-        curses_add_menu(wid, NO_GLYPH, &Id, 0, 0, A_NORMAL,
+        curses_add_menu(wid, NO_GLYPH, &Id, 0, 0, ATR_NONE,
                         "[No past messages available.]", FALSE);
 
     curses_end_menu_ex(wid, "", (const char*)0);
@@ -415,7 +492,7 @@ curses_count_window(const char *count_text)
 
 /* Gets a "line" (buffer) of input. */
 void
-curses_message_win_getline(const char *prompt, char *answer, int buffer)
+curses_message_win_getline(int attr, int color, const char *prompt, char *answer, int buffer)
 {
     int height, width; /* of window */
     char *tmpbuf, *p_answer; /* combined prompt + answer */
@@ -430,6 +507,7 @@ curses_message_win_getline(const char *prompt, char *answer, int buffer)
     int border_space = 0;
     int len = 0; /* of answer string */
     boolean border = curses_window_has_border(MESSAGE_WIN);
+    int curses_attr = curses_atr2cursesattr(attr);
 
     *answer = '\0';
     orig_cursor = curs_set(0);
@@ -464,7 +542,7 @@ curses_message_win_getline(const char *prompt, char *answer, int buffer)
         mx = border_space;
     }
 
-    curses_toggle_color_attr(win, NONE, A_BOLD, ON);
+    curses_toggle_color_attr(win, color == NO_COLOR ? NONE : color, curses_attr | A_BOLD, ON);
 
     for (i = 0; i < nlines - 1; i++) {
         tmpstr = curses_break_str(linestarts[i], width - 1, 1);
@@ -562,7 +640,7 @@ curses_message_win_getline(const char *prompt, char *answer, int buffer)
             free(tmpbuf);
             free(linestarts);
             curs_set(orig_cursor);
-            curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
+            curses_toggle_color_attr(win, color == NO_COLOR ? NONE : color, curses_attr | A_BOLD, OFF);
             return;
         case '\r':
         case '\n':
@@ -573,7 +651,7 @@ curses_message_win_getline(const char *prompt, char *answer, int buffer)
             mesg_add_line(tmpbuf);
             free(tmpbuf);
             curs_set(orig_cursor);
-            curses_toggle_color_attr(win, NONE, A_BOLD, OFF);
+            curses_toggle_color_attr(win, color == NO_COLOR ? NONE : color, curses_attr | A_BOLD, OFF);
             if (++my > maxy) {
                 scroll_window(MESSAGE_WIN);
                 my--;
@@ -668,9 +746,14 @@ directional_scroll(winid wid, int nlines)
 
 
 /* Add given line to message history */
+static void
+mesg_add_line(const char* mline)
+{
+    mesg_add_line_ex(mline, (const char*)0, (const char*)0, ATR_NONE, NO_COLOR);
+}
 
 static void
-mesg_add_line(const char *mline)
+mesg_add_line_ex(const char *mline, const char* attrs, const char* colors, int attr, int color)
 {
     nhprev_mesg *current_mesg;
 
@@ -678,40 +761,70 @@ mesg_add_line(const char *mline)
      * Messages are kept in a doubly linked list, with head 'first_mesg',
      * tail 'last_mesg', and a maximum capacity of 'max_messages'.
      */
-    if (num_messages < max_messages) {
+    if (num_messages < max_messages) 
+    {
         /* create a new list element */
         current_mesg = (nhprev_mesg *) alloc((unsigned) sizeof (nhprev_mesg));
         current_mesg->str = dupstr(mline);
-    } else {
+        current_mesg->attrs = attrs ? cpystr(mline, attrs) : setstr(mline, attr);
+        current_mesg->colors = colors ? cpystr(mline, colors) : setstr(mline, color);
+    }
+    else 
+    {
         /* instead of discarding list element being forced out, reuse it */
         current_mesg = first_mesg;
         /* whenever new 'mline' is shorter, extra allocation size of the
            original element will be frittered away, until eventually we'll
            discard this 'str' and dupstr() a replacement; we could easily
            track the allocation size but don't really need to do so */
-        if (strlen(mline) <= strlen(current_mesg->str)) {
+        if (strlen(mline) <= strlen(current_mesg->str))
+        {
             Strcpy(current_mesg->str, mline);
-        } else {
+            size_t len = strlen(mline);
+            if(attrs)
+                memcpy(current_mesg->attrs, attrs, len);
+            else
+                memset(current_mesg->attrs, attr, len);
+
+            if (colors)
+                memcpy(current_mesg->colors, colors, len);
+            else
+                memset(current_mesg->colors, color, len);
+
+            current_mesg->attrs[len] = current_mesg->colors[len] = 0;
+        }
+        else 
+        {
             free((genericptr_t) current_mesg->str);
+            free((genericptr_t) current_mesg->attrs);
+            free((genericptr_t) current_mesg->colors);
             current_mesg->str = dupstr(mline);
+            current_mesg->attrs = attrs ? cpystr(mline, attrs) : setstr(mline, attr);
+            current_mesg->colors = colors ? cpystr(mline, colors) : setstr(mline, color);
         }
     }
     current_mesg->turn = moves;
 
-    if (num_messages == 0) {
+    if (num_messages == 0) 
+    {
         /* very first message; set up head */
         first_mesg = current_mesg;
-    } else {
+    } 
+    else 
+    {
         /* not first message; tail exists */
         last_mesg->next_mesg = current_mesg;
     }
     current_mesg->prev_mesg = last_mesg;
     last_mesg = current_mesg; /* new tail */
 
-    if (num_messages < max_messages) {
+    if (num_messages < max_messages) 
+    {
         /* wasn't at capacity yet */
         ++num_messages;
-    } else {
+    }
+    else 
+    {
         /* at capacity; old head is being removed */
         first_mesg = first_mesg->next_mesg; /* new head */
         first_mesg->prev_mesg = NULL; /* head has no prev_mesg */
@@ -752,17 +865,12 @@ get_msg_line(boolean reverse, int mindex)
    puts it into save file; if any new messages are added to the list while
    that is taking place, the results are likely to be scrambled */
 char*
-curses_getmsghistory_ex(attr_ptr, color_ptr, init)
-int* attr_ptr, *color_ptr;
+curses_getmsghistory_ex(attrs_ptr, colors_ptr, init)
+char** attrs_ptr, **colors_ptr;
 boolean init;
 {
     static int nxtidx;
     nhprev_mesg *mesg;
-
-    if (attr_ptr)
-        *attr_ptr = ATR_NONE;
-    if (color_ptr)
-        *color_ptr = NO_COLOR;
 
     if (init)
         nxtidx = 0;
@@ -778,8 +886,26 @@ boolean init;
            curses wouldn't find the expected turn info;
            so, we live without that */
         mesg = get_msg_line(FALSE, nxtidx);
-    } else
-        mesg = (nhprev_mesg *) 0;
+    }
+    else
+    {
+        mesg = (nhprev_mesg*)0;
+    }
+
+    if (mesg)
+    {
+        if (attrs_ptr)
+            *attrs_ptr = mesg->attrs;
+        if (colors_ptr)
+            *colors_ptr = mesg->colors;
+    }
+    else
+    {
+        if (attrs_ptr)
+            *attrs_ptr = (char*)0;
+        if (colors_ptr)
+            *colors_ptr = (char*)0;
+    }
 
     return mesg ? mesg->str : (char *) 0;
 }
@@ -802,9 +928,9 @@ boolean init;
  * into message history for ^P recall without having displayed it.
  */
 void
-curses_putmsghistory_ex(msg, attr, color, restoring_msghist)
+curses_putmsghistory_ex(msg, attrs, colors, restoring_msghist)
 const char *msg;
-int attr UNUSED, color UNUSED;
+const char* attrs, *colors;
 boolean restoring_msghist;
 {
     static boolean initd = FALSE;
@@ -822,7 +948,7 @@ boolean restoring_msghist;
     }
 
     if (msg) {
-        mesg_add_line(msg);
+        mesg_add_line_ex(msg, attrs, colors, ATR_NONE, NO_COLOR);
         /* treat all saved and restored messages as turn #1 */
         last_mesg->turn = 1L;
     } else if (stash_count) {
@@ -841,10 +967,12 @@ boolean restoring_msghist;
             stash_head = mesg->next_mesg;
             --stash_count;
             mesg_turn = mesg->turn;
-            mesg_add_line(mesg->str);
+            mesg_add_line_ex(mesg->str, mesg->attrs, mesg->colors, ATR_NONE, NO_COLOR);
             /* added line became new tail */
             last_mesg->turn = mesg_turn;
             free((genericptr_t) mesg->str);
+            free((genericptr_t) mesg->attrs);
+            free((genericptr_t) mesg->colors);
             free((genericptr_t) mesg);
         }
         initd = FALSE; /* reset */

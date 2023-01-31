@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-28 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    drawing.c    $NHDT-Date: 1546656404 2019/01/05 02:46:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.59 $ */
 /* Copyright (c) GnollHack Development Team 1992.                   */
@@ -1308,18 +1308,26 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
 
 const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
 {
-    {"stalagmite-default", "stalagmite", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"torch-holder", TORCH_HOLDER_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"torch-holder-left-wall", TORCH_HOLDER_LEFT_WALL_REPLACEMENT, NO_ANIMATION, TORCH_HOLDER_LEFT_WALL_ENLARGEMENT},
+    {"torch-holder-right-wall", TORCH_HOLDER_RIGHT_WALL_REPLACEMENT, NO_ANIMATION, TORCH_HOLDER_RIGHT_WALL_ENLARGEMENT},
+    {"torch-holder-bottom-wall", TORCH_HOLDER_BOTTOM_WALL_REPLACEMENT, NO_ANIMATION, TORCH_HOLDER_BOTTOM_WALL_ENLARGEMENT},
+    {"lantern-holder", LANTERN_HOLDER_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"lantern-holder-left-wall", LANTERN_HOLDER_LEFT_WALL_REPLACEMENT, NO_ANIMATION, LANTERN_HOLDER_LEFT_WALL_ENLARGEMENT},
+    {"lantern-holder-right-wall", LANTERN_HOLDER_RIGHT_WALL_REPLACEMENT, NO_ANIMATION, LANTERN_HOLDER_RIGHT_WALL_ENLARGEMENT},
+    {"lantern-holder-bottom-wall", LANTERN_HOLDER_BOTTOM_WALL_REPLACEMENT, NO_ANIMATION, LANTERN_HOLDER_BOTTOM_WALL_ENLARGEMENT},
+    {"fireplace", FIREPLACE_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =
 {
-    {"cobweb-normal", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-double", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-corner", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-corner-2", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-corner-3", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-corner-4", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"cobweb-corner-5", "cobweb", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-normal", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-double", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-2", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-3", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-4", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"cobweb-corner-5", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 

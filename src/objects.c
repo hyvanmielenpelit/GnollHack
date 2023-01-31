@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-28 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    objects.c    $NHDT-Date: 1535422421 2018/08/28 02:13:41 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.51 $ */
 /* Copyright (c) Mike Threepoint, 1989.                           */
@@ -1072,7 +1072,7 @@ BOW("Galadhrim bow", "ornamental long bow",
 #define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
             cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)           \
         GENERAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
-            cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,0,0,0)
+            cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,NO_ANIMATION,NO_ENLARGEMENT,NO_REPLACEMENT)
 
 #define SUIT(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
             cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)           \
@@ -1085,9 +1085,11 @@ BOW("Galadhrim bow", "ornamental long bow",
 #define CLOAK(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
       cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_CLOAK, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5,flags6, powconfermask)
+#define GENERAL_SHIELD(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,anim,enl,repl) \
+    GENERAL_ARMOR(name, desc, kn, mgc, blk, power, power2, power3, pflags, enchtype, prob, delay, wt, \
+      cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIELD, P_SHIELD, metal, c, 0, soundset, flags, flags2, flags3, flags4 | O4_CAN_HAVE_EXCEPTIONALITY, flags5, flags6, powconfermask,anim,enl,repl)
 #define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask) \
-    ARMOR(name, desc, kn, mgc, blk, power, power2, power3, pflags, enchtype, prob, delay, wt, \
-      cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIELD, P_SHIELD, metal, c, 0, soundset, flags, flags2, flags3, flags4 | O4_CAN_HAVE_EXCEPTIONALITY, flags5, flags6, powconfermask)
+    GENERAL_SHIELD(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,NO_ANIMATION,NO_ENLARGEMENT,NO_REPLACEMENT)
 #define GLOVES(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
       cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_GLOVES, P_NONE, metal, c, 24, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE | O4_CAN_HAVE_EXCEPTIONALITY, flags5, flags6, powconfermask)
@@ -1095,16 +1097,18 @@ BOW("Galadhrim bow", "ornamental long bow",
     GENERAL_ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
       cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BOOTS, P_NONE, metal, c, 32, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_CAN_HAVE_EXCEPTIONALITY, flags5, flags6, powconfermask,anim,enl,repl)
 #define BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
-    GENERAL_BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,0,0,0)
+    GENERAL_BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,NO_ANIMATION,NO_ENLARGEMENT,NO_REPLACEMENT)
 #define SHIRT(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
       cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIRT, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5, flags6, powconfermask)
 #define ROBE(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
       cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_ROBE, P_NONE, metal, c, height, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5, flags6, powconfermask)
+#define GENERAL_BRACERS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,anim,enl,repl)  \
+    GENERAL_ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
+      cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BRACERS, P_NONE, metal, c, 24, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, flags5, flags6, powconfermask,anim,enl,repl)
 #define BRACERS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-      cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BRACERS, P_NONE, metal, c, 24, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, flags5, flags6, powconfermask)
+    GENERAL_BRACERS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,NO_ANIMATION,NO_ENLARGEMENT,NO_REPLACEMENT)
 
 /* note: acbon = 10 - ac used in ARMOR, i.e., 1 gives -1 AC bonus to the player */
 #define WEAPONSHIELD(name,desc,kn,mgc,prob,wt,cost,enchtype,\
@@ -1177,7 +1181,7 @@ HELM("leather hat", None,
     O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 HELM("fedora", None,
     1, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_LEATHER_NONBODY_ARMOR,
-    0, 0, 3,  1, 10, 0, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BROWN, 32, OBJECT_SOUNDSET_GENERIC,
+    0, 0, 3,  1, 10, 0, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BROWN, 24, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE | O4_NON_MYTHIC, O5_NONE, O6_NONE, PERMITTED_ALL),
 HELM("tinfoil hat of mind shielding", "thin metal hat",
     0, 1, MIND_SHIELDING, ODD_IDEAS, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR,
@@ -1454,28 +1458,28 @@ ARMOR("force field armor", "armor-shaped force field",
 ARMOR("Hawaiian shirt", None, 
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     8, 0, 5,  5, 10, 1, 0, 0, 0, 0, 0, 
-    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_MAGENTA, 32, OBJECT_SOUNDSET_GENERIC, 
+    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_MAGENTA, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_READABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 /* with shuffled appearances... */
 ARMOR("shirt of uncontrollable laughter", "funny T-shirt", //STARTMARKER 2
     0, 1, 0,  LAUGHING,  NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     6, 0, 5, 50, 10, 1, 0, 0, 0, 0, 3, 
-    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLUE, 32, OBJECT_SOUNDSET_GENERIC, 
+    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLUE, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_CURSED_MAGIC_ITEM, O3_READABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 ARMOR("shirt of comeliness", "black T-shirt",
     0, 1, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     6, 0, 5, 50, 10, 1, 0, 0, BONUS_TO_CHA, 0, 0, 
-    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLACK, 32, OBJECT_SOUNDSET_GENERIC, 
+    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_READABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 ARMOR("shirt of sound mindedness", "green T-shirt", 
     0, 1, 0, HALLUC_RES, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     6, 0, 5, 50, 10, 1, 0, 0, 0, 0, 0, 
-    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_GREEN, 32, OBJECT_SOUNDSET_GENERIC, 
+    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_GREEN, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_READABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 ARMOR("T-shirt", "old T-shirt", 0, //ENDMARKER 1 & 2 
     0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     4, 0, 5,  2, 10, 1, 0, 0, 0, 0, 0, 
-    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_WHITE, 32, OBJECT_SOUNDSET_GENERIC, 
+    ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_READABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 
 
@@ -1651,11 +1655,12 @@ BRACERS("bracers against magic missiles", "ornamental bracers",//ENDMARKER FOR S
     10, 1, 10, 300, 9, 1, 0, 0, 0, 0, 0, 
     MAT_CLOTH, HI_LEATHER, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-BRACERS("bracers of reflection", "silver bracers", //ENDMARKER FOR BRACER CLASS
+GENERAL_BRACERS("bracers of reflection", "silver bracers", //ENDMARKER FOR BRACER CLASS
     0, 1, REFLECTING, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     9, 1, 25, 400,  9, 1, 0, 0, 0, 0, 0, 
     MAT_SILVER, HI_SILVER, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
+    BRACERS_OF_REFLECTION_SPARKLE_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 
 
 /* shields */
@@ -1689,11 +1694,12 @@ SHIELD("dwarvish roundshield", "large round shield",
     4, 0, 150, 10, 6, 0, 0, 0, 0, 0, 5, 
     MAT_IRON, HI_METAL, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL),
-SHIELD("shield of reflection", "polished silver shield",
+GENERAL_SHIELD("shield of reflection", "polished silver shield",
     0, 1, 0, REFLECTING, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     3, 0, 70, 750, 7, 0, 0, 0, 0, 0, 3, 
     MAT_SILVER, HI_SILVER, OBJECT_SOUNDSET_GENERIC, 
-    O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, 
+    SHIELD_OF_REFLECTION_SPARKLE_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 
 WEAPONSHIELD("spiked shield", None,
     1, 0, 5, 130, 50, ENCHTYPE_GENERAL_WEAPON_ARMOR,
@@ -2288,22 +2294,22 @@ MISCELLANEOUSITEM("lenses", "gold-framed eyeglasses", MISC_EYEGLASSES, None,
     0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 45, 80, 3, //STARTMARKER FOR EYEGLASSES WISH-CLASS AND SHUFFLED EYEGLASSES
     ENHANCED_VISION, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
     20, MAT_GLASS, HI_GLASS, 24, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("eyeglasses of hallucination", "oval eyeglasses", MISC_EYEGLASSES, None,
     0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 45, 150, 3,
     HALLUC, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
     20, MAT_GLASS, HI_GLASS, 24, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("eyeglasses of awkwardness", "square eyeglasses", MISC_EYEGLASSES, None,
     0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 45, 150, 3,
     CHARM_RESISTANCE, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM, 3, 0,
     20, MAT_GLASS, HI_GLASS, 24, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("eyeglasses of see invisible", "round eyeglasses", MISC_EYEGLASSES, None,
     0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 45, 150, 3,  //ENDMARKER FOR SHUFFLED EYEGLASSES
     SEE_INVISIBLE, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
     20, MAT_GLASS, HI_GLASS, 24, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("sunglasses", "shaded eyeglasses", MISC_EYEGLASSES, None,
     0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 25, 80, 3,   //ENDMARKER FOR EYEGLASSES WISH-CLASS
     FLASH_RESISTANCE, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
@@ -2673,21 +2679,26 @@ GENERAL_TOOL("magic candle",    "handcrafted candle", None, None, "An infinitely
     CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 3,  1, 20, 0, 0, 0, 0, 0, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_WAX, CLR_WHITE, 0, OBJECT_SOUNDSET_CANDLE,
     O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, O5_LIGHT_SOURCE | O5_BURNS_INFINITELY, O6_NONE, PERMITTED_ALL),
+GENERAL_TOOL("torch", None, None, None, None,
+    NO_ANIMATION, NO_ENLARGEMENT, TORCH_REPLACEMENT, TOOLTYPE_TORCH, 1, 1, 0, ENCHTYPE_NO_ENCHANTMENT, 
+    CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  16, 4, 0, 0, 0, 0, 0, 0, //STARTMARKER
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_WAX, CLR_WHITE, 0, OBJECT_SOUNDSET_CANDLE, 
+    O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, O5_LIGHT_SOURCE | O5_TORCH, O6_NONE, PERMITTED_ALL),
 GENERAL_TOOL("brass lantern",       None, None, None, None, 
     NO_ANIMATION, NO_ENLARGEMENT, BRASS_LANTERN_LIT_REPLACEMENT, TOOLTYPE_LANTERN, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, 
     CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 30, 30, 12, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_COPPER, CLR_YELLOW, 0, OBJECT_SOUNDSET_LANTERN,
-    O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_REFILLABLE_WITH_OIL, O4_NONE, O5_LIGHT_SOURCE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_COPPER, CLR_YELLOW, 34, OBJECT_SOUNDSET_LANTERN,
+    O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_REFILLABLE_WITH_OIL, O4_FLOOR_TILE, O5_LIGHT_SOURCE | O5_LAMP, O6_NONE, PERMITTED_ALL),
 GENERAL_TOOL("oil lamp",      "antiquated brass lamp", None, None, None, 
     NO_ANIMATION, NO_ENLARGEMENT, ANTIQUATED_BRASS_LAMP_LIT_REPLACEMENT, TOOLTYPE_LAMP, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, 
     CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 37, 20, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_COPPER, CLR_YELLOW, 32, OBJECT_SOUNDSET_LAMP, 
-    O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_REFILLABLE_WITH_OIL, O4_FLOOR_TILE, O5_LIGHT_SOURCE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_REFILLABLE_WITH_OIL, O4_FLOOR_TILE, O5_LIGHT_SOURCE | O5_LAMP, O6_NONE, PERMITTED_ALL),
 GENERAL_TOOL("magic lamp",    "oriental brass lamp", None, None, "An infinitely burning lamp.", 
     NO_ANIMATION, NO_ENLARGEMENT, ORIENTAL_BRASS_LAMP_LIT_REPLACEMENT, TOOLTYPE_LAMP, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT,
     CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 15, 20, 50, 0, 0, 0, 0, 0, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_COPPER, CLR_YELLOW, 32, OBJECT_SOUNDSET_LAMP,
-    O1_NONE, O2_NONE, O3_INVOKABLE | O3_REFILLABLE_WITH_OIL | O3_IGNITABLE, O4_FLOOR_TILE, O5_LIGHT_SOURCE | O5_BURNS_INFINITELY, O6_NONE, PERMITTED_ALL), //ENDMARKER
+    O1_NONE, O2_NONE, O3_INVOKABLE | O3_REFILLABLE_WITH_OIL | O3_IGNITABLE, O4_FLOOR_TILE, O5_LIGHT_SOURCE | O5_LAMP | O5_BURNS_INFINITELY, O6_NONE, PERMITTED_ALL), //ENDMARKER
 GENERAL_TOOL("large five-branched candelabrum", None, None, None, None, 
     NO_ANIMATION, NO_ENLARGEMENT, LARGE_FIVE_BRANCHED_CANDELABRUM_REPLACEMENT, TOOLTYPE_CANDELABRUM, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, 
     CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 3, 300, 50, 0, 0, 0, 0, 0, 0,
@@ -3270,7 +3281,7 @@ POTION("invisibility", "brilliant blue", "Confers invisibility for a duration.",
     1, INVISIBILITY, NO_POWER, NO_POWER, 
     25, 150, 0, 0, 0, 0, 10, 10, 400, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_BLUE, POTFLAGS_NONE,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-POTION("see invisible",       "magenta", "Confers ability to see invisible cratures for a duration.",
+POTION("see invisible",       "magenta", "Confers ability to see invisible creatures for a duration.",
     1, SEE_INVISIBLE, NO_POWER, NO_POWER, 
     20, 50, 0, 0, 0, 0, 1, 100, 750, 0, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, POTFLAGS_NONE,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),

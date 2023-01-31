@@ -30,7 +30,7 @@ struct window_procs Gnome_procs = {
     gnome_player_selection, gnome_askname, gnome_get_nh_event,
     gnome_exit_nhwindows, gnome_suspend_nhwindows, gnome_resume_nhwindows,
     gnome_create_nhwindow_ex, gnome_clear_nhwindow, gnome_display_nhwindow,
-    gnome_destroy_nhwindow, gnome_curs, gnome_putstr_ex, genl_putmixed_ex,
+    gnome_destroy_nhwindow, gnome_curs, gnome_putstr_ex, gnome_putstr_ex2, genl_putmixed_ex,
     gnome_display_file, gnome_start_menu_ex, gnome_add_menu, gnome_add_extended_menu, gnome_end_menu_ex,
     gnome_select_menu,
     genl_message_menu, /* no need for X-specific handling */
@@ -606,6 +606,12 @@ gnome_putstr_ex(winid wid, int attr, const char *text, int app, int color)
         gtk_signal_emit(GTK_OBJECT(gnome_windowlist[wid].win),
                         ghack_signals[GHSIG_PUTSTR], (guint) attr, text);
     }
+}
+
+void
+gnome_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app)
+{
+    gnome_putstr_ex(wid, attrs ? attrs[0] : attr, text, app, colors ? colors[0] : color);
 }
 
 /* Display the file named str.  Complain about missing files

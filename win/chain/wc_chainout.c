@@ -192,6 +192,19 @@ const char *str;
     (*tdp->nprocs->win_putstr_ex)(window, attr, str, app, color);
 }
 
+
+void
+chainout_putstr_ex2(vp, window, str, attrs, colors, attr, color, app)
+void* vp;
+winid window;
+int attr, color, app;
+const char* str, *attrs, *colors;
+{
+    struct chainout_data* tdp = vp;
+
+    (*tdp->nprocs->win_putstr_ex2)(window, str, attrs, colors, attr, color, app);
+}
+
 void
 chainout_putmixed_ex(vp, window, attr, str, app, color)
 void *vp;
@@ -620,29 +633,29 @@ const char *pref;
 }
 
 char *
-chainout_getmsghistory_ex(vp, attr_ptr, color_ptr, init)
+chainout_getmsghistory_ex(vp, attrs_ptr, colors_ptr, init)
 void *vp;
-int* attr_ptr, *color_ptr;
+char** attrs_ptr, **colors_ptr;
 boolean init;
 {
     struct chainout_data *tdp = vp;
     char *rv;
 
-    rv = (*tdp->nprocs->win_getmsghistory_ex)(attr_ptr, color_ptr, init);
+    rv = (*tdp->nprocs->win_getmsghistory_ex)(attrs_ptr, colors_ptr, init);
 
     return rv;
 }
 
 void
-chainout_putmsghistory_ex(vp, msg, attr, color, is_restoring)
+chainout_putmsghistory_ex(vp, msg, attrs, colors, is_restoring)
 void *vp;
 const char *msg;
-int attr, color;
+const char* attrs, *colors;
 boolean is_restoring;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_putmsghistory_ex)(msg, attr, color, is_restoring);
+    (*tdp->nprocs->win_putmsghistory_ex)(msg, attrs, colors, is_restoring);
 }
 
 void
@@ -715,7 +728,7 @@ struct chain_procs chainout_procs = {
     chainout_exit_nhwindows, chainout_suspend_nhwindows,
     chainout_resume_nhwindows, chainout_create_nhwindow_ex,
     chainout_clear_nhwindow, chainout_display_nhwindow,
-    chainout_destroy_nhwindow, chainout_curs, chainout_putstr_ex,
+    chainout_destroy_nhwindow, chainout_curs, chainout_putstr_ex,chainout_putstr_ex2,
     chainout_putmixed_ex, chainout_display_file, chainout_start_menu_ex,
     chainout_add_menu, chainout_end_menu_ex, chainout_select_menu,
     chainout_message_menu, chainout_update_inventory, chainout_mark_synch,

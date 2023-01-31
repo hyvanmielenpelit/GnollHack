@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* vim:set cin ft=c sw=4 sts=4 ts=8 et ai cino=Ls\:0t0(0 : -*- mode:c;fill-column:80;tab-width:8;c-basic-offset:4;indent-tabs-mode:nil;c-file-style:"k&r" -*-*/
 /* GnollHack 4.0 cursmain.c */
@@ -41,6 +41,7 @@ struct window_procs curses_procs = {
     curses_destroy_nhwindow,
     curses_curs,
     curses_putstr_ex,
+    curses_putstr_ex2,
     genl_putmixed_ex,
     curses_display_file,
     curses_start_menu_ex,
@@ -435,20 +436,44 @@ putstr(window, attr, str)
                    by calling more() or displaying both on the same line.
 */
 void
-curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int color UNUSED)
+curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int color)
 {
-    int mesgflags, curses_attr;
+    if (!text)
+        return;
 
-    mesgflags = attr & (ATR_URGENT | ATR_NOHISTORY);
+    int mesgflags = attr & (ATR_LINE_MSG_MASK);
     attr &= ~mesgflags;
 
-    if (wid == WIN_MESSAGE && (mesgflags & ATR_NOHISTORY) != 0) {
+    if (wid == WIN_MESSAGE && (mesgflags & ATR_NOHISTORY) != 0) 
+    {
         /* display message without saving it in recall history */
         curses_count_window(text);
-    } else {
+    } 
+    else 
+    {
         /* We need to convert NetHack attributes to curses attributes */
-        curses_attr = curses_convert_attr(attr);
-        curses_puts(wid, curses_attr, text);
+        curses_puts_ex(wid, attr, color, text);
+    }
+}
+
+void
+curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app UNUSED)
+{
+    if (!text)
+        return;
+
+    int mesgflags = attr & (ATR_LINE_MSG_MASK);
+    attr &= ~mesgflags;
+
+    if (wid == WIN_MESSAGE && (mesgflags & ATR_NOHISTORY) != 0)
+    {
+        /* display message without saving it in recall history */
+        curses_count_window(text);
+    }
+    else 
+    {
+        /* We need to convert NetHack attributes to curses attributes */
+        curses_puts_ex2(wid, text, attrs, colors, attr, color);
     }
 }
 
@@ -511,10 +536,7 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
                 CHAR_P accelerator, CHAR_P group_accel, int attr,
                 const char *str, BOOLEAN_P presel)
 {
-    int curses_attr;
-
-    attr &= ~(ATR_URGENT | ATR_NOHISTORY);
-    curses_attr = curses_convert_attr(attr);
+    attr &= ~(ATR_LINE_MSG_MASK);
 
     if (inv_update) {
         int height = 0, width = 0;
@@ -524,23 +546,50 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
         int applied_y = 1 + inv_update - (has_border ? 0 : 1);
         if (applied_y <= applicable_height)
         {
-            curses_add_inv(applied_y, glyph, accelerator, curses_attr, str);
+            curses_add_inv(applied_y, glyph, accelerator, attr, NO_COLOR, str, (char*)0, (char*)0);
             inv_update++;
         }
     }
 
     curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
-                           curses_attr, str, presel);
+        attr, NO_COLOR, str, (char*)0, (char*)0, presel);
 }
 
 void
-curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info UNUSED,
+curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
+    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
+    const char* str, const char* attrs, const char* colors, BOOLEAN_P presel)
+{
+    struct extended_menu_info info = { 0 };
+    info.color = color;
+    info.attrs = attrs;
+    info.colors = colors;
+    curses_add_extended_menu(wid, glyph, identifier, info,
+        accelerator, group_accel, attr, str, presel);
+}
+
+void
+curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    curses_add_menu(wid, glyph, identifier,
-        accelerator, group_accel, attr,
-        str, presel);
+    attr &= ~(ATR_LINE_MSG_MASK);
+
+    if (inv_update) {
+        int height = 0, width = 0;
+        curses_get_window_size(INV_WIN, &height, &width);
+        boolean has_border = curses_window_has_border(INV_WIN);
+        int applicable_height = height - (has_border ? 0 : 1);
+        int applied_y = 1 + inv_update - (has_border ? 0 : 1);
+        if (applied_y <= applicable_height)
+        {
+            curses_add_inv(applied_y, glyph, accelerator, attr, info.color, str, info.attrs, info.colors);
+            inv_update++;
+        }
+    }
+
+    curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
+        attr, info.color, str, info.attrs, info.colors, presel);
 }
 
 

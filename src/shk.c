@@ -2345,8 +2345,9 @@ boolean unpaid_only;
             if (saleable(shkp, otmp) && !otmp->unpaid
                 && otmp->oclass != BALL_CLASS
                 && !(otmp->oclass == FOOD_CLASS && otmp->oeaten)
-                && !(is_candle(otmp)
-                     && otmp->age < 30L * objects[otmp->otyp].oc_cost))
+                && !(is_candle(otmp) && otmp->age < candle_starting_burn_time(otmp))
+                && !(is_torch(otmp) && otmp->age < torch_starting_burn_time(otmp))
+                )
                 price += set_cost(otmp, shkp);
         } else {
             /* no_charge is only set for floor items (including
@@ -3418,8 +3419,9 @@ xchar x, y;
     if ((!saleitem && !(container && cltmp > 0L)) || eshkp->billct == BILLSZ
         || obj->oclass == BALL_CLASS || obj->oclass == CHAIN_CLASS
         || offer == 0L || (obj->oclass == FOOD_CLASS && obj->oeaten)
-        || (is_candle(obj)
-            && obj->age < 30L * objects[obj->otyp].oc_cost)) 
+        || (is_candle(obj) && obj->age < candle_starting_burn_time(obj))
+        || (is_torch(obj) && obj->age < torch_starting_burn_time(obj))
+        )
     {
         play_sfx_sound(SFX_SEEMS_UNINTERESTED);
 
@@ -3728,8 +3730,9 @@ boolean shk_buying;
             tmp += 10L * (long) obj->enchantment;
         break;
     case TOOL_CLASS:
-        if (is_candle(obj)
-            && obj->age < 30L * objects[obj->otyp].oc_cost)
+        if (is_candle(obj) && obj->age < candle_starting_burn_time(obj))
+            tmp /= 2L;
+        else if (is_torch(obj) && obj->age < torch_starting_burn_time(obj))
             tmp /= 2L;
         break;
     }

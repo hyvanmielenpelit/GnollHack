@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    shknam.c    $NHDT-Date: 1454485432 2016/02/03 07:43:52 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.41 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -451,13 +451,13 @@ const struct shclass shtypes[] = {
       0,
       D_SHOP,
       { { 30, -WAX_CANDLE },
-        { 45, -TALLOW_CANDLE },
+        { 42, -TALLOW_CANDLE },
         { 5, -BRASS_LANTERN },
         { 9, -OIL_LAMP },
         { 3, -MAGIC_LAMP },
         { 5, -POT_OIL },
         { 3, -MAGIC_CANDLE },
-        { 0, 0 },
+        { 3, -TORCH },
         { 0, 0 },
         { 0, 0 } },
           shklight },

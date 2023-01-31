@@ -25,6 +25,8 @@ struct window_line {
     int attr;
     int color;
     char text[MAXWINDOWTEXT + 1];
+    char attrs[MAXWINDOWTEXT + 1];
+    char colors[MAXWINDOWTEXT + 1];
 };
 
 typedef struct mswin_gnollhack_message_window {
@@ -58,7 +60,7 @@ static void onMSNH_HScroll(HWND hWnd, WPARAM wParam, LPARAM lParam);
 static COLORREF setMsgTextColor(HDC hdc, int gray, int nhcolor);
 static void onPaint(HWND hWnd);
 static void onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam);
-static BOOL can_append_text(HWND hWnd, int attr, int color, const char *text);
+static BOOL can_append_text(HWND hWnd, /* int attr, int color, */ const char* text);
 /* check if text can be appended to the last line without wrapping */
 
 static BOOL more_prompt_check(HWND hWnd);
@@ -275,53 +277,112 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         SCROLLINFO si;
         char *p;
         char msgbuf[BUFSIZ] = "";
+
+        if (!msg_data->text)
+            return;
+
         write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
 
-        if (msg_data->append == 1) {
+        int current_length = (int)strlen(data->window_text[MSG_LINES - 1].text);
+        int remaining_length = MAXWINDOWTEXT - current_length;
+        int text_length = (int)strlen(msg_data->text);
+        int used_length = max(0, min(text_length, remaining_length));
+        int last_point = min(current_length + used_length, MAXWINDOWTEXT);
+
+        if (msg_data->append == 1)
+        {
             /* Forcibly append to line, even if we pass the edge */
-            strncat(data->window_text[MSG_LINES - 1].text, msgbuf,
-                    MAXWINDOWTEXT
-                        - strlen(data->window_text[MSG_LINES - 1].text));
-        } else if (msg_data->append < 0) {
+            strncat(data->window_text[MSG_LINES - 1].text, msgbuf, remaining_length);
+
+            if(msg_data->attrs)
+                memcpy(data->window_text[MSG_LINES - 1].attrs + current_length, msg_data->attrs, used_length);
+            else
+                memset(data->window_text[MSG_LINES - 1].attrs + current_length, msg_data->attr, used_length);
+
+            if (msg_data->colors)
+                memcpy(data->window_text[MSG_LINES - 1].colors + current_length, msg_data->colors, used_length);
+            else
+                memset(data->window_text[MSG_LINES - 1].colors + current_length, msg_data->color, used_length);
+
+            data->window_text[MSG_LINES - 1].attrs[last_point] = data->window_text[MSG_LINES - 1].colors[last_point] = 0;
+        } 
+        else if (msg_data->append < 0) 
+        {
             /* remove that many chars */
-            int len = strlen(data->window_text[MSG_LINES - 1].text);
-            int newend = max(len + msg_data->append, 0);
+            int newend = max(current_length + msg_data->append, 0);
             data->window_text[MSG_LINES - 1].text[newend] = '\0';
-        } else {
-            if (!(msg_data->attr & ATR_STAY_ON_LINE) && can_append_text(hWnd, msg_data->attr, msg_data->color, msgbuf)) {
-                strncat(data->window_text[MSG_LINES - 1].text, "  ",
-                        MAXWINDOWTEXT
-                            - strlen(data->window_text[MSG_LINES - 1].text));
-                strncat(data->window_text[MSG_LINES - 1].text, msgbuf,
-                        MAXWINDOWTEXT
-                            - strlen(data->window_text[MSG_LINES - 1].text));
-            } else {
+            data->window_text[MSG_LINES - 1].attrs[newend] = data->window_text[MSG_LINES - 1].colors[newend] = 0;
+        }
+        else 
+        {
+            if (!(msg_data->attr & ATR_STAY_ON_LINE) && can_append_text(hWnd, /* msg_data->attr, msg_data->color, */ msgbuf))
+            {
+                strncat(data->window_text[MSG_LINES - 1].text, "  ", remaining_length);
+                if (current_length <= MAXWINDOWTEXT - 2)
+                {
+                    memset(data->window_text[MSG_LINES - 1].attrs + current_length, ATR_NONE, 2);
+                    memset(data->window_text[MSG_LINES - 1].colors + current_length, NO_COLOR, 2);
+                }
+
+                current_length = (int)strlen(data->window_text[MSG_LINES - 1].text);
+                remaining_length = MAXWINDOWTEXT - current_length;
+                used_length = max(0, min(text_length, remaining_length));
+                last_point = min(current_length + used_length, MAXWINDOWTEXT);
+
+                strncat(data->window_text[MSG_LINES - 1].text, msgbuf, remaining_length);
+
+                if (msg_data->attrs)
+                    memcpy(data->window_text[MSG_LINES - 1].attrs + current_length, msg_data->attrs, used_length);
+                else
+                    memset(data->window_text[MSG_LINES - 1].attrs + current_length, msg_data->attr, used_length);
+
+                if (msg_data->colors)
+                    memcpy(data->window_text[MSG_LINES - 1].colors + current_length, msg_data->colors, used_length);
+                else
+                    memset(data->window_text[MSG_LINES - 1].colors + current_length, msg_data->color, used_length);
+
+                data->window_text[MSG_LINES - 1].attrs[last_point] = data->window_text[MSG_LINES - 1].colors[last_point] = 0;
+            } 
+            else 
+            {
                 /* check for "--more--" */
-                if (!data->nevermore && !(msg_data->attr & ATR_STAY_ON_LINE)
-                    && more_prompt_check(hWnd)) {
+                if (!data->nevermore && !(msg_data->attr & ATR_STAY_ON_LINE) && more_prompt_check(hWnd)) 
+                {
                     int okkey = 0;
                     char tmptext[MAXWINDOWTEXT + 1];
+                    char tmpattrs[MAXWINDOWTEXT + 1];
+                    char tmpcolors[MAXWINDOWTEXT + 1];
 
                     // @@@ Ok respnses
 
                     /* save original text */
                     strcpy(tmptext, data->window_text[MSG_LINES - 1].text);
+                    memcpy(tmpattrs, data->window_text[MSG_LINES - 1].attrs, MAXWINDOWTEXT + 1);
+                    memcpy(tmpcolors, data->window_text[MSG_LINES - 1].colors, MAXWINDOWTEXT + 1);
 
                     /* text could end in newline so strip it */
                     strip_newline(data->window_text[MSG_LINES - 1].text);
+                    current_length = (int)strlen(data->window_text[MSG_LINES - 1].text);
+                    remaining_length = MAXWINDOWTEXT - current_length;
 
                     /* append more prompt and indicate the update */
-                    strncat(
-                        data->window_text[MSG_LINES - 1].text, MORE,
-                        MAXWINDOWTEXT
-                            - strlen(data->window_text[MSG_LINES - 1].text));
+                    strncat(data->window_text[MSG_LINES - 1].text, MORE, remaining_length);
+                    int morelen = (int)strlen(MORE);
+                    if (current_length <= MAXWINDOWTEXT - morelen)
+                    {
+                        memset(data->window_text[MSG_LINES - 1].attrs + current_length, ATR_NONE, morelen);
+                        memset(data->window_text[MSG_LINES - 1].colors + current_length, NO_COLOR, morelen);
+                    }
+
                     InvalidateRect(hWnd, NULL, TRUE);
 
                     /* get the input */
-                    while (!okkey) {
+                    while (!okkey) 
+                    {
                         int c = mswin_nhgetch();
 
-                        switch (c) {
+                        switch (c) 
+                        {
                         /* space or enter */
                         case ' ':
                         case '\015':
@@ -339,6 +400,8 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                     /* restore original text */
                     strcpy(data->window_text[MSG_LINES - 1].text, tmptext);
+                    memcpy(data->window_text[MSG_LINES - 1].attrs, tmpattrs, MAXWINDOWTEXT + 1);
+                    memcpy(data->window_text[MSG_LINES - 1].colors, tmpcolors, MAXWINDOWTEXT + 1);
 
                     data->lines_not_seen = 0;
                 }
@@ -350,23 +413,40 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                 if (!(msg_data->attr & ATR_STAY_ON_LINE))
                 {
-                    if (*p) {
+                    if (*p) 
+                    {
                         /* last string is not empty - scroll up */
-                        memmove(&data->window_text[0], &data->window_text[1],
-                                (MSG_LINES - 1) * sizeof(data->window_text[0]));
+                        memmove(&data->window_text[0], &data->window_text[1], (MSG_LINES - 1) * sizeof(data->window_text[0]));
                     }
                 }
                 else
                 {
                     /* clear the line instead */
                     strcpy(data->window_text[MSG_LINES - 1].text, "");
+                    memset(data->window_text[MSG_LINES - 1].attrs, ATR_NONE, MAXWINDOWTEXT);
+                    memset(data->window_text[MSG_LINES - 1].colors, NO_COLOR, MAXWINDOWTEXT);
+                    data->window_text[MSG_LINES - 1].attrs[MAXWINDOWTEXT] = data->window_text[MSG_LINES - 1].colors[MAXWINDOWTEXT] = 0;
+                    data->window_text[MSG_LINES - 1].attrs[0] = data->window_text[MSG_LINES - 1].colors[0] = 0;
                 }
 
                 /* append new text to the end of the array */
                 data->window_text[MSG_LINES - 1].attr = msg_data->attr;
                 data->window_text[MSG_LINES - 1].color = msg_data->color;
-                strncpy(data->window_text[MSG_LINES - 1].text, msgbuf,
-                        MAXWINDOWTEXT);
+                strncpy(data->window_text[MSG_LINES - 1].text, msgbuf, MAXWINDOWTEXT);
+
+                used_length = max(0, min(text_length, MAXWINDOWTEXT));
+                last_point = min(used_length, MAXWINDOWTEXT);
+                if (msg_data->attrs)
+                    memcpy(data->window_text[MSG_LINES - 1].attrs, msg_data->attrs, used_length);
+                else
+                    memset(data->window_text[MSG_LINES - 1].attrs, msg_data->attr, used_length);
+
+                if (msg_data->colors)
+                    memcpy(data->window_text[MSG_LINES - 1].colors, msg_data->colors, used_length);
+                else
+                    memset(data->window_text[MSG_LINES - 1].colors, msg_data->color, used_length);
+
+                data->window_text[MSG_LINES - 1].attrs[last_point] = data->window_text[MSG_LINES - 1].colors[last_point] = 0;
 
                 if (!(msg_data->attr & ATR_STAY_ON_LINE))
                 {
@@ -421,19 +501,26 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
         buflen = 0;
         for (i = 0; i < MSG_LINES; i++)
-            if (*data->window_text[i].text) {
-                strncpy(&msg_data->buffer[buflen], data->window_text[i].text,
-                        msg_data->max_size - buflen);
+            if (*data->window_text[i].text) 
+            {
+                strncpy(&msg_data->buffer[buflen], data->window_text[i].text, msg_data->max_size - buflen);
+                memcpy(&msg_data->attrs[buflen], data->window_text[i].attrs, msg_data->max_size - buflen);
+                memcpy(&msg_data->colors[buflen], data->window_text[i].colors, msg_data->max_size - buflen);
+
                 buflen += strlen(data->window_text[i].text);
                 if (buflen >= msg_data->max_size)
                     break;
 
-                strncpy(&msg_data->buffer[buflen], "\r\n",
-                        msg_data->max_size - buflen);
+                strncpy(&msg_data->buffer[buflen], "\r\n", msg_data->max_size - buflen);
+                memset(&msg_data->attrs[buflen], ATR_NONE, msg_data->max_size - buflen);
+                memset(&msg_data->colors[buflen], NO_COLOR, msg_data->max_size - buflen);
+
                 buflen += 2;
                 if (buflen > msg_data->max_size)
                     break;
             }
+
+        msg_data->buffer[msg_data->max_size] = msg_data->attrs[msg_data->max_size] = msg_data->colors[msg_data->max_size] = 0;
     } break;
 
     case MSNH_MSG_RANDOM_INPUT:
@@ -660,7 +747,7 @@ onPaint(HWND hWnd)
     int i, y;
     HGDIOBJ oldFont;
     TCHAR wbuf[MAXWINDOWTEXT + 2];
-    size_t wlen;
+    size_t wlen, wlen2, wlen3;
     COLORREF OldBg, OldFg;
 
     hdc = BeginPaint(hWnd, &ps);
@@ -674,7 +761,8 @@ onPaint(HWND hWnd)
 
     GetClientRect(hWnd, &client_rt);
 
-    if (!IsRectEmpty(&ps.rcPaint)) {
+    if (!IsRectEmpty(&ps.rcPaint)) 
+    {
         FirstLine = max(
             0, data->yPos - (client_rt.bottom - ps.rcPaint.top) / data->yChar
                    + 1);
@@ -683,16 +771,18 @@ onPaint(HWND hWnd)
                 data->yPos
                     - (client_rt.bottom - ps.rcPaint.bottom) / data->yChar);
         y = min(ps.rcPaint.bottom, client_rt.bottom);
-        for (i = LastLine; i >= FirstLine; i--) {
+        LONG client_width = client_rt.right - LINE_PADDING_RIGHT(data) - LINE_PADDING_LEFT(data);
+
+        for (i = LastLine; i >= FirstLine; i--) 
+        {
             char tmptext[MAXWINDOWTEXT + 1];
 
             draw_rt.left = LINE_PADDING_LEFT(data);
             draw_rt.right = client_rt.right - LINE_PADDING_RIGHT(data);
             draw_rt.top = y - data->yChar;
             draw_rt.bottom = y;
-
-            cached_font * font = mswin_get_font(NHW_MESSAGE,
-                                        data->window_text[i].attr, hdc, FALSE);
+            
+            cached_font * font = mswin_get_font(NHW_MESSAGE, data->window_text[i].attr, hdc, FALSE);
             oldFont = SelectObject(hdc, font->hFont);
 
             /* convert to UNICODE stripping newline */
@@ -701,64 +791,162 @@ onPaint(HWND hWnd)
             NH_A2W(tmptext, wbuf, sizeof(wbuf));
             wbuf[MAXWINDOWTEXT + 1] = '\0';
             wlen = _tcslen(wbuf);
-            setMsgTextColor(hdc, i < (MSG_LINES - data->lines_last_turn), data->window_text[i].color);
 #ifdef MSG_WRAP_TEXT
-            /* Find out how large the bounding rectangle of the text is */
-            DrawText(hdc, wbuf, wlen, &draw_rt,
-                     DT_NOPREFIX | DT_WORDBREAK | DT_CALCRECT);
-            /* move that rectangle up, so that the bottom remains at the same
-             * height */
-            draw_rt.top = y - (draw_rt.bottom - draw_rt.top);
-            draw_rt.bottom = y;
+            TCHAR* wp = wbuf;
+            char* ap = data->window_text[i].attrs;
+            char* cp = data->window_text[i].colors;
+            TCHAR* wp2 = wp;
+            char* ap2 = ap;
+            char* cp2 = cp;
+            LONG x = 0;
+            /* Calculate the length of the whole line */
+            DrawText(hdc, wbuf, wlen, &draw_rt, DT_NOPREFIX | DT_CALCRECT);
+            if (draw_rt.right > client_rt.right - LINE_PADDING_RIGHT(data))
+            {
+                LONG width = max(1, draw_rt.right - draw_rt.left);
+                LONG mult = max(1, client_width / width);
+                y -= mult * (draw_rt.bottom - draw_rt.top);
+            }
 
-            /* Now really draw it */
-            DrawText(hdc, wbuf, wlen, &draw_rt, DT_NOPREFIX | DT_WORDBREAK);
+            LONG line_height = draw_rt.bottom - draw_rt.top;
+            LONG line_start_y = y;
 
-            /* Find out the cursor (caret) position */
-            if (i == MSG_LINES - 1) {
-                int nnum, numfit;
-                SIZE size = { 0 };
-                TCHAR *nbuf;
-                int nlen;
+            while (*wp)
+            {
+                /* set attribute on based on *ap */
+                setMsgTextColor(hdc, i < (MSG_LINES - data->lines_last_turn), *cp /* data->window_text[i].color */);
+                /* Go forward until a different attribute or color */
+                do
+                {
+                    wp2++;
+                    ap2++;
+                    cp2++;
+                } while (!(!*wp2 || *ap2 != *ap || *cp2 != *cp));
 
-                nbuf = wbuf;
-                nlen = wlen;
-                while (nlen) {
-                    /* Get the number of characters that fit on the line */
-                    GetTextExtentExPoint(hdc, nbuf, nlen,
-                                         draw_rt.right - draw_rt.left,
-                                         &numfit, NULL, &size);
-                    /* Search back to a space */
-                    nnum = numfit;
-                    if (numfit < nlen) {
-                        while (nnum > 0 && nbuf[nnum] != ' ')
-                            nnum--;
-                        /* If no space found, break wherever */
-                        if (nnum == 0)
-                            nnum = numfit;
+                TCHAR wc = *wp2; /* Store the char at the pointer */
+                *wp2 = 0; /* Cut the string at the pointer */
+                wlen2 = _tcslen(wp); /* Calculate the length of the cut string */
+
+                /* Start of word wrap */
+                TCHAR* wp3 = wp;
+                char* ap3 = ap;
+                char* cp3 = cp;
+
+                while (*wp3)
+                {
+                    draw_rt.left = LINE_PADDING_LEFT(data) + x;
+                    draw_rt.right = client_rt.right - LINE_PADDING_RIGHT(data) - x;
+                    draw_rt.top = y - data->yChar;
+                    draw_rt.bottom = y;
+
+                    TCHAR* wp4 = wp3;
+                    char* ap4 = ap3;
+                    char* cp4 = cp3;
+                    do
+                    {
+                        wp4++;
+                        ap4++;
+                        cp4++;
+                    } while (!(!*wp4 || *wp4 == ' ' || *wp4 == '\n'));
+
+                    TCHAR wcww = *wp4;
+                    *wp4 = 0;
+                    wlen3 = _tcslen(wp3); /* Calculate the length of the cut string */
+
+                    /* Find out how large the bounding rectangle of the text is */
+                    //DrawText(hdc, wp /* wbuf */, wlen2, &draw_rt, DT_NOPREFIX | DT_WORDBREAK | DT_CALCRECT);
+                    DrawText(hdc, wp3, wlen3, &draw_rt, DT_NOPREFIX | DT_CALCRECT);
+
+                    if (draw_rt.right > client_rt.right - LINE_PADDING_RIGHT(data))
+                    {
+                        x = 0;
+                        y += (draw_rt.bottom - draw_rt.top);
+                        LONG tmp_width = draw_rt.right - draw_rt.left;
+                        draw_rt.left = LINE_PADDING_LEFT(data);
+                        draw_rt.right = draw_rt.left + tmp_width;
                     }
-                    nbuf += nnum;
-                    nlen -= nnum;
-                    if (*nbuf == ' ') {
-                        nbuf++;
-                        nlen--;
-                    }
+
+                    /* move that rectangle up, so that the bottom remains at the same height */
+                    draw_rt.top = y - (draw_rt.bottom - draw_rt.top);
+                    draw_rt.bottom = y;
+
+                    LONG width = draw_rt.right - draw_rt.left;
+                    x += width;
+
+                    /* Now really draw it */
+                    //DrawText(hdc, wp /* wbuf */, wlen2, &draw_rt, DT_NOPREFIX | DT_WORDBREAK);
+                    DrawText(hdc, wp3 /* wbuf */, wlen3, &draw_rt, DT_NOPREFIX);
+
+                    *wp4 = wcww;
+                    wp3 = wp4;
+                    ap3 = ap4;
+                    cp3 = cp4;
                 }
-                /* The last size is the size of the last line. Set the caret
-                   there.
-                   This will fail automatically if we don't own the caret
-                   (i.e.,
-                   when not in a question.)
-                 */
-                SetCaretPos(draw_rt.left + size.cx,
-                            draw_rt.bottom - data->yChar);
+
+#if 0
+                /* Find out the cursor (caret) position */
+                if (i == MSG_LINES - 1) 
+                {
+                    int nnum, numfit;
+                    SIZE size = { 0 };
+                    TCHAR* nbuf;
+                    int nlen;
+
+                    nbuf = wp; // wbuf;
+                    nlen = wlen2; // wlen;
+                    while (nlen) 
+                    {
+                        /* Get the number of characters that fit on the line */
+                        GetTextExtentExPoint(hdc, nbuf, nlen,
+                            draw_rt.right - draw_rt.left,
+                            &numfit, NULL, &size);
+                        /* Search back to a space */
+                        nnum = numfit;
+                        if (numfit < nlen) 
+                        {
+                            while (nnum > 0 && nbuf[nnum] != ' ')
+                                nnum--;
+                            /* If no space found, break wherever */
+                            if (nnum == 0)
+                                nnum = numfit;
+                        }
+                        nbuf += nnum;
+                        nlen -= nnum;
+                        if (*nbuf == ' ') 
+                        {
+                            nbuf++;
+                            nlen--;
+                        }
+                    }
+                    /* The last size is the size of the last line. Set the caret
+                       there.
+                       This will fail automatically if we don't own the caret
+                       (i.e.,
+                       when not in a question.)
+                     */
+                    SetCaretPos(draw_rt.left + size.cx,
+                        draw_rt.bottom - data->yChar);
+                }
+#endif
+                /* Find out the cursor (caret) position */
+                if (i == MSG_LINES - 1)
+                {
+                    SetCaretPos(LINE_PADDING_LEFT(data) + x, y - data->yChar);
+                }
+
+                *wp2 = wc; /* Restore the char */
+
+                wp = wp2;
+                ap = ap2;
+                cp = cp2;
             }
 #else
+            setMsgTextColor(hdc, i < (MSG_LINES - data->lines_last_turn), data->window_text[i].color);
             DrawText(hdc, wbuf, wlen, &draw_rt, DT_NOPREFIX);
             SetCaretPos(draw_rt.left + size.cx, draw_rt.bottom - data->yChar);
 #endif
             SelectObject(hdc, oldFont);
-            y -= draw_rt.bottom - draw_rt.top;
+            y = line_start_y - line_height;
         }
     }
     SetTextColor(hdc, OldFg);
@@ -835,7 +1023,7 @@ mswin_message_window_size(HWND hWnd, LPSIZE sz)
 
 /* check if text can be appended to the last line without wrapping */
 BOOL
-can_append_text(HWND hWnd, int attr, int color, const char *text)
+can_append_text(HWND hWnd, /* int attr, int color, */ const char* text)
 {
     PNHMessageWindow data;
     char tmptext[MAXWINDOWTEXT + 1];
@@ -851,10 +1039,10 @@ can_append_text(HWND hWnd, int attr, int color, const char *text)
         return FALSE;
 
     /* cannot append text with different attrbutes */
-    if (data->window_text[MSG_LINES - 1].attr != attr)
-        return FALSE;
-    if (data->window_text[MSG_LINES - 1].color != color)
-        return FALSE;
+    //if (data->window_text[MSG_LINES - 1].attr != attr)
+    //    return FALSE;
+    //if (data->window_text[MSG_LINES - 1].color != color)
+    //    return FALSE;
 
     /* cannot append if current line ends in newline */
     if (str_end_is(data->window_text[MSG_LINES - 1].text, "\n"))
@@ -875,15 +1063,13 @@ can_append_text(HWND hWnd, int attr, int color, const char *text)
     strcat(tmptext, MORE);
 
     hdc = GetDC(hWnd);
-    cached_font * font = mswin_get_font(NHW_MESSAGE,
-                            data->window_text[MSG_LINES - 1].attr, hdc, FALSE);
+    cached_font * font = mswin_get_font(NHW_MESSAGE, data->window_text[MSG_LINES - 1].attr, hdc, FALSE);
     saveFont = SelectObject(hdc, font->hFont);
     GetClientRect(hWnd, &draw_rt);
     draw_rt.left += LINE_PADDING_LEFT(data);
     draw_rt.right -= LINE_PADDING_RIGHT(data);
     draw_rt.bottom = draw_rt.top; /* we only need width for the DrawText */
-    DrawText(hdc, tmptext, strlen(tmptext), &draw_rt,
-             DT_NOPREFIX | DT_WORDBREAK | DT_CALCRECT);
+    DrawText(hdc, tmptext, strlen(tmptext), &draw_rt, DT_NOPREFIX | DT_WORDBREAK | DT_CALCRECT);
 
     /* we will check against 1.5 of the font size in order to determine
        if the text is single-line or not - just to be on the safe size */

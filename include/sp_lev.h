@@ -78,6 +78,7 @@ enum opcode_defs {
     SPO_LADDER,
     SPO_ALTAR,
     SPO_ANVIL,
+    SPO_DECORATION,
     SPO_FLOOR,
     SPO_SUBTYPE,
     SPO_NPC,
@@ -510,6 +511,16 @@ typedef struct {
     xchar x, y;
     int mtype;
 } anvil;
+
+typedef struct {
+    packed_coord coord;
+    xchar x, y;
+    schar typ;
+    schar subtyp;
+    schar dir;
+    boolean item_in_holder;
+    boolean lit;
+} decoration;
 
 typedef struct {
     packed_coord coord;

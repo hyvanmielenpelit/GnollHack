@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    rm.h    $NHDT-Date: 1547255911 2019/01/12 01:18:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.60 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -265,6 +265,7 @@ enum decoration_types {
     DECORATION_COBWEB_CORNER,
     DECORATION_TORCH,
     DECORATION_LANTERN,
+    DECORATION_FIREPLACE,
     MAX_DECORATIONS
 };
 
@@ -272,14 +273,14 @@ struct decoration_type_definition {
     const char* name;
     const char* description;
     const char* description_filled;
-    int first_doodad;
+    int first_doodad[NUM_DOODAD_DIRECTIONS]; //For each of four directions
     int num_subtypes;
     int lootable_item;
-    int color;
+    short color;
+    short color_lit;
+    short color_filled;
+    short color_filled_lit;
     enum location_soundset_types soundset;
-    short animation;
-    short enlargement;
-    short replacement;
     unsigned short dflags;
 };
 
@@ -742,7 +743,6 @@ enum signpost_subtypes
 
 struct doodad_definition {
     const char* name;
-    const char* description;
     short /*enum replacement_types*/ replacement;
     short /*enum animation_types*/ animation;
     short /*enum enlargement_types*/ enlargement;
@@ -964,6 +964,8 @@ struct rm {
     Bitfield(click_kick_ok, 1); /* No query when clicking to kick  */
 };
 
+#define DECORATION_FLAGS_NONE               0x00
+#define DECORATION_FLAGS_ITEM_IN_HOLDER     0x01
 
 #define SET_TYPLIT(x, y, ttyp, tsubtyp, llit)                              \
     {                                                             \

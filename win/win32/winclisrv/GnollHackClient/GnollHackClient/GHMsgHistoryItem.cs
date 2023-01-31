@@ -23,8 +23,12 @@ namespace GnollHackClient
             } 
         }
         public List<string> WrappedTextRows = new List<string>();
-        public int Attributes { get; set; }
+        public int Attribute { get; set; }
         public int NHColor { get; set; }
+
+        public byte[] Attributes { get; set; } = null;
+        public byte[] Colors { get; set; } = null;
+
         public bool IsLast { get; set; }
 
         public GHMsgHistoryItem()
@@ -39,7 +43,16 @@ namespace GnollHackClient
         public GHMsgHistoryItem(string text, int attr, int color)
         {
             Text = text;
-            Attributes = attr;
+            Attribute = attr;
+            NHColor = color;
+            IsLast = false;
+        }
+        public GHMsgHistoryItem(string text, byte[] attrs, byte[] colors, int attr, int color)
+        {
+            Text = text;
+            Attributes = attrs;
+            Colors = colors;
+            Attribute = attr;
             NHColor = color;
             IsLast = false;
         }

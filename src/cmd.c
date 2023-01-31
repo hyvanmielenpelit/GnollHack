@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-28 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    cmd.c    $NHDT-Date: 1557088405 2019/05/05 20:33:25 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.333 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -101,6 +101,7 @@ extern int NDECL(dodiscovered);       /**/
 extern int NDECL(doclassdisco);       /**/
 extern int NDECL(doset);              /**/
 extern int NDECL(dotogglepickup);     /**/
+extern int NDECL(dotoggledecorations);/**/
 extern int NDECL(dowhatis);           /**/
 extern int NDECL(doquickwhatis);      /**/
 extern int NDECL(dowhatdoes);         /**/
@@ -780,7 +781,7 @@ doability(VOID_ARGS)
     int abilitynum = 0;
     int glyph = 0;
     glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Upolyd ? u.mfemale : flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
-    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL));
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(&youmonst));
@@ -838,7 +839,7 @@ doability(VOID_ARGS)
         any = zeroany;
         any.a_int = abilitynum + 1;
         glyph = flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum);
-        gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
+        gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL));
 
         add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
             0, 0, ATR_NONE,
@@ -1038,7 +1039,7 @@ doability(VOID_ARGS)
                 any.a_int = abilitynum + 1;
 
                 glyph = abs(any_mon_to_glyph(mtmp, rn2_on_display_rng));
-                gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL));
+                gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL));
 
                 add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
                     0, 0, ATR_NONE,
@@ -1093,7 +1094,7 @@ domonsterability(VOID_ARGS)
     int abilitynum = 0;
     int glyph, gui_glyph;
     glyph = abs(u_to_glyph());
-    gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
+    gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL));
 
     struct extended_create_window_info createinfo = extended_create_window_info_from_mon(&youmonst);
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_COMMAND_MENU, iflags.using_gui_tiles ? gui_glyph : glyph, createinfo);
@@ -1428,7 +1429,7 @@ boolean ischaractermenu;
     {
         any = zeroany;
         glyph = abs(any_mon_to_glyph(u.usteed, rn2_on_display_rng));
-        gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, u.usteed, 0UL));
+        gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, u.usteed, 0UL, 0UL));
         add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, menu_heading_info(),
             0, 0, iflags.menu_headings,
             ischaractermenu ? "Use Your Steed's Abilities            " : "Your Steed's Abilities", MENU_UNSELECTED);
@@ -2472,6 +2473,39 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_PLAYER_DEATH_OFF:
                 header = "PLAYER_DEATH_OFF";
                 break;
+            case GLYPH_SPECIAL_EFFECT_OFF:
+                header = "SPECIAL_EFFECT_OFF";
+                break;
+            case GLYPH_SIMPLE_DOODAD_OFF:
+                header = "SIMPLE_DOODAD_OFF";
+                break;
+            case GLYPH_MIRRORABLE_DOODAD_OFF:
+                header = "MIRRORABLE_DOODAD_OFF";
+                break;
+            case GLYPH_CURSOR_OFF:
+                header = "CURSOR_OFF";
+                break;
+            case GLYPH_HIT_TILE_OFF:
+                header = "GENERAL_HIT_TILE_OFF";
+                break;
+            case GLYPH_GENERAL_TILE_OFF:
+                header = "GENERAL_TILE_OFF";
+                break;
+            case GLYPH_UI_TILE_OFF:
+                header = "GENERAL_UI_TILE_OFF";
+                break;
+            case GLYPH_SPELL_TILE_OFF:
+                header = "GENERAL_SPELL_TILE_OFF";
+                break;
+            case GLYPH_SKILL_TILE_OFF:
+                header = "GENERAL_SKILL_TILE_OFF";
+                break;
+            case GLYPH_BUFF_OFF:
+                header = "BUFF_OFF";
+                break;
+            case GLYPH_REPLACEMENT_OFF:
+                header = "REPLACEMENT_OFF";
+                break;
             case GLYPH_ANIMATION_OFF:
                 header = "ANIMATION_OFF";
                 break;
@@ -3262,7 +3296,7 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
 {
     char buf[BUFSZ], tmpbuf[BUFSZ];
     int glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Upolyd ? u.mfemale : flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
-    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL));
 
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(&youmonst));
     en_via_menu = !final;
@@ -5739,6 +5773,7 @@ struct ext_func_tab extcmdlist[] = {
             docommandmenu, IFBURIED | GENERALCMD | AUTOCOMPLETE },
     { M(3) /*M('c')*/, "conduct", "list voluntary challenges you have maintained",
             doconduct, IFBURIED | AUTOCOMPLETE },
+    { '\0', "decorations", "toggle display of decorations on and off", dotoggledecorations, IFBURIED | AUTOCOMPLETE },
     { M(6), "deletesavedgame", "delete saved game if it exists",
             dodeletesavedgame, IFBURIED | CASUALMODECMD | AUTOCOMPLETE },
     { C('g'), "dig", "dig the ground", dodig, INCMDMENU },
@@ -9221,6 +9256,8 @@ dolight(VOID_ARGS)
                         {
                             if (is_candle(otmp))
                                 return use_candle(&otmp);
+                            else if (is_torch(otmp))
+                                return use_torch(&otmp);
                             else if (is_obj_candelabrum(otmp))
                                 use_candelabrum(otmp);
                             else if (otmp->otyp == POT_OIL)

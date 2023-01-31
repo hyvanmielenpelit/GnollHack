@@ -1925,6 +1925,12 @@ mac_putstr_ex(winid win, int attr, const char *str, int app, int color)
 }
 
 void
+mac_putstr_ex2(winid win, const char* str, const char* attrs, const char* colors, int attr, int color, int app)
+{
+    mac_putstr_ex(win, attrs ? attrs[0] : attr, str, app, colors ? colors[0] : color);
+}
+
+void
 mac_curs(winid win, int x, int y)
 {
     NhWindow *aWin = &theWindows[win];
@@ -3286,7 +3292,7 @@ struct window_procs mac_procs = {
     mac_unimplemented, /* see macmenu.c:mac_askname() for player selection */
     mac_askname, mac_get_nh_event, mac_exit_nhwindows, mac_suspend_nhwindows,
     mac_unimplemented, mac_create_nhwindow_ex, mac_clear_nhwindow,
-    mac_display_nhwindow, mac_destroy_nhwindow, mac_curs, mac_putstr_ex,
+    mac_display_nhwindow, mac_destroy_nhwindow, mac_curs, mac_putstr_ex, mac_putstr_ex2,
     genl_putmixed_ex, mac_display_file, mac_start_menu_ex, mac_add_menu, mac_add_extended_menu,
     mac_end_menu_ex, mac_select_menu, genl_message_menu, mac_unimplemented,
     mac_get_nh_event, mac_get_nh_event,

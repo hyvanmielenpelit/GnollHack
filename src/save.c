@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    save.c    $NHDT-Date: 1554591225 2019/04/06 22:53:45 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.117 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -1371,7 +1371,7 @@ int fd;
 {
     struct save_game_stats gamestats = { 0 };
     gamestats.glyph = abs(u_to_glyph());
-    gamestats.gui_glyph = maybe_get_replaced_glyph(gamestats.glyph, u.ux, u.uy, data_to_replacement_info(gamestats.glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
+    gamestats.gui_glyph = maybe_get_replaced_glyph(gamestats.glyph, u.ux, u.uy, data_to_replacement_info(gamestats.glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL));
     gamestats.rolenum = urole.rolenum;
     gamestats.racenum = urace.racenum;
     gamestats.gender = Upolyd ? u.mfemale : flags.female;
@@ -1412,15 +1412,15 @@ STATIC_OVL void
 save_msghistory(fd, mode)
 int fd, mode;
 {
-    char *msg;
+    char *msg, *attrs, *colors;
     int msgcount = 0;
-    int msglen = 0, attr = ATR_NONE, color = NO_COLOR;
+    int msglen = 0;
     int minusone = -1;
     boolean init = TRUE;
 
     if (perform_bwrite(mode)) {
         /* ask window port for each message in sequence */
-        while ((msg = getmsghistory_ex(&attr, &color, init)) != 0) {
+        while ((msg = getmsghistory_ex(&attrs, &colors, init)) != 0) {
             init = FALSE;
             msglen = (int)strlen(msg);
             if (msglen < 1)
@@ -1431,10 +1431,9 @@ int fd, mode;
                 msglen = BUFSZ - 1;
             bwrite(fd, (genericptr_t) &msglen, sizeof(msglen));
             bwrite(fd, (genericptr_t) msg, msglen);
-            bwrite(fd, (genericptr_t) &attr, sizeof(attr));
-            bwrite(fd, (genericptr_t) &color, sizeof(color));
+            bwrite(fd, (genericptr_t) attrs, msglen);
+            bwrite(fd, (genericptr_t) colors, msglen);
             ++msgcount;
-            attr = ATR_NONE, color = NO_COLOR;
         }
         bwrite(fd, (genericptr_t) &minusone, sizeof(int));
     }

@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    options.c    $NHDT-Date: 1554591224 2019/04/06 22:53:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.363 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -194,7 +194,7 @@ static struct Bool_Opt {
     { "mail", (boolean *) 0, TRUE, SET_IN_FILE },
 #endif
     { "mention_walls", &iflags.mention_walls, FALSE, SET_IN_GAME },
-#ifdef ANDROID
+#if defined(ANDROID) || defined(GNH_MOBILE)
     { "menucolors", &iflags.use_menu_color, TRUE, SET_IN_GAME },
 #else
     { "menucolors", &iflags.use_menu_color, FALSE, SET_IN_GAME },
@@ -260,6 +260,7 @@ static struct Bool_Opt {
     { "showscore", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
     { "show_buff_timer", &flags.show_buff_timer, FALSE, SET_IN_GAME },
+    { "show_decorations", &flags.show_decorations, TRUE, SET_IN_GAME },
     { "show_grid", &flags.show_grid, FALSE, SET_IN_GAME },
     { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME },
     { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
@@ -5076,7 +5077,7 @@ boolean tinitial, tfrom_file;
                     need_redraw = TRUE;
                     need_issue_gui_command = TRUE;
             }
-            else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors)
+            else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors || boolopt[i].addr == &flags.show_decorations)
             {
                 need_redraw = TRUE;
             }
@@ -7263,6 +7264,24 @@ struct autopickup_exception *whichape;
             ape = ape->next;
         }
     }
+}
+
+int
+dotoggledecorations()
+{
+    char buf[BUFSZ];
+
+    flags.show_decorations = !flags.show_decorations;
+    if (flags.show_decorations) {
+        Strcpy(buf, "ON");
+    }
+    else {
+        Strcpy(buf, "OFF");
+    }
+    pline("Displaying decorations: %s.", buf);
+    (void)doredraw();
+
+    return 0;
 }
 
 STATIC_OVL int

@@ -40,6 +40,8 @@ typedef struct mswin_nhmsg_putstr {
     const char *text;
     int append;
     int color;
+    const char* attrs;
+    const char* colors;
 } MSNHMsgPutstr, *PMSNHMsgPutstr;
 
 typedef struct mswin_nhmsg_print_glyph {
@@ -75,9 +77,14 @@ typedef struct mswin_nhmsg_end_menu_ex {
     const char *subtitle;
 } MSNHMsgEndMenu, *PMSNHMsgEndMenu;
 
+
+#define TEXT_BUFFER_SIZE 4096
+
 typedef struct mswin_nhmsg_get_text {
     size_t max_size;
-    char buffer[];
+    char buffer[TEXT_BUFFER_SIZE];
+    char attrs[TEXT_BUFFER_SIZE];
+    char colors[TEXT_BUFFER_SIZE];
 } MSNHMsgGetText, *PMSNHMsgGetText;
 
 typedef struct mswin_nhmsg_update_status {

@@ -202,6 +202,7 @@ extern char curr_token[512];
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
 %token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE ALTAR_SUBTYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
 %token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_SUBTYPE FLOOR_SUBTYPE_ID FLOOR_ID FLOOR_TYPE FLOOR_TYPE_ID
+%token	<i> DECORATION_ID DECORATION_TYPE DECORATION_DIR DECORATION_ITEM_STATE
 %token	<i> ELEMENTAL_ENCHANTMENT_TYPE EXCEPTIONALITY_TYPE EXCEPTIONALITY_ID ELEMENTAL_ENCHANTMENT_ID ENCHANTMENT_ID SECRET_DOOR_ID USES_UP_KEY_ID
 %token	<i> MYTHIC_PREFIX_TYPE MYTHIC_SUFFIX_TYPE MYTHIC_PREFIX_ID MYTHIC_SUFFIX_ID
 %token	<i> CHARGES_ID SPECIAL_QUALITY_ID SPEFLAGS_ID
@@ -511,6 +512,7 @@ levstatement 	: message
 		| subtype_detail
 		| monster_generation_detail
 		| floor_detail
+		| decoration_detail
 		| altar_detail
 		| anvil_detail
 		| npc_detail
@@ -2344,6 +2346,20 @@ anvil_detail : ANVIL_ID ':' coord_or_var
 		| ANVIL_ID ':' coord_or_var ',' MONTYPE_ID ':' monster_or_var
 		  {
 		      add_opvars(splev, "o", VA_PASS1(SPO_ANVIL));
+		  }
+		;
+
+decoration_detail : DECORATION_ID ':' coord_or_var ',' DECORATION_TYPE ',' INTEGER ',' DECORATION_DIR ',' DECORATION_ITEM_STATE
+		  {
+		      add_opvars(splev, "iiiiio", VA_PASS6(1, (int)$11, (int)$9, (int)$7, (int)$5, SPO_DECORATION));
+		  }
+		| DECORATION_ID ':' coord_or_var ',' DECORATION_TYPE ',' INTEGER ',' DECORATION_DIR ',' DECORATION_ITEM_STATE ',' light_state
+		  {
+		      add_opvars(splev, "iiiiio", VA_PASS6((int)$13, (int)$11, (int)$9, (int)$7, (int)$5, SPO_DECORATION));
+		  }
+		| DECORATION_ID ':' coord_or_var ',' DECORATION_TYPE ',' DECORATION_DIR
+		  {
+		      add_opvars(splev, "iiiiio", VA_PASS6(1, 1, (int)$7, 0, (int)$5, SPO_DECORATION));
 		  }
 		;
 

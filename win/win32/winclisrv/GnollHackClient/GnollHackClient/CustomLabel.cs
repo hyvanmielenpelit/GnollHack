@@ -722,6 +722,9 @@ namespace GnollHackClient
                     if (TouchDictionary.Count > 1)
                         TouchMoved = true;
 
+                    TextScrollSpeedOn = false;
+                    _textScrollSpeed = 0;
+
                     e.Handled = true;
                     break;
                 case SKTouchAction.Moved:

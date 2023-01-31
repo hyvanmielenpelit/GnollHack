@@ -134,6 +134,7 @@ struct replacement_info {
     struct obj* object;
     struct monst* monster;
     unsigned long layer_flags;
+    unsigned long missile_flags;
 };
 
 struct skill_menu_info
@@ -184,6 +185,8 @@ struct extended_menu_info {
     struct monst* monster;
     char heading_for_group_accelerator;
     int color;
+    const char* attrs;
+    const char* colors;
     int style; /* Generic style or subtype; used in menu data */
     char special_mark;
     unsigned long menu_flags;
@@ -339,9 +342,18 @@ enum special_level_naming_types {
 
 enum simple_doodad_tile_types
 {
-    DOODAD_STALAGMITE = 0,
+    DOODAD_TORCH_HOLDER = 0,
+    DOODAD_TORCH_HOLDER_LEFT,
+    DOODAD_TORCH_HOLDER_RIGHT,
+    DOODAD_TORCH_HOLDER_BOTTOM,
+    DOODAD_LANTERN_HOLDER,
+    DOODAD_LANTERN_HOLDER_LEFT,
+    DOODAD_LANTERN_HOLDER_RIGHT,
+    DOODAD_LANTERN_HOLDER_BOTTOM,
+    DOODAD_FIREPLACE,
     MAX_SIMPLE_DOODAD_TILES
 };
+#define NUM_DOODAD_DIRECTIONS 4
 
 enum mirrorable_doodad_tile_types
 {

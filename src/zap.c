@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-28 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    zap.c    $NHDT-Date: 1551395521 2019/02/28 23:12:01 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.307 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -4733,7 +4733,9 @@ register struct obj *obj;
         break;
     case SPE_GUARDIAN_ANGEL:
         You_ex(ATR_NONE, CLR_MSG_SPELL, "recite an ancient prayer to %s.", u_gname());
-        gain_guardian_angel(TRUE);
+        //gain_guardian_angel(TRUE);
+        mtmp = summoncreature(obj->otyp, PM_ANGEL, "%s descends from the heavens.", MM_EMIN_COALIGNED | MM_LAWFUL_SUMMON_ANIMATION,
+            SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_PACIFIST | SUMMONCREATURE_FLAGS_FAITHFUL);
         break;
     case SPE_SUMMON_ARCHON:
         mtmp = summoncreature(obj->otyp, PM_ARCHON, "%s descends from the heavens.", MM_EMIN_COALIGNED | MM_LAWFUL_SUMMON_ANIMATION,
@@ -7836,7 +7838,7 @@ boolean stop_at_first_hit_object;
     }
     else if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM)
     {
-        tmp_at(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng));
+        tmp_at_with_missile_flags(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng), get_missile_flags(obj, FALSE));
     }
     else if (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)
     {
@@ -8199,7 +8201,7 @@ boolean stop_at_first_hit_object;
                 newsym(x, y);
             }
             tmp_at(bhitpos.x, bhitpos.y);
-            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2 || tethered_weapon || get_obj_height(obj) > 0))
+            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2 || tethered_weapon || get_obj_height(obj) > 0 || obj->lamplit))
             {                
                 show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, tethered_weapon), get_obj_height(obj), 0, 0);
                 if (tethered_weapon)

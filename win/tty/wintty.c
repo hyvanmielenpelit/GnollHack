@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-01-06 */
 
 /* GnollHack 4.0    wintty.c    $NHDT-Date: 1557088734 2019/05/05 20:38:54 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.203 $ */
 /* Copyright (c) David Cohrs, 1991                                */
@@ -105,7 +105,7 @@ struct window_procs tty_procs = {
     tty_init_nhwindows, tty_player_selection, tty_askname, tty_get_nh_event,
     tty_exit_nhwindows, tty_suspend_nhwindows, tty_resume_nhwindows,
     tty_create_nhwindow_ex, tty_clear_nhwindow, tty_display_nhwindow,
-    tty_destroy_nhwindow, tty_curs, tty_putstr_ex, genl_putmixed_ex,
+    tty_destroy_nhwindow, tty_curs, tty_putstr_ex, tty_putstr_ex2, genl_putmixed_ex,
     tty_display_file, tty_start_menu_ex, tty_add_menu, tty_add_extended_menu, tty_end_menu_ex,
     tty_select_menu, tty_message_menu, tty_update_inventory, tty_mark_synch,
     tty_wait_synch,
@@ -374,12 +374,12 @@ int sig_unused UNUSED;
                 ttyDisplay->toplin = i;
                 flush_screen(1);
                 if (i) {
-                    addtopl(toplines);
+                    addtopl(toplines, ATR_NONE, NO_COLOR);
                 } else
                     for (i = WIN_INVEN; i < MAXWIN; i++)
                         if (wins[i] && wins[i]->active) {
                             /* cop-out */
-                            addtopl("Press Return to continue: ");
+                            addtopl("Press Return to continue: ", ATR_NONE, NO_COLOR);
                             break;
                         }
                 (void) fflush(stdout);
@@ -1584,13 +1584,19 @@ struct extended_create_window_info info UNUSED;
 
     if (newwin->maxrow) {
         newwin->data = (char **) alloc(((size_t)newwin->maxrow * sizeof (char *)));
+        newwin->datattrs = (char**)alloc(((size_t)newwin->maxrow * sizeof(char*)));
+        newwin->datcolors = (char**) alloc(((size_t)newwin->maxrow * sizeof(char*)));
         newwin->datlen = (short *) alloc(((size_t)newwin->maxrow * sizeof (short)));
         for (i = 0; i < newwin->maxrow; i++) {
             if (newwin->maxcol) { /* WIN_STATUS */
                 newwin->data[i] = (char *) alloc((size_t)newwin->maxcol);
+                newwin->datattrs[i] = (char*)alloc((size_t)newwin->maxcol);
+                newwin->datcolors[i] = (char*) alloc((size_t)newwin->maxcol);
                 newwin->datlen[i] = (short) newwin->maxcol;
             } else {
                 newwin->data[i] = (char *) 0;
+                newwin->datattrs[i] = (char*)0;
+                newwin->datcolors[i] = (char*)0;
                 newwin->datlen[i] = 0;
             }
         }
@@ -1598,6 +1604,8 @@ struct extended_create_window_info info UNUSED;
             newwin->maxrow = 0;
     } else {
         newwin->data = (char **) 0;
+        newwin->datattrs = (char**)0;
+        newwin->datcolors = (char **) 0;
         newwin->datlen = (short *) 0;
     }
 
@@ -2308,26 +2316,31 @@ process_text_window(window, cw)
 winid window;
 struct WinDesc *cw;
 {
-    int i, n, attr;
+    int i, n, /* attr, */ ccolor = NO_COLOR, cattr = ATR_NONE;
     boolean linestart;
-    register char *cp;
+    register char *cp,*ccp,*cap;
 
     issue_gui_command(GUI_CMD_START_FLUSH);
 
-    for (n = 0, i = 0; i < cw->maxrow; i++) {
+    for (n = 0, i = 0; i < cw->maxrow; i++) 
+    {
         HUPSKIP();
-        if (!cw->offx && (n + cw->offy == ttyDisplay->rows - 1)) {
+        if (!cw->offx && (n + cw->offy == ttyDisplay->rows - 1)) 
+        {
             tty_curs(window, 1, n);
             cl_end();
             dmore(cw, quitchars);
-            if (morc == '\033') {
+            if (morc == '\033') 
+            {
                 cw->flags |= WIN_CANCELLED;
                 break;
             }
-            if (cw->offy) {
+            if (cw->offy) 
+            {
                 tty_curs(window, 1, 0);
                 cl_eos();
-            } else
+            }
+            else
                 clear_screen();
             n = 0;
         }
@@ -2338,38 +2351,72 @@ struct WinDesc *cw;
         if (cw->offx)
             cl_end();
 #endif
-        if (cw->data[i]) {
-            attr = cw->data[i][0] - 1;
-            if (cw->offx) {
+        if (cw->data[i]) 
+        {
+            //attr = cw->data[i][0] - 1;
+            if (cw->offx) 
+            {
                 (void) doputchar(' ', TRUE);
                 ++ttyDisplay->curx;
             }
-            term_start_attr(attr);
-            for (cp = &cw->data[i][1], linestart = TRUE;
+            //term_start_attr(attr);
+            for (cp = &cw->data[i][1], ccp = &cw->datcolors[i][0], cap = &cw->datattrs[i][0], linestart = TRUE;
 #ifndef WIN32CON
                  *cp && (int) ++ttyDisplay->curx < (int) ttyDisplay->cols;
-                 cp++
+                 cp++, ccp++, cap++
 #else
                  *cp && (int) ttyDisplay->curx < (int) ttyDisplay->cols;
-                 cp++, ttyDisplay->curx++
+                 cp++, ccp++, cap++, ttyDisplay->curx++
 #endif
-                 ) {
+                 ) 
+            {
                 /* message recall for msg_window:full/combination/reverse
                    might have output from '/' in it (see redotoplin()) */
-                if (linestart && (*cp & 0x80) != 0) {
+                if (linestart && (*cp & 0x80) != 0) 
+                {
                     g_putch((int)*cp, TRUE);
                     end_glyphout();
                     linestart = FALSE;
-                } else {
+                }
+                else 
+                {
+                    if (ccolor != *ccp)
+                    {
+                        if(ccolor != NO_COLOR)
+                            term_end_color();
+                        ccolor = *ccp;
+                        if (ccolor != NO_COLOR)
+                            term_start_color(ccolor);
+                    }
+                    if (cattr != *cap)
+                    {
+                        if (cattr != ATR_NONE)
+                            term_end_attr(cattr);
+                        cattr = *cap;
+                        if (cattr != ATR_NONE)
+                            term_start_attr(cattr);
+                    }
                     (void) doputchar((nhsym)((unsigned char)(*cp)), TRUE);
                 }
             }
-            term_end_attr(attr);
+            if (ccolor != NO_COLOR)
+            {
+                term_end_color();
+                ccolor = NO_COLOR;
+            }
+            if (cattr != ATR_NONE)
+            {
+                term_end_attr(cattr);
+                cattr = ATR_NONE;
+            }
+            //term_end_attr(attr);
         }
     }
-    if (i == cw->maxrow) {
+    if (i == cw->maxrow) 
+    {
 #ifdef H2344_BROKEN
-        if (cw->type == NHW_TEXT) {
+        if (cw->type == NHW_TEXT) 
+        {
             tty_curs(BASE_WINDOW, 1, (int) ttyDisplay->cury + 1);
             cl_eos();
         }
@@ -2735,7 +2782,18 @@ void
 tty_putstr_ex(window, attr, str, app, color)
 winid window;
 int attr, app, color;
-const char *str;
+const char* str;
+{
+    if (!str)
+        return;
+    tty_putstr_ex2(window, str, (char*)0, (char*)0, attr, color, app);
+}
+
+void
+tty_putstr_ex2(window, str, attrs, colors, attr, color, app)
+winid window;
+int attr, color, app;
+const char *str, *attrs, *colors;
 {
     register struct WinDesc *cw = 0;
     register char *ob;
@@ -2764,13 +2822,15 @@ const char *str;
 
     print_vt_code2(AVTC_SELECT_WINDOW, window);
 
+    int used_attr = attrs ? attrs[0] : attr;
+
     switch (cw->type) {
     case NHW_MESSAGE: {
         int suppress_history = (attr & ATR_NOHISTORY);
 
         /* in case we ever support display attributes for topline
            messages, clear flag mask leaving only display attr */
-        /*attr &= ~(ATR_URGENT | ATR_NOHISTORY);*/
+        /*attr &= ~(ATR_LINE_MSG_MASK);*/
 
         /* really do this later */
 #if defined(USER_SOUNDS) && defined(WIN32CON)
@@ -2779,12 +2839,12 @@ const char *str;
         if (!suppress_history) {
             /* normal output; add to current top line if room, else flush
                whatever is there to history and then write this */
-            update_topl(str);
+            update_topl2(str, attrs, colors, attr, color);
         } else {
             /* put anything already on top line into history */
             remember_topl();
             /* write to top line without remembering what we're writing */
-            show_topl(str);
+            show_topl2(str, attrs, colors, attr, color);
         }
         break;
     }
@@ -2823,7 +2883,7 @@ const char *str;
 #endif /* STATUS_HILITES */
     case NHW_MAP:
         tty_curs(window, cw->curx + 1, cw->cury);
-        term_start_attr(attr);
+        term_start_attr(used_attr);
         while (*str && (int) ttyDisplay->curx < (int) ttyDisplay->cols - 1) {
             (void) doputchar((nhsym)*str, TRUE);
             str++;
@@ -2831,11 +2891,11 @@ const char *str;
         }
         cw->curx = 0;
         cw->cury++;
-        term_end_attr(attr);
+        term_end_attr(used_attr);
         break;
     case NHW_BASE:
         tty_curs(window, cw->curx + 1, cw->cury);
-        term_start_attr(attr);
+        term_start_attr(used_attr);
         while (*str) {
             if ((int) ttyDisplay->curx >= (int) ttyDisplay->cols - 1) {
                 cw->curx = 0;
@@ -2848,7 +2908,7 @@ const char *str;
         }
         cw->curx = 0;
         cw->cury++;
-        term_end_attr(attr);
+        term_end_attr(used_attr);
         break;
     case NHW_MENU:
     case NHW_TEXT:
@@ -2863,33 +2923,76 @@ const char *str;
             cw->maxcol = ttyDisplay->cols; /* force full-screen mode */
             tty_display_nhwindow(window, TRUE);
             for (i = 0; i < cw->maxrow; i++)
+            {
                 if (cw->data[i]) {
-                    free((genericptr_t) cw->data[i]);
+                    free((genericptr_t)cw->data[i]);
                     cw->data[i] = 0;
                 }
+                if (cw->datcolors[i]) {
+                    free((genericptr_t)cw->datcolors[i]);
+                    cw->datcolors[i] = 0;
+                }
+                if (cw->datattrs[i]) {
+                    free((genericptr_t)cw->datattrs[i]);
+                    cw->datattrs[i] = 0;
+                }
+            }
             cw->maxrow = cw->cury = 0;
         }
         /* always grows one at a time, but alloc 12 at a time */
         if (cw->cury >= cw->rows) {
-            char **tmp;
+            char **tmp, ** tmp2, ** tmp3;
 
             cw->rows += 12;
             tmp = (char **) alloc(sizeof(char *) * (size_t)cw->rows);
+            tmp2 = (char**) alloc(sizeof(char *) * (size_t)cw->rows);
+            tmp3 = (char**) alloc(sizeof(char *) * (size_t)cw->rows);
             for (i = 0; i < cw->maxrow; i++)
+            {
                 tmp[i] = cw->data[i];
+                tmp2[i] = cw->datcolors[i];
+                tmp3[i] = cw->datattrs[i];
+            }
             if (cw->data)
                 free((genericptr_t) cw->data);
+            if (cw->datcolors)
+                free((genericptr_t)cw->datcolors);
+            if (cw->datattrs)
+                free((genericptr_t)cw->datattrs);
             cw->data = tmp;
+            cw->datcolors = tmp2;
+            cw->datattrs = tmp3;
 
             for (i = cw->maxrow; i < cw->rows; i++)
+            {
                 cw->data[i] = 0;
+                cw->datcolors[i] = 0;
+                cw->datattrs[i] = 0;
+            }
         }
         if (cw->data[cw->cury])
             free((genericptr_t) cw->data[cw->cury]);
+        if (cw->datattrs[cw->cury])
+            free((genericptr_t)cw->datattrs[cw->cury]);
+        if (cw->datcolors[cw->cury])
+            free((genericptr_t)cw->datcolors[cw->cury]);
         n0 = (long) strlen(str) + 1L;
         ob = cw->data[cw->cury] = (char *) alloc((size_t)n0 + 1);
-        *ob++ = (char) (attr + 1); /* avoid nuls, for convenience */
+        cw->datattrs[cw->cury] = (char*)alloc((size_t)n0 + 1);
+        cw->datcolors[cw->cury] = (char*)alloc((size_t)n0 + 1);
+        *ob++ = (char) (used_attr + 1); /* avoid nuls, for convenience */
         Strcpy(ob, str);
+        size_t len = strlen(ob);
+        if(attrs)
+            memcpy(cw->datattrs[cw->cury], attrs, len);
+        else
+            memset(cw->datattrs[cw->cury], attr, len);
+        if (colors)
+            memcpy(cw->datcolors[cw->cury], colors, len);
+        else
+            memset(cw->datcolors[cw->cury], color, len);
+        cw->datattrs[cw->cury][len] = 0;
+        cw->datcolors[cw->cury][len] = 0;
 
         if (n0 > cw->maxcol)
             cw->maxcol = n0;
@@ -2901,7 +3004,7 @@ const char *str;
                 i--;
             if (i) {
                 cw->data[cw->cury - 1][++i] = '\0';
-                tty_putstr_ex(window, attr, &str[i], app, color);
+                tty_putstr_ex2(window, &str[i], attrs ? &attrs[i] : attrs, colors ? &colors[i] : colors, attr, color, app);
             }
         }
         break;
@@ -3331,7 +3434,7 @@ tty_wait_synch()
         tty_display_nhwindow(WIN_MAP, FALSE);
         if (ttyDisplay->inmore) 
         {
-            addtopl("--More--");
+            addtopl("--More--", ATR_NONE, NO_COLOR);
             (void) fflush(stdout);
         } 
         else if (ttyDisplay->inread > (program_state.gameover ? 1 : 0)) 
@@ -3660,7 +3763,7 @@ struct layer_info layers;
         reverse_on = TRUE;
     }
 
-    if (!reverse_on && (special & MG_PEACEFUL) && flags.underline_peaceful)
+    if (!reverse_on && (((special & MG_PEACEFUL) && flags.underline_peaceful) || (special & MG_DECORATION)))
     {
         term_start_attr(ATR_ULINE);
         underline_on = TRUE;

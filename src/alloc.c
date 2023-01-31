@@ -169,4 +169,34 @@ const char *string;
     return cptr;
 }
 
+char*
+setstr(string, initval)
+const char* string;
+char initval;
+{
+    if (!string)
+        return (char*)0;
+
+    size_t len = strlen(string);
+    char* cptr = (char*)alloc(len + 1);
+    memset(cptr, initval, len);
+    cptr[len] = 0;
+    return cptr;
+}
+
+char*
+cpystr(string, initvals)
+const char* string;
+const char* initvals;
+{
+    if (!string)
+        return (char*)0;
+
+    size_t len = strlen(string);
+    char* cptr = (char*)alloc(len + 1);
+    memcpy(cptr, initvals, len);
+    cptr[len] = 0;
+    return cptr;
+}
+
 /*alloc.c*/
