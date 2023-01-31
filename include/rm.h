@@ -743,6 +743,7 @@ enum signpost_subtypes
 
 struct doodad_definition {
     const char* name;
+    signed char special_height;
     short /*enum replacement_types*/ replacement;
     short /*enum animation_types*/ animation;
     short /*enum enlargement_types*/ enlargement;

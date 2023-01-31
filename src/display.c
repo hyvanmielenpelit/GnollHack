@@ -134,7 +134,7 @@ STATIC_DCL int FDECL(check_pos, (int, int, int));
 STATIC_DCL int FDECL(get_bk_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_floor_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_floor_doodad_layer_glyph, (XCHAR_P, XCHAR_P));
-STATIC_DCL int FDECL(get_feature_doodad_layer_glyph, (XCHAR_P, XCHAR_P));
+STATIC_DCL int FDECL(get_feature_doodad_layer_glyph, (XCHAR_P, XCHAR_P, signed char*));
 STATIC_DCL int FDECL(tether_glyph, (int, int));
 
 /*#define WA_VERBOSE*/ /* give (x,y) locations for all "bad" spots */
@@ -232,7 +232,8 @@ register int show;
     int new_feature_gui_glyph = NO_GLYPH;
     int new_cover_feature_glyph = NO_GLYPH;
     int new_cover_feature_gui_glyph = NO_GLYPH;
-    int new_feature_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_feature_doodad_layer_glyph(x, y);
+    schar new_feature_doodad_height = 0;
+    int new_feature_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_feature_doodad_layer_glyph(x, y, &new_feature_doodad_height);
     int new_feature_doodad_gui_glyph = maybe_get_replaced_glyph(new_feature_doodad_glyph, x, y, data_to_replacement_info(new_feature_doodad_glyph, LAYER_FEATURE_DOODAD, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
     unsigned long new_layer_flags = 0UL;
     if (symbol_index > S_stone && levl[x][y].decoration_typ > 0)
@@ -283,6 +284,7 @@ register int show;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_gui_glyph;
 
         levl[x][y].hero_memory_layers.layer_flags = new_layer_flags;
+        levl[x][y].hero_memory_layers.special_feature_doodad_layer_height = new_feature_doodad_height;
     }
 
     if (show)
@@ -313,6 +315,7 @@ register int show;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_gui_glyph;
 
         gbuf[y][x].layers.layer_flags = new_layer_flags;
+        gbuf[y][x].layers.special_feature_doodad_layer_height = new_feature_doodad_height;
 
         if (floor_glyph_before != new_floor_glyph || floor_doodad_glyph_before != new_floor_doodad_glyph
             || feature_glyph_before != new_feature_glyph || feature_doodad_glyph_before != new_feature_doodad_glyph
@@ -4405,8 +4408,9 @@ xchar x, y;
 
 /* Feature doodad layer glyph  */
 STATIC_OVL int
-get_feature_doodad_layer_glyph(x, y)
+get_feature_doodad_layer_glyph(x, y, height_ptr)
 xchar x, y;
+schar* height_ptr;
 {
     if (!isok(x, y))
         return NO_GLYPH;
@@ -4414,14 +4418,26 @@ xchar x, y;
     if (levl[x][y].decoration_typ > 0)
     {
         int glyph = NO_GLYPH;
-        if(decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_MIRRORABLE)
+        if (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_MIRRORABLE)
+        {
             glyph = levl[x][y].decoration_dir + (decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir] + levl[x][y].decoration_subtyp) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+            if (height_ptr)
+                *height_ptr = mirrorable_doodads[decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir] + levl[x][y].decoration_subtyp].special_height;
+        }
         else
+        {
             glyph = decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir] + levl[x][y].decoration_subtyp + GLYPH_SIMPLE_DOODAD_OFF;
+            if (height_ptr)
+                *height_ptr = simple_doodads[decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir] + levl[x][y].decoration_subtyp].special_height;
+        }
         return glyph;
     }
     else
+    {
+        if (height_ptr)
+            *height_ptr = 0;
         return NO_GLYPH;
+    }
 }
 
 

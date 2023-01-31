@@ -55,9 +55,10 @@ struct layer_info {
     short damage_displayed;
     short hit_tile;
 
-    short special_monster_layer_height;
-    xchar monster_origin_x;
-    xchar monster_origin_y;
+    schar special_feature_doodad_layer_height;
+    schar special_monster_layer_height;
+    schar monster_origin_x;
+    schar monster_origin_y;
     int monster_hp;
     int monster_maxhp;
     int rider_glyph;

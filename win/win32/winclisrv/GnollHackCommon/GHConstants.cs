@@ -414,7 +414,8 @@ namespace GnollHackCommon
         public short damage_displayed;
         public short hit_tile;
 
-        public short special_monster_layer_height;
+        public sbyte special_feature_doodad_layer_height;
+        public sbyte special_monster_layer_height;
         public sbyte monster_origin_x;
         public sbyte monster_origin_y;
         public int monster_hp;
