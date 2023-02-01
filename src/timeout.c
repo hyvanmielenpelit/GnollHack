@@ -2389,7 +2389,7 @@ boolean already_lit;
         xchar x, y;
 
         if (get_obj_location(obj, &x, &y, CONTAINED_TOO | BURIED_TOO))
-            new_light_source(x, y, radius, LS_OBJECT, obj_to_any(obj));
+            new_light_source(x, y, radius, LS_OBJECT, obj_to_any(obj), 0);
         else
             impossible("begin_burn: can't get obj position");
     }

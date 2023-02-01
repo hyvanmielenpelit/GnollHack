@@ -2590,12 +2590,13 @@ create_level_light_sources(VOID_ARGS)
             int lr = get_location_light_range(x, y);
             if (lr != 0 && (levl[x][y].flags & L_INITIALLY_UNLIT) == 0) // Altars are always on by default
             {
+                int ls = get_location_light_sidedness(x, y);
                 anything id;
                 coord c;
                 c.x = x;
                 c.y = y;
                 id.a_coord = c;
-                new_light_source(x, y, lr, LS_LOCATION, &id);
+                new_light_source(x, y, lr, LS_LOCATION, &id, ls);
                 levl[x][y].lamplit = TRUE;
             }
         }
@@ -2609,12 +2610,13 @@ xchar x, y;
     int lr = get_location_light_range(x, y);
     if (lr != 0)
     {
+        int ls = get_location_light_sidedness(x, y);
         anything id;
         coord c;
         c.x = x;
         c.y = y;
         id.a_coord = c;
-        new_light_source(x, y, lr, LS_LOCATION, &id);
+        new_light_source(x, y, lr, LS_LOCATION, &id, ls);
         levl[x][y].lamplit = TRUE;
     }
 }

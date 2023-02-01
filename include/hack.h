@@ -744,7 +744,7 @@ extern struct objclass saved_objects[NUM_OBJECTS];
           NO_GLYPH,NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH \
         }, \
         0UL, 0U, 0U, (struct obj*)0,   0, 0,   \
-        0, 0, 0, 0, 0, 0, 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0 }, 0, 0, 0UL,   0, \
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0 }, 0, 0, 0UL,   0, \
         0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0, \
         {0, 0, 0}, {0, 0, 0} \
     }

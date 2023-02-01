@@ -3072,7 +3072,8 @@ namespace GnollHackClient.Pages.Game
                                                             bool loc_is_you = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
                                                             bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
                                                             bool canspotself = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
-                                                            short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
+                                                            sbyte monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
+                                                            sbyte feature_doodad_height = _mapData[mapx, mapy].Layers.special_feature_doodad_layer_height;
                                                             float scaled_y_height_change = 0;
                                                             sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
                                                             sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
@@ -3786,6 +3787,10 @@ namespace GnollHackClient.Pages.Game
                                                                             }
                                                                             else if (tileflag_halfsize && (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
                                                                                 scaled_y_height_change = (float)(-(sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT) * targetscale;
+                                                                            else if (feature_doodad_height != 0 && layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD)
+                                                                            {
+                                                                                scaled_y_height_change = (float)-feature_doodad_height * height / (float)GHConstants.TileHeight;
+                                                                            }
 
                                                                             int ntile = App.Glyph2Tile[glyph];
                                                                             int animation = App.Tile2Animation[ntile];

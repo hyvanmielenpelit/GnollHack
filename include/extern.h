@@ -576,6 +576,7 @@ E int NDECL(get_current_cmap_type_index);
 E int FDECL(get_missile_index, (int, int));
 E void FDECL(display_self_with_extra_info_choose_ascii, (unsigned long, int, int, BOOLEAN_P));
 E int FDECL(get_location_light_range, (XCHAR_P, XCHAR_P));
+E int FDECL(get_location_light_sidedness, (XCHAR_P, XCHAR_P));
 E void NDECL(u_shieldeff);
 E void FDECL(m_shieldeff, (struct monst*));
 E boolean NDECL(use_extra_special_staircase);
@@ -1512,7 +1513,7 @@ E int NDECL(dosuspend);
 
 /* ### light.c ### */
 
-E void FDECL(new_light_source, (XCHAR_P, XCHAR_P, int, int, ANY_P *));
+E void FDECL(new_light_source, (XCHAR_P, XCHAR_P, int, int, ANY_P *, int));
 E void FDECL(del_light_source, (int, ANY_P *));
 E void FDECL(do_light_sources, (char **));
 E struct monst* FDECL(find_mid_ew, (unsigned));
