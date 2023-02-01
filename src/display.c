@@ -232,6 +232,8 @@ register int show;
     int new_feature_gui_glyph = NO_GLYPH;
     int new_cover_feature_glyph = NO_GLYPH;
     int new_cover_feature_gui_glyph = NO_GLYPH;
+    int new_carpet_glyph = NO_GLYPH;
+    int new_carpet_gui_glyph = NO_GLYPH;
     schar new_feature_doodad_height = 0;
     int new_feature_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_feature_doodad_layer_glyph(x, y, &new_feature_doodad_height);
     int new_feature_doodad_gui_glyph = maybe_get_replaced_glyph(new_feature_doodad_glyph, x, y, data_to_replacement_info(new_feature_doodad_glyph, LAYER_FEATURE_DOODAD, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
@@ -272,12 +274,14 @@ register int show;
     {
         levl[x][y].hero_memory_layers.glyph = glyph; /* Ascii only */
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
+        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_CARPET] = new_carpet_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_glyph;
 
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_FLOOR] = new_floor_gui_glyph;
+        levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_CARPET] = new_carpet_gui_glyph;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_gui_glyph;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_FEATURE] = new_feature_gui_glyph;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_gui_glyph;
@@ -290,12 +294,14 @@ register int show;
     if (show)
     {
         int floor_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR];
+        int carpet_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_CARPET];
         int floor_doodad_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR_DOODAD];
         int feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE];
         int feature_doodad_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE_DOODAD];
         int cover_feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_COVER_FEATURE];
 
         int floor_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_FLOOR];
+        int carpet_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_CARPET];
         int floor_doodad_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_FLOOR_DOODAD];
         int feature_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_FEATURE];
         int feature_doodad_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_FEATURE_DOODAD];
@@ -303,12 +309,14 @@ register int show;
 
         //unsigned long flags_before = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
+        gbuf[y][x].layers.layer_glyphs[LAYER_CARPET] = new_carpet_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_glyph;
 
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_FLOOR] = new_floor_gui_glyph;
+        gbuf[y][x].layers.layer_gui_glyphs[LAYER_CARPET] = new_carpet_gui_glyph;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_gui_glyph;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_FEATURE] = new_feature_gui_glyph;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_gui_glyph;
@@ -317,10 +325,10 @@ register int show;
         gbuf[y][x].layers.layer_flags = new_layer_flags;
         gbuf[y][x].layers.special_feature_doodad_layer_height = new_feature_doodad_height;
 
-        if (floor_glyph_before != new_floor_glyph || floor_doodad_glyph_before != new_floor_doodad_glyph
+        if (floor_glyph_before != new_floor_glyph || carpet_glyph_before != new_carpet_glyph || floor_doodad_glyph_before != new_floor_doodad_glyph
             || feature_glyph_before != new_feature_glyph || feature_doodad_glyph_before != new_feature_doodad_glyph
             || cover_feature_glyph_before != new_cover_feature_glyph
-            || floor_gui_glyph_before != new_floor_gui_glyph || floor_doodad_gui_glyph_before != new_floor_doodad_gui_glyph
+            || floor_gui_glyph_before != new_floor_gui_glyph || carpet_gui_glyph_before != new_carpet_gui_glyph || floor_doodad_gui_glyph_before != new_floor_doodad_gui_glyph
             || feature_gui_glyph_before != new_feature_gui_glyph || feature_doodad_gui_glyph_before != new_feature_doodad_gui_glyph
             || cover_feature_gui_glyph_before != new_cover_feature_gui_glyph)
         {

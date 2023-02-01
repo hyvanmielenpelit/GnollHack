@@ -373,6 +373,7 @@ namespace GnollHackCommon
     public enum layer_types
     {
         LAYER_FLOOR = 0,
+        LAYER_CARPET,
         LAYER_FLOOR_DOODAD,   /* Doodads underneath features and traps */
         LAYER_FEATURE,
         LAYER_TRAP,

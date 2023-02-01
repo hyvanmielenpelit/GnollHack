@@ -28,8 +28,8 @@
 #define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
-/* Layers floor, leash, and zap do not have enlargements; monster and monster effect layers have 2 'tile movement' draw order slots */
-#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 3 + 2 * 2) + 3 + NUM_ZAP_SOURCE_DIRS + NUM_WORM_SOURCE_DIRS + NUM_CHAIN_SOURCE_DIRS)
+/* Layers floor, carpet, leash, and zap do not have enlargements; monster and monster effect layers have 2 'tile movement' draw order slots */
+#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 3 + 2 * 2) + 4 + NUM_ZAP_SOURCE_DIRS + NUM_WORM_SOURCE_DIRS + NUM_CHAIN_SOURCE_DIRS)
 
 #define IDX_LAYER_MONSTER_SHADOW LAYER_ENVIRONMENT
 
@@ -5147,7 +5147,7 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
 static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers)
 {
     boolean layer_different = FALSE;
-    for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx < MAX_GLYPH; layer_idx++)
+    for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
     {
         if (data->map[i][j].layer_glyphs[layer_idx] != layers.layer_glyphs[layer_idx])
         {
@@ -5207,6 +5207,12 @@ static void setDrawOrder(PNHMapWindow data)
     data->draw_order[draw_count].source_dir_index = 0;
     draw_count++;
 
+    data->draw_order[draw_count].enlargement_index = -1;
+    data->draw_order[draw_count].layer = LAYER_CARPET;
+    data->draw_order[draw_count].tile_movement_index = 0;
+    data->draw_order[draw_count].source_dir_index = 0;
+    draw_count++;
+
     int same_level_z_order_array[3] = { 0, -1, 1 };
     int different_level_z_order_array[3] = { 2, 3, 4 };
     boolean draw_monster_shadow_placed = FALSE;
@@ -5215,7 +5221,7 @@ static void setDrawOrder(PNHMapWindow data)
 
     for (int layer_partition = 0; layer_partition < NUM_LAYER_PARTITIONS; layer_partition++)
     {
-        enum layer_types layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_FLOOR + 1, LAYER_LEASH, LAYER_ENVIRONMENT, LAYER_ZAP, LAYER_GENERAL_EFFECT, LAYER_MONSTER_EFFECT, LAYER_GENERAL_UI, MAX_LAYERS };
+        enum layer_types layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_CARPET + 1, LAYER_LEASH, LAYER_ENVIRONMENT, LAYER_ZAP, LAYER_GENERAL_EFFECT, LAYER_MONSTER_EFFECT, LAYER_GENERAL_UI, MAX_LAYERS };
 
         for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
         {
@@ -5660,7 +5666,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
 #endif
     }
 
-    for (enum layer_types layer_idx = LAYER_FLOOR/*-2*/; layer_idx < MAX_LAYERS; layer_idx++)
+    for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
     {
         int layer_rounds = 1;
         struct obj* otmp = (struct obj*)0;

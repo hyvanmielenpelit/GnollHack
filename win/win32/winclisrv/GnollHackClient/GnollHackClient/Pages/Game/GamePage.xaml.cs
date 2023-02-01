@@ -2637,9 +2637,13 @@ namespace GnollHackClient.Pages.Game
                 dodfloor.enlargement_position = -1;
                 _draw_order.Add(dodfloor);
 
+                dodfloor.layer = (int)layer_types.LAYER_CARPET;
+                dodfloor.enlargement_position = -1;
+                _draw_order.Add(dodfloor);
+
                 for (int partition = 0; partition <= 1; partition++)
                 {
-                    int[] partition_start = { (int)layer_types.LAYER_FLOOR + 1, (int)layer_types.LAYER_GENERAL_UI, (int)layer_types.MAX_LAYERS };
+                    int[] partition_start = { (int)layer_types.LAYER_CARPET + 1, (int)layer_types.LAYER_GENERAL_UI, (int)layer_types.MAX_LAYERS };
                     for (int enl_round = 0; enl_round <= 1; enl_round++)
                     {
                         for (int i = partition_start[partition]; i < partition_start[partition + 1]; i++)
