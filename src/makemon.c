@@ -713,9 +713,37 @@ register struct monst *mtmp;
             }
             else
             {
-                int weaptype = !rn2(3) || is_lord(ptr) || is_prince(ptr) ? SWORD_OF_HOLY_VENGEANCE : !rn2(3) ? LONG_SWORD : SILVER_LONG_SWORD;
+                aligntyp alignment = mon_aligntyp(mtmp);
+                int aligntyp_major_weapon = LONG_SWORD;
+                int aligntyp_minor_weapon = LONG_SWORD;
+                unsigned long weapon_flags = 0UL;
+                boolean is_major_weapon = !rn2(3) || is_lord(ptr) || is_prince(ptr);
+                switch (alignment)
+                {
+                case A_LAWFUL:
+                    aligntyp_major_weapon = SWORD_OF_HOLY_VENGEANCE;
+                    aligntyp_minor_weapon = SILVER_LONG_SWORD;
+                    break;
+                case A_NEUTRAL:
+                    aligntyp_major_weapon = SILVER_LONG_SWORD;
+                    aligntyp_minor_weapon = SILVER_LONG_SWORD;
+                    weapon_flags = is_major_weapon ? MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY : 0UL;
+                    break;
+                case A_CHAOTIC:
+                    aligntyp_major_weapon = SWORD_OF_UNHOLY_DESECRATION;
+                    aligntyp_minor_weapon = SCIMITAR;
+                    break;
+                case A_NONE:
+                    aligntyp_major_weapon = SCIMITAR;
+                    aligntyp_minor_weapon = SCIMITAR;
+                    weapon_flags = is_major_weapon ? MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY : 0UL;
+                    break;
+                default:
+                    break;
+                }
+                int weaptype = is_major_weapon ? aligntyp_major_weapon : !rn2(3) ? LONG_SWORD : aligntyp_minor_weapon;
                 short artifacttype = 0;
-                otmp = mksobj_with_flags(weaptype, FALSE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+                otmp = mksobj_with_flags(weaptype, FALSE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp) | weapon_flags);
 
                 /* maybe make it special */
                 if (artifacttype > 0 && (!rn2(20) || is_lord(ptr) || is_prince(ptr)))
