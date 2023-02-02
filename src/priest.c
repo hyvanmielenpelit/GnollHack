@@ -1173,7 +1173,7 @@ xchar x, y;
 boolean peaceful;
 {
     register struct monst *roamer;
-    register boolean coaligned = (u.ualign.type == alignment);
+    //register boolean coaligned = (u.ualign.type == alignment);
 
 #if 0 /* this was due to permonst's pxlth field which is now gone */
     if (ptr != &mons[PM_ALIGNED_PRIEST] && ptr != &mons[PM_ANGEL])
@@ -1183,17 +1183,17 @@ boolean peaceful;
     if (MON_AT(x, y))
         (void) rloc(m_at(x, y), FALSE); /* insurance */
 
-    if (!(roamer = makemon(ptr, x, y, MM_ADJACENTOK | MM_EMIN)))
+    if (!(roamer = makemon_limited(ptr, x, y, MM_ADJACENTOK | MM_EMIN | MM_ROAMER | (peaceful ? MM_PEACEFUL : MM_ANGRY), 0UL, 0, 0, 0, alignment)))
         return (struct monst *) 0;
 
-    EMIN(roamer)->min_align = alignment;
-    EMIN(roamer)->renegade = (coaligned && !peaceful);
-    roamer->ispriest = 0;
-    roamer->isminion = 1;
-    roamer->mtrapseen = ~0; /* traps are known */
-    roamer->mpeaceful = peaceful;
-    roamer->msleeping = 0;
-    set_mhostility(roamer); /* peaceful may have changed */
+    //EMIN(roamer)->min_align = alignment;
+    //EMIN(roamer)->renegade = (coaligned && !peaceful);
+    //roamer->ispriest = 0;
+    //roamer->isminion = 1;
+    //roamer->mtrapseen = ~0; /* traps are known */
+    //roamer->mpeaceful = peaceful;
+    //roamer->msleeping = 0;
+    //set_mhostility(roamer); /* peaceful may have changed */
 
     /* MORE TO COME */
     return roamer;

@@ -742,32 +742,36 @@ register struct monst *mtmp;
                     break;
                 }
                 int weaptype = is_major_weapon ? aligntyp_major_weapon : !rn2(3) ? LONG_SWORD : aligntyp_minor_weapon;
-                short artifacttype = 0;
                 otmp = mksobj_with_flags(weaptype, FALSE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp) | weapon_flags);
+                if (otmp)
+                {
+                    if (otmp->oartifact == 0)
+                    {
+                        if (otmp->exceptionality == EXCEPTIONALITY_NORMAL)
+                            otmp->exceptionality = is_prince(ptr) || is_lord(ptr) || !rn2(4) ? EXCEPTIONALITY_CELESTIAL : !rn2(3) ? EXCEPTIONALITY_ELITE : !rn2(2) ? EXCEPTIONALITY_EXCEPTIONAL : EXCEPTIONALITY_NORMAL;
 
-                /* maybe make it special */
-                if (artifacttype > 0 && (!rn2(20) || is_lord(ptr) || is_prince(ptr)))
-                    otmp = oname(otmp, artiname(artifacttype));
-
-                if (otmp->oartifact == 0)
-                    otmp->exceptionality = is_prince(ptr) || is_lord(ptr) || !rn2(4) ? EXCEPTIONALITY_CELESTIAL : !rn2(3) ? EXCEPTIONALITY_ELITE : !rn2(2) ? EXCEPTIONALITY_EXCEPTIONAL : 0;
-
-                if (otmp->oartifact == 0 && weaptype != SWORD_OF_HOLY_VENGEANCE)
-                    otmp->elemental_enchantment = FIRE_ENCHANTMENT;
-
-                bless(otmp);
-                otmp->oerodeproof = TRUE;
-                spe2 = rnd(4);
-                otmp->enchantment = max(otmp->enchantment, spe2);
-                (void)mpickobj(mtmp, otmp);
+                        if (weaptype != SWORD_OF_HOLY_VENGEANCE && weaptype != SWORD_OF_UNHOLY_DESECRATION
+                            && otmp->mythic_prefix == 0 && otmp->mythic_suffix == 0
+                            && otmp->elemental_enchantment == 0)
+                            otmp->elemental_enchantment = FIRE_ENCHANTMENT;
+                    }
+                    bless(otmp);
+                    otmp->oerodeproof = TRUE;
+                    spe2 = rnd(4);
+                    otmp->enchantment = max(otmp->enchantment, spe2);
+                    (void)mpickobj(mtmp, otmp);
+                }
 
                 otmp = mksobj_with_flags(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION : !rn2(3) ? SPIKED_SILVER_SHIELD : LARGE_SHIELD,
                     FALSE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
-
-                otmp->cursed = FALSE;
-                otmp->oerodeproof = TRUE;
-                otmp->enchantment = 0;
-                (void)mpickobj(mtmp, otmp);
+                
+                if (otmp)
+                {
+                    otmp->cursed = FALSE;
+                    otmp->oerodeproof = TRUE;
+                    otmp->enchantment = 0;
+                    (void)mpickobj(mtmp, otmp);
+                }
             }
         }
         break;
@@ -2651,7 +2655,7 @@ register struct permonst* ptr;
 register int x, y;
 unsigned long mmflags;
 {
-    return makemon_limited(ptr, x, y, mmflags, 0, 0, 0);
+    return makemon_limited(ptr, x, y, mmflags, 0UL, 0, 0, 0, 0);
 }
 
 struct monst*
@@ -2661,7 +2665,7 @@ register int x, y;
 unsigned long mmflags;
 int subtype, level_adjustment;
 {
-    return makemon_limited(ptr, x, y, mmflags, subtype, 0, level_adjustment);
+    return makemon_limited(ptr, x, y, mmflags, 0UL, subtype, 0, level_adjustment, 0);
 }
 
 /*
@@ -2672,12 +2676,13 @@ int subtype, level_adjustment;
  *      In case we make a monster group, only return the one at [x,y].
  */
 struct monst *
-makemon_limited(ptr, x, y, mmflags, subtype, level_limit, level_adjustment)
+makemon_limited(ptr, x, y, mmflags, mmflags2, subtype, level_limit, level_adjustment, alignment)
 register struct permonst *ptr;
 register int x, y;
-unsigned long mmflags;
+unsigned long mmflags, mmflags2;
 int subtype;
 int level_limit, level_adjustment;
+aligntyp alignment;
 {
     register struct monst *mtmp;
     int mndx = NON_PM, mcham, ct, mitem;
@@ -2960,7 +2965,7 @@ int level_limit, level_adjustment;
     if (ptr->mflags3 & M3_KNOWS_TRAPS)
         mtmp->mtrapseen = ~0;
 
-    mtmp->facing_right = (mmflags & MM_FACING_LEFT) ? 0 : (mmflags & MM_FACING_RIGHT) ? 1 : rn2(2);
+    mtmp->facing_right = (mmflags & MM2_FACING_LEFT) ? 0 : (mmflags & MM2_FACING_RIGHT) ? 1 : rn2(2);
 
     place_monster(mtmp, x, y);
     if (setorigin)
@@ -2970,7 +2975,7 @@ int level_limit, level_adjustment;
     }
 
     mtmp->mcanmove = mtmp->mwantstomove = mtmp->mwantstodrop = TRUE;
-    mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : peace_minded(ptr);
+    mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : (mmflags & MM_PEACEFUL) ? TRUE : peace_minded(ptr);
 
     switch (ptr->mlet) 
     {
@@ -3115,11 +3120,22 @@ int level_limit, level_adjustment;
             place_worm_tail_randomly(mtmp, x, y);
     }
 
+    /* Set roamer stuff */
+    if ((mmflags & MM_ROAMER) && has_emin(mtmp))
+    {
+        register boolean coaligned = (u.ualign.type == alignment);
+        EMIN(mtmp)->min_align = alignment;
+        EMIN(mtmp)->renegade = (coaligned && !mtmp->mpeaceful);
+        mtmp->ispriest = 0;
+        mtmp->isminion = 1;
+        mtmp->mtrapseen = ~0; /* traps are known */
+        mtmp->msleeping = 0;
+    }
     /* it's possible to create an ordinary monster of some special
        types; make sure their extended data is initialized to
        something sensible if caller hasn't specified MM_EPRI|MM_EMIN
        (when they're specified, caller intends to handle this itself) */
-    if ((mndx == PM_ALIGNED_PRIEST || mndx == PM_HIGH_PRIEST)
+    else if ((mndx == PM_ALIGNED_PRIEST || mndx == PM_HIGH_PRIEST)
             ? !(mmflags & (MM_EPRI | MM_EMIN))
             : (mndx == PM_ANGEL && !(mmflags & MM_EMIN) && !rn2(3)))
     {
@@ -3136,6 +3152,8 @@ int level_limit, level_adjustment;
     }
 
     set_mhostility(mtmp); /* having finished peaceful changes */
+
+
 
 #if 0
     if (anymon && !(mmflags & MM_NOGRP)) { //Small and large groups deactivated due to new encounter system -- JG

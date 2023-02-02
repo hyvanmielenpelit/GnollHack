@@ -372,8 +372,12 @@ extern short tile2enlargement[MAX_TILES];
 
 #define MM_PLAY_SUMMON_SOUND            0x10000000UL
 #define MM_ANIMATION_WAIT_UNTIL_END     0x20000000UL
-#define MM_FACING_LEFT                  0x40000000UL
-#define MM_FACING_RIGHT                 0x80000000UL
+#define MM_PEACEFUL                     0x40000000UL
+#define MM_ROAMER                       0x80000000UL
+
+#define NO_MM2_FLAGS                    0x00000000UL /* use this rather than plain 0 */
+#define MM2_FACING_LEFT                 0x00000001UL
+#define MM2_FACING_RIGHT                0x00000002UL
 
 #define GOODPOS_IGNOREYOU               0x80000000UL
 
