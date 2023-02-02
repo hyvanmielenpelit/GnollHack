@@ -938,6 +938,10 @@ struct rm {
     int floor_doodad;        /* a floor doodad layer glyph: previously broken typ, etc., which appears on the broken feature layer above the floor layer */
     //int feature_doodad;      /* a feature doodad layer glyph, which appears on the doodad layer above the dungeon feature */
 
+    schar carpet_typ;
+    schar carpet_piece;
+    uchar carpet_flags;
+
     schar decoration_typ;
     schar decoration_subtyp;
     schar decoration_dir;

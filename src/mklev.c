@@ -840,7 +840,7 @@ STATIC_OVL void
 clear_level_structures()
 {
     static struct rm zerorm = { nul_layerinfo,
-                                0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0 };
+                                0, 0, 0, 0, 0,  0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0 };
     register int x, y;
     register struct rm *lev;
 

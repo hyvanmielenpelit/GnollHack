@@ -7332,6 +7332,9 @@ xchar x, y;
     levl[x][y].vartyp = 0;
     levl[x][y].floor_doodad = 0;
     //levl[x][y].feature_doodad = 0;
+    levl[x][y].carpet_typ = 0;
+    levl[x][y].carpet_piece = 0;
+    levl[x][y].carpet_flags = 0;
     levl[x][y].decoration_typ = 0;
     levl[x][y].decoration_subtyp = 0;
     levl[x][y].decoration_dir = 0;
@@ -7371,11 +7374,11 @@ xchar x, y;
 }
 
 void
-full_location_transform(x, y, type, subtype, vartype, location_flags, decoration_typ, decoration_subtyp, decoration_dir, decoration_flags, floor_doodad, floortype, floorsubtype, floorvartype, facing_right, horizontal, key_otyp, special_quality, donewsym)
+full_location_transform(x, y, type, subtype, vartype, location_flags, carpet_typ, carpet_piece, carpet_flags, decoration_typ, decoration_subtyp, decoration_dir, decoration_flags, floor_doodad, floortype, floorsubtype, floorvartype, facing_right, horizontal, key_otyp, special_quality, donewsym)
 xchar x, y;
 int type, subtype, vartype, floor_doodad, floortype, floorsubtype, floorvartype;
-schar decoration_typ, decoration_subtyp, decoration_dir;
-uchar decoration_flags;
+schar carpet_typ, carpet_piece, decoration_typ, decoration_subtyp, decoration_dir;
+uchar carpet_flags, decoration_flags;
 unsigned short location_flags;
 boolean facing_right, horizontal, donewsym;
 short key_otyp, special_quality;
@@ -7387,6 +7390,9 @@ short key_otyp, special_quality;
     levl[x][y].flags = location_flags;
     levl[x][y].floor_doodad = floor_doodad;
     //levl[x][y].feature_doodad = feature_doodad;
+    levl[x][y].carpet_typ = carpet_typ;
+    levl[x][y].carpet_piece = carpet_piece;
+    levl[x][y].carpet_flags = carpet_flags;
     levl[x][y].decoration_typ = decoration_typ;
     levl[x][y].decoration_subtyp = decoration_subtyp;
     levl[x][y].decoration_dir = decoration_dir;
@@ -7412,11 +7418,11 @@ short key_otyp, special_quality;
 }
 
 void
-full_initial_location_transform(x, y, type, location_flags, decoration_typ, decoration_subtyp, decoration_dir, decoration_flags, floor_doodad, floortype, facing_right, horizontal, key_otyp, special_quality, donewsym)
+full_initial_location_transform(x, y, type, location_flags, carpet_typ, carpet_piece, carpet_flags, decoration_typ, decoration_subtyp, decoration_dir, decoration_flags, floor_doodad, floortype, facing_right, horizontal, key_otyp, special_quality, donewsym)
 xchar x, y;
 int type, floor_doodad, floortype;
-schar decoration_typ, decoration_subtyp, decoration_dir;
-uchar decoration_flags;
+schar carpet_typ, carpet_piece, decoration_typ, decoration_subtyp, decoration_dir;
+uchar carpet_flags, decoration_flags;
 unsigned short location_flags;
 boolean facing_right, horizontal, donewsym;
 short key_otyp, special_quality;
@@ -7427,7 +7433,7 @@ short key_otyp, special_quality;
         floortype = 0;
     int floorsubtype = floortype == 0 ? 0 : get_initial_location_subtype(floortype);
     int floorvartype = floortype == 0 ? 0 : get_initial_location_vartype(floortype, floorsubtype);
-    full_location_transform(x, y, type, subtype, vartype, location_flags, decoration_typ, decoration_subtyp, decoration_dir, decoration_flags, floor_doodad, floortype, floorsubtype, floorvartype, facing_right, horizontal, key_otyp, special_quality, donewsym);
+    full_location_transform(x, y, type, subtype, vartype, location_flags, carpet_typ, carpet_piece, carpet_flags, decoration_typ, decoration_subtyp, decoration_dir, decoration_flags, floor_doodad, floortype, floorsubtype, floorvartype, facing_right, horizontal, key_otyp, special_quality, donewsym);
     initialize_location(&levl[x][y]);
 }
 
@@ -7438,7 +7444,7 @@ int type, subtype, vartype, floor_doodad, floortype, floorsubtype, floorvartype;
 unsigned short location_flags;
 boolean donewsym;
 {
-    full_location_transform(x, y, type, subtype, vartype, location_flags, 0, 0, 0, 0, floor_doodad, floortype, floorsubtype, floorvartype, FALSE, FALSE, 0, 0, donewsym);
+    full_location_transform(x, y, type, subtype, vartype, location_flags, 0, 0, 0, 0, 0, 0, 0, floor_doodad, floortype, floorsubtype, floorvartype, FALSE, FALSE, 0, 0, donewsym);
     initialize_location(&levl[x][y]);
 }
 
@@ -7449,7 +7455,7 @@ int type, floor_doodad, floortype;
 unsigned short location_flags;
 boolean donewsym;
 {
-    full_initial_location_transform(x, y, type, location_flags, 0, 0, 0, 0, floor_doodad, floortype, FALSE, FALSE, 0, 0, donewsym);
+    full_initial_location_transform(x, y, type, location_flags, 0, 0, 0, 0, 0, 0, 0, floor_doodad, floortype, FALSE, FALSE, 0, 0, donewsym);
     initialize_location(&levl[x][y]);
 }
 
@@ -7515,7 +7521,7 @@ boolean donewsym;
         return;
 
     int vartype = get_initial_location_vartype(type, subtype);
-    full_location_transform(x, y, type, subtype, vartype, location_flags, 0, 0, 0, 0, 0, 0, 0, 0, FALSE, FALSE, 0, 0, donewsym);
+    full_location_transform(x, y, type, subtype, vartype, location_flags, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FALSE, FALSE, 0, 0, donewsym);
 }
 
 void
