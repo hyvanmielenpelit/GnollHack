@@ -2965,7 +2965,7 @@ aligntyp alignment;
     if (ptr->mflags3 & M3_KNOWS_TRAPS)
         mtmp->mtrapseen = ~0;
 
-    mtmp->facing_right = (mmflags & MM2_FACING_LEFT) ? 0 : (mmflags & MM2_FACING_RIGHT) ? 1 : rn2(2);
+    mtmp->facing_right = (mmflags2 & MM2_FACING_LEFT) ? 0 : (mmflags2 & MM2_FACING_RIGHT) ? 1 : rn2(2);
 
     place_monster(mtmp, x, y);
     if (setorigin)
