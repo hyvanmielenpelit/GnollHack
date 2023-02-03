@@ -590,6 +590,7 @@ E void FDECL(set_obj_glyph, (struct obj*));
 E int FDECL(get_seen_monster_glyph, (struct monst*));
 E void NDECL(reset_display);
 E const char* FDECL(get_decoration_description, (int, int));
+E const char* FDECL(get_carpet_description, (int, int));
 
 /* ### do.c ### */
 

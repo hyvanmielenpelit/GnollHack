@@ -294,6 +294,46 @@ extern struct decoration_type_definition decoration_type_definitions[MAX_DECORAT
 #define DECORATION_TYPE_FLAGS_CORNERS            0x0010
 #define DECORATION_TYPE_FLAGS_MIRRORABLE         0x0020
 
+enum carpet_types {
+    CARPET_NONE = 0,
+    CARPET_HORIZONTAL_RED,
+    MAX_CARPETS
+};
+
+enum carpet_tile_indexation_types {
+    CARPET_TILE_INDEXATION_TYPE_NORMAL = 0,
+    CARPET_TILE_INDEXATION_TYPE_LONG_CARPET,
+    MAX_CARPET_TILE_INDEXATION_TYPES
+};
+
+enum carpet_long_piece_indexation {
+    CARPET_PIECE_LONG_TLCORN,
+    CARPET_PIECE_LONG_BLCORN,
+    CARPET_PIECE_LONG_TRCORN,
+    CARPET_PIECE_LONG_BRCORN,
+    CARPET_PIECE_LONG_LEFT,
+    CARPET_PIECE_LONG_RIGHT,
+    CARPET_PIECE_LONG_TOP,
+    CARPET_PIECE_LONG_BOTTOM,
+    CARPET_PIECE_LONG_MIDDLE_1,
+    CARPET_PIECE_LONG_MIDDLE_2,
+    CARPET_PIECE_LONG_MIDDLE_3,
+    CARPET_PIECE_LONG_MIDDLE_PLAIN,
+    NUM_CARPET_LONG_PIECES
+};
+
+struct carpet_type_definition {
+    const char* name;
+    const char* description;
+    int first_doodad; //For each of four directions
+    enum carpet_tile_indexation_types tile_indexation_type;
+    unsigned short cflags;
+};
+
+#define CARPET_TYPE_FLAGS_NONE                  0x0000
+
+extern struct carpet_type_definition carpet_type_definitions[MAX_CARPETS];
+
 struct location_type_definition {
     const char* name;
     enum screen_symbols base_screen_symbol;

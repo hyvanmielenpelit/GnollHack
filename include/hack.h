@@ -157,6 +157,7 @@ enum dismount_types {
 #define MG_STONE_INVERSE    0x00001000UL /* ' ' is inversed if it has color */
 #define MG_ALT_COLORS       0x00002000UL /* Uses alternative colors */
 #define MG_DECORATION       0x00004000UL
+#define MG_CARPET           0x00008000UL
 
 
 /* sellobj_state() states */

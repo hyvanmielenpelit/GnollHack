@@ -1340,6 +1340,8 @@ makelevel()
             (void) mkcorpstat(STATUE, (struct monst *) 0,
                               (struct permonst *) 0, somex(croom),
                               somey(croom), CORPSTAT_INIT);
+        
+
         /* put box/chest inside;
          *  40% chance for at least 1 box, regardless of number
          *  of rooms; about 5 - 7.5% for 2 boxes, least likely
@@ -1348,22 +1350,6 @@ makelevel()
         if (!startingroom && !rn2(nroom * 5 / 2))
             (void) mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, somex(croom),
                              somey(croom), TRUE, FALSE);
-
-        /* maybe make some graffiti */
-        if (!rn2(27 + 3 * abs(depth(&u.uz)))) {
-            char buf[BUFSZ];
-            const char *mesg = random_engraving(buf);
-
-            if (mesg) {
-                do {
-                    x = somex(croom);
-                    y = somey(croom);
-                } while (levl[x][y].typ != ROOM && !rn2(40));
-                if (!(IS_POOL(levl[x][y].typ)
-                      || IS_FURNITURE(levl[x][y].typ)))
-                    make_engr_at(x, y, mesg, 0L, MARK, ENGR_FLAGS_NONE);
-            }
-        }
 
  skip_nonrogue:
         if (!rn2(2)) {
@@ -1375,6 +1361,78 @@ makelevel()
                     break;
                 }
                 (void) mkobj_at(0, somex(croom), somey(croom), TRUE);
+            }
+        }
+    }
+
+    /* Carpets */
+    for (croom = rooms; croom->hx > 0; croom++)
+    {
+        int rt = croom->rtype;
+        int rst = croom->rsubtype;
+        int lowx = croom->lx;
+        int lowy = croom->ly;
+        int hix = croom->hx;
+        int hiy = croom->hy;
+        if ((rt == OROOM && !rn2(20)) || rt == COURT || rt == TEMPLE || rt == LIBRARY || (rt >= SHOPBASE && !rn2(2))
+            || (rt == NPCROOM && (rst == NPC_ELVEN_BARD || rst == NPC_ARTIFICER || !rn2(2))))
+        {
+            levl[lowx][lowy].carpet_typ = CARPET_HORIZONTAL_RED;
+            levl[lowx][lowy].carpet_piece = CARPET_PIECE_LONG_TLCORN;
+            levl[lowx][lowy].carpet_flags = 0;
+            levl[hix][lowy].carpet_typ = CARPET_HORIZONTAL_RED;
+            levl[hix][lowy].carpet_piece = CARPET_PIECE_LONG_TRCORN;
+            levl[hix][lowy].carpet_flags = 0;
+            levl[lowx][hiy].carpet_typ = CARPET_HORIZONTAL_RED;
+            levl[lowx][hiy].carpet_piece = CARPET_PIECE_LONG_BLCORN;
+            levl[lowx][hiy].carpet_flags = 0;
+            levl[hix][hiy].carpet_typ = CARPET_HORIZONTAL_RED;
+            levl[hix][hiy].carpet_piece = CARPET_PIECE_LONG_BRCORN;
+            levl[hix][hiy].carpet_flags = 0;
+            for (x = lowx + 1; x <= hix - 1; x++)
+            {
+                levl[x][lowy].carpet_typ = CARPET_HORIZONTAL_RED;
+                levl[x][lowy].carpet_piece = CARPET_PIECE_LONG_TOP;
+                levl[x][lowy].carpet_flags = 0;
+                levl[x][hiy].carpet_typ = CARPET_HORIZONTAL_RED;
+                levl[x][hiy].carpet_piece = CARPET_PIECE_LONG_BOTTOM;
+                levl[x][hiy].carpet_flags = 0;
+
+                for (y = lowy + 1; y <= hiy - 1; y++)
+                {
+                    levl[x][y].carpet_typ = CARPET_HORIZONTAL_RED;
+                    levl[x][y].carpet_piece = CARPET_PIECE_LONG_MIDDLE_PLAIN;
+                    levl[x][y].carpet_flags = 0;
+                }
+            }
+            for (y = lowy + 1; y <= hiy - 1; y++)
+            {
+                levl[lowx][y].carpet_typ = CARPET_HORIZONTAL_RED;
+                levl[lowx][y].carpet_piece = CARPET_PIECE_LONG_LEFT;
+                levl[lowx][y].carpet_flags = 0;
+                levl[hix][y].carpet_typ = CARPET_HORIZONTAL_RED;
+                levl[hix][y].carpet_piece = CARPET_PIECE_LONG_RIGHT;
+                levl[hix][y].carpet_flags = 0;
+            }
+        }
+    }
+
+    for (croom = rooms; croom->hx > 0; croom++) {
+        if (croom->rtype != OROOM)
+            continue;
+
+        /* maybe make some graffiti */
+        if (!rn2(27 + 3 * abs(depth(&u.uz)))) {
+            char buf[BUFSZ];
+            const char* mesg = random_engraving(buf);
+
+            if (mesg) {
+                do {
+                    x = somex(croom);
+                    y = somey(croom);
+                } while (levl[x][y].typ != ROOM && !rn2(40));
+                if (!(IS_POOL(levl[x][y].typ) || IS_FURNITURE(levl[x][y].typ)) && levl[x][y].carpet_typ == 0)
+                    make_engr_at(x, y, mesg, 0L, MARK, ENGR_FLAGS_NONE);
             }
         }
     }

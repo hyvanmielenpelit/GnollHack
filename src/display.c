@@ -135,6 +135,7 @@ STATIC_DCL int FDECL(get_bk_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_floor_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_floor_doodad_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_feature_doodad_layer_glyph, (XCHAR_P, XCHAR_P, signed char*));
+STATIC_DCL int FDECL(get_carpet_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(tether_glyph, (int, int));
 
 /*#define WA_VERBOSE*/ /* give (x,y) locations for all "bad" spots */
@@ -232,14 +233,16 @@ register int show;
     int new_feature_gui_glyph = NO_GLYPH;
     int new_cover_feature_glyph = NO_GLYPH;
     int new_cover_feature_gui_glyph = NO_GLYPH;
-    int new_carpet_glyph = NO_GLYPH;
-    int new_carpet_gui_glyph = NO_GLYPH;
+    int new_carpet_glyph = symbol_index <= S_stone ? NO_GLYPH : get_carpet_layer_glyph(x, y);
+    int new_carpet_gui_glyph = maybe_get_replaced_glyph(new_carpet_glyph, x, y, data_to_replacement_info(new_carpet_glyph, LAYER_CARPET, (struct obj*)0, (struct monst*)0, 0UL, 0UL));;
     schar new_feature_doodad_height = 0;
     int new_feature_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_feature_doodad_layer_glyph(x, y, &new_feature_doodad_height);
     int new_feature_doodad_gui_glyph = maybe_get_replaced_glyph(new_feature_doodad_glyph, x, y, data_to_replacement_info(new_feature_doodad_glyph, LAYER_FEATURE_DOODAD, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
     unsigned long new_layer_flags = 0UL;
     if (symbol_index > S_stone && levl[x][y].decoration_typ > 0)
         new_layer_flags |= LFLAGS_C_DECORATION;
+    if (symbol_index > S_stone && levl[x][y].carpet_typ > 0)
+        new_layer_flags |= LFLAGS_C_CARPET;
 
     if (defsyms[symbol_index].layer != LAYER_FLOOR)
     {
@@ -4476,6 +4479,25 @@ schar* height_ptr;
     }
 }
 
+/* Carpet layer glyph  */
+STATIC_OVL int
+get_carpet_layer_glyph(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return NO_GLYPH;
+
+    if (levl[x][y].carpet_typ > 0 && levl[x][y].carpet_typ < MAX_CARPETS)
+    {
+        int glyph = NO_GLYPH;
+        glyph = carpet_type_definitions[levl[x][y].carpet_typ].first_doodad + levl[x][y].carpet_piece;
+        return glyph;
+    }
+    else
+    {
+        return NO_GLYPH;
+    }
+}
 
 /* ------------------------------------------------------------------------ */
 /* Wall Angle ------------------------------------------------------------- */
@@ -5298,6 +5320,20 @@ int x, y;
             {
                 return decoration_type_definitions[levl[x][y].decoration_typ].description;
             }
+        }
+    }
+    return 0;
+}
+
+const char*
+get_carpet_description(x, y)
+int x, y;
+{
+    if (isok(x, y))
+    {
+        if ((gbuf[y][x].layers.layer_flags & LFLAGS_C_CARPET) != 0 && levl[x][y].carpet_typ > 0)
+        {
+            return carpet_type_definitions[levl[x][y].carpet_typ].description;
         }
     }
     return 0;

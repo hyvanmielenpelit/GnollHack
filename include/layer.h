@@ -134,15 +134,16 @@ struct simple_layer_info {
 
 /* Cmap */
 #define LFLAGS_C_DECORATION             0x00800000UL
+#define LFLAGS_C_CARPET                 0x01000000UL
 
 /* Important general flags */
-#define LFLAGS_SHOWING_MEMORY           0x01000000UL /* also implies that you cannot see the location (and hence showing memory) */
-#define LFLAGS_SHOWING_DETECTION        0x02000000UL /* Do not darken */
-#define LFLAGS_ASCENSION_RADIANCE       0x04000000UL /* Lighten up */
-#define LFLAGS_CAN_SEE                  0x08000000UL /* cansee(x, y) is true (if not, then darken etc.) */
-#define LFLAGS_UXUY                     0x10000000UL /* x == u.ux && y == u.uy is true */
-#define LFLAGS_APPEARS_UNLIT            0x20000000UL
-#define LFLAGS_NO_WALL_END_AUTODRAW     0x40000000UL /* NO_WALL_END_AUTODRAW(x, y) is true */
+#define LFLAGS_SHOWING_MEMORY           0x02000000UL /* also implies that you cannot see the location (and hence showing memory) */
+#define LFLAGS_SHOWING_DETECTION        0x04000000UL /* Do not darken */
+#define LFLAGS_ASCENSION_RADIANCE       0x08000000UL /* Lighten up */
+#define LFLAGS_CAN_SEE                  0x10000000UL /* cansee(x, y) is true (if not, then darken etc.) */
+#define LFLAGS_UXUY                     0x20000000UL /* x == u.ux && y == u.uy is true */
+#define LFLAGS_APPEARS_UNLIT            0x40000000UL
+#define LFLAGS_NO_WALL_END_AUTODRAW     0x80000000UL /* NO_WALL_END_AUTODRAW(x, y) is true */
 
 #define LMFLAGS_WORM_HEAD               0x00000001UL
 #define LMFLAGS_WORM_TAILEND            0x00000002UL

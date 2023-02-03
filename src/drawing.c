@@ -1317,6 +1317,18 @@ const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
     {"lantern-holder-right-wall", 0, LANTERN_HOLDER_RIGHT_WALL_REPLACEMENT, NO_ANIMATION, LANTERN_HOLDER_RIGHT_WALL_ENLARGEMENT},
     {"lantern-holder-bottom-wall", 0, LANTERN_HOLDER_BOTTOM_WALL_REPLACEMENT, NO_ANIMATION, LANTERN_HOLDER_BOTTOM_WALL_ENLARGEMENT},
     {"fireplace", -9, FIREPLACE_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-tlcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-blcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-trcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-brcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-left", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-right", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-top", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-bottom", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-middle-1", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-middle-2", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-middle-3", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-red-horizontal-middle-plain", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =

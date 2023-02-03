@@ -263,6 +263,19 @@ NEARDATA struct decoration_type_definition decoration_type_definitions[MAX_DECOR
     },
 };
 
+NEARDATA struct carpet_type_definition carpet_type_definitions[MAX_CARPETS] = {
+    {
+        (char*)0, (char*)0,
+        0, CARPET_TILE_INDEXATION_TYPE_NORMAL,
+        CARPET_TYPE_FLAGS_NONE
+    },
+    {
+        "carpet-horizantal-red", "red carpet",
+        DOODAD_CARPET_RED_HORIZONTAL_TLCORN + GLYPH_SIMPLE_DOODAD_OFF, 
+        CARPET_TILE_INDEXATION_TYPE_LONG_CARPET,
+        CARPET_TYPE_FLAGS_NONE
+    },
+};
 
 /* force linkage */
 void
