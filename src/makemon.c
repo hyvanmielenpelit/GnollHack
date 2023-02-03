@@ -3125,7 +3125,7 @@ aligntyp alignment;
     {
         register boolean coaligned = (u.ualign.type == alignment);
         EMIN(mtmp)->min_align = alignment;
-        EMIN(mtmp)->renegade = (coaligned && !mtmp->mpeaceful);
+        EMIN(mtmp)->renegade = (mmflags2 & MM2_FORCE_RENEGADE) ? TRUE : (mmflags2 & MM2_FORCE_NONRENEGADE) ? FALSE : (coaligned && !mtmp->mpeaceful);
         mtmp->ispriest = 0;
         mtmp->isminion = 1;
         mtmp->mtrapseen = ~0; /* traps are known */

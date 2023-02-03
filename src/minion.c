@@ -180,7 +180,7 @@ struct monst *mon;
     context.makemon_spef_idx = 0;
     while (cnt > 0)
     {
-        mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | mmanimtype | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
+        mtmp = makemon_limited(&mons[dtype], u.ux, u.uy, MM_EMIN | (dtype == PM_ANGEL ? MM_ROAMER : 0UL) | MM_PLAY_SUMMON_ANIMATION | mmanimtype | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL), 0UL, 0, 0, 0, dtype == PM_ANGEL ? atyp : 0);
         if (mtmp) 
         {
             context.makemon_spef_idx++;
@@ -189,15 +189,15 @@ struct monst *mon;
             mtmp->mspecialsummon2_used = 30;
             result++;
             /* an angel's alignment should match the summoner */
-            if (dtype == PM_ANGEL)
-            {
-                mtmp->isminion = 1;
-                EMIN(mtmp)->min_align = atyp;
-                /* renegade if same alignment but not peaceful
-                   or peaceful but different alignment */
-                EMIN(mtmp)->renegade =
-                    (atyp != u.ualign.type) ^ !is_peaceful(mtmp);
-            }
+            //if (dtype == PM_ANGEL)
+            //{
+            //    mtmp->isminion = 1;
+            //    EMIN(mtmp)->min_align = atyp;
+            //    /* renegade if same alignment but not peaceful
+            //       or peaceful but different alignment */
+            //    EMIN(mtmp)->renegade =
+            //        (atyp != u.ualign.type) ^ !is_peaceful(mtmp);
+            //}
             play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp->mx, mtmp->my);
             if(canseemon(mtmp))
             { 
@@ -680,26 +680,26 @@ boolean talk;
     }
     else if (mnum == PM_ANGEL) 
     {
-        mon = makemon(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
-        if (mon)
-        {
-            mon->isminion = 1;
-            EMIN(mon)->min_align = alignment;
-            EMIN(mon)->renegade = FALSE;
-        }
+        mon = makemon_limited(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_ROAMER | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, MM2_FORCE_NONRENEGADE, 0, 0, 0, alignment);
+        //if (mon)
+        //{
+        //    mon->isminion = 1;
+        //    EMIN(mon)->min_align = alignment;
+        //    EMIN(mon)->renegade = FALSE;
+        //}
     }
     else if (mnum != PM_SHOPKEEPER && mnum != PM_SMITH && mnum != PM_GUARD
                && mnum != PM_ALIGNED_PRIEST && mnum != PM_HIGH_PRIEST) 
     {
         /* This was mons[mnum].pxlth == 0 but is this restriction
            appropriate or necessary now that the structures are separate? */
-        mon = makemon(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
-        if (mon)
-        {
-            mon->isminion = 1;
-            EMIN(mon)->min_align = alignment;
-            EMIN(mon)->renegade = FALSE;
-        }
+        mon = makemon_limited(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_ROAMER | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, MM2_FORCE_NONRENEGADE, 0, 0, 0, alignment);
+        //if (mon)
+        //{
+        //    mon->isminion = 1;
+        //    EMIN(mon)->min_align = alignment;
+        //    EMIN(mon)->renegade = FALSE;
+        //}
     }
     else
     {

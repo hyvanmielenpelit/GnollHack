@@ -378,6 +378,8 @@ extern short tile2enlargement[MAX_TILES];
 #define NO_MM2_FLAGS                    0x00000000UL /* use this rather than plain 0 */
 #define MM2_FACING_LEFT                 0x00000001UL
 #define MM2_FACING_RIGHT                0x00000002UL
+#define MM2_FORCE_RENEGADE              0x00000004UL
+#define MM2_FORCE_NONRENEGADE           0x00000008UL
 
 #define GOODPOS_IGNOREYOU               0x80000000UL
 

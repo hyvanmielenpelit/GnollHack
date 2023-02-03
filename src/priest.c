@@ -1203,8 +1203,9 @@ void
 reset_hostility(roamer)
 register struct monst *roamer;
 {
-    if (!roamer->isminion)
+    if (!roamer || !roamer->isminion || !has_emin(roamer))
         return;
+
     if (roamer->data != &mons[PM_ALIGNED_PRIEST]
         && roamer->data != &mons[PM_ANGEL])
         return;
@@ -1359,9 +1360,9 @@ angry_priest()
             || ((aligntyp) Amask2align(lev->altarmask & AM_MASK)
                 != eprip->shralign))
         {
-            if (!EMIN(priest))
+            if (!has_emin(priest))
                 newemin(priest);
-            if (EMIN(priest))
+            if (has_emin(priest))
             {
                 priest->ispriest = 0; /* now a roaming minion */
                 priest->isminion = 1;
