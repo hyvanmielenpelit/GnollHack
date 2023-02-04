@@ -1743,7 +1743,7 @@ E int FDECL(yeenaghu_ghoul_summon, (struct monst*));
 E int NDECL(yacc_bison_summon);
 E int NDECL(orcus_undead_summon);
 E void FDECL(summon_minion, (ALIGNTYP_P, BOOLEAN_P));
-E int FDECL(demon_talk, (struct monst *));
+E int FDECL(demon_talk, (struct monst *, boolean*));
 E long FDECL(bribe, (struct monst *));
 E int FDECL(dprince, (ALIGNTYP_P));
 E int FDECL(dlord, (ALIGNTYP_P));

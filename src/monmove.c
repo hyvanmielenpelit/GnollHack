@@ -878,7 +878,7 @@ register struct monst *mtmp;
                 /* since no way is an image going to pay it off */
             }
         }
-        else if (demon_talk(mtmp))
+        else if (demon_talk(mtmp, (boolean*)0)
             return 1; /* you paid it off */
     }
 #endif

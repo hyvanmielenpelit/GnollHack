@@ -194,6 +194,7 @@ STATIC_DCL boolean FDECL(maybe_spellbook, (struct obj*));
 STATIC_DCL boolean FDECL(maybe_dragon_scales, (struct obj*));
 STATIC_DCL boolean FDECL(maybe_otyp, (struct obj*));
 STATIC_VAR int otyp_for_maybe_otyp = 0;
+STATIC_VAR boolean stop_chat = FALSE;
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -1780,7 +1781,7 @@ bark_here:
         break;
     case MS_BRIBE:
         if (is_peaceful(mtmp) && !is_tame(mtmp)) {
-            (void) demon_talk(mtmp);
+            (void) demon_talk(mtmp, &stop_chat);
             break;
         }
         if (is_gnoll(mtmp->data))
@@ -2262,7 +2263,6 @@ dochat()
         return 0;
     }
 
-
     /* Finally, generate the actual chat menu */
     struct permonst* ptr = mtmp->data;
     int msound = ptr->msound;
@@ -2300,6 +2300,7 @@ dochat()
     int i = '\0';
     int result = 0;
     boolean stopsdialogue = FALSE;
+    stop_chat = FALSE;
     do
     {
         i = '\0';
@@ -4208,7 +4209,7 @@ dochat()
         }
         if (!is_peaceful(mtmp))
             stopsdialogue = TRUE;
-    } while (i > 0 && !stopsdialogue);
+    } while (i > 0 && !stopsdialogue && !stop_chat);
     
 end_of_chat_here:
     if (!elbereth_was_known && u.uevent.elbereth_known)
