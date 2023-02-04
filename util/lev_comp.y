@@ -206,7 +206,7 @@ extern char curr_token[512];
 %token	<i> ELEMENTAL_ENCHANTMENT_TYPE EXCEPTIONALITY_TYPE EXCEPTIONALITY_ID ELEMENTAL_ENCHANTMENT_ID ENCHANTMENT_ID SECRET_DOOR_ID USES_UP_KEY_ID
 %token	<i> MYTHIC_PREFIX_TYPE MYTHIC_SUFFIX_TYPE MYTHIC_PREFIX_ID MYTHIC_SUFFIX_ID
 %token	<i> CHARGES_ID SPECIAL_QUALITY_ID SPEFLAGS_ID
-%token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS SUBTYPE_ID NON_PASSDOOR_ID
+%token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS SUBTYPE_ID NON_PASSDOOR_ID CARPET_ID CARPET_PIECE_ID CARPET_TYPE
 %token	<i> MON_APPEARANCE ROOMDOOR_ID IF_ID ELSE_ID
 %token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID LOCATION_SUBTYPE_ID DOOR_SUBTYPE BRAZIER_SUBTYPE SIGNPOST_SUBTYPE TREE_SUBTYPE FOREST_ID FOREST_TYPE INITIALIZE_TYPE
 %token	<i> EXIT_ID SHUFFLE_ID MANUAL_TYPE_ID MANUAL_TYPE
@@ -510,6 +510,8 @@ levstatement 	: message
 		| boundary_type_detail
 		| forest_detail
 		| subtype_detail
+		| carpet_detail
+		| carpet_piece_detail
 		| monster_generation_detail
 		| floor_detail
 		| decoration_detail
@@ -2377,6 +2379,22 @@ subtype_detail : SUBTYPE_ID ':' ter_selection ',' INTEGER
 		  {
 		      add_opvars(splev, "iio", VA_PASS3((int)$7, (int)$5, SPO_SUBTYPE));
 		  }
+		;
+
+carpet_detail : CARPET_ID ':' region_or_var ',' CARPET_TYPE
+		  {
+		      add_opvars(splev, "io", VA_PASS2($<i>5, SPO_CARPET));
+		  }
+		;
+
+carpet_piece_detail : CARPET_PIECE_ID ':' ter_selection ',' CARPET_TYPE ',' INTEGER ',' INTEGER
+		  {
+		      add_opvars(splev, "iiio", VA_PASS4((int)$9, (int)$7, (int)$5, SPO_CARPET_PIECE));
+		  }
+        | CARPET_PIECE_ID ':' ter_selection ',' CARPET_TYPE ',' INTEGER
+		  {
+		      add_opvars(splev, "iiio", VA_PASS4(0, (int)$7, (int)$5, SPO_CARPET_PIECE));
+		  }		
 		;
 
 npc_detail : NPC_ID ':' NPC_TYPE ',' coord_or_var

@@ -22,8 +22,8 @@
 
 typedef void FDECL((*select_iter_func), (int, int, genericptr));
 typedef void FDECL((*select_iter_func2), (int, int, genericptr, genericptr));
-#if 0 /* UNUSED */
 typedef void FDECL((*select_iter_func3), (int, int, genericptr, genericptr, genericptr));
+#if 0 /* UNUSED */
 typedef void FDECL((*select_iter_func4), (int, int, genericptr, genericptr, genericptr, genericptr));
 #endif
 typedef void FDECL((*select_iter_func5), (int, int, genericptr, genericptr, genericptr, genericptr, genericptr));
@@ -78,6 +78,7 @@ STATIC_DCL boolean FDECL(create_subroom, (struct mkroom *, XCHAR_P, XCHAR_P,
                                           XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int, int, int));
 STATIC_DCL void FDECL(create_door, (room_door *, struct mkroom *));
 STATIC_DCL void FDECL(create_trap, (spltrap *, struct mkroom *));
+STATIC_DCL void  FDECL(create_carpet, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int));
 STATIC_DCL int FDECL(noncoalignment, (ALIGNTYP_P));
 STATIC_DCL boolean FDECL(m_bad_boulder_spot, (int, int));
 STATIC_DCL int FDECL(pm_to_humidity, (struct permonst *));
@@ -165,9 +166,9 @@ STATIC_DCL void FDECL(selection_iterate, (struct opvar *, select_iter_func,
                                           genericptr_t));
 STATIC_DCL void FDECL(selection_iterate2, (struct opvar*, select_iter_func2,
     genericptr_t, genericptr_t));
-#if 0 /* UNUSED */
 STATIC_DCL void FDECL(selection_iterate3, (struct opvar*, select_iter_func3,
     genericptr_t, genericptr_t, genericptr_t));
+#if 0 /* UNUSED */
 STATIC_DCL void FDECL(selection_iterate4, (struct opvar*, select_iter_func4,
     genericptr_t, genericptr_t, genericptr_t, genericptr_t));
 #endif
@@ -178,6 +179,7 @@ STATIC_DCL void FDECL(sel_set_feature, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_floor, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_subtype, (int, int, genericptr_t, genericptr_t));
+STATIC_DCL void FDECL(sel_set_carpet_piece, (int, int, genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_tileset, (int, int, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
@@ -187,6 +189,7 @@ STATIC_DCL void FDECL(spo_anvil, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_decoration, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_floor, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_subtype, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_carpet, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_npc, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_terrain, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_replace_terrain, (struct sp_coder *));
@@ -1629,6 +1632,51 @@ struct mkroom *croom;
     tm.y = y;
 
     (void)mktrap(t->type, 1, (struct mkroom *) 0, &tm);
+}
+
+STATIC_OVL void
+create_carpet(x1, y1, x2, y2, type)
+xchar x1, y1, x2, y2;
+int type;
+{
+    if (!isok(x1, y1) || !isok(x2, y2) || type < 0 || type >= MAX_CARPETS)
+        return;
+
+    int x, y;
+    for (x = x1; x <= x2; x++)
+    {
+        for (y = y1; y <= y2; y++)
+        {
+            levl[x][y].carpet_typ = type;
+            int piece = 0;
+            switch (carpet_type_definitions[type].tile_indexation_type)
+            {
+            default:
+            case CARPET_TILE_INDEXATION_TYPE_LONG_CARPET:
+                if (x == x1 && y == y1)
+                    piece = CARPET_PIECE_LONG_TLCORN;
+                else if (x == x1 && y == y2)
+                    piece = CARPET_PIECE_LONG_BLCORN;
+                else if (x == x2 && y == y1)
+                    piece = CARPET_PIECE_LONG_TRCORN;
+                else if (x == x2 && y == y2)
+                    piece = CARPET_PIECE_LONG_BRCORN;
+                else if (x == x1)
+                    piece = CARPET_PIECE_LONG_LEFT;
+                else if (x == x2)
+                    piece = CARPET_PIECE_LONG_RIGHT;
+                else if (y == y1)
+                    piece = CARPET_PIECE_LONG_TOP;
+                else if (y == y2)
+                    piece = CARPET_PIECE_LONG_BOTTOM;
+                else
+                    piece = CARPET_PIECE_LONG_MIDDLE_PLAIN;
+                break;
+            }
+            levl[x][y].carpet_piece = piece;
+            levl[x][y].carpet_flags = 0;
+        }
+    }
 }
 
 /*
@@ -5725,7 +5773,6 @@ genericptr_t arg, arg2;
                 (*func)(x, y, arg, arg2);
 }
 
-#if 0 /* UNUSED */
 void
 selection_iterate3(ov, func, arg, arg2, arg3)
 struct opvar* ov;
@@ -5741,6 +5788,7 @@ genericptr_t arg, arg2, arg3;
                 (*func)(x, y, arg, arg2, arg3);
 }
 
+#if 0 /* UNUSED */
 void
 selection_iterate4(ov, func, arg, arg2, arg3, arg4)
 struct opvar* ov;
@@ -5908,6 +5956,22 @@ genericptr_t arg1, arg2;
         levl[x][y].subtyp = (*(int*)arg2);
         levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
     }
+}
+
+void
+sel_set_carpet_piece(x, y, arg1, arg2, arg3)
+int x, y;
+genericptr_t arg1, arg2, arg3;
+{
+    schar typ = (schar)(*(int*)arg1);
+    if(typ >= 0 && typ < MAX_CARPETS)
+        levl[x][y].carpet_typ = typ;
+    
+    schar piece = (schar)(*(int*)arg2);
+    if(piece >= 0)
+        levl[x][y].carpet_piece = piece;
+    
+    levl[x][y].carpet_flags = (uchar)(*(int*)arg3);
 }
 
 void
@@ -6216,10 +6280,61 @@ struct sp_coder* coder;
     subtyp = (int)OV_i(subtyp_opvar);
     selection_iterate2(sel, sel_set_subtype, (genericptr_t)&typ, (genericptr_t)&subtyp);
 
+    opvar_free(typ_opvar);
     opvar_free(subtyp_opvar);
     opvar_free(sel);
 }
 
+
+void
+spo_carpet(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_carpet";
+    struct opvar* carpet_type, * area;
+    xchar dx1, dy1, dx2, dy2;
+    int typ;
+
+    if (!OV_pop_i(carpet_type) || !OV_pop_r(area))
+        return;
+
+    dx1 = (xchar)SP_REGION_X1(OV_i(area));
+    dy1 = (xchar)SP_REGION_Y1(OV_i(area));
+    dx2 = (xchar)SP_REGION_X2(OV_i(area));
+    dy2 = (xchar)SP_REGION_Y2(OV_i(area));
+    typ = (int)OV_i(carpet_type);
+
+    get_location(&dx1, &dy1, ANY_LOC, coder->croom);
+    get_location(&dx2, &dy2, ANY_LOC, coder->croom);
+
+    create_carpet(dx1, dy1, dx2, dy2, typ);
+
+    opvar_free(area);
+    opvar_free(carpet_type);
+}
+
+void
+spo_carpet_piece(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_carpet_piece";
+    struct opvar* sel;
+    struct opvar* subtyp_opvar, *typ_opvar, * flags_opvar;
+    int typ, subtyp, cflags;
+
+    if (!OV_pop_i(typ_opvar) || !OV_pop_i(subtyp_opvar) || !OV_pop_i(flags_opvar) || !OV_pop_typ(sel, SPOVAR_SEL))
+        return;
+
+    typ = (int)OV_i(typ_opvar);
+    subtyp = (int)OV_i(subtyp_opvar);
+    cflags = (int)OV_i(flags_opvar);
+    selection_iterate3(sel, sel_set_carpet_piece, (genericptr_t)&typ, (genericptr_t)&subtyp, (genericptr_t)&cflags);
+
+    opvar_free(typ_opvar);
+    opvar_free(subtyp_opvar);
+    opvar_free(flags_opvar);
+    opvar_free(sel);
+}
 
 void spo_npc(coder)
 struct sp_coder* coder;
@@ -7764,6 +7879,12 @@ sp_lev *lvl;
             break;
         case SPO_SUBTYPE:
             spo_subtype(coder);
+            break;
+        case SPO_CARPET:
+            spo_carpet(coder);
+            break;
+        case SPO_CARPET_PIECE:
+            spo_carpet_piece(coder);
             break;
         case SPO_NPC:
             spo_npc(coder);

@@ -195,6 +195,8 @@ EXIT		ST_RET(EXIT_ID);
 ROOM		ST_RET(ROOM_ID);
 SUBROOM		ST_RET(SUBROOM_ID);
 SUBTYPE		ST_RET(SUBTYPE_ID);
+CARPET		ST_RET(CARPET_ID);
+CARPET_PIECE		ST_RET(CARPET_PIECE_ID);
 RANDOM_CORRIDORS	ST_RET(RAND_CORRIDOR_ID);
 CORRIDOR	ST_RET(CORRIDOR_ID);
 TERRAIN		ST_RET(TERRAIN_ID);
@@ -414,6 +416,7 @@ location_floor { savetoken(yytext); yylval.i=ROOM; return FLOOR_TYPE; }
 location_corridor { savetoken(yytext); yylval.i=CORR; return FLOOR_TYPE; }
 location_grass { savetoken(yytext); yylval.i=GRASS; return FLOOR_TYPE; }
 location_ground { savetoken(yytext); yylval.i=GROUND; return FLOOR_TYPE; }
+carpet_red { savetoken(yytext); yylval.i=CARPET_HORIZONTAL_RED; return CARPET_TYPE; }
 flaming { savetoken(yytext); yylval.i=FIRE_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 freezing { savetoken(yytext); yylval.i=COLD_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 electrified { savetoken(yytext); yylval.i=LIGHTNING_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }

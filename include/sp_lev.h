@@ -81,6 +81,8 @@ enum opcode_defs {
     SPO_DECORATION,
     SPO_FLOOR,
     SPO_SUBTYPE,
+    SPO_CARPET,
+    SPO_CARPET_PIECE,
     SPO_NPC,
     SPO_FOUNTAIN,
     SPO_THRONE,
