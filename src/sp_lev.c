@@ -1647,7 +1647,7 @@ int type;
     {
         for (y = y1; y <= y2; y++)
         {
-            levl[x][y].carpet_typ = type;
+            levl[x][y].carpet_typ = (schar)type;
             int piece = 0;
             switch (carpet_type_definitions[type].tile_indexation_type)
             {
@@ -1673,7 +1673,7 @@ int type;
                     piece = CARPET_PIECE_LONG_MIDDLE_PLAIN;
                 break;
             }
-            levl[x][y].carpet_piece = piece;
+            levl[x][y].carpet_piece = (schar)piece;
             levl[x][y].carpet_flags = 0;
         }
     }
