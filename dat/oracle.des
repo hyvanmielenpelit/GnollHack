@@ -11,6 +11,7 @@ LEVEL: "oracle"
 NAMING:"Large room with centaur statues",name_revealed_seeing_monster, montype:"Oracle"
 
 ROOM: "ordinary" , lit, (3,3), (center,center), (11,9) {
+  SPECIAL_TILESET:fillrect(00,00,10,08), garden_tileset
   OBJECT:('`',"statue"),(0,0),montype:'C',1
   OBJECT:('`',"statue"),(0,8),montype:'C',1
   OBJECT:('`',"statue"),(10,0),montype:'C',1
@@ -21,6 +22,7 @@ ROOM: "ordinary" , lit, (3,3), (center,center), (11,9) {
   OBJECT:('`',"statue"),(8,4),montype:'C',1
 
   SUBROOM: "delphi" , lit , (4,3) , (3,3) floorsubtype:floor_marble {
+    SPECIAL_TILESET:fillrect(00,00,02,02), garden_tileset
     FOUNTAIN: (0, 1),fountain_healing
     FOUNTAIN: (1, 0),fountain_mana
     FOUNTAIN: (1, 2),fountain_mana
