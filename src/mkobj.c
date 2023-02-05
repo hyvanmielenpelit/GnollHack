@@ -22,6 +22,7 @@ STATIC_DCL void FDECL(insane_object, (struct obj *, const char *,
                                       const char *, struct monst *));
 STATIC_DCL void FDECL(check_contained, (struct obj *, const char *));
 STATIC_DCL void FDECL(sanity_check_worn, (struct obj *));
+STATIC_DCL uchar FDECL(get_otyp_initial_material, (int));
 
 struct icp {
     int iprob;   /* probability of an item type */
@@ -1370,6 +1371,7 @@ unsigned long mkflags;
     char let = objects[otyp].oc_class;
     boolean forcemythic = (mkflags & MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY) != 0;
     boolean forcelegendary = (mkflags & MKOBJ_FLAGS_FORCE_LEGENDARY) != 0;
+    boolean forcebasematerial = (mkflags & MKOBJ_FLAGS_FORCE_BASE_MATERIAL) != 0;
     unsigned long excludedtitles = 0UL, excludedtitles2 = 0UL;
     if (mkflags & MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS)
     {
@@ -1400,7 +1402,7 @@ unsigned long mkflags;
     otmp->tknown = 0;
     otmp->cknown = (objects[otmp->otyp].oc_flags4 & O4_CONTAINER_CONTENTS_VISIBLE) ? 1 : 0;
     otmp->corpsenm = NON_PM;
-    otmp->material = objects[otyp].oc_material;
+    otmp->material = forcebasematerial ? objects[otyp].oc_material : get_otyp_initial_material(otyp);
     otmp->elemental_enchantment = 0;
     otmp->exceptionality = 0;
     otmp->mythic_prefix = 0;
@@ -4843,6 +4845,26 @@ struct obj *otmp2;
     {
         You_hear("a faint sloshing sound.");
     }
+}
+
+STATIC_OVL
+uchar get_otyp_initial_material(otyp)
+int otyp;
+{
+    uchar mat = objects[otyp].oc_material;
+
+    switch (objects[otyp].oc_material_init_type)
+    {
+    case MATINIT_ONE_IN_TEN_SILVER:
+        if(!rn2(10))
+            mat = MAT_SILVER;
+        break;
+    case MATINIT_NORMAL:
+    default:
+        break;
+    }
+
+    return mat;
 }
 
 /*mkobj.c*/

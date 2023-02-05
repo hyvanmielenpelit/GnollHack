@@ -236,32 +236,33 @@ enum obj_material_types {
     MAT_IVORY = 14, /* Worm tooth, ivory, etc. Hard bone-like materials stop here */
     MAT_DRAGON_HIDE = 15, /* not leather! */
     MAT_IRON = 16, /* Fe */
-    MAT_STEEL = 17, /* Fe and C (carbon)  */
+    MAT_STEEL = 17, /* Alloy of Fe and C (carbon)  */
     MAT_METAL = 18, /* Sn, &c. */
-    MAT_COPPER = 19, /* Cu (pure) */
-    MAT_BRASS = 20, /* Cu and Zn (zinc) */
-    MAT_BRONZE = 21, /* Cu and Sn (tin) */
-    MAT_SILVER = 22, /* Ag */
-    MAT_GOLD = 23, /* Au */
-    MAT_PLATINUM = 24, /* Pt */
-    MAT_ORICHALCUM = 25,
-    MAT_ADAMANTIUM = 26,
-    MAT_MITHRIL = 27,
-    MAT_PLASTIC = 28,
-    MAT_GLASS = 29,
-    MAT_CRYSTAL = 30, //Brittle like glass
-    MAT_HARD_CRYSTAL = 31, //Strong like gemstone
-    MAT_GEMSTONE = 32,
-    MAT_MINERAL = 33,
-    MAT_MODRONITE = 34,
-    MAT_PLANARRIFT = 35,
-    MAT_FORCEFIELD = 36,
-    MAT_AIR = 37,
-    MAT_FIRE = 38,
-    MAT_ENERGY = 39,
-    MAT_INCORPOREAL = 40,
-    MAT_ICE = 41,
-    MAT_SOIL = 42,
+    MAT_LEAD = 19, /* Pb */
+    MAT_COPPER = 20, /* Cu */
+    MAT_BRASS = 21, /* Alloy of Cu and Zn (zinc) */
+    MAT_BRONZE = 22, /* Alloy of Cu and Sn (tin) */
+    MAT_SILVER = 23, /* Ag */
+    MAT_GOLD = 24, /* Au */
+    MAT_PLATINUM = 25, /* Pt */
+    MAT_ORICHALCUM = 26,
+    MAT_ADAMANTIUM = 27,
+    MAT_MITHRIL = 28,
+    MAT_PLASTIC = 29,
+    MAT_GLASS = 30,
+    MAT_CRYSTAL = 31, /* Brittle like glass */
+    MAT_HARD_CRYSTAL = 32, /* Strong like gemstone */
+    MAT_GEMSTONE = 33,
+    MAT_MINERAL = 34,
+    MAT_MODRONITE = 35,
+    MAT_PLANARRIFT = 36,
+    MAT_FORCEFIELD = 37,
+    MAT_AIR = 38,
+    MAT_FIRE = 39,
+    MAT_ENERGY = 40,
+    MAT_INCORPOREAL = 41,
+    MAT_ICE = 42,
+    MAT_SOIL = 43,
     MAX_MATERIAL_TYPES
 };
 
@@ -753,6 +754,7 @@ enum context_menu_styles {
 #define MKOBJ_FLAGS_OWNER_IS_NONALIGNED                0x00001000
 #define MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS       0x00002000
 #define MKOBJ_FLAGS_PARAM2_IS_MATERIAL                 0x00004000
+#define MKOBJ_FLAGS_FORCE_BASE_MATERIAL                0x00008000
 
 #define MONDIED_FLAGS_NONE                             0x00000000
 #define MONDIED_FLAGS_NO_DEATH_ACTION                  0x00000001

@@ -65,6 +65,7 @@ extern const char* multishot_style_names[MAX_MULTISHOT_TYPES]; /* in objnam.c */
 
 struct material_definition {
     const char* name;
+    const char* adjective;
     enum material_phase phase;
     enum hit_surface_types hit_surface_mapping;
     enum floor_surface_types floor_surface_mapping;
@@ -353,6 +354,7 @@ enum enchantment_init_types {
 
 enum material_init_types {
     MATINIT_NORMAL = 0,
+    MATINIT_ONE_IN_TEN_SILVER,
 };
 
 
