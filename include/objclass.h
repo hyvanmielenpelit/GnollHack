@@ -351,6 +351,10 @@ enum enchantment_init_types {
     MAX_ENCHTYPES
 };
 
+enum material_init_types {
+    MATINIT_NORMAL = 0,
+};
+
 
 struct objclass {
     short oc_name_idx;              /* index of actual name */
@@ -400,6 +404,7 @@ struct objclass {
 #define WHACK 0
     /* 4 free bits */
 
+    uchar oc_material_init_type;
     uchar oc_material; /* one of obj_material_types */
 
 #define is_organic(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].organic != 0) //(objects[otmp->otyp].oc_material <= MAT_WOOD)
