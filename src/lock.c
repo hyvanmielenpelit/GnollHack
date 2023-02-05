@@ -1660,7 +1660,7 @@ int x, y;
     Blinded = 1;
     thing = singular(otmp, xname);
     Blinded = save_Blinded;
-    switch (objects[otmp->otyp].oc_material) {
+    switch (otmp->material) {
     case MAT_PAPER:
         disposition = "is torn to shreds";
         break;

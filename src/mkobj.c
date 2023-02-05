@@ -1400,6 +1400,7 @@ unsigned long mkflags;
     otmp->tknown = 0;
     otmp->cknown = (objects[otmp->otyp].oc_flags4 & O4_CONTAINER_CONTENTS_VISIBLE) ? 1 : 0;
     otmp->corpsenm = NON_PM;
+    otmp->material = objects[otyp].oc_material;
     otmp->elemental_enchantment = 0;
     otmp->exceptionality = 0;
     otmp->mythic_prefix = 0;
@@ -1950,6 +1951,11 @@ unsigned long mkflags;
     else if (is_obj_generated_cursed(otmp))
         curse(otmp);
 
+    if ((mkflags & MKOBJ_FLAGS_PARAM2_IS_MATERIAL) && param2 > 0)
+    {
+        otmp->material = (uchar)param2;
+    }
+
     /* Exceptionality */
     if (can_have_exceptionality(otmp) && mkobj_type < 2 && otmp->oartifact == 0)
     {
@@ -1987,7 +1993,7 @@ unsigned long mkflags;
             if (In_endgame(&u.uz))
             {
                 if (doublechance || !rn2(halfchance ? 4 : 2))
-                    otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                    otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && otmp->material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
                 else if (!rn2(halfchance ? 4 : 2))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
                 else if (halfchance ? rn2(2) : doublechance ? rn2(8) : rn2(4))
@@ -1996,7 +2002,7 @@ unsigned long mkflags;
             else if (Inhell)
             {
                 if (!rn2(halfchance ? 20 : doublechance ? 5 : 10))
-                    otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                    otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && otmp->material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
                 else if (!rn2(halfchance ? 8 : doublechance ? 2 : 4))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
                 else if (halfchance ? !rn2(4) : doublechance ? rn2(4) : !rn2(2))
@@ -2005,7 +2011,7 @@ unsigned long mkflags;
             else if (leveldiff >= 16)
             {
                 if (!rn2(halfchance ? 400 : doublechance ? 100 : 200))
-                    otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                    otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && otmp->material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
                 else if (!rn2(halfchance ? 20 : doublechance ? 5 : 10))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
                 else if (!rn2(halfchance ? 8 : doublechance ? 2 : 4))
@@ -2036,7 +2042,7 @@ unsigned long mkflags;
             otmp->exceptionality = EXCEPTIONALITY_ELITE;
         else if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_PRIMORDIAL) || (objects[otmp->otyp].oc_flags2 & (O2_DEMON_ITEM | O2_ANGELIC_ITEM))) && otmp->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
             otmp->exceptionality = EXCEPTIONALITY_ELITE;
-        else if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_INFERNAL) || (objects[otmp->otyp].oc_flags2 & (O2_ANGELIC_ITEM)) || objects[otmp->otyp].oc_material == MAT_SILVER) && otmp->exceptionality == EXCEPTIONALITY_INFERNAL)
+        else if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_INFERNAL) || (objects[otmp->otyp].oc_flags2 & (O2_ANGELIC_ITEM)) || otmp->material == MAT_SILVER) && otmp->exceptionality == EXCEPTIONALITY_INFERNAL)
             otmp->exceptionality = EXCEPTIONALITY_ELITE;
     }
 
@@ -3200,12 +3206,12 @@ register struct obj *obj;
                 && (contents->oclass == COIN_CLASS || contents->oclass == GEM_CLASS
                     || contents->oclass == RING_CLASS || contents->oclass == AMULET_CLASS
                     || contents->oclass == MISCELLANEOUS_CLASS
-                    || objects[contents->otyp].oc_material == MAT_SILVER
-                    || objects[contents->otyp].oc_material == MAT_GOLD
-                    || objects[contents->otyp].oc_material == MAT_PLATINUM
-                    || objects[contents->otyp].oc_material == MAT_MITHRIL
-                    || objects[contents->otyp].oc_material == MAT_ADAMANTIUM
-                    || objects[contents->otyp].oc_material == MAT_GEMSTONE
+                    || contents->material == MAT_SILVER
+                    || contents->material == MAT_GOLD
+                    || contents->material == MAT_PLATINUM
+                    || contents->material == MAT_MITHRIL
+                    || contents->material == MAT_ADAMANTIUM
+                    || contents->material == MAT_GEMSTONE
                     ))
                 cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 63) / 64)
                 : ((weight(contents) + 31) / 32);
@@ -3507,7 +3513,7 @@ is_flammable(otmp)
 register struct obj *otmp;
 {
     int otyp = otmp->otyp;
-    int omat = objects[otyp].oc_material;
+    int omat = otmp->material;
 
     /* Candles and torches can be burned, but they're not flammable in the sense that
      * they can't get fire damage and it makes no sense for them to be
@@ -3531,7 +3537,7 @@ register struct obj *otmp;
     if (objects[otyp].oc_flags & O1_ROT_RESISTANT)
         return FALSE;
 
-    return (boolean)material_definitions[objects[otyp].oc_material].rottable;// <= MAT_WOOD && objects[otyp].oc_material != MAT_LIQUID);
+    return (boolean)material_definitions[otmp->material].rottable;// <= MAT_WOOD && objects[otyp].oc_material != MAT_LIQUID);
 }
 
 /*

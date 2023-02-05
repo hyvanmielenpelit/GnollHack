@@ -1536,7 +1536,7 @@ register int after;
                          || (uses_items && searches_for_item(mtmp, otmp))
                          || (likerock && otmp->otyp == BOULDER)
                          || (likegems && otmp->oclass == GEM_CLASS
-                             && objects[otmp->otyp].oc_material != MAT_MINERAL)
+                             && otmp->material != MAT_MINERAL)
                          || (conceals && !cansee(otmp->ox, otmp->oy))
                          || (slurps_items(ptr)
                              && !index(indigestion, otmp->oclass)
@@ -1547,7 +1547,7 @@ register int after;
                         if (can_carry(mtmp, otmp) > 0
                             && (throws_rocks(ptr) || !sobj_at(BOULDER, xx, yy))
                             && (!is_unicorn(ptr)
-                                || objects[otmp->otyp].oc_material == MAT_GEMSTONE)
+                                || otmp->material == MAT_GEMSTONE)
                             /* Don't get stuck circling an Elbereth or Gilthoniel */
                             && !onnopickup(xx, yy, mtmp) && !is_obj_no_pickup(otmp)) 
                         {

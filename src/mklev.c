@@ -755,7 +755,7 @@ int trap_type;
                             if (!m_carrying(mon, ORCISH_SHORT_BOW))
                                 mongets(mon, ORCISH_SHORT_BOW);
                             if (!m_carrying(mon, ORCISH_ARROW))
-                                m_initthrow(mon, ORCISH_ARROW, 10, 12, TRUE, -1, -1);
+                                m_initthrow(mon, ORCISH_ARROW, 10, 12, TRUE, -1, -1, MAT_NONE);
 
                             m_dowear(mon, TRUE);
                             mongets(mon, CREAM_PIE);

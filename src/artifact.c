@@ -267,6 +267,8 @@ uchar mkflags; /* for monks */
             otmp->exceptionality = artilist[otmp->oartifact].exceptionality;
             otmp->mythic_prefix = artilist[otmp->oartifact].mythic_prefix;
             otmp->mythic_suffix = artilist[otmp->oartifact].mythic_suffix;
+            if(artilist[otmp->oartifact].material)
+                otmp->material = artilist[otmp->oartifact].material;
         }
     } 
     else 
@@ -347,6 +349,8 @@ boolean mod;
                     otmp->exceptionality = artilist[otmp->oartifact].exceptionality;
                     otmp->mythic_prefix = artilist[otmp->oartifact].mythic_prefix;
                     otmp->mythic_suffix = artilist[otmp->oartifact].mythic_suffix;
+                    if (artilist[otmp->oartifact].material)
+                        otmp->material = artilist[otmp->oartifact].material;
 
                     if (artilist[otmp->oartifact].aflags & AF_FAMOUS)
                         otmp->nknown = TRUE;
@@ -600,7 +604,7 @@ struct obj *obj;
     const struct artifact *arti;
 
     /* any silver object is effective */
-    if (objects[obj->otyp].oc_material == MAT_SILVER)
+    if (obj->material == MAT_SILVER)
         return TRUE;
 
     /* any blessed object is effective */
@@ -831,7 +835,7 @@ struct monst *mon;
             if(badclass || badalign)
                 dmg += d((Antimagic_or_resistance ? 2 : 4), (self_willed ? 10 : 4));
             /* add half (maybe quarter) of the usual silver damage bonus */
-            if (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver)
+            if (obj->material == MAT_SILVER && Hate_silver)
                 dmg += rnd(10);
             damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
 
@@ -3690,7 +3694,7 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
     if (touch_artifact(obj, &youmonst)) {
         char buf[BUFSZ];
         double damage = 0;
-        boolean ag = (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver),
+        boolean ag = (obj->material == MAT_SILVER && Hate_silver),
             bane = bane_applies(get_artifact(obj), &youmonst),
             inappr_character = ((objects[obj->otyp].oc_flags4 & O4_INAPPROPRIATE_CHARACTERS_CANT_HANDLE) != 0 && inappropriate_monster_character_type(&youmonst, obj)),
             inappr_exceptionality = inappropriate_exceptionality(&youmonst, obj);

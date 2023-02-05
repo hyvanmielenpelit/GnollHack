@@ -465,7 +465,7 @@ autoquiver()
                    || (otmp->otyp == FLINT
                        && objects[otmp->otyp].oc_name_known)
                    || (otmp->oclass == GEM_CLASS
-                       && (objects[otmp->otyp].oc_material == MAT_GLASS || objects[otmp->otyp].oc_material == MAT_CRYSTAL)
+                       && (otmp->material == MAT_GLASS || otmp->material == MAT_CRYSTAL)
                        && objects[otmp->otyp].oc_name_known))
         {
             if (uslinging())
@@ -1365,13 +1365,13 @@ struct obj *obj;
         tmp_at(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(u.dx, u.dy), rn2_on_display_rng));
         while (isok(x,y) && (x != u.ux || y != u.uy)) {
             tmp_at(x, y);
-            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2))
+            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->material != objects[obj->otyp].oc_material || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2))
             {
-                show_missile_info(x, y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, FALSE), get_obj_height(obj), 0, 0);
+                show_missile_info(x, y, obj->opoisoned, obj->material, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, FALSE), get_obj_height(obj), 0, 0);
                 flush_screen(1);
             }
             adjusted_delay_output();
-            show_missile_info(x, y, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out */
+            show_missile_info(x, y, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out */
             x -= u.dx;
             y -= u.dy;
         }
@@ -2286,7 +2286,7 @@ register struct obj *obj;
 {
     char buf[BUFSZ];
     boolean is_buddy = sgn(mon->data->maligntyp) == sgn(u.ualign.type);
-    boolean is_gem = objects[obj->otyp].oc_material == MAT_GEMSTONE;
+    boolean is_gem = obj->material == MAT_GEMSTONE;
     int ret = 0;
     int luck_change = 0;
     STATIC_VAR NEARDATA const char nogood[] = " is not interested in your junk.";

@@ -184,11 +184,11 @@ int x, y, n, mmflags;
 #endif
 
 void
-m_initthrow(mtmp, otyp, oquan_const, oquan_rnd, poisoned, elemental_enchantment, exceptionality)
+m_initthrow(mtmp, otyp, oquan_const, oquan_rnd, poisoned, elemental_enchantment, exceptionality, material)
 struct monst *mtmp;
 int otyp, oquan_const, oquan_rnd;
 boolean poisoned;
-int elemental_enchantment, exceptionality;
+int elemental_enchantment, exceptionality, material;
 {
     register struct obj *otmp;
 
@@ -202,6 +202,8 @@ int elemental_enchantment, exceptionality;
         otmp->elemental_enchantment = elemental_enchantment;
     if (can_have_exceptionality(otmp) && exceptionality >= 0)
         otmp->exceptionality = exceptionality;
+    if (material > MAT_NONE)
+        otmp->material = material;
     (void) mpickobj(mtmp, otmp);
 }
 
@@ -399,7 +401,7 @@ register struct monst *mtmp;
             if (!rn2(5))
             {
                 (void)mongets(mtmp, CROSSBOW);
-                m_initthrow(mtmp, GNOLLISH_QUARREL, 6, 20, !rn2(20), -1, -1);
+                m_initthrow(mtmp, GNOLLISH_QUARREL, 6, 20, !rn2(20), -1, -1, MAT_NONE);
             }
             break;
         case PM_GNOLL_LORD:
@@ -425,7 +427,7 @@ register struct monst *mtmp;
                 else
                     (void)mongets(mtmp, CROSSBOW);
 
-                m_initthrow(mtmp, GNOLLISH_QUARREL, 11, 15, !rn2(10), -1, -1);
+                m_initthrow(mtmp, GNOLLISH_QUARREL, 11, 15, !rn2(10), -1, -1, MAT_NONE);
             }
             break;
         case PM_GNOLL_KING:
@@ -437,7 +439,7 @@ register struct monst *mtmp;
             else
                 (void)mongets(mtmp, FLAIL);
             (void)mongets(mtmp, HEAVY_CROSSBOW);
-            m_initthrow(mtmp, GNOLLISH_QUARREL, 21, 10, !rn2(5), -1, -1);
+            m_initthrow(mtmp, GNOLLISH_QUARREL, 21, 10, !rn2(5), -1, -1, MAT_NONE);
             break;
         case PM_FLIND:
             if (!rn2(2))
@@ -548,7 +550,7 @@ register struct monst *mtmp;
                 if (rn2(3))
                     (void) mongets(mtmp, ELVEN_SHORT_SWORD);
                 (void) mongets(mtmp, ELVEN_LONG_BOW);
-                m_initthrow(mtmp, ELVEN_ARROW, 10, 12, FALSE, -1, -1);
+                m_initthrow(mtmp, ELVEN_ARROW, 10, 12, FALSE, -1, -1, MAT_NONE);
                 break;
             case 1:
                 (void) mongets(mtmp, ELVEN_BROADSWORD);
@@ -630,7 +632,7 @@ register struct monst *mtmp;
                 if (!rn2(3)) 
                 {
                     (void) mongets(mtmp, SHORT_BOW);
-                    m_initthrow(mtmp, ARROW, 10, 12, FALSE, -1, -1);
+                    m_initthrow(mtmp, ARROW, 10, 12, FALSE, -1, -1, MAT_NONE);
                 }
                 break;
             case PM_HUNTER:
@@ -639,7 +641,7 @@ register struct monst *mtmp;
                     (void) mongets(mtmp, rn2(2) ? LEATHER_JACKET
                                                 : LEATHER_ARMOR);
                 (void) mongets(mtmp, LONG_BOW);
-                m_initthrow(mtmp, ARROW, 10, 12, FALSE, -1, -1);
+                m_initthrow(mtmp, ARROW, 10, 12, FALSE, -1, -1, MAT_NONE);
                 break;
             case PM_THUG:
                 (void) mongets(mtmp, CLUB);
@@ -874,7 +876,7 @@ register struct monst *mtmp;
         /* create Keystone Kops with cream pies to
            throw. As suggested by KAA.     [MRS] */
         if (!rn2(4))
-            m_initthrow(mtmp, CREAM_PIE, 1, 2, FALSE, -1, -1);
+            m_initthrow(mtmp, CREAM_PIE, 1, 2, FALSE, -1, -1, MAT_NONE);
         if (!rn2(3))
             (void) mongets(mtmp, (rn2(2)) ? CLUB : RUBBER_HOSE);
         break;
@@ -904,7 +906,7 @@ register struct monst *mtmp;
             if (!rn2(3))
             {
                 (void) mongets(mtmp, ORCISH_SHORT_BOW);
-                m_initthrow(mtmp, ORCISH_ARROW, 10, 12, TRUE, -1, -1);
+                m_initthrow(mtmp, ORCISH_ARROW, 10, 12, TRUE, -1, -1, MAT_NONE);
             }
             if (!rn2(3))
                 (void) mongets(mtmp, GREAT_ORCISH_SHIELD);
@@ -923,7 +925,7 @@ register struct monst *mtmp;
             if (!rn2(2))
             {
                 (void)mongets(mtmp, !rn2(2) ? STAFF_SLING : SLING);
-                m_initthrow(mtmp, !rn2(5) ? SILVER_SLING_BULLET : !rn2(2) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 8, 12, FALSE, -1, -1);
+                m_initthrow(mtmp, !rn2(5) ? SILVER_SLING_BULLET : !rn2(2) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 8, 12, FALSE, -1, -1, MAT_NONE);
             }
             (void)mongets(mtmp, SCIMITAR);
             break;
@@ -931,7 +933,7 @@ register struct monst *mtmp;
             if (!rn2(20))
             {
                 (void)mongets(mtmp, SLING);
-                m_initthrow(mtmp, !rn2(20) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 6, 8, FALSE, -1, -1);
+                m_initthrow(mtmp, !rn2(20) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 6, 8, FALSE, -1, -1, MAT_NONE);
             }
             if (rn2(2))
                 (void)mongets(mtmp, ORCISH_DAGGER);
@@ -940,7 +942,7 @@ register struct monst *mtmp;
             if (!rn2(4))
             {
                 (void)mongets(mtmp, !rn2(20)? STAFF_SLING : SLING);
-                m_initthrow(mtmp, !rn2(10) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 6, 8, FALSE, -1, -1);
+                m_initthrow(mtmp, !rn2(10) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 6, 8, FALSE, -1, -1, MAT_NONE);
             }
             if (rn2(2))
                 (void)mongets(mtmp, !rn2(2) ? ORCISH_DAGGER : SCIMITAR);
@@ -955,7 +957,7 @@ register struct monst *mtmp;
         {
             if (ptr != &mons[PM_OGRE] && ptr != &mons[PM_OGRE_MAGE] && ptr != &mons[PM_OGRE_ARCHMAGE]) {
                 (void)mongets(mtmp, HEAVY_CROSSBOW);
-                m_initthrow(mtmp, CROSSBOW_BOLT, 10, 12, FALSE, -1, -1);
+                m_initthrow(mtmp, CROSSBOW_BOLT, 10, 12, FALSE, -1, -1, MAT_NONE);
             }
             (void)mongets(mtmp, CLUB);
         }
@@ -995,7 +997,7 @@ register struct monst *mtmp;
         break;
     case S_KOBOLD:
         if (!rn2(4))
-            m_initthrow(mtmp, DART, 5, 12, !rn2(20), -1, -1);
+            m_initthrow(mtmp, DART, 5, 12, !rn2(20), -1, -1, MAT_NONE);
         break;
 
     case S_CENTAUR:
@@ -1004,12 +1006,12 @@ register struct monst *mtmp;
             if (ptr == &mons[PM_FOREST_CENTAUR]) 
             {
                 (void) mongets(mtmp, SHORT_BOW);
-                m_initthrow(mtmp, ARROW, 10, 12, FALSE, -1, -1);
+                m_initthrow(mtmp, ARROW, 10, 12, FALSE, -1, -1, MAT_NONE);
             } 
             else
             {
                 (void) mongets(mtmp, CROSSBOW);
-                m_initthrow(mtmp, CROSSBOW_BOLT, 10, 12, FALSE, -1, -1);
+                m_initthrow(mtmp, CROSSBOW_BOLT, 10, 12, FALSE, -1, -1, MAT_NONE);
             }
         }
         break;
@@ -1079,7 +1081,7 @@ register struct monst *mtmp;
         if (mm < PM_MODRON_QUINTON && !rn2(6))
         {
             //(void)mongets(mtmp, !rn2(3) ? STAFF_SLING : SLING);
-            //m_initthrow(mtmp, !rn2(10) ? SILVER_SLING_BULLET : IRON_SLING_BULLET, 8, 8, FALSE, -1, -1);
+            //m_initthrow(mtmp, !rn2(10) ? SILVER_SLING_BULLET : IRON_SLING_BULLET, 8, 8, FALSE, -1, -1, MAT_NONE);
             goto default_equipment_here;
         }
         break;
@@ -1129,7 +1131,7 @@ register struct monst *mtmp;
             if (!rn2(4))
             {
                 (void)mongets(mtmp, !rn2(3) ? STAFF_SLING : SLING);
-                m_initthrow(mtmp, IRON_SLING_BULLET, 8, 8, FALSE, -1, -1);
+                m_initthrow(mtmp, IRON_SLING_BULLET, 8, 8, FALSE, -1, -1, MAT_NONE);
             }
             break;
         case PM_MARILITH:
@@ -1220,7 +1222,7 @@ default_equipment_here:
             if (strongmonst(ptr))
                 (void) mongets(mtmp, BATTLE_AXE);
             else
-                m_initthrow(mtmp, DART, 5, 12, !rn2(20), -1, -1);
+                m_initthrow(mtmp, DART, 5, 12, !rn2(20), -1, -1, MAT_NONE);
             break;
         case 2:
             if (strongmonst(ptr))
@@ -1228,18 +1230,18 @@ default_equipment_here:
             else 
             {
                 (void) mongets(mtmp, CROSSBOW);
-                m_initthrow(mtmp, CROSSBOW_BOLT, 10, 12, FALSE, -1, -1);
+                m_initthrow(mtmp, CROSSBOW_BOLT, 10, 12, FALSE, -1, -1, MAT_NONE);
             }
             break;
         case 3:
             (void) mongets(mtmp, SHORT_BOW);
-            m_initthrow(mtmp, ARROW, 10, 12, FALSE, -1, -1);
+            m_initthrow(mtmp, ARROW, 10, 12, FALSE, -1, -1, MAT_NONE);
             break;
         case 4:
             if (strongmonst(ptr))
                 (void) mongets(mtmp, LONG_SWORD);
             else
-                m_initthrow(mtmp, DAGGER, 1, 3, FALSE, -1, -1);
+                m_initthrow(mtmp, DAGGER, 1, 3, FALSE, -1, -1, MAT_NONE);
             break;
         case 5:
             if (strongmonst(ptr))

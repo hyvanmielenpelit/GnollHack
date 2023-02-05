@@ -436,6 +436,7 @@ namespace GnollHackCommon
         public short object_height;
 
         public byte missile_poisoned;
+        public byte missile_material;
         public byte missile_elemental_enchantment;
         public byte missile_exceptionality;
         public byte missile_mythic_prefix;

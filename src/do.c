@@ -1080,7 +1080,7 @@ register struct obj* obj;
     /* Material */
     if (stats_known || objects[otyp].oc_name_known)
     {
-        Strcpy(buf2, material_definitions[objects[otyp].oc_material].name);
+        Strcpy(buf2, material_definitions[obj->material].name);
         *buf2 = highc(*buf2);
         Sprintf(buf, "Material:               %s", buf2);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -1556,7 +1556,7 @@ register struct obj* obj;
         }
 
         /* Damage - Silver*/
-        if (objects[otyp].oc_material == MAT_SILVER)
+        if (obj->material == MAT_SILVER)
         {
             Sprintf(buf, "Silver bonus damage:    ");
             maindiceprinted = TRUE;

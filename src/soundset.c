@@ -15820,7 +15820,7 @@ struct obj* container;
     enum object_sound_types sound_type = OBJECT_SOUND_TYPE_DROP;
     struct ghsound_immediate_info immediateinfo = { 0 };
 
-    enum obj_material_types container_material = objects[container->otyp].oc_material;
+    enum obj_material_types container_material = container->material;
     enum floor_surface_types floorid = material_definitions[container_material].floor_surface_mapping;
     float weight = (float)obj->owt;
     enum ghsound_types soundid = GHSOUND_NONE;
@@ -16390,7 +16390,7 @@ anything* surface_source_ptr;
         struct obj* obj = surface_source.a_obj;
         if (!obj)
             return surfaceid;
-        surface_material = objects[obj->otyp].oc_material;
+        surface_material = obj->material;
     }
     else if (surface_type == HIT_SURFACE_SOURCE_LOCATION)
     {

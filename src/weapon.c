@@ -525,7 +525,7 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
 
     }
 
-    if (objects[otyp].oc_material <= MAT_LEATHER && thick_skinned(ptr))
+    if (otmp->material <= MAT_LEATHER && thick_skinned(ptr))
         /* thick skinned/scaled creatures don't feel it */
         tmp = 0;
     if (is_shade(ptr) && !shade_glare(otmp))
@@ -557,7 +557,7 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
             bonus += rnd(4);
         if ((is_axe(otmp) || is_saw(otmp)) && is_wooden(ptr))
             bonus += rnd(4);
-        if (objects[otyp].oc_material == MAT_SILVER && mon_hates_silver(mon))
+        if (otmp->material == MAT_SILVER && mon_hates_silver(mon))
             bonus += rnd(20);
         if ((artifact_light(otmp) || obj_shines_magical_light(otmp) || has_obj_mythic_magical_light(otmp)) && otmp->lamplit && mon_hates_light(mon))
             bonus += rnd(8);
@@ -778,8 +778,7 @@ long *silverhit_p; /* output flag mask for silver bonus */
            scales refer to color, not material) and the only way to hit
            with one--aside from throwing--is to wield it and perform a
            weapon hit, but we include a general check here */
-        if (objects[obj->otyp].oc_material == MAT_SILVER
-            && mon_hates_silver(mdef)) 
+        if (obj->material == MAT_SILVER && mon_hates_silver(mdef)) 
         {
             bonus += rnd(20);
             silverhit |= armask;
@@ -791,8 +790,7 @@ long *silverhit_p; /* output flag mask for silver bonus */
     {
         if (left_ring && uleft) 
         {
-            if (objects[uleft->otyp].oc_material == MAT_SILVER
-                && mon_hates_silver(mdef))
+            if (uleft->material == MAT_SILVER && mon_hates_silver(mdef))
             {
                 bonus += rnd(20);
                 silverhit |= W_RINGL;
@@ -800,8 +798,7 @@ long *silverhit_p; /* output flag mask for silver bonus */
         }
         if (right_ring && uright) 
         {
-            if (objects[uright->otyp].oc_material == MAT_SILVER
-                && mon_hates_silver(mdef)) 
+            if (uright->material == MAT_SILVER && mon_hates_silver(mdef)) 
             {
                 /* two silver rings don't give double silver damage
                    but 'silverhit' messages might be adjusted for them */
@@ -831,8 +828,8 @@ long silverhit;
         rtyp = ((uright && (silverhit & W_RINGR) != 0L)
                 ? uright->otyp : STRANGE_OBJECT);
     boolean both,
-        l_ag = (objects[ltyp].oc_material == MAT_SILVER && uleft && uleft->dknown),
-        r_ag = (objects[rtyp].oc_material == MAT_SILVER && uright && uright->dknown);
+        l_ag = ((ltyp != STRANGE_OBJECT && uleft ? uleft->material : objects[ltyp].oc_material) == MAT_SILVER && uleft && uleft->dknown),
+        r_ag = ((rtyp != STRANGE_OBJECT && uright ? uright->material : objects[rtyp].oc_material) == MAT_SILVER && uright && uright->dknown);
 
     if ((silverhit & (W_RINGL | W_RINGR)) != 0L) {
         /* plural if both the same type (so not multi_claw and both rings
@@ -1183,7 +1180,7 @@ int handindex;
     //Is in hwep table, extra hands do not use two-handed weapons for simplicity (maybe too weak)
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
         if (otmp != MON_WEP(mtmp) && !objects[otmp->otyp].oc_bimanual
-            && !(objects[otmp->otyp].oc_material == MAT_SILVER && mon_hates_silver(mtmp)) && otmp->otyp != CORPSE)
+            && !(otmp->material == MAT_SILVER && mon_hates_silver(mtmp)) && otmp->otyp != CORPSE)
         {
             //Suitable weapons are in hwep array
             int i;

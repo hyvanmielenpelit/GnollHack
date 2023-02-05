@@ -2146,7 +2146,7 @@ register struct monst *mtmp;
     {
         if (is_obj_no_pickup(gold))
             return;
-        mat_idx = objects[gold->otyp].oc_material;
+        mat_idx = gold->material;
         obj_extract_self(gold);
         add_to_minv(mtmp, gold);
         if (cansee(mtmp->mx, mtmp->my)) 
@@ -2305,7 +2305,7 @@ struct obj *otmp;
         return 0;
     if (otyp == CORPSE && is_rider(&mons[otmp->corpsenm]))
         return 0;
-    if (objects[otyp].oc_material == MAT_SILVER && mon_hates_silver(mtmp)
+    if (otmp->material == MAT_SILVER && mon_hates_silver(mtmp)
         && (otyp != BELL_OF_OPENING || !wants_bell(mdat)))
         return 0;
 

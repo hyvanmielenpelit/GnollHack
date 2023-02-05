@@ -197,7 +197,7 @@ struct obj *obj;
          *  7) discovered gray stones ("touchstone"),
          *  8) seen rocks ("rock").
          */
-        switch (objects[obj->otyp].oc_material) {
+        switch (obj->material) {
         case MAT_HARD_CRYSTAL:
         case MAT_GEMSTONE:
             k = !seen ? 1 : !discovered ? 2 : 3;
@@ -6177,7 +6177,7 @@ register struct obj *otmp, *obj;
         return TRUE;
 
     if (obj->unpaid != otmp->unpaid || obj->enchantment != otmp->enchantment || obj->elemental_enchantment != otmp->elemental_enchantment
-        || obj->exceptionality != otmp->exceptionality || obj->mythic_prefix != otmp->mythic_prefix || obj->mythic_suffix != otmp->mythic_suffix
+        || obj->material != otmp->material || obj->exceptionality != otmp->exceptionality || obj->mythic_prefix != otmp->mythic_prefix || obj->mythic_suffix != otmp->mythic_suffix
         || obj->charges != otmp->charges || obj->special_quality != otmp->special_quality || obj->speflags != otmp->speflags
         || obj->cursed != otmp->cursed || obj->blessed != otmp->blessed
         || obj->no_charge != otmp->no_charge || obj->obroken != otmp->obroken

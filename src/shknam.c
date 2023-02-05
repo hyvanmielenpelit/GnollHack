@@ -502,20 +502,23 @@ int otyp; /* used iff obj is null */
 {
     int corpsenm;
     char oclass;
+    int material;
 
     if (obj) {
         /* actual object; will check tin content and corpse species */
         otyp = (int) obj->otyp;
         oclass = obj->oclass;
         corpsenm = obj->corpsenm;
+        material = obj->material;
     } else {
         /* just a type; caller will have to handle tins and corpses */
         oclass = objects[otyp].oc_class;
         corpsenm = PM_LICHEN; /* veggy standin */
+        material = objects[otyp].oc_material;
     }
 
     if (oclass == FOOD_CLASS) {
-        if (objects[otyp].oc_material == MAT_VEGGY || otyp == EGG)
+        if (material == MAT_VEGGY || otyp == EGG)
             return TRUE;
         if (otyp == TIN && corpsenm == NON_PM) /* implies obj is non-null */
             return (boolean) (obj->special_quality == 1); /* 0 = empty, 1 = spinach */

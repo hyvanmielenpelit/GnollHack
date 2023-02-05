@@ -121,7 +121,7 @@ struct monst *victim;
         case 0:
             item = hitting_u ? uarmh : which_armor(victim, W_ARMH);
             if (item) {
-                mat_idx = objects[item->otyp].oc_material;
+                mat_idx = item->material;
                 Sprintf(buf, "%s %s", material_definitions[mat_idx].name,
                         helm_simple_name(item));
             }

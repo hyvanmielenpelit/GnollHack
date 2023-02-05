@@ -11,8 +11,8 @@
 #ifdef MAKEDEFS_C
 /* in makedefs.c, all we care about is the list of names */
 
-#define GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, replacement) nam
-#define A(nam, desc, hit_desc, typ, masktyp, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset) nam
+#define GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, material,exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, replacement) nam
+#define A(nam, desc, hit_desc, typ, masktyp, material,exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset) nam
 
 const char *artifact_names[] = {
 #else

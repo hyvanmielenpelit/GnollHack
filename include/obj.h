@@ -98,6 +98,7 @@ struct obj {
     uchar mythic_suffix;  /* magical quality for a weapon or armor giving additional powers */
     uchar exceptionality; /* exceptional, elite, etc. weapon, multiplies base damage */
     uchar elemental_enchantment; /* cold, fire, lightning, or deathly */
+    uchar material; /* specific material of this object */
 
 #define COLD_ENCHANTMENT 1
 #define FIRE_ENCHANTMENT 2
@@ -338,7 +339,10 @@ struct obj {
 #define is_otyp_material_death_enchantable(otyp)     \
     (material_definitions[objects[otyp].oc_material].death_enchantable != 0)
 
-#define is_death_enchantable(o)  (is_elemental_enchantable(o) && is_otyp_material_death_enchantable((o)->otyp))
+#define is_obj_material_death_enchantable(o)     \
+    (material_definitions[(o)->material].death_enchantable != 0)
+
+#define is_death_enchantable(o)  (is_elemental_enchantable(o) && is_obj_material_death_enchantable(o))
 
 #define is_otyp_specially_exceptional(otyp)     \
     ((objects[(otyp)].oc_flags4 & O4_CAN_HAVE_EXCEPTIONALITY))
@@ -595,7 +599,7 @@ struct obj {
 
 /* misc helpers, simple enough to be macros */
 #define is_flimsy(otmp)                           \
-    (objects[(otmp)->otyp].oc_material <= MAT_LEATHER \
+    ((otmp)->material <= MAT_LEATHER \
      || (objects[(otmp)->otyp].oc_flags2 & O2_FLIMSY))
 #define is_plural(o) \
     ((o)->quan != 1L                                                    \

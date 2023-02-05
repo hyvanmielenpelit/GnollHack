@@ -2835,7 +2835,7 @@ eatspecial()
         vault_gd_watching(GD_EATGOLD);
         return;
     }
-    if (objects[otmp->otyp].oc_material == MAT_PAPER) {
+    if (otmp->material == MAT_PAPER) {
 #ifdef MAIL
         if (otmp->otyp == SCR_MAIL)
             /* no nutrition */
@@ -2909,10 +2909,10 @@ struct obj *otmp;
     if (otmp->oclass == FOOD_CLASS)
         return food;
 
-    if (otmp->oclass == GEM_CLASS && (objects[otmp->otyp].oc_material == MAT_GLASS || objects[otmp->otyp].oc_material == MAT_CRYSTAL)
+    if (otmp->oclass == GEM_CLASS && (otmp->material == MAT_GLASS || otmp->material == MAT_CRYSTAL)
         && otmp->dknown)
         makeknown(otmp->otyp);
-    return material_definitions[objects[otmp->otyp].oc_material].foodword;
+    return material_definitions[otmp->material].foodword;
 }
 
 /* called after consuming (non-corpse) food */
@@ -3186,7 +3186,7 @@ struct obj *otmp;
          it_or_they[QBUFSZ], eat_it_anyway[QBUFSZ];
     boolean cadaver = is_obj_rotting_corpse(otmp), // (otmp->otyp == CORPSE || otmp->globby),
             stoneorslime = FALSE;
-    int material = objects[otmp->otyp].oc_material, mnum = otmp->corpsenm;
+    int material = otmp->material, mnum = otmp->corpsenm;
     long rotted = 0L;
 
     Strcpy(foodsmell, Tobjnam(otmp, "smell"));
@@ -3528,7 +3528,7 @@ doeat()
         context.victual.eating = TRUE; /* needed for lesshungry() */
         context.victual.total_nutrition = basenutrit;
 
-        material = objects[otmp->otyp].oc_material;
+        material = otmp->material;
         if (material == MAT_LEATHER || material == MAT_BONE
             || material == MAT_DRAGON_HIDE) 
         {
@@ -3545,7 +3545,7 @@ doeat()
             (void) rottenfood(otmp);
             nodelicious = TRUE;
         }
-        else if (objects[otmp->otyp].oc_material == MAT_PAPER)
+        else if (otmp->material == MAT_PAPER)
             nodelicious = TRUE;
 
         if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) 
@@ -3645,7 +3645,7 @@ doeat()
         /* No checks for MAT_WAX, MAT_LEATHER, MAT_BONE, MAT_DRAGON_HIDE.  These are
          * all handled in the != FOOD_CLASS case, above.
          */
-        switch (objects[otmp->otyp].oc_material)
+        switch (otmp->material)
         {
         case MAT_ORGANIC:
         case MAT_FLESH:

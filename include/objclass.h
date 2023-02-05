@@ -407,20 +407,20 @@ struct objclass {
     uchar oc_material_init_type;
     uchar oc_material; /* one of obj_material_types */
 
-#define is_organic(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].organic != 0) //(objects[otmp->otyp].oc_material <= MAT_WOOD)
-#define is_slurpable(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].slurpable != 0)
-#define melts_in_lava(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].destroyed_in_lava != 0)
-#define is_metallic(otmp)  (material_definitions[objects[(otmp)->otyp].oc_material].metallic != 0) 
-#define is_fragile(otmp)  (material_definitions[objects[(otmp)->otyp].oc_material].fragile != 0) 
-#define is_obj_stony(otmp)  (material_definitions[objects[(otmp)->otyp].oc_material].mineral != 0) 
+#define is_organic(otmp) (material_definitions[(otmp)->material].organic != 0) //(objects[otmp->otyp].oc_material <= MAT_WOOD)
+#define is_slurpable(otmp) (material_definitions[(otmp)->material].slurpable != 0)
+#define melts_in_lava(otmp) (material_definitions[(otmp)->material].destroyed_in_lava != 0)
+#define is_metallic(otmp)  (material_definitions[(otmp)->material].metallic != 0) 
+#define is_fragile(otmp)  (material_definitions[(otmp)->material].fragile != 0) 
+#define is_obj_stony(otmp)  (material_definitions[(otmp)->material].mineral != 0) 
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
-#define is_rustprone(otmp) ((material_definitions[objects[(otmp)->otyp].oc_material].rustprone != 0) && !(objects[(otmp)->otyp].oc_flags & O1_RUST_RESISTANT))
+#define is_rustprone(otmp) ((material_definitions[(otmp)->material].rustprone != 0) && !(objects[(otmp)->otyp].oc_flags & O1_RUST_RESISTANT))
 
 /* secondary damage: rot/acid/acid */
 #define is_corrodeable(otmp)                   \
-    ((material_definitions[objects[(otmp)->otyp].oc_material].corrodeable != 0) && !(objects[(otmp)->otyp].oc_flags & O1_CORROSION_RESISTANT))
+    ((material_definitions[(otmp)->material].corrodeable != 0) && !(objects[(otmp)->otyp].oc_flags & O1_CORROSION_RESISTANT))
 
 #define is_damageable(otmp)                                        \
     (is_rustprone(otmp) || is_flammable(otmp) || is_rottable(otmp) \

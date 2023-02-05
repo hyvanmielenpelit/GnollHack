@@ -749,6 +749,7 @@ enum context_menu_styles {
 #define MKOBJ_FLAGS_OWNER_IS_CHAOTIC                   0x00000800
 #define MKOBJ_FLAGS_OWNER_IS_NONALIGNED                0x00001000
 #define MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS       0x00002000
+#define MKOBJ_FLAGS_PARAM2_IS_MATERIAL                 0x00004000
 
 #define MONDIED_FLAGS_NONE                             0x00000000
 #define MONDIED_FLAGS_NO_DEATH_ACTION                  0x00000001

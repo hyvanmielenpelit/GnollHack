@@ -74,6 +74,7 @@ struct layer_info {
     short object_height;
 
     uchar missile_poisoned;
+    uchar missile_material;
     uchar missile_elemental_enchantment;
     uchar missile_exceptionality;
     uchar missile_mythic_prefix;
