@@ -1976,9 +1976,7 @@ boolean* obj_destroyed;
         /* iron weapon using melee or polearm hit [3.6.1: metal weapon too;
            also allow either or both weapons to cause split when twoweap] */
         && obj && (obj == uwep || obj == uarms)
-        && ((obj->material == MAT_IRON
-            /* allow scalpel and tsurugi to split puddings */
-            || obj->material == MAT_STEEL || obj->material == MAT_METAL)
+        && (is_metallic(obj) /* allow scalpel and tsurugi to split puddings */
             /* but not bashing with darts, arrows or ya */
             && !(is_ammo(obj) || is_missile(obj)))
         && hand_to_hand) {

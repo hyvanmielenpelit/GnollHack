@@ -307,15 +307,7 @@ long mask;
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s to shine %s!", Tobjnam(wep, "begin"),
                       arti_light_description(wep));
         }
-#if 0
-        /* we'll get back to this someday, but it's not balanced yet */
-        if (Race_if(PM_ELF) && !wep->oartifact
-            && wep->material == MAT_IRON) {
-            /* Elves are averse to wielding cold iron */
-            You("have an uneasy feeling about wielding cold iron.");
-            change_luck(-1);
-        }
-#endif
+
         if (wep && wep->unpaid)
         {
             struct monst *this_shkp;
