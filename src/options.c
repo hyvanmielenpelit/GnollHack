@@ -7173,9 +7173,12 @@ int
 dotogglepickup()
 {
     char buf[BUFSZ], ocl[MAX_OBJECT_CLASSES + 1];
+    int color = NO_COLOR;
 
     flags.pickup = !flags.pickup;
-    if (flags.pickup) {
+    if (flags.pickup) 
+    {
+        color = CLR_GREEN;
         oc_to_str(flags.pickup_types, ocl);
         Sprintf(buf, "ON, for %s objects%s", ocl[0] ? ocl : "all",
                 (iflags.autopickup_exceptions[AP_LEAVE]
@@ -7184,10 +7187,13 @@ dotogglepickup()
                            ? ", with one exception"
                            : ", with some exceptions")
                     : "");
-    } else {
+    } 
+    else 
+    {
+        color = CLR_RED;
         Strcpy(buf, "OFF");
     }
-    pline("Autopickup: %s.", buf);
+    custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "Autopickup: ", ATR_NONE, NO_COLOR, "", ATR_NONE, color, 0UL, "%s.", buf);
     return 0;
 }
 
@@ -7270,15 +7276,20 @@ int
 dotoggledecorations()
 {
     char buf[BUFSZ];
+    int color = NO_COLOR;
 
     flags.show_decorations = !flags.show_decorations;
-    if (flags.show_decorations) {
+    if (flags.show_decorations) 
+    {
         Strcpy(buf, "ON");
+        color = CLR_GREEN;
     }
-    else {
+    else 
+    {
         Strcpy(buf, "OFF");
+        color = CLR_RED;
     }
-    pline("Displaying decorations: %s.", buf);
+    custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "Displaying decorations: ", ATR_NONE, NO_COLOR, "", ATR_NONE, color, 0UL, "%s.", buf);
     (void)doredraw();
 
     return 0;

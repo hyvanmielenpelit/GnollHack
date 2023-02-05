@@ -3343,6 +3343,7 @@ E struct opvar *FDECL(selection_opvar, (char *));
 E void FDECL(opvar_free_x, (struct opvar *));
 E void FDECL(set_selection_floodfillchk, (int FDECL((*), (int,int))));
 E void FDECL(selection_floodfill, (struct opvar *, int, int, BOOLEAN_P));
+E void FDECL(create_carpet, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int));
 E void NDECL(reset_splev);
 
 /* ### spell.c ### */

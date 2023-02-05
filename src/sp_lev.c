@@ -78,7 +78,6 @@ STATIC_DCL boolean FDECL(create_subroom, (struct mkroom *, XCHAR_P, XCHAR_P,
                                           XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int, int, int));
 STATIC_DCL void FDECL(create_door, (room_door *, struct mkroom *));
 STATIC_DCL void FDECL(create_trap, (spltrap *, struct mkroom *));
-STATIC_DCL void  FDECL(create_carpet, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int));
 STATIC_DCL int FDECL(noncoalignment, (ALIGNTYP_P));
 STATIC_DCL boolean FDECL(m_bad_boulder_spot, (int, int));
 STATIC_DCL int FDECL(pm_to_humidity, (struct permonst *));
@@ -1634,7 +1633,7 @@ struct mkroom *croom;
     (void)mktrap(t->type, 1, (struct mkroom *) 0, &tm);
 }
 
-STATIC_OVL void
+void
 create_carpet(x1, y1, x2, y2, type)
 xchar x1, y1, x2, y2;
 int type;
