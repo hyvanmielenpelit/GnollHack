@@ -128,6 +128,7 @@ struct artifact {
     const char *name;
     const char* desc;       /* unidentified name */
     const char* hit_desc;  /* description used in artifact_hit: e.g., massive hammer, ice-cold blade, etc. */
+    uchar material;
     uchar exceptionality;
     uchar mythic_prefix;
     uchar mythic_suffix;
