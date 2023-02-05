@@ -27,11 +27,14 @@ struct material_definition material_definitions[MAX_MATERIAL_TYPES] = {
     {"tooth",       PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,       "ivory" },
     {"dragonhide",  PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_CARPET,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE,      "scale" },
     {"iron",        PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, TRUE,  TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal" },
+    {"steel",       PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, TRUE,  TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal" },
     {"metal",       PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal" },
     {"copper",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "copper" },
+    {"brass",       PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "brass" },
+    {"bronze",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "bronze" },
     {"silver",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "silver" },
     {"gold",        PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "gold" },
-    {"platinum",    PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal" },
+    {"platinum",    PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "platinum" },
     {"orichalcum",  PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal" },
     {"adamantium",  PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal" },
     {"mithril",     PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal" },
@@ -617,6 +620,12 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Strcat(buf, "primordial ");
         else if (obj->exceptionality == EXCEPTIONALITY_INFERNAL)
             Strcat(buf, "infernal ");
+
+        if (obj->material != objects[obj->otyp].oc_material)
+        {
+            Strcat(buf, material_definitions[obj->material].name);
+            Strcat(buf, " ");
+        }
     }
 
     switch (obj->oclass) {

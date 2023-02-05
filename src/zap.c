@@ -3211,8 +3211,11 @@ int okind;
     /* some of these choices are arbitrary */
     switch (okind) {
     case MAT_IRON:
+    case MAT_STEEL:
     case MAT_METAL:
     case MAT_COPPER:
+    case MAT_BRASS:
+    case MAT_BRONZE:
     case MAT_PLATINUM:
     case MAT_ORICHALCUM:
     case MAT_ADAMANTIUM:

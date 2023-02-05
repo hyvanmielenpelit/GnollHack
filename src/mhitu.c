@@ -2016,7 +2016,7 @@ register struct obj* omonwep;
                    need to have at least 2 hp left to split */
                 if (!isinstakilled && (double)u.mh + (((double)u.mh_fraction)/10000) - damage >= 2 && (otmp->material == MAT_IRON
                     /* relevant 'metal' objects are scalpel and tsurugi */
-                    || otmp->material == MAT_METAL)
+                    || otmp->material == MAT_STEEL || otmp->material == MAT_METAL)
                     && (u.umonnum >= 0 && does_split_upon_hit(&mons[u.umonnum])))
                 {
                     if (damage > 1)

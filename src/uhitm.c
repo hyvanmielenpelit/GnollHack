@@ -1978,7 +1978,7 @@ boolean* obj_destroyed;
         && obj && (obj == uwep || obj == uarms)
         && ((obj->material == MAT_IRON
             /* allow scalpel and tsurugi to split puddings */
-            || obj->material == MAT_METAL)
+            || obj->material == MAT_STEEL || obj->material == MAT_METAL)
             /* but not bashing with darts, arrows or ya */
             && !(is_ammo(obj) || is_missile(obj)))
         && hand_to_hand) {
