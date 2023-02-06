@@ -284,6 +284,8 @@ STATIC_VAR const struct trobj LightningElvenArrow[] = { { ELVEN_ARROW, 0, WEAPON
 STATIC_VAR const struct trobj LightningOrcishArrow[] = { { ORCISH_ARROW, 0, WEAPON_CLASS, 2, 0, 0, LIGHTNING_ENCHANTMENT, 0, MAT_NONE },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 
+STATIC_VAR const struct trobj PriestSilverMace[] = { { MACE, 3, WEAPON_CLASS, 1, 0, 1, 0, 0, MAT_SILVER },
+                                { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 STATIC_VAR const struct trobj PriestNormalMace[] = { { MACE, 3, WEAPON_CLASS, 1, 0, 1, 0, 0, MAT_NONE },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 STATIC_VAR const struct trobj PriestLawfulSummonSpell[] = { { SPE_CELESTIAL_DOVE, 0, SPBOOK_CLASS, 1, 0, 0, 0, 0, MAT_NONE },
@@ -1061,7 +1063,10 @@ u_init()
         else
             ini_inv(PriestNeutralSummonSpell);
 
-        ini_inv(PriestNormalMace);
+        if(!rn2(8))
+            ini_inv(PriestSilverMace);
+        else
+            ini_inv(PriestNormalMace);
 
         ini_inv(Priest);
 
