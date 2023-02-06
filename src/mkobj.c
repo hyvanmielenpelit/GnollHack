@@ -4855,7 +4855,7 @@ int otyp;
 
     switch (objects[otyp].oc_material_init_type)
     {
-    case MATINIT_ONE_IN_TEN_SILVER:
+    case MATINIT_MAYBE_SILVER:
         if(!rn2(20))
             mat = MAT_SILVER;
         break;
