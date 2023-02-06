@@ -8936,6 +8936,13 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "elf-zombie-male-attack-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
       { "elf-zombie-male-statue-enlargement", 0, 0,
         2,
         3, 1, 0,
@@ -8944,6 +8951,13 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 }
       },
       { "elf-zombie-female-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "elf-zombie-female-attack-enlargement", 0, 0,
         2,
         3, 1, 0,
         { -1, -1, -1, 0, 1 },

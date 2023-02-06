@@ -65,7 +65,7 @@ extern const char* multishot_style_names[MAX_MULTISHOT_TYPES]; /* in objnam.c */
 
 struct material_definition {
     const char* name;
-    const char* adjective;
+    const char* object_prefix;
     enum material_phase phase;
     enum hit_surface_types hit_surface_mapping;
     enum floor_surface_types floor_surface_mapping;
@@ -89,6 +89,22 @@ struct material_definition {
     Bitfield(destroyed_in_lava, 1);
 
     const char* foodword;
+
+    uchar color;
+    schar acbonus_armor;
+    schar mcbonus_armor;
+    schar spell_casting_penalty_armor;
+    double weight_multiplier;
+    double cost_multiplier;
+    double damage_multiplier;
+    int power_armor;
+    int power_weapon;
+    unsigned long extra_oflags1;
+    unsigned long extra_oflags2;
+    unsigned long extra_oflags3;
+    unsigned long extra_oflags4;
+    unsigned long extra_oflags5;
+    unsigned long extra_oflags6;
 };
 extern struct material_definition material_definitions[MAX_MATERIAL_TYPES]; /* in objnam.c */
 
