@@ -2175,7 +2175,7 @@ struct mkroom *croom;
         {
             int treasuretyp = Race_if(PM_GNOLL) && !P_RESTRICTED(P_FLAIL) && !rn2(2) ? (!rn2(4) ? DOUBLE_HEADED_FLAIL : FLAIL) :
                 P_RESTRICTED(P_SWORD) ? (!P_RESTRICTED(P_AXE) && !rn2(2) ? (!rn2(2) ? AXE : BATTLE_AXE) : !P_RESTRICTED(P_BLUDGEONING_WEAPON) && !rn2(2) ? (!rn2(4) ? MACE : WAR_HAMMER) : !P_RESTRICTED(P_DAGGER) && !rn2(2) ? (!rn2(3) ? DAGGER : ATHAME) : QUARTERSTAFF) :
-                !rn2(3) ? LONG_SWORD : !rn2(2) ? SILVER_LONG_SWORD : TWO_HANDED_SWORD;
+                !rn2(3) ? LONG_SWORD : TWO_HANDED_SWORD;
             otmp = mksobj_at(treasuretyp, x, y, TRUE, !named);
             if (!otmp->oartifact)
             {

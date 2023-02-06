@@ -719,17 +719,22 @@ register struct monst *mtmp;
                 int aligntyp_major_weapon = LONG_SWORD;
                 int aligntyp_minor_weapon = LONG_SWORD;
                 unsigned long weapon_flags = 0UL;
+                unsigned long param2 = 0UL;
                 boolean is_major_weapon = !rn2(3) || is_lord(ptr) || is_prince(ptr);
                 switch (alignment)
                 {
                 case A_LAWFUL:
                     aligntyp_major_weapon = SWORD_OF_HOLY_VENGEANCE;
-                    aligntyp_minor_weapon = SILVER_LONG_SWORD;
+                    aligntyp_minor_weapon = LONG_SWORD;
+                    weapon_flags = is_major_weapon ? 0UL : MKOBJ_FLAGS_PARAM2_IS_MATERIAL;
+                    param2 = is_major_weapon ? 0UL : MAT_SILVER;
                     break;
                 case A_NEUTRAL:
-                    aligntyp_major_weapon = SILVER_LONG_SWORD;
-                    aligntyp_minor_weapon = SILVER_LONG_SWORD;
+                    aligntyp_major_weapon = LONG_SWORD;
+                    aligntyp_minor_weapon = LONG_SWORD;
                     weapon_flags = is_major_weapon ? MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY : 0UL;
+                    weapon_flags |= MKOBJ_FLAGS_PARAM2_IS_MATERIAL;
+                    param2 = MAT_SILVER;
                     break;
                 case A_CHAOTIC:
                     aligntyp_major_weapon = SWORD_OF_UNHOLY_DESECRATION;
@@ -744,7 +749,7 @@ register struct monst *mtmp;
                     break;
                 }
                 int weaptype = is_major_weapon ? aligntyp_major_weapon : !rn2(3) ? LONG_SWORD : aligntyp_minor_weapon;
-                otmp = mksobj_with_flags(weaptype, FALSE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp) | weapon_flags);
+                otmp = mksobj_with_flags(weaptype, FALSE, FALSE, FALSE, 0L, param2, mkobj_ownerflags(mtmp) | weapon_flags);
                 if (otmp)
                 {
                     if (otmp->oartifact == 0)
@@ -1054,7 +1059,7 @@ register struct monst *mtmp;
                     artifacttype = ART_GRAYSWANDIR;
                     break;
                 case 3:
-                    weaptype = SILVER_LONG_SWORD;
+                    weaptype = LONG_SWORD;
                     artifacttype = ART_DEMONBANE;
                     break;
                 case 4:

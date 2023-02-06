@@ -4856,7 +4856,13 @@ int otyp;
     switch (objects[otyp].oc_material_init_type)
     {
     case MATINIT_ONE_IN_TEN_SILVER:
-        if(!rn2(10))
+        if(!rn2(20))
+            mat = MAT_SILVER;
+        break;
+    case MATINIT_LONG_SWORD:
+        if (!rn2(800))
+            mat = MAT_HARD_CRYSTAL;
+        else if (!rn2(100))
             mat = MAT_SILVER;
         break;
     case MATINIT_NORMAL:

@@ -42,8 +42,8 @@ struct material_definition material_definitions[MAX_MATERIAL_TYPES] = {
     {"mithril",     "mithril",     PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "metal",         HI_SILVER, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
     {"plastic",     "plastic",     PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  TRUE,        "plastic",       CLR_WHITE, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
     {"glass",       "glass",       PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   TRUE,  TRUE,  TRUE,        "glass",         HI_GLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"crystal",     "crystal",     PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   TRUE,  TRUE,  TRUE,        "crystal",       HI_GLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"hard crystal","hard crystal",PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "crystal",       HI_GLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"crystal",     "crystal",     PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   TRUE,  TRUE,  FALSE,       "crystal",       HI_GLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"hard crystal","crystal",     PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "crystal",       HI_GLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
     {"gemstone",    "gemstone",    PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "gemstone",      CLR_BRIGHT_GREEN, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
     {"stone",       "stone",       PHASE_SOLID,    HIT_SURFACE_STONE,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "rock",          CLR_GRAY, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
     {"modronite",   "modronite",   PHASE_SOLID,    HIT_SURFACE_STONE,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE,       "alien food",    CLR_WHITE, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
@@ -65,7 +65,8 @@ struct material_wishing_definition {
 
 struct material_wishing_definition material_wishing_definitions[MAX_MATINIT_TYPES] = {
     { {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0} },
-    { {MAT_SILVER,0,0,0,0,0,0,0,0,0}, {75,0,0,0,0,0,0,0,0,0} },
+    { {MAT_SILVER,0,0,0,0,0,0,0,0,0}, {90,0,0,0,0,0,0,0,0,0} },
+    { {MAT_SILVER,MAT_HARD_CRYSTAL,0,0,0,0,0,0,0,0}, {90,40,0,0,0,0,0,0,0,0} },
 };
 
 const char* multishot_style_names[MAX_MULTISHOT_TYPES] = {
@@ -637,7 +638,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
         if (obj->material != objects[obj->otyp].oc_material)
         {
-            Strcat(buf, material_definitions[obj->material].name);
+            Strcat(buf, material_definitions[obj->material].object_prefix);
             Strcat(buf, " ");
         }
     }
