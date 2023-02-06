@@ -269,6 +269,8 @@ uchar mkflags; /* for monks */
             otmp->mythic_suffix = artilist[otmp->oartifact].mythic_suffix;
             if(artilist[otmp->oartifact].material)
                 otmp->material = artilist[otmp->oartifact].material;
+            else
+                otmp->material = objects[otmp->otyp].oc_material; /* Only the base material will do */
         }
     } 
     else 
@@ -351,6 +353,8 @@ boolean mod;
                     otmp->mythic_suffix = artilist[otmp->oartifact].mythic_suffix;
                     if (artilist[otmp->oartifact].material)
                         otmp->material = artilist[otmp->oartifact].material;
+                    else
+                        otmp->material = objects[otmp->otyp].oc_material; /* Only the base material will do */
 
                     if (artilist[otmp->oartifact].aflags & AF_FAMOUS)
                         otmp->nknown = TRUE;

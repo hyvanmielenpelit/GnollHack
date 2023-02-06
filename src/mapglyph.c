@@ -19,7 +19,8 @@
 #define zap_color(n) color = iflags.use_color ? zap_type_definitions[n].color : NO_COLOR
 #define cmap_color(n,cmap_type_index) color = iflags.use_color ? defsyms[n].color[cmap_type_index] : NO_COLOR
 #define cmap_variation_color(n,cmap_type_index) color = iflags.use_color ? defsym_variations[n].color[cmap_type_index] : NO_COLOR
-#define obj_color(n) color = iflags.use_color ? objects[n].oc_color : NO_COLOR
+#define otyp_color(n) color = iflags.use_color ? objects[n].oc_color : NO_COLOR
+#define obj_color(o, n) color = iflags.use_color ? ((o) && (o)->otyp == n && (o)->material != objects[n].oc_material && material_definitions[(o)->material].color != NO_COLOR ? material_definitions[(o)->material].color : objects[n].oc_color) : NO_COLOR
 #define artifact_color(n) color = iflags.use_color ? artilist[n].ocolor : NO_COLOR
 #define mon_color(n) color = iflags.use_color ? mons[n].mcolor : NO_COLOR
 #define invis_color(n) color = NO_COLOR
@@ -32,7 +33,8 @@
 
 #define zap_color(n)
 #define cmap_color(n,cmap_idx)
-#define obj_color(n)
+#define otyp_color(n)
+#define obj_color(o, n)
 #define mon_color(n)
 #define invis_color(n)
 #define pet_color(c)
@@ -146,7 +148,7 @@ unsigned long *ospecial;
         else
         {
             if(artilist[artidx].ocolor == NO_COLOR)
-                obj_color(objoffset);
+                otyp_color(objoffset);
             else
                 artifact_color(artidx);
         }
@@ -189,7 +191,7 @@ unsigned long *ospecial;
         if (has_rogue_color)
             color = CLR_RED;
         else
-            obj_color(STATUE);
+            otyp_color(STATUE);
         special |= MG_FEMALE;
         special |= MG_STATUE;
         if (is_objpile(x, y))
@@ -208,7 +210,7 @@ unsigned long *ospecial;
         if (has_rogue_color)
             color = CLR_RED;
         else
-            obj_color(STATUE);
+            otyp_color(STATUE);
         special |= MG_STATUE;
         if (is_objpile(x,y))
             special |= MG_OBJPILE;
@@ -393,6 +395,7 @@ unsigned long *ospecial;
         if (glyph - GLYPH_OBJ_MISSILE_OFF >= 0)
             offset = offset / NUM_MISSILE_DIRS;
 
+        struct obj* otmp = vobj_at(x, y);
         idx = objects[offset].oc_class + SYM_OFF_O;
         if (offset == BOULDER)
             idx = SYM_BOULDER + SYM_OFF_X;
@@ -416,7 +419,7 @@ unsigned long *ospecial;
             if(offset == BOULDER)
                 cmap_color(S_extra_boulder, flags.classic_colors ? 0 : get_current_cmap_type_index());
             else
-                obj_color(offset);
+                obj_color(otmp, offset);
         }
         if (offset != BOULDER && is_objpile(x,y))
             special |= MG_OBJPILE;

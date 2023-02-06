@@ -87,6 +87,7 @@ struct material_definition {
 
     Bitfield(fragile, 1);
     Bitfield(destroyed_in_lava, 1);
+    Bitfield(wishable, 1);
 
     const char* foodword;
 
@@ -371,6 +372,7 @@ enum enchantment_init_types {
 enum material_init_types {
     MATINIT_NORMAL = 0,
     MATINIT_ONE_IN_TEN_SILVER,
+    MAX_MATINIT_TYPES
 };
 
 

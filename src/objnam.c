@@ -10,51 +10,62 @@
 /* NOTE: the order of these exactly corresponds to the
    order of oc_material values #define'd in objclass.h. */
 struct material_definition material_definitions[MAX_MATERIAL_TYPES] = {
-                                                                                                /* Flamm  Rustp  Corro  Rotta    Melts  Death  Flims  Metal  Miner    Gemst  Organ  Edibl  Slurp    Fragi  Dlava  */
-    {"mysterious",  "mysterious",  PHASE_VOID,     HIT_SURFACE_NONE,       FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "meal",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"liquid",      "liquid",      PHASE_LIQUID,   HIT_SURFACE_LIQUID,     FLOOR_SURFACE_LIQUID,   FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, TRUE,       "liquid",        NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"oil",         "oily",        PHASE_LIQUID,   HIT_SURFACE_LIQUID,     FLOOR_SURFACE_LIQUID,   TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,       "wax",           NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"wax",         "wax"  ,       PHASE_SOLID,    HIT_SURFACE_ORGANIC,    FLOOR_SURFACE_CARPET,   FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,       "food",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"vegetable",   "veggy",       PHASE_SOLID,    HIT_SURFACE_ORGANIC,    FLOOR_SURFACE_GRASS,    TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  TRUE,  TRUE,    FALSE, TRUE,       "meat",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"flesh",       "fleshy",      PHASE_SOLID,    HIT_SURFACE_FLESH,      FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  TRUE,  TRUE,    FALSE, TRUE,       "food",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"organic",     "organic",     PHASE_SOLID,    HIT_SURFACE_ORGANIC,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,       "food",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"paper",       "paper",       PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,       "paper",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"cloth",       "cloth",       PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,       "cloth",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"silk",        "silk" ,       PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,       "silk",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"leather",     "leather",     PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,       "leather",       NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"wood",        "wooden",      PHASE_SOLID,    HIT_SURFACE_WOOD,       FLOOR_SURFACE_WOOD,     TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,       "wood",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"bone",        "bone",        PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,       "bone",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"chitin",      "chitin",      PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,       "chitin",        NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"tooth",       "tooth",       PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,       "ivory",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"dragonhide",  "dragonhide",  PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_CARPET,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE,      "scale",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"iron",        "iron",        PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"steel",       "steel",       PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"metal",       "metallic",    PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"lead",        "leaden",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"copper",      "copper",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "copper",        NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"brass",       "brass",       PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "brass",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"bronze",      "bronze",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "bronze",        NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"silver",      "silver",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "silver",        NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"gold",        "golden",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "gold",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"platinum",    "platinum",    PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "platinum",      NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"orichalcum",  "orichalcum",  PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"adamantium",  "adamantium",  PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"mithril",     "mithril",     PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "metal",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"plastic",     "plastic",     PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,       "plastic",       NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"glass",       "glass",       PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   TRUE,  TRUE,       "glass",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"crystal",     "crystal",     PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   TRUE,  TRUE,       "crystal",       NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"hard crystal","hard crystal",PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE,      "crystal",       NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"gemstone",    "gemstone",    PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE,      "gemstone",      NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"stone",       "stone",       PHASE_SOLID,    HIT_SURFACE_STONE,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "rock",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"modronite",   "modronite",   PHASE_SOLID,    HIT_SURFACE_STONE,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,       "alien food",    NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"planar rift", "planar rift", PHASE_VOID,     HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "nothingness",   NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"force field", "force field", PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "force field",   NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"air",         "airy",        PHASE_GAS,      HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "air",           NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"fire",        "fiery",       PHASE_ENERGY,   HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "flames",        NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"energy",      "energy",      PHASE_ENERGY,   HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "energy",        NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"incorporeal", "incorporeal", PHASE_VOID,     HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "incorporeal foodstuff", NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"ice",         "ice",         PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,       "ice",           NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
-    {"soil",        "soil",        PHASE_SOLID,    HIT_SURFACE_STONE,      FLOOR_SURFACE_GROUND,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE,      "soil",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+                                                                                                /* Flamm  Rustp  Corro  Rotta    Melts  Death  Flims  Metal  Miner    Gemst  Organ  Edibl  Slurp    Fragi  Dlava  Wisha  */
+    {"mysterious",  "mysterious",  PHASE_VOID,     HIT_SURFACE_NONE,       FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE,       "meal",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"liquid",      "liquid",      PHASE_LIQUID,   HIT_SURFACE_LIQUID,     FLOOR_SURFACE_LIQUID,   FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, TRUE,  FALSE,       "liquid",        NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"oil",         "oily",        PHASE_LIQUID,   HIT_SURFACE_LIQUID,     FLOOR_SURFACE_LIQUID,   TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,  FALSE,       "wax",           NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"wax",         "wax"  ,       PHASE_SOLID,    HIT_SURFACE_ORGANIC,    FLOOR_SURFACE_CARPET,   FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,  FALSE,       "food",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"vegetable",   "veggy",       PHASE_SOLID,    HIT_SURFACE_ORGANIC,    FLOOR_SURFACE_GRASS,    TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  TRUE,  TRUE,    FALSE, TRUE,  FALSE,       "meat",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"flesh",       "fleshy",      PHASE_SOLID,    HIT_SURFACE_FLESH,      FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  TRUE,  TRUE,    FALSE, TRUE,  FALSE,       "food",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"organic",     "organic",     PHASE_SOLID,    HIT_SURFACE_ORGANIC,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,  FALSE,       "food",          NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"paper",       "paper",       PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,  FALSE,       "paper",         CLR_WHITE, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"cloth",       "cloth",       PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,  FALSE,       "cloth",         NO_COLOR, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"silk",        "silk" ,       PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,  FALSE,       "silk",          CLR_GRAY, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"leather",     "leather",     PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,  FALSE,       "leather",       CLR_BROWN, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"wood",        "wooden",      PHASE_SOLID,    HIT_SURFACE_WOOD,       FLOOR_SURFACE_WOOD,     TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,  TRUE,        "wood",          CLR_BROWN, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"bone",        "bone",        PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,  TRUE,        "bone",          CLR_WHITE, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"chitin",      "chitin",      PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  TRUE,        "chitin",        CLR_WHITE, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"tooth",       "tooth",       PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE,  TRUE,        "ivory",         CLR_WHITE, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"dragonhide",  "dragonhide",  PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_CARPET,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE, TRUE,        "scale",         CLR_MAGENTA, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"iron",        "iron",        PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "metal",         HI_METAL, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"steel",       "steel",       PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "metal",         HI_METAL, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"metal",       "metallic",    PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "metal",         HI_METAL, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"lead",        "leaden",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "metal",         CLR_GRAY, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"copper",      "copper",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "copper",        HI_COPPER, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"brass",       "brass",       PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "brass",         HI_COPPER, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"bronze",      "bronze",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "bronze",        HI_COPPER, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"silver",      "silver",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "silver",        HI_SILVER, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"gold",        "golden",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "gold",          HI_GOLD, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"platinum",    "platinum",    PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "platinum",      HI_SILVER, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"orichalcum",  "orichalcum",  PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "metal",         HI_GOLD, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"adamantium",  "adamantium",  PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "metal",         HI_SILVER, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"mithril",     "mithril",     PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "metal",         HI_SILVER, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"plastic",     "plastic",     PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  TRUE,        "plastic",       CLR_WHITE, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"glass",       "glass",       PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   TRUE,  TRUE,  TRUE,        "glass",         HI_GLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"crystal",     "crystal",     PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   TRUE,  TRUE,  TRUE,        "crystal",       HI_GLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"hard crystal","hard crystal",PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "crystal",       HI_GLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"gemstone",    "gemstone",    PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "gemstone",      CLR_BRIGHT_GREEN, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"stone",       "stone",       PHASE_SOLID,    HIT_SURFACE_STONE,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,        "rock",          CLR_GRAY, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"modronite",   "modronite",   PHASE_SOLID,    HIT_SURFACE_STONE,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE,       "alien food",    CLR_WHITE, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"planar rift", "planar rift", PHASE_VOID,     HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE,       "nothingness",   CLR_BLACK, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"force field", "force field", PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE,       "force field",   HI_ZAP, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"air",         "airy",        PHASE_GAS,      HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE,       "air",           CLR_CYAN, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"fire",        "fiery",       PHASE_ENERGY,   HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE,       "flames",        CLR_RED, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"energy",      "energy",      PHASE_ENERGY,   HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE,       "energy",        HI_ZAP, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"incorporeal", "incorporeal", PHASE_VOID,     HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE,       "incorporeal foodstuff", CLR_BLACK, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"ice",         "ice",         PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE,       "ice",           CLR_CYAN, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+    {"soil",        "soil",        PHASE_SOLID,    HIT_SURFACE_STONE,      FLOOR_SURFACE_GROUND,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE,       "soil",          CLR_BROWN, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
+};
+
+#define MAX_WISHING_MATERIALS 10
+struct material_wishing_definition {
+    uchar material[MAX_WISHING_MATERIALS];
+    schar probability[MAX_WISHING_MATERIALS];
+};
+
+struct material_wishing_definition material_wishing_definitions[MAX_MATINIT_TYPES] = {
+    { {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0} },
+    { {MAT_SILVER,0,0,0,0,0,0,0,0,0}, {75,0,0,0,0,0,0,0,0,0} },
 };
 
 const char* multishot_style_names[MAX_MULTISHOT_TYPES] = {
@@ -130,6 +141,7 @@ STATIC_DCL boolean FDECL(singplur_lookup, (char *, char *, BOOLEAN_P,
 STATIC_DCL char *FDECL(singplur_compound, (char *));
 STATIC_DCL char *FDECL(xname_flags, (struct obj *, unsigned));
 STATIC_DCL boolean FDECL(badman, (const char *, BOOLEAN_P));
+STATIC_DCL boolean FDECL(material_wish_success, (int, int));
 
 struct Jitem {
     int item;
@@ -3735,7 +3747,7 @@ boolean is_wiz_wish;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
     int eroded, eroded2, erodeproof, locked, unlocked, broken, open;
     int halfeaten, mntmp, contents;
-    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, exceptionality, mythic_prefix, mythic_suffix, key_special_quality, key_otyp, is_switchable;
+    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, material, exceptionality, mythic_prefix, mythic_suffix, key_special_quality, key_otyp, is_switchable;
     int tmp, tinv, tvariety;
     int wetness, gsize = 0;
     struct fruit *f;
@@ -3762,7 +3774,7 @@ boolean is_wiz_wish;
     boolean wiz_wishing = (wizard && is_wiz_wish);
 
     cnt = enchantment = charges = chargesfound = spesgn = typ = 0;
-    very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = exceptionality = mythic_prefix = mythic_suffix =
+    very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = material = exceptionality = mythic_prefix = mythic_suffix =
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
         locked = unlocked = open = broken = key_special_quality = key_otyp = is_switchable = 0;
@@ -4865,6 +4877,25 @@ boolean is_wiz_wish;
         }
     }
 
+    if (!material)
+    {
+        int m;
+        /* Check for materials */
+        for (m = MAT_NONE + 1; m < MAX_MATERIAL_TYPES; m++)
+        {
+            if (material_definitions[m].wishable)
+            {
+                size_t mlen = strlen(material_definitions[m].object_prefix);
+                if (!strncmpi(bp, material_definitions[m].object_prefix, mlen) && *(bp + mlen) == ' ')
+                {
+                    bp += mlen + 1;
+                    material = m;
+                    goto retry;
+                }
+            }
+        }
+    }
+
     if (!oclass)
         return ((struct obj *) 0);
  any:
@@ -5110,6 +5141,13 @@ boolean is_wiz_wish;
                 otmp->otyp = GRAY_DRAGON_SCALE_MAIL + mntmp - PM_GRAY_DRAGON;
             break;
         }
+    }
+
+    /* set material */
+    if (material > 0)
+    {
+        if (material_wish_success(typ, material))
+            otmp->material = material;
     }
 
     /* set eroded and erodeproof */
@@ -5766,6 +5804,31 @@ boolean normally_without_lock;
         else
             Sprintf(lbuf, " with %s lock", an(ldesc));
     }
+}
+
+STATIC_OVL
+boolean material_wish_success(otyp, material)
+int otyp, material;
+{
+    if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
+        return FALSE;
+
+    if (material == objects[otyp].oc_material)
+        return TRUE; /* base material always works */
+
+    int mit = objects[otyp].oc_material_init_type;
+    if (mit <= MATINIT_NORMAL || mit >= MAX_MATINIT_TYPES)
+        return FALSE;
+
+    int i;
+    for (i = 0; i < MAX_WISHING_MATERIALS && material_wishing_definitions[mit].material[i] > 0; i++)
+    {
+        if (material == material_wishing_definitions[mit].material[i])
+        {
+            return wizard || (rn2(100) < material_wishing_definitions[mit].probability[i]);
+        }
+    }
+    return FALSE;
 }
 
 /*objnam.c*/

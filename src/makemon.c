@@ -1042,6 +1042,8 @@ register struct monst *mtmp;
             {
                 int weaptype = SILVER_SABER;
                 short artifacttype = ART_GRAYSWANDIR;
+                unsigned long extra_flags = 0UL;
+                unsigned long param2 = 0UL;
 
                 switch (rn2(6))
                 {
@@ -1056,17 +1058,21 @@ register struct monst *mtmp;
                     artifacttype = ART_DEMONBANE;
                     break;
                 case 4:
-                    weaptype = SILVER_DAGGER;
+                    weaptype = DAGGER;
                     artifacttype = 0;
+                    extra_flags = MKOBJ_FLAGS_PARAM2_IS_MATERIAL;
+                    param2 = MAT_SILVER;
                     break;
                 case 5:
-                    weaptype = SILVER_MACE;
+                    weaptype = MACE;
                     artifacttype = 0;
+                    extra_flags = MKOBJ_FLAGS_PARAM2_IS_MATERIAL;
+                    param2 = MAT_SILVER;
                     break;
                 default:
                     break;
                 }
-                otmp = mksobj_with_flags(weaptype, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+                otmp = mksobj_with_flags(weaptype, TRUE, FALSE, FALSE, 0L, param2, mkobj_ownerflags(mtmp) | extra_flags);
 
                 /* maybe make it special */
                 if (artifacttype > 0 && !rn2(40))
