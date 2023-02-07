@@ -382,7 +382,7 @@ register struct monst *mtmp;
             if (!rn2(3))
                 (void)mongets(mtmp, FLAIL);
             else if (!rn2(2))
-                (void)mongets(mtmp, BONE_DAGGER);
+                (void)mongets_with_material(mtmp, DAGGER, MAT_BONE);
             break;
         case PM_GNOLL:
             if (rn2(7))
@@ -820,7 +820,7 @@ register struct monst *mtmp;
             }
             case 2:
                 (void) mongets(mtmp, !rn2(20) ? STAFF_SLING : SLING);
-                (void) mongets(mtmp, !rn2(20) ? SILVER_SLING_BULLET : !rn2(5) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET);
+                (void) mongets(mtmp, SLING_BULLET);
                 break;
             }
             if (!rn2(10))
@@ -930,7 +930,7 @@ register struct monst *mtmp;
             if (!rn2(2))
             {
                 (void)mongets(mtmp, !rn2(2) ? STAFF_SLING : SLING);
-                m_initthrow(mtmp, !rn2(5) ? SILVER_SLING_BULLET : !rn2(2) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 8, 12, FALSE, -1, -1, MAT_NONE);
+                m_initthrow(mtmp, SLING_BULLET, 8, 12, FALSE, -1, -1, MAT_NONE);
             }
             (void)mongets(mtmp, SCIMITAR);
             break;
@@ -938,7 +938,7 @@ register struct monst *mtmp;
             if (!rn2(20))
             {
                 (void)mongets(mtmp, SLING);
-                m_initthrow(mtmp, !rn2(20) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 6, 8, FALSE, -1, -1, MAT_NONE);
+                m_initthrow(mtmp, SLING_BULLET, 6, 8, FALSE, -1, -1, MAT_NONE);
             }
             if (rn2(2))
                 (void)mongets(mtmp, ORCISH_DAGGER);
@@ -947,7 +947,7 @@ register struct monst *mtmp;
             if (!rn2(4))
             {
                 (void)mongets(mtmp, !rn2(20)? STAFF_SLING : SLING);
-                m_initthrow(mtmp, !rn2(10) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET, 6, 8, FALSE, -1, -1, MAT_NONE);
+                m_initthrow(mtmp, SLING_BULLET, 6, 8, FALSE, -1, -1, MAT_NONE);
             }
             if (rn2(2))
                 (void)mongets(mtmp, !rn2(2) ? ORCISH_DAGGER : SCIMITAR);
@@ -1092,7 +1092,7 @@ register struct monst *mtmp;
         if (mm < PM_MODRON_QUINTON && !rn2(6))
         {
             //(void)mongets(mtmp, !rn2(3) ? STAFF_SLING : SLING);
-            //m_initthrow(mtmp, !rn2(10) ? SILVER_SLING_BULLET : IRON_SLING_BULLET, 8, 8, FALSE, -1, -1, MAT_NONE);
+            //m_initthrow(mtmp, SLING_BULLET, 8, 8, FALSE, -1, -1, MAT_NONE);
             goto default_equipment_here;
         }
         break;
@@ -1142,13 +1142,13 @@ register struct monst *mtmp;
             if (!rn2(4))
             {
                 (void)mongets(mtmp, !rn2(3) ? STAFF_SLING : SLING);
-                m_initthrow(mtmp, IRON_SLING_BULLET, 8, 8, FALSE, -1, -1, MAT_NONE);
+                m_initthrow(mtmp, SLING_BULLET, 8, 8, FALSE, -1, -1, MAT_NONE);
             }
             break;
         case PM_MARILITH:
-            (void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? BONE_DAGGER : AXE);
-            (void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? BONE_DAGGER : AXE);
-            (void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? BONE_DAGGER : AXE);
+            (void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? DAGGER : AXE);
+            (void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? DAGGER : AXE);
+            (void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? DAGGER : AXE);
             (void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? DAGGER : AXE);
             (void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? DAGGER : AXE);
             (void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? DAGGER : AXE);
@@ -4078,14 +4078,22 @@ int otyp;
 
 struct obj*
 mongets(mtmp, otyp)
-register struct monst *mtmp;
+register struct monst* mtmp;
 int otyp;
+{
+    return mongets_with_material(mtmp, otyp, MAT_NONE);
+}
+
+struct obj*
+mongets_with_material(mtmp, otyp, material)
+register struct monst *mtmp;
+int otyp, material;
 {
     register struct obj *otmp;
     if (!otyp || !mtmp)
         return (struct obj*)0;
 
-    otmp = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+    otmp = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, 0L, (long)material, mkobj_ownerflags(mtmp) | (material > 0 ? MKOBJ_FLAGS_PARAM2_IS_MATERIAL : 0UL));
     if (otmp) 
     {
         if (mtmp->data->mlet == S_DEMON) 

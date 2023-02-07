@@ -1656,6 +1656,7 @@ E int FDECL(adj_lev, (struct permonst *, int));
 E struct permonst *FDECL(grow_up, (struct monst *, struct monst *));
 E void FDECL(change_mon_ability_scores, (struct monst*, int, int));
 E struct obj* FDECL(mongets, (struct monst *, int));
+E struct obj* FDECL(mongets_with_material, (struct monst*, int, int));
 E struct obj* FDECL(mongets_spellbook, (struct monst*));
 E int FDECL(mongets_return_enchantment, (struct monst*, int));
 E struct obj* FDECL(mongets_noinit_item, (struct monst*, int,  int));

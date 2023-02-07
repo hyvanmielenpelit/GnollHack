@@ -68,8 +68,10 @@ struct material_definition material_definitions[MAX_MATERIAL_TYPES] = {
 struct material_wishing_definition material_wishing_definitions[MAX_MATINIT_TYPES] = {
     { {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0} },
     { {MAT_SILVER,0,0,0,0,0,0,0,0,0}, {100,0,0,0,0,0,0,0,0,0} },
+    { {MAT_SILVER,MAT_BONE,0,0,0,0,0,0,0,0}, {100,100,0,0,0,0,0,0,0,0} },
     { {MAT_SILVER,MAT_HARD_CRYSTAL,0,0,0,0,0,0,0,0}, {100,40,0,0,0,0,0,0,0,0} },
     { {MAT_BRONZE,MAT_HARD_CRYSTAL,MAT_ORICHALCUM,MAT_MITHRIL,MAT_ADAMANTIUM,0,0,0,0,0}, {100,100,100,100,100,0,0,0,0,0} },
+    { {MAT_SILVER,MAT_LEAD,0,0,0,0,0,0,0,0}, {100,100,0,0,0,0,0,0,0,0} },
 };
 
 NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =

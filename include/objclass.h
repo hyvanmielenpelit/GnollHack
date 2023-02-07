@@ -325,8 +325,10 @@ enum enchantment_init_types {
 enum material_init_types {
     MATINIT_NORMAL = 0,
     MATINIT_MAYBE_SILVER,
+    MATINIT_MAYBE_SILVER_OR_BONE,
     MATINIT_LONG_SWORD,
     MATINIT_PLATE_MAIL,
+    MATINIT_SLING_BULLET,
     MAX_MATINIT_TYPES
 };
 

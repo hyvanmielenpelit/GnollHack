@@ -508,12 +508,12 @@ int mtype;
                 (void)mpickobj(npc, otmp);
 
             /* Sling bullets */
-            mongets(npc, LEADEN_SLING_BULLET);
-            mongets(npc, IRON_SLING_BULLET);
+            mongets_with_material(npc, SLING_BULLET, MAT_LEAD);
+            mongets(npc, SLING_BULLET);
             for (i = 0; i < 3; i++)
             {
                 if(!rn2(2))
-                    mongets(npc, rnd_class(LEADEN_SLING_BULLET, SILVER_SLING_BULLET));
+                    mongets(npc, SLING_BULLET);
             }
             break;
         }

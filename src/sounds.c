@@ -7850,27 +7850,27 @@ struct monst* mtmp;
     switch (i)
     {
     case 1:
-        cost = max(1L, (long)((double)(objects[IRON_SLING_BULLET].oc_cost) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((double)(objects[SLING_BULLET].oc_cost) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_iron_sling_bullets_func, "forge 10 iron sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "2 nuggets of iron ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_IRON_SLING_BULLETS);
         break;
     case 2:
-        cost = max(1L, (long)((double)(objects[IRON_SLING_BULLET].oc_cost) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((double)(objects[SLING_BULLET].oc_cost) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_ex_iron_sling_bullets_func, "forge 10 exceptional iron sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "3 nuggets of iron ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_IRON_SLING_BULLETS);
         break;
     case 3:
-        cost = max(1L, (long)((double)(objects[IRON_SLING_BULLET].oc_cost) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((double)(objects[SLING_BULLET].oc_cost) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_el_iron_sling_bullets_func, "forge 10 elite iron sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "4 nuggets of iron ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_IRON_SLING_BULLETS);
         break;
     case 4:
-        cost = max(1L, (long)((double)(objects[SILVER_SLING_BULLET].oc_cost) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_silver_sling_bullets_func, "forge 10 silver sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "2 nuggets of silver ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_SILVER_SLING_BULLETS);
         break;
     case 5:
-        cost = max(1L, (long)((double)(objects[SILVER_SLING_BULLET].oc_cost) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_ex_silver_sling_bullets_func, "forge 10 exceptional silver sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "3 nuggets of silver ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_SILVER_SLING_BULLETS);
         break;
     case 6:
-        cost = max(1L, (long)((double)(objects[SILVER_SLING_BULLET].oc_cost) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_el_silver_sling_bullets_func, "forge 10 elite silver sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "4 nuggets of silver ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_SILVER_SLING_BULLETS);
         break;
     default:
@@ -10458,42 +10458,42 @@ STATIC_OVL int
 forge_iron_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 2, IRON_SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, MAT_NONE, FALSE);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 2, SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, MAT_NONE, FALSE);
 }
 
 STATIC_OVL int
 forge_ex_iron_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 3, IRON_SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, MAT_NONE, FALSE);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 3, SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, MAT_NONE, FALSE);
 }
 
 STATIC_OVL int
 forge_el_iron_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, IRON_SLING_BULLET, 10, EXCEPTIONALITY_ELITE, MAT_NONE, FALSE);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, SLING_BULLET, 10, EXCEPTIONALITY_ELITE, MAT_NONE, FALSE);
 }
 
 STATIC_OVL int
 forge_silver_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 2, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, MAT_NONE, FALSE);
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 2, SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, MAT_SILVER, FALSE);
 }
 
 STATIC_OVL int
 forge_ex_silver_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 3, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, MAT_NONE, FALSE);
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 3, SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, MAT_SILVER, FALSE);
 }
 
 STATIC_OVL int
 forge_el_silver_sling_bullets_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 4, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_ELITE, MAT_NONE, FALSE);
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 4, SLING_BULLET, 10, EXCEPTIONALITY_ELITE, MAT_SILVER, FALSE);
 }
 
 

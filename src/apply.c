@@ -5796,13 +5796,13 @@ doapply()
             (void)bagotricks(obj, FALSE, (int*)0);
             break;
         case POUCH_OF_ENDLESS_BOLTS:
-            (void)endlessarrows(obj, obj->blessed && !rn2(4) ? SILVER_CROSSBOW_BOLT : CROSSBOW_BOLT, rnd(10) + 10);
+            (void)endlessarrows(obj, CROSSBOW_BOLT, rnd(10) + 10);
             break;
         case BAG_OF_INFINITE_SLING_BULLETS:
-            (void)endlessarrows(obj, obj->blessed && !rn2(4) ? SILVER_SLING_BULLET : ((obj->blessed || !rn2(2)) && !obj->cursed ? IRON_SLING_BULLET : LEADEN_SLING_BULLET), rnd(10) + 10);
+            (void)endlessarrows(obj, SLING_BULLET, rnd(10) + 10);
             break;
         case QUIVER_OF_INFINITE_ARROWS:
-            (void)endlessarrows(obj, obj->blessed && !rn2(4) ? SILVER_ARROW : ARROW, rnd(10) + 10);
+            (void)endlessarrows(obj, ARROW, rnd(10) + 10);
             break;
         case CAN_OF_GREASE:
             use_grease(obj);

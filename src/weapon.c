@@ -183,7 +183,7 @@ struct obj *obj;
                         : (obj->oclass == GEM_CLASS)
                             ? "gem"
                             /* in case somebody adds odd sling ammo */
-                            : (obj->otyp == LEADEN_SLING_BULLET || obj->otyp == IRON_SLING_BULLET || obj->otyp == SILVER_SLING_BULLET || is_graystone(obj))
+                            : (obj->otyp == SLING_BULLET || is_graystone(obj))
                                 ? "sling-bullet"
                                 : def_oc_syms[(int) obj->oclass].name;
         break;
@@ -891,10 +891,10 @@ int otyp, exceptionality;
 /* TODO: have monsters use aklys' throw-and-return */
 STATIC_VAR NEARDATA const int rwep[] = {
     DWARVISH_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, JAVELIN,
-    SHURIKEN, YA, SILVER_ARROW, BONE_ARROW, ELVEN_ARROW, ARROW, ORCISH_ARROW,
-    SILVER_CROSSBOW_BOLT, BONE_QUARREL, CROSSBOW_BOLT, GNOLLISH_QUARREL, 
-    SILVER_SLING_BULLET, IRON_SLING_BULLET, LEADEN_SLING_BULLET,
-    BONE_DAGGER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, SILVER_KNIFE, KNIFE,
+    SHURIKEN, YA, ELVEN_ARROW, ARROW, ORCISH_ARROW,
+    CROSSBOW_BOLT, GNOLLISH_QUARREL, 
+    SLING_BULLET,
+    ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, KNIFE,
     FLINT, ROCK, STONE_PEBBLE, CLAY_PEBBLE, LOADSTONE, LUCKSTONE, DART,
     /* BOOMERANG, */ CREAM_PIE
 };

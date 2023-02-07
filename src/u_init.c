@@ -27,6 +27,7 @@ STATIC_DCL void FDECL(knows_class, (CHAR_P));
 STATIC_DCL boolean FDECL(restricted_spell_discipline, (int));
 STATIC_DCL void NDECL(add_school_specific_spellbooks);
 STATIC_DCL struct obj* FDECL(mk_obj_in_container_known, (struct obj*, int));
+STATIC_DCL struct obj* FDECL(mk_obj_with_material_in_container_known, (struct obj*, int, int));
 
 #define UNDEF_TYP 0
 #define UNDEF_SPE '\177'
@@ -275,7 +276,7 @@ STATIC_VAR const struct trobj OreDetection[] = { { WAN_ORE_DETECTION, UNDEF_SPE,
 STATIC_VAR const struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0, 0, 0, 0, MAT_NONE },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 
-STATIC_VAR const struct trobj DeathQuarrel[] = { { BONE_QUARREL, 0, WEAPON_CLASS, 1, 0, 0, DEATH_ENCHANTMENT, 0, MAT_NONE },
+STATIC_VAR const struct trobj DeathQuarrel[] = { { CROSSBOW_BOLT, 0, WEAPON_CLASS, 1, 0, 0, DEATH_ENCHANTMENT, 0, MAT_BONE },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 STATIC_VAR const struct trobj LightningArrow[] = { { ARROW, 0, WEAPON_CLASS, 2, 0, 0, LIGHTNING_ENCHANTMENT, 0, MAT_NONE },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
@@ -367,14 +368,12 @@ STATIC_VAR const struct inv_sub {
     { PM_DWARF, ELVEN_WAYBREAD, CRAM_RATION },
     { PM_GNOLL, LONG_SWORD, FLAIL },
     { PM_GNOLL, SHORT_SWORD, FLAIL },
-    { PM_GNOLL, SCALPEL, BONE_DAGGER },
-    { PM_GNOLL, DAGGER, BONE_DAGGER },
+    { PM_GNOLL, SCALPEL, DAGGER },
     { PM_GNOLL, MACE, FLAIL },
     { PM_GNOLL, CLUB, FLAIL },
     { PM_GNOLL, SHORT_BOW, CROSSBOW },
     { PM_GNOLL, LONG_BOW, CROSSBOW },
     { PM_GNOLL, ARROW, GNOLLISH_QUARREL },
-    { PM_GNOLL, BONE_ARROW, BONE_QUARREL },
     { PM_GNOLL, HELMET, GNOLLISH_HOOD },
     { PM_GNOLL, COTTON_HOOD, GNOLLISH_HOOD },
     { PM_GNOLL, LEATHER_HAT, GNOLLISH_HOOD },
@@ -1823,8 +1822,8 @@ register const struct trobj * trop;
                     }
                     else
                     {
-                        (void)mk_obj_in_container_known(obj, SILVER_FORK);
-                        (void)mk_obj_in_container_known(obj, SILVER_KNIFE);
+                        (void)mk_obj_with_material_in_container_known(obj, FORK, MAT_SILVER);
+                        (void)mk_obj_with_material_in_container_known(obj, KNIFE, MAT_SILVER);
                         (void)mk_obj_in_container_known(obj, FOOD_RATION);
                         if (!rn2(2))
                             (void)mk_obj_in_container_known(obj, FOOD_RATION);
@@ -2077,12 +2076,21 @@ register const struct trobj * trop;
 }
 
 STATIC_OVL
-struct obj* 
+struct obj*
 mk_obj_in_container_known(container, itemtype)
 struct obj* container;
 int itemtype;
 {
-    struct obj* otmp = mksobj(itemtype, FALSE, FALSE, TRUE);
+    return mk_obj_with_material_in_container_known(container, itemtype, MAT_NONE);
+}
+
+STATIC_OVL
+struct obj* 
+mk_obj_with_material_in_container_known(container, itemtype, material)
+struct obj* container;
+int itemtype, material;
+{
+    struct obj* otmp = mksobj_with_flags(itemtype, FALSE, FALSE, TRUE, 0L, material, material > 0 ? MKOBJ_FLAGS_PARAM2_IS_MATERIAL : 0UL);
     if (otmp)
     {
         otmp->bknown = 1;

@@ -1021,7 +1021,7 @@ t_missile(otyp, trap)
 int otyp;
 struct trap *trap;
 {
-    struct obj *otmp = mksobj(otyp, TRUE, FALSE, FALSE);
+    struct obj *otmp = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
 
     otmp->quan = 1L;
     otmp->owt = weight(otmp);

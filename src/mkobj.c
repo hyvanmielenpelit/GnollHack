@@ -4876,6 +4876,12 @@ int otyp;
         if(!rn2(20))
             mat = MAT_SILVER;
         break;
+    case MATINIT_MAYBE_SILVER_OR_BONE:
+        if (!rn2(20))
+            mat = MAT_SILVER;
+        else if (!rn2(20))
+            mat = MAT_BONE;
+        break;
     case MATINIT_LONG_SWORD:
         if (!rn2(800))
             mat = MAT_HARD_CRYSTAL;
@@ -4893,6 +4899,12 @@ int otyp;
             mat = MAT_MITHRIL;
         else if (!rn2(50) && levdiff >= 8)
             mat = MAT_ADAMANTIUM;
+        break;
+    case MATINIT_SLING_BULLET:
+        if (!rn2(20))
+            mat = MAT_SILVER;
+        else if (!rn2(2))
+            mat = MAT_LEAD;
         break;
     case MATINIT_NORMAL:
     default:
