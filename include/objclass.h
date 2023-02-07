@@ -369,6 +369,12 @@ struct material_definition {
     double cost_multiplier;
     double cost_addition;
     int power_armor[MAX_ARMOR_TYPES];
+    int sdice_adjustment;
+    int sdam_adjustment;
+    int splus_adjustment;
+    int ldice_adjustment;
+    int ldam_adjustment;
+    int lplus_adjustment;
     int power_weapon;
     unsigned long extra_oflags1;
     unsigned long extra_oflags2;

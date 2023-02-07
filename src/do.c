@@ -1284,31 +1284,34 @@ register struct obj* obj;
         boolean doubledamagetopermittedtargets = FALSE;
 
         /* Damage - Small */
-        if((objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0) || objects[otyp].oc_wsdmgplus != 0)
+        short wsdice = get_obj_wsdice(obj);
+        short wsdam = get_obj_wsdam(obj);
+        short wsdmgplus = get_obj_wsdmgplus(obj);
+        if((wsdice > 0 && wsdam > 0) || wsdmgplus != 0)
         {
             printmaindmgtype = TRUE;
             Sprintf(buf, "Base damage - Small:    ");
 
-            if (objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0)
+            if (wsdice > 0 && wsdam > 0)
             {
                 maindiceprinted = TRUE;
-                Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wsdice * exceptionality_multiplier, objects[otyp].oc_wsdam);
+                Sprintf(plusbuf, "%dd%d", wsdice * exceptionality_multiplier, wsdam);
                 Strcat(buf, plusbuf);
             }
 
-            if (objects[otyp].oc_wsdmgplus != 0)
+            if (wsdmgplus != 0)
             {
-                if (maindiceprinted && objects[otyp].oc_wsdmgplus > 0)
+                if (maindiceprinted && wsdmgplus > 0)
                 {
                     Sprintf(plusbuf, "+");
                     Strcat(buf, plusbuf);
                 }
-                Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus * exceptionality_multiplier);
+                Sprintf(plusbuf, "%d", wsdmgplus * exceptionality_multiplier);
                 Strcat(buf, plusbuf);
             }
 
             char endbuf[BUFSZ] = "";
-            double avgdmg = (double)exceptionality_multiplier * ((double)objects[otyp].oc_wsdice * (double)(1 + objects[otyp].oc_wsdam) / 2.0 + (double)objects[otyp].oc_wsdmgplus);
+            double avgdmg = (double)exceptionality_multiplier * ((double)wsdice * (double)(1 + wsdam) / 2.0 + (double)wsdmgplus);
             if (*endbuf)
                 Strcat(endbuf, ", ");
             Sprintf(eos(endbuf), "avg %.1f", avgdmg);
@@ -1348,32 +1351,35 @@ register struct obj* obj;
 
 
         /* Damage - Large */
-        if((objects[otyp].oc_wldice > 0 && objects[otyp].oc_wldam > 0) || objects[otyp].oc_wldmgplus != 0)
+        short wldice = get_obj_wldice(obj);
+        short wldam = get_obj_wldam(obj);
+        short wldmgplus = get_obj_wldmgplus(obj);
+        if((wldice > 0 && wldam > 0) || wldmgplus != 0)
         {
             printmaindmgtype = TRUE;
             maindiceprinted = FALSE;
             Sprintf(buf, "Base damage - Large:    ");
 
-            if (objects[otyp].oc_wldice > 0 && objects[otyp].oc_wldam > 0)
+            if (wldice > 0 && wldam > 0)
             {
                 maindiceprinted = TRUE;
-                Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wldice * exceptionality_multiplier, objects[otyp].oc_wldam);
+                Sprintf(plusbuf, "%dd%d", wldice * exceptionality_multiplier, wldam);
                 Strcat(buf, plusbuf);
             }
 
-            if (objects[otyp].oc_wldmgplus != 0)
+            if (wldmgplus != 0)
             {
-                if (maindiceprinted && objects[otyp].oc_wldmgplus > 0)
+                if (maindiceprinted && wldmgplus > 0)
                 {
                     Sprintf(plusbuf, "+");
                     Strcat(buf, plusbuf);
                 }
-                Sprintf(plusbuf, "%d", objects[otyp].oc_wldmgplus * exceptionality_multiplier);
+                Sprintf(plusbuf, "%d", wldmgplus * exceptionality_multiplier);
                 Strcat(buf, plusbuf);
             }
 
             char endbuf[BUFSZ] = "";
-            double avgdmg = (double)exceptionality_multiplier * ((double)objects[otyp].oc_wldice * (double)(1 + objects[otyp].oc_wldam) / 2.0 + (double)objects[otyp].oc_wldmgplus);
+            double avgdmg = (double)exceptionality_multiplier * ((double)wldice * (double)(1 + wldam) / 2.0 + (double)wldmgplus);
             if (*endbuf)
                 Strcat(endbuf, ", ");
             Sprintf(eos(endbuf), "avg %.1f", avgdmg);
@@ -1411,8 +1417,8 @@ register struct obj* obj;
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
-        double base_avg_dmg = 0.5 * ((double)objects[otyp].oc_wsdice * (double)exceptionality_multiplier * (1.0 + (double)objects[otyp].oc_wsdam) / 2.0 + (double)objects[otyp].oc_wsdmgplus * (double)exceptionality_multiplier
-            + objects[otyp].oc_wldice * (double)exceptionality_multiplier * (1.0 + (double)objects[otyp].oc_wldam) / 2.0 + (double)objects[otyp].oc_wldmgplus * (double)exceptionality_multiplier);
+        double base_avg_dmg = 0.5 * ((double)wsdice * (double)exceptionality_multiplier * (1.0 + (double)wsdam) / 2.0 + (double)wsdmgplus * (double)exceptionality_multiplier
+            + wldice * (double)exceptionality_multiplier * (1.0 + (double)wldam) / 2.0 + (double)wldmgplus * (double)exceptionality_multiplier);
         wep_avg_dmg += base_avg_dmg;
         wep_multipliable_avg_dmg += base_avg_dmg;
         if (doubledamagetopermittedtargets)
@@ -1739,7 +1745,7 @@ register struct obj* obj;
                         Sprintf(plusbuf, "+");
                         Strcat(buf, plusbuf);
                     }
-                    Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
+                    Sprintf(plusbuf, "%d", objects[otyp].oc_spell_dmg_plus);
                     Strcat(buf, plusbuf);
                 }
 

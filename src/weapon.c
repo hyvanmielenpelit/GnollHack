@@ -467,19 +467,25 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
             double mythic_multiplier = get_mythic_dmg_multiplier(otmp, mon, mattacker);
             int tmp2 = 0;
             int exp_round;
+            short wsdice = get_obj_wsdice(otmp);
+            short wsdam = get_obj_wsdam(otmp);
+            short wsdmgplus = get_obj_wsdmgplus(otmp);
+            short wldice = get_obj_wldice(otmp);
+            short wldam = get_obj_wldam(otmp);
+            short wldmgplus = get_obj_wldmgplus(otmp);
             for (exp_round = 0; exp_round < exceptionality_rounds; exp_round++)
             {
                 if (bigmonst(ptr)) 
                 {
-                    if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)
-                        tmp2 += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
-                    tmp2 += objects[otyp].oc_wldmgplus;
+                    if (wldam > 0 && wldice > 0)
+                        tmp2 += d(wldice, wldam);
+                    tmp2 += wldmgplus;
                 }
                 else 
                 {
-                    if (objects[otyp].oc_wsdam > 0 && objects[otyp].oc_wsdice > 0)
-                        tmp2 += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
-                    tmp2 += objects[otyp].oc_wsdmgplus;
+                    if (wsdam > 0 && wsdice > 0)
+                        tmp2 += d(wsdice, wsdam);
+                    tmp2 += wsdmgplus;
                 }
             }
 
@@ -4411,6 +4417,96 @@ dump_skills(VOID_ARGS)
     }
     Sprintf(buf, "You had %d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
     putstr(0, 0, buf);
+}
+
+short
+get_obj_wsdice(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wsdice;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].sdice_adjustment - material_definitions[objects[obj->otyp].oc_material].sdice_adjustment;
+    }
+    return res;
+}
+
+short
+get_obj_wsdam(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wsdam;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].sdam_adjustment - material_definitions[objects[obj->otyp].oc_material].sdam_adjustment;
+    }
+    return res;
+}
+
+short
+get_obj_wsdmgplus(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wsdmgplus;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].splus_adjustment - material_definitions[objects[obj->otyp].oc_material].splus_adjustment;
+    }
+    return res;
+}
+
+short
+get_obj_wldice(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wldice;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].ldice_adjustment - material_definitions[objects[obj->otyp].oc_material].ldice_adjustment;
+    }
+    return res;
+}
+
+short
+get_obj_wldam(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wldam;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].ldam_adjustment - material_definitions[objects[obj->otyp].oc_material].ldam_adjustment;
+    }
+    return res;
+}
+
+short
+get_obj_wldmgplus(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wldmgplus;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].lplus_adjustment - material_definitions[objects[obj->otyp].oc_material].lplus_adjustment;
+    }
+    return res;
 }
 
 /*weapon.c*/

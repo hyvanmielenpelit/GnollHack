@@ -3966,6 +3966,12 @@ E void FDECL(print_weapon_style_string, (char*, BOOLEAN_P));
 E int FDECL(limited_skill_level, (enum p_skills, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(exceptionality_digging_speed_bonus, (struct obj*));
 E int FDECL(exceptionality_weapon_disarm_bonus, (struct obj*));
+E short FDECL(get_obj_wsdice, (struct obj*));
+E short FDECL(get_obj_wsdam, (struct obj*));
+E short FDECL(get_obj_wsdmgplus, (struct obj*));
+E short FDECL(get_obj_wldice, (struct obj*));
+E short FDECL(get_obj_wldam, (struct obj*));
+E short FDECL(get_obj_wldmgplus, (struct obj*));
 E void NDECL(dump_skills);
 
 
