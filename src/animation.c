@@ -2195,6 +2195,46 @@ break;
             }
             break;
         }
+        case REPLACEMENT_ACTION_PLATE_MAIL_MATERIAL:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            if (otmp->material != objects[otmp->otyp].oc_material)
+            {
+                int glyph_idx = 0;
+                switch (otmp->material)
+                {
+                case MAT_BRONZE:
+                    glyph_idx = 0;
+                    break;
+                case MAT_HARD_CRYSTAL:
+                    glyph_idx = 1;
+                    break;
+                case MAT_ORICHALCUM:
+                    glyph_idx = 2;
+                    break;
+                case MAT_MITHRIL:
+                    glyph_idx = 3;
+                    break;
+                case MAT_ADAMANTIUM:
+                    glyph_idx = 4;
+                    break;
+                default:
+                    return ntile;
+                }
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
         default:
             break;
         }
@@ -2676,6 +2716,39 @@ struct replacement_info info;
             }
             break;
         }
+        case REPLACEMENT_ACTION_PLATE_MAIL_MATERIAL:
+        {
+            if (!otmp)
+                return glyph;
+
+            if (otmp->material != objects[otmp->otyp].oc_material)
+            {
+                int glyph_idx = 0;
+                switch (otmp->material)
+                {
+                case MAT_BRONZE:
+                    glyph_idx = 0;
+                    break;
+                case MAT_HARD_CRYSTAL:
+                    glyph_idx = 1;
+                    break;
+                case MAT_ORICHALCUM:
+                    glyph_idx = 2;
+                    break;
+                case MAT_MITHRIL:
+                    glyph_idx = 3;
+                    break;
+                case MAT_ADAMANTIUM:
+                    glyph_idx = 4;
+                    break;
+                default:
+                    return glyph;
+                }
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+
         default:
             break;
         }

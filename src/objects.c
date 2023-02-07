@@ -987,10 +987,15 @@ BOW("Galadhrim bow", "ornamental long bow",
         GENERAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
             cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,matinit,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,NO_ANIMATION,NO_ENLARGEMENT,NO_REPLACEMENT)
 
+#define GENERAL_SUIT(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
+            cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,matinit,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,anim,enl,repl)           \
+        GENERAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
+            cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,ARM_SUIT,P_NONE,matinit,metal,c,height,soundset,flags,flags2,flags3,flags4 | O4_CAN_HAVE_EXCEPTIONALITY,flags5,flags6,powconfermask,anim,enl,repl)
 #define SUIT(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
             cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,matinit,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)           \
-        ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
-            cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,ARM_SUIT,P_NONE,matinit,metal,c,height,soundset,flags,flags2,flags3,flags4 | O4_CAN_HAVE_EXCEPTIONALITY,flags5,flags6,powconfermask)
+        GENERAL_SUIT(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
+            cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,matinit,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,NO_ANIMATION,NO_ENLARGEMENT,NO_REPLACEMENT)
+
 
 #define HELM(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,matinit,metal,c,floor_height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
@@ -1241,21 +1246,21 @@ DRGN_ARMR("yellow dragon scales",
     O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 #undef DRGN_ARMR
 /* other suits */
-SUIT("full plate mail", None, 
+GENERAL_SUIT("full plate mail", None, 
     1, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     20, 7, 960, 2000, 1, 5, 0, 0, 0, 0, 14, 
     MATINIT_PLATE_MAIL, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_RARE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_NONE, O4_RARE, O5_NONE, O6_NONE, PERMITTED_ALL, NO_ANIMATION, NO_ENLARGEMENT, FULL_PLATE_MAIL_REPLACEMENT),
 SUIT("field plate mail", None, 
     1, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     25, 6, 840, 1000, 2, 4, 0, 0, 0, 0, 12, 
     MATINIT_PLATE_MAIL, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_RARE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SUIT("plate mail", None, 
+GENERAL_SUIT("plate mail", None, 
     1, 0, 1,NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     30, 5, 720, 600, 3, 3, 0, 0, 0, 0, 10, 
     MATINIT_PLATE_MAIL, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, NO_ANIMATION, NO_ENLARGEMENT, PLATE_MAIL_REPLACEMENT),
 SUIT("splint mail", None,
     1, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     35, 5, 640, 125,  4, 3, 0, 0, 0, 0, 7, 
@@ -1769,17 +1774,21 @@ WEAPONBOOTS("spiked silver boots", None,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
 
 
+#undef GENERAL_SUIT
 #undef SUIT
 #undef HELM
 #undef CLOAK
+#undef GENERAL_SHIELD
 #undef SHIELD
 #undef SHIRT
 #undef ROBE
+#undef GENERAL_BRACERS
 #undef BRACERS
 #undef GLOVES
+#undef GENERAL_BOOTS
 #undef BOOTS
-#undef ARMOR
 #undef GENERAL_ARMOR
+#undef ARMOR
 #undef WEAPONSHIELD
 #undef WEAPONGLOVES
 #undef WEAPONBOOTS
