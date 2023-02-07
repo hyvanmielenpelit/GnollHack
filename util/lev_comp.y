@@ -204,7 +204,7 @@ extern char curr_token[512];
 %token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_SUBTYPE FLOOR_SUBTYPE_ID FLOOR_ID FLOOR_TYPE FLOOR_TYPE_ID
 %token	<i> DECORATION_ID DECORATION_TYPE DECORATION_DIR DECORATION_ITEM_STATE
 %token	<i> ELEMENTAL_ENCHANTMENT_TYPE EXCEPTIONALITY_TYPE EXCEPTIONALITY_ID ELEMENTAL_ENCHANTMENT_ID ENCHANTMENT_ID SECRET_DOOR_ID USES_UP_KEY_ID
-%token	<i> MYTHIC_PREFIX_TYPE MYTHIC_SUFFIX_TYPE MYTHIC_PREFIX_ID MYTHIC_SUFFIX_ID
+%token	<i> MYTHIC_PREFIX_TYPE MYTHIC_SUFFIX_TYPE MYTHIC_PREFIX_ID MYTHIC_SUFFIX_ID MATERIAL_ID MATERIAL_TYPE
 %token	<i> CHARGES_ID SPECIAL_QUALITY_ID SPEFLAGS_ID
 %token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS SUBTYPE_ID NON_PASSDOOR_ID CARPET_ID CARPET_PIECE_ID CARPET_TYPE
 %token	<i> MON_APPEARANCE ROOMDOOR_ID IF_ID ELSE_ID
@@ -1870,73 +1870,78 @@ object_info	: CURSE_TYPE
 		| EXCEPTIONALITY_ID ':' EXCEPTIONALITY_TYPE
 		  {
 		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_EXCEPTIONALITY));
-		      $$ = 0x10000;
+		      $$ = 0x00010000;
 		  }
 		| ENCHANTMENT_ID ':' integer_or_var
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_O_V_ENCHANTMENT));
-		      $$ = 0x20000;
+		      $$ = 0x00020000;
 		  }
 		| CHARGES_ID ':' integer_or_var
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_O_V_CHARGES));
-		      $$ = 0x40000;
+		      $$ = 0x00040000;
 		  }
 		| SPECIAL_QUALITY_ID ':' integer_or_var
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_O_V_SPECIAL_QUALITY));
-		      $$ = 0x80000;
+		      $$ = 0x00080000;
 		  }
 		| MANUAL_TYPE_ID ':' MANUAL_TYPE
 		  {
 		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_SPECIAL_QUALITY));
-		      $$ = 0x80000;
+		      $$ = 0x00080000;
 		  }
 		| SPEFLAGS_ID ':' integer_or_var
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_O_V_SPEFLAGS));
-		      $$ = 0x100000;
+		      $$ = 0x00100000;
 		  }
 		| KEYTYPE_ID ':' object_or_var
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_O_V_KEY_TYPE));
-		      $$ = 0x200000;
+		      $$ = 0x00200000;
 		  }
 		| INDESTRUCTIBLE_ID
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_O_V_INDESTRUCTIBLE));
-		      $$ = 0x400000;
+		      $$ = 0x00400000;
 		  }
 		| USES_UP_KEY_ID
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_O_V_USES_UP_KEY));
-		      $$ = 0x800000;
+		      $$ = 0x00800000;
 		  }
 		| NO_PICKUP_ID
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_O_V_NO_PICKUP));
-		      $$ = 0x1000000;
+		      $$ = 0x01000000;
 		  }
         | MYTHIC_TYPE
 		  {
 		      add_opvars(splev, "ii",
 				 VA_PASS2((int) $1, SP_O_V_MYTHIC_TYPE));
-		      $$ = 0x2000000;
+		      $$ = 0x02000000;
 		  }		
 	    | MYTHIC_PREFIX_ID ':' MYTHIC_PREFIX_TYPE
 		  {
 		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_MYTHIC_PREFIX));
-		      $$ = 0x4000000;
+		      $$ = 0x04000000;
 		  }
 		| MYTHIC_SUFFIX_ID ':' MYTHIC_SUFFIX_TYPE
 		  {
 		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_MYTHIC_SUFFIX));
-		      $$ = 0x8000000;
+		      $$ = 0x08000000;
 		  }
 		| AGE_ID ':' integer_or_var
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_O_V_AGE));
 		      $$ = 0x10000000;
+		  }
+		| MATERIAL_ID ':' MATERIAL_TYPE
+		  {
+		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_MATERIAL));
+		      $$ = 0x20000000;
 		  }
 		;
 

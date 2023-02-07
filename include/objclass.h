@@ -62,53 +62,6 @@ enum multishot_types {
 };
 extern const char* multishot_style_names[MAX_MULTISHOT_TYPES]; /* in objnam.c */
 
-
-struct material_definition {
-    const char* name;
-    const char* object_prefix;
-    enum material_phase phase;
-    enum hit_surface_types hit_surface_mapping;
-    enum floor_surface_types floor_surface_mapping;
-    Bitfield(flammable, 1);
-    Bitfield(rustprone, 1);
-    Bitfield(corrodeable, 1);
-    Bitfield(rottable, 1);
-
-    Bitfield(melts_in_fire, 1);        /* Solids melt, liquids boil */
-    Bitfield(death_enchantable, 1);
-    Bitfield(flimsy, 1);
-    Bitfield(metallic, 1);
-    Bitfield(mineral, 1);
-
-    Bitfield(gemstone, 1);
-    Bitfield(organic, 1);
-    Bitfield(edible, 1);
-    Bitfield(slurpable, 1);
-
-    Bitfield(fragile, 1);
-    Bitfield(destroyed_in_lava, 1);
-    Bitfield(wishable, 1);
-
-    const char* foodword;
-
-    uchar color;
-    schar acbonus_armor;
-    schar mcbonus_armor;
-    schar spell_casting_penalty_armor;
-    double weight_multiplier;
-    double cost_multiplier;
-    double damage_multiplier;
-    int power_armor;
-    int power_weapon;
-    unsigned long extra_oflags1;
-    unsigned long extra_oflags2;
-    unsigned long extra_oflags3;
-    unsigned long extra_oflags4;
-    unsigned long extra_oflags5;
-    unsigned long extra_oflags6;
-};
-extern struct material_definition material_definitions[MAX_MATERIAL_TYPES]; /* in objnam.c */
-
 enum obj_armor_types {
     ARM_SUIT    = 0,
     ARM_SHIELD  = 1,        /* needed for special wear function */
@@ -376,6 +329,58 @@ enum material_init_types {
     MAX_MATINIT_TYPES
 };
 
+struct material_definition {
+    const char* name;
+    const char* object_prefix;
+    enum material_phase phase;
+    enum hit_surface_types hit_surface_mapping;
+    enum floor_surface_types floor_surface_mapping;
+    Bitfield(flammable, 1);
+    Bitfield(rustprone, 1);
+    Bitfield(corrodeable, 1);
+    Bitfield(rottable, 1);
+
+    Bitfield(melts_in_fire, 1);        /* Solids melt, liquids boil */
+    Bitfield(death_enchantable, 1);
+    Bitfield(flimsy, 1);
+    Bitfield(metallic, 1);
+    Bitfield(mineral, 1);
+
+    Bitfield(gemstone, 1);
+    Bitfield(organic, 1);
+    Bitfield(edible, 1);
+    Bitfield(slurpable, 1);
+
+    Bitfield(fragile, 1);
+    Bitfield(destroyed_in_lava, 1);
+    Bitfield(wishable, 1);
+
+    const char* foodword;
+
+    uchar color;
+    schar acbonus_armor;
+    schar mcbonus_armor;
+    schar spell_casting_penalty_armor;
+    double weight_multiplier;
+    double cost_multiplier;
+    double damage_multiplier;
+    int power_armor;
+    int power_weapon;
+    unsigned long extra_oflags1;
+    unsigned long extra_oflags2;
+    unsigned long extra_oflags3;
+    unsigned long extra_oflags4;
+    unsigned long extra_oflags5;
+    unsigned long extra_oflags6;
+};
+extern struct material_definition material_definitions[MAX_MATERIAL_TYPES]; /* in o_init.c */
+
+#define MAX_WISHING_MATERIALS 10
+struct material_wishing_definition {
+    uchar material[MAX_WISHING_MATERIALS];
+    schar probability[MAX_WISHING_MATERIALS];
+};
+extern struct material_wishing_definition material_wishing_definitions[MAX_MATINIT_TYPES]; /* in o_init.c */
 
 struct objclass {
     short oc_name_idx;              /* index of actual name */

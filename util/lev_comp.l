@@ -252,6 +252,7 @@ air		{ savetoken(yytext); yylval.i=AIRLOC;  return HUMIDITY_TYPE; }
 floor   { savetoken(yytext); yylval.i=FLOORLOC;  return HUMIDITY_TYPE; }
 levregion	ST_RET(LEV);
 quantity	ST_RET(QUANTITY_ID);
+material	ST_RET(MATERIAL_ID);
 elemental_enchantment	ST_RET(ELEMENTAL_ENCHANTMENT_ID);
 exceptionality	ST_RET(EXCEPTIONALITY_ID);
 mythic_prefix	ST_RET(MYTHIC_PREFIX_ID);
@@ -429,6 +430,18 @@ primordial { savetoken(yytext); yylval.i=EXCEPTIONALITY_PRIMORDIAL; return EXCEP
 infernal { savetoken(yytext); yylval.i=EXCEPTIONALITY_INFERNAL; return EXCEPTIONALITY_TYPE; }
 no_mythic_prefix { savetoken(yytext); yylval.i=MYTHIC_PREFIX_NONE; return MYTHIC_PREFIX_TYPE; }
 no_mythic_suffix { savetoken(yytext); yylval.i=MYTHIC_SUFFIX_NONE; return MYTHIC_SUFFIX_TYPE; }
+material_none { savetoken(yytext); yylval.i=MAT_NONE; return MATERIAL_TYPE; }
+material_silver { savetoken(yytext); yylval.i=MAT_SILVER; return MATERIAL_TYPE; }
+material_orichalcum { savetoken(yytext); yylval.i=MAT_ORICHALCUM; return MATERIAL_TYPE; }
+material_mithril { savetoken(yytext); yylval.i=MAT_MITHRIL; return MATERIAL_TYPE; }
+material_adamantium { savetoken(yytext); yylval.i=MAT_ADAMANTIUM; return MATERIAL_TYPE; }
+material_bronze { savetoken(yytext); yylval.i=MAT_BRONZE; return MATERIAL_TYPE; }
+material_bone { savetoken(yytext); yylval.i=MAT_BONE; return MATERIAL_TYPE; }
+material_iron { savetoken(yytext); yylval.i=MAT_IRON; return MATERIAL_TYPE; }
+material_steel { savetoken(yytext); yylval.i=MAT_STEEL; return MATERIAL_TYPE; }
+material_gold { savetoken(yytext); yylval.i=MAT_GOLD; return MATERIAL_TYPE; }
+material_platinum { savetoken(yytext); yylval.i=MAT_PLATINUM; return MATERIAL_TYPE; }
+material_gemstone { savetoken(yytext); yylval.i=MAT_GEMSTONE; return MATERIAL_TYPE; }
 region_general { savetoken(yytext); yylval.i=REGION_GENERAL; return SPECIAL_REGION_TYPE; }
 region_special_level_seen { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_SEEN; return SPECIAL_REGION_TYPE; }
 region_special_level_true_nature_revealed { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_TRUE_NATURE_REVEALED; return SPECIAL_REGION_TYPE; }

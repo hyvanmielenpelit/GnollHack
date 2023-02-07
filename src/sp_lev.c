@@ -2359,6 +2359,8 @@ struct mkroom *croom;
 
     if (o->trapped == 0 || o->trapped == 1)
         otmp->otrapped = o->trapped;
+    if (o->material > 0)
+        otmp->material = (uchar)o->material;
     if (o->elemental_enchantment >= 0)
         otmp->elemental_enchantment = (uchar)o->elemental_enchantment;
     if (o->exceptionality >= 0)
@@ -4145,6 +4147,10 @@ struct sp_coder *coder;
         case SP_O_V_SPEFLAGS:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpobj.speflags = (unsigned long)OV_i(parm);
+            break;
+        case SP_O_V_MATERIAL:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.material = (int)OV_i(parm);
             break;
         case SP_O_V_ELEMENTAL_ENCHANTMENT:
             if (OV_typ(parm) == SPOVAR_INT)

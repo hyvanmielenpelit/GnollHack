@@ -1371,7 +1371,7 @@ unsigned long mkflags;
     char let = objects[otyp].oc_class;
     boolean forcemythic = (mkflags & MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY) != 0;
     boolean forcelegendary = (mkflags & MKOBJ_FLAGS_FORCE_LEGENDARY) != 0;
-    boolean forcebasematerial = (mkflags & MKOBJ_FLAGS_FORCE_BASE_MATERIAL) != 0;
+    boolean forcebasematerial = (mkflags & MKOBJ_FLAGS_FORCE_BASE_MATERIAL) != 0 || mkobj_type == 2;
     unsigned long excludedtitles = 0UL, excludedtitles2 = 0UL;
     if (mkflags & MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS)
     {

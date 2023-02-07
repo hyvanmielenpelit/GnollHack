@@ -221,6 +221,7 @@ enum sp_obj_var_flags {
     SP_O_V_CHARGES,
     SP_O_V_SPECIAL_QUALITY,
     SP_O_V_SPEFLAGS,
+    SP_O_V_MATERIAL,
     SP_O_V_ELEMENTAL_ENCHANTMENT,
     SP_O_V_EXCEPTIONALITY,
     SP_O_V_MYTHIC_TYPE,
@@ -491,6 +492,7 @@ typedef struct {
     short buried;
     short lit;
     short eroded, locked, trapped, recharged, invis, greased, broken, indestructible, uses_up_key, no_pickup, open;
+    short material;
     int elemental_enchantment;
     int exceptionality;
     schar mythic_type;

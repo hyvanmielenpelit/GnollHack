@@ -1578,7 +1578,7 @@ register const struct trobj * trop;
             otyp = (int)trop->trotyp;
             if (otyp != UNDEF_TYP)
             {
-                obj = mksobj(otyp, TRUE, FALSE, FALSE);
+                obj = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, 0UL, (unsigned long)trop->material, (trop->material ? MKOBJ_FLAGS_PARAM2_IS_MATERIAL : 0UL) | MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
             }
             else
             { /* UNDEF_TYP */
@@ -1975,8 +1975,6 @@ register const struct trobj * trop;
                 }
 
                 obj->exceptionality = trop->exceptionality;
-                if(trop->material)
-                    obj->material = trop->material;
             }
             /* defined after setting otyp+quan + blessedness */
             obj->owt = weight(obj);
