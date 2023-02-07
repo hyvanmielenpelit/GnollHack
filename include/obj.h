@@ -315,7 +315,7 @@ struct obj {
     (objects[(otmp)->otyp].oc_multigen_type > MULTIGEN_SINGLE)
 
 #define is_poisonable(otmp) \
-    ((is_weapon(otmp) && !is_launcher(otmp) && objects[(otmp)->otyp].oc_dir > WHACK) || get_obj_oc_flags3(otmp) & O3_POISONABLE)
+    ((is_weapon(otmp) && !is_launcher(otmp) && objects[(otmp)->otyp].oc_dir > WHACK) || (get_obj_oc_flags3(otmp) & O3_POISONABLE) != 0)
 
 #define is_obj_tethered_weapon(o, wmask)  \
     ((objects[(o)->otyp].oc_flags4 & O4_TETHERED_WEAPON) != 0 && ((wmask) & W_WIELDED_WEAPON) != 0)
@@ -331,10 +331,10 @@ struct obj {
 #define is_obj_enchantable(o) is_otyp_enchantable((o)->otyp) 
 
 #define is_otyp_elemental_enchantable(otyp)     \
-    (objects[(otyp)].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
+    ((objects[(otyp)].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE) != 0)
 
 /* Unusual definition to account for weapons appropriately */
-#define is_elemental_enchantable(o)     ((is_weapon(o) && !is_launcher(o)) || (get_obj_oc_flags3(o) & O3_ELEMENTAL_ENCHANTABLE))
+#define is_elemental_enchantable(o)     ((is_weapon(o) && !is_launcher(o)) || (get_obj_oc_flags3(o) & O3_ELEMENTAL_ENCHANTABLE) != 0)
 
 #define is_otyp_material_death_enchantable(otyp)     \
     (material_definitions[objects[otyp].oc_material].death_enchantable != 0)
@@ -345,16 +345,16 @@ struct obj {
 #define is_death_enchantable(o)  (is_elemental_enchantable(o) && is_obj_material_death_enchantable(o))
 
 #define is_otyp_specially_exceptional(otyp)     \
-    ((objects[(otyp)].oc_flags4 & O4_CAN_HAVE_EXCEPTIONALITY))
+    ((objects[(otyp)].oc_flags4 & O4_CAN_HAVE_EXCEPTIONALITY) != 0)
 
 #define is_otyp_non_exceptional(otyp)     \
-    ((objects[(otyp)].oc_flags4 & O4_NON_EXCEPTIONAL))
+    ((objects[(otyp)].oc_flags4 & O4_NON_EXCEPTIONAL) != 0)
 
 /* Unusual definition to account for weapons appropriately */
 #define can_have_exceptionality(o)     ((is_weapon(o) || is_otyp_specially_exceptional((o)->otyp)) && !is_otyp_non_exceptional((o)->otyp))
 #define nonexceptionality_armor(o)     (is_armor(o) && !can_have_exceptionality(o))
 
-#define otyp_allows_specially_dipping_into(otyp) (objects[(otyp)].oc_flags4 & O4_ALLOWS_DIPPING_INTO)
+#define otyp_allows_specially_dipping_into(otyp) ((objects[(otyp)].oc_flags4 & O4_ALLOWS_DIPPING_INTO) != 0)
 #define otyp_allows_object_to_be_dipped_into_it(otyp) (objects[(otyp)].oc_class == POTION_CLASS || otyp_allows_specially_dipping_into(otyp))
 #define obj_allows_object_to_be_dipped_into_it(o) otyp_allows_object_to_be_dipped_into_it((o)->otyp)
 #define otyp_expends_charges_when_dipped_into(otyp) (otyp_allows_specially_dipping_into(otyp) && objects[otyp].oc_charged > CHARGED_NOT_CHARGED)
@@ -362,34 +362,34 @@ struct obj {
     (otyp_allows_object_to_be_dipped_into_it((o)->otyp) && (!otyp_expends_charges_when_dipped_into((o)->otyp) || (o)->charges > 0))
 
 #define is_cursed_magic_item(otmp)                                            \
-    (objects[(otmp)->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM)
+    ((objects[(otmp)->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM) != 0)
 
 #define is_obj_generated_cursed(otmp)                                            \
-    (objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_CURSED)
+    ((objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_CURSED) != 0)
 
 #define is_obj_generated_blessed(otmp)                                            \
-    (objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_BLESSED)
+    ((objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_BLESSED) != 0)
 
 #define oresist_disintegration(otmp)                                       \
-    (get_obj_oc_flags(otmp) & O1_DISINTEGRATION_RESISTANT || is_obj_indestructible(otmp) \
+    ((get_obj_oc_flags(otmp) & O1_DISINTEGRATION_RESISTANT) != 0 || is_obj_indestructible(otmp) \
      || ((otmp)->otyp == CORPSE && pm_resists_disint(&mons[(otmp)->corpsenm])) \
      || obj_resists(otmp, 2, 50) \
      || is_quest_artifact(otmp) )
 
 #define oresist_fire(otmp)                                       \
-    (get_obj_oc_flags(otmp) & O1_FIRE_RESISTANT || is_obj_indestructible(otmp) \
+    ((get_obj_oc_flags(otmp) & O1_FIRE_RESISTANT) != 0 || is_obj_indestructible(otmp) \
      || ((otmp)->otyp == CORPSE && pm_resists_fire(&mons[(otmp)->corpsenm])) \
      || obj_resists(otmp, 0, 0) \
      || is_quest_artifact(otmp) )
 
 #define oresist_cold(otmp)                                       \
-    (get_obj_oc_flags(otmp) & O1_COLD_RESISTANT || is_obj_indestructible(otmp) \
+    ((get_obj_oc_flags(otmp) & O1_COLD_RESISTANT) != 0 || is_obj_indestructible(otmp) \
      || ((otmp)->otyp == CORPSE && pm_resists_cold(&mons[(otmp)->corpsenm])) \
      || obj_resists(otmp, 0, 0) \
      || is_quest_artifact(otmp) )
 
 #define oresist_elec(otmp)                                       \
-    (get_obj_oc_flags(otmp) & O1_LIGHTNING_RESISTANT || is_obj_indestructible(otmp) \
+    ((get_obj_oc_flags(otmp) & O1_LIGHTNING_RESISTANT) != 0 || is_obj_indestructible(otmp) \
      || ((otmp)->otyp == CORPSE && pm_resists_elec(&mons[(otmp)->corpsenm])) \
      || obj_resists(otmp, 0, 0) \
      || is_quest_artifact(otmp) )
@@ -469,9 +469,9 @@ struct obj {
 
 /* dragon gear */
 #define is_dragon_scales(obj) \
-    (is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALES))
+    (is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALES) != 0)
 #define is_dragon_mail(obj)  \
-    (is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL))
+    (is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL) != 0)
 #define is_dragon_scale_armor(obj) \
     (is_dragon_scales(obj) || is_dragon_mail(obj))
 #define Dragon_scales_to_pm(obj) \
@@ -570,7 +570,7 @@ struct obj {
 
 /* things that can be read */
 #define is_readable(o)                                                    \
-    ((objects[(o)->otyp].oc_flags3 & O3_READABLE) || ((o)->oartifact && artilist[(o)->oartifact].aflags & AF_READABLE))
+    ((objects[(o)->otyp].oc_flags3 & O3_READABLE) != 0 || ((o)->oartifact && artilist[(o)->oartifact].aflags & AF_READABLE))
 
 /* special stones */
 #define is_otyp_rock(otyp)                                 \
@@ -600,7 +600,7 @@ struct obj {
 /* misc helpers, simple enough to be macros */
 #define is_flimsy(otmp)                           \
     ((otmp)->material <= MAT_LEATHER \
-     || (get_obj_oc_flags2(otmp) & O2_FLIMSY))
+     || (get_obj_oc_flags2(otmp) & O2_FLIMSY) != 0)
 #define is_plural(o) \
     ((o)->quan != 1L                                                    \
      /* "the Eyes of the Overworld" are plural, but                     \
@@ -650,7 +650,7 @@ struct obj {
     ((objects[otyp].oc_flags4 & O4_MISSILE_TILE) != 0)
 
 #define is_otyp_drawn_in_front(otyp, tx, ty) \
-     ((objects[(otyp)].oc_flags4 & O4_DRAWN_IN_FRONT) && (tx) == u.ux && (ty) == u.uy)
+     ((objects[(otyp)].oc_flags4 & O4_DRAWN_IN_FRONT) != 0 && (tx) == u.ux && (ty) == u.uy)
 
 #define is_obj_drawn_in_front(obj) \
     (is_otyp_drawn_in_front((obj)->otyp, (obj)->ox, (obj)->oy))
