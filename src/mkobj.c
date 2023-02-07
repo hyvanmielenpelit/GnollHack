@@ -3158,11 +3158,30 @@ register struct obj *otmp;
  *         of the code messes with a contained object and doesn't update the
  *         container's weight.
  */
+unsigned int
+get_item_base_weight(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0U;
+
+    unsigned int tmp = objects[obj->otyp].oc_weight;
+    double matmult = 1.0;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        double curmult = material_definitions[obj->material].weight_multiplier > 0 ? material_definitions[obj->material].weight_multiplier : 1.0;
+        double basemult = material_definitions[objects[obj->otyp].oc_material].weight_multiplier > 0 ? material_definitions[objects[obj->otyp].oc_material].weight_multiplier : 1.0;
+        matmult = curmult / basemult;
+    }
+    tmp = (unsigned int)max(0.0, ((double)tmp * matmult));
+    return tmp;
+}
+
 int
 weight(obj)
 register struct obj *obj;
 {
-    int wt = (int) objects[obj->otyp].oc_weight;
+    int wt = (int)get_item_base_weight(obj);
 
     if (has_obj_mythic_lightness(obj))
         wt /= 8;
@@ -4852,6 +4871,7 @@ uchar get_otyp_initial_material(otyp)
 int otyp;
 {
     uchar mat = objects[otyp].oc_material;
+    xchar levdiff = level_difficulty();
 
     switch (objects[otyp].oc_material_init_type)
     {
@@ -4864,6 +4884,18 @@ int otyp;
             mat = MAT_HARD_CRYSTAL;
         else if (!rn2(100))
             mat = MAT_SILVER;
+        break;
+    case MATINIT_PLATE_MAIL:
+        if (!rn2(4))
+            mat = MAT_BRONZE;
+        else if (!rn2(50) && levdiff >= 4)
+            mat = MAT_HARD_CRYSTAL;
+        else if (!rn2(50) && levdiff >= 10)
+            mat = MAT_ORICHALCUM;
+        else if (!rn2(50) && levdiff >= 6)
+            mat = MAT_MITHRIL;
+        else if (!rn2(50) && levdiff >= 8)
+            mat = MAT_ADAMANTIUM;
         break;
     case MATINIT_NORMAL:
     default:

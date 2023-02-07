@@ -4824,8 +4824,11 @@ boolean is_wiz_wish;
         {
             if (material_definitions[m].wishable)
             {
+                size_t bplen = strlen(bp);
                 size_t mlen = strlen(material_definitions[m].object_prefix);
-                if (!strncmpi(bp, material_definitions[m].object_prefix, mlen) && *(bp + mlen) == ' ')
+                size_t mlena = material_definitions[m].adjective ? strlen(material_definitions[m].adjective) : 0;
+                if ((!strncmpi(bp, material_definitions[m].object_prefix, mlen) && bplen >= mlen + 1 && *(bp + mlen) == ' ')
+                    || (material_definitions[m].adjective && !strncmpi(bp, material_definitions[m].adjective, mlena) && bplen >= mlena + 1 && *(bp + mlena) == ' '))
                 {
                     bp += mlen + 1;
                     material = m;

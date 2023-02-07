@@ -829,9 +829,9 @@ update_extrinsics()
                 ))
                 u.uprops[objects[otyp].oc_oprop3].extrinsic |= bit;//W_CARRIED;
 
-            /* Mythic */
             if (bit != W_CARRIED)
             {
+                /* Mythic */
                 for (uchar j = 0; j <= 1; j++)
                 {
                     uchar mythic_quality = (j == 0 ? uitem->mythic_prefix : uitem->mythic_suffix);
@@ -856,6 +856,28 @@ update_extrinsics()
                                 u.uprops[mythic_powers[i].parameter1].extrinsic |= bit;
                             }
                         }
+                    }
+                }
+            }
+
+            /* Material */
+            if (uitem->material != objects[uitem->otyp].oc_material)
+            {
+                if (is_armor(uitem))
+                {
+                    int power = material_definitions[uitem->material].power_armor[objects[otyp].oc_armor_category];
+                    if (power != NO_POWER)
+                    {
+                        u.uprops[power].extrinsic |= bit;
+                    }
+                }
+                
+                if (is_weapon(uitem))
+                {
+                    int power = material_definitions[uitem->material].power_weapon;
+                    if (power != NO_POWER)
+                    {
+                        u.uprops[power].extrinsic |= bit;
                     }
                 }
             }

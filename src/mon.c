@@ -1787,7 +1787,7 @@ register struct monst *mtmp;
                 /* Heal up to the object's weight in hp */
                 if (mtmp->mhp < mtmp->mhpmax)
                 {
-                    mtmp->mhp += objects[otmp->otyp].oc_weight;
+                    mtmp->mhp += get_item_base_weight(otmp);
                     if (mtmp->mhp > mtmp->mhpmax)
                         mtmp->mhp = mtmp->mhpmax;
                 }
@@ -1902,7 +1902,7 @@ register struct monst* mtmp;
             /* Heal up to the object's weight in hp */
             if (mtmp->mhp < mtmp->mhpmax)
             {
-                mtmp->mhp += objects[otmp->otyp].oc_weight;
+                mtmp->mhp += get_item_base_weight(otmp);
                 if (mtmp->mhp > mtmp->mhpmax)
                     mtmp->mhp = mtmp->mhpmax;
             }
@@ -2069,7 +2069,7 @@ struct monst *mtmp;
             /* Heal up to the object's weight in hp */
             if (mtmp->mhp < mtmp->mhpmax)
             {
-                mtmp->mhp += objects[otmp->otyp].oc_weight;
+                mtmp->mhp += get_item_base_weight(otmp);
                 if (mtmp->mhp > mtmp->mhpmax)
                     mtmp->mhp = mtmp->mhpmax;
             }

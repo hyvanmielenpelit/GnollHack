@@ -935,7 +935,7 @@ register struct obj* obj;
         if(obj->oartifact)
             Sprintf(buf2, "%ld gold", artilist[obj->oartifact].cost);
         else
-            Sprintf(buf2, "%ld gold", objects[otyp].oc_cost);
+            Sprintf(buf2, "%ld gold", get_object_base_value(obj));
 
         Sprintf(buf, "Base value:             %s", buf2);        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -1683,25 +1683,21 @@ register struct obj* obj;
 
     if (affectsac)
     {
-        long shownacbonus = -objects[otyp].oc_armor_class;
+        int shownacbonus = -get_object_base_ac(obj);
         if (flags.baseacasbonus)
         {
-            Sprintf(buf, "Base armor class bonus: %s%ld", shownacbonus >= 0 ? "+" : "", shownacbonus);
+            Sprintf(buf, "Base armor class bonus: %s%d", shownacbonus >= 0 ? "+" : "", shownacbonus);
         }
         else
         {
-            Sprintf(buf, "Base armor class:       %ld", 10L + shownacbonus);
+            Sprintf(buf, "Base armor class:       %d", 10 + shownacbonus);
         }
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
     if(affectsmc)
     {
-        int mc = (int)objects[otyp].oc_magic_cancellation;
-        //if (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
-        //    mc+= obj->enchantment;
-
-        /* magic cancellation */
+        int mc = get_object_base_mc(obj);
         Sprintf(buf2, "%s%d", mc >= 0 ? "+" : "", mc);
         Sprintf(buf, "Magic cancellation:     %s", buf2);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -2151,13 +2147,12 @@ register struct obj* obj;
             }
         }
 
+        long splpenalty = get_object_spell_casting_penalty(obj);
         if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
-            (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || objects[otyp].oc_spell_casting_penalty != 0))
+            (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || splpenalty != 0))
         {
-            long splcaster = has_obj_mythic_spellcasting(obj) ? 0L : objects[otyp].oc_spell_casting_penalty;
-
-            Sprintf(buf2, "%s%ld%%", splcaster <= 0 ? "+" : "", -splcaster * ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
-            if (splcaster < 0)
+            Sprintf(buf2, "%s%ld%%", splpenalty <= 0 ? "+" : "", -splpenalty * ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
+            if (splpenalty < 0)
                 Sprintf(buf, "Spell casting bonus:    %s (somatic spells only)", buf2);
             else
                 Sprintf(buf, "Spell casting penalty:  %s (somatic spells only)", buf2);
@@ -2305,7 +2300,7 @@ register struct obj* obj;
 
             if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
             {
-                penalty = min(greatest_erosion(obj), (int)objects[otyp].oc_armor_class);
+                penalty = min(greatest_erosion(obj), get_object_base_ac(obj));
                 Sprintf(eos(penaltybuf), "(+%d penalty to AC)", penalty);
             }
         }
@@ -2422,6 +2417,7 @@ register struct obj* obj;
         if (objects[otyp].oc_oprop > 0
             || objects[otyp].oc_oprop2 > 0
             || objects[otyp].oc_oprop3 > 0
+            || (obj->material != objects[otyp].oc_material && (is_armor(obj) && material_definitions[obj->material].power_armor[objects[otyp].oc_armor_category] != NO_POWER))
             || objects[otyp].oc_mana_bonus > 0
             || objects[otyp].oc_hp_bonus > 0
             || objects[otyp].oc_bonus_attributes > 0
@@ -2437,10 +2433,12 @@ register struct obj* obj;
 
             int powercnt = 0;
             int j;
-            for (j = 1; j <= 6; j++)
+            for (j = 0; j <= 6; j++)
             {
                 int prop = 0;
-                if (j == 1)
+                if (j == 0)
+                    prop = obj->material != objects[otyp].oc_material && is_armor(obj) ? material_definitions[obj->material].power_armor[objects[otyp].oc_armor_category] : NO_POWER;
+                else if (j == 1)
                     prop = objects[otyp].oc_oprop;
                 else if (j == 2)
                     prop = objects[otyp].oc_oprop2;
@@ -2454,7 +2452,11 @@ register struct obj* obj;
                     prop = (int)objects[otyp].oc_bonus_attributes;
 
                 char pwbuf[BUFSZ] = "";
-                if (j == 1)
+                if (j == 0)
+                {
+                    Sprintf(eos(pwbuf), " when %s", is_wieldable_weapon(obj) ? "wielded" : "worn");
+                }
+                else if (j == 1)
                 {
                     if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");

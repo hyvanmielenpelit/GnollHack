@@ -2086,7 +2086,7 @@ struct mkroom *croom;
         else if (Role_if(PM_MONK))
             otmp = mksobj_at(!rn2(5) ? BRACERS_OF_REFLECTION : !rn2(2) ? ROBE_OF_PROTECTION : !rn2(2) ? ROBE_OF_MAGIC_RESISTANCE : CLOAK_OF_MAGIC_RESISTANCE, x, y, TRUE, !named);
         else
-            otmp = mksobj_at(!rn2(2) ? MITHRIL_FULL_PLATE_MAIL : ADAMANTIUM_FULL_PLATE_MAIL, x, y, TRUE, !named);
+            otmp = mksobj_at_with_flags(FULL_PLATE_MAIL, x, y, TRUE, !named, -1, 0L, !rn2(2) ? MAT_MITHRIL : MAT_ADAMANTIUM, MKOBJ_FLAGS_PARAM2_IS_MATERIAL);
     }
     else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_WEAPON)
     {

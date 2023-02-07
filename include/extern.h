@@ -1907,6 +1907,7 @@ E struct obj *FDECL(obj_nexto_xy, (struct obj *, int, int, BOOLEAN_P));
 E struct obj *FDECL(obj_absorb, (struct obj **, struct obj **));
 E struct obj *FDECL(obj_meld, (struct obj **, struct obj **));
 E void FDECL(pudding_merge_message, (struct obj *, struct obj *));
+E unsigned int FDECL(get_item_base_weight, (struct obj*));
 
 /* ### mkroom.c ### */
 
@@ -2299,6 +2300,10 @@ E boolean FDECL(is_mythic_affix_ok, (UCHAR_P, UCHAR_P, struct obj*, UCHAR_P));
 E double FDECL(get_mythic_dmg_multiplier, (struct obj*, struct monst*, struct monst*));
 E int FDECL(get_obj_exceptionality_ac_bonus, (struct obj*));
 E int FDECL(get_obj_exceptionality_mc_bonus, (struct obj*));
+E int FDECL(get_obj_material_and_exceptionality_ac_bonus, (struct obj*));
+E int FDECL(get_obj_material_and_exceptionality_mc_bonus, (struct obj*));
+E int FDECL(get_object_base_ac, (struct obj*));
+E int FDECL(get_object_base_mc, (struct obj*));
 
 /* ### objects.c ### */
 
@@ -3133,6 +3138,7 @@ E boolean FDECL(is_izchak, (struct monst *, BOOLEAN_P));
 E const char* FDECL(shoptypename, (int));
 E boolean FDECL(veggy_item, (struct obj* obj, int));
 E void FDECL(izchak_talk, (struct monst*));
+E long FDECL(get_object_base_value, (struct obj*));
 
 /* ### sit.c ### */
 
@@ -3392,6 +3398,7 @@ E void NDECL(sortspells);
 #endif
 E void FDECL(print_spell_level_text, (char*, int, BOOLEAN_P, UCHAR_P));
 E void NDECL(reset_spells);
+E long FDECL(get_object_spell_casting_penalty, (struct obj*));
 
 /* ### steal.c ### */
 

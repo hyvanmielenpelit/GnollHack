@@ -442,6 +442,7 @@ material_steel { savetoken(yytext); yylval.i=MAT_STEEL; return MATERIAL_TYPE; }
 material_gold { savetoken(yytext); yylval.i=MAT_GOLD; return MATERIAL_TYPE; }
 material_platinum { savetoken(yytext); yylval.i=MAT_PLATINUM; return MATERIAL_TYPE; }
 material_gemstone { savetoken(yytext); yylval.i=MAT_GEMSTONE; return MATERIAL_TYPE; }
+material_hard_crystal { savetoken(yytext); yylval.i=MAT_HARD_CRYSTAL; return MATERIAL_TYPE; }
 region_general { savetoken(yytext); yylval.i=REGION_GENERAL; return SPECIAL_REGION_TYPE; }
 region_special_level_seen { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_SEEN; return SPECIAL_REGION_TYPE; }
 region_special_level_true_nature_revealed { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_TRUE_NATURE_REVEALED; return SPECIAL_REGION_TYPE; }

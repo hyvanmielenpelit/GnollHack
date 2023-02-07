@@ -2585,7 +2585,6 @@ boolean in_view;
         if (!is_fragile(obj))
             impossible("breaking odd object?");
         /*FALLTHRU*/
-    case CRYSTAL_PLATE_MAIL:
     case LENSES:
     case SUNGLASSES:
     case MIRROR:

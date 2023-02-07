@@ -1410,8 +1410,7 @@ register struct monst *mtmp;
             }
 
             if (mac < -1 && rn2(5))
-                mac += 7 + mongets_return_enchantment(mtmp, (rn2(5)) ? PLATE_MAIL
-                    : CRYSTAL_PLATE_MAIL);
+                mac += 7 + mongets_return_enchantment(mtmp, PLATE_MAIL);
             else if (mac < 3 && rn2(5))
                 mac +=
                 6 + mongets_return_enchantment(mtmp, (rn2(3)) ? SPLINT_MAIL : BANDED_MAIL);

@@ -4615,6 +4615,26 @@ int spell;
     return 0;
 }
 
+long
+get_object_spell_casting_penalty(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    long res = objects[obj->otyp].oc_spell_casting_penalty;
+
+    if (obj->material != objects[obj->otyp].oc_material && is_armor(obj))
+    {
+        res += material_definitions[obj->material].spell_casting_penalty_armor[objects[obj->otyp].oc_armor_category];
+    }
+
+    if (res > 0 && has_obj_mythic_spellcasting(obj))
+        return 0;
+
+    return res;
+}
+
 STATIC_OVL int
 percent_success(spell, limited)
 int spell;
@@ -4633,42 +4653,42 @@ boolean limited;
 
     if (!(objects[spellid(spell)].oc_spell_flags & S1_NO_SOMATIC_COMPONENT))
     {
-        if (uarm && !has_obj_mythic_spellcasting(uarm))
-            armor_penalty += objects[uarm->otyp].oc_spell_casting_penalty;
-        if (uarms && !has_obj_mythic_spellcasting(uarms))
-            armor_penalty += objects[uarms->otyp].oc_spell_casting_penalty;
-        if (uarmh && !has_obj_mythic_spellcasting(uarmh))
-            armor_penalty += objects[uarmh->otyp].oc_spell_casting_penalty;
-        if (uarmg && !has_obj_mythic_spellcasting(uarmg))
-            armor_penalty += objects[uarmg->otyp].oc_spell_casting_penalty;
-        if (uarmf && !has_obj_mythic_spellcasting(uarmf))
-            armor_penalty += objects[uarmf->otyp].oc_spell_casting_penalty;
-        if (uarmu && !has_obj_mythic_spellcasting(uarmu))
-            armor_penalty += objects[uarmu->otyp].oc_spell_casting_penalty;
-        if (uarmo && !has_obj_mythic_spellcasting(uarmo))
-            armor_penalty += objects[uarmo->otyp].oc_spell_casting_penalty;
-        if (uarmb && !has_obj_mythic_spellcasting(uarmb))
-            armor_penalty += objects[uarmb->otyp].oc_spell_casting_penalty;
+        if (uarm)
+            armor_penalty += get_object_spell_casting_penalty(uarm);
+        if (uarms)
+            armor_penalty += get_object_spell_casting_penalty(uarms);
+        if (uarmh)
+            armor_penalty += get_object_spell_casting_penalty(uarmh);
+        if (uarmg)
+            armor_penalty += get_object_spell_casting_penalty(uarmg);
+        if (uarmf)
+            armor_penalty += get_object_spell_casting_penalty(uarmf);
+        if (uarmu)
+            armor_penalty += get_object_spell_casting_penalty(uarmu);
+        if (uarmo)
+            armor_penalty += get_object_spell_casting_penalty(uarmo);
+        if (uarmb)
+            armor_penalty += get_object_spell_casting_penalty(uarmb);
         if (umisc)
-            armor_penalty += objects[umisc->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(umisc);
         if (umisc2)
-            armor_penalty += objects[umisc2->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(umisc2);
         if (umisc3)
-            armor_penalty += objects[umisc3->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(umisc3);
         if (umisc4)
-            armor_penalty += objects[umisc4->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(umisc4);
         if (umisc5)
-            armor_penalty += objects[umisc5->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(umisc5);
         if (uamul)
-            armor_penalty += objects[uamul->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(uamul);
         if (uleft)
-            armor_penalty += objects[uleft->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(uleft);
         if (uright)
-            armor_penalty += objects[uright->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(uright);
         if (ublindf)
-            armor_penalty += objects[ublindf->otyp].oc_spell_casting_penalty;
-        if (uwep && !has_obj_mythic_spellcasting(uwep))
-            armor_penalty += objects[uwep->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(ublindf);
+        if (uwep)
+            armor_penalty += get_object_spell_casting_penalty(uwep);
     }
 
     /* Calculate success chance */

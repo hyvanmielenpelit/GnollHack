@@ -326,12 +326,14 @@ enum material_init_types {
     MATINIT_NORMAL = 0,
     MATINIT_MAYBE_SILVER,
     MATINIT_LONG_SWORD,
+    MATINIT_PLATE_MAIL,
     MAX_MATINIT_TYPES
 };
 
 struct material_definition {
-    const char* name;
+    const char* name; /* noun */
     const char* object_prefix;
+    const char* adjective;
     enum material_phase phase;
     enum hit_surface_types hit_surface_mapping;
     enum floor_surface_types floor_surface_mapping;
@@ -358,13 +360,13 @@ struct material_definition {
     const char* foodword;
 
     uchar color;
-    schar acbonus_armor;
-    schar mcbonus_armor;
-    schar spell_casting_penalty_armor;
+    schar acbonus_armor[MAX_ARMOR_TYPES];
+    schar mcbonus_armor[MAX_ARMOR_TYPES];
+    schar spell_casting_penalty_armor[MAX_ARMOR_TYPES];
     double weight_multiplier;
     double cost_multiplier;
-    double damage_multiplier;
-    int power_armor;
+    double cost_addition;
+    int power_armor[MAX_ARMOR_TYPES];
     int power_weapon;
     unsigned long extra_oflags1;
     unsigned long extra_oflags2;

@@ -1528,10 +1528,11 @@ struct monst *mon;
         if (worn)
         {
             /* MC always from worn */
+            int basemc = get_object_base_mc(o);
             if (objects[o->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC)
-                item_mc_bonus += objects[o->otyp].oc_magic_cancellation;
+                item_mc_bonus += basemc;
             else
-                item_mc_bonus += max(0, objects[o->otyp].oc_magic_cancellation - greatest_erosion(o) / 3);
+                item_mc_bonus += max(0, basemc - greatest_erosion(o) / 3);
 
             if (o->oclass == ARMOR_CLASS || o->oclass == MISCELLANEOUS_CLASS || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(o) || (objects[o->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC))
                 item_mc_bonus += o->enchantment / 3;

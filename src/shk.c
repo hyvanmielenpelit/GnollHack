@@ -3648,12 +3648,34 @@ int mode; /* 0: deliver count 1: paged */
     return 0;
 }
 
+long
+get_object_base_value(obj)
+struct obj* obj; 
+{
+    if (!obj)
+        return 0L;
+
+    long tmp = objects[obj->otyp].oc_cost;
+    double matmult = 1.0;
+    double matadd = 0.0;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        double curmult = material_definitions[obj->material].cost_multiplier > 0 ? material_definitions[obj->material].cost_multiplier : 1.0;
+        double basemult = material_definitions[objects[obj->otyp].oc_material].cost_multiplier > 0 ? material_definitions[objects[obj->otyp].oc_material].cost_multiplier : 1.0;
+        matmult = curmult / basemult;
+        matadd += material_definitions[obj->material].cost_addition - material_definitions[objects[obj->otyp].oc_material].cost_addition;
+    }
+
+    tmp = max(0L, (long)((double)tmp * matmult + matadd));
+    return tmp;
+}
+
 STATIC_OVL long
 getprice(obj, shk_buying)
 register struct obj *obj;
 boolean shk_buying;
 {
-    register long tmp = objects[obj->otyp].oc_cost;
+    register long tmp = get_object_base_value(obj);
 
     if (obj->oartifact)
     {

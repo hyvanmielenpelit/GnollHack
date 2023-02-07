@@ -3265,11 +3265,11 @@ arti_cost(otmp)
 struct obj *otmp;
 {
     if (!otmp->oartifact)
-        return objects[otmp->otyp].oc_cost;
+        return get_object_base_value(otmp);
     else if (artilist[(int) otmp->oartifact].cost)
         return artilist[(int) otmp->oartifact].cost;
     else
-        return (20L * (objects[otmp->otyp].oc_cost + 75L));
+        return (20L * (get_object_base_value(otmp) + 75L));
 }
 
 struct abil2adtyp_tag {
