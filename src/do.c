@@ -3215,10 +3215,12 @@ register struct obj* obj;
     boolean show_corpse_hint = FALSE;
     if(stats_known)
     {
+        unsigned long ocflags = get_obj_oc_flags(obj);
+        unsigned long ocflags5 = get_obj_oc_flags5(obj);
         /* Item properties */
-        if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON
+        if (ocflags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON
             | O1_SPELLTOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD) 
-            || (objects[otyp].oc_flags5 & (O5_MBAG_DESTROYING_ITEM | O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN))
+            || (ocflags5 & (O5_MBAG_DESTROYING_ITEM | O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN))
             || otyp_shines_magical_light(otyp)
             || is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp)
             || is_death_enchantable(obj) //|| is_otyp_elemental_enchantable(otyp) 
@@ -3230,97 +3232,97 @@ register struct obj* obj;
             putstr(datawin, ATR_HEADING, buf);
 
             /* Flags here */
-            if (objects[otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
+            if (ocflags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Becomes cursed when picked up", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN)
+            if (ocflags & O1_BECOMES_CURSED_WHEN_WORN)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Becomes cursed when worn", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)
+            if (ocflags & O1_CANNOT_BE_DROPPED_IF_CURSED)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Undroppable when cursed", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_COLD_RESISTANT)
+            if (ocflags & O1_COLD_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Cold resistant", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_CORROSION_RESISTANT)
+            if (ocflags & O1_CORROSION_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Corrosion resistant", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_DISINTEGRATION_RESISTANT)
+            if (ocflags & O1_DISINTEGRATION_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Disintegration resistant", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_FIRE_RESISTANT)
+            if (ocflags & O1_FIRE_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Fire resistant", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_INDESTRUCTIBLE)
+            if (ocflags & O1_INDESTRUCTIBLE)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Indestructible", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_LIGHTNING_RESISTANT)
+            if (ocflags & O1_LIGHTNING_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Lightning resistant", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_NOT_CURSEABLE)
+            if (ocflags & O1_NOT_CURSEABLE)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Cannot be cursed", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_POLYMORPH_RESISTANT)
+            if (ocflags & O1_POLYMORPH_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Polymorph resistant", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_RUST_RESISTANT)
+            if (ocflags & O1_RUST_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Rust-proof", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_ROT_RESISTANT)
+            if (ocflags & O1_ROT_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Rot-resistant", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)
+            if (ocflags & O1_IS_ARMOR_WHEN_WIELDED)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Is armor when wielded", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED)
+            if (ocflags & O1_IS_WEAPON_WHEN_WIELDED)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Is weapon when wielded", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags5 & O5_IS_WEAPON_WHEN_WORN)
+            if (ocflags5 & O5_IS_WEAPON_WHEN_WORN)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Is weapon when worn", powercnt);
@@ -3350,13 +3352,13 @@ register struct obj* obj;
                 Sprintf(buf, " %2d - Death-magically enchantable", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM)
+            if (ocflags5 & O5_MBAG_DESTROYING_ITEM)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Destroys magic bags if put in", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH, buf);
             }
-            if (objects[otyp].oc_flags5 & O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN)
+            if (ocflags5 & O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Strips magic bag destroying items of charges; does not explode", powercnt);

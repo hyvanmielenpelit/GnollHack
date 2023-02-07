@@ -3533,7 +3533,6 @@ boolean
 is_flammable(otmp)
 register struct obj *otmp;
 {
-    int otyp = otmp->otyp;
     int omat = otmp->material;
 
     /* Candles and torches can be burned, but they're not flammable in the sense that
@@ -3543,7 +3542,7 @@ register struct obj *otmp;
     if (is_candle(otmp) || is_torch(otmp))
         return FALSE;
 
-    if ((objects[otyp].oc_flags & O1_FIRE_RESISTANT) != 0)
+    if ((get_obj_oc_flags(otmp) & O1_FIRE_RESISTANT) != 0)
         return FALSE;
 
     return (boolean)material_definitions[omat].flammable; // ((omat <= MAT_WOOD && omat != MAT_LIQUID) || omat == MAT_PLASTIC);
@@ -3553,9 +3552,7 @@ boolean
 is_rottable(otmp)
 register struct obj *otmp;
 {
-    int otyp = otmp->otyp;
-
-    if (objects[otyp].oc_flags & O1_ROT_RESISTANT)
+    if (get_obj_oc_flags(otmp) & O1_ROT_RESISTANT)
         return FALSE;
 
     return (boolean)material_definitions[otmp->material].rottable;// <= MAT_WOOD && objects[otyp].oc_material != MAT_LIQUID);

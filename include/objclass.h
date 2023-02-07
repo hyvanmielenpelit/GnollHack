@@ -444,11 +444,11 @@ struct objclass {
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
-#define is_rustprone(otmp) ((material_definitions[(otmp)->material].rustprone != 0) && !(objects[(otmp)->otyp].oc_flags & O1_RUST_RESISTANT))
+#define is_rustprone(otmp) ((material_definitions[(otmp)->material].rustprone != 0) && !(get_obj_oc_flags(otmp) & O1_RUST_RESISTANT))
 
 /* secondary damage: rot/acid/acid */
 #define is_corrodeable(otmp)                   \
-    ((material_definitions[(otmp)->material].corrodeable != 0) && !(objects[(otmp)->otyp].oc_flags & O1_CORROSION_RESISTANT))
+    ((material_definitions[(otmp)->material].corrodeable != 0) && !(get_obj_oc_flags(otmp) & O1_CORROSION_RESISTANT))
 
 #define is_damageable(otmp)                                        \
     (is_rustprone(otmp) || is_flammable(otmp) || is_rottable(otmp) \

@@ -1540,6 +1540,96 @@ struct obj* obj;
     return res;
 }
 
+unsigned long
+get_obj_oc_flags(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0UL;
+
+    unsigned long ocflags = objects[obj->otyp].oc_flags;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        ocflags |= material_definitions[obj->material].extra_oflags1;
+    }
+    return ocflags;
+}
+
+unsigned long
+get_obj_oc_flags2(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0UL;
+
+    unsigned long ocflags = objects[obj->otyp].oc_flags2;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        ocflags |= material_definitions[obj->material].extra_oflags2;
+    }
+    return ocflags;
+}
+
+unsigned long
+get_obj_oc_flags3(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0UL;
+
+    unsigned long ocflags = objects[obj->otyp].oc_flags3;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        ocflags |= material_definitions[obj->material].extra_oflags3;
+    }
+    return ocflags;
+}
+
+unsigned long
+get_obj_oc_flags4(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0UL;
+
+    unsigned long ocflags = objects[obj->otyp].oc_flags4;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        ocflags |= material_definitions[obj->material].extra_oflags4;
+    }
+    return ocflags;
+}
+
+unsigned long
+get_obj_oc_flags5(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0UL;
+
+    unsigned long ocflags = objects[obj->otyp].oc_flags5;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        ocflags |= material_definitions[obj->material].extra_oflags5;
+    }
+    return ocflags;
+}
+
+unsigned long
+get_obj_oc_flags6(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0UL;
+
+    unsigned long ocflags = objects[obj->otyp].oc_flags6;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        ocflags |= material_definitions[obj->material].extra_oflags6;
+    }
+    return ocflags;
+}
+
 
 STATIC_VAR boolean object_init_values_saved = FALSE;
 

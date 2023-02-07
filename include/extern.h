@@ -2304,6 +2304,13 @@ E int FDECL(get_obj_material_and_exceptionality_ac_bonus, (struct obj*));
 E int FDECL(get_obj_material_and_exceptionality_mc_bonus, (struct obj*));
 E int FDECL(get_object_base_ac, (struct obj*));
 E int FDECL(get_object_base_mc, (struct obj*));
+E unsigned long FDECL(get_obj_oc_flags, (struct obj*));
+E unsigned long FDECL(get_obj_oc_flags2, (struct obj*));
+E unsigned long FDECL(get_obj_oc_flags3, (struct obj*));
+E unsigned long FDECL(get_obj_oc_flags4, (struct obj*));
+E unsigned long FDECL(get_obj_oc_flags5, (struct obj*));
+E unsigned long FDECL(get_obj_oc_flags6, (struct obj*));
+
 
 /* ### objects.c ### */
 
