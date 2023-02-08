@@ -134,9 +134,9 @@ MONSTER:('E',"earth elemental"),(04,17),hostile
 MONSTER:('E',"elder earth elemental"),(04,18),hostile
 #
 MONSTER:('h',"dwarf king"),(26,14),maxhp,level_adjustment:10 {
-  OBJECT:(')', "dwarvish axe"),notcursed
-  OBJECT:('[', "dwarvish iron helm"),notcursed
-  OBJECT:('[', "dwarvish roundshield"),notcursed
+  OBJECT:(')', "dwarvish axe"),notcursed,material:material_mithril
+  OBJECT:('[', "dwarvish helm"),notcursed,material:material_mithril
+  OBJECT:('[', "dwarvish roundshield"),notcursed,material:material_mithril
   OBJECT:('[', "dwarvish mithril-coat"),notcursed
   OBJECT:('(', "pick-axe"),notcursed
   OBJECT:('?', "magic mapping"),notcursed

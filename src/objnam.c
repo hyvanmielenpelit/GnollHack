@@ -4483,7 +4483,7 @@ boolean is_wiz_wish;
         }
     }
 
- retry:
+retry:
     /* "grey stone" check must be before general "stone" */
     for (i = 0; i < SIZE(o_ranges); i++)
         if (!strcmpi(bp, o_ranges[i].name)) {
@@ -4890,15 +4890,46 @@ boolean is_wiz_wish;
         {
             if (material_definitions[m].wishable)
             {
-                size_t bplen = strlen(bp);
                 size_t mlen = strlen(material_definitions[m].object_prefix);
                 size_t mlena = material_definitions[m].adjective ? strlen(material_definitions[m].adjective) : 0;
-                if ((!strncmpi(bp, material_definitions[m].object_prefix, mlen) && bplen >= mlen + 1 && *(bp + mlen) == ' ')
-                    || (material_definitions[m].adjective && !strncmpi(bp, material_definitions[m].adjective, mlena) && bplen >= mlena + 1 && *(bp + mlena) == ' '))
+
+                char startbuf[BUFSZ] = "";
+                char originalbuf[BUFSZ] = "";
+                Strcpy(originalbuf, bp);
+                size_t bplen = strlen(originalbuf);
+                char* mbp = originalbuf;
+                char* spacep = 0;
+                /* Check up to 4 words for a material word */
+                int w;
+                for (w = 0; w < 4; w++)
                 {
-                    bp += mlen + 1;
-                    material = m;
-                    goto retry;
+                    if (!mbp || !*mbp)
+                        break;
+
+                    if ((!strncmpi(mbp, material_definitions[m].object_prefix, mlen) && bplen >= mlen + 1 && *(mbp + mlen) == ' ')
+                        || (material_definitions[m].adjective && !strncmpi(bp, material_definitions[m].adjective, mlena) && bplen >= mlena + 1 && *(mbp + mlena) == ' '))
+                    {
+                        mbp += mlen + 1;
+                        Sprintf(bp, "%s%s", startbuf, mbp);
+                        material = m;
+                        goto retry;
+                    }
+                    spacep = index(mbp, ' ');
+                    if (spacep)
+                    {
+                        spacep++;
+                        int len = (int)(spacep - originalbuf);
+                        if (len > 0 && bplen > len)
+                        {
+                            strncpy(startbuf, mbp, (size_t)len);
+                            startbuf[len + 1] = '\0';
+                            mbp += len;
+                        }
+                        else
+                            break;
+                    }
+                    else
+                        break;
                 }
             }
         }

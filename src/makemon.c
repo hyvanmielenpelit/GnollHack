@@ -841,7 +841,7 @@ register struct monst *mtmp;
                     (void) mongets(mtmp, rn2(2) ? AXE : DWARVISH_SPEAR);
                     (void) mongets(mtmp, DWARVISH_ROUNDSHIELD);
                 }
-                (void) mongets(mtmp, DWARVISH_IRON_HELM);
+                (void) mongets(mtmp, DWARVISH_HELM);
                 if (!rn2(3))
                     (void) mongets(mtmp, DWARVISH_MITHRIL_COAT);
             } 

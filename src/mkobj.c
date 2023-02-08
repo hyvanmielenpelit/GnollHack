@@ -4947,6 +4947,10 @@ int otyp;
         else if (!rn2(2))
             mat = MAT_LEAD;
         break;
+    case MATINIT_MAYBE_MITHRIL:
+        if (!rn2(20))
+            mat = MAT_MITHRIL;
+        break;
     case MATINIT_NORMAL:
     default:
         break;
