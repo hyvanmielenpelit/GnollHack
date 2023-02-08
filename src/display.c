@@ -223,21 +223,21 @@ register int show;
 {
     register int glyph = back_to_glyph(x, y);
     int symbol_index = generic_glyph_to_cmap(glyph);
-    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, defsyms[symbol_index].layer, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, defsyms[symbol_index].layer, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE));
 
     int new_floor_glyph = NO_GLYPH;
     int new_floor_gui_glyph = NO_GLYPH;
     int new_floor_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_floor_doodad_layer_glyph(x, y);
-    int new_floor_doodad_gui_glyph = maybe_get_replaced_glyph(new_floor_doodad_glyph, x, y, data_to_replacement_info(new_floor_doodad_glyph, LAYER_FLOOR_DOODAD, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
+    int new_floor_doodad_gui_glyph = maybe_get_replaced_glyph(new_floor_doodad_glyph, x, y, data_to_replacement_info(new_floor_doodad_glyph, LAYER_FLOOR_DOODAD, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE));
     int new_feature_glyph = NO_GLYPH;
     int new_feature_gui_glyph = NO_GLYPH;
     int new_cover_feature_glyph = NO_GLYPH;
     int new_cover_feature_gui_glyph = NO_GLYPH;
     int new_carpet_glyph = symbol_index <= S_stone ? NO_GLYPH : get_carpet_layer_glyph(x, y);
-    int new_carpet_gui_glyph = maybe_get_replaced_glyph(new_carpet_glyph, x, y, data_to_replacement_info(new_carpet_glyph, LAYER_CARPET, (struct obj*)0, (struct monst*)0, 0UL, 0UL));;
+    int new_carpet_gui_glyph = maybe_get_replaced_glyph(new_carpet_glyph, x, y, data_to_replacement_info(new_carpet_glyph, LAYER_CARPET, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE));;
     schar new_feature_doodad_height = 0;
     int new_feature_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_feature_doodad_layer_glyph(x, y, &new_feature_doodad_height);
-    int new_feature_doodad_gui_glyph = maybe_get_replaced_glyph(new_feature_doodad_glyph, x, y, data_to_replacement_info(new_feature_doodad_glyph, LAYER_FEATURE_DOODAD, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
+    int new_feature_doodad_gui_glyph = maybe_get_replaced_glyph(new_feature_doodad_glyph, x, y, data_to_replacement_info(new_feature_doodad_glyph, LAYER_FEATURE_DOODAD, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE));
     unsigned long new_layer_flags = 0UL;
     if (symbol_index > S_stone && levl[x][y].decoration_typ > 0)
         new_layer_flags |= LFLAGS_C_DECORATION;
@@ -247,7 +247,7 @@ register int show;
     if (defsyms[symbol_index].layer != LAYER_FLOOR)
     {
         new_floor_glyph = get_floor_layer_glyph(x, y);
-        new_floor_gui_glyph = maybe_get_replaced_glyph(new_floor_glyph, x, y, data_to_replacement_info(new_floor_glyph, LAYER_FLOOR, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
+        new_floor_gui_glyph = maybe_get_replaced_glyph(new_floor_glyph, x, y, data_to_replacement_info(new_floor_glyph, LAYER_FLOOR, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE));
         if (defsyms[symbol_index].layer == LAYER_FEATURE)
         {
             new_feature_glyph = glyph;
@@ -361,7 +361,7 @@ register int show;
     register int glyph = trap_to_glyph(trap, newsym_rn2);
 
     /* Replace */
-    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_TRAP, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_TRAP, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE));
 
     struct monst* mtmp = m_at(x, y);
     boolean utrapped = (x == u.ux && y == u.uy && u.utrap > 0);
@@ -461,7 +461,7 @@ boolean exclude_ascii;
     int obj_height = get_obj_height(obj);
 
     /* Replace */
-    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, layer, obj, (struct monst*)0, 0UL, 0UL));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, layer, obj, (struct monst*)0, 0UL, 0UL, MAT_NONE));
 
     /* Save this object's glyph for showing in here window (ASCII) and in object pile in GUI */
     obj->glyph = glyph;
@@ -477,7 +477,7 @@ boolean exclude_ascii;
         if (Hallucination && obj->otyp == STATUE)
         {
             new_glyph = random_obj_to_glyph(newsym_rn2);
-            new_gui_glyph = maybe_get_replaced_glyph(new_glyph, x, y, data_to_replacement_info(glyph, layer, obj, (struct monst*)0, 0UL, 0UL));
+            new_gui_glyph = maybe_get_replaced_glyph(new_glyph, x, y, data_to_replacement_info(glyph, layer, obj, (struct monst*)0, 0UL, 0UL, MAT_NONE));
             obj_height = 0;
         }
 
@@ -778,7 +778,7 @@ boolean dropping_piercer;
             int sym = mon->mappearance, glyph = cmap_with_type_to_glyph(sym, cmap_type);
 
             /* Replace */
-            int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_FEATURE, (struct obj*)0, mon, 0UL, 0UL));
+            int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_FEATURE, (struct obj*)0, mon, 0UL, 0UL, MAT_NONE));
 
 
             //levl[x][y].hero_memory_layers.glyph = glyph;
@@ -809,7 +809,7 @@ boolean dropping_piercer;
             /* might be mimicing a corpse or statue */
             obj.corpsenm = has_mcorpsenm(mon) ? MCORPSENM(mon) : PM_TENGU;
             int glyph = obj_to_glyph(&obj, newsym_rn2);
-            int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, &obj, mon, 0UL, 0UL));
+            int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, &obj, mon, 0UL, 0UL, MAT_NONE));
             obj.glyph = glyph;
             obj.gui_glyph = gui_glyph;
             //show_monster_glyph_with_extra_info(x, y,
@@ -822,7 +822,7 @@ boolean dropping_piercer;
                 if (Hallucination && obj.otyp == STATUE)
                 {
                     new_glyph = random_obj_to_glyph(newsym_rn2);
-                    new_gui_glyph = maybe_get_replaced_glyph(new_glyph, x, y, data_to_replacement_info(new_glyph, LAYER_OBJECT, &obj, mon, 0UL, 0UL));
+                    new_gui_glyph = maybe_get_replaced_glyph(new_glyph, x, y, data_to_replacement_info(new_glyph, LAYER_OBJECT, &obj, mon, 0UL, 0UL, MAT_NONE));
                 }
                 obj.glyph = new_glyph;
                 obj.gui_glyph = new_gui_glyph;
@@ -1655,22 +1655,24 @@ void
 tmp_at(x, y)
 int x, y;
 {
-    tmp_at_with_obj(x, y, (struct obj*)0, 0UL);
+    tmp_at_with_obj(x, y, (struct obj*)0, 0UL, MAT_NONE);
 }
 
 void
-tmp_at_with_missile_flags(x, y, missile_flags)
+tmp_at_with_missile_flags(x, y, missile_flags, missile_material)
 int x, y;
 unsigned long missile_flags;
+uchar missile_material;
 {
-    tmp_at_with_obj(x, y, (struct obj*)0, missile_flags);
+    tmp_at_with_obj(x, y, (struct obj*)0, missile_flags, missile_material);
 }
 
 void
-tmp_at_with_obj(x, y, obj, missile_flags)
+tmp_at_with_obj(x, y, obj, missile_flags, missile_material)
 int x, y;
 struct obj* obj;
 unsigned long missile_flags;
+uchar missile_material;
 {
     static struct tmp_glyph *tglyph = (struct tmp_glyph *) 0;
     struct tmp_glyph *tmp;
@@ -1691,7 +1693,7 @@ unsigned long missile_flags;
         tglyph->sidx = 0;
         tglyph->style = x;
         tglyph->glyph = y;
-        tglyph->gui_glyph = maybe_get_replaced_glyph(y, 0, 0, data_to_replacement_info(y, LAYER_MISSILE, obj, (struct monst*)0, 0UL, missile_flags));
+        tglyph->gui_glyph = maybe_get_replaced_glyph(y, 0, 0, data_to_replacement_info(y, LAYER_MISSILE, obj, (struct monst*)0, 0UL, missile_flags, missile_material));
         context.tether_x = 0;
         context.tether_y = 0;
         flush_screen(1); /* flush buffered glyphs */
@@ -1721,7 +1723,7 @@ unsigned long missile_flags;
     switch (x) {
     case DISP_CHANGE:
         tglyph->glyph = y;
-        tglyph->gui_glyph = maybe_get_replaced_glyph(y, 0, 0, data_to_replacement_info(y, LAYER_MISSILE, obj, (struct monst*)0, 0UL, missile_flags));
+        tglyph->gui_glyph = maybe_get_replaced_glyph(y, 0, 0, data_to_replacement_info(y, LAYER_MISSILE, obj, (struct monst*)0, 0UL, missile_flags, missile_material));
         break;
 
     case DISP_END:
@@ -2833,7 +2835,7 @@ boolean exclude_ascii;
         boolean loc_is_you = (u.ux == x && u.uy == y);
 
         /* Replace */
-        int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL));
+        int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, MAT_NONE));
 
         if(!exclude_ascii)
             show_glyph_ascii(x, y, glyph);
@@ -2985,7 +2987,7 @@ unsigned long layer_flags;
     if (loc_is_you && issteed)
     {
         int rider_glyph = u_to_glyph();
-        int rider_gui_glyph = maybe_get_replaced_glyph(rider_glyph, x, y, data_to_replacement_info(rider_glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL));
+        int rider_gui_glyph = maybe_get_replaced_glyph(rider_glyph, x, y, data_to_replacement_info(rider_glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE));
         gbuf[y][x].layers.rider_glyph = rider_glyph;
         gbuf[y][x].layers.rider_gui_glyph = rider_gui_glyph;
     }
@@ -3050,14 +3052,14 @@ boolean remove;
         {
             int cmap_idx = generic_glyph_to_cmap(glyph);
             if (!remove)
-                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, defsyms[cmap_idx].layer, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
+                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, defsyms[cmap_idx].layer, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE));
             gbuf[y][x].layers.layer_glyphs[defsyms[cmap_idx].layer] = remove ? NO_GLYPH : glyph;
             gbuf[y][x].layers.layer_gui_glyphs[defsyms[cmap_idx].layer] = remove ? NO_GLYPH : gui_glyph;
         }
         else if (glyph_is_monster(glyph) || glyph_is_invisible(glyph) || glyph_is_warning(glyph)) /* includes also players */
         {
             if (!remove)
-                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, m_at(x, y), 0UL, 0UL));
+                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, m_at(x, y), 0UL, 0UL, MAT_NONE));
             gbuf[y][x].layers.layer_glyphs[LAYER_MONSTER] = remove ? NO_GLYPH : glyph;
             gbuf[y][x].layers.layer_gui_glyphs[LAYER_MONSTER] = remove ? NO_GLYPH : gui_glyph;
             clear_monster_extra_info(x, y);
@@ -3067,7 +3069,7 @@ boolean remove;
         {
             int obj_idx = glyph_to_obj(glyph);
             if (!remove)
-                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, is_otyp_drawn_in_front(obj_idx, x, y) ? LAYER_COVER_OBJECT : LAYER_OBJECT, level.objects[x][y], (struct monst*)0, 0UL, 0UL));
+                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, is_otyp_drawn_in_front(obj_idx, x, y) ? LAYER_COVER_OBJECT : LAYER_OBJECT, level.objects[x][y], (struct monst*)0, 0UL, 0UL, MAT_NONE));
 
             if (is_otyp_drawn_in_front(obj_idx, x, y))
             {
@@ -3085,7 +3087,7 @@ boolean remove;
         else if (glyph_is_missile(glyph))
         {
             if (!remove)
-                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_MISSILE, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
+                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_MISSILE, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE));
 
             gbuf[y][x].layers.layer_glyphs[LAYER_MISSILE] = remove ? NO_GLYPH : glyph;
             gbuf[y][x].layers.layer_gui_glyphs[LAYER_MISSILE] = remove ? NO_GLYPH : gui_glyph;
@@ -3093,7 +3095,7 @@ boolean remove;
         else if (glyph_is_zap(glyph))
         {
             if(!remove)
-                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_ZAP, (struct obj*)0, (struct monst*)0, 0UL, gbuf[y][x].layers.missile_flags));
+                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_ZAP, (struct obj*)0, (struct monst*)0, 0UL, gbuf[y][x].layers.missile_flags, MAT_NONE));
 
             gbuf[y][x].layers.layer_glyphs[LAYER_ZAP] = remove ? NO_GLYPH : glyph;
             gbuf[y][x].layers.layer_gui_glyphs[LAYER_ZAP] = remove ? NO_GLYPH : gui_glyph;
@@ -3101,7 +3103,7 @@ boolean remove;
         else if (glyph_is_swallow(glyph) || glyph_is_explosion(glyph))
         {
             if (!remove)
-                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_GENERAL_EFFECT, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
+                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_GENERAL_EFFECT, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE));
 
             gbuf[y][x].layers.layer_glyphs[LAYER_GENERAL_EFFECT] = remove ? NO_GLYPH : glyph;
             gbuf[y][x].layers.layer_gui_glyphs[LAYER_GENERAL_EFFECT] = remove ? NO_GLYPH : gui_glyph;
@@ -3109,7 +3111,7 @@ boolean remove;
         else
         {
             if (!remove)
-                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_GENERAL_UI, (struct obj*)0, (struct monst*)0, 0UL, 0UL));
+                gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_GENERAL_UI, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE));
             /* Should not get here */
             gbuf[y][x].layers.layer_glyphs[LAYER_GENERAL_UI] = remove ? NO_GLYPH : glyph;
             gbuf[y][x].layers.layer_gui_glyphs[LAYER_GENERAL_UI] = remove ? NO_GLYPH : gui_glyph;
@@ -5288,7 +5290,7 @@ struct obj* otmp;
     xchar x = 0, y = 0;
     get_obj_location(otmp, &x, &y, CONTAINED_TOO | BURIED_TOO);
     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, is_obj_drawn_in_front(otmp) ? LAYER_COVER_OBJECT : LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, is_obj_drawn_in_front(otmp) ? LAYER_COVER_OBJECT : LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE));
     otmp->glyph = glyph;
     otmp->gui_glyph = gui_glyph;
 }
@@ -5301,7 +5303,7 @@ struct monst* mtmp;
         return NO_GLYPH;
 
     int glyph = any_seen_mon_to_glyph(mtmp, rn2_on_display_rng);
-    int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, MAT_NONE));
 
     return iflags.using_gui_tiles ? gui_glyph : glyph;
 }

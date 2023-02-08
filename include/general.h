@@ -135,6 +135,7 @@ struct replacement_info {
     struct monst* monster;
     unsigned long layer_flags;
     unsigned long missile_flags;
+    unsigned char missile_material;
 };
 
 struct skill_menu_info

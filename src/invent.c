@@ -4151,7 +4151,7 @@ long pickcnt;
     xchar x = 0, y = 0;
     get_obj_location(otmp, &x, &y, CONTAINED_TOO | BURIED_TOO);
     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE));
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_COMMAND_MENU, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_obj(otmp));
@@ -4661,7 +4661,7 @@ nextclass:
             char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
 
             int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-            int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL));
+            int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE));
             add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, obj_to_extended_menu_info(otmp), ilet,
                 applied_class_accelerator,
                      ATR_NONE, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED);
@@ -5065,7 +5065,7 @@ char avoidlet;
                     }
                     any.a_char = ilet;
                     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-                    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL));
+                    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE));
                     add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph,
                              &any, obj_to_extended_menu_info(otmp), ilet, 0, ATR_NONE,
                              (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE) : doname_with_weight_first(otmp, TRUE)), MENU_UNSELECTED);

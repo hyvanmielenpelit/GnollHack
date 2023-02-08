@@ -1072,6 +1072,7 @@ struct objclass {
 #define O5_MATERIAL_NAME_4TH_WORD      (O5_MATERIAL_NAME_4TH_WORD_AN | O5_MATERIAL_NAME_4TH_WORD_DN)
 
 #define O6_NONE                        0x00000000UL
+#define O6_MISSILE_REPLACEMENTS        0x00000001UL
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
 #define PERMITTED_ALL                 0x00000000UL

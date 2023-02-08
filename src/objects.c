@@ -124,10 +124,10 @@ OBJECT(OBJ("strange object", None, None, None, None, 0, 0, 0, 0), \
             power,power2,power3,pflags,typ,sub,skill,matinit,metal,color,height,soundset,\
             flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets)
 
-#define PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost, \
+#define GENERAL_PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost, \
             dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, hitbon,mcadj, matinit, metal,sub,launcher_skill,skill,color,height,soundset, \
-            flags,flags2,flags3,flags4,flags5,flags6, permittedtargets) \
-        OBJECT(OBJ(name,desc, None, None, None, height, 0, 0, 0),   \
+            flags,flags2,flags3,flags4,flags5,flags6, permittedtargets, anim, enl, repl) \
+        OBJECT(OBJ(name,desc, None, None, None, height, anim, enl, repl),   \
             BITS(nmkn, 1, 1, 0, mgc, ENCHTYPE_PROJECTILE, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, PIERCE, sub, skill, matinit, metal), \
             NO_POWER, NO_POWER, NO_POWER, P1_NONE, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
             dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
@@ -136,6 +136,12 @@ OBJECT(OBJ("strange object", None, None, None, None, 0, 0, 0, 0), \
             launcher_skill, 0, 0, 0, \
             PERMITTED_ALL, permittedtargets, flags, flags2, flags3, O4_MISSILE_TILE | flags4, flags5, flags6)
 
+#define PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost, \
+            dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, hitbon,mcadj, matinit, metal,sub,launcher_skill,skill,color,height,soundset, \
+            flags,flags2,flags3,flags4,flags5,flags6, permittedtargets) \
+        GENERAL_PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost, \
+            dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, hitbon,mcadj, matinit, metal,sub,launcher_skill,skill,color,height,soundset, \
+            flags,flags2,flags3,flags4,flags5,flags6, permittedtargets, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT)
 
 #define BOW(name,desc,  nmkn,mgc,bi,prob,multigen,enchtype,wt,cost, \
             dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct,hitbon,mcadj,fixeddmgbon,launchrange,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,power,power2,power3,pflags,matinit,metal,sub,skill,color,height,soundset,\
@@ -157,11 +163,11 @@ OBJECT(OBJ("strange object", None, None, None, None, 0, 0, 0, 0), \
 #define B WHACK
 
 /* missiles; materiel reflects the arrowhead, not the shaft */
-PROJECTILE("arrow", None,
+GENERAL_PROJECTILE("arrow", None,
     1, 0, 44, MULTIGEN_2D6_3, 1, 2,
     AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, MATINIT_MAYBE_SILVER_OR_BONE, MAT_IRON, WEP_ARROW, P_BOW, -P_BOW, HI_METAL, 16, OBJECT_SOUNDSET_ARROW,
-    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, ALL_TARGETS),
+    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_MISSILE_REPLACEMENTS, ALL_TARGETS, NO_ANIMATION, NO_ENLARGEMENT, ARROW_REPLACEMENT),
 PROJECTILE("elven arrow", "runed arrow",
     0, 0, 20, MULTIGEN_2D6_3, 1, 2, 
     AD_PHYS, 1, 7, 0, 1, 6, 0,     AD_PHYS,    0, 0, 0, A1_NONE, A2_NONE, 0, 
@@ -182,21 +188,21 @@ PROJECTILE("enchanted arrow", None, /* Special item for display in arrow spells 
     AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS,    0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, MATINIT_NORMAL, MAT_FORCEFIELD, WEP_ARROW, P_BOW, -P_BOW, HI_ZAP, 16, OBJECT_SOUNDSET_ARROW,
     O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_FLOOR_TILE, O5_NONE, O6_NONE, ALL_TARGETS),
-PROJECTILE("crossbow bolt", None,
+GENERAL_PROJECTILE("crossbow bolt", None,
     1, 0, 45, MULTIGEN_2D6_3, 1, 2, 
     AD_PHYS, 1, 3, 1, 1, 4, 1, AD_PHYS,    0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, MATINIT_MAYBE_SILVER_OR_BONE, MAT_IRON, WEP_QUARREL, P_CROSSBOW, -P_CROSSBOW, HI_METAL, 16, OBJECT_SOUNDSET_ARROW,
-    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, ALL_TARGETS), //1d3+1 //1d4+1
+    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, ALL_TARGETS, NO_ANIMATION, NO_ENLARGEMENT, CROSSBOW_BOLT_REPLACEMENT), //1d3+1 //1d4+1
 PROJECTILE("gnollish quarrel", "crude crossbow bolt",
     0, 0, 15, MULTIGEN_2D6_3, 1, 2, 
     AD_PHYS, 1, 2, 1, 1, 3, 1, AD_PHYS,    0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, MATINIT_NORMAL, MAT_IRON, WEP_QUARREL, P_CROSSBOW, -P_CROSSBOW, HI_METAL, 16, OBJECT_SOUNDSET_ARROW,
     O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, O4_FLOOR_TILE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, ALL_TARGETS), //1d2+1 //1d3+1
-PROJECTILE("sling-bullet", None,
+GENERAL_PROJECTILE("sling-bullet", None,
     1, 0, 40, MULTIGEN_2D6_6, 2, 3, 
     AD_PHYS, 1, 7, 0, 1, 9, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, MATINIT_SLING_BULLET, MAT_IRON, WEP_SLING_BULLET, P_SLING, -P_SLING, HI_METAL, 16, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, ALL_TARGETS),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_SHOW_BASE_MATERIAL_NAME, O6_NONE, ALL_TARGETS, NO_ANIMATION, NO_ENLARGEMENT, SLING_BULLET_REPLACEMENT),
 
 /* missiles that don't use a launcher */
 WEAPON("dart", None,
@@ -954,6 +960,7 @@ BOW("Galadhrim bow", "ornamental long bow",
 #undef WEAPON
 #undef CHARGEDWEAPON
 #undef PROJECTILE
+#undef GENERAL_PROJECTILE
 #undef BOW
 
 /* armor ... */
@@ -1244,11 +1251,11 @@ GENERAL_SUIT("full plate mail", None,
     20, 7, 960, 2000, 1, 5, 0, 0, 0, 0, 14, 
     MATINIT_PLATE_MAIL, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_RARE, O5_NONE, O6_NONE, PERMITTED_ALL, NO_ANIMATION, NO_ENLARGEMENT, FULL_PLATE_MAIL_REPLACEMENT),
-SUIT("field plate mail", None, 
+GENERAL_SUIT("field plate mail", None, 
     1, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     25, 6, 840, 1000, 2, 4, 0, 0, 0, 0, 12, 
     MATINIT_PLATE_MAIL, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_RARE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_NONE, O4_RARE, O5_NONE, O6_NONE, PERMITTED_ALL, NO_ANIMATION, NO_ENLARGEMENT, FIELD_PLATE_MAIL_REPLACEMENT),
 GENERAL_SUIT("plate mail", None, 
     1, 0, 1,NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     30, 5, 720, 600, 3, 3, 0, 0, 0, 0, 10, 

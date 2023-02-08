@@ -2271,6 +2271,10 @@ enum replacement_action_types
     REPLACEMENT_ACTION_TORCH_HOLDER,
     REPLACEMENT_ACTION_FIREPLACE,
     REPLACEMENT_ACTION_PLATE_MAIL_MATERIAL,
+    REPLACEMENT_ACTION_SILVER_BONE_MATERIAL,
+    REPLACEMENT_ACTION_SILVER_LEAD_MATERIAL,
+    REPLACEMENT_ACTION_SILVER_BONE_MISSILE_MATERIAL,
+    REPLACEMENT_ACTION_SILVER_LEAD_MISSILE_MATERIAL,
 };
 
 
@@ -2280,6 +2284,7 @@ struct replacement_definition {
     unsigned long replacement_events;
     enum replacement_action_types replacement_action; /* hard-coded - defines which tile to use and when */
     enum autodraw_types general_autodraw; /* For zero-tile replacements */
+    schar missile_dir;
     const char* tile_names[MAX_TILES_PER_REPLACEMENT];
     short tile_animation[MAX_TILES_PER_REPLACEMENT];
     short tile_enlargement[MAX_TILES_PER_REPLACEMENT];
@@ -2473,7 +2478,14 @@ enum replacement_types
     TORCH_REPLACEMENT,
     FIREPLACE_REPLACEMENT,
     PLATE_MAIL_REPLACEMENT,
+    FIELD_PLATE_MAIL_REPLACEMENT,
     FULL_PLATE_MAIL_REPLACEMENT,
+    ARROW_REPLACEMENT,
+    ARROW_MISSILE_0_REPLACEMENT,
+    ARROW_MISSILE_1_REPLACEMENT,
+    ARROW_MISSILE_2_REPLACEMENT,
+    CROSSBOW_BOLT_REPLACEMENT,
+    SLING_BULLET_REPLACEMENT,
     MAX_REPLACEMENTS
 };
 

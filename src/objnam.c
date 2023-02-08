@@ -3569,7 +3569,6 @@ STATIC_VAR const struct alt_spellings {
     { "clay", CLAY_PEBBLE },
     { "sling-bullet", SLING_BULLET },
     { "sling bullet", SLING_BULLET },
-    { "sling bullet", SLING_BULLET },
     { "quarrel", CROSSBOW_BOLT },
     { "gnollish crossbow bolt", GNOLLISH_QUARREL },
     { "camera", EXPENSIVE_CAMERA },

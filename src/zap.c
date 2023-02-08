@@ -7840,7 +7840,7 @@ boolean stop_at_first_hit_object;
     }
     else if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM)
     {
-        tmp_at_with_missile_flags(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng), get_missile_flags(obj, FALSE));
+        tmp_at_with_missile_flags(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng), get_missile_flags(obj, FALSE), obj ? obj->material : MAT_NONE);
     }
     else if (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)
     {

@@ -1470,11 +1470,12 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 struct replacement_info
-data_to_replacement_info(signed_glyph, layer, otmp, mtmp, layer_flags, missile_flags)
+data_to_replacement_info(signed_glyph, layer, otmp, mtmp, layer_flags, missile_flags, missile_material)
 int signed_glyph, layer;
 struct obj* otmp;
 struct monst* mtmp;
 unsigned long layer_flags, missile_flags;
+uchar missile_material;
 {
     struct replacement_info info = { 0 };
     info.signed_glyph = signed_glyph;
@@ -1483,6 +1484,7 @@ unsigned long layer_flags, missile_flags;
     info.monster = mtmp;
     info.layer_flags = layer_flags;
     info.missile_flags = missile_flags;
+    info.missile_material = missile_material;
 
     return info;
 }
@@ -1498,6 +1500,7 @@ enum autodraw_types* autodraw_ptr;
     struct obj* otmp = info.object;
     struct monst* mtmp = info.monster;
     unsigned long layer_flags = info.layer_flags;
+    uchar missile_material = info.missile_material;
     boolean is_lit_missile = info.layer == LAYER_MISSILE && (info.missile_flags & MISSILE_FLAGS_LIT) != 0;
     short replacement_idx = tile2replacement[ntile];
     if (replacement_idx > 0)
@@ -2235,6 +2238,116 @@ break;
             }
             break;
         }
+        case REPLACEMENT_ACTION_SILVER_BONE_MATERIAL:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            if (otmp->material != objects[otmp->otyp].oc_material)
+            {
+                int glyph_idx = 0;
+                switch (otmp->material)
+                {
+                case MAT_SILVER:
+                    glyph_idx = 0;
+                    break;
+                case MAT_BONE:
+                    glyph_idx = 1;
+                    break;
+                default:
+                    return ntile;
+                }
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_SILVER_BONE_MISSILE_MATERIAL:
+        {
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            int glyph_idx = 0;
+            switch (missile_material)
+            {
+            case MAT_SILVER:
+                glyph_idx = 0;
+                break;
+            case MAT_BONE:
+                glyph_idx = 1;
+                break;
+            default:
+                return ntile;
+            }
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+            return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+        }
+        case REPLACEMENT_ACTION_SILVER_LEAD_MATERIAL:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            if (otmp->material != objects[otmp->otyp].oc_material)
+            {
+                int glyph_idx = 0;
+                switch (otmp->material)
+                {
+                case MAT_SILVER:
+                    glyph_idx = 0;
+                    break;
+                case MAT_LEAD:
+                    glyph_idx = 1;
+                    break;
+                default:
+                    return ntile;
+                }
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_SILVER_LEAD_MISSILE_MATERIAL:
+        {
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            int glyph_idx = 0;
+            switch (missile_material)
+            {
+            case MAT_SILVER:
+                glyph_idx = 0;
+                break;
+            case MAT_LEAD:
+                glyph_idx = 1;
+                break;
+            default:
+                return ntile;
+            }
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+            return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+        }
         default:
             break;
         }
@@ -2748,7 +2861,52 @@ struct replacement_info info;
             }
             break;
         }
+        case REPLACEMENT_ACTION_SILVER_BONE_MATERIAL:
+        {
+            if (!otmp)
+                return glyph;
 
+            if (otmp->material != objects[otmp->otyp].oc_material)
+            {
+                int glyph_idx = 0;
+                switch (otmp->material)
+                {
+                case MAT_SILVER:
+                    glyph_idx = 0;
+                    break;
+                case MAT_BONE:
+                    glyph_idx = 1;
+                    break;
+                default:
+                    return glyph;
+                }
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_SILVER_LEAD_MATERIAL:
+        {
+            if (!otmp)
+                return glyph;
+
+            if (otmp->material != objects[otmp->otyp].oc_material)
+            {
+                int glyph_idx = 0;
+                switch (otmp->material)
+                {
+                case MAT_SILVER:
+                    glyph_idx = 0;
+                    break;
+                case MAT_LEAD:
+                    glyph_idx = 1;
+                    break;
+                default:
+                    return glyph;
+                }
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
         default:
             break;
         }
@@ -3521,7 +3679,7 @@ int
 get_replacement_base_tile(replacement_idx)
 short replacement_idx;
 {
-    int i, cmap_idx;
+    int i, j, k, cmap_idx;
     for (i = LOW_PM; i < NUM_MONSTERS; i++)
     {
         int action;
@@ -3550,6 +3708,46 @@ short replacement_idx;
     {
         if (obj_descr[objects[i].oc_descr_idx].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_OBJ_OFF];
+        if (objects[i].oc_flags6 & O6_MISSILE_REPLACEMENTS)
+        {
+            for (j = 0; j < NUM_BASE_TILE_DIRS; j++)
+            {
+                if (obj_descr[objects[i].oc_descr_idx].replacement + j + 1 == replacement_idx)
+                {
+                    for (k = 0; k < NUM_MISSILE_DIRS; k++)
+                    {
+                        boolean hflip = FALSE;
+                        boolean vflip = FALSE;
+                        boolean isdirfrombasedir = is_dir_from_base_dir(k, j, &hflip, &vflip);
+                        if(isdirfrombasedir)
+                            return glyph2tile[k + i * NUM_MISSILE_DIRS + GLYPH_OBJ_MISSILE_OFF];
+                    }
+                }
+            }
+        }
+    }
+
+    for (i = 1; i <= NUM_ARTIFACTS; i++)
+    {
+        if (artilist[i].replacement == replacement_idx)
+            return glyph2tile[i - 1 + GLYPH_ARTIFACT_OFF];
+        if (artilist[i].aflags2 & AF2_MISSILE_REPLACEMENTS)
+        {
+            for (j = 0; j < NUM_BASE_TILE_DIRS; j++)
+            {
+                if (artilist[i].replacement + j + 1 == replacement_idx)
+                {
+                    for (k = 0; k < NUM_MISSILE_DIRS; k++)
+                    {
+                        boolean hflip = FALSE;
+                        boolean vflip = FALSE;
+                        boolean isdirfrombasedir = is_dir_from_base_dir(k, j, &hflip, &vflip);
+                        if (isdirfrombasedir)
+                            return glyph2tile[k + (i - 1) * NUM_MISSILE_DIRS + GLYPH_ARTIFACT_MISSILE_OFF];
+                    }
+                }
+            }
+        }
     }
 
     for (cmap_idx = 0; cmap_idx < MAX_CMAP_TYPES; cmap_idx++)
