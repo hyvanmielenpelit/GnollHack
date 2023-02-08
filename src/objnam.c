@@ -4919,7 +4919,7 @@ retry:
                     {
                         spacep++;
                         int len = (int)(spacep - originalbuf);
-                        if (len > 0 && bplen > len)
+                        if (len > 0 && (int)bplen > len)
                         {
                             strncpy(startbuf, mbp, (size_t)len);
                             startbuf[len + 1] = '\0';
