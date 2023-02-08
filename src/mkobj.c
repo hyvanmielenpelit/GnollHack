@@ -4951,6 +4951,20 @@ int otyp;
         if (!rn2(20))
             mat = MAT_MITHRIL;
         break;
+    case MATINIT_MAYBE_MITHRIL_OR_SILVER:
+        if (!rn2(20))
+            mat = MAT_MITHRIL;
+        else if (!rn2(20))
+            mat = MAT_SILVER;
+        break;
+    case MATINIT_CHAIN_MAIL:
+        if (!rn2(100) && levdiff >= 10)
+            mat = MAT_ORICHALCUM;
+        else if (!rn2(50) && levdiff >= 6)
+            mat = MAT_MITHRIL;
+        else if (!rn2(50) && levdiff >= 8)
+            mat = MAT_ADAMANTIUM;
+        break;
     case MATINIT_NORMAL:
     default:
         break;
