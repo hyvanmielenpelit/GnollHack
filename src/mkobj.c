@@ -23,6 +23,7 @@ STATIC_DCL void FDECL(insane_object, (struct obj *, const char *,
 STATIC_DCL void FDECL(check_contained, (struct obj *, const char *));
 STATIC_DCL void FDECL(sanity_check_worn, (struct obj *));
 STATIC_DCL uchar FDECL(get_otyp_initial_material, (int));
+STATIC_DCL unsigned long FDECL(mkobj_ownerflags, (struct monst*));
 
 struct icp {
     int iprob;   /* probability of an item type */
@@ -214,10 +215,12 @@ struct obj *otmp;
 }
 
 struct obj *
-mkobj_at_with_flags(let, x, y, artif, mkflags)
+mkobj_at_with_flags(let, x, y, artif, material, param1, param2, mkflags)
 char let;
 int x, y;
 boolean artif;
+uchar material;
+long param1, param2;
 unsigned long mkflags;
 {
     if (!isok(x, y))
@@ -225,7 +228,7 @@ unsigned long mkflags;
 
     struct obj *otmp;
 
-    otmp = mkobj_with_flags(let, artif, FALSE, (struct monst*)0, mkflags);
+    otmp = mkobj_with_flags(let, artif, FALSE, (struct monst*)0, material, param1, param2, mkflags);
     if (otmp)
     {
         place_object(otmp, x, y);
@@ -244,7 +247,7 @@ char let;
 int x, y;
 boolean artif;
 {
-    return mkobj_at_with_flags(let, x, y, artif, 0UL);
+    return mkobj_at_with_flags(let, x, y, artif, MAT_NONE, 0L, 0L, 0UL);
 }
 
 struct obj *
@@ -252,13 +255,15 @@ mksobj_at(otyp, x, y, init, artif)
 int otyp, x, y;
 boolean init, artif;
 {
-    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, 0L, 0L, 0UL);
+    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, (struct monst*)0, MAT_NONE, 0L, 0L, 0UL);
 }
 
 struct obj*
-mksobj_at_with_flags(otyp, x, y, init, artif, mkobj_type, param, param2, mkflags)
+mksobj_at_with_flags(otyp, x, y, init, artif, mkobj_type, mowner, material, param, param2, mkflags)
 int otyp, x, y, mkobj_type;
 boolean init, artif;
+struct monst* mowner;
+uchar material;
 long param, param2;
 unsigned long mkflags;
 {
@@ -267,7 +272,7 @@ unsigned long mkflags;
 
     struct obj* otmp;
 
-    otmp = mksobj_with_flags(otyp, init, artif, mkobj_type, param, param2, mkflags);
+    otmp = mksobj_with_flags(otyp, init, artif, mkobj_type, mowner, material, param, param2, mkflags);
     if (otmp)
     {
         place_object(otmp, x, y);
@@ -306,15 +311,17 @@ char oclass;
 boolean artif;
 int mkobj_type;
 {
-    return mkobj_with_flags(oclass, artif, mkobj_type, (struct monst*)0, 0UL);
+    return mkobj_with_flags(oclass, artif, mkobj_type, (struct monst*)0, MAT_NONE, 0L, 0L, 0UL);
 }
 
 struct obj *
-mkobj_with_flags(oclass, artif, mkobj_type, mowner, mkflags)
+mkobj_with_flags(oclass, artif, mkobj_type, mowner, material, param1, param2, mkflags)
 char oclass;
 boolean artif;
 int mkobj_type;
 struct monst* mowner;
+uchar material;
+long param1, param2;
 unsigned long mkflags;
 {
     int tprob;
@@ -343,7 +350,7 @@ unsigned long mkflags;
         else
             break;
     }
-    return mksobj_with_flags(i, TRUE, artif, mkobj_type, 0L, 0L, mkflags);
+    return mksobj_with_flags(i, TRUE, artif, mkobj_type, mowner, material, param1, param2, mkflags);
 }
 
 int
@@ -615,7 +622,7 @@ struct obj *box;
             if (!rn2(4))
             {
                 /* A random catalogue */
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, FIRST_CATALOGUE + rn2(NUM_CATALOGUES), 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, (struct monst*)0, MAT_NONE, FIRST_CATALOGUE + rn2(NUM_CATALOGUES), 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             }
             else if (rn2(3))
                 otmp = mkobj(SCROLL_CLASS, FALSE, TRUE);
@@ -1340,6 +1347,27 @@ int alter_type;
     }
 }
 
+STATIC_OVL
+unsigned long mkobj_ownerflags(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return 0UL;
+
+    aligntyp alignment = mon_aligntyp(mtmp);
+    unsigned long mkflags = 0UL;
+    if (alignment == A_NONE || is_mercenary(mtmp->data) || mtmp->isgd)
+        mkflags |= MKOBJ_FLAGS_OWNER_IS_NONALIGNED;
+    else if (alignment == A_LAWFUL)
+        mkflags |= MKOBJ_FLAGS_OWNER_IS_LAWFUL;
+    else if (alignment == A_NEUTRAL)
+        mkflags |= MKOBJ_FLAGS_OWNER_IS_NEUTRAL;
+    else if (alignment == A_CHAOTIC)
+        mkflags |= MKOBJ_FLAGS_OWNER_IS_CHAOTIC;
+
+    return mkflags;
+}
+
 /* These are the classes where dknown is zero by default! */
 STATIC_VAR const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS, ARMOR_CLASS, MISCELLANEOUS_CLASS, REAGENT_CLASS,
                                 SCROLL_CLASS, GEM_CLASS,  SPBOOK_CLASS,
@@ -1354,15 +1382,29 @@ boolean init;
 boolean artif;
 int mkobj_type;
 {
-    return mksobj_with_flags(otyp, init, artif, mkobj_type, 0L, 0L, 0UL);
+    return mksobj_with_flags(otyp, init, artif, mkobj_type, (struct monst*)0, MAT_NONE, 0L, 0L, 0UL);
+}
+
+struct obj*
+mksobj_ex(otyp, init, artif, mkobj_type, mowner, material)
+int otyp;
+boolean init;
+boolean artif;
+int mkobj_type;
+struct monst* mowner;
+uchar material;
+{
+    return mksobj_with_flags(otyp, init, artif, mkobj_type, mowner, material, 0L, 0L, 0UL);
 }
 
 struct obj *
-mksobj_with_flags(otyp, init, artif, mkobj_type, param, param2, mkflags)
+mksobj_with_flags(otyp, init, artif, mkobj_type, mowner, material, param, param2, mkflags)
 int otyp;
 boolean init;
 boolean artif;
 int mkobj_type; /* 0 = floor, 1 = box, 2 = wishing, -1 = special level preset item */
+struct monst* mowner;
+uchar material;
 long param, param2;
 unsigned long mkflags;
 {
@@ -1377,6 +1419,10 @@ unsigned long mkflags;
     {
         excludedtitles = (unsigned long)param;
         excludedtitles2 = (unsigned long)param2;
+    }
+    if (mowner)
+    {
+        mkflags |= mkobj_ownerflags(mowner);
     }
 
     otmp = newobj();
@@ -1402,7 +1448,7 @@ unsigned long mkflags;
     otmp->tknown = 0;
     otmp->cknown = (objects[otmp->otyp].oc_flags4 & O4_CONTAINER_CONTENTS_VISIBLE) ? 1 : 0;
     otmp->corpsenm = NON_PM;
-    otmp->material = forcebasematerial ? objects[otyp].oc_material : get_otyp_initial_material(otyp);
+    otmp->material = material > 0 ? material : forcebasematerial ? objects[otyp].oc_material : get_otyp_initial_material(otyp);
     otmp->elemental_enchantment = 0;
     otmp->exceptionality = 0;
     otmp->mythic_prefix = 0;
@@ -1952,11 +1998,6 @@ unsigned long mkflags;
     }
     else if (is_obj_generated_cursed(otmp))
         curse(otmp);
-
-    if ((mkflags & MKOBJ_FLAGS_PARAM2_IS_MATERIAL) && param2 > 0)
-    {
-        otmp->material = (uchar)param2;
-    }
 
     /* Exceptionality */
     if (can_have_exceptionality(otmp) && mkobj_type < 2 && otmp->oartifact == 0)
@@ -4891,9 +4932,9 @@ int otyp;
     case MATINIT_PLATE_MAIL:
         if (!rn2(4))
             mat = MAT_BRONZE;
-        else if (!rn2(50) && levdiff >= 4)
+        else if (!rn2(75) && levdiff >= 4)
             mat = MAT_HARD_CRYSTAL;
-        else if (!rn2(50) && levdiff >= 10)
+        else if (!rn2(100) && levdiff >= 10)
             mat = MAT_ORICHALCUM;
         else if (!rn2(50) && levdiff >= 6)
             mat = MAT_MITHRIL;

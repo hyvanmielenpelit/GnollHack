@@ -1153,7 +1153,7 @@ coord *cc;
                 pline(Hallucination ? "I want my mummy!"
                     : "You've disturbed a tomb!");
             }
-            otmp = mksobj_at_with_flags(SARCOPHAGUS, dig_x, dig_y, FALSE, FALSE, 0, 0L, 0L, MKOBJ_FLAGS_OPEN_COFFIN);
+            otmp = mksobj_at_with_flags(SARCOPHAGUS, dig_x, dig_y, FALSE, FALSE, 0, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_OPEN_COFFIN);
             if (otmp)
             {
                 boolean dealloc = FALSE;

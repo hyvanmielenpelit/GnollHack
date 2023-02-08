@@ -2078,6 +2078,12 @@ struct mkroom *croom;
     else
         c = 0;
 
+    struct monst* mowner = 0;
+    if ((o->containment & SP_OBJ_CONTENT) != 0 && !container_idx && invent_carrying_monster) 
+    {
+        mowner = invent_carrying_monster;
+    }
+
     if (o->class == OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_ARMOR)
     {
         /* class armor treasure */
@@ -2086,7 +2092,7 @@ struct mkroom *croom;
         else if (Role_if(PM_MONK))
             otmp = mksobj_at(!rn2(5) ? BRACERS_OF_REFLECTION : !rn2(2) ? ROBE_OF_PROTECTION : !rn2(2) ? ROBE_OF_MAGIC_RESISTANCE : CLOAK_OF_MAGIC_RESISTANCE, x, y, TRUE, !named);
         else
-            otmp = mksobj_at_with_flags(FULL_PLATE_MAIL, x, y, TRUE, !named, -1, 0L, !rn2(2) ? MAT_MITHRIL : MAT_ADAMANTIUM, MKOBJ_FLAGS_PARAM2_IS_MATERIAL);
+            otmp = mksobj_at_with_flags(FULL_PLATE_MAIL, x, y, TRUE, !named, -1, mowner, !rn2(2) ? MAT_MITHRIL : MAT_ADAMANTIUM, 0L, 0L, 0UL);
     }
     else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_WEAPON)
     {
@@ -2260,7 +2266,7 @@ struct mkroom *croom;
         unsigned long mkflags = o->open ? MKOBJ_FLAGS_OPEN_COFFIN : 0UL;
         mkflags |= o->corpsenm > NON_PM ? MKOBJ_FLAGS_MONSTER_SPECIFIED : 0UL;
         
-        otmp = mksobj_at_with_flags(o->id, x, y, TRUE, !named, -1, 0L, 0L, mkflags);
+        otmp = mksobj_at_with_flags(o->id, x, y, TRUE, !named, -1, mowner, MAT_NONE, 0L, 0L, mkflags);
     }
     else {
         /*

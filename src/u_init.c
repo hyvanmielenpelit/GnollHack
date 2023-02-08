@@ -1451,7 +1451,7 @@ add_school_specific_spellbooks(VOID_ARGS)
             int i;
             for (i = 0; i < cnt; i++)
             {
-                struct obj* obj = mkobj_with_flags(SPBOOK_CLASS, FALSE, FALSE, (struct monst*)0, MKOBJ_FLAGS_NORMAL_SPELLBOOK);
+                struct obj* obj = mkobj_with_flags(SPBOOK_CLASS, FALSE, FALSE, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_NORMAL_SPELLBOOK);
                 int otyp = obj->otyp;
 
                 while (otyp == SPE_BLANK_PAPER
@@ -1480,7 +1480,7 @@ add_school_specific_spellbooks(VOID_ARGS)
                         ))
                 {
                     dealloc_obj(obj);
-                    obj = mkobj_with_flags(SPBOOK_CLASS, FALSE, FALSE, (struct monst*)0, MKOBJ_FLAGS_NORMAL_SPELLBOOK);
+                    obj = mkobj_with_flags(SPBOOK_CLASS, FALSE, FALSE, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_NORMAL_SPELLBOOK);
                     otyp = obj->otyp;
                 }
 
@@ -1577,7 +1577,7 @@ register const struct trobj * trop;
             otyp = (int)trop->trotyp;
             if (otyp != UNDEF_TYP)
             {
-                obj = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, 0UL, (unsigned long)trop->material, (trop->material ? MKOBJ_FLAGS_PARAM2_IS_MATERIAL : 0UL) | MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
+                obj = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, (struct monst*)0, trop->material, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
             }
             else
             { /* UNDEF_TYP */
@@ -2090,7 +2090,7 @@ mk_obj_with_material_in_container_known(container, itemtype, material)
 struct obj* container;
 int itemtype, material;
 {
-    struct obj* otmp = mksobj_with_flags(itemtype, FALSE, FALSE, TRUE, 0L, material, material > 0 ? MKOBJ_FLAGS_PARAM2_IS_MATERIAL : 0UL);
+    struct obj* otmp = mksobj_with_flags(itemtype, FALSE, FALSE, TRUE, (struct monst*)0, material, 0L, 0L, 0UL);
     if (otmp)
     {
         otmp->bknown = 1;

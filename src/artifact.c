@@ -257,7 +257,7 @@ uchar mkflags; /* for monks */
 
         /* make an appropriate object if necessary, then christen it */
         if (by_align || !otmp)
-            otmp = mksobj_with_flags((int) a->otyp, TRUE, FALSE, FALSE, 0UL, 0UL, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
+            otmp = mksobj_with_flags((int) a->otyp, TRUE, FALSE, FALSE, (struct monst*)0, MAT_NONE, 0UL, 0UL, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
 
         if (otmp) 
         {

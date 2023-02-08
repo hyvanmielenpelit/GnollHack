@@ -166,7 +166,7 @@ STATIC_DCL int FDECL(blessed_recharge_item_func, (struct monst*, struct obj*));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
-STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int, int, int, int, int, BOOLEAN_P));
+STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int, int, int, int, UCHAR_P, BOOLEAN_P));
 STATIC_DCL int FDECL(forge_cubic_gate_func, (struct monst*));
 STATIC_DCL int FDECL(forge_artificial_wings_func, (struct monst*));
 STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
@@ -10500,7 +10500,8 @@ struct monst* mtmp;
 STATIC_OVL int
 forge_special_func(mtmp, forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality, material, initialize)
 struct monst* mtmp;
-int forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality, material;
+int forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality;
+uchar material;
 boolean initialize;
 {
     char talkbuf[BUFSZ];
@@ -10583,7 +10584,7 @@ boolean initialize;
         otmp = 0;
     }
 
-    struct obj* craftedobj = mksobj_with_flags(forge_dest_otyp, initialize, FALSE, 3, 0L, (long)material, (material ? MKOBJ_FLAGS_PARAM2_IS_MATERIAL : 0UL) | MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
+    struct obj* craftedobj = mksobj_with_flags(forge_dest_otyp, initialize, FALSE, 3, (struct monst*)0, material, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
     if (craftedobj)
     {
         if (quan > 0)

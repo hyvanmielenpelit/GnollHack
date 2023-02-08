@@ -2831,11 +2831,11 @@ dosacrifice()
                     {
                         struct obj* otmp2 = (struct obj*)0;
                         if (objects[otmp->otyp].oc_skill == P_BOW)
-                            otmp2 = mksobj_with_flags(ARROW, FALSE, FALSE, FALSE, 0L, MAT_SILVER, MKOBJ_FLAGS_PARAM2_IS_MATERIAL);
+                            otmp2 = mksobj_with_flags(ARROW, FALSE, FALSE, FALSE, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
                         else if(objects[otmp->otyp].oc_skill == P_CROSSBOW)
-                            otmp2 = mksobj_with_flags(CROSSBOW_BOLT, FALSE, FALSE, FALSE, 0L, MAT_SILVER, MKOBJ_FLAGS_PARAM2_IS_MATERIAL);
+                            otmp2 = mksobj_with_flags(CROSSBOW_BOLT, FALSE, FALSE, FALSE, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
                         else if (objects[otmp->otyp].oc_skill == P_SLING)
-                            otmp2 = mksobj_with_flags(SLING_BULLET, FALSE, FALSE, FALSE, 0L, MAT_SILVER, MKOBJ_FLAGS_PARAM2_IS_MATERIAL);
+                            otmp2 = mksobj_with_flags(SLING_BULLET, FALSE, FALSE, FALSE, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
 
                         if (otmp2)
                         {

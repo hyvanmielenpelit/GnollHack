@@ -21,6 +21,7 @@
 #define cmap_variation_color(n,cmap_type_index) color = iflags.use_color ? defsym_variations[n].color[cmap_type_index] : NO_COLOR
 #define otyp_color(n) color = iflags.use_color ? objects[n].oc_color : NO_COLOR
 #define obj_color(o, n) color = iflags.use_color ? ((o) && (o)->otyp == n && (o)->material != objects[n].oc_material && material_definitions[(o)->material].color != NO_COLOR ? material_definitions[(o)->material].color : objects[n].oc_color) : NO_COLOR
+#define missile_color(l, n) color = iflags.use_color ? ((l).missile_material > MAT_NONE && (l).missile_material != objects[n].oc_material && material_definitions[(l).missile_material].color != NO_COLOR ? material_definitions[(l).missile_material].color : objects[n].oc_color) : NO_COLOR
 #define artifact_color(n) color = iflags.use_color ? artilist[n].ocolor : NO_COLOR
 #define mon_color(n) color = iflags.use_color ? mons[n].mcolor : NO_COLOR
 #define invis_color(n) color = NO_COLOR
@@ -122,6 +123,7 @@ unsigned long *ospecial;
     { /* an artifact */
         int artidx = offset + 1;
         int objoffset = artilist[artidx].otyp;
+        boolean ismissile = glyph - GLYPH_ARTIFACT_MISSILE_OFF >= 0;
         if (artilist[artidx].maskotyp != STRANGE_OBJECT)
         {
             /* We always use maskotyp for base case if there is one, since the item is specified to look like one */
@@ -147,8 +149,18 @@ unsigned long *ospecial;
         }
         else
         {
-            if(artilist[artidx].ocolor == NO_COLOR)
-                otyp_color(objoffset);
+            if (artilist[artidx].ocolor == NO_COLOR)
+            {
+                if (ismissile)
+                {
+                    missile_color(layers, artilist[artidx].otyp);
+                }
+                else
+                {
+                    struct obj* otmp = vobj_at(x, y);
+                    obj_color(otmp, objoffset);
+                }
+            }
             else
                 artifact_color(artidx);
         }
@@ -395,8 +407,9 @@ unsigned long *ospecial;
         if (glyph - GLYPH_OBJ_MISSILE_OFF >= 0)
             offset = offset / NUM_MISSILE_DIRS;
 
-        struct obj* otmp = vobj_at(x, y);
         idx = objects[offset].oc_class + SYM_OFF_O;
+        boolean ismissile = glyph - GLYPH_OBJ_MISSILE_OFF >= 0;
+
         if (offset == BOULDER)
             idx = SYM_BOULDER + SYM_OFF_X;
         if (has_rogue_color && iflags.use_color) 
@@ -416,10 +429,15 @@ unsigned long *ospecial;
         } 
         else
         {
-            if(offset == BOULDER)
+            if (offset == BOULDER)
                 cmap_color(S_extra_boulder, flags.classic_colors ? 0 : get_current_cmap_type_index());
+            else if (ismissile)
+                missile_color(layers, offset);
             else
+            {
+                struct obj* otmp = vobj_at(x, y);
                 obj_color(otmp, offset);
+            }
         }
         if (offset != BOULDER && is_objpile(x,y))
             special |= MG_OBJPILE;

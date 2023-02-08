@@ -27,7 +27,6 @@ STATIC_DCL void FDECL(m_init_background, (struct monst*));
 STATIC_DCL struct obj* FDECL(m_inityour, (struct monst*, struct obj*)); 
 STATIC_DCL boolean FDECL(makemon_rnd_goodpos, (struct monst *,
                                                unsigned long, coord *));
-STATIC_DCL unsigned long FDECL(mkobj_ownerflags, (struct monst*));
 
 #if 0
 #define m_initsgrp(mtmp, x, y, mmf) m_initgrp(mtmp, x, y, 3, mmf)
@@ -36,27 +35,6 @@ STATIC_DCL unsigned long FDECL(mkobj_ownerflags, (struct monst*));
 #define toostrong(monindx, lev) (mons[monindx].difficulty > lev)
 #define tooweak(monindx, lev) (mons[monindx].difficulty < lev)
 
-
-STATIC_OVL
-unsigned long mkobj_ownerflags(mtmp)
-struct monst* mtmp;
-{
-    if (!mtmp)
-        return 0UL;
-
-    aligntyp alignment = mon_aligntyp(mtmp);
-    unsigned long mkflags = 0UL;
-    if (alignment == A_NONE || is_mercenary(mtmp->data) || mtmp->isgd)
-        mkflags |= MKOBJ_FLAGS_OWNER_IS_NONALIGNED;
-    else if (alignment == A_LAWFUL)
-        mkflags |= MKOBJ_FLAGS_OWNER_IS_LAWFUL;
-    else if (alignment == A_NEUTRAL)
-        mkflags |= MKOBJ_FLAGS_OWNER_IS_NEUTRAL;
-    else if (alignment == A_CHAOTIC)
-        mkflags |= MKOBJ_FLAGS_OWNER_IS_CHAOTIC;
-
-    return mkflags;
-}
 
 boolean
 is_home_elemental(ptr)
@@ -192,7 +170,7 @@ int elemental_enchantment, exceptionality, material;
 {
     register struct obj *otmp;
 
-    otmp = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+    otmp = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, mtmp, material, 0L, 0L, 0UL);
     if(!(oquan_const == 0 && oquan_rnd == 0))
         otmp->quan = (long) rn1(oquan_rnd, oquan_const);
     otmp->owt = weight(otmp);
@@ -202,8 +180,6 @@ int elemental_enchantment, exceptionality, material;
         otmp->elemental_enchantment = elemental_enchantment;
     if (can_have_exceptionality(otmp) && exceptionality >= 0)
         otmp->exceptionality = exceptionality;
-    if (material > MAT_NONE)
-        otmp->material = material;
     (void) mpickobj(mtmp, otmp);
 }
 
@@ -576,7 +552,7 @@ register struct monst *mtmp;
         else if (ptr->msound == MS_PRIEST
                    || quest_mon_represents_role(ptr, PM_PRIEST)) 
         {
-            otmp = mksobj_with_flags(MACE, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+            otmp = mksobj_with_flags(MACE, TRUE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
             if (otmp)
             {
                 if (has_epri(mtmp) && mm == PM_HIGH_PRIEST)
@@ -718,23 +694,21 @@ register struct monst *mtmp;
                 aligntyp alignment = mon_aligntyp(mtmp);
                 int aligntyp_major_weapon = LONG_SWORD;
                 int aligntyp_minor_weapon = LONG_SWORD;
-                unsigned long weapon_flags = 0UL;
-                unsigned long param2 = 0UL;
+                unsigned long weapon_flags = MKOBJ_FLAGS_FORCE_BASE_MATERIAL;
+                uchar material = MAT_NONE;
                 boolean is_major_weapon = !rn2(3) || is_lord(ptr) || is_prince(ptr);
                 switch (alignment)
                 {
                 case A_LAWFUL:
                     aligntyp_major_weapon = SWORD_OF_HOLY_VENGEANCE;
                     aligntyp_minor_weapon = LONG_SWORD;
-                    weapon_flags = is_major_weapon ? 0UL : MKOBJ_FLAGS_PARAM2_IS_MATERIAL;
-                    param2 = is_major_weapon ? 0UL : MAT_SILVER;
+                    material = is_major_weapon ? MAT_NONE : MAT_SILVER;
                     break;
                 case A_NEUTRAL:
                     aligntyp_major_weapon = LONG_SWORD;
                     aligntyp_minor_weapon = LONG_SWORD;
                     weapon_flags = is_major_weapon ? MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY : 0UL;
-                    weapon_flags |= MKOBJ_FLAGS_PARAM2_IS_MATERIAL;
-                    param2 = MAT_SILVER;
+                    material = MAT_SILVER;
                     break;
                 case A_CHAOTIC:
                     aligntyp_major_weapon = SWORD_OF_UNHOLY_DESECRATION;
@@ -749,7 +723,7 @@ register struct monst *mtmp;
                     break;
                 }
                 int weaptype = is_major_weapon ? aligntyp_major_weapon : !rn2(3) ? LONG_SWORD : aligntyp_minor_weapon;
-                otmp = mksobj_with_flags(weaptype, FALSE, FALSE, FALSE, 0L, param2, mkobj_ownerflags(mtmp) | weapon_flags);
+                otmp = mksobj_with_flags(weaptype, FALSE, FALSE, FALSE, mtmp, material, 0L, 0L, weapon_flags);
                 if (otmp)
                 {
                     if (otmp->oartifact == 0)
@@ -769,8 +743,8 @@ register struct monst *mtmp;
                     (void)mpickobj(mtmp, otmp);
                 }
 
-                otmp = mksobj_with_flags(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION : !rn2(3) ? SPIKED_SILVER_SHIELD : LARGE_SHIELD,
-                    FALSE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+                otmp = mksobj_with_flags(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION : !rn2(3) ? SPIKED_SHIELD : LARGE_SHIELD,
+                    FALSE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
                 
                 if (otmp)
                 {
@@ -802,7 +776,7 @@ register struct monst *mtmp;
 
                 }
 
-                otmp = mksobj_with_flags(weaptype, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+                otmp = mksobj_with_flags(weaptype, TRUE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
 
                 /* maybe make it special */
                 if (artifacttype > 0)
@@ -1047,8 +1021,7 @@ register struct monst *mtmp;
             {
                 int weaptype = SILVER_SABER;
                 short artifacttype = ART_GRAYSWANDIR;
-                unsigned long extra_flags = 0UL;
-                unsigned long param2 = 0UL;
+                uchar material = 0UL;
 
                 switch (rn2(6))
                 {
@@ -1065,19 +1038,17 @@ register struct monst *mtmp;
                 case 4:
                     weaptype = DAGGER;
                     artifacttype = 0;
-                    extra_flags = MKOBJ_FLAGS_PARAM2_IS_MATERIAL;
-                    param2 = MAT_SILVER;
+                    material = MAT_SILVER;
                     break;
                 case 5:
                     weaptype = MACE;
                     artifacttype = 0;
-                    extra_flags = MKOBJ_FLAGS_PARAM2_IS_MATERIAL;
-                    param2 = MAT_SILVER;
+                    material = MAT_SILVER;
                     break;
                 default:
                     break;
                 }
-                otmp = mksobj_with_flags(weaptype, TRUE, FALSE, FALSE, 0L, param2, mkobj_ownerflags(mtmp) | extra_flags);
+                otmp = mksobj_with_flags(weaptype, TRUE, FALSE, FALSE, mtmp, material, 0L, 0L, 0UL);
 
                 /* maybe make it special */
                 if (artifacttype > 0 && !rn2(40))
@@ -1109,7 +1080,7 @@ register struct monst *mtmp;
         {
         case PM_BALOR:
         {
-            otmp = mksobj_with_flags(BULLWHIP, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+            otmp = mksobj_with_flags(BULLWHIP, TRUE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
             spe2 = rnd(5);
             otmp->enchantment = max(otmp->enchantment, spe2);
             otmp->elemental_enchantment = FIRE_ENCHANTMENT;
@@ -1118,7 +1089,7 @@ register struct monst *mtmp;
 
             if (rn2(2))
             {
-                otmp = mksobj_with_flags(BROADSWORD, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+                otmp = mksobj_with_flags(BROADSWORD, TRUE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
                 spe2 = rnd(4);
                 otmp->enchantment = max(otmp->enchantment, spe2);
                 otmp->elemental_enchantment = FIRE_ENCHANTMENT;
@@ -1127,7 +1098,7 @@ register struct monst *mtmp;
             }
             else
             {
-                otmp = mksobj_with_flags(AXE, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+                otmp = mksobj_with_flags(AXE, TRUE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
                 spe2 = 1 + rnd(4);
                 otmp->enchantment = max(otmp->enchantment, spe2);
                 otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : EXCEPTIONALITY_ELITE;
@@ -1154,14 +1125,14 @@ register struct monst *mtmp;
             (void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? DAGGER : AXE);
             break;
         case PM_PIT_FIEND:
-            otmp = mksobj_with_flags(ANCUS, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+            otmp = mksobj_with_flags(ANCUS, TRUE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
             curse(otmp);
             spe2 = 0 + rnd(3);
             otmp->enchantment = max(otmp->enchantment, spe2);
             otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : EXCEPTIONALITY_ELITE;
             (void)mpickobj(mtmp, otmp);
 
-            otmp = mksobj_with_flags(JAGGED_TOOTHED_CLUB, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+            otmp = mksobj_with_flags(JAGGED_TOOTHED_CLUB, TRUE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
             curse(otmp);
             spe2 = 0 + rnd(3);
             otmp->enchantment = max(otmp->enchantment, spe2);
@@ -1170,7 +1141,7 @@ register struct monst *mtmp;
             break;
         case PM_BAPHOMET:
             /* Baphomet's bardiche */
-            otmp = mksobj_with_flags(BARDICHE, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+            otmp = mksobj_with_flags(BARDICHE, TRUE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
             curse(otmp);
             otmp->oerodeproof = TRUE;
             spe2 = 3 + rnd(7);
@@ -1183,7 +1154,7 @@ register struct monst *mtmp;
 
             break;
         case PM_ORCUS:
-            otmp = mksobj_with_flags(MACE_OF_THE_UNDERWORLD, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+            otmp = mksobj_with_flags(MACE_OF_THE_UNDERWORLD, TRUE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
             if(otmp)
                 otmp = oname(otmp, artiname(ART_WAND_OF_ORCUS));
 
@@ -1202,7 +1173,7 @@ register struct monst *mtmp;
             }
             break;
         case PM_YEENAGHU:
-            otmp = mksobj_with_flags(TRIPLE_HEADED_FLAIL, TRUE, FALSE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+            otmp = mksobj_with_flags(TRIPLE_HEADED_FLAIL, TRUE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
             if (otmp)
                 otmp = oname(otmp, artiname(ART_TRIPLE_HEADED_FLAIL_OF_YEENAGHU));
 
@@ -1660,7 +1631,7 @@ register struct monst *mtmp;
         }
         else if (ptr == &mons[PM_VLAD_THE_IMPALER])
         {
-            otmp = mksobj_with_flags(SPEAR, TRUE, FALSE, 0, EXCEPTIONALITY_INFERNAL, 0L, MKOBJ_FLAGS_FORCE_LEGENDARY | MKOBJ_FLAGS_PARAM_IS_EXCEPTIONALITY | mkobj_ownerflags(mtmp));
+            otmp = mksobj_with_flags(SPEAR, TRUE, FALSE, 0, mtmp, MAT_NONE, EXCEPTIONALITY_INFERNAL, 0L, MKOBJ_FLAGS_FORCE_LEGENDARY | MKOBJ_FLAGS_PARAM_IS_EXCEPTIONALITY);
             if (otmp)
             {
                 otmp->enchantment = 4 + rn2(4);
@@ -1678,7 +1649,7 @@ register struct monst *mtmp;
             (void)mongets(mtmp, (rn2(7) ? ATHAME : WAN_NOTHING));
         else if (ptr == &mons[PM_ARCH_LICH] && !rn2(3)) {
             otmp = mksobj_with_flags(rn2(3) ? ATHAME : QUARTERSTAFF, TRUE,
-                rn2(13) ? FALSE : TRUE, FALSE, 0L, 0L, mkobj_ownerflags(mtmp));
+                rn2(13) ? FALSE : TRUE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
             if (otmp->enchantment < 2)
                 otmp->enchantment = rnd(3);
             if (!rn2(4))
@@ -1776,7 +1747,7 @@ register struct monst *mtmp;
 
             if (!rn2(12))
             {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_COMESTIBLES, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, mtmp, MAT_NONE, MANUAL_CATALOGUE_OF_COMESTIBLES, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(mtmp, otmp);
             }
@@ -4087,13 +4058,14 @@ int otyp;
 struct obj*
 mongets_with_material(mtmp, otyp, material)
 register struct monst *mtmp;
-int otyp, material;
+int otyp;
+uchar material;
 {
     register struct obj *otmp;
     if (!otyp || !mtmp)
         return (struct obj*)0;
 
-    otmp = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, 0L, (long)material, mkobj_ownerflags(mtmp) | (material > 0 ? MKOBJ_FLAGS_PARAM2_IS_MATERIAL : 0UL));
+    otmp = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, mtmp, material, 0L, 0L, 0UL);
     if (otmp) 
     {
         if (mtmp->data->mlet == S_DEMON) 
