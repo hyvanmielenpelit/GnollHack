@@ -574,7 +574,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         else if (obj->exceptionality == EXCEPTIONALITY_INFERNAL)
             Strcat(buf, "infernal ");
 
-        if (obj->material != objects[obj->otyp].oc_material)
+        if (((objects[obj->otyp].oc_flags5 & O5_SHOW_BASE_MATERIAL_NAME) != 0 && nn) || obj->material != objects[obj->otyp].oc_material)
         {
             Strcat(buf, material_definitions[obj->material].object_prefix);
             Strcat(buf, " ");
@@ -3407,9 +3407,9 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "crown", ARMOR_CLASS, ROYAL_CROWN, CROWN_OF_RULERSHIP },
     { "conical hat", ARMOR_CLASS, CORNUTHAUM, GNOMISH_FELT_HAT },
     { "gloves", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
-    { "gauntlets", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
+    //{ "gauntlets", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
     { "boots", ARMOR_CLASS, LOW_BOOTS, LEVITATION_BOOTS },
-    { "shoes", ARMOR_CLASS, LOW_BOOTS, IRON_SHOES },
+    //{ "shoes", ARMOR_CLASS, LOW_BOOTS, IRON_SHOES },
     { "cloak", ARMOR_CLASS, ELVEN_CLOAK, CLOAK_OF_DISPLACEMENT },
     { "shirt", ARMOR_CLASS, HAWAIIAN_SHIRT, T_SHIRT },
     { "robe", ARMOR_CLASS, MEDIEVAL_ROBE, MUMMY_WRAPPING },

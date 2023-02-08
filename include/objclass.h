@@ -1059,6 +1059,8 @@ struct objclass {
 #define O5_MIXTURE_CLEARS              0x01000000UL
 #define O5_TORCH                       0x02000000UL
 #define O5_LAMP                        0x04000000UL
+#define O5_SHOW_BASE_MATERIAL_NAME     0x08000000UL
+#define O5_MATERIAL_NAME_SECOND_WORD   0x10000000UL
 
 
 #define O6_NONE                        0x00000000UL

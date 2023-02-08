@@ -829,7 +829,7 @@ register struct monst *mtmp;
             if (rn2(7))
                 (void) mongets(mtmp, DWARVISH_CLOAK);
             if (rn2(7))
-                (void) mongets(mtmp, IRON_SHOES);
+                (void) mongets(mtmp, SHOES);
             if (!rn2(4))
             {
                 (void) mongets(mtmp, DWARVISH_SHORT_SWORD);
@@ -881,7 +881,7 @@ register struct monst *mtmp;
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_SHORT_SWORD);
             if (!rn2(3))
-                (void) mongets(mtmp, IRON_SHOES);
+                (void) mongets_with_material(mtmp, SHOES, MAT_IRON);
             if (!rn2(3))
             {
                 (void) mongets(mtmp, ORCISH_SHORT_BOW);

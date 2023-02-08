@@ -2330,8 +2330,7 @@ register struct obj* omonwep;
         {
             if (uarmf) 
             {
-                if (rn2(2) && (uarmf->otyp == LOW_BOOTS
-                               || uarmf->otyp == IRON_SHOES)) 
+                if (rn2(2) && (uarmf->otyp == LOW_BOOTS || uarmf->otyp == SHOES)) 
                 {
                     pline("%s pricks the exposed part of your %s %s for %d damage!",
                           Monst_name, sidestr, leg, damagedealt);

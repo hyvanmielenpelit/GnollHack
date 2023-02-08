@@ -220,49 +220,50 @@ struct extended_create_window_info {
 
 enum obj_material_types {
     MAT_NONE = 0,
-    MAT_LIQUID = 1, /* currently only for venom */  /* Organics start here */
-    MAT_OIL = 2, /* flammable liquid */
-    MAT_WAX = 3,
-    MAT_VEGGY = 4, /* foodstuffs */
-    MAT_FLESH = 5, /*   ditto    */
-    MAT_ORGANIC = 6, /* non-veggy, non-flesh organic material, e.g. bat guano, feathers */
-    MAT_PAPER = 7,
-    MAT_CLOTH = 8,
-    MAT_SILK = 9,
-    MAT_LEATHER = 10, /* Flimsy materials stop here */
-    MAT_WOOD = 11, /* Organics stop here */
-    MAT_BONE = 12,
-    MAT_CHITIN = 13, /* Chitin in insects' exoskeleton, or keratin in nails and horns */
-    MAT_IVORY = 14, /* Worm tooth, ivory, etc. Hard bone-like materials stop here */
-    MAT_DRAGON_HIDE = 15, /* not leather! */
-    MAT_IRON = 16, /* Fe */
-    MAT_STEEL = 17, /* Alloy of Fe and C (carbon)  */
-    MAT_METAL = 18, /* Sn, &c. */
-    MAT_LEAD = 19, /* Pb */
-    MAT_COPPER = 20, /* Cu */
-    MAT_BRASS = 21, /* Alloy of Cu and Zn (zinc) */
-    MAT_BRONZE = 22, /* Alloy of Cu and Sn (tin) */
-    MAT_SILVER = 23, /* Ag */
-    MAT_GOLD = 24, /* Au */
-    MAT_PLATINUM = 25, /* Pt */
-    MAT_ORICHALCUM = 26,
-    MAT_ADAMANTIUM = 27,
-    MAT_MITHRIL = 28,
-    MAT_PLASTIC = 29,
-    MAT_GLASS = 30,
-    MAT_CRYSTAL = 31, /* Brittle like glass */
-    MAT_HARD_CRYSTAL = 32, /* Strong like gemstone */
-    MAT_GEMSTONE = 33,
-    MAT_MINERAL = 34,
-    MAT_MODRONITE = 35,
-    MAT_PLANARRIFT = 36,
-    MAT_FORCEFIELD = 37,
-    MAT_AIR = 38,
-    MAT_FIRE = 39,
-    MAT_ENERGY = 40,
-    MAT_INCORPOREAL = 41,
-    MAT_ICE = 42,
-    MAT_SOIL = 43,
+    MAT_LIQUID, /* currently only for venom */  /* Organics start here */
+    MAT_OIL, /* flammable liquid */
+    MAT_WAX,
+    MAT_VEGGY, /* foodstuffs */
+    MAT_FLESH, /*   ditto    */
+    MAT_ORGANIC, /* non-veggy, non-flesh organic material, e.g. bat guano, feathers */
+    MAT_PAPER,
+    MAT_CLOTH,
+    MAT_COTTON,
+    MAT_SILK,
+    MAT_LEATHER, /* Flimsy materials stop here */
+    MAT_WOOD, /* Organics stop here */
+    MAT_BONE,
+    MAT_CHITIN, /* Chitin in insects' exoskeleton, or keratin in nails and horns */
+    MAT_IVORY, /* Worm tooth, ivory, etc. Hard bone-like materials stop here */
+    MAT_DRAGON_HIDE, /* not leather! */
+    MAT_IRON, /* Fe */
+    MAT_STEEL, /* Alloy of Fe and C (carbon)  */
+    MAT_METAL, /* Sn, &c. */
+    MAT_LEAD, /* Pb */
+    MAT_COPPER, /* Cu */
+    MAT_BRASS, /* Alloy of Cu and Zn (zinc) */
+    MAT_BRONZE, /* Alloy of Cu and Sn (tin) */
+    MAT_SILVER, /* Ag */
+    MAT_GOLD, /* Au */
+    MAT_PLATINUM, /* Pt */
+    MAT_ORICHALCUM,
+    MAT_ADAMANTIUM,
+    MAT_MITHRIL,
+    MAT_PLASTIC,
+    MAT_GLASS,
+    MAT_CRYSTAL, /* Brittle like glass */
+    MAT_HARD_CRYSTAL, /* Strong like gemstone */
+    MAT_GEMSTONE,
+    MAT_MINERAL, /* Stone */
+    MAT_MODRONITE,
+    MAT_PLANARRIFT,
+    MAT_FORCEFIELD,
+    MAT_AIR,
+    MAT_FIRE,
+    MAT_ENERGY,
+    MAT_INCORPOREAL,
+    MAT_ICE,
+    MAT_SOIL,
     MAX_MATERIAL_TYPES
 };
 

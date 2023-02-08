@@ -624,7 +624,7 @@ boolean createcorpse;
                     objid = IRON_CHAIN;
                     break;
                 case 1:
-                    objid = IRON_SHOES;
+                    objid = SHOES;
                     break;
                 case 2:
                     objid = HEAVY_IRON_BALL;
@@ -632,7 +632,7 @@ boolean createcorpse;
                 default:
                     break;
                 }
-                obj = mksobj_at(objid, x, y, TRUE, FALSE);
+                obj = mksobj_at_with_flags(objid, x, y, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
             }
         }
         free_mname(mtmp);
