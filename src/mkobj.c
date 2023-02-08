@@ -4965,6 +4965,10 @@ int otyp;
         else if (!rn2(50) && levdiff >= 8)
             mat = MAT_ADAMANTIUM;
         break;
+    case MATINIT_MAYBE_BONE:
+        if (!rn2(4))
+            mat = MAT_BONE;
+        break;
     case MATINIT_NORMAL:
     default:
         break;
