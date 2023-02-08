@@ -4907,7 +4907,7 @@ retry:
                         break;
 
                     if ((!strncmpi(mbp, material_definitions[m].object_prefix, mlen) && bplen >= mlen + 1 && *(mbp + mlen) == ' ')
-                        || (material_definitions[m].adjective && !strncmpi(bp, material_definitions[m].adjective, mlena) && bplen >= mlena + 1 && *(mbp + mlena) == ' '))
+                        || (material_definitions[m].adjective && !strncmpi(mbp, material_definitions[m].adjective, mlena) && bplen >= mlena + 1 && *(mbp + mlena) == ' '))
                     {
                         mbp += mlen + 1;
                         Sprintf(bp, "%s%s", startbuf, mbp);
