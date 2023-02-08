@@ -2900,7 +2900,7 @@ STATIC_VAR const struct sing_plur one_off[] = {
 
 STATIC_VAR const char *const as_is[] = {
     /* makesingular() leaves these plural due to how they're used */
-    "boots",   "shoes",     "gloves",    "lenses", "goggles", "glasses", "eye glasses", "scales",
+    "boots",   "shoes",     "slippers",  "sandals", "gloves", "lenses", "goggles", "glasses", "eye glasses", "eyeglasses", "scales",
     "eyes",    "gauntlets", "iron bars", "bracers", "wings", "earrings",
     "pants",   "trousers",  "trunks",
     /* both singular and plural are spelled the same */
