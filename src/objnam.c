@@ -516,9 +516,13 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             }
         }
     }
-    if (objects[obj->otyp].oc_flags5 & (O5_MATERIAL_NAME_2ND_WORD_DN | O5_MATERIAL_NAME_3RD_WORD_DN | O5_MATERIAL_NAME_4TH_WORD_DN))
+    if (((OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_WORD_BY_AN) != 0 && (objects[obj->otyp].oc_flags5 & (O5_MATERIAL_NAME_2ND_WORD_AN | O5_MATERIAL_NAME_3RD_WORD_AN | O5_MATERIAL_NAME_4TH_WORD_AN)) != 0)
+       || (OBJ_DESCR_FLAGS(obj->otyp) & (OD_MATERIAL_NAME_2ND_WORD_DN | OD_MATERIAL_NAME_3RD_WORD_DN | OD_MATERIAL_NAME_4TH_WORD_DN)) != 0)
     {
-        int spacecnt = (objects[obj->otyp].oc_flags5 & O5_MATERIAL_NAME_4TH_WORD_DN) == O5_MATERIAL_NAME_4TH_WORD_DN ? 3 : (objects[obj->otyp].oc_flags5 & O5_MATERIAL_NAME_3RD_WORD_DN) == O5_MATERIAL_NAME_3RD_WORD_DN ? 2 : 1;
+        int spacecnt = (OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_WORD_BY_AN) != 0 ? 
+            ((objects[obj->otyp].oc_flags5 & O5_MATERIAL_NAME_4TH_WORD_AN) == O5_MATERIAL_NAME_4TH_WORD_AN ? 3 : (objects[obj->otyp].oc_flags5 & O5_MATERIAL_NAME_3RD_WORD_AN) == O5_MATERIAL_NAME_3RD_WORD_AN ? 2 : 1) : 
+            (OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_4TH_WORD_DN) == OD_MATERIAL_NAME_4TH_WORD_DN ? 3 : (OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_3RD_WORD_DN) == OD_MATERIAL_NAME_3RD_WORD_DN ? 2 : 1;
+        
         const char* p = dn;
         boolean doabort = FALSE;
         int i;

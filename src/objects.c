@@ -99,12 +99,12 @@ OBJECT(OBJ("strange object", None, None, None, None, 0, OD_NONE, NO_ANIMATION, N
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 
     /* weapons ... */
-#define CHARGEDWEAPON(name,desc,nmkn,mrg,mgc,charged,recharging,bi,prob,multigen,enchtype,wt,cost,\
+#define GENERAL_WEAPON(name,desc,nmkn,mrg,mgc,charged,recharging,bi,prob,multigen,enchtype,wt,cost,\
             dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
             hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
             power,power2,power3,pflags,typ,sub,skill,matinit,metal,color,height,soundset,\
-            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets) \
-        OBJECT(OBJ(name,desc, None, None, None, height, OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),                     \
+            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets,odflags,anim,enl,repl) \
+        OBJECT(OBJ(name,desc, None, None, None, height, odflags, anim, enl, repl),                     \
             BITS(nmkn, mrg, 1, 0, mgc, enchtype, charged, recharging, 0, 0, bi, 0, typ, sub, skill, matinit, metal),  \
             power, power2, power3, pflags, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
             dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
@@ -118,11 +118,22 @@ OBJECT(OBJ("strange object", None, None, None, None, 0, OD_NONE, NO_ANIMATION, N
             hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
             power,power2,power3,pflags,typ,sub,skill,matinit,metal,color,height,soundset,\
             flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets) \
-        CHARGEDWEAPON(name,desc,nmkn,mrg,mgc,CHARGED_NOT_CHARGED,RECHARGING_NOT_RECHARGEABLE,bi,prob,multigen,enchtype,wt,cost,\
+        GENERAL_WEAPON(name,desc,nmkn,mrg,mgc,CHARGED_NOT_CHARGED,RECHARGING_NOT_RECHARGEABLE,bi,prob,multigen,enchtype,wt,cost,\
             dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
             hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
             power,power2,power3,pflags,typ,sub,skill,matinit,metal,color,height,soundset,\
-            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets)
+            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets, OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT)
+
+#define WEAPON_OD(name,desc,nmkn,mrg,mgc,bi,prob,multigen,enchtype,wt,cost,\
+            dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
+            hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
+            power,power2,power3,pflags,typ,sub,skill,matinit,metal,color,height,soundset,\
+            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets,odflags) \
+        GENERAL_WEAPON(name,desc,nmkn,mrg,mgc,CHARGED_NOT_CHARGED,RECHARGING_NOT_RECHARGEABLE,bi,prob,multigen,enchtype,wt,cost,\
+            dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
+            hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
+            power,power2,power3,pflags,typ,sub,skill,matinit,metal,color,height,soundset,\
+            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets, odflags, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT)
 
 #define GENERAL_PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost, \
             dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, hitbon,mcadj, matinit, metal,sub,launcher_skill,skill,color,height,soundset, \
@@ -193,11 +204,12 @@ GENERAL_PROJECTILE("crossbow bolt", None,
     AD_PHYS, 1, 3, 1, 1, 4, 1, AD_PHYS,    0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, MATINIT_MAYBE_SILVER_OR_BONE, MAT_IRON, WEP_QUARREL, P_CROSSBOW, -P_CROSSBOW, HI_METAL, 16, OBJECT_SOUNDSET_ARROW,
     O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, ALL_TARGETS, OD_MISSILE_REPLACEMENTS, NO_ANIMATION, NO_ENLARGEMENT, CROSSBOW_BOLT_REPLACEMENT), //1d3+1 //1d4+1
-PROJECTILE("gnollish quarrel", "crude crossbow bolt",
+GENERAL_PROJECTILE("gnollish quarrel", "crude crossbow bolt",
     0, 0, 15, MULTIGEN_2D6_3, 1, 2, 
     AD_PHYS, 1, 2, 1, 1, 3, 1, AD_PHYS,    0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, MATINIT_MAYBE_BONE, MAT_IRON, WEP_QUARREL, P_CROSSBOW, -P_CROSSBOW, HI_METAL, 16, OBJECT_SOUNDSET_ARROW,
-    O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, O4_FLOOR_TILE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD, O6_NONE, ALL_TARGETS), //1d2+1 //1d3+1
+    O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, O4_FLOOR_TILE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE, ALL_TARGETS,
+    OD_MATERIAL_NAME_2ND_WORD_DN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT), //1d2+1 //1d3+1
 GENERAL_PROJECTILE("sling-bullet", None,
     1, 0, 40, MULTIGEN_2D6_6, 2, 3, 
     AD_PHYS, 1, 7, 0, 1, 9, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
@@ -387,13 +399,13 @@ WEAPON("axe", None,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, S, WEP_AXE, P_AXE, MATINIT_NORMAL, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_AXE,
     O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE,
     PERMITTED_ALL, ALL_TARGETS),
-WEAPON("dwarvish axe", "broad axe",
+WEAPON_OD("dwarvish axe", "broad axe",
     0, 0, 0, 0, 3, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 50, 8,
     AD_PHYS, 1, 6, 2, 1, 8, 2, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, S, WEP_AXE, P_AXE, MATINIT_MAYBE_MITHRIL, MAT_STEEL, HI_METAL, 24, OBJECT_SOUNDSET_AXE,
     O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_FLOOR_TILE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE,
-    PERMITTED_ALL, ALL_TARGETS),
+    PERMITTED_ALL, ALL_TARGETS, OD_MATERIAL_NAME_2ND_WORD_DN),
 WEAPON("throwing axe", None,
     1, 0, 0, 0, 8, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 50, 8,
     AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
@@ -431,13 +443,13 @@ WEAPON("orcish short sword", "crude short sword",
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, P, WEP_SHORT_SWORD, P_SWORD, MATINIT_NORMAL, MAT_IRON, CLR_BLACK, 16, OBJECT_SOUNDSET_SWORD,
     O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_FLOOR_TILE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE,
     PERMITTED_ALL, ALL_TARGETS),
-WEAPON("dwarvish short sword", "broad short sword",
+WEAPON_OD("dwarvish short sword", "broad short sword",
     0, 0, 0, 0, 4, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 50, 10,
     AD_PHYS, 1, 7, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, P, WEP_SHORT_SWORD, P_SWORD, MATINIT_MAYBE_MITHRIL, MAT_STEEL, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
-    O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_FLOOR_TILE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD, O6_NONE,
-    PERMITTED_ALL, ALL_TARGETS),
+    O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_FLOOR_TILE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE,
+    PERMITTED_ALL, ALL_TARGETS, OD_MATERIAL_NAME_2ND_WORD_DN),
 WEAPON("scimitar", "curved sword",
     0, 0, 0, 0, 12, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 15,
     AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
@@ -501,13 +513,13 @@ WEAPON("glass sword", None,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MATINIT_NORMAL, MAT_GLASS, HI_GLASS, 16, OBJECT_SOUNDSET_SWORD,
     O1_NONE, O2_GENERATED_DEATH_OR_COLD_ENCHANTED, O3_NO_GENERATION, O4_NON_EXCEPTIONAL | O4_FLOOR_TILE, O5_NONE, O6_NONE,
     PERMITTED_ALL, ALL_TARGETS),
-WEAPON("two-handed sword", None,
+WEAPON_OD("two-handed sword", None,
     1, 0, 0, 1, 22, MULTIGEN_SINGLE, ENCHTYPE_TWO_HANDED_MELEE_WEAPON, 120, 50,
     AD_PHYS, 2, 6, 0, 3, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, S, WEP_TWO_HANDED_SWORD, P_SWORD, MATINIT_LONG_SWORD, MAT_IRON, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
-    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_MATERIAL_NAME_2ND_WORD, O6_NONE,
-    PERMITTED_ALL, ALL_TARGETS),
+    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE,
+    PERMITTED_ALL, ALL_TARGETS, OD_MATERIAL_NAME_WORD_BY_AN),
 WEAPON("katana", "samurai sword",
     0, 0, 0, 0, 4, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 80, 80,
     AD_PHYS, 1, 10, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
@@ -530,19 +542,20 @@ WEAPON("runesword", "runed broadsword", /* Base item for Stormbringer */
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, S, WEP_BROADSWORD, P_SWORD, MATINIT_NORMAL, MAT_METAL, CLR_BLACK, 16, OBJECT_SOUNDSET_SWORD,
     O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_NON_MYTHIC | O4_FLOOR_TILE, O5_NONE, O6_NONE,
     PERMITTED_ALL, ALL_TARGETS),
-CHARGEDWEAPON("sword of luckiness", "bright broadsword", /* Base item for Luck Blade */
+GENERAL_WEAPON("sword of luckiness", "bright broadsword", /* Base item for Luck Blade */
     0, 0, 0, CHARGED_LUCK_BLADE, RECHARGING_LUCK_BLADE, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 55, 500,
     AD_PHYS, 2, 4, 0, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, P1_CONFERS_LUCK | P1_CURSED_ITEM_YIELDS_NEGATIVE, S, WEP_BROADSWORD, P_SWORD, MATINIT_NORMAL, MAT_METAL, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
     O1_ENCHANTMENT_AFFECTS_MC, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_NON_MYTHIC | O4_FLOOR_TILE, O5_NONE, O6_NONE,
-    PERMITTED_ALL, ALL_TARGETS),
-CHARGEDWEAPON("sword of nine lives stealing", "black-hilted long sword", /* Base item for Nine Lives Stealer */
+    PERMITTED_ALL, ALL_TARGETS, OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
+GENERAL_WEAPON("sword of nine lives stealing", "black-hilted long sword", /* Base item for Nine Lives Stealer */
     0, 0, 1, CHARGED_ALWAYS_9, RECHARGING_NINE_LIVES_STEALER, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 1350,
     AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_CRITICAL_STRIKE | A1_CRITICAL_STRIKE_IS_DEADLY | A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK, A2_REQUIRES_AND_EXPENDS_A_CHARGE | A2_REQUIRES_ARTIFACT_INVOKE_ON, 100,
     0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MATINIT_NORMAL, MAT_METAL, CLR_BLACK, 16, OBJECT_SOUNDSET_SWORD,
-    O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_FLOOR_TILE | O4_RARE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
+    O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_FLOOR_TILE | O4_RARE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS, 
+    OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 
 /* polearms */
 /* spear-type */
@@ -664,13 +677,13 @@ WEAPON("mace", None,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_MACE, P_BLUDGEONING_WEAPON, MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_SILVER, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE,
     PERMITTED_ALL, ALL_TARGETS),
-CHARGEDWEAPON("runed sceptre", None,
+GENERAL_WEAPON("runed sceptre", None,
     1, 0, 0, CHARGED_ALWAYS_9, RECHARGING_GENERAL, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 0,
     AD_PHYS, 1, 6, 1, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_MACE, P_BLUDGEONING_WEAPON, MATINIT_NORMAL, MAT_GOLD, HI_GOLD, 32, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE,
-    PERMITTED_ALL, ALL_TARGETS),
+    PERMITTED_ALL, ALL_TARGETS, OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 WEAPON("heavenly oak mace", "wooden mace", /* Base item for Mace of Saint Cuthbert */
     0, 0, 1, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 1000,
     AD_PHYS, 1, 6, 1, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_CRITICAL_STRIKE | A1_CRITICAL_STRIKE_IS_DEADLY | A1_DEADLY_CRITICAL_STRIKE_ONE_FOURTH_MAX_HP_DAMAGE_TO_UNIQUE_MONSTERS, A2_NONE, CRITICAL_STRIKE_SPECIAL_PERCENTAGE_HIT_DICE_SAVES,
@@ -681,14 +694,14 @@ WEAPON("heavenly oak mace", "wooden mace", /* Base item for Mace of Saint Cuthbe
     O3_TARGET_PERMISSION_IS_M2_FLAG | O3_NO_WISH | O3_NO_GENERATION, 
     O4_FLOOR_TILE, O5_NONE, O6_NONE,
     PERMITTED_ALL, M2_UNDEAD | M2_DEMON),
-CHARGEDWEAPON("mace of the underworld", "skull-headed obsidian mace", /* Base item for Wand of Orcus */
+GENERAL_WEAPON("mace of the underworld", "skull-headed obsidian mace", /* Base item for Wand of Orcus */
     0, 0, 1, CHARGED_ALWAYS_7, RECHARGING_WAND_OF_ORCUS, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 40, 1500,
     AD_PHYS, 1, 6, 1, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_CRITICAL_STRIKE | A1_CRITICAL_STRIKE_IS_DEADLY | A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK, A2_NONE, 15,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_MACE, P_BLUDGEONING_WEAPON, MATINIT_NORMAL, MAT_BONE, CLR_BLACK, 32, OBJECT_SOUNDSET_GENERIC,
     O1_INDESTRUCTIBLE, O2_DEMON_ITEM, O3_NO_WISH | O3_NO_GENERATION, 
     O4_FLOOR_TILE, O5_NONE, O6_NONE,
-    PERMITTED_ALL, ALL_TARGETS),
+    PERMITTED_ALL, ALL_TARGETS, OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 WEAPON("morning star", None,
     1, 0, 0, 0, 10, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 10,
     AD_PHYS, 2, 4, 0, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
@@ -824,13 +837,13 @@ WEAPON("triple-headed flail", None, /* Also a base item for Triple-Headed Flail 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_TRIPLE_FLAIL, P_FLAIL, MATINIT_NORMAL, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_NON_MYTHIC, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
     /* one-handed, strikes up to three times, -2 hit bonus (difficult to wield) */
-CHARGEDWEAPON("runed flail", None, /* Base item for Howling Flail */
+GENERAL_WEAPON("runed flail", None, /* Base item for Howling Flail */
     1, 0, 1, CHARGED_ALWAYS_7, RECHARGING_HOWLING_FLAIL, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 35, 250,
     AD_PHYS, 1, 6, 1, 2, 4, 0, AD_PHYS, 2, 4, 0, A1_NONE, A2_NONE, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_FLAIL, P_FLAIL, MATINIT_NORMAL, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_GENERIC,
     O1_INDESTRUCTIBLE, O2_GNOLLISH_ITEM, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE,
-    PERMITTED_RACE_GNOLL, ALL_TARGETS),
+    PERMITTED_RACE_GNOLL, ALL_TARGETS, OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 
 
 /* misc */
@@ -958,7 +971,8 @@ BOW("Galadhrim bow", "ornamental long bow",
 #undef B
 
 #undef WEAPON
-#undef CHARGEDWEAPON
+#undef WEAPON_OD
+#undef GENERAL_WEAPON
 #undef PROJECTILE
 #undef GENERAL_PROJECTILE
 #undef BOW
@@ -1033,8 +1047,8 @@ BOW("Galadhrim bow", "ornamental long bow",
             dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
             hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
             power,power2,power3,pflags,typ,skill,matinit,metal,color,soundset,\
-            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets) \
-        OBJECT(OBJ(name,desc, None, None, None, 0, OD_NONE, 0, 0, 0),                     \
+            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets,odflags,anim,enl,repl) \
+        OBJECT(OBJ(name,desc, None, None, None, 0, odflags, anim, enl, repl),                     \
             BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_SHIELD, skill, matinit, metal),  \
             power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,\
             dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
@@ -1047,8 +1061,8 @@ BOW("Galadhrim bow", "ornamental long bow",
             dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
             hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
             power,power2,power3,pflags,typ,matinit,metal,color,soundset,\
-            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets) \
-        OBJECT(OBJ(name,desc, None, None, None, 32, OD_NONE, 0, 0, 0),                     \
+            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets,odflags,anim,enl,repl) \
+        OBJECT(OBJ(name,desc, None, None, None, 32, odflags, anim, enl, repl),                     \
             BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_BOOTS, P_MARTIAL_ARTS, matinit, metal),  \
             power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
             dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
@@ -1061,8 +1075,8 @@ BOW("Galadhrim bow", "ornamental long bow",
             dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
             hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
             power,power2,power3,pflags,typ,matinit,metal,color,soundset,\
-            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets) \
-        OBJECT(OBJ(name,desc, None, None, None, 24, OD_NONE, 0, 0, 0),                     \
+            flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets,odflags,anim,enl,repl) \
+        OBJECT(OBJ(name,desc, None, None, None, 24, odflags, anim, enl, repl),                     \
             BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_GLOVES, P_BARE_HANDED_COMBAT, matinit, metal),  \
             power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
             dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
@@ -1291,11 +1305,12 @@ SUIT("chain mail", None,
     35, 5, 480,  75,  5, 3, 0, 0, 0, 0, 5, 
     MATINIT_CHAIN_MAIL, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_DOUBLE_EXCEPTIONALITY_CHANCE, O6_NONE, PERMITTED_ALL),
-SUIT("orcish chain mail", "crude chain mail",
+GENERAL_SUIT("orcish chain mail", "crude chain mail",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     20, 5, 450,  40,  6, 3, 0, 0, 0, 0, 5, 
     MATINIT_NORMAL, MAT_IRON, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE, PERMITTED_ALL,
+    OD_MATERIAL_NAME_2ND_WORD_DN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 SUIT("scale mail", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     35, 5, 500,  45,  6, 3, 0, 0, 0, 0, 4, 
@@ -1316,11 +1331,12 @@ SUIT("ring mail", None,
     35, 5, 500,  30,  7, 2, 0, 0, 0, 0, 3, 
     MATINIT_CHAIN_MAIL, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_DOUBLE_EXCEPTIONALITY_CHANCE, O6_NONE, PERMITTED_ALL),
-SUIT("orcish ring mail", "crude ring mail",
+GENERAL_SUIT("orcish ring mail", "crude ring mail",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     20, 5, 450,  15,  8, 2, 0, 0, 0, 0, 3, 
     MATINIT_NORMAL, MAT_IRON, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_DOUBLE_MYTHIC_CHANCE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE, PERMITTED_ALL,
+    OD_MATERIAL_NAME_2ND_WORD_DN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 SUIT("leather armor", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_LEATHER_BODY_ARMOR, 
     35, 3, 150,   5,  8, 2, 0, 0, 0, 0, 1, 
@@ -1555,36 +1571,42 @@ GENERAL_BRACERS("bracers of reflection", "silver bracers", //ENDMARKER FOR BRACE
 
 
 /* shields */
-SHIELD("small shield", None,
+GENERAL_SHIELD("small shield", None,
     1, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     6, 0,  80,  3, 8, 0, 0, 0, 0, 0, 3, 
     MATINIT_MAYBE_ADAMANTIUM_OR_MITHRIL, MAT_WOOD, HI_WOOD, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MATERIAL_NAME_2ND_WORD, O6_NONE, PERMITTED_ALL),
-SHIELD("elven shield", "blue and green shield",
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE, PERMITTED_ALL,
+    OD_MATERIAL_NAME_WORD_BY_AN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
+GENERAL_SHIELD("elven shield", "blue and green shield",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_ELVEN_ARMOR, 
     2, 0,  140,  7, 7, 0, 0, 0, 0, 0, 2, 
     MATINIT_NORMAL, MAT_WOOD, CLR_GREEN, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD_AN | O5_MATERIAL_NAME_4TH_WORD_DN, O6_NONE, PERMITTED_ALL),
-SHIELD("great orcish shield", "large black shield",
+    O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE, PERMITTED_ALL,
+    OD_MATERIAL_NAME_4TH_WORD_DN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
+GENERAL_SHIELD("great orcish shield", "large black shield",
     0, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     2, 0,  160,  7, 6, 0, 0, 0, 0, 0, 4, 
     MATINIT_NORMAL, MAT_IRON, CLR_BLACK, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_3RD_WORD, O6_NONE, PERMITTED_ALL),
-SHIELD("orcish shield", "black shield",
+    O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL,
+    OD_MATERIAL_NAME_3RD_WORD_DN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
+GENERAL_SHIELD("orcish shield", "black shield",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     2, 0,  100,  7, 7, 0, 0, 0, 0, 0, 3, 
     MATINIT_NORMAL, MAT_IRON, CLR_BLACK, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD, O6_NONE, PERMITTED_ALL),
-SHIELD("large shield", None,
+    O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES, O6_NONE, PERMITTED_ALL,
+    OD_MATERIAL_NAME_2ND_WORD_DN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
+GENERAL_SHIELD("large shield", None,
     1, 0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     5, 0, 160, 10, 6, 0, 0, 0, 0, 0, 4, 
     MATINIT_MAYBE_ADAMANTIUM_OR_MITHRIL, MAT_IRON, HI_METAL, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MATERIAL_NAME_2ND_WORD, O6_NONE, PERMITTED_ALL),
-SHIELD("dwarvish roundshield", "large round shield",
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE, PERMITTED_ALL,
+    OD_MATERIAL_NAME_WORD_BY_AN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
+GENERAL_SHIELD("dwarvish roundshield", "large round shield",
     0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     4, 0, 150, 10, 6, 0, 0, 0, 0, 0, 5, 
     MATINIT_MAYBE_MITHRIL, MAT_STEEL, HI_METAL, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, O5_NO_MYTHIC_RACIAL_PREFIXES | O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE, PERMITTED_ALL,
+    OD_MATERIAL_NAME_2ND_WORD_DN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 GENERAL_SHIELD("shield of reflection", "polished silver shield",
     0, 1, 0, REFLECTING, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     3, 0, 70, 750, 7, 0, 0, 0, 0, 0, 3, 
@@ -1597,7 +1619,8 @@ WEAPONSHIELD("spiked shield", None,
     AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 3, 0, 0, 0, 0, 0, 6, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, P_SHIELD, MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_SILVER, MAT_IRON, HI_METAL, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MATERIAL_NAME_2ND_WORD, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE, PERMITTED_ALL, ALL_TARGETS, 
+    OD_MATERIAL_NAME_WORD_BY_AN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 
 /* gloves */
 /* These have their color but not material shuffled, so the MAT_IRON must
@@ -1614,7 +1637,8 @@ WEAPONGLOVES("gauntlets of fumbling", "padded gloves",
     AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 1, 0, 0, 0, 0, 0, 6, 0,
     FUMBLING, NO_POWER, NO_POWER, P1_NONE, WHACK, MATINIT_NORMAL, MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
+    O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS,
+    OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 GLOVES("gloves of haste", "brown gloves",
     0, 1, VERY_FAST, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 
     8, 1, 10, 100, 9, 0, 0, 0, 0, 0, 0, 
@@ -1630,13 +1654,15 @@ WEAPONGLOVES("gauntlets of ogre power", "riding gloves",
     AD_PHYS, 1, 3, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 1, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_ENCHANTMENT, STR18(100), 2, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, WHACK, MATINIT_NORMAL, MAT_IRON, CLR_BROWN, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS,
+    OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 WEAPONGLOVES("gauntlets of dexterity", "fencing gloves",
     0, 1, 1, 8, 10, 100, ENCHTYPE_GENERAL_ARMOR,
     AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 1, 0, 0, 0, BONUS_TO_DEX, 0, 0, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, WHACK, MATINIT_NORMAL, MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS,
+    OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 WEAPONGLOVES("gauntlets of balance", "runed gloves", /* Base item for Gauntlets of Yin and Yang */
     0, 1, 1, 0, 10, 1000, ENCHTYPE_GENERAL_WEAPON_ARMOR,
     AD_PHYS, 1, 3, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
@@ -1646,7 +1672,8 @@ WEAPONGLOVES("gauntlets of balance", "runed gloves", /* Base item for Gauntlets 
     O2_NONE,
     O3_NO_WISH | O3_NO_GENERATION,
     O4_NONE, O5_NONE, O6_NONE,
-    PERMITTED_ALL, ALL_TARGETS),
+    PERMITTED_ALL, ALL_TARGETS,
+    OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 
 /* without shuffled appearances */
 WEAPONGLOVES("spiked gauntlets", None,
@@ -1654,13 +1681,15 @@ WEAPONGLOVES("spiked gauntlets", None,
     AD_PHYS, 1, 4, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 1, 0, 0, 0, 0, 0, 3, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_SILVER, MAT_IRON, HI_METAL, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MATERIAL_NAME_2ND_WORD, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE, PERMITTED_ALL, ALL_TARGETS, 
+    OD_MATERIAL_NAME_WORD_BY_AN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 WEAPONGLOVES("gauntlets", None,
     1, 0, 1, 5, 30, 300, ENCHTYPE_GENERAL_ARMOR,
     AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, WHACK, MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_SILVER, MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_SHOW_BASE_MATERIAL_NAME, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_SHOW_BASE_MATERIAL_NAME, O6_NONE, PERMITTED_ALL, ALL_TARGETS,
+    OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 
 /* boots */
 BOOTS("low boots", "walking shoes",
@@ -1675,7 +1704,8 @@ WEAPONBOOTS("shoes", "hard shoes",
     AD_PHYS, 1, 3, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, WHACK, MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_SILVER, MAT_IRON, HI_METAL, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_SHOW_BASE_MATERIAL_NAME, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_SHOW_BASE_MATERIAL_NAME, O6_NONE, PERMITTED_ALL, ALL_TARGETS,
+    OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 BOOTS("leather sandals", None,
     1, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_LEATHER_NONBODY_ARMOR, 
     2, 1, 6,  4, 10, 0, 0, 0, 0, 0, 0, 
@@ -1726,7 +1756,8 @@ WEAPONBOOTS("kicking boots", "buckled boots",
     AD_PHYS, 1, 7, 0, 1, 7, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,
     MAGICAL_KICKING, NO_POWER, NO_POWER, P1_NONE, WHACK, MATINIT_NORMAL, MAT_IRON, CLR_BROWN, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS,
+    OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 /* CLR_BROWN for same reason as gauntlets of power */
 
 BOOTS("fumble boots", "riding boots",
@@ -1746,7 +1777,8 @@ WEAPONBOOTS("spiked boots", None,
     AD_PHYS, 1, 5, 0, 1, 5, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
     0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_SILVER, MAT_IRON, HI_METAL, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MATERIAL_NAME_2ND_WORD, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE, PERMITTED_ALL, ALL_TARGETS,
+    OD_MATERIAL_NAME_WORD_BY_AN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 
 #undef GENERAL_SUIT
 #undef SUIT
