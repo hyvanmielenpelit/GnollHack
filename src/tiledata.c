@@ -2491,7 +2491,6 @@ uchar* tilemapflags;
                             if (isfrombasedir)
                             {
                                 int mrepl = obj_descr[i].replacement + bn + 1;
-                                int mtile = glyph2tile[mglyph];
                                 tile2replacement[mtile] = glyph2replacement[mglyph] = mrepl;
                                 tile2autodraw[mtile] = replacements[mrepl].general_autodraw;
                                 for (j = 0; j < replacements[mrepl].number_of_tiles; j++)
@@ -2552,7 +2551,6 @@ uchar* tilemapflags;
                             if (isfrombasedir)
                             {
                                 int mrepl = artilist[i].replacement + bn + 1;
-                                int mtile = glyph2tile[mglyph];
                                 tile2replacement[mtile] = glyph2replacement[mglyph] = mrepl;
                                 tile2autodraw[mtile] = replacements[mrepl].general_autodraw;
                                 for (j = 0; j < replacements[mrepl].number_of_tiles; j++)
