@@ -260,7 +260,7 @@ gottype:
     schar lowx = sroom->lx;
     schar hix = sroom->hx;
     schar lowy = sroom->ly;
-    schar hiy = sroom->hy;
+    //schar hiy = sroom->hy;
     int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
     if (lowx + 1 < hix && !rn2(2))
     {
@@ -1988,7 +1988,7 @@ int npctyp;
         schar lowx = sroom->lx;
         schar hix = sroom->hx;
         schar lowy = sroom->ly;
-        schar hiy = sroom->hy;
+        //schar hiy = sroom->hy;
         int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
         if (lowx + 1 < hix && !rn2(2))
         {
