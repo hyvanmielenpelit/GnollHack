@@ -244,14 +244,15 @@ namespace GnollHackCommon
          LFLAGS_ZAP_TRAILING_EDGE = 0x00200000UL, /* Last (trailing) tile in a zap */
          LFLAGS_ZAP_MASK = (0x00100000UL | 0x00200000UL),
          LFLAGS_T_TRAPPED =         0x00400000UL,
-         /* free */
-         LFLAGS_SHOWING_MEMORY =    0x01000000UL, /* also implies that you cannot see the location (and hence showing memory) */
-         LFLAGS_SHOWING_DETECTION = 0x02000000UL, /* Do not darken */
-         LFLAGS_ASCENSION_RADIANCE =0x04000000UL, /* Lighten up */
-         LFLAGS_CAN_SEE =           0x08000000UL, /* cansee(x, y) is true (if not, then darken etc.) */
-         LFLAGS_UXUY =              0x10000000UL, /* x == u.ux && y == u.uy is true */
-         LFLAGS_APPEARS_UNLIT =     0x20000000UL, /* looks unlit */
-         LFLAGS_NO_WALL_END_AUTODRAW=0x40000000UL,/* NO_WALL_END_AUTODRAW(x, y) is true */
+         LFLAGS_C_DECORATION =      0x00800000UL,
+         LFLAGS_C_CARPET =          0x01000000UL,
+         LFLAGS_SHOWING_MEMORY =    0x02000000UL, /* also implies that you cannot see the location (and hence showing memory) */
+         LFLAGS_SHOWING_DETECTION = 0x04000000UL, /* Do not darken */
+         LFLAGS_ASCENSION_RADIANCE =0x08000000UL, /* Lighten up */
+         LFLAGS_CAN_SEE =           0x10000000UL, /* cansee(x, y) is true (if not, then darken etc.) */
+         LFLAGS_UXUY =              0x20000000UL, /* x == u.ux && y == u.uy is true */
+         LFLAGS_APPEARS_UNLIT =     0x40000000UL, /* looks unlit */
+         LFLAGS_NO_WALL_END_AUTODRAW=0x80000000UL,/* NO_WALL_END_AUTODRAW(x, y) is true */
     }
 
     [Flags]
@@ -280,9 +281,10 @@ namespace GnollHackCommon
         MISSILE_FLAGS_ERODEPROOF =   0x00000010UL,
         MISSILE_FLAGS_POISONABLE =   0x00000020UL,
         MISSILE_FLAGS_TETHERED =     0x00000040UL, /* Missile is tethered */
+        MISSILE_FLAGS_LIT =          0x00000080UL,
     }
 
- 
+
     [Flags]
     public enum glyph_tile_flags : byte
     {

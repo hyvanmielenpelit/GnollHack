@@ -1080,6 +1080,7 @@ struct painting_definition {
     const char* artist;  /* a painting of description by artist */
     const char* paint_date; /* known painting date */
     const char* provenance; /* list of notable previous owners */
+    long cost;
 };
 extern NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS];
 

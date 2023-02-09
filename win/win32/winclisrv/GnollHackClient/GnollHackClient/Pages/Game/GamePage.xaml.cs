@@ -3079,6 +3079,8 @@ namespace GnollHackClient.Pages.Game
                                                             bool canspotself = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
                                                             sbyte monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
                                                             sbyte feature_doodad_height = _mapData[mapx, mapy].Layers.special_feature_doodad_layer_height;
+                                                            //byte missile_material = _mapData[mapx, mapy].Layers.missile_material;
+                                                            short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
                                                             float scaled_y_height_change = 0;
                                                             sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
                                                             sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
@@ -7031,7 +7033,7 @@ namespace GnollHackClient.Pages.Game
                         cnt++;
                     }
                 }
-                else if (App._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CANDELABRUM_CANDLES && otmp_round != null)
+                else if (App._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CANDELABRUM_CANDLES && (otmp_round != null || layer_idx == (int)layer_types.LAYER_MISSILE))
                 {
                     float y_start = scaled_y_padding;
                     if (!is_inventory)
@@ -7055,12 +7057,14 @@ namespace GnollHackClient.Pages.Game
                     int src_lit_x = 6 * (1 + (int)App._autodraws[autodraw].flags);
                     int src_lit_y = 10;
                     int cnt = 0;
+                    short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
+                    bool missile_lamplit = (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_LIT) != 0;
 
-                    for (int cidx = 0; cidx < Math.Min((short)7, otmp_round.ObjData.special_quality); cidx++)
+                    for (int cidx = 0; cidx < Math.Min((short)7, otmp_round != null  ? otmp_round.ObjData.special_quality : missile_special_quality); cidx++)
                     {
                         int src_x = 0, src_y = 0;
                         float dest_x = 0, dest_y = 0;
-                        if (otmp_round.LampLit)
+                        if (otmp_round != null ? otmp_round.LampLit : missile_lamplit)
                         {
                             src_x = src_lit_x;
                             src_y = src_lit_y;
@@ -7106,7 +7110,7 @@ namespace GnollHackClient.Pages.Game
                         cnt++;
                     }
                 }
-                else if (App._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES && otmp_round != null)
+                else if (App._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES && (otmp_round != null || layer_idx == (int)layer_types.LAYER_MISSILE))
                 {
                     float y_start = scaled_y_padding;
                     float x_start = scaled_x_padding;
@@ -7117,12 +7121,14 @@ namespace GnollHackClient.Pages.Game
                     int src_lit_x = 9 * (1 + (int)App._autodraws[autodraw].flags);
                     int src_lit_y = 0;
                     int cnt = 0;
+                    short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
+                    bool missile_lamplit = (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_LIT) != 0;
 
-                    for (int cidx = 0; cidx < Math.Min((short)otmp_round.OtypData.special_quality, otmp_round.ObjData.special_quality); cidx++)
+                    for (int cidx = 0; cidx < (otmp_round != null ? Math.Min((short)otmp_round.OtypData.special_quality, otmp_round.ObjData.special_quality) : missile_special_quality); cidx++)
                     {
                         int src_x = 0, src_y = 0;
                         float dest_x = 0, dest_y = 0;
-                        if (otmp_round.LampLit)
+                        if (otmp_round != null ? otmp_round.LampLit : missile_lamplit)
                         {
                             src_x = src_lit_x;
                             src_y = src_lit_y;

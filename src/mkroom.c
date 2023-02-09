@@ -260,7 +260,6 @@ gottype:
     schar lowx = sroom->lx;
     schar hix = sroom->hx;
     schar lowy = sroom->ly;
-    //schar hiy = sroom->hy;
     int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
     if (lowx + 1 < hix && !rn2(2))
     {
@@ -1866,6 +1865,22 @@ mksmithy()
                 //levl[x][y].feature_doodad = 0;
                 delete_decoration(x, y);
             }
+
+    /* Add a fireplace */
+    schar lowx = sroom->lx;
+    schar hix = sroom->hx;
+    schar lowy = sroom->ly;
+    int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+    if (lowx + 1 < hix && !rn2(2))
+    {
+        if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ) && !levl[lowx + roll2 + 1][lowy - 1].use_special_tileset)
+        {
+            levl[lowx + roll2 + 1][lowy - 1].decoration_typ = DECORATION_FIREPLACE;
+            levl[lowx + roll2 + 1][lowy - 1].decoration_subtyp = 0;
+            levl[lowx + roll2 + 1][lowy - 1].decoration_dir = 0;
+            levl[lowx + roll2 + 1][lowy - 1].decoration_flags = 0;
+        }
+    }
 
     return 1;
 }

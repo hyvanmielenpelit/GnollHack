@@ -3021,7 +3021,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     int src_x = 0, src_y = 0;
                                     int dest_x = 0, dest_y = 0;
-                                    if (otmp_round ? otmp_round->lamplit : (data->map[i][j].missile_flags) != 0)
+                                    if (otmp_round ? otmp_round->lamplit : (data->map[i][j].missile_flags & MISSILE_FLAGS_LIT) != 0)
                                     {
                                         src_x = src_lit_x;
                                         src_y = src_lit_y;
@@ -3080,7 +3080,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     cnt++;
                                 }
                             }
-                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES && otmp_round)
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES && (otmp_round || base_layer == LAYER_MISSILE))
                             {
                                 int y_start = dest_top_added;
                                 int x_start = dest_left_added;
@@ -3093,11 +3093,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int src_lit_y = 0;
                                 int cnt = 0;
 
-                                for (int cidx = 0; cidx < min(objects[otmp_round->otyp].oc_special_quality, otmp_round->special_quality); cidx++)
+                                for (int cidx = 0; cidx < (otmp_round ? min(objects[otmp_round->otyp].oc_special_quality, otmp_round->special_quality) : data->map[i][j].missile_special_quality); cidx++)
                                 {
                                     int src_x = 0, src_y = 0;
                                     int dest_x = 0, dest_y = 0;
-                                    if (otmp_round->lamplit)
+                                    if (otmp_round ? otmp_round->lamplit : (data->map[i][j].missile_flags & MISSILE_FLAGS_LIT) != 0)
                                     {
                                         src_x = src_lit_x;
                                         src_y = src_lit_y;

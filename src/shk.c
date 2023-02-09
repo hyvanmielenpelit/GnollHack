@@ -3656,17 +3656,27 @@ struct obj* obj;
         return 0L;
 
     long tmp = objects[obj->otyp].oc_cost;
-    double matmult = 1.0;
-    double matadd = 0.0;
-    if (obj->material != objects[obj->otyp].oc_material)
+    if (obj->otyp == PAINTING)
     {
-        double curmult = material_definitions[obj->material].cost_multiplier > 0 ? material_definitions[obj->material].cost_multiplier : 1.0;
-        double basemult = material_definitions[objects[obj->otyp].oc_material].cost_multiplier > 0 ? material_definitions[objects[obj->otyp].oc_material].cost_multiplier : 1.0;
-        matmult = curmult / basemult;
-        matadd += material_definitions[obj->material].cost_addition - material_definitions[objects[obj->otyp].oc_material].cost_addition;
+        if (obj->special_quality >= 0 && obj->special_quality < MAX_PAINTINGS)
+        {
+            tmp = painting_definitions[obj->special_quality].cost;
+        }
+    }
+    else
+    {
+        double matmult = 1.0;
+        double matadd = 0.0;
+        if (obj->material != objects[obj->otyp].oc_material)
+        {
+            double curmult = material_definitions[obj->material].cost_multiplier > 0 ? material_definitions[obj->material].cost_multiplier : 1.0;
+            double basemult = material_definitions[objects[obj->otyp].oc_material].cost_multiplier > 0 ? material_definitions[objects[obj->otyp].oc_material].cost_multiplier : 1.0;
+            matmult = curmult / basemult;
+            matadd += material_definitions[obj->material].cost_addition - material_definitions[objects[obj->otyp].oc_material].cost_addition;
+        }
+        tmp = max(0L, (long)((double)tmp * matmult + matadd));
     }
 
-    tmp = max(0L, (long)((double)tmp * matmult + matadd));
     return tmp;
 }
 

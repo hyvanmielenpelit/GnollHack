@@ -296,6 +296,7 @@ extern struct decoration_type_definition decoration_type_definitions[MAX_DECORAT
 #define DECORATION_TYPE_FLAGS_MIRRORABLE         0x0020
 #define DECORATION_TYPE_FLAGS_PAINTING_DESCR     0x0040
 #define DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET   0x0080
+#define DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY 0x0100
 
 enum carpet_types {
     CARPET_NONE = 0,
