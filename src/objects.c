@@ -1011,9 +1011,11 @@ BOW("Galadhrim bow", "ornamental long bow",
             cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,matinit,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,OD_NONE, NO_ANIMATION,NO_ENLARGEMENT,NO_REPLACEMENT)
 
 
-#define HELM(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,matinit,metal,c,floor_height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-      cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, matinit, metal, c, floor_height, soundset, flags, flags2, flags3, flags4, flags5, flags6, powconfermask)
+#define GENERAL_HELM(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,matinit,metal,c,floor_height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,odflags,anim,enl,repl)  \
+    GENERAL_ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
+      cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, matinit, metal, c, floor_height, soundset, flags, flags2, flags3, flags4, flags5, flags6, powconfermask,odflags,anim,enl,repl)
+#define HELM(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,matinit,metal,c,floor_height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,odflags,anim,enl,repl)  \
+    GENERAL_HELM(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,matinit,metal,c,floor_height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,OD_NONE,NO_ANIMATION,NO_ENLARGEMENT,NO_REPLACEMENT)
 #define CLOAK(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,matinit,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
       cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_CLOAK, P_NONE, matinit, metal, c, 0, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5,flags6, powconfermask)
@@ -1153,22 +1155,22 @@ HELM("dented pot", None,
     2, 0, 30,  8,  9, 0, 0, 0, 0, 0, 1, MATINIT_NORMAL, MAT_IRON, CLR_BLACK, 32, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE | O4_NON_MYTHIC, O5_NONE, O6_NONE, PERMITTED_ALL),
 /* with shuffled appearances... */
-HELM("helmet", "plumed helmet",
+GENERAL_HELM("helmet", "plumed helmet",
     0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR,
     10, 1, 50, 10,  9, 0, 0, 0, 0, 0, 1, MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_BRONZE, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
-HELM("helm of brilliance", "etched helmet",
+    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL, OD_MATERIAL_NAME_2ND_WORD_DN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
+GENERAL_HELM("helm of brilliance", "etched helmet",
     0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR,
     6, 1, 50, 50,  9, 0, 0, 0, BONUS_TO_INT | BONUS_TO_WIS | BONUS_TO_ALL_SPELL_CASTING, 0, 0, MATINIT_NORMAL, MAT_IRON, CLR_GREEN, 32, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
-HELM("helm of opposite alignment", "crested helmet",
+    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL, OD_MATERIAL_NAME_2ND_WORD_DN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
+GENERAL_HELM("helm of opposite alignment", "crested helmet",
      0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR,
     6, 1, 50, 50,  9, 0, 0, 0, 0, 0, 1, MATINIT_NORMAL, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_GENERIC,
-    O1_BECOMES_CURSED_WHEN_WORN, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
-HELM("helm of telepathy", "visored helmet",
+    O1_BECOMES_CURSED_WHEN_WORN, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL, OD_MATERIAL_NAME_2ND_WORD_DN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
+GENERAL_HELM("helm of telepathy", "visored helmet",
     0, 1, TELEPAT, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR,
     2, 1, 50, 50,  9, 0, 0, 0, 0, 0, 0, MATINIT_NORMAL, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL, OD_MATERIAL_NAME_2ND_WORD_DN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 
 /* suits of armor */
 /*
@@ -1780,21 +1782,22 @@ WEAPONBOOTS("spiked boots", None,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_MATERIAL_NAME_2ND_WORD_AN, O6_NONE, PERMITTED_ALL, ALL_TARGETS,
     OD_MATERIAL_NAME_WORD_BY_AN, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
 
-#undef GENERAL_SUIT
 #undef SUIT
+#undef GENERAL_SUIT
 #undef HELM
+#undef GENERAL_HELM
 #undef CLOAK
-#undef GENERAL_SHIELD
 #undef SHIELD
+#undef GENERAL_SHIELD
 #undef SHIRT
 #undef ROBE
-#undef GENERAL_BRACERS
 #undef BRACERS
+#undef GENERAL_BRACERS
 #undef GLOVES
-#undef GENERAL_BOOTS
 #undef BOOTS
-#undef GENERAL_ARMOR
+#undef GENERAL_BOOTS
 #undef ARMOR
+#undef GENERAL_ARMOR
 #undef WEAPONSHIELD
 #undef WEAPONGLOVES
 #undef WEAPONBOOTS
