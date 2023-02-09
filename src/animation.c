@@ -1862,13 +1862,13 @@ enum autodraw_types* autodraw_ptr;
         }
         case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_LIT:
         {
-            if (!otmp && !is_lit_missile)
+            if (!otmp && info.layer != LAYER_MISSILE)
                 return ntile;
 
             if (autodraw_ptr)
                 *autodraw_ptr = replacements[replacement_idx].general_autodraw;
 
-            if (is_lit_missile || is_obj_activated(otmp))
+            if ((info.layer == LAYER_MISSILE && is_lit_missile) || (otmp && is_obj_activated(otmp)))
             {
                 if (replacements[replacement_idx].number_of_tiles < 1)
                     return ntile;
@@ -2663,10 +2663,10 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_LIT:
         {
-            if (!otmp && !is_lit_missile)
+            if (!otmp && info.layer != LAYER_MISSILE)
                 return glyph;
 
-            if (is_lit_missile || is_obj_activated(otmp))
+            if ((info.layer == LAYER_MISSILE && is_lit_missile) || (otmp && is_obj_activated(otmp)))
             {
                 /* Return the first tile with index 0 */
                 return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
