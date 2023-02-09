@@ -811,6 +811,29 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         break;
     case ART_CLASS:
         Strcpy(buf, actualn_fullbuf);
+        if (dknown)
+        {
+            switch (obj->otyp)
+            {
+            case PAINTING:
+                if (obj->special_quality >= 0 && obj->special_quality < MAX_PAINTINGS)
+                {
+                    if (painting_definitions[obj->special_quality].description)
+                    {
+                        Strcat(buf, " of ");
+                        Strcat(buf, painting_definitions[obj->special_quality].description);
+                    }
+                    if (painting_definitions[obj->special_quality].artist)
+                    {
+                        Strcat(buf, " by ");
+                        Strcat(buf, painting_definitions[obj->special_quality].artist);
+                    }
+                }
+                break;
+            default:
+                break;
+            }
+        }
         break;
     case ROCK_CLASS:
         if (typ == STATUE && omndx != NON_PM) 

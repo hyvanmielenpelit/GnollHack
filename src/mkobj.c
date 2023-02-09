@@ -1976,7 +1976,7 @@ unsigned long mkflags;
         case ART_CLASS:
             switch (otmp->otyp) {
             case PAINTING:
-                otmp->special_quality = rn2(4);
+                otmp->special_quality = rn2(MAX_PAINTINGS);
                 break;
             default:
                 break;

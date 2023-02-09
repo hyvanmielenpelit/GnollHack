@@ -1065,6 +1065,24 @@ enum manual_types
 #define LAST_CATALOGUE MANUAL_CATALOGUE_OF_ARTIFACTS
 #define NUM_CATALOGUES (LAST_CATALOGUE - FIRST_CATALOGUE + 1)
 
+enum painting_types {
+    PAINTING_STANDARD = 0,
+    PAINTING_MALE_ARISTOCRAT,
+    PAINTING_FEMALE_ARISTOCRAT,
+    PAINTING_PRIESTESS,
+    MAX_PAINTINGS
+};
+
+/* Paintings */
+struct painting_definition {
+    const char* name;
+    const char* description; /* a painting of description */
+    const char* artist;  /* a painting of description by artist */
+    const char* paint_date; /* known painting date */
+    const char* provenance; /* list of notable previous owners */
+};
+extern NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS];
+
 
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1

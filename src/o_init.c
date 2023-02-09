@@ -206,7 +206,6 @@ NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_PREFIX_P
 };
 
 
-
 NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
 {
     { "", "", "", 0, 1.0, 0L, 0UL, 0UL },
@@ -378,6 +377,14 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_P
     { "Searching", "Searching", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEARCHING, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "See invisible", "See invisible", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEE_INVISIBLE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Returns to hand", "Returns to hand after throwing", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_THROWN_WEAPONS_ONLY },
+};
+
+
+NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS] = {
+    { "male aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0 },
+    { "male aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0 },
+    { "female aristocrat", "a female aristocrat", "Otumn", (char*)0, (char*)0 },
+    { "elucid priestess", "a stern priestess", "Otumn", (char*)0, (char*)0 }
 };
 
 //STATIC_DCL void FDECL(setgemprobs, (d_level *));
