@@ -252,25 +252,36 @@ int floortyp, floorsubtyp, mtype;
                     }
                 }
                 
+                int roll1 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                 if (lowx + 1 < hix && !rn2(lvl_depth / 3 + 3))
                 {
-                    int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
-                    if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ) && !levl[lowx + roll + 1][lowy - 1].use_special_tileset)
+                    if (IS_WALL(levl[lowx + roll1 + 1][lowy - 1].typ) && !levl[lowx + roll1 + 1][lowy - 1].use_special_tileset)
                     {
                         if (!rn2(4))
                         {
-                            levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_FIREPLACE;
-                            levl[lowx + roll + 1][lowy - 1].decoration_subtyp = 0;
-                            levl[lowx + roll + 1][lowy - 1].decoration_dir = 0;
-                            levl[lowx + roll + 1][lowy - 1].decoration_flags = 0;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_typ = DECORATION_FIREPLACE;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_flags = 0;
                         }
                         else
                         {
-                            levl[lowx + roll + 1][lowy - 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
-                            levl[lowx + roll + 1][lowy - 1].decoration_subtyp = 0;
-                            levl[lowx + roll + 1][lowy - 1].decoration_dir = 0;
-                            levl[lowx + roll + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                         }
+                    }
+                }
+                if (lowx + 1 < hix && !rn2(lvl_depth / 3 + 3) && roll1 != roll2)
+                {
+                    if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ) && !levl[lowx + roll2 + 1][lowy - 1].use_special_tileset)
+                    {
+                        levl[lowx + roll2 + 1][lowy - 1].decoration_typ = DECORATION_PAINTING;
+                        levl[lowx + roll2 + 1][lowy - 1].decoration_subtyp = rn2(MAX_PAINTINGS);
+                        levl[lowx + roll2 + 1][lowy - 1].decoration_dir = 0;
+                        levl[lowx + roll2 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                     }
                 }
                 if (lowx + 1 < hix && !rn2(lvl_depth / 3 + 3))

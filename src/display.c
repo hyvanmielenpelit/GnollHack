@@ -4473,9 +4473,18 @@ schar* height_ptr;
         }
         else
         {
-            glyph = decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir] + levl[x][y].decoration_subtyp + GLYPH_SIMPLE_DOODAD_OFF;
-            if (height_ptr)
-                *height_ptr = simple_doodads[decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir] + levl[x][y].decoration_subtyp].special_height;
+            if (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET)
+            {
+                glyph = decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir] + GLYPH_SIMPLE_DOODAD_OFF;
+                if (height_ptr)
+                    *height_ptr = simple_doodads[decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir]].special_height;
+            }
+            else
+            {
+                glyph = decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir] + levl[x][y].decoration_subtyp + GLYPH_SIMPLE_DOODAD_OFF;
+                if (height_ptr)
+                    *height_ptr = simple_doodads[decoration_type_definitions[levl[x][y].decoration_typ].first_doodad[levl[x][y].decoration_dir] + levl[x][y].decoration_subtyp].special_height;
+            }
         }
         return glyph;
     }
@@ -5231,7 +5240,7 @@ int dx, dy;
     else if (dy == 0 && dx > 0)
         return 4;
     else if (dy > 0)
-        return sgn(dx) + 6;
+    return sgn(dx) + 6;
 
     /* Not reached */
     return 0;
@@ -5316,18 +5325,40 @@ const char*
 get_decoration_description(x, y)
 int x, y;
 {
+    static char decoration_buf[BUFSZ] = "";;
     if (isok(x, y))
     {
         if ((gbuf[y][x].layers.layer_flags & LFLAGS_C_DECORATION) != 0 && levl[x][y].decoration_typ > 0)
         {
             if ((levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0 && decoration_type_definitions[levl[x][y].decoration_typ].description_filled != 0)
             {
-                return decoration_type_definitions[levl[x][y].decoration_typ].description_filled;
+                Strcpy(decoration_buf, decoration_type_definitions[levl[x][y].decoration_typ].description_filled);
+                if (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_PAINTING_DESCR)
+                {
+                    if (levl[x][y].decoration_subtyp >= 0 && levl[x][y].decoration_subtyp < MAX_PAINTINGS)
+                    {
+                        if ((levl[x][y].decoration_flags & DECORATION_FLAGS_SEEN) != 0 || cansee(x, y))
+                        {
+                            levl[x][y].decoration_flags |= DECORATION_FLAGS_SEEN;
+                            if (painting_definitions[levl[x][y].decoration_subtyp].description)
+                            {
+                                Strcat(decoration_buf, " of ");
+                                Strcat(decoration_buf, painting_definitions[levl[x][y].decoration_subtyp].description);
+                            }
+                            if (painting_definitions[levl[x][y].decoration_subtyp].artist)
+                            {
+                                Strcat(decoration_buf, " by ");
+                                Strcat(decoration_buf, painting_definitions[levl[x][y].decoration_subtyp].artist);
+                            }
+                        }
+                    }
+                }           
             }
             else
             {
-                return decoration_type_definitions[levl[x][y].decoration_typ].description;
+                Strcpy(decoration_buf, decoration_type_definitions[levl[x][y].decoration_typ].description);
             }
+            return decoration_buf;
         }
     }
     return 0;

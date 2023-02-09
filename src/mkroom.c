@@ -256,6 +256,23 @@ gottype:
                 delete_decoration(x, y);
             }
 
+    /* Add a painting */
+    schar lowx = sroom->lx;
+    schar hix = sroom->hx;
+    schar lowy = sroom->ly;
+    schar hiy = sroom->hy;
+    int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+    if (lowx + 1 < hix && !rn2(2))
+    {
+        if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ) && !levl[lowx + roll2 + 1][lowy - 1].use_special_tileset)
+        {
+            levl[lowx + roll2 + 1][lowy - 1].decoration_typ = DECORATION_PAINTING;
+            levl[lowx + roll2 + 1][lowy - 1].decoration_subtyp = rn2(MAX_PAINTINGS);
+            levl[lowx + roll2 + 1][lowy - 1].decoration_dir = 0;
+            levl[lowx + roll2 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+        }
+    }
+
     /* set room bits before stocking the shop */
 #ifdef SPECIALIZATION
     topologize(sroom, FALSE); /* doesn't matter - this is a special room */
@@ -1962,6 +1979,26 @@ int npctyp;
                 for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
                     levl[x][y].lit = 1;
             sroom->rlit = 1;
+        }
+    }
+
+    if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_HAS_PAINTINGS)
+    {
+        /* Add a painting */
+        schar lowx = sroom->lx;
+        schar hix = sroom->hx;
+        schar lowy = sroom->ly;
+        schar hiy = sroom->hy;
+        int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+        if (lowx + 1 < hix && !rn2(2))
+        {
+            if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ) && !levl[lowx + roll2 + 1][lowy - 1].use_special_tileset)
+            {
+                levl[lowx + roll2 + 1][lowy - 1].decoration_typ = DECORATION_PAINTING;
+                levl[lowx + roll2 + 1][lowy - 1].decoration_subtyp = rn2(MAX_PAINTINGS);
+                levl[lowx + roll2 + 1][lowy - 1].decoration_dir = 0;
+                levl[lowx + roll2 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+            }
         }
     }
 

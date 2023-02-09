@@ -266,6 +266,7 @@ enum decoration_types {
     DECORATION_TORCH,
     DECORATION_LANTERN,
     DECORATION_FIREPLACE,
+    DECORATION_PAINTING,
     MAX_DECORATIONS
 };
 
@@ -293,6 +294,8 @@ extern struct decoration_type_definition decoration_type_definitions[MAX_DECORAT
 #define DECORATION_TYPE_FLAGS_ALL_SIDES          0x0008
 #define DECORATION_TYPE_FLAGS_CORNERS            0x0010
 #define DECORATION_TYPE_FLAGS_MIRRORABLE         0x0020
+#define DECORATION_TYPE_FLAGS_PAINTING_DESCR     0x0040
+#define DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET   0x0080
 
 enum carpet_types {
     CARPET_NONE = 0,
@@ -1011,6 +1014,7 @@ struct rm {
 
 #define DECORATION_FLAGS_NONE               0x00
 #define DECORATION_FLAGS_ITEM_IN_HOLDER     0x01
+#define DECORATION_FLAGS_SEEN               0x02
 
 #define SET_TYPLIT(x, y, ttyp, tsubtyp, llit)                              \
     {                                                             \
