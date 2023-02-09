@@ -2423,7 +2423,10 @@ register struct obj* obj;
         if (objects[otyp].oc_oprop > 0
             || objects[otyp].oc_oprop2 > 0
             || objects[otyp].oc_oprop3 > 0
-            || (obj->material != objects[otyp].oc_material && (is_armor(obj) && material_definitions[obj->material].power_armor[objects[otyp].oc_armor_category] != NO_POWER))
+            || (obj->material != objects[otyp].oc_material 
+                && ((is_armor(obj) && (material_definitions[obj->material].power_armor[objects[otyp].oc_armor_category] != NO_POWER || material_definitions[obj->material].power2_armor[objects[otyp].oc_armor_category] != NO_POWER))
+                    || (is_weapon(obj) && (material_definitions[obj->material].power_weapon != NO_POWER || material_definitions[obj->material].power2_weapon != NO_POWER)))
+               )
             || objects[otyp].oc_mana_bonus > 0
             || objects[otyp].oc_hp_bonus > 0
             || objects[otyp].oc_bonus_attributes > 0
@@ -2439,11 +2442,17 @@ register struct obj* obj;
 
             int powercnt = 0;
             int j;
-            for (j = 0; j <= 6; j++)
+            for (j = -3; j <= 6; j++)
             {
                 int prop = 0;
-                if (j == 0)
+                if (j == -3)
+                    prop = obj->material != objects[otyp].oc_material && is_weapon(obj) ? material_definitions[obj->material].power_weapon : NO_POWER;
+                else if (j == -2)
+                    prop = obj->material != objects[otyp].oc_material && is_weapon(obj) ? material_definitions[obj->material].power2_weapon : NO_POWER;
+                else if (j == -1)
                     prop = obj->material != objects[otyp].oc_material && is_armor(obj) ? material_definitions[obj->material].power_armor[objects[otyp].oc_armor_category] : NO_POWER;
+                else if (j == 0)
+                    prop = obj->material != objects[otyp].oc_material && is_armor(obj) ? material_definitions[obj->material].power2_armor[objects[otyp].oc_armor_category] : NO_POWER;
                 else if (j == 1)
                     prop = objects[otyp].oc_oprop;
                 else if (j == 2)
@@ -2458,7 +2467,7 @@ register struct obj* obj;
                     prop = (int)objects[otyp].oc_bonus_attributes;
 
                 char pwbuf[BUFSZ] = "";
-                if (j == 0)
+                if (j <= 0)
                 {
                     Sprintf(eos(pwbuf), " when %s", is_wieldable_weapon(obj) ? "wielded" : "worn");
                 }

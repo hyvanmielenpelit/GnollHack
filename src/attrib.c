@@ -870,6 +870,11 @@ update_extrinsics()
                     {
                         u.uprops[power].extrinsic |= bit;
                     }
+                    int power2 = material_definitions[uitem->material].power2_armor[objects[otyp].oc_armor_category];
+                    if (power2 != NO_POWER)
+                    {
+                        u.uprops[power2].extrinsic |= bit;
+                    }
                 }
                 
                 if (is_weapon(uitem))
@@ -878,6 +883,11 @@ update_extrinsics()
                     if (power != NO_POWER)
                     {
                         u.uprops[power].extrinsic |= bit;
+                    }
+                    int power2 = material_definitions[uitem->material].power2_weapon;
+                    if (power2 != NO_POWER)
+                    {
+                        u.uprops[power2].extrinsic |= bit;
                     }
                 }
             }

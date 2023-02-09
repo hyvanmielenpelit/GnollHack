@@ -330,9 +330,11 @@ enum material_init_types {
     MATINIT_PLATE_MAIL,
     MATINIT_SLING_BULLET,
     MATINIT_MAYBE_MITHRIL,
-    MATINIT_MAYBE_MITHRIL_OR_SILVER,
+    MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_SILVER,
     MATINIT_CHAIN_MAIL,
     MATINIT_MAYBE_BONE,
+    MATINIT_MAYBE_ADAMANTIUM_OR_MITHRIL,
+    MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_BRONZE,
     MAX_MATINIT_TYPES
 };
 
@@ -373,6 +375,7 @@ struct material_definition {
     double cost_multiplier;
     double cost_addition;
     int power_armor[MAX_ARMOR_TYPES];
+    int power2_armor[MAX_ARMOR_TYPES];
     int sdice_adjustment;
     int sdam_adjustment;
     int splus_adjustment;
@@ -380,6 +383,7 @@ struct material_definition {
     int ldam_adjustment;
     int lplus_adjustment;
     int power_weapon;
+    int power2_weapon;
     unsigned long extra_oflags1;
     unsigned long extra_oflags2;
     unsigned long extra_oflags3;

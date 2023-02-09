@@ -4951,8 +4951,10 @@ int otyp;
         if (!rn2(20))
             mat = MAT_MITHRIL;
         break;
-    case MATINIT_MAYBE_MITHRIL_OR_SILVER:
-        if (!rn2(20))
+    case MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_SILVER:
+        if (!rn2(30))
+            mat = MAT_ADAMANTIUM;
+        else if (!rn2(25))
             mat = MAT_MITHRIL;
         else if (!rn2(20))
             mat = MAT_SILVER;
@@ -4968,6 +4970,20 @@ int otyp;
     case MATINIT_MAYBE_BONE:
         if (!rn2(4))
             mat = MAT_BONE;
+        break;
+    case MATINIT_MAYBE_ADAMANTIUM_OR_MITHRIL:
+        if (!rn2(25))
+            mat = MAT_ADAMANTIUM;
+        else if (!rn2(20))
+            mat = MAT_MITHRIL;
+        break;
+    case MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_BRONZE:
+        if (!rn2(30))
+            mat = MAT_ADAMANTIUM;
+        else if (!rn2(25))
+            mat = MAT_MITHRIL;
+        else if (!rn2(10))
+            mat = MAT_BRONZE;
         break;
     case MATINIT_NORMAL:
     default:
