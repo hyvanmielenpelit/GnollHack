@@ -809,6 +809,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     case CHAIN_CLASS:
         Strcpy(buf, actualn_fullbuf);
         break;
+    case ART_CLASS:
+        Strcpy(buf, actualn_fullbuf);
+        break;
     case ROCK_CLASS:
         if (typ == STATUE && omndx != NON_PM) 
         {

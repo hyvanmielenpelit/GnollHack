@@ -1398,7 +1398,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     int main_tile = glyph2tile[main_glyph];
                                     char mapAnimatedDummy = FALSE;
                                     int anim_frame_idx_dummy = 0, main_tile_idx_dummy = 0;
-                                    main_tile = maybe_get_replaced_tile(main_tile, adj_x, adj_y, data_to_replacement_info(signed_main_glyph, base_layer, 0, worm, data->map[adj_x][adj_y].layer_flags, data->map[adj_x][adj_y].missile_flags, data->map[adj_x][adj_y].missile_material), &autodraw);
+                                    main_tile = maybe_get_replaced_tile(main_tile, adj_x, adj_y, data_to_replacement_info(signed_main_glyph, base_layer, 0, worm, data->map[adj_x][adj_y].layer_flags, data->map[adj_x][adj_y].missile_flags, data->map[adj_x][adj_y].missile_material, data->map[adj_x][adj_y].missile_special_quality), &autodraw);
 
                                     if (animation_timers.m_action_animation_counter_on && base_layer == LAYER_MONSTER && animation_timers.m_action_animation_x == adj_x && animation_timers.m_action_animation_y == adj_y)
                                         main_tile = maybe_get_animated_tile(main_tile, tile_animation_index, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.m_action_animation_counter, &anim_frame_idx_dummy, &main_tile_idx_dummy, &mapAnimatedDummy, &autodraw);
@@ -1903,7 +1903,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
-                    ntile = maybe_get_replaced_tile(ntile, enl_i, enl_j, data_to_replacement_info(signed_glyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags, data->map[adj_x][adj_y].missile_flags, data->map[adj_x][adj_y].missile_material), &autodraw);
+                    ntile = maybe_get_replaced_tile(ntile, enl_i, enl_j, data_to_replacement_info(signed_glyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags, data->map[adj_x][adj_y].missile_flags, data->map[adj_x][adj_y].missile_material, data->map[adj_x][adj_y].missile_special_quality), &autodraw);
                     if(animation_timers.u_action_animation_counter_on && base_layer == LAYER_MONSTER && enl_i == u.ux && enl_j == u.uy)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else if (animation_timers.m_action_animation_counter_on && ((!is_dropping_piercer && base_layer == LAYER_MONSTER) || (is_dropping_piercer && base_layer == LAYER_MISSILE)) && animation_timers.m_action_animation_x == enl_i && animation_timers.m_action_animation_y == enl_j)
@@ -3004,7 +3004,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     cnt++;
                                 }
                             }
-                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CANDELABRUM_CANDLES && otmp_round)
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CANDELABRUM_CANDLES && (otmp_round || base_layer == LAYER_MISSILE))
                             {
                                 int y_start = dest_top_added;
                                 int x_start = dest_left_added;
@@ -3017,11 +3017,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int src_lit_y = 10;
                                 int cnt = 0;
 
-                                for (int cidx = 0; cidx < min(7, otmp_round->special_quality); cidx++)
+                                for (int cidx = 0; cidx < min(7, otmp_round ? otmp_round->special_quality : data->map[i][j].missile_special_quality); cidx++)
                                 {
                                     int src_x = 0, src_y = 0;
                                     int dest_x = 0, dest_y = 0;
-                                    if (otmp_round->lamplit)
+                                    if (otmp_round ? otmp_round->lamplit : (data->map[i][j].missile_flags) != 0)
                                     {
                                         src_x = src_lit_x;
                                         src_y = src_lit_y;
@@ -4908,7 +4908,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 mglyph = abs(signed_mglyph);
                                 mtile = glyph2tile[mglyph];
                                 int tile_animation_idx = get_tile_animation_index_from_glyph(mglyph);
-                                mtile = maybe_get_replaced_tile(mtile, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags, data->map[enl_i][enl_j].missile_flags, data->map[enl_i][enl_j].missile_material), (enum auto_drawtypes*)0);
+                                mtile = maybe_get_replaced_tile(mtile, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags, data->map[enl_i][enl_j].missile_flags, data->map[enl_i][enl_j].missile_material, data->map[enl_i][enl_j].missile_special_quality), (enum auto_drawtypes*)0);
                                 mtile = maybe_get_animated_tile(mtile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, animation_timers.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 m_sheet_idx = TILE_SHEET_IDX(mtile);
                                 int c_x = TILEBMP_X(mtile);
@@ -5715,7 +5715,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                             continue;
                         int ntile = glyph2tile[glyph];
                         enum autodraw_types autodraw = AUTODRAW_NONE;
-                        ntile = maybe_get_replaced_tile(ntile, x, y, data_to_replacement_info(otmp->glyph, layer_idx, otmp, m_at(x, y), data->map[x][y].layer_flags, data->map[x][y].missile_flags, data->map[x][y].missile_material), &autodraw);
+                        ntile = maybe_get_replaced_tile(ntile, x, y, data_to_replacement_info(otmp->glyph, layer_idx, otmp, m_at(x, y), data->map[x][y].layer_flags, data->map[x][y].missile_flags, data->map[x][y].missile_material, data->map[x][y].missile_special_quality), &autodraw);
                         enlarg = tile2enlargement[ntile]; // obj_to_glyph(otmp, rn2_on_display_rng))]];
                     }
                 }
@@ -5731,7 +5731,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     continue;
                 flipped = (signed_glyph < 0);
                 int ntile = glyph2tile[glyph];
-                ntile = maybe_get_replaced_tile(ntile, x, y, data_to_replacement_info(signed_glyph, layer_idx, (struct obj*)0, m_at(x, y), data->map[x][y].layer_flags, data->map[x][y].missile_flags, data->map[x][y].missile_material), &autodraw);
+                ntile = maybe_get_replaced_tile(ntile, x, y, data_to_replacement_info(signed_glyph, layer_idx, (struct obj*)0, m_at(x, y), data->map[x][y].layer_flags, data->map[x][y].missile_flags, data->map[x][y].missile_material, data->map[x][y].missile_special_quality), &autodraw);
 
                 int tile_animation_idx = get_tile_animation_index_from_glyph(glyph);
                 boolean is_dropping_piercer = m_at(x, y) && (data->map[x][y].layer_flags & LFLAGS_M_DROPPING_PIERCER);

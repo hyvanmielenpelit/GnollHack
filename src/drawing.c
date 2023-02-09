@@ -58,7 +58,8 @@ const struct class_sym def_oc_syms[MAX_OBJECT_CLASSES] = {
     { CHAIN_SYM, "chains", "iron chain" },
     { VENOM_SYM, "venoms", "splash of venom" },
     { REAGENT_SYM, "reagents", "reagent" },
-    { MISCELLANEOUS_SYM, "miscellaneous items", "miscellaneous item" }
+    { MISCELLANEOUS_SYM, "miscellaneous items", "miscellaneous item" },
+    { ART_SYM, "objects of art", "object of art" }
 };
 
 /* Default monster class symbols.  See monsym.h. */
@@ -1353,7 +1354,7 @@ STATIC_VAR const uchar def_r_oc_syms[MAX_OBJECT_CLASSES] = {
 /*10*/ SPBOOK_SYM, WAND_SYM,
        GEM_SYM,                /* gold -- yes it's the same as gems */
        GEM_SYM, ROCK_SYM,
-/*15*/ BALL_SYM, CHAIN_SYM, VENOM_SYM
+/*15*/ BALL_SYM, CHAIN_SYM, VENOM_SYM, MISCELLANEOUS_SYM, ART_SYM
 };
 
 #undef C
@@ -1830,6 +1831,7 @@ struct symparse loadsyms[] = {
     { SYM_OC, WAND_CLASS + SYM_OFF_O, "S_wand" },
     { SYM_OC, COIN_CLASS + SYM_OFF_O, "S_coin" },
     { SYM_OC, GEM_CLASS + SYM_OFF_O, "S_gem" },
+    { SYM_OC, ART_CLASS + SYM_OFF_O, "S_art" },
     { SYM_OC, ROCK_CLASS + SYM_OFF_O, "S_rock" },
     { SYM_OC, BALL_CLASS + SYM_OFF_O, "S_ball" },
     { SYM_OC, CHAIN_CLASS + SYM_OFF_O, "S_chain" },

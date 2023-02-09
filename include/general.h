@@ -136,6 +136,7 @@ struct replacement_info {
     unsigned long layer_flags;
     unsigned long missile_flags;
     unsigned char missile_material;
+    short missile_special_quality;
 };
 
 struct skill_menu_info

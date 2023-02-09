@@ -1973,6 +1973,15 @@ unsigned long mkflags;
                     (void) add_to_container(otmp, mkobj(SPBOOK_CLASS, FALSE, TRUE));
             }
             break;
+        case ART_CLASS:
+            switch (otmp->otyp) {
+            case PAINTING:
+                otmp->special_quality = rn2(4);
+                break;
+            default:
+                break;
+            }
+            break;
         case COIN_CLASS:
             break; /* do nothing */
         default:
@@ -4910,61 +4919,72 @@ int otyp;
 {
     uchar mat = objects[otyp].oc_material;
     xchar levdiff = level_difficulty();
+    int simple_rare_one_in_chance = levdiff < 10 ? 20 : levdiff < 20 ? 15 : levdiff < 30 ? 10 : 5;
+    int silver_rare_one_in_chance = Inhell ? 200 : levdiff < 10 ? 20 : levdiff < 20 ? 15 : levdiff < 30 ? 10 : 5;
+    int special_bronze_rare_one_in_chance = levdiff < 10 ? 10 : levdiff < 20 ? 15 : levdiff < 30 ? 20 : 25;
+    int mithril_rare_one_in_chance = levdiff < 10 ? 25 : levdiff < 20 ? 20 : levdiff < 30 ? 15 : 10;
+    int adamantium_rare_one_in_chance = levdiff < 10 ? 30 : levdiff < 20 ? 25 : levdiff < 30 ? 20 : 15;
+    int crystal_long_sword_one_in_chance = levdiff < 10 ? 800 : levdiff < 20 ? 200 : levdiff < 30 ? 100 : 50;
+    int silver_long_sword_one_in_chance = Inhell ? 200 : levdiff < 10 ? 100 : levdiff < 20 ? 50 : levdiff < 30 ? 30 : 20;
+    int bronze_plate_mail_one_in_chance = levdiff < 10 ? 4 : levdiff < 20 ? 8 : levdiff < 30 ? 16 : 32;
+    int crystal_plate_mail_one_in_chance = levdiff < 5 ? 150 : levdiff < 10 ? 75 : levdiff < 20 ? 50 : levdiff < 30 ? 25 : 10;
+    int orichalcum_plate_mail_one_in_chance = levdiff < 5 ? 300 : levdiff < 10 ? 125 : levdiff < 20 ? 75 : levdiff < 30 ? 30 : 15;
+    int mithril_plate_mail_one_in_chance = levdiff < 5 ? 175 : levdiff < 10 ? 100 : levdiff < 20 ? 50 : levdiff < 30 ? 25 : 10;
 
     switch (objects[otyp].oc_material_init_type)
     {
     case MATINIT_MAYBE_SILVER:
-        if(!rn2(20))
+        if(!rn2(silver_rare_one_in_chance))
             mat = MAT_SILVER;
         break;
     case MATINIT_MAYBE_SILVER_OR_BONE:
-        if (!rn2(20))
+        if (!rn2(silver_rare_one_in_chance))
             mat = MAT_SILVER;
         else if (!rn2(20))
             mat = MAT_BONE;
         break;
     case MATINIT_LONG_SWORD:
-        if (!rn2(800))
+        if (!rn2(crystal_long_sword_one_in_chance))
             mat = MAT_HARD_CRYSTAL;
-        else if (!rn2(100))
+        else if (!rn2(silver_long_sword_one_in_chance))
             mat = MAT_SILVER;
         break;
     case MATINIT_PLATE_MAIL:
-        if (!rn2(4))
+        if (!rn2(bronze_plate_mail_one_in_chance))
             mat = MAT_BRONZE;
-        else if (!rn2(75) && levdiff >= 4)
+        else if (!rn2(crystal_plate_mail_one_in_chance))
             mat = MAT_HARD_CRYSTAL;
-        else if (!rn2(100) && levdiff >= 10)
+        else if (!rn2(orichalcum_plate_mail_one_in_chance))
             mat = MAT_ORICHALCUM;
-        else if (!rn2(50) && levdiff >= 6)
+        else if (!rn2(mithril_plate_mail_one_in_chance))
             mat = MAT_MITHRIL;
-        else if (!rn2(50) && levdiff >= 8)
+        else if (!rn2(mithril_plate_mail_one_in_chance))
             mat = MAT_ADAMANTIUM;
         break;
     case MATINIT_SLING_BULLET:
-        if (!rn2(20))
+        if (!rn2(silver_rare_one_in_chance))
             mat = MAT_SILVER;
         else if (!rn2(2))
             mat = MAT_LEAD;
         break;
     case MATINIT_MAYBE_MITHRIL:
-        if (!rn2(20))
+        if (!rn2(simple_rare_one_in_chance))
             mat = MAT_MITHRIL;
         break;
     case MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_SILVER:
-        if (!rn2(30))
+        if (!rn2(adamantium_rare_one_in_chance))
             mat = MAT_ADAMANTIUM;
-        else if (!rn2(25))
+        else if (!rn2(mithril_rare_one_in_chance))
             mat = MAT_MITHRIL;
-        else if (!rn2(20))
+        else if (!rn2(silver_rare_one_in_chance))
             mat = MAT_SILVER;
         break;
     case MATINIT_CHAIN_MAIL:
-        if (!rn2(100) && levdiff >= 10)
+        if (!rn2(orichalcum_plate_mail_one_in_chance) && levdiff >= 10)
             mat = MAT_ORICHALCUM;
-        else if (!rn2(50) && levdiff >= 6)
+        else if (!rn2(mithril_plate_mail_one_in_chance) && levdiff >= 6)
             mat = MAT_MITHRIL;
-        else if (!rn2(50) && levdiff >= 8)
+        else if (!rn2(mithril_plate_mail_one_in_chance) && levdiff >= 8)
             mat = MAT_ADAMANTIUM;
         break;
     case MATINIT_MAYBE_BONE:
@@ -4972,17 +4992,17 @@ int otyp;
             mat = MAT_BONE;
         break;
     case MATINIT_MAYBE_ADAMANTIUM_OR_MITHRIL:
-        if (!rn2(25))
+        if (!rn2(adamantium_rare_one_in_chance))
             mat = MAT_ADAMANTIUM;
-        else if (!rn2(20))
+        else if (!rn2(mithril_rare_one_in_chance))
             mat = MAT_MITHRIL;
         break;
     case MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_BRONZE:
-        if (!rn2(30))
+        if (!rn2(adamantium_rare_one_in_chance))
             mat = MAT_ADAMANTIUM;
-        else if (!rn2(25))
+        else if (!rn2(mithril_rare_one_in_chance))
             mat = MAT_MITHRIL;
-        else if (!rn2(10))
+        else if (!rn2(special_bronze_rare_one_in_chance))
             mat = MAT_BRONZE;
         break;
     case MATINIT_NORMAL:

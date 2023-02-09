@@ -1186,8 +1186,9 @@ enum obj_class_types {
     VENOM_CLASS  = 17,
     REAGENT_CLASS = 18,
     MISCELLANEOUS_CLASS = 19,
+    ART_CLASS = 20,
 
-    MAX_OBJECT_CLASSES  = 20
+    MAX_OBJECT_CLASSES  = 21
 };
 
 
@@ -1227,6 +1228,7 @@ extern uchar oc_syms[MAX_OBJECT_CLASSES];      /* current class symbols */
 #define VENOM_SYM '.'
 #define REAGENT_SYM '9'
 #define MISCELLANEOUS_SYM '8'
+#define ART_SYM ']'
 #define GOLD_SYM_ALTERNATE '\''
 
 struct fruit {

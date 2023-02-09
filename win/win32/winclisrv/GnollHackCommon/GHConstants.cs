@@ -437,6 +437,7 @@ namespace GnollHackCommon
 
         public byte missile_poisoned;
         public byte missile_material;
+        public short missile_special_quality;
         public byte missile_elemental_enchantment;
         public byte missile_exceptionality;
         public byte missile_mythic_prefix;
@@ -1017,8 +1018,9 @@ namespace GnollHackCommon
         VENOM_CLASS = 17,
         REAGENT_CLASS = 18,
         MISCELLANEOUS_CLASS = 19,
+        ART_CLASS = 20,
 
-        MAX_OBJECT_CLASSES = 20
+        MAX_OBJECT_CLASSES = 21
     }
 
     public enum obj_where_types

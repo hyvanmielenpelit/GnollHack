@@ -2268,7 +2268,8 @@ struct mkroom *croom;
         
         otmp = mksobj_at_with_flags(o->id, x, y, TRUE, !named, -1, mowner, MAT_NONE, 0L, 0L, mkflags);
     }
-    else {
+    else 
+    {
         /*
          * The special levels are compiled with the default "text" object
          * class characters.  We must convert them to the internal format.

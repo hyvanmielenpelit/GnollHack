@@ -5362,6 +5362,27 @@ REAGENT("modronite icosahedron", "alien twenty-faced polyhedral object",
 
 #undef REAGENT
 
+        /* Reagents here, which do not belong to any class, includes also all other odd non-food objects with no other apparent purpose*/
+#define ARTOBJECT(name, desc, known, prob, multigen, wt, cost, material, nutrition, color, height,soundset, \
+            flags, flags2, flags3, flags4, flags5, flags6, powconfermask, oflags, anim, enl, repl)     \
+        OBJECT(OBJ(name, desc, None, None, None, height, oflags, anim, enl, repl),                      \
+            BITS(known, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, MATINIT_NORMAL, material), \
+            NO_POWER, NO_POWER, NO_POWER, P1_NONE, ART_CLASS, prob, multigen, 0, wt, cost, \
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+            nutrition, color, soundset, \
+            0, 0, 0, 0, powconfermask, ALL_TARGETS, \
+            flags, flags2, flags3, flags4, flags5, flags6)
+
+ARTOBJECT("painting", None,    
+    1, 1000, MULTIGEN_SINGLE, 80, 5, MAT_PAPER,
+    10, CLR_MAGENTA, 0, OBJECT_SOUNDSET_GENERIC,
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
+    OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, PAINTING_REPLACEMENT),
+
+#undef ARTOBJECT
+
+
 /* fencepost, the deadly Array Terminator -- name [1st arg] *must* be NULL */
 OBJECT(OBJ(None, None, None, None, None, 0, OD_NONE, 0, 0, 0),
     BITS(0, 0, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, MATINIT_NORMAL, MAT_NONE),

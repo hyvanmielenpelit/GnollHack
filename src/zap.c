@@ -7840,7 +7840,7 @@ boolean stop_at_first_hit_object;
     }
     else if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM)
     {
-        tmp_at_with_missile_flags(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng), get_missile_flags(obj, FALSE), obj ? obj->material : MAT_NONE);
+        tmp_at_with_missile_flags(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng), get_missile_flags(obj, FALSE), obj ? obj->material : MAT_NONE, obj ? obj->special_quality : 0);
     }
     else if (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)
     {
@@ -7877,7 +7877,7 @@ boolean stop_at_first_hit_object;
         int x, y;
 
         if(isok(bhitpos.x, bhitpos.y))
-            show_missile_info(bhitpos.x, bhitpos.y, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out in the previous location */
+            show_missile_info(bhitpos.x, bhitpos.y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out in the previous location */
 
         bhitpos.x += ddx;
         bhitpos.y += ddy;
@@ -8203,9 +8203,9 @@ boolean stop_at_first_hit_object;
                 newsym(x, y);
             }
             tmp_at(bhitpos.x, bhitpos.y);
-            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->material != objects[obj->otyp].oc_material || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2 || tethered_weapon || get_obj_height(obj) > 0 || obj->lamplit))
+            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->material != objects[obj->otyp].oc_material || obj->special_quality != 0 || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2 || tethered_weapon || get_obj_height(obj) > 0 || obj->lamplit))
             {                
-                show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->material, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, tethered_weapon), get_obj_height(obj), 0, 0);
+                show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, tethered_weapon), get_obj_height(obj), 0, 0);
                 if (tethered_weapon)
                     show_leash_info(bhitpos.x, bhitpos.y, 0, 0, u.ux, u.uy);
                 flush_screen(1);

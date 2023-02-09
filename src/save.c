@@ -1371,7 +1371,7 @@ int fd;
 {
     struct save_game_stats gamestats = { 0 };
     gamestats.glyph = abs(u_to_glyph());
-    gamestats.gui_glyph = maybe_get_replaced_glyph(gamestats.glyph, u.ux, u.uy, data_to_replacement_info(gamestats.glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE));
+    gamestats.gui_glyph = maybe_get_replaced_glyph(gamestats.glyph, u.ux, u.uy, data_to_replacement_info(gamestats.glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
     gamestats.rolenum = urole.rolenum;
     gamestats.racenum = urace.racenum;
     gamestats.gender = Upolyd ? u.mfemale : flags.female;

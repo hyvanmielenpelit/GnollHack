@@ -1242,6 +1242,7 @@ register struct obj *obj;
             return APPORT;
         /*FALLTHRU*/
     case ROCK_CLASS:
+    case ART_CLASS:
         return UNDEF;
     }
 }

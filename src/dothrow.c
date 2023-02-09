@@ -1367,11 +1367,11 @@ struct obj *obj;
             tmp_at(x, y);
             if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->material != objects[obj->otyp].oc_material || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2))
             {
-                show_missile_info(x, y, obj->opoisoned, obj->material, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, FALSE), get_obj_height(obj), 0, 0);
+                show_missile_info(x, y, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, FALSE), get_obj_height(obj), 0, 0);
                 flush_screen(1);
             }
             adjusted_delay_output();
-            show_missile_info(x, y, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out */
+            show_missile_info(x, y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out */
             x -= u.dx;
             y -= u.dy;
         }
@@ -1622,7 +1622,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         {
 //            if (rn2(100)) {
                 if (tethered_weapon)
-                    tmp_at_with_obj(DISP_END, BACKTRACK, obj, get_missile_flags(obj, TRUE), obj ? obj->material : MAT_NONE);
+                    tmp_at_with_obj(DISP_END, BACKTRACK, obj, get_missile_flags(obj, TRUE), obj ? obj->material : MAT_NONE, obj ? obj->special_quality : 0);
                 else
                     sho_obj_return_to_u(obj); /* display its flight */
 

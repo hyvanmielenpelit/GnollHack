@@ -1235,7 +1235,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             enum autodraw_types autodraw = AUTODRAW_NONE;
             ntile = glyph2tile[glyph];
             ntile = maybe_get_replaced_tile(ntile, -1, -1,
-                data_to_replacement_info(signed_glyph, -1, item->object_data.otyp > STRANGE_OBJECT ? &item->object_data : (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE),
+                data_to_replacement_info(signed_glyph, -1, item->object_data.otyp > STRANGE_OBJECT ? &item->object_data : (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0),
                 &autodraw);
             //int tile_animation_idx = get_tile_animation_index_from_glyph(glyph);
             //ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->intervalCounter, &frame_idx, &main_tile_idx, &item->is_animated, &autodraw);

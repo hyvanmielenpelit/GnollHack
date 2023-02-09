@@ -69,7 +69,7 @@ struct obj *obj;
        set; it is similar to sortpack's inv_order but items most
        likely to be picked up are moved to the front */
     static char def_srt_order[MAX_OBJECT_CLASSES] = {
-        COIN_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
+        COIN_CLASS, AMULET_CLASS, ART_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
         SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, REAGENT_CLASS, TOOL_CLASS,
         WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
     };
@@ -4151,7 +4151,7 @@ long pickcnt;
     xchar x = 0, y = 0;
     get_obj_location(otmp, &x, &y, CONTAINED_TOO | BURIED_TOO);
     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_COMMAND_MENU, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_obj(otmp));
@@ -4661,7 +4661,7 @@ nextclass:
             char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
 
             int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-            int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE));
+            int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
             add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, obj_to_extended_menu_info(otmp), ilet,
                 applied_class_accelerator,
                      ATR_NONE, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED);
@@ -5065,7 +5065,7 @@ char avoidlet;
                     }
                     any.a_char = ilet;
                     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-                    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE));
+                    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
                     add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph,
                              &any, obj_to_extended_menu_info(otmp), ilet, 0, ATR_NONE,
                              (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE) : doname_with_weight_first(otmp, TRUE)), MENU_UNSELECTED);
@@ -6526,7 +6526,7 @@ unsigned long newsym_flags;
 STATIC_VAR NEARDATA const char *names[MAX_OBJECT_CLASSES] = {
     "Random objects", "Illegal objects", "Weapons", "Armor", "Rings", "Amulets", "Tools",
     "Comestibles", "Potions", "Scrolls", "Books", "Wands", "Coins",
-    "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms", "Reagents",  "Miscellaneous"
+    "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms", "Reagents",  "Miscellaneous",  "Objects of art"
 };
 STATIC_VAR NEARDATA const char oth_symbols[] = { CONTAINED_SYM, '\0' };
 STATIC_VAR NEARDATA const char *oth_names[] = { "Bagged/Boxed items" };
