@@ -3708,7 +3708,7 @@ short replacement_idx;
     {
         if (obj_descr[objects[i].oc_descr_idx].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_OBJ_OFF];
-        if (objects[i].oc_flags6 & O6_MISSILE_REPLACEMENTS)
+        if (obj_descr[objects[i].oc_descr_idx].oc_descr_flags & OD_MISSILE_REPLACEMENTS)
         {
             for (j = 0; j < NUM_BASE_TILE_DIRS; j++)
             {

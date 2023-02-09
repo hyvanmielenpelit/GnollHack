@@ -2479,7 +2479,7 @@ uchar* tilemapflags;
                             glyphtileflags[rglyph] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                         }
                     }
-                    if (objects[i].oc_flags6 & O6_MISSILE_REPLACEMENTS)
+                    if (obj_descr[i].oc_descr_flags & OD_MISSILE_REPLACEMENTS)
                     {
                         int bn;
                         for (bn = 0; bn < NUM_BASE_TILE_DIRS; bn++)

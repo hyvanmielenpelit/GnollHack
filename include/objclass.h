@@ -1079,7 +1079,6 @@ struct objclass {
 #define O5_MATERIAL_NAME_4TH_WORD      (O5_MATERIAL_NAME_4TH_WORD_AN | O5_MATERIAL_NAME_4TH_WORD_DN)
 
 #define O6_NONE                        0x00000000UL
-#define O6_MISSILE_REPLACEMENTS        0x00000001UL
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
 #define PERMITTED_ALL                 0x00000000UL
@@ -1145,6 +1144,13 @@ struct class_sym {
     const char *explain;
 };
 
+#define OD_NONE                        0x00000000UL
+#define OD_MATERIAL_NAME_WORD_BY_AN    0x00000001UL
+#define OD_MATERIAL_NAME_2ND_WORD_DN   0x00000002UL
+#define OD_MATERIAL_NAME_3RD_WORD_DN   0x00000004UL
+#define OD_MATERIAL_NAME_4TH_WORD_DN   (O5_MATERIAL_NAME_2ND_WORD_DN | O5_MATERIAL_NAME_3RD_WORD_DN)
+#define OD_MISSILE_REPLACEMENTS        0x00000008UL
+
 struct objdescr {
     const char *oc_name;                /* actual name */
     const char *oc_descr;               /* description when name unknown */
@@ -1152,6 +1158,7 @@ struct objdescr {
     const char* oc_content_description; /* unknown description of contents (spellbooks, jars) */
     const char* oc_item_description;    /* description of the item */
     int oc_tile_floor_height;           /* (scaled) height of the item tile in pixels when it appears on the floor */
+    unsigned long oc_descr_flags;
     short stand_animation;
     short enlargement;
     short replacement;
@@ -1246,6 +1253,7 @@ struct fruit {
 
 #define OBJ_TILE_HEIGHT(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].oc_tile_floor_height)
 #define OBJ_STAND_ANIMATION(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].stand_animation)
+#define OBJ_DESCR_FLAGS(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].oc_descr_flags)
 
 #define has_spell_otyp_per_level_bonus(otyp) \
     ((objects[otyp].oc_spell_flags & S1_LDMG_IS_PER_LEVEL_DMG_INCREASE) != 0 && objects[otyp].oc_spell_per_level_step > 0)
