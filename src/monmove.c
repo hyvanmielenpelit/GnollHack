@@ -196,9 +196,6 @@ struct monst* mon;
                             strcpy(someitembuf, "some items");
                         }
 
-                        if (canseemon(mon))
-                            talkeff(mon->mx, mon->my);
-                        
                         switch (mon->talkstate_item_trading)
                         {
                         case 0:
@@ -224,6 +221,10 @@ struct monst* mon;
                         default:
                             break;
                         }
+
+                        if (canseemon(mon))
+                            talkeff(mon->mx, mon->my);
+
                         mon_talked = TRUE;
                     }
                 }
