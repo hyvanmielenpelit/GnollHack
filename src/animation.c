@@ -2474,7 +2474,8 @@ break;
                 *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
             return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             break;
-        }        case REPLACEMENT_ACTION_PAINTING:
+        }        
+        case REPLACEMENT_ACTION_PAINTING:
         {
             short special_quality = 0;
             if (otmp)
@@ -2540,6 +2541,7 @@ struct replacement_info info;
     struct obj* otmp = info.object;
     struct monst* mtmp = info.monster;
     unsigned long layer_flags = info.layer_flags;
+    uchar missile_material = info.missile_material;
     short missile_special_quality = info.missile_special_quality;
     boolean is_lit_missile = info.layer == LAYER_MISSILE && (info.missile_flags & MISSILE_FLAGS_LIT) != 0;
     short replacement_idx = glyph2replacement[absglyph];
@@ -3074,30 +3076,6 @@ struct replacement_info info;
                 glyph_idx = 0;
                 break;
             case MAT_LEAD:
-                glyph_idx = 1;
-                break;
-            default:
-                return glyph;
-            }
-            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
-        }
-        case REPLACEMENT_ACTION_SILVER_BONE_MATERIAL:
-        {
-            uchar material = MAT_NONE;
-            if (otmp)
-                material = otmp->material;
-            else if (info.layer == LAYER_MISSILE)
-                material = missile_material;
-            else
-                return glyph;
-
-            int glyph_idx = 0;
-            switch (material)
-            {
-            case MAT_SILVER:
-                glyph_idx = 0;
-                break;
-            case MAT_BONE:
                 glyph_idx = 1;
                 break;
             default:
