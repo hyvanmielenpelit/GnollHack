@@ -386,7 +386,8 @@ NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS] = {
     { "male aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 25L },
     { "male aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 50L },
     { "female aristocrat", "a female aristocrat", "Otumn", (char*)0, (char*)0, 100L },
-    { "elucid priestess", "a stern priestess", "Otumn", (char*)0, (char*)0, 150L }
+    { "elucid priestess", "a stern priestess", "Otumn", (char*)0, (char*)0, 150L },
+    { "Portrait of Dispater", "Dispater, Archduke of Gehennom", "Diedi", (char*)0, (char*)0, 250L },
 };
 
 //STATIC_DCL void FDECL(setgemprobs, (d_level *));

@@ -163,57 +163,57 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0}},  /* stone */
        { '|', "wall", "",                LAYER_FEATURE, FALSE,     VWALL_VARIATIONS, VWALL_VARIATION_OFFSET,
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_VWALL_REPLACEMENT, GNOMISH_MINES_VWALL_REPLACEMENT, GEHENNOM_VWALL_REPLACEMENT, DUNGEON_UNDEAD_VWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_VWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* vwall */
        { '-', "wall", "",                LAYER_FEATURE, FALSE,      HWALL_VARIATIONS, HWALL_VARIATION_OFFSET,
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_HWALL_REPLACEMENT, GNOMISH_MINES_HWALL_REPLACEMENT, GEHENNOM_HWALL_REPLACEMENT, DUNGEON_UNDEAD_HWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_HWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* hwall */
        { '-', "wall", "",                LAYER_FEATURE, FALSE,     0, 0,     
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_TLCORN_REPLACEMENT, GNOMISH_MINES_TLCORN_REPLACEMENT, GEHENNOM_TLCORN_REPLACEMENT, DUNGEON_UNDEAD_TLCORN_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_TLCORN_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* tlcorn */
        { '-', "wall", "",                LAYER_FEATURE, FALSE,     0, 0,     
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_TRCORN_REPLACEMENT, GNOMISH_MINES_TRCORN_REPLACEMENT, GEHENNOM_TRCORN_REPLACEMENT, DUNGEON_UNDEAD_TRCORN_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_TRCORN_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* trcorn */
        { '-', "wall", "",                LAYER_FEATURE, FALSE,     0, 0,     
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_BLCORN_REPLACEMENT, GNOMISH_MINES_BLCORN_REPLACEMENT, GEHENNOM_BLCORN_REPLACEMENT, DUNGEON_UNDEAD_BLCORN_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_BLCORN_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* blcorn */
        { '-', "wall", "",                LAYER_FEATURE, FALSE,     0, 0,     
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_BRCORN_REPLACEMENT, GNOMISH_MINES_BRCORN_REPLACEMENT, GEHENNOM_BRCORN_REPLACEMENT, DUNGEON_UNDEAD_BRCORN_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_BRCORN_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* brcorn */
        { '-', "wall", "",                LAYER_FEATURE, FALSE,     CRWALL_VARIATIONS, CRWALL_VARIATION_OFFSET,     
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_CRWALL_REPLACEMENT, GNOMISH_MINES_CRWALL_REPLACEMENT, GEHENNOM_CRWALL_REPLACEMENT, DUNGEON_UNDEAD_CRWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_CRWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* crwall */
        { '-', "wall", "",                LAYER_FEATURE, FALSE,     0, 0,     
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_TUWALL_REPLACEMENT, GNOMISH_MINES_TUWALL_REPLACEMENT, GEHENNOM_TUWALL_REPLACEMENT, DUNGEON_UNDEAD_TUWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_TUWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* tuwall */
        { '-', "wall", "",                LAYER_FEATURE, FALSE,     0, 0,     
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_TDWALL_REPLACEMENT, GNOMISH_MINES_TDWALL_REPLACEMENT, GEHENNOM_TDWALL_REPLACEMENT, DUNGEON_UNDEAD_TDWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_TDWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* tdwall */
 /*10*/ { '|', "wall", "",                LAYER_FEATURE, FALSE,     0, 0,     
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_TLWALL_REPLACEMENT, GNOMISH_MINES_TLWALL_REPLACEMENT, GEHENNOM_TLWALL_REPLACEMENT, DUNGEON_UNDEAD_TLWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_TLWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* tlwall */
        { '|', "wall", "",                LAYER_FEATURE, FALSE,     0, 0,     
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},  {DUNGEON_NORMAL_TRWALL_REPLACEMENT, GNOMISH_MINES_TRWALL_REPLACEMENT, GEHENNOM_TRWALL_REPLACEMENT, DUNGEON_UNDEAD_TRWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_TRWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* trwall */
@@ -564,7 +564,7 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
 const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
 {
        { S_crwall, "crwall-all-ends", "wall", "", FALSE, 
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* crwall */
@@ -586,33 +586,33 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* room */
 
        { S_vwall, "vwall-variation-1", "", "", FALSE,
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_VWALL_REPLACEMENT, GNOMISH_MINES_VWALL_REPLACEMENT, GEHENNOM_VWALL_REPLACEMENT, DUNGEON_UNDEAD_VWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_VWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* room */
        { S_vwall, "vwall-variation-2", "", "", FALSE,
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_VWALL_REPLACEMENT, GNOMISH_MINES_VWALL_REPLACEMENT, GEHENNOM_VWALL_REPLACEMENT, DUNGEON_UNDEAD_VWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_VWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* room */
        { S_vwall, "vwall-variation-3", "", "", FALSE,
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_VWALL_REPLACEMENT, GNOMISH_MINES_VWALL_REPLACEMENT, GEHENNOM_VWALL_REPLACEMENT, DUNGEON_UNDEAD_VWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_VWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* room */
 
        { S_hwall, "hwall-variation-1", "", "", FALSE,
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_HWALL_REPLACEMENT, GNOMISH_MINES_HWALL_REPLACEMENT, GEHENNOM_HWALL_REPLACEMENT, DUNGEON_UNDEAD_HWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_HWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* room */
        { S_hwall, "hwall-variation-2", "", "", FALSE,
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_HWALL_REPLACEMENT, GNOMISH_MINES_HWALL_REPLACEMENT, GEHENNOM_HWALL_REPLACEMENT, DUNGEON_UNDEAD_HWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_HWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* room */
        { S_hwall, "hwall-variation-3", "", "", FALSE,
-            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_BLACK), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(CLR_ORANGE), C(CLR_GREEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_METAL), C(CLR_YELLOW), C(HI_TOWER), C(CLR_MAGENTA), C(CLR_WHITE) },
+            { C(CLR_GRAY), C(HI_MINES), C(HI_GEHENNOM), C(HI_UNDEAD), C(HI_SOKOBAN),   /*5*/ C(HI_ELEMENTAL_PLANES), C(HI_ASTRAL), C(HI_GEHENNOM), C(HI_GARDEN), C(HI_MODRON),      /*10*/ C(HI_SHOP), C(HI_REINFORCED), C(HI_NEST), C(HI_TOWER), C(HI_OPULENT), C(HI_TEMPLE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_HWALL_REPLACEMENT, GNOMISH_MINES_HWALL_REPLACEMENT, GEHENNOM_HWALL_REPLACEMENT, DUNGEON_UNDEAD_HWALL_REPLACEMENT, 0, 0, 0, GEHENNOM_CAVERNOUS_HWALL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* room */

@@ -304,7 +304,7 @@ gottype:
     int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
     if (lowx + 1 < hix && !rn2(2))
     {
-        if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ) && !levl[lowx + roll2 + 1][lowy - 1].use_special_tileset)
+        if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ))
         {
             levl[lowx + roll2 + 1][lowy - 1].decoration_typ = DECORATION_PAINTING;
             levl[lowx + roll2 + 1][lowy - 1].decoration_subtyp = rn2(MAX_PAINTINGS);
@@ -1911,7 +1911,7 @@ mksmithy()
     int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
     if (lowx + 1 < hix && !rn2(2))
     {
-        if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ) && !levl[lowx + roll2 + 1][lowy - 1].use_special_tileset)
+        if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ))
         {
             levl[lowx + roll2 + 1][lowy - 1].decoration_typ = DECORATION_FIREPLACE;
             levl[lowx + roll2 + 1][lowy - 1].decoration_subtyp = 0;
@@ -2049,7 +2049,7 @@ int npctyp;
                 }
             }
 
-    if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_HAS_PAINTINGS)
+    if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_MAY_HAVE_PAINTINGS)
     {
         /* Add a painting */
         schar lowx = sroom->lx;
@@ -2057,9 +2057,9 @@ int npctyp;
         schar lowy = sroom->ly;
         //schar hiy = sroom->hy;
         int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
-        if (lowx + 1 < hix && !rn2(2))
+        if (lowx + 1 < hix && ((npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_ALWAYS_HAS_PAINTING) || !rn2(2)))
         {
-            if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ) && !levl[lowx + roll2 + 1][lowy - 1].use_special_tileset)
+            if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ))
             {
                 levl[lowx + roll2 + 1][lowy - 1].decoration_typ = DECORATION_PAINTING;
                 levl[lowx + roll2 + 1][lowy - 1].decoration_subtyp = rn2(MAX_PAINTINGS);
