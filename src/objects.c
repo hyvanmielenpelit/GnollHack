@@ -5271,7 +5271,7 @@ OBJECT(OBJ("acid venom", "splash of acid venom", None, None, None, 0, OD_NONE, 0
     O1_NONE, O2_NONE, O3_NONE, O4_MISSILE_TILE, O5_NONE, O6_NONE),
      /* +d6 small or large */
 
-/* Reagents here, which do not belong to any class, includes also all other odd non-food objects with no other apparent purpose*/
+/* Reagents here, which do not belong to any class, includes also all other odd non-food objects with no other apparent purpose */
 #define REAGENT(name, desc, known, prob, multigen, eatdelay, wt, cost, material, ediblesubtype, edibleeffect, ediblechance, nutrition, color, height,soundset, \
             flags, flags2, flags3, flags4, flags5, flags6, powconfermask)     \
         OBJECT(OBJ(name, desc, None, None, None, height, OD_NONE, 0, 0, 0),                      \
@@ -5362,7 +5362,7 @@ REAGENT("modronite icosahedron", "alien twenty-faced polyhedral object",
 
 #undef REAGENT
 
-        /* Reagents here, which do not belong to any class, includes also all other odd non-food objects with no other apparent purpose*/
+/* Potentially valuable objects of art */
 #define ARTOBJECT(name, desc, known, prob, multigen, wt, cost, material, nutrition, color, height,soundset, \
             flags, flags2, flags3, flags4, flags5, flags6, powconfermask, oflags, anim, enl, repl)     \
         OBJECT(OBJ(name, desc, None, None, None, height, oflags, anim, enl, repl),                      \
