@@ -47,6 +47,8 @@ struct npc_subtype_definition {
     schar min_appearance_depth;
     schar max_appearance_depth;
     int start_money_d, start_money_n, start_money_p;
+    boolean has_special_tileset;
+    uchar special_tileset;
     unsigned long service_flags;
     unsigned long general_flags;
 };

@@ -1935,6 +1935,7 @@ E void NDECL(reset_rooms);
 E struct mkroom *FDECL(search_special, (SCHAR_P));
 E int FDECL(cmap_to_type, (int));
 E int FDECL(mknpcroom, (int));
+E void FDECL(set_room_tileset, (struct mkroom*));
 
 /* ### mon.c ### */
 

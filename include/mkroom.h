@@ -93,8 +93,17 @@ enum roomtype_types {
     REAGENTSHOP,
     MODRONSHOP,
     FODDERSHOP, /* health food store */
-    CANDLESHOP
+    CANDLESHOP,
+    NUM_ROOM_TYPES
 };
+
+struct room_definition {
+    const char* name;
+    boolean has_special_tileset;
+    uchar special_tileset;
+};
+
+extern NEARDATA struct room_definition room_definitions[NUM_ROOM_TYPES];
 
 #define MAXRTYPE (CANDLESHOP) /* maximum valid room type */
 #define UNIQUESHOP (CANDLESHOP) /* shops here & above not randomly gen'd. */

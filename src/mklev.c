@@ -223,8 +223,8 @@ int floortyp, floorsubtyp, mtype;
             levl[hix + 1][hiy + 1].vartyp = levl[hix + 1][hiy + 1].vartyp; /* Retain the vartyp setting from stone */
 
 #if 1
-            if (level.flags.tileset == CMAP_NORMAL || level.flags.tileset == CMAP_UNDEAD_STYLE)
-            {
+            //if (level.flags.tileset == CMAP_NORMAL || level.flags.tileset == CMAP_UNDEAD_STYLE)
+            //{
                 int lvl_depth = max(0, depth(&u.uz));
                 int webmod = lvl_depth > 10 ? -2 : lvl_depth > 5 ? -1 : 0;
                 if (IS_WALL(levl[lowx][lowy - 1].typ) && !levl[lowx][lowy - 1].use_special_tileset && !rn2(5 + webmod))
@@ -308,7 +308,7 @@ int floortyp, floorsubtyp, mtype;
                         levl[hix + 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                     }
                 }
-            }
+            //}
 #endif
 
         }
@@ -560,7 +560,6 @@ uchar dmask;
     levl[x][y].typ = type;
     levl[x][y].subtyp = 0;
     levl[x][y].floor_doodad = 0;
-    //levl[x][y].feature_doodad = 0;
     delete_decoration(x, y);
     if (type == DOOR) {
         if (dmask != 0)
@@ -1059,6 +1058,7 @@ makelevel()
             level.flags.has_vault = 1;
             ++room_threshold;
             fill_room(&rooms[nroom - 1], FALSE);
+            set_room_tileset(&rooms[nroom - 1]);
             mk_knox_portal(vault_x + w, vault_y + h);
             if (!level.flags.noteleport && !rn2(2))
                 makevtele();

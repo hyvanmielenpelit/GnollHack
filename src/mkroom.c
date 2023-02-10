@@ -19,6 +19,45 @@
 
 #include "hack.h"
 
+NEARDATA struct room_definition room_definitions[NUM_ROOM_TYPES] =
+{
+    { "ordinary room" , FALSE, 0 },
+    { "" , FALSE, 0 },
+    { "court", TRUE, CMAP_OPULENT },
+    { "swamp", TRUE, CMAP_UNDEAD_STYLE },
+    { "vault", TRUE, CMAP_REINFORCED },
+    { "beehive", TRUE, CMAP_NEST },
+    { "dragon lair", TRUE, CMAP_NEST },
+    { "library", TRUE, CMAP_CITYSCAPE },
+    { "garden", TRUE, CMAP_GARDEN },
+    { "morgue", TRUE, CMAP_UNDEAD_STYLE },
+    { "barracks", TRUE, CMAP_REINFORCED },
+    { "armory", TRUE, CMAP_REINFORCED },
+    { "zoo", TRUE, CMAP_NEST },
+    { "Delphi", TRUE, CMAP_GARDEN },
+    { "temple", TRUE, CMAP_TEMPLE },
+    { "leprechaun hall", TRUE, CMAP_CITYSCAPE },
+    { "cockatrice nest", TRUE, CMAP_NEST },
+    { "anthole", TRUE, CMAP_GNOMISH_MINES },
+    { "smithy", TRUE, CMAP_REINFORCED },
+    { "residence", TRUE, CMAP_CITYSCAPE },
+    { "deserted shop", TRUE, CMAP_CITYSCAPE },
+    { "general store", TRUE, CMAP_CITYSCAPE },
+    { "armor shop", TRUE, CMAP_CITYSCAPE },
+    { "scroll shop", TRUE, CMAP_CITYSCAPE },
+    { "potion shop", TRUE, CMAP_CITYSCAPE },
+    { "weapon shop", TRUE, CMAP_CITYSCAPE },
+    { "food shop", TRUE, CMAP_CITYSCAPE },
+    { "ring shop", TRUE, CMAP_CITYSCAPE },
+    { "wand shop", TRUE, CMAP_CITYSCAPE },
+    { "tool shop", TRUE, CMAP_CITYSCAPE },
+    { "book shop", TRUE, CMAP_CITYSCAPE },
+    { "reagent shop", TRUE, CMAP_CITYSCAPE },
+    { "modron shop", TRUE, CMAP_MODRON },
+    { "fodder shop", TRUE, CMAP_CITYSCAPE },
+    { "candle shop", TRUE, CMAP_CITYSCAPE },
+};
+
 STATIC_DCL boolean FDECL(isbig, (struct mkroom *));
 STATIC_DCL struct mkroom *FDECL(pick_room, (BOOLEAN_P));
 STATIC_DCL int NDECL(mkshop), NDECL(mkdesertedshop);
@@ -252,9 +291,11 @@ gottype:
             if(isok(x, y))
             {
                 levl[x][y].floor_doodad = 0;
-                //levl[x][y].feature_doodad = 0;
                 delete_decoration(x, y);
             }
+
+    /* Set room tileset */
+    set_room_tileset(sroom);
 
     /* Add a painting */
     schar lowx = sroom->lx;
@@ -366,6 +407,19 @@ mkdesertedshop()
 
     /* Change back to get the right message */
     sroom->rtype = DESERTEDSHOP;
+
+    /* Remove doodads */
+    for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+        for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+            if (isok(x, y))
+            {
+                levl[x][y].floor_doodad = 0;
+                delete_decoration(x, y);
+            }
+
+    /* Set room tileset */
+    set_room_tileset(sroom);
+
     return 1;
 }
 
@@ -412,9 +466,11 @@ int type;
                 if (isok(x, y))
                 {
                     levl[x][y].floor_doodad = 0;
-                    //levl[x][y].feature_doodad = 0;
                     delete_decoration(x, y);
                 }
+
+        /* Set room tileset */
+        set_room_tileset(sroom);
 
         /* Change floor for some randomly generated zoo rooms */
         int floorsubtype = 0;
@@ -500,14 +556,15 @@ struct mkroom *sroom;
     int box_count = 0;
     int box_threshold = 5;
     boolean make_special_item = FALSE;
+    int x, y;
 
     sh = sroom->fdoor;
     switch (type)
     {
     case MORGUE:
         /* Change floor to ground, more sensible for graveyards */
-        for (int x = sroom->lx; x <= sroom->hx; x++)
-            for (int y = sroom->ly; y <= sroom->hy; y++)
+        for (x = sroom->lx; x <= sroom->hx; x++)
+            for (y = sroom->ly; y <= sroom->hy; y++)
                 if (!sroom->irregular || (sroom->irregular && levl[x][y].roomno == rmno))
                 {
                     if (levl[x][y].typ == ROOM)
@@ -991,11 +1048,6 @@ place_main_monst_here:
         break;
     case MORGUE:
         level.flags.has_morgue = 1;
-        if (!level.flags.has_tileset && u.uz.dnum == main_dungeon_dnum && !Is_special(&u.uz))
-        {
-            level.flags.tileset = CMAP_UNDEAD_STYLE;
-            level.flags.has_tileset = 1;
-        }
         break;
     case SWAMP:
         level.flags.has_swamp = 1;
@@ -1234,13 +1286,6 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
 
         level.flags.has_swamp = 1;
         swampnumber++;
-
-        //Change the tileset of the dungeon level
-        if (!level.flags.has_tileset && u.uz.dnum == main_dungeon_dnum && !Is_special(&u.uz))
-        {
-            level.flags.tileset = CMAP_UNDEAD_STYLE;
-            level.flags.has_tileset = 1;
-        }
     }
     return swampnumber;
 }
@@ -1270,17 +1315,6 @@ mkgarden()
     int statue_base_type = levdiff >= 16 && rn2(2) ? PM_WINGED_GARGOYLE :
         levdiff >= 13 && rn2(3) ? PM_ROCK_TROLL : levdiff >= 7 && rn2(9) ? PM_GARGOYLE : PM_GNOME;
     sroom->rtype = GARDEN;
-    for (sx = sroom->lx - 1; sx <= sroom->hx + 1; sx++)
-    {
-        for (sy = sroom->ly - 1; sy <= sroom->hy + 1; sy++)
-        {
-            if (isok(sx, sy))
-            {
-                levl[sx][sy].use_special_tileset = TRUE;
-                levl[sx][sy].special_tileset = CMAP_GARDEN;
-            }
-        }
-    }
 
     /* Remove doodads */
     for (sx = sroom->lx - 1; sx <= sroom->hx + 1; sx++)
@@ -1288,10 +1322,11 @@ mkgarden()
             if (isok(sx, sy))
             {
                 levl[sx][sy].floor_doodad = 0;
-                //levl[sx][sy].feature_doodad = 0;
                 delete_decoration(sx, sy);
             }
 
+    /* Set room tileset */
+    set_room_tileset(sroom);
 
     for (sx = sroom->lx; sx <= sroom->hx; sx++)
     {
@@ -1765,10 +1800,11 @@ mktemple()
             if (isok(x, y))
             {
                 levl[x][y].floor_doodad = 0;
-                //levl[x][y].feature_doodad = 0;
                 delete_decoration(x, y);
             }
 
+    /* Set room tileset */
+    set_room_tileset(sroom);
 
      /* Altar */
     shrine_spot = shrine_pos((int) ((sroom - rooms) + ROOMOFFSET));
@@ -1862,9 +1898,11 @@ mksmithy()
             if (isok(x, y))
             {
                 levl[x][y].floor_doodad = 0;
-                //levl[x][y].feature_doodad = 0;
                 delete_decoration(x, y);
             }
+
+    /* Set room tileset */
+    set_room_tileset(sroom);
 
     /* Add a fireplace */
     schar lowx = sroom->lx;
@@ -1997,6 +2035,20 @@ int npctyp;
         }
     }
 
+    /* Remove doodads */
+    for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+        for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+            if (isok(x, y))
+            {
+                levl[x][y].floor_doodad = 0;
+                delete_decoration(x, y);
+                if (room_definitions[sroom->rtype].has_special_tileset || npc_subtype_definitions[npctype].has_special_tileset)
+                {
+                    levl[x][y].use_special_tileset = 1;
+                    levl[x][y].special_tileset = npc_subtype_definitions[npctype].has_special_tileset ? npc_subtype_definitions[npctype].special_tileset : room_definitions[sroom->rtype].special_tileset;
+                }
+            }
+
     if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_HAS_PAINTINGS)
     {
         /* Add a painting */
@@ -2017,18 +2069,29 @@ int npctyp;
         }
     }
 
-    /* Remove doodads */
-    for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
-        for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
-            if (isok(x, y))
-            {
-                levl[x][y].floor_doodad = 0;
-                //levl[x][y].feature_doodad = 0;
-                delete_decoration(x, y);
-            }
-
 
     return 1;
+}
+
+void
+set_room_tileset(sroom)
+struct mkroom* sroom;
+{
+    if (!sroom)
+        return;
+
+    if (room_definitions[sroom->rtype].has_special_tileset)
+    {
+        int x, y;
+        for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+            for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+                if (isok(x, y))
+                {
+                    levl[x][y].use_special_tileset = 1;
+                    levl[x][y].special_tileset = room_definitions[sroom->rtype].special_tileset;
+                }
+
+    }
 }
 
 boolean

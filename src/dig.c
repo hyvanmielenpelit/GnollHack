@@ -764,7 +764,6 @@ int ttyp;
     levl[x][y].carpet_typ = 0;
     levl[x][y].carpet_piece = 0;
     levl[x][y].carpet_flags = 0;
-    //levl[x][y].feature_doodad = 0;
     levl[x][y].decoration_typ = 0;
     levl[x][y].decoration_subtyp = 0;
     levl[x][y].decoration_dir = 0;

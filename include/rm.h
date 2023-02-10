@@ -23,138 +23,138 @@
 /* begin dungeon characters */
 enum screen_symbols {
     S_unexplored = 0,
-    S_stone     =  1,
-    S_vwall     =  2,
-    S_hwall     =  3,
-    S_tlcorn    =  4,
-    S_trcorn    =  5,
-    S_blcorn    =  6,
-    S_brcorn    =  7,
-    S_crwall    =  8,
-    S_tuwall    =  9,
-    S_tdwall    = 10,
-    S_tlwall    = 11,
-    S_trwall    = 12,
-    S_ndoor     = 13,
-    S_vodoor    = 14,
-    S_hodoor    = 15,
-    S_vcdoor    = 16, /* closed door, vertical wall */
-    S_hcdoor    = 17, /* closed door, horizontal wall */
-    S_vbdoor    = 18, /* broken door, vertical wall */
-    S_hbdoor    = 19, /* broken door, horizontal wall */
-    S_voportcullis = 20, /* open portcullis, vertical wall */
-    S_hoportcullis = 21, /* open portcullis, horizontal wall */
-    S_bars      = 22, /* KMH -- iron bars */
-    S_tree      = 23, /* KMH */
-    S_room      = 24,
-    S_darkroom  = 25,
-    S_grass     = 26,
-    S_darkgrass = 27,
-    S_ground    = 28,
-    S_darkground = 29,
-    S_corr      = 30,
-    S_litcorr   = 31,
-    S_upstair   = 32,
-    S_dnstair   = 33,
-    S_upladder  = 34,
-    S_dnladder  = 35,
-    S_anvil     = 36,
-    S_altar     = 37,
-    S_extra_boulder = 38,
-    S_grave     = 39,
-    S_brazier   = 40,
-    S_signpost  = 41,
-    S_throne    = 29+13,
-    S_sink      = 30+13,
-    S_fountain  = 31+13,
-    S_pool      = 32+13,
-    S_ice       = 33+13,
-    S_lava      = 34+13,
-    S_vodbridge = 35+13,
-    S_hodbridge = 36+13,
-    S_vcdbridge = 37+13, /* closed drawbridge+13, vertical wall */
-    S_hcdbridge = 38+13, /* closed drawbridge+13, horizontal wall */
-    S_air       = 39+13,
-    S_cloud     = 40+13,
-    S_water     = 41+13,
+    S_stone,
+    S_vwall,
+    S_hwall,
+    S_tlcorn,
+    S_trcorn,
+    S_blcorn,
+    S_brcorn,
+    S_crwall,
+    S_tuwall,
+    S_tdwall,
+    S_tlwall,
+    S_trwall,
+    S_ndoor,
+    S_vodoor,
+    S_hodoor,
+    S_vcdoor, /* closed door, vertical wall */
+    S_hcdoor, /* closed door, horizontal wall */
+    S_vbdoor, /* broken door, vertical wall */
+    S_hbdoor, /* broken door, horizontal wall */
+    S_voportcullis, /* open portcullis, vertical wall */
+    S_hoportcullis, /* open portcullis, horizontal wall */
+    S_bars, /* KMH -- iron bars */
+    S_tree, /* KMH */
+    S_room,
+    S_darkroom,
+    S_grass,
+    S_darkgrass,
+    S_ground,
+    S_darkground,
+    S_corr,
+    S_litcorr,
+    S_upstair,
+    S_dnstair,
+    S_upladder,
+    S_dnladder,
+    S_anvil,
+    S_altar,
+    S_extra_boulder,
+    S_grave,
+    S_brazier,
+    S_signpost,
+    S_throne,
+    S_sink,
+    S_fountain,
+    S_pool,
+    S_ice,
+    S_lava,
+    S_vodbridge,
+    S_hodbridge,
+    S_vcdbridge, /* closed drawbridge, vertical wall */
+    S_hcdbridge, /* closed drawbridge, horizontal wall */
+    S_air,
+    S_cloud,
+    S_water,
 
 /* end dungeon characters+13, begin traps */
 
-    S_arrow_trap           = 42+13,
-    S_dart_trap            = 43+13,
-    S_falling_rock_trap    = 44+13,
-    S_squeaky_board        = 45+13,
-    S_bear_trap            = 46+13,
-    S_land_mine            = 47+13,
-    S_rolling_boulder_trap = 48+13,
-    S_sleeping_gas_trap    = 49+13,
-    S_rust_trap            = 50+13,
-    S_fire_trap            = 51+13,
-    S_pit                  = 52+13,
-    S_spiked_pit           = 53+13,
-    S_hole                 = 54+13,
-    S_trap_door            = 55+13,
-    S_teleportation_trap   = 56+13,
-    S_level_teleporter     = 57+13,
-    S_magic_portal         = 58+13,
-    S_web                  = 59+13,
-    S_statue_trap          = 60+13,
-    S_magic_trap           = 61+13,
-    S_anti_magic_trap      = 62+13,
-    S_polymorph_trap       = 63+13,
-    S_modron_portal           = 64+13,
-    S_lever                = 65+13,
-    S_vibrating_square     = 66+13, /* for display rather than any trap effect */
+    S_arrow_trap,
+    S_dart_trap,
+    S_falling_rock_trap,
+    S_squeaky_board,
+    S_bear_trap,
+    S_land_mine,
+    S_rolling_boulder_trap,
+    S_sleeping_gas_trap,
+    S_rust_trap,
+    S_fire_trap,
+    S_pit,
+    S_spiked_pit,
+    S_hole,
+    S_trap_door,
+    S_teleportation_trap,
+    S_level_teleporter,
+    S_magic_portal,
+    S_web,
+    S_statue_trap,
+    S_magic_trap,
+    S_anti_magic_trap,
+    S_polymorph_trap,
+    S_modron_portal,
+    S_lever,
+    S_vibrating_square, /* for display rather than any trap effect */
 
 /* end traps+13, begin special effects */
 
-    S_vbeam     = 65+15, /* The 4 zap beam symbols.  Do NOT separate. */
-    S_hbeam     = 66+15, /* To change order or add+15, see function      */
-    S_lslant    = 67+15, /* zapdir_to_glyph() in display.c.           */
-    S_rslant    = 68+15,
-    S_digbeam  = 69+15, /* dig beam symbol */
-    S_flashbeam = 70+15, /* camera flash symbol */
-    S_boom_tl = 71 +15, /* thrown boomerang flying towards top left [1]             */
-    S_boom_tc = 72 +15, /* thrown boomerang flying towards top center [2]    Order: */
-    S_boom_tr = 73 +15, /* thrown boomerang flying towards top right [3]            */
-    S_boom_ml = 74 +15, /* thrown boomerang flying towards middle left [4]   1 2 3  */
-    S_boom_mr = 75 +15, /* thrown boomerang flying towards middle right [5]  4   5  */
-    S_boom_bl = 76 +15, /* thrown boomerang flying towards bottom left [6]   6 7 8  */
-    S_boom_bc = 77 +15, /* thrown boomerang flying towards bottom center [7]        */
-    S_boom_br = 78 +15, /* thrown boomerang flying towards bottom right [8]         */
-    S_ss1       = 79+15, /* 4 magic shield ("resistance sparkle") glyphs */
-    S_ss2       = 80+15,
-    S_ss3       = 81+15,
-    S_ss4       = 82+15,
-    S_talkeffect = 83+15,
-    S_poisoncloud = 84+15,
-    S_goodpos   = 85+15, /* valid position for targeting via getpos() */
+    S_vbeam, /* The 4 zap beam symbols.  Do NOT separate. */
+    S_hbeam, /* To change order or add+15, see function      */
+    S_lslant, /* zapdir_to_glyph() in display.c.           */
+    S_rslant,
+    S_digbeam, /* dig beam symbol */
+    S_flashbeam, /* camera flash symbol */
+    S_boom_tl, /* thrown boomerang flying towards top left [1]             */
+    S_boom_tc, /* thrown boomerang flying towards top center [2]    Order: */
+    S_boom_tr, /* thrown boomerang flying towards top right [3]            */
+    S_boom_ml, /* thrown boomerang flying towards middle left [4]   1 2 3  */
+    S_boom_mr, /* thrown boomerang flying towards middle right [5]  4   5  */
+    S_boom_bl, /* thrown boomerang flying towards bottom left [6]   6 7 8  */
+    S_boom_bc, /* thrown boomerang flying towards bottom center [7]        */
+    S_boom_br, /* thrown boomerang flying towards bottom right [8]         */
+    S_ss1, /* 4 magic shield ("resistance sparkle") glyphs */
+    S_ss2,
+    S_ss3,
+    S_ss4,
+    S_talkeffect,
+    S_poisoncloud,
+    S_goodpos, /* valid position for targeting via getpos() */
 
 /* The 8 swallow symbols.  Do NOT separate.  To change order or add+21, */
 /* see the function swallow_to_glyph() in display.c.                 */
-    S_sw_tl     = 80+21, /* swallow top left [1]             */
-    S_sw_tc     = 81+21, /* swallow top center [2]    Order: */
-    S_sw_tr     = 82+21, /* swallow top right [3]            */
-    S_sw_ml     = 83+21, /* swallow middle left [4]          */
-    S_sw_mc     = 84+21, /* swallow middle center [5] 1 2 3  */
-    S_sw_mr     = 85+21, /* swallow middle right [6]  4 5 6  */
-    S_sw_bl     = 86+21, /* swallow bottom left [7]   7 8 9  */
-    S_sw_bc     = 87+21, /* swallow bottom center [8]        */
-    S_sw_br     = 88+21, /* swallow bottom right [9]         */
+    S_sw_tl, /* swallow top left [1]             */
+    S_sw_tc, /* swallow top center [2]    Order: */
+    S_sw_tr, /* swallow top right [3]            */
+    S_sw_ml, /* swallow middle left [4]          */
+    S_sw_mc, /* swallow middle center [5] 1 2 3  */
+    S_sw_mr, /* swallow middle right [6]  4 5 6  */
+    S_sw_bl, /* swallow bottom left [7]   7 8 9  */
+    S_sw_bc, /* swallow bottom center [8]        */
+    S_sw_br, /* swallow bottom right [9]         */
 
-    S_explode1  = 89+21, /* explosion top left               */
-    S_explode2  = 90+21, /* explosion top center             */
-    S_explode3  = 91+21, /* explosion top right        Ex.   */
-    S_explode4  = 92+21, /* explosion middle left            */
-    S_explode5  = 93+21, /* explosion middle center    /-\   */
-    S_explode6  = 94+21, /* explosion middle right     |@|   */
-    S_explode7  = 95+21, /* explosion bottom left      \-/   */
-    S_explode8  = 96+21, /* explosion bottom center          */
-    S_explode9  = 97+21, /* explosion bottom right           */
+    S_explode1, /* explosion top left               */
+    S_explode2, /* explosion top center             */
+    S_explode3, /* explosion top right        Ex.   */
+    S_explode4, /* explosion middle left            */
+    S_explode5, /* explosion middle center    /-\   */
+    S_explode6, /* explosion middle right     |@|   */
+    S_explode7, /* explosion bottom left      \-/   */
+    S_explode8, /* explosion bottom center          */
+    S_explode9, /* explosion bottom right           */
 
 /* end effects */
 
-    MAX_CMAPPED_CHARS   = 119  /* maximum number of mapped characters */
+    MAX_CMAPPED_CHARS/* maximum number of mapped characters */
 };
 
 #define MAX_DUNGEON_CHARS (S_water - S_unexplored + 1) /* mapped dungeon characters */
@@ -639,11 +639,11 @@ enum cmap_types {
     CMAP_GARDEN = 8,
     CMAP_MODRON = 9,
     CMAP_CITYSCAPE = 10,
-    CMAP_SEWERS = 11,
-    CMAP_MAZE = 12,
+    CMAP_REINFORCED = 11,
+    CMAP_NEST = 12,
     CMAP_TOWER = 13,
-    CMAP_CAVERNS = 14,
-    CMAP_EXTRA = 15,
+    CMAP_OPULENT = 14,
+    CMAP_TEMPLE = 15,
     MAX_CMAP_TYPES = 16
 };
 
@@ -980,7 +980,6 @@ struct rm {
     schar floorvartyp;       /* variation type for floortyp / floorsubtyp combination, normally set at random */
 
     int floor_doodad;        /* a floor doodad layer glyph: previously broken typ, etc., which appears on the broken feature layer above the floor layer */
-    //int feature_doodad;      /* a feature doodad layer glyph, which appears on the doodad layer above the dungeon feature */
 
     schar carpet_typ;
     schar carpet_piece;
