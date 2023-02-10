@@ -223,7 +223,7 @@ int floortyp, floorsubtyp, mtype;
             levl[hix + 1][hiy + 1].vartyp = levl[hix + 1][hiy + 1].vartyp; /* Retain the vartyp setting from stone */
 
 #if 1
-            //if (level.flags.tileset == CMAP_NORMAL || level.flags.tileset == CMAP_UNDEAD_STYLE)
+            //if (level.flags.tileset == CMAP_NORMAL || level.flags.tileset == CMAP_UNDEAD)
             //{
                 int lvl_depth = max(0, depth(&u.uz));
                 int webmod = lvl_depth > 10 ? -2 : lvl_depth > 5 ? -1 : 0;

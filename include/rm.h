@@ -631,7 +631,7 @@ enum cmap_types {
     CMAP_NORMAL = 0,
     CMAP_GNOMISH_MINES = 1,
     CMAP_GEHENNOM = 2,
-    CMAP_UNDEAD_STYLE = 3,
+    CMAP_UNDEAD = 3,
     CMAP_SOKOBAN = 4,
     CMAP_ELEMENTAL_PLANES = 5,
     CMAP_ASTRAL = 6,

@@ -5209,7 +5209,7 @@ get_current_cmap_type_index()
     else if (In_mines(&u.uz) || Is_quantum_level(&u.uz))
         return CMAP_GNOMISH_MINES;
     else if (Is_valley(&u.uz) || Is_orcus_level(&u.uz) || Is_sanctum(&u.uz) || In_V_tower(&u.uz))
-        return CMAP_UNDEAD_STYLE;
+        return CMAP_UNDEAD;
     else if (In_modron_level(&u.uz))
         return CMAP_MODRON;
     else if (In_sokoban(&u.uz))
