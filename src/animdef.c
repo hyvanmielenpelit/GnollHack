@@ -11456,7 +11456,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "painting-holder-replacement",
-      min(MAX_PAINTINGS, MAX_TILES_PER_REPLACEMENT),
+      MAX_PAINTINGS < MAX_TILES_PER_REPLACEMENT ? MAX_PAINTINGS : MAX_TILES_PER_REPLACEMENT,
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_PAINTING_HOLDER,
       AUTODRAW_NONE, -1,
