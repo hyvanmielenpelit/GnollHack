@@ -2277,30 +2277,6 @@ break;
             return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             break;
         }
-        case REPLACEMENT_ACTION_SILVER_BONE_MISSILE_MATERIAL:
-        {
-            if (autodraw_ptr)
-                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
-
-            if (replacements[replacement_idx].number_of_tiles < 1)
-                return ntile;
-
-            int glyph_idx = 0;
-            switch (missile_material)
-            {
-            case MAT_SILVER:
-                glyph_idx = 0;
-                break;
-            case MAT_BONE:
-                glyph_idx = 1;
-                break;
-            default:
-                return ntile;
-            }
-            if (autodraw_ptr)
-                *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
-            return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
-        }
         case REPLACEMENT_ACTION_SILVER_LEAD_MATERIAL:
         {
             uchar material = MAT_NONE;
@@ -2334,8 +2310,16 @@ break;
             return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             break;
         }
-        case REPLACEMENT_ACTION_SILVER_LEAD_MISSILE_MATERIAL:
+        case REPLACEMENT_ACTION_SILVER_MATERIAL:
         {
+            uchar material = MAT_NONE;
+            if (otmp)
+                material = otmp->material;
+            else if (info.layer == LAYER_MISSILE)
+                material = missile_material;
+            else
+                return ntile;
+
             if (autodraw_ptr)
                 *autodraw_ptr = replacements[replacement_idx].general_autodraw;
 
@@ -2343,12 +2327,74 @@ break;
                 return ntile;
 
             int glyph_idx = 0;
-            switch (missile_material)
+            switch (material)
             {
             case MAT_SILVER:
                 glyph_idx = 0;
                 break;
-            case MAT_LEAD:
+            default:
+                return ntile;
+            }
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+            return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            break;
+        }
+        case REPLACEMENT_ACTION_MITHRIL_MATERIAL:
+        {
+            uchar material = MAT_NONE;
+            if (otmp)
+                material = otmp->material;
+            else if (info.layer == LAYER_MISSILE)
+                material = missile_material;
+            else
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            int glyph_idx = 0;
+            switch (material)
+            {
+            case MAT_MITHRIL:
+                glyph_idx = 0;
+                break;
+            default:
+                return ntile;
+            }
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+            return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            break;
+        }
+        case REPLACEMENT_ACTION_SILVER_CRYSTAL_MATERIAL:
+        {
+            uchar material = MAT_NONE;
+            if (otmp)
+                material = otmp->material;
+            else if (info.layer == LAYER_MISSILE)
+                material = missile_material;
+            else
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            int glyph_idx = 0;
+            switch (material)
+            {
+            case MAT_SILVER:
+                glyph_idx = 0;
+                break;
+            case MAT_GLASS:
+            case MAT_CRYSTAL:
+            case MAT_HARD_CRYSTAL:
                 glyph_idx = 1;
                 break;
             default:
@@ -2357,6 +2403,7 @@ break;
             if (autodraw_ptr)
                 *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
             return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            break;
         }
         case REPLACEMENT_ACTION_PAINTING:
         {
@@ -2884,81 +2931,178 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_PLATE_MAIL_MATERIAL:
         {
-            if (!otmp)
+            uchar material = MAT_NONE;
+            if (otmp)
+                material = otmp->material;
+            else if (info.layer == LAYER_MISSILE)
+                material = missile_material;
+            else
                 return glyph;
 
-            if (otmp->material != objects[otmp->otyp].oc_material)
+            int glyph_idx = 0;
+            switch (material)
             {
-                int glyph_idx = 0;
-                switch (otmp->material)
-                {
-                case MAT_BRONZE:
-                    glyph_idx = 0;
-                    break;
-                case MAT_HARD_CRYSTAL:
-                    glyph_idx = 1;
-                    break;
-                case MAT_ORICHALCUM:
-                    glyph_idx = 2;
-                    break;
-                case MAT_MITHRIL:
-                    glyph_idx = 3;
-                    break;
-                case MAT_ADAMANTIUM:
-                    glyph_idx = 4;
-                    break;
-                default:
-                    return glyph;
-                }
-                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            case MAT_BRONZE:
+                glyph_idx = 0;
+                break;
+            case MAT_HARD_CRYSTAL:
+                glyph_idx = 1;
+                break;
+            case MAT_ORICHALCUM:
+                glyph_idx = 2;
+                break;
+            case MAT_MITHRIL:
+                glyph_idx = 3;
+                break;
+            case MAT_ADAMANTIUM:
+                glyph_idx = 4;
+                break;
+            default:
+                return glyph;
             }
+            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             break;
         }
         case REPLACEMENT_ACTION_SILVER_BONE_MATERIAL:
         {
-            if (!otmp)
+            uchar material = MAT_NONE;
+            if (otmp)
+                material = otmp->material;
+            else if (info.layer == LAYER_MISSILE)
+                material = missile_material;
+            else
                 return glyph;
 
-            if (otmp->material != objects[otmp->otyp].oc_material)
+            int glyph_idx = 0;
+            switch (material)
             {
-                int glyph_idx = 0;
-                switch (otmp->material)
-                {
-                case MAT_SILVER:
-                    glyph_idx = 0;
-                    break;
-                case MAT_BONE:
-                    glyph_idx = 1;
-                    break;
-                default:
-                    return glyph;
-                }
-                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            case MAT_SILVER:
+                glyph_idx = 0;
+                break;
+            case MAT_BONE:
+                glyph_idx = 1;
+                break;
+            default:
+                return glyph;
             }
+            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             break;
         }
         case REPLACEMENT_ACTION_SILVER_LEAD_MATERIAL:
         {
-            if (!otmp)
+            uchar material = MAT_NONE;
+            if (otmp)
+                material = otmp->material;
+            else if (info.layer == LAYER_MISSILE)
+                material = missile_material;
+            else
                 return glyph;
 
-            if (otmp->material != objects[otmp->otyp].oc_material)
+            int glyph_idx = 0;
+            switch (material)
             {
-                int glyph_idx = 0;
-                switch (otmp->material)
-                {
-                case MAT_SILVER:
-                    glyph_idx = 0;
-                    break;
-                case MAT_LEAD:
-                    glyph_idx = 1;
-                    break;
-                default:
-                    return glyph;
-                }
-                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            case MAT_SILVER:
+                glyph_idx = 0;
+                break;
+            case MAT_LEAD:
+                glyph_idx = 1;
+                break;
+            default:
+                return glyph;
             }
-            break;
+            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
+        }
+        case REPLACEMENT_ACTION_SILVER_BONE_MATERIAL:
+        {
+            uchar material = MAT_NONE;
+            if (otmp)
+                material = otmp->material;
+            else if (info.layer == LAYER_MISSILE)
+                material = missile_material;
+            else
+                return glyph;
+
+            int glyph_idx = 0;
+            switch (material)
+            {
+            case MAT_SILVER:
+                glyph_idx = 0;
+                break;
+            case MAT_BONE:
+                glyph_idx = 1;
+                break;
+            default:
+                return glyph;
+            }
+            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
+        }
+        case REPLACEMENT_ACTION_SILVER_MATERIAL:
+        {
+            uchar material = MAT_NONE;
+            if (otmp)
+                material = otmp->material;
+            else if (info.layer == LAYER_MISSILE)
+                material = missile_material;
+            else
+                return glyph;
+
+            int glyph_idx = 0;
+            switch (material)
+            {
+            case MAT_SILVER:
+                glyph_idx = 0;
+                break;
+            default:
+                return glyph;
+            }
+            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
+        }
+        case REPLACEMENT_ACTION_MITHRIL_MATERIAL:
+        {
+            uchar material = MAT_NONE;
+            if (otmp)
+                material = otmp->material;
+            else if (info.layer == LAYER_MISSILE)
+                material = missile_material;
+            else
+                return glyph;
+
+            int glyph_idx = 0;
+            switch (material)
+            {
+            case MAT_MITHRIL:
+                glyph_idx = 0;
+                break;
+            default:
+                return glyph;
+            }
+            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
+        }
+        case REPLACEMENT_ACTION_SILVER_CRYSTAL_MATERIAL:
+        {
+            uchar material = MAT_NONE;
+            if (otmp)
+                material = otmp->material;
+            else if (info.layer == LAYER_MISSILE)
+                material = missile_material;
+            else
+                return glyph;
+
+            int glyph_idx = 0;
+            switch (material)
+            {
+            case MAT_SILVER:
+                glyph_idx = 0;
+                break;
+            case MAT_GLASS:
+            case MAT_CRYSTAL:
+            case MAT_HARD_CRYSTAL:
+                glyph_idx = 1;
+                break;
+            default:
+                return glyph;
+            }
+            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
         }
         case REPLACEMENT_ACTION_PAINTING:
         {

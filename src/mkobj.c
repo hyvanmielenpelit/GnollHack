@@ -5011,6 +5011,20 @@ int otyp;
         else if (!rn2(special_bronze_rare_one_in_chance))
             mat = MAT_BRONZE;
         break;
+    case MATINIT_MAYBE_ADAMANTIUM_MITHRIL_SILVER_OR_BONE:
+        if (!rn2(adamantium_rare_one_in_chance))
+            mat = MAT_ADAMANTIUM;
+        else if (!rn2(mithril_rare_one_in_chance))
+            mat = MAT_MITHRIL;
+        else if (!rn2(silver_rare_one_in_chance))
+            mat = MAT_SILVER;
+        else if (Inhell ? !rn2(3) : levdiff > 20 ? !rn2(10) : !rn2(20))
+            mat = MAT_BONE;
+        break;
+    case MATINIT_MAYBE_SPECIAL_BONE:
+        if (Inhell ? !rn2(3) : levdiff > 20 ? !rn2(10) : !rn2(20))
+            mat = MAT_BONE;
+        break;
     case MATINIT_NORMAL:
     default:
         break;
