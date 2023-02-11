@@ -54,8 +54,6 @@ namespace GnollHackClient
             App.FullVersionMode = true; // Preferences.Get("FullVersion", true);
             App.ClassicMode = Preferences.Get("ClassicMode", false);
             App.CasualMode = Preferences.Get("CasualMode", false);
-            App.SponsorButtonVisited = Preferences.Get("SponsorButtonVisited", false);
-            App.ShowSpecialEffect = Preferences.Get("ShowSpecialEffect", false);
             App.LoadBanks = Preferences.Get("LoadSoundBanks", true);
             App.InformAboutGameTermination = Preferences.Get("WentToSleepWithGameOn", false);
             Preferences.Set("WentToSleepWithGameOn", false);
@@ -327,8 +325,6 @@ namespace GnollHackClient
         public static Server SelectedServer { get; set; }
         public static string UserName { get; set; }
         public static bool IsServerGame { get; set; }
-        public static bool SponsorButtonVisited { get; set; }
-        public static bool ShowSpecialEffect { get; set; }
         public static bool LoadBanks { get; set; }
 
 

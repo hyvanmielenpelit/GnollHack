@@ -100,7 +100,6 @@ namespace GnollHackClient
             await Navigation.PushAsync(_loginNavPage);
         }
 
-        private Animation _sponsorAnimation = null;
         private bool _firsttime = true;
         private bool _mainScreenMusicStarted = false;
 
@@ -150,15 +149,6 @@ namespace GnollHackClient
             StartServerGrid.IsEnabled = true;
             UpperButtonGrid.IsEnabled = true;
             LogoGrid.IsEnabled = true;
-
-            if(App.ShowSpecialEffect && !App.SponsorButtonVisited && SponsorButton.IsVisible)
-            {
-                SponsorButton.AbortAnimation("AnimationCounter");
-                _sponsorAnimation = new Animation(v => SponsorButton.AnimationCounter = (long)v, 1, 120);
-                _sponsorAnimation.Commit(SponsorButton, "AnimationCounter", length: 1500, rate: 25, repeat: () => App.ShowSpecialEffect);
-                //_sponsorAnimation = new Animation(callback: v => BackgroundColor = Color.FromHsla(v, 1, 0.5), start: 0, end: 1);
-                //_sponsorAnimation.Commit(SponsorButton, "Animation", 16, 4000, Easing.Linear, (v, c) => BackgroundColor = Color.Default);
-            }
         }
         public async Task InitializeServices()
         {
@@ -1209,150 +1199,6 @@ namespace GnollHackClient
             };
             return chksum.ToLower() == sha256.ToLower();
         }
-
-        private async void SponsorButton_Clicked(object sender, EventArgs e)
-        {
-            SponsorButton.IsEnabled = false;
-            Uri uri = new Uri(GHConstants.GnollHackSponsorPage);
-            App.PlayButtonClickedSound();
-            if (App.UsesCarousel)
-                carouselView.Stop();
-            try
-            {
-                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
-                App.SponsorButtonVisited = true;
-                Preferences.Set("SponsorButtonVisited", true);
-                App.ShowSpecialEffect = false;
-                Preferences.Set("ShowSpecialEffect", false);
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
-            }
-            if (App.UsesCarousel)
-                carouselView.Play();
-            SponsorButton.IsEnabled = true;
-        }
-
-        //public async Task<bool> PurchaseConsumable(string productId)
-        //{
-        //    if (!CrossInAppBilling.IsSupported)
-        //    {
-        //        await DisplayAlert("Purchasing Not Supported", "Purchasing an extra life is not supported on your platform.", "OK");
-        //        return false;
-        //    }
-
-        //    var billing = CrossInAppBilling.Current;
-        //    try
-        //    {
-        //        var connected = await billing.ConnectAsync();
-        //        if (!connected)
-        //        {
-        //            await DisplayAlert("Connection Failed", "There was an error in connecting to the store.", "OK");
-        //            return false;
-        //        }
-
-        //        //check purchases
-        //        var purchase = await billing.PurchaseAsync(productId, ItemType.InAppPurchase);
-
-        //        //possibility that a null came through.
-        //        if (purchase == null)
-        //        {
-        //            //did not purchase
-        //            await DisplayAlert("Purchase Failed", "Your purchase failed.", "OK");
-        //            return false;
-        //        }
-        //        else if (purchase.State == PurchaseState.Purchased)
-        //        {
-        //            //purchased!
-        //            if (Device.RuntimePlatform == Device.Android)
-        //            {
-        //                // Must call AcknowledgePurchaseAsync else the purchase will be refunded
-        //                await billing.AcknowledgePurchaseAsync(purchase.PurchaseToken);
-        //            }
-
-        //            if (Device.RuntimePlatform == Device.iOS)
-        //                return true;
-
-        //            /* Consumption */
-        //            bool success = await CrossInAppBilling.Current.ConsumePurchaseAsync(purchase.ProductId, purchase.PurchaseToken);
-        //            if (success)
-        //            {
-        //                return true;
-        //            }
-        //            await DisplayAlert("Extra Life Purchased But Not Consumed", "The extra life was purchased but not consumed.", "OK");
-        //            return false;
-        //        }
-        //        else
-        //        {
-        //            await DisplayAlert("Extra Life Not Purchased", "The extra life was not purchased.", "OK");
-        //            return false;
-        //        }
-        //    }
-        //    catch (InAppBillingPurchaseException purchaseEx)
-        //    {
-        //        //Billing Exception handle this based on the type
-        //        Debug.WriteLine("Error: " + purchaseEx);
-        //        await DisplayAlert("Error in Purchasing Extra Life", "There was an error purchasing an extra life upgrade.", "OK");
-        //        return false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //Something else has gone wrong, log it
-        //        Debug.WriteLine("Issue connecting: " + ex);
-        //        await DisplayAlert("Error", "There was a general error in the transaction.", "OK");
-        //        return false;
-        //    }
-        //    finally
-        //    {
-        //        await billing.DisconnectAsync();
-        //    }
-        //}
-
-        //public async Task<InAppBillingProduct> GetProductDetails(string productid)
-        //{
-        //    InAppBillingProduct res = null;
-        //    var billing = CrossInAppBilling.Current;
-        //    try
-        //    {
-
-        //        var productIds = new string[] { productid };
-        //        //You must connect
-        //        var connected = await billing.ConnectAsync();
-
-        //        if (!connected)
-        //        {
-        //            //Couldn't connect
-        //            return res;
-        //        }
-
-        //        //check purchases
-
-        //        var items = await billing.GetProductInfoAsync(ItemType.InAppPurchase, productIds);
-
-        //        foreach (var item in items)
-        //        {
-        //            if(item != null && item.ProductId == productid)
-        //            {
-        //                res = item;
-        //                break;
-        //            }
-        //        }
-        //    }
-        //    catch (InAppBillingPurchaseException pEx)
-        //    {
-        //        //Handle IAP Billing Exception
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //Something has gone wrong
-        //    }
-        //    finally
-        //    {
-        //        await billing.DisconnectAsync();
-        //    }
-        //    return res;
-        //}
 
         private void UpdateMobileVersionLabel()
         {

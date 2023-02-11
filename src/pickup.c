@@ -2266,6 +2266,7 @@ doloot()
                             {
                                 begin_burn(newobj, FALSE);
                             }
+                            play_simple_object_sound(newobj, OBJECT_SOUND_TYPE_PICK_UP);
                             obj_extract_self(newobj);
                             newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
                                 The(aobjnam(newobj, "slip")),  (const char*)0);
@@ -2273,6 +2274,7 @@ doloot()
                     }
                     newsym(cc.x, cc.y);
                     newsym(u.ux, u.uy);
+                    flush_screen(1);
                     vision_full_recalc = 1;
                 }
                 else

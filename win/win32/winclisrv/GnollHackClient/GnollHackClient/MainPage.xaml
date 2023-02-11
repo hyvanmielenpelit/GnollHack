@@ -73,10 +73,6 @@
                 <Label x:Name="MobileVersionLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
                    Text="Mobile Version" TextColor="White"
                    FontFamily="ARChristy" FontSize="18" />
-                <Grid x:Name="SponsorGrid"  WidthRequest="120" IsVisible="False">
-                    <ff:CachedImage x:Name="BuyNowImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" WidthRequest="120" HeightRequest="50"/>
-                    <local:AnimatedButton Text="Sponsor" x:Name="SponsorButton" Clicked="SponsorButton_Clicked" CornerRadius="10" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
-                </Grid>
             </StackLayout>
         </Grid>
 
