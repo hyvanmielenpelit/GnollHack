@@ -2127,6 +2127,7 @@ struct WinDesc *cw;
 
         switch (morc) {
         case '0':
+        case '7':
         case '8':
         case '9':
             /* special case: '0' is also the default ball class */
@@ -2140,7 +2141,6 @@ struct WinDesc *cw;
         case '4':
         case '5':
         case '6':
-        case '7':
             count = (count * 10L) + (long) (morc - '0');
             /*
              * It is debatable whether we should allow 0 to

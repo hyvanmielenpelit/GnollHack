@@ -2430,7 +2430,7 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
     accelerator:
     default:
         if (strchr(data->menu.gacc, ch)
-            && !((ch == '0' || ch == '9' || ch == '8' || ch == GOLD_SYM || ch == GOLD_SYM_ALTERNATE) && data->menu.counting)) 
+            && !((ch == '0' || ch == '9' || ch == '8' || ch == '7' || ch == GOLD_SYM || ch == GOLD_SYM_ALTERNATE) && data->menu.counting))
         {
             /* matched a group accelerator */
             if (data->how == PICK_ANY || data->how == PICK_ONE) 

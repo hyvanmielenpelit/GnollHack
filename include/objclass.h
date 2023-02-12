@@ -1230,7 +1230,7 @@ extern uchar oc_syms[MAX_OBJECT_CLASSES];      /* current class symbols */
 #define VENOM_SYM '.'
 #define REAGENT_SYM '9'
 #define MISCELLANEOUS_SYM '8'
-#define ART_SYM ']'
+#define ART_SYM '7'
 #define GOLD_SYM_ALTERNATE '\''
 
 struct fruit {

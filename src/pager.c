@@ -1199,7 +1199,7 @@ struct permonst **for_supplement;
                             ) && cansee(cc.x, cc.y))
                         {
                             char buf2[BUFSIZ];
-                            Sprintf(buf2, "%s%s", levl[cc.x][cc.y].lamplit ? "lit " : "unlit ", look_buf);
+                            Sprintf(buf2, "%s%s", levl[cc.x][cc.y].lamplit ? "lit " : "unlit ", decoration_buf);
                             Strcpy(decoration_buf, buf2);
                         }
                         x_str = decoration_buf;
