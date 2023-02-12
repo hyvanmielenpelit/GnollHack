@@ -488,10 +488,16 @@ long seconds;
     return buf_fmt_duration;
 }
 
-char*
-botl_realtime(void)
+long
+get_current_game_duration(VOID_ARGS)
 {
-    long currenttime = urealtime.realtime + ((long)getnow() - (long)urealtime.start_timing);
+    return urealtime.realtime + ((long)getnow() - (long)urealtime.start_timing);
+}
+
+char*
+botl_realtime(VOID_ARGS)
+{
+    long currenttime = get_current_game_duration();
     char* duration = format_duration_with_units(currenttime);
     /* only show 2 time units */
     char* p = strchr(duration, ':');

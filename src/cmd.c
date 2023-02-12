@@ -3378,23 +3378,6 @@ int final;
         }
         you_have(buf, "");
     }
-    
-
-#ifdef SCORE_ON_BOTL
-    if (flags.showscore) {
-        /* describes what's shown on status line, which is an approximation;
-           only show it here if player has the 'showscore' option enabled */
-        Sprintf(buf, "%ld%s", botl_score(), 
-                !final ? "" : "" /*" before end-of-game adjustments"*/); //In GnollHack, it is accurate --JG
-        enl_msg("Your game score ", "is ", "was ", buf, "");
-    }
-#endif
-
-    if (flags.showrealtime)
-    {
-        Sprintf(buf, "%s", botl_realtime());
-        enl_msg("You ", "have been playing the game for ", "had been playing the game for ", buf, "");
-    }
 }
 
 /* hit points, energy points, armor class -- essential information which
@@ -3503,6 +3486,12 @@ int final;
     Sprintf(modebuf, " mode (%s)", get_game_mode_description());
     enl_msg("You ", "are playing in ", "were playing in ", get_game_mode_text(TRUE), modebuf);
 
+    Sprintf(buf, "%ld", get_current_game_score());
+    enl_msg("Your game score ", "is ", "was ", buf, "");
+
+    print_realtime(modebuf, get_current_game_duration());
+    Sprintf(buf, "%s", modebuf);
+    enl_msg("You ", "have been playing the game for ", "had been playing the game for ", buf, "");
 }
 
 /* characteristics: expanded version of bottom line strength, dexterity, &c */
