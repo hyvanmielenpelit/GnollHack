@@ -370,49 +370,52 @@ unsigned long *ospecial;
         {
             if (has_decoration && levl[x][y].decoration_typ > 0)
             {
-                int dcolor = NO_COLOR;
                 if (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE)
                 {
                     if (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER)
                     {
-                        if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
+                        if (decoration_type_definitions[levl[x][y].decoration_typ].color_filled != NO_COLOR)
+                            color = decoration_type_definitions[levl[x][y].decoration_typ].color_filled;
+
+                        if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_UNLIT_FILLED_COLOR) != 0)
+                            color = decoration_lit_colors[color].color_unlit;
+                        else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIT_FILLED_COLOR) != 0)
+                            color = decoration_lit_colors[color].color_lit;
+                        else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
                         {
-                            if(levl[x][y].lamplit)
-                                dcolor = (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_USE_LIT_UNLIT_COLORS) != 0 ? decoration_lit_colors[color].color_lit : decoration_type_definitions[levl[x][y].decoration_typ].color_filled_lit;
+                            if (levl[x][y].lamplit)
+                                color = decoration_lit_colors[color].color_lit;
                             else
-                                dcolor = (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_USE_LIT_UNLIT_COLORS) != 0 ? decoration_lit_colors[color].color_unlit : decoration_type_definitions[levl[x][y].decoration_typ].color_filled;
-                        }
-                        else
-                        {
-                            dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color_filled;
+                                color = decoration_lit_colors[color].color_unlit;
                         }
                     }
                     else
                     {
-                        if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0 && levl[x][y].lamplit)
-                        {
-                            dcolor = (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_USE_LIT_UNLIT_COLORS) != 0 ? decoration_lit_colors[color].color_lit : decoration_type_definitions[levl[x][y].decoration_typ].color_lit;
-                        }
-                        else
-                        {
-                            dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color;
-                        }
+                        if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_UNLIT_COLOR) != 0)
+                            color = decoration_lit_colors[color].color_unlit;
+                        else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIT_COLOR) != 0)
+                            color = decoration_lit_colors[color].color_lit;
+                        else if (decoration_type_definitions[levl[x][y].decoration_typ].color != NO_COLOR)
+                            color = decoration_type_definitions[levl[x][y].decoration_typ].color;
                     }
                 }
                 else
                 {
-                    if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
+                    if (decoration_type_definitions[levl[x][y].decoration_typ].color != NO_COLOR)
+                        color = decoration_type_definitions[levl[x][y].decoration_typ].color;
+
+                    if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_UNLIT_COLOR) != 0)
+                        color = decoration_lit_colors[color].color_unlit;
+                    else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIT_COLOR) != 0)
+                        color = decoration_lit_colors[color].color_lit;
+                    else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
                     {
                         if (levl[x][y].lamplit)
-                            dcolor = (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_USE_LIT_UNLIT_COLORS) != 0 ? decoration_lit_colors[color].color_lit : decoration_type_definitions[levl[x][y].decoration_typ].color_lit;
+                            color = decoration_lit_colors[color].color_lit;
                         else
-                            dcolor = (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_USE_LIT_UNLIT_COLORS) != 0 ? decoration_lit_colors[color].color_unlit : decoration_type_definitions[levl[x][y].decoration_typ].color;
+                            color = decoration_lit_colors[color].color_unlit;
                     }
-                    else
-                        dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color;
                 }
-                if (dcolor != NO_COLOR)
-                    color = dcolor;
             }
         }
     } 

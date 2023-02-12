@@ -279,9 +279,7 @@ struct decoration_type_definition {
     short num_subtypes;
     short lootable_item;
     schar color;
-    schar color_lit;
     schar color_filled;
-    schar color_filled_lit;
     enum location_soundset_types soundset;
     unsigned short dflags;
 };
@@ -305,7 +303,10 @@ extern NEARDATA const struct decoration_lit_color_definition decoration_lit_colo
 #define DECORATION_TYPE_FLAGS_PAINTING_DESCR                0x0040
 #define DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET              0x0080
 #define DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY 0x0100
-#define DECORATION_TYPE_FLAGS_USE_LIT_UNLIT_COLORS          0x0200
+#define DECORATION_TYPE_FLAGS_UNLIT_COLOR                   0x0200
+#define DECORATION_TYPE_FLAGS_UNLIT_FILLED_COLOR            0x0400
+#define DECORATION_TYPE_FLAGS_LIT_COLOR                     0x0800
+#define DECORATION_TYPE_FLAGS_LIT_FILLED_COLOR              0x1000
 
 enum carpet_types {
     CARPET_NONE = 0,
