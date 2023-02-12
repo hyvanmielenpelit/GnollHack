@@ -2628,6 +2628,7 @@ struct monst* targetmonst;
             {
                 play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
                 update_u_action(ACTION_TILE_CAST_NODIR);
+                play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
                 u_wait_until_action();
 
                 if ((damage = zapyourself(pseudo, TRUE)) != 0)
@@ -2643,6 +2644,7 @@ struct monst* targetmonst;
                 update_u_facing(TRUE);
                 play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
                 update_u_action(ACTION_TILE_CAST_DIR);
+                play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
                 u_wait_until_action();
                 weffects(pseudo);
 
@@ -2653,6 +2655,7 @@ struct monst* targetmonst;
             /* No dir */
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
             update_u_action(ACTION_TILE_CAST_NODIR);
+            play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
             u_wait_until_action();
             weffects(pseudo);
         }
@@ -2731,6 +2734,7 @@ struct monst* targetmonst;
         {
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
             update_u_action(ACTION_TILE_CAST_NODIR);
+            play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
             u_wait_until_action();
         }
         (void) seffects(pseudo, &effect_happened, targetmonst);
@@ -2746,6 +2750,7 @@ struct monst* targetmonst;
     case SPE_INVISIBILITY:
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         (void) peffects(pseudo);
         break;
@@ -2754,6 +2759,7 @@ struct monst* targetmonst;
     case SPE_CREATE_FAMILIAR:
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         (void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
         break;
@@ -2761,6 +2767,7 @@ struct monst* targetmonst;
     case SPE_SUMMONING_CALL:
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         if (iflags.using_gui_sounds)
             delay_output_milliseconds(200);
@@ -2769,6 +2776,7 @@ struct monst* targetmonst;
     case SPE_CLAIRVOYANCE:
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
@@ -2784,12 +2792,14 @@ struct monst* targetmonst;
     case SPE_MINOR_CONSULTATION:
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         outrumor(&youmonst, pseudo, 1, BY_SPELL);
         break;
     case SPE_MAJOR_CONSULTATION:
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         outoracle(&youmonst, pseudo, FALSE, 2);
         break;
@@ -2824,6 +2834,7 @@ struct monst* targetmonst;
     case SPE_DIVINE_INTERVENTION:
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound_at_location(SFX_GENERAL_GAIN_ABILITY_SPELL, u.ux, u.uy);
@@ -2846,6 +2857,7 @@ struct monst* targetmonst;
     case SPE_JUMPING:
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         if (!jump(max(role_skill, 1)))
             pline1(nothing_happens);
@@ -2874,6 +2886,7 @@ struct monst* targetmonst;
         {
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
             update_u_action(ACTION_TILE_CAST_NODIR);
+            play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
             u_wait_until_action();
 
             switch (otyp)

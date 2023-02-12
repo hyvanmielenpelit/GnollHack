@@ -277,6 +277,7 @@ boolean foundyou;
     play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CAST);
     if(show_action_tile)
         update_m_action(mtmp, action);
+    play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, mtmp->mx, mtmp->my);
     if (show_action_tile)
         m_wait_until_action();
 

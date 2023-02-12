@@ -1377,43 +1377,44 @@ makelevel()
         if ((rt == OROOM && !rn2(20)) || rt == COURT || rt == TEMPLE || rt == LIBRARY || (rt >= SHOPBASE && !rn2(2))
             || (rt == NPCROOM && (rst == NPC_ELVEN_BARD || rst == NPC_ARTIFICER || !rn2(2))))
         {
-            levl[lowx][lowy].carpet_typ = CARPET_HORIZONTAL_RED;
-            levl[lowx][lowy].carpet_piece = CARPET_PIECE_LONG_TLCORN;
-            levl[lowx][lowy].carpet_flags = 0;
-            levl[hix][lowy].carpet_typ = CARPET_HORIZONTAL_RED;
-            levl[hix][lowy].carpet_piece = CARPET_PIECE_LONG_TRCORN;
-            levl[hix][lowy].carpet_flags = 0;
-            levl[lowx][hiy].carpet_typ = CARPET_HORIZONTAL_RED;
-            levl[lowx][hiy].carpet_piece = CARPET_PIECE_LONG_BLCORN;
-            levl[lowx][hiy].carpet_flags = 0;
-            levl[hix][hiy].carpet_typ = CARPET_HORIZONTAL_RED;
-            levl[hix][hiy].carpet_piece = CARPET_PIECE_LONG_BRCORN;
-            levl[hix][hiy].carpet_flags = 0;
-            for (x = lowx + 1; x <= hix - 1; x++)
-            {
-                levl[x][lowy].carpet_typ = CARPET_HORIZONTAL_RED;
-                levl[x][lowy].carpet_piece = CARPET_PIECE_LONG_TOP;
-                levl[x][lowy].carpet_flags = 0;
-                levl[x][hiy].carpet_typ = CARPET_HORIZONTAL_RED;
-                levl[x][hiy].carpet_piece = CARPET_PIECE_LONG_BOTTOM;
-                levl[x][hiy].carpet_flags = 0;
+            create_carpet(lowx, lowy, hix, hiy, CARPET_HORIZONTAL_RED);
+            //levl[lowx][lowy].carpet_typ = CARPET_HORIZONTAL_RED;
+            //levl[lowx][lowy].carpet_piece = CARPET_PIECE_LONG_TLCORN;
+            //levl[lowx][lowy].carpet_flags = 0;
+            //levl[hix][lowy].carpet_typ = CARPET_HORIZONTAL_RED;
+            //levl[hix][lowy].carpet_piece = CARPET_PIECE_LONG_TRCORN;
+            //levl[hix][lowy].carpet_flags = 0;
+            //levl[lowx][hiy].carpet_typ = CARPET_HORIZONTAL_RED;
+            //levl[lowx][hiy].carpet_piece = CARPET_PIECE_LONG_BLCORN;
+            //levl[lowx][hiy].carpet_flags = 0;
+            //levl[hix][hiy].carpet_typ = CARPET_HORIZONTAL_RED;
+            //levl[hix][hiy].carpet_piece = CARPET_PIECE_LONG_BRCORN;
+            //levl[hix][hiy].carpet_flags = 0;
+            //for (x = lowx + 1; x <= hix - 1; x++)
+            //{
+            //    levl[x][lowy].carpet_typ = CARPET_HORIZONTAL_RED;
+            //    levl[x][lowy].carpet_piece = CARPET_PIECE_LONG_TOP;
+            //    levl[x][lowy].carpet_flags = 0;
+            //    levl[x][hiy].carpet_typ = CARPET_HORIZONTAL_RED;
+            //    levl[x][hiy].carpet_piece = CARPET_PIECE_LONG_BOTTOM;
+            //    levl[x][hiy].carpet_flags = 0;
 
-                for (y = lowy + 1; y <= hiy - 1; y++)
-                {
-                    levl[x][y].carpet_typ = CARPET_HORIZONTAL_RED;
-                    levl[x][y].carpet_piece = CARPET_PIECE_LONG_MIDDLE_PLAIN;
-                    levl[x][y].carpet_flags = 0;
-                }
-            }
-            for (y = lowy + 1; y <= hiy - 1; y++)
-            {
-                levl[lowx][y].carpet_typ = CARPET_HORIZONTAL_RED;
-                levl[lowx][y].carpet_piece = CARPET_PIECE_LONG_LEFT;
-                levl[lowx][y].carpet_flags = 0;
-                levl[hix][y].carpet_typ = CARPET_HORIZONTAL_RED;
-                levl[hix][y].carpet_piece = CARPET_PIECE_LONG_RIGHT;
-                levl[hix][y].carpet_flags = 0;
-            }
+            //    for (y = lowy + 1; y <= hiy - 1; y++)
+            //    {
+            //        levl[x][y].carpet_typ = CARPET_HORIZONTAL_RED;
+            //        levl[x][y].carpet_piece = CARPET_PIECE_LONG_MIDDLE_PLAIN;
+            //        levl[x][y].carpet_flags = 0;
+            //    }
+            //}
+            //for (y = lowy + 1; y <= hiy - 1; y++)
+            //{
+            //    levl[lowx][y].carpet_typ = CARPET_HORIZONTAL_RED;
+            //    levl[lowx][y].carpet_piece = CARPET_PIECE_LONG_LEFT;
+            //    levl[lowx][y].carpet_flags = 0;
+            //    levl[hix][y].carpet_typ = CARPET_HORIZONTAL_RED;
+            //    levl[hix][y].carpet_piece = CARPET_PIECE_LONG_RIGHT;
+            //    levl[hix][y].carpet_flags = 0;
+            //}
         }
     }
 

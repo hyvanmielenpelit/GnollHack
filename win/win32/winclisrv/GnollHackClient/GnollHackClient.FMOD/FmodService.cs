@@ -420,7 +420,15 @@ namespace GnollHackClient.Unknown
 
             if (play_group == (int)sound_play_groups.SOUND_PLAY_GROUP_LONG)
             {
-                queue_sound = (longImmediateInstances.Count > 0 && sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && longImmediateInstances[0].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && !longImmediateInstances[0].stopped);
+                queue_sound = false;
+                for (int j = 0; j < longImmediateInstances.Count; j++)
+                {
+                    if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && longImmediateInstances[j].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && !longImmediateInstances[j].stopped)
+                    {
+                        queue_sound = true;
+                        break;
+                    }
+                }
                 longImmediateInstances.Insert(0, ghinstance);
 
                 if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
@@ -437,7 +445,15 @@ namespace GnollHackClient.Unknown
             }
             else
             {
-                queue_sound = (immediateInstances.Count > 0 && sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && immediateInstances[0].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && !immediateInstances[0].stopped);
+                queue_sound = false;
+                for (int j = 0; j < immediateInstances.Count; j++)
+                {
+                    if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && immediateInstances[j].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && !immediateInstances[j].stopped)
+                    {
+                        queue_sound = true;
+                        break;
+                    }
+                }
 
                 immediateInstances.Insert(0, ghinstance);
 

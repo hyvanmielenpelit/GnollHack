@@ -998,7 +998,15 @@ extern "C"
         boolean queue_sound = FALSE;
         if (play_group == SOUND_PLAY_GROUP_LONG)
         {
-            queue_sound = (info.sound_type == IMMEDIATE_SOUND_DIALOGUE && longImmediateSoundInstances[0].sound_type == IMMEDIATE_SOUND_DIALOGUE && !longImmediateSoundInstances[0].finished_playing);
+            queue_sound = FALSE;
+            for (int j = 0; j < NUM_LONG_IMMEDIATE_SOUND_INSTANCES; j++)
+            {
+                if (info.sound_type == IMMEDIATE_SOUND_DIALOGUE && longImmediateSoundInstances[j].eventInstance && longImmediateSoundInstances[j].sound_type == IMMEDIATE_SOUND_DIALOGUE && !longImmediateSoundInstances[j].finished_playing)
+                {
+                    queue_sound = TRUE;
+                    break;
+                }
+            }
 
             /* Long play group */
             if (longImmediateSoundInstances[0].eventInstance)
@@ -1042,7 +1050,15 @@ extern "C"
         }
         else
         {
-            queue_sound = (info.sound_type == IMMEDIATE_SOUND_DIALOGUE && immediateSoundInstances[0].sound_type == IMMEDIATE_SOUND_DIALOGUE && !immediateSoundInstances[0].finished_playing);
+            queue_sound = FALSE;
+            for (int j = 0; j < NUM_IMMEDIATE_SOUND_INSTANCES; j++)
+            {
+                if (info.sound_type == IMMEDIATE_SOUND_DIALOGUE && immediateSoundInstances[j].eventInstance && immediateSoundInstances[j].sound_type == IMMEDIATE_SOUND_DIALOGUE && !immediateSoundInstances[j].finished_playing)
+                {
+                    queue_sound = TRUE;
+                    break;
+                }
+            }
 
             /* Normal play group */
             if (immediateSoundInstances[0].eventInstance)
