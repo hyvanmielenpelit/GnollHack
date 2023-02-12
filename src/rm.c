@@ -4,7 +4,7 @@
 
 #include "hack.h"
 
-NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
+NEARDATA const struct location_type_definition location_type_definitions[MAX_TYPE] = {
     {"STONE",           S_stone,    CORR,   MAT_MINERAL, LOCATION_SOUNDSET_STONE},
     {"VWALL",           S_vwall,    CORR,   MAT_MINERAL, LOCATION_SOUNDSET_STONE},
     {"HWALL",           S_hwall,    CORR,   MAT_MINERAL, LOCATION_SOUNDSET_STONE},
@@ -49,25 +49,25 @@ NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
     {"UNDEFINED_LOCATION",S_unexplored,0,   MAT_NONE,    LOCATION_SOUNDSET_NONE}
 };
 
-struct location_subtype_definition corridor_subtype_definitions[MAX_CORRIDOR_SUBTYPES] =
+const struct location_subtype_definition corridor_subtype_definitions[MAX_CORRIDOR_SUBTYPES] =
 {
     { "normal corridor", CORRIDOR_SUBTYPE_NORMAL_VARIATIONS, 0 },
 };
 
-struct location_subtype_definition grass_subtype_definitions[MAX_GRASS_SUBTYPES] =
+const struct location_subtype_definition grass_subtype_definitions[MAX_GRASS_SUBTYPES] =
 {
     { "normal grass", GRASS_SUBTYPE_NORMAL_VARIATIONS, 0 },
     { "swampy grass", GRASS_SUBTYPE_SWAMPY_VARIATIONS, GRASS_SUBTYPE_NORMAL_VARIATIONS },
 };
 
-struct location_subtype_definition ground_subtype_definitions[MAX_GROUND_SUBTYPES] =
+const struct location_subtype_definition ground_subtype_definitions[MAX_GROUND_SUBTYPES] =
 {
     { "normal ground", GROUND_SUBTYPE_NORMAL_VARIATIONS, 0 },
     { "swampy ground", GROUND_SUBTYPE_SWAMPY_VARIATIONS, GROUND_SUBTYPE_NORMAL_VARIATIONS },
     { "desert sand",   GROUND_SUBTYPE_DESERT_SAND_VARIATIONS, GROUND_SUBTYPE_NORMAL_VARIATIONS + GROUND_SUBTYPE_SWAMPY_VARIATIONS },
 };
 
-struct location_subtype_definition floor_subtype_definitions[MAX_FLOOR_SUBTYPES] =
+const struct location_subtype_definition floor_subtype_definitions[MAX_FLOOR_SUBTYPES] =
 {
     { "normal floor", FLOOR_SUBTYPE_NORMAL_VARIATIONS, 0 },
     { "marble floor", FLOOR_SUBTYPE_MARBLE_VARIATIONS, FLOOR_SUBTYPE_NORMAL_VARIATIONS },
@@ -75,17 +75,17 @@ struct location_subtype_definition floor_subtype_definitions[MAX_FLOOR_SUBTYPES]
     { "cobblestone", FLOOR_SUBTYPE_COBBLESTONE_VARIATIONS, FLOOR_SUBTYPE_PARQUET_VARIATIONS + FLOOR_SUBTYPE_MARBLE_VARIATIONS + FLOOR_SUBTYPE_NORMAL_VARIATIONS },
 };
 
-struct location_subtype_definition stone_subtype_definitions[MAX_STONE_SUBTYPES] =
+const struct location_subtype_definition stone_subtype_definitions[MAX_STONE_SUBTYPES] =
 {
     { "normal stone", STONE_SUBTYPE_NORMAL_VARIATIONS, 0 },
 };
 
-struct location_subtype_definition wall_subtype_definitions[MAX_WALL_SUBTYPES] =
+const struct location_subtype_definition wall_subtype_definitions[MAX_WALL_SUBTYPES] =
 {
     { "normal wall", WALL_SUBTYPE_NORMAL_VARIATIONS, 0 }, /* Must be aligned with stone normal subtypes */
 };
 
-struct location_subtype_definition altar_subtype_definitions[MAX_ALTAR_SUBTYPES] =
+const struct location_subtype_definition altar_subtype_definitions[MAX_ALTAR_SUBTYPES] =
 {
     { "normal altar", ALTAR_SUBTYPE_NORMAL_VARIATIONS, 0 },
     { "high altar", ALTAR_SUBTYPE_HIGH_VARIATIONS, ALTAR_SUBTYPE_NORMAL_VARIATIONS },
@@ -93,7 +93,7 @@ struct location_subtype_definition altar_subtype_definitions[MAX_ALTAR_SUBTYPES]
 };
 
 
-struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES] =
+const struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES] =
 {
     {"wooden door",          "door", MAT_WOOD, LOCATION_SOUNDSET_DOOR, DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES | DSTFLAGS_BROKEN_BY_STRONG_MONSTERS | DSTFLAGS_BROKEN_BY_DIGGING | DSTFLAGS_BROKEN_BY_KICKING | DSTFLAGS_BROKEN_BY_STRIKING | DSTFLAGS_BROKEN_BY_BEING_BOOBY_TRAPPED },
     {"windowed wooden door", "door", MAT_WOOD, LOCATION_SOUNDSET_DOOR, DSTFLAGS_BROKEN_BY_STRONG_MONSTERS | DSTFLAGS_BROKEN_BY_DIGGING | DSTFLAGS_BROKEN_BY_KICKING | DSTFLAGS_BROKEN_BY_STRIKING | DSTFLAGS_BROKEN_BY_BEING_BOOBY_TRAPPED },
@@ -109,7 +109,7 @@ struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES] =
     {"black gate",           "gate", MAT_METAL, LOCATION_SOUNDSET_DOOR, DSTFLAGS_BLOCKS_VISION_AND_SOUND},
 };
 
-struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES] =
+const struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES] =
 {
     {"tree",          "tree",  
         TREE_SUBTYPE_NORMAL_VARIATIONS, 0,  
@@ -212,7 +212,7 @@ struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES] =
 };
 
 
-NEARDATA struct decoration_type_definition decoration_type_definitions[MAX_DECORATIONS] = {
+NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX_DECORATIONS] = {
     {
         (char*)0, (char*)0, (char*)0, 
         {0, 0, 0, 0},
@@ -243,7 +243,7 @@ NEARDATA struct decoration_type_definition decoration_type_definitions[MAX_DECOR
         1, TORCH, 
         NO_COLOR, NO_COLOR, CLR_BROWN,CLR_ORANGE,
         LOCATION_SOUNDSET_BRAZIER,
-        DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_LIGHTABLE | DECORATION_TYPE_FLAGS_ALL_SIDES
+        DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_LIGHTABLE | DECORATION_TYPE_FLAGS_ALL_SIDES | DECORATION_TYPE_FLAGS_USE_LIT_UNLIT_COLORS
     },
     {
         "lantern", "lantern holder", "brass lantern", 
@@ -251,7 +251,7 @@ NEARDATA struct decoration_type_definition decoration_type_definitions[MAX_DECOR
         1, BRASS_LANTERN, 
         NO_COLOR, NO_COLOR, CLR_YELLOW, CLR_WHITE,
         LOCATION_SOUNDSET_BRAZIER,
-        DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_LIGHTABLE | DECORATION_TYPE_FLAGS_ALL_SIDES
+        DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_LIGHTABLE | DECORATION_TYPE_FLAGS_ALL_SIDES | DECORATION_TYPE_FLAGS_USE_LIT_UNLIT_COLORS
     },
     {
         "fireplace", "fireplace", "fireplace",
@@ -259,7 +259,7 @@ NEARDATA struct decoration_type_definition decoration_type_definitions[MAX_DECOR
         1, STRANGE_OBJECT,
         NO_COLOR, NO_COLOR, CLR_BROWN, CLR_RED,
         LOCATION_SOUNDSET_BRAZIER,
-        DECORATION_TYPE_FLAGS_LIGHTABLE | DECORATION_TYPE_FLAGS_ALL_SIDES
+        DECORATION_TYPE_FLAGS_LIGHTABLE | DECORATION_TYPE_FLAGS_ALL_SIDES | DECORATION_TYPE_FLAGS_USE_LIT_UNLIT_COLORS
     },
     {
         "painting", "painting hanger", "painting",
@@ -271,7 +271,7 @@ NEARDATA struct decoration_type_definition decoration_type_definitions[MAX_DECOR
     },
 };
 
-NEARDATA struct carpet_type_definition carpet_type_definitions[MAX_CARPETS] = {
+NEARDATA const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS] = {
     {
         (char*)0, (char*)0,
         0, CARPET_TILE_INDEXATION_TYPE_NORMAL,
@@ -283,6 +283,25 @@ NEARDATA struct carpet_type_definition carpet_type_definitions[MAX_CARPETS] = {
         CARPET_TILE_INDEXATION_TYPE_LONG_CARPET,
         CARPET_TYPE_FLAGS_NONE
     },
+};
+
+NEARDATA const struct decoration_lit_color_definition decoration_lit_colors[CLR_MAX] = {
+    { CLR_GRAY, CLR_WHITE },           /* CLR_BLACK */
+    { CLR_GRAY, CLR_ORANGE },          /* CLR_RED */
+    { CLR_GRAY, CLR_BRIGHT_GREEN },    /* CLR_GREEN */
+    { CLR_GRAY, CLR_ORANGE },          /* CLR_BROWN */
+    { CLR_GRAY, CLR_BRIGHT_BLUE },     /* CLR_BLUE */
+    { CLR_GRAY, CLR_BRIGHT_MAGENTA },  /* CLR_MAGENTA */
+    { CLR_GRAY, CLR_BRIGHT_CYAN },     /* CLR_CYAN */
+    { CLR_BLACK, CLR_WHITE },          /* CLR_GRAY */
+    { NO_COLOR, NO_COLOR },            /* NO_COLOR */
+    { CLR_RED, CLR_WHITE },            /* CLR_ORANGE */
+    { CLR_GREEN, CLR_WHITE },          /* CLR_BRIGHT_GREEN */
+    { CLR_BROWN, CLR_WHITE },          /* CLR_YELLOW */
+    { CLR_BLUE, CLR_WHITE },           /* CLR_BRIGHT_BLUE */
+    { CLR_MAGENTA, CLR_WHITE },        /* CLR_BRIGHT_MAGENTA */
+    { CLR_CYAN, CLR_WHITE },           /* CLR_BRIGHT_CYAN */
+    { CLR_GRAY, CLR_YELLOW },          /* CLR_WHITE */
 };
 
 /* force linkage */
@@ -397,7 +416,7 @@ int
 get_initial_location_vartype(typ, subtyp)
 int typ, subtyp;
 {
-    struct location_subtype_definition* sub_def = 0;
+    const struct location_subtype_definition* sub_def = 0;
     int num_subs = 0;
 
     if (typ == CORR)

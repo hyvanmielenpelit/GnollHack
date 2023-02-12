@@ -11,6 +11,7 @@
 #include "layer.h"
 #include "soundset.h"
 #include "general.h"
+#include "color.h"
 
 
  /*
@@ -275,28 +276,36 @@ struct decoration_type_definition {
     const char* description;
     const char* description_filled;
     int first_doodad[NUM_DOODAD_DIRECTIONS]; //For each of four directions
-    int num_subtypes;
-    int lootable_item;
-    short color;
-    short color_lit;
-    short color_filled;
-    short color_filled_lit;
+    short num_subtypes;
+    short lootable_item;
+    schar color;
+    schar color_lit;
+    schar color_filled;
+    schar color_filled_lit;
     enum location_soundset_types soundset;
     unsigned short dflags;
 };
 
-extern struct decoration_type_definition decoration_type_definitions[MAX_DECORATIONS];
+extern NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX_DECORATIONS];
 
-#define DECORATION_TYPE_FLAGS_NONE               0x0000
-#define DECORATION_TYPE_FLAGS_LOOTABLE           0x0001
-#define DECORATION_TYPE_FLAGS_LIGHTABLE          0x0002
-#define DECORATION_TYPE_FLAGS_UNDERSCORE         0x0004
-#define DECORATION_TYPE_FLAGS_ALL_SIDES          0x0008
-#define DECORATION_TYPE_FLAGS_CORNERS            0x0010
-#define DECORATION_TYPE_FLAGS_MIRRORABLE         0x0020
-#define DECORATION_TYPE_FLAGS_PAINTING_DESCR     0x0040
-#define DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET   0x0080
+struct decoration_lit_color_definition {
+    schar color_unlit;
+    schar color_lit;
+};
+
+extern NEARDATA const struct decoration_lit_color_definition decoration_lit_colors[CLR_MAX];
+
+#define DECORATION_TYPE_FLAGS_NONE                          0x0000
+#define DECORATION_TYPE_FLAGS_LOOTABLE                      0x0001
+#define DECORATION_TYPE_FLAGS_LIGHTABLE                     0x0002
+#define DECORATION_TYPE_FLAGS_UNDERSCORE                    0x0004
+#define DECORATION_TYPE_FLAGS_ALL_SIDES                     0x0008
+#define DECORATION_TYPE_FLAGS_CORNERS                       0x0010
+#define DECORATION_TYPE_FLAGS_MIRRORABLE                    0x0020
+#define DECORATION_TYPE_FLAGS_PAINTING_DESCR                0x0040
+#define DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET              0x0080
 #define DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY 0x0100
+#define DECORATION_TYPE_FLAGS_USE_LIT_UNLIT_COLORS          0x0200
 
 enum carpet_types {
     CARPET_NONE = 0,
@@ -336,7 +345,7 @@ struct carpet_type_definition {
 
 #define CARPET_TYPE_FLAGS_NONE                  0x0000
 
-extern struct carpet_type_definition carpet_type_definitions[MAX_CARPETS];
+extern const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS];
 
 struct location_type_definition {
     const char* name;
@@ -346,7 +355,7 @@ struct location_type_definition {
     enum location_soundset_types soundset;
 };
 
-extern struct location_type_definition location_type_definitions[MAX_TYPE];
+extern const struct location_type_definition location_type_definitions[MAX_TYPE];
 
 struct location_subtype_definition {
     const char* subtype_name;
@@ -363,7 +372,7 @@ enum corridor_subtypes {
     MAX_CORRIDOR_SUBTYPES
 };
 
-extern struct location_subtype_definition corridor_subtype_definitions[MAX_CORRIDOR_SUBTYPES];
+extern const struct location_subtype_definition corridor_subtype_definitions[MAX_CORRIDOR_SUBTYPES];
 
 #define GRASS_SUBTYPE_NORMAL_VARIATIONS 3
 #define GRASS_SUBTYPE_SWAMPY_VARIATIONS 1
@@ -374,7 +383,7 @@ enum grass_subtypes {
     MAX_GRASS_SUBTYPES
 };
 
-extern struct location_subtype_definition grass_subtype_definitions[MAX_GRASS_SUBTYPES];
+extern const struct location_subtype_definition grass_subtype_definitions[MAX_GRASS_SUBTYPES];
 
 #define GROUND_SUBTYPE_NORMAL_VARIATIONS 4
 #define GROUND_SUBTYPE_SWAMPY_VARIATIONS 1
@@ -387,7 +396,7 @@ enum ground_subtypes {
     MAX_GROUND_SUBTYPES
 };
 
-extern struct location_subtype_definition ground_subtype_definitions[MAX_GROUND_SUBTYPES];
+extern const struct location_subtype_definition ground_subtype_definitions[MAX_GROUND_SUBTYPES];
 
 #define FLOOR_SUBTYPE_NORMAL_VARIATIONS 4
 #define FLOOR_SUBTYPE_MARBLE_VARIATIONS 4
@@ -402,7 +411,7 @@ enum floor_subtypes {
     MAX_FLOOR_SUBTYPES
 };
 
-extern struct location_subtype_definition floor_subtype_definitions[MAX_FLOOR_SUBTYPES];
+extern const struct location_subtype_definition floor_subtype_definitions[MAX_FLOOR_SUBTYPES];
 
 /* Stone and wall subtypes and categories */
 #define NUM_NORMAL_STONE_VARTYPES 4
@@ -414,7 +423,7 @@ enum stone_subtypes {
     MAX_STONE_SUBTYPES
 };
 
-extern struct location_subtype_definition stone_subtype_definitions[MAX_STONE_SUBTYPES];
+extern const struct location_subtype_definition stone_subtype_definitions[MAX_STONE_SUBTYPES];
 
 #define WALL_SUBTYPE_NORMAL_VARIATIONS NUM_NORMAL_STONE_VARTYPES
 #define TOTAL_WALL_SUBTYPE_VARIATIONS (WALL_SUBTYPE_NORMAL_VARIATIONS)
@@ -424,7 +433,7 @@ enum wall_subtypes {
     MAX_WALL_SUBTYPES
 };
 
-extern struct location_subtype_definition wall_subtype_definitions[MAX_WALL_SUBTYPES];
+extern const struct location_subtype_definition wall_subtype_definitions[MAX_WALL_SUBTYPES];
 
 /* Other subtypes */
 #define ALTAR_SUBTYPE_NORMAL_VARIATIONS 4
@@ -439,7 +448,7 @@ enum altar_subtypes
     MAX_ALTAR_SUBTYPES
 };
 
-extern struct location_subtype_definition altar_subtype_definitions[MAX_ALTAR_SUBTYPES];
+extern const struct location_subtype_definition altar_subtype_definitions[MAX_ALTAR_SUBTYPES];
 
 
 enum modron_portal_subtypes {
@@ -498,7 +507,7 @@ struct door_subtype_definition {
 #define DSTFLAGS_NO_LOCK_DESCRIPTION_IS_DEFAULT             0x00000100 /* If no lock, nothing is printed, with normal lock, tells that has a metal lock */
 #define DSTFLAGS_NONPASSABLE                                0x00000200 /* Cannot be walked through with wallwalk */
 
-extern struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES];
+extern const struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES];
 
 enum forest_types
 {
@@ -586,7 +595,7 @@ enum tree_classes
     MAX_TREE_CLASSES
 };
 
-extern struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES];
+extern const struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES];
 
 /*
  * Avoid using the level types in inequalities:
