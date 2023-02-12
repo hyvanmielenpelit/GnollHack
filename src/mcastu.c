@@ -274,9 +274,9 @@ boolean foundyou;
     boolean next2u = (distmin(u.ux, u.uy, mtmp->mx, mtmp->my) <= 1);
     boolean show_action_tile = (next2u || !nodirspell);
 
+    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CAST);
     if(show_action_tile)
         update_m_action(mtmp, action);
-    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CAST);
     if (show_action_tile)
         m_wait_until_action();
 
