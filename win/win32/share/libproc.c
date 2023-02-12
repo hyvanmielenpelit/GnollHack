@@ -1064,10 +1064,10 @@ void lib_status_flush(void)
                              BL_WI,    BL_CH, BL_GOLD,  /*BL_ALIGN,*/ BL_FLUSH, };
     static const int fieldorder2[] = { BL_MODE, BL_LEVELDESC, BL_HP,   BL_HPMAX,
                                  BL_ENE,       BL_ENEMAX,    BL_AC,  BL_MC_LVL, BL_MC_PCT,    BL_MOVE, BL_UWEP, BL_UWEP2,  BL_XP,
-                                 BL_EXP,       BL_HD,        BL_TIME, BL_SCORE, BL_FLUSH };
+                                 BL_EXP,       BL_HD,        BL_TIME,  BL_REALTIME, BL_SCORE, BL_FLUSH };
     static const int fieldorder2_2statuslines[] = { BL_MODE, BL_LEVELDESC, BL_HP,   BL_HPMAX,
                                  BL_ENE,       BL_ENEMAX,    BL_AC,    BL_MC_LVL, BL_MC_PCT,    BL_MOVE, BL_UWEP, BL_UWEP2,   BL_XP,
-                                 BL_EXP,       BL_HD,        BL_TIME,  BL_2WEP,   BL_SKILL,     BL_HUNGER, BL_CAP,  BL_CONDITION, BL_FLUSH };
+                                 BL_EXP,       BL_HD,        BL_TIME,  BL_REALTIME, BL_2WEP,   BL_SKILL,     BL_HUNGER, BL_CAP,  BL_CONDITION, BL_FLUSH };
     static const int fieldorder3[] = { BL_2WEP, BL_SKILL,     BL_HUNGER,
                                  BL_CAP,       BL_CONDITION, BL_FLUSH };
     static const int fieldorder4[] = { BL_PARTYSTATS, BL_FLUSH };

@@ -3389,6 +3389,12 @@ int final;
         enl_msg("Your game score ", "is ", "was ", buf, "");
     }
 #endif
+
+    if (flags.showrealtime)
+    {
+        Sprintf(buf, "%s", botl_realtime());
+        enl_msg("You ", "have been playing the game for ", "had been playing the game for ", buf, "");
+    }
 }
 
 /* hit points, energy points, armor class -- essential information which

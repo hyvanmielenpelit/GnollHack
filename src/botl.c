@@ -21,7 +21,7 @@ STATIC_DCL void NDECL(bot_via_windowport);
 STATIC_DCL void NDECL(stat_update_time);
 STATIC_DCL void FDECL(compose_partystatline, (char*, char*, char*, char*, char*));
 STATIC_DCL char* FDECL(conditionbitmask2str, (unsigned long));
-
+STATIC_DCL char* FDECL(format_duration_with_units, (long));
 
 STATIC_VAR struct _status_hilite_line_str* status_hilite_str = 0;
 STATIC_VAR int status_hilite_str_id = 0;
@@ -462,6 +462,44 @@ botl_score()
 }
 #endif /* SCORE_ON_BOTL */
 
+/* Returns a human readable formatted duration (e.g. 2h:03m:ss). */
+STATIC_OVL
+char* format_duration_with_units(seconds)
+long seconds;
+{
+    static char buf_fmt_duration[BUFSZ];
+    long minutes = seconds / 60;
+    long hours = minutes / 60;
+    long days = hours / 24;
+
+    seconds = seconds % 60;
+    minutes = minutes % 60;
+    hours = hours % 24;
+
+    if (days > 0) {
+        Sprintf(buf_fmt_duration, "%ldd:%2.2ldh:%2.2ldm:%2.2lds", days, hours, minutes, seconds);
+    }
+    else if (hours > 0) {
+        Sprintf(buf_fmt_duration, "%ldh:%2.2ldm:%2.2lds", hours, minutes, seconds);
+    }
+    else {
+        Sprintf(buf_fmt_duration, "%ldm:%2.2lds", minutes, seconds);
+    }
+    return buf_fmt_duration;
+}
+
+char*
+botl_realtime(void)
+{
+    long currenttime = urealtime.realtime + ((long)getnow() - (long)urealtime.start_timing);
+    char* duration = format_duration_with_units(currenttime);
+    /* only show 2 time units */
+    char* p = strchr(duration, ':');
+    if(p)
+        *(p + 4) = '\0';
+    return duration;
+}
+
 /* provide the name of the current level for display by various ports */
 int
 describe_level(buf)
@@ -631,6 +669,7 @@ STATIC_VAR const struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("secondary-weapon", "/%s", ANY_STR, 20, BL_UWEP2),
     INIT_BLSTAT("HD", " HD:%s", ANY_INT, 10, BL_HD),
     INIT_BLSTAT("time", " T:%s", ANY_LONG, 20, BL_TIME),
+    INIT_BLSTAT("realtime", " %s", ANY_STR, MAXVALWIDTH, BL_REALTIME),
     /* hunger used to be 'ANY_UINT'; see note below in bot_via_windowport() */
     INIT_BLSTAT("hunger", " %s", ANY_INT, 40, BL_HUNGER),
     INIT_BLSTATP("hitpoints", " HP:%s", ANY_INT, 10, BL_HPMAX, BL_HP),
@@ -831,6 +870,10 @@ bot_via_windowport()
 
     /* Time (moves) */
     blstats[idx][BL_TIME].a.a_long = moves;
+
+    /* Realtime */
+    Strcpy(blstats[idx][BL_REALTIME].val, flags.showrealtime ? botl_realtime() : "");
+    valset[BL_REALTIME] = TRUE;
 
     /* Hunger */
     /* note: u.uhs is unsigned, and 3.6.1's STATUS_HILITE defined
@@ -1357,6 +1400,13 @@ stat_update_time()
     valset[fld] = FALSE;
 
     eval_notify_windowport_field(fld, valset, idx);
+
+    /* Realtime */
+    fld = BL_REALTIME;
+    Strcpy(blstats[idx][fld].val, botl_realtime());
+    valset[fld] = FALSE;
+    eval_notify_windowport_field(fld, valset, idx);
+
     if ((windowprocs.wincap2 & WC2_FLUSH_STATUS) != 0L)
         status_update(BL_FLUSH, (genericptr_t) 0, 0, 0,
                       NO_COLOR, (unsigned long *) 0);
@@ -1489,6 +1539,7 @@ boolean *valsetlist;
         if (((i == BL_SCORE) && !flags.showscore)
             || ((i == BL_EXP) && !flags.showexp)
             || ((i == BL_TIME) && !flags.time)
+            || ((i == BL_REALTIME) && !flags.showrealtime)
             || ((i == BL_MOVE) && !flags.showmove)
             || ((i == BL_UWEP) && !flags.show_weapon_style)
             || ((i == BL_UWEP2) && (!flags.show_weapon_style || (uwep && is_wieldable_weapon(uwep) && objects[uwep->otyp].oc_bimanual) || (!u.twoweap && !uarms)))
@@ -1560,6 +1611,7 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
         fld = initblstats[i].fld;
         fldenabl = (fld == BL_SCORE) ? flags.showscore
                    : (fld == BL_TIME) ? flags.time
+                   : (fld == BL_REALTIME) ? flags.showrealtime
                      : (fld == BL_EXP) ? (boolean) (flags.showexp && !Upolyd)
                        : (fld == BL_MOVE) ? flags.showmove
                         : (fld == BL_UWEP) ? flags.show_weapon_style

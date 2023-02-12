@@ -6508,7 +6508,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         else
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "It is hot here.  You smell smoke...");
 
-#ifdef SHOW_SCORE_ON_BOTL
+#ifdef SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.enter_gehennom)
             context.botl = 1;
 #endif

@@ -291,6 +291,7 @@ E unsigned long FDECL(get_m_status_bits, (struct monst*, BOOLEAN_P, BOOLEAN_P, B
 E unsigned long FDECL(get_m_condition_bits, (struct monst*));
 E void FDECL(get_m_buff_bits, (struct monst*, unsigned long*, BOOLEAN_P));
 E void NDECL(status_reassess);
+E char* NDECL(botl_realtime);
 
 /* ### cmd.c ### */
 

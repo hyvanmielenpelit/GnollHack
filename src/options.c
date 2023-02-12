@@ -254,6 +254,7 @@ static struct Bool_Opt {
     { "showexp", &flags.showexp, FALSE, SET_IN_GAME },
     { "showmove", &flags.showmove, TRUE, SET_IN_GAME },
     { "showrace", &flags.showrace, FALSE, SET_IN_GAME },
+    { "showrealtime", &flags.showrealtime, FALSE, SET_IN_GAME },
 #ifdef SCORE_ON_BOTL
     { "showscore", &flags.showscore, FALSE, SET_IN_GAME },
 #else
@@ -5055,6 +5056,7 @@ boolean tinitial, tfrom_file;
 #ifdef SCORE_ON_BOTL
                 || boolopt[i].addr == &flags.showscore
 #endif
+                || boolopt[i].addr == &flags.showrealtime
                 || boolopt[i].addr == &flags.showexp
                 || boolopt[i].addr == &flags.showmove
                 || boolopt[i].addr == &flags.show_weapon_style

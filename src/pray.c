@@ -2501,7 +2501,7 @@ dosacrifice()
             else
             { /* super big win */
                 adjalign(10);
-#ifdef SHOW_SCORE_ON_BOTL
+#ifdef SCORE_ON_BOTL
                 if (flags.showscore && !u.uachieve.ascended)
                     context.botl = 1;
 #endif
