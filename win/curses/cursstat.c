@@ -783,7 +783,7 @@ boolean border;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
-                    if (!flags.fullstatuslineorder && number_of_lines == 3 && *text == ' ')
+                    if (!flags.fullstatuslineorder && number_of_lines >= 3 && *text == ' ')
                         ++text;
                 }
 				break;
@@ -829,6 +829,8 @@ boolean border;
 			case BL_MC_LVL:
 			case BL_GOLD:
                 spacing[fld] = 0; // 1; /* always extra space */
+                if (flags.fullstatuslineorder && first_status_line == BL_FLUSH)
+                    first_status_line = fld;
                 break;
             case BL_XP:
             case BL_HD:
