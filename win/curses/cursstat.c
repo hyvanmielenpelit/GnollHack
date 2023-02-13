@@ -1179,7 +1179,7 @@ boolean border;
                     if (asis)
                         waddstr(win, cbuf);
                     else /* cond by cond if any cond specifies highlighting */
-                        curs_stat_conds(0, &x, &y, (char *) 0, (boolean *) 0, (number_of_lines >= 3 && first_status_field == BL_CONDITION ? TRUE : FALSE));
+                        curs_stat_conds(0, &x, &y, (char *) 0, (boolean *) 0, (!flags.fullstatuslineorder && number_of_lines >= 3 && first_status_field == BL_CONDITION ? TRUE : FALSE));
                 } /* curses_condition_bits */
             } /* hitpointbar vs regular field vs conditions */
         } /* i (fld) */
