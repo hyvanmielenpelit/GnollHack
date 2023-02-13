@@ -260,15 +260,14 @@ E const char* NDECL(rank);
 E char *NDECL(do_statusline1);
 E void NDECL(check_gold_symbol);
 E char *NDECL(do_statusline2);
+E char* NDECL(do_statusline3);
 E void NDECL(bot);
 E void NDECL(timebot);
 E int FDECL(xlev_to_rank, (int));
 E const char *FDECL(rank_of, (int, SHORT_P, BOOLEAN_P));
 E int FDECL(title_to_mon, (const char *, int *, size_t*));
 E void NDECL(max_rank_sz);
-#ifdef SCORE_ON_BOTL
 E long NDECL(botl_score);
-#endif
 E int FDECL(describe_level, (char *));
 E int FDECL(describe_mode, (char*));
 E void FDECL(status_initialize, (BOOLEAN_P));
@@ -4039,7 +4038,7 @@ E void FDECL(genl_putmsghistory_ex, (const char *, const char*, const char*, BOO
 #ifdef HANGUPHANDLING
 E void NDECL(nhwindows_hangup);
 #endif
-E void NDECL(genl_status_init);
+E void FDECL(genl_status_init, (int));
 E void NDECL(genl_status_finish);
 E void FDECL(genl_status_enablefield,
              (int, const char *, const char *, BOOLEAN_P));

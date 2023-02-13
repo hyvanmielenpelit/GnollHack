@@ -165,6 +165,7 @@ static struct Bool_Opt {
 #endif
     { "force_hint", &flags.force_hint, FALSE, SET_IN_GAME },
     { "fullscreen", &iflags.wc2_fullscreen, FALSE, SET_IN_FILE }, /*WC2*/
+    { "fullstatuslineorder", &flags.fullstatuslineorder, TRUE, SET_IN_GAME },
     { "goldX", &iflags.goldX, FALSE, SET_IN_GAME },
     { "guicolor", &iflags.wc2_guicolor, TRUE, SET_IN_GAME}, /*WC2*/
     { "help", &flags.help, TRUE, SET_IN_GAME },
@@ -251,15 +252,11 @@ static struct Bool_Opt {
     { "search_box_traps", &flags.search_box_traps, TRUE, SET_IN_GAME },
     { "selectsaved", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME }, /*WC*/
     { "self_click_action", &flags.self_click_action, TRUE, SET_IN_GAME },
-    { "showexp", &flags.showexp, FALSE, SET_IN_GAME },
+    { "showexp", &flags.showexp, TRUE, SET_IN_GAME },
     { "showmove", &flags.showmove, TRUE, SET_IN_GAME },
     { "showrace", &flags.showrace, FALSE, SET_IN_GAME },
-    { "showrealtime", &flags.showrealtime, FALSE, SET_IN_GAME },
-#ifdef SCORE_ON_BOTL
-    { "showscore", &flags.showscore, FALSE, SET_IN_GAME },
-#else
-    { "showscore", (boolean *) 0, FALSE, SET_IN_FILE },
-#endif
+    { "showrealtime", &flags.showrealtime, TRUE, SET_IN_GAME },
+    { "showscore", &flags.showscore, TRUE, SET_IN_GAME },
     { "show_buff_timer", &flags.show_buff_timer, FALSE, SET_IN_GAME },
     { "show_decorations", &flags.show_decorations, TRUE, SET_IN_GAME },
     { "show_grid", &flags.show_grid, FALSE, SET_IN_GAME },
@@ -5053,9 +5050,7 @@ boolean tinitial, tfrom_file;
                 return retval;
 
             if (boolopt[i].addr == &flags.time
-#ifdef SCORE_ON_BOTL
                 || boolopt[i].addr == &flags.showscore
-#endif
                 || boolopt[i].addr == &flags.showrealtime
                 || boolopt[i].addr == &flags.showexp
                 || boolopt[i].addr == &flags.showmove
@@ -5065,7 +5060,13 @@ boolean tinitial, tfrom_file;
                 status_reassess();
                 context.botl = TRUE;
             }
-            else if (boolopt[i].addr == &flags.invlet_constant) 
+            else if(boolopt[i].addr == &flags.fullstatuslineorder)
+            {
+                (*windowprocs.win_status_init)(1);
+                status_reassess();
+                context.botl = TRUE;
+            }
+            else if (boolopt[i].addr == &flags.invlet_constant)
             {
                 if (flags.invlet_constant) 
                 {
@@ -5723,6 +5724,7 @@ doset() /* changing options via menu by Per Liboriussen */
 
     if (need_status_initialize)
     {
+        (*windowprocs.win_status_init)(1);
         status_reassess();
         need_redraw = TRUE;
     }

@@ -279,10 +279,8 @@ register int exper, gamescore;
     /* newrexp will always differ from oldrexp unless they're LONG_MAX */
     if (newscore != oldscore) {
         u.u_gamescore = newscore;
-#ifdef SCORE_ON_BOTL
         if (flags.showscore)
             context.botl = TRUE;
-#endif
     }
     if (u.u_gamescore >= (Role_if(PM_WIZARD) ? 1000 : 2000))
         flags.beginner = 0;

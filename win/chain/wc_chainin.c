@@ -522,9 +522,10 @@ boolean is_restoring;
 }
 
 void
-chainin_status_init()
+chainin_status_init(reassessment)
+int reassessment;
 {
-    (*cibase->nprocs->win_status_init)(cibase->ndata);
+    (*cibase->nprocs->win_status_init)(cibase->ndata, reassessment);
 }
 
 void

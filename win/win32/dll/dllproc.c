@@ -2417,10 +2417,10 @@ status_init()   -- core calls this to notify the window port that a status
                    the necessary initialization in here, allocate memory, etc.
 */
 void
-dll_status_init(void)
+dll_status_init(int reassessment)
 {
     dll_logDebug("dll_status_init()\n");
-    dll_callbacks.callback_status_init();
+    dll_callbacks.callback_status_init(reassessment);
 
 #if 0
     for (int i = 0; i < SIZE(_status_fields); i++) {

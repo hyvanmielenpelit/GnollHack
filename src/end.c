@@ -810,6 +810,8 @@ time_t when; /* date+time at end of game */
     dump_map();
     putstr(0, 0, do_statusline1());
     putstr(0, 0, do_statusline2());
+    if(iflags.wc2_statuslines > 2)
+        putstr(0, 0, do_statusline3());
     putstr(0, 0, "");
 
     dump_plines();

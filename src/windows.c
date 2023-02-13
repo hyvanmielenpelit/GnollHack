@@ -808,7 +808,7 @@ STATIC_VAR struct window_procs hup_procs = {
     hup_void_ndecl,                                   /* end_screen */
     hup_outrip, genl_preference_update, genl_getmsghistory_ex,
     genl_putmsghistory_ex,
-    hup_void_ndecl,                                   /* status_init */
+    hup_void_fdecl_int,                               /* status_init */
     hup_void_ndecl,                                   /* status_finish */
     genl_status_enablefield, hup_status_update,
     genl_can_suspend_no,
@@ -1155,8 +1155,12 @@ boolean status_activefields[MAXBLSTATS];
 //NEARDATA winid WIN_STATUS;
 
 void
-genl_status_init()
+genl_status_init(reassessment)
+int reassessment;
 {
+    if (reassessment)
+        return;
+
     int i;
 
     for (i = 0; i < MAXBLSTATS; ++i) {

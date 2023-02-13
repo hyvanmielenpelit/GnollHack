@@ -86,7 +86,7 @@ struct window_procs {
     void FDECL((*win_preference_update), (const char *));
     char *FDECL((*win_getmsghistory_ex), (char**, char**, BOOLEAN_P));
     void FDECL((*win_putmsghistory_ex), (const char *, const char *, const char *, BOOLEAN_P));
-    void NDECL((*win_status_init));
+    void FDECL((*win_status_init), (int));
     void NDECL((*win_status_finish));
     void FDECL((*win_status_enablefield),
                (int, const char *, const char *, BOOLEAN_P));
@@ -468,7 +468,7 @@ struct chain_procs {
     void FDECL((*win_preference_update), (CARGS, const char *));
     char *FDECL((*win_getmsghistory_ex), (CARGS, char**, char**, BOOLEAN_P));
     void FDECL((*win_putmsghistory_ex), (CARGS, const char *, const char*, const char*, BOOLEAN_P));
-    void FDECL((*win_status_init), (CARGS));
+    void FDECL((*win_status_init), (CARGS, int));
     void FDECL((*win_status_finish), (CARGS));
     void FDECL((*win_status_enablefield),
                (CARGS, int, const char *, const char *, BOOLEAN_P));
@@ -570,7 +570,7 @@ extern void FDECL(safe_outrip, (winid, int, time_t));
 extern void FDECL(safe_preference_update, (const char *));
 extern char *FDECL(safe_getmsghistory_ex, (char**, char**, BOOLEAN_P));
 extern void FDECL(safe_putmsghistory_ex, (const char *, const char *, const char *, BOOLEAN_P));
-extern void NDECL(safe_status_init);
+extern void FDECL(safe_status_init, (int));
 extern void NDECL(safe_status_finish);
 extern void FDECL(safe_status_enablefield,
                     (int, const char *, const char *, BOOLEAN_P));

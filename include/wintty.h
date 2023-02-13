@@ -241,7 +241,7 @@ E char *NDECL(tty_get_color_string);
 #endif
 E void FDECL(tty_status_enablefield,
              (int, const char *, const char *, BOOLEAN_P));
-E void NDECL(tty_status_init);
+E void FDECL(tty_status_init, (int));
 E void FDECL(tty_status_update, (int, genericptr_t, int, int, int, unsigned long *));
 
 /* other defs that really should go away (they're tty specific) */

@@ -1991,6 +1991,7 @@ domove_core()
                     play_sfx_sound(SFX_WRIGGLE_FREE);
                     You("pull free from %s.", mon_nam(u.ustuck));
                     u.ustuck = 0;
+                    context.botl = context.botlx = 1;
                     if (iflags.using_gui_sounds)
                         delay_output_milliseconds(100); // Just give a bit of time for the sound before moving on.
                     break;

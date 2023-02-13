@@ -93,7 +93,7 @@ void dll_preference_update(const char *pref);
 char *dll_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init);
 void dll_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring);
 
-void dll_status_init(void);
+void dll_status_init(int);
 void dll_status_finish(void);
 void dll_status_enablefield(int fieldidx, const char *nm, const char *fmt,
                               boolean enable);

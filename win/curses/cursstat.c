@@ -52,8 +52,11 @@ static void FDECL(curses_print_rest_partyline, (WINDOW*, boolean, char*, int*, i
 #define STATVAL_WIDTH 60 /* overkill; was MAXCO (200), massive overkill */
 
 void
-curses_status_init()
+curses_status_init(int reassessment)
 {
+    if (reassessment)
+        return;
+
     int i;
 
     for (i = 0; i < MAXBLSTATS; ++i) {
@@ -66,7 +69,7 @@ curses_status_init()
     vert_status_dirty = 1;
 
     /* let genl_status_init do most of the initialization */
-    genl_status_init();
+    genl_status_init(reassessment);
     return;
 }
 
@@ -455,6 +458,180 @@ boolean border;
         BL_FLUSH, blPAD, blPAD, blPAD,
         blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
         blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
+    },
+    threelineorder_alt[3][blCols] = { /* moves align to line 2, leveldesc+ to 3 */
+        { BL_TITLE,
+          /*xspace*/ BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
+          /*xspace*/ BL_ALIGN,
+          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { //BL_ALIGN,
+          /*xspace*/ //BL_GOLD,
+          /*xspace*/ BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX,
+          /*xspace*/ BL_ENE, BL_ENEMAX,
+          /*xspace*/ BL_AC, 
+		  /*xspace*/ BL_MC_LVL, BL_MC_PCT,
+          /*xspace*/ BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD,
+		  BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+		{ /*xspace*/ BL_GOLD, BL_SCORE, BL_TIME, BL_REALTIME, BL_SKILL, BL_2WEP,
+		  /*xspace*/ BL_HUNGER, BL_CAP,
+		  /*xspecial*/ BL_CONDITION,
+          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+          blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
+    },
+    fourlineorder_alt[4][blCols] = { /* moves align to line 2, leveldesc+ to 3 */
+        { BL_TITLE,
+          /*xspace*/ BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
+          /*xspace*/ BL_ALIGN,
+          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { //BL_ALIGN,
+          /*xspace*/ //BL_GOLD,
+            /*xspace*/ BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX,
+            /*xspace*/ BL_ENE, BL_ENEMAX,
+            /*xspace*/ BL_AC,
+            /*xspace*/ BL_MC_LVL, BL_MC_PCT,
+            /*xspace*/ BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD,
+            BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+          { /*xspace*/ BL_GOLD, BL_SCORE, BL_TIME, BL_REALTIME, BL_SKILL, BL_2WEP,
+          /*xspace*/ BL_HUNGER, BL_CAP,
+          /*xspecial*/ BL_CONDITION,
+          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+          blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
+    },
+    fivelineorder_alt[5][blCols] = { /* moves align to line 2, leveldesc+ to 3 */
+        { BL_TITLE,
+        /*xspace*/ BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
+        /*xspace*/ BL_ALIGN,
+        BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { //BL_ALIGN,
+          /*xspace*/ //BL_GOLD,
+            /*xspace*/ BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX,
+            /*xspace*/ BL_ENE, BL_ENEMAX,
+            /*xspace*/ BL_AC,
+            /*xspace*/ BL_MC_LVL, BL_MC_PCT,
+            /*xspace*/ BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD,
+            BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+          { /*xspace*/ BL_GOLD, BL_SCORE, BL_TIME, BL_REALTIME, BL_SKILL, BL_2WEP,
+          /*xspace*/ BL_HUNGER, BL_CAP,
+          /*xspecial*/ BL_CONDITION,
+          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+          blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS2,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
+    },
+    sixlineorder_alt[6][blCols] = { /* moves align to line 2, leveldesc+ to 3 */
+        { BL_TITLE,
+        /*xspace*/ BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
+        /*xspace*/ BL_ALIGN,
+        BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { //BL_ALIGN,
+          /*xspace*/ //BL_GOLD,
+            /*xspace*/ BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX,
+            /*xspace*/ BL_ENE, BL_ENEMAX,
+            /*xspace*/ BL_AC,
+            /*xspace*/ BL_MC_LVL, BL_MC_PCT,
+            /*xspace*/ BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD,
+            BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+          { /*xspace*/ BL_GOLD, BL_SCORE, BL_TIME, BL_REALTIME, BL_SKILL, BL_2WEP,
+          /*xspace*/ BL_HUNGER, BL_CAP,
+          /*xspecial*/ BL_CONDITION,
+          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+          blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS2,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS3,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
+    },
+    sevenlineorder_alt[7][blCols] = { /* moves align to line 2, leveldesc+ to 3 */
+        { BL_TITLE,
+        /*xspace*/ BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
+        /*xspace*/ BL_ALIGN,
+        BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { //BL_ALIGN,
+          /*xspace*/ //BL_GOLD,
+            /*xspace*/ BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX,
+            /*xspace*/ BL_ENE, BL_ENEMAX,
+            /*xspace*/ BL_AC,
+            /*xspace*/ BL_MC_LVL, BL_MC_PCT,
+            /*xspace*/ BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD,
+            BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+          { /*xspace*/ BL_GOLD, BL_SCORE, BL_TIME, BL_REALTIME, BL_SKILL, BL_2WEP,
+          /*xspace*/ BL_HUNGER, BL_CAP,
+          /*xspecial*/ BL_CONDITION,
+          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+          blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS2,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS3,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS4,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
+    },
+    eightlineorder_alt[8][blCols] = { /* moves align to line 2, leveldesc+ to 3 */
+        { BL_TITLE,
+        /*xspace*/ BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
+        /*xspace*/ BL_ALIGN,
+        BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { //BL_ALIGN,
+          /*xspace*/ //BL_GOLD,
+            /*xspace*/ BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX,
+            /*xspace*/ BL_ENE, BL_ENEMAX,
+            /*xspace*/ BL_AC,
+            /*xspace*/ BL_MC_LVL, BL_MC_PCT,
+            /*xspace*/ BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD,
+            BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+          { /*xspace*/ BL_GOLD, BL_SCORE, BL_TIME, BL_REALTIME, BL_SKILL, BL_2WEP,
+          /*xspace*/ BL_HUNGER, BL_CAP,
+          /*xspecial*/ BL_CONDITION,
+          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+          blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS2,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS3,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS4,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+        { /*xspace*/ BL_PARTYSTATS5,
+        BL_FLUSH, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+        blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
     };
 
     const enum statusfields (*fieldorder)[blCols];
@@ -497,9 +674,11 @@ boolean border;
      */
 
     number_of_lines = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines;
-    fieldorder = (number_of_lines >= 8) ? eightlineorder : (number_of_lines == 7) ? sevenlineorder : (number_of_lines == 6) ? sixlineorder : 
+    fieldorder = flags.altstatuslineorder ? ((number_of_lines >= 8) ? eightlineorder_alt : (number_of_lines == 7) ? sevenlineorder_alt : (number_of_lines == 6) ? sixlineorder_alt :
+        (number_of_lines == 5) ? fivelineorder_alt : (number_of_lines == 4) ? fourlineorder_alt :
+        (number_of_lines != 3) ? twolineorder : threelineorder_alt) : ((number_of_lines >= 8) ? eightlineorder : (number_of_lines == 7) ? sevenlineorder : (number_of_lines == 6) ? sixlineorder :
         (number_of_lines == 5) ? fivelineorder : (number_of_lines == 4) ? fourlineorder : 
-        (number_of_lines != 3) ? twolineorder : threelineorder;
+        (number_of_lines != 3) ? twolineorder : threelineorder);
 
     cbuf[0] = '\0';
     x = y = border ? 1 : 0; /* origin; ignored by curs_stat_conds(0) */

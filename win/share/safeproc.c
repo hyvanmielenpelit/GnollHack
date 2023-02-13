@@ -437,7 +437,8 @@ char *posbar;
  *      -- initialize the port-specific data structures.
  */
 void
-safe_status_init()
+safe_status_init(reassessment)
+int reassessment;
 {
     return;
 }

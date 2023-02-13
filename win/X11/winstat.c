@@ -177,7 +177,8 @@ unsigned long *bmarray;
 }
 
 void
-X11_status_init()
+X11_status_init(reassessment)
+int reassessment;
 {
 #ifdef STATUS_HILITES
     int i;
@@ -188,7 +189,7 @@ X11_status_init()
     hpbar_percent = 0, hpbar_color = NO_COLOR;
 #endif /* STATUS_HILITES */
     /* let genl_status_init do most of the initialization */
-    genl_status_init();
+    genl_status_init(reassessment);
 }
 
 void

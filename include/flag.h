@@ -137,6 +137,7 @@ struct flag {
     boolean wiz_mstatusline; /* extra information on monsters */
     boolean wiz_alwaysenc;   /* creates always an encounter */
     boolean show_decorations;/* show decorations on the walls etc. in ASCII */
+    boolean fullstatuslineorder;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
     boolean reserved_bool1;

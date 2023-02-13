@@ -734,8 +734,11 @@ namespace GnollHackClient
                 _ghWindows[StatusWindowId].Clear();
             }
         }
-        public void ClientCallback_StatusInit()
+        public void ClientCallback_StatusInit(int reassessment)
         {
+            if (reassessment != 0)
+                return;
+
             for(int i = 0; i < (int)statusfields.MAXBLSTATS; i++)
             {
                 _gamePage.StatusFields[i] = new GHStatusField();

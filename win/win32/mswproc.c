@@ -3301,7 +3301,7 @@ status_init()   -- core calls this to notify the window port that a status
                    the necessary initialization in here, allocate memory, etc.
 */
 void
-mswin_status_init(void)
+mswin_status_init(int reassessment)
 {
     logDebug("mswin_status_init()\n");
 
@@ -3337,6 +3337,10 @@ mswin_status_init(void)
         _status_hilites[i].over = BL_HILITE_NONE;
 #endif /* STATUS_HILITES */
     }
+
+    if (reassessment)
+        return;
+
     /* Use a window for the genl version; backward port compatibility */
     WIN_STATUS = create_nhwindow(NHW_STATUS);
     display_nhwindow(WIN_STATUS, FALSE);
@@ -3356,10 +3360,10 @@ mswin_statuslines_init(void)
         mswin_status_strings* status_strings = &line->status_strings;
         status_strings->count = 0;
 
-        int fc = iflags.wc2_statuslines == 2 ? fieldcounts_2statuslines[lineIndex] : fieldcounts[lineIndex];
+        int fc = iflags.wc2_statuslines == 2 ? fieldcounts_2statuslines[lineIndex] : flags.fullstatuslineorder ? fieldcounts_alt[lineIndex] : fieldcounts[lineIndex];
         for (int i = 0; i < fc; i++) 
         {
-            int field_index = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines[lineIndex][i] : fieldorders[lineIndex][i];
+            int field_index = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines[lineIndex][i] : flags.fullstatuslineorder ? fieldorders_alt[lineIndex][i] : fieldorders[lineIndex][i];
             nhassert(field_index <= SIZE(_status_fields));
 
             nhassert(status_fields->count <= SIZE(status_fields->status_fields));

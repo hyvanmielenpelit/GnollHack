@@ -197,7 +197,7 @@ void mswin_preference_update(const char *pref);
 char *mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init);
 void mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring);
 
-void mswin_status_init(void);
+void mswin_status_init(int);
 void mswin_statuslines_init(void);
 void mswin_status_finish(void);
 void mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,

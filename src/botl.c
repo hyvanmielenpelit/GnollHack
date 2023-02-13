@@ -101,42 +101,112 @@ do_statusline1()
             ACURR(A_DEX), ACURR(A_CON), ACURR(A_INT), ACURR(A_WIS),
             ACURR(A_CHA));
 
-    /*
-    Sprintf(nb = eos(nb),
+    if (flags.fullstatuslineorder)
+    {
+        Sprintf(nb = eos(nb),
             (u.ualign.type == A_CHAOTIC)
-                ? "  Chaotic"
-                : (u.ualign.type == A_NEUTRAL) ? "  Neutral" : "  Lawful");
-    */
-
-    long money;
-    if ((money = money_cnt(invent)) < 0L)
-        money = 0L;
-    Sprintf(nb = eos(nb), "  %s:%-2ld",
-        (iflags.in_dumplog || iflags.invis_goldsym) ? "$"
-          : encglyph(objnum_to_glyph(GOLD_PIECE)),
-        min(money, 999999L));
-
-#if 0
-    /* No score shown on two-line setup --JG */
-#ifdef SCORE_ON_BOTL
-    if (flags.showscore)
-        Sprintf(nb = eos(nb), " S:%ld", botl_score());
-#endif
-#endif
+            ? "  Chaotic"
+            : (u.ualign.type == A_NEUTRAL) ? "  Neutral" : "  Lawful");
+    }
+    else
+    {
+        long money;
+        if ((money = money_cnt(invent)) < 0L)
+            money = 0L;
+        Sprintf(nb = eos(nb), "  %s:%-2ld",
+            (iflags.in_dumplog || iflags.invis_goldsym) ? "$"
+            : encglyph(objnum_to_glyph(GOLD_PIECE)),
+            min(money, 999999L));
+    }
     return newbot1;
+}
+
+size_t
+print_conditions(cond)
+char* cond; /* buffer */
+{
+    if (!cond)
+        return 0;
+
+    char* nb;
+    size_t cln;
+    int cap;
+    char buf[BUFSZ * 2] = "";
+    buf[0] = '\0'; /* once non-empty, cond will have a leading space */
+    nb = buf;
+
+    if (u.ustuck && !u.uswallow)
+        Strcpy(nb = eos(nb), " Grab");
+    if (Stoned)
+        Strcpy(nb = eos(nb), " Stone");
+    if (Slimed)
+        Strcpy(nb = eos(nb), " Slime");
+    if (Strangled && !Breathless)
+        Strcpy(nb = eos(nb), " Strngl");
+    if (Strangled && !Survives_without_air)
+        Strcpy(nb = eos(nb), " Suffoc");
+    if (Slowed)
+        Strcpy(nb = eos(nb), " Slow");
+    if (Silenced)
+        Strcpy(nb = eos(nb), " Silent");
+    if (Paralyzed_or_immobile)
+        Strcpy(nb = eos(nb), " Paral");
+    if (Fearful)
+        Strcpy(nb = eos(nb), " Fear");
+    if (Sleeping)
+        Strcpy(nb = eos(nb), " Sleep");
+    if (Cancelled)
+        Strcpy(nb = eos(nb), " Cancl");
+    if (Sick)
+        Strcpy(nb = eos(nb), " TermIll");
+    if (FoodPoisoned)
+        Strcpy(nb = eos(nb), " FoodPois");
+    if (MummyRot)
+        Strcpy(nb = eos(nb), " Rot");
+    if (u.ulycn >= LOW_PM)
+        Strcpy(nb = eos(nb), " Lyca");
+    if (u.uhs != NOT_HUNGRY)
+        Sprintf(nb = eos(nb), " %s", hu_stat[u.uhs]);
+    if ((cap = near_capacity()) > UNENCUMBERED)
+        Sprintf(nb = eos(nb), " %s", enc_stat[cap]);
+    if (Blind)
+        Strcpy(nb = eos(nb), " Blind");
+    if (Deaf)
+        Strcpy(nb = eos(nb), " Deaf");
+    if (Stunned)
+        Strcpy(nb = eos(nb), " Stun");
+    if (Confusion)
+        Strcpy(nb = eos(nb), " Conf");
+    if (Hallucination)
+        Strcpy(nb = eos(nb), " Hallu");
+    /* levitation and flying are mutually exclusive; riding is not */
+    if (Levitation)
+        Strcpy(nb = eos(nb), " Lev");
+    if (Flying)
+        Strcpy(nb = eos(nb), " Fly");
+    if (u.usteed)
+        Strcpy(nb = eos(nb), " Ride");
+
+    if (*buf == ' ')
+        Strcpy(cond, buf + 1);
+    else
+        Strcpy(cond, buf);
+
+    cln = strlen(cond);
+    return cln;
 }
 
 char *
 do_statusline2()
 {
-    static char newbot2[BUFSZ], /* MAXCO: botl.h */
+    static char newbot2[BUFSZ * 2], /* MAXCO: botl.h */
          /* dungeon location (and gold), hero health (HP, PW, AC),
             experience (HD if poly'd, else Exp level and maybe Exp points),
             time (in moves), varying number of status conditions */
         gmode[QBUFSZ], dloc[QBUFSZ], hlth[QBUFSZ], expr[QBUFSZ], tmmv[QBUFSZ], move[QBUFSZ], weaponstyle[QBUFSZ], cond[QBUFSZ], skll[QBUFSZ];
-    register char *nb;
+
     size_t gln, dln, hln, xln, mln, tln, cln, sln, wln;
-    int hp, hpmax, cap;
+    int hp, hpmax;
 
     /*
      * Various min(x,9999)'s are to avoid having excessive values
@@ -162,7 +232,7 @@ do_statusline2()
     hpmax = Upolyd ? u.mhmax : u.uhpmax;
     if (hp < 0)
         hp = 0;
-    Sprintf(hlth, "HP:%d(%d) MP:%d(%d) AC:%-2d",
+    Sprintf(hlth, "HP:%d(%d) MP:%d(%d) AC:%d",
             min(hp, 9999), min(hpmax, 9999),
             min(u.uen, 9999), min(u.uenmax, 9999), u.uac);
     hln = strlen(hlth);
@@ -199,77 +269,33 @@ do_statusline2()
     wln = strlen(weaponstyle);
 
     /* time/move counter */
-    if (flags.time)
-        Sprintf(tmmv, "T:%ld", moves);
+    tmmv[0] = '\0';
+    tln = 0;
+
+    if (!flags.fullstatuslineorder)
+    {
+        if (flags.time)
+            Sprintf(tmmv, "T:%ld", moves);
+        else
+            tmmv[0] = '\0';
+        tln = strlen(tmmv);
+
+    }
+
+    skll[0] = '\0';
+    sln = 0;
+
+    if (iflags.wc2_statuslines == 2)
+    {
+        /* can advance skills */
+        Sprintf(skll, "%s", u.canadvanceskill ? "Skill" : ""); // can_advance_any_skill()
+        Sprintf(eos(skll), "%s%s", u.twoweap && *skll ? " " : "", u.twoweap ? "2Weap" : ""); // can_advance_any_skill()
+        sln = strlen(skll);
+
+        cln = print_conditions(cond);
+    }
     else
-        tmmv[0] = '\0';
-    tln = strlen(tmmv);
-
-    /* can advance skills */
-    Sprintf(skll, "%s", u.canadvanceskill ? "Skill" : ""); // can_advance_any_skill()
-    sln = strlen(skll);
-
-    /* status conditions; worst ones first */
-    cond[0] = '\0'; /* once non-empty, cond will have a leading space */
-    nb = cond;
-    /*
-     * Stoned, Slimed, Strangled, and both types of Sick are all fatal
-     * unless remedied before timeout expires.  Should we order them by
-     * shortest time left?  [Probably not worth the effort, since it's
-     * unusual for more than one of them to apply at a time.]
-     */
-    if (u.ustuck && !u.uswallow)
-        Strcpy(nb = eos(nb), " Grab");
-    if (Stoned)
-        Strcpy(nb = eos(nb), " Stone");
-    if (Slimed)
-        Strcpy(nb = eos(nb), " Slime");
-    if (Strangled && !Breathless)
-        Strcpy(nb = eos(nb), " Strngl");
-    if (Strangled && !Survives_without_air)
-        Strcpy(nb = eos(nb), " Suffoc");
-    if (Slowed)
-        Strcpy(nb = eos(nb), " Slow");
-    if (Silenced)
-        Strcpy(nb = eos(nb), " Silent");
-    if (Paralyzed_or_immobile)
-        Strcpy(nb = eos(nb), " Paral");
-    if (Fearful)
-        Strcpy(nb = eos(nb), " Fear");
-    if (Sleeping)
-        Strcpy(nb = eos(nb), " Sleep");
-    if (Cancelled)
-        Strcpy(nb = eos(nb), " Cancl");
-    if (Sick) 
-        Strcpy(nb = eos(nb), " TermIll");
-    if (FoodPoisoned)
-        Strcpy(nb = eos(nb), " FoodPois");
-    if (MummyRot)
-        Strcpy(nb = eos(nb), " Rot");
-    if (u.ulycn >= LOW_PM)
-        Strcpy(nb = eos(nb), " Lyca");
-    if (u.uhs != NOT_HUNGRY)
-        Sprintf(nb = eos(nb), " %s", hu_stat[u.uhs]);
-    if ((cap = near_capacity()) > UNENCUMBERED)
-        Sprintf(nb = eos(nb), " %s", enc_stat[cap]);
-    if (Blind)
-        Strcpy(nb = eos(nb), " Blind");
-    if (Deaf)
-        Strcpy(nb = eos(nb), " Deaf");
-    if (Stunned)
-        Strcpy(nb = eos(nb), " Stun");
-    if (Confusion)
-        Strcpy(nb = eos(nb), " Conf");
-    if (Hallucination)
-        Strcpy(nb = eos(nb), " Hallu");
-    /* levitation and flying are mutually exclusive; riding is not */
-    if (Levitation)
-        Strcpy(nb = eos(nb), " Lev");
-    if (Flying)
-        Strcpy(nb = eos(nb), " Fly");
-    if (u.usteed)
-        Strcpy(nb = eos(nb), " Ride");
-    cln = strlen(cond);
+        cln = 0;
 
     /*
      * Put the pieces together.  If they all fit, keep the traditional
@@ -283,35 +309,220 @@ do_statusline2()
      * wider displays can still show wider status than the map if the
      * interface supports that.
      */
-    if (gln + 1 + dln + 1 + hln + 1 + xln + 1 + mln + 1 + wln + 1 + tln + 1 + sln + 1 + cln <= COLNO)
+    if (gln + (dln ? 1 : 0) + dln + (hln ? 1 : 0) + hln + (xln ? 1 : 0) + xln + (mln ? 1 : 0) + mln + (wln ? 1 : 0) + wln + (tln ? 1 : 0) + tln + (sln ? 1 : 0) + sln + (cln ? 1 : 0) + cln <= COLNO)
     {
-        Sprintf(newbot2, "%s %s %s %s %s %s %s %s %s", gmode, dloc, hlth, expr, move, weaponstyle, tmmv, skll, cond);
+        if (*gmode)
+        {
+            if (*newbot2)
+                Strcat(newbot2, " ");
+            Strcat(newbot2, gmode);
+        }
+        if (*dloc)
+        {
+            if (*newbot2)
+                Strcat(newbot2, " ");
+            Strcat(newbot2, dloc);
+        }
+        if (*hlth)
+        {
+            if (*newbot2)
+                Strcat(newbot2, " ");
+            Strcat(newbot2, hlth);
+        }
+        if (*expr)
+        {
+            if (*newbot2)
+                Strcat(newbot2, " ");
+            Strcat(newbot2, expr);
+        }
+        if (*move)
+        {
+            if (*newbot2)
+                Strcat(newbot2, " ");
+            Strcat(newbot2, move);
+        }
+        if (*weaponstyle)
+        {
+            if (*newbot2)
+                Strcat(newbot2, " ");
+            Strcat(newbot2, weaponstyle);
+        }
+        if (*tmmv)
+        {
+            if (*newbot2)
+                Strcat(newbot2, " ");
+            Strcat(newbot2, tmmv);
+        }
+        if (*skll)
+        {
+            if (*newbot2)
+                Strcat(newbot2, " ");
+            Strcat(newbot2, skll);
+        }
+        if (*cond)
+        {
+            if (*newbot2)
+                Strcat(newbot2, " ");
+            Strcat(newbot2, cond);
+        }
+        //Sprintf(newbot2, "%s %s %s %s %s %s %s %s %s", gmode, dloc, hlth, expr, move, weaponstyle, tmmv, skll, cond);
     }
     else
     {
-        if (gln + 1 + dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1 > MAXCO)
+        if (gln + (dln ? 1 : 0) + dln + (hln ? 1 : 0) + hln + (xln ? 1 : 0) + xln + (tln ? 1 : 0) + tln + (cln ? 1 : 0) + cln <= MAXCO)
         {
-            panic("bot2: second status line exceeds MAXCO (%u > %d)",
-                  (int)(gln + 1 + dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1), MAXCO);
-            strcpy(newbot2, "");
-            return newbot2;
+            if (*gmode)
+            {
+                if (*newbot2)
+                    Strcat(newbot2, " ");
+                Strcat(newbot2, gmode);
+            }
+            if (*dloc)
+            {
+                if (*newbot2)
+                    Strcat(newbot2, " ");
+                Strcat(newbot2, dloc);
+            }
+            if (*hlth)
+            {
+                if (*newbot2)
+                    Strcat(newbot2, " ");
+                Strcat(newbot2, hlth);
+            }
+            if (*expr)
+            {
+                if (*newbot2)
+                    Strcat(newbot2, " ");
+                Strcat(newbot2, expr);
+            }
+            if (*tmmv)
+            {
+                if (*newbot2)
+                    Strcat(newbot2, " ");
+                Strcat(newbot2, tmmv);
+            }
+            if (*cond)
+            {
+                if (*newbot2)
+                    Strcat(newbot2, " ");
+                Strcat(newbot2, cond);
+            }
         }
-        else if (gln + 1 + dln+ 1 + hln + 1 + xln + 1 + cln <= COLNO)
+        else if (gln + (dln ? 1 : 0) + dln + (hln ? 1 : 0) + hln + (cln ? 1 : 0) + cln <= COLNO)
         {
-            Sprintf(newbot2, "%s %s %s %s %s %s", gmode, dloc, hlth, expr, cond, tmmv);
-        } 
-        else if (gln + 1 + dln + 1 + hln + 1 + cln <= COLNO)
-        {
-            Sprintf(newbot2, "%s %s %s %s %s %s", gmode, dloc, hlth, cond, expr, tmmv);
+            if (*gmode)
+            {
+                if (*newbot2)
+                    Strcat(newbot2, " ");
+                Strcat(newbot2, gmode);
+            }
+            if (*dloc)
+            {
+                if (*newbot2)
+                    Strcat(newbot2, " ");
+                Strcat(newbot2, dloc);
+            }
+            if (*hlth)
+            {
+                if (*newbot2)
+                    Strcat(newbot2, " ");
+                Strcat(newbot2, hlth);
+            }
+            if (*cond)
+            {
+                if (*newbot2)
+                    Strcat(newbot2, " ");
+                Strcat(newbot2, cond);
+            }
         }
         else 
         {
-            Sprintf(newbot2, "%s %s %s %s %s", hlth, cond, dloc, expr, tmmv);
+            Strcpy(newbot2, "");
         }
         /* only two or three consecutive spaces available to squeeze out */
         mungspaces(newbot2);
     }
     return newbot2;
+}
+
+char*
+do_statusline3()
+{
+    if (iflags.wc2_statuslines < 3)
+        return "";
+
+    static char newbot3[BUFSZ * 2] = "", cond[QBUFSZ * 2] = "", moneybuf[QBUFSZ] = "";
+    size_t cln;
+
+    if (iflags.wc2_statuslines > 2)
+        cln = print_conditions(cond);
+    else
+        cln = 0;
+
+    if (iflags.wc2_statuslines > 2)
+        cln = print_conditions(cond);
+    else
+        cln = 0;
+
+    long money;
+    if ((money = money_cnt(invent)) < 0L)
+        money = 0L;
+    Sprintf(moneybuf, "%s:%ld", (iflags.in_dumplog || iflags.invis_goldsym) ? "$" : encglyph(objnum_to_glyph(GOLD_PIECE)), money);
+
+    Strcpy(newbot3, "");
+    if (flags.fullstatuslineorder)
+    {
+        Strcpy(newbot3, moneybuf);
+        if (flags.showscore)
+        {
+            if (*newbot3)
+                Strcat(newbot3, " ");
+            
+            Sprintf(eos(newbot3), "S:%ld", botl_score());
+        }
+        if (flags.time)
+        {
+            if (*newbot3)
+                Strcat(newbot3, " ");
+
+            Sprintf(eos(newbot3), "T:%ld", moves);
+        }
+        if (flags.showrealtime)
+        {
+            if (*newbot3)
+                Strcat(newbot3, " ");
+
+            Sprintf(eos(newbot3), "%s", botl_realtime());
+        }
+
+        Sprintf(eos(newbot3), "%s%s", *newbot3 && u.canadvanceskill ? " " : "", u.canadvanceskill ? "Skill" : "");
+        Sprintf(eos(newbot3), "%s%s", *
+            newbot3 && u.twoweap ? " " : "", u.twoweap ? "2Weap" : "");
+
+        if (cln > 0)
+        {
+            if (*newbot3)
+                Strcat(newbot3, " ");
+
+            Strcat(newbot3, cond);
+
+        }
+    }
+    else
+    {
+        Sprintf(eos(newbot3), "%s%s", *newbot3 && u.canadvanceskill ? " " : "", u.canadvanceskill ? "Skill" : "");
+        Sprintf(eos(newbot3), "%s%s", *newbot3 && u.twoweap ? " " : "", u.twoweap ? "2Weap" : "");
+        if (cln > 0)
+        {
+            if (*newbot3)
+                Strcat(newbot3, " ");
+
+            Strcat(newbot3, cond);
+        }
+    }
+
+    newbot3[COLNO] = '\0';
+    return newbot3;
 }
 
 void
@@ -329,6 +540,11 @@ bot()
             putstr(WIN_STATUS, 0, do_statusline1());
             curs(WIN_STATUS, 1, 1);
             putmixed(WIN_STATUS, 0, do_statusline2());
+            if (iflags.wc2_statuslines > 2)
+            {
+                curs(WIN_STATUS, 1, 2);
+                putmixed(WIN_STATUS, 0, do_statusline3());
+            }
         }
     }
     context.botl = context.botlx = iflags.time_botl = FALSE;
@@ -454,13 +670,11 @@ max_rank_sz()
     return;
 }
 
-#ifdef SCORE_ON_BOTL
 long
 botl_score()
 {
     return get_current_game_score();
 }
-#endif /* SCORE_ON_BOTL */
 
 /* Returns a human readable formatted duration (e.g. 2h:03m:ss). */
 STATIC_OVL
@@ -491,7 +705,7 @@ long seconds;
 long
 get_current_game_duration(VOID_ARGS)
 {
-    return urealtime.realtime + ((long)getnow() - (long)urealtime.start_timing);
+    return iflags.in_dumplog ? urealtime.realtime : urealtime.realtime + ((long)getnow() - (long)urealtime.start_timing);
 }
 
 char*
@@ -784,11 +998,7 @@ bot_via_windowport()
                                                ? "Neutral"
                                                : "Lawful");
     /* Score */
-    blstats[idx][BL_SCORE].a.a_long =
-#ifdef SCORE_ON_BOTL
-        flags.showscore ? botl_score() :
-#endif
-        0L;
+    blstats[idx][BL_SCORE].a.a_long = flags.showscore ? botl_score() : 0L;
 
     /*  Hit points  */
     i = Upolyd ? u.mh : u.uhp;
@@ -1605,7 +1815,7 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
         if (blinit)
             impossible("2nd status_initialize with full init.");
         init_blstats();
-        (*windowprocs.win_status_init)();
+        (*windowprocs.win_status_init)(reassessment);
         blinit = TRUE;
     }
     else if (!blinit) 
@@ -1613,6 +1823,7 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
         panic("status 'reassess' before init");
         return;
     }
+
     for (i = 0; i < MAXBLSTATS; ++i) {
         fld = initblstats[i].fld;
         fldenabl = (fld == BL_SCORE) ? flags.showscore
@@ -3619,7 +3830,8 @@ status_hilite_menu_choose_field()
     start_menu(tmpwin);
 
     for (i = 0; i < MAXBLSTATS; i++) {
-#ifndef SCORE_ON_BOTL
+//#ifndef SCORE_ON_BOTL
+#if 0
         if (initblstats[i].fld == BL_SCORE
             && !blstats[0][BL_SCORE].thresholds)
             continue;
@@ -4346,7 +4558,8 @@ int fld;
                  "Remove selected hilites", MENU_UNSELECTED);
     }
 
-#ifndef SCORE_ON_BOTL
+//#ifndef SCORE_ON_BOTL
+#if 0
     if (fld == BL_SCORE) {
         /* suppress 'Z - Add a new hilite' for 'score' when SCORE_ON_BOTL
            is disabled; we wouldn't be called for 'score' unless it has
@@ -4465,7 +4678,8 @@ shlmenu_redo:
         int count = status_hilite_linestr_countfield(i);
         char buf[BUFSZ];
 
-#ifndef SCORE_ON_BOTL
+//#ifndef SCORE_ON_BOTL
+#if 0
         /* config file might contain rules for highlighting 'score'
            even when SCORE_ON_BOTL is disabled; if so, 'O' command
            menus will show them and allow deletions but not additions,

@@ -113,7 +113,7 @@ namespace GnollHackClient.Unknown
             VoidConstCharCallback callback_preference_update,
             GetMsgHistoryCallback callback_getmsghistory,
             PutMsgHistoryCallback callback_putmsghistory,
-            VoidVoidCallback callback_status_init,
+            VoidIntCallback callback_status_init,
             VoidVoidCallback callback_status_finish,
             VoidIntConstCharPtrConstCharPtrBooleanCallback callback_status_enablefield,
             StatusUpdateCallback callback_status_update,

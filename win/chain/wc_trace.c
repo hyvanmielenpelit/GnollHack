@@ -1125,15 +1125,16 @@ boolean is_restoring;
 }
 
 void
-trace_status_init(vp)
+trace_status_init(vp, reassessment)
 void *vp;
+int reassessment;
 {
     struct trace_data *tdp = vp;
 
     fprintf(wc_tracelogf, "%sstatus_init()\n", INDENT);
 
     PRE;
-    (*tdp->nprocs->win_status_init)(tdp->ndata);
+    (*tdp->nprocs->win_status_init)(tdp->ndata, reassessment);
     POST;
 }
 

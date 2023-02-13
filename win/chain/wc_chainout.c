@@ -659,12 +659,13 @@ boolean is_restoring;
 }
 
 void
-chainout_status_init(vp)
+chainout_status_init(vp, reassessment)
 void *vp;
+int reassessment;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_status_init)();
+    (*tdp->nprocs->win_status_init)(reassessment);
 }
 
 void

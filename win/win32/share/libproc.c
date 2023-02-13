@@ -786,10 +786,10 @@ static const char* cond_names[NUM_BL_CONDITIONS] = {
     "Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", "Fear", "Sleep", "Cancl", "Silent", "Grab", "Rot", "Lyca"
 };
 
-void lib_status_init(void)
+void lib_status_init(int reassessment)
 {
-    lib_callbacks.callback_status_init();
-    genl_status_init();
+    lib_callbacks.callback_status_init(reassessment);
+    genl_status_init(reassessment);
 
 }
 
@@ -1070,6 +1070,15 @@ void lib_status_flush(void)
                                  BL_EXP,       BL_HD,        BL_TIME,  BL_REALTIME, BL_2WEP,   BL_SKILL,     BL_HUNGER, BL_CAP,  BL_CONDITION, BL_FLUSH };
     static const int fieldorder3[] = { BL_2WEP, BL_SKILL,     BL_HUNGER,
                                  BL_CAP,       BL_CONDITION, BL_FLUSH };
+
+    static const int fieldorder1_alt[] = { BL_TITLE, BL_STR, BL_DX,    BL_CO,    BL_IN,
+                             BL_WI,    BL_CH, BL_ALIGN, BL_FLUSH };
+    static const int fieldorder2_alt[] = { BL_MODE, BL_LEVELDESC, BL_HP,   BL_HPMAX,
+                                 BL_ENE,       BL_ENEMAX,    BL_AC,  BL_MC_LVL, BL_MC_PCT,    BL_MOVE, BL_UWEP, BL_UWEP2,  BL_XP,
+                                 BL_EXP,       BL_HD,        BL_FLUSH };
+    static const int fieldorder3_alt[] = { BL_GOLD, BL_SCORE, BL_TIME, BL_REALTIME,  BL_2WEP, BL_SKILL,     BL_HUNGER,
+                                 BL_CAP,       BL_CONDITION, BL_FLUSH };
+
     static const int fieldorder4[] = { BL_PARTYSTATS, BL_FLUSH };
     static const int fieldorder5[] = { BL_PARTYSTATS2, BL_FLUSH };
     static const int fieldorder6[] = { BL_PARTYSTATS3, BL_FLUSH };
@@ -1079,7 +1088,9 @@ void lib_status_flush(void)
     static const int* fieldorders_2statuslines[MAX_STATUS_LINES + 1] = { fieldorder1, fieldorder2_2statuslines, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
     static const int* fieldorders[MAX_STATUS_LINES + 1] = { fieldorder1, fieldorder2, fieldorder3, fieldorder4, fieldorder5, fieldorder6, fieldorder7, fieldorder8, NULL };
 
-    const int** fieldorder = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines : fieldorders;
+    static const int* fieldorders_alt[MAX_STATUS_LINES + 1] = { fieldorder1_alt, fieldorder2_alt, fieldorder3_alt, fieldorder4, fieldorder5, fieldorder6, fieldorder7, fieldorder8, NULL };
+
+    const int** fieldorder = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines : flags.fullstatuslineorder ? fieldorders_alt : fieldorders;
 
     for (j = 0; fieldorder[j] != NULL && j < iflags.wc2_statuslines; j++)
     {

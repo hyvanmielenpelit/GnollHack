@@ -60,7 +60,7 @@ OPTIONS=boulder:0
 #
 # number_pad option can have an optional value of 0 (off), 1 (on), 
 # or 2(on,legacy-mode) which causes 5='g', alt-5='G', alt-0='I'
-OPTIONS=time,noshowexp,number_pad:2,lit_corridor
+OPTIONS=time,number_pad:2,lit_corridor
 
 # Treat space bar as rest. Warning: may be dangerous for new players.
 # OPTIONS=rest_on_space

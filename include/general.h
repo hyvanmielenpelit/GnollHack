@@ -768,11 +768,7 @@ enum context_menu_styles {
 #define ANGRY(mon) (!NOTANGRY(mon))
 #define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
 
-
-/* Turn on score on botl everywhere */
-#define SCORE_ON_BOTL
-
-/* Demo version */
+/* Special effect in GUI upon reaching a certain level */
 #define GUI_SPECIAL_EFFECT_LEVEL_DEPTH_THRESHOLD 10
 
 /* Basic tile information */

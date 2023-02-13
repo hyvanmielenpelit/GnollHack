@@ -61,7 +61,7 @@ void lib_preference_update(const char* pref);
 char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init);
 void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors, BOOLEAN_P restoring);
 
-void lib_status_init(void);
+void lib_status_init(int);
 void lib_status_finish(void);
 void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, BOOLEAN_P enable);
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks);

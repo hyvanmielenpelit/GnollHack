@@ -1110,7 +1110,7 @@ rumors_failure:
  */
 #define IGNORED_FEATURES                 \
     (0L | (1L << 6)  /* MAIL */          \
-     | (1L << 19)    /* SCORE_ON_BOTL */ \
+     | (1L << 19)    /* TRUE, previously SCORE_ON_BOTL */ \
      | (1L << 27)    /* ZEROCOMP */      \
      | (1L << 28)    /* RLECOMP */       \
      )
@@ -1148,7 +1148,7 @@ make_version()
 #ifdef INSURANCE
                                            | (1L << 18)
 #endif
-#ifdef SCORE_ON_BOTL
+#if TRUE //def SCORE_ON_BOTL
                                            | (1L << 19)
 #endif
 /* data format (27..31)
@@ -1646,7 +1646,7 @@ static const char *build_opts[] = {
 #ifdef SELECTSAVED
     "restore saved games via menu",
 #endif
-#ifdef SCORE_ON_BOTL
+#if TRUE // def SCORE_ON_BOTL
     "score on status line",
 #endif
 #ifdef CLIPPING

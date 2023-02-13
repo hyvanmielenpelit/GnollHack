@@ -116,7 +116,7 @@ typedef void(__callconv* OutRipCallback)(int, char*, int, char*, char*);
 typedef VoidConstCharCallback PreferenceUpdateCallback;
 typedef char* (__callconv* GetMsgHistoryCallback)(char*, char*, BOOLEAN_P);
 typedef void(__callconv* PutMsgHistoryCallback)(const char*, const char*, const char*, BOOLEAN_P);
-typedef VoidVoidCallback StatusInitCallback;
+typedef VoidIntCallback StatusInitCallback;
 typedef VoidVoidCallback StatusFinishCallback;
 typedef VoidIntConstCharPtrConstCharPtrBooleanCallback StatusEnableFieldCallback;
 typedef void(__callconv* StatusUpdateCallback)(int, char*, long, int, int, int, short*);

@@ -446,7 +446,7 @@ E void FDECL(X11_number_pad, (int));
 E void NDECL(X11_delay_output);
 E void FDECL(X11_delay_output_milliseconds, (int));
 E void FDECL(X11_delay_output_intervals, (int));
-E void NDECL(X11_status_init);
+E void FDECL(X11_status_init, (int));
 E void NDECL(X11_status_finish);
 E void FDECL(X11_status_enablefield, (int, const char *, const char *, BOOLEAN_P));
 E void FDECL(X11_status_update, (int, genericptr_t, int, int, int, unsigned long *));

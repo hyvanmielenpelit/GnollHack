@@ -2501,10 +2501,9 @@ dosacrifice()
             else
             { /* super big win */
                 adjalign(10);
-#ifdef SCORE_ON_BOTL
                 if (flags.showscore && !u.uachieve.ascended)
                     context.botl = 1;
-#endif
+
                 u.uachieve.ascended = 1;
 
                 play_sfx_sound(SFX_INVISIBLE_CHOIR_SINGS);
