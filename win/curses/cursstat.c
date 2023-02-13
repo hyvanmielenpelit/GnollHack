@@ -774,7 +774,7 @@ boolean border;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
-                    if (number_of_lines >= 3 && *text == ' ')
+                    if (!flags.fullstatuslineorder && number_of_lines >= 3 && *text == ' ')
                         ++text;
                 }
 				break;
@@ -783,7 +783,7 @@ boolean border;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
-                    if (number_of_lines == 3 && *text == ' ')
+                    if (!flags.fullstatuslineorder && number_of_lines == 3 && *text == ' ')
                         ++text;
                 }
 				break;
@@ -792,7 +792,7 @@ boolean border;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
-                    if (number_of_lines >= 3 && *text == ' ')
+                    if (!flags.fullstatuslineorder && number_of_lines >= 3 && *text == ' ')
                         ++text;
                 }
                 break;
@@ -801,7 +801,7 @@ boolean border;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
-                    if (number_of_lines >= 3 && *text == ' ')
+                    if (!flags.fullstatuslineorder && number_of_lines >= 3 && *text == ' ')
                         ++text;
                 }
                 break;
@@ -811,7 +811,7 @@ boolean border;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
-                    if (number_of_lines >= 3 && *text == ' ')
+                    if (!flags.fullstatuslineorder && number_of_lines >= 3 && *text == ' ')
                     {
                         ++text;
                         char tmpbuf[BUFSZ];
