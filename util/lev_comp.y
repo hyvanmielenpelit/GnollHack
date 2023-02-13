@@ -1637,6 +1637,11 @@ monster_info	: string_expr
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_M_V_REVIVED));
 		      $$ = 0x00000100;
 		  }
+		| REVIVED_ID ':' integer_or_var
+		  {
+		      add_opvars(splev, "i", VA_PASS1(SP_M_V_REVIVED));
+		      $$ = 0x00000100;
+		  }
 		| AVENGE_ID
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_M_V_AVENGE));

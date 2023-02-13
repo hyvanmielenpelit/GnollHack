@@ -2275,7 +2275,7 @@ unsigned long mmflags;
         mtmp2->leaves_no_corpse = mtmp->leaves_no_corpse;
         mtmp2->delayed_killer_by_you = mtmp->delayed_killer_by_you;
         /* set these ones explicitly */
-        mtmp2->mrevived = 1;
+        mtmp2->mrevived = mtmp2->mrevived + (mtmp->mrevived < MAX_MONST_REVIVALS ? 1 : 0);
         mtmp2->mavenge = 0;
         mtmp2->meating = 0;
         mtmp2->mleashed = 0;

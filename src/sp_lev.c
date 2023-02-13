@@ -2021,7 +2021,7 @@ struct mkroom *croom;
             mtmp->mprops[CANCELLED] = m->cancelled;
         }
         if (m->revived)
-            mtmp->mrevived = 1;
+            mtmp->mrevived = (short)m->revived;
         if (m->avenge)
             mtmp->mavenge = 1;
         if (m->stunned)

@@ -2873,6 +2873,7 @@ struct obj *body;
     long corpse_age = 0; /* age of corpse          */
     int rot_adjust= 0;
     short action = -1;
+    short revivals = has_omonst(body) ? OMONST(body)->mrevived : 0;
 
 #define TAINT_AGE (50L)        /* age when corpses go bad */
 #define TROLL_REVIVE_CHANCE 37 /* 1/37 chance for 50 turns ~ 75% chance */
@@ -2919,19 +2920,22 @@ struct obj *body;
                     break;
 
         }
-        else if (body->corpsenm == PM_PHOENIX && !body->norevive)
+        else if (body->corpsenm == PM_PHOENIX && !body->norevive && revivals < 4) /* Can only revive up to 4 times */
         {
             /*
-             * Phoenixes always revive.  They have a 1/4 chance per turn
-             * of reviving after 20 turns.  Always revive by 500.
+             * Phoenixes always revive on Elemental Planes, 50% chance in Gehennom;
+             * and on Primaterial Plane, they have 80% chance.  If they revive,
+             * they have a 1/33 chance per turn of reviving after 25 turns.  Always revive by 500.
              */
-            action = REVIVE_MON;
-            for (when = 25L; when < 500L; when++)
-                if (!rn2(PHOENIX_REVIVE_CHANCE))
-                    break;
-
+            if (In_endgame(&u.uz) || !revivals ? TRUE : Inhell ? rn2(2) : rn2(5))
+            {
+                action = REVIVE_MON;
+                for (when = 25L; when < 500L; when++)
+                    if (!rn2(PHOENIX_REVIVE_CHANCE))
+                        break;
+            }
         }
-        else if (mons[body->corpsenm].mlet == S_TROLL && !body->norevive) 
+        else if (mons[body->corpsenm].mlet == S_TROLL)
         {
             long age;
             for (age = 2; age <= TAINT_AGE; age++)
