@@ -919,9 +919,9 @@ gcrownu()
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
     HSee_invisible |= FROM_ACQUIRED;
-    HFire_immunity |= FROM_ACQUIRED;
-    HCold_immunity |= FROM_ACQUIRED;
-    HShock_immunity |= FROM_ACQUIRED;
+    HFire_resistance |= FROM_ACQUIRED;
+    HCold_resistance |= FROM_ACQUIRED;
+    HShock_resistance |= FROM_ACQUIRED;
     HDeath_resistance |= FROM_ACQUIRED;
     HLycanthropy_resistance |= FROM_ACQUIRED;
     HSleep_resistance |= FROM_ACQUIRED;
