@@ -1783,6 +1783,7 @@ int propidx; /* OBSOLETE: special cases can have negative values */
             char *p;
             struct obj *obj = (struct obj *) 0;
             int innateness = is_innate(propidx);
+            boolean because_used = FALSE;
 
             /*
              * Properties can be obtained from multiple sources and we
@@ -1805,18 +1806,16 @@ int propidx; /* OBSOLETE: special cases can have negative values */
             else if (innateness == A_FROM_INTR) /* [].intrinsic & FROM_ACQUIRED */
                 Strcpy(buf, " intrinsically");
             else if (innateness == A_FROM_EXP)
+            {
                 Strcpy(buf, " because of your experience");
+                because_used = TRUE;
+            }
             else if (innateness == A_FROM_LYCN)
                 Strcpy(buf, " due to your lycanthropy");
             else if (innateness == A_FROM_FORM)
                 Strcpy(buf, " from current creature form");
-            else if (u.uprops[propidx].intrinsic & TIMEOUT)
-            {
-                long dur = u.uprops[propidx].intrinsic & TIMEOUT;
-                Sprintf(buf, " because of %s (%ld rounds remaining)", "a temporary effect", dur);
-            }
             else if (u.uprops[propidx].extrinsic & W_ENVIRONMENT)
-                Sprintf(buf, because_of, "your surroundings");
+                Strcpy(buf, " due to your surroundings");
             else if (u.uprops[propidx].extrinsic & W_STUCK)
             {
                 char ustuckbuf[BUFSIZ];
@@ -1826,11 +1825,15 @@ int propidx; /* OBSOLETE: special cases can have negative values */
                     Sprintf(ustuckbuf, "%s", "the monster holding you");
 
                 Sprintf(buf, because_of, ustuckbuf);
+                because_used = TRUE;
             }
             else if (
                 ((obj = what_gives(propidx)) != 0 && (wizard || object_stats_known(obj)))
                 )
+            {
                 Sprintf(buf, because_of, yname(obj));
+                because_used = TRUE;
+            }
             /*obj->oartifact
                                              ? bare_artifactname(obj)
                                              : ysimple_name(obj));
@@ -1840,7 +1843,10 @@ int propidx; /* OBSOLETE: special cases can have negative values */
                     ? bare_artifactname(obj)
                     : ysimple_name(obj));*/
             else if (propidx == BLINDED && Blind_because_of_blindfold_only)
+            {
                 Sprintf(buf, because_of, ysimple_name(ublindf));
+                because_used = TRUE;
+            }
 
             /* remove some verbosity and/or redundancy */
             if ((p = strstri(buf, " pair of ")) != 0)
@@ -1849,6 +1855,13 @@ int propidx; /* OBSOLETE: special cases can have negative values */
                      && (p = strstri(buf, " of strangulation")) != 0)
                 *p = '\0';
 
+            if (u.uprops[propidx].intrinsic & TIMEOUT)
+            {
+                long dur = u.uprops[propidx].intrinsic & TIMEOUT;
+                if (*buf)
+                    Strcat(buf, " and");
+                Sprintf(eos(buf), " %s%s (%ld rounds left)", because_used ? "" : "because of ", "an effect", dur);
+            }
         }
         else { /* negative property index */
             /* if more blocking capabilities get implemented we'll need to
