@@ -777,6 +777,7 @@ MAZEWALK:(32,02),east
 # Non diggable walls
 NON_DIGGABLE:(00,00,32,04)
 SPECIAL_REGION:(00,00,32,04),region_special_level_seen
+CARPET:(00,01,30,03),carpet_red
 
 DOOR:closed,(32,02),subtype:door_black_gate
 OBJECT: ('`', "statue"), (00,01), no_pickup, montype:"pit fiend", 1

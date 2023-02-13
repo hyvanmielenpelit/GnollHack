@@ -905,7 +905,7 @@ doforce()
             else
                 You("start bashing it with %s.", yname(uwep));
             xlock.box = otmp;
-            xlock.chance = objects[uwep->otyp].oc_wldam * 2;
+            xlock.chance = get_obj_wldam(uwep) * 2;
             xlock.picktyp = picktyp;
             xlock.magic_key = FALSE;
             xlock.usedtime = 0;
@@ -1660,7 +1660,7 @@ int x, y;
     Blinded = 1;
     thing = singular(otmp, xname);
     Blinded = save_Blinded;
-    switch (objects[otmp->otyp].oc_material) {
+    switch (otmp->material) {
     case MAT_PAPER:
         disposition = "is torn to shreds";
         break;

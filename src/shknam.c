@@ -397,7 +397,7 @@ const struct shclass shtypes[] = {
         D_SHOP,
         { { 60, REAGENT_CLASS },
           { 30, GEM_CLASS },
-          { 1, -BONE_DAGGER },
+          { 1, -DAGGER },
           { 2, -HOLY_SYMBOL },
           { 3, -ORACULAR_TOADSTOOL },
           { 2, -PANTHER_CAP },
@@ -502,20 +502,23 @@ int otyp; /* used iff obj is null */
 {
     int corpsenm;
     char oclass;
+    int material;
 
     if (obj) {
         /* actual object; will check tin content and corpse species */
         otyp = (int) obj->otyp;
         oclass = obj->oclass;
         corpsenm = obj->corpsenm;
+        material = obj->material;
     } else {
         /* just a type; caller will have to handle tins and corpses */
         oclass = objects[otyp].oc_class;
         corpsenm = PM_LICHEN; /* veggy standin */
+        material = objects[otyp].oc_material;
     }
 
     if (oclass == FOOD_CLASS) {
-        if (objects[otyp].oc_material == MAT_VEGGY || otyp == EGG)
+        if (material == MAT_VEGGY || otyp == EGG)
             return TRUE;
         if (otyp == TIN && corpsenm == NON_PM) /* implies obj is non-null */
             return (boolean) (obj->special_quality == 1); /* 0 = empty, 1 = spinach */
@@ -653,7 +656,7 @@ boolean deserted;
         else if (atype < 0)
             (void) mksobj_at(-atype, sx, sy, TRUE, TRUE);
         else
-            (void) mkobj_at_with_flags(atype, sx, sy, TRUE, MKOBJ_FLAGS_SHOP_ITEM);
+            (void) mkobj_at_with_flags(atype, sx, sy, TRUE, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_SHOP_ITEM);
     }
 }
 

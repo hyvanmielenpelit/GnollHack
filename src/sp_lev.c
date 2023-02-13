@@ -22,8 +22,8 @@
 
 typedef void FDECL((*select_iter_func), (int, int, genericptr));
 typedef void FDECL((*select_iter_func2), (int, int, genericptr, genericptr));
-#if 0 /* UNUSED */
 typedef void FDECL((*select_iter_func3), (int, int, genericptr, genericptr, genericptr));
+#if 0 /* UNUSED */
 typedef void FDECL((*select_iter_func4), (int, int, genericptr, genericptr, genericptr, genericptr));
 #endif
 typedef void FDECL((*select_iter_func5), (int, int, genericptr, genericptr, genericptr, genericptr, genericptr));
@@ -165,9 +165,9 @@ STATIC_DCL void FDECL(selection_iterate, (struct opvar *, select_iter_func,
                                           genericptr_t));
 STATIC_DCL void FDECL(selection_iterate2, (struct opvar*, select_iter_func2,
     genericptr_t, genericptr_t));
-#if 0 /* UNUSED */
 STATIC_DCL void FDECL(selection_iterate3, (struct opvar*, select_iter_func3,
     genericptr_t, genericptr_t, genericptr_t));
+#if 0 /* UNUSED */
 STATIC_DCL void FDECL(selection_iterate4, (struct opvar*, select_iter_func4,
     genericptr_t, genericptr_t, genericptr_t, genericptr_t));
 #endif
@@ -178,6 +178,7 @@ STATIC_DCL void FDECL(sel_set_feature, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_floor, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_subtype, (int, int, genericptr_t, genericptr_t));
+STATIC_DCL void FDECL(sel_set_carpet_piece, (int, int, genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_tileset, (int, int, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
@@ -187,6 +188,7 @@ STATIC_DCL void FDECL(spo_anvil, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_decoration, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_floor, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_subtype, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_carpet, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_npc, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_terrain, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_replace_terrain, (struct sp_coder *));
@@ -1631,6 +1633,51 @@ struct mkroom *croom;
     (void)mktrap(t->type, 1, (struct mkroom *) 0, &tm);
 }
 
+void
+create_carpet(x1, y1, x2, y2, type)
+xchar x1, y1, x2, y2;
+int type;
+{
+    if (!isok(x1, y1) || !isok(x2, y2) || type < 0 || type >= MAX_CARPETS)
+        return;
+
+    int x, y;
+    for (x = x1; x <= x2; x++)
+    {
+        for (y = y1; y <= y2; y++)
+        {
+            levl[x][y].carpet_typ = (schar)type;
+            int piece = 0;
+            switch (carpet_type_definitions[type].tile_indexation_type)
+            {
+            default:
+            case CARPET_TILE_INDEXATION_TYPE_LONG_CARPET:
+                if (x == x1 && y == y1)
+                    piece = CARPET_PIECE_LONG_TLCORN;
+                else if (x == x1 && y == y2)
+                    piece = CARPET_PIECE_LONG_BLCORN;
+                else if (x == x2 && y == y1)
+                    piece = CARPET_PIECE_LONG_TRCORN;
+                else if (x == x2 && y == y2)
+                    piece = CARPET_PIECE_LONG_BRCORN;
+                else if (x == x1)
+                    piece = CARPET_PIECE_LONG_LEFT;
+                else if (x == x2)
+                    piece = CARPET_PIECE_LONG_RIGHT;
+                else if (y == y1)
+                    piece = CARPET_PIECE_LONG_TOP;
+                else if (y == y2)
+                    piece = CARPET_PIECE_LONG_BOTTOM;
+                else
+                    piece = CARPET_PIECE_LONG_MIDDLE_PLAIN;
+                break;
+            }
+            levl[x][y].carpet_piece = (schar)piece;
+            levl[x][y].carpet_flags = 0;
+        }
+    }
+}
+
 /*
  * Create a monster in a room.
  */
@@ -1974,7 +2021,7 @@ struct mkroom *croom;
             mtmp->mprops[CANCELLED] = m->cancelled;
         }
         if (m->revived)
-            mtmp->mrevived = 1;
+            mtmp->mrevived = (short)m->revived;
         if (m->avenge)
             mtmp->mavenge = 1;
         if (m->stunned)
@@ -2031,6 +2078,12 @@ struct mkroom *croom;
     else
         c = 0;
 
+    struct monst* mowner = 0;
+    if ((o->containment & SP_OBJ_CONTENT) != 0 && !container_idx && invent_carrying_monster) 
+    {
+        mowner = invent_carrying_monster;
+    }
+
     if (o->class == OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_ARMOR)
     {
         /* class armor treasure */
@@ -2039,7 +2092,7 @@ struct mkroom *croom;
         else if (Role_if(PM_MONK))
             otmp = mksobj_at(!rn2(5) ? BRACERS_OF_REFLECTION : !rn2(2) ? ROBE_OF_PROTECTION : !rn2(2) ? ROBE_OF_MAGIC_RESISTANCE : CLOAK_OF_MAGIC_RESISTANCE, x, y, TRUE, !named);
         else
-            otmp = mksobj_at(!rn2(2) ? MITHRIL_FULL_PLATE_MAIL : ADAMANTIUM_FULL_PLATE_MAIL, x, y, TRUE, !named);
+            otmp = mksobj_at_with_flags(FULL_PLATE_MAIL, x, y, TRUE, !named, -1, mowner, !rn2(2) ? MAT_MITHRIL : MAT_ADAMANTIUM, 0L, 0L, 0UL);
     }
     else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_WEAPON)
     {
@@ -2083,7 +2136,7 @@ struct mkroom *croom;
             otmp = mksobj_at(!rn2(3) ? BELT_OF_FIRE_GIANT_STRENGTH : !rn2(2) ? GAUNTLETS_OF_OGRE_POWER : GLOVES_OF_HASTE, x, y, TRUE, !named);
         else if (Role_if(PM_PRIEST))
         {
-            otmp = mksobj_at(Race_if(PM_GNOLL) && rn2(2) ? (!rn2(4) ? DOUBLE_HEADED_FLAIL : !rn2(2) ? SILVER_FLAIL : FLAIL) : !rn2(2) ? MACE : !rn2(2) ? MORNING_STAR : WAR_HAMMER, x, y, TRUE, !named);
+            otmp = mksobj_at(Race_if(PM_GNOLL) && rn2(2) ? (!rn2(4) ? DOUBLE_HEADED_FLAIL : FLAIL) : !rn2(2) ? MACE : !rn2(2) ? MORNING_STAR : WAR_HAMMER, x, y, TRUE, !named);
             if (!otmp->oartifact)
             {
                 if (can_obj_have_mythic(otmp))
@@ -2126,9 +2179,9 @@ struct mkroom *croom;
         }
         else
         {
-            int treasuretyp = Race_if(PM_GNOLL) && !P_RESTRICTED(P_FLAIL) && !rn2(2) ? (!rn2(4) ? DOUBLE_HEADED_FLAIL : !rn2(2) ? SILVER_FLAIL : FLAIL) :
-                P_RESTRICTED(P_SWORD) ? (!P_RESTRICTED(P_AXE) && !rn2(2) ? (!rn2(2) ? AXE : BATTLE_AXE) : !P_RESTRICTED(P_BLUDGEONING_WEAPON) && !rn2(2) ? (!rn2(4) ? MACE : !rn2(3) ? SILVER_MACE : WAR_HAMMER) : !P_RESTRICTED(P_DAGGER) && !rn2(2) ? (!rn2(3) ? DAGGER : !rn2(2) ? SILVER_DAGGER : ATHAME) : QUARTERSTAFF) :
-                !rn2(3) ? LONG_SWORD : !rn2(2) ? SILVER_LONG_SWORD : TWO_HANDED_SWORD;
+            int treasuretyp = Race_if(PM_GNOLL) && !P_RESTRICTED(P_FLAIL) && !rn2(2) ? (!rn2(4) ? DOUBLE_HEADED_FLAIL : FLAIL) :
+                P_RESTRICTED(P_SWORD) ? (!P_RESTRICTED(P_AXE) && !rn2(2) ? (!rn2(2) ? AXE : BATTLE_AXE) : !P_RESTRICTED(P_BLUDGEONING_WEAPON) && !rn2(2) ? (!rn2(4) ? MACE : WAR_HAMMER) : !P_RESTRICTED(P_DAGGER) && !rn2(2) ? (!rn2(3) ? DAGGER : ATHAME) : QUARTERSTAFF) :
+                !rn2(3) ? LONG_SWORD : TWO_HANDED_SWORD;
             otmp = mksobj_at(treasuretyp, x, y, TRUE, !named);
             if (!otmp->oartifact)
             {
@@ -2213,9 +2266,10 @@ struct mkroom *croom;
         unsigned long mkflags = o->open ? MKOBJ_FLAGS_OPEN_COFFIN : 0UL;
         mkflags |= o->corpsenm > NON_PM ? MKOBJ_FLAGS_MONSTER_SPECIFIED : 0UL;
         
-        otmp = mksobj_at_with_flags(o->id, x, y, TRUE, !named, -1, 0L, 0L, mkflags);
+        otmp = mksobj_at_with_flags(o->id, x, y, TRUE, !named, -1, mowner, MAT_NONE, 0L, 0L, mkflags);
     }
-    else {
+    else 
+    {
         /*
          * The special levels are compiled with the default "text" object
          * class characters.  We must convert them to the internal format.
@@ -2312,6 +2366,8 @@ struct mkroom *croom;
 
     if (o->trapped == 0 || o->trapped == 1)
         otmp->otrapped = o->trapped;
+    if (o->material > 0)
+        otmp->material = (uchar)o->material;
     if (o->elemental_enchantment >= 0)
         otmp->elemental_enchantment = (uchar)o->elemental_enchantment;
     if (o->exceptionality >= 0)
@@ -4099,6 +4155,10 @@ struct sp_coder *coder;
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpobj.speflags = (unsigned long)OV_i(parm);
             break;
+        case SP_O_V_MATERIAL:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.material = (int)OV_i(parm);
+            break;
         case SP_O_V_ELEMENTAL_ENCHANTMENT:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpobj.elemental_enchantment = (int)OV_i(parm);
@@ -5725,7 +5785,6 @@ genericptr_t arg, arg2;
                 (*func)(x, y, arg, arg2);
 }
 
-#if 0 /* UNUSED */
 void
 selection_iterate3(ov, func, arg, arg2, arg3)
 struct opvar* ov;
@@ -5741,6 +5800,7 @@ genericptr_t arg, arg2, arg3;
                 (*func)(x, y, arg, arg2, arg3);
 }
 
+#if 0 /* UNUSED */
 void
 selection_iterate4(ov, func, arg, arg2, arg3, arg4)
 struct opvar* ov;
@@ -5908,6 +5968,22 @@ genericptr_t arg1, arg2;
         levl[x][y].subtyp = (*(int*)arg2);
         levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
     }
+}
+
+void
+sel_set_carpet_piece(x, y, arg1, arg2, arg3)
+int x, y;
+genericptr_t arg1, arg2, arg3;
+{
+    schar typ = (schar)(*(int*)arg1);
+    if(typ >= 0 && typ < MAX_CARPETS)
+        levl[x][y].carpet_typ = typ;
+    
+    schar piece = (schar)(*(int*)arg2);
+    if(piece >= 0)
+        levl[x][y].carpet_piece = piece;
+    
+    levl[x][y].carpet_flags = (uchar)(*(int*)arg3);
 }
 
 void
@@ -6216,10 +6292,61 @@ struct sp_coder* coder;
     subtyp = (int)OV_i(subtyp_opvar);
     selection_iterate2(sel, sel_set_subtype, (genericptr_t)&typ, (genericptr_t)&subtyp);
 
+    opvar_free(typ_opvar);
     opvar_free(subtyp_opvar);
     opvar_free(sel);
 }
 
+
+void
+spo_carpet(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_carpet";
+    struct opvar* carpet_type, * area;
+    xchar dx1, dy1, dx2, dy2;
+    int typ;
+
+    if (!OV_pop_i(carpet_type) || !OV_pop_r(area))
+        return;
+
+    dx1 = (xchar)SP_REGION_X1(OV_i(area));
+    dy1 = (xchar)SP_REGION_Y1(OV_i(area));
+    dx2 = (xchar)SP_REGION_X2(OV_i(area));
+    dy2 = (xchar)SP_REGION_Y2(OV_i(area));
+    typ = (int)OV_i(carpet_type);
+
+    get_location(&dx1, &dy1, ANY_LOC, coder->croom);
+    get_location(&dx2, &dy2, ANY_LOC, coder->croom);
+
+    create_carpet(dx1, dy1, dx2, dy2, typ);
+
+    opvar_free(area);
+    opvar_free(carpet_type);
+}
+
+void
+spo_carpet_piece(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_carpet_piece";
+    struct opvar* sel;
+    struct opvar* subtyp_opvar, *typ_opvar, * flags_opvar;
+    int typ, subtyp, cflags;
+
+    if (!OV_pop_i(typ_opvar) || !OV_pop_i(subtyp_opvar) || !OV_pop_i(flags_opvar) || !OV_pop_typ(sel, SPOVAR_SEL))
+        return;
+
+    typ = (int)OV_i(typ_opvar);
+    subtyp = (int)OV_i(subtyp_opvar);
+    cflags = (int)OV_i(flags_opvar);
+    selection_iterate3(sel, sel_set_carpet_piece, (genericptr_t)&typ, (genericptr_t)&subtyp, (genericptr_t)&cflags);
+
+    opvar_free(typ_opvar);
+    opvar_free(subtyp_opvar);
+    opvar_free(flags_opvar);
+    opvar_free(sel);
+}
 
 void spo_npc(coder)
 struct sp_coder* coder;
@@ -7764,6 +7891,12 @@ sp_lev *lvl;
             break;
         case SPO_SUBTYPE:
             spo_subtype(coder);
+            break;
+        case SPO_CARPET:
+            spo_carpet(coder);
+            break;
+        case SPO_CARPET_PIECE:
+            spo_carpet_piece(coder);
             break;
         case SPO_NPC:
             spo_npc(coder);

@@ -98,6 +98,7 @@ boolean restore;
                             otmp->otyp = random_objectid_from_class(otmp->oclass, (struct monst*)0, MKOBJ_FLAGS_ALSO_RARE);
                             otmp->elemental_enchantment = 0;
                             otmp->exceptionality = 0;
+                            otmp->material = objects[otmp->otyp].oc_material;
                             otmp->mythic_prefix = 0;
                             otmp->mythic_suffix = 0;
                             otmp->charges = 0;

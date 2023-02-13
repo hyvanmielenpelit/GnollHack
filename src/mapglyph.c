@@ -19,7 +19,9 @@
 #define zap_color(n) color = iflags.use_color ? zap_type_definitions[n].color : NO_COLOR
 #define cmap_color(n,cmap_type_index) color = iflags.use_color ? defsyms[n].color[cmap_type_index] : NO_COLOR
 #define cmap_variation_color(n,cmap_type_index) color = iflags.use_color ? defsym_variations[n].color[cmap_type_index] : NO_COLOR
-#define obj_color(n) color = iflags.use_color ? objects[n].oc_color : NO_COLOR
+#define otyp_color(n) color = iflags.use_color ? objects[n].oc_color : NO_COLOR
+#define obj_color(o, n) color = iflags.use_color ? ((o) && (o)->otyp == n && (o)->material != objects[n].oc_material && material_definitions[(o)->material].color != NO_COLOR ? material_definitions[(o)->material].color : objects[n].oc_color) : NO_COLOR
+#define missile_color(l, n) color = iflags.use_color ? ((l).missile_material > MAT_NONE && (l).missile_material != objects[n].oc_material && material_definitions[(l).missile_material].color != NO_COLOR ? material_definitions[(l).missile_material].color : objects[n].oc_color) : NO_COLOR
 #define artifact_color(n) color = iflags.use_color ? artilist[n].ocolor : NO_COLOR
 #define mon_color(n) color = iflags.use_color ? mons[n].mcolor : NO_COLOR
 #define invis_color(n) color = NO_COLOR
@@ -32,7 +34,8 @@
 
 #define zap_color(n)
 #define cmap_color(n,cmap_idx)
-#define obj_color(n)
+#define otyp_color(n)
+#define obj_color(o, n)
 #define mon_color(n)
 #define invis_color(n)
 #define pet_color(c)
@@ -120,6 +123,7 @@ unsigned long *ospecial;
     { /* an artifact */
         int artidx = offset + 1;
         int objoffset = artilist[artidx].otyp;
+        boolean ismissile = glyph - GLYPH_ARTIFACT_MISSILE_OFF >= 0;
         if (artilist[artidx].maskotyp != STRANGE_OBJECT)
         {
             /* We always use maskotyp for base case if there is one, since the item is specified to look like one */
@@ -145,8 +149,18 @@ unsigned long *ospecial;
         }
         else
         {
-            if(artilist[artidx].ocolor == NO_COLOR)
-                obj_color(objoffset);
+            if (artilist[artidx].ocolor == NO_COLOR)
+            {
+                if (ismissile)
+                {
+                    missile_color(layers, artilist[artidx].otyp);
+                }
+                else
+                {
+                    struct obj* otmp = vobj_at(x, y);
+                    obj_color(otmp, objoffset);
+                }
+            }
             else
                 artifact_color(artidx);
         }
@@ -189,7 +203,7 @@ unsigned long *ospecial;
         if (has_rogue_color)
             color = CLR_RED;
         else
-            obj_color(STATUE);
+            otyp_color(STATUE);
         special |= MG_FEMALE;
         special |= MG_STATUE;
         if (is_objpile(x, y))
@@ -208,7 +222,7 @@ unsigned long *ospecial;
         if (has_rogue_color)
             color = CLR_RED;
         else
-            obj_color(STATUE);
+            otyp_color(STATUE);
         special |= MG_STATUE;
         if (is_objpile(x,y))
             special |= MG_OBJPILE;
@@ -356,33 +370,52 @@ unsigned long *ospecial;
         {
             if (has_decoration && levl[x][y].decoration_typ > 0)
             {
-                int dcolor = NO_COLOR;
                 if (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE)
                 {
                     if (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER)
                     {
-                        if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0 && levl[x][y].lamplit)
-                            dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color_filled_lit;
-                        else
-                            dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color_filled;
+                        if (decoration_type_definitions[levl[x][y].decoration_typ].color_filled != NO_COLOR)
+                            color = decoration_type_definitions[levl[x][y].decoration_typ].color_filled;
+
+                        if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_UNLIT_FILLED_COLOR) != 0)
+                            color = decoration_lit_colors[color].color_unlit;
+                        else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIT_FILLED_COLOR) != 0)
+                            color = decoration_lit_colors[color].color_lit;
+                        else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
+                        {
+                            if (levl[x][y].lamplit)
+                                color = decoration_lit_colors[color].color_lit;
+                            else
+                                color = decoration_lit_colors[color].color_unlit;
+                        }
                     }
                     else
                     {
-                        if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0 && levl[x][y].lamplit)
-                            dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color_lit;
-                        else
-                            dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color;
+                        if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_UNLIT_COLOR) != 0)
+                            color = decoration_lit_colors[color].color_unlit;
+                        else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIT_COLOR) != 0)
+                            color = decoration_lit_colors[color].color_lit;
+                        else if (decoration_type_definitions[levl[x][y].decoration_typ].color != NO_COLOR)
+                            color = decoration_type_definitions[levl[x][y].decoration_typ].color;
                     }
                 }
                 else
                 {
-                    if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0 && levl[x][y].lamplit)
-                        dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color_lit;
-                    else
-                        dcolor = decoration_type_definitions[levl[x][y].decoration_typ].color;
+                    if (decoration_type_definitions[levl[x][y].decoration_typ].color != NO_COLOR)
+                        color = decoration_type_definitions[levl[x][y].decoration_typ].color;
+
+                    if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_UNLIT_COLOR) != 0)
+                        color = decoration_lit_colors[color].color_unlit;
+                    else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIT_COLOR) != 0)
+                        color = decoration_lit_colors[color].color_lit;
+                    else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
+                    {
+                        if (levl[x][y].lamplit)
+                            color = decoration_lit_colors[color].color_lit;
+                        else
+                            color = decoration_lit_colors[color].color_unlit;
+                    }
                 }
-                if (dcolor != NO_COLOR)
-                    color = dcolor;
             }
         }
     } 
@@ -394,6 +427,8 @@ unsigned long *ospecial;
             offset = offset / NUM_MISSILE_DIRS;
 
         idx = objects[offset].oc_class + SYM_OFF_O;
+        boolean ismissile = glyph - GLYPH_OBJ_MISSILE_OFF >= 0;
+
         if (offset == BOULDER)
             idx = SYM_BOULDER + SYM_OFF_X;
         if (has_rogue_color && iflags.use_color) 
@@ -413,10 +448,15 @@ unsigned long *ospecial;
         } 
         else
         {
-            if(offset == BOULDER)
+            if (offset == BOULDER)
                 cmap_color(S_extra_boulder, flags.classic_colors ? 0 : get_current_cmap_type_index());
+            else if (ismissile)
+                missile_color(layers, offset);
             else
-                obj_color(offset);
+            {
+                struct obj* otmp = vobj_at(x, y);
+                obj_color(otmp, offset);
+            }
         }
         if (offset != BOULDER && is_objpile(x,y))
             special |= MG_OBJPILE;

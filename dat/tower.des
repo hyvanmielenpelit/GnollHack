@@ -112,7 +112,7 @@ CONTAINER:('(',"coffin"),$place[7],montype:"vampire" {
   OBJECT:('[',"water walking boots")
 }
 CONTAINER:('(',"coffin"),$place[8],montype:"vampire lord" {
-  OBJECT:('[',"crystal plate mail")
+  OBJECT:('[',"plate mail"),material:material_hard_crystal
 }
 CONTAINER:('(',"coffin"),$place[9],montype:"vampire mage" {
   OBJECT:('+',"invisibility")

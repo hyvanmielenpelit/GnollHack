@@ -219,7 +219,7 @@ struct obj *obj;
             nutrit = objects[obj->otyp].oc_nutrition;
             if(obj->otyp == TIN && (obj->special_quality == 1 || (obj->corpsenm >= LOW_PM && (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm])))))
                 is_veg = TRUE;
-            else if(objects[obj->otyp].oc_material == MAT_VEGGY)
+            else if(obj->material == MAT_VEGGY)
                 is_veg = TRUE;
         }
 
@@ -2084,7 +2084,7 @@ int after; /* this is extra fast monster movement */
                     cursemsg[i] = TRUE;
                     cursedobj[i] = obj;
                 }
-                else if (objects[obj->otyp].oc_material == MAT_SILVER && mon_eschews_silver(mtmp))
+                else if (obj->material == MAT_SILVER && mon_eschews_silver(mtmp))
                 {
                     cursemsg[i] = TRUE;
                     cursedobj[i] = obj;

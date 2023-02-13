@@ -635,11 +635,17 @@ char *buf, *monbuf;
                 explanation = get_cmap_or_cmap_variation_glyph_explanation(glyph);
 
             const char* dec_descr = 0;
+            const char* carpet_descr = 0;
             if (explanation && *explanation)
             {
+                carpet_descr = get_carpet_description(x, y);
                 dec_descr = get_decoration_description(x, y);
-                if (dec_descr && *dec_descr)
+                if (dec_descr && *dec_descr && carpet_descr && *carpet_descr)
+                    Sprintf(buf, "%s on %s", dec_descr, an(carpet_descr));
+                else if (dec_descr && *dec_descr)
                     Sprintf(buf, "%s on %s", dec_descr, an(explanation));
+                else if (carpet_descr && *carpet_descr)
+                    Sprintf(buf, "%s on %s", carpet_descr, an(explanation));
                 else
                     Strcpy(buf, explanation); // defsyms[cmap].explanation);
             }
@@ -1180,18 +1186,27 @@ struct permonst **for_supplement;
                 {
                     static char decoration_buf[BUFSZ] = "";
                     const char* dec_descr = get_decoration_description(cc.x, cc.y);
+                    const char* carpet_descr = get_carpet_description(cc.x, cc.y);
                     if (dec_descr && *dec_descr)
                     {
-                        Sprintf(decoration_buf, "%s on %s", dec_descr, an(defsyms[i].explanation));
+                        if(carpet_descr && *carpet_descr)
+                            Sprintf(decoration_buf, "%s on %s", dec_descr, an(carpet_descr));
+                        else
+                            Sprintf(decoration_buf, "%s on %s", dec_descr, an(defsyms[i].explanation));
                         if ((levl[cc.x][cc.y].decoration_typ > 0
                             && (decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0
                             && ((decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE) == 0 || (levl[cc.x][cc.y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0)
                             ) && cansee(cc.x, cc.y))
                         {
                             char buf2[BUFSIZ];
-                            Sprintf(buf2, "%s%s", levl[cc.x][cc.y].lamplit ? "lit " : "unlit ", look_buf);
+                            Sprintf(buf2, "%s%s", levl[cc.x][cc.y].lamplit ? "lit " : "unlit ", decoration_buf);
                             Strcpy(decoration_buf, buf2);
                         }
+                        x_str = decoration_buf;
+                    }
+                    else if (carpet_descr && *carpet_descr)
+                    {
+                        Sprintf(decoration_buf, "%s on %s", carpet_descr, an(defsyms[i].explanation));
                         x_str = decoration_buf;
                     }
                 }

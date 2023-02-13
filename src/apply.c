@@ -4201,7 +4201,7 @@ struct obj *tstone;
         else
         {
             /* either a ring or the touchstone was not effective */
-            if (objects[obj->otyp].oc_material == MAT_GLASS || objects[obj->otyp].oc_material == MAT_CRYSTAL)
+            if (obj->material == MAT_GLASS || obj->material == MAT_CRYSTAL)
             {
                 do_scratch = TRUE;
                 break;
@@ -4211,7 +4211,7 @@ struct obj *tstone;
         break; /* gem or ring */
 
     default:
-        switch (objects[obj->otyp].oc_material) 
+        switch (obj->material)
         {
         case MAT_CLOTH:
             pline("%s a little more polished now.", Tobjnam(tstone, "look"));
@@ -5796,13 +5796,13 @@ doapply()
             (void)bagotricks(obj, FALSE, (int*)0);
             break;
         case POUCH_OF_ENDLESS_BOLTS:
-            (void)endlessarrows(obj, obj->blessed && !rn2(4) ? SILVER_CROSSBOW_BOLT : CROSSBOW_BOLT, rnd(10) + 10);
+            (void)endlessarrows(obj, CROSSBOW_BOLT, rnd(10) + 10);
             break;
         case BAG_OF_INFINITE_SLING_BULLETS:
-            (void)endlessarrows(obj, obj->blessed && !rn2(4) ? SILVER_SLING_BULLET : ((obj->blessed || !rn2(2)) && !obj->cursed ? IRON_SLING_BULLET : LEADEN_SLING_BULLET), rnd(10) + 10);
+            (void)endlessarrows(obj, SLING_BULLET, rnd(10) + 10);
             break;
         case QUIVER_OF_INFINITE_ARROWS:
-            (void)endlessarrows(obj, obj->blessed && !rn2(4) ? SILVER_ARROW : ARROW, rnd(10) + 10);
+            (void)endlessarrows(obj, ARROW, rnd(10) + 10);
             break;
         case CAN_OF_GREASE:
             use_grease(obj);
@@ -6041,7 +6041,7 @@ boolean useonlyautostashes;
             xchar x = 0, y = 0;
             get_obj_location(otmp, &x, &y, CONTAINED_TOO | BURIED_TOO);
             int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-            int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL));
+            int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
 
             add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
                 applied_invlet,

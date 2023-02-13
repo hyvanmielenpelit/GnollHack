@@ -133,7 +133,7 @@ const char *name; /* if null, then format `*objp' */
 
                 display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
             }
-            if (obj && objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver) 
+            if (obj && obj->material == MAT_SILVER && Hate_silver)
             {
                 /* extra damage already applied by weapon_dmg_value() */
                 pline_The("silver sears your flesh!");
@@ -637,7 +637,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             }
         }
 
-        if (objects[otmp->otyp].oc_material == MAT_SILVER
+        if (otmp->material == MAT_SILVER
             && mon_hates_silver(mtmp))
         {
             if (vis)
@@ -1060,13 +1060,13 @@ struct obj *obj;         /* missile (or stack providing it) */
         }
 
         tmp_at(bhitpos.x, bhitpos.y);
-        if (singleobj && ((is_poisonable(singleobj) && singleobj->opoisoned) || singleobj->elemental_enchantment || singleobj->exceptionality || singleobj->mythic_prefix || singleobj->mythic_suffix || singleobj->oeroded || singleobj->oeroded2 || get_obj_height(singleobj) > 0))
+        if (singleobj && ((is_poisonable(singleobj) && singleobj->opoisoned) || singleobj->special_quality != 0 || singleobj->elemental_enchantment || singleobj->exceptionality || singleobj->mythic_prefix || singleobj->mythic_suffix || singleobj->oeroded || singleobj->oeroded2 || get_obj_height(singleobj) > 0))
         {
-            show_missile_info(bhitpos.x, bhitpos.y, singleobj->opoisoned, singleobj->elemental_enchantment, singleobj->exceptionality, singleobj->mythic_prefix, singleobj->mythic_suffix, singleobj->oeroded, singleobj->oeroded2, get_missile_flags(singleobj, FALSE), get_obj_height(singleobj), 0, 0);
+            show_missile_info(bhitpos.x, bhitpos.y, singleobj->opoisoned, singleobj->material, singleobj->special_quality, singleobj->elemental_enchantment, singleobj->exceptionality, singleobj->mythic_prefix, singleobj->mythic_suffix, singleobj->oeroded, singleobj->oeroded2, get_missile_flags(singleobj, FALSE), get_obj_height(singleobj), 0, 0);
             flush_screen(1);
         }
         if (isok(lastpos_x, lastpos_y))
-            show_missile_info(lastpos_x, lastpos_y, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out in the previous location */
+            show_missile_info(lastpos_x, lastpos_y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out in the previous location */
         adjusted_delay_output();
     }
 
@@ -2067,8 +2067,10 @@ boolean your_fault, from_invent;
     else if (obj_type == BOULDER || obj_type == HEAVY_IRON_BALL)
         pline("Whang!");
     else if (otmp->oclass == COIN_CLASS
-             || objects[obj_type].oc_material == MAT_GOLD
-             || objects[obj_type].oc_material == MAT_SILVER)
+             || otmp->material == MAT_GOLD
+             || otmp->material == MAT_SILVER
+             || otmp->material == MAT_PLATINUM
+        )
         pline("Clink!");
     else
         pline("Clonk!");
@@ -2121,6 +2123,7 @@ int whodidit;   /* 1==hero, 0=other, -1==just check whether it'll pass thru */
         case WAND_CLASS:
         case BALL_CLASS:
         case CHAIN_CLASS:
+        case ART_CLASS:
             hits = TRUE;
             break;
         default:

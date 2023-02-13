@@ -135,6 +135,8 @@ struct replacement_info {
     struct monst* monster;
     unsigned long layer_flags;
     unsigned long missile_flags;
+    unsigned char missile_material;
+    short missile_special_quality;
 };
 
 struct skill_menu_info
@@ -220,45 +222,50 @@ struct extended_create_window_info {
 
 enum obj_material_types {
     MAT_NONE = 0,
-    MAT_LIQUID = 1, /* currently only for venom */  /* Organics start here */
-    MAT_OIL = 2, /* flammable liquid */
-    MAT_WAX = 3,
-    MAT_VEGGY = 4, /* foodstuffs */
-    MAT_FLESH = 5, /*   ditto    */
-    MAT_ORGANIC = 6, /* non-veggy, non-flesh organic material, e.g. bat guano, feathers */
-    MAT_PAPER = 7,
-    MAT_CLOTH = 8,
-    MAT_SILK = 9,
-    MAT_LEATHER = 10, /* Flimsy materials stop here */
-    MAT_WOOD = 11, /* Organics stop here */
-    MAT_BONE = 12,
-    MAT_CHITIN = 13, /* Chitin in insects' exoskeleton, or keratin in nails and horns */
-    MAT_IVORY = 14, /* Worm tooth, ivory, etc. Hard bone-like materials stop here */
-    MAT_DRAGON_HIDE = 15, /* not leather! */
-    MAT_IRON = 16, /* Fe - includes steel */
-    MAT_METAL = 17, /* Sn, &c. */
-    MAT_COPPER = 18, /* Cu - includes brass */
-    MAT_SILVER = 19, /* Ag */
-    MAT_GOLD = 20, /* Au */
-    MAT_PLATINUM = 21, /* Pt */
-    MAT_ORICHALCUM = 22,
-    MAT_ADAMANTIUM = 23,
-    MAT_MITHRIL = 24,
-    MAT_PLASTIC = 25,
-    MAT_GLASS = 26,
-    MAT_CRYSTAL = 27, //Brittle like glass
-    MAT_HARD_CRYSTAL = 28, //Strong like gemstone
-    MAT_GEMSTONE = 29,
-    MAT_MINERAL = 30,
-    MAT_MODRONITE = 31,
-    MAT_PLANARRIFT = 32,
-    MAT_FORCEFIELD = 33,
-    MAT_AIR = 34,
-    MAT_FIRE = 35,
-    MAT_ENERGY = 36,
-    MAT_INCORPOREAL = 37,
-    MAT_ICE = 38,
-    MAT_SOIL = 39,
+    MAT_LIQUID, /* currently only for venom */  /* Organics start here */
+    MAT_OIL, /* flammable liquid */
+    MAT_WAX,
+    MAT_VEGGY, /* foodstuffs */
+    MAT_FLESH, /*   ditto    */
+    MAT_ORGANIC, /* non-veggy, non-flesh organic material, e.g. bat guano, feathers */
+    MAT_PAPER,
+    MAT_CLOTH,
+    MAT_COTTON,
+    MAT_SILK,
+    MAT_LEATHER, /* Flimsy materials stop here */
+    MAT_WOOD, /* Organics stop here */
+    MAT_BONE,
+    MAT_CHITIN, /* Chitin in insects' exoskeleton, or keratin in nails and horns */
+    MAT_IVORY, /* Worm tooth, ivory, etc. Hard bone-like materials stop here */
+    MAT_DRAGON_HIDE, /* not leather! */
+    MAT_IRON, /* Fe */
+    MAT_STEEL, /* Alloy of Fe and C (carbon)  */
+    MAT_METAL, /* Sn, &c. */
+    MAT_LEAD, /* Pb */
+    MAT_COPPER, /* Cu */
+    MAT_BRASS, /* Alloy of Cu and Zn (zinc) */
+    MAT_BRONZE, /* Alloy of Cu and Sn (tin) */
+    MAT_SILVER, /* Ag */
+    MAT_GOLD, /* Au */
+    MAT_PLATINUM, /* Pt */
+    MAT_ORICHALCUM,
+    MAT_ADAMANTIUM,
+    MAT_MITHRIL,
+    MAT_PLASTIC,
+    MAT_GLASS,
+    MAT_CRYSTAL, /* Brittle like glass */
+    MAT_HARD_CRYSTAL, /* Strong like gemstone */
+    MAT_GEMSTONE,
+    MAT_MINERAL, /* Stone */
+    MAT_MODRONITE,
+    MAT_PLANARRIFT,
+    MAT_FORCEFIELD,
+    MAT_AIR,
+    MAT_FIRE,
+    MAT_ENERGY,
+    MAT_INCORPOREAL,
+    MAT_ICE,
+    MAT_SOIL,
     MAX_MATERIAL_TYPES
 };
 
@@ -351,8 +358,23 @@ enum simple_doodad_tile_types
     DOODAD_LANTERN_HOLDER_RIGHT,
     DOODAD_LANTERN_HOLDER_BOTTOM,
     DOODAD_FIREPLACE,
+    DOODAD_CARPET_RED_HORIZONTAL_TLCORN,
+    DOODAD_CARPET_RED_HORIZONTAL_BLCORN,
+    DOODAD_CARPET_RED_HORIZONTAL_TRCORN,
+    DOODAD_CARPET_RED_HORIZONTAL_BRCORN,
+    DOODAD_CARPET_RED_HORIZONTAL_LEFT,
+    DOODAD_CARPET_RED_HORIZONTAL_RIGHT,
+    DOODAD_CARPET_RED_HORIZONTAL_TOP,
+    DOODAD_CARPET_RED_HORIZONTAL_BOTTOM,
+    DOODAD_CARPET_RED_HORIZONTAL_MIDDLE_1,
+    DOODAD_CARPET_RED_HORIZONTAL_MIDDLE_2,
+    DOODAD_CARPET_RED_HORIZONTAL_MIDDLE_3,
+    DOODAD_CARPET_RED_HORIZONTAL_MIDDLE_PLAIN,
+    DOODAD_PAINTING_HOLDER,
     MAX_SIMPLE_DOODAD_TILES
 };
+
+
 #define NUM_DOODAD_DIRECTIONS 4
 
 enum mirrorable_doodad_tile_types
@@ -735,6 +757,8 @@ enum context_menu_styles {
 #define MKOBJ_FLAGS_OWNER_IS_CHAOTIC                   0x00000800
 #define MKOBJ_FLAGS_OWNER_IS_NONALIGNED                0x00001000
 #define MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS       0x00002000
+#define MKOBJ_FLAGS_FORCE_BASE_MATERIAL                0x00004000
+#define MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY           0x00008000
 
 #define MONDIED_FLAGS_NONE                             0x00000000
 #define MONDIED_FLAGS_NO_DEATH_ACTION                  0x00000001

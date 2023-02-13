@@ -195,6 +195,8 @@ EXIT		ST_RET(EXIT_ID);
 ROOM		ST_RET(ROOM_ID);
 SUBROOM		ST_RET(SUBROOM_ID);
 SUBTYPE		ST_RET(SUBTYPE_ID);
+CARPET		ST_RET(CARPET_ID);
+CARPET_PIECE		ST_RET(CARPET_PIECE_ID);
 RANDOM_CORRIDORS	ST_RET(RAND_CORRIDOR_ID);
 CORRIDOR	ST_RET(CORRIDOR_ID);
 TERRAIN		ST_RET(TERRAIN_ID);
@@ -250,6 +252,7 @@ air		{ savetoken(yytext); yylval.i=AIRLOC;  return HUMIDITY_TYPE; }
 floor   { savetoken(yytext); yylval.i=FLOORLOC;  return HUMIDITY_TYPE; }
 levregion	ST_RET(LEV);
 quantity	ST_RET(QUANTITY_ID);
+material	ST_RET(MATERIAL_ID);
 elemental_enchantment	ST_RET(ELEMENTAL_ENCHANTMENT_ID);
 exceptionality	ST_RET(EXCEPTIONALITY_ID);
 mythic_prefix	ST_RET(MYTHIC_PREFIX_ID);
@@ -363,6 +366,8 @@ decoration_cobweb { savetoken(yytext); yylval.i=DECORATION_COBWEB; return DECORA
 decoration_cobweb_corner { savetoken(yytext); yylval.i=DECORATION_COBWEB_CORNER; return DECORATION_TYPE; }
 decoration_torch { savetoken(yytext); yylval.i=DECORATION_TORCH; return DECORATION_TYPE; }
 decoration_lantern { savetoken(yytext); yylval.i=DECORATION_LANTERN; return DECORATION_TYPE; }
+decoration_fireplace { savetoken(yytext); yylval.i=DECORATION_FIREPLACE; return DECORATION_TYPE; }
+decoration_painting { savetoken(yytext); yylval.i=DECORATION_PAINTING; return DECORATION_TYPE; }
 direction_top { savetoken(yytext); yylval.i=0; return DECORATION_DIR; }
 direction_left { savetoken(yytext); yylval.i=1; return DECORATION_DIR; }
 direction_right { savetoken(yytext); yylval.i=2; return DECORATION_DIR; }
@@ -395,12 +400,19 @@ random_contents { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_RANDOM_
 dungeons_of_doom_tileset { savetoken(yytext); yylval.i=CMAP_NORMAL; return CMAP_TYPE; }
 gnomish_mines_tileset { savetoken(yytext); yylval.i=CMAP_GNOMISH_MINES; return CMAP_TYPE; }
 gehennom_tileset { savetoken(yytext); yylval.i=CMAP_GEHENNOM; return CMAP_TYPE; }
-undead_tileset { savetoken(yytext); yylval.i=CMAP_UNDEAD_STYLE; return CMAP_TYPE; }
+undead_tileset { savetoken(yytext); yylval.i=CMAP_UNDEAD; return CMAP_TYPE; }
 sokoban_tileset { savetoken(yytext); yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
 elemental_tileset { savetoken(yytext); yylval.i=CMAP_ELEMENTAL_PLANES; return CMAP_TYPE; }
 astral_tileset { savetoken(yytext); yylval.i=CMAP_ASTRAL; return CMAP_TYPE; }
 gehennom_cavernous_tileset { savetoken(yytext); yylval.i=CMAP_GEHENNOM_CAVERNOUS; return CMAP_TYPE; }
 garden_tileset { savetoken(yytext); yylval.i=CMAP_GARDEN; return CMAP_TYPE; }
+cityscape_tileset { savetoken(yytext); yylval.i=CMAP_CITYSCAPE; return CMAP_TYPE; }
+nest_tileset { savetoken(yytext); yylval.i=CMAP_NEST; return CMAP_TYPE; }
+temple_tileset { savetoken(yytext); yylval.i=CMAP_TEMPLE; return CMAP_TYPE; }
+opulent_tileset { savetoken(yytext); yylval.i=CMAP_OPULENT; return CMAP_TYPE; }
+modron_tileset { savetoken(yytext); yylval.i=CMAP_MODRON; return CMAP_TYPE; }
+reinforced_tileset { savetoken(yytext); yylval.i=CMAP_REINFORCED; return CMAP_TYPE; }
+tower_tileset { savetoken(yytext); yylval.i=CMAP_TOWER; return CMAP_TYPE; }
 floor_normal { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_NORMAL; return FLOOR_SUBTYPE; }
 floor_marble { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_MARBLE; return FLOOR_SUBTYPE; }
 floor_parquet { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_PARQUET; return FLOOR_SUBTYPE; }
@@ -414,6 +426,7 @@ location_floor { savetoken(yytext); yylval.i=ROOM; return FLOOR_TYPE; }
 location_corridor { savetoken(yytext); yylval.i=CORR; return FLOOR_TYPE; }
 location_grass { savetoken(yytext); yylval.i=GRASS; return FLOOR_TYPE; }
 location_ground { savetoken(yytext); yylval.i=GROUND; return FLOOR_TYPE; }
+carpet_red { savetoken(yytext); yylval.i=CARPET_HORIZONTAL_RED; return CARPET_TYPE; }
 flaming { savetoken(yytext); yylval.i=FIRE_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 freezing { savetoken(yytext); yylval.i=COLD_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 electrified { savetoken(yytext); yylval.i=LIGHTNING_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
@@ -426,6 +439,19 @@ primordial { savetoken(yytext); yylval.i=EXCEPTIONALITY_PRIMORDIAL; return EXCEP
 infernal { savetoken(yytext); yylval.i=EXCEPTIONALITY_INFERNAL; return EXCEPTIONALITY_TYPE; }
 no_mythic_prefix { savetoken(yytext); yylval.i=MYTHIC_PREFIX_NONE; return MYTHIC_PREFIX_TYPE; }
 no_mythic_suffix { savetoken(yytext); yylval.i=MYTHIC_SUFFIX_NONE; return MYTHIC_SUFFIX_TYPE; }
+material_none { savetoken(yytext); yylval.i=MAT_NONE; return MATERIAL_TYPE; }
+material_silver { savetoken(yytext); yylval.i=MAT_SILVER; return MATERIAL_TYPE; }
+material_orichalcum { savetoken(yytext); yylval.i=MAT_ORICHALCUM; return MATERIAL_TYPE; }
+material_mithril { savetoken(yytext); yylval.i=MAT_MITHRIL; return MATERIAL_TYPE; }
+material_adamantium { savetoken(yytext); yylval.i=MAT_ADAMANTIUM; return MATERIAL_TYPE; }
+material_bronze { savetoken(yytext); yylval.i=MAT_BRONZE; return MATERIAL_TYPE; }
+material_bone { savetoken(yytext); yylval.i=MAT_BONE; return MATERIAL_TYPE; }
+material_iron { savetoken(yytext); yylval.i=MAT_IRON; return MATERIAL_TYPE; }
+material_steel { savetoken(yytext); yylval.i=MAT_STEEL; return MATERIAL_TYPE; }
+material_gold { savetoken(yytext); yylval.i=MAT_GOLD; return MATERIAL_TYPE; }
+material_platinum { savetoken(yytext); yylval.i=MAT_PLATINUM; return MATERIAL_TYPE; }
+material_gemstone { savetoken(yytext); yylval.i=MAT_GEMSTONE; return MATERIAL_TYPE; }
+material_hard_crystal { savetoken(yytext); yylval.i=MAT_HARD_CRYSTAL; return MATERIAL_TYPE; }
 region_general { savetoken(yytext); yylval.i=REGION_GENERAL; return SPECIAL_REGION_TYPE; }
 region_special_level_seen { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_SEEN; return SPECIAL_REGION_TYPE; }
 region_special_level_true_nature_revealed { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_TRUE_NATURE_REVEALED; return SPECIAL_REGION_TYPE; }

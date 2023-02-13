@@ -1130,7 +1130,7 @@ boolean* obj_destroyed;
                 else
                     damage = adjust_damage(rnd(2), &youmonst, mon, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
 
-                if (objects[obj->otyp].oc_material == MAT_SILVER
+                if (obj->material == MAT_SILVER
                     && mon_hates_silver(mon)) 
                 {
                     silvermsg = TRUE;
@@ -1263,7 +1263,7 @@ boolean* obj_destroyed;
                 {
                     damage += adjust_damage(special_hit_dmg, &youmonst, mon, spec_adtyp, ADFLAGS_NONE);
                 }
-                if (objects[obj->otyp].oc_material == MAT_SILVER
+                if (obj->material == MAT_SILVER
                     && mon_hates_silver(mon)) 
                 {
                     silvermsg = TRUE;
@@ -1598,7 +1598,7 @@ boolean* obj_destroyed;
                      * Things like silver wands can arrive here so
                      * so we need another silver check.
                      */
-                    if (objects[obj->otyp].oc_material == MAT_SILVER
+                    if (obj->material == MAT_SILVER
                         && mon_hates_silver(mon)) 
                     {
                         damage += adjust_damage(rnd(20), &youmonst, mon, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
@@ -1976,9 +1976,7 @@ boolean* obj_destroyed;
         /* iron weapon using melee or polearm hit [3.6.1: metal weapon too;
            also allow either or both weapons to cause split when twoweap] */
         && obj && (obj == uwep || obj == uarms)
-        && ((objects[obj->otyp].oc_material == MAT_IRON
-            /* allow scalpel and tsurugi to split puddings */
-            || objects[obj->otyp].oc_material == MAT_METAL)
+        && (is_metallic(obj) /* allow scalpel and tsurugi to split puddings */
             /* but not bashing with darts, arrows or ya */
             && !(is_ammo(obj) || is_missile(obj)))
         && hand_to_hand) {
@@ -2460,7 +2458,7 @@ struct obj *obj;
         || obj->otyp == MIRROR          /* silver in the reflective surface */
         || obj->otyp == MAGIC_MIRROR          /* silver in the reflective surface */
         || obj->otyp == CLOVE_OF_GARLIC /* causes shades to flee */
-        || objects[obj->otyp].oc_material == MAT_SILVER)
+        || obj->material == MAT_SILVER)
         return TRUE;
     return FALSE;
 }
@@ -3782,8 +3780,7 @@ register struct monst *mon;
             if (u.twoweap && uarms /* set up 'altwep' flag for next iteration */
                 /* only consider seconary when wielding one-handed primary */
                 && !bimanual(uwep)
-                && !(objects[uarms->otyp].oc_material == MAT_SILVER
-                     && Hate_silver))
+                && !(uarms->material == MAT_SILVER && Hate_silver))
                 altwep = !altwep; /* toggle for next attack */
             weapon = *originalweapon;
             if (!weapon) /* no need to go beyond no-gloves to rings; not ...*/

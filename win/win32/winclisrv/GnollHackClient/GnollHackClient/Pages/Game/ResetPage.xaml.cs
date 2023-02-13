@@ -109,10 +109,6 @@ namespace GnollHackClient.Pages.Game
                 bool resetatstart = Preferences.Get("ResetAtStart", true);
                 bool has_resetbanks = Preferences.ContainsKey("ResetExternalFiles");
                 bool resetbanks = Preferences.Get("ResetExternalFiles", false);
-                bool has_sse = Preferences.ContainsKey("ShowSpecialEffect");
-                bool sse = Preferences.Get("ShowSpecialEffect", true);
-                bool has_sbv = Preferences.ContainsKey("SponsorButtonVisited");
-                bool sbv = Preferences.Get("SponsorButtonVisited", true);
                 bool has_fcf = Preferences.ContainsKey("CheckPurchase_FirstConnectFail");
                 DateTime fcf = Preferences.Get("CheckPurchase_FirstConnectFail", DateTime.MinValue);
                 bool has_gsc = Preferences.ContainsKey("CheckPurchase_ConnectFail_GameStartCount");
@@ -141,10 +137,6 @@ namespace GnollHackClient.Pages.Game
                     Preferences.Set("ResetAtStart", resetatstart);
                 if (has_resetbanks)
                     Preferences.Set("ResetExternalFiles", resetbanks);
-                if (has_sse)
-                    Preferences.Set("ShowSpecialEffect", sse);
-                if (has_sbv)
-                    Preferences.Set("SponsorButtonVisited", sbv);
                 if (has_fcf)
                     Preferences.Set("CheckPurchase_FirstConnectFail", fcf);
                 if (has_gsc)
@@ -167,21 +159,6 @@ namespace GnollHackClient.Pages.Game
 
                 btnDeletePreferences.Text = "Done";
                 btnDeletePreferences.TextColor = Color.Red;
-            }
-        }
-
-        private async void btnRevertToDemo_Clicked(object sender, EventArgs e)
-        {
-            App.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Activate Effect?", "Are you sure to activate sponsor button special effect?", "Yes", "No");
-            if (answer)
-            {
-                App.ShowSpecialEffect = true;
-                App.SponsorButtonVisited = false;
-                Preferences.Set("ShowSpecialEffect", App.ShowSpecialEffect);
-                Preferences.Set("SponsorButtonVisited", App.SponsorButtonVisited);
-                btnRevertToDemo.Text = "Done";
-                btnRevertToDemo.TextColor = Color.Red;
             }
         }
 

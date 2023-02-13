@@ -359,7 +359,7 @@ int mtype;
         /* now his/her goodies... */
         if (montype == PM_HIGH_PRIEST)
         {
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_MANUAL_OF_THE_PLANES, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, priest, MAT_NONE, MANUAL_MANUAL_OF_THE_PLANES, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(priest, otmp);
         }
@@ -389,21 +389,21 @@ int mtype;
 
             if (montype != PM_HIGH_PRIEST)
             {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, priest, MAT_NONE, MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(priest, otmp);
 
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_PRAYING, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, priest, MAT_NONE, MANUAL_GUIDE_TO_PRAYING, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(priest, otmp);
 
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_CLERICAL_SPELLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, priest, MAT_NONE, MANUAL_CATALOGUE_OF_CLERICAL_SPELLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(priest, otmp);
 
                 if (context.game_difficulty < 0)
                 {
-                    otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                    otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, priest, MAT_NONE, MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                     if (otmp)
                         (void)mpickobj(priest, otmp);
                 }
@@ -544,24 +544,24 @@ int mtype;
         set_mhostility(smith); /* mpeaceful may have changed */
 
         (void)mongetsgold(smith, 3000L + (long)rn2(6) * 500L);
-        struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+        struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, smith, MAT_NONE, MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
         if (otmp)
             (void)mpickobj(smith, otmp);
 
-        otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_WEAPONS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+        otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, smith, MAT_NONE, MANUAL_CATALOGUE_OF_WEAPONS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
         if (otmp)
             (void)mpickobj(smith, otmp);
 
-        otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_CATALOGUE_OF_ARMOR, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+        otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, smith, MAT_NONE, MANUAL_CATALOGUE_OF_ARMOR, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
         if (otmp)
             (void)mpickobj(smith, otmp);
 
         if (context.game_difficulty < 0)
         {
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_ARMOR_101, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, smith, MAT_NONE, MANUAL_ARMOR_101, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(smith, otmp);
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_WEAPONS_101, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, smith, MAT_NONE, MANUAL_WEAPONS_101, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(smith, otmp);
         }
@@ -1173,7 +1173,7 @@ xchar x, y;
 boolean peaceful;
 {
     register struct monst *roamer;
-    register boolean coaligned = (u.ualign.type == alignment);
+    //register boolean coaligned = (u.ualign.type == alignment);
 
 #if 0 /* this was due to permonst's pxlth field which is now gone */
     if (ptr != &mons[PM_ALIGNED_PRIEST] && ptr != &mons[PM_ANGEL])
@@ -1183,17 +1183,17 @@ boolean peaceful;
     if (MON_AT(x, y))
         (void) rloc(m_at(x, y), FALSE); /* insurance */
 
-    if (!(roamer = makemon(ptr, x, y, MM_ADJACENTOK | MM_EMIN)))
+    if (!(roamer = makemon_limited(ptr, x, y, MM_ADJACENTOK | MM_EMIN | MM_ROAMER | (peaceful ? MM_PEACEFUL : MM_ANGRY), 0UL, 0, 0, 0, alignment)))
         return (struct monst *) 0;
 
-    EMIN(roamer)->min_align = alignment;
-    EMIN(roamer)->renegade = (coaligned && !peaceful);
-    roamer->ispriest = 0;
-    roamer->isminion = 1;
-    roamer->mtrapseen = ~0; /* traps are known */
-    roamer->mpeaceful = peaceful;
-    roamer->msleeping = 0;
-    set_mhostility(roamer); /* peaceful may have changed */
+    //EMIN(roamer)->min_align = alignment;
+    //EMIN(roamer)->renegade = (coaligned && !peaceful);
+    //roamer->ispriest = 0;
+    //roamer->isminion = 1;
+    //roamer->mtrapseen = ~0; /* traps are known */
+    //roamer->mpeaceful = peaceful;
+    //roamer->msleeping = 0;
+    //set_mhostility(roamer); /* peaceful may have changed */
 
     /* MORE TO COME */
     return roamer;
@@ -1203,8 +1203,9 @@ void
 reset_hostility(roamer)
 register struct monst *roamer;
 {
-    if (!roamer->isminion)
+    if (!roamer || !roamer->isminion || !has_emin(roamer))
         return;
+
     if (roamer->data != &mons[PM_ALIGNED_PRIEST]
         && roamer->data != &mons[PM_ANGEL])
         return;
@@ -1359,9 +1360,9 @@ angry_priest()
             || ((aligntyp) Amask2align(lev->altarmask & AM_MASK)
                 != eprip->shralign))
         {
-            if (!EMIN(priest))
+            if (!has_emin(priest))
                 newemin(priest);
-            if (EMIN(priest))
+            if (has_emin(priest))
             {
                 priest->ispriest = 0; /* now a roaming minion */
                 priest->isminion = 1;

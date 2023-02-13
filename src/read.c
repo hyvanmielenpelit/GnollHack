@@ -2326,8 +2326,9 @@ struct monst* targetmonst;
             {
                 u.dx = cc.x - u.ux;
                 update_u_facing(TRUE);
-                update_u_action(ACTION_TILE_CAST_NODIR);
                 play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+                update_u_action(ACTION_TILE_CAST_NODIR);
+                play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
                 u_wait_until_action();
                 u.dx = 0;
             }
@@ -3158,8 +3159,9 @@ struct monst* targetmonst;
         {
             u.dx = cc.x - u.ux;
             update_u_facing(TRUE);
-            update_u_action(ACTION_TILE_CAST_NODIR);
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+            update_u_action(ACTION_TILE_CAST_NODIR);
+            play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
             u_wait_until_action();
             u.dx = 0;
         }
@@ -3203,8 +3205,9 @@ struct monst* targetmonst;
         {
             u.dx = cc.x - u.ux;
             update_u_facing(TRUE);
-            update_u_action(ACTION_TILE_CAST_NODIR);
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+            update_u_action(ACTION_TILE_CAST_NODIR);
+            play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
             u_wait_until_action();
             u.dx = 0;
         }

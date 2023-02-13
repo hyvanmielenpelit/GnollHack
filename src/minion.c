@@ -180,7 +180,7 @@ struct monst *mon;
     context.makemon_spef_idx = 0;
     while (cnt > 0)
     {
-        mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | mmanimtype | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
+        mtmp = makemon_limited(&mons[dtype], u.ux, u.uy, MM_EMIN | (dtype == PM_ANGEL ? MM_ROAMER : 0UL) | MM_PLAY_SUMMON_ANIMATION | mmanimtype | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL), 0UL, 0, 0, 0, dtype == PM_ANGEL ? atyp : 0);
         if (mtmp) 
         {
             context.makemon_spef_idx++;
@@ -189,15 +189,15 @@ struct monst *mon;
             mtmp->mspecialsummon2_used = 30;
             result++;
             /* an angel's alignment should match the summoner */
-            if (dtype == PM_ANGEL)
-            {
-                mtmp->isminion = 1;
-                EMIN(mtmp)->min_align = atyp;
-                /* renegade if same alignment but not peaceful
-                   or peaceful but different alignment */
-                EMIN(mtmp)->renegade =
-                    (atyp != u.ualign.type) ^ !is_peaceful(mtmp);
-            }
+            //if (dtype == PM_ANGEL)
+            //{
+            //    mtmp->isminion = 1;
+            //    EMIN(mtmp)->min_align = atyp;
+            //    /* renegade if same alignment but not peaceful
+            //       or peaceful but different alignment */
+            //    EMIN(mtmp)->renegade =
+            //        (atyp != u.ualign.type) ^ !is_peaceful(mtmp);
+            //}
             play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp->mx, mtmp->my);
             if(canseemon(mtmp))
             { 
@@ -680,26 +680,26 @@ boolean talk;
     }
     else if (mnum == PM_ANGEL) 
     {
-        mon = makemon(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
-        if (mon)
-        {
-            mon->isminion = 1;
-            EMIN(mon)->min_align = alignment;
-            EMIN(mon)->renegade = FALSE;
-        }
+        mon = makemon_limited(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_ROAMER | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, MM2_FORCE_NONRENEGADE, 0, 0, 0, alignment);
+        //if (mon)
+        //{
+        //    mon->isminion = 1;
+        //    EMIN(mon)->min_align = alignment;
+        //    EMIN(mon)->renegade = FALSE;
+        //}
     }
     else if (mnum != PM_SHOPKEEPER && mnum != PM_SMITH && mnum != PM_GUARD
                && mnum != PM_ALIGNED_PRIEST && mnum != PM_HIGH_PRIEST) 
     {
         /* This was mons[mnum].pxlth == 0 but is this restriction
            appropriate or necessary now that the structures are separate? */
-        mon = makemon(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
-        if (mon)
-        {
-            mon->isminion = 1;
-            EMIN(mon)->min_align = alignment;
-            EMIN(mon)->renegade = FALSE;
-        }
+        mon = makemon_limited(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_ROAMER | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, MM2_FORCE_NONRENEGADE, 0, 0, 0, alignment);
+        //if (mon)
+        //{
+        //    mon->isminion = 1;
+        //    EMIN(mon)->min_align = alignment;
+        //    EMIN(mon)->renegade = FALSE;
+        //}
     }
     else
     {
@@ -726,10 +726,14 @@ boolean talk;
 
 /* returns 1 if it won't attack. */
 int
-demon_talk(mtmp)
+demon_talk(mtmp, stop_chat_ptr)
 struct monst *mtmp;
+boolean* stop_chat_ptr;
 {
     long cash, demand, offer;
+
+    if (stop_chat_ptr)
+        *stop_chat_ptr = FALSE;
 
     if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_ANGERS_DEMONS))
         || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))
@@ -742,6 +746,8 @@ struct monst *mtmp;
 
         set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
+        if (stop_chat_ptr)
+            *stop_chat_ptr = TRUE;
         return 0;
     }
 
@@ -776,6 +782,8 @@ struct monst *mtmp;
         if (!tele_restrict(mtmp))
         {
             (void)rloc2(mtmp, TRUE, TRUE);
+            if (stop_chat_ptr)
+                *stop_chat_ptr = TRUE;
         }
         return 1;
     }
@@ -787,9 +795,17 @@ struct monst *mtmp;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You hear the thundering voice of %s, the Demon Lord of Gnolls.", Amonnam(mtmp));
 
         pline("%s speaks.", Amonnam(mtmp));
+        boolean has_howling_flail = FALSE;
+        struct obj* flailobj;
+        for(flailobj = invent; flailobj; flailobj = flailobj->nobj)
+            if (flailobj->oartifact == ART_HOWLING_FLAIL)
+            {
+                has_howling_flail = TRUE;
+                break;
+            }
 
         if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !(2-rnl(3)))) || (u.ualign.type == A_NEUTRAL && !rnl(3))
-            || ((uwep && uwep->oartifact == ART_HOWLING_FLAIL) || (uarms && uarms->oartifact == ART_HOWLING_FLAIL)))
+            || has_howling_flail)
         {
             struct monst tmpmon = *mtmp; /* Save Yeenaghu's data */
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_PLEASED);
@@ -799,6 +815,8 @@ struct monst *mtmp;
             //mongrantswish removes the monster (calls mongone)
             play_simple_monster_sound(&tmpmon, MONSTER_SOUND_TYPE_LAUGHTER);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The demon lord laughs, then vanishes.");
+            if (stop_chat_ptr)
+                *stop_chat_ptr = TRUE;
             return 1;
         }
         if (u.ualign.type != A_LAWFUL)
@@ -825,9 +843,8 @@ struct monst *mtmp;
         {
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s laughs menacingly, then vanishes.",
-                Amonnam(mtmp));
-        } 
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s laughs menacingly, then vanishes.", Amonnam(mtmp));
+        }
         else 
         {
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
@@ -836,6 +853,8 @@ struct monst *mtmp;
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
             update_game_music();
+            if (stop_chat_ptr)
+                *stop_chat_ptr = TRUE;
             return 0;
         }
     }
@@ -850,6 +869,8 @@ struct monst *mtmp;
             mtmp->mpeaceful = 0;
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
+            if (stop_chat_ptr)
+                *stop_chat_ptr = TRUE;
             return 0;
         }
         else 
@@ -872,16 +893,14 @@ struct monst *mtmp;
             {
                 play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s vanishes, laughing about cowardly mortals.",
-                      Amonnam(mtmp));
-            } 
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s vanishes, laughing about cowardly mortals.", Amonnam(mtmp));
+            }
             else if (offer > 0L
                        && (long) rnd(5 * ACURR(A_CHA)) > (demand - offer)) 
             {
                 play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s scowls at you menacingly, then vanishes.",
-                      Amonnam(mtmp));
-            } 
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));
+            }
             else 
             {
                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
@@ -890,11 +909,15 @@ struct monst *mtmp;
                 set_mhostility(mtmp);
                 newsym(mtmp->mx, mtmp->my);
                 update_game_music();
+                if (stop_chat_ptr)
+                    *stop_chat_ptr = TRUE;
                 return 0;
             }
         }
     }
     mongone(mtmp);
+    if (stop_chat_ptr)
+        *stop_chat_ptr = TRUE;
     return 1;
 }
 

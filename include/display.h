@@ -303,6 +303,7 @@
 #define NUM_CMAP_TYPE_CHARS (MAX_CMAPPED_CHARS - MAX_EXPLOSION_CHARS - MAX_SWALLOW_CHARS)
 #define NUM_INVIS_GLYPHS 1
 #define NUM_MISSILE_DIRS 8
+#define NUM_BASE_TILE_DIRS 3 /* Up, left, up-left */
 #define MAX_BUFF_TILES ((LAST_PROP - 1) / 24 + 1)
 
 #define GLYPH_MON_OFF     (1) /* Changed to 1 so that mirror image of mon 0 maps to -1 */

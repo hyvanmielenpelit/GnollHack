@@ -47,6 +47,8 @@ struct npc_subtype_definition {
     schar min_appearance_depth;
     schar max_appearance_depth;
     int start_money_d, start_money_n, start_money_p;
+    boolean has_special_tileset;
+    uchar special_tileset;
     unsigned long service_flags;
     unsigned long general_flags;
 };
@@ -105,6 +107,8 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_HAS_DISTANT_SOUND_3       0x00080000UL
 #define NPC_FLAGS_HAS_STANDARD_DISTANT_SOUNDS       (NPC_FLAGS_HAS_DISTANT_SOUND_1 | NPC_FLAGS_HAS_DISTANT_SOUND_2)
 #define NPC_FLAGS_HAS_ALL_DISTANT_SOUNDS            (NPC_FLAGS_HAS_DISTANT_SOUND_1 | NPC_FLAGS_HAS_DISTANT_SOUND_2 | NPC_FLAGS_HAS_DISTANT_SOUND_3)
+#define NPC_FLAGS_MAY_HAVE_PAINTINGS        0x00100000UL
+#define NPC_FLAGS_ALWAYS_HAS_PAINTING       0x00200000UL
 
 
 

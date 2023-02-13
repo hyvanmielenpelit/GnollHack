@@ -2799,8 +2799,8 @@ struct monst* targetmonst;
     chance = percent_success(spell, TRUE);
     if (confused || (rnd(100) > chance)) 
     {
-        update_u_action(ACTION_TILE_CAST_NODIR);
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+        update_u_action(ACTION_TILE_CAST_NODIR);
         u_wait_until_action();
         play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to cast the spell correctly.");
@@ -3048,8 +3048,9 @@ struct monst* targetmonst;
 
             if (!u.dx && !u.dy && !u.dz)
             {
-                update_u_action(ACTION_TILE_CAST_NODIR);
                 play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+                update_u_action(ACTION_TILE_CAST_NODIR);
+                play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
                 u_wait_until_action();
 
                 if ((damage = zapyourself(pseudo, TRUE)) != 0)
@@ -3063,8 +3064,9 @@ struct monst* targetmonst;
             else
             {
                 update_u_facing(TRUE);
-                update_u_action(ACTION_TILE_CAST_DIR);
                 play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+                update_u_action(ACTION_TILE_CAST_DIR);
+                play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
                 u_wait_until_action();
                 weffects(pseudo);
 
@@ -3073,8 +3075,9 @@ struct monst* targetmonst;
         else
         {
             /* No dir */
-            update_u_action(ACTION_TILE_CAST_NODIR);
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+            update_u_action(ACTION_TILE_CAST_NODIR);
+            play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
             u_wait_until_action();
             weffects(pseudo);
         }
@@ -3151,8 +3154,9 @@ struct monst* targetmonst;
     case SPE_CREATE_MONSTER:
         if (objects[otyp].oc_dir != TARGETED)
         {
-            update_u_action(ACTION_TILE_CAST_NODIR);
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+            update_u_action(ACTION_TILE_CAST_NODIR);
+            play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
             u_wait_until_action();
         }
         (void) seffects(pseudo, &effect_happened, targetmonst);
@@ -3166,31 +3170,35 @@ struct monst* targetmonst;
     case SPE_LEVITATION:
     case SPE_RESTORE_ABILITY:
     case SPE_INVISIBILITY:
-        update_u_action(ACTION_TILE_CAST_NODIR);
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+        update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         (void) peffects(pseudo);
         break;
     /* end of potion-like spells */
 
     case SPE_CREATE_FAMILIAR:
-        update_u_action(ACTION_TILE_CAST_NODIR);
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+        update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         (void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
         break;
     case SPE_CONGREGATE:
     case SPE_SUMMONING_CALL:
-        update_u_action(ACTION_TILE_CAST_NODIR);
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+        update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         if (iflags.using_gui_sounds)
             delay_output_milliseconds(200);
         use_magic_whistle((struct obj*) 0);
         break;
     case SPE_CLAIRVOYANCE:
-        update_u_action(ACTION_TILE_CAST_NODIR);
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+        update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
@@ -3204,14 +3212,16 @@ struct monst* targetmonst;
         special_effect_wait_until_end(0);
         break;
     case SPE_MINOR_CONSULTATION:
-        update_u_action(ACTION_TILE_CAST_NODIR);
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+        update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         outrumor(&youmonst, pseudo, 1, BY_SPELL);
         break;
     case SPE_MAJOR_CONSULTATION:
-        update_u_action(ACTION_TILE_CAST_NODIR);
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+        update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         outoracle(&youmonst, pseudo, FALSE, 2);
         break;
@@ -3244,8 +3254,9 @@ struct monst* targetmonst;
     case SPE_MASS_CONFLICT:
     case SPE_GLOBE_OF_INVULNERABILITY:
     case SPE_DIVINE_INTERVENTION:
-        update_u_action(ACTION_TILE_CAST_NODIR);
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+        update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound_at_location(SFX_GENERAL_GAIN_ABILITY_SPELL, u.ux, u.uy);
@@ -3266,8 +3277,9 @@ struct monst* targetmonst;
         special_effect_wait_until_end(0);
         break;
     case SPE_JUMPING:
-        update_u_action(ACTION_TILE_CAST_NODIR);
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+        update_u_action(ACTION_TILE_CAST_NODIR);
+        play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         if (!jump(max(role_skill, 1)))
             pline1(nothing_happens);
@@ -3294,8 +3306,9 @@ struct monst* targetmonst;
 
         if (otmp && otmp != &zeroobj) 
         {
-            update_u_action(ACTION_TILE_CAST_NODIR);
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+            update_u_action(ACTION_TILE_CAST_NODIR);
+            play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
             u_wait_until_action();
 
             switch (otyp)
@@ -5037,6 +5050,26 @@ int spell;
     return 0;
 }
 
+long
+get_object_spell_casting_penalty(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    long res = objects[obj->otyp].oc_spell_casting_penalty;
+
+    if (obj->material != objects[obj->otyp].oc_material && is_armor(obj))
+    {
+        res += material_definitions[obj->material].spell_casting_penalty_armor[objects[obj->otyp].oc_armor_category];
+    }
+
+    if (res > 0 && has_obj_mythic_spellcasting(obj))
+        return 0;
+
+    return res;
+}
+
 STATIC_OVL int
 percent_success(spell, limited)
 int spell;
@@ -5055,42 +5088,42 @@ boolean limited;
 
     if (!(objects[spellid(spell)].oc_spell_flags & S1_NO_SOMATIC_COMPONENT))
     {
-        if (uarm && !has_obj_mythic_spellcasting(uarm))
-            armor_penalty += objects[uarm->otyp].oc_spell_casting_penalty;
-        if (uarms && !has_obj_mythic_spellcasting(uarms))
-            armor_penalty += objects[uarms->otyp].oc_spell_casting_penalty;
-        if (uarmh && !has_obj_mythic_spellcasting(uarmh))
-            armor_penalty += objects[uarmh->otyp].oc_spell_casting_penalty;
-        if (uarmg && !has_obj_mythic_spellcasting(uarmg))
-            armor_penalty += objects[uarmg->otyp].oc_spell_casting_penalty;
-        if (uarmf && !has_obj_mythic_spellcasting(uarmf))
-            armor_penalty += objects[uarmf->otyp].oc_spell_casting_penalty;
-        if (uarmu && !has_obj_mythic_spellcasting(uarmu))
-            armor_penalty += objects[uarmu->otyp].oc_spell_casting_penalty;
-        if (uarmo && !has_obj_mythic_spellcasting(uarmo))
-            armor_penalty += objects[uarmo->otyp].oc_spell_casting_penalty;
-        if (uarmb && !has_obj_mythic_spellcasting(uarmb))
-            armor_penalty += objects[uarmb->otyp].oc_spell_casting_penalty;
+        if (uarm)
+            armor_penalty += get_object_spell_casting_penalty(uarm);
+        if (uarms)
+            armor_penalty += get_object_spell_casting_penalty(uarms);
+        if (uarmh)
+            armor_penalty += get_object_spell_casting_penalty(uarmh);
+        if (uarmg)
+            armor_penalty += get_object_spell_casting_penalty(uarmg);
+        if (uarmf)
+            armor_penalty += get_object_spell_casting_penalty(uarmf);
+        if (uarmu)
+            armor_penalty += get_object_spell_casting_penalty(uarmu);
+        if (uarmo)
+            armor_penalty += get_object_spell_casting_penalty(uarmo);
+        if (uarmb)
+            armor_penalty += get_object_spell_casting_penalty(uarmb);
         if (umisc)
-            armor_penalty += objects[umisc->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(umisc);
         if (umisc2)
-            armor_penalty += objects[umisc2->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(umisc2);
         if (umisc3)
-            armor_penalty += objects[umisc3->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(umisc3);
         if (umisc4)
-            armor_penalty += objects[umisc4->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(umisc4);
         if (umisc5)
-            armor_penalty += objects[umisc5->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(umisc5);
         if (uamul)
-            armor_penalty += objects[uamul->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(uamul);
         if (uleft)
-            armor_penalty += objects[uleft->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(uleft);
         if (uright)
-            armor_penalty += objects[uright->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(uright);
         if (ublindf)
-            armor_penalty += objects[ublindf->otyp].oc_spell_casting_penalty;
-        if (uwep && !has_obj_mythic_spellcasting(uwep))
-            armor_penalty += objects[uwep->otyp].oc_spell_casting_penalty;
+            armor_penalty += get_object_spell_casting_penalty(ublindf);
+        if (uwep)
+            armor_penalty += get_object_spell_casting_penalty(uwep);
     }
 
     /* Calculate success chance */

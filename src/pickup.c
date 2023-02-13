@@ -1034,7 +1034,7 @@ int show_weights;
                 xchar x = 0, y = 0;
                 get_obj_location(curr, &x, &y, CONTAINED_TOO | BURIED_TOO);
                 int glyph = obj_to_glyph(curr, rn2_on_display_rng);
-                int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, curr, (struct monst*)0, 0UL, 0UL));
+                int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, curr, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
 
                 add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, obj_to_extended_menu_info(curr),
                     applied_invlet,
@@ -1061,7 +1061,7 @@ int show_weights;
         fake_hero_object.quan = 1L; /* not strictly necessary... */
         any.a_obj = &fake_hero_object;
         int glyph = any_mon_to_glyph(&youmonst, rn2_on_display_rng);
-        int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL));
+        int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
         add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
                  /* fake inventory letter, no group accelerator */
                  CONTAINED_SYM, 0, ATR_NONE, an(self_lookat(buf)),
@@ -1934,7 +1934,7 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
         if(cobj->cooldownleft > 0)
             You("find nothing but void inside.");
         else
-            (void)endlessarrows(cobj, (cobj->otyp == BAG_OF_INFINITE_SLING_BULLETS ? (!rn2(2) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET) : cobj->otyp == POUCH_OF_ENDLESS_BOLTS ? CROSSBOW_BOLT : ARROW), rnd(10) + 10);
+            (void)endlessarrows(cobj, (cobj->otyp == BAG_OF_INFINITE_SLING_BULLETS ? SLING_BULLET : cobj->otyp == POUCH_OF_ENDLESS_BOLTS ? CROSSBOW_BOLT : ARROW), rnd(10) + 10);
         abort_looting = TRUE;
         return 1;
     }
@@ -2255,7 +2255,8 @@ doloot()
                     }
                     if (decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item != STRANGE_OBJECT)
                     {
-                        struct obj* newobj = mksobj(decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item, TRUE, FALSE, 0);
+                        boolean subtyp_is_item_special_quality = (decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY) != 0;
+                        struct obj* newobj = mksobj_with_flags(decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, subtyp_is_item_special_quality ? (long)levl[cc.x][cc.y].decoration_subtyp : 0L, 0L, subtyp_is_item_special_quality ? MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY : 0UL);
                         if (newobj)
                         {
                             got_something = TRUE;
@@ -2265,6 +2266,7 @@ doloot()
                             {
                                 begin_burn(newobj, FALSE);
                             }
+                            play_simple_object_sound(newobj, OBJECT_SOUND_TYPE_PICK_UP);
                             obj_extract_self(newobj);
                             newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
                                 The(aobjnam(newobj, "slip")),  (const char*)0);
@@ -2272,6 +2274,7 @@ doloot()
                     }
                     newsym(cc.x, cc.y);
                     newsym(u.ux, u.uy);
+                    flush_screen(1);
                     vision_full_recalc = 1;
                 }
                 else

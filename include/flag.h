@@ -89,6 +89,7 @@ struct flag {
     boolean show_weight_summary; /* show weight summary */
     boolean show_grid; /* show grid on tiles */
     boolean showscore;       /* show score */
+    boolean showrealtime;       /* show realtime */
     boolean silent;          /* whether the bell rings or not */
     /* The story so far:
      * 'sortloot' originally took a True/False value but was changed

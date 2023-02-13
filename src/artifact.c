@@ -257,7 +257,7 @@ uchar mkflags; /* for monks */
 
         /* make an appropriate object if necessary, then christen it */
         if (by_align || !otmp)
-            otmp = mksobj((int) a->otyp, TRUE, FALSE, FALSE);
+            otmp = mksobj_with_flags((int) a->otyp, TRUE, FALSE, FALSE, (struct monst*)0, MAT_NONE, 0UL, 0UL, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
 
         if (otmp) 
         {
@@ -267,6 +267,10 @@ uchar mkflags; /* for monks */
             otmp->exceptionality = artilist[otmp->oartifact].exceptionality;
             otmp->mythic_prefix = artilist[otmp->oartifact].mythic_prefix;
             otmp->mythic_suffix = artilist[otmp->oartifact].mythic_suffix;
+            if(artilist[otmp->oartifact].material)
+                otmp->material = artilist[otmp->oartifact].material;
+            else
+                otmp->material = objects[otmp->otyp].oc_material; /* Only the base material will do */
         }
     } 
     else 
@@ -347,6 +351,10 @@ boolean mod;
                     otmp->exceptionality = artilist[otmp->oartifact].exceptionality;
                     otmp->mythic_prefix = artilist[otmp->oartifact].mythic_prefix;
                     otmp->mythic_suffix = artilist[otmp->oartifact].mythic_suffix;
+                    if (artilist[otmp->oartifact].material)
+                        otmp->material = artilist[otmp->oartifact].material;
+                    else
+                        otmp->material = objects[otmp->otyp].oc_material; /* Only the base material will do */
 
                     if (artilist[otmp->oartifact].aflags & AF_FAMOUS)
                         otmp->nknown = TRUE;
@@ -600,7 +608,7 @@ struct obj *obj;
     const struct artifact *arti;
 
     /* any silver object is effective */
-    if (objects[obj->otyp].oc_material == MAT_SILVER)
+    if (obj->material == MAT_SILVER)
         return TRUE;
 
     /* any blessed object is effective */
@@ -831,7 +839,7 @@ struct monst *mon;
             if(badclass || badalign)
                 dmg += d((Antimagic_or_resistance ? 2 : 4), (self_willed ? 10 : 4));
             /* add half (maybe quarter) of the usual silver damage bonus */
-            if (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver)
+            if (obj->material == MAT_SILVER && Hate_silver)
                 dmg += rnd(10);
             damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
 
@@ -3257,11 +3265,11 @@ arti_cost(otmp)
 struct obj *otmp;
 {
     if (!otmp->oartifact)
-        return objects[otmp->otyp].oc_cost;
+        return get_object_base_value(otmp);
     else if (artilist[(int) otmp->oartifact].cost)
         return artilist[(int) otmp->oartifact].cost;
     else
-        return (20L * (objects[otmp->otyp].oc_cost + 75L));
+        return (20L * (get_object_base_value(otmp) + 75L));
 }
 
 struct abil2adtyp_tag {
@@ -3690,7 +3698,7 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
     if (touch_artifact(obj, &youmonst)) {
         char buf[BUFSZ];
         double damage = 0;
-        boolean ag = (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver),
+        boolean ag = (obj->material == MAT_SILVER && Hate_silver),
             bane = bane_applies(get_artifact(obj), &youmonst),
             inappr_character = ((objects[obj->otyp].oc_flags4 & O4_INAPPROPRIATE_CHARACTERS_CANT_HANDLE) != 0 && inappropriate_monster_character_type(&youmonst, obj)),
             inappr_exceptionality = inappropriate_exceptionality(&youmonst, obj);

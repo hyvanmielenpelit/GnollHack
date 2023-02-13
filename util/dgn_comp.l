@@ -116,12 +116,19 @@ chaotic         { yylval.i=D_ALIGN_CHAOTIC ; return(DESCRIPTOR); }
 dungeons_of_doom_tileset 	{ yylval.i=CMAP_NORMAL; return CMAP_TYPE; }
 gnomish_mines_tileset 		{ yylval.i=CMAP_GNOMISH_MINES; return CMAP_TYPE; }
 gehennom_tileset 			{ yylval.i=CMAP_GEHENNOM; return CMAP_TYPE; }
-undead_tileset 				{ yylval.i=CMAP_UNDEAD_STYLE; return CMAP_TYPE; }
+undead_tileset 				{ yylval.i=CMAP_UNDEAD; return CMAP_TYPE; }
 sokoban_tileset 			{ yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
 elemental_tileset 			{ yylval.i=CMAP_ELEMENTAL_PLANES; return CMAP_TYPE; }
 astral_tileset 				{ yylval.i=CMAP_ASTRAL; return CMAP_TYPE; }
 gehennom_cavernous_tileset 	{ yylval.i=CMAP_GEHENNOM_CAVERNOUS; return CMAP_TYPE; }
 garden_tileset 				{ yylval.i=CMAP_GARDEN; return CMAP_TYPE; }
+cityscape_tileset			{ yylval.i=CMAP_CITYSCAPE; return CMAP_TYPE; }
+nest_tileset				{ yylval.i=CMAP_NEST; return CMAP_TYPE; }
+temple_tileset				{ yylval.i=CMAP_TEMPLE; return CMAP_TYPE; }
+opulent_tileset				{ yylval.i=CMAP_OPULENT; return CMAP_TYPE; }
+modron_tileset				{ yylval.i=CMAP_MODRON; return CMAP_TYPE; }
+reinforced_tileset			{ yylval.i=CMAP_REINFORCED; return CMAP_TYPE; }
+tower_tileset				{ yylval.i=CMAP_TOWER; return CMAP_TYPE; }
 BRANCH		return(BRANCH);
 CHAINBRANCH	return(CHBRANCH);
 LEVEL		return(LEVEL);

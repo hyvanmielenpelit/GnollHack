@@ -95,7 +95,7 @@ uchar* tilemapflags;
     const char* fq_save = save_file_name;
     const char* tile_section_name;
     const char* set_name;
-    int fd, i, j, k;
+    int fd, i, j, k, l;
     int tile_count = 0;
     char buf[BUFSIZ];
     strcpy(buf, "");
@@ -330,8 +330,6 @@ uchar* tilemapflags;
             }
         }
     }
-
-#define NUM_BASE_TILE_DIRS 3 /* Up, left, up-left */
 
 #if 0
     const char* missile_direction_name_array[NUM_MISSILE_DIRS] = {
@@ -2016,7 +2014,7 @@ uchar* tilemapflags;
             if (process_style == 0)
             {
                 Sprintf(buf, "%s,%s,%s,%d", tile_section_name,
-                    replacements[i].replacement_name ? replacements[i].replacement_name : "unknown replacement",
+                    replacements[i].replacement_name ? replacements[i].replacement_name : "unknown-replacement",
                     replacements[i].tile_names[j],
                     base_tile
                 );
@@ -2025,6 +2023,9 @@ uchar* tilemapflags;
                     Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl].width_in_tiles, enlargements[enl].height_in_tiles, enlargements[enl].main_tile_x_coordinate);
                 else
                     Sprintf(eos(buf), ",1,1,0");
+
+                int base_repl = replacements[i].missile_dir < 0 ? -1 : i - replacements[i].missile_dir - 1;
+                Sprintf(eos(buf), ",%s,%s", replacements[i].missile_dir == -2 ? "base" : replacements[i].missile_dir < 0 ? "none" : base_missile_direction_name_array[replacements[i].missile_dir], base_repl < 0 ? "none" : replacements[base_repl].replacement_name ? replacements[base_repl].replacement_name : "unknown-base-replacement");
                 Sprintf(eos(buf), "\n");
                 (void)write(fd, buf, strlen(buf));
             }
@@ -2466,16 +2467,44 @@ uchar* tilemapflags;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
-                for (j = 0; j < NUM_MISSILE_DIRS; j++)
+                for (l = 0; l < NUM_MISSILE_DIRS; l++)
                 {
-                    int mglyph = j + i * NUM_MISSILE_DIRS + GLYPH_OBJ_MISSILE_OFF;
+                    int mglyph = l + i * NUM_MISSILE_DIRS + GLYPH_OBJ_MISSILE_OFF;
+                    int mtile = glyph2tile[mglyph];
                     if (glyphtileflags[mglyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE)
                     {
-                        glyph2replacement[mglyph] = repl;
+                        tile2replacement[mtile] = glyph2replacement[mglyph] = repl;
                         for (k = 0; k < replacements[repl].number_of_tiles; k++)
                         {
                             int rglyph = k + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                             glyphtileflags[rglyph] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                        }
+                    }
+                    if (obj_descr[i].oc_descr_flags & OD_MISSILE_REPLACEMENTS)
+                    {
+                        int bn;
+                        for (bn = 0; bn < NUM_BASE_TILE_DIRS; bn++)
+                        {
+                            boolean hflip = FALSE;
+                            boolean vflip = FALSE;
+                            boolean isfrombasedir = is_dir_from_base_dir(l, bn, &hflip, &vflip);
+                            if (isfrombasedir)
+                            {
+                                int mrepl = obj_descr[i].replacement + bn + 1;
+                                tile2replacement[mtile] = glyph2replacement[mglyph] = mrepl;
+                                tile2autodraw[mtile] = replacements[mrepl].general_autodraw;
+                                for (j = 0; j < replacements[mrepl].number_of_tiles; j++)
+                                {
+                                    int mrglyph = j + replacement_offsets[mrepl] + GLYPH_REPLACEMENT_OFF;
+                                    glyphtileflags[mrglyph] = glyphtileflags[mglyph];
+                                    glyphtileflags[mrglyph] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                    if (hflip)
+                                        glyphtileflags[mrglyph] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                    if (vflip)
+                                        glyphtileflags[mrglyph] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                                    tile2autodraw[tilemaparray[mrglyph]] = replacements[mrepl].tile_autodraw[j];
+                                }
+                            }
                         }
                     }
                 }
@@ -2498,17 +2527,46 @@ uchar* tilemapflags;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
-                for (j = 0; j < NUM_MISSILE_DIRS; j++)
+                for (l = 0; l < NUM_MISSILE_DIRS; l++)
                 {
-                    int mglyph = j + (i - 1) * NUM_MISSILE_DIRS + GLYPH_ARTIFACT_MISSILE_OFF;
+                    int mglyph = l + (i - 1) * NUM_MISSILE_DIRS + GLYPH_ARTIFACT_MISSILE_OFF;
+                    int mtile = glyph2tile[mglyph];
                     if (glyphtileflags[mglyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE)
                     {
-                        glyph2replacement[mglyph] = repl;
+                        tile2replacement[mtile] = glyph2replacement[mglyph] = repl;
                         for (k = 0; k < replacements[repl].number_of_tiles; k++)
                         {
                             int rglyph = k + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                             glyphtileflags[rglyph] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                         }
+                    }
+                    if (artilist[i].aflags2 & AF2_MISSILE_REPLACEMENTS)
+                    {
+                        int bn;
+                        for (bn = 0; bn < NUM_BASE_TILE_DIRS; bn++)
+                        {
+                            boolean hflip = FALSE;
+                            boolean vflip = FALSE;
+                            boolean isfrombasedir = is_dir_from_base_dir(l, bn, &hflip, &vflip);
+                            if (isfrombasedir)
+                            {
+                                int mrepl = artilist[i].replacement + bn + 1;
+                                tile2replacement[mtile] = glyph2replacement[mglyph] = mrepl;
+                                tile2autodraw[mtile] = replacements[mrepl].general_autodraw;
+                                for (j = 0; j < replacements[mrepl].number_of_tiles; j++)
+                                {
+                                    int mrglyph = j + replacement_offsets[mrepl] + GLYPH_REPLACEMENT_OFF;
+                                    glyphtileflags[mrglyph] = glyphtileflags[mglyph];
+                                    glyphtileflags[mrglyph] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                    if (hflip)
+                                        glyphtileflags[mrglyph] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                    if (vflip)
+                                        glyphtileflags[mrglyph] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                                    tile2autodraw[tilemaparray[mrglyph]] = replacements[mrepl].tile_autodraw[j];
+                                }
+                            }
+                        }
+
                     }
                 }
             }

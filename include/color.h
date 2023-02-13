@@ -53,6 +53,21 @@
 #define DRAGON_SILVER CLR_BRIGHT_CYAN
 #define HI_ZAP CLR_BRIGHT_BLUE
 
+#define HI_MINES CLR_BROWN
+#define HI_GEHENNOM CLR_ORANGE
+#define HI_UNDEAD CLR_BLACK
+#define HI_SOKOBAN CLR_BLUE
+#define HI_ELEMENTAL_PLANES CLR_GRAY /* HI_MINERAL */
+#define HI_ASTRAL CLR_BRIGHT_MAGENTA
+#define HI_GARDEN CLR_GREEN
+#define HI_MODRON CLR_WHITE /* color of modronite */
+#define HI_SHOP CLR_BROWN /* HI_WOOD */
+#define HI_REINFORCED CLR_CYAN /* HI_METAL */
+#define HI_NEST CLR_YELLOW
+#define HI_TOWER CLR_BRIGHT_BLUE /* HI_ZAP */
+#define HI_OPULENT CLR_MAGENTA /* could be also CLR_MAGENTA but best choice seems to depend on the color scheme */
+#define HI_TEMPLE CLR_WHITE
+
 #define CLR_MSG_POSITIVE      CLR_GREEN
 #define CLR_MSG_NEGATIVE      CLR_RED
 #define CLR_MSG_WARNING       CLR_ORANGE

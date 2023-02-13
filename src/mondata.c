@@ -1677,7 +1677,7 @@ struct obj* obj;
 
     if (is_hell_hound(ptr) && (obj)->oclass == FOOD_CLASS && (obj)->cursed)
     {
-        if (!(objects[(obj)->otyp].oc_material == MAT_VEGGY
+        if (!(obj->material == MAT_VEGGY
             || ((obj)->otyp == CORPSE && (obj)->corpsenm >= LOW_PM && vegetarian(&mons[(obj)->corpsenm]))))
             return TRUE;
     }
@@ -1686,7 +1686,7 @@ struct obj* obj;
     {
         if ((ptr)->mlet == S_UNICORN)
         {
-            if (objects[(obj)->otyp].oc_material == MAT_VEGGY
+            if (obj->material == MAT_VEGGY
                 || ((obj)->otyp == CORPSE && (obj)->corpsenm >= LOW_PM && vegetarian(&mons[(obj)->corpsenm])))
                 return TRUE;
         }

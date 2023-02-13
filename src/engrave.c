@@ -665,6 +665,7 @@ doengrave()
     case FOOD_CLASS:
     case SCROLL_CLASS:
     case SPBOOK_CLASS:
+    case ART_CLASS:
         pline("%s would get %s.", Yname2(otmp),
               is_ice(u.ux, u.uy) ? "all frosty" : "too dirty");
         ptext = FALSE;

@@ -602,8 +602,7 @@ register struct monst *magr, *mdef;
                             endforloop = TRUE;
                         }
                         if (does_split_upon_hit(mdef->data)
-                            && (otmp && (objects[otmp->otyp].oc_material == MAT_IRON
-                                || objects[otmp->otyp].oc_material == MAT_METAL))
+                            && (otmp && is_metallic(otmp))
                             && mdef->mhp > 1
                             && !is_cancelled(mdef))
                         {

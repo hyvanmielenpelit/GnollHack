@@ -1397,7 +1397,7 @@ gcrownu()
                     discover_artifact(ART_KATANA_OF_MASAMUNE);
                 }
             }
-            else if (obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj->otyp].oc_cost < 2000L && !obj->oartifact)
+            else if (obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && get_object_base_value(obj) < 2000L && !obj->oartifact)
             {
                 if (!Blind)
                     Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "sword shines brightly for a moment.");
@@ -1410,7 +1410,7 @@ gcrownu()
                 }
             }
             /* acquire Excalibur's skill regardless of weapon or gift */
-            else if (obj2 && objects[obj2->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj2->otyp].oc_cost < 2000L && !obj2->oartifact)
+            else if (obj2 && objects[obj2->otyp].oc_subtyp == WEP_LONG_SWORD && get_object_base_value(obj2) < 2000L && !obj2->oartifact)
             {
                 if (!Blind)
                     Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "sword shines brightly for a moment.");
@@ -2501,7 +2501,7 @@ dosacrifice()
             else
             { /* super big win */
                 adjalign(10);
-#ifdef SHOW_SCORE_ON_BOTL
+#ifdef SCORE_ON_BOTL
                 if (flags.showscore && !u.uachieve.ascended)
                     context.botl = 1;
 #endif
@@ -2831,11 +2831,11 @@ dosacrifice()
                     {
                         struct obj* otmp2 = (struct obj*)0;
                         if (objects[otmp->otyp].oc_skill == P_BOW)
-                            otmp2 = mksobj(SILVER_ARROW, FALSE, FALSE, FALSE);
+                            otmp2 = mksobj_with_flags(ARROW, FALSE, FALSE, FALSE, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
                         else if(objects[otmp->otyp].oc_skill == P_CROSSBOW)
-                            otmp2 = mksobj(SILVER_CROSSBOW_BOLT, FALSE, FALSE, FALSE);
+                            otmp2 = mksobj_with_flags(CROSSBOW_BOLT, FALSE, FALSE, FALSE, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
                         else if (objects[otmp->otyp].oc_skill == P_SLING)
-                            otmp2 = mksobj(SILVER_SLING_BULLET, FALSE, FALSE, FALSE);
+                            otmp2 = mksobj_with_flags(SLING_BULLET, FALSE, FALSE, FALSE, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
 
                         if (otmp2)
                         {

@@ -1223,7 +1223,7 @@ register struct obj *obj;
         if (obj->otyp == AMULET_OF_STRANGULATION
             || obj->otyp == RIN_SLOW_DIGESTION)
             return TABU;
-        if (mon_hates_silver(mon) && objects[obj->otyp].oc_material == MAT_SILVER)
+        if (mon_hates_silver(mon) && obj->material == MAT_SILVER)
             return TABU;
         if (slurps_items(mptr) && is_slurpable(obj))
             return ACCFOOD;
@@ -1242,6 +1242,7 @@ register struct obj *obj;
             return APPORT;
         /*FALLTHRU*/
     case ROCK_CLASS:
+    case ART_CLASS:
         return UNDEF;
     }
 }

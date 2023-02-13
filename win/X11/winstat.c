@@ -62,8 +62,9 @@
 #define F_EXP      16
 #define F_ALIGN    17
 #define F_TIME     18
-#define F_SCORE    19
-#define F_MODE     20
+#define F_REALTIME 19
+#define F_SCORE    20
+#define F_MODE     21
 
 /* status conditions grouped by columns; tty orders these differently */
 #define F_STONE    20
@@ -114,7 +115,7 @@ static enum statusfields X11_fieldorder[X11_NUM_STATUS_LINES][X11_NUM_STATUS_FIE
       BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
       BL_FLUSH, BL_FLUSH },
     { BL_MODE, BL_LEVELDESC, BL_GOLD, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,
-      BL_AC, BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_HUNGER,
+      BL_AC, BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_HUNGER,
       BL_CAP, BL_CONDITION, BL_FLUSH }
 };
 
@@ -551,6 +552,7 @@ unsigned long *colormasks UNUSED;
         { BL_UWEP2, F_UWEP2 },
         /*{ BL_HD, F_ },*/
         { BL_TIME, F_TIME },
+        { BL_REALTIME, F_REALTIME },
         { BL_HUNGER, F_HUNGER },
         { BL_HP, F_HP },
         { BL_HPMAX, F_MAXHP },

@@ -2275,7 +2275,7 @@ unsigned long mmflags;
         mtmp2->leaves_no_corpse = mtmp->leaves_no_corpse;
         mtmp2->delayed_killer_by_you = mtmp->delayed_killer_by_you;
         /* set these ones explicitly */
-        mtmp2->mrevived = 1;
+        mtmp2->mrevived = mtmp2->mrevived + (mtmp->mrevived < MAX_MONST_REVIVALS ? 1 : 0);
         mtmp2->mavenge = 0;
         mtmp2->meating = 0;
         mtmp2->mleashed = 0;
@@ -3162,7 +3162,7 @@ int mat, minwt;
         if (otmp->otyp == SCR_MAIL)
             continue;
 
-        if (((int) objects[otmp->otyp].oc_material == mat)
+        if (((int)otmp->material == mat)
             == (rn2(minwt + 1) != 0)) {
             /* appropriately add damage to bill */
             if (costly_spot(otmp->ox, otmp->oy)) {
@@ -3211,8 +3211,11 @@ int okind;
     /* some of these choices are arbitrary */
     switch (okind) {
     case MAT_IRON:
+    case MAT_STEEL:
     case MAT_METAL:
     case MAT_COPPER:
+    case MAT_BRASS:
+    case MAT_BRONZE:
     case MAT_PLATINUM:
     case MAT_ORICHALCUM:
     case MAT_ADAMANTIUM:
@@ -3319,7 +3322,7 @@ struct obj *obj;
         /* some may metamorphosize */
         for (i = obj->quan; i; i--)
             if (!rn2(Luck + 45)) {
-                poly_zapped = objects[obj->otyp].oc_material;
+                poly_zapped = obj->material;
                 break;
             }
     }
@@ -3575,8 +3578,8 @@ int id;
 
     case GEM_CLASS:
         if (otmp->quan > (long) rnd(4)
-            && objects[obj->otyp].oc_material == MAT_MINERAL
-            && objects[otmp->otyp].oc_material != MAT_MINERAL)
+            && obj->material == MAT_MINERAL
+            && otmp->material != MAT_MINERAL)
         {
             otmp->otyp = ROCK; /* transmutation backfired */
             otmp->quan /= 2L;  /* some material has been lost */
@@ -3711,8 +3714,7 @@ struct obj *obj;
     xchar oox, ooy;
     boolean smell = FALSE, golem_xform = FALSE;
 
-    if (objects[obj->otyp].oc_material != MAT_MINERAL
-        && objects[obj->otyp].oc_material != MAT_GEMSTONE)
+    if (obj->material != MAT_MINERAL && obj->material != MAT_GEMSTONE)
         return 0;
     /* Heart of Ahriman usually resists; ordinary items rarely do */
     if (obj_resists(obj, 2, 98))
@@ -7838,7 +7840,7 @@ boolean stop_at_first_hit_object;
     }
     else if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM)
     {
-        tmp_at_with_missile_flags(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng), get_missile_flags(obj, FALSE));
+        tmp_at_with_missile_flags(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng), get_missile_flags(obj, FALSE), obj ? obj->material : MAT_NONE, obj ? obj->special_quality : 0);
     }
     else if (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)
     {
@@ -7875,7 +7877,7 @@ boolean stop_at_first_hit_object;
         int x, y;
 
         if(isok(bhitpos.x, bhitpos.y))
-            show_missile_info(bhitpos.x, bhitpos.y, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out in the previous location */
+            show_missile_info(bhitpos.x, bhitpos.y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out in the previous location */
 
         bhitpos.x += ddx;
         bhitpos.y += ddy;
@@ -8201,9 +8203,9 @@ boolean stop_at_first_hit_object;
                 newsym(x, y);
             }
             tmp_at(bhitpos.x, bhitpos.y);
-            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2 || tethered_weapon || get_obj_height(obj) > 0 || obj->lamplit))
+            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->material != objects[obj->otyp].oc_material || obj->special_quality != 0 || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2 || tethered_weapon || get_obj_height(obj) > 0 || obj->lamplit))
             {                
-                show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, tethered_weapon), get_obj_height(obj), 0, 0);
+                show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, tethered_weapon), get_obj_height(obj), 0, 0);
                 if (tethered_weapon)
                     show_leash_info(bhitpos.x, bhitpos.y, 0, 0, u.ux, u.uy);
                 flush_screen(1);

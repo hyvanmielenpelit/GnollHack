@@ -254,6 +254,7 @@ static struct Bool_Opt {
     { "showexp", &flags.showexp, FALSE, SET_IN_GAME },
     { "showmove", &flags.showmove, TRUE, SET_IN_GAME },
     { "showrace", &flags.showrace, FALSE, SET_IN_GAME },
+    { "showrealtime", &flags.showrealtime, FALSE, SET_IN_GAME },
 #ifdef SCORE_ON_BOTL
     { "showscore", &flags.showscore, FALSE, SET_IN_GAME },
 #else
@@ -596,7 +597,7 @@ extern char ttycolors[CLR_MAX]; /* in sys/msdos/video.c */
 static char def_inv_order[MAX_OBJECT_CLASSES] = {
     COIN_CLASS, AMULET_CLASS, WEAPON_CLASS, ARMOR_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, 
     FOOD_CLASS, SCROLL_CLASS, SPBOOK_CLASS, POTION_CLASS, WAND_CLASS,
-    TOOL_CLASS, REAGENT_CLASS, GEM_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
+    TOOL_CLASS, REAGENT_CLASS, GEM_CLASS, ART_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
 };
 
 /*
@@ -5055,6 +5056,7 @@ boolean tinitial, tfrom_file;
 #ifdef SCORE_ON_BOTL
                 || boolopt[i].addr == &flags.showscore
 #endif
+                || boolopt[i].addr == &flags.showrealtime
                 || boolopt[i].addr == &flags.showexp
                 || boolopt[i].addr == &flags.showmove
                 || boolopt[i].addr == &flags.show_weapon_style
@@ -7173,9 +7175,12 @@ int
 dotogglepickup()
 {
     char buf[BUFSZ], ocl[MAX_OBJECT_CLASSES + 1];
+    int color = NO_COLOR;
 
     flags.pickup = !flags.pickup;
-    if (flags.pickup) {
+    if (flags.pickup) 
+    {
+        color = CLR_GREEN;
         oc_to_str(flags.pickup_types, ocl);
         Sprintf(buf, "ON, for %s objects%s", ocl[0] ? ocl : "all",
                 (iflags.autopickup_exceptions[AP_LEAVE]
@@ -7184,10 +7189,13 @@ dotogglepickup()
                            ? ", with one exception"
                            : ", with some exceptions")
                     : "");
-    } else {
+    } 
+    else 
+    {
+        color = CLR_RED;
         Strcpy(buf, "OFF");
     }
-    pline("Autopickup: %s.", buf);
+    custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "Autopickup: ", ATR_NONE, NO_COLOR, "", ATR_NONE, color, 0UL, "%s.", buf);
     return 0;
 }
 
@@ -7270,15 +7278,20 @@ int
 dotoggledecorations()
 {
     char buf[BUFSZ];
+    int color = NO_COLOR;
 
     flags.show_decorations = !flags.show_decorations;
-    if (flags.show_decorations) {
+    if (flags.show_decorations) 
+    {
         Strcpy(buf, "ON");
+        color = CLR_GREEN;
     }
-    else {
+    else 
+    {
         Strcpy(buf, "OFF");
+        color = CLR_RED;
     }
-    pline("Displaying decorations: %s.", buf);
+    custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "Displaying decorations: ", ATR_NONE, NO_COLOR, "", ATR_NONE, color, 0UL, "%s.", buf);
     (void)doredraw();
 
     return 0;

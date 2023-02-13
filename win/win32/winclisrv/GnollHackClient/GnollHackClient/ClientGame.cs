@@ -1753,11 +1753,7 @@ namespace GnollHackClient
                 case (int)special_view_types.SPECIAL_VIEW_CHAT_MESSAGE:
                     break;
                 case (int)special_view_types.SPECIAL_VIEW_SHOW_SPECIAL_EFFECT:
-                    if (!App.SponsorButtonVisited)
-                    {
-                        App.ShowSpecialEffect = true;
-                        Preferences.Set("ShowSpecialEffect", true);
-                    }
+                    /* Do nothing currently */
                     break;
                 case (int)special_view_types.SPECIAL_VIEW_GUI_TIPS:
                     {

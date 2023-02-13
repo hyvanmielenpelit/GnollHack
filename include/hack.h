@@ -157,6 +157,7 @@ enum dismount_types {
 #define MG_STONE_INVERSE    0x00001000UL /* ' ' is inversed if it has color */
 #define MG_ALT_COLORS       0x00002000UL /* Uses alternative colors */
 #define MG_DECORATION       0x00004000UL
+#define MG_CARPET           0x00008000UL
 
 
 /* sellobj_state() states */
@@ -372,8 +373,14 @@ extern short tile2enlargement[MAX_TILES];
 
 #define MM_PLAY_SUMMON_SOUND            0x10000000UL
 #define MM_ANIMATION_WAIT_UNTIL_END     0x20000000UL
-#define MM_FACING_LEFT                  0x40000000UL
-#define MM_FACING_RIGHT                 0x80000000UL
+#define MM_PEACEFUL                     0x40000000UL
+#define MM_ROAMER                       0x80000000UL
+
+#define NO_MM2_FLAGS                    0x00000000UL /* use this rather than plain 0 */
+#define MM2_FACING_LEFT                 0x00000001UL
+#define MM2_FACING_RIGHT                0x00000002UL
+#define MM2_FORCE_RENEGADE              0x00000004UL
+#define MM2_FORCE_NONRENEGADE           0x00000008UL
 
 #define GOODPOS_IGNOREYOU               0x80000000UL
 
@@ -614,11 +621,11 @@ enum bodypart_types {
 #define plur(x) (((x) == 1) ? "" : "s")
 
 #define ARM_AC_BONUS(obj, ptr) ((int)(((obj)->oclass == ARMOR_CLASS || (obj)->oclass == MISCELLANEOUS_CLASS || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)) ?                    \
-    (objects[(obj)->otyp].oc_armor_class + get_obj_exceptionality_ac_bonus(obj) + (objects[(obj)->otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC ? 0 : (!cursed_items_are_positive(ptr) ? (obj)->enchantment : abs((obj)->enchantment))) \
+    (objects[(obj)->otyp].oc_armor_class + get_obj_material_and_exceptionality_ac_bonus(obj) + (objects[(obj)->otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC ? 0 : (!cursed_items_are_positive(ptr) ? (obj)->enchantment : abs((obj)->enchantment))) \
      - (objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_AC ? 0 : min((int) greatest_erosion(obj), objects[(obj)->otyp].oc_armor_class))) : 0))
 
 #define ARM_MC_BONUS(obj, ptr)                      \
-    ((int)(objects[(obj)->otyp].oc_magic_cancellation + get_obj_exceptionality_mc_bonus(obj) + (objects[(obj)->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC ? (!cursed_items_are_positive(ptr) ? (obj)->enchantment : abs((obj)->enchantment)) / 2 : 0) \
+    ((int)(objects[(obj)->otyp].oc_magic_cancellation + get_obj_material_and_exceptionality_mc_bonus(obj) + (objects[(obj)->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC ? (!cursed_items_are_positive(ptr) ? (obj)->enchantment : abs((obj)->enchantment)) / 2 : 0) \
      - (objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC ? 0 : min(greatest_erosion(obj) / 2, objects[(obj)->otyp].oc_magic_cancellation))))
 
 
@@ -745,7 +752,7 @@ extern struct objclass saved_objects[NUM_OBJECTS];
         }, \
         0UL, 0U, 0U, (struct obj*)0,   0, 0,   \
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0 }, 0, 0, 0UL,   0, \
-        0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0, \
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0, \
         {0, 0, 0}, {0, 0, 0} \
     }
 

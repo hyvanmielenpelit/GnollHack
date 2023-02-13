@@ -624,7 +624,7 @@ boolean createcorpse;
                     objid = IRON_CHAIN;
                     break;
                 case 1:
-                    objid = IRON_SHOES;
+                    objid = SHOES;
                     break;
                 case 2:
                     objid = HEAVY_IRON_BALL;
@@ -632,7 +632,7 @@ boolean createcorpse;
                 default:
                     break;
                 }
-                obj = mksobj_at(objid, x, y, TRUE, FALSE);
+                obj = mksobj_at_with_flags(objid, x, y, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
             }
         }
         free_mname(mtmp);
@@ -1787,7 +1787,7 @@ register struct monst *mtmp;
                 /* Heal up to the object's weight in hp */
                 if (mtmp->mhp < mtmp->mhpmax)
                 {
-                    mtmp->mhp += objects[otmp->otyp].oc_weight;
+                    mtmp->mhp += get_item_base_weight(otmp);
                     if (mtmp->mhp > mtmp->mhpmax)
                         mtmp->mhp = mtmp->mhpmax;
                 }
@@ -1902,7 +1902,7 @@ register struct monst* mtmp;
             /* Heal up to the object's weight in hp */
             if (mtmp->mhp < mtmp->mhpmax)
             {
-                mtmp->mhp += objects[otmp->otyp].oc_weight;
+                mtmp->mhp += get_item_base_weight(otmp);
                 if (mtmp->mhp > mtmp->mhpmax)
                     mtmp->mhp = mtmp->mhpmax;
             }
@@ -2069,7 +2069,7 @@ struct monst *mtmp;
             /* Heal up to the object's weight in hp */
             if (mtmp->mhp < mtmp->mhpmax)
             {
-                mtmp->mhp += objects[otmp->otyp].oc_weight;
+                mtmp->mhp += get_item_base_weight(otmp);
                 if (mtmp->mhp > mtmp->mhpmax)
                     mtmp->mhp = mtmp->mhpmax;
             }
@@ -2146,7 +2146,7 @@ register struct monst *mtmp;
     {
         if (is_obj_no_pickup(gold))
             return;
-        mat_idx = objects[gold->otyp].oc_material;
+        mat_idx = gold->material;
         obj_extract_self(gold);
         add_to_minv(mtmp, gold);
         if (cansee(mtmp->mx, mtmp->my)) 
@@ -2305,7 +2305,7 @@ struct obj *otmp;
         return 0;
     if (otyp == CORPSE && is_rider(&mons[otmp->corpsenm]))
         return 0;
-    if (objects[otyp].oc_material == MAT_SILVER && mon_hates_silver(mtmp)
+    if (otmp->material == MAT_SILVER && mon_hates_silver(mtmp)
         && (otyp != BELL_OF_OPENING || !wants_bell(mdat)))
         return 0;
 
@@ -3888,7 +3888,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
             /* no items from cloned monsters */
             && !mtmp->mcloned) 
         {
-            otmp = mkobj_with_flags(RANDOM_CLASS, TRUE, TRUE, mtmp, is_lord(mdat) || is_prince(mdat) || (mdat->geno & G_UNIQ) ? MKOBJ_FLAGS_ALSO_RARE : 0UL );
+            otmp = mkobj_with_flags(RANDOM_CLASS, TRUE, TRUE, mtmp, MAT_NONE, 0L, 0L, is_lord(mdat) || is_prince(mdat) || (mdat->geno & G_UNIQ) ? MKOBJ_FLAGS_ALSO_RARE : 0UL);
             /* don't create large objects from small monsters */
             otyp = otmp->otyp;
             if (mdat->msize < MZ_HUMAN && otyp != FIGURINE

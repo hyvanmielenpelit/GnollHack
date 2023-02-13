@@ -183,7 +183,7 @@ struct obj *obj;
                         : (obj->oclass == GEM_CLASS)
                             ? "gem"
                             /* in case somebody adds odd sling ammo */
-                            : (obj->otyp == LEADEN_SLING_BULLET || obj->otyp == IRON_SLING_BULLET || obj->otyp == SILVER_SLING_BULLET || is_graystone(obj))
+                            : (obj->otyp == SLING_BULLET || is_graystone(obj))
                                 ? "sling-bullet"
                                 : def_oc_syms[(int) obj->oclass].name;
         break;
@@ -467,19 +467,25 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
             double mythic_multiplier = get_mythic_dmg_multiplier(otmp, mon, mattacker);
             int tmp2 = 0;
             int exp_round;
+            short wsdice = get_obj_wsdice(otmp);
+            short wsdam = get_obj_wsdam(otmp);
+            short wsdmgplus = get_obj_wsdmgplus(otmp);
+            short wldice = get_obj_wldice(otmp);
+            short wldam = get_obj_wldam(otmp);
+            short wldmgplus = get_obj_wldmgplus(otmp);
             for (exp_round = 0; exp_round < exceptionality_rounds; exp_round++)
             {
                 if (bigmonst(ptr)) 
                 {
-                    if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)
-                        tmp2 += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
-                    tmp2 += objects[otyp].oc_wldmgplus;
+                    if (wldam > 0 && wldice > 0)
+                        tmp2 += d(wldice, wldam);
+                    tmp2 += wldmgplus;
                 }
                 else 
                 {
-                    if (objects[otyp].oc_wsdam > 0 && objects[otyp].oc_wsdice > 0)
-                        tmp2 += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
-                    tmp2 += objects[otyp].oc_wsdmgplus;
+                    if (wsdam > 0 && wsdice > 0)
+                        tmp2 += d(wsdice, wsdam);
+                    tmp2 += wsdmgplus;
                 }
             }
 
@@ -525,7 +531,7 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
 
     }
 
-    if (objects[otyp].oc_material <= MAT_LEATHER && thick_skinned(ptr))
+    if (otmp->material <= MAT_LEATHER && thick_skinned(ptr))
         /* thick skinned/scaled creatures don't feel it */
         tmp = 0;
     if (is_shade(ptr) && !shade_glare(otmp))
@@ -557,7 +563,7 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
             bonus += rnd(4);
         if ((is_axe(otmp) || is_saw(otmp)) && is_wooden(ptr))
             bonus += rnd(4);
-        if (objects[otyp].oc_material == MAT_SILVER && mon_hates_silver(mon))
+        if (otmp->material == MAT_SILVER && mon_hates_silver(mon))
             bonus += rnd(20);
         if ((artifact_light(otmp) || obj_shines_magical_light(otmp) || has_obj_mythic_magical_light(otmp)) && otmp->lamplit && mon_hates_light(mon))
             bonus += rnd(8);
@@ -778,8 +784,7 @@ long *silverhit_p; /* output flag mask for silver bonus */
            scales refer to color, not material) and the only way to hit
            with one--aside from throwing--is to wield it and perform a
            weapon hit, but we include a general check here */
-        if (objects[obj->otyp].oc_material == MAT_SILVER
-            && mon_hates_silver(mdef)) 
+        if (obj->material == MAT_SILVER && mon_hates_silver(mdef)) 
         {
             bonus += rnd(20);
             silverhit |= armask;
@@ -791,8 +796,7 @@ long *silverhit_p; /* output flag mask for silver bonus */
     {
         if (left_ring && uleft) 
         {
-            if (objects[uleft->otyp].oc_material == MAT_SILVER
-                && mon_hates_silver(mdef))
+            if (uleft->material == MAT_SILVER && mon_hates_silver(mdef))
             {
                 bonus += rnd(20);
                 silverhit |= W_RINGL;
@@ -800,8 +804,7 @@ long *silverhit_p; /* output flag mask for silver bonus */
         }
         if (right_ring && uright) 
         {
-            if (objects[uright->otyp].oc_material == MAT_SILVER
-                && mon_hates_silver(mdef)) 
+            if (uright->material == MAT_SILVER && mon_hates_silver(mdef)) 
             {
                 /* two silver rings don't give double silver damage
                    but 'silverhit' messages might be adjusted for them */
@@ -831,8 +834,8 @@ long silverhit;
         rtyp = ((uright && (silverhit & W_RINGR) != 0L)
                 ? uright->otyp : STRANGE_OBJECT);
     boolean both,
-        l_ag = (objects[ltyp].oc_material == MAT_SILVER && uleft && uleft->dknown),
-        r_ag = (objects[rtyp].oc_material == MAT_SILVER && uright && uright->dknown);
+        l_ag = ((ltyp != STRANGE_OBJECT && uleft ? uleft->material : objects[ltyp].oc_material) == MAT_SILVER && uleft && uleft->dknown),
+        r_ag = ((rtyp != STRANGE_OBJECT && uright ? uright->material : objects[rtyp].oc_material) == MAT_SILVER && uright && uright->dknown);
 
     if ((silverhit & (W_RINGL | W_RINGR)) != 0L) {
         /* plural if both the same type (so not multi_claw and both rings
@@ -893,11 +896,11 @@ int otyp, exceptionality;
 
 /* TODO: have monsters use aklys' throw-and-return */
 STATIC_VAR NEARDATA const int rwep[] = {
-    DWARVISH_SPEAR, SILVER_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, JAVELIN,
-    SHURIKEN, YA, SILVER_ARROW, BONE_ARROW, ELVEN_ARROW, ARROW, ORCISH_ARROW,
-    SILVER_CROSSBOW_BOLT, BONE_QUARREL, CROSSBOW_BOLT, GNOLLISH_QUARREL, 
-    SILVER_SLING_BULLET, IRON_SLING_BULLET, LEADEN_SLING_BULLET,
-    SILVER_DAGGER, BONE_DAGGER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, SILVER_KNIFE, KNIFE,
+    DWARVISH_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, JAVELIN,
+    SHURIKEN, YA, ELVEN_ARROW, ARROW, ORCISH_ARROW,
+    CROSSBOW_BOLT, GNOLLISH_QUARREL, 
+    SLING_BULLET,
+    ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, KNIFE,
     FLINT, ROCK, STONE_PEBBLE, CLAY_PEBBLE, LOADSTONE, LUCKSTONE, DART,
     /* BOOMERANG, */ CREAM_PIE
 };
@@ -1083,16 +1086,15 @@ STATIC_VAR const NEARDATA short hwep[] =
     TSURUGI, RUNESWORD,  RUNED_FLAIL, HEAVENLY_OAK_MACE, 
     SWORD_OF_HOLY_VENGEANCE, SWORD_OF_UNHOLY_DESECRATION,  ELVEN_RUNEDAGGER, MACE_OF_THE_UNDERWORLD, TRIPLE_HEADED_FLAIL,
     CORPSE, /* cockatrice corpse */
-    BROADSWORD, SILVER_LONG_SWORD,  CRYSTAL_LONG_SWORD, SILVER_SABER, JAGGED_TOOTHED_CLUB, BARDICHE,
+    BROADSWORD, SILVER_SABER, JAGGED_TOOTHED_CLUB, BARDICHE,
     ANCUS, DOUBLE_HEADED_FLAIL,
-    SILVER_MACE, SILVER_SPEAR, 
     DWARVISH_MATTOCK, TWO_HANDED_SWORD, BATTLE_AXE,
     KATANA, UNICORN_HORN, CRYSKNIFE, TRIDENT, LONG_SWORD, ELVEN_BROADSWORD,
     SCIMITAR, MORNING_STAR, ELVEN_SHORT_SWORD,
     DWARVISH_SHORT_SWORD, SHORT_SWORD, ORCISH_SHORT_SWORD, MACE, AXE,
     DWARVISH_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, FLAIL,
     BULLWHIP, QUARTERSTAFF, JAVELIN, AKLYS, CLUB, PICK_AXE, RUBBER_HOSE,
-    WAR_HAMMER, SILVER_DAGGER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, ATHAME,
+    WAR_HAMMER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, ATHAME,
     SCALPEL, KNIFE, WORM_TOOTH
 };
 
@@ -1183,7 +1185,7 @@ int handindex;
     //Is in hwep table, extra hands do not use two-handed weapons for simplicity (maybe too weak)
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
         if (otmp != MON_WEP(mtmp) && !objects[otmp->otyp].oc_bimanual
-            && !(objects[otmp->otyp].oc_material == MAT_SILVER && mon_hates_silver(mtmp)) && otmp->otyp != CORPSE)
+            && !(otmp->material == MAT_SILVER && mon_hates_silver(mtmp)) && otmp->otyp != CORPSE)
         {
             //Suitable weapons are in hwep array
             int i;
@@ -4415,6 +4417,96 @@ dump_skills(VOID_ARGS)
     }
     Sprintf(buf, "You had %d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
     putstr(0, 0, buf);
+}
+
+short
+get_obj_wsdice(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wsdice;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].sdice_adjustment - material_definitions[objects[obj->otyp].oc_material].sdice_adjustment;
+    }
+    return res;
+}
+
+short
+get_obj_wsdam(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wsdam;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].sdam_adjustment - material_definitions[objects[obj->otyp].oc_material].sdam_adjustment;
+    }
+    return res;
+}
+
+short
+get_obj_wsdmgplus(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wsdmgplus;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].splus_adjustment - material_definitions[objects[obj->otyp].oc_material].splus_adjustment;
+    }
+    return res;
+}
+
+short
+get_obj_wldice(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wldice;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].ldice_adjustment - material_definitions[objects[obj->otyp].oc_material].ldice_adjustment;
+    }
+    return res;
+}
+
+short
+get_obj_wldam(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wldam;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].ldam_adjustment - material_definitions[objects[obj->otyp].oc_material].ldam_adjustment;
+    }
+    return res;
+}
+
+short
+get_obj_wldmgplus(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0;
+
+    short res = objects[obj->otyp].oc_wldmgplus;
+    if (obj->material != objects[obj->otyp].oc_material)
+    {
+        res += material_definitions[obj->material].lplus_adjustment - material_definitions[objects[obj->otyp].oc_material].lplus_adjustment;
+    }
+    return res;
 }
 
 /*weapon.c*/

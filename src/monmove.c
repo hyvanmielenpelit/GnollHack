@@ -196,9 +196,6 @@ struct monst* mon;
                             strcpy(someitembuf, "some items");
                         }
 
-                        if (canseemon(mon))
-                            talkeff(mon->mx, mon->my);
-                        
                         switch (mon->talkstate_item_trading)
                         {
                         case 0:
@@ -224,6 +221,10 @@ struct monst* mon;
                         default:
                             break;
                         }
+
+                        if (canseemon(mon))
+                            talkeff(mon->mx, mon->my);
+
                         mon_talked = TRUE;
                     }
                 }
@@ -878,7 +879,7 @@ register struct monst *mtmp;
                 /* since no way is an image going to pay it off */
             }
         }
-        else if (demon_talk(mtmp))
+        else if (demon_talk(mtmp, (boolean*)0)
             return 1; /* you paid it off */
     }
 #endif
@@ -1536,7 +1537,7 @@ register int after;
                          || (uses_items && searches_for_item(mtmp, otmp))
                          || (likerock && otmp->otyp == BOULDER)
                          || (likegems && otmp->oclass == GEM_CLASS
-                             && objects[otmp->otyp].oc_material != MAT_MINERAL)
+                             && otmp->material != MAT_MINERAL)
                          || (conceals && !cansee(otmp->ox, otmp->oy))
                          || (slurps_items(ptr)
                              && !index(indigestion, otmp->oclass)
@@ -1547,7 +1548,7 @@ register int after;
                         if (can_carry(mtmp, otmp) > 0
                             && (throws_rocks(ptr) || !sobj_at(BOULDER, xx, yy))
                             && (!is_unicorn(ptr)
-                                || objects[otmp->otyp].oc_material == MAT_GEMSTONE)
+                                || otmp->material == MAT_GEMSTONE)
                             /* Don't get stuck circling an Elbereth or Gilthoniel */
                             && !onnopickup(xx, yy, mtmp) && !is_obj_no_pickup(otmp)) 
                         {

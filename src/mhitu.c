@@ -1149,7 +1149,7 @@ register struct monst *mtmp;
                             if ((!rn2(2) || is_silenced(mtmp))
                                 && (m_carrying(mtmp, TRIPLE_HEADED_FLAIL) 
                                     || m_carrying(mtmp, DOUBLE_HEADED_FLAIL) || m_carrying(mtmp, FLAIL)
-                                    || m_carrying(mtmp, SILVER_FLAIL) || m_carrying(mtmp, RUNED_FLAIL)))
+                                    || m_carrying(mtmp, RUNED_FLAIL)))
                                 pline("%s swings his flail commandingly.", Monnam(mtmp));
                             else if (!Deaf)
                             {
@@ -1528,10 +1528,11 @@ struct monst *mon;
         if (worn)
         {
             /* MC always from worn */
+            int basemc = get_object_base_mc(o);
             if (objects[o->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC)
-                item_mc_bonus += objects[o->otyp].oc_magic_cancellation;
+                item_mc_bonus += basemc;
             else
-                item_mc_bonus += max(0, objects[o->otyp].oc_magic_cancellation - greatest_erosion(o) / 3);
+                item_mc_bonus += max(0, basemc - greatest_erosion(o) / 3);
 
             if (o->oclass == ARMOR_CLASS || o->oclass == MISCELLANEOUS_CLASS || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(o) || (objects[o->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC))
                 item_mc_bonus += o->enchantment / 3;
@@ -1966,7 +1967,7 @@ register struct obj* omonwep;
                 }
 
                 boolean silvermsg = FALSE;
-                if (objects[otmp->otyp].oc_material == MAT_SILVER && Hate_silver)
+                if (otmp->material == MAT_SILVER && Hate_silver)
                 {
                     damage += adjust_damage(rnd(20), mtmp, &youmonst, objects[otmp->otyp].oc_damagetype, ADFLAGS_NONE);
                     silvermsg = TRUE;
@@ -2014,9 +2015,7 @@ register struct obj* omonwep;
                 /* this redundancy necessary because you have
                    to take the damage _before_ being cloned;
                    need to have at least 2 hp left to split */
-                if (!isinstakilled && (double)u.mh + (((double)u.mh_fraction)/10000) - damage >= 2 && (objects[otmp->otyp].oc_material == MAT_IRON
-                    /* relevant 'metal' objects are scalpel and tsurugi */
-                    || objects[otmp->otyp].oc_material == MAT_METAL)
+                if (!isinstakilled && (double)u.mh + (((double)u.mh_fraction)/10000) - damage >= 2 && is_metallic(otmp) /* relevant 'metal' objects are scalpel and tsurugi */
                     && (u.umonnum >= 0 && does_split_upon_hit(&mons[u.umonnum])))
                 {
                     if (damage > 1)
@@ -2331,8 +2330,7 @@ register struct obj* omonwep;
         {
             if (uarmf) 
             {
-                if (rn2(2) && (uarmf->otyp == LOW_BOOTS
-                               || uarmf->otyp == IRON_SHOES)) 
+                if (rn2(2) && (uarmf->otyp == LOW_BOOTS || uarmf->otyp == SHOES)) 
                 {
                     pline("%s pricks the exposed part of your %s %s for %d damage!",
                           Monst_name, sidestr, leg, damagedealt);
