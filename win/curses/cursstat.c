@@ -832,7 +832,7 @@ boolean border;
             case BL_GOLD:
                 spacing[fld] = 0; // 1; /* always extra space */
                 if (flags.fullstatuslineorder && first_status_field == BL_FLUSH)
-                    first_status_line = fld;
+                    first_status_field = fld;
                 break;
             case BL_XP:
             case BL_HD:
