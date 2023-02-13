@@ -4172,7 +4172,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 1257 "lev_comp.y"
     {
-		      add_opvars(splev, "io", VA_PASS2(0, SPO_MESSAGE));
+		      add_opvars(splev, "io", VA_PASS2(NO_COLOR, SPO_MESSAGE));
 		  ;}
     break;
 

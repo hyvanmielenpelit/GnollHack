@@ -1255,7 +1255,7 @@ if_ending	: stmt_block
 
 message		: MESSAGE_ID ':' string_expr
 		  {
-		      add_opvars(splev, "io", VA_PASS2(0, SPO_MESSAGE));
+		      add_opvars(splev, "io", VA_PASS2(NO_COLOR, SPO_MESSAGE));
 		  }
 		| MESSAGE_ID ':' string_expr ',' MESSAGE_TYPE
 		  {
