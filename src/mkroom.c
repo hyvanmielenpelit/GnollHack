@@ -561,6 +561,7 @@ struct mkroom *sroom;
     sh = sroom->fdoor;
     switch (type)
     {
+    case ANTHOLE:
     case MORGUE:
         /* Change floor to ground, more sensible for graveyards */
         for (x = sroom->lx; x <= sroom->hx; x++)
