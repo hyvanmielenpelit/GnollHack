@@ -113,7 +113,7 @@ do_statusline1()
         long money;
         if ((money = money_cnt(invent)) < 0L)
             money = 0L;
-        Sprintf(nb = eos(nb), "  %s:%-2ld",
+        Sprintf(nb = eos(nb), " %s:%-2ld",
             (iflags.in_dumplog || iflags.invis_goldsym) ? "$"
             : encglyph(objnum_to_glyph(GOLD_PIECE)),
             min(money, 999999L));
