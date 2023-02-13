@@ -1404,9 +1404,6 @@ newgame()
     /* Change to intro music */
     update_game_music();
 
-    /* Mark game as started; check special room plays intro here */
-    context.game_started = TRUE;
-
     docrt();
     status_reassess();
 
@@ -1417,8 +1414,11 @@ newgame()
         issue_gui_command(GUI_CMD_UNLOAD_INTRO_SOUND_BANK);
     }
 
+    /* Game is starting now */
+    context.game_started = TRUE;
     urealtime.realtime = 0L;
     urealtime.start_timing = getnow();
+
 #ifdef INSURANCE
     save_currentstate();
 #endif

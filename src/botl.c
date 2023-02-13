@@ -105,8 +105,8 @@ do_statusline1()
     {
         Sprintf(nb = eos(nb),
             (u.ualign.type == A_CHAOTIC)
-            ? "  Chaotic"
-            : (u.ualign.type == A_NEUTRAL) ? "  Neutral" : "  Lawful");
+            ? " Chaotic"
+            : (u.ualign.type == A_NEUTRAL) ? " Neutral" : " Lawful");
     }
     else
     {
@@ -309,7 +309,7 @@ do_statusline2()
      * wider displays can still show wider status than the map if the
      * interface supports that.
      */
-    if (gln + (dln ? 1 : 0) + dln + (hln ? 1 : 0) + hln + (xln ? 1 : 0) + xln + (mln ? 1 : 0) + mln + (wln ? 1 : 0) + wln + (tln ? 1 : 0) + tln + (sln ? 1 : 0) + sln + (cln ? 1 : 0) + cln <= COLNO)
+    if (gln + (dln ? 1 : 0) + dln + (hln ? 1 : 0) + hln + (mln ? 1 : 0) + mln + (wln ? 1 : 0) + wln + (xln ? 1 : 0) + xln + (tln ? 1 : 0) + tln + (sln ? 1 : 0) + sln + (cln ? 1 : 0) + cln <= COLNO)
     {
         if (*gmode)
         {
@@ -329,12 +329,6 @@ do_statusline2()
                 Strcat(newbot2, " ");
             Strcat(newbot2, hlth);
         }
-        if (*expr)
-        {
-            if (*newbot2)
-                Strcat(newbot2, " ");
-            Strcat(newbot2, expr);
-        }
         if (*move)
         {
             if (*newbot2)
@@ -346,6 +340,12 @@ do_statusline2()
             if (*newbot2)
                 Strcat(newbot2, " ");
             Strcat(newbot2, weaponstyle);
+        }
+        if (*expr)
+        {
+            if (*newbot2)
+                Strcat(newbot2, " ");
+            Strcat(newbot2, expr);
         }
         if (*tmmv)
         {
@@ -707,7 +707,7 @@ long seconds;
 long
 get_current_game_duration(VOID_ARGS)
 {
-    return iflags.in_dumplog ? urealtime.realtime : urealtime.realtime + ((long)getnow() - (long)urealtime.start_timing);
+    return !context.game_started ? 0 : iflags.in_dumplog ? urealtime.realtime : urealtime.realtime + ((long)getnow() - (long)urealtime.start_timing);
 }
 
 char*
