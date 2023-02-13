@@ -496,8 +496,7 @@ do_statusline3()
         }
 
         Sprintf(eos(newbot3), "%s%s", *newbot3 && u.canadvanceskill ? " " : "", u.canadvanceskill ? "Skill" : "");
-        Sprintf(eos(newbot3), "%s%s", *
-            newbot3 && u.twoweap ? " " : "", u.twoweap ? "2Weap" : "");
+        Sprintf(eos(newbot3), "%s%s", *newbot3 && u.twoweap ? " " : "", u.twoweap ? "2Weap" : "");
 
         if (cln > 0)
         {
