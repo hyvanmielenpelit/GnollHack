@@ -1753,6 +1753,8 @@ int propidx;
         return A_FROM_ROLE;
     if (u.uprops[propidx].intrinsic & FROM_FORM)
         return A_FROM_FORM;
+    if (u.uprops[propidx].intrinsic & FROM_ACQUIRED)
+        return A_FROM_INTR;
 
     /* Special cases */
     if (propidx == DRAIN_RESISTANCE && u.ulycn >= LOW_PM)
