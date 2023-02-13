@@ -448,11 +448,14 @@ do_statusline2()
 char*
 do_statusline3()
 {
-    if (iflags.wc2_statuslines < 3)
-        return "";
-
     static char newbot3[BUFSZ * 2] = "", cond[QBUFSZ * 2] = "", moneybuf[QBUFSZ] = "";
     size_t cln;
+
+    if (iflags.wc2_statuslines < 3)
+    {
+        Strcpy(newbot3, "");
+        return newbot3;
+    }
 
     if (iflags.wc2_statuslines > 2)
         cln = print_conditions(cond);
