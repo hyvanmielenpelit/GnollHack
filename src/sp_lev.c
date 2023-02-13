@@ -247,6 +247,9 @@ STATIC_VAR NEARDATA xchar xstart, ystart;
 STATIC_VAR NEARDATA char xsize, ysize;
 
 char *lev_message = 0;
+int lev_message_color = NO_COLOR;
+int lev_message_attr = ATR_NONE;
+
 lev_region *lregions = 0;
 int num_lregions = 0;
 
@@ -3782,15 +3785,17 @@ spo_message(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_message";
-    struct opvar *op;
+    struct opvar *op, *mtyp_opvar;
     char *msg, *levmsg;
     size_t old_n, n;
 
-    if (!OV_pop_s(op))
+    if (!OV_pop_i(mtyp_opvar) || !OV_pop_s(op))
         return;
     msg = OV_s(op);
     if (!msg)
         return;
+
+    long mtyp = OV_i(mtyp_opvar);
 
     old_n = lev_message ? (strlen(lev_message) + 1) : 0;
     n = strlen(msg);
@@ -3806,8 +3811,13 @@ struct sp_coder *coder;
     (void) memcpy((genericptr_t) &levmsg[old_n], msg, n);
     levmsg[old_n + n] = '\0';
     Free(lev_message);
+    
     lev_message = levmsg;
+    lev_message_color = mtyp;
+    lev_message_attr = ATR_NONE;
+    
     opvar_free(op);
+    opvar_free(mtyp_opvar);
 }
 
 STATIC_VAR const monster emptymons; /* Initialized to zero automatically */

@@ -19,6 +19,8 @@
 
 /* from sp_lev.c, for deliver_splev_message() */
 extern char *lev_message;
+extern int lev_message_color;
+extern int lev_message_attr;
 
 STATIC_DCL void NDECL(dump_qtlist);
 STATIC_DCL void FDECL(Fread, (genericptr_t, long, long, dlb *));
@@ -795,7 +797,7 @@ deliver_splev_message()
             /* convert_line() expects encrypted input */
             (void) xcrypt(in_line, in_line);
             convert_line(in_line, out_line);
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s", out_line);
+            pline_ex(lev_message_attr, lev_message_color, "%s", out_line);
 
             if ((nl = index(str, '\n')) == 0)
                 break; /* done if no newline */
@@ -803,6 +805,8 @@ deliver_splev_message()
 
         free((genericptr_t) lev_message);
         lev_message = 0;
+        lev_message_color = NO_COLOR;
+        lev_message_attr = ATR_NONE;
     }
 }
 
