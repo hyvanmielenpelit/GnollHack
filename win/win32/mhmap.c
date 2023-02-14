@@ -5122,11 +5122,25 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
                 DrawTextW(data->backBufferDC, &wch, 1, rect,
                     DT_CENTER | DT_VCENTER | DT_NOPREFIX
                     | DT_SINGLELINE);
+                if ((special & MG_PEACEFUL) && flags.underline_peaceful)
+                {
+                    wch = (WCHAR)'_';
+                    DrawTextW(data->backBufferDC, &wch, 1, rect,
+                        DT_CENTER | DT_VCENTER | DT_NOPREFIX
+                        | DT_SINGLELINE);
+                }
             }
         } else {
             DrawTextA(data->backBufferDC, &ch, 1, rect,
                         DT_CENTER | DT_VCENTER | DT_NOPREFIX
                             | DT_SINGLELINE);
+            if ((special & MG_PEACEFUL) && flags.underline_peaceful)
+            {
+                ch = '_';
+                DrawTextA(data->backBufferDC, &ch, 1, rect,
+                    DT_CENTER | DT_VCENTER | DT_NOPREFIX
+                    | DT_SINGLELINE);
+            }
         }
 
         SetTextColor(data->backBufferDC, OldFg);
