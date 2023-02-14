@@ -383,11 +383,14 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_P
 
 
 NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS] = {
-    { "male aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 25L },
-    { "male aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 50L },
-    { "female aristocrat", "a female aristocrat", "Otumn", (char*)0, (char*)0, 100L },
-    { "elucid priestess", "a stern priestess", "Otumn", (char*)0, (char*)0, 150L },
-    { "Portrait of Dispater", "Dispater, Archduke of Gehennom", "Diedi", (char*)0, (char*)0, 250L },
+    { "Portrait of Male Aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 25L },
+    { "Portrait of Male Aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 50L },
+    { "Portrait of Female Aristocrat", "a female aristocrat", "Otumn", (char*)0, (char*)0, 100L },
+    { "Portrait of Elucid Priestess", "a stern priestess", "Otumn", (char*)0, (char*)0, 150L },
+    { "Portrait of Serious Dispater", "Dispater, Archduke of Gehennom", "Diedi", (char*)0, (char*)0, 200L },
+    { "Portrait of Smiling Dispater", "Dispater, Archduke of Gehennom", "Diedi", (char*)0, (char*)0, 200L },
+    { "Portrait of Wizard of Yendor in Blue", "Wizard of Yendor", "Diedi", (char*)0, (char*)0, 250L },
+    { "Portrait of Wizard of Yendor in Red", "Wizard of Yendor", "Diedi", (char*)0, (char*)0, 250L },
 };
 
 //STATIC_DCL void FDECL(setgemprobs, (d_level *));
