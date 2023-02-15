@@ -2015,7 +2015,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
         }
         else if ((objects[otmp->otyp].oc_aflags & A1_SVB_MASK) == A1_SHARPNESS || has_obj_mythic_sharpness(otmp))
         {
-            if ((has_obj_mythic_sharpness(otmp) && rn2(2) < SHARPNESS_PERCENTAGE_CHANCE) ||
+            if ((has_obj_mythic_sharpness(otmp) && rn2(100) < SHARPNESS_PERCENTAGE_CHANCE) ||
                 (
                     ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
                     && ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
