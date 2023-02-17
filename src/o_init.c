@@ -948,7 +948,7 @@ dodiscovered() /* free after Robert Viduya */
 {
     register int i, dis;
     int ct = 0;
-    char *s, oclass, prev_class, classes[MAX_OBJECT_CLASSES], buf[BUFSZ];
+    char *s, oclass, prev_class, classes[MAX_OBJECT_CLASSES], buf[OBUFSZ];
     winid tmpwin;
 
     tmpwin = create_nhwindow(NHW_MENU);

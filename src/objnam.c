@@ -124,7 +124,7 @@ register const char *pref;
 }
 
 /* manage a pool of BUFSZ buffers, so callers don't have to */
-STATIC_VAR char NEARDATA obufs[NUMOBUF][BUFSZ];
+STATIC_VAR char NEARDATA obufs[NUMOBUF][OBUFSZ];
 STATIC_VAR int obufidx = 0;
 
 char *
@@ -367,7 +367,7 @@ int *highest_fid; /* optional output; only valid if 'fname' isn't found */
         releaseobuf(altfname);
     }
     if (!f && !exact) {
-        char fnamebuf[BUFSZ], *p;
+        char fnamebuf[OBUFSZ], *p;
         size_t fname_k = strlen(fname); /* length of assumed plural fname */
 
         tentativef = 0;
@@ -483,11 +483,11 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     if (!dn)
         dn = actualn;
 
-    char actualn_fullbuf[BUFSZ] = "";
-    char dn_fullbuf[BUFSZ] = "";
+    char actualn_fullbuf[OBUFSZ] = "";
+    char dn_fullbuf[OBUFSZ] = "";
 
-    char actualn_startbuf[BUFSZ] = "";
-    char dn_startbuf[BUFSZ] = "";
+    char actualn_startbuf[OBUFSZ] = "";
+    char dn_startbuf[OBUFSZ] = "";
     if (objects[obj->otyp].oc_flags5 & (O5_MATERIAL_NAME_2ND_WORD_AN | O5_MATERIAL_NAME_3RD_WORD_AN | O5_MATERIAL_NAME_4TH_WORD_AN))
     {
         int spacecnt = (objects[obj->otyp].oc_flags5 & O5_MATERIAL_NAME_4TH_WORD_AN) == O5_MATERIAL_NAME_4TH_WORD_AN ? 3 : (objects[obj->otyp].oc_flags5 & O5_MATERIAL_NAME_3RD_WORD_AN) == O5_MATERIAL_NAME_3RD_WORD_AN ? 2 : 1;
@@ -969,12 +969,12 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     }
 
     if (obj->otyp == T_SHIRT && program_state.gameover) {
-        char tmpbuf[BUFSZ];
+        char tmpbuf[OBUFSZ];
 
         Sprintf(eos(buf), " with text \"%s\"", tshirt_text(obj, tmpbuf));
     }
 
-    char anamebuf[BUFSZ] = "";
+    char anamebuf[OBUFSZ] = "";
     if (has_oname(obj) && nknown && dknown) {
         if(obj->oclass == SPBOOK_CLASS)
             Strcat(buf, " entitled ");
@@ -1077,7 +1077,7 @@ char *
 mshot_xname(obj)
 struct obj *obj;
 {
-    char tmpbuf[BUFSZ];
+    char tmpbuf[OBUFSZ];
     char *onm = xname(obj);
 
     if (m_shot.n > 1 && m_shot.o == obj->otyp) {
@@ -1427,7 +1427,7 @@ unsigned doname_flags;
                 Strcat(bp, " (being worn)");
             else
             {
-                char replacetxt[BUFSZ] = "";
+                char replacetxt[OBUFSZ] = "";
                 strcpy(replacetxt, misc_type_worn_texts[objects[obj->otyp].oc_subtyp]);
 
                 /* special replacement for some types */
@@ -1865,7 +1865,7 @@ weapon_here:
     /* Mark if glowing when detected something */
     if (obj->detectioncount > 0)
     {
-        char colorbuf[BUFSZ] = "red";
+        char colorbuf[OBUFSZ] = "red";
         if (obj->oartifact)
             strcpy(colorbuf, glow_color(obj->oartifact));
 
@@ -1906,9 +1906,9 @@ weapon_here:
 
     if ((wizard && iflags.wizweight) || weightfirst) 
     {
-        char weightbuf[BUFSZ];
+        char weightbuf[OBUFSZ];
         printweight(weightbuf, objweight_oz, TRUE, TRUE);
-        char buf[BUFSZ];
+        char buf[OBUFSZ];
         Sprintf(buf, "%s - %s", weightbuf, bp);
         Strcpy(bp, buf);
 
@@ -1916,9 +1916,9 @@ weapon_here:
     
     if (weightlast)
     {
-        char weightbuf[BUFSZ];
+        char weightbuf[OBUFSZ];
         printweight(weightbuf, objweight_oz, FALSE, FALSE);
-        char buf[BUFSZ];
+        char buf[OBUFSZ];
         Sprintf(buf, "%s (%s)", bp, weightbuf);
         Strcpy(bp, buf);
     }
@@ -2576,7 +2576,7 @@ const char *verb;
     if (!carried(obj) || !obj_is_pname(obj)
         || any_quest_artifact(obj)) {
         char *outbuf = shk_your(nextobuf(), obj);
-        size_t space_left = BUFSZ - 1 - strlen(outbuf);
+        size_t space_left = OBUFSZ - 1 - strlen(outbuf);
 
         s = strncat(outbuf, s, space_left);
     }
@@ -2634,7 +2634,7 @@ struct obj *obj;
         || any_quest_artifact(obj)) 
     {
         char *outbuf = shk_your(nextobuf(), obj);
-        size_t space_left = BUFSZ - 1 - strlen(outbuf);
+        size_t space_left = OBUFSZ - 1 - strlen(outbuf);
 
         s = strncat(outbuf, s, space_left);
     }
@@ -2642,7 +2642,7 @@ struct obj *obj;
     {
         if (strncmpi(s, "the ", 4))
         {
-            char tempbuf[BUFSZ];
+            char tempbuf[OBUFSZ];
             strcpy(tempbuf, s);
             Sprintf(s, "the %s", tempbuf);
         }
@@ -2672,7 +2672,7 @@ struct obj *obj;
 {
     char *outbuf = nextobuf();
     char *s = shk_your(outbuf, obj); /* assert( s == outbuf ); */
-    size_t space_left = BUFSZ - 1 - strlen(s);
+    size_t space_left = OBUFSZ - 1 - strlen(s);
 
     char* min_name = minimal_xname(obj);
 
@@ -3408,7 +3408,7 @@ boolean retry_inverted; /* optional extra "of" handling */
 {
     STATIC_VAR NEARDATA const char detect_SP[] = "detect ",
                                SP_detection[] = " detection";
-    char *p, buf[BUFSZ];
+    char *p, buf[OBUFSZ];
 
     /* ignore spaces & hyphens and upper/lower case when comparing */
     if (fuzzymatch(u_str, o_str, " -", TRUE))
@@ -3786,7 +3786,7 @@ boolean is_wiz_wish;
     int wetness, gsize = 0;
     struct fruit *f;
     int ftype = context.current_fruit;
-    char fruitbuf[BUFSZ], globbuf[BUFSZ];
+    char fruitbuf[OBUFSZ], globbuf[OBUFSZ];
     /* Fruits may not mess up the ability to wish for real objects (since
      * you can leave a fruit in a bones file and it will be added to
      * another person's game), so they must be checked for last, after
@@ -4550,7 +4550,7 @@ retry:
             else
                 typ = 0; /* somebody changed objects[]? punt */
         } else { /* try to construct canonical form */
-            char tbuf[BUFSZ];
+            char tbuf[OBUFSZ];
 
             Strcpy(tbuf, "worthless piece of ");
             Strcat(tbuf, g); /* assume it starts with the color */
@@ -4922,8 +4922,8 @@ retry:
                 size_t mlen = strlen(material_definitions[m].object_prefix);
                 size_t mlena = material_definitions[m].adjective ? strlen(material_definitions[m].adjective) : 0;
 
-                char startbuf[BUFSZ] = "";
-                char originalbuf[BUFSZ] = "";
+                char startbuf[OBUFSZ] = "";
+                char originalbuf[OBUFSZ] = "";
                 Strcpy(originalbuf, bp);
                 size_t bplen = strlen(originalbuf);
                 char* mbp = originalbuf;
@@ -5793,7 +5793,7 @@ int *otyp_ptr, *sq_ptr;
     int i;
     for (i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
     {
-        char buf[BUFSZ];
+        char buf[OBUFSZ];
         size_t ln = 0;
         strcpy(buf, key_special_descriptions[i].description);
         Strcat(buf, " ");
