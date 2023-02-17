@@ -1782,7 +1782,10 @@ dll_getlin_ex(int style, int attr, int color, const char *question, char *input,
     dll_logDebug("dll_getlin(%s, %p)\n", question, input);
     char* res = dll_callbacks.callback_getlin_ex(style, attr, color, question, placeholder, linesuffix, introline);
     if (res && input)
-        strcpy(input, res);
+    {
+        strncpy(input, res, BUFSZ - 1);
+        input[BUFSZ - 1] = '\0';
+    }
 
 #if 0
     if (!iflags.wc_popup_dialog) {

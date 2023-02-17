@@ -626,27 +626,29 @@ char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* t
 
 void lib_getlin_ex(int style, int attr, int color, const char* question, char* input, const char* placeholder, const char* linesuffix, const char* introline)
 {
-    char buf[BUFSIZ] = "";
-    char phbuf[BUFSIZ] = "";
-    char dvbuf[BUFSIZ] = "";
-    char ibuf[BUFSIZ] = "";
+    char buf[UTF8QBUFSZ] = "";
+    char phbuf[UTF8BUFSZ] = "";
+    char dvbuf[UTF8BUFSZ] = "";
+    char ibuf[UTF8BUFSZ] = "";
 
     if (question)
-        write_text2buf_utf8(buf, BUFSIZ, question);
+        write_text2buf_utf8(buf, UTF8QBUFSZ, question);
     if (placeholder)
-        write_text2buf_utf8(phbuf, BUFSIZ, placeholder);
+        write_text2buf_utf8(phbuf, UTF8BUFSZ, placeholder);
     if (linesuffix)
-        write_text2buf_utf8(dvbuf, BUFSIZ, linesuffix);
+        write_text2buf_utf8(dvbuf, UTF8BUFSZ, linesuffix);
     if (introline)
-        write_text2buf_utf8(ibuf, BUFSIZ, introline);
+        write_text2buf_utf8(ibuf, UTF8BUFSZ, introline);
 
     char* res = lib_callbacks.callback_getlin_ex(style, attr, color, buf, placeholder ? phbuf : 0, linesuffix ? dvbuf : 0, introline ? ibuf : 0);
     if (res && input)
     {
-        char msgbuf[BUFSZ] = "";
-        strcpy(msgbuf, res);
-        convertUTF8toCP437(msgbuf, BUFSZ);
-        strcpy(input, msgbuf);
+        char msgbuf[UTF8BUFSZ] = "";
+        strncpy(msgbuf, res, UTF8BUFSZ - 1);
+        msgbuf[UTF8BUFSZ - 1] = '\0';
+        convertUTF8toCP437(msgbuf, UTF8BUFSZ);
+        strncpy(input, msgbuf, BUFSZ - 1);
+        input[BUFSZ - 1] = '\0';
     }
 }
 
@@ -940,7 +942,7 @@ int get_condition_attr(int cond_mask)
     return attr;
 }
 
-void print_conditions(const char** names)
+void lib_print_conditions(const char** names)
 {
     int i;
     for (i = 0; i < NUM_BL_CONDITIONS; i++) {
@@ -1022,7 +1024,7 @@ void print_status_field(int idx, boolean first_field)
 
     if (idx == BL_CONDITION)
     {
-        print_conditions(cond_names);
+        lib_print_conditions(cond_names);
     }
     else
     {

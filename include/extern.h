@@ -292,6 +292,7 @@ E void FDECL(get_m_buff_bits, (struct monst*, unsigned long*, BOOLEAN_P));
 E void NDECL(status_reassess);
 E char* NDECL(botl_realtime);
 E long NDECL(get_current_game_duration);
+E size_t FDECL(print_conditions, (char*));
 
 /* ### cmd.c ### */
 

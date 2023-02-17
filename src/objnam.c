@@ -63,7 +63,6 @@ const char* critical_strike_special_percentage_names[MAX_CRITICAL_STRIKE_SPECIAL
 };
 
 /* "an uncursed greased partly eaten guardian naga hatchling [corpse]" */
-#define PREFIX 80 /* (56) */
 #define SCHAR_LIM 127
 #define NUMOBUF 12
 
@@ -114,8 +113,8 @@ register const char *pref;
 {
     register int i = (int) strlen(pref);
 
-    if (i > PREFIX) {
-        impossible("PREFIX too short (for %d).", i);
+    if (i > PREFIXBUFSZ) {
+        impossible("PREFIXBUFSZ too short (for %d).", i);
         return s;
     }
     s -= i;
@@ -141,7 +140,7 @@ char *bufp;
 {
     /* caller may not know whether bufp is the most recently allocated
        buffer; if it isn't, do nothing; note that because of the somewhat
-       obscure PREFIX handling for object name formatting by xname(),
+       obscure PREFIXBUFSZ handling for object name formatting by xname(),
        the pointer our caller has and is passing to us might be into the
        middle of an obuf rather than the address returned by nextobuf() */
     if (bufp >= obufs[obufidx]
@@ -474,7 +473,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     boolean known, dknown, bknown, nknown, aknown, mknown, tknown;
     boolean makeThelower = FALSE;
 
-    buf = nextobuf() + PREFIX; /* leave room for "17 -3 " */
+    buf = nextobuf() + PREFIXBUFSZ; /* leave room for "17 -3 " */
 
     if (Role_if(PM_SAMURAI) && Japanese_item_name(typ))
         actualn = Japanese_item_name(typ);
@@ -1237,8 +1236,8 @@ unsigned doname_flags;
             lit_in_front = (doname_flags & DONAME_LIT_IN_FRONT) != 0;
     boolean known, dknown, cknown, bknown, lknown, tknown;
     int omndx = obj->corpsenm, isenchanted = 0;
-    char prefix[PREFIX];
-    char tmpbuf[PREFIX + 1]; /* for when we have to add something at
+    char prefix[PREFIXBUFSZ];
+    char tmpbuf[PREFIXBUFSZ + 1]; /* for when we have to add something at
                                 the start of prefix instead of the
                                 end (Strcat is used on the end) */
     register char *bp = xname(obj);
@@ -2549,7 +2548,7 @@ aobjnam(otmp, verb)
 struct obj *otmp;
 const char *verb;
 {
-    char prefix[PREFIX];
+    char prefix[PREFIXBUFSZ];
     char *bp = cxname(otmp);
 
     if (otmp->quan != 1L) {
