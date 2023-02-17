@@ -31,7 +31,7 @@
 #include "mhfont.h"
 #include "resource.h"
 
-#define LLEN 128
+#define LLEN UTF8BUFSZ /* 128 */
 
 #define NHTRACE_LOG "nhtrace.log"
 

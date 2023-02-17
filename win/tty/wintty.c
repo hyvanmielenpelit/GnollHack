@@ -3053,7 +3053,7 @@ boolean complain;
 #else /* DEF_PAGER */
     {
         dlb *f;
-        char buf[BUFSZ];
+        char buf[UTF8BUFSZ];
         char *cr;
 
         tty_clear_nhwindow(WIN_MESSAGE);
@@ -3082,7 +3082,7 @@ boolean complain;
                 if ((int) wins[datawin]->offy + 12 > (int) ttyDisplay->rows)
                     wins[datawin]->offy = 0;
             }
-            while (dlb_fgets(buf, BUFSZ, f)) {
+            while (dlb_fgets(buf, sizeof(buf), f)) {
                 if ((cr = index(buf, '\n')) != 0)
                     *cr = 0;
 #ifdef MSDOS

@@ -15,7 +15,7 @@
 #include "dlb.h"
 #include "soundset.h"
 
-#define LLEN 128
+#define LLEN UTF8BUFSZ /* 128 */
 
 PNHWinApp GetNHApp(void);
 

@@ -1417,7 +1417,7 @@ size_t bufsize;
     char cp437char = 0;
     //boolean was_unicode = FALSE;
 
-    for (bp = buf; *bp && bp < bp + bufsize && wp < copybuf + sizeof(copybuf); bp++)
+    for (bp = buf; *bp && bp < buf + bufsize && wp < copybuf + sizeof(copybuf); bp++)
     {
         uc = (uchar)(*bp);
         if (uc >= 0x80)
