@@ -2167,7 +2167,7 @@ int how;
     struct obj *saddle = (struct obj *) 0;
     boolean hit_saddle = FALSE, your_fault = (how <= POTHIT_HERO_THROW);
     struct obj* obj = *obj_ptr;
-    char dcbuf[BUFSZ] = "";
+    char dcbuf[IBUFSZ] = "";
 
     if (!obj)
         return;
@@ -2595,7 +2595,7 @@ const char* introline;
 
     int i, kn = 0;
     boolean cureblind = FALSE;
-    char dcbuf[BUFSZ] = "";
+    char dcbuf[IBUFSZ] = "";
 
     /* potion of unholy water might be wielded; prevent
        you_were() -> drop_weapon() from dropping it so that it
@@ -2922,7 +2922,7 @@ const char* introline;
      */
     }
 
-    char dcbuf2[BUFSZ * 2] = "";
+    char dcbuf2[IBUFSZ] = "";
     if (introline && *introline)
     {
         Strcpy(dcbuf2, introline);
@@ -3799,8 +3799,8 @@ dodip()
                 if (!potion->oartifact && !is_obj_indestructible(potion))
                     useup(potion); /* now gone */
 
-                char dcbuf2[BUFSZ] = "";
-                char dcbuf3[BUFSZ * 2] = "";
+                char dcbuf2[IBUFSZ] = "";
+                char dcbuf3[IBUFSZ] = "";
                 /* it would be better to use up the whole stack in advance
                    of the message, but we can't because we need to keep it
                    around for potionbreathe() [and we can't set obj->in_use

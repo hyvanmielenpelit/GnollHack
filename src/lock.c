@@ -1647,7 +1647,7 @@ int x, y;
 
     play_simple_object_sound_at_location(otmp, x, y, OBJECT_SOUND_TYPE_BREAK);
     if (otmp->oclass == POTION_CLASS) {
-        char dcbuf[BUFSZ] = "";
+        char dcbuf[IBUFSZ] = "";
         Sprintf(dcbuf, "You %s %s shatter!", Blind ? "hear" : "see", an(bottlename()));
         pline1(dcbuf);
         if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))

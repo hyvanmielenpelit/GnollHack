@@ -2473,7 +2473,7 @@ boolean from_invent;
             explode_oil(obj, x, y);
         } else if (distu(x, y) <= 2) {
             if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data)) {
-                char dcbuf[BUFSZ] = "";
+                char dcbuf[IBUFSZ] = "";
                 if (obj->otyp != POT_WATER) {
                     if (!has_innate_breathless(youmonst.data)) {
                         /* [what about "familiar odor" when known?] */

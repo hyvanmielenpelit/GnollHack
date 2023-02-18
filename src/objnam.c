@@ -62,7 +62,6 @@ const char* critical_strike_special_percentage_names[MAX_CRITICAL_STRIKE_SPECIAL
     "100% less 5% per hit die"
 };
 
-/* "an uncursed greased partly eaten guardian naga hatchling [corpse]" */
 #define SCHAR_LIM 127
 #define NUMOBUF 12
 

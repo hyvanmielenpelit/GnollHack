@@ -611,13 +611,13 @@ int lib_doprev_message(void)
 
 char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags)
 {
-    char buf[BUFSIZ] = "", tbuf[BUFSIZ] = "", ibuf[BUFSIZ] = "";
+    char buf[UTF8QBUFSZ] = "", tbuf[UTF8QBUFSZ] = "", ibuf[UTF8IBUFSZ] = "";
     if(question)
-        write_text2buf_utf8(buf, BUFSIZ, question);
+        write_text2buf_utf8(buf, UTF8QBUFSZ, question);
     if (title)
-        write_text2buf_utf8(tbuf, BUFSIZ, title);
+        write_text2buf_utf8(tbuf, UTF8QBUFSZ, title);
     if (introline)
-        write_text2buf_utf8(ibuf, BUFSIZ, introline);
+        write_text2buf_utf8(ibuf, UTF8IBUFSZ, introline);
     char defs[2] = { 0,0 };
     defs[0] = def;
     int res = lib_callbacks.callback_yn_function_ex(style, attr, color, glyph, title ? tbuf : 0, question ? buf : 0, choices, defs, resp_desc, introline ? ibuf : 0, ynflags);
@@ -629,7 +629,7 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
     char buf[UTF8QBUFSZ] = "";
     char phbuf[UTF8BUFSZ] = "";
     char dvbuf[UTF8BUFSZ] = "";
-    char ibuf[UTF8BUFSZ] = "";
+    char ibuf[UTF8IBUFSZ] = "";
 
     if (question)
         write_text2buf_utf8(buf, UTF8QBUFSZ, question);
@@ -638,7 +638,7 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
     if (linesuffix)
         write_text2buf_utf8(dvbuf, UTF8BUFSZ, linesuffix);
     if (introline)
-        write_text2buf_utf8(ibuf, UTF8BUFSZ, introline);
+        write_text2buf_utf8(ibuf, UTF8IBUFSZ, introline);
 
     char* res = lib_callbacks.callback_getlin_ex(style, attr, color, buf, placeholder ? phbuf : 0, linesuffix ? dvbuf : 0, introline ? ibuf : 0);
     if (res && input)

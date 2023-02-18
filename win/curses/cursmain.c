@@ -914,7 +914,7 @@ getlin(const char *ques, char *input)
 void
 curses_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline UNUSED)
 {
-    char promptbuf[QBUFSZ + BUFSZ] = "";
+    char promptbuf[PBUFSZ] = "";
     if (question)
         Sprintf(promptbuf, "%s", question);
     if (placeholder)

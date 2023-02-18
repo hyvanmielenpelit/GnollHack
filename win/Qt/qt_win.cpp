@@ -5048,7 +5048,7 @@ char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph,
 
 void NetHackQtBind::qt_getlin_ex(int style, int attr, int color, const char *prompt, char *line, const char* placeholder, const char* linesuffix, const char* introline)
 {
-    char promptbuf[BUFSZ] = "";
+    char promptbuf[PBUFSZ] = "";
     //Do not show introline
     if (prompt)
         Sprintf(promptbuf, "%s", prompt);

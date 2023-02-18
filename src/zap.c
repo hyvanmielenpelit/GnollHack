@@ -10691,7 +10691,7 @@ boolean forcedestroy;
                                                : "All of your"); /* N of N */
 
         play_simple_object_sound(obj, obj_sound_type);
-        char dcbuf[BUFSZ] = "";
+        char dcbuf[IBUFSZ] = "";
         Sprintf(dcbuf, "%s %s %s!", mult, xname(obj),
               destroy_strings[dindx][(cnt > 1L)]);
         pline_ex1(ATR_NONE, CLR_MSG_NEGATIVE, dcbuf);

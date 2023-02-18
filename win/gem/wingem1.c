@@ -3016,7 +3016,7 @@ char *input;
     OBJECT *z_ob = zz_oblist[LINEGET];
     int d_exit, length;
     char *pr[2], *tmp;
-    char promptbuf[BUFSZ] = "";
+    char promptbuf[PBUFSZ] = "";
     //Do not show introline
     if (ques)
         Sprintf(promptbuf, "%s", ques);

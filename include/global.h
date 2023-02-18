@@ -364,11 +364,14 @@ struct savefile_info {
 
 #define BUFSZ 256  /* for getlin buffers */
 #define QBUFSZ 256 /* for building question text */
+#define IBUFSZ (BUFSZ * 3)  /* for getlin introline buffers */
+#define PBUFSZ (IBUFSZ + QBUFSZ + BUFSZ)  /* for getlin combined introline + question (+ extras) buffers */
 #define TBUFSZ 300 /* toplines[] buffer max msg: 3 81char names */
-#define PREFIXBUFSZ 128 /* for object prefixes */
+#define PREFIXBUFSZ 128 /* for object prefix buffer; "an uncursed greased partly eaten guardian naga hatchling [corpse]" and "an uncursed +10 erodeproof greased poisoned death-magical witch-king's primordial adamantium [long sword]" */
 #define OBUFSZ (BUFSZ + PL_FSIZ + PL_PSIZ * 2 + PREFIXBUFSZ)  /* for object name buffers */
 #define UTF8BUFSZ (BUFSZ * 4)  /* for getlin buffers in UTF8 */
 #define UTF8QBUFSZ (QBUFSZ * 4)  /* for building question text in UTF8 */
+#define UTF8IBUFSZ (IBUFSZ * 4)  /* for getlin introline bufferst in UTF8 */
 
 /* plus longest prefix plus a few extra words */
 

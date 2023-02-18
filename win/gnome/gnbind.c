@@ -1150,7 +1150,7 @@ void
 gnome_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline UNUSED)
 {
     int ret;
-    char promptbuf[BUFSZ] = "";
+    char promptbuf[PBUFSZ] = "";
     //Do not show introline
     if (question)
         Sprintf(promptbuf, "%s", question);

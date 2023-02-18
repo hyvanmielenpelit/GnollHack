@@ -1907,7 +1907,7 @@ void and_n_getline_r(const char* question, char* buf, int nMax, int showLog, int
 void and_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline)
 {
 //	debuglog("and_getlin '%s'", question);
-	char promptbuf[BUFSZ] = "";
+	char promptbuf[PBUFSZ] = "";
 	//Do not show introline
 	//if (introline && *introline)
 	//	Sprintf(promptbuf, "%s", introline);

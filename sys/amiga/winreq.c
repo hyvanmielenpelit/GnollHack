@@ -820,7 +820,7 @@ const char* linesuffix;
 const char* introline;
 char *bufp;
 {
-    char promptbuf[BUFSZ] = "";
+    char promptbuf[PBUFSZ] = "";
     //Do not show introline
     //if (introline && *introline)
     //    Sprintf(promptbuf, "%s", introline);

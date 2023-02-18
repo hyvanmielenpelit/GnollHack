@@ -37,7 +37,7 @@ topl_getlin_ex(int style UNUSED, int attr, int color, const char *query, char *b
     if (get_line_from_key_queue(bufp))
         return;
 
-    char promptbuf[BUFSZ] = "";
+    char promptbuf[PBUFSZ] = "";
     //Do not show introline
     //if (introline && *introline)
     //    Sprintf(promptbuf, "%s", introline);
