@@ -2062,7 +2062,7 @@ namespace GnollHackClient.Pages.Game
                     res = "resource://GnollHackClient.Assets.UI.inventory.png";
                     break;
                 case 'd':
-                    if (desc.Substring(0, 4) == "Drop")
+                    if (desc != null && desc.Length >= 4 && desc.Substring(0, 4) == "Drop")
                         res = "resource://GnollHackClient.Assets.UI.dropmany.png";
                     else if (desc == "Disarm")
                         res = "resource://GnollHackClient.Assets.UI.yes.png";
@@ -5489,6 +5489,8 @@ namespace GnollHackClient.Pages.Game
                                 string printtext;
                                 if (valtext.Substring(0, 3) == "DL:" && valtext.Length > 3)
                                     printtext = valtext.Substring(3);
+                                else if (valtext.Substring(0, 5) == "Dlvl:" && valtext.Length > 5)
+                                    printtext = valtext.Substring(5);
                                 else
                                     printtext = valtext;
 

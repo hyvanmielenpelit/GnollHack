@@ -730,19 +730,35 @@ char *buf;
     int ret = 1;
 
     /* TODO:    Add in dungeon name */
-    if (Is_knox(&u.uz)) {
+    if (Is_knox(&u.uz)) 
+    {
         Sprintf(buf, "%s", dungeons[u.uz.dnum].dname);
-    } else if (In_quest(&u.uz)) {
+    } 
+    else if (Is_bovine_level(&u.uz)) 
+    {
+        Sprintf(buf, "%s", "Bovine");
+    }
+    else if (In_quest(&u.uz))
+    {
         Sprintf(buf, "Home %d", dunlev(&u.uz));
-    } else if (In_endgame(&u.uz)) {
+    }
+    else if (In_modron_level(&u.uz)) 
+    {
+        Sprintf(buf, "Modron %d", dunlev(&u.uz));
+    }
+    else if (In_endgame(&u.uz))
+    {
         /* [3.6.2: this used to be "Astral Plane" or generic "End Game"] */
         char buf2[BUFSZ];
         (void) endgamelevelname(buf2, depth(&u.uz));
         (void) strsubst(buf2, "Plane of ", ""); /* just keep <element> */
+        (void) strsubst(buf2, " Plane", ""); /* just keep Astral*/
         Sprintf(buf, "%s", buf2);
-    } else {
+    } 
+    else 
+    {
         /* ports with more room may expand this one */
-        Sprintf(buf, "DL:%d", depth(&u.uz));
+        Sprintf(buf, "%s:%d", flags.fullstatuslineorder ? "Dlvl" : "DL", depth(&u.uz));
         ret = 0;
     }
     return ret;
