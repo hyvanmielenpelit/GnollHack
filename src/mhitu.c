@@ -2915,7 +2915,7 @@ register struct obj* omonwep;
             play_sfx_sound(SFX_LUCKILY_ITS_TOUCH_DID_NOT_WORK);
             if (Death_resistance)
                 u_shieldeff();
-            pline("Lucky for you, it didn't work!");
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Lucky for you, it didn't work!");
             damage = 0;
             break;
         }

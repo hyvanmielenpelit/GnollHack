@@ -1315,6 +1315,50 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Gremlin/Female/Chat", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Gremlin/Female/Laughter", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Death", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Cough", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Push Effort", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Ouch", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Flounder", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Bump Into", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Search", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Cast", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Mumbled Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Yell", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Shudder", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Pray", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Male/Who", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Death", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Cough", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Push Effort", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Ouch", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Flounder", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Bump Into", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Search", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Cast", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Mumbled Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Yell", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Shudder", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Pray", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic Undead/Female/Who", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Monster/Angel/Male/Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Angel/Male/Special Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Angel/Female/Death", 1.0f },
@@ -8922,6 +8966,98 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
+    {
+        "Undead/Demon Male",
+        MONSTER_SOUNDSET_UNDEAD,
+        {
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_AMBIENT */
+            {GHSOUND_GENERAL_SWALLOW_AMBIENT, 1.0f}, /* MONSTER_SOUND_TYPE_SWALLOW_AMBIENT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME */
+            {GHSOUND_UNDEAD_DEMON_MALE_ITEM_TRADING, 1.0f}, /* MONSTER_SOUND_TYPE_ITEM_TRADING */
+            {GHSOUND_UNDEAD_DEMON_MALE_STANDARD_DIALOGUE_LINE, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
+            {GHSOUND_UNDEAD_DEMON_MALE_SPECIAL_DIALOGUE_LINE, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_CREATION */
+            {GHSOUND_UNDEAD_DEMON_MALE_GET_ANGRY, 1.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {GHSOUND_UNDEAD_DEMON_MALE_MOLLIFIED, 1.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {GHSOUND_UNDEAD_DEMON_MALE_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {GHSOUND_UNDEAD_DEMON_MALE_COUGH, 1.0f}, /* MONSTER_SOUND_TYPE_COUGH */
+            {GHSOUND_UNDEAD_DEMON_MALE_PUSH_EFFORT, 1.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_HOWL */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_PISSED */
+            {GHSOUND_UNDEAD_DEMON_MALE_WHO, 1.0f}, /* MONSTER_SOUND_TYPE_WHO */
+            {GHSOUND_UNDEAD_DEMON_MALE_OUCH, 1.0f}, /* MONSTER_SOUND_TYPE_OUCH */
+            {GHSOUND_UNDEAD_DEMON_MALE_FLOUNDER, 1.0f}, /* MONSTER_SOUND_TYPE_FLOUNDER */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_4 */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_5 */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_6 */
+            {GHSOUND_UNDEAD_DEMON_MALE_BUMP_INTO, 1.0f}, /* MONSTER_SOUND_TYPE_BUMP_INTO */
+            {GHSOUND_UNDEAD_DEMON_MALE_SEARCH, 1.0f}, /* MONSTER_SOUND_TYPE_SEARCH */
+            {GHSOUND_UNDEAD_DEMON_MALE_CAST, 1.0f}, /* MONSTER_SOUND_TYPE_CAST */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_HAPPY */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_LAUGHTER */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RANDOM_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_7 */
+            {GHSOUND_UNDEAD_DEMON_MALE_CURSE, 1.0f}, /* MONSTER_SOUND_TYPE_CURSE */
+            {GHSOUND_UNDEAD_DEMON_MALE_MUMBLED_CURSE, 1.0f}, /* MONSTER_SOUND_TYPE_MUMBLED_CURSE */
+            {GHSOUND_UNDEAD_DEMON_MALE_YELL, 1.0f}, /* MONSTER_SOUND_TYPE_YELL */
+            {GHSOUND_UNDEAD_DEMON_MALE_CHAT, 1.0f}, /* MONSTER_SOUND_TYPE_CHAT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
+            {GHSOUND_UNDEAD_DEMON_MALE_SHUDDER, 1.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
+            {GHSOUND_UNDEAD_DEMON_MALE_DEATH, 1.0f} /* MONSTER_SOUND_TYPE_DEATH */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
+    },
+    {
+        "Undead/Demon Female",
+        MONSTER_SOUNDSET_UNDEAD,
+        {
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_AMBIENT */
+            {GHSOUND_GENERAL_SWALLOW_AMBIENT, 1.0f}, /* MONSTER_SOUND_TYPE_SWALLOW_AMBIENT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_ITEM_TRADING, 1.0f}, /* MONSTER_SOUND_TYPE_ITEM_TRADING */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_STANDARD_DIALOGUE_LINE, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_SPECIAL_DIALOGUE_LINE, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_CREATION */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_GET_ANGRY, 1.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_MOLLIFIED, 1.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_COUGH, 1.0f}, /* MONSTER_SOUND_TYPE_COUGH */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_PUSH_EFFORT, 1.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_HOWL */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_PISSED */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_WHO, 1.0f}, /* MONSTER_SOUND_TYPE_WHO */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_OUCH, 1.0f}, /* MONSTER_SOUND_TYPE_OUCH */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_FLOUNDER, 1.0f}, /* MONSTER_SOUND_TYPE_FLOUNDER */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_4 */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_5 */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_6 */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_BUMP_INTO, 1.0f}, /* MONSTER_SOUND_TYPE_BUMP_INTO */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_SEARCH, 1.0f}, /* MONSTER_SOUND_TYPE_SEARCH */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_CAST, 1.0f}, /* MONSTER_SOUND_TYPE_CAST */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_HAPPY */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_LAUGHTER */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RANDOM_SOUND */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_RESERVED_7 */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_CURSE, 1.0f}, /* MONSTER_SOUND_TYPE_CURSE */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_MUMBLED_CURSE, 1.0f}, /* MONSTER_SOUND_TYPE_MUMBLED_CURSE */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_YELL, 1.0f}, /* MONSTER_SOUND_TYPE_YELL */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_CHAT, 1.0f}, /* MONSTER_SOUND_TYPE_CHAT */
+            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_SHUDDER, 1.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
+            {GHSOUND_UNDEAD_DEMON_FEMALE_DEATH, 1.0f} /* MONSTER_SOUND_TYPE_DEATH */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
+    }, 
 };
 
 NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS] =
@@ -20981,11 +21117,16 @@ enum monster_standard_dialogue_lines standard_line_id;
 {
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
-    enum monster_soundset_types mss = get_monster_soundset(mtmp);
+    int ss_subtype = 0;
+    enum monster_soundset_types mss = get_monster_soundset_with_subtype(mtmp, &ss_subtype);
     set_simple_monster_sound_id_and_volume(mss, MONSTER_SOUND_TYPE_WHO, &soundid, &volume);
 
     if (soundid != GHSOUND_NONE && volume > 0.0f)
+    {
+        if (who_line_id == MONSTER_WHO_SOUND_ANSWER_WHO_ARE_YOU && ss_subtype > 0)
+            who_line_id = 9 + ss_subtype;
         play_monster_who_sound(mtmp, who_line_id);
+    }
     else
         play_monster_standard_dialogue_line(mtmp, standard_line_id);
 }
@@ -21049,6 +21190,18 @@ enum monster_soundset_types
 get_monster_soundset(mtmp)
 struct monst* mtmp;
 {
+    int dummy = 0;
+    return get_monster_soundset_with_subtype(mtmp, &dummy);
+}
+
+enum monster_soundset_types
+get_monster_soundset_with_subtype(mtmp, subtyp_ptr)
+struct monst* mtmp;
+int* subtyp_ptr;
+{
+    if (subtyp_ptr)
+        *subtyp_ptr = NO_SOUNDSET_SUBTYPE;
+
     if (!mtmp)
         return MONSTER_SOUNDSET_NONE;
 
@@ -21093,6 +21246,10 @@ struct monst* mtmp;
         default:
             break;
         }
+
+        if (subtyp_ptr)
+            *subtyp_ptr = mtmp->data->soundset_subtype;
+
         return isfemale ? mtmp->data->female_soundset : mtmp->data->soundset;
     }
     else if ((mtmp->mnum == PM_ALIGNED_PRIEST || mtmp->mnum == PM_HIGH_PRIEST || (is_human(mtmp->data) && mtmp->ispriest)) && mon_aligntyp(mtmp) == A_NONE)
@@ -21102,7 +21259,12 @@ struct monst* mtmp;
     else if ((mtmp->mnum == PM_ANGEL) && mon_aligntyp(mtmp) == A_NONE)
         return isfemale ? MONSTER_SOUNDSET_HUMANLIKE_DEMONESS : MONSTER_SOUNDSET_HUMANLIKE_DEMON;
     else
+    {
+        if (subtyp_ptr)
+            *subtyp_ptr = mtmp->data->soundset_subtype;
+
         return isfemale ? mtmp->data->female_soundset : mtmp->data->soundset;
+    }
 }
 
 void

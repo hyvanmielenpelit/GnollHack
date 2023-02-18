@@ -1879,17 +1879,25 @@ bark_here:
         {
             if ((tribtitle = noveltitle(&book->novelidx, 0UL, 0UL)) != 0)
             {
-                Sprintf(verbuf, "Ah, so you have a copy of /%s/.", tribtitle);
-                /* no Death featured in these two, so exclude them */
-                if (strcmpi(tribtitle, "Snuff")
-                    && strcmpi(tribtitle, "The Wee Free Men"))
+                if (iflags.using_gui_sounds)
+                {
+                    Strcpy(verbuf, "Ah, so you have a copy of a Discworld novel.");
                     Strcat(verbuf, "  I may have been misquoted there.");
+                }
+                else
+                {
+                    Sprintf(verbuf, "Ah, so you have a copy of /%s/.", tribtitle);
+                    /* no Death featured in these two, so exclude them */
+                    if (strcmpi(tribtitle, "Snuff")
+                        && strcmpi(tribtitle, "The Wee Free Men"))
+                        Strcat(verbuf, "  I may have been misquoted there.");
+                }
                 verbl_msg = verbuf;
                 chat_line = 2;
             }
             context.tribute.Deathnotice = 1;
         } 
-        else if (ms_Death && rn2(3) && Death_quote(verbuf, sizeof verbuf)) 
+        else if (ms_Death && !iflags.using_gui_sounds && rn2(3) && Death_quote(verbuf, sizeof verbuf)) 
         {
             verbl_msg = verbuf;
             /* end of tribute addition */
@@ -1898,12 +1906,12 @@ bark_here:
         else if (ms_Death && !rn2(10)) 
         {
             pline_msg = "is busy reading a copy of Sandman #8.";
-            chat_line = 1;
+            chat_line = -1;
         }
         else
         {
             verbl_msg = "Who do you think you are, War?";
-            chat_line = 0;
+            chat_line = 3;
         }
         break;
     } /* case MS_RIDER */
@@ -2090,7 +2098,7 @@ const char* nomoodstr;
         There("is no one here to talk to.");
         return 0;
     }
-    else if (!is_peaceful(mtmp) && !is_quantum_mechanic(mtmp->data)) 
+    else if (!is_peaceful(mtmp) && !is_quantum_mechanic(mtmp->data) && !is_rider(mtmp->data))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s is in no mood for %s.", noittame_Monnam(mtmp), nomoodstr);
@@ -2332,7 +2340,7 @@ dochat()
 
         chatnum++;
 
-        if (is_speaking_monster(mtmp->data) && (is_peaceful(mtmp) || is_quantum_mechanic(mtmp->data)))
+        if (is_speaking_monster(mtmp->data) && (is_peaceful(mtmp) || is_quantum_mechanic(mtmp->data) || is_rider(mtmp->data)))
         {
             /* Who are you? */
             strcpy(available_chat_list[chatnum].name, "\"Who are you?\"");
@@ -4550,13 +4558,24 @@ struct monst* mtmp;
     else if (is_mname_proper_name(mtmp->data))
     {
         char titlebuf[BUFSZ];
-        strcpy(titlebuf, "");
-        if (mtmp->data->mtitle && strcmp(mtmp->data->mtitle, ""))
+        Strcpy(titlebuf, "");
+        if (!is_rider(mtmp->data) && mtmp->data->mtitle && strcmp(mtmp->data->mtitle, ""))
             Sprintf(titlebuf, ", %s", mtmp->data->mtitle);
 
         play_monster_switchable_who_sound(mtmp, MONSTER_WHO_SOUND_ANSWER_WHO_ARE_YOU, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+
         Sprintf(ansbuf, "I am %s%s.", mon_monster_name(mtmp), titlebuf);
-        popup_talk_line(mtmp, ansbuf);
+        if (mtmp->mnum == PM_DEATH)
+        {
+            (void)ucase(ansbuf);
+            popup_talk_line_ex(mtmp, ansbuf, ATR_NONE, CLR_MSG_GOD, TRUE, FALSE);
+        }
+        else
+        {
+            popup_talk_line(mtmp, ansbuf);
+        }
+
+
     }
     else if (has_mname(mtmp))
     {
@@ -4629,6 +4648,7 @@ struct monst* mtmp;
         : (mtmp->ispriest && has_epri(mtmp) && EPRI(mtmp)->shralign == A_NONE) || (mtmp->isminion && has_emin(mtmp) && EMIN(mtmp)->min_align == A_NONE) || is_demon(mtmp->data) ? -1
         : mtmp->ispriest || mtmp->isminion ? 1 : 0;
     int truth = min(is_peaceful(mtmp), truth_core);
+    boolean is_death = mtmp->mnum == PM_DEATH;
 
     (void)getrumor(truth, rumorbuf, TRUE);
     if (*rumorbuf)
@@ -4639,7 +4659,13 @@ struct monst* mtmp;
         play_voice_monster_advice(mtmp, FALSE);
         pline("%s answers:", noittame_Monnam(mtmp));
         Sprintf(ansbuf, "Unfortunately, I don't have any %s advice for you.", mtmp->told_rumor ? "further" : "useful");
-        popup_talk_line(mtmp, ansbuf);
+        if (is_death)
+        {
+            (void)ucase(ansbuf);
+            popup_talk_line_ex(mtmp, ansbuf, ATR_NONE, CLR_MSG_GOD, TRUE, FALSE);
+        }
+        else
+            popup_talk_line(mtmp, ansbuf);
         mtmp->rumorsleft = 0;
     }
     else
@@ -4650,16 +4676,32 @@ struct monst* mtmp;
             Sprintf(ansbuf, "Let me think. Maybe keep this in mind%s", iflags.using_gui_sounds || Deaf ? "." : ":");
         else
             Sprintf(ansbuf, "Yes, here's a piece of advice for you%s", iflags.using_gui_sounds || Deaf ? "." : ":");
-        popup_talk_line(mtmp, ansbuf);
+        
+        if (is_death)
+        {
+            (void)ucase(ansbuf);
+            popup_talk_line_ex(mtmp, ansbuf, ATR_NONE, CLR_MSG_GOD, TRUE, FALSE);
+        }
+        else
+            popup_talk_line(mtmp, ansbuf);
 
         /* Tell a rumor */
+        boolean isspeaking = TRUE;
         if (iflags.using_gui_sounds || Deaf)
         {
+            isspeaking = FALSE;
             pline("(%s hands a note over to you.)  It reads:", noittame_Monnam(mtmp));
             u.uconduct.literate++;
         }
-        verbalize("%s", rumorbuf);
-        display_popup_text(rumorbuf, "Advice", POPUP_TEXT_ADVICE, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
+        if (is_death && isspeaking)
+        {
+            (void)ucase(rumorbuf);
+            popup_talk_line_ex(mtmp, rumorbuf, ATR_NONE, CLR_MSG_GOD, TRUE, FALSE);
+        }
+        else
+            verbalize("%s", rumorbuf);
+
+        display_popup_text(rumorbuf, "Advice", POPUP_TEXT_ADVICE, ATR_NONE, is_death ? CLR_MSG_GOD : NO_COLOR, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
 
         mtmp->told_rumor = TRUE;
     }

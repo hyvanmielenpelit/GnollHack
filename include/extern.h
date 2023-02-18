@@ -3323,6 +3323,7 @@ E void FDECL(play_monster_flounder_sound, (struct monst*, enum monster_flounder_
 E void FDECL(play_monster_pissed_sound, (struct monst*, enum monster_pissed_sounds));
 E void FDECL(play_monster_chat_sound, (struct monst*, int));
 E enum monster_soundset_types FDECL(get_monster_soundset, (struct monst*));
+E enum monster_soundset_types FDECL(get_monster_soundset_with_subtype, (struct monst*, int*));
 E void FDECL(play_voice_com_pager, (struct monst*, int, BOOLEAN_P));
 E void FDECL(play_voice_quest_pager, (struct monst*, int, BOOLEAN_P));
 E void FDECL(play_voice_quest_leader_whoareyou, (struct monst*));

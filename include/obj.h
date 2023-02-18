@@ -99,18 +99,6 @@ struct obj {
     uchar exceptionality; /* exceptional, elite, etc. weapon, multiplies base damage */
     uchar elemental_enchantment; /* cold, fire, lightning, or deathly */
     uchar material; /* specific material of this object */
-
-#define COLD_ENCHANTMENT 1
-#define FIRE_ENCHANTMENT 2
-#define LIGHTNING_ENCHANTMENT 3
-#define DEATH_ENCHANTMENT 4
-
-#define ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL 3 /* How many stackable items are enchanted. Also 1/quan is wear-off chance for non-stackable items */
-#define ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION 2 
-#define DEATH_ENCHANTMENT_QUANTITY_NORMAL 1 /* How many stackable items are enchanted. Also 1/quan is wear-off chance for non-stackable items */
-#define DEATH_ENCHANTMENT_QUANTITY_BUC_VARIATION 1 
-#define ELEMENTAL_ENCHANTMENT_BAG_WEAR_OFF_ONE_PER_CHANCE 3
-
     char recharged; /* number of times it's been recharged */
 #define RECHARGE_LIMIT 100
 
@@ -196,6 +184,21 @@ struct obj {
     int gui_glyph;
     struct oextra *oextra; /* pointer to oextra struct */
 };
+
+enum elemental_enchantments {
+    NO_ELEMENATAL_ENCHANTMENT = 0,
+    COLD_ENCHANTMENT,
+    FIRE_ENCHANTMENT,
+    LIGHTNING_ENCHANTMENT,
+    DEATH_ENCHANTMENT,
+    MAX_ELEMENTAL_ENCHANTMENTS
+};
+
+#define ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL 3 /* How many stackable items are enchanted. Also 1/quan is wear-off chance for non-stackable items */
+#define ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION 2 
+#define DEATH_ENCHANTMENT_QUANTITY_NORMAL 1 /* How many stackable items are enchanted. Also 1/quan is wear-off chance for non-stackable items */
+#define DEATH_ENCHANTMENT_QUANTITY_BUC_VARIATION 1 
+#define ELEMENTAL_ENCHANTMENT_BAG_WEAR_OFF_ONE_PER_CHANCE 3
 
 #define newobj() (struct obj *) alloc(sizeof(struct obj))
 

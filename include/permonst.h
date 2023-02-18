@@ -98,6 +98,7 @@ struct permonst {
 #endif
     enum monster_soundset_types soundset;
     enum monster_soundset_types female_soundset;
+    uchar soundset_subtype;
 
     struct action_info animation;
     struct action_info female_animation;

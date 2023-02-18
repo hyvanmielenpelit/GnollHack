@@ -450,7 +450,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     if (!obj)
     {
         buf = nextobuf();
-        strcpy(buf, empty_string);
+        Strcpy(buf, empty_string);
         return buf;
     }
 
@@ -584,14 +584,23 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
     if (dknown)
     {
-        if (obj->elemental_enchantment == COLD_ENCHANTMENT)
+        switch (obj->elemental_enchantment)
+        {
+        case COLD_ENCHANTMENT:
             Strcat(buf, "freezing ");
-        else if (obj->elemental_enchantment == FIRE_ENCHANTMENT)
+            break;
+        case FIRE_ENCHANTMENT:
             Strcat(buf, "flaming ");
-        else if (obj->elemental_enchantment == LIGHTNING_ENCHANTMENT)
+            break;
+        case LIGHTNING_ENCHANTMENT:
             Strcat(buf, "electrified ");
-        else if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
+            break;
+        case DEATH_ENCHANTMENT:
             Strcat(buf, "death-magical ");
+            break;
+        default:
+            break;
+        }
     }
 
     if (obj->oclass == ARMOR_CLASS && (is_boots(obj) || is_gloves(obj) || is_bracers(obj)))
@@ -627,16 +636,26 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
     if (dknown)
     {
-        if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
+        switch (obj->exceptionality)
+        {
+        case EXCEPTIONALITY_EXCEPTIONAL:
             Strcat(buf, "exceptional ");
-        else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
+            break;
+        case EXCEPTIONALITY_ELITE:
             Strcat(buf, "elite ");
-        else if (obj->exceptionality == EXCEPTIONALITY_CELESTIAL)
+            break;
+        case EXCEPTIONALITY_CELESTIAL:
             Strcat(buf, "celestial ");
-        else if (obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
+            break;
+        case EXCEPTIONALITY_PRIMORDIAL:
             Strcat(buf, "primordial ");
-        else if (obj->exceptionality == EXCEPTIONALITY_INFERNAL)
+            break;
+        case EXCEPTIONALITY_INFERNAL:
             Strcat(buf, "infernal ");
+            break;
+        default:
+            break;
+        }
     }
 
     Strcpy(actualn_fullbuf, actualn_startbuf);
@@ -980,7 +999,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Strcat(buf, " named ");
         makeThelower = TRUE;
     nameit:
-        strcpy(anamebuf, ONAME(obj));
+        Strcpy(anamebuf, ONAME(obj));
         if (makeThelower && !strncmpi(anamebuf, "The ", 4))
             *anamebuf = lowc(*anamebuf);
         Strcat(buf, anamebuf);
@@ -2240,7 +2259,7 @@ unsigned kxnflags;
     if (!obj)
     {
         buf = nextobuf();
-        strcpy(buf, empty_string);
+        Strcpy(buf, empty_string);
         return buf;
     }
 
