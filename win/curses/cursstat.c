@@ -753,11 +753,15 @@ boolean border;
                 }
                 /*FALLTHRU*/
             //case BL_ALIGN:
-            case BL_MODE:
             case BL_LEVELDESC:
                 spacing[fld] = 0; // (i > 0 ? 1 : 0); /* extra space unless first */
                 break;
-			case BL_SKILL:
+            case BL_MODE:
+                spacing[fld] = 0;
+                if (flags.fullstatuslineorder && first_status_field == BL_FLUSH)
+                    first_status_field = fld;
+                break;
+            case BL_SKILL:
 				spacing[fld] = 0; // (number_of_lines < 3 && (skill_and_2wep & 1)) ? 1 : 0;
                 if(first_status_field == BL_FLUSH && *text)
                 {
@@ -819,8 +823,6 @@ boolean border;
                 break;
             case BL_GOLD:
                 spacing[fld] = 0; // 1; /* always extra space */
-                if (flags.fullstatuslineorder && first_status_field == BL_FLUSH)
-                    first_status_field = fld;
                 break;
             case BL_XP:
             case BL_HD:
