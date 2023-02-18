@@ -159,25 +159,22 @@ curses_atr2cursesattr(int atr)
     if (atr == ATR_NONE)
         return A_NORMAL;
 
-    int result = 0;
-    if ((atr & ATR_INVERSE) == ATR_INVERSE)
-        result |= A_REVERSE;
-    else
+    atr = atr & ATR_ATTR_MASK;
+    switch (atr)
     {
-        if ((atr & ATR_BLINK) == ATR_BLINK)
-            result |= A_BLINK;
-        else
-        {
-            if (atr & ATR_BOLD)
-                result |= A_BOLD;
-            if (atr & ATR_DIM)
-                result |= A_DIM;
-            if (atr & ATR_ULINE)
-                result |= A_UNDERLINE;
-        }
+    case ATR_BOLD:
+        return A_BOLD;
+    case ATR_DIM:
+        return A_DIM;
+    case ATR_ULINE:
+        return A_UNDERLINE;
+    case ATR_BLINK:
+        return A_BLINK;
+    case ATR_INVERSE:
+        return A_REVERSE;
     }
 
-    return result;
+    return A_NORMAL;
 }
 
 /* Turn on or off the specified color and / or attribute */

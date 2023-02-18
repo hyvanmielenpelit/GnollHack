@@ -70,6 +70,8 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
     int font_index;
     static BOOL once = FALSE;
 
+    attr = attr & ATR_ATTR_MASK;
+
     if (!once) {
         once = TRUE;
         atexit(font_table_cleanup);
