@@ -371,7 +371,7 @@ struct savefile_info {
 #define OBUFSZ (BUFSZ + PL_FSIZ + PL_PSIZ * 2 + PREFIXBUFSZ)  /* for object name buffers */
 #define UTF8BUFSZ (BUFSZ * 4)  /* for getlin buffers in UTF8 */
 #define UTF8QBUFSZ (QBUFSZ * 4)  /* for building question text in UTF8 */
-#define UTF8IBUFSZ (IBUFSZ * 4)  /* for getlin introline bufferst in UTF8 */
+#define UTF8IBUFSZ (IBUFSZ * 4)  /* for getlin introline buffers in UTF8 */
 
 /* plus longest prefix plus a few extra words */
 
