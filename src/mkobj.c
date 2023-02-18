@@ -2920,14 +2920,16 @@ struct obj *body;
                     break;
 
         }
-        else if (body->corpsenm == PM_PHOENIX && !body->norevive && revivals < 4) /* Can only revive up to 4 times */
+        else if (body->corpsenm == PM_PHOENIX && !body->norevive)
         {
             /*
-             * Phoenixes always revive on Elemental Planes, 50% chance in Gehennom;
-             * and on Primaterial Plane, they have 80% chance.  If they revive,
-             * they have a 1/33 chance per turn of reviving after 25 turns.  Always revive by 500.
+             * Phoenixes always revive on the Elemental Planes and the first time everywhere.
+             * On the second and subsequent times, they have 80% or lower chance in Gehennom and 
+             * and on Primaterial Plane 95% or lower chance. However, after 4 revivals they have just
+             * 50% chance of riving. If they do revive, they have a 1/33 chance per turn of 
+             * reviving after 25 turns. They always revive by 500.
              */
-            if (In_endgame(&u.uz) || !revivals ? TRUE : Inhell ? rn2(2) : rn2(5))
+            if (In_endgame(&u.uz) || !revivals ? TRUE : revivals >= 4 ? rn2(2) : Inhell ? rn2(5 - (revivals - 1)) : rn2(20 - (revivals - 1) * 5))
             {
                 action = REVIVE_MON;
                 for (when = 25L; when < 500L; when++)
