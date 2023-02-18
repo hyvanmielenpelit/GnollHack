@@ -289,6 +289,7 @@ extern NEARDATA const struct decoration_type_definition decoration_type_definiti
 struct decoration_lit_color_definition {
     schar color_unlit;
     schar color_lit;
+    schar color_woody;
 };
 
 extern NEARDATA const struct decoration_lit_color_definition decoration_lit_colors[CLR_MAX];
@@ -307,6 +308,8 @@ extern NEARDATA const struct decoration_lit_color_definition decoration_lit_colo
 #define DECORATION_TYPE_FLAGS_UNLIT_FILLED_COLOR            0x0400
 #define DECORATION_TYPE_FLAGS_LIT_COLOR                     0x0800
 #define DECORATION_TYPE_FLAGS_LIT_FILLED_COLOR              0x1000
+#define DECORATION_TYPE_FLAGS_WOODY_COLOR                   0x2000
+#define DECORATION_TYPE_FLAGS_WOODY_FILLED_COLOR            0x4000
 
 enum carpet_types {
     CARPET_NONE = 0,

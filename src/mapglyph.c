@@ -381,6 +381,8 @@ unsigned long *ospecial;
                             color = decoration_lit_colors[color].color_unlit;
                         else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIT_FILLED_COLOR) != 0)
                             color = decoration_lit_colors[color].color_lit;
+                        else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_WOODY_FILLED_COLOR) != 0)
+                            color = decoration_lit_colors[color].color_woody;
                         else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
                         {
                             if (levl[x][y].lamplit)
@@ -395,6 +397,8 @@ unsigned long *ospecial;
                             color = decoration_lit_colors[color].color_unlit;
                         else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIT_COLOR) != 0)
                             color = decoration_lit_colors[color].color_lit;
+                        else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_WOODY_COLOR) != 0)
+                            color = decoration_lit_colors[color].color_woody;
                         else if (decoration_type_definitions[levl[x][y].decoration_typ].color != NO_COLOR)
                             color = decoration_type_definitions[levl[x][y].decoration_typ].color;
                     }

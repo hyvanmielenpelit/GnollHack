@@ -26,10 +26,10 @@ static const int fieldorder3[] = { BL_2WEP, BL_SKILL,     BL_HUNGER,
 
 static const int fieldorder1_alt[] = { BL_TITLE, BL_STR, BL_DX,    BL_CO,    BL_IN,
                              BL_WI,    BL_CH, BL_ALIGN, BL_FLUSH };
-static const int fieldorder2_alt[] = { BL_MODE, BL_LEVELDESC, BL_HP,   BL_HPMAX,
+static const int fieldorder2_alt[] = { BL_LEVELDESC, BL_HP,   BL_HPMAX,
                              BL_ENE,       BL_ENEMAX,    BL_AC,  BL_MC_LVL, BL_MC_PCT,    BL_MOVE, BL_UWEP, BL_UWEP2,  BL_XP,
                              BL_EXP,       BL_HD,        BL_FLUSH };
-static const int fieldorder3_alt[] = { BL_GOLD, BL_SCORE, BL_TIME, BL_REALTIME,  BL_2WEP, BL_SKILL,     BL_HUNGER,
+static const int fieldorder3_alt[] = { BL_MODE, BL_GOLD, BL_TIME, BL_REALTIME,  BL_SCORE,  BL_2WEP, BL_SKILL,     BL_HUNGER,
                              BL_CAP,       BL_CONDITION, BL_FLUSH };
 
 static const int fieldorder4[] = { BL_PARTYSTATS, BL_FLUSH };

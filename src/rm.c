@@ -267,7 +267,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
         1, PAINTING,
         NO_COLOR, NO_COLOR,
         LOCATION_SOUNDSET_NONE,
-        DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_PAINTING_DESCR | DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET | DECORATION_TYPE_FLAGS_UNLIT_FILLED_COLOR
+        DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_PAINTING_DESCR | DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET | DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY | DECORATION_TYPE_FLAGS_WOODY_FILLED_COLOR
     },
 };
 
@@ -286,22 +286,22 @@ NEARDATA const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS
 };
 
 NEARDATA const struct decoration_lit_color_definition decoration_lit_colors[CLR_MAX] = {
-    { CLR_GRAY, CLR_WHITE },           /* CLR_BLACK */
-    { CLR_BLACK, CLR_ORANGE },         /* CLR_RED */
-    { CLR_BLACK, CLR_BRIGHT_GREEN },   /* CLR_GREEN */
-    { CLR_BLACK,  CLR_ORANGE },          /* CLR_BROWN */
-    { CLR_BLACK, CLR_BRIGHT_BLUE },    /* CLR_BLUE */
-    { CLR_BLACK, CLR_BRIGHT_MAGENTA },   /* CLR_MAGENTA */
-    { CLR_BLACK, CLR_BRIGHT_CYAN },     /* CLR_CYAN */
-    { CLR_BLACK, CLR_WHITE },          /* CLR_GRAY */
-    { NO_COLOR, NO_COLOR },            /* NO_COLOR */
-    { CLR_RED, CLR_WHITE },            /* CLR_ORANGE */
-    { CLR_GREEN, CLR_WHITE },          /* CLR_BRIGHT_GREEN */
-    { CLR_BROWN, CLR_WHITE },          /* CLR_YELLOW */
-    { CLR_BLUE, CLR_WHITE },           /* CLR_BRIGHT_BLUE */
-    { CLR_MAGENTA, CLR_WHITE },        /* CLR_BRIGHT_MAGENTA */
-    { CLR_CYAN, CLR_WHITE },           /* CLR_BRIGHT_CYAN */
-    { CLR_GRAY, CLR_YELLOW },          /* CLR_WHITE */
+    { CLR_GRAY, CLR_WHITE, CLR_BROWN },           /* CLR_BLACK */
+    { CLR_BLACK, CLR_ORANGE, CLR_BROWN },         /* CLR_RED */
+    { CLR_BLACK, CLR_BRIGHT_GREEN, CLR_BROWN },   /* CLR_GREEN */
+    { CLR_BLACK,  CLR_ORANGE, CLR_RED },          /* CLR_BROWN */
+    { CLR_BLACK, CLR_BRIGHT_BLUE, CLR_BROWN },    /* CLR_BLUE */
+    { CLR_BLACK, CLR_BRIGHT_MAGENTA, CLR_BROWN },   /* CLR_MAGENTA */
+    { CLR_BLACK, CLR_BRIGHT_CYAN, CLR_BROWN },     /* CLR_CYAN */
+    { CLR_BLACK, CLR_WHITE, CLR_BROWN },          /* CLR_GRAY */
+    { NO_COLOR, NO_COLOR, NO_COLOR },            /* NO_COLOR */
+    { CLR_RED, CLR_WHITE, CLR_BROWN },            /* CLR_ORANGE */
+    { CLR_GREEN, CLR_WHITE, CLR_BROWN },          /* CLR_BRIGHT_GREEN */
+    { CLR_BROWN, CLR_WHITE, CLR_BROWN },          /* CLR_YELLOW */
+    { CLR_BLUE, CLR_WHITE, CLR_BROWN },           /* CLR_BRIGHT_BLUE */
+    { CLR_MAGENTA, CLR_WHITE, CLR_BROWN },        /* CLR_BRIGHT_MAGENTA */
+    { CLR_CYAN, CLR_WHITE, CLR_BROWN },           /* CLR_BRIGHT_CYAN */
+    { CLR_GRAY, CLR_YELLOW, CLR_BROWN },          /* CLR_WHITE */
 };
 
 /* force linkage */
