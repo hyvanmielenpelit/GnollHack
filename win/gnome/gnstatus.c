@@ -675,17 +675,11 @@ ghack_status_window_update_stats()
         gtk_label_set(GTK_LABEL(timeLabel), buf);
     } else
         gtk_label_set(GTK_LABEL(timeLabel), "");
-#ifdef SCORE_ON_BOTL
     if (flags.showscore) {
         sprintf(buf, "Score:%ld", botl_score());
         gtk_label_set(GTK_LABEL(scoreLabel), buf);
     } else
         gtk_label_set(GTK_LABEL(scoreLabel), "");
-#else
-    {
-        gtk_label_set(GTK_LABEL(scoreLabel), "");
-    }
-#endif
 
     /* See if their alignment has changed */
     if (lastAlignment != u.ualign.type) {

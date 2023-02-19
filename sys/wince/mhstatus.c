@@ -224,10 +224,8 @@ FormatStatusString(char *text, int format)
             (u.ualign.type == A_CHAOTIC)
                 ? "  Chaotic"
                 : (u.ualign.type == A_NEUTRAL) ? "  Neutral" : "  Lawful");
-#ifdef SCORE_ON_BOTL
     if (flags.showscore)
         Sprintf(nb = eos(nb), " S:%ld", botl_score());
-#endif
     if (format == NHSTAT_LINES_4 || format == NHSTAT_LINES_2)
         strcat(text, "\r\n");
 

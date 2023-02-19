@@ -1179,8 +1179,6 @@ long new_value;
         /* special case: score can be enabled & disabled */
         else if (attr_rec == &shown_stats[F_SCORE]) {
             static boolean flagscore = TRUE;
-#ifdef SCORE_ON_BOTL
-
             if (flags.showscore && !flagscore) {
                 set_name(attr_rec->w, shown_stats[F_SCORE].name);
                 force_update = TRUE;
@@ -1192,14 +1190,6 @@ long new_value;
             }
             if (!flagscore)
                 return;
-#else
-            if (flagscore) {
-                set_name(attr_rec->w, "");
-                set_value(attr_rec->w, "");
-                flagscore = FALSE;
-            }
-            return;
-#endif
         }
 
         /* special case: when polymorphed, show "HD", disable exp */
@@ -1423,11 +1413,7 @@ int i;
             val = flags.time ? (long) moves : 0L;
             break;
         case F_SCORE:
-#ifdef SCORE_ON_BOTL
             val = flags.showscore ? botl_score() : 0L;
-#else
-            val = 0L;
-#endif
             break;
         default: {
             /*

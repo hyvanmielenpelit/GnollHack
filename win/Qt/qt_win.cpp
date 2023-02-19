@@ -2599,11 +2599,9 @@ void NetHackQtStatusWindow::updateStats()
 
     if (::flags.time) time.setLabel("Time:",(long)moves);
     else time.setLabel("");
-#ifdef SCORE_ON_BOTL
     if (::flags.showscore) {
 	score.setLabel("Score:",(long)botl_score());
     } else
-#endif
     {
 	score.setLabel("");
     }
