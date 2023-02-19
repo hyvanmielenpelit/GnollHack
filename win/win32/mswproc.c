@@ -3364,7 +3364,7 @@ mswin_statuslines_init(void)
         if (line_field_order == NULL)
             break;
 
-        for (int i = 0; line_field_order[i] != BL_FLUSH; i++)
+        for (int i = 0; i < MAX_STATUS_LINE_ITEMS && line_field_order[i] != BL_FLUSH; i++)
         {
             int field_index = line_field_order[i];
             nhassert(field_index <= SIZE(_status_fields));

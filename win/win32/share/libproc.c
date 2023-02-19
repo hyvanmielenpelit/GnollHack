@@ -1067,7 +1067,7 @@ void lib_status_flush(void)
     for (j = 0; fieldorder[j] != NULL && j < iflags.wc2_statuslines; j++)
     {
         curs(WIN_STATUS, 1, j);
-        for (i = 0; (idx = fieldorder[j][i]) != BL_FLUSH; i++)
+        for (i = 0; i < MAX_STATUS_LINE_ITEMS && (idx = fieldorder[j][i]) != BL_FLUSH; i++)
             print_status_field(idx, i == 0);
     }
 
