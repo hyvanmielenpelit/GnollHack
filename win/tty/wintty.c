@@ -4112,9 +4112,8 @@ tty_status_init(reassessment)
 int reassessment;
 {
 #ifdef STATUS_HILITES
-    int i, num_rows;
+    int i;
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines >= MAX_STATUS_LINES) ? MAX_STATUS_LINES : iflags.wc2_statuslines;
     fieldorder = iflags.wc2_statuslines < 3 ? fieldorders_2statuslines : flags.fullstatuslineorder ? fieldorders_alt : fieldorders;
 
     if (!reassessment)
