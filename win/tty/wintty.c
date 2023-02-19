@@ -4074,162 +4074,7 @@ static const char *encvals[3][6] = {
     { "", "Burden",   "Stress",   "Strain",   "Overtax",   "Overload"   },
     { "", "Brd",      "Strs",     "Strn",     "Ovtx",      "Ovld"       }
 };
-#define blPAD BL_FLUSH
-#define MAX_PER_ROW 23
-
-#define STATUS_LINE_ROW_1 { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_FLUSH, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
-#define STATUS_LINE_ROW_2 { BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC,  BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD,  BL_TIME, BL_REALTIME, BL_SCORE, BL_FLUSH, blPAD, blPAD, blPAD, blPAD }
-#define STATUS_LINE_ROW_3 { BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
-#define ALT_LINE_ROW_1 { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_ALIGN, BL_FLUSH, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
-#define ALT_LINE_ROW_2 { BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD }
-#define ALT_LINE_ROW_3 { BL_MODE, BL_GOLD, BL_TIME, BL_REALTIME, BL_SCORE, BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
-#define STATUS_LINE_ROW_4 { BL_PARTYSTATS, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
-#define STATUS_LINE_ROW_5 { BL_PARTYSTATS2, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
-#define STATUS_LINE_ROW_6 { BL_PARTYSTATS3, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
-#define STATUS_LINE_ROW_7 { BL_PARTYSTATS4, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
-#define STATUS_LINE_ROW_8 { BL_PARTYSTATS5, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
-#define EMPTY_STATUS_LINE { BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
-
-
-/* 2 or 3 status lines */
-static const enum statusfields
-    twolineorder[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD,  //BL_ALIGN,
-      BL_FLUSH, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
-    { BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, 
-      BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_2WEP, BL_SKILL, BL_HUNGER,
-      BL_CAP, BL_CONDITION, BL_FLUSH },
-    /* third row of array isn't used for twolineorder */
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE
-},
-    /* Align moved from 1 to 2, Leveldesc+Time+Condition moved from 2 to 3 */
-    threelineorder[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    STATUS_LINE_ROW_1,
-    STATUS_LINE_ROW_2,
-    STATUS_LINE_ROW_3,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE
-},
-fourlineorder[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    STATUS_LINE_ROW_1,
-    STATUS_LINE_ROW_2,
-    STATUS_LINE_ROW_3,
-    STATUS_LINE_ROW_4,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE
-},
-fivelineorder[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    STATUS_LINE_ROW_1,
-    STATUS_LINE_ROW_2,
-    STATUS_LINE_ROW_3,
-    STATUS_LINE_ROW_4,
-    STATUS_LINE_ROW_5,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE
-},
-sixlineorder[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    STATUS_LINE_ROW_1,
-    STATUS_LINE_ROW_2,
-    STATUS_LINE_ROW_3,
-    STATUS_LINE_ROW_4,
-    STATUS_LINE_ROW_5,
-    STATUS_LINE_ROW_6,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE
-},
-sevenlineorder[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    STATUS_LINE_ROW_1,
-    STATUS_LINE_ROW_2,
-    STATUS_LINE_ROW_3,
-    STATUS_LINE_ROW_4,
-    STATUS_LINE_ROW_5,
-    STATUS_LINE_ROW_6,
-    STATUS_LINE_ROW_7,
-    EMPTY_STATUS_LINE
-},
-eightlineorder[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    STATUS_LINE_ROW_1,
-    STATUS_LINE_ROW_2,
-    STATUS_LINE_ROW_3,
-    STATUS_LINE_ROW_4,
-    STATUS_LINE_ROW_5,
-    STATUS_LINE_ROW_6,
-    STATUS_LINE_ROW_7,
-    STATUS_LINE_ROW_8
-
-},
-threelineorder_alt[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    ALT_LINE_ROW_1,
-    ALT_LINE_ROW_2,
-    ALT_LINE_ROW_3,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE
-    },
-fourlineorder_alt[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    ALT_LINE_ROW_1,
-    ALT_LINE_ROW_2,
-    ALT_LINE_ROW_3,
-    STATUS_LINE_ROW_4,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE
-    },
-fivelineorder_alt[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    ALT_LINE_ROW_1,
-    ALT_LINE_ROW_2,
-    ALT_LINE_ROW_3,
-    STATUS_LINE_ROW_4,
-    STATUS_LINE_ROW_5,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE
-    },
-sixlineorder_alt[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    ALT_LINE_ROW_1,
-    ALT_LINE_ROW_2,
-    ALT_LINE_ROW_3,
-    STATUS_LINE_ROW_4,
-    STATUS_LINE_ROW_5,
-    STATUS_LINE_ROW_6,
-    EMPTY_STATUS_LINE,
-    EMPTY_STATUS_LINE
-    },
-sevenlineorder_alt[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    ALT_LINE_ROW_1,
-    ALT_LINE_ROW_2,
-    ALT_LINE_ROW_3,
-    STATUS_LINE_ROW_4,
-    STATUS_LINE_ROW_5,
-    STATUS_LINE_ROW_6,
-    STATUS_LINE_ROW_7,
-    EMPTY_STATUS_LINE
-    },
-eightlineorder_alt[MAX_STATUS_LINES][MAX_PER_ROW] = {
-    ALT_LINE_ROW_1,
-    ALT_LINE_ROW_2,
-    ALT_LINE_ROW_3,
-    STATUS_LINE_ROW_4,
-    STATUS_LINE_ROW_5,
-    STATUS_LINE_ROW_6,
-    STATUS_LINE_ROW_7,
-    STATUS_LINE_ROW_8,
-    };
-static const enum statusfields (*fieldorder)[MAX_PER_ROW];
+static const enum statusfields** fieldorder;
 
 static int finalx[MAX_STATUS_LINES][2];    /* [rows][NOW or BEFORE] */
 static boolean windowdata_init = FALSE;
@@ -4270,12 +4115,7 @@ int reassessment;
     int i, num_rows;
 
     num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines >= MAX_STATUS_LINES) ? MAX_STATUS_LINES : iflags.wc2_statuslines;
-    fieldorder = flags.fullstatuslineorder ? ((num_rows >= MAX_STATUS_LINES) ? eightlineorder_alt : (num_rows == 7) ? sevenlineorder_alt :
-        (num_rows == 6) ? sixlineorder_alt : (num_rows == 5) ? fivelineorder_alt : (num_rows == 4) ? fourlineorder_alt :
-        (num_rows != 3) ? twolineorder : threelineorder_alt) :
-        ((num_rows >= MAX_STATUS_LINES) ? eightlineorder : (num_rows == 7) ? sevenlineorder :
-        (num_rows == 6 ) ? sixlineorder : (num_rows == 5) ? fivelineorder : (num_rows == 4) ? fourlineorder :
-        (num_rows != 3) ? twolineorder : threelineorder);
+    fieldorder = iflags.wc2_statuslines < 3 ? fieldorders_2statuslines : flags.fullstatuslineorder ? fieldorders_alt : fieldorders;
 
     if (!reassessment)
     {
@@ -4582,7 +4422,7 @@ int sz[MAX_STATUS_LINES];
         sz[row] = 0;
         col = 1;
         update_right = FALSE;
-        for (i = 0; (idx = fieldorder[row][i]) != BL_FLUSH; ++i) {
+        for (i = 0; i < MAX_STATUS_LINE_ITEMS && (idx = fieldorder[row][i]) != BL_FLUSH; ++i) {
             if (!status_activefields[idx])
                 continue;
             if (!tty_status[NOW][idx].valid)
@@ -4895,7 +4735,7 @@ render_status(VOID_ARGS)
         tty_curs(WIN_STATUS, 1, y);
         int removedspaces = 0;
         int x_start;
-        for (i = 0; (idx = fieldorder[row][i]) != BL_FLUSH; ++i) {
+        for (i = 0; i < MAX_STATUS_LINE_ITEMS && (idx = fieldorder[row][i]) != BL_FLUSH; ++i) {
             if (!status_activefields[idx])
                 continue;
             x = x_start = tty_status[NOW][idx].x - removedspaces;

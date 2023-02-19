@@ -1062,7 +1062,7 @@ void lib_status_flush(void)
     enum statusfields idx;
     register int i, j;
 
-    const enum statusfields** fieldorder = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines : flags.fullstatuslineorder ? fieldorders_alt : fieldorders;
+    const enum statusfields** fieldorder = iflags.wc2_statuslines < 3 ? fieldorders_2statuslines : flags.fullstatuslineorder ? fieldorders_alt : fieldorders;
 
     for (j = 0; fieldorder[j] != NULL && j < iflags.wc2_statuslines; j++)
     {

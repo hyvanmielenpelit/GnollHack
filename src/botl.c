@@ -239,7 +239,7 @@ do_statusline2()
      /* game mode */
     Strcpy(gmode, "");
     gln = 0;
-    if (iflags.wc2_statuslines == 2 || !flags.fullstatuslineorder)
+    if (iflags.wc2_statuslines < 3 || !flags.fullstatuslineorder)
     {
         (void)describe_mode(gmode); /* includes at least one trailing space */
         (void)trimspaces(gmode);
@@ -309,7 +309,7 @@ do_statusline2()
     skll[0] = '\0';
     sln = 0;
 
-    if (iflags.wc2_statuslines == 2)
+    if (iflags.wc2_statuslines < 3)
     {
         /* can advance skills */
         Sprintf(skll, "%s", u.canadvanceskill ? "Skill" : ""); // can_advance_any_skill()
