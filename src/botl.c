@@ -237,9 +237,14 @@ do_statusline2()
      */
 
      /* game mode */
-    (void)describe_mode(gmode); /* includes at least one trailing space */
-    (void)trimspaces(gmode);
-    gln = strlen(gmode);
+    Strcpy(gmode, "");
+    gln = 0;
+    if (iflags.wc2_statuslines == 2 || !flags.fullstatuslineorder)
+    {
+        (void)describe_mode(gmode); /* includes at least one trailing space */
+        (void)trimspaces(gmode);
+        gln = strlen(gmode);
+    }
 
     /* dungeon location */
     (void)describe_level(dloc); /* includes at least one trailing space */
@@ -494,14 +499,15 @@ do_statusline3()
     Strcpy(newbot3, "");
     if (flags.fullstatuslineorder)
     {
-        Strcpy(newbot3, moneybuf);
-        if (flags.showscore)
-        {
-            if (*newbot3)
-                Strcat(newbot3, " ");
-            
-            Sprintf(eos(newbot3), "S:%ld", botl_score());
-        }
+        char gmode[QBUFSZ];
+        (void)describe_mode(gmode); /* includes at least one trailing space */
+        (void)trimspaces(gmode);
+        Strcat(newbot3, gmode);
+
+        if (*newbot3)
+            Strcat(newbot3, " ");
+        Strcat(newbot3, moneybuf);
+
         if (flags.time)
         {
             if (*newbot3)
@@ -515,6 +521,13 @@ do_statusline3()
                 Strcat(newbot3, " ");
 
             Sprintf(eos(newbot3), "%s", botl_realtime());
+        }
+        if (flags.showscore)
+        {
+            if (*newbot3)
+                Strcat(newbot3, " ");
+
+            Sprintf(eos(newbot3), "S:%ld", botl_score());
         }
 
         Sprintf(eos(newbot3), "%s%s", *newbot3 && u.canadvanceskill ? " " : "", u.canadvanceskill ? "Skill" : "");

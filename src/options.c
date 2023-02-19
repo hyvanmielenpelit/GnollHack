@@ -7004,7 +7004,8 @@ char *buf;
     {
         if (wc2_supported(optname))
         { 
-            Sprintf(buf, "%d", (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines);
+            boolean auto_on = wc2_supported("autostatuslines") && iflags.wc2_autostatuslines;
+            Sprintf(buf, "%d%s", (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines, auto_on ? ", auto" : "");
         }
         /* else default to "unknown" */
     } 
