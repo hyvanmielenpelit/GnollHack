@@ -662,7 +662,7 @@ boolean border;
      */
 
     number_of_lines = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines;
-    fieldorder = number_of_lines < 3 ? twolineorder : flags.fullstatuslineorder ? fieldorders_alt : fieldorders;
+    fieldorder = number_of_lines < 3 ? fieldorders_2statuslines : flags.fullstatuslineorder ? fieldorders_alt : fieldorders;
 
     //fieldorder = flags.fullstatuslineorder ? ((number_of_lines >= 8) ? eightlineorder_alt : (number_of_lines == 7) ? sevenlineorder_alt : (number_of_lines == 6) ? sixlineorder_alt :
     //    (number_of_lines == 5) ? fivelineorder_alt : (number_of_lines == 4) ? fourlineorder_alt :
