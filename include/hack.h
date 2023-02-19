@@ -705,9 +705,6 @@ static const char empty_string[] = "";
 #define BLESSED_ROTTING_THRESHOLD 80L       /* Turns before can rot */
 
 
-/* Maximum number of status lines */
-#define MAX_STATUS_LINES 8
-
 /* Some tile display properties */
 #define MIN_SCREEN_SCALE_ADJUSTMENT -0.90
 #define MAX_SCREEN_SCALE_ADJUSTMENT 3.0

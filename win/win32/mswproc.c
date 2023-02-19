@@ -3360,10 +3360,13 @@ mswin_statuslines_init(void)
         mswin_status_strings* status_strings = &line->status_strings;
         status_strings->count = 0;
 
-        int fc = iflags.wc2_statuslines == 2 ? fieldcounts_2statuslines[lineIndex] : flags.fullstatuslineorder ? fieldcounts_alt[lineIndex] : fieldcounts[lineIndex];
-        for (int i = 0; i < fc; i++) 
+        const enum statusfields* line_field_order = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines[lineIndex] : flags.fullstatuslineorder ? fieldorders_alt[lineIndex] : fieldorders[lineIndex];
+        if (line_field_order == NULL)
+            break;
+
+        for (int i = 0; line_field_order[i] != BL_FLUSH; i++)
         {
-            int field_index = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines[lineIndex][i] : flags.fullstatuslineorder ? fieldorders_alt[lineIndex][i] : fieldorders[lineIndex][i];
+            int field_index = line_field_order[i];
             nhassert(field_index <= SIZE(_status_fields));
 
             nhassert(status_fields->count <= SIZE(status_fields->status_fields));

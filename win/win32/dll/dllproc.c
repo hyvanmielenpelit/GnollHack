@@ -2425,68 +2425,6 @@ dll_status_init(int reassessment)
     dll_logDebug("dll_status_init()\n");
     dll_callbacks.callback_status_init(reassessment);
 
-#if 0
-    for (int i = 0; i < SIZE(_status_fields); i++) {
-        dll_status_field * status_field = &_status_fields[i];
-        status_field->field_index = i;
-        status_field->enabled = FALSE;
-    }
-
-    for (int i = 0; i < SIZE(_condition_fields); i++) {
-        dll_condition_field * condition_field = &_condition_fields[i];
-        nhassert(condition_field->mask == (1 << i));
-        condition_field->bit_position = i;
-    }
-
-    for (int i = 0; i < SIZE(_status_strings); i++) {
-        dll_status_string * status_string = &_status_strings[i];
-        status_string->str = NULL;
-    }
-
-    for (int i = 0; i < SIZE(_condition_strings); i++) {
-        dll_status_string * status_string = &_condition_strings[i];
-        status_string->str = NULL;
-    }
-
-    for (int lineIndex = 0; lineIndex < SIZE(_status_lines.lines); lineIndex++) {
-        dll_status_line * line = &_status_lines.lines[lineIndex];
-
-        dll_status_fields * status_fields = &line->status_fields;
-        status_fields->count = 0;
-
-        dll_status_strings * status_strings = &line->status_strings;
-        status_strings->count = 0;
-
-        for (int i = 0; i < iflags.wc2_statuslines == 2 ? fieldcounts_2statuslines[lineIndex] : fieldcounts[lineIndex]; i++) {
-            int field_index = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines[lineIndex][i] : fieldorders[lineIndex][i];
-            nhassert(field_index <= SIZE(_status_fields));
-
-            nhassert(status_fields->count <= SIZE(status_fields->status_fields));
-            status_fields->status_fields[status_fields->count++] = &_status_fields[field_index];
-
-            nhassert(status_strings->count <= SIZE(status_strings->status_strings));
-            status_strings->status_strings[status_strings->count++] =
-                &_status_strings[field_index];
-
-            if (field_index == BL_CONDITION) {
-                for (int j = 0; j < BL_MASK_BITS; j++) {
-                    nhassert(status_strings->count <= SIZE(status_strings->status_strings));
-                    status_strings->status_strings[status_strings->count++] =
-                        &_condition_strings[j];
-                }
-            }
-        }
-    }
-
-    for (int i = 0; i < MAXBLSTATS; ++i) {
-#ifdef STATUS_HILITES
-        _status_hilites[i].thresholdtype = 0;
-        _status_hilites[i].behavior = BL_TH_NONE;
-        _status_hilites[i].under = BL_HILITE_NONE;
-        _status_hilites[i].over = BL_HILITE_NONE;
-#endif /* STATUS_HILITES */
-    }
-#endif
     /* Use a window for the genl version; backward port compatibility */
     WIN_STATUS = create_nhwindow(NHW_STATUS);
     display_nhwindow(WIN_STATUS, FALSE);

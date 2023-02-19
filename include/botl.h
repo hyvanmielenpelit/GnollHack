@@ -146,6 +146,29 @@ enum hlattribs { HL_UNDEF   = 0x00,
                  HL_DIM     = 0x20 };
 /* #endif STATUS_HILITES */
 
-extern const char *status_fieldnames[]; /* in botl.c */
+/* Maximum number of status lines */
+#define MAX_STATUS_LINES 8
+#define MAX_STATUS_LINE_ITEMS 24
+
+/* in botl.c */
+extern const char *status_fieldnames[MAX_STATUS_LINE_ITEMS];
+extern const enum statusfields fieldorder1[MAX_STATUS_LINE_ITEMS];
+extern const enum statusfields fieldorder2[MAX_STATUS_LINE_ITEMS];
+extern const enum statusfields fieldorder2_2statuslines[MAX_STATUS_LINE_ITEMS];
+extern const enum statusfields fieldorder3[MAX_STATUS_LINE_ITEMS];
+
+extern const enum statusfields fieldorder1_alt[MAX_STATUS_LINE_ITEMS];
+extern const enum statusfields fieldorder2_alt[MAX_STATUS_LINE_ITEMS];
+extern const enum statusfields fieldorder3_alt[MAX_STATUS_LINE_ITEMS];
+
+extern const enum statusfields fieldorder4[MAX_STATUS_LINE_ITEMS];
+extern const enum statusfields fieldorder5[MAX_STATUS_LINE_ITEMS];
+extern const enum statusfields fieldorder6[MAX_STATUS_LINE_ITEMS];
+extern const enum statusfields fieldorder7[MAX_STATUS_LINE_ITEMS];
+extern const enum statusfields fieldorder8[MAX_STATUS_LINE_ITEMS];
+
+extern const enum statusfields* fieldorders_2statuslines[MAX_STATUS_LINES + 1];
+extern const enum statusfields* fieldorders[MAX_STATUS_LINES + 1];
+extern const enum statusfields* fieldorders_alt[MAX_STATUS_LINES + 1];
 
 #endif /* BOTL_H */
