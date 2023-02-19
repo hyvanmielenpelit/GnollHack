@@ -4256,14 +4256,14 @@ unsigned long *colormasks;
         /* should be checking for first enabled field here rather than
            just first field, but 'fieldorder' doesn't start any rows
            with fields which can be disabled so [any_row][0] suffices */
-        if (*fmt == ' ' && (fldidx == fieldorder[0][0]
-                            || fldidx == fieldorder[1][0]
-                            || fldidx == fieldorder[2][0]
-                            || fldidx == fieldorder[3][0]
-                            || fldidx == fieldorder[4][0]
-                            || fldidx == fieldorder[5][0]
-                            || fldidx == fieldorder[6][0]
-                            || fldidx == fieldorder[7][0]
+        if (*fmt == ' ' && ((fieldorder[0] != NULL && fldidx == fieldorder[0][0])
+                            || (fieldorder[1] != NULL && fldidx == fieldorder[1][0])
+                            || (fieldorder[2] != NULL && fldidx == fieldorder[2][0])
+                            || (fieldorder[3] != NULL && fldidx == fieldorder[3][0])
+                            || (fieldorder[4] != NULL && fldidx == fieldorder[4][0])
+                            || (fieldorder[5] != NULL && fldidx == fieldorder[5][0])
+                            || (fieldorder[6] != NULL && fldidx == fieldorder[6][0])
+                            || (fieldorder[7] != NULL && fldidx == fieldorder[7][0])
             ))
             ++fmt; /* skip leading space for first field on line */
         Sprintf(status_vals[fldidx], fmt, text);
@@ -4417,7 +4417,7 @@ int sz[MAX_STATUS_LINES];
 
     num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines >= MAX_STATUS_LINES) ? MAX_STATUS_LINES : iflags.wc2_statuslines;
 
-    for (row = 0; row < num_rows; ++row) {
+    for (row = 0; row < num_rows && fieldorder[row] != NULL; ++row) {
         sz[row] = 0;
         col = 1;
         update_right = FALSE;
@@ -4728,7 +4728,7 @@ render_status(VOID_ARGS)
 
     num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines >= MAX_STATUS_LINES) ? MAX_STATUS_LINES : iflags.wc2_statuslines;
 
-    for (row = 0; row < num_rows; ++row) {
+    for (row = 0; row < num_rows && fieldorder[row] != NULL; ++row) {
         HUPSKIP();
         y = row;
         tty_curs(WIN_STATUS, 1, y);
