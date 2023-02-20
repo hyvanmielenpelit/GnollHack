@@ -4908,8 +4908,6 @@ retry:
             return (struct obj*)&zeroobj;
         }
 
-
-
         if (!BSTRCMPI(bp, p - 4, "bars")) {
             create_simple_location(x, y, IRONBARS, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].vartyp : levl[x][y].floorvartyp, FALSE);
             pline("Iron bars.");
