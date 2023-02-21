@@ -2409,7 +2409,7 @@ NEARDATA struct permonst mons[] = {
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 500, MS_ROAR, MZ_HUGE, 1, 0, MAT_FLESH), STATS(18, 14, 18, 14, 14, 9), 
         MR_REFLECTING, 
-        MR2_NONE, MC_NONE,
+        MR2_COLD_RESISTANCE, MC_NONE,
         M1_FLY | M1_THICK_HIDE | M1_CARNIVORE | M1_STEED,
         M2_HOSTILE | M2_GREEDY | M2_JEWELS,
         M3_SPEAKING,
