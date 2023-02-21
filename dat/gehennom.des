@@ -1350,6 +1350,34 @@ TILESET: gehennom_cavernous_tileset
 INIT_MAP: mines, ':' , ' ' , true , true , random , true
 NOMAP
 #
+IF [66%] {
+  TERRAIN: (19,00), ' '
+  TERRAIN: (39,00), ' '
+  TERRAIN: (59,00), ' '
+  TERRAIN: (19,20), ' '
+  TERRAIN: (39,20), ' '
+  TERRAIN: (59,20), ' '
+
+  TERRAIN: floodfill (00,00), 'L'
+  TERRAIN: floodfill (19,00), 'L'
+  TERRAIN: floodfill (39,00), 'L'
+  TERRAIN: floodfill (59,00), 'L'
+  TERRAIN: floodfill (78,00), 'L'
+  TERRAIN: floodfill (00,20), 'L'
+  TERRAIN: floodfill (19,20), 'L'
+  TERRAIN: floodfill (39,20), 'L'
+  TERRAIN: floodfill (59,20), 'L'
+  TERRAIN: floodfill (78,20), 'L'
+
+  # the lava river
+  IF [50%] {
+    TERRAIN: grow(north | west, randline (30,00),(50,20), 10), 'L'
+  } ELSE {
+    TERRAIN: grow(north | west, randline (50,00),(30,20), 10), 'L'
+  }
+}
+
+#
 STAIR: random, up
 STAIR: random, down
 #
