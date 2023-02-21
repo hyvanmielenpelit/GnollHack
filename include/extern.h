@@ -3750,6 +3750,8 @@ E void FDECL(paygd, (BOOLEAN_P));
 E long NDECL(hidden_gold);
 E boolean NDECL(gd_sound);
 E void FDECL(vault_gd_watching, (unsigned int));
+E long NDECL(carried_gem_value);
+E long FDECL(contained_gem_value, (struct obj*));
 
 /* ### version.c ### */
 

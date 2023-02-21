@@ -5540,7 +5540,15 @@ int final;
                     " for any artifacts", "");
     }
 
-    if (Role_if(PM_TOURIST))
+    if (Role_if(PM_ROGUE))
+    {
+        char mbuf[BUFSZ];
+        long valuableworth = money_cnt(invent) + hidden_gold() + carried_gem_value();
+        putstr(en_win, ATR_NONE, " ");
+        Sprintf(mbuf, "You have %ld %s worth of %svaluables with you.", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        putstr(en_win, ATR_TITLE, mbuf);
+    }
+    else if (Role_if(PM_TOURIST))
     {
         putstr(en_win, ATR_NONE, " ");
         putstr(en_win, ATR_TITLE, "Selfies taken with:");
