@@ -3659,8 +3659,8 @@ boolean ispoly;
             return FALSE;
         if (In_endgame(&u.uz) && !Is_astralevel(&u.uz) && wrong_elem_type(ptr))
             return FALSE;
-        if (Inhell && (ptr->maligntyp <= A_NEUTRAL))
-            return FALSE;
+        //if (Inhell && (ptr->maligntyp <= A_NEUTRAL))
+        //    return FALSE;
     }
 
     /* Note that G_MODRON and G_YACC override G_NOGEN */

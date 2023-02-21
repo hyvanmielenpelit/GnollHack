@@ -174,6 +174,7 @@ int mndx;
         break;
     case PM_VAMPIRE:
     case PM_VAMPIRE_LORD:
+    case PM_VAMPIRE_KING:
     case PM_VAMPIRE_MAGE:
     case PM_HUMAN_ZOMBIE:
     case PM_HUMAN_MUMMY:
@@ -576,6 +577,7 @@ boolean createcorpse;
     case PM_VAMPIRE:
     case PM_VAMPIRE_MAGE:
     case PM_VAMPIRE_LORD:
+    case PM_VAMPIRE_KING:
         /* include mtmp in the mkcorpstat() call */
         num = undead_to_corpse(mndx);
         corpstatflags |= CORPSTAT_INIT;
@@ -3397,9 +3399,10 @@ unsigned long mdiedflags;
     }
 
     if (!u.uachieve.role_achievement &&
-        (      (Role_if(PM_ARCHAEOLOGIST) && mtmp->mnum == PM_GREATER_MUMMY_PHARAOH && mvitals[mtmp->mnum].died >= 2)
+        (      (Role_if(PM_ARCHAEOLOGIST) && mtmp->mnum == PM_AMONKET)
             || (Role_if(PM_ROGUE) && mtmp->mnum == PM_CROESUS)
-        )
+            || (Role_if(PM_KNIGHT) && mtmp->mnum == PM_ASMODEUS)
+            )
        )
     {
         u.uachieve.role_achievement = 1;
@@ -4882,6 +4885,7 @@ struct monst *mon;
     /*FALLTHRU*/
     case PM_VAMPIRE_MAGE: /* vampire mage or Vlad can become wolf */
     case PM_VAMPIRE_LORD: /* vampire lord or Vlad can become wolf */
+    case PM_VAMPIRE_KING:
         if (!rn2(wolfchance) && !uppercase_only) {
             mndx = PM_WOLF;
             break;
@@ -4939,7 +4943,7 @@ int *mndx_p, monclass;
     if (!is_vampshifter(mon))
         return validspecmon(mon, *mndx_p);
 
-    if (*mndx_p == PM_VAMPIRE || *mndx_p == PM_VAMPIRE_LORD || *mndx_p == PM_VAMPIRE_MAGE
+    if (*mndx_p == PM_VAMPIRE || *mndx_p == PM_VAMPIRE_LORD || *mndx_p == PM_VAMPIRE_KING || *mndx_p == PM_VAMPIRE_MAGE
         || *mndx_p == PM_VLAD_THE_IMPALER) {
         /* player picked some type of vampire; use mon's self */
         *mndx_p = mon->cham;
@@ -5067,6 +5071,7 @@ struct monst *mon;
     case PM_VLAD_THE_IMPALER:
     case PM_VAMPIRE_LORD:
     case PM_VAMPIRE_MAGE:
+    case PM_VAMPIRE_KING:
     case PM_VAMPIRE:
         mndx = pickvampshape(mon);
         break;

@@ -936,22 +936,6 @@ struct obj *obj;
                     u.uevent.role_achievement_2 = 1;
             }
         }
-        else if (Role_if(PM_KNIGHT))
-        {
-            check_achievement = TRUE;
-            if (obj->oartifact == ART_EXCALIBUR)
-                u.uevent.role_achievement_1 = 1;
-            if (obj->oartifact == ART_HOLY_GRAIL)
-                u.uevent.role_achievement_2 = 1;
-        }
-        else if (Role_if(PM_PRIEST))
-        {
-            check_achievement = TRUE;
-            if (obj->oartifact == ART_MACE_OF_SAINT_CUTHBERT)
-                u.uevent.role_achievement_1 = 1;
-            if (obj->oartifact == ART_MACE_OF_SAINT_CUTHBERT)
-                u.uevent.role_achievement_2 = 1;
-        }
         else if (Role_if(PM_SAMURAI))
         {
             check_achievement = TRUE;

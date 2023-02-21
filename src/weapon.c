@@ -1973,7 +1973,6 @@ int skill;
     if (!u.uachieve.role_achievement &&
         (
             (Role_if(PM_CAVEMAN) && skill == P_BLUDGEONING_WEAPON && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
-            || (Role_if(PM_HEALER) && skill == P_HEALING_SPELL && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
             || (Role_if(PM_MONK) && skill == P_MARTIAL_ARTS && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
             || (Role_if(PM_RANGER) && (skill == P_BOW || skill == P_CROSSBOW) && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
             || (Role_if(PM_VALKYRIE) && skill == P_DUAL_WEAPON_COMBAT && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)

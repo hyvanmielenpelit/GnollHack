@@ -2403,7 +2403,10 @@ struct monst* targetmonst;
     skill = spell_skilltype(otyp);
     role_skill = P_SKILL_LEVEL(skill);
 
-    if (!u.uachieve.role_achievement && Role_if(PM_WIZARD) && spellev(spell) >= 11)
+    if (!u.uachieve.role_achievement && (
+        (Role_if(PM_WIZARD) && spellev(spell) >= 10)
+        || (Role_if(PM_PRIEST) && spellev(spell) >= 10)
+        || (Role_if(PM_HEALER) && (skill == P_HEALING_SPELL || skill == P_ABJURATION_SPELL) && spellev(spell) >= 9)))
     {
         u.uachieve.role_achievement = 1;
         char abuf[BUFSZ];

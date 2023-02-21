@@ -2626,6 +2626,7 @@ polysense()
     case PM_VAMPIRE:
     case PM_VAMPIRE_MAGE:
     case PM_VAMPIRE_LORD:
+    case PM_VAMPIRE_KING:
         context.warntype.polyd = M2_HUMAN | M2_ELF;
         HWarn_of_mon |= FROM_RACE;
         return;

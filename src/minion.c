@@ -503,7 +503,7 @@ orcus_undead_summon()
 
     context.makemon_spef_idx = 0;
     while (cnt > 0) {
-        int roll = rn2(28);
+        int roll = rn2(29);
         dtype = NON_PM;
 
         switch (roll)
@@ -589,6 +589,9 @@ orcus_undead_summon()
             break;
         case 27:
             dtype = PM_GREATER_MUMMY_PHARAOH;
+            break;
+        case 28:
+            dtype = PM_VAMPIRE_KING;
             break;
         default:
             break;

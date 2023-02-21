@@ -6449,6 +6449,20 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "amonket-enlargement", 0, 0,
+        1,
+        1, 2, 0,
+        { -1, 0, -1, -1, -1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "amonket-statue-enlargement", 0, 0,
+        1,
+        1, 2, 0,
+        { -1, 0, -1, -1, -1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
       { "rock-piercer-drop-enlargement",
         ROCK_PIERCER_DROP_ANIMATION_TILES, ROCK_PIERCER_DROP_ANIMATION_FRAMES,
         1,

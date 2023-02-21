@@ -2118,9 +2118,9 @@ boolean is_past_participle;
     {
     case ROLE_ARCHAEOLOGIST:
         if(is_past_participle)
-            res = "defeated two greater mummy pharaohs";
+            res = "defeated Amonket, Ruler of Greater Mummies";
         else
-            res = "defeat two greater mummy pharaohs";
+            res = "defeat Amonket, Ruler of Greater Mummies";
         break;
     case ROLE_BARBARIAN:
         if (u.ualignbase[A_ORIGINAL] == A_CHAOTIC)
@@ -2146,15 +2146,15 @@ boolean is_past_participle;
         break;
     case ROLE_HEALER:
         if (is_past_participle)
-            res = "attained the level of Grand Master in healing";
+            res = "successfully cast a healing or abjuration spell of level 9 or higher";
         else
-            res = "attain the level of Grand Master in healing";
+            res = "successfully cast a healing or abjuration spell of level 9 or higher";
         break;
     case ROLE_KNIGHT:
         if (is_past_participle)
-            res = "found the Holy Grail and Excalibur";
+            res = "defeated Asmodeus, Ruler of Nine Hells";
         else
-            res = "find the Holy Grail and Excalibur";
+            res = "defeat Asmodeus, Ruler of Nine Hells";
         break;
     case ROLE_MONK:
         if (is_past_participle)
@@ -2164,9 +2164,9 @@ boolean is_past_participle;
         break;
     case ROLE_PRIEST:
         if (is_past_participle)
-            res = "found the Mace of St. Cuthbert";
+            res = "successfully cast a spell of level 10 or higher";
         else
-            res = "find the Mace of St. Cuthbert";
+            res = "successfully cast a spell of level 10 or higher";
         break;
     case ROLE_ROGUE:
         if (is_past_participle)
@@ -2200,9 +2200,9 @@ boolean is_past_participle;
         break;
     case ROLE_WIZARD:
         if (is_past_participle)
-            res = "successfully cast a spell of level 11 or higher";
+            res = "successfully cast a spell of level 10 or higher";
         else
-            res = "successfully cast a spell of level 11 or higher";
+            res = "successfully cast a spell of level 10 or higher";
         break;
     default:
         res = "";

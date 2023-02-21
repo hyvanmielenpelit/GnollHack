@@ -250,9 +250,9 @@ struct context_info
     boolean starting_prayer_timeout_expired;
     uchar dlords_summoned_via_altar;
     boolean skip_botl;
+    boolean amonket_generated;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
-    boolean reserved_bool2;
     boolean reserved_bool3;
     boolean reserved_bool4;
 
