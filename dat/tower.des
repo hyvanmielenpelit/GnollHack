@@ -22,10 +22,10 @@ MAP
   --- --- ---  
 ENDMAP
 
-MONSTER_GENERATION: 60, ('V', "vampire lord") 
-MONSTER_GENERATION: 30, 'V' 
-MONSTER_GENERATION: 5, '&' 
-MONSTER_GENERATION: 5, ('d', "hell hound") 
+MONSTER_GENERATION: 50, ('V', "vampire king") 
+MONSTER_GENERATION: 25, ('V', "vampire lord") 
+MONSTER_GENERATION: 25, 'V' 
+MONSTER_GENERATION: 10, '&' 
 
 $niches = { (03,01), (03,09), (07,01), (07,09), (11,01), (11,09) }
 SHUFFLE: $niches
@@ -55,10 +55,10 @@ CONTAINER:('(',"coffin"),$niches[2],montype:"vampire mage" {
   OBJECT:('=', "levitation")
 }
 OBJECT:('(',"coffin"),$niches[3],montype:"vampire lord"
-CONTAINER:('(',"coffin"),$niches[4],montype:"vampire" {
+CONTAINER:('(',"coffin"),$niches[4],montype:"vampire king" {
   OBJECT:('(', "wax candle"), quantity:4d2
 }
-CONTAINER:('(',"coffin"),$niches[5],montype:"vampire" {
+CONTAINER:('(',"coffin"),$niches[5],montype:"vampire king" {
   OBJECT:('(', "tallow candle"), quantity:4d2
 }
 # We have to protect the tower against outside attacks
@@ -83,9 +83,8 @@ MAP
   --- --- ---  
 ENDMAP
 
-MONSTER_GENERATION: 75, 'V' 
-MONSTER_GENERATION: 5, '&' 
-MONSTER_GENERATION: 15, ('d', "hell hound") 
+MONSTER_GENERATION: 80, 'V' 
+MONSTER_GENERATION: 20, '&' 
 
 # Random places are the 10 niches
 $place = { (03,01),(07,01),(11,01),(01,03),(13,03),
@@ -102,13 +101,13 @@ OBJECT:('(',"coffin"),$place[2]
 OBJECT:('(',"coffin"),$place[3]
 OBJECT:('(',"coffin"),$place[4]
 
-CONTAINER:('(',"coffin"),$place[5],montype:"vampire lord" {
+CONTAINER:('(',"coffin"),$place[5],montype:"vampire king" {
   OBJECT:('"',"amulet of life saving")
 }
-CONTAINER:('(',"coffin"),$place[6],montype:"vampire lord" {
+CONTAINER:('(',"coffin"),$place[6],montype:"vampire king" {
   OBJECT:('"',"amulet of strangulation")
 }
-CONTAINER:('(',"coffin"),$place[7],montype:"vampire" {
+CONTAINER:('(',"coffin"),$place[7],montype:"vampire lord" {
   OBJECT:('[',"water walking boots")
 }
 CONTAINER:('(',"coffin"),$place[8],montype:"vampire lord" {
@@ -142,10 +141,9 @@ MAP
   ---------------  
 ENDMAP
 
-MONSTER_GENERATION: 50, 'V' 
-MONSTER_GENERATION: 10, 'z' 
-MONSTER_GENERATION: 5, '&' 
-MONSTER_GENERATION: 10, ('d', "hell hound") 
+MONSTER_GENERATION: 70, 'V' 
+MONSTER_GENERATION: 20, 'z' 
+MONSTER_GENERATION: 10, '&' 
 
 # Random places are the 10 niches
 $place = { (05,01),(09,01),(13,01),(03,03),(15,03),
@@ -166,11 +164,11 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 OBJECT:('(',"coffin"),$place[0]
-CONTAINER:('(',"coffin"),$place[1],montype:"vampire" {
+CONTAINER:('(',"coffin"),$place[1],montype:"vampire lord" {
   OBJECT:('(',"lock pick")
 }
 OBJECT:('(',"coffin"),$place[2]
-CONTAINER:('(',"coffin"),$place[3],montype:"vampire" {
+CONTAINER:('(',"coffin"),$place[3],montype:"vampire lord" {
   OBJECT:('(',"blindfold")
 }
 OBJECT:('(',"coffin"),$place[4]
