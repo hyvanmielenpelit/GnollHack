@@ -2340,7 +2340,7 @@ break;
             return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             break;
         }
-        case REPLACEMENT_ACTION_MITHRIL_MATERIAL:
+        case REPLACEMENT_ACTION_STEEL_MITHRIL_GEMSTONE_MATERIAL:
         {
             uchar material = MAT_NONE;
             if (otmp)
@@ -2361,6 +2361,12 @@ break;
             {
             case MAT_MITHRIL:
                 glyph_idx = 0;
+                break;
+            case MAT_STEEL:
+                glyph_idx = 1;
+                break;
+            case MAT_GEMSTONE:
+                glyph_idx = 2;
                 break;
             default:
                 return ntile;
@@ -3104,7 +3110,7 @@ struct replacement_info info;
             }
             return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
         }
-        case REPLACEMENT_ACTION_MITHRIL_MATERIAL:
+        case REPLACEMENT_ACTION_STEEL_MITHRIL_GEMSTONE_MATERIAL:
         {
             uchar material = MAT_NONE;
             if (otmp)
@@ -3119,6 +3125,12 @@ struct replacement_info info;
             {
             case MAT_MITHRIL:
                 glyph_idx = 0;
+                break;
+            case MAT_STEEL:
+                glyph_idx = 1;
+                break;
+            case MAT_GEMSTONE:
+                glyph_idx = 2;
                 break;
             default:
                 return glyph;

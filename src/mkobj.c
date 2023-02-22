@@ -4984,9 +4984,13 @@ int otyp;
         else if (!rn2(2))
             mat = MAT_LEAD;
         break;
-    case MATINIT_MAYBE_MITHRIL:
+    case MATINIT_DWARVISH_ITEM:
         if (!rn2(simple_rare_one_in_chance))
             mat = MAT_MITHRIL;
+        else if (!rn2(simple_rare_one_in_chance))
+            mat = MAT_GEMSTONE;
+        else if (!rn2(3))
+            mat = MAT_STEEL;
         break;
     case MATINIT_MAYBE_ADAMANTIUM_MITHRIL_OR_SILVER:
         if (!rn2(adamantium_rare_one_in_chance))
@@ -4995,6 +4999,14 @@ int otyp;
             mat = MAT_MITHRIL;
         else if (!rn2(silver_rare_one_in_chance))
             mat = MAT_SILVER;
+        break;
+    case MATINIT_MAYBE_STEEL_MITHRIL_OR_SILVER:
+        if (!rn2(mithril_rare_one_in_chance))
+            mat = MAT_MITHRIL;
+        else if (!rn2(silver_rare_one_in_chance))
+            mat = MAT_SILVER;
+        else if (!rn2(3))
+            mat = MAT_STEEL;
         break;
     case MATINIT_CHAIN_MAIL:
         if (!rn2(orichalcum_plate_mail_one_in_chance) && levdiff >= 10)
