@@ -56,7 +56,7 @@ struct material_definition material_definitions[MAX_MATERIAL_TYPES] = {
     0, -1, 0, 0, -1, 0, NO_POWER, NO_POWER, 
     0UL, 0UL, 0UL, 0UL, 0UL, 0UL },
 {"dragonhide",  "dragonhide",  "dragonhide",  PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_CARPET,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE, TRUE,        "scale",         CLR_MAGENTA, 
-    {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, 1.0, 1.0, 0.0, 
+    {2, 1, 1, 1, 1, 1, 1, 1, 2}, {1, 1, 1, 1, 1, 1, 1, 1, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, 1.0, 1.0, 0.0, 
     { NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER }, 
     { NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER }, 
     0, 0, 0, 0, 0, 0, NO_POWER, NO_POWER, 
@@ -197,6 +197,7 @@ struct material_wishing_definition material_wishing_definitions[MAX_MATINIT_TYPE
     { {MAT_MITHRIL,MAT_ADAMANTIUM,MAT_SILVER,MAT_BONE,0,0,0,0,0,0}, {100,100,100,100,0,0,0,0,0,0} },
     { {MAT_BONE,0,0,0,0,0,0,0,0,0}, {100,0,0,0,0,0,0,0,0,0} },
     { {MAT_STEEL,MAT_MITHRIL,MAT_SILVER,0,0,0,0,0,0,0}, {100,100,100,0,0,0,0,0,0,0} },
+    { {MAT_DRAGON_HIDE,0,0,0,0,0,0,0,0,0}, {100,0,0,0,0,0,0,0,0,0} },
 };
 
 NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =

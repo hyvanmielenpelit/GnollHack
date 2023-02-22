@@ -5048,6 +5048,10 @@ int otyp;
         if (Inhell ? !rn2(3) : levdiff > 20 ? !rn2(10) : !rn2(20))
             mat = MAT_BONE;
         break;
+    case MATINIT_MAYBE_DRAGON_HIDE:
+        if (!rn2(simple_rare_one_in_chance))
+            mat = MAT_DRAGON_HIDE;
+        break;
     case MATINIT_NORMAL:
     default:
         break;
