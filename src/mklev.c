@@ -780,6 +780,10 @@ int trap_type;
                     {
                         levl[xx][yy].typ = IRONBARS;
                         levl[xx][yy].subtyp = 0;
+                        levl[xx][yy].decoration_typ = 0;
+                        levl[xx][yy].decoration_subtyp = 0;
+                        levl[xx][yy].decoration_dir = 0;
+                        levl[xx][yy].decoration_flags = 0;
                         /* HWALL .horizontal value retained */
                         if (levl[xx][yy].horizontal && isok(xx, yy - 1) && IS_FLOOR(levl[xx][yy - 1].typ))
                         {
