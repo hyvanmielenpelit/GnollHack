@@ -337,7 +337,7 @@ STATIC_VAR const struct inv_sub {
     { PM_ELF, SHORT_BOW, ELVEN_LONG_BOW },
     { PM_ELF, LONG_BOW, ELVEN_LONG_BOW },
     { PM_ELF, ARROW, ELVEN_ARROW },
-    { PM_ELF, HELMET, ELVEN_LEATHER_HELM },
+    { PM_ELF, HELMET, ELVEN_HELM },
     /* { PM_ELF, SMALL_SHIELD, ELVEN_SHIELD }, */
     { PM_ELF, CLOAK_OF_DISPLACEMENT, ELVEN_CLOAK },
     { PM_ELF, CRAM_RATION, ELVEN_WAYBREAD },
@@ -1203,7 +1203,7 @@ u_init()
         knows_object(ELVEN_DAGGER);
         knows_object(ELVEN_BROADSWORD);
         knows_object(ELVEN_MITHRIL_COAT);
-        knows_object(ELVEN_LEATHER_HELM);
+        knows_object(ELVEN_HELM);
         knows_object(ELVEN_SHIELD);
         knows_object(ELVEN_BOOTS);
         knows_object(ELVEN_CLOAK);

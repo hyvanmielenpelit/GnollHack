@@ -166,7 +166,7 @@ register boolean special;
         cloak  = !rn2(8) ? STRANGE_OBJECT
                          : rnd_class(OILSKIN_CLOAK, CLOAK_OF_DISPLACEMENT);
         helm   = !rn2(8) ? STRANGE_OBJECT
-                         : rnd_class(ELVEN_LEATHER_HELM, HELM_OF_TELEPATHY);
+                         : rnd_class(ELVEN_HELM, HELM_OF_TELEPATHY);
         shield = !rn2(8) ? STRANGE_OBJECT
                          : rnd_class(ELVEN_SHIELD, SHIELD_OF_REFLECTION);
 

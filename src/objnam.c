@@ -663,7 +663,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
     if (dknown)
     {
-        if (((objects[obj->otyp].oc_flags5 & O5_SHOW_BASE_MATERIAL_NAME) != 0 && nn) || obj->material != objects[obj->otyp].oc_material)
+        if (((objects[obj->otyp].oc_flags5 & O5_SHOW_BASE_MATERIAL_NAME) != 0 && nn) || ((OBJ_DESCR_FLAGS(obj->otyp) & OD_SHOW_BASE_MATERIAL_NAME) != 0 && !nn) || obj->material != objects[obj->otyp].oc_material)
         {
             Strcat(actualn_fullbuf, material_definitions[obj->material].object_prefix);
             Strcat(actualn_fullbuf, " ");
@@ -3523,7 +3523,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "horn", TOOL_CLASS, BRASS_HORN, HORN_OF_PLENTY },
     { "shield", ARMOR_CLASS, SMALL_SHIELD, SHIELD_OF_REFLECTION },
     { "hat", ARMOR_CLASS, FEDORA, DUNCE_CAP },
-    { "helm", ARMOR_CLASS, ELVEN_LEATHER_HELM, HELM_OF_TELEPATHY },
+    { "helm", ARMOR_CLASS, ELVEN_HELM, HELM_OF_TELEPATHY },
     { "crown", ARMOR_CLASS, ROYAL_CROWN, CROWN_OF_RULERSHIP },
     { "conical hat", ARMOR_CLASS, CORNUTHAUM, GNOMISH_FELT_HAT },
     { "gloves", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },

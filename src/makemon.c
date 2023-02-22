@@ -513,7 +513,7 @@ register struct monst *mtmp;
                 (void) mongets(mtmp,
                                rn2(2) ? ELVEN_MITHRIL_COAT : ELVEN_CLOAK);
             if (rn2(2))
-                (void) mongets(mtmp, ELVEN_LEATHER_HELM);
+                (void) mongets(mtmp, ELVEN_HELM);
             else if (!rn2(4))
                 (void) mongets(mtmp, ELVEN_BOOTS);
             if (rn2(2))

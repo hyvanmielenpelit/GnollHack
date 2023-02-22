@@ -4984,7 +4984,7 @@ int otyp;
         else if (!rn2(2))
             mat = MAT_LEAD;
         break;
-    case MATINIT_DWARVISH_ITEM:
+    case MATINIT_DWARVISH_METAL_ITEM:
         if (!rn2(simple_rare_one_in_chance))
             mat = MAT_MITHRIL;
         else if (!rn2(simple_rare_one_in_chance))
