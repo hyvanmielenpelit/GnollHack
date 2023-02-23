@@ -1331,6 +1331,8 @@ const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
     {"carpet-red-horizontal-middle-3", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"carpet-red-horizontal-middle-plain", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"painting-holder", 0, PAINTING_HOLDER_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"gargoyle-niche", 0, GARGOYLE_NICHE_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"knight-niche", 0, KNIGHT_NICHE_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =

@@ -1415,6 +1415,7 @@ unsigned long mkflags;
     boolean forcelegendary = (mkflags & MKOBJ_FLAGS_FORCE_LEGENDARY) != 0;
     boolean forcebasematerial = (mkflags & MKOBJ_FLAGS_FORCE_BASE_MATERIAL) != 0 || mkobj_type == 2;
     boolean param_is_spquality = (mkflags & MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY) != 0;
+    boolean param_is_mnum = (mkflags & MKOBJ_FLAGS_PARAM_IS_MNUM) != 0;
     unsigned long excludedtitles = 0UL, excludedtitles2 = 0UL;
     if (mkflags & MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS)
     {
@@ -1960,7 +1961,7 @@ unsigned long mkflags;
             switch (otmp->otyp) {
             case STATUE:
                 /* possibly overridden by mkcorpstat() */
-                otmp->corpsenm = rndmonnum();
+                otmp->corpsenm = param_is_mnum && param >= LOW_PM ? (int)param : rndmonnum();
 
                 if(!rn2(2))
                     otmp->speflags |= SPEFLAGS_FACING_RIGHT;

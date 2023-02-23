@@ -216,7 +216,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     {
         (char*)0, (char*)0, (char*)0, 
         {0, 0, 0, 0},
-        0, STRANGE_OBJECT, 
+        0, STRANGE_OBJECT, NON_PM,
         NO_COLOR, NO_COLOR,
         LOCATION_SOUNDSET_NONE,
         DECORATION_TYPE_FLAGS_NONE 
@@ -224,7 +224,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     {
         "cobweb", "cobweb", "cobweb", 
         {DOODAD_COBWEB_NORMAL, DOODAD_COBWEB_NORMAL, DOODAD_COBWEB_NORMAL, DOODAD_COBWEB_NORMAL},
-        2, STRANGE_OBJECT, 
+        2, STRANGE_OBJECT,  NON_PM,
         NO_COLOR, NO_COLOR,
         LOCATION_SOUNDSET_NONE, 
         DECORATION_TYPE_FLAGS_MIRRORABLE
@@ -232,7 +232,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     {
         "cobweb", "cobweb", "cobweb", 
         {DOODAD_COBWEB_CORNER_ELONGATED, DOODAD_COBWEB_CORNER_ELONGATED, DOODAD_COBWEB_CORNER_ELONGATED, DOODAD_COBWEB_CORNER_ELONGATED},
-        5, STRANGE_OBJECT, 
+        5, STRANGE_OBJECT, NON_PM,
         NO_COLOR, NO_COLOR,
         LOCATION_SOUNDSET_NONE,
         DECORATION_TYPE_FLAGS_MIRRORABLE | DECORATION_TYPE_FLAGS_CORNERS
@@ -240,7 +240,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     {
         "torch", "torch holder", "torch", 
         {DOODAD_TORCH_HOLDER, DOODAD_TORCH_HOLDER_LEFT, DOODAD_TORCH_HOLDER_RIGHT, DOODAD_TORCH_HOLDER_BOTTOM},
-        1, TORCH, 
+        1, TORCH, NON_PM,
         NO_COLOR, NO_COLOR,
         LOCATION_SOUNDSET_BRAZIER,
         DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_LIGHTABLE | DECORATION_TYPE_FLAGS_ALL_SIDES
@@ -248,7 +248,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     {
         "lantern", "lantern holder", "brass lantern", 
         {DOODAD_LANTERN_HOLDER, DOODAD_LANTERN_HOLDER_LEFT, DOODAD_LANTERN_HOLDER_RIGHT, DOODAD_LANTERN_HOLDER_BOTTOM},
-        1, BRASS_LANTERN, 
+        1, BRASS_LANTERN, NON_PM,
         NO_COLOR, NO_COLOR,
         LOCATION_SOUNDSET_BRAZIER,
         DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_LIGHTABLE | DECORATION_TYPE_FLAGS_ALL_SIDES
@@ -256,7 +256,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     {
         "fireplace", "fireplace", "fireplace",
         {DOODAD_FIREPLACE, DOODAD_FIREPLACE, DOODAD_FIREPLACE, DOODAD_FIREPLACE},
-        1, STRANGE_OBJECT,
+        1, STRANGE_OBJECT, NON_PM,
         NO_COLOR, NO_COLOR,
         LOCATION_SOUNDSET_BRAZIER,
         DECORATION_TYPE_FLAGS_LIGHTABLE | DECORATION_TYPE_FLAGS_ALL_SIDES 
@@ -264,10 +264,26 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     {
         "painting", "painting hanger", "painting",
         {DOODAD_PAINTING_HOLDER, DOODAD_PAINTING_HOLDER, DOODAD_PAINTING_HOLDER, DOODAD_PAINTING_HOLDER},
-        1, PAINTING,
+        1, PAINTING, NON_PM,
         NO_COLOR, NO_COLOR,
         LOCATION_SOUNDSET_NONE,
         DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_PAINTING_DESCR | DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET | DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY | DECORATION_TYPE_FLAGS_WOODY_FILLED_COLOR
+    },
+    {
+        "gargoyle statue niche", "statue niche", "statue of a gargoyle in a niche",
+        {DOODAD_GARGOYLE_STATUE_NICHE, DOODAD_GARGOYLE_STATUE_NICHE, DOODAD_GARGOYLE_STATUE_NICHE, DOODAD_GARGOYLE_STATUE_NICHE},
+        1, STATUE, PM_GARGOYLE,
+        NO_COLOR, CLR_WHITE,
+        LOCATION_SOUNDSET_NONE,
+        DECORATION_TYPE_FLAGS_LOOTABLE
+    },
+    {
+        "knight statue niche", "statue niche", "statue of a knight in a niche",
+        {DOODAD_KNIGHT_STATUE_NICHE, DOODAD_KNIGHT_STATUE_NICHE, DOODAD_KNIGHT_STATUE_NICHE, DOODAD_KNIGHT_STATUE_NICHE},
+        1, STATUE, PM_KNIGHT,
+        NO_COLOR, CLR_WHITE,
+        LOCATION_SOUNDSET_NONE,
+        DECORATION_TYPE_FLAGS_LOOTABLE 
     },
 };
 

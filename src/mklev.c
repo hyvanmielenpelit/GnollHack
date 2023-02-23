@@ -259,6 +259,13 @@ int floortyp, floorsubtyp, mtype;
                     {
                         if (!rn2(4))
                         {
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_typ = !rn2(2) ? DECORATION_GARGOYLE_NICHE : DECORATION_KNIGHT_NICHE;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                        }
+                        else if (!rn2(4))
+                        {
                             levl[lowx + roll1 + 1][lowy - 1].decoration_typ = DECORATION_FIREPLACE;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;

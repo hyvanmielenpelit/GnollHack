@@ -5160,10 +5160,17 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
 
 static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers)
 {
+    dirty(data, i, j, TRUE);
+
+    data->map[i][j] = layers;
+
+    dirty(data, i, j, FALSE);
+
+#if 0
     boolean layer_different = FALSE;
     for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
     {
-        if (data->map[i][j].layer_glyphs[layer_idx] != layers.layer_glyphs[layer_idx])
+        if (data->map[i][j].layer_gui_glyphs[layer_idx] != layers.layer_gui_glyphs[layer_idx] || data->map[i][j].layer_glyphs[layer_idx] != layers.layer_glyphs[layer_idx])
         {
             layer_different = TRUE;
             break;
@@ -5188,6 +5195,7 @@ static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers)
         InvalidateRect(data->hWnd, &rect, FALSE);
         */
     }
+#endif
 }
 
 static void clearAll(PNHMapWindow data)

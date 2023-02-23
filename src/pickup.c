@@ -2256,7 +2256,9 @@ doloot()
                     if (decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item != STRANGE_OBJECT)
                     {
                         boolean subtyp_is_item_special_quality = (decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY) != 0;
-                        struct obj* newobj = mksobj_with_flags(decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, subtyp_is_item_special_quality ? (long)levl[cc.x][cc.y].decoration_subtyp : 0L, 0L, subtyp_is_item_special_quality ? MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY : 0UL);
+                        boolean item_is_statue = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item == STATUE;
+                        int mnum = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].mnum;
+                        struct obj* newobj = mksobj_with_flags(decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, item_is_statue ? mnum : subtyp_is_item_special_quality ? (long)levl[cc.x][cc.y].decoration_subtyp : 0L, 0L, item_is_statue ? MKOBJ_FLAGS_PARAM_IS_MNUM : subtyp_is_item_special_quality ? MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY : 0UL);
                         if (newobj)
                         {
                             got_something = TRUE;

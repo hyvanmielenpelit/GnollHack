@@ -268,6 +268,8 @@ enum decoration_types {
     DECORATION_LANTERN,
     DECORATION_FIREPLACE,
     DECORATION_PAINTING,
+    DECORATION_GARGOYLE_NICHE,
+    DECORATION_KNIGHT_NICHE,
     MAX_DECORATIONS
 };
 
@@ -278,6 +280,7 @@ struct decoration_type_definition {
     int first_doodad[NUM_DOODAD_DIRECTIONS]; //For each of four directions
     short num_subtypes;
     short lootable_item;
+    short mnum; /* to be used with statues etc. */
     schar color;
     schar color_filled;
     enum location_soundset_types soundset;
