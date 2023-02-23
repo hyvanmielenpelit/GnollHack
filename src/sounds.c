@@ -1261,6 +1261,7 @@ boolean dopopup, fromchatmenu;
                         isnight ? "evening" : "day",
                         isnight ? "!" : ".  Why do we not rest?");
                 verbl_msg = verbuf;
+                chat_line = isnight ? 4 : 5;
             } else {
                 Sprintf(verbuf, "%s%s",
                         nightchild ? "Child of the night, " : "",
@@ -1270,17 +1271,24 @@ boolean dopopup, fromchatmenu;
                           ? "I beg you, help me satisfy this growing craving!"
                           : "I find myself growing a little weary.");
                 verbl_msg = verbuf;
+                chat_line = midnight() ? 6 : isnight ? 7 : 8;
             }
         } else if (is_peaceful(mtmp)) {
             if (kindred && isnight) {
                 Sprintf(verbuf, "Good feeding %s!",
                         flags.female ? "sister" : "brother");
                 verbl_msg = verbuf;
+                chat_line = flags.female ? 9 : 10;
             } else if (nightchild && isnight) {
                 Sprintf(verbuf, "How nice to hear you, child of the night!");
                 verbl_msg = verbuf;
-            } else
+                chat_line = 12;
+            }
+            else
+            {
                 verbl_msg = "I only drink... potions.";
+                chat_line = 13;
+            }
         } else {
             int vampindex;
             static const char *const vampmsg[] = {
@@ -1290,8 +1298,11 @@ boolean dopopup, fromchatmenu;
                 /* other famous vampire quotes can follow here if desired */
             };
             if (kindred)
+            {
                 verbl_msg =
                     "This is my hunting ground that you dare to prowl!";
+                chat_line = 14;
+            }
             else if (youmonst.data == &mons[PM_SILVER_DRAGON] || youmonst.data == &mons[PM_ANCIENT_SILVER_DRAGON]
                      || youmonst.data == &mons[PM_SILVER_DRAGON_HATCHLING]) {
                 /* Silver dragons are silver in color, not made of silver */
@@ -1300,18 +1311,25 @@ boolean dopopup, fromchatmenu;
                             ? "Fool"
                             : "Young fool");
                 verbl_msg = verbuf;
+                chat_line = youmonst.data == &mons[PM_SILVER_DRAGON] || youmonst.data == &mons[PM_ANCIENT_SILVER_DRAGON] ? 16 : 17;
             } else {
                 vampindex = rn2(SIZE(vampmsg));
                 if (vampindex == 0) {
                     Sprintf(verbuf, vampmsg[vampindex], body_part(BLOOD));
                     verbl_msg = verbuf;
+                    chat_line = 18;
                 } else if (vampindex == 1) {
                     Sprintf(verbuf, vampmsg[vampindex],
                             Upolyd ? an(pm_monster_name(&mons[u.umonnum], flags.female))
                                    : an(racenoun));
                     verbl_msg = verbuf;
-                } else
+                    chat_line = 19;
+                }
+                else
+                {
                     verbl_msg = vampmsg[vampindex];
+                    chat_line = 18 + vampindex;
+                }
             }
         }
     } break;
