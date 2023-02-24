@@ -2684,7 +2684,7 @@ aligntyp alignment;
     boolean countbirth = ((mmflags & MM_NOCOUNTBIRTH) == 0);
     boolean setorigin = ((mmflags & MM_SET_ORIGIN_COORDINATES) == 0);
     boolean saddled = ((mmflags & MM_SADDLED) != 0);
-    boolean may_extinct = ((mmflags2 & MM2_MAYBE_ALLOW_EXTINCT) != 0);
+    boolean maybe_extinct = ((mmflags2 & MM2_MAYBE_ALLOW_EXTINCT) != 0);
     unsigned long gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
     
@@ -2745,7 +2745,7 @@ aligntyp alignment;
 
         if ((mvitals[mndx].mvflags & MV_EXTINCT) != 0)
         {
-            if(wizard && may_extinct && yn_query("Create an extinct monster?") == 'y')
+            if(wizard && maybe_extinct && yn_query("Create an extinct monster?") == 'y')
                 debugpline1("Explicitly creating extinct monster %s.", mons[mndx].mname);
             else
                 return (struct monst*)0;
