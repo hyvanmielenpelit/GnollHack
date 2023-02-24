@@ -885,7 +885,7 @@
 #define nonrotting_corpse(mnum) nonrotting_corpse_ptr(&mons[mnum])
 #define has_pitwalk(ptr) (((ptr)->mflags4 & M4_PITWALK) != 0)
 #define can_speak_language(ptr) ((ptr)->msound >= MS_LAUGH || (ptr)->msound == MS_ORC || is_speaking_monster(ptr))
-#define call_mon_tame(mon) ((is_animal((mon)->data) || !humanoid((mon)->data)) && !mindless((mon)->data) && !is_speaking_monster((mon)->data) && is_living((mon)->data) && !is_demon((mon)->data))
+#define call_mon_tame(mon)  (is_domestic((mon)->data) || ((is_animal((mon)->data) || !humanoid((mon)->data)) && !mindless((mon)->data) && !is_speaking_monster((mon)->data) && is_living((mon)->data) && !is_demon((mon)->data)))
 
 /* Overall resistances */
 #define resists_drli(mon) resists_drain(mon)

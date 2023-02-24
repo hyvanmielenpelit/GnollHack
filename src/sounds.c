@@ -5286,10 +5286,34 @@ struct monst* mtmp;
                             pline_ex1_popup(ATR_NONE, NO_COLOR, pbuf, "Item Given", TRUE);
                         }
 
+                        boolean abort_pickup = FALSE;
                         if (*u.ushops || otmp->unpaid)
+                        {
                             check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE);
-
-                        (void)mpickobj(mtmp, otmp);
+                            if (costly_spot(mtmp->mx, mtmp->my))
+                            {
+                                struct monst* shkp = shop_keeper(inside_shop(mtmp->mx, mtmp->my));
+                                if (shkp)
+                                {
+                                    play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DROP_THAT_NOW);
+                                    pline("%s shouts:", Monnam(shkp));
+                                    verbalize("Drop that, now!");
+                                    if (iflags.using_gui_sounds)
+                                        delay_output_milliseconds(1200);
+                                    play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WHIMPER);
+                                    if (iflags.using_gui_sounds)
+                                        delay_output_milliseconds(200);
+                                    play_object_floor_sound(otmp, OBJECT_SOUND_TYPE_DROP, FALSE);
+                                    pline("%s drops %s.", Monnam(mtmp), the(cxname(otmp)));
+                                    place_object(otmp, mtmp->mx, mtmp->my);
+                                    abort_pickup = TRUE;
+                                }
+                            }
+                        }
+                        if (abort_pickup)
+                            break;
+                        else
+                            (void)mpickobj(mtmp, otmp);
                     }
                 }
             }
