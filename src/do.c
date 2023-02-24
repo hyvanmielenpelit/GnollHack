@@ -6019,6 +6019,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     char whynot[BUFSZ];
     char *annotation;
     boolean play_arrival_teleport_effect = !!(u.utotype & 0x0100);
+    d_level fromlevel = u.uz;
 
     if(at_location & 2)
         context.reviving = TRUE;
@@ -6264,16 +6265,19 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         register struct trap *ttrap;
 
         for (ttrap = ftrap; ttrap; ttrap = ttrap->ntrap)
-            if (ttrap->ttyp == MAGIC_PORTAL)
+            if (ttrap->ttyp == MAGIC_PORTAL && ttrap->dst.dlevel == fromlevel.dlevel && ttrap->dst.dnum == fromlevel.dnum)
                 break;
 
         if (!ttrap)
         {
-            panic("goto_level: no corresponding portal!");
-            return;
+            impossible("goto_level: no corresponding portal!");
+            u_on_rndspot((up ? 1 : 0) | (was_in_W_tower ? 2 : 0));
         }
-        seetrap(ttrap);
-        u_on_newpos(ttrap->tx, ttrap->ty);
+        else
+        {
+            seetrap(ttrap);
+            u_on_newpos(ttrap->tx, ttrap->ty);
+        }
     } 
     else if ((portal == 2 || portal == 3) && !In_endgame(&u.uz))
     {

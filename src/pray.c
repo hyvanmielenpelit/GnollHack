@@ -2271,7 +2271,7 @@ dosacrifice()
                 exercise(A_WIS, FALSE);
             }
 
-            if (highaltar && (altaralign != A_CHAOTIC || u.ualign.type != A_CHAOTIC))
+            if (highaltar && (altaralign != A_CHAOTIC || u.ualign.type != A_CHAOTIC) && !molochaltar)
             {
                 goto desecrate_high_altar;
             } 
@@ -2285,7 +2285,7 @@ dosacrifice()
             } 
             else 
             {
-                struct monst *dmon;
+                struct monst *dmon = 0;
                 const char *demonless_msg;
 
                 /* Human sacrifice on a chaotic or Moloch altar */
@@ -2309,7 +2309,17 @@ dosacrifice()
                     demonless_msg = "blood coagulates";
                 }
 
-                if ((pm = dlord(altaralign)) != NON_PM && (dmon = makemon(&mons[pm], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0)
+                if(Inhell)
+                    dmon = makemon(&mons[PM_DEMOGORGON], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+
+                if (!dmon)
+                {
+                    pm = dlord(altaralign);
+                    if(pm)
+                        dmon = makemon(&mons[pm], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+                }
+
+                if (dmon)
                 {
                     if(context.dlords_summoned_via_altar < 255)
                         context.dlords_summoned_via_altar++;
@@ -2614,8 +2624,7 @@ dosacrifice()
                 if (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL]
                     && altaralign != A_NONE) 
                 {
-                    You_ex(ATR_NONE, CLR_MSG_WARNING, "have a strong feeling that %s is angry...",
-                        u_gname());
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "have a strong feeling that %s is angry...", u_gname());
                     consume_offering(otmp);
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s accepts your allegiance.", a_gname());
                     play_sfx_sound(SFX_ALTAR_ANGRY_ACCEPTS_SACRIFICE);
