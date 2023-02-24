@@ -473,11 +473,12 @@ NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS] = {
     { "Portrait of Male Aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 25L },
     { "Portrait of Male Aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 50L },
     { "Portrait of Female Aristocrat", "a female aristocrat", "Otumn", (char*)0, (char*)0, 100L },
-    { "Portrait of Elucid Priestess", "a stern priestess", "Otumn", (char*)0, (char*)0, 150L },
+    { "Portrait of Elucid Priestess", "a priestess", "Otumn", (char*)0, (char*)0, 150L },
     { "Portrait of Serious Dispater", "Dispater, Archduke of Gehennom", "Diedi", (char*)0, (char*)0, 200L },
     { "Portrait of Smiling Dispater", "Dispater, Archduke of Gehennom", "Diedi", (char*)0, (char*)0, 200L },
     { "Portrait of Wizard of Yendor in Blue", "Wizard of Yendor", "Diedi", (char*)0, (char*)0, 250L },
     { "Portrait of Wizard of Yendor in Red", "Wizard of Yendor", "Diedi", (char*)0, (char*)0, 250L },
+    { "Portrait of Vlad the Impaler", "Vlad the Impaler", "Diedi", (char*)0, (char*)0, 300L },
 };
 
 //STATIC_DCL void FDECL(setgemprobs, (d_level *));
