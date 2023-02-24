@@ -2642,6 +2642,15 @@ unsigned long mmflags;
 }
 
 struct monst*
+makemon2(ptr, x, y, mmflags, mmflags2)
+register struct permonst* ptr;
+register int x, y;
+unsigned long mmflags, mmflags2;
+{
+    return makemon_limited(ptr, x, y, mmflags, mmflags2, 0, 0, 0, 0);
+}
+
+struct monst*
 makemon_ex(ptr, x, y, mmflags, subtype, level_adjustment)
 register struct permonst* ptr;
 register int x, y;
@@ -2675,9 +2684,10 @@ aligntyp alignment;
     boolean countbirth = ((mmflags & MM_NOCOUNTBIRTH) == 0);
     boolean setorigin = ((mmflags & MM_SET_ORIGIN_COORDINATES) == 0);
     boolean saddled = ((mmflags & MM_SADDLED) != 0);
+    boolean may_extinct = ((mmflags2 & MM2_MAYBE_ALLOW_EXTINCT) != 0);
     unsigned long gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
-
+    
     /* if caller wants random location, do it here */
     if (x == 0 && y == 0) 
     {
@@ -2735,7 +2745,7 @@ aligntyp alignment;
 
         if ((mvitals[mndx].mvflags & MV_EXTINCT) != 0)
         {
-            if(wizard && yn_query("Create an extinct monster?") == 'y')
+            if(wizard && may_extinct && yn_query("Create an extinct monster?") == 'y')
                 debugpline1("Explicitly creating extinct monster %s.", mons[mndx].mname);
             else
                 return (struct monst*)0;

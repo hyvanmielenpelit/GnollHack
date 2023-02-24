@@ -381,6 +381,7 @@ extern short tile2enlargement[MAX_TILES];
 #define MM2_FACING_RIGHT                0x00000002UL
 #define MM2_FORCE_RENEGADE              0x00000004UL
 #define MM2_FORCE_NONRENEGADE           0x00000008UL
+#define MM2_MAYBE_ALLOW_EXTINCT         0x00000010UL
 
 #define GOODPOS_IGNOREYOU               0x80000000UL
 

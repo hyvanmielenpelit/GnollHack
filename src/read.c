@@ -4265,7 +4265,7 @@ struct _create_particular_data *d;
                 genderflag = MM_FEMALE;
         }
 
-        mtmp = makemon(whichpm, u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END | genderflag);
+        mtmp = makemon2(whichpm, u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END | genderflag, MM2_MAYBE_ALLOW_EXTINCT);
 
         if (!mtmp)
         {
