@@ -1247,7 +1247,7 @@ boolean dopopup, fromchatmenu;
         boolean isnight = night();
         boolean kindred = (Upolyd && (u.umonnum == PM_VAMPIRE || u.umonnum == PM_VAMPIRE_MAGE
                                       || u.umonnum == PM_VAMPIRE_LORD || u.umonnum == PM_VAMPIRE_KING));
-        boolean nightchild = !iflags.using_gui_sounds && 
+        boolean nightchild =
             (Upolyd && (u.umonnum == PM_WOLF || u.umonnum == PM_WINTER_WOLF
                         || u.umonnum == PM_WINTER_WOLF_CUB));
         const char *racenoun =
@@ -1264,7 +1264,7 @@ boolean dopopup, fromchatmenu;
                 chat_line = isnight ? 4 : 5;
             } else {
                 Sprintf(verbuf, "%s%s",
-                        nightchild ? "Child of the night, " : "",
+                        nightchild && !iflags.using_gui_sounds ? "Child of the night, " : "", /* Voice lines not currently available in */
                         midnight()
                          ? "I can stand this craving no longer!"
                          : isnight
