@@ -2733,12 +2733,14 @@ aligntyp alignment;
         if (mvitals[mndx].mvflags & MV_GENOCIDED)
             return (struct monst *) 0;
 
-        if (wizard && (mvitals[mndx].mvflags & MV_EXTINCT)) 
+        if ((mvitals[mndx].mvflags & MV_EXTINCT) != 0)
         {
-            debugpline1("Explicitly creating extinct monster %s.",
-                        mons[mndx].mname);
+            if(wizard && yn_query("Create an extinct monster?") == 'y')
+                debugpline1("Explicitly creating extinct monster %s.", mons[mndx].mname);
+            else
+                return (struct monst*)0;
         }
-    } 
+    }
     else 
     {
         /* make a random (common) monster that can survive here.

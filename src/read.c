@@ -2120,6 +2120,20 @@ struct monst* targetmonst;
          * monsters are not visible
          */
         break;
+    case SCR_A_PACT_WITH_THE_DEVIL:
+    {
+        You_ex1(ATR_NONE, NO_COLOR, "recite the words of the ancient pact, demanding its hellish signatory to come forth.");
+
+        struct monst* mon = makemon(&mons[PM_ASMODEUS], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+        if(!mon)
+            mon = makemon(&mons[PM_GERYON], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+
+        if (mon && canspotmon(mon))
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears in a puff of smoke!", Monnam(mon));
+        else
+            pline_ex1(ATR_NONE, NO_COLOR, "However, nothing much seems to happen.");
+        break;
+    }
     case SPE_PROTECT_WEAPON:
     case SCR_PROTECT_WEAPON:
     case SPE_ENCHANT_WEAPON:

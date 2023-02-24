@@ -671,6 +671,7 @@ MONSTER:('&',"Dispater"),(12,07) {
 }
 CONTAINER:('(',"chest"),trapped,locked,(12,07),keytype:('(',"ornamental key"),special_quality:3,no_pickup {
    OBJECT:('$',"gold piece"), quantity:(2500+(3d1000))
+   OBJECT:('?',"a pact with the devil")
    [25%]:OBJECT:artifact
    OBJECT:random_contents
    OBJECT:random_contents
@@ -878,6 +879,7 @@ MONSTER:('&',"Baalzebub"),(35,06) {
 }
 CONTAINER:('(',"chest"),trapped,locked,(35,06),keytype:('(',"ornamental key"),special_quality:5,no_pickup {
    OBJECT:('$',"gold piece"), quantity:(1000+(1d1000))
+   OBJECT:('?',"a pact with the devil")
    [25%]:OBJECT:artifact
    OBJECT:random_contents
    OBJECT:random_contents

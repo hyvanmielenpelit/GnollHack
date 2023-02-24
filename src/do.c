@@ -1086,7 +1086,8 @@ register struct obj* obj;
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    if (objects[otyp].oc_name_known && obj->oartifact == 0 && !objects[otyp].oc_unique && (objects[otyp].oc_class == SPBOOK_CLASS || objects[obj->otyp].oc_class == SCROLL_CLASS))
+    if (objects[otyp].oc_name_known && obj->oartifact == 0 && !objects[otyp].oc_unique && (objects[otyp].oc_class == SPBOOK_CLASS || objects[obj->otyp].oc_class == SCROLL_CLASS)
+        && otyp != SCR_BLANK_PAPER && otyp != SPE_BLANK_PAPER && otyp != SCR_A_PACT_WITH_THE_DEVIL)
     {
         int ink = ink_cost(obj);
         Sprintf(buf, "Base write cost:        %d charge%s", ink, plur(ink));        

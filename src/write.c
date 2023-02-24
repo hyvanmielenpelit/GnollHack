@@ -55,6 +55,7 @@ register struct obj *otmp;
     case SCR_CHARGING:
         return 24;
     case SCR_GENOCIDE:
+    case SCR_A_PACT_WITH_THE_DEVIL:
         return 30;
     case SCR_BLANK_PAPER:
     default:
@@ -226,6 +227,10 @@ found:
     } else if (i == SPE_BOOK_OF_THE_DEAD || i == SPE_BOOK_OF_MODRON) {
         play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "No mere dungeon adventurer could write that.");
+        return 1;
+    } else if (i == SCR_A_PACT_WITH_THE_DEVIL) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot write that with mere ink.");
         return 1;
     } else if (by_descr && paper->oclass == SPBOOK_CLASS
                && !objects[i].oc_name_known) {
