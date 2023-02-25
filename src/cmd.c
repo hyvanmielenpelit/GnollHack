@@ -3525,6 +3525,7 @@ int mode, final, attrindx;
     int acurrent, abase, apeak, alimit;
     const char *paren_pfx;
     char subjbuf[BUFSZ], valubuf[BUFSZ], valstring[32];
+    boolean parenthesis_open = FALSE;
 
     /* being polymorphed or wearing certain cursed items prevents
        hero from reliably tracking changes to characteristics so
@@ -3566,26 +3567,27 @@ int mode, final, attrindx;
         interesting_alimit =
             final ? TRUE /* was originally `(abase != alimit)' */
                   : (alimit != (attrindx != A_STR ? 18 : STR18(100)));
-        paren_pfx = final ? " (" : " (current; ";
+        paren_pfx = final ? " (" : " (current, ";
         if (acurrent != abase) {
+            parenthesis_open = TRUE;
             Sprintf(eos(valubuf), "%sbase:%s", paren_pfx,
                     attrval(attrindx, abase, valstring));
             paren_pfx = ", ";
         }
         if (abase != apeak) {
+            parenthesis_open = TRUE;
             Sprintf(eos(valubuf), "%speak:%s", paren_pfx,
                     attrval(attrindx, apeak, valstring));
             paren_pfx = ", ";
         }
         if (interesting_alimit) {
+            parenthesis_open = TRUE;
             Sprintf(eos(valubuf), "%s%slimit:%s", paren_pfx,
                     /* more verbose if exceeding 'limit' due to magic bonus */
                     (acurrent > alimit) ? "innate " : "",
                     attrval(attrindx, alimit, valstring));
             /* paren_pfx = ", "; */
         }
-        if (acurrent != abase || abase != apeak || interesting_alimit)
-            Strcat(valubuf, ")");
     }
 
     if (attrindx == A_STR)
@@ -3602,7 +3604,8 @@ int mode, final, attrindx;
         Sprintf(tohitbuf, "-%d", tohitbonus_constant + tohitbonus_random);
         Sprintf(dmgbuf, "-%d", dmgbonus_constant + dmgbonus_random);
 
-        Sprintf(eos(valubuf), ": %s%d%s to-hit %s and %s%d%s damage %s", 
+        Sprintf(eos(valubuf), "%s%s%d%s to-hit %s, %s%d%s damage %s", 
+            parenthesis_open ? ", " : " (",
             tohitbonus_constant >= 0 ? "+" : "",
             tohitbonus_constant,
             tohitbonus_random ? tohitbuf : "",
@@ -3612,23 +3615,34 @@ int mode, final, attrindx;
             dmgbonus_random ? dmgbuf : "",
             dmgbonus_constant >= 0 ? "bonus" : "penalty"
             );
+
+        parenthesis_open = TRUE;
     }
     else if (attrindx == A_DEX)
     {
         int tohitbonus = dexterity_tohit_bonus(ACURR(A_DEX));
         int acbonus = -dexterity_ac_bonus(ACURR(A_DEX));
 
-        Sprintf(eos(valubuf), ": %s%d to-hit %s and %s%d AC %s",
+        Sprintf(eos(valubuf), "%s%s%d to-hit %s, %s%d AC %s",
+            parenthesis_open ? ", " : " (",
             tohitbonus >= 0 ? "+" : "", tohitbonus, tohitbonus >= 0 ? "bonus" : "penalty",
             acbonus >= 0 ? "+" : "", acbonus, acbonus <= 0 ? "bonus" : "penalty");
+
+        parenthesis_open = TRUE;
     }
     else if (attrindx == A_CON)
     {
         double hpbonus = constitution_hp_bonus(ACURR(A_CON));
 
-        Sprintf(eos(valubuf), ": %s%0.1f HP %s per level",
+        Sprintf(eos(valubuf), "%s%s%0.1f HP %s per level",
+            parenthesis_open ? ", " : " (",
             hpbonus >= 0 ? "+" : "", hpbonus, hpbonus >= 0 ? "bonus" : "penalty");
+
+        parenthesis_open = TRUE;
     }
+
+    if (parenthesis_open)
+        Strcat(valubuf, ")");
 
     enl_msg(subjbuf, "is ", "was ", valubuf, "");
 }
