@@ -278,6 +278,10 @@
 #define ELaughing u.uprops[LAUGHING].extrinsic
 #define Laughing (HLaughing || ELaughing)
 
+#define HTottering u.uprops[TOTTERING].intrinsic
+#define ETottering u.uprops[TOTTERING].extrinsic
+#define Tottering (HTottering || ETottering)
+
 #define HOddIdeas u.uprops[ODD_IDEAS].intrinsic
 #define EOddIdeas u.uprops[ODD_IDEAS].extrinsic
 #define OddIdeas (HOddIdeas || EOddIdeas)

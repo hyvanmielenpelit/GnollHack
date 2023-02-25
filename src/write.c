@@ -337,7 +337,7 @@ found:
     }
     /* can write scrolls when blind, but requires luck too;
        attempts to write books when blind are caught above */
-    if (Blind && rnl(3)) {
+    if ((Blind && rnl(3)) || (Tottering && rn2(7))) {
         /* writing while blind usually fails regardless of
            whether the target scroll is known; even if we
            have passed the write-an-unknown scroll test

@@ -1393,7 +1393,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
     boolean isinstakill = FALSE;
 
     notonhead = FALSE; /* reset potentially stale value */
-    if ((obj->cursed || obj->greased) && (u.dx || u.dy) && !rn2(7))
+    if ((obj->cursed || obj->greased || Tottering) && (u.dx || u.dy) && (Tottering ? rn2(7) : !rn2(7)))
     {
         boolean slipok = TRUE;
 

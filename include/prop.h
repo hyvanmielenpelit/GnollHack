@@ -188,7 +188,8 @@ enum prop_types {
     HALF_SLOW_DIGESTION = 165,
     SLIME_RESISTANCE = 166,
     LAUGHING          = 167,
-    MAX_PROPS         = 168
+    TOTTERING         = 168,
+    MAX_PROPS         = 169
 };
 #define LAST_PROP (MAX_PROPS - 1)
 

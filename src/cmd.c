@@ -3836,6 +3836,10 @@ int final;
         if (magic || cause_known(LAUGHING))
             enl_msg(You_, "laugh uncontrollably", "laughed uncontrollably", "", from_what(LAUGHING));
     }
+    if (Tottering) {
+        if (magic || cause_known(TOTTERING))
+            enl_msg(You_, "shake and totter", "shaked and tottered", "", from_what(TOTTERING));
+    }
     if (OddIdeas) {
         if (magic || cause_known(ODD_IDEAS))
             enl_msg(You_, "get visionary ideas", "got visionary ideas", "", from_what(ODD_IDEAS));

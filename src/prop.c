@@ -180,6 +180,7 @@ const struct propname propertynames[] = {
     { HALF_SLOW_DIGESTION, "digesting half slower than normal", "half slower digestion" },
     { SLIME_RESISTANCE, "resistant to green slime", "slime resistance" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
+    { TOTTERING, "shaking and tottering", "shaking and tottering" },
     {  0, 0 },
 };
 
@@ -353,6 +354,7 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "half-slow-digestion",          1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE},  /* HALF_SLOW_DIGESTION = 165 */
     { "sliming-resistance",           0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE },  /* SLIME_RESISTANCE = 166 */
     { "laughing",                     0, 0, 1,  0, 20,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE},  /* LAUGHING = 167 */
+    { "tottering",                    0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* TOTTERING = 168 */
 };
 
 const char* condition_names[NUM_BL_CONDITIONS] = {

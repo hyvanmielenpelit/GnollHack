@@ -37,7 +37,7 @@ enum layer_types
 
 
 #define MAXLEASHED 2
-#define NUM_BUFF_BIT_ULONGS 7 // 1 + (MAX_PROPS - 1) / 32
+#define NUM_BUFF_BIT_ULONGS 8 // 1 + (MAX_PROPS - 1) / 32
 
 struct layer_info {
     int glyph; /* For ascii compatibility */
