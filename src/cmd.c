@@ -3977,7 +3977,7 @@ int final;
     if (two_handed_bonus_applies(uwep))
         print_weapon_skill_line_core(P_TWO_HANDED_WEAPON, TRUE, final);
 
-    if (!uwep && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
+    if (!uwep && (P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED || Martial_prowess))
     {
         wtype = P_MARTIAL_ARTS;
         char sklvlbuf[20];
@@ -3991,11 +3991,13 @@ int final;
         /* "you have no/basic/expert/master/grand-master skill with <skill>"
            or "you are unskilled/skilled in <skill>" */
 
-        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
-        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
+        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE); /* Gives only pure skill bonuses */
+        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE); /* Gives only pure skill bonuses */
 
-        Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
-            hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
+        Sprintf(buf, "%s %s %s%s (%s%d to hit and %s%d to damage)", sklvlbuf,
+            hav ? "skill with" : "in", skill_name(wtype, TRUE), 
+            Martial_prowess ? (final ? " and had martial prowess" : " and have martial prowess") : "",
+            hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
 
         if (can_advance(wtype, FALSE))
             Sprintf(eos(buf), " and %s that",
@@ -4017,7 +4019,7 @@ int final;
         Strcpy(mbuf, "");
         if (martial_bonus())
         {
-            int multihitchance = martial_arts_multishot_percentage_chance(limited_skill_level(wtype, FALSE, TRUE));
+            int multihitchance = martial_arts_multishot_percentage_chance(adjusted_limited_skill_level(wtype, FALSE, TRUE));
             Sprintf(mbuf, ", %d%% double-hit chance", multihitchance); // due to% s", multihitchance, skill_name(wtype, TRUE));
         }
         Sprintf(buf, "fighting weaponless (%s%s)", martial_bonus() ? "full strength bonus" : "half strength damage bonus", mbuf);
@@ -4041,8 +4043,8 @@ int final;
         /* "you have no/basic/expert/master/grand-master skill with <skill>"
            or "you are unskilled/skilled in <skill>" */
 
-        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
-        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
+        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE); /* Gives only pure skill bonuses */
+        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE); /* Gives only pure skill bonuses */
 
         Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
             hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
@@ -4099,8 +4101,8 @@ int final;
         char ebuf[BUFSZ] = "";
         if (printweaponstats)
         {
-            int hitbonus = weapon_skill_hit_bonus((struct obj*)0, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
-            int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, wtype, FALSE, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
+            int hitbonus = weapon_skill_hit_bonus((struct obj*)0, wtype, FALSE, FALSE, FALSE, 0, TRUE); /* Gives only pure skill bonuses */
+            int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, wtype, FALSE, FALSE, FALSE, 0, TRUE); /* Gives only pure skill bonuses */
             Sprintf(ebuf, "%s%d to hit%s%s%d to damage",
                 hitbonus >= 0 ? "+" : "", hitbonus,
                 wtype == P_SHIELD ? ", " : " and ",
@@ -4124,8 +4126,10 @@ int final;
         if (*ebuf)
             Sprintf(pbuf, " (%s)", ebuf);
 
-        Sprintf(buf, "%s %s %s%s", sklvlbuf, hav ? "skill with" : "in",
-            skill_name(wtype, TRUE), pbuf);
+        Sprintf(buf, "%s %s %s%s%s", sklvlbuf, hav ? "skill with" : "in",
+            skill_name(wtype, TRUE),
+            (wtype == P_BARE_HANDED_COMBAT || wtype == P_MARTIAL_ARTS) && Martial_prowess ? (final ? " and had martial prowess" : " and have martial prowess") : "",
+            pbuf);
 
         if (can_advance(wtype, FALSE))
             Sprintf(eos(buf), " and %s that",

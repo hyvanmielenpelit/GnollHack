@@ -282,6 +282,10 @@
 #define ETottering u.uprops[TOTTERING].extrinsic
 #define Tottering (HTottering || ETottering)
 
+#define HMartial_prowess u.uprops[MARTIAL_PROWESS].intrinsic
+#define EMartial_prowess u.uprops[MARTIAL_PROWESS].extrinsic
+#define Martial_prowess (HMartial_prowess || EMartial_prowess)
+
 #define HOddIdeas u.uprops[ODD_IDEAS].intrinsic
 #define EOddIdeas u.uprops[ODD_IDEAS].extrinsic
 #define OddIdeas (HOddIdeas || EOddIdeas)

@@ -369,7 +369,7 @@ int *attk_count, *role_roll_penalty;
             tmp += weapon_to_hit_value(weapon, mtmp, &youmonst, 0);
         else if(uarmg)
             tmp += weapon_to_hit_value(uarmg, mtmp, &youmonst, 0);
-        nonpolytmp += weapon_skill_hit_bonus(weapon, P_NONE, FALSE, TRUE, TRUE, 0);
+        nonpolytmp += weapon_skill_hit_bonus(weapon, P_NONE, FALSE, TRUE, TRUE, 0, TRUE);
     } 
     else if (aatyp == AT_KICK && martial_bonus()) 
     {
@@ -377,7 +377,7 @@ int *attk_count, *role_roll_penalty;
             tmp += weapon_to_hit_value(weapon, mtmp, &youmonst, 0);
         else if (uarmf)
             tmp += weapon_to_hit_value(uarmf, mtmp, &youmonst, 0);
-        nonpolytmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE, TRUE, TRUE, 0);
+        nonpolytmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE, TRUE, TRUE, 0, TRUE);
     }
 
     tmp += maybe_polyd(max(polytmp, nonpolytmp), nonpolytmp);
@@ -992,7 +992,7 @@ boolean* obj_destroyed;
             if (martial_arts_applies)
             {
                 /* bonus for martial arts */
-                switch (P_SKILL_LEVEL(P_MARTIAL_ARTS))
+                switch (adjusted_skill_level(P_MARTIAL_ARTS))
                 {
                 case P_BASIC:
                     tmp = rnd(4);
@@ -1632,7 +1632,7 @@ boolean* obj_destroyed;
             {
                 if(!martial_bonus() || (uarmg && is_metallic(uarmg)))
                     damage += adjust_damage(u_str_dmg_bonus() / 2, &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
-                else if(P_SKILL_LEVEL(P_MARTIAL_ARTS) >= P_BASIC)
+                else if(adjusted_skill_level(P_MARTIAL_ARTS) >= P_BASIC)
                     damage += adjust_damage(u_str_dmg_bonus(), &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
             }
             else if(obj && objects[obj->otyp].oc_skill == P_NONE)
@@ -1681,14 +1681,14 @@ boolean* obj_destroyed;
     struct obj* wep;
     wep = (is_golf_swing_with_stone || PROJECTILE(obj)) ? uwep : obj;
     wtype = is_golf_swing_with_stone ? P_THROWN_WEAPON :
-        (!obj || !wep) ? (P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) < P_GRAND_MASTER ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :
+        (!obj || !wep) ? (adjusted_skill_level(P_BARE_HANDED_COMBAT) < P_GRAND_MASTER ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :
         weapon_skill_type(wep); //: uwep_skill_type();
 
     if (valid_weapon_attack)
     {
 
         /* to be valid a projectile must have had the correct projector */
-        damage += adjust_damage(weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, !is_golf_swing_with_stone, TRUE, 0), &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
+        damage += adjust_damage(weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, !is_golf_swing_with_stone, TRUE, 0, TRUE), &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
         /* [this assumes that `!thrown' implies wielded...] */
         use_skill(wtype, 1);
 
@@ -1886,7 +1886,7 @@ boolean* obj_destroyed;
     else if (unarmed && damage > 1 && !thrown && !obj && !Upolyd) 
     {
         /* VERY small chance of stunning opponent if unarmed. */
-        if (rnd(100) < 2 * P_SKILL_LEVEL(P_MARTIAL_ARTS) && !bigmonst(mdat)
+        if (rnd(100) < 2 * adjusted_skill_level(P_MARTIAL_ARTS) && !bigmonst(mdat)
             && !thick_skinned(mdat)) 
         {
             if (canspotmon(mon))
@@ -1908,7 +1908,7 @@ boolean* obj_destroyed;
     boolean skill_critical_success = FALSE;
     if (damage > 0 && !incorrect_weapon_use)
     {
-        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0);
+        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE);
         if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
         {
             skill_critical_success = TRUE;
@@ -3214,7 +3214,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     boolean skill_critical_success = FALSE;
     if (damage > 0 && !incorrect_weapon_use)
     {
-        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0);
+        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE);
         if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
         {
             skill_critical_success = TRUE;

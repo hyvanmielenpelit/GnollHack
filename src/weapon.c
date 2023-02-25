@@ -21,6 +21,7 @@ STATIC_DCL void FDECL(skill_advance, (int));
 STATIC_DCL void FDECL(open_skill_cmd_menu, (int, BOOLEAN_P));
 STATIC_DCL void FDECL(doskilldescription, (int));
 STATIC_DCL const char* FDECL(get_skill_range_name, (int, BOOLEAN_P));
+STATIC_DCL int FDECL(adjust_skill_level, (enum p_skills, int));
 
 /* Categories whose names don't come from OBJ_NAME(objects[type])
  */
@@ -1756,6 +1757,42 @@ boolean nextlevel, limit_by_twoweap;
     return res;
 }
 
+STATIC_OVL int
+adjust_skill_level(skill, undjusted_skill_level)
+enum p_skills skill;
+int undjusted_skill_level;
+{
+    int res = undjusted_skill_level;
+    if (skill == P_BARE_HANDED_COMBAT)
+    {
+        if (Martial_prowess)
+            res = P_GRAND_MASTER;
+    }
+    else if (skill == P_MARTIAL_ARTS)
+    {
+        if (res < P_EXPERT && Martial_prowess)
+            res = P_EXPERT;
+    }
+    return res;
+}
+
+int
+adjusted_limited_skill_level(skill, nextlevel, limit_by_twoweap)
+enum p_skills skill;
+boolean nextlevel, limit_by_twoweap;
+{
+    int res = limited_skill_level(skill, nextlevel, limit_by_twoweap);
+    return adjust_skill_level(skill, res);
+}
+
+int
+adjusted_skill_level(skill)
+enum p_skills skill;
+{
+    int res = P_SKILL_LEVEL(skill);
+    return adjust_skill_level(skill, res);
+}
+
 int
 two_handed_weapon_multishot_percentage_chance(skill_level)
 int skill_level;
@@ -2475,9 +2512,9 @@ int skill_id;
             }
             else if (skill_id == P_MARTIAL_ARTS)
             {
-                int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl);
-                int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl);
-                int criticalhitpct = get_skill_critical_strike_chance(skill_id, FALSE, FALSE, lvl);
+                int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE);
+                int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE);
+                int criticalhitpct = get_skill_critical_strike_chance(skill_id, FALSE, FALSE, lvl, FALSE);
                 int multihitpct = martial_arts_multishot_percentage_chance(lvl);
                 Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                 Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
@@ -2491,9 +2528,9 @@ int skill_id;
                 int tohitbonus, dmgbonus, criticalhitpct;
                 if (skill_id == P_BARE_HANDED_COMBAT && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
                 {
-                    tohitbonus = weapon_skill_hit_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, FALSE, 0);
-                    dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, FALSE, 0);
-                    criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, FALSE, FALSE, 0);
+                    tohitbonus = weapon_skill_hit_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, FALSE, 0, FALSE);
+                    dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, FALSE, 0, FALSE);
+                    criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, FALSE, FALSE, 0, FALSE);
                     Sprintf(hbuf, "from Martial Arts %s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                     Sprintf(dbuf, "from Martial Arts %s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
                     Sprintf(cbuf, "from Martial Arts %d%%", criticalhitpct);
@@ -2505,9 +2542,9 @@ int skill_id;
                 }
                 else
                 {
-                    tohitbonus = weapon_skill_hit_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl);
-                    dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl);
-                    criticalhitpct = get_skill_critical_strike_chance(skill_id, FALSE, FALSE, lvl);
+                    tohitbonus = weapon_skill_hit_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE);
+                    dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE);
+                    criticalhitpct = get_skill_critical_strike_chance(skill_id, FALSE, FALSE, lvl, FALSE);
                     Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                     Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
                     Sprintf(cbuf, "%d%%", criticalhitpct);
@@ -3049,7 +3086,7 @@ enhance_weapon_skill()
                     if (i == P_WAND)
                     {
                         int tohitbonus = wand_skill_hit_bonus(P_SKILL_LEVEL(i));
-                        //int criticalhitpct = get_skill_critical_strike_chance(i, FALSE, 0);
+                        //int criticalhitpct = get_skill_critical_strike_chance(i, FALSE, 0, FALSE);
                         double dicemult = get_wand_damage_multiplier(P_SKILL_LEVEL(i));
                         char hbuf[BUFSZ] = "";
                         //char cbuf[BUFSZ] = "";
@@ -3063,7 +3100,7 @@ enhance_weapon_skill()
                         {
                             int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
                             int tohitbonus2 = wand_skill_hit_bonus(nextlevel);
-                            //int criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE, 0);
+                            //int criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE, 0, FALSE);
                             double dicemult2 = get_wand_damage_multiplier(nextlevel);
                             char hbuf2[BUFSZ] = "";
                             //char cbuf2[BUFSZ] = "";
@@ -3114,8 +3151,8 @@ enhance_weapon_skill()
                     }
                     else if (i == P_MARTIAL_ARTS || i == P_TWO_HANDED_WEAPON)
                     {
-                        int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
-                        int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
+                        int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE);
+                        int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE);
                         int multihitpct = i == P_TWO_HANDED_WEAPON ? two_handed_weapon_multishot_percentage_chance(limited_skill_level(i, FALSE, FALSE)) 
                             : martial_arts_multishot_percentage_chance(limited_skill_level(i, FALSE, FALSE));
                         char hbuf[BUFSZ];
@@ -3136,8 +3173,8 @@ enhance_weapon_skill()
 
                         if (can_advance(i, speedy) || could_advance(i))
                         {
-                            int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
-                            int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
+                            int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
+                            int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
                             int multihitpct2 = i == P_TWO_HANDED_WEAPON ? two_handed_weapon_multishot_percentage_chance(limited_skill_level(i, TRUE, FALSE)) 
                                 : martial_arts_multishot_percentage_chance(limited_skill_level(i, TRUE, FALSE));// min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1));
                             char hbuf2[BUFSZ] = "";
@@ -3169,8 +3206,8 @@ enhance_weapon_skill()
                         switch (i)
                         {
                         case P_DIGGING:
-                            tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
-                            dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
+                            tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE);
+                            dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE);
                             criticalhitpct = digging_skill_speed_bonus(P_SKILL_LEVEL(i));
                             addplus = TRUE;
                             break;
@@ -3181,9 +3218,9 @@ enhance_weapon_skill()
                             addplus = TRUE;
                             break;
                         default:
-                            tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
-                            dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0);
-                            criticalhitpct = get_skill_critical_strike_chance(i, FALSE, FALSE, 0);
+                            tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE);
+                            dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE);
+                            criticalhitpct = get_skill_critical_strike_chance(i, FALSE, FALSE, 0, FALSE);
                             break;
                         }
                         char hbuf[BUFSZ];
@@ -3193,7 +3230,7 @@ enhance_weapon_skill()
                         {
                             Sprintf(hbuf, "--");
                             Sprintf(dbuf, "--");
-                            criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, FALSE, FALSE, 0);
+                            criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, FALSE, FALSE, 0, FALSE);
                         }
                         else
                         {
@@ -3213,8 +3250,8 @@ enhance_weapon_skill()
                             switch (i)
                             {
                             case P_DIGGING:
-                                tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
-                                dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
+                                tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
+                                dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
                                 criticalhitpct = digging_skill_speed_bonus(nextlevel);
                                 addplus2 = TRUE;
                                 break;
@@ -3225,9 +3262,9 @@ enhance_weapon_skill()
                                 addplus2 = TRUE;
                                 break;
                             default:
-                                tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
-                                dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0);
-                                criticalhitpct = get_skill_critical_strike_chance(i, TRUE, FALSE, 0);
+                                tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
+                                dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
+                                criticalhitpct = get_skill_critical_strike_chance(i, TRUE, FALSE, 0, FALSE);
                                 break;
                             }
 
@@ -3238,7 +3275,7 @@ enhance_weapon_skill()
                             {
                                 Sprintf(hbuf2, "--");
                                 Sprintf(dbuf2, "--");
-                                criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, TRUE, FALSE, 0);
+                                criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, TRUE, FALSE, 0, FALSE);
                             }
                             else
                             {
@@ -3514,9 +3551,9 @@ uwep_skill_type()
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_skill_hit_bonus(weapon, use_this_skill, nextlevel, limit_by_twoweap, apply_extra_bonuses, use_this_level)
+weapon_skill_hit_bonus(weapon, use_this_skill, nextlevel, limit_by_twoweap, apply_extra_bonuses, use_this_level, use_adjusted_sklvl)
 struct obj *weapon;
-int use_this_skill, use_this_level;
+int use_this_skill, use_this_level, use_adjusted_sklvl;
 boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
 {
     int bonus = 0;
@@ -3534,7 +3571,7 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
         if (type == P_NONE || type == P_MARTIAL_ARTS)
             type2 = P_BARE_HANDED_COMBAT;
 
-        int skill_level = use_this_level > 0 ? use_this_level : limited_skill_level(type2, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type2), P_SKILL_LEVEL(type2) + (nextlevel ? 1 : 0));
+        int skill_level = use_this_level > 0 ? use_this_level : use_adjusted_sklvl ? adjusted_limited_skill_level(type2, nextlevel, limit_by_twoweap) : limited_skill_level(type2, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type2), P_SKILL_LEVEL(type2) + (nextlevel ? 1 : 0));
 
         bonus += 3 * max(skill_level - 1, 0);
         /* unskilled: -1, basic: +0, skilled: +1, expert: +2 */
@@ -3557,11 +3594,11 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
     }
     else if (type <= P_LAST_WEAPON || type == P_SHIELD || type == P_DIGGING)
     {
-        int skill_level = use_this_level > 0 ? use_this_level : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
+        int skill_level = use_this_level > 0 ? use_this_level : use_adjusted_sklvl ? adjusted_limited_skill_level(type, nextlevel, limit_by_twoweap) : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
         switch (skill_level)
         {
         default:
-            impossible(bad_skill, P_SKILL_LEVEL(type)); /* fall through */
+            impossible(bad_skill, skill_level); /* fall through */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
             bonus += -4;
@@ -3652,7 +3689,7 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
     /* Martial arts */
     if ((!use_this_skill && apply_martial_arts_bonus) || type == P_MARTIAL_ARTS)
     {
-        int skill_level = use_this_level > 0 ? use_this_level : limited_skill_level(type, nextlevel, limit_by_twoweap); // min(P_MAX_SKILL_LEVEL(P_MARTIAL_ARTS), P_SKILL_LEVEL(P_MARTIAL_ARTS) + (nextlevel ? 1 : 0));
+        int skill_level = use_this_level > 0 ? use_this_level : use_adjusted_sklvl ? adjusted_limited_skill_level(type, nextlevel, limit_by_twoweap) : limited_skill_level(type, nextlevel, limit_by_twoweap); // min(P_MAX_SKILL_LEVEL(P_MARTIAL_ARTS), P_SKILL_LEVEL(P_MARTIAL_ARTS) + (nextlevel ? 1 : 0));
         bonus += 4 * max(skill_level - 1, 0); /* unskilled => 0 */
         /* unskilled: +0, basic: +2, skilled: +4, expert: +6 */
         /* total with expert in bare-handed combat: */
@@ -3674,9 +3711,9 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_skill_dmg_bonus(weapon, use_this_skill, nextlevel, limit_by_twoweap, apply_extra_bonuses, use_this_level)
+weapon_skill_dmg_bonus(weapon, use_this_skill, nextlevel, limit_by_twoweap, apply_extra_bonuses, use_this_level, use_adjusted_sklvl)
 struct obj *weapon;
-int use_this_skill, use_this_level;
+int use_this_skill, use_this_level, use_adjusted_sklvl;
 boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
 {
     int bonus = 0;
@@ -3693,7 +3730,7 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
         if (type == P_NONE || type == P_MARTIAL_ARTS)
             type2 = P_BARE_HANDED_COMBAT;
 
-        int skill_level = use_this_level > 0 ? use_this_level : limited_skill_level(type2, nextlevel, limit_by_twoweap);  //min(P_MAX_SKILL_LEVEL(type2), P_SKILL_LEVEL(type2) + (nextlevel ? 1 : 0));
+        int skill_level = use_this_level > 0 ? use_this_level : use_adjusted_sklvl ? adjusted_limited_skill_level(type2, nextlevel, limit_by_twoweap) : limited_skill_level(type2, nextlevel, limit_by_twoweap);  //min(P_MAX_SKILL_LEVEL(type2), P_SKILL_LEVEL(type2) + (nextlevel ? 1 : 0));
 
         bonus += 2 * max(skill_level - 1, 0); /* unskilled => 0 */
         /*
@@ -3715,7 +3752,7 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
     } 
     else if (type <= P_LAST_WEAPON || type == P_SHIELD || type == P_DIGGING)
     {
-        int skill_level = use_this_level > 0 ? use_this_level : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
+        int skill_level = use_this_level > 0 ? use_this_level : use_adjusted_sklvl ? adjusted_limited_skill_level(type, nextlevel, limit_by_twoweap) : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
         switch (skill_level)
         {
         default:
@@ -3805,7 +3842,7 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
 
     if ((!use_this_skill && apply_martial_arts_bonus) || type == P_MARTIAL_ARTS)
     {
-        int skill_level = use_this_level > 0 ? use_this_level : limited_skill_level(type, nextlevel, limit_by_twoweap);  //min(P_MAX_SKILL_LEVEL(P_MARTIAL_ARTS), P_SKILL_LEVEL(P_MARTIAL_ARTS) + (nextlevel ? 1 : 0));
+        int skill_level = use_this_level > 0 ? use_this_level : use_adjusted_sklvl ? adjusted_limited_skill_level(type, nextlevel, limit_by_twoweap) : limited_skill_level(type, nextlevel, limit_by_twoweap);  //min(P_MAX_SKILL_LEVEL(P_MARTIAL_ARTS), P_SKILL_LEVEL(P_MARTIAL_ARTS) + (nextlevel ? 1 : 0));
         bonus += 3 * max(skill_level - 1, 0); /* unskilled => 0 */
         /* unskilled: +0, basic: +2, skilled: +4, expert: +6 */
         /* total with expert in bare-handed combat: */
@@ -4128,16 +4165,16 @@ register struct obj *obj;
 }
 
 int
-get_skill_critical_strike_chance(skill_type, nextlevel, limit_by_twoweap, use_this_level)
+get_skill_critical_strike_chance(skill_type, nextlevel, limit_by_twoweap, use_this_level, use_adjusted_sklvl)
 enum p_skills skill_type;
-boolean nextlevel, limit_by_twoweap;
+boolean nextlevel, limit_by_twoweap, use_adjusted_sklvl;
 int use_this_level;
 {
     /* Note that P_NONE returns also 0 */
     if (skill_type <= P_NONE || skill_type >= P_NUM_SKILLS)
         return 0;
 
-    enum skill_levels skill_level = use_this_level > 0 ? use_this_level : limited_skill_level(skill_type, nextlevel, limit_by_twoweap);  //min(P_MAX_SKILL_LEVEL(skill_type), P_SKILL_LEVEL(skill_type) + (nextlevel ? 1 : 0));
+    enum skill_levels skill_level = use_this_level > 0 ? use_this_level : use_adjusted_sklvl ? adjusted_limited_skill_level(skill_type, nextlevel, limit_by_twoweap) :  limited_skill_level(skill_type, nextlevel, limit_by_twoweap);  //min(P_MAX_SKILL_LEVEL(skill_type), P_SKILL_LEVEL(skill_type) + (nextlevel ? 1 : 0));
     int res = 0;
 
     /* Bare handed combat and martial arts use less skill points, hence less critical strike */
@@ -4173,7 +4210,7 @@ int use_this_level;
         {
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            res = get_skill_critical_strike_chance(P_BARE_HANDED_COMBAT, nextlevel, limit_by_twoweap, use_this_level);
+            res = get_skill_critical_strike_chance(P_BARE_HANDED_COMBAT, nextlevel, limit_by_twoweap, use_this_level, use_adjusted_sklvl);
             break;
         case P_BASIC:
             res = 75;

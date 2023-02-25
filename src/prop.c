@@ -181,6 +181,7 @@ const struct propname propertynames[] = {
     { SLIME_RESISTANCE, "resistant to green slime", "slime resistance" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
     { TOTTERING, "shaking and tottering", "shaking and tottering" },
+    { MARTIAL_PROWESS, "imbued with martial prowess", "martial prowess" },
     {  0, 0 },
 };
 
@@ -355,6 +356,7 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "sliming-resistance",           0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE },  /* SLIME_RESISTANCE = 166 */
     { "laughing",                     0, 0, 1,  0, 20,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE},  /* LAUGHING = 167 */
     { "tottering",                    0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* TOTTERING = 168 */
+    { "martial-prowess",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* MARTIAL_PROWESS = 169 */
 };
 
 const char* condition_names[NUM_BL_CONDITIONS] = {

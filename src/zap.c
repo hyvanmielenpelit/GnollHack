@@ -8610,7 +8610,7 @@ uchar* out_flags_ptr;
 #if 0
     if (origobj && objects[origobj->otyp].oc_class == WAND_CLASS && allow_critical_strike)
     {
-        int skill_crit_chance = get_skill_critical_strike_chance(P_WAND, FALSE, FALSE, 0);
+        int skill_crit_chance = get_skill_critical_strike_chance(P_WAND, FALSE, FALSE, 0, TRUE);
         if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
         {
             if (out_flags_ptr)

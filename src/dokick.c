@@ -68,7 +68,7 @@ boolean clumsy;
     {
         basedmg = rnd(8) + 3;
         strdmg = ((10 + extratenths) * u_str_dmg_bonus()) / 10;
-        switch (P_SKILL_LEVEL(P_MARTIAL_ARTS))
+        switch (adjusted_skill_level(P_MARTIAL_ARTS))
         {
         case P_BASIC:
             basedmg = d(2, 4) + 3;
@@ -99,14 +99,14 @@ boolean clumsy;
     if (uarmf)
         dmg += weapon_dmg_value(uarmf, mon, &youmonst, 0);
     
-    dmg += weapon_skill_dmg_bonus(uarmf, P_MARTIAL_ARTS, FALSE, FALSE, TRUE, 0);
+    dmg += weapon_skill_dmg_bonus(uarmf, P_MARTIAL_ARTS, FALSE, FALSE, TRUE, 0, TRUE);
 
     /* excessive wt affects dex, so it affects dmg */
     if (clumsy)
         dmg /= 2;
 
     /* kicking a dragon or an elephant will not harm it, unless you are a martial artist */
-    if (thick_skinned(mon->data) && !Magical_kicking && P_SKILL_LEVEL(P_MARTIAL_ARTS) < P_BASIC)
+    if (thick_skinned(mon->data) && !Magical_kicking && adjusted_skill_level(P_MARTIAL_ARTS) < P_BASIC)
         dmg = 0;
 
     /* attacking a shade is normally useless */
@@ -138,7 +138,7 @@ boolean clumsy;
         }
         else if (martial_bonus())
         {
-            int skilllevel = P_SKILL_LEVEL(P_MARTIAL_ARTS);
+            int skilllevel = adjusted_skill_level(P_MARTIAL_ARTS);
             if (!rn2(7 - skilllevel))
                 kicksuccessful = TRUE;
         }
@@ -234,7 +234,7 @@ boolean clumsy;
 
     if (kicksuccessful && !DEADMONSTER(mon))
     {
-        int skilllevel = P_SKILL_LEVEL(P_MARTIAL_ARTS) + (Jumping ? 1 : 0);
+        int skilllevel = adjusted_skill_level(P_MARTIAL_ARTS) + (Jumping ? 1 : 0);
         if (verysmall(mon->data) || mon->data->msize == MZ_SMALL)
             hurtles = TRUE;
         else if (!bigmonst(mon->data))

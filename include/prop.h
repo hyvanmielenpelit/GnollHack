@@ -189,7 +189,8 @@ enum prop_types {
     SLIME_RESISTANCE = 166,
     LAUGHING          = 167,
     TOTTERING         = 168,
-    MAX_PROPS         = 169
+    MARTIAL_PROWESS   = 169,
+    MAX_PROPS         = 170
 };
 #define LAST_PROP (MAX_PROPS - 1)
 

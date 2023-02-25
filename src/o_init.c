@@ -762,6 +762,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
             *lo_p = LEATHER_BELT, * hi_p = BELT_OF_STORM_GIANT_STRENGTH;
         else if (otyp >= NOSE_RING_OF_BULL_STRENGTH && otyp <= NOSE_RING_OF_CEREBRAL_SAFEGUARDING)
             *lo_p = NOSE_RING_OF_BULL_STRENGTH, * hi_p = NOSE_RING_OF_CEREBRAL_SAFEGUARDING;
+        else if (otyp >= HEADBAND_OF_INTELLECT && otyp <= HEADBAND_OF_CRANIAL_TIGHTNESS)
+            *lo_p = HEADBAND_OF_INTELLECT, * hi_p = HEADBAND_OF_CRANIAL_TIGHTNESS;
         else if (otyp >= LENSES && otyp <= EYEGLASSES_OF_SEE_INVISIBLE)
             *lo_p = LENSES, * hi_p = EYEGLASSES_OF_SEE_INVISIBLE;
         else if (otyp >= GOGGLES_OF_NIGHT && otyp <= GOGGLES_OF_EYE_PROTECTION)

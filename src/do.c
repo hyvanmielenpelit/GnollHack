@@ -4054,7 +4054,7 @@ register struct obj* obj;
                 else if (applicable_launcher)
                 {
                     roll_to_hit += weapon_to_hit_value(applicable_launcher, &youmonst, &youmonst, 2);
-                    roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE, TRUE, 0);
+                    roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
 
                     if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI))
                         && (!Upolyd || your_race(youmonst.data))
@@ -4080,7 +4080,7 @@ register struct obj* obj;
                 if (throwing_weapon(obj)) /* meant to be thrown */
                     roll_to_hit += 2;
 
-                roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0);
+                roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
             }
         }
         else
@@ -4118,7 +4118,7 @@ register struct obj* obj;
 
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
 
-        double skill_dmg_bonus = (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0);
+        double skill_dmg_bonus = (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
         wep_avg_dmg += skill_dmg_bonus;
         wep_multipliable_avg_dmg += skill_dmg_bonus;
         if (wep_avg_dmg < 0)
