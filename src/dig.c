@@ -360,7 +360,7 @@ dig(VOID_ARGS)
     }
 
     context.digging.effort +=
-        10 + rn2(5) + u_strdex_to_hit_bonus() + wep->enchantment + exceptionality_digging_speed_bonus(wep) - greatest_erosion(wep) + u.ubasedaminc + u.udaminc;
+        10 + rn2(5) + u_strdex_to_hit_bonus() + wep->enchantment + material_definitions[wep->material].digging_speed_bonus + exceptionality_digging_speed_bonus(wep) - greatest_erosion(wep) + u.ubasedaminc + u.udaminc;
     
     int speed_bonus = digging_skill_speed_bonus(P_SKILL_LEVEL(objects[wep->otyp].oc_skill));
     context.digging.effort = max(1, (context.digging.effort * (100 + speed_bonus)) / 100);
