@@ -157,7 +157,7 @@ unsigned long *ospecial;
                 }
                 else
                 {
-                    struct obj* otmp = vobj_at(x, y);
+                    struct obj* otmp = cansee(x, y) ? vobj_at(x, y) : level.locations[x][y].hero_memory_layers.memory_objchn;
                     obj_color(otmp, objoffset);
                 }
             }
@@ -458,7 +458,7 @@ unsigned long *ospecial;
                 missile_color(layers, offset);
             else
             {
-                struct obj* otmp = vobj_at(x, y);
+                struct obj* otmp = cansee(x, y) ? vobj_at(x, y) : level.locations[x][y].hero_memory_layers.memory_objchn;
                 obj_color(otmp, offset);
             }
         }
