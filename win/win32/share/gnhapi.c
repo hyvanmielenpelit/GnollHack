@@ -337,6 +337,12 @@ LibSaveAndRestoreSavedGame(void)
         && !program_state.gameover && !program_state.panicking 
         && !program_state.exiting && !program_state.freeing_dynamic_data)
     {
+#ifdef INSURANCE
+        save_currentstate();
+#endif
+        issue_gui_command(GUI_CMD_WAIT_FOR_RESUME);
+        /* Already in the right state */
+#if 0
         if (dosave0(TRUE))
         {
             issue_gui_command(GUI_CMD_WAIT_FOR_RESUME);
@@ -351,6 +357,7 @@ LibSaveAndRestoreSavedGame(void)
         }
         else
             (void)doredraw();
+#endif
     }
 }
 
@@ -536,9 +543,6 @@ int RunGnollHack(
 
     GetCwdCallback callback_getcwd,
     MessageBoxCallback callback_messagebox,
-    //OutRipBeginCallback callback_outrip_begin,
-    //OutRipEndCallback callback_outrip_end,
-
     FreeMemoryCallback callback_free_memory,
     ReportPlayerNameCallback callback_report_player_name,
     ReportPlayTimeCallback callback_report_play_time,
