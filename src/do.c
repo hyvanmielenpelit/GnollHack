@@ -1195,6 +1195,14 @@ register struct obj* obj;
                         putstr(datawin, ATR_INDENT_AT_COLON, buf);
                     }
                 }
+                if (material_definitions[obj->material].digging_speed_bonus != 0)
+                {
+                    if (is_pick(obj) || is_axe(obj) || is_saw(obj))
+                    {
+                        Sprintf(buf, "Material bonus:         %d%% %s speed", material_definitions[obj->material].digging_speed_bonus, is_axe(obj) ? "chopping" : is_saw(obj) ? "cutting" : "digging");
+                        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    }
+                }
             }
         }
 
