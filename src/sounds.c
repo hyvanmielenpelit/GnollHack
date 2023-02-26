@@ -2147,6 +2147,7 @@ dochat()
     int tx, ty;
     struct obj *otmp;
     boolean elbereth_was_known = (boolean)u.uevent.elbereth_known;
+    boolean target_is_steed = FALSE;
 
     if (!getdir("Talk to whom? (in what direction)")) 
     {
@@ -2154,7 +2155,7 @@ dochat()
         return 0;
     }
 
-    if (u.dx == 0 && u.dy == 0)
+    if (u.dx == 0 && u.dy == 0 && u.dz == 0)
     {
         struct special_view_info info = { 0 };
         info.viewtype = SPECIAL_VIEW_CHAT_MESSAGE;
@@ -2171,25 +2172,24 @@ dochat()
         return 0;
     }
 
-    if (u.usteed && u.dz > 0)
+    if (u.usteed && u.dx == 0 && u.dy == 0 && u.dz > 0)
     {
         if (!mon_can_move(u.usteed)) 
         {
             play_sfx_sound(SFX_MONSTER_DOES_NOT_NOTICE);
             pline("%s seems not to notice you.", noittame_Monnam(u.usteed));
             return 1;
-        } else
-            return domonnoise(u.usteed, FALSE, TRUE);
+        }
+        else
+            target_is_steed = TRUE; // return domonnoise(u.usteed, FALSE, TRUE);
     }
-
-    if (u.dz)
+    else if (u.dz)
     {
         play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
         pline("They won't hear you %s there.", u.dz < 0 ? "up" : "down");
         return 0;
     }
-
-    if (u.dx == 0 && u.dy == 0) 
+    else if (u.dx == 0 && u.dy == 0) 
     {
         /* Note: Used above for chat message --JG */
 
@@ -2216,7 +2216,7 @@ dochat()
     if (!isok(tx, ty))
         return 0;
 
-    mtmp = m_at(tx, ty);
+    mtmp = target_is_steed ? u.usteed : m_at(tx, ty);
 
     if ((!mtmp || mtmp->mundetected)
         && (otmp = vobj_at(tx, ty)) != 0 && otmp->otyp == STATUE)
