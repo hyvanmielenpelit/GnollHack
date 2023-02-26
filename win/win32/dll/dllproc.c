@@ -1207,7 +1207,7 @@ dll_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    dll_add_extended_menu(wid, glyph, identifier, zeroextendedmenuinfo,
+    dll_add_extended_menu(wid, glyph, identifier, nilextendedmenuinfo,
         accelerator, group_accel, attr,
         str, presel);
 }

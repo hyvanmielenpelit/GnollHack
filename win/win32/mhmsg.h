@@ -63,6 +63,7 @@ typedef struct mswin_nhmsg_add_menu {
     CHAR_P accelerator;
     CHAR_P group_accel;
     int attr;
+    int color;
     const char *str;
     BOOLEAN_P presel;
 } MSNHMsgAddMenu, *PMSNHMsgAddMenu;

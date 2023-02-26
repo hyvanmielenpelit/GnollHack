@@ -2021,7 +2021,10 @@ struct WinDesc *cw;
 
                     if (!iflags.use_menu_color
                         || !get_menu_coloring(curr->str, &color, &attr))
+                    {
                         attr = curr->attr;
+                        color = curr->color;
+                    }
 
                     /* which character to start attribute highlighting;
                        whole line for headers and such, after the selector
@@ -3133,22 +3136,40 @@ int attr;                   /* attribute for string (like tty_putstr()) */
 const char *str;            /* menu string */
 boolean preselected;        /* item is marked as selected */
 {
-    register struct WinDesc *cw = 0;
-    tty_menu_item *item;
-    const char *newstr;
+    struct extended_menu_info info = nilextendedmenuinfo;
+    tty_add_extended_menu(window, glyph, identifier, info, ch, gch, attr, str, preselected);
+}
+
+void
+tty_add_extended_menu(window, glyph, identifier, info, ch, gch, attr, str, preselected)
+winid window;               /* window to use, must be of type NHW_MENU */
+int glyph UNUSED;           /* glyph to display with item (not used) */
+const anything* identifier; /* what to return if selected */
+struct extended_menu_info info;
+char ch;                    /* keyboard accelerator (0 = pick our own) */
+char gch;                   /* group accelerator (0 = no group) */
+int attr;                   /* attribute for string (like tty_putstr()) */
+const char* str;            /* menu string */
+boolean preselected;        /* item is marked as selected */
+{
+    register struct WinDesc* cw = 0;
+    tty_menu_item* item;
+    const char* newstr;
     char buf[4 + BUFSZ];
 
     HUPSKIP();
-    if (str == (const char *) 0)
+    if (str == (const char*)0)
         return;
 
     if (window == WIN_ERR
-        || (cw = wins[window]) == (struct WinDesc *) 0
+        || (cw = wins[window]) == (struct WinDesc*)0
         || cw->type != NHW_MENU)
     {
         panic(winpanicstr, window);
         return;
     }
+
+    int color = info.color;
 
     cw->nitems++;
     if (identifier->a_void) {
@@ -3160,38 +3181,25 @@ boolean preselected;        /* item is marked as selected */
             len = BUFSZ - 1;
         }
         Sprintf(buf, "%c - ", ch ? ch : '?');
-        (void) strncpy(buf + 4, str, len);
+        (void)strncpy(buf + 4, str, len);
         buf[4 + len] = '\0';
         newstr = buf;
-    } else
+    }
+    else
         newstr = str;
 
-    item = (tty_menu_item *) alloc(sizeof(tty_menu_item));
+    item = (tty_menu_item*)alloc(sizeof(tty_menu_item));
     item->identifier = *identifier;
     item->count = -1L;
     item->selected = preselected;
     item->selector = ch;
     item->gselector = gch;
     item->attr = attr;
+    item->color = color;
     item->str = dupstr(newstr ? newstr : "");
 
     item->next = cw->mlist;
     cw->mlist = item;
-}
-
-void
-tty_add_extended_menu(window, glyph, identifier, info, ch, gch, attr, str, preselected)
-winid window;               /* window to use, must be of type NHW_MENU */
-int glyph UNUSED;           /* glyph to display with item (not used) */
-const anything* identifier; /* what to return if selected */
-struct extended_menu_info info UNUSED;
-char ch;                    /* keyboard accelerator (0 = pick our own) */
-char gch;                   /* group accelerator (0 = no group) */
-int attr;                   /* attribute for string (like tty_putstr()) */
-const char* str;            /* menu string */
-boolean preselected;        /* item is marked as selected */
-{
-    tty_add_menu(window, glyph, identifier, ch, gch, attr, str, preselected);
 }
 
 /* Invert the given list, can handle NULL as an input. */

@@ -385,7 +385,7 @@ E NEARDATA const anything zeroany;   /* init'd and defined in decl.c */
 
 E NEARDATA const struct layer_info zerolayerinfo;
 E NEARDATA const struct replacement_info zeroreplacementinfo;
-E NEARDATA const struct extended_menu_info zeroextendedmenuinfo;
+E NEARDATA const struct extended_menu_info nilextendedmenuinfo;
 E NEARDATA const struct extended_create_window_info zerocreatewindowinfo;
 
 E NEARDATA const struct d_level zerodlevel;

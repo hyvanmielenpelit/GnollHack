@@ -1733,7 +1733,7 @@ struct save_game_data* saved;
             int glyph = saved[k].gamestats.glyph;
             int gui_glyph = saved[k].gamestats.gui_glyph;
             any.a_int = k + 1;
-            struct extended_menu_info menuinfo = { 0 };
+            struct extended_menu_info menuinfo = nilextendedmenuinfo;
             menuinfo.color = style == 1 ? CLR_RED : NO_COLOR;
 
             add_extended_menu(tmpwin, iflags.using_gui_tiles ? gui_glyph : glyph, &any, menuinfo, 0, 0, ATR_HEADING | ATR_BOLD, namebuf,

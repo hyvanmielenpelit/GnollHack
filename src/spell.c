@@ -54,7 +54,7 @@ STATIC_DCL boolean FDECL(spell_aim_step, (genericptr_t, int, int));
 STATIC_DCL const char *FDECL(spelltypemnemonic, (int));
 STATIC_DCL const char* FDECL(spelltypesymbol, (int));
 STATIC_DCL int FDECL(domaterialcomponentsmenu, (int));
-STATIC_DCL void FDECL(add_spell_cast_menu_item, (winid, int, int, int, char*, int*, BOOLEAN_P));
+STATIC_DCL void FDECL(add_spell_cast_menu_item, (winid, int, int, int, BOOLEAN_P));
 STATIC_DCL void FDECL(add_spell_cast_menu_heading, (winid, int, BOOLEAN_P));
 STATIC_DCL void FDECL(add_spell_prepare_menu_item, (winid, int, int, int, int, BOOLEAN_P));
 STATIC_DCL void FDECL(add_spell_prepare_menu_heading, (winid, int, int, BOOLEAN_P));
@@ -1188,12 +1188,12 @@ int* spell_no;
                 Strcpy(descbuf, nodesc);
 
             boolean inactive = FALSE;
-            struct extended_menu_info info = { 0 };
+            struct extended_menu_info info = nilextendedmenuinfo;
             info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
             if (spellknow(splnum) <= 0)
             {
                 Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
-                info.color = CLR_GRAY;
+                info.color = CLR_BLACK;
                 info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
                 inactive = TRUE;
             }
@@ -3633,20 +3633,20 @@ int splaction; /* SPELLMENU_CAST, SPELLMENU_REORDER, or spl_book[] index */
 int *spell_no;
 {
     winid tmpwin;
-    int i, j, n, how, splnum;
+    int i, n, how, splnum;
     char buf[BUFSZ], descbuf[BUFSZ], fmt[BUFSZ];
-    char* colorbufs[MAXSPELL];
-    int colorbufcnt = 0;
+    //char* colorbufs[MAXSPELL];
+    //int colorbufcnt = 0;
     //const char *fmt;
     menu_item *selected;
     anything any;
     const char* nodesc = "(No short description)";
 
-    for (j = 0; j < MAXSPELL; j++)
-    {
-        colorbufs[j] = (char*)malloc(BUFSZ * sizeof(char));
-        strcpy(colorbufs[j], "");
-    }
+    //for (j = 0; j < MAXSPELL; j++)
+    //{
+    //    colorbufs[j] = (char*)malloc(BUFSZ * sizeof(char));
+    //    strcpy(colorbufs[j], "");
+    //}
 
     tmpwin = create_nhwindow(NHW_MENU);
     start_menu_ex(tmpwin, GHMENU_STYLE_SPELLS);
@@ -3849,7 +3849,7 @@ int *spell_no;
         {
             if (hotkeys[i] >= 0)
             {
-                add_spell_cast_menu_item(tmpwin, hotkeys[i], splaction, namelength, colorbufs[colorbufcnt], &colorbufcnt, TRUE);
+                add_spell_cast_menu_item(tmpwin, hotkeys[i], splaction, namelength, TRUE);
                 hotkeyfound = TRUE;
             }
         }
@@ -3860,7 +3860,7 @@ int *spell_no;
 
         for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++)
         {
-            add_spell_cast_menu_item(tmpwin, i, splaction, namelength, colorbufs[colorbufcnt], &colorbufcnt, FALSE);
+            add_spell_cast_menu_item(tmpwin, i, splaction, namelength, FALSE);
         }
     }
 
@@ -3883,15 +3883,15 @@ int *spell_no;
     destroy_nhwindow(tmpwin);
     
     //Remove menucolors
-    for (j = 0; j < colorbufcnt; j++)
-    {
-        free_menu_coloring_str(colorbufs[j]);
-    }
+    //for (j = 0; j < colorbufcnt; j++)
+    //{
+    //    free_menu_coloring_str(colorbufs[j]);
+    //}
 
-    for (j = 0; j < MAXSPELL; j++)
-    {
-        free(colorbufs[j]);
-    }
+    //for (j = 0; j < MAXSPELL; j++)
+    //{
+    //    free(colorbufs[j]);
+    //}
 
 
     if (n > 0) {
@@ -4170,7 +4170,7 @@ int splaction;
     }
 
     boolean inactive = FALSE;
-    struct extended_menu_info info = { 0 };
+    struct extended_menu_info info = nilextendedmenuinfo;
     info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
     if (spellcooldownleft(splnum) > 0 || spellknow(splnum) <= 0)
     {
@@ -4231,7 +4231,7 @@ int splaction;
         strcpy(matcompbuf, "No components");
 
     boolean inactive = FALSE;
-    struct extended_menu_info info = { 0 };
+    struct extended_menu_info info = nilextendedmenuinfo;
     info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
     if (spellknow(splnum) <= 0)
     {
@@ -4257,13 +4257,11 @@ int splaction;
 
 STATIC_OVL
 void
-add_spell_cast_menu_item(tmpwin, i, splaction, namelength, colorbufs, colorbufcnt, usehotkey)
+add_spell_cast_menu_item(tmpwin, i, splaction, namelength, usehotkey)
 winid tmpwin;
 int i;
 int splaction;
 int namelength;
-char *colorbufs;
-int* colorbufcnt;
 boolean usehotkey;
 {
     int splnum = !flags.spellorder || usehotkey ? i : (int)spl_orderindx[i];
@@ -4296,7 +4294,7 @@ boolean usehotkey;
 #endif
     }
 
-    Sprintf(fullname, "%s%s", spellcooldownleft(splnum) > 0 ? "-" : "",
+    Sprintf(fullname, "%s%s", spellcooldownleft(splnum) > 0 ? "[" : "",
         spellname(splnum));
 
     //Spell name
@@ -4306,7 +4304,7 @@ boolean usehotkey;
         strcpy(shortenedname, fullname);
 
     if (spellcooldownleft(splnum) > 0)
-        Strcat(shortenedname, "-");
+        Strcat(shortenedname, "]");
 
     //Spell level
     if (spellev(splnum) < -1)
@@ -4403,16 +4401,22 @@ boolean usehotkey;
     else
         letter = 0; // spellet(splnum);
 
-    add_menu(tmpwin, NO_GLYPH, &any, letter, 0, ATR_NONE, buf,
+    struct extended_menu_info info = nilextendedmenuinfo;
+    if ((spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE) || spellknow(splnum) <= 0)
+        info.color = CLR_BLACK;
+    else
+        info.color = NO_COLOR;
+
+    add_extended_menu(tmpwin, NO_GLYPH, &any, info, letter, 0, ATR_NONE, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
-    Strcat(shortenedname, "=black");
-    if (spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE)
-    {
-        add_menu_coloring(shortenedname);
-        strcpy(colorbufs, shortenedname);
-        (*colorbufcnt)++;
-    }
+    //Strcat(shortenedname, "=black");
+    //if (spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE)
+    //{
+    //    add_menu_coloring(shortenedname);
+    //    strcpy(colorbufs, shortenedname);
+    //    (*colorbufcnt)++;
+    //}
     /* //Should not be needed
     else
     {

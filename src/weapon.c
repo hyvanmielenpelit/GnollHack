@@ -2168,7 +2168,7 @@ doskill_core()
 
                 boolean canadv = can_advance(i, speedy);
                 any.a_int = i + 1; // canadv ? i + 1 : 0;
-                struct extended_menu_info info = { 0 };
+                struct extended_menu_info info = nilextendedmenuinfo;
                 info.color = color;
                 if(canadv)
                     info.menu_flags |= MENU_FLAGS_ACTIVE;
@@ -2246,8 +2246,7 @@ boolean speedy;
     actioncount++;
 
     /* Advance skill */
-    struct extended_menu_info menuinfo = { 0 };
-    menuinfo.color = NO_COLOR;
+    struct extended_menu_info menuinfo = nilextendedmenuinfo;
     any = zeroany;
 
     if (canadv)

@@ -1326,6 +1326,7 @@ mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct ex
              presel);
 
     struct obj* otmp = info.object;
+    int color = info.color;
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
@@ -1337,6 +1338,7 @@ mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct ex
         data.accelerator = accelerator;
         data.group_accel = group_accel;
         data.attr = attr;
+        data.color = color;
         data.str = str;
         data.presel = presel;
 
@@ -1350,7 +1352,7 @@ mswin_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    mswin_add_extended_menu(wid, glyph, identifier, zeroextendedmenuinfo,
+    mswin_add_extended_menu(wid, glyph, identifier, nilextendedmenuinfo,
         accelerator, group_accel, attr,
         str, presel);
 }

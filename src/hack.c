@@ -3941,8 +3941,7 @@ struct extended_menu_info
 obj_to_extended_menu_info(otmp)
 struct obj* otmp;
 {
-    struct extended_menu_info info = { 0 };
-    info.color = CLR_WHITE;
+    struct extended_menu_info info = nilextendedmenuinfo;
     info.object = otmp;
 
     return info;
@@ -3951,8 +3950,7 @@ struct obj* otmp;
 struct extended_menu_info
 menu_heading_info()
 {
-    struct extended_menu_info info = { 0 };
-    info.color = CLR_WHITE;
+    struct extended_menu_info info = nilextendedmenuinfo;
     info.menu_flags = MENU_FLAGS_IS_HEADING;
 
     return info;
@@ -3962,8 +3960,7 @@ struct extended_menu_info
 menu_group_heading_info(groupaccel)
 char groupaccel;
 {
-    struct extended_menu_info info = { 0 };
-    info.color = CLR_WHITE;
+    struct extended_menu_info info = nilextendedmenuinfo;
     info.menu_flags = MENU_FLAGS_IS_HEADING | MENU_FLAGS_IS_GROUP_HEADING;
     info.heading_for_group_accelerator = groupaccel;
 
@@ -3975,7 +3972,7 @@ menu_special_mark_info(special_mark, color)
 char special_mark;
 int color;
 {
-    struct extended_menu_info info = { 0 };
+    struct extended_menu_info info = nilextendedmenuinfo;
     info.color = color;
     info.special_mark = special_mark;
 

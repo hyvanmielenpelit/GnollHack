@@ -1140,9 +1140,8 @@ boolean ischaractermenu;
     int glyph = 0, gui_glyph = 0;
     const char* fmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
         "%s (&mana; %d)" : "%s (%d mana)";
-    struct extended_menu_info menuinfo = { 0 };
+    struct extended_menu_info menuinfo = nilextendedmenuinfo;
     menuinfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
-    menuinfo.color = NO_COLOR;
 
     /* Monster abilities */
     if (can_breathe(youmonst.data)
@@ -1431,7 +1430,7 @@ boolean ischaractermenu;
 
         if (can_breathe(u.usteed->data))
         {
-            struct extended_menu_info steedmenuinfo = { 0 };
+            struct extended_menu_info steedmenuinfo = nilextendedmenuinfo;
             steedmenuinfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
             any = zeroany;
             if (u.usteed->mspec_used > 0)

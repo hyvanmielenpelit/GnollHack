@@ -274,7 +274,7 @@ NEARDATA const anything zeroany;
 
 NEARDATA const struct layer_info zerolayerinfo = DUMMY;
 NEARDATA const struct replacement_info zeroreplacementinfo = DUMMY;
-NEARDATA const struct extended_menu_info zeroextendedmenuinfo = DUMMY;
+NEARDATA const struct extended_menu_info nilextendedmenuinfo = { 0, 0, 0, NO_COLOR, 0, 0, 0, 0, 0UL };
 NEARDATA const struct extended_create_window_info zerocreatewindowinfo = DUMMY;
 NEARDATA const struct d_level zerodlevel = DUMMY;
 
