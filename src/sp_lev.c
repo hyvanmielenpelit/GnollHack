@@ -4735,7 +4735,7 @@ struct sp_coder *coder;
         tmproom.rfloortyp = (xchar)(flmt >= 0 && IS_FLOOR(flmt) ? flmt : ROOM); /* Rooms have default flooring as ROOM, rather than nothing */
         tmproom.rfloorsubtyp = (xchar)(IS_FLOOR(tmproom.rfloortyp) && flt >= 0 ? flt : 0);
         tmproom.tileset = (short)OV_i(rtileset);
-        tmproom.decotyp = decotyp < 0 ? 1 : decotyp;
+        tmproom.decotyp = decotyp < 0 ? (coder->croom ? 0 : 1) : decotyp;
         tmproom.mtype = NON_PM;
         if (OV_typ(mtype) == SPOVAR_MONST)
         {

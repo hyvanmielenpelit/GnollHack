@@ -249,105 +249,135 @@ int floortyp, floorsubtyp, mtype, tileset;
                 levl[lowx - 1][hiy + 1].special_tileset = (uchar)tileset;
                 levl[hix + 1][hiy + 1].special_tileset = (uchar)tileset;
             }
-
-            if (decotyp == 1)
-            {
-                int lvl_depth = max(0, depth(&u.uz));
-                int webmod = lvl_depth > 10 ? -2 : lvl_depth > 5 ? -1 : 0;
-                if (IS_WALL(levl[lowx][lowy - 1].typ) && !rn2(5 + webmod))
-                {
-                    levl[lowx][lowy - 1].decoration_typ = DECORATION_COBWEB_CORNER; // 0 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
-                    levl[lowx][lowy - 1].decoration_subtyp = decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes > 1 ? rn2(decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes) : 0;
-                    levl[lowx][lowy - 1].decoration_dir = 0;
-                }
-                if (IS_WALL(levl[hix][lowy - 1].typ) && !rn2(5 + webmod))
-                {
-                    levl[hix][lowy - 1].decoration_typ = DECORATION_COBWEB_CORNER; // 1 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
-                    levl[hix][lowy - 1].decoration_subtyp = decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes > 1 ? rn2(decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes) : 0;
-                    levl[hix][lowy - 1].decoration_dir = 1;
-                }
-
-                if (lowx + 1 < hix && !rn2(7 + webmod))
-                {
-                    int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
-                    if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ))
-                    {
-                        //levl[lowx + roll + 1][lowy - 1].feature_doodad = rn2(2) + (DOODAD_COBWEB_NORMAL)*NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
-                        levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_COBWEB;
-                        levl[lowx + roll + 1][lowy - 1].decoration_subtyp = 0;
-                        levl[lowx + roll + 1][lowy - 1].decoration_dir = rn2(2);
-                    }
-                }
-
-                int roll1 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
-                if (lowx + 1 < hix && !rn2(lvl_depth / 3 + 3))
-                {
-                    if (IS_WALL(levl[lowx + roll1 + 1][lowy - 1].typ))
-                    {
-                        if (!rn2(4))
-                        {
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_typ = !rn2(2) ? DECORATION_GARGOYLE_NICHE : DECORATION_KNIGHT_NICHE;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
-                        }
-                        else if (!rn2(4))
-                        {
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_typ = DECORATION_FIREPLACE;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_flags = 0;
-                        }
-                        else
-                        {
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
-                        }
-                    }
-                }
-                if (lowx + 1 < hix && !rn2(lvl_depth / 3 + 3))
-                {
-                    int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
-                    if (IS_WALL(levl[lowx + roll + 1][hiy + 1].typ))
-                    {
-                        levl[lowx + roll + 1][hiy + 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
-                        levl[lowx + roll + 1][hiy + 1].decoration_subtyp = 0;
-                        levl[lowx + roll + 1][hiy + 1].decoration_dir = 3;
-                        levl[lowx + roll + 1][hiy + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
-                    }
-                }
-                if (lowy + 1 < hiy && !rn2(lvl_depth / 3 + 3))
-                {
-                    int roll = hiy - lowy - 1 <= 1 ? 0 : rn2(hiy - lowy - 1);
-                    if (IS_WALL(levl[lowx - 1][lowy + roll + 1].typ))
-                    {
-                        //levl[lowx + roll + 1][lowy - 1].feature_doodad = rn2(2) + (DOODAD_COBWEB_NORMAL)*NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
-                        levl[lowx - 1][lowy + roll + 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
-                        levl[lowx - 1][lowy + roll + 1].decoration_subtyp = 0;
-                        levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
-                        levl[lowx - 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
-                    }
-                }
-                if (lowy + 1 < hiy && !rn2(lvl_depth / 3 + 3))
-                {
-                    int roll = hiy - lowy - 1 <= 1 ? 0 : rn2(hiy - lowy - 1);
-                    if (IS_WALL(levl[hix + 1][lowy + roll + 1].typ))
-                    {
-                        //levl[lowx + roll + 1][lowy - 1].feature_doodad = rn2(2) + (DOODAD_COBWEB_NORMAL)*NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
-                        levl[hix + 1][lowy + roll + 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
-                        levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;
-                        levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
-                        levl[hix + 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
-                    }
-                }
-            }
         }
         else 
         { /* a subroom */
             wallification(lowx - 1, lowy - 1, hix + 1, hiy + 1);
         }
+
+        /* Decorations */
+        if (decotyp == 1)
+        {
+            int lvl_depth = max(0, depth(&u.uz));
+            int webmod = lvl_depth > 10 ? -2 : lvl_depth > 5 ? -1 : 0;
+            if (IS_WALL(levl[lowx][lowy - 1].typ) && !rn2(5 + webmod))
+            {
+                levl[lowx][lowy - 1].decoration_typ = DECORATION_COBWEB_CORNER; // 0 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                levl[lowx][lowy - 1].decoration_subtyp = decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes > 1 ? rn2(decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes) : 0;
+                levl[lowx][lowy - 1].decoration_dir = 0;
+            }
+            if (IS_WALL(levl[hix][lowy - 1].typ) && !rn2(5 + webmod))
+            {
+                levl[hix][lowy - 1].decoration_typ = DECORATION_COBWEB_CORNER; // 1 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                levl[hix][lowy - 1].decoration_subtyp = decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes > 1 ? rn2(decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes) : 0;
+                levl[hix][lowy - 1].decoration_dir = 1;
+            }
+
+            if (lowx + 1 < hix && !rn2(7 + webmod))
+            {
+                int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ))
+                {
+                    //levl[lowx + roll + 1][lowy - 1].feature_doodad = rn2(2) + (DOODAD_COBWEB_NORMAL)*NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                    levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_COBWEB;
+                    levl[lowx + roll + 1][lowy - 1].decoration_subtyp = 0;
+                    levl[lowx + roll + 1][lowy - 1].decoration_dir = rn2(2);
+                }
+            }
+
+            int roll1 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+            if (lowx + 1 < hix && !rn2(lvl_depth / 3 + 3))
+            {
+                if (IS_WALL(levl[lowx + roll1 + 1][lowy - 1].typ))
+                {
+                    if (!rn2(4))
+                    {
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_typ = !rn2(2) ? DECORATION_GARGOYLE_NICHE : DECORATION_KNIGHT_NICHE;
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                    }
+                    else if (!rn2(4))
+                    {
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_typ = DECORATION_FIREPLACE;
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_flags = 0;
+                    }
+                    else
+                    {
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                    }
+                }
+            }
+            if (lowx + 1 < hix && !rn2(lvl_depth / 3 + 3))
+            {
+                int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                if (IS_WALL(levl[lowx + roll + 1][hiy + 1].typ))
+                {
+                    levl[lowx + roll + 1][hiy + 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
+                    levl[lowx + roll + 1][hiy + 1].decoration_subtyp = 0;
+                    levl[lowx + roll + 1][hiy + 1].decoration_dir = 3;
+                    levl[lowx + roll + 1][hiy + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                }
+            }
+            if (lowy + 1 < hiy && !rn2(lvl_depth / 3 + 3))
+            {
+                int roll = hiy - lowy - 1 <= 1 ? 0 : rn2(hiy - lowy - 1);
+                if (IS_WALL(levl[lowx - 1][lowy + roll + 1].typ))
+                {
+                    //levl[lowx + roll + 1][lowy - 1].feature_doodad = rn2(2) + (DOODAD_COBWEB_NORMAL)*NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                    levl[lowx - 1][lowy + roll + 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
+                    levl[lowx - 1][lowy + roll + 1].decoration_subtyp = 0;
+                    levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
+                    levl[lowx - 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                }
+            }
+            if (lowy + 1 < hiy && !rn2(lvl_depth / 3 + 3))
+            {
+                int roll = hiy - lowy - 1 <= 1 ? 0 : rn2(hiy - lowy - 1);
+                if (IS_WALL(levl[hix + 1][lowy + roll + 1].typ))
+                {
+                    //levl[lowx + roll + 1][lowy - 1].feature_doodad = rn2(2) + (DOODAD_COBWEB_NORMAL)*NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
+                    levl[hix + 1][lowy + roll + 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
+                    levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;
+                    levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
+                    levl[hix + 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                }
+            }
+        }
+        else if (decotyp == 2)
+        {
+            int lvl_depth = max(0, depth(&u.uz));
+            int roll1 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+            int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+
+            if (IS_WALL(levl[lowx + roll1 + 1][lowy - 1].typ))
+            {
+                if (!rn2(3))
+                {
+                    levl[lowx + roll1 + 1][lowy - 1].decoration_typ = DECORATION_FIREPLACE;
+                    levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
+                    levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
+                    levl[lowx + roll1 + 1][lowy - 1].decoration_flags = 0;
+                }
+            }
+            if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ))
+            {
+                if (!rn2(4))
+                {
+                    levl[lowx + roll2 + 1][lowy - 1].decoration_typ = DECORATION_PAINTING;
+                    levl[lowx + roll2 + 1][lowy - 1].decoration_subtyp = rn2(MAX_PAINTINGS);
+                    levl[lowx + roll2 + 1][lowy - 1].decoration_dir = 0;
+                    levl[lowx + roll2 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                }
+            }
+        }
+
+
     }
     else
     {

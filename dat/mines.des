@@ -307,29 +307,29 @@ SIGNPOST: (15, 6),signpost_normal,"Stay out of the fountains!"
   ROOMDOOR: false, closed, west, random
 }
 
-SUBROOM: "npcroom", lit, (5,0), (2,2) {
+SUBROOM: "npcroom", lit, (5,0), (2,2) decoration_style:2 {
   ROOMDOOR: false, closed, south, random
   NPC: npc_hermit3, random
 }
 
-[75%]: SUBROOM: "ordinary", random, (8,0), (2,2) floorsubtype:floor_parquet {
+[75%]: SUBROOM: "ordinary", random, (8,0), (2,2) floorsubtype:floor_parquet decoration_style:2 {
   ROOMDOOR: false, closed, east, random
 }
 
-[75%]: SUBROOM: "ordinary", lit, (16,0), (2,2) {
+[75%]: SUBROOM: "ordinary", lit, (16,0), (2,2) decoration_style:2 {
   ROOMDOOR: false, closed, west, random
 }
 
-[75%]: SUBROOM: "ordinary", unlit, (19,0), (2,2) floorsubtype:floor_parquet {
+[75%]: SUBROOM: "ordinary", unlit, (19,0), (2,2) floorsubtype:floor_parquet decoration_style:2 {
   ROOMDOOR: false, closed, south, random
 }
 
-[75%]: SUBROOM: "ordinary", random, (22,0), (2,2) {
+[75%]: SUBROOM: "ordinary", random, (22,0), (2,2) decoration_style:2 {
   ROOMDOOR: false, locked, south, random
   MONSTER: ('g', "gnome"), random
 }
 
-SUBROOM: "npcroom", unlit, (25,0), (2,2) {
+SUBROOM: "npcroom", unlit, (25,0), (2,2) decoration_style:2 {
   ROOMDOOR: false, closed, east, random
   NPC: npc_quantum_mechanic, random
   CONTAINER: ('(', "chest"),random,locked,trapped,buried {
@@ -339,17 +339,17 @@ SUBROOM: "npcroom", unlit, (25,0), (2,2) {
   }
 }
 
-[75%]: SUBROOM: "ordinary", lit, (2,5), (2,2) {
+[75%]: SUBROOM: "ordinary", lit, (2,5), (2,2) decoration_style:2 {
   ROOMDOOR: false, closed, north, random
 }
 
-SUBROOM: "ordinary", lit, (5,5), (2,2) {
+SUBROOM: "ordinary", lit, (5,5), (2,2) decoration_style:2 {
   OBJECT:('/',"town portal"),(1,1),no_pickup
   ENGRAVING:(1,1),engrave, "Here's the wand you ordered. -Endicott"
   ROOMDOOR: false, closed, south, random
 }
 
-[75%]: SUBROOM: "ordinary", random, (8,5), (2,2) {
+[75%]: SUBROOM: "ordinary", random, (8,5), (2,2) decoration_style:2 {
   ROOMDOOR: false, locked, north, random
   MONSTER: ('g', "gnome"), random
 }
@@ -370,7 +370,7 @@ SUBROOM: "candle shop", lit, (11,10), (4,3) {
   ROOMDOOR: false, closed, east, random
 }
 
-SUBROOM: "npcroom", lit, (7,10), (3,3) floorsubtype:floor_parquet {
+SUBROOM: "npcroom", lit, (7,10), (3,3) floorsubtype:floor_parquet decoration_style:2 {
   ROOMDOOR: false, closed, north, random
   NPC: npc_geologist, random
 }
@@ -386,7 +386,7 @@ SUBROOM: "temple", lit, (19,5), (4,4) floorsubtype:floor_marble {
   OBJECT: ('(', "large five-branched candelabrum"), (03,03), special_quality:5, lit
 }
 
-SUBROOM: "smithy", lit, (18,10), (4,3) {
+SUBROOM: "smithy", lit, (18,10), (4,3) decoration_style:2 {
   ROOMDOOR: false, closed, west, random
   ANVIL:(02,01)
   MONSTER: ('g', "gnome lord"), random
@@ -432,7 +432,7 @@ ROOM: "ordinary",lit,(3,3),(center,center),(31,15) floortype:location_ground dec
 FOUNTAIN:(01,06),fountain_healing
 FOUNTAIN:(29,13),fountain_water
 
-SUBROOM:"ordinary",random,(2,2),(2,2) {
+SUBROOM:"ordinary",random,(2,2),(2,2) decoration_style:2 {
   ROOMDOOR: false,closed,south,random
 }
 
@@ -440,13 +440,13 @@ SUBROOM:"tool shop" [30%], lit,(5,3),(2,3) floorsubtype:floor_parquet {
   ROOMDOOR: false,closed,south,random
 }
 
-SUBROOM:"smithy",lit,(2,10),(2,3) {
+SUBROOM:"smithy",lit,(2,10),(2,3) decoration_style:2 {
   ROOMDOOR: false, closed, north, random
   ANVIL:(1,1)
   MONSTER: 'g',random
 }
 
-SUBROOM:"ordinary",random,(5,9),(2,2) floorsubtype:floor_parquet {
+SUBROOM:"ordinary",random,(5,9),(2,2) floorsubtype:floor_parquet decoration_style:2 {
   ROOMDOOR: false,closed,north,random
 }
 
@@ -461,7 +461,7 @@ SUBROOM:"temple",lit,(10,2),(3,4) floorsubtype:floor_marble {
   OBJECT: ('(', "large five-branched candelabrum"), (02,03), special_quality:5, lit
 }
 
-SUBROOM:"npcroom",random,(11,7),(2,2) floorsubtype:floor_parquet {
+SUBROOM:"npcroom",random,(11,7),(2,2) floorsubtype:floor_parquet decoration_style:2 {
   ROOMDOOR: false,closed,west,random
   NPC: npc_geologist, random
 }
@@ -470,12 +470,12 @@ SUBROOM:"shop",lit,(10,10),(3,3) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,west,random
 }
 
-SUBROOM:"ordinary",random,(14,8),(2,2) {
+SUBROOM:"ordinary",random,(14,8),(2,2) decoration_style:2 {
   ROOMDOOR:false,locked,north,random
   MONSTER: 'g',random
 }
 
-SUBROOM:"ordinary",random,(14,11),(2,2) {
+SUBROOM:"ordinary",random,(14,11),(2,2) decoration_style:2 {
   ROOMDOOR:false,closed,south,random
   OBJECT:('/',"town portal"),(1,1),no_pickup
   ENGRAVING:(1,1),engrave, "Here's the wand you ordered. -Endicott"
@@ -494,12 +494,12 @@ SUBROOM:"food shop" [90%],lit,(26,8),(3,2) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,west,random
 }
 
-SUBROOM:"npcroom",random,(16,2),(2,2) {
+SUBROOM:"npcroom",random,(16,2),(2,2) decoration_style:2 {
   ROOMDOOR:false,closed,west,random
   NPC: npc_hermit3, random
 }
 
-SUBROOM:"npcroom",random,(19,2),(2,2) floorsubtype:floor_parquet {
+SUBROOM:"npcroom",random,(19,2),(2,2) floorsubtype:floor_parquet decoration_style:2 {
   ROOMDOOR:false,closed,north,random
   NPC: npc_quantum_mechanic, random
   CONTAINER: ('(', "chest"),random,locked,trapped,buried {
@@ -562,7 +562,7 @@ SUBROOM:"book shop",lit,(4,2),(3,3) {
   ROOMDOOR: false,closed,south,random
 }
 
-SUBROOM:"smithy",lit,(8,2),(2,2) {
+SUBROOM:"smithy",lit,(8,2),(2,2) decoration_style:2 {
   ROOMDOOR: false,closed,south,random
   ANVIL:(1,1)
 }
@@ -578,7 +578,7 @@ SUBROOM:"temple",lit,(11,3),(5,4) floorsubtype:floor_marble {
   OBJECT: ('(', "large five-branched candelabrum"), (04,03), special_quality:5, lit
 }
 
-SUBROOM:"npcroom",random,(19,2),(2,2) {
+SUBROOM:"npcroom",random,(19,2),(2,2) decoration_style:2 {
   ROOMDOOR: false,closed,south,random
   NPC: npc_geologist, random
 }
@@ -587,7 +587,7 @@ SUBROOM:"candle shop",lit,(22,2),(3,3) {
   ROOMDOOR:false,closed,south,random
 }
 
-SUBROOM:"npcroom",lit,(26,2),(2,2) {
+SUBROOM:"npcroom",lit,(26,2),(2,2) decoration_style:2 {
   ROOMDOOR:false,closed,east,random
   NPC: npc_hermit3, random
 }
@@ -596,7 +596,7 @@ SUBROOM:"tool shop" [90%],lit,(4,10),(3,3) {
   ROOMDOOR:false,closed,north,random
 }
 
-SUBROOM:"ordinary",random,(8,11),(2,2) {
+SUBROOM:"ordinary",random,(8,11),(2,2) decoration_style:2 {
   ROOMDOOR:false,locked,south,random
   MONSTER: ('k',"kobold shaman"),random
   MONSTER: ('k',"kobold shaman"),random
@@ -608,13 +608,13 @@ SUBROOM:"food shop" [90%],lit,(11,11),(3,2) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,east,random
 }
 
-SUBROOM:"ordinary",random,(17,11),(2,2) {
+SUBROOM:"ordinary",random,(17,11),(2,2) decoration_style:2 {
   ROOMDOOR:false,closed,west,random
   OBJECT:('/',"town portal"),(1,1),no_pickup
   ENGRAVING:(1,1),engrave, "Here's the wand you ordered. -Endicott"
 }
 
-SUBROOM:"npcroom",random,(20,10),(2,2) {
+SUBROOM:"npcroom",random,(20,10),(2,2) decoration_style:2 {
   ROOMDOOR:false,closed,north,random
   NPC: npc_quantum_mechanic, random
   CONTAINER: ('(', "chest"),random,locked,trapped,buried {
@@ -934,12 +934,12 @@ FOUNTAIN: (12, 07),fountain_healing
 FOUNTAIN: (11, 13),fountain_water
 SIGNPOST: (09, 08), signpost_normal, "Stay out of the fountains!"
 
-SUBROOM: "npcroom", random, (2,2), (4,2) {
+SUBROOM: "npcroom", random, (2,2), (4,2) decoration_style:2 {
   ROOMDOOR: false, closed, south, random
   NPC: npc_geologist, random
 } 
 
-SUBROOM: "npcroom", random, (7,2), (2,2) floorsubtype:floor_parquet {
+SUBROOM: "npcroom", random, (7,2), (2,2) floorsubtype:floor_parquet decoration_style:2 {
   ROOMDOOR: false, closed, north, random
   NPC: npc_quantum_mechanic, random
   CONTAINER: ('(', "chest"),random,locked,trapped,buried {
@@ -949,13 +949,13 @@ SUBROOM: "npcroom", random, (7,2), (2,2) floorsubtype:floor_parquet {
   }
 }
 
-SUBROOM: "ordinary", random, (7,5), (2,2) {
+SUBROOM: "ordinary", random, (7,5), (2,2) decoration_style:2 {
   ROOMDOOR: false, closed, south, random
   OBJECT: ('/', "town portal"), (1,1), no_pickup
   ENGRAVING:(1,1),engrave, "Here's the wand you ordered. -Endicott"
 }
 
-[75%]: SUBROOM: "ordinary", lit, (10,2), (3,4) floorsubtype:floor_parquet {
+[75%]: SUBROOM: "ordinary", lit, (10,2), (3,4) floorsubtype:floor_parquet decoration_style:2 {
   MONSTER:('g',"gnome"),random
   MONSTER:('Y',"monkey"),random
   MONSTER:('Y',"monkey"),random
@@ -963,17 +963,17 @@ SUBROOM: "ordinary", random, (7,5), (2,2) {
   ROOMDOOR: false, closed, south, random
 }
 
-[75%]: SUBROOM: "ordinary", random, (14,2), (4,2) {
+[75%]: SUBROOM: "ordinary", random, (14,2), (4,2) decoration_style:2 {
   ROOMDOOR: false, closed, south, 0
   MONSTER: 'n', random
 }
 
-SUBROOM: "npcroom", random, (16,5), (2,2) {
+SUBROOM: "npcroom", random, (16,5), (2,2) decoration_style:2 {
   ROOMDOOR: false, closed, south, random
   NPC: npc_hermit3, random
 }
 
-[75%]: SUBROOM: "ordinary", unlit, (19,2), (2,2) {
+[75%]: SUBROOM: "ordinary", unlit, (19,2), (2,2) decoration_style:2 {
   ROOMDOOR: false, locked, east, random
   MONSTER: ('g',"gnome king"),random
 }
@@ -982,7 +982,7 @@ SUBROOM: "food shop" [50%], lit, (19,5), (2,3) {
   ROOMDOOR: false, closed, south, random
 }
 
-[75%]: SUBROOM: "ordinary", random, (2,7), (2,2) {
+[75%]: SUBROOM: "ordinary", random, (2,7), (2,2) decoration_style:2 {
   ROOMDOOR: false, closed, east, random
 }
 
@@ -994,7 +994,7 @@ SUBROOM: "candle shop", lit, (5,10),(3,3) {
   ROOMDOOR: false, closed, north, random
 }
 
-[75%]: SUBROOM: "ordinary", random, (11,10), (2,2) {
+[75%]: SUBROOM: "ordinary", random, (11,10), (2,2) decoration_style:2 {
   ROOMDOOR: false, locked, west, random
   MONSTER: 'g',random
 }
@@ -1003,13 +1003,13 @@ SUBROOM: "shop" [60%], lit, (14,10), (2,3) {
   ROOMDOOR: false, closed, north, random
 }
 
-SUBROOM: "smithy", lit, (17,11), (4,2) {
+SUBROOM: "smithy", lit, (17,11), (4,2) decoration_style:2 {
   ROOMDOOR: false, closed, north, random
   ANVIL:(02,01)
   MONSTER: ('g', "gnome lord"), random
 }
 
-[75%]: SUBROOM: "ordinary", random, (22,11), (2,2) floorsubtype:floor_parquet {
+[75%]: SUBROOM: "ordinary", random, (22,11), (2,2) floorsubtype:floor_parquet decoration_style:2 {
   ROOMDOOR: false, closed, south, random
   SINK: (00,00)
 }
