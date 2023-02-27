@@ -317,6 +317,7 @@ extern NEARDATA const struct decoration_lit_color_definition decoration_lit_colo
 enum carpet_types {
     CARPET_NONE = 0,
     CARPET_HORIZONTAL_RED,
+    CARPET_VERTICAL_PURPLE,
     MAX_CARPETS
 };
 
@@ -335,10 +336,7 @@ enum carpet_long_piece_indexation {
     CARPET_PIECE_LONG_RIGHT,
     CARPET_PIECE_LONG_TOP,
     CARPET_PIECE_LONG_BOTTOM,
-    CARPET_PIECE_LONG_MIDDLE_1,
-    CARPET_PIECE_LONG_MIDDLE_2,
-    CARPET_PIECE_LONG_MIDDLE_3,
-    CARPET_PIECE_LONG_MIDDLE_PLAIN,
+    CARPET_PIECE_LONG_MIDDLE,
     NUM_CARPET_LONG_PIECES
 };
 

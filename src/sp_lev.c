@@ -1672,7 +1672,7 @@ int type;
                 else if (y == y2)
                     piece = CARPET_PIECE_LONG_BOTTOM;
                 else
-                    piece = CARPET_PIECE_LONG_MIDDLE_PLAIN;
+                    piece = CARPET_PIECE_LONG_MIDDLE;
                 break;
             }
             levl[x][y].carpet_piece = (schar)piece;
