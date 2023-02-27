@@ -351,7 +351,6 @@ int floortyp, floorsubtyp, mtype, tileset;
         }
         else if (decotyp == 2)
         {
-            int lvl_depth = max(0, depth(&u.uz));
             int roll1 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
             int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
 

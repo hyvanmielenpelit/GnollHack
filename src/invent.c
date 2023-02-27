@@ -6510,7 +6510,7 @@ unsigned long newsym_flags;
 STATIC_VAR NEARDATA const char *names[MAX_OBJECT_CLASSES] = {
     "Random objects", "Illegal objects", "Weapons", "Armor", "Rings", "Amulets", "Tools",
     "Comestibles", "Potions", "Scrolls", "Books", "Wands", "Coins",
-    "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms", "Reagents",  "Miscellaneous",  "Objects of art"
+    "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms", "Reagents",  "Miscellaneous",  "Art objects"
 };
 STATIC_VAR NEARDATA const char oth_symbols[] = { CONTAINED_SYM, '\0' };
 STATIC_VAR NEARDATA const char *oth_names[] = { "Bagged/Boxed items" };
