@@ -364,7 +364,7 @@ lev_init* init_lev;
                 if (n_loc_filled > 3) 
                 {
                     add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OROOM,
-                             TRUE, 0, 0, NON_PM, -1);
+                             TRUE, 0, 0, NON_PM, -1, FALSE);
                     rooms[nroom - 1].irregular = TRUE;
                     if (nroom >= (MAXNROFROOMS * 2))
                         goto joinm;

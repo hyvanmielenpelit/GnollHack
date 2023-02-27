@@ -75,7 +75,7 @@ STATIC_DCL void FDECL(get_room_loc, (schar *, schar *, struct mkroom *));
 STATIC_DCL void FDECL(get_free_room_loc, (schar *, schar *,
                                           struct mkroom *, packed_coord));
 STATIC_DCL boolean FDECL(create_subroom, (struct mkroom *, XCHAR_P, XCHAR_P,
-                                          XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int, int, int, int));
+                                          XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int, int, int, int, XCHAR_P));
 STATIC_DCL void FDECL(create_door, (room_door *, struct mkroom *));
 STATIC_DCL void FDECL(create_trap, (spltrap *, struct mkroom *));
 STATIC_DCL int FDECL(noncoalignment, (ALIGNTYP_P));
@@ -1225,11 +1225,11 @@ chk:
  * This is still very incomplete...
  */
 boolean
-create_room(x, y, w, h, xal, yal, rtype, rlit, floortyp, floorsubtyp, mtype, tileset)
+create_room(x, y, w, h, xal, yal, rtype, rlit, floortyp, floorsubtyp, mtype, tileset, decotyp)
 xchar x, y;
 xchar w, h;
 xchar xal, yal;
-xchar rtype, rlit;
+xchar rtype, rlit, decotyp;
 int floortyp, floorsubtyp, mtype, tileset;
 {
     xchar xabs = 0, yabs = 0;
@@ -1385,7 +1385,7 @@ int floortyp, floorsubtyp, mtype, tileset;
     if (!vault) {
         smeq[nroom] = nroom;
         add_room(xabs, yabs, xabs + wtmp - 1, yabs + htmp - 1, rlit, rtype,
-                 FALSE, IS_FLOOR(floortyp) ? floortyp : 0, IS_FLOOR(floortyp) ? floorsubtyp : 0, mtype, tileset);
+                 FALSE, IS_FLOOR(floortyp) ? floortyp : 0, IS_FLOOR(floortyp) ? floorsubtyp : 0, mtype, tileset, decotyp);
     } else {
         rooms[nroom].lx = xabs;
         rooms[nroom].ly = yabs;
@@ -1398,11 +1398,11 @@ int floortyp, floorsubtyp, mtype, tileset;
  * x & y are relative to the parent room.
  */
 STATIC_OVL boolean
-create_subroom(proom, x, y, w, h, rtype, rlit, floortyp, floorsubtyp, mtype, tileset)
+create_subroom(proom, x, y, w, h, rtype, rlit, floortyp, floorsubtyp, mtype, tileset, decotyp)
 struct mkroom *proom;
 xchar x, y;
 xchar w, h;
-xchar rtype, rlit;
+xchar rtype, rlit, decotyp;
 int floortyp, floorsubtyp, mtype, tileset;
 {
     xchar width, height;
@@ -1437,7 +1437,7 @@ int floortyp, floorsubtyp, mtype, tileset;
     if (rlit == -1)
         rlit = (rnd(1 + abs(depth(&u.uz))) < 11 && rn2(77)) ? TRUE : FALSE;
     add_subroom(proom, proom->lx + x, proom->ly + y, proom->lx + x + w - 1,
-                proom->ly + y + h - 1, rlit, rtype, FALSE, floortyp, floorsubtyp, mtype, tileset);
+                proom->ly + y + h - 1, rlit, rtype, FALSE, floortyp, floorsubtyp, mtype, tileset, decotyp);
     return TRUE;
 }
 
@@ -3326,11 +3326,11 @@ struct mkroom *mkr;
 
     if (mkr) {
         aroom = &subrooms[nsubroom];
-        okroom = create_subroom(mkr, r->x, r->y, r->w, r->h, rtype, r->rlit, r->rfloortyp, r->rfloorsubtyp, r->mtype, r->tileset);
+        okroom = create_subroom(mkr, r->x, r->y, r->w, r->h, rtype, r->rlit, r->rfloortyp, r->rfloorsubtyp, r->mtype, r->tileset, r->decotyp);
     } else {
         aroom = &rooms[nroom];
         okroom = create_room(r->x, r->y, r->w, r->h, r->xalign, r->yalign,
-                             rtype, r->rlit, r->rfloortyp, r->rfloorsubtyp, r->mtype, r->tileset);
+                             rtype, r->rlit, r->rfloortyp, r->rfloorsubtyp, r->mtype, r->tileset, r->decotyp);
     }
 
     if (okroom) {
@@ -4708,17 +4708,18 @@ struct sp_coder *coder;
         return;
     } else {
         struct opvar *rflags, *h, *w, *yalign, *xalign, *y, *x, *rlit,
-            *chance, *rtype, * rfloorsubtyp, *rfloortyp, * rtileset, *mtype;
+            *chance, *rtype, * rfloorsubtyp, *rfloortyp, * rtileset, * rdecotyp, *mtype;
         room tmproom;
         struct mkroom *tmpcr;
 
         if (!OV_pop_i(h) || !OV_pop_i(w) || !OV_pop_i(y) || !OV_pop_i(x)
-            || !OV_pop_i(yalign) || !OV_pop_i(xalign) || !OV_pop_i(rflags) || !OV_pop_i(rfloortyp) || !OV_pop_i(rfloorsubtyp) || !OV_pop_i(rtileset) || !OV_pop(mtype)
+            || !OV_pop_i(yalign) || !OV_pop_i(xalign) || !OV_pop_i(rflags) || !OV_pop_i(rfloortyp) || !OV_pop_i(rfloorsubtyp) || !OV_pop_i(rtileset) || !OV_pop_i(rdecotyp) || !OV_pop(mtype)
             || !OV_pop_i(rlit) || !OV_pop_i(chance) || !OV_pop_i(rtype))
             return;
 
         int flmt = (int)OV_i(rfloortyp);
         int flt = (int)OV_i(rfloorsubtyp);
+        int decotyp = (short)OV_i(rdecotyp);
         tmproom.x = (xchar)OV_i(x);
         tmproom.y = (xchar)OV_i(y);
         tmproom.w = (xchar)OV_i(w);
@@ -4734,6 +4735,7 @@ struct sp_coder *coder;
         tmproom.rfloortyp = (xchar)(flmt >= 0 && IS_FLOOR(flmt) ? flmt : ROOM); /* Rooms have default flooring as ROOM, rather than nothing */
         tmproom.rfloorsubtyp = (xchar)(IS_FLOOR(tmproom.rfloortyp) && flt >= 0 ? flt : 0);
         tmproom.tileset = (short)OV_i(rtileset);
+        tmproom.decotyp = decotyp < 0 ? 1 : decotyp;
         tmproom.mtype = NON_PM;
         if (OV_typ(mtype) == SPOVAR_MONST)
         {
@@ -4760,6 +4762,7 @@ struct sp_coder *coder;
         opvar_free(rfloortyp);
         opvar_free(rfloorsubtyp);
         opvar_free(rtileset);
+        opvar_free(rdecotyp);
         opvar_free(mtype);
         opvar_free(chance);
         opvar_free(rlit);
@@ -6773,17 +6776,21 @@ spo_region(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_region";
-    struct opvar *rtype, *rlit, *rflags, *area, *rfloortyp, * rfloorsubtyp, * rtileset, *mtype;
+    struct opvar *rtype, *rlit, *rflags, *area, *rfloortyp, * rfloorsubtyp, * rtileset, * rdecotyp, *mtype;
     xchar dx1, dy1, dx2, dy2;
     register struct mkroom *troom;
     boolean prefilled, room_not_needed, irregular, joined;
     int roommontype = NON_PM, roomtileset = -1;
+    xchar decotyp;
 
-    if (!OV_pop_i(rtileset) || !OV_pop_i(rfloorsubtyp) || !OV_pop_i(rfloortyp) || !OV_pop_i(rflags) || !OV_pop_i(rtype) || !OV_pop_i(rlit) || !OV_pop(mtype)
+    if (!OV_pop_i(rdecotyp) || !OV_pop_i(rtileset) || !OV_pop_i(rfloorsubtyp) || !OV_pop_i(rfloortyp) || !OV_pop_i(rflags) || !OV_pop_i(rtype) || !OV_pop_i(rlit) || !OV_pop(mtype)
         || !OV_pop_r(area))
         return;
 
     roomtileset = (int)OV_i(rtileset);
+    decotyp = (xchar)OV_i(rdecotyp);
+    if (decotyp < 0)
+        decotyp = 0;
     prefilled = (boolean)!(OV_i(rflags) & (1 << 0));
     irregular = (boolean)(OV_i(rflags) & (1 << 1));
     joined = (boolean)!(OV_i(rflags) & (1 << 2));
@@ -6850,6 +6857,7 @@ struct sp_coder *coder;
         opvar_free(rfloorsubtyp);
         opvar_free(rfloortyp);
         opvar_free(rtileset);
+        opvar_free(rdecotyp);
         opvar_free(mtype);
 
         return;
@@ -6869,13 +6877,13 @@ struct sp_coder *coder;
         min_ry = max_ry = dy1;
         smeq[nroom] = nroom;
         flood_fill_rm(dx1, dy1, nroom + ROOMOFFSET, (boolean)OV_i(rlit), TRUE);
-        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, (schar)OV_i(rtype), TRUE, usedfloortype, usedfloorsubtype, roommontype, roomtileset);
+        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, (schar)OV_i(rtype), TRUE, usedfloortype, usedfloorsubtype, roommontype, roomtileset, decotyp);
         troom->rlit = (schar)OV_i(rlit);
         troom->irregular = TRUE;
     }
     else 
     {
-        add_room(dx1, dy1, dx2, dy2, (boolean)OV_i(rlit), (schar)OV_i(rtype), TRUE, usedfloortype, usedfloorsubtype, roommontype, roomtileset);
+        add_room(dx1, dy1, dx2, dy2, (boolean)OV_i(rlit), (schar)OV_i(rtype), TRUE, usedfloortype, usedfloorsubtype, roommontype, roomtileset, decotyp);
 #ifdef SPECIALIZATION
         topologize(troom, FALSE); /* set roomno */
 #else
@@ -6902,6 +6910,7 @@ struct sp_coder *coder;
     opvar_free(rfloorsubtyp);
     opvar_free(rfloortyp);
     opvar_free(rtileset);
+    opvar_free(rdecotyp);
     opvar_free(mtype);
 }
 

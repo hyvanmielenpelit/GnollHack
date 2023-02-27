@@ -30,14 +30,14 @@ STATIC_DCL void FDECL(dosdoor, (XCHAR_P, XCHAR_P, struct mkroom *, int, UCHAR_P)
 STATIC_DCL void FDECL(join, (int, int, BOOLEAN_P));
 STATIC_DCL void FDECL(do_room_or_subroom, (struct mkroom *, int, int,
                                            int, int, BOOLEAN_P,
-                                           SCHAR_P, BOOLEAN_P, int, int, int, int, BOOLEAN_P));
+                                           SCHAR_P, BOOLEAN_P, int, int, int, int, XCHAR_P, BOOLEAN_P));
 STATIC_DCL void NDECL(makerooms);
 STATIC_DCL void FDECL(finddpos, (coord *, XCHAR_P, XCHAR_P,
                                  XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(mkinvpos, (XCHAR_P, XCHAR_P, int));
 STATIC_DCL void FDECL(mk_knox_portal, (XCHAR_P, XCHAR_P));
 
-#define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE, ROOM, 0, NON_PM, -1)
+#define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE, ROOM, 0, NON_PM, -1, 0)
 #define init_vault() vault_x = -1
 #define do_vault() (vault_x != -1)
 STATIC_VAR xchar vault_x, vault_y;
@@ -110,7 +110,7 @@ sort_rooms()
 }
 
 STATIC_OVL void
-do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset, is_room)
+do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset, decotyp, is_room)
 register struct mkroom *croom;
 int lowx, lowy;
 register int hix, hiy;
@@ -118,6 +118,7 @@ boolean lit;
 schar rtype;
 boolean special;
 boolean is_room;
+xchar decotyp;
 int floortyp, floorsubtyp, mtype, tileset;
 {
     register int x, y;
@@ -249,9 +250,8 @@ int floortyp, floorsubtyp, mtype, tileset;
                 levl[hix + 1][hiy + 1].special_tileset = (uchar)tileset;
             }
 
-#if 1
-            //if (level.flags.tileset == CMAP_NORMAL || level.flags.tileset == CMAP_UNDEAD)
-            //{
+            if (decotyp == 1)
+            {
                 int lvl_depth = max(0, depth(&u.uz));
                 int webmod = lvl_depth > 10 ? -2 : lvl_depth > 5 ? -1 : 0;
                 if (IS_WALL(levl[lowx][lowy - 1].typ) && !rn2(5 + webmod))
@@ -278,7 +278,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                         levl[lowx + roll + 1][lowy - 1].decoration_dir = rn2(2);
                     }
                 }
-                
+
                 int roll1 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                 if (lowx + 1 < hix && !rn2(lvl_depth / 3 + 3))
                 {
@@ -342,9 +342,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                         levl[hix + 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                     }
                 }
-            //}
-#endif
-
+            }
         }
         else 
         { /* a subroom */
@@ -387,17 +385,18 @@ int floortyp, floorsubtyp, mtype, tileset;
 }
 
 void
-add_room(lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset)
+add_room(lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset, decotyp)
 int lowx, lowy, hix, hiy;
 boolean lit;
 schar rtype;
 boolean special;
+xchar decotyp;
 int floortyp, floorsubtyp, mtype, tileset;
 {
     register struct mkroom *croom;
 
     croom = &rooms[nroom];
-    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset,
+    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset, decotyp,
                        (boolean) TRUE);
     croom++;
     croom->hx = -1;
@@ -405,18 +404,19 @@ int floortyp, floorsubtyp, mtype, tileset;
 }
 
 void
-add_subroom(proom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset)
+add_subroom(proom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset, decotyp)
 struct mkroom *proom;
 int lowx, lowy, hix, hiy;
 boolean lit;
 schar rtype;
 boolean special;
+xchar decotyp;
 int floortyp, floorsubtyp, mtype, tileset;
 {
     register struct mkroom *croom;
 
     croom = &subrooms[nsubroom];
-    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset,
+    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset, decotyp,
                        (boolean) FALSE);
     proom->sbrooms[proom->nsubrooms++] = croom;
     croom++;
@@ -439,7 +439,7 @@ makerooms()
                 vault_y = rooms[nroom].ly;
                 rooms[nroom].hx = -1;
             }
-        } else if (!create_room(-1, -1, -1, -1, -1, -1, OROOM, -1, ROOM, 0, NON_PM, -1))
+        } else if (!create_room(-1, -1, -1, -1, -1, -1, OROOM, -1, ROOM, 0, NON_PM, -1, 1))
             return;
     }
     return;
@@ -1097,7 +1097,7 @@ makelevel()
         if (check_room(&vault_x, &w, &vault_y, &h, TRUE)) {
  fill_vault:
             add_room(vault_x, vault_y, vault_x + w, vault_y + h, TRUE, VAULT,
-                     FALSE, ROOM, 0, NON_PM, -1);
+                     FALSE, ROOM, 0, NON_PM, -1, FALSE);
             level.flags.has_vault = 1;
             ++room_threshold;
             fill_room(&rooms[nroom - 1], FALSE);

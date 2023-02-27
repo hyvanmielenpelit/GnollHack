@@ -191,7 +191,7 @@ extern char curr_token[512];
 %token	<i> CHAR INTEGER BOOLEAN PERCENT SPERCENT
 %token	<i> MINUS_INTEGER PLUS_INTEGER
 %token	<i> MAZE_GRID_ID SOLID_FILL_ID MINES_ID ROGUELEV_ID
-%token	<i> MESSAGE_ID MESSAGE_TYPE MAZE_ID LEVEL_ID LEV_INIT_ID TILESET_ID GEOMETRY_ID NOMAP_ID BOUNDARY_TYPE_ID SPECIAL_TILESET_ID TILESET_PARAM_ID
+%token	<i> MESSAGE_ID MESSAGE_TYPE MAZE_ID LEVEL_ID LEV_INIT_ID TILESET_ID GEOMETRY_ID NOMAP_ID BOUNDARY_TYPE_ID SPECIAL_TILESET_ID TILESET_PARAM_ID DECOTYP_ID
 %token	<i> OBJECT_ID COBJECT_ID MONSTER_ID TRAP_ID DOOR_ID DRAWBRIDGE_ID MONSTER_GENERATION_ID
 %token	<i> object_ID monster_ID terrain_ID
 %token	<i> MAZEWALK_ID WALLIFY_ID REGION_ID SPECIAL_REGION_ID SPECIAL_LEVREGION_ID SPECIAL_REGION_TYPE NAMING_ID NAMING_TYPE FILLING IRREGULAR JOINED
@@ -257,7 +257,7 @@ extern char curr_token[512];
 %type	<i> object_infos object_info monster_infos monster_info
 %type	<i> levstatements stmt_block region_detail_end
 %type	<i> engraving_type flag_list roomregionflag roomregionflags
-%type	<i> optroomregionflags floorsubtype optfloorsubtype floortype optfloortype optmontype opttileset
+%type	<i> optroomregionflags floorsubtype optfloorsubtype floortype optfloortype optmontype opttileset optdecotyp
 %type	<i> humidity_flags
 %type	<i> comparestmt encodecoord encoderegion mapchar
 %type	<i> seen_trap_mask
@@ -1314,19 +1314,20 @@ room_begin      : room_type opt_percent ',' light_state
                   }
                 ;
 
-subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomregionflags optfloortype optfloorsubtype opttileset optmontype
+subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomregionflags optfloortype optfloorsubtype opttileset optdecotyp optmontype
 		  {
 		      long rflags = $8;
 		      long flmt = (long)$<i>9;
 		      long flt = (long)$<i>10;
 		      long tlset = (long)$<i>11;
+		      long decotyp = (long)$<i>12;
 
 		      if (rflags == -1) rflags = (1 << 0);
 		      //if (flmt == -1) flmt = ROOM;
 		      //if (flt == -1) flt = 0;
 
-		      add_opvars(splev, "iiiiiiiiiio",
-				 VA_PASS11(tlset, flt, flmt, rflags, ERR, ERR,
+		      add_opvars(splev, "iiiiiiiiiiio",
+				 VA_PASS12(decotyp, tlset, flt, flmt, rflags, ERR, ERR,
 					  $5.x, $5.y, $7.width, $7.height,
 					  SPO_SUBROOM));
 		      break_stmt_start();
@@ -1338,19 +1339,20 @@ subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomreg
 		  }
 		;
 
-room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optroomregionflags optfloortype optfloorsubtype opttileset optmontype
+room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optroomregionflags optfloortype optfloorsubtype opttileset optdecotyp optmontype
 		  {
 		      long rflags = $10;
 		      long flmt = (long)$<i>11;
 		      long flt = (long)$<i>12;
 		      long tlset = (long)$<i>13;
+		      long decotyp = (long)$<i>14;
 
 		      if (rflags == -1) rflags = (1 << 0);
 		      //if (flmt == -1) flmt = ROOM;
 		      //if (flt == -1) flt = 0;
 
-		      add_opvars(splev, "iiiiiiiiiio",
-				 VA_PASS11(tlset, flt, flmt, rflags,
+		      add_opvars(splev, "iiiiiiiiiiio",
+				 VA_PASS12(decotyp, tlset, flt, flmt, rflags,
 					  $7.x, $7.y, $5.x, $5.y,
 					  $9.width, $9.height, SPO_ROOM));
 		      break_stmt_start();
@@ -2294,7 +2296,7 @@ special_tileset_detail : SPECIAL_TILESET_ID ':' ter_selection ',' CMAP_TYPE
 		  }
 		;
 
-region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroomregionflags optfloortype optfloorsubtype opttileset optmontype
+region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroomregionflags optfloortype optfloorsubtype opttileset optdecotyp optmontype
 		  {
 		      long irr;
 		      long rt = $7;
@@ -2302,6 +2304,7 @@ region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroo
 		      long flmt = (long)$<i>9;
 		      long flt = (long)$<i>10;
 		      long tlset = (long)$<i>11;
+		      long decotyp = (long)$<i>12;
 
 		      if (rflags == -1) rflags = (1 << 0);
 		      //if (flmt == -1) flmt = 0;
@@ -2309,8 +2312,8 @@ region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroo
 
 		      if (!(rflags & 1)) rt += MAXRTYPE+1;
 		      irr = ((rflags & 2) != 0);
-		      add_opvars(splev, "iiiiiio",
-				 VA_PASS7((long)$5, rt, rflags, flmt, flt, tlset, SPO_REGION));
+		      add_opvars(splev, "iiiiiiio",
+				 VA_PASS8((long)$5, rt, rflags, flmt, flt, tlset, decotyp, SPO_REGION));
 		      $<i>$ = (irr || (rflags & 1) || rt != OROOM);
 		      break_stmt_start();
 		  }
@@ -2619,6 +2622,15 @@ opttileset : /* empty */
 		  }
 		;
 
+optdecotyp : /* empty */
+		  {
+			$<i>$ = -1;
+		  }
+		| DECOTYP_ID ':' INTEGER
+		  {
+			$<i>$ = $<i>3;
+		  }
+		;
 
 door_state	: DOOR_STATE
 		| RANDOM_TYPE
