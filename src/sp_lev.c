@@ -6781,7 +6781,7 @@ struct sp_coder *coder;
     register struct mkroom *troom;
     boolean prefilled, room_not_needed, irregular, joined;
     int roommontype = NON_PM, roomtileset = -1;
-    xchar decotyp;
+    int decotyp;
 
     if (!OV_pop_i(rdecotyp) || !OV_pop_i(rtileset) || !OV_pop_i(rfloorsubtyp) || !OV_pop_i(rfloortyp) || !OV_pop_i(rflags) || !OV_pop_i(rtype) || !OV_pop_i(rlit) || !OV_pop(mtype)
         || !OV_pop_r(area))
@@ -6877,13 +6877,13 @@ struct sp_coder *coder;
         min_ry = max_ry = dy1;
         smeq[nroom] = nroom;
         flood_fill_rm(dx1, dy1, nroom + ROOMOFFSET, (boolean)OV_i(rlit), TRUE);
-        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, (schar)OV_i(rtype), TRUE, usedfloortype, usedfloorsubtype, roommontype, roomtileset, decotyp);
+        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, (schar)OV_i(rtype), TRUE, usedfloortype, usedfloorsubtype, roommontype, roomtileset, (xchar)decotyp);
         troom->rlit = (schar)OV_i(rlit);
         troom->irregular = TRUE;
     }
     else 
     {
-        add_room(dx1, dy1, dx2, dy2, (boolean)OV_i(rlit), (schar)OV_i(rtype), TRUE, usedfloortype, usedfloorsubtype, roommontype, roomtileset, decotyp);
+        add_room(dx1, dy1, dx2, dy2, (boolean)OV_i(rlit), (schar)OV_i(rtype), TRUE, usedfloortype, usedfloorsubtype, roommontype, roomtileset, (xchar)decotyp);
 #ifdef SPECIALIZATION
         topologize(troom, FALSE); /* set roomno */
 #else

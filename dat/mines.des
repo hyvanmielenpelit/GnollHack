@@ -298,7 +298,7 @@ WALLIFY
 # "Town Square"
 #
 LEVEL: "minetn-2"
-ROOM: "ordinary" , lit, (3,3), (center,center), (31,15) floortype:location_ground {
+ROOM: "ordinary" , lit, (3,3), (center,center), (31,15) floortype:location_ground decoration_style:0 {
 FOUNTAIN: (17, 5),fountain_healing
 FOUNTAIN: (13, 8),fountain_water
 SIGNPOST: (15, 6),signpost_normal,"Stay out of the fountains!"
@@ -428,7 +428,7 @@ RANDOM_CORRIDORS
 # "Alley Town"
 #
 LEVEL: "minetn-3"
-ROOM: "ordinary",lit,(3,3),(center,center),(31,15) floortype:location_ground {
+ROOM: "ordinary",lit,(3,3),(center,center),(31,15) floortype:location_ground decoration_style:0 {
 FOUNTAIN:(01,06),fountain_healing
 FOUNTAIN:(29,13),fountain_water
 
@@ -552,7 +552,7 @@ RANDOM_CORRIDORS
 # "College Town"
 #
 LEVEL: "minetn-4"
-ROOM: "ordinary",lit,(3,3),(center,center),(30,15) floortype:location_ground {
+ROOM: "ordinary",lit,(3,3),(center,center),(30,15) floortype:location_ground decoration_style:0 {
 FOUNTAIN:(08,07),fountain_healing
 FOUNTAIN:(18,07),fountain_water
 SIGNPOST:(06,07),signpost_normal,"Stay out of the fountain!"
@@ -929,7 +929,7 @@ MONSTER: ('@', "watch captain"), random, peaceful
 # "Bazaar Town" by Kelly Bailey
 #
 LEVEL: "minetn-7"
-ROOM: "ordinary" , lit, (3,3), (center,center), (30,15) floortype:location_ground {
+ROOM: "ordinary" , lit, (3,3), (center,center), (30,15) floortype:location_ground decoration_style:0 {
 FOUNTAIN: (12, 07),fountain_healing
 FOUNTAIN: (11, 13),fountain_water
 SIGNPOST: (09, 08), signpost_normal, "Stay out of the fountains!"
