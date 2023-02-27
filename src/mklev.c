@@ -30,14 +30,14 @@ STATIC_DCL void FDECL(dosdoor, (XCHAR_P, XCHAR_P, struct mkroom *, int, UCHAR_P)
 STATIC_DCL void FDECL(join, (int, int, BOOLEAN_P));
 STATIC_DCL void FDECL(do_room_or_subroom, (struct mkroom *, int, int,
                                            int, int, BOOLEAN_P,
-                                           SCHAR_P, BOOLEAN_P, int, int, int, BOOLEAN_P));
+                                           SCHAR_P, BOOLEAN_P, int, int, int, int, BOOLEAN_P));
 STATIC_DCL void NDECL(makerooms);
 STATIC_DCL void FDECL(finddpos, (coord *, XCHAR_P, XCHAR_P,
                                  XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(mkinvpos, (XCHAR_P, XCHAR_P, int));
 STATIC_DCL void FDECL(mk_knox_portal, (XCHAR_P, XCHAR_P));
 
-#define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE, ROOM, 0, NON_PM)
+#define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE, ROOM, 0, NON_PM, -1)
 #define init_vault() vault_x = -1
 #define do_vault() (vault_x != -1)
 STATIC_VAR xchar vault_x, vault_y;
@@ -110,7 +110,7 @@ sort_rooms()
 }
 
 STATIC_OVL void
-do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, is_room)
+do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset, is_room)
 register struct mkroom *croom;
 int lowx, lowy;
 register int hix, hiy;
@@ -118,7 +118,7 @@ boolean lit;
 schar rtype;
 boolean special;
 boolean is_room;
-int floortyp, floorsubtyp, mtype;
+int floortyp, floorsubtyp, mtype, tileset;
 {
     register int x, y;
     struct rm *lev;
@@ -175,6 +175,11 @@ int floortyp, floorsubtyp, mtype;
                 levl[x][y].special_quality = 0;
                 /* Retain floortype from stone */
                 levl[x][y].horizontal = 1; /* For open/secret doors. */
+                if (tileset >= 0)
+                {
+                    levl[x][y].use_special_tileset = 1;
+                    levl[x][y].special_tileset = (uchar)tileset;
+                }
             }
 
         for (x = lowx - 1; x <= hix + 1; x += (hix - lowx + 2))
@@ -186,6 +191,11 @@ int floortyp, floorsubtyp, mtype;
                 levl[x][y].special_quality = 0;
                 /* Retain floortype from stone */
                 levl[x][y].horizontal = 0; /* For open/secret doors. */
+                if (tileset >= 0)
+                {
+                    levl[x][y].use_special_tileset = 1;
+                    levl[x][y].special_tileset = (uchar)tileset;
+                }
             }
 
         if (IS_FLOOR(floortyp))
@@ -200,6 +210,11 @@ int floortyp, floorsubtyp, mtype;
                     lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
                     lev->special_quality = 0;
                     lev->floortyp = lev->floorsubtyp = lev->floorvartyp = 0;
+                    if (tileset >= 0)
+                    {
+                        lev->use_special_tileset = 1;
+                        lev->special_tileset = (uchar)tileset;
+                    }
                     lev++;
                 }
             }
@@ -221,6 +236,18 @@ int floortyp, floorsubtyp, mtype;
             levl[hix + 1][lowy - 1].vartyp = levl[hix + 1][lowy - 1].vartyp; /* Retain the vartyp setting from stone */
             levl[lowx - 1][hiy + 1].vartyp = levl[lowx - 1][hiy + 1].vartyp; /* Retain the vartyp setting from stone */
             levl[hix + 1][hiy + 1].vartyp = levl[hix + 1][hiy + 1].vartyp; /* Retain the vartyp setting from stone */
+
+            if (tileset >= 0)
+            {
+                levl[lowx - 1][lowy - 1].use_special_tileset = 1;
+                levl[hix + 1][lowy - 1].use_special_tileset = 1;
+                levl[lowx - 1][hiy + 1].use_special_tileset = 1;
+                levl[hix + 1][hiy + 1].use_special_tileset = 1;
+                levl[lowx - 1][lowy - 1].special_tileset = (uchar)tileset;
+                levl[hix + 1][lowy - 1].special_tileset = (uchar)tileset;
+                levl[lowx - 1][hiy + 1].special_tileset = (uchar)tileset;
+                levl[hix + 1][hiy + 1].special_tileset = (uchar)tileset;
+            }
 
 #if 1
             //if (level.flags.tileset == CMAP_NORMAL || level.flags.tileset == CMAP_UNDEAD)
@@ -347,6 +374,11 @@ int floortyp, floorsubtyp, mtype;
                         lev->floorsubtyp = floorsubtyp;
                         lev->floorvartyp = get_initial_location_vartype(lev->floortyp, lev->floorsubtyp);
                     }
+                    if (tileset >= 0)
+                    {
+                        lev->use_special_tileset = 1;
+                        lev->special_tileset = (uchar)tileset;
+                    }
                     lev++;
                 }
             }
@@ -355,17 +387,17 @@ int floortyp, floorsubtyp, mtype;
 }
 
 void
-add_room(lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype)
+add_room(lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset)
 int lowx, lowy, hix, hiy;
 boolean lit;
 schar rtype;
 boolean special;
-int floortyp, floorsubtyp, mtype;
+int floortyp, floorsubtyp, mtype, tileset;
 {
     register struct mkroom *croom;
 
     croom = &rooms[nroom];
-    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype,
+    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset,
                        (boolean) TRUE);
     croom++;
     croom->hx = -1;
@@ -373,18 +405,18 @@ int floortyp, floorsubtyp, mtype;
 }
 
 void
-add_subroom(proom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype)
+add_subroom(proom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset)
 struct mkroom *proom;
 int lowx, lowy, hix, hiy;
 boolean lit;
 schar rtype;
 boolean special;
-int floortyp, floorsubtyp, mtype;
+int floortyp, floorsubtyp, mtype, tileset;
 {
     register struct mkroom *croom;
 
     croom = &subrooms[nsubroom];
-    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype,
+    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset,
                        (boolean) FALSE);
     proom->sbrooms[proom->nsubrooms++] = croom;
     croom++;
@@ -407,7 +439,7 @@ makerooms()
                 vault_y = rooms[nroom].ly;
                 rooms[nroom].hx = -1;
             }
-        } else if (!create_room(-1, -1, -1, -1, -1, -1, OROOM, -1, ROOM, 0, NON_PM))
+        } else if (!create_room(-1, -1, -1, -1, -1, -1, OROOM, -1, ROOM, 0, NON_PM, -1))
             return;
     }
     return;
@@ -1065,7 +1097,7 @@ makelevel()
         if (check_room(&vault_x, &w, &vault_y, &h, TRUE)) {
  fill_vault:
             add_room(vault_x, vault_y, vault_x + w, vault_y + h, TRUE, VAULT,
-                     FALSE, ROOM, 0, NON_PM);
+                     FALSE, ROOM, 0, NON_PM, -1);
             level.flags.has_vault = 1;
             ++room_threshold;
             fill_room(&rooms[nroom - 1], FALSE);
@@ -1388,7 +1420,7 @@ makelevel()
         if ((rt == OROOM && !rn2(20)) || rt == COURT || rt == TEMPLE || rt == LIBRARY || (rt >= SHOPBASE && !rn2(2))
             || (rt == NPCROOM && (rst == NPC_ELVEN_BARD || rst == NPC_ARTIFICER || !rn2(2))))
         {
-            create_carpet(lowx, lowy, hix, hiy, !rn2(2)? CARPET_HORIZONTAL_RED : CARPET_VERTICAL_PURPLE);
+            create_carpet(lowx, lowy, hix, hiy, Inhell ? CARPET_HORIZONTAL_RED : CARPET_VERTICAL_PURPLE);
         }
     }
 

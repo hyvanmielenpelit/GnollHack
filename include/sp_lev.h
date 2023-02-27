@@ -585,7 +585,8 @@ typedef struct _room {
     Str_or_Len parent;
     xchar x, y, w, h;
     xchar xalign, yalign;
-    xchar rtype, chance, rlit, filled, joined, rfloortyp, rfloorsubtyp, mtype;
+    xchar rtype, chance, rlit, filled, joined, rfloortyp, rfloorsubtyp;
+    short mtype, tileset;
 } room;
 
 typedef struct {
@@ -709,6 +710,9 @@ typedef const char *vA;
 #define VA_PASS10(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) \
     vA_(a1), vA_(a2), vA_(a3), vA_(a4), vA_(a5), vA_(a6), vA_(a7), vA_(a8), \
         vA_(a9), vA_(a10), vA_(0), vA_(0), vA_(0), vA_(0)
+#define VA_PASS11(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11) \
+    vA_(a1), vA_(a2), vA_(a3), vA_(a4), vA_(a5), vA_(a6), vA_(a7), vA_(a8), \
+        vA_(a9), vA_(a10), vA_(a11), vA_(0), vA_(0), vA_(0)
 #define VA_PASS14(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14) \
     vA_(a1), vA_(a2), vA_(a3), vA_(a4), vA_(a5), vA_(a6), vA_(a7), vA_(a8), \
         vA_(a9), vA_(a10), vA_(a11), vA_(a12), vA_(a13), vA_(a14)
@@ -725,6 +729,7 @@ typedef const char *vA;
 #define VA_PASS8(a1,a2,a3,a4,a5,a6,a7,a8) a1, a2, a3, a4, a5, a6, a7, a8
 #define VA_PASS9(a1,a2,a3,a4,a5,a6,a7,a8,a9) a1, a2, a3, a4, a5, a6, a7, a8, a9
 #define VA_PASS10(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) a1, a2, a3, a4, a5, a6, a7, a8, a9, a10
+#define VA_PASS11(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11) a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11
 #define VA_PASS14(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14) \
     a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14
 #endif /*?USE_OLDARGS*/
