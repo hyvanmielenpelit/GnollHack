@@ -90,6 +90,7 @@ struct obj {
 #define SPEFLAGS_AUTOSTASH                     0x04000000UL
 #define SPEFLAGS_EMPTY_NOTICED                 0x08000000UL
 #define SPEFLAGS_BEING_BROKEN                  0x10000000UL
+#define SPEFLAGS_GIVEN_OUT_BLUE_SMOKE          0x20000000UL
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */

@@ -1832,18 +1832,39 @@ struct monst* targetmonst;
         s = scursed ? -otmp->enchantment : otmp->enchantment;
         if (s > max_ench && rn2(max(1, s)))
         {
-            play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
-            otmp->in_use = TRUE;
-            Sprintf(effbuf, "%s violently %s%s%s for a while, then %s.", Yname2(otmp),
-                otense(otmp, Blind ? "vibrate" : "glow"),
-                (!Blind && !same_color) ? " " : "",
-                (Blind || same_color) ? "" : hcolor(scursed ? NH_BLACK
-                    : NH_SILVER),
-                otense(otmp, "evaporate"));
-            pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, effbuf, "Evaporation", is_serviced_spell);
-            remove_worn_item(otmp, FALSE);
-            useup(otmp);
-            break;
+            if (((otmp->speflags & SPEFLAGS_GIVEN_OUT_BLUE_SMOKE) == 0 || rn2(3)) && (otmp->material == MAT_ORICHALCUM || obj_resists(otmp, 0, 75)))
+            {
+                play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, u.ux, u.uy, 0, FALSE);
+                play_sfx_sound(GHSOUND_VANISHES_IN_PUFF_OF_SMOKE);
+                special_effect_wait_until_action(0);
+                Sprintf(effbuf, "%s violently %s%s%s for a while, then suddenly %s out a puff of%s smoke.", Yname2(otmp),
+                    otense(otmp, Blind ? "vibrate" : "glow"),
+                    (!Blind && !same_color) ? " " : "",
+                    (Blind || same_color) ? "" : hcolor(scursed ? NH_BLACK
+                        : NH_SILVER),
+                    otense(otmp, "give"), Blind ? "" : " blue");
+                pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, effbuf, Blind ? "Puff of Smoke" : "Puff of Blue Smoke", is_serviced_spell);
+                otmp->enchantment = 0;
+                otmp->speflags |= SPEFLAGS_GIVEN_OUT_BLUE_SMOKE;
+                update_inventory();
+                special_effect_wait_until_end(0);
+                break;
+            }
+            else
+            {
+                play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
+                otmp->in_use = TRUE;
+                Sprintf(effbuf, "%s violently %s%s%s for a while, then %s.", Yname2(otmp),
+                    otense(otmp, Blind ? "vibrate" : "glow"),
+                    (!Blind && !same_color) ? " " : "",
+                    (Blind || same_color) ? "" : hcolor(scursed ? NH_BLACK
+                        : NH_SILVER),
+                    otense(otmp, "evaporate"));
+                pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, effbuf, "Evaporation", is_serviced_spell);
+                remove_worn_item(otmp, FALSE);
+                useup(otmp);
+                break;
+            }
         }
 
         s = scursed ? -1

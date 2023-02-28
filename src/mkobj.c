@@ -2507,6 +2507,9 @@ struct obj* otmp;
 
     int max_spe = get_max_enchantment(objects[otmp->otyp].oc_enchantable);
 
+    /* Material */
+    max_spe = (max_spe * material_definitions[otmp->material].added_enchantability_multiplier) / (max(1, material_definitions[otmp->material].added_enchantability_divisor));
+
     /* Extra modifications */
     if (has_obj_mythic_added_enchantability(otmp))
         max_spe = (max_spe * 3) / 2;

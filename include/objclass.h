@@ -388,6 +388,8 @@ struct material_definition {
     short lplus_adjustment;
     short power_weapon;
     short power2_weapon;
+    short added_enchantability_multiplier;
+    short added_enchantability_divisor;
     short digging_speed_bonus;
     unsigned long extra_oflags1;
     unsigned long extra_oflags2;
