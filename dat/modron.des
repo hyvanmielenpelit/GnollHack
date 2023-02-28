@@ -106,7 +106,7 @@ MONSTER:('M',"modron pentadrone"),(09,08),hostile,waitforu
 # 3: Cube and normal key holder
 MONSTER:('M',"modron quinton"),(33,08),waitforu,hostile {
     OBJECT:('(', "skeleton key")
-    OBJECT:('9', "modronite cube")
+    OBJECT:('7', "modronite cube")
     [50%]:OBJECT:random_contents
 }
 MONSTER:('M',"modron pentadrone"),(32,08),hostile,waitforu
@@ -225,7 +225,7 @@ MONSTER:('M',"modron quarton"),(40,14),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(39,13),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(39,14),waitforu,hostile
 CONTAINER:('(',"chest"),(42,15),no_pickup {
-    OBJECT:('9', "modronite tetrahedron")
+    OBJECT:('7', "modronite tetrahedron")
     [50%]:OBJECT:random_contents
     [50%]:OBJECT:random_contents
 }
@@ -328,7 +328,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(25,03),no_pickup {
 MONSTER:('M',"modron tertian"),(10,12),waitforu,hostile
 BRAZIER:(08,12)
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(07,12),no_pickup {
-        OBJECT:('9', "modronite monopole")
+        OBJECT:('7', "modronite monopole")
         [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
 }
@@ -462,7 +462,7 @@ MONSTER:('M',"modron secundus"),(65,10),waitforu,hostile {
 }
 BRAZIER:(62,10)
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(54,11),no_pickup {
-        OBJECT:('9', "modronite sphere")
+        OBJECT:('7', "modronite sphere")
         OBJECT:class_treasure_armor
         [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
