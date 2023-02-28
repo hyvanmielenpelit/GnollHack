@@ -274,7 +274,7 @@ makeroguerooms()
                  * encountered below level 10, use !rn2(7).
                  */
                 add_room(lowx, lowy, hix, hiy, (boolean) !rn2(7), OROOM,
-                         FALSE, ROOM, 0, NON_PM, -1, 1);
+                         FALSE, ROOM, 0, NON_PM, -1, 0);
             }
         }
 
