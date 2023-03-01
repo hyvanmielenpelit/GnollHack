@@ -271,7 +271,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     },
     {
         "gargoyle statue niche", "statue niche", "statue of a gargoyle in a niche",
-        {DOODAD_GARGOYLE_STATUE_NICHE, DOODAD_GARGOYLE_STATUE_NICHE, DOODAD_GARGOYLE_STATUE_NICHE, DOODAD_GARGOYLE_STATUE_NICHE},
+        {DOODAD_GARGOYLE_STATUE_NICHE, DOODAD_GARGOYLE_STATUE_NICHE_LEFT, DOODAD_GARGOYLE_STATUE_NICHE_RIGHT, DOODAD_GARGOYLE_STATUE_NICHE},
         1, STATUE, PM_GARGOYLE,
         NO_COLOR, CLR_WHITE,
         LOCATION_SOUNDSET_NONE,
@@ -279,7 +279,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     },
     {
         "knight statue niche", "statue niche", "statue of a knight in a niche",
-        {DOODAD_KNIGHT_STATUE_NICHE, DOODAD_KNIGHT_STATUE_NICHE, DOODAD_KNIGHT_STATUE_NICHE, DOODAD_KNIGHT_STATUE_NICHE},
+        {DOODAD_KNIGHT_STATUE_NICHE, DOODAD_KNIGHT_STATUE_NICHE_LEFT, DOODAD_KNIGHT_STATUE_NICHE_RIGHT, DOODAD_KNIGHT_STATUE_NICHE},
         1, STATUE, PM_KNIGHT,
         NO_COLOR, CLR_WHITE,
         LOCATION_SOUNDSET_NONE,
