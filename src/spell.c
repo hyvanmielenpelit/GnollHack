@@ -2183,6 +2183,7 @@ struct monst* targetmonst;
     int chance, n; // , intell;
     int otyp, skill, role_skill, res = 0;
     boolean confused = (Confusion != 0);
+    boolean stunned = (Stunned != 0);
     struct obj *pseudo;
     boolean effect_happened = 1;
     //coord cc;
@@ -2375,7 +2376,7 @@ struct monst* targetmonst;
 
     //Now check if successful
     chance = percent_success(spell, TRUE);
-    if (confused || (rnd(100) > chance)) 
+    if (confused || stunned || (rnd(100) > chance)) 
     {
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);

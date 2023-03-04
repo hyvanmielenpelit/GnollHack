@@ -245,7 +245,7 @@ boolean resuming;
 
                     if (!u.uinvulnerable) 
                     {
-                        if (Teleportation && !rn2(85))
+                        if (Teleportation && (!Teleport_control || Stunned || Confusion) && !rn2(85))
                         {
                             xchar old_ux = u.ux, old_uy = u.uy;
 

@@ -876,6 +876,7 @@ enum yn_function_styles {
 #define WERE_SUMMON_MANA_COST 10
 #define MIND_BLAST_MANA_COST 10
 #define UNICORN_HORN_MANA_COST 25
+#define TELEPORT_AT_WILL_MANA_COST 15
 
 /* Minimum dungeon levels for traps */
 #define MINIMUM_DGN_LEVEL_MEDIUM_LEVEL  2

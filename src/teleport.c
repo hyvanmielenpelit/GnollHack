@@ -16,6 +16,7 @@ STATIC_DCL void FDECL(mvault_tele, (struct monst *));
 /* non-null when teleporting via having read this scroll */
 STATIC_VAR struct obj *telescroll = 0;
 
+
 /*
  * Is (x,y) a good position of mtmp?  If mtmp is NULL, then is (x,y) good
  * for an object?
@@ -574,7 +575,7 @@ boolean iscontrolled;
             return FALSE;
     }
 
-    if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (iswizcmd /* || yn_query("Enforce teleport control?") == 'y'*/)))
+    if ((Teleport_control && !Stunned && !Confusion) || iscontrolled || (wizard && (iswizcmd /* || yn_query("Enforce teleport control?") == 'y'*/)))
     {
         if (unconscious() && !iscontrolled && !iswizcmd)
         {
@@ -974,10 +975,12 @@ boolean break_the_rules; /* True: wizard mode ^T */
     if (!trap)
     {
         boolean castit = FALSE;
-        register int sp_no = 0, energy = 0;
+        int sp_no = 0, energy = 0;
+        boolean can_teleport = Teleportation;
+        boolean can_teleport_at_will = can_teleport && Teleport_control;
+        boolean is_able_to_teleport_at_will = can_teleport_at_will && !Stunned; /* Confusion just randomly teleports you around but stunned prevents from teleporting at will */
 
-        if (!break_the_rules && (!Teleportation || (u.ulevel < (Role_if(PM_WIZARD) ? 8 : 12)
-                               && !has_innate_teleportation(youmonst.data))))
+        if (!break_the_rules && !is_able_to_teleport_at_will)
         {
             /* Try to use teleport away spell.
                3.6.2: this used to require that you know the spellbook
@@ -988,29 +991,25 @@ boolean break_the_rules; /* True: wizard mode ^T */
                 if (spl_book[sp_no].sp_id == SPE_TELEPORT_SELF)
                     break;
 
-            /* casting isn't inhibited by being Stunned (...it ought to be) */
-            castit = (sp_no < MAXSPELL && !Confusion);
-            if (!castit) 
+            boolean has_teleport_self_spell = sp_no < MAXSPELL;
+
+            castit = (has_teleport_self_spell && !Confusion && !Stunned);
+            if (castit && yn_query("Cast the 'teleport self' spell?") == 'y')
+            {
+                return spelleffects(sp_no, FALSE, &youmonst);
+            }
+            else if (!castit) 
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You_ex(ATR_NONE, CLR_MSG_FAIL, "%s.",
-                    !Teleportation ? ((sp_no < MAXSPELL)
-                                        ? "can't cast that spell"
-                                        : "don't know that spell")
-                                   : "are not able to teleport at will");
+                    can_teleport_at_will ? (has_teleport_self_spell ? "are not in a condition to teleport at will or cast the 'teleport self' spell" : "are not in a condition to teleport at will or able to cast the 'teleport self' spell") 
+                    : (has_teleport_self_spell ? "are not able to teleport at will or in a condition to cast the 'teleport self' spell" : "are not able to teleport at will or cast the 'teleport self' spell"));
                 return 0;
             }
         }
 
         cantdoit = 0;
-        /* 3.6.2: the magic numbers for hunger, strength, and energy
-           have been changed to match the ones used in spelleffects().
-           Also, failing these tests used to return 1 and use a move
-           even though casting failure due to these reasons doesn't.
-           [Note: this spellev() is different from the one in spell.c
-           but they both yield the same result.] */
-#define spellev(spell_otyp) ((int) objects[spell_otyp].oc_spell_level)
-        energy = 5 * spellev(SPE_TELEPORT_MONSTER);
+        energy = TELEPORT_AT_WILL_MANA_COST;
 
         if (break_the_rules) 
         {
@@ -1053,21 +1052,8 @@ boolean break_the_rules; /* True: wizard mode ^T */
             return 1; /* this failure in spelleffects() also uses the move */
         }
 
-        if (castit)
-        {
-            /* energy cost is deducted in spelleffects() */
-            exercise(A_WIS, TRUE);
-            if (spelleffects(sp_no, TRUE, &youmonst))
-                return 1;
-            else if (!break_the_rules)
-                return 0;
-        } 
-        else 
-        {
-            /* bypassing spelleffects(); apply energy cost directly */
-            u.uen -= energy;
-            context.botl = 1;
-        }
+        u.uen -= energy;
+        context.botl = 1;
     }
 
     if (next_to_u()) 
@@ -1121,7 +1107,7 @@ d_level target_level;
         newlevel = target_level;
         newlev = target_level.dlevel;
     }
-    else if ((Teleport_control && !Stunned) || controltype == 1 || (wizard && (teletype == 1 /* || yn_query("Enforce teleport control?") == 'y'*/)))
+    else if ((Teleport_control && !Stunned && !Confusion) || controltype == 1 || (wizard && (teletype == 1 /* || yn_query("Enforce teleport control?") == 'y'*/)))
     {
         char qbuf[BUFSZ];
         char phbuf[BUFSZ] = "";

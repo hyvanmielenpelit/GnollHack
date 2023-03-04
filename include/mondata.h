@@ -262,6 +262,8 @@
 #define has_innate_energy_regeneration(ptr) \
     has_innate2(ptr, MR2_ENERGY_REGENERATION)
 
+#define has_innate_sick_resistance(ptr) \
+    has_innate(ptr, MR_SICK)
 
 /* fixed ability */
 #define has_fixed_ability(mon) \
