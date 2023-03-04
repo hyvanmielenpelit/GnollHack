@@ -40,8 +40,8 @@
       "version": "49",
       "source_directory": "banks",
       "source_url": "https://download.gnollhack.com/gnollhack-xu5yROO95006WNM/v49/Auxiliary.bank",
-      "length": 401528192,
-      "sha256": "0f60d6af402f118064e505ae15298c32b12f1c77ce2be2542994d450d0e42e9d",
+      "length": 404297888,
+      "sha256": "6033d49fc003abb12b7d48541ef8f6e7cb15301d0c36165f3657080aaeb54168",
       "target_directory": "bank",
       "flags": 0
     },
