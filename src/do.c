@@ -5151,7 +5151,11 @@ const char *word;
                   obj->corpsenm ? " any of" : "", is_graystone(obj) ? "the stone" : "the item", plur(obj->quan));
         }
         obj->corpsenm = 0; /* reset */
-        obj->bknown = 1;
+        if (!obj->bknown)
+        {
+            obj->bknown = TRUE;
+            update_inventory();
+        }
         return FALSE;
     }
     if (obj->otyp == LEASH && obj->leashmon != 0) {

@@ -2623,7 +2623,11 @@ boolean dobot;
     else if ((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) 
     {
         play_sfx_sound(SFX_GENERAL_WELDED);
-        obj->bknown = 1;
+        if (!obj->bknown)
+        {
+            obj->bknown = TRUE;
+            update_inventory();
+        }
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
         goto default_incontainer_end_here;
     }

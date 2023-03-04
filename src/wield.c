@@ -1912,8 +1912,14 @@ welded(obj, mon)
 register struct obj *obj;
 register struct monst* mon;
 {
-    if (obj && mon && (obj == uwep || obj == uarms) && will_weld(obj, mon)) {
-        obj->bknown = TRUE;
+    if (obj && mon && (obj == uwep || obj == uarms) && will_weld(obj, mon)) 
+    {
+        if (!obj->bknown)
+        {
+            obj->bknown = TRUE;
+            if (obj->where == OBJ_INVENT)
+                update_inventory();
+        }
         return 1;
     }
     return 0;

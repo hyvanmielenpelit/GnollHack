@@ -1479,7 +1479,11 @@ register struct obj *otmp;
 
         play_sfx_sound(SFX_GENERAL_WELDED);
         You_ex(ATR_NONE, CLR_MSG_WARNING, "can't.  %s cursed.", use_plural ? "They are" : "It is");
-        otmp->bknown = TRUE;
+        if (!otmp->bknown)
+        {
+            otmp->bknown = TRUE;
+            update_inventory();
+        }
         return 1;
     }
     return 0;
@@ -2331,7 +2335,11 @@ boolean in_takeoff_wear;
             if (uarmg && uarmg->cursed) 
             {
                 res = !uarmg->bknown;
-                uarmg->bknown = 1;
+                if (!uarmg->bknown)
+                {
+                    uarmg->bknown = TRUE;
+                    update_inventory();
+                }
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "cannot remove your gloves to put on the ring.");
                 return res; /* uses move iff we learned gloves are cursed */
@@ -2935,7 +2943,11 @@ register struct obj *otmp;
         if (why) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot %s to remove the ring.", buf);
-            why->bknown = TRUE;
+            if (!why->bknown)
+            {
+                why->bknown = TRUE;
+                update_inventory();
+            }
             return 0;
         }
     }
@@ -2945,7 +2957,11 @@ register struct obj *otmp;
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "are unable to take off your %s while wielding that %s.",
                 c_gloves, is_sword(uwep) ? c_sword : c_weapon);
-            uwep->bknown = TRUE;
+            if (!uwep->bknown)
+            {
+                uwep->bknown = TRUE;
+                update_inventory();
+            }
             return 0;
         } else if (Glib) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -2990,7 +3006,11 @@ register struct obj *otmp;
         if (why) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot %s to take off %s.", buf, the(xname(otmp)));
-            why->bknown = TRUE;
+            if (!why->bknown)
+            {
+                why->bknown = TRUE;
+                update_inventory();
+            }
             return 0;
         }
     }

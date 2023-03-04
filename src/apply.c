@@ -1100,8 +1100,12 @@ struct obj *obj;
         {
             play_sfx_sound(SFX_GENERAL_WELDED);
             pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "leash would not come off!");
-            obj->bknown = 1;
-        } 
+            if (!obj->bknown)
+            {
+                obj->bknown = TRUE;
+                update_inventory();
+            }
+        }
         else
         {
             mtmp->mleashed = 0;
@@ -5853,6 +5857,7 @@ doapply()
                         obj->bknown = 1;
                     }
                     unbless(obj);
+                    update_inventory();
                 }
             }
             else
