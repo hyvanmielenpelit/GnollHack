@@ -1279,9 +1279,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
                 if (youmonst.data != old_uasmon)
                     *dmgptr = 0; /* rehumanized, so no more damage */
                 if (u.uenmax > 0) {
-                    u.ubaseenmax--;
-                    if (u.uen > 0)
-                        u.uen--;
+                    u.ubaseendrain--;
                     updatemaxen();
                     context.botl = TRUE;
                     You("lose magical energy!");
@@ -1290,8 +1288,13 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
                 if (mdef->data == &mons[PM_CLAY_GOLEM])
                     mdef->mhp = 1; /* cancelled clay golems will die */
                 if (youattack && attacktype(mdef->data, AT_MAGC)) {
-                    u.ubaseenmax++;
-                    u.uen++;
+                    if (u.ubaseendrain < 0)
+                        u.ubaseendrain++;
+                    else
+                    {
+                        u.ubaseenmax++;
+                        u.uen++;
+                    }
                     updatemaxen();
                     context.botl = TRUE;
                     You("absorb magical energy!");
@@ -1729,7 +1732,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 }
 
                 *dmgptr += (double)drain + mhpadj;
-                mdef->mbasehpmax -= drain;
+                mdef->mbasehpdrain -= drain;
                 mdef->m_lev -= levelloss;
                 update_mon_maxhp(mdef);
                 drain /= 2;
@@ -1928,7 +1931,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                         if (!does_regenerate_bodyparts(mdef->data))
                         {
                             /* Max HP does not go down if the creature can regenerate the lost body part */
-                            mdef->mbasehpmax -= damagedone;
+                            mdef->mbasehpdrain -= damagedone;
                             mdef->mhpmax -= damagedone;
                             if (mdef->mhpmax < 1)
                                 mdef->mhpmax = 1, lethaldamage = TRUE;
@@ -1989,7 +1992,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                             if (!does_regenerate_bodyparts(youmonst.data))
                             {
                                 /* Max HP does not go down if the creature can regenerate the lost body part */
-                                u.ubasehpmax -= damagedone;
+                                u.ubasehpdrain -= damagedone;
                                 u.uhpmax -= damagedone;
                                 if (u.uhpmax < 1)
                                     u.uhpmax = 1, lethaldamage = TRUE;
@@ -2236,7 +2239,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                             int drain = monbasehp_per_lvl(mdef);
                             int drain2 = (int)monhpadj_per_lvl(mdef);
                             totaldamagedone += drain + drain2;
-                            mdef->mbasehpmax -= drain;
+                            mdef->mbasehpdrain -= drain;
                             mdef->mhpmax -= (drain + drain2);
                             if (mdef->mhpmax < 1)
                                 mdef->mhpmax = 1, lethaldamage = TRUE;

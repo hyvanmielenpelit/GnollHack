@@ -1468,7 +1468,7 @@ cure_petrification_here:
             double bdamage = adjust_damage(basedmg, origmonst, mtmp, AD_DRLI, ADFLAGS_SPELL_DAMAGE);
 
             deduct_monster_hp(mtmp, damage);
-            mtmp->mbasehpmax -= (int)floor(bdamage);
+            mtmp->mbasehpdrain -= (int)floor(bdamage);
             mtmp->mhpmax -= (int)floor(damage);
 
             /* die if already level 0, regardless of hit points */

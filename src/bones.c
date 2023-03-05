@@ -523,6 +523,7 @@ make_bones:
     if (mtmp) {
         mtmp->m_lev = (u.ulevel ? u.ulevel : 1);
         mtmp->mbasehpmax = u.ubasehpmax;
+        mtmp->mbasehpdrain = 0; /* Undead are cured on hp drain */
         update_mon_maxhp(mtmp);
         mtmp->mhp = mtmp->mhpmax;
         mtmp->female = flags.female;

@@ -1872,7 +1872,7 @@ register struct obj* omonwep;
             play_sfx_sound_at_location(SFX_DRAIN_LIFE, mdef->mx, mdef->my);
             if (vis && canspotmon(mdef))
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly seems weaker!", Monnam(mdef));
-            mdef->mbasehpmax -= basehpdrain;
+            mdef->mbasehpdrain -= basehpdrain;
             if (mdef->m_lev == 0)
                 damage = (double)mdef->mhp + 1;
             else
@@ -2123,7 +2123,7 @@ register struct obj* omonwep;
 
         if (extradmg > 0)
         {
-            mdef->mbasehpmax -= extradmg;
+            mdef->mbasehpdrain -= extradmg;
 
             if (extradmg > 0)
             {

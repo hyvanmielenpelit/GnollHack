@@ -1113,6 +1113,7 @@ boolean fromspell;
             mtmp->m_lev = rn1(8, 15);
             mtmp->mbasehpmax =
                 d((int) mtmp->m_lev, 10) + 30 + rnd(30);
+            mtmp->mbaseendrain = 0;
             update_mon_maxhp(mtmp);
             mtmp->mhp = mtmp->mhpmax;
             if ((otmp = select_hwep(mtmp, TRUE, 0, 0)) == 0) {

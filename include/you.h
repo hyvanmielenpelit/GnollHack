@@ -518,7 +518,7 @@ struct you {
     int umonster;               /* hero's "real" monster num */
     int umonnum;                /* current monster number */
 
-    int mh, mhmax, basemhmax, mtimedone;   /* for polymorph-self */
+    int mh, mhmax, basemhmax, basemhdrain, mtimedone;   /* for polymorph-self */
     struct attribs macurr,      /* for monster attribs */
                    mamin,       /* for monster attribs */
                    mamax;       /* for monster attribs */
@@ -579,8 +579,8 @@ struct you {
     schar uarcherybonus;
     short uac;                 /* current armor class */
     schar umc;                 /* current magic cancellation */
-    int uhp, uhpmax, ubasehpmax;         /* hit points, aka health */
-    int uen, uenmax, ubaseenmax;         /* magical energy - M. Stephenson */
+    int uhp, uhpmax, ubasehpmax, ubasehpdrain;         /* hit points, aka health */
+    int uen, uenmax, ubaseenmax, ubaseendrain;         /* magical energy - M. Stephenson */
     xchar uhpinc[MAXULEV],   /* increases to uhpmax for each level gain */
           ueninc[MAXULEV];   /* increases to uenmax for each level gain */
     int uhp_fraction, uen_fraction, mh_fraction;

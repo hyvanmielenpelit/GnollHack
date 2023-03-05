@@ -940,6 +940,8 @@ u_init()
     u.ubasehpmax = newhp();
     u.ubaseenmax = newpw();
 
+    u.ubasehpdrain = u.basemhdrain = u.ubaseendrain = 0;
+
     u.uhp_fraction = 0;
     u.mh_fraction = 0;
     u.uen_fraction = 0;

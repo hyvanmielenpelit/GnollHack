@@ -453,6 +453,7 @@ int trouble;
            boosted to be more than that */
         play_sfx_sound(SFX_FULL_HEALING);
         You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much better.");
+        u.ubasehpdrain = u.basemhdrain = 0;
         if (Upolyd) {
             u.basemhmax += rnd(5);
             if (u.basemhmax <= 5)

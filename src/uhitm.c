@@ -2140,7 +2140,7 @@ boolean* obj_destroyed;
 
         if (extradmg > 0)
         {
-            mon->mbasehpmax -= extradmg;
+            mon->mbasehpdrain -= extradmg;
             update_mon_maxhp(mon);
 
             if (mon->mhp > mon->mhpmax)
@@ -2996,7 +2996,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             int xtmp = d(2, 6);
 
             pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s suddenly seems weaker!", Monnam(mdef));
-            mdef->mbasehpmax -= xtmp;
+            mdef->mbasehpdrain -= xtmp;
             update_mon_maxhp(mdef);
             deduct_monster_hp(mdef, adjust_damage(xtmp, &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE));
             /* !m_lev: level 0 monster is killed regardless of hit points

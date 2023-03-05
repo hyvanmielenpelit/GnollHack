@@ -3114,7 +3114,7 @@ register struct obj* omonwep;
     {
         if (permdmg > 0) 
         { /* Death's life force drain */
-            int lowerlimit, * hpmax_p;
+            int *hpdrain_p;
             /*
              * Apply some of the damage to permanent hit points:
              *  polymorphed         100% against poly'd hpmax
@@ -3133,18 +3133,12 @@ register struct obj* omonwep;
                 permdmg += (int)ceil(damage / 4);
 
             if (Upolyd) {
-                hpmax_p = &u.basemhmax;
-                /* [can't use youmonst.m_lev] */
-                lowerlimit = min((int)youmonst.data->mlevel, u.ulevel);
+                hpdrain_p = &u.basemhdrain;
             }
             else {
-                hpmax_p = &u.ubasehpmax;
-                lowerlimit = u.ulevel;
+                hpdrain_p = &u.ubasehpdrain;
             }
-            if (*hpmax_p - permdmg > lowerlimit)
-                * hpmax_p -= permdmg;
-            else if (*hpmax_p > lowerlimit)
-                * hpmax_p = lowerlimit;
+            *hpdrain_p -= permdmg;
 
             updatemaxhp();
             if (Upolyd)
@@ -3169,14 +3163,14 @@ register struct obj* omonwep;
         {
             if (Upolyd)
             {
-                u.basemhmax -= permdmg2;
+                u.basemhdrain -= permdmg2;
                 updatemaxhp();
                 if (u.mh > u.mhmax)
                     u.mh = u.mhmax;
             }
             else
             {
-                u.ubasehpmax -= permdmg2;
+                u.ubasehpdrain -= permdmg2;
                 updatemaxhp();
                 if (u.uhp > u.uhpmax)
                     u.uhp = u.uhpmax;
@@ -4359,7 +4353,7 @@ struct monst *mon;
             play_sfx_sound(SFX_LOSE_ENERGY);
             You_feel("drained of energy.");
             u.uen = 0;
-            u.ubaseenmax -= rnd(Half_physical_damage ? 5 : 10);
+            u.ubaseendrain -= rnd(Half_physical_damage ? 5 : 10);
             updatemaxen();
             exercise(A_CON, FALSE);
             if (u.uenmax < 0)
@@ -4409,7 +4403,8 @@ struct monst *mon;
         case 0:
             You_feel("raised to your full potential.");
             exercise(A_CON, TRUE);
-            u.uen = (u.ubaseenmax += rnd(5));
+            u.ubaseenmax += rnd(5);
+            u.uen = u.ubaseenmax;
             updatemaxen();
             break;
         case 1:
@@ -4826,6 +4821,7 @@ cloneu()
     mon->m_lev = youmonst.data->mlevel;
     //mon might need mbasehpmax stat
     mon->mbasehpmax = u.basemhmax;
+    mon->mbasehpdrain = u.basemhdrain;
     update_mon_maxhp(mon);
     mon->mhp = u.mh / 2;
     u.mh -= mon->mhp;

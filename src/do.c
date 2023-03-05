@@ -8064,6 +8064,7 @@ heal_ailments_upon_revival(VOID_ARGS)
     make_sick(0L, (char*)0, FALSE, 0);
     make_food_poisoned(0L, (char*)0, FALSE, 0);
     make_hallucinated(0L, FALSE, 0L);
+    u.ubasehpdrain = u.ubaseendrain = u.basemhdrain = 0;
 }
 
 /*do.c*/

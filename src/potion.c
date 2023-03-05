@@ -1826,12 +1826,23 @@ struct obj *otmp;
         {
             /* subtract instead of add when cursed */
             num = -num;
-            u.ubaseenmax -= numxtra;
+            u.ubaseendrain -= numxtra;
             play_sfx_sound(SFX_LOSE_ENERGY);
         }
         else if(otmp->blessed)
         {
             num = num * 2;
+            if (u.ubaseendrain < 0)
+            {
+                u.ubaseendrain += numxtra;
+                if (u.ubaseendrain > 0)
+                {
+                    numxtra = u.ubaseendrain;
+                    u.ubaseendrain = 0;
+                }
+                else
+                    numxtra = 0;
+            }
             u.ubaseenmax += numxtra;
             play_sfx_sound(SFX_FULL_ENERGY);
         }
@@ -1931,10 +1942,28 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
         int max_hp_before = (Upolyd ? u.mhmax : u.uhpmax);
         if (Upolyd)
         {
+            if (u.basemhdrain < 0)
+            {
+                u.basemhdrain += nxtra;
+                if (u.basemhdrain > 0)
+                {
+                    nxtra = u.basemhdrain;
+                    u.basemhdrain = 0;
+                }
+            }
             u.basemhmax += nxtra;
         }
         else 
         {
+            if (u.ubasehpdrain < 0)
+            {
+                u.ubasehpdrain += nxtra;
+                if (u.ubasehpdrain > 0)
+                {
+                    nxtra = u.ubasehpdrain;
+                    u.ubasehpdrain = 0;
+                }
+            }
             u.ubasehpmax += nxtra;
         }
         updatemaxhp();
@@ -2372,8 +2401,8 @@ int how;
             }
 
 do_illness: /* Pestilence's potion of healing effect */
-            if ((mon->mbasehpmax > 3) && !check_ability_resistance_success(mon, A_CON, objects[obj->otyp].oc_mc_adjustment))
-                mon->mbasehpmax /= 2;
+            if ((mon->mbasehpmax + mon->mbasehpdrain > 3) && !check_ability_resistance_success(mon, A_CON, objects[obj->otyp].oc_mc_adjustment))
+                mon->mbasehpdrain -= mon->mbasehpmax / 2;
             
             update_mon_maxhp(mon);
             
@@ -4228,6 +4257,8 @@ struct monst *mon,  /* monster being split */
         {
             mtmp2->mbasehpmax = u.basemhmax / 2;
             u.basemhmax -= mtmp2->mbasehpmax;
+            mtmp2->mbasehpdrain = u.basemhdrain / 2;
+            u.basemhdrain -= mtmp2->mbasehpdrain;
             updatemaxhp();
             update_mon_maxhp(mtmp2);
             context.botl = context.botlx = 1;
@@ -4242,6 +4273,8 @@ struct monst *mon,  /* monster being split */
             /* Gremlins are half strength */
             mtmp2->mbasehpmax = mon->mbasehpmax / 2;
             mon->mbasehpmax -= mtmp2->mbasehpmax;
+            mtmp2->mbasehpdrain = mon->mbasehpdrain / 2;
+            mon->mbasehpdrain -= mtmp2->mbasehpdrain;
             update_mon_maxhp(mon);
             update_mon_maxhp(mtmp2);
             if (canspotmon(mon))

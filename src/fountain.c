@@ -293,6 +293,19 @@ drinkfountain()
             added_mana *= 2;
             added_max_mana += d(1, 3);
         }
+        if (u.ubaseendrain < 0)
+        {
+            u.ubaseendrain += added_max_mana;
+            if (u.ubaseendrain > 0)
+            {
+                added_max_mana = u.ubaseendrain;
+                u.ubaseendrain = 0;
+            }
+            else
+            {
+                added_max_mana = 0;
+            }
+        }
         u.uen += added_mana;
         u.ubaseenmax += added_max_mana;
         updatemaxen();

@@ -1047,7 +1047,7 @@ register struct monst *mtmp;
         //mtmp->mhp -= dam;
 
         if (mtmp->mhpmax > dam)
-            mtmp->mbasehpmax -= dam;
+            mtmp->mbasehpdrain -= dam;
         
         update_mon_maxhp(mtmp);
         if (DEADMONSTER(mtmp)) 
@@ -3166,6 +3166,7 @@ struct monst *mtmp;
         }
         if (mtmp->mbasehpmax <= 0)
             mtmp->mbasehpmax = 10;
+        mtmp->mbasehpdrain = 0;
         update_mon_maxhp(mtmp);
         mtmp->mhp = mtmp->mhpmax;
         mtmp->heads_left = mtmp->data->heads;
@@ -3243,6 +3244,7 @@ unsigned long mdiedflags;
             mtmp->yell_y = 0;
             if (mtmp->mbasehpmax <= 0)
                 mtmp->mbasehpmax = 10;
+            mtmp->mbasehpdrain = 0;
             update_mon_maxhp(mtmp);
             mtmp->mhp = mtmp->mhpmax;
             mtmp->heads_left = mtmp->data->heads;
@@ -4082,6 +4084,7 @@ struct monst *mtmp;
             mtmp->yell_y = 0;
             if (mtmp->mbasehpmax <= 0)
                 mtmp->mbasehpmax = 10;
+            mtmp->mbasehpdrain = 0;
             update_mon_maxhp(mtmp);
             mtmp->mhp = mtmp->mhpmax;
             /* this can happen if previously a fog cloud */

@@ -2274,6 +2274,7 @@ boolean origin_at_mon;
      */
     m2->mhpmax = mon->mhpmax;
     m2->mbasehpmax = mon->mbasehpmax;
+    m2->mbasehpdrain = mon->mbasehpdrain;
     m2->mhp = mon->mhp / 2;
     mon->mhp -= m2->mhp;
 
@@ -2512,6 +2513,7 @@ unsigned long mmflags;
     mon->mbasehpmax = hp;
     if (mon->mbasehpmax < 1)
         mon->mbasehpmax = 1;
+    mon->mbaseendrain = 0;
     update_mon_maxhp(mon);
 
     mon->mhp = mon->mhpmax;

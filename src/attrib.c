@@ -361,11 +361,11 @@ register int num;
         --num;
         if (Upolyd) {
             u.mh -= 6;
-            u.basemhmax -= 6;
+            u.basemhdrain -= 6;
             updatemaxhp();
         } else {
             u.uhp -= 6;
-            u.ubasehpmax -= 6;
+            u.ubasehpdrain -= 6;
             updatemaxhp();
         }
     }
@@ -1994,22 +1994,23 @@ newhp()
 }
 
 int
-hpmaxadjustment()
+hpmaxadjustment(usemh)
+boolean usemh;
 {
-    return m_hpmaxadjustment(&youmonst);
+    return m_hpmaxadjustment(&youmonst, usemh);
 }
 
 int
-m_hpmaxadjustment(mon)
+m_hpmaxadjustment(mon, usemh)
 struct monst* mon;
+boolean usemh;
 {
     boolean is_you = (mon == &youmonst);
     int basehp = is_you ? u.ubasehpmax : mon->mbasehpmax;
-    int baseadj = (int)(constitution_hp_bonus(M_ACURR(mon, A_CON)) * (double)(is_you ? u.ulevel : mon->m_lev));
+    int baseadj = (int)(constitution_hp_bonus(M_ACURR(mon, A_CON)) * (double)(is_you ? u.ulevel : mon->m_lev)) + (is_you ? (usemh ? u.basemhdrain : u.ubasehpdrain) : mon->mbasehpdrain);
     int adj = baseadj;
     int otyp = 0;
     struct obj* uitem;
-
 
     for (uitem = is_you ? invent : mon->minvent; uitem; uitem = uitem->nobj)
     {
@@ -2063,7 +2064,7 @@ struct monst* mon;
         return;
     }
 
-    mon->mhpmax = mon->mbasehpmax + m_hpmaxadjustment(mon);
+    mon->mhpmax = mon->mbasehpmax + m_hpmaxadjustment(mon, FALSE);
 
     /* EDOG penalty */
     if(mon->mextra && EDOG(mon))
@@ -2087,7 +2088,7 @@ struct monst* mon;
 void
 updatemaxhp()
 {
-    u.uhpmax = u.ubasehpmax + hpmaxadjustment();
+    u.uhpmax = u.ubasehpmax + hpmaxadjustment(FALSE);
 
     if (u.uhpmax < 1)
         u.uhpmax = 1;
@@ -2095,7 +2096,7 @@ updatemaxhp()
     if (u.uhp > u.uhpmax)
         u.uhp = u.uhpmax;
 
-    u.mhmax = u.basemhmax + hpmaxadjustment();
+    u.mhmax = u.basemhmax + hpmaxadjustment(TRUE);
 
     if (u.mhmax < 1)
         u.mhmax = 1;

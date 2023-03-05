@@ -101,10 +101,10 @@ struct monst {
     schar macbonus;
     schar mmcbonus;
 
-    int mhp, mbasehpmax, mhpmax;
+    int mhp, mbasehpmax, mhpmax, mbasehpdrain;
     int mhp_fraction;
 
-    int men, mbaseenmax, menmax;
+    int men, mbaseenmax, menmax, mbaseendrain;
     int men_fraction;
 
     uchar heads_left;

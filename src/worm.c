@@ -408,6 +408,7 @@ boolean cuttier; /* hit is by wielded blade or axe or by thrown axe */
        Note: m_lev is always at least 3 in order to get this far. */
     worm->m_lev = max((unsigned) worm->m_lev - 2, 3);
     new_worm->m_lev = worm->m_lev;
+    new_worm->mbasehpdrain = worm->mbasehpdrain;
 
     /* Calculate the lower-level mhp; use <N>d8 for long worms.
        Can't use newmonhp() here because it would reset m_lev. */
