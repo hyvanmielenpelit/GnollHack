@@ -227,6 +227,9 @@ boolean self;
     case ARTINVOKE_WAND_OF_DEATH:
         powertxt = " a death ray from";
         break;
+    case ARTINVOKE_WAND_OF_COLD:
+        powertxt = " a cone of cold from";
+        break;
     default:
         break;
     }
@@ -1350,6 +1353,7 @@ try_again:
 #define MUSE_WAN_DISINTEGRATION 18
 #define MUSE_WAN_PETRIFICATION 19
 #define MUSE_WAN_ORCUS 20
+#define MUSE_RUBY_ROD 21
 
 /* Select an offensive item/action for a monster.  Returns TRUE iff one is
  * found.
@@ -1417,6 +1421,13 @@ struct monst *mtmp;
             {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_ORCUS;
+            }
+            nomore(MUSE_RUBY_ROD);
+            if (obj->oartifact == ART_RUBY_ROD_OF_ASMODEUS && obj->charges > 0 && obj->repowerleft == 0 && !cold_resistant_skip && !level_skip_normal_wand
+                && lined_up(mtmp, TRUE, AD_COLD, TRUE, M_RAY_RANGE))
+            {
+                m.offensive = obj;
+                m.has_offense = MUSE_RUBY_ROD;
             }
             nomore(MUSE_WAN_DISINTEGRATION);
             if (obj->otyp == WAN_DISINTEGRATION && obj->charges > 0 && !is_cancelled(mtmp) && !disintegration_resistant_skip && ((!uarm && !uarms && !level_skip_powerful_wand) || ((uarm || uarms) && !level_skip_normal_wand))
@@ -1808,6 +1819,7 @@ struct monst *mtmp;
         m_using = FALSE;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
     case MUSE_WAN_ORCUS:
+    case MUSE_RUBY_ROD:
         if (!otmp)
             return 2;
 
@@ -1822,10 +1834,10 @@ struct monst *mtmp;
         }
         m_using = TRUE;
 
-        raytype = -40 - objects[WAN_DEATH].oc_dir_subtype; //-40...-48;
         struct obj pseudo = { 0 };
-        pseudo.otyp = WAN_DEATH;
+        pseudo.otyp = m.has_offense == MUSE_WAN_ORCUS ? WAN_DEATH : WAN_COLD;
         pseudo.quan = 1L;
+        raytype = -40 - objects[pseudo.otyp].oc_dir_subtype; //-40...-48;
         buzz(raytype, &pseudo, mtmp, 0, 0, 0, mtmp->mx, mtmp->my,
             sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
         m_using = FALSE;

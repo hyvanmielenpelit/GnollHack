@@ -1186,6 +1186,20 @@ register struct monst *mtmp;
                 (void)mpickobj(mtmp, otmp);
             }
             break;
+        case PM_ASMODEUS:
+            otmp = mksobj_with_flags(RUNED_SCEPTRE, TRUE, FALSE, FALSE, mtmp, MAT_GEMSTONE, 0L, 0L, 0UL);
+            if (otmp)
+                otmp = oname(otmp, artiname(ART_RUBY_ROD_OF_ASMODEUS));
+
+            if (otmp)
+            {
+                otmp->oerodeproof = TRUE;
+                spe2 = 2 + rnd(4);
+                otmp->enchantment = max(otmp->enchantment, spe2);
+                curse(otmp);
+                (void)mpickobj(mtmp, otmp);
+            }
+            break;
         default:
             goto default_equipment_here;
         }

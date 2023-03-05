@@ -65,6 +65,9 @@
 #define AF2_HEIGHT_IS_CLIPPING                 0x00000100UL  /* Height clips rather than scales the item graphics */
 #define AF2_NO_CATALOGUE                       0x00000200UL  
 #define AF2_MISSILE_REPLACEMENTS               0x00000400UL  
+#define AF2_MATERIAL_NAME_2ND_WORD_DN          0x00000800UL  
+#define AF2_MATERIAL_NAME_3RD_WORD_DN          0x00001000UL  
+#define AF2_MATERIAL_NAME_4TH_WORD_DN          (AF2_MATERIAL_NAME_2ND_WORD_DN | AF2_MATERIAL_NAME_3RD_WORD_DN)  
 
 
 #define has_artifact_floor_tile(artifact_idx) \
@@ -184,6 +187,7 @@ enum invoke_prop_types {
     ARTINVOKE_RECHARGE_ITSELF,
     ARTINVOKE_INVOKE_WITH_TIMER,
     ARTINVOKE_TIME_STOP,
+    ARTINVOKE_WAND_OF_COLD,
     MAX_ARTINVOKES /* this is NOT the number of artifact invokes*/
 };
 

@@ -514,12 +514,15 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             }
         }
     }
-    if (((OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_WORD_BY_AN) != 0 && (objects[obj->otyp].oc_flags5 & (O5_MATERIAL_NAME_2ND_WORD_AN | O5_MATERIAL_NAME_3RD_WORD_AN | O5_MATERIAL_NAME_4TH_WORD_AN)) != 0)
-       || (OBJ_DESCR_FLAGS(obj->otyp) & (OD_MATERIAL_NAME_2ND_WORD_DN | OD_MATERIAL_NAME_3RD_WORD_DN | OD_MATERIAL_NAME_4TH_WORD_DN)) != 0)
+    if ( (!artifact_description_exists && (((OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_WORD_BY_AN) != 0 && (objects[obj->otyp].oc_flags5 & (O5_MATERIAL_NAME_2ND_WORD_AN | O5_MATERIAL_NAME_3RD_WORD_AN | O5_MATERIAL_NAME_4TH_WORD_AN)) != 0)
+            || (OBJ_DESCR_FLAGS(obj->otyp) & (OD_MATERIAL_NAME_2ND_WORD_DN | OD_MATERIAL_NAME_3RD_WORD_DN | OD_MATERIAL_NAME_4TH_WORD_DN)) != 0)
+         )
+        || (artifact_description_exists && (artilist[obj->oartifact].aflags2 & (AF2_MATERIAL_NAME_2ND_WORD_DN | AF2_MATERIAL_NAME_3RD_WORD_DN | AF2_MATERIAL_NAME_4TH_WORD_DN)) != 0))
     {
-        int spacecnt = (OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_WORD_BY_AN) != 0 ? 
+        int spacecnt = artifact_description_exists ? ((artilist[obj->oartifact].aflags2 & AF2_MATERIAL_NAME_4TH_WORD_DN) == AF2_MATERIAL_NAME_4TH_WORD_DN ? 3 : (artilist[obj->oartifact].aflags2 & AF2_MATERIAL_NAME_3RD_WORD_DN) == AF2_MATERIAL_NAME_3RD_WORD_DN ? 2 : 1)
+            : ((OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_WORD_BY_AN) != 0 ?
             ((objects[obj->otyp].oc_flags5 & O5_MATERIAL_NAME_4TH_WORD_AN) == O5_MATERIAL_NAME_4TH_WORD_AN ? 3 : (objects[obj->otyp].oc_flags5 & O5_MATERIAL_NAME_3RD_WORD_AN) == O5_MATERIAL_NAME_3RD_WORD_AN ? 2 : 1) : 
-            (OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_4TH_WORD_DN) == OD_MATERIAL_NAME_4TH_WORD_DN ? 3 : (OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_3RD_WORD_DN) == OD_MATERIAL_NAME_3RD_WORD_DN ? 2 : 1;
+            (OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_4TH_WORD_DN) == OD_MATERIAL_NAME_4TH_WORD_DN ? 3 : (OBJ_DESCR_FLAGS(obj->otyp) & OD_MATERIAL_NAME_3RD_WORD_DN) == OD_MATERIAL_NAME_3RD_WORD_DN ? 2 : 1);
         
         const char* p = dn;
         boolean doabort = FALSE;
@@ -4292,7 +4295,7 @@ boolean is_wiz_wish;
             && !strstri(bp, "gauntlets ") && !strstri(bp, "belt ") && !strstri(bp, "girdle ")
             && !strstri(bp, "boots ") && !strstri(bp, "ring ")
             && !strstri(bp, "potion ") && !strstri(bp, "scroll ")
-            && !strstri(bp, "potions ") && !strstri(bp, "scrolls ")
+            && !strstri(bp, "potions ") && !strstri(bp, "scrolls ") && !strstri(bp, "ruby rod ") && !strstri(bp, "triple-headed flail ")
             && !strstri(bp, "finger ")) {
             if ((p = strstri(bp, "tin of ")) != 0) {
                 if (!strcmpi(p + 7, "spinach")) {
@@ -4315,6 +4318,9 @@ boolean is_wiz_wish;
         && strncmpi(bp, "wizard lock", 11) /* not the "wizard" monster! */
         && strncmpi(bp, "wizard's robe", 13) /* not the "wizard" monster! */
         && strncmpi(bp, "bat guano", 9) /* not the "bat" monster! */
+        && strncmpi(bp, "ruby rod of asmodeus", 20) /* not the "Asmodeus" monster! */
+        && strncmpi(bp, "wand of orcus", 13) /* not the "Orcus" monster! */
+        && strncmpi(bp, "triple-headed flail of yeenaghu", 31) /* not the "Yeenaghu" monster! */
         && strncmpi(bp, "ninja-to", 8)     /* not the "ninja" rank */
         && strncmpi(bp, "master key", 10)  /* not the "master" rank */
         && strncmpi(bp, "death cap", 9)  /* not the "death" monster */

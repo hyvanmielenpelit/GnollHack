@@ -25,7 +25,7 @@ STATIC_VAR boolean touch_blasted; /* for retouch_object() */
 const char* artifact_invoke_names[NUM_ARTINVOKES] = {
     "taming", "healing", "mana replenishment", "untrapping", "charging",
     "level teleportation", "portal creation", "enlightenment", "arrow creation", "arrow of Diana", "death ray", "blessing of contents", "wishing",
-    "summon demon", "summon elder air elemental", "recharge itself", "activates the artifact", "time stop"
+    "summon demon", "summon elder air elemental", "recharge itself", "activates the artifact", "time stop", "cone of cold"
 };
 
 #define get_artifact(o) \
@@ -2802,10 +2802,11 @@ struct obj *obj;
             }
             break;
         }
+        case ARTINVOKE_WAND_OF_COLD:
         case ARTINVOKE_WAND_OF_DEATH:
         {
             struct obj pseudo = zeroobj;
-            pseudo.otyp = WAN_DEATH;
+            pseudo.otyp = oart->inv_prop == ARTINVOKE_WAND_OF_DEATH ? WAN_DEATH : WAN_COLD;
             pseudo.quan = 1L; /* do not let useup get it */
             double damage = 0;
 
