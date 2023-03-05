@@ -1423,7 +1423,7 @@ struct monst *mtmp;
                 m.has_offense = MUSE_WAN_ORCUS;
             }
             nomore(MUSE_RUBY_ROD);
-            if (obj->oartifact == ART_RUBY_ROD_OF_ASMODEUS && obj->repowerleft == 0 && !level_skip_normal_wand)
+            if (obj->oartifact == ART_RUBY_ROD_OF_ASMODEUS && obj->repowerleft == 0)
             {
                 if (!cold_resistant_skip
                     && lined_up(mtmp, TRUE, AD_COLD, TRUE, M_RAY_RANGE))

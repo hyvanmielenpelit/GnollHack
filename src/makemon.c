@@ -1187,7 +1187,7 @@ register struct monst *mtmp;
             }
             break;
         case PM_ASMODEUS:
-            otmp = mksobj_with_flags(RUNED_SCEPTRE, TRUE, FALSE, FALSE, mtmp, MAT_GEMSTONE, 0L, 0L, 0UL);
+            otmp = mksobj_with_flags(DIABOLICAL_SCEPTRE, TRUE, FALSE, FALSE, mtmp, MAT_NONE, 0L, 0L, 0UL);
             if (otmp)
                 otmp = oname(otmp, artiname(ART_RUBY_ROD_OF_ASMODEUS));
 
