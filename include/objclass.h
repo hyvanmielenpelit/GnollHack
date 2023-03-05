@@ -259,7 +259,8 @@ enum charged_init_types {
     CHARGED_UNICORN_HORN = 29,
     CHARGED_1D4_4 = 30,
     CHARGED_1D20_20 = 31,
-    CHARGED_1D4_1 = 32
+    CHARGED_1D4_1 = 32,
+    CHARGED_1D6_9 = 33,
 };
 
 enum recharging_types {
@@ -368,8 +369,10 @@ struct material_definition {
     Bitfield(fragile, 1);
     Bitfield(destroyed_in_lava, 1);
     Bitfield(wishable, 1);
+    Bitfield(scratchable, 1);
 
     const char* foodword;
+    const char* streakword;
 
     uchar color;
     schar acbonus_armor[MAX_ARMOR_TYPES];

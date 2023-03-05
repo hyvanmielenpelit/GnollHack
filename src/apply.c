@@ -4153,7 +4153,7 @@ struct obj *tstone;
         return;
     }
 
-    if (tstone->otyp == TOUCHSTONE && tstone->cursed
+    if (tstone->otyp == TOUCHSTONE && (tstone->cursed || tstone->charges <= 0)
         && obj->oclass == GEM_CLASS && !is_graystone(obj)
         && !obj_resists(obj, 80, 100)) 
     {
@@ -4188,18 +4188,18 @@ struct obj *tstone;
     {
     case GEM_CLASS: /* these have class-specific handling below */
     case RING_CLASS:
-        if (tstone->otyp != TOUCHSTONE) 
+        if (tstone->otyp != TOUCHSTONE || tstone->charges <= 0)
         {
             do_scratch = TRUE;
         } 
-        else if (obj->oclass == GEM_CLASS
-                   && (tstone->blessed
-                       || (!tstone->cursed /*&& (Role_if(PM_ARCHAEOLOGIST)
-                                               || Race_if(PM_GNOME))*/ ))) {
+        else if (obj->oclass == GEM_CLASS) /* Touchstone */
+        {
+            tstone->charges--;
             makeknown(TOUCHSTONE);
             makeknown(obj->otyp);
             prinv((char *) 0, obj, 0L);
             play_sfx_sound(SFX_IDENTIFY_SUCCESS);
+            update_inventory();
             return;
         } 
         else
@@ -4217,6 +4217,7 @@ struct obj *tstone;
     default:
         switch (obj->material)
         {
+        case MAT_COTTON:
         case MAT_CLOTH:
             pline("%s a little more polished now.", Tobjnam(tstone, "look"));
             return;
@@ -4226,20 +4227,6 @@ struct obj *tstone;
             else
                 pline("%s a little wetter now.", Tobjnam(tstone, "are"));
             return;
-        case MAT_WAX:
-            streak_color = "waxy";
-            break; /* okay even if not touchstone */
-        case MAT_WOOD:
-            streak_color = "wooden";
-            break; /* okay even if not touchstone */
-        case MAT_GOLD:
-            do_scratch = TRUE; /* scratching and streaks */
-            streak_color = "golden";
-            break;
-        case MAT_SILVER:
-            do_scratch = TRUE; /* scratching and streaks */
-            streak_color = "silvery";
-            break;
         default:
             /* Objects passing the is_flimsy() test will not
                scratch a stone.  They will leave streaks on
@@ -4247,7 +4234,10 @@ struct obj *tstone;
             if (is_flimsy(obj))
                 streak_color = c_obj_colors[objects[obj->otyp].oc_color];
             else
-                do_scratch = (tstone->otyp != TOUCHSTONE);
+            {
+                do_scratch = material_definitions[obj->material].scratchable;
+                streak_color = material_definitions[obj->material].streakword;
+            }
             break;
         }
         break; /* default oclass */
