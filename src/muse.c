@@ -1844,6 +1844,10 @@ struct monst *mtmp;
         minvokemsg(mtmp, otmp, FALSE);
         if (otmp->oartifact > 0 && artilist[otmp->oartifact].repower_time > 0) /* Override below if effect failed */
             otmp->repowerleft = artilist[otmp->oartifact].repower_time;
+
+        if (artilist[otmp->oartifact].aflags & AF_INVOKE_EXPENDS_CHARGE)
+            otmp->charges--;
+
         if (oseen && otmp->oartifact)
         {
             makeknown(otmp->otyp);
