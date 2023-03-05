@@ -2700,7 +2700,10 @@ register struct obj* omonwep;
                 if (!rn2(7)) 
                 {
                     /* no upper limit necessary; effect is temporary */
-                    u.basemhmax++;
+                    if(u.basemhdrain < 0)
+                        u.basemhdrain++;
+                    else
+                        u.basemhmax++;
                     if (!rn2(13))
                         goaway = TRUE;
                 }
@@ -2714,7 +2717,9 @@ register struct obj* omonwep;
                 if (!rn2(7))
                 {
                     /* hard upper limit via nurse care: 25 * ulevel */
-                    if (u.uhpmax < 5 * u.ulevel + d(2 * u.ulevel, 10))
+                    if(u.ubasehpdrain < 0)
+                        u.ubasehpdrain++;
+                    else if (u.uhpmax < 5 * u.ulevel + d(2 * u.ulevel, 10))
                         u.ubasehpmax++;
                     if (!rn2(13))
                         goaway = TRUE;

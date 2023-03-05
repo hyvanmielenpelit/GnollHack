@@ -1950,6 +1950,8 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
                     nxtra = u.basemhdrain;
                     u.basemhdrain = 0;
                 }
+                else
+                    nxtra = 0;
             }
             u.basemhmax += nxtra;
         }
@@ -1963,6 +1965,8 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
                     nxtra = u.ubasehpdrain;
                     u.ubasehpdrain = 0;
                 }
+                else
+                    nxtra = 0;
             }
             u.ubasehpmax += nxtra;
         }
