@@ -315,7 +315,7 @@ boolean verbose;
     //m_updatemaxen(); //Not implemented
 
     /* Check if AC and MC need to be updated */
-    find_mac(mon);
+    //find_mac(mon);
     //find_mmc(mon); 
 
     return limitexceeded ? 3 : TRUE;

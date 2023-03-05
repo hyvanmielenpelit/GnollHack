@@ -2723,18 +2723,13 @@ find_ac()
     /* Monk protection */
     uac -= get_role_AC_bonus();
 
-    /* [The magic binary numbers 127 and -128 should be replaced with the
-     * mystic decimal numbers 99 and -99 which require no explanation to
-     * the uninitiated and would cap the width of a status line value at
-     * one less character.]
-     */
-    if (uac < -128)
-        uac = -128; /* u.uac is an schar */
-    else if (uac > 127)
-        uac = 127; /* for completeness */
+    if (uac < -9999)
+        uac = -9999; /* u.uac is a short */
+    else if (uac > 9999)
+        uac = 9999; /* for completeness */
 
     if (uac != u.uac) {
-        u.uac = uac;
+        u.uac = (short)uac;
         context.botl = 1;
     }
 }
