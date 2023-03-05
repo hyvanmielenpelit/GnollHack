@@ -187,7 +187,7 @@ enum invoke_prop_types {
     ARTINVOKE_RECHARGE_ITSELF,
     ARTINVOKE_INVOKE_WITH_TIMER,
     ARTINVOKE_TIME_STOP,
-    ARTINVOKE_WAND_OF_COLD,
+    ARTINVOKE_RUBY_ROD,
     MAX_ARTINVOKES /* this is NOT the number of artifact invokes*/
 };
 

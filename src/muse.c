@@ -227,8 +227,8 @@ boolean self;
     case ARTINVOKE_WAND_OF_DEATH:
         powertxt = " a death ray from";
         break;
-    case ARTINVOKE_WAND_OF_COLD:
-        powertxt = " a cone of cold from";
+    case ARTINVOKE_RUBY_ROD:
+        powertxt = otmp->special_quality == 0 ? " a cone of cold from" : otmp->special_quality == 1 ? " a lightning bolt from" : " a bolt of fire from";
         break;
     default:
         break;

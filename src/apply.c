@@ -5950,6 +5950,31 @@ doapply()
         case CUBIC_GATE:
             res = use_cubic_gate(obj);
             break;
+        case DIABOLICAL_SCEPTRE:
+        {
+            obj->special_quality++;
+            if (obj->special_quality > 2)
+                obj->special_quality = 0;
+
+            const char* glowcolor = "gray";
+            switch (obj->special_quality)
+            {
+            case 0:
+                glowcolor = "blue";
+                break;
+            case 1:
+                glowcolor = "white";
+                break;
+            case 2:
+                glowcolor = "red";
+                break;
+            default:
+                break;
+            }
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The head of %s rotates.", yname(obj));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s.", Tobjnam(obj, "glow"), glowcolor);
+            break;
+        }
         default:
             /* Pole-type-weapons can strike at a distance */
             if (is_appliable_pole_type_weapon(obj))
