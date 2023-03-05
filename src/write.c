@@ -55,7 +55,7 @@ register struct obj *otmp;
     case SCR_CHARGING:
         return 24;
     case SCR_GENOCIDE:
-    case SCR_A_PACT_WITH_THE_DEVIL:
+    case SCR_SUPREME_DIABOLISM:
         return 30;
     case SCR_BLANK_PAPER:
     default:
@@ -228,7 +228,7 @@ found:
         play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "No mere dungeon adventurer could write that.");
         return 1;
-    } else if (i == SCR_A_PACT_WITH_THE_DEVIL) {
+    } else if (i == SCR_SUPREME_DIABOLISM) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot write that with mere ink.");
         return 1;

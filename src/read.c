@@ -2141,7 +2141,7 @@ struct monst* targetmonst;
          * monsters are not visible
          */
         break;
-    case SCR_A_PACT_WITH_THE_DEVIL:
+    case SCR_SUPREME_DIABOLISM:
     {
         You_ex1(ATR_NONE, NO_COLOR, "recite the words of the ancient pact, demanding its hellish signatory to come forth.");
 

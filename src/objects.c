@@ -3458,7 +3458,7 @@ SCROLL("punishment",        "VE FORBRYDERNE", "Causes a heavy iron ball to be ch
 SCROLL("charging",        "HACKEM MUCHE", "Recharges wands and other charged items.",
     1,  15, 300, 0, 0, 0, 0, 0, 0, 0, 
     S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL("a pact with the devil",       "ALA KA ZAM", "Summons the arch-devil tied to the pact.",
+SCROLL("supreme diabolism",       "ALA KA ZAM", "Summons Asmodeus or another arch-devil.",
     1,  0, 300, 0, 0, 0, 0, 0, 0, 0, 
     S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("stinking cloud",         "VELOX NEB", "Creates a stinking cloud at a specified target location.",
