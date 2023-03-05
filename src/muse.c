@@ -1423,11 +1423,29 @@ struct monst *mtmp;
                 m.has_offense = MUSE_WAN_ORCUS;
             }
             nomore(MUSE_RUBY_ROD);
-            if (obj->oartifact == ART_RUBY_ROD_OF_ASMODEUS && obj->charges > 0 && obj->repowerleft == 0 && !cold_resistant_skip && !level_skip_normal_wand
-                && lined_up(mtmp, TRUE, AD_COLD, TRUE, M_RAY_RANGE))
+            if (obj->oartifact == ART_RUBY_ROD_OF_ASMODEUS && obj->repowerleft == 0 && !level_skip_normal_wand)
             {
-                m.offensive = obj;
-                m.has_offense = MUSE_RUBY_ROD;
+                if (!cold_resistant_skip
+                    && lined_up(mtmp, TRUE, AD_COLD, TRUE, M_RAY_RANGE))
+                {
+                    obj->special_quality = 0;
+                        m.offensive = obj;
+                        m.has_offense = MUSE_RUBY_ROD;
+                }
+                else if (!shock_resistant_skip
+                    && lined_up(mtmp, TRUE, AD_ELEC, TRUE, M_RAY_RANGE))
+                {
+                    obj->special_quality = 1;
+                    m.offensive = obj;
+                    m.has_offense = MUSE_RUBY_ROD;
+                }
+                else if (!fire_resistant_skip
+                    && lined_up(mtmp, TRUE, AD_FIRE, TRUE, M_RAY_RANGE))
+                {
+                    obj->special_quality = 2;
+                    m.offensive = obj;
+                    m.has_offense = MUSE_RUBY_ROD;
+                }
             }
             nomore(MUSE_WAN_DISINTEGRATION);
             if (obj->otyp == WAN_DISINTEGRATION && obj->charges > 0 && !is_cancelled(mtmp) && !disintegration_resistant_skip && ((!uarm && !uarms && !level_skip_powerful_wand) || ((uarm || uarms) && !level_skip_normal_wand))
@@ -1826,7 +1844,6 @@ struct monst *mtmp;
         minvokemsg(mtmp, otmp, FALSE);
         if (otmp->oartifact > 0 && artilist[otmp->oartifact].repower_time > 0) /* Override below if effect failed */
             otmp->repowerleft = artilist[otmp->oartifact].repower_time;
-        otmp->charges--;
         if (oseen && otmp->oartifact)
         {
             makeknown(otmp->otyp);
@@ -1835,7 +1852,7 @@ struct monst *mtmp;
         m_using = TRUE;
 
         struct obj pseudo = { 0 };
-        pseudo.otyp = m.has_offense == MUSE_WAN_ORCUS ? WAN_DEATH : WAN_COLD;
+        pseudo.otyp = m.has_offense == MUSE_WAN_ORCUS ? WAN_DEATH : otmp->special_quality == 0 ? WAN_COLD : otmp->special_quality == 1 ? WAN_LIGHTNING : WAN_FIRE;
         pseudo.quan = 1L;
         raytype = -40 - objects[pseudo.otyp].oc_dir_subtype; //-40...-48;
         buzz(raytype, &pseudo, mtmp, 0, 0, 0, mtmp->mx, mtmp->my,
