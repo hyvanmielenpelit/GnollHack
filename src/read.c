@@ -1835,7 +1835,7 @@ struct monst* targetmonst;
             if (((otmp->speflags & SPEFLAGS_GIVEN_OUT_BLUE_SMOKE) == 0 || rn2(3)) && (otmp->material == MAT_ORICHALCUM || obj_resists(otmp, 0, 75)))
             {
                 play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, u.ux, u.uy, 0, FALSE);
-                play_sfx_sound(GHSOUND_VANISHES_IN_PUFF_OF_SMOKE);
+                play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
                 special_effect_wait_until_action(0);
                 Sprintf(effbuf, "%s violently %s%s%s for a while, then suddenly %s out a puff of%s smoke.", Yname2(otmp),
                     otense(otmp, Blind ? "vibrate" : "glow"),

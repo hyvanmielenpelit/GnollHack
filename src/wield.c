@@ -1820,7 +1820,7 @@ boolean dopopup;
         if (((weapon->speflags & SPEFLAGS_GIVEN_OUT_BLUE_SMOKE) == 0 || rn2(3)) && (weapon->material == MAT_ORICHALCUM || obj_resists(weapon, 0, 75)))
         {
             play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, u.ux, u.uy, 0, FALSE);
-            play_sfx_sound(GHSOUND_VANISHES_IN_PUFF_OF_SMOKE);
+            play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
             special_effect_wait_until_action(0);
             if (!Blind)
                 Sprintf(buf, "%s %s for a while, and then suddenly %s out a puff of blue smoke.", Yobjnam2(weapon, "violently glow"), color, otense(weapon, "give"));
