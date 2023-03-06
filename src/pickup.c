@@ -2308,8 +2308,6 @@ doloot()
                 if (has_item1 || has_item2 || has_item3)
                 {
                     int selected_item = 0;
-                    int lootable_item = STRANGE_OBJECT;
-                    uchar item_flag = 0UL;
                     if (has_item1 + has_item2 + has_item3 == 1)
                     {
                         if (has_item1)
@@ -2339,10 +2337,9 @@ doloot()
                             char itembuf[BUFSIZ] = "";
                             int item_otyp = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item;
                             Sprintf(itembuf, "%s", an(OBJ_NAME(objects[item_otyp])));
-                            char accel = def_oc_syms[objects[item_otyp].oc_class].sym;
 
                             add_menu(win, NO_GLYPH, &any,
-                                0, accel, ATR_NONE,
+                                0, 0, ATR_NONE,
                                 itembuf, MENU_UNSELECTED);
 
                             item_count++;
@@ -2353,10 +2350,9 @@ doloot()
                             char itembuf[BUFSIZ] = "";
                             int item_otyp = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item2;
                             Sprintf(itembuf, "%s", an(OBJ_NAME(objects[item_otyp])));
-                            char accel = def_oc_syms[objects[item_otyp].oc_class].sym;
 
                             add_menu(win, NO_GLYPH, &any,
-                                0, accel, ATR_NONE,
+                                0, 0, ATR_NONE,
                                 itembuf, MENU_UNSELECTED);
 
                             item_count++;
@@ -2367,10 +2363,9 @@ doloot()
                             char itembuf[BUFSIZ] = "";
                             int item_otyp = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item3;
                             Sprintf(itembuf, "%s", an(OBJ_NAME(objects[item_otyp])));
-                            char accel = def_oc_syms[objects[item_otyp].oc_class].sym;
 
                             add_menu(win, NO_GLYPH, &any,
-                                0, accel, ATR_NONE,
+                                0, 0, ATR_NONE,
                                 itembuf, MENU_UNSELECTED);
 
                             item_count++;
