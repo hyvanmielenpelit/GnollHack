@@ -372,7 +372,7 @@ unsigned long *ospecial;
             {
                 if (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE)
                 {
-                    if (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER)
+                    if (levl[x][y].decoration_flags & (DECORATION_FLAGS_ITEM_IN_HOLDER | DECORATION_FLAGS_ITEM2_IN_HOLDER | DECORATION_FLAGS_ITEM3_IN_HOLDER))
                     {
                         if (decoration_type_definitions[levl[x][y].decoration_typ].color_filled != NO_COLOR)
                             color = decoration_type_definitions[levl[x][y].decoration_typ].color_filled;

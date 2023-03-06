@@ -270,6 +270,7 @@ enum decoration_types {
     DECORATION_PAINTING,
     DECORATION_GARGOYLE_NICHE,
     DECORATION_KNIGHT_NICHE,
+    DECORATION_SHIELD_WITH_SWORDS,
     MAX_DECORATIONS
 };
 
@@ -281,10 +282,12 @@ struct decoration_type_definition {
     short num_subtypes;
     short lootable_item;
     short mnum; /* to be used with statues etc. */
+    short lootable_item2;
+    short lootable_item3;
     schar color;
     schar color_filled;
     enum location_soundset_types soundset;
-    unsigned short dflags;
+    unsigned long dflags;
 };
 
 extern NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX_DECORATIONS];
@@ -297,22 +300,23 @@ struct decoration_lit_color_definition {
 
 extern NEARDATA const struct decoration_lit_color_definition decoration_lit_colors[CLR_MAX];
 
-#define DECORATION_TYPE_FLAGS_NONE                          0x0000
-#define DECORATION_TYPE_FLAGS_LOOTABLE                      0x0001
-#define DECORATION_TYPE_FLAGS_LIGHTABLE                     0x0002
-#define DECORATION_TYPE_FLAGS_UNDERSCORE                    0x0004
-#define DECORATION_TYPE_FLAGS_ALL_SIDES                     0x0008
-#define DECORATION_TYPE_FLAGS_CORNERS                       0x0010
-#define DECORATION_TYPE_FLAGS_MIRRORABLE                    0x0020
-#define DECORATION_TYPE_FLAGS_PAINTING_DESCR                0x0040
-#define DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET              0x0080
-#define DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY 0x0100
-#define DECORATION_TYPE_FLAGS_UNLIT_COLOR                   0x0200
-#define DECORATION_TYPE_FLAGS_UNLIT_FILLED_COLOR            0x0400
-#define DECORATION_TYPE_FLAGS_LIT_COLOR                     0x0800
-#define DECORATION_TYPE_FLAGS_LIT_FILLED_COLOR              0x1000
-#define DECORATION_TYPE_FLAGS_WOODY_COLOR                   0x2000
-#define DECORATION_TYPE_FLAGS_WOODY_FILLED_COLOR            0x4000
+#define DECORATION_TYPE_FLAGS_NONE                          0x00000000UL
+#define DECORATION_TYPE_FLAGS_LOOTABLE                      0x00000001UL
+#define DECORATION_TYPE_FLAGS_LIGHTABLE                     0x00000002UL
+#define DECORATION_TYPE_FLAGS_UNDERSCORE                    0x00000004UL
+#define DECORATION_TYPE_FLAGS_ALL_SIDES                     0x00000008UL
+#define DECORATION_TYPE_FLAGS_CORNERS                       0x00000010UL
+#define DECORATION_TYPE_FLAGS_MIRRORABLE                    0x00000020UL
+#define DECORATION_TYPE_FLAGS_PAINTING_DESCR                0x00000040UL
+#define DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET              0x00000080UL
+#define DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY 0x00000100UL
+#define DECORATION_TYPE_FLAGS_UNLIT_COLOR                   0x00000200UL
+#define DECORATION_TYPE_FLAGS_UNLIT_FILLED_COLOR            0x00000400UL
+#define DECORATION_TYPE_FLAGS_LIT_COLOR                     0x00000800UL
+#define DECORATION_TYPE_FLAGS_LIT_FILLED_COLOR              0x00001000UL
+#define DECORATION_TYPE_FLAGS_WOODY_COLOR                   0x00002000UL
+#define DECORATION_TYPE_FLAGS_WOODY_FILLED_COLOR            0x00004000UL
+#define DECORATION_TYPE_FLAGS_ADD_OTHER_ITEM_DESCRIPTIONS   0x00008000UL
 
 enum carpet_types {
     CARPET_NONE = 0,
@@ -1028,7 +1032,9 @@ struct rm {
 
 #define DECORATION_FLAGS_NONE               0x00
 #define DECORATION_FLAGS_ITEM_IN_HOLDER     0x01
-#define DECORATION_FLAGS_SEEN               0x02
+#define DECORATION_FLAGS_ITEM2_IN_HOLDER    0x02
+#define DECORATION_FLAGS_ITEM3_IN_HOLDER    0x04
+#define DECORATION_FLAGS_SEEN               0x08
 
 #define SET_TYPLIT(x, y, ttyp, tsubtyp, llit)                              \
     {                                                             \

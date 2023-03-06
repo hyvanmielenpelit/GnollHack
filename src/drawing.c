@@ -1343,6 +1343,7 @@ const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
     {"knight-niche", 0, KNIGHT_NICHE_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"knight-niche-left", 0, KNIGHT_NICHE_LEFT_REPLACEMENT, NO_ANIMATION, KNIGHT_NICHE_LEFT_ENLARGEMENT},
     {"knight-niche-right", 0, KNIGHT_NICHE_RIGHT_REPLACEMENT, NO_ANIMATION, KNIGHT_NICHE_RIGHT_ENLARGEMENT},
+    {"equipment-holder", 0, EQUIPMENT_HOLDER_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =

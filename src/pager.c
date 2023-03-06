@@ -22,6 +22,7 @@ STATIC_DCL void FDECL(checkfile, (char *, struct permonst *,
 STATIC_DCL void FDECL(look_all, (BOOLEAN_P,BOOLEAN_P));
 STATIC_DCL void FDECL(do_supplemental_info, (char *, struct permonst *,
                                              BOOLEAN_P));
+STATIC_DCL void FDECL(print_decoration_ending, (char*, int, int));
 STATIC_DCL void NDECL(whatdoes_help);
 STATIC_DCL void NDECL(docontact);
 STATIC_DCL void NDECL(dispfile_help);
@@ -427,6 +428,39 @@ int x, y;
     } /* monbuf is non-null */
 }
 
+STATIC_OVL
+void print_decoration_ending(buf, x, y)
+char* buf;
+int x, y;
+{
+    if (levl[x][y].decoration_typ > 0 && (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_ADD_OTHER_ITEM_DESCRIPTIONS) != 0)
+    {
+        const char* dec2 = 0;
+        const char* dec3 = 0;
+        if (decoration_type_definitions[levl[x][y].decoration_typ].lootable_item2 != STRANGE_OBJECT && (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM2_IN_HOLDER) != 0)
+        {
+            dec2 = OBJ_NAME(objects[decoration_type_definitions[levl[x][y].decoration_typ].lootable_item2]);
+        }
+        if (decoration_type_definitions[levl[x][y].decoration_typ].lootable_item3 != STRANGE_OBJECT && (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM3_IN_HOLDER) != 0)
+        {
+            dec3 = OBJ_NAME(objects[decoration_type_definitions[levl[x][y].decoration_typ].lootable_item3]);
+        }
+        boolean same_item = dec2 && dec3 && !strcmp(dec2, dec3);
+        if (same_item)
+        {
+            Sprintf(eos(buf), " with two %s", makeplural(dec2));
+        }
+        else if (dec2 && dec3)
+        {
+            Sprintf(eos(buf), " with %s and %s", an(dec2), an(dec3));
+        }
+        else if (dec2 || dec3)
+        {
+            Sprintf(eos(buf), " with %s", an(dec2 ? dec2 : dec3));
+        }
+    }
+}
+
 /*
  * Return the name of the glyph found at (x,y).
  * If not hallucinating and the glyph is a monster, also monster data.
@@ -643,7 +677,12 @@ char *buf, *monbuf;
                 if (dec_descr && *dec_descr && carpet_descr && *carpet_descr)
                     Sprintf(buf, "%s on %s", dec_descr, an(carpet_descr));
                 else if (dec_descr && *dec_descr)
-                    Sprintf(buf, "%s on %s", dec_descr, an(explanation));
+                {
+                    char dbuf[BUFSZ];
+                    Strcpy(dbuf, dec_descr);
+                    print_decoration_ending(dbuf, x, y);
+                    Sprintf(buf, "%s on %s", dbuf, an(explanation));
+                }
                 else if (carpet_descr && *carpet_descr)
                     Sprintf(buf, "%s on %s", carpet_descr, an(explanation));
                 else
@@ -1192,7 +1231,12 @@ struct permonst **for_supplement;
                         if(carpet_descr && *carpet_descr)
                             Sprintf(decoration_buf, "%s on %s", dec_descr, an(carpet_descr));
                         else
-                            Sprintf(decoration_buf, "%s on %s", dec_descr, an(defsyms[i].explanation));
+                        {
+                            char dbuf[BUFSZ];
+                            Strcpy(dbuf, dec_descr);
+                            print_decoration_ending(dbuf, cc.x, cc.y);
+                            Sprintf(decoration_buf, "%s on %s", dbuf, an(defsyms[i].explanation));
+                        }
                         if ((levl[cc.x][cc.y].decoration_typ > 0
                             && (decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0
                             && ((decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE) == 0 || (levl[cc.x][cc.y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0)

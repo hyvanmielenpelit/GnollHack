@@ -60,6 +60,7 @@ STATIC_DCL boolean NDECL(reverse_loot);
 //STATIC_DCL boolean FDECL(mon_beside, (int, int));
 STATIC_DCL int FDECL(do_loot_cont, (struct obj **, int, int));
 STATIC_DCL void FDECL(tipcontainer, (struct obj *));
+STATIC_DCL void FDECL(loot_decoration, (int, int, int, boolean*));
 
 /* define for query_objlist() and autopickup() */
 #define FOLLOW(curr, flags) \
@@ -2030,6 +2031,72 @@ struct obj* cobj;
 
 }
 
+STATIC_OVL void
+loot_decoration(x, y, itemnumber, got_something_ptr)
+int x, y, itemnumber;
+boolean* got_something_ptr;
+{
+    if (itemnumber == 1)
+    {
+        boolean itemlit = FALSE;
+        if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
+        {
+            if (levl[x][y].lamplit)
+            {
+                itemlit = TRUE;
+                del_light_source(LS_LOCATION, xy_to_any(x, y));
+                levl[x][y].lamplit = 0;
+            }
+            if (levl[x][y].makingsound)
+            {
+                del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
+                levl[x][y].makingsound = 0;
+            }
+        }
+        if (decoration_type_definitions[levl[x][y].decoration_typ].lootable_item != STRANGE_OBJECT)
+        {
+            levl[x][y].decoration_flags &= ~DECORATION_FLAGS_ITEM_IN_HOLDER;
+            boolean subtyp_is_item_special_quality = (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY) != 0;
+            boolean item_is_statue = decoration_type_definitions[levl[x][y].decoration_typ].lootable_item == STATUE;
+            int mnum = decoration_type_definitions[levl[x][y].decoration_typ].mnum;
+            struct obj* newobj = mksobj_with_flags(decoration_type_definitions[levl[x][y].decoration_typ].lootable_item, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, item_is_statue ? mnum : subtyp_is_item_special_quality ? (long)levl[x][y].decoration_subtyp : 0L, 0L, item_is_statue ? MKOBJ_FLAGS_PARAM_IS_MNUM : subtyp_is_item_special_quality ? MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY : 0UL);
+            if (newobj)
+            {
+                *got_something_ptr = TRUE;
+                place_object(newobj, u.ux, u.uy);
+                //Light it up
+                if (itemlit && !newobj->lamplit)
+                {
+                    begin_burn(newobj, FALSE);
+                }
+                play_simple_object_sound(newobj, OBJECT_SOUND_TYPE_PICK_UP);
+                obj_extract_self(newobj);
+                newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
+                    The(aobjnam(newobj, "slip")), (const char*)0);
+            }
+        }
+    }
+    else
+    {
+        int lootable_item = itemnumber == 2 ? decoration_type_definitions[levl[x][y].decoration_typ].lootable_item2 : decoration_type_definitions[levl[x][y].decoration_typ].lootable_item3;
+        if (lootable_item != STRANGE_OBJECT)
+        {
+            struct obj* newobj = mksobj_with_flags(lootable_item, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, 0L, 0L, 0UL);
+            if (newobj)
+            {
+                if(itemnumber == 2)
+                    levl[x][y].decoration_flags &= ~DECORATION_FLAGS_ITEM2_IN_HOLDER;
+                else
+                    levl[x][y].decoration_flags &= ~DECORATION_FLAGS_ITEM3_IN_HOLDER;
+
+                *got_something_ptr = TRUE;
+                newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
+                    The(aobjnam(newobj, "slip")), (const char*)0);
+            }
+        }
+    }
+}
+
 /* loot a container on the floor or loot saddle from mon. */
 int
 doloot()
@@ -2234,46 +2301,110 @@ doloot()
             }
             if (is_lootable_dir)
             {
-                if (levl[cc.x][cc.y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER)
+                boolean has_item1 = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item != STRANGE_OBJECT && (levl[cc.x][cc.y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0;
+                boolean has_item2 = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item2 != STRANGE_OBJECT && (levl[cc.x][cc.y].decoration_flags & DECORATION_FLAGS_ITEM2_IN_HOLDER) != 0;
+                boolean has_item3 = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item3 != STRANGE_OBJECT && (levl[cc.x][cc.y].decoration_flags & DECORATION_FLAGS_ITEM3_IN_HOLDER) != 0;
+
+                if (has_item1 || has_item2 || has_item3)
                 {
-                    did_something = TRUE;
-                    levl[cc.x][cc.y].decoration_flags &= ~DECORATION_FLAGS_ITEM_IN_HOLDER;
-                    boolean itemlit = FALSE;
-                    if ((decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
+                    int selected_item = 0;
+                    int lootable_item = STRANGE_OBJECT;
+                    uchar item_flag = 0UL;
+                    if (has_item1 + has_item2 + has_item3 == 1)
                     {
-                        if (levl[cc.x][cc.y].lamplit)
-                        {
-                            itemlit = TRUE;
-                            del_light_source(LS_LOCATION, xy_to_any(cc.x, cc.y));
-                            levl[cc.x][cc.y].lamplit = 0;
-                        }
-                        if (levl[cc.x][cc.y].makingsound)
-                        {
-                            del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(cc.x, cc.y));
-                            levl[cc.x][cc.y].makingsound = 0;
-                        }
+                        if (has_item1)
+                            selected_item = 1;
+                        else if (has_item2)
+                            selected_item = 2;
+                        else if (has_item3)
+                            selected_item = 3;
+
+                        did_something = TRUE;
+                        loot_decoration(cc.x, cc.y, selected_item, &got_something);
                     }
-                    if (decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item != STRANGE_OBJECT)
+                    else
                     {
-                        boolean subtyp_is_item_special_quality = (decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY) != 0;
-                        boolean item_is_statue = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item == STATUE;
-                        int mnum = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].mnum;
-                        struct obj* newobj = mksobj_with_flags(decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, item_is_statue ? mnum : subtyp_is_item_special_quality ? (long)levl[cc.x][cc.y].decoration_subtyp : 0L, 0L, item_is_statue ? MKOBJ_FLAGS_PARAM_IS_MNUM : subtyp_is_item_special_quality ? MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY : 0UL);
-                        if (newobj)
+                        menu_item* pick_list = (menu_item*)0;
+                        winid win;
+                        anything any;
+
+                        any = zeroany;
+                        win = create_nhwindow(NHW_MENU);
+                        start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
+
+                        int item_count = 0;
+                        if (has_item1)
                         {
-                            got_something = TRUE;
-                            place_object(newobj, u.ux, u.uy);
-                            //Light it up
-                            if (itemlit && !newobj->lamplit)
+                            any.a_int = 1;
+                            char itembuf[BUFSIZ] = "";
+                            int item_otyp = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item;
+                            Sprintf(itembuf, "%s", an(OBJ_NAME(objects[item_otyp])));
+                            char accel = def_oc_syms[objects[item_otyp].oc_class].sym;
+
+                            add_menu(win, NO_GLYPH, &any,
+                                0, accel, ATR_NONE,
+                                itembuf, MENU_UNSELECTED);
+
+                            item_count++;
+                        }
+                        if (has_item2)
+                        {
+                            any.a_int = 2;
+                            char itembuf[BUFSIZ] = "";
+                            int item_otyp = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item2;
+                            Sprintf(itembuf, "%s", an(OBJ_NAME(objects[item_otyp])));
+                            char accel = def_oc_syms[objects[item_otyp].oc_class].sym;
+
+                            add_menu(win, NO_GLYPH, &any,
+                                0, accel, ATR_NONE,
+                                itembuf, MENU_UNSELECTED);
+
+                            item_count++;
+                        }
+                        if (has_item3)
+                        {
+                            any.a_int = 3;
+                            char itembuf[BUFSIZ] = "";
+                            int item_otyp = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item3;
+                            Sprintf(itembuf, "%s", an(OBJ_NAME(objects[item_otyp])));
+                            char accel = def_oc_syms[objects[item_otyp].oc_class].sym;
+
+                            add_menu(win, NO_GLYPH, &any,
+                                0, accel, ATR_NONE,
+                                itembuf, MENU_UNSELECTED);
+
+                            item_count++;
+                        }
+
+                        /* Finish the menu */
+                        end_menu(win, "What do you want to loot?");
+
+                        if (item_count <= 0)
+                        {
+                            pline1("There's nothing to loot.");
+                            destroy_nhwindow(win);
+                            return timepassed;
+                        }
+
+                        /* Now generate the menu */
+                        int pick_count = 0;
+                        if ((pick_count = select_menu(win, PICK_ANY, &pick_list)) > 0)
+                        {
+                            int i;
+                            for (i = 0; i < pick_count; i++)
                             {
-                                begin_burn(newobj, FALSE);
+                                if (pick_list[i].item.a_int > 0)
+                                {
+                                    selected_item = pick_list[i].item.a_int;
+                                    did_something = TRUE;
+                                    loot_decoration(cc.x, cc.y, selected_item, &got_something);
+                                }
                             }
-                            play_simple_object_sound(newobj, OBJECT_SOUND_TYPE_PICK_UP);
-                            obj_extract_self(newobj);
-                            newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
-                                The(aobjnam(newobj, "slip")),  (const char*)0);
+                            free((genericptr_t)pick_list);
+                            destroy_nhwindow(win);
                         }
                     }
+
                     newsym(cc.x, cc.y);
                     newsym(u.ux, u.uy);
                     flush_screen(1);
