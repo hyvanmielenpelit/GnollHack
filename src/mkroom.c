@@ -1062,6 +1062,61 @@ place_main_monst_here:
         break;
     }
 
+    /* Shields */
+    switch (type)
+    {
+    case ZOO:
+    case BARRACKS:
+    case COURT:
+    case ARMORY:
+    {
+        int roll1 = sroom->hx - sroom->lx - 1 <= 1 ? 0 : rn2(sroom->hx - sroom->lx - 1);
+        int roll2 = sroom->hx - sroom->lx - 1 <= 1 ? 0 : rn2(sroom->hx - sroom->lx - 1);
+        if (sroom->lx + 1 < sroom->hx)
+        {
+            if (IS_WALL(levl[sroom->lx + roll2 + 1][sroom->ly - 1].typ) && rn2(3))
+            {
+                levl[sroom->lx + roll2 + 1][sroom->ly - 1].decoration_typ = rn2(2) ? DECORATION_KNIGHT_NICHE : DECORATION_GARGOYLE_NICHE;
+                levl[sroom->lx + roll2 + 1][sroom->ly - 1].decoration_subtyp = 0;
+                levl[sroom->lx + roll2 + 1][sroom->ly - 1].decoration_dir = 0;
+                levl[sroom->lx + roll2 + 1][sroom->ly - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER | DECORATION_FLAGS_ITEM2_IN_HOLDER | DECORATION_FLAGS_ITEM3_IN_HOLDER;
+            }
+            if (IS_WALL(levl[sroom->lx + roll1 + 1][sroom->ly - 1].typ) && rn2(3))
+            {
+                levl[sroom->lx + roll1 + 1][sroom->ly - 1].decoration_typ = DECORATION_SHIELD_WITH_SWORDS;
+                levl[sroom->lx + roll1 + 1][sroom->ly - 1].decoration_subtyp = 0;
+                levl[sroom->lx + roll1 + 1][sroom->ly - 1].decoration_dir = 0;
+                levl[sroom->lx + roll1 + 1][sroom->ly - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER | DECORATION_FLAGS_ITEM2_IN_HOLDER | DECORATION_FLAGS_ITEM3_IN_HOLDER;
+            }
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    /* Paintings */
+    switch (type)
+    {
+    case LIBRARY:
+    case COURT:
+    {
+        int roll1 = sroom->hx - sroom->lx - 1 <= 1 ? 0 : rn2(sroom->hx - sroom->lx - 1);
+        if (sroom->lx + 1 < sroom->hx)
+        {
+            if (IS_WALL(levl[sroom->lx + roll1 + 1][sroom->ly - 1].typ) && rn2(3))
+            {
+                levl[sroom->lx + roll1 + 1][sroom->ly - 1].decoration_typ = DECORATION_PAINTING;
+                levl[sroom->lx + roll1 + 1][sroom->ly - 1].decoration_subtyp = rn2(MAX_PAINTINGS);
+                levl[sroom->lx + roll1 + 1][sroom->ly - 1].decoration_dir = 0;
+                levl[sroom->lx + roll1 + 1][sroom->ly - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+            }
+        }
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 /* make a swarm of undead around mm */
