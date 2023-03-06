@@ -286,7 +286,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     },
     {
         "shield with swords", "equipment holder", "shield", 
-        {DOODAD_EQUIPMENT_HOLDER, DOODAD_EQUIPMENT_HOLDER, DOODAD_EQUIPMENT_HOLDER, DOODAD_EQUIPMENT_HOLDER},
+        {DOODAD_EQUIPMENT_HOLDER, DOODAD_EQUIPMENT_HOLDER_LEFT, DOODAD_EQUIPMENT_HOLDER_RIGHT, DOODAD_EQUIPMENT_HOLDER},
         1, LARGE_SHIELD, NON_PM, LONG_SWORD, LONG_SWORD,
         NO_COLOR, CLR_CYAN,
         LOCATION_SOUNDSET_NONE,

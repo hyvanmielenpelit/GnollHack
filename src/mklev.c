@@ -311,7 +311,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_typ = DECORATION_SHIELD_WITH_SWORDS;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER | DECORATION_FLAGS_ITEM2_IN_HOLDER | DECORATION_FLAGS_ITEM3_IN_HOLDER;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
                         }
                         else
                         {
@@ -345,6 +345,13 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
                             levl[lowx - 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                         }
+                        else if (!rn2(4))
+                        {
+                            levl[lowx - 1][lowy + roll + 1].decoration_typ = DECORATION_SHIELD_WITH_SWORDS;
+                            levl[lowx - 1][lowy + roll + 1].decoration_subtyp = 0;
+                            levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
+                            levl[lowx - 1][lowy + roll + 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
+                        }
                         else
                         {
                             levl[lowx - 1][lowy + roll + 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
@@ -365,6 +372,13 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;
                             levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
                             levl[hix + 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                        }
+                        else if (!rn2(4))
+                        {
+                            levl[hix + 1][lowy + roll + 1].decoration_typ = DECORATION_SHIELD_WITH_SWORDS;
+                            levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;
+                            levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
+                            levl[hix + 1][lowy + roll + 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
                         }
                         else
                         {
@@ -1473,8 +1487,19 @@ makelevel()
         int lowy = croom->ly;
         int hix = croom->hx;
         int hiy = croom->hy;
-        if ((rt == OROOM && !rn2(20)) || rt == COURT || rt == TEMPLE || rt == LIBRARY || (rt >= SHOPBASE && !rn2(2))
-            || (rt == NPCROOM && (rst == NPC_ELVEN_BARD || rst == NPC_ARTIFICER || !rn2(2))))
+        boolean has_fireplace = FALSE;
+
+        for (x = lowx; x <= hix; x++)
+        {
+            if (isok(x, lowy - 1) && levl[x][lowy - 1].decoration_typ == DECORATION_FIREPLACE)
+            {
+                has_fireplace = TRUE;
+                break;
+            }
+        }
+
+        if ((rt == OROOM && !rn2(has_fireplace ? 2 : 20)) || rt == COURT || rt == TEMPLE || rt == LIBRARY || (rt >= SHOPBASE && rn2(3))
+            || (rt == NPCROOM && (has_fireplace || rst == NPC_ELVEN_BARD || rst == NPC_ARTIFICER || !rn2(2))))
         {
             create_carpet(lowx, lowy, hix, hiy, Inhell ? CARPET_HORIZONTAL_RED : CARPET_VERTICAL_PURPLE);
         }
