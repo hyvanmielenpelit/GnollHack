@@ -415,13 +415,42 @@ struct monst *mtmp; /* The animal */
             play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
         }
 
-        Sprintf(buf, "slipped while mounting %s",
+        if (!rn2(2) || ((Upolyd ? u.mh : u.uhp) <= 3))
+        {
+            if (has_head(youmonst.data))
+            {
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "hit your %s.", body_part(HEAD));
+                if (!Stun_resistance)
+                    make_stunned(rnd(3) + 1, TRUE);
+            }
+            else
+            {
+                nomul(-rnd(3));
+            }
+        }
+        else
+        {
+            if (has_head(youmonst.data))
+            {
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "hit your %s badly.", body_part(HEAD));
+                if(!Stun_resistance)
+                    make_stunned(rnd(5) + 1, TRUE);
+            }
+            else
+            {
+                nomul(-rnd(5));
+            }
+
+            Sprintf(buf, "slipped while mounting %s",
                 /* "a saddled mumak" or "a saddled pony called Dobbin" */
-                x_monnam(mtmp, ARTICLE_A, (char *) 0,
-                         SUPPRESS_IT | SUPPRESS_INVISIBLE
-                             | SUPPRESS_HALLUCINATION,
-                         TRUE));
-        losehp(adjust_damage(rnd(8) + 1, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
+                x_monnam(mtmp, ARTICLE_A, (char*)0,
+                    SUPPRESS_IT | SUPPRESS_INVISIBLE
+                    | SUPPRESS_HALLUCINATION,
+                    TRUE));
+
+            int dmg = context.game_difficulty <= 0 ? rnd(3) : rnd(8) + 1;
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
+        }
         return (FALSE);
     }
 
