@@ -1501,7 +1501,7 @@ makelevel()
         if ((rt == OROOM && !rn2(has_fireplace ? 2 : 20)) || rt == COURT || rt == TEMPLE || rt == LIBRARY || (rt >= SHOPBASE && rn2(3))
             || (rt == NPCROOM && (has_fireplace || rst == NPC_ELVEN_BARD || rst == NPC_ARTIFICER || !rn2(2))))
         {
-            create_carpet(lowx, lowy, hix, hiy, Inhell ? CARPET_HORIZONTAL_RED : CARPET_VERTICAL_PURPLE);
+            create_carpet(lowx, lowy, hix, hiy, Inhell || !rn2(4) ? CARPET_HORIZONTAL_RED : CARPET_VERTICAL_PURPLE);
         }
     }
 
