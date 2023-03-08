@@ -1701,6 +1701,7 @@ register const struct trobj * trop;
                             (trop->trotyp == UNDEF_TYP) ? "random " : "",
                             OBJ_NAME(objects[otyp]));
                         otyp = obj->otyp = inv_subs[i].subs_otyp;
+                        obj->material = objects[otyp].oc_material;
                     }
             }
 
