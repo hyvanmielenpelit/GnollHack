@@ -46,6 +46,11 @@ BRAZIER: (04,07)
 BRAZIER: (10,07)
 BRAZIER: (04,11)
 BRAZIER: (10,11)
+IF[50%] {
+  DECORATION:(16,03),decoration_painting,painting_wizard_blue,direction_top
+} ELSE {
+  DECORATION:(16,03),decoration_painting,painting_wizard_red,direction_top
+}
 # Non diggable walls
 # Walls inside the moat stay diggable
 NON_DIGGABLE:(00,00,11,12)
@@ -211,6 +216,13 @@ REGION:(20,06,26,11),unlit,"ordinary",unfilled {
 }
 DOOR:closed,(18,05)
 LADDER:(11,07),up
+IF[50%] {
+  IF[50%] {
+    DECORATION:(11,05),decoration_painting,painting_wizard_blue,direction_top
+  } ELSE {
+    DECORATION:(11,05),decoration_painting,painting_wizard_red,direction_top
+  }
+}
 # Non diggable walls
 # Walls inside the moat stay diggable
 NON_DIGGABLE:(00,00,06,12)
@@ -285,7 +297,13 @@ TRAP:"board",(04,03)
 TRAP:"board",(04,05)
 TRAP:"board",(03,04)
 TRAP:"board",(05,04)
-
+IF[50%] {
+  IF[50%] {
+    DECORATION:(04,02),decoration_painting,painting_wizard_blue,direction_top
+  } ELSE {
+    DECORATION:(04,02),decoration_painting,painting_wizard_red,direction_top
+  }
+}
 
 MAZE:"fakewiz2",' '
 FLAGS:corrmaze
@@ -316,5 +334,12 @@ TRAP:"board",(04,03)
 TRAP:"board",(04,05)
 TRAP:"board",(03,04)
 TRAP:"board",(05,04)
+IF[50%] {
+  IF[50%] {
+    DECORATION:(04,02),decoration_painting,painting_wizard_blue,direction_top
+  } ELSE {
+    DECORATION:(04,02),decoration_painting,painting_wizard_red,direction_top
+  }
+}
 # treasures
 OBJECT:'"',(04,04)

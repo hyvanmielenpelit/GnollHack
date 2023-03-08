@@ -8,6 +8,7 @@
 MAZE:"tower1",' '
 FLAGS: noteleport,hardfloor,solidify
 GEOMETRY:half-left,center
+#12345678901234567890
 MAP
   --- --- ---  
   |.| |.| |.|  
@@ -26,6 +27,20 @@ MONSTER_GENERATION: 50, ('V', "vampire king")
 MONSTER_GENERATION: 25, ('V', "vampire lord") 
 MONSTER_GENERATION: 25, 'V' 
 MONSTER_GENERATION: 10, '&' 
+
+DECORATION:(06,04),decoration_painting,painting_vlad,direction_top
+IF[50%] {
+  DECORATION:(03,00),decoration_painting,painting_vampire_male,direction_top
+}
+IF[50%] {
+  DECORATION:(07,00),decoration_painting,painting_vampire_female,direction_top
+}
+IF[50%] {
+  DECORATION:(11,00),decoration_painting,painting_vampire_male,direction_top
+}
+IF[50%] {
+  DECORATION:(06,06),decoration_painting,painting_vampire_female,direction_top
+}
 
 $niches = { (03,01), (03,09), (07,01), (07,09), (11,01), (11,09) }
 SHUFFLE: $niches
@@ -69,6 +84,7 @@ NON_DIGGABLE:(00,00,14,10)
 MAZE:"tower2",' '
 FLAGS: noteleport,hardfloor,solidify
 GEOMETRY:half-left,center
+#12345678901234567890
 MAP
   --- --- ---  
   |.| |.| |.|  
@@ -85,6 +101,22 @@ ENDMAP
 
 MONSTER_GENERATION: 80, 'V' 
 MONSTER_GENERATION: 20, '&' 
+
+IF[50%] {
+  DECORATION:(03,00),decoration_painting,painting_vampire_male,direction_top
+}
+IF[50%] {
+  DECORATION:(07,00),decoration_painting,painting_vampire_female,direction_top
+}
+IF[50%] {
+  DECORATION:(11,00),decoration_painting,painting_vampire_male,direction_top
+}
+IF[50%] {
+  DECORATION:(06,06),decoration_painting,painting_vampire_female,direction_top
+}
+IF[50%] {
+  DECORATION:(06,04),decoration_painting,painting_vlad,direction_top
+}
 
 # Random places are the 10 niches
 $place = { (03,01),(07,01),(11,01),(01,03),(13,03),
@@ -125,6 +157,7 @@ NON_DIGGABLE:(00,00,14,10)
 MAZE:"tower3",' '
 FLAGS: noteleport,hardfloor,solidify
 GEOMETRY:half-left,center
+#12345678901234567890
 MAP
     --- --- ---  
     |.| |.| |.|    
@@ -174,5 +207,8 @@ CONTAINER:('(',"coffin"),$place[3],montype:"vampire lord" {
 OBJECT:('(',"coffin"),$place[4]
 OBJECT:('(',"coffin"),$place[5]
 OBJECT:('(',"coffin"),$place[6]
+
+OBJECT: ('`', "statue"), (09,05), no_pickup, montype:"vampire king", 1
+
 # Walls in the tower are non diggable
 NON_DIGGABLE:(00,00,18,12)
