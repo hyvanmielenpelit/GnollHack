@@ -254,7 +254,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     },
     {
         "fireplace", "fireplace", "fireplace",
-        {DOODAD_FIREPLACE, DOODAD_FIREPLACE, DOODAD_FIREPLACE, DOODAD_FIREPLACE},
+        {DOODAD_FIREPLACE, DOODAD_FIREPLACE_LEFT, DOODAD_FIREPLACE_RIGHT, DOODAD_FIREPLACE},
         1, STRANGE_OBJECT, NON_PM, STRANGE_OBJECT, STRANGE_OBJECT,
         NO_COLOR, NO_COLOR,
         LOCATION_SOUNDSET_BRAZIER,

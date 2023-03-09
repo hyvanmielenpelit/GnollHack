@@ -352,6 +352,13 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
                             levl[lowx - 1][lowy + roll + 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
                         }
+                        else if (!rn2(5))
+                        {
+                            levl[lowx - 1][lowy + roll + 1].decoration_typ = DECORATION_FIREPLACE;
+                            levl[lowx - 1][lowy + roll + 1].decoration_subtyp = 0;
+                            levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
+                            levl[lowx - 1][lowy + roll + 1].decoration_flags = 0;
+                        }
                         else
                         {
                             levl[lowx - 1][lowy + roll + 1].decoration_typ = !rn2(10) ? DECORATION_LANTERN : DECORATION_TORCH;
@@ -379,6 +386,13 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;
                             levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
                             levl[hix + 1][lowy + roll + 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
+                        }
+                        else if (!rn2(5))
+                        {
+                            levl[hix + 1][lowy + roll + 1].decoration_typ = DECORATION_FIREPLACE;
+                            levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;
+                            levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
+                            levl[hix + 1][lowy + roll + 1].decoration_flags = 0;
                         }
                         else
                         {
@@ -1495,6 +1509,22 @@ makelevel()
             {
                 has_fireplace = TRUE;
                 break;
+            }
+        }
+        if (!has_fireplace)
+        {
+            for (y = lowy; y <= hiy; y++)
+            {
+                if (isok(lowx - 1, y) && levl[lowx - 1][y].decoration_typ == DECORATION_FIREPLACE)
+                {
+                    has_fireplace = TRUE;
+                    break;
+                }
+                else if (isok(hix - 1, y) && levl[hix - 1][y].decoration_typ == DECORATION_FIREPLACE)
+                {
+                    has_fireplace = TRUE;
+                    break;
+                }
             }
         }
 
