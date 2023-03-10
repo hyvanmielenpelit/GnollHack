@@ -300,6 +300,14 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
         LOCATION_SOUNDSET_NONE,
         DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_BANNER_DESCR | DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET | DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY
     },
+    {
+        "priest statue niche", "statue niche", "statue of a priest in a niche",
+        {DOODAD_PRIEST_STATUE_NICHE, DOODAD_PRIEST_STATUE_NICHE, DOODAD_PRIEST_STATUE_NICHE, DOODAD_PRIEST_STATUE_NICHE},
+        1, STATUE, PM_PRIEST, STRANGE_OBJECT, STRANGE_OBJECT,
+        NO_COLOR, CLR_WHITE,
+        LOCATION_SOUNDSET_NONE,
+        DECORATION_TYPE_FLAGS_LOOTABLE
+    },
 };
 
 NEARDATA struct banner_definition banner_definitions[MAX_BANNERS] = {

@@ -1899,6 +1899,22 @@ mktemple()
         }
     }
 
+    /* Priest statue */
+    int lowx = sroom->lx;
+    int hix = sroom->hx;
+    int lowy = sroom->ly;
+    int roll1 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+    if (lowx + 1 < hix && rn2(3))
+    {
+        if (IS_WALL(levl[lowx + roll1 + 1][lowy - 1].typ))
+        {
+            levl[lowx + roll1 + 1][lowy - 1].decoration_typ = DECORATION_PRIEST_NICHE;
+            levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
+            levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
+            levl[lowx + roll1 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+        }
+    }
+
     /* Priest */
     priestini(&u.uz, sroom, shrine_spot->x, shrine_spot->y, FALSE, NON_PM);
     lev->altarmask |= AM_SHRINE;
