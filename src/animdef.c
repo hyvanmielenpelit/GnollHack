@@ -12147,7 +12147,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "banner-holder-replacement",
-      MAX_BANNERS - 1 < MAX_TILES_PER_REPLACEMENT ? MAX_BANNERS - 1 : MAX_TILES_PER_REPLACEMENT,
+      MAX_BANNERS < MAX_TILES_PER_REPLACEMENT ? MAX_BANNERS : MAX_TILES_PER_REPLACEMENT,
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_PAINTING_HOLDER,
       AUTODRAW_NONE, -1,

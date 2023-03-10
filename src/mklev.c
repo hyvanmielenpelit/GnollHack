@@ -273,6 +273,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                     levl[hix][lowy - 1].decoration_typ = DECORATION_COBWEB_CORNER; // 1 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
                     levl[hix][lowy - 1].decoration_subtyp = decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes > 1 ? rn2(decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes) : 0;
                     levl[hix][lowy - 1].decoration_dir = 1;
+                    levl[hix][lowy - 1].decoration_flags = 0;
                 }
 
                 if (lowx + 1 < hix && !rn2(7 + webmod))
@@ -283,18 +284,43 @@ int floortyp, floorsubtyp, mtype, tileset;
                         levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_COBWEB;
                         levl[lowx + roll + 1][lowy - 1].decoration_subtyp = 0;
                         levl[lowx + roll + 1][lowy - 1].decoration_dir = rn2(2);
+                        levl[lowx + roll + 1][lowy - 1].decoration_flags = 0;
                     }
                 }
 
                 if (lowx + 1 < hix && (rtype == COURT || !rn2(10)))
                 {
                     int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                    schar bannertype = (schar)rn2(MAX_BANNERS);
                     if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ))
                     {
                         levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_BANNER;
-                        levl[lowx + roll + 1][lowy - 1].decoration_subtyp = rn2(MAX_BANNERS);
+                        levl[lowx + roll + 1][lowy - 1].decoration_subtyp = bannertype;
                         levl[lowx + roll + 1][lowy - 1].decoration_dir = 0;
                         levl[lowx + roll + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                    }
+                    if ((hix - lowx > 5 && rn2(3))  || (hix - lowx >=  2 && !rn2(3)))
+                    {
+                        int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                        if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ))
+                        {
+                            levl[lowx + roll2 + 1][lowy - 1].decoration_typ = DECORATION_BANNER;
+                            levl[lowx + roll2 + 1][lowy - 1].decoration_subtyp = bannertype;
+                            levl[lowx + roll2 + 1][lowy - 1].decoration_dir = 0;
+                            levl[lowx + roll2 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                        }
+
+                    }
+                    if ((hix - lowx > 5 && !rn2(3)))
+                    {
+                        int roll3 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                        if (IS_WALL(levl[lowx + roll3 + 1][lowy - 1].typ))
+                        {
+                            levl[lowx + roll3 + 1][lowy - 1].decoration_typ = DECORATION_BANNER;
+                            levl[lowx + roll3 + 1][lowy - 1].decoration_subtyp = bannertype;
+                            levl[lowx + roll3 + 1][lowy - 1].decoration_dir = 0;
+                            levl[lowx + roll3 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                        }
                     }
                 }
 
@@ -307,6 +333,18 @@ int floortyp, floorsubtyp, mtype, tileset;
                         levl[lowx + roll + 1][lowy - 1].decoration_subtyp = rn2(MAX_WALL_SCULPTURES);
                         levl[lowx + roll + 1][lowy - 1].decoration_dir = 0;
                         levl[lowx + roll + 1][lowy - 1].decoration_flags = 0;
+                    }
+                }
+
+                if (lowx + 1 < hix && ((rtype == COURT  && !rn2(2)) || !rn2(10)))
+                {
+                    int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                    if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ))
+                    {
+                        levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_SHIELD_WITH_SWORDS;
+                        levl[lowx + roll + 1][lowy - 1].decoration_subtyp = 0;
+                        levl[lowx + roll + 1][lowy - 1].decoration_dir = 0;
+                        levl[lowx + roll + 1][lowy - 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
                     }
                 }
 
@@ -328,13 +366,6 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_flags = 0;
-                        }
-                        else if (!rn2(4))
-                        {
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_typ = DECORATION_SHIELD_WITH_SWORDS;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
                         }
                         else
                         {
