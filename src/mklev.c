@@ -262,6 +262,7 @@ int floortyp, floorsubtyp, mtype, tileset;
             {
                 int lvl_depth = max(0, depth(&u.uz));
                 int webmod = lvl_depth > 10 ? -2 : lvl_depth > 5 ? -1 : 0;
+                boolean made_fireplace = FALSE;
                 if (IS_WALL(levl[lowx][lowy - 1].typ) && !rn2(5 + webmod))
                 {
                     levl[lowx][lowy - 1].decoration_typ = DECORATION_COBWEB_CORNER; // 0 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
@@ -367,6 +368,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_flags = 0;
+                            made_fireplace = TRUE;
                         }
                         else
                         {
@@ -407,12 +409,13 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
                             levl[lowx - 1][lowy + roll + 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
                         }
-                        else if (!rn2(5))
+                        else if (!made_fireplace && !rn2(5))
                         {
                             levl[lowx - 1][lowy + roll + 1].decoration_typ = DECORATION_FIREPLACE;
                             levl[lowx - 1][lowy + roll + 1].decoration_subtyp = 0;
                             levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
                             levl[lowx - 1][lowy + roll + 1].decoration_flags = 0;
+                            made_fireplace = TRUE;
                         }
                         else
                         {
@@ -442,12 +445,13 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
                             levl[hix + 1][lowy + roll + 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
                         }
-                        else if (!rn2(5))
+                        else if (!made_fireplace && !rn2(5))
                         {
                             levl[hix + 1][lowy + roll + 1].decoration_typ = DECORATION_FIREPLACE;
                             levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;
                             levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
                             levl[hix + 1][lowy + roll + 1].decoration_flags = 0;
+                            made_fireplace = TRUE;
                         }
                         else
                         {
