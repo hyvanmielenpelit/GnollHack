@@ -1351,6 +1351,15 @@ const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
     {"banner-holder", 0, BANNER_HOLDER_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"priest-niche", 0, PRIEST_NICHE_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"modron-wall-sculpture", 0, MODRON_WALL_SCULPTURE_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-brown-animal-skin-tlcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-brown-animal-skin-blcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-brown-animal-skin-trcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-brown-animal-skin-brcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-brown-animal-skin-left", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-brown-animal-skin-right", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-brown-animal-skin-top", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-brown-animal-skin-bottom", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-brown-animal-skin-middle", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =

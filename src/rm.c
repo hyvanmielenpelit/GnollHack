@@ -348,20 +348,26 @@ NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS] = {
 NEARDATA const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS] = {
     {
         (char*)0, (char*)0,
-        0, CARPET_TILE_INDEXATION_TYPE_NORMAL,
+        0, CARPET_TILE_INDEXATION_TYPE_NORMAL, 0, 0,
         CARPET_TYPE_FLAGS_NONE
     },
     {
         "carpet-horizantal-red", "red carpet",
         DOODAD_CARPET_RED_HORIZONTAL_TLCORN + GLYPH_SIMPLE_DOODAD_OFF, 
-        CARPET_TILE_INDEXATION_TYPE_LONG_CARPET,
+        CARPET_TILE_INDEXATION_TYPE_LONG_CARPET, 0, 0,
         CARPET_TYPE_FLAGS_NONE
     },
     {
         "carpet-purple-vertical", "purple carpet",
         DOODAD_CARPET_PURPLE_VERTICAL_TLCORN + GLYPH_SIMPLE_DOODAD_OFF,
-        CARPET_TILE_INDEXATION_TYPE_LONG_CARPET,
+        CARPET_TILE_INDEXATION_TYPE_LONG_CARPET, 0, 0,
         CARPET_TYPE_FLAGS_NONE
+    },
+    {
+        "carpet-brown-animal-skin", "brown hide",
+        DOODAD_CARPET_BROWN_ANIMAL_HIDE_TLCORN + GLYPH_SIMPLE_DOODAD_OFF,
+        CARPET_TILE_INDEXATION_TYPE_LONG_CARPET, 3, 3,
+        CARPET_TYPE_FLAGS_FIXED_SIZE
     },
 };
 

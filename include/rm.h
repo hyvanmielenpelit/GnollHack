@@ -381,6 +381,7 @@ enum carpet_types {
     CARPET_NONE = 0,
     CARPET_HORIZONTAL_RED,
     CARPET_VERTICAL_PURPLE,
+    CARPET_BROWN_ANIMAL_HIDE,
     MAX_CARPETS
 };
 
@@ -408,10 +409,13 @@ struct carpet_type_definition {
     const char* description;
     int first_doodad; //For each of four directions
     enum carpet_tile_indexation_types tile_indexation_type;
+    schar fixed_width;
+    schar fixed_height;
     unsigned short cflags;
 };
 
 #define CARPET_TYPE_FLAGS_NONE                  0x0000
+#define CARPET_TYPE_FLAGS_FIXED_SIZE            0x0001
 
 extern const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS];
 

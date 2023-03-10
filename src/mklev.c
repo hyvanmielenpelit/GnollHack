@@ -1590,7 +1590,13 @@ makelevel()
         if ((rt == OROOM && !rn2(has_fireplace ? 2 : 20)) || rt == COURT || rt == TEMPLE || rt == LIBRARY || rt == LEPREHALL || (rt >= SHOPBASE && rn2(3))
             || (rt == NPCROOM && (has_fireplace || rst == NPC_ELVEN_BARD || rst == NPC_ARTIFICER || !rn2(2))))
         {
-            create_carpet(lowx, lowy, hix, hiy, rt == DELPHI ? CARPET_VERTICAL_PURPLE : Inhell || rt == COURT || !rn2(4) ? CARPET_HORIZONTAL_RED : CARPET_VERTICAL_PURPLE);
+            int excess_hide_width = hix - lowx + 1 - carpet_type_definitions[CARPET_BROWN_ANIMAL_HIDE].fixed_width;
+            int excess_hide_height = hiy - lowy + 1 - carpet_type_definitions[CARPET_BROWN_ANIMAL_HIDE].fixed_height;
+            if (excess_hide_width >= 0 && excess_hide_width <= 2 && excess_hide_width % 2 == 0 && excess_hide_height >= 0 && excess_hide_height <= 2 && excess_hide_height % 2 == 0
+                && !Inhell && rn2(excess_hide_width == 0 && excess_hide_height == 0 ? 5 : 2))
+                create_carpet(lowx + excess_hide_width / 2, lowy + excess_hide_height / 2, hix - excess_hide_width / 2, hiy - excess_hide_height / 2, CARPET_BROWN_ANIMAL_HIDE);
+            else
+                create_carpet(lowx, lowy, hix, hiy, rt == DELPHI ? CARPET_VERTICAL_PURPLE : Inhell || rt == COURT || !rn2(4) ? CARPET_HORIZONTAL_RED : CARPET_VERTICAL_PURPLE);
         }
     }
 
