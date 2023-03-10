@@ -5367,18 +5367,14 @@ int x, y;
                         }
                     }
                 }
-                else if (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_WALL_SCULPTURE_DESCR)
+            }
+            else if (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_WALL_SCULPTURE_DESCR)
+            {
+                if (levl[x][y].decoration_subtyp >= 0 && levl[x][y].decoration_subtyp < MAX_WALL_SCULPTURES)
                 {
-                    if (levl[x][y].decoration_subtyp >= 0 && levl[x][y].decoration_subtyp < MAX_WALL_SCULPTURES)
+                    if (wall_sculpture_definitions[levl[x][y].decoration_subtyp].description)
                     {
-                        if ((levl[x][y].decoration_flags & DECORATION_FLAGS_SEEN) != 0 || cansee(x, y))
-                        {
-                            levl[x][y].decoration_flags |= DECORATION_FLAGS_SEEN;
-                            if (modron_wall_sculpture_definitions[levl[x][y].decoration_subtyp].description)
-                            {
-                                Strcpy(decoration_buf, modron_wall_sculpture_definitions[levl[x][y].decoration_subtyp].description);
-                            }
-                        }
+                        Strcpy(decoration_buf, wall_sculpture_definitions[levl[x][y].decoration_subtyp].description);
                     }
                 }
             }

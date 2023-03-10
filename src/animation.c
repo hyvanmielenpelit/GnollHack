@@ -2531,9 +2531,9 @@ break;
             if (replacements[replacement_idx].number_of_tiles < 1)
                 return ntile;
 
-            if (isok(x, y) && levl[x][y].decoration_typ > 0)
+            if (isok(x, y) && levl[x][y].decoration_typ > 0 && levl[x][y].decoration_subtyp > 0)
             {
-                int glyph_idx = levl[x][y].decoration_subtyp;
+                int glyph_idx = levl[x][y].decoration_subtyp - 1;
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
                 return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
@@ -3319,9 +3319,9 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_WALL_SCULPTURE:
         {
-            if (isok(x, y) && levl[x][y].decoration_typ > 0)
+            if (isok(x, y) && levl[x][y].decoration_typ > 0 && levl[x][y].decoration_subtyp > 0)
             {
-                int glyph_idx = levl[x][y].decoration_subtyp;
+                int glyph_idx = levl[x][y].decoration_subtyp - 1;
 
                 /* Return the first tile with index 0 */
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);

@@ -340,16 +340,16 @@ struct banner_definition {
 extern NEARDATA struct banner_definition banner_definitions[MAX_BANNERS];
 
 /* Wall sculptures */
-enum modron_wall_sculpture_types {
-    WALL_SCULPTURE_SPHERICAL = 0,
-    WALL_SCULPTURE_TRIANGULAR,
+enum wall_sculpture_types {
+    WALL_SCULPTURE_MODRON_SPHERICAL = 0,
+    WALL_SCULPTURE_MODRON_TRIANGULAR,
     MAX_WALL_SCULPTURES
 };
-struct modron_wall_sculpture_definition {
+struct wall_sculpture_definition {
     const char* name;
     const char* description;
 };
-extern NEARDATA struct modron_wall_sculpture_definition modron_wall_sculpture_definitions[MAX_WALL_SCULPTURES];
+extern NEARDATA struct wall_sculpture_definition wall_sculpture_definitions[MAX_WALL_SCULPTURES];
 
 /* Paintings */
 enum painting_types {
