@@ -288,7 +288,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                     }
                 }
 
-                if (lowx + 1 < hix && !rn2(10))
+                if (lowx + 1 < hix && !rn2(15))
                 {
                     int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                     schar bannertype = (schar)rn2(MAX_BANNERS);
