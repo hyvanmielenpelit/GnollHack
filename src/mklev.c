@@ -298,6 +298,18 @@ int floortyp, floorsubtyp, mtype, tileset;
                     }
                 }
 
+                if (lowx + 1 < hix && !rn2(20))
+                {
+                    int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                    if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ))
+                    {
+                        levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_MODRON_WALL_SCULPTURE;
+                        levl[lowx + roll + 1][lowy - 1].decoration_subtyp = rn2(MAX_WALL_SCULPTURES);
+                        levl[lowx + roll + 1][lowy - 1].decoration_dir = 0;
+                        levl[lowx + roll + 1][lowy - 1].decoration_flags = 0;
+                    }
+                }
+
                 int roll1 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                 if (lowx + 1 < hix && !rn2(3))
                 {

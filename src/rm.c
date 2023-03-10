@@ -308,6 +308,14 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
         LOCATION_SOUNDSET_NONE,
         DECORATION_TYPE_FLAGS_LOOTABLE
     },
+    {
+        "modron wall sculpture", "modron wall sculpture", "alien wall sculpture",
+        {DOODAD_MODRON_WALL_SCULPTURE, DOODAD_MODRON_WALL_SCULPTURE, DOODAD_MODRON_WALL_SCULPTURE, DOODAD_MODRON_WALL_SCULPTURE},
+        1, STRANGE_OBJECT, NON_PM, STRANGE_OBJECT, STRANGE_OBJECT,
+        NO_COLOR, NO_COLOR,
+        LOCATION_SOUNDSET_NONE,
+        DECORATION_TYPE_FLAGS_WALL_SCULPTURE_DESCR | DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET
+    },
 };
 
 NEARDATA struct banner_definition banner_definitions[MAX_BANNERS] = {
@@ -316,6 +324,12 @@ NEARDATA struct banner_definition banner_definitions[MAX_BANNERS] = {
     { "purple banner", "purple banner", 25L },
     { "old purple banner", "old purple banner", 25L },
 };
+
+NEARDATA struct modron_wall_sculpture_definition modron_wall_sculpture_definitions[MAX_WALL_SCULPTURES] = {
+    { "modron spherical wall sculpture", "alien spherical wall sculpture" },
+    { "modron triangular wall sculpture", "alien triangular wall sculpture" },
+};
+
 
 NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS] = {
     { "Portrait of Male Aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 25L },

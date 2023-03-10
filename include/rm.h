@@ -273,6 +273,7 @@ enum decoration_types {
     DECORATION_SHIELD_WITH_SWORDS,
     DECORATION_BANNER,
     DECORATION_PRIEST_NICHE,
+    DECORATION_MODRON_WALL_SCULPTURE,
     MAX_DECORATIONS
 };
 
@@ -320,6 +321,7 @@ extern NEARDATA const struct decoration_lit_color_definition decoration_lit_colo
 #define DECORATION_TYPE_FLAGS_WOODY_FILLED_COLOR            0x00004000UL
 #define DECORATION_TYPE_FLAGS_ADD_OTHER_ITEM_DESCRIPTIONS   0x00008000UL
 #define DECORATION_TYPE_FLAGS_BANNER_DESCR                  0x00010000UL
+#define DECORATION_TYPE_FLAGS_WALL_SCULPTURE_DESCR          0x00020000UL
 
 /* Banners */
 enum banner_types {
@@ -332,10 +334,22 @@ enum banner_types {
 
 struct banner_definition {
     const char* name;
-    const char* description; /* a banner of description */
+    const char* description;
     long cost;
 };
 extern NEARDATA struct banner_definition banner_definitions[MAX_BANNERS];
+
+/* Wall sculptures */
+enum modron_wall_sculpture_types {
+    WALL_SCULPTURE_SPHERICAL = 0,
+    WALL_SCULPTURE_TRIANGULAR,
+    MAX_WALL_SCULPTURES
+};
+struct modron_wall_sculpture_definition {
+    const char* name;
+    const char* description;
+};
+extern NEARDATA struct modron_wall_sculpture_definition modron_wall_sculpture_definitions[MAX_WALL_SCULPTURES];
 
 /* Paintings */
 enum painting_types {
