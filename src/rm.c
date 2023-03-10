@@ -326,8 +326,8 @@ NEARDATA struct banner_definition banner_definitions[MAX_BANNERS] = {
 };
 
 NEARDATA struct wall_sculpture_definition wall_sculpture_definitions[MAX_WALL_SCULPTURES] = {
-    { "modron spherical wall sculpture", "alien spherical wall sculpture" },
-    { "modron triangular wall sculpture", "alien triangular wall sculpture" },
+    { "modron spherical wall sculpture", "alien spherical sculpture" },
+    { "modron triangular wall sculpture", "alien triangular sculpture" },
 };
 
 
