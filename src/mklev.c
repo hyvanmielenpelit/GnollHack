@@ -329,14 +329,14 @@ int floortyp, floorsubtyp, mtype, tileset;
                     int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                     if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ))
                     {
-                        levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_MODRON_WALL_SCULPTURE;
+                        levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_WALL_SCULPTURE;
                         levl[lowx + roll + 1][lowy - 1].decoration_subtyp = rn2(MAX_WALL_SCULPTURES);
                         levl[lowx + roll + 1][lowy - 1].decoration_dir = 0;
                         levl[lowx + roll + 1][lowy - 1].decoration_flags = 0;
                     }
                 }
 
-                if (lowx + 1 < hix && ((rtype == COURT  && !rn2(2)) || !rn2(10)))
+                if (lowx + 1 < hix && ((rtype == COURT  && !rn2(2)) || !rn2(15)))
                 {
                     int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                     if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ))
@@ -399,7 +399,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
                             levl[lowx - 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                         }
-                        else if (!rn2(4))
+                        else if (!rn2(5))
                         {
                             levl[lowx - 1][lowy + roll + 1].decoration_typ = DECORATION_SHIELD_WITH_SWORDS;
                             levl[lowx - 1][lowy + roll + 1].decoration_subtyp = 0;
@@ -434,7 +434,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
                             levl[hix + 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                         }
-                        else if (!rn2(4))
+                        else if (!rn2(5))
                         {
                             levl[hix + 1][lowy + roll + 1].decoration_typ = DECORATION_SHIELD_WITH_SWORDS;
                             levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;

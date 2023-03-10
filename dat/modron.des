@@ -57,6 +57,9 @@ DOOR:closed,(30,09),subtype:door_modron
 DOOR:closed,(03,08),subtype:door_modron,secret_door
 DOOR:closed,(39,08),subtype:door_modron,secret_door
 
+DECORATION:(16,03),decoration_wall_sculpture,wall_sculpture_modron_spherical,direction_top
+DECORATION:(26,03),decoration_wall_sculpture,wall_sculpture_modron_spherical,direction_top
+
 # Portal room guards
 MONSTER:('M',"modron monodrone"),(14,06),hostile,waitforu
 MONSTER:('M',"modron duodrone"),(15,06),hostile,waitforu
