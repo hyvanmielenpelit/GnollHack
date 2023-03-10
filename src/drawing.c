@@ -1348,6 +1348,7 @@ const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
     {"equipment-holder", 0, EQUIPMENT_HOLDER_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"equipment-holder-left", 0, EQUIPMENT_HOLDER_LEFT_REPLACEMENT, NO_ANIMATION, EQUIPMENT_HOLDER_LEFT_ENLARGEMENT},
     {"equipment-holder-right", 0, EQUIPMENT_HOLDER_RIGHT_REPLACEMENT, NO_ANIMATION, EQUIPMENT_HOLDER_RIGHT_ENLARGEMENT},
+    {"banner-holder", 0, BANNER_HOLDER_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =

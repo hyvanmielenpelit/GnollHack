@@ -3663,6 +3663,13 @@ struct obj* obj;
             tmp = painting_definitions[obj->special_quality].cost;
         }
     }
+    else if (obj->otyp == BANNER)
+    {
+        if (obj->special_quality >= 0 && obj->special_quality < MAX_BANNERS)
+        {
+            tmp = banner_definitions[obj->special_quality].cost;
+        }
+    }
     else
     {
         double matmult = 1.0;

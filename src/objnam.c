@@ -850,6 +850,15 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                     }
                 }
                 break;
+            case BANNER:
+                if (obj->special_quality >= 0 && obj->special_quality < MAX_BANNERS)
+                {
+                    if (banner_definitions[obj->special_quality].description)
+                    {
+                        Strcpy(buf, banner_definitions[obj->special_quality].description);
+                    }
+                }
+                break;
             default:
                 break;
             }

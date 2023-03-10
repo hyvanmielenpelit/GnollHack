@@ -1985,6 +1985,9 @@ unsigned long mkflags;
             case PAINTING:
                 otmp->special_quality = rn2(MAX_PAINTINGS);
                 break;
+            case BANNER:
+                otmp->special_quality = rn2(MAX_BANNERS);
+                break;
             default:
                 break;
             }

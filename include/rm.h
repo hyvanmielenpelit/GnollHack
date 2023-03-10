@@ -271,6 +271,7 @@ enum decoration_types {
     DECORATION_GARGOYLE_NICHE,
     DECORATION_KNIGHT_NICHE,
     DECORATION_SHIELD_WITH_SWORDS,
+    DECORATION_BANNER,
     MAX_DECORATIONS
 };
 
@@ -317,6 +318,49 @@ extern NEARDATA const struct decoration_lit_color_definition decoration_lit_colo
 #define DECORATION_TYPE_FLAGS_WOODY_COLOR                   0x00002000UL
 #define DECORATION_TYPE_FLAGS_WOODY_FILLED_COLOR            0x00004000UL
 #define DECORATION_TYPE_FLAGS_ADD_OTHER_ITEM_DESCRIPTIONS   0x00008000UL
+#define DECORATION_TYPE_FLAGS_BANNER_DESCR                  0x00010000UL
+
+/* Banners */
+enum banner_types {
+    BANNER_RED = 0,
+    BANNER_RED_OLD,
+    BANNER_PURPLE,
+    BANNER_PURPLE_OLD,
+    MAX_BANNERS
+};
+
+struct banner_definition {
+    const char* name;
+    const char* description; /* a banner of description */
+    long cost;
+};
+extern NEARDATA struct banner_definition banner_definitions[MAX_BANNERS];
+
+/* Paintings */
+enum painting_types {
+    PAINTING_STANDARD = 0,
+    PAINTING_MALE_ARISTOCRAT,
+    PAINTING_FEMALE_ARISTOCRAT,
+    PAINTING_PRIESTESS,
+    PAINTING_DISPATER,
+    PAINTING_DISPATER_SMILING,
+    PAINTING_WIZARD_OF_YENDOR_BLUE,
+    PAINTING_WIZARD_OF_YENDOR_RED,
+    PAINTING_VLAD_THE_IMPALER,
+    PAINTING_VAMPIRE_MALE,
+    PAINTING_VAMPIRE_FEMALE,
+    MAX_PAINTINGS
+};
+
+struct painting_definition {
+    const char* name;
+    const char* description; /* a painting of description */
+    const char* artist;  /* a painting of description by artist */
+    const char* paint_date; /* known painting date */
+    const char* provenance; /* list of notable previous owners */
+    long cost;
+};
+extern NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS];
 
 enum carpet_types {
     CARPET_NONE = 0,

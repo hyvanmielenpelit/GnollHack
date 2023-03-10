@@ -292,6 +292,35 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
         LOCATION_SOUNDSET_NONE,
         DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_ADD_OTHER_ITEM_DESCRIPTIONS
     },
+    {
+        "banner", "banner pole", "banner",
+        {DOODAD_BANNER_HOLDER, DOODAD_BANNER_HOLDER, DOODAD_BANNER_HOLDER, DOODAD_BANNER_HOLDER},
+        1, BANNER, NON_PM, STRANGE_OBJECT, STRANGE_OBJECT,
+        NO_COLOR, NO_COLOR,
+        LOCATION_SOUNDSET_NONE,
+        DECORATION_TYPE_FLAGS_LOOTABLE | DECORATION_TYPE_FLAGS_BANNER_DESCR | DECORATION_TYPE_FLAGS_NO_SUBTYP_OFFSET | DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY
+    },
+};
+
+NEARDATA struct banner_definition banner_definitions[MAX_BANNERS] = {
+    { "red banner", "red banner", 25L },
+    { "old red banner", "old red banner", 25L },
+    { "purple banner", "purple banner", 25L },
+    { "old purple banner", "old purple banner", 25L },
+};
+
+NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS] = {
+    { "Portrait of Male Aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 25L },
+    { "Portrait of Male Aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 50L },
+    { "Portrait of Female Aristocrat", "a female aristocrat", "Otumn", (char*)0, (char*)0, 100L },
+    { "Portrait of Elucid Priestess", "a priestess", "Otumn", (char*)0, (char*)0, 150L },
+    { "Portrait of Serious Dispater", "Dispater, Archduke of Gehennom", "Diedi", (char*)0, (char*)0, 200L },
+    { "Portrait of Smiling Dispater", "Dispater, Archduke of Gehennom", "Diedi", (char*)0, (char*)0, 200L },
+    { "Portrait of Wizard of Yendor in Blue", "Wizard of Yendor", "Diedi", (char*)0, (char*)0, 250L },
+    { "Portrait of Wizard of Yendor in Red", "Wizard of Yendor", "Diedi", (char*)0, (char*)0, 250L },
+    { "Portrait of Vlad the Impaler", "Vlad the Impaler", "Diedi", (char*)0, (char*)0, 250L },
+    { "Portrait of Vampire Lord", "a vampire lord", "Diedi", (char*)0, (char*)0, 200L },
+    { "Portrait of Vampire Lady", "a vampire lady", "Diedi", (char*)0, (char*)0, 200L },
 };
 
 NEARDATA const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS] = {

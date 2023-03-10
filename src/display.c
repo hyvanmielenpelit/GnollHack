@@ -5353,6 +5353,20 @@ int x, y;
                         }
                     }
                 }           
+                else if (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_BANNER_DESCR)
+                {
+                    if (levl[x][y].decoration_subtyp >= 0 && levl[x][y].decoration_subtyp < MAX_BANNERS)
+                    {
+                        if ((levl[x][y].decoration_flags & DECORATION_FLAGS_SEEN) != 0 || cansee(x, y))
+                        {
+                            levl[x][y].decoration_flags |= DECORATION_FLAGS_SEEN;
+                            if (banner_definitions[levl[x][y].decoration_subtyp].description)
+                            {
+                                Strcpy(decoration_buf, banner_definitions[levl[x][y].decoration_subtyp].description);
+                            }
+                        }
+                    }
+                }
             }
             else
             {

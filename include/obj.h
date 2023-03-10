@@ -1069,33 +1069,6 @@ enum manual_types
 #define LAST_CATALOGUE MANUAL_CATALOGUE_OF_ARTIFACTS
 #define NUM_CATALOGUES (LAST_CATALOGUE - FIRST_CATALOGUE + 1)
 
-enum painting_types {
-    PAINTING_STANDARD = 0,
-    PAINTING_MALE_ARISTOCRAT,
-    PAINTING_FEMALE_ARISTOCRAT,
-    PAINTING_PRIESTESS,
-    PAINTING_DISPATER,
-    PAINTING_DISPATER_SMILING,
-    PAINTING_WIZARD_OF_YENDOR_BLUE,
-    PAINTING_WIZARD_OF_YENDOR_RED,
-    PAINTING_VLAD_THE_IMPALER,
-    PAINTING_VAMPIRE_MALE,
-    PAINTING_VAMPIRE_FEMALE,
-    MAX_PAINTINGS
-};
-
-/* Paintings */
-struct painting_definition {
-    const char* name;
-    const char* description; /* a painting of description */
-    const char* artist;  /* a painting of description by artist */
-    const char* paint_date; /* known painting date */
-    const char* provenance; /* list of notable previous owners */
-    long cost;
-};
-extern NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS];
-
-
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1
 #define BURIED_TOO 0x2

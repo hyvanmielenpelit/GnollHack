@@ -468,21 +468,6 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_P
     { "Returns to hand", "Returns to hand after throwing", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_THROWN_WEAPONS_ONLY },
 };
 
-
-NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS] = {
-    { "Portrait of Male Aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 25L },
-    { "Portrait of Male Aristocrat", "a male aristocrat", "Otumn", (char*)0, (char*)0, 50L },
-    { "Portrait of Female Aristocrat", "a female aristocrat", "Otumn", (char*)0, (char*)0, 100L },
-    { "Portrait of Elucid Priestess", "a priestess", "Otumn", (char*)0, (char*)0, 150L },
-    { "Portrait of Serious Dispater", "Dispater, Archduke of Gehennom", "Diedi", (char*)0, (char*)0, 200L },
-    { "Portrait of Smiling Dispater", "Dispater, Archduke of Gehennom", "Diedi", (char*)0, (char*)0, 200L },
-    { "Portrait of Wizard of Yendor in Blue", "Wizard of Yendor", "Diedi", (char*)0, (char*)0, 250L },
-    { "Portrait of Wizard of Yendor in Red", "Wizard of Yendor", "Diedi", (char*)0, (char*)0, 250L },
-    { "Portrait of Vlad the Impaler", "Vlad the Impaler", "Diedi", (char*)0, (char*)0, 250L },
-    { "Portrait of Vampire Lord", "a vampire lord", "Diedi", (char*)0, (char*)0, 200L },
-    { "Portrait of Vampire Lady", "a vampire lady", "Diedi", (char*)0, (char*)0, 200L },
-};
-
 //STATIC_DCL void FDECL(setgemprobs, (d_level *));
 STATIC_DCL void FDECL(shuffle, (int, int, BOOLEAN_P));
 STATIC_DCL void NDECL(shuffle_all);
