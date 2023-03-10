@@ -564,7 +564,7 @@ fall_through(td)
 boolean td; /* td == TRUE : trap door or hole */
 {
     d_level dtmp;
-    char msgbuf[BUFSZ];
+    char msgbuf[BUFSZ] = "";
     const char *dont_fall = 0;
     int newlevel, bottom;
 
