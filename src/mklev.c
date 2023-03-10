@@ -324,7 +324,8 @@ int floortyp, floorsubtyp, mtype, tileset;
                     }
                 }
 
-                if (lowx + 1 < hix && !rn2(20))
+                int modron_one_in_chance = 50 - depth(&u.uz);
+                if (lowx + 1 < hix && !rn2(max(3, modron_one_in_chance)))
                 {
                     int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                     if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ))

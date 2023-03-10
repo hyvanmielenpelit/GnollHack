@@ -192,6 +192,11 @@ DOOR:closed,(37,13),subtype:door_modron
 DOOR:locked,(19,10),subtype:door_magic,keytype:"magic key"
 DOOR:locked,(29,10),subtype:door_magic,keytype:"magic key"
 
+DECORATION:(21,06),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
+DECORATION:(27,06),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
+DECORATION:(21,14),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
+DECORATION:(27,14),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
+
 # Middle room
 REGION:(22,09,26,11),lit,"temple" floorsubtype:floor_marble
 ALTAR:(24,10),neutral,shrine,montype:"monk"
@@ -311,7 +316,6 @@ TELEPORT_REGION:(19,09,21,10),(0,0,0,0),down
 MODRON_PORTAL:(20,09),level_teleporter,teleport_up,matching_portal,tetrahedral,inactive
 MODRON_PORTAL:(30,09),level_teleporter,teleport_down,matching_portal,cylindrical,inactive
 
-
 DOOR:closed,(25,07),subtype:door_modron
 DOOR:locked,(22,10),subtype:door_modron,keytype:"geometric key",special_quality:3,non_passdoor
 DOOR:closed,(19,13),subtype:door_modron,secret_door
@@ -322,6 +326,12 @@ DOOR:closed,(22,06),subtype:door_modron
 DOOR:closed,(28,06),subtype:door_modron
 
 DOOR:locked,(28,10),subtype:door_modron,keytype:"geometric key",special_quality:2,non_passdoor
+
+DECORATION:(25,02),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
+DECORATION:(07,11),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
+DECORATION:(43,11),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
+DECORATION:(23,07),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
+DECORATION:(27,07),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
 
 # Three tertians and other modrons
 MONSTER:('M',"modron tertian"),(25,04),waitforu,hostile
@@ -470,6 +480,7 @@ MONSTER:('M',"modron secundus"),(65,10),waitforu,hostile {
         OBJECT:('(', "magic key"),special_quality:1
 }
 BRAZIER:(62,10)
+DECORATION:(62,08),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(54,11),no_pickup {
         OBJECT:('7', "modronite sphere")
         OBJECT:class_treasure_armor
@@ -480,6 +491,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(54,1
 
 MONSTER:('M',"modron secundus"),(07,10),waitforu,hostile
 BRAZIER:(10,10)
+DECORATION:(10,08),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(18,11),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:1
         OBJECT:class_treasure_weapon
@@ -561,6 +573,13 @@ DOOR:closed,(22,09),subtype:door_modron
 DOOR:closed,(22,05),subtype:door_modron
 
 MODRON_PORTAL:(18,04),level_teleporter,teleport_up,matching_portal,spherical,inactive
+
+DECORATION:(14,03),decoration_wall_sculpture,wall_sculpture_modron_spherical,direction_top
+DECORATION:(18,03),decoration_wall_sculpture,wall_sculpture_modron_spherical,direction_top
+DECORATION:(08,04),decoration_wall_sculpture,wall_sculpture_modron_spherical,direction_top
+DECORATION:(24,04),decoration_wall_sculpture,wall_sculpture_modron_spherical,direction_top
+DECORATION:(14,09),decoration_wall_sculpture,wall_sculpture_modron_spherical,direction_top
+DECORATION:(18,09),decoration_wall_sculpture,wall_sculpture_modron_spherical,direction_top
 
 MONSTER:('M',"modron monodrone"),(11,04),waitforu,hostile
 MONSTER:('M',"modron monodrone"),(11,05),waitforu,hostile
