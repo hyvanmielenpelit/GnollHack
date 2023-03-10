@@ -288,7 +288,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                     }
                 }
 
-                if (lowx + 1 < hix && (rtype == COURT || !rn2(10)))
+                if (lowx + 1 < hix && !rn2(10))
                 {
                     int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                     schar bannertype = (schar)rn2(MAX_BANNERS);
@@ -336,7 +336,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                     }
                 }
 
-                if (lowx + 1 < hix && ((rtype == COURT  && !rn2(2)) || !rn2(15)))
+                if (lowx + 1 < hix && !rn2(15))
                 {
                     int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                     if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ))

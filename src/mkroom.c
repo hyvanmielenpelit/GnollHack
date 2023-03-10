@@ -506,6 +506,78 @@ int type;
                     }
 
         }
+
+        int lowx = sroom->lx;
+        int hix = sroom->hx;
+        int lowy = sroom->ly;
+        switch (sroom->rtype)
+        {
+        case BARRACKS:
+        case ARMORY:
+        case COURT:
+            if (lowx + 1 < hix)
+            {
+                int roll = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                schar bannertype = (schar)rn2(sroom->rtype == COURT ? BANNER_RED_OLD + 1 : MAX_BANNERS);
+                if (IS_WALL(levl[lowx + roll + 1][lowy - 1].typ))
+                {
+                    levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_BANNER;
+                    levl[lowx + roll + 1][lowy - 1].decoration_subtyp = bannertype;
+                    levl[lowx + roll + 1][lowy - 1].decoration_dir = 0;
+                    levl[lowx + roll + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                }
+                if ((hix - lowx > 5 && rn2(3)) || (hix - lowx >= 2 && !rn2(3)))
+                {
+                    int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                    if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ))
+                    {
+                        levl[lowx + roll2 + 1][lowy - 1].decoration_typ = DECORATION_BANNER;
+                        levl[lowx + roll2 + 1][lowy - 1].decoration_subtyp = bannertype;
+                        levl[lowx + roll2 + 1][lowy - 1].decoration_dir = 0;
+                        levl[lowx + roll2 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                    }
+
+                }
+                if ((hix - lowx > 5 && !rn2(3)))
+                {
+                    int roll3 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                    if (IS_WALL(levl[lowx + roll3 + 1][lowy - 1].typ))
+                    {
+                        levl[lowx + roll3 + 1][lowy - 1].decoration_typ = DECORATION_BANNER;
+                        levl[lowx + roll3 + 1][lowy - 1].decoration_subtyp = bannertype;
+                        levl[lowx + roll3 + 1][lowy - 1].decoration_dir = 0;
+                        levl[lowx + roll3 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                    }
+                }
+                if (lowx + 1 < hix && !rn2(2))
+                {
+                    int roll4 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                    if (IS_WALL(levl[lowx + roll4 + 1][lowy - 1].typ))
+                    {
+                        levl[lowx + roll4 + 1][lowy - 1].decoration_typ = DECORATION_SHIELD_WITH_SWORDS;
+                        levl[lowx + roll4 + 1][lowy - 1].decoration_subtyp = 0;
+                        levl[lowx + roll4 + 1][lowy - 1].decoration_dir = 0;
+                        levl[lowx + roll4 + 1][lowy - 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
+                    }
+                }
+                if (lowx + 1 < hix && sroom->rtype == COURT && !rn2(2))
+                {
+                    int roll5 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
+                    if (IS_WALL(levl[lowx + roll5 + 1][lowy - 1].typ))
+                    {
+                        levl[lowx + roll5 + 1][lowy - 1].decoration_typ = DECORATION_KNIGHT_NICHE;
+                        levl[lowx + roll5 + 1][lowy - 1].decoration_subtyp = 0;
+                        levl[lowx + roll5 + 1][lowy - 1].decoration_dir = 0;
+                        levl[lowx + roll5 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+                    }
+                }
+            }
+            break;
+        default:
+            break;
+        }
+        /* Decorations */
+
         return 1;
     }
     return 0;
@@ -1904,7 +1976,7 @@ mktemple()
     int hix = sroom->hx;
     int lowy = sroom->ly;
     int roll1 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
-    if (lowx + 1 < hix && rn2(3))
+    if (lowx + 1 < hix && rn2(5))
     {
         if (IS_WALL(levl[lowx + roll1 + 1][lowy - 1].typ))
         {
