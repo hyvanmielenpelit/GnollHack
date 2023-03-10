@@ -419,3 +419,13 @@ REGION:(39,08,55,08),unlit,"ordinary"
 #   Storeroom alcoves
 REGION:(47,05,47,06),unlit,"ordinary"
 REGION:(47,10,47,11),unlit,"ordinary"
+
+DECORATION:(28,04),decoration_banner,banner_red,direction_top
+DECORATION:(30,04),decoration_banner,banner_red,direction_top
+DECORATION:(34,04),decoration_banner,banner_red,direction_top
+DECORATION:(36,04),decoration_banner,banner_red,direction_top
+
+DECORATION:(28,12),decoration_banner,banner_red,direction_top
+DECORATION:(30,12),decoration_banner,banner_red,direction_top
+DECORATION:(34,12),decoration_banner,banner_red,direction_top
+DECORATION:(36,12),decoration_banner,banner_red,direction_top
