@@ -279,7 +279,7 @@ namespace GnollHackClient.Pages.Game
             statusbar = App.HideiOSStatusBar;
             devmode = App.DeveloperMode;
             bank = Preferences.Get("LoadSoundBanks", true);
-            carousel = Preferences.Get("UsesCarousel", App.IsiOS);
+            carousel = Preferences.Get("UsesCarousel", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             if (_gamePage == null)
             {
