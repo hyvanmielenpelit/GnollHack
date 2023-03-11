@@ -27,7 +27,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.soundmindgames.GnollHack</string>
 	<key>CFBundleVersion</key>
-	<string>47</string>
+	<string>48</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>CFBundleName</key>
