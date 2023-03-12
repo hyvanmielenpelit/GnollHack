@@ -585,8 +585,8 @@ typedef struct _room {
     Str_or_Len parent;
     xchar x, y, w, h;
     xchar xalign, yalign;
-    xchar rtype, chance, rlit, filled, joined, rfloortyp, rfloorsubtyp, decotyp;
-    short mtype, tileset;
+    xchar rtype, chance, rlit, filled, joined, rfloortyp, rfloorsubtyp;
+    short mtype, tileset, decotyp;
 } room;
 
 typedef struct {

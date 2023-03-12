@@ -30,7 +30,7 @@ STATIC_DCL void FDECL(dosdoor, (XCHAR_P, XCHAR_P, struct mkroom *, int, UCHAR_P)
 STATIC_DCL void FDECL(join, (int, int, BOOLEAN_P));
 STATIC_DCL void FDECL(do_room_or_subroom, (struct mkroom *, int, int,
                                            int, int, BOOLEAN_P,
-                                           SCHAR_P, BOOLEAN_P, int, int, int, int, XCHAR_P, BOOLEAN_P));
+                                           SCHAR_P, BOOLEAN_P, int, int, int, int, SHORT_P, BOOLEAN_P));
 STATIC_DCL void NDECL(makerooms);
 STATIC_DCL void FDECL(finddpos, (coord *, XCHAR_P, XCHAR_P,
                                  XCHAR_P, XCHAR_P));
@@ -118,7 +118,7 @@ boolean lit;
 schar rtype;
 boolean special;
 boolean is_room;
-xchar decotyp;
+short decotyp;
 int floortyp, floorsubtyp, mtype, tileset;
 {
     register int x, y;
@@ -162,6 +162,8 @@ int floortyp, floorsubtyp, mtype, tileset;
     croom->fdoor = doorindex;
     croom->irregular = FALSE;
     croom->resident_mtype = mtype;
+    croom->room_decoration_type = decotyp;
+    croom->room_flags = 0;
 
     croom->nsubrooms = 0;
     croom->sbrooms[0] = (struct mkroom *) 0;
@@ -540,7 +542,7 @@ int lowx, lowy, hix, hiy;
 boolean lit;
 schar rtype;
 boolean special;
-xchar decotyp;
+short decotyp;
 int floortyp, floorsubtyp, mtype, tileset;
 {
     register struct mkroom *croom;
@@ -560,7 +562,7 @@ int lowx, lowy, hix, hiy;
 boolean lit;
 schar rtype;
 boolean special;
-xchar decotyp;
+short decotyp;
 int floortyp, floorsubtyp, mtype, tileset;
 {
     register struct mkroom *croom;
