@@ -258,7 +258,9 @@ int floortyp, floorsubtyp, mtype, tileset;
         /* Decorations */
         if (!Is_really_rogue_level(&u.uz))
         {
-            if (decotyp == 1)
+            switch (decotyp)
+            {
+            case 1:
             {
                 int lvl_depth = max(0, depth(&u.uz));
                 int webmod = lvl_depth > 10 ? -2 : lvl_depth > 5 ? -1 : 0;
@@ -300,7 +302,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                         levl[lowx + roll + 1][lowy - 1].decoration_dir = 0;
                         levl[lowx + roll + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                     }
-                    if ((hix - lowx > 5 && rn2(3))  || (hix - lowx >=  2 && !rn2(3)))
+                    if ((hix - lowx > 5 && rn2(3)) || (hix - lowx >= 2 && !rn2(3)))
                     {
                         int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                         if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ))
@@ -402,14 +404,14 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
                             levl[lowx - 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                         }
-                        else if (!rn2(5))
+                        else if (!rn2(7))
                         {
                             levl[lowx - 1][lowy + roll + 1].decoration_typ = DECORATION_SHIELD_WITH_SWORDS;
                             levl[lowx - 1][lowy + roll + 1].decoration_subtyp = 0;
                             levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
                             levl[lowx - 1][lowy + roll + 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
                         }
-                        else if (!made_fireplace && !rn2(5))
+                        else if (!made_fireplace && !rn2(6))
                         {
                             levl[lowx - 1][lowy + roll + 1].decoration_typ = DECORATION_FIREPLACE;
                             levl[lowx - 1][lowy + roll + 1].decoration_subtyp = 0;
@@ -438,14 +440,14 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
                             levl[hix + 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                         }
-                        else if (!rn2(5))
+                        else if (!rn2(7))
                         {
                             levl[hix + 1][lowy + roll + 1].decoration_typ = DECORATION_SHIELD_WITH_SWORDS;
                             levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;
                             levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
                             levl[hix + 1][lowy + roll + 1].decoration_flags = (rn2(6) ? DECORATION_FLAGS_ITEM_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM2_IN_HOLDER : 0UL) | (rn2(5) ? DECORATION_FLAGS_ITEM3_IN_HOLDER : 0UL);
                         }
-                        else if (!made_fireplace && !rn2(5))
+                        else if (!made_fireplace && !rn2(6))
                         {
                             levl[hix + 1][lowy + roll + 1].decoration_typ = DECORATION_FIREPLACE;
                             levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;
@@ -462,8 +464,9 @@ int floortyp, floorsubtyp, mtype, tileset;
                         }
                     }
                 }
+                break;
             }
-            else if (decotyp == 2)
+            case 2:
             {
                 int roll1 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
                 int roll2 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
@@ -488,8 +491,12 @@ int floortyp, floorsubtyp, mtype, tileset;
                         levl[lowx + roll2 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                     }
                 }
+                break;
             }
-
+            default:
+                break;
+            }
+            
         }
     }
     else
