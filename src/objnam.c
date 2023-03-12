@@ -1077,6 +1077,7 @@ struct obj *obj;
        are required in order for xname() to yield a sensible result */
     bareobj = zeroobj;
     bareobj.otyp = otyp;
+    bareobj.material = obj->material;
     bareobj.oartifact = obj->oartifact;
     bareobj.oclass = obj->oclass;
     bareobj.dknown = obj->dknown;
