@@ -1218,11 +1218,13 @@ char* outbuf;
     Strcpy(betaflagbuf, "*");
 #endif
     if (EDITLEVEL > 0)
-        Sprintf(editbuf, "%d", EDITLEVEL > 20 ? EDITLEVEL - 20 : EDITLEVEL % 10);
+        Sprintf(editbuf, "%d", EDITLEVEL > 50 ? EDITLEVEL - 50 : EDITLEVEL > 20 ? EDITLEVEL - 20 : EDITLEVEL % 10);
     if (HOTFIXLEVEL > 0)
         Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
 
-    if (EDITLEVEL > 20)
+    if (EDITLEVEL > 50)
+        Sprintf(outbuf, "%s%s%s%s", " Release Candidate ", editbuf, betaflagbuf, hotfixbuf);
+    else if (EDITLEVEL > 20)
         Sprintf(outbuf, "%s%s%s%s", " Beta ", editbuf, betaflagbuf, hotfixbuf);
     else if (EDITLEVEL > 10)
         Sprintf(outbuf, "%s%s%s%s", " Alpha ", editbuf, betaflagbuf, hotfixbuf);
@@ -1873,7 +1875,7 @@ do_options()
             opt_indent,
             VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL,
 #if defined(PRE_RELEASE)
-        EDITLEVEL > 20 ? " [beta]" : EDITLEVEL > 10 ? " [alpha]" : " [pre-alpha]"
+        EDITLEVEL > 50 ? " [rc]" : EDITLEVEL > 20 ? " [beta]" : EDITLEVEL > 10 ? " [alpha]" : " [pre-alpha]"
 #else
             ""
 #endif
