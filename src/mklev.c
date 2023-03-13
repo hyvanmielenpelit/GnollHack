@@ -444,7 +444,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                             levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
                             levl[lowx - 1][lowy + roll + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
                         }
-                        else if (!rn2(3))
+                        else if (!rn2(4))
                         {
                             levl[lowx - 1][lowy + roll + 1].decoration_typ = DECORATION_BANNER;
                             levl[lowx - 1][lowy + roll + 1].decoration_subtyp = bannertype;

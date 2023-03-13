@@ -683,7 +683,7 @@ char *buf, *monbuf;
                     print_decoration_ending(dbuf, x, y);
                     Sprintf(buf, "%s on %s", dbuf, an(explanation));
                 }
-                else if (carpet_descr && *carpet_descr)
+                else if (carpet_descr && *carpet_descr && strstr(explanation, "floor"))
                     Sprintf(buf, "%s on %s", carpet_descr, an(explanation));
                 else
                     Strcpy(buf, explanation); // defsyms[cmap].explanation);
@@ -1248,7 +1248,7 @@ struct permonst **for_supplement;
                         }
                         x_str = decoration_buf;
                     }
-                    else if (carpet_descr && *carpet_descr)
+                    else if (carpet_descr && *carpet_descr && strstr(defsyms[i].explanation, "floor"))
                     {
                         Sprintf(decoration_buf, "%s on %s", carpet_descr, an(defsyms[i].explanation));
                         x_str = decoration_buf;
