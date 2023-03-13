@@ -425,7 +425,7 @@ DECORATION:(30,04),decoration_banner,banner_red,direction_top
 DECORATION:(34,04),decoration_banner,banner_red,direction_top
 DECORATION:(36,04),decoration_banner,banner_red,direction_top
 
-DECORATION:(28,12),decoration_banner,banner_red,direction_top
-DECORATION:(30,12),decoration_banner,banner_red,direction_top
-DECORATION:(34,12),decoration_banner,banner_red,direction_top
-DECORATION:(36,12),decoration_banner,banner_red,direction_top
+DECORATION:(28,12),decoration_banner,banner_red,direction_bottom
+DECORATION:(30,12),decoration_banner,banner_red,direction_bottom
+DECORATION:(34,12),decoration_banner,banner_red,direction_bottom
+DECORATION:(36,12),decoration_banner,banner_red,direction_bottom

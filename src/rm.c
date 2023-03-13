@@ -294,7 +294,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     },
     {
         "banner", "banner pole", "banner",
-        {DOODAD_BANNER_HOLDER, DOODAD_BANNER_HOLDER, DOODAD_BANNER_HOLDER, DOODAD_BANNER_HOLDER},
+        {DOODAD_BANNER_HOLDER, DOODAD_BANNER_HOLDER_LEFT, DOODAD_BANNER_HOLDER_RIGHT, DOODAD_BANNER_HOLDER_BOTTOM},
         1, BANNER, NON_PM, STRANGE_OBJECT, STRANGE_OBJECT,
         NO_COLOR, NO_COLOR,
         LOCATION_SOUNDSET_NONE,
@@ -302,7 +302,7 @@ NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX
     },
     {
         "priest statue niche", "statue niche", "statue of a priest in a niche",
-        {DOODAD_PRIEST_STATUE_NICHE, DOODAD_PRIEST_STATUE_NICHE, DOODAD_PRIEST_STATUE_NICHE, DOODAD_PRIEST_STATUE_NICHE},
+        {DOODAD_PRIEST_STATUE_NICHE, DOODAD_PRIEST_STATUE_NICHE_LEFT, DOODAD_PRIEST_STATUE_NICHE_RIGHT, DOODAD_PRIEST_STATUE_NICHE},
         1, STATUE, PM_PRIEST, STRANGE_OBJECT, STRANGE_OBJECT,
         NO_COLOR, CLR_WHITE,
         LOCATION_SOUNDSET_NONE,

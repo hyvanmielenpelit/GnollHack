@@ -1975,6 +1975,7 @@ mktemple()
     int lowx = sroom->lx;
     int hix = sroom->hx;
     int lowy = sroom->ly;
+    int hiy = sroom->hy;
     int roll1 = hix - lowx - 1 <= 1 ? 0 : rn2(hix - lowx - 1);
     if (lowx + 1 < hix && rn2(5))
     {
@@ -1984,6 +1985,28 @@ mktemple()
             levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
             levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
             levl[lowx + roll1 + 1][lowy - 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+        }
+    }
+    int roll2 = hiy - lowy - 1 <= 1 ? 0 : rn2(hiy - lowy - 1);
+    if (lowy + 1 < hiy && rn2(5))
+    {
+        if (IS_WALL(levl[lowx - 1][lowy + roll2 + 1].typ))
+        {
+            levl[lowx - 1][lowy + roll2 + 1].decoration_typ = DECORATION_PRIEST_NICHE;
+            levl[lowx - 1][lowy + roll2 + 1].decoration_subtyp = 0;
+            levl[lowx - 1][lowy + roll2 + 1].decoration_dir = 1;
+            levl[lowx - 1][lowy + roll2 + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
+        }
+    }
+    int roll3 = hiy - lowy - 1 <= 1 ? 0 : rn2(hiy - lowy - 1);
+    if (lowy + 1 < hiy && rn2(5))
+    {
+        if (IS_WALL(levl[hix + 1][lowy + roll3 + 1].typ))
+        {
+            levl[hix + 1][lowy + roll3 + 1].decoration_typ = DECORATION_PRIEST_NICHE;
+            levl[hix + 1][lowy + roll3 + 1].decoration_subtyp = 0;
+            levl[hix + 1][lowy + roll3 + 1].decoration_dir = 2;
+            levl[hix + 1][lowy + roll3 + 1].decoration_flags = DECORATION_FLAGS_ITEM_IN_HOLDER;
         }
     }
 
