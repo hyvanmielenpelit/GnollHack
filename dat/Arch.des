@@ -111,6 +111,8 @@ OBJECT:('(',"bookshelf"),(36,08)
 OBJECT:('(',"large box"),(40,08)
 OBJECT:('(',"large box"),(40,12)
 
+CARPET:(24,08,38,12),carpet_purple
+
 # Monsters on siege duty.
 MONSTER: 'S',(60,09)
 MONSTER: 'Z',(60,10)
