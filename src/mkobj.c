@@ -2943,11 +2943,11 @@ struct obj *body;
             /*
              * Phoenixes always revive on the Elemental Planes and the first time everywhere.
              * On the second and subsequent times, they have 80% or lower chance in Gehennom and 
-             * and on Primaterial Plane 95% or lower chance. However, after 4 revivals they have just
+             * and on Primaterial Plane 95% or lower chance. However, after 4 revivals in Gehennom and 20 otherwise, they have just
              * 50% chance of riving. If they do revive, they have a 1/33 chance per turn of 
              * reviving after 25 turns. They always revive by 500.
              */
-            if (In_endgame(&u.uz) || !revivals ? TRUE : revivals >= 4 ? rn2(2) : Inhell ? rn2(5 - (revivals - 1)) : rn2(20 - (revivals - 1) * 5))
+            if (In_endgame(&u.uz) || !revivals ? TRUE : revivals >= (Inhell ? 4 : 20) ? rn2(2) : Inhell ? rn2(5 - (revivals - 1)) : rn2(20 - (revivals - 1) * 5))
             {
                 action = REVIVE_MON;
                 for (when = 25L; when < 500L; when++)

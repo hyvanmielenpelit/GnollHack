@@ -570,7 +570,7 @@ int spellnum;
             play_voice_wizard_of_yendor_simple_line(mtmp,
                 count > 1 ? WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PETS :
                 WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PET);
-            verbalize("Destroy the thief, my pet%s!", plur(count));
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Destroy the thief, my pet%s!", plur(count));
             if(canseemon(mtmp))
                 talkeff(mtmp->mx, mtmp->my);
         }
@@ -605,7 +605,7 @@ int spellnum;
             play_voice_wizard_of_yendor_simple_line(mtmp,
                 count > 1 ? WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PETS :
                 WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PET);
-            verbalize("Destroy the thief, my pet%s!", plur(count));
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Destroy the thief, my pet%s!", plur(count));
             if (canseemon(mtmp))
                 talkeff(mtmp->mx, mtmp->my);
         }
