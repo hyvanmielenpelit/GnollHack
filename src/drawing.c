@@ -1365,6 +1365,21 @@ const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
     {"carpet-brown-animal-skin-top", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"carpet-brown-animal-skin-bottom", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"carpet-brown-animal-skin-middle", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-crimson-tlcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-crimson-blcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-crimson-trcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-crimson-brcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-crimson-left", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-crimson-right", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-crimson-top", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-crimson-bottom", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"carpet-crimson-middle", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"modron-round-plaque-tlcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"modron-round-plaque-blcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"modron-round-plaque-trcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"modron-round-plaque-brcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"modron-round-plaque-top", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"modron-round-plaque-bottom", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =

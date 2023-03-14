@@ -1399,6 +1399,7 @@ makelevel()
     register int altarsplaced = 0;
     register int chance = 60;
     register int u_depth = depth(&u.uz);
+    int level_dif = level_difficulty();
 
     /* Put items and other stuff in the rooms */
     for (croom = rooms; croom->hx > 0; croom++) {
@@ -1466,7 +1467,7 @@ makelevel()
             }
         }
         /* put traps and mimics inside */
-        x = 8 - (level_difficulty() / 6);
+        x = 8 - (level_dif / 6);
         if (x <= 1)
             x = 2;
         while (!rn2(x) && !startingroom)
@@ -1653,11 +1654,17 @@ makelevel()
         {
             int excess_hide_width = hix - lowx + 1 - carpet_type_definitions[CARPET_BROWN_ANIMAL_HIDE].fixed_width;
             int excess_hide_height = hiy - lowy + 1 - carpet_type_definitions[CARPET_BROWN_ANIMAL_HIDE].fixed_height;
+            int excess_plaque_width = hix - lowx + 1 - carpet_type_definitions[CARPET_MODRON_SPHERICAL_PLAQUE].fixed_width;
+            int excess_plaque_height = hiy - lowy + 1 - carpet_type_definitions[CARPET_MODRON_SPHERICAL_PLAQUE].fixed_height;
             if (excess_hide_width >= 0 && excess_hide_width <= 2 && excess_hide_width % 2 == 0 && excess_hide_height >= 0 && excess_hide_height <= 2 && excess_hide_height % 2 == 0
                 && !Inhell && rn2(excess_hide_width == 0 && excess_hide_height == 0 ? 5 : 2))
                 create_carpet(lowx + excess_hide_width / 2, lowy + excess_hide_height / 2, hix - excess_hide_width / 2, hiy - excess_hide_height / 2, CARPET_BROWN_ANIMAL_HIDE);
+            else if (rt < SHOPBASE && ((levl[lowx][lowy].floortyp == ROOM && levl[lowx][lowy].floorsubtyp == 0) || (levl[lowx][lowy].typ == ROOM && levl[lowx][lowy].subtyp == 0))
+                && excess_plaque_width >= 0 && excess_plaque_width <= 2 && excess_plaque_width % 2 == 0 && excess_plaque_height >= 0 && excess_plaque_height <= 2 && excess_plaque_height % 2 == 0
+                && (level_dif >= 12 ? rn2(excess_plaque_width == 0 && excess_plaque_height == 0 ? 3 : 2)  : !rn2(excess_plaque_width == 0 && excess_plaque_height == 0 ? 3 : 8)))
+                create_carpet(lowx + excess_plaque_width / 2, lowy + excess_plaque_height / 2, hix - excess_plaque_width / 2, hiy - excess_plaque_height / 2, CARPET_MODRON_SPHERICAL_PLAQUE);
             else
-                create_carpet(lowx, lowy, hix, hiy, rt == DELPHI ? CARPET_VERTICAL_PURPLE : Inhell || rt == COURT || !rn2(4) ? CARPET_HORIZONTAL_RED : CARPET_VERTICAL_PURPLE);
+                create_carpet(lowx, lowy, hix, hiy, rt == DELPHI ? CARPET_VERTICAL_PURPLE : Inhell || !rn2(rt == COURT ? 3 : 20) ? CARPET_HORIZONTAL_RED : !rn2(2) || rt == COURT ? CARPET_CRIMSON : CARPET_VERTICAL_PURPLE);
         }
     }
 

@@ -1676,6 +1676,22 @@ int type;
                 else
                     piece = CARPET_PIECE_LONG_MIDDLE;
                 break;
+            case CARPET_TILE_INDEXATION_TYPE_3X2_CARPET:
+                if (x == x1 && y == y1)
+                    piece = CARPET_PIECE_3X2_TLCORN;
+                else if (x == x1 && y == y2)
+                    piece = CARPET_PIECE_3X2_BLCORN;
+                else if (x == x2 && y == y1)
+                    piece = CARPET_PIECE_3X2_TRCORN;
+                else if (x == x2 && y == y2)
+                    piece = CARPET_PIECE_3X2_BRCORN;
+                else if (y == y1)
+                    piece = CARPET_PIECE_3X2_TOP;
+                else if (y == y2)
+                    piece = CARPET_PIECE_3X2_BOTTOM;
+                else
+                    piece = CARPET_PIECE_3X2_BOTTOM; /* should not happen */
+                break;
             }
             levl[x][y].carpet_piece = (schar)piece;
             levl[x][y].carpet_flags = 0;
