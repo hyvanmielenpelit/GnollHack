@@ -156,8 +156,9 @@ boolean resuming;
                     /* occasionally add another monster; since this takes
                        place after movement has been allotted, the new
                        monster effectively loses its first turn */
-                    if (!rn2(u.uevent.udemigod ? 25
-                        : (depth(&u.uz) > depth(&stronghold_level)) ? 50
+                    if (!rn2(u.uevent.invoked && !In_endgame(&u.uz) ? 15 /* More monsters after invocation, since there is no mysterious force */
+                        : u.uevent.udemigod ? 25 /* If killed the wizard */
+                        : Inhell ? 50
                         : 70))
                     {
                         create_monster_or_encounter();
