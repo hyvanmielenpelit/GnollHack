@@ -63,6 +63,12 @@ BRAZIER:(47,09)
 BRAZIER:(47,10)
 
 CARPET:(25,07,32,12),carpet_crimson
+DECORATION:(26,05),decoration_priest_statue,0,direction_top,item_in_holder
+DECORATION:(31,05),decoration_priest_statue,0,direction_top,item_in_holder
+DECORATION:(23,07),decoration_priest_statue,0,direction_left,item_in_holder
+DECORATION:(23,12),decoration_priest_statue,0,direction_left,item_in_holder
+DECORATION:(34,07),decoration_priest_statue,0,direction_right,item_in_holder
+DECORATION:(34,12),decoration_priest_statue,0,direction_right,item_in_holder
 
 # Doors
 DOOR:locked,(18,09)
