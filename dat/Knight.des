@@ -15,6 +15,8 @@ FLAGS: noteleport,hardfloor
 # This is a kludge to init the level as a lit field.
 INIT_MAP: mines, ',' , 'T' , false , false , lit , false
 GEOMETRY:center,center
+#         1         2         3         4
+#12345678901234567890123456789012345678901234567890
 MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,-----,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-----,
@@ -38,6 +40,30 @@ REGION:(00,00,49,15),lit,"ordinary"
 REGION:(04,04,45,11),unlit,"ordinary"
 REGION:(06,06,22,09),lit,"throne" , unfilled floorsubtype:floor_marble
 REGION:(27,06,43,09),lit,"ordinary"
+# Decorations
+CARPET:(06,06,22,09),carpet_red
+CARPET:(27,06,35,09),carpet_purple
+DECORATION:(07,05),decoration_banner,banner_red,direction_top
+DECORATION:(09,05),decoration_banner,banner_red,direction_top
+DECORATION:(11,05),decoration_banner,banner_red,direction_top
+DECORATION:(13,05),decoration_banner,banner_red,direction_top
+DECORATION:(15,05),decoration_banner,banner_red,direction_top
+DECORATION:(17,05),decoration_banner,banner_red,direction_top
+DECORATION:(19,05),decoration_banner,banner_red,direction_top
+DECORATION:(21,05),decoration_banner,banner_red,direction_top
+
+DECORATION:(07,10),decoration_banner,banner_red,direction_bottom
+DECORATION:(09,10),decoration_banner,banner_red,direction_bottom
+DECORATION:(11,10),decoration_banner,banner_red,direction_bottom
+DECORATION:(13,10),decoration_banner,banner_red,direction_bottom
+DECORATION:(15,10),decoration_banner,banner_red,direction_bottom
+DECORATION:(17,10),decoration_banner,banner_red,direction_bottom
+DECORATION:(19,10),decoration_banner,banner_red,direction_bottom
+DECORATION:(21,10),decoration_banner,banner_red,direction_bottom
+
+DECORATION:(29,05),decoration_shield_with_swords,0,direction_top,items_in_holder
+DECORATION:(33,05),decoration_shield_with_swords,0,direction_top,items_in_holder
+
 # Portal arrival point
 BRANCH:(20,14,20,14),(0,0,0,0)
 # Stairs

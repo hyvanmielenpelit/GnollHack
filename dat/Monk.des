@@ -69,6 +69,8 @@ BRAZIER:(50,11)
 BRAZIER:(54,08)
 BRAZIER:(54,11)
 
+CARPET:(25,07,32,12),carpet_purple
+
 # Portal arrival point
 TERRAIN:(05,04),','
 BRANCH:(05,04,05,04),(0,0,0,0)

@@ -62,6 +62,8 @@ BRAZIER:(43,10)
 BRAZIER:(47,09)
 BRAZIER:(47,10)
 
+CARPET:(25,07,32,12),carpet_crimson
+
 # Doors
 DOOR:locked,(18,09)
 DOOR:locked,(18,10)

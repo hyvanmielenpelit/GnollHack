@@ -522,7 +522,7 @@ typedef struct {
     schar typ;
     schar subtyp;
     schar dir;
-    boolean item_in_holder;
+    uchar item_in_holder;
     boolean lit;
 } decoration;
 

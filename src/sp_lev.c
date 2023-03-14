@@ -2829,8 +2829,15 @@ struct mkroom* croom;
         levl[x][y].decoration_subtyp = d->subtyp;
         levl[x][y].decoration_dir = max(0, min(3, d->dir));
         levl[x][y].decoration_flags = 0;
-        if(d->item_in_holder && (decoration_type_definitions[d->typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE) != 0)
-            levl[x][y].decoration_flags |= DECORATION_FLAGS_ITEM_IN_HOLDER;
+        if ((decoration_type_definitions[d->typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE) != 0)
+        {
+            if (d->item_in_holder & 1)
+                levl[x][y].decoration_flags |= DECORATION_FLAGS_ITEM_IN_HOLDER;
+            if (d->item_in_holder & 2)
+                levl[x][y].decoration_flags |= DECORATION_FLAGS_ITEM2_IN_HOLDER;
+            if (d->item_in_holder & 4)
+                levl[x][y].decoration_flags |= DECORATION_FLAGS_ITEM3_IN_HOLDER;
+        }
         if (!d->lit && (decoration_type_definitions[d->typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
             levl[x][y].flags |= L_INITIALLY_UNLIT;  //This uses normal flags, since lamplit is shared as well
     }
@@ -6274,7 +6281,7 @@ struct sp_coder* coder;
     tmpdecoration.typ = (schar)OV_i(typ_opvar);
     tmpdecoration.subtyp = (schar)OV_i(subtyp_opvar);
     tmpdecoration.dir = (schar)OV_i(dir_opvar);
-    tmpdecoration.item_in_holder = (boolean)OV_i(flags_opvar);
+    tmpdecoration.item_in_holder = (uchar)OV_i(flags_opvar);
     tmpdecoration.lit = (boolean)OV_i(lit_opvar);
 
     create_decoration(&tmpdecoration, coder->croom);
