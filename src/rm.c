@@ -381,6 +381,12 @@ NEARDATA const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS
         CARPET_TILE_INDEXATION_TYPE_3X2_CARPET, 3, 2,
         CARPET_TYPE_FLAGS_FIXED_SIZE
     },
+    {
+        "carpet-yellow", "yellow carpet",
+        DOODAD_CARPET_YELLOW_TLCORN + GLYPH_SIMPLE_DOODAD_OFF,
+        CARPET_TILE_INDEXATION_TYPE_LONG_CARPET, 0, 0,
+        CARPET_TYPE_FLAGS_NONE
+    },
 };
 
 NEARDATA const struct decoration_lit_color_definition decoration_lit_colors[CLR_MAX] = {

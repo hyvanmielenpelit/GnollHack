@@ -1664,7 +1664,7 @@ makelevel()
                 && (level_dif >= 12 ? rn2(excess_plaque_width == 0 && excess_plaque_height == 0 ? 3 : 2)  : !rn2(excess_plaque_width == 0 && excess_plaque_height == 0 ? 3 : 8)))
                 create_carpet(lowx + excess_plaque_width / 2, lowy + excess_plaque_height / 2, hix - excess_plaque_width / 2, hiy - excess_plaque_height / 2, CARPET_MODRON_SPHERICAL_PLAQUE);
             else
-                create_carpet(lowx, lowy, hix, hiy, rt == DELPHI ? CARPET_VERTICAL_PURPLE : Inhell ? CARPET_HORIZONTAL_RED : !rn2(2) || rt == COURT ? CARPET_CRIMSON : CARPET_VERTICAL_PURPLE);
+                create_carpet(lowx, lowy, hix, hiy, rt == DELPHI ? CARPET_VERTICAL_PURPLE : Inhell ? CARPET_HORIZONTAL_RED : !rn2(2) || rt == COURT ? CARPET_CRIMSON : !rn2(2) ? CARPET_VERTICAL_PURPLE : CARPET_YELLOW);
         }
     }
 
