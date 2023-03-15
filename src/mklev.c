@@ -1667,8 +1667,8 @@ makelevel()
                 create_carpet(lowx, lowy, hix, hiy, 
                     rt == DELPHI ? CARPET_VERTICAL_PURPLE : 
                     Inhell ? CARPET_HORIZONTAL_RED : 
-                    rt >= SHOPBASE || rt == TEMPLE || rt == LIBRARY ? (!rn2(4) ? (!rn2(2) ? CARPET_CRIMSON : CARPET_VERTICAL_PURPLE) : CARPET_YELLOW) :
-                    !rn2(2) || rt == COURT ? CARPET_CRIMSON : (rn2(4) ? CARPET_VERTICAL_PURPLE : CARPET_YELLOW));
+                    rt >= SHOPBASE || rt == TEMPLE || rt == LIBRARY ? (!rn2(5) ? (!rn2(2) ? CARPET_CRIMSON : CARPET_VERTICAL_PURPLE) : CARPET_YELLOW) :
+                    !rn2(2) || rt == COURT ? CARPET_CRIMSON : (rn2(5) ? CARPET_VERTICAL_PURPLE : CARPET_YELLOW));
         }
     }
 
