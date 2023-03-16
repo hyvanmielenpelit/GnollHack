@@ -845,6 +845,8 @@
 #define is_rider(ptr)                                      \
     ((ptr) == &mons[PM_DEATH] || (ptr) == &mons[PM_FAMINE] \
      || (ptr) == &mons[PM_PESTILENCE])
+#define is_rider_or_tarrasque(ptr)                                      \
+    ((ptr) == &mons[PM_TARRASQUE] || is_rider(ptr))
 #define is_placeholder(ptr)                             \
     ((ptr) == &mons[PM_ORC] || (ptr) == &mons[PM_GIANT] \
      || (ptr) == &mons[PM_ELF] || (ptr) == &mons[PM_HUMAN])

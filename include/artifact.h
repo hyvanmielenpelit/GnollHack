@@ -68,6 +68,8 @@
 #define AF2_MATERIAL_NAME_2ND_WORD_DN          0x00000800UL  
 #define AF2_MATERIAL_NAME_3RD_WORD_DN          0x00001000UL  
 #define AF2_MATERIAL_NAME_4TH_WORD_DN          (AF2_MATERIAL_NAME_2ND_WORD_DN | AF2_MATERIAL_NAME_3RD_WORD_DN)  
+#define AF2_NO_MATERIAL_NAME                   0x00002000UL  
+#define AF2_SHOW_BASE_MATERIAL_NAME            0x00004000UL  
 
 
 #define has_artifact_floor_tile(artifact_idx) \

@@ -1081,6 +1081,7 @@ struct objclass {
 #define O5_MATERIAL_NAME_2ND_WORD_AN   0x10000000UL
 #define O5_MATERIAL_NAME_3RD_WORD_AN   0x20000000UL
 #define O5_MATERIAL_NAME_4TH_WORD_AN   (O5_MATERIAL_NAME_2ND_WORD_AN | O5_MATERIAL_NAME_3RD_WORD_AN)
+#define O5_NO_MATERIAL_NAME            0x40000000UL
 
 #define O6_NONE                        0x00000000UL
 
@@ -1155,6 +1156,7 @@ struct class_sym {
 #define OD_MATERIAL_NAME_4TH_WORD_DN   (OD_MATERIAL_NAME_2ND_WORD_DN | OD_MATERIAL_NAME_3RD_WORD_DN)
 #define OD_SHOW_BASE_MATERIAL_NAME     0x00000008UL
 #define OD_MISSILE_REPLACEMENTS        0x00000010UL
+#define OD_NO_MATERIAL_NAME            0x00000020UL
 
 struct objdescr {
     const char *oc_name;                /* actual name */

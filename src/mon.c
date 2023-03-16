@@ -847,6 +847,18 @@ boolean createcorpse;
         free_mname(mtmp);
         free_umname(mtmp);
         return obj;
+    case PM_TARRASQUE:
+        if (!exist_artifact(DAGGER, artiname(ART_TOOTH_OF_TARRASQUE)))
+        {
+            obj = mksobj_at(DAGGER, x, y, FALSE, FALSE);
+            if (obj)
+            {
+                obj->quan = 1;
+                obj = oname(obj, artiname(ART_TOOTH_OF_TARRASQUE));
+                obj->owt = weight(obj);
+            }
+        }
+        goto default_1;
     default_1:
     default:
         if (mvitals[mndx].mvflags & MV_NOCORPSE) 

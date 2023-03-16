@@ -236,7 +236,7 @@ enum obj_material_types {
     MAT_WOOD, /* Organics stop here */
     MAT_BONE,
     MAT_CHITIN, /* Chitin in insects' exoskeleton, or keratin in nails and horns */
-    MAT_IVORY, /* Worm tooth, ivory, etc. Hard bone-like materials stop here */
+    MAT_TOOTH, /* Worm tooth, ivory, etc. Hard bone-like materials stop here */
     MAT_DRAGON_HIDE, /* not leather! */
     MAT_IRON, /* Fe */
     MAT_STEEL, /* Alloy of Fe and C (carbon)  */

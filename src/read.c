@@ -1296,13 +1296,15 @@ STATIC_OVL void
 forget_single_object(obj_id)
 int obj_id;
 {
+    boolean was_known = objects[obj_id].oc_name_known;
     objects[obj_id].oc_name_known = 0;
     objects[obj_id].oc_pre_discovered = 0; /* a discovery when relearned */
     if (objects[obj_id].oc_uname) {
         free((genericptr_t) objects[obj_id].oc_uname);
         objects[obj_id].oc_uname = 0;
     }
-    undiscover_object(obj_id); /* after clearing oc_name_known */
+    if(was_known)
+        undiscover_object(obj_id); /* after clearing oc_name_known */
 
     /* clear & free object names from matching inventory items too? */
 }
