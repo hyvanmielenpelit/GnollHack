@@ -2411,7 +2411,7 @@ boolean ghostly;
     result = (((int) mvitals[mndx].born < lim) && !gone) ? TRUE : FALSE;
 
     /* if it's unique, don't ever make it again; except for revivers */
-    if ((mons[mndx].geno & G_UNIQ) && mndx != PM_HIGH_PRIEST && !is_rider_or_tarrasque(&mons[mndx]))
+    if ((mons[mndx].geno & G_UNIQ) && mndx != PM_HIGH_PRIEST)
         mvitals[mndx].mvflags |= (uchar)MV_EXTINCT;
 
     if (mvitals[mndx].born < 255 && tally
@@ -2701,6 +2701,7 @@ aligntyp alignment;
     boolean setorigin = ((mmflags & MM_SET_ORIGIN_COORDINATES) == 0);
     boolean saddled = ((mmflags & MM_SADDLED) != 0);
     boolean maybe_extinct = ((mmflags2 & MM2_MAYBE_ALLOW_EXTINCT) != 0);
+    boolean reviving = ((mmflags2 & MM2_REVIVING) != 0);
     unsigned long gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
     
@@ -2759,7 +2760,7 @@ aligntyp alignment;
         if (mvitals[mndx].mvflags & MV_GENOCIDED)
             return (struct monst *) 0;
 
-        if ((mvitals[mndx].mvflags & MV_EXTINCT) != 0)
+        if ((mvitals[mndx].mvflags & MV_EXTINCT) != 0 && !reviving && countbirth)
         {
             if(wizard && maybe_extinct && yn_query("Create an extinct monster?") == 'y')
                 debugpline1("Explicitly creating extinct monster %s.", mons[mndx].mname);

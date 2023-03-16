@@ -2237,9 +2237,9 @@ unsigned long mmflags;
         if (mtmp2->mhpmax <= 0 && !is_rider(mtmp2->data))
             return (struct monst *) 0;
         
-        mtmp = makemon(mtmp2->data, cc->x, cc->y,
+        mtmp = makemon2(mtmp2->data, cc->x, cc->y,
                        (mmflags | MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH
-                        | (adjacentok ? MM_ADJACENTOK : 0)));
+                        | (adjacentok ? MM_ADJACENTOK : 0)), MM2_REVIVING);
         if (!mtmp)
             return mtmp;
 
@@ -2531,7 +2531,7 @@ boolean replaceundead;
     else 
     {
         /* make a new monster */
-        mtmp = makemon(mptr, x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
+        mtmp = makemon2(mptr, x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND, MM2_REVIVING);
     }
 
     if (!mtmp)
