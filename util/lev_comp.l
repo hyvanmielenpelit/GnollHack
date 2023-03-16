@@ -466,6 +466,7 @@ carpet_purple { savetoken(yytext); yylval.i=CARPET_VERTICAL_PURPLE; return CARPE
 carpet_crimson { savetoken(yytext); yylval.i=CARPET_CRIMSON; return CARPET_TYPE; }
 carpet_brown_hide { savetoken(yytext); yylval.i=CARPET_BROWN_ANIMAL_HIDE; return CARPET_TYPE; }
 carpet_modron_spherical_plaque { savetoken(yytext); yylval.i=CARPET_MODRON_SPHERICAL_PLAQUE; return CARPET_TYPE; }
+carpet_yellow { savetoken(yytext); yylval.i=CARPET_YELLOW; return CARPET_TYPE; }
 flaming { savetoken(yytext); yylval.i=FIRE_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 freezing { savetoken(yytext); yylval.i=COLD_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 electrified { savetoken(yytext); yylval.i=LIGHTNING_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }

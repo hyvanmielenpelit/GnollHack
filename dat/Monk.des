@@ -69,7 +69,7 @@ BRAZIER:(50,11)
 BRAZIER:(54,08)
 BRAZIER:(54,11)
 
-CARPET:(25,07,32,12),carpet_purple
+CARPET:(25,07,32,12),carpet_yellow
 
 # Portal arrival point
 TERRAIN:(05,04),','
