@@ -13,6 +13,8 @@
 MAZE: "Tou-strt",'T'
 FLAGS: noteleport,hardfloor,arboreal
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 ,,,,,,,}},,,,---------,,-------------------------------------------------,,,
 ,,,,,,,,}},,,|:::::::|,,|.-------------------------------------------...|,,,
@@ -52,6 +54,12 @@ STAIR:(66,03),down
 BRANCH:(68,14,68,14),(0,0,0,0)
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)
+# Carpets
+CARPET:(27,02,32,04),carpet_purple
+CARPET:(34,02,39,04),carpet_crimson
+CARPET:(41,02,53,04),carpet_yellow
+CARPET:(55,02,60,04),carpet_crimson
+CARPET:(63,02,65,04),carpet_brown_hide
 # Doors
 DOOR:locked,(31,05)
 DOOR:locked,(36,05)

@@ -13,6 +13,8 @@
 MAZE: "Sam-strt",'T'
 FLAGS: noteleport,hardfloor,arboreal,fountain_on_grass
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,PP,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,PP,,,,,,,,,,,
@@ -57,6 +59,10 @@ DOOR:closed,(50,06)
 MONSTER:('@',"Lord Sato"),(20,04)
 # The treasure of Lord Sato
 OBJECT:('(',"chest"),(20,04)
+CARPET:(32,03,45,05),carpet_crimson
+CARPET:(43,12,59,16),carpet_yellow
+CARPET:(18,03,26,07),carpet_purple
+CARPET:(51,03,59,07),carpet_purple
 # roshi guards for the audience chamber
 MONSTER:('@',"roshi"),(18,04)
 MONSTER:('@',"roshi"),(18,05)

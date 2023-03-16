@@ -12,6 +12,8 @@
 MAZE: "Wiz-strt",'T'
 FLAGS: noteleport,hardfloor,arboreal
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,C,,,,CC,C,,,,,,,,,,,,,,,,,,,,,,,,C,,,,,,,,,,,,,,,,,,,,,
@@ -64,6 +66,7 @@ DOOR:locked,(20,10)
 MONSTER:('@',"Neferet the Green"),(23,05)
 # The treasure of the quest leader
 OBJECT:('(',"chest"),(24,05)
+CARPET:(19,005,27,09),carpet_crimson
 # apprentice guards for the audience chamber
 MONSTER:('@',"apprentice"),(30,07)
 MONSTER:('@',"apprentice"),(24,06)
