@@ -244,7 +244,7 @@ VA_DECL(const char *, line)
         if (vision_full_recalc)
             vision_recalc(0);
     }
-    if (u.ux)
+    if (u.ux && !program_state.in_bones)
         flush_screen(!flags.show_cursor_on_u); // show_cursor_on_u actually indicates that there is a getpos going on, in which case the cursor should not be returned to the player
 
     if (pline_prefix_text || pline_separator_text)

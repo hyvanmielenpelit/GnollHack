@@ -213,9 +213,9 @@ namespace GnollHackClient.Pages.Game
             GameTableView.IsEnabled = false;
             App.PlayButtonClickedSound();
 
-            string url = "https://download.gnollhack.com/test-files/test-files.zip";
+            string url = "https://download.gnollhack.com/test-files/test-files2.zip";
             string target_path = App.GHPath;
-            string target_file = Path.Combine(target_path, "test-files.zip");
+            string target_file = Path.Combine(target_path, "test-files2.zip");
             bool trouble = false;
             bool cancelled = false;
             using (var client = new HttpClientDownloadWithProgress(url, target_file, _cancellationTokenSource))

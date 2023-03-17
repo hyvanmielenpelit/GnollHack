@@ -436,6 +436,9 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 
     lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, &layers);
 
+    if (program_state.in_bones)
+        return;
+
     /* Now send all object data */
     /* Note: print_glyph clears all object data */
     boolean showing_detection = !!(layers.layer_flags & LFLAGS_SHOWING_DETECTION);
