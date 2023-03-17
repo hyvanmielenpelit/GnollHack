@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-06-05 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-03-17 */
 
 /* GnollHack 4.0    mhsplash.c    $NHDT-Date: 1449751714 2015/12/10 12:48:34 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.27 $ */
 /* Copyright (C) 2001 by Alex Kompel      */
