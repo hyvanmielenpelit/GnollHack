@@ -332,16 +332,18 @@ char **argv;
 #ifdef UNIX
                 DIR* d;
                 struct dirent* dir;
-                chdir("../dat");
-                d = opendir(".");
-                if (d)
+                if (!chdir("../dat"))
                 {
-                    while ((dir = readdir(d)) != NULL)
+                    d = opendir(".");
+                    if (d)
                     {
-                        if(strlen(dir->d_name) > 4 && !strcmp(dir->d_name + strlen(dir->d_name) - 4, ".des"))
-                            errors_encountered |= process_file(dir->d_name);
+                        while ((dir = readdir(d)) != NULL)
+                        {
+                            if (strlen(dir->d_name) > 4 && !strcmp(dir->d_name + strlen(dir->d_name) - 4, ".des"))
+                                errors_encountered |= process_file(dir->d_name);
+                        }
+                        closedir(d);
                     }
-                    closedir(d);
                 }
 #else
                 continue;
