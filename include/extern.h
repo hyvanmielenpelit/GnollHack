@@ -552,6 +552,7 @@ E void FDECL(change_layer_hit_tile, (int, int, int));
 E void FDECL(add_glyph_buffer_layer_flags, (int, int, unsigned long));
 E void FDECL(remove_glyph_buffer_layer_flags, (int, int, unsigned long));
 E void FDECL(set_glyph_buffer_object_height, (int, int, SHORT_P));
+E void FDECL(set_glyph_buffer_feature_doodad_height, (int, int, SCHAR_P));
 E void FDECL(set_glyph_buffer_oid, (int, int, int));
 E void FDECL(add_or_remove_glyph_to_layer, (int, int, int, BOOLEAN_P));
 E void FDECL(add_glyph_to_layer, (int, int, int));

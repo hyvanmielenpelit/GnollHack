@@ -1484,6 +1484,7 @@ int hit_tile_id, damage_shown;
             }
             /* Add layer flags and object height from memory */
             add_glyph_buffer_layer_flags(x, y, lev->hero_memory_layers.layer_flags);
+            set_glyph_buffer_feature_doodad_height(x, y, lev->hero_memory_layers.special_feature_doodad_layer_height);
             set_glyph_buffer_object_height(x, y, lev->hero_memory_layers.object_height);
             set_glyph_buffer_oid(x, y, lev->hero_memory_layers.o_id);
 
@@ -2757,6 +2758,17 @@ short height;
     if (isok(x, y))
     {
         gbuf[y][x].layers.object_height = height;
+    }
+}
+
+void
+set_glyph_buffer_feature_doodad_height(x, y, height)
+int x, y;
+schar height;
+{
+    if (isok(x, y))
+    {
+        gbuf[y][x].layers.special_feature_doodad_layer_height = height;
     }
 }
 
