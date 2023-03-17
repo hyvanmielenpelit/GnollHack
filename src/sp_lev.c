@@ -3820,7 +3820,7 @@ struct sp_coder *coder;
     if (!msg)
         return;
 
-    long mtyp = OV_i(mtyp_opvar);
+    int mtyp = (int)OV_i(mtyp_opvar);
 
     old_n = lev_message ? (strlen(lev_message) + 1) : 0;
     n = strlen(msg);
