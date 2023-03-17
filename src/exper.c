@@ -135,9 +135,9 @@ enmaxadjustment()
             }
         }
         
-        if (has_obj_mythic_mana_gain_25(uitem) && worn)
+        if (has_obj_mythic_mana_gain(uitem) && worn)
         {
-            adj += 1 * (25 * (baseen + baseadj)) / 100;
+            adj += 1 * (MYTHIC_MANA_GAIN_PERCENTAGE * (baseen + baseadj)) / 100;
         }
     }
 

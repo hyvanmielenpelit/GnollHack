@@ -10,6 +10,8 @@
 
 #define MYTHIC_STANDARD_PRICE_MULTIPLIER 2.0
 #define MYTHIC_STANDARD_PRICE_ADDITION 200L
+#define MYTHIC_DESC_STR(A) #A
+#define MYTHIC_DESC_XSTR(A) MYTHIC_DESC_STR(A)
 
 /* Saved initial object data */
 NEARDATA struct objdescr saved_obj_descr[NUM_OBJECTS];
@@ -210,12 +212,12 @@ NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
     },
     {
         "Hyperborean", "Hyperborean ", "", 25, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
-        MYTHIC_PREFIX_POWER_MANA_GAIN_25,
+        MYTHIC_PREFIX_POWER_MANA_GAIN,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_RACIAL_PREFIX
     },
     {
         "Asgardian", "Asgardian ", "", 25, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
-        MYTHIC_PREFIX_POWER_HP_GAIN_25,
+        MYTHIC_PREFIX_POWER_HP_GAIN,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_RACIAL_PREFIX
     },
     {
@@ -255,7 +257,7 @@ NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
     },
     {
         "witch-king's", "witch-king's ", "", 3, MYTHIC_STANDARD_PRICE_MULTIPLIER + 0.5, MYTHIC_STANDARD_PRICE_ADDITION * 4L,
-        MYTHIC_PREFIX_POWER_LEVEL_DRAIN | MYTHIC_PREFIX_POWER_MANA_GAIN_25 | MYTHIC_PREFIX_POWER_HP_GAIN_25,
+        MYTHIC_PREFIX_POWER_LEVEL_DRAIN | MYTHIC_PREFIX_POWER_MANA_GAIN | MYTHIC_PREFIX_POWER_HP_GAIN,
         MYTHIC_FLAG_NO_CELESTIAL_WEAPONS | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_RACIAL_PREFIX
     },
     {
@@ -275,12 +277,16 @@ NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
     },
 };
 
+#define MYTHIC_VAMPIRIC_DESC "Heals " MYTHIC_DESC_XSTR(MYTHIC_LIFE_DRAINING_DICE) "d" MYTHIC_DESC_XSTR(MYTHIC_LIFE_DRAINING_DIESIZE) " hit points plus enchantment bonus on hit"
+#define MYTHIC_MANA_GAIN_DESC "Increases maximum mana by " MYTHIC_DESC_XSTR(MYTHIC_MANA_GAIN_PERCENTAGE) "%"
+#define MYTHIC_HP_GAIN_DESC "Increases maximum hit points by " MYTHIC_DESC_XSTR(MYTHIC_HP_GAIN_PERCENTAGE) "%"
+
 NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_PREFIX_POWERS] =
 {
     { "Level drain", "Causes level drain", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
-    { "Mana gain 25%", "Increases maximum mana by 25%", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
-    { "Hit point gain 25%", "Increases maximum hit points by 25%", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
-    { "Life draining", "Heals 2d6 hit points plus enchantment bonus on hit", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Mana gain", MYTHIC_MANA_GAIN_DESC, MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
+    { "Hit point gain", MYTHIC_HP_GAIN_DESC, MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
+    { "Life draining", MYTHIC_VAMPIRIC_DESC, MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Shines light", "Shines magical light", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Armor death resistance", "Death resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, DEATH_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
     { "Armor drain resistance", "Drain resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, DRAIN_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
@@ -435,9 +441,8 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
     },
 };
 
-#define SHARPNESS_STR(A) #A
-#define SHARPNESS_XSTR(A) SHARPNESS_STR(A)
-#define SHARPNESS_DESC  "Has " SHARPNESS_XSTR(SHARPNESS_PERCENTAGE_CHANCE) "% chance of dealing damage equal to " SHARPNESS_XSTR(SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) "% of max HP"
+#define SHARPNESS_DESC "Has " MYTHIC_DESC_XSTR(SHARPNESS_PERCENTAGE_CHANCE) "% chance of dealing damage equal to " MYTHIC_DESC_XSTR(SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) "% of max HP"
+#define WOUNDING_DESC "Causes permanent damage equal to " MYTHIC_DESC_XSTR(MYTHIC_WOUNDING_DICE) "d" MYTHIC_DESC_XSTR(MYTHIC_WOUNDING_DIESIZE) " + enchantment"
 
 NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_POWERS] =
 {
@@ -456,7 +461,7 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_P
     { "Dragon slaying", "Triple damage to dragons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_DRAGON, 0UL , MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Undead destruction", "Triple damage to undead", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_UNDEAD, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
     { "Speed", "Increases speed to very fast", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, VERY_FAST, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
-    { "Wounding", "Causes permanent damage equal to 1d4 + enchantment", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Wounding", WOUNDING_DESC, MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Defense", "Enchantment and quality provide AC and MC", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Sharpness", SHARPNESS_DESC, MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Reach", "Has extended range", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },

@@ -850,8 +850,8 @@ enum mythic_power_types {
 
 enum mythic_prefix_power_types {
     MYTHIC_PREFIX_POWER_INDEX_LEVEL_DRAIN = 0,
-    MYTHIC_PREFIX_POWER_INDEX_MANA_GAIN_25,
-    MYTHIC_PREFIX_POWER_INDEX_HP_GAIN_25,
+    MYTHIC_PREFIX_POWER_INDEX_MANA_GAIN,
+    MYTHIC_PREFIX_POWER_INDEX_HP_GAIN,
     MYTHIC_PREFIX_POWER_INDEX_LIFE_DRAINING,
     MYTHIC_PREFIX_POWER_INDEX_SHINES_LIGHT,
     MYTHIC_PREFIX_POWER_INDEX_ARMOR_DEATH_RESISTANCE,
@@ -869,8 +869,8 @@ enum mythic_prefix_power_types {
 
 #define MYTHIC_PREFIX_POWER_NONE                    0x00000000UL
 #define MYTHIC_PREFIX_POWER_LEVEL_DRAIN             (1UL << MYTHIC_PREFIX_POWER_INDEX_LEVEL_DRAIN)
-#define MYTHIC_PREFIX_POWER_MANA_GAIN_25            (1UL << MYTHIC_PREFIX_POWER_INDEX_MANA_GAIN_25)
-#define MYTHIC_PREFIX_POWER_HP_GAIN_25              (1UL << MYTHIC_PREFIX_POWER_INDEX_HP_GAIN_25)
+#define MYTHIC_PREFIX_POWER_MANA_GAIN               (1UL << MYTHIC_PREFIX_POWER_INDEX_MANA_GAIN)
+#define MYTHIC_PREFIX_POWER_HP_GAIN                 (1UL << MYTHIC_PREFIX_POWER_INDEX_HP_GAIN)
 #define MYTHIC_PREFIX_POWER_LIFE_DRAINING           (1UL << MYTHIC_PREFIX_POWER_INDEX_LIFE_DRAINING)
 #define MYTHIC_PREFIX_POWER_SHINES_LIGHT            (1UL << MYTHIC_PREFIX_POWER_INDEX_SHINES_LIGHT)
 #define MYTHIC_PREFIX_POWER_ARMOR_DEATH_RESISTANCE  (1UL << MYTHIC_PREFIX_POWER_INDEX_ARMOR_DEATH_RESISTANCE)
@@ -976,17 +976,24 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
 #define has_obj_mythic_suffix_power(o, pwrindex) \
     ((mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & (1UL << (pwrindex))) != 0 && mythic_power_applies_to_obj(o, mythic_suffix_powers[(pwrindex)].power_flags))
 
+#define MYTHIC_WOUNDING_DICE 1
+#define MYTHIC_WOUNDING_DIESIZE 4
+#define MYTHIC_LIFE_DRAINING_DICE 2
+#define MYTHIC_LIFE_DRAINING_DIESIZE 6
+#define MYTHIC_HP_GAIN_PERCENTAGE 25
+#define MYTHIC_MANA_GAIN_PERCENTAGE 25
+
 #define has_obj_mythic_lightness(o)             has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_LIGHTNESS)
 #define has_obj_mythic_spellcasting(o)          (has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_SORCERY) || has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_SORCERY))
 #define has_obj_mythic_level_drain(o)           has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_LEVEL_DRAIN)
-#define has_obj_mythic_mana_gain_25(o)          has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_MANA_GAIN_25)
-#define has_obj_mythic_hp_gain_25(o)            has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_HP_GAIN_25)
+#define has_obj_mythic_mana_gain(o)             has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_MANA_GAIN)
+#define has_obj_mythic_hp_gain(o)               has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_HP_GAIN)
 #define has_obj_mythic_wounding(o)              has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_WOUNDING)
-#define mythic_wounding_amount(o)               (d(1, 4) + (o)->enchantment)
+#define mythic_wounding_amount(o)               (d(MYTHIC_WOUNDING_DICE, MYTHIC_WOUNDING_DIESIZE) + (o)->enchantment)
 #define has_obj_mythic_defense(o)               has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_DEFENSE)
 #define has_obj_mythic_sharpness(o)             has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_SHARPNESS)
 #define has_obj_mythic_life_draining(o)         has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_LIFE_DRAINING)
-#define mythic_life_draining_amount(o)          (d(2, 6) + (o)->enchantment) 
+#define mythic_life_draining_amount(o)          (d(MYTHIC_LIFE_DRAINING_DICE, MYTHIC_LIFE_DRAINING_DIESIZE) + (o)->enchantment) 
 #define has_obj_mythic_magical_light(o)         has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_SHINES_LIGHT)
 #define has_obj_mythic_reach(o)                 has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_REACH)
 #define has_obj_mythic_luck(o)                  has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_LUCK)

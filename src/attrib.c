@@ -2041,9 +2041,9 @@ boolean usemh;
             }
         }
 
-        if (has_obj_mythic_hp_gain_25(uitem) && worn)
+        if (has_obj_mythic_hp_gain(uitem) && worn)
         {
-            adj += 1 * (25 * (basehp + baseadj)) / 100;
+            adj += 1 * (MYTHIC_HP_GAIN_PERCENTAGE * (basehp + baseadj)) / 100;
         }
 
     }
