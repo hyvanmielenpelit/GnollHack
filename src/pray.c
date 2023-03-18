@@ -1403,6 +1403,7 @@ gcrownu()
                 if (!Blind)
                     Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "sword shines brightly for a moment.");
                 obj->otyp = LONG_SWORD;
+                obj->material = objects[obj->otyp].oc_material;
                 obj = oname(obj, artiname(ART_EXCALIBUR));
                 if (obj && obj->oartifact == ART_EXCALIBUR)
                 {
@@ -1416,6 +1417,7 @@ gcrownu()
                 if (!Blind)
                     Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "sword shines brightly for a moment.");
                 obj2->otyp = LONG_SWORD;
+                obj2->material = objects[obj2->otyp].oc_material;
                 obj2 = oname(obj2, artiname(ART_EXCALIBUR));
                 if (obj2 && obj2->oartifact == ART_EXCALIBUR)
                 {

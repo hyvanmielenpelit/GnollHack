@@ -1781,6 +1781,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
 #if 0
         if (crysknife) {
             obj->otyp = CRYSKNIFE;
+            obj->material = objects[obj->otyp].oc_material;
             obj->oerodeproof = oerode;
         }
 #endif

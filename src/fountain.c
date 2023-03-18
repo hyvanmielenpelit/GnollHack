@@ -646,6 +646,7 @@ register struct obj *obj;
               "From the murky depths, a hand reaches up to bless the sword.");
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As the hand retreats, the fountain disappears!");
             obj->otyp = LONG_SWORD;
+            obj->material = objects[obj->otyp].oc_material;
             obj = oname(obj, artiname(ART_EXCALIBUR));
             discover_artifact(ART_EXCALIBUR);
             bless(obj);

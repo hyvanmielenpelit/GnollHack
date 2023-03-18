@@ -682,6 +682,7 @@ struct obj *box;
                 while (is_rock(otmp))
                 {
                     otmp->otyp = rnd_class(DILITHIUM_CRYSTAL, JINXSTONE);
+                    otmp->material = objects[otmp->otyp].oc_material;
                     if (otmp->quan > 2L)
                         otmp->quan = 1L;
                     otmp->owt = weight(otmp);
@@ -692,6 +693,7 @@ struct obj *box;
                 if (Is_mbag(otmp)) 
                 {
                     otmp->otyp = SACK;
+                    otmp->material = objects[otmp->otyp].oc_material;
                     otmp->enchantment = 0;
                     otmp->special_quality = 0;
                     otmp->charges = 0;
@@ -699,8 +701,13 @@ struct obj *box;
                     otmp->owt = weight(otmp);
                 } 
                 else
+                {
                     while (otmp->otyp == WAN_CANCELLATION || otmp->otyp == WAN_DISJUNCTION)
+                    {
                         otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
+                        otmp->material = objects[otmp->otyp].oc_material;
+                    }
+                }
             }
         }
         (void) add_to_container(box, otmp);
@@ -1474,21 +1481,33 @@ unsigned long mkflags;
     if (mkobj_type == 0 && (In_mines(&u.uz) || leveldiff < 10))
     {
         if (otyp == FROST_HORN || otyp == FIRE_HORN)
+        {
             otmp->otyp = !rn2(3) ? HORN_OF_CHAOS : !rn2(2) ? BRASS_HORN : TOOLED_HORN;
+            otmp->material = objects[otmp->otyp].oc_material;
+        }
         else if (otmp->otyp == WAN_COLD || otmp->otyp == WAN_FIRE || otmp->otyp == WAN_LIGHTNING)
+        {
             otmp->otyp = !rn2(3) ? WAN_STRIKING : !rn2(2) ? WAN_DIGGING : WAN_SPEED_MONSTER;
+            otmp->material = objects[otmp->otyp].oc_material;
+        }
     }
     
     if (mkobj_type == 0 && !Inhell) /* No instadeath wands on floor ever, except in Gehennom */
     {
         if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION || otmp->otyp == WAN_PETRIFICATION)
+        {
             otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
+            otmp->material = objects[otmp->otyp].oc_material;
+        }
     }
 
     if (mkobj_type >= 0 && mkobj_type < 2 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || leveldiff < 5))
     {
         if (otmp->otyp == WAN_WISHING)
+        {
             otmp->otyp = WAN_POLYMORPH;
+            otmp->material = objects[otmp->otyp].oc_material;
+        }
     }
 
     /* Initialize */
@@ -4219,7 +4238,10 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
         {
             obj = mkobj(FOOD_CLASS, FALSE, FALSE);
             if (obj->otyp == FOOD_RATION && !rn2(7))
+            {
                 obj->otyp = LUMP_OF_ROYAL_JELLY;
+                obj->material = objects[obj->otyp].oc_material;
+            }
             what = "Some food";
         }
         ++objcount;

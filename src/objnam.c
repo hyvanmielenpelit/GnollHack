@@ -5244,7 +5244,10 @@ retry:
         case SCALE_MAIL:
             /* Dragon mail - depends on the order of objects & dragons. */
             if (mntmp >= PM_GRAY_DRAGON && mntmp <= PM_YELLOW_DRAGON)
+            {
                 otmp->otyp = GRAY_DRAGON_SCALE_MAIL + mntmp - PM_GRAY_DRAGON;
+                otmp->material = objects[otmp->otyp].oc_material;
+            }
             break;
         }
     }

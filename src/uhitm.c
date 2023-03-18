@@ -1475,6 +1475,7 @@ boolean* obj_destroyed;
                             if (obj->timed)
                                 obj_stop_timers(obj);
                             obj->otyp = ROCK;
+                            obj->material = objects[obj->otyp].oc_material;
                             obj->oclass = GEM_CLASS;
                             obj->oartifact = 0;
                             obj->speflags = 0;

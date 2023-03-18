@@ -3002,6 +3002,7 @@ boolean update_inv;
         case SCROLL_CLASS:
             costly_alteration(obj, COST_CANCEL);
             obj->otyp = SCR_BLANK_PAPER;
+            obj->material = objects[obj->otyp].oc_material;
             obj->enchantment = 0;
             obj->special_quality = 0;
             break;
@@ -3011,6 +3012,7 @@ boolean update_inv;
             {
                 costly_alteration(obj, COST_CANCEL);
                 obj->otyp = SPE_BLANK_PAPER;
+                obj->material = objects[obj->otyp].oc_material;
             }
             break;
         case POTION_CLASS:
@@ -3510,6 +3512,7 @@ int id;
         if (obj->corpsenm == PM_CROCODILE) 
         {
             otmp->otyp = LOW_BOOTS;
+            otmp->material = objects[otmp->otyp].oc_material;
             otmp->oclass = ARMOR_CLASS;
             otmp->enchantment = 0;
             otmp->charges = 0;
@@ -3546,7 +3549,10 @@ int id;
 
     case WAND_CLASS:
         while (otmp->otyp == WAN_WISHING || otmp->otyp == WAN_POLYMORPH)
+        {
             otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
+            otmp->material = objects[otmp->otyp].oc_material;
+        }
         /* altering the object tends to degrade its quality
            (analogous to spellbook `read count' handling) */
         if ((int) otmp->recharged < rn2(RECHARGE_LIMIT)) /* recharge_limit */
@@ -3560,7 +3566,10 @@ int id;
 
     case SPBOOK_CLASS:
         while (otmp->otyp == SPE_POLYMORPH)
+        {
             otmp->otyp = rnd_class(SPE_DIG, SPE_BLANK_PAPER);
+            otmp->material = objects[otmp->otyp].oc_material;
+        }
         /* reduce spellbook abuse; non-blank books degrade */
         if (otmp->otyp != SPE_BLANK_PAPER) 
         {
@@ -3582,6 +3591,7 @@ int id;
             && otmp->material != MAT_MINERAL)
         {
             otmp->otyp = ROCK; /* transmutation backfired */
+            otmp->material = objects[otmp->otyp].oc_material;
             otmp->quan /= 2L;  /* some material has been lost */
         }
         break;
@@ -10475,6 +10485,7 @@ boolean verbose;
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
 
     obj->otyp = ROCK;
+    obj->material = objects[obj->otyp].oc_material;
     obj->oclass = GEM_CLASS;
     obj->quan = (long) rn1(60, 7);
     obj->owt = weight(obj);

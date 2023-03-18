@@ -91,6 +91,7 @@ boolean restore;
                         if (artilist[otmp->oartifact].maskotyp && objects[artilist[otmp->oartifact].maskotyp].oc_prob > 0 && !(objects[artilist[otmp->oartifact].maskotyp].oc_flags3 & O3_NO_GENERATION))
                         {
                             otmp->otyp = artilist[otmp->oartifact].maskotyp;
+                            otmp->material = objects[otmp->otyp].oc_material;
                         }
                         else
                         {
@@ -201,6 +202,7 @@ boolean restore;
             } else if (otmp->otyp == AMULET_OF_YENDOR) {
                 /* no longer the real Amulet */
                 otmp->otyp = FAKE_AMULET_OF_YENDOR;
+                otmp->material = objects[otmp->otyp].oc_material;
                 curse(otmp);
             } else if (otmp->otyp == CANDELABRUM_OF_INVOCATION) {
                 if (otmp->lamplit)
@@ -210,6 +212,7 @@ boolean restore;
                 if (otmp->special_quality > 0)
                     otmp->quan = (long) otmp->special_quality;
                 otmp->special_quality = 0;
+                otmp->material = objects[otmp->otyp].oc_material;
                 otmp->owt = weight(otmp);
                 curse(otmp);
             } else if (otmp->otyp == BELL_OF_OPENING) {

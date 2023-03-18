@@ -520,6 +520,7 @@ learn(VOID_ARGS)
             play_sfx_sound(SFX_SPELL_TOO_FAINT);
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "This spellbook is too faint to be read any more.");
             book->otyp = booktype = SPE_BLANK_PAPER;
+            book->material = objects[book->otyp].oc_material;
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
         }
@@ -552,6 +553,7 @@ learn(VOID_ARGS)
             play_sfx_sound(SFX_SPELL_TOO_FAINT);
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "This spellbook is too faint to read even once.");
             book->otyp = booktype = SPE_BLANK_PAPER;
+            book->material = objects[book->otyp].oc_material;
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
         } else {

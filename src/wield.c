@@ -1741,6 +1741,7 @@ boolean dopopup;
              multiple ? "fuse, and become" : "is");
         pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, buf, enchwepknown ? "Enchant Weapon" : "Sharpening Magic", dopopup);
         weapon->otyp = CRYSKNIFE;
+        weapon->material = objects[weapon->otyp].oc_material;
         weapon->oerodeproof = 0;
 
         if (multiple)
@@ -1779,6 +1780,7 @@ boolean dopopup;
         pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, buf, enchwepknown ? "Enchant Weapon" : "Dulling Magic", dopopup);
         costly_alteration(weapon, COST_DEGRD); /* DECHNT? other? */
         weapon->otyp = WORM_TOOTH;
+        weapon->material = objects[weapon->otyp].oc_material;
         weapon->oerodeproof = 0;
 
         if (multiple) 
