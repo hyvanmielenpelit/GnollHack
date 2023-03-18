@@ -992,7 +992,7 @@ boolean deserted;
         else if (inside_shop(sx, sy - 1))
             n++;
         Sprintf(buf, "Closed for inventory");
-        if (isok(m, n) && IS_FLOOR(levl[m][n].typ))
+        if (isok(m, n))
         {
             create_simple_location(m, n, SIGNPOST, 0, 0, 0, 0, levl[m][n].typ, levl[m][n].subtyp, levl[m][n].vartyp, FALSE);
             make_engr_at(m, n, buf, 0L, ENGR_SIGNPOST, ENGR_FLAGS_NONE);

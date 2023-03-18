@@ -435,7 +435,7 @@ unsigned short e_flags;
     if (!in_mklev && (!strcmp(s, Elbereth_word) || !strcmp(s, Gilthoniel_word)))
         exercise(A_WIS, TRUE);
     ep->engr_time = e_time;
-    ep->engr_type = e_type > 0 ? e_type : rnd(N_ENGRAVE - 1);
+    ep->engr_type = e_type > 0 ? e_type : rnd(ENGR_BLOOD);
     ep->engr_flags = e_flags;
     ep->engr_lth = smem;
 }
