@@ -1546,10 +1546,17 @@ build_savebones_compat_string()
     Strcpy(save_bones_compat_buf,
            "save and bones files accepted from version");
 #ifdef VERSION_COMPATIBILITY
+#ifdef VERSION_DETAILS
+    Sprintf(eos(save_bones_compat_buf), "s %lu.%lu.%lu Build %lu through %d.%d.%d Build %d",
+        ((uver & 0xFF000000L) >> 24), ((uver & 0x00FF0000L) >> 16),
+        ((uver & 0x0000FF00L) >> 8), (uver & 0x000000FFL), VERSION_MAJOR, VERSION_MINOR,
+        PATCHLEVEL, EDITLEVEL);
+#else
     Sprintf(eos(save_bones_compat_buf), "s %lu.%lu.%lu through %d.%d.%d",
             ((uver & 0xFF000000L) >> 24), ((uver & 0x00FF0000L) >> 16),
             ((uver & 0x0000FF00L) >> 8), VERSION_MAJOR, VERSION_MINOR,
             PATCHLEVEL);
+#endif
 #else
     Sprintf(eos(save_bones_compat_buf), " %d.%d.%d only", VERSION_MAJOR,
             VERSION_MINOR, PATCHLEVEL);
