@@ -186,7 +186,9 @@ static FILE *FDECL(getfp, (const char *, const char *, const char *));
 static void FDECL(do_ext_makedefs, (int, char **));
 
 static void NDECL(make_version);
+#ifdef PRE_RELEASE
 static void FDECL(print_beta_string, (char*));
+#endif
 static char *FDECL(version_string, (char *, const char *));
 static char *FDECL(version_id_string, (char *, const char *));
 static char *FDECL(bannerc_string, (char *, const char *));
@@ -1200,6 +1202,7 @@ make_version()
 /* REPRODUCIBLE_BUILD will change this to TRUE */
 static boolean date_via_env = FALSE;
 
+#ifdef PRE_RELEASE
 static void
 print_beta_string(outbuf)
 char* outbuf;
@@ -1213,7 +1216,6 @@ char* outbuf;
     char editbuf[64] = "";
     char hotfixbuf[64] = "";
 
-#ifdef PRE_RELEASE
 #ifdef BETA
     Strcpy(betaflagbuf, "*");
 #endif
@@ -1230,9 +1232,8 @@ char* outbuf;
         Sprintf(outbuf, "%s%s%s%s", " Alpha ", editbuf, betaflagbuf, hotfixbuf);
     else if (EDITLEVEL > 0)
         Sprintf(outbuf, "%s%s%s%s", " Pre-Alpha ", editbuf, betaflagbuf, hotfixbuf);
-#endif   
-
 }
+#endif   
 
 static char *
 version_string(outbuf, delim)
@@ -1254,15 +1255,17 @@ version_id_string(outbuf, build_date)
 char *outbuf;
 const char *build_date;
 {
-    char subbuf[64], versbuf[64];
+    char subbuf[64], versbuf[64], elbuf[64] = "";
     subbuf[0] = '\0';
 #ifdef PORT_SUB_ID
     subbuf[0] = ' ';
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
-
-    Sprintf(outbuf, "%s GnollHack%s Version %s - last %s %s.", PORT_ID,
-            subbuf, version_string(versbuf, "."),
+#ifdef VERSION_DETAILS
+    Sprintf(elbuf, date_via_env ? " (Revision %d)" : " (Build %d)", EDITLEVEL);
+#endif
+    Sprintf(outbuf, "%s GnollHack%s Version %s%s - last %s %s.", PORT_ID,
+            subbuf, version_string(versbuf, "."), elbuf,
             date_via_env ? "revision" : "build", build_date);
     return outbuf;
 }
@@ -1272,15 +1275,18 @@ bannerc_string(outbuf, build_date)
 char *outbuf;
 const char *build_date;
 {
-    char subbuf[64], versbuf[64];
+    char subbuf[64], versbuf[64], elbuf[64] = "";
     subbuf[0] = '\0';
 #ifdef PORT_SUB_ID
     subbuf[0] = ' ';
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
+#ifdef VERSION_DETAILS
+    Sprintf(elbuf, date_via_env ? " (Revision %d)" : " (Build %d)", EDITLEVEL);
+#endif
 
-    Sprintf(outbuf, "         Version %s %s%s, %s %s.",
-            version_string(versbuf, "."), PORT_ID, subbuf,
+    Sprintf(outbuf, "         Version %s%s %s%s, %s %s.",
+            version_string(versbuf, "."), elbuf, PORT_ID, subbuf,
             date_via_env ? "revised" : "built", &build_date[4]);
 
     return outbuf;
@@ -1871,11 +1877,15 @@ do_options()
     }
 
     build_savebones_compat_string();
+    char elbuf[BUFSZ];
+    Sprintf(elbuf, " [%d]", EDITLEVEL);
     Fprintf(ofp, "\n%sGnollHack version %d.%d.%d%s\n",
             opt_indent,
             VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL,
 #if defined(PRE_RELEASE)
         EDITLEVEL > 50 ? " [rc]" : EDITLEVEL > 20 ? " [beta]" : EDITLEVEL > 10 ? " [alpha]" : " [pre-alpha]"
+#elif defined(VERSION_DETAILS)
+        elbuf
 #else
             ""
 #endif
