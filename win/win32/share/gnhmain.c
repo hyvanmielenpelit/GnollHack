@@ -130,8 +130,7 @@ char** argv;
 
     set_playmode(); /* sets plname to "wizard" for wizard mode */
 
-    if (!wizard)
-        Sprintf(lock, "%d%s", (int)getuid(), plname);
+    Sprintf(lock, "%d%s", (int)getuid(), plname);
     getlock();
 
     create_gamestate_levelfile();
