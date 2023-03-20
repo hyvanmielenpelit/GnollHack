@@ -4310,7 +4310,7 @@ boolean is_wiz_wish;
             && !strstri(bp, "gauntlets ") && !strstri(bp, "belt ") && !strstri(bp, "girdle ")
             && !strstri(bp, "boots ") && !strstri(bp, "ring ")
             && !strstri(bp, "potion ") && !strstri(bp, "scroll ")
-            && !strstri(bp, "potions ") && !strstri(bp, "scrolls ") && !strstri(bp, "ruby rod ") && !strstri(bp, "triple-headed flail ")
+            && !strstri(bp, "potions ") && !strstri(bp, "scrolls ") && !strstri(bp, "ruby rod ") && !strstri(bp, "triple-headed flail ") && !strstri(bp, "tooth ")
             && !strstri(bp, "finger ")) {
             if ((p = strstri(bp, "tin of ")) != 0) {
                 if (!strcmpi(p + 7, "spinach")) {
@@ -4334,6 +4334,7 @@ boolean is_wiz_wish;
         && strncmpi(bp, "wizard's robe", 13) /* not the "wizard" monster! */
         && strncmpi(bp, "bat guano", 9) /* not the "bat" monster! */
         && strncmpi(bp, "ruby rod of asmodeus", 20) /* not the "Asmodeus" monster! */
+        && strncmpi(bp, "tooth of tarraque", 17) /* not the "Tarrasque" monster! */
         && strncmpi(bp, "wand of orcus", 13) /* not the "Orcus" monster! */
         && strncmpi(bp, "triple-headed flail of yeenaghu", 31) /* not the "Yeenaghu" monster! */
         && strncmpi(bp, "ninja-to", 8)     /* not the "ninja" rank */
