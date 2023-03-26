@@ -496,7 +496,7 @@ struct monst *mtmp; /* The animal */
                     | SUPPRESS_HALLUCINATION,
                     TRUE));
 
-            int dmg = context.game_difficulty <= 0 ? rnd(3) : rnd(8) + 1;
+            int dmg = rnd(3);
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
         }
         return (FALSE);
