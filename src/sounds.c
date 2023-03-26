@@ -15,6 +15,7 @@ STATIC_DCL boolean NDECL(yell_check);
 STATIC_DCL boolean FDECL(m_speak_check, (struct monst*));
 STATIC_DCL boolean FDECL(m_general_talk_check, (struct monst*, const char*));
 STATIC_DCL int NDECL(dochat);
+STATIC_DCL int FDECL(dochatmon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 STATIC_DCL struct monst* FDECL(ask_target_monster, (struct monst*));
@@ -2024,6 +2025,47 @@ dotalk()
     return result;
 }
 
+int
+dotalksteed()
+{
+    if (!u.usteed)
+        return 0;
+    else
+        return dochatmon(u.usteed);
+}
+
+int
+dotalknearby()
+{
+    int x, y;
+    int nummonfound = 0;
+    struct monst* selected_mtmp = 0;
+    if (!Hallucination)
+    {
+        struct monst* mtmp = 0;
+        for (x = u.ux - 1; x <= u.ux + 1; x++)
+        {
+            for (y = u.uy - 1; y <= u.uy + 1; y++)
+                if (!(x == u.ux && y == u.uy) && isok(x, y))
+                {
+                    mtmp = m_at(x, y);
+                    if (mtmp && (is_peaceful(mtmp) || is_quantum_mechanic(mtmp->data) || is_rider(mtmp->data)) && (is_speaking_monster(mtmp->data) || is_tame(mtmp)) && canspotmon(mtmp) && mon_can_move(mtmp))
+                    {
+                        nummonfound++;
+                        selected_mtmp = mtmp;
+                    }
+                }
+        }
+    }
+
+    if (!selected_mtmp || nummonfound != 1)
+        return dotalk();
+    else if (selected_mtmp)
+        return dochatmon(selected_mtmp);
+    else
+        return 0; /* Should not happen */
+}
+
 STATIC_OVL boolean
 speak_check()
 {
@@ -2143,13 +2185,12 @@ genl_chat_message()
 STATIC_OVL int
 dochat()
 {
-    struct monst *mtmp;
+    struct monst* mtmp;
     int tx, ty;
-    struct obj *otmp;
-    boolean elbereth_was_known = (boolean)u.uevent.elbereth_known;
+    struct obj* otmp;
     boolean target_is_steed = FALSE;
 
-    if (!getdir("Talk to whom? (in what direction)")) 
+    if (!getdir("Talk to whom? (in what direction)"))
     {
         /* decided not to chat */
         return 0;
@@ -2174,7 +2215,7 @@ dochat()
 
     if (u.usteed && u.dx == 0 && u.dy == 0 && u.dz > 0)
     {
-        if (!mon_can_move(u.usteed)) 
+        if (!mon_can_move(u.usteed))
         {
             play_sfx_sound(SFX_MONSTER_DOES_NOT_NOTICE);
             pline("%s seems not to notice you.", noittame_Monnam(u.usteed));
@@ -2189,7 +2230,7 @@ dochat()
         pline("They won't hear you %s there.", u.dz < 0 ? "up" : "down");
         return 0;
     }
-    else if (u.dx == 0 && u.dy == 0) 
+    else if (u.dx == 0 && u.dy == 0)
     {
         /* Note: Used above for chat message --JG */
 
@@ -2222,15 +2263,24 @@ dochat()
         && (otmp = vobj_at(tx, ty)) != 0 && otmp->otyp == STATUE)
     {
         /* Talking to a statue */
-        if (!Blind) 
+        if (!Blind)
         {
             play_sfx_sound(SFX_MONSTER_DOES_NOT_NOTICE);
             pline_The("%s seems not to notice you.",
-                      /* if hallucinating, you can't tell it's a statue */
-                      Hallucination ? rndmonnam((char *) 0) : "statue");
+                /* if hallucinating, you can't tell it's a statue */
+                Hallucination ? rndmonnam((char*)0) : "statue");
         }
         return 0;
     }
+
+    return dochatmon(mtmp);
+}
+
+STATIC_OVL int
+dochatmon(mtmp)
+struct monst* mtmp;
+{
+    boolean elbereth_was_known = (boolean)u.uevent.elbereth_known;
 
     if (!mtmp || mtmp->mundetected || (!canspotmon(mtmp) && !is_tame(mtmp)) || M_AP_TYPE(mtmp) == M_AP_FURNITURE
         || M_AP_TYPE(mtmp) == M_AP_OBJECT)
@@ -3623,7 +3673,7 @@ dochat()
                 chatnum++;
             }
 
-
+            struct obj* otmp;
             if (is_peaceful(mtmp) && !Blind && (otmp = shop_object(u.ux, u.uy)) != (struct obj*) 0)
             {
                 /* standing on something in a shop and chatting causes the shopkeeper

@@ -1241,6 +1241,7 @@ namespace GnollHackClient.Pages.Game
             int DipCmd = GHUtils.Meta('d');
             int DigCmd = GHUtils.Ctrl('g');
             int SitCmd = GHUtils.Ctrl('s');
+            int RideCmd = GHUtils.Meta('R');
 
             switch ((char)cmddefchar)
             {
@@ -1345,6 +1346,12 @@ namespace GnollHackClient.Pages.Game
                             break;
                     }
                     break;
+                case 'C':
+                    if(data.cmd_text == "Steed")
+                        icon_string = "GnollHackClient.Assets.UI.chatsteed.png";
+                    else
+                        icon_string = "GnollHackClient.Assets.UI.chat.png";
+                    break;
                 default:
                     if (cmddefchar == LastPickedCmd)
                         icon_string = "GnollHackClient.Assets.UI.lastitem.png";
@@ -1358,6 +1365,8 @@ namespace GnollHackClient.Pages.Game
                         icon_string = "GnollHackClient.Assets.UI.dig.png";
                     else if (cmddefchar == SitCmd)
                         icon_string = "GnollHackClient.Assets.UI.sit.png";
+                    else if (cmddefchar == RideCmd)
+                        icon_string = "GnollHackClient.Assets.UI.ride.png";
                     else
                         icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
                     break;
@@ -1369,7 +1378,7 @@ namespace GnollHackClient.Pages.Game
             lib.LblText = data.cmd_text;
             lib.SetSideSize(_currentPageWidth, _currentPageHeight);
             lib.GridMargin = new Thickness(lib.ImgWidth / 15, lib.ImgWidth / 30);
-            lib.BtnCommand = cmddefchar;
+            lib.BtnCommand = data.cmd_cur_char; //cmddefchar;
             lib.BtnClicked += GHButton_Clicked;
             ContextLayout.IsVisible = true;
             ContextLayout.Children.Add(lib);

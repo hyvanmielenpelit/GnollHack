@@ -171,14 +171,62 @@ doride()
     {
         dismount_steed(DISMOUNT_BYCHOICE);
     } 
-    else if (getdir((char *) 0) && isok(u.ux + u.dx, u.uy + u.dy))
+    else
     {
-        update_u_facing(TRUE);
-        return (mount_steed(m_at(u.ux + u.dx, u.uy + u.dy)));
+        if (getdir((char*)0) && isok(u.ux + u.dx, u.uy + u.dy))
+        {
+            update_u_facing(TRUE);
+            return (mount_steed(m_at(u.ux + u.dx, u.uy + u.dy)));
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int
+doridenearby()
+{
+    if (u.usteed)
+    {
+        dismount_steed(DISMOUNT_BYCHOICE);
     }
     else
     {
-        return 0;
+        int x, y;
+        int numsteeds = 0;
+        struct monst* steedmtmp = 0;
+        if (!Hallucination)
+        {
+            struct monst* mtmp = 0;
+            for (x = u.ux - 1; x <= u.ux + 1; x++)
+            {
+                for (y = u.uy - 1; y <= u.uy + 1; y++)
+                    if (!(x == u.ux && y == u.uy) && isok(x, y))
+                    {
+                        mtmp = m_at(x, y);
+                        if (mtmp && is_tame(mtmp) && is_steed(mtmp->data) && canspotmon(mtmp) && which_armor(mtmp, W_SADDLE))
+                        {
+                            steedmtmp = mtmp;
+                            numsteeds++;
+                        }
+                    }
+            }
+        }
+
+        if (!steedmtmp || numsteeds != 1)
+            return doride();
+        else if (steedmtmp)
+        {
+            u.dx = steedmtmp->mx - u.ux;
+            u.dy = steedmtmp->my - u.uy;
+            update_u_facing(TRUE);
+            return mount_steed(steedmtmp);
+        }
+        else
+            return 0;
     }
     return 1;
 }

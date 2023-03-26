@@ -3172,6 +3172,8 @@ E void FDECL(whimper, (struct monst *));
 E void FDECL(beg, (struct monst *));
 E int NDECL(doyell);
 E int NDECL(dotalk);
+E int NDECL(dotalksteed);
+E int NDECL(dotalknearby);
 #ifdef USER_SOUNDS
 E int FDECL(add_sound_mapping, (const char *));
 E void FDECL(play_sound_for_message, (const char *));
@@ -3442,6 +3444,7 @@ E int FDECL(use_saddle, (struct obj *));
 E void FDECL(put_saddle_on_mon, (struct obj *, struct monst *));
 E boolean FDECL(can_ride, (struct monst *));
 E int NDECL(doride);
+E int NDECL(doridenearby);
 E boolean FDECL(mount_steed, (struct monst *));
 E void NDECL(exercise_steed);
 E void NDECL(kick_steed);

@@ -88,6 +88,7 @@
     <None Remove="Assets\UI\cancel.png" />
     <None Remove="Assets\UI\cast.png" />
     <None Remove="Assets\UI\chat.png" />
+    <None Remove="Assets\UI\chatsteed.png" />
     <None Remove="Assets\UI\close.png" />
     <None Remove="Assets\UI\commands.png" />
     <None Remove="Assets\UI\conduct.png" />
@@ -266,6 +267,7 @@
     <EmbeddedResource Include="Assets\main-menu-gnoll.jpg" />
     <EmbeddedResource Include="Assets\main-menu-ranger.jpg" />
     <EmbeddedResource Include="Assets\UI\autopickup.png" />
+    <EmbeddedResource Include="Assets\UI\chatsteed.png" />
     <EmbeddedResource Include="Assets\UI\unwield.png" />
     <Page Include="Assets\imrl.otf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />

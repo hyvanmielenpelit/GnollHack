@@ -5614,6 +5614,8 @@ struct ext_func_tab extcmdlist[] = {
 #endif
     { 'c', "close", "close a door", doclose },
     { 'C', "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
+    { M(10), "chatsteed", "talk to steed", dotalksteed, IFBURIED },
+    { M(11), "chatnearby", "talk to someone nearby", dotalknearby, IFBURIED },
     { C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE, 0, getobj_callable, "call" },
     { M('c'), "commands", "list of additional actions",
             docommandmenu, IFBURIED | GENERALCMD | AUTOCOMPLETE },
@@ -5710,6 +5712,8 @@ struct ext_func_tab extcmdlist[] = {
     { 'R', "remove", "remove an accessory (ring, amulet, etc)", doremring, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_accessories, "remove" },
     { M('R'), "ride", "mount or dismount a saddled steed",
             doride, AUTOCOMPLETE },
+    { M(12), "ridenearby", "mount or dismount a saddled steed nearby",
+            doridenearby, 0 },
     { M('r'), "rub", "rub a lamp or a stone", dorub, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_cuddly, "rub" },
     { 's', "search", "search for traps and secret doors",
             dosearch, IFBURIED, "searching" },
@@ -9274,6 +9278,49 @@ enum create_context_menu_types menu_type;
             {
                 add_context_menu('p', cmd_from_func(dopay), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(shkp, rn2_on_display_rng), "Pay", 0, 0, NO_COLOR);
             }
+        }
+
+        int x, y;
+        boolean addchatmenu = FALSE;
+        boolean addridemenu = FALSE;
+        struct monst* mtmp = 0;
+        struct monst* steedmtmp = 0;
+        struct monst* chatmtmp = 0;
+        if (!Hallucination)
+        {
+            for (x = u.ux - 1; x <= u.ux + 1; x++)
+            {
+                for (y = u.uy - 1; y <= u.uy + 1; y++)
+                    if (!(x == u.ux && y == u.uy) && isok(x, y))
+                    {
+                        mtmp = m_at(x, y);
+                        if (mtmp && (is_peaceful(mtmp) || is_quantum_mechanic(mtmp->data) || is_rider(mtmp->data)) && (is_speaking_monster(mtmp->data) || is_tame(mtmp)) && canspotmon(mtmp) && mon_can_move(mtmp))
+                        {
+                            chatmtmp = mtmp;
+                            addchatmenu = TRUE;
+                        }
+                        if (!u.usteed && mtmp && is_tame(mtmp) && is_steed(mtmp->data) && canspotmon(mtmp) && which_armor(mtmp, W_SADDLE))
+                        {
+                            steedmtmp = mtmp;
+                            addridemenu = TRUE;
+                        }
+                    }
+            }
+        }
+
+        if (addchatmenu && chatmtmp)
+        {
+            add_context_menu('C', cmd_from_func(dotalknearby), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(chatmtmp, rn2_on_display_rng), "Chat", Monnam(chatmtmp), 0, NO_COLOR);
+        }
+        if (addridemenu && steedmtmp)
+        {
+            add_context_menu(M('R'), cmd_from_func(doridenearby), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(steedmtmp, rn2_on_display_rng), "Mount", Monnam(steedmtmp), 0, NO_COLOR);
+        }
+
+        if (u.usteed)
+        {
+            add_context_menu(M('R'), cmd_from_func(doride), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(u.usteed, rn2_on_display_rng), "Dismount", Monnam(u.usteed), 0, NO_COLOR);
+            add_context_menu('C', cmd_from_func(dotalksteed), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(u.usteed, rn2_on_display_rng), "Steed", Monnam(u.usteed), 0, NO_COLOR);
         }
 
         if (otmp)
