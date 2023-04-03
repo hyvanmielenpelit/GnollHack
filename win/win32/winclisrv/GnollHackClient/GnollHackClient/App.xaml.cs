@@ -57,7 +57,7 @@ namespace GnollHackClient
             App.LoadBanks = Preferences.Get("LoadSoundBanks", true);
             App.InformAboutGameTermination = Preferences.Get("WentToSleepWithGameOn", false);
             Preferences.Set("WentToSleepWithGameOn", false);
-            App.UsesCarousel = App.IsiOS || Preferences.Get("UsesCarousel", true);
+            App.UsesCarousel = true; // App.IsiOS || Preferences.Get("UsesCarousel", true);
 
             App.BackButtonPressed += App.EmptyBackButtonPressed;
         }

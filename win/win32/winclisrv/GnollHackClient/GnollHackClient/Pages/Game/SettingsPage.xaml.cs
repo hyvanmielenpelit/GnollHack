@@ -196,6 +196,7 @@ namespace GnollHackClient.Pages.Game
             bool oldvalue = App.LoadBanks;
             App.LoadBanks = SoundBankSwitch.IsToggled;
             Preferences.Set("LoadSoundBanks", SoundBankSwitch.IsToggled);
+            /*
             if(!App.IsiOS)
             {
                 bool oldCarousel = App.UsesCarousel;
@@ -209,6 +210,7 @@ namespace GnollHackClient.Pages.Game
                         _gamePage.MainPageBackgroundNeedsUpdate = true;
                 }
             }
+            */
             if (App.UsesCarousel && _mainPage != null)
                 _mainPage.PlayCarouselView();
             if (oldvalue != App.LoadBanks)
@@ -262,7 +264,8 @@ namespace GnollHackClient.Pages.Game
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, bank = true, carousel = false, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            //bool carousel = false;
             bool devmode = GHConstants.DefaultDeveloperMode, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             //bool altnoclipmode = GHConstants.DefaultMapAlternateNoClipMode, zoomchangecenter = GHConstants.DefaultZoomChangeCenterMode;
@@ -279,7 +282,7 @@ namespace GnollHackClient.Pages.Game
             statusbar = App.HideiOSStatusBar;
             devmode = App.DeveloperMode;
             bank = Preferences.Get("LoadSoundBanks", true);
-            carousel = Preferences.Get("UsesCarousel", true);
+            //carousel = Preferences.Get("UsesCarousel", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             if (_gamePage == null)
             {
@@ -366,9 +369,9 @@ namespace GnollHackClient.Pages.Game
             StatusBarSwitch.IsToggled = statusbar;
             DeveloperSwitch.IsToggled = devmode;
             SoundBankSwitch.IsToggled = bank;
-            CarouselSwitch.IsToggled = carousel;
-            CarouselSwitch.IsEnabled = !App.IsiOS;
-            CarouselLabel.TextColor = !App.IsiOS ? Color.Black : Color.Gray;
+            //CarouselSwitch.IsToggled = carousel;
+            //CarouselSwitch.IsEnabled = !App.IsiOS;
+            //CarouselLabel.TextColor = !App.IsiOS ? Color.Black : Color.Gray;
             GeneralVolumeSlider.Value = (double)generalVolume;
             MusicVolumeSlider.Value = (double)musicVolume;
             AmbientVolumeSlider.Value = (double)ambientVolume;

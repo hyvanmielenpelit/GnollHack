@@ -446,7 +446,7 @@
                                     <Switch x:Name="SoundBankSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
-                            <ViewCell>
+                            <!--<ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Image Carousel" x:Name="CarouselLabel"
                                            FontFamily="Underwood" TextColor="Black"
@@ -455,7 +455,7 @@
                                            HorizontalOptions="Start" />
                                     <Switch x:Name="CarouselSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
-                            </ViewCell>
+                            </ViewCell>-->
                         </TableSection>
                     </TableRoot>
                 </TableView>

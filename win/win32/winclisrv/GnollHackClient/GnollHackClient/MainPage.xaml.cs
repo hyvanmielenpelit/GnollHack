@@ -142,7 +142,7 @@ namespace GnollHackClient
             }
             else if (!GameStarted)
             {
-                if ((!App.UsesCarousel && !videoView.IsVisible) || (App.UsesCarousel && !_mainScreenMusicStarted))
+                if (/*(!App.UsesCarousel && !videoView.IsVisible) ||*/ (App.UsesCarousel && !_mainScreenMusicStarted))
                     PlayMainScreenVideoAndMusic();
             }
 
@@ -436,6 +436,7 @@ namespace GnollHackClient
 
         public void PlayMainScreenVideoAndMusic()
         {
+            /*
             if (!App.UsesCarousel)
             {
                 videoView.IsVisible = true;
@@ -443,6 +444,7 @@ namespace GnollHackClient
                 StillImage.IsVisible = false;
             }
             else // if (App.IsiOS)
+            */
             {
                 carouselView.IsVisible = true;
                 carouselView.Play();
@@ -475,6 +477,7 @@ namespace GnollHackClient
             //Task[] tasklist1 = new Task[2] { t1, t2 };
             //Task.WaitAll(tasklist1);
 
+            /*
             if (!App.UsesCarousel)
             {
                 videoView.IsVisible = true;
@@ -482,6 +485,7 @@ namespace GnollHackClient
                 videoView.Play();
             }
             else
+            */
             {
                 //StillImage.IsVisible = true;
                 //await StillImage.FadeTo(1, 250);
@@ -678,6 +682,7 @@ namespace GnollHackClient
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
+            /*
             if (!App.UsesCarousel)
             {
                 StillImage.IsVisible = true;
@@ -685,6 +690,7 @@ namespace GnollHackClient
                 videoView.IsVisible = false;
             }
             else
+            */
             {
                 carouselView.Stop();
             }
@@ -708,8 +714,8 @@ namespace GnollHackClient
             /* Change the situation as it would have been from the start */
             if (App.UsesCarousel)
             {
-                videoView.Stop();
-                videoView.IsVisible = false;
+                //videoView.Stop();
+                //videoView.IsVisible = false;
                 StillImage.IsVisible = false;
                 carouselView.IsVisible = true;
             }
@@ -724,6 +730,7 @@ namespace GnollHackClient
 
         public void UpdateMainScreenBackgroundElement(bool playAfterUpdate)
         {
+            /*
             if (!App.UsesCarousel)
             {
                 videoView.Stop();
@@ -748,6 +755,7 @@ namespace GnollHackClient
                     videoView.Play();
             }
             else
+            */
             {
                 carouselView.InvalidateSurface();
             }

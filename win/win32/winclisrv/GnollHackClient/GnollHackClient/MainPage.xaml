@@ -51,11 +51,11 @@
                AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                AbsoluteLayout.LayoutFlags="All" Aspect="AspectFill"/>
 
-        <xct:MediaElement x:Name="videoView" IsVisible="false" IsLooping="true" Aspect="AspectFill" ShowsPlaybackControls="False"
+        <!--<xct:MediaElement x:Name="videoView" IsVisible="false" IsLooping="true" Aspect="AspectFill" ShowsPlaybackControls="False"
                                 HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                                 AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0" AbsoluteLayout.LayoutFlags="All" 
                                 Source="ms-appx:///mainmenuportrait.mp4"
-                                />
+                                />-->
 
         <local:ImageCarousel x:Name="carouselView" IsVisible="false"
                HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
