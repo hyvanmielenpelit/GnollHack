@@ -351,7 +351,7 @@ NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS] = {
 NEARDATA const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS] = {
     {
         (char*)0, (char*)0,
-        0, CARPET_TILE_INDEXATION_TYPE_NORMAL, 0, 0,
+        0, CARPET_TILE_INDEXATION_TYPE_NONE, 0, 0,
         CARPET_TYPE_FLAGS_NONE
     },
     {
@@ -388,6 +388,24 @@ NEARDATA const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS
         "carpet-yellow", "yellow carpet",
         DOODAD_CARPET_YELLOW_TLCORN + GLYPH_SIMPLE_DOODAD_OFF,
         CARPET_TILE_INDEXATION_TYPE_LONG_CARPET, 0, 0,
+        CARPET_TYPE_FLAGS_NONE
+    },
+    {
+        "carpet-beige", "beige carpet",
+        DOODAD_CARPET_BEIGE_TLCORN + GLYPH_SIMPLE_DOODAD_OFF,
+        CARPET_TILE_INDEXATION_TYPE_LONG_CARPET, 0, 0,
+        CARPET_TYPE_FLAGS_NONE
+    },
+    {
+        "carpet-blue", "blue carpet",
+        DOODAD_CARPET_BLUE_TLCORN + GLYPH_SIMPLE_DOODAD_OFF,
+        CARPET_TILE_INDEXATION_TYPE_LONG_CARPET, 0, 0,
+        CARPET_TYPE_FLAGS_NONE
+    },
+    {
+        "grate", "grate",
+        DOODAD_GRATE + GLYPH_SIMPLE_DOODAD_OFF,
+        CARPET_TILE_INDEXATION_TYPE_NONE, 1, 1,
         CARPET_TYPE_FLAGS_NONE
     },
 };
