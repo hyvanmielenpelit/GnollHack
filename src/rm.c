@@ -343,6 +343,9 @@ NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS] = {
     { "Portrait of Vlad the Impaler", "Vlad the Impaler", "Diedi", (char*)0, (char*)0, 250L },
     { "Portrait of Vampire Lord", "a vampire lord", "Diedi", (char*)0, (char*)0, 200L },
     { "Portrait of Vampire Lady", "a vampire lady", "Diedi", (char*)0, (char*)0, 200L },
+    { "Portrait of Death", "Death", "Diedi", (char*)0, (char*)0, 300L },
+    { "Portrait of Famine", "Famine", "Diedi", (char*)0, (char*)0, 300L },
+    { "Portrait of Pestilence", "Pestilence", "Diedi", (char*)0, (char*)0, 300L },
 };
 
 NEARDATA const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS] = {
