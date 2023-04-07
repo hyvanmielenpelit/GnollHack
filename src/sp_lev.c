@@ -6079,6 +6079,13 @@ genericptr_t arg, arg2, arg3, arg4, arg5;
     levl[x][y].doormask = dmask;
     levl[x][y].key_otyp = key_otyp;
     levl[x][y].special_quality = key_spe_quality;
+
+    /* Clear out any possible decoration */
+    levl[x][y].decoration_typ = 0;
+    levl[x][y].decoration_subtyp = 0;
+    levl[x][y].decoration_dir = 0;
+    levl[x][y].decoration_flags = 0;
+
     SpLev_Map[x][y] = 1;
 }
 
