@@ -12,7 +12,7 @@ namespace GnollHackServer
 {
     public class ServerGame
     {
-        [DllImport(@"gnollhacklib.dll")]
+        [DllImport(@"gnollhackwin.dll")]
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
@@ -120,25 +120,25 @@ namespace GnollHackServer
             SendMonsterDataCallback callback_send_monster_data
         );
 
-        [DllImport(@"gnollhacklib.dll")]
+        [DllImport(@"gnollhackwin.dll")]
         public static extern int RunGnollHackSimple(
             ulong wincaps1,
             ulong wincaps2
         );
 
-        [DllImport(@"gnollhacklib.dll")]
+        [DllImport(@"gnollhackwin.dll")]
         public static extern int RunGnollHackSimple2(
             ulong wincaps1,
             ulong wincaps2,
             VoidVoidCallback callback_init_nhwindows);
 
-        [DllImport(@"gnollhacklib.dll")]
+        [DllImport(@"gnollhackwin.dll")]
         public static extern byte dll_validrole(int role);
 
-        [DllImport(@"gnollhacklib.dll")]
+        [DllImport(@"gnollhackwin.dll")]
         public static extern byte dll_str2role([MarshalAs(UnmanagedType.LPStr)] string role_str);
 
-        [DllImport(@"gnollhacklib.dll")]
+        [DllImport(@"gnollhackwin.dll")]
         public static extern int DoSomeCalc2();
 
         private Thread _gnhthread;
