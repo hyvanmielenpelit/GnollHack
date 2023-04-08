@@ -718,7 +718,7 @@ curses_view_file(const char *filename, boolean must_exist)
     Id = zeroany;
 
     while (dlb_fgets(buf, BUFSZ, fp) != NULL) {
-        curses_add_menu(wid, NO_GLYPH, &Id, 0, 0, A_NORMAL, buf, FALSE);
+        curses_add_menu(wid, NO_GLYPH, &Id, 0, 0, ATR_NONE, NO_COLOR, buf, FALSE);
     }
 
     dlb_fclose(fp);
