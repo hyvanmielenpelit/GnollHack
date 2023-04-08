@@ -8505,8 +8505,9 @@ sp_lev *lvl;
      * is currently not possible, we overload the corrmaze flag for this
      * purpose.
      */
+
     //if (!level.flags.corrmaze)
-        wallification(1, 0, COLNO - 1, ROWNO - 1);
+    wallification(1, 0, COLNO - 1, ROWNO - 1);
 
     count_features();
 

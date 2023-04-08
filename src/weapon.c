@@ -2216,17 +2216,20 @@ boolean speedy;
     anything any;
     boolean canadv = can_advance(skill_id, speedy);
     char buf[BUFSZ];
-    char headerbuf[BUFSZ];
+    char headerbuf[BUFSZ] = "";
     char subbuf[BUFSZ] = "";
-    char skillnamebuf[BUFSZ];
-    char skilllevelbuf[BUFSZ];
-    char nextlevelbuf[BUFSZ];
+    char skillnamebuf[BUFSZ] = "";
+    char skilllevelbuf[BUFSZ] = "";
+    char nextlevelbuf[BUFSZ] = "";
 
     strcpy(skillnamebuf, P_NAME(skill_id));
     (void)skill_level_name(skill_id, skilllevelbuf, FALSE);
     (void)skill_level_name(skill_id, nextlevelbuf, 2);
     int skill_slots_needed = slots_required(skill_id);
     int actioncount = 0;
+    boolean nextsamelvl = FALSE;
+    if (!strcmp(skilllevelbuf, nextlevelbuf))
+        nextsamelvl = TRUE;
 
     struct extended_create_window_info createinfo = { 0 };
     if(canadv)
@@ -2284,6 +2287,7 @@ boolean speedy;
             Strcpy(reasonbuf, " {Not enough slots}");
         }
 
+        boolean peakedskl = FALSE;
         /* Use consistent colors from the previous menu, except normal case is grayed out rahter than white */
         if (canadv)
         {
@@ -2296,13 +2300,17 @@ boolean speedy;
         else if (peaked_skill(skill_id))
         {
             menuinfo.color = CLR_BLUE;
+            peakedskl = TRUE;
         }
         else
         {
             menuinfo.color = CLR_GRAY;
         }
 
-        Sprintf(buf, "Cannot advance to %s (%d skill slot%s from %s)%s", nextlevelbuf, skill_slots_needed, plur(skill_slots_needed), skilllevelbuf, reasonbuf);
+        if(peakedskl || nextsamelvl)
+            Sprintf(buf, "Cannot be advanced further%s", peakedskl ? " (Peaked skill)" : "");
+        else
+            Sprintf(buf, "Cannot advance to %s (%d skill slot%s from %s)%s", nextlevelbuf, skill_slots_needed, plur(skill_slots_needed), skilllevelbuf, reasonbuf);
     }
     add_extended_menu(win, NO_GLYPH, &any, menuinfo,
         0, 0, ATR_NONE,
