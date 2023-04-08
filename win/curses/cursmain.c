@@ -561,7 +561,6 @@ curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
     const char* str, const char* attrs, const char* colors, BOOLEAN_P presel)
 {
     struct extended_menu_info info = { 0 };
-    info.color = color;
     info.attrs = attrs;
     info.colors = colors;
     curses_add_extended_menu(wid, glyph, identifier, info,
@@ -583,13 +582,13 @@ curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct e
         int applied_y = 1 + inv_update - (has_border ? 0 : 1);
         if (applied_y <= applicable_height)
         {
-            curses_add_inv(applied_y, glyph, accelerator, attr, color != NO_COLOR ? color : info.color, str, info.attrs, info.colors);
+            curses_add_inv(applied_y, glyph, accelerator, attr, color, str, info.attrs, info.colors);
             inv_update++;
         }
     }
 
     curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
-        attr, color != NO_COLOR ? color : info.color, str, info.attrs, info.colors, presel);
+        attr, color, str, info.attrs, info.colors, presel);
 }
 
 

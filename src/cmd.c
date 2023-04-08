@@ -1140,7 +1140,7 @@ boolean ischaractermenu;
     int glyph = 0, gui_glyph = 0;
     const char* fmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
         "%s (&mana; %d)" : "%s (%d mana)";
-    struct extended_menu_info menuinfo = nilextendedmenuinfo;
+    struct extended_menu_info menuinfo = zeroextendedmenuinfo;
     menuinfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
 
     /* Monster abilities */
@@ -1430,13 +1430,14 @@ boolean ischaractermenu;
 
         if (can_breathe(u.usteed->data))
         {
-            struct extended_menu_info steedmenuinfo = nilextendedmenuinfo;
+            struct extended_menu_info steedmenuinfo = zeroextendedmenuinfo;
+            int mcolor = NO_COLOR;
             steedmenuinfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
             any = zeroany;
             if (u.usteed->mspec_used > 0)
             {
-                strcpy(available_ability_list[abilitynum].name, "(Breath weapon cooling down)");
-                menuinfo.color = CLR_GRAY;
+                Strcpy(available_ability_list[abilitynum].name, "(Breath weapon cooling down)");
+                mcolor = CLR_GRAY;
             }
             else
             {
@@ -1444,7 +1445,7 @@ boolean ischaractermenu;
                     "%s (&cool; %s)" : "%s (%s round cooldown)";
                 Sprintf(available_ability_list[abilitynum].name, steedbreathefmt, "Command steed to use breath weapon", "1d10+4");
                 any.a_int = abilitynum + 1;
-                menuinfo.color = NO_COLOR;
+                mcolor = NO_COLOR;
             }
 
             available_ability_list[abilitynum].function_ptr = &dosteedbreathe;
@@ -1453,7 +1454,7 @@ boolean ischaractermenu;
             any = zeroany;
 
             add_extended_menu(win, NO_GLYPH, &any, steedmenuinfo,
-                0, 0, ATR_NONE, NO_COLOR,
+                0, 0, ATR_NONE, mcolor,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
             abilitynum++;

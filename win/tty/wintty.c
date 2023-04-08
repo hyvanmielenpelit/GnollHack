@@ -3137,7 +3137,7 @@ int color;                  /* color for string (like tty_putstr_ex()) */
 const char *str;            /* menu string */
 boolean preselected;        /* item is marked as selected */
 {
-    struct extended_menu_info info = nilextendedmenuinfo;
+    struct extended_menu_info info = zeroextendedmenuinfo;
     tty_add_extended_menu(window, glyph, identifier, info, ch, gch, attr, color, str, preselected);
 }
 
@@ -3170,9 +3170,6 @@ boolean preselected;        /* item is marked as selected */
         panic(winpanicstr, window);
         return;
     }
-
-    if(color == NO_COLOR)
-        color = info.color;
 
     cw->nitems++;
     if (identifier->a_void) {

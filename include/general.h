@@ -186,7 +186,6 @@ struct extended_menu_info {
     struct obj* object;
     struct monst* monster;
     char heading_for_group_accelerator;
-    int color;
     const char* attrs;
     const char* colors;
     int style; /* Generic style or subtype; used in menu data */

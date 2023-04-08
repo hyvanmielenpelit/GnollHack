@@ -2168,7 +2168,7 @@ doskill_core()
 
                 boolean canadv = can_advance(i, speedy);
                 any.a_int = i + 1; // canadv ? i + 1 : 0;
-                struct extended_menu_info info = nilextendedmenuinfo;
+                struct extended_menu_info info = zeroextendedmenuinfo;
                 if(canadv)
                     info.menu_flags |= MENU_FLAGS_ACTIVE;
 
@@ -3342,7 +3342,7 @@ enhance_weapon_skill()
                             sklnambuf, skillslotbuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                 }
                 any.a_int = can_advance(i, speedy) ? i + 1 : 0;
-                add_extended_menu(win, NO_GLYPH, &any, menu_special_mark_info(special_mark, color), 0, 0, ATR_NONE, NO_COLOR, buf,
+                add_extended_menu(win, NO_GLYPH, &any, menu_special_mark_info(special_mark), 0, 0, ATR_NONE, color, buf,
                     MENU_UNSELECTED);
             }
         }

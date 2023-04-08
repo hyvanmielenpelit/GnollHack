@@ -1190,26 +1190,27 @@ int* spell_no;
                 Strcpy(descbuf, nodesc);
 
             boolean inactive = FALSE;
-            struct extended_menu_info info = nilextendedmenuinfo;
+            struct extended_menu_info info = zeroextendedmenuinfo;
+            int mcolor = NO_COLOR;
             info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
             if (spellknow(splnum) <= 0)
             {
                 Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
-                info.color = CLR_BLACK;
+                mcolor = CLR_BLACK;
                 info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
                 inactive = TRUE;
             }
             else
             {
                 Sprintf(buf, "%s (%s)", fullname, descbuf);
-                info.color = NO_COLOR;
+                mcolor = NO_COLOR;
                 info.menu_flags |= MENU_FLAGS_ACTIVE;
             }
             if (!inactive)
                 info.menu_flags |= MENU_FLAGS_ACTIVE;
 
             any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
-            add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, NO_COLOR, buf,
+            add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, mcolor, buf,
                 (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
         }
     }
@@ -4173,24 +4174,21 @@ int splaction;
     }
 
     boolean inactive = FALSE;
-    struct extended_menu_info info = nilextendedmenuinfo;
+    struct extended_menu_info info = zeroextendedmenuinfo;
+    int mcolor = NO_COLOR;
     info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
     if (spellcooldownleft(splnum) > 0 || spellknow(splnum) <= 0)
     {
-        info.color = CLR_GRAY;
+        mcolor = CLR_GRAY;
         info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
         inactive = TRUE;
-    }
-    else
-    {
-        info.color = NO_COLOR;
     }
     if(!inactive)
         info.menu_flags |= MENU_FLAGS_ACTIVE;
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
 
-    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, NO_COLOR, buf,
+    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, mcolor, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
 }
@@ -4234,12 +4232,13 @@ int splaction;
         strcpy(matcompbuf, "No components");
 
     boolean inactive = FALSE;
-    struct extended_menu_info info = nilextendedmenuinfo;
+    struct extended_menu_info info = zeroextendedmenuinfo;
+    int mcolor = NO_COLOR;
     info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
     if (spellknow(splnum) <= 0)
     {
         Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
-        info.color = CLR_GRAY;
+        mcolor = CLR_GRAY;
         info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
         inactive = TRUE;
     }
@@ -4248,13 +4247,12 @@ int splaction;
         const char* fmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ? "%s (%s) {&casts; %s &adds; %s}" : "%s (%s) {Casts %s Adds %s}";
         Sprintf(buf, fmt, fullname, matcompbuf,
             availablebuf, addsbuf);
-        info.color = NO_COLOR;
     }
     if (!inactive)
         info.menu_flags |= MENU_FLAGS_ACTIVE;
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
-    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, NO_COLOR, buf,
+    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, mcolor, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 }
 
