@@ -563,14 +563,14 @@ curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
     struct extended_menu_info info = { 0 };
     info.attrs = attrs;
     info.colors = colors;
-    curses_add_extended_menu(wid, glyph, identifier, info,
-        accelerator, group_accel, attr, color, str, presel);
+    curses_add_extended_menu(wid, glyph, identifier,
+        accelerator, group_accel, attr, color, str, presel, info);
 }
 
 void
-curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
+curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel)
+    const char* str, BOOLEAN_P presel, struct extended_menu_info info)
 {
     attr &= ~(ATR_LINE_MSG_MASK);
 

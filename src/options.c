@@ -5528,8 +5528,8 @@ doset() /* changing options via menu by Per Liboriussen */
     }
 
     any = zeroany;
-    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
-             "Booleans (selecting will toggle value):", MENU_UNSELECTED);
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+             "Booleans (selecting will toggle value):", MENU_UNSELECTED, menu_heading_info());
     any.a_int = 0;
     /* first list any other non-modifiable booleans, then modifiable ones */
     for (pass = 0; pass <= 1; pass++)
@@ -5560,9 +5560,9 @@ doset() /* changing options via menu by Per Liboriussen */
     indexoffset = boolcount;
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
-    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
              "Compounds (selecting will prompt for new value):",
-             MENU_UNSELECTED);
+             MENU_UNSELECTED, menu_heading_info());
 
     /* deliberately put playmode, name, role+race+gender+align first */
     doset_add_menu(tmpwin, "playmode", 0);
@@ -5589,8 +5589,8 @@ doset() /* changing options via menu by Per Liboriussen */
 
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
-    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
-             "Other settings:", MENU_UNSELECTED);
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+             "Other settings:", MENU_UNSELECTED, menu_heading_info());
 
     for (i = 0; (name = othropt[i].name) != 0; i++) {
         if ((is_wc_option(name) && !wc_supported(name))
@@ -5603,8 +5603,8 @@ doset() /* changing options via menu by Per Liboriussen */
 #ifdef PREFIXES_IN_USE
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
-    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
-             "Variable playground locations:", MENU_UNSELECTED);
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+             "Variable playground locations:", MENU_UNSELECTED, menu_heading_info());
     for (i = 0; i < PREFIX_COUNT; i++)
         doset_add_menu(tmpwin, fqn_prefix_names[i], 0);
 #endif
@@ -6468,9 +6468,9 @@ boolean setinitial, setfromfile;
                     continue;
                 ape = iflags.autopickup_exceptions[pass];
                 any = zeroany;
-                add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
+                add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
                          (pass == 0) ? "Never pickup" : "Always pickup",
-                         MENU_UNSELECTED);
+                         MENU_UNSELECTED, menu_heading_info());
                 for (i = 0; i < numapes[pass] && ape; i++) {
                     any.a_void = (opt_idx == 1) ? 0 : ape;
                     /* length of pattern plus quotes is less than BUFSZ */

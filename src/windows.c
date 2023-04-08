@@ -85,8 +85,8 @@ STATIC_DCL void FDECL(dump_destroy_nhwindow, (winid));
 STATIC_DCL void FDECL(dump_start_menu_ex, (winid, int));
 STATIC_DCL void FDECL(dump_add_menu, (winid, int, const ANY_P *, CHAR_P,
                                       CHAR_P, int, int, const char *, BOOLEAN_P));
-STATIC_DCL void FDECL(dump_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P,
-    CHAR_P, int, int, const char*, BOOLEAN_P));
+STATIC_DCL void FDECL(dump_add_extended_menu, (winid, int, const ANY_P*, CHAR_P,
+    CHAR_P, int, int, const char*, BOOLEAN_P, struct extended_menu_info));
 STATIC_DCL void FDECL(dump_end_menu_ex, (winid, const char *, const char*));
 STATIC_DCL int FDECL(dump_select_menu, (winid, int, MENU_ITEM_P **));
 STATIC_DCL void FDECL(dump_putstr_ex, (winid, int, const char *, int, int));
@@ -733,8 +733,8 @@ STATIC_DCL void FDECL(hup_start_menu_ex, (winid, int));
 STATIC_DCL int FDECL(hup_select_menu, (winid, int, MENU_ITEM_P **));
 STATIC_DCL void FDECL(hup_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P,
                                  int, int, const char *, BOOLEAN_P));
-STATIC_DCL void FDECL(hup_add_extended_menu, (winid, int, const anything*, struct extended_menu_info, CHAR_P, CHAR_P,
-    int, int, const char*, BOOLEAN_P));
+STATIC_DCL void FDECL(hup_add_extended_menu, (winid, int, const anything*, CHAR_P, CHAR_P,
+    int, int, const char*, BOOLEAN_P, struct extended_menu_info));
 STATIC_DCL void FDECL(hup_end_menu_ex, (winid, const char *, const char*));
 STATIC_DCL void FDECL(hup_putstr_ex, (winid, int, const char *, int, int));
 STATIC_DCL void FDECL(hup_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
@@ -953,14 +953,14 @@ boolean preselected UNUSED;
 }
 
 STATIC_OVL void
-hup_add_extended_menu(window, glyph, identifier, info, sel, grpsel, attr, color, txt, preselected)
+hup_add_extended_menu(window, glyph, identifier, sel, grpsel, attr, color, txt, preselected, info)
 winid window UNUSED;
 int glyph UNUSED, attr UNUSED, color UNUSED;
 const anything* identifier UNUSED;
-struct extended_menu_info info UNUSED;
 char sel UNUSED, grpsel UNUSED;
 const char* txt UNUSED;
 boolean preselected UNUSED;
+struct extended_menu_info info UNUSED;
 {
     return;
 }
@@ -1681,17 +1681,17 @@ boolean preselected UNUSED;
 
 /*ARGSUSED*/
 STATIC_OVL void
-dump_add_extended_menu(win, glyph, identifier, info, ch, gch, attr, color, str, preselected)
+dump_add_extended_menu(win, glyph, identifier, ch, gch, attr, color, str, preselected, info)
 winid win UNUSED;
 int glyph;
 const anything* identifier UNUSED;
-struct extended_menu_info info UNUSED;
 char ch;
 char gch UNUSED;
 int attr UNUSED;
 int color UNUSED;
 const char* str;
 boolean preselected UNUSED;
+struct extended_menu_info info UNUSED;
 {
     char buf[BUFSIZ * 4] = "";
     if (str)

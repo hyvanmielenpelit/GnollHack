@@ -294,17 +294,17 @@ boolean preselected;        /* item is marked as selected */
 }
 
 void
-safe_add_extended_menu(window, glyph, identifier, info, ch, gch, attr, color, str, preselected)
+safe_add_extended_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected, info)
 winid window;               /* window to use, must be of type NHW_MENU */
 int glyph UNUSED;           /* glyph to display with item (not used) */
 const anything* identifier; /* what to return if selected */
-struct extended_menu_info info;
 char ch;                    /* keyboard accelerator (0 = pick our own) */
 char gch;                   /* group accelerator (0 = no group) */
 int attr;                   /* attribute for string (like safe_putstr()) */
 int color;                  /* color for string (like safe_putstr_ex()) */
 const char* str;            /* menu string */
 boolean preselected;        /* item is marked as selected */
+struct extended_menu_info info;
 {
     return;
 }

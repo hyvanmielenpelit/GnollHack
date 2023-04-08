@@ -2043,8 +2043,8 @@ mac_add_menu(winid win, int glyph, const anything *any, CHAR_P menuChar,
 }
 
 void
-mac_add_extended_menu(winid win, int glyph, const anything* any, struct extended_menu_info info, CHAR_P menuChar,
-    CHAR_P groupAcc, int attr, int color, const char* inStr, int preselected)
+mac_add_extended_menu(winid win, int glyph, const anything* any, CHAR_P menuChar,
+    CHAR_P groupAcc, int attr, int color, const char* inStr, int preselected, struct extended_menu_info info)
 {
     mac_add_menu(win, glyph, any, menuChar,
         groupAcc, attr, color, inStr, preselected);

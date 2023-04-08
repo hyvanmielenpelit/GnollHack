@@ -27,9 +27,9 @@ void lib_start_menu_ex(winid wid, int style);
 void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
     const char* str, BOOLEAN_P presel);
-void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
+void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel);
+    const char* str, BOOLEAN_P presel, struct extended_menu_info info);
 void lib_end_menu_ex(winid wid, const char* prompt, const char* subtitle);
 int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected);
 void lib_update_inventory(void);

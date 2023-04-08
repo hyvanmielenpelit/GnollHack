@@ -1210,8 +1210,8 @@ int* spell_no;
                 info.menu_flags |= MENU_FLAGS_ACTIVE;
 
             any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
-            add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, mcolor, buf,
-                (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
+            add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, mcolor, buf,
+                (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED, info);
         }
     }
     else if (splaction == SPELLMENU_PREPARE)
@@ -3724,8 +3724,8 @@ int *spell_no;
             Sprintf(buf, "Name\tH\tDescription");
         }
 
-        add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR, buf,
-            MENU_UNSELECTED);
+        add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR, buf,
+            MENU_UNSELECTED, menu_heading_info());
 
 
         for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++) {
@@ -3959,8 +3959,8 @@ boolean addemptyline;
     }
 
     any = zeroany;
-    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR, buf,
-        MENU_UNSELECTED);
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR, buf,
+        MENU_UNSELECTED, menu_heading_info());
 
 }
 
@@ -4118,8 +4118,8 @@ boolean addemptyline;
     }
 
     any = zeroany;
-    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR, buf,
-        MENU_UNSELECTED);
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR, buf,
+        MENU_UNSELECTED, menu_heading_info());
 
 }
 
@@ -4188,8 +4188,8 @@ int splaction;
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
 
-    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, mcolor, buf,
-        (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
+    add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_NONE, mcolor, buf,
+        (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED, info);
 
 }
 
@@ -4252,8 +4252,8 @@ int splaction;
         info.menu_flags |= MENU_FLAGS_ACTIVE;
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
-    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, mcolor, buf,
-        (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
+    add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_NONE, mcolor, buf,
+        (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED, info);
 }
 
 STATIC_OVL

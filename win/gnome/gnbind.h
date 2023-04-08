@@ -61,9 +61,9 @@ void gnome_start_menu_ex(winid wid, int style);
 void gnome_add_menu(winid wid, int glyph, const ANY_P *identifier,
                     CHAR_P accelerator, CHAR_P group_accel, int attr,
                     const char *str, BOOLEAN_P presel);
-void gnome_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
+void gnome_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel);
+    const char* str, BOOLEAN_P presel, struct extended_menu_info info);
 void gnome_end_menu_ex(winid wid, const char *prompt, const char* subtitle);
 int gnome_select_menu(winid wid, int how, MENU_ITEM_P **selected);
 /* No need for message_menu -- we'll use genl_message_menu instead */

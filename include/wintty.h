@@ -203,8 +203,8 @@ E void FDECL(tty_display_file, (const char *, BOOLEAN_P));
 E void FDECL(tty_start_menu_ex, (winid, int));
 E void FDECL(tty_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P, int, int,
                             const char *, BOOLEAN_P));
-E void FDECL(tty_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P, int, int,
-    const char*, BOOLEAN_P));
+E void FDECL(tty_add_extended_menu, (winid, int, const ANY_P*, CHAR_P, CHAR_P, int, int,
+    const char*, BOOLEAN_P, struct extended_menu_info));
 E void FDECL(tty_end_menu_ex, (winid, const char *, const char*));
 E int FDECL(tty_select_menu, (winid, int, MENU_ITEM_P **));
 E char FDECL(tty_message_menu, (CHAR_P, int, const char *));

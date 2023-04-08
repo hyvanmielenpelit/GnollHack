@@ -4228,9 +4228,9 @@ long pickcnt;
         Sprintf(hbuf, "%s%s", headings[j], catbuf);
 
         any = zeroany;
-        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
+        add_extended_menu(win, NO_GLYPH, &any,
             0, 0, iflags.menu_headings, NO_COLOR,
-            hbuf, MENU_UNSELECTED);
+            hbuf, MENU_UNSELECTED, menu_heading_info());
 
         for (i = 0; extcmdlist[i].ef_txt; i++)
         {
@@ -4592,8 +4592,8 @@ boolean addinventoryheader, wornonly;
     {
         /* wizard override ID and xtra_choice are mutually exclusive */
         if (flags.sortpack)
-            add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
-                     "Miscellaneous", MENU_UNSELECTED);
+            add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+                     "Miscellaneous", MENU_UNSELECTED, menu_heading_info());
         any.a_char = HANDS_SYM; /* '-' */
         add_menu(win, NO_GLYPH, &any, HANDS_SYM, 0, ATR_NONE, NO_COLOR,
                  xtra_choice, MENU_UNSELECTED);
@@ -4624,12 +4624,12 @@ nextclass:
             ilet = otmp->invlet;
             if (flags.sortpack && !classcount) 
             {
-                add_extended_menu(win, NO_GLYPH, &any, 
-                    menu_group_heading_info(*invlet > ILLOBJ_CLASS && *invlet < MAX_OBJECT_CLASSES ? def_oc_syms[(int)(*invlet)].sym : '\0'),
+                add_extended_menu(win, NO_GLYPH, &any,
                     0, 0, iflags.menu_headings, NO_COLOR,
                          let_to_name(*invlet, FALSE,
                                      (want_reply && iflags.menu_head_objsym)),
-                         MENU_UNSELECTED);
+                         MENU_UNSELECTED,
+                    menu_group_heading_info(*invlet > ILLOBJ_CLASS&&* invlet < MAX_OBJECT_CLASSES ? def_oc_syms[(int)(*invlet)].sym : '\0'));
                 classcount++;
             }
             if (wizid)
@@ -4647,9 +4647,9 @@ nextclass:
 
             int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
             int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
-            add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, obj_to_extended_menu_info(otmp), ilet,
+            add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, ilet,
                 applied_class_accelerator,
-                     ATR_NONE, NO_COLOR, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED);
+                     ATR_NONE, NO_COLOR, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
         }
     }
     if (flags.sortpack) 
@@ -4665,8 +4665,8 @@ nextclass:
     if (iflags.force_invmenu && lets && want_reply) 
     {
         any = zeroany;
-        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
-                 "Special", MENU_UNSELECTED);
+        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+                 "Special", MENU_UNSELECTED, menu_heading_info());
         any.a_char = '*';
         add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR,
                  "(list everything)", MENU_UNSELECTED);
@@ -4771,8 +4771,8 @@ int show_weights;
     if (show_weights > 0)
     {
         anything any = zeroany;
-        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
-            "Weight Summary", MENU_UNSELECTED);
+        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+            "Weight Summary", MENU_UNSELECTED, menu_heading_info());
 
         char wtbuf[BUFSZ];
         char carrybuf[BUFSZ];
@@ -5042,18 +5042,18 @@ char avoidlet;
                 if (!flags.sortpack || otmp->oclass == *invlet) {
                     if (flags.sortpack && !classcount) {
                         any = zeroany; /* zero */
-                        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0,
+                        add_extended_menu(win, NO_GLYPH, &any, 0, 0,
                                  iflags.menu_headings, NO_COLOR,
                                  let_to_name(*invlet, FALSE, FALSE),
-                                 MENU_UNSELECTED);
+                                 MENU_UNSELECTED, menu_heading_info());
                         classcount++;
                     }
                     any.a_char = ilet;
                     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
                     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
                     add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph,
-                             &any, obj_to_extended_menu_info(otmp), ilet, 0, ATR_NONE, NO_COLOR,
-                             (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE) : doname_with_weight_first(otmp, TRUE)), MENU_UNSELECTED);
+                             &any, ilet, 0, ATR_NONE, NO_COLOR,
+                             (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE) : doname_with_weight_first(otmp, TRUE)), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
                 }
             }
             if (flags.sortpack && *++invlet)

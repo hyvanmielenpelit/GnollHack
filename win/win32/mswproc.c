@@ -1317,9 +1317,9 @@ identifier
                    menu is displayed, set preselected to TRUE.
 */
 void
-mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct extended_menu_info info,
+mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
                CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-               const char *str, BOOLEAN_P presel)
+               const char *str, BOOLEAN_P presel, struct extended_menu_info info)
 {
     logDebug("mswin_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
              identifier, (char) accelerator, (char) group_accel, attr, str,
@@ -1351,9 +1351,9 @@ mswin_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
     const char* str, BOOLEAN_P presel)
 {
-    mswin_add_extended_menu(wid, glyph, identifier, zeroextendedmenuinfo,
+    mswin_add_extended_menu(wid, glyph, identifier,
         accelerator, group_accel, attr, color,
-        str, presel);
+        str, presel, zeroextendedmenuinfo);
 }
 
 /*

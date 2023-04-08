@@ -2130,8 +2130,8 @@ doskill_core()
                     }
                     if (skillcount > 0)
                     {
-                        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
-                            skill_ranges[pass].name, MENU_UNSELECTED);
+                        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+                            skill_ranges[pass].name, MENU_UNSELECTED, menu_heading_info());
                     }
                 }
                 if (P_RESTRICTED(i))
@@ -2172,7 +2172,7 @@ doskill_core()
                 if(canadv)
                     info.menu_flags |= MENU_FLAGS_ACTIVE;
 
-                add_extended_menu(win, i + GLYPH_SKILL_TILE_OFF, &any, info, 0, 0, attr, color, buf, MENU_UNSELECTED);
+                add_extended_menu(win, i + GLYPH_SKILL_TILE_OFF, &any, 0, 0, attr, color, buf, MENU_UNSELECTED, info);
 
             }
 
@@ -2941,8 +2941,8 @@ enhance_weapon_skill()
                     to_advance + eventually_advance > 0 ? "Next level" : "");
         }
 
-        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
-            headerbuf, MENU_UNSELECTED);
+        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+            headerbuf, MENU_UNSELECTED, menu_heading_info());
         
         for (pass = 0; pass < SIZE(skill_ranges); pass++)
         {
@@ -2998,8 +2998,8 @@ enhance_weapon_skill()
                     */
                     if (skillcount > 0)
                     {
-                        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
-                            skill_ranges[pass].name, MENU_UNSELECTED);
+                        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+                            skill_ranges[pass].name, MENU_UNSELECTED, menu_heading_info());
                         //firstheader = FALSE;
                     }
                 }
@@ -3342,8 +3342,8 @@ enhance_weapon_skill()
                             sklnambuf, skillslotbuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                 }
                 any.a_int = can_advance(i, speedy) ? i + 1 : 0;
-                add_extended_menu(win, NO_GLYPH, &any, menu_special_mark_info(special_mark), 0, 0, ATR_NONE, color, buf,
-                    MENU_UNSELECTED);
+                add_extended_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, color, buf,
+                    MENU_UNSELECTED, menu_special_mark_info(special_mark));
             }
         }
         Strcpy(buf, (to_advance > 0) ? "Pick a skill to advance"

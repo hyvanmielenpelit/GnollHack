@@ -857,9 +857,9 @@ class NetHackQtBind : NetHackQtBindBase
     static void qt_add_menu(winid wid, int glyph, const ANY_P *identifier,
                             CHAR_P ch, CHAR_P gch, int attr, int color, const char *str,
                             BOOLEAN_P presel);
-    static void qt_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info,
+    static void qt_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
         CHAR_P ch, CHAR_P gch, int attr, int color, const char* str,
-        BOOLEAN_P presel);
+        BOOLEAN_P presel, struct extended_menu_info);
     static void qt_end_menu_ex(winid wid, const char *prompt, const char*);
     static int qt_select_menu(winid wid, int how, MENU_ITEM_P **menu_list);
     static void qt_update_inventory();

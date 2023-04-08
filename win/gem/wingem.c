@@ -805,7 +805,7 @@ boolean preselected;        /* item is marked as selected */
 }
 
 void
-Gem_add_extended_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected)
+Gem_add_extended_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected, info)
 winid window;               /* window to use, must be of type NHW_MENU */
 int glyph;                  /* glyph to display with item (unused) */
 const anything* identifier; /* what to return if selected */
@@ -816,6 +816,7 @@ int attr;                   /* attribute for string (like Gem_putstr()) */
 int color;                  /* color for string (like Gem_putstr_ex()) */
 const char* str;            /* menu string */
 boolean preselected;        /* item is marked as selected */
+struct extended_menu_info info;
 {
     Gem_add_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected);
 }
