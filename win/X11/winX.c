@@ -2012,7 +2012,7 @@ boolean complain;
 
     any = zeroany;
     while (dlb_fgets(line, LLEN, fp)) {
-        X11_add_menu(newwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+        X11_add_menu(newwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                      line, MENU_UNSELECTED);
     }
     (void) dlb_fclose(fp);
