@@ -1136,7 +1136,7 @@ doclassdisco()
             Strcat(discosyms, "u");
             if (!traditional) {
                 any.a_int = 'u';
-                add_menu(tmpwin, NO_GLYPH, &any, menulet++, 0, ATR_NONE,
+                add_menu(tmpwin, NO_GLYPH, &any, menulet++, 0, ATR_NONE, NO_COLOR,
                          unique_items, MENU_UNSELECTED);
             }
             break;
@@ -1147,7 +1147,7 @@ doclassdisco()
         Strcat(discosyms, "a");
         if (!traditional) {
             any.a_int = 'a';
-            add_menu(tmpwin, NO_GLYPH, &any, menulet++, 0, ATR_NONE,
+            add_menu(tmpwin, NO_GLYPH, &any, menulet++, 0, ATR_NONE, NO_COLOR,
                      artifact_items, MENU_UNSELECTED);
         }
     }
@@ -1169,7 +1169,7 @@ doclassdisco()
                     if (!traditional) {
                         any.a_int = c;
                         add_menu(tmpwin, NO_GLYPH, &any, menulet++, c,
-                                 ATR_NONE, oclass_to_name(oclass, buf),
+                                 ATR_NONE, NO_COLOR, oclass_to_name(oclass, buf),
                                  MENU_UNSELECTED);
                     }
                 }
@@ -1310,13 +1310,13 @@ rename_disco()
 
             if (oclass != prev_class) {
                 any.a_int = 0;
-                add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
+                add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
                          let_to_name(oclass, FALSE, FALSE),
                          MENU_UNSELECTED);
                 prev_class = oclass;
             }
             any.a_int = dis;
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                      obj_typename(dis), MENU_UNSELECTED);
         }
     }

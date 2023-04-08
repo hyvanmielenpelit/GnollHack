@@ -96,13 +96,13 @@ extern void curses_putstr_ex2(winid wid, const char* text, const char* attrs, co
 extern void curses_display_file(const char *filename, BOOLEAN_P must_exist);
 extern void curses_start_menu_ex(winid wid, int style);
 extern void curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
-                            CHAR_P accelerator, CHAR_P group_accel, int attr,
+                            CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
                             const char *str, BOOLEAN_P presel);
 extern void curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
     const char* str, const char* attrs, const char* colors, BOOLEAN_P presel);
 extern void curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info,
-    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
     const char* str, BOOLEAN_P presel);
 extern void curses_end_menu_ex(winid wid, const char *prompt, const char *subtitle);
 extern int curses_select_menu(winid wid, int how, MENU_ITEM_P **selected);

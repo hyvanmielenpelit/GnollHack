@@ -1526,9 +1526,9 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
         /* COPYRIGHT_BANNER_[ABCD] */
         int k;
         for (k = 1; k <= 4; ++k)
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                 copyright_banner_line(k), MENU_UNSELECTED);
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
             MENU_UNSELECTED);
 #endif
         char ngbuf[BUFSZ] = "", modebuf[BUFSZ] = "", descbuf[BUFSZ] = "";
@@ -1541,23 +1541,23 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
 #endif
         Sprintf(ngbuf, "New Game in %s Mode%s", modebuf, descbuf);
         any.a_int = -1;
-        add_menu(tmpwin, NO_GLYPH, &any, 'n', 0, ATR_HEADING, ngbuf,
+        add_menu(tmpwin, NO_GLYPH, &any, 'n', 0, ATR_HEADING, NO_COLOR, ngbuf,
             MENU_UNSELECTED);
 
         if (saved && saved[0].playername)
         {
 
             any.a_int = 1;
-            add_menu(tmpwin, NO_GLYPH, &any, 'l', 0, ATR_HEADING, "Load Saved Game",
+            add_menu(tmpwin, NO_GLYPH, &any, 'l', 0, ATR_HEADING, NO_COLOR, "Load Saved Game",
                 MENU_UNSELECTED);
 
             any.a_int = 2;
-            add_menu(tmpwin, NO_GLYPH, &any, 'd', 0, ATR_HEADING, "Delete Saved Game",
+            add_menu(tmpwin, NO_GLYPH, &any, 'd', 0, ATR_HEADING, NO_COLOR, "Delete Saved Game",
                 MENU_UNSELECTED);
         }
 
         any.a_int = -2;
-        add_menu(tmpwin, NO_GLYPH, &any, 'q', 0, ATR_HEADING, "Quit",
+        add_menu(tmpwin, NO_GLYPH, &any, 'q', 0, ATR_HEADING, NO_COLOR, "Quit",
             MENU_UNSELECTED);
 
 #ifdef GNH_MOBILE
@@ -1641,7 +1641,7 @@ struct save_game_data* saved;
         any = zeroany; /* no selection */
 
     #ifndef GNH_MOBILE
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
             titlestr, MENU_UNSELECTED);
     #endif
 
@@ -1733,29 +1733,27 @@ struct save_game_data* saved;
             int glyph = saved[k].gamestats.glyph;
             int gui_glyph = saved[k].gamestats.gui_glyph;
             any.a_int = k + 1;
-            struct extended_menu_info menuinfo = nilextendedmenuinfo;
-            menuinfo.color = style == 1 ? CLR_RED : NO_COLOR;
 
-            add_extended_menu(tmpwin, iflags.using_gui_tiles ? gui_glyph : glyph, &any, menuinfo, 0, 0, ATR_HEADING | ATR_BOLD, namebuf,
+            add_menu(tmpwin, iflags.using_gui_tiles ? gui_glyph : glyph, &any, 0, 0, ATR_HEADING | ATR_BOLD, style == 1 ? CLR_RED : NO_COLOR, namebuf,
                 MENU_UNSELECTED);
 
             any.a_int = 0;
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, characterbuf,
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, characterbuf,
                 MENU_UNSELECTED);
 
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, adventuringbuf,
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, adventuringbuf,
                 MENU_UNSELECTED);
 
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, playingbuf,
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, playingbuf,
                 MENU_UNSELECTED);
 
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, savedbuf,
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, savedbuf,
                 MENU_UNSELECTED);
         }
 
         clet = (k + 1 <= 'q' - 'a') ? 'q' : 0; /* back to menu */
         any.a_int = -1;
-        add_menu(tmpwin, NO_GLYPH, &any, clet, 0, ATR_HEADING,
+        add_menu(tmpwin, NO_GLYPH, &any, clet, 0, ATR_HEADING, NO_COLOR,
             "Quit back to menu", MENU_SELECTED);
 
     #ifdef GNH_MOBILE

@@ -2117,7 +2117,7 @@ struct obj **optr;
                 if (is_obj_candelabrum(cobj)) 
                 {
                     any.a_obj = cobj;
-                    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                         doname(cobj), MENU_UNSELECTED);
                 }
             end_menu(win, "Attach candles to which candelabrum?");
@@ -5216,14 +5216,14 @@ struct obj *obj;
         start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_COMMAND);
         any.a_int++;
         Sprintf(buf, "an object on the %s", surface(cc.x, cc.y));
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                  MENU_UNSELECTED);
         any.a_int++;
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "a monster",
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "a monster",
                  MENU_UNSELECTED);
         any.a_int++;
         Sprintf(buf, "the %s", surface(cc.x, cc.y));
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                  MENU_UNSELECTED);
         end_menu(tmpwin, "Aim for what?");
         tohit = rn2(4);
@@ -6066,7 +6066,7 @@ boolean useonlyautostashes;
             add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
                 applied_invlet,
                 applied_group_accelerator,
-                ATR_NONE, 
+                ATR_NONE, NO_COLOR,
                 doname(otmp), 
                 MENU_UNSELECTED);
 

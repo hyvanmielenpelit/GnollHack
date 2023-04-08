@@ -3666,7 +3666,7 @@ do_class_genocide()
                     {
                         *cbuf = highc(*cbuf);
                         any.a_int = k + 1;
-                        add_menu(tmpwin, NO_GLYPH, &any, def_monsyms[k].sym, 0, ATR_NONE, cbuf, MENU_UNSELECTED);
+                        add_menu(tmpwin, NO_GLYPH, &any, def_monsyms[k].sym, 0, ATR_NONE, NO_COLOR, cbuf, MENU_UNSELECTED);
                     }
                 }
                 end_menu(tmpwin, "What class of monsters do you wish to genocide?");

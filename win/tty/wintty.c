@@ -622,7 +622,7 @@ tty_player_selection()
                     /* add miscellaneous menu entries */
                     role_menu_extra(ROLE_RANDOM, win, TRUE);
                     any = zeroany; /* separator, not a choice */
-                    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
+                    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
                              MENU_UNSELECTED);
                     role_menu_extra(RS_RACE, win, FALSE);
                     role_menu_extra(RS_GENDER, win, FALSE);
@@ -721,7 +721,7 @@ tty_player_selection()
                         /* add miscellaneous menu entries */
                         role_menu_extra(ROLE_RANDOM, win, TRUE);
                         any.a_int = 0; /* separator, not a choice */
-                        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
+                        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
                                  MENU_UNSELECTED);
                         role_menu_extra(RS_ROLE, win, FALSE);
                         role_menu_extra(RS_GENDER, win, FALSE);
@@ -814,7 +814,7 @@ tty_player_selection()
                         /* add miscellaneous menu entries */
                         role_menu_extra(ROLE_RANDOM, win, TRUE);
                         any.a_int = 0; /* separator, not a choice */
-                        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
+                        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
                                  MENU_UNSELECTED);
                         role_menu_extra(RS_ROLE, win, FALSE);
                         role_menu_extra(RS_RACE, win, FALSE);
@@ -903,7 +903,7 @@ tty_player_selection()
                         setup_algnmenu(win, TRUE, ROLE, RACE, GEND);
                         role_menu_extra(ROLE_RANDOM, win, TRUE);
                         any.a_int = 0; /* separator, not a choice */
-                        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
+                        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
                                  MENU_UNSELECTED);
                         role_menu_extra(RS_ROLE, win, FALSE);
                         role_menu_extra(RS_RACE, win, FALSE);
@@ -991,25 +991,25 @@ tty_player_selection()
                 races[RACE].adj,
                 (GEND == 1 && roles[ROLE].name.f) ? roles[ROLE].name.f
                                                   : roles[ROLE].name.m);
-        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, pbuf,
+        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, pbuf,
                  MENU_UNSELECTED);
         /* blank separator */
         any.a_int = 0;
-        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
         /* [ynaq] menu choices */
         any.a_int = 1;
-        add_menu(win, NO_GLYPH, &any, 'y', 0, ATR_NONE, "Yes; start game",
+        add_menu(win, NO_GLYPH, &any, 'y', 0, ATR_NONE, NO_COLOR, "Yes; start game",
                  MENU_SELECTED);
         any.a_int = 2;
-        add_menu(win, NO_GLYPH, &any, 'n', 0, ATR_NONE,
+        add_menu(win, NO_GLYPH, &any, 'n', 0, ATR_NONE, NO_COLOR,
                  "No; choose role again", MENU_UNSELECTED);
         if (iflags.renameallowed) {
             any.a_int = 3;
-            add_menu(win, NO_GLYPH, &any, 'a', 0, ATR_NONE,
+            add_menu(win, NO_GLYPH, &any, 'a', 0, ATR_NONE, NO_COLOR,
                      "Not yet; choose another name", MENU_UNSELECTED);
         }
         any.a_int = -1;
-        add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, "Quit",
+        add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                  MENU_UNSELECTED);
         Sprintf(pbuf, "Is this ok? [yn%sq]", iflags.renameallowed ? "a" : "");
         end_menu(win, pbuf);
@@ -1084,22 +1084,22 @@ reset_role_filtering()
     any = zeroany;
 
     /* no extra blank line preceding this entry; end_menu supplies one */
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
              "Unacceptable roles", MENU_UNSELECTED);
     setup_rolemenu(win, FALSE, ROLE_NONE, ROLE_NONE, ROLE_NONE);
 
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
              "Unacceptable races", MENU_UNSELECTED);
     setup_racemenu(win, FALSE, ROLE_NONE, ROLE_NONE, ROLE_NONE);
 
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
              "Unacceptable genders", MENU_UNSELECTED);
     setup_gendmenu(win, FALSE, ROLE_NONE, ROLE_NONE, ROLE_NONE);
 
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
              "Uncceptable alignments", MENU_UNSELECTED);
     setup_algnmenu(win, FALSE, ROLE_NONE, ROLE_NONE, ROLE_NONE);
 
@@ -1162,7 +1162,7 @@ int race, gend, algn; /* all ROLE_NONE for !filtering case */
         }
         /* !filtering implies reset_role_filtering() where we want to
            mark this role as preseleted if current filter excludes it */
-        add_menu(win, NO_GLYPH, &any, thisch, 0, ATR_NONE, an(rolenamebuf),
+        add_menu(win, NO_GLYPH, &any, thisch, 0, ATR_NONE, NO_COLOR, an(rolenamebuf),
                  (!filtering && !role_ok) ? MENU_SELECTED : MENU_UNSELECTED);
         lastch = thisch;
     }
@@ -1196,7 +1196,7 @@ int role, gend, algn;
         add_menu(win, NO_GLYPH, &any,
                  filtering ? this_ch : highc(this_ch),
                  filtering ? highc(this_ch) : 0,
-                 ATR_NONE, races[i].noun,
+                 ATR_NONE, NO_COLOR, races[i].noun,
                  (!filtering && !race_ok) ? MENU_SELECTED : MENU_UNSELECTED);
     }
 }
@@ -1227,7 +1227,7 @@ int role, race, algn;
         add_menu(win, NO_GLYPH, &any,
                  filtering ? this_ch : highc(this_ch),
                  filtering ? highc(this_ch) : 0,
-                 ATR_NONE, genders[i].adj,
+                 ATR_NONE, NO_COLOR, genders[i].adj,
                  (!filtering && !gend_ok) ? MENU_SELECTED : MENU_UNSELECTED);
     }
 }
@@ -1258,7 +1258,7 @@ int role, race, gend;
         add_menu(win, NO_GLYPH, &any,
                  filtering ? this_ch : highc(this_ch),
                  filtering ? highc(this_ch) : 0,
-                 ATR_NONE, aligns[i].adj,
+                 ATR_NONE, NO_COLOR, aligns[i].adj,
                  (!filtering && !algn_ok) ? MENU_SELECTED : MENU_UNSELECTED);
     }
 }
@@ -3126,22 +3126,23 @@ int style UNUSED;
  * later.
  */
 void
-tty_add_menu(window, glyph, identifier, ch, gch, attr, str, preselected)
+tty_add_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected)
 winid window;               /* window to use, must be of type NHW_MENU */
 int glyph UNUSED;           /* glyph to display with item (not used) */
 const anything *identifier; /* what to return if selected */
 char ch;                    /* keyboard accelerator (0 = pick our own) */
 char gch;                   /* group accelerator (0 = no group) */
 int attr;                   /* attribute for string (like tty_putstr()) */
+int color;                  /* color for string (like tty_putstr_ex()) */
 const char *str;            /* menu string */
 boolean preselected;        /* item is marked as selected */
 {
     struct extended_menu_info info = nilextendedmenuinfo;
-    tty_add_extended_menu(window, glyph, identifier, info, ch, gch, attr, str, preselected);
+    tty_add_extended_menu(window, glyph, identifier, info, ch, gch, attr, color, str, preselected);
 }
 
 void
-tty_add_extended_menu(window, glyph, identifier, info, ch, gch, attr, str, preselected)
+tty_add_extended_menu(window, glyph, identifier, info, ch, gch, attr, color, str, preselected)
 winid window;               /* window to use, must be of type NHW_MENU */
 int glyph UNUSED;           /* glyph to display with item (not used) */
 const anything* identifier; /* what to return if selected */
@@ -3149,6 +3150,7 @@ struct extended_menu_info info;
 char ch;                    /* keyboard accelerator (0 = pick our own) */
 char gch;                   /* group accelerator (0 = no group) */
 int attr;                   /* attribute for string (like tty_putstr()) */
+int color;                  /* color for string (like tty_putstr_ex()) */
 const char* str;            /* menu string */
 boolean preselected;        /* item is marked as selected */
 {
@@ -3169,7 +3171,8 @@ boolean preselected;        /* item is marked as selected */
         return;
     }
 
-    int color = info.color;
+    if(color == NO_COLOR)
+        color = info.color;
 
     cw->nitems++;
     if (identifier->a_void) {
@@ -3254,9 +3257,9 @@ const char *prompt, *subtitle; /* prompt to for menu */
         anything any;
 
         any = zeroany; /* not selectable */
-        tty_add_menu(window, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
+        tty_add_menu(window, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
                      MENU_UNSELECTED);
-        tty_add_menu(window, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+        tty_add_menu(window, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                      MENU_UNSELECTED);
     }
 

@@ -2897,7 +2897,7 @@ int arrmin, arrmax;
     for (i = arrmin; i < arrmax; i++) {
         any = zeroany;
         any.a_int = i + adj;
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                  arr[i], MENU_UNSELECTED);
     }
 
@@ -3304,7 +3304,7 @@ query_conditions()
     for (i = 0; i < SIZE(valid_conditions); i++) {
         any = zeroany;
         any.a_ulong = valid_conditions[i].bitmask;
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                  valid_conditions[i].id, MENU_UNSELECTED);
     }
 
@@ -3888,7 +3888,7 @@ status_hilite_menu_choose_field()
 #endif
         any = zeroany;
         any.a_int = (i + 1);
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                  initblstats[i].fldname, MENU_UNSELECTED);
     }
 
@@ -3927,7 +3927,7 @@ int fld;
         any = zeroany;
         any.a_int = onlybeh = BL_TH_ALWAYS_HILITE;
         Sprintf(buf, "Always highlight %s", initblstats[fld].fldname);
-        add_menu(tmpwin, NO_GLYPH, &any, 'a', 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 'a', 0, ATR_NONE, NO_COLOR,
                  buf, MENU_UNSELECTED);
         nopts++;
     }
@@ -3935,7 +3935,7 @@ int fld;
     if (fld == BL_CONDITION) {
         any = zeroany;
         any.a_int = onlybeh = BL_TH_CONDITION;
-        add_menu(tmpwin, NO_GLYPH, &any, 'b', 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 'b', 0, ATR_NONE, NO_COLOR,
                  "Bitmask of conditions", MENU_UNSELECTED);
         nopts++;
     }
@@ -3944,7 +3944,7 @@ int fld;
         any = zeroany;
         any.a_int = onlybeh = BL_TH_UPDOWN;
         Sprintf(buf, "%s value changes", initblstats[fld].fldname);
-        add_menu(tmpwin, NO_GLYPH, &any, 'c', 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 'c', 0, ATR_NONE, NO_COLOR,
                  buf, MENU_UNSELECTED);
         nopts++;
     }
@@ -3953,7 +3953,7 @@ int fld;
         && (at == ANY_INT || at == ANY_LONG)) {
         any = zeroany;
         any.a_int = onlybeh = BL_TH_VAL_ABSOLUTE;
-        add_menu(tmpwin, NO_GLYPH, &any, 'n', 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 'n', 0, ATR_NONE, NO_COLOR,
                  "Number threshold", MENU_UNSELECTED);
         nopts++;
     }
@@ -3961,7 +3961,7 @@ int fld;
     if (initblstats[fld].idxmax >= 0) {
         any = zeroany;
         any.a_int = onlybeh = BL_TH_VAL_PERCENTAGE;
-        add_menu(tmpwin, NO_GLYPH, &any, 'p', 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 'p', 0, ATR_NONE, NO_COLOR,
                  "Percentage threshold", MENU_UNSELECTED);
         nopts++;
     }
@@ -3971,7 +3971,7 @@ int fld;
         any = zeroany;
         any.a_int = onlybeh = BL_TH_TEXTMATCH;
         Sprintf(buf, "%s text match", initblstats[fld].fldname);
-        add_menu(tmpwin, NO_GLYPH, &any, 't', 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 't', 0, ATR_NONE, NO_COLOR,
                  buf, MENU_UNSELECTED);
         nopts++;
     }
@@ -4018,7 +4018,7 @@ boolean ltok, gtok;
             Sprintf(buf, "Value goes down");
         any = zeroany;
         any.a_int = 10 + LT_VALUE;
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                  buf, MENU_UNSELECTED);
 
         if (str) {
@@ -4026,7 +4026,7 @@ boolean ltok, gtok;
                     str, (fld == BL_AC) ? "better (lower)" : "less");
             any = zeroany;
             any.a_int = 10 + LE_VALUE;
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                      buf, MENU_UNSELECTED);
         }
     }
@@ -4037,7 +4037,7 @@ boolean ltok, gtok;
         Sprintf(buf, "Value changes");
     any = zeroany;
     any.a_int = 10 + EQ_VALUE;
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
              buf, MENU_UNSELECTED);
 
     if (gtok) {
@@ -4046,7 +4046,7 @@ boolean ltok, gtok;
                     str, (fld == BL_AC) ? "worse (higher)" : "more");
             any = zeroany;
             any.a_int = 10 + GE_VALUE;
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                      buf, MENU_UNSELECTED);
         }
 
@@ -4057,7 +4057,7 @@ boolean ltok, gtok;
             Sprintf(buf, "Value goes up");
         any = zeroany;
         any.a_int = 10 + GT_VALUE;
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
              buf, MENU_UNSELECTED);
     }
     Sprintf(buf, "Select field %s value:", initblstats[fld].fldname);
@@ -4586,7 +4586,7 @@ int fld;
             if (hlstr->fld == fld) {
                 any = zeroany;
                 any.a_int = hlstr->id;
-                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                          hlstr->str, MENU_UNSELECTED);
             }
             hlstr = hlstr->next;
@@ -4594,17 +4594,17 @@ int fld;
     } else {
         any = zeroany;
         Sprintf(buf, "No current hilites for %s", initblstats[fld].fldname);
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf, MENU_UNSELECTED);
     }
 
     /* separator line */
     any = zeroany;
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
 
     if (count) {
         any = zeroany;
         any.a_int = -1;
-        add_menu(tmpwin, NO_GLYPH, &any, 'X', 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 'X', 0, ATR_NONE, NO_COLOR,
                  "Remove selected hilites", MENU_UNSELECTED);
     }
 
@@ -4621,7 +4621,7 @@ int fld;
     {
         any = zeroany;
         any.a_int = -2;
-        add_menu(tmpwin, NO_GLYPH, &any, 'Z', 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 'Z', 0, ATR_NONE, NO_COLOR,
                  "Add a new hilite", MENU_UNSELECTED);
     }
 
@@ -4717,11 +4717,11 @@ shlmenu_redo:
     if (countall) {
         any = zeroany;
         any.a_int = -1;
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                  "View all hilites in config format", MENU_UNSELECTED);
 
         any = zeroany;
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
     }
 
     for (i = 0; i < MAXBLSTATS; i++) {
@@ -4742,7 +4742,7 @@ shlmenu_redo:
         Sprintf(buf, "%-18s", initblstats[i].fldname);
         if (count)
             Sprintf(eos(buf), " (%d defined)", count);
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                  buf, MENU_UNSELECTED);
     }
 

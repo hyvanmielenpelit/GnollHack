@@ -1300,16 +1300,16 @@ choose_game_difficulty()
         else
             Sprintf(buf2, "%s (%d%% combat)", buf, combat_damage_percentage);
 
-        add_menu(menuwin, NO_GLYPH, &any, diffchar, 0, ATR_NONE,
+        add_menu(menuwin, NO_GLYPH, &any, diffchar, 0, ATR_NONE, NO_COLOR,
             buf2, MENU_UNSELECTED);
     }
 
     any = zeroany;
-    add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE,
+    add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR,
         " ", MENU_UNSELECTED);
 
     any.a_int = QUIT_DUMMY;
-    add_menu(menuwin, NO_GLYPH, &any, 'q', 0, ATR_NONE,
+    add_menu(menuwin, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR,
         "Quit", MENU_UNSELECTED);
 
     end_menu(menuwin, "Pick a level for game difficulty");

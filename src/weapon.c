@@ -2130,7 +2130,7 @@ doskill_core()
                     }
                     if (skillcount > 0)
                     {
-                        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
+                        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
                             skill_ranges[pass].name, MENU_UNSELECTED);
                     }
                 }
@@ -2169,11 +2169,10 @@ doskill_core()
                 boolean canadv = can_advance(i, speedy);
                 any.a_int = i + 1; // canadv ? i + 1 : 0;
                 struct extended_menu_info info = nilextendedmenuinfo;
-                info.color = color;
                 if(canadv)
                     info.menu_flags |= MENU_FLAGS_ACTIVE;
 
-                add_extended_menu(win, i + GLYPH_SKILL_TILE_OFF, &any, info, 0, 0, attr, buf, MENU_UNSELECTED);
+                add_extended_menu(win, i + GLYPH_SKILL_TILE_OFF, &any, info, 0, 0, attr, color, buf, MENU_UNSELECTED);
 
             }
 
@@ -2244,19 +2243,19 @@ boolean speedy;
     any = zeroany;
     any.a_int = 1;
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         buf, MENU_UNSELECTED);
     actioncount++;
 
     /* Advance skill */
-    struct extended_menu_info menuinfo = nilextendedmenuinfo;
+    int mcolor = NO_COLOR;
     any = zeroany;
 
     if (canadv)
     {
         Sprintf(buf, "Advance to %s (%d skill slot%s from %s)", nextlevelbuf, skill_slots_needed, plur(skill_slots_needed), skilllevelbuf);
         any.a_int = 2;
-        menuinfo.color = CLR_GREEN;
+        mcolor = CLR_GREEN;
     }
     else
     {
@@ -2266,12 +2265,12 @@ boolean speedy;
         else if (P_SKILL_LEVEL(skill_id) >= P_MAX_SKILL_LEVEL(skill_id))
         {
             Strcpy(reasonbuf, " {Peaked skill}");
-            menuinfo.color = CLR_BLUE;
+            mcolor = CLR_BLUE;
         }
         else if (u.skills_advanced >= P_SKILL_LIMIT)
         {
             Strcpy(reasonbuf, " {General advancement limit reached}");
-            menuinfo.color = CLR_BLUE;
+            mcolor = CLR_BLUE;
         }
         else if (urole.skill_advance_levels[skill_id][P_SKILL_LEVEL(skill_id) + 1] > 0 && u.ulevel < urole.skill_advance_levels[skill_id][P_SKILL_LEVEL(skill_id) + 1])
         {
@@ -2283,7 +2282,7 @@ boolean speedy;
         }
         else if (u.weapon_slots < skill_slots_needed)
         {
-            menuinfo.color = CLR_RED;
+            mcolor = CLR_RED;
             Strcpy(reasonbuf, " {Not enough slots}");
         }
 
@@ -2291,20 +2290,20 @@ boolean speedy;
         /* Use consistent colors from the previous menu, except normal case is grayed out rahter than white */
         if (canadv)
         {
-            menuinfo.color = CLR_GREEN;
+            mcolor = CLR_GREEN;
         }
         else if (could_advance(skill_id))
         {
-            menuinfo.color = CLR_BROWN;
+            mcolor = CLR_BROWN;
         }
         else if (peaked_skill(skill_id))
         {
-            menuinfo.color = CLR_BLUE;
+            mcolor = CLR_BLUE;
             peakedskl = TRUE;
         }
         else
         {
-            menuinfo.color = CLR_GRAY;
+            mcolor = CLR_GRAY;
         }
 
         if(peakedskl || nextsamelvl)
@@ -2312,8 +2311,8 @@ boolean speedy;
         else
             Sprintf(buf, "Cannot advance to %s (%d skill slot%s from %s)%s", nextlevelbuf, skill_slots_needed, plur(skill_slots_needed), skilllevelbuf, reasonbuf);
     }
-    add_extended_menu(win, NO_GLYPH, &any, menuinfo,
-        0, 0, ATR_NONE,
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE, mcolor,
         buf, MENU_UNSELECTED);
     actioncount++;
 
@@ -2806,11 +2805,11 @@ enhance_weapon_skill()
             Sprintf(buf, "Skill slot%s available: %d",
                 plur(u.weapon_slots), u.weapon_slots);
 
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS | ATR_ALIGN_CENTER, buf,
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS | ATR_ALIGN_CENTER, NO_COLOR, buf,
                 MENU_UNSELECTED);
 
             Strcpy(buf, "");
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
 
             boolean disarmtrapslast = (P_SKILL_LEVEL(P_DISARM_TRAP) > P_ISRESTRICTED);
@@ -2824,24 +2823,24 @@ enhance_weapon_skill()
             any = zeroany;
             
             Strcpy(buf, "Bonuses are to-hit/damage/critical-% for weapons and combat,");
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, NO_COLOR, buf, MENU_UNSELECTED);
 
             if (martialartsshown || twohandedshown)
             {
                 Sprintf(buf, "to-hit/damage/double-hit-%% for %s%s%s,", martialartsshown ? "martial arts" : "", martialartsshown && twohandedshown ? " and " : "", twohandedshown ? "two-handed weapon" : "");
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, NO_COLOR, buf, MENU_UNSELECTED);
             }
 
             if (diggingshown)
             {
                 Strcpy(buf, "to-hit/damage/dig speed bonus for digging,");
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, NO_COLOR, buf, MENU_UNSELECTED);
             }
 
             if (ridingshown)
             {
                 Strcpy(buf, "to-hit/damage/joust bonus for riding (when riding),");
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, NO_COLOR, buf, MENU_UNSELECTED);
             }
 
             if (shieldsshown || dodgeshown)
@@ -2856,13 +2855,13 @@ enhance_weapon_skill()
                     Strcat(buf, "AC bonus for dodge,");
                 }
 
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, NO_COLOR, buf, MENU_UNSELECTED);
             }
 
             if (wandsshown)
             {
                 Strcpy(buf, "to-hit/damage multiplier for wands,");
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, NO_COLOR, buf, MENU_UNSELECTED);
             }
             
             if (disarmtrapslast)
@@ -2873,14 +2872,14 @@ enhance_weapon_skill()
             {
                 Strcpy(buf, "and success/cost adjustment for spells.");
             }
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, NO_COLOR, buf, MENU_UNSELECTED);
 
             if (disarmtrapslast)
             {
                 Strcpy(buf, "arrow/magic trap untrap chance for disarm trap.");
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, NO_COLOR, buf, MENU_UNSELECTED);
             }
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
         }
 
         if (eventually_advance > 0 || maxxed_cnt > 0)
@@ -2892,17 +2891,17 @@ enhance_weapon_skill()
                         (u.ulevel < MAXULEV)
                             ? "when you're more experienced"
                             : "if skill slots become available");
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf,
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, NO_COLOR, buf,
                          MENU_UNSELECTED);
             }
             if (maxxed_cnt > 0)
             {
                 Sprintf(buf, "#: Cannot be enhanced further.");
 
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf,
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, NO_COLOR, buf,
                          MENU_UNSELECTED);
             }
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
                      MENU_UNSELECTED);
         }
 
@@ -2942,7 +2941,7 @@ enhance_weapon_skill()
                     to_advance + eventually_advance > 0 ? "Next level" : "");
         }
 
-        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
+        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
             headerbuf, MENU_UNSELECTED);
         
         for (pass = 0; pass < SIZE(skill_ranges); pass++)
@@ -2994,12 +2993,12 @@ enhance_weapon_skill()
                     }
                     /*
                     if (!firstheader)
-                        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                             "", MENU_UNSELECTED);
                     */
                     if (skillcount > 0)
                     {
-                        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
+                        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
                             skill_ranges[pass].name, MENU_UNSELECTED);
                         //firstheader = FALSE;
                     }
@@ -3343,7 +3342,7 @@ enhance_weapon_skill()
                             sklnambuf, skillslotbuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                 }
                 any.a_int = can_advance(i, speedy) ? i + 1 : 0;
-                add_extended_menu(win, NO_GLYPH, &any, menu_special_mark_info(special_mark, color), 0, 0, ATR_NONE, buf,
+                add_extended_menu(win, NO_GLYPH, &any, menu_special_mark_info(special_mark, color), 0, 0, ATR_NONE, NO_COLOR, buf,
                     MENU_UNSELECTED);
             }
         }

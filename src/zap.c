@@ -5474,7 +5474,7 @@ register struct obj *obj;
                                 Sprintf(wpbuf, "%s - %s", dname, slev->name);
                             else
                                 Sprintf(wpbuf, "%s", slev->name);
-                            add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                            add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                                 wpbuf, MENU_UNSELECTED);
                         }
                     }
@@ -5482,7 +5482,7 @@ register struct obj *obj;
 
                 any = zeroany;
                 any.a_int = NUM_WAYPOINTS + 1;
-                add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                     "Last town portal level", MENU_UNSELECTED);
 
                 end_menu(menuwin, "Pick a level to teleport to");
@@ -5556,7 +5556,7 @@ register struct obj *obj;
                                 else
                                     Sprintf(wpbuf, "%s", slev->name);
 
-                                add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                                add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                                     wpbuf, MENU_UNSELECTED);
                             }
                         }

@@ -1064,7 +1064,7 @@ identifier
 */
 void
 mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
-               CHAR_P accelerator, CHAR_P group_accel, int attr,
+               CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
                const char *str, BOOLEAN_P presel)
 {
     logDebug("mswin_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
@@ -1079,6 +1079,7 @@ mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
         data.accelerator = accelerator;
         data.group_accel = group_accel;
         data.attr = attr;
+        data.color = color;
         data.str = str;
         data.presel = presel;
 
@@ -1089,11 +1090,11 @@ mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
 
 void
 mswin_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
-    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
     const char* str, BOOLEAN_P presel)
 {
     mswin_add_menu(glyph, identifier,
-        accelerator, group_accel, attr,
+        accelerator, group_accel, attr, color,
         str, presel);
 }
 /*

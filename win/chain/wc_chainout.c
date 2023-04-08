@@ -240,7 +240,7 @@ int style;
 }
 
 void
-chainout_add_menu(vp, window, glyph, identifier, ch, gch, attr, str,
+chainout_add_menu(vp, window, glyph, identifier, ch, gch, attr, color, str,
                   preselected)
 void *vp;
 winid window;               /* window to use, must be of type NHW_MENU */
@@ -249,17 +249,18 @@ const anything *identifier; /* what to return if selected */
 char ch;                    /* keyboard accelerator (0 = pick our own) */
 char gch;                   /* group accelerator (0 = no group) */
 int attr;                   /* attribute for string (like tty_putstr()) */
+int color;                  /* color for string (like tty_putstr_ex()) */
 const char *str;            /* menu string */
 boolean preselected;        /* item is marked as selected */
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_add_menu)(window, glyph, identifier, ch, gch, attr,
+    (*tdp->nprocs->win_add_menu)(window, glyph, identifier, ch, gch, attr, color,
                                  str, preselected);
 }
 
 void
-chainout_add_extended_menu(vp, window, glyph, identifier, info, ch, gch, attr, str,
+chainout_add_extended_menu(vp, window, glyph, identifier, info, ch, gch, attr, color, str,
     preselected)
     void* vp;
 winid window;               /* window to use, must be of type NHW_MENU */
@@ -269,10 +270,11 @@ struct extended_menu_info info;
 char ch;                    /* keyboard accelerator (0 = pick our own) */
 char gch;                   /* group accelerator (0 = no group) */
 int attr;                   /* attribute for string (like tty_putstr()) */
+int color;                  /* color for string (like tty_putstr_ex()) */
 const char* str;            /* menu string */
 boolean preselected;        /* item is marked as selected */
 {
-    (*tdp->nprocs->win_add_extended_menu)(window, glyph, identifier, info, ch, gch, attr,
+    (*tdp->nprocs->win_add_extended_menu)(window, glyph, identifier, info, ch, gch, attr, color,
         str, preselected);
 }
 void

@@ -59,13 +59,14 @@ register int style;
 
 /* Add a string to a menu */
 void
-amii_add_menu(window, glyph, id, ch, gch, attr, str, preselected)
+amii_add_menu(window, glyph, id, ch, gch, attr, color, str, preselected)
 register winid window;
 register int glyph;
 register const anything *id;
 register char ch;
 register char gch;
 register int attr;
+register int color;
 register const char *str;
 register BOOLEAN_P preselected;
 {
@@ -123,7 +124,7 @@ register BOOLEAN_P preselected;
 }
 
 void
-amii_add_extended_menu(window, glyph, id, info, ch, gch, attr, str, preselected)
+amii_add_extended_menu(window, glyph, id, info, ch, gch, attr, color, str, preselected)
 register winid window;
 register int glyph;
 register const anything* id;
@@ -131,10 +132,11 @@ struct extended_menu_info info;
 register char ch;
 register char gch;
 register int attr;
+register int color;
 register const char* str;
 register BOOLEAN_P preselected;
 {
-    amii_add_menu(window, glyph, id, ch, gch, attr, str, preselected);
+    amii_add_menu(window, glyph, id, ch, gch, attr, color, str, preselected);
 }
 /* Done building a menu. */
 

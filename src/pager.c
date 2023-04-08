@@ -1471,19 +1471,19 @@ coord *click_cc;
             /* 'y' and 'n' to keep backwards compatibility with previous
                versions: "Specify unknown object by cursor?" */
             add_menu(win, NO_GLYPH, &any,
-                     flags.lootabc ? 0 : any.a_char, 'y', ATR_NONE,
+                     flags.lootabc ? 0 : any.a_char, 'y', ATR_NONE, NO_COLOR,
                      "something on the map", MENU_UNSELECTED);
             any.a_char = 'i';
             add_menu(win, NO_GLYPH, &any,
-                     flags.lootabc ? 0 : any.a_char, 0, ATR_NONE,
+                     flags.lootabc ? 0 : any.a_char, 0, ATR_NONE, NO_COLOR,
                      "something you're carrying", MENU_UNSELECTED);
             any.a_char = '?';
             add_menu(win, NO_GLYPH, &any,
-                     flags.lootabc ? 0 : any.a_char, 'n', ATR_NONE,
+                     flags.lootabc ? 0 : any.a_char, 'n', ATR_NONE, NO_COLOR,
                      "something else (by symbol or name)", MENU_UNSELECTED);
             if (!u.uswallow && !Hallucination) {
                 any = zeroany;
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                          "", MENU_UNSELECTED);
                 /* these options work sensibly for the swallowed case,
                    but there's no reason for the player to use them then;
@@ -1492,19 +1492,19 @@ coord *click_cc;
                    bogus monster type, so suppress when hallucinating */
                 any.a_char = 'm';
                 add_menu(win, NO_GLYPH, &any,
-                         flags.lootabc ? 0 : any.a_char, 0, ATR_NONE,
+                         flags.lootabc ? 0 : any.a_char, 0, ATR_NONE, NO_COLOR,
                          "nearby monsters", MENU_UNSELECTED);
                 any.a_char = 'M';
                 add_menu(win, NO_GLYPH, &any,
-                         flags.lootabc ? 0 : any.a_char, 0, ATR_NONE,
+                         flags.lootabc ? 0 : any.a_char, 0, ATR_NONE, NO_COLOR,
                          "all monsters shown on map", MENU_UNSELECTED);
                 any.a_char = 'o';
                 add_menu(win, NO_GLYPH, &any,
-                         flags.lootabc ? 0 : any.a_char, 0, ATR_NONE,
+                         flags.lootabc ? 0 : any.a_char, 0, ATR_NONE, NO_COLOR,
                          "nearby objects", MENU_UNSELECTED);
                 any.a_char = 'O';
                 add_menu(win, NO_GLYPH, &any,
-                         flags.lootabc ? 0 : any.a_char, 0, ATR_NONE,
+                         flags.lootabc ? 0 : any.a_char, 0, ATR_NONE, NO_COLOR,
                          "all objects shown on map", MENU_UNSELECTED);
             }
             end_menu(win, "What do you want to look at:");
@@ -2370,7 +2370,7 @@ dohelp()
             Strcpy(helpbuf, help_menu_items[i].text);
         }
         any.a_int = i + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                  helpbuf, MENU_UNSELECTED);
     }
     end_menu(tmpwin, "Select one item:");

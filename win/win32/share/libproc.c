@@ -319,7 +319,7 @@ void lib_start_menu_ex(winid wid, int style)
 }
 
 void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
     const char* str, BOOLEAN_P presel)
 {
     if (!str)
@@ -328,15 +328,14 @@ void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     char buf[BUFSIZ];
     if (str)
         write_text2buf_utf8(buf, BUFSIZ, str);
-    int color = CLR_WHITE;
 #ifdef TEXTCOLOR
     get_menu_coloring(str, &color, &attr);
 #endif
-    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str ? buf : 0, presel, color);
+    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, color, str ? buf : 0, presel);
 }
 
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
-    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
     const char* str, BOOLEAN_P presel)
 {
     if (!str)
@@ -346,7 +345,6 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct
     if(str)
         write_text2buf_utf8(buf, BUFSIZ, str);
 
-    int color = info.color;
 #ifdef TEXTCOLOR
     get_menu_coloring(str, &color, &attr);
 #endif
@@ -354,7 +352,7 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct
         set_obj_glyph(info.object);
 
     struct objclassdata ocdata = get_objclassdata(info.object);
-    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str ? buf : 0, presel, color, (info.object && !(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? (int)info.object->quan : 0),
+    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, color, str ? buf : 0, presel, (info.object && !(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? (int)info.object->quan : 0),
         (unsigned long long)(info.object ? info.object->o_id : 0), (unsigned long long)(info.monster ? info.monster->m_id : 0), info.heading_for_group_accelerator, info.special_mark, info.menu_flags,
         (info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && info.monster->female ? MENU_DATAFLAGS_FEMALE : 0),
         info.style, info.object, &ocdata);

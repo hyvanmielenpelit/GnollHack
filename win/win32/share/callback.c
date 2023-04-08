@@ -208,7 +208,7 @@ common_prompt_for_player_selection()
                         flags.initalign >= 0 ? aligns[flags.initalign].value : A_NEUTRAL, 
                         0);
                     int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
-                    add_menu(win, glyph, &any, thisch, 0, ATR_NONE,
+                    add_menu(win, glyph, &any, thisch, 0, ATR_NONE, NO_COLOR,
                         an(rolenamebuf), MENU_UNSELECTED);
                     lastch = thisch;
                 }
@@ -217,10 +217,10 @@ common_prompt_for_player_selection()
                 flags.initalign, PICK_RANDOM) + 1;
             if (any.a_int == 0) /* must be non-zero */
                 any.a_int = randrole(FALSE) + 1;
-            add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "Random",
+            add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                 MENU_UNSELECTED);
             any.a_int = i + 1; /* must be non-zero */
-            add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, "Quit",
+            add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                 MENU_UNSELECTED);
             Sprintf(pbuf, "Pick a role for your %s", plbuf);
             end_menu(win, pbuf);
@@ -299,17 +299,17 @@ common_prompt_for_player_selection()
                             0);
                         int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
                         add_menu(win, glyph, &any, races[i].noun[0], 0,
-                            ATR_NONE, races[i].noun, MENU_UNSELECTED);
+                            ATR_NONE, NO_COLOR, races[i].noun, MENU_UNSELECTED);
                     }
 
                 any.a_int = pick_race(flags.initrole, flags.initgend,
                     flags.initalign, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randrace(flags.initrole) + 1;
-                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "Random",
+                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                     MENU_UNSELECTED);
                 any.a_int = i + 1; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, "Quit",
+                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                     MENU_UNSELECTED);
                 Sprintf(pbuf, "Pick the race of your %s", plbuf);
                 end_menu(win, pbuf);
@@ -392,17 +392,17 @@ common_prompt_for_player_selection()
                             0);
                         int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
                         add_menu(win, glyph, &any, genders[i].adj[0], 0,
-                            ATR_NONE, genders[i].adj, MENU_UNSELECTED);
+                            ATR_NONE, NO_COLOR, genders[i].adj, MENU_UNSELECTED);
                     }
 
                 any.a_int = pick_gend(flags.initrole, flags.initrace,
                     flags.initalign, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randgend(flags.initrole, flags.initrace) + 1;
-                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "Random",
+                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                     MENU_UNSELECTED);
                 any.a_int = i + 1; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, "Quit",
+                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                     MENU_UNSELECTED);
                 Sprintf(pbuf, "Pick the gender of your %s", plbuf);
                 end_menu(win, pbuf);
@@ -484,17 +484,17 @@ common_prompt_for_player_selection()
                             0);
                         int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
                         add_menu(win, glyph, &any, aligns[i].adj[0], 0,
-                            ATR_NONE, aligns[i].adj, MENU_UNSELECTED);
+                            ATR_NONE, NO_COLOR, aligns[i].adj, MENU_UNSELECTED);
                     }
 
                 any.a_int = pick_align(flags.initrole, flags.initrace,
                     flags.initgend, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randalign(flags.initrole, flags.initrace) + 1;
-                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "Random",
+                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                     MENU_UNSELECTED);
                 any.a_int = i + 1; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, "Quit",
+                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                     MENU_UNSELECTED);
                 Sprintf(pbuf, "Pick the alignment of your %s", plbuf);
                 end_menu(win, pbuf);

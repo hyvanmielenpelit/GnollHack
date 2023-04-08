@@ -4229,7 +4229,7 @@ long pickcnt;
 
         any = zeroany;
         add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
-            0, 0, iflags.menu_headings,
+            0, 0, iflags.menu_headings, NO_COLOR,
             hbuf, MENU_UNSELECTED);
 
         for (i = 0; extcmdlist[i].ef_txt; i++)
@@ -4296,7 +4296,7 @@ long pickcnt;
             Sprintf(buf, "%s%s", cmdbuf, shortcutbuf);
 
             add_menu(win, NO_GLYPH, &any,
-                0, 0, ATR_NONE,
+                0, 0, ATR_NONE, NO_COLOR,
                 buf, MENU_UNSELECTED);
 
             actioncount++;
@@ -4564,10 +4564,10 @@ boolean addinventoryheader, wornonly;
             Sprintf(eos(prompt),
                     " -- unidentified or partially identified item%s",
                     plur(unid_cnt));
-        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, prompt, MENU_UNSELECTED);
+        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, prompt, MENU_UNSELECTED);
         if (!unid_cnt) 
         {
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                      "(all items are permanently identified already)",
                      MENU_UNSELECTED);
         } 
@@ -4583,7 +4583,7 @@ boolean addinventoryheader, wornonly;
             if (unid_cnt > 1)
                 Sprintf(eos(prompt), " (%s for all)",
                         visctrl(iflags.override_ID));
-            add_menu(win, NO_GLYPH, &any, '_', iflags.override_ID, ATR_NONE,
+            add_menu(win, NO_GLYPH, &any, '_', iflags.override_ID, ATR_NONE, NO_COLOR,
                      prompt, MENU_UNSELECTED);
             wizid = TRUE;
         }
@@ -4592,19 +4592,19 @@ boolean addinventoryheader, wornonly;
     {
         /* wizard override ID and xtra_choice are mutually exclusive */
         if (flags.sortpack)
-            add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
+            add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
                      "Miscellaneous", MENU_UNSELECTED);
         any.a_char = HANDS_SYM; /* '-' */
-        add_menu(win, NO_GLYPH, &any, HANDS_SYM, 0, ATR_NONE,
+        add_menu(win, NO_GLYPH, &any, HANDS_SYM, 0, ATR_NONE, NO_COLOR,
                  xtra_choice, MENU_UNSELECTED);
     }
 
 #if !defined(GNH_MOBILE)
    if(strcmp(headertext, "") != 0)
    {
-       add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE,
+       add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE, NO_COLOR,
            headertext, MENU_UNSELECTED);
-       add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE,
+       add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE, NO_COLOR,
            "", MENU_UNSELECTED);
    }
 #endif
@@ -4626,7 +4626,7 @@ nextclass:
             {
                 add_extended_menu(win, NO_GLYPH, &any, 
                     menu_group_heading_info(*invlet > ILLOBJ_CLASS && *invlet < MAX_OBJECT_CLASSES ? def_oc_syms[(int)(*invlet)].sym : '\0'),
-                    0, 0, iflags.menu_headings,
+                    0, 0, iflags.menu_headings, NO_COLOR,
                          let_to_name(*invlet, FALSE,
                                      (want_reply && iflags.menu_head_objsym)),
                          MENU_UNSELECTED);
@@ -4649,7 +4649,7 @@ nextclass:
             int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
             add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, obj_to_extended_menu_info(otmp), ilet,
                 applied_class_accelerator,
-                     ATR_NONE, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED);
+                     ATR_NONE, NO_COLOR, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED);
         }
     }
     if (flags.sortpack) 
@@ -4665,10 +4665,10 @@ nextclass:
     if (iflags.force_invmenu && lets && want_reply) 
     {
         any = zeroany;
-        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
+        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
                  "Special", MENU_UNSELECTED);
         any.a_char = '*';
-        add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE,
+        add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR,
                  "(list everything)", MENU_UNSELECTED);
     }
     unsortloot(&sortedinvent);
@@ -4679,7 +4679,7 @@ nextclass:
     if (iflags.perm_invent && !lets && !any.a_char) 
     {
         any = zeroany;
-        add_menu(win, NO_GLYPH, &any, 0, 0, 0,
+        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                  not_carrying_anything, MENU_UNSELECTED);
         want_reply = FALSE;
     }
@@ -4771,7 +4771,7 @@ int show_weights;
     if (show_weights > 0)
     {
         anything any = zeroany;
-        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
+        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR,
             "Weight Summary", MENU_UNSELECTED);
 
         char wtbuf[BUFSZ];
@@ -4828,7 +4828,7 @@ int show_weights;
             else
                 Sprintf(wtbuf, "  = %s of total weight", weightbuf);
 
-            add_menu(win, NO_GLYPH, &any, 0, 0, 0, wtbuf, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, wtbuf, MENU_UNSELECTED);
         }
 
         if (show_weights > 0 && show_weights <= 3)
@@ -4859,7 +4859,7 @@ int show_weights;
             }
 
             Sprintf(totalbuf, "%s%s", carrybuf, wtbuf);
-            add_menu(win, NO_GLYPH, &any, 0, 0, 0, totalbuf, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, totalbuf, MENU_UNSELECTED);
         }
     }
 }
@@ -5043,7 +5043,7 @@ char avoidlet;
                     if (flags.sortpack && !classcount) {
                         any = zeroany; /* zero */
                         add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0,
-                                 iflags.menu_headings,
+                                 iflags.menu_headings, NO_COLOR,
                                  let_to_name(*invlet, FALSE, FALSE),
                                  MENU_UNSELECTED);
                         classcount++;
@@ -5052,7 +5052,7 @@ char avoidlet;
                     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
                     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
                     add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph,
-                             &any, obj_to_extended_menu_info(otmp), ilet, 0, ATR_NONE,
+                             &any, obj_to_extended_menu_info(otmp), ilet, 0, ATR_NONE, NO_COLOR,
                              (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE) : doname_with_weight_first(otmp, TRUE)), MENU_UNSELECTED);
                 }
             }
@@ -6901,7 +6901,7 @@ const char *hdr, *txt;
     any = zeroany;
     win = create_nhwindow(NHW_MENU);
     start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, txt, MENU_UNSELECTED);
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, txt, MENU_UNSELECTED);
     end_menu(win, hdr);
     if (select_menu(win, PICK_NONE, &selected) > 0)
         free((genericptr_t) selected);

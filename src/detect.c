@@ -1329,7 +1329,7 @@ struct obj **optr;
             if (strcmp(def_monsyms[k].explain, ""))
             {
                 any.a_int = k + 1;
-                add_menu(tmpwin, NO_GLYPH, &any, def_monsyms[k].sym == ' ' ? ',' : def_monsyms[k].sym, 0, ATR_NONE, def_monsyms[k].explain, MENU_UNSELECTED);
+                add_menu(tmpwin, NO_GLYPH, &any, def_monsyms[k].sym == ' ' ? ',' : def_monsyms[k].sym, 0, ATR_NONE, NO_COLOR, def_monsyms[k].explain, MENU_UNSELECTED);
             }
         }
         for (k = 0; k < MAX_OBJECT_CLASSES; k++)
@@ -1337,29 +1337,29 @@ struct obj **optr;
             if (strcmp(def_oc_syms[k].explain, "") && def_oc_syms[k].sym != ILLOBJ_SYM && def_oc_syms[k].sym != '\0')
             {
                 any.a_int = -(k + 1);
-                add_menu(tmpwin, NO_GLYPH, &any, def_oc_syms[k].sym, 0, ATR_NONE, def_oc_syms[k].explain, MENU_UNSELECTED);
+                add_menu(tmpwin, NO_GLYPH, &any, def_oc_syms[k].sym, 0, ATR_NONE, NO_COLOR, def_oc_syms[k].explain, MENU_UNSELECTED);
             }
         }
 
         /* Cmap, which sometimes do not work */
         any.a_int = MAX_MONSTER_CLASSES + S_arrow_trap + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_arrow_trap].sym, 0, ATR_NONE, "traps and portals", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_arrow_trap].sym, 0, ATR_NONE, NO_COLOR, "traps and portals", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_throne + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_throne].sym, 0, ATR_NONE, "thrones", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_throne].sym, 0, ATR_NONE, NO_COLOR, "thrones", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_altar + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_altar].sym, 0, ATR_NONE, "altars and anvils", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_altar].sym, 0, ATR_NONE, NO_COLOR, "altars and anvils", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_dnstair + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_dnstair].sym, 0, ATR_NONE, "stairs and ladders down", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_dnstair].sym, 0, ATR_NONE, NO_COLOR, "stairs and ladders down", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_upstair + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_upstair].sym, 0, ATR_NONE, "stairs and ladders up", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_upstair].sym, 0, ATR_NONE, NO_COLOR, "stairs and ladders up", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_tree + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_tree].sym, 0, ATR_NONE, "trees and sinks", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_tree].sym, 0, ATR_NONE, NO_COLOR, "trees and sinks", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_fountain + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_fountain].sym, 0, ATR_NONE, "fountains", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_fountain].sym, 0, ATR_NONE, NO_COLOR, "fountains", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_pool + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_pool].sym, 0, ATR_NONE, "water or lava", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_pool].sym, 0, ATR_NONE, NO_COLOR, "water or lava", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_grave + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_grave].sym, 0, ATR_NONE, "graves, braziers, and signposts", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_grave].sym, 0, ATR_NONE, NO_COLOR, "graves, braziers, and signposts", MENU_UNSELECTED);
 
 
         end_menu(tmpwin, "What do you look for?");

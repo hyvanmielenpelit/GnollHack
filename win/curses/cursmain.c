@@ -533,7 +533,7 @@ add_menu(winid wid, int glyph, const anything identifier,
 */
 void
 curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
-                CHAR_P accelerator, CHAR_P group_accel, int attr,
+                CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
                 const char *str, BOOLEAN_P presel)
 {
     attr &= ~(ATR_LINE_MSG_MASK);
@@ -546,13 +546,13 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
         int applied_y = 1 + inv_update - (has_border ? 0 : 1);
         if (applied_y <= applicable_height)
         {
-            curses_add_inv(applied_y, glyph, accelerator, attr, NO_COLOR, str, (char*)0, (char*)0);
+            curses_add_inv(applied_y, glyph, accelerator, attr, color, str, (char*)0, (char*)0);
             inv_update++;
         }
     }
 
     curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
-        attr, NO_COLOR, str, (char*)0, (char*)0, presel);
+        attr, color, str, (char*)0, (char*)0, presel);
 }
 
 void
@@ -570,7 +570,7 @@ curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
 
 void
 curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
-    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
     const char* str, BOOLEAN_P presel)
 {
     attr &= ~(ATR_LINE_MSG_MASK);
@@ -583,13 +583,13 @@ curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct e
         int applied_y = 1 + inv_update - (has_border ? 0 : 1);
         if (applied_y <= applicable_height)
         {
-            curses_add_inv(applied_y, glyph, accelerator, attr, info.color, str, info.attrs, info.colors);
+            curses_add_inv(applied_y, glyph, accelerator, attr, color != NO_COLOR ? color : info.color, str, info.attrs, info.colors);
             inv_update++;
         }
     }
 
     curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
-        attr, info.color, str, info.attrs, info.colors, presel);
+        attr, color != NO_COLOR ? color : info.color, str, info.attrs, info.colors, presel);
 }
 
 

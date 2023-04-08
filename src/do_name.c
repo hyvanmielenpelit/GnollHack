@@ -630,7 +630,7 @@ int gloc;
                               iflags.getpos_coords);
             Sprintf(fullbuf, "%s%s%s", firstmatch,
                     (*tmpbuf ? " " : ""), tmpbuf);
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, fullbuf,
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, fullbuf,
                      MENU_UNSELECTED);
         }
     }
@@ -1672,29 +1672,29 @@ docallcmd()
     if (!getobj_autoselect_obj)
     {
         any.a_char = 'm'; /* group accelerator 'C' */
-        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'C', ATR_NONE,
+        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'C', ATR_NONE, NO_COLOR,
             "a monster", MENU_UNSELECTED);
     }
     if (invent) {
         /* we use y and n as accelerators so that we can accept user's
             response keyed to old "name an individual object?" prompt */
         any.a_char = 'i'; /* group accelerator 'y' */
-        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'y', ATR_NONE,
+        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'y', ATR_NONE, NO_COLOR,
             "a particular object in inventory", MENU_UNSELECTED);
         any.a_char = 'o'; /* group accelerator 'n' */
-        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'n', ATR_NONE,
+        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'n', ATR_NONE, NO_COLOR,
             "the type of an object in inventory", MENU_UNSELECTED);
     }
     if (!getobj_autoselect_obj)
     {
         any.a_char = 'f'; /* group accelerator ',' (or ':' instead?) */
-        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, ',', ATR_NONE,
+        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, ',', ATR_NONE, NO_COLOR,
             "the type of an object upon the floor", MENU_UNSELECTED);
         any.a_char = 'd'; /* group accelerator '\' */
-        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, '\\', ATR_NONE,
+        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, '\\', ATR_NONE, NO_COLOR,
             "the type of an object on discoveries list", MENU_UNSELECTED);
         any.a_char = 'a'; /* group accelerator 'l' */
-        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'l', ATR_NONE,
+        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'l', ATR_NONE, NO_COLOR,
             "record an annotation for the current level", MENU_UNSELECTED);
         end_menu(win, "What do you want to name?");
     }

@@ -43,9 +43,9 @@ void amii_getret(void);
 
 /* winmenu.c */
 void amii_start_menu_ex(winid window, int style);
-void FDECL(amii_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P, int,
+void FDECL(amii_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P, int, int,
                            const char *, BOOLEAN_P));
-void FDECL(amii_add_extended_menu, (winid, int, const anything*, struct extended_menu_info, CHAR_P, CHAR_P, int,
+void FDECL(amii_add_extended_menu, (winid, int, const anything*, struct extended_menu_info, CHAR_P, CHAR_P, int, int,
     const char*, BOOLEAN_P));
 void FDECL(amii_end_menu_ex, (winid, const char *, const char*));
 int FDECL(amii_select_menu, (winid, int, menu_item **));

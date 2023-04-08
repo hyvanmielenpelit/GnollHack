@@ -1448,7 +1448,7 @@ bool NetHackQtWindow::Destroy() { return TRUE; }
 void NetHackQtWindow::CursorTo(int x,int y) { puts("unexpected CursorTo"); }
 void NetHackQtWindow::PutStr(int attr, const char* text) { puts("unexpected PutStr"); }
 void NetHackQtWindow::StartMenu() { puts("unexpected StartMenu"); }
-void NetHackQtWindow::AddMenu(int glyph, const ANY_P* identifier, char ch, char gch, int attr,
+void NetHackQtWindow::AddMenu(int glyph, const ANY_P* identifier, char ch, char gch, int attr, int color,
     const char* str, bool presel) { puts("unexpected AddMenu"); }
 void NetHackQtWindow::EndMenu(const char* prompt) { puts("unexpected EndMenu"); }
 int NetHackQtWindow::SelectMenu(int how, MENU_ITEM_P **menu_list) { puts("unexpected SelectMenu"); return 0; }
@@ -4831,19 +4831,19 @@ void NetHackQtBind::qt_start_menu_ex(winid wid, int style)
 }
 
 void NetHackQtBind::qt_add_menu(winid wid, int glyph,
-    const ANY_P * identifier, CHAR_P ch, CHAR_P gch, int attr,
+    const ANY_P * identifier, CHAR_P ch, CHAR_P gch, int attr, int color,
     const char *str, BOOLEAN_P presel)
 {
     NetHackQtWindow* window=id_to_window[wid];
-    window->AddMenu(glyph, identifier, ch, gch, attr, str, presel);
+    window->AddMenu(glyph, identifier, ch, gch, attr, color, str, presel);
 }
 
 void NetHackQtBind::qt_add_extended_menu(winid wid, int glyph,
-    const ANY_P* identifier, struct extended_menu_info info, CHAR_P ch, CHAR_P gch, int attr,
+    const ANY_P* identifier, struct extended_menu_info info, CHAR_P ch, CHAR_P gch, int attr, int color,
     const char* str, BOOLEAN_P presel)
 {
     NetHackQtWindow* window = id_to_window[wid];
-    window->AddMenu(glyph, identifier, ch, gch, attr, str, presel);
+    window->AddMenu(glyph, identifier, ch, gch, attr, color, str, presel);
 }
 
 void NetHackQtBind::qt_end_menu_ex(winid wid, const char *prompt, const char* subtitle)

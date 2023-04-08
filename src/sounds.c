@@ -2403,7 +2403,7 @@ struct monst* mtmp;
         any.a_char = available_chat_list[chatnum].charnum;
 
         add_menu(win, NO_GLYPH, &any,
-            any.a_char, 0, ATR_NONE,
+            any.a_char, 0, ATR_NONE, NO_COLOR,
             available_chat_list[chatnum].name, MENU_UNSELECTED);
 
         chatnum++;
@@ -2419,7 +2419,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -2443,7 +2443,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2463,7 +2463,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2479,7 +2479,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2496,7 +2496,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2512,7 +2512,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2528,7 +2528,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2546,7 +2546,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -2559,7 +2559,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -2572,7 +2572,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -2587,7 +2587,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2600,7 +2600,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2616,7 +2616,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2632,7 +2632,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2645,7 +2645,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2661,7 +2661,7 @@ struct monst* mtmp;
             //    any.a_char = available_chat_list[chatnum].charnum;
 
             //    add_menu(win, NO_GLYPH, &any,
-            //        any.a_char, 0, ATR_NONE,
+            //        any.a_char, 0, ATR_NONE, NO_COLOR,
             //        available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             //    chatnum++;
@@ -2680,7 +2680,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -2693,7 +2693,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -2706,7 +2706,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -2721,7 +2721,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2737,7 +2737,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2753,7 +2753,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2769,7 +2769,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2785,7 +2785,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2804,7 +2804,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -2819,7 +2819,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2838,7 +2838,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -2853,7 +2853,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2874,7 +2874,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2890,7 +2890,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2911,7 +2911,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2928,7 +2928,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2945,7 +2945,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2970,7 +2970,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -2994,7 +2994,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3013,7 +3013,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3030,7 +3030,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3048,7 +3048,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3065,7 +3065,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3083,7 +3083,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3104,7 +3104,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3125,7 +3125,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3139,7 +3139,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3156,7 +3156,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3172,7 +3172,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3191,7 +3191,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3208,7 +3208,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3224,7 +3224,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3244,7 +3244,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3260,7 +3260,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3277,7 +3277,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3293,7 +3293,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3309,7 +3309,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3335,7 +3335,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3366,7 +3366,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3379,7 +3379,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3397,7 +3397,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3410,7 +3410,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3423,7 +3423,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3441,7 +3441,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3455,7 +3455,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3469,7 +3469,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3483,7 +3483,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3496,7 +3496,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3509,7 +3509,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3524,7 +3524,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3544,7 +3544,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3558,7 +3558,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3572,7 +3572,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3589,7 +3589,7 @@ struct monst* mtmp;
             any.a_char = available_chat_list[chatnum].charnum;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
@@ -3612,7 +3612,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3628,7 +3628,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3644,7 +3644,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3667,7 +3667,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3691,7 +3691,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3712,7 +3712,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3729,7 +3729,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3743,7 +3743,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3757,7 +3757,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3773,7 +3773,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3787,7 +3787,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3801,7 +3801,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3815,7 +3815,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3829,7 +3829,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3843,7 +3843,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3857,7 +3857,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3872,7 +3872,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3894,7 +3894,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3910,7 +3910,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3924,7 +3924,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3945,7 +3945,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -3964,7 +3964,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -3982,7 +3982,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -3999,7 +3999,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4018,7 +4018,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4037,7 +4037,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4054,7 +4054,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4071,7 +4071,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4088,7 +4088,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4107,7 +4107,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4126,7 +4126,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4145,7 +4145,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4164,7 +4164,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4181,7 +4181,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4199,7 +4199,7 @@ struct monst* mtmp;
                     any.a_char = available_chat_list[chatnum].charnum;
 
                     add_menu(win, NO_GLYPH, &any,
-                        any.a_char, 0, ATR_NONE,
+                        any.a_char, 0, ATR_NONE, NO_COLOR,
                         available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                     chatnum++;
@@ -4224,7 +4224,7 @@ struct monst* mtmp;
                 any.a_char = available_chat_list[chatnum].charnum;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
@@ -5572,7 +5572,7 @@ struct monst* mtmp;
         any = zeroany;
         any.a_int = 1;
         Sprintf(nbuf, "Cast a bless on %s item", s_suffix(mon_nam(mtmp)));
-        add_menu(win, POT_WATER + GLYPH_OBJ_OFF, &any, 0, 0, ATR_NONE, "Dip an item in a potion of water", MENU_UNSELECTED);
+        add_menu(win, POT_WATER + GLYPH_OBJ_OFF, &any, 0, 0, ATR_NONE, NO_COLOR, "Dip an item in a potion of water", MENU_UNSELECTED);
         cnt++;
     }
 
@@ -5591,7 +5591,7 @@ struct monst* mtmp;
         any = zeroany;
         any.a_int = 2;
         Sprintf(nbuf, "Ask %s to read a scroll of remove curse", mon_nam(mtmp));
-        add_menu(win, SCR_REMOVE_CURSE + GLYPH_OBJ_OFF, &any, 0, 0, ATR_NONE, nbuf, MENU_UNSELECTED);
+        add_menu(win, SCR_REMOVE_CURSE + GLYPH_OBJ_OFF, &any, 0, 0, ATR_NONE, NO_COLOR, nbuf, MENU_UNSELECTED);
         cnt++;
     }
 
@@ -5611,7 +5611,7 @@ struct monst* mtmp;
         any = zeroany;
         any.a_int = 3;
         Sprintf(nbuf, "Cast a bless spell on %s item", s_suffix(mon_nam(mtmp)));
-        add_menu(win, SPE_BLESS - FIRST_SPELL + GLYPH_SPELL_TILE_OFF, &any, 0, 0, ATR_NONE, nbuf, MENU_UNSELECTED);
+        add_menu(win, SPE_BLESS - FIRST_SPELL + GLYPH_SPELL_TILE_OFF, &any, 0, 0, ATR_NONE, NO_COLOR, nbuf, MENU_UNSELECTED);
         cnt++;
     }
 
@@ -5647,7 +5647,7 @@ struct monst* mtmp;
         any = zeroany;
         any.a_int = 4;
         Sprintf(nbuf, "Ask %s to bless %s item", mon_nam(priest), s_suffix(mon_nam(mtmp)));
-        add_menu(win, mon_to_glyph(priest, rn2_on_display_rng), &any, 0, 0, ATR_NONE, nbuf, MENU_UNSELECTED);
+        add_menu(win, mon_to_glyph(priest, rn2_on_display_rng), &any, 0, 0, ATR_NONE, NO_COLOR, nbuf, MENU_UNSELECTED);
         cnt++;
     }
 
@@ -6339,7 +6339,7 @@ struct monst* mtmp;
                     madeheader = TRUE;
                     any = zeroany;
 
-                    add_extended_menu(win, NO_GLYPH, &any, menu_group_heading_info(def_oc_syms[(int)oclass].sym), 0, 0, iflags.menu_headings,
+                    add_extended_menu(win, NO_GLYPH, &any, menu_group_heading_info(def_oc_syms[(int)oclass].sym), 0, 0, iflags.menu_headings, NO_COLOR,
                         get_class_name(oclass), MENU_UNSELECTED);
                 }
 
@@ -6360,7 +6360,7 @@ struct monst* mtmp;
                 int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
                 int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
                 add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, & any, obj_to_extended_menu_info(otmp), 
-                    0, 0, ATR_NONE, 
+                    0, 0, ATR_NONE, NO_COLOR,
                     itembuf, MENU_UNSELECTED);
 
                 sellable_item_count++;
@@ -6595,7 +6595,7 @@ struct monst* mtmp;
                     madeheader = TRUE;
                     any = zeroany;
 
-                    add_extended_menu(win, NO_GLYPH, &any, menu_group_heading_info(def_oc_syms[(int)oclass].sym), 0, 0, iflags.menu_headings,
+                    add_extended_menu(win, NO_GLYPH, &any, menu_group_heading_info(def_oc_syms[(int)oclass].sym), 0, 0, iflags.menu_headings, NO_COLOR,
                         get_class_name(oclass), MENU_UNSELECTED);
                 }
 
@@ -6608,7 +6608,7 @@ struct monst* mtmp;
                 char accel = def_oc_syms[(int)otmp->oclass].sym;
 
                 add_menu(win, NO_GLYPH, &any,
-                    let, accel, ATR_NONE,
+                    let, accel, ATR_NONE, NO_COLOR,
                     itembuf, MENU_UNSELECTED);
 
                 item_count++;
@@ -7722,42 +7722,42 @@ struct monst* mtmp;
     any.a_char = 1;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge dragon scales into a dragon scale mail", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 2;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge a shield of reflection", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 3;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge a crystal plate mail", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 4;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge an adamantium full plate mail", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 5;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge a mithril full plate mail", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 6;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge an orichalcum full plate mail", MENU_UNSELECTED);
 
     /* Finish the menu */
@@ -7831,28 +7831,28 @@ struct monst* mtmp;
     any.a_char = 1;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge a plate mail", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 2;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge a bronze plate mail", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 3;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge a field plate mail", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 4;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge a full plate mail", MENU_UNSELECTED);
 
     /* Finish the menu */
@@ -7926,42 +7926,42 @@ struct monst* mtmp;
     any.a_char = 1;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge 10 iron sling-bullets", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 2;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge 10 exceptional iron sling-bullets", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 3;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge 10 elite iron sling-bullets", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 4;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge 10 silver sling-bullets", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 5;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge 10 exceptional silver sling-bullets", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 6;
 
     add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
+        0, 0, ATR_NONE, NO_COLOR,
         "Forge 10 elite silver sling-bullets", MENU_UNSELECTED);
 
     /* Finish the menu */
@@ -10828,7 +10828,7 @@ int* spell_otyps;
         int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_OBJECT, &pseudo, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
 
         add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
-            let, 0, ATR_NONE,
+            let, 0, ATR_NONE, NO_COLOR,
             spellbuf, MENU_UNSELECTED);
 
         spell_count++;
@@ -11017,7 +11017,7 @@ struct monst* mtmp;
                 Strcpy(nbuf, Monnam(nearbymon[i]));
             else
                 continue;
-            add_menu(win, isyou ? u_to_glyph() : mon_to_glyph(nearbymon[i], rn2_on_display_rng), &any, 0, 0, ATR_NONE, nbuf, MENU_UNSELECTED);
+            add_menu(win, isyou ? u_to_glyph() : mon_to_glyph(nearbymon[i], rn2_on_display_rng), &any, 0, 0, ATR_NONE, NO_COLOR, nbuf, MENU_UNSELECTED);
         }
 
         /* Finish the menu */

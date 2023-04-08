@@ -1209,7 +1209,7 @@ int* spell_no;
                 info.menu_flags |= MENU_FLAGS_ACTIVE;
 
             any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
-            add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, buf,
+            add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, NO_COLOR, buf,
                 (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
         }
     }
@@ -1240,7 +1240,7 @@ int* spell_no;
         {
             /* more than 1 spell, add an extra menu entry */
             any.a_int = SPELLMENU_SORT + 1;
-            add_menu(tmpwin, NO_GLYPH, &any, '+', 0, ATR_NONE,
+            add_menu(tmpwin, NO_GLYPH, &any, '+', 0, ATR_NONE, NO_COLOR,
                 "[sort spells]", MENU_UNSELECTED);
         }
     }
@@ -3556,13 +3556,13 @@ spellsortmenu()
             let = 'z'; /* assumes fewer than 26 sort choices... */
             /* separate final choice from others with a blank line */
             any.a_int = 0;
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
                      MENU_UNSELECTED);
         } else {
             let = 'a' + i;
         }
         any.a_int = i + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, let, 0, ATR_NONE, spl_sortchoices[i],
+        add_menu(tmpwin, NO_GLYPH, &any, let, 0, ATR_NONE, NO_COLOR, spl_sortchoices[i],
                  (i == flags.spellorder) ? MENU_SELECTED : MENU_UNSELECTED);
     }
     end_menu(tmpwin, "View known spells list sorted");
@@ -3723,7 +3723,7 @@ int *spell_no;
             Sprintf(buf, "Name\tH\tDescription");
         }
 
-        add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, buf,
+        add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR, buf,
             MENU_UNSELECTED);
 
 
@@ -3779,7 +3779,7 @@ int *spell_no;
                 Sprintf(buf, fmt, shortenedname, hotkeychar, descbuf);
 
             any.a_int = splnum + 1; /* must be non-zero */
-            add_menu(tmpwin, NO_GLYPH, &any, 0 /*spellet(splnum)*/, 0, ATR_INDENT_AT_DOUBLE_SPACE, buf,
+            add_menu(tmpwin, NO_GLYPH, &any, 0 /*spellet(splnum)*/, 0, ATR_INDENT_AT_DOUBLE_SPACE, NO_COLOR, buf,
                 (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
         }
@@ -3875,7 +3875,7 @@ int *spell_no;
         } else {
             /* more than 1 spell, add an extra menu entry */
             any.a_int = SPELLMENU_SORT + 1;
-            add_menu(tmpwin, NO_GLYPH, &any, '+', 0, ATR_NONE,
+            add_menu(tmpwin, NO_GLYPH, &any, '+', 0, ATR_NONE, NO_COLOR,
                      "[sort spells]", MENU_UNSELECTED);
         }
     }
@@ -3954,11 +3954,11 @@ boolean addemptyline;
     if (addemptyline)
     {
         any = zeroany;
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
     }
 
     any = zeroany;
-    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, buf,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR, buf,
         MENU_UNSELECTED);
 
 }
@@ -4079,7 +4079,7 @@ boolean usehotkey;
 
 
     any.a_int = splnum + 1; /* must be non-zero */
-    add_menu(tmpwin, NO_GLYPH, &any, letter, 0, ATR_NONE, buf,
+    add_menu(tmpwin, NO_GLYPH, &any, letter, 0, ATR_NONE, NO_COLOR, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
 }
@@ -4113,11 +4113,11 @@ boolean addemptyline;
     if (addemptyline)
     {
         any = zeroany;
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
     }
 
     any = zeroany;
-    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, buf,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, NO_COLOR, buf,
         MENU_UNSELECTED);
 
 }
@@ -4190,7 +4190,7 @@ int splaction;
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
 
-    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, buf,
+    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, NO_COLOR, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
 }
@@ -4254,7 +4254,7 @@ int splaction;
         info.menu_flags |= MENU_FLAGS_ACTIVE;
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
-    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, buf,
+    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, NO_COLOR, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 }
 
@@ -4404,13 +4404,7 @@ boolean usehotkey;
     else
         letter = 0; // spellet(splnum);
 
-    struct extended_menu_info info = nilextendedmenuinfo;
-    if ((spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE) || spellknow(splnum) <= 0)
-        info.color = CLR_BLACK;
-    else
-        info.color = NO_COLOR;
-
-    add_extended_menu(tmpwin, NO_GLYPH, &any, info, letter, 0, ATR_NONE, buf,
+    add_menu(tmpwin, NO_GLYPH, &any, letter, 0, ATR_NONE, (spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE) || spellknow(splnum) <= 0 ? CLR_BLACK : NO_COLOR, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
     //Strcat(shortenedname, "=black");
@@ -4462,7 +4456,7 @@ dospellmanagemenu()
     any.a_char = available_selection_item[selnum].charnum;
 
     add_menu(win, NO_GLYPH, &any,
-        any.a_char, 0, ATR_NONE,
+        any.a_char, 0, ATR_NONE, NO_COLOR,
         available_selection_item[selnum].name, MENU_UNSELECTED);
 
     selnum++;
@@ -4478,7 +4472,7 @@ dospellmanagemenu()
     any.a_char = available_selection_item[selnum].charnum;
 
     add_menu(win, NO_GLYPH, &any,
-        any.a_char, 0, ATR_NONE,
+        any.a_char, 0, ATR_NONE, NO_COLOR,
         available_selection_item[selnum].name, MENU_UNSELECTED);
 
     selnum++;
@@ -4494,7 +4488,7 @@ dospellmanagemenu()
     any.a_char = available_selection_item[selnum].charnum;
 
     add_menu(win, NO_GLYPH, &any,
-        any.a_char, 0, ATR_NONE,
+        any.a_char, 0, ATR_NONE, NO_COLOR,
         available_selection_item[selnum].name, MENU_UNSELECTED);
 
     selnum++;

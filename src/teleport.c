@@ -878,7 +878,7 @@ dotelecmd()
         for (i = 0; i < SIZE(tports); ++i)
         {
             any.a_int = (int) tports[i].menulet;
-            add_menu(win, NO_GLYPH, &any, (char) any.a_int, 0, ATR_NONE,
+            add_menu(win, NO_GLYPH, &any, (char) any.a_int, 0, ATR_NONE, NO_COLOR,
                      tports[i].menudesc,
                      (tports[i].menulet == 'w') ? MENU_SELECTED
                                                 : MENU_UNSELECTED);

@@ -230,9 +230,9 @@ E void FDECL(mac_putstr_ex, (winid, int, const char *, int, int));
 E void FDECL(mac_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 #define mac_putstr(x, y, z) mac_putstr_ex(x, y, z, 0, 0)
 E void FDECL(mac_start_menu_ex, (winid, int));
-E void FDECL(mac_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P, int,
+E void FDECL(mac_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P, int, int,
                             const char *, BOOLEAN_P));
-E void FDECL(mac_add_extended_menu, (winid, int, const anything*, struct extended_menu_info, CHAR_P, CHAR_P, int,
+E void FDECL(mac_add_extended_menu, (winid, int, const anything*, struct extended_menu_info, CHAR_P, CHAR_P, int, int,
     const char*, BOOLEAN_P));
 E void FDECL(mac_end_menu_ex, (winid, const char *, const char*));
 E int FDECL(mac_select_menu, (winid, int, menu_item **));

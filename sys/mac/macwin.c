@@ -1966,7 +1966,7 @@ mac_start_menu_ex(winid win, int style)
 
 void
 mac_add_menu(winid win, int glyph, const anything *any, CHAR_P menuChar,
-             CHAR_P groupAcc, int attr, const char *inStr, int preselected)
+             CHAR_P groupAcc, int attr, int color, const char *inStr, int preselected)
 {
 #if defined(__SC__) || defined(__MRC__)
 #pragma unused(glyph)
@@ -2044,10 +2044,10 @@ mac_add_menu(winid win, int glyph, const anything *any, CHAR_P menuChar,
 
 void
 mac_add_extended_menu(winid win, int glyph, const anything* any, struct extended_menu_info info, CHAR_P menuChar,
-    CHAR_P groupAcc, int attr, const char* inStr, int preselected)
+    CHAR_P groupAcc, int attr, int color, const char* inStr, int preselected)
 {
     mac_add_menu(win, glyph, any, menuChar,
-        groupAcc, attr, inStr, preselected);
+        groupAcc, attr, color, inStr, preselected);
 }
 
 /*

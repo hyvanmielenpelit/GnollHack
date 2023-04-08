@@ -455,7 +455,7 @@ prompt_for_player_selection(void)
                         else
                             Strcpy(rolenamebuf, roles[i].name.m);
                     }
-                    add_menu(win, NO_GLYPH, &any, thisch, 0, ATR_NONE,
+                    add_menu(win, NO_GLYPH, &any, thisch, 0, ATR_NONE, NO_COLOR,
                              an(rolenamebuf), MENU_UNSELECTED);
                     lastch = thisch;
                 }
@@ -464,10 +464,10 @@ prompt_for_player_selection(void)
                                   flags.initalign, PICK_RANDOM) + 1;
             if (any.a_int == 0) /* must be non-zero */
                 any.a_int = randrole(FALSE) + 1;
-            add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "Random",
+            add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                      MENU_UNSELECTED);
             any.a_int = i + 1; /* must be non-zero */
-            add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, "Quit",
+            add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                      MENU_UNSELECTED);
             Sprintf(pbuf, "Pick a role for your %s", plbuf);
             end_menu(win, pbuf);
@@ -540,17 +540,17 @@ prompt_for_player_selection(void)
                     {
                         any.a_int = i + 1; /* must be non-zero */
                         add_menu(win, NO_GLYPH, &any, races[i].noun[0], 0,
-                                 ATR_NONE, races[i].noun, MENU_UNSELECTED);
+                                 ATR_NONE, NO_COLOR, races[i].noun, MENU_UNSELECTED);
                     }
 
                 any.a_int = pick_race(flags.initrole, flags.initgend,
                                       flags.initalign, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randrace(flags.initrole) + 1;
-                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "Random",
+                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                          MENU_UNSELECTED);
                 any.a_int = i + 1; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, "Quit",
+                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                          MENU_UNSELECTED);
                 Sprintf(pbuf, "Pick the race of your %s", plbuf);
                 end_menu(win, pbuf);
@@ -627,17 +627,17 @@ prompt_for_player_selection(void)
                     {
                         any.a_int = i + 1;
                         add_menu(win, NO_GLYPH, &any, genders[i].adj[0], 0,
-                                 ATR_NONE, genders[i].adj, MENU_UNSELECTED);
+                                 ATR_NONE, NO_COLOR, genders[i].adj, MENU_UNSELECTED);
                     }
 
                 any.a_int = pick_gend(flags.initrole, flags.initrace,
                                       flags.initalign, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randgend(flags.initrole, flags.initrace) + 1;
-                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "Random",
+                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                          MENU_UNSELECTED);
                 any.a_int = i + 1; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, "Quit",
+                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                          MENU_UNSELECTED);
                 Sprintf(pbuf, "Pick the gender of your %s", plbuf);
                 end_menu(win, pbuf);
@@ -713,17 +713,17 @@ prompt_for_player_selection(void)
                     {
                         any.a_int = i + 1;
                         add_menu(win, NO_GLYPH, &any, aligns[i].adj[0], 0,
-                                 ATR_NONE, aligns[i].adj, MENU_UNSELECTED);
+                                 ATR_NONE, NO_COLOR, aligns[i].adj, MENU_UNSELECTED);
                     }
 
                 any.a_int = pick_align(flags.initrole, flags.initrace,
                                        flags.initgend, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randalign(flags.initrole, flags.initrace) + 1;
-                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "Random",
+                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                          MENU_UNSELECTED);
                 any.a_int = i + 1; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, "Quit",
+                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                          MENU_UNSELECTED);
                 Sprintf(pbuf, "Pick the alignment of your %s", plbuf);
                 end_menu(win, pbuf);
@@ -1183,32 +1183,31 @@ identifier
 */
 void
 dll_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct extended_menu_info info,
-               CHAR_P accelerator, CHAR_P group_accel, int attr,
+               CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
                const char *str, BOOLEAN_P presel)
 {
     dll_logDebug("dll_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
              identifier, (char) accelerator, (char) group_accel, attr, str,
              presel);
      
-    int color = CLR_WHITE;
 #ifdef TEXTCOLOR
     get_menu_coloring(str, &color, &attr);
 #endif
 
     struct objclassdata ocdata = get_objclassdata(info.object);
-    dll_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr,
-        str, presel, color, info.object ? info.object->quan : 0, info.object ? info.object->o_id : 0, 
+    dll_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, color,
+        str, presel, info.object ? info.object->quan : 0, info.object ? info.object->o_id : 0, 
         info.monster ? info.monster->m_id : 0, info.heading_for_group_accelerator, info.special_mark, info.menu_flags, 1, info.style, 
         info.object, &ocdata);
 }
 
 void
 dll_add_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
     const char* str, BOOLEAN_P presel)
 {
     dll_add_extended_menu(wid, glyph, identifier, nilextendedmenuinfo,
-        accelerator, group_accel, attr,
+        accelerator, group_accel, attr, color,
         str, presel);
 }
 

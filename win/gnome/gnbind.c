@@ -750,7 +750,7 @@ identifier
 */
 void
 gnome_add_menu(winid wid, int glyph, const ANY_P *identifier,
-               CHAR_P accelerator, CHAR_P group_accel, int attr,
+               CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
                const char *str, BOOLEAN_P presel)
 {
     GHackMenuItem item;
@@ -770,11 +770,11 @@ gnome_add_menu(winid wid, int glyph, const ANY_P *identifier,
 
 void
 gnome_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
-    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
     const char* str, BOOLEAN_P presel)
 {
         gnome_add_menu(wid, glyph, identifier,
-            accelerator, group_accel, attr,
+            accelerator, group_accel, attr, color,
             str, presel)
 
 }

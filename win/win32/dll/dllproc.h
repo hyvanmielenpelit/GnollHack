@@ -57,10 +57,10 @@ void dll_putstr_ex2(winid wid, const char* text, const char* attrs, const char* 
 void dll_display_file(const char *filename, BOOLEAN_P must_exist);
 void dll_start_menu_ex(winid wid, int style);
 void dll_add_menu(winid wid, int glyph, const ANY_P *identifier,
-                    CHAR_P accelerator, CHAR_P group_accel, int attr,
+                    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
                     const char *str, BOOLEAN_P presel);
 void dll_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
-    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
     const char* str, BOOLEAN_P presel);
 void dll_end_menu_ex(winid wid, const char *prompt, const char* subtitle);
 int dll_select_menu(winid wid, int how, MENU_ITEM_P **selected);

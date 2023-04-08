@@ -1008,12 +1008,12 @@ namespace GnollHackClient
                 }
             }
         }
-        public void ClientCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color)
+        public void ClientCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, int color, string text, byte presel)
         {
-            ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attributes, text, presel, color, 
+            ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attributes, color, text, presel,
                 0, 0, 0, '\0', '\0', 0, 0, 0, IntPtr.Zero, IntPtr.Zero);
         }
-        public void ClientCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color, 
+        public void ClientCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, int color, string text, byte presel, 
             int maxcount, UInt64 oid, UInt64 mid, char headingaccel, char special_mark, ulong menuflags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr)
         {
             App.DebugWriteProfilingStopwatchTimeAndStart("AddExtendedMenu");

@@ -357,12 +357,12 @@ namespace GnollHackServer
 
         }
 
-        protected void GameCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color)
+        protected void GameCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, int color, string text, byte presel)
         {
 
         }
 
-        protected void GameCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color, int maxcount,
+        protected void GameCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, int color, string text, byte presel, int maxcount,
             UInt64 oid, UInt64 mid, char heading_group_accel, char special_mark, ulong menu_flags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr)
         {
 
