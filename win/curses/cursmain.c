@@ -565,7 +565,7 @@ curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
     info.attrs = attrs;
     info.colors = colors;
     curses_add_extended_menu(wid, glyph, identifier, info,
-        accelerator, group_accel, attr, str, presel);
+        accelerator, group_accel, attr, color, str, presel);
 }
 
 void

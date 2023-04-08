@@ -955,7 +955,7 @@ boolean preselected UNUSED;
 STATIC_OVL void
 hup_add_extended_menu(window, glyph, identifier, info, sel, grpsel, attr, color, txt, preselected)
 winid window UNUSED;
-int glyph UNUSED, attr UNUSED;
+int glyph UNUSED, attr UNUSED, color UNUSED;
 const anything* identifier UNUSED;
 struct extended_menu_info info UNUSED;
 char sel UNUSED, grpsel UNUSED;

@@ -6111,7 +6111,7 @@ boolean setinitial, setfromfile;
                 any.a_char = 's';
                 add_menu(tmpwin, NO_GLYPH, &any, 's', 0, ATR_NONE, NO_COLOR,
                          "single", MENU_UNSELECTED);
-                any.a_char = 'c'; NO_COLOR,
+                any.a_char = 'c';
                 add_menu(tmpwin, NO_GLYPH, &any, 'c', 0, ATR_NONE, NO_COLOR,
                          "combination", MENU_UNSELECTED);
             }
