@@ -9295,15 +9295,18 @@ enum create_context_menu_types menu_type;
                     if (!(x == u.ux && y == u.uy) && isok(x, y))
                     {
                         mtmp = m_at(x, y);
-                        if (mtmp && (is_peaceful(mtmp) || is_quantum_mechanic(mtmp->data) || is_rider(mtmp->data)) && (is_speaking_monster(mtmp->data) || is_tame(mtmp)) && canspotmon(mtmp) && mon_can_move(mtmp))
+                        if (mtmp)
                         {
-                            chatmtmp = mtmp;
-                            addchatmenu = TRUE;
-                        }
-                        if (!u.usteed && mtmp && is_tame(mtmp) && is_steed(mtmp->data) && canspotmon(mtmp) && which_armor(mtmp, W_SADDLE))
-                        {
-                            steedmtmp = mtmp;
-                            addridemenu = TRUE;
+                            if (!is_tame(mtmp) && (is_peaceful(mtmp) || is_quantum_mechanic(mtmp->data) || is_rider(mtmp->data)) && (is_speaking_monster(mtmp->data) || is_tame(mtmp)) && canspotmon(mtmp) && mon_can_move(mtmp))
+                            {
+                                chatmtmp = mtmp;
+                                addchatmenu = TRUE;
+                            }
+                            if (!u.usteed && is_tame(mtmp) && is_steed(mtmp->data) && canspotmon(mtmp) && which_armor(mtmp, W_SADDLE))
+                            {
+                                steedmtmp = mtmp;
+                                addridemenu = TRUE;
+                            }
                         }
                     }
             }
