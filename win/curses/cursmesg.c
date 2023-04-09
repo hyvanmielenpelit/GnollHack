@@ -186,8 +186,7 @@ curses_message_win_puts_ex(const char *message, const char* attrs, const char* c
             if (p)
             {
                 int offset = (int)(p - message);
-                int tlen = (int)strlen(tmpstr);
-                int rlen = message_length - tlen;
+                int rlen = (int)strlen(tmpstr);
                 if (rlen > 0 && offset > 0 && rlen + offset <= message_length)
                 {
                     if(remainder_attrs)
