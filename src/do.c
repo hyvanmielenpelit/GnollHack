@@ -1646,25 +1646,25 @@ register struct obj* obj;
     }
 
 
-    boolean affectsac = (obj->oclass == ARMOR_CLASS
+    boolean affectsac = ((obj->oclass == ARMOR_CLASS && objects[otyp].oc_name_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
-            || has_obj_mythic_defense(obj)
+            || (has_obj_mythic_defense(obj) && obj->mknown)
             || (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_armor_class != 0)
             );
 
-    boolean affectsmc = (obj->oclass == ARMOR_CLASS
+    boolean affectsmc = ((obj->oclass == ARMOR_CLASS && objects[otyp].oc_name_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
-            || has_obj_mythic_defense(obj)
+            || (has_obj_mythic_defense(obj) && obj->mknown)
             || (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_magic_cancellation != 0)
             );
 
 
     boolean nonexpeptionalarmor = nonexceptionality_armor(obj);
 
-    if (((obj->oclass == ARMOR_CLASS
+    if ((((obj->oclass == ARMOR_CLASS && objects[otyp].oc_name_known)
         || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
-        || has_obj_mythic_defense(obj)) 
-        && obj->exceptionality) || nonexpeptionalarmor)
+        || (has_obj_mythic_defense(obj) && obj->mknown)) 
+        && obj->exceptionality) || (nonexpeptionalarmor && objects[otyp].oc_name_known))
     {
         const char* excep = nonexpeptionalarmor ? "Cannot have quality" : 
             obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional" :
@@ -2337,7 +2337,7 @@ register struct obj* obj;
     /* Mythic status */
     boolean nonmythic = (is_weapon(obj) || is_armor(obj)) && otyp_non_mythic(otyp)
         && !obj->oartifact && !objects[otyp].oc_unique && !(objects[otyp].oc_flags3 & O3_UNIQUE);
-    if (obj->dknown && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
+    if (obj->dknown && objects[otyp].oc_name_known && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
     {
         Sprintf(buf, "Mythic status:          %s", nonmythic ? "Cannot be mythic" : (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
