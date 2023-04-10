@@ -949,7 +949,7 @@ init_options()
     flags.sound_volume_ui = 50;
 
     flags.spellorder = SORTBY_NONE;
-    flags.max_hint_difficulty = MIN_DIFFICULTY_LEVEL;
+    flags.max_hint_difficulty = DEFAULT_MAX_HINT_DIFFICULTY;
 
     /* since this is done before init_objects(), do partial init here */
     objects[SLIME_MOLD].oc_name_idx = SLIME_MOLD;

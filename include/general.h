@@ -792,6 +792,7 @@ enum context_menu_styles {
 #define MAX_DIFFICULTY_LEVEL 2
 #define WAND_OF_PROBING_DIFFICULTY_THRESHOLD -1
 #define SCROLL_OF_REMOVE_CURSE_DIFFICULTY_THRESHOLD -3
+#define DEFAULT_MAX_HINT_DIFFICULTY -1
 
 /* Moved from spell.c */
 /* spell retention period, in turns; at 10% of this value, player becomes
