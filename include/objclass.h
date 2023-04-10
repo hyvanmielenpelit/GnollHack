@@ -899,7 +899,7 @@ struct objclass {
 #define O1_CORROSION_RESISTANT               0x00000080UL
 #define O1_ROT_RESISTANT                     0x00000100UL
 
-#define O1_ENCHANTMENT_AFFECTS_MC            0x00000200UL            /* +X of the item influences also its MC */
+#define O1_ENCHANTMENT_DOES_NOT_AFFECT_MC    0x00000200UL            /* +X of the item does not affect its MC */
 #define O1_EROSION_DOES_NOT_AFFECT_MC        0x00000400UL            /* erosion level does not affect the item's MC */
 #define O1_ENCHANTMENT_DOES_NOT_AFFECT_AC    0x00000800UL            /* +X of the item does not affect its AC bonus */
 #define O1_EROSION_DOES_NOT_AFFECT_AC        0x00001000UL            /* erosion level does not affect the item's MC */

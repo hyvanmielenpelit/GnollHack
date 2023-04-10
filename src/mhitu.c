@@ -1534,7 +1534,8 @@ struct monst *mon;
             else
                 item_mc_bonus += max(0, basemc - greatest_erosion(o) / 3);
 
-            if (o->oclass == ARMOR_CLASS || o->oclass == MISCELLANEOUS_CLASS || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(o) || (objects[o->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC))
+            if (((o->oclass == ARMOR_CLASS || o->oclass == MISCELLANEOUS_CLASS || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)) && !(objects[o->otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_MC))
+                || has_obj_mythic_defense(o))
                 item_mc_bonus += o->enchantment / 3;
 
             if (is_shield(o))

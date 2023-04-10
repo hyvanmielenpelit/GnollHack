@@ -1656,7 +1656,6 @@ register struct obj* obj;
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
             || has_obj_mythic_defense(obj)
             || (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_magic_cancellation != 0)
-            || (stats_known && objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
             );
 
 
@@ -2223,7 +2222,7 @@ register struct obj* obj;
 
                 char bonusbuf[BUFSZ] = "";
                 boolean display_ac = affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC);
-                boolean display_mc = affectsmc || (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC);
+                boolean display_mc = affectsmc && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_MC);
 
                 if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
                 {
@@ -4157,28 +4156,27 @@ register struct obj* obj;
     }
 
     /* Armor statistics */
-    if (stats_known && (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)
-        || ARM_AC_BONUS(obj, youmonst.data) != 0 || ARM_MC_BONUS(obj, youmonst.data) != 0
-        ))
+    int totalacbonus = 0;
+    int totalmcbonus = 0;
+    if (notfullyidentified || !stats_known)
+    {
+        totalacbonus = -knownacbonus;
+        totalmcbonus = knownmcbonus;
+    }
+    else
+    {
+        totalacbonus = -ARM_AC_BONUS(obj, youmonst.data);
+        totalmcbonus = ARM_MC_BONUS(obj, youmonst.data);
+    }
+    if (stats_known && (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)) 
+        || totalacbonus != 0 || totalmcbonus != 0 || (has_obj_mythic_defense(obj) && obj->mknown))
     {
         int powercnt = 0;
         Sprintf(buf, "Armor statistics:");
         putstr(datawin, ATR_HEADING, buf);
 
-        powercnt++;
-        int totalacbonus = 0;
-        int totalmcbonus = 0;
         const char* totalprefix = notfullyidentified ? "Total known" : "Total";
-        if (notfullyidentified)
-        {
-            totalacbonus = knownacbonus;
-            totalmcbonus = knownmcbonus;
-        }
-        else
-        {
-            totalacbonus = -ARM_AC_BONUS(obj, youmonst.data);
-            totalmcbonus = ARM_MC_BONUS(obj, youmonst.data);
-        }
+        powercnt++;
         Sprintf(buf, " %2d - %s AC %s %s%d", powercnt, totalprefix, totalacbonus > 0 ? "penalty" : "bonus", totalacbonus >= 0 ? "+" : "", totalacbonus);
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
         powercnt++;
