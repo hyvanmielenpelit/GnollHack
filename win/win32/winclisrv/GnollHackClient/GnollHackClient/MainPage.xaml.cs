@@ -592,14 +592,10 @@ namespace GnollHackClient
             }
             else
             {
-                bool reviewrequested = Preferences.Get("StoreReviewRequested", false);
-                long numberofgames = Preferences.Get("NumberOfGames", 0L);
+                bool ReviewRequested = Preferences.Get("StoreReviewRequested", false);
+                long NumberOfGames = Preferences.Get("NumberOfGames", 0L);
                 long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
-#if DEBUG
-                if (numberofgames >= 2 && TotalPlayTime >= 60)
-#else
-                if (!reviewrequested && numberofgames >= 4 && TotalPlayTime >= 60 * 60 * 2)
-#endif
+                if (!ReviewRequested && NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime)
                 {
                     Preferences.Set("StoreReviewRequested", true);
                     await CrossStoreReview.Current.RequestReview(false);

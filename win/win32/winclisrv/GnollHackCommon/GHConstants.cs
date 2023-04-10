@@ -1413,6 +1413,8 @@ namespace GnollHackCommon
         public const bool DefaultZoomChangeCenterMode = false;
         public const bool DefaultHideNavigation = true;
         public const bool DefaultHideStatusBar = true;
+        public const long StoreReviewRequestNumberOfGames = 4;
+        public const long StoreReviewRequestTotalPlayTime = 60 * 60 * 2;
     }
 
 
