@@ -1079,7 +1079,7 @@ register struct obj* obj;
     }
 
     /* Material */
-    if (stats_known || objects[otyp].oc_name_known)
+    if (obj->dknown)
     {
         Strcpy(buf2, material_definitions[obj->material].name);
         *buf2 = highc(*buf2);
