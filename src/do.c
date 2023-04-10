@@ -4168,7 +4168,7 @@ register struct obj* obj;
         totalacbonus = -ARM_AC_BONUS(obj, youmonst.data);
         totalmcbonus = ARM_MC_BONUS(obj, youmonst.data);
     }
-    if (stats_known && (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)) 
+    if ((stats_known && (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
         || totalacbonus != 0 || totalmcbonus != 0 || (has_obj_mythic_defense(obj) && obj->mknown))
     {
         int powercnt = 0;
