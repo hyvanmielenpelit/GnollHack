@@ -29,6 +29,7 @@ using Xamarin.Essentials;
 using System.Collections;
 using System.Collections.Concurrent;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using Plugin.StoreReview;
 
 namespace GnollHackClient
 {
@@ -69,6 +70,9 @@ namespace GnollHackClient
             StartLocalGameButton.TextColor = Color.Gray;
             if (App.UsesCarousel)
                 carouselView.Stop();
+
+            long numberofgames = Preferences.Get("NumberOfGames", 0L);
+            Preferences.Set("NumberOfGames", numberofgames + 1L);
 
             var gamePage = new GamePage(this);
             gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
@@ -566,7 +570,7 @@ namespace GnollHackClient
         //}
 
 
-        private void ExitAppButton_Clicked(object sender, EventArgs e)
+        private async void ExitAppButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
@@ -588,6 +592,18 @@ namespace GnollHackClient
             }
             else
             {
+                bool reviewrequested = Preferences.Get("StoreReviewRequested", false);
+                long numberofgames = Preferences.Get("NumberOfGames", 0L);
+                long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
+#if DEBUG
+                if (numberofgames >= 2 && TotalPlayTime >= 60)
+#else
+                if (!reviewrequested && numberofgames >= 4 && TotalPlayTime >= 60 * 60 * 2)
+#endif
+                {
+                    Preferences.Set("StoreReviewRequested", true);
+                    await CrossStoreReview.Current.RequestReview(false);
+                }
                 CloseApp();
             }
         }
