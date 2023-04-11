@@ -11485,7 +11485,7 @@ namespace GnollHackClient.Pages.Game
 
         public async void ReportCrashDetected()
         {
-            bool answer = await DisplayAlert("Crash Detected", "A crashed game has been detected. GnollHack will attempt to restore this game. Also, do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
+            bool answer = await DisplayAlert("Crash Detected", "A crashed game has been detected. GnollHack will attempt to restore this game. Also, do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further." + (UseMainGLCanvas ? " If the problem persists, try switching Game GPU Acceleration off in Settings." : ""), "Yes", "No");
             if (answer)
             {
                 await CheckAndRequestWritePermission();
