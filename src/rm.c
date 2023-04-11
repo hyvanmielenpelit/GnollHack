@@ -408,6 +408,12 @@ NEARDATA const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS
         CARPET_TILE_INDEXATION_TYPE_NONE, 1, 1,
         CARPET_TYPE_FLAGS_NONE
     },
+    {
+        "modron-triangular-plaque", "alien plaque",
+        DOODAD_CARPET_MODRON_TRIANGULAR_PLAQUE_TLCORN + GLYPH_SIMPLE_DOODAD_OFF,
+        CARPET_TILE_INDEXATION_TYPE_3X2_CARPET, 3, 2,
+        CARPET_TYPE_FLAGS_FIXED_SIZE
+    },
 };
 
 NEARDATA const struct decoration_lit_color_definition decoration_lit_colors[CLR_MAX] = {

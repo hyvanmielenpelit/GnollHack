@@ -391,6 +391,7 @@ enum carpet_types {
     CARPET_BEIGE,
     CARPET_BLUE,
     CARPET_GRATE,
+    CARPET_MODRON_TRIANGULAR_PLAQUE,
     MAX_CARPETS
 };
 

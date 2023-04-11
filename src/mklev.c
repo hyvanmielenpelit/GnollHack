@@ -1662,7 +1662,7 @@ makelevel()
             else if (rt < SHOPBASE && ((levl[lowx][lowy].floortyp == ROOM && levl[lowx][lowy].floorsubtyp == 0) || (levl[lowx][lowy].typ == ROOM && levl[lowx][lowy].subtyp == 0))
                 && excess_plaque_width >= 0 && excess_plaque_width <= 2 && excess_plaque_width % 2 == 0 && excess_plaque_height >= 0 && excess_plaque_height <= 2 && excess_plaque_height % 2 == 0
                 && (level_dif >= 12 ? rn2(excess_plaque_width == 0 && excess_plaque_height == 0 ? 3 : 2)  : !rn2(excess_plaque_width == 0 && excess_plaque_height == 0 ? 3 : 8)))
-                create_carpet(lowx + excess_plaque_width / 2, lowy + excess_plaque_height / 2, hix - excess_plaque_width / 2, hiy - excess_plaque_height / 2, CARPET_MODRON_SPHERICAL_PLAQUE);
+                create_carpet(lowx + excess_plaque_width / 2, lowy + excess_plaque_height / 2, hix - excess_plaque_width / 2, hiy - excess_plaque_height / 2, !rn2(2) ? CARPET_MODRON_SPHERICAL_PLAQUE : CARPET_MODRON_TRIANGULAR_PLAQUE);
             else
                 create_carpet(lowx, lowy, hix, hiy, 
                     rt == DELPHI ? CARPET_BLUE : 

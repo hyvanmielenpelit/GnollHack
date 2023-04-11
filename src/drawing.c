@@ -1408,6 +1408,12 @@ const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
     {"carpet-blue-bottom", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"carpet-blue-middle", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"grate", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    { "modron-triangular-plaque-tlcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    { "modron-triangular-plaque-blcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    { "modron-triangular-plaque-trcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    { "modron-triangular-plaque-brcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    { "modron-triangular-plaque-top", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    { "modron-triangular-plaque-bottom", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
 };
 
 const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =

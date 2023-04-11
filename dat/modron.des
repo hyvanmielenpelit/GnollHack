@@ -199,8 +199,8 @@ DECORATION:(27,06),decoration_wall_sculpture,wall_sculpture_modron_triangular,di
 DECORATION:(21,14),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
 DECORATION:(27,14),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
 
-CARPET:(14,08,16,09),carpet_modron_spherical_plaque
-CARPET:(32,08,34,09),carpet_modron_spherical_plaque
+CARPET:(14,08,16,09),carpet_modron_triangular_plaque
+CARPET:(32,08,34,09),carpet_modron_triangular_plaque
 CARPET:(14,11,16,12),carpet_modron_spherical_plaque
 CARPET:(32,11,34,12),carpet_modron_spherical_plaque
 
@@ -340,9 +340,9 @@ DECORATION:(43,11),decoration_wall_sculpture,wall_sculpture_modron_triangular,di
 DECORATION:(23,07),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
 DECORATION:(27,07),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
 
-CARPET:(24,05,26,06),carpet_modron_spherical_plaque
-CARPET:(09,11,11,12),carpet_modron_spherical_plaque
-CARPET:(39,11,41,12),carpet_modron_spherical_plaque
+CARPET:(24,05,26,06),carpet_modron_triangular_plaque
+CARPET:(13,10,15,11),carpet_modron_triangular_plaque
+CARPET:(35,10,37,11),carpet_modron_triangular_plaque
 
 # Three tertians and other modrons
 MONSTER:('M',"modron tertian"),(25,04),waitforu,hostile
