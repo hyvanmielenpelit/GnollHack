@@ -15,7 +15,6 @@ STATIC_DCL boolean NDECL(yell_check);
 STATIC_DCL boolean FDECL(m_speak_check, (struct monst*));
 STATIC_DCL boolean FDECL(m_general_talk_check, (struct monst*, const char*));
 STATIC_DCL int NDECL(dochat);
-STATIC_DCL int FDECL(dochatmon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 STATIC_DCL struct monst* FDECL(ask_target_monster, (struct monst*));
@@ -2135,7 +2134,7 @@ struct monst* mtmp;
     if (is_silenced(mtmp))
     {
         char Mhis[BUFSIZ];
-        strcpy(Mhis, mhis(mtmp));
+        Strcpy(Mhis, mhis(mtmp));
         *Mhis = highc(*Mhis);
         pline("%s cannot answer you. %s voice is gone!", noittame_Monnam(mtmp), Mhis);
         return 0;
@@ -2276,14 +2275,14 @@ dochat()
     return dochatmon(mtmp);
 }
 
-STATIC_OVL int
+int
 dochatmon(mtmp)
 struct monst* mtmp;
 {
     boolean elbereth_was_known = (boolean)u.uevent.elbereth_known;
 
-    if (!mtmp || mtmp->mundetected || (!canspotmon(mtmp) && !is_tame(mtmp)) || M_AP_TYPE(mtmp) == M_AP_FURNITURE
-        || M_AP_TYPE(mtmp) == M_AP_OBJECT)
+    if (!mtmp || 
+        ((!canspotmon(mtmp) || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE || M_AP_TYPE(mtmp) == M_AP_OBJECT) && !is_tame(mtmp)))
     {
         play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
         pline1(Blind ? "You cannot see there anyone to talk to." : "There is no-one to talk to.");
@@ -2395,7 +2394,7 @@ struct monst* mtmp;
         any = zeroany;
 
         /* Hello! This is the old chat, i.e., domonnoise function */
-        strcpy(available_chat_list[chatnum].name, "\"Hello there!\"");
+        Strcpy(available_chat_list[chatnum].name, "\"Hello there!\"");
         available_chat_list[chatnum].function_ptr = &domonnoise_with_popup;
         available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2411,7 +2410,7 @@ struct monst* mtmp;
         if (is_speaking_monster(mtmp->data) && (is_peaceful(mtmp) || is_quantum_mechanic(mtmp->data) || is_rider(mtmp->data)))
         {
             /* Who are you? */
-            strcpy(available_chat_list[chatnum].name, "\"Who are you?\"");
+            Strcpy(available_chat_list[chatnum].name, "\"Who are you?\"");
             available_chat_list[chatnum].function_ptr = &do_chat_whoareyou;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2432,9 +2431,9 @@ struct monst* mtmp;
             if (!mtmp->isgd && !(mtmp->data->mflags6 & M6_HATCHLING) && (is_izchak(mtmp, TRUE) || mtmp->rumorsleft >= 0))
             {
                 if(is_izchak(mtmp, TRUE))
-                    strcpy(available_chat_list[chatnum].name, mtmp->told_rumor ? "Ask what is further on his mind" : "Ask what is on his mind");
+                    Strcpy(available_chat_list[chatnum].name, mtmp->told_rumor ? "Ask what is further on his mind" : "Ask what is on his mind");
                 else
-                    strcpy(available_chat_list[chatnum].name, mtmp->told_rumor ? "Ask for further adventuring advice" : "Ask for adventuring advice");
+                    Strcpy(available_chat_list[chatnum].name, mtmp->told_rumor ? "Ask for further adventuring advice" : "Ask for adventuring advice");
 
                 available_chat_list[chatnum].function_ptr = &do_chat_rumors;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -2455,7 +2454,7 @@ struct monst* mtmp;
             /* Endicott - Quantum Quests */
             if (mtmp->u_know_mname)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about experiments");
+                Strcpy(available_chat_list[chatnum].name, "Ask about experiments");
                 available_chat_list[chatnum].function_ptr = &do_chat_quantum_experiments;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2471,7 +2470,7 @@ struct monst* mtmp;
 
             if (mtmp->quantum_told_experiments)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about the Large Circular Dungeon");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Large Circular Dungeon");
                 available_chat_list[chatnum].function_ptr = &do_chat_quantum_large_circular_dungeon;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2538,7 +2537,7 @@ struct monst* mtmp;
         if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_STARTING_QUESTS) != 0)
         {
             /* Hermit - Starting Quests */
-            strcpy(available_chat_list[chatnum].name, "Ask about the Dungeons of Doom");
+            Strcpy(available_chat_list[chatnum].name, "Ask about the Dungeons of Doom");
             available_chat_list[chatnum].function_ptr = &do_chat_hermit_dungeons;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2551,7 +2550,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Ask about the Amulet of Yendor");
+            Strcpy(available_chat_list[chatnum].name, "Ask about the Amulet of Yendor");
             available_chat_list[chatnum].function_ptr = &do_chat_hermit_quests;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2564,7 +2563,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Ask about further advice");
+            Strcpy(available_chat_list[chatnum].name, "Ask about further advice");
             available_chat_list[chatnum].function_ptr = &do_chat_hermit_further_advice;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2579,7 +2578,7 @@ struct monst* mtmp;
 
             if (mtmp->hermit_told_dungeon)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
                 available_chat_list[chatnum].function_ptr = &do_chat_hermit_gnomish_mines;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2592,7 +2591,7 @@ struct monst* mtmp;
 
                 chatnum++;
 
-                strcpy(available_chat_list[chatnum].name, "Ask about the Sokoban");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Sokoban");
                 available_chat_list[chatnum].function_ptr = &do_chat_hermit_sokoban;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2608,7 +2607,7 @@ struct monst* mtmp;
 
             if(mtmp->hermit_told_quests || mtmp->hermit_told_castle)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about the Wizard of Yendor");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Wizard of Yendor");
                 available_chat_list[chatnum].function_ptr = &do_chat_hermit_wizard_of_yendor;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2624,7 +2623,7 @@ struct monst* mtmp;
 
             if (mtmp->hermit_told_quests)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about the Castle");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Castle");
                 available_chat_list[chatnum].function_ptr = &do_chat_hermit_castle;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2637,7 +2636,7 @@ struct monst* mtmp;
 
                 chatnum++;
 
-                strcpy(available_chat_list[chatnum].name, "Ask about Under World");
+                Strcpy(available_chat_list[chatnum].name, "Ask about Under World");
                 available_chat_list[chatnum].function_ptr = &do_chat_hermit_gehennom;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2653,7 +2652,7 @@ struct monst* mtmp;
 
             //if (mtmp->hermit_told_sokoban)
             //{
-            //    strcpy(available_chat_list[chatnum].name, "Ask about the prizes in Sokoban");
+            //    Strcpy(available_chat_list[chatnum].name, "Ask about the prizes in Sokoban");
             //    available_chat_list[chatnum].function_ptr = &do_chat_hermit_sokoprizes;
             //    available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2672,7 +2671,7 @@ struct monst* mtmp;
         if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ADVANCED_QUESTS) != 0)
         {
             /* Hermit - Advanced Quests */
-            strcpy(available_chat_list[chatnum].name, "Ask about the Castle");
+            Strcpy(available_chat_list[chatnum].name, "Ask about the Castle");
             available_chat_list[chatnum].function_ptr = &do_chat_hermit2_castle;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2685,7 +2684,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Ask about Gehennom");
+            Strcpy(available_chat_list[chatnum].name, "Ask about Gehennom");
             available_chat_list[chatnum].function_ptr = &do_chat_hermit2_gehennom;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2698,7 +2697,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Ask about the Wizard of Yendor");
+            Strcpy(available_chat_list[chatnum].name, "Ask about the Wizard of Yendor");
             available_chat_list[chatnum].function_ptr = &do_chat_hermit2_wizard_of_yendor;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2713,7 +2712,7 @@ struct monst* mtmp;
 
             if (mtmp->hermit2_told_gehennom)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about the Vampire Lord");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Vampire Lord");
                 available_chat_list[chatnum].function_ptr = &do_chat_hermit2_vampire_lord;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2729,7 +2728,7 @@ struct monst* mtmp;
 
             if (mtmp->hermit2_told_vampire_lord || mtmp->hermit2_told_ritual)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about the Candelabrum of Invocation");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Candelabrum of Invocation");
                 available_chat_list[chatnum].function_ptr = &do_chat_hermit2_candelabrum;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2745,7 +2744,7 @@ struct monst* mtmp;
 
             if (mtmp->hermit2_told_wizard_of_yendor || mtmp->hermit2_told_ritual)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about the Book of the Dead");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Book of the Dead");
                 available_chat_list[chatnum].function_ptr = &do_chat_hermit2_book_of_the_dead;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2761,7 +2760,7 @@ struct monst* mtmp;
 
             if (mtmp->hermit2_told_ritual)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about the Silver Bell");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Silver Bell");
                 available_chat_list[chatnum].function_ptr = &do_chat_hermit2_silver_bell;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2777,7 +2776,7 @@ struct monst* mtmp;
 
             if (mtmp->hermit2_told_wizard_of_yendor || mtmp->hermit2_told_vampire_lord || mtmp->hermit2_told_candelabrum || mtmp->hermit2_told_silver_bell || mtmp->hermit2_told_book_of_the_dead)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about the Passage to Amulet");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Passage to Amulet");
                 available_chat_list[chatnum].function_ptr = &do_chat_hermit2_ritual;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2796,7 +2795,7 @@ struct monst* mtmp;
         if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_GNOMISH_QUESTS) != 0)
         {
             /* Hermit - Gnomish Quests */
-            strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
+            Strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
             available_chat_list[chatnum].function_ptr = &do_chat_hermit3_gnomish_mines;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2811,7 +2810,7 @@ struct monst* mtmp;
 
             if (mtmp->hermit3_told_gnomish_mines)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about the Gladstone");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Gladstone");
                 available_chat_list[chatnum].function_ptr = &do_chat_hermit3_luckstone;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2830,7 +2829,7 @@ struct monst* mtmp;
         if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ORCISH_QUESTS) != 0)
         {
             /* Hermit - Orcish Quests */
-            strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
+            Strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
             available_chat_list[chatnum].function_ptr = &do_chat_orc_hermit3_gnomish_mines;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2845,7 +2844,7 @@ struct monst* mtmp;
 
             if (mtmp->hermit3_told_gnomish_mines)
             {
-                strcpy(available_chat_list[chatnum].name, "Ask about the Gladstone");
+                Strcpy(available_chat_list[chatnum].name, "Ask about the Gladstone");
                 available_chat_list[chatnum].function_ptr = &do_chat_orc_hermit3_luckstone;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2866,7 +2865,7 @@ struct monst* mtmp;
             if ((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_SING_SONGS) != 0)
             {
                 /* Special hints about game mechanics */
-                strcpy(available_chat_list[chatnum].name, "Ask to sing a song");
+                Strcpy(available_chat_list[chatnum].name, "Ask to sing a song");
                 available_chat_list[chatnum].function_ptr = &do_chat_npc_sing_song;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2882,7 +2881,7 @@ struct monst* mtmp;
             if ((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_SPECIAL_NPC_HINTS) != 0)
             {
                 /* Special hints about game mechanics */
-                strcpy(available_chat_list[chatnum].name, "Ask about advanced adventuring tactics");
+                Strcpy(available_chat_list[chatnum].name, "Ask about advanced adventuring tactics");
                 available_chat_list[chatnum].function_ptr = &do_chat_npc_special_hints;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2919,7 +2918,7 @@ struct monst* mtmp;
 
             if (mtmp->data->mlet == S_DOG && !mtmp->mstaying && mtmp->mwantstomove)
             {
-                strcpy(available_chat_list[chatnum].name, "Command to sit down");
+                Strcpy(available_chat_list[chatnum].name, "Command to sit down");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_sit;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -2936,7 +2935,7 @@ struct monst* mtmp;
 
             if (mtmp->data->mlet == S_DOG)
             {
-                strcpy(available_chat_list[chatnum].name, "Command to give paw");
+                Strcpy(available_chat_list[chatnum].name, "Command to give paw");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_givepaw;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -2956,11 +2955,11 @@ struct monst* mtmp;
             {
 
                 if (is_animal(mtmp->data))
-                    strcpy(available_chat_list[chatnum].name, "Command to stay put");
+                    Strcpy(available_chat_list[chatnum].name, "Command to stay put");
                 else if (is_speaking_monster(mtmp->data))
-                    strcpy(available_chat_list[chatnum].name, "Command to hold position");
+                    Strcpy(available_chat_list[chatnum].name, "Command to hold position");
                 else
-                    strcpy(available_chat_list[chatnum].name, "Command to hold position");
+                    Strcpy(available_chat_list[chatnum].name, "Command to hold position");
 
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_stay;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -2980,11 +2979,11 @@ struct monst* mtmp;
             if (mtmp->mstaying || !mtmp->mwantstomove)
             {
                 if (is_animal(mtmp->data))
-                    strcpy(available_chat_list[chatnum].name, "Command to stop staying put");
+                    Strcpy(available_chat_list[chatnum].name, "Command to stop staying put");
                 else if (is_speaking_monster(mtmp->data))
-                    strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
+                    Strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
                 else
-                    strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
+                    Strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
 
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_standup;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -3004,7 +3003,7 @@ struct monst* mtmp;
             if (!mtmp->mcomingtou)
             {
 
-                strcpy(available_chat_list[chatnum].name, "Command to follow you");
+                Strcpy(available_chat_list[chatnum].name, "Command to follow you");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_follow;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3021,7 +3020,7 @@ struct monst* mtmp;
 
             if (mtmp->mcomingtou)
             {
-                strcpy(available_chat_list[chatnum].name, "Command to stop following you");
+                Strcpy(available_chat_list[chatnum].name, "Command to stop following you");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_unfollow;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3040,7 +3039,7 @@ struct monst* mtmp;
 
             if (mtmp->minvent)
             {
-                strcpy(available_chat_list[chatnum].name, "Display inventory");
+                Strcpy(available_chat_list[chatnum].name, "Display inventory");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_display_inventory;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3056,7 +3055,7 @@ struct monst* mtmp;
 
             if (mtmp->minvent && droppables(mtmp) && !mtmp->issummoned && !mtmp->ispartymember)
             {
-                strcpy(available_chat_list[chatnum].name, "Command to drop items");
+                Strcpy(available_chat_list[chatnum].name, "Command to drop items");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_dropitems;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3074,7 +3073,7 @@ struct monst* mtmp;
             if (OBJ_AT(mtmp->mx, mtmp->my) && !mtmp->issummoned && !mtmp->ispartymember)
             {
             
-                strcpy(available_chat_list[chatnum].name, "Command to pick the items on the ground");
+                Strcpy(available_chat_list[chatnum].name, "Command to pick the items on the ground");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_pickitems;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3327,7 +3326,7 @@ struct monst* mtmp;
             && !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
             && mtmp->minvent && count_sellable_items(mtmp) > 0)
         {
-            strcpy(available_chat_list[chatnum].name, "Check items for sale");
+            Strcpy(available_chat_list[chatnum].name, "Check items for sale");
             available_chat_list[chatnum].function_ptr = &do_chat_buy_items;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3357,7 +3356,7 @@ struct monst* mtmp;
             && !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
             )
         {
-            strcpy(available_chat_list[chatnum].name, "Ask to join the party");
+            Strcpy(available_chat_list[chatnum].name, "Ask to join the party");
             available_chat_list[chatnum].function_ptr = &do_chat_join_party;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -3371,7 +3370,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Explain current statistics");
+            Strcpy(available_chat_list[chatnum].name, "Explain current statistics");
             available_chat_list[chatnum].function_ptr = &do_chat_explain_statistics;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3389,7 +3388,7 @@ struct monst* mtmp;
         /* Oracle */
         if (is_peaceful(mtmp) && msound == MS_ORACLE)
         {
-            strcpy(available_chat_list[chatnum].name, "Consultation");
+            Strcpy(available_chat_list[chatnum].name, "Consultation");
             available_chat_list[chatnum].function_ptr = &do_chat_oracle_consult;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3402,7 +3401,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Identify items");
+            Strcpy(available_chat_list[chatnum].name, "Identify items");
             available_chat_list[chatnum].function_ptr = &do_chat_oracle_identify;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3415,7 +3414,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Enlightenment");
+            Strcpy(available_chat_list[chatnum].name, "Enlightenment");
             available_chat_list[chatnum].function_ptr = &do_chat_oracle_enlightenment;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3432,7 +3431,7 @@ struct monst* mtmp;
         /* Priest */
         if (is_peaceful(mtmp) && (msound == MS_PRIEST || mtmp->ispriest))
         {
-            strcpy(available_chat_list[chatnum].name, "Standard healing");
+            Strcpy(available_chat_list[chatnum].name, "Standard healing");
             available_chat_list[chatnum].function_ptr = &do_chat_priest_normal_healing;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3446,7 +3445,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Full healing");
+            Strcpy(available_chat_list[chatnum].name, "Full healing");
             available_chat_list[chatnum].function_ptr = &do_chat_priest_full_healing;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3460,7 +3459,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Cure sickness");
+            Strcpy(available_chat_list[chatnum].name, "Cure sickness");
             available_chat_list[chatnum].function_ptr = &do_chat_priest_cure_sickness;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3474,7 +3473,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Bless or curse an item");
+            Strcpy(available_chat_list[chatnum].name, "Bless or curse an item");
             available_chat_list[chatnum].function_ptr = &do_chat_priest_blesscurse;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -3488,7 +3487,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Divination");
+            Strcpy(available_chat_list[chatnum].name, "Divination");
             available_chat_list[chatnum].function_ptr = &do_chat_priest_divination;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3501,7 +3500,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Teach spells");
+            Strcpy(available_chat_list[chatnum].name, "Teach spells");
             available_chat_list[chatnum].function_ptr = &do_chat_priest_teach_spells;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3516,7 +3515,7 @@ struct monst* mtmp;
 
             if (mtmp->ispriest && inhistemple(mtmp))
             {
-                strcpy(available_chat_list[chatnum].name, "Chat about a monetary contribution to the temple");
+                Strcpy(available_chat_list[chatnum].name, "Chat about a monetary contribution to the temple");
                 available_chat_list[chatnum].function_ptr = &do_chat_priest_chat;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3535,7 +3534,7 @@ struct monst* mtmp;
             && msound != MS_LEADER && msound != MS_GUARDIAN)
         {
             /* Non-priest monster priests here */
-            strcpy(available_chat_list[chatnum].name, "Healing");
+            Strcpy(available_chat_list[chatnum].name, "Healing");
             available_chat_list[chatnum].function_ptr = &do_chat_priest_normal_healing;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3549,7 +3548,7 @@ struct monst* mtmp;
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Cure sickness");
+            Strcpy(available_chat_list[chatnum].name, "Cure sickness");
             available_chat_list[chatnum].function_ptr = &do_chat_priest_cure_sickness;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3564,7 +3563,7 @@ struct monst* mtmp;
             chatnum++;
 
 
-            strcpy(available_chat_list[chatnum].name, "Divination");
+            Strcpy(available_chat_list[chatnum].name, "Divination");
             available_chat_list[chatnum].function_ptr = &do_chat_priest_divination;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3581,7 +3580,7 @@ struct monst* mtmp;
         /* Quest */
         if ((is_peaceful(mtmp) && (msound == MS_LEADER || msound == MS_GUARDIAN)) || msound == MS_NEMESIS)
         {
-            strcpy(available_chat_list[chatnum].name, "Talk about your quest");
+            Strcpy(available_chat_list[chatnum].name, "Talk about your quest");
             available_chat_list[chatnum].function_ptr = &do_chat_quest_chat;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3602,7 +3601,7 @@ struct monst* mtmp;
             if(1)
             {
                 if(is_peaceful(mtmp))
-                    strcpy(available_chat_list[chatnum].name, "Ask about the state of business");
+                    Strcpy(available_chat_list[chatnum].name, "Ask about the state of business");
                 else
                     Sprintf(available_chat_list[chatnum].name, "Ask about what's getting on %s nerves", mhis(mtmp));
                 available_chat_list[chatnum].function_ptr = &do_chat_shk_chat;
@@ -3619,7 +3618,7 @@ struct monst* mtmp;
             }
             if (!is_peaceful(mtmp))
             {
-                strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
+                Strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
                 available_chat_list[chatnum].function_ptr = &do_chat_shk_reconciliation;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3635,7 +3634,7 @@ struct monst* mtmp;
             }
             if(invent && count_unpaid(invent, FALSE))
             {
-                strcpy(available_chat_list[chatnum].name, "Pay items");
+                Strcpy(available_chat_list[chatnum].name, "Pay items");
                 available_chat_list[chatnum].function_ptr = &do_chat_shk_payitems;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3657,7 +3656,7 @@ struct monst* mtmp;
                 shp_indx = ESHK(mtmp)->shoptype - SHOPBASE;
                 const struct shclass* shp = &shtypes[shp_indx];
                 char itembuf[BUFSIZ] = "";
-                strcpy(itembuf, shp->identified_item_description_plural);
+                Strcpy(itembuf, shp->identified_item_description_plural);
             
                 Sprintf(available_chat_list[chatnum].name, "Identify %s", itembuf);
                 available_chat_list[chatnum].function_ptr = &do_chat_shk_identify;
@@ -3683,7 +3682,7 @@ struct monst* mtmp;
                    (not angry) and able (not asleep) to speak and the position
                    contains any objects other than just gold.
                 */
-                strcpy(available_chat_list[chatnum].name, "Quote items");
+                Strcpy(available_chat_list[chatnum].name, "Quote items");
                 available_chat_list[chatnum].function_ptr = &do_chat_shk_pricequote;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3703,7 +3702,7 @@ struct monst* mtmp;
         {
             if (!is_peaceful(mtmp))
             {
-                strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
+                Strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_reconciliation;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3748,7 +3747,7 @@ struct monst* mtmp;
 
                 chatnum++;
 
-                strcpy(available_chat_list[chatnum].name, "Identify weapons and armor");
+                Strcpy(available_chat_list[chatnum].name, "Identify weapons and armor");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_identify;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -3764,7 +3763,7 @@ struct monst* mtmp;
 
                 char sbuf[BUFSIZ];
                 Sprintf(sbuf, "Sell nuggets of armor ore to %s", noittame_mon_nam(mtmp));
-                strcpy(available_chat_list[chatnum].name, sbuf);
+                Strcpy(available_chat_list[chatnum].name, sbuf);
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_sell_ore;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -3885,7 +3884,7 @@ struct monst* mtmp;
         {
             if (!is_peaceful(mtmp))
             {
-                strcpy(available_chat_list[chatnum].name, "Offer research support");
+                Strcpy(available_chat_list[chatnum].name, "Offer research support");
                 available_chat_list[chatnum].function_ptr = &do_chat_quantum_mechanic_research_support;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -3901,7 +3900,7 @@ struct monst* mtmp;
             }
             else
             {
-                strcpy(available_chat_list[chatnum].name, "Ask to observe your position");
+                Strcpy(available_chat_list[chatnum].name, "Ask to observe your position");
                 available_chat_list[chatnum].function_ptr = &do_chat_quantum_observe_position;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3915,7 +3914,7 @@ struct monst* mtmp;
 
                 chatnum++;
 
-                strcpy(available_chat_list[chatnum].name, "Ask to observe your speed");
+                Strcpy(available_chat_list[chatnum].name, "Ask to observe your speed");
                 available_chat_list[chatnum].function_ptr = &do_chat_quantum_observe_speed;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3936,7 +3935,7 @@ struct monst* mtmp;
         {
             if (!is_peaceful(mtmp))
             {
-                strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
+                Strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
                 available_chat_list[chatnum].function_ptr = &do_chat_npc_reconciliation;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -4009,7 +4008,7 @@ struct monst* mtmp;
                 {
                     char sbuf[BUFSIZ];
                     Sprintf(sbuf, "Identify gems and stones");
-                    strcpy(available_chat_list[chatnum].name, sbuf);
+                    Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_gems_and_stones;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
                     available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -4028,7 +4027,7 @@ struct monst* mtmp;
                 {
                     char sbuf[BUFSIZ];
                     Sprintf(sbuf, "Sell gems and stones to %s", noittame_mon_nam(mtmp));
-                    strcpy(available_chat_list[chatnum].name, sbuf);
+                    Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_gems_and_stones;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
                     available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -4098,7 +4097,7 @@ struct monst* mtmp;
                 {
                     char sbuf[BUFSIZ];
                     Sprintf(sbuf, "Sell dilithium crystals and other gems to %s", noittame_mon_nam(mtmp));
-                    strcpy(available_chat_list[chatnum].name, sbuf);
+                    Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_dilithium_crystals;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
                     available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -4117,7 +4116,7 @@ struct monst* mtmp;
                 {
                     char sbuf[BUFSIZ];
                     Sprintf(sbuf, "Sell spellbooks to %s", noittame_mon_nam(mtmp));
-                    strcpy(available_chat_list[chatnum].name, sbuf);
+                    Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_spellbooks;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
                     available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -4136,7 +4135,7 @@ struct monst* mtmp;
                 {
                     char sbuf[BUFSIZ];
                     Sprintf(sbuf, "Identify accessories and charged items");
-                    strcpy(available_chat_list[chatnum].name, sbuf);
+                    Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_accessories_and_charged_items;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
                     available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -4155,7 +4154,7 @@ struct monst* mtmp;
                 {
                     char sbuf[BUFSIZ];
                     Sprintf(sbuf, "Identify gems, stones and charged items");
-                    strcpy(available_chat_list[chatnum].name, sbuf);
+                    Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_gems_stones_and_charged_items;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
                     available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -4191,7 +4190,7 @@ struct monst* mtmp;
                 {
                     char sbuf[BUFSIZ];
                     Sprintf(sbuf, "Teach spells");
-                    strcpy(available_chat_list[chatnum].name, sbuf);
+                    Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_teach_spells;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -4215,7 +4214,7 @@ struct monst* mtmp;
         {
             if(!is_peaceful(mtmp))
             {
-                strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
+                Strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
                 available_chat_list[chatnum].function_ptr = &do_chat_watchman_reconciliation;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -4231,6 +4230,21 @@ struct monst* mtmp;
             }
         }
 
+        if (is_tame(mtmp))
+        {
+            Strcpy(available_chat_list[chatnum].name, "Display statistics");
+            available_chat_list[chatnum].function_ptr = &monsterdescription;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
 
         /* Finish the menu */
         end_menu(win, "What do you want to say?");
@@ -4510,11 +4524,11 @@ struct monst* mtmp;
                     char titlebuf[BUFSZ];
                     if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_TITLE_ARTICLE)
                     {
-                        strcpy(titlebuf, npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name);
+                        Strcpy(titlebuf, npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name);
                     }
                     else
                     {
-                        strcpy(titlebuf, an(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name));
+                        Strcpy(titlebuf, an(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name));
                     }
 
                     Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), titlebuf);
@@ -4555,7 +4569,7 @@ struct monst* mtmp;
         switch (mtmp->mnum)
         {
         case PM_STUDENT:
-            strcpy(titlebuf, "a student at the College of Archaeology");
+            Strcpy(titlebuf, "a student at the College of Archaeology");
             break;
         case PM_CHIEFTAIN:
         case PM_NEANDERTHAL:
@@ -4573,9 +4587,9 @@ struct monst* mtmp;
             break;
         default:
             if (mtmp->mnum == urole.guardnum)
-                strcpy(titlebuf, "your quest guardian");
+                Strcpy(titlebuf, "your quest guardian");
             else
-                strcpy(titlebuf, "a quest guardian");
+                Strcpy(titlebuf, "a quest guardian");
             break;
 
         }
@@ -6402,11 +6416,11 @@ struct monst* mtmp;
         {
             char itembuf[BUFSZ];
             if (sellable_item_count == 1 && !iflags.using_gui_sounds && (otmp = get_first_sellable_item(mtmp)) != 0)
-                strcpy(itembuf, cxname(otmp));
+                Strcpy(itembuf, cxname(otmp));
             else if (sellable_item_count == 1)
-                strcpy(itembuf,"item");
+                Strcpy(itembuf,"item");
             else
-                strcpy(itembuf, "items");
+                Strcpy(itembuf, "items");
 
             play_monster_item_trading_line(mtmp, sellable_item_count == 1 ? MONSTER_ITEM_TRADING_LINE_TRADING_MAY_I_INTEREST_YOU_IN_FOLLOWING_ITEM : MONSTER_ITEM_TRADING_LINE_TRADING_MAY_I_INTEREST_YOU_IN_FOLLOWING_ITEMS);
             verbalize("Hello, adventurer! May I interest you in the following %s?", itembuf);
@@ -9061,7 +9075,7 @@ long id_cost;
     int res = 0, id_res = 0;
     long umoney = money_cnt(invent);
 
-    strcpy(buf, "What would you like to identify?");
+    Strcpy(buf, "What would you like to identify?");
 
     n = query_objlist(buf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE
         | USE_INVLET | INVORDER_SORT),

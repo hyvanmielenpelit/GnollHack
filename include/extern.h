@@ -3196,6 +3196,7 @@ E void FDECL(popup_talk_line_ex, (struct monst*, const char*, int, int, BOOLEAN_
 E void FDECL(popup_talk_line_with_know_mname, (struct monst*, const char*, BOOLEAN_P));
 E int FDECL(service_identify, (struct monst*, long));
 E void FDECL(You_ex1_popup, (const char*, const char*, int, int, int, unsigned long));
+E int FDECL(dochatmon, (struct monst*));
 
 /* ### soundset.c ### */
 

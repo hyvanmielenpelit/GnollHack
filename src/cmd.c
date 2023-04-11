@@ -9008,8 +9008,10 @@ doviewpet(VOID_ARGS)
         {
             if (mtmp->m_id == context.view_pet_mid && is_tame(mtmp))
             {
-                doviewpetstatistics(mtmp);
-                break;
+                if (abs(mtmp->mx - u.ux) <= 1 && abs(mtmp->my - u.uy) <= 1)
+                    return dochatmon(mtmp);
+                else
+                    return doviewpetstatistics(mtmp);
             }
         }
     }
@@ -9284,9 +9286,11 @@ enum create_context_menu_types menu_type;
         int x, y;
         boolean addchatmenu = FALSE;
         boolean addridemenu = FALSE;
+        //boolean addkickmenu = FALSE;
         struct monst* mtmp = 0;
         struct monst* steedmtmp = 0;
         struct monst* chatmtmp = 0;
+        //struct obj* kickotmp = 0;
         if (!Hallucination)
         {
             for (x = u.ux - 1; x <= u.ux + 1; x++)
@@ -9308,6 +9312,15 @@ enum create_context_menu_types menu_type;
                                 addridemenu = TRUE;
                             }
                         }
+                        //otmp = level.objects[x][y];
+                        //if (otmp)
+                        //{
+                        //    if (Is_proper_container(otmp) && otmp->olocked && !otmp->obroken && otmp->lknown)
+                        //    {
+                        //        kickotmp = otmp;
+                        //        addkickmenu = TRUE;
+                        //    }
+                        //}
                     }
             }
         }
@@ -9320,6 +9333,11 @@ enum create_context_menu_types menu_type;
         {
             add_context_menu(M('R'), cmd_from_func(doridenearby), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(steedmtmp, rn2_on_display_rng), "Mount", Monnam(steedmtmp), 0, NO_COLOR);
         }
+        //if (addkickmenu)
+        //{
+        //    if(kickotmp)
+        //        add_context_menu(C('d'), cmd_from_func(dokicknearby), CONTEXT_MENU_STYLE_GENERAL, obj_to_glyph(kickotmp, rn2_on_display_rng), "Kick", The(cxname(kickotmp)), 0, NO_COLOR);
+        //}
 
         if (u.usteed)
         {
