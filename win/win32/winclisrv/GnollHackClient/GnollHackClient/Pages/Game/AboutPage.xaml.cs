@@ -1,4 +1,5 @@
 ﻿using GnollHackCommon;
+using Plugin.StoreReview;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,9 +16,9 @@ using static System.Net.WebRequestMethods;
 namespace GnollHackClient.Pages.Game
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CreditsPage : ContentPage
+    public partial class AboutPage : ContentPage
     {
-        public CreditsPage()
+        public AboutPage()
         {
             InitializeComponent();
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
@@ -26,7 +27,7 @@ namespace GnollHackClient.Pages.Game
         private async void btnCreditsX_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
-            CreditsTableView.IsEnabled = false;
+            AboutTableView.IsEnabled = false;
             string fulltargetpath = Path.Combine(App.GHPath, "xcredits");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Cross-Platform Credits", 80);
             string errormsg = "";
@@ -38,13 +39,13 @@ namespace GnollHackClient.Pages.Game
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
-            CreditsTableView.IsEnabled = true;
+            AboutTableView.IsEnabled = true;
         }
 
         private async void btnCreditsW_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
-            CreditsTableView.IsEnabled = false;
+            AboutTableView.IsEnabled = false;
             string fulltargetpath = Path.Combine(App.GHPath, "credits");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Credits", 77);
             string errormsg = "";
@@ -56,13 +57,13 @@ namespace GnollHackClient.Pages.Game
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
-            CreditsTableView.IsEnabled = true;
+            AboutTableView.IsEnabled = true;
         }
 
         private async void btnLicense_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
-            CreditsTableView.IsEnabled = false;
+            AboutTableView.IsEnabled = false;
             string fulltargetpath = Path.Combine(App.GHPath, "license");
             var displFilePage = new DisplayFilePage(fulltargetpath, "License", 78);
             string errormsg = "";
@@ -74,14 +75,14 @@ namespace GnollHackClient.Pages.Game
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
-            CreditsTableView.IsEnabled = true;
+            AboutTableView.IsEnabled = true;
         }
         private async void btnGitHub_Clicked(object sender, EventArgs e)
         {
-            CreditsTableView.IsEnabled = false;
+            AboutTableView.IsEnabled = false;
             App.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackGitHubPage));
-            CreditsTableView.IsEnabled = true;
+            AboutTableView.IsEnabled = true;
         }
 
         public async Task OpenBrowser(Uri uri)
@@ -98,31 +99,39 @@ namespace GnollHackClient.Pages.Game
 
         private async void btnWebPage_Clicked(object sender, EventArgs e)
         {
-            CreditsTableView.IsEnabled = false;
+            AboutTableView.IsEnabled = false;
             App.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackWebPage));
-            CreditsTableView.IsEnabled = true;
+            AboutTableView.IsEnabled = true;
         }
 
         private async void btnWiki_Clicked(object sender, EventArgs e)
         {
-            CreditsTableView.IsEnabled = false;
+            AboutTableView.IsEnabled = false;
             App.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackWikiPage));
-            CreditsTableView.IsEnabled = true;
+            AboutTableView.IsEnabled = true;
+        }
+
+        private async void btnRateApp_Clicked(object sender, EventArgs e)
+        {
+            AboutTableView.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            await CrossStoreReview.Current.RequestReview(false);
+            AboutTableView.IsEnabled = true;
         }
 
         private async void btnSponsor_Clicked(object sender, EventArgs e)
         {
-            CreditsTableView.IsEnabled = false;
+            AboutTableView.IsEnabled = false;
             App.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackSponsorPage));
-            CreditsTableView.IsEnabled = true;
+            AboutTableView.IsEnabled = true;
         }
 
         //private async void btnSourceCode_Clicked(object sender, EventArgs e)
         //{
-        //    CreditsTableView.IsEnabled = false;
+        //    AboutTableView.IsEnabled = false;
         //    App.PlayButtonClickedSound();
         //    SecretsFile sourcesf = null;
         //    foreach (SecretsFile f in App.CurrentSecrets.files)
@@ -170,7 +179,7 @@ namespace GnollHackClient.Pages.Game
         //        return;
         //    }
         //    await DisplayAlert("Source Files in Downloads", "Source files have been successfully saved to the Downloads folder in a zip format. The file is named \'" + sourcesf.name + "\'.", "OK");
-        //    CreditsTableView.IsEnabled = true;
+        //    AboutTableView.IsEnabled = true;
         //}
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -194,7 +203,7 @@ namespace GnollHackClient.Pages.Game
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;
-            CreditsTableView.IsEnabled = true;
+            AboutTableView.IsEnabled = true;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
@@ -327,7 +336,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void btnViewPanicLog_Clicked(object sender, EventArgs e)
         {
-            CreditsTableView.IsEnabled = false;
+            AboutTableView.IsEnabled = false;
             App.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(App.GHPath, "paniclog");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Panic Log");
@@ -344,7 +353,7 @@ namespace GnollHackClient.Pages.Game
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
-            CreditsTableView.IsEnabled = true;
+            AboutTableView.IsEnabled = true;
         }
 
 
@@ -365,11 +374,11 @@ namespace GnollHackClient.Pages.Game
 
         private async void btnVersion_Clicked(object sender, EventArgs e)
         {
-            CreditsTableView.IsEnabled = false;
+            AboutTableView.IsEnabled = false;
             App.PlayButtonClickedSound();
             var verPage = new VersionPage(null);
             await App.Current.MainPage.Navigation.PushModalAsync(verPage);
-            CreditsTableView.IsEnabled = true;
+            AboutTableView.IsEnabled = true;
 
         }
 

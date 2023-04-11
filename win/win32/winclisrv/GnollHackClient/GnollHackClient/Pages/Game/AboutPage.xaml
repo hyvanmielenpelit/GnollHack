@@ -4,7 +4,7 @@
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:gnollhackclient="clr-namespace:GnollHackClient"
              BackgroundColor="Black"
-             x:Class="GnollHackClient.Pages.Game.CreditsPage" 
+             x:Class="GnollHackClient.Pages.Game.AboutPage" 
              Appearing="ContentPage_Appearing" 
              Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>
@@ -21,10 +21,24 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="About GnollHack" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,30" />
-                <TableView Grid.Row="1" x:Name="CreditsTableView" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
+                <TableView Grid.Row="1" x:Name="AboutTableView" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
                            Intent="Menu">
                     <TableRoot>
                         <TableSection x:Name="BaseSection">
+                            <ViewCell>
+                                <Grid WidthRequest="320" HorizontalOptions="Center" >
+                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                                    <Button x:Name="btnVersion" Text="Version" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnVersion_Clicked" />
+                                </Grid>
+                            </ViewCell>
+                            <ViewCell>
+                                <Grid WidthRequest="320" HorizontalOptions="Center" >
+                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                                    <Button x:Name="btnRateApp" Text="Give App Rating" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnRateApp_Clicked" />
+                                </Grid>
+                            </ViewCell>
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center" >
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
@@ -72,13 +86,6 @@
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center" >
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnSponsor" Text="Sponsor" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnSponsor_Clicked" />
-                                </Grid>
-                            </ViewCell>
-                            <ViewCell>
-                                <Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
                                     <Button x:Name="btnWebPage" Text="www.gnollhack.com" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnWebPage_Clicked" />
                                 </Grid>
@@ -86,8 +93,8 @@
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center" >
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnVersion" Text="Version" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnVersion_Clicked" />
+                                    <Button x:Name="btnSponsor" Text="Sponsor" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnSponsor_Clicked" />
                                 </Grid>
                             </ViewCell>
                         </TableSection>

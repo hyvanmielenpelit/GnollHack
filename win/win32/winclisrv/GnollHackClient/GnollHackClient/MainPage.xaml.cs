@@ -681,14 +681,14 @@ namespace GnollHackClient
             App.PlayButtonClickedSound();
             if (App.UsesCarousel)
                 carouselView.Stop();
-            var creditsPage = new CreditsPage();
-            creditsPage.Disappearing += (sender2, e2) =>
+            var aboutPage = new AboutPage();
+            aboutPage.Disappearing += (sender2, e2) =>
             {
                 if (App.UsesCarousel)
                     carouselView.Play();
                 UpperButtonGrid.IsEnabled = true;
             };
-            await App.Current.MainPage.Navigation.PushModalAsync(creditsPage);
+            await App.Current.MainPage.Navigation.PushModalAsync(aboutPage);
             UpperButtonGrid.IsEnabled = true;
         }
 
