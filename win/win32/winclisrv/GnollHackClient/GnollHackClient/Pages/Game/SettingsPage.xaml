@@ -24,6 +24,16 @@
                         <TableSection>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
+                                    <Label Text="Simple Command Layout"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="SimpleCmdLayoutSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
                                     <Label Text="Graphics"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"

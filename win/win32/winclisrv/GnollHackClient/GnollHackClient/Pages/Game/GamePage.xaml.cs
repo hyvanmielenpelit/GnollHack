@@ -181,6 +181,7 @@ namespace GnollHackClient.Pages.Game
 
         private int _shownPetRows = GHConstants.DefaultPetRows;
         public int NumDisplayedPetRows { get { return _shownPetRows; } set { _shownPetRows = value; } }
+        public SimpleImageButton StandardMeasurementButton { get { return UseSimpleCmdLayout ? SimpleESCButton : ESCButton; } }
 
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
@@ -218,6 +219,21 @@ namespace GnollHackClient.Pages.Game
                 CommandCanvas.UseGL = value;
             } 
         }
+        private bool _useSimpleCmdLayout = true;
+        public bool UseSimpleCmdLayout
+        {
+            get { return _useSimpleCmdLayout; }
+            set
+            {
+                _useSimpleCmdLayout = value;
+                ButtonRowStack.IsVisible = !value;
+                UpperCmdLayout.IsVisible = !value;
+                SimpleButtonRowStack.IsVisible = value;
+                SimpleUpperCmdLayout.IsVisible = value;
+            }
+        }
+        public StackLayout UsedButtonRowStack { get { return UseSimpleCmdLayout ? SimpleButtonRowStack : ButtonRowStack; } }
+
         public bool ShowFPS { get; set; }
         private double _fps;
         private long _counterValueDiff;
@@ -406,6 +422,7 @@ namespace GnollHackClient.Pages.Game
             MapRefreshRate = (MapRefreshRateStyle)Preferences.Get("MapRefreshRate", (int)ClientUtils.GetDefaultMapFPS());
             ShowFPS = Preferences.Get("ShowFPS", false);
             UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHConstants.IsGPUDefault);
+            UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", true);
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
             MapGrid = Preferences.Get("MapGrid", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
@@ -515,7 +532,7 @@ namespace GnollHackClient.Pages.Game
 
                     App.InitializeArrowButtons(assembly);
                     App.InitializeUIBitmaps(assembly);
-                    App.InitializeMoreCommandButtons(assembly);
+                    App.InitializeMoreCommandButtons(assembly, UseSimpleCmdLayout);
 
                     App.UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
                     App.NoGlyph = _gnollHackService.GetNoGlyph();
@@ -651,6 +668,7 @@ namespace GnollHackClient.Pages.Game
                     lAbilitiesButton.HeightRequest = statusbarheight;
                     lWornItemsButton.HeightRequest = statusbarheight;
                     UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
+                    SimpleUpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
                     StartingPositionsSet = true;
                 }
 
@@ -1631,6 +1649,7 @@ namespace GnollHackClient.Pages.Game
             }
 
             GameMenuButton.IsEnabled = true;
+            SimpleGameMenuButton.IsEnabled = true;
             lMoreButton.IsEnabled = true;
 
             if (_isFirstAppearance)
@@ -4517,7 +4536,7 @@ namespace GnollHackClient.Pages.Game
 
                                 textPaint.TextAlign = SKTextAlign.Center;
                                 tx = canvaswidth / 2;
-                                ty = GetStatusBarSkiaHeight() + 1.5f * inverse_canvas_scale * (float)ESCButton.Height - textPaint.FontMetrics.Ascent;
+                                ty = GetStatusBarSkiaHeight() + 1.5f * inverse_canvas_scale * (float)StandardMeasurementButton.Height - textPaint.FontMetrics.Ascent;
                                 if (relativestrokewidth > 0)
                                 {
                                     textPaint.Style = SKPaintStyle.Stroke;
@@ -4639,7 +4658,7 @@ namespace GnollHackClient.Pages.Game
                                         if (_clientGame.Windows[i].WindowType == GHWinType.Message)
                                         {
                                             float newleft = 0;
-                                            float newtop = canvasheight - height * ActualDisplayedMessages - canvasheight * (float)ButtonRowStack.Height / Math.Max(1.0f, (float)canvasView.Height) - 30;
+                                            float newtop = canvasheight - height * ActualDisplayedMessages - canvasheight * (float)UsedButtonRowStack.Height / Math.Max(1.0f, (float)canvasView.Height) - 30;
                                             _clientGame.Windows[i].Left = newleft;
                                             _clientGame.Windows[i].Top = newtop;
                                         }
@@ -4910,7 +4929,7 @@ namespace GnollHackClient.Pages.Game
                     }
 
                     float abilitybuttonbottom = (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / canvasView.Height) * canvasheight;
-                    float escbuttonbottom = (float)((ESCButton.Y + ESCButton.Height) / canvasView.Height) * canvasheight;
+                    float escbuttonbottom = (float)((StandardMeasurementButton.Y + StandardMeasurementButton.Height) / canvasView.Height) * canvasheight;
                     if (_canvasButtonRect.Top < escbuttonbottom)
                         _canvasButtonRect.Top = escbuttonbottom;
                     if (_canvasButtonRect.Top < abilitybuttonbottom)
@@ -4952,7 +4971,7 @@ namespace GnollHackClient.Pages.Game
                             SKRect darkenrect = new SKRect(0, 0, canvaswidth, statusbarheight);
                             StatusBarRect = darkenrect;
                             _statusBarRectDrawn = true;
-                            _canvasButtonRect.Top = StatusBarRect.Bottom + 1.25f * inverse_canvas_scale * (float)ESCButton.Width;
+                            _canvasButtonRect.Top = StatusBarRect.Bottom + 1.25f * inverse_canvas_scale * (float)StandardMeasurementButton.Width;
                             canvas.DrawRect(darkenrect, textPaint);
                             textPaint.Color = SKColors.White;
                             textPaint.TextAlign = SKTextAlign.Left;
@@ -5523,7 +5542,7 @@ namespace GnollHackClient.Pages.Game
                                     textPaint.Color = SKColors.White;
                                     textPaint.Typeface = App.LatoRegular;
                                     textPaint.TextSize = 36;
-                                    float pet_target_height = inverse_canvas_scale * (float)(ESCButton.Height + lAbilitiesButton.Width) / 2;
+                                    float pet_target_height = inverse_canvas_scale * (float)(StandardMeasurementButton.Height + lAbilitiesButton.Width) / 2;
                                     //float pet_name_target_height = pet_target_height * 0.4f;
                                     float pet_picture_target_height = pet_target_height * 0.56f;
                                     float pet_hp_target_height = pet_target_height * 0.24f;
@@ -5534,9 +5553,9 @@ namespace GnollHackClient.Pages.Game
                                                                                                                             //string pet_test_text = "Large Dog";
                                                                                                                             //float pet_target_width = textPaint.MeasureText(pet_test_text);
                                                                                                                             //pet_target_width += textPaint.FontSpacing; // For picture
-                                    float pet_target_width = pet_target_height; // inverse_canvas_scale * (float)ESCButton.Width;
+                                    float pet_target_width = pet_target_height; // inverse_canvas_scale * (float)StandardMeasurementButton.Width;
 
-                                    SKRect menubuttonrect = GetViewScreenRect(GameMenuButton);
+                                    SKRect menubuttonrect = GetViewScreenRect(UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton);
                                     SKRect canvasrect = GetViewScreenRect(canvasView);
                                     SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
                                     float menu_button_left = adjustedrect.Left;
@@ -6028,14 +6047,14 @@ namespace GnollHackClient.Pages.Game
                     canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint);
                     textPaint.Color = SKColors.White;
 
-                    float box_left = canvaswidth < canvasheight ? 1.25f * inverse_canvas_scale * (float)ESCButton.Width :
-                        3.25f * inverse_canvas_scale * (float)ESCButton.Width;
+                    float box_left = canvaswidth < canvasheight ? 1.25f * inverse_canvas_scale * (float)StandardMeasurementButton.Width :
+                        3.25f * inverse_canvas_scale * (float)StandardMeasurementButton.Width;
                     float box_right = canvaswidth - box_left;
                     if (box_right < box_left)
                         box_right = box_left;
-                    float box_top = canvaswidth < canvasheight ? GetStatusBarSkiaHeight() + 1.25f * inverse_canvas_scale * (float)ESCButton.Height :
-                        GetStatusBarSkiaHeight() + 0.25f * inverse_canvas_scale * (float)ESCButton.Height;
-                    float box_bottom = canvasheight - 1.25f * inverse_canvas_scale * (float)ButtonRowStack.Height;
+                    float box_top = canvaswidth < canvasheight ? GetStatusBarSkiaHeight() + 1.25f * inverse_canvas_scale * (float)StandardMeasurementButton.Height :
+                        GetStatusBarSkiaHeight() + 0.25f * inverse_canvas_scale * (float)StandardMeasurementButton.Height;
+                    float box_bottom = canvasheight - 1.25f * inverse_canvas_scale * (float)UsedButtonRowStack.Height;
                     if (box_bottom < box_top)
                         box_bottom = box_top;
 
@@ -7427,6 +7446,12 @@ namespace GnollHackClient.Pages.Game
                 ToggleZoomMiniButton.SetSideSize(width, height);
                 ToggleZoomAlternateButton.SetSideSize(width, height);
 
+                SimpleGameMenuButton.SetSideSize(width, height);
+                SimpleESCButton.SetSideSize(width, height);
+                SimpleToggleAutoCenterModeButton.SetSideSize(width, height);
+                SimpleLookModeButton.SetSideSize(width, height);
+                SimpleToggleZoomMiniButton.SetSideSize(width, height);
+
                 ZeroButton.SetSideSize(width, height);
                 FirstButton.SetSideSize(width, height);
                 SecondButton.SetSideSize(width, height);
@@ -7439,7 +7464,9 @@ namespace GnollHackClient.Pages.Game
                 lAbilitiesButton.HeightRequest = statusbarheight;
                 lWornItemsButton.HeightRequest = statusbarheight;
                 //lSkillButton.SetSideSize(width, height);
+
                 UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
+                SimpleUpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
 
                 foreach (View v in UpperCmdGrid.Children)
                 {
@@ -7451,10 +7478,18 @@ namespace GnollHackClient.Pages.Game
                     LabeledImageButton lib = (LabeledImageButton)v;
                     lib.SetSideSize(width, height);
                 }
+                foreach (View v in SimpleCmdGrid.Children)
+                {
+                    LabeledImageButton lib = (LabeledImageButton)v;
+                    lib.SetSideSize(width, height);
+                }
 
                 LabeledImageButton firstchild = (LabeledImageButton)UpperCmdGrid.Children[0];
                 UpperCmdGrid.HeightRequest = firstchild.GridHeight;
                 LowerCmdGrid.HeightRequest = firstchild.GridHeight;
+
+                LabeledImageButton simplefirstchild = (LabeledImageButton)SimpleCmdGrid.Children[0];
+                SimpleCmdGrid.HeightRequest = simplefirstchild.GridHeight;
 
                 MenuHeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(MenuBackground.BorderStyle, width, height);
                 MenuCloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(MenuBackground.BorderStyle, width, height);
@@ -7489,6 +7524,12 @@ namespace GnollHackClient.Pages.Game
                     ModeSubLayout2.Orientation = StackOrientation.Horizontal;
                     GameMenuLayout.Orientation = StackOrientation.Horizontal;
                     //UpperCmdLayout.Orientation = StackOrientation.Vertical;
+
+                    SimpleButtonRowStack.Orientation = StackOrientation.Horizontal;
+                    SimpleModeLayout.Orientation = StackOrientation.Vertical;
+                    SimpleModeSubLayout1.Orientation = StackOrientation.Horizontal;
+                    SimpleModeSubLayout2.Orientation = StackOrientation.Horizontal;
+                    SimpleGameMenuLayout.Orientation = StackOrientation.Horizontal;
                 }
                 else
                 {
@@ -7499,6 +7540,12 @@ namespace GnollHackClient.Pages.Game
                     ModeSubLayout2.Orientation = StackOrientation.Vertical;
                     GameMenuLayout.Orientation = StackOrientation.Horizontal;
                     //UpperCmdLayout.Orientation = StackOrientation.Horizontal;
+
+                    SimpleButtonRowStack.Orientation = StackOrientation.Vertical;
+                    SimpleModeLayout.Orientation = StackOrientation.Vertical;
+                    SimpleModeSubLayout1.Orientation = StackOrientation.Vertical;
+                    SimpleModeSubLayout2.Orientation = StackOrientation.Vertical;
+                    SimpleGameMenuLayout.Orientation = StackOrientation.Horizontal;
                 }
 
                 RefreshMenuRowCounts = true;
@@ -8753,10 +8800,12 @@ namespace GnollHackClient.Pages.Game
             if (MapNoClipMode)
             {
                 ToggleAutoCenterModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-autocenter-off.png";
+                SimpleToggleAutoCenterModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-autocenter-off.png";
             }
             else
             {
                 ToggleAutoCenterModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-autocenter-on.png";
+                SimpleToggleAutoCenterModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-autocenter-on.png";
                 if (sender != null && GHUtils.isok(_ux, _uy))
                 {
                     SetTargetClip(_ux, _uy, false);
@@ -8789,11 +8838,13 @@ namespace GnollHackClient.Pages.Game
             if (MapLookMode)
             {
                 LookModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-look-on.png";
+                SimpleLookModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-look-on.png";
                 //LookModeImg.Source = lookmode_on_source;
             }
             else
             {
                 LookModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-look-off.png";
+                SimpleLookModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-look-off.png";
                 //LookModeImg.Source = lookmode_off_source;
             }
         }
@@ -8807,12 +8858,14 @@ namespace GnollHackClient.Pages.Game
             if (ZoomMiniMode)
             {
                 ToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-minimap-on.png";
+                SimpleToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-minimap-on.png";
                 //ToggleZoomMiniImg.Source = minimap_on_source;
                 //ToggleZoomMiniButton.BackgroundColor = Color.Green;
             }
             else
             {
                 ToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-minimap-off.png";
+                SimpleToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-minimap-off.png";
                 //ToggleZoomMiniImg.Source = minimap_off_source;
                 //ToggleZoomMiniButton.BackgroundColor = Color.DarkBlue;
                 if (sender != null && GHUtils.isok(_ux, _uy) && !MapNoClipMode)
@@ -8877,10 +8930,12 @@ namespace GnollHackClient.Pages.Game
         private void GameMenuButton_Clicked(object sender, EventArgs e)
         {
             GameMenuButton.IsEnabled = false;
+            SimpleGameMenuButton.IsEnabled = false;
             App.PlayButtonClickedSound();
             TouchDictionary.Clear();
             ShowGameMenu(sender, e);
             GameMenuButton.IsEnabled = true;
+            SimpleGameMenuButton.IsEnabled = true;
         }
 
         private void PopupOkButton_Clicked(object sender, EventArgs e)
@@ -10623,6 +10678,8 @@ namespace GnollHackClient.Pages.Game
         private readonly object _commandFPSCounterLock = new object();
         private long _commandFPSCounterValue = 0;
 
+        public int CurrentMoreButtonPageMaxNumber { get { return UseSimpleCmdLayout ? GHConstants.MoreButtonPages - 1 : GHConstants.MoreButtonPages; } }
+
         private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             SKImageInfo info = e.Info;
@@ -10644,7 +10701,7 @@ namespace GnollHackClient.Pages.Game
                 float cmdOffsetX = MoreCmdOffsetX;
                 int curpage = MoreCmdPage;
                 int pagemin = cmdOffsetX > 0 ? Math.Max(EnableWizardMode ? 0 : 1, curpage - 1) : curpage;
-                int pagemax = cmdOffsetX < 0 ? Math.Min(GHConstants.MoreButtonPages - 1, curpage + 1) : curpage;
+                int pagemax = cmdOffsetX < 0 ? Math.Min(CurrentMoreButtonPageMaxNumber - 1, curpage + 1) : curpage;
                 SKRect screenRect = new SKRect(0, 0, canvaswidth, canvasheight);
 
                 float smalldotheight = Math.Min(canvaswidth, canvasheight) / 120 * scale;
@@ -10652,9 +10709,9 @@ namespace GnollHackClient.Pages.Game
                 float dotmargin = smalldotheight;
 
                 textPaint.Style = SKPaintStyle.Fill;
-                for (int i = (EnableWizardMode ? 0 : 1); i < GHConstants.MoreButtonPages; i++)
+                for (int i = (EnableWizardMode ? 0 : 1); i < CurrentMoreButtonPageMaxNumber; i++)
                 {
-                    int numdots = (EnableWizardMode ? 4 : 3);
+                    int numdots = CurrentMoreButtonPageMaxNumber - (EnableWizardMode ? 0 : 1);
                     int dotidx = (EnableWizardMode ? i : i - 1);
                     float dotspacing = dotmargin + largedotheight;
                     float dotoffsetx = ((float)dotidx - ((float)(numdots - 1) / 2)) * dotspacing;
@@ -10824,7 +10881,7 @@ namespace GnollHackClient.Pages.Game
                                         if (diffX != 0 || diffY != 0)
                                         {
                                             int minpage = EnableWizardMode ? 0 : 1;
-                                            int maxpage = GHConstants.MoreButtonPages - 1;
+                                            int maxpage = CurrentMoreButtonPageMaxNumber - 1;
                                             cmdOffset += diffX;
                                             if(cmdPage == minpage && cmdOffset > 0)
                                                 MoreCmdOffsetX = cmdOffset = 0;
@@ -10956,7 +11013,7 @@ namespace GnollHackClient.Pages.Game
                                     }
                                     else if (origdiffX < -swipelengththreshold)
                                     {
-                                        if (cmdPage < GHConstants.MoreButtonPages - 1)
+                                        if (cmdPage < CurrentMoreButtonPageMaxNumber - 1)
                                         {
                                             MoreCmdPage = cmdPage + 1;
                                             MoreCmdOffsetX = cmdOffset + btnMatrixWidth;
@@ -10979,7 +11036,7 @@ namespace GnollHackClient.Pages.Game
                                     }
                                     else if (cmdOffset < -btnMatrixWidth / 2)
                                     {
-                                        if (cmdPage < GHConstants.MoreButtonPages - 1)
+                                        if (cmdPage < CurrentMoreButtonPageMaxNumber - 1)
                                         {
                                             MoreCmdPage = cmdPage + 1;
                                             MoreCmdOffsetX = cmdOffset + btnMatrixWidth;
@@ -11116,22 +11173,22 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(str, tx, ty, textPaint);
                         break;
                     case 1:
-                        PaintTipButton(canvas, textPaint, GameMenuButton, "This opens the main menu.", "Main Menu", 1.5f, centerfontsize, fontsize, false, -0.15f, 0);
+                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton, "This opens the main menu.", "Main Menu", 1.5f, centerfontsize, fontsize, false, -0.15f, 0);
                         break;
                     case 2:
-                        PaintTipButton(canvas, textPaint, ESCButton, "This cancels any command.", "Escape Button", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
+                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleESCButton : ESCButton, "This cancels any command.", "Escape Button", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
                         break;
                     case 3:
-                        PaintTipButton(canvas, textPaint, ToggleAutoCenterModeButton, "This toggles auto-center on player.", "Map Auto-Center", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
+                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleToggleAutoCenterModeButton : ToggleAutoCenterModeButton, "This toggles auto-center on player.", "Map Auto-Center", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
                         break;
                     case 4:
-                        PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f);
+                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleToggleZoomMiniButton : ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f);
                         break;
                     case 5:
                         PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0);
                         break;
                     case 6:
-                        PaintTipButton(canvas, textPaint, LookModeButton, "This allows you to inspect the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, landscape ? -0.5f : 0);
+                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleLookModeButton : LookModeButton, "This allows you to inspect the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 7:
                         PaintTipButton(canvas, textPaint, ToggleTravelModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
@@ -11220,9 +11277,11 @@ namespace GnollHackClient.Pages.Game
                     break;
                 case SKTouchAction.Released:
                     ShownTip++;
-                    if(ShownTip == 12 && HealthRect.Width == 0)
+                    if (ShownTip == 12 && HealthRect.Width == 0)
                         ShownTip++;
-                    if (ShownTip == 13 && ManaRect.Width == 0)
+                    if (ShownTip == 12 && HealthRect.Width == 0)
+                        ShownTip++;
+                    if (UseSimpleCmdLayout && (ShownTip == 5 || ShownTip == 7))
                         ShownTip++;
                     TipView.InvalidateSurface();
                     if (ShownTip >= 15 - (_blockingTipView ? 0 : 1))
@@ -11282,8 +11341,8 @@ namespace GnollHackClient.Pages.Game
             }
             float relX = (float)(screenCoordinateX / canvasView.Width) * canvaswidth;
             float relY = (float)(screenCoordinateY / canvasView.Height) * canvasheight;
-            float relWidth = (float)(GameMenuButton.Width / canvasView.Width) * canvaswidth;
-            float relHeight = (float)(GameMenuButton.Height / canvasView.Height) * canvasheight;
+            float relWidth = (float)(StandardMeasurementButton.Width / canvasView.Width) * canvaswidth;
+            float relHeight = (float)(StandardMeasurementButton.Height / canvasView.Height) * canvasheight;
 
             SKRect res = new SKRect(relX, relY, relX + relWidth, relY + relHeight);
             return res;
