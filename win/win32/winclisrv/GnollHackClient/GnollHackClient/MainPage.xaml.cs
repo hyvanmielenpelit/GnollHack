@@ -1267,7 +1267,7 @@ namespace GnollHackClient
                 if (PopupNoAgainCheckBox.IsChecked)
                 {
                     Preferences.Set("HideAutoUpdateAlert", true);
-                    await Task.Delay(25);
+                    await Task.Delay(50);
                 }
 
                 CloseApp();
