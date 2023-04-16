@@ -100,11 +100,11 @@ namespace GnollHackClient.iOS
         //}
         //}
 
-        public float GetAnimatorDurationSetting()
+        public float GetAnimatorDurationScaleSetting()
         {
             return 1.0f;
         }
-        public float GetCurrentAnimatorDuration()
+        public float GetCurrentAnimatorDurationScale()
         {
             return 1.0f;
         }

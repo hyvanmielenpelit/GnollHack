@@ -140,8 +140,8 @@ namespace GnollHackClient
                 FmodLogoImage.IsVisible = false;
                 if (App.PlatformService != null)
                 {
-                    float scalesetting = App.PlatformService.GetAnimatorDurationSetting();
-                    float scalecurrent = App.PlatformService.GetCurrentAnimatorDuration();
+                    float scalesetting = App.PlatformService.GetAnimatorDurationScaleSetting();
+                    float scalecurrent = App.PlatformService.GetCurrentAnimatorDurationScale();
                     if (scalecurrent == 0.0f)
                     {
                         if(scalesetting == 0.0f)

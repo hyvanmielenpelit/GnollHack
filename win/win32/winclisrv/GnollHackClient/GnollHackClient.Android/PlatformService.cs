@@ -115,7 +115,7 @@ namespace GnollHackClient.Droid
         //    }
         //}
 
-        public float GetAnimatorDurationSetting()
+        public float GetAnimatorDurationScaleSetting()
         {
             var resolver = Android.App.Application.Context.ContentResolver;
             var scaleName = Android.Provider.Settings.Global.AnimatorDurationScale;
@@ -123,7 +123,7 @@ namespace GnollHackClient.Droid
             return scale;
         }
 
-        public float GetCurrentAnimatorDuration()
+        public float GetCurrentAnimatorDurationScale()
         {
             float scale = -1.0f;
             try
@@ -144,7 +144,7 @@ namespace GnollHackClient.Droid
         private float _originalAnimationDurationScale = 1.0f;
         public void OverrideAnimatorDuration()
         {
-            float scale = GetAnimatorDurationSetting();
+            float scale = GetAnimatorDurationScaleSetting();
 
             if (scale == 1.0f)
                 return;
