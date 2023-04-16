@@ -78,7 +78,7 @@ namespace GnollHackClient.Droid
 
         public void CloseApplication()
         {
-            RevertAnimationDuration(true);
+            RevertAnimatorDuration(true);
             MainActivity.CurrentMainActivity.Finish();
         }
 
@@ -115,13 +115,36 @@ namespace GnollHackClient.Droid
         //    }
         //}
 
-        private bool _originalSet = false;
-        private float _originalAnimationDurationScale = 1.0f;
-        public void OverrideAnimationDuration()
+        public float GetAnimatorDurationSetting()
         {
             var resolver = Android.App.Application.Context.ContentResolver;
             var scaleName = Android.Provider.Settings.Global.AnimatorDurationScale;
             float scale = Android.Provider.Settings.Global.GetFloat(resolver, scaleName, 1.0f);
+            return scale;
+        }
+
+        public float GetCurrentAnimatorDuration()
+        {
+            float scale = -1.0f;
+            try
+            {
+                var classForName = JNIEnv.FindClass("android/animation/ValueAnimator");
+                var methodId = JNIEnv.GetStaticMethodID(classForName, "getDurationScale", "()F");
+
+                scale = JNIEnv.CallStaticFloatMethod(classForName, methodId);
+            }
+            catch //(Exception ex)
+            {
+                // Log Android Error or try / catch should be moved to the calling function
+            }
+            return scale;
+        }
+
+        private bool _originalSet = false;
+        private float _originalAnimationDurationScale = 1.0f;
+        public void OverrideAnimatorDuration()
+        {
+            float scale = GetAnimatorDurationSetting();
 
             if (scale == 1.0f)
                 return;
@@ -141,10 +164,10 @@ namespace GnollHackClient.Droid
             }
             catch //(Exception ex)
             {
-                //Debug.WriteLine(ex.Message);
+                // Log Android Error or try / catch should be moved to the calling function
             }
         }
-        public void RevertAnimationDuration(bool isfinal)
+        public void RevertAnimatorDuration(bool isfinal)
         {
             if (_originalSet && _originalAnimationDurationScale != 1.0f)
             {
@@ -153,12 +176,12 @@ namespace GnollHackClient.Droid
                     var classForName = JNIEnv.FindClass("android/animation/ValueAnimator");
                     var methodId = JNIEnv.GetStaticMethodID(classForName, "setDurationScale", "(F)V");
 
-                    float usedValue = !isfinal && _originalAnimationDurationScale == 0 ? 0.1f : _originalAnimationDurationScale; //Make sure that the value is not set to zero upon sleep just in case, since that seems to create problems
+                    float usedValue = !isfinal && _originalAnimationDurationScale == 0.0f ? 0.1f : _originalAnimationDurationScale; //Make sure that the value is not set to zero upon sleep just in case, since that seems to create problems
                     JNIEnv.CallStaticVoidMethod(classForName, methodId, new JValue(usedValue));
                 }
                 catch //(Exception ex)
                 {
-                    // Log Error
+                    // Log Android Error or try / catch should be moved to the calling function
                 }
 
                 _originalSet = false;

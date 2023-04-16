@@ -126,7 +126,7 @@ namespace GnollHackClient
         protected override void OnStart()
         {
             if (PlatformService != null)
-                PlatformService.OverrideAnimationDuration();
+                PlatformService.OverrideAnimatorDuration();
 
             App.CancelSaveGame = true;
             App.SleepMuteMode = false;
@@ -145,7 +145,7 @@ namespace GnollHackClient
         protected override void OnSleep()
         {
             if (PlatformService != null)
-                PlatformService.RevertAnimationDuration(false);
+                PlatformService.RevertAnimatorDuration(false);
 
             App.CancelSaveGame = false;
             App.SleepMuteMode = true;
@@ -160,7 +160,7 @@ namespace GnollHackClient
         protected override void OnResume()
         {
             if (PlatformService != null)
-                PlatformService.OverrideAnimationDuration();
+                PlatformService.OverrideAnimatorDuration();
 
             App.CancelSaveGame = true;
             App.SleepMuteMode = false;
