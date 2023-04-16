@@ -643,7 +643,7 @@ struct monst *mtmp;
 {
     if ((mtmp == &youmonst && (Strangled || Silenced))
         || is_silenced(mtmp) || is_being_strangled(mtmp)
-        || is_silent(mtmp->data) || (!has_head(mtmp->data) && !is_speaking_monster(mtmp->data))
+        || is_silent(mtmp->data) || (!has_head(mtmp->data) && !is_speaking(mtmp->data))
         || mtmp->data->msound == MS_BUZZ || mtmp->data->msound == MS_BURBLE)
         return FALSE;
     return TRUE;

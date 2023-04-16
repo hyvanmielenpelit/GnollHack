@@ -1090,11 +1090,11 @@ struct rm {
 
     schar decoration_typ;
     schar decoration_subtyp;
-    schar decoration_dir;
+    schar decoration_dir;    /* -1 = N/A, 0 = on top wall pointing down, 1 = on left wall pointing right, 2 = on right wall pointing left, 3 = on bottom wall pointing up, */
     uchar decoration_flags;
 
-    short key_otyp;            /* For doors, the otyp that unlocks the door */
-    short special_quality;     /* For doors, the special quality of the key that unlocks the door */
+    short key_otyp;          /* For doors, the otyp that unlocks the door */
+    short special_quality;   /* For doors, the special quality of the key that unlocks the door */
 
     uchar seenv;             /* seen vector */
     unsigned short flags;    /* extra information for typ */

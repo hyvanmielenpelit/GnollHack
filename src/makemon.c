@@ -2937,7 +2937,7 @@ aligntyp alignment;
     /* set up known rumors */
     mtmp->told_rumor = 0;
     mtmp->rumorsleft = 0;
-    if (is_speaking_monster(mtmp->data) && !(mmflags & MM_EGD))
+    if (is_speaking(mtmp->data) && !(mmflags & MM_EGD))
     {
         mtmp->rumorsleft = (!rn2(2) ? 1 : 0) + (((is_lord(mtmp->data) && rn2(2)) || ((is_prince(mtmp->data) && rn2(4))) || ((mtmp->data->mflags6 & M6_ELDER) && rn2(3))) ? 1 : 0) + (ptr->intl > 15 && !rn2(2) ? 1 : 0);
     }

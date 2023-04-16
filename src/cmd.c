@@ -9301,7 +9301,7 @@ enum create_context_menu_types menu_type;
                         mtmp = m_at(x, y);
                         if (mtmp)
                         {
-                            if (!is_tame(mtmp) && (is_peaceful(mtmp) || is_quantum_mechanic(mtmp->data) || is_rider(mtmp->data)) && (is_speaking_monster(mtmp->data) || is_tame(mtmp)) && canspotmon(mtmp) && mon_can_move(mtmp))
+                            if (monster_invokes_context_chat(mtmp))
                             {
                                 chatmtmp = mtmp;
                                 addchatmenu = TRUE;

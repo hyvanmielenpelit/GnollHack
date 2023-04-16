@@ -246,16 +246,16 @@
 #define M3_STRANGLES_NECK_BY_HAND                      0x00008000UL   /* rope golem's strangulation attack */
 
 #define M3_BURNS_COMPLETELY                            0x00010000UL   /* burns completely */
-/* free bit */
-/* free bit */
-/* free bit */
-/* free bit */
-/* free bit */
-#define M3_REGENERATES_LOST_BODY_PARTS                 0x00400000UL   /* does not lose max hitpoint because of sharpness or bisection */
-#define M3_REVIVES_FROM_DEAD                           0x00800000UL   /* is resurrects itself after a while */
 
-#define M3_SPEAKING                                    0x01000000UL   /* can be spoken to using the chat command */
-#define M3_CHAT_CAN_JOIN_PARTY                         0x02000000UL   /* can join the player's party */
+#define M3_SPEAKING                                    0x00020000UL   /* can be spoken to using the chat command */
+#define M3_CHATTY                                      0x00040000UL   /* speaks even if hostile */
+#define M3_CHAT_CAN_JOIN_PARTY                         0x00080000UL   /* can join the player's party */
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
+#define M3_REGENERATES_LOST_BODY_PARTS                 0x01000000UL   /* does not lose max hitpoint because of sharpness or bisection */
+#define M3_REVIVES_FROM_DEAD                           0x02000000UL   /* is resurrects itself after a while */
 
 #define M3_WEBMAKER                                    0x04000000UL   /* is a webmaker */
 #define M3_KNOWS_TRAPS                                 0x08000000UL   /* knows traps on the level */
@@ -362,7 +362,7 @@
 #define M6_NON_TINNABLE             0x00010000UL   /* Corpse cannot be tinned similar to riders */
 #define M6_NON_EDIBLE               0x00020000UL   /* Corpse cannot be eaten similar to riders */
 #define M6_REVIVES_UPON_MEDDLING    0x00040000UL   /* Revive upon corpse meddling */
-#define M6_LITHOVORE               0x00080000UL   /* Eats rock */
+#define M6_LITHOVORE                0x00080000UL   /* Eats rock */
 
 #define M7_NONE                     0x00000000UL
 #define M7_ARCHAEOLOGIST            0x00000001UL   /* monster can use archaeologist items */

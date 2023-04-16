@@ -877,7 +877,7 @@ namespace GnollHackClient
                 _moreBtnMatrix[2, 3, 2] = new GHCommandButtonItem("Unwield", "GnollHackClient.Assets.UI.unwield.png", GHUtils.Meta(5));
 
                 _moreBtnMatrix[2, 0, 3] = new GHCommandButtonItem("Light", "GnollHackClient.Assets.UI.light.png", GHUtils.Ctrl((int)'l'));
-                _moreBtnMatrix[2, 1, 3] = new GHCommandButtonItem("Sit", "GnollHackClient.Assets.UI.sit.png", GHUtils.Ctrl((int)'s'));
+                _moreBtnMatrix[2, 1, 3] = new GHCommandButtonItem("Loot", "GnollHackClient.Assets.UI.loot.png", (int)'l');
                 _moreBtnMatrix[2, 2, 3] = new GHCommandButtonItem("Open", "GnollHackClient.Assets.UI.open.png", (int)'o');
                 _moreBtnMatrix[2, 3, 3] = new GHCommandButtonItem("Close", "GnollHackClient.Assets.UI.close.png", (int)'c');
 

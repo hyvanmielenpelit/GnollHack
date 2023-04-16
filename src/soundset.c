@@ -16771,7 +16771,7 @@ unsigned long play_flags;
     }
 
     /* Treat potential spoken lines as queueable dialogue */
-    if ((humanoid(mon->data) || is_speaking_monster(mon->data)) && (
+    if ((humanoid(mon->data) || is_speaking(mon->data)) && (
         sound_type == MONSTER_SOUND_TYPE_CREATION
         || sound_type == MONSTER_SOUND_TYPE_GET_ANGRY
         || sound_type == MONSTER_SOUND_TYPE_MOLLIFIED

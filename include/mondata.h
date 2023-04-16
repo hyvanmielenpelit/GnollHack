@@ -126,7 +126,8 @@
 #define is_multiweaponmonster(ptr) (((ptr)->mflags3 & M3_MULTIWEAPON) != 0L)
 #define leaves_corpses_randomly(ptr) (((ptr)->mflags3 & M3_RANDOM_CORPSE) != 0L)
 #define corpse_crumbles_to_dust(ptr) (((ptr)->mflags3 & M3_CORPSE_CRUMBLES_TO_DUST) != 0L)
-#define is_speaking_monster(ptr) (((ptr)->mflags3 & M3_SPEAKING) != 0L)
+#define is_speaking(ptr) (((ptr)->mflags3 & M3_SPEAKING) != 0L)
+#define is_chatty(ptr) (((ptr)->mflags3 & M3_CHATTY) != 0L)
 #define is_constrictor(ptr) (((ptr)->mflags3 & M3_CONSTRICTOR) != 0L)
 #define hug_throttles(ptr) (((ptr)->mflags3 & M3_STRANGLES_NECK_BY_HAND) != 0L)
 #define hug_requires_two_previous_attacks(ptr) (((ptr)->mflags3 & M3_HUG_HITS_IF_TWO_FIRST_ATTACKS_SUCCEEDED) != 0L)
@@ -221,7 +222,7 @@
 #define is_non_eater(ptr) \
     ((is_not_living(ptr) || is_angel(ptr) || is_demon(ptr) || has_mflag_is_non_eater(ptr) || (!carnivorous(ptr) && !herbivorous(ptr) && !metallivorous(ptr) && !lithovore(ptr))) && !is_corpse_eater(ptr))
 
-#define mon_is_literate(m) (is_speaking_monster((m)->data) && !mindless((m)->data) && haseyes((m)->data))
+#define mon_is_literate(m) (is_speaking((m)->data) && !mindless((m)->data) && haseyes((m)->data))
 
 /* Resistances and properties */
 #define has_innate(ptr, bit) \
@@ -888,8 +889,8 @@
 #define nonrotting_corpse_ptr(ptr) (((ptr)->mflags4 & M4_NONROTTING_CORPSE) != 0)
 #define nonrotting_corpse(mnum) nonrotting_corpse_ptr(&mons[mnum])
 #define has_pitwalk(ptr) (((ptr)->mflags4 & M4_PITWALK) != 0)
-#define can_speak_language(ptr) ((ptr)->msound >= MS_LAUGH || (ptr)->msound == MS_ORC || is_speaking_monster(ptr))
-#define call_mon_tame(mon)  (is_domestic((mon)->data) || ((is_animal((mon)->data) || !humanoid((mon)->data)) && !mindless((mon)->data) && !is_speaking_monster((mon)->data) && is_living((mon)->data) && !is_demon((mon)->data)))
+#define can_speak_language(ptr) ((ptr)->msound >= MS_LAUGH || (ptr)->msound == MS_ORC || is_speaking(ptr))
+#define call_mon_tame(mon)  (is_domestic((mon)->data) || ((is_animal((mon)->data) || !humanoid((mon)->data)) && !mindless((mon)->data) && !is_speaking((mon)->data) && is_living((mon)->data) && !is_demon((mon)->data)))
 
 /* Overall resistances */
 #define resists_drli(mon) resists_drain(mon)
@@ -902,6 +903,9 @@
     (is_rider(ptr) || is_not_living(ptr))
 #define resists_life_leech(mon) \
     (is_immune_to_life_leech((mon)->data) || is_vampshifter(mon))
+
+/* Other */
+#define is_mon_talkative(mon) (is_speaking((mon)->data) && (is_peaceful(mon) || is_chatty((mon)->data)))
 
 /* monkeys are tameable via bananas but not pacifiable via food,
    otherwise their theft attack could be nullified too easily;

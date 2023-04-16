@@ -2048,7 +2048,7 @@ dotalknearby()
                 if (!(x == u.ux && y == u.uy) && isok(x, y))
                 {
                     mtmp = m_at(x, y);
-                    if (mtmp && (is_peaceful(mtmp) || is_quantum_mechanic(mtmp->data) || is_rider(mtmp->data)) && (is_speaking_monster(mtmp->data) || is_tame(mtmp)) && canspotmon(mtmp) && mon_can_move(mtmp))
+                    if (mtmp && monster_invokes_context_chat(mtmp))
                     {
                         nummonfound++;
                         selected_mtmp = mtmp;
@@ -2294,7 +2294,7 @@ struct monst* mtmp;
 
 #if 0
     /* Non-speaking monster */
-    if (!is_speaking_monster(mtmp->data) && !is_tame(mtmp))
+    if (!is_speaking(mtmp->data) && !is_tame(mtmp))
     {
         if (canspotmon(mtmp))
         {
@@ -2407,7 +2407,7 @@ struct monst* mtmp;
 
         chatnum++;
 
-        if (is_speaking_monster(mtmp->data) && (is_peaceful(mtmp) || is_quantum_mechanic(mtmp->data) || is_rider(mtmp->data)))
+        if (is_speaking(mtmp->data) && is_mon_talkative(mtmp))
         {
             /* Who are you? */
             Strcpy(available_chat_list[chatnum].name, "\"Who are you?\"");
@@ -2426,7 +2426,7 @@ struct monst* mtmp;
 
         boolean non_advicing_npc = has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_ADVICE) != 0;
 
-        if(is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && !non_advicing_npc)
+        if(is_speaking(mtmp->data) && is_peaceful(mtmp) && !non_advicing_npc)
         {
             if (!mtmp->isgd && !(mtmp->data->mflags6 & M6_HATCHLING) && (is_izchak(mtmp, TRUE) || mtmp->rumorsleft >= 0))
             {
@@ -2449,7 +2449,7 @@ struct monst* mtmp;
             }
         }
 
-        if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_QUANTUM_QUESTS) != 0)
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_QUANTUM_QUESTS) != 0)
         {
             /* Endicott - Quantum Quests */
             if (mtmp->u_know_mname)
@@ -2534,7 +2534,7 @@ struct monst* mtmp;
             }
         }
 
-        if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_STARTING_QUESTS) != 0)
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_STARTING_QUESTS) != 0)
         {
             /* Hermit - Starting Quests */
             Strcpy(available_chat_list[chatnum].name, "Ask about the Dungeons of Doom");
@@ -2668,7 +2668,7 @@ struct monst* mtmp;
 
         }
 
-        if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ADVANCED_QUESTS) != 0)
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ADVANCED_QUESTS) != 0)
         {
             /* Hermit - Advanced Quests */
             Strcpy(available_chat_list[chatnum].name, "Ask about the Castle");
@@ -2792,7 +2792,7 @@ struct monst* mtmp;
 
         }
 
-        if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_GNOMISH_QUESTS) != 0)
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_GNOMISH_QUESTS) != 0)
         {
             /* Hermit - Gnomish Quests */
             Strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
@@ -2826,7 +2826,7 @@ struct monst* mtmp;
 
         }
 
-        if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ORCISH_QUESTS) != 0)
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ORCISH_QUESTS) != 0)
         {
             /* Hermit - Orcish Quests */
             Strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
@@ -2860,7 +2860,7 @@ struct monst* mtmp;
         }
 
 
-        if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp))
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp))
         {
             if ((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_SING_SONGS) != 0)
             {
@@ -2956,7 +2956,7 @@ struct monst* mtmp;
 
                 if (is_animal(mtmp->data))
                     Strcpy(available_chat_list[chatnum].name, "Command to stay put");
-                else if (is_speaking_monster(mtmp->data))
+                else if (is_speaking(mtmp->data))
                     Strcpy(available_chat_list[chatnum].name, "Command to hold position");
                 else
                     Strcpy(available_chat_list[chatnum].name, "Command to hold position");
@@ -2980,7 +2980,7 @@ struct monst* mtmp;
             {
                 if (is_animal(mtmp->data))
                     Strcpy(available_chat_list[chatnum].name, "Command to stop staying put");
-                else if (is_speaking_monster(mtmp->data))
+                else if (is_speaking(mtmp->data))
                     Strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
                 else
                     Strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
@@ -5051,7 +5051,7 @@ struct monst* mtmp;
             Sprintf(pbuf, "%s looks determined not to move anywhere.", noittame_Monnam(mtmp));
         else if is_animal(mtmp->data)
             Sprintf(pbuf, "%s sits down and looks determined not to move anywhere.", noittame_Monnam(mtmp));
-        else if (is_speaking_monster(mtmp->data))
+        else if (is_speaking(mtmp->data))
             Sprintf(pbuf, "%s starts to hold its position.", noittame_Monnam(mtmp));
         else
             Sprintf(pbuf, "%s starts to hold its position.", noittame_Monnam(mtmp));
@@ -5082,7 +5082,7 @@ struct monst* mtmp;
             Sprintf(pbuf, "%s stops staying put.", noittame_Monnam(mtmp));
         else if is_animal(mtmp->data)
             Sprintf(pbuf, "%s stands up.", noittame_Monnam(mtmp));
-        else if (is_speaking_monster(mtmp->data))
+        else if (is_speaking(mtmp->data))
             Sprintf(pbuf, "%s stops holding its position.", noittame_Monnam(mtmp));
         else
             Sprintf(pbuf, "%s stops holding its position.", noittame_Monnam(mtmp));
@@ -6403,7 +6403,7 @@ struct monst* mtmp;
     }
     else
     {
-        if (!Deaf && is_speaking_monster(mtmp->data) && !mtmp->isshk && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) ))
+        if (!Deaf && is_speaking(mtmp->data) && !mtmp->isshk && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) ))
         {
             if(is_undead(mtmp->data) || is_demon(mtmp->data))
                 play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_TRADING_GREETINGS_MORTAL);
@@ -6412,7 +6412,7 @@ struct monst* mtmp;
             play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_BUT_BE_QUICK_MY_PATIENCE_IS_LIMITED);
             verbalize("But be quick, my patience is limited.");
         }
-        else if (!Deaf && is_speaking_monster(mtmp->data))
+        else if (!Deaf && is_speaking(mtmp->data))
         {
             char itembuf[BUFSZ];
             if (sellable_item_count == 1 && !iflags.using_gui_sounds && (otmp = get_first_sellable_item(mtmp)) != 0)
@@ -6534,7 +6534,7 @@ struct monst* mtmp;
                 popup_talk_line_ex(mtmp, "Use your purchase well!", ATR_NONE, NO_COLOR, TRUE, TRUE);
                 //verbalize("Use your purchase well!");
             }
-            else if (!Deaf && (is_speaking_monster(mtmp->data) || (mtmp->isshk && !muteshk(mtmp))))
+            else if (!Deaf && (is_speaking(mtmp->data) || (mtmp->isshk && !muteshk(mtmp))))
             {
                 play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_TRADING_THANK_YOU_FOR_YOUR_PURCHASE);
                 popup_talk_line_ex(mtmp, "Thank you for your purchase!", ATR_NONE, NO_COLOR, TRUE, TRUE);

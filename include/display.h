@@ -166,6 +166,9 @@
     (mon && flags.displace_peaceful && is_peaceful(mon) && (is_special_peaceful(mon) || !mon_can_move(mon) || is_confused(mon) || is_hallucinating(mon) || is_stunned(mon) || !goodpos(u.ux, u.uy, mon, GOODPOS_IGNOREYOU))  \
       && canspotmon(mon) && !Confusion && !Hallucination && !Stunned)
 
+#define monster_invokes_context_chat(mon) \
+    (!is_tame(mon) && is_mon_talkative(mon) && canspotmon(mon) && mon_can_move(mon))
+
  /*
  * canseeself()
  * senseself()

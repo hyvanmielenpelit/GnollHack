@@ -129,7 +129,7 @@ struct monst* mon;
         return;
     }
 
-    if (!is_speaking_monster(mon->data) || mindless(mon->data)
+    if (!is_speaking(mon->data) || mindless(mon->data)
         || is_stunned(mon) || is_confused(mon))
         return;
 

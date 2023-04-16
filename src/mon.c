@@ -1478,7 +1478,7 @@ update_monster_timeouts()
                             else
                                 Sprintf(laughbuf, "%s head off", mhis(mtmp));
 
-                            if (is_speaking_monster(mtmp->data))
+                            if (is_speaking(mtmp->data))
                             {
                                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
                                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s laughs %s.", mon_nam(mtmp), laughbuf);
