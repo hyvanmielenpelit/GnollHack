@@ -62,17 +62,21 @@ boolean restore;
 {
     struct obj *otmp, *nobj;
 
-    for (otmp = ochain; otmp; otmp = nobj) {
+    for (otmp = ochain; otmp; otmp = nobj)
+    {
         nobj = otmp->nobj;
         if (otmp->cobj)
             resetobjs(otmp->cobj, restore);
-        if (otmp->in_use) {
+        
+        if (otmp->in_use) 
+        {
             obj_extract_self(otmp);
             dealloc_obj(otmp);
             continue;
         }
 
-        if (restore) {
+        if (restore)
+        {
             if (has_uoname(otmp))
             {
                 sanitize_name(UONAME(otmp));
@@ -116,11 +120,18 @@ boolean restore;
                     artifact_exists(otmp, safe_oname(otmp), TRUE);
                 }
             }
-            else if (has_oname(otmp)) 
+            else
             {
-                sanitize_name(ONAME(otmp));
+                if (has_oname(otmp))
+                {
+                    sanitize_name(ONAME(otmp));
+                }
+                if (objects[otmp->otyp].oc_material_init_type == MATINIT_NORMAL)
+                    otmp->material = objects[otmp->otyp].oc_material; /* Material may have been randomized (using the dead character's randomization) */
             }
-        } else { /* saving */
+        }
+        else 
+        { /* saving */
             /* do not zero out o_ids for ghost levels anymore */
 
             if (objects[otmp->otyp].oc_uses_known)
@@ -152,27 +163,37 @@ boolean restore;
                      || otmp->otyp == SPE_NOVEL
                      || otmp->otyp == SPE_MANUAL
                      || (otmp->otyp == CORPSE
-                         && otmp->corpsenm >= SPECIAL_PM))) {
+                         && otmp->corpsenm >= SPECIAL_PM))) 
+            {
                 free_oname(otmp);
             }
 
-            if (otmp->otyp == SLIME_MOLD) {
+            if (otmp->otyp == SLIME_MOLD)
+            {
                 goodfruit(otmp->special_quality);
 #ifdef MAIL
-            } else if (otmp->otyp == SCR_MAIL) {
+            }
+            else if (otmp->otyp == SCR_MAIL)
+            {
                 /* 0: delivered in-game via external event;
                    1: from bones or wishing; 2: written with marker */
                 if (otmp->special_quality == 0)
                     otmp->special_quality = 1;
 #endif
-            } else if (otmp->otyp == EGG) {
+            } 
+            else if (otmp->otyp == EGG) 
+            {
                 otmp->speflags &= ~SPEFLAGS_YOURS; /* not "laid by you" in next game */
-            } else if (otmp->otyp == TIN) {
+            } 
+            else if (otmp->otyp == TIN) 
+            {
                 /* make tins of unique monster's meat be empty */
                 if (otmp->corpsenm >= LOW_PM
                     && unique_corpstat(&mons[otmp->corpsenm]))
                     otmp->corpsenm = NON_PM;
-            } else if (otmp->otyp == CORPSE || otmp->otyp == STATUE) {
+            }
+            else if (otmp->otyp == CORPSE || otmp->otyp == STATUE) 
+            {
                 int mnum = otmp->corpsenm;
 
                 /* Discard incarnation details of unique monsters
@@ -181,7 +202,8 @@ boolean restore;
                    temple priests, and vault guards in order to
                    prevent corpse revival or statue reanimation. */
                 if (has_omonst(otmp)
-                    && cant_revive(&mnum, FALSE, (struct obj *) 0)) {
+                    && cant_revive(&mnum, FALSE, (struct obj *) 0)) 
+                {
                     free_omonst(otmp);
                     /* mnum is now either human_zombie or doppelganger;
                        for corpses of uniques, we need to force the
@@ -191,20 +213,26 @@ boolean restore;
                     if (mnum == PM_DOPPELGANGER && otmp->otyp == CORPSE)
                         set_corpsenm(otmp, mnum);
                 }
-            } else if ((otmp->otyp == iflags.mines_prize_type
+            }
+            else if ((otmp->otyp == iflags.mines_prize_type
                         && !Is_mineend_level(&u.uz))
                        || ((otmp->otyp == iflags.soko_prize_type1
                             || otmp->otyp == iflags.soko_prize_type2)
-                           && !Is_sokoend_level(&u.uz))) {
+                           && !Is_sokoend_level(&u.uz))) 
+            {
                 /* "special prize" in this game becomes ordinary object
                    if loaded into another game */
                 otmp->speflags &= ~(SPEFLAGS_MINES_PRIZE | SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2);
-            } else if (otmp->otyp == AMULET_OF_YENDOR) {
+            }
+            else if (otmp->otyp == AMULET_OF_YENDOR) 
+            {
                 /* no longer the real Amulet */
                 otmp->otyp = FAKE_AMULET_OF_YENDOR;
                 otmp->material = objects[otmp->otyp].oc_material;
                 curse(otmp);
-            } else if (otmp->otyp == CANDELABRUM_OF_INVOCATION) {
+            }
+            else if (otmp->otyp == CANDELABRUM_OF_INVOCATION) 
+            {
                 if (otmp->lamplit)
                     end_burn(otmp, TRUE);
                 otmp->otyp = WAX_CANDLE;
@@ -215,13 +243,19 @@ boolean restore;
                 otmp->material = objects[otmp->otyp].oc_material;
                 otmp->owt = weight(otmp);
                 curse(otmp);
-            } else if (otmp->otyp == BELL_OF_OPENING) {
+            }
+            else if (otmp->otyp == BELL_OF_OPENING)
+            {
                 otmp->otyp = BELL;
                 curse(otmp);
-            } else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD) {
+            }
+            else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD) 
+            {
                 otmp->otyp = SPE_BLANK_PAPER;
                 curse(otmp);
-            } else if (otmp->otyp == SPE_BOOK_OF_MODRON) {
+            } 
+            else if (otmp->otyp == SPE_BOOK_OF_MODRON) 
+            {
                 otmp->otyp = SPE_BLANK_PAPER;
                 otmp->oartifact = 0;
                 curse(otmp);
