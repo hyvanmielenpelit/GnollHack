@@ -8091,6 +8091,16 @@ struct obj* otmp;
     return !!is_dragon_scales(otmp);
 }
 
+boolean
+maybe_refillable_with_oil(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return FALSE;
+
+    return !!is_refillable_with_oil(otmp);
+}
+
 STATIC_OVL boolean
 maybe_otyp(otmp)
 struct obj* otmp;
@@ -10410,7 +10420,7 @@ refill_lantern_func(mtmp)
 struct monst* mtmp;
 {
     const char refill_lantern_objects[] = { ALL_CLASSES, TOOL_CLASS, 0 };
-    struct obj* otmp = getobj(refill_lantern_objects, "refill", 0, "");
+    struct obj* otmp = getobj_ex(refill_lantern_objects, "refill", 0, "", maybe_refillable_with_oil);
     char talkbuf[BUFSZ];
 
     if (!otmp)

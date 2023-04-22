@@ -2669,6 +2669,7 @@ E void FDECL(strange_feeling, (struct obj *, const char *, BOOLEAN_P));
 E void FDECL(potionhit, (struct monst *, struct obj **, int));
 E void FDECL(potionbreathe, (struct obj *, const char*));
 E int NDECL(dodip);
+E int FDECL(refill_obj_with_oil, (struct obj*, struct obj*));
 E void FDECL(mongrantswish, (struct monst **));
 E void FDECL(djinni_from_bottle, (struct obj *));
 E struct monst *FDECL(split_mon, (struct monst *, struct monst *));
@@ -3197,6 +3198,8 @@ E void FDECL(popup_talk_line_with_know_mname, (struct monst*, const char*, BOOLE
 E int FDECL(service_identify, (struct monst*, long));
 E void FDECL(You_ex1_popup, (const char*, const char*, int, int, int, unsigned long));
 E int FDECL(dochatmon, (struct monst*));
+E boolean FDECL(maybe_refillable_with_oil, (struct obj*));
+
 
 /* ### soundset.c ### */
 

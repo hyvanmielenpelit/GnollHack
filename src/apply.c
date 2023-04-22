@@ -2520,6 +2520,79 @@ struct obj *obj;
     }
 }
 
+int
+use_oil(obj)
+struct obj* obj;
+{
+    if (!obj || obj->otyp != POT_OIL)
+        return 0;
+
+    if (obj->lamplit)
+    {
+        light_cocktail(&obj);
+        return 1;
+    }
+    else
+    {
+        if (!objects[obj->otyp].oc_name_known)
+        {
+            makeknown(obj->otyp);
+            pline1("This is a potion of oil.");
+        }
+
+        winid tmpwin = create_nhwindow(NHW_MENU);
+        anything any;
+        char buf[BUFSZ];
+        menu_item* selected;
+
+        any = zeroany; /* set all bits to zero */
+        start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_COMMAND);
+
+        any.a_int = 1; /* use index+1 (cant use 0) as identifier */
+        Sprintf(buf, "light %s up", obj->quan == 1 ? "it" : "them");
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+            MENU_UNSELECTED);
+        any.a_int = 2;
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "refill an item with oil",
+            MENU_UNSELECTED);
+        Sprintf(buf, "What do you want to do with %s?", the(cxname(obj)));
+        end_menu(tmpwin, buf);
+        int menures = 0;
+        if (select_menu(tmpwin, PICK_ONE, &selected) > 0)
+        {
+            menures = selected[0].item.a_int;
+        }
+        free((genericptr_t)selected);
+        destroy_nhwindow(tmpwin);
+
+        switch (menures)
+        {
+        case 1:
+            light_cocktail(&obj);
+            return 1;
+        case 2:
+        {
+            const char refill_lantern_objects[] = { ALL_CLASSES, TOOL_CLASS, 0 };
+            struct obj* target_obj = getobj_ex(refill_lantern_objects, "refill", 0, "", maybe_refillable_with_oil);
+            if (!target_obj)
+            {
+                pline1(Never_mind);
+                return 0;
+            }
+            else if (!is_refillable_with_oil(target_obj))
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot refill %s with oil.", acxname(target_obj));
+            }
+            else
+                return refill_obj_with_oil(target_obj, obj);
+        }
+        default:
+            return 0;
+        }
+    }
+}
+
 void
 light_cocktail(optr)
 struct obj **optr;
@@ -5886,7 +5959,7 @@ doapply()
             use_lamp(obj);
             break;
         case POT_OIL:
-            light_cocktail(&obj);
+            res = use_oil(obj);
             break;
         case EXPENSIVE_CAMERA:
             res = use_camera(obj);

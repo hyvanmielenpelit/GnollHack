@@ -2244,7 +2244,7 @@ struct obj* obj;
 {
     if (obj->otyp == CORPSE)
         return corpse_xname(obj, (const char*)0, CXN_ARTICLE);
-    return obj->oartifact && obj->aknown ? the(xname(obj)) : an(xname(obj));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? xname(obj) : an(xname(obj));
 }
 
 /* like cxname, but ignores quantity */

@@ -2737,7 +2737,7 @@ find_ac()
 int
 get_role_AC_bonus(VOID_ARGS)
 {
-    if (Role_if(PM_MONK) && !Upolyd && !uarm && !uarms && !uwep)
+    if (Role_if(PM_MONK) && !Upolyd && !uarm && (!uarms || is_launcher(uarms)) && (!uwep || is_launcher(uwep)))
         return u.ulevel / 4;
     else
         return 0;
@@ -2746,7 +2746,7 @@ get_role_AC_bonus(VOID_ARGS)
 int
 get_role_MC_bonus(VOID_ARGS)
 {
-    if (Role_if(PM_MONK) && !Upolyd && !uarm && !uarms && !uwep)
+    if (Role_if(PM_MONK) && !Upolyd && !uarm && (!uarms || is_launcher(uarms)) && (!uwep || is_launcher(uwep)))
         return u.ulevel / 12;
     else 
         return 0;

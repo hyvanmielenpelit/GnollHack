@@ -4030,47 +4030,10 @@ dodip()
     /* Allow filling of MAGIC_LAMPs to prevent identification by player */
     if (is_refillable_with_oil(obj) && potion->otyp == POT_OIL) 
     {
-        /* Turn off engine before fueling, turn off fuel too :-)  */
-        if (obj->lamplit || potion->lamplit) 
-        {
-            useup(potion);
-            explode(u.ux, u.uy, 11, &youmonst, 6, 6, 0, obj->otyp, 0, EXPL_FIERY);
-            exercise(A_WIS, FALSE);
-            return 1;
-        }
-        /* Adding oil to an empty magic lamp renders it into an oil lamp */
-        if ((obj->otyp == MAGIC_LAMP) && obj->special_quality == 0)
-        {
-            obj->otyp = OIL_LAMP;
-            obj->age = 0;
-        }
-        if (obj->age > 1000L) 
-        {
-            play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s full.", Yname2(obj), otense(obj, "are"));
-            potion->in_use = FALSE; /* didn't go poof */
-        } 
-        else 
-        {
-            play_sfx_sound(SFX_FILL_OIL_UP);
-            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "fill %s with oil.", yname(obj));
-            check_unpaid(potion);        /* Yendorian Fuel Tax */
-            /* burns more efficiently in a lamp than in a bottle;
-               diluted potion provides less benefit but we don't attempt
-               to track that the lamp now also has some non-oil in it */
-            obj->age += (!potion->odiluted ? 4L : 3L) * potion->age / 2L;
-            if (obj->age > 1500L)
-                obj->age = 1500L;
-            useup(potion);
-            exercise(A_WIS, TRUE);
-        }
-        makeknown(POT_OIL);
-        obj->special_quality = 1;
-        update_inventory();
-        return 1;
-    }
+        return refill_obj_with_oil(obj, potion);
 
-    if (potion->otyp == JAR_OF_BASILISK_BLOOD)
+    }
+    else if (potion->otyp == JAR_OF_BASILISK_BLOOD)
     {
         return stone_to_flesh_obj(obj);
     }
@@ -4143,6 +4106,54 @@ dodip()
         && !objects[potion->otyp].oc_uname)
         docall(potion, (char*)0);
     useup(potion);
+    return 1;
+}
+
+int
+refill_obj_with_oil(obj, potion)
+struct obj* obj, * potion;
+{
+    if (!obj || !potion || !is_refillable_with_oil(obj))
+        return 0;
+
+    /* Turn off engine before fueling, turn off fuel too :-)  */
+    if (obj->lamplit || potion->lamplit)
+    {
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s fire!", Tobjnam(potion, "catch"));
+        useup(potion);
+        explode(u.ux, u.uy, 11, &youmonst, 6, 6, 0, obj->otyp, 0, EXPL_FIERY);
+        exercise(A_WIS, FALSE);
+        return 1;
+    }
+    /* Adding oil to an empty magic lamp renders it into an oil lamp */
+    if ((obj->otyp == MAGIC_LAMP) && obj->special_quality == 0)
+    {
+        obj->otyp = OIL_LAMP;
+        obj->age = 0;
+    }
+    if (obj->age > 1000L)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s full.", Yname2(obj), otense(obj, "are"));
+        potion->in_use = FALSE; /* didn't go poof */
+    }
+    else
+    {
+        play_sfx_sound(SFX_FILL_OIL_UP);
+        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "fill %s with oil.", yname(obj));
+        check_unpaid(potion);        /* Yendorian Fuel Tax */
+        /* burns more efficiently in a lamp than in a bottle;
+           diluted potion provides less benefit but we don't attempt
+           to track that the lamp now also has some non-oil in it */
+        obj->age += (!potion->odiluted ? 4L : 3L) * potion->age / 2L;
+        if (obj->age > 1500L)
+            obj->age = 1500L;
+        useup(potion);
+        exercise(A_WIS, TRUE);
+    }
+    makeknown(POT_OIL);
+    //obj->special_quality = 1;
+    update_inventory();
     return 1;
 }
 
