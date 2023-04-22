@@ -5968,12 +5968,15 @@ print_things_here_to_window(VOID_ARGS)
 
     struct obj* otmp;
     const char* dfeature = (char*)0;
+    struct engr* ep = 0;
     char fbuf[BUFSZ] = "";
     char dfbuf[BUFSZ] = "";
+    char ebuf[BUFSZ] = "";
     struct rm* lev = &levl[u.ux][u.uy];
 
     otmp = level.objects[u.ux][u.uy];
     dfeature = adjusted_dfeature_at(u.ux, u.uy);
+    ep = engr_at(u.ux, u.uy);
 
     if (IS_BRAZIER(lev->typ))
     {
@@ -5986,7 +5989,7 @@ print_things_here_to_window(VOID_ARGS)
     char buf[BUFSZ];
     char buf2[BUFSZ];
     int count = 0;
-    int displ_style = here_window_display_style(dfeature, otmp);
+    int displ_style = here_window_display_style(dfeature, ep, otmp);
     if (displ_style == 0)
         return;
     else if (displ_style == 2)
@@ -6029,6 +6032,45 @@ print_things_here_to_window(VOID_ARGS)
             
             //Sprintf(fbuf, "'%c' %s", sym, an(dfbuf));
             //putstr_ex(tmpwin, attr, fbuf, 0, textcolor);
+        }
+
+        if (ep && ep->engr_txt[0] && !Blind)
+        {
+            switch (ep->engr_type) {
+            case DUST:
+                Sprintf(ebuf, "Writing in the %s:", is_ice(u.ux, u.uy) ? "frost" : "dust");
+                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+               break;
+            case ENGRAVE:
+            case ENGR_HEADSTONE:
+                Sprintf(ebuf, "Engraving on the %s:", surface(u.ux, u.uy));
+                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                break;
+            case ENGR_SIGNPOST:
+                Strcpy(ebuf, "Writing on the signpost:");
+                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                break;
+            case BURN:
+                Sprintf(ebuf, "Writing %s on the %s:", is_ice(u.ux, u.uy) ? "melted" : "burned", surface(u.ux, u.uy));
+                putstr_ex(tmpwin, attr, ebuf, 1, CLR_ORANGE);
+                break;
+            case MARK:
+                Sprintf(ebuf, "Graffiti on the %s:", surface(u.ux, u.uy));
+                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                break;
+            case ENGR_BLOOD:
+                Strcpy(ebuf, "Message scrawled in blood:");
+                putstr_ex(tmpwin, attr, ebuf, 1, CLR_RED);
+                break;
+            default:
+                Strcpy(ebuf, "Message written in a very strange way:");
+                putstr_ex(tmpwin, attr, ebuf, 1, CLR_MSG_FAIL);
+                break;
+            }
+            strncpy(buf, ep->engr_txt, BUFSZ - 5);
+            buf[BUFSZ - 5] = 0;
+            Sprintf(ebuf, " \"%s\".", buf);
+            putstr_ex(tmpwin, attr, ebuf, 0, textcolor);
         }
 
         for (; otmp; otmp = otmp->nexthere) 
@@ -7082,8 +7124,9 @@ int x, y;
 }
 
 int
-here_window_display_style(dfeature, first_obj_here)
+here_window_display_style(dfeature, engraving, first_obj_here)
 const char* dfeature;
+struct engr* engraving;
 struct obj* first_obj_here;
 {
     int total_count = 0;
@@ -7091,10 +7134,10 @@ struct obj* first_obj_here;
     for (otmp_cnt = first_obj_here; otmp_cnt; otmp_cnt = otmp_cnt->nexthere)
         total_count++;
 
-    if (total_count == 0 && !dfeature)
+    if (total_count == 0 && !dfeature && (!engraving || !engraving->engr_txt[0] || Blind))
         return 0;
 
-    if (total_count + (dfeature ? 1 : 0) > iflags.wc2_here_window_size)
+    if (total_count + (dfeature ? 1 : 0) + (engraving && engraving->engr_txt[0] && !Blind ? 1 : 0) > iflags.wc2_here_window_size)
         return 2; /* Many things */
 
     return 1;

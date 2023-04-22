@@ -1467,7 +1467,7 @@ E struct obj *FDECL(display_minventory, (struct monst *, int, char *));
 E int NDECL(dotypeinv);
 E const char *FDECL(dfeature_at, (int, int));
 E const char* FDECL(adjusted_dfeature_at, (int, int));
-int FDECL(here_window_display_style, (const char*, struct obj*));
+int FDECL(here_window_display_style, (const char*, struct engr*, struct obj*));
 E const char* FDECL(get_floor_doodad_explanation_at, (int, int));
 E int FDECL(look_here, (int, BOOLEAN_P, BOOLEAN_P));
 E int NDECL(dolook);

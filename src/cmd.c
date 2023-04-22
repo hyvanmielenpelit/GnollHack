@@ -9368,7 +9368,8 @@ enum create_context_menu_types menu_type;
         }
 
         const char* dfeature = adjusted_dfeature_at(u.ux, u.uy);
-        int displ_style = here_window_display_style(dfeature, otmp);
+        struct engr* ep = engr_at(u.ux, u.uy);
+        int displ_style = here_window_display_style(dfeature, ep, otmp);
 
         if (Blind || displ_style == 2)
         {
