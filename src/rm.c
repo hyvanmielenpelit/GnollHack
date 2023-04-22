@@ -347,6 +347,7 @@ NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS] = {
     { "Portrait of Famine", "Famine", "Diedi", (char*)0, (char*)0, 250L },
     { "Portrait of Pestilence", "Pestilence", "Diedi", (char*)0, (char*)0, 250L },
     { "Portrait of Bark Sharpnose", "Bark Sharpnose, Gnoll Ranger", "Diedi", (char*)0, (char*)0, 300L },
+    { "Portrait of Luna Moonsnout", "Luna Moonsnout, Gnoll Supreme Warden", "Diedi", (char*)0, (char*)0, 300L },
 };
 
 NEARDATA const struct carpet_type_definition carpet_type_definitions[MAX_CARPETS] = {
