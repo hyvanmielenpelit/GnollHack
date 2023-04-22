@@ -2361,6 +2361,9 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
+            MenuCancelButton.IsEnabled = true;
+            /* Enabling OKButton is done below */
+
             /* On iOS, hide MenuStack to start fade in */
             if (App.IsiOS)
             {
@@ -9910,6 +9913,10 @@ namespace GnollHackClient.Pages.Game
         private bool _menuHideOn = false;
         private void MenuOKButton_Clicked(object sender, EventArgs e)
         {
+            MenuOKButton.IsEnabled = false;
+            MenuCancelButton.IsEnabled = false;
+            App.PlayButtonClickedSound();
+
             lock (_menuDrawOnlyLock)
             {
                 _menuRefresh = false;
@@ -9962,6 +9969,10 @@ namespace GnollHackClient.Pages.Game
 
         private void MenuCancelButton_Clicked(object sender, EventArgs e)
         {
+            MenuOKButton.IsEnabled = false;
+            MenuCancelButton.IsEnabled = false;
+            App.PlayButtonClickedSound();
+
             lock (_menuDrawOnlyLock)
             {
                 _menuRefresh = false;
