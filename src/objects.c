@@ -2132,7 +2132,7 @@ MISCELLANEOUSITEM("headband of intellect", "shining blue headband", MISC_HEADBAN
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 19, 0,
     50, MAT_CLOTH, CLR_BLUE, 24, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("headband of martial prowess", "shining green headband", MISC_HEADBAND, "The wearer can fight bare-handed as though having expert skill in martial arts.",
+MISCELLANEOUSITEM("headband of martial prowess", "shining green headband", MISC_HEADBAND, "The wearer's skill in bare-handed combat is increased by two levels.",
     0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 25, 200, 3,
     MARTIAL_PROWESS, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
     50, MAT_CLOTH, CLR_GREEN, 24, OBJECT_SOUNDSET_GENERIC, 

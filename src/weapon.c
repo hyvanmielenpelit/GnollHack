@@ -1766,12 +1766,22 @@ int undjusted_skill_level;
     if (skill == P_BARE_HANDED_COMBAT)
     {
         if (Martial_prowess)
-            res = P_GRAND_MASTER;
+        {
+            if (res == P_ISRESTRICTED)
+                res++;
+            res = min(res + MARTIAL_PROWESS_SKILL_LEVEL_BONUS, P_GRAND_MASTER);
+        }
     }
     else if (skill == P_MARTIAL_ARTS)
     {
-        if (res < P_EXPERT && Martial_prowess)
-            res = P_EXPERT;
+        int lvlexcess = max(0, P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) + MARTIAL_PROWESS_SKILL_LEVEL_BONUS - P_GRAND_MASTER);
+        if (Martial_prowess)
+        {
+            if (res == P_ISRESTRICTED)
+                res++;
+
+            res = min(res + lvlexcess, P_GRAND_MASTER);
+        }
     }
     return res;
 }
