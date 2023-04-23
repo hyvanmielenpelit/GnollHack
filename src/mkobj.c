@@ -5087,7 +5087,7 @@ int otyp;
         if (!rn2(simple_rare_one_in_chance))
             mat = MAT_DRAGON_HIDE;
         break;
-    case MATINIT_NORMAL:
+    case MATINIT_BASE_MATERIAL:
     default:
         break;
     }

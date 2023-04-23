@@ -5927,7 +5927,7 @@ int otyp, material;
         return TRUE; /* base material always works */
 
     int mit = objects[otyp].oc_material_init_type;
-    if (mit <= MATINIT_NORMAL || mit >= MAX_MATINIT_TYPES)
+    if (mit <= MATINIT_BASE_MATERIAL || mit >= MAX_MATINIT_TYPES)
         return FALSE;
 
     int i;

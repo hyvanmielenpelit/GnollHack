@@ -126,8 +126,8 @@ boolean restore;
                 {
                     sanitize_name(ONAME(otmp));
                 }
-                if (objects[otmp->otyp].oc_material_init_type == MATINIT_NORMAL)
-                    otmp->material = objects[otmp->otyp].oc_material; /* Material may have been randomized (using the dead character's randomization) */
+                if (objects[otmp->otyp].oc_material_init_type == MATINIT_BASE_MATERIAL)
+                    otmp->material = objects[otmp->otyp].oc_material; /* Base material may have been randomized (using the dead character's randomization) */
             }
         }
         else 

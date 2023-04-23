@@ -1898,9 +1898,9 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
 void
 status_finish(VOID_ARGS)
 {
-    int i;
-    if (blinit) /* Changed to blinit instead of VIA_WINDOWPORT() because exit_nhwindows mayset VIA_WINDOWPORT() to false --JG */
+    if (blinit) /* Changed to blinit instead of VIA_WINDOWPORT() because exit_nhwindows may set VIA_WINDOWPORT() to false --JG */
     {
+        int i;
         /* call the window port cleanup routine first */
         if (windowprocs.win_status_finish)
             (*windowprocs.win_status_finish)();
