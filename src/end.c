@@ -3212,13 +3212,12 @@ reset_game(VOID_ARGS)
     plname_from_imported_savefile = FALSE;
     reset_gamestate_ex();
     n_game_recoveries = 0;
+    status_finish();
     reset_blstats();
     reset_occupations();
     reset_pick();
     reset_remaining_static_variables();
     reset_remaining_dynamic_data();
-    if (VIA_WINDOWPORT())
-        status_finish();
     dlb_cleanup();
 }
 

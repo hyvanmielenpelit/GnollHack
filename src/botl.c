@@ -1899,31 +1899,33 @@ void
 status_finish(VOID_ARGS)
 {
     int i;
+    if (blinit) /* Changed to blinit instead of VIA_WINDOWPORT() because exit_nhwindows mayset VIA_WINDOWPORT() to false --JG */
+    {
+        /* call the window port cleanup routine first */
+        if (windowprocs.win_status_finish)
+            (*windowprocs.win_status_finish)();
 
-    /* call the window port cleanup routine first */
-    if (windowprocs.win_status_finish)
-        (*windowprocs.win_status_finish)();
-
-    /* free memory that we alloc'd now */
-    for (i = 0; i < MAXBLSTATS; ++i) {
-        if (blstats[0][i].val)
-            free((genericptr_t) blstats[0][i].val), blstats[0][i].val = 0;
-        if (blstats[1][i].val)
-            free((genericptr_t) blstats[1][i].val), blstats[1][i].val = 0;
+        /* free memory that we alloc'd now */
+        for (i = 0; i < MAXBLSTATS; ++i) {
+            if (blstats[0][i].val)
+                free((genericptr_t)blstats[0][i].val), blstats[0][i].val = 0;
+            if (blstats[1][i].val)
+                free((genericptr_t)blstats[1][i].val), blstats[1][i].val = 0;
 #ifdef STATUS_HILITES
-        /* pointer to an entry in thresholds list; Null it out since
-           that list is about to go away */
-        blstats[0][i].hilite_rule = blstats[1][i].hilite_rule = 0;
-        if (blstats[0][i].thresholds) {
-            struct hilite_s *temp, *next;
+            /* pointer to an entry in thresholds list; Null it out since
+               that list is about to go away */
+            blstats[0][i].hilite_rule = blstats[1][i].hilite_rule = 0;
+            if (blstats[0][i].thresholds) {
+                struct hilite_s* temp, * next;
 
-            for (temp = blstats[0][i].thresholds; temp; temp = next) {
-                next = temp->next;
-                free((genericptr_t) temp);
+                for (temp = blstats[0][i].thresholds; temp; temp = next) {
+                    next = temp->next;
+                    free((genericptr_t)temp);
+                }
+                blstats[0][i].thresholds = blstats[1][i].thresholds = 0;
             }
-            blstats[0][i].thresholds = blstats[1][i].thresholds = 0;
-        }
 #endif /* STATUS_HILITES */
+        }
     }
 }
 
