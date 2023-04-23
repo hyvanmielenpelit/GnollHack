@@ -1486,7 +1486,7 @@ int *wt_before, *wt_after;
     }
 
     play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
-    There("%s %s %s, but %s%s%s%s.", otense(obj, "are"), obj_nambuf, where,
+    There_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s %s, but %s%s%s%s.", otense(obj, "are"), obj_nambuf, where,
           prefx1, prefx2, verb, suffx);
 
     /* *wt_after = iw; */
@@ -2133,7 +2133,7 @@ doloot()
             return 1;
         if (rn2(2)) {
             play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-            pline("Being confused, you find nothing to loot.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Being confused, you find nothing to loot.");
             return 1; /* costs a turn */
         }             /* else fallthrough to normal looting */
     }
@@ -2228,7 +2228,7 @@ doloot()
         }
     } else if (IS_GRAVE(levl[cc.x][cc.y].typ)) {
         play_sfx_sound(SFX_GENERAL_ANOTHER_ACTION_NEEDED);
-        You("need to dig up the grave to effectively loot it...");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "need to dig up the grave to effectively loot it...");
     }
 
     /*
@@ -2259,7 +2259,7 @@ doloot()
         {
             did_something = TRUE;
             play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-            You("%s to loot on the %s.", dont_find_anything,
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "%s to loot on the %s.", dont_find_anything,
                 ceiling(cc.x, cc.y));
             timepassed = 1;
             return timepassed;
@@ -2438,13 +2438,13 @@ doloot()
                 else
                 {
                     play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
-                    You("have to be at a container to loot it.");
+                    You_ex(ATR_NONE, CLR_MSG_FAIL, "have to be at a container to loot it.");
                 }
             } 
             else
             {
                 play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-                You("%s %sthere to loot.", dont_find_anything,
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "%s %sthere to loot.", dont_find_anything,
                     (prev_inquiry || prev_loot) ? "else " : "");
                 return timepassed;
             }
@@ -2452,7 +2452,7 @@ doloot()
 
         if (!did_something)
         {
-            You("%s %sthere to loot.", dont_find_anything,
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "%s %sthere to loot.", dont_find_anything,
                 (prev_inquiry || prev_loot) ? "else " : "");
             play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
         }
@@ -2460,7 +2460,7 @@ doloot()
     else if (c != 'y' && c != 'n')
     {
         play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-        You("%s %s to loot.", dont_find_anything,
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s to loot.", dont_find_anything,
             underfoot ? "here" : "there");
     }
     return timepassed;
@@ -2729,13 +2729,13 @@ boolean dobot;
     else if (obj == uball || obj == uchain) 
     {
         play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-        You("must be kidding.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "must be kidding.");
         goto default_incontainer_end_here;
     }
     else if (obj == current_container)
     {
         play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-        pline("That would be an interesting topological exercise.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "That would be an interesting topological exercise.");
         goto default_incontainer_end_here;
     }
     else if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) 
@@ -2782,7 +2782,7 @@ boolean dobot;
     else if (obj->otyp == LEASH && obj->leashmon != 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s attached to your pet.", Tobjnam(obj, "are"));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s attached to your pet.", Tobjnam(obj, "are"));
         goto default_incontainer_end_here;
     }
     else if (obj == uwep) 
@@ -3390,11 +3390,11 @@ u_handsy()
 {
     if (nohands(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You("have no hands!"); /* not `body_part(HAND)' */
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "have no hands!"); /* not `body_part(HAND)' */
         return FALSE;
     } else if (!freehand()) {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You("have no free %s.", body_part(HAND));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "have no free %s.", body_part(HAND));
         return FALSE;
     }
     return TRUE;

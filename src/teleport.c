@@ -2141,7 +2141,7 @@ boolean give_feedback;
         if (give_feedback)
         {
             play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
-            pline("%s resists your magic!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists your magic!", Monnam(mtmp));
         }
         return FALSE;
     }

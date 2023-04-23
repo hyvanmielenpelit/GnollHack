@@ -2273,7 +2273,7 @@ struct obj *otmp;
         else
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            You("seem unaffected by the poison.");
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "seem unaffected by the poison.");
         }
         standard_hint("Some corpses are inherently poisonous. You can check this out by using a wand of probing.", &u.uhint.ate_poisonous_corpse);
         /* now any corpse left too long will make you mildly ill */
@@ -3559,7 +3559,7 @@ doeat()
             else
             {
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-                You("seem unaffected by the poison.");
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "seem unaffected by the poison.");
             }
         } 
         else if (!nodelicious) 
@@ -3716,7 +3716,7 @@ doeat()
             else
             {
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-                You("seem unaffected by the poison.");
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "seem unaffected by the poison.");
             }
             standard_hint("Some food items can be inherently poisonous. You can check this out by identifying the item.", &u.uhint.ate_poisonous_food);
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
@@ -3734,7 +3734,7 @@ doeat()
             else
             {
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-                You("seem unaffected by the poison.");
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "seem unaffected by the poison.");
             }
             standard_hint("Some food items can be inherently poisonous. You can check this out by identifying the item.", &u.uhint.ate_poisonous_food);
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */

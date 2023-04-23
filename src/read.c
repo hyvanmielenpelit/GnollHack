@@ -384,7 +384,7 @@ doread()
                && scroll->oclass != SPBOOK_CLASS) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline(silly_thing_to, "read");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, silly_thing_to, "read");
         return 0;
     }
     else if (Blind /*&& (scroll->otyp != SPE_BOOK_OF_THE_DEAD)*/) 
@@ -552,7 +552,7 @@ boolean verbose, dopopup;
         {
             if(obj->charges <= 0)
                 play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-            pline_ex1_popup(ATR_NONE, NO_COLOR, nothing_happens, "No Effect", dopopup);
+            pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, nothing_happens, "No Effect", dopopup);
         }
     } 
     else 
@@ -1534,7 +1534,7 @@ struct monst* origmonst;
         else if (resists_charm(mtmp))
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-            pline("%s is unaffected.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected.", Monnam(mtmp));
         }
         else if (!check_ability_resistance_success(mtmp, A_WIS, adj_save))
         {
@@ -1552,7 +1552,7 @@ struct monst* origmonst;
             if (!tamedog(mtmp, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, charmed, duration, TRUE, FALSE) || !is_tame(mtmp))
             {
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-                pline("%s is unaffected!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected!", Monnam(mtmp));
             }
             else
             {
@@ -1566,7 +1566,7 @@ struct monst* origmonst;
         {
             play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
-            pline("%s resists!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists!", Monnam(mtmp));
         }
         if ((!was_peaceful && is_peaceful(mtmp)) || (!was_tame && is_tame(mtmp)))
             return 1;
@@ -1615,14 +1615,14 @@ struct monst* origmonst;
             if (!tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, controlled, duration, TRUE, FALSE) || !is_tame(mtmp))
             {
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-                pline("%s is unaffected!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected!", Monnam(mtmp));
             }
         }
         else
         {
             play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
-            pline("%s resists!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists!", Monnam(mtmp));
         }
         if ((!was_peaceful && is_peaceful(mtmp)) || (!was_tame && is_tame(mtmp)))
             return 1;
@@ -1630,7 +1630,7 @@ struct monst* origmonst;
     else
     {
         play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-        pline("%s is unaffected!", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected!", Monnam(mtmp));
     }
     return 0;
 }
@@ -2343,7 +2343,7 @@ struct monst* targetmonst;
                     if (!get_valid_targeted_position(cc.x, cc.y, otyp))
                     {
                         play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
-                        pline("Not a valid target position.");
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Not a valid target position.");
                         if (trycnt > 4)
                         {
                             cc.x = u.ux;
@@ -3179,7 +3179,7 @@ struct monst* targetmonst;
             if (!get_valid_targeted_position(cc.x, cc.y, otyp))
             {
                 play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
-                pline("Not a valid target position.");
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "Not a valid target position.");
                 if (trycnt > 4)
                 {
                     cc.x = u.ux;
@@ -3225,7 +3225,7 @@ struct monst* targetmonst;
             if (!get_valid_targeted_position(cc.x, cc.y, otyp))
             {
                 play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
-                pline("Not a valid target position.");
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "Not a valid target position.");
                 if (trycnt > 4)
                 {
                     cc.x = u.ux;
@@ -4565,7 +4565,7 @@ boolean confused; /* Is caster confused */
            already been given above if reading a scroll) */
         play_sfx_sound(SFX_GENERAL_CANNOT);
         Sprintf(effbuf, "%s %s not carrying anything to be %s.", isyou ? "You" : Monnam(mtmp), isyou ? "are" : "is", (otyp == SPE_BLESS ? "blessed" : "cursed"));
-        pline_ex1_popup(ATR_NONE, NO_COLOR, effbuf, "", is_serviced_spell);
+        pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, effbuf, "", is_serviced_spell);
         return 0;
     }
     return 1;

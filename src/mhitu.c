@@ -1928,7 +1928,7 @@ register struct obj* omonwep;
                     {
                         play_sfx_sound(SFX_GENERAL_RESISTS);
                         shieldeff(u.ux, u.uy);
-                        You("resist!");
+                        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "resist!");
                     }
                     else
                     {
@@ -2112,7 +2112,7 @@ register struct obj* omonwep;
             if (Cold_immunity || damage == 0)
             {
                 play_sfx_sound(SFX_GENERAL_UNHARMED);
-                pline("You're covered in frost, but the frost doesn't feel cold!");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "You're covered in frost, but the frost doesn't feel cold!");
                 damage = 0;
             }
             else
@@ -2138,7 +2138,7 @@ register struct obj* omonwep;
             if (Shock_immunity || damage == 0)
             {
                 play_sfx_sound(SFX_GENERAL_UNHARMED);
-                You("get zapped, but the zap doesn't shock you!");
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "get zapped, but the zap doesn't shock you!");
                 //pline_The("zap doesn't shock you!");
                 damage = 0;
             }
@@ -2223,7 +2223,7 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (Brain_protection || !has_head(youmonst.data)) {
             play_sfx_sound(SFX_GENERAL_UNHARMED);
-            You("don't seem harmed.");
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "don't seem harmed.");
             /* Not clear what to do for green slimes */
             break;
         }
@@ -2561,7 +2561,7 @@ register struct obj* omonwep;
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             if (!Blind)
-                pline("%s tries to %s you, but you seem %s.",
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s tries to %s you, but you seem %s.",
                       Adjmonnam(mtmp, "plain"),
                       flags.female ? "charm" : "seduce",
                       flags.female ? "unaffected" : "uninterested");
@@ -2824,7 +2824,7 @@ register struct obj* omonwep;
             {
                 play_sfx_sound(SFX_GENERAL_UNHARMED);
                 hitmsg(mtmp, mattk, -1, TRUE);
-                pline("You're covered in %s, but it seems harmless.",
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "You're covered in %s, but it seems harmless.",
                     hliquid("acid"));
                 damage = 0;
             }
@@ -2953,12 +2953,12 @@ register struct obj* omonwep;
             break;
         if (flaming(youmonst.data)) {
             hitmsg(mtmp, mattk, -1, FALSE);
-            pline_The("slime burns away!");
+            pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "slime burns away!");
             damage = 0;
         } else if (Unchanging || Slime_resistance || slimeproof(youmonst.data)) {
             hitmsg(mtmp, mattk, -1, FALSE);
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            You("are unaffected.");
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "are unaffected.");
             damage = 0;
         } else if (!Slimed) {
             hitmsg(mtmp, mattk, damagedealt, TRUE);
@@ -3726,7 +3726,7 @@ boolean ufound;
         if (not_affected) 
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            You("seem unaffected by it.");
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "seem unaffected by it.");
             ugolemeffects((int) mattk->adtyp, damage);
         }
     }
@@ -3898,7 +3898,7 @@ struct attack *mattk;
                 else
                 {
                     play_sfx_sound(SFX_GENERAL_RESISTS);
-                    You("resist!");
+                    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "resist!");
                     u_shieldeff();
                 }
             }
@@ -4016,7 +4016,7 @@ struct attack *mattk;
             if (Cancellation_resistance)
             {
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-                pline("However, you are unaffected!");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "However, you are unaffected!");
                 u_shieldeff();
             }
             else
@@ -4584,7 +4584,7 @@ struct attack *mattk;
         hit_tile = HIT_SPLASHED_ACID;
         if (!rn2(2))
         {
-            pline("%s is splashed by %s%s!", Monnam(mtmp),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is splashed by %s%s!", Monnam(mtmp),
                   /* temporary? hack for sequencing issue:  "your acid"
                      looks strange coming immediately after player has
                      been told that hero has reverted to normal form */
@@ -4592,7 +4592,7 @@ struct attack *mattk;
             if (is_mon_immune_to_acid(mtmp)) 
             {
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-                pline("%s is not affected.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is not affected.", Monnam(mtmp));
                 damage = 0;
             }
         } 
@@ -4683,7 +4683,7 @@ struct attack *mattk;
                     && (has_see_invisible(mtmp) || !Invis))
                 {
                     if (Blind)
-                        pline("As a blind %s, you cannot defend yourself.",
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "As a blind %s, you cannot defend yourself.",
                               mon_monster_name(&youmonst));
                     else
                     {
@@ -4695,7 +4695,7 @@ struct attack *mattk;
                         }
                         hit_tile = HIT_PARALYZED;
                         play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mtmp->mx, mtmp->my);
-                        pline("%s is frozen by your gaze!", Monnam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is frozen by your gaze!", Monnam(mtmp));
                         paralyze_monst(mtmp, paralyse_duration, FALSE);
                         return 3;
                     }

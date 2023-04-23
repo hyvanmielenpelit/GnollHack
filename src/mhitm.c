@@ -1472,7 +1472,7 @@ register struct obj* omonwep;
         {
             if (vis && canseemon(mdef))
             {
-                pline_The("fire doesn't seem to burn %s!", mon_nam(mdef));
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fire doesn't seem to burn %s!", mon_nam(mdef));
                 play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
                 m_shieldeff(mdef);
             }
@@ -1498,7 +1498,7 @@ register struct obj* omonwep;
         {
             if (vis && canseemon(mdef))
             {
-                pline_The("frost doesn't seem to chill %s!", mon_nam(mdef));
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "frost doesn't seem to chill %s!", mon_nam(mdef));
                 play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
                 m_shieldeff(mdef);
             }
@@ -1527,7 +1527,7 @@ register struct obj* omonwep;
         {
             if (vis && canseemon(mdef))
             {
-                pline_The("zap doesn't shock %s!", mon_nam(mdef));
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "zap doesn't shock %s!", mon_nam(mdef));
                 play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
                 m_shieldeff(mdef);
             }
@@ -1549,7 +1549,7 @@ register struct obj* omonwep;
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
             if (vis && canseemon(mdef))
-                pline("%s is covered in %s, but it seems harmless.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is covered in %s, but it seems harmless.",
                       Monnam(mdef), hliquid("acid"));
             damage = 0;
         } 
@@ -1770,7 +1770,7 @@ register struct obj* omonwep;
             if (has_cancellation_resistance(mdef))
             {
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mdef->mx, mdef->my);
-                pline("However, %s is unaffected!", mon_nam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "However, %s is unaffected!", mon_nam(mdef));
                 m_shieldeff(mdef);
             }
             else
@@ -1970,7 +1970,7 @@ register struct obj* omonwep;
             {
                 //play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
                 if (vis && canspotmon(mdef) && canspotmon(magr))
-                    pline_The("poison doesn't seem to affect %s.",
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "poison doesn't seem to affect %s.",
                               mon_nam(mdef));
             }
             else
@@ -1999,7 +1999,7 @@ register struct obj* omonwep;
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
             if (vis && canspotmon(mdef))
-                pline("%s doesn't seem harmed.", Monnam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s doesn't seem harmed.", Monnam(mdef));
             /* Not clear what to do for green slimes */
             damage = 0;
             break;
@@ -2342,7 +2342,7 @@ int amt, saving_throw_adjustment, tellstyle;
         if (tellstyle != NOTELL)
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
-            pline("%s is unaffected!", Monnam(mon));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected!", Monnam(mon));
         }
         m_shieldeff(mon);
     }
@@ -2351,7 +2351,7 @@ int amt, saving_throw_adjustment, tellstyle;
         if (tellstyle != NOTELL)
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
-            pline("%s is unaffected!", Monnam(mon));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected!", Monnam(mon));
         }
 
         m_shieldeff(mon);
@@ -2505,7 +2505,7 @@ int mdead;
                 if (canseemon(magr))
                 {
                     play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, magr->mx, magr->my);
-                    pline("%s is not affected.", Monnam(magr));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is not affected.", Monnam(magr));
                 }
                 damage = 0;
             }

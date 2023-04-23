@@ -418,7 +418,7 @@ boolean foundyou;
         if (Fire_immunity || Invulnerable) {
             play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
-            pline("But you resist the effects.");
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "But you resist the effects.");
             damage = 0;
         }
         burn_away_slime();
@@ -433,7 +433,7 @@ boolean foundyou;
         if (Cold_immunity || Invulnerable) {
             play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
-            pline("But you resist the effects.");
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "But you resist the effects.");
             damage = 0;
         }
         break;
@@ -447,7 +447,7 @@ boolean foundyou;
         if (Magic_missile_immunity || Invulnerable) {
             play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
-            pline_The("missiles bounce off!");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "missiles bounce off!");
             damage = 0;
         } else
             damage = adjust_damage(d((int) mtmp->m_lev / 2 + 1, 6), mtmp, &youmonst, mattk->adtyp, ADFLAGS_SPELL_DAMAGE);
@@ -647,7 +647,7 @@ int spellnum;
         else if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY) {
             play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Your cloak neutralizes the destructive energies of the spell!");
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Your cloak neutralizes the destructive energies of the spell!");
             makeknown(uarmc->otyp);
         } else if (!destroy_arm(some_armor(&youmonst))) {
             play_sfx_sound(SFX_HANDS_ITCH);

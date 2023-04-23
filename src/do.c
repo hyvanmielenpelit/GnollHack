@@ -5205,7 +5205,7 @@ const char *word;
         if (*word)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline_The("leash is tied around your %s.", body_part(HAND));
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "leash is tied around your %s.", body_part(HAND));
         }
         return FALSE;
     }

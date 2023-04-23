@@ -776,7 +776,7 @@ dodrink()
             return use_salve(otmp, TRUE);
         default:
             play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-            pline("That's a silly thing to drink!");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "That's a silly thing to drink!");
             return 0;
             break;
         }
@@ -1378,7 +1378,7 @@ struct obj *otmp;
         if (Poison_resistance)
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            pline("However, you are unaffected by the poison.");
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "However, you are unaffected by the poison.");
         }
         else 
         {

@@ -2154,13 +2154,13 @@ const char* nomoodstr;
     if (!mtmp) 
     {
         play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-        There("is no one here to talk to.");
+        There_ex(ATR_NONE, CLR_MSG_FAIL, "is no one here to talk to.");
         return 0;
     }
     else if (!is_peaceful(mtmp) && !is_quantum_mechanic(mtmp->data) && !is_rider(mtmp->data))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s is in no mood for %s.", noittame_Monnam(mtmp), nomoodstr);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is in no mood for %s.", noittame_Monnam(mtmp), nomoodstr);
         return 0;
     }
 
@@ -2208,7 +2208,7 @@ dochat()
     if (u.uswallow)
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        pline1("They won't hear you out there.");
+        pline_ex1(ATR_NONE, CLR_MSG_FAIL, "They won't hear you out there.");
         return 0;
     }
 
@@ -2226,7 +2226,7 @@ dochat()
     else if (u.dz)
     {
         play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
-        pline("They won't hear you %s there.", u.dz < 0 ? "up" : "down");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "They won't hear you %s there.", u.dz < 0 ? "up" : "down");
         return 0;
     }
     else if (u.dx == 0 && u.dy == 0)
@@ -2244,7 +2244,7 @@ dochat()
         }
          */
         play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-        pline1("Talking to yourself is a bad habit for a dungeoneer.");
+        pline_ex1(ATR_NONE, CLR_MSG_WARNING, "Talking to yourself is a bad habit for a dungeoneer.");
         return 0;
     }
 
@@ -2285,7 +2285,7 @@ struct monst* mtmp;
         ((!canspotmon(mtmp) || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE || M_AP_TYPE(mtmp) == M_AP_OBJECT) && !is_tame(mtmp)))
     {
         play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-        pline1(Blind ? "You cannot see there anyone to talk to." : "There is no-one to talk to.");
+        pline_ex1(ATR_NONE, CLR_MSG_FAIL, Blind ? "You cannot see there anyone to talk to." : "There is no-one to talk to.");
         return 0;
     }
 
@@ -5488,7 +5488,7 @@ struct monst* mtmp;
                 if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    You("cannot pass %s over to %s. You are wearing it.", an(singular(otmp, cxname)), noittame_mon_nam(mtmp));
+                    You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot pass %s over to %s. You are wearing it.", an(singular(otmp, cxname)), noittame_mon_nam(mtmp));
                 }
                 else
                 {
@@ -5863,7 +5863,7 @@ struct monst* mtmp;
                 if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    You("cannot pass %s over to %s. You are wearing it.", an(singular(otmp, cxname)), noittame_mon_nam(mtmp));
+                    You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot pass %s over to %s. You are wearing it.", an(singular(otmp, cxname)), noittame_mon_nam(mtmp));
                 }
                 else
                 {
@@ -6656,7 +6656,7 @@ struct monst* mtmp;
                 if ((objects[item_to_take->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && item_to_take->cursed) 
                 {
                     play_sfx_sound(SFX_GENERAL_WELDED);
-                    pline("%s not leave %s!", Tobjnam(item_to_take, "do"), noittame_mon_nam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s not leave %s!", Tobjnam(item_to_take, "do"), noittame_mon_nam(mtmp));
                 }
                 else
                 {
@@ -7411,7 +7411,7 @@ struct monst* mtmp;
     {
         context.shop_identify_type = 0;
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex1_popup("have nothing to identify.", "Nothing to Identify", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have nothing to identify.", "Nothing to Identify", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
     context.shop_identify_type = 0;
@@ -8497,7 +8497,7 @@ struct monst* mtmp;
     if (!mtmp) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        There("is no one here to talk to.");
+        There_ex(ATR_NONE, CLR_MSG_FAIL, "is no one here to talk to.");
         return 0;
     }
     else if (!m_speak_check(mtmp))
@@ -8580,7 +8580,7 @@ struct monst* mtmp;
 
     if (!mtmp) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        There("is no one here to talk to.");
+        There_ex(ATR_NONE, CLR_MSG_FAIL, "is no one here to talk to.");
         return 0;
     }
     else if (!m_speak_check(mtmp))
@@ -9007,7 +9007,7 @@ long minor_id_cost;
     if (count_unidentified(invent) == 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex1_popup("have nothing to identify.", "Nothing to Identify", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have nothing to identify.", "Nothing to Identify", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         context.npc_identify_type = 0;
         return 0;
     }

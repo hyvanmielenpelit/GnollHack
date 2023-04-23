@@ -243,7 +243,7 @@ long mask;
     else if (wepinotherhand && bimanual(wep)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot wield a two-handed %s while %s.",
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot wield a two-handed %s while %s.",
             is_sword(wep) ? "sword" : wep->otyp == BATTLE_AXE ? "axe"
                                                               : "weapon", is_shield(wepinotherhand) ? "wearing a shield" : "wielding a weapon in the other hand");
     } 
@@ -390,7 +390,7 @@ dowield()
     if (cantwield(youmonst.data))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("Don't be ridiculous!");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Don't be ridiculous!");
         return 0;
     }
 
@@ -415,7 +415,7 @@ struct obj* wep;
         if (wep == uwep || wep == uarms)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("are already wielding that!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "are already wielding that!");
             return 0;
         }
 
@@ -562,7 +562,7 @@ struct obj* wep;
         if (wep == uwep) 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("are already wielding that!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "are already wielding that!");
             return 0;
         } 
         else if (welded(uwep, &youmonst))
@@ -628,7 +628,7 @@ dounwield()
 
     if (!uwep && !uwep2) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("Not wielding anything.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Not wielding anything.");
         return 0;
     }
 
@@ -718,7 +718,7 @@ long swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original weapon
     if (cantwield(youmonst.data)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("Don't be ridiculous!");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Don't be ridiculous!");
         return 0;
     }
 
@@ -745,7 +745,7 @@ long swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original weapon
     if (!wep && !swapwep)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        Your("%s %s is already empty.", swap_target_mask == W_WEP ? "right" : "left", body_part(HAND));
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s is already empty.", swap_target_mask == W_WEP ? "right" : "left", body_part(HAND));
         return 0;
     }
 
@@ -839,7 +839,7 @@ doswapweapon()
     if (cantwield(youmonst.data))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("Don't be ridiculous!");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Don't be ridiculous!");
         return 0;
     }
     if (u.twoweap)
@@ -857,7 +857,7 @@ doswapweapon()
         if (!uwep && !uswapwep && !uarms && !uswapwep2)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            Your("both %s are already empty.", makeplural(body_part(HAND)));
+            Your_ex(ATR_NONE, CLR_MSG_FAIL, "both %s are already empty.", makeplural(body_part(HAND)));
             return 0;
         }
 
@@ -956,7 +956,7 @@ doswapweapon()
         if (!uwep && !uswapwep && !uarms && !uswapwep2)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("are already empty %s.", body_part(HANDED));
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "are already empty %s.", body_part(HANDED));
             return 0;
         }
 
@@ -1118,7 +1118,7 @@ dowieldquiver()
         else 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("already have no ammunition readied!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "already have no ammunition readied!");
         }
         return 0;
     } 
@@ -1138,7 +1138,7 @@ dowieldquiver()
     {
     already_quivered:
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("That ammunition is already readied!");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "That ammunition is already readied!");
         return 0;
     }
     else if (newquiver->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) 
@@ -1575,7 +1575,7 @@ dotwoweapon()
         if (P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT) == P_ISRESTRICTED)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("do not have the dual wielding skill.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "do not have the dual wielding skill.");
             return 0;
         }
         play_ui_sound(UI_SOUND_START_TWO_WEAPON_COMBAT);

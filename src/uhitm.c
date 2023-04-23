@@ -1382,7 +1382,7 @@ boolean* obj_destroyed;
                         {
                             play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mon->mx, mon->my);
                             m_shieldeff(mon);
-                            pline("%s resists!", Monnam(mon));
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists!", Monnam(mon));
                         }
                         else
                         {
@@ -1450,7 +1450,7 @@ boolean* obj_destroyed;
                         {
                             play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mon->mx, mon->my);
                             m_shieldeff(mon);
-                            pline("%s resists!", Monnam(mon));
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists!", Monnam(mon));
                         }
                         else
                         {
@@ -2266,7 +2266,7 @@ boolean* obj_destroyed;
         if (needpoismsg)
         {
             //play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
-            pline_The("poison doesn't seem to affect %s.", mon_nam(mon));
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "poison doesn't seem to affect %s.", mon_nam(mon));
         }
 
         if (needenchantmsg && !destroyed)    
@@ -2278,49 +2278,49 @@ boolean* obj_destroyed;
             {
             case -COLD_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
-                pline_The("cold doesn't seem to affect %s.", mon_nam(mon));
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "cold doesn't seem to affect %s.", mon_nam(mon));
                 break;
             case -FIRE_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
-                pline_The("fire doesn't seem to affect %s.", mon_nam(mon));
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fire doesn't seem to affect %s.", mon_nam(mon));
                 break;
             case -LIGHTNING_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
-                pline_The("electricity doesn't seem to affect %s.", mon_nam(mon));
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "electricity doesn't seem to affect %s.", mon_nam(mon));
                 break;
             case -DEATH_ENCHANTMENT:
                 if (!check_rider_death_absorption(mon, (const char*)0))
                 {
                     play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
-                    pline_The("death magic doesn't seem to affect %s.", mon_nam(mon));
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "death magic doesn't seem to affect %s.", mon_nam(mon));
                 }
                 break;
             case COLD_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mon->mx, mon->my);
-                pline_The("cold sears %s.", mon_nam(mon));
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "cold sears %s.", mon_nam(mon));
                 break;
             case FIRE_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mon->mx, mon->my);
-                pline_The("fire burns %s.", mon_nam(mon));
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fire burns %s.", mon_nam(mon));
                 break;
             case LIGHTNING_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mon->mx, mon->my);
-                pline("%s is jolted by lightning.", Monnam(mon));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is jolted by lightning.", Monnam(mon));
                 break;
             case DEATH_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mon->mx, mon->my);
-                pline("%s feels its life energy draining away.", Monnam(mon));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s feels its life energy draining away.", Monnam(mon));
                 break;
             default:
                 //play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
-                pline_The("enchantment doesn't seem to affect %s.", mon_nam(mon));
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "enchantment doesn't seem to affect %s.", mon_nam(mon));
                 break;
             }
         }
 
         if (poiskilled) 
         {
-            pline_The("poison was deadly...");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "poison was deadly...");
             if (!already_killed)
                 killed(mon); //xkilled(mon, XKILL_NOMSG);
             destroyed = TRUE; /* return FALSE; */
@@ -4364,7 +4364,7 @@ boolean wep_was_destroyed;
                         ;
                     } else if (Free_action) {
                         play_sfx_sound(SFX_GENERAL_RESISTS);
-                        You("momentarily stiffen under %s gaze!",
+                        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "momentarily stiffen under %s gaze!",
                             s_suffix(mon_nam(mon)));
                     } else if (Hallucination && rn2(4)) {
                         pline("%s looks %s%s.", Monnam(mon),
@@ -4386,7 +4386,7 @@ boolean wep_was_destroyed;
                 }
             } else if (Free_action) {
                 play_sfx_sound(SFX_GENERAL_RESISTS);
-                You("momentarily stiffen.");
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "momentarily stiffen.");
             } else { /* gelatinous cube */
                 play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
                 You("are frozen by %s!", mon_nam(mon));

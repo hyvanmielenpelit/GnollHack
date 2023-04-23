@@ -2309,15 +2309,15 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                         {
                             if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
                             {
-                                pline("%s hits %s with death magic!", The(xname(otmp)), mon_nam(mdef));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s hits %s with death magic!", The(xname(otmp)), mon_nam(mdef));
                             }
                             else if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
                             {
-                                pline("%s hits %s with annihilating force!", The(xname(otmp)), mon_nam(mdef));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s hits %s with annihilating force!", The(xname(otmp)), mon_nam(mdef));
                             }
                             else
                             {
-                                pline("%s hits %s with a deadly blow!", The(xname(otmp)), mon_nam(mdef));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s hits %s with a deadly blow!", The(xname(otmp)), mon_nam(mdef));
                             }
 
                             if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
@@ -2330,27 +2330,27 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                             {
                                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mdef->mx, mdef->my);
                                 m_shieldeff(mdef);
-                                pline("%s is unaffected!", Monnam(mdef));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected!", Monnam(mdef));
                             }
                         }
                         else
                         {
                             if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
                             {
-                                pline("%s hits you with death magic!", The(xname(otmp)));
+                                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s hits you with death magic!", The(xname(otmp)));
                             }
                             else if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
                             {
-                                pline("%s hits you with annihilating force!", The(xname(otmp)));
+                                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s hits you with annihilating force!", The(xname(otmp)));
                             }
                             else
                             {
-                                pline("%s hits you with a deadly blow!", The(xname(otmp)));
+                                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s hits you with a deadly blow!", The(xname(otmp)));
                             }
 
                             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                             u_shieldeff();
-                            You("are unaffected!");
+                            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "are unaffected!");
                         }
                     }
                     else
@@ -2586,7 +2586,7 @@ struct obj *obj;
     else if ((oart->aflags & AF_INVOKE_EXPENDS_CHARGE) && obj->charges <= 0)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        pline("Unfortunately, nothing happens.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Unfortunately, nothing happens.");
         return 1;
     }
     else if (obj->repowerleft > 0)

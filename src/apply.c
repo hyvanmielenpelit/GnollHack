@@ -58,7 +58,7 @@ struct obj* obj;
     if (obj->charges <= 0)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        pline("%s", nothing_happens);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s", nothing_happens);
         return 1;
     }
 
@@ -76,13 +76,13 @@ boolean drink_yourself;
     if (obj->charges <= 0)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        pline("%s empty.", Tobjnam(obj, "are"));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s empty.", Tobjnam(obj, "are"));
         return 0;
     }
 
     if (Underwater)
     {
-        pline("Using %s underwater would spoil it.", yname(obj));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Using %s underwater would spoil it.", yname(obj));
         return 0;
     }
 
@@ -152,7 +152,7 @@ boolean drink_yourself;
     if (obj->charges <= 0)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        pline("%s now empty.", Tobjnam(obj, "are"));
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s now empty.", Tobjnam(obj, "are"));
     }
     return 1;
 }
@@ -167,7 +167,7 @@ boolean drink_yourself;
     if (obj->charges <= 0)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        pline("%s empty.", Tobjnam(obj, "are"));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s empty.", Tobjnam(obj, "are"));
         return 0;
     }
 
@@ -231,7 +231,7 @@ boolean drink_yourself;
     if (obj->charges <= 0)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        pline("%s now empty.", Tobjnam(obj, "are"));
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s now empty.", Tobjnam(obj, "are"));
     }
     return 1;
 }
@@ -287,7 +287,7 @@ struct obj *obj;
     if (obj->charges <= 0)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        pline1(nothing_happens);
+        pline_ex1(ATR_NONE, CLR_MSG_FAIL, nothing_happens);
         return 1;
     }
 
@@ -1759,7 +1759,7 @@ struct obj **optr;
     {
         /* needs to be recharged... */
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        pline("But it makes no sound.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "But it makes no sound.");
         learno = TRUE; /* help player figure out why */
 
     } 
@@ -2477,9 +2477,9 @@ struct obj *obj;
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         if (obj->otyp == BRASS_LANTERN)
-            Your("lamp has run out of power.");
+            Your_ex(ATR_NONE, CLR_MSG_FAIL, "lamp has run out of power.");
         else
-            pline("This %s has no oil.", xname(obj));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This %s has no oil.", xname(obj));
         return;
     }
     if ((obj->cursed && !rn2(2)) || (obj->otyp == MAGIC_CANDLE && obj->special_quality == 0))
@@ -2797,21 +2797,21 @@ boolean showmsg;
         if (showmsg)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("Illegal move!");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Illegal move!");
         }
         return FALSE;
     } else if (distu(x, y) > (magic ? 6 + magic * 3 : 9)) {
         if (showmsg)
         {
             play_sfx_sound(SFX_GENERAL_TOO_FAR);
-            pline("Too far!");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Too far!");
         }
         return FALSE;
     } else if (!isok(x, y)) {
         if (showmsg)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("cannot jump there!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot jump there!");
         }
         return FALSE;
     } else if (!cansee(x, y)) {
@@ -3136,7 +3136,7 @@ struct obj *obj;
     if (obj->charges <= 0) 
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        You("seem to be out of tins.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "seem to be out of tins.");
         return;
     }
     if (!(corpse = floorfood("tin", 2)))
@@ -3763,9 +3763,9 @@ struct obj *obj;
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         if (obj->known)
-            pline("%s empty.", Tobjnam(obj, "are"));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s empty.", Tobjnam(obj, "are"));
         else
-            pline("%s to be empty.", Tobjnam(obj, "seem"));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s to be empty.", Tobjnam(obj, "seem"));
     }
     update_inventory();
 }
@@ -4139,9 +4139,9 @@ struct obj* obj;
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         res = 0;
         if (obj->known)
-            pline("%s out of charges.", Tobjnam(obj, "are"));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s out of charges.", Tobjnam(obj, "are"));
         else
-            pline("%s out of charges.", Tobjnam(obj, "seem"));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s out of charges.", Tobjnam(obj, "seem"));
     }
     update_inventory();
     return res;

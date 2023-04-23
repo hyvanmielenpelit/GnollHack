@@ -1943,7 +1943,7 @@ dogaze()
                             if (has_cancellation_resistance(mtmp))
                             {
                                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-                                pline("However, %s is unaffected!", mon_nam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "However, %s is unaffected!", mon_nam(mtmp));
                                 m_shieldeff(mtmp);
 
                             }

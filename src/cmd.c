@@ -7756,7 +7756,7 @@ const char *msg;
             if (!*buf)
                 Sprintf(buf, "Invalid direction for '%s' prefix.",
                         visctrl(Cmd.spkeys[spkey]));
-            pline("%s", buf);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s", buf);
             return TRUE;
         }
         /* when 'cmdassist' is off and caller doesn't insist, do nothing */

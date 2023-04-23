@@ -1216,10 +1216,10 @@ struct obj **optr;
         {
         case 1:
             play_sfx_sound(SFX_TOO_MUCH_TO_COMPREHEND);
-            pline("%s too much to comprehend!", Tobjnam(obj, "are"));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s too much to comprehend!", Tobjnam(obj, "are"));
             break;
         case 2:
-            pline("%s you!", Tobjnam(obj, "confuse"));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s you!", Tobjnam(obj, "confuse"));
             if (!Confusion)
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
@@ -1227,7 +1227,7 @@ struct obj **optr;
         case 3:
             if (!resists_blnd(&youmonst)) 
             {
-                pline("%s your vision!", Tobjnam(obj, "damage"));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s your vision!", Tobjnam(obj, "damage"));
                 if(!Blinded)
                     play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
 
@@ -1238,14 +1238,14 @@ struct obj **optr;
             else
             {
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-                pline("%s your vision.", Tobjnam(obj, "assault"));
-                You("are unaffected!");
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s your vision.", Tobjnam(obj, "assault"));
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "are unaffected!");
             }
             break;
         case 4:
             if (!Hallucination)
                 play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
-            pline("%s your mind!", Tobjnam(obj, "zap"));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s your mind!", Tobjnam(obj, "zap"));
             (void) make_hallucinated(
                 (HHallucination & TIMEOUT) + (long) rnd(100), FALSE, 0L);
             break;
@@ -1253,7 +1253,7 @@ struct obj **optr;
             play_sfx_sound(SFX_EXPLOSION_FIERY);
             play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, u.ux, u.uy, FALSE);
             special_effect_wait_until_action(0);
-            pline("%s!", Tobjnam(obj, "explode"));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Tobjnam(obj, "explode"));
             useup(obj);
             *optr = obj = 0; /* it's gone */
             /* physical damage cause by the shards and force */
@@ -1984,7 +1984,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
         if (!aflag)
         {
             play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-            pline("What are you looking for?  The exit?");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "What are you looking for?  The exit?");
         }
     }
     else 

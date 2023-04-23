@@ -81,7 +81,7 @@ struct obj *otmp;
     }
     if (ptr == &mons[PM_INCUBUS]) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("Shame on you!");
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "Shame on you!");
         exercise(A_WIS, FALSE);
         return 1;
     }
@@ -266,7 +266,7 @@ struct monst *mtmp; /* The animal */
     if (!mtmp || steedunseen)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT_SEE_SPOT);
-        pline("I see nobody there.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "I see nobody there.");
         return (FALSE);
     }
 

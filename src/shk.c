@@ -1376,7 +1376,7 @@ dopay()
 
     if (!seensk) {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You_cant("see...");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "see...");
         return 0;
     }
 
@@ -1421,22 +1421,22 @@ dopay()
         mtmp = m_at(cx, cy);
         if (!cansee(cx, cy) && (!mtmp || !canspotmon(mtmp))) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("can't %s anyone there.", !Blind ? "see" : "sense");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "can't %s anyone there.", !Blind ? "see" : "sense");
             return 0;
         }
         if (!mtmp) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            There("is no one there to receive your payment.");
+            There_ex(ATR_NONE, CLR_MSG_FAIL, "is no one there to receive your payment.");
             return 0;
         }
         if (!mtmp->isshk) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("%s is not interested in your payment.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not interested in your payment.", Monnam(mtmp));
             return 0;
         }
         if (mtmp != resident && distu(mtmp->mx, mtmp->my) > 2) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("%s is too far to receive your payment.", Shknam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is too far to receive your payment.", Shknam(mtmp));
             return 0;
         }
         shkp = mtmp;

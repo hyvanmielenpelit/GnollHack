@@ -5877,7 +5877,7 @@ struct trap *ttmp;
     if (!mtmp->mtrapped)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s isn't trapped.", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s isn't trapped.", Monnam(mtmp));
         return 0;
     }
     /* Do you have the necessary capacity to lift anything? */
@@ -5993,7 +5993,7 @@ boolean force;
     if (!isok(x, y)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline_The("perils lurking there are beyond your grasp.");
+        pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "perils lurking there are beyond your grasp.");
         return 0;
     }
 
@@ -6889,7 +6889,7 @@ boolean disarm;
             {
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                 u_shieldeff();
-                You("don't seem to be affected.");
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "don't seem to be affected.");
                 dmg = 0;
             }
             else
@@ -6932,7 +6932,7 @@ boolean disarm;
             else
             {
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-                You("momentarily stiffen.");
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "momentarily stiffen.");
             }
             special_effect_wait_until_end(0);
             break;

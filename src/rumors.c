@@ -662,25 +662,25 @@ struct monst* oracl;
     if (!oracl) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        There("is no one here to identify items.");
+        There_ex(ATR_NONE, CLR_MSG_FAIL, "is no one here to identify items.");
         return 0;
     }
     else if (!is_peaceful(oracl)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s is in no mood for identification.", Monnam(oracl));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is in no mood for identification.", Monnam(oracl));
         return 0;
     }
     else if (!umoney) 
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
     else if (count_unidentified(invent) == 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex1_popup("have no unidentified items.", "Nothing to Identify", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no unidentified items.", "Nothing to Identify", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 

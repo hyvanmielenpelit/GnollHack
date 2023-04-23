@@ -564,7 +564,7 @@ boolean lifesavedalready;
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff();
-            pline_The("cold doesn't seem to affect you.");
+            pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "cold doesn't seem to affect you.");
             return;
         }
 
@@ -581,7 +581,7 @@ boolean lifesavedalready;
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff();
-            pline_The("fire doesn't seem to affect you.");
+            pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "fire doesn't seem to affect you.");
             return;
         }
 
@@ -598,7 +598,7 @@ boolean lifesavedalready;
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff();
-            pline_The("lightning doesn't seem to affect you.");
+            pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "lightning doesn't seem to affect you.");
             return;
         }
 
@@ -615,7 +615,7 @@ boolean lifesavedalready;
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff();
-            pline_The("death magic doesn't seem to affect you.");
+            pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "death magic doesn't seem to affect you.");
             return;
         }
 

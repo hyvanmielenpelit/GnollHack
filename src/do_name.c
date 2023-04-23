@@ -604,7 +604,7 @@ int gloc;
     if (gcount < 2) { /* gcount always includes the hero */
         free((genericptr_t) garr);
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot %s %s.",
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot %s %s.",
             iflags.getloc_filter == GFILTER_VIEW ? "see" : "detect",
             gloc_descr[gloc][0]);
         return FALSE;
@@ -1049,7 +1049,7 @@ enum game_cursor_types cursor_style;
                         }     /* row */
                     }         /* pass */
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    pline("Can't find dungeon feature '%c'.", c);
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "Can't find dungeon feature '%c'.", c);
                     msg_given = TRUE;
                     goto nxtc;
                 } 
@@ -1371,7 +1371,7 @@ do_mname()
         else 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("This %s creature is called %s and cannot be renamed.",
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This %s creature is called %s and cannot be renamed.",
                   beautiful(), plname);
             return;
         }
@@ -1919,11 +1919,11 @@ namefloorobj()
               unames[rn2_on_display_rng(SIZE(unames))]);
     } else if (!objtyp_is_callable(obj->otyp)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s %s can't be assigned a type name.",
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s can't be assigned a type name.",
               use_plural ? "Those" : "That", buf);
     } else if (!obj->dknown) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("don't know %s %s well enough to name %s.",
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "don't know %s %s well enough to name %s.",
             use_plural ? "those" : "that", buf, use_plural ? "them" : "it");
     } else {
         docall(obj, (char*)0);

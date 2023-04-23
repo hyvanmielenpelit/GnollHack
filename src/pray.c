@@ -700,7 +700,7 @@ aligntyp resp_god;
         else
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            pline("%s seems unaffected.", Monnam(u.ustuck));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems unaffected.", Monnam(u.ustuck));
         }
     }
     else 
@@ -710,13 +710,13 @@ aligntyp resp_god;
             play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
             if (Blind)
-                pline("For some reason you're unaffected.");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "For some reason you're unaffected.");
             else
                 (void) ureflects("%s reflects from your %s.", "It");
         } else if (Shock_immunity) {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff();
-            pline("It seems not to affect you.");
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "It seems not to affect you.");
         } else
             fry_by_god(resp_god, FALSE);
     }
@@ -732,7 +732,7 @@ aligntyp resp_god;
         else
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            pline("%s seems unaffected.", Monnam(u.ustuck));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems unaffected.", Monnam(u.ustuck));
         }
     } else {
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A wide-angle disintegration beam hits you!");
@@ -2214,7 +2214,7 @@ dosacrifice()
     if (!on_altar() || u.uswallow) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("are not standing on an altar.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are not standing on an altar.");
         return 0;
     }
 
@@ -3238,7 +3238,7 @@ doturn()
                 return spelleffects(sp_no, FALSE, &youmonst);
         }
         play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
-        You("don't know how to turn undead!");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "don't know how to turn undead!");
         return 0;
     }
     u.uconduct.gnostic++;

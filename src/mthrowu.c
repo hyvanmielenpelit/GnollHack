@@ -502,7 +502,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                 if (vis)
                 {
                     //play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-                    pline_The("poison doesn't seem to affect %s.",
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "poison doesn't seem to affect %s.",
                         mon_nam(mtmp));
                 }
             } 
@@ -524,7 +524,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-                        pline_The("cold doesn't seem to affect %s.",
+                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "cold doesn't seem to affect %s.",
                             mon_nam(mtmp));
                     }
                 }
@@ -551,7 +551,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-                        pline_The("fire doesn't seem to affect %s.",
+                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fire doesn't seem to affect %s.",
                             mon_nam(mtmp));
                     }
                 }
@@ -578,7 +578,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-                        pline_The("lightning doesn't seem to affect %s.",
+                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "lightning doesn't seem to affect %s.",
                             mon_nam(mtmp));
                     }
                 }
@@ -610,7 +610,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-                        pline_The("death magic doesn't seem to affect %s.",
+                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "death magic doesn't seem to affect %s.",
                             mon_nam(mtmp));
                     }
                 }
@@ -653,7 +653,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                 if (vis || (verbose && !target))
                 {
                     play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-                    pline("%s is unaffected.", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected.", Monnam(mtmp));
                 }
             } 
             else 
@@ -671,7 +671,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             {
                 play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
                 m_shieldeff(mtmp);
-                pline("%s resists!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists!", Monnam(mtmp));
             }
             else
             {

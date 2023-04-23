@@ -50,7 +50,7 @@ dosit()
         if (u.uswallow)
         {
             play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-            There("are no seats in here!");
+            There_ex(ATR_NONE, CLR_MSG_FAIL, "are no seats in here!");
         }
         else if (Levitation)
         {

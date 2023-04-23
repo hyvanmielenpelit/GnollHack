@@ -928,7 +928,7 @@ register struct monst *mtmp;
         else
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            You("are unaffected.");
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "are unaffected.");
         }
 
         for (m2 = fmon; m2; m2 = nmon) 

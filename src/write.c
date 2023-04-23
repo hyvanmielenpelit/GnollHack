@@ -148,7 +148,7 @@ register struct obj *pen;
     paper->dknown = 1;
     if (paper->otyp != SCR_BLANK_PAPER && paper->otyp != SPE_BLANK_PAPER) {
         play_sfx_sound(SFX_GENERAL_NOT_IN_THE_RIGHT_CONDITION);
-        pline("That %s is not blank!", typeword);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "That %s is not blank!", typeword);
         exercise(A_WIS, FALSE);
         return 1;
     }
@@ -215,7 +215,7 @@ register struct obj *pen;
     }
 
     play_sfx_sound(SFX_GENERAL_CANNOT);
-    There("is no such %s!", typeword);
+    There_ex(ATR_NONE, CLR_MSG_FAIL, "is no such %s!", typeword);
     return 1;
 found:
 

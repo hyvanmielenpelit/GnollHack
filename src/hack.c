@@ -958,7 +958,7 @@ int mode;
                 if (mode == DO_MOVE && iflags.mention_walls)
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    You("cannot pass through the bars.");
+                    You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot pass through the bars.");
                 }
                 return FALSE;
             }
@@ -1125,21 +1125,21 @@ int mode;
             if (mode == DO_MOVE)
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("cannot pass that way.");
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot pass that way.");
             }
             return FALSE;
         case 2:
             if (mode == DO_MOVE)
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("are carrying too much to get through.");
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "are carrying too much to get through.");
             }
             return FALSE;
         case 1:
             if (mode == DO_MOVE)
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                Your("body is too large to fit through.");
+                Your_ex(ATR_NONE, CLR_MSG_FAIL, "body is too large to fit through.");
             }
             return FALSE;
         default:
@@ -1152,7 +1152,7 @@ int mode;
         if (mode == DO_MOVE)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("%s is in your way.", Monnam(m_at(ux, y)));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is in your way.", Monnam(m_at(ux, y)));
         }
         return FALSE;
     }
@@ -3265,58 +3265,58 @@ pickup_checks()
         if (IS_THRONE(lev->typ))
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("It must weigh%s a ton!", lev->looted ? " almost" : "");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "It must weigh%s a ton!", lev->looted ? " almost" : "");
         }
         else if (IS_SINK(lev->typ))
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline_The("plumbing connects it to the floor.");
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "plumbing connects it to the floor.");
         }
         else if (IS_GRAVE(lev->typ))
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("don't need a gravestone.  Yet.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't need a gravestone.  Yet.");
         }
         else if (IS_FOUNTAIN(lev->typ))
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("could drink the %s...", hliquid("water"));
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "could drink the %s...", hliquid("water"));
         }
         else if (IS_DOOR(lev->typ) && (lev->doormask & D_ISOPEN))
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("It won't come off the hinges.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "It won't come off the hinges.");
         }
         else if (IS_ALTAR(lev->typ))
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("Moving the altar would be a very bad idea.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Moving the altar would be a very bad idea.");
         }
         else if (IS_ANVIL(lev->typ))
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("The anvil is bolted down to the floor.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "The anvil is bolted down to the floor.");
         }
         else if (IS_BRAZIER(lev->typ))
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("The brazier is bolted down to the floor.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "The brazier is bolted down to the floor.");
         }
         else if (IS_SIGNPOST(lev->typ))
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("The signpost is bolted down to the floor.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "The signpost is bolted down to the floor.");
         }
         else if (lev->typ == STAIRS)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline_The("stairs are solidly fixed to the %s.",
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "stairs are solidly fixed to the %s.",
                 surface(u.ux, u.uy));
         }
         else
         {
             play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-            There("is nothing here to pick up.");
+            There_ex(ATR_NONE, CLR_MSG_FAIL, "is nothing here to pick up.");
         }
         return 0;
     }

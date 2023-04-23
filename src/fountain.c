@@ -390,7 +390,7 @@ drinkfountain()
         if (Poison_resistance) 
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            pline("However, you are unaffected!");
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "However, you are unaffected!");
         }
         else
         {

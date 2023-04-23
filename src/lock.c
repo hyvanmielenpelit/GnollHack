@@ -125,19 +125,19 @@ picklock(VOID_ARGS)
         {
         case D_NODOOR:
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("This doorway has no door.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This doorway has no door.");
             return ((xlock.usedtime = 0));
         case D_ISOPEN:
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("cannot lock an open door.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot lock an open door.");
             return ((xlock.usedtime = 0));
         case D_BROKEN:
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("This door is broken.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This door is broken.");
             return ((xlock.usedtime = 0));
         case D_PORTCULLIS:
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("cannot lock a portcullis.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot lock a portcullis.");
             return ((xlock.usedtime = 0));
         }
 
@@ -383,7 +383,7 @@ forcelock(VOID_ARGS)
     if (xlock.box->keyotyp == NUM_OBJECTS)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s has no observable lock to force.", The(cxname(xlock.box)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s has no observable lock to force.", The(cxname(xlock.box)));
         return ((xlock.usedtime = 0));
     }
 
@@ -594,7 +594,7 @@ boolean is_auto;
             if (!is_auto)
             {
                 play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-                There("isn't any sort of lock up %s.",
+                There_ex(ATR_NONE, CLR_MSG_FAIL, "isn't any sort of lock up %s.",
                     Levitation ? "here" : "there");
             }
             return PICKLOCK_LEARNED_SOMETHING;
@@ -613,7 +613,7 @@ boolean is_auto;
             if (!is_auto)
             {
                 play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-                pline_The("%s has no lock.", hliquid("water"));
+                pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "%s has no lock.", hliquid("water"));
             }
             return PICKLOCK_LEARNED_SOMETHING;
         }
@@ -751,19 +751,19 @@ boolean is_auto;
         {
         case D_NODOOR:
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("This doorway has no door.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This doorway has no door.");
             return PICKLOCK_LEARNED_SOMETHING;
         case D_ISOPEN:
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("cannot lock an open door.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot lock an open door.");
             return PICKLOCK_LEARNED_SOMETHING;
         case D_BROKEN:
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("This door is broken.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This door is broken.");
             return PICKLOCK_LEARNED_SOMETHING;
         case D_PORTCULLIS:
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("There is no lock on the portcullis.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "There is no lock on the portcullis.");
             return PICKLOCK_LEARNED_SOMETHING;
         default:
             /* credit cards are only good for unlocking */
@@ -1004,12 +1004,12 @@ int x, y;
         if (is_db_wall(cc.x, cc.y) || door->typ == DRAWBRIDGE_UP)
         {
             play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
-            There("is no obvious way to open the drawbridge.");
+            There_ex(ATR_NONE, CLR_MSG_FAIL, "is no obvious way to open the drawbridge.");
         }
         else if (portcullis || door->typ == DRAWBRIDGE_DOWN)
         {
             play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
-            pline_The("drawbridge is already open.");
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "drawbridge is already open.");
         }
         else if (container_at(cc.x, cc.y, TRUE))
         {
@@ -1020,7 +1020,7 @@ int x, y;
         else
         {
             play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-            You("%s no door there.", Blind ? "feel" : "see");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "%s no door there.", Blind ? "feel" : "see");
         }
         return res;
     }
@@ -1110,7 +1110,7 @@ int x, y;
 
     if (verysmall(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        pline("You're too small to pull the %s open.", door_name);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You're too small to pull the %s open.", door_name);
         return res;
     }
 
@@ -1258,17 +1258,17 @@ doclose()
         if (is_db_wall(x, y) || door->typ == DRAWBRIDGE_UP)
         {
             play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
-            pline_The("drawbridge is already closed.");
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "drawbridge is already closed.");
         }
         else if (portcullis || door->typ == DRAWBRIDGE_DOWN)
         {
             play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
-            There("is no obvious way to close the drawbridge.");
+            There_ex(ATR_NONE, CLR_MSG_FAIL, "is no obvious way to close the drawbridge.");
         }
         else {
  nodoor:
             play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-            You("%s no door there.", Blind ? "feel" : "see");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "%s no door there.", Blind ? "feel" : "see");
         }
         return res;
     }
@@ -1276,13 +1276,13 @@ doclose()
     if ((door->doormask & D_MASK) == D_NODOOR)
     {
         play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-        pline("This doorway has no door.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "This doorway has no door.");
         return res;
     } 
     else if ((door->doormask & D_MASK) == D_PORTCULLIS)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("This portcullis can be closed only by lifting the drawbridge.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "This portcullis can be closed only by lifting the drawbridge.");
         return res;
     }
     else if (obstructed(x, y, FALSE)) 
@@ -1292,13 +1292,13 @@ doclose()
     else if ((door->doormask & D_MASK) == D_BROKEN) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("This %s is broken.", get_door_name_at_ptr(door));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "This %s is broken.", get_door_name_at_ptr(door));
         return res;
     } 
     else if ((door->doormask & D_MASK) & (D_CLOSED | D_LOCKED))
     {
         play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
-        pline("This %s is already closed.", get_door_name_at_ptr(door));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "This %s is already closed.", get_door_name_at_ptr(door));
         return res;
     }
 
@@ -1307,7 +1307,7 @@ doclose()
         if (verysmall(youmonst.data) && !u.usteed) 
         {
             play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-            pline("You're too small to push the door closed.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You're too small to push the door closed.");
             return res;
         }
         update_u_action(ACTION_TILE_DOOR_USE);

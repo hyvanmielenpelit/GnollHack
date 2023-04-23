@@ -1387,12 +1387,12 @@ struct obj *obj;
             else if (IS_TREE(lev->typ)) 
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("need an axe or a saw to cut down a tree.");
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "need an axe or a saw to cut down a tree.");
             }
             else if (IS_ROCK(lev->typ)) 
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("need a pick to dig rock.");
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "need a pick to dig rock.");
             }
             else if (!ispick && ((sobj_at(STATUE, rx, ry) && !issaw) || sobj_at(BOULDER, rx, ry)))
             {

@@ -2682,7 +2682,7 @@ struct monst* targetmonst;
             if (!get_valid_targeted_position(cc.x, cc.y, otyp))
             {
                 play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
-                pline("Not a valid target position.");
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "Not a valid target position.");
                 if (trycnt > 4)
                 {
                     cc.x = u.ux;
@@ -3601,7 +3601,7 @@ dovspell()
     if (spellid(0) == NO_SPELL)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("don't know any spells right now.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "don't know any spells right now.");
     } 
     else 
     {
