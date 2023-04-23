@@ -7263,7 +7263,7 @@ register char *cmd;
         return;
     case NHKF_CLICKFIRE:
         if (iflags.clickfire) {
-            context.move = FALSE;
+            //context.move = FALSE;
             int fireres = dofire();
             if (!fireres)
                 readchar_queue = ""; //Prevent movement if firing failed.

@@ -19,6 +19,10 @@ STATIC_DCL int FDECL(m_arrival, (struct monst *));
 STATIC_DCL boolean FDECL(stuff_prevents_passage, (struct monst *));
 STATIC_DCL int FDECL(vamp_shift, (struct monst *, struct permonst *, BOOLEAN_P));
 
+#define mon_wants_to_pick_up_obj(m, o) \
+    ((m) && mon_can_move(m) && !(m)->issummoned && mon_can_reach_floor(m) && !onnopickup((m)->mx, (m)->my, m) \
+     && !((o) && couldsee((m)->mx, (m)->my) && (o)->was_thrown))
+
 /* True if mtmp died */
 boolean
 mb_trapped(mtmp)
@@ -1543,7 +1547,9 @@ register int after;
                              && !index(indigestion, otmp->oclass)
                              && !(otmp->otyp == CORPSE
                                   && touch_petrifies(&mons[otmp->corpsenm]))))
-                        && touch_artifact(otmp, mtmp))
+                        && touch_artifact(otmp, mtmp) 
+                        && mon_wants_to_pick_up_obj(mtmp, otmp)
+                        )
                     {
                         if (can_carry(mtmp, otmp) > 0
                             && (throws_rocks(ptr) || !sobj_at(BOULDER, xx, yy))
@@ -2045,8 +2051,9 @@ register int after;
         }
 
         struct obj* objhere = o_at(mtmp->mx, mtmp->my);
-        if (OBJ_AT(mtmp->mx, mtmp->my) && mon_can_move(mtmp) && !mtmp->issummoned && mon_can_reach_floor(mtmp) && !onnopickup(mtmp->mx, mtmp->my, mtmp)
-            && !(couldsee(mtmp->mx, mtmp->my) && objhere && objhere->was_thrown)) //Do not pick up ammo or other stuff that the player shoots / throws (this checks just the first item, but that's probably good enough)
+        if (OBJ_AT(mtmp->mx, mtmp->my) && mon_wants_to_pick_up_obj(mtmp, objhere))
+            //mon_can_move(mtmp) && !mtmp->issummoned && mon_can_reach_floor(mtmp) && !onnopickup(mtmp->mx, mtmp->my, mtmp)
+            //&& !(couldsee(mtmp->mx, mtmp->my) && objhere && objhere->was_thrown)) //Do not pick up ammo or other stuff that the player shoots / throws (this checks just the first item, but that's probably good enough)
         {
             /* recompute the likes tests, in case we polymorphed
              * or if the "likegold" case got taken above */
