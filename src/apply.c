@@ -2583,14 +2583,16 @@ struct obj* obj;
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot refill %s with oil.", acxname(target_obj));
+                return 0;
             }
             else
                 return refill_obj_with_oil(target_obj, obj);
         }
         default:
-            return 0;
+            break;
         }
     }
+    return 0;
 }
 
 void
