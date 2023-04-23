@@ -3217,6 +3217,8 @@ reset_game(VOID_ARGS)
     reset_pick();
     reset_remaining_static_variables();
     reset_remaining_dynamic_data();
+    if (VIA_WINDOWPORT())
+        status_finish();
     dlb_cleanup();
 }
 
