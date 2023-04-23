@@ -557,7 +557,7 @@ boolean lifesavedalready;
     //Effects
     if(elemental_enchantment == COLD_ENCHANTMENT)
     {
-        pline("%s%s %s ice-cold!",
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s ice-cold!",
             isupper((uchar)* reason) ? "" : "The ", reason,
             plural ? "are" : "is");
         if (Cold_immunity || Invulnerable) 
@@ -574,7 +574,7 @@ boolean lifesavedalready;
     }
     else if (elemental_enchantment == FIRE_ENCHANTMENT)
     {
-        pline("%s%s %s burning hot!",
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s burning hot!",
             isupper((uchar)* reason) ? "" : "The ", reason,
             plural ? "are" : "is");
         if (Fire_immunity || Invulnerable)
@@ -591,7 +591,7 @@ boolean lifesavedalready;
     }
     else if (elemental_enchantment == LIGHTNING_ENCHANTMENT)
     {
-        pline("%s%s %s you with lightning!",
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s you with lightning!",
             isupper((uchar)* reason) ? "" : "The ", reason,
             plural ? "jolt" : "jolts");
         if (Shock_immunity || Invulnerable) 
@@ -608,7 +608,7 @@ boolean lifesavedalready;
     }
     else if (elemental_enchantment == DEATH_ENCHANTMENT)
     {
-        pline("%s%s %s imbued by death magic!",
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s imbued by death magic!",
             isupper((uchar)* reason) ? "" : "The ", reason,
             plural ? "were" : "was");
         if (Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data))

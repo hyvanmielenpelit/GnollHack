@@ -4250,9 +4250,9 @@ boolean wep_was_destroyed;
         {
             play_sfx_sound(SFX_MONSTER_GETS_SPLASHED_BY_ACID);
             if (Blind || !flags.verbose)
-                You("are splashed!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are splashed!");
             else
-                You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are splashed by %s %s!", s_suffix(mon_nam(mon)),
                     hliquid("acid"));
 
             if (!Acid_immunity && !Invulnerable)
@@ -4325,10 +4325,10 @@ boolean wep_was_destroyed;
         if (Magic_missile_immunity || Invulnerable) {
             play_sfx_sound(SFX_HAIL_OF_MAGIC_MISSILES_MISSES);
             u_shieldeff();
-            pline("A hail of magic missiles narrowly misses you!");
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, "A hail of magic missiles narrowly misses you!");
         } else {
             play_sfx_sound(SFX_HAIL_OF_MAGIC_MISSILES_HITS);
-            You("are hit by magic missiles appearing from thin air!");
+            You_ex(ATR_NONE, CLR_MSG_SPELL, "are hit by magic missiles appearing from thin air!");
             mdamageu(mon, damage, TRUE);
         }
         break;
@@ -4364,15 +4364,15 @@ boolean wep_was_destroyed;
                         ;
                     } else if (Free_action) {
                         play_sfx_sound(SFX_GENERAL_RESISTS);
-                        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "momentarily stiffen under %s gaze!",
+                        You_ex(ATR_NONE, CLR_MSG_WARNING, "momentarily stiffen under %s gaze!",
                             s_suffix(mon_nam(mon)));
                     } else if (Hallucination && rn2(4)) {
-                        pline("%s looks %s%s.", Monnam(mon),
+                        pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "%s looks %s%s.", Monnam(mon),
                               !rn2(2) ? "" : "rather ",
                               !rn2(2) ? "numb" : "stupified");
                     } else {
                         play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
-                        You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
+                        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frozen by %s gaze!", s_suffix(mon_nam(mon)));
                         incr_itimeout(&HParalyzed, (ACURR(A_WIS) > 12 || rn2(4)) ? basedmg : 127);
                         context.botl = context.botlx = 1;
                         refresh_u_tile_gui_info(TRUE);
@@ -4386,10 +4386,10 @@ boolean wep_was_destroyed;
                 }
             } else if (Free_action) {
                 play_sfx_sound(SFX_GENERAL_RESISTS);
-                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "momentarily stiffen.");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "momentarily stiffen.");
             } else { /* gelatinous cube */
                 play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
-                You("are frozen by %s!", mon_nam(mon));
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frozen by %s!", mon_nam(mon));
                 incr_itimeout(&HParalyzed, basedmg);
                 context.botl = context.botlx = 1;
                 refresh_u_tile_gui_info(TRUE);
@@ -4400,13 +4400,13 @@ boolean wep_was_destroyed;
             if (monnear(mon, u.ux, u.uy)) {
                 if (Cold_immunity || Invulnerable) {
                     u_shieldeff();
-                    You_feel("a mild chill.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "a mild chill.");
                     ugolemeffects(AD_COLD, damage);
                     break;
                 }
                 hit_tile = HIT_FROZEN;
                 play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
-                You("are suddenly very cold!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are suddenly very cold!");
                 mdamageu_with_hit_tile(mon, damage, TRUE, hit_tile);
                 /* monster gets stronger with your heat! */
                 mon->mhp += (int)ceil(damage) / 2;
@@ -4433,9 +4433,9 @@ boolean wep_was_destroyed;
                 {
                     u_shieldeff();
                     if (flaming(mon->data))
-                        You("are engulfed in %s flames, but they do not burn you!", s_suffix(mon_nam(mon)));
+                        You_ex(ATR_NONE, CLR_MSG_WARNING, "are engulfed in %s flames, but they do not burn you!", s_suffix(mon_nam(mon)));
                     else
-                        You_feel("mildly warm.");
+                        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "mildly warm.");
                     ugolemeffects(AD_FIRE, damage);
                     break;
                 }
@@ -4443,10 +4443,10 @@ boolean wep_was_destroyed;
                 if (flaming(mon->data))
                 {
                     hit_tile = HIT_ON_FIRE;
-                    You("are engulfed in %s flames!", s_suffix(mon_nam(mon)));
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are engulfed in %s flames!", s_suffix(mon_nam(mon)));
                 }
                 else
-                    You("are suddenly very hot!");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are suddenly very hot!");
                 mdamageu_with_hit_tile(mon, damage, TRUE, hit_tile); /* fire damage */
                 standard_hint("Acquire full fire resistance or use ranged weapons to bypass passive fire defense.", &u.uhint.damaged_by_passive_fire);
             }
@@ -4455,13 +4455,13 @@ boolean wep_was_destroyed;
             if (Shock_immunity || Invulnerable) 
             {
                 u_shieldeff();
-                You_feel("a mild tingle.");
+                You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "a mild tingle.");
                 ugolemeffects(AD_ELEC, damage);
                 break;
             }
             hit_tile = HIT_ELECTROCUTED;
             play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
-            You("are jolted with electricity!");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are jolted with electricity!");
             mdamageu_with_hit_tile(mon, damage, TRUE, hit_tile);
             standard_hint("Acquire full shock resistance or use ranged weapons to bypass passive electricity defense.", &u.uhint.damaged_by_passive_electricity);
             break;

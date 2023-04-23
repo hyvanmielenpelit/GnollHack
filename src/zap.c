@@ -420,7 +420,7 @@ struct monst* origmonst;
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
-            pline("%s is unaffected by your electric touch!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected by your electric touch!", Monnam(mtmp));
             break;
         }
         /* resist deals the damage and displays the damage dealt */
@@ -534,7 +534,7 @@ struct monst* origmonst;
         else if (magic_cancellation_success)
         {
             play_sfx_sound_at_location(SFX_UNLUCKILY_YOUR_TOUCH_DID_NOT_WORK, mtmp->mx, mtmp->my);
-            pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Luckily for %s, it didn't work!", mon_nam(mtmp));
             break; /* skip makeknown */
         }
         else
@@ -566,7 +566,7 @@ struct monst* origmonst;
         else if (magic_cancellation_success)
         {
             play_sfx_sound_at_location(SFX_UNLUCKILY_YOUR_TOUCH_DID_NOT_WORK, mtmp->mx, mtmp->my);
-            pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Luckily for %s, it didn't work!", mon_nam(mtmp));
             break; /* skip makeknown */
         }
         else
@@ -611,7 +611,7 @@ struct monst* origmonst;
     case SPE_GAZE_OF_PETRIFICATION:
         res = 1;
         if (!m_canseeu(mtmp))
-            pline("%s couldn't see your gaze.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s couldn't see your gaze.", Monnam(mtmp));
         else if (mon_reflects(mtmp, (char*)0))
         {
             if (canseemon(mtmp))
@@ -631,7 +631,7 @@ struct monst* origmonst;
                 if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
                     && !Stone_resistance)
                 {
-                    You("meet your own reflected gaze.");
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "meet your own reflected gaze.");
                     stop_occupation();
                     if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
                         break;
@@ -717,7 +717,7 @@ struct monst* origmonst;
         }
         else if (is_blinded(mtmp) && ((duration > 0 && get_mon_property(mtmp, BLINDED) > duration) || (mtmp->mprops[BLINDED] & ~M_TIMEOUT)))
         { /* match effect on player */
-            pline("%s does not seem more blind than before.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s does not seem more blind than before.", Monnam(mtmp));
             break; /* skip makeknown */
         }
         else if (!check_ability_resistance_success(mtmp, A_CON, save_adj))

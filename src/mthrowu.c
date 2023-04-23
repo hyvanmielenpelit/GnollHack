@@ -481,7 +481,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             if (otmp->otyp == EGG)
             {
                 display_m_being_hit(mtmp, hit_tile, 0, 0UL, FALSE);
-                pline("Splat!  %s is hit with %s egg!", Monnam(mtmp),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Splat!  %s is hit with %s egg!", Monnam(mtmp),
                     otmp->known ? an(corpse_monster_name(otmp)) : "an");
             }
             else
@@ -491,7 +491,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
         {
 
             display_m_being_hit(mtmp, hit_tile, 0, 0UL, FALSE);
-            pline("%s%s is hit%s", (otmp->otyp == EGG) ? "Splat!  " : "",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%s is hit%s", (otmp->otyp == EGG) ? "Splat!  " : "",
                 Monnam(mtmp), exclam((int)ceil(damage)));
         }
 
@@ -533,12 +533,12 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mtmp->mx, mtmp->my);
-                        pline_The("cold sears %s!", mon_nam(mtmp));
+                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "cold sears %s!", mon_nam(mtmp));
                     }
                     else if (verbose && !target)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mtmp->mx, mtmp->my);
-                        pline_The("cold sears it!");
+                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "cold sears it!");
                     }
                     damage += adjust_damage(d(12, 6), (struct monst*)0, mtmp, AD_COLD, ADFLAGS_NONE);
                 }
@@ -560,12 +560,12 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mtmp->mx, mtmp->my);
-                        pline_The("fire burns %s!", mon_nam(mtmp));
+                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fire burns %s!", mon_nam(mtmp));
                     }
                     else if (verbose && !target)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mtmp->mx, mtmp->my);
-                        pline_The("fire burns it!");
+                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fire burns it!");
                     }
                     damage += adjust_damage(d(4, 6), (struct monst*)0, mtmp, AD_FIRE, ADFLAGS_NONE);
                 }
@@ -587,12 +587,12 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mtmp->mx, mtmp->my);
-                        pline("%s is jolted by lightning!", Monnam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is jolted by lightning!", Monnam(mtmp));
                     }
                     else if (verbose && !target)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mtmp->mx, mtmp->my);
-                        pline("It is jolted by lightning!");
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It is jolted by lightning!");
                     }
 
                     damage += adjust_damage(d(6, 6), (struct monst*)0, mtmp, AD_ELEC, ADFLAGS_NONE);
@@ -619,13 +619,13 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mtmp->mx, mtmp->my);
-                        pline("%s is slain!", Monnam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is slain!", Monnam(mtmp));
 
                     }
                     else if (verbose && !target)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mtmp->mx, mtmp->my);
-                        pline("It is slain!");
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It is slain!");
                     }
                     damage = (double)mtmp->mhp + 1;
                 }
@@ -641,9 +641,9 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             && mon_hates_silver(mtmp))
         {
             if (vis)
-                pline_The("silver sears %s flesh!", s_suffix(mon_nam(mtmp)));
+                pline_The_ex(ATR_NONE, CLR_MSG_MYSTICAL, "silver sears %s flesh!", s_suffix(mon_nam(mtmp)));
             else if (verbose && !target)
-                pline("Its flesh is seared!");
+                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Its flesh is seared!");
         }
 
         if (otmp->otyp == ACID_VENOM && cansee(mtmp->mx, mtmp->my)) 
@@ -659,9 +659,9 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             else 
             {
                 if (vis)
-                    pline_The("%s burns %s!", hliquid("acid"), mon_nam(mtmp));
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s burns %s!", hliquid("acid"), mon_nam(mtmp));
                 else if (verbose && !target)
-                    pline("It is burned!");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It is burned!");
             }
         }
 
@@ -688,7 +688,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             if (DEADMONSTER(mtmp))
             {
                 if (poisondamage > 0 && (((double)mtmp->mhp + ((double)mtmp->mhp_fraction)/10000) - 1) > -poisondamage && vis)
-                    pline_The("poison was deadly...");
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "poison was deadly...");
                 if (vis || (verbose && !target))
                     pline("%s is %s!", Monnam(mtmp),
                           (is_not_living(mtmp->data) || is_vampshifter(mtmp)
@@ -711,7 +711,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                         otmp)) 
         {
             if (vis && !is_blinded(mtmp))
-                pline("%s is blinded by %s.", Monnam(mtmp), the(xname(otmp)));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is blinded by %s.", Monnam(mtmp), the(xname(otmp)));
             increase_mon_property(mtmp, BLINDED, rnd(25) + 20);
         }
 

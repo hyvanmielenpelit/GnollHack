@@ -4666,7 +4666,7 @@ struct attack *mattk;
         case AD_PHYS:
             if (oldu_mattk->aatyp == AT_BOOM) 
             {
-                You("explode!");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "explode!");
                 /* KMH, balance patch -- this is okay with unchanging */
                 rehumanize();
                 goto assess_dmg;
@@ -4704,7 +4704,7 @@ struct attack *mattk;
             else 
             { /* gelatinous cube */
                 hit_tile = HIT_PARALYZED;
-                pline("%s is frozen by you.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is frozen by you.", Monnam(mtmp));
                 play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mtmp->mx, mtmp->my);
                 paralyze_monst(mtmp, paralyse_duration, FALSE);
                 update_u_action_core(action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
@@ -4716,14 +4716,14 @@ struct attack *mattk;
             if (is_mon_immune_to_cold(mtmp)) 
             {
                 m_shieldeff(mtmp);
-                pline("%s is mildly chilly.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is mildly chilly.", Monnam(mtmp));
                 golemeffects(mtmp, AD_COLD, damage);
                 damage = 0;
                 break;
             }
             hit_tile = HIT_FROZEN;
             play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mtmp->mx, mtmp->my);
-            pline("%s is suddenly very cold!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is suddenly very cold!", Monnam(mtmp));
             u.mh += (int)damage / 2;
             if (u.mh - u.mhmax > 0)
                 u.basemhmax += u.mh - u.mhmax;
@@ -4736,7 +4736,7 @@ struct attack *mattk;
             {
                 play_sfx_sound_at_location(SFX_ACQUIRE_STUN, mtmp->mx, mtmp->my);
                 nonadditive_increase_mon_property(mtmp, STUNNED, 5 + rnd(5));
-                pline("%s %s.", Monnam(mtmp),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s.", Monnam(mtmp),
                       makeplural(stagger(mtmp->data, "stagger")));
             }
             damage = 0;
@@ -4746,9 +4746,9 @@ struct attack *mattk;
             {
                 m_shieldeff(mtmp);
                 if (flaming(youmonst.data))
-                    pline("%s is engulfed in your flames, but they do not burn %s.", Monnam(mtmp), mon_nam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is engulfed in your flames, but they do not burn %s.", Monnam(mtmp), mon_nam(mtmp));
                 else
-                    pline("%s is mildly warm.", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is mildly warm.", Monnam(mtmp));
                 golemeffects(mtmp, AD_FIRE, damage);
                 damage = 0;
                 break;
@@ -4756,22 +4756,22 @@ struct attack *mattk;
             hit_tile = HIT_ON_FIRE;
             play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mtmp->mx, mtmp->my);
             if (flaming(youmonst.data))
-                pline("%s is engulfed in your flames!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is engulfed in your flames!", Monnam(mtmp));
             else
-                pline("%s is suddenly very hot!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is suddenly very hot!", Monnam(mtmp));
             break;
         case AD_ELEC:
             if (is_mon_immune_to_elec(mtmp)) 
             {
                 m_shieldeff(mtmp);
-                pline("%s is slightly tingled.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is slightly tingled.", Monnam(mtmp));
                 golemeffects(mtmp, AD_ELEC, damage);
                 damage = 0;
                 break;
             }
             hit_tile = HIT_ELECTROCUTED;
             play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mtmp->mx, mtmp->my);
-            pline("%s is jolted with your electricity!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is jolted with your electricity!", Monnam(mtmp));
             break;
         default:
             damage = 0;

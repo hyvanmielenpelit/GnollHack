@@ -2590,7 +2590,7 @@ int mdead;
             {
                 if (canseemon(magr)) 
                 {
-                    pline("%s is mildly chilly.", Monnam(magr));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is mildly chilly.", Monnam(magr));
                     golemeffects(magr, AD_COLD, damage);
                 }
                 damage = 0;
@@ -2599,7 +2599,7 @@ int mdead;
             if (canseemon(magr))
             {
                 play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mdef->mx, mdef->my);
-                pline("%s is suddenly very cold!", Monnam(magr));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is suddenly very cold!", Monnam(magr));
             }
             mdef->mhp += (int)ceil(damage) / 2;
             if (mdef->mhpmax < mdef->mhp)
@@ -2628,9 +2628,9 @@ int mdead;
                 if (canseemon(magr)) 
                 {
                     if (flaming(mdef->data))
-                        pline("%s is engulfed in %s flames, but they do not burn %s.", Monnam(magr), s_suffix(mon_nam(mdef)), mon_nam(magr));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is engulfed in %s flames, but they do not burn %s.", Monnam(magr), s_suffix(mon_nam(mdef)), mon_nam(magr));
                     else
-                        pline("%s is mildly warmed.", Monnam(magr));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is mildly warmed.", Monnam(magr));
                     golemeffects(magr, AD_FIRE, damage);
                 }
                 damage = 0;
@@ -2640,9 +2640,9 @@ int mdead;
             {
                 play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mdef->mx, mdef->my);
                 if (flaming(mdef->data))
-                    pline("%s is engulfed in %s flames!", Monnam(magr), s_suffix(mon_nam(mdef)));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is engulfed in %s flames!", Monnam(magr), s_suffix(mon_nam(mdef)));
                 else
-                    pline("%s is suddenly very hot!", Monnam(magr));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is suddenly very hot!", Monnam(magr));
             }
             break;
         case AD_ELEC:
@@ -2650,7 +2650,7 @@ int mdead;
             if (is_mon_immune_to_elec(magr))
             {
                 if (canseemon(magr)) {
-                    pline("%s is mildly tingled.", Monnam(magr));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is mildly tingled.", Monnam(magr));
                     golemeffects(magr, AD_ELEC, damage);
                 }
                 damage = 0;
@@ -2659,7 +2659,7 @@ int mdead;
             if (canseemon(magr))
             {
                 play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mdef->mx, mdef->my);
-                pline("%s is jolted with electricity!", Monnam(magr));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is jolted with electricity!", Monnam(magr));
             }
             break;
         default:
