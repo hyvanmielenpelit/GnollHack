@@ -92,24 +92,25 @@ dosave()
     else 
     {
         boolean contplay = FALSE;
-        if (CasualMode)
-        {
-            clear_nhwindow(WIN_MESSAGE);
-            char ans = ynq("Continue playing after saving?");
-            switch (ans)
-            {
-            case 'q':
-                clear_nhwindow(WIN_MESSAGE);
-                if (multi > 0)
-                    nomul(0);
-                return 0;
-            case 'y':
-                contplay = TRUE;
-                break;
-            default:
-                break;
-            }
-        }
+        /* Not supported anymore */
+        //if (CasualMode)
+        //{
+        //    clear_nhwindow(WIN_MESSAGE);
+        //    char ans = ynq("Continue playing after saving?");
+        //    switch (ans)
+        //    {
+        //    case 'q':
+        //        clear_nhwindow(WIN_MESSAGE);
+        //        if (multi > 0)
+        //            nomul(0);
+        //        return 0;
+        //    case 'y':
+        //        contplay = TRUE;
+        //        break;
+        //    default:
+        //        break;
+        //    }
+        //}
 
         clear_nhwindow(WIN_MESSAGE);
         pline("Saving...");
