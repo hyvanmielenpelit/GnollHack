@@ -2078,25 +2078,25 @@ enum autodraw_types* autodraw_ptr;
                 *autodraw_ptr = replacements[replacement_idx].general_autodraw;
 
             if (replacements[replacement_idx].number_of_tiles < 1)
-return ntile;
+                return ntile;
 
-struct monst* mtmp2 = get_mtraits(otmp, FALSE);
-if (mtmp2 && has_epri(mtmp2))
-{
-    int glyph_idx = 0;
-    switch (EPRI(mtmp2)->shralign)
-    {
-    case A_NONE:
-        glyph_idx = 0;
-        break;
-    default:
-        return ntile;
-    }
-    if (autodraw_ptr)
-        *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
-    return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
-}
-break;
+            struct monst* mtmp2 = get_mtraits(otmp, FALSE);
+            if (mtmp2 && has_epri(mtmp2))
+            {
+                int glyph_idx = 0;
+                switch (EPRI(mtmp2)->shralign)
+                {
+                case A_NONE:
+                    glyph_idx = 0;
+                    break;
+                default:
+                    return ntile;
+                }
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
         }
         case REPLACEMENT_ACTION_PRISONER:
         {
@@ -2596,6 +2596,43 @@ break;
                 }
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_BREED:
+        {
+            if (!mtmp || !mtmp->subtype || mtmp->subtype > MAX_TILES_PER_REPLACEMENT)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            int glyph_idx = (int)mtmp->subtype - 1;
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+            return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+        }
+        case REPLACEMENT_ACTION_STATUE_BREED:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            struct monst* mtmp2 = get_mtraits(otmp, FALSE);
+            if (mtmp2 && mtmp2->subtype && mtmp2->subtype <= MAX_TILES_PER_REPLACEMENT)
+            {
+                int glyph_idx = (int)mtmp2->subtype - 1;
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
                 return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
@@ -3372,6 +3409,28 @@ struct replacement_info info;
                 }
 
                 /* Return the first tile with index 0 */
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_BREED:
+        {
+            if (!mtmp || !mtmp->subtype || mtmp->subtype > MAX_TILES_PER_REPLACEMENT)
+                return glyph;
+
+            int glyph_idx = (int)mtmp->subtype - 1;
+            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            break;
+        }
+        case REPLACEMENT_ACTION_STATUE_BREED:
+        {
+            if (!otmp)
+                return glyph;
+
+            struct monst* mtmp2 = get_mtraits(otmp, FALSE);
+            if (mtmp2 && mtmp2->subtype && mtmp2->subtype <= MAX_TILES_PER_REPLACEMENT)
+            {
+                int glyph_idx = mtmp2->subtype - 1;
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             }
             break;

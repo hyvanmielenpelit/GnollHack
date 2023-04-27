@@ -998,6 +998,16 @@ struct multishot_result {
     double average;
 };
 
+enum dog_breeds {
+    STANDARD = 0,
+    BLACK_LABRADOR,
+    BROWN_LABRADOR,
+    YELLOW_LABRADOR,
+    DALMATIAN,
+    GERMAN_SHEPHERD,
+    MAX_DOG_BREEDS = GERMAN_SHEPHERD
+};
+
 
 #define AD_MODULO 4
 

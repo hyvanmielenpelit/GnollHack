@@ -321,6 +321,11 @@ makedog()
         mtmp->isfaithful = 1; /* Hachiko is well-known for his faithfulness -- JG */
     }
 
+    if (pettype == PM_LITTLE_DOG)
+    {
+        mtmp->subtype = rn2(MAX_DOG_BREEDS + 1);
+    }
+
     context.startingpet_mid = mtmp->m_id;
 
     /* Horses and rams already wear a saddle */
