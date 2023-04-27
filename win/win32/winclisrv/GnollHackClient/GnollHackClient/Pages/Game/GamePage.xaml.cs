@@ -1250,8 +1250,11 @@ namespace GnollHackClient.Pages.Game
         {
             _contextMenuData.Add(data);
             int cmddefchar = data.cmd_def_char;
+            int cmdcurchar = data.cmd_cur_char;
             if (cmddefchar < 0)
                 cmddefchar += 256; /* On this operating system, chars are signed chars; fix to positive values */
+            if (cmdcurchar < 0)
+                cmdcurchar += 256; /* On this operating system, chars are signed chars; fix to positive values */
             string icon_string = "";
             int LastPickedCmd = GHUtils.Meta('<');
             int OfferCmd = GHUtils.Meta('o');
@@ -1396,7 +1399,7 @@ namespace GnollHackClient.Pages.Game
             lib.LblText = data.cmd_text;
             lib.SetSideSize(_currentPageWidth, _currentPageHeight);
             lib.GridMargin = new Thickness(lib.ImgWidth / 15, lib.ImgWidth / 30);
-            lib.BtnCommand = data.cmd_cur_char; //cmddefchar;
+            lib.BtnCommand = cmdcurchar;
             lib.BtnClicked += GHButton_Clicked;
             ContextLayout.IsVisible = true;
             ContextLayout.Children.Add(lib);
