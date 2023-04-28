@@ -432,6 +432,18 @@ boolean forward;
         }
     }
 }
+char*
+str_upper_start(str)
+const char* str;
+{
+    char* buf = nextobuf();
+    if(!str)
+        Strcpy(buf, empty_string);
+    else
+        Strcpy(buf, str);
+
+    return upstart(buf);
+}
 
 char *
 xname(obj)
@@ -683,6 +695,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     Strcat(actualn_fullbuf, actualn);
     Strcat(dn_fullbuf, dn);
 
+    boolean statueusesname = FALSE;
+
     switch (obj->oclass) {
     case AMULET_CLASS:
         if (!dknown)
@@ -881,6 +895,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                     (has_mname(mtmp)) ? (SUPPRESS_SADDLE | SUPPRESS_IT | SUPPRESS_INVISIBLE)
                     : SUPPRESS_IT | SUPPRESS_INVISIBLE,
                     FALSE));
+
+                statueusesname = TRUE;
             }
             else
             {
@@ -892,7 +908,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                        ? "historic "
                        : "",
                     actualn_fullbuf,
-                    is_mname_proper_name(&mons[omndx])
+                    is_mname_proper_name(&mons[omndx]) || has_mname(mtmp)
                        ? ""
                        : the_unique_pm(&mons[omndx])
                           ? "the "
@@ -1033,21 +1049,21 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         buf += 4;
 
     /* Corpse names from OMONST */
-    if (obj->oextra && OMONST(obj)) 
+    if (obj->oextra && OMONST(obj) && !statueusesname)
     {
-        if (OMONST(obj)->isshk && OMONST(obj)->mextra && ESHK(OMONST(obj)) && OMONST(obj)->u_know_mname)
+        if (OMONST(obj)->isshk && OMONST(obj)->mextra && ESHK(OMONST(obj)))
         {
-            Strcat(buf, " who was named ");
+            Strcat(buf, " named ");
             Strcat(buf, shkname(OMONST(obj)));
         }
         else if(has_mname(OMONST(obj)) && OMONST(obj)->u_know_mname)
         {
-            Strcat(buf, " that was named ");
+            Strcat(buf, " named ");
             Strcat(buf, MNAME(OMONST(obj)));
         }
         else if (has_umname(OMONST(obj)))
         {
-            Strcat(buf, " that you called ");
+            Strcat(buf, " called ");
             Strcat(buf, UMNAME(OMONST(obj)));
         }
     }

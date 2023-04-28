@@ -1006,21 +1006,21 @@ doability(VOID_ARGS)
                 if (UMNAME(mtmp))
                 {
                     char umnbuf[BUFSIZ];
-                    strcpy(umnbuf, UMNAME(mtmp));
+                    Strcpy(umnbuf, UMNAME(mtmp));
                     umnbuf[16] = '\0'; /* Limit the length of the name */
-                    strcpy(namebuf, umnbuf);
+                    Strcpy(namebuf, umnbuf);
                 }
                 else if (MNAME(mtmp) && mtmp->u_know_mname)
                 {
                     char mnbuf[BUFSIZ];
-                    strcpy(mnbuf, MNAME(mtmp));
+                    Strcpy(mnbuf, MNAME(mtmp));
                     mnbuf[16] = '\0'; /* Limit the length of the name */
-                    strcpy(namebuf, mnbuf);
+                    Strcpy(namebuf, mnbuf);
                 }
                 else
                 {
                     char buf[BUFSZ];
-                    strcpy(buf, mon_monster_name(mtmp));
+                    Strcpy(buf, mon_monster_name(mtmp));
                     *buf = highc(*buf);
                     strncpy(namebuf, buf, MAXNAMELENGTH - 1);
                     namebuf[MAXNAMELENGTH - 1] = '\0';

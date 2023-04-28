@@ -2403,6 +2403,7 @@ E const char* FDECL(get_lock_description_by_otyp, (int, int, BOOLEAN_P));
 E boolean FDECL(find_key_otyp_by_description, (char*, int*, int*));
 E void FDECL(print_lock_with_buf, (char*, int, int, BOOLEAN_P));
 E char* NDECL(nextobuf);
+E char* FDECL(str_upper_start, (const char*));
 
 /* ### options.c ### */
 
