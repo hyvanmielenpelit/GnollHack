@@ -2668,7 +2668,7 @@ boolean tinitial, tfrom_file;
             boolean breedfound = FALSE;
             for (indx = 0; indx < NUM_DOG_BREEDS; indx++)
             {
-                if (dog_breed_definitions[indx].name && (!strcmpi(op, dog_breed_definitions[indx].name)) 
+                if ((dog_breed_definitions[indx].name && !strcmpi(op, dog_breed_definitions[indx].name)) 
                     || (dog_breed_definitions[indx].description && !strcmpi(op, dog_breed_definitions[indx].description)))
                 {
                     breedfound = TRUE;
