@@ -558,7 +558,6 @@ struct instance_flags {
     boolean obsolete;  /* obsolete options can point at this, it isn't used */
 
     struct monst* spell_target_monster;
-    boolean select_pet_details;
 };
 
 /*

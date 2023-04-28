@@ -7,7 +7,13 @@
 
 #include "hack.h"
 
-STATIC_DCL int NDECL(pet_type);
+STATIC_DCL int FDECL(pet_type, (BOOLEAN_P, BOOLEAN_P));
+STATIC_DCL int NDECL(choose_cat_or_dog);
+STATIC_DCL short FDECL(choose_pet_gender, (int));
+STATIC_DCL unsigned short FDECL(choose_pet_breed, (int, BOOLEAN_P));
+
+STATIC_VAR boolean petdetails_used = FALSE;
+STATIC_VAR int petname_used = 0;
 
 void
 newedog(mtmp)
@@ -62,7 +68,8 @@ boolean set_tameness;
 }
 
 STATIC_OVL int
-pet_type()
+pet_type(verbose, nonpm_upon_random)
+boolean verbose, nonpm_upon_random;
 {
     if (urole.petnum != NON_PM)
     {
@@ -78,7 +85,19 @@ pet_type()
     else if (preferred_pet == 'h')
         return urace.monsternum == PM_DWARF ? PM_RAM : PM_PONY;
     else
-        return rn2(2) ? PM_KITTEN : PM_LITTLE_DOG;
+    {
+        int mnum = NON_PM;
+        if (petdetails_used && verbose)
+            mnum = choose_cat_or_dog();
+
+        if (mnum == NON_PM)
+        {
+            if(!nonpm_upon_random)
+                mnum = rn2(2) ? PM_KITTEN : PM_LITTLE_DOG;
+        }
+
+        return mnum;
+    }
 }
 
 struct monst *
@@ -113,7 +132,7 @@ boolean quietly;
         } 
         else if (!rn2(3))
         {
-            pm = &mons[pet_type()];
+            pm = &mons[pet_type(FALSE, FALSE)];
         }
         else 
         {
@@ -186,6 +205,65 @@ boolean quietly;
 }
 
 STATIC_OVL
+int
+choose_cat_or_dog(VOID_ARGS)
+{
+    int res = NON_PM;
+    const char* pet_names[2] = { "Cat", "Dog" };
+    int pet_mnum[2] = { PM_KITTEN, PM_LITTLE_DOG };
+
+    winid menuwin;
+    menu_item* selected = (menu_item*)0;
+    int n = 0;
+
+    menuwin = create_nhwindow(NHW_MENU);
+    start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_PLAYER);
+    anything any = zeroany;
+
+    int i;
+    for (i = 0; i <= 1; i++)
+    {
+        any = zeroany;
+        int glyph = pet_mnum[i] + GLYPH_MON_OFF;
+        any.a_int = i + 1;
+
+        add_menu(menuwin, glyph, &any, 0, 0, ATR_NONE, NO_COLOR,
+            pet_names[i], MENU_UNSELECTED);
+    }
+
+    any = zeroany;
+    add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR,
+        " ", MENU_UNSELECTED);
+
+    any.a_int = -2;
+    add_menu(menuwin, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR,
+        "Random", MENU_UNSELECTED);
+
+    //any.a_int = -1;
+    //add_menu(menuwin, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR,
+    //    "Quit", MENU_UNSELECTED);
+
+    end_menu(menuwin, "Pick the type of your pet");
+    n = select_menu(menuwin, PICK_ONE, &selected);
+    destroy_nhwindow(menuwin);
+    if (n > 0)
+    {
+        if (selected->item.a_int > 0)
+        {
+            res = pet_mnum[selected->item.a_int - 1];
+        }
+        else if (selected->item.a_int == -2)
+        {
+            res = pet_mnum[rn2(2)];
+        }
+        free((genericptr_t)selected);
+    }
+
+    /* res == NON_PM leads to randomized type in the calling function */
+    return res;
+}
+
+STATIC_OVL
 short
 choose_pet_gender(mnum)
 int mnum;
@@ -228,9 +306,9 @@ int mnum;
     add_menu(menuwin, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR,
         "Random", MENU_UNSELECTED);
 
-    any.a_int = -1;
-    add_menu(menuwin, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR,
-        "Quit", MENU_UNSELECTED);
+    //any.a_int = -1;
+    //add_menu(menuwin, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR,
+    //    "Quit", MENU_UNSELECTED);
 
     char titlebuf[BUFSZ];
     Sprintf(titlebuf, "Pick the gender for your %s", mons[mnum].mname);
@@ -249,6 +327,8 @@ int mnum;
         }
         free((genericptr_t)selected);
     }
+
+    /* res == 0 leads to randomized gender in the calling function */
     return res;
 }
 
@@ -307,9 +387,9 @@ boolean isfemale;
     add_menu(menuwin, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR,
         "Random", MENU_UNSELECTED);
 
-    any.a_int = -1;
-    add_menu(menuwin, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR,
-        "Quit", MENU_UNSELECTED);
+    //any.a_int = -1;
+    //add_menu(menuwin, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR,
+    //    "Quit", MENU_UNSELECTED);
 
     char titlebuf[BUFSZ];
     Sprintf(titlebuf, "Pick a breed for your %s", mons[mnum].mname);
@@ -328,21 +408,20 @@ boolean isfemale;
         }
         free((genericptr_t)selected);
     }
+
+    /* res == 0 leads to the generic breed */
     return res;
 }
-
-
-STATIC_VAR int petname_used = 0;
 
 struct monst *
 makedog()
 {
     register struct monst *mtmp;
     register struct obj *otmp;
-    const char *petname;
+    const char *petname = "";
     const char* petname_female = "";
     int pettype;
-    short petgender;
+    short petgender = 0;
     unsigned short petbreed = 0;
     boolean ismale = FALSE;
     boolean isfemale = FALSE;
@@ -351,16 +430,55 @@ makedog()
     if (preferred_pet == 'n')
         return ((struct monst *) 0);
 
-    pettype = pet_type();
+    if (sysopt.select_pet_details)
+    {
+        char ans;
+        int petnum = pet_type(FALSE, TRUE);
+        if (petnum == NON_PM)
+            ans = yn_query("Do you want to select the type and name for your pet?");
+        else
+        {
+            char qbuf[QBUFSZ] = "";
+            if ((mons[petnum].mflags2 & (M2_MALE | M2_FEMALE | M2_NEUTER)) == 0)
+            {
+                if ((mons[petnum].mflags6 & (M6_USES_DOG_SUBTYPES)) != 0)
+                    Sprintf(qbuf, "Do you want to select the gender, breed, and name for your %s?", mons[petnum].mname);
+                else
+                    Sprintf(qbuf, "Do you want to select the gender and name for your %s?", mons[petnum].mname);
+            }
+            else
+                Sprintf(qbuf, "Do you want to name your %s?", mons[petnum].mname);
+            
+            ans = yn_query(qbuf);
+        }
+
+        if (ans == 'y')
+            petdetails_used = TRUE;
+        else
+            petdetails_used = FALSE;
+    }
+    else
+        petdetails_used = FALSE;
+
+    pettype = pet_type(TRUE, FALSE);
+
+    ismale = (mons[pettype].mflags2 & M2_MALE) != 0;
+    isfemale = (mons[pettype].mflags2 & M2_FEMALE) != 0;
+    isneuter = (mons[pettype].mflags2 & M2_NEUTER) != 0;
+    boolean ispresetgender = ismale || isfemale || isneuter;
+
     if (pettype == PM_LITTLE_DOG)
     {
         petname = dogname;
-        if (!doggender && iflags.select_pet_details)
-            petgender = choose_pet_gender(pettype);
-        else
-            petgender = doggender;
+        if (!ispresetgender)
+        {
+            if (!doggender && petdetails_used)
+                petgender = choose_pet_gender(pettype);
+            else
+                petgender = doggender;
+        }
 
-        if(!dogbreed && iflags.select_pet_details)
+        if(!dogbreed && petdetails_used)
             petbreed = choose_pet_breed(pettype, petgender == 2);
         else
             petbreed = dogbreed;
@@ -368,18 +486,24 @@ makedog()
     else if (pettype == PM_PONY)
     {
         petname = horsename;
-        if (!horsegender && iflags.select_pet_details)
-            petgender = choose_pet_gender(pettype);
-        else
-            petgender = horsegender;
+        if (!ispresetgender)
+        {
+            if (!horsegender && petdetails_used)
+                petgender = choose_pet_gender(pettype);
+            else
+                petgender = horsegender;
+        }
     }
     else if (pettype == PM_RAM)
     {
         petname = ramname;
-        if (!ramgender && iflags.select_pet_details)
-            petgender = choose_pet_gender(pettype);
-        else
-            petgender = ramgender;
+        if (!ispresetgender)
+        {
+            if (!ramgender && petdetails_used)
+                petgender = choose_pet_gender(pettype);
+            else
+                petgender = ramgender;
+        }
     }
     else if (pettype == PM_SMALL_LUGGAGE)
     {
@@ -391,18 +515,46 @@ makedog()
     else if (pettype == PM_DIREWOLF_CUB)
     {
         petname = wolfname;
-        if (!wolfgender && iflags.select_pet_details)
-            petgender = choose_pet_gender(pettype);
-        else
-            petgender = wolfgender;
+        if (!ispresetgender)
+        {
+            if (!wolfgender && petdetails_used)
+                petgender = choose_pet_gender(pettype);
+            else
+                petgender = wolfgender;
+        }
     }
     else
     {
         petname = catname;
-        if (!catgender && iflags.select_pet_details)
-            petgender = choose_pet_gender(pettype);
+        if (!ispresetgender)
+        {
+            if (!catgender && petdetails_used)
+                petgender = choose_pet_gender(pettype);
+            else
+                petgender = catgender;
+        }
+    }
+
+    char givennamebuf[PL_PSIZ] = "";
+    if (petdetails_used && !*petname)
+    {
+        /* Give name */
+        char buf[BUFSZ] = "";
+        char qbuf[QBUFSZ] = "";
+        Sprintf(qbuf, "What is the name of your %s?", mons[pettype].mname);
+        getlin_ex(GETLINE_ASK_NAME, ATR_NONE, NO_COLOR, qbuf, buf, (char*)0, (char*)0, (char*)0);
+        if (!*buf || *buf == '\033')
+        {
+            /* Do nothing */
+        }
         else
-            petgender = catgender;
+        {
+            /* strip leading and trailing spaces */
+            (void)mungspaces(buf);
+            strncpy(givennamebuf, buf, PL_PSIZ - 1);
+            givennamebuf[PL_PSIZ - 1] = 0;
+            petname = givennamebuf;
+        }
     }
 
     /* default pet names */

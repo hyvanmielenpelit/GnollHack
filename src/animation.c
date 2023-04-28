@@ -2648,7 +2648,7 @@ enum autodraw_types* autodraw_ptr;
 
 int
 maybe_get_replaced_glyph(glyph, x, y, info)
-#if defined(USE_TILES) && defined(GNH_MOBILE)
+#if defined(USE_TILES)
 int glyph;
 int x, y;
 struct replacement_info info;

@@ -2704,7 +2704,6 @@ aligntyp alignment;
     boolean saddled = ((mmflags & MM_SADDLED) != 0);
     boolean maybe_extinct = ((mmflags2 & MM2_MAYBE_ALLOW_EXTINCT) != 0);
     boolean reviving = ((mmflags2 & MM2_REVIVING) != 0);
-    boolean ismonsubtype = ((mmflags2 & MM2_SUBTYPE_IS_MON_SUBTYPE) != 0);
     unsigned long gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
     

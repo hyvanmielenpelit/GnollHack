@@ -128,4 +128,7 @@ PANICTRACE_LIBC=2
 # environment or via ~/.gnollhackrc run-time configuration file.
 #OPTIONS=!autopickup,fruit:tomato,symset:DECgraphics
 
+# Ask for pet details at start
+SELECT_PET_DETAILS=1
+
 #eof

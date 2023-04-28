@@ -3014,8 +3014,14 @@ char *origbuf;
         n = atoi(bufp);
         sysopt.check_plname = n;
     }
-    else if (match_varname(buf, "SEDUCE", 6)) 
-{
+    else if (src == SET_IN_SYS
+        && match_varname(buf, "SELECT_PET_DETAILS", 18))
+    {
+        n = atoi(bufp);
+        sysopt.select_pet_details = n;
+    }
+    else if (match_varname(buf, "SEDUCE", 6))
+    {
         n = !!atoi(bufp); /* XXX this could be tighter */
         /* allow anyone to turn it off, but only sysconf to turn it on*/
         if (src != SET_IN_SYS && n != 0)

@@ -32,6 +32,7 @@ struct sysopt {
     int bones_pools;
     int min_difficulty;
     int max_difficulty;
+    int select_pet_details;
 
     /* record file */
     int persmax;

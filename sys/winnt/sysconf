@@ -100,4 +100,6 @@ DUMPLOGFILE=dumplog/gnollhack-%n-%d.txt
 # is kept (default=HACKDIR, writeable)
 #TROUBLEDIR=c:\nethack\trouble
 
+# Ask for pet details at start
+SELECT_PET_DETAILS=1
 
