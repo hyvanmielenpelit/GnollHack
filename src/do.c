@@ -4406,7 +4406,7 @@ register struct monst* mon;
             }
             if (dog_breed_definitions[mon->subtype].color_name)
             {
-                Sprintf(buf, "Color:                  %s", str_upper_start(dog_breed_definitions[mon->subtype].color_name));
+                Sprintf(buf, "Coat color:             %s", str_upper_start(dog_breed_definitions[mon->subtype].color_name));
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
         }
