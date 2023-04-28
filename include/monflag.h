@@ -364,6 +364,7 @@
 #define M6_REVIVES_UPON_MEDDLING    0x00040000UL   /* Revive upon corpse meddling */
 #define M6_LITHOVORE                0x00080000UL   /* Eats rock */
 #define M6_USES_DOG_SUBTYPES        0x00100000UL   /* Can have dog breeds */
+#define M6_USES_CAT_SUBTYPES        0x00200000UL   /* Can have cat breeds */
 
 #define M7_NONE                     0x00000000UL
 #define M7_ARCHAEOLOGIST            0x00000001UL   /* monster can use archaeologist items */

@@ -342,6 +342,7 @@ static struct Comp_Opt {
     { "boulder", "deprecated (use S_boulder in sym file instead)", 1,
       SET_IN_GAME },
 #endif
+    { "catbreed", "the breed of your (first) cat (e.g., catbreed:white persian)", 32, DISP_IN_GAME },
     { "catgender", "the gender of your (first) cat (e.g., catgender:female)", 7, DISP_IN_GAME },
     { "catname", "the name of your (first) cat (e.g., catname:Tabby)",
       PL_PSIZ, DISP_IN_GAME },
@@ -2684,6 +2685,42 @@ boolean tinitial, tfrom_file;
                 {
                     dogbreed = 0;
                     config_error_add("Unrecognized dog breed '%s'.", op);
+                    return FALSE;
+                }
+            }
+        }
+        return retval;
+    }
+
+    fullname = "catbreed";
+    if (match_optname(opts, fullname, 8, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        if ((op = string_for_env_opt(fullname, opts, negated)) != 0) {
+            int indx = 0;
+            boolean breedfound = FALSE;
+            for (indx = 0; indx < NUM_CAT_BREEDS; indx++)
+            {
+                if ((cat_breed_definitions[indx].name && !strcmpi(op, cat_breed_definitions[indx].name))
+                    || (cat_breed_definitions[indx].description && !strcmpi(op, cat_breed_definitions[indx].description)))
+                {
+                    breedfound = TRUE;
+                    catbreed = indx;
+                    break;
+                }
+            }
+            if (!breedfound)
+            {
+                if (!strcmpi(op, "persian"))
+                    catbreed = CAT_BREED_PERSIAN_GREY + rn2(CAT_BREED_PERSIAN_WHITE - CAT_BREED_PERSIAN_GREY + 1);
+                else
+                {
+                    catbreed = 0;
+                    config_error_add("Unrecognized cat breed '%s'.", op);
                     return FALSE;
                 }
             }
@@ -6955,6 +6992,10 @@ char *buf;
         Sprintf(buf, "%s", !dogbreed ? "generic"
                            : (dogbreed >= NUM_DOG_BREEDS) ? "invalid breed"
                                  : dog_breed_definitions[dogbreed].name ? dog_breed_definitions[dogbreed].name : "unnamed breed");
+    } else if (!strcmp(optname, "catbreed")) {
+        Sprintf(buf, "%s", !catbreed ? "generic"
+                           : (catbreed >= NUM_CAT_BREEDS) ? "invalid breed"
+                                 : cat_breed_definitions[dogbreed].name ? cat_breed_definitions[dogbreed].name : "unnamed breed");
     } else if (!strcmp(optname, "pickup_burden")) {
         Sprintf(buf, "%s", burdentype[flags.pickup_burden]);
     } else if (!strcmp(optname, "pickup_types")) {

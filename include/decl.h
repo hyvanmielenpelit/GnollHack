@@ -299,6 +299,7 @@ E short ramgender;
 E short wolfgender;
 
 E unsigned short dogbreed;
+E unsigned short catbreed;
 
 struct breed_definition {
     const char* name;
@@ -308,6 +309,7 @@ struct breed_definition {
 };
 
 E const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS];
+E const struct breed_definition cat_breed_definitions[NUM_CAT_BREEDS];
 
 E char preferred_pet;
 

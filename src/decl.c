@@ -359,6 +359,7 @@ NEARDATA char wolfname[PL_PSIZ] = DUMMY;
 char preferred_pet; /* '\0', 'c', 'd', 'n' (none) */
 short doggender, catgender, horsegender, ramgender, wolfgender; /* 0 = random, 1 = male, 2 = female */
 unsigned short dogbreed;
+unsigned short catbreed;
 
 const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
     { "generic", "generic", (char*)0, (char*)0},
@@ -367,6 +368,14 @@ const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
     { "yellow labrador", "yellow Labrador retriever", "Labrador retriever", "yellow" },
     { "dalmatian", "Dalmatian", "Dalmatian", (char*)0 },
     { "german shepherd", "German shepherd", "German shepherd", (char*)0 },
+};
+
+const struct breed_definition cat_breed_definitions[NUM_CAT_BREEDS] = {
+    { "generic", "generic", (char*)0, (char*)0},
+    { "black", "black cat", "domestic cat", "black" },
+    { "siamese", "siamese", "siamese", (char*)0 },
+    { "grey Persian", "grey Persian", "Persian", "gray" },
+    { "white Persian", "white Persian", "Persian", "white" },
 };
 
 /* monsters that went down/up together with @ */

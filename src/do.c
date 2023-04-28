@@ -4410,6 +4410,19 @@ register struct monst* mon;
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
         }
+        else if ((mons[mon->mnum].mflags6 & M6_USES_CAT_SUBTYPES) != 0 && mon->subtype < NUM_CAT_BREEDS)
+        {
+            if (cat_breed_definitions[mon->subtype].breed_name)
+            {
+                Sprintf(buf, "Breed:                  %s", str_upper_start(cat_breed_definitions[mon->subtype].breed_name));
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+            if (cat_breed_definitions[mon->subtype].color_name)
+            {
+                Sprintf(buf, "Coat color:             %s", str_upper_start(cat_breed_definitions[mon->subtype].color_name));
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+        }
     }
 
     if (!is_neuter(ptr))

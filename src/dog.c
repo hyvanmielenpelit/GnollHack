@@ -353,6 +353,12 @@ boolean isfemale;
         male_replacement = LITTLE_DOG_REPLACEMENT;
         female_replacement = LITTLE_DOG_REPLACEMENT;
         break;
+    case PM_KITTEN:
+        max_breed = NUM_CAT_BREEDS - 1;
+        breed_def_ptr = cat_breed_definitions;
+        male_replacement = KITTEN_REPLACEMENT;
+        female_replacement = KITTEN_REPLACEMENT;
+        break;
     default:
         break;
     }
@@ -442,7 +448,7 @@ makedog()
             char qbuf[QBUFSZ] = "";
             if ((mons[petnum].mflags2 & (M2_MALE | M2_FEMALE | M2_NEUTER)) == 0)
             {
-                if ((mons[petnum].mflags6 & (M6_USES_DOG_SUBTYPES)) != 0)
+                if ((mons[petnum].mflags6 & (M6_USES_DOG_SUBTYPES | M6_USES_CAT_SUBTYPES)) != 0)
                     Sprintf(qbuf, "Do you want to select the gender, breed, and name for your %s?", mons[petnum].mname);
                 else
                     Sprintf(qbuf, "Do you want to select the gender and name for your %s?", mons[petnum].mname);
@@ -534,6 +540,12 @@ makedog()
             else
                 petgender = catgender;
         }
+
+        if (!catbreed && petdetails_used)
+            petbreed = choose_pet_breed(pettype, petgender == 2);
+        else
+            petbreed = catbreed;
+
     }
 
     char givennamebuf[PL_PSIZ] = "";

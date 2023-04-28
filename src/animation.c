@@ -2602,7 +2602,7 @@ enum autodraw_types* autodraw_ptr;
         }
         case REPLACEMENT_ACTION_BREED:
         {
-            if (!mtmp || !mtmp->subtype || mtmp->subtype > MAX_TILES_PER_REPLACEMENT)
+            if (!mtmp || !mtmp->subtype || mtmp->subtype > MAX_TILES_PER_REPLACEMENT || mtmp->subtype > replacements[replacement_idx].number_of_tiles)
                 return ntile;
 
             if (autodraw_ptr)
@@ -3415,7 +3415,7 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_BREED:
         {
-            if (!mtmp || !mtmp->subtype || mtmp->subtype > MAX_TILES_PER_REPLACEMENT)
+            if (!mtmp || !mtmp->subtype || mtmp->subtype > MAX_TILES_PER_REPLACEMENT || mtmp->subtype > replacements[replacement_idx].number_of_tiles)
                 return glyph;
 
             int glyph_idx = (int)mtmp->subtype - 1;
