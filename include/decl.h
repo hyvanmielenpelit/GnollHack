@@ -302,6 +302,9 @@ E unsigned short dogbreed;
 
 struct breed_definition {
     const char* name;
+    const char* description;
+    const char* breed_name;
+    const char* color_name;
 };
 
 E const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS];

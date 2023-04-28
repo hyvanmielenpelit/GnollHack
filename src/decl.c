@@ -361,12 +361,12 @@ short doggender, catgender, horsegender, ramgender, wolfgender; /* 0 = random, 1
 unsigned short dogbreed;
 
 const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
-    { "generic" },
-    { "black labrador" },
-    { "brown labrador" },
-    { "yellow labrador" },
-    { "dalmatian" },
-    { "German shepherd" },
+    { "generic", "generic", (char*)0, (char*)0},
+    { "black labrador", "black Labrador retriever", "Labrador retriever", "black" },
+    { "brown labrador", "brown Labrador retriever", "Labrador retriever", "brown" },
+    { "yellow labrador", "yellow Labrador retriever", "Labrador retriever", "yellow" },
+    { "dalmatian", "Dalmatian", "Dalmatian", (char*)0 },
+    { "german shepherd", "German shepherd", "German shepherd", (char*)0 },
 };
 
 /* monsters that went down/up together with @ */

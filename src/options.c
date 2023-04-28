@@ -2668,7 +2668,8 @@ boolean tinitial, tfrom_file;
             boolean breedfound = FALSE;
             for (indx = 0; indx < NUM_DOG_BREEDS; indx++)
             {
-                if (!strcmpi(op, dog_breed_definitions[indx].name))
+                if (dog_breed_definitions[indx].name && (!strcmpi(op, dog_breed_definitions[indx].name)) 
+                    || (dog_breed_definitions[indx].description && !strcmpi(op, dog_breed_definitions[indx].description)))
                 {
                     breedfound = TRUE;
                     dogbreed = indx;
@@ -2677,7 +2678,7 @@ boolean tinitial, tfrom_file;
             }
             if (!breedfound)
             {
-                if (!strcmpi(op, "labrador"))
+                if (!strcmpi(op, "labrador") || !strcmpi(op, "labrador retriever"))
                     dogbreed = DOG_BREED_LABRADOR_BLACK + rn2(DOG_BREED_LABRADOR_YELLOW - DOG_BREED_LABRADOR_BLACK + 1);
                 else
                 {
@@ -6953,7 +6954,7 @@ char *buf;
     } else if (!strcmp(optname, "dogbreed")) {
         Sprintf(buf, "%s", !dogbreed ? "generic"
                            : (dogbreed >= NUM_DOG_BREEDS) ? "invalid breed"
-                                 : dog_breed_definitions[dogbreed].name);
+                                 : dog_breed_definitions[dogbreed].name ? dog_breed_definitions[dogbreed].name : "unnamed breed");
     } else if (!strcmp(optname, "pickup_burden")) {
         Sprintf(buf, "%s", burdentype[flags.pickup_burden]);
     } else if (!strcmp(optname, "pickup_types")) {

@@ -4399,9 +4399,17 @@ register struct monst* mon;
     {
         if ((mons[mon->mnum].mflags6 & M6_USES_DOG_SUBTYPES) != 0 && mon->subtype < NUM_DOG_BREEDS)
         {
-            Sprintf(buf, "Breed:                  %s", str_upper_start(dog_breed_definitions[mon->subtype].name));
+            if (dog_breed_definitions[mon->subtype].breed_name)
+            {
+                Sprintf(buf, "Breed:                  %s", str_upper_start(dog_breed_definitions[mon->subtype].breed_name));
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+            if (dog_breed_definitions[mon->subtype].color_name)
+            {
+                Sprintf(buf, "Color:                  %s", str_upper_start(dog_breed_definitions[mon->subtype].color_name));
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
         }
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
     if (!is_neuter(ptr))

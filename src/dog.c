@@ -376,7 +376,8 @@ boolean isfemale;
             : (i - 1 + replacement_offsets[isfemale ? female_replacement : male_replacement] + GLYPH_REPLACEMENT_OFF);
         any.a_int = i + 1;
         add_menu(menuwin, glyph, &any, 0, 0, ATR_NONE, NO_COLOR,
-            str_upper_start(breed_def_ptr[i].name), MENU_UNSELECTED);
+            str_upper_start(breed_def_ptr[i].description ? breed_def_ptr[i].description : breed_def_ptr[i].name ? breed_def_ptr[i].name : "Unnamed breed"),
+            MENU_UNSELECTED);
     }
 
     any = zeroany;
