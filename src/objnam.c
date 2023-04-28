@@ -908,7 +908,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                        ? "historic "
                        : "",
                     actualn_fullbuf,
-                    is_mname_proper_name(&mons[omndx]) || has_mname(mtmp)
+                    is_mname_proper_name(&mons[omndx]) || (mtmp && has_mname(mtmp) && mtmp->u_know_mname)
                        ? ""
                        : the_unique_pm(&mons[omndx])
                           ? "the "
