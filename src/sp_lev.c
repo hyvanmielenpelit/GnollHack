@@ -1834,7 +1834,7 @@ struct mkroom *croom;
     else if (PM_ARCHAEOLOGIST <= m->id && m->id <= PM_WIZARD)
         mtmp = mk_mplayer(pm, x, y, FALSE);
     else
-        mtmp = makemon_ex(pm, x, y, mmflags, 0, (int)m->level_adjustment);
+        mtmp = makemon_ex(pm, x, y, mmflags, 0UL, 0, 0, (int)m->level_adjustment);
 
     if (mtmp)
     {

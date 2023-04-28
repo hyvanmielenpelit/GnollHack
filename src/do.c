@@ -4395,6 +4395,14 @@ register struct monst* mon;
     
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
+    if (mon->subtype > 0)
+    {
+        if((mons[mon->mnum].mflags6 & M6_USES_DOG_SUBTYPES) != 0 && mon->subtype < NUM_DOG_BREEDS)
+            Sprintf(buf, "Breed:                  %s", dog_breed_definitions[mon->subtype].name);
+
+        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+    }
+
     if (!is_neuter(ptr))
     {
         Sprintf(buf, "Gender:                 %s", mon->female ? "Female" : "Male");

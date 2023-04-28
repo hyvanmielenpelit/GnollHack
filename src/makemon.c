@@ -2654,7 +2654,7 @@ register struct permonst* ptr;
 register int x, y;
 unsigned long mmflags;
 {
-    return makemon_limited(ptr, x, y, mmflags, 0UL, 0, 0, 0, 0);
+    return makemon_limited(ptr, x, y, mmflags, 0UL, 0, 0, 0, 0, 0);
 }
 
 struct monst*
@@ -2663,17 +2663,18 @@ register struct permonst* ptr;
 register int x, y;
 unsigned long mmflags, mmflags2;
 {
-    return makemon_limited(ptr, x, y, mmflags, mmflags2, 0, 0, 0, 0);
+    return makemon_limited(ptr, x, y, mmflags, mmflags2, 0, 0, 0, 0, 0);
 }
 
 struct monst*
-makemon_ex(ptr, x, y, mmflags, subtype, level_adjustment)
+makemon_ex(ptr, x, y, mmflags, mmflags2, subtype, npcsubtype, level_adjustment)
 register struct permonst* ptr;
 register int x, y;
-unsigned long mmflags;
-int subtype, level_adjustment;
+unsigned long mmflags, mmflags2;
+unsigned short subtype;
+int npcsubtype, level_adjustment;
 {
-    return makemon_limited(ptr, x, y, mmflags, 0UL, subtype, 0, level_adjustment, 0);
+    return makemon_limited(ptr, x, y, mmflags, mmflags2, subtype, npcsubtype, 0, level_adjustment, 0);
 }
 
 /*
@@ -2684,11 +2685,12 @@ int subtype, level_adjustment;
  *      In case we make a monster group, only return the one at [x,y].
  */
 struct monst *
-makemon_limited(ptr, x, y, mmflags, mmflags2, subtype, level_limit, level_adjustment, alignment)
+makemon_limited(ptr, x, y, mmflags, mmflags2, subtype, npcsubtype, level_limit, level_adjustment, alignment)
 register struct permonst *ptr;
 register int x, y;
 unsigned long mmflags, mmflags2;
-int subtype;
+unsigned short subtype;
+int npcsubtype;
 int level_limit, level_adjustment;
 aligntyp alignment;
 {
@@ -2702,6 +2704,7 @@ aligntyp alignment;
     boolean saddled = ((mmflags & MM_SADDLED) != 0);
     boolean maybe_extinct = ((mmflags2 & MM2_MAYBE_ALLOW_EXTINCT) != 0);
     boolean reviving = ((mmflags2 & MM2_REVIVING) != 0);
+    boolean ismonsubtype = ((mmflags2 & MM2_SUBTYPE_IS_MON_SUBTYPE) != 0);
     unsigned long gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
     
@@ -2870,7 +2873,7 @@ aligntyp alignment;
     {
         newenpc(mtmp);
         if (has_enpc(mtmp))
-            ENPC(mtmp)->npc_typ = subtype;
+            ENPC(mtmp)->npc_typ = npcsubtype;
     }
     if (mmflags & MM_ESHK)
         neweshk(mtmp);
@@ -2890,6 +2893,7 @@ aligntyp alignment;
     if (ptr->msound == MS_LEADER && quest_info(MS_LEADER) == mndx)
         quest_status.leader_m_id = mtmp->m_id;
     mtmp->mnum = mndx;
+    mtmp->subtype = subtype;
     mtmp->glyph = NO_GLYPH;
     mtmp->gui_glyph = NO_GLYPH;
 

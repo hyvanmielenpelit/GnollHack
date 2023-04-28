@@ -342,13 +342,14 @@ static struct Comp_Opt {
     { "boulder", "deprecated (use S_boulder in sym file instead)", 1,
       SET_IN_GAME },
 #endif
-    { "catgender", "the name of your (first) cat (e.g., catgender:female)", 7, DISP_IN_GAME },
+    { "catgender", "the gender of your (first) cat (e.g., catgender:female)", 7, DISP_IN_GAME },
     { "catname", "the name of your (first) cat (e.g., catname:Tabby)",
       PL_PSIZ, DISP_IN_GAME },
     { "crawl_interval", "crawl movement interval in milliseconds", 3, SET_IN_GAME },
     { "disclose", "the kinds of information to disclose at end of game",
       sizeof flags.end_disclose * 2, SET_IN_GAME },
-    { "doggender", "the name of your (first) dog (e.g., dogname:male)", 7, DISP_IN_GAME },
+    { "dogbreed", "the breed of your (first) dog (e.g., dogbreed:black labrador)", 32, DISP_IN_GAME },
+    { "doggender", "the gender of your (first) dog (e.g., doggender:male)", 7, DISP_IN_GAME },
     { "dogname", "the name of your (first) dog (e.g., dogname:Fang)", PL_PSIZ,
       DISP_IN_GAME },
     { "dungeon", "the symbols to use in drawing the dungeon map",
@@ -379,7 +380,7 @@ static struct Comp_Opt {
       "number of rows in the here window",
       20, SET_IN_GAME
     }, /*WC2*/
-    { "horsegender", "the name of your (first) horse (e.g., horsegender:female)", 7, DISP_IN_GAME },
+    { "horsegender", "the gender of your (first) horse (e.g., horsegender:female)", 7, DISP_IN_GAME },
     { "horsename", "the name of your (first) horse (e.g., horsename:Silver)",
       PL_PSIZ, DISP_IN_GAME },
     { "last_item_show_duration", "duration for showing last item in context menu", 3,
@@ -454,7 +455,7 @@ static struct Comp_Opt {
 #endif
     { "race", "your starting race (e.g., Human, Elf)", PL_CSIZ,
       DISP_IN_GAME },
-    { "ramgender", "the name of your (first) ram (e.g., ramgender:male)", 7, DISP_IN_GAME },
+    { "ramgender", "the gender of your (first) ram (e.g., ramgender:male)", 7, DISP_IN_GAME },
     { "ramname", "the name of your (first) ram (e.g., ramname:Silver)",
       PL_PSIZ, DISP_IN_GAME },
     { "role", "your starting role (e.g., Barbarian, Valkyrie)", PL_CSIZ,
@@ -548,7 +549,7 @@ static struct Comp_Opt {
 #ifdef WINCHAIN
     { "windowchain", "window processor to use", WINTYPELEN, SET_IN_SYS },
 #endif
-    { "wolfgender", "the name of your (first) direwolf (e.g., wolfgender:female)", 7, DISP_IN_GAME },
+    { "wolfgender", "the gender of your (first) direwolf (e.g., wolfgender:female)", 7, DISP_IN_GAME },
     { "wolfname", "the name of your (first) wolf (e.g., wolfname:Shadow)",
         PL_PSIZ, DISP_IN_GAME },
 #ifdef BACKWARD_COMPAT
@@ -2649,6 +2650,41 @@ boolean tinitial, tfrom_file;
                 config_error_add("Unrecognized wolf gender '%s'.", op);
                 return FALSE;
                 break;
+            }
+        }
+        return retval;
+    }
+
+    fullname = "dogbreed";
+    if (match_optname(opts, fullname, 8, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        if ((op = string_for_env_opt(fullname, opts, negated)) != 0) {
+            int indx = 0;
+            boolean breedfound = FALSE;
+            for (indx = 0; indx < NUM_DOG_BREEDS; indx++)
+            {
+                if (!strcmpi(op, dog_breed_definitions[indx].name))
+                {
+                    breedfound = TRUE;
+                    dogbreed = indx;
+                    break;
+                }
+            }
+            if (!breedfound)
+            {
+                if (!strcmpi(op, "labrador"))
+                    dogbreed = DOG_BREED_LABRADOR_BLACK + rn2(DOG_BREED_LABRADOR_YELLOW - DOG_BREED_LABRADOR_BLACK + 1);
+                else
+                {
+                    dogbreed = 0;
+                    config_error_add("Unrecognized dog breed '%s'.", op);
+                    return FALSE;
+                }
             }
         }
         return retval;
@@ -6914,6 +6950,10 @@ char *buf;
         Sprintf(buf, "%s", (wolfgender == 1) ? "male"
                            : (wolfgender == 2) ? "female"
                                  : "random");
+    } else if (!strcmp(optname, "dogbreed")) {
+        Sprintf(buf, "%s", !dogbreed ? "generic"
+                           : (dogbreed >= NUM_DOG_BREEDS) ? "invalid breed"
+                                 : dog_breed_definitions[dogbreed].name);
     } else if (!strcmp(optname, "pickup_burden")) {
         Sprintf(buf, "%s", burdentype[flags.pickup_burden]);
     } else if (!strcmp(optname, "pickup_types")) {

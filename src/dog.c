@@ -196,6 +196,7 @@ makedog()
     const char* petname_female = "";
     int pettype;
     short petgender;
+    unsigned short petbreed = 0;
     boolean ismale = FALSE;
     boolean isfemale = FALSE;
     boolean isneuter = FALSE;
@@ -208,6 +209,7 @@ makedog()
     {
         petname = dogname;
         petgender = doggender;
+        petbreed = dogbreed;
     }
     else if (pettype == PM_PONY)
     {
@@ -263,6 +265,7 @@ makedog()
             {
                 petname = "Idefix";          /* Obelix */
                 ismale = TRUE;
+                petbreed = 0;
             }
             if (Role_if(PM_TOURIST))
             {
@@ -311,7 +314,7 @@ makedog()
         extrammflags = MM_MALE;
     }
 
-    mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_MONSTER_INVENTORY | extrammflags);
+    mtmp = makemon_limited(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_MONSTER_INVENTORY | extrammflags, 0UL, petbreed, 0, 0, 0, 0);
 
     if (!mtmp)
         return ((struct monst *) 0); /* pets were genocided */
@@ -319,11 +322,6 @@ makedog()
     if (pettype == PM_LITTLE_DOG && Role_if(PM_SAMURAI))
     {
         mtmp->isfaithful = 1; /* Hachiko is well-known for his faithfulness -- JG */
-    }
-
-    if (pettype == PM_LITTLE_DOG)
-    {
-        mtmp->subtype = rn2(MAX_DOG_BREEDS + 1);
     }
 
     context.startingpet_mid = mtmp->m_id;

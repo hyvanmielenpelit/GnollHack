@@ -297,6 +297,15 @@ E short horsegender;
 E short ramgender;
 /* No luggagegender, because luggages are neuter */
 E short wolfgender;
+
+E unsigned short dogbreed;
+
+struct breed_defintion {
+    const char* name;
+};
+
+E const struct breed_defintion dog_breed_definitions[NUM_DOG_BREEDS];
+
 E char preferred_pet;
 
 E NEARDATA unsigned long n_game_recoveries;

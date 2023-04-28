@@ -12446,7 +12446,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
     },
 
     { "little-dog-replacement",
-      MAX_DOG_BREEDS,
+      NUM_SPECIAL_DOG_BREEDS,
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_BREED,
       AUTODRAW_NONE, -1,
@@ -12457,7 +12457,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "dog-replacement",
-      MAX_DOG_BREEDS,
+      NUM_SPECIAL_DOG_BREEDS,
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_BREED,
       AUTODRAW_NONE, -1,
@@ -12468,7 +12468,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "large-dog-replacement",
-      MAX_DOG_BREEDS,
+      NUM_SPECIAL_DOG_BREEDS,
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_BREED,
       AUTODRAW_NONE, -1,
@@ -12479,7 +12479,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "little-dog-statue-replacement",
-      MAX_DOG_BREEDS,
+      NUM_SPECIAL_DOG_BREEDS,
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_STATUE_BREED,
       AUTODRAW_NONE, -1,
@@ -12490,7 +12490,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "dog-statue-replacement",
-      MAX_DOG_BREEDS,
+      NUM_SPECIAL_DOG_BREEDS,
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_STATUE_BREED,
       AUTODRAW_NONE, -1,
@@ -12501,7 +12501,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "large-dog-statue-replacement",
-      MAX_DOG_BREEDS,
+      NUM_SPECIAL_DOG_BREEDS,
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_STATUE_BREED,
       AUTODRAW_NONE, -1,

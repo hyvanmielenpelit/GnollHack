@@ -358,6 +358,16 @@ NEARDATA char luggagename[PL_PSIZ] = DUMMY;
 NEARDATA char wolfname[PL_PSIZ] = DUMMY;
 char preferred_pet; /* '\0', 'c', 'd', 'n' (none) */
 short doggender, catgender, horsegender, ramgender, wolfgender; /* 0 = random, 1 = male, 2 = female */
+unsigned short dogbreed;
+
+const struct breed_defintion dog_breed_definitions[NUM_DOG_BREEDS] = {
+    { "generic" },
+    { "black labrador" },
+    { "brown labrador" },
+    { "yellow labrador" },
+    { "dalmatian" },
+    { "German shepherd" },
+};
 
 /* monsters that went down/up together with @ */
 NEARDATA struct monst *mydogs = (struct monst *) 0;
