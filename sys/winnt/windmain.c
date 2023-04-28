@@ -554,6 +554,9 @@ char *argv[];
         case 'C':
             CasualMode = TRUE;
             break;
+        case 'b':
+            iflags.select_pet_details = TRUE;
+            break;
 #ifdef NEWS
         case 'n':
             iflags.news = FALSE;

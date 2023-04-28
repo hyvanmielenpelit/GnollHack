@@ -17,6 +17,7 @@ int FDECL(GnollHackStart, (char*));
 #define GHRUNFLAGS_FULL_VERSION 0x00000004
 #define GHRUNFLAGS_MODERN_MODE  0x00000008
 #define GHRUNFLAGS_CASUAL_MODE  0x00000010
+#define GHRUNFLAGS_SELECT_PET_DETAILS    0x00000020
 
 /* Main GnollHack routine with all the necessary callback functions */
 int RunGnollHack(

@@ -52,6 +52,7 @@ namespace GnollHackClient
             App.HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             App.DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
             App.FullVersionMode = true; // Preferences.Get("FullVersion", true);
+            App.SelectPetDetails = Preferences.Get("SelectPetDetails", GHConstants.DefaultSelectPetDetails);
             App.ClassicMode = Preferences.Get("ClassicMode", false);
             App.CasualMode = Preferences.Get("CasualMode", false);
             App.LoadBanks = Preferences.Get("LoadSoundBanks", true);
@@ -309,6 +310,7 @@ namespace GnollHackClient
         public static bool ClassicMode { get; set; }
         public static bool CasualMode { get; set; }
         public static bool ServerGameAvailable { get; set; }
+        public static bool SelectPetDetails { get; set; }
 
         public static string GHVersionId { get; set; }
         public static string GHVersionString { get; set; }

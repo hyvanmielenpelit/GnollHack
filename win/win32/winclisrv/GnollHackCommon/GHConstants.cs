@@ -191,12 +191,13 @@ namespace GnollHackCommon
     [Flags]
     public enum RunGnollHackFlags: ulong
     {
-        None =          0x00000000,
-        SetWinCaps =    0x00000001,
-        WizardMode =    0x00000002,
-        FullVersion =   0x00000004,
-        ModernMode =    0x00000008, /* Upon death, the character teleports back to starting altar */
-        CasualMode =    0x00000010, /* Save games are preserved */
+        None =              0x00000000,
+        SetWinCaps =        0x00000001,
+        WizardMode =        0x00000002,
+        FullVersion =       0x00000004,
+        ModernMode =        0x00000008, /* Upon death, the character teleports back to starting altar */
+        CasualMode =        0x00000010, /* Save games are preserved */
+        SelectPetDetails =    0x00000020, /* Pet breed can be selected on start */
     }
 
     [Flags]
@@ -1374,6 +1375,7 @@ namespace GnollHackCommon
 #else
         public const bool DefaultDeveloperMode = false;
 #endif
+        public const bool DefaultSelectPetDetails = false;
         public const int NUM_ZAP_SOURCE_BASE_DIRS = 8;
         public const int NUM_ZAP_SOURCE_DIRS = (GHConstants.NUM_ZAP_SOURCE_BASE_DIRS * 2);
         public const int NUM_CHAIN_SOURCE_DIRS = 4;

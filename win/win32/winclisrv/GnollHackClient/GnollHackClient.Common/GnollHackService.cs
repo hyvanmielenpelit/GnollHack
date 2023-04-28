@@ -897,7 +897,8 @@ namespace GnollHackClient.Unknown
             ulong runflags = (ulong)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
                 (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0) |
                 (ulong)(clientGame.ModernMode ? RunGnollHackFlags.ModernMode : 0) |
-                (ulong)(clientGame.CasualMode ? RunGnollHackFlags.CasualMode : 0);
+                (ulong)(clientGame.CasualMode ? RunGnollHackFlags.CasualMode : 0) |
+                (ulong)(App.SelectPetDetails ? RunGnollHackFlags.SelectPetDetails : 0);
             string lastusedplname = Preferences.Get("LastUsedPlayerName", "");
 
             return RunGnollHack(

@@ -581,7 +581,6 @@ int RunGnollHack(
 
     if (runflags & GHRUNFLAGS_MODERN_MODE)
     {
-        //ModernMode = TRUE;
         if (*cmdbuf)
             Strcat(cmdbuf, " ");
         Strcat(cmdbuf, "-M");
@@ -589,10 +588,16 @@ int RunGnollHack(
 
     if (runflags & GHRUNFLAGS_CASUAL_MODE)
     {
-        //CasualMode = TRUE;
         if (*cmdbuf)
             Strcat(cmdbuf, " ");
         Strcat(cmdbuf, "-C");
+    }
+
+    if (runflags & GHRUNFLAGS_SELECT_PET_DETAILS)
+    {
+        if (*cmdbuf)
+            Strcat(cmdbuf, " ");
+        Strcat(cmdbuf, "-b");
     }
 
     /* Set directly, as other parts of GnollHack do not purposedly set this */

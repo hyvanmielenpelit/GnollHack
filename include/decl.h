@@ -300,11 +300,11 @@ E short wolfgender;
 
 E unsigned short dogbreed;
 
-struct breed_defintion {
+struct breed_definition {
     const char* name;
 };
 
-E const struct breed_defintion dog_breed_definitions[NUM_DOG_BREEDS];
+E const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS];
 
 E char preferred_pet;
 

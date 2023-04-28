@@ -360,7 +360,7 @@ char preferred_pet; /* '\0', 'c', 'd', 'n' (none) */
 short doggender, catgender, horsegender, ramgender, wolfgender; /* 0 = random, 1 = male, 2 = female */
 unsigned short dogbreed;
 
-const struct breed_defintion dog_breed_definitions[NUM_DOG_BREEDS] = {
+const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
     { "generic" },
     { "black labrador" },
     { "brown labrador" },

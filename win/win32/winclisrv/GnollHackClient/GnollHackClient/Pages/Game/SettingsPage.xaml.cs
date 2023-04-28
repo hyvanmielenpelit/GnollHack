@@ -161,6 +161,9 @@ namespace GnollHackClient.Pages.Game
             App.DeveloperMode = DeveloperSwitch.IsToggled;
             Preferences.Set("DeveloperMode", App.DeveloperMode);
 
+            App.SelectPetDetails = PetDetailsSwitch.IsToggled;
+            Preferences.Set("SelectPetDetails", App.SelectPetDetails);
+
             Preferences.Set("DefaultMapNoClipMode", !YesClipNormalSwitch.IsToggled);
 
             App.SilentMode = SilentModeSwitch.IsToggled;
@@ -279,7 +282,7 @@ namespace GnollHackClient.Pages.Game
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             //bool carousel = false;
-            bool devmode = GHConstants.DefaultDeveloperMode, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool devmode = GHConstants.DefaultDeveloperMode, petdetails = GHConstants.DefaultSelectPetDetails, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             //bool altnoclipmode = GHConstants.DefaultMapAlternateNoClipMode, zoomchangecenter = GHConstants.DefaultZoomChangeCenterMode;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
@@ -294,6 +297,7 @@ namespace GnollHackClient.Pages.Game
             navbar = App.HideAndroidNavigationBar;
             statusbar = App.HideiOSStatusBar;
             devmode = App.DeveloperMode;
+            petdetails = App.SelectPetDetails;
             bank = Preferences.Get("LoadSoundBanks", true);
             //carousel = Preferences.Get("UsesCarousel", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
@@ -384,6 +388,7 @@ namespace GnollHackClient.Pages.Game
             NavBarSwitch.IsToggled = navbar;
             StatusBarSwitch.IsToggled = statusbar;
             DeveloperSwitch.IsToggled = devmode;
+            PetDetailsSwitch.IsToggled = petdetails;
             SoundBankSwitch.IsToggled = bank;
             //CarouselSwitch.IsToggled = carousel;
             //CarouselSwitch.IsEnabled = !App.IsiOS;
