@@ -602,9 +602,9 @@ learn(VOID_ARGS)
     if (addedamount > 0)
     {
         if (addedamount == 1)
-            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have one %scasting of \"%s\" prepared.", !initialamount ? "" : "more ", splname);
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have one %scasting of %s prepared.", !initialamount ? "" : "more ", splname);
         else
-            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have %d %scastings of \"%s\" prepared.", addedamount, !initialamount ? "" : "more ", splname);
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have %d %scastings of %s prepared.", addedamount, !initialamount ? "" : "more ", splname);
     }
 
     if (book->cursed) 
