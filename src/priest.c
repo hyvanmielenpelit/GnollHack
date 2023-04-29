@@ -407,6 +407,16 @@ int mtype;
                     if (otmp)
                         (void)mpickobj(priest, otmp);
                 }
+
+                /* Reagents */
+                int cnt = 10 + rnd(10);
+                int i;
+                for (i = 0; i < cnt; i++)
+                {
+                    otmp = mksobj(random_reagent_otyp(TRUE, 1), FALSE, FALSE, FALSE);
+                    if (otmp)
+                        (void)mpickobj(priest, otmp);
+                }
             }
         }
 

@@ -2011,7 +2011,7 @@ E void FDECL(decide_to_shapeshift, (struct monst *, int));
 E boolean FDECL(vamp_stone, (struct monst *));
 E void FDECL(m_detach, (struct monst*, struct permonst*, BOOLEAN_P));
 E int NDECL(randomtruegem);
-E int FDECL(randomreagent, (BOOLEAN_P, int));
+E int FDECL(random_reagent_otyp, (BOOLEAN_P, int));
 E int NDECL(randomore);
 E const char* FDECL(pm_monster_name, (struct permonst*, BOOLEAN_P));
 E const char* FDECL(mon_monster_name, (struct monst*));

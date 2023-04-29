@@ -744,6 +744,16 @@ int mtype;
                 if (otmp)
                     (void)mpickobj(npc, otmp);
             }
+
+            /* Reagents */
+            int cnt = 10 + rnd(10);
+            for (i = 0; i < cnt; i++)
+            {
+                otmp = mksobj(random_reagent_otyp(TRUE, 2), FALSE, FALSE, FALSE);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+
             break;
         }
         default:

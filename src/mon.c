@@ -936,7 +936,7 @@ randomtruegem()
 
 
 int
-randomreagent(alsotruegems, reagentstyle)
+random_reagent_otyp(alsotruegems, reagentstyle)
 boolean alsotruegems;
 int reagentstyle; //0 = all, 1 = priest only, 2 = wizard (no priest specific reagents)
 {
