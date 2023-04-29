@@ -951,6 +951,7 @@ init_options()
     flags.sound_volume_ui = 50;
 
     flags.spellorder = SORTBY_NONE;
+    flags.force_hint = (CasualMode || ModernMode);
     flags.max_hint_difficulty = DEFAULT_MAX_HINT_DIFFICULTY;
 
     /* since this is done before init_objects(), do partial init here */
