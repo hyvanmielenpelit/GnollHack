@@ -413,7 +413,7 @@ int mtype;
                 int i;
                 for (i = 0; i < cnt; i++)
                 {
-                    otmp = mksobj(random_reagent_otyp(TRUE, 1), FALSE, FALSE, FALSE);
+                    otmp = mksobj(random_reagent_otyp(TRUE, TRUE, 1), FALSE, FALSE, FALSE);
                     if (otmp)
                         (void)mpickobj(priest, otmp);
                 }

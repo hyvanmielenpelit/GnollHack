@@ -1888,7 +1888,7 @@ register const struct trobj * trop;
                     int n = 2 + rn2(4); //2...5
                     for (i = 0; i < n; i++)
                     {
-                        struct obj* otmp2 = mksobj(random_reagent_otyp(FALSE, 2), FALSE, FALSE, FALSE);
+                        struct obj* otmp2 = mksobj(random_reagent_otyp(FALSE, FALSE, 2), FALSE, FALSE, FALSE);
                         if (otmp)
                         {
                             knows_object(otmp2->otyp);

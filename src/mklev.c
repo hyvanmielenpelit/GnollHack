@@ -1774,7 +1774,7 @@ boolean skip_lvl_checks;
                        && levl[x + 1][y + 1].typ == STONE
                        && levl[x - 1][y + 1].typ == STONE) {
                 if (rn2(1000) < goldprob) {
-                    if ((otmp = mksobj(randomore(), FALSE, FALSE, FALSE)) != 0) {
+                    if ((otmp = mksobj(randomore(Inhell), FALSE, FALSE, FALSE)) != 0) {
                         otmp->ox = x, otmp->oy = y;
                         otmp->quan = 1L; //+ rnd(goldprob * 3);
                         otmp->owt = weight(otmp);

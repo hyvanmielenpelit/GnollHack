@@ -895,7 +895,7 @@ register struct monst *mtmp;
             {
                 int n = rn2(3); //0...2
                 while (n--)
-                    (void)mongets(mtmp, random_reagent_otyp(FALSE, 0));
+                    (void)mongets(mtmp, random_reagent_otyp(FALSE, FALSE, 0));
             }
             if(!rn2(2))
                 (void)mongets(mtmp, GINSENG_ROOT);
@@ -1557,7 +1557,7 @@ register struct monst *mtmp;
             //Reagents
             n = rn2(3);
             for (i = 0; i < n; i++)
-                (void)mongets(mtmp, random_reagent_otyp(TRUE, 0));
+                (void)mongets(mtmp, random_reagent_otyp(TRUE, TRUE, 0));
 
             //Spellbooks
             n = rn2(3); // 0...2
@@ -1631,7 +1631,7 @@ register struct monst *mtmp;
             n = rn2(3);
             for (i = 0; i < n; i++)
             {
-                (void)mongets(mtmp, random_reagent_otyp(TRUE, 2));
+                (void)mongets(mtmp, random_reagent_otyp(TRUE, TRUE, 2));
             }
 
             //Some spellbooks
@@ -1686,7 +1686,7 @@ register struct monst *mtmp;
         //Reagents
         n = rn2(3) + (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH] ? 1 : 0); //1...3 + 2
         for (i = 0; i < n; i++)
-            (void)mongets(mtmp, random_reagent_otyp(TRUE, 2));
+            (void)mongets(mtmp, random_reagent_otyp(TRUE, TRUE, 2));
 
         //Some spellbooks
         if (ptr == &mons[PM_ARCH_LICH])
@@ -1733,7 +1733,7 @@ register struct monst *mtmp;
             //Reagents
             n = rn2(4);
             for (i = 0; i < n; i++)
-                (void)mongets(mtmp, random_reagent_otyp(TRUE, 2));
+                (void)mongets(mtmp, random_reagent_otyp(TRUE, TRUE, 2));
 
             if (!rn2(4))
                 (void)mongetsgold(mtmp, 100 + rn2(1001));
@@ -1847,7 +1847,7 @@ register struct monst *mtmp;
             /* Some random reagants */
             n = rn2(2);
             for (i = 0; i < n; i++)
-                (void)mongets(mtmp, random_reagent_otyp(TRUE, 0));
+                (void)mongets(mtmp, random_reagent_otyp(TRUE, FALSE, 0));
 
             if (!rn2(4))
                 (void)mongets(mtmp, GINSENG_ROOT);
@@ -1874,7 +1874,7 @@ register struct monst *mtmp;
             /* Some random reagants */
             n = rn2(5);
             for (i = 0; i < n; i++)
-                (void)mongets(mtmp, random_reagent_otyp(TRUE, 1));
+                (void)mongets(mtmp, random_reagent_otyp(TRUE, TRUE, 1));
 
             n = rn2(2);
             for (i = 0; i < n; i++)
@@ -1885,7 +1885,7 @@ register struct monst *mtmp;
             /* Some random reagants */
             n = rn2(7);
             for (i = 0; i < n; i++)
-                (void)mongets(mtmp, random_reagent_otyp(TRUE, 1));
+                (void)mongets(mtmp, random_reagent_otyp(TRUE, TRUE, 1));
 
             n = rn2(2);
             for (i = 0; i < n; i++)
@@ -1898,7 +1898,7 @@ register struct monst *mtmp;
             /* Some random reagants */
             n = rn2(5);
             for (i = 0; i < n; i++)
-                (void)mongets(mtmp, random_reagent_otyp(TRUE, 1));
+                (void)mongets(mtmp, random_reagent_otyp(TRUE, Inhell, 1));
 
             n = rn2(2);
             for (i = 0; i < n; i++)
@@ -1909,7 +1909,7 @@ register struct monst *mtmp;
             /* Some random reagants */
             n = rn2(3);
             for (i = 0; i < n; i++)
-                (void)mongets(mtmp, random_reagent_otyp(TRUE, 1));
+                (void)mongets(mtmp, random_reagent_otyp(TRUE, Inhell, 1));
 
             n = rn2(2);
             for (i = 0; i < n; i++)
@@ -2045,7 +2045,7 @@ register struct monst *mtmp;
 
                 n = rn2(3);
                 for (i = 0; i < n; i++)
-                    (void)mongets(mtmp, random_reagent_otyp(FALSE, 1));
+                    (void)mongets(mtmp, random_reagent_otyp(FALSE, Inhell, 1));
 
                 if (ptr == &mons[PM_GNOLL_SUPREME_WARDEN])
                 {
@@ -2141,7 +2141,7 @@ register struct monst *mtmp;
         {
             n = rn2(3);
             for (i = 0; i < n; i++)
-                (void)mongets(mtmp, random_reagent_otyp(TRUE, 2));
+                (void)mongets(mtmp, random_reagent_otyp(TRUE, FALSE, 2));
 
             if (!rn2(2))
                 (void)mongets(mtmp, GINSENG_ROOT);
