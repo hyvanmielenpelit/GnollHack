@@ -469,7 +469,8 @@ learn(VOID_ARGS)
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "Despite your best efforts, you fail to understand the spell in %s.", the(cxname(book)));
         }
 
-        if (gone || !rn2(2)) {
+        if (gone || !rn2(2)) 
+        {
             if (!gone)
             {
                 if (iflags.using_gui_sounds)
@@ -508,6 +509,9 @@ learn(VOID_ARGS)
         if (spellid(i) == booktype || spellid(i) == NO_SPELL)
             break;
 
+    int initialamount = i < MAXSPELL ? spl_book[i].sp_amount : 0;
+    int addedamount = 0;
+
     if (i == MAXSPELL)
     {
         impossible("Too many spells memorized!");
@@ -524,12 +528,12 @@ learn(VOID_ARGS)
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
         }
-        else if (spellknow(i) > SPELL_IS_KEEN / 10)
-        {
-            play_sfx_sound(SFX_SPELL_KNOWN_ALREADY);
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "know %s quite well already.", splname);
-            costly = FALSE;
-        }
+        //else if (spellknow(i) > SPELL_IS_KEEN / 10)
+        //{
+        //    play_sfx_sound(SFX_SPELL_KNOWN_ALREADY);
+        //    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "know %s quite well already.", splname);
+        //    costly = FALSE;
+        //}
         else
         { /* spellknow(i) <= SPELL_IS_KEEN/10 */
             play_sfx_sound(SFX_SPELL_KEENER);
@@ -538,6 +542,13 @@ learn(VOID_ARGS)
             incr_spell_nknow(i, 1);
             book->spestudied++;
             exercise(A_WIS, TRUE); /* extra study */
+
+            if (spl_book[i].sp_matcomp > 0)
+            {
+                addedamount = matlists[spl_book[i].sp_matcomp].spellsgained;
+                spl_book[i].sp_amount += addedamount;
+            }
+            learnsuccess = TRUE;
         }
         /* make book become known even when spell is already
            known, in case amnesia made you forget the book */
@@ -556,7 +567,9 @@ learn(VOID_ARGS)
             book->material = objects[book->otyp].oc_material;
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
-        } else {
+        } 
+        else 
+        {
             spl_book[i].sp_id = (short)booktype;
             spl_book[i].sp_lev = (xchar)objects[booktype].oc_spell_level;
             spl_book[i].sp_matcomp = objects[booktype].oc_material_components;
@@ -571,6 +584,12 @@ learn(VOID_ARGS)
             incr_spell_nknow(i, 1);
             book->spestudied++;
 
+            if (spl_book[i].sp_matcomp > 0)
+            {
+                addedamount = matlists[spl_book[i].sp_matcomp].spellsgained;
+                spl_book[i].sp_amount += addedamount;
+            }
+
             sortspells();
 
             play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
@@ -578,6 +597,14 @@ learn(VOID_ARGS)
             learnsuccess = TRUE;
         }
         makeknown((int) booktype);
+    }
+
+    if (addedamount > 0)
+    {
+        if (addedamount == 1)
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have one %scasting of \"%s\" prepared.", !initialamount ? "" : "more ", splname);
+        else
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have %d %scastings of \"%s\" prepared.", addedamount, !initialamount ? "" : "more ", splname);
     }
 
     if (book->cursed) 

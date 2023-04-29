@@ -13,13 +13,13 @@
 #define OBJCLASS_H
 
 enum multigen_types {
-    MULTIGEN_SINGLE        = 0,
+    MULTIGEN_SINGLE     = 0,
     MULTIGEN_1D2        = 1,
     MULTIGEN_1D3        = 2,
     MULTIGEN_1D4        = 3,
     MULTIGEN_1D6        = 4,
     MULTIGEN_1D8        = 5,
-    MULTIGEN_1D10        = 6,
+    MULTIGEN_1D10       = 6,
     MULTIGEN_2D6        = 7,
     MULTIGEN_3D6        = 8,
     MULTIGEN_4D6        = 9,
