@@ -1528,7 +1528,7 @@ const char *verb; /* "rub",&c */
             if(u.twoweap)
                 Sprintf(handbuf, " in your %s %s", selected_hand_is_right ? "right" : "left", body_part(HAND));
 
-            You("now wield %s%s.", doname(obj), handbuf);
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "now wield %s%s.", doname(obj), handbuf);
 
             setuwep(obj, wepslot);
         }
