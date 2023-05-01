@@ -1013,7 +1013,7 @@ struct monst *mtmp;
             return 0;
         mzapmsg(mtmp, otmp, FALSE);
         otmp->charges--;
-        mon = makemon((struct permonst *) 0, cc.x, cc.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+        mon = makemon2((struct permonst *) 0, cc.x, cc.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, MM2_RANDOMIZE_SUBTYPE);
         if (mon && canspotmon(mon) && oseen)
             makeknown(WAN_CREATE_MONSTER);
         return 2;

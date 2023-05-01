@@ -1331,7 +1331,7 @@ int x, y;
     }
     else
     {
-        makemon((struct permonst*)0, x, y, NO_MM_FLAGS);
+        makemon2((struct permonst*)0, x, y, NO_MM_FLAGS, MM2_RANDOMIZE_SUBTYPE);
     }
 
     return;
@@ -1570,7 +1570,7 @@ int selected_encounter, x, y, max_attk_monsters;
         }
     }
     if(!mcnt)
-        makemon((struct permonst*)0, x, y, NO_MM_FLAGS);
+        makemon2((struct permonst*)0, x, y, NO_MM_FLAGS, MM2_RANDOMIZE_SUBTYPE);
 }
 
 

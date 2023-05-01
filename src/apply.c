@@ -5565,7 +5565,7 @@ struct obj *obj;
             continue;
         } else if (obj->otyp == WAN_CREATE_MONSTER) {
             /* u.ux,u.uy creates it near you--x,y might create it in rock */
-            (void) makemon((struct permonst *) 0, u.ux, u.uy, NO_MM_FLAGS);
+            (void) makemon2((struct permonst *) 0, u.ux, u.uy, NO_MM_FLAGS, MM2_RANDOMIZE_SUBTYPE);
             continue;
         } else if (x != u.ux || y != u.uy) {
             /*

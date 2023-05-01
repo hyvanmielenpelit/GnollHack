@@ -625,7 +625,7 @@ create_monster_or_encounter(VOID_ARGS)
         }
         else
         {
-            (void)makemon((struct permonst*) 0, 0, 0, NO_MM_FLAGS);
+            (void)makemon2((struct permonst*) 0, 0, 0, NO_MM_FLAGS, MM2_RANDOMIZE_SUBTYPE);
         }
     }
 }

@@ -2704,6 +2704,8 @@ aligntyp alignment;
     boolean saddled = ((mmflags & MM_SADDLED) != 0);
     boolean maybe_extinct = ((mmflags2 & MM2_MAYBE_ALLOW_EXTINCT) != 0);
     boolean reviving = ((mmflags2 & MM2_REVIVING) != 0);
+    boolean randomize_subtype = ((mmflags2 & MM2_RANDOMIZE_SUBTYPE) != 0);
+    
     unsigned long gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
     
@@ -2893,6 +2895,19 @@ aligntyp alignment;
         quest_status.leader_m_id = mtmp->m_id;
     mtmp->mnum = mndx;
     mtmp->subtype = subtype;
+    if (!subtype && randomize_subtype)
+    {
+        if (mons[mndx].mflags6 & M6_USES_CAT_SUBTYPES)
+        {
+            if(!rn2(9))
+                mtmp->subtype = rn2(NUM_CAT_BREEDS);
+        }
+        else if (mons[mndx].mflags6 & M6_USES_DOG_SUBTYPES)
+        {
+            if (!rn2(9))
+                mtmp->subtype = rn2(NUM_DOG_BREEDS);
+        }
+    }
     mtmp->glyph = NO_GLYPH;
     mtmp->gui_glyph = NO_GLYPH;
 
@@ -3349,7 +3364,7 @@ boolean neverask;
         if (!mptr && u.uinwater && enexto(&c, x, y, &mons[PM_GIANT_EEL]))
             x = c.x, y = c.y;
 
-        mon = makemon(mptr, x, y,  MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND);
+        mon = makemon2(mptr, x, y,  MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND, MM2_RANDOMIZE_SUBTYPE);
         if (mon)
         {
             //play_sfx_sound_at_location(SFX_SUMMON_MONSTER, mon->mx, mon->my);
@@ -4603,7 +4618,7 @@ int *seencount;  /* secondary output */
         if (!rn2(23))
             creatcnt += rnd(7);
         do {
-            mtmp = makemon((struct permonst *) 0, u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+            mtmp = makemon2((struct permonst *) 0, u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, MM2_RANDOMIZE_SUBTYPE);
             if (mtmp) {
                 ++moncount;
                 if (canspotmon(mtmp))
@@ -4624,13 +4639,13 @@ int *seencount;  /* secondary output */
 
 
 struct monst*
-make_level_monster(x, y, mmflags)
+make_level_monster(x, y, mmflags, mmflags2)
 register int x, y;
-unsigned long mmflags; 
+unsigned long mmflags, mmflags2; 
 {
     if (level.flags.nmgeninfos <= 0)
     {
-        return makemon((struct permonst*)0, x, y, mmflags);
+        return makemon2((struct permonst*)0, x, y, mmflags, mmflags2);
     }
 
     int i, totalprob = 0;
@@ -4669,17 +4684,17 @@ unsigned long mmflags;
         {
             if (level.flags.mon_gen_infos[sel_index].mnum >= LOW_PM)
             {
-                mtmp = makemon(&mons[level.flags.mon_gen_infos[sel_index].mnum], x, y, mmflags);
+                mtmp = makemon2(&mons[level.flags.mon_gen_infos[sel_index].mnum], x, y, mmflags, mmflags2);
             }
             else if (level.flags.mon_gen_infos[sel_index].mclass > 0 && level.flags.mon_gen_infos[sel_index].mclass < MAX_MONSTER_CLASSES)
             {
                 struct permonst* pm = mkclass(level.flags.mon_gen_infos[sel_index].mclass, 0);
                 if(pm)
-                    mtmp = makemon(pm, x, y, mmflags);
+                    mtmp = makemon2(pm, x, y, mmflags, mmflags2);
             }
             else
             {
-                mtmp = makemon((struct permonst*)0, x, y, mmflags);
+                mtmp = makemon2((struct permonst*)0, x, y, mmflags, mmflags2);
             }
 
             if (mtmp)
@@ -4697,7 +4712,7 @@ unsigned long mmflags;
 struct monst*
 make_level_monster_anywhere(VOID_ARGS)
 {
-    return make_level_monster(0, 0, NO_MM_FLAGS);
+    return make_level_monster(0, 0, NO_MM_FLAGS, MM2_RANDOMIZE_SUBTYPE);
 }
 
 void
