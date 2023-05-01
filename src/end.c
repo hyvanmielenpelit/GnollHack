@@ -1412,6 +1412,7 @@ int how;
     update_game_music();
 
     const char* endtext = 0;
+    const char* endinfotext = 0;
     int screentextstyle = 0;
     int clr = NO_COLOR;
 
@@ -1444,11 +1445,13 @@ int how;
         break;
     case PANICKED:
         endtext = "Panic!";
+        endinfotext = "The cause has been recorded in the paniclog.";
         screentextstyle = SCREEN_TEXT_SPECIAL_END;
         clr = CLR_RED;
         break;
     case TRICKED:
         endtext = "Trickery!";
+        endinfotext = "Your game may have become corrupted.";
         screentextstyle = SCREEN_TEXT_SPECIAL_END;
         clr = CLR_RED;
         break;
@@ -1625,7 +1628,12 @@ int how;
     else if (how != QUIT)
     {
         char ebuf[BUFSZ];
-        Sprintf(ebuf, "%s", has_existing_save_file ? "You can load the game from the point at which you last saved the game." : endtext ? endtext : "Your game is over.");
+        Sprintf(ebuf, "%s%s%s%s%s", 
+            endtext ? endtext : "Your game is over.", 
+            endinfotext ? " " : "", 
+            endinfotext ? endinfotext : "", 
+            has_existing_save_file ? " " : "", 
+            has_existing_save_file ? "You can load the game from the point at which you last saved the game." : "");
         display_popup_text(ebuf, "Game Over", POPUP_TEXT_MESSAGE, ATR_NONE, clr, NO_GLYPH, POPUP_FLAGS_NONE);
     }
 

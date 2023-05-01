@@ -110,8 +110,6 @@ namespace GnollHackServer
             VoidIntCallback callback_exit_hack,
             CharVoidCallback callback_getcwd,
             IntCharCharUintCallback callback_messagebox,
-            //VoidIntCallback callback_outrip_begin,
-            //VoidIntCallback callback_outrip_end,
 
             FreeMemoryCallback callback_free_memory,
             ReportPlayerNameCallback callback_report_player_name,

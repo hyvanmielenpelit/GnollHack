@@ -2040,7 +2040,6 @@ dll_outrip(winid wid, int how, time_t when)
     long year;
 
     dll_logDebug("dll_outrip(%d, %d, %ld)\n", wid, how, (long) when);
-    //dll_callbacks.callback_outrip_begin(wid); //Begin
 
     /* Put name on stone */
     Sprintf(buf, "%s", plname);
@@ -2062,8 +2061,6 @@ dll_outrip(winid wid, int how, time_t when)
     year = yyyymmdd(when) / 10000L;
     Sprintf(buf, "%4ld", year);
     putstr(wid, 0, buf);
-
-    //dll_callbacks.callback_outrip_end(wid);  //End
 }
 
 /* handle options updates here */

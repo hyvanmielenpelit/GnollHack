@@ -688,8 +688,6 @@ int RunGnollHack(
     lib_callbacks.callback_exit_hack = callback_exit_hack;
     lib_callbacks.callback_getcwd = callback_getcwd;
     lib_callbacks.callback_messagebox = callback_messagebox;
-    //lib_callbacks.callback_outrip_begin = callback_outrip_begin;
-    //lib_callbacks.callback_outrip_end = callback_outrip_end;
 
     lib_callbacks.callback_free_memory = callback_free_memory;
     lib_callbacks.callback_report_player_name = callback_report_player_name;

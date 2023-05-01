@@ -222,8 +222,6 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_exit_hack = callback_exit_hack;
     dll_callbacks.callback_getcwd = callback_getcwd;
     dll_callbacks.callback_messagebox = callback_messagebox;
-    //dll_callbacks.callback_outrip_begin = callback_outrip_begin;
-    //dll_callbacks.callback_outrip_end = callback_outrip_end;
 
     dll_callbacks.callback_free_memory = callback_free_memory;
     dll_callbacks.callback_report_player_name = callback_report_player_name;
