@@ -80,6 +80,10 @@
 #define CLR_MSG_FAIL          CLR_BROWN
 #define CLR_MSG_HINT          CLR_BRIGHT_CYAN
 
+#define CLR_MSG_TALK          CLR_BRIGHT_CYAN
+#define CLR_MSG_TALK_ANGRY    CLR_ORANGE
+#define CLR_MSG_TALK_HAPPY    CLR_BRIGHT_GREEN
+
 struct menucoloring {
     struct nhregex *match;
     char *origstr;

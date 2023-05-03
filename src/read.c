@@ -516,7 +516,7 @@ struct obj* otmp;
     else
     {
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s, an inscription appears on %s in fiery letters:", revealed ? "Again" : "Suddenly", yname(otmp));
-        verbalize_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ash na... dur...");
+        verbalize_ex(ATR_NONE, CLR_ORANGE, "Ash na... dur...");
         if (otmp->speflags & SPEFLAGS_INSCRIPTION_REVEALED)
         {
             You("still couldn't make much sense of it.");

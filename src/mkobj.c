@@ -1317,13 +1317,13 @@ int alter_type;
             {
                 //play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_YOU_ALTER_THAT_YOU_PAY_FOR_IT : SHOPKEEPER_LINE_YOU_ALTER_THOSE_YOU_PAY_FOR_THEM);
                 play_voice_shopkeeper_costly_alteration(shkp, obj, alter_type);
-                verbalize("You %s %s, you pay for %s!", alteration_verbs[alter_type], those, them);
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You %s %s, you pay for %s!", alteration_verbs[alter_type], those, them);
                 didtalk = TRUE;
             }
         }
 
         if(!didtalk)
-            verbalize("You %s %s %s, you pay for %s!",
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You %s %s %s, you pay for %s!",
                       alteration_verbs[alter_type], those, simpleonames(obj),
                       them);
 
@@ -1340,7 +1340,7 @@ int alter_type;
             {
                 //play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_YOU_ALTER_THAT_YOU_PAY_FOR_IT : SHOPKEEPER_LINE_YOU_ALTER_THOSE_YOU_PAY_FOR_THEM);
                 play_voice_shopkeeper_costly_alteration(shkp, obj, alter_type);
-                verbalize("You %s %s, you pay for %s!",
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You %s %s, you pay for %s!",
                     alteration_verbs[alter_type], those, them);
                 obj->speflags |= SPEFLAGS_ADDED_TO_YOUR_BILL;
             }

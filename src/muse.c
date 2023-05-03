@@ -125,13 +125,13 @@ struct obj *obj;
                 /* can't wish for wands of death here.... */
                 if (rn2(2)) {
                     play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_FREED_ME);
-                    verbalize("You freed me!");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK, "You freed me!");
                     mtmp->mpeaceful = 1;
                     set_mhostility(mtmp);
                     newsym(mtmp->mx, mtmp->my);
                 } else {
                     play_monster_special_dialogue_line(mtmp, DJINN_LINE_IT_IS_ABOUT_TIME);
-                    verbalize("It is about time.");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK, "It is about time.");
                     play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
                     if (vis)
                         pline("%s vanishes.", Monnam(mtmp));

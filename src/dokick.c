@@ -567,7 +567,7 @@ uchar* hitres_ptr;
                 else
                 {
                     play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_THANK_YOU_SCUM);
-                    verbalize("Thank you, scum!");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Thank you, scum!");
                 }
             }
         } 
@@ -576,12 +576,12 @@ uchar* hitres_ptr;
             if (is_peaceful(mtmp))
             {
                 play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANK_YOU_FOR_YOUR_CONTRIBUTION);
-                verbalize("Thank you for your contribution.");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thank you for your contribution.");
             }
             else
             {
                 play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANKS_SCUM);
-                verbalize("Thanks, scum!");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Thanks, scum!");
             }
         }
         else if (mtmp->issmith || mtmp->isnpc) 
@@ -593,7 +593,7 @@ uchar* hitres_ptr;
                 else
                     play_monster_special_dialogue_line(mtmp, NPC_LINE_THANK_YOU_FOR_YOUR_ASSISTANCE);
 
-                verbalize("Thank you for your assistance.");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thank you for your assistance.");
             }
             else
             {
@@ -601,7 +601,7 @@ uchar* hitres_ptr;
                     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANKS_SCUM);
                 else
                     play_monster_special_dialogue_line(mtmp, NPC_LINE_THANKS_SCUM);
-                verbalize("Thanks, scum!");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Thanks, scum!");
             }
         } 
         else if (mtmp->isgd) 
@@ -620,7 +620,7 @@ uchar* hitres_ptr;
                 ? VAULT_GUARD_LINE_ILL_TAKE_CARE_OF_THAT_PLEASE_MOVE_ALONG
                 : VAULT_GUARD_LINE_ILL_TAKE_THAT_NOW_GET_MOVING);
 
-            verbalize(umoney
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, umoney
                     ? "Drop the rest and follow me."
                     : hidden_gold()
                           ? "You still have hidden gold.  Drop it now."
@@ -654,11 +654,11 @@ uchar* hitres_ptr;
             }
             if (is_peaceful(mtmp))
             {
-                verbalize("That should do.  Now beat it!");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "That should do.  Now beat it!");
             }
             else
             {
-                verbalize("That's not enough, coward!");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "That's not enough, coward!");
             }
         }
         return TRUE;
@@ -2128,10 +2128,10 @@ xchar dlev;          /* if !0 send to dlev near player */
                     if (iflags.using_gui_sounds)
                     {
                         play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_THIEF);
-                        verbalize("You thief!");
+                        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You thief!");
                     }
                     else
-                        verbalize("%s, you are a thief!", plname);
+                        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "%s, you are a thief!", plname);
                 }
                 /* should use verbalize here? */
             }

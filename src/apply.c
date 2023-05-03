@@ -2224,7 +2224,7 @@ struct obj **optr;
             play_voice_shopkeeper_simple_line(shkp, otmp->lamplit ? ((obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT) :
                 ((obj->quan > 1L) ? SHOPKEEPER_LINE_USE_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_USE_IT_BOUGHT_IT));
         }
-        verbalize("You %s %s, you bought %s!",
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You %s %s, you bought %s!",
             otmp->lamplit ? "burn" : "use",
             (obj->quan > 1L) ? "them" : "it",
             (obj->quan > 1L) ? "them" : "it");
@@ -2425,13 +2425,13 @@ struct obj *obj;
                 if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
                 {
                     play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_ITEM_ITSELF : SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_ITEMS_THEMSELVES);
-                    verbalize("That's in addition to the cost of %s %s, of course.",
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "That's in addition to the cost of %s %s, of course.",
                         obj->quan == 1L ? "the item" : "the items", obj->quan == 1L ? "itself" : "themselves");
                 }
             }
             else
             {
-                verbalize("That's in addition to the cost of %s %s, of course.",
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "That's in addition to the cost of %s %s, of course.",
                     yname(obj), obj->quan == 1L ? "itself" : "themselves");
             }
             bill_dummy_object(obj);
@@ -2512,7 +2512,7 @@ struct obj *obj;
                 {
                     play_voice_shopkeeper_simple_line(shkp, (obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT);
                 }
-                verbalize("You burn %s, you bought %s!", ithem, ithem);
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You burn %s, you bought %s!", ithem, ithem);
                 bill_dummy_object(obj);
             }
         }
@@ -2649,7 +2649,7 @@ struct obj **optr;
         if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_POTION);
-            verbalize("That's in addition to the cost of the potion, of course.");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "That's in addition to the cost of the potion, of course.");
         }
         bill_dummy_object(obj);
     }
@@ -3184,7 +3184,7 @@ struct obj *obj;
     {
         if (revive_corpse(corpse))
         {
-            verbalize("Yes...  But War does not preserve its enemies...");
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Yes...  But War does not preserve its enemies...");
         }
         else
         {
@@ -3234,13 +3234,13 @@ struct obj *obj;
                 if (shkp && inhishop(shkp) && is_obj_on_shk_bill(corpse, shkp))
                 {
                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_TIN_IT_YOU_BOUGHT_IT);
-                    verbalize(you_buy_it);
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, you_buy_it);
                 }
             }
             useup(corpse);
         } else {
             if (costly_spot(corpse->ox, corpse->oy) && !corpse->no_charge)
-                verbalize(you_buy_it);
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, you_buy_it);
             useupf(corpse, 1L);
         }
         (void) hold_another_object(can, "You make, but cannot pick up, %s.",

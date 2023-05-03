@@ -2520,7 +2520,7 @@ reverse_loot()
 
         if (coffers) {
             play_sfx_sound(SFX_VOICE_THRONE_ROOM_THANK_YOU_FOR_YOUR_CONTRIBUTION);
-            verbalize("Thank you for your contribution to reduce the debt.");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK, "Thank you for your contribution to reduce the debt.");
             freeinv(goldob);
             (void) add_to_container(coffers, goldob);
             coffers->owt = weight(coffers);

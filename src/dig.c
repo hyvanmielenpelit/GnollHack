@@ -1683,7 +1683,7 @@ boolean zap;
             if (zap || context.digging.warned) {
                 play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HALT_VANDAL_YOURE_UNDER_ARREST);
                 context.global_minimum_volume = 0.25f;
-                verbalize("Halt, vandal!  You're under arrest!");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Halt, vandal!  You're under arrest!");
                 context.global_minimum_volume = 0.0f;
                 (void) angry_guards(!!Deaf);
             } else {
@@ -1715,7 +1715,7 @@ boolean zap;
                 context.global_minimum_volume = 0.25f;
                 play_monster_special_dialogue_line(mtmp, dialogueline);
                 context.global_minimum_volume = 0.0f;
-                verbalize("Hey, stop damaging that %s!", str);
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Hey, stop damaging that %s!", str);
                 context.digging.warned = TRUE;
             }
             if (is_digging())

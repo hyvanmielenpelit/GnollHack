@@ -4212,25 +4212,25 @@ struct obj *obj;
     switch (chance) {
     case 0:
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_GRANT_ONE_WISH);
-        verbalize("I am in your debt.  I will grant one wish!");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "I am in your debt.  I will grant one wish!");
         /* give a wish and discard the monster (mtmp set to null) */
         mongrantswish(&mtmp);
         break;
     case 1:
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_THANK_YOU_FOR_FREEING);
-        verbalize("Thank you for freeing me!");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK, "Thank you for freeing me!");
         (void) tamedog(mtmp, (struct obj *) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
         break;
     case 2:
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_FREED_ME);
-        verbalize("You freed me!");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK, "You freed me!");
         mtmp->mpeaceful = TRUE;
         set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
         break;
     case 3:
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_IT_IS_ABOUT_TIME);
-        verbalize("It is about time!");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK, "It is about time!");
         play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
         play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
         if (canspotmon(mtmp))
@@ -4241,7 +4241,7 @@ struct obj *obj;
         break;
     default:
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_DISTURBED);
-        verbalize("You disturbed me, fool!");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You disturbed me, fool!");
         mtmp->mpeaceful = FALSE;
         set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);

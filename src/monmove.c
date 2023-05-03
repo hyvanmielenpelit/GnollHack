@@ -648,7 +648,7 @@ boolean fleemsg;
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flees from the painful light of %s.",
                           Monnam(mtmp), bare_artifactname(uwep));
                 else
-                    verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Bright light!");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Bright light!");
             } else
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to flee.", Monnam(mtmp));
         }
@@ -1379,7 +1379,7 @@ register int after;
     if (ptr == &mons[PM_MAIL_DAEMON])
     {
         if (!Deaf && canseemon(mtmp))
-            verbalize("I'm late!");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK, "I'm late!");
         mongone(mtmp);
         return 2;
     }
