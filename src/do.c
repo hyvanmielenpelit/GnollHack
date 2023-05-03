@@ -5854,18 +5854,18 @@ dodown()
 
     if (/*on_level(&valley_level, &u.uz)*/ Is_stronghold(&u.uz) && !u.uevent.gehennom_entered)
     {
-        You("are standing at the gate to Gehennom.");
-        pline("Unspeakable cruelty and harm lurk down there.");
+        You_ex(ATR_NONE, CLR_MSG_GOD, "are standing at the gate to Gehennom.");
+        pline_ex(ATR_NONE, CLR_MSG_GOD, "Unspeakable cruelty and harm lurk down there.");
         if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Gate to Gehennom", "Are you sure you want to enter?") != 'y')
             return 0;
         else
-            pline("So be it.");
+            pline_ex(ATR_NONE, CLR_MSG_GOD, "So be it.");
         u.uevent.gehennom_entered = 1; /* don't ask again */
     }
 
     if (!next_to_u())
     {
-        You("are held back by your pet!");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are held back by your pet!");
         return 0;
     }
 

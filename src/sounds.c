@@ -10930,9 +10930,15 @@ struct monst* mtmp;
     int booktype = (short)context.spbook.book->otyp;
     char learnbuf[BUFSZ] = "";
 
+    char splname[BUFSZ];
+    Sprintf(splname, "\"%s\"", OBJ_NAME(objects[booktype]));
+
     for (i = 0; i < MAXSPELL; i++)
         if (spellid(i) == booktype || spellid(i) == NO_SPELL)
             break;
+
+    int initialamount = i < MAXSPELL ? spl_book[i].sp_amount : 0;
+    int addedamount = 0;
 
     if (i == MAXSPELL)
     {
@@ -10941,14 +10947,14 @@ struct monst* mtmp;
     else if (spellid(i) == booktype)
     {
         /* Should not happen */
-        if (spellknow(i) > SPELL_IS_KEEN / 10)
-        {
-            play_sfx_sound(SFX_SPELL_KNOWN_ALREADY);
-            Sprintf(learnbuf, "You know %s quite well already.", OBJ_NAME(objects[booktype]));
-            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, learnbuf);
-            display_popup_text(learnbuf, "Spell Known Already", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
-        }
-        else
+        //if (spellknow(i) > SPELL_IS_KEEN / 10)
+        //{
+        //    play_sfx_sound(SFX_SPELL_KNOWN_ALREADY);
+        //    Sprintf(learnbuf, "You know %s quite well already.", OBJ_NAME(objects[booktype]));
+        //    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, learnbuf);
+        //    display_popup_text(learnbuf, "Spell Known Already", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        //}
+        //else
         { /* spellknow(i) <= SPELL_IS_KEEN/10 */
             incr_spell_nknow(i, 1);
             play_sfx_sound(SFX_SPELL_KEENER);
@@ -10956,6 +10962,12 @@ struct monst* mtmp;
                 spellknow(i) ? "keener" : "restored");
             pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, learnbuf);
             display_popup_text(learnbuf, "Knowledge Keener", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_POSITIVE, NO_GLYPH, POPUP_FLAGS_NONE);
+
+            if (spl_book[i].sp_matcomp > 0)
+            {
+                addedamount = matlists[spl_book[i].sp_matcomp].spellsgained;
+                spl_book[i].sp_amount += addedamount;
+            }
         }
     }
     else
@@ -10972,12 +10984,27 @@ struct monst* mtmp;
         spl_book[i].sp_skillchance = (int)objects[booktype].oc_spell_skill_chance;
 
         incr_spell_nknow(i, 1);
+
+        if (spl_book[i].sp_matcomp > 0)
+        {
+            addedamount = matlists[spl_book[i].sp_matcomp].spellsgained;
+            spl_book[i].sp_amount += addedamount;
+        }
+
         sortspells();
 
         play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
-        Sprintf(learnbuf, i > 0 ? "You add %s to your repertoire." : "You learn %s.", OBJ_NAME(objects[booktype]));
+        Sprintf(learnbuf, i > 0 ? "You add %s to your repertoire." : "You learn %s.", splname);
         pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, learnbuf);
         display_popup_text(learnbuf, "New Spell Learnt", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_POSITIVE, NO_GLYPH, POPUP_FLAGS_NONE);
+    }
+
+    if (addedamount > 0)
+    {
+        if (addedamount == 1)
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have one %scasting of %s prepared.", !initialamount ? "" : "more ", splname);
+        else
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have %d %scastings of %s prepared.", addedamount, !initialamount ? "" : "more ", splname);
     }
 
     return 1;

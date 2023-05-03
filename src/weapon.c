@@ -3886,14 +3886,14 @@ int
 shield_skill_ac_bonus(skill_level)
 int skill_level;
 {
-    return 2 * max(0, skill_level - 1);
+    return 5 * max(0, skill_level - 1);
 }
 
 int
 shield_skill_mc_bonus(skill_level)
 int skill_level;
 {
-    return max(0, skill_level - 1);
+    return 1 * max(0, skill_level - 1);
 }
 
 int
