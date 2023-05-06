@@ -336,7 +336,7 @@ register int tx, ty; /* destination of mail daemon */
         if ((mon = m_at(fx, fy)) != 0) /* save monster at this position */
             verbalize1(md_exclamations());
         else if (fx == u.ux && fy == u.uy)
-            verbalize("Excuse me.");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Excuse me.");
 
         if (mon)
             remove_monster(fx, fy);
@@ -364,7 +364,7 @@ register int tx, ty; /* destination of mail daemon */
         remove_monster(fx, fy);
         place_monster(md, fx, fy); /* display md with text below */
         newsym(fx, fy);
-        verbalize("This place's too crowded.  I'm outta here.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "This place's too crowded.  I'm outta here.");
         remove_monster(fx, fy);
 
         if ((mon->mx != fx) || (mon->my != fy)) /* put mon back */
@@ -405,7 +405,7 @@ struct mail_info *info;
         goto go_back;
 
     message_seen = TRUE;
-    verbalize("%s, %s!  %s.", Hello(md), plname, info->display_txt);
+    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s, %s!  %s.", Hello(md), plname, info->display_txt);
 
     if (info->message_typ) {
         struct obj *obj = mksobj(SCR_MAIL, FALSE, FALSE, FALSE);
@@ -416,7 +416,7 @@ struct mail_info *info;
             new_omailcmd(obj, info->response_cmd);
 
         if (distu(md->mx, md->my) > 2)
-            verbalize("Catch!");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Catch!");
         display_nhwindow(WIN_MESSAGE, FALSE);
         obj = hold_another_object(obj, "Oops!", (const char *) 0,
                                   (const char *) 0);
@@ -587,7 +587,7 @@ boolean adminmsg;
 
         pline(msgfrom, curline);
         if (adminmsg)
-            verbalize(msg);
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, msg);
         else
             pline("It reads: \"%s\".", msg);
 

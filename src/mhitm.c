@@ -1363,7 +1363,7 @@ register struct obj* omonwep;
         if (flags.verbose && !Deaf)
         {
             play_sfx_sound_at_location(SFX_BURP, magr->mx, magr->my);
-            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Burrrrp!");
+            verbalize_angry1("Burrrrp!");
         }
         // mdef->mhp;
         break;

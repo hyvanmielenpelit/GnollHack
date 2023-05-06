@@ -2649,7 +2649,7 @@ struct obj **optr;
         if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_POTION);
-            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "That's in addition to the cost of the potion, of course.");
+            verbalize_angry1("That's in addition to the cost of the potion, of course.");
         }
         bill_dummy_object(obj);
     }
@@ -3234,13 +3234,13 @@ struct obj *obj;
                 if (shkp && inhishop(shkp) && is_obj_on_shk_bill(corpse, shkp))
                 {
                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_TIN_IT_YOU_BOUGHT_IT);
-                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, you_buy_it);
+                    verbalize_angry1(you_buy_it);
                 }
             }
             useup(corpse);
         } else {
             if (costly_spot(corpse->ox, corpse->oy) && !corpse->no_charge)
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, you_buy_it);
+                verbalize_angry1(you_buy_it);
             useupf(corpse, 1L);
         }
         (void) hold_another_object(can, "You make, but cannot pick up, %s.",

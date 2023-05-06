@@ -722,7 +722,7 @@ boolean is_auto;
                 && (mtmp->isshk))
             {
                 play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_NO_CHECKS_NO_CREDIT_NO_PROBLEM);
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK, "No checks, no credit, no problem.");
+                verbalize_talk1("No checks, no credit, no problem.");
             }
             else
                 pline("I don't think %s would appreciate that.",

@@ -817,7 +817,7 @@ int roomno;
                     !shrined ? "desecrated" : "sacred");
             msg1 = buf;
             spdl_id1 = !shrined ? PRIEST_SPECIAL_DIALOGUE_PILGRIM_ENTER_DESECRATED_PLACE : PRIEST_SPECIAL_DIALOGUE_PILGRIM_ENTER_SACRED_PLACE;
-            msg1color = CLR_MSG_TALK;
+            msg1color = CLR_MSG_TALK_NORMAL;
         }
 
         if (msg1 && can_speak && !Deaf)
@@ -991,9 +991,9 @@ int roomno;
 
         if (msg1 && can_speak && !Deaf) 
         {
-            verbalize_ex1(ATR_NONE, CLR_MSG_TALK, msg1);
+            verbalize_talk1(msg1);
             if (msg2)
-                verbalize_ex1(ATR_NONE, CLR_MSG_TALK, msg2);
+                verbalize_talk1(msg2);
             esmi_p->enter_time = moves + (long)d(10, 100); /* ~505 */
         }
     }
@@ -1057,7 +1057,7 @@ register struct monst *priest;
         int roll = rn2(3);
         priest->mpeaceful = 0;
         play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_WORD_OR_TWO + roll);
-        verbalize1(cranky_msg[roll]);
+        verbalize_angry1(cranky_msg[roll]);
         return;
     }
 
@@ -1109,7 +1109,7 @@ register struct monst *priest;
         if ((offer = bribe(priest)) == 0) 
         {
             play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_REGRET_ACTION);
-            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Thou shalt regret thine action!");
+            verbalize_angry1("Thou shalt regret thine action!");
             if (coaligned)
                 adjalign(-1);
         }
@@ -1118,12 +1118,12 @@ register struct monst *priest;
             if (money_cnt(invent) > (offer * 2L)) 
             {
                 play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_CHEAPSKATE);
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Cheapskate.");
+                verbalize_angry1("Cheapskate.");
             } 
             else 
             {
                 play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_THANK_FOR_CONTRIBUTION);
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "I thank thee for thy contribution.");
+                verbalize_happy1("I thank thee for thy contribution.");
                 /* give player some token */
                 exercise(A_WIS, TRUE);
             }
@@ -1131,12 +1131,12 @@ register struct monst *priest;
         else if (offer < (u.ulevel * 400)) 
         {
             play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_PIOUS_INDIVIDUAL);
-            verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thou art indeed a pious individual.");
+            verbalize_happy1("Thou art indeed a pious individual.");
             if (money_cnt(invent) < (offer * 2L)) {
                 if (coaligned && u.ualign.record <= ALGN_SINNED)
                     adjalign(1);
                 play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_BESTOW_BLESSING);
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "I bestow upon thee a blessing.");
+                verbalize_happy1("I bestow upon thee a blessing.");
                 incr_itimeout(&HClairvoyant, rn1(500, 500));
                 refresh_u_tile_gui_info(TRUE);
             }
@@ -1151,7 +1151,7 @@ register struct monst *priest;
                            && (u.ublessed < 8 || !rn2(u.ublessed)))))
         {
             play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_DEVOTION_REWARDED);
-            verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thy devotion has been rewarded.");
+            verbalize_happy1("Thy devotion has been rewarded.");
             if (u.ublessed == 0)
                 u.ublessed = rnd(3);
             else
@@ -1160,7 +1160,7 @@ register struct monst *priest;
         else
         {
             play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_GENEROSITY_APPRECIATED);
-            verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thy selfless generosity is deeply appreciated.");
+            verbalize_happy1("Thy selfless generosity is deeply appreciated.");
             if (money_cnt(invent) < (offer * 2L) && coaligned)
             {
                 if (strayed && (moves - u.ucleansed) > 5000L) 

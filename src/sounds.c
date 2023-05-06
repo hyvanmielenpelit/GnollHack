@@ -983,7 +983,7 @@ register struct monst *mtmp;
     else if (mtmp->data->msound >= MS_HUMANOID) {
         if (!canspotmon(mtmp))
             map_invisible(mtmp->mx, mtmp->my);
-        verbalize("I'm hungry.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "I'm hungry.");
     }
 }
 
@@ -1021,8 +1021,8 @@ boolean dopopup, fromchatmenu;
 {
     char verbuf[BUFSZ];
     register const char *pline_msg = 0, /* Monnam(mtmp) will be prepended */
-        *verbl_msg = 0,                 /* verbalize() */
-        *verbl_msg_mcan = 0;            /* verbalize() if cancelled */
+        *verbl_msg = 0,                 /* verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, ) */
+        *verbl_msg_mcan = 0;            /* verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, ) if cancelled */
     struct permonst *ptr = mtmp->data;
     int msound = ptr->msound;
     char furiosbuf[BUFSZ] = "";
@@ -1504,13 +1504,13 @@ bark_here:
             {
             default:
             case 0:
-                verbalize("Thou hast strayed from the %s path, %s.", align_str(u.ualignbase[A_ORIGINAL]), is_living(youmonst.data) ? "mortal" : "creature");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Thou hast strayed from the %s path, %s.", align_str(u.ualignbase[A_ORIGINAL]), is_living(youmonst.data) ? "mortal" : "creature");
                 break;
             case 1:
-                verbalize("I have been sent by %s to punish thee for thine insolence.", align_gname(u.ualignbase[A_ORIGINAL]));
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "I have been sent by %s to punish thee for thine insolence.", align_gname(u.ualignbase[A_ORIGINAL]));
                 break;
             case 2:
-                verbalize1("The punishment for such insolence is death.");
+                verbalize_angry1("The punishment for such insolence is death.");
                 break;
             }
             mtmp->talkstate_special++;
@@ -1784,7 +1784,7 @@ bark_here:
         if (is_peaceful(mtmp))
         {
             play_monster_special_dialogue_line(mtmp, flags.female ? KOP_LINE_JUST_THE_FACTS_MAAM : KOP_LINE_JUST_THE_FACTS_SIR);
-            verbalize("Just the facts, %s.", flags.female ? "Ma'am" : "Sir");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Just the facts, %s.", flags.female ? "Ma'am" : "Sir");
         }
         else 
         {
@@ -1958,7 +1958,7 @@ bark_here:
         if (dopopup)
             popup_talk_line(mtmp, verbl_msg_mcan);
         else
-            verbalize1(verbl_msg_mcan);
+            verbalize_talk1(verbl_msg_mcan);
     }
     else if (verbl_msg) 
     {
@@ -4781,7 +4781,7 @@ struct monst* mtmp;
             popup_talk_line_ex(mtmp, rumorbuf, ATR_NONE, CLR_MSG_GOD, TRUE, FALSE);
         }
         else
-            verbalize("%s", rumorbuf);
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s", rumorbuf);
 
         display_popup_text(rumorbuf, "Advice", POPUP_TEXT_ADVICE, ATR_NONE, is_death ? CLR_MSG_GOD : NO_COLOR, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
 
@@ -5361,7 +5361,7 @@ struct monst* mtmp;
                                 {
                                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DROP_THAT_NOW);
                                     pline("%s shouts:", Monnam(shkp));
-                                    verbalize("Drop that, now!");
+                                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Drop that, now!");
                                     if (iflags.using_gui_sounds)
                                         delay_output_milliseconds(1200);
                                     play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WHIMPER);
@@ -6408,9 +6408,9 @@ struct monst* mtmp;
             if(is_undead(mtmp->data) || is_demon(mtmp->data))
                 play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_TRADING_GREETINGS_MORTAL);
             play_monster_item_trading_line(mtmp, sellable_item_count == 1 ? MONSTER_ITEM_TRADING_LINE_TRADING_IM_WILLING_TO_TRADE_THE_FOLLOWING_ITEM : MONSTER_ITEM_TRADING_LINE_TRADING_IM_WILLING_TO_TRADE_THE_FOLLOWING_ITEMS);
-            verbalize("%sI'm willing to trade the following item%s.", is_undead(mtmp->data) || is_demon(mtmp->data) ? "Greetings, mortal. " : "", plur(sellable_item_count));
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%sI'm willing to trade the following item%s.", is_undead(mtmp->data) || is_demon(mtmp->data) ? "Greetings, mortal. " : "", plur(sellable_item_count));
             play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_BUT_BE_QUICK_MY_PATIENCE_IS_LIMITED);
-            verbalize("But be quick, my patience is limited.");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "But be quick, my patience is limited.");
         }
         else if (!Deaf && is_speaking(mtmp->data))
         {
@@ -6423,7 +6423,7 @@ struct monst* mtmp;
                 Strcpy(itembuf, "items");
 
             play_monster_item_trading_line(mtmp, sellable_item_count == 1 ? MONSTER_ITEM_TRADING_LINE_TRADING_MAY_I_INTEREST_YOU_IN_FOLLOWING_ITEM : MONSTER_ITEM_TRADING_LINE_TRADING_MAY_I_INTEREST_YOU_IN_FOLLOWING_ITEMS);
-            verbalize("Hello, adventurer! May I interest you in the following %s?", itembuf);
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Hello, adventurer! May I interest you in the following %s?", itembuf);
         }
         else
             pline("%s shows you %s merchandise.", noittame_Monnam(mtmp), mhis(mtmp));
@@ -6487,7 +6487,7 @@ struct monst* mtmp;
                 {
                     if (umoney < item_cost) {
                         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-                        You("don't have enough money for %s!", cxname(item_to_buy));
+                        You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for %s!", cxname(item_to_buy));
                         break; /* for break */
                     }
                     bought = TRUE;
@@ -6532,13 +6532,13 @@ struct monst* mtmp;
             {
                 play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_TRADING_USE_YOUR_PURCHASE_WELL);
                 popup_talk_line_ex(mtmp, "Use your purchase well!", ATR_NONE, NO_COLOR, TRUE, TRUE);
-                //verbalize("Use your purchase well!");
+                //verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Use your purchase well!");
             }
             else if (!Deaf && (is_speaking(mtmp->data) || (mtmp->isshk && !muteshk(mtmp))))
             {
                 play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_TRADING_THANK_YOU_FOR_YOUR_PURCHASE);
                 popup_talk_line_ex(mtmp, "Thank you for your purchase!", ATR_NONE, NO_COLOR, TRUE, TRUE);
-                //verbalize("Thank you for your purchase!");
+                //verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Thank you for your purchase!");
             }
             else
             {
@@ -6959,7 +6959,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < extrahealing_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for that!");
             return 0;
         }
         u_pay = extrahealing_cost;
@@ -7159,7 +7159,7 @@ struct monst* mtmp;
     if (priest_action == 2)
     {
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_PIOUS_INDIVIDUAL);
-        verbalize("Thou art indeed a pious individual.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thou art indeed a pious individual.");
         if (coaligned && u.ualign.record <= ALGN_SINNED)
         {
             play_sfx_sound(SFX_ALTAR_ADD_ALIGNMENT);
@@ -7167,7 +7167,7 @@ struct monst* mtmp;
         }
         play_sfx_sound(SFX_PRAY_BLESS_WATER);
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_BESTOW_BLESSING);
-        verbalize("I bestow upon thee a blessing.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "I bestow upon thee a blessing.");
         incr_itimeout(&HClairvoyant, rn1(500, 500));
         refresh_u_tile_gui_info(TRUE);
     }
@@ -7182,7 +7182,7 @@ struct monst* mtmp;
     {
         play_sfx_sound(SFX_ALTAR_GIFT);
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_DEVOTION_REWARDED);
-        verbalize("Thy devotion has been rewarded.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thy devotion has been rewarded.");
         if (u.ublessed == 0)
             u.ublessed = rnd(3);
         else
@@ -7191,7 +7191,7 @@ struct monst* mtmp;
     else
     {
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_GENEROSITY_APPRECIATED);
-        verbalize("Thy selfless generosity is deeply appreciated.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thy selfless generosity is deeply appreciated.");
         if (coaligned)
         {
             if (strayed && (moves - u.ucleansed) > 5000L)
@@ -7251,23 +7251,23 @@ struct monst* mtmp;
     u.uconduct.gnostic++;
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_IS_LIKE);
-    verbalize("Very well, then. Let's see what your fortune is like.");
+    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Very well, then. Let's see what your fortune is like.");
 
     if (can_pray(FALSE))
     {
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_CAN_SAFELY_PRAY);
-        verbalize("First, I see that you can safely pray.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "First, I see that you can safely pray.");
 
     }
     else
     {
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_CANNOT_SAFELY_PRAY);
-        verbalize("First, you should know that you cannot safely pray.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "First, you should know that you cannot safely pray.");
 
         if (u.ugangr)
         {
             play_monster_special_dialogue_line(mtmp, u.ugangr > 6 ? PRIEST_SPECIAL_DIALOGUE_GOD_EXTREMELY_ANGRY : u.ugangr > 3 ? PRIEST_SPECIAL_DIALOGUE_GOD_VERY_ANGRY : PRIEST_SPECIAL_DIALOGUE_GOD_ANGRY );
-            verbalize("I see that %s is %sangry with you.", iflags.using_gui_sounds ? "your god" : u_gname(), u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "I see that %s is %sangry with you.", iflags.using_gui_sounds ? "your god" : u_gname(), u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
         }
 
         if (u.uprayer_timeout > 0)
@@ -7275,15 +7275,15 @@ struct monst* mtmp;
             if (iflags.using_gui_sounds)
             {
                 play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_PRAYER_CONDUCT_NUMBER);
-                verbalize("For your prayer conduct, a number appears before me. (The number appears to be %d.)", u.uprayer_timeout / 10 + 1);
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "For your prayer conduct, a number appears before me. (The number appears to be %d.)", u.uprayer_timeout / 10 + 1);
             }
             else
-                verbalize("For your prayer conduct, the number %d appears before me.", u.uprayer_timeout / 10 + 1);
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "For your prayer conduct, the number %d appears before me.", u.uprayer_timeout / 10 + 1);
 
             if (u.uprayer_timeout > 300)
             {
                 play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_GOD_TIRED_OF_WHINING);
-                verbalize("I can see that %s is quite tired of your constant whining.", iflags.using_gui_sounds ? "your god" : u_gname());
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "I can see that %s is quite tired of your constant whining.", iflags.using_gui_sounds ? "your god" : u_gname());
             }
 
             if(u.uprayer_timeout >= 50)
@@ -7291,7 +7291,7 @@ struct monst* mtmp;
             else
                 play_monster_special_dialogue_line(mtmp, u.uprayer_timeout < 50 ? PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LITTLE_LONGER : u.uprayer_timeout > 200 ? PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LONG_TIME : PRIEST_SPECIAL_DIALOGUE_MUST_WAIT);
 
-            verbalize("Thus, %s wait %sbefore bothering %s again.",
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Thus, %s wait %sbefore bothering %s again.",
                 u.uprayer_timeout >= 50 ? "it would be wise to" : "you must",
                 u.uprayer_timeout < 50 ? "a little longer " : u.uprayer_timeout > 200 ? "a long time " : "",
                 iflags.using_gui_sounds ? "your god" : u_gname());
@@ -7310,7 +7310,7 @@ struct monst* mtmp;
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_NUMBER);
         play_monster_special_dialogue_line(mtmp, abs(Luck) >= 10 ? PRIEST_SPECIAL_DIALOGUE_EXTREMELY_UNLUCKY_NUMBER : abs(Luck) >= 5 ? PRIEST_SPECIAL_DIALOGUE_VERY_UNLUCKY_NUMBER : PRIEST_SPECIAL_DIALOGUE_UNLUCKY_NUMBER);
 
-        verbalize("For your fortune, I see a number%s. That is not good, for it is %s unlucky number.%s",
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "For your fortune, I see a number%s. That is not good, for it is %s unlucky number.%s",
             buf1, abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "an", buf2);
     }
     else if (Luck > 0)
@@ -7319,17 +7319,17 @@ struct monst* mtmp;
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_NUMBER);
         play_monster_special_dialogue_line(mtmp, abs(Luck) >= 10 ? PRIEST_SPECIAL_DIALOGUE_EXTREMELY_LUCKY_NUMBER : abs(Luck) >= 5 ? PRIEST_SPECIAL_DIALOGUE_VERY_LUCKY_NUMBER : PRIEST_SPECIAL_DIALOGUE_LUCKY_NUMBER);
 
-        verbalize("For your fortune, I see a number%s. That is good, for it is %s lucky number.%s",
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "For your fortune, I see a number%s. That is good, for it is %s lucky number.%s",
             buf1, abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "an", buf2);
     }
     else
     {
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_NEUTRAL);
-        verbalize("For your fortune, my vision is neutral.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "For your fortune, my vision is neutral.");
     }
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANK_YOU_FOR_YOUR_INTEREST);
-    verbalize("That's all for now. Thank you for your interest in divine matters.");
+    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "That's all for now. Thank you for your interest in divine matters.");
 
     return 1;
 }
@@ -8694,13 +8694,13 @@ struct monst* mtmp;
     if (is_peaceful(mtmp))
     {
         play_monster_special_dialogue_line(mtmp, NPC_LINE_THATS_A_DEAL_BE_MORE_CAREFUL_NEXT_TIME);
-        verbalize("That's a deal. Be more careful next time.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "That's a deal. Be more careful next time.");
 
     }
     else
     {
         play_monster_special_dialogue_line(mtmp, NPC_LINE_ON_SECOND_THOUGHT_MAYBE_YOU_SHOULD_HANG_FOR_YOUR_CRIMES_ANYWAY);
-        verbalize("On second thought, maybe you should hang for your crimes anyway.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "On second thought, maybe you should hang for your crimes anyway.");
     }
 
     return 1;
@@ -8841,7 +8841,7 @@ struct monst* mtmp;
         return 0;
     else if (mvitals[PM_WATCHMAN].died > 0 || mvitals[PM_WATCH_CAPTAIN].died > 0) {
         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_YOU_WILL_HANG_FOR_YOUR_CRIMES_SCUM);
-        verbalize("You will hang for your crimes, scum!");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You will hang for your crimes, scum!");
         return 0;
     }
     else if (mtmp->mhp < (3 * mtmp->mhpmax) / 4) {
@@ -8880,12 +8880,12 @@ struct monst* mtmp;
     if (is_peaceful(mtmp))
     {
         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_FINE_ITS_ALRIGHT_NOW_BE_MORE_CAREFUL_NEXT_TIME);
-        verbalize("Fine, it's alright now. Be more careful next time.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Fine, it's alright now. Be more careful next time.");
     }
     else
     {
         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_ON_SECOND_THOUGHT_MAYBE_ILL_HANG_YOU_ANYWAY);
-        verbalize("On second thought, maybe I'll hang you anyway.");
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "On second thought, maybe I'll hang you anyway.");
     }
 
     return 1; 
@@ -9431,7 +9431,7 @@ struct monst* mtmp;
 const char** linearray;
 enum ghsound_types soundid;
 {
-    popup_talk(mtmp, linearray, soundid, ATR_NONE, NO_COLOR, TRUE, TRUE);
+    popup_talk(mtmp, linearray, soundid, ATR_NONE, CLR_MSG_TALK_NORMAL, TRUE, TRUE);
 }
 
 #if 0
@@ -10184,7 +10184,7 @@ int special_dialogue_sound_id;
         if (umoney < service_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for that!");
             return 0;
         }
         u_pay = service_cost;
@@ -10254,7 +10254,7 @@ int special_dialogue_sound_id;
         if (umoney < service_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for that!");
             return 0;
         }
         u_pay = service_cost;

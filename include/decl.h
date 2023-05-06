@@ -512,6 +512,9 @@ E NEARDATA winid WIN_MAP, WIN_INVEN, WIN_HERE;
 #define You_hear_ex1(a, b, cstr) You_hear_ex(a, b, "%s", cstr)
 #define You_cant_ex1(a, b, cstr) You_cant_ex(a, b, "%s", cstr)
 #define verbalize_ex1(a, b, cstr) verbalize_ex(a, b, "%s", cstr)
+#define verbalize_talk1(cstr) verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s", cstr)
+#define verbalize_angry1(cstr) verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "%s", cstr)
+#define verbalize_happy1(cstr) verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "%s", cstr)
 
 #define pline_ex1_popup(a, b, cstr, title, dopop) pline_ex1(a, b, cstr); if (dopop) display_popup_text(cstr, title, POPUP_TEXT_GENERAL, a, b, NO_GLYPH, 0)
 

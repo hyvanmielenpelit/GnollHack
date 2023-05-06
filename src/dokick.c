@@ -567,7 +567,7 @@ uchar* hitres_ptr;
                 else
                 {
                     play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_THANK_YOU_SCUM);
-                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Thank you, scum!");
+                    verbalize_angry1("Thank you, scum!");
                 }
             }
         } 
@@ -576,12 +576,12 @@ uchar* hitres_ptr;
             if (is_peaceful(mtmp))
             {
                 play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANK_YOU_FOR_YOUR_CONTRIBUTION);
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thank you for your contribution.");
+                verbalize_happy1("Thank you for your contribution.");
             }
             else
             {
                 play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANKS_SCUM);
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Thanks, scum!");
+                verbalize_angry1("Thanks, scum!");
             }
         }
         else if (mtmp->issmith || mtmp->isnpc) 
@@ -593,7 +593,7 @@ uchar* hitres_ptr;
                 else
                     play_monster_special_dialogue_line(mtmp, NPC_LINE_THANK_YOU_FOR_YOUR_ASSISTANCE);
 
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thank you for your assistance.");
+                verbalize_happy1("Thank you for your assistance.");
             }
             else
             {
@@ -601,7 +601,7 @@ uchar* hitres_ptr;
                     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANKS_SCUM);
                 else
                     play_monster_special_dialogue_line(mtmp, NPC_LINE_THANKS_SCUM);
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Thanks, scum!");
+                verbalize_angry1("Thanks, scum!");
             }
         } 
         else if (mtmp->isgd) 
@@ -620,7 +620,7 @@ uchar* hitres_ptr;
                 ? VAULT_GUARD_LINE_ILL_TAKE_CARE_OF_THAT_PLEASE_MOVE_ALONG
                 : VAULT_GUARD_LINE_ILL_TAKE_THAT_NOW_GET_MOVING);
 
-            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, umoney
+            verbalize_angry1(umoney
                     ? "Drop the rest and follow me."
                     : hidden_gold()
                           ? "You still have hidden gold.  Drop it now."
@@ -654,11 +654,11 @@ uchar* hitres_ptr;
             }
             if (is_peaceful(mtmp))
             {
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "That should do.  Now beat it!");
+                verbalize_angry1("That should do.  Now beat it!");
             }
             else
             {
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "That's not enough, coward!");
+                verbalize_angry1("That's not enough, coward!");
             }
         }
         return TRUE;
@@ -1934,7 +1934,7 @@ dokick() {
                     context.global_minimum_volume = 0.25f;
                     play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HALT_THIEF_YOURE_UNDER_ARREST);
                     context.global_minimum_volume = 0.0f;
-                    mon_yells(mtmp, "Halt, thief!  You're under arrest!", "yell", "angrily", FALSE);
+                    mon_yells(mtmp, "Halt, thief!  You're under arrest!", "yell", "angrily", FALSE, TRUE);
                     (void) angry_guards(FALSE);
                     break;
                 }
@@ -1963,13 +1963,13 @@ dokick() {
                         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HALT_VANDAL_YOURE_UNDER_ARREST);
                         context.global_minimum_volume = 0.0f;
                         mon_yells(mtmp,
-                                  "Halt, vandal!  You're under arrest!", "yell", "angrily", FALSE);
+                                  "Halt, vandal!  You're under arrest!", "yell", "angrily", FALSE, TRUE);
                         (void) angry_guards(FALSE);
                     } else {
                         context.global_minimum_volume = 0.25f;
                         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HEY_STOP_DAMAGING_THAT_DOOR);
                         context.global_minimum_volume = 0.0f;
-                        mon_yells(mtmp, "Hey, stop damaging that door!", "yell", "angrily", FALSE);
+                        mon_yells(mtmp, "Hey, stop damaging that door!", "yell", "angrily", FALSE, TRUE);
                         levl[x][y].looted |= D_WARNED;
                     }
                     break;
@@ -2128,7 +2128,7 @@ xchar dlev;          /* if !0 send to dlev near player */
                     if (iflags.using_gui_sounds)
                     {
                         play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_THIEF);
-                        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You thief!");
+                        verbalize_angry1("You thief!");
                     }
                     else
                         verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "%s, you are a thief!", plname);

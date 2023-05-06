@@ -2102,7 +2102,7 @@ E boolean FDECL(onscary, (int, int, struct monst *));
 E boolean FDECL(onnopickup, (int, int, struct monst*));
 E void FDECL(monflee, (struct monst *, int, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(make_mon_fearful, (struct monst*, int));
-E void FDECL(mon_yells, (struct monst *, const char *, const char *, const char*, BOOLEAN_P));
+E void FDECL(mon_yells, (struct monst *, const char *, const char *, const char*, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(check_mon_talk, (struct monst*));
 E int FDECL(dochug, (struct monst *));
 E boolean FDECL(m_digweapon_check, (struct monst *, XCHAR_P, XCHAR_P));

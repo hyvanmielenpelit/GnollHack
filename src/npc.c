@@ -335,7 +335,7 @@ int roomno;
                 play_monster_special_dialogue_line(npc, dialogueline);
                 context.global_minimum_volume = 0.0;
                 Sprintf(buf, "%s", npc_subtype_definitions[npctype].revival_line);
-                verbalize1(buf);
+                verbalize_talk1(buf);
             }
             else if (moves >= enpc_p->enter_time)
             {
@@ -349,7 +349,7 @@ int roomno;
                 else
                     Sprintf(buf, "Adventurer, welcome!");
 
-                verbalize1(buf);
+                verbalize_talk1(buf);
                 enpc_p->enter_time = moves + (long)d(5, 50); /* ~125 */
             }
         }

@@ -193,7 +193,7 @@ boolean isyou;
                         context.global_minimum_volume = 0.25f;
                         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HEY_STOP_USING_THAT_FOUNTAIN);
                         context.global_minimum_volume = 0.0f;
-                        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Hey, stop using that fountain!");
+                        verbalize_angry1("Hey, stop using that fountain!");
                     } else {
                         pline("%s earnestly %s %s %s!",
                               Amonnam(mtmp),

@@ -431,7 +431,7 @@ boolean newlev;
         if (!Deaf && !muteshk(shkp))
         {
             play_voice_shopkeeper_simple_line(shkp, NOTANGRY(shkp) ? SHOPKEEPER_LINE_PLEASE_PAY_BEFORE_LEAVING : SHOPKEEPER_LINE_DONT_YOU_LEAVE_BEFORE_PAYING);
-            verbalize(NOTANGRY(shkp) ? "%s!  Please pay before leaving."
+            verbalize_ex(ATR_NONE, NOTANGRY(shkp) ? CLR_MSG_TALK_NORMAL : CLR_MSG_TALK_ANGRY, NOTANGRY(shkp) ? "%s!  Please pay before leaving."
                 : "%s!  Don't you leave without paying!",
                 iflags.using_gui_sounds ? "Adventurer" : plname);
         }
@@ -592,7 +592,7 @@ char *enterstring;
         if (!Deaf && !muteshk(shkp))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_INVISIBLE_CUSTOMERS_NOT_WELCOME);
-            verbalize("Invisible customers are not welcome!");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Invisible customers are not welcome!");
         }
         else
             pline("%s stands firm as if %s knows you are there.",
@@ -608,11 +608,11 @@ char *enterstring;
             if (iflags.using_gui_sounds)
             {
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_DARE_TO_RETURN_TO_MY_STORE);
-                verbalize("So, adventurer, you dare return to my store?!");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "So, adventurer, you dare return to my store?!");
             }
             else
             {
-                verbalize("So, %s, you dare return to %s %s?!", plname,
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "So, %s, you dare return to %s %s?!", plname,
                     s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
             }
         }
@@ -634,14 +634,14 @@ char *enterstring;
             {
                 play_voice_shopkeeper_welcome(shkp, rt);
                 if(eshkp->visitct > 0)
-                    verbalize("%s, adventurer!  Welcome back to my store!", Hello(shkp));
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s, adventurer!  Welcome back to my store!", Hello(shkp));
                 else
-                    verbalize("%s, adventurer!  Welcome to my %s!", Hello(shkp), shtypes[rt - SHOPBASE].name);
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s, adventurer!  Welcome to my %s!", Hello(shkp), shtypes[rt - SHOPBASE].name);
             }
             else
             {
                 shkp->u_know_mname = 1;
-                verbalize("%s, %s!  Welcome%s to %s %s!", Hello(shkp), plname,
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s, %s!  Welcome%s to %s %s!", Hello(shkp), plname,
                     eshkp->visitct ? " again" : "",
                     s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
             }
@@ -704,7 +704,7 @@ char *enterstring;
             if (!Deaf && !muteshk(shkp))
             {
                 play_voice_shopkeeper_leave_pick_outside(shkp, tool, cnt, !NOTANGRY(shkp));
-                verbalize(NOTANGRY(shkp)
+                verbalize_ex(ATR_NONE, NOTANGRY(shkp) ? CLR_MSG_TALK_NORMAL : CLR_MSG_TALK_ANGRY, NOTANGRY(shkp)
                     ? "Will you please leave your %s%s outside?"
                     : "Leave the %s%s outside.",
                     tool, plur(cnt));
@@ -722,7 +722,7 @@ char *enterstring;
             if (!Deaf && !muteshk(shkp))
             {
                 play_voice_shopkeeper_leave_pick_outside(shkp, "steed", 1, !NOTANGRY(shkp));
-                verbalize(NOTANGRY(shkp) ? "Will you please leave %s outside?"
+                verbalize_ex(ATR_NONE, NOTANGRY(shkp) ? CLR_MSG_TALK_NORMAL : CLR_MSG_TALK_ANGRY, NOTANGRY(shkp) ? "Will you please leave %s outside?"
                     : "Leave %s outside.",
                     iflags.using_gui_sounds ? "your steed" : y_monnam(u.usteed));
             }
@@ -768,7 +768,7 @@ struct obj *obj;
             {
                 const char* cad_str = cad(FALSE);
                 play_voice_shopkeeper_cad_line(shkp, SHOPKEEPER_CAD_LINE_YOU_SNEAKY, cad_str);
-                verbalize("You sneaky %s!  Get out of here with that pick!",
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You sneaky %s!  Get out of here with that pick!",
                     cad_str);
             }
             else
@@ -1679,11 +1679,11 @@ dopay()
             {
                 delay_output_milliseconds(200);
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THANK_YOU_SHOPPING_IN_MY_STORE);
-                verbalize("Thank you for shopping in my store!");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Thank you for shopping in my store!");
             }
             else
             {
-                verbalize("Thank you for shopping in %s %s!",
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Thank you for shopping in %s %s!",
                     s_suffix(shkname(shkp)),
                     shtypes[eshkp->shoptype - SHOPBASE].name);
             }
@@ -1763,7 +1763,7 @@ boolean itemize;
             if (!Deaf && !muteshk(shkp))
             {
                 play_voice_shopkeeper_pay_before_buying(shkp, obj->quan, save_quan);
-                verbalize("%s for the other %s before buying %s.",
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s for the other %s before buying %s.",
                       ANGRY(shkp) ? "Pay" : "Please pay",
                       simpleonames(obj), /* short name suffices */
                       save_quan > 1L ? "these" : "this one");
@@ -2446,11 +2446,11 @@ boolean quietly;
                 else 
                 {
                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ID_HANG_ONTO_THAT);
-                    verbalize("No thanks, I'd hang onto that if I were you.");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "No thanks, I'd hang onto that if I were you.");
                     if (obj->special_quality < 7)
                     {
                         play_voice_shopkeeper_candelabrum_candles(shkp, obj);
-                        verbalize(
+                        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, 
                             "You'll need %d%s candle%s to go along with it.",
                             (7 - obj->special_quality), (obj->special_quality > 0) ? " more" : "",
                             plur(7 - obj->special_quality));
@@ -2464,7 +2464,7 @@ boolean quietly;
                 if (!Deaf && !muteshk(shkp))
                 {
                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_I_WONT_STOCK_THAT);
-                    verbalize("I won't stock that.  Take it out of here!");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "I won't stock that.  Take it out of here!");
                 }
                 else
                     pline("%s shakes %s %s in refusal.",
@@ -3348,7 +3348,7 @@ xchar x, y;
         if (!Deaf && !muteshk(shkp))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THANK_YOU_SCUM);
-            verbalize("Thank you, scum!");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Thank you, scum!");
         }
         else
             pline("%s smirks with satisfaction.", Shknam(shkp));
@@ -3366,7 +3366,7 @@ xchar x, y;
         if (offer && !Deaf && !muteshk(shkp))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THANK_YOU_FOR_YOUR_CONTRIBUTION);
-            verbalize(
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, 
                 "Thank you for your contribution to restock this recently plundered shop.");
             subfrombill(obj, shkp);
         }
@@ -3798,7 +3798,7 @@ register xchar x, y;
         if (mnearto(shkp, x, y, TRUE, FALSE) == 2 && !Deaf && !muteshk(shkp))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_OUT_OF_MY_WAY_SCUM);
-            verbalize("Out of my way, scum!");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Out of my way, scum!");
         }
         if (cansee(x, y)) {
             pline("%s nimbly%s catches %s.", Shknam(shkp),
@@ -4120,7 +4120,7 @@ boolean catchup; /* restoring a level */
             if (!Deaf && !muteshk(shkp))
             {
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_GET_YOUR_JUNK_OUT_OF_MY_WALL);
-                verbalize("Get your junk out of my wall!");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Get your junk out of my wall!");
             }
             unplacebc(); /* pick 'em up */
             placebc();   /* put 'em down */
@@ -4214,10 +4214,10 @@ struct monst *shkp;
                     if (iflags.using_gui_sounds)
                     {
                         play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_I_WAS_LOOKING_FOR_SOMEONE_ELSE);
-                        verbalize("%s, adventurer!  I was looking for someone else.", Hello(shkp));
+                        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s, adventurer!  I was looking for someone else.", Hello(shkp));
                     }
                     else
-                        verbalize("%s, %s!  I was looking for %s.", Hello(shkp),
+                        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s, %s!  I was looking for %s.", Hello(shkp),
                             plname, eshkp->customer);
                 }
                 eshkp->following = 0;
@@ -4227,7 +4227,7 @@ struct monst *shkp;
                 if (!Deaf && !muteshk(shkp))
                 {
                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DIDNT_YOU_FORGET_TO_PAY);
-                    verbalize("%s, %s!  Didn't you forget to pay?",
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s, %s!  Didn't you forget to pay?",
                         Hello(shkp), iflags.using_gui_sounds ? "adventurer" : plname);
                 }
                 else
@@ -4370,14 +4370,14 @@ register int fall;
                 if (u.utraptype == TT_PIT)
                 {
                     play_voice_shopkeeper_simple_line(shkp, flags.female ? SHOPKEEPER_LINE_BE_CAREFUL_MADAM_FALL_THROUGH_THE_FLOOR : SHOPKEEPER_LINE_BE_CAREFUL_SIR_FALL_THROUGH_THE_FLOOR);
-                    verbalize(
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, 
                         "Be careful, %s, or you might fall through the floor.",
                         flags.female ? "madam" : "sir");
                 }
                 else
                 {
                     play_voice_shopkeeper_simple_line(shkp, flags.female ? SHOPKEEPER_LINE_MADAM_DO_NOT_DAMAGE_FLOOR : SHOPKEEPER_LINE_SIR_DO_NOT_DAMAGE_FLOOR);
-                    verbalize("%s, do not damage the floor here!",
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "%s, do not damage the floor here!",
                         flags.female ? "Madam" : "Sir");
                 }
             }
@@ -4608,7 +4608,7 @@ boolean cant_mollify;
                 {
                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_OUT_OF_MY_WAY_SCUM);
                     You_hear("an angry voice:");
-                    verbalize("Out of my way, scum!");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Out of my way, scum!");
                 }
                 wait_synch();
 #if defined(UNIX) || defined(VMS)
@@ -4641,7 +4641,7 @@ boolean cant_mollify;
             if (!Deaf)
             {
                 play_voice_shopkeeper_how_dare_you_damage(shkp, 1, dmgstr, dugwall);
-                verbalize("How dare you %s my %s?", dmgstr,
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "How dare you %s my %s?", dmgstr,
                     dugwall ? "shop" : "door");
             }
             else
@@ -4655,7 +4655,7 @@ boolean cant_mollify;
             {
                 pline("%s shouts:", Shknam(shkp));
                 play_voice_shopkeeper_how_dare_you_damage(shkp, 0, dmgstr, dugwall);
-                verbalize("Who dared %s my %s?", dmgstr,
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Who dared %s my %s?", dmgstr,
                           dugwall ? "shop" : "door");
             } 
             else
@@ -4711,7 +4711,7 @@ boolean cant_mollify;
             if (!Deaf && !muteshk(shkp))
             {
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_OH_YES_YOULL_PAY);
-                verbalize("Oh, yes!  You'll pay!");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Oh, yes!  You'll pay!");
             }
             else
                 pline("%s lunges %s %s toward your %s!",
@@ -4933,7 +4933,7 @@ struct monst *shkp;
                     popup_talk_line(shkp, ansbuf);
                 }
                 else
-                    verbalize("%s, %s!  I was looking for %s.",
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s, %s!  I was looking for %s.",
                         Hello(shkp), plname, eshk->customer);
             }
             eshk->following = 0;
@@ -5289,7 +5289,7 @@ boolean altusage;
             Sprintf(pricebuf, " %s", pricedesc);
         Sprintf(fmtbuf, "\"%s\"%s", fmt, pricebuf);
         pline(fmtbuf, arg1, arg2, tmp, currency(tmp));
-        //verbalize(fmt, arg1, arg2, tmp, currency(tmp));
+        //verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, fmt, arg1, arg2, tmp, currency(tmp));
         exercise(A_WIS, TRUE); /* you just got info */
     }
     ESHK(shkp)->debit += tmp;
@@ -5532,10 +5532,10 @@ boolean eating;
                         if (iflags.using_gui_sounds)
                         {
                             play_voice_shopkeeper_simple_line(shkp, obj->quan > 1 ? SHOPKEEPER_LINE_STAY_AWAY_FROM_THOSE : SHOPKEEPER_LINE_STAY_AWAY_FROM_THAT);
-                            verbalize("Stay away from %s!", obj->quan > 1 ? "those" : "that");
+                            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Stay away from %s!", obj->quan > 1 ? "those" : "that");
                         }
                         else
-                            verbalize("Stay away from %s %s!", obj->quan > 1 ? "those" : "that", cxname(obj));
+                            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Stay away from %s %s!", obj->quan > 1 ? "those" : "that", cxname(obj));
 
                         if (iflags.using_gui_sounds)
                             delay_output_milliseconds(1200);
@@ -5545,7 +5545,7 @@ boolean eating;
                     else
                     {
                         play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DROP_THAT_NOW);
-                        verbalize("Drop that, now!");
+                        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Drop that, now!");
                         if (iflags.using_gui_sounds)
                             delay_output_milliseconds(1200);
                         play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WHIMPER);

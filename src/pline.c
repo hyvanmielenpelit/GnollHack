@@ -577,7 +577,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     return;
 }
 
-/* work buffer for You(), &c and verbalize() */
+/* work buffer for You(), &c and verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, ) */
 STATIC_VAR char *you_buf = 0;
 STATIC_VAR size_t you_buf_siz = 0;
 

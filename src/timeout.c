@@ -1529,11 +1529,11 @@ long timeout;
                 You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s out of your pack!", monnambuf,
                         locomotion(mon->data, "drop"));
             if (tamed) {
-                pline("%s cries sound like \"%s%s\"",
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s cries sound like \"%s%s\"",
                       siblings ? "Their" : "Its",
                       flags.female ? "mommy" : "daddy", yours ? "." : "?");
             } else if (mon->data->mlet == S_DRAGON && !Deaf) {
-                verbalize("Gleep!"); /* Mything eggs :-) */
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Gleep!"); /* Mything eggs :-) */
             }
             break;
 

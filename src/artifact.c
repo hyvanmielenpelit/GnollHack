@@ -1944,9 +1944,9 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                         {
                             pline("But %s retorts:", mon_nam(mdef));
                             if (rn2(2))
-                                verbalize_ex(ATR_NONE, CLR_MSG_TALK, "Hah! It's just a scratch.");
+                                verbalize_talk1("Hah! It's just a scratch.");
                             else
-                                verbalize_ex(ATR_NONE, CLR_MSG_TALK, "Hah! It's just a flesh wound.");
+                                verbalize_talk1("Hah! It's just a flesh wound.");
                         }
                         otmp->dknown = TRUE;
                     }
@@ -2058,9 +2058,9 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                         {
                             pline("But %s retorts:", mon_nam(mdef));
                             if (rn2(2))
-                                verbalize_ex(ATR_NONE, CLR_MSG_TALK, "Hah! It's just a scratch.");
+                                verbalize_talk1("Hah! It's just a scratch.");
                             else
-                                verbalize_ex(ATR_NONE, CLR_MSG_TALK, "Hah! It's just a flesh wound.");
+                                verbalize_talk1("Hah! It's just a flesh wound.");
                         }
                         otmp->dknown = TRUE;
                     }

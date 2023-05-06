@@ -3104,12 +3104,12 @@ register boolean newlev;
                 if (!is_peaceful(oracle))
                 {
                     play_monster_special_dialogue_line(oracle, ORACLE_LINE_YOURE_IN_DELPHI_ADVENTURER);
-                    verbalize("You're in Delphi, %s.", iflags.using_gui_sounds ? "adventurer" : plname);
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "You're in Delphi, %s.", iflags.using_gui_sounds ? "adventurer" : plname);
                 }
                 else
                 {
                     play_monster_special_dialogue_line(oracle, ORACLE_LINE_HELLO_ADVENTURER_WELCOME_TO_DELPHI);
-                    verbalize("%s, %s, welcome to Delphi!",
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s, %s, welcome to Delphi!",
                         iflags.using_gui_sounds ? "Hello" : Hello((struct monst*)0), iflags.using_gui_sounds ? "adventurer" : plname);
                 }
             } else

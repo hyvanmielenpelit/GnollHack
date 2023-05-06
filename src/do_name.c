@@ -1417,7 +1417,7 @@ do_mname()
         if (!alreadynamed(mtmp, monnambuf, buf))
         {
             mtmp->u_know_mname = 1;
-            verbalize("I'm %s, not %s.", shkname(mtmp), buf);
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "I'm %s, not %s.", shkname(mtmp), buf);
         }
     } 
     else if (mtmp->ispriest || mtmp->isminion || mtmp->isshk || mtmp->issmith || mtmp->isnpc) 

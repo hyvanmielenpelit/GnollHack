@@ -2768,7 +2768,7 @@ register struct obj* omonwep;
             if (Role_if(PM_HEALER)) 
             {
                 if (!Deaf && !(moves % 5))
-                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Doc, I can't help you unless you cooperate.");
+                    verbalize_angry1("Doc, I can't help you unless you cooperate.");
                 damage = 0;
             } 
             else
@@ -4465,7 +4465,7 @@ struct monst *mon;
         if (cost > umoney)
             cost = umoney;
         if (!cost) {
-            verbalize_ex(ATR_NONE, CLR_MSG_TALK, "It's on the house!");
+            verbalize_talk1("It's on the house!");
         } else {
             pline("%s takes %ld %s for services rendered!", noit_Monnam(mon),
                   cost, currency(cost));
@@ -4512,7 +4512,7 @@ const char *str;
 
         Sprintf(hairbuf, "let me run my fingers through your %s",
                 body_part(HAIR));
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK, "Take off your %s; %s.", str,
+        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Take off your %s; %s.", str,
                   (obj == uarm)
                      ? "let's get a little closer"
                      : (obj == uarmc || obj == uarms || obj == uarmo || obj == uarmb)

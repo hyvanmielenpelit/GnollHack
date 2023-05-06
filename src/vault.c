@@ -411,7 +411,7 @@ invault()
             if (!Deaf)
             {
                 play_monster_special_dialogue_line(guard, VAULT_GUARD_LINE_WHATS_GOING_ON_HERE);
-                verbalize("What's going on here?");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "What's going on here?");
             }
             if (gsensed)
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "other presence vanishes.");
@@ -425,7 +425,7 @@ invault()
                 if (!Deaf)
                 {
                     play_monster_special_dialogue_line(guard, VAULT_GUARD_LINE_HEY_WHO_LEFT_THAT_PILE_OF_GOLD_PIECES_IN_HERE);
-                    verbalize("Hey!  Who left that %s in here?",
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Hey!  Who left that %s in here?",
                         iflags.using_gui_sounds ? "pile of gold pieces" : mimic_obj_name(&youmonst));
                 }
             /* You're mimicking some object or you're hidden. */
@@ -442,7 +442,7 @@ invault()
             else
             {
                 play_monster_special_dialogue_line(guard, VAULT_GUARD_LINE_ILL_BE_BACK_WHEN_YOURE_READY_TO_SPEAK_TO_ME);
-                verbalize("I'll be back when you're ready to speak to me!");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "I'll be back when you're ready to speak to me!");
             }
             mongone(guard);
             return;
@@ -486,7 +486,7 @@ invault()
                 else 
                 {
                     play_monster_special_dialogue_line(guard, VAULT_GUARD_LINE_OH_YES_OF_COURSE_SORRY_TO_HAVE_DISTURBED_YOU);
-                    verbalize("Oh, yes, of course.  Sorry to have disturbed you.");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Oh, yes, of course.  Sorry to have disturbed you.");
                 }
                 mongone(guard);
             } 
@@ -502,7 +502,7 @@ invault()
                 else 
                 {
                     play_monster_special_dialogue_line(guard, VAULT_GUARD_LINE_BACK_FROM_THE_DEAD_ARE_YOU_ILL_REMEDY_THAT);
-                    verbalize("Back from the dead, are you?  I'll remedy that!");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Back from the dead, are you?  I'll remedy that!");
                 }
                 /* don't want guard to waste next turn wielding a weapon */
                 if (!MON_WEP(guard)) 
@@ -519,7 +519,7 @@ invault()
         else
         {
             play_monster_special_dialogue_line(guard, VAULT_GUARD_LINE_I_DONT_KNOW_YOU);
-            verbalize("I don't know you.");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "I don't know you.");
         }
 
         umoney = money_cnt(invent);
@@ -531,7 +531,7 @@ invault()
             else
             {
                 play_monster_special_dialogue_line(guard, VAULT_GUARD_LINE_PLEASE_FOLLOW_ME);
-                verbalize("Please follow me.");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Please follow me.");
             }
         } 
         else 
@@ -547,7 +547,7 @@ invault()
                 else 
                 {
                     play_monster_special_dialogue_line(guard, VAULT_GUARD_LINE_YOU_HAVE_HIDDEN_GOLD);
-                    verbalize("You have hidden gold.");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You have hidden gold.");
                 }
             }
             if (Deaf)
@@ -560,9 +560,9 @@ invault()
             else 
             {
                 play_monster_special_dialogue_line(guard, VAULT_GUARD_LINE_MOST_LIKELY_ALL_YOUR_GOLD_WAS_STOLEN_FROM_THIS_VAULT);
-                verbalize("Most likely all your gold was stolen from this vault.");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Most likely all your gold was stolen from this vault.");
                 play_monster_special_dialogue_line(guard, VAULT_GUARD_LINE_PLEASE_DROP_THAT_GOLD_AND_FOLLOW_ME);
-                verbalize("Please drop that gold and follow me.");
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Please drop that gold and follow me.");
             }
         }
         EGD(guard)->gdx = gx;
@@ -706,7 +706,7 @@ int nx, ny;
         if (!Deaf)
         {
             play_monster_special_dialogue_line(grd, VAULT_GUARD_LINE_OUT_OF_MY_WAY_SCUM);
-            verbalize("Out of my way, scum!");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Out of my way, scum!");
         }
         if (!rloc(m_at(nx, ny), FALSE) || MON_AT(nx, ny))
             m_into_limbo(m_at(nx, ny), FALSE);
@@ -863,7 +863,7 @@ register struct monst *grd;
         if (!Deaf)
         {
             play_monster_special_dialogue_line(grd, (egrd->witness& GD_EATGOLD) ? VAULT_GUARD_LINE_HOW_DARE_YOU_CONSUME_THAT_GOLD_SCOUNDREL : VAULT_GUARD_LINE_HOW_DARE_YOU_DESTROY_THAT_GOLD_SCOUNDREL );
-            verbalize("How dare you %s that gold, scoundrel!",
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "How dare you %s that gold, scoundrel!",
                 (egrd->witness& GD_EATGOLD) ? "consume" : "destroy");
         }
         egrd->witness = 0;
@@ -882,7 +882,7 @@ register struct monst *grd;
                 play_monster_special_dialogue_line(grd, 
                     u_carry_gold ? (!umoney ? VAULT_GUARD_LINE_I_REPEAT_DROP_THAT_HIDDEN_MONEY_AND_FOLLOW_ME
                         : VAULT_GUARD_LINE_I_REPEAT_DROP_THAT_MONEY_AND_FOLLOW_ME) : VAULT_GUARD_LINE_I_REPEAT_FOLLOW_ME);
-                verbalize("I repeat, %sfollow me!",
+                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "I repeat, %sfollow me!",
                     u_carry_gold
                     ? (!umoney ? "drop that hidden money and "
                         : "drop that money and ")
@@ -896,7 +896,7 @@ register struct monst *grd;
                 if (!Deaf)
                 {
                     play_monster_special_dialogue_line(grd, VAULT_GUARD_LINE_YOUVE_BEEN_WARNED_KNAVE);
-                    verbalize("You've been warned, knave!");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You've been warned, knave!");
                 }
                 mnexto(grd);
                 transform_location_type(m, n, egrd->fakecorr[0].ftyp, 0);
@@ -947,7 +947,7 @@ register struct monst *grd;
                 if (!Deaf)
                 {
                     play_monster_special_dialogue_line(grd, VAULT_GUARD_LINE_WELL_BEGONE);
-                    verbalize("Well, begone.");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Well, begone.");
                 }
                 egrd->gddone = 1;
                 goto cleanup;
@@ -982,13 +982,13 @@ register struct monst *grd;
                 if (Deaf) 
                 {
                     if (!Blind)
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s holds out %s palm demandingly!",
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s holds out %s palm demandingly!",
                               noit_Monnam(grd), noit_mhis(grd));
                 }
                 else 
                 {
                     play_monster_special_dialogue_line(grd, VAULT_GUARD_LINE_DROP_ALL_YOUR_GOLD_SCOUNDREL);
-                    verbalize("Drop all your gold, scoundrel!");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Drop all your gold, scoundrel!");
                 }
                 return 0;
             } 
@@ -997,13 +997,13 @@ register struct monst *grd;
                 if (Deaf) 
                 {
                     if (!Blind)
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s rubs %s hands with enraged delight!",
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s rubs %s hands with enraged delight!",
                               noit_Monnam(grd), noit_mhis(grd));
                 }
                 else 
                 {
                     play_monster_special_dialogue_line(grd, VAULT_GUARD_LINE_SO_BE_IT_ROGUE);
-                    verbalize("So be it, rogue!");
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "So be it, rogue!");
                 }
                 grd->mpeaceful = 0;
                 return -1;
@@ -1037,7 +1037,7 @@ register struct monst *grd;
             && !(u.ustuck && !sticks(youmonst.data)))
         {
             play_monster_special_dialogue_line(grd, VAULT_GUARD_LINE_MOVE_ALONG);
-            verbalize("Move along!");
+            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Move along!");
         }
         restfakecorr(grd);
         return 0; /* didn't move */
