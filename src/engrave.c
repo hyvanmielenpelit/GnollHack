@@ -403,7 +403,11 @@ int x, y;
                 et = buf;
             } else
                 et = ep->engr_txt;
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s: \"%s\".", (Blind) ? "feel the words" : "read", et);
+
+            char ybuf[BUFSZ];
+            Sprintf(ybuf, "You %s", (Blind) ? "feel the words" : "read");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_ATTENTION, ybuf, ATR_NONE, CLR_MSG_ATTENTION, ": ", ATR_NONE, CLR_MSG_TEXT, 0U, "\"%s\".", et);
+            //You_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s: \"%s\".", (Blind) ? "feel the words" : "read", et);
             if (context.run > 1)
                 nomul(0);
         }

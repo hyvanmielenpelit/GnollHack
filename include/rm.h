@@ -384,8 +384,8 @@ extern NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS];
 
 enum carpet_types {
     CARPET_NONE = 0,
-    CARPET_HORIZONTAL_RED,
-    CARPET_VERTICAL_PURPLE,
+    CARPET_RED,
+    CARPET_PURPLE,
     CARPET_BROWN_ANIMAL_HIDE,
     CARPET_CRIMSON,
     CARPET_MODRON_SPHERICAL_PLAQUE,

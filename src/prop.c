@@ -182,7 +182,7 @@ const struct propname propertynames[] = {
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
     { TOTTERING, "shaking and tottering", "shaking and tottering" },
     { MARTIAL_PROWESS, "imbued with martial prowess", "martial prowess" },
-    {  0, 0 },
+    {  0, 0, 0 },
 };
 
 NEARDATA struct prop_info property_definitions[MAX_PROPS] =

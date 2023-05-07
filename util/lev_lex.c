@@ -4355,12 +4355,12 @@ YY_RULE_SETUP
 case 329:
 YY_RULE_SETUP
 #line 464 "lev_comp.l"
-{ savetoken(yytext); yylval.i=CARPET_HORIZONTAL_RED; return CARPET_TYPE; }
+{ savetoken(yytext); yylval.i=CARPET_RED; return CARPET_TYPE; }
 	YY_BREAK
 case 330:
 YY_RULE_SETUP
 #line 465 "lev_comp.l"
-{ savetoken(yytext); yylval.i=CARPET_VERTICAL_PURPLE; return CARPET_TYPE; }
+{ savetoken(yytext); yylval.i=CARPET_PURPLE; return CARPET_TYPE; }
 	YY_BREAK
 case 331:
 YY_RULE_SETUP
