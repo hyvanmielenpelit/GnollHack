@@ -849,7 +849,7 @@ namespace GnollHackClient
                 _moreBtnMatrix[1, 0, 3] = new GHCommandButtonItem("Eat", "GnollHackClient.Assets.UI.eat.png", (int)'e');
                 _moreBtnMatrix[1, 1, 3] = new GHCommandButtonItem("Drink", "GnollHackClient.Assets.UI.quaff.png", (int)'q');
                 _moreBtnMatrix[1, 2, 3] = new GHCommandButtonItem("Read", "GnollHackClient.Assets.UI.read.png", (int)'r');
-                _moreBtnMatrix[1, 3, 1] = new GHCommandButtonItem("Apply", "GnollHackClient.Assets.UI.apply.png", (int)'a');
+                _moreBtnMatrix[1, 3, 3] = new GHCommandButtonItem("Apply", "GnollHackClient.Assets.UI.apply.png", (int)'a');
 
                 _moreBtnMatrix[1, 0, 4] = new GHCommandButtonItem("View Spell", "GnollHackClient.Assets.UI.viewspell.png", GHUtils.Meta((int)'z'));
                 _moreBtnMatrix[1, 1, 4] = new GHCommandButtonItem("Mix", "GnollHackClient.Assets.UI.mix.png", (int)'X');
