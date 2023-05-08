@@ -97,6 +97,7 @@
     <None Remove="Assets\UI\dip.png" />
     <None Remove="Assets\UI\discoveries.png" />
     <None Remove="Assets\UI\dropmany.png" />
+    <None Remove="Assets\UI\droptypes.png" />
     <None Remove="Assets\UI\eat.png" />
     <None Remove="Assets\UI\engrave.png" />
     <None Remove="Assets\UI\examine.png" />
@@ -268,6 +269,7 @@
     <EmbeddedResource Include="Assets\main-menu-ranger.jpg" />
     <EmbeddedResource Include="Assets\UI\autopickup.png" />
     <EmbeddedResource Include="Assets\UI\chatsteed.png" />
+    <EmbeddedResource Include="Assets\UI\droptypes.png" />
     <EmbeddedResource Include="Assets\UI\unwield.png" />
     <Page Include="Assets\imrl.otf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
