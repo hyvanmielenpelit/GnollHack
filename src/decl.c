@@ -376,6 +376,9 @@ const struct breed_definition cat_breed_definitions[NUM_CAT_BREEDS] = {
     { "siamese", "siamese", "siamese", (char*)0 },
     { "grey Persian", "grey Persian", "Persian", "gray" },
     { "white Persian", "white Persian", "Persian", "white" },
+    { "brown ragdoll", "brown ragdoll", "ragdoll", "brown-white bicolor" },
+    { "grey ragdoll", "grey ragdoll", "ragdoll", "grey-white bicolor" },
+    { "white ragdoll", "white ragdoll", "ragdoll", "white" },
 };
 
 /* monsters that went down/up together with @ */
