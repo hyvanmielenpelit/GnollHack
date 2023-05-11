@@ -367,7 +367,11 @@ const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
     { "brown labrador", "brown Labrador retriever", "Labrador retriever", "brown" },
     { "yellow labrador", "yellow Labrador retriever", "Labrador retriever", "yellow" },
     { "dalmatian", "Dalmatian", "Dalmatian", (char*)0 },
-    { "german shepherd", "German shepherd", "German shepherd", (char*)0 },
+    { "german shepherd", "German Shepherd", "German Shepherd", (char*)0 },
+    { "black schnauzer", "black Schnauzer", "Schnauzer", "black" },
+    { "salt and pepper schnauzer", "salt and pepper Schnauzer", "Schnauzer", "salt and pepper" },
+    { "black schnauzer", "Scottish Terrier", "Scottish Terrier", (char*)0  },
+    { "pembroke corgi", "Pembroke Corgi", "Corgi", "Pembroke" },
 };
 
 const struct breed_definition cat_breed_definitions[NUM_CAT_BREEDS] = {
