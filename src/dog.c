@@ -210,6 +210,7 @@ choose_cat_or_dog(VOID_ARGS)
 {
     int res = NON_PM;
     const char* pet_names[2] = { "Cat", "Dog" };
+    const char pet_chars[2] = { 'c', 'd' };
     int pet_mnum[2] = { PM_KITTEN, PM_LITTLE_DOG };
 
     winid menuwin;
@@ -227,7 +228,7 @@ choose_cat_or_dog(VOID_ARGS)
         int glyph = pet_mnum[i] + GLYPH_MON_OFF;
         any.a_int = i + 1;
 
-        add_menu(menuwin, glyph, &any, 0, 0, ATR_NONE, NO_COLOR,
+        add_menu(menuwin, glyph, &any, pet_chars[i], 0, ATR_NONE, NO_COLOR,
             pet_names[i], MENU_UNSELECTED);
     }
 
@@ -290,11 +291,12 @@ int mnum;
     for (i = 1; i <= 2; i++)
     {
         const char* gender_names[3] = { "Neuter", "Male", "Female" };
+        const char gender_chars[3] = { 'n', 'm', 'f' };
         any = zeroany;
         int glyph = (mnum + (i == 2 ? GLYPH_FEMALE_MON_OFF : GLYPH_MON_OFF));
         any.a_int = i;
 
-        add_menu(menuwin, glyph, &any, 0, 0, ATR_NONE, NO_COLOR,
+        add_menu(menuwin, glyph, &any, gender_chars[i], 0, ATR_NONE, NO_COLOR,
             gender_names[i], MENU_UNSELECTED);
     }
 
