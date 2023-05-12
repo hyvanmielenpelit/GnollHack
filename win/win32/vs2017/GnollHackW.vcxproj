@@ -34,7 +34,7 @@
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(WinFmodDir)core\inc\;$(WinFmodDir)fsbank\inc\;$(WinFmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

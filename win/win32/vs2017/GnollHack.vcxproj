@@ -48,7 +48,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TILES;WIN32CON;DLB;MSWIN_GRAPHICS;SAFEPROCS;_LIB;GNOLLHACK_MAIN_PROGRAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NO_TILES;WIN32CON;DLB;MSWIN_GRAPHICS;SAFEPROCS;_LIB;GNOLLHACK_MAIN_PROGRAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>

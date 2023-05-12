@@ -91,6 +91,7 @@ const char* save_file_name;
 int* tilemaparray;
 uchar* tilemapflags;
 {
+#ifdef USE_TILES
     struct tileset_definition* tsd = &default_tileset_definition;
     const char* fq_save = save_file_name;
     const char* tile_section_name;
@@ -1227,9 +1228,6 @@ uchar* tilemapflags;
         }
         else if (misc_idx == 2)
         {
-#define ZAP_TEMPLATE_WIDTH 5
-#define ZAP_TEMPLATE_HEIGHT 4
-#define NUM_ZAP_BASE_TILES 18
 /* If updating, also update ZAP_INDEX_WITH_FIRST_TILE from tiledata.h */
 
 #if 0
@@ -1830,16 +1828,16 @@ uchar* tilemapflags;
                 {
                 default:
                 case 0:
-                    glyphtileflags[glyphidx] |= 0;
+                    tilemapflags[glyphidx] |= 0;
                     break;
                 case 1:
-                    glyphtileflags[glyphidx] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                    tilemapflags[glyphidx] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
                     break;
                 case 2:
-                    glyphtileflags[glyphidx] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                    tilemapflags[glyphidx] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
                     break;
                 case 3:
-                    glyphtileflags[glyphidx] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY | GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                    tilemapflags[glyphidx] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY | GLYPH_TILE_FLAG_FLIP_VERTICALLY;
                     break;
                 }
             }
@@ -3422,6 +3420,9 @@ uchar* tilemapflags;
     }
 
     return tile_count;
+#else
+    return 0;
+#endif
 }
 
 STATIC_OVL void

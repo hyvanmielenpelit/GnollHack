@@ -3851,6 +3851,7 @@ int
 get_animation_base_tile(animidx)
 short animidx;
 {
+#ifdef USE_TILES
     int i, j, cmap_idx;
     for (i = LOW_PM; i < NUM_MONSTERS; i++)
     {
@@ -4019,6 +4020,7 @@ short animidx;
                 return glyph2tile[j + replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
         }
     }
+#endif
 
     return -1;
 }
@@ -4028,6 +4030,7 @@ int
 get_enlargement_base_tile(enlidx, enl_anim_tile_idx)
 short enlidx, enl_anim_tile_idx;
 {
+#ifdef USE_TILES
     int i, j, cmap_idx;
     for (i = LOW_PM; i < NUM_MONSTERS; i++)
     {
@@ -4184,7 +4187,7 @@ short enlidx, enl_anim_tile_idx;
             }
         }
     }
-
+#endif
 
     return -1;
 }
@@ -4207,6 +4210,7 @@ int
 get_replacement_base_tile(replacement_idx)
 short replacement_idx;
 {
+#ifdef USE_TILES
     int i, j, k, cmap_idx;
     for (i = LOW_PM; i < NUM_MONSTERS; i++)
     {
@@ -4378,6 +4382,8 @@ short replacement_idx;
         /* Currently skill tiles do not have replacements */
         //return glyph2tile[i + GLYPH_SKILL_TILE_OFF];
     }
+#endif
+
 #endif
 
     return -1;

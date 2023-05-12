@@ -1027,6 +1027,9 @@ enum cat_breeds {
 #define NUM_SPECIAL_CAT_BREEDS (NUM_CAT_BREEDS - 1)
 
 #define AD_MODULO 4
+#define ZAP_TEMPLATE_WIDTH 5
+#define ZAP_TEMPLATE_HEIGHT 4
+#define NUM_ZAP_BASE_TILES 18
 
 
 #endif /* GENERAL_H */

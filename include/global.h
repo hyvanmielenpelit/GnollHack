@@ -261,6 +261,7 @@ typedef xchar boolean; /* 0 or 1 */
 #define EXIT_FAILURE 1
 #endif
 
+#if !defined(NO_TILES)
 #if defined(X11_GRAPHICS) || defined(QT_GRAPHICS) || defined(GNOME_GRAPHICS) \
     || defined(WIN32) || defined(ANDROID_GRAPHICS) || defined(LIB_GRAPHICS) || defined(DLL_GRAPHICS)
 #ifndef USE_TILES
@@ -270,6 +271,7 @@ typedef xchar boolean; /* 0 or 1 */
 #if defined(AMII_GRAPHICS) || defined(GEM_GRAPHICS)
 #ifndef USE_TILES
 #define USE_TILES
+#endif
 #endif
 #endif
 
