@@ -123,6 +123,31 @@ namespace GnollHackClient.Droid
             return scale;
         }
 
+        public float GetTransitionAnimationScaleSetting()
+        {
+            var resolver = Android.App.Application.Context.ContentResolver;
+            var scaleName = Android.Provider.Settings.Global.TransitionAnimationScale;
+            float scale = Android.Provider.Settings.Global.GetFloat(resolver, scaleName, 1.0f);
+            return scale;
+        }
+
+        public float GetWindowAnimationScaleSetting()
+        {
+            var resolver = Android.App.Application.Context.ContentResolver;
+            var scaleName = Android.Provider.Settings.Global.WindowAnimationScale;
+            float scale = Android.Provider.Settings.Global.GetFloat(resolver, scaleName, 1.0f);
+            return scale;
+        }
+
+        public bool IsRemoveAnimationsOn()
+        {
+            var scale1 = GetAnimatorDurationScaleSetting();
+            var scale2 = GetTransitionAnimationScaleSetting();
+            var scale3 = GetWindowAnimationScaleSetting();
+
+            return scale1 == 0 && scale2 == 0 && scale3 == 0;
+        }
+
         public float GetCurrentAnimatorDurationScale()
         {
             float scale = -1.0f;

@@ -133,29 +133,41 @@ namespace GnollHackClient
                 FmodLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.FMOD-Logo-192-White.png", thisassembly);
                 StartLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
                 MainLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
+                if (App.PlatformService != null)
+                {
+                    bool removeanimationson = App.PlatformService.IsRemoveAnimationsOn();
+                    if(removeanimationson)
+                    {
+                        await DisplayAlert("Invalid Animator Duration Scale",
+                            "GnollHack has detected invalid animator settings. If your device has a setting named \"Remove Animations\" under Settings -> Accessibility -> Visibility Enhancements, this setting must be set to Off. If your device does not have this setting, please manually adjust the value of \"Animator duration scale\" to 1x under Settings -> Developer Options -> Animator duration scale. ", "OK");
+                        CloseApp();
+                    }
+                    else
+                    {
+                        float scalesetting = App.PlatformService.GetAnimatorDurationScaleSetting();
+                        float scalecurrent = App.PlatformService.GetCurrentAnimatorDurationScale();
+                        if (scalecurrent == 0.0f)
+                        {
+                            if (scalesetting == 0.0f)
+                                await DisplayAlert("Invalid Animator Duration Scale",
+                                    "GnollHack failed to automatically adjust Animator Duration Scale and it remains set to Off. Please manually adjust the value to 1x under Settings -> Developer Options -> Animator duration scale. If your device has a setting named \"Remove Animations\" under Settings -> Accessibility -> Visibility Enhancements, this setting needs to be disabled, too.", "OK");
+                            else
+                                await DisplayAlert("Invalid Animator Duration Scale",
+                                    "GnollHack failed to automatically adjust Animator Duration Scale and it has become turned Off. Please check that the value is 1x under Settings -> Developer Options -> Animator duration scale. If your device has a setting named \"Remove Animations\" under Settings -> Accessibility -> Visibility Enhancements, this setting needs to be disabled, too.", "OK");
+                            CloseApp();
+                        }
+                        else if (scalecurrent == -1.0f)
+                        {
+                            /* GnollHack could determine current animator duration scale */
+                        }
+                    }
+                }
+
                 await StartFadeLogoIn();
                 await StartUpTasks();
                 await StartFadeIn();
                 StartLogoImage.IsVisible = false;
                 FmodLogoImage.IsVisible = false;
-                if (App.PlatformService != null)
-                {
-                    float scalesetting = App.PlatformService.GetAnimatorDurationScaleSetting();
-                    float scalecurrent = App.PlatformService.GetCurrentAnimatorDurationScale();
-                    if (scalecurrent == 0.0f)
-                    {
-                        if(scalesetting == 0.0f)
-                            await DisplayAlert("Invalid Animator Duration Scale", 
-                                "GnollHack failed to automatically adjust animator duration scale and it remains set to Off. Please manually adjust the value to 1x in Settings -> Developer Options -> Animator duration scale. If your device has Remove Animations setting under Settings -> Accessibility -> Visibility Enhancements, this setting needs to be disabled, too.", "OK");
-                        else
-                            await DisplayAlert("Invalid Animator Duration Scale",
-                                "GnollHack failed to automatically adjust animator duration scale and it has become turned Off. Please check that the value is 1x in Settings -> Developer Options -> Animator duration scale. If your device has Remove Animations setting under Settings -> Accessibility -> Visibility Enhancements, this setting needs to be disabled, too.", "OK");
-                    }
-                    else if (scalecurrent == -1.0f)
-                    {
-                        /* GnollHack could determine current animator duration scale */
-                    }
-                }
 
                 if (App.InformAboutGameTermination)
                 {

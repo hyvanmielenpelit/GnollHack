@@ -109,6 +109,24 @@ namespace GnollHackClient.iOS
             return 1.0f;
         }
 
+        public float GetTransitionAnimationScaleSetting()
+        {
+            return 1.0f;
+        }
+
+        public float GetWindowAnimationScaleSetting()
+        {
+            return 1.0f;
+        }
+
+        public bool IsRemoveAnimationsOn()
+        {
+            var scale1 = GetAnimatorDurationScaleSetting();
+            var scale2 = GetTransitionAnimationScaleSetting();
+            var scale3 = GetWindowAnimationScaleSetting();
+
+            return scale1 == 0 && scale2 == 0 && scale3 == 0;
+        }
         public void OverrideAnimatorDuration()
         {
 
