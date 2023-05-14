@@ -679,6 +679,8 @@ curs_pad_menu(nhmenu *current_menu, boolean do_pad UNUSED)
     current_menu->entries = menu_item_ptr->next_item;
     current_menu->entries->prev_item = (nhmenu_item *) 0;
     free((genericptr_t) menu_item_ptr->str);
+    free((genericptr_t) menu_item_ptr->attrs);
+    free((genericptr_t) menu_item_ptr->colors);
     free((genericptr_t) menu_item_ptr);
 
     /* reset page count; shouldn't need to re-count */
