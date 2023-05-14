@@ -243,6 +243,11 @@ namespace GnollHackClient
         public int SuffixTextRows { get; set; } = 0;
         public int Suffix2TextRows { get; set; } = 0;
 
+        public List<float> MainTextRowWidths { get; set; } = new List<float>() { 0.0f };
+        public List<float> SuffixTextRowWidths { get; set; } = new List<float>();
+        public List<float> Suffix2TextRowWidths { get; set; } = new List<float>();
+
+
         private string[] _mainTextSplit;
         public string[] MainTextSplit 
         {

@@ -33,7 +33,9 @@
     <None Remove="Assets\archristy.ttf" />
     <None Remove="Assets\Auxiliary.bank" />
     <None Remove="Assets\buttons.png" />
+    <None Remove="Assets\button_disabled.png" />
     <None Remove="Assets\button_normal.png" />
+    <None Remove="Assets\button_selected.png" />
     <None Remove="Assets\consola.ttf" />
     <None Remove="Assets\DejaVuSansMono-Bold.ttf" />
     <None Remove="Assets\DejaVuSansMono-BoldOblique.ttf" />
@@ -83,6 +85,7 @@
     <None Remove="Assets\UI\arrow_upright.png" />
     <None Remove="Assets\UI\attributes.png" />
     <None Remove="Assets\UI\autopickup.png" />
+    <None Remove="Assets\UI\background-loading-screen.jpg" />
     <None Remove="Assets\UI\background-oldpaper.png" />
     <None Remove="Assets\UI\break.png" />
     <None Remove="Assets\UI\cancel.png" />
@@ -249,7 +252,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\archristy.ttf" />
     <EmbeddedResource Include="Assets\buttons.png" />
+    <EmbeddedResource Include="Assets\button_disabled.png" />
     <EmbeddedResource Include="Assets\button_normal.png" />
+    <EmbeddedResource Include="Assets\button_selected.png" />
     <EmbeddedResource Include="Assets\DejaVuSansMono-Bold.ttf" />
     <EmbeddedResource Include="Assets\DejaVuSansMono-BoldOblique.ttf" />
     <EmbeddedResource Include="Assets\DejaVuSansMono-Oblique.ttf" />
@@ -268,6 +273,7 @@
     <EmbeddedResource Include="Assets\main-menu-gnoll.jpg" />
     <EmbeddedResource Include="Assets\main-menu-ranger.jpg" />
     <EmbeddedResource Include="Assets\UI\autopickup.png" />
+    <EmbeddedResource Include="Assets\UI\background-loading-screen.jpg" />
     <EmbeddedResource Include="Assets\UI\chatsteed.png" />
     <EmbeddedResource Include="Assets\UI\droptypes.png" />
     <EmbeddedResource Include="Assets\UI\unwield.png" />

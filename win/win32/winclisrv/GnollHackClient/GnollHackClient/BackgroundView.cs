@@ -11,11 +11,13 @@ namespace GnollHackClient
     public enum BackgroundStyles
     {
         SeamlessBitmap = 0,
-        StretchedBitmap
+        StretchedBitmap,
+        FitToScreen
     }
     public enum BackgroundBitmaps
     {
         OldPaper = 0,
+        LoadingScreen,
         SmallDarkMenu,
         Custom
     }
@@ -80,6 +82,9 @@ namespace GnollHackClient
             {
                 case BackgroundBitmaps.OldPaper:
                     bmp = App.OldPaperBackgroundBitmap;
+                    break;
+                case BackgroundBitmaps.LoadingScreen:
+                    bmp = App.LoadingScreenBackgroundBitmap;
                     break;
                 case BackgroundBitmaps.SmallDarkMenu:
                     bmp = App.MenuBackgroundBitmap;
@@ -154,6 +159,45 @@ namespace GnollHackClient
                         target_rect.Right = canvaswidth;
                         target_rect.Bottom = canvasheight;
                         canvas.DrawBitmap(bmp, target_rect);
+                    }
+                    break;
+                case BackgroundStyles.FitToScreen:
+                    if (bmp != null)
+                    {
+                        float bmpwidth = (float)bmp.Width;
+                        float bmpheight = (float)bmp.Height;
+                        if (bmpwidth > 0 && bmpheight > 0 && canvaswidth > 0 && canvasheight > 0)
+                        {
+                            float bmpaspectratio = bmpwidth / bmpheight;
+                            float canvasaspectratio = canvaswidth / canvasheight;
+                            bool fitheight = true;
+                            if(canvasaspectratio > bmpaspectratio)
+                            {
+                                fitheight = false;
+                            }
+                            SKRect target_rect = new SKRect();
+                            if(fitheight)
+                            {
+                                target_rect.Top = 0;
+                                target_rect.Bottom = canvasheight;
+
+                                float target_bmpwidth = canvasheight * bmpaspectratio;
+                                float padding = (canvaswidth - target_bmpwidth) / 2;
+                                target_rect.Left = padding;
+                                target_rect.Right = target_rect.Left + target_bmpwidth;
+                            }
+                            else
+                            {
+                                target_rect.Left = 0;
+                                target_rect.Right = canvaswidth;
+
+                                float target_bmpheight = canvaswidth / bmpaspectratio;
+                                float padding = (canvasheight - target_bmpheight) / 2;
+                                target_rect.Top = padding;
+                                target_rect.Bottom = target_rect.Top + target_bmpheight;
+                            }
+                            canvas.DrawBitmap(bmp, target_rect);
+                        }
                     }
                     break;
             }

@@ -114,6 +114,8 @@ namespace GnollHackClient.Controls
 
         public bool RevertBlackAndWhite { get; set; }
         public bool UseTextOutline { get; set; }
+        public bool HideMenuLetters { get; set; }
+        public bool UseMenuButtonBackground { get; set; }
 
         public CanvasTypes CanvasType { get; set; }
 

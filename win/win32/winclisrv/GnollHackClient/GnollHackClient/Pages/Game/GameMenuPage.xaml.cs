@@ -26,11 +26,11 @@ namespace GnollHackClient.Pages.Game
 
             _gamePage = gamePage;
 
-            if (gamePage.EnableCasualMode)
-            {
-                btnSave.Text = "Save Game";
-                btnQuit.Text = "Quit Game";
-            }
+            //if (gamePage.EnableCasualMode)
+            //{
+            //    btnSave.Text = "Save Game";
+            //    btnQuit.Text = "Quit Game";
+            //}
 
             _gcViewCell = GCViewCell;
             _optionsViewCell = OptionsViewCell;

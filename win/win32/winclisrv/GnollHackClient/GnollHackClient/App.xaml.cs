@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.IO.Compression;
 using System.Globalization;
+using GnollHackClient.Pages.Game;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
@@ -552,6 +553,10 @@ namespace GnollHackClient
 
         public static SKBitmap MenuBackgroundBitmap { get; set; }
         public static SKBitmap OldPaperBackgroundBitmap { get; set; }
+        public static SKBitmap LoadingScreenBackgroundBitmap { get; set; }
+        public static SKBitmap ButtonNormalBitmap { get; set; }
+        public static SKBitmap ButtonSelectedBitmap { get; set; }
+        public static SKBitmap ButtonDisabledBitmap { get; set; }
 
         public static SKBitmap SimpleFrameTopLeftCornerBitmap { get; set; }
         public static SKBitmap SimpleFrameSmallTopLeftCornerBitmap { get; set; }
@@ -572,6 +577,22 @@ namespace GnollHackClient
                 using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.background-oldpaper.png"))
                 {
                     OldPaperBackgroundBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.background-loading-screen.jpg"))
+                {
+                    LoadingScreenBackgroundBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.button_normal.png"))
+                {
+                    ButtonNormalBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.button_selected.png"))
+                {
+                    ButtonSelectedBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.button_disabled.png"))
+                {
+                    ButtonDisabledBitmap = SKBitmap.Decode(stream);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-topleft.png"))
                 {
