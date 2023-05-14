@@ -4128,6 +4128,7 @@ long pickcnt;
         return 0;
 
     int cmd_idx = 0;
+    char invlet = otmp->invlet;
 
     menu_item* pick_list = (menu_item*)0;
     winid win;
@@ -4341,6 +4342,15 @@ long pickcnt;
             struct obj* otmpsplit = splitobj(otmp, pickcnt);
             getobj_autoselect_obj = otmpsplit;
         }
+
+        /* Change the saved command string to action-item based equivalent to allow use in repeat */
+        if (extcmdlist[selected_action].bound_key && invlet)
+        {
+            savech(0);
+            savech((char)extcmdlist[selected_action].bound_key);
+            savech(invlet);
+        }
+
         res = (extcmdlist[selected_action].ef_funct)();
         getobj_autoselect_obj = (struct obj*)0;
     }

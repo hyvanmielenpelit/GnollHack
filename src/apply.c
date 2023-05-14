@@ -2686,17 +2686,10 @@ dorub()
         }
     }
 
-    boolean already_uwep = FALSE;
-    if (obj && obj == uwep)
-        already_uwep = TRUE;
-
     if (!obj || !wield_tool(obj, "rub"))
         return 0;
 
-    if(already_uwep)
-        You("rub %s.", yname(uwep));
-    else
-        You("wield %s and start rubbing it.", yname(uwep));
+    You("start rubbing %s.", yname(uwep));
 
     if (iflags.using_gui_sounds && !Deaf && uwep)
     {
