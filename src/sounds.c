@@ -1085,13 +1085,11 @@ boolean dopopup, fromchatmenu;
         {
             play_monster_special_dialogue_line(mtmp, ORACLE_LINE_WELCOME_TO_DELPHI_ADVENTURER);
             Sprintf(verbuf, "Welcome to Delphi, adventurer!");
-            chat_line = 0;
         }
         else
         {
             play_monster_special_dialogue_line(mtmp, ORACLE_LINE_BEGONE_YOU_FOOL);
             Sprintf(verbuf, "Begone, you fool!");
-            chat_line = 1;
         }
         verbl_msg = verbuf;
         break;
@@ -1105,13 +1103,11 @@ boolean dopopup, fromchatmenu;
         {
             play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_WELCOME_TO_TEMPLE_LONG);
             Sprintf(verbuf, "Welcome to the temple of %s, adventurer!", temple_god);
-            chat_line = 0;
         }
         else
         {
             play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_YOU_SHALL_PERISH);
             Sprintf(verbuf, "You shall perish by the divine hand of %s!", temple_god);
-            chat_line = 1;
         }
         verbl_msg = verbuf;
         break;
@@ -10694,7 +10690,7 @@ boolean initialize;
     if (otmp && !maybe_otyp(otmp))
     {
         //play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
-        play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_LETS_HAVE_A_LOOK : NPC_LINE_SORRY_THIS_IS_NOT_A_COMPONENT_THAT_I_CAN_FORGE_INTO_THE_REQUESTED_ITEM);
+        play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_SORRY_THIS_IS_NOT_AN_ITEM_THAT_I_CAN_FORGE_INTO_THE_REQUESTED_ITEM : NPC_LINE_SORRY_THIS_IS_NOT_A_COMPONENT_THAT_I_CAN_FORGE_INTO_THE_REQUESTED_ITEM);
         Sprintf(talkbuf, "Sorry, this is not an item that I can forge into %s.", an(OBJ_NAME(objects[forge_dest_otyp])));
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 0;
