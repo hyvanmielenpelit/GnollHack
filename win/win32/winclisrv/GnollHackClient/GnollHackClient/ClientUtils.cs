@@ -22,73 +22,132 @@ namespace GnollHackClient
     class ClientUtils
     {
         private static SKColor GHDarkGray = new SKColor(96, 96, 96);
+        private static SKColor GHVeryDarkGray = new SKColor(64, 64, 64);
         private static SKColor GHTitleGold = new SKColor(0xD4, 0xA0, 0x17);
         private static SKColor GHRed = new SKColor(255, 32, 32);
+        private static SKColor GHDarkRed = new SKColor(224, 0, 0);
         private static SKColor GHGreen = new SKColor(0, 255, 0);
+        private static SKColor GHDarkGreen = new SKColor(0, 192, 0);
         private static SKColor GHBlue = new SKColor(112, 112, 255);
+        private static SKColor GHDarkBlue = new SKColor(64, 64, 255);
         private static SKColor GHBrown = new SKColor(210, 128, 32);
+        private static SKColor GHDarkBrown = new SKColor(180, 92, 0);
         private static SKColor GHBrightBlue = new SKColor(180, 200, 255);
+        private static SKColor GHCyan = new SKColor(133, 224, 224);
         private static SKColor GHBrightCyan = new SKColor(165, 255, 255);
+        private static SKColor GHDarkYellow = new SKColor(192, 192, 0);
 
         public static SKColor NHColor2SKColor(int nhclr, int attr)
         {
-            return NHColor2SKColorCore(nhclr, attr, false);
+            return NHColor2SKColorCore(nhclr, attr, false, false);
         }
-        public static SKColor NHColor2SKColorCore(int nhclr, int attr, bool revertblackwhite)
+        public static SKColor NHColor2SKColorCore(int nhclr, int attr, bool revertblackwhite, bool isselected)
         {
-            SKColor res = revertblackwhite ? SKColors.Black : SKColors.White;
+            SKColor res;
+            if (isselected)
+                res = revertblackwhite ? SKColors.DarkGray : SKColors.LightGray;
+            else
+                res = revertblackwhite ? SKColors.Black : SKColors.White;
+
             bool usealtcolors = (attr & (int)MenuItemAttributes.AltColors) != 0;
             switch ((nhcolor)nhclr)
             {
                 case nhcolor.CLR_BLACK:
-                    res = revertblackwhite ? SKColors.White : GHDarkGray;
+                    if(isselected)
+                        res = revertblackwhite ? SKColors.Gray : GHVeryDarkGray;
+                    else
+                        res = revertblackwhite ? SKColors.White : GHDarkGray;
                     break;
                 case nhcolor.CLR_RED:
-                    res = revertblackwhite ? SKColors.Red : GHRed;
+                    if (isselected)
+                        res = revertblackwhite ? SKColors.DarkRed : GHDarkRed;
+                    else
+                        res = revertblackwhite ? SKColors.Red : GHRed;
                     break;
                 case nhcolor.CLR_GREEN:
-                    res = revertblackwhite ? SKColors.Green : GHGreen;
+                    if (isselected)
+                        res = revertblackwhite ? SKColors.DarkGreen : GHDarkGreen;
+                    else
+                        res = revertblackwhite ? SKColors.Green : GHGreen;
                     break;
                 case nhcolor.CLR_BROWN:
                     if (usealtcolors)
                         res = GHTitleGold;
                     else
-                        res = revertblackwhite ? SKColors.Brown : GHBrown;
+                    {
+                        if (isselected)
+                            res = revertblackwhite ? GHDarkBrown : GHDarkBrown;
+                        else
+                            res = revertblackwhite ? SKColors.Brown : GHBrown;
+                    }
                     break;
                 case nhcolor.CLR_BLUE:
-                    res = revertblackwhite ? SKColors.Blue : GHBlue;
+                    if (isselected)
+                        res = revertblackwhite ? SKColors.DarkBlue : GHDarkBlue;
+                    else
+                        res = revertblackwhite ? SKColors.Blue : GHBlue;
                     break;
                 case nhcolor.CLR_MAGENTA:
-                    res = SKColors.Magenta;
+                    if (isselected)
+                        res = SKColors.DarkMagenta;
+                    else
+                        res = SKColors.Magenta;
                     break;
                 case nhcolor.CLR_CYAN:
-                    res = SKColors.Cyan;
+                    if (isselected)
+                        res = SKColors.DarkCyan;
+                    else
+                        res = SKColors.Cyan;
                     break;
                 case nhcolor.CLR_GRAY:
-                    res = revertblackwhite ? GHDarkGray : SKColors.LightGray;
+                    if (isselected)
+                        res = revertblackwhite ? GHVeryDarkGray : SKColors.Gray;
+                    else
+                        res = revertblackwhite ? GHDarkGray : SKColors.LightGray;
                     break;
                 case nhcolor.NO_COLOR:
                     break;
                 case nhcolor.CLR_ORANGE:
-                    res = SKColors.Orange;
+                    if (isselected)
+                        res = SKColors.DarkOrange;
+                    else
+                        res = SKColors.Orange;
                     break;
                 case nhcolor.CLR_BRIGHT_GREEN:
-                    res = SKColors.LightGreen;
+                    if (isselected)
+                        res = SKColors.Green;
+                    else
+                        res = SKColors.LightGreen;
                     break;
                 case nhcolor.CLR_YELLOW:
-                    res = SKColors.Yellow;
+                    if (isselected)
+                        res = GHDarkYellow;
+                    else
+                        res = SKColors.Yellow;
                     break;
                 case nhcolor.CLR_BRIGHT_BLUE:
-                    res = revertblackwhite ? SKColors.LightBlue : GHBrightBlue;
+                    if (isselected)
+                        res = revertblackwhite ? SKColors.Blue : GHBlue;
+                    else
+                        res = revertblackwhite ? SKColors.LightBlue : GHBrightBlue;
                     break;
                 case nhcolor.CLR_BRIGHT_MAGENTA:
-                    res = SKColors.LightPink;
+                    if (isselected)
+                        res = SKColors.Pink;
+                    else
+                        res = SKColors.LightPink;
                     break;
                 case nhcolor.CLR_BRIGHT_CYAN:
-                    res = revertblackwhite ? SKColors.LightCyan : GHBrightCyan;
+                    if (isselected)
+                        res = revertblackwhite ? SKColors.Cyan : GHCyan;
+                    else
+                        res = revertblackwhite ? SKColors.LightCyan : GHBrightCyan;
                     break;
                 case nhcolor.CLR_WHITE:
-                    res = revertblackwhite ? SKColors.Black : SKColors.White;
+                    if (isselected)
+                        res = revertblackwhite ? SKColors.DarkGray : SKColors.Gray;
+                    else
+                        res = revertblackwhite ? SKColors.Black : SKColors.White;
                     break;
                 case nhcolor.CLR_MAX:
                     break;
