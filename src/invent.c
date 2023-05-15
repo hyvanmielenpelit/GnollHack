@@ -7162,4 +7162,21 @@ reset_inventory(VOID_ARGS)
     memset((genericptr_t)&safeq_xprn_ctx, 0, sizeof(safeq_xprn_ctx));
 }
 
+struct obj*
+contains_otyp(container, otyp)
+struct obj* container;
+int otyp;
+{
+    if (!container)
+        return (struct obj*)0;
+
+    struct obj* otmp;
+    for (otmp = container->cobj; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->otyp == otyp)
+            return otmp;
+    }
+    return (struct obj*)0;
+}
+
 /*invent.c*/

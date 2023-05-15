@@ -2670,7 +2670,7 @@ enum autodraw_types* autodraw_ptr;
                 return ntile;
 
             struct monst* mtmp2 = get_mtraits(otmp, FALSE);
-            if (mtmp2 && which_armor(mtmp, W_SADDLE))
+            if (mtmp2 && (which_armor(mtmp2, W_SADDLE) || contains_otyp(otmp, SADDLE)))
             {
                 int glyph_idx = 0;
                 if (autodraw_ptr)
@@ -3492,7 +3492,7 @@ struct replacement_info info;
                 return glyph;
 
             struct monst* mtmp2 = get_mtraits(otmp, FALSE);
-            if (mtmp2 && which_armor(mtmp2, W_SADDLE))
+            if (mtmp2 && (which_armor(mtmp2, W_SADDLE) || contains_otyp(otmp, SADDLE)))
             {
                 int glyph_idx = 0;
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);

@@ -1502,6 +1502,7 @@ E void FDECL(silly_thing, (const char *, struct obj *));
 E void NDECL(print_things_here_to_window);
 E void NDECL(update_here_window);
 E void NDECL(reset_inventory);
+E struct obj* FDECL(contains_otyp, (struct obj*, int));
 
 /* ### ioctl.c ### */
 
