@@ -52,10 +52,15 @@ namespace GnollHackClient.Pages.Game
 
         private async void btnOK_Clicked(object sender, EventArgs e)
         {
+            btnOK.IsEnabled = false;
+            btnCancel.IsEnabled = false;
+            App.PlayButtonClickedSound();
             if (string.IsNullOrWhiteSpace(eName.Text))
             {
                 lblError.TextColor = Color.Red;
                 lblError.Text = "Please enter a name.";
+                btnOK.IsEnabled = true;
+                btnCancel.IsEnabled = true;
                 return;
             }
 
@@ -64,6 +69,8 @@ namespace GnollHackClient.Pages.Game
             {
                 lblError.TextColor = Color.Red;
                 lblError.Text = "Name is invalid.";
+                btnOK.IsEnabled = true;
+                btnCancel.IsEnabled = true;
                 return;
             }
 
@@ -75,6 +82,8 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, usedName));
                 await _gamePage.Navigation.PopModalAsync();
             }
+            btnOK.IsEnabled = true;
+            btnCancel.IsEnabled = true;
         }
 
         protected override void OnAppearing()
@@ -124,6 +133,10 @@ namespace GnollHackClient.Pages.Game
 
         private async void btnCancel_Clicked(object sender, EventArgs e)
         {
+            btnOK.IsEnabled = false;
+            btnCancel.IsEnabled = false;
+            App.PlayButtonClickedSound();
+
             App.IsServerGame = false;
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
@@ -131,6 +144,8 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, ""));
                 await _gamePage.Navigation.PopModalAsync();
             }
+            btnOK.IsEnabled = true;
+            btnCancel.IsEnabled = true;
         }
     }
 }
