@@ -372,6 +372,8 @@ const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
     { "salt and pepper schnauzer", "salt and pepper Schnauzer", "Schnauzer", "salt and pepper" },
     { "black schnauzer", "Scottish Terrier", "Scottish Terrier", (char*)0  },
     { "pembroke corgi", "Pembroke Corgi", "Corgi", "Pembroke" },
+    { "cocker spaniel", "Cocker Spaniel", "Cocker Spaniel", (char*)0  },
+    { "bloodhound", "bloodhound", "Bloodhound", (char*)0  },
 };
 
 const struct breed_definition cat_breed_definitions[NUM_CAT_BREEDS] = {

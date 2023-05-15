@@ -2269,7 +2269,8 @@ doloot()
         if (mtmp)
         {
             timepassed = loot_mon(mtmp, &prev_inquiry, &prev_loot);
-            did_something = TRUE;
+            if(timepassed)
+                did_something = TRUE;
         }
 
         /* always use a turn when choosing a direction is impaired,
@@ -2423,7 +2424,7 @@ doloot()
          * Adjust this if-block to allow container looting
          * from one square away to change that in the future.
          */
-        if (!underfoot && !got_something) 
+        if (!underfoot && !got_something && !did_something) 
         {
             did_something = TRUE;
             if (container_at(cc.x, cc.y, FALSE))
@@ -2589,6 +2590,7 @@ boolean *prev_loot;
                 return 1;
             }
 
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
             obj_extract_self(otmp);
 
             if ((unwornmask = otmp->owornmask) != 0L)
