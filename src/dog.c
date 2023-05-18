@@ -486,6 +486,7 @@ makedog()
     int pettype;
     short petgender = 0;
     unsigned short petbreed = 0;
+    unsigned short petbreed_female = 0;
     boolean ismale = FALSE;
     boolean isfemale = FALSE;
     boolean isneuter = FALSE;
@@ -542,9 +543,9 @@ makedog()
         }
 
         if(!dogbreed && petdetails_used)
-            petbreed = choose_pet_breed(pettype, petgender == 2);
+            petbreed = petbreed_female = choose_pet_breed(pettype, petgender == 2);
         else
-            petbreed = dogbreed;
+            petbreed = petbreed_female = dogbreed;
     }
     else if (pettype == PM_PONY)
     {
@@ -598,9 +599,9 @@ makedog()
         }
 
         if (!catbreed && petdetails_used)
-            petbreed = choose_pet_breed(pettype, petgender == 2);
+            petbreed = petbreed_female = choose_pet_breed(pettype, petgender == 2);
         else
-            petbreed = catbreed;
+            petbreed = petbreed_female = catbreed;
 
     }
 
@@ -630,7 +631,15 @@ makedog()
     if (!*petname && pettype == PM_LITTLE_DOG)
     {
         /* All of these names were for dogs. */
-        petname_female = rn2(2) ? "Fifi" : "Lassie";
+        if (rn2(2))
+        {
+            petname_female = "Fifi";
+        }
+        else
+        {
+            petname_female = "Lassie";
+            petbreed_female = DOG_BREED_SABLE_ROUGH_COLLIE;
+        }
 
         if (Race_if(PM_GNOLL))
         {
@@ -647,17 +656,20 @@ makedog()
             {
                 petname = "Hachiko";         /* Shibuya Station */
                 ismale = TRUE;
+                petbreed = 0;                /* Akita */
             }
             if (Role_if(PM_BARBARIAN))
             {
                 petname = "Idefix";          /* Obelix */
                 ismale = TRUE;
-                petbreed = 0;
+                petbreed = DOG_BREED_SALTPEPPER_SCHNAUZER;
             }
             if (Role_if(PM_TOURIST))
             {
-                petname = "Pepe";            /* Tribute to a male Welsh springer spaniel -- JG */
+                petname = "Pepe";            /* Tribute to a male Welsh Springer Spaniel -- JG */
+                petbreed = 0;                /* Welsh Springer Spaniel */
                 petname_female = "Luna";     /* Tribute to a female Finnish Lapphund -- JG */
+                petbreed_female = 0;         /* Finnish Lapphund */
             }
             if (Role_if(PM_RANGER))
                 petname = "Sirius";          /* Orion's dog */
@@ -676,6 +688,7 @@ makedog()
         ismale = TRUE;
     else if (petgender == 2 && !ismale && !isneuter)
         isfemale = TRUE;
+
 
     if (*petname == '+' || *petname == '_')
     {
@@ -701,7 +714,7 @@ makedog()
         extrammflags = MM_MALE;
     }
 
-    mtmp = makemon_limited(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_MONSTER_INVENTORY | extrammflags, 0UL, petbreed, 0, 0, 0, 0);
+    mtmp = makemon_limited(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_MONSTER_INVENTORY | extrammflags, 0UL, petbreed, petbreed_female, 0, 0, 0, 0);
 
     if (!mtmp)
         return ((struct monst *) 0); /* pets were genocided */

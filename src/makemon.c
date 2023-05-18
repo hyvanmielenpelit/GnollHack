@@ -2654,7 +2654,7 @@ register struct permonst* ptr;
 register int x, y;
 unsigned long mmflags;
 {
-    return makemon_limited(ptr, x, y, mmflags, 0UL, 0, 0, 0, 0, 0);
+    return makemon_limited(ptr, x, y, mmflags, 0UL, 0, 0, 0, 0, 0, 0);
 }
 
 struct monst*
@@ -2663,7 +2663,7 @@ register struct permonst* ptr;
 register int x, y;
 unsigned long mmflags, mmflags2;
 {
-    return makemon_limited(ptr, x, y, mmflags, mmflags2, 0, 0, 0, 0, 0);
+    return makemon_limited(ptr, x, y, mmflags, mmflags2, 0, 0, 0, 0, 0, 0);
 }
 
 struct monst*
@@ -2674,7 +2674,7 @@ unsigned long mmflags, mmflags2;
 unsigned short subtype;
 int npcsubtype, level_adjustment;
 {
-    return makemon_limited(ptr, x, y, mmflags, mmflags2, subtype, npcsubtype, 0, level_adjustment, 0);
+    return makemon_limited(ptr, x, y, mmflags, mmflags2, subtype, subtype, npcsubtype, 0, level_adjustment, 0);
 }
 
 /*
@@ -2685,11 +2685,11 @@ int npcsubtype, level_adjustment;
  *      In case we make a monster group, only return the one at [x,y].
  */
 struct monst *
-makemon_limited(ptr, x, y, mmflags, mmflags2, subtype, npcsubtype, level_limit, level_adjustment, alignment)
+makemon_limited(ptr, x, y, mmflags, mmflags2, subtype, subtype_female, npcsubtype, level_limit, level_adjustment, alignment)
 register struct permonst *ptr;
 register int x, y;
 unsigned long mmflags, mmflags2;
-unsigned short subtype;
+unsigned short subtype, subtype_female;
 int npcsubtype;
 int level_limit, level_adjustment;
 aligntyp alignment;
@@ -2894,20 +2894,6 @@ aligntyp alignment;
     if (ptr->msound == MS_LEADER && quest_info(MS_LEADER) == mndx)
         quest_status.leader_m_id = mtmp->m_id;
     mtmp->mnum = mndx;
-    mtmp->subtype = subtype;
-    if (!subtype && randomize_subtype)
-    {
-        if (mons[mndx].mflags6 & M6_USES_CAT_SUBTYPES)
-        {
-            if(!rn2(9))
-                mtmp->subtype = rn2(NUM_CAT_BREEDS);
-        }
-        else if (mons[mndx].mflags6 & M6_USES_DOG_SUBTYPES)
-        {
-            if (!rn2(9))
-                mtmp->subtype = rn2(NUM_DOG_BREEDS);
-        }
-    }
     mtmp->glyph = NO_GLYPH;
     mtmp->gui_glyph = NO_GLYPH;
 
@@ -2983,6 +2969,21 @@ aligntyp alignment;
     else
     {
         mtmp->female = randomize_monster_gender(ptr);
+    }
+
+    mtmp->subtype = mtmp->female ? subtype_female : subtype;
+    if (!mtmp->subtype && randomize_subtype)
+    {
+        if (mons[mndx].mflags6 & M6_USES_CAT_SUBTYPES)
+        {
+            if (!rn2(9))
+                mtmp->subtype = rn2(NUM_CAT_BREEDS);
+        }
+        else if (mons[mndx].mflags6 & M6_USES_DOG_SUBTYPES)
+        {
+            if (!rn2(9))
+                mtmp->subtype = rn2(NUM_DOG_BREEDS);
+        }
     }
 
     if ((In_sokoban(&u.uz) && !mindless(ptr)) || (ptr->mflags3 & M3_KNOWS_PITS_AND_HOLES)) /* know about traps here */

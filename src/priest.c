@@ -1198,7 +1198,7 @@ boolean peaceful;
     if (MON_AT(x, y))
         (void) rloc(m_at(x, y), FALSE); /* insurance */
 
-    if (!(roamer = makemon_limited(ptr, x, y, MM_ADJACENTOK | MM_EMIN | MM_ROAMER | (peaceful ? MM_PEACEFUL : MM_ANGRY), 0UL, 0, 0, 0, 0, alignment)))
+    if (!(roamer = makemon_limited(ptr, x, y, MM_ADJACENTOK | MM_EMIN | MM_ROAMER | (peaceful ? MM_PEACEFUL : MM_ANGRY), 0UL, 0, 0, 0, 0, 0, alignment)))
         return (struct monst *) 0;
 
     //EMIN(roamer)->min_align = alignment;
