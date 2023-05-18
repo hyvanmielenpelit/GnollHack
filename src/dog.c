@@ -405,7 +405,7 @@ boolean isfemale;
     }
 
     size_t breed_cnt = max_breed - min_breed >= 0 ? (size_t)(max_breed - min_breed) + 1 : 0;
-    if (!breed_def_ptr || breed_cnt <= 0)
+    if (!breed_def_ptr || !breed_cnt)
         return res;
 
     int* breed_indices = (int*)alloc(breed_cnt * sizeof(int));
@@ -428,7 +428,7 @@ boolean isfemale;
     anything any = zeroany;
 
     int j;
-    for (j = 0; j < breed_cnt; j++)
+    for (j = 0; j < (int)breed_cnt; j++)
     {
         i = breed_indices[j];
         any = zeroany;
