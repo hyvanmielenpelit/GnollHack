@@ -396,6 +396,12 @@ int sx, sy;
 uchar npctype;
 int mtype;
 {
+    if (!sroom)
+        return;
+
+    /* Change the npcroom to the right npc subtype */
+    sroom->rsubtype = npctype;
+
     struct monst* npc;
     int i;
     int npc_loc_x = sx;

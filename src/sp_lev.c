@@ -1556,6 +1556,12 @@ struct mkroom *broom;
     levl[x][y].doormask = dflags;
     levl[x][y].key_otyp = dd->key_otyp;
     levl[x][y].special_quality = dd->key_special_quality;
+
+    /* Clear off decorations */
+    levl[x][y].decoration_typ = 0;
+    levl[x][y].decoration_subtyp = 0;
+    levl[x][y].decoration_dir = 0;
+    levl[x][y].decoration_flags = 0;
 }
 
 /*

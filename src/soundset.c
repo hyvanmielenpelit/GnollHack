@@ -204,6 +204,8 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
 
     { SOUND_BANK_MASTER, "event:/Music/Smith/Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/NPC/Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/NPC/Secondary", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/NPC/Tertiary", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Disintegrate", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Life Saved", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Healing/Healing", 0.3f },
@@ -19292,6 +19294,16 @@ struct mkroom* room;
                     break;
                 case NPC_HERMIT:
                     break;
+                case NPC_HERMIT2:
+                case NPC_HERMIT3:
+                case NPC_ELVEN_BARD:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_TERTIARY;
+                    break;
+                case NPC_ARTIFICER:
+                case NPC_WARP_ENGINEER:
+                case NPC_QUANTUM_MECHANIC:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_SECONDARY;
+                    break;
                 default:
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_NORMAL;
                     break;
@@ -19303,6 +19315,16 @@ struct mkroom* room;
                 {
                 case NPC_GEOLOGIST:
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_NORMAL;
+                    break;
+                case NPC_HERMIT2:
+                case NPC_HERMIT3:
+                case NPC_ELVEN_BARD:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_TERTIARY;
+                    break;
+                case NPC_ARTIFICER:
+                case NPC_WARP_ENGINEER:
+                case NPC_QUANTUM_MECHANIC:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_SECONDARY;
                     break;
                 case NPC_HERMIT:
                     break;
@@ -19316,6 +19338,16 @@ struct mkroom* room;
                 switch (room->rsubtype)
                 {
                 case NPC_HERMIT:
+                    break;
+                case NPC_HERMIT2:
+                case NPC_HERMIT3:
+                case NPC_ELVEN_BARD:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_TERTIARY;
+                    break;
+                case NPC_ARTIFICER:
+                case NPC_WARP_ENGINEER:
+                case NPC_QUANTUM_MECHANIC:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_SECONDARY;
                     break;
                 default:
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_NORMAL;
