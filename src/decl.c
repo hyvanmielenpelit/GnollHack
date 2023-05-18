@@ -375,6 +375,9 @@ const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
     { "cardigan corgi", "Cardigan Corgi", "Corgi", "Cardigan" },
     { "cocker spaniel", "Cocker Spaniel", "Cocker Spaniel", (char*)0  },
     { "bloodhound", "bloodhound", "Bloodhound", (char*)0  },
+    { "blue rough collie", "Blue Rough Collie", "Rough Collie", "Blue and white" },
+    { "sable rough collie", "Sable Rough Collie", "Rough Collie", "Sable and white" },
+    { "tricolor rough collie", "Tricolor Rough Collie", "Rough Collie", "Tricolor" },
 };
 
 const struct breed_definition cat_breed_definitions[NUM_CAT_BREEDS] = {

@@ -11,6 +11,7 @@ STATIC_DCL int FDECL(pet_type, (BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL int NDECL(choose_cat_or_dog);
 STATIC_DCL short FDECL(choose_pet_gender, (int));
 STATIC_DCL unsigned short FDECL(choose_pet_breed, (int, BOOLEAN_P));
+STATIC_PTR int FDECL(CFDECLSPEC breed_cmp, (const genericptr, const genericptr));
 
 STATIC_VAR boolean petdetails_used = FALSE;
 STATIC_VAR int petname_used = 0;
@@ -334,6 +335,43 @@ int mnum;
     return res;
 }
 
+STATIC_VAR const struct breed_definition* breed_def_ptr = 0;
+
+STATIC_OVL int CFDECLSPEC
+breed_cmp(p, q)
+const genericptr p;
+const genericptr q;
+{
+    if (!p || !q || !breed_def_ptr)
+        return 0;
+
+    int idx1 = *(int*)p;
+    int idx2 = *(int*)q;
+
+    struct breed_definition breed1 = breed_def_ptr[idx1];
+    struct breed_definition breed2 = breed_def_ptr[idx2];
+
+    int breedres = 0;
+    if (breed1.breed_name && breed2.breed_name)
+        breedres = strcmp(breed1.breed_name, breed2.breed_name);
+    else if (breed1.breed_name)
+        return 1;
+    else
+        return -1;
+
+    if (!breedres && (breed1.color_name || breed2.color_name))
+    {
+        if (breed1.color_name && breed2.color_name)
+            breedres = strcmp(breed1.color_name, breed2.color_name);
+        else if (breed1.color_name)
+            return 1;
+        else
+            return -1;
+    }
+
+    return breedres;
+}
+
 STATIC_OVL
 unsigned short
 choose_pet_breed(mnum, isfemale)
@@ -346,7 +384,8 @@ boolean isfemale;
     int max_breed = -1;
     int male_replacement = -1;
     int female_replacement = -1;
-    const struct breed_definition* breed_def_ptr = 0;
+    breed_def_ptr = 0;
+
     switch (mnum)
     {
     case PM_LITTLE_DOG:
@@ -365,8 +404,20 @@ boolean isfemale;
         break;
     }
 
-    if (!breed_def_ptr || max_breed <= 0)
+    size_t breed_cnt = max_breed - min_breed >= 0 ? (size_t)(max_breed - min_breed) + 1 : 0;
+    if (!breed_def_ptr || breed_cnt <= 0)
         return res;
+
+    int* breed_indices = (int*)alloc(breed_cnt * sizeof(int));
+
+    if(!breed_indices)
+        return res;
+
+    int i;
+    for (i = min_breed; i <= max_breed; i++)
+        breed_indices[i- min_breed] = i;
+
+    qsort(breed_indices, breed_cnt, sizeof(int), breed_cmp);
 
     winid menuwin;
     menu_item* selected = (menu_item*)0;
@@ -376,9 +427,10 @@ boolean isfemale;
     start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_PLAYER);
     anything any = zeroany;
 
-    int i;
-    for (i = min_breed; i <= max_breed; i++)
+    int j;
+    for (j = 0; j < breed_cnt; j++)
     {
+        i = breed_indices[j];
         any = zeroany;
         int glyph = i == 0 || (isfemale ? female_replacement : male_replacement) < 0 || !iflags.using_gui_tiles ? (mnum + (isfemale ? GLYPH_FEMALE_MON_OFF : GLYPH_MON_OFF))
             : (i - 1 + replacement_offsets[isfemale ? female_replacement : male_replacement] + GLYPH_REPLACEMENT_OFF);
@@ -417,6 +469,8 @@ boolean isfemale;
         }
         free((genericptr_t)selected);
     }
+
+    free((genericptr_t)breed_indices);
 
     /* res == 0 leads to the generic breed */
     return res;
