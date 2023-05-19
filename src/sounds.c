@@ -3628,7 +3628,7 @@ struct monst* mtmp;
 
                 chatnum++;
             }
-            if(invent && count_unpaid(invent, FALSE))
+            if(invent && count_unpaid(invent, 0, FALSE))
             {
                 Strcpy(available_chat_list[chatnum].name, "Pay items");
                 available_chat_list[chatnum].function_ptr = &do_chat_shk_payitems;

@@ -3335,7 +3335,7 @@ STATIC_PTR int
 ckunpaid(otmp)
 struct obj *otmp;
 {
-    return (otmp->unpaid || (Has_contents(otmp) && count_unpaid(otmp->cobj, FALSE)));
+    return (otmp->unpaid || (Has_contents(otmp) && count_unpaid(otmp->cobj, 0, FALSE)));
 }
 
 boolean
@@ -3461,7 +3461,7 @@ int show_weights;
     }
 
     iletct = collect_obj_classes(ilets, invent, FALSE, ofilter, &itemcount);
-    unpaid = count_unpaid(invent, FALSE);
+    unpaid = count_unpaid(invent, ofilter, FALSE);
 
     if (ident && !iletct) {
         return -1; /* no further identifications */
@@ -5096,21 +5096,23 @@ char avoidlet;
  * contained objects.
  */
 int
-count_unpaid(list, bynexthere)
+count_unpaid(list, filterfunc, bynexthere)
 struct obj *list;
+boolean FDECL((*filterfunc), (OBJ_P));
 boolean bynexthere;
 {
     int count = 0;
+    struct obj* otmp;
+    for (otmp = list; otmp; otmp = (bynexthere ? otmp->nexthere : otmp->nobj))
+    {
+        if (filterfunc && !(*filterfunc)(otmp))
+            continue;
 
-    while (list) {
-        if (list->unpaid)
+        if (otmp->unpaid)
             count++;
-        if (Has_contents(list))
-            count += count_unpaid(list->cobj, FALSE); //Contents are always by nobj
-        if (bynexthere)
-            list = list->nexthere;
-        else
-            list = list->nobj;
+
+        if (Has_contents(otmp))
+            count += count_unpaid(otmp->cobj, filterfunc, FALSE); //Contents are always by nobj
     }
     return count;
 }
@@ -5257,7 +5259,7 @@ dounpaid()
     int classcount, count, num_so_far;
     long cost, totcost;
 
-    count = count_unpaid(invent, FALSE);
+    count = count_unpaid(invent, 0, FALSE);
     otmp = marker = contnr = (struct obj *) 0;
 
     if (count == 1) {
@@ -5358,7 +5360,14 @@ dounidentified()
     int classcount, count;
 
     count = count_unidentified(invent, 0, FALSE);
-    otmp = (struct obj*)0;
+    if (!count)
+    {
+        win = create_nhwindow(NHW_MENU);
+        putstr(win, 0, "You have no unidentified items.");
+        display_nhwindow(win, FALSE);
+        destroy_nhwindow(win);
+        return;
+    }
 
     win = create_nhwindow(NHW_MENU);
     if (!flags.invlet_constant)
@@ -5439,7 +5448,7 @@ dotypeinv()
         You1("aren't carrying anything.");
         return 0;
     }
-    unpaid_count = count_unpaid(invent, FALSE);
+    unpaid_count = count_unpaid(invent, 0, FALSE);
     unidentified_count = count_unidentified(invent, 0, FALSE);
     tally_BUCX(invent, FALSE, &bcnt, &ucnt, &ccnt, &xcnt, &ocnt, &tcnt);
 

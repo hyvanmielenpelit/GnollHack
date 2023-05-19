@@ -952,8 +952,7 @@ boolean
 is_unpaid(obj)
 struct obj *obj;
 {
-    return (boolean) (obj->unpaid
-                      || (Has_contents(obj) && count_unpaid(obj->cobj, FALSE)));
+    return (boolean) (obj->unpaid || (Has_contents(obj) && count_unpaid(obj->cobj, 0, FALSE)));
 }
 
 /* Delete the contents of the given object. */
@@ -2848,7 +2847,7 @@ boolean ininv, dummy, silent;
 
         if (obj->no_charge)
             obj->no_charge = 0;
-        contentscount = count_unpaid(obj->cobj, FALSE);
+        contentscount = count_unpaid(obj->cobj, 0, FALSE);
     }
     else
     { /* !container */

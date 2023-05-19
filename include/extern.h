@@ -1490,7 +1490,7 @@ E void NDECL(free_invbuf);
 E void NDECL(reassign);
 E int NDECL(doorganize);
 E void NDECL(free_pickinv_cache);
-E int FDECL(count_unpaid, (struct obj *, BOOLEAN_P));
+E int FDECL(count_unpaid, (struct obj *, boolean(*)(OBJ_P), BOOLEAN_P));
 E int FDECL(count_objects, (struct obj*, BOOLEAN_P));
 E int FDECL(count_buc, (struct obj *, int, boolean (*)(OBJ_P), BOOLEAN_P));
 E void FDECL(tally_BUCX, (struct obj *, BOOLEAN_P,

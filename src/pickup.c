@@ -158,7 +158,7 @@ struct obj *objs;
 boolean here;
 int *menu_on_demand;
 {
-    char ilets[36], inbuf[BUFSZ] = DUMMY; /* FIXME: hardcoded ilets[] length */
+    char ilets[BUFSZ], inbuf[BUFSZ] = DUMMY; /* FIXME: hardcoded ilets[] length */
     int iletct, oclassct;
     boolean not_everything, filtered;
     char qbuf[QBUFSZ];
@@ -187,8 +187,10 @@ int *menu_on_demand;
     }
     if (itemcount && menu_on_demand)
         ilets[iletct++] = 'm';
-    if (count_unpaid(objs, here))
+    if (count_unpaid(objs, 0, here))
         ilets[iletct++] = 'u';
+    if (count_unidentified(objs, 0, here))
+        ilets[iletct++] = 'I';
 
     tally_BUCX(objs, here, &bcnt, &ucnt, &ccnt, &xcnt, &ocnt, &tcnt);
     if (bcnt)
@@ -239,7 +241,7 @@ int *menu_on_demand;
                 goto ask_again;
             } else if (sym == 'm') {
                 m_seen = TRUE;
-            } else if (index("uBUCX", sym)) {
+            } else if (index("uIBUCX", sym)) {
                 add_valid_menu_class(sym); /* 'u' or 'B','U','C',or 'X' */
                 filtered = TRUE;
             } else {
@@ -462,7 +464,7 @@ struct obj *obj;
     /* if unpaid is expected and obj isn't unpaid, reject (treat a container
        holding any unpaid object as unpaid even if isn't unpaid itself) */
     if (shop_filter && !obj->unpaid
-        && !(Has_contents(obj) && count_unpaid(obj->cobj, FALSE) > 0))
+        && !(Has_contents(obj) && count_unpaid(obj->cobj, 0, FALSE) > 0))
         return FALSE;
     /* reject fully identified objects */
     if (unidentified_filter && !not_fully_identified(obj))
@@ -1146,10 +1148,13 @@ int how;               /* type of query */
     *pick_list = (menu_item *) 0;
     if (!olist)
         return 0;
-    if ((qflags & UNPAID_TYPES) && count_unpaid(olist, (qflags & BY_NEXTHERE) != 0))
-        do_unpaid = TRUE;
+
     if (qflags & WORN_TYPES)
         ofilter = is_worn;
+
+    if ((qflags & UNPAID_TYPES) && count_unpaid(olist, ofilter, (qflags & BY_NEXTHERE) != 0))
+        do_unpaid = TRUE;
+
     if ((qflags & UNIDENTIFIED_TYPES) && count_unidentified(olist, ofilter, (qflags & BY_NEXTHERE) != 0)) {
         do_unidentified = TRUE;
     }
