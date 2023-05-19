@@ -355,7 +355,7 @@ struct obj *obj;
 /* list of valid menu classes for query_objlist() and allow_category callback
    (with room for all object classes, 'u'npaid, BUCX, and terminator) */
 STATIC_VAR char valid_menu_classes[MAX_OBJECT_CLASSES + 1 + 4 + 1];
-STATIC_VAR boolean class_filter, bucx_filter, shop_filter;
+STATIC_VAR boolean class_filter, bucx_filter, shop_filter, unidentified_filter;
 
 /* check valid_menu_classes[] for an entry; also used by askchain() */
 boolean
@@ -373,7 +373,7 @@ int c;
 
     if (c == 0) { /* reset */
         vmc_count = 0;
-        class_filter = bucx_filter = shop_filter = FALSE;
+        class_filter = bucx_filter = shop_filter = unidentified_filter = FALSE;
     } else if (!menu_class_present(c)) {
         valid_menu_classes[vmc_count++] = (char) c;
         /* categorize the new class */
@@ -383,6 +383,9 @@ int c;
         case 'C': /*FALLTHRU*/
         case 'X':
             bucx_filter = TRUE;
+            break;
+        case 'I':
+            unidentified_filter = TRUE;
             break;
         case 'u':
             shop_filter = TRUE;
@@ -430,7 +433,8 @@ struct obj *obj;
                     : bucx_filter
                        ? (index(valid_menu_classes, iflags.goldX ? 'X' : 'U')
                           ? TRUE : FALSE)
-                       : TRUE; /* catchall: no filters specified, so accept */
+                       : unidentified_filter ? FALSE :
+                          TRUE; /* catchall: no filters specified, so accept */
 
     if (Role_if(PM_PRIEST))
         obj->bknown = TRUE;
@@ -459,6 +463,9 @@ struct obj *obj;
        holding any unpaid object as unpaid even if isn't unpaid itself) */
     if (shop_filter && !obj->unpaid
         && !(Has_contents(obj) && count_unpaid(obj->cobj, FALSE) > 0))
+        return FALSE;
+    /* reject fully identified objects */
+    if (unidentified_filter && !not_fully_identified(obj))
         return FALSE;
     /* check for particular bless/curse state */
     if (bucx_filter) {
@@ -1132,7 +1139,7 @@ int how;               /* type of query */
     boolean FDECL((*ofilter), (OBJ_P)) = (boolean FDECL((*), (OBJ_P))) 0;
     boolean do_unpaid = FALSE;
     boolean do_blessed = FALSE, do_cursed = FALSE, do_uncursed = FALSE,
-            do_buc_unknown = FALSE;
+            do_buc_unknown = FALSE, do_unidentified = FALSE;
     int num_buc_types = 0;
     int objcnt = count_objects(olist, (qflags & BY_NEXTHERE) != 0);
 
@@ -1143,6 +1150,9 @@ int how;               /* type of query */
         do_unpaid = TRUE;
     if (qflags & WORN_TYPES)
         ofilter = is_worn;
+    if ((qflags & UNIDENTIFIED_TYPES) && count_unidentified(olist, ofilter, (qflags & BY_NEXTHERE) != 0)) {
+        do_unidentified = TRUE;
+    }
     if ((qflags & BUC_BLESSED) && count_buc(olist, BUC_BLESSED, ofilter, (qflags & BY_NEXTHERE) != 0)) {
         do_blessed = TRUE;
         num_buc_types++;
@@ -1255,6 +1265,13 @@ int how;               /* type of query */
         add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
                  "Unpaid items already used up", MENU_UNSELECTED);
     }
+    if (do_unidentified) {
+        invlet = 'I';
+        any = zeroany;
+        any.a_int = 'I';
+        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
+            "Unidentified items", MENU_UNSELECTED);
+    }
 
     /* items with b/u/c/unknown if there are any;
        this cluster of menu entries is in alphabetical order,
@@ -1286,6 +1303,13 @@ int how;               /* type of query */
         any.a_int = 'X';
         add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
                  "Items of unknown Bless/Curse status", MENU_UNSELECTED);
+    }
+    if (do_buc_unknown) {
+        invlet = 'X';
+        any = zeroany;
+        any.a_int = 'X';
+        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
+            "Items of unknown Bless/Curse status", MENU_UNSELECTED);
     }
     end_menu(win, qstr);
     n = select_menu(win, how, pick_list);
@@ -3932,7 +3956,7 @@ struct obj* other_container UNUSED;
     {
         all_categories = FALSE;
         Sprintf(buf, "%s what type of objects?", action);
-        mflags = (ALL_TYPES | UNPAID_TYPES | BUCX_TYPES | CHOOSE_ALL);
+        mflags = (ALL_TYPES | UNPAID_TYPES | BUCX_TYPES | UNIDENTIFIED_TYPES | CHOOSE_ALL);
         if (command_id == 5)
             mflags |= BY_NEXTHERE;
         n = query_category(buf, command_id == 1 ? invent : command_id == 5 ? level.objects[u.ux][u.uy] : current_container->cobj,

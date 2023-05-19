@@ -540,7 +540,7 @@ struct monst *oracl;
 {
     long umoney;
     long u_pay, minor_cost = max(1L, (long)(25.0 * service_cost_charisma_adjustment(ACURR(A_CHA)))), major_cost = max(1, (int)((double)(250 + 25 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    //int unid_cnt = count_unidentified(invent);
+    //int unid_cnt = count_unidentified(invent, 0, FALSE);
     int oracleaction = 0;
     int add_xpts;
     char qbuf[QBUFSZ];
@@ -677,7 +677,7 @@ struct monst* oracl;
         You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
-    else if (count_unidentified(invent) == 0)
+    else if (count_unidentified(invent, 0, FALSE) == 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex1_popup("have no unidentified items.", "Nothing to Identify", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
@@ -751,7 +751,7 @@ struct monst* oracl;
     //        umoney = money_cnt(invent);
     //        cnt += res;
     //    }
-    //} while (res > 0 && count_unidentified(invent) > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
+    //} while (res > 0 && count_unidentified(invent, 0, FALSE) > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
 
     return (res > 0);
 }

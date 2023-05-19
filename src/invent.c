@@ -40,6 +40,7 @@ STATIC_DCL char FDECL(display_pickinv, (const char *, char *, char *, BOOLEAN_P,
 STATIC_DCL char FDECL(display_used_invlets, (CHAR_P));
 STATIC_DCL boolean FDECL(this_type_only, (struct obj *));
 STATIC_DCL void NDECL(dounpaid);
+STATIC_DCL void NDECL(dounidentified);
 STATIC_DCL struct obj *FDECL(find_unpaid, (struct obj *, struct obj **));
 STATIC_DCL int FDECL(menu_identify, (int));
 STATIC_DCL boolean FDECL(tool_in_use, (struct obj *));
@@ -3864,15 +3865,22 @@ int id_limit;
 
 /* count the unidentified items */
 int
-count_unidentified(objchn)
+count_unidentified(objchn, filterfunc, bynexthere)
 struct obj *objchn;
+boolean FDECL((*filterfunc), (OBJ_P));
+boolean bynexthere;
 {
     int unid_cnt = 0;
     struct obj *obj;
 
-    for (obj = objchn; obj; obj = obj->nobj)
+    for (obj = objchn; obj; obj = (bynexthere ? obj->nexthere : obj->nobj))
+    {
+        if (filterfunc && !(*filterfunc)(obj))
+            continue;
+
         if (not_fully_identified(obj))
             ++unid_cnt;
+    }
     return unid_cnt;
 }
 
@@ -3884,7 +3892,7 @@ int id_limit; /* 0 = all, >0 max no of items identified */
 boolean learning_id; /* true if we just read unknown identify scroll */
 {
     struct obj *obj;
-    int n, unid_cnt = count_unidentified(invent);
+    int n, unid_cnt = count_unidentified(invent, 0, FALSE);
     int res = 0;
 
     if (!unid_cnt)
@@ -4568,7 +4576,7 @@ boolean addinventoryheader, wornonly;
         int unid_cnt;
         char prompt[QBUFSZ];
 
-        unid_cnt = count_unidentified(invent);
+        unid_cnt = count_unidentified(invent, 0, FALSE);
         Sprintf(prompt, "Debug Identify"); /* 'title' rather than 'prompt' */
         if (unid_cnt)
             Sprintf(eos(prompt),
@@ -5340,6 +5348,44 @@ dounpaid()
     destroy_nhwindow(win);
 }
 
+STATIC_OVL void
+dounidentified()
+{
+    winid win;
+    struct obj* otmp;
+    register char ilet;
+    char* invlet = flags.inv_order;
+    int classcount, count;
+
+    count = count_unidentified(invent, 0, FALSE);
+    otmp = (struct obj*)0;
+
+    win = create_nhwindow(NHW_MENU);
+    if (!flags.invlet_constant)
+        reassign();
+
+    do {
+        classcount = 0;
+        for (otmp = invent; otmp; otmp = otmp->nobj) {
+            ilet = otmp->invlet;
+            if (not_fully_identified(otmp)) {
+                if (!flags.sortpack || otmp->oclass == *invlet) {
+                    if (flags.sortpack && !classcount) {
+                        putstr(win, 0, let_to_name(*invlet, 2, FALSE));
+                        classcount++;
+                    }
+
+                    putstr(win, 0, xprname(otmp, distant_name(otmp, doname),
+                        ilet, TRUE, 0L, 0L));
+                }
+            }
+        }
+    } while (flags.sortpack && (*++invlet));
+
+    display_nhwindow(win, FALSE);
+    destroy_nhwindow(win);
+}
+
 /* query objlist callback: return TRUE if obj type matches "this_type" */
 static int this_type;
 
@@ -5382,7 +5428,7 @@ dotypeinv()
     char c = '\0';
     int n, i = 0;
     char *extra_types, types[BUFSZ];
-    int class_count, oclass, unpaid_count, itemcount;
+    int class_count, oclass, unpaid_count, unidentified_count, itemcount;
     int bcnt, ccnt, ucnt, xcnt, ocnt, tcnt;
     boolean billx = *u.ushops && doinvbill(0);
     menu_item *pick_list;
@@ -5394,13 +5440,18 @@ dotypeinv()
         return 0;
     }
     unpaid_count = count_unpaid(invent, FALSE);
+    unidentified_count = count_unidentified(invent, 0, FALSE);
     tally_BUCX(invent, FALSE, &bcnt, &ucnt, &ccnt, &xcnt, &ocnt, &tcnt);
 
     if (flags.menu_style != MENU_TRADITIONAL) {
         if (flags.menu_style == MENU_FULL
             || flags.menu_style == MENU_PARTIAL) {
             traditional = FALSE;
-            i = UNPAID_TYPES;
+            i = 0;
+            if(unpaid_count)
+                i |= UNPAID_TYPES;
+            if (unidentified_count)
+                i |= UNIDENTIFIED_TYPES;
             if (billx)
                 i |= BILLED_TYPES;
             if (bcnt)
@@ -5425,12 +5476,14 @@ dotypeinv()
         class_count = collect_obj_classes(types, invent, FALSE,
                                           (boolean FDECL((*), (OBJ_P))) 0,
                                           &itemcount);
-        if (unpaid_count || billx || (bcnt + ccnt + ucnt + xcnt) != 0)
+        if (unpaid_count || billx || unidentified_count || (bcnt + ccnt + ucnt + xcnt) != 0)
             types[class_count++] = ' ';
         if (unpaid_count)
             types[class_count++] = 'u';
         if (billx)
             types[class_count++] = 'x';
+        if (unidentified_count)
+            types[class_count++] = 'I';
         if (bcnt)
             types[class_count++] = 'B';
         if (ucnt)
@@ -5447,6 +5500,8 @@ dotypeinv()
             *extra_types++ = 'u';
         if (!billx)
             *extra_types++ = 'x';
+        if (!unidentified_count)
+            *extra_types++ = 'I';
         if (!bcnt)
             *extra_types++ = 'B';
         if (!ucnt)
@@ -5475,6 +5530,8 @@ dotypeinv()
                 c = 'u';
             else if (billx)
                 c = 'x';
+            else if (unidentified_count)
+                c = 'I';
             else
                 c = types[0];
         }
@@ -5492,6 +5549,13 @@ dotypeinv()
             dounpaid();
         else
             You1("are not carrying any unpaid objects.");
+        return 0;
+    }
+    if (c == 'I') {
+        if (unidentified_count)
+            dounidentified();
+        else
+            You1("are not carrying any unidentified objects.");
         return 0;
     }
     if (traditional) {
@@ -6572,9 +6636,10 @@ STATIC_VAR NEARDATA char *invbuf = (char *) 0;
 STATIC_VAR NEARDATA size_t invbufsiz = 0;
 
 char *
-let_to_name(let, unpaid, showsym)
+let_to_name(let, prefix_style, showsym)
 char let;
-boolean unpaid, showsym;
+uchar prefix_style; //1 = unpaid, 2 = unidentified
+boolean showsym;
 {
     const char *ocsymfmt = " '%c'";
     const size_t invbuf_sympadding = 0; /* arbitrary */
@@ -6590,7 +6655,7 @@ boolean unpaid, showsym;
     else
         class_name = names[0];
 
-    len = strlen(class_name) + (unpaid ? sizeof "unpaid_" : sizeof "")
+    len = strlen(class_name) + (prefix_style == 1 ? sizeof "unpaid_" : prefix_style == 2 ? sizeof "unidentified_" : sizeof "")
           + (oclass ? (strlen(ocsymfmt) + invbuf_sympadding) : 0);
     if (len > invbufsiz) {
         if (invbuf)
@@ -6598,10 +6663,20 @@ boolean unpaid, showsym;
         invbufsiz = len + 10; /* add slop to reduce incremental realloc */
         invbuf = (char *) alloc(invbufsiz);
     }
-    if (unpaid)
+
+    switch (prefix_style)
+    {
+    case 1:
         Strcat(strcpy(invbuf, "Unpaid "), class_name);
-    else
+        break;
+    case 2:
+        Strcat(strcpy(invbuf, "Unidentified "), class_name);
+        break;
+    default:
         Strcpy(invbuf, class_name);
+        break;
+    }
+
     if ((oclass != 0) && showsym) {
         char *bp = eos(invbuf);
         long mlen = (long)invbuf_sympadding - (long)strlen(class_name);

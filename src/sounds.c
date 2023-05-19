@@ -7403,7 +7403,7 @@ struct monst* mtmp;
     int res = 0;
 
     context.shop_identify_type = ESHK(mtmp)->shoptype - SHOPBASE + 1;
-    if (count_unidentified(invent) == 0)
+    if (count_unidentified(invent, 0, FALSE) == 0)
     {
         context.shop_identify_type = 0;
         play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -7455,7 +7455,7 @@ struct monst* mtmp;
     //    context.shop_identify_type = ESHK(mtmp)->shoptype - SHOPBASE + 1; // shtypes[ESHK(mtmp)->shoptype - SHOPBASE].symb;
 
     //    res = identify_pack(1, FALSE);
-    //    unided = count_unidentified(invent);
+    //    unided = count_unidentified(invent, 0, FALSE);
 
     //    context.shop_identify_type = 0;
 
@@ -9000,7 +9000,7 @@ long minor_id_cost;
     }
 
     context.npc_identify_type = id_idx;
-    if (count_unidentified(invent) == 0)
+    if (count_unidentified(invent, 0, FALSE) == 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex1_popup("have nothing to identify.", "Nothing to Identify", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);

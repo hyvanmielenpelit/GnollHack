@@ -1448,7 +1448,7 @@ E int FDECL(askchain, (struct obj **, const char *, int, int (*)(OBJ_P),
                        int (*)(OBJ_P), int, const char *));
 E void FDECL(fully_identify_obj, (struct obj *));
 E int FDECL(identify, (struct obj *));
-E int FDECL(count_unidentified, (struct obj *));
+E int FDECL(count_unidentified, (struct obj *, boolean(*)(OBJ_P), BOOLEAN_P));
 E int FDECL(identify_pack, (int, BOOLEAN_P));
 E void NDECL(learn_unseen_invent);
 E void FDECL(prinv, (const char *, struct obj *, long));
@@ -1484,7 +1484,7 @@ E int NDECL(doprtool);
 E int NDECL(doprinuse);
 E void FDECL(useupf, (struct obj *, long));
 E void FDECL(useupf_with_flags, (struct obj*, long, unsigned long));
-E char *FDECL(let_to_name, (CHAR_P, BOOLEAN_P, BOOLEAN_P));
+E char *FDECL(let_to_name, (CHAR_P, UCHAR_P, BOOLEAN_P));
 E const char* FDECL(get_class_name, (CHAR_P));
 E void NDECL(free_invbuf);
 E void NDECL(reassign);
