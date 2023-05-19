@@ -9233,7 +9233,7 @@ enum create_context_menu_types menu_type;
 
         struct obj* otmp = level.objects[u.ux][u.uy];
         struct rm* lev = &levl[u.ux][u.uy];
-        struct trap* t = 0;
+        struct trap* t = t_at(u.ux, u.uy);
         if (IS_ALTAR(lev->typ))
         {
             add_context_menu(M('o'), cmd_from_func(dosacrifice), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Offer", 0, 0, NO_COLOR);
@@ -9266,11 +9266,28 @@ enum create_context_menu_types menu_type;
             add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Go Down",
                 (u.ux == xdnladder && u.uy == ydnladder) ? "Ladder" : "Stairs", 0, NO_COLOR);
         }
-        else if ((Flying || (Levitation && Levitation_control)) && (t = t_at(u.ux, u.uy)) != 0 && t->tseen && is_hole(t->ttyp)
+        else if ((Flying || (Levitation && Levitation_control)) && t && t->tseen && is_hole(t->ttyp)
             && Can_fall_thru(&u.uz))
         {
             add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Go Down",
                 t->ttyp == HOLE ? "Hole" : "Trap Door", 0, NO_COLOR);
+        }
+        else if (t && t->tseen && is_pit(t->ttyp))
+        {
+            if (u.utrap > 0)
+            {
+                /* Climb out of the pit */
+                add_context_menu('<', cmd_from_func(doup), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), 
+                    Flying ? "Fly out" : (Levitation && Levitation_control) ? "Levitate out" : "Climb out",
+                    "Pit", 0, NO_COLOR);
+            }
+            else
+            {
+                /* Go down to the pit */
+                add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy),
+                    Flying ? "Fly down" : (Levitation && Levitation_control) ? "Levitate down" : has_pitwalk(youmonst.data) ? "Climb down" : "Jump down",
+                    "Pit", 0, NO_COLOR);
+            }
         }
 
         struct monst* shkp = can_pay_to_shkp();

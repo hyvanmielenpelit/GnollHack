@@ -1314,7 +1314,10 @@ namespace GnollHackClient.Pages.Game
                             break;
                         default:
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
-                            icon_string = "GnollHackClient.Assets.UI.stairs-up.png";
+                            if (data.target_text != null && data.target_text == "Pit")
+                                icon_string = "GnollHackClient.Assets.UI.target-upwards.png";
+                            else
+                                icon_string = "GnollHackClient.Assets.UI.stairs-up.png";
                             break;
                     }
                     break;
@@ -1329,7 +1332,10 @@ namespace GnollHackClient.Pages.Game
                             break;
                         default:
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
-                            icon_string = "GnollHackClient.Assets.UI.stairs-down.png";
+                            if(data.target_text != null && data.target_text == "Pit")
+                                icon_string = "GnollHackClient.Assets.UI.target-downwards.png";
+                            else
+                                icon_string = "GnollHackClient.Assets.UI.stairs-down.png";
                             break;
                     }
                     break;
