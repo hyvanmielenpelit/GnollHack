@@ -1315,7 +1315,7 @@ namespace GnollHackClient.Pages.Game
                         default:
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
                             if (data.target_text != null && data.target_text == "Pit")
-                                icon_string = "GnollHackClient.Assets.UI.target-upwards.png";
+                                icon_string = "GnollHackClient.Assets.UI.arrow_up.png";
                             else
                                 icon_string = "GnollHackClient.Assets.UI.stairs-up.png";
                             break;
@@ -1333,7 +1333,7 @@ namespace GnollHackClient.Pages.Game
                         default:
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
                             if(data.target_text != null && data.target_text == "Pit")
-                                icon_string = "GnollHackClient.Assets.UI.target-downwards.png";
+                                icon_string = "GnollHackClient.Assets.UI.arrow_down.png";
                             else
                                 icon_string = "GnollHackClient.Assets.UI.stairs-down.png";
                             break;
