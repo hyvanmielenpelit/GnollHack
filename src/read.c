@@ -1870,8 +1870,8 @@ struct monst* targetmonst;
         }
 
         s = scursed ? -1
-            : (otmp->enchantment >= 9)
-            ? (rn2(max(1, otmp->enchantment)) == 0)
+            : (otmp->enchantment >= (3 * max_ench) / 2)
+            ? (!rn2(max(2, otmp->enchantment / (sblessed ? 2 : 1))))
             : sblessed ? rnd(2) : 1;
 
         if (s >= 0 && is_dragon_scales(otmp)) 
@@ -1900,7 +1900,7 @@ struct monst* targetmonst;
             (Blind || same_color)
             ? "" : hcolor(scursed ? NH_BLACK : NH_SILVER),
             (s * s > 1) ? "while" : "moment");
-        pline_ex1_popup(ATR_NONE, scursed ? CLR_MSG_NEGATIVE : CLR_MSG_POSITIVE, effbuf, 
+        pline_ex1_popup(ATR_NONE, scursed ? CLR_MSG_NEGATIVE : s == 0 ? CLR_MSG_WARNING : CLR_MSG_POSITIVE, effbuf,
             known || otmp->oclass == SPBOOK_CLASS ? "Enchant Armor" : Blind ? "Magical Vibration" : "Magical Glow", 
             is_serviced_spell);
 
@@ -2283,8 +2283,8 @@ struct monst* targetmonst;
         }
 
         boolean isweptwohanded = (otmp && bimanual(otmp));
-        int special_threshold = isweptwohanded ? 24 : 12;
-        int special_chance = max(1, otmp->enchantment / (isweptwohanded ? 2 : 1));
+        int special_threshold = (3 * get_obj_max_enchantment(otmp)) / 2;
+        int special_chance = max(2, otmp->enchantment / ((isweptwohanded ? 2 : 1) * (sblessed ? 2 : 1)));
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
 
