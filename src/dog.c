@@ -656,7 +656,7 @@ makedog()
             {
                 petname = "Hachiko";         /* Shibuya Station */
                 ismale = TRUE;
-                petbreed = 0;                /* Akita */
+                petbreed = DOG_BREED_AKITA;
             }
             if (Role_if(PM_BARBARIAN))
             {
@@ -669,7 +669,7 @@ makedog()
                 petname = "Pepe";            /* Tribute to a male Welsh Springer Spaniel -- JG */
                 petbreed = 0;                /* Welsh Springer Spaniel */
                 petname_female = "Luna";     /* Tribute to a female Finnish Lapphund -- JG */
-                petbreed_female = 0;         /* Finnish Lapphund */
+                petbreed_female = DOG_BREED_FINNISH_LAPPHUND;
             }
             if (Role_if(PM_RANGER))
                 petname = "Sirius";          /* Orion's dog */

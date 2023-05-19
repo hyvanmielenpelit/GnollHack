@@ -378,6 +378,12 @@ const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
     { "blue rough collie", "Blue Rough Collie", "Rough Collie", "Blue and white" },
     { "sable rough collie", "Sable Rough Collie", "Rough Collie", "Sable and white" },
     { "tricolor rough collie", "Tricolor Rough Collie", "Rough Collie", "Tricolor" },
+    { "finnish lapphund", "Finnish Lapphund", "Finnish Lapphund", (char*)0  },
+    { "akita", "Akita", "Akita", (char*)0  },
+    { "shiba", "Shiba", "Shiba", (char*)0  },
+    { "black border collie", "Black Border Collie", "Border Collie", "Black and white" },
+    { "brown border collie", "Brown Border Collie", "Border Collie", "Brown and white" },
+    { "grey border collie", "Grey Border Collie", "Border Collie", "Grey and black" },
 };
 
 const struct breed_definition cat_breed_definitions[NUM_CAT_BREEDS] = {
