@@ -386,7 +386,7 @@ const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
     { "grey border collie", "Grey Border Collie", "Border Collie", "Grey and black" },
     { "english springer spaniel", "English Springer Spaniel", "English Springer Spaniel", (char*)0  },
     { "welsh springer spaniel", "Welsh Springer Spaniel", "Welsh Springer Spaniel", (char*)0  },
-    /* {"bulldog", "Bulldog", "Bulldog", (char*)0}, */
+    {"bulldog", "Bulldog", "Bulldog", (char*)0},
 };
 
 const struct breed_definition cat_breed_definitions[NUM_CAT_BREEDS] = {

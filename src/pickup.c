@@ -1304,13 +1304,7 @@ int how;               /* type of query */
         add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
                  "Items of unknown Bless/Curse status", MENU_UNSELECTED);
     }
-    if (do_buc_unknown) {
-        invlet = 'X';
-        any = zeroany;
-        any.a_int = 'X';
-        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
-            "Items of unknown Bless/Curse status", MENU_UNSELECTED);
-    }
+
     end_menu(win, qstr);
     n = select_menu(win, how, pick_list);
     destroy_nhwindow(win);
