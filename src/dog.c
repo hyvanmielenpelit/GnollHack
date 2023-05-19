@@ -667,7 +667,7 @@ makedog()
             if (Role_if(PM_TOURIST))
             {
                 petname = "Pepe";            /* Tribute to a male Welsh Springer Spaniel -- JG */
-                petbreed = 0;                /* Welsh Springer Spaniel */
+                petbreed = DOG_BREED_WELSH_SPRINGER_SPANIEL;
                 petname_female = "Luna";     /* Tribute to a female Finnish Lapphund -- JG */
                 petbreed_female = DOG_BREED_FINNISH_LAPPHUND;
             }
