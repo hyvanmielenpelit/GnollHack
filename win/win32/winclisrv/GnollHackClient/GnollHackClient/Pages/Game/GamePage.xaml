@@ -308,7 +308,7 @@
             <Grid x:Name="GetLineGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="440" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Margin="0,50,0,10" >
-                    <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                    <Frame x:Name="GetLineFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                         <StackLayout x:Name="GetLineLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">

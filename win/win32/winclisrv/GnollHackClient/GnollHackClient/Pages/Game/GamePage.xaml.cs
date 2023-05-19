@@ -24,6 +24,7 @@ using GnollHackClient.Controls;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.PlatformConfiguration;
+using System.Text.RegularExpressions;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -2169,8 +2170,14 @@ namespace GnollHackClient.Pages.Game
         }
 
         private int _getLineStyle = 0;
+        private Regex _getLineRegex = null;
         private void GetLine(string query, string placeholder, string linesuffix, string introline, int style, int attr, int color)
         {
+            GetLineFrame.BorderColor = Color.Black;
+            GetLineOkButton.IsEnabled = true;
+            GetLineCancelButton.IsEnabled = true;
+            GetLineQuestionMarkButton.IsEnabled = true;
+
             Color clr = ClientUtils.NHColor2XColor(color, attr, false, false); /* Non-title / white coloring works better here */
             string PlaceHolderText = null;
             if (!string.IsNullOrWhiteSpace(placeholder) && placeholder.Length > 0)
@@ -2198,6 +2205,8 @@ namespace GnollHackClient.Pages.Game
             GetLineAutoComplete.IsVisible = false;
 
             _getLineStyle = style;
+            _getLineRegex = null;
+
             switch (style)
             {
                 case (int)getline_types.GETLINE_EXTENDED_COMMAND:
@@ -2205,10 +2214,12 @@ namespace GnollHackClient.Pages.Game
                     GetLineQuestionMarkGrid.IsVisible = true;
                     GetLineAutoComplete.IsVisible = true;
                     GetLineEntryText.Placeholder = "Type the command";
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_]{0,64}$");
                     break;
                 case (int)getline_types.GETLINE_LEVELPORT:
                     GetLineEntryText.Placeholder = "Type the level here";
                     GetLineEntryText.Keyboard = Keyboard.Numeric;
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_? ]{0,32}$");
                     /* '*' could be possible as well, but not implemented at the moment */
                     break;
                 case (int)getline_types.GETLINE_WIZ_LEVELPORT:
@@ -2216,6 +2227,7 @@ namespace GnollHackClient.Pages.Game
                     GetLineQuestionMarkGrid.IsVisible = true;
                     GetLineEntryText.Placeholder = "Type the level";
                     GetLineEntryText.Keyboard = Keyboard.Numeric;
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_? ]{0,32}$");
                     break;
                 case (int)getline_types.GETLINE_LEVEL_CHANGE:
                 case (int)getline_types.GETLINE_NUMBERS_ONLY:
@@ -2225,34 +2237,45 @@ namespace GnollHackClient.Pages.Game
                         GetLineEntryText.Placeholder = "Type the level here";
                     else
                         GetLineEntryText.Placeholder = "Type the number here";
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_? ]{0,32}$");
                     break;
                 case (int)getline_types.GETLINE_WISHING:
                     GetLineEntryText.Placeholder = "Type your wish here";
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \(\:\)\+\-]{0,128}$");
                     break;
                 case (int)getline_types.GETLINE_GENESIS:
                 case (int)getline_types.GETLINE_POLYMORPH:
                 case (int)getline_types.GETLINE_GENOCIDE:
                 case (int)getline_types.GETLINE_MONSTER:
                     GetLineEntryText.Placeholder = "Type the monster here";
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ ]{0,64}$");
                     break;
                 case (int)getline_types.GETLINE_MONSTER_CLASS:
                     GetLineEntryText.WidthRequest = 230;
                     GetLineEntryText.MaxLength = 1;
                     GetLineQuestionMarkGrid.IsVisible = true;
                     GetLineEntryText.Placeholder = "Type the monster class";
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \'\&\#\:\;]{0,64}$");
                     break;
                 case (int)getline_types.GETLINE_TUNE:
                     GetLineEntryText.WidthRequest = 240;
                     GetLineEntryText.Placeholder = "Type the tune here";
+                    _getLineRegex = new Regex(@"^[A-Za-z]{0,10}$");
                     break;
                 case (int)getline_types.GETLINE_QUESTION:
                     GetLineEntryText.Placeholder = "Type the answer here";
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \$\*\&\.\,\<\>\=\?\!\#\(\:\;\)\+\-]{0,128}$");
+                    break;
+                case (int)getline_types.GETLINE_MENU_SEARCH:
+                    GetLineEntryText.Placeholder = "Type the search here";
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \`\|\~\^\""\'\%\/\\\[\]\{\}\$\*\&\.\,\<\>\=\?\!\#\(\:\;\)\+\-]{0,128}$");
                     break;
                 default:
                     if (PlaceHolderText != null)
                         GetLineEntryText.Placeholder = PlaceHolderText;
                     else
                         GetLineEntryText.Placeholder = "Type the text here";
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \$\*\&\.\,\<\>\=\?\!\#\(\:\;\)\+\-]{0,128}$");
                     break;
             }
             GetLineGrid.IsVisible = true;
@@ -2260,6 +2283,11 @@ namespace GnollHackClient.Pages.Game
 
         private void GetLineOkButton_Clicked(object sender, EventArgs e)
         {
+            GetLineOkButton.IsEnabled = false;
+            GetLineCancelButton.IsEnabled = false;
+            GetLineQuestionMarkButton.IsEnabled = false;
+            App.PlayButtonClickedSound();
+
             string res = GetLineEntryText.Text;
             if (string.IsNullOrEmpty(GetLineEntryText.Text))
             {
@@ -2274,8 +2302,19 @@ namespace GnollHackClient.Pages.Game
                 res.Trim();
             }
 
+            if(_getLineRegex != null && !_getLineRegex.IsMatch(res))
+            {
+                GetLineFrame.BorderColor = Color.Red;
+                GetLineEntryText.Focus();
+                GetLineOkButton.IsEnabled = true;
+                GetLineCancelButton.IsEnabled = true;
+                GetLineQuestionMarkButton.IsEnabled = true;
+                return;
+            }
+            GetLineFrame.BorderColor = Color.Black;
+
             /* Style-dependent behavior */
-            switch(_getLineStyle)
+            switch (_getLineStyle)
             {
                 case (int)getline_types.GETLINE_EXTENDED_COMMAND:
                     res = res.ToLower();
@@ -2297,6 +2336,11 @@ namespace GnollHackClient.Pages.Game
 
         private void GetLineQuestionMarkButton_Clicked(object sender, EventArgs e)
         {
+            GetLineOkButton.IsEnabled = false;
+            GetLineCancelButton.IsEnabled = false;
+            GetLineQuestionMarkButton.IsEnabled = false;
+            App.PlayButtonClickedSound();
+
             string res = "?";
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
@@ -2311,6 +2355,11 @@ namespace GnollHackClient.Pages.Game
 
         private void GetLineCancelButton_Clicked(object sender, EventArgs e)
         {
+            GetLineOkButton.IsEnabled = false;
+            GetLineCancelButton.IsEnabled = false;
+            GetLineQuestionMarkButton.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
