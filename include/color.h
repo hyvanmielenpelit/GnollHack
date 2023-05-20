@@ -79,7 +79,7 @@
 #define CLR_MSG_SUCCESS       CLR_BRIGHT_GREEN
 #define CLR_MSG_FAIL          CLR_BROWN
 #define CLR_MSG_HINT          CLR_BRIGHT_CYAN
-#define CLR_MSG_TEXT          CLR_WHITE
+#define CLR_MSG_TEXT          CLR_BRIGHT_CYAN
 
 #define CLR_MSG_TALK_NORMAL   CLR_WHITE
 #define CLR_MSG_TALK_ANGRY    CLR_ORANGE
