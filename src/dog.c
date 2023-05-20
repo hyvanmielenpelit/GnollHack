@@ -348,22 +348,24 @@ const genericptr q;
     int idx1 = *(int*)p;
     int idx2 = *(int*)q;
 
+    int breedres = 0;
     struct breed_definition breed1 = breed_def_ptr[idx1];
     struct breed_definition breed2 = breed_def_ptr[idx2];
+    const char* cmp_name1 = breed1.description && breed1.breed_name ? breed1.description : breed1.breed_name;
+    const char* cmp_name2 = breed2.description && breed2.breed_name ? breed2.description : breed2.breed_name;
 
-    int breedres = 0;
-    if (breed1.breed_name && breed2.breed_name)
-        breedres = strcmp(breed1.breed_name, breed2.breed_name);
-    else if (breed1.breed_name)
+    if (cmp_name1 && cmp_name2)
+        breedres = strcmpi(cmp_name1, cmp_name2);
+    else if (cmp_name1)
         return 1;
     else
         return -1;
 
-    if (!breedres && (breed1.color_name || breed2.color_name))
+    if (!breedres && (breed1.short_coat_color || breed2.short_coat_color))
     {
-        if (breed1.color_name && breed2.color_name)
-            breedres = strcmp(breed1.color_name, breed2.color_name);
-        else if (breed1.color_name)
+        if (breed1.short_coat_color && breed2.short_coat_color)
+            breedres = strcmpi(breed1.short_coat_color, breed2.short_coat_color);
+        else if (breed1.short_coat_color)
             return 1;
         else
             return -1;
@@ -427,6 +429,7 @@ boolean isfemale;
     start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_PLAYER);
     anything any = zeroany;
 
+    char breedbuf[BUFSZ];
     int j;
     for (j = 0; j < (int)breed_cnt; j++)
     {
@@ -435,9 +438,17 @@ boolean isfemale;
         int glyph = i == 0 || (isfemale ? female_replacement : male_replacement) < 0 || !iflags.using_gui_tiles ? (mnum + (isfemale ? GLYPH_FEMALE_MON_OFF : GLYPH_MON_OFF))
             : (i - 1 + replacement_offsets[isfemale ? female_replacement : male_replacement] + GLYPH_REPLACEMENT_OFF);
         any.a_int = i + 1;
-        add_menu(menuwin, glyph, &any, 0, 0, ATR_NONE, NO_COLOR,
-            str_upper_start(breed_def_ptr[i].description ? breed_def_ptr[i].description : breed_def_ptr[i].name ? breed_def_ptr[i].name : "Unnamed breed"),
-            MENU_UNSELECTED);
+
+        boolean coatclr = breed_def_ptr[i].short_coat_color != 0;
+
+        if (breed_def_ptr[i].description)
+            Strcpy(breedbuf, str_upper_start(breed_def_ptr[i].description));
+        else if (!breed_def_ptr[i].breed_name)
+            Strcpy(breedbuf, "Unnamed breed");
+        else
+            Sprintf(breedbuf, "%s%s%s%s", str_upper_start(breed_def_ptr[i].breed_name), coatclr ? " (" : "", coatclr ? str_upper_start(breed_def_ptr[i].short_coat_color) : "", coatclr ? ")" : "");
+
+        add_menu(menuwin, glyph, &any, 0, 0, ATR_NONE, NO_COLOR, breedbuf, MENU_UNSELECTED);
     }
 
     any = zeroany;

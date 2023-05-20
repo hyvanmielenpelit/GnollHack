@@ -2671,7 +2671,9 @@ boolean tinitial, tfrom_file;
             for (indx = 0; indx < NUM_DOG_BREEDS; indx++)
             {
                 if ((dog_breed_definitions[indx].name && !strcmpi(op, dog_breed_definitions[indx].name)) 
-                    || (dog_breed_definitions[indx].description && !strcmpi(op, dog_breed_definitions[indx].description)))
+                    || (dog_breed_definitions[indx].description && !strcmpi(op, dog_breed_definitions[indx].description))
+                    || (dog_breed_definitions[indx].breed_name && !strcmpi(op, dog_breed_definitions[indx].breed_name))
+                    )
                 {
                     breedfound = TRUE;
                     dogbreed = indx;
@@ -2707,7 +2709,9 @@ boolean tinitial, tfrom_file;
             for (indx = 0; indx < NUM_CAT_BREEDS; indx++)
             {
                 if ((cat_breed_definitions[indx].name && !strcmpi(op, cat_breed_definitions[indx].name))
-                    || (cat_breed_definitions[indx].description && !strcmpi(op, cat_breed_definitions[indx].description)))
+                    || (cat_breed_definitions[indx].description && !strcmpi(op, cat_breed_definitions[indx].description))
+                    || (cat_breed_definitions[indx].breed_name && !strcmpi(op, cat_breed_definitions[indx].breed_name))
+                    )
                 {
                     breedfound = TRUE;
                     catbreed = indx;

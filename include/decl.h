@@ -305,7 +305,9 @@ struct breed_definition {
     const char* name;
     const char* description;
     const char* breed_name;
-    const char* color_name;
+    const char* short_coat_color;
+    const char* long_coat_color;
+    unsigned long breed_flags;
 };
 
 E const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS];

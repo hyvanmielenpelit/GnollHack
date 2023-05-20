@@ -4404,9 +4404,9 @@ register struct monst* mon;
                 Sprintf(buf, "Breed:                  %s", str_upper_start(dog_breed_definitions[mon->subtype].breed_name));
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
-            if (dog_breed_definitions[mon->subtype].color_name)
+            if (dog_breed_definitions[mon->subtype].short_coat_color || dog_breed_definitions[mon->subtype].long_coat_color)
             {
-                Sprintf(buf, "Coat color:             %s", str_upper_start(dog_breed_definitions[mon->subtype].color_name));
+                Sprintf(buf, "Coat color:             %s", str_upper_start(dog_breed_definitions[mon->subtype].long_coat_color ? dog_breed_definitions[mon->subtype].long_coat_color : dog_breed_definitions[mon->subtype].short_coat_color));
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
         }
@@ -4417,9 +4417,9 @@ register struct monst* mon;
                 Sprintf(buf, "Breed:                  %s", str_upper_start(cat_breed_definitions[mon->subtype].breed_name));
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
-            if (cat_breed_definitions[mon->subtype].color_name)
+            if (cat_breed_definitions[mon->subtype].short_coat_color || cat_breed_definitions[mon->subtype].long_coat_color)
             {
-                Sprintf(buf, "Coat color:             %s", str_upper_start(cat_breed_definitions[mon->subtype].color_name));
+                Sprintf(buf, "Coat color:             %s", str_upper_start(cat_breed_definitions[mon->subtype].long_coat_color ? cat_breed_definitions[mon->subtype].long_coat_color : cat_breed_definitions[mon->subtype].short_coat_color));
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
         }
