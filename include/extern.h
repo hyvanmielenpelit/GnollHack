@@ -1918,7 +1918,7 @@ E unsigned int FDECL(get_item_base_weight, (struct obj*));
 
 /* ### mkroom.c ### */
 
-E int FDECL(mkroom, (int));
+E int FDECL(make_room, (int));
 E void FDECL(fill_zoo, (struct mkroom *));
 E struct permonst *NDECL(antholemon);
 E boolean FDECL(nexttodoor, (int, int));

@@ -7,7 +7,7 @@
 
 /*
  * Entry points:
- *      mkroom() -- make and stock a room of a given type
+ *      make_room() -- make and stock a room of a given type
  *      nexttodoor() -- return TRUE if adjacent to a door
  *      has_dnstairs() -- return TRUE if given room has a down staircase
  *      has_upstairs() -- return TRUE if given room has an up staircase
@@ -90,7 +90,7 @@ register struct mkroom *sroom;
 
 /* make and stock a room of a given type */
 int
-mkroom(roomtype)
+make_room(roomtype)
 int roomtype;
 {
     if (roomtype >= SHOPBASE)
@@ -1434,7 +1434,7 @@ mkgarden()
             break;
     }
 
-    if (!sroom)
+    if (i >= nroom)
         return 0;
 
     /* satisfied; make a garden */
@@ -1460,7 +1460,14 @@ mkgarden()
     {
         for (sy = sroom->ly; sy <= sroom->hy; sy++)
         {
-            if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy)
+            if (levl[sx][sy].typ == STAIRS || levl[sx][sy].typ == LADDER)
+            {
+                /* Insurance */
+                levl[sx][sy].floortyp = GRASS;
+                levl[sx][sy].floorsubtyp = GRASS_SUBTYPE_NORMAL;
+                levl[sx][sy].floorvartyp = get_initial_location_vartype(levl[sx][sy].floortyp, levl[sx][sy].floorsubtyp);
+            }
+            else if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy)
                 && !nexttodoor(sx, sy) && !nexttotree(sx, sy) && !rn2(3))
             {
                 levl[sx][sy].typ = TREE;
@@ -1688,7 +1695,7 @@ mkdragonlair()
             break;
     }
 
-    if (!sroom)
+    if (i >= nroom)
         return 0;
 
     /* satisfied; make a dragon lair */
