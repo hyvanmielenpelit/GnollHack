@@ -105,7 +105,7 @@ dosit()
                 play_sfx_sound(SFX_SIT);
                 if (trap && trap->ttyp == SPIKED_PIT) {
                     play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
-                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "sit down on a spike.  Ouch!");
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "sit down on a spike.  Ouch!");
                     losehp(adjust_damage(rn2(2), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                            "sitting on an iron spike", KILLED_BY);
                     exercise(A_STR, FALSE);

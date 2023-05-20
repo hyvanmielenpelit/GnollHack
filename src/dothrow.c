@@ -806,10 +806,10 @@ int x, y;
             const char *s;
 
             if (odoor_diag)
-                You("hit the door edge!");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "hit the door edge!");
 
             play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
-            pline("Ouch!");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Ouch!");
             if (IS_TREE(levl[x][y].typ))
                 s = "bumping into a tree";
             else if (IS_ROCK(levl[x][y].typ))
@@ -828,7 +828,7 @@ int x, y;
             if (iflags.using_gui_sounds)
                 delay_output_milliseconds(2 * ANIMATION_FRAME_INTERVAL);
             play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
-            You("crash into some iron bars.  Ouch!");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "crash into some iron bars.  Ouch!");
             dmg = rnd(2 + *range);
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "crashing into iron bars",
                    KILLED_BY);
@@ -842,7 +842,7 @@ int x, y;
             if (iflags.using_gui_sounds)
                 delay_output_milliseconds(2 * ANIMATION_FRAME_INTERVAL);
             play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
-            You("bump into a %s.  Ouch!", xname(obj));
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "bump into a %s.  Ouch!", xname(obj));
             dmg = rnd(2 + *range);
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "bumping into a boulder", KILLED_BY);
             wake_nearto(x,y, 10);

@@ -1070,7 +1070,7 @@ int mode;
                         {
                             if (u.usteed) 
                             {
-                                You_cant("lead %s through that closed door.",
+                                You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "lead %s through that closed door.",
                                          y_monnam(u.usteed));
                             }
                             else
@@ -1079,7 +1079,7 @@ int mode;
                                 if (iflags.using_gui_sounds)
                                     delay_output_milliseconds(2 * ANIMATION_FRAME_INTERVAL);
                                 play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
-                                pline("Ouch!  You bump into a door.");
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Ouch!  You bump into a door.");
                                 exercise(A_DEX, FALSE);
                             }
                         } 

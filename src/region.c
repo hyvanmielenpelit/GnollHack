@@ -947,11 +947,11 @@ genericptr_t p2;
     if (p2 == (genericptr_t) 0) { /* That means the player */
         play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
         if (!Blind)
-            You("bump into %s.  Ouch!",
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "bump into %s.  Ouch!",
                 Hallucination ? "an invisible tree"
                               : "some kind of invisible wall");
         else
-            pline("Ouch!");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Ouch!");
     } else {
         mtmp = (struct monst *) p2;
         if (canseemon(mtmp))

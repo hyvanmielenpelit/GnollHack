@@ -306,13 +306,17 @@ dig(VOID_ARGS)
     else 
     { /* !context.digging.down */
         if (IS_TREE(lev->typ) && !may_dig(dpx, dpy)
-            && dig_typ(wep, dpx, dpy) == DIGTYP_TREE) {
-            pline("This tree seems to be petrified.");
+            && dig_typ(wep, dpx, dpy) == DIGTYP_TREE) 
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This tree seems to be petrified.");
             return 0;
         }
         if (IS_ROCK(lev->typ) && !may_dig(dpx, dpy)
-            && dig_typ(wep, dpx, dpy) == DIGTYP_ROCK) {
-            pline("This %s is too hard to %s.",
+            && dig_typ(wep, dpx, dpy) == DIGTYP_ROCK) 
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This %s is too hard to %s.",
                   is_db_wall(dpx, dpy) ? "drawbridge" : "wall", verb);
             return 0;
         }
@@ -320,7 +324,8 @@ dig(VOID_ARGS)
         {
             if (!m_can_destroy_door(&youmonst, lev, FALSE) || !is_door_diggable_at_ptr(lev))
             {
-                pline("This %s is too hard to %s.",
+                play_sfx_sound(SFX_GENERAL_CANNOT);
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "This %s is too hard to %s.",
                     get_door_name_at_ptr(lev), verb);
                 return 0;
             }
@@ -334,26 +339,26 @@ dig(VOID_ARGS)
                 dropx(wep);
             } else {
                 if (u.usteed)
-                    pline("%s and %s %s!", Yobjnam2(wep, "bounce"),
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s and %s %s!", Yobjnam2(wep, "bounce"),
                           otense(wep, "hit"), mon_nam(u.usteed));
                 else
                 {
                     play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
-                    pline("Ouch!  %s and %s you!", Yobjnam2(wep, "bounce"),
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "Ouch!  %s and %s you!", Yobjnam2(wep, "bounce"),
                         otense(wep, "hit"));
                 }
                 set_wounded_legs(RIGHT_SIDE, 5 + rnd(5));
             }
             break;
         case 1:
-            pline("Bang!  You hit with the broad side of %s!",
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Bang!  You hit with the broad side of %s!",
                   the(xname(wep)));
             break;
         default:
             if(issaw)
-                Your("fail to position your saw properly.");
+                Your_ex(ATR_NONE, CLR_MSG_FAIL, "fail to position your saw properly.");
             else
-            Your("swing misses its mark.");
+            Your_ex(ATR_NONE, CLR_MSG_FAIL, "swing misses its mark.");
             break;
         }
         return 0;

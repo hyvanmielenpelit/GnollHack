@@ -1810,7 +1810,7 @@ dokick() {
  ouch:
 
             play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
-            pline("Ouch!  That hurts!");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Ouch!  That hurts!");
             exercise(A_DEX, FALSE);
             exercise(A_STR, FALSE);
             if (isok(x, y)) {
