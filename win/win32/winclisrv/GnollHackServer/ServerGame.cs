@@ -371,9 +371,9 @@ namespace GnollHackServer
 
         }
 
-        public string GameCallback_GetMsgHistory(IntPtr attributes_ptr, IntPtr colors_ptr, byte init)
+        public int GameCallback_GetMsgHistory(IntPtr text_ptr, IntPtr attributes_ptr, IntPtr colors_ptr, byte init)
         {
-            return null;
+            return 0;
         }
 
         public void GameCallback_PutMsgHistory(string msg, IntPtr attributes_ptr, IntPtr colors_ptr, byte is_restoring)
@@ -602,9 +602,9 @@ namespace GnollHackServer
         {
             return 0;
         }
-        protected string GameCallback_GetLineCallback(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline)
+        protected int GameCallback_GetLineCallback(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr)
         {
-            return "";
+            return 0;
         }
         protected string GameCallback_CharPtrBooleanDummy(byte value1)
         {

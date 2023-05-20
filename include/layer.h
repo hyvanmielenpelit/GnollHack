@@ -172,7 +172,7 @@ struct monst_info {
     int glyph;
     int gui_glyph;
 
-    char name[BUFSZ];
+    char name[UTF8BUFSZ];
     unsigned m_id;
 
     int mhp;

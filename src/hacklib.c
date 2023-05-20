@@ -1402,22 +1402,21 @@ size_t bufsize;
 #endif
 
 void
-convertUTF8toCP437(buf, bufsize)
-char* buf;
-size_t bufsize;
+copyUTF8toCP437(cp437destbuf, cp437destbufsize, utf8sourcebuf, utf8sourcebufsize)
+char* cp437destbuf,* utf8sourcebuf;
+size_t cp437destbufsize, utf8sourcebufsize;
 {
-    if (!buf || !*buf)
+    if (!cp437destbuf || !utf8sourcebuf || !cp437destbufsize || !utf8sourcebufsize)
         return;
 
-    char* bp, *wp;
-    char copybuf[BUFSZ] = "";
-    wp = copybuf;
+    char* bp, * wp;
+    wp = cp437destbuf;
     uchar uc, uc2, uc3, uc4;
     unsigned long unicode = 0, byte2bits, byte1bits, byte3bits, byte4bits;
     char cp437char = 0;
     //boolean was_unicode = FALSE;
 
-    for (bp = buf; *bp && bp < buf + bufsize && wp < copybuf + sizeof(copybuf); bp++)
+    for (bp = utf8sourcebuf; *bp && bp < utf8sourcebuf + utf8sourcebufsize && wp < cp437destbuf + cp437destbufsize; bp++)
     {
         uc = (uchar)(*bp);
         if (uc >= 0x80)
@@ -1519,12 +1518,28 @@ size_t bufsize;
         }
     }
 
-    if(wp < copybuf + sizeof(copybuf))
+    if (wp < cp437destbuf + cp437destbufsize)
         *wp = '\0';
     else
-        copybuf[sizeof(copybuf) - 1] = '\0';
+        cp437destbuf[cp437destbufsize - 1] = '\0';
 
+}
+
+void
+convertUTF8toCP437(buf, bufsize)
+char* buf;
+size_t bufsize;
+{
+    if (!buf || !*buf || !bufsize)
+        return;
+
+    char* copybuf = (char*)alloc(bufsize);
+    if (!copybuf)
+        return;
+
+    copyUTF8toCP437(copybuf, bufsize, buf, bufsize);
     Strcpy(buf, copybuf);
+    free(copybuf);
 }
 
 char

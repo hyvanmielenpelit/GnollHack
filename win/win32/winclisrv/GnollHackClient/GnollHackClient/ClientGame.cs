@@ -919,16 +919,22 @@ namespace GnollHackClient
         }
 
         private int _msgIndex = 0;
-        public string ClientCallback_GetMsgHistory(IntPtr attributes_ptr, IntPtr colors_ptr, byte init)
+        public int ClientCallback_GetMsgHistory(IntPtr text_ptr, IntPtr attributes_ptr, IntPtr colors_ptr, byte init)
         {
             if (init != 0)
                 _msgIndex = 0;
 
-            string res = null;
+            int res = 0;
             if (_msgIndex < _message_history.Count)
             {
-                res = _message_history[_msgIndex].Text;
-                int msgLength = res.Length;
+                string text = _message_history[_msgIndex].Text;
+                int msgLength = text.Length;
+                if (text_ptr != IntPtr.Zero)
+                {
+                    byte[] utf8text = Encoding.UTF8.GetBytes(text);
+                    for(int i = 0; i < utf8text.Length; i++)
+                        Marshal.WriteInt16(text_ptr, i * 2, (short)utf8text[i]);
+                }
                 if (attributes_ptr != IntPtr.Zero)
                 {
                     if(_message_history[_msgIndex].Attributes != null)
@@ -959,10 +965,8 @@ namespace GnollHackClient
                 _msgIndex++;
                 if (_msgIndex < 0)
                     _msgIndex = 0;
-            }
-            else
-            {
-                //Do nothing
+
+                res = 1;
             }
 
             return res;
@@ -1231,7 +1235,7 @@ namespace GnollHackClient
             }
         }
 
-        public string ClientCallback_GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline)
+        public int ClientCallback_GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr)
         {
             Debug.WriteLine("ClientCallback_GetLine");
             if (query == null)
@@ -1248,11 +1252,21 @@ namespace GnollHackClient
                     pollResponseQueue();
                 }
 
-                return _getLineString;
+                byte[] buffer = Encoding.UTF8.GetBytes(_getLineString);
+                if (out_string_ptr != null)
+                {
+                    for(int i = 0; i < buffer.Length; i++)
+                        Marshal.WriteInt16(out_string_ptr, i * 2, (short)buffer[i]);
+                    return 1;
+                }
+                else
+                    return 0;
             }
             else
             {
-                return "";
+                if(out_string_ptr != null)
+                   Marshal.WriteInt16(out_string_ptr, 0, 0);
+                return 0;
             }
         }
 

@@ -59,7 +59,7 @@ typedef unsigned char(__callconv* BooleanIntDoubleCallback)(int, double);
 typedef unsigned char(__callconv* BooleanIntDoubleVoidPtrCallback)(int, double, void*);
 typedef unsigned char(__callconv* BooleanVoidPtrDoubleCallback)(void* , double);
 typedef unsigned char(__callconv* BooleanVoidPtrCallback)(void*);
-typedef char*(__callconv* GetLineCallback)(int, int, int, const char*, const char*, const char*, const char*);
+typedef int(__callconv* GetLineCallback)(int, int, int, const char*, const char*, const char*, const char*, short*);
 typedef char*(__callconv* CharPtrBooleanCallback)(BOOLEAN_P);
 typedef void(__callconv* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, UCHAR_P);
 
@@ -114,7 +114,7 @@ typedef VoidVoidCallback StartScreenCallback;
 typedef VoidVoidCallback EndScreenCallback;
 typedef void(__callconv* OutRipCallback)(int, char*, int, char*, char*);
 typedef VoidConstCharCallback PreferenceUpdateCallback;
-typedef char* (__callconv* GetMsgHistoryCallback)(char*, char*, BOOLEAN_P);
+typedef int (__callconv* GetMsgHistoryCallback)(short*, char*, char*, BOOLEAN_P);
 typedef void(__callconv* PutMsgHistoryCallback)(const char*, const char*, const char*, BOOLEAN_P);
 typedef VoidIntCallback StatusInitCallback;
 typedef VoidVoidCallback StatusFinishCallback;

@@ -1045,7 +1045,7 @@ namespace GnollHackCommon
         public int glyph;
         public int gui_glyph;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = GHConstants.BUFSZ)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = GHConstants.UTF8BUFSZ)]
         public string name;
         public uint m_id;
         
@@ -1295,6 +1295,7 @@ namespace GnollHackCommon
     {
         public const int InputBufferLength = 32;
         public const int BUFSZ = 256;
+        public const int UTF8BUFSZ = 256 * 4;
         public const int MaxGHWindows = 32;
         public const int MapCols = 80;
         public const int MapRows = 21;
