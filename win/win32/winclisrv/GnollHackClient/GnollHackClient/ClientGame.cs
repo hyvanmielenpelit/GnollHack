@@ -13,6 +13,7 @@ using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using Xamarin.Essentials;
 using System.Drawing;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GnollHackClient
 {
@@ -402,7 +403,7 @@ namespace GnollHackClient
 
         }
 
-        public string ClientCallback_AskName(string modeName, string modeDescription)
+        public int ClientCallback_AskName(string modeName, string modeDescription, IntPtr out_string_ptr)
         {
             Debug.WriteLine("ClientCallback_AskName");
             ConcurrentQueue<GHRequest> queue;
@@ -416,10 +417,18 @@ namespace GnollHackClient
                     Thread.Sleep(GHConstants.PollingInterval);
                     pollResponseQueue();
                 }
-                return CharacterName;
+
+                if (out_string_ptr != IntPtr.Zero)
+                {
+                    byte[] utf8text = Encoding.UTF8.GetBytes(CharacterName);
+                    Marshal.Copy(utf8text, 0, out_string_ptr, utf8text.Length);
+                    return 1;
+                }
+                else
+                    return 0;
             }
             else
-                return "AskNameFailed";
+                return 0;
         }
 
         public void ClientCallback_get_nh_event()

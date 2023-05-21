@@ -23,7 +23,7 @@ namespace GnollHackClient.Pages.Game
         {
             InitializeComponent();
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-            ValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,32}$");
+            ValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
             _clientGame = gamepage.ClientGame;
             _gamePage = gamepage;
             if (!string.IsNullOrWhiteSpace(modeName))

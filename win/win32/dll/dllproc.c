@@ -749,15 +749,24 @@ void
 dll_askname(void)
 {
     dll_logDebug("dll_askname()\n");
-    char* askedname = dll_callbacks.callback_askname("", "");
-    if (!askedname)
+    char utf8buf[PL_NSIZ * 4 + UTF8BUFSZ] = "";
+    int res = dll_callbacks.callback_askname("", "", utf8buf);
+    if (!res)
     {
         dll_bail("bye-bye");
         /* not reached */
     }
     else
     {
-        strncpy(plname, askedname, PL_NSIZ - 1);
+        char ansbuf[PL_NSIZ + BUFSZ] = "";
+        copyUTF8toCP437(ansbuf, sizeof(ansbuf), utf8buf, sizeof(utf8buf));
+        ansbuf[sizeof(ansbuf) - 1] = 0;
+        int i, len = (int)strlen(ansbuf);
+        for (i = 0; i < len; i++)
+            if (ansbuf[i] > 127 || ansbuf[i] < 0)
+                ansbuf[i] = '_';
+
+        strncpy(plname, ansbuf, PL_NSIZ - 1);
         plname[PL_NSIZ - 1] = '\0';
     }
 }

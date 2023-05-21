@@ -1562,9 +1562,9 @@ int attr;
 const char *str;
 int no_forward;
 {
-    char buf[BUFSIZ * 4] = "";
+    char buf[UTF8BUFSZ * 2] = "";
     if (str)
-        write_text2buf_utf8(buf, BUFSIZ * 4, str);
+        write_text2buf_utf8(buf, sizeof(buf), str);
 
     if (dumplog_file)
         fprintf(dumplog_file, "%s\n", buf);
@@ -1579,9 +1579,9 @@ winid win UNUSED;
 int attr UNUSED, app UNUSED, color UNUSED;
 const char *str;
 {
-    char buf[BUFSIZ * 4] = "";
+    char buf[UTF8BUFSZ * 2] = "";
     if(str)
-        write_text2buf_utf8(buf, BUFSIZ * 4, str);
+        write_text2buf_utf8(buf, sizeof(buf), str);
 
     if (dumplog_file)
         fprintf(dumplog_file, "%s\n", buf);
@@ -1667,9 +1667,9 @@ int color UNUSED;
 const char *str;
 boolean preselected UNUSED;
 {
-    char buf[BUFSIZ * 4] = "";
+    char buf[UTF8BUFSZ * 2] = "";
     if (str)
-        write_text2buf_utf8(buf, BUFSIZ * 4, str);
+        write_text2buf_utf8(buf, sizeof(buf), str);
 
     if (dumplog_file) {
         if (glyph == NO_GLYPH)
@@ -1693,9 +1693,9 @@ const char* str;
 boolean preselected UNUSED;
 struct extended_menu_info info UNUSED;
 {
-    char buf[BUFSIZ * 4] = "";
+    char buf[UTF8BUFSZ * 2] = "";
     if (str)
-        write_text2buf_utf8(buf, BUFSIZ * 4, str);
+        write_text2buf_utf8(buf, sizeof(buf), str);
 
     if (dumplog_file) {
         if (glyph == NO_GLYPH)
@@ -1711,16 +1711,16 @@ dump_end_menu_ex(win, str, str2)
 winid win UNUSED;
 const char *str, *str2;
 {
-    char buf[BUFSIZ * 4] = "";
-    char buf1[BUFSIZ * 4] = "";
-    char buf2[BUFSIZ * 4] = "";
+    char buf[UTF8BUFSZ * 4 + 3] = "";
+    char buf1[UTF8BUFSZ * 2] = "";
+    char buf2[UTF8BUFSZ * 2] = "";
     const char* txt = 0;
     txt = (str && str2) ? " - " : "";
 
     if (str)
-        write_text2buf_utf8(buf1, BUFSIZ * 4, str);
+        write_text2buf_utf8(buf1, sizeof(buf1), str);
     if (str2)
-        write_text2buf_utf8(buf2, BUFSIZ * 4, str2);
+        write_text2buf_utf8(buf2, sizeof(buf2), str2);
 
     Sprintf(buf, "%s%s%s", buf1, txt, buf2);
 

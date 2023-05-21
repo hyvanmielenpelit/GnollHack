@@ -118,14 +118,15 @@ void lib_player_selection(void)
 
 void lib_askname(void)
 {
-    char* name = 0;
     char mdbuf[BUFSZ] = "";
     char modenamebuf[BUFSZ] = "";
     char modedescbuf[BUFSZ] = "";
+    char utf8buf[PL_NSIZ * 4 + UTF8BUFSZ] = "";
     Sprintf(mdbuf, "%s mode", get_game_mode_text(FALSE));
     strcpy_capitalized_for_title(modenamebuf, mdbuf);
-    strcpy(modedescbuf, get_game_mode_description());
+    Strcpy(modedescbuf, get_game_mode_description());
     *modedescbuf = highc(*modedescbuf);
+    int res = 0;
 
 #ifdef SELECTSAVED
     if (iflags.wc2_selectsaved && !iflags.renameinprogress)
@@ -145,10 +146,19 @@ void lib_askname(void)
                 do
                 {
                     repeataskname = FALSE;
-                    name = lib_callbacks.callback_askname(modenamebuf, modedescbuf);
-                    if (name && *name != 0)
+                    *utf8buf = 0;
+                    res = lib_callbacks.callback_askname(modenamebuf, modedescbuf, utf8buf);
+                    if (res)
                     {
-                        strncpy(plname, name, PL_NSIZ - 1);
+                        char ansbuf[PL_NSIZ + BUFSZ] = "";
+                        copyUTF8toCP437(ansbuf, sizeof(ansbuf), utf8buf, sizeof(utf8buf));
+                        ansbuf[sizeof(ansbuf) - 1] = 0;
+                        int i, len = (int)strlen(ansbuf);
+                        for (i = 0; i < len; i++)
+                            if (ansbuf[i] > 127 || ansbuf[i] < 0)
+                                ansbuf[i] = '_';
+
+                        strncpy(plname, ansbuf, PL_NSIZ - 1);
                         plname[PL_NSIZ - 1] = '\0';
                         if (check_saved_game_exists())
                         {
@@ -168,7 +178,7 @@ void lib_askname(void)
                             }
                             else
                             {
-                                name = 0;
+                                *utf8buf = 0;
                                 *plname = 0;
                                 if (ans == 'n')
                                     repeataskname = TRUE;
@@ -189,17 +199,26 @@ void lib_askname(void)
             case 1:
                 return; /* plname[] has been set */
             }
-        } while (name == 0 || *name == 0);
+        } while (*utf8buf == 0);
         return;
     }
 #endif /* SELECTSAVED */
 
-    name = lib_callbacks.callback_askname(modenamebuf, modedescbuf);
-    if (name == 0 || *name == 0)
+    *utf8buf = 0;
+    res = lib_callbacks.callback_askname(modenamebuf, modedescbuf, utf8buf);
+    if (!res)
         lib_bail((char*)0); /* quit */
     else
     {
-        strncpy(plname, name, PL_NSIZ - 1);
+        char ansbuf[PL_NSIZ + BUFSZ] = "";
+        copyUTF8toCP437(ansbuf, sizeof(ansbuf), utf8buf, sizeof(utf8buf));
+        ansbuf[sizeof(ansbuf) - 1] = 0;
+        int i, len = (int)strlen(ansbuf);
+        for (i = 0; i < len; i++)
+            if (ansbuf[i] > 127 || ansbuf[i] < 0)
+                ansbuf[i] = '_';
+
+        strncpy(plname, ansbuf, PL_NSIZ - 1);
         plname[PL_NSIZ - 1] = '\0';
     }
 }
@@ -257,17 +276,17 @@ void lib_curs(winid wid, int x, int y)
 /* text is supposed to be in CP437; if text is UTF8 encoding, call callback_putstr_ex directly */
 void lib_putstr_ex(winid wid, int attr, const char* text, int append, int color)
 {
-    char buf[BUFSIZ] = "";
+    char buf[UTF8BUFSZ] = "";
     if (text)
-        write_text2buf_utf8(buf, BUFSIZ, text);
+        write_text2buf_utf8(buf, UTF8BUFSZ, text);
     lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, append, color);
 }
 
 void lib_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int append)
 {
-    char buf[BUFSIZ];
+    char buf[UTF8BUFSZ];
     if (text)
-        write_text2buf_utf8(buf, BUFSIZ, text);
+        write_text2buf_utf8(buf, UTF8BUFSZ, text);
     //lib_callbacks.callback_putstr_ex(wid, attrs ? attrs[0] : attr, text ? buf : 0, append, colors ? colors[0] : color);
     lib_callbacks.callback_putstr_ex2(wid, text ? buf : 0, attrs, colors, attr, color, append);
 }
@@ -1142,11 +1161,11 @@ void lib_set_animation_timer_interval(unsigned int param)
 
 int lib_open_special_view(struct special_view_info info)
 {
-    char buf[BUFSIZ], buf2[BUFSIZ];
+    char buf[UTF8BUFSZ], buf2[UTF8BUFSZ];
     if (info.text)
-        write_text2buf_utf8(buf, BUFSIZ, info.text);
+        write_text2buf_utf8(buf, UTF8BUFSZ, info.text);
     if (info.title)
-        write_text2buf_utf8(buf2, BUFSIZ, info.title);
+        write_text2buf_utf8(buf2, UTF8BUFSZ, info.title);
 
     return lib_callbacks.callback_open_special_view(info.viewtype, info.text ? buf : 0, info.title ? buf2 : 0, info.attr, info.color);
 }

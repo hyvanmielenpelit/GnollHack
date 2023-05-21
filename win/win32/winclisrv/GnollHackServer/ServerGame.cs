@@ -294,10 +294,10 @@ namespace GnollHackServer
         }
 
 
-        protected string GameCallback_AskName(string modeName, string modeDescription)
+        protected int GameCallback_AskName(string modeName, string modeDescription, IntPtr out_string_ptr)
         {
             Debug.WriteLine("GameCallback_AskName");
-            return "Janne Test";
+            return 0;
         }
 
         protected void GameCallback_ExitHack(int status)
