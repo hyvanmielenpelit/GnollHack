@@ -1779,17 +1779,10 @@ void
 dll_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline)
 {
     dll_logDebug("dll_getlin(%s, %p)\n", question, input);
-    short utf8intbuf[UTF8BUFSZ] = { 0 };
-    int res = dll_callbacks.callback_getlin_ex(style, attr, color, question, placeholder, linesuffix, introline, utf8intbuf);
+    char utf8buf[UTF8BUFSZ] = "";
+    int res = dll_callbacks.callback_getlin_ex(style, attr, color, question, placeholder, linesuffix, introline, utf8buf);
     if (res && input)
     {
-        char utf8buf[UTF8BUFSZ] = "";
-        for (int i = 0; i < UTF8BUFSZ; i++)
-        {
-            utf8buf[i] = (char)utf8intbuf[i];
-            if (!utf8buf[i])
-                break;
-        }
         copyUTF8toCP437(input, BUFSZ, utf8buf, sizeof(utf8buf));
         input[BUFSZ - 1] = '\0';
     }

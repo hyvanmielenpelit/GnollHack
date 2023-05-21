@@ -632,7 +632,7 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
     char dvbuf[UTF8BUFSZ] = "";
     char ibuf[UTF8IBUFSZ] = "";
 
-    short utf8intbuf[UTF8BUFSZ] = { 0 };
+    char utf8buf[UTF8BUFSZ] = "";
 
     if (question)
         write_text2buf_utf8(buf, UTF8QBUFSZ, question);
@@ -643,18 +643,10 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
     if (introline)
         write_text2buf_utf8(ibuf, UTF8IBUFSZ, introline);
 
-    int res = lib_callbacks.callback_getlin_ex(style, attr, color, buf, placeholder ? phbuf : 0, linesuffix ? dvbuf : 0, introline ? ibuf : 0, utf8intbuf);
+    int res = lib_callbacks.callback_getlin_ex(style, attr, color, buf, placeholder ? phbuf : 0, linesuffix ? dvbuf : 0, introline ? ibuf : 0, utf8buf);
     if (res && input)
     {
         char msgbuf[BUFSZ] = "";
-        char utf8buf[UTF8BUFSZ] = "";
-        int i;
-        for(i = 0; i < UTF8BUFSZ; i++)
-        { 
-            utf8buf[i] = (char)utf8intbuf[i];
-            if (!utf8buf[i])
-                break;
-        }
         copyUTF8toCP437(msgbuf, sizeof(msgbuf), utf8buf, sizeof(utf8buf));
         strncpy(input, msgbuf, BUFSZ - 1);
         input[BUFSZ - 1] = '\0';
@@ -663,22 +655,13 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
 
 int lib_get_ext_cmd(void)
 {
-    short utf8intbuf[UTF8BUFSZ] = { 0 };
-    int res = lib_callbacks.callback_getlin_ex(GETLINE_EXTENDED_COMMAND, ATR_NONE, NO_COLOR, "Type an Extended Command", 0, 0, 0, utf8intbuf);
+    char utf8buf[UTF8BUFSZ] = "";
+    int res = lib_callbacks.callback_getlin_ex(GETLINE_EXTENDED_COMMAND, ATR_NONE, NO_COLOR, "Type an Extended Command", 0, 0, 0, utf8buf);
     if (!res)
         return -1;
 
-    if(*utf8intbuf == 27 || *utf8intbuf == 0)
+    if(*utf8buf == 27 || *utf8buf == 0)
         return -1;
-
-    char utf8buf[UTF8BUFSZ] = "";
-    int i;
-    for (i = 0; i < UTF8BUFSZ; i++)
-    {
-        utf8buf[i] = (char)utf8intbuf[i];
-        if (!utf8buf[i])
-            break;
-    }
 
     char buf[BUFSZ];
     copyUTF8toCP437(buf, sizeof(buf), utf8buf, sizeof(utf8buf));
@@ -770,19 +753,10 @@ char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
     static char buf[BUFSIZ * 2] = "";
     static char attrs[BUFSIZ * 2] = "";
     static char colors[BUFSIZ * 2] = "";
-    short utf8intbuf[UTF8BUFSZ * 4] = { 0 };
-    int res = lib_callbacks.callback_getmsghistory(utf8intbuf, attrs, colors, (int)init);
+    char utf8buf[UTF8BUFSZ * 4] = "";
+    int res = lib_callbacks.callback_getmsghistory(utf8buf, attrs, colors, (int)init);
     if (res)
     {
-        char utf8buf[UTF8BUFSZ * 4] = "";
-        int i;
-        for (i = 0; i < UTF8BUFSZ * 4; i++)
-        {
-            utf8buf[i] = (char)utf8intbuf[i];
-            if (!utf8buf[i])
-                break;
-        }
-
         copyUTF8toCP437(buf, sizeof(buf), utf8buf, sizeof(utf8buf));
         buf[sizeof(buf) - 1] = 0; /* Insurance */
 

@@ -932,8 +932,7 @@ namespace GnollHackClient
                 if (text_ptr != IntPtr.Zero)
                 {
                     byte[] utf8text = Encoding.UTF8.GetBytes(text);
-                    for(int i = 0; i < utf8text.Length; i++)
-                        Marshal.WriteInt16(text_ptr, i * 2, (short)utf8text[i]);
+                    Marshal.Copy(utf8text, 0, text_ptr, utf8text.Length);
                 }
                 if (attributes_ptr != IntPtr.Zero)
                 {
@@ -946,7 +945,6 @@ namespace GnollHackClient
                         for (int i = 0; i < msgLength; i++)
                             Marshal.WriteByte(colors_ptr, i, (byte)_message_history[_msgIndex].Attribute);
                     }
-                    //Marshal.WriteInt32(attr, _message_history[_msgIndex].Attribute);
                 }
                 if (colors_ptr != IntPtr.Zero)
                 {
@@ -959,7 +957,6 @@ namespace GnollHackClient
                         for(int i = 0; i < msgLength; i++)
                             Marshal.WriteByte(colors_ptr, i, (byte)_message_history[_msgIndex].NHColor);
                     }
-                    //Marshal.WriteInt32(attr, _message_history[_msgIndex].NHColor);
                 }
 
                 _msgIndex++;
@@ -1252,11 +1249,10 @@ namespace GnollHackClient
                     pollResponseQueue();
                 }
 
-                byte[] buffer = Encoding.UTF8.GetBytes(_getLineString);
+                byte[] utf8text = Encoding.UTF8.GetBytes(_getLineString);
                 if (out_string_ptr != null)
                 {
-                    for(int i = 0; i < buffer.Length; i++)
-                        Marshal.WriteInt16(out_string_ptr, i * 2, (short)buffer[i]);
+                    Marshal.Copy(utf8text, 0, out_string_ptr, utf8text.Length);
                     return 1;
                 }
                 else
@@ -1265,7 +1261,7 @@ namespace GnollHackClient
             else
             {
                 if(out_string_ptr != null)
-                   Marshal.WriteInt16(out_string_ptr, 0, 0);
+                   Marshal.WriteByte(out_string_ptr, 0, 0);
                 return 0;
             }
         }
