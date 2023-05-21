@@ -578,7 +578,7 @@ namespace GnollHackClient
                 {
                     OldPaperBackgroundBitmap = SKBitmap.Decode(stream);
                 }
-                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.background-loading-screen.jpg"))
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.background-loading-screen.png"))
                 {
                     LoadingScreenBackgroundBitmap = SKBitmap.Decode(stream);
                 }

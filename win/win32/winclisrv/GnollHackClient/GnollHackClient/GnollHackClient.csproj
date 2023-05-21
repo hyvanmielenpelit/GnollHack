@@ -86,6 +86,7 @@
     <None Remove="Assets\UI\attributes.png" />
     <None Remove="Assets\UI\autopickup.png" />
     <None Remove="Assets\UI\background-loading-screen.jpg" />
+    <None Remove="Assets\UI\background-loading-screen.png" />
     <None Remove="Assets\UI\background-oldpaper.png" />
     <None Remove="Assets\UI\break.png" />
     <None Remove="Assets\UI\cancel.png" />
@@ -273,7 +274,7 @@
     <EmbeddedResource Include="Assets\main-menu-gnoll.jpg" />
     <EmbeddedResource Include="Assets\main-menu-ranger.jpg" />
     <EmbeddedResource Include="Assets\UI\autopickup.png" />
-    <EmbeddedResource Include="Assets\UI\background-loading-screen.jpg" />
+    <EmbeddedResource Include="Assets\UI\background-loading-screen.png" />
     <EmbeddedResource Include="Assets\UI\chatsteed.png" />
     <EmbeddedResource Include="Assets\UI\droptypes.png" />
     <EmbeddedResource Include="Assets\UI\unwield.png" />
