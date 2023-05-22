@@ -27,7 +27,7 @@
  */
 #define HOTFIXLEVEL 0
 //#define PRE_RELEASE
-#define VERSION_DETAILS
+//#define VERSION_DETAILS
 
 #define COPYRIGHT_BANNER_A "GnollHack, Copyright 2023 by Sound Mind Games"
 #define COPYRIGHT_BANNER_B \
