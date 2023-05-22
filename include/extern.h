@@ -1174,7 +1174,7 @@ E void NDECL(set_imported_savefile);
 E int NDECL(create_savefile);
 E int NDECL(open_savefile);
 E int NDECL(delete_savefile);
-E int NDECL(restore_saved_game);
+E int NDECL(open_and_validate_saved_game);
 E void NDECL(mode_message);
 E void NDECL(create_gamestate_levelfile);
 E int FDECL(load_saved_game, (int));

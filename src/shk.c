@@ -2976,7 +2976,7 @@ char *buf;
                                            "esteemed",
                                            "most renowned and sacred" };
 
-    int honidx = rn2(SIZE(honored) - 1) + u.uevent.udemigod;
+    int honidx = rn2(SIZE(honored) - 1) + u.uevent.ukilled_wizard;
 
     Strcat(buf, honored[honidx]);
     if (!iflags.using_gui_sounds && is_vampire(youmonst.data))

@@ -273,9 +273,9 @@ struct obj *book2;
             u.uevent.invoked = 1;
             /* in case you haven't killed the Wizard yet, behave as if
                you just did */
-            u.uevent.udemigod = 1; /* wizdead() */
-            if (!u.udg_cnt || u.udg_cnt > soon)
-                u.udg_cnt = soon;
+            u.uevent.ukilled_wizard = 1; /* wizdead() */
+            if (!u.uintervene_timer || u.uintervene_timer > soon)
+                u.uintervene_timer = soon;
         } else { /* at least one artifact not prepared properly */
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have a feeling that %s is amiss...", something);
             goto raise_dead;

@@ -109,7 +109,7 @@ struct u_event {
     Bitfield(large_circular_dgn_entered, 1); /* entered the Large Circular Dungeon */
     Bitfield(polymorph_trap_warning, 1); /* polymorph trap warning given */
     Bitfield(uhand_of_elbereth, 2); /* became Hand of Elbereth */
-    Bitfield(udemigod, 1);          /* killed the wiz */
+    Bitfield(ukilled_wizard, 1);    /* killed the wiz */
     Bitfield(uvibrated, 1);         /* stepped on "vibrating square" */
     Bitfield(ascended, 1);          /* has offered the Amulet */
 
@@ -537,7 +537,7 @@ struct you {
     Bitfield(uedibility, 1);    /* blessed food detect; sense unsafe food */
     /* 1 free bit! */
 
-    unsigned udg_cnt;           /* how long you have been demigod */
+    unsigned uintervene_timer;  /* how timer until next intervention by Wizard of Yendor */
     struct u_achieve uachieve;  /* achievements */
     struct u_event uevent;      /* certain events have happened */
     struct u_hint uhint;        /* certain hints have been given */

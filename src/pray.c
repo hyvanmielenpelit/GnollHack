@@ -1984,7 +1984,7 @@ crown_here:
 
     u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(175) : rnz(350);
 
-    kick_on_butt = u.uevent.udemigod ? 1 : 0;
+    kick_on_butt = u.uevent.ukilled_wizard ? 1 : 0;
     if (u.uevent.uhand_of_elbereth)
         kick_on_butt++;
     if (kick_on_butt)

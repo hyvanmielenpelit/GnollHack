@@ -143,25 +143,27 @@ boolean resuming;
                 {
                     /* both hero and monsters are out of steam this round */
                     struct monst *mtmp;
-
-                    /* set up for a new turn */
-                    update_monster_timeouts(); /* adjust monsters' trap, blind, etc */
-
-                    /* reallocate movement rations to monsters; don't need
-                       to skip dead monsters here because they will have
-                       been purged at end of their previous round of moving */
-                    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
-                        mtmp->movement += mcalcmove(mtmp);
-
-                    /* occasionally add another monster; since this takes
-                       place after movement has been allotted, the new
-                       monster effectively loses its first turn */
-                    if (!rn2(u.uevent.invoked && !In_endgame(&u.uz) ? 15 /* More monsters after invocation, since there is no mysterious force */
-                        : u.uevent.udemigod ? 25 /* If killed the wizard */
-                        : Inhell ? 50
-                        : 70))
+                    if (!context.time_stopped)
                     {
-                        create_monster_or_encounter();
+                        /* set up for a new turn */
+                        update_monster_timeouts(); /* adjust monsters' trap, blind, etc */
+
+                        /* reallocate movement rations to monsters; don't need
+                           to skip dead monsters here because they will have
+                           been purged at end of their previous round of moving */
+                        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+                            mtmp->movement += mcalcmove(mtmp);
+
+                        /* occasionally add another monster; since this takes
+                           place after movement has been allotted, the new
+                           monster effectively loses its first turn */
+                        if (!rn2(u.uevent.invoked && !In_endgame(&u.uz) ? 15 /* More monsters after invocation, since there is no mysterious force */
+                            : u.uevent.ukilled_wizard ? 25 /* If killed the wizard */
+                            : Inhell ? 50
+                            : 70))
+                        {
+                            create_monster_or_encounter();
+                        }
                     }
 
                     moveamt = get_u_move_speed(FALSE);
@@ -183,7 +185,8 @@ boolean resuming;
                     if (Glib)
                         glibr();
                     nh_timeout();
-                    run_regions();
+                    if(!context.time_stopped)
+                        run_regions();
 
                     if (u.uprayer_timeout)
                     {
@@ -310,29 +313,34 @@ boolean resuming;
                     if (Warning || Any_warning)
                         warnreveal();
                     mkot_trap_warn();
-                    dosounds();
-                    do_storms();
                     gethungry();
+                    if (!context.time_stopped)
+                    {
+                        dosounds();
+                        do_storms();
+                        invault();
+                    }
                     //age_spells();
                     //exerchk();  /* exercise system has been deactivated -- JG */
-                    invault();
                     if (u.uhave.amulet)
                         amulet();
                     if (!rn2(40 + (int) (ACURR(A_DEX) * 3)))
                         u_wipe_engr(rnd(3));
-                    if (u.uevent.udemigod && !u.uinvulnerable) {
-                        if (u.udg_cnt)
-                            u.udg_cnt--;
-                        if (!u.udg_cnt) {
+                    if (u.uevent.ukilled_wizard && !u.uinvulnerable && !context.time_stopped)
+                    {
+                        if (u.uintervene_timer)
+                            u.uintervene_timer--;
+                        if (!u.uintervene_timer)
+                        {
                             intervene();
-                            u.udg_cnt = rn1(200, 50);
+                            u.uintervene_timer = rn1(200, 50);
                         }
                     }
                     restore_attrib();
                     /* underwater and waterlevel vision are done here */
-                    if (Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
+                    if ((Is_waterlevel(&u.uz) || Is_airlevel(&u.uz)) && !context.time_stopped)
                         movebubbles();
-                    else if (Is_firelevel(&u.uz))
+                    else if (Is_firelevel(&u.uz) && !context.time_stopped)
                         fumaroles();
                     else if (Underwater)
                         under_water(0);
