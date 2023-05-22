@@ -86,7 +86,7 @@ main(void)
  * We'll return here if new game player_selection() renames the hero.
  */
 attempt_restore:
-    if ((fd = restore_saved_game()) >= 0) {
+    if ((fd = open_and_validate_saved_game()) >= 0) {
 #ifdef NEWS
         if (iflags.news) {
             display_file(NEWS, FALSE);

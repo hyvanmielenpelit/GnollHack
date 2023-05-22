@@ -160,7 +160,7 @@ int GnollHackMain(int argc, char** argv)
 	 */
 	vision_init();
 
-	if((fd = restore_saved_game()) >= 0)
+	if((fd = open_and_validate_saved_game()) >= 0)
 	{
 #ifdef WIZARD
 		/* Since wizard is actually flags.debug, restoring might

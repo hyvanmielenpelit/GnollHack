@@ -285,7 +285,7 @@ attempt_restore:
         program_state.preserve_locks = 0; /* after getlock() */
     }
 
-    if (*plname && (fd = restore_saved_game()) >= 0) {
+    if (*plname && (fd = open_and_validate_saved_game()) >= 0) {
         const char *fq_save = fqname(SAVEF, SAVEPREFIX, 1);
 
         (void) chmod(fq_save, 0); /* disallow parallel restores */
