@@ -996,12 +996,10 @@ doability(VOID_ARGS)
             0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
             "Companion Statistics                ", MENU_UNSELECTED, menu_heading_info());
 
-        int pet_index = 0;
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {
             if (!DEADMONSTER(mtmp) && is_tame(mtmp))
             {
-                pet_index++;
                 char namebuf[MAXNAMELENGTH];
                 if (UMNAME(mtmp))
                 {

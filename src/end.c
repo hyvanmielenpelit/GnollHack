@@ -3085,10 +3085,10 @@ STATIC_OVL void
 reset_levchn(VOID_ARGS)
 {
     s_level* tmplev, * tmplev2;
-    int cnt = 0;
+    //int cnt = 0;
 
-    for (tmplev = sp_levchn; tmplev; tmplev = tmplev->next)
-        cnt++;
+    //for (tmplev = sp_levchn; tmplev; tmplev = tmplev->next)
+    //    cnt++;
 
     for (tmplev = sp_levchn; tmplev; tmplev = tmplev2) {
         tmplev2 = tmplev->next;

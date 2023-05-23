@@ -1254,7 +1254,6 @@ int x, y;
     double totalrollprob = 0;
     int selected_encounter = 0;
     double totalselectedprob = 0;
-    int acceptable_encounter_count = 0;
     int maxmlev = 0, minmlev = 0;
 
     int max_attk_monsters = 1;
@@ -1297,7 +1296,6 @@ int x, y;
             {
                 encounter_list[j].insearch = TRUE;
                 totalselectedprob += encounter_list[j].probability;
-                acceptable_encounter_count++;
             }
 
         }

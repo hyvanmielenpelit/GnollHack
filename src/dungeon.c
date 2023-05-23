@@ -285,7 +285,7 @@ dlb *stream;
         panic(
   "Premature EOF on dungeon description file!\r\nExpected %ld bytes - got %ld.",
               (size * nitems), (size * cnt));
-        nh_terminate(EXIT_FAILURE);
+        //nh_terminate(EXIT_FAILURE);
     }
 }
 
