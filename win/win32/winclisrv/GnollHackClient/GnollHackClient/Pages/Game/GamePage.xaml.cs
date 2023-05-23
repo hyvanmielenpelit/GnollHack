@@ -9547,6 +9547,7 @@ namespace GnollHackClient.Pages.Game
 
             float spacelength = textPaint.MeasureText(" ");
             int idx = 0;
+            int rowidx = 0;
             foreach (string split_str in textsplit)
             {
                 bool nowrap = false;
@@ -9554,12 +9555,13 @@ namespace GnollHackClient.Pages.Game
                     nowrap = true;
 
                 float centering_padding = 0.0f;
-                if(centertext && rowwidths != null && idx < rowwidths.Count)
+                if(centertext && rowwidths != null && rowidx < rowwidths.Count)
                 {
-                    centering_padding = (totalrowwidth - rowwidths[idx]) / 2;
+                    centering_padding = (totalrowwidth - rowwidths[rowidx]) / 2;
                 }
 
-                x += centering_padding;
+                if(isfirstprintonrow)
+                    x += centering_padding;
 
                 float endposition = x;
                 float usedglyphpadding = 0.0f;
@@ -9601,9 +9603,16 @@ namespace GnollHackClient.Pages.Game
                     bool pastend = x + printlength > canvaswidth - usedglyphpadding - rightmenupadding;
                     if (pastend && !isfirstprintonrow && !nowrap)
                     {
-                        x = indent_start_x;
-                        y += textPaint.FontSpacing;
+                        rowidx++;
                         isfirstprintonrow = true;
+
+                        x = indent_start_x;
+
+                        if (centertext && rowwidths != null && rowidx < rowwidths.Count)
+                            centering_padding = (totalrowwidth - rowwidths[rowidx]) / 2;
+                        x += centering_padding;
+
+                        y += textPaint.FontSpacing;
                         endposition = x + printlength;
                         if(idx < textsplit.Length - 1)
                             endposition += spacelength;

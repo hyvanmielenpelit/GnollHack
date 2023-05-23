@@ -1251,9 +1251,9 @@ boolean iswizardmode, isexporemode, ismodernmode, iscasualmode;
     else if (iscasualmode)
     {
         if (ismodernmode)
-            return "non-scoring mode with revival upon death and loadable saved games";
+            return "revival upon death and loadable saved games";
         else
-            return "non-scoring mode with permanent death but loadable saved games";
+            return "permanent death but loadable saved games";
     }
     else if (ismodernmode)
         return "revival and score reduction upon death";
