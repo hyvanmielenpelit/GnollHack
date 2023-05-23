@@ -2112,6 +2112,7 @@ boolean* got_something_ptr;
                     levl[x][y].decoration_flags &= ~DECORATION_FLAGS_ITEM3_IN_HOLDER;
 
                 *got_something_ptr = TRUE;
+                play_simple_object_sound_at_location(newobj, u.ux, u.uy, OBJECT_SOUND_TYPE_PICK_UP);
                 newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
                     The(aobjnam(newobj, "slip")), (const char*)0);
             }
