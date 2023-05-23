@@ -2556,6 +2556,9 @@ namespace GnollHackClient.Pages.Game
                     break;
             }
 
+            MenuHeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(MenuBackground.BorderStyle, _currentPageWidth, _currentPageHeight);
+            MenuCloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(MenuBackground.BorderStyle, _currentPageWidth, _currentPageHeight);
+
             ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
             if (menuinfo != null)
             {
