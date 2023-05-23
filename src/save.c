@@ -76,6 +76,7 @@ STATIC_VAR struct save_procs {
 /* need to preserve these during save to avoid accessing freed memory */
 STATIC_VAR unsigned ustuck_id = 0, usteed_id = 0;
 boolean saving = FALSE;
+boolean check_pointing = FALSE;
 
 int
 dosave()

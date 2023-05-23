@@ -6020,7 +6020,7 @@ void
 save_currentstate()
 {
     int fd;
-
+    check_pointing = TRUE;
     if (flags.ins_chkpt) {
         /* write out just-attained level, with pets and everything */
         fd = currentlevel_rewrite();
@@ -6033,6 +6033,7 @@ save_currentstate()
 
     /* write out non-level state */
     savestateinlock();
+    check_pointing = FALSE;
 }
 #endif
 

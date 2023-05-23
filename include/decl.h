@@ -211,6 +211,7 @@ E NEARDATA struct sinfo {
 E boolean restoring;
 E boolean saving;
 E boolean reseting;
+E boolean check_pointing;
 E boolean ransacked;
 
 E const char quitchars[];

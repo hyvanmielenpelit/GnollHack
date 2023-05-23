@@ -185,6 +185,8 @@ reset_global_variables(VOID_ARGS)
     WIN_INVEN = WIN_ERR;
     WIN_HERE = WIN_ERR;
 
+    saving = FALSE;
+    check_pointing = FALSE;
     restoring = FALSE;
     ransacked = FALSE;
     occupation = 0;
