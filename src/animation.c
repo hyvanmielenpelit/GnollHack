@@ -3420,7 +3420,7 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_EQUIPMENT_HOLDER:
         {
-            if (isok(x, y) && levl[x][y].decoration_typ > 0 && (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0)
+            if (isok(x, y) && levl[x][y].decoration_typ > 0 && (levl[x][y].decoration_flags & (DECORATION_FLAGS_ITEM_IN_HOLDER | DECORATION_FLAGS_ITEM2_IN_HOLDER | DECORATION_FLAGS_ITEM3_IN_HOLDER)) != 0)
             {
                 int glyph_idx = 0;
                 switch ((levl[x][y].decoration_flags & (DECORATION_FLAGS_ITEM_IN_HOLDER | DECORATION_FLAGS_ITEM2_IN_HOLDER | DECORATION_FLAGS_ITEM3_IN_HOLDER)))
