@@ -3387,7 +3387,7 @@ int cursor_on_u;
         return;
 #endif
 
-#if defined(GNH_MOBILE)
+#if defined(GNH_MOBILE) && defined(USE_TILES)
     char saved_gbuf_start[ROWNO];
     char saved_gbuf_stop[ROWNO];
     memcpy(saved_gbuf_start, gbuf_start, ROWNO);

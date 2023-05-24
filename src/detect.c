@@ -1540,7 +1540,7 @@ do_mapping()
 
     unconstrained = unconstrain_map();
     for (zx = 1; zx < COLNO; zx++)
-        for (zy = 0; zy < ROWNO; zy++)
+        for (zy = ROWNO - 1; zy >= 0; zy--)
             show_map_spot(zx, zy);
 
     if (!level.flags.hero_memory || unconstrained) {
