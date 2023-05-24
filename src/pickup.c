@@ -1659,7 +1659,7 @@ boolean telekinesis; /* not picking it up directly by hand */
         {
             char dcbuf[BUFSZ] = "";
             play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-            Sprintf(dcbuf, "scroll%s %s to dust as you %s %s up.", plur(obj->quan),
+            Sprintf(dcbuf, "The scroll%s %s to dust as you %s %s up.", plur(obj->quan),
                       otense(obj, "turn"), telekinesis ? "raise" : "pick",
                       (obj->quan == 1L) ? "it" : "them");
 

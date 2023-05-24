@@ -6134,16 +6134,24 @@ print_things_here_to_window(VOID_ARGS)
                 putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
                 break;
             case BURN:
-                Sprintf(ebuf, "Writing %s on the %s:", is_ice(u.ux, u.uy) ? "melted" : "burned", surface(u.ux, u.uy));
-                putstr_ex(tmpwin, attr, ebuf, 1, CLR_ORANGE);
+                Strcpy(ebuf, "Writing ");
+                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                Sprintf(ebuf, "%s", is_ice(u.ux, u.uy) ? "melted" : "burned");
+                putstr_ex(tmpwin, attr, ebuf, 1, is_ice(u.ux, u.uy) ? CLR_CYAN : CLR_ORANGE);
+                Sprintf(ebuf, " on the %s:", surface(u.ux, u.uy));
+                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
                 break;
             case MARK:
                 Sprintf(ebuf, "Graffiti on the %s:", surface(u.ux, u.uy));
                 putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
                 break;
             case ENGR_BLOOD:
-                Strcpy(ebuf, "Message scrawled in blood:");
+                Strcpy(ebuf, "Message scrawled in ");
+                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                Strcpy(ebuf, "blood");
                 putstr_ex(tmpwin, attr, ebuf, 1, CLR_RED);
+                Strcpy(ebuf, ":");
+                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
                 break;
             default:
                 Strcpy(ebuf, "Message written in a very strange way:");
@@ -6153,7 +6161,7 @@ print_things_here_to_window(VOID_ARGS)
             strncpy(buf, ep->engr_txt, BUFSZ - 5);
             buf[BUFSZ - 5] = 0;
             Sprintf(ebuf, " \"%s\".", buf);
-            putstr_ex(tmpwin, attr, ebuf, 0, textcolor);
+            putstr_ex(tmpwin, attr, ebuf, 0, CLR_MSG_TEXT);
         }
 
         for (; otmp; otmp = otmp->nexthere) 

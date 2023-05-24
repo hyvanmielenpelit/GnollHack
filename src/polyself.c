@@ -1136,14 +1136,14 @@ break_armor()
             if (otmp->oartifact || is_obj_indestructible(otmp))
             {
                 /* Luckily, you do not die, just the armor pops off, so having an indestructible armor is not life-threatening --JG */
-                pline("%s falls off!", Yname2(otmp));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
                 (void)Armor_off();
                 dropx(otmp);
             }
             else
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
-                You("break out of %s!", yname(otmp));
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "break out of %s!", yname(otmp));
                 exercise(A_STR, FALSE);
                 (void)Armor_gone();
                 useup(otmp);
@@ -1156,14 +1156,14 @@ break_armor()
 
             if (otmp->oartifact || is_obj_indestructible(otmp))
             {
-                Your("%s falls off!", cloak_simple_name(otmp));
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", cloak_simple_name(otmp));
                 (void) Cloak_off();
                 dropx(otmp);
             } 
             else 
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
-                Your("%s tears apart!", cloak_simple_name(otmp));
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s tears apart!", cloak_simple_name(otmp));
                 (void) Cloak_off();
                 useup(otmp);
             }
@@ -1176,14 +1176,14 @@ break_armor()
             if (otmp->oartifact || is_obj_indestructible(otmp))
             {
                 /* Not sure how this happens but at least it is not life-threatening */
-                Your("%s falls off!", robe_simple_name(otmp));
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", robe_simple_name(otmp));
                 (void)Robe_off();
                 dropx(otmp);
             }
             else
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
-                Your("%s in torn to pieces!", robe_simple_name(otmp));
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s in torn to pieces!", robe_simple_name(otmp));
                 (void)Robe_off();
                 useup(otmp);
             }
@@ -1196,14 +1196,14 @@ break_armor()
             if (otmp->oartifact || is_obj_indestructible(otmp))
             {
                 /* Not sure how this happens but at least it is not life-threatening */
-                Your("shirt falls off!");
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "shirt falls off!");
                 (void)Shirt_off();
                 dropx(otmp);
             }
             else
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
-                Your("shirt rips to shreds!");
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "shirt rips to shreds!");
                 (void)Shirt_off();
                 useup(otmp);
             }
@@ -1215,33 +1215,33 @@ break_armor()
         {
             if (donning(otmp))
                 cancel_don();
-            Your("armor falls around you!");
+            Your_ex(ATR_NONE, CLR_MSG_WARNING, "armor falls around you!");
             (void) Armor_gone();
             dropx(otmp);
         }
         if ((otmp = uarmo) != 0)
         {
             if (is_whirly(youmonst.data))
-                Your("%s falls, unsupported!", robe_simple_name(otmp));
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls, unsupported!", robe_simple_name(otmp));
             else
-                You("shrink out of your %s!", robe_simple_name(otmp));
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "shrink out of your %s!", robe_simple_name(otmp));
             (void)Robe_off();
             dropx(otmp);
         }
         if ((otmp = uarmc) != 0) {
             if (is_whirly(youmonst.data))
-                Your("%s falls, unsupported!", cloak_simple_name(otmp));
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls, unsupported!", cloak_simple_name(otmp));
             else
-                You("shrink out of your %s!", cloak_simple_name(otmp));
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "shrink out of your %s!", cloak_simple_name(otmp));
             (void) Cloak_off();
             dropx(otmp);
         }
         if ((otmp = uarmu) != 0) 
         {
             if (is_whirly(youmonst.data))
-                You("seep right through your shirt!");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "seep right through your shirt!");
             else
-                You("become much too small for your shirt!");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "become much too small for your shirt!");
             setworn((struct obj *) 0, otmp->owornmask & W_ARMU);
             dropx(otmp);
         }
@@ -1258,14 +1258,14 @@ break_armor()
 
                 /* Future possibilities: This could damage/destroy helmet */
                 Sprintf(hornbuf, "horn%s", plur(num_horns(youmonst.data)));
-                Your("%s %s through %s.", hornbuf, vtense(hornbuf, "pierce"),
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s through %s.", hornbuf, vtense(hornbuf, "pierce"),
                      yname(otmp));
             }
             else 
             {
                 if (donning(otmp))
                     cancel_don();
-                Your("%s falls to the %s!", helm_simple_name(otmp),
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls to the %s!", helm_simple_name(otmp),
                      surface(u.ux, u.uy));
                 (void) Helmet_off();
                 dropx(otmp);
@@ -1281,7 +1281,7 @@ break_armor()
             if (donning(otmp))
                 cancel_don();
             /* Drop weapon along with gloves */
-            You("drop your gloves%s!", uwep ? " and weapon" : "");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "drop your gloves%s!", uwep ? " and weapon" : "");
             drop_weapon(0);
             (void) Gloves_off();
             dropx(otmp);
@@ -1290,12 +1290,12 @@ break_armor()
         {
             if(is_shield(otmp))
             {
-                You("can no longer hold your shield!");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "can no longer hold your shield!");
                 (void) Shield_off();
             }
             else
             {
-                You("can no longer hold your %s!", cxname(otmp));
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "can no longer hold your %s!", cxname(otmp));
                 remove_worn_item(otmp, FALSE);
             }
             dropx(otmp);
@@ -1304,7 +1304,7 @@ break_armor()
         {
             if (donning(otmp))
                 cancel_don();
-            Your("%s falls to the %s!", helm_simple_name(otmp),
+            Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls to the %s!", helm_simple_name(otmp),
                  surface(u.ux, u.uy));
             (void) Helmet_off();
             dropx(otmp);
@@ -1320,9 +1320,9 @@ break_armor()
             if (donning(otmp))
                 cancel_don();
             if (is_whirly(youmonst.data))
-                Your("boots fall away!");
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots fall away!");
             else
-                Your("boots %s off your feet!",
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots %s off your feet!",
                      verysmall(youmonst.data) ? "slide" : "are pushed");
             (void) Boots_off();
             dropx(otmp);
@@ -1336,9 +1336,9 @@ break_armor()
             if (donning(otmp))
                 cancel_don();
             if (is_whirly(youmonst.data))
-                Your("bracers fall away!");
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers fall away!");
             else
-                Your("bracers %s off your arms!",
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers %s off your arms!",
                     verysmall(youmonst.data) ? "slide" : "are pushed");
             (void)Bracers_off();
             dropx(otmp);
