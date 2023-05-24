@@ -12,7 +12,7 @@ int glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
 uchar glyphtileflags[MAX_GLYPH] = { 0 }; /* specifies how to use the tile and operations applied to the tile before use (e.g., flip or move to middle) */
 short glyph2replacement[MAX_GLYPH] = { 0 };
 short tile2autodraw[MAX_TILES] = { 0 };
-short tile2replacement[MAX_TILES] = { 0 };
+//short tile2replacement[MAX_TILES] = { 0 };
 short tile2animation[MAX_TILES] = { 0 };
 short tile2enlargement[MAX_TILES] = { 0 };
 #endif
@@ -2290,7 +2290,7 @@ uchar* tilemapflags;
     else if (process_style == 1)
     {
         /*
-         *Set tile2replacement, glyph2replacement, glyphtileflags, and tile2autodraw
+         *Set glyph2replacement, glyphtileflags, and tile2autodraw
          */
 
          /* Monsters */
@@ -2311,7 +2311,7 @@ uchar* tilemapflags;
                 {
                     int glyph = i + get_monster_action_glyph_offset(action, 0);
                     int tile = tilemaparray[glyph];
-                    tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                    /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                     tile2autodraw[tile] = replacements[repl].general_autodraw;
                     if (has_this_action)
                     {
@@ -2337,7 +2337,7 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_BODY_OFF;
                 int tile = tilemaparray[glyph];
                 int repl = corpse_repl;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 if (has_corpse_tile)
                 {
@@ -2355,7 +2355,7 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_STATUE_OFF;
                 int tile = tilemaparray[glyph];
                 int repl = mons[i].replacement.statue;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 for (j = 0; j < replacements[repl].number_of_tiles; j++)
                 {
@@ -2392,7 +2392,7 @@ uchar* tilemapflags;
                 {
                     int glyph = i + get_monster_action_glyph_offset(action, 1);
                     int tile = tilemaparray[glyph];
-                    tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                    /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                     tile2autodraw[tile] = replacements[repl].general_autodraw;
                     if (has_this_action && has_female_tile)
                     {
@@ -2421,7 +2421,7 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_FEMALE_BODY_OFF;
                 int tile = tilemaparray[glyph];
                 int repl = corpse_repl;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 if (has_female_tile && has_corpse_tile)
                 {
@@ -2438,7 +2438,7 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_FEMALE_STATUE_OFF;
                 int tile = tilemaparray[glyph];
                 int repl = mons[i].female_replacement.statue;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 for (j = 0; j < replacements[repl].number_of_tiles; j++)
                 {
@@ -2457,7 +2457,7 @@ uchar* tilemapflags;
                 int glyph = objnum_to_glyph(i);
                 int tile = glyph2tile[glyph];
                 int repl = obj_descr[i].replacement;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 for (j = 0; j < replacements[repl].number_of_tiles; j++)
                 {
@@ -2471,7 +2471,7 @@ uchar* tilemapflags;
                     int mtile = glyph2tile[mglyph];
                     if (glyphtileflags[mglyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE)
                     {
-                        tile2replacement[mtile] = glyph2replacement[mglyph] = repl;
+                        /* tile2replacement[mtile] = */ glyph2replacement[mglyph] = repl;
                         for (k = 0; k < replacements[repl].number_of_tiles; k++)
                         {
                             int rglyph = k + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
@@ -2489,7 +2489,7 @@ uchar* tilemapflags;
                             if (isfrombasedir)
                             {
                                 int mrepl = obj_descr[i].replacement + bn + 1;
-                                tile2replacement[mtile] = glyph2replacement[mglyph] = mrepl;
+                                /* tile2replacement[mtile] = */ glyph2replacement[mglyph] = mrepl;
                                 tile2autodraw[mtile] = replacements[mrepl].general_autodraw;
                                 for (j = 0; j < replacements[mrepl].number_of_tiles; j++)
                                 {
@@ -2517,7 +2517,7 @@ uchar* tilemapflags;
                 int glyph = i - 1 + GLYPH_ARTIFACT_OFF;
                 int tile = glyph2tile[glyph];
                 int repl = artilist[i].replacement;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 for (j = 0; j < replacements[repl].number_of_tiles; j++)
                 {
@@ -2531,7 +2531,7 @@ uchar* tilemapflags;
                     int mtile = glyph2tile[mglyph];
                     if (glyphtileflags[mglyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE)
                     {
-                        tile2replacement[mtile] = glyph2replacement[mglyph] = repl;
+                        /* tile2replacement[mtile] = */ glyph2replacement[mglyph] = repl;
                         for (k = 0; k < replacements[repl].number_of_tiles; k++)
                         {
                             int rglyph = k + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
@@ -2549,7 +2549,7 @@ uchar* tilemapflags;
                             if (isfrombasedir)
                             {
                                 int mrepl = artilist[i].replacement + bn + 1;
-                                tile2replacement[mtile] = glyph2replacement[mglyph] = mrepl;
+                                /* tile2replacement[mtile] = */ glyph2replacement[mglyph] = mrepl;
                                 tile2autodraw[mtile] = replacements[mrepl].general_autodraw;
                                 for (j = 0; j < replacements[mrepl].number_of_tiles; j++)
                                 {
@@ -2586,7 +2586,7 @@ uchar* tilemapflags;
                     int tile = glyph2tile[glyph];
                     if (included_in_this_tileset_cmap)
                     {
-                        tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                        /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                         tile2autodraw[tile] = replacements[repl].general_autodraw;
                         for (j = 0; j < replacements[repl].number_of_tiles; j++)
                         {
@@ -2605,7 +2605,7 @@ uchar* tilemapflags;
                     int tile = glyph2tile[glyph];
                     if (included_in_this_tileset_cmap)
                     {
-                        tile2replacement[tile]= repl;
+                        /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                         tile2autodraw[tile] = replacements[repl].general_autodraw;
                         for (j = 0; j < replacements[repl].number_of_tiles; j++)
                         {
@@ -2635,7 +2635,7 @@ uchar* tilemapflags;
                     int tile = glyph2tile[glyph];
                     if (included_in_this_tileset_cmap)
                     {
-                        tile2replacement[tile] = repl;
+                        /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                         tile2autodraw[tile] = replacements[repl].general_autodraw;
                         for (j = 0; j < replacements[repl].number_of_tiles; j++)
                         {
@@ -2654,7 +2654,7 @@ uchar* tilemapflags;
                     int tile = glyph2tile[glyph];
                     if (included_in_this_tileset_cmap)
                     {
-                        tile2replacement[tile] = repl;
+                        /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                         tile2autodraw[tile] = replacements[repl].general_autodraw;
                         for (j = 0; j < replacements[repl].number_of_tiles; j++)
                         {
@@ -2687,7 +2687,7 @@ uchar* tilemapflags;
                                 {
                                     int glyph = player_glyph_index + get_player_action_glyph_offset(action);
                                     int tile = glyph2tile[glyph];
-                                    tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                                    /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                                     tile2autodraw[tile] = replacements[repl].general_autodraw;
                                     for (j = 0; j < replacements[repl].number_of_tiles; j++)
                                     {
@@ -2711,7 +2711,7 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_SPECIAL_EFFECT_OFF;
                 int tile = glyph2tile[glyph];
                 int repl = special_effects[i].replacement;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 for (j = 0; j < replacements[repl].number_of_tiles; j++)
                 {
@@ -2730,7 +2730,7 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_SIMPLE_DOODAD_OFF;
                 int tile = glyph2tile[glyph];
                 int repl = simple_doodads[i].replacement;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 for (j = 0; j < replacements[repl].number_of_tiles; j++)
                 {
@@ -2749,7 +2749,7 @@ uchar* tilemapflags;
                 int glyph = i * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
                 int tile = glyph2tile[glyph];
                 int repl = mirrorable_doodads[i].replacement;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 for (j = 0; j < replacements[repl].number_of_tiles; j++)
                 {
@@ -2768,7 +2768,7 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_CURSOR_OFF;
                 int tile = glyph2tile[glyph];
                 int repl = game_cursors[i].replacement;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 for (j = 0; j < replacements[repl].number_of_tiles; j++)
                 {
@@ -2787,7 +2787,7 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_HIT_TILE_OFF;
                 int tile = glyph2tile[glyph];
                 int repl = hit_tile_definitions[i].replacement;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 for (j = 0; j < replacements[repl].number_of_tiles; j++)
                 {
@@ -2806,7 +2806,7 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_GENERAL_TILE_OFF;
                 int tile = glyph2tile[glyph];
                 int repl = general_tile_definitions[i].replacement;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 for (j = 0; j < replacements[repl].number_of_tiles; j++)
                 {
@@ -2825,7 +2825,7 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_UI_TILE_OFF;
                 int tile = glyph2tile[glyph];
                 int repl = ui_tile_component_array[i].replacement;
-                tile2replacement[tile] = glyph2replacement[glyph] = repl;
+                /* tile2replacement[tile] = */ glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
                 for (j = 0; j < replacements[repl].number_of_tiles; j++)
                 {

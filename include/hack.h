@@ -310,7 +310,7 @@ extern int glyph2tile[MAX_GLYPH];
 extern uchar glyphtileflags[MAX_GLYPH];
 extern short glyph2replacement[MAX_GLYPH];
 extern short tile2autodraw[MAX_TILES];
-extern short tile2replacement[MAX_TILES];
+//extern short tile2replacement[MAX_TILES];
 extern short tile2animation[MAX_TILES];
 extern short tile2enlargement[MAX_TILES];
 #endif

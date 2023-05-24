@@ -163,8 +163,6 @@ namespace GnollHackClient.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int GetTile2Enlargement(out IntPtr array_ptr, out int size);
         [DllImport(PlatformConstants.dll)]
-        public static extern int GetTile2Replacement(out IntPtr array_ptr, out int size);
-        [DllImport(PlatformConstants.dll)]
         public static extern int GetTile2Autodraw(out IntPtr array_ptr, out int size);
         [DllImport(PlatformConstants.dll)]
         public static extern int GetAnimationOffsets(out IntPtr array_ptr, out int size);

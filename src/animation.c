@@ -1491,6 +1491,7 @@ short missile_special_quality;
     return info;
 }
 
+#if 0
 int
 maybe_get_replaced_tile(ntile, x, y, info, autodraw_ptr)
 int x, y;
@@ -2686,7 +2687,7 @@ enum autodraw_types* autodraw_ptr;
 #endif
     return ntile;
 }
-
+#endif
 
 int
 maybe_get_replaced_glyph(glyph, x, y, info)

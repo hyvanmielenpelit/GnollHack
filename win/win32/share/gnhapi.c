@@ -65,19 +65,6 @@ void GetTile2Enlargement(short** ti2en_ptr, int* size_ptr)
 #endif
 }
 
-void GetTile2Replacement(short** ti2re_ptr, int* size_ptr)
-{
-    if (!ti2re_ptr || !size_ptr)
-        return;
-#ifdef USE_TILES
-    *ti2re_ptr = tile2replacement;
-    *size_ptr = SIZE(tile2replacement);
-#else
-    *ti2re_ptr = 0;
-    *size_ptr = 0;
-#endif
-}
-
 void GetTile2Autodraw(short** ti2ad_ptr, int* size_ptr)
 {
     if (!ti2ad_ptr || !size_ptr)
