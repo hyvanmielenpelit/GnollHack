@@ -1177,7 +1177,7 @@ int how;               /* type of query */
 
     ccount = count_categories(olist, qflags);
     /* no point in actually showing a menu for a single category */
-    if ((objcnt == 1 || ccount == 1) && !(qflags & BILLED_TYPES)) 
+    if ((objcnt == 1 || ccount == 1) && !do_unidentified && num_buc_types <= 1 && !(qflags & BILLED_TYPES))
     {
         for (curr = olist; curr; curr = FOLLOW(curr, qflags)) {
             if (ofilter && !(*ofilter)(curr))

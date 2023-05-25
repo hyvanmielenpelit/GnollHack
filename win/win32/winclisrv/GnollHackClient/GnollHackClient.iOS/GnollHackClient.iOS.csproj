@@ -59,7 +59,7 @@
     </MtouchSdkVersion>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
     <MtouchFastDev>false</MtouchFastDev>
-    <CodesignProvision>GnollHack MBP iOS</CodesignProvision>
+    <CodesignProvision>GnollHack HMP 2023 Development</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
