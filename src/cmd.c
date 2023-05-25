@@ -9006,7 +9006,7 @@ doviewpet(VOID_ARGS)
         {
             if (mtmp->m_id == context.view_pet_mid && is_tame(mtmp))
             {
-                if (abs(mtmp->mx - u.ux) <= 1 && abs(mtmp->my - u.uy) <= 1)
+                if (abs(mtmp->mx - u.ux) <= 1 && abs(mtmp->my - u.uy) <= 1 && !mtmp->meating && mon_can_move(mtmp))
                     return dochatmon(mtmp);
                 else
                     return doviewpetstatistics(mtmp);
