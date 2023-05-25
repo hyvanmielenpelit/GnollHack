@@ -175,7 +175,7 @@ boolean isyou;
     int ftyp = levl[x][y].subtyp; // (levl[x][y].fountainmask& FOUNTAIN_TYPE_MASK);
 
     if (IS_FOUNTAIN(levl[x][y].typ)
-        && (!rn2(ftyp == FOUNTAIN_POWER ? 2 : ftyp == FOUNTAIN_MAGIC ? 3 : 4) || FOUNTAIN_IS_WARNED(x, y)))
+        && (!rn2(ftyp == FOUNTAIN_MAGIC ? 3 : ftyp == FOUNTAIN_POWER ? 3 : 6) || FOUNTAIN_IS_WARNED(x, y)))
     {
         if (isyou && in_town(x, y) && !FOUNTAIN_IS_WARNED(x, y))
         {
@@ -208,7 +208,7 @@ boolean isyou;
             }
             /* You can see or hear this effect */
             if (!mtmp)
-                pline_The("flow reduces to a trickle.");
+                pline_The1("flow reduces to a trickle.");
             return;
         }
         if (isyou && wizard) {
@@ -219,7 +219,7 @@ boolean isyou;
         play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_DRY_UP);
         create_current_floor_location(x, y, 0, back_to_broken_glyph(x, y), TRUE);
         if (cansee(x, y))
-            pline_The("fountain dries up!");
+            pline_The1("fountain dries up!");
         /* The location is seen if the hero/monster is invisible
            or felt if the hero is blind. */
         if (isyou && in_town(x, y))

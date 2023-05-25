@@ -5266,12 +5266,12 @@ char* bindings;
     char *bind;
     char key;
     int i;
-    boolean ret = FALSE;
+    //boolean ret = FALSE;
 
     /* break off first binding from the rest; parse the rest */
     if ((bind = index(bindings, ',')) != 0) {
         *bind++ = 0;
-        ret |= parsebindings(bind);
+        /* ret |= */ (void)parsebindings(bind);
     }
 
     /* parse a single binding: first split around : */

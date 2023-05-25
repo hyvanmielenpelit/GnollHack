@@ -1796,7 +1796,7 @@ evaluate_and_notify_windowport(valsetlist, idx)
 int idx;
 boolean *valsetlist;
 {
-    int i, updated = 0, notpresent = 0;
+    int i, updated = 0 /*, notpresent = 0 */;
 
     /*
      *  Now pass the changed values to window port.
@@ -1811,7 +1811,7 @@ boolean *valsetlist;
             || ((i == BL_UWEP2) && (!flags.show_weapon_style || (uwep && is_wieldable_weapon(uwep) && objects[uwep->otyp].oc_bimanual) || (!u.twoweap && !uarms)))
             || ((i == BL_HD) && !Upolyd)
             || ((i == BL_XP || i == BL_EXP) && Upolyd)) {
-            notpresent++;
+            //notpresent++;
             continue;
         }
         if (eval_notify_windowport_field(i, valsetlist, idx))

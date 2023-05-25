@@ -2060,7 +2060,6 @@ int
 doskill_core()
 {
     int pass, i, n;
-    int to_advance, eventually_advance, maxxed_cnt;
     int color = CLR_WHITE;
     int attr = ATR_NONE;
     boolean speedy = FALSE;
@@ -2076,19 +2075,6 @@ doskill_core()
 
     do
     {
-        to_advance = eventually_advance = maxxed_cnt = 0;
-        for (i = 0; i < P_NUM_SKILLS; i++)
-        {
-            if (P_RESTRICTED(i))
-                continue;
-            if (can_advance(i, speedy))
-                to_advance++;
-            else if (could_advance(i))
-                eventually_advance++;
-            else if (peaked_skill(i))
-                maxxed_cnt++;
-        }
-
         win = create_nhwindow(NHW_MENU);
         start_menu_ex(win, GHMENU_STYLE_SKILLS_ALTERNATE);
 

@@ -5917,10 +5917,10 @@ boolean picked_some, explicit_cmd;
     }
 
     /* we know there is something here */
-    int total_count = 0;
-    struct obj* otmp_cnt;
-    for (otmp_cnt = otmp; otmp_cnt; otmp_cnt = otmp_cnt->nexthere)
-        total_count++;
+    //int total_count = 0;
+    //struct obj* otmp_cnt;
+    //for (otmp_cnt = otmp; otmp_cnt; otmp_cnt = otmp_cnt->nexthere)
+    //    total_count++;
 
     if (skip_objects)
     {
@@ -6071,7 +6071,6 @@ print_things_here_to_window(VOID_ARGS)
 
     char buf[BUFSZ];
     char buf2[BUFSZ];
-    int count = 0;
     int displ_style = here_window_display_style(dfeature, ep, otmp);
     if (displ_style == 0)
         return;
@@ -6166,8 +6165,6 @@ print_things_here_to_window(VOID_ARGS)
 
         for (; otmp; otmp = otmp->nexthere) 
         {
-            count++;
-
             struct layer_info layers = nul_layerinfo;
             char sym = 0;
             nhsym ch = 0;

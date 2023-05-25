@@ -3718,7 +3718,7 @@ register struct monst *mon;
     struct attack *mattk, alt_attk;
     struct obj *weapon, **originalweapon;
     boolean altwep = FALSE, weapon_used = FALSE, weapon2_used = FALSE, odd_claw = TRUE;
-    int i, tmp, armorpenalty, sum[NATTK], nsum = 0, dhit = 0, attknum = 0;
+    int i, tmp, armorpenalty, sum[NATTK], /* nsum = 0, */ dhit = 0, attknum = 0;
     int dieroll, multi_claw = 0;
 
     /* with just one touch/claw/weapon attack, both rings matter;
@@ -4164,10 +4164,10 @@ register struct monst *mon;
         if (sum[i] == 2) {
             /* defender dead */
             (void) passive(mon, weapon, 1, 0, mattk->aatyp, FALSE);
-            nsum = 0; /* return value below used to be 'nsum > 0' */
+            //nsum = 0; /* return value below used to be 'nsum > 0' */
         } else {
             (void) passive(mon, weapon, sum[i], 1, mattk->aatyp, FALSE);
-            nsum |= sum[i];
+            //nsum |= sum[i];
         }
 
         /* don't use sum[i] beyond this point;

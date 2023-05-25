@@ -2651,7 +2651,7 @@ struct obj* origobj;
             create_current_floor_location(zx, zy, 0, back_to_broken_glyph(zx, zy), TRUE);
             newsym(zx, zy);
             if (see_it)
-                pline_The("fountain dries up!");
+                pline_The1("fountain dries up!");
             /* The location is seen if the hero/monster is invisible
                or felt if the hero is blind. */
             digdepth -= 1;

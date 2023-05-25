@@ -2127,7 +2127,7 @@ struct monst* mon;
     struct obj* uitem;
 
     int blessed_luck_count = 0;
-    int uncursed_luck_count = 0;
+    //int uncursed_luck_count = 0;
     int cursed_luck_count = 0;
 
     schar* abon_ptr[A_MAX] = { 0 };
@@ -2421,8 +2421,8 @@ struct monst* mon;
                 u.moreluck += uitem->quan;
                 if (uitem->blessed)
                     blessed_luck_count += uitem->quan;
-                else
-                    uncursed_luck_count += uitem->quan;
+                //else
+                //    uncursed_luck_count += uitem->quan;
             }
 
             if ((artifact_confers_unluck(uitem) || confers_unluck(uitem)))
@@ -2430,8 +2430,8 @@ struct monst* mon;
                 u.moreluck -= uitem->quan;
                 if (uitem->cursed)
                     cursed_luck_count += uitem->quan;
-                else
-                    uncursed_luck_count -= uitem->quan;
+                //else
+                //    uncursed_luck_count -= uitem->quan;
             }
         }
     }
