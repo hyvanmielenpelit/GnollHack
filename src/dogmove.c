@@ -1296,7 +1296,7 @@ int udist;
 
             carryamt = can_carry(mtmp, obj);
             if (carryamt > 0 && !obj->cursed && !is_obj_unique(obj) && !is_quest_artifact(obj) 
-                && !mtmp->issummoned && !mtmp->ispartymember && !is_packmule(mtmp->data) && !Is_container(obj)
+                && !mtmp->issummoned && !mtmp->ispartymember && !is_packmule(mtmp->data)
                 && could_reach_item(mtmp, obj->ox, obj->oy) && !onnopickup(obj->ox, obj->oy, mtmp) && !is_obj_no_pickup(obj))
             {
                 if (rn2(20) < edog->apport + 3)

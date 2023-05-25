@@ -1517,16 +1517,19 @@ register struct obj *obj;
     if (is_non_eater(mptr))
         return TABU;
 
-    if (is_corpse_eater(mptr) && obj->otyp != CORPSE)
+    if (is_obj_no_pickup(obj))
         return TABU;
 
-    switch (obj->oclass) 
+    switch (obj->oclass)
     {
     case FOOD_CLASS:
         if (obj->otyp == CORPSE || obj->otyp == TIN || obj->otyp == EGG)
             fptr = &mons[obj->corpsenm];
 
         if (obj->otyp == CORPSE && is_rider(fptr))
+            return TABU;
+
+        if (is_corpse_eater(mptr) && obj->otyp != CORPSE)
             return TABU;
 
         if ((obj->otyp == CORPSE || obj->otyp == EGG) && fptr && touch_petrifies(fptr)
