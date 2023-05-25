@@ -785,7 +785,7 @@ register struct permonst* ptr;
         if (Hallucination)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems centered in %s personal space.", Monnam(mon), mhis(mon));
         else
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems in control of %self.", Monnam(mon), mhim(mon));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems in control of %sself.", Monnam(mon), mhim(mon));
         break;
     case BLIND_TELEPATHY:
         play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_BLIND_TELEPATHY, mon->mx, mon->my);
