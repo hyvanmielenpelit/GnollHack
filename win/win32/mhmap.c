@@ -1391,6 +1391,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 else if (worm->mnum == PM_LONG_WORM_TAIL || worm->mnum == PM_ELDER_LONG_WORM_TAIL || (is_long_worm_with_tail(worm->data) && is_adj_worm_tail))
                                 {
                                     int signed_main_glyph = data->map[adj_x][adj_y].layer_gui_glyphs[base_layer];
+                                    //signed_main_glyph = maybe_get_replaced_glyph(signed_main_glyph, adj_x, adj_y, data_to_replacement_info(signed_main_glyph, base_layer, 0, worm, data->map[adj_x][adj_y].layer_flags, data->map[adj_x][adj_y].missile_flags, data->map[adj_x][adj_y].missile_material, data->map[adj_x][adj_y].missile_special_quality));
                                     int main_glyph = abs(signed_main_glyph);
                                     int anim_frame_idx = -1, main_tile_idx = -1;
                                     int tile_animation_index = get_tile_animation_index_from_glyph(main_glyph);
@@ -1789,12 +1790,16 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
                 }
                 else if (base_layer == LAYER_CHAIN && enlarg_idx == -1 && tile_move_idx == 0 && source_dir_idx == 0 && (data->map[adj_x][adj_y].layer_flags & LFLAGS_O_CHAIN))
+                {
                     signed_glyph = GENERAL_TILE_CHAIN_MAIN + GLYPH_GENERAL_TILE_OFF;
+                    signed_glyph = maybe_get_replaced_glyph(signed_glyph, enl_i, enl_j, data_to_replacement_info(signed_glyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags, data->map[adj_x][adj_y].missile_flags, data->map[adj_x][adj_y].missile_material, data->map[adj_x][adj_y].missile_special_quality));
+                }
                 else if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
                     signed_glyph = otmp_round->gui_glyph;
                 else
                     signed_glyph = data->map[enl_i][enl_j].layer_gui_glyphs[base_layer];
 
+                //signed_glyph = maybe_get_replaced_glyph(signed_glyph, enl_i, enl_j, data_to_replacement_info(signed_glyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags, data->map[adj_x][adj_y].missile_flags, data->map[adj_x][adj_y].missile_material, data->map[adj_x][adj_y].missile_special_quality));
                 glyph = abs(signed_glyph);
 
                 /* Kludge for the time being */
@@ -4416,6 +4421,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         {
                             int anim_frame_idx = -1, main_tile_idx = -1;
                             int cglyph = (cannotseeself && flags.active_cursor_style == CURSOR_STYLE_GENERIC_CURSOR ? CURSOR_STYLE_INVISIBLE : flags.active_cursor_style) + GLYPH_CURSOR_OFF;
+                            cglyph = maybe_get_replaced_glyph(cglyph, i, j, zeroreplacementinfo);
                             int ctile = glyph2tile[cglyph];
                             int tile_animation_idx = get_tile_animation_index_from_glyph(cglyph);
                             //ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
@@ -4904,6 +4910,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             {
                                 int anim_frame_idx = -1, main_tile_idx = -1;
                                 int signed_mglyph = u_to_glyph();
+                                signed_mglyph = maybe_get_replaced_glyph(signed_mglyph, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags, data->map[enl_i][enl_j].missile_flags, data->map[enl_i][enl_j].missile_material, data->map[enl_i][enl_j].missile_special_quality));
                                 boolean flip_rider = (signed_mglyph < 0);
                                 mglyph = abs(signed_mglyph);
                                 mtile = glyph2tile[mglyph];
@@ -5734,6 +5741,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                         int glyph = abs(otmp->gui_glyph);
                         if (glyph <= 0 || glyph >= MAX_GLYPH)
                             continue;
+                        //glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(otmp->glyph, layer_idx, otmp, m_at(x, y), data->map[x][y].layer_flags, data->map[x][y].missile_flags, data->map[x][y].missile_material, data->map[x][y].missile_special_quality));
                         int ntile = glyph2tile[glyph];
                         enum autodraw_types autodraw = AUTODRAW_NONE;
                         //ntile = maybe_get_replaced_tile(ntile, x, y, data_to_replacement_info(otmp->glyph, layer_idx, otmp, m_at(x, y), data->map[x][y].layer_flags, data->map[x][y].missile_flags, data->map[x][y].missile_material, data->map[x][y].missile_special_quality), &autodraw);
@@ -5747,6 +5755,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 enum autodraw_types autodraw = AUTODRAW_NONE;
                 int anim_frame_idx = -1, main_tile_idx = -1;
                 int signed_glyph = data->map[x][y].layer_gui_glyphs[layer_idx];
+                //signed_glyph = maybe_get_replaced_glyph(signed_glyph, x, y, data_to_replacement_info(signed_glyph, layer_idx, (struct obj*)0, m_at(x, y), data->map[x][y].layer_flags, data->map[x][y].missile_flags, data->map[x][y].missile_material, data->map[x][y].missile_special_quality));
                 int glyph = abs(signed_glyph);
                 if (glyph <= 0 || glyph >= MAX_GLYPH)
                     continue;

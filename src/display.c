@@ -3387,7 +3387,7 @@ int cursor_on_u;
         return;
 #endif
 
-#if defined(GNH_MOBILE) && defined(USE_TILES)
+#if (defined(GNH_MOBILE) || defined(WIN32)) && defined(USE_TILES)
     char saved_gbuf_start[ROWNO];
     char saved_gbuf_stop[ROWNO];
     memcpy(saved_gbuf_start, gbuf_start, ROWNO);
@@ -3503,7 +3503,7 @@ int cursor_on_u;
                 {
                     gbuf[y][x].isnew = 1;
                     gbuf[y][x].layers.layer_flags &= ~LFLAGS_NO_WALL_END_AUTODRAW;
-                    if(nwead)
+                    if (nwead)
                         gbuf[y][x].layers.layer_flags |= LFLAGS_NO_WALL_END_AUTODRAW;
                 }
             }
