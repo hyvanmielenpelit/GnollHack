@@ -2976,7 +2976,9 @@ aligntyp alignment;
     {
         if (mons[mndx].mflags6 & M6_USES_CAT_SUBTYPES)
         {
-            if (!rn2(9))
+            if(!rn2(4))
+                mtmp->subtype = CAT_BREED_BLACK;
+            else if (!rn2(9))
                 mtmp->subtype = rn2(NUM_CAT_BREEDS);
         }
         else if (mons[mndx].mflags6 & M6_USES_DOG_SUBTYPES)
