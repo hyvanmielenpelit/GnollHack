@@ -362,7 +362,7 @@ unsigned short dogbreed;
 unsigned short catbreed;
 
 const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
-    { "generic", "generic",     (char*)0, (char*)0, (char*)0, 0UL },
+    { "generic",                "generic", (char*)0, (char*)0, (char*)0, 0UL },
     { "black labrador",         (char*)0, "Labrador Retriever", "black", (char*)0, 0UL },
     { "brown labrador",         (char*)0, "Labrador Retriever", "brown", (char*)0, 0UL },
     { "yellow labrador",        (char*)0, "Labrador Retriever", "yellow", (char*)0, 0UL },
@@ -387,6 +387,8 @@ const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
     { "english springer spaniel", (char*)0, "English Springer Spaniel", (char*)0, (char*)0, 0UL   },
     { "welsh springer spaniel", (char*)0, "Welsh Springer Spaniel", (char*)0, (char*)0, 0UL   },
     { "bulldog",                (char*)0, "Bulldog", (char*)0, (char*)0, 0UL },
+    { "rottweiler",             (char*)0, "Rottweiler", (char*)0, (char*)0, 0UL },
+    { "dachshund",              (char*)0, "Dachshund", (char*)0, (char*)0, 0UL },
 };
 
 const struct breed_definition cat_breed_definitions[NUM_CAT_BREEDS] = {

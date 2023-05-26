@@ -9919,6 +9919,20 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "large-rottweiler-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "large-dachshund-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
 
       { "large-black-labrador-statue-enlargement", 0, 0,
          2,
@@ -10088,6 +10102,20 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "large-rottweiler-statue-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "large-dachshund-statue-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
 
 
       { "saddled-pony-enlargement", 0, 0,
@@ -10126,6 +10154,14 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 }
       },
       { "saddled-warhorse-statue-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+
+      { "gnoll-zombie-attack-enlargement", 0, 0,
         2,
         3, 1, 0,
         { -1, -1, -1, 0, 1 },
@@ -12761,7 +12797,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_BREED,
       AUTODRAW_NONE, -1,
-      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "", "", "", "", "", "", "", "" },
+      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "rottweiler", "dachshund", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -12772,7 +12808,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_BREED,
       AUTODRAW_NONE, -1,
-      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "", "", "", "", "", "", "", "" },
+      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "rottweiler", "dachshund", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -12783,9 +12819,9 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_BREED,
       AUTODRAW_NONE, -1,
-      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "", "", "", "", "", "", "", "" },
+      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "rottweiler", "dachshund", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-      { LARGE_BLACK_LABRADOR_ENLARGEMENT, LARGE_BROWN_LABRADOR_ENLARGEMENT, LARGE_YELLOW_LABRADOR_ENLARGEMENT, LARGE_DALMATIAN_ENLARGEMENT, LARGE_GERMAN_SHEPHERD_ENLARGEMENT, LARGE_BLACK_SCHNAUZER_ENLARGEMENT, LARGE_SALTPEPPER_SCHNAUZER_ENLARGEMENT, LARGE_SCOTTISH_TERRIER_ENLARGEMENT, LARGE_PEMBROKE_CORGI_ENLARGEMENT, LARGE_CARDIGAN_CORGI_ENLARGEMENT, LARGE_COCKER_SPANIEL_ENLARGEMENT, LARGE_BLOODHOUND_ENLARGEMENT, LARGE_BLUE_ROUGH_COLLIE_ENLARGEMENT, LARGE_SABLE_ROUGH_COLLIE_ENLARGEMENT, LARGE_TRICOLOR_ROUGH_COLLIE_ENLARGEMENT, LARGE_FINNISH_LAPPHUND_ENLARGEMENT, LARGE_AKITA_ENLARGEMENT, LARGE_SHIBA_ENLARGEMENT, LARGE_BLACK_BORDER_COLLIE_ENLARGEMENT, LARGE_BROWN_BORDER_COLLIE_ENLARGEMENT, LARGE_GREY_BORDER_COLLIE_ENLARGEMENT, LARGE_ENGLISH_SPRINGER_SPANIEL_ENLARGEMENT, LARGE_WELSH_SPRINGER_SPANIEL_ENLARGEMENT, LARGE_BULLDOG_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { LARGE_BLACK_LABRADOR_ENLARGEMENT, LARGE_BROWN_LABRADOR_ENLARGEMENT, LARGE_YELLOW_LABRADOR_ENLARGEMENT, LARGE_DALMATIAN_ENLARGEMENT, LARGE_GERMAN_SHEPHERD_ENLARGEMENT, LARGE_BLACK_SCHNAUZER_ENLARGEMENT, LARGE_SALTPEPPER_SCHNAUZER_ENLARGEMENT, LARGE_SCOTTISH_TERRIER_ENLARGEMENT, LARGE_PEMBROKE_CORGI_ENLARGEMENT, LARGE_CARDIGAN_CORGI_ENLARGEMENT, LARGE_COCKER_SPANIEL_ENLARGEMENT, LARGE_BLOODHOUND_ENLARGEMENT, LARGE_BLUE_ROUGH_COLLIE_ENLARGEMENT, LARGE_SABLE_ROUGH_COLLIE_ENLARGEMENT, LARGE_TRICOLOR_ROUGH_COLLIE_ENLARGEMENT, LARGE_FINNISH_LAPPHUND_ENLARGEMENT, LARGE_AKITA_ENLARGEMENT, LARGE_SHIBA_ENLARGEMENT, LARGE_BLACK_BORDER_COLLIE_ENLARGEMENT, LARGE_BROWN_BORDER_COLLIE_ENLARGEMENT, LARGE_GREY_BORDER_COLLIE_ENLARGEMENT, LARGE_ENGLISH_SPRINGER_SPANIEL_ENLARGEMENT, LARGE_WELSH_SPRINGER_SPANIEL_ENLARGEMENT, LARGE_BULLDOG_ENLARGEMENT, LARGE_ROTTWEILER_ENLARGEMENT, LARGE_DACHSHUND_ENLARGEMENT, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -12794,7 +12830,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_STATUE_BREED,
       AUTODRAW_NONE, -1,
-      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "", "", "", "", "", "", "", "" },
+      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "rottweiler", "dachshund", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -12805,7 +12841,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_STATUE_BREED,
       AUTODRAW_NONE, -1,
-      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "", "", "", "", "", "", "", "" },
+      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "rottweiler", "dachshund", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -12816,9 +12852,9 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_STATUE_BREED,
       AUTODRAW_NONE, -1,
-      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "", "", "", "", "", "", "", "" },
+      { "black-labrador", "brown-labrador", "yellow-labrador", "dalmatian", "german-shepherd", "black-schnauzer", "saltpepper-schnauzer", "scottish-terrier", "pembroke-corgi", "cardigan-corgi", "cocker-spaniel", "bloodhound", "blue-rough-collie", "sable-rough-collie", "tricolor-rough-collie", "finnish-lapphund", "akita", "shiba", "black-border-collie", "brown-border-collie", "grey-border-collie", "english-springer-spaniel", "welsh-springer-spaniel", "bulldog", "rottweiler", "dachshund", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-      { LARGE_BLACK_LABRADOR_STATUE_ENLARGEMENT, LARGE_BROWN_LABRADOR_STATUE_ENLARGEMENT, LARGE_YELLOW_LABRADOR_STATUE_ENLARGEMENT, LARGE_DALMATIAN_STATUE_ENLARGEMENT, LARGE_GERMAN_SHEPHERD_STATUE_ENLARGEMENT, LARGE_BLACK_SCHNAUZER_STATUE_ENLARGEMENT, LARGE_SALTPEPPER_SCHNAUZER_STATUE_ENLARGEMENT, LARGE_SCOTTISH_TERRIER_STATUE_ENLARGEMENT, LARGE_PEMBROKE_CORGI_STATUE_ENLARGEMENT, LARGE_CARDIGAN_CORGI_STATUE_ENLARGEMENT, LARGE_COCKER_SPANIEL_STATUE_ENLARGEMENT, LARGE_BLOODHOUND_STATUE_ENLARGEMENT, LARGE_BLUE_ROUGH_COLLIE_STATUE_ENLARGEMENT, LARGE_SABLE_ROUGH_COLLIE_STATUE_ENLARGEMENT, LARGE_TRICOLOR_ROUGH_COLLIE_STATUE_ENLARGEMENT, LARGE_FINNISH_LAPPHUND_STATUE_ENLARGEMENT, LARGE_AKITA_STATUE_ENLARGEMENT, LARGE_SHIBA_STATUE_ENLARGEMENT, LARGE_BLACK_BORDER_COLLIE_STATUE_ENLARGEMENT, LARGE_BROWN_BORDER_COLLIE_STATUE_ENLARGEMENT, LARGE_GREY_BORDER_COLLIE_STATUE_ENLARGEMENT, LARGE_ENGLISH_SPRINGER_SPANIEL_STATUE_ENLARGEMENT, LARGE_WELSH_SPRINGER_SPANIEL_STATUE_ENLARGEMENT, LARGE_BULLDOG_STATUE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { LARGE_BLACK_LABRADOR_STATUE_ENLARGEMENT, LARGE_BROWN_LABRADOR_STATUE_ENLARGEMENT, LARGE_YELLOW_LABRADOR_STATUE_ENLARGEMENT, LARGE_DALMATIAN_STATUE_ENLARGEMENT, LARGE_GERMAN_SHEPHERD_STATUE_ENLARGEMENT, LARGE_BLACK_SCHNAUZER_STATUE_ENLARGEMENT, LARGE_SALTPEPPER_SCHNAUZER_STATUE_ENLARGEMENT, LARGE_SCOTTISH_TERRIER_STATUE_ENLARGEMENT, LARGE_PEMBROKE_CORGI_STATUE_ENLARGEMENT, LARGE_CARDIGAN_CORGI_STATUE_ENLARGEMENT, LARGE_COCKER_SPANIEL_STATUE_ENLARGEMENT, LARGE_BLOODHOUND_STATUE_ENLARGEMENT, LARGE_BLUE_ROUGH_COLLIE_STATUE_ENLARGEMENT, LARGE_SABLE_ROUGH_COLLIE_STATUE_ENLARGEMENT, LARGE_TRICOLOR_ROUGH_COLLIE_STATUE_ENLARGEMENT, LARGE_FINNISH_LAPPHUND_STATUE_ENLARGEMENT, LARGE_AKITA_STATUE_ENLARGEMENT, LARGE_SHIBA_STATUE_ENLARGEMENT, LARGE_BLACK_BORDER_COLLIE_STATUE_ENLARGEMENT, LARGE_BROWN_BORDER_COLLIE_STATUE_ENLARGEMENT, LARGE_GREY_BORDER_COLLIE_STATUE_ENLARGEMENT, LARGE_ENGLISH_SPRINGER_SPANIEL_STATUE_ENLARGEMENT, LARGE_WELSH_SPRINGER_SPANIEL_STATUE_ENLARGEMENT, LARGE_BULLDOG_STATUE_ENLARGEMENT, LARGE_ROTTWEILER_STATUE_ENLARGEMENT, LARGE_DACHSHUND_STATUE_ENLARGEMENT, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
