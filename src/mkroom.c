@@ -2087,7 +2087,7 @@ mksmithy()
     {
         if (IS_WALL(levl[lowx + roll2 + 1][lowy - 1].typ))
         {
-            levl[lowx + roll2 + 1][lowy - 1].decoration_typ = DECORATION_FIREPLACE;
+            levl[lowx + roll2 + 1][lowy - 1].decoration_typ = !rn2(2) ? DECORATION_FIREPLACE : DECORATION_ANOTHER_FIREPLACE;
             levl[lowx + roll2 + 1][lowy - 1].decoration_subtyp = 0;
             levl[lowx + roll2 + 1][lowy - 1].decoration_dir = 0;
             levl[lowx + roll2 + 1][lowy - 1].decoration_flags = 0;

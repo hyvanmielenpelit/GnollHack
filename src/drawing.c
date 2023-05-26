@@ -1414,6 +1414,9 @@ const struct doodad_definition simple_doodads[MAX_SIMPLE_DOODAD_TILES] =
     { "modron-triangular-plaque-brcorn", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
     { "modron-triangular-plaque-top", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
     { "modron-triangular-plaque-bottom", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    { "fireplace-2", -12, ANOTHER_FIREPLACE_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    { "fireplace-2-left", 0, ANOTHER_FIREPLACE_LEFT_WALL_REPLACEMENT, NO_ANIMATION, ANOTHER_FIREPLACE_LEFT_WALL_UNLIT_ENLARGEMENT },
+    { "fireplace-2-right", 0, ANOTHER_FIREPLACE_RIGHT_WALL_REPLACEMENT, NO_ANIMATION, ANOTHER_FIREPLACE_RIGHT_WALL_UNLIT_ENLARGEMENT },
 };
 
 const struct doodad_definition mirrorable_doodads[MAX_MIRRORABLE_DOODAD_TILES] =

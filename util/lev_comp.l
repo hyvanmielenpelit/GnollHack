@@ -369,6 +369,7 @@ decoration_cobweb_corner { savetoken(yytext); yylval.i=DECORATION_COBWEB_CORNER;
 decoration_torch { savetoken(yytext); yylval.i=DECORATION_TORCH; return DECORATION_TYPE; }
 decoration_lantern { savetoken(yytext); yylval.i=DECORATION_LANTERN; return DECORATION_TYPE; }
 decoration_fireplace { savetoken(yytext); yylval.i=DECORATION_FIREPLACE; return DECORATION_TYPE; }
+decoration_fireplace2 { savetoken(yytext); yylval.i=DECORATION_ANOTHER_FIREPLACE; return DECORATION_TYPE; }
 decoration_painting { savetoken(yytext); yylval.i=DECORATION_PAINTING; return DECORATION_TYPE; }
 decoration_banner { savetoken(yytext); yylval.i=DECORATION_BANNER; return DECORATION_TYPE; }
 decoration_wall_sculpture { savetoken(yytext); yylval.i=DECORATION_WALL_SCULPTURE; return DECORATION_TYPE; }

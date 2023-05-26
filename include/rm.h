@@ -274,6 +274,7 @@ enum decoration_types {
     DECORATION_BANNER,
     DECORATION_PRIEST_NICHE,
     DECORATION_WALL_SCULPTURE,
+    DECORATION_ANOTHER_FIREPLACE,
     MAX_DECORATIONS
 };
 
@@ -1408,6 +1409,9 @@ extern dlevel_t level; /* structure describing the current level */
 #define m_at(x, y) (MON_AT(x, y) ? level.monsters[x][y] : (struct monst *) 0)
 #define m_buried_at(x, y) \
     (MON_BURIED_AT(x, y) ? level.monsters[x][y] : (struct monst *) 0)
+
+/* decoration checks */
+#define has_loc_fireplace(x, y) (levl[x][y].decoration_typ == DECORATION_FIREPLACE || levl[x][y].decoration_typ == DECORATION_ANOTHER_FIREPLACE)
 
 /* restricted movement, potential luck penalties */
 #define Sokoban level.flags.sokoban_rules

@@ -406,7 +406,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                         }
                         else if (!rn2(3))
                         {
-                            levl[lowx + roll1 + 1][lowy - 1].decoration_typ = DECORATION_FIREPLACE;
+                            levl[lowx + roll1 + 1][lowy - 1].decoration_typ = !rn2(2) ? DECORATION_FIREPLACE : DECORATION_ANOTHER_FIREPLACE;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
                             levl[lowx + roll1 + 1][lowy - 1].decoration_flags = 0;
@@ -460,7 +460,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                         }
                         else if (!made_fireplace && !rn2(6))
                         {
-                            levl[lowx - 1][lowy + roll + 1].decoration_typ = DECORATION_FIREPLACE;
+                            levl[lowx - 1][lowy + roll + 1].decoration_typ = DECORATION_ANOTHER_FIREPLACE;
                             levl[lowx - 1][lowy + roll + 1].decoration_subtyp = 0;
                             levl[lowx - 1][lowy + roll + 1].decoration_dir = 1;
                             levl[lowx - 1][lowy + roll + 1].decoration_flags = 0;
@@ -503,7 +503,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                         }
                         else if (!made_fireplace && !rn2(6))
                         {
-                            levl[hix + 1][lowy + roll + 1].decoration_typ = DECORATION_FIREPLACE;
+                            levl[hix + 1][lowy + roll + 1].decoration_typ = DECORATION_ANOTHER_FIREPLACE;
                             levl[hix + 1][lowy + roll + 1].decoration_subtyp = 0;
                             levl[hix + 1][lowy + roll + 1].decoration_dir = 2;
                             levl[hix + 1][lowy + roll + 1].decoration_flags = 0;
@@ -529,7 +529,7 @@ int floortyp, floorsubtyp, mtype, tileset;
                 {
                     if (!rn2(3))
                     {
-                        levl[lowx + roll1 + 1][lowy - 1].decoration_typ = DECORATION_FIREPLACE;
+                        levl[lowx + roll1 + 1][lowy - 1].decoration_typ = !rn2(2) ? DECORATION_FIREPLACE : DECORATION_ANOTHER_FIREPLACE;
                         levl[lowx + roll1 + 1][lowy - 1].decoration_subtyp = 0;
                         levl[lowx + roll1 + 1][lowy - 1].decoration_dir = 0;
                         levl[lowx + roll1 + 1][lowy - 1].decoration_flags = 0;
@@ -1635,7 +1635,7 @@ makelevel()
 
         for (x = lowx; x <= hix; x++)
         {
-            if (isok(x, lowy - 1) && levl[x][lowy - 1].decoration_typ == DECORATION_FIREPLACE)
+            if (isok(x, lowy - 1) && has_loc_fireplace(x, lowy - 1))
             {
                 has_fireplace = TRUE;
                 break;
@@ -1645,12 +1645,12 @@ makelevel()
         {
             for (y = lowy; y <= hiy; y++)
             {
-                if (isok(lowx - 1, y) && levl[lowx - 1][y].decoration_typ == DECORATION_FIREPLACE)
+                if (isok(lowx - 1, y) && has_loc_fireplace(lowx - 1, y))
                 {
                     has_fireplace = TRUE;
                     break;
                 }
-                else if (isok(hix - 1, y) && levl[hix - 1][y].decoration_typ == DECORATION_FIREPLACE)
+                else if (isok(hix - 1, y) && has_loc_fireplace(hix - 1, y))
                 {
                     has_fireplace = TRUE;
                     break;
