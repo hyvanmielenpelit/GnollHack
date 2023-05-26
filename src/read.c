@@ -203,7 +203,7 @@ doread()
     if (scroll->otyp == FORTUNE_COOKIE) 
     {
         if (flags.verbose)
-            You("break up the cookie and throw away the pieces.");
+            You1("break up the cookie and throw away the pieces.");
         outrumor((struct monst*)0, scroll, bcsign(scroll), BY_COOKIE);
         if (!Blind)
             u.uconduct.literate++;
@@ -217,12 +217,15 @@ doread()
 
         if (Blind) 
         {
-            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "feel any Braille writing.");
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You_cant_ex1(ATR_NONE, CLR_MSG_FAIL, "feel any Braille writing.");
             return 0;
         }
         /* can't read shirt worn under suit (under cloak is ok though) */
-        if (objects[scroll->otyp].oc_armor_category == ARM_SHIRT && (uarm || uarmo) && scroll == uarmu) {
-            pline("%s shirt is obscured by %s%s.",
+        if (objects[scroll->otyp].oc_armor_category == ARM_SHIRT && (uarm || uarmo) && scroll == uarmu) 
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s shirt is obscured by %s%s.",
                   scroll->unpaid ? "That" : "Your", shk_your(buf, uarmo ? uarmo : uarm),
                   uarmo ? robe_simple_name(uarmo) : suit_simple_name(uarm));
             return 0;
@@ -231,7 +234,7 @@ doread()
         /* populate 'buf[]' */
         if (scroll->otyp == SHIRT_OF_SOUND_MINDEDNESS)
         {
-            pline("This T-shirt has the words \"Sound Mind Games\" emblazoned upon it in large friendly letters.");
+            pline_ex1(ATR_NONE, CLR_MSG_TEXT, "This T-shirt has the words \"Sound Mind Games\" emblazoned upon it in large friendly letters.");
             if (!objects[scroll->otyp].oc_name_known)
             {
                 makeknown(scroll->otyp);
@@ -240,7 +243,7 @@ doread()
         }
         else if (scroll->otyp == SHIRT_OF_UNCONTROLLABLE_LAUGHTER)
         {
-            pline("This T-shirt has a message of incomparable hilarity emblazoned upon it.");
+            pline_ex1(ATR_NONE, CLR_MSG_TEXT, "This T-shirt has a message of incomparable hilarity emblazoned upon it.");
             if (!objects[scroll->otyp].oc_name_known)
             {
                 makeknown(scroll->otyp);
@@ -249,7 +252,7 @@ doread()
         }
         else if (scroll->otyp == SHIRT_OF_COMELINESS || scroll->otyp == HAWAIIAN_SHIRT)
         {
-            pline("There is no text on this T-shirt.");
+            pline_ex1(ATR_NONE, NO_COLOR, "There is no text on this T-shirt.");
         }
         else
         {
@@ -265,7 +268,7 @@ doread()
                     endpunct = ".";
                 pline("It reads:");
             }
-            pline("\"%s\"%s", mesg, endpunct);
+            pline_ex(ATR_NONE, CLR_MSG_TEXT, "\"%s\"%s", mesg, endpunct);
         }
         return 1;
     } 
@@ -292,14 +295,14 @@ doread()
             You("feel the embossed numbers:");
         } else {
             if (flags.verbose)
-                pline("It reads:");
-            pline("\"%s\"",
+                pline1("It reads:");
+            pline_ex(ATR_NONE, CLR_MSG_TEXT, "\"%s\"",
                   scroll->oartifact
                       ? card_msgs[SIZE(card_msgs) - 1]
                       : card_msgs[scroll->o_id % (SIZE(card_msgs) - 1)]);
         }
         /* Make a credit card number */
-        pline("\"%d0%d %ld%d1 0%d%d0\"%s",
+        pline_ex(ATR_NONE, CLR_MSG_TEXT, "\"%d0%d %ld%d1 0%d%d0\"%s",
               (((int) scroll->o_id % 89) + 10),
               ((int) scroll->o_id % 4),
               ((((long) scroll->o_id * 499L) % 899999L) + 100000L),
@@ -319,26 +322,26 @@ doread()
     {
         if (Blind) 
         {
-            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "feel any Braille writing.");
+            You_cant_ex1(ATR_NONE, CLR_MSG_FAIL, "feel any Braille writing.");
             return 0;
         }
         if (flags.verbose)
-            pline("It reads:");
-        pline("\"Magic Marker(TM) Red Ink Marker Pen.  Water Soluble.\"");
+            pline1("It reads:");
+        pline_ex1(ATR_NONE, CLR_MSG_TEXT, "\"Magic Marker(TM) Red Ink Marker Pen.  Water Soluble.\"");
         u.uconduct.literate++;
         return 1;
     }
     else if (scroll->oclass == COIN_CLASS)
     {
         if (Blind)
-            You("feel the embossed words:");
+            You1("feel the embossed words:");
         else if (flags.verbose)
-            You("read:");
+            You1("read:");
         
         if(Hallucination)
-            pline("\"1 Zorkmid.  857 GUE.  In Frobs We Trust.\"");
+            pline_ex1(ATR_NONE, CLR_MSG_TEXT, "\"1 Zorkmid.  857 GUE.  In Frobs We Trust.\"");
         else
-            pline("\"1 Yendorian Gold Coin.  Treasury of Yendor.\"");
+            pline_ex1(ATR_NONE, CLR_MSG_TEXT, "\"1 Yendorian Gold Coin.  Treasury of Yendor.\"");
 
         u.uconduct.literate++;
         return 1;
@@ -346,10 +349,10 @@ doread()
     else if (scroll->oartifact == ART_ORB_OF_FATE) 
     {
         if (Blind)
-            You("feel the engraved signature:");
+            You1("feel the engraved signature:");
         else
-            pline("It is signed:");
-        pline("\"Odin.\"");
+            pline1("It is signed:");
+        pline_ex1(ATR_NONE, CLR_MSG_TEXT, "\"Odin.\"");
         u.uconduct.literate++;
         return 1;
     }
@@ -375,7 +378,8 @@ doread()
             You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "feel any Braille writing.");
             return 0;
         }
-        pline("The wrapper reads: \"%s\".",
+        pline1("The wrapper reads:");
+        pline_ex(ATR_NONE, CLR_MSG_TEXT, "\"%s\".",
               wrapper_msgs[scroll->o_id % SIZE(wrapper_msgs)]);
         u.uconduct.literate++;
         return 1;
