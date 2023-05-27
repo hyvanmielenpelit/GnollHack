@@ -2319,6 +2319,8 @@ uchar* tilemapflags;
                         {
                             int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                             glyphtileflags[rglyph] = glyphtileflags[glyph];
+                            if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                                glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                             tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                         }
                     }
@@ -2345,6 +2347,8 @@ uchar* tilemapflags;
                     {
                         int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                         glyphtileflags[rglyph] = glyphtileflags[glyph];
+                        if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                            glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                         tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                     }
                 }
@@ -2361,6 +2365,8 @@ uchar* tilemapflags;
                 {
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                        glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
             }
@@ -2400,6 +2406,8 @@ uchar* tilemapflags;
                         {
                             int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                             glyphtileflags[rglyph] = glyphtileflags[glyph];
+                            if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                                glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                             tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                         }
                     }
@@ -2429,6 +2437,8 @@ uchar* tilemapflags;
                     {
                         int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                         glyphtileflags[rglyph] = glyphtileflags[glyph];
+                        if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                            glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                         tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                     }
                 }
@@ -2444,6 +2454,8 @@ uchar* tilemapflags;
                 {
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                        glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
             }
@@ -2463,6 +2475,8 @@ uchar* tilemapflags;
                 {
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                        glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
                 for (l = 0; l < NUM_MISSILE_DIRS; l++)
@@ -2476,6 +2490,8 @@ uchar* tilemapflags;
                         {
                             int rglyph = k + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                             glyphtileflags[rglyph] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                            if (replacements[repl].tile_flags[k] & RTF_CLEAR_OUT_HALF_SIZE)
+                                glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                         }
                     }
                     if (obj_descr[i].oc_descr_flags & OD_MISSILE_REPLACEMENTS)
@@ -2500,6 +2516,8 @@ uchar* tilemapflags;
                                         glyphtileflags[mrglyph] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
                                     if (vflip)
                                         glyphtileflags[mrglyph] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                                    if (replacements[mrepl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                                        glyphtileflags[mrglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                                     tile2autodraw[tilemaparray[mrglyph]] = replacements[mrepl].tile_autodraw[j];
                                 }
                             }
@@ -2523,6 +2541,8 @@ uchar* tilemapflags;
                 {
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                        glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
                 for (l = 0; l < NUM_MISSILE_DIRS; l++)
@@ -2536,6 +2556,8 @@ uchar* tilemapflags;
                         {
                             int rglyph = k + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                             glyphtileflags[rglyph] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                            if (replacements[repl].tile_flags[k] & RTF_CLEAR_OUT_HALF_SIZE)
+                                glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                         }
                     }
                     if (artilist[i].aflags2 & AF2_MISSILE_REPLACEMENTS)
@@ -2560,6 +2582,8 @@ uchar* tilemapflags;
                                         glyphtileflags[mrglyph] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
                                     if (vflip)
                                         glyphtileflags[mrglyph] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                                    if (replacements[mrepl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                                        glyphtileflags[mrglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                                     tile2autodraw[tilemaparray[mrglyph]] = replacements[mrepl].tile_autodraw[j];
                                 }
                             }
@@ -2592,6 +2616,8 @@ uchar* tilemapflags;
                         {
                             int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                             glyphtileflags[rglyph] = glyphtileflags[glyph];
+                            if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                                glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                             tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                         }
                     }
@@ -2611,6 +2637,8 @@ uchar* tilemapflags;
                         {
                             int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                             glyphtileflags[rglyph] = glyphtileflags[glyph];
+                            if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                                glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                             tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                         }
                     }
@@ -2641,6 +2669,8 @@ uchar* tilemapflags;
                         {
                             int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                             glyphtileflags[rglyph] = glyphtileflags[glyph];
+                            if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                                glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                             tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                         }
                     }
@@ -2660,6 +2690,8 @@ uchar* tilemapflags;
                         {
                             int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                             glyphtileflags[rglyph] = glyphtileflags[glyph];
+                            if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                                glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                             tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                         }
                     }
@@ -2693,6 +2725,8 @@ uchar* tilemapflags;
                                     {
                                         int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                                         glyphtileflags[rglyph] = glyphtileflags[glyph];
+                                        if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                                            glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                                         tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                                     }
                                 }
@@ -2717,6 +2751,8 @@ uchar* tilemapflags;
                 {
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                        glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
             }
@@ -2736,6 +2772,8 @@ uchar* tilemapflags;
                 {
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                        glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
             }
@@ -2755,6 +2793,8 @@ uchar* tilemapflags;
                 {
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                        glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
             }
@@ -2774,6 +2814,8 @@ uchar* tilemapflags;
                 {
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                        glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
             }
@@ -2793,6 +2835,8 @@ uchar* tilemapflags;
                 {
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                        glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
             }
@@ -2812,6 +2856,8 @@ uchar* tilemapflags;
                 {
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                        glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
             }
@@ -2831,6 +2877,8 @@ uchar* tilemapflags;
                 {
                     int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
                     glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    if (replacements[repl].tile_flags[j] & RTF_CLEAR_OUT_HALF_SIZE)
+                        glyphtileflags[rglyph] &= ~GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     tile2autodraw[tilemaparray[rglyph]] = replacements[repl].tile_autodraw[j];
                 }
             }

@@ -2427,7 +2427,8 @@ struct replacement_definition {
 #define REPLACEMENT_EVENT_UPDATE_FROM_LEFT      0x00000004UL
 #define REPLACEMENT_EVENT_UPDATE_FROM_RIGHT     0x00000008UL
 
-#define RTF_SKIP   0x00000001UL
+#define RTF_SKIP                                0x00000001UL
+#define RTF_CLEAR_OUT_HALF_SIZE                 0x00000002UL
 
 enum replacement_types
 {
