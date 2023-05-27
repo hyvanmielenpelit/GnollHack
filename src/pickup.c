@@ -1152,10 +1152,12 @@ int how;               /* type of query */
     if (qflags & WORN_TYPES)
         ofilter = is_worn;
 
-    if ((qflags & UNPAID_TYPES) && count_unpaid(olist, ofilter, (qflags & BY_NEXTHERE) != 0))
+    int unpaid_count = count_unpaid(olist, ofilter, (qflags & BY_NEXTHERE) != 0);
+    if ((qflags & UNPAID_TYPES) && unpaid_count)
         do_unpaid = TRUE;
 
-    if ((qflags & UNIDENTIFIED_TYPES) && count_unidentified(olist, ofilter, (qflags & BY_NEXTHERE) != 0)) {
+    int unidentified_count = count_unidentified(olist, ofilter, (qflags & BY_NEXTHERE) != 0);
+    if ((qflags & UNIDENTIFIED_TYPES) && unidentified_count) {
         do_unidentified = TRUE;
     }
     if ((qflags & BUC_BLESSED) && count_buc(olist, BUC_BLESSED, ofilter, (qflags & BY_NEXTHERE) != 0)) {
@@ -1177,7 +1179,7 @@ int how;               /* type of query */
 
     ccount = count_categories(olist, qflags);
     /* no point in actually showing a menu for a single category */
-    if ((objcnt == 1 || ccount == 1) && !do_unidentified && num_buc_types <= 1 && !(qflags & BILLED_TYPES))
+    if ((objcnt == 1 || (ccount == 1 && (!do_unidentified || unidentified_count == objcnt) && (!do_unpaid || unpaid_count == objcnt) && num_buc_types <= 1)) && !(qflags & BILLED_TYPES))
     {
         for (curr = olist; curr; curr = FOLLOW(curr, qflags)) {
             if (ofilter && !(*ofilter)(curr))
@@ -1248,7 +1250,7 @@ int how;               /* type of query */
         }
     } while (*pack);
 
-    if (do_unpaid || (qflags & BILLED_TYPES) || do_blessed || do_cursed
+    if (do_unpaid || do_unidentified || (qflags & BILLED_TYPES) || do_blessed || do_cursed
         || do_uncursed || do_buc_unknown) {
         any = zeroany;
         add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR, "", MENU_UNSELECTED);
