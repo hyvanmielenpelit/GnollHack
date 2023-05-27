@@ -1429,9 +1429,7 @@ newgame()
     urealtime.start_timing = getnow();
 
 #ifdef INSURANCE
-    lock_thread_lock();
     save_currentstate();
-    unlock_thread_lock();
 #endif
     program_state.something_worth_saving++; /* useful data now exists */
 

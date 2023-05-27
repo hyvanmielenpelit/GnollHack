@@ -1196,7 +1196,6 @@ int
 load_saved_game(load_type)
 int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after saving quietly
 {
-    lock_thread_lock();
     reseting = TRUE;
     if (load_type > 0)
     {
@@ -1234,14 +1233,12 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
         if (!loadres) //This deletes the save file in normal modes
         {
             reseting = FALSE;
-            unlock_thread_lock();
             return 0;
         }
         if (!wizard && remember_wiz_mode)
             wizard = TRUE;
 
         reseting = FALSE;
-        unlock_thread_lock();
         
         if (load_type > 0)
             flush_screen(1);
@@ -1292,7 +1289,6 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
         return 1;
     }
     reseting = FALSE;
-    unlock_thread_lock();
     return 0;
 }
 

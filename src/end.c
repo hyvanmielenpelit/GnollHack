@@ -658,9 +658,7 @@ VA_DECL(const char *, str)
      * or say it's NOT possible to rebuild. */
     if (program_state.something_worth_saving && !iflags.debug_fuzzer) {
         set_error_savefile();
-        lock_thread_lock();
         int saveres = dosave0(TRUE);
-        unlock_thread_lock();
         if (saveres) {
             /* os/win port specific recover instructions */
             if (sysopt.recover)

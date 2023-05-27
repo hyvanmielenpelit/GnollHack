@@ -6830,9 +6830,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
     assign_level(&u.uz0, &u.uz); /* reset u.uz0 */
 #ifdef INSURANCE
-    lock_thread_lock();
     save_currentstate();
-    unlock_thread_lock();
 #endif
 
     if ((annotation = get_annotation(&u.uz)) != 0)

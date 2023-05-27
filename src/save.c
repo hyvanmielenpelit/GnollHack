@@ -118,9 +118,7 @@ dosave()
 #if defined(UNIX) || defined(VMS) || defined(__EMX__)
         program_state.done_hup = 0;
 #endif
-        lock_thread_lock();
         int saveres = dosave0(FALSE);
-        unlock_thread_lock();
         if (saveres)
         {
             //if(contplay)

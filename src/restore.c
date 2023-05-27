@@ -902,9 +902,7 @@ int
 dorecover(fd)
 register int fd;
 {
-    lock_thread_lock();
     int loadres = dorecover_saved_game(fd);
-    unlock_thread_lock();
     if (loadres)
     {
         /* Success! */

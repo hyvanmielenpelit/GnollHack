@@ -320,7 +320,6 @@ LibChmod(const char* filename, unsigned int mode)
 void
 LibSaveAndRestoreSavedGame(void)
 {
-    thread_lock_lock();
     if (program_state.something_worth_saving 
         && !program_state.gameover && !program_state.panicking 
         && !program_state.exiting && !program_state.freeing_dynamic_data
@@ -348,7 +347,6 @@ LibSaveAndRestoreSavedGame(void)
             (void)doredraw();
 #endif
     }
-    thread_lock_unlock();
 }
 
 void

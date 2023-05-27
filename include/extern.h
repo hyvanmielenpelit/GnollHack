@@ -44,6 +44,8 @@ E int FDECL(argcheck, (int, char **, enum earlyarg));
 E void FDECL(reset_monster_origin_coordinates, (struct monst*));
 E void NDECL(reset_all_monster_origin_coordinates);
 E void FDECL(reset_object_origin_coordinates, (struct obj*));
+E void NDECL(lock_thread_lock);
+E void NDECL(unlock_thread_lock);
 
 /* ### animation.c ### */
 
@@ -389,8 +391,6 @@ E int NDECL(doviewpet);
 E int NDECL(domarkautostash);
 E int NDECL(dounmarkautostash);
 E struct monst* FDECL(spotted_linedup_monster_in_way, (int, int, int, int));
-E void NDECL(lock_thread_lock);
-E void NDECL(unlock_thread_lock);
 
 /* ### dbridge.c ### */
 
