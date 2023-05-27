@@ -118,7 +118,10 @@ dosave()
 #if defined(UNIX) || defined(VMS) || defined(__EMX__)
         program_state.done_hup = 0;
 #endif
-        if (dosave0(FALSE))
+        lock_thread_lock();
+        int saveres = dosave0(FALSE);
+        unlock_thread_lock();
+        if (saveres)
         {
             //if(contplay)
             //    display_popup_text("Game was saved successfully.", "Game Saved", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, 0UL);

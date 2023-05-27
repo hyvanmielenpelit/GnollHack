@@ -174,8 +174,7 @@ char** argv;
         issue_gui_command(GUI_CMD_DISABLE_CASUAL_MODE); /* Notification may be needed */
 
     moveloop(resuming);
-    exit(EXIT_SUCCESS);
-
+    gnollhack_exit(EXIT_SUCCESS);
     return (0);
 }
 

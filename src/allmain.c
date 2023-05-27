@@ -1429,7 +1429,9 @@ newgame()
     urealtime.start_timing = getnow();
 
 #ifdef INSURANCE
+    lock_thread_lock();
     save_currentstate();
+    unlock_thread_lock();
 #endif
     program_state.something_worth_saving++; /* useful data now exists */
 
@@ -1832,6 +1834,26 @@ boolean return_expected_value;
     }
 
     return moveamt;
+}
+
+void
+lock_thread_lock(VOID_ARGS)
+{
+#if defined(UNIX) && defined(GNH_MOBILE)
+    thread_lock_lock();
+#else
+    return;
+#endif
+}
+
+void
+unlock_thread_lock(VOID_ARGS)
+{
+#if defined(UNIX) && defined(GNH_MOBILE)
+    thread_lock_unlock();
+#else
+    return;
+#endif
 }
 
 

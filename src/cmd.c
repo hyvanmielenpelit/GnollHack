@@ -1679,7 +1679,9 @@ wiz_makemap(VOID_ARGS)
         deliver_splev_message(); /* level entry */
         check_special_room(FALSE); /* room entry */
 #ifdef INSURANCE
+        lock_thread_lock();
         save_currentstate();
+        unlock_thread_lock();
 #endif
     } else {
         pline(unavailcmd, "#wizmakemap");
@@ -8607,7 +8609,11 @@ end_of_input()
     if (!program_state.done_hup++)
 #endif
         if (program_state.something_worth_saving)
-            (void) dosave0(TRUE);
+        {
+            lock_thread_lock();
+            (void)dosave0(TRUE);
+            unlock_thread_lock();
+        }
     if (iflags.window_inited)
         exit_nhwindows((char *) 0);
     clearlocks();

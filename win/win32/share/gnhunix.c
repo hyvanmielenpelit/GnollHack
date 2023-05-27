@@ -12,6 +12,7 @@
 #if defined(NO_FILE_LINKS) || defined(SUNOS4) || defined(POSIX_TYPES)
 #include <fcntl.h>
 #endif
+#include <pthread.h>
 
 void
 regularize(s)    /* normalize file name - we don't like .'s, /'s, spaces */
@@ -152,3 +153,41 @@ nofilefound:
     unlock_file(HLOCK);
 }
 
+int lock_init_result = -1;
+pthread_mutex_t threadlock = { 0 };
+
+void
+thread_lock_init(VOID_ARGS)
+{
+    if (!lock_init_result)
+        thread_lock_destroy();
+    lock_init_result = pthread_mutex_init(&threadlock, NULL);
+}
+
+void
+thread_lock_destroy(VOID_ARGS)
+{
+    if (!lock_init_result)
+    {
+        (void)pthread_mutex_destroy(&threadlock);
+        lock_init_result = -1;
+    }
+}
+
+void
+thread_lock_lock(VOID_ARGS)
+{
+    if (!lock_init_result)
+    {
+        (void)pthread_mutex_lock(&threadlock);
+    }
+}
+
+void
+thread_lock_unlock(VOID_ARGS)
+{
+    if (!lock_init_result)
+    {
+        (void)pthread_mutex_unlock(&threadlock);
+    }
+}

@@ -389,6 +389,8 @@ E int NDECL(doviewpet);
 E int NDECL(domarkautostash);
 E int NDECL(dounmarkautostash);
 E struct monst* FDECL(spotted_linedup_monster_in_way, (int, int, int, int));
+E void NDECL(lock_thread_lock);
+E void NDECL(unlock_thread_lock);
 
 /* ### dbridge.c ### */
 
@@ -1255,6 +1257,10 @@ E boolean NDECL(authorize_wizard_mode);
 #if defined(UNIX) && defined(GNH_MOBILE)
 E void NDECL(getlock);
 E void NDECL(check_crash);
+E void NDECL(thread_lock_init);
+E void NDECL(thread_lock_destroy);
+E void NDECL(thread_lock_lock);
+E void NDECL(thread_lock_unlock);
 #endif /* UNIX && GNH_MOBILE */
 
 /* ### hack.c ### */

@@ -1424,6 +1424,7 @@ void lib_bail(const char* mesg)
 
 void lib_init_platform(VOID_ARGS)
 {
+    thread_lock_init();
     /* Tiles */
 #ifdef USE_TILES
     process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
@@ -1433,7 +1434,7 @@ void lib_init_platform(VOID_ARGS)
 
 void lib_exit_platform(int status)
 {
-
+    thread_lock_destroy();
 }
 
 
