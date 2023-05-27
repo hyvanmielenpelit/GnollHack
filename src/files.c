@@ -648,6 +648,16 @@ savegamedata_strcmp_wrap(p, q)
 const void *p;
 const void *q;
 {
+    if (!p || !q)
+        return 0;
+
+    struct save_game_data* savegame1 = (struct save_game_data*)p;
+    struct save_game_data* savegame2 = (struct save_game_data*)q;
+    int priority1 = savegame1->is_running ? 3 : savegame1->is_error_save_file ? 2 : savegame1->is_imported_save_file ? 1 : 0;
+    int priority2 = savegame2->is_running ? 3 : savegame2->is_error_save_file ? 2 : savegame2->is_imported_save_file ? 1 : 0;
+    if (priority1 != priority2)
+        return priority2 - priority1;
+
 #if defined(UNIX) && defined(QT_GRAPHICS)
     return strncasecmp((((struct save_game_data*)p)->playername), (((struct save_game_data*)q)->playername), 16);
 #else

@@ -146,8 +146,8 @@ check_crash()
     (void)open_special_view(info);
 
     /* Use recover_plname instead */
-    if(!wizard)
-        strcpy(plname, recovery_plname);
+    //if(!wizard)
+    //    strcpy(plname, recovery_plname);
 
 nofilefound:
     unlock_file(HLOCK);

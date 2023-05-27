@@ -1737,8 +1737,9 @@ struct save_game_data* saved;
             int gui_glyph = saved[k].gamestats.gui_glyph;
             any.a_int = k + 1;
 
-            add_menu(tmpwin, iflags.using_gui_tiles ? gui_glyph : glyph, &any, 0, 0, ATR_HEADING | ATR_BOLD, style == 1 ? CLR_RED : NO_COLOR, namebuf,
-                MENU_UNSELECTED);
+            add_menu(tmpwin, iflags.using_gui_tiles ? gui_glyph : glyph, &any, 0, 0, ATR_HEADING | ATR_BOLD, 
+                style == 1 ? CLR_RED : saved[k].is_running ? CLR_MAGENTA : saved[k].is_error_save_file ? CLR_BROWN : saved[k].is_imported_save_file ? CLR_BLUE : NO_COLOR, 
+                namebuf, MENU_UNSELECTED);
 
             any.a_int = 0;
             add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, characterbuf,
