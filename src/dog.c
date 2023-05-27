@@ -613,7 +613,6 @@ makedog()
             petbreed = petbreed_female = choose_pet_breed(pettype, petgender == 2);
         else
             petbreed = petbreed_female = catbreed;
-
     }
 
     char givennamebuf[PL_PSIZ] = "";
@@ -639,59 +638,69 @@ makedog()
     }
 
     /* default pet names */
-    if (!*petname && pettype == PM_LITTLE_DOG)
+    if (!petdetails_used)
     {
-        /* All of these names were for dogs. */
-        if (rn2(2))
+        if (!*petname && pettype == PM_LITTLE_DOG)
         {
-            petname_female = "Fifi";
-        }
-        else
-        {
-            petname_female = "Lassie";
-            petbreed_female = DOG_BREED_SABLE_ROUGH_COLLIE;
-        }
-
-        if (Race_if(PM_GNOLL))
-        {
-            if(!rn2(2))                        /* Warcraft III: Dwarf Campaign Chapter 3 -- JG */
-                petname = "Spot";
+            /* All of these names were for dogs. */
+            if (rn2(2))
+            {
+                petname_female = "Fifi";
+            }
             else
-                petname = "Rover";
+            {
+                petname_female = "Lassie";
+                petbreed_female = DOG_BREED_SABLE_ROUGH_COLLIE;
+            }
+
+            if (Race_if(PM_GNOLL))
+            {
+                if (!rn2(2))                        /* Warcraft III: Dwarf Campaign Chapter 3 -- JG */
+                    petname = "Spot";
+                else
+                    petname = "Rover";
+            }
+            else
+            {
+                if (Role_if(PM_CAVEMAN))
+                    petname = "Slasher";         /* The Warrior */
+                if (Role_if(PM_SAMURAI))
+                {
+                    petname = "Hachiko";         /* Shibuya Station */
+                    ismale = TRUE;
+                    petbreed = DOG_BREED_AKITA;
+                }
+                if (Role_if(PM_BARBARIAN))
+                {
+                    petname = "Idefix";          /* Obelix */
+                    ismale = TRUE;
+                    petbreed = DOG_BREED_SALTPEPPER_SCHNAUZER;
+                }
+                if (Role_if(PM_TOURIST))
+                {
+                    petname = "Pepe";            /* Tribute to a male Welsh Springer Spaniel -- JG */
+                    petbreed = DOG_BREED_WELSH_SPRINGER_SPANIEL;
+                    petname_female = "Luna";     /* Tribute to a female Finnish Lapphund -- JG */
+                    petbreed_female = DOG_BREED_FINNISH_LAPPHUND;
+                }
+                if (Role_if(PM_RANGER))
+                    petname = "Sirius";          /* Orion's dog */
+            }
         }
-        else
+        else if (!petbreed && !*petname && pettype == PM_KITTEN)
         {
-            if (Role_if(PM_CAVEMAN))
-                petname = "Slasher";         /* The Warrior */
-            if (Role_if(PM_SAMURAI))
+            if ((Role_if(PM_WIZARD) || Role_if(PM_PRIEST) || Role_if(PM_MONK)) && u.ualign.type == A_CHAOTIC)
             {
-                petname = "Hachiko";         /* Shibuya Station */
-                ismale = TRUE;
-                petbreed = DOG_BREED_AKITA;
+                petbreed = petbreed_female = CAT_BREED_BLACK;
             }
-            if (Role_if(PM_BARBARIAN))
-            {
-                petname = "Idefix";          /* Obelix */
-                ismale = TRUE;
-                petbreed = DOG_BREED_SALTPEPPER_SCHNAUZER;
-            }
-            if (Role_if(PM_TOURIST))
-            {
-                petname = "Pepe";            /* Tribute to a male Welsh Springer Spaniel -- JG */
-                petbreed = DOG_BREED_WELSH_SPRINGER_SPANIEL;
-                petname_female = "Luna";     /* Tribute to a female Finnish Lapphund -- JG */
-                petbreed_female = DOG_BREED_FINNISH_LAPPHUND;
-            }
-            if (Role_if(PM_RANGER))
-                petname = "Sirius";          /* Orion's dog */
         }
-    }
-    else if(!*petname && pettype == PM_DIREWOLF_CUB) 
-    {
-        if (Role_if(PM_VALKYRIE))
+        else if (!*petname && pettype == PM_DIREWOLF_CUB)
         {
-            petname = "Ghost";                /* Game of Thrones */
-            petname_female = "Nymeria";       /* Game of Thrones */
+            if (Role_if(PM_VALKYRIE))
+            {
+                petname = "Ghost";                /* Game of Thrones */
+                petname_female = "Nymeria";       /* Game of Thrones */
+            }
         }
     }
 

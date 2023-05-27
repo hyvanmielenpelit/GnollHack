@@ -5118,13 +5118,16 @@ boolean bynexthere;
 }
 
 int
-count_objects(list, bynexthere)
+count_objects(list, filterfunc, bynexthere)
 struct obj* list;
+boolean FDECL((*filterfunc), (OBJ_P));
 boolean bynexthere;
 {
     int count = 0;
 
     while (list) {
+        if (filterfunc && !(*filterfunc)(list))
+            continue;
         count++;
         if(bynexthere)
             list = list->nexthere;

@@ -1143,8 +1143,6 @@ int how;               /* type of query */
     boolean do_blessed = FALSE, do_cursed = FALSE, do_uncursed = FALSE,
             do_buc_unknown = FALSE, do_unidentified = FALSE;
     int num_buc_types = 0;
-    int objcnt = count_objects(olist, (qflags & BY_NEXTHERE) != 0);
-
     *pick_list = (menu_item *) 0;
     if (!olist)
         return 0;
@@ -1152,12 +1150,16 @@ int how;               /* type of query */
     if (qflags & WORN_TYPES)
         ofilter = is_worn;
 
-    int unpaid_count = count_unpaid(olist, ofilter, (qflags & BY_NEXTHERE) != 0);
-    if ((qflags & UNPAID_TYPES) && unpaid_count)
+    int objcnt = count_objects(olist, ofilter, (qflags & BY_NEXTHERE) != 0);
+    if (!objcnt)
+        return 0;
+
+    int unpaid_count = 0;
+    if ((qflags & UNPAID_TYPES) && (unpaid_count = count_unpaid(olist, ofilter, (qflags & BY_NEXTHERE) != 0)) > 0)
         do_unpaid = TRUE;
 
-    int unidentified_count = count_unidentified(olist, ofilter, (qflags & BY_NEXTHERE) != 0);
-    if ((qflags & UNIDENTIFIED_TYPES) && unidentified_count) {
+    int unidentified_count = 0;
+    if ((qflags & UNIDENTIFIED_TYPES) && (unidentified_count = count_unidentified(olist, ofilter, (qflags & BY_NEXTHERE) != 0)) > 0) {
         do_unidentified = TRUE;
     }
     if ((qflags & BUC_BLESSED) && count_buc(olist, BUC_BLESSED, ofilter, (qflags & BY_NEXTHERE) != 0)) {
