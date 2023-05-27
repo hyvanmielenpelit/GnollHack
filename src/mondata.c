@@ -302,9 +302,10 @@ unsigned long innate2_bit;
 
 /* set up an individual monster's base type (initial creation, shapechange) */
 void
-set_mon_data(mon, ptr)
+set_mon_data(mon, ptr, subtype)
 struct monst *mon;
 struct permonst *ptr;
+unsigned short subtype;
 {
     if (!mon || !ptr)
         return;
@@ -313,6 +314,7 @@ struct permonst *ptr;
 
     mon->data = ptr;
     mon->mnum = (short) monsndx(ptr);
+    mon->subtype = subtype;
     mon->heads_left = mon->data->heads;
 
     if (mon->movement) { /* used to adjust poly'd hero as well as monsters */

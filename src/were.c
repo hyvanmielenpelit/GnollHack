@@ -137,7 +137,7 @@ register struct monst *mon;
             is_human(&mons[pm]) ? "human" : pm_monster_name(&mons[pm], mon->female) + 4);
     }
 
-    set_mon_data(mon, &mons[pm]);
+    set_mon_data(mon, &mons[pm], mon->subtype);
     if (!mon_can_move(mon)) 
     {
         /* transformation wakens and/or revitalizes */

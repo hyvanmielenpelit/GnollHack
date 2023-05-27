@@ -149,7 +149,7 @@ unsigned long entflags;
         mdat = &mons[u.umonster];
     }
     fakemon = zeromonst;
-    set_mon_data(&fakemon, mdat); /* set up for goodpos */
+    set_mon_data(&fakemon, mdat, 0); /* set up for goodpos */
 
     good_ptr = good;
     range = 1;

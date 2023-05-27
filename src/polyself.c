@@ -45,7 +45,7 @@ set_uasmon()
     struct permonst *mdat = &mons[u.umonnum];
     int i;
 
-    set_mon_data(&youmonst, mdat);
+    set_mon_data(&youmonst, mdat, 0);
 
     /* Clear out FROM_FORMs*/
     for (i = 1; i <= LAST_PROP; i++)

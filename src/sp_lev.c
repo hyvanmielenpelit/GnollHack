@@ -1976,7 +1976,7 @@ struct mkroom *croom;
                     struct permonst *olddata = mtmp->data;
 
                     mgender_from_permonst(mtmp, mdat);
-                    set_mon_data(mtmp, mdat);
+                    set_mon_data(mtmp, mdat, 0);
 
                     if (emitted_light_range(olddata) != emitted_light_range(mtmp->data))
                     {

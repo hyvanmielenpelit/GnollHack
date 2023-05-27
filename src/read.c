@@ -4340,7 +4340,7 @@ struct _create_particular_data *d;
         /* in case we got a doppelganger instead of what was asked
            for, make it start out looking like what was asked for */
         if (mtmp->cham != NON_PM && firstchoice != NON_PM && mtmp->cham != firstchoice)
-            (void) newcham(mtmp, &mons[firstchoice], FALSE, FALSE);
+            (void) newcham(mtmp, &mons[firstchoice], 0, FALSE, FALSE);
 
         newsym(mtmp->mx, mtmp->my);
     }

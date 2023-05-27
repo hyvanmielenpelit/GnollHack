@@ -734,7 +734,7 @@ int *fail_reason;
             /* if hero has protection from shape changers, cham field will
                be NON_PM; otherwise, set form to match the statue */
             if (mon && mon->cham >= LOW_PM)
-                (void) newcham(mon, mptr, FALSE, FALSE);
+                (void) newcham(mon, mptr, 0, FALSE, FALSE);
         } 
         else
         {
@@ -2110,7 +2110,7 @@ struct obj *otmp;
         break;
     case POLY_TRAP:
         if (!resists_magic(steed) && !has_unchanging(steed) && !check_magic_resistance_and_inflict_damage(steed, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL)) {
-            (void) newcham(steed, (struct permonst *) 0, FALSE, FALSE);
+            (void) newcham(steed, (struct permonst *) 0, 0, FALSE, FALSE);
             if (!can_saddle(steed) || !can_ride(steed))
                 dismount_steed(DISMOUNT_POLY);
             else
@@ -3518,7 +3518,7 @@ register struct monst *mtmp;
             } 
             else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, (struct monst*)0, FALSE, 0, 0, NOTELL))
             {
-                if (newcham(mtmp, (struct permonst*)0, FALSE, FALSE))
+                if (newcham(mtmp, (struct permonst*)0, 0, FALSE, FALSE))
                 {
                     play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my); // Since msg is FALSE in newcham
                     /* we're done with mptr but keep it up to date */

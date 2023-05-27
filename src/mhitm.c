@@ -1063,7 +1063,7 @@ register struct attack *mattk;
         (void) snuff_lit(obj);
 
     if (mdef->cham >= LOW_PM && is_vampshifter(mdef)
-        && newcham(mdef, &mons[mdef->cham], FALSE, FALSE))
+        && newcham(mdef, &mons[mdef->cham], mdef->cham_subtype, FALSE, FALSE))
     {
         if (vis)
         {
@@ -2027,7 +2027,7 @@ register struct obj* omonwep;
             start_delayed_sliming(mdef, FALSE);
 #if 0
             if (!munslime(mdef, FALSE) && !DEADMONSTER(mdef)) {
-                if (newcham(mdef, &mons[PM_GREEN_SLIME], FALSE,
+                if (newcham(mdef, &mons[PM_GREEN_SLIME], 0, FALSE,
                             (boolean) (vis && canseemon(mdef))))
                     pd = mdef->data;
                 mdef->mstrategy &= ~STRAT_WAITFORU;
@@ -2270,11 +2270,11 @@ register struct obj* omonwep;
              * after monkilled() to provide better message ordering */
             if (mdef->cham >= LOW_PM)
             {
-                (void) newcham(magr, (struct permonst *) 0, FALSE, TRUE);
+                (void) newcham(magr, (struct permonst *) 0, 0, FALSE, TRUE);
             }
             else if (pd == &mons[PM_GREEN_SLIME] && !resists_slime(magr)) 
             {
-                (void) newcham(magr, &mons[PM_GREEN_SLIME], FALSE, TRUE);
+                (void) newcham(magr, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE);
             }
             else if (pd == &mons[PM_WRAITH] || pd == &mons[PM_SPECTRE] || pd == &mons[PM_KING_WRAITH])
             {

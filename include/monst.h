@@ -76,6 +76,7 @@ struct monst {
     unsigned m_id;
     short mnum;           /* permanent monster index number */
     short cham;           /* if shapeshifter, orig mons[] idx goes here */
+    short cham_subtype;   /* if shapeshifter, orig subtype goes here */
     short movement;       /* movement points (derived from permonst definition
                              and added effects */
     uchar m_lev;          /* adjusted difficulty level of monster */

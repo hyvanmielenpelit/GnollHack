@@ -2369,7 +2369,7 @@ boolean domsg;
         reslt = 1;
         domsg = FALSE;
     } else if (is_vampshifter(mon)) {
-        reslt = newcham(mon, ptr, FALSE, FALSE);
+        reslt = newcham(mon, ptr, 0, FALSE, FALSE);
     }
 
     if (reslt && domsg) {

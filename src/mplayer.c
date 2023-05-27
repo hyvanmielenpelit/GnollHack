@@ -353,7 +353,7 @@ boolean special;
 
         /* roll for character class */
         pm = rn1(PM_WIZARD - PM_ARCHAEOLOGIST + 1, PM_ARCHAEOLOGIST);
-        set_mon_data(&fakemon, &mons[pm]);
+        set_mon_data(&fakemon, &mons[pm], 0);
 
         /* roll for an available location */
         do {

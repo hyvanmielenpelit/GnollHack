@@ -3156,7 +3156,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                 /* this assumes newcham() won't fail; since hero has
                    a slime attack, green slimes haven't been geno'd */
                 You_ex(ATR_NONE, CLR_MSG_SUCCESS, "turn %s into slime.", mon_nam(mdef));
-                if (newcham(mdef, &mons[PM_GREEN_SLIME], FALSE, FALSE))
+                if (newcham(mdef, &mons[PM_GREEN_SLIME], 0, FALSE, FALSE))
                     pd = mdef->data;
             }
             /* munslime attempt could have been fatal */
@@ -3476,7 +3476,7 @@ register struct attack *mattk;
         /* force vampire in bat, cloud, or wolf form to revert back to
            vampire form now instead of dealing with that when it dies */
         if (is_vampshifter(mdef)
-            && newcham(mdef, &mons[mdef->cham], FALSE, FALSE))
+            && newcham(mdef, &mons[mdef->cham], mdef->cham_subtype, FALSE, FALSE))
         {
             You("engulf it, then expel it.");
             if (canspotmon(mdef))

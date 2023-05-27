@@ -2890,7 +2890,7 @@ aligntyp alignment;
     if (!mtmp->m_id)
         mtmp->m_id = context.ident++; /* ident overflowed */
 
-    set_mon_data(mtmp, ptr); /* mtmp->data = ptr; */
+    set_mon_data(mtmp, ptr, 0); /* mtmp->data = ptr; */
     if (ptr->msound == MS_LEADER && quest_info(MS_LEADER) == mndx)
         quest_status.leader_m_id = mtmp->m_id;
     mtmp->mnum = mndx;
@@ -3063,6 +3063,7 @@ aligntyp alignment;
     if (mndx == PM_VLAD_THE_IMPALER)
         mitem = CANDELABRUM_OF_INVOCATION;
     mtmp->cham = NON_PM; /* default is "not a shapechanger" */
+    mtmp->cham_subtype = 0;
 
     if (!Protection_from_shape_changers
         && (mcham = pm_to_cham(mndx)) != NON_PM) 
@@ -3076,7 +3077,7 @@ aligntyp alignment;
                to the level's difficulty but ignoring the changer's usual
                type selection, so was inappropriate for vampshifters.
                Let newcham() pick the shape. */
-            && newcham(mtmp, (struct permonst *) 0, FALSE, FALSE))
+            && newcham(mtmp, (struct permonst *) 0, 0, FALSE, FALSE))
             allow_minvent = FALSE;
     }
     else if (mndx == PM_WIZARD_OF_YENDOR) 
@@ -3999,7 +4000,7 @@ struct monst *mtmp, *victim;
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As %s grows up into %s, %s %s!", mon_nam(mtmp),
                       an(pm_monster_name(ptr, mtmp->female)), mhe(mtmp),
                       is_not_living(ptr) ? "expires" : "dies");
-            set_mon_data(mtmp, ptr); /* keep mvitals[] accurate */
+            set_mon_data(mtmp, ptr, mtmp->subtype); /* keep mvitals[] accurate */
             change_mon_ability_scores(mtmp, oldtype, newtype);
             mondied(mtmp);
             return (struct permonst *) 0;
@@ -4026,7 +4027,7 @@ struct monst *mtmp, *victim;
                                                         : "grows up into",
                   an(buf));
         }
-        set_mon_data(mtmp, ptr);
+        set_mon_data(mtmp, ptr, mtmp->subtype);
         change_mon_ability_scores(mtmp, oldtype, newtype);
         newsym(mtmp->mx, mtmp->my);    /* color may change */
         lev_limit = (int) mtmp->m_lev; /* never undo increment */

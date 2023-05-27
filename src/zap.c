@@ -1017,11 +1017,11 @@ struct monst* origmonst;
                 /* no corpse after system shock */
                 xkilled(mtmp, XKILL_GIVEMSG | XKILL_NOCORPSE);
             } 
-            else if (newcham(mtmp, (struct permonst *) 0, polyspot, give_msg) != 0
+            else if (newcham(mtmp, (struct permonst *) 0, 0, polyspot, give_msg) != 0
                        /* if shapechange failed because there aren't
                           enough eligible candidates (most likely for
                           vampshifter), try reverting to original form */
-                       || (mtmp->cham >= LOW_PM && newcham(mtmp, &mons[mtmp->cham], polyspot, give_msg) != 0)) 
+                       || (mtmp->cham >= LOW_PM && newcham(mtmp, &mons[mtmp->cham], mtmp->cham_subtype, polyspot, give_msg) != 0)) 
             {
                 if (give_msg && (canspotmon(mtmp)
                     || (u.uswallow && mtmp == u.ustuck)))
@@ -1437,7 +1437,7 @@ cure_petrification_here:
             char *name = Monnam(mtmp);
 
             /* turn into flesh golem */
-            if (newcham(mtmp, &mons[PM_FLESH_GOLEM], FALSE, FALSE)) {
+            if (newcham(mtmp, &mons[PM_FLESH_GOLEM], 0, FALSE, FALSE)) {
                 if (canseemon(mtmp))
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to flesh!", name);
             } else {
@@ -2231,6 +2231,7 @@ unsigned long mmflags;
         {
             int used_mnum = mnum_override >= LOW_PM ? mnum_override : mtmp2->mnum;
             mtmp2->mnum = used_mnum;
+            mtmp2->subtype = 0;
             mtmp2->data = &mons[used_mnum];
         }
 
@@ -2505,14 +2506,19 @@ boolean replaceundead;
         mtmp = makemon(&mons[montype], x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
         if (mtmp)
         {
+            int subtype = 0;
             /* skip ghost handling */
             if (has_omid(corpse))
                 free_omid(corpse);
             if (has_omonst(corpse))
+            {
+                struct monst* omon = OMONST(corpse);
+                subtype = omon->subtype;
                 free_omonst(corpse);
+            }
             if (mtmp->cham == PM_DOPPELGANGER) {
                 /* change shape to match the corpse */
-                (void) newcham(mtmp, mptr, FALSE, FALSE);
+                (void) newcham(mtmp, mptr, subtype, FALSE, FALSE);
             } else if (mtmp->data->mlet == S_LESSER_UNDEAD) 
             {
                 mtmp->mhp = mtmp->mhpmax = 100;
@@ -3777,7 +3783,7 @@ struct obj *obj;
                 ptr = mon->data;
                 /* this golem handling is redundant... */
                 if (is_golem(ptr) && ptr != &mons[PM_FLESH_GOLEM])
-                    (void) newcham(mon, &mons[PM_FLESH_GOLEM], TRUE, FALSE);
+                    (void) newcham(mon, &mons[PM_FLESH_GOLEM], 0, TRUE, FALSE);
             } else if ((ptr->geno & (G_NOCORPSE | G_UNIQ)) != 0) {
                 /* didn't revive but can't leave corpse either */
                 res = 0;
@@ -7077,8 +7083,9 @@ int duration;
                to 0), but only for shapechangers whose m->cham is already
                to 0), but only for shapechangers whose m->cham is already
                NON_PM and we just verified that it's LOW_PM or higher */
-            newcham(mdef, &mons[mdef->cham], FALSE, FALSE);
+            newcham(mdef, &mons[mdef->cham], mdef->cham_subtype, FALSE, FALSE);
             mdef->cham = NON_PM; /* cancelled shapeshifter can't shift */
+            mdef->cham_subtype = 0;
         }
         if (is_were(mdef->data) && !is_human(mdef->data))
             were_change(mdef);

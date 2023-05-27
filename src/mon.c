@@ -1384,7 +1384,7 @@ update_monster_timeouts()
                         {
                             if (!resists_slime(mtmp))
                             {
-                                (void)newcham(mtmp, &mons[PM_GREEN_SLIME], FALSE, TRUE);
+                                (void)newcham(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE);
                                 break_charm(mtmp, FALSE);
 
                                 if (mtmp->mtame)
@@ -1825,7 +1825,7 @@ register struct monst *mtmp;
                     ptr = mtmp->data;
                     if (poly) 
                     {
-                        if (newcham(mtmp, (struct permonst *) 0, FALSE, FALSE))
+                        if (newcham(mtmp, (struct permonst *) 0, 0, FALSE, FALSE))
                             ptr = mtmp->data;
                     }
                     else if (grow) 
@@ -1942,7 +1942,7 @@ register struct monst* mtmp;
                 ptr = mtmp->data;
                 if (poly)
                 {
-                    if (newcham(mtmp, (struct permonst*)0, FALSE, FALSE))
+                    if (newcham(mtmp, (struct permonst*)0, 0, FALSE, FALSE))
                         ptr = mtmp->data;
                 }
                 else if (grow)
@@ -2113,7 +2113,7 @@ struct monst *mtmp;
             ptr = mtmp->data;
             if (poly) 
             {
-                if (newcham(mtmp, (struct permonst *) 0, FALSE, FALSE))
+                if (newcham(mtmp, (struct permonst *) 0, 0, FALSE, FALSE))
                     ptr = mtmp->data;
             } 
             else if (grow) 
@@ -3222,6 +3222,7 @@ unsigned long mdiedflags;
     if (is_vampshifter(mtmp))
     {
         int mndx = mtmp->cham;
+        int subtype = mtmp->cham_subtype;
         int x = mtmp->mx, y = mtmp->my;
 
         /* this only happens if shapeshifted */
@@ -3280,12 +3281,17 @@ unsigned long mdiedflags;
                     rloc_to(mtmp, new_xy.x, new_xy.y);
                 }
             }
-            newcham(mtmp, &mons[mndx], FALSE, FALSE);
+            newcham(mtmp, &mons[mndx], 0, FALSE, FALSE);
             if (mtmp->data == &mons[mndx])
+            {
                 mtmp->cham = NON_PM;
+                mtmp->cham_subtype = 0;
+            }
             else
+            {
                 mtmp->cham = mndx;
-
+                mtmp->cham_subtype = subtype;
+            }
             boolean spef_on = FALSE;
             if (canspotmon(mtmp)) 
             {
@@ -3333,17 +3339,18 @@ unsigned long mdiedflags;
     /* restore chameleon, lycanthropes to true form at death */
     if (mtmp->cham >= LOW_PM) 
     {
-        set_mon_data(mtmp, &mons[mtmp->cham]);
+        set_mon_data(mtmp, &mons[mtmp->cham], mtmp->cham_subtype);
         mtmp->cham = NON_PM;
-    } 
+        mtmp->cham_subtype = 0;
+    }
     else if (mtmp->data == &mons[PM_WEREJACKAL])
-        set_mon_data(mtmp, &mons[PM_HUMAN_WEREJACKAL]);
+        set_mon_data(mtmp, &mons[PM_HUMAN_WEREJACKAL], mtmp->subtype);
     else if (mtmp->data == &mons[PM_WEREWOLF])
-        set_mon_data(mtmp, &mons[PM_HUMAN_WEREWOLF]);
+        set_mon_data(mtmp, &mons[PM_HUMAN_WEREWOLF], mtmp->subtype);
     else if (mtmp->data == &mons[PM_WEREBEAR])
-        set_mon_data(mtmp, &mons[PM_HUMAN_WEREBEAR]);
+        set_mon_data(mtmp, &mons[PM_HUMAN_WEREBEAR], mtmp->subtype);
     else if (mtmp->data == &mons[PM_WERERAT])
-        set_mon_data(mtmp, &mons[PM_HUMAN_WERERAT]);
+        set_mon_data(mtmp, &mons[PM_HUMAN_WERERAT], mtmp->subtype);
 
     /*
      * mvitals[].died does double duty as total number of dead monsters
@@ -4045,7 +4052,7 @@ struct monst *mtmp;
         if (canseemon(mtmp))
             pline("%s solidifies...", Monnam(mtmp));
 
-        if (newcham(mtmp, &mons[PM_STONE_GOLEM], FALSE, FALSE))
+        if (newcham(mtmp, &mons[PM_STONE_GOLEM], 0, FALSE, FALSE))
         {
             if (canseemon(mtmp))
                 pline("Now it's %s.", an(mon_monster_name(mtmp)));
@@ -4067,6 +4074,7 @@ struct monst *mtmp;
     if (is_vampshifter(mtmp)) 
     {
         int mndx = mtmp->cham;
+        int subtype = mtmp->cham_subtype;
         int x = mtmp->mx, y = mtmp->my;
 
         /* this only happens if shapeshifted */
@@ -4114,11 +4122,17 @@ struct monst *mtmp;
                 pline("%s!", buf);
                 display_nhwindow(WIN_MESSAGE, FALSE);
             }
-            newcham(mtmp, &mons[mndx], FALSE, FALSE);
+            newcham(mtmp, &mons[mndx], 0, FALSE, FALSE);
             if (mtmp->data == &mons[mndx])
+            {
                 mtmp->cham = NON_PM;
+                mtmp->cham_subtype = 0;
+            }
             else
+            {
                 mtmp->cham = mndx;
+                mtmp->cham_subtype = subtype;
+            }
             if (canspotmon(mtmp)) {
                 pline("%s rises from the %s with renewed agility!",
                       Amonnam(mtmp), surface(mtmp->mx, mtmp->my));
@@ -4607,8 +4621,9 @@ rescham()
         mcham = (int) mtmp->cham;
         if (mcham >= LOW_PM) 
         {
-            (void) newcham(mtmp, &mons[mcham], FALSE, FALSE);
+            (void) newcham(mtmp, &mons[mcham], mtmp->cham_subtype, FALSE, FALSE);
             mtmp->cham = NON_PM;
+            mtmp->cham_subtype = 0;
         }
         if (is_were(mtmp->data) && mtmp->data->mlet != S_HUMAN)
             new_were(mtmp);
@@ -4632,7 +4647,10 @@ restartcham()
         if (DEADMONSTER(mtmp))
             continue;
         if (!is_cancelled(mtmp))
+        {
             mtmp->cham = pm_to_cham(mtmp->mnum);
+            mtmp->cham_subtype = mtmp->cham != NON_PM ? mtmp->subtype : 0;
+        }
         if (is_mimic(mtmp->data) && mtmp->msleeping
             && cansee(mtmp->mx, mtmp->my)) 
         {
@@ -4657,7 +4675,8 @@ struct monst *mon;
         if (mcham >= LOW_PM) 
         {
             mon->cham = NON_PM;
-            (void) newcham(mon, &mons[mcham], FALSE, FALSE);
+            mon->cham_subtype = 0;
+            (void) newcham(mon, &mons[mcham], mon->cham_subtype, FALSE, FALSE);
         }
         else if (is_were(mon->data) && !is_human(mon->data)) 
         {
@@ -4667,6 +4686,7 @@ struct monst *mon;
     else if (mon->cham == NON_PM) 
     {
         mon->cham = pm_to_cham(mon->mnum);
+        mon->cham_subtype = mon->cham != NON_PM ? mon->subtype : 0;
     }
 }
 
@@ -4823,7 +4843,7 @@ int shiftflags;
         return;
 
     struct permonst *ptr = 0;
-    int mndx;
+    int mndx, subtype = 0;
     unsigned was_female = mon->female;
     boolean msg = FALSE, dochng = FALSE;
 
@@ -4849,6 +4869,7 @@ int shiftflags;
                 && mon->cham >= LOW_PM) 
             {
                 ptr = &mons[mon->cham];
+                subtype = mon->cham_subtype;
                 dochng = TRUE;
             } 
             else if (mon->data == &mons[PM_FOG_CLOUD]
@@ -4863,6 +4884,7 @@ int shiftflags;
                 mndx = pickvampshape(mon);
                 if (mndx >= LOW_PM) {
                     ptr = &mons[mndx];
+                    subtype = 0;
                     dochng = (ptr != mon->data);
                 }
             }
@@ -4874,7 +4896,7 @@ int shiftflags;
         }
     }
     if (dochng) {
-        if (newcham(mon, ptr, FALSE, msg) && is_vampshifter(mon)) {
+        if (newcham(mon, ptr, subtype, FALSE, msg) && is_vampshifter(mon)) {
             /* for vampshift, override the 10% chance for sex change */
             ptr = mon->data;
             if (!is_male(ptr) && !is_female(ptr) && !is_neuter(ptr))
@@ -5218,9 +5240,10 @@ struct permonst *mdat;
    (possibly self-inflicted) become a different monster;
    returns 1 if it actually changes form */
 int
-newcham(mtmp, mdat, polyspot, msg)
+newcham(mtmp, mdat, subtype, polyspot, msg)
 struct monst *mtmp;
 struct permonst *mdat;
+unsigned short subtype;
 boolean polyspot; /* change is the result of wand or spell of polymorph */
 boolean msg;      /* "The oldmon turns into a newmon!" */
 {
@@ -5245,12 +5268,14 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         if (is_cancelled(mtmp) && !Protection_from_shape_changers) 
         {
             mtmp->cham = pm_to_cham(mtmp->mnum);
+            mtmp->cham_subtype = mtmp->cham != NON_PM ? mtmp->subtype : 0;
             if (mtmp->cham != NON_PM)
                 mtmp->mprops[CANCELLED] = 0;
         }
     }
 
-    if (msg) {
+    if (msg)
+    {
         /* like Monnam() but never mention saddle */
         Strcpy(oldname, x_monnam(mtmp, ARTICLE_THE, (char *) 0,
                                  SUPPRESS_SADDLE, FALSE));
@@ -5261,11 +5286,13 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
                                has_mname(mtmp) ? SUPPRESS_SADDLE : 0, FALSE));
 
     /* mdat = 0 -> caller wants a random monster shape */
-    if (mdat == 0) {
+    if (mdat == 0) 
+    {
         /* select_newcham_form() loops when resorting to random but
            it doesn't always pick that so we still retry here too */
         tryct = 20;
-        do {
+        do 
+        {
             mndx = select_newcham_form(mtmp);
             mdat = accept_newcham_form(mndx);
             /* for the first several tries we require upper-case on
@@ -5273,12 +5300,16 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
             if (tryct > 15 && Is_really_rogue_level(&u.uz)
                 && mdat && !isupper((uchar) mdat->mlet))
                 mdat = 0;
+            
             if (mdat)
                 break;
-        } while (--tryct > 0);
+        } 
+        while (--tryct > 0);
+
         if (!tryct)
             return 0;
-    } else if (mvitals[monsndx(mdat)].mvflags & MV_GENOCIDED)
+    }
+    else if (mvitals[monsndx(mdat)].mvflags & MV_GENOCIDED)
         return 0; /* passed in mdat is genocided */
 
     if (mdat == olddata)
@@ -5309,7 +5340,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     hpd = mtmp->mhpmax;
 
     /* take on the new form... */
-    set_mon_data(mtmp, mdat);
+    set_mon_data(mtmp, mdat, subtype);
 
     /* Adjust monster ability scores to the new form */
     int oldtype = oldmnum;
@@ -5422,8 +5453,10 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
        a full-fledged vampshifter unless shape-changing is blocked */
     if (mtmp->cham == NON_PM && mdat->mlet == S_VAMPIRE
         && !Protection_from_shape_changers)
+    {
         mtmp->cham = pm_to_cham(monsndx(mdat));
-
+        mtmp->cham_subtype = 0;
+    }
     possibly_unwield(mtmp, polyspot); /* might lose use of weapon */
     mon_break_armor(mtmp, polyspot);
     if (!(mtmp->worn_item_flags & W_ARMG))
@@ -5599,7 +5632,7 @@ kill_genocided_monsters()
         if ((mvitals[mndx].mvflags & MV_GENOCIDED) || kill_cham) 
         {
             if (mtmp->cham >= LOW_PM && !kill_cham)
-                (void) newcham(mtmp, (struct permonst *) 0, FALSE, FALSE);
+                (void) newcham(mtmp, (struct permonst *) 0, 0, FALSE, FALSE);
             else
                 mondead(mtmp);
         }

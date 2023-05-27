@@ -465,7 +465,7 @@ boolean devour;
     if (poly || slimer)
     {
         struct permonst *ptr = slimer ? &mons[PM_GREEN_SLIME] : 0;
-        (void) newcham(mtmp, ptr, FALSE, cansee(mtmp->mx, mtmp->my));
+        (void) newcham(mtmp, ptr, 0, FALSE, cansee(mtmp->mx, mtmp->my));
     }
 
     /* limit "instant" growth to prevent potential abuse */

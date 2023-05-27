@@ -5408,9 +5408,7 @@ boolean with_impact;
             {
                 if (could_poly || could_slime) 
                 {
-                    (void) newcham(u.ustuck,
-                                   could_poly ? (struct permonst *) 0
-                                              : &mons[PM_GREEN_SLIME],
+                    (void) newcham(u.ustuck, could_poly ? (struct permonst *) 0 : &mons[PM_GREEN_SLIME], 0,
                                    FALSE, could_slime);
                     delobj(obj); /* corpse is digested */
                 }
