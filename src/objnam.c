@@ -900,7 +900,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             }
             else
             {
-                Strcpy(monbuf, mons[omndx].mname);
+                if(mons[omndx].mfemalename && (obj->speflags & SPEFLAGS_FEMALE))
+                    Strcpy(monbuf, mons[omndx].mfemalename);
+                else
+                    Strcpy(monbuf, mons[omndx].mname);
             }
 
             Sprintf(buf, "%s%s of %s%s",
