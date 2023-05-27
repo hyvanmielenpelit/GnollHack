@@ -953,7 +953,7 @@ order of the calls should be the same.
 
 
 choose_windows(DEFAULT_WINDOW_SYS) /* choose a default window system */
-read_options()			   /* read the resource file */
+process_options_file()			   /* read the resource file */
 init_nhwindows()		   /* initialize the window system */
 process_command_line_arguments(argc, argv)	   /* process command line options or equiv */
 if(save file is present) {

@@ -267,14 +267,14 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     /*
      * If we're dealing with workbench, change the directory.  Otherwise
      * we could get "Insert disk in drive 0" messages. (Must be done
-     * before read_options())....
+     * before process_options_file())....
      */
     if (argc == 0)
         chdirx(HACKDIR, 1);
 #endif
     ami_wininit_data();
 #endif
-    read_options();
+    process_options_file();
 
 #ifdef NOCWD_ASSUMPTIONS
     if (!validate_prefix_locations(failbuf)) {
@@ -331,7 +331,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
                 chdirx(hackdir, 0);
 #endif
 #ifdef SYSCF
-                read_options();
+                process_options_file();
 #endif
                 prscore(argc, argv);
                 gnollhack_exit(EXIT_SUCCESS);

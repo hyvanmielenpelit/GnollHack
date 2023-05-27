@@ -2419,7 +2419,7 @@ E char* FDECL(str_upper_start, (const char*));
 
 E void NDECL(reglyph_darkroom);
 E boolean FDECL(match_optname, (const char *, const char *, size_t, BOOLEAN_P));
-E void NDECL(read_options);
+E void NDECL(process_options_file);
 E void NDECL(init_options);
 E void NDECL(finish_options);
 E boolean FDECL(parseoptions, (char *, BOOLEAN_P, BOOLEAN_P));

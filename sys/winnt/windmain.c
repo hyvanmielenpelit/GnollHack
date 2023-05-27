@@ -260,7 +260,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     check_recordfile((char *) 0);
 
     iflags.windowtype_deferred = TRUE;
-    read_options();                  
+    process_options_file();                  
 
     if (!validate_prefix_locations(failbuf))
     {
@@ -508,7 +508,7 @@ char *argv[];
              */
             if (!strncmp(argv[1], "-s", 2)) {
 #ifdef SYSCF
-                read_options();
+                process_options_file();
 #endif
                 prscore(argc, argv);
 

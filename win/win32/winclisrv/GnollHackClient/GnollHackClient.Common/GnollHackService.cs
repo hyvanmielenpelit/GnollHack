@@ -890,10 +890,12 @@ namespace GnollHackClient.Unknown
         public int StartGnollHack(ClientGame clientGame)
         {
             string filesdir = GetGnollHackPath();
+            bool allowbones = Preferences.Get("AllowBones", true);
             ulong runflags = (ulong)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
                 (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0) |
                 (ulong)(clientGame.ModernMode ? RunGnollHackFlags.ModernMode : 0) |
-                (ulong)(clientGame.CasualMode ? RunGnollHackFlags.CasualMode : 0);
+                (ulong)(clientGame.CasualMode ? RunGnollHackFlags.CasualMode : 0) |
+                (ulong)(allowbones ? 0 : RunGnollHackFlags.DisableBones);
             string lastusedplname = Preferences.Get("LastUsedPlayerName", "");
 
             return RunGnollHack(

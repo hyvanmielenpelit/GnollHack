@@ -197,6 +197,7 @@ namespace GnollHackCommon
         FullVersion =       0x00000004,
         ModernMode =        0x00000008, /* Upon death, the character teleports back to starting altar */
         CasualMode =        0x00000010, /* Save games are preserved */
+        DisableBones =      0x00000020, /* Force iflags.bones to off */
     }
 
     [Flags]

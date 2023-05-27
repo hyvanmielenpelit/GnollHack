@@ -99,7 +99,7 @@ char *argv[];
                 chdirx(dir, FALSE);
 #endif
 #ifdef SYSCF
-                read_options();
+                process_options_file();
 #endif
                 prscore(argc, argv);
                 exit(EXIT_SUCCESS);
@@ -116,7 +116,7 @@ char *argv[];
        and also while initializing terminal [$assign("TT:")]. */
     privoff();
 #endif
-    read_options();
+    process_options_file();
     init_nhwindows(&argc, argv);
     whoami();
 #ifdef SECURE

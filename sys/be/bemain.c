@@ -35,7 +35,7 @@ MAIN(int argc, char **argv)
 
     choose_windows(DEFAULT_WINDOW_SYS);
     chdirx(dir);
-    read_options();
+    process_options_file();
 
     init_nhwindows(&argc, argv);
     whoami();

@@ -154,7 +154,7 @@ char *argv[];
             chdirx(dir, 0);
 #endif
 #ifdef SYSCF
-            read_options();
+            process_options_file();
 #endif
 #ifdef PANICTRACE
             ARGV0 = hname; /* save for possible stack trace */
@@ -164,7 +164,7 @@ char *argv[];
 #endif
             prscore(argc, argv);
             /* FIXME: shouldn't this be using nh_terminate() to free
-               up any memory allocated by read_options() */
+               up any memory allocated by process_options_file() */
             exit(EXIT_SUCCESS);
         }
     } /* argc > 1 */
@@ -183,7 +183,7 @@ char *argv[];
 #ifdef __linux__
     check_linux_console();
 #endif
-    read_options();
+    process_options_file();
 #ifdef PANICTRACE
     ARGV0 = hname; /* save for possible stack trace */
 #ifndef NO_SIGNAL

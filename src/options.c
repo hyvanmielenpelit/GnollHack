@@ -769,7 +769,7 @@ const char *ev;
 
 /* process options, possibly including SYSCF */
 void
-read_options()
+process_options_file()
 {
     init_options();
 #ifdef SYSCF
@@ -3163,8 +3163,8 @@ boolean tinitial, tfrom_file;
             (void) fruitadd(pl_fruit, forig);
             pline("Fruit is now \"%s\".", pl_fruit);
         }
-        /* If initial, then read_options is allowed to do it instead
-         * of here (read_options always has to do it even if there's
+        /* If initial, then process_options_file is allowed to do it instead
+         * of here (process_options_file always has to do it even if there's
          * no fruit option at all.  Also, we don't want people
          * setting multiple fruits in their options.)
          */

@@ -23,6 +23,7 @@ extern struct passwd *FDECL( getpwnam, (const char *));
 STATIC_DCL boolean NDECL( whoami);
 #endif
 STATIC_DCL void FDECL( process_command_line_arguments, (int, char **));
+STATIC_DCL void NDECL(make_dumplog_dir);
 
 STATIC_OVL char*
 make_lockname(filename, lockname)
@@ -96,7 +97,7 @@ char** argv;
     /* Now initialize windows */
     choose_windows(DEFAULT_WINDOW_SYS);
     init_nhwindows(&argc, argv);
-    read_options();
+    process_options_file();
 
     /*
      * It seems you really want to play.
@@ -104,15 +105,7 @@ char** argv;
     u.uhp = 1; /* prevent RIP on early quits */
 
     process_command_line_arguments(argc, argv); /* command line options */
-
-#if defined(DUMPLOG) && defined(DUMPLOG_DIR)
-    /* Make DUMPLOG_DIR if defined */
-    struct stat st = { 0 };
-
-    if (stat(DUMPLOG_DIR, &st) == -1) {
-        mkdir(DUMPLOG_DIR, 0700);
-    }
-#endif
+    make_dumplog_dir();
 
 #ifdef DEF_PAGER
     if(!(catmore = nh_getenv("HACKPAGER")) && !(catmore = nh_getenv("PAGER")))
@@ -213,6 +206,12 @@ char *argv[];
         case 'C':
             CasualMode = TRUE;
             break;
+        case 'b':
+            flags.bones = FALSE;
+            break;
+        case 'B':
+            flags.bones = TRUE;
+            break;
 #ifdef NEWS
             case 'n':
             iflags.news = FALSE;
@@ -232,7 +231,7 @@ char *argv[];
                 else
                     raw_print("Player name expected after -u");
             }
-        break;
+            break;
         case 'p': /* profession (role) */
             if(argv[0][2])
             {
@@ -246,7 +245,7 @@ char *argv[];
                 if((i = str2role(argv[0])) >= 0)
                     flags.initrole = i;
             }
-        break;
+            break;
         case 'r': /* race */
             if(argv[0][2])
             {
@@ -260,10 +259,10 @@ char *argv[];
                 if((i = str2race(argv[0])) >= 0)
                     flags.initrace = i;
             }
-        break;
+            break;
         case '@':
             flags.randomall = 1;
-        break;
+            break;
         default:
             if((i = str2role(&argv[0][1])) >= 0)
             {
@@ -364,4 +363,17 @@ sys_random_seed()
         }
     }
     return seed;
+}
+
+STATIC_OVL void
+make_dumplog_dir(VOID_ARGS)
+{
+#if defined(DUMPLOG) && defined(DUMPLOG_DIR)
+    /* Make DUMPLOG_DIR if defined */
+    struct stat st = { 0 };
+
+    if (stat(DUMPLOG_DIR, &st) == -1) {
+        mkdir(DUMPLOG_DIR, 0700);
+    }
+#endif
 }

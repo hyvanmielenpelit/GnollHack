@@ -444,7 +444,7 @@ char **argv UNUSED;
      *
      *  gettty() must be called before tty_startup()
      *    due to ordering of LI/CO settings
-     *  tty_startup() must be called before read_options()
+     *  tty_startup() must be called before process_options_file()
      *    due to ordering of graphics settings
      */
 #if defined(UNIX) || defined(VMS)

@@ -581,6 +581,13 @@ int RunGnollHack(
         Strcat(cmdbuf, "-C");
     }
 
+    if (runflags & GHRUNFLAGS_DISABLE_BONES)
+    {
+        if (*cmdbuf)
+            Strcat(cmdbuf, " ");
+        Strcat(cmdbuf, "-b");
+    }
+
     /* Set directly, as other parts of GnollHack do not purposedly set this */
     if (recovery_name && strcmp(recovery_name, ""))
     {
