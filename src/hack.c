@@ -524,7 +524,7 @@ xchar x, y;
             )) 
     {
         play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
-        You("hurt your teeth on the %s.",
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "hurt your teeth on the %s.",
             (lev->typ == IRONBARS)
                 ? "bars"
                 : IS_TREE(lev->typ)

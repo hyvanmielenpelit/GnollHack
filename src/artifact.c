@@ -1255,7 +1255,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
     verb = mb_verb[!!Hallucination][attack_indx];
     if (youattack || youdefend || vis) {
         result = TRUE;
-        pline_The("magic-absorbing blade %s %s!",
+        pline_The_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "magic-absorbing blade %s %s!",
                   vtense((const char *) 0, verb), hittee);
         /* assume probing has some sort of noticeable feedback
            even if it is being done by one monster to another */
@@ -1282,7 +1282,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
                     u.ubaseendrain--;
                     updatemaxen();
                     context.botl = TRUE;
-                    You("lose magical energy!");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "lose magical energy!");
                 }
             } else {
                 if (mdef->data == &mons[PM_CLAY_GOLEM])
@@ -1297,7 +1297,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
                     }
                     updatemaxen();
                     context.botl = TRUE;
-                    You("absorb magical energy!");
+                    You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "absorb magical energy!");
                 }
             }
         }
@@ -1332,7 +1332,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
 
     case MB_INDEX_PROBE:
         if (youattack && (mb->enchantment == 0 || !rn2(3 * abs(mb->enchantment)))) {
-            pline_The("%s is insightful.", verb);
+            pline_The_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s is insightful.", verb);
             /* pre-damage status */
             probe_monster(mdef);
         }
@@ -1380,7 +1380,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
     if (youattack || youdefend || vis) {
         (void) upstart(hittee); /* capitalize */
         if (resisted) {
-            pline("%s %s!", hittee, vtense(fakename, "resist"));
+            pline_ex(ATR_NONE, youdefend ? CLR_MSG_SUCCESS : CLR_MSG_ATTENTION, "%s %s!", hittee, vtense(fakename, "resist"));
             if (youdefend)
                 u_shieldeff();
             else
@@ -1396,7 +1396,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
                 Strcat(buf, " and ");
             if (do_confuse)
                 Strcat(buf, "confused");
-            pline("%s %s %s%c", hittee, vtense(fakename, "are"), buf,
+            pline_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s %s %s%c", hittee, vtense(fakename, "are"), buf,
                   (do_stun && do_confuse) ? '!' : '.');
         }
     }
@@ -1449,7 +1449,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                        || (youattack && mdef == u.ustuck));
 
     char artifact_hit_desc[BUFSZ] = "";
-    if(otmp->oartifact && artilist[otmp->oartifact].hit_desc && strcmp(artilist[otmp->oartifact].hit_desc, ""))
+    if(otmp->oartifact && otmp->nknown && artilist[otmp->oartifact].hit_desc && strcmp(artilist[otmp->oartifact].hit_desc, ""))
         Strcpy(artifact_hit_desc, artilist[otmp->oartifact].hit_desc);
     else
         Strcpy(artifact_hit_desc, cxname(otmp));
@@ -1458,7 +1458,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     if (artifact_attack_type(AD_FIRE, otmp)) 
     {
         if (realizes_damage)
-            pline_The("%s %s %s%c", artifact_hit_desc,
+            pline_The_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s %s %s%c", artifact_hit_desc,
                       !spec_dbon_applies
                           ? "hits"
                           : (is_watery(mdef->data))
@@ -1478,7 +1478,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     if (artifact_attack_type(AD_COLD, otmp)) 
     {
         if (realizes_damage)
-            pline_The("%s %s %s%c", artifact_hit_desc,
+            pline_The_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s %s %s%c", artifact_hit_desc,
                       !spec_dbon_applies ? "hits" : "freezes", hittee,
                       !spec_dbon_applies ? '.' : '!');
         if (!rn2(4))
@@ -1491,7 +1491,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             play_sfx_sound_at_location(SFX_LIGHTNING_STRIKES, mdef->mx, mdef->my);
 
         if (realizes_damage)
-            pline_The("%s hits%s %s%c", artifact_hit_desc,
+            pline_The_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s hits%s %s%c", artifact_hit_desc,
                       !spec_dbon_applies ? "" : "!  Lightning strikes",
                       hittee, !spec_dbon_applies ? '.' : '!');
 
@@ -1507,7 +1507,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     if (artifact_attack_type(AD_MAGM, otmp))
     {
         if (realizes_damage)
-            pline_The("%s hits%s %s%c", artifact_hit_desc,
+            pline_The_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s hits%s %s%c", artifact_hit_desc,
                       !spec_dbon_applies
                           ? ""
                           : "!  A hail of magic missiles strikes",
@@ -1538,7 +1538,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             /* not really beheading, but close */
             if (youattack && u.uswallow && mdef == u.ustuck) 
             {
-                You("slice %s wide open!", mon_nam(mdef));
+                You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "slice %s wide open!", mon_nam(mdef));
                 //*dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 //mdef->mhp = 0;
                 *instakillptr = TRUE;
@@ -1553,9 +1553,9 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 if (bigmonst(mdef->data)) 
                 {
                     if (youattack)
-                        You("slice deeply into %s!", mon_nam(mdef));
+                        You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "slice deeply into %s!", mon_nam(mdef));
                     else if (vis)
-                        pline("%s cuts deeply into %s!", Monnam(magr),
+                        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts deeply into %s!", Monnam(magr),
                               hittee);
                     *dmgptr *= 2;
                     return 2;
@@ -1563,7 +1563,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 //*dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 //mdef->mhp = 0;
                 *instakillptr = TRUE;
-                pline("%s cuts %s in half!", wepdesc, mon_nam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts %s in half!", wepdesc, mon_nam(mdef));
                 otmp->dknown = TRUE;
                 return 2;
             } 
@@ -1571,7 +1571,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             {
                 if (bigmonst(youmonst.data))
                 {
-                    pline("%s cuts deeply into you!",
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s cuts deeply into you!",
                           magr ? Monnam(magr) : wepdesc);
                     *dmgptr *= 2;
                     return 2;
@@ -1588,7 +1588,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 //else
                 //    u.uhp = 0;
                 *instakillptr = TRUE;
-                pline("%s cuts you in half!", wepdesc);
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s cuts you in half!", wepdesc);
                 otmp->dknown = TRUE;
                 return 2;
             }
@@ -1601,21 +1601,21 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
             if (youattack && u.uswallow && mdef == u.ustuck)
                 return FALSE;
-            strcpy(wepdesc, artifact_hit_desc);
+            Strcpy(wepdesc, artifact_hit_desc);
             if (!youdefend)
             {
                 if (!has_neck(mdef->data) || notonhead || u.uswallow || mdef->heads_left == 0)
                 {
                     if (youattack)
-                        pline("Somehow, you miss %s wildly.", mon_nam(mdef));
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Somehow, you miss %s wildly.", mon_nam(mdef));
                     else if (vis)
-                        pline("Somehow, %s misses wildly.", mon_nam(magr));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Somehow, %s misses wildly.", mon_nam(magr));
                     *dmgptr = 0;
                     return (youattack || vis) * 2;
                 }
                 if (is_incorporeal(mdef->data) || amorphous(mdef->data) || (is_shade(mdef->data) && !shade_glare(otmp)))
                 {
-                    pline("%s slices through %s %s.", The(wepdesc),
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s slices through %s %s.", The(wepdesc),
                           s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     return 2;
                 }
@@ -1623,7 +1623,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 {
                     mdef->heads_left--;
                     *dmgptr += 0.625 * (double)mdef->mhpmax / (double)max(1, mdef->data->heads); //Adjusted based on Tiamat in AD&D
-                    pline("%s cuts one of %s heads off!", The(wepdesc),
+                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts one of %s heads off!", The(wepdesc),
                         s_suffix(mon_nam(mdef)));
                     otmp->dknown = TRUE;
                     return 1;
@@ -1637,12 +1637,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     *instakillptr = TRUE;
 
                     if(mdef->data->heads <= 1)
-                        pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),mon_nam(mdef));
+                        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),mon_nam(mdef));
                     else
-                        pline("%s cuts off %s last head!", The(wepdesc), s_suffix(mon_nam(mdef)));
+                        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts off %s last head!", The(wepdesc), s_suffix(mon_nam(mdef)));
 
                     if (Hallucination && !flags.female)
-                        pline("Good job Henry, but that wasn't Anne.");
+                        pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Good job Henry, but that wasn't Anne.");
                     otmp->dknown = TRUE;
                     return 2;
                 }
@@ -1650,14 +1650,14 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             else
             {
                 if (!has_neck(youmonst.data) || mdef->heads_left == 0) {
-                    pline("Somehow, %s misses you wildly.",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Somehow, %s misses you wildly.",
                           magr ? mon_nam(magr) : the(wepdesc));
                     *dmgptr = 0;
                     return 2;
                 }
                 if (is_incorporeal(youmonst.data) || amorphous(youmonst.data) || (is_shade(youmonst.data) && !shade_glare(otmp)))
                 {
-                    pline("%s slices through your %s.", The(wepdesc),
+                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s slices through your %s.", The(wepdesc),
                           body_part(NECK));
                     return 2;
                 }
@@ -1666,7 +1666,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 {
                     mdef->heads_left--;
                     *dmgptr += 0.625 * (double)(Upolyd ? u.mh : u.uhp) / (double)max(1, mdef->data->heads); //Adjusted based on Tiamat in AD&D
-                    pline("%s cuts one of your %s off!", The(wepdesc), makeplural(body_part(HEAD)));
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s cuts one of your %s off!", The(wepdesc), makeplural(body_part(HEAD)));
                     otmp->dknown = TRUE;
                     return 1;
                 }
@@ -1682,9 +1682,9 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     *instakillptr = TRUE;
 
                     if (mdef->data->heads <= 1)
-                        pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), "you");
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), "you");
                     else
-                        pline("%s cuts off %s last %s!", The(wepdesc), "your", body_part(HEAD));
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s cuts off %s last %s!", The(wepdesc), "your", body_part(HEAD));
 
                     otmp->dknown = TRUE;
                     /* Should amulets fall off? */
@@ -1704,10 +1704,10 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             if (vis)
             {
                 if (otmp->oartifact == ART_STORMBRINGER || otmp->oartifact == ART_MOURNBLADE)
-                    pline_The("%s draws the %s from %s!",
+                    pline_The_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s draws the %s from %s!",
                         artifact_hit_desc, life, mon_nam(mdef));
                 else
-                    pline("%s draws the %s from %s!",
+                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s draws the %s from %s!",
                         The(distant_name(otmp, xname)), life,
                         mon_nam(mdef));
             }
@@ -1751,15 +1751,15 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             int oldhpmax = u.uhpmax;
 
             if (Blind)
-                You_feel("an %s drain your %s!",
+                You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "an %s drain your %s!",
                     (otmp->oartifact == ART_STORMBRINGER || otmp->oartifact == ART_MOURNBLADE)
                     ? "unholy blade"
                     : "object",
                     life);
             else if (otmp->oartifact == ART_STORMBRINGER || otmp->oartifact == ART_MOURNBLADE)
-                pline_The("%s blade drains your %s!", hcolor(NH_BLACK), life);
+                pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "%s blade drains your %s!", hcolor(NH_BLACK), life);
             else
-                pline("%s drains your %s!", The(distant_name(otmp, xname)),
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s drains your %s!", The(distant_name(otmp, xname)),
                     life);
             losexp("life drainage");
             if(monwep_has_dual_runesword_bonus(magr, otmp))
@@ -1833,7 +1833,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
     if (!(youdefend ? Fire_immunity : is_mon_immune_to_fire(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_FIRE || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_FIRE)))
     {
         if (realizes_damage)
-            pline("%s %s %s%c",
+            pline_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s %s %s%c",
                 The(xname(otmp)),
                 (is_watery(mdef->data))
                 ? "vaporizes part of"
@@ -1851,7 +1851,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
     if (!(youdefend ? Cold_immunity : is_mon_immune_to_cold(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_COLD || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_COLD)))
     {
         if (realizes_damage)
-            pline("%s %s %s%c", The(xname(otmp)),
+            pline_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s %s %s%c", The(xname(otmp)),
                 "freezes", hittee,
                 '!');
         if (!rn2(4))
@@ -1860,7 +1860,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
     if (!(youdefend ? Shock_immunity : is_mon_immune_to_elec(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_ELEC || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_ELEC)))
     {
         if (realizes_damage)
-            pline("The electrical energies of %s jolt %s%c", the(xname(otmp)),
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "The electrical energies of %s jolt %s%c", the(xname(otmp)),
                 hittee, '!');
         wake_nearto(mdef->mx, mdef->my, 4 * 4);
         if (!rn2(5))
@@ -1872,7 +1872,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
     if (!check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL) && (objects[otmp->otyp].oc_damagetype == AD_MAGM || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_MAGM)))
     {
         if (realizes_damage)
-            pline("A hail of magic missiles strikes from %s hits %s!", the(xname(otmp)), hittee);
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A hail of magic missiles strikes from %s hits %s!", the(xname(otmp)), hittee);
     }
 
     if ((objects[otmp->otyp].oc_damagetype == AD_STUN || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_STUN)) && dieroll <= MB_MAX_DIEROLL)
@@ -1909,13 +1909,13 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                 )
             {
                 if (youattack && u.uswallow && mdef == u.ustuck) {
-                    You("slice %s wide open!", mon_nam(mdef));
+                    You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "slice %s wide open!", mon_nam(mdef));
                     lethaldamage = TRUE;
                 }
                 else if (!youdefend)
                 {
                     if (is_incorporeal(mdef->data) || amorphous(mdef->data)) {
-                        pline("%s through %s body.", Yobjnam2(otmp, "cut"),
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s body.", Yobjnam2(otmp, "cut"),
                             s_suffix(mon_nam(mdef)));
                     }
                     else if (notonhead)
@@ -1938,7 +1938,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                             else
                                 update_mon_maxhp(mdef);
                         }
-                        pline("%s slices a part of %s off!", The(xname(otmp)),
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s slices a part of %s off!", The(xname(otmp)),
                             mon_nam(mdef));
                         if (Hallucination && !lethaldamage)
                         {
@@ -1952,7 +1952,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                     }
                     else
                     {
-                        pline("%s cuts %s in half!", The(xname(otmp)), mon_nam(mdef));
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s cuts %s in half!", The(xname(otmp)), mon_nam(mdef));
                         otmp->dknown = TRUE;
                         lethaldamage = TRUE;
                     }
@@ -1999,7 +1999,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                             }
 
                         }
-                        pline("%s slices a part of %s off!", The(xname(otmp)), "you");
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s slices a part of %s off!", The(xname(otmp)), "you");
                         otmp->dknown = TRUE;
                     }
                     else
@@ -2009,7 +2009,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                          * value to the damage so that this reduction in
                          * damage does not prevent death.
                          */
-                        pline("%s cuts you in half!", The(xname(otmp)));
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s cuts you in half!", The(xname(otmp)));
                         otmp->dknown = TRUE;
                         lethaldamage = TRUE;
                     }
@@ -2041,7 +2041,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                 if (!youdefend)
                 {
                     if (is_incorporeal(mdef->data) || amorphous(mdef->data)) {
-                        pline("%s through %s %s.", Yobjnam2(otmp, "slice"),
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Yobjnam2(otmp, "slice"),
                             s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     }
                     else
@@ -2052,7 +2052,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
 
                         totaldamagedone += damagedone;
 
-                        pline("%s slices a part of %s off!", The(xname(otmp)),
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s slices a part of %s off!", The(xname(otmp)),
                             mon_nam(mdef));
                         if (Hallucination && !lethaldamage)
                         {
@@ -2068,7 +2068,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                 else
                 {
                     if (is_incorporeal(youmonst.data) || amorphous(youmonst.data)) {
-                        pline("%s slices through your %s.", The(xname(otmp)),
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s slices through your %s.", The(xname(otmp)),
                             body_part(NECK));
                     }
                     else
@@ -2089,7 +2089,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
 
                             totaldamagedone += damagedone;
                         }
-                        pline("%s slices a part of %s off!", The(xname(otmp)), "you");
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s slices a part of %s off!", The(xname(otmp)), "you");
                         otmp->dknown = TRUE;
                     }
                 }
@@ -2124,12 +2124,12 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                 else if (!youdefend) {
                     if (!has_neck(mdef->data) || notonhead || u.uswallow) {
                         if (youattack)
-                            pline("Somehow, you miss %s wildly.", mon_nam(mdef));
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Somehow, you miss %s wildly.", mon_nam(mdef));
                         else if (vis)
-                            pline("Somehow, %s misses wildly.", mon_nam(magr));
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Somehow, %s misses wildly.", mon_nam(magr));
                     }
                     else if (is_incorporeal(mdef->data) || amorphous(mdef->data)) {
-                        pline("%s through %s %s.", Yobjnam2(otmp, "slice"),
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Yobjnam2(otmp, "slice"),
                             s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     }
                     else
@@ -2138,7 +2138,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                         {
                             mdef->heads_left--;
                             totaldamagedone += (int)(0.625 * (double)mdef->mhpmax / (double)max(1, mdef->data->heads)); //Adjusted based on Tiamat in AD&D
-                            pline("%s cuts one of %s heads off!", The(xname(otmp)), s_suffix(mon_nam(mdef)));
+                            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s cuts one of %s heads off!", The(xname(otmp)), s_suffix(mon_nam(mdef)));
                             otmp->dknown = TRUE;
                         }
                         else
@@ -2146,10 +2146,10 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                             if (mdef->heads_left > 0)
                                 mdef->heads_left--;
 
-                            pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)),
+                            pline_ex(ATR_NONE, CLR_MSG_WARNING, behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)),
                                 mon_nam(mdef));
                             if (Hallucination && !flags.female)
-                                pline("Good job Henry, but that wasn't Anne.");
+                                pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Good job Henry, but that wasn't Anne.");
                             otmp->dknown = TRUE;
                             lethaldamage = TRUE;
                         }
@@ -2159,10 +2159,10 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                 {
                     if (!has_neck(youmonst.data))
                     {
-                        pline("Somehow, %s misses you wildly.", (magr ? mon_nam(magr) : the(xname(otmp))));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Somehow, %s misses you wildly.", (magr ? mon_nam(magr) : the(xname(otmp))));
                     }
                     else if (is_incorporeal(youmonst.data) || amorphous(youmonst.data)) {
-                        pline("%s slices through your %s.", The(xname(otmp)),
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s slices through your %s.", The(xname(otmp)),
                             body_part(NECK));
                     }
                     else
@@ -2171,7 +2171,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                         {
                             mdef->heads_left--;
                             totaldamagedone += (int)(0.625 * (double)(Upolyd ? u.mhmax : u.uhpmax) / (double)max(1, mdef->data->heads)); //Adjusted based on Tiamat in AD&D
-                            pline("%s cuts one of your %s off!", The(xname(otmp)), makeplural(body_part(HEAD)));
+                            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s cuts one of your %s off!", The(xname(otmp)), makeplural(body_part(HEAD)));
                             otmp->dknown = TRUE;
                         }
                         else
@@ -2179,7 +2179,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                             if (mdef->heads_left > 0)
                                 mdef->heads_left--;
 
-                            pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)), "you");
+                            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)), "you");
                             otmp->dknown = TRUE;
                             lethaldamage = TRUE;
                         }
@@ -2224,7 +2224,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                     {
                         if (vis)
                         {
-                            pline("%s draws the %s from %s!",
+                            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s draws the %s from %s!",
                                 The(distant_name(otmp, xname)), life,
                                 mon_nam(mdef));
                         }
@@ -2252,11 +2252,11 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                     else
                     { /* youdefend */
                         if (Blind)
-                            You_feel("an %s drain your %s!",
+                            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "an %s drain your %s!",
                                 "object",
                                 life);
                         else
-                            pline("%s drains your %s!", The(distant_name(otmp, xname)),
+                            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s drains your %s!", The(distant_name(otmp, xname)),
                                 life);
                         losexp("life drainage");
                     }
@@ -2309,15 +2309,15 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                         {
                             if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
                             {
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s hits %s with death magic!", The(xname(otmp)), mon_nam(mdef));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s hits %s with death magic!", The(xname(otmp)), mon_nam(mdef));
                             }
                             else if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
                             {
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s hits %s with annihilating force!", The(xname(otmp)), mon_nam(mdef));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s hits %s with annihilating force!", The(xname(otmp)), mon_nam(mdef));
                             }
                             else
                             {
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s hits %s with a deadly blow!", The(xname(otmp)), mon_nam(mdef));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s hits %s with a deadly blow!", The(xname(otmp)), mon_nam(mdef));
                             }
 
                             if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
@@ -2337,15 +2337,15 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                         {
                             if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
                             {
-                                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s hits you with death magic!", The(xname(otmp)));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s hits you with death magic!", The(xname(otmp)));
                             }
                             else if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
                             {
-                                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s hits you with annihilating force!", The(xname(otmp)));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s hits you with annihilating force!", The(xname(otmp)));
                             }
                             else
                             {
-                                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s hits you with a deadly blow!", The(xname(otmp)));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s hits you with a deadly blow!", The(xname(otmp)));
                             }
 
                             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
@@ -2420,7 +2420,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                                         objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT ? -otmp->enchantment : 0)))
                                     )
                                 {                    // if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
-                                    You("are not disintegrated.");
+                                    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "are not disintegrated.");
                                 }
                                 else if (uarms)
                                 {
@@ -2480,12 +2480,12 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                                     }
                                     else
                                     {
-                                        pline("%s hits %s. The magic is deadly...", The(xname(otmp)), mon_nam(mdef));
+                                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s hits %s. The magic is deadly...", The(xname(otmp)), mon_nam(mdef));
                                     }
                                 }
                                 else
                                 {
-                                    pline("%s hits you. The magic is deadly...", The(xname(otmp)));
+                                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s hits you. The magic is deadly...", The(xname(otmp)));
                                 }
                             }
                         }
@@ -2502,16 +2502,16 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                                 if (!youdefend)
                                 {
                                     if (is_living(mdef->data))
-                                        pline("%s strikes %s dead!", The(xname(otmp)), mon_nam(mdef));
+                                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s strikes %s dead!", The(xname(otmp)), mon_nam(mdef));
                                     else
-                                        pline("%s strikes %s down!", The(xname(otmp)), mon_nam(mdef));
+                                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s strikes %s down!", The(xname(otmp)), mon_nam(mdef));
                                 }
                                 else
                                 {
                                     if (is_living(mdef->data))
-                                        pline("%s strikes you dead!", The(xname(otmp)));
+                                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s strikes you dead!", The(xname(otmp)));
                                     else
-                                        pline("%s strikes you down!", The(xname(otmp)));
+                                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s strikes you down!", The(xname(otmp)));
                                 }
                             }
                         }
