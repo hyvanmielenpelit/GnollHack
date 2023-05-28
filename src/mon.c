@@ -3018,14 +3018,28 @@ struct monst *mtmp2, *mtmp1;
         if (!MMONST(mtmp2))
             newmmonst(mtmp2);
         if (MMONST(mtmp2))
+        {
             *MMONST(mtmp2) = *MMONST(mtmp1);
+            MMONST(mtmp2)->mextra = 0;
+            MMONST(mtmp2)->nmon = 0;
+            if(MMONST(mtmp1)->mextra)
+                copy_mextra(MMONST(mtmp2), MMONST(mtmp1));
+        }
     }
     if (MOBJ(mtmp1))
     {
         if (!MOBJ(mtmp2))
             newmobj(mtmp2);
         if (MOBJ(mtmp2))
+        {
             *MOBJ(mtmp2) = *MOBJ(mtmp1);
+            MOBJ(mtmp2)->oextra = 0;
+            MOBJ(mtmp2)->nobj = 0;
+            MOBJ(mtmp2)->nexthere = 0;
+            MOBJ(mtmp2)->cobj = 0;
+            if (MOBJ(mtmp1)->oextra)
+                copy_oextra(MOBJ(mtmp2), MOBJ(mtmp1));
+        }
     }
     if (has_mcorpsenm(mtmp1))
         MCORPSENM(mtmp2) = MCORPSENM(mtmp1);
@@ -3058,9 +3072,9 @@ struct monst *m;
         if (x->edog)
             free((genericptr_t) x->edog);
         if (x->mmonst)
-            free((genericptr_t)x->mmonst);
+            free_mmonst(m);
         if (x->mobj)
-            free((genericptr_t)x->mobj);
+            free_mobj(m);
         /* [no action needed for x->mcorpsenm] */
 
         free((genericptr_t) x);

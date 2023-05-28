@@ -767,9 +767,9 @@ struct obj *obj2, *obj1;
             if (OMONST(obj2)->m_id) /* ident overflowed */
                 OMONST(obj2)->m_id = context.ident++;
 #endif
+            if (OMONST(obj1)->mextra)
+                copy_mextra(OMONST(obj2), OMONST(obj1));
         }
-        if (OMONST(obj1)->mextra)
-            copy_mextra(OMONST(obj2), OMONST(obj1));
     }
     if (has_omid(obj1)) 
     {
