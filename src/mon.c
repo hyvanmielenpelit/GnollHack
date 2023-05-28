@@ -3022,6 +3022,9 @@ struct monst *mtmp2, *mtmp1;
             *MMONST(mtmp2) = *MMONST(mtmp1);
             MMONST(mtmp2)->mextra = 0;
             MMONST(mtmp2)->nmon = 0;
+            MMONST(mtmp2)->m_id = context.ident++;
+            if (!MMONST(mtmp2)->m_id) /* ident overflowed */
+                MMONST(mtmp2)->m_id = context.ident++;
             if(MMONST(mtmp1)->mextra)
                 copy_mextra(MMONST(mtmp2), MMONST(mtmp1));
         }
@@ -3037,6 +3040,9 @@ struct monst *mtmp2, *mtmp1;
             MOBJ(mtmp2)->nobj = 0;
             MOBJ(mtmp2)->nexthere = 0;
             MOBJ(mtmp2)->cobj = 0;
+            MOBJ(mtmp2)->o_id = context.ident++;
+            if (!MOBJ(mtmp2)->o_id) /* ident overflowed */
+                MOBJ(mtmp2)->o_id = context.ident++;
             if (MOBJ(mtmp1)->oextra)
                 copy_oextra(MOBJ(mtmp2), MOBJ(mtmp1));
         }

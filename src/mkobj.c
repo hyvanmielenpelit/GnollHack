@@ -762,11 +762,9 @@ struct obj *obj2, *obj1;
                 (genericptr_t)OMONST(obj1), sizeof(struct monst));
             OMONST(obj2)->mextra = (struct mextra*) 0;
             OMONST(obj2)->nmon = (struct monst*) 0;
-#if 0 /* Let's keep the original m_id */
             OMONST(obj2)->m_id = context.ident++;
-            if (OMONST(obj2)->m_id) /* ident overflowed */
+            if (!OMONST(obj2)->m_id) /* ident overflowed */
                 OMONST(obj2)->m_id = context.ident++;
-#endif
             if (OMONST(obj1)->mextra)
                 copy_mextra(OMONST(obj2), OMONST(obj1));
         }
