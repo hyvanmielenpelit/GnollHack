@@ -752,7 +752,7 @@ void
 free_eshk(mtmp)
 struct monst *mtmp;
 {
-    if (mtmp->mextra && ESHK(mtmp)) {
+    if (has_eshk(mtmp)) {
         free((genericptr_t) ESHK(mtmp));
         ESHK(mtmp) = (struct eshk *) 0;
     }

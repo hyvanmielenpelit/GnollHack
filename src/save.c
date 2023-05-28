@@ -1172,7 +1172,7 @@ savemon(fd, mtmp)
 int fd;
 struct monst *mtmp;
 {
-    size_t buflen;
+    size_t buflen, zerobuf = 0;
 
     buflen = sizeof(struct monst);
     bwrite(fd, (genericptr_t) &buflen, sizeof buflen);
@@ -1250,6 +1250,16 @@ struct monst *mtmp;
         bwrite(fd, (genericptr_t) &buflen, sizeof buflen);
         if (buflen > 0)
             bwrite(fd, (genericptr_t) EDOG(mtmp), buflen);
+
+        if (MMONST(mtmp))
+            savemon(fd, MMONST(mtmp));
+        else
+            bwrite(fd, (genericptr_t)&zerobuf, sizeof zerobuf);
+
+        if (MOBJ(mtmp))
+            saveobj(fd, MOBJ(mtmp));
+        else
+            bwrite(fd, (genericptr_t)&zerobuf, sizeof zerobuf);
 
         /* mcorpsenm is inline int rather than pointer to something,
            so doesn't need to be preceded by a length field */

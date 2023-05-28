@@ -14,7 +14,7 @@ STATIC_DCL void FDECL(maybe_adjust_sound_volume, (struct obj*, double));
 STATIC_DCL void FDECL(obj_timer_checks, (struct obj *,
                                          XCHAR_P, XCHAR_P, int));
 STATIC_DCL void FDECL(container_weight, (struct obj *));
-STATIC_DCL struct obj *FDECL(save_mtraits, (struct obj *, struct monst *));
+STATIC_DCL void FDECL(save_mtraits, (struct obj *, struct monst *));
 STATIC_DCL void FDECL(objlist_sanity, (struct obj *, int, const char *));
 STATIC_DCL void FDECL(mon_obj_sanity, (struct monst *, const char *));
 STATIC_DCL const char *FDECL(where_name, (struct obj *));
@@ -3452,14 +3452,9 @@ unsigned corpstatflags;
     {
         if (mtmp) 
         {
-            struct obj *otmp2;
-
             if (!ptr)
                 ptr = mtmp->data;
-            /* save_mtraits frees original data pointed to by otmp */
-            otmp2 = save_mtraits(otmp, mtmp);
-            if (otmp2)
-                otmp = otmp2;
+            save_mtraits(otmp, mtmp);
         }
         /* use the corpse or statue produced by mksobj() as-is
            unless `ptr' is non-null */
@@ -3520,7 +3515,7 @@ unsigned mid;
     return obj;
 }
 
-STATIC_OVL struct obj *
+STATIC_OVL void
 save_mtraits(obj, mtmp)
 struct obj *obj;
 struct monst *mtmp;
@@ -3540,21 +3535,15 @@ struct monst *mtmp;
         *mtmp2 = *mtmp;
         mtmp2->mextra = (struct mextra *) 0;
 
-#if 0 /* All monsters should have data and mnum */
-        if (mtmp->data)
-            mtmp2->mnum = mtmp->mnum;
-#endif
         /* invalidate pointers */
         /* m_id is needed to know if this is a revived quest leader */
         /* but m_id must be cleared when loading bones */
         mtmp2->nmon = (struct monst *) 0;
         //mtmp2->data = (struct permonst *) 0; /* This sounds very dangerous to set to zero */
         mtmp2->minvent = (struct obj *) 0;
-        mtmp2->facing_right = mtmp->facing_right;
         if (mtmp->mextra)
             copy_mextra(mtmp2, mtmp);
     }
-    return obj;
 }
 
 /* returns a pointer to a new monst structure based on

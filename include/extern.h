@@ -1694,6 +1694,14 @@ E void NDECL(makemon_animation_wait_until_end);
 E struct monst* FDECL(make_level_monster, (int, int, unsigned long, unsigned long));
 E struct monst* NDECL(make_level_monster_anywhere);
 E void NDECL(reset_makemon);
+E void FDECL(newmmonst, (struct monst*));
+E void FDECL(free_mmonst, (struct monst*));
+E void FDECL(newmobj, (struct monst*));
+E void FDECL(free_mobj, (struct monst*));
+E struct monst* FDECL(get_mmonst, (struct monst*, BOOLEAN_P));
+E void FDECL(save_mmonst, (struct monst*, struct monst*));
+E struct obj* FDECL(get_mobj, (struct monst*, BOOLEAN_P));
+E void FDECL(save_mobj, (struct monst*, struct obj*));
 
 /* ### mapglyph.c ### */
 

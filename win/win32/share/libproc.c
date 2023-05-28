@@ -883,14 +883,14 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
     mi_ptr->gui_glyph = maybe_get_replaced_glyph(mi_ptr->glyph, mtmp->mx, mtmp->my, data_to_replacement_info(mi_ptr->glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, MAT_NONE, 0));
 
     char tempbuf[BUFSIZ] = "";
-    if (mtmp->mextra && UMNAME(mtmp))
+    if (has_umname(mtmp))
     {
         char umnbuf[BUFSIZ];
         strcpy(umnbuf, UMNAME(mtmp));
         umnbuf[16] = '\0'; /* Limit the length of the name */
         strcat(tempbuf, umnbuf);
     }
-    else if (mtmp->mextra && MNAME(mtmp) && mtmp->u_know_mname)
+    else if (has_mname(mtmp) && mtmp->u_know_mname)
     {
         char mnbuf[BUFSIZ];
         strcpy(mnbuf, MNAME(mtmp));

@@ -19221,7 +19221,7 @@ struct mkroom* room;
 
     if (rtype >= SHOPBASE)
     {
-        if (room->resident && room->resident->isshk && room->resident->mextra && ESHK(room->resident))
+        if (room->resident && room->resident->isshk && has_eshk(room->resident))
         {
             if (is_peaceful(room->resident))
             {

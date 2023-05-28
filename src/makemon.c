@@ -2573,6 +2573,8 @@ newmextra()
     mextra->eshk = 0;
     mextra->emin = 0;
     mextra->edog = 0;
+    mextra->mmonst = 0;
+    mextra->mobj = 0;
     mextra->mcorpsenm = NON_PM;
     return mextra;
 }
@@ -4726,4 +4728,173 @@ reset_makemon(VOID_ARGS)
     align_lev = 0;
     reset_rndmonst(NON_PM);
 }
+
+void
+newmmonst(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp->mextra)
+        mtmp->mextra = newmextra();
+    if (!MMONST(mtmp)) {
+        MMONST(mtmp) = (struct monst*)alloc(sizeof(struct monst));
+        (void)memset((genericptr_t)MMONST(mtmp), 0, sizeof(struct monst));
+    }
+}
+
+void
+free_mmonst(mtmp)
+struct monst* mtmp;
+{
+    if (has_mmonst(mtmp)) {
+        if (MMONST(mtmp)->mextra)
+            dealloc_mextra(MMONST(mtmp));
+        free((genericptr_t)MMONST(mtmp));
+        MMONST(mtmp) = (struct monst*)0;
+    }
+}
+
+void
+newmobj(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp->mextra)
+        mtmp->mextra = newmextra();
+    if (!MOBJ(mtmp)) {
+        MOBJ(mtmp) = (struct obj*)alloc(sizeof(struct obj));
+        (void)memset((genericptr_t)MOBJ(mtmp), 0, sizeof(struct obj));
+    }
+}
+
+void
+free_mobj(mtmp)
+struct monst* mtmp;
+{
+    if (has_mobj(mtmp)) {
+        if (MOBJ(mtmp)->oextra)
+            dealloc_oextra(MOBJ(mtmp));
+        free((genericptr_t)MOBJ(mtmp));
+        MOBJ(mtmp) = (struct obj*)0;
+    }
+}
+
+void
+save_mmonst(mon, mon_mmonst)
+struct monst* mon; /* Save to this mon's mextra */
+struct monst* mon_mmonst;
+{
+    if (mon_mmonst->ispriest)
+        forget_temple_entry(mon_mmonst); /* EPRI() */
+    if (mon_mmonst->issmith)
+        forget_smithy_entry(mon_mmonst); /* ESMI() */
+    if (mon_mmonst->isnpc)
+        forget_npc_entry(mon_mmonst); /* ENPC() */
+    if (!has_mmonst(mon))
+        newmmonst(mon);
+    if (has_mmonst(mon))
+    {
+        struct monst* mtmp2 = MMONST(mon);
+
+        *mtmp2 = *mon_mmonst;
+        mtmp2->mextra = (struct mextra*)0;
+
+        /* invalidate pointers */
+        /* m_id is needed to know if this is a revived quest leader */
+        /* but m_id must be cleared when loading bones */
+        mtmp2->nmon = (struct monst*)0;
+        //mtmp2->data = (struct permonst *) 0; /* This sounds very dangerous to set to zero */
+        mtmp2->minvent = (struct obj*)0;
+        if (mon_mmonst->mextra)
+            copy_mextra(mtmp2, mon_mmonst);
+    }
+}
+
+/* returns a pointer to a new monst structure based on
+ * the one contained within the obj.
+ */
+struct monst*
+get_mmonst(mon, copyof)
+struct monst* mon;
+boolean copyof;
+{
+    struct monst* mon_mmonst = (struct monst*)0;
+    struct monst* mnew = (struct monst*)0;
+
+    if (has_mmonst(mon))
+        mon_mmonst = MMONST(mon);
+    if (mon_mmonst) {
+        if (copyof) {
+            mnew = newmonst();
+            *mnew = *mon_mmonst;
+            mnew->mextra = (struct mextra*)0;
+            if (mon_mmonst->mextra)
+                copy_mextra(mnew, mon_mmonst);
+        }
+        else {
+            /* Never insert this returned pointer into mon chains! */
+            mnew = mon_mmonst;
+        }
+
+        if (mnew && !mnew->data)
+            mnew->data = &mons[mnew->mnum];
+    }
+
+    return mnew;
+}
+
+void
+save_mobj(mon, obj_mobj)
+struct monst* mon; /* Save to this mon's mextra */
+struct obj* obj_mobj;
+{
+    if (!has_mobj(mon))
+        newmobj(mon);
+    if (has_mobj(mon))
+    {
+        struct obj* obj2 = MOBJ(mon);
+
+        *obj2 = *obj_mobj;
+        obj2->oextra = (struct oextra*)0;
+
+        /* invalidate pointers */
+        /* m_id is needed to know if this is a revived quest leader */
+        /* but m_id must be cleared when loading bones */
+        obj2->nobj = (struct obj*)0;
+        obj2->nexthere = (struct obj*)0;
+        //mtmp2->data = (struct permonst *) 0; /* This sounds very dangerous to set to zero */
+        obj2->cobj = (struct obj*)0;
+        if (obj_mobj->oextra)
+            copy_oextra(obj2, obj_mobj);
+    }
+}
+
+/* returns a pointer to a new monst structure based on
+ * the one contained within the obj.
+ */
+struct obj*
+get_mobj(mon, copyof)
+struct monst* mon;
+boolean copyof;
+{
+    struct obj* obj_mobj = (struct obj*)0;
+    struct obj* onew = (struct obj*)0;
+
+    if (has_mobj(mon))
+        obj_mobj = MOBJ(mon);
+    if (obj_mobj) {
+        if (copyof) {
+            onew = newobj();
+            *onew = *obj_mobj;
+            onew->oextra = (struct oextra*)0;
+            if (obj_mobj->oextra)
+                copy_oextra(onew, obj_mobj);
+        }
+        else {
+            /* Never insert this returned pointer into obj chains! */
+            onew = obj_mobj;
+        }
+    }
+
+    return onew;
+}
+
 /*makemon.c*/

@@ -463,6 +463,18 @@ struct monst *mtmp;
             newedog(mtmp);
             mread(fd, (genericptr_t) EDOG(mtmp), sizeof(struct edog));
         }
+        /* mmonst - original form when polymorphed */
+        mread(fd, (genericptr_t)&buflen, sizeof(buflen));
+        if (buflen > 0) {
+            newmmonst(mtmp);
+            restmon(fd, MMONST(mtmp));
+        }
+        /* mobj - object that mimic is posing as */
+        mread(fd, (genericptr_t)&buflen, sizeof(buflen));
+        if (buflen > 0) {
+            newmobj(mtmp);
+            restobj(fd, MOBJ(mtmp));
+        }
         /* mcorpsenm - obj->corpsenm for mimic posing as corpse or
            statue (inline int rather than pointer to something) */
         mread(fd, (genericptr_t) &MCORPSENM(mtmp), sizeof MCORPSENM(mtmp));

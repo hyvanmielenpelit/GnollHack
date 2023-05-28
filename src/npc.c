@@ -911,7 +911,7 @@ void
 free_enpc(mtmp)
 struct monst* mtmp;
 {
-    if (mtmp->mextra && ENPC(mtmp))
+    if (has_enpc(mtmp))
     {
         free((genericptr_t)ENPC(mtmp));
         ENPC(mtmp) = (struct enpc*)0;

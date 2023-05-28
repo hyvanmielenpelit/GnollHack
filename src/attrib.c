@@ -2067,7 +2067,7 @@ struct monst* mon;
     mon->mhpmax = mon->mbasehpmax + m_hpmaxadjustment(mon, FALSE);
 
     /* EDOG penalty */
-    if(mon->mextra && EDOG(mon))
+    if(has_edog(mon))
     {
         struct edog* edog = EDOG(mon);
         if (edog->mhpmax_penalty) 

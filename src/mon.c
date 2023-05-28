@@ -3013,6 +3013,20 @@ struct monst *mtmp2, *mtmp1;
         if (EDOG(mtmp2))
             *EDOG(mtmp2) = *EDOG(mtmp1);
     }
+    if (MMONST(mtmp1))
+    {
+        if (!MMONST(mtmp2))
+            newmmonst(mtmp2);
+        if (MMONST(mtmp2))
+            *MMONST(mtmp2) = *MMONST(mtmp1);
+    }
+    if (MOBJ(mtmp1))
+    {
+        if (!MOBJ(mtmp2))
+            newmobj(mtmp2);
+        if (MOBJ(mtmp2))
+            *MOBJ(mtmp2) = *MOBJ(mtmp1);
+    }
     if (has_mcorpsenm(mtmp1))
         MCORPSENM(mtmp2) = MCORPSENM(mtmp1);
 }
@@ -3043,6 +3057,10 @@ struct monst *m;
             free((genericptr_t) x->emin);
         if (x->edog)
             free((genericptr_t) x->edog);
+        if (x->mmonst)
+            free((genericptr_t)x->mmonst);
+        if (x->mobj)
+            free((genericptr_t)x->mobj);
         /* [no action needed for x->mcorpsenm] */
 
         free((genericptr_t) x);
@@ -3835,7 +3853,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 
     /* shopkeeper adds lost money in debit bill */
     long shkmoney = 0;
-    if (mtmp->isshk && mtmp->mextra && ESHK(mtmp))
+    if (mtmp->isshk && has_eshk(mtmp))
     {
         shkmoney += money_cnt(mtmp->minvent);
         shkmoney += max(0, ESHK(mtmp)->robbed + ESHK(mtmp)->debit - ESHK(mtmp)->credit);
@@ -3863,7 +3881,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     disintegested = FALSE; /* reset */
 
     /* shopkeeper adds lost money in debit bill in the case heor she is revived */
-    if (mtmp->isshk && mtmp->mextra && ESHK(mtmp))
+    if (mtmp->isshk && has_eshk(mtmp))
     {
         ESHK(mtmp)->debit += shkmoney;
     }
@@ -6180,5 +6198,6 @@ reset_mon(VOID_ARGS)
 {
     vamp_rise_msg = disintegested = 0;
 }
+
 
 /*mon.c*/

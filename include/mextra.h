@@ -211,6 +211,8 @@ struct mextra {
     struct eshk *eshk;
     struct emin *emin;
     struct edog *edog;
+    struct monst* mmonst; /* For original form when polymorphed */
+    struct obj* mobj; /* obj that mimic is posing as */
     int mcorpsenm; /* obj->corpsenm for mimic posing as statue or corpse */
 };
 
@@ -223,6 +225,8 @@ struct mextra {
 #define ESHK(mon) ((mon)->mextra->eshk)
 #define EMIN(mon) ((mon)->mextra->emin)
 #define EDOG(mon) ((mon)->mextra->edog)
+#define MMONST(mon) ((mon)->mextra->mmonst)
+#define MOBJ(mon) ((mon)->mextra->mobj)
 #define MCORPSENM(mon) ((mon)->mextra->mcorpsenm)
 
 #define has_mname(mon) ((mon)->mextra && MNAME(mon))
@@ -234,6 +238,8 @@ struct mextra {
 #define has_eshk(mon)  ((mon)->mextra && ESHK(mon))
 #define has_emin(mon)  ((mon)->mextra && EMIN(mon))
 #define has_edog(mon)  ((mon)->mextra && EDOG(mon))
+#define has_mmonst(mon)  ((mon)->mextra && MMONST(mon))
+#define has_mobj(mon)  ((mon)->mextra && MOBJ(mon))
 #define has_mcorpsenm(mon) ((mon)->mextra && MCORPSENM(mon) != NON_PM)
 
 #endif /* MEXTRA_H */

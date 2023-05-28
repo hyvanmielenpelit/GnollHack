@@ -6352,6 +6352,10 @@ boolean incl_wsegs;
             sz += sizeof (struct emin);
         if (EDOG(mtmp))
             sz += sizeof (struct edog);
+        if (MMONST(mtmp))
+            sz += sizeof(struct monst);
+        if (MOBJ(mtmp))
+            sz += sizeof(struct obj);
         /* mextra->mcorpsenm doesn't point to more memory */
     }
     return sz;

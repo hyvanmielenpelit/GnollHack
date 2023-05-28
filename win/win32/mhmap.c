@@ -4581,13 +4581,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     break;
                                 case STATUS_MARK_HUNGRY:
                                     if ((loc_is_you && u.uhs == HUNGRY)
-                                        || (!loc_is_you && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty == 0)
+                                        || (!loc_is_you && ispet && has_edog(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty == 0)
                                         )
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_WEAK:
                                     if ((loc_is_you && u.uhs == WEAK)
-                                        || (!loc_is_you && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty > 0)
+                                        || (!loc_is_you && ispet && has_edog(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty > 0)
                                         )
                                         display_this_status_mark = TRUE;
                                     break;

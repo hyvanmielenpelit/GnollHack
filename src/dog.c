@@ -32,7 +32,7 @@ void
 free_edog(mtmp)
 struct monst *mtmp;
 {
-    if (mtmp->mextra && EDOG(mtmp)) {
+    if (has_edog(mtmp)) {
         free((genericptr_t) EDOG(mtmp));
         EDOG(mtmp) = (struct edog *) 0;
     }
@@ -1556,7 +1556,7 @@ register struct obj *obj;
             return obj->cursed ? UNDEF : APPORT;
 
         /* a starving pet will eat almost anything */
-        starving = (mon->mtame && mon->mextra && EDOG(mon) && !mon->isminion
+        starving = (mon->mtame && has_edog(mon) && !mon->isminion
                     && EDOG(mon)->mhpmax_penalty);
 
         /* even carnivores will eat carrots if they're temporarily blind */
@@ -1722,7 +1722,7 @@ boolean thrown;
     }
 
     /* feeding it treats makes it tamer */
-    if (mtmp->mtame && obj && mtmp->mextra && EDOG(mtmp))
+    if (mtmp->mtame && obj && has_edog(mtmp))
     {
         int tasty;
 

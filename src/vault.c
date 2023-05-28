@@ -34,7 +34,7 @@ void
 free_egd(mtmp)
 struct monst *mtmp;
 {
-    if (mtmp->mextra && EGD(mtmp)) {
+    if (has_egd(mtmp)) {
         free((genericptr_t) EGD(mtmp));
         EGD(mtmp) = (struct egd *) 0;
     }

@@ -2188,10 +2188,10 @@ register struct monst *shkp; /* if angry, impose a surcharge */
             adjustments (unID'd, dunce/tourist, charisma) are made */
         multiplier = 1L, divisor = 1L;
 
-    boolean shkp_is_shopkeeper = (shkp && shkp->isshk && shkp->mextra && ESHK(shkp));
-    boolean shkp_is_priest = (shkp && shkp->ispriest && shkp->mextra && EPRI(shkp));
-    boolean shkp_is_smith = (shkp && shkp->issmith && shkp->mextra && ESMI(shkp));
-    boolean shkp_is_npc = (shkp && shkp->isnpc && shkp->mextra && ENPC(shkp));
+    boolean shkp_is_shopkeeper = (shkp && shkp->isshk && has_eshk(shkp));
+    boolean shkp_is_priest = (shkp && shkp->ispriest && has_epri(shkp));
+    boolean shkp_is_smith = (shkp && shkp->issmith && has_esmi(shkp));
+    boolean shkp_is_npc = (shkp && shkp->isnpc && has_enpc(shkp));
 
     if (!tmp)
         tmp = 5L;
@@ -5500,7 +5500,7 @@ struct monst* mtmp;
 struct obj* obj;
 boolean eating;
 {
-    if (!mtmp || !mtmp->mextra || !EDOG(mtmp) || !obj)
+    if (!mtmp || !has_edog(mtmp) || !obj)
         return 0;
 
     boolean chastised = FALSE;

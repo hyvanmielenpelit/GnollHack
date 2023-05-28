@@ -1054,7 +1054,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     /* Corpse names from OMONST */
     if (obj->oextra && OMONST(obj) && !statueusesname)
     {
-        if (OMONST(obj)->isshk && OMONST(obj)->mextra && ESHK(OMONST(obj)))
+        if (OMONST(obj)->isshk && has_eshk(OMONST(obj)))
         {
             Strcat(buf, " named ");
             Strcat(buf, shkname(OMONST(obj)));

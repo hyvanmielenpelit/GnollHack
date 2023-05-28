@@ -218,7 +218,7 @@ int
 ask_shk_reconciliation(mtmp)
 struct monst* mtmp;
 {
-    if (!mtmp || !mtmp->isshk || !mtmp->mextra || !ESHK(mtmp))
+    if (!mtmp || !mtmp->isshk || !has_eshk(mtmp))
         return 0;
 
     You("try to appease %s by offering %s some compensation.", noittame_mon_nam(mtmp), mhim(mtmp));
@@ -1097,7 +1097,7 @@ boolean dopopup, fromchatmenu;
     case MS_PRIEST:
     {
         const char* temple_god = iflags.using_gui_sounds ? (mon_aligntyp(mtmp) == A_NONE ? Moloch : "our almighty god") :
-            ((mtmp->ispriest && mtmp->mextra && mtmp->mextra->epri) ? align_gname(mtmp->mextra->epri->shralign) : "our almighty god");
+            ((mtmp->ispriest && has_epri(mtmp)) ? align_gname(mtmp->mextra->epri->shralign) : "our almighty god");
 
         if (is_peaceful(mtmp))
         {
@@ -1122,8 +1122,8 @@ boolean dopopup, fromchatmenu;
         if (mtmp->isshk)
         {
             register struct eshk* eshkp = (struct eshk*)0;
-            if (mtmp->mextra && mtmp->mextra->eshk)
-                eshkp = mtmp->mextra->eshk;
+            if (has_eshk(mtmp))
+                eshkp = ESHK(mtmp);
 
             if (eshkp && !Deaf && !muteshk(mtmp))
             {
@@ -3647,7 +3647,7 @@ struct monst* mtmp;
 
 
             int shp_indx = 0;
-            if(is_peaceful(mtmp) && mtmp->mextra && ESHK(mtmp))
+            if(is_peaceful(mtmp) && has_eshk(mtmp))
             {
                 shp_indx = ESHK(mtmp)->shoptype - SHOPBASE;
                 const struct shclass* shp = &shtypes[shp_indx];
@@ -3713,7 +3713,7 @@ struct monst* mtmp;
                 chatnum++;
             }
 
-            if (is_peaceful(mtmp) && mtmp->mextra && ESMI(mtmp) &&!mtmp->mrevived) /* no mrivived here to prevent abuse*/
+            if (is_peaceful(mtmp) && has_esmi(mtmp) &&!mtmp->mrevived) /* no mrivived here to prevent abuse*/
             {
                 Sprintf(available_chat_list[chatnum].name, "Forge a plate armor");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_forge_standard_armor;
@@ -4328,8 +4328,8 @@ struct monst* mtmp;
     if (mtmp->isshk)
     {
         register struct eshk* eshkp = (struct eshk*)0;
-        if (mtmp->mextra && mtmp->mextra->eshk)
-            eshkp = mtmp->mextra->eshk;
+        if (has_eshk(mtmp))
+            eshkp = ESHK(mtmp);
 
         if (iflags.using_gui_sounds)
         {
@@ -5177,8 +5177,8 @@ struct monst* mtmp;
     int omy = mtmp->my;
     int udist = distu(omx, omy);
 
-    if(mtmp->mextra && mtmp->mextra->edog)
-        edog = mtmp->mextra->edog;
+    if(has_edog(mtmp))
+        edog = EDOG(mtmp);
 
     if(has_edog && edog && droppables(mtmp))
     {
@@ -5215,9 +5215,8 @@ struct monst* mtmp;
     int omx = mtmp->mx;
     int omy = mtmp->my;
 
-    if (mtmp->mextra && mtmp->mextra->edog)
-        edog = mtmp->mextra->edog;
-
+    if (has_edog(mtmp))
+        edog = EDOG(mtmp);
 
     if (has_edog && edog)
     {
@@ -5501,7 +5500,7 @@ struct monst* mtmp;
                             if (tamedog(mtmp, otmp, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, FALSE))
                                 otmp = 0; /* It is gone */
                         }
-                        else if (is_tame(mtmp) && mtmp->mextra && EDOG(mtmp))
+                        else if (is_tame(mtmp) && has_edog(mtmp))
                         {
                             place_object(otmp, mtmp->mx, mtmp->my);
                             (void)dog_eat(mtmp, otmp, mtmp->mx, mtmp->my, FALSE);
@@ -7381,7 +7380,7 @@ STATIC_OVL int
 do_chat_shk_identify(mtmp)
 struct monst* mtmp;
 {
-    if (!mtmp || !mtmp->mextra || !mtmp->mextra->eshk)
+    if (!mtmp || !has_eshk(mtmp))
         return 0;
 
     long umoney;
@@ -7513,7 +7512,7 @@ STATIC_OVL int
 do_chat_shk_reconciliation(mtmp)
 struct monst* mtmp;
 {
-    if (!mtmp || !mtmp->isshk || !mtmp->mextra || !ESHK(mtmp))
+    if (!mtmp || !mtmp->isshk || !has_eshk(mtmp))
         return 0;
 
     long umoney;

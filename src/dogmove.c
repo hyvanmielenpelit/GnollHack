@@ -1345,7 +1345,7 @@ boolean
 dog_wants_to_eat(mtmp)
 struct monst* mtmp;
 {
-    if(!mtmp || !mtmp->mextra || !EDOG(mtmp))
+    if(!mtmp || !has_edog(mtmp))
         return FALSE;
 
     if (is_non_eater(mtmp->data))

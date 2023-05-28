@@ -1365,13 +1365,13 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
             break;
         case STATUS_MARK_HUNGRY:
             if ((loc_is_you && u.uhs == HUNGRY)
-                || (!loc_is_you && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty == 0)
+                || (!loc_is_you && ispet && has_edog(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty == 0)
                 )
                 display_this_status_mark = TRUE;
             break;
         case STATUS_MARK_WEAK:
             if ((loc_is_you && u.uhs == WEAK)
-                || (!loc_is_you && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty > 0)
+                || (!loc_is_you && ispet && has_edog(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty > 0)
                 )
                 display_this_status_mark = TRUE;
             break;
@@ -1552,14 +1552,14 @@ char* outbuf5;
             if (!targetbuf)
                 break;
 
-            if (mtmp->mextra && UMNAME(mtmp))
+            if (has_umname(mtmp))
             {
                 char umnbuf[BUFSIZ];
                 strcpy(umnbuf, UMNAME(mtmp));
                 umnbuf[16] = '\0'; /* Limit the length of the name */
                 strcat(tempbuf, umnbuf);
             }
-            else if (mtmp->mextra && MNAME(mtmp) && mtmp->u_know_mname)
+            else if (has_mname(mtmp) && mtmp->u_know_mname)
             {
                 char mnbuf[BUFSIZ];
                 strcpy(mnbuf, MNAME(mtmp));
@@ -1595,7 +1595,7 @@ char* outbuf5;
                 Sprintf(eos(tempbuf), "%d/%d%%", mc, mcpct);
             }
 
-            if (mtmp->mextra && EDOG(mtmp))
+            if (has_edog(mtmp))
             {
                 if (EDOG(mtmp)->hungrytime + 500 <= monstermoves)
                     strcat(tempbuf, " Weak");

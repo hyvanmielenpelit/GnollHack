@@ -24,7 +24,7 @@ void
 free_emin(mtmp)
 struct monst *mtmp;
 {
-    if (mtmp->mextra && EMIN(mtmp)) 
+    if (has_emin(mtmp)) 
     {
         free((genericptr_t) EMIN(mtmp));
         EMIN(mtmp) = (struct emin *) 0;
