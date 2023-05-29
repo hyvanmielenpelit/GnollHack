@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
-             xmlns:gnollhackclient="clr-namespace:GnollHackClient"
+             xmlns:gnollhackclient="clr-namespace:GnollHackClient" xmlns:controls="clr-namespace:GnollHackClient.Controls"
              BackgroundColor="Black"
              x:Class="GnollHackClient.Pages.Game.DisplayFilePage">
     <ContentPage.Content>
@@ -40,14 +40,16 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0" x:Name="ShareGrid" BackgroundColor="Transparent" HorizontalOptions="End" VerticalOptions="FillAndExpand" WidthRequest="170">
+                    <!--<Grid Grid.Column="0" x:Name="ShareGrid" BackgroundColor="Transparent" HorizontalOptions="End" VerticalOptions="FillAndExpand" WidthRequest="170">
                         <ff:CachedImage x:Name="ShareButtonImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
                         <Button Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-                    </Grid>
-                    <Grid Grid.Column="1" x:Name="CloseGrid2" BackgroundColor="Transparent" HorizontalOptions="Start" VerticalOptions="FillAndExpand" WidthRequest="170">
+                    </Grid>-->
+                    <controls:CustomImageButton Grid.Column="0" Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" WidthRequest="170" HorizontalOptions="End" VerticalOptions="FillAndExpand" />
+                    <!--<Grid Grid.Column="1" x:Name="CloseGrid2" BackgroundColor="Transparent" HorizontalOptions="Start" VerticalOptions="FillAndExpand" WidthRequest="170">
                         <ff:CachedImage x:Name="CloseButtonImage2" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
                         <Button Text="Close" x:Name="CloseButton2" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-                    </Grid>
+                    </Grid>-->
+                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" WidthRequest="170" HorizontalOptions="Start" VerticalOptions="FillAndExpand" />
                 </Grid>
             </Grid>
         </Grid>    

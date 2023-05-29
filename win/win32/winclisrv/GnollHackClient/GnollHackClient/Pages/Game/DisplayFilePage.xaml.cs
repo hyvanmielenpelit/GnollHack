@@ -127,7 +127,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void ShareButton_Clicked(object sender, EventArgs e)
         {
-            ShareGrid.IsEnabled = false;
+            ShareButton.IsEnabled = false;
             App.PlayButtonClickedSound();
             try
             {
@@ -141,7 +141,7 @@ namespace GnollHackClient.Pages.Game
             {
                 await DisplayAlert("Share File Failure", "GnollHack failed to share " + HeaderLabel.Text + ": " + ex.Message, "OK");
             }
-            ShareGrid.IsEnabled = true;
+            ShareButton.IsEnabled = true;
         }
     }
 }

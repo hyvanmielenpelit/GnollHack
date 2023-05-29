@@ -485,6 +485,9 @@
     <EmbeddedResource Update="Controls\SwitchableCanvasView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Controls\CustomImageButton.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Pages\Game\AboutPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -537,6 +540,9 @@
   <ItemGroup>
     <Compile Update="Controls\SimpleImageButton.xaml.cs">
       <DependentUpon>SimpleImageButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\CustomImageButton.xaml.cs">
+      <DependentUpon>CustomImageButton.xaml</DependentUpon>
     </Compile>
     <Compile Update="Pages\Game\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>

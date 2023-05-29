@@ -25,9 +25,9 @@ namespace GnollHackClient.Pages.Game
             _fileName = fileName;
             HeaderLabel.Text = header;
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            OKButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            CancelButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            ResetButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            //OKButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            //CancelButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            //ResetButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
         }
 
         public bool ReadFile(out string errorMessage)
@@ -53,7 +53,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void OKButton_Clicked(object sender, EventArgs e)
         {
-            OKGrid.IsEnabled = false;
+            OKButton.IsEnabled = false;
             App.PlayButtonClickedSound();
             if (_textChanged)
             {
@@ -67,7 +67,7 @@ namespace GnollHackClient.Pages.Game
                     catch (Exception ex)
                     {
                         ErrorLabel.Text = ex.Message;
-                        OKGrid.IsEnabled = true;
+                        OKButton.IsEnabled = true;
                         return;
                     }
                     ErrorLabel.Text = "";
@@ -75,7 +75,7 @@ namespace GnollHackClient.Pages.Game
                 }
                 else
                 {
-                    OKGrid.IsEnabled = true;
+                    OKButton.IsEnabled = true;
                 }
             }
             else
@@ -87,7 +87,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
         {
-            CancelGrid.IsEnabled = false;
+            CancelButton.IsEnabled = false;
             App.PlayButtonClickedSound();
             if (_textChanged)
             {
@@ -99,7 +99,7 @@ namespace GnollHackClient.Pages.Game
                 }
                 else 
                 {
-                    CancelGrid.IsEnabled = true;
+                    CancelButton.IsEnabled = true;
                 }
             }
             else
@@ -111,7 +111,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void ResetButton_Clicked(object sender, EventArgs e)
         {
-            ResetGrid.IsEnabled = false;
+            ResetButton.IsEnabled = false;
             App.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Reset Options File?", "Are you sure to reset the options file?", "Yes", "No");
             if(answer)
@@ -122,7 +122,7 @@ namespace GnollHackClient.Pages.Game
             }
             else
             {
-                ResetGrid.IsEnabled = true;
+                ResetButton.IsEnabled = true;
             }
         }
 

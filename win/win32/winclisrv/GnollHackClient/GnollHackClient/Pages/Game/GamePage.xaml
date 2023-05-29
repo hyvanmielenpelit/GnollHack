@@ -208,7 +208,11 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Grid x:Name="MenuOKGrid" HorizontalOptions="End" WidthRequest="215" HeightRequest="60" Grid.Column="0">
+                        <controls:CustomImageButton HorizontalOptions="End" WidthRequest="215" HeightRequest="60" Grid.Column="0"  UseVaryingTextColors="True"  Text="OK" x:Name="MenuOKButton" Clicked="MenuOKButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" >
+                        </controls:CustomImageButton>
+                        <controls:CustomImageButton HorizontalOptions="Start" WidthRequest="215" HeightRequest="60" Grid.Column="1"  UseVaryingTextColors="True" Text="Cancel" x:Name="MenuCancelButton" Clicked="MenuCancelButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
+
+                        <!--<Grid x:Name="MenuOKGrid" HorizontalOptions="End" WidthRequest="215" HeightRequest="60" Grid.Column="0">
                             <ff:CachedImage x:Name="MenuOKButtonImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="215" HeightRequest="60" />
                             <Button Text="OK" x:Name="MenuOKButton" Clicked="MenuOKButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
                                 <VisualStateManager.VisualStateGroups>
@@ -226,11 +230,11 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Button>
-                        </Grid>
-                        <Grid x:Name="MenuCancelGrid" HorizontalOptions="Start" WidthRequest="215" HeightRequest="60" Grid.Column="1">
+                        </Grid>-->
+                        <!--<Grid x:Name="MenuCancelGrid" HorizontalOptions="Start" WidthRequest="215" HeightRequest="60" Grid.Column="1">
                             <ff:CachedImage x:Name="MenuCancelButtonImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="215" HeightRequest="60" />
                             <Button Text="Cancel" x:Name="MenuCancelButton" Clicked="MenuCancelButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-                        </Grid>
+                        </Grid>-->
                     </Grid>
                 </StackLayout>
                 <Grid x:Name="MenuCountBackgroundGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
@@ -278,18 +282,24 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Grid Grid.Column="0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="170" HeightRequest="60">
+                                    <!--<Grid Grid.Column="0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="170" HeightRequest="60">
                                         <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170" HeightRequest="60"  HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Aspect="Fill" />
                                         <Button x:Name="MenuCountOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="MenuCountOkButton_Clicked" />
-                                    </Grid>
-                                    <Grid  Grid.Column="1" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="170" HeightRequest="60">
+                                    </Grid>-->
+                                    <controls:CustomImageButton Grid.Column="0" x:Name="MenuCountOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="MenuCountOkButton_Clicked" />
+                                    <!--<Grid  Grid.Column="1" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="170" HeightRequest="60">
                                         <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Aspect="Fill" />
                                         <Button x:Name="MenuCountCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="MenuCountCancelButton_Clicked" />
-                                    </Grid>
+                                    </Grid>-->
+                                    <controls:CustomImageButton Grid.Column="1" x:Name="MenuCountCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="MenuCountCancelButton_Clicked" />
                                 </Grid>
                             </StackLayout>
                         </Frame>
@@ -314,12 +324,15 @@
                             <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                                 <Entry x:Name="GetLineEntryText" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        HorizontalTextAlignment="Center" FontSize="20" TextChanged="GetLineEntryText_TextChanged" />
-                                <Grid x:Name="GetLineQuestionMarkGrid" IsVisible="False" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" WidthRequest="50" HeightRequest="50">
+                                <!--<Grid x:Name="GetLineQuestionMarkGrid" IsVisible="False" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" WidthRequest="50" HeightRequest="50">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="50" HeightRequest="50"  HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Aspect="Fill" />
                                     <Button x:Name="GetLineQuestionMarkButton" Text="?" FontSize="18" WidthRequest="50" HeightRequest="50" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GetLineQuestionMarkButton_Clicked" />
-                                </Grid>
+                                </Grid>-->
+                                <controls:CustomImageButton x:Name="GetLineQuestionMarkButton" IsVisible="False" Text="?" FontSize="18" WidthRequest="50" HeightRequest="50" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="GetLineQuestionMarkButton_Clicked" />
                             </StackLayout>
                             <Label x:Name="GetLineAutoComplete" IsVisible="False" Text="" FontSize="18" HorizontalOptions="CenterAndExpand" TextColor="LightGray" >
                                 <Label.GestureRecognizers>
@@ -334,18 +347,24 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="160" HeightRequest="60">
+                                <!--<Grid Grid.Column="0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="160" HeightRequest="60">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="160" HeightRequest="60"  HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Aspect="Fill" />
                                     <Button x:Name="GetLineOkButton" Text="OK" FontSize="19" WidthRequest="160" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GetLineOkButton_Clicked" />
-                                </Grid>
-                                <Grid  Grid.Column="1" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="170" HeightRequest="60">
+                                </Grid>-->
+                                <controls:CustomImageButton Grid.Column="0" x:Name="GetLineOkButton" Text="OK" FontSize="19" WidthRequest="160" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="GetLineOkButton_Clicked" />
+                                <!--<Grid  Grid.Column="1" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="170" HeightRequest="60">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Aspect="Fill" />
                                     <Button x:Name="GetLineCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GetLineCancelButton_Clicked" />
-                                </Grid>
+                                </Grid>-->
+                                <controls:CustomImageButton Grid.Column="1" x:Name="GetLineCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="GetLineCancelButton_Clicked" />
                             </Grid>
                         </StackLayout>
                     </Frame>
@@ -392,11 +411,13 @@
                             </StackLayout>
                             <Label Text="" x:Name="PopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
                                        VerticalTextAlignment="Start" HorizontalOptions="Center"  />
-                            <Grid Grid.Column="0" HorizontalOptions="Center" WidthRequest="170" Margin="0,10,0,0">
+                            <!--<Grid Grid.Column="0" HorizontalOptions="Center" WidthRequest="170" Margin="0,10,0,0">
                                 <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
                                 <Button x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PopupOkButton_Clicked" />
-                            </Grid>
+                            </Grid>-->
+                            <controls:CustomImageButton Grid.Column="0" Margin="0,10,0,0" x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="PopupOkButton_Clicked" />
                         </StackLayout>
                     </Frame>
                 </Grid>

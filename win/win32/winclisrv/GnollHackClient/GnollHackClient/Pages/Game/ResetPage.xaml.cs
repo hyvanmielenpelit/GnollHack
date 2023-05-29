@@ -164,7 +164,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            CloseGrid.IsEnabled = false;
+            CloseButton.IsEnabled = false;
             App.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
@@ -201,7 +201,7 @@ namespace GnollHackClient.Pages.Game
                 _currentPageHeight = height;
 
                 lblHeader.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
-                CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
+                CloseButton.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }
         }
 

@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
-             xmlns:gnollhackclient="clr-namespace:GnollHackClient"
+             xmlns:gnollhackclient="clr-namespace:GnollHackClient" xmlns:controls="clr-namespace:GnollHackClient.Controls"
              BackgroundColor="Black"
              x:Class="GnollHackClient.Pages.Game.EditorPage">
     <ContentPage.Content>
@@ -35,18 +35,21 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Grid x:Name="OKGrid" HorizontalOptions="End" WidthRequest="180" HeightRequest="50" Grid.Column="0">
+                    <!--<Grid x:Name="OKGrid" HorizontalOptions="End" WidthRequest="180" HeightRequest="50" Grid.Column="0">
                         <ff:CachedImage x:Name="OKButtonImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="180" HeightRequest="50" />
                         <Button Text="Save" x:Name="OKButton" Clicked="OKButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  />
-                    </Grid>
-                    <Grid x:Name="CancelGrid" HorizontalOptions="Center" WidthRequest="180" HeightRequest="50" Grid.Column="1">
+                    </Grid>-->
+                    <controls:CustomImageButton Grid.Column="0" Text="Save" x:Name="OKButton" Clicked="OKButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="End" VerticalOptions="FillAndExpand"   />
+                    <!--<Grid x:Name="CancelGrid" HorizontalOptions="Center" WidthRequest="180" HeightRequest="50" Grid.Column="1">
                         <ff:CachedImage x:Name="CancelButtonImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="180" HeightRequest="50" />
                         <Button Text="Close" x:Name="CancelButton" Clicked="CancelButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-                    </Grid>
-                    <Grid x:Name="ResetGrid" HorizontalOptions="Start" WidthRequest="180" HeightRequest="50" Grid.Column="2">
+                    </Grid>-->
+                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CancelButton" Clicked="CancelButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="FillAndExpand" />
+                    <!--<Grid x:Name="ResetGrid" HorizontalOptions="Start" WidthRequest="180" HeightRequest="50" Grid.Column="2">
                         <ff:CachedImage x:Name="ResetButtonImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="180" HeightRequest="50" />
                         <Button Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-                    </Grid>
+                    </Grid>-->
+                    <controls:CustomImageButton Grid.Column="2" Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="Start" VerticalOptions="FillAndExpand" />
                 </Grid>
             </Grid>
         </Grid>

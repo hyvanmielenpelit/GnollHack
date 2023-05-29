@@ -42,6 +42,9 @@ namespace GnollHackClient
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             App.InitBaseTypefaces(assembly);
+            ButtonNormalImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            ButtonSelectedImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_selected.png", assembly);
+            ButtonDisabledImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_disabled.png", assembly);
 
             var mainPage = new MainPage();
             var navPage = new NavigationPage(mainPage);
@@ -565,6 +568,10 @@ namespace GnollHackClient
 
         public static SKBitmap ScrollBitmap { get; set; }
         public static SKBitmap YouBitmap { get; set; }
+
+        public static ImageSource ButtonNormalImageSource { get; set; }
+        public static ImageSource ButtonSelectedImageSource { get; set; }
+        public static ImageSource ButtonDisabledImageSource { get; set; }
 
         public static void InitGameBitmaps(Assembly assembly)
         {

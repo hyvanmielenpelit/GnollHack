@@ -25,8 +25,8 @@ namespace GnollHackClient.Pages.Game
             InitializeComponent();
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
             _fileName = fileName;
-            Assembly assembly = GetType().GetTypeInfo().Assembly;
-            CloseButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            //Assembly assembly = GetType().GetTypeInfo().Assembly;
+            //CloseButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             ScoresView.BindingContext = this;
             MainGrid.BindingContext = this;
         }
@@ -37,14 +37,14 @@ namespace GnollHackClient.Pages.Game
             _fileName = "";
             NoScoresLabel.IsVisible = true;
             ScoresView.IsVisible = false;
-            Assembly assembly = GetType().GetTypeInfo().Assembly;
-            CloseButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            //Assembly assembly = GetType().GetTypeInfo().Assembly;
+            //CloseButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             ScoresView.BindingContext = this;
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            CloseGrid.IsEnabled = false;
+            CloseButton.IsEnabled = false;
             App.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
@@ -114,7 +114,7 @@ namespace GnollHackClient.Pages.Game
                 _currentPageHeight = height;
 
                 HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
-                CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorderWithTop(bkgView.BorderStyle, width, height, 20.0);
+                CloseButton.Margin = ClientUtils.GetFooterMarginWithBorderWithTop(bkgView.BorderStyle, width, height, 20.0);
                 double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
                 ScoresView.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
 

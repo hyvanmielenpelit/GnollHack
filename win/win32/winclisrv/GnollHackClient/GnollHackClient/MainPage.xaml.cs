@@ -49,7 +49,7 @@ namespace GnollHackClient
         public void HideLocalGameButton()
         {
             StartLocalGameButton.IsVisible = false;
-            StartLocalGameImage.IsVisible = false;
+            //StartLocalGameImage.IsVisible = false;
             StartLocalGameButton.TextColor = Color.Gray;
             StartLocalGoneLabel.IsVisible = true;
         }
@@ -112,8 +112,8 @@ namespace GnollHackClient
             wizardModeGrid.IsVisible = App.DeveloperMode;
             if (!App.DeveloperMode)
                 wizardModeSwitch.IsToggled = false;
-            ResetGrid.IsVisible = App.DeveloperMode;
-            OptionsGrid.IsVisible = App.DeveloperMode;
+            ResetButton.IsVisible = App.DeveloperMode;
+            OptionsButton.IsVisible = App.DeveloperMode;
             StartServerGrid.IsVisible = App.ServerGameAvailable;
 
             classicModeSwitch.IsToggled = App.ClassicMode;
@@ -343,14 +343,14 @@ namespace GnollHackClient
 
             try
             {
-                StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                topScoreImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                //StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                //StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                //clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                //topScoreImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                //optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                //settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                //creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                //exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                 StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
             }
             catch (Exception ex)

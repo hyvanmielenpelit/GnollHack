@@ -4,7 +4,7 @@
              xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              xmlns:local="clr-namespace:GnollHackClient" 
              xmlns:xct="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit" 
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:controls="clr-namespace:GnollHackClient.Controls"
              x:Class="GnollHackClient.MainPage"
              NavigationPage.HasNavigationBar="false"
              BackgroundColor="Black"
@@ -80,30 +80,36 @@
         <Label x:Name="ErrorLabel" TextColor="Red" FontSize="Small" FontFamily="Lato" AbsoluteLayout.LayoutBounds="10, 10, AutoSize, AutoSize" />
         <Grid x:Name="UpperButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,10,10,5" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
             <StackLayout>
-                <Grid x:Name="ResetGrid">
+                <!--<Grid x:Name="ResetGrid">
                     <Image x:Name="clearImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
                     <Button Text="Reset" x:Name="ClearFilesButton" Clicked="ClearFilesButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
-                </Grid>
-                <Grid>
+                </Grid>-->
+                <!--<Grid>
                     <Image x:Name="topScoreImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
                     <Button Text="Scores" x:Name="TopScoreButton" Clicked="TopScoreButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
-                </Grid>
-                <Grid x:Name="OptionsGrid">
+                </Grid>-->
+                <!--<Grid x:Name="OptionsGrid">
                     <Image x:Name="optionsImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
                     <Button Text="Options" x:Name="OptionsButton" Clicked="OptionsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
-                </Grid>
-                <Grid>
+                </Grid>-->
+                <!--<Grid>
                     <Image x:Name="settingsImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
                     <Button Text="Settings" x:Name="SettingsButton" Clicked="SettingsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
-                </Grid>
-                <Grid>
+                </Grid>-->
+                <!--<Grid>
                     <Image x:Name="creditsImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
                     <Button Text="About" x:Name="CreditsButton" Clicked="CreditsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
                 </Grid>
                 <Grid>
                     <Image x:Name="exitImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
                     <Button Text="Exit" x:Name="ExitAppButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
-                </Grid>
+                </Grid>-->
+                <controls:CustomImageButton Text="Reset" x:Name="ResetButton" Clicked="ClearFilesButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                <controls:CustomImageButton Text="Scores" x:Name="TopScoreButton" Clicked="TopScoreButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                <controls:CustomImageButton Text="Options" x:Name="OptionsButton" Clicked="OptionsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                <controls:CustomImageButton Text="Settings" x:Name="SettingsButton" Clicked="SettingsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+                <controls:CustomImageButton Text="About" x:Name="CreditsButton" Clicked="CreditsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                <controls:CustomImageButton Text="Exit" x:Name="ExitAppButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
             </StackLayout>
         </Grid>
         <StackLayout x:Name="StartButtonLayout" Opacity="0" IsVisible="false"
@@ -161,14 +167,14 @@
                 <local:CustomLabel x:Name="StartLocalGoneLabel" IsVisible="False" Text="Please exit and restart to play" FontFamily="Immortal" FontSize="19" TextColor="LightBlue" 
                                    OutlineWidth="3" WidthRequest="300" HeightRequest="30"
                                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-                <Image x:Name="StartLocalGameImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-                <Button Text="Play Game" x:Name="StartLocalGameButton" Clicked="localButton_Clicked" 
+                <!--<Image x:Name="StartLocalGameImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />-->
+                <controls:CustomImageButton Text="Play Game" x:Name="StartLocalGameButton" Clicked="localButton_Clicked" 
                         FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent"  
                         HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
             </Grid>
             <Grid x:Name="StartServerGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                <Image x:Name="StartServerGameImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-                <Button Text="Online Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" 
+                <!--<Image x:Name="StartServerGameImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>-->
+                <controls:CustomImageButton Text="Online Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" 
                         FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" 
                         HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
             </Grid>
@@ -193,11 +199,13 @@
                                 </Label.GestureRecognizers>
                             </Label>
                         </StackLayout>
-                        <Grid HorizontalOptions="Center" WidthRequest="170" Margin="0,10,0,0">
+                        <!--<Grid HorizontalOptions="Center" WidthRequest="170" Margin="0,10,0,0">
                             <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
                             <Button x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PopupOkButton_Clicked" />
-                        </Grid>
+                        </Grid>-->
+                        <controls:CustomImageButton x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="PopupOkButton_Clicked" />
                     </StackLayout>
                 </Frame>
             </Grid>

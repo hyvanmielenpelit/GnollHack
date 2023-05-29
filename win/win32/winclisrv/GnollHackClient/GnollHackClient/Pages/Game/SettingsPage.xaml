@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
-             xmlns:gnollhackclient="clr-namespace:GnollHackClient"
+             xmlns:gnollhackclient="clr-namespace:GnollHackClient" xmlns:controls="clr-namespace:GnollHackClient.Controls"
              x:Class="GnollHackClient.Pages.Game.SettingsPage"
              BackgroundColor="Black"
              Appearing="ContentPage_Appearing"
@@ -479,11 +479,13 @@
                         </TableSection>
                     </TableRoot>
                 </TableView>
-                <Grid Grid.Row="2" x:Name="CloseGrid" WidthRequest="250" HeightRequest="60" Margin="0,10,0,10" HorizontalOptions="Center" VerticalOptions="EndAndExpand">
+                <!--<Grid Grid.Row="2" x:Name="CloseGrid" WidthRequest="250" HeightRequest="60" Margin="0,10,0,10" HorizontalOptions="Center" VerticalOptions="EndAndExpand">
                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="250" HeightRequest="60" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill" />
                     <Button Text="Close" WidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="19" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
-                </Grid>
+                </Grid>-->
+                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Margin="0,10,0,10" Text="Close" WidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="19" HorizontalOptions="Center" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
+                        Clicked="Button_Clicked" />
             </Grid>
         </Grid>
     </ContentPage.Content>

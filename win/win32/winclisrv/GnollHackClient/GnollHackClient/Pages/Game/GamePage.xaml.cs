@@ -2203,7 +2203,7 @@ namespace GnollHackClient.Pages.Game
             GetLineCaption.TextColor = clr;
             GetLineEntryText.Text = "";
             GetLineEntryText.MaxLength = GHConstants.BUFSZ - 1;
-            GetLineQuestionMarkGrid.IsVisible = false;
+            GetLineQuestionMarkButton.IsVisible = false;
             GetLineEntryText.IsVisible = true;
             GetLineEntryText.Keyboard = Keyboard.Default;
             GetLineEntryText.WidthRequest = 320;
@@ -2217,7 +2217,7 @@ namespace GnollHackClient.Pages.Game
             {
                 case (int)getline_types.GETLINE_EXTENDED_COMMAND:
                     GetLineEntryText.WidthRequest = 230;
-                    GetLineQuestionMarkGrid.IsVisible = true;
+                    GetLineQuestionMarkButton.IsVisible = true;
                     GetLineAutoComplete.IsVisible = true;
                     GetLineEntryText.Placeholder = "Type the command";
                     _getLineRegex = new Regex(@"^[A-Za-z0-9_]{0,64}$");
@@ -2230,7 +2230,7 @@ namespace GnollHackClient.Pages.Game
                     break;
                 case (int)getline_types.GETLINE_WIZ_LEVELPORT:
                     GetLineEntryText.WidthRequest = 230;
-                    GetLineQuestionMarkGrid.IsVisible = true;
+                    GetLineQuestionMarkButton.IsVisible = true;
                     GetLineEntryText.Placeholder = "Type the level";
                     GetLineEntryText.Keyboard = Keyboard.Numeric;
                     _getLineRegex = new Regex(@"^[A-Za-z0-9_? ]{0,32}$");
@@ -2259,7 +2259,7 @@ namespace GnollHackClient.Pages.Game
                 case (int)getline_types.GETLINE_MONSTER_CLASS:
                     GetLineEntryText.WidthRequest = 230;
                     GetLineEntryText.MaxLength = 1;
-                    GetLineQuestionMarkGrid.IsVisible = true;
+                    GetLineQuestionMarkButton.IsVisible = true;
                     GetLineEntryText.Placeholder = "Type the monster class";
                     _getLineRegex = new Regex(@"^[A-Za-z0-9_ \'\&\#\:\;]{0,64}$");
                     break;
