@@ -6353,9 +6353,9 @@ boolean incl_wsegs;
         if (EDOG(mtmp))
             sz += sizeof (struct edog);
         if (MMONST(mtmp))
-            sz += sizeof(struct monst);
+            sz += size_monst(MMONST(mtmp), FALSE);
         if (MOBJ(mtmp))
-            sz += sizeof(struct obj);
+            sz += size_obj(MOBJ(mtmp));
         /* mextra->mcorpsenm doesn't point to more memory */
     }
     return sz;
