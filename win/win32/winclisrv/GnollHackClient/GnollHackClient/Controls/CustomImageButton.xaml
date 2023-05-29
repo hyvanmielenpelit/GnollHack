@@ -6,7 +6,7 @@
              x:Class="GnollHackClient.Controls.CustomImageButton">
   <ContentView.Content>
         <Grid x:Name="customGrid">
-            <forms:SKCanvasView x:Name="customCanvasView" Margin="1,0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" EnableTouchEvents="false" PaintSurface="CustomCanvasView_PaintSurface" />
+            <forms:SKCanvasView x:Name="customCanvasView" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" EnableTouchEvents="false" PaintSurface="CustomCanvasView_PaintSurface" />
             <Button Text="" x:Name="customButton" Clicked="CustomButton_Clicked" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
         </Grid>
     </ContentView.Content>
