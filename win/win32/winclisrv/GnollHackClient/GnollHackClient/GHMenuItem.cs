@@ -629,6 +629,7 @@ namespace GnollHackClient
         }
 
         public bool Selected { get; set; }
+        public bool Highlighted { get; set; }
 
         public float BottomPadding
         {

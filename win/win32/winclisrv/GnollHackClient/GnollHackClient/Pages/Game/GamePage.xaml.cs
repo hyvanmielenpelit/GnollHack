@@ -9236,7 +9236,7 @@ namespace GnollHackClient.Pages.Game
                                 SKRect selectionrect = new SKRect(x, y, x + totalRowWidth, y + totalRowHeight);
                                 if(MenuCanvas.MenuButtonStyle)
                                 {
-                                    canvas.DrawBitmap(isselected ? App.ButtonSelectedBitmap : App.ButtonNormalBitmap, selectionrect, textPaint);
+                                    canvas.DrawBitmap(isselected || mi.Highlighted ? App.ButtonSelectedBitmap : App.ButtonNormalBitmap, selectionrect, textPaint);
                                 }
                                 else
                                 {
@@ -9697,6 +9697,8 @@ namespace GnollHackClient.Pages.Game
                         _savedMenuSender = sender;
                         _savedMenuEventArgs = e;
 
+                        HighlightMenuItems(e.Location);
+
                         Device.StartTimer(TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold), () =>
                         {
                             if (_savedMenuSender == null || _savedMenuEventArgs == null)
@@ -9729,6 +9731,8 @@ namespace GnollHackClient.Pages.Game
                                 /* Just one finger => Scroll the menu */
                                 if (diffX != 0 || diffY != 0)
                                 {
+                                    HighlightMenuItems(e.Location);
+
                                     DateTime now = DateTime.Now;
                                     /* Do not scroll within button press time threshold, unless large move */
                                     long millisecs_elapsed = (now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
@@ -9819,6 +9823,8 @@ namespace GnollHackClient.Pages.Game
                         _savedMenuEventArgs = null;
                         _savedMenuTimeStamp = DateTime.Now;
 
+                        ClearHighlightMenuItems();
+
                         TouchEntry entry;
                         bool res = MenuTouchDictionary.TryGetValue(e.Id, out entry);
                         if (res)
@@ -9883,7 +9889,9 @@ namespace GnollHackClient.Pages.Game
                     else
                         MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
-                    lock(_menuScrollLock)
+                    ClearHighlightMenuItems();
+
+                    lock (_menuScrollLock)
                     {
                         if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
                         {
@@ -9905,6 +9913,7 @@ namespace GnollHackClient.Pages.Game
                     e.Handled = true;
                     break;
                 case SKTouchAction.Exited:
+                    ClearHighlightMenuItems();
                     break;
                 case SKTouchAction.WheelChanged:
                     break;
@@ -9995,6 +10004,59 @@ namespace GnollHackClient.Pages.Game
             MenuCountBackgroundGrid.IsVisible = true;
         }
 
+        private void ClearHighlightMenuItems()
+        {
+            if (!MenuCanvas.MenuButtonStyle)
+                return;
+            lock (MenuCanvas.MenuItemLock)
+            {
+                if (MenuCanvas.MenuItems == null)
+                    return;
+
+                for (int idx = 0; idx < MenuCanvas.MenuItems.Count; idx++)
+                {
+                    if (idx >= MenuCanvas.MenuItems.Count)
+                        break;
+                    MenuCanvas.MenuItems[idx].Highlighted = false;
+                }
+            }
+        }
+
+        private void HighlightMenuItems(SKPoint p)
+        {
+            if (!MenuCanvas.MenuButtonStyle)
+                return;
+            lock (MenuCanvas.MenuItemLock)
+            {
+                if (MenuCanvas.MenuItems == null)
+                    return;
+
+                for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
+                {
+                    if (idx >= MenuCanvas.MenuItems.Count)
+                        break;
+                    MenuCanvas.MenuItems[idx].Highlighted = false;
+                    if (MenuCanvas.MenuItems[idx].DrawBounds.Contains(p))
+                    {
+                        GHMenuItem mi = MenuCanvas.MenuItems[idx];
+                        if (mi.Identifier != 0)
+                        {
+                            if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
+                            {
+                                if(!MenuCanvas.MenuItems[idx].Selected)
+                                    MenuCanvas.MenuItems[idx].Highlighted = true;
+                            }
+                            else if (MenuCanvas.SelectionHow == SelectionMode.Single)
+                            {
+                                MenuCanvas.MenuItems[idx].Highlighted = true;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
         private void MenuCanvas_NormalClickRelease(object sender, SKTouchEventArgs e)
         {
             bool doclickok = false;
@@ -10007,7 +10069,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     if (idx >= MenuCanvas.MenuItems.Count)
                         break;
-                    if (e.Location.Y >= MenuCanvas.MenuItems[idx].DrawBounds.Top && e.Location.Y <= MenuCanvas.MenuItems[idx].DrawBounds.Bottom)
+                    if (MenuCanvas.MenuItems[idx].DrawBounds.Contains(e.Location))
                     {
                         GHMenuItem mi = MenuCanvas.MenuItems[idx];
                         if (mi.Identifier == 0)
