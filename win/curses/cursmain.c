@@ -153,7 +153,7 @@ curses_init_nhwindows(int *argcp UNUSED,
 #ifdef PDCURSES
     char window_title[BUFSZ];
 #endif
-    curses_issue_gui_command(1);
+    curses_issue_gui_command(1, 0, 0);
 #ifdef XCURSES
     base_term = Xinitscr(*argcp, argv);
 #else
@@ -706,9 +706,9 @@ curses_cliparound(int x, int y, BOOLEAN_P force UNUSED)
 }
 
 void
-curses_issue_gui_command(int initid)
+curses_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str)
 {
-    if (initid == 1)
+    if (cmd_id == 1)
     {
         setlocale(LC_ALL, "en_US.UTF-8");
         setlocale(LC_CTYPE, "");

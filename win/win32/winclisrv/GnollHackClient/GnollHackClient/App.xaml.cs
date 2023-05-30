@@ -62,6 +62,11 @@ namespace GnollHackClient
             App.InformAboutGameTermination = Preferences.Get("WentToSleepWithGameOn", false);
             Preferences.Set("WentToSleepWithGameOn", false);
             App.UsesCarousel = true; // App.IsiOS || Preferences.Get("UsesCarousel", true);
+            App.PostingGameStarts = Preferences.Get("PostingGameStarts", GHConstants.DefaultPosting);
+            App.PostingAchievements = Preferences.Get("PostingAchievements", GHConstants.DefaultPosting);
+            App.PostingEvents = Preferences.Get("PostingEvents", GHConstants.DefaultPosting);
+            App.PostingEndResults = Preferences.Get("PostingEndResults", GHConstants.DefaultPosting);
+            App.PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
 
             App.BackButtonPressed += App.EmptyBackButtonPressed;
         }
@@ -1580,6 +1585,28 @@ namespace GnollHackClient
             return bitmap;
         }
 
+        public static bool PostingGameStarts { get; set; }
+        public static bool PostingAchievements { get; set; }
+        public static bool PostingEvents { get; set; }
+        public static bool PostingEndResults { get; set; }
+        public static bool PostingDiagnosticData { get; set; }
+
+        public enum PostAddressType
+        {
+            GameStarts = 0,
+            GameAchievements,
+            GameEvents,
+            GameResults,
+            DiagnosticData
+        }
+
+        public static string GetPostAddress(PostAddressType patype)
+        {
+            if(patype == PostAddressType.DiagnosticData)
+                return CurrentSecrets.DefaultDiagnosticDataPostAddress;
+            else
+                return CurrentSecrets.DefaultGamePostAddress;
+        }
     }
 
     class SecretsFileSizeComparer : IComparer<SecretsFile>

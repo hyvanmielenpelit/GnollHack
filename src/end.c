@@ -969,7 +969,7 @@ int how;
     if (Upolyd) /* Unchanging, or death which bypasses losing hit points */
         u.mh = u.mhmax;
 
-    issue_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
+    issue_simple_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
 
     if (u.uhunger < 500 || how == CHOKING) {
         init_uhunger();
@@ -1478,7 +1478,7 @@ int how;
         break;
     }
 
-    issue_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
+    issue_simple_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
  
     if(endtext)
         display_screen_text(endtext, (const char*)0, (const char*)0, screentextstyle, ATR_NONE, clr, 0UL);
@@ -1498,7 +1498,7 @@ int how;
        time or even day if player is slow responding to --More-- */
     urealtime.finish_time = endtime = getnow();
     urealtime.realtime += (long) (endtime - urealtime.start_timing);
-    issue_gui_command(GUI_CMD_REPORT_PLAY_TIME);
+    issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
 
     /* Write dumplog */
     if(disclose_and_dumplog_ok)
@@ -1980,7 +1980,7 @@ int how;
     if (CasualMode && how == ASCENDED && has_existing_save_file)
         (void)delete_savefile(); /* The casual mode character gets deleted only upon ascension */
 
-    issue_gui_command(GUI_CMD_GAME_ENDED);
+    issue_simple_gui_command(GUI_CMD_GAME_ENDED);
 
     if (have_windows)
         exit_nhwindows((char*)0);
@@ -3101,12 +3101,12 @@ reset_levchn(VOID_ARGS)
 STATIC_OVL void
 reset_msghistory(VOID_ARGS)
 {
-    issue_gui_command(GUI_CMD_CLEAR_MESSAGE_HISTORY);
+    issue_simple_gui_command(GUI_CMD_CLEAR_MESSAGE_HISTORY);
 
     /* Let's clean something else, too, here just in case */
-    issue_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
-    issue_gui_command(GUI_CMD_CLEAR_FLOATING_TEXTS);
-    issue_gui_command(GUI_CMD_CLEAR_GUI_EFFECTS);
+    issue_simple_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
+    issue_simple_gui_command(GUI_CMD_CLEAR_FLOATING_TEXTS);
+    issue_simple_gui_command(GUI_CMD_CLEAR_GUI_EFFECTS);
 }
 
 
@@ -3244,7 +3244,7 @@ tally_realtime(VOID_ARGS)
 {
     urealtime.finish_time = getnow();
     urealtime.realtime += (long)(urealtime.finish_time - urealtime.start_timing);
-    issue_gui_command(GUI_CMD_REPORT_PLAY_TIME);
+    issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
     urealtime.start_timing = urealtime.finish_time;
 }
 

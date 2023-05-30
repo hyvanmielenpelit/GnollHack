@@ -449,7 +449,7 @@ void NetHackQtBind::qt_cliparound_window(winid wid, int x, int y)
     NetHackQtWindow* window=id_to_window[(int)wid];
     window->ClipAround(x,y);
 }
-void NetHackQtBind::qt_issue_gui_command(int initid)
+void NetHackQtBind::qt_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str)
 {
 
 }

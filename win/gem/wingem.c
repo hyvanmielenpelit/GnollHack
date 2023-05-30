@@ -927,8 +927,9 @@ extern int mar_set_rogue(int);
 extern void mar_add_pet_sign(winid, int, int);
 
 void
-Gem_issue_gui_command(initid)
-int initid;
+Gem_issue_gui_command(cmd_id, cmd_param, cmd_str)
+int cmd_id, cmd_param;
+const char* cmd_str;
 {
     return;
 }

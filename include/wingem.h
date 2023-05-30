@@ -39,7 +39,7 @@ E char *NDECL(mar_ask_name);
 E int FDECL(mar_create_window, (int));
 E void FDECL(mar_destroy_nhwindow, (int));
 E void FDECL(mar_print_glyph, (int, int, int, struct layer_info));
-E void FDECL(mar_issue_gui_command, (int));
+E void FDECL(mar_issue_gui_command, (int, int, const char*));
 E void FDECL(mar_print_line, (int, int, int, char *));
 E void FDECL(mar_set_message, (char *, char *, char *));
 E Gem_menu_item *NDECL(mar_hol_inv);
@@ -89,7 +89,7 @@ E void FDECL(Gem_cliparound, (int, int, BOOLEAN_P force));
 E void FDECL(Gem_update_positionbar, (char *));
 #endif
 E void FDECL(Gem_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
-E void FDECL(Gem_issue_gui_command, (int));
+E void FDECL(Gem_issue_gui_command, (int, int, const char*));
 E void FDECL(Gem_raw_print, (const char *));
 E void FDECL(Gem_raw_print_bold, (const char *));
 E int NDECL(Gem_nhgetch);

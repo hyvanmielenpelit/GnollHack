@@ -6199,7 +6199,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         return;
 
     /* Fade to black */
-    issue_gui_command(GUI_CMD_FADE_TO_BLACK);
+    issue_simple_gui_command(GUI_CMD_FADE_TO_BLACK);
 
     /* discard context which applies to the level we're leaving;
        for lock-picking, container may be carried, in which case we
@@ -6297,12 +6297,12 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     reset_rndmonst(NON_PM); /* u.uz change affects monster generation */
 
     /* Clear certain gui texts and effects */
-    issue_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
-    issue_gui_command(GUI_CMD_CLEAR_FLOATING_TEXTS);
-    issue_gui_command(GUI_CMD_CLEAR_GUI_EFFECTS);
+    issue_simple_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
+    issue_simple_gui_command(GUI_CMD_CLEAR_FLOATING_TEXTS);
+    issue_simple_gui_command(GUI_CMD_CLEAR_GUI_EFFECTS);
 
     /* It is a good time for the garbage collector to function */
-    issue_gui_command(GUI_CMD_COLLECT_GARBAGE);
+    issue_simple_gui_command(GUI_CMD_COLLECT_GARBAGE);
 
     /* set default level change destination areas */
     /* the special level code may override these */
@@ -6553,7 +6553,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     play_environment_ambient_sounds();
 
      /* Fade back from black */
-    issue_gui_command(GUI_CMD_FADE_FROM_BLACK);
+    issue_simple_gui_command(GUI_CMD_FADE_FROM_BLACK);
 
     if (play_arrival_teleport_effect)
     {
@@ -6705,13 +6705,13 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 #ifdef GNH_MOBILE
         if (Is_waterlevel(&u.uz))
         {
-            issue_gui_command(GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE_ON_LEVEL);
+            issue_simple_gui_command(GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE_ON_LEVEL);
             pline_ex1(ATR_NONE, CLR_MSG_HINT, "Beware, it is dangerous to use travel mode on the Plane of Water!");
             pline_ex1(ATR_NONE, CLR_MSG_HINT, "[Travel mode has been disabled]");
         }
         else if (Is_waterlevel(&u.uz0))
         {
-            issue_gui_command(GUI_CMD_RESTORE_TRAVEL_MODE_ON_LEVEL);
+            issue_simple_gui_command(GUI_CMD_RESTORE_TRAVEL_MODE_ON_LEVEL);
             pline_ex1(ATR_NONE, CLR_MSG_HINT, "Phew! It is now safe to use the travel mode again!");
             pline_ex1(ATR_NONE, CLR_MSG_HINT, "[Travel mode has been restored]");
         }

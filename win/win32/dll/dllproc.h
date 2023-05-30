@@ -69,7 +69,7 @@ void dll_mark_synch(void);
 void dll_wait_synch(void);
 void dll_cliparound(int x, int y, BOOLEAN_P force);
 void dll_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
-void dll_issue_gui_command(int initid);
+void dll_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str);
 void dll_raw_print(const char *str);
 void dll_raw_print_bold(const char *str);
 void dll_raw_print_flush();

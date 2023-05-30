@@ -141,7 +141,7 @@ void mswin_mark_synch(void);
 void mswin_wait_synch(void);
 void mswin_cliparound(int x, int y, BOOLEAN_P force);
 void mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
-void mswin_issue_gui_command(int initid);
+void mswin_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str);
 void mswin_raw_print(const char *str);
 void mswin_raw_print_bold(const char *str);
 int mswin_nhgetch(void);

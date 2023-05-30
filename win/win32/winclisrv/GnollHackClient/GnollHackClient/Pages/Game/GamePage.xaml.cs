@@ -25,6 +25,8 @@ using System.Runtime.CompilerServices;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.PlatformConfiguration;
 using System.Text.RegularExpressions;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -1827,9 +1829,49 @@ namespace GnollHackClient.Pages.Game
                                 if (MapTravelMode != _savedMapTravelModeOnLevel)
                                     ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
                                 break;
+                            case GHRequestType.PostAchievement:
+                                PostAchievement(req.RequestString);
+                                break;
+                            case GHRequestType.PostEvent:
+                                break;
+                            case GHRequestType.PostEndResult:
+                                break;
+                            case GHRequestType.PostDiagnosticData:
+                                break;
                         }
                     }
                 }
+            }
+        }
+
+        private async void PostAchievement(string achievementname)
+        {
+            if (!App.PostingAchievements)
+                return;
+
+            try
+            {
+                string plname = Preferences.Get("LastUsedPlayerName", "");
+                string message = plname + " has gained an achievement: " + achievementname;
+
+                HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) };
+                string postaddress = App.GetPostAddress(App.PostAddressType.GameAchievements);
+                DiscordWebHookPost post = new DiscordWebHookPost(message);
+                string json = JsonConvert.SerializeObject(post);
+                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                //var cts = new CancellationTokenSource();
+                //cts.CancelAfter(5000);
+                string jsonResponse = "";
+                using (HttpResponseMessage response = await client.PostAsync(postaddress, content))
+                {
+                    jsonResponse = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine(jsonResponse);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
             }
         }
 

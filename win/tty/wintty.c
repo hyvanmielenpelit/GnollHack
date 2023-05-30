@@ -434,7 +434,7 @@ char **argv UNUSED;
 {
     int wid, hgt, i;
 
-    tty_issue_gui_command(1);
+    tty_issue_gui_command(1, 0, 0);
 
     /* options aren't processed yet so wc2_statuslines might be 0;
        make sure that it has a reasonable value during tty setup */
@@ -2323,7 +2323,7 @@ struct WinDesc *cw;
     boolean linestart;
     register char *cp,*ccp,*cap;
 
-    issue_gui_command(GUI_CMD_START_FLUSH);
+    issue_simple_gui_command(GUI_CMD_START_FLUSH);
 
     for (n = 0, i = 0; i < cw->maxrow; i++) 
     {
@@ -2432,7 +2432,7 @@ struct WinDesc *cw;
             cw->flags |= WIN_CANCELLED;
     }
 
-    issue_gui_command(GUI_CMD_FINISH_FLUSH);
+    issue_simple_gui_command(GUI_CMD_FINISH_FLUSH);
 }
 
 /*ARGSUSED*/
@@ -3477,7 +3477,7 @@ register int xmin, ymax;
     }
 #endif /*0*/
 
-    issue_gui_command(GUI_CMD_START_FLUSH);
+    issue_simple_gui_command(GUI_CMD_START_FLUSH);
 
 #if defined(SIGWINCH) && defined(CLIPPING)
     if (ymax > LI)
@@ -3503,7 +3503,7 @@ register int xmin, ymax;
         row_refresh(xmin - (int) cw->offx, COLNO - 1, y - (int) cw->offy);
 #endif
     }
-    issue_gui_command(GUI_CMD_FINISH_FLUSH);
+    issue_simple_gui_command(GUI_CMD_FINISH_FLUSH);
 
     end_glyphout();
     if (ymax >= (int) wins[WIN_STATUS]->offy) {
@@ -3669,12 +3669,13 @@ boolean force UNUSED;
 #endif /* CLIPPING */
 
 void
-tty_issue_gui_command(initid)
-int initid;
+tty_issue_gui_command(cmd_id, cmd_param, cmd_str)
+int cmd_id, cmd_param;
+const char* cmd_str;
 {
     if (use_utf8_encoding())
     {
-        switch (initid)
+        switch (cmd_id)
         {
         case 0: /* Set locale to default */
             break;

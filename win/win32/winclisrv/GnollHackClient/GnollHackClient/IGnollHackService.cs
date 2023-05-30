@@ -52,5 +52,6 @@ namespace GnollHackClient
         void SaveAndRestoreSavedGame();
         void TallyRealTime();
         bool ValidateSaveFile(string filename);
+
     }
 }

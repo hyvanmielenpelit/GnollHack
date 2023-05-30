@@ -1388,7 +1388,7 @@ newgame()
 
     encounter_init();        /* initialize encounters and force linkage */
 
-    issue_gui_command(GUI_CMD_LOAD_GLYPHS);
+    issue_simple_gui_command(GUI_CMD_LOAD_GLYPHS);
 
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, (SIG_RET_TYPE) done1);
@@ -1417,10 +1417,10 @@ newgame()
     status_reassess();
 
     if (flags.legacy) {
-        issue_gui_command(GUI_CMD_LOAD_INTRO_SOUND_BANK);
+        issue_simple_gui_command(GUI_CMD_LOAD_INTRO_SOUND_BANK);
         flush_screen(1);
         com_pager_ex((struct monst*)0, 1, ATR_NONE, CLR_MSG_HINT, FALSE);
-        issue_gui_command(GUI_CMD_UNLOAD_INTRO_SOUND_BANK);
+        issue_simple_gui_command(GUI_CMD_UNLOAD_INTRO_SOUND_BANK);
     }
 
     /* Game is starting now */

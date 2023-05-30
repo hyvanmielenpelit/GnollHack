@@ -1198,6 +1198,10 @@ namespace GnollHackCommon
         GUI_CMD_UNLOAD_INTRO_SOUND_BANK,
         GUI_CMD_WAIT_FOR_RESUME,
         GUI_CMD_REPORT_PLAY_TIME,
+        GUI_CMD_POST_GAME_EVENT,
+        GUI_CMD_POST_GAME_ACHIEVEMENT,
+        GUI_CMD_POST_GAME_END_RESULT,
+        GUI_CMD_POST_DIAGNOSTIC_DATA,
         GUI_CMD_GAME_START,
         GUI_CMD_GAME_ENDED,
     }
@@ -1373,8 +1377,10 @@ namespace GnollHackCommon
         public const float MenuSelectVolume = 0.15f;
 #if DEBUG
         public const bool DefaultDeveloperMode = true;
+        public const bool DefaultPosting = true;
 #else
         public const bool DefaultDeveloperMode = false;
+        public const bool DefaultPosting = false;
 #endif
         public const int NUM_ZAP_SOURCE_BASE_DIRS = 8;
         public const int NUM_ZAP_SOURCE_DIRS = (GHConstants.NUM_ZAP_SOURCE_BASE_DIRS * 2);

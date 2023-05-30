@@ -1,6 +1,6 @@
 {
   "directories": [
-    {"name": "bank"}
+    { "name": "bank" }
   ],
   "files": [
     {
@@ -60,5 +60,6 @@
       "flags": 0
     }
   ],
-  "AdUnitID": ""
+  "EncodedDefaultGamePostAddress": "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTExMzA0Nzk1MjczMTE1NjUyMC9RMVJETTl6aDlpSUd6RC1TMlVkb3hEOHRwUnV3OU1VdmZzREpqQjhJcXVRakVDVjQyYWhzNlZjUUI3LVFpLWREUWNvMw==",
+  "EncodedDefaultDiagnosticDataPostAddress": "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTExMzA0Nzk1MjczMTE1NjUyMC9RMVJETTl6aDlpSUd6RC1TMlVkb3hEOHRwUnV3OU1VdmZzREpqQjhJcXVRakVDVjQyYWhzNlZjUUI3LVFpLWREUWNvMw=="
 }

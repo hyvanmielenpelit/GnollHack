@@ -1579,10 +1579,10 @@ namespace GnollHackClient
             return 1;
         }
 
-        public void ClientCallback_IssueGuiCommand(int cmdtype)
+        public void ClientCallback_IssueGuiCommand(int cmd_id, int cmd_param, string cmd_str)
         {
             ConcurrentQueue<GHRequest> queue;
-            switch (cmdtype)
+            switch (cmd_id)
             {
                 case (int)gui_command_types.GUI_CMD_LOAD_GLYPHS:
                     /* Reinitialize  glyph2tile after object shuffling */
@@ -1729,6 +1729,16 @@ namespace GnollHackClient
                         pollResponseQueue();
                     }
                     _restoreRequested = false;
+                    break;
+                case (int)gui_command_types.GUI_CMD_POST_GAME_ACHIEVEMENT:
+                    string achievementname = "";
+                    if(cmd_str != null)
+                        achievementname = cmd_str;
+
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.PostAchievement, cmd_param, achievementname));
+                    }
                     break;
                 default:
                     break;

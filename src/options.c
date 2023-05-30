@@ -5793,7 +5793,7 @@ doset() /* changing options via menu by Per Liboriussen */
 
     if (need_issue_gui_command)
     {
-        issue_gui_command(GUI_CMD_PREFERENCE_SET);
+        issue_simple_gui_command(GUI_CMD_PREFERENCE_SET);
     }
 
     if (need_stretch_map)

@@ -302,10 +302,11 @@ char *posbar;
 
 /* XXX can we decode the glyph in a meaningful way? */
 void
-chainin_issue_gui_command(initid)
-int initid;
+chainin_issue_gui_command(cmd_id, cmd_param, cmd_str)
+int cmd_id, cmd_param;
+const char* cmd_str;
 {
-    (*cibase->nprocs->win_issue_gui_command)(cibase->ndata, initid);
+    (*cibase->nprocs->win_issue_gui_command)(cibase->ndata, cmd_id, cmd_param, cmd_str);
 }
 
 void

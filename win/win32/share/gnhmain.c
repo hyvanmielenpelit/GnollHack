@@ -142,7 +142,7 @@ char** argv;
      */
     vision_init();
 
-    issue_gui_command(GUI_CMD_GAME_START);
+    issue_simple_gui_command(GUI_CMD_GAME_START);
 
     if(!load_saved_game(0))
     {
@@ -157,14 +157,14 @@ char** argv;
     }
 
     if(wizard)
-        issue_gui_command(GUI_CMD_ENABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
+        issue_simple_gui_command(GUI_CMD_ENABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
     else
-        issue_gui_command(GUI_CMD_DISABLE_WIZARD_MODE); /* Notification may be needed */
+        issue_simple_gui_command(GUI_CMD_DISABLE_WIZARD_MODE); /* Notification may be needed */
 
     if (CasualMode)
-        issue_gui_command(GUI_CMD_ENABLE_CASUAL_MODE); /* Notification may be needed if loaded a casual mode saved game */
+        issue_simple_gui_command(GUI_CMD_ENABLE_CASUAL_MODE); /* Notification may be needed if loaded a casual mode saved game */
     else
-        issue_gui_command(GUI_CMD_DISABLE_CASUAL_MODE); /* Notification may be needed */
+        issue_simple_gui_command(GUI_CMD_DISABLE_CASUAL_MODE); /* Notification may be needed */
 
     moveloop(resuming);
     gnollhack_exit(EXIT_SUCCESS);

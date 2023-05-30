@@ -555,11 +555,11 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     }
 }
 
-void lib_issue_gui_command(int initid)
+void lib_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str)
 {
-    lib_callbacks.callback_issue_gui_command(initid);
+    lib_callbacks.callback_issue_gui_command(cmd_id, cmd_param, cmd_str);
 
-    switch (initid)
+    switch (cmd_id)
     {
     case GUI_CMD_CLEAR_PET_DATA:
     {

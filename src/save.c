@@ -404,7 +404,7 @@ register int fd, mode;
     save_msghistory(fd, mode);
     bflush(fd);
 
-    issue_gui_command(GUI_CMD_REPORT_PLAY_TIME);
+    issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
     /* this is the value to use for the next update of urealtime.realtime */
     urealtime.start_timing = urealtime.finish_time;
 }

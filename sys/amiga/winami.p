@@ -38,7 +38,7 @@ void FDECL(amii_display_nhwindow, (winid  , boolean ));
 void FDECL(amii_display_file, (const char * , boolean ));
 void FDECL(amii_curs, (winid  , int  , int ));
 void FDECL(amii_print_glyph, (winid  , xchar  , xchar  , struct layer_info ));
-void FDECL(amii_issue_gui_command, (int));
+void FDECL(amii_issue_gui_command, (int, int, const char*));
 void FDECL(DoMenuScroll, (int  , int ));
 void FDECL(DisplayData, (int  , int  , int ));
 void FDECL(SetPropInfo, (struct Window * , struct Gadget * , long  , long  , long ));

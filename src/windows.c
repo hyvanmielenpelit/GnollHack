@@ -739,7 +739,7 @@ STATIC_DCL void FDECL(hup_end_menu_ex, (winid, const char *, const char*));
 STATIC_DCL void FDECL(hup_putstr_ex, (winid, int, const char *, int, int));
 STATIC_DCL void FDECL(hup_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 STATIC_DCL void FDECL(hup_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
-STATIC_DCL void FDECL(hup_issue_gui_command, (int));
+STATIC_DCL void FDECL(hup_issue_gui_command, (int, int, const char*));
 STATIC_DCL void FDECL(hup_outrip, (winid, int, time_t));
 STATIC_DCL void FDECL(hup_curs, (winid, int, int));
 STATIC_DCL void FDECL(hup_display_nhwindow, (winid, BOOLEAN_P));
@@ -1007,8 +1007,9 @@ struct layer_info layers UNUSED;
 
 /*ARGSUSED*/
 STATIC_OVL void
-hup_issue_gui_command(initid)
-int initid UNUSED;
+hup_issue_gui_command(cmd_id, cmd_param, cmd_str)
+int cmd_id UNUSED, cmd_param UNUSED;
+const char* cmd_str UNUSED;
 {
     return;
 }

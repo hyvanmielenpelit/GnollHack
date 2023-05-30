@@ -1220,7 +1220,7 @@ mswin_cliparound(int x, int y, BOOLEAN_P force)
 }
 
 void
-mswin_issue_gui_command(int initid)
+mswin_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str)
 {
     return;
 }

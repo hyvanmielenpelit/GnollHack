@@ -2384,13 +2384,13 @@ redraw_map()
      * the map would currently be showing.
      */
     struct layer_info layers;
-    issue_gui_command(GUI_CMD_START_FLUSH);
+    issue_simple_gui_command(GUI_CMD_START_FLUSH);
     for (y = 0; y < ROWNO; ++y)
         for (x = 1; x < COLNO; ++x) {
             layers = layers_at(x, y); /* not levl[x][y].hero_memory_layers.glyph */
             print_glyph(WIN_MAP, x, y, layers);
         }
-    issue_gui_command(GUI_CMD_FINISH_FLUSH);
+    issue_simple_gui_command(GUI_CMD_FINISH_FLUSH);
     flush_screen(1);
 }
 
@@ -3510,8 +3510,8 @@ int cursor_on_u;
         }
     }
 #endif
-    issue_gui_command(Is_really_rogue_level(&u.uz) ? GUI_CMD_FORCE_ASCII : GUI_CMD_UNFORCE_ASCII);
-    issue_gui_command(GUI_CMD_START_FLUSH);
+    issue_simple_gui_command(Is_really_rogue_level(&u.uz) ? GUI_CMD_FORCE_ASCII : GUI_CMD_UNFORCE_ASCII);
+    issue_simple_gui_command(GUI_CMD_START_FLUSH);
     for (y = 0; y < ROWNO; y++) {
         register gbuf_entry *gptr = &gbuf[y][x = gbuf_start[y]];
 
@@ -3521,7 +3521,7 @@ int cursor_on_u;
                 gptr->isnew = 0;
             }
     }
-    issue_gui_command(GUI_CMD_FINISH_FLUSH);
+    issue_simple_gui_command(GUI_CMD_FINISH_FLUSH);
 
     if (cursor_on_u)
         curs(WIN_MAP, u.ux, u.uy); /* move cursor to the hero */

@@ -365,8 +365,8 @@ boolean force;
 #endif /* CLIPPING */
 
 void
-safe_issue_gui_command(initid)
-int initid;
+safe_issue_gui_command(cmd_id, cmd_param)
+int cmd_id, cmd_param;
 {
     return;
 }

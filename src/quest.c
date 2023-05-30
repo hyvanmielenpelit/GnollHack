@@ -561,6 +561,7 @@ const char* achievement_name;
 {
     play_sfx_sound(SFX_ACHIEVEMENT);
     custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "ACHIEVEMENT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0U, "%s", achievement_name);
+    issue_gui_command(GUI_CMD_POST_GAME_ACHIEVEMENT, 0, achievement_name);
 }
 
 /*quest.c*/

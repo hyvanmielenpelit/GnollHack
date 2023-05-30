@@ -328,12 +328,12 @@ LibSaveAndRestoreSavedGame(void)
 #ifdef INSURANCE
         save_currentstate();
 #endif
-        issue_gui_command(GUI_CMD_WAIT_FOR_RESUME);
+        issue_simple_gui_command(GUI_CMD_WAIT_FOR_RESUME);
         /* Already in the right state */
 #if 0
         if (dosave0(TRUE))
         {
-            issue_gui_command(GUI_CMD_WAIT_FOR_RESUME);
+            issue_simple_gui_command(GUI_CMD_WAIT_FOR_RESUME);
             if (!load_saved_game(2))
             {
                 u.uhp = -1; /* universal game's over indicator */
