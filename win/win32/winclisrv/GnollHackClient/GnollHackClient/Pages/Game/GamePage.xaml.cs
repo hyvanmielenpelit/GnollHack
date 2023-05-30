@@ -1829,12 +1829,8 @@ namespace GnollHackClient.Pages.Game
                                 if (MapTravelMode != _savedMapTravelModeOnLevel)
                                     ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
                                 break;
-                            case GHRequestType.PostAchievement:
-                                PostAchievement(req.RequestString);
-                                break;
-                            case GHRequestType.PostEvent:
-                                break;
-                            case GHRequestType.PostEndResult:
+                            case GHRequestType.PostGameStatus:
+                                PostGameStatus(req.RequestInt, req.RequestString);
                                 break;
                             case GHRequestType.PostDiagnosticData:
                                 break;
@@ -1844,18 +1840,21 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private async void PostAchievement(string achievementname)
+        private async void PostGameStatus(int status_type, string status_string)
         {
-            if (!App.PostingAchievements)
+            if (!App.PostingGameStatus)
                 return;
 
+            string message = "";
             try
             {
-                string plname = Preferences.Get("LastUsedPlayerName", "");
-                string message = plname + " has gained an achievement: " + achievementname;
+                if(status_string != null)
+                    message = status_string;
+                if (message == "")
+                    return;
 
                 HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) };
-                string postaddress = App.GetPostAddress(App.PostAddressType.GameAchievements);
+                string postaddress = App.GetGameStatusPostAddress();
                 DiscordWebHookPost post = new DiscordWebHookPost(message);
                 string json = JsonConvert.SerializeObject(post);
                 HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");

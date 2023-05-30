@@ -1730,14 +1730,14 @@ namespace GnollHackClient
                     }
                     _restoreRequested = false;
                     break;
-                case (int)gui_command_types.GUI_CMD_POST_GAME_ACHIEVEMENT:
+                case (int)gui_command_types.GUI_CMD_POST_GAME_STATUS:
                     string achievementname = "";
                     if(cmd_str != null)
                         achievementname = cmd_str;
 
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.PostAchievement, cmd_param, achievementname));
+                        queue.Enqueue(new GHRequest(this, GHRequestType.PostGameStatus, cmd_param, achievementname));
                     }
                     break;
                 default:

@@ -1982,6 +1982,25 @@ int how;
 
     issue_simple_gui_command(GUI_CMD_GAME_ENDED);
 
+    if (how < PANICKED || how == ASCENDED || how == ESCAPED)
+    {
+        IfModeAllowsPostToForum
+        {
+            char postbuf[BUFSZ * 2] = "";
+            if (how < PANICKED)
+            {
+                char killerbuf[BUFSZ * 2];
+                formatkiller(killerbuf, sizeof killerbuf, how, TRUE);
+                Sprintf(postbuf, "%s has died, %s", plname, killerbuf);
+            }
+            else if (how == ASCENDED)
+                Sprintf(postbuf, "%s has ascended to demigodhood", plname);
+            else if (how == ESCAPED)
+                Sprintf(postbuf, "%s has escaped the dungeon", plname);
+            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, postbuf);
+        }
+    }
+
     if (have_windows)
         exit_nhwindows((char*)0);
 

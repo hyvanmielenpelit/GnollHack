@@ -53,9 +53,7 @@ namespace GnollHackClient
         StopWaitAndRestoreSavedGame,
         TallyRealTime,
         YnConfirmation,
-        PostEvent,
-        PostAchievement,
-        PostEndResult,
+        PostGameStatus,
         PostDiagnosticData,
     }
 

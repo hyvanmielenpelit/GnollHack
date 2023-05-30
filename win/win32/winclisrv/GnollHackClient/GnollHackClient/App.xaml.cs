@@ -62,10 +62,7 @@ namespace GnollHackClient
             App.InformAboutGameTermination = Preferences.Get("WentToSleepWithGameOn", false);
             Preferences.Set("WentToSleepWithGameOn", false);
             App.UsesCarousel = true; // App.IsiOS || Preferences.Get("UsesCarousel", true);
-            App.PostingGameStarts = Preferences.Get("PostingGameStarts", GHConstants.DefaultPosting);
-            App.PostingAchievements = Preferences.Get("PostingAchievements", GHConstants.DefaultPosting);
-            App.PostingEvents = Preferences.Get("PostingEvents", GHConstants.DefaultPosting);
-            App.PostingEndResults = Preferences.Get("PostingEndResults", GHConstants.DefaultPosting);
+            App.PostingGameStatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             App.PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
 
             App.BackButtonPressed += App.EmptyBackButtonPressed;
@@ -1585,27 +1582,20 @@ namespace GnollHackClient
             return bitmap;
         }
 
-        public static bool PostingGameStarts { get; set; }
-        public static bool PostingAchievements { get; set; }
-        public static bool PostingEvents { get; set; }
-        public static bool PostingEndResults { get; set; }
+        public static bool PostingGameStatus { get; set; }
         public static bool PostingDiagnosticData { get; set; }
 
-        public enum PostAddressType
+        public static string GetGameStatusPostAddress()
         {
-            GameStarts = 0,
-            GameAchievements,
-            GameEvents,
-            GameResults,
-            DiagnosticData
+#if DEBUG
+            return CurrentSecrets.DefaultDiagnosticDataPostAddress;
+#else
+            return CurrentSecrets.DefaultGamePostAddress;
+#endif
         }
-
-        public static string GetPostAddress(PostAddressType patype)
+        public static string GetDiagnosticDataPostAddress()
         {
-            if(patype == PostAddressType.DiagnosticData)
-                return CurrentSecrets.DefaultDiagnosticDataPostAddress;
-            else
-                return CurrentSecrets.DefaultGamePostAddress;
+            return CurrentSecrets.DefaultDiagnosticDataPostAddress;
         }
     }
 

@@ -1198,12 +1198,26 @@ namespace GnollHackCommon
         GUI_CMD_UNLOAD_INTRO_SOUND_BANK,
         GUI_CMD_WAIT_FOR_RESUME,
         GUI_CMD_REPORT_PLAY_TIME,
-        GUI_CMD_POST_GAME_EVENT,
-        GUI_CMD_POST_GAME_ACHIEVEMENT,
-        GUI_CMD_POST_GAME_END_RESULT,
+        GUI_CMD_POST_GAME_STATUS,
         GUI_CMD_POST_DIAGNOSTIC_DATA,
         GUI_CMD_GAME_START,
         GUI_CMD_GAME_ENDED,
+    }
+
+    public enum game_status_types
+    {
+        GAME_STATUS_START = 0,
+        GAME_STATUS_EVENT,
+        GAME_STATUS_ACHIEVEMENT,
+        GAME_STATUS_RESULT,
+    }
+
+    public enum diagnostic_data_types
+    {
+        DIAGNOSTIC_DATA_GENERAL = 0,
+        DIAGNOSTIC_DATA_IMPOSSIBLE,
+        DIAGNOSTIC_DATA_PANIC,
+        DIAGNOSTIC_DATA_CRASH_REPORT,
     }
 
     public enum popup_text_types
