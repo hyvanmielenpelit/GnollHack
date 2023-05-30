@@ -3670,8 +3670,8 @@ boolean force UNUSED;
 
 void
 tty_issue_gui_command(cmd_id, cmd_param, cmd_str)
-int cmd_id, cmd_param;
-const char* cmd_str;
+int cmd_id, cmd_param UNUSED;
+const char* cmd_str UNUSED;
 {
     if (use_utf8_encoding())
     {

@@ -706,7 +706,7 @@ curses_cliparound(int x, int y, BOOLEAN_P force UNUSED)
 }
 
 void
-curses_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str)
+curses_issue_gui_command(int cmd_id, int cmd_param UNUSED, const char* cmd_str UNUSED)
 {
     if (cmd_id == 1)
     {
