@@ -1860,10 +1860,10 @@ namespace GnollHackClient.Pages.Game
                 string json = JsonConvert.SerializeObject(post);
                 HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                //var cts = new CancellationTokenSource();
-                //cts.CancelAfter(5000);
+                var cts = new CancellationTokenSource();
+                cts.CancelAfter(5000);
                 string jsonResponse = "";
-                using (HttpResponseMessage response = await client.PostAsync(postaddress, content))
+                using (HttpResponseMessage response = await client.PostAsync(postaddress, content, cts.Token))
                 {
                     jsonResponse = await response.Content.ReadAsStringAsync();
                     Debug.WriteLine(jsonResponse);
