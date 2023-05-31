@@ -2318,7 +2318,7 @@ dosacrifice()
                 if (!dmon)
                 {
                     pm = dlord(altaralign);
-                    if(pm)
+                    if(pm >= LOW_PM && pm < NUM_MONSTERS)
                         dmon = makemon(&mons[pm], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
                 }
 
