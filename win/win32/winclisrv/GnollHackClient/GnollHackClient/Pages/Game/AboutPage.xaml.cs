@@ -440,7 +440,8 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         if(System.IO.File.Exists(filestr))
                                         {
-                                            if(App.GnollHackService.ValidateSaveFile(filestr))
+                                            string out_str = "";
+                                            if(App.GnollHackService.ValidateSaveFile(filestr, out out_str))
                                             {
                                                 FileInfo fileInfo = new FileInfo(filestr);
                                                 string finalname = Path.Combine(savedirpath, fileInfo.Name + ".i");
@@ -451,7 +452,7 @@ namespace GnollHackClient.Pages.Game
                                             }
                                             else
                                             {
-                                                await DisplayAlert("Invalid Save Game in Zip", "Saved game \'" + filestr + "\' is invalid.", "OK");
+                                                await DisplayAlert("Invalid Save Game in Zip", "Saved game \'" + filestr + "\' is invalid: " + out_str, "OK");
                                             }
                                         }
                                     }
@@ -467,7 +468,8 @@ namespace GnollHackClient.Pages.Game
                             }
                             else
                             {
-                                if (App.GnollHackService.ValidateSaveFile(file.FullPath))
+                                string out_str = "";
+                                if (App.GnollHackService.ValidateSaveFile(file.FullPath, out out_str))
                                 {
                                     string targetfilename = file.FileName + ".i";
                                     string savedirpath = Path.Combine(gnhpath, "save");
@@ -484,7 +486,7 @@ namespace GnollHackClient.Pages.Game
                                 }
                                 else
                                 {
-                                    await DisplayAlert("Invalid Saved Game", "Saved game \'" + file.FullPath + "\' is invalid.", "OK");
+                                    await DisplayAlert("Invalid Saved Game", "Saved game \'" + file.FullPath + "\' is invalid: " + out_str, "OK");
                                 }
                             }
                         }

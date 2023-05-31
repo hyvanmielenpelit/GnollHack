@@ -255,7 +255,7 @@ namespace GnollHackClient.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibTallyRealTime();
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibValidateSaveFile(string filename);
+        public static extern int LibValidateSaveFile(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_buffer);
 
         private void LoadNativeLibrary(string libName)
         {
@@ -882,9 +882,12 @@ namespace GnollHackClient.Unknown
             LibTallyRealTime();
         }
 
-        public bool ValidateSaveFile(string filename)
+        public bool ValidateSaveFile(string filename, out string res_str)
         {
-            return LibValidateSaveFile(filename) != 0;
+            byte[] buffer = new byte[256 * 4];
+            int res = LibValidateSaveFile(filename, buffer);
+            res_str = Encoding.UTF8.GetString(buffer);
+            return res != 0;
         }
 
         public int StartGnollHack(ClientGame clientGame)

@@ -355,11 +355,47 @@ LibTallyRealTime()
     tally_realtime();
 }
 
+char gnhapi_putstr_buffer[BUFSZ * 4];
+void gnhapi_raw_print(const char* text)
+{
+    char buf[UTF8BUFSZ] = "";
+    if (text)
+    {
+        write_text2buf_utf8(buf, UTF8BUFSZ, text);
+        if (*gnhapi_putstr_buffer)
+            Strcat(gnhapi_putstr_buffer, " ");
+        Strcpy(eos(gnhapi_putstr_buffer), buf);
+    }
+}
+
+void gnhapi_putstr_ex(winid wid, int attr, const char* text, int append, int color)
+{
+    gnhapi_raw_print(text);
+}
+
+void gnhapi_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int append)
+{
+    gnhapi_raw_print(text);
+}
+
+void gnhapi_wait_synch(VOID_ARGS)
+{
+
+}
+
 int
-LibValidateSaveFile(const char* filename)
+LibValidateSaveFile(const char* filename, char* output_str)
 {
     int fd;
     int res = 0;
+    *gnhapi_putstr_buffer = 0;
+
+    struct window_procs oldprocs = windowprocs;
+    windowprocs.win_putstr_ex = gnhapi_putstr_ex;
+    windowprocs.win_putstr_ex2 = gnhapi_putstr_ex2;
+    windowprocs.win_raw_print = gnhapi_raw_print;
+    windowprocs.win_wait_synch = gnhapi_wait_synch;
+
     Strcpy(SAVEF, filename);
 #ifdef COMPRESS_EXTENSION
     SAVEF[strlen(SAVEF) - strlen(COMPRESS_EXTENSION)] = '\0';
@@ -372,6 +408,14 @@ LibValidateSaveFile(const char* filename)
         (void)nhclose(fd);
     }
     nh_compress(SAVEF);
+    windowprocs = oldprocs;
+
+    if (output_str && *gnhapi_putstr_buffer)
+    {
+        char buf[UTF8BUFSZ * 4] = "";
+        write_text2buf_utf8(buf, sizeof(buf), gnhapi_putstr_buffer);
+        Strcpy(output_str, buf);
+    }
     return res;
 }
 
