@@ -1730,14 +1730,17 @@ namespace GnollHackClient
                     }
                     _restoreRequested = false;
                     break;
+                case (int)gui_command_types.GUI_CMD_POST_DIAGNOSTIC_DATA:
                 case (int)gui_command_types.GUI_CMD_POST_GAME_STATUS:
-                    string achievementname = "";
+                    string status_str = "";
                     if(cmd_str != null)
-                        achievementname = cmd_str;
+                        status_str = cmd_str;
 
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.PostGameStatus, cmd_param, achievementname));
+                        queue.Enqueue(new GHRequest(this,
+                            cmd_id == (int)gui_command_types.GUI_CMD_POST_GAME_STATUS ? GHRequestType.PostGameStatus : GHRequestType.PostDiagnosticData, 
+                            cmd_param, status_str));
                     }
                     break;
                 default:

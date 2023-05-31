@@ -89,6 +89,11 @@ namespace GnollHackClient.Pages.Game
 
             Preferences.Set("AllowBones", BonesSwitch.IsToggled);
 
+            App.PostingGameStatus = PostGameStatusSwitch.IsToggled;
+            Preferences.Set("PostingGameStatus", PostGameStatusSwitch.IsToggled);
+            App.PostingDiagnosticData = PostDiagnosticDataSwitch.IsToggled;
+            Preferences.Set("PostingDiagnosticData", PostDiagnosticDataSwitch.IsToggled);
+
             if (_gamePage != null)
             {
                 if(_gamePage.UseSimpleCmdLayout != SimpleCmdLayoutSwitch.IsToggled)
@@ -284,6 +289,7 @@ namespace GnollHackClient.Pages.Game
             bool allowbones = true;
             bool devmode = GHConstants.DefaultDeveloperMode, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
+            bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting;
             //bool altnoclipmode = GHConstants.DefaultMapAlternateNoClipMode, zoomchangecenter = GHConstants.DefaultZoomChangeCenterMode;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
 
@@ -298,6 +304,8 @@ namespace GnollHackClient.Pages.Game
             statusbar = App.HideiOSStatusBar;
             devmode = App.DeveloperMode;
             bank = Preferences.Get("LoadSoundBanks", true);
+            postgamestatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
+            postdiagnostics = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             allowbones = Preferences.Get("AllowBones", true);
             //carousel = Preferences.Get("UsesCarousel", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
@@ -390,6 +398,8 @@ namespace GnollHackClient.Pages.Game
             DeveloperSwitch.IsToggled = devmode;
             SoundBankSwitch.IsToggled = bank;
             BonesSwitch.IsToggled = allowbones;
+            PostGameStatusSwitch.IsToggled = postgamestatus;
+            PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
             //CarouselSwitch.IsToggled = carousel;
             //CarouselSwitch.IsEnabled = !App.IsiOS;
             //CarouselLabel.TextColor = !App.IsiOS ? Color.Black : Color.Gray;

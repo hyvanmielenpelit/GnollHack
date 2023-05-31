@@ -1829,10 +1829,9 @@ namespace GnollHackClient.Pages.Game
                                 if (MapTravelMode != _savedMapTravelModeOnLevel)
                                     ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
                                 break;
-                            case GHRequestType.PostGameStatus:
-                                PostGameStatus(req.RequestInt, req.RequestString);
-                                break;
                             case GHRequestType.PostDiagnosticData:
+                            case GHRequestType.PostGameStatus:
+                                PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestString);
                                 break;
                         }
                     }
@@ -1840,9 +1839,9 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private async void PostGameStatus(int status_type, string status_string)
+        private async void PostToForum(bool is_game_status, int status_type, string status_string)
         {
-            if (!App.PostingGameStatus)
+            if (is_game_status ? !App.PostingGameStatus : !App.PostingDiagnosticData)
                 return;
 
             string message = "";
@@ -1854,7 +1853,7 @@ namespace GnollHackClient.Pages.Game
                     return;
 
                 HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) };
-                string postaddress = App.GetGameStatusPostAddress();
+                string postaddress = is_game_status ? App.GetGameStatusPostAddress() : App.GetDiagnosticDataPostAddress();
                 DiscordWebHookPost post = new DiscordWebHookPost(message);
                 string json = JsonConvert.SerializeObject(post);
                 HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
