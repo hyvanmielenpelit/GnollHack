@@ -7,6 +7,8 @@
 #include "hack.h"
 #include <stdio.h>
 
+#ifdef GNH_MOBILE
+#endif
 /*
  * ***********************************************************
  * This is a complete WindowPort implementation that can be
@@ -365,8 +367,9 @@ boolean force;
 #endif /* CLIPPING */
 
 void
-safe_issue_gui_command(cmd_id, cmd_param)
+safe_issue_gui_command(cmd_id, cmd_param, cmd_str)
 int cmd_id, cmd_param;
+const char* cmd_str;
 {
     return;
 }
@@ -698,6 +701,43 @@ int intervals;
 {
     return;
 }
+
+#ifdef CHANGE_COLOR
+/*ARGSUSED*/
+void
+safe_change_color(color, rgb, reverse)
+int color, reverse;
+long rgb;
+{
+    return;
+}
+
+#ifdef MAC
+/*ARGUSED*/
+void
+safe_change_background(arg)
+int arg UNUSED;
+{
+    return;
+}
+
+/*ARGSUSED*/
+short
+safe_set_font_name(window, fontname)
+winid window;
+char* fontname;
+{
+    return 0;
+}
+#endif /* MAC */
+
+char*
+safe_get_color_string(VOID_ARGS)
+{
+    return (char*)0;
+}
+#endif /* CHANGE_COLOR */
+
 
 void
 safe_start_screen()

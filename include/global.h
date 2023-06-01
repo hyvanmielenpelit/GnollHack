@@ -325,7 +325,10 @@ struct version_info {
     unsigned char int_size;
     unsigned char long_size;
     unsigned char ptr_size;
+    unsigned long version_compatibility; /* used in cases where an older version of GnollHack tries to load a compatible but newer saved game; tells what is the oldest compatible old version */
 };
+
+#define NEW_VERSION_INFO_VERSION 0x04010103UL
 
 struct savefile_info {
     unsigned long sfi1; /* compression etc. */

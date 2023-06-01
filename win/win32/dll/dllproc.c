@@ -799,6 +799,8 @@ dll_exit_nhwindows(const char *str)
     windowprocs.win_exit_hack = dll_exit_hack;
 
     dll_callbacks.callback_exit_nhwindows(str);
+
+    iflags.window_inited = FALSE;
 }
 
 /* Prepare the window to be suspended. */

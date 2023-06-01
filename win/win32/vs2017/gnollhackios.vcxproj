@@ -354,6 +354,7 @@
     <ClCompile Include="$(SysShareDir)ioctl.c" />
     <ClCompile Include="$(SysShareDir)posixregex.c" />
     <ClCompile Include="$(SysShareDir)unixtty.c" />
+    <ClCompile Include="$(WinShareDir)safeproc.c" />
     <ClCompile Include="$(LibShareDir)libproc.c" />
     <ClCompile Include="$(LibShareDir)callback.c" />
     <ClCompile Include="$(LibShareDir)gnhapi.c" />

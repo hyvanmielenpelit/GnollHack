@@ -1196,6 +1196,11 @@ make_version()
     version.int_size = (unsigned char)sizeof(int);
     version.long_size = (unsigned char)sizeof(long);
     version.ptr_size = (unsigned char)sizeof(char*);
+#ifdef VERSION_COMPATIBILITY
+    version.version_compatibility = VERSION_COMPATIBILITY;
+#else
+    version.version_compatibility = version.incarnation;
+#endif
     return;
 }
 
@@ -1415,6 +1420,8 @@ do_date()
     Fprintf(ofp, "\n");
     Fprintf(ofp, "#define VERSION_NUMBER 0x%08lx%s\n", version.incarnation,
             ul_sfx);
+    Fprintf(ofp, "#define EARLIEST_COMPATIBLE_VERSION_NUMBER 0x%08lx%s\n", version.version_compatibility,
+        ul_sfx);
     Fprintf(ofp, "#define VERSION_FEATURES 0x%08lx%s\n", version.feature_set,
             ul_sfx);
 #ifdef IGNORED_FEATURES

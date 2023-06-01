@@ -275,19 +275,22 @@ boolean complain;
     unsigned char longsize = VERSION_LONGSIZE;
     unsigned char ptrsize = VERSION_PTRSIZE;
 
-    unsigned long versioncompat = 0UL;
-#ifdef VERSION_COMPATIBILITY
-    versioncompat = VERSION_COMPATIBILITY;
-#else
-    versioncompat = VERSION_NUMBER;
-#endif
+    unsigned long versioncompat = EARLIEST_COMPATIBLE_VERSION_NUMBER;
+
+    boolean incompatibleversioninfo = FALSE;
 
     if (
         version_data->incarnation < versioncompat
-        || version_data->incarnation > VERSION_NUMBER
+        || (incompatibleversioninfo = ((version_data->incarnation >= NEW_VERSION_INFO_VERSION && VERSION_NUMBER < NEW_VERSION_INFO_VERSION) || (version_data->incarnation < NEW_VERSION_INFO_VERSION && VERSION_NUMBER >= NEW_VERSION_INFO_VERSION)))
+        || version_data->version_compatibility > VERSION_NUMBER
         ) {
         if (complain)
-            pline("Version mismatch for file \"%s\" (%lu, %lu, %lu).", filename, version_data->incarnation, VERSION_NUMBER, versioncompat);
+        {
+            if(incompatibleversioninfo)
+                pline("Version mismatch for file \"%s\" (Incompatible version info format: %lu, %lu, %lu, %lu).", filename, version_data->incarnation, version_data->incarnation < NEW_VERSION_INFO_VERSION ? 0UL : version_data->version_compatibility, VERSION_NUMBER, versioncompat);
+            else
+                pline("Version mismatch for file \"%s\" (%lu, %lu, %lu, %lu).", filename, version_data->incarnation, version_data->incarnation < NEW_VERSION_INFO_VERSION ? 0 : version_data->version_compatibility, VERSION_NUMBER, versioncompat);
+        }
         return FALSE;
     } 
     else if (
@@ -343,7 +346,9 @@ int fd;
 {
     static const struct version_info version_data = {
         VERSION_NUMBER, VERSION_FEATURES,
-        VERSION_SANITY1, VERSION_SANITY2, VERSION_SANITY3
+        VERSION_SANITY1, VERSION_SANITY2, VERSION_SANITY3,
+        VERSION_SHORTSIZE, VERSION_INTSIZE, VERSION_LONGSIZE, VERSION_PTRSIZE,
+        EARLIEST_COMPATIBLE_VERSION_NUMBER
     };
 
     bufoff(fd);

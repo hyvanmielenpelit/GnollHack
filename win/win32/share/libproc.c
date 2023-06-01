@@ -38,7 +38,12 @@ struct window_procs lib_procs = {
     lib_nh_poskey, lib_nhbell, lib_doprev_message, lib_yn_function_ex,
     lib_getlin_ex, lib_get_ext_cmd, lib_number_pad, lib_delay_output, lib_delay_output_milliseconds, lib_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
-    lib_change_color, lib_change_background,
+    lib_change_color, 
+#ifdef MAC
+    lib_change_background,
+    lib_set_font_name,
+#endif
+    lib_get_color_string,
 #endif
     /* other defs that really should go away (they're tty specific) */
     lib_start_screen, lib_end_screen, lib_outrip,
@@ -231,6 +236,7 @@ void lib_get_nh_event(void)
 void lib_exit_nhwindows(const char* param)
 {
     lib_callbacks.callback_exit_nhwindows(param);
+    iflags.window_inited = 0;
 }
 
 void lib_suspend_nhwindows(const char* param)
@@ -723,20 +729,36 @@ void lib_delay_output_intervals(int intervals)
     reduce_counters_intervals(intervals);
 }
 
+#ifdef CHANGE_COLOR
 void lib_change_color(int param1, long param2, int param3)
 {
     return;
 }
 
-char* lib_change_background(void)
+#ifdef MAC
+/*ARGUSED*/
+STATIC_OVL void
+lib_change_background(arg)
+int arg UNUSED;
 {
-    return "";
+    return;
 }
+
+/*ARGSUSED*/
+STATIC_OVL short
+lib_set_font_name(window, fontname)
+winid window;
+char* fontname;
+{
+    return 0;
+}
+#endif /* MAC */
 
 char* lib_get_color_string(void)
 {
     return "";
 }
+#endif
 
 void lib_start_screen(void)
 {

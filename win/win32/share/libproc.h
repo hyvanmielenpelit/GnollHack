@@ -51,9 +51,14 @@ void lib_number_pad(int state);
 void lib_delay_output(void);
 void lib_delay_output_milliseconds(int interval);
 void lib_delay_output_intervals(int intervals);
+#ifdef CHANGE_COLOR
 void lib_change_color(int, long, int);
-char* lib_change_background(void);
+#ifdef MAC
+void FDECL(lib_change_background, (int));
+short FDECL(lib_set_font_name, (winid, char*));
+#endif
 char* lib_get_color_string(void);
+#endif
 void lib_start_screen(void);
 void lib_end_screen(void);
 void lib_outrip(winid wid, int how, time_t when);

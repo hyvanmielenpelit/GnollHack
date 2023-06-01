@@ -239,12 +239,12 @@ VA_DECL(const char *, line)
             goto pline_done;
     }
 
-    if (!saving && !restoring && context.game_started)
+    if (!saving && !restoring && !reseting && !check_pointing && iflags.window_inited)
     {
         if (vision_full_recalc)
             vision_recalc(0);
     }
-    if (u.ux && !program_state.in_bones && context.game_started)
+    if (u.ux && !program_state.in_bones && iflags.window_inited)
         flush_screen(!flags.show_cursor_on_u); // show_cursor_on_u actually indicates that there is a getpos going on, in which case the cursor should not be returned to the player
 
     if (pline_prefix_text || pline_separator_text)
@@ -289,7 +289,7 @@ VA_DECL(const char *, line)
     /* this gets cleared after every pline message */
     iflags.last_msg = PLNMSG_UNKNOWN;
     (void) strncpy(prevmsg, line, BUFSZ), prevmsg[BUFSZ - 1] = '\0';
-    if (msgtyp == MSGTYP_STOP && context.game_started)
+    if (msgtyp == MSGTYP_STOP && iflags.window_inited)
         display_nhwindow(WIN_MESSAGE, TRUE); /* --more-- */
 
  pline_done:

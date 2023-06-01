@@ -1526,7 +1526,8 @@ int fd;
 {
     static struct version_info version_data = {
         VERSION_NUMBER, VERSION_FEATURES, VERSION_SANITY1, VERSION_SANITY2,
-        VERSION_SANITY3
+        VERSION_SANITY3, VERSION_SHORTSIZE, VERSION_INTSIZE, VERSION_LONGSIZE, VERSION_PTRSIZE,
+        EARLIEST_COMPATIBLE_VERSION_NUMBER
     };
 
     Write(fd, &version_data, sizeof version_data);

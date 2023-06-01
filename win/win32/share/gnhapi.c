@@ -378,11 +378,6 @@ void gnhapi_putstr_ex2(winid wid, const char* text, const char* attrs, const cha
     gnhapi_raw_print(text);
 }
 
-void gnhapi_wait_synch(VOID_ARGS)
-{
-
-}
-
 int
 LibValidateSaveFile(const char* filename, char* output_str)
 {
@@ -391,10 +386,10 @@ LibValidateSaveFile(const char* filename, char* output_str)
     *gnhapi_putstr_buffer = 0;
 
     struct window_procs oldprocs = windowprocs;
+    windowprocs = *get_safe_procs(0);
     windowprocs.win_putstr_ex = gnhapi_putstr_ex;
     windowprocs.win_putstr_ex2 = gnhapi_putstr_ex2;
     windowprocs.win_raw_print = gnhapi_raw_print;
-    windowprocs.win_wait_synch = gnhapi_wait_synch;
 
     Strcpy(SAVEF, filename);
 #ifdef COMPRESS_EXTENSION

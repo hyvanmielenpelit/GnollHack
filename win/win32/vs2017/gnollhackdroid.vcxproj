@@ -361,6 +361,7 @@
     <ClCompile Include="$(SysShareDir)ioctl.c" />
     <ClCompile Include="$(SysShareDir)posixregex.c" />
     <ClCompile Include="$(SysShareDir)unixtty.c" />
+    <ClCompile Include="$(WinShareDir)safeproc.c" />
     <ClCompile Include="$(LibShareDir)gnhapi.c" />
     <ClCompile Include="$(LibShareDir)gnhmain.c" />
     <ClCompile Include="$(LibShareDir)gnhunix.c" />
