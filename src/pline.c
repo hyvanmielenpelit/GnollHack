@@ -823,6 +823,9 @@ VA_DECL(const char *, s)
         Strcat(pbuf, "  (Saving and reloading may fix this problem.)");
     pline("%s", VA_PASS1(pbuf));
 
+    if (issue_gui_command)
+        issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_IMPOSSIBLE, pbuf);
+
     program_state.in_impossible = 0;
     VA_END();
 }

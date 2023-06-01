@@ -1251,6 +1251,11 @@ const char *delim;
     print_beta_string(eos(outbuf));
 #elif defined (BETA)
     Sprintf(eos(outbuf), "-%d", EDITLEVEL);
+#else
+#ifdef VERSION_DETAILS
+    if(EDITLEVEL > 0)
+        Sprintf(eos(outbuf), " %s %d", date_via_env ? "Revision" : "Build", EDITLEVEL);
+#endif
 #endif
     return outbuf;
 }
@@ -1267,7 +1272,8 @@ const char *build_date;
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
 #ifdef VERSION_DETAILS
-    Sprintf(elbuf, date_via_env ? " (Revision %d)" : " (Build %d)", EDITLEVEL);
+    if(EDITLEVEL > 0)
+        Sprintf(elbuf, date_via_env ? " (Revision %d)" : " (Build %d)", EDITLEVEL);
 #endif
     Sprintf(outbuf, "%s GnollHack%s Version %s%s - last %s %s.", PORT_ID,
             subbuf, version_string(versbuf, "."), elbuf,

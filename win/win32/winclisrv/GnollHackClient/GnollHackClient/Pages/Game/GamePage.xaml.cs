@@ -28,6 +28,7 @@ using System.Text.RegularExpressions;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.Runtime.ConstrainedExecution;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -1863,14 +1864,32 @@ namespace GnollHackClient.Pages.Game
             }
 
             string message = "";
+            if (status_string != null)
+                message = status_string;
+            if (message == "")
+                return;
+
+            if (!is_game_status)
+            {
+                string player_name = Preferences.Get("LastUsedPlayerName", "Unknown Player");
+                string ver = App.GHVersionString;
+                switch(status_type)
+                {
+                    case (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC:
+                        message = player_name + " - Panic: " + message + " (" + ver + ")";
+                        break;
+                    case (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE:
+                        message = player_name + " - Impossible: " + message + " (" + ver + ")";
+                        break;
+                    default:
+                        message = player_name + " - Diagnostics: " + message + " (" + ver + ")";
+                        break;
+                }
+            }
+
             string attachment = is_game_status ? _gameStatusPostAttachment : _diagnosticDataPostAttachment;
             try
             {
-                if(status_string != null)
-                    message = status_string;
-                if (message == "")
-                    return;
-
                 using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
                 {
                     string postaddress = is_game_status ? App.GetGameStatusPostAddress() : App.GetDiagnosticDataPostAddress();
