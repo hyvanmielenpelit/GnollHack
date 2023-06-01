@@ -379,23 +379,49 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         if (System.IO.File.Exists(filestr))
                                         {
-                                            string out_str = "";
-                                            if (App.GnollHackService.ValidateSaveFile(filestr, out out_str))
+                                            FileInfo fileInfo = new FileInfo(filestr);
+                                            string finalname = Path.Combine(gnhpath, fileInfo.Name);
+                                            if (System.IO.File.Exists(finalname))
+                                                System.IO.File.Delete(finalname);
+                                            System.IO.File.Move(filestr, finalname);
+                                            nextracted++;
+                                        }
+                                    }
+                                }
+
+                                string[] extracteddirs = Directory.GetDirectories(temp2dirpath);
+                                if (extracteddirs != null)
+                                {
+                                    foreach (string dirstr in extracteddirs)
+                                    {
+                                        if(System.IO.Directory.Exists(dirstr))
+                                        {
+                                            DirectoryInfo dirInfo = new DirectoryInfo(dirstr);
+                                            string targetdirname = dirInfo.Name;
+                                            string targetdirpath = Path.Combine(gnhpath, targetdirname);
+                                            if (!Directory.Exists(targetdirpath))
+                                                App.CheckCreateDirectory(targetdirpath);
+                                            string sourcedirpath = Path.Combine(temp2dirpath, targetdirname);
+                                            if (sourcedirpath == targetdirpath)
+                                                continue;
+
+                                            extractedfiles = Directory.GetFiles(sourcedirpath);
+                                            foreach (string filestr in extractedfiles)
                                             {
-                                                FileInfo fileInfo = new FileInfo(filestr);
-                                                string finalname = Path.Combine(gnhpath, fileInfo.Name);
-                                                if (System.IO.File.Exists(finalname))
-                                                    System.IO.File.Delete(finalname);
-                                                System.IO.File.Move(filestr, finalname);
-                                                nextracted++;
-                                            }
-                                            else
-                                            {
-                                                await DisplayAlert("Invalid File in Zip", "File \'" + filestr + "\' is invalid: " + out_str, "OK");
+                                                if (System.IO.File.Exists(filestr))
+                                                {
+                                                    FileInfo fileInfo = new FileInfo(filestr);
+                                                    string finalname = Path.Combine(targetdirpath, fileInfo.Name);
+                                                    if (System.IO.File.Exists(finalname))
+                                                        System.IO.File.Delete(finalname);
+                                                    System.IO.File.Move(filestr, finalname);
+                                                    nextracted++;
+                                                }
                                             }
                                         }
                                     }
                                 }
+
                                 Directory.Delete(tempdirpath, true);
                                 Directory.Delete(temp2dirpath, true);
                                 if (extractedfiles.Length == 0)
@@ -434,7 +460,7 @@ namespace GnollHackClient.Pages.Game
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", "An error occurred while trying to import a saved game: " + ex.Message, "OK");
+                await DisplayAlert("Error", "An error occurred while trying to import files: " + ex.Message, "OK");
             }
 
             GameTableView.IsEnabled = true;
