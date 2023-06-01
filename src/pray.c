@@ -2205,7 +2205,7 @@ dosacrifice()
     STATIC_VAR NEARDATA const char cloud_of_smoke[] =
         "A cloud of %s smoke surrounds you...";
     register struct obj* otmp;
-    int value = 0, pm;
+    int value = 0, mndx;
     boolean highaltar, molochaltar, godlessaltar;
     aligntyp altaralign = a_align(u.ux, u.uy);
     int altarsubtyp = levl[u.ux][u.uy].subtyp;
@@ -2317,9 +2317,9 @@ dosacrifice()
 
                 if (!dmon)
                 {
-                    pm = dlord(altaralign);
-                    if(pm)
-                        dmon = makemon(&mons[pm], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+                    mndx = dlord(altaralign);
+                    if(mndx >= LOW_PM && mndx < NUM_MONSTERS)
+                        dmon = makemon(&mons[mndx], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
                 }
 
                 if (dmon)

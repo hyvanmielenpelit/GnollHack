@@ -5374,7 +5374,7 @@ namespace GnollHackClient.Pages.Game
                             if (valtext != "")
                             {
                                 string printtext;
-                                if (valtext.Substring(0, 1) == "\\" && valtext.Length > 11)
+                                if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
                                     printtext = valtext.Substring(11);
                                 else
                                     printtext = valtext;
@@ -5603,9 +5603,9 @@ namespace GnollHackClient.Pages.Game
                             if (valtext != "")
                             {
                                 string printtext;
-                                if (valtext.Substring(0, 3) == "DL:" && valtext.Length > 3)
+                                if (valtext.Length > 3 && valtext.Substring(0, 3) == "DL:")
                                     printtext = valtext.Substring(3);
-                                else if (valtext.Substring(0, 5) == "Dlvl:" && valtext.Length > 5)
+                                else if (valtext.Length > 5 && valtext.Substring(0, 5) == "Dlvl:")
                                     printtext = valtext.Substring(5);
                                 else
                                     printtext = valtext;
@@ -6467,7 +6467,7 @@ namespace GnollHackClient.Pages.Game
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
                             string printtext;
-                            if (valtext.Substring(0, 1) == "\\" && valtext.Length > 11)
+                            if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
                                 printtext = valtext.Substring(11);
                             else
                                 printtext = valtext;
