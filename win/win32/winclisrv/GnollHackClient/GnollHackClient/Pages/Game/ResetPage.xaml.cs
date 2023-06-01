@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,15 +14,16 @@ using Xamarin.Forms.Xaml;
 
 namespace GnollHackClient.Pages.Game
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class ResetPage : ContentPage
-	{
-		public ResetPage ()
-		{
-			InitializeComponent();
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class ResetPage : ContentPage
+    {
+        public ResetPage()
+        {
+            InitializeComponent();
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #if !DEBUG
             BaseSection.Remove(DownloadTestFilesViewCell);
+            BaseSection.Remove(ImportTestFilesViewCell);
 #endif
         }
 
@@ -118,11 +120,11 @@ namespace GnollHackClient.Pages.Game
 
                 Dictionary<string, string> saveverdict = new Dictionary<string, string>();
                 Dictionary<string, DateTime> savetimedict = new Dictionary<string, DateTime>();
-                foreach(SecretsFile sf in App.CurrentSecrets.files)
+                foreach (SecretsFile sf in App.CurrentSecrets.files)
                 {
                     bool has_vbv = Preferences.ContainsKey("Verify_" + sf.id + "_Version");
                     string vbv = Preferences.Get("Verify_" + sf.id + "_Version", "");
-                    if(has_vbv)
+                    if (has_vbv)
                         saveverdict.Add("Verify_" + sf.id + "_Version", vbv);
                     bool has_vblwt = Preferences.ContainsKey("Verify_" + sf.id + "_LastWriteTime");
                     DateTime vblwt = Preferences.Get("Verify_" + sf.id + "_LastWriteTime", DateTime.MinValue);
@@ -246,7 +248,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     if (File.Exists(target_file))
                     {
-                        if(_cancellationTokenSource.Token.IsCancellationRequested)
+                        if (_cancellationTokenSource.Token.IsCancellationRequested)
                             File.Delete(target_file);
                         else
                             System.IO.Compression.ZipFile.ExtractToDirectory(target_file, target_path);
@@ -258,12 +260,12 @@ namespace GnollHackClient.Pages.Game
                     trouble = true;
                 }
 
-                if(trouble)
+                if (trouble)
                 {
                     btnDownloadTestFiles.Text = "Error";
                     btnDownloadTestFiles.TextColor = Color.Red;
                 }
-                else if(cancelled)
+                else if (cancelled)
                 {
                     btnDownloadTestFiles.Text = "Cancelled";
                     btnDownloadTestFiles.TextColor = Color.Red;
@@ -275,6 +277,167 @@ namespace GnollHackClient.Pages.Game
                 }
                 GameTableView.IsEnabled = true;
             }
+
+        }
+
+        public async Task<PermissionStatus> CheckAndRequestWritePermission()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                // Prompt the user to turn on in settings
+                // On iOS once a permission has been denied it may not be requested again from the application
+                await DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file. Please turn it on in Settings.", "OK");
+                return status;
+            }
+
+            if (Permissions.ShouldShowRationale<Permissions.StorageWrite>())
+            {
+                await DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file.", "OK");
+            }
+
+            status = await Permissions.RequestAsync<Permissions.StorageWrite>();
+
+            return status;
+        }
+
+        public async Task<PermissionStatus> CheckAndRequestReadPermission()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                // Prompt the user to turn on in settings
+                // On iOS once a permission has been denied it may not be requested again from the application
+                await DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file. Please turn it on in Settings.", "OK");
+                return status;
+            }
+
+            if (Permissions.ShouldShowRationale<Permissions.StorageRead>())
+            {
+                await DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file.", "OK");
+            }
+
+            status = await Permissions.RequestAsync<Permissions.StorageRead>();
+
+            return status;
+        }
+
+        private async void btnImportTestFiles_Clicked(object sender, EventArgs e)
+        {
+            GameTableView.IsEnabled = false;
+
+            App.PlayButtonClickedSound();
+            await CheckAndRequestWritePermission();
+            await CheckAndRequestReadPermission();
+            try
+            {
+                FileResult file = await FilePicker.PickAsync();
+
+                if (file != null)
+                {
+                    using (Stream s = await file.OpenReadAsync())
+                    {
+                        if (s != null)
+                        {
+                            string gnhpath = App.GHPath;
+                            if (file.FileName.EndsWith("zip", StringComparison.OrdinalIgnoreCase))
+                            {
+                                string tempdirpath = Path.Combine(gnhpath, "temp");
+                                if (Directory.Exists(tempdirpath))
+                                    Directory.Delete(tempdirpath, true);
+                                App.CheckCreateDirectory(tempdirpath);
+
+                                string temp2dirpath = Path.Combine(gnhpath, "zip");
+                                if (Directory.Exists(temp2dirpath))
+                                    Directory.Delete(temp2dirpath, true);
+                                App.CheckCreateDirectory(temp2dirpath);
+
+                                string ziptargetfilename = file.FileName;
+                                string fulltargetpath = Path.Combine(tempdirpath, ziptargetfilename);
+
+                                using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
+                                {
+                                    s.CopyTo(t);
+                                }
+                                using (ZipArchive ziparch = ZipFile.OpenRead(fulltargetpath))
+                                {
+                                    ziparch.ExtractToDirectory(temp2dirpath);
+                                }
+                                int nextracted = 0;
+                                string[] extractedfiles = Directory.GetFiles(temp2dirpath);
+                                if (extractedfiles != null)
+                                {
+                                    foreach (string filestr in extractedfiles)
+                                    {
+                                        if (System.IO.File.Exists(filestr))
+                                        {
+                                            string out_str = "";
+                                            if (App.GnollHackService.ValidateSaveFile(filestr, out out_str))
+                                            {
+                                                FileInfo fileInfo = new FileInfo(filestr);
+                                                string finalname = Path.Combine(gnhpath, fileInfo.Name);
+                                                if (System.IO.File.Exists(finalname))
+                                                    System.IO.File.Delete(finalname);
+                                                System.IO.File.Move(filestr, finalname);
+                                                nextracted++;
+                                            }
+                                            else
+                                            {
+                                                await DisplayAlert("Invalid File in Zip", "File \'" + filestr + "\' is invalid: " + out_str, "OK");
+                                            }
+                                        }
+                                    }
+                                }
+                                Directory.Delete(tempdirpath, true);
+                                Directory.Delete(temp2dirpath, true);
+                                if (extractedfiles.Length == 0)
+                                    await DisplayAlert("No Files in Zip", "There are no files in \'" + ziptargetfilename + "\'.", "OK");
+                                else if (nextracted > 0)
+                                    await DisplayAlert("Files from Zip", nextracted + " file" + (nextracted != 1 ? "s" : "") + " from \'" + ziptargetfilename + "\' have been saved to the GnollHack directory.", "OK");
+                                else
+                                    await DisplayAlert("No Files in Zip", "No files from \'" + ziptargetfilename + "\' were saved to the GnollHack directory.", "OK");
+                            }
+                            else
+                            {
+                                string out_str = "";
+                                if (App.GnollHackService.ValidateSaveFile(file.FullPath, out out_str))
+                                {
+                                    string targetfilename = file.FileName + ".i";
+                                    string savedirpath = Path.Combine(gnhpath, "save");
+                                    App.CheckCreateDirectory(savedirpath);
+
+                                    string fulltargetpath = Path.Combine(savedirpath, targetfilename);
+                                    if (System.IO.File.Exists(fulltargetpath))
+                                        System.IO.File.Delete(fulltargetpath);
+                                    using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
+                                    {
+                                        s.CopyTo(t);
+                                    }
+                                    await DisplayAlert("Game Saved", "Saved game \'" + file.FileName + "\' has been saved to the save directory as a non-scoring imported saved game.", "OK");
+                                }
+                                else
+                                {
+                                    await DisplayAlert("Invalid Saved Game", "Saved game \'" + file.FullPath + "\' is invalid: " + out_str, "OK");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", "An error occurred while trying to import a saved game: " + ex.Message, "OK");
+            }
+
+            GameTableView.IsEnabled = true;
         }
     }
 }
