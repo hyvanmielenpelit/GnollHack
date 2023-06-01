@@ -1254,7 +1254,7 @@ const char *delim;
 #else
 #ifdef VERSION_DETAILS
     if(EDITLEVEL > 0)
-        Sprintf(eos(outbuf), " %s %d", date_via_env ? "Revision" : "Build", EDITLEVEL);
+        Sprintf(eos(outbuf), " (%s %d)", date_via_env ? "Revision" : "Build", EDITLEVEL);
 #endif
 #endif
     return outbuf;
@@ -1265,18 +1265,14 @@ version_id_string(outbuf, build_date)
 char *outbuf;
 const char *build_date;
 {
-    char subbuf[64], versbuf[64], elbuf[64] = "";
+    char subbuf[64], versbuf[64];
     subbuf[0] = '\0';
 #ifdef PORT_SUB_ID
     subbuf[0] = ' ';
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
-#ifdef VERSION_DETAILS
-    if(EDITLEVEL > 0)
-        Sprintf(elbuf, date_via_env ? " (Revision %d)" : " (Build %d)", EDITLEVEL);
-#endif
-    Sprintf(outbuf, "%s GnollHack%s Version %s%s - last %s %s.", PORT_ID,
-            subbuf, version_string(versbuf, "."), elbuf,
+    Sprintf(outbuf, "%s GnollHack%s Version %s - last %s %s.", PORT_ID,
+            subbuf, version_string(versbuf, "."),
             date_via_env ? "revision" : "build", build_date);
     return outbuf;
 }

@@ -604,7 +604,7 @@ int how;
 }
 
 #if defined(WIN32) && !defined(SYSCF)
-#define NOTIFY_GnollHack_BUGS
+#define NOTIFY_GNOLLHACK_BUGS
 #endif
 
 /*VARARGS1*/
@@ -630,17 +630,17 @@ VA_DECL(const char *, str)
                         ? "Program initialization has failed."
                         : "Suddenly, the dungeon collapses.");
 #ifndef MICRO
-#ifdef NOTIFY_GnollHack_BUGS
+#ifdef NOTIFY_GNOLLHACK_BUGS
     if (!wizard)
         raw_printf("Report the following error to \"%s\" or at \"%s\".",
                    DEVTEAM_EMAIL, DEVTEAM_URL);
     else if (program_state.something_worth_saving)
         raw_print("\nError save file being written.\n");
-#else /* !NOTIFY_GnollHack_BUGS */
+#else /* !NOTIFY_GNOLLHACK_BUGS */
     if (!wizard) {
         const char *maybe_rebuild = !program_state.something_worth_saving
                                      ? "."
-                                     : "\nand it may be possible to rebuild.";
+                                     : ", and it may be possible to rebuild.";
 
         if (sysopt.support)
             raw_printf("To report this error, %s%s", sysopt.support,
@@ -652,7 +652,7 @@ VA_DECL(const char *, str)
             raw_printf("Report error to \"%s\"%s", WIZARD_NAME,
                        maybe_rebuild);
     }
-#endif /* ?NOTIFY_GnollHack_BUGS */
+#endif /* ?NOTIFY_GNOLLHACK_BUGS */
     /* XXX can we move this above the prints?  Then we'd be able to
      * suppress "it may be possible to rebuild" based on dosave0()
      * or say it's NOT possible to rebuild. */

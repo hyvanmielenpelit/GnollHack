@@ -1876,13 +1876,13 @@ namespace GnollHackClient.Pages.Game
                 switch(status_type)
                 {
                     case (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC:
-                        message = player_name + " - Panic: " + message + " (" + ver + ")";
+                        message = player_name + " - Panic: " + message + " [" + ver + "]";
                         break;
                     case (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE:
-                        message = player_name + " - Impossible: " + message + " (" + ver + ")";
+                        message = player_name + " - Impossible: " + message + " [" + ver + "]";
                         break;
                     default:
-                        message = player_name + " - Diagnostics: " + message + " (" + ver + ")";
+                        message = player_name + " - Diagnostics: " + message + " [" + ver + "]";
                         break;
                 }
             }
