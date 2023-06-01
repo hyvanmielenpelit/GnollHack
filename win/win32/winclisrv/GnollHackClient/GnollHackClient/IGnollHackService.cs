@@ -41,6 +41,7 @@ namespace GnollHackClient
 
         string GetVersionString();
         string GetVersionId();
+        ulong GetVersionNumber();
         string GetPropertyName(int prop_index);
         List<string> GetExtendedCommands();
         string DumplogDateString(long startdate);

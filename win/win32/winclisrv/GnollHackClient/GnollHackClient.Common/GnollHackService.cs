@@ -205,6 +205,8 @@ namespace GnollHackClient.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetVersionId();
         [DllImport(PlatformConstants.dll)]
+        public static extern ulong LibGetVersionNumber();
+        [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetPropertyName(int prop_index);
         [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetExtendedCommands();
@@ -842,6 +844,10 @@ namespace GnollHackClient.Unknown
             IntPtr resptr = LibGetVersionId();
             string ret = Marshal.PtrToStringAnsi(resptr);
             return ret;
+        }
+        public ulong GetVersionNumber()
+        {
+            return LibGetVersionNumber();
         }
         public string GetPropertyName(int prop_index)
         {

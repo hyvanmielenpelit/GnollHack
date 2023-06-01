@@ -418,7 +418,7 @@ namespace GnollHackClient
                     pollResponseQueue();
                 }
 
-                if (out_string_ptr != IntPtr.Zero)
+                if (out_string_ptr != IntPtr.Zero && CharacterName != "")
                 {
                     byte[] utf8text = Encoding.UTF8.GetBytes(CharacterName);
                     Marshal.Copy(utf8text, 0, out_string_ptr, utf8text.Length);

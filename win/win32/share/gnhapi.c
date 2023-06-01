@@ -196,6 +196,11 @@ const char* LibGetVersionId()
     return VERSION_ID;
 }
 
+unsigned long LibGetVersionNumber()
+{
+    return VERSION_NUMBER;
+}
+
 static const char* extcmdnames[256] = { 0 };
 const char** LibGetExtendedCommands()
 {

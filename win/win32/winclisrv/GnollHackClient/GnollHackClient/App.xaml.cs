@@ -318,6 +318,7 @@ namespace GnollHackClient
 
         public static string GHVersionId { get; set; }
         public static string GHVersionString { get; set; }
+        public static ulong GHVersionNumber { get; set; }
         public static string SkiaVersionString { get; set; }
         public static string SkiaSharpVersionString { get; set; }
         public static string FMODVersionString { get; set; }
@@ -1393,7 +1394,13 @@ namespace GnollHackClient
 
             App.CheckCreateDirectory(targetpath);
 
-            string filepath = Path.Combine(targetpath, "savedgames.zip");
+            ulong vernum = App.GHVersionNumber;
+            ulong majorver = (vernum >> 24) & 0xFFUL;
+            ulong minorver = (vernum >> 16) & 0xFFUL;
+            ulong patchlvl = (vernum >> 8) & 0xFFUL;
+            ulong editlvl = (vernum) & 0xFFUL;
+            string versionstring = majorver.ToString() + minorver.ToString() + patchlvl.ToString() + "-" + editlvl;
+            string filepath = Path.Combine(targetpath, "savedgames-" + versionstring + ".zip");
             if (File.Exists(filepath))
                 File.Delete(filepath);
 

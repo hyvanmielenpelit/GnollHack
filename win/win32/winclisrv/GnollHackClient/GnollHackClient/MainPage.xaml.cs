@@ -292,10 +292,12 @@ namespace GnollHackClient
             string fmodverstr = "?";
             string skiaverstr = "?";
             string skiasharpverstr = "?";
+            ulong vernum = 0UL;
             try
             {
                 verstr = App.GnollHackService.GetVersionString();
                 verid = App.GnollHackService.GetVersionId();
+                vernum = App.GnollHackService.GetVersionNumber();
                 path = App.GnollHackService.GetGnollHackPath();
                 fmodverstr = App.FmodService.GetVersionString();
                 skiaverstr = SkiaSharpVersion.Native.ToString();
@@ -324,6 +326,7 @@ namespace GnollHackClient
                 Debug.WriteLine(ex.Message);
             }
             App.GHVersionString = verstr;
+            App.GHVersionNumber = vernum;
             App.GHVersionId = verid;
             App.GHPath = path;
             App.FMODVersionString = fmodverstr;
