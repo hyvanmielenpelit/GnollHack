@@ -5414,7 +5414,7 @@ namespace GnollHackClient.Pages.Game
                             if (valtext != "")
                             {
                                 string printtext;
-                                if (valtext.Substring(0, 1) == "\\" && valtext.Length > 11)
+                                if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
                                     printtext = valtext.Substring(11);
                                 else
                                     printtext = valtext;
@@ -6507,7 +6507,7 @@ namespace GnollHackClient.Pages.Game
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
                             string printtext;
-                            if (valtext.Substring(0, 1) == "\\" && valtext.Length > 11)
+                            if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
                                 printtext = valtext.Substring(11);
                             else
                                 printtext = valtext;

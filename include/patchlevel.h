@@ -19,7 +19,7 @@
  * EDITLEVEL is also used to indicate the pre-alpha / alpha / beta version if PRE_RELEASE compiler preprocessor option is on.
  * Change EDITLEVEL when the changes to the game are save-file-breaking.
  */
-#define EDITLEVEL 3
+#define EDITLEVEL 4
 
 /*
  * HOTFIXLEVEL indicates the hot fix number. 
@@ -44,7 +44,7 @@
  * PP = patch level, ee = edit level, L = literal suffix "L",
  * with all four numbers specified as two hexadecimal digits.
  */
-#define VERSION_COMPATIBILITY 0x04010103L
+#define VERSION_COMPATIBILITY 0x04010104UL
 
 /****************************************************************************/
 /* Version 0.1.x */
