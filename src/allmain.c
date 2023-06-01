@@ -1500,8 +1500,8 @@ boolean new_game; /* false => restoring an old game */
         IfModeAllowsPostToForum
         {
             char postbuf[BUFSZ * 2];
-            Sprintf(postbuf, "%s has started a new game as a%s %s %s", plname, buf, urace.adj,
-                (currentgend && urole.name.f) ? urole.name.f : urole.name.m);
+            Sprintf(postbuf, "%s has started a new game as a%s %s %s on %s difficulty", plname, buf, urace.adj,
+                (currentgend && urole.name.f) ? urole.name.f : urole.name.m, get_game_difficulty_text(context.game_difficulty));
             issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_START, postbuf);
         }
     }
