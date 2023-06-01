@@ -1997,6 +1997,11 @@ int how;
                 Sprintf(postbuf, "%s has ascended to demigodhood", plname);
             else if (how == ESCAPED)
                 Sprintf(postbuf, "%s has escaped the dungeon", plname);
+
+            char dlbuf[BUFSZ * 4];
+            char* dlfilename = print_dumplog_filename_to_buffer(dlbuf);
+            if(dlfilename)
+                issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT, dlfilename);
             issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, postbuf);
         }
     }

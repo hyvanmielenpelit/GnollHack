@@ -4112,6 +4112,7 @@ E void NDECL(dump_close_log);
 E void FDECL(dump_redirect, (BOOLEAN_P));
 E void FDECL(dump_forward_putstr, (winid, int, const char*, int));
 #ifdef DUMPLOG
+E char* FDECL(print_dumplog_filename_to_buffer, (char*));
 E char* FDECL(dump_fmtstr, (const char*, char*));
 E void FDECL(dump_putstr_no_utf8, (winid, int, const char*));
 #endif

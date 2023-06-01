@@ -1210,6 +1210,7 @@ namespace GnollHackCommon
         GAME_STATUS_EVENT,
         GAME_STATUS_ACHIEVEMENT,
         GAME_STATUS_RESULT,
+        GAME_STATUS_RESULT_ATTACHMENT,
     }
 
     public enum diagnostic_data_types
@@ -1218,6 +1219,7 @@ namespace GnollHackCommon
         DIAGNOSTIC_DATA_IMPOSSIBLE,
         DIAGNOSTIC_DATA_PANIC,
         DIAGNOSTIC_DATA_CRASH_REPORT,
+        DIAGNOSTIC_DATA_ATTACHMENT,
     }
 
     public enum popup_text_types

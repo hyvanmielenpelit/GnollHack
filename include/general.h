@@ -914,6 +914,7 @@ enum game_status_types
     GAME_STATUS_EVENT,
     GAME_STATUS_ACHIEVEMENT,
     GAME_STATUS_RESULT,
+    GAME_STATUS_RESULT_ATTACHMENT,
 };
 
 enum diagnostic_data_types

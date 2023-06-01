@@ -27,6 +27,7 @@ using Xamarin.Forms.PlatformConfiguration;
 using System.Text.RegularExpressions;
 using System.Net.Http;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -1839,12 +1840,30 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private string _gameStatusPostAttachment = "";
+        private string _diagnosticDataPostAttachment = "";
+
         private async void PostToForum(bool is_game_status, int status_type, string status_string)
         {
             if (is_game_status ? !App.PostingGameStatus : !App.PostingDiagnosticData)
                 return;
 
+            string description = "attached file";
+            if(is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
+            {
+                _gameStatusPostAttachment = status_string;
+                description = "dumplog";
+                return;
+            }
+            else if(!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT)
+            {
+                _diagnosticDataPostAttachment = status_string;
+                description = "diagnostic data";
+                return;
+            }
+
             string message = "";
+            string attachment = is_game_status ? _gameStatusPostAttachment : _diagnosticDataPostAttachment;
             try
             {
                 if(status_string != null)
@@ -1852,25 +1871,58 @@ namespace GnollHackClient.Pages.Game
                 if (message == "")
                     return;
 
-                HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) };
-                string postaddress = is_game_status ? App.GetGameStatusPostAddress() : App.GetDiagnosticDataPostAddress();
-                DiscordWebHookPost post = new DiscordWebHookPost(message);
-                string json = JsonConvert.SerializeObject(post);
-                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var cts = new CancellationTokenSource();
-                cts.CancelAfter(5000);
-                string jsonResponse = "";
-                using (HttpResponseMessage response = await client.PostAsync(postaddress, content, cts.Token))
+                using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
                 {
-                    jsonResponse = await response.Content.ReadAsStringAsync();
-                    Debug.WriteLine(jsonResponse);
+                    string postaddress = is_game_status ? App.GetGameStatusPostAddress() : App.GetDiagnosticDataPostAddress();
+                    HttpContent content = null;
+                    if (attachment != "")
+                    {
+                        FileInfo fileinfo = new FileInfo(attachment);
+                        string filename = fileinfo.Name;
+                        DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message, description, filename);
+                        string json = JsonConvert.SerializeObject(post);
+                        MultipartFormDataContent multicontent = new MultipartFormDataContent("--boundary");
+                        StringContent content1 = new StringContent(json, Encoding.UTF8, "application/json");
+                        ContentDispositionHeaderValue cdhv = new ContentDispositionHeaderValue("form-data");
+                        cdhv.Name = "payload_json";
+                        content1.Headers.ContentDisposition = cdhv;
+                        multicontent.Add(content1);
+                        var stream = new FileStream(attachment, FileMode.Open);
+                        StreamContent content2 = new StreamContent(stream);
+                        ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
+                        cdhv2.Name = "files[0]";
+                        cdhv2.FileName = filename;
+                        content2.Headers.ContentDisposition = cdhv2;
+                        content2.Headers.ContentType = new MediaTypeHeaderValue(is_game_status ? "text/plain" : "application/zip");
+                        multicontent.Add(content2);
+                        content = multicontent;
+                    }
+                    else
+                    {
+                        DiscordWebHookPost post = new DiscordWebHookPost(message);
+                        string json = JsonConvert.SerializeObject(post);
+                        content = new StringContent(json, Encoding.UTF8, "application/json");
+                    }
+
+                    using (var cts = new CancellationTokenSource())
+                    {
+                        cts.CancelAfter(5000);
+                        string jsonResponse = "";
+                        using (HttpResponseMessage response = await client.PostAsync(postaddress, content, cts.Token))
+                        {
+                            jsonResponse = await response.Content.ReadAsStringAsync();
+                            Debug.WriteLine(jsonResponse);
+                        }
+                    }
+                    content.Dispose();
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
             }
+            _gameStatusPostAttachment = "";
+            _diagnosticDataPostAttachment = "";
         }
 
         private void CreateWindowView(int winid)

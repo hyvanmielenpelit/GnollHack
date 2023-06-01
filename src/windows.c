@@ -1426,6 +1426,35 @@ STATIC_VAR FILE *dumplog_file;
 #ifdef DUMPLOG
 STATIC_VAR time_t dumplog_now;
 
+char*
+print_dumplog_filename_to_buffer(buf)
+char* buf;
+{
+    char* fname;
+
+#ifdef SYSCF
+    if (!sysopt.dumplogfile)
+        return 0;
+    fname = dump_fmtstr(sysopt.dumplogfile, buf);
+#elif defined(ANDROID)
+    if (iflags.dumplog)
+    {
+        char buf_[BUFSZ];
+        dump_fmtstr(DUMPLOG_FILE, buf_);
+        and_get_dumplog_dir(buf);
+        if (strlen(buf_) + strlen(buf) < BUFSZ - 1)
+            fname = strcat(buf, buf_);
+        else
+            fname = strcpy(buf, buf_);
+    }
+    else
+        fname = 0;
+#else
+    fname = dump_fmtstr(DUMPLOG_FILE, buf);
+#endif
+    return fname;
+}
+
 char *
 dump_fmtstr(fmt, buf)
 const char *fmt;
@@ -1519,26 +1548,9 @@ time_t now;
     char *fname;
 
     dumplog_now = now;
-#ifdef SYSCF
-    if (!sysopt.dumplogfile)
+    fname = print_dumplog_filename_to_buffer(buf);
+    if (!fname)
         return;
-    fname = dump_fmtstr(sysopt.dumplogfile, buf);
-#elif defined(ANDROID)
-    if (iflags.dumplog)
-    {
-        char buf_[BUFSZ];
-        dump_fmtstr(DUMPLOG_FILE, buf_);
-        and_get_dumplog_dir(buf);
-        if (strlen(buf_) + strlen(buf) < BUFSZ - 1)
-            fname = strcat(buf, buf_);
-        else
-            fname = strcpy(buf, buf_);
-    }
-    else
-        fname = 0;
-#else
-    fname = dump_fmtstr(DUMPLOG_FILE, buf);
-#endif
     dumplog_file = fopen(fname, "w");
     dumplog_windowprocs_backup = windowprocs;
 
