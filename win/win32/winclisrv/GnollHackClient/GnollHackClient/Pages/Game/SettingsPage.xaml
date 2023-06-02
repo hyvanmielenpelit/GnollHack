@@ -478,7 +478,7 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="  Custom Link"
+                                    <Label Text="  Webhook Link"
                                                FontFamily="Underwood" TextColor="Black"
                                                FontSize="15"
                                                VerticalOptions="CenterAndExpand" 

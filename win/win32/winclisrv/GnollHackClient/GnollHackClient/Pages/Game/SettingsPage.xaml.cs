@@ -519,7 +519,7 @@ namespace GnollHackClient.Pages.Game
         {
             CustomLinkButton.IsEnabled = false;
             App.PlayButtonClickedSound();
-            TextCaption.Text = "Enter Custom Discord Post Link:";
+            TextCaption.Text = "Enter Custom Webhook Link:";
             TextEntry.Text = _customGameStatusLink;
             TextOkButton.IsEnabled = true;
             TextCancelButton.IsEnabled = true;
@@ -542,6 +542,15 @@ namespace GnollHackClient.Pages.Game
                 res.Trim();
             }
 
+            if(res != "" && !App.IsValidHttpsURL(res))
+            {
+                TextFrame.BorderColor = Color.Red;
+                TextEntry.Focus();
+                TextOkButton.IsEnabled = true;
+                TextCancelButton.IsEnabled = true;
+                return;
+            }
+
             _customGameStatusLink = res;
             if(res == "")
                 CustomLinkLabel.Text = "Default";
@@ -553,6 +562,7 @@ namespace GnollHackClient.Pages.Game
             TextGrid.IsVisible = false;
             TextEntry.Text = "";
             TextCaption.Text = "";
+            TextFrame.BorderColor = Color.Black;
             CustomLinkButton.IsEnabled = true;
         }
 
@@ -566,6 +576,7 @@ namespace GnollHackClient.Pages.Game
             TextGrid.IsVisible = false;
             TextEntry.Text = "";
             TextCaption.Text = "";
+            TextFrame.BorderColor = Color.Black;
             CustomLinkButton.IsEnabled = true;
         }
 

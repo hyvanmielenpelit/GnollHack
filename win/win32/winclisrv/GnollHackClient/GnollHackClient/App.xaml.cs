@@ -1613,6 +1613,28 @@ namespace GnollHackClient
         {
             return CurrentSecrets.DefaultDiagnosticDataPostAddress;
         }
+        public static bool IsValidHttpsURL(string uriString)
+        {
+            try
+            {
+                bool wellformed = Uri.IsWellFormedUriString(uriString, UriKind.Absolute);
+                if (wellformed)
+                {
+                    Uri uri = new Uri(uriString);
+                    if (uri.Scheme == Uri.UriSchemeHttps)
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
     }
 
     class SecretsFileSizeComparer : IComparer<SecretsFile>
