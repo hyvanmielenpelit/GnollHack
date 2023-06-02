@@ -77,7 +77,7 @@
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchNoSymbolStrip>false</MtouchNoSymbolStrip>
     <MtouchFastDev>false</MtouchFastDev>
-    <CodesignProvision>GnollHack HMP Distribution App Store</CodesignProvision>
+    <CodesignProvision>GnollHack HMP 2023 Distribution</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <AppExtensionDebugBundleId />
