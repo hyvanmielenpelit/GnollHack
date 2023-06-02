@@ -1869,10 +1869,10 @@ namespace GnollHackClient.Pages.Game
             if (message == "")
                 return;
 
+            string ver = App.GHVersionString;
             if (!is_game_status)
             {
                 string player_name = Preferences.Get("LastUsedPlayerName", "Unknown Player");
-                string ver = App.GHVersionString;
                 switch(status_type)
                 {
                     case (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC:
@@ -1885,6 +1885,18 @@ namespace GnollHackClient.Pages.Game
                         message = player_name + " - Diagnostics: " + message + " [" + ver + "]";
                         break;
                 }
+            }
+            else
+            {
+                switch (status_type)
+                {
+                    case (int)game_status_types.GAME_STATUS_START:
+                        message = message + " [" + ver + "]";
+                        break;
+                    default:
+                        break;
+                }
+
             }
 
             string attachment = is_game_status ? _gameStatusPostAttachment : _diagnosticDataPostAttachment;
@@ -1925,7 +1937,7 @@ namespace GnollHackClient.Pages.Game
 
                     using (var cts = new CancellationTokenSource())
                     {
-                        cts.CancelAfter(5000);
+                        cts.CancelAfter(is_game_status || attachment == "" ? 10000 : 120000);
                         string jsonResponse = "";
                         using (HttpResponseMessage response = await client.PostAsync(postaddress, content, cts.Token))
                         {
