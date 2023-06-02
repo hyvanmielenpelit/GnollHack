@@ -1869,20 +1869,38 @@ namespace GnollHackClient.Pages.Game
             if (message == "")
                 return;
 
-            string ver = App.GHVersionString;
             if (!is_game_status)
             {
+                string ver = App.GHVersionString + " / " + VersionTracking.CurrentVersion + " / " + VersionTracking.CurrentBuild;
+                string manufacturer = DeviceInfo.Manufacturer;
+                if (manufacturer.Length > 0)
+                    manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
+                string device_model = manufacturer + " " + DeviceInfo.Model;
+                string platform = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
+
+                ulong TotalMemInBytes = App.PlatformService.GetDeviceMemoryInBytes();
+                ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
+                ulong FreeDiskSpaceInBytes = App.PlatformService.GetDeviceFreeDiskSpaceInBytes();
+                ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
+                ulong TotalDiskSpaceInBytes = App.PlatformService.GetDeviceTotalDiskSpaceInBytes();
+                ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
+
+                string totmem = TotalMemInMB + " MB";
+                string diskspace = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
+
                 string player_name = Preferences.Get("LastUsedPlayerName", "Unknown Player");
+                string info = ver + ", " + platform + ", " + device_model + ", " + totmem + ", " + diskspace;
+
                 switch(status_type)
                 {
                     case (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC:
-                        message = player_name + " - Panic: " + message + " [" + ver + "]";
+                        message = player_name + " - Panic: " + message + " [" + info + "]";
                         break;
                     case (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE:
-                        message = player_name + " - Impossible: " + message + " [" + ver + "]";
+                        message = player_name + " - Impossible: " + message + " [" + info + "]";
                         break;
                     default:
-                        message = player_name + " - Diagnostics: " + message + " [" + ver + "]";
+                        message = player_name + " - Diagnostics: " + message + " [" + info + "]";
                         break;
                 }
             }
@@ -1890,9 +1908,6 @@ namespace GnollHackClient.Pages.Game
             {
                 switch (status_type)
                 {
-                    case (int)game_status_types.GAME_STATUS_START:
-                        message = message + " [" + ver + "]";
-                        break;
                     default:
                         break;
                 }
