@@ -76,6 +76,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackCommon", "..\winclisrv\GnollHackCommon\GnollHackCommon.csproj", "{40516BC7-AC45-4F0C-9754-6C6A381302AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.UWP", "..\winclisrv\GnollHackClient\GnollHackClient.UWP\GnollHackClient.UWP.csproj", "{FC538EE2-A6CA-4443-96C3-88441272B242}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1} = {6FF04CCD-3E5A-423E-B6B8-637C42A007C1}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.Android", "..\winclisrv\GnollHackClient\GnollHackClient.Android\GnollHackClient.Android.csproj", "{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -93,6 +96,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackClient", "..\wincl
 	ProjectSection(ProjectDependencies) = postProject
 		{272434B5-141B-48AD-9C5E-87F0CB6C5161} = {272434B5-141B-48AD-9C5E-87F0CB6C5161}
 		{40516BC7-AC45-4F0C-9754-6C6A381302AB} = {40516BC7-AC45-4F0C-9754-6C6A381302AB}
+		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1} = {6FF04CCD-3E5A-423E-B6B8-637C42A007C1}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.Android.Bindings", "..\winclisrv\GnollHackClient\GnollHackClient.Android.Bindings\GnollHackClient.Android.Bindings.csproj", "{6603A81B-B0D4-4119-B731-77C579AC7C86}"
