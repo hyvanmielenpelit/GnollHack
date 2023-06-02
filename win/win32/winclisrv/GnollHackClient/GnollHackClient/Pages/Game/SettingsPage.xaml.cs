@@ -10,6 +10,7 @@ using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using System.Reflection;
+using System.Collections.Concurrent;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -93,6 +94,9 @@ namespace GnollHackClient.Pages.Game
             Preferences.Set("PostingGameStatus", PostGameStatusSwitch.IsToggled);
             App.PostingDiagnosticData = PostDiagnosticDataSwitch.IsToggled;
             Preferences.Set("PostingDiagnosticData", PostDiagnosticDataSwitch.IsToggled);
+
+            App.CustomGameStatusLink = _customGameStatusLink;
+            Preferences.Set("CustomGameStatusLink", _customGameStatusLink);
 
             if (_gamePage != null)
             {
@@ -292,6 +296,7 @@ namespace GnollHackClient.Pages.Game
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting;
             //bool altnoclipmode = GHConstants.DefaultMapAlternateNoClipMode, zoomchangecenter = GHConstants.DefaultZoomChangeCenterMode;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
+            string customlink = "";
 
             silentmode = Preferences.Get("SilentMode", false);
             generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
@@ -306,6 +311,7 @@ namespace GnollHackClient.Pages.Game
             bank = Preferences.Get("LoadSoundBanks", true);
             postgamestatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             postdiagnostics = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
+            customlink = Preferences.Get("CustomGameStatusLink", "");
             allowbones = Preferences.Get("AllowBones", true);
             //carousel = Preferences.Get("UsesCarousel", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
@@ -400,6 +406,9 @@ namespace GnollHackClient.Pages.Game
             BonesSwitch.IsToggled = allowbones;
             PostGameStatusSwitch.IsToggled = postgamestatus;
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
+            _customGameStatusLink = customlink;
+            CustomLinkLabel.Text = customlink == "" ? "Default" : "Custom";
+            CustomLinkButton.Text = customlink == "" ? "Add" : "Edit";
             //CarouselSwitch.IsToggled = carousel;
             //CarouselSwitch.IsEnabled = !App.IsiOS;
             //CarouselLabel.TextColor = !App.IsiOS ? Color.Black : Color.Gray;
@@ -502,6 +511,67 @@ namespace GnollHackClient.Pages.Game
             App.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
+
+
+
+        private string _customGameStatusLink = "";
+        private void CustomLinkButton_Clicked(object sender, EventArgs e)
+        {
+            CustomLinkButton.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            TextCaption.Text = "Enter Custom Discord Post Link:";
+            TextEntry.Text = _customGameStatusLink;
+            TextOkButton.IsEnabled = true;
+            TextCancelButton.IsEnabled = true;
+            TextGrid.IsVisible = true;
+        }
+
+        private void TextOkButton_Clicked(object sender, EventArgs e)
+        {
+            TextOkButton.IsEnabled = false;
+            TextCancelButton.IsEnabled = false;
+            App.PlayButtonClickedSound();
+
+            string res = TextEntry.Text;
+            if (string.IsNullOrWhiteSpace(TextEntry.Text))
+            {
+                res = "";
+            }
+            else
+            {
+                res.Trim();
+            }
+
+            _customGameStatusLink = res;
+            if(res == "")
+                CustomLinkLabel.Text = "Default";
+            else
+                CustomLinkLabel.Text = "Custom";
+
+            CustomLinkButton.Text = _customGameStatusLink == "" ? "Add" : "Edit";
+
+            TextGrid.IsVisible = false;
+            TextEntry.Text = "";
+            TextCaption.Text = "";
+            CustomLinkButton.IsEnabled = true;
+        }
+
+
+        private void TextCancelButton_Clicked(object sender, EventArgs e)
+        {
+            TextOkButton.IsEnabled = false;
+            TextCancelButton.IsEnabled = false;
+            App.PlayButtonClickedSound();
+
+            TextGrid.IsVisible = false;
+            TextEntry.Text = "";
+            TextCaption.Text = "";
+            CustomLinkButton.IsEnabled = true;
+        }
+
+
+
+
 
         private bool _backPressed = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)

@@ -478,6 +478,26 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
+                                    <Label Text="  Custom Link"
+                                               FontFamily="Underwood" TextColor="Black"
+                                               FontSize="15"
+                                               VerticalOptions="CenterAndExpand" 
+                                               HorizontalOptions="Start" />
+                                    <Label x:Name="CustomLinkLabel"
+                                               Text="Default"
+                                               FontFamily="Underwood" TextColor="Blue"
+                                               FontSize="15"
+                                               VerticalOptions="CenterAndExpand" 
+                                               HorizontalOptions="EndAndExpand" />
+                                    <controls:CustomImageButton x:Name="CustomLinkButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="50" FontFamily="Diablo"
+                                                BackgroundColor="Transparent" TextColor="White"
+                                                Clicked="CustomLinkButton_Clicked"
+                                                VerticalOptions="CenterAndExpand" 
+                                                HorizontalOptions="End" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
                                     <Label Text="Post Diagnostic Data"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -506,6 +526,33 @@
                 </Grid>-->
                 <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Margin="0,10,0,10" Text="Close" WidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="19" HorizontalOptions="Center" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
+            </Grid>
+            <Grid x:Name="TextGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+                         Padding="10" BackgroundColor="#66000000" IsVisible="False">
+                <Grid WidthRequest="440" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Margin="0,50,0,10" >
+                    <Frame x:Name="TextFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                        <StackLayout x:Name="TextLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                            <Label x:Name="TextCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
+                            <Entry x:Name="TextEntry" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the link here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
+                                       HorizontalTextAlignment="Center" FontSize="20" />
+                            <Grid WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="65" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <controls:CustomImageButton Grid.Column="0" x:Name="TextOkButton" Text="OK" FontSize="19" WidthRequest="160" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="TextOkButton_Clicked" />
+                                <controls:CustomImageButton Grid.Column="1" x:Name="TextCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="TextCancelButton_Clicked" />
+                            </Grid>
+                        </StackLayout>
+                    </Frame>
+                </Grid>
             </Grid>
         </Grid>
     </ContentPage.Content>

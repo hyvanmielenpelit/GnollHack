@@ -59,5 +59,6 @@ namespace GnollHackClient.Controls
         {
             BtnClicked?.Invoke(this, e);
         }
+
     }
 }

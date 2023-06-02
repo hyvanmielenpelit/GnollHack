@@ -64,6 +64,7 @@ namespace GnollHackClient
             App.UsesCarousel = true; // App.IsiOS || Preferences.Get("UsesCarousel", true);
             App.PostingGameStatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             App.PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
+            App.CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
 
             App.BackButtonPressed += App.EmptyBackButtonPressed;
         }
@@ -1591,14 +1592,22 @@ namespace GnollHackClient
 
         public static bool PostingGameStatus { get; set; }
         public static bool PostingDiagnosticData { get; set; }
+        public static string CustomGameStatusLink { get; set; }
 
         public static string GetGameStatusPostAddress()
         {
+            if(App.CustomGameStatusLink != null && App.CustomGameStatusLink != "")
+            { 
+                return App.CustomGameStatusLink; 
+            }
+            else
+            { 
 #if DEBUG
-            return CurrentSecrets.DefaultDiagnosticDataPostAddress;
+                return CurrentSecrets.DefaultDiagnosticDataPostAddress;
 #else
-            return CurrentSecrets.DefaultGamePostAddress;
+                return CurrentSecrets.DefaultGamePostAddress;
 #endif
+            }
         }
         public static string GetDiagnosticDataPostAddress()
         {
