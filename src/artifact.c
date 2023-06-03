@@ -57,7 +57,7 @@ STATIC_VAR int spec_dbon_applies = 0;
 STATIC_VAR boolean artiexist[1 + NUM_ARTIFACTS + 1];
 /* and a discovery list for them (no dummy first entry here) */
 STATIC_VAR short artidisco[NUM_ARTIFACTS];
-STATIC_VAR int nesting = 0; /* recursion control */
+STATIC_VAR int arti_nesting = 0; /* recursion control */
 STATIC_VAR int mkot_trap_warn_count = 0;
 
 STATIC_DCL void NDECL(hack_artifacts);
@@ -133,7 +133,7 @@ reset_artifacts(VOID_ARGS)
     memset((genericptr_t)artidisco, 0, sizeof artidisco);
     memcpy((genericptr_t)artilist, (genericptr_t)saved_artilist, sizeof(struct artifact) * (NUM_ARTIFACTS + 2));
     mkot_trap_warn_count = 0;
-    nesting = 0;
+    arti_nesting = 0;
     spec_dbon_applies = 0;
     touch_blasted = 0;
 }
@@ -3826,7 +3826,7 @@ int dropflag; /* 0==don't drop, 1==drop all, 2==drop weapon */
      * using the non-helm alignment rather than the helm alignment
      * which triggered this in the first place.
      */
-    if (!nesting++)
+    if (!arti_nesting++)
         clear_bypasses(); /* init upon initial entry */
 
     dropit = (dropflag > 0); /* drop all or drop weapon */
@@ -3870,7 +3870,7 @@ int dropflag; /* 0==don't drop, 1==drop all, 2==drop weapon */
     if (had_gloves && !uarmg)
         selftouch("After losing your gloves, you");
 
-    if (!--nesting)
+    if (!--arti_nesting)
         clear_bypasses(); /* reset upon final exit */
 }
 

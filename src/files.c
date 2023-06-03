@@ -4932,4 +4932,19 @@ list_files()
     return;
 }
 
+void
+reset_files(VOID_ARGS)
+{
+    nesting = 0;
+    config_error_data = 0;
+#if defined(WIN32) || defined(MSDOS)
+    lockptr = 0;
+#endif
+#ifdef AMIGA
+    lockptr = 0;
+#endif
+    *config_section_chosen = 0;
+    *config_section_current = 0;
+}
+
 /*files.c*/

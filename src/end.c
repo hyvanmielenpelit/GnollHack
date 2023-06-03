@@ -3206,6 +3206,7 @@ reset_remaining_static_variables()
     reset_dogmove();
     reset_doname();
     reset_dowear();
+    reset_files();
     reset_hack();
     reset_inventory();
     reset_kick();

@@ -3854,7 +3854,7 @@ tty_nhgetch()
      * is non-reentrant code in the internal _filbuf() routine, called by
      * getc().
      */
-    static volatile int nesting = 0;
+    static volatile int tty_nesting = 0;
     char nestbuf;
 #endif
 
@@ -3872,11 +3872,11 @@ tty_nhgetch()
         i = randomkey();
     } else {
 #ifdef UNIX
-        i = (++nesting == 1)
+        i = (++tty_nesting == 1)
               ? tgetch()
               : (read(fileno(stdin), (genericptr_t) &nestbuf, 1) == 1)
                   ? (int) nestbuf : EOF;
-        --nesting;
+        --tty_nesting;
 #else
         i = tgetch();
 #endif
