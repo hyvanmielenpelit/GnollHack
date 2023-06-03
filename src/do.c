@@ -4287,6 +4287,7 @@ register struct monst* mon;
     //int mnum = mon->mnum;
     struct permonst* ptr = mon->data;
     boolean is_you = (mon == &youmonst);
+    short cham = mon->cham;
 
     char buf[BUFSZ];
     char buf2[BUFSZ];
@@ -4339,15 +4340,23 @@ register struct monst* mon;
         putstr(datawin, ATR_SUBTITLE, buf);
     }
 
-    strcpy(buf, "");
+    Strcpy(buf, "");
     
     putstr(datawin, 0, buf);
+
+    if (cham >= LOW_PM)
+    {
+        Strcpy(buf2, mon->female && mons[cham].mfemalename ? mons[cham].mfemalename : mons[cham].mname);
+        *buf2 = highc(*buf2);
+        Sprintf(buf, "True form:              %s", buf2);
+        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+    }
 
     int relevant_hp = is_you ? (Upolyd ? u.mh : u.uhp) : mon->mhp;
     int relevant_hpmax = is_you ? (Upolyd ? u.mhmax : u.uhpmax) : mon->mhpmax;
     int relevant_level = is_you ? ptr->mlevel : mon->m_lev;
 
-    strcpy(buf2, "");
+    Strcpy(buf2, "");
     if (relevant_level != ptr->mlevel)
     {
         Sprintf(buf2, " (base %d)", ptr->mlevel);

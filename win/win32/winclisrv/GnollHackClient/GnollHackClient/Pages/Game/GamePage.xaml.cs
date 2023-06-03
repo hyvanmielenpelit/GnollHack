@@ -177,6 +177,9 @@ namespace GnollHackClient.Pages.Game
         private ObjectData[,] _objectData = new ObjectData[GHConstants.MapCols, GHConstants.MapRows];
         private readonly object _objectDataLock = new object();
 
+        private ObjectDataItem[] _weaponStyleObjDataItem= new ObjectDataItem[3];
+        private readonly object _weaponStyleObjDataItemLock = new object();
+
         private readonly object _petDataLock = new object();
         private List<GHPetDataItem> _petData = new List<GHPetDataItem>();
 
@@ -8798,50 +8801,84 @@ namespace GnollHackClient.Pages.Game
 
         public void AddObjectData(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags)
         {
-            lock (_objectDataLock)
-            {
-                if (_objectData[x, y] != null)
-                {
-                    bool is_memoryobj = (where == (int)obj_where_types.OBJ_HEROMEMORY);
-                    bool is_drawn_in_front = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_DRAWN_IN_FRONT) != 0UL;
-                    bool hallucinated = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_HALLUCINATION) != 0UL;
-                    List<ObjectDataItem> ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
+            bool is_uwep = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP) != 0UL;
+            bool is_uwep2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP2) != 0UL;
+            bool is_uquiver = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UQUIVER) != 0UL;
+            bool is_equipped = is_uwep | is_uwep2 | is_uquiver;
+            bool hallucinated = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_HALLUCINATION) != 0UL;
 
+            if (is_equipped)
+            {
+                bool outofammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO1) != 0UL;
+                bool wrongammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE1) != 0UL;
+                bool outofammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO2) != 0UL;
+                bool wrongammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE2) != 0UL;
+                bool outofammo = is_uwep ? outofammo1 : is_uwep2 ? outofammo2 : false;
+                bool wrongammo = is_uwep ? wrongammo1 : is_uwep2 ? wrongammo2 : false;
+
+                int idx = is_uwep ? 0 : is_uwep2 ? 1 : 2;
+                lock (_weaponStyleObjDataItemLock)
+                {
                     switch (cmdtype)
                     {
                         case 1: /* Clear */
-                            if (ObjectList != null)
-                                ObjectList.Clear();
+                            _weaponStyleObjDataItem[idx] = null;
                             break;
                         case 2: /* Add item */
-                            if (ObjectList == null)
-                            {
-                                if (is_memoryobj)
-                                {
-                                    if (is_drawn_in_front)
-                                        _objectData[x, y].CoverMemoryObjectList = new List<ObjectDataItem>();
-                                    else
-                                        _objectData[x, y].MemoryObjectList = new List<ObjectDataItem>();
-                                }
-                                else
-                                {
-                                    if (is_drawn_in_front)
-                                        _objectData[x, y].CoverFloorObjectList = new List<ObjectDataItem>();
-                                    else
-                                        _objectData[x, y].FloorObjectList = new List<ObjectDataItem>();
-                                }
-
-                                ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
-                            }
-                            ObjectList.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
+                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo);
                             break;
                         case 3: /* Add container item to previous item */
-                            if (ObjectList == null || ObjectList.Count == 0)
-                                break;
-                            if (ObjectList[ObjectList.Count - 1].ContainedObjs == null)
-                                ObjectList[ObjectList.Count - 1].ContainedObjs = new List<ObjectDataItem>();
-                            ObjectList[ObjectList.Count - 1].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
+                            _weaponStyleObjDataItem[idx].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
                             break;
+                    }
+                }
+            }
+            else
+            {
+                lock (_objectDataLock)
+                {
+                    if (_objectData[x, y] != null)
+                    {
+                        bool is_memoryobj = (where == (int)obj_where_types.OBJ_HEROMEMORY);
+                        bool is_drawn_in_front = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_DRAWN_IN_FRONT) != 0UL;
+                        List<ObjectDataItem> ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
+
+                        switch (cmdtype)
+                        {
+                            case 1: /* Clear */
+                                if (ObjectList != null)
+                                    ObjectList.Clear();
+                                break;
+                            case 2: /* Add item */
+                                if (ObjectList == null)
+                                {
+                                    if (is_memoryobj)
+                                    {
+                                        if (is_drawn_in_front)
+                                            _objectData[x, y].CoverMemoryObjectList = new List<ObjectDataItem>();
+                                        else
+                                            _objectData[x, y].MemoryObjectList = new List<ObjectDataItem>();
+                                    }
+                                    else
+                                    {
+                                        if (is_drawn_in_front)
+                                            _objectData[x, y].CoverFloorObjectList = new List<ObjectDataItem>();
+                                        else
+                                            _objectData[x, y].FloorObjectList = new List<ObjectDataItem>();
+                                    }
+
+                                    ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
+                                }
+                                ObjectList.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
+                                break;
+                            case 3: /* Add container item to previous item */
+                                if (ObjectList == null || ObjectList.Count == 0)
+                                    break;
+                                if (ObjectList[ObjectList.Count - 1].ContainedObjs == null)
+                                    ObjectList[ObjectList.Count - 1].ContainedObjs = new List<ObjectDataItem>();
+                                ObjectList[ObjectList.Count - 1].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
+                                break;
+                        }
                     }
                 }
             }
