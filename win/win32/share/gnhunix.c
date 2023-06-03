@@ -53,6 +53,7 @@ getlock()
     {
         wait_synch();
         error("%s", "");
+        return;
     }
 
     regularize(lock);
@@ -66,6 +67,7 @@ getlock()
         perror(fq_lock);
         unlock_file(HLOCK);
         error("Cannot open %s", fq_lock);
+        return;
     }
     (void) close(fd);
 
@@ -74,6 +76,7 @@ getlock()
         (void) eraseoldlocks();
         unlock_file(HLOCK);
         error("Couldn't recover old game.");
+        return;
     }
 
 gotlock:
@@ -118,6 +121,7 @@ check_crash()
     {
         wait_synch();
         error("%s", "");
+        return;
     }
 
     if (!wizard)
@@ -137,6 +141,7 @@ check_crash()
         perror(fq_lock);
         unlock_file(HLOCK);
         error("Cannot open %s", fq_lock);
+        return;
     }
     (void)close(fd);
 

@@ -151,7 +151,7 @@ char** argv;
 
     issue_gui_command(GUI_CMD_GAME_START);
 
-    if(!load_saved_game(0))
+    if (!load_saved_game(0))
     {
         player_selection();
         resuming = FALSE;
@@ -161,6 +161,10 @@ char** argv;
 
         newgame();
         mode_message();
+    }
+    else
+    {
+        resuming = TRUE;
     }
 
     if(wizard)
