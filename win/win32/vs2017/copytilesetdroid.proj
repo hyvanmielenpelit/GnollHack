@@ -2,10 +2,8 @@
   <Import Project="dirs.props"/>
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
-  <Target Name="Build"
-    Inputs="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png"
-    Outputs="$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits.png;$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits-2.png">
-    <Copy SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(ClientCommonAssetsDir)"/>
+  <Target Name="Build">
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(ClientCommonAssetsDir)"/>
   </Target>
   <Target Name="Clean">
     <Delete Files="$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits.png;$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>

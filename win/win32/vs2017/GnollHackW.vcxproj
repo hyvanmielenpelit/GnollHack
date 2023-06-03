@@ -320,9 +320,6 @@
     <None Include="$(WinWin32Dir)Intro.bank" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <Target Name="BeforeBuild">
-    <MSBuild Projects="beforegnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
-  </Target>
   <Target Name="BeforeRebuild">
     <MSBuild Projects="beforegnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
@@ -331,8 +328,5 @@
   </Target>
   <Target Name="AfterClean">
     <MSBuild Projects="aftergnollhack.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
-  </Target>
-  <Target Name="AfterRebuild">
-    <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
 </Project>

@@ -63,7 +63,6 @@
     <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/dlb</RemoteIntDir>
     <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
     <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
 	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -106,22 +105,13 @@
     <SourcesToCopyRemotely Include="@(ClInclude)" />
     <SourcesToCopyRemotely Include="$(IncDir)*.h" />
   </ItemGroup>
-  <Target Name="BeforeBuild">
-    <MSBuild Projects="copytilesetdroid.proj" Targets="Build" />
-  </Target>
-  <Target Name="BeforeClean">
-    <MSBuild Projects="copytilesetdroid.proj" Targets="Build" />
-  </Target>
   <Target Name="BeforeRebuild">
     <MSBuild Projects="copytilesetdroid.proj" Targets="Build" />
-  </Target>
-  <Target Name="AfterBuild">
-    <MSBuild Projects="afterdroidutils.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterClean">
     <MSBuild Projects="afterdroidutils.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
   </Target>
-  <Target Name="AfterRebuild">
+  <Target Name="AfterBuild">
     <MSBuild Projects="afterdroidutils.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
 </Project>
