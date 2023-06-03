@@ -1552,7 +1552,7 @@ boolean verbose;
     if (state_change_detected || condition_change)
     {
         context.botl = context.botlx = TRUE;
-        force_redraw_at(u.ux, u.uy);
+        refresh_u_tile_gui_info(FALSE);
     }
 }
 

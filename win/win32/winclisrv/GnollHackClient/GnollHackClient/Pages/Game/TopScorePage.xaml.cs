@@ -260,18 +260,35 @@ namespace GnollHackClient.Pages.Game
             if(tsi != null)
             {
                 string fulltargetpath = Path.Combine(App.GHPath, "dumplog", tsi.GetDumplogFileName());
-                var displFilePage = new DisplayFilePage(fulltargetpath, "Dumplog - " + tsi.Name, 0, true);
-                string errormsg = "";
-                if (!displFilePage.ReadFile(out errormsg))
+                try
                 {
-                    await DisplayAlert("Error Reading Dumplog File", errormsg, "OK");
+                    if (File.Exists(fulltargetpath))
+                    {
+                        var displFilePage = new DisplayFilePage(fulltargetpath, "Dumplog - " + tsi.Name, 0, true);
+                        string errormsg = "";
+                        if (!displFilePage.ReadFile(out errormsg))
+                        {
+                            await DisplayAlert("Error Reading Dumplog File", errormsg, "OK");
+                        }
+                        else
+                        {
+                            await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                        }
+                    }
+                    else
+                    {
+                        await DisplayAlert("No Dumplog", "Dumplog \'" + fulltargetpath + "\' for " + tsi.Name + " does not exist.", "OK");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                    await DisplayAlert("Error Reading Dumplog File", "An error occurred when reading dumplog \'" + fulltargetpath + "\' for " + tsi.Name + ": " + ex.Message, "OK");
                 }
             }
+            else
+            {
+                await DisplayAlert("Top Score Info Missing", "Selected top score information does not exist.", "OK");
+            }
         }
-
     }
 }

@@ -188,10 +188,11 @@ namespace GnollHackClient
         {
             get
             {
-                string filename = GetDumplogFileName();
-                string fulltargetpath = Path.Combine(App.GHPath, "dumplog", filename);
-                bool res = File.Exists(fulltargetpath);
-                return res;
+                //string filename = GetDumplogFileName();
+                //string fulltargetpath = Path.Combine(App.GHPath, "dumplog", filename);
+                //bool res = File.Exists(fulltargetpath);
+                //return res;
+                return true;
             }
         }
 

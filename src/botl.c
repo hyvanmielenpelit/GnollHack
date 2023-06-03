@@ -256,9 +256,9 @@ do_statusline2()
     hpmax = Upolyd ? u.mhmax : u.uhpmax;
     if (hp < 0)
         hp = 0;
-    Sprintf(hlth, "HP:%d(%d) MP:%d(%d) AC:%d",
+    Sprintf(hlth, "HP:%d(%d) MP:%d(%d) AC:%d MC:%d",
             min(hp, 9999), min(hpmax, 9999),
-            min(u.uen, 9999), min(u.uenmax, 9999), u.uac);
+            min(u.uen, 9999), min(u.uenmax, 9999), u.uac, u.umc);
     hln = strlen(hlth);
 
     /* experience */
@@ -272,7 +272,7 @@ do_statusline2()
 
     /* move */
     if (flags.showmove)
-        Sprintf(move, "M:%d", get_u_move_speed(TRUE));
+        Sprintf(move, "MS:%d", get_u_move_speed(TRUE));
     else
         move[0] = '\0';
     mln = strlen(move);
