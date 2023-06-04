@@ -169,6 +169,8 @@ struct obj *obj;
                         ? "nearby" : "in the distance");
         }
         m_useup(mon, obj);
+        special_effect_wait_until_end(0);
+
         deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, AD_MAGM, ADFLAGS_NONE));
         //mon->mhp -= dam;
         if (DEADMONSTER(mon))
