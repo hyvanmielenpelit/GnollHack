@@ -30,6 +30,7 @@ STATIC_DCL const char *FDECL(e_nam, (struct entity *));
 STATIC_DCL const char *FDECL(E_phrase, (struct entity *, const char *));
 STATIC_DCL boolean FDECL(e_survives_at, (struct entity *, int, int));
 STATIC_DCL void FDECL(e_died, (struct entity *, int, int));
+STATIC_OVL void FDECL(e_damage, (struct entity*, int, int, unsigned long, const char*, int));
 STATIC_DCL boolean FDECL(automiss, (struct entity *));
 STATIC_DCL boolean FDECL(e_missed, (struct entity *, BOOLEAN_P));
 STATIC_DCL boolean FDECL(e_jumps, (struct entity *));
@@ -500,6 +501,34 @@ int xkill_flags, how;
     }
 }
 
+STATIC_OVL void
+e_damage(etmp, basedmg, adtyp, ad_flags, knam, k_format)
+struct entity* etmp;
+int basedmg, adtyp;
+unsigned long ad_flags;
+const char* knam;
+int k_format;
+{
+    if (!etmp || !etmp->emon)
+        return;
+
+    if (etmp->emon == &youmonst)
+        losehp(adjust_damage(basedmg, (struct monst*)0, &youmonst, adtyp, ad_flags), knam, k_format);
+    else
+    {
+        deduct_monster_hp(etmp->emon, adjust_damage(basedmg, (struct monst*)0, etmp->emon, adtyp, ad_flags));
+        if (DEADMONSTER(etmp->emon))
+        {
+            if (canspotmon(etmp->emon))
+                pline("%s is %s!", Monnam(etmp->emon),
+                    (is_not_living(etmp->emon->data) || is_vampshifter(etmp->emon))
+                    ? "destroyed" : "killed");
+
+            monkilled(etmp->emon, canspotmon(etmp->emon) ? knam : 0, adtyp);
+        }
+    }
+}
+
 /*
  * These are never directly affected by a bridge or portcullis.
  */
@@ -592,7 +621,8 @@ struct entity *etmp;
     at_portcullis = is_db_wall(oldx, oldy);
     crm = &levl[oldx][oldy];
 
-    if (automiss(etmp) && e_survives_at(etmp, oldx, oldy)) {
+    if (automiss(etmp) && e_survives_at(etmp, oldx, oldy)) 
+    {
         if (e_inview && (at_portcullis || IS_DRAWBRIDGE(crm->typ)))
             pline_The("%s passes through %s!",
                       at_portcullis ? "portcullis" : "drawbridge",
@@ -601,24 +631,36 @@ struct entity *etmp;
             spoteffects(FALSE);
         return;
     }
-    if (e_missed(etmp, FALSE)) {
-        if (at_portcullis) {
+
+    if (e_missed(etmp, FALSE)) 
+    {
+        if (at_portcullis) 
+        {
             pline_The("portcullis misses %s!", e_nam(etmp));
-        } else {
+        } 
+        else 
+        {
             debugpline1("The drawbridge misses %s!", e_nam(etmp));
         }
-        if (e_survives_at(etmp, oldx, oldy)) {
+        if (e_survives_at(etmp, oldx, oldy)) 
+        {
             return;
-        } else {
+        }
+        else
+        {
             debugpline0("Mon can't survive here");
             if (at_portcullis)
                 must_jump = TRUE;
             else
                 relocates = TRUE; /* just ride drawbridge in */
         }
-    } else {
-        if (crm->typ == DRAWBRIDGE_DOWN) {
-            if (is_u(etmp)) {
+    }
+    else 
+    {
+        if (crm->typ == DRAWBRIDGE_DOWN) 
+        {
+            if (is_u(etmp)) 
+            {
                 killer.format = NO_KILLER_PREFIX;
                 Strcpy(killer.name,
                        "crushed to death underneath a drawbridge");
@@ -632,17 +674,24 @@ struct entity *etmp;
         }                 /* not at an opened drawbridge, since all  */
         must_jump = TRUE; /* *missable* creatures survive on the     */
     }                     /* square, and all the unmissed ones die.  */
-    if (must_jump) {
-        if (at_portcullis) {
-            if (e_jumps(etmp)) {
+
+    if (must_jump) 
+    {
+        if (at_portcullis) 
+        {
+            if (e_jumps(etmp)) 
+            {
                 relocates = TRUE;
                 debugpline0("Jump succeeds!");
-            } else {
+            } 
+            else 
+            {
                 if (e_inview)
                     pline("%s crushed by the falling portcullis!",
                           E_phrase(etmp, "are"));
                 else if (!Deaf)
                     You_hear("a crushing sound.");
+
                 e_died(etmp,
                        XKILL_NOCORPSE | (e_inview ? XKILL_GIVEMSG
                                                   : XKILL_NOMSG),
@@ -650,7 +699,9 @@ struct entity *etmp;
                 /* no corpse */
                 return;
             }
-        } else { /* tries to jump off bridge to original square */
+        }
+        else 
+        { /* tries to jump off bridge to original square */
             relocates = !e_jumps(etmp);
             debugpline1("Jump %s!", (relocates) ? "fails" : "succeeds");
         }
@@ -670,7 +721,8 @@ struct entity *etmp;
     if ((newx == oldx) && (newy == oldy))
         get_wall_for_db(&newx, &newy);
     debugpline0("Checking new square for occupancy.");
-    if (relocates && (e_at(newx, newy))) {
+    if (relocates && (e_at(newx, newy)))
+    {
         /*
          * Standoff problem: one or both entities must die, and/or
          * both switch places.  Avoid infinite recursion by checking
@@ -681,10 +733,13 @@ struct entity *etmp;
 
         other = e_at(newx, newy);
         debugpline1("New square is occupied by %s", e_nam(other));
-        if (e_survives_at(other, newx, newy) && automiss(other)) {
+        if (e_survives_at(other, newx, newy) && automiss(other))
+        {
             relocates = FALSE; /* "other" won't budge */
             debugpline1("%s suicide.", E_phrase(etmp, "commit"));
-        } else {
+        }
+        else
+        {
             debugpline1("Handling %s", e_nam(other));
             while ((e_at(newx, newy) != 0) && (e_at(newx, newy) != etmp))
                 do_entity(other);
@@ -692,7 +747,8 @@ struct entity *etmp;
 #ifdef D_DEBUG
             wait_synch();
 #endif
-            if (e_at(oldx, oldy) != etmp) {
+            if (e_at(oldx, oldy) != etmp) 
+            {
                 debugpline1("%s moved or died in recursion somewhere",
                             E_phrase(etmp, "have"));
 #ifdef D_DEBUG
@@ -702,13 +758,18 @@ struct entity *etmp;
             }
         }
     }
-    if (relocates && !e_at(newx, newy)) { /* if e_at() entity = worm tail */
+
+    if (relocates && !e_at(newx, newy)) 
+    { /* if e_at() entity = worm tail */
         debugpline1("Moving %s", e_nam(etmp));
-        if (!is_u(etmp)) {
+        if (!is_u(etmp)) 
+        {
             remove_monster(etmp->ex, etmp->ey);
             place_monster(etmp->emon, newx, newy);
             update_monster_region(etmp->emon);
-        } else {
+        }
+        else 
+        {
             u.ux = newx;
             u.uy = newy;
         }
@@ -720,35 +781,44 @@ struct entity *etmp;
 #ifdef D_DEBUG
     wait_synch();
 #endif
-    if (is_db_wall(etmp->ex, etmp->ey)) {
+
+    if (is_db_wall(etmp->ex, etmp->ey)) 
+    {
         debugpline1("%s in portcullis chamber", E_phrase(etmp, "are"));
 #ifdef D_DEBUG
         wait_synch();
 #endif
-        if (e_inview) {
-            if (is_u(etmp)) {
+        if (e_inview) 
+        {
+            if (is_u(etmp)) 
+            {
                 You("tumble towards the closed portcullis!");
                 if (automiss(etmp))
                     You("pass through it!");
                 else
                     pline_The("drawbridge closes in...");
-            } else
+            } 
+            else
                 pline("%s behind the drawbridge.",
                       E_phrase(etmp, "disappear"));
         }
-        if (!e_survives_at(etmp, etmp->ex, etmp->ey)) {
+        if (!e_survives_at(etmp, etmp->ex, etmp->ey)) 
+        {
             killer.format = KILLED_BY_AN;
             Strcpy(killer.name, "closing drawbridge");
             e_died(etmp, XKILL_NOMSG, CRUSHING);
             return;
         }
         debugpline1("%s in here", E_phrase(etmp, "survive"));
-    } else {
+    } 
+    else
+    {
         debugpline1("%s on drawbridge square", E_phrase(etmp, "are"));
         if (is_pool(etmp->ex, etmp->ey) && !e_inview)
             if (!Deaf)
                 You_hear("a splash.");
-        if (e_survives_at(etmp, etmp->ex, etmp->ey)) {
+        if (e_survives_at(etmp, etmp->ex, etmp->ey))
+        {
             if (e_inview && !is_flyer(etmp->edata)
                 && !is_floater(etmp->edata))
                 pline("%s from the bridge.", E_phrase(etmp, "fall"));
@@ -757,7 +827,8 @@ struct entity *etmp;
         debugpline1("%s cannot survive on the drawbridge square",
                     E_phrase(etmp, NULL));
         if (is_pool(etmp->ex, etmp->ey) || is_lava(etmp->ex, etmp->ey))
-            if (e_inview && !is_u(etmp)) {
+            if (e_inview && !is_u(etmp))
+            {
                 /* drown() will supply msgs if nec. */
                 boolean lava = is_lava(etmp->ex, etmp->ey);
 
@@ -768,6 +839,7 @@ struct entity *etmp;
                     pline("%s into the %s.", E_phrase(etmp, "fall"),
                           lava ? hliquid("lava") : "moat");
             }
+
         killer.format = NO_KILLER_PREFIX;
         Strcpy(killer.name, "fell from a drawbridge");
         e_died(etmp, /* CRUSHING is arbitrary */
@@ -1071,13 +1143,15 @@ boolean is_disintegrated;
         if (!automiss(etmp2)) 
         {
             if (e_inview)
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s blown apart by flying debris.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s hit by flying debris.",
                       E_phrase(etmp2, "are"));
-            killer.format = KILLED_BY_AN;
-            Strcpy(killer.name, "exploding drawbridge");
-            e_died(etmp2,
-                   XKILL_NOCORPSE | (e_inview ? XKILL_GIVEMSG : XKILL_NOMSG),
-                   CRUSHING); /*no corpse*/
+
+            e_damage(etmp2, d(10, 8), AD_PHYS, ADFLAGS_NONE, "flying debris from a collapsing drawbridge", KILLED_BY);
+            //killer.format = KILLED_BY_AN;
+            //Strcpy(killer.name, "exploding drawbridge");
+            //e_died(etmp2,
+            //       XKILL_NOCORPSE | (e_inview ? XKILL_GIVEMSG : XKILL_NOMSG),
+            //       CRUSHING); /*no corpse*/
         } /* nothing which is vulnerable can survive this */
     }
     set_entity(x, y, etmp1);
@@ -1115,13 +1189,14 @@ boolean is_disintegrated;
                     debugpline1("%s from shrapnel", E_phrase(etmp1, "die"));
                 }
             }
-            killer.format = KILLED_BY_AN;
-            Strcpy(killer.name, "collapsing drawbridge");
-            e_died(etmp1,
-                   XKILL_NOCORPSE | (e_inview ? XKILL_GIVEMSG : XKILL_NOMSG),
-                   CRUSHING); /*no corpse*/
-            if (levl[etmp1->ex][etmp1->ey].typ == MOAT)
-                do_entity(etmp1);
+            e_damage(etmp2, d(10, 8), AD_PHYS, ADFLAGS_NONE, "flying debris from a collapsing drawbridge", KILLED_BY);
+            //killer.format = KILLED_BY_AN;
+            //Strcpy(killer.name, "collapsing drawbridge");
+            //e_died(etmp1,
+            //       XKILL_NOCORPSE | (e_inview ? XKILL_GIVEMSG : XKILL_NOMSG),
+            //       CRUSHING); /*no corpse*/
+            //if (levl[etmp1->ex][etmp1->ey].typ == MOAT)
+            //    do_entity(etmp1);
         }
     }
     nokiller();
