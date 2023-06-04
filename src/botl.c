@@ -256,9 +256,10 @@ do_statusline2()
     hpmax = Upolyd ? u.mhmax : u.uhpmax;
     if (hp < 0)
         hp = 0;
-    Sprintf(hlth, "HP:%d(%d) MP:%d(%d) AC:%d MC:%d",
+    Sprintf(hlth, "HP:%d(%d) MP:%d(%d) AC:%d MC:%d/%d%%",
             min(hp, 9999), min(hpmax, 9999),
-            min(u.uen, 9999), min(u.uenmax, 9999), u.uac, u.umc);
+            min(u.uen, 9999), min(u.uenmax, 9999), 
+            u.uac, u.umc, magic_negation_percentage(u.umc));
     hln = strlen(hlth);
 
     /* experience */
