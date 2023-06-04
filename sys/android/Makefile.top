@@ -267,9 +267,12 @@ install: rootcheck $(GAME) recover $(VARDAT) dungeon spec_levs
 #		mkdir -p $(SHELLDIR); fi
 	-rm -rf $(INSTDIR) $(VARDIR)
 	-mkdir -p $(INSTDIR) $(VARDIR) $(VARDIR)/save
+	-mkdir -p $(INSTDIR) $(VARDIR) $(VARDIR)/whereis
 	if test -d ./-p; then rmdir ./-p; fi
 #	-$(CHOWN) $(GAMEUID) $(INSTDIR) $(VARDIR) $(VARDIR)/save
+#	-$(CHOWN) $(GAMEUID) $(INSTDIR) $(VARDIR) $(VARDIR)/whereis
 #	$(CHGRP) $(GAMEGRP) $(INSTDIR) $(VARDIR) $(VARDIR)/save
+#	$(CHGRP) $(GAMEGRP) $(INSTDIR) $(VARDIR) $(VARDIR)/whereis
 # order counts here:
 #	chmod $(DIRPERM) $(INSTDIR)
 #	chmod $(VARDIRPERM) $(VARDIR) $(VARDIR)/save

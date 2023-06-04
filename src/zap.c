@@ -11429,6 +11429,10 @@ retry:
                             ? "Oops!  %s away from you!"
                             : "Oops!  %s to the floor!");
 
+#ifdef WISH_TRACKER
+        /* write it out to our universal wishtracker file */
+        trackwish(bufcpy);
+#endif
         /* The(aobjnam()) is safe since otmp is unidentified -dlc */
         (void) hold_another_object(otmp, oops_msg,
                                    The(aobjnam(otmp, verb)),
