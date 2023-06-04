@@ -583,7 +583,7 @@ typedef unsigned char uchar;
 /* Live-logging - not particularly experimental, but very optional */
 /* #define LIVELOG_ENABLE */
 #ifdef LIVELOG_ENABLE
-#define LIVELOGFILE "livelogfile" /* in-game events recorded live */
+#define LIVELOGFILE "livelog" /* in-game events recorded live */
 #ifdef LIVELOGFILE
 /* LL_flags defined in global.h. Value below is ignored if SYSCF is enabled */
 /* #define LIVELOG_DETAIL (LL_WISH | LL_ACHIEVE | LL_UMONST) */

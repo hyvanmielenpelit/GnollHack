@@ -279,10 +279,10 @@ install: rootcheck $(GAME) recover $(VARDAT) dungeon spec_levs
 # set up the game files
 	( $(MAKE) dofiles )
 # set up some additional files
-	touch $(VARDIR)/perm $(VARDIR)/record $(VARDIR)/logfile $(VARDIR)/livelogfile $(VARDIR)/xlogfile $(VARDIR)/wishtracker
-	-( cd $(VARDIR) ; $(CHOWN) $(GAMEUID) perm record logfile livelogfile xlogfile wishtracker ; \
-			$(CHGRP) $(GAMEGRP) perm record logfile livelogfile xlogfile wishtracker ; \
-			chmod $(VARFILEPERM) perm record logfile livelogfile xlogfile wishtracker )
+	touch $(VARDIR)/perm $(VARDIR)/record $(VARDIR)/logfile $(VARDIR)/livelog $(VARDIR)/xlogfile $(VARDIR)/wishtracker
+	-( cd $(VARDIR) ; $(CHOWN) $(GAMEUID) perm record logfile livelog xlogfile wishtracker ; \
+			$(CHGRP) $(GAMEGRP) perm record logfile livelog xlogfile wishtracker ; \
+			chmod $(VARFILEPERM) perm record logfile livelog xlogfile wishtracker )
 	true; $(POSTINSTALL)
 # and a reminder
 	@echo You may also want to reinstall the man pages via the doc Makefile.
