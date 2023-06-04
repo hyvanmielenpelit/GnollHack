@@ -1557,12 +1557,12 @@ int x, y;
                         play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, x, y, FALSE);
                         special_effect_wait_until_action(0);
                         spef_on = TRUE;
-                        pline("KABOOM!!  You see a door explode.");
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "KABOOM!!  You see a door explode.");
                     }
                     else if (!Deaf)
                     {
                         play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, x, y, 0.15);
-                        You_hear("a distant explosion.");
+                        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a distant explosion.");
                     }
                 }
                 door->doormask &= ~D_TRAPPED;

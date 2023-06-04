@@ -4196,10 +4196,10 @@ struct obj *obj;
     }
 
     if (!Blind) {
-        pline("In a cloud of smoke, %s emerges!", a_monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "In a cloud of smoke, %s emerges!", a_monnam(mtmp));
         pline("%s speaks.", Monnam(mtmp));
     } else {
-        You("smell acrid fumes.");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "smell acrid fumes.");
         pline("%s speaks.", Something);
     }
 

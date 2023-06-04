@@ -202,9 +202,9 @@ struct monst *mon;
             if(canseemon(mtmp))
             { 
                 if (is_demon(ptr))
-                    pline("%s appears in a cloud of smoke!", Amonnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s appears in a cloud of smoke!", Amonnam(mtmp));
                 else
-                    pline("%s appears!", Amonnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s appears!", Amonnam(mtmp));
             }
         }
         cnt--;
@@ -461,19 +461,19 @@ yacc_bison_summon()
         if (result == 1 && mtmp)
         {
             play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp->mx, mtmp->my);
-            pline("%s appears in a cloud of smoke!", Amonnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s appears in a cloud of smoke!", Amonnam(mtmp));
         }
         else
         {
             if (canseemonnumber == 1 && mtmp2)
             {
                 play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp2->mx, mtmp2->my);
-                pline("%s appears in a cloud of smoke!", Amonnam(mtmp2));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s appears in a cloud of smoke!", Amonnam(mtmp2));
             }
             else
             {
                 play_sfx_sound(SFX_SUMMON_DEMON);
-                pline("%s bison appear in a cloud of smoke!", numberword);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s bison appear in a cloud of smoke!", numberword);
             }
         }
     }

@@ -2577,9 +2577,9 @@ demonpet()
         if (canseemon(dtmp))
         {
             if (is_demon(dtmp->data))
-                pline("%s appears in a cloud of smoke!", Amonnam(dtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears in a cloud of smoke!", Amonnam(dtmp));
             else
-                pline("%s appears!", Amonnam(dtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears!", Amonnam(dtmp));
         }
     }
     exercise(A_WIS, TRUE);

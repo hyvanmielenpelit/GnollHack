@@ -93,12 +93,12 @@ struct obj *obj;
                 } else {
                     if (vis) {
                         play_sfx_sound(SFX_SURPRISE_ATTACK);
-                        pline(
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING,
                             "As %s opens the bottle, an enormous %s emerges!",
                               mon_nam(mon),
                               Hallucination ? rndmonnam(NULL)
                                             : (const char *) "ghost");
-                        pline("%s is frightened to death, and unable to move.",
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s is frightened to death, and unable to move.",
                               Monnam(mon));
                     }
                     paralyze_monst(mon, 3, FALSE);
@@ -119,7 +119,7 @@ struct obj *obj;
                     pline1(empty);
             } else {
                 if (vis)
-                    pline("In a cloud of smoke, %s emerges!", a_monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "In a cloud of smoke, %s emerges!", a_monnam(mtmp));
                 pline("%s speaks.", vis ? Monnam(mtmp) : Something);
                 /* I suspect few players will be upset that monsters */
                 /* can't wish for wands of death here.... */
@@ -134,7 +134,7 @@ struct obj *obj;
                     verbalize_talk1("It is about time.");
                     play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
                     if (vis)
-                        pline("%s vanishes.", Monnam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s vanishes.", Monnam(mtmp));
                     mongone(mtmp);
                 }
             }
@@ -142,8 +142,17 @@ struct obj *obj;
         }
     }
     if (obj->oclass == WAND_CLASS && obj->cursed && !is_cancelled(mon)
-        && !rn2(WAND_BACKFIRE_CHANCE)) {
+        && !rn2(WAND_BACKFIRE_CHANCE))
+    {
         int dam = d(obj->charges + 2, 6);
+
+        context.global_minimum_volume = 0.15f;
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_ZAP);
+        context.global_minimum_volume = 0.0f;
+
+        play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_MAGICAL, mon->mx, mon->my, 0.15);
+        play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, mon->mx, mon->my, FALSE);
+        special_effect_wait_until_action(0);
 
         /* 3.6.1: no Deaf filter; 'if' message doesn't warrant it, 'else'
            message doesn't need it since You_hear() has one of its own */
