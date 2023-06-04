@@ -25,6 +25,10 @@ STATIC_DCL void NDECL(create_monster_or_encounter);
 STATIC_DCL int NDECL(select_rwraith);
 STATIC_DCL boolean NDECL(maybe_create_rwraith);
 
+#ifdef EXTRAINFO_FN
+static long prev_dgl_extrainfo = 0;
+#endif
+
 void
 moveloop(resuming)
 boolean resuming;
@@ -105,6 +109,11 @@ boolean resuming;
 
     /* Main move loop */
     program_state.in_moveloop = 1;
+
+#ifdef WHEREIS_FILE
+    touch_whereis();
+#endif
+
     for (;;)
     {
 #ifdef SAFERHANGUP
@@ -198,6 +207,13 @@ boolean resuming;
                     }
                     if (flags.time && !context.run)
                         iflags.time_botl = TRUE;
+
+#ifdef EXTRAINFO_FN
+                    if ((prev_dgl_extrainfo == 0) || (prev_dgl_extrainfo < (moves + 250))) {
+                        prev_dgl_extrainfo = moves;
+                        mk_dgl_extrainfo();
+                    }
+#endif
 
                     /* One possible result of prayer is healing.  Whether or
                      * not you get healed depends on your current hit points.
@@ -1862,6 +1878,14 @@ unlock_thread_lock(VOID_ARGS)
     thread_lock_unlock();
 #else
     return;
+#endif
+}
+
+void
+reset_allmain(VOID_ARGS)
+{
+#ifdef EXTRAINFO_FN
+    prev_dgl_extrainfo = 0;
 #endif
 }
 

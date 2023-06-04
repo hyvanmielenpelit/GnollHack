@@ -4914,7 +4914,10 @@ register struct obj *obj;
 
     if (obj->oclass != COIN_CLASS) {
         /* KMH, conduct */
-        u.uconduct.gnostic++;
+        if (!u.uconduct.gnostic++)
+            livelog_printf(LL_CONDUCT,
+                "eschewed atheism, by dropping %s on an altar",
+                doname(obj));
     } else {
         /* coins don't have bless/curse status */
         obj->blessed = obj->cursed = 0;
@@ -6343,6 +6346,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         }
         mklev();
         isnew = TRUE; /* made the level */
+        livelog_printf(LL_DEBUG, "entered new level %d, %s.", dunlev(&u.uz), dungeons[u.uz.dnum].dname);
     }
     else 
     {
@@ -6625,7 +6629,10 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             context.botl = 1;
 
         if (!u.uachieve.enter_gehennom)
+        {
             achievement_gained("Entered Gehennom");
+            livelog_write_string(LL_ACHIEVE, "entered Gehennom");
+        }
         u.uachieve.enter_gehennom = 1;
     }
 
@@ -6638,10 +6645,19 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
     if (In_endgame(&u.uz))
     {
-        if(Is_astralevel(&u.uz))
+        if (Is_astralevel(&u.uz))
+        {
+            if (!u.uachieve.entered_astral_plane)
+                livelog_write_string(LL_ACHIEVE, "entered the Astral Plane");
+
             u.uachieve.entered_astral_plane = 1;
+        }
         else
+        {
+            if(!u.uachieve.entered_elemental_planes)
+                livelog_write_string(LL_ACHIEVE, "entered the Elemental Planes");
             u.uachieve.entered_elemental_planes = 1;
+        }
     }
 
     if (Is_minetown_level(&u.uz))
@@ -6860,6 +6876,11 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     /* assume this will always return TRUE when changing level */
     (void) in_out_region(u.ux, u.uy);
     (void) pickup(1);
+
+#ifdef WHEREIS_FILE
+    touch_whereis();
+#endif
+
     context.reviving = FALSE;
 }
 

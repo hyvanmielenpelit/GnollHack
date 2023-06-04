@@ -46,6 +46,7 @@ E void NDECL(reset_all_monster_origin_coordinates);
 E void FDECL(reset_object_origin_coordinates, (struct obj*));
 E void NDECL(lock_thread_lock);
 E void NDECL(unlock_thread_lock);
+E void NDECL(reset_allmain);
 
 /* ### animation.c ### */
 
@@ -1227,6 +1228,21 @@ E boolean FDECL(Death_quote, (char *, int));
 E void NDECL(list_files);
 E void FDECL(reset_save_file_name, (BOOLEAN_P));
 E void NDECL(reset_files);
+E void FDECL(livelog_write_string, (unsigned int, const char*));
+E void VDECL(livelog_printf, (unsigned int, const char*, ...)) PRINTF_F(2, 3);
+E void FDECL(livelog_dump_url, (unsigned int));
+#ifdef WHEREIS_FILE
+E void NDECL(touch_whereis);
+E void NDECL(delete_whereis);
+E void FDECL(signal_whereis, (int));
+#endif
+#ifdef EXTRAINFO_FN
+E void NDECL(mk_dgl_extrainfo);
+#endif
+#ifdef WISH_TRACKER
+E void FDECL(trackwish, (char*));
+#endif
+
 
 /* ### fountain.c ### */
 

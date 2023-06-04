@@ -953,6 +953,8 @@ gcrownu()
         in_hand2 = (uarms && uarms->oartifact == ART_KATANA_OF_MASAMUNE);
         play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_I_CROWN_THEE_THE_HAND_OF_ELBERETH);
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "I crown thee...  The Hand of Elbereth!");
+        livelog_printf(LL_DIVINEGIFT,
+            "was crowned \"The Hand of Elbereth\" by %s", u_gname());
         break;
     case A_NEUTRAL:
         u.uevent.uhand_of_elbereth = 2;
@@ -961,6 +963,8 @@ gcrownu()
         already_exists = exist_artifact(LONG_SWORD, artiname(ART_VORPAL_BLADE));
         play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THOU_SHALT_BE_MY_ENVOY_OF_BALANCE);
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou shalt be my Envoy of Balance!");
+        livelog_printf(LL_DIVINEGIFT, "became %s Envoy of Balance",
+            s_suffix(u_gname()));
         break;
     case A_CHAOTIC:
         u.uevent.uhand_of_elbereth = 3;
@@ -971,6 +975,7 @@ gcrownu()
         {
             play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_I_CROWN_THEE_THE_GLORY_OF_ARIOCH);
             verbalize_ex(ATR_NONE, CLR_MSG_GOD, "I crown thee... The Glory of Arioch!");
+            livelog_printf(LL_DIVINEGIFT, "%s", "became The Glory of Arioch");
         }
         else
         {
@@ -978,6 +983,8 @@ gcrownu()
             play_voice_god_simple_line_by_align(u.ualign.type, takelives ? GOD_LINE_THOU_ART_CHOSEN_TO_TAKE_LIVES_FOR_MY_GLORY : GOD_LINE_THOU_ART_CHOSEN_TO_STEAL_SOULS_FOR_MY_GLORY);
             verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou art chosen to %s for My Glory!",
                 takelives ? "take lives" : "steal souls");
+            livelog_printf(LL_DIVINEGIFT, "was chosen to %s for the Glory of %s", takelives ? "take lives" : "steal souls",
+                u_gname());
         }
         break;
     }
@@ -2245,7 +2252,10 @@ dosacrifice()
         struct monst *mtmp;
 
         /* KMH, conduct */
-        u.uconduct.gnostic++;
+        if (!u.uconduct.gnostic++)
+            livelog_printf(LL_CONDUCT,
+                "rejected atheism by offering %s on an altar of %s",
+                The(xname(otmp)), a_gname());
 
         /* you're handling this corpse, even if it was killed upon the altar
          */
@@ -2863,6 +2873,10 @@ dosacrifice()
                     u.ugifts++;
                     u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(150 + (25 * nartifacts)) : rnz(300 + (50 * nartifacts));
                     exercise(A_WIS, TRUE);
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                        "had %s given to %s by %s",
+                        acxname(otmp), uhim(), u_gname());
+
                     /* make sure we can use this weapon */
                     enum p_skills wep_skill_idx = weapon_skill_type(otmp);
                     if (wep_skill_idx > P_NONE)
@@ -3065,7 +3079,13 @@ dopray()
         }
     }
     
-    u.uconduct.gnostic++;
+    if (!u.uconduct.gnostic++)
+        /* breaking conduct should probably occur in can_pray() at
+         * "You begin praying to %s", as demons who find praying repugnant
+         * should not break conduct.  Also we can add more detail to the
+         * livelog message as p_aligntyp will be known.
+         */
+        livelog_write_string(LL_CONDUCT, "rejected atheism with a prayer");
 
     /* set up p_type and p_alignment */
     if (!can_pray(TRUE))
@@ -3241,7 +3261,9 @@ doturn()
         You_ex(ATR_NONE, CLR_MSG_FAIL, "don't know how to turn undead!");
         return 0;
     }
-    u.uconduct.gnostic++;
+
+    if (!u.uconduct.gnostic++)
+        livelog_write_string(LL_CONDUCT, "rejected atheism by turning undead");
 
     if ((u.ualign.type != A_CHAOTIC
          && (is_demon(youmonst.data) || is_undead(youmonst.data)))

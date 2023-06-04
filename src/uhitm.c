@@ -611,7 +611,8 @@ int dieroll;
 
         /* KMH, conduct */
         if (weapon && (weapon->oclass == WEAPON_CLASS || is_weptool(weapon)))
-            u.uconduct.weaphit++;
+            if (!u.uconduct.weaphit++)
+                livelog_write_string(LL_CONDUCT, "hit with a wielded weapon for the first time");
 
         /* we hit the monster; be careful: it might die or
            be knocked into a different location */
@@ -644,6 +645,9 @@ int dieroll;
             if (mon->wormno && *mhit)
                 cutworm(mon, bhitpos.x, bhitpos.y, slice_or_chop);
         }
+        if (u.uconduct.weaphit && !oldweaphit)
+            livelog_write_string(LL_CONDUCT,
+                "hit with a wielded weapon for the first time");
     }
     return malive;
 }

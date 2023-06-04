@@ -1518,6 +1518,10 @@ char *buf;
                 break;
             }
 
+            (void)strNsubst(tmpbuf, " ", "_", 0);
+            (void)strNsubst(tmpbuf, "/", "_", 0);
+            (void)strNsubst(tmpbuf, "\\", "_", 0);
+
             slen = strlen(tmpbuf);
             if (len + slen < BUFSZ-1) {
                 len += slen;

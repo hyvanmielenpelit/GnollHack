@@ -206,7 +206,10 @@ doread()
             You1("break up the cookie and throw away the pieces.");
         outrumor((struct monst*)0, scroll, bcsign(scroll), BY_COOKIE);
         if (!Blind)
-            u.uconduct.literate++;
+            if (!u.uconduct.literate++)
+                livelog_write_string(LL_CONDUCT,
+                    "became literate by reading a fortune cookie");
+
         useup(scroll);
         return 1;
     } 
@@ -230,7 +233,10 @@ doread()
                   uarmo ? robe_simple_name(uarmo) : suit_simple_name(uarm));
             return 0;
         }
-        u.uconduct.literate++;
+
+        if (!u.uconduct.literate++)
+            livelog_printf(LL_CONDUCT, "became literate by reading %s", acxname(scroll));
+
         /* populate 'buf[]' */
         if (scroll->otyp == SHIRT_OF_SOUND_MINDEDNESS)
         {
@@ -310,7 +316,11 @@ doread()
               (!((int) scroll->o_id % 3)),
               (((int) scroll->o_id * 7) % 10),
               (flags.verbose || Blind) ? "." : "");
-        u.uconduct.literate++;
+
+        if (!u.uconduct.literate++)
+            livelog_write_string(LL_CONDUCT,
+                "became literate by reading a credit card");
+
         return 1;
     }
     else if (scroll->otyp == CAN_OF_GREASE || scroll->otyp == JAR_OF_MEDICINAL_SALVE || scroll->otyp == JAR_OF_BASILISK_BLOOD || scroll->otyp == JAR_OF_EXTRA_HEALING_SALVE || scroll->otyp == JAR_OF_GREATER_HEALING_SALVE || scroll->otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE || scroll->otyp == GRAIL_OF_HEALING) 
@@ -328,7 +338,9 @@ doread()
         if (flags.verbose)
             pline1("It reads:");
         pline_ex1(ATR_NONE, CLR_MSG_TEXT, "\"Magic Marker(TM) Red Ink Marker Pen.  Water Soluble.\"");
-        u.uconduct.literate++;
+        if (!u.uconduct.literate++)
+            livelog_write_string(LL_CONDUCT,
+                "became literate by reading a magic marker");
         return 1;
     }
     else if (scroll->oclass == COIN_CLASS)
@@ -343,7 +355,9 @@ doread()
         else
             pline_ex1(ATR_NONE, CLR_MSG_TEXT, "\"1 Yendorian Gold Coin.  Treasury of Yendor.\"");
 
-        u.uconduct.literate++;
+        if (!u.uconduct.literate++)
+            livelog_write_string(LL_CONDUCT,
+                "became literate by reading a coin's engravings");
         return 1;
     } 
     else if (scroll->oartifact == ART_ORB_OF_FATE) 
@@ -353,7 +367,8 @@ doread()
         else
             pline1("It is signed:");
         pline_ex1(ATR_NONE, CLR_MSG_TEXT, "\"Odin.\"");
-        u.uconduct.literate++;
+        if (!u.uconduct.literate++)
+            livelog_printf(LL_CONDUCT, "became literate by reading %s", acxname(scroll));
         return 1;
     }
     else if (scroll->oartifact == ART_RULING_RING_OF_YENDOR) 
@@ -381,7 +396,9 @@ doread()
         pline1("The wrapper reads:");
         pline_ex(ATR_NONE, CLR_MSG_TEXT, "\"%s\".",
               wrapper_msgs[scroll->o_id % SIZE(wrapper_msgs)]);
-        u.uconduct.literate++;
+        if (!u.uconduct.literate++)
+            livelog_write_string(LL_CONDUCT,
+                "became literate by reading a candy bar wrapper");
         return 1;
     }
     else if (scroll->oclass != SCROLL_CLASS
@@ -432,7 +449,12 @@ doread()
     /* Actions required to win the game aren't counted towards conduct */
     /* Novel conduct is handled in read_tribute so exclude it too*/
     if (!(objects[scroll->otyp].oc_flags5 & O5_OK_FOR_ILLITERATE))
-        u.uconduct.literate++;
+    {
+        if (!u.uconduct.literate++)
+            livelog_printf(LL_CONDUCT, "became literate by reading %s",
+                scroll->oclass == SPBOOK_CLASS ? "a book" :
+                scroll->oclass == SCROLL_CLASS ? "a scroll" : acxname(scroll));
+    }
 
     if (scroll->oclass == SPBOOK_CLASS)
     {
@@ -3635,7 +3657,7 @@ struct obj *obj;
 STATIC_OVL void
 do_class_genocide()
 {
-    int i, j, immunecnt, gonecnt, goodcnt, class, feel_dead = 0;
+    int i, j, immunecnt, gonecnt, goodcnt, class, feel_dead = 0, ll_done = 0;
     char buf[BUFSZ] = DUMMY;
     boolean gameover = FALSE; /* true iff killed self */
 
@@ -3775,6 +3797,18 @@ do_class_genocide()
                     kill_genocided_monsters();
                     update_inventory(); /* eggs & tins */
                     pline("Wiped out all %s.", nam);
+
+                    if (!ll_done++) 
+                    {
+                        if (!num_genocides())
+                            livelog_printf(LL_CONDUCT | LL_GENOCIDE,
+                                "performed %s first genocide (class genocide for class %c)",
+                                uhis(), def_monsyms[class].sym);
+                        else
+                            livelog_printf(LL_GENOCIDE, "genocided monsters from class %c",
+                                def_monsyms[class].sym);
+                    }
+
                     if (Upolyd && i == u.umonnum) 
                     {
                         u.mh = -1;
@@ -3990,6 +4024,12 @@ int how;
         mvitals[mndx].mvflags |= (MV_GENOCIDED | MV_NOCORPSE);
         pline("Wiped out %s%s.", which, pluralbuf);
               //(*which != 'a') ? buf : makeplural(buf));
+
+        if (!num_genocides())
+            livelog_printf(LL_CONDUCT | LL_GENOCIDE,
+                "performed %s first genocide (%s)", uhis(), pluralbuf);
+        else
+            livelog_printf(LL_GENOCIDE, "genocided %s", pluralbuf);
 
         if (killplayer) 
         {

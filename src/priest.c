@@ -1027,7 +1027,10 @@ register struct monst *priest;
     boolean strayed = (u.ualign.record < 0);
 
     /* KMH, conduct */
-    u.uconduct.gnostic++;
+    if (!u.uconduct.gnostic++)
+        livelog_printf(LL_CONDUCT,
+            "rejected atheism by consulting with %s",
+            mon_nam(priest));
 
     if (is_fleeing(priest) || (!priest->ispriest && coaligned && strayed)) 
     {

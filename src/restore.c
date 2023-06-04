@@ -813,7 +813,9 @@ unsigned int *stuckid, *steedid;
     /* inventory display is now viable */
     iflags.perm_invent = defer_perm_invent;
     issue_simple_gui_command(GUI_CMD_LOAD_GLYPHS);
-
+#ifdef WHEREIS_FILE
+    touch_whereis();
+#endif
     return TRUE;
 }
 

@@ -35,6 +35,10 @@ STATIC_DCL void FDECL(lifesaved_monster, (struct monst *));
     (Is_really_rogue_level(&u.uz)            \
      || ((level.flags.graveyard || In_quest(&u.uz)) && is_undead(mdat) && rn2(3)))
 
+#define livelog_mon_nam(mtmp) \
+    x_monnam(mtmp, ARTICLE_THE, (char *) 0,                 \
+             (SUPPRESS_IT | SUPPRESS_HALLUCINATION), FALSE)
+
 #if 0
 /* part of the original warning code which was replaced in 3.3.1 */
 const char *warnings[] = {
@@ -3444,18 +3448,71 @@ unsigned long mdiedflags;
             context.botl = 1;
 #endif
         if (!u.uachieve.killed_medusa)
+        {
             achievement_gained("Defeated Medusa");
+            livelog_write_string(LL_ACHIEVE | LL_UMONST, "killed Medusa");
+        }
         u.uachieve.killed_medusa = 1;
     }
-    if (mtmp->data == &mons[PM_YACC])
+    else if (mtmp->data == &mons[PM_YACC])
     {
 #ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.killed_yacc)
             context.botl = 1;
 #endif
         if (!u.uachieve.killed_yacc)
+        {
             achievement_gained("Defeated Yacc");
+            livelog_write_string(LL_ACHIEVE | LL_UMONST, "killed Yacc");
+        }
         u.uachieve.killed_yacc = 1;
+    }
+    else if (mtmp->data == &mons[PM_DEATH]) 
+    {
+        switch (mvitals[tmp].died) 
+        {
+        case 1:
+            livelog_printf(LL_UMONST, "put %s down for a little nap",
+                livelog_mon_nam(mtmp));
+            break;
+        case 5:
+        case 10:
+        case 50:
+        case 100:
+        case 150:
+        case 200:
+        case 250:
+            livelog_printf(LL_UMONST, "put %s down for a little nap (%d times)",
+                livelog_mon_nam(mtmp), mvitals[tmp].died);
+            break;
+        default:
+            /* don't spam the log every time */
+            break;
+        }
+    }
+    else if (unique_corpstat(mtmp->data)) 
+    {
+        switch (mvitals[tmp].died) 
+        {
+        case 1:
+            livelog_printf(LL_UMONST, "%s %s",
+                is_not_living(mtmp->data) ? "destroyed" : "killed",
+                livelog_mon_nam(mtmp));
+        case 5:
+        case 10:
+        case 50:
+        case 100:
+        case 150:
+        case 200:
+        case 250:
+            livelog_printf(LL_UMONST, "%s %s (%d times)",
+                is_not_living(mtmp->data) ? "destroyed" : "killed",
+                livelog_mon_nam(mtmp), mvitals[tmp].died);
+            break;
+        default:
+            /* don't spam the log every time */
+            break;
+        }
     }
 
     if (!u.uachieve.role_achievement &&
@@ -3820,7 +3877,8 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 
     mtmp->mhp = 0; /* caller will usually have already done this */
     if (!noconduct) /* KMH, conduct */
-        u.uconduct.killer++;
+        if (!u.uconduct.killer++)
+            livelog_write_string(LL_CONDUCT, "killed for the first time");
 
     if (!nomsg)
     {

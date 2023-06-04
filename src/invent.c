@@ -849,6 +849,7 @@ struct obj *obj;
         if (!u.uachieve.amulet)
         {
             achievement_gained("Amulet of Yendor");
+            livelog_write_string(LL_ACHIEVE, "acquired the Amulet of Yendor");
             if (iflags.using_gui_sounds)
             {
                 delay_output_milliseconds(500);
@@ -872,7 +873,10 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.menorah)
             context.botl = 1;
         if (!u.uachieve.menorah)
+        {
             achievement_gained("Candelabrum of Invocation");
+            livelog_write_string(LL_ACHIEVE, "acquired the Candelabrum of Invocation");
+        }
         u.uachieve.menorah = 1;
     }
     else if (obj->otyp == BELL_OF_OPENING)
@@ -883,7 +887,10 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.bell)
             context.botl = 1;
         if (!u.uachieve.bell)
+        {
             achievement_gained("Bell of Opening");
+            livelog_write_string(LL_ACHIEVE, "acquired the Bell of Opening");
+        }
         u.uachieve.bell = 1;
     }
     else if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
@@ -894,7 +901,10 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.book)
             context.botl = 1;
         if (!u.uachieve.bell)
+        {
             achievement_gained("Book of the Dead");
+            livelog_write_string(LL_ACHIEVE, "acquired the Book of the Dead");
+        }
         u.uachieve.book = 1;
     } 
     else if (obj->oartifact) 
@@ -960,7 +970,10 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.mines_luckstone)
             context.botl = 1;
         if (!u.uachieve.mines_luckstone)
+        {
             achievement_gained("Gladstone");
+            livelog_write_string(LL_ACHIEVE, "acquired the Gladstone from Mines' End");
+        }
         u.uachieve.mines_luckstone = 1;
         obj->speflags &= ~(SPEFLAGS_MINES_PRIZE);
         obj->nomerge = 0;
@@ -970,7 +983,10 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.finish_sokoban)
             context.botl = 1;
         if (!u.uachieve.finish_sokoban)
+        {
             achievement_gained("Sokoban Solved");
+            livelog_printf(LL_ACHIEVE, "completed Sokoban, acquiring %s", an(xname(obj)));
+        }
         u.uachieve.finish_sokoban = 1;
         obj->speflags &= ~(SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2);
         obj->nomerge = 0;

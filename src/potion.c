@@ -3705,7 +3705,8 @@ dodip()
             short save_otyp = obj->otyp;
 
             /* KMH, conduct */
-            u.uconduct.polypiles++;
+            if (!u.uconduct.polypiles++)
+                livelog_printf(LL_CONDUCT, "polymorphed %s first item", uhis());
 
             obj = poly_obj(obj, STRANGE_OBJECT);
 

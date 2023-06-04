@@ -1569,7 +1569,12 @@ const char *name;
             alter_cost(obj, 0L);
         if (via_naming) {
             /* violate illiteracy conduct since successfully wrote arti-name */
-            u.uconduct.literate++;
+            if (!u.uconduct.literate++)
+                livelog_printf(LL_CONDUCT | LL_ARTIFACT, "became literate by naming %s",
+                    bare_artifactname(obj));
+            else
+                livelog_printf(LL_ARTIFACT, "chose %s to be named \"%s\"",
+                    ansimpleoname(obj), bare_artifactname(obj));
         }
     }
     if (carried(obj))
@@ -4151,7 +4156,9 @@ struct obj* obj;
         return;
     }
 
-    u.uconduct.literate++;
+    if (!u.uconduct.literate++)
+        livelog_printf(LL_CONDUCT | LL_ARTIFACT, "became literate by reading %s",
+            acxname(obj));
 
     winid datawin;
     char buf[BUFSZ];

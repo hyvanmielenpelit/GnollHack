@@ -59,9 +59,16 @@ const
 #else
 #include <sys/stat.h>
 #endif
+#elif (defined (EXTRAINFO_FN) || defined (WHEREIS_FILE)) && defined(UNIX)
+#include <sys/stat.h>
 #endif
+
 #ifndef O_BINARY /* used for micros, no-op for others */
 #define O_BINARY 0
+#endif
+
+#ifdef WHEREIS_FILE
+char whereis_file[255] = WHEREIS_FILE;
 #endif
 
 #ifdef PREFIXES_IN_USE
@@ -135,6 +142,9 @@ STATIC_DCL void FDECL(wizkit_addinv, (struct obj *));
 STATIC_DCL void FDECL(print_special_savefile_extension, (char*, const char*));
 STATIC_DCL void FDECL(print_error_savefile_extension, (char*));
 STATIC_DCL void FDECL(print_imported_savefile_extension, (char*));
+#endif
+#ifdef WHEREIS_FILE
+STATIC_DCL void FDECL(write_whereis, (int));
 #endif
 
 #ifdef AMIGA
@@ -639,6 +649,11 @@ clearlocks()
             delete_levelfile(x); /* not all levels need be present */
     }
 #endif /* ?PC_LOCKING,&c */
+
+#ifdef WHEREIS_FILE
+    delete_whereis();
+#endif
+
 }
 
 #if defined(SELECTSAVED)
@@ -3106,9 +3121,28 @@ char *origbuf;
         }
         sysopt.tt_oname_maxrank = n;
 
+    } else if (src == SET_IN_SYS && match_varname(buf, "LIVELOG", 7)) {
+#ifdef LIVELOGFILE
+        n = strtol(bufp, NULL, 0);
+        if (n < 0 || n > 0xFFFF) {
+            raw_printf("Illegal value in LIVELOG (must be between 0 and 0xFFFF).");
+            return 0;
+        }
+        sysopt.livelog = n;
+#else
+        raw_printf("WARNING: LIVELOG value configured but LIVELOGFILE not #defined. Ignored.");
+#endif
+    }
+    else if (src == SET_IN_SYS && match_varname(buf, "LLC_TURNS", 9)) {
+            n = atoi(bufp);
+            if (n < 0) {
+                raw_printf("Illegal value in LLC_TURNS (must be a positive integer).");
+                return 0;
+            }
+            sysopt.ll_conduct_turns = n;
+
     /* SYSCF PANICTRACE options */
-    } 
-    else if (src == SET_IN_SYS
+    } else if (src == SET_IN_SYS
                && match_varname(buf, "PANICTRACE_LIBC", 15)) 
     {
         n = atoi(bufp);
@@ -4946,5 +4980,304 @@ reset_files(VOID_ARGS)
     *config_section_chosen = 0;
     *config_section_current = 0;
 }
+
+
+/* Live logging - taken directly from 3.4.3-nao code base,
+ * but now uses \t separator instead of : as per xlogfile
+ */
+ /* Locks the live log file and writes 'buffer'
+  * IF the ll_type matches sysopt.livelog mask
+  * lltype is included in LL entry for post-process filtering also
+  */
+#if defined LIVELOGFILE
+void
+livelog_write_string(ll_type, buffer)
+unsigned int ll_type;
+const char* buffer;
+{
+#define LLOG_SEP '\t' /* livelog field separator */
+    FILE* livelogfile;
+
+    if (!(ll_type & sysopt.livelog)) return;
+    if ((ll_type == LL_CONDUCT) && (moves < sysopt.ll_conduct_turns)) return;
+    if (lock_file(LIVELOGFILE, SCOREPREFIX, 10)) {
+        if (!(livelogfile = fopen_datafile(LIVELOGFILE, "a", SCOREPREFIX))) {
+            pline("Cannot open live log file!");
+        }
+        else {
+            char tmpbuf[1024 + 1];
+            char msgbuf[512 + 1];
+            char* c1 = msgbuf;
+            strncpy(msgbuf, buffer, 512);
+            msgbuf[512] = '\0';
+            while (*c1 != '\0') {
+                if (*c1 == LLOG_SEP) *c1 = '_';
+                c1++;
+            }
+            snprintf(tmpbuf, 1024, "lltype=%d%cplayer=%s%crole=%s%crace=%s%cgender=%s%calign=%s%cturns=%ld%crealtime=%ld%cstarttime=%ld%ccurtime=%ld%cmessage=%s\n",
+                (ll_type & sysopt.livelog),
+                LLOG_SEP,
+                plname,
+                LLOG_SEP,
+                urole.filecode,
+                LLOG_SEP,
+                urace.filecode,
+                LLOG_SEP,
+                genders[flags.female].filecode,
+                LLOG_SEP,
+                aligns[u.ualign.type == A_NONE ? 3 : 1 - u.ualign.type].filecode,
+                LLOG_SEP,
+                moves,
+                LLOG_SEP,
+                urealtime.realtime + (getnow() - urealtime.start_timing), LLOG_SEP,
+                (long)ubirthday,
+                LLOG_SEP,
+                (long)time(NULL),
+                LLOG_SEP,
+                msgbuf);
+
+            fprintf(livelogfile, "%s", tmpbuf);
+            (void)fclose(livelogfile);
+        }
+        unlock_file(LIVELOGFILE);
+    }
+#undef LLOG_SEP
+}
+
+#else /* LIVELOGFILE */
+
+void
+livelog_write_string(log_type, buffer)
+unsigned int log_type UNUSED;
+const char* buffer UNUSED;
+{
+}
+#endif /* LIVELOGFILE */
+
+void
+livelog_printf
+VA_DECL2(unsigned int, ll_type, const char*, fmt)
+{
+    char ll_msgbuf[512];
+    VA_START(fmt);
+    VA_INIT(fmt, char*);
+    vsnprintf(ll_msgbuf, 512, fmt, VA_ARGS);
+    livelog_write_string(ll_type, ll_msgbuf);
+    VA_END();
+}
+
+#ifdef EXTRAINFO_FN
+/* This probably belongs in files.c, but it
+ * uses dump_fmtstr() which is static here.
+ */
+void
+mk_dgl_extrainfo()
+{
+    FILE* extrai = (FILE*)0;
+#ifdef UNIX
+    mode_t eimode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+#endif
+    char new_fn[512];
+
+    dump_fmtstr(EXTRAINFO_FN, new_fn, TRUE);
+
+    extrai = fopen(new_fn, "w");
+    if (!extrai) {
+    }
+    else {
+        int sortval = 0;
+        char tmpdng[16];
+        sortval += (u.uhave.amulet ? 1024 : 0);
+        if (Is_knox(&u.uz)) {
+            Sprintf(tmpdng, "%s", "Knx");
+            sortval += 245;
+        }
+        else if (In_quest(&u.uz)) {
+            Sprintf(tmpdng, "%s%i", "Q", dunlev(&u.uz));
+            sortval += 250 + (dunlev(&u.uz));
+        }
+        else if (In_endgame(&u.uz)) {
+            Sprintf(tmpdng, "%s", "End");
+            sortval += 256;
+        }
+        else if (In_tower(&u.uz)) {
+            Sprintf(tmpdng, "T%i", dunlev(&u.uz));
+            sortval += 235 + (depth(&u.uz));
+        }
+        else if (In_sokoban(&u.uz)) {
+            Sprintf(tmpdng, "S%i", dunlev(&u.uz));
+            sortval += 225 + (depth(&u.uz));
+        }
+        else if (In_mines(&u.uz)) {
+            Sprintf(tmpdng, "M%i", dunlev(&u.uz));
+            sortval += 215 + (dunlev(&u.uz));
+        }
+        else {
+            Sprintf(tmpdng, "D%i", depth(&u.uz));
+            sortval += (depth(&u.uz));
+        }
+#ifdef UNIX
+        chmod(new_fn, eimode);
+#endif
+        fprintf(extrai, "%i|%c %s", sortval, (u.uhave.amulet ? 'A' : ' '), tmpdng);
+        fclose(extrai);
+    }
+}
+#endif /* EXTRAINFO_FN */
+
+void
+livelog_dump_url(llflags)
+unsigned int llflags;
+{
+#ifdef DUMPLOG
+    char buf[BUFSZ];
+    char* dumpurl;
+
+#ifdef SYSCF
+    if (!sysopt.dumplogurl)
+        return;
+    dumpurl = dump_fmtstr(sysopt.dumplogurl, buf);
+#else
+    dumpurl = dump_fmtstr(DUMPLOG_URL, buf);
+#endif
+    livelog_write_string(llflags, dumpurl);
+#else
+    nhUse(llflags);
+#endif /*?DUMPLOG*/
+}
+
+
+#ifdef WISH_TRACKER
+const char* wish_tracker_file =
+#ifdef UNIX
+"wishtracker";
+#else
+#if defined(MAC) || defined(__BEOS__)
+"Wish Tracker";
+#else
+"wishes.txt";
+#endif
+#endif /* WISH_TRACKER */
+
+void
+trackwish(wishstring)
+char* wishstring;
+{
+    char bigbuf[512];
+    FILE* fp;
+    time_t now = getnow();
+
+    fp = fopen_datafile(wish_tracker_file, "a+", LEVELPREFIX);
+    if (fp) {
+        Sprintf(bigbuf, "%s wished for %s (%ld%s wish, on T:%ld on %08ld at %06ld hrs)\n",
+            plname, wishstring, u.uconduct.wishes,
+            u.uconduct.wishes == 1 ? "st" : u.uconduct.wishes == 2 ? "nd" :
+            u.uconduct.wishes == 3 ? "rd" : "th", moves, yyyymmdd(now), hhmmss(now));
+        fwrite(bigbuf, strlen(bigbuf), 1, fp);
+        fclose(fp);
+    }
+}
+#endif
+
+#ifdef WHEREIS_FILE
+/** Set the filename for the whereis file. */
+void
+set_whereisfile()
+{
+    char* p = (char*)strstr(whereis_file, "%n");
+
+    if (p) {
+        int new_whereis_len = strlen(whereis_file) + strlen(plname) - 2; /* %n */
+        char* new_whereis_fn = (char*)alloc((unsigned)(new_whereis_len + 1));
+        char* q = new_whereis_fn;
+
+        strncpy(q, whereis_file, p - whereis_file);
+        q += p - whereis_file;
+        strncpy(q, plname, strlen(plname) + 1);
+        regularize(q);
+        q[strlen(plname)] = '\0';
+        q += strlen(q);
+        p += 2;   /* skip "%n" */
+        strncpy(q, p, strlen(p));
+        new_whereis_fn[new_whereis_len] = '\0';
+        Sprintf(whereis_file, "%s", new_whereis_fn);
+        free(new_whereis_fn); /* clean up the pointer */
+    }
+}
+
+/** Write out information about current game to plname.whereis. */
+void
+write_whereis(playing)
+boolean playing; /**< True if game is running.  */
+{
+    FILE* fp;
+    char whereis_work[511];
+
+    if (strstr(whereis_file, "%n"))
+        set_whereisfile();
+    Sprintf(whereis_work,
+        "player=%s:depth=%d:dnum=%d:dname=%s:hp=%d:maxhp=%d:turns=%ld:score=%ld:role=%s:race=%s:gender=%s:align=%s:conduct=0x%lx:amulet=%d:ascended=%d:playing=%d\n",
+        plname,
+        depth(&u.uz),
+        u.uz.dnum,
+        dungeons[u.uz.dnum].dname,
+        u.uhp,
+        u.uhpmax,
+        moves,
+#ifdef SCORE_ON_BOTL
+        botl_score(),
+#else
+        0L,
+#endif
+        urole.filecode,
+        urace.filecode,
+        genders[flags.female].filecode,
+        aligns[u.ualign.type == A_NONE ? 3 : 1 - u.ualign.type].filecode,
+#ifdef RECORD_CONDUCT
+        encodeconduct(),
+#else
+        0L,
+#endif
+        u.uhave.amulet ? 1 : 0,
+        u.uevent.ascended ? 2 : *killer.name ? 1 : 0,
+        playing);
+
+    fp = fopen_datafile(whereis_file, "w", LEVELPREFIX);
+    if (fp) {
+#ifdef UNIX
+        mode_t whereismode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH;
+        chmod(fqname(whereis_file, LEVELPREFIX, 2), whereismode);
+#endif
+        fwrite(whereis_work, strlen(whereis_work), 1, fp);
+        fclose(fp);
+    }
+    else {
+        pline("Can't open %s for output.", whereis_file);
+        pline("No whereis file created.");
+    }
+}
+
+/** Signal handler to update whereis information. */
+void
+signal_whereis(sig_unused)
+int sig_unused UNUSED;
+{
+    touch_whereis();
+}
+
+void
+touch_whereis()
+{
+    write_whereis(TRUE);
+}
+
+void
+delete_whereis()
+{
+    write_whereis(FALSE);
+}
+#endif /* WHEREIS_FILE */
+
+
 
 /*files.c*/

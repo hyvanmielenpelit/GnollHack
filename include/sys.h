@@ -19,6 +19,7 @@ struct sysopt {
     char *debugfiles; /* files to show debugplines in. '*' is all. */
 #ifdef DUMPLOG
     char *dumplogfile; /* where the dump file is saved */
+    char* dumplogurl;  /* url path for the above */
 #endif
     int env_dbgfl;    /*  1: debugfiles comes from getenv("DEBUGFILES")
                        *     so sysconf's DEBUGFILES shouldn't override it;
@@ -27,6 +28,8 @@ struct sysopt {
                        */
     int maxplayers;
     int seduce;
+    unsigned int livelog;  /* event types to livelog */
+    int ll_conduct_turns;  /* do not livelog conducts before this turncount */
     int check_save_uid; /* restoring savefile checks UID? */
     int check_plname; /* use plname for checking wizards/explorers/shellers */
     int bones_pools;

@@ -1139,7 +1139,8 @@ doengrave()
 
     /* A single `x' is the traditional signature of an illiterate person */
     if (len != 1 || (!index(ebuf, 'x') && !index(ebuf, 'X')))
-        u.uconduct.literate++;
+        if (!u.uconduct.literate++)
+            livelog_printf(LL_CONDUCT, "became literate by engraving \"%s\"", ebuf);
 
     if (!otmp || otmp == &zeroobj)
         play_monster_attack_floor_sound(&youmonst, 0, OBJECT_SOUND_TYPE_ENGRAVE);

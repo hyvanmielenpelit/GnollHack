@@ -1304,6 +1304,9 @@ int how;
         if (how == GENOCIDED) {
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Unfortunately you are still genocided...");
         } else {
+            char killbuf[BUFSZ];
+            formatkiller(killbuf, BUFSZ, how, FALSE);
+            livelog_printf(LL_LIFESAVE, "averted death (%s)", killbuf);
             survive = TRUE;
         }
     }
@@ -2016,6 +2019,7 @@ int how;
         raw_print("");
         raw_print("");
     }
+    livelog_dump_url(LL_DUMP_ALL | (how == ASCENDED ? LL_DUMP_ASC : 0));
     nh_terminate(EXIT_SUCCESS);
 }
 
@@ -3198,6 +3202,7 @@ reset_remaining_static_variables()
 #ifdef PANICTRACE
     aborting = FALSE;
 #endif
+    reset_allmain();
     reset_hunger_status();
     reset_drawbridge();
     reset_dig();

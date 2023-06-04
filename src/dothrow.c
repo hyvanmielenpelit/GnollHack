@@ -2096,7 +2096,8 @@ uchar* hitres_ptr;
 
             /* attack hits mon */
             if (hmode == HMON_APPLIED)
-                u.uconduct.weaphit++;
+                if (!u.uconduct.weaphit++)
+                    livelog_write_string(LL_CONDUCT, "hit with a wielded weapon for the first time");
 
             if (hitres_ptr)
                 *hitres_ptr = 1;

@@ -737,6 +737,10 @@ nh_timeout()
                 done(STONING);
                 break;
             case SLIMED:
+                /* involuntarily break "never changed form" conduct */
+                if (!u.uconduct.polyselfs++)
+                    livelog_write_string(LL_CONDUCT,
+                        "changed form for the first time by turning to slime");
                 slimed_to_death(kptr); /* done(TURNED_SLIME) */
                 break;
             case VOMITING:

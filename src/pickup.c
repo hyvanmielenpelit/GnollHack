@@ -2935,6 +2935,9 @@ boolean dobot;
         /* explicitly mention what item is triggering the explosion */
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "As you put %s inside, you are blasted by a magical explosion!",
               doname(obj));
+
+        livelog_printf(LL_ACHIEVE, "just blew up %s %s", uhis(), cxname(obj));
+
         /* did not actually insert obj yet */
         if (was_unpaid)
             addtobill(obj, FALSE, FALSE, TRUE);
