@@ -3498,6 +3498,7 @@ unsigned long mdiedflags;
             livelog_printf(LL_UMONST, "%s %s",
                 is_not_living(mtmp->data) ? "destroyed" : "killed",
                 livelog_mon_nam(mtmp));
+            break;
         case 5:
         case 10:
         case 50:
