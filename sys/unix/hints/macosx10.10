@@ -308,6 +308,7 @@ build_package_root:
 	echo $(CHGRP) $(GAMEGRP) $(SHELLDIR)/recover  >> PKGSCRIPTS/postinstall
 	echo chmod $(VARDIRPERM)  $(HACKDIR)          >> PKGSCRIPTS/postinstall
 	echo chmod $(VARDIRPERM)  $(HACKDIR)/save     >> PKGSCRIPTS/postinstall
+	echo chmod $(VARDIRPERM)  $(HACKDIR)/whereis  >> PKGSCRIPTS/postinstall
 	echo chmod $(FILEPERM)    $(HACKDIR)/license  >> PKGSCRIPTS/postinstall
 	echo chmod $(FILEPERM)    $(HACKDIR)/credits  >> PKGSCRIPTS/postinstall
 	echo chmod $(FILEPERM)    $(HACKDIR)/nhdat    >> PKGSCRIPTS/postinstall
