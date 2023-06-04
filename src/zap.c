@@ -11352,7 +11352,7 @@ boolean is_wiz_wish, play_sound;
     char promptbuf[BUFSZ];
     struct obj *otmp, nothing;
     int tries = 0;
-    int prev_artwish = u.uconduct.wisharti;
+    long prev_artwish = u.uconduct.wisharti;
 
     promptbuf[0] = '\0';
     nothing = zeroobj; /* lint suppression; only its address matters */
