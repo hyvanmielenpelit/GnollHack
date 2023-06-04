@@ -5079,7 +5079,7 @@ mk_dgl_extrainfo()
 #endif
     char new_fn[512];
 
-    dump_fmtstr(EXTRAINFO_FN, new_fn, TRUE);
+    dump_fmtstr(EXTRAINFO_FN, new_fn);
 
     extrai = fopen(new_fn, "w");
     if (!extrai) {
