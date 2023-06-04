@@ -1288,10 +1288,10 @@ const char *build_date;
     subbuf[0] = ' ';
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
-#ifdef VERSION_DETAILS
-    Sprintf(elbuf, date_via_env ? " (Revision %d)" : " (Build %d)", EDITLEVEL);
-#endif
-
+//#ifdef VERSION_DETAILS
+//    Sprintf(elbuf, date_via_env ? " (Revision %d)" : " (Build %d)", EDITLEVEL);
+//#endif
+//
     Sprintf(outbuf, "         Version %s%s %s%s, %s %s.",
             version_string(versbuf, "."), elbuf, PORT_ID, subbuf,
             date_via_env ? "revised" : "built", &build_date[4]);
