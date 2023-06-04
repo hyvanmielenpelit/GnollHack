@@ -5100,7 +5100,7 @@ mk_dgl_extrainfo()
             Sprintf(tmpdng, "%s", "End");
             sortval += 256;
         }
-        else if (In_tower(&u.uz)) {
+        else if (In_V_tower(&u.uz)) {
             Sprintf(tmpdng, "T%i", dunlev(&u.uz));
             sortval += 235 + (depth(&u.uz));
         }
