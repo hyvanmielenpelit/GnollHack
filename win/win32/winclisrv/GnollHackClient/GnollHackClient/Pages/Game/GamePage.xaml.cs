@@ -179,6 +179,7 @@ namespace GnollHackClient.Pages.Game
 
         private ObjectDataItem[] _weaponStyleObjDataItem= new ObjectDataItem[3];
         private readonly object _weaponStyleObjDataItemLock = new object();
+        private bool _drawWeaponStyleAsGlyphs = true;
 
         private readonly object _petDataLock = new object();
         private List<GHPetDataItem> _petData = new List<GHPetDataItem>();
@@ -2934,6 +2935,7 @@ namespace GnollHackClient.Pages.Game
 
         //private object _canvasPageLock = new object();
         //private canvas_page_types _canvasPage = 0;
+        private GlyphImageSource _paintGlyphImageSource = new GlyphImageSource();
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -5440,15 +5442,19 @@ namespace GnollHackClient.Pages.Game
 
                             valtext = "";
                             valtext2 = "";
+                            bool isenabled1 = false;
+                            bool isenabled2 = false;
                             lock (StatusFieldLock)
                             {
                                 if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].IsEnabled && StatusFields[(int)statusfields.BL_UWEP].Text != null)
                                 {
                                     valtext = StatusFields[(int)statusfields.BL_UWEP].Text;
+                                    isenabled1 = StatusFields[(int)statusfields.BL_UWEP].IsEnabled;
                                 }
                                 if (StatusFields[(int)statusfields.BL_UWEP2] != null && StatusFields[(int)statusfields.BL_UWEP2].IsEnabled && StatusFields[(int)statusfields.BL_UWEP2].Text != null)
                                 {
                                     valtext2 = StatusFields[(int)statusfields.BL_UWEP2].Text;
+                                    isenabled2 = StatusFields[(int)statusfields.BL_UWEP2].IsEnabled;
                                 }
                             }
                             if (valtext != "" || valtext2 != "")
@@ -5460,18 +5466,226 @@ namespace GnollHackClient.Pages.Game
                                 curx += target_width;
                                 curx += innerspacing;
                                 float print_width = 0;
-                                if (valtext != "")
+                                if (_drawWeaponStyleAsGlyphs)
                                 {
-                                    print_width = textPaint.MeasureText(valtext);
-                                    canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    curx += print_width;
+                                    lock (_weaponStyleObjDataItemLock)
+                                    {
+                                        /* Right-hand weapon */
+                                        if (isenabled1 && valtext != "")
+                                        {
+                                            if (_weaponStyleObjDataItem[0] != null)
+                                            {
+                                                float startpicturex = curx;
+                                                using (new SKAutoCanvasRestore(canvas, true))
+                                                {
+                                                    GlyphImageSource gis = _paintGlyphImageSource;
+                                                    gis.ReferenceGamePage = this;
+                                                    gis.UseUpperSide = false;
+                                                    gis.AutoSize = true;
+                                                    gis.Glyph = Math.Abs(_weaponStyleObjDataItem[0].ObjData.gui_glyph);
+                                                    gis.ObjData = _weaponStyleObjDataItem[0];
+                                                    gis.DoAutoSize();
+                                                    float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
+                                                    float weppicturewidth = wep_scale * gis.Width;
+                                                    float weppictureheight = wep_scale * gis.Height;
+                                                    canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
+                                                    canvas.Scale(wep_scale);
+                                                    gis.DrawOnCanvas(canvas);
+                                                    curx += weppicturewidth;
+                                                    curx += innerspacing;
+                                                }
+                                                float endpicturex = curx;
+                                                if (_weaponStyleObjDataItem[0].OutOfAmmo)
+                                                {
+                                                    string printtext = "X";
+                                                    SKColor oldcolor = textPaint.Color;
+                                                    textPaint.Color = SKColors.Red;
+                                                    print_width = textPaint.MeasureText(printtext);
+                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Color = oldcolor;
+                                                    curx += print_width;
+
+                                                }
+                                                if (_weaponStyleObjDataItem[0].WrongAmmoType)
+                                                {
+                                                    string printtext = "?";
+                                                    SKColor oldcolor = textPaint.Color;
+                                                    textPaint.Color = SKColors.Red;
+                                                    print_width = textPaint.MeasureText(printtext);
+                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Color = oldcolor;
+                                                    curx += print_width;
+                                                }
+                                                if (_weaponStyleObjDataItem[0].NotBeingUsed || _weaponStyleObjDataItem[0].NotWeapon)
+                                                {
+                                                    string printtext = "!";
+                                                    SKColor oldcolor = textPaint.Color;
+                                                    textPaint.Color = SKColors.Orange;
+                                                    print_width = textPaint.MeasureText(printtext);
+                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Color = oldcolor;
+                                                    curx += print_width;
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                                SKRect emptyHandedSource = new SKRect(0, 0, App._statusEmptyHandedBitmap.Width, App._statusEmptyHandedBitmap.Height);
+                                                float empty_handed_scale = rowheight / App._statusEmptyHandedBitmap.Height;
+                                                if (valtext2 != "")
+                                                {
+                                                    emptyHandedSource = new SKRect(0, 0, App._statusEmptyHandedBitmap.Width / 2, App._statusEmptyHandedBitmap.Height);
+                                                    target_width = empty_handed_scale * App._statusEmptyHandedBitmap.Width / 2;
+                                                    target_height = empty_handed_scale * App._statusEmptyHandedBitmap.Height;
+                                                }
+                                                else
+                                                {
+                                                    target_width = empty_handed_scale * App._statusEmptyHandedBitmap.Width;
+                                                    target_height = empty_handed_scale * App._statusEmptyHandedBitmap.Height;
+                                                }
+                                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                                canvas.DrawBitmap(App._statusEmptyHandedBitmap, emptyHandedSource, statusDest, textPaint);
+                                                curx += target_width;
+                                                curx += innerspacing;
+                                            }
+                                            ///* Ammo */
+                                            //if (_weaponStyleObjDataItem[2] != null)
+                                            //{
+                                            //    string printtext = "+";
+                                            //    print_width = textPaint.MeasureText(printtext);
+                                            //    canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                            //    curx += print_width;
+                                            //    using (new SKAutoCanvasRestore(canvas, true))
+                                            //    {
+                                            //        GlyphImageSource gis = _paintGlyphImageSource;
+                                            //        gis.ReferenceGamePage = this;
+                                            //        gis.UseUpperSide = false;
+                                            //        gis.AutoSize = true;
+                                            //        gis.Glyph = Math.Abs(_weaponStyleObjDataItem[2].ObjData.gui_glyph);
+                                            //        gis.ObjData = _weaponStyleObjDataItem[2];
+                                            //        gis.DoAutoSize();
+                                            //        float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
+                                            //        float weppicturewidth = wep_scale * gis.Width;
+                                            //        float weppictureheight = wep_scale * gis.Height;
+                                            //        canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
+                                            //        canvas.Scale(wep_scale);
+                                            //        gis.DrawOnCanvas(canvas);
+                                            //        curx += weppicturewidth;
+                                            //        curx += innerspacing;
+                                            //    }
+                                            //}
+                                        }
+                                        if (isenabled2 && valtext2 != "")
+                                        {
+                                            /* Left-hand weapon */
+                                            if (_weaponStyleObjDataItem[1] != null)
+                                            {
+                                                string printtext = "+";
+                                                print_width = textPaint.MeasureText(printtext);
+                                                canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                curx += print_width;
+
+                                                float startpicturex = curx;
+                                                using (new SKAutoCanvasRestore(canvas, true))
+                                                {
+                                                    GlyphImageSource gis = _paintGlyphImageSource;
+                                                    gis.ReferenceGamePage = this;
+                                                    gis.UseUpperSide = false;
+                                                    gis.AutoSize = true;
+                                                    gis.Glyph = Math.Abs(_weaponStyleObjDataItem[1].ObjData.gui_glyph);
+                                                    gis.ObjData = _weaponStyleObjDataItem[1];
+                                                    gis.DoAutoSize();
+                                                    float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
+                                                    float weppicturewidth = wep_scale * gis.Width;
+                                                    float weppictureheight = wep_scale * gis.Height;
+                                                    canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
+                                                    canvas.Scale(wep_scale);
+                                                    gis.DrawOnCanvas(canvas);
+                                                    curx += weppicturewidth;
+                                                    curx += innerspacing;
+                                                }
+                                                float endpicturex = curx;
+                                                if (_weaponStyleObjDataItem[1].OutOfAmmo)
+                                                {
+                                                    printtext = "X";
+                                                    SKColor oldcolor = textPaint.Color;
+                                                    textPaint.Color = SKColors.Red;
+                                                    print_width = textPaint.MeasureText(printtext);
+                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Color = oldcolor;
+                                                    curx += print_width;
+
+                                                }
+                                                if (_weaponStyleObjDataItem[1].WrongAmmoType)
+                                                {
+                                                    printtext = "?";
+                                                    SKColor oldcolor = textPaint.Color;
+                                                    textPaint.Color = SKColors.Red;
+                                                    print_width = textPaint.MeasureText(printtext);
+                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Color = oldcolor;
+                                                    curx += print_width;
+                                                }
+                                                if (_weaponStyleObjDataItem[1].NotBeingUsed || _weaponStyleObjDataItem[1].NotWeapon)
+                                                {
+                                                    printtext = "!";
+                                                    SKColor oldcolor = textPaint.Color;
+                                                    textPaint.Color = SKColors.Orange;
+                                                    print_width = textPaint.MeasureText(printtext);
+                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Color = oldcolor;
+                                                    curx += print_width;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                SKRect emptyHandedSource = new SKRect(0, 0, App._statusEmptyHandedBitmap.Width, App._statusEmptyHandedBitmap.Height);
+                                                float empty_handed_scale = rowheight / App._statusEmptyHandedBitmap.Height;
+                                                if (valtext != "")
+                                                {
+                                                    string printtext = "+";
+                                                    print_width = textPaint.MeasureText(printtext);
+                                                    canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    curx += print_width;
+
+                                                    emptyHandedSource = new SKRect(App._statusEmptyHandedBitmap.Width / 2, 0, App._statusEmptyHandedBitmap.Width, App._statusEmptyHandedBitmap.Height);
+                                                    target_width = empty_handed_scale * App._statusEmptyHandedBitmap.Width / 2;
+                                                    target_height = empty_handed_scale * App._statusEmptyHandedBitmap.Height;
+                                                }
+                                                else
+                                                {
+                                                    target_width = empty_handed_scale * App._statusEmptyHandedBitmap.Width;
+                                                    target_height = empty_handed_scale * App._statusEmptyHandedBitmap.Height;
+                                                }
+                                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                                canvas.DrawBitmap(App._statusEmptyHandedBitmap, emptyHandedSource, statusDest, textPaint);
+                                                curx += target_width;
+                                                curx += innerspacing;
+                                            }
+                                        }
+                                    }
                                 }
-                                if (valtext2 != "")
+                                else
                                 {
-                                    string printtext = "/" + valtext2;
-                                    print_width = textPaint.MeasureText(printtext);
-                                    canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    curx += print_width;
+                                    if (valtext != "")
+                                    {
+                                        print_width = textPaint.MeasureText(valtext);
+                                        canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                        curx += print_width;
+                                    }
+                                    if (valtext2 != "")
+                                    {
+                                        string printtext = "/" + valtext2;
+                                        print_width = textPaint.MeasureText(printtext);
+                                        canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                        curx += print_width;
+                                    }
                                 }
                                 curx += stdspacing;
                             }
@@ -8811,10 +9025,16 @@ namespace GnollHackClient.Pages.Game
             {
                 bool outofammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO1) != 0UL;
                 bool wrongammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE1) != 0UL;
+                bool notbeingused1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_BEING_USED1) != 0UL;
+                bool notweapon1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_WEAPON1) != 0UL;
                 bool outofammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO2) != 0UL;
                 bool wrongammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE2) != 0UL;
+                bool notbeingused2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_BEING_USED2) != 0UL;
+                bool notweapon2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_WEAPON2) != 0UL;
                 bool outofammo = is_uwep ? outofammo1 : is_uwep2 ? outofammo2 : false;
                 bool wrongammo = is_uwep ? wrongammo1 : is_uwep2 ? wrongammo2 : false;
+                bool notbeingused = is_uwep ? notbeingused1 : is_uwep2 ? notbeingused2 : false;
+                bool notweapon = is_uwep ? notweapon1 : is_uwep2 ? notweapon2 : false;
 
                 int idx = is_uwep ? 0 : is_uwep2 ? 1 : 2;
                 lock (_weaponStyleObjDataItemLock)
@@ -8825,7 +9045,7 @@ namespace GnollHackClient.Pages.Game
                             _weaponStyleObjDataItem[idx] = null;
                             break;
                         case 2: /* Add item */
-                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo);
+                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon);
                             break;
                         case 3: /* Add container item to previous item */
                             _weaponStyleObjDataItem[idx].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));

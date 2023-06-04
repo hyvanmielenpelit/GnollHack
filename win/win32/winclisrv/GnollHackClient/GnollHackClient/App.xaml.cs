@@ -773,6 +773,7 @@ namespace GnollHackClient
         public static SKBitmap _statusMCBitmap;
         public static SKBitmap _statusMoveBitmap;
         public static SKBitmap _statusWeaponStyleBitmap;
+        public static SKBitmap _statusEmptyHandedBitmap;
 
         public static SKBitmap _statusGoldBitmap;
         public static SKBitmap _statusTurnsBitmap;
@@ -1203,6 +1204,10 @@ namespace GnollHackClient
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-weapon-style.png"))
             {
                 _statusWeaponStyleBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-empty-handed.png"))
+            {
+                _statusEmptyHandedBitmap = SKBitmap.Decode(stream);
             }
 
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-gold.png"))
