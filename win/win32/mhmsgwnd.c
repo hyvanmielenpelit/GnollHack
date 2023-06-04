@@ -276,12 +276,12 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         PMSNHMsgPutstr msg_data = (PMSNHMsgPutstr) lParam;
         SCROLLINFO si;
         char *p;
-        char msgbuf[BUFSIZ] = "";
+        char msgbuf[UTF8BUFSZ] = "";
 
         if (!msg_data->text)
             return;
 
-        write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
+        write_CP437_to_buf_unicode(msgbuf, UTF8BUFSZ, msg_data->text);
 
         int current_length = (int)strlen(data->window_text[MSG_LINES - 1].text);
         int remaining_length = MAXWINDOWTEXT - current_length;
