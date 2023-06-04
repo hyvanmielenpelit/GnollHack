@@ -333,8 +333,9 @@ build_package_root:
 	sys/unix/hints/macosx.sh editsysconf sys/unix/sysconf $(PKGROOT_UGLN)/sysconf
 	cd dat; install -p $(DATNODLB) ../$(PKGROOT_UGLN)
 # XXX these files should be somewhere else for good Mac form
-	touch $(PKGROOT_UGLN)/perm $(PKGROOT_UGLN)/record $(PKGROOT_UGLN)/logfile $(PKGROOT_UGLN)/xlogfile
+	touch $(PKGROOT_UGLN)/perm $(PKGROOT_UGLN)/record $(PKGROOT_UGLN)/logfile $(PKGROOT_UGLN)/livelogfile $(PKGROOT_UGLN)/xlogfile $(PKGROOT_UGLN)/wishtracker
 	mkdir $(PKGROOT_UGLN)/save
+	mkdir $(PKGROOT_UGLN)/whereis
 # XXX what about a news file?
 
 	mkdir -p PKGSCRIPTS

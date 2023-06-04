@@ -266,19 +266,23 @@ install: rootcheck $(GAME) recover $(VARDAT) dungeon spec_levs
 		mkdir -p $(SHELLDIR); fi
 	rm -rf $(INSTDIR) $(VARDIR)
 	-mkdir -p $(INSTDIR) $(VARDIR) $(VARDIR)/save
+	-mkdir -p $(INSTDIR) $(VARDIR) $(VARDIR)/whereis
 	if test -d ./-p; then rmdir ./-p; fi
 	-$(CHOWN) $(GAMEUID) $(INSTDIR) $(VARDIR) $(VARDIR)/save
+	-$(CHOWN) $(GAMEUID) $(INSTDIR) $(VARDIR) $(VARDIR)/whereis
 	$(CHGRP) $(GAMEGRP) $(INSTDIR) $(VARDIR) $(VARDIR)/save
+	$(CHGRP) $(GAMEGRP) $(INSTDIR) $(VARDIR) $(VARDIR)/whereis
 # order counts here:
 	chmod $(DIRPERM) $(INSTDIR)
 	chmod $(VARDIRPERM) $(VARDIR) $(VARDIR)/save
+	chmod $(VARDIRPERM) $(VARDIR) $(VARDIR)/whereis
 # set up the game files
 	( $(MAKE) dofiles )
 # set up some additional files
-	touch $(VARDIR)/perm $(VARDIR)/record $(VARDIR)/logfile $(VARDIR)/xlogfile
-	-( cd $(VARDIR) ; $(CHOWN) $(GAMEUID) perm record logfile xlogfile ; \
-			$(CHGRP) $(GAMEGRP) perm record logfile xlogfile ; \
-			chmod $(VARFILEPERM) perm record logfile xlogfile )
+	touch $(VARDIR)/perm $(VARDIR)/record $(VARDIR)/logfile $(VARDIR)/livelogfile $(VARDIR)/xlogfile $(VARDIR)/wishtracker
+	-( cd $(VARDIR) ; $(CHOWN) $(GAMEUID) perm record logfile livelogfile xlogfile wishtracker ; \
+			$(CHGRP) $(GAMEGRP) perm record logfile livelogfile xlogfile wishtracker ; \
+			chmod $(VARFILEPERM) perm record logfile livelogfile xlogfile wishtracker )
 	true; $(POSTINSTALL)
 # and a reminder
 	@echo You may also want to reinstall the man pages via the doc Makefile.
