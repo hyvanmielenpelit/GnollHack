@@ -5495,41 +5495,55 @@ namespace GnollHackClient.Pages.Game
                                                     curx += innerspacing;
                                                 }
                                                 float endpicturex = curx;
+                                                textPaint.Typeface = App.LatoBold;
+                                                textPaint.TextSize = basefontsize;
                                                 if (_weaponStyleObjDataItem[0].OutOfAmmo)
                                                 {
                                                     string printtext = "X";
                                                     SKColor oldcolor = textPaint.Color;
-                                                    textPaint.Color = SKColors.Red;
                                                     print_width = textPaint.MeasureText(printtext);
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    textPaint.Color = SKColors.Black;
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.Color = SKColors.Red;
                                                     canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
                                                     textPaint.Color = oldcolor;
-                                                    curx += print_width;
 
                                                 }
                                                 if (_weaponStyleObjDataItem[0].WrongAmmoType)
                                                 {
                                                     string printtext = "?";
                                                     SKColor oldcolor = textPaint.Color;
-                                                    textPaint.Color = SKColors.Red;
                                                     print_width = textPaint.MeasureText(printtext);
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    textPaint.Color = SKColors.Black;
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.Color = SKColors.Red;
                                                     canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
                                                     textPaint.Color = oldcolor;
-                                                    curx += print_width;
                                                 }
                                                 if (_weaponStyleObjDataItem[0].NotBeingUsed || _weaponStyleObjDataItem[0].NotWeapon)
                                                 {
                                                     string printtext = "!";
                                                     SKColor oldcolor = textPaint.Color;
-                                                    textPaint.Color = SKColors.Orange;
                                                     print_width = textPaint.MeasureText(printtext);
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    textPaint.Color = SKColors.Black;
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.Color = SKColors.Orange;
                                                     canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
                                                     textPaint.Color = oldcolor;
-                                                    curx += print_width;
-
                                                 }
+                                                textPaint.Typeface = App.LatoRegular;
                                             }
                                             else
                                             {
@@ -5583,6 +5597,7 @@ namespace GnollHackClient.Pages.Game
                                             /* Left-hand weapon */
                                             if (_weaponStyleObjDataItem[1] != null)
                                             {
+                                                textPaint.TextSize = shieldfontsize;
                                                 string printtext = "+";
                                                 print_width = textPaint.MeasureText(printtext);
                                                 canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
@@ -5608,28 +5623,38 @@ namespace GnollHackClient.Pages.Game
                                                     curx += innerspacing;
                                                 }
                                                 float endpicturex = curx;
+                                                textPaint.Typeface = App.LatoBold;
+                                                textPaint.TextSize = basefontsize;
                                                 if (_weaponStyleObjDataItem[1].OutOfAmmo)
                                                 {
                                                     printtext = "X";
                                                     SKColor oldcolor = textPaint.Color;
-                                                    textPaint.Color = SKColors.Red;
                                                     print_width = textPaint.MeasureText(printtext);
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    textPaint.Color = SKColors.Black;
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.Color = SKColors.Red;
                                                     canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
                                                     textPaint.Color = oldcolor;
-                                                    curx += print_width;
 
                                                 }
                                                 if (_weaponStyleObjDataItem[1].WrongAmmoType)
                                                 {
                                                     printtext = "?";
                                                     SKColor oldcolor = textPaint.Color;
-                                                    textPaint.Color = SKColors.Red;
                                                     print_width = textPaint.MeasureText(printtext);
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    textPaint.Color = SKColors.Black;
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.Color = SKColors.Red;
                                                     canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
                                                     textPaint.Color = oldcolor;
-                                                    curx += print_width;
                                                 }
                                                 if (_weaponStyleObjDataItem[1].NotBeingUsed || _weaponStyleObjDataItem[1].NotWeapon)
                                                 {
@@ -5638,10 +5663,16 @@ namespace GnollHackClient.Pages.Game
                                                     textPaint.Color = SKColors.Orange;
                                                     print_width = textPaint.MeasureText(printtext);
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    textPaint.Color = SKColors.Black;
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.Color = SKColors.Orange;
                                                     canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
                                                     textPaint.Color = oldcolor;
-                                                    curx += print_width;
                                                 }
+                                                textPaint.Typeface = App.LatoRegular;
                                             }
                                             else
                                             {
