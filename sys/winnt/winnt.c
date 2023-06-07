@@ -523,7 +523,7 @@ int code;
            a little cleaner than the stdio one */
         windowprocs.win_nhgetch = windows_console_custom_nhgetch;
     }
-    if (getreturn_enabled)
+    if (getreturn_enabled && wait_synch)
         wait_synch();
 
 #ifdef _CRTDBG_MAP_ALLOC

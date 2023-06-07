@@ -4627,14 +4627,17 @@ int intervals;
 void
 stop_animations()
 {
-    toggle_animation_timer(ANIMATION_TIMER_YOU, 0, 0, 0, 0, 0, 0UL);
-    toggle_animation_timer(ANIMATION_TIMER_MONSTER, 0, 0, 0, 0, 0, 0UL);
-    toggle_animation_timer(ANIMATION_TIMER_EXPLOSION, 0, 0, 0, 0, 0, 0UL);
-    int i;
-    for(i = 0; i < MAX_PLAYED_SPECIAL_EFFECTS; i++)
-        toggle_animation_timer(ANIMATION_TIMER_SPECIAL_EFFECT, i, 0, 0, 0, 0, 0UL);
-    for (i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
-        toggle_animation_timer(ANIMATION_TIMER_ZAP, i, 0, 0, 0, 0, 0UL);
+    if (toggle_animation_timer)
+    {
+        toggle_animation_timer(ANIMATION_TIMER_YOU, 0, 0, 0, 0, 0, 0UL);
+        toggle_animation_timer(ANIMATION_TIMER_MONSTER, 0, 0, 0, 0, 0, 0UL);
+        toggle_animation_timer(ANIMATION_TIMER_EXPLOSION, 0, 0, 0, 0, 0, 0UL);
+        int i;
+        for (i = 0; i < MAX_PLAYED_SPECIAL_EFFECTS; i++)
+            toggle_animation_timer(ANIMATION_TIMER_SPECIAL_EFFECT, i, 0, 0, 0, 0, 0UL);
+        for (i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
+            toggle_animation_timer(ANIMATION_TIMER_ZAP, i, 0, 0, 0, 0, 0UL);
+    }
 }
 
 
