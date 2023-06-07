@@ -4047,9 +4047,9 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 
 cleanup:
     /* punish bad behaviour */
-    if (is_human(mdat) && !is_not_living(mdat) && !is_were(mdat) 
+    if (is_human(mdat) && !is_not_living(mdat) && !is_were(mdat)
         && !(mtmp->ispriest && has_epri(mtmp) && EPRI(mtmp)->shralign == A_NONE) /* Killing Moloch's (high) priests do not make you murderer */
-        && (!always_hostile(mdat) && mtmp->mhostility <= 0)
+        && (!always_hostile(mdat) && mtmp->mhostility < 0)
         && (mndx < PM_ARCHAEOLOGIST || mndx > PM_WIZARD)
         && u.ualign.type != A_CHAOTIC) 
     {

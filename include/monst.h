@@ -80,7 +80,7 @@ struct monst {
     short movement;       /* movement points (derived from permonst definition
                              and added effects */
     uchar m_lev;          /* adjusted difficulty level of monster */
-    aligntyp mhostility;  /* hostility of this monster towards the player, (positive = good to kill) */
+    aligntyp mhostility;  /* hostility of this monster towards the player, (nonnegative = good to kill) */
     xchar mx0, my0;       /* where the monster is moving from */
     xchar mx, my;
     xchar mux, muy;       /* where the monster thinks you are */
