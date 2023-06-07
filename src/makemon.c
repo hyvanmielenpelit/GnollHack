@@ -4396,6 +4396,8 @@ struct monst *mtmp;
     }
 
     coaligned = (sgn(mal) == sgn(u.ualign.type));
+
+    int absmal = abs(mal) + 1;
     if (mtmp->data->msound == MS_LEADER)
     {
         mtmp->mhostility = -20;
@@ -4403,13 +4405,12 @@ struct monst *mtmp;
     else if (mal == A_NONE) 
     {
         if (is_peaceful(mtmp))
-            mtmp->mhostility = 0;
+            mtmp->mhostility = 1;
         else
             mtmp->mhostility = 20; /* really hostile */
     }
     else if (always_peaceful(mtmp->data))
     {
-        int absmal = abs(mal);
         if (is_peaceful(mtmp))
             mtmp->mhostility = -3 * max(5, absmal);
         else
@@ -4417,22 +4418,20 @@ struct monst *mtmp;
     } 
     else if (always_hostile(mtmp->data)) 
     {
-        int absmal = abs(mal);
         if (coaligned)
-            mtmp->mhostility = 0;
+            mtmp->mhostility = 1;
         else
             mtmp->mhostility = max(5, absmal);
     }
     else if (coaligned) 
     {
-        int absmal = abs(mal);
         if (is_peaceful(mtmp))
             mtmp->mhostility = -3 * max(3, absmal);
         else /* renegade */
             mtmp->mhostility = max(3, absmal);
     } 
     else /* not coaligned and therefore hostile */
-        mtmp->mhostility = abs(mal);
+        mtmp->mhostility = absmal;
 }
 
 /* allocate a new mcorpsenm field for a monster; only need mextra itself */

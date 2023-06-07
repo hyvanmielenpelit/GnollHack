@@ -29,6 +29,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Runtime.ConstrainedExecution;
+using Xamarin.Forms.PlatformConfiguration.TizenSpecific;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -5495,55 +5496,62 @@ namespace GnollHackClient.Pages.Game
                                                     curx += innerspacing;
                                                 }
                                                 float endpicturex = curx;
-                                                textPaint.Typeface = App.LatoBold;
-                                                textPaint.TextSize = basefontsize;
                                                 if (_weaponStyleObjDataItem[0].OutOfAmmo)
                                                 {
+                                                    textPaint.TextSize = basefontsize;
                                                     string printtext = "X";
                                                     SKColor oldcolor = textPaint.Color;
                                                     print_width = textPaint.MeasureText(printtext);
+                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
                                                     textPaint.Color = SKColors.Black;
                                                     textPaint.Style = SKPaintStyle.Stroke;
                                                     textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Style = SKPaintStyle.Fill;
                                                     textPaint.Color = SKColors.Red;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Color = oldcolor;
 
                                                 }
                                                 if (_weaponStyleObjDataItem[0].WrongAmmoType)
                                                 {
+                                                    textPaint.Typeface = App.LatoBold;
+                                                    textPaint.TextSize = basefontsize;
                                                     string printtext = "?";
                                                     SKColor oldcolor = textPaint.Color;
                                                     print_width = textPaint.MeasureText(printtext);
+                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
                                                     textPaint.Color = SKColors.Black;
                                                     textPaint.Style = SKPaintStyle.Stroke;
                                                     textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Style = SKPaintStyle.Fill;
                                                     textPaint.Color = SKColors.Red;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Color = oldcolor;
+                                                    textPaint.Typeface = App.LatoRegular;
                                                 }
                                                 if (_weaponStyleObjDataItem[0].NotBeingUsed || _weaponStyleObjDataItem[0].NotWeapon)
                                                 {
+                                                    textPaint.Typeface = App.LatoBold;
+                                                    textPaint.TextSize = basefontsize;
                                                     string printtext = "!";
                                                     SKColor oldcolor = textPaint.Color;
                                                     print_width = textPaint.MeasureText(printtext);
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                                                     textPaint.Color = SKColors.Black;
                                                     textPaint.Style = SKPaintStyle.Stroke;
                                                     textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Style = SKPaintStyle.Fill;
                                                     textPaint.Color = SKColors.Orange;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Color = oldcolor;
+                                                    textPaint.Typeface = App.LatoRegular;
                                                 }
-                                                textPaint.Typeface = App.LatoRegular;
                                             }
                                             else
                                             {
@@ -5623,56 +5631,63 @@ namespace GnollHackClient.Pages.Game
                                                     curx += innerspacing;
                                                 }
                                                 float endpicturex = curx;
-                                                textPaint.Typeface = App.LatoBold;
-                                                textPaint.TextSize = basefontsize;
                                                 if (_weaponStyleObjDataItem[1].OutOfAmmo)
                                                 {
+                                                    textPaint.TextSize = basefontsize;
                                                     printtext = "X";
                                                     SKColor oldcolor = textPaint.Color;
                                                     print_width = textPaint.MeasureText(printtext);
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                                                     textPaint.Color = SKColors.Black;
                                                     textPaint.Style = SKPaintStyle.Stroke;
                                                     textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Style = SKPaintStyle.Fill;
                                                     textPaint.Color = SKColors.Red;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Color = oldcolor;
 
                                                 }
                                                 if (_weaponStyleObjDataItem[1].WrongAmmoType)
                                                 {
+                                                    textPaint.Typeface = App.LatoBold;
+                                                    textPaint.TextSize = basefontsize;
                                                     printtext = "?";
                                                     SKColor oldcolor = textPaint.Color;
                                                     print_width = textPaint.MeasureText(printtext);
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                                                     textPaint.Color = SKColors.Black;
                                                     textPaint.Style = SKPaintStyle.Stroke;
                                                     textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Style = SKPaintStyle.Fill;
                                                     textPaint.Color = SKColors.Red;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Color = oldcolor;
+                                                    textPaint.Typeface = App.LatoRegular;
                                                 }
                                                 if (_weaponStyleObjDataItem[1].NotBeingUsed || _weaponStyleObjDataItem[1].NotWeapon)
                                                 {
+                                                    textPaint.Typeface = App.LatoBold;
+                                                    textPaint.TextSize = basefontsize;
                                                     printtext = "!";
                                                     SKColor oldcolor = textPaint.Color;
                                                     textPaint.Color = SKColors.Orange;
                                                     print_width = textPaint.MeasureText(printtext);
                                                     float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                                                     textPaint.Color = SKColors.Black;
                                                     textPaint.Style = SKPaintStyle.Stroke;
                                                     textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Style = SKPaintStyle.Fill;
                                                     textPaint.Color = SKColors.Orange;
-                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
                                                     textPaint.Color = oldcolor;
+                                                    textPaint.Typeface = App.LatoRegular;
                                                 }
-                                                textPaint.Typeface = App.LatoRegular;
                                             }
                                             else
                                             {
