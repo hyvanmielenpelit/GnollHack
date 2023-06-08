@@ -6636,10 +6636,11 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         u.uachieve.enter_gehennom = 1;
     }
 
-    if (In_mines(&u.uz))
+    if (In_mines(&u.uz) && !u.uachieve.entered_gnomish_mines)
     {
         //if (!u.uachieve.entered_gnomish_mines)
         //    achievement_gained("Entered Gnomish Mines");
+        livelog_printf(LL_ACHIEVE, "entered the Gnomish Mines");
         u.uachieve.entered_gnomish_mines = 1;
     }
 
@@ -6660,24 +6661,24 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         }
     }
 
-    if (Is_minetown_level(&u.uz))
+    if (Is_minetown_level(&u.uz) && !u.uachieve.entered_mine_town)
     {
-        //if (!u.uachieve.entered_mine_town)
         //    achievement_gained("Entered Mine Town");
+        livelog_printf(LL_ACHIEVE, "entered the Mine Town");
         u.uachieve.entered_mine_town = 1;
     }
 
-    if (In_sokoban(&u.uz))
+    if (In_sokoban(&u.uz) && u.uachieve.entered_sokoban)
     {
-        //if (!u.uachieve.entered_sokoban)
         //    achievement_gained("Entered Sokoban");
+        livelog_printf(LL_ACHIEVE, "entered the Sokoban");
         u.uachieve.entered_sokoban = 1;
     }
 
-    if (Is_bigroom(&u.uz))
+    if (Is_bigroom(&u.uz) && !u.uachieve.entered_bigroom)
     {
-        //if (!u.uachieve.entered_bigroom)
         //    achievement_gained("Entered the Big Room");
+        livelog_printf(LL_ACHIEVE, "entered the Big Room");
         u.uachieve.entered_bigroom = 1;
     }
 
@@ -6687,18 +6688,24 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     
     if (In_modron_level(&u.uz))
     {
+        if(!u.uachieve.entered_plane_of_modron)
+            livelog_printf(LL_ACHIEVE, "entered the Plane of the Modron");
         u.uevent.modron_plane_entered = 1;
         u.uachieve.entered_plane_of_modron = 1;
     }
     
     if (In_bovine_level(&u.uz))
     {
+        if (!u.uachieve.entered_hellish_pastures)
+            livelog_printf(LL_ACHIEVE, "entered the Hellish Pastures");
         u.uevent.hellish_pastures_entered = 1;
         u.uachieve.entered_hellish_pastures = 1;
     }
 
     if (In_large_circular_dgn_level(&u.uz))
     {
+        if (!u.uachieve.entered_large_circular_dungeon)
+            livelog_printf(LL_ACHIEVE, "entered the Large Circular Dungeon");
         u.uevent.large_circular_dgn_entered = 1;
         u.uachieve.entered_large_circular_dungeon = 1;
     }

@@ -2753,7 +2753,6 @@ mkinvokearea()
     mkstairs(u.ux, u.uy, 0, (struct mkroom *) 0, STAIRCASE_TO_DEEPER); /* down */
     newsym(u.ux, u.uy);
     vision_full_recalc = 1; /* everything changed */
-    livelog_write_string(LL_ACHIEVE, "performed the invocation");
 }
 
 /* Change level topology.  Boulders in the vicinity are eliminated.

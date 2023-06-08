@@ -3525,8 +3525,10 @@ unsigned long mdiedflags;
     {
         u.uachieve.role_achievement = 1;
         char abuf[BUFSZ];
-        strcpy_capitalized_for_title(abuf, get_role_achievement_description(TRUE));
+        const char* ra_desc = get_role_achievement_description(TRUE);
+        strcpy_capitalized_for_title(abuf, ra_desc);
         achievement_gained(abuf);
+        livelog_write_string(LL_ACHIEVE, ra_desc);
     }
 
     if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].hero_memory_layers.glyph))

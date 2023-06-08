@@ -924,7 +924,10 @@ struct obj *obj;
             if (flags.showscore && !u.uachieve.prime_codex)
                 context.botl = 1;
             if (!u.uachieve.prime_codex)
+            {
                 achievement_gained("Prime Codex");
+                livelog_write_string(LL_ACHIEVE, "acquired the Prime Codex");
+            }
             u.uachieve.prime_codex = 1;
         }
 
@@ -959,9 +962,11 @@ struct obj *obj;
         if (check_achievement && u.uevent.role_achievement_1 && u.uevent.role_achievement_2 && !u.uachieve.role_achievement)
         {
             u.uachieve.role_achievement = 1;
+            const char* ra_desc = get_role_achievement_description(TRUE);
             char abuf[BUFSZ];
-            strcpy_capitalized_for_title(abuf, get_role_achievement_description(TRUE));
+            strcpy_capitalized_for_title(abuf, ra_desc);
             achievement_gained(abuf);
+            livelog_write_string(LL_ACHIEVE, ra_desc);
         }
     }
 
@@ -999,6 +1004,7 @@ struct obj *obj;
                 context.botl = 1;
             u.uachieve.role_achievement = 1;
             achievement_gained("Found the Holy Grail");
+            livelog_printf(LL_ACHIEVE, "found the Holy Grail");
         }
     }
 }

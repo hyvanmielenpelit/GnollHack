@@ -1001,7 +1001,12 @@ gcrownu()
         u.ugifts++;
         obj->aknown = obj->nknown = 1;
         if (obj && obj->oartifact == ART_GAUNTLETS_OF_YIN_AND_YANG)
+        {
             discover_artifact(ART_GAUNTLETS_OF_YIN_AND_YANG);
+            livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                "was bestowed with %s",
+                artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
+        }
     }
     else if (Role_if(PM_WIZARD))
     {
@@ -1362,6 +1367,9 @@ gcrownu()
                 {
                     obj->aknown = obj->nknown = TRUE;
                     discover_artifact(ART_RHONGOMYNIAD);
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                        "was bestowed with %s",
+                        artiname(ART_RHONGOMYNIAD));
                 }
             }
             else if ((Role_if(PM_KNIGHT) || Role_if(PM_ARCHAEOLOGIST)) && !grail_already_exists)
@@ -1376,6 +1384,9 @@ gcrownu()
                 {
                     obj->aknown = obj->nknown = TRUE;
                     discover_artifact(ART_HOLY_GRAIL);
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                        "was bestowed with %s",
+                        artiname(ART_HOLY_GRAIL));
                 }
             }
             else if (obj && in_hand)
@@ -1403,6 +1414,9 @@ gcrownu()
                 {
                     obj->aknown = obj->nknown = TRUE;
                     discover_artifact(ART_KATANA_OF_MASAMUNE);
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                        "was bestowed with %s",
+                        artiname(ART_KATANA_OF_MASAMUNE));
                 }
             }
             else if (obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && get_object_base_value(obj) < 2000L && !obj->oartifact)
@@ -1416,6 +1430,9 @@ gcrownu()
                 {
                     u.ugifts++;
                     obj->aknown = obj->nknown = TRUE;
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                        "was bestowed with %s",
+                        artiname(ART_EXCALIBUR));
                 }
             }
             /* acquire Excalibur's skill regardless of weapon or gift */
@@ -1430,6 +1447,9 @@ gcrownu()
                 {
                     u.ugifts++;
                     obj2->aknown = obj2->nknown = TRUE;
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                        "was bestowed with %s",
+                        artiname(ART_EXCALIBUR));
                 }
             }
             else
@@ -1474,6 +1494,9 @@ gcrownu()
                 {
                     obj->aknown = obj->nknown = TRUE;
                     discover_artifact(ART_HOLY_GRAIL);
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                        "was bestowed with %s",
+                        artiname(ART_HOLY_GRAIL));
                 }
             }
             else if (obj && in_hand)
@@ -1497,6 +1520,12 @@ gcrownu()
                 dropy(obj);
                 u.ugifts++;
                 obj->aknown = obj->nknown = TRUE;
+                if (obj->oartifact == ART_VORPAL_BLADE)
+                {
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                        "was bestowed with %s",
+                        artiname(ART_VORPAL_BLADE));
+                }
             }
             /* acquire Vorpal Blade's skill regardless of weapon or gift */
             unrestrict_weapon_skill(P_SWORD);
@@ -1545,6 +1574,12 @@ gcrownu()
                 dropy(obj);
                 u.ugifts++;
                 obj->aknown = obj->nknown = TRUE;
+                if (obj->oartifact == chaotic_crowning_gift_oartifact)
+                {
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                        "was bestowed with %s",
+                        artiname(chaotic_crowning_gift_oartifact));
+                }
             }
             /* Acquire two-weapon combat for dual-wielding Stormbringer and Mournblade  */
             if (chaotic_crowning_gift_oartifact == ART_STORMBRINGER || chaotic_crowning_gift_oartifact == ART_MOURNBLADE)
@@ -2874,8 +2909,9 @@ dosacrifice()
                     u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(150 + (25 * nartifacts)) : rnz(300 + (50 * nartifacts));
                     exercise(A_WIS, TRUE);
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
-                        "had %s given to %s by %s",
-                        acxname(otmp), uhim(), u_gname());
+                        "was bestowed with %s by %s",
+                        artiname(otmp->oartifact),
+                        align_gname(u.ualign.type));
 
                     /* make sure we can use this weapon */
                     enum p_skills wep_skill_idx = weapon_skill_type(otmp);
@@ -3641,9 +3677,6 @@ int dx, dy;
 
     return FALSE;
 }
-
-
-
 
 int
 wiz_crown()
