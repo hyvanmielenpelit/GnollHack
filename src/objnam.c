@@ -2789,6 +2789,18 @@ struct obj *obj;
     return the(simpleoname);
 }
 
+char*
+actualoname(obj)
+struct obj* obj;
+{
+    char* res;
+
+    iflags.override_ID = TRUE;
+    res = minimal_xname(obj);
+    iflags.override_ID = FALSE;
+    return res;
+}
+
 /* artifact's name without any object type or known/dknown/&c feedback */
 char *
 bare_artifactname(obj)

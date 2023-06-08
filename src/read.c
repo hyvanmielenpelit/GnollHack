@@ -3784,6 +3784,7 @@ do_class_genocide()
                     || ((mons[i].geno & G_GENO)
                         && !(mvitals[i].mvflags & MV_GENOCIDED))) 
                 {
+                    int prevnumgenocided = num_genocides();
                     /* This check must be first since player monsters might
                      * have MV_GENOCIDED or !G_GENO.
                      */
@@ -3800,13 +3801,13 @@ do_class_genocide()
 
                     if (!ll_done++) 
                     {
-                        if (!num_genocides())
+                        if (!prevnumgenocided)
                             livelog_printf(LL_CONDUCT | LL_GENOCIDE,
-                                "performed %s first genocide (class genocide for class %c)",
-                                uhis(), def_monsyms[class].sym);
+                                "performed %s first genocide (monsters from class %c, %s)",
+                                uhis(), def_monsyms[class].sym, def_monsyms[class].name);
                         else
-                            livelog_printf(LL_GENOCIDE, "genocided monsters from class %c",
-                                def_monsyms[class].sym);
+                            livelog_printf(LL_GENOCIDE, "genocided monsters from class %c (%s)",
+                                def_monsyms[class].sym, def_monsyms[class].name);
                     }
 
                     if (Upolyd && i == u.umonnum) 
@@ -4018,6 +4019,7 @@ int how;
 
     if (how & REALLY) 
     {
+        int prevnumgenocided = num_genocides();
         play_sfx_sound(SFX_GENOCIDE);
 
         /* setting no-corpse affects wishing and random tin generation */
@@ -4025,7 +4027,7 @@ int how;
         pline("Wiped out %s%s.", which, pluralbuf);
               //(*which != 'a') ? buf : makeplural(buf));
 
-        if (!num_genocides())
+        if (!prevnumgenocided)
             livelog_printf(LL_CONDUCT | LL_GENOCIDE,
                 "performed %s first genocide (%s)", uhis(), pluralbuf);
         else

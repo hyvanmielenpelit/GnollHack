@@ -2420,6 +2420,7 @@ E char *FDECL(Ysimple_name2, (struct obj *));
 E char *FDECL(simpleonames, (struct obj *));
 E char *FDECL(ansimpleoname, (struct obj *));
 E char *FDECL(thesimpleoname, (struct obj *));
+E char* FDECL(actualoname, (struct obj*));
 E char *FDECL(bare_artifactname, (struct obj *));
 E char *FDECL(makeplural, (const char *));
 E char *FDECL(makesingular, (const char *));

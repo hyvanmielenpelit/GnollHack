@@ -1109,7 +1109,8 @@ gcrownu()
             bless(otmp);
             (void)add_to_container(obj, otmp);
         }
-
+        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+            "was bestowed with %s", an(actualoname(obj)));
         at_your_feet("A golden chest");
         dropy(obj);
         u.ugifts++;
@@ -1309,6 +1310,8 @@ gcrownu()
             }
 
         }
+        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+            "was bestowed with %s", an(actualoname(obj)));
         at_your_feet("A golden chest");
         dropy(obj);
         u.ugifts++;
@@ -1331,6 +1334,8 @@ gcrownu()
             obj = mksobj(class_gift, TRUE, FALSE, FALSE);
             bless(obj);
             obj->bknown = TRUE;
+            livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
+                "was bestowed with %s", an(actualoname(obj)));
             at_your_feet("A spellbook");
             dropy(obj);
             u.ugifts++;
@@ -1367,7 +1372,7 @@ gcrownu()
                 {
                     obj->aknown = obj->nknown = TRUE;
                     discover_artifact(ART_RHONGOMYNIAD);
-                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                         "was bestowed with %s",
                         artiname(ART_RHONGOMYNIAD));
                 }
@@ -1414,7 +1419,7 @@ gcrownu()
                 {
                     obj->aknown = obj->nknown = TRUE;
                     discover_artifact(ART_KATANA_OF_MASAMUNE);
-                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                         "was bestowed with %s",
                         artiname(ART_KATANA_OF_MASAMUNE));
                 }
@@ -1447,7 +1452,7 @@ gcrownu()
                 {
                     u.ugifts++;
                     obj2->aknown = obj2->nknown = TRUE;
-                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                         "was bestowed with %s",
                         artiname(ART_EXCALIBUR));
                 }
@@ -1460,6 +1465,8 @@ gcrownu()
                 dropy(obj);
                 u.ugifts++;
                 obj->aknown = obj->nknown = TRUE;
+                livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
+                    "was bestowed with %s", an(actualoname(obj)));
             }
 
             /* acquire Excalibur's skill regardless of weapon or gift */
