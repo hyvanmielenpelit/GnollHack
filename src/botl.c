@@ -599,12 +599,12 @@ timebot()
     iflags.time_botl = FALSE;
 }
 
-/* convert experience level (1..30) to rank index (0..8) */
+/* convert experience level (1...MAXULEV) to rank index (0...NUM_RANKS - 1) */
 int
 xlev_to_rank(xlev)
 int xlev;
 {
-    return (xlev <= 2) ? 0 : (xlev <= 30) ? ((xlev + 2) / 4) : 8;
+    return (xlev <= RANK_MIN_THRESHOLD) ? 0 : (xlev <= MAXULEV) ? ((xlev + RANK_ADD_CONSTANT) / RANK_LEVEL_INCREMENT) : NUM_RANKS - 1;
 }
 
 #if 0 /* not currently needed */

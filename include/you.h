@@ -117,6 +117,8 @@ struct u_event {
     Bitfield(role_achievement_2, 1);  /* passed the second requirement of the role achievement */
 
     Bitfield(elbereth_known, 1);      /* has learned of Elbereth */
+
+    unsigned short ranks_attained;
 };
 
 struct u_achieve {
@@ -300,12 +302,16 @@ struct u_roleplay {
 };
 
 #define MAX_TRAIT_DESCRIPTIONS 5
+#define RANK_MIN_THRESHOLD 2
+#define RANK_ADD_CONSTANT 2
+#define RANK_LEVEL_INCREMENT 5
+#define NUM_RANKS 9
 
 /*** Unified structure containing role information ***/
 struct Role {
     /*** Strings that name various things ***/
     struct RoleName name;    /* the role's name (from u_init.c) */
-    struct RoleName rank[9]; /* names for experience levels (from botl.c) */
+    struct RoleName rank[NUM_RANKS]; /* names for experience levels (from botl.c) */
     const char *lgod, *ngod, *cgod; /* god names (from pray.c) */
     const char *filecode;           /* abbreviation for use in file names */
     const char *homebase; /* quest leader's location (from questpgr.c) */

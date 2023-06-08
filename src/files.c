@@ -5055,6 +5055,77 @@ const char* buffer UNUSED;
 #endif /* LIVELOGFILE */
 
 void
+gamelog_add(glflags, gltime, str)
+long glflags, gltime;
+const char* str;
+{
+    struct gamelog_line* tmp;
+    struct gamelog_line* lst = gamelog;
+
+    tmp = (struct gamelog_line*)alloc(sizeof(struct gamelog_line));
+    tmp->turn = gltime;
+    tmp->flags = glflags;
+    tmp->text = dupstr(str);
+    tmp->next = NULL;
+    while (lst && lst->next)
+        lst = lst->next;
+    if (!lst)
+        gamelog = tmp;
+    else
+        lst->next = tmp;
+}
+
+void
+reset_gamelog(VOID_ARGS)
+{
+    struct gamelog_line* next;
+    while (gamelog)
+    {
+        if (gamelog->text)
+        {
+            free((genericptr_t)gamelog->text);
+            gamelog->text = 0;
+        }
+        next = gamelog->next;
+        free((genericptr_t)gamelog);
+        gamelog = next;
+    }
+}
+
+/* #chronicle details */
+void
+show_gamelog(final)
+int final;
+{
+    struct gamelog_line* llmsg;
+    winid win;
+    char buf[BUFSZ];
+    int eventcnt = 0;
+
+    win = create_nhwindow(NHW_TEXT);
+    Sprintf(buf, "%s events:", final ? "Major" : "Logged");
+    putstr(win, 0, buf);
+    for (llmsg = gamelog; llmsg; llmsg = llmsg->next) {
+        if (final && !majorevent(llmsg))
+            continue;
+        if (!final && !wizard && spoilerevent(llmsg))
+            continue;
+        if (!eventcnt++)
+            putstr(win, 0, " Turn");
+        Sprintf(buf, "%5ld: %s", llmsg->turn, llmsg->text);
+        putstr(win, 0, buf);
+    }
+    /* since start of game is logged as a major event, 'eventcnt' should
+       never end up as 0; for 'final', end of game is a major event too */
+    if (!eventcnt)
+        putstr(win, 0, " none");
+
+    display_nhwindow(win, TRUE);
+    destroy_nhwindow(win);
+    return;
+}
+
+void
 livelog_printf
 VA_DECL2(unsigned int, ll_type, const char*, fmt)
 {
@@ -5062,6 +5133,7 @@ VA_DECL2(unsigned int, ll_type, const char*, fmt)
     VA_START(fmt);
     VA_INIT(fmt, char*);
     vsnprintf(ll_msgbuf, 512, fmt, VA_ARGS);
+    gamelog_add(ll_type, moves, ll_msgbuf);
     livelog_write_string(ll_type, ll_msgbuf);
     VA_END();
 }

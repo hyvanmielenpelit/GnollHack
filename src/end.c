@@ -829,6 +829,8 @@ time_t when; /* date+time at end of game */
     putstr(0, 0, "");
     dump_spells();
     putstr(0, 0, "");
+    show_gamelog((how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
+    putstr(0, 0, "");
     list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */
     putstr(0, 0, "");
     list_genocided('d', FALSE, TRUE); /* 'd' => 'y' */
@@ -3194,6 +3196,7 @@ reset_gamestate(VOID_ARGS)
     reset_names();
     reset_waterlevel();
     reset_msghistory();
+    reset_gamelog();
 }
 
 STATIC_DCL void

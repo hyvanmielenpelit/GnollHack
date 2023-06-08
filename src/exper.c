@@ -405,7 +405,9 @@ boolean incr; /* true iff via incremental experience growth */
     u.uen += eninc;
 
     /* increase level (unless already maxxed) */
-    if (u.ulevel < MAXULEV) {
+    if (u.ulevel < MAXULEV) 
+    {
+        int prevrank = xlev_to_rank(u.ulevel);
         /* increase experience points to reflect new level */
         if (incr) {
             long tmp = newuexp(u.ulevel + 1);
@@ -427,6 +429,22 @@ boolean incr; /* true iff via incremental experience growth */
         char lvlbuf[BUFSZ];
         Sprintf(lvlbuf, "Experience Level %d", u.ulevel);
         display_screen_text(lvlbuf, welcomenormal ? "Welcome to" : "Welcome Back to", (const char*)0, SCREEN_TEXT_GAIN_LEVEL, 0, 0, 0UL);
+
+        int currank = xlev_to_rank(u.ulevel);
+        if (currank > 0 && currank > prevrank)
+        {
+            unsigned short rankbit = 1 << (currank - 1);
+            if (!(u.uevent.ranks_attained & rankbit))
+            {
+                u.uevent.ranks_attained |= rankbit;
+                const char* ranktxt = rank_of(u.ulevel, Role_switch, flags.female);
+                custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "NEW RANK", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "%s", str_upper_start(ranktxt));
+                livelog_printf(LL_ACHIEVE,
+                    "attained the rank of %s (level %d)",
+                    rank_of(u.ulevel, Role_switch, flags.female),
+                    u.ulevel);
+            }
+        }
     }
     updatemaxhp();
     updatemaxen();

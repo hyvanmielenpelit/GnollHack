@@ -37,6 +37,8 @@ int otg_temp; /* used by object_to_glyph() [otg] */
 NEARDATA int in_doagain = 0;
 NEARDATA int skip_savech = 0;
 
+struct gamelog_line* gamelog = 0;
+
 /*
  *      The following structure will be initialized at startup time with
  *      the level numbers of some "important" things in the game.

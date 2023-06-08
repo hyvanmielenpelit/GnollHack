@@ -216,6 +216,14 @@ enum game_end_types {
     NUM_GAME_END_TYPES = 22
 };
 
+/* game events log */
+struct gamelog_line {
+    long turn; /* turn when this happened */
+    long flags; /* LL_foo flags */
+    char* text;
+    struct gamelog_line* next;
+};
+
 typedef struct strbuf {
     size_t len;
     char * str;

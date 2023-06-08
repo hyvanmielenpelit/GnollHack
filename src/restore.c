@@ -40,6 +40,7 @@ STATIC_DCL int FDECL(restlevelfile, (int, XCHAR_P));
 STATIC_OVL void FDECL(restore_msghistory, (int));
 STATIC_DCL void FDECL(reset_oattached_mids, (BOOLEAN_P));
 STATIC_DCL void FDECL(rest_levl, (int, BOOLEAN_P));
+STATIC_DCL void FDECL(restore_gamelog, (int));
 
 STATIC_VAR struct restore_procs {
     const char *name;
@@ -806,6 +807,8 @@ unsigned int *stuckid, *steedid;
     restnames(fd);
     restore_waterlevel(fd);
     restore_msghistory(fd);
+    restore_gamelog(fd);
+
     /* must come after all mons & objs are restored */
     relink_timers(FALSE);
     relink_light_sources(FALSE);
@@ -1367,6 +1370,28 @@ struct save_game_stats* stats_ptr;
     (void)read(fd, (genericptr_t)stats_ptr, (readLenType)sizeof(struct save_game_stats));
     return;
 }
+
+STATIC_OVL void
+restore_gamelog(fd)
+register int fd;
+{
+    int slen = 0;
+    struct gamelog_line tmp;
+    char* tmpstr = 0;
+
+    while (1) {
+        mread(fd, &slen, sizeof slen);
+        if (slen < 0)
+            break;
+        tmpstr = (char*)alloc((size_t)slen + 1);
+        mread(fd, tmpstr, slen);
+        mread(fd, &tmp, sizeof tmp);
+        tmpstr[slen] = '\0';
+        gamelog_add(tmp.flags, tmp.turn, tmpstr);
+        free(tmpstr);
+    }
+}
+
 
 STATIC_OVL void
 restore_msghistory(fd)

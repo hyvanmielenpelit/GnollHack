@@ -337,6 +337,36 @@ boolean quietly;
 }
 
 STATIC_OVL void
+save_gamelog(fd, mode)
+int fd, mode;
+{
+    struct gamelog_line* tmp = gamelog, * tmp2;
+    int slen;
+
+    while (tmp) {
+        tmp2 = tmp->next;
+        if (perform_bwrite(mode)) {
+            slen = strlen(tmp->text);
+            bwrite(fd, (genericptr_t)&slen, sizeof slen);
+            bwrite(fd, (genericptr_t)tmp->text, slen);
+            bwrite(fd, (genericptr_t)tmp,
+                sizeof(struct gamelog_line));
+        }
+        if (release_data(mode)) {
+            free((genericptr_t)tmp->text);
+            free((genericptr_t)tmp);
+        }
+        tmp = tmp2;
+    }
+    if (perform_bwrite(mode)) {
+        slen = -1;
+        bwrite(fd, (genericptr_t)&slen, sizeof slen);
+    }
+    if (release_data(mode))
+        gamelog = 0;
+}
+
+STATIC_OVL void
 savegamestate(fd, mode)
 register int fd, mode;
 {
@@ -406,6 +436,7 @@ register int fd, mode;
     savenames(fd, mode);
     save_waterlevel(fd, mode);
     save_msghistory(fd, mode);
+    save_gamelog(fd, mode);
     bflush(fd);
 
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
@@ -1603,6 +1634,7 @@ freedynamicdata(VOID_ARGS)
 #define free_sound_sources(R) save_sound_sources(0, FREE_SAVE, R);
 #define free_engravings() save_engravings(0, FREE_SAVE)
 #define freedamage() savedamage(0, FREE_SAVE)
+#define free_gamelog() save_gamelog(0, FREE_SAVE)
 
     /* move-specific data */
     dmonsfree(); /* release dead monsters */
@@ -1636,6 +1668,7 @@ freedynamicdata(VOID_ARGS)
     freefruitchn();
     freenames();
     free_waterlevel();
+    free_gamelog();
     free_dungeons();
 
     free_dynamic_data_B();

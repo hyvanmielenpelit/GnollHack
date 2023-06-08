@@ -214,6 +214,8 @@ E boolean reseting;
 E boolean check_pointing;
 E boolean ransacked;
 
+E struct gamelog_line* gamelog;
+
 E const char quitchars[];
 E const char vowels[];
 E const char ynchars[];

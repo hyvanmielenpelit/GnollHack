@@ -422,7 +422,20 @@ struct savefile_info {
 #define LL_ALIGNMENT  0x0200 /* changed alignment temporarily or permanently */
 #define LL_DUMP_ASC   0x0400 /* Log URL for dumplog if ascended */
 #define LL_DUMP_ALL   0x0800 /* Log dumplog url for all games */
+#define LL_MINORAC    0x1000 /* Log 'minor' achievements - can be spammy */
+#define LL_SPOILER    0x2000 /* reveals information so don't show in-game
+                               * via #chronicle unless in wizard mode */
+#define LL_DUMP       0x4000 /* none of the above but should be in dumplog */
 #define LL_DEBUG      0x8000 /* For debugging messages and other spam */
+
+/* #chronicle details */
+/* 'major' events for dumplog; inclusion or exclusion here may need tuning */
+#define LL_majors                                                        \
+    (0L | LL_WISH | LL_ACHIEVE | LL_UMONST | LL_DIVINEGIFT | LL_LIFESAVE \
+     | LL_ARTIFACT | LL_GENOCIDE | LL_DUMP) /* explicitly for dumplog */
+#define majorevent(m) (((m)->flags & LL_majors) != 0)
+#define spoilerevent(m) (((m)->flags & LL_SPOILER) != 0)
+
 
 /* Supply GnollHack_enter macro if not supplied by port */
 #ifndef GnollHack_enter

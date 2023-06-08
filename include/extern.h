@@ -392,6 +392,7 @@ E int NDECL(doviewpet);
 E int NDECL(domarkautostash);
 E int NDECL(dounmarkautostash);
 E struct monst* FDECL(spotted_linedup_monster_in_way, (int, int, int, int));
+E int NDECL(do_gamelog);
 
 /* ### dbridge.c ### */
 
@@ -1228,6 +1229,9 @@ E boolean FDECL(Death_quote, (char *, int));
 E void NDECL(list_files);
 E void FDECL(reset_save_file_name, (BOOLEAN_P));
 E void NDECL(reset_files);
+E void NDECL(reset_gamelog);
+E void FDECL(show_gamelog, (int));
+E void FDECL(gamelog_add, (long, long, const char*));
 E void FDECL(livelog_write_string, (unsigned int, const char*));
 E void VDECL(livelog_printf, (unsigned int, const char*, ...)) PRINTF_F(2, 3);
 E void FDECL(livelog_dump_url, (unsigned int));
@@ -3096,6 +3100,7 @@ E void NDECL(free_dynamic_data_B);
 E void NDECL(free_dynamic_data_C);
 E void NDECL(freedynamicdata);
 E void FDECL(store_savefileinfo, (int));
+E void FDECL(save_gamelog, (int, int));
 
 /* ### shk.c ### */
 
