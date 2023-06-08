@@ -5298,20 +5298,12 @@ boolean playing; /**< True if game is running.  */
         u.uhp,
         u.uhpmax,
         moves,
-#ifdef SCORE_ON_BOTL
         botl_score(),
-#else
-        0L,
-#endif
         urole.filecode,
         urace.filecode,
         genders[flags.female].filecode,
         aligns[u.ualign.type == A_NONE ? 3 : 1 - u.ualign.type].filecode,
-#ifdef RECORD_CONDUCT
         encodeconduct(),
-#else
-        0L,
-#endif
         u.uhave.amulet ? 1 : 0,
         u.uevent.ascended ? 2 : *killer.name ? 1 : 0,
         playing);

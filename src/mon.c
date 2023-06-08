@@ -3443,10 +3443,8 @@ unsigned long mdiedflags;
         nemdead();
     if (mtmp->data == &mons[PM_MEDUSA])
     {
-#ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.killed_medusa)
             context.botl = 1;
-#endif
         if (!u.uachieve.killed_medusa)
         {
             achievement_gained("Defeated Medusa");
@@ -3456,10 +3454,8 @@ unsigned long mdiedflags;
     }
     else if (mtmp->data == &mons[PM_YACC])
     {
-#ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.killed_yacc)
             context.botl = 1;
-#endif
         if (!u.uachieve.killed_yacc)
         {
             achievement_gained("Defeated Yacc");
