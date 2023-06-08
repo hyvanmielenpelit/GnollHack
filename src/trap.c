@@ -7521,13 +7521,23 @@ maybe_finish_sokoban()
                 break;
         }
         if (!t) {
+            int sokonum = dungeons[u.uz.dnum].entry_lev - u.uz.dlevel + 1;
+
             /* we've passed the last trap without finding a pit or hole;
                clear the sokoban_rules flag so that luck penalties for
                things like breaking boulders or jumping will no longer
                be given, and restrictions on diagonal moves are lifted */
-            Sokoban = 0; /* clear level.flags.sokoban_rules */
-            /* TODO: give some feedback about solving the sokoban puzzle
-               (perhaps say "congratulations" in Japanese?) */
+            Sokoban = 0; /* clear gl.level.flags.sokoban_rules */
+            /*
+             * TODO: give some feedback about solving the sokoban puzzle
+             * (perhaps say "congratulations" in Japanese?).
+             */
+
+             /* log the completion event regardless of whether or not
+                any normal in-game feedback has just been given */
+            livelog_printf(LL_MINORAC | LL_DUMP,
+                "completed %d%s Sokoban level",
+                sokonum, ordin(sokonum));
         }
     }
 }
