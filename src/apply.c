@@ -351,7 +351,7 @@ struct obj *obj;
                 {
                     u.uachieve.role_achievement = 1;
                     achievement_gained("Took a Selfie with Demogorgon");
-                    livelog_printf(LL_ACHIEVE, "took a selfie with Demogorgon");
+                    livelog_printf(LL_ACHIEVE, "%s", "took a selfie with Demogorgon");
                 }
             }
             else

@@ -914,7 +914,7 @@ register struct monst *mtmp;
         if (!rn2(5)) /* typical bad guy action */
         {
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
-            pline("%s laughs fiendishly.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_TALK_CUSS, "%s laughs fiendishly.", Monnam(mtmp));
         }
         else if (u.uhave.amulet && !rn2(SIZE(random_insult)))
         {
@@ -959,21 +959,20 @@ register struct monst *mtmp;
         while (iflags.using_gui_sounds && (cuss_rnd >= 3 && cuss_rnd <= 5)); /* For the time being, remove ones using god names as difficult to implement when using voice acting */
 
 //        play_voice_monster_cuss_with_god_name(mtmp, cuss_rnd + 1);
-        com_pager(mtmp, cuss_rnd
-                  + QT_ANGELIC);
+        com_pager_ex(mtmp, cuss_rnd + QT_ANGELIC, ATR_NONE, CLR_MSG_TALK_CUSS, FALSE);
     } 
     else 
     {
         if (!rn2(is_minion(mtmp->data) ? 100 : 5))
         {
             play_voice_monster_cuss(mtmp, 0);
-            pline("%s casts aspersions on your ancestry.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_TALK_CUSS, "%s casts aspersions on your ancestry.", Monnam(mtmp));
         }
         else
         {
             int cuss_rnd = rn2(QTN_DEMONIC);
 //            play_voice_monster_cuss(mtmp, cuss_rnd + 1);
-            com_pager(mtmp, cuss_rnd + QT_DEMONIC);
+            com_pager_ex(mtmp, cuss_rnd + QT_DEMONIC, ATR_NONE, CLR_MSG_TALK_CUSS, FALSE);
         }
     }
     return res;

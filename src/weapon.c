@@ -2031,7 +2031,7 @@ int skill;
         const char* ra_desc = get_role_achievement_description(TRUE);
         strcpy_capitalized_for_title(abuf, ra_desc);
         achievement_gained(abuf);
-        livelog_write_string(LL_ACHIEVE, ra_desc);
+        livelog_printf(LL_ACHIEVE, "%s", ra_desc);
     }
 
     update_can_advance_any_skill();

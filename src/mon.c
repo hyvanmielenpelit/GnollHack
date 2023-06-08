@@ -3450,7 +3450,7 @@ unsigned long mdiedflags;
         if (!u.uachieve.killed_medusa)
         {
             achievement_gained("Defeated Medusa");
-            livelog_write_string(LL_ACHIEVE | LL_UMONST, "killed Medusa");
+            livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Medusa");
         }
         u.uachieve.killed_medusa = 1;
     }
@@ -3463,7 +3463,7 @@ unsigned long mdiedflags;
         if (!u.uachieve.killed_yacc)
         {
             achievement_gained("Defeated Yacc");
-            livelog_write_string(LL_ACHIEVE | LL_UMONST, "killed Yacc");
+            livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Yacc");
         }
         u.uachieve.killed_yacc = 1;
     }
@@ -3528,7 +3528,7 @@ unsigned long mdiedflags;
         const char* ra_desc = get_role_achievement_description(TRUE);
         strcpy_capitalized_for_title(abuf, ra_desc);
         achievement_gained(abuf);
-        livelog_write_string(LL_ACHIEVE, ra_desc);
+        livelog_printf(LL_ACHIEVE, "%s", ra_desc);
     }
 
     if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].hero_memory_layers.glyph))
@@ -3881,7 +3881,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     mtmp->mhp = 0; /* caller will usually have already done this */
     if (!noconduct) /* KMH, conduct */
         if (!u.uconduct.killer++)
-            livelog_write_string(LL_CONDUCT, "killed for the first time");
+            livelog_printf(LL_CONDUCT, "%s", "killed for the first time");
 
     if (!nomsg)
     {

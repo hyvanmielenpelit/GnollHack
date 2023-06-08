@@ -207,7 +207,7 @@ doread()
         outrumor((struct monst*)0, scroll, bcsign(scroll), BY_COOKIE);
         if (!Blind)
             if (!u.uconduct.literate++)
-                livelog_write_string(LL_CONDUCT,
+                livelog_printf(LL_CONDUCT, "%s",
                     "became literate by reading a fortune cookie");
 
         useup(scroll);
@@ -318,7 +318,7 @@ doread()
               (flags.verbose || Blind) ? "." : "");
 
         if (!u.uconduct.literate++)
-            livelog_write_string(LL_CONDUCT,
+            livelog_printf(LL_CONDUCT, "%s",
                 "became literate by reading a credit card");
 
         return 1;
@@ -339,7 +339,7 @@ doread()
             pline1("It reads:");
         pline_ex1(ATR_NONE, CLR_MSG_TEXT, "\"Magic Marker(TM) Red Ink Marker Pen.  Water Soluble.\"");
         if (!u.uconduct.literate++)
-            livelog_write_string(LL_CONDUCT,
+            livelog_printf(LL_CONDUCT, "%s",
                 "became literate by reading a magic marker");
         return 1;
     }
@@ -356,7 +356,7 @@ doread()
             pline_ex1(ATR_NONE, CLR_MSG_TEXT, "\"1 Yendorian Gold Coin.  Treasury of Yendor.\"");
 
         if (!u.uconduct.literate++)
-            livelog_write_string(LL_CONDUCT,
+            livelog_printf(LL_CONDUCT, "%s",
                 "became literate by reading a coin's engravings");
         return 1;
     } 
@@ -397,7 +397,7 @@ doread()
         pline_ex(ATR_NONE, CLR_MSG_TEXT, "\"%s\".",
               wrapper_msgs[scroll->o_id % SIZE(wrapper_msgs)]);
         if (!u.uconduct.literate++)
-            livelog_write_string(LL_CONDUCT,
+            livelog_printf(LL_CONDUCT, "%s",
                 "became literate by reading a candy bar wrapper");
         return 1;
     }

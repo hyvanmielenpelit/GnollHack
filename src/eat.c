@@ -1939,7 +1939,7 @@ const char *mesg;
          */
         play_occupation_immediate_sound(objects[tin->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
         if (!u.uconduct.food++)
-            livelog_write_string(LL_CONDUCT, "ate for the first time (spinach)");
+            livelog_printf(LL_CONDUCT, "%s", "ate for the first time (spinach)");
         if (!tin->cursed)
             pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "This makes you feel like %s!",
                   /* "Swee'pea" is a character from the Popeye cartoons */
@@ -2987,7 +2987,7 @@ struct obj *otmp;
         outrumor((struct monst*)0, otmp, bcsign(otmp), BY_COOKIE);
         if (!Blind)
             if (!u.uconduct.literate++)
-                livelog_write_string(LL_CONDUCT, "became literate by reading the fortune inside a cookie");
+                livelog_printf(LL_CONDUCT, "%s", "became literate by reading the fortune inside a cookie");
         break;
     case EDIBLEFX_ROYAL_JELLY:
         /* This stuff seems to be VERY healthy! */

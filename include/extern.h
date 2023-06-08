@@ -1232,7 +1232,6 @@ E void NDECL(reset_files);
 E void NDECL(reset_gamelog);
 E void FDECL(show_gamelog, (int));
 E void FDECL(gamelog_add, (long, long, const char*));
-E void FDECL(livelog_write_string, (unsigned int, const char*));
 E void VDECL(livelog_printf, (unsigned int, const char*, ...)) PRINTF_F(2, 3);
 E void FDECL(livelog_dump_url, (unsigned int));
 #ifdef WHEREIS_FILE

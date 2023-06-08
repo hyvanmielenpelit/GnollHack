@@ -739,7 +739,7 @@ nh_timeout()
             case SLIMED:
                 /* involuntarily break "never changed form" conduct */
                 if (!u.uconduct.polyselfs++)
-                    livelog_write_string(LL_CONDUCT,
+                    livelog_printf(LL_CONDUCT, "%s",
                         "changed form for the first time by turning to slime");
                 slimed_to_death(kptr); /* done(TURNED_SLIME) */
                 break;

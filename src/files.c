@@ -232,6 +232,8 @@ STATIC_DCL boolean FDECL(copy_bytes, (int, int));
 STATIC_DCL int FDECL(open_levelfile_exclusively, (const char *, int, int));
 #endif
 
+STATIC_DCL void FDECL(livelog_write_string, (unsigned int, const char*));
+
 #define INBUF_SIZ 4 * BUFSIZ
 
 STATIC_VAR char config_section_chosen[INBUF_SIZ]; // = (char*)0;
@@ -4990,7 +4992,7 @@ reset_files(VOID_ARGS)
   * lltype is included in LL entry for post-process filtering also
   */
 #if defined LIVELOGFILE
-void
+STATIC_OVL void
 livelog_write_string(ll_type, buffer)
 unsigned int ll_type;
 const char* buffer;
@@ -5046,7 +5048,7 @@ const char* buffer;
 
 #else /* LIVELOGFILE */
 
-void
+STATIC_OVL void
 livelog_write_string(log_type, buffer)
 unsigned int log_type UNUSED;
 const char* buffer UNUSED;

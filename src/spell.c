@@ -271,7 +271,7 @@ struct obj *book2;
             if (!u.uevent.invoked)
             {
                 achievement_gained("Performed the Invocation Ritual");
-                livelog_write_string(LL_ACHIEVE, "performed the invocation");
+                livelog_printf(LL_ACHIEVE, "%s", "performed the invocation");
                 u.uevent.invoked = 1;
             }
             /* in case you haven't killed the Wizard yet, behave as if
@@ -2449,7 +2449,7 @@ struct monst* targetmonst;
         const char* ra_desc = get_role_achievement_description(TRUE);
         strcpy_capitalized_for_title(abuf, ra_desc);
         achievement_gained(abuf);
-        livelog_write_string(LL_ACHIEVE, ra_desc);
+        livelog_printf(LL_ACHIEVE, "%s", ra_desc);
     }
 
     switch (otyp) {

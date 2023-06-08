@@ -849,7 +849,7 @@ struct obj *obj;
         if (!u.uachieve.amulet)
         {
             achievement_gained("Amulet of Yendor");
-            livelog_write_string(LL_ACHIEVE, "acquired the Amulet of Yendor");
+            livelog_printf(LL_ACHIEVE, "%s", "acquired the Amulet of Yendor");
             if (iflags.using_gui_sounds)
             {
                 delay_output_milliseconds(500);
@@ -875,7 +875,7 @@ struct obj *obj;
         if (!u.uachieve.menorah)
         {
             achievement_gained("Candelabrum of Invocation");
-            livelog_write_string(LL_ACHIEVE, "acquired the Candelabrum of Invocation");
+            livelog_printf(LL_ACHIEVE, "%s", "acquired the Candelabrum of Invocation");
         }
         u.uachieve.menorah = 1;
     }
@@ -889,7 +889,7 @@ struct obj *obj;
         if (!u.uachieve.bell)
         {
             achievement_gained("Bell of Opening");
-            livelog_write_string(LL_ACHIEVE, "acquired the Bell of Opening");
+            livelog_printf(LL_ACHIEVE, "%s", "acquired the Bell of Opening");
         }
         u.uachieve.bell = 1;
     }
@@ -903,7 +903,7 @@ struct obj *obj;
         if (!u.uachieve.bell)
         {
             achievement_gained("Book of the Dead");
-            livelog_write_string(LL_ACHIEVE, "acquired the Book of the Dead");
+            livelog_printf(LL_ACHIEVE, "%s", "acquired the Book of the Dead");
         }
         u.uachieve.book = 1;
     } 
@@ -926,7 +926,7 @@ struct obj *obj;
             if (!u.uachieve.prime_codex)
             {
                 achievement_gained("Prime Codex");
-                livelog_write_string(LL_ACHIEVE, "acquired the Prime Codex");
+                livelog_printf(LL_ACHIEVE, "%s", "acquired the Prime Codex");
             }
             u.uachieve.prime_codex = 1;
         }
@@ -966,7 +966,7 @@ struct obj *obj;
             char abuf[BUFSZ];
             strcpy_capitalized_for_title(abuf, ra_desc);
             achievement_gained(abuf);
-            livelog_write_string(LL_ACHIEVE, ra_desc);
+            livelog_printf(LL_ACHIEVE, "%s", ra_desc);
         }
     }
 
@@ -977,7 +977,7 @@ struct obj *obj;
         if (!u.uachieve.mines_luckstone)
         {
             achievement_gained("Gladstone");
-            livelog_write_string(LL_ACHIEVE, "acquired the Gladstone from Mines' End");
+            livelog_printf(LL_ACHIEVE, "%s", "acquired the Gladstone from Mines' End");
         }
         u.uachieve.mines_luckstone = 1;
         obj->speflags &= ~(SPEFLAGS_MINES_PRIZE);
@@ -1004,7 +1004,7 @@ struct obj *obj;
                 context.botl = 1;
             u.uachieve.role_achievement = 1;
             achievement_gained("Found the Holy Grail");
-            livelog_printf(LL_ACHIEVE, "found the Holy Grail");
+            livelog_printf(LL_ACHIEVE, "%s", "found the Holy Grail");
         }
     }
 }

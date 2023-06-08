@@ -2375,7 +2375,7 @@ domove_core()
                     int tmp, mndx;
 
                     if (!u.uconduct.killer++)
-                        livelog_write_string(LL_CONDUCT, "killed for the first time");
+                        livelog_printf(LL_CONDUCT, "%s", "killed for the first time");
 
                     mndx = mtmp->mnum;
                     tmp = experience(mtmp, (int) mvitals[mndx].died);

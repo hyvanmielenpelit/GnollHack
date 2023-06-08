@@ -1507,6 +1507,39 @@ int how;
     urealtime.realtime += (long) (endtime - urealtime.start_timing);
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
 
+    /* Write forum post and livelog */
+    if (how < PANICKED || how == ASCENDED || how == ESCAPED)
+    {
+        char postbuf[BUFSZ * 3] = "";
+        char basebuf[BUFSZ * 3] = "";
+        if (how < PANICKED)
+        {
+            char killerbuf[BUFSZ * 2];
+            formatkiller(killerbuf, sizeof killerbuf, how, TRUE);
+            Strcpy(basebuf, killerbuf);
+            Sprintf(postbuf, "%s died, %s", plname, basebuf);
+        }
+        else
+        {
+            if (how == ASCENDED)
+                Strcpy(basebuf, "ascended to demigodhood");
+            else if (how == ESCAPED)
+                Strcpy(basebuf, "escaped the dungeon");
+            Sprintf(postbuf, "%s %s", plname, basebuf);
+        }
+
+        IfModeAllowsPostToForum
+        {
+            char dlbuf[BUFSZ * 4];
+            char* dlfilename = print_dumplog_filename_to_buffer(dlbuf);
+            if (dlfilename)
+                issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT, dlfilename);
+            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, postbuf);
+
+        }
+        livelog_printf(LL_ACHIEVE, "%s", basebuf);
+    }
+
     /* Write dumplog */
     if(disclose_and_dumplog_ok)
         dump_open_log(endtime);
@@ -1988,30 +2021,6 @@ int how;
         (void)delete_savefile(); /* The casual mode character gets deleted only upon ascension */
 
     issue_simple_gui_command(GUI_CMD_GAME_ENDED);
-
-    if (how < PANICKED || how == ASCENDED || how == ESCAPED)
-    {
-        IfModeAllowsPostToForum
-        {
-            char postbuf[BUFSZ * 2] = "";
-            if (how < PANICKED)
-            {
-                char killerbuf[BUFSZ * 2];
-                formatkiller(killerbuf, sizeof killerbuf, how, TRUE);
-                Sprintf(postbuf, "%s has died, %s", plname, killerbuf);
-            }
-            else if (how == ASCENDED)
-                Sprintf(postbuf, "%s has ascended to demigodhood", plname);
-            else if (how == ESCAPED)
-                Sprintf(postbuf, "%s has escaped the dungeon", plname);
-
-            char dlbuf[BUFSZ * 4];
-            char* dlfilename = print_dumplog_filename_to_buffer(dlbuf);
-            if(dlfilename)
-                issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT, dlfilename);
-            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, postbuf);
-        }
-    }
 
     if (have_windows)
         exit_nhwindows((char*)0);

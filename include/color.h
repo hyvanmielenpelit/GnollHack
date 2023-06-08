@@ -84,6 +84,7 @@
 #define CLR_MSG_TALK_NORMAL   CLR_WHITE
 #define CLR_MSG_TALK_ANGRY    CLR_ORANGE
 #define CLR_MSG_TALK_HAPPY    CLR_BRIGHT_GREEN
+#define CLR_MSG_TALK_CUSS     CLR_BRIGHT_CYAN
 
 struct menucoloring {
     struct nhregex *match;
