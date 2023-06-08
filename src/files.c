@@ -5106,14 +5106,14 @@ int final;
 
     win = create_nhwindow(NHW_TEXT);
     Sprintf(buf, "%s events:", final ? "Major" : "Logged");
-    putstr(win, 0, buf);
+    putstr(win, ATR_TITLE, buf);
     for (llmsg = gamelog; llmsg; llmsg = llmsg->next) {
         if (final && !majorevent(llmsg))
             continue;
         if (!final && !wizard && spoilerevent(llmsg))
             continue;
         if (!eventcnt++)
-            putstr(win, 0, " Turn");
+            putstr(win, ATR_HEADING, " Turn");
         Sprintf(buf, "%5ld: %s", llmsg->turn, llmsg->text);
         putstr(win, 0, buf);
     }

@@ -304,7 +304,7 @@ struct u_roleplay {
 #define MAX_TRAIT_DESCRIPTIONS 5
 #define RANK_MIN_THRESHOLD 2
 #define RANK_ADD_CONSTANT 2
-#define RANK_LEVEL_INCREMENT 5
+#define RANK_LEVEL_INCREMENT 4
 #define NUM_RANKS 9
 
 /*** Unified structure containing role information ***/
