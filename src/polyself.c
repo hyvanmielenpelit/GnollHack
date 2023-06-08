@@ -1186,7 +1186,7 @@ break_armor()
             else
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
-                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s in torn to pieces!", robe_simple_name(otmp));
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s is torn to pieces!", robe_simple_name(otmp));
                 (void)Robe_off();
                 useup(otmp);
             }
