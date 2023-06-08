@@ -3600,7 +3600,6 @@ E void NDECL(timer_sanity_check);
 E void FDECL(make_sound_object, (ANY_P*, long));
 E void FDECL(property_expiry_message, (int, BOOLEAN_P));
 
-
 /* ### topten.c ### */
 
 E void FDECL(formatkiller, (char *, size_t, int, BOOLEAN_P));
@@ -3609,6 +3608,8 @@ E void FDECL(topten, (int, time_t));
 E void FDECL(prscore, (int, char **));
 E struct toptenentry *NDECL(get_rnd_toptenentry);
 E struct obj *FDECL(tt_oname, (struct obj *));
+E long NDECL(encodeconduct);
+E long NDECL(encodeachieve);
 
 /* ### track.c ### */
 

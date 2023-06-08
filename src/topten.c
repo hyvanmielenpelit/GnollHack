@@ -71,10 +71,7 @@ STATIC_DCL void FDECL(readentry, (FILE *, struct toptenentry *));
 STATIC_DCL void FDECL(writeentry, (FILE *, struct toptenentry *));
 #ifdef XLOGFILE
 STATIC_DCL void FDECL(writexlentry, (FILE *, struct toptenentry *, int));
-
 STATIC_DCL long NDECL(encodexlogflags);
-STATIC_DCL long NDECL(encodeconduct);
-STATIC_DCL long NDECL(encodeachieve);
 STATIC_DCL void FDECL(add_achieveX, (char*, const char*, BOOLEAN_P));
 STATIC_DCL char* NDECL(encode_extended_achievements);
 STATIC_DCL char* NDECL(encode_extended_conducts);
@@ -343,8 +340,113 @@ struct toptenentry *tt;
 #endif
 }
 
-#ifdef XLOGFILE
+long
+encodeconduct()
+{
+    long e = 0L;
 
+    if (!u.uconduct.food)
+        e |= 1L << 0;
+    if (!u.uconduct.unvegan)
+        e |= 1L << 1;
+    if (!u.uconduct.unvegetarian)
+        e |= 1L << 2;
+    if (!u.uconduct.gnostic)
+        e |= 1L << 3;
+    if (!u.uconduct.weaphit)
+        e |= 1L << 4;
+    if (!u.uconduct.killer)
+        e |= 1L << 5;
+    if (!u.uconduct.literate)
+        e |= 1L << 6;
+    if (!u.uconduct.polypiles)
+        e |= 1L << 7;
+    if (!u.uconduct.polyselfs)
+        e |= 1L << 8;
+    if (!u.uconduct.wishes)
+        e |= 1L << 9;
+    if (!u.uconduct.wisharti)
+        e |= 1L << 10;
+    if (!num_genocides())
+        e |= 1L << 11;
+    if (u.uroleplay.blind)
+        e |= 1L << 12;
+    if (u.uroleplay.nudist)
+        e |= 1L << 13;
+
+    return e;
+}
+
+long
+encodeachieve()
+{
+    long r = 0L;
+
+    if (u.uachieve.bell)
+        r |= 1L << 0;
+    if (u.uachieve.enter_gehennom)
+        r |= 1L << 1;
+    if (u.uachieve.menorah)
+        r |= 1L << 2;
+    if (u.uachieve.book)
+        r |= 1L << 3;
+    if (u.uevent.invoked)
+        r |= 1L << 4;
+    if (u.uachieve.amulet)
+        r |= 1L << 5;
+    if (In_endgame(&u.uz))
+        r |= 1L << 6;
+    if (Is_astralevel(&u.uz))
+        r |= 1L << 7;
+    if (u.uachieve.ascended)
+        r |= 1L << 8;
+    if (u.uachieve.mines_luckstone)
+        r |= 1L << 9;
+    if (u.uachieve.finish_sokoban)
+        r |= 1L << 10;
+    if (u.uachieve.killed_medusa)
+        r |= 1L << 11;
+    if (u.uachieve.killed_yacc)
+        r |= 1L << 12;
+    if (u.uachieve.prime_codex)
+        r |= 1L << 13;
+    if (u.uachieve.consulted_oracle)
+        r |= 1L << 14;
+    if (u.uachieve.read_discworld_novel)
+        r |= 1L << 15;
+    if (u.uachieve.entered_gnomish_mines)
+        r |= 1L << 16;
+    if (u.uachieve.entered_mine_town)
+        r |= 1L << 17;
+    if (u.uachieve.entered_shop)
+        r |= 1L << 18;
+    if (u.uachieve.entered_temple)
+        r |= 1L << 19;
+    if (u.uachieve.entered_sokoban)
+        r |= 1L << 20;
+    if (u.uachieve.entered_bigroom)
+        r |= 1L << 21;
+    if (u.uachieve.learned_castle_tune)
+        r |= 1L << 22;
+    if (u.uachieve.entered_large_circular_dungeon)
+        r |= 1L << 23;
+    if (u.uachieve.entered_plane_of_modron)
+        r |= 1L << 24;
+    if (u.uachieve.entered_hellish_pastures)
+        r |= 1L << 25;
+    if (u.uachieve.entered_elemental_planes)
+        r |= 1L << 26;
+    if (u.uachieve.entered_astral_plane)
+        r |= 1L << 27;
+    if (u.uachieve.role_achievement)
+        r |= 1L << 28;
+    if (u.uachieve.crowned)
+        r |= 1L << 29;
+
+    return r;
+}
+
+#ifdef XLOGFILE
 /* as tab is never used in eg. plname or death, no need to mangle those. */
 STATIC_OVL void
 writexlentry(rfile, tt, how)
@@ -415,113 +517,6 @@ encodexlogflags()
 
     return e;
 }
-
-STATIC_OVL long
-encodeconduct()
-{
-    long e = 0L;
-
-    if (!u.uconduct.food)
-        e |= 1L << 0;
-    if (!u.uconduct.unvegan)
-        e |= 1L << 1;
-    if (!u.uconduct.unvegetarian)
-        e |= 1L << 2;
-    if (!u.uconduct.gnostic)
-        e |= 1L << 3;
-    if (!u.uconduct.weaphit)
-        e |= 1L << 4;
-    if (!u.uconduct.killer)
-        e |= 1L << 5;
-    if (!u.uconduct.literate)
-        e |= 1L << 6;
-    if (!u.uconduct.polypiles)
-        e |= 1L << 7;
-    if (!u.uconduct.polyselfs)
-        e |= 1L << 8;
-    if (!u.uconduct.wishes)
-        e |= 1L << 9;
-    if (!u.uconduct.wisharti)
-        e |= 1L << 10;
-    if (!num_genocides())
-        e |= 1L << 11;
-    if (u.uroleplay.blind)
-        e |= 1L << 12;
-    if (u.uroleplay.nudist)
-        e |= 1L << 13;
-
-    return e;
-}
-
-STATIC_OVL long
-encodeachieve()
-{
-    long r = 0L;
-
-    if (u.uachieve.bell)
-        r |= 1L << 0;
-    if (u.uachieve.enter_gehennom)
-        r |= 1L << 1;
-    if (u.uachieve.menorah)
-        r |= 1L << 2;
-    if (u.uachieve.book)
-        r |= 1L << 3;
-    if (u.uevent.invoked)
-        r |= 1L << 4;
-    if (u.uachieve.amulet)
-        r |= 1L << 5;
-    if (In_endgame(&u.uz))
-        r |= 1L << 6;
-    if (Is_astralevel(&u.uz))
-        r |= 1L << 7;
-    if (u.uachieve.ascended)
-        r |= 1L << 8;
-    if (u.uachieve.mines_luckstone)
-        r |= 1L << 9;
-    if (u.uachieve.finish_sokoban)
-        r |= 1L << 10;
-    if (u.uachieve.killed_medusa)
-        r |= 1L << 11;
-    if (u.uachieve.killed_yacc)
-        r |= 1L << 12;
-    if (u.uachieve.prime_codex)
-        r |= 1L << 13;
-    if (u.uachieve.consulted_oracle)
-        r |= 1L << 14;
-    if (u.uachieve.read_discworld_novel)
-        r |= 1L << 15;
-    if (u.uachieve.entered_gnomish_mines)
-        r |= 1L << 16;
-    if (u.uachieve.entered_mine_town)
-        r |= 1L << 17;
-    if (u.uachieve.entered_shop)
-        r |= 1L << 18;
-    if (u.uachieve.entered_temple)
-        r |= 1L << 19;
-    if (u.uachieve.entered_sokoban)
-        r |= 1L << 20;
-    if (u.uachieve.entered_bigroom)
-        r |= 1L << 21;
-    if (u.uachieve.learned_castle_tune)
-        r |= 1L << 22;
-    if (u.uachieve.entered_large_circular_dungeon)
-        r |= 1L << 23;
-    if (u.uachieve.entered_plane_of_modron)
-        r |= 1L << 24;
-    if (u.uachieve.entered_hellish_pastures)
-        r |= 1L << 25;
-    if (u.uachieve.entered_elemental_planes)
-        r |= 1L << 26;
-    if (u.uachieve.entered_astral_plane)
-        r |= 1L << 27;
-    if (u.uachieve.role_achievement)
-        r |= 1L << 28;
-    if (u.uachieve.crowned)
-        r |= 1L << 29;
-
-    return r;
-}
-
 
 /* add the achievement or conduct comma-separated to string */
 STATIC_OVL void
