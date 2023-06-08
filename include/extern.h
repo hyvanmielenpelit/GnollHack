@@ -3100,7 +3100,6 @@ E void NDECL(free_dynamic_data_B);
 E void NDECL(free_dynamic_data_C);
 E void NDECL(freedynamicdata);
 E void FDECL(store_savefileinfo, (int));
-E void FDECL(save_gamelog, (int, int));
 
 /* ### shk.c ### */
 

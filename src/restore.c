@@ -1384,7 +1384,7 @@ register int fd;
         if (slen < 0)
             break;
         tmpstr = (char*)alloc((size_t)slen + 1);
-        mread(fd, tmpstr, slen);
+        mread(fd, tmpstr, (size_t)slen);
         mread(fd, &tmp, sizeof tmp);
         tmpstr[slen] = '\0';
         gamelog_add(tmp.flags, tmp.turn, tmpstr);

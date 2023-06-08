@@ -33,6 +33,7 @@ STATIC_DCL void FDECL(savemonchn, (int, struct monst *, int));
 STATIC_DCL void FDECL(savetrapchn, (int, struct trap *, int));
 STATIC_DCL void FDECL(savegamestate, (int, int));
 STATIC_OVL void FDECL(save_msghistory, (int, int));
+STATIC_OVL void FDECL(save_gamelog, (int, int));
 #ifdef MFLOPPY
 STATIC_DCL void FDECL(savelev0, (int, XCHAR_P, int));
 STATIC_DCL boolean NDECL(swapout_oldest);
@@ -346,9 +347,9 @@ int fd, mode;
     while (tmp) {
         tmp2 = tmp->next;
         if (perform_bwrite(mode)) {
-            slen = strlen(tmp->text);
+            slen = (int)strlen(tmp->text);
             bwrite(fd, (genericptr_t)&slen, sizeof slen);
-            bwrite(fd, (genericptr_t)tmp->text, slen);
+            bwrite(fd, (genericptr_t)tmp->text, (size_t)slen);
             bwrite(fd, (genericptr_t)tmp,
                 sizeof(struct gamelog_line));
         }
