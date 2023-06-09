@@ -1641,10 +1641,6 @@ const char* str;
     if (dumplog_file)
         fprintf(dumplog_file, "%s\n", str);
 #endif
-#ifdef DUMPHTML
-    if (dumphtml_file)
-        fprintf(dumphtml_file, "%s\n", str);
-#endif
 }
 
 STATIC_OVL winid
@@ -1718,16 +1714,24 @@ boolean preselected UNUSED;
 #endif
 #ifdef DUMPHTML
     if (dumphtml_file) {
-        int color;
+        int htmlcolor;
         boolean iscolor = FALSE;
         /* Don't use NHW_MENU for inv items as this makes bullet points */
         if (!attr && glyph != NO_GLYPH)
             win = (winid)0;
         html_write_tags(dumphtml_file, win, attr, TRUE);
-        if (iflags.use_menu_color && get_menu_coloring(str, &color, &attr)) {
+        if (iflags.use_menu_color && get_menu_coloring(str, &htmlcolor, &attr)) {
             iscolor = TRUE;
-            fprintf(dumphtml_file, "<span class=\"nh_color_%d\">", color);
         }
+        else if (color != NO_COLOR)
+        {
+            htmlcolor = color;
+            iscolor = TRUE;
+        }
+
+        if(iscolor)
+            fprintf(dumphtml_file, "<span class=\"nh_color_%d\">", htmlcolor);
+
         if (glyph != NO_GLYPH) {
             fprintf(dumphtml_file, "<span class=\"nh_item_letter\">%c</span> - ", ch);
         }
@@ -1981,16 +1985,120 @@ dump_css()
     if (!dumphtml_file)
         return;
 
-    css = fopen_datafile("NHdump.css", "r", DATAPREFIX);
+    css = fopen_datafile("gnhdump.css", "r", DATAPREFIX);
     if (!css) {
-        pline("Can't open css file for input.");
-        pline("CSS file not included.");
-        return;
+        char* css_strings[] = {
+        "body {",
+        "    color: #CCCCCC;",
+        "    background-color: #222222;",
+        "    font-family: monospace;",
+        "    font-size: 0.9vw;",
+        "}",
+        "",
+        "pre.nh_screen {",
+        "    font-family: DejaVu Sans Mono, Consolas, Menlo, Courier New, Courier, monospace;",
+        "    font-size: 1.05vw;",
+        "    background-color: black;",
+        "    width: fit-content;",
+        "}",
+        "",
+        ".nh_item_letter {",
+        "    padding-left: 3ex;",
+        "}",
+        "",
+        ".tooltip {",
+        "    position: relative;",
+        "    display: inline-block;",
+        "}",
+        "",
+        /* Tooltip text */
+        ".tooltip .tooltiptext {",
+        "    visibility: hidden;",
+        "    background-color: #222222;",
+        "    color: #fff;",
+        "    text-align: center;",
+        "    font-size: 0.9vw;",
+        "    padding: 5px 5px;",
+        "    border-radius: 6px;",
+        "    position: absolute;",
+        "    z-index: 1;",
+        "}",
+        "",
+        /* Show the tooltip text when you mouse over the tooltip container */
+        ".tooltip:hover .tooltiptext {",
+        "    visibility: visible;",
+        "}",
+        "",
+        "h2 {",
+        "    color: white;",
+        "    font-size: 1.06vw;",
+        "    margin: 0.5ex;",
+        "    padding-top: 1.5em;",
+        "}",
+        "",
+        "h3 {",
+        "    color: white;",
+        "    font-size: 0.95vw;",
+        "    margin: 1ex 0ex 0.25ex 1.5ex;",
+        "}",
+        "",
+        "blockquote {",
+        "    margin-top: 0px;",
+        "}",
+        "",
+        "span.nh_screen {",
+        "    background-color: black;",
+        "}",
+        "",
+        ".nh_color_0 { color: #555555; }  /* CLR_BLACK          */",
+        ".nh_color_1 { color: #AA0000; }  /* CLR_RED            */",
+        ".nh_color_2 { color: #00AA00; }  /* CLR_GREEN          */",
+        ".nh_color_3 { color: #AA5500; }  /* CLR_BROWN          */",
+        ".nh_color_4 { color: #0000AA; }  /* CLR_BLUE           */",
+        ".nh_color_5 { color: #AA00AA; }  /* CLR_MAGENTA        */",
+        ".nh_color_6 { color: #00AAAA; }  /* CLR_CYAN           */",
+        ".nh_color_7 { color: #AAAAAA; }  /* CLR_GRAY           */",
+        ".nh_color_8 { color: #555555; }  /* NO_COLOR           */",
+        ".nh_color_9 { color: #FF5555; }  /* CLR_ORANGE         */",
+        ".nh_color_10 { color: #55FF55; } /* CLR_BRIGHT_GREEN   */",
+        ".nh_color_11 { color: #FFFF55; } /* CLR_YELLOW         */",
+        ".nh_color_12 { color: #5555FF; } /* CLR_BRIGHT_BLUE    */",
+        ".nh_color_13 { color: #FF55FF; } /* CLR_BRIGHT_MAGENTA */",
+        ".nh_color_14 { color: #55FFFF; } /* CLR_BRIGHT_CYAN    */",
+        ".nh_color_15 { color: #FCFCFC; } /* CLR_WHITE          */",
+        ".nh_inv_0 { color: black; background-color: #555555; }  /* CLR_BLACK          */",
+        ".nh_inv_1 { color: black; background-color: #AA0000; }  /* CLR_RED            */",
+        ".nh_inv_2 { color: black; background-color: #00AA00; }  /* CLR_GREEN          */",
+        ".nh_inv_3 { color: black; background-color: #AA5500; }  /* CLR_BROWN          */",
+        ".nh_inv_4 { color: black; background-color: #0000AA; }  /* CLR_BLUE           */",
+        ".nh_inv_5 { color: black; background-color: #AA00AA; }  /* CLR_MAGENTA        */",
+        ".nh_inv_6 { color: black; background-color: #00AAAA; }  /* CLR_CYAN           */",
+        ".nh_inv_7 { color: black; background-color: #AAAAAA; }  /* CLR_GRAY           */",
+        ".nh_inv_8 { color: black; background-color: #555555; }  /* NO_COLOR           */",
+        ".nh_inv_9 { color: black; background-color: #FF5555; }  /* CLR_ORANGE         */",
+        ".nh_inv_10 { color: black; background-color: #55FF55; } /* CLR_BRIGHT_GREEN   */",
+        ".nh_inv_11 { color: black; background-color: #FFFF55; } /* CLR_YELLOW         */",
+        ".nh_inv_12 { color: black; background-color: #5555FF; } /* CLR_BRIGHT_BLUE    */",
+        ".nh_inv_13 { color: black; background-color: #FF55FF; } /* CLR_BRIGHT_MAGENTA */",
+        ".nh_inv_14 { color: black; background-color: #55FFFF; } /* CLR_BRIGHT_CYAN    */",
+        ".nh_inv_15 { color: black; background-color: #FCFCFC; } /* CLR_WHITE          */",
+        0
+        };
+
+        int i = 0;
+        while (css_strings[i])
+        {
+            fprintf(dumphtml_file, "%s\n", css_strings[i]);
+            i++;
+        }
     }
-    while ((c = fgetc(css)) != EOF) {
-        fputc(c, dumphtml_file);
+    else
+    {
+        while ((c = fgetc(css)) != EOF) {
+            fputc(c, dumphtml_file);
+        }
+        fclose(css);
     }
-    fclose(css);
 }
 
 STATIC_OVL void

@@ -810,12 +810,14 @@ time_t when; /* date+time at end of game */
     putstr(0, 0, pbuf);
     putstr(0, 0, "");
 
+    dump_start_screendump();
     dump_map();
     putstr(0, 0, do_statusline1());
     putstr(0, 0, do_statusline2());
     if(iflags.wc2_statuslines > 2)
         putstr(0, 0, do_statusline3());
     putstr(0, 0, "");
+    dump_end_screendump();
 
     dump_plines();
     putstr(0, 0, "");
