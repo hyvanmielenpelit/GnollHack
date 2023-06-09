@@ -3204,7 +3204,7 @@ int final;
 #ifndef GNH_MOBILE
     enlght_out("", ATR_NONE); /* separator after title */
 #endif
-    enlght_out("Background:", ATR_HEADING);
+    enlght_out("Background:", ATR_SUBHEADING);
 
     /* if polymorphed, report current shape before underlying role;
        will be repeated as first status: "you are transformed" and also
@@ -3392,7 +3392,7 @@ int final;
         pwmax = u.uenmax, hpmax = (Upolyd ? u.mhmax : u.uhpmax);
 
     enlght_out(" ", ATR_HALF_SIZE); /* separator after background */
-    enlght_out("Basics:", ATR_HEADING);
+    enlght_out("Basics:", ATR_SUBHEADING);
 
     if (hp < 0)
         hp = 0;
@@ -3502,7 +3502,7 @@ int final;
 
     enlght_out(" ", ATR_HALF_SIZE);
     Sprintf(buf, "%s Characteristics:", !final ? "Current" : "Final");
-    enlght_out(buf, ATR_HEADING);
+    enlght_out(buf, ATR_SUBHEADING);
 
     /* bottom line order */
     one_characteristic(mode, final, A_STR); /* strength */
@@ -3669,7 +3669,7 @@ int final;
      *     should be discernible to the hero hence to the player)
     \*/
     enlght_out(" ", ATR_HALF_SIZE); /* separator after title or characteristics */
-    enlght_out(final ? "Final Status:" : "Current Status:", ATR_HEADING);
+    enlght_out(final ? "Final Status:" : "Current Status:", ATR_SUBHEADING);
 
     Strcpy(youtoo, You_);
     /* not a traditional status but inherently obvious to player; more
@@ -4168,7 +4168,7 @@ int final;
      *  Attributes
     \*/
     enlght_out(" ", ATR_HALF_SIZE);
-    enlght_out(final ? "Final Attributes:" : "Current Attributes:", ATR_HEADING);
+    enlght_out(final ? "Final Attributes:" : "Current Attributes:", ATR_SUBHEADING);
 
     if (u.uevent.uhand_of_elbereth) {
         you_are(hofe_titles[u.uevent.uhand_of_elbereth - 1], "");
@@ -5318,7 +5318,7 @@ int final;
     }
 
     int num_achievements = 0;
-    putstr(en_win, ATR_NONE, " ");
+    putstr(en_win, ATR_NONE, "");
     putstr(en_win, ATR_TITLE, "Achievements:");
     if (!final)
         putstr(en_win, ATR_HALF_SIZE, " ");
@@ -5464,7 +5464,7 @@ int final;
         you_have_not("earned any achievements", "");
     }
 
-    putstr(en_win, ATR_NONE, " ");
+    putstr(en_win, ATR_NONE, "");
     putstr(en_win, ATR_TITLE, "Voluntary challenges:");
     if(!final)
         putstr(en_win, ATR_HALF_SIZE, " ");

@@ -4669,7 +4669,7 @@ nextclass:
                          let_to_name(*invlet, FALSE,
                                      (want_reply && iflags.menu_head_objsym)),
                          MENU_UNSELECTED,
-                    menu_group_heading_info(*invlet > ILLOBJ_CLASS&&* invlet < MAX_OBJECT_CLASSES ? def_oc_syms[(int)(*invlet)].sym : '\0'));
+                    menu_group_heading_info(*invlet > ILLOBJ_CLASS && *invlet < MAX_OBJECT_CLASSES ? def_oc_syms[(int)(*invlet)].sym : '\0'));
                 classcount++;
             }
             if (wizid)

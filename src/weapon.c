@@ -4441,7 +4441,7 @@ dump_skills(VOID_ARGS)
     char skillnamebufC[BUFSZ];
     char skilllevelbuf[BUFSZ];
     char skillmaxbuf[BUFSZ];
-    putstr(0, 0, "Final Skills:");
+    putstr(0, ATR_HEADING, "Final Skills:");
     for (i = 1; i < P_NUM_SKILLS; i++)
     {
         if (P_RESTRICTED(i))

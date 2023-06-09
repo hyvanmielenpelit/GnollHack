@@ -100,7 +100,7 @@ STATIC_DCL void NDECL(dump_css);
 STATIC_DCL void FDECL(dump_outrip, (winid, int, time_t));
 STATIC_DCL void FDECL(html_dump_str, (FILE*, const char*));
 STATIC_DCL void FDECL(html_dump_line, (FILE*, winid, int, const char*));
-STATIC_DCL void FDECL(html_write_tags, (FILE*, winid, int, BOOLEAN_P)); /* Tags before/after string */
+STATIC_DCL void FDECL(html_write_tags, (FILE*, winid, int, BOOLEAN_P, struct extended_menu_info)); /* Tags before/after string */
 #endif
 #ifdef DUMPLOG
 STATIC_VAR FILE* dumplog_file;
@@ -1700,6 +1700,23 @@ int color UNUSED;
 const char *str;
 boolean preselected UNUSED;
 {
+    dump_add_extended_menu(win, glyph, identifier, ch, gch, attr, color, str, preselected, zeroextendedmenuinfo);
+}
+
+/*ARGSUSED*/
+STATIC_OVL void
+dump_add_extended_menu(win, glyph, identifier, ch, gch, attr, color, str, preselected, info)
+winid win;
+int glyph;
+const anything* identifier;
+char ch;
+char gch;
+int attr;
+int color;
+const char* str;
+boolean preselected;
+struct extended_menu_info info;
+{
     char buf[UTF8BUFSZ * 2] = "";
     if (str)
         write_text2buf_utf8(buf, sizeof(buf), str);
@@ -1719,7 +1736,7 @@ boolean preselected UNUSED;
         /* Don't use NHW_MENU for inv items as this makes bullet points */
         if (!attr && glyph != NO_GLYPH)
             win = (winid)0;
-        html_write_tags(dumphtml_file, win, attr, TRUE);
+        html_write_tags(dumphtml_file, win, attr, TRUE, info);
         if (iflags.use_menu_color && get_menu_coloring(str, &htmlcolor, &attr)) {
             iscolor = TRUE;
         }
@@ -1729,7 +1746,7 @@ boolean preselected UNUSED;
             iscolor = TRUE;
         }
 
-        if(iscolor)
+        if (iscolor)
             fprintf(dumphtml_file, "<span class=\"nh_color_%d\">", htmlcolor);
 
         if (glyph != NO_GLYPH) {
@@ -1737,36 +1754,9 @@ boolean preselected UNUSED;
         }
         html_dump_str(dumphtml_file, str);
         fprintf(dumphtml_file, "%s", iscolor ? "</span>" : "");
-        html_write_tags(dumphtml_file, win, attr, FALSE);
+        html_write_tags(dumphtml_file, win, attr, FALSE, info);
     }
 #endif
-}
-
-/*ARGSUSED*/
-STATIC_OVL void
-dump_add_extended_menu(win, glyph, identifier, ch, gch, attr, color, str, preselected, info)
-winid win;
-int glyph;
-const anything* identifier;
-char ch;
-char gch;
-int attr;
-int color;
-const char* str;
-boolean preselected;
-struct extended_menu_info info UNUSED;
-{
-    dump_add_menu(win, glyph, identifier, ch, gch, attr, color, str, preselected);
-    //char buf[UTF8BUFSZ * 2] = "";
-    //if (str)
-    //    write_text2buf_utf8(buf, sizeof(buf), str);
-
-    //if (dumplog_file) {
-    //    if (glyph == NO_GLYPH)
-    //        fprintf(dumplog_file, " %s\n", buf);
-    //    else
-    //        fprintf(dumplog_file, "  %c - %s\n", ch, buf);
-    //}
 }
 
 /*ARGSUSED*/
@@ -1893,15 +1883,19 @@ boolean onoff_flag;
    keep consecutive preformatted strings in a single block.  */
 STATIC_OVL
 void
-html_write_tags(fp, win, attr, before)
+html_write_tags(fp, win, attr, before, info)
 FILE* fp;
 winid win;
 int attr;
 boolean before; /* Tags before/after string */
+struct extended_menu_info info; 
 {
     static boolean in_list = FALSE;
     static boolean in_preform = FALSE;
     if (!fp) return;
+
+    boolean is_heading = !(info.menu_flags & (MENU_FLAGS_IS_GROUP_HEADING)) && ((attr & ATR_SUBHEADING) == ATR_HEADING || (attr & ATR_SUBTITLE) == ATR_TITLE || (info.menu_flags & (MENU_FLAGS_IS_HEADING)));
+    boolean is_subheading = (attr & ATR_SUBHEADING) == ATR_SUBHEADING || (attr & ATR_SUBTITLE) == ATR_SUBTITLE || (info.menu_flags & (MENU_FLAGS_IS_GROUP_HEADING));
     if (before) { /* before next string is written,
                      close any finished blocks
                      and open a new block if necessary */
@@ -1916,7 +1910,7 @@ boolean before; /* Tags before/after string */
             fprintf(fp, PREF_E);
             in_preform = FALSE;
         }
-        if (!(attr & (ATR_SUBHEADING)) && win == NHW_MENU) {
+        if (!(attr & (ATR_SUBHEADING | ATR_SUBTITLE)) && (info.menu_flags & (MENU_FLAGS_IS_HEADING | MENU_FLAGS_IS_GROUP_HEADING)) == 0 && win == NHW_MENU) {
             /* This is a bullet point */
             if (!in_list) {
                 fprintf(fp, "%s\n", LIST_S);
@@ -1929,8 +1923,8 @@ boolean before; /* Tags before/after string */
             fprintf(fp, "%s\n", LIST_E);
             in_list = FALSE;
         }
-        fprintf(fp, "%s", (attr & ATR_HEADING) == ATR_HEADING ? HEAD_S :
-            (attr & ATR_SUBHEADING) == ATR_SUBHEADING ? SUBH_S : "");
+        fprintf(fp, "%s", is_heading ? HEAD_S :
+            is_subheading ? SUBH_S : "");
         return;
     }
     /* after string is written */
@@ -1942,8 +1936,8 @@ boolean before; /* Tags before/after string */
         fprintf(fp, "%s\n", LITM_E); /* </li>, but not </ul> yet */
         return;
     }
-    fprintf(fp, "%s", (attr & ATR_HEADING) == ATR_HEADING ? HEAD_E:
-        (attr & ATR_SUBHEADING) == ATR_SUBHEADING ? SUBH_E : LINEBREAK);
+    fprintf(fp, "%s", is_heading ? HEAD_E:
+        is_subheading ? SUBH_E : LINEBREAK);
 }
 
 /* Write HTML-escaped char to a file */
@@ -2108,7 +2102,7 @@ int how;
 time_t when;
 {
     if (dumphtml_file) {
-        html_write_tags(dumphtml_file, 0, 0, TRUE); /* </ul>, </pre> if needed */
+        html_write_tags(dumphtml_file, 0, 0, TRUE, zeroextendedmenuinfo); /* </ul>, </pre> if needed */
         fprintf(dumphtml_file, "%s\n", PREF_S);
     }
     genl_outrip(win, how, when);
@@ -2136,14 +2130,14 @@ winid win;
 int attr;
 const char* str;
 {
-    if (strlen(str) == 0) {
+    if (strlen(str) == 0 || !strcmp(str, " ")) {
         /* if it's a blank line, just print a blank line */
         fprintf(fp, "%s\n", LINEBREAK);
         return;
     }
-    html_write_tags(fp, win, attr, TRUE);
+    html_write_tags(fp, win, attr, TRUE, zeroextendedmenuinfo);
     html_dump_str(fp, str);
-    html_write_tags(fp, win, attr, FALSE);
+    html_write_tags(fp, win, attr, FALSE, zeroextendedmenuinfo);
 }
 
 /** HTML Map **/
@@ -2275,7 +2269,7 @@ dump_footers()
 {
 #ifdef DUMPHTML
     if (dumphtml_file) {
-        html_write_tags(dumphtml_file, 0, 0, TRUE); /* close </ul> and </pre> if open */
+        html_write_tags(dumphtml_file, 0, 0, TRUE, zeroextendedmenuinfo); /* close </ul> and </pre> if open */
         fprintf(dumphtml_file, "</body>\n</html>\n");
     }
 #endif

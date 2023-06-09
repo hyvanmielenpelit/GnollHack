@@ -5120,7 +5120,7 @@ int final;
         if (!final && !wizard && spoilerevent(llmsg))
             continue;
         if (!eventcnt++)
-            putstr(win, ATR_HEADING, " Turn");
+            putstr(win, ATR_SUBHEADING, " Turn");
         Sprintf(buf, "%5ld: %s", llmsg->turn, llmsg->text);
         putstr(win, 0, buf);
     }

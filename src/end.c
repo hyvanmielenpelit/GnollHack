@@ -751,7 +751,7 @@ dump_plines()
     extern unsigned saved_pline_index;
 
     Strcpy(buf, " "); /* one space for indentation */
-    putstr(0, 0, "Latest messages:");
+    putstr(0, ATR_HEADING, "Latest messages:");
     for (i = 0, j = (int) saved_pline_index; i < DUMPLOG_MSG_COUNT;
          ++i, j = (j + 1) % DUMPLOG_MSG_COUNT) {
         strp = &saved_plines[j];
@@ -821,26 +821,26 @@ time_t when; /* date+time at end of game */
 
     dump_plines();
     putstr(0, 0, "");
-    putstr(0, 0, "Inventory:");
+    putstr(0, ATR_HEADING, "Inventory:");
     (void) display_inventory((char *) 0, TRUE, 0);
     container_contents(invent, TRUE, TRUE, FALSE, 0);
     enlightenment((BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
                   (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     dump_skills();
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     dump_spells();
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     show_gamelog((how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     list_genocided('d', FALSE, TRUE); /* 'd' => 'y' */
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     show_conduct((how >= PANICKED) ? 1 : 2);
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     show_overview((how >= PANICKED) ? 1 : 2, how);
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     dump_redirect(FALSE);
 #else
     nhUse(how);
