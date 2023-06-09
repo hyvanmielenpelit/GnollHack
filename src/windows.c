@@ -1690,15 +1690,15 @@ int style UNUSED;
 /*ARGSUSED*/
 STATIC_OVL void
 dump_add_menu(win, glyph, identifier, ch, gch, attr, color, str, preselected)
-winid win UNUSED;
+winid win;
 int glyph;
-const anything *identifier UNUSED;
+const anything *identifier;
 char ch;
-char gch UNUSED;
-int attr UNUSED;
-int color UNUSED;
+char gch;
+int attr;
+int color;
 const char *str;
-boolean preselected UNUSED;
+boolean preselected;
 {
     dump_add_extended_menu(win, glyph, identifier, ch, gch, attr, color, str, preselected, zeroextendedmenuinfo);
 }
@@ -1706,16 +1706,16 @@ boolean preselected UNUSED;
 /*ARGSUSED*/
 STATIC_OVL void
 dump_add_extended_menu(win, glyph, identifier, ch, gch, attr, color, str, preselected, info)
-winid win;
-int glyph;
-const anything* identifier;
-char ch;
-char gch;
-int attr;
-int color;
+winid win UNUSED;
+int glyph UNUSED;
+const anything* identifier UNUSED;
+char ch UNUSED;
+char gch UNUSED;
+int attr UNUSED;
+int color UNUSED;
 const char* str;
-boolean preselected;
-struct extended_menu_info info;
+boolean preselected UNUSED;
+struct extended_menu_info info UNUSED;
 {
     char buf[UTF8BUFSZ * 2] = "";
     if (str)
