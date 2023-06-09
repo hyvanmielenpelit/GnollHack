@@ -1942,11 +1942,13 @@ struct extended_menu_info info;
     fprintf(fp, "%s", !is_heading && !is_subheading ? LINEBREAK : "");
 }
 
+extern const nhsym cp437toUnicode[256]; /* From hacklib.c */
+
 /* Write HTML-escaped char to a file */
 STATIC_OVL void
 html_dump_char(fp, c)
 FILE* fp;
-char c;
+nhsym c;
 {
     if (!fp) return;
     switch (c) {
@@ -1969,7 +1971,15 @@ char c;
         fprintf(fp, "<br />\n");
         break;
     default:
-        fprintf(fp, "%c", c);
+        if(c < 128)
+            fprintf(fp, "%c", (char)c);
+        else
+        {
+            nhsym ch = c;
+            if (!!SYMHANDLING(H_IBM) && c >= 0 && c < 256)
+                ch = cp437toUnicode[c];
+            fprintf(fp, "&#%d", (int)ch);
+        }
     }
 }
 
@@ -1977,13 +1987,45 @@ STATIC_OVL void
 dump_css()
 {
     int c = 0;
-    FILE* css;
+    FILE* css = 0;
     if (!dumphtml_file)
         return;
 
-    css = fopen_datafile("gnhdump.css", "r", DATAPREFIX);
+#ifdef DUMPHTML_CSS_FILE
+    css = fopen_datafile(DUMPHTML_CSS_FILE, "r", DATAPREFIX); //"gnhdump.css"
+#endif
     if (!css) {
         const char* css_strings[] = {
+#ifndef DUMPHTML_WEBFONT_LINK
+        "@font-face {",
+        "  font-family: \"DejaVu Sans Mono\";",
+        "  font-style: normal;",
+        "  font-weight: normal;",
+        "  src: local(DejaVu Sans Mono), local(DejaVuSansMono),",
+        "    url(DejaVuSansMono.woff) format(\"woff\");",
+        "}",
+        "@font-face {",
+        "  font-family: \"DejaVu Sans Mono\";",
+        "  font-style: normal;",
+        "  font-weight: bold;",
+        "  src: local(DejaVu Sans Mono Bold), local(DejaVuSansMono-Bold),",
+        "    url(DejaVuSansMono-Bold.woff) format(\"woff\");",
+        "}",
+        "@font-face {",
+        "  font-family: \"DejaVu Sans Mono\";",
+        "  font-style: oblique;",
+        "  font-weight: bold;",
+        "  src: local(DejaVu Sans Mono Bold Oblique), local(DejaVuSansMono-BoldOblique),",
+        "    url(DejaVuSansMono-BoldOblique.woff) format(\"woff\");",
+        "}",
+        "@font-face {",
+        "  font-family: \"DejaVu Sans Mono\";",
+        "  font-style: oblique;",
+        "  font-weight: normal;",
+        "  src: local(DejaVu Sans Mono Oblique), local(DejaVuSansMono-Oblique),",
+        "    url(DejaVuSansMono-Oblique.woff) format(\"woff\");",
+        "}",
+#endif
         "body {",
         "    color: #CCCCCC;",
         "    background-color: #222222;",
@@ -2122,7 +2164,7 @@ const char* str;
     const char* p;
     if (!fp) return;
     for (p = str; *p; p++)
-        html_dump_char(fp, *p);
+        html_dump_char(fp, (nhsym)*p);
 }
 
 STATIC_OVL void
@@ -2223,7 +2265,7 @@ unsigned long special;
     if (htmlsym[sym])
         fprintf(dumphtml_file, "&#%d;", htmlsym[sym]);
     else
-        html_dump_char(dumphtml_file, (char)ch);
+        html_dump_char(dumphtml_file, ch);
     dump_set_color_attr(color, attr, FALSE);
     if (desc_found)
         fprintf(dumphtml_file, "<span class=\"tooltiptext\">%s</span></div>", firstmatch);
@@ -2291,7 +2333,9 @@ dump_headers()
     fprintf(dumphtml_file, "<meta name=\"generator\" content=\"GnollHack %s (%s)\" />\n", vers, plname);
     fprintf(dumphtml_file, "<meta name=\"date\" content=\"%s\" />\n", iso8601);
     fprintf(dumphtml_file, "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n");
+#ifdef DUMPHTML_WEBFONT_LINK
     fprintf(dumphtml_file, "<link href=\"https://cdn.jsdelivr.net/gh/maxwell-k/dejavu-sans-mono-web-font@2.37/index.css\" title=\"Default\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />\n");
+#endif
     fprintf(dumphtml_file, "<style type=\"text/css\">\n");
     dump_css();
     fprintf(dumphtml_file, "</style>\n</head>\n<body>\n");
