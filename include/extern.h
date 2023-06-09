@@ -4142,7 +4142,7 @@ E char* FDECL(print_dumplog_filename_to_buffer, (char*));
 #endif
 #ifdef DUMPHTML
 E char* FDECL(print_dumphtml_filename_to_buffer, (char*));
-E void FDECL(html_dump_glyph, (int, int, int, int, int, unsigned));
+E void FDECL(html_dump_glyph, (int, int, int, nhsym, int, unsigned long));
 #endif
 #endif
 
