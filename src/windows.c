@@ -1983,7 +1983,7 @@ dump_css()
 
     css = fopen_datafile("gnhdump.css", "r", DATAPREFIX);
     if (!css) {
-        char* css_strings[] = {
+        const char* css_strings[] = {
         "body {",
         "    color: #CCCCCC;",
         "    background-color: #222222;",
