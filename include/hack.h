@@ -632,14 +632,15 @@ enum bodypart_types {
 #endif
 #define plur(x) (((x) == 1) ? "" : "s")
 
-#define ARM_AC_BONUS(obj, ptr) ((int)(((obj)->oclass == ARMOR_CLASS || (obj)->oclass == MISCELLANEOUS_CLASS || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)) ?                    \
+#define ARM_AC_BONUS(obj, ptr) \
+    ((int)(((obj)->oclass == ARMOR_CLASS || (obj)->oclass == MISCELLANEOUS_CLASS || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)) ? \
     (objects[(obj)->otyp].oc_armor_class + get_obj_material_and_exceptionality_ac_bonus(obj) + (!(objects[(obj)->otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC) || has_obj_mythic_defense(obj) ? (!cursed_items_are_positive(ptr) ? (obj)->enchantment : abs((obj)->enchantment)) : 0) \
      - ((objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_AC) ? 0 : min((int) greatest_erosion(obj), objects[(obj)->otyp].oc_armor_class))) : 0))
 
-#define ARM_MC_BONUS(obj, ptr)                      \
-    ((int)(objects[(obj)->otyp].oc_magic_cancellation + get_obj_material_and_exceptionality_mc_bonus(obj) + ((!(objects[(obj)->otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_MC) || has_obj_mythic_defense(obj)) ? (!cursed_items_are_positive(ptr) ? (obj)->enchantment : abs((obj)->enchantment)) / 3 : 0) \
-     - ((objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC) ? 0 : min(greatest_erosion(obj) / 2, objects[(obj)->otyp].oc_magic_cancellation))))
-
+#define ARM_MC_BONUS(obj, ptr) \
+    ((int)(((obj)->oclass == ARMOR_CLASS || (obj)->oclass == MISCELLANEOUS_CLASS || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)) ? \
+    (objects[(obj)->otyp].oc_magic_cancellation + get_obj_material_and_exceptionality_mc_bonus(obj) + ((!(objects[(obj)->otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_MC) || has_obj_mythic_defense(obj)) ? (!cursed_items_are_positive(ptr) ? (obj)->enchantment : abs((obj)->enchantment)) / 3 : 0) \
+     - ((objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC) ? 0 : min(greatest_erosion(obj) / 2, objects[(obj)->otyp].oc_magic_cancellation))) : 0))
 
 #define makeknown(x) discover_object((x), TRUE, TRUE)
 #define distu(xx, yy) dist2((int)(xx), (int)(yy), (int) u.ux, (int) u.uy)
