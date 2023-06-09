@@ -2231,6 +2231,39 @@ unsigned long special;
         fprintf(dumphtml_file, "  </span>\n"); /* 2 trailing spaces and newline */
 }
 
+/* Status and map highlighting */
+STATIC_OVL void
+dump_set_color_attr(coloridx, attrmask, onoff)
+int coloridx, attrmask;
+boolean onoff;
+{
+    if (!dumphtml_file) return;
+    if (onoff) {
+        if (attrmask & HL_BOLD)
+            fprintf(dumphtml_file, BOLD_S);
+        if (attrmask & HL_ULINE)
+            fprintf(dumphtml_file, UNDL_S);
+        if (attrmask & HL_BLINK)
+            fprintf(dumphtml_file, BLNK_S);
+        if (attrmask & HL_INVERSE)
+            fprintf(dumphtml_file, "<span class=\"nh_inv_%d\">", coloridx);
+        else if (coloridx != NO_COLOR)
+            fprintf(dumphtml_file, "<span class=\"nh_color_%d\">", coloridx);
+        /* ignore HL_DIM */
+    }
+    else {
+        /* reverse order for nesting */
+        if ((attrmask & HL_INVERSE) || coloridx != NO_COLOR)
+            fprintf(dumphtml_file, SPAN_E);
+        if (attrmask & HL_BLINK)
+            fprintf(dumphtml_file, BLNK_E);
+        if (attrmask & HL_ULINE)
+            fprintf(dumphtml_file, UNDL_E);
+        if (attrmask & HL_BOLD)
+            fprintf(dumphtml_file, BOLD_E);
+    }
+}
+
 #endif /* DUMPHTML */
 
 
@@ -2295,45 +2328,6 @@ dump_end_screendump()
 #ifdef DUMPHTML
     if (dumphtml_file)
         fprintf(dumphtml_file, "%s\n", PREF_E);
-#endif
-}
-
-/* Status and map highlighting */
-STATIC_OVL void
-dump_set_color_attr(coloridx, attrmask, onoff)
-int coloridx, attrmask;
-boolean onoff;
-{
-#ifdef DUMPHTML
-    if (!dumphtml_file) return;
-    if (onoff) {
-        if (attrmask & HL_BOLD)
-            fprintf(dumphtml_file, BOLD_S);
-        if (attrmask & HL_ULINE)
-            fprintf(dumphtml_file, UNDL_S);
-        if (attrmask & HL_BLINK)
-            fprintf(dumphtml_file, BLNK_S);
-        if (attrmask & HL_INVERSE)
-            fprintf(dumphtml_file, "<span class=\"nh_inv_%d\">", coloridx);
-        else if (coloridx != NO_COLOR)
-            fprintf(dumphtml_file, "<span class=\"nh_color_%d\">", coloridx);
-        /* ignore HL_DIM */
-    }
-    else {
-        /* reverse order for nesting */
-        if ((attrmask & HL_INVERSE) || coloridx != NO_COLOR)
-            fprintf(dumphtml_file, SPAN_E);
-        if (attrmask & HL_BLINK)
-            fprintf(dumphtml_file, BLNK_E);
-        if (attrmask & HL_ULINE)
-            fprintf(dumphtml_file, UNDL_E);
-        if (attrmask & HL_BOLD)
-            fprintf(dumphtml_file, BOLD_E);
-    }
-#else
-    nhUse(coloridx);
-    nhUse(attrmask);
-    nhUse(onoff);
 #endif
 }
 
