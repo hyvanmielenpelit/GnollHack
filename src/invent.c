@@ -900,7 +900,7 @@ struct obj *obj;
         u.uhave.book = 1;
         if (flags.showscore && !u.uachieve.book)
             context.botl = 1;
-        if (!u.uachieve.bell)
+        if (!u.uachieve.book)
         {
             achievement_gained("Book of the Dead");
             livelog_printf(LL_ACHIEVE, "%s", "acquired the Book of the Dead");
