@@ -17,9 +17,12 @@ struct sysopt {
     char *shellers;   /* like wizards, for ! command (-DSHELL); also ^Z */
     char *genericusers; /* usernames that prompt for user name */
     char *debugfiles; /* files to show debugplines in. '*' is all. */
-#ifdef DUMPLOG
+#if defined (DUMPLOG)
     char *dumplogfile; /* where the dump file is saved */
     char* dumplogurl;  /* url path for the above */
+#endif
+#ifdef DUMPHTML
+    char* dumphtmlfile; /* where the html dump is saved */
 #endif
     int env_dbgfl;    /*  1: debugfiles comes from getenv("DEBUGFILES")
                        *     so sysconf's DEBUGFILES shouldn't override it;

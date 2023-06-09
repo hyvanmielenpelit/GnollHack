@@ -35,6 +35,7 @@ WIZARDS=*
 #   %n player name
 #   %N first character of player name
 DUMPLOGFILE=dumplog/gnollhack-%n-%d.txt
+DUMPHTMLFILE=dumplog/gnollhack-%n-%d.html
 
 # Number of bones file pools.
 # The pool you belong to is determined at game start. You will

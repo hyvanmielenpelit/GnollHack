@@ -90,6 +90,11 @@ typedef struct mi {
 #define NHW_HERE 7     /* new - window for "things that are here" */
 #define NHW_INVEN 8    /* from winMS.h in WinCE and Win32 */
 
+#if defined(DUMPLOG) || defined(DUMPHTML)
+#define NHW_DUMPTXT 9
+#define NHW_DUMPHTML 10
+#endif
+
 /* Various esoteric window types from various ports; numbering has been changed */
 #define NHW_RIP 12     /* from winMS.h in WinCE and Win32 */
 #define NHW_KEYPAD 13  /* from winMS.h in WinCE and Win32 */
@@ -129,6 +134,7 @@ typedef struct mi {
 #define ATR_INACTIVE        0x00040000
 #define ATR_HALF_SIZE       0x00080000
 #define ATR_ALT_COLORS      0x00100000
+#define ATR_PREFORM         0x00200000
 #define ATR_LINE_MSG_MASK   0xFFFFFFF0
 
 /* nh_poskey() modifier types */

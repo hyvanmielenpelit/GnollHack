@@ -2987,12 +2987,19 @@ char *origbuf;
     } 
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPLOGFILE", 7))
     {
-#ifdef DUMPLOG
+#if defined (DUMPLOG)
         if (sysopt.dumplogfile)
             free((genericptr_t) sysopt.dumplogfile);
         sysopt.dumplogfile = dupstr(bufp);
 #endif
-    } 
+    }
+    else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTMLFILE", 8)) {
+#ifdef DUMPHTML
+        if (sysopt.dumphtmlfile)
+            free((genericptr_t)sysopt.dumphtmlfile);
+        sysopt.dumphtmlfile = dupstr(bufp);
+#endif
+    }
     else if (src == SET_IN_SYS && match_varname(buf, "GENERICUSERS", 12))
     {
         if (sysopt.genericusers)
@@ -5144,6 +5151,96 @@ VA_DECL2(unsigned int, ll_type, const char*, fmt)
 /* This probably belongs in files.c, but it
  * uses dump_fmtstr() which is static here.
  */
+
+char*
+extrainfo_fmtstr(fmt, buf)
+const char* fmt;
+char* buf;
+{
+    const char* fp = fmt;
+    char* bp = buf;
+    size_t slen, len = 0;
+    char tmpbuf[BUFSZ];
+    char verbuf[BUFSZ];
+    long uid;
+    time_t now = getnow();
+
+    uid = (long)getuid();
+
+    /*
+     * Note: %t and %T assume that time_t is a 'long int' number of
+     * seconds since some epoch value.  That's quite iffy....  The
+     * unit of time might be different and the datum size might be
+     * some variant of 'long long int'.  [Their main purpose is to
+     * construct a unique file name rather than record the date and
+     * time; violating the 'long seconds since base-date' assumption
+     * may or may not interfere with that usage.]
+     */
+
+    while (fp && *fp && len < BUFSZ - 1) {
+        if (*fp == '%') {
+            fp++;
+            switch (*fp) {
+            default:
+                goto finish;
+            case '\0': /* fallthrough */
+            case '%':  /* literal % */
+                Sprintf(tmpbuf, "%%");
+                break;
+            case 't': /* game start, timestamp */
+                Sprintf(tmpbuf, "%lu", (unsigned long)ubirthday);
+                break;
+            case 'T': /* current time, timestamp */
+                Sprintf(tmpbuf, "%lu", (unsigned long)now);
+                break;
+            case 'd': /* game start, YYYYMMDDhhmmss */
+                Sprintf(tmpbuf, "%08ld%06ld",
+                    yyyymmdd(ubirthday), hhmmss(ubirthday));
+                break;
+            case 'D': /* current time, YYYYMMDDhhmmss */
+                Sprintf(tmpbuf, "%08ld%06ld", yyyymmdd(now), hhmmss(now));
+                break;
+            case 'v': /* version, eg. "3.6.2-0" */
+                Sprintf(tmpbuf, "%s", version_string(verbuf));
+                break;
+            case 'u': /* UID */
+                Sprintf(tmpbuf, "%ld", uid);
+                break;
+            case 'n': /* player name */
+                Sprintf(tmpbuf, "%s", *plname ? plname : "unknown");
+                break;
+            case 'N': /* first character of player name */
+                Sprintf(tmpbuf, "%c", *plname ? *plname : 'u');
+                break;
+            }
+
+            (void)strNsubst(tmpbuf, " ", "_", 0);
+            (void)strNsubst(tmpbuf, "/", "_", 0);
+            (void)strNsubst(tmpbuf, "\\", "_", 0);
+
+            slen = strlen(tmpbuf);
+            if (len + slen < BUFSZ - 1) {
+                len += slen;
+                Sprintf(bp, "%s", tmpbuf);
+                bp += slen;
+                if (*fp) fp++;
+            }
+            else
+                break;
+        }
+        else {
+            *bp = *fp;
+            bp++;
+            fp++;
+            len++;
+        }
+    }
+finish:
+    *bp = '\0';
+    return buf;
+}
+
+
 void
 mk_dgl_extrainfo()
 {
@@ -5153,7 +5250,7 @@ mk_dgl_extrainfo()
 #endif
     char new_fn[512];
 
-    dump_fmtstr(EXTRAINFO_FN, new_fn);
+    extrainfo_fmtstr(EXTRAINFO_FN, new_fn);
 
     extrai = fopen(new_fn, "w");
     if (!extrai) {
@@ -5203,7 +5300,7 @@ void
 livelog_dump_url(llflags)
 unsigned int llflags;
 {
-#ifdef DUMPLOG
+#if defined (DUMPLOG)
     char buf[BUFSZ];
     char* dumpurl;
 

@@ -25,7 +25,7 @@
 
 #undef SHELL                /* we do not support the '!' command */
 
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
 #undef DUMPLOG_FILE
 #define DUMPLOG_FILE        "dumplog/gnollhack.%n.%d.txt" /* Note: Actually the one in sysconf is used, not this one */
 #undef DUMPLOG_DIR

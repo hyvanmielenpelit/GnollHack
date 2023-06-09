@@ -1606,7 +1606,7 @@ free_dynamic_data_B(VOID_ARGS)
 void
 free_dynamic_data_C(VOID_ARGS)
 {
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
     dumplogfreemessages();
 #endif
 

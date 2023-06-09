@@ -2234,7 +2234,7 @@ int default_glyph, which_subset;
     return glyph;
 }
 
-#ifdef DUMPLOG
+#if defined(DUMPLOG) || defined(DUMPHTML)
 void
 dump_map()
 {
@@ -2270,9 +2270,21 @@ dump_map()
                                             default_glyph, subset);
             struct layer_info layers = nul_layerinfo;
             layers.glyph = glyph;
-            (void) mapglyph(layers, &ch, &color, &special, x, y);
+#ifdef DUMPHTML
+            int sym =
+#else
+            (void)
+#endif
+                mapglyph(layers, &ch, &color, &special, x, y);
 
             write_nhsym_utf8(&bp, ch, !!SYMHANDLING(H_IBM)); //buf[x - 1] = ch;
+
+#ifdef DUMPHTML
+            /* HTML map prints in a defined rectangle, so
+               just render every glyph - no skipping. */
+            html_dump_glyph(x, y, sym, ch, color, special);
+#endif
+
             /* UTF-8 must be handled here, because you cannot write nhsym (long) to the buf (char) and convert it later */
             /* Note: write_nhsym_utf8 moves bp forward the right amount (1-4 bytes) */
 

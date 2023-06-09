@@ -62,7 +62,7 @@ STATIC_DCL int NDECL(set_vanq_order);
 STATIC_DCL void FDECL(list_vanquished, (CHAR_P, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void FDECL(list_genocided, (CHAR_P, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL boolean FDECL(should_query_disclose_option, (int, char *));
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
 STATIC_DCL void NDECL(dump_plines);
 #endif
 STATIC_DCL void FDECL(dump_everything, (int, time_t));
@@ -741,7 +741,7 @@ char *defquery;
     return TRUE;
 }
 
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
 STATIC_OVL void
 dump_plines()
 {
@@ -773,7 +773,7 @@ dump_everything(how, when)
 int how;
 time_t when; /* date+time at end of game */
 {
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
     char pbuf[BUFSZ], datetimebuf[24]; /* [24]: room for 64-bit bogus value */
 
     dump_redirect(TRUE);
@@ -850,7 +850,7 @@ time_t when; /* date+time at end of game */
 int
 wiz_dumplog(VOID_ARGS)
 {
-#ifdef DUMPLOG
+#if defined (DUMPLOG)
     if (wizard) {
         time_t dumptime = getnow();
         char buf[BUFSZ] = "";
@@ -1530,10 +1530,12 @@ int how;
 
         IfModeAllowsPostToForum
         {
+#if defined (DUMPLOG)
             char dlbuf[BUFSZ * 4];
             char* dlfilename = print_dumplog_filename_to_buffer(dlbuf);
             if (dlfilename)
                 issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT, dlfilename);
+#endif
             issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, postbuf);
 
         }
@@ -1807,7 +1809,7 @@ int how;
     if (disclose_and_dumplog_ok)
     {
 
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
         /* 'how' reasons beyond genocide shouldn't show tombstone;
            for normal end of game, genocide doesn't either */
         if (how <= GENOCIDED)
@@ -1910,7 +1912,7 @@ int how;
             if (!done_stopprint)
                 artifact_score(invent, FALSE, endwin); /* list artifacts */
 
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
             dump_redirect(TRUE);
             if (iflags.in_dumplog)
                 artifact_score(invent, FALSE, 0);
@@ -2520,7 +2522,7 @@ boolean ask, isend;
         pline1(nomsg);
         if (!isend)
             display_popup_text(nomsg, "No Vanquished Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_NONE);
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
     }
     else if (dumping)
     {
@@ -2704,7 +2706,7 @@ boolean ask, isend;
         pline1(nomsg); /* Game is still ongoing, so pline is ok */
         if(!isend)
             display_popup_text(nomsg, "No Genocided Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_NONE);
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
     } 
     else if (dumping) 
     {

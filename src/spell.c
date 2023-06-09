@@ -5455,7 +5455,7 @@ int spell;
     return cooldown;
 }
 
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
 void
 dump_spells()
 {

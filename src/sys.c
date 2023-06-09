@@ -41,9 +41,12 @@ sys_early_init()
 #else
     sysopt.debugfiles = dupstr(DEBUGFILES);
 #endif
-#ifdef DUMPLOG
+#if defined (DUMPLOG)
     sysopt.dumplogfile = (char *) 0;
     sysopt.dumplogurl = (char*)0;
+#endif
+#if defined (DUMPHTML)
+    sysopt.dumphtmlfile = (char*)0;
 #endif
     sysopt.env_dbgfl = 0; /* haven't checked getenv("DEBUGFILES") yet */
     sysopt.shellers = (char *) 0;
@@ -114,9 +117,13 @@ sysopt_release()
     if (sysopt.debugfiles)
         free((genericptr_t) sysopt.debugfiles),
         sysopt.debugfiles = (char *) 0;
-#ifdef DUMPLOG
+#if defined (DUMPLOG)
     if (sysopt.dumplogfile)
         free((genericptr_t)sysopt.dumplogfile), sysopt.dumplogfile=(char *)0;
+#endif
+#if defined (DUMPHTML)
+    if (sysopt.dumphtmlfile)
+        free((genericptr_t)sysopt.dumphtmlfile), sysopt.dumphtmlfile = (char*)0;
 #endif
     if (sysopt.genericusers)
         free((genericptr_t) sysopt.genericusers),

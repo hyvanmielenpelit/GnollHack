@@ -5852,7 +5852,7 @@ struct ext_func_tab extcmdlist[] = {
             wiz_level_tele, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizlightsources", "show mobile light sources",
             wiz_light_sources, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
     { '\0', "wizdumplog", "write the dumplog",
             wiz_dumplog, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
@@ -8782,7 +8782,7 @@ char def;
 unsigned long ynflags; /* 1 means use upper side for half-sized tile */
 {
     char res, qbuf[QBUFSZ];
-#ifdef DUMPLOG
+#if defined(DUMPLOG) || defined(DUMPHTML)
     extern unsigned saved_pline_index; /* pline.c */
     unsigned idx = saved_pline_index;
     /* buffer to hold query+space+formatted_single_char_response */
@@ -8800,7 +8800,7 @@ unsigned long ynflags; /* 1 means use upper side for half-sized tile */
         query = qbuf;
     }
     res = (*windowprocs.win_yn_function_ex)(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags);
-#ifdef DUMPLOG
+#if defined(DUMPLOG) || defined(DUMPHTML)
     if (idx == saved_pline_index) {
         /* when idx is still the same as saved_pline_index, the interface
            didn't put the prompt into saved_plines[]; we put a simplified

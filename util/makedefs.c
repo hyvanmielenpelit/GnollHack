@@ -1600,8 +1600,11 @@ static const char *build_opts[] = {
 #ifdef DLB
     "data librarian",
 #endif
-#ifdef DUMPLOG
+#if defined (DUMPLOG)
     "end-of-game dumplogs",
+#endif
+#if defined (DUMPHTML)
+    "end-of-game HTML dumplogs",
 #endif
 #ifdef HOLD_LOCKFILE_OPEN
     "exclusive lock on level 0 file",

@@ -444,7 +444,7 @@ E void NDECL(warnreveal);
 E int FDECL(dosearch0, (int));
 E int NDECL(dosearch);
 E void NDECL(sokoban_detect);
-#ifdef DUMPLOG
+#if defined(DUMPLOG) || defined(DUMPHTML)
 E void NDECL(dump_map);
 #endif
 E void FDECL(reveal_terrain, (int, int));
@@ -2613,7 +2613,7 @@ E void NDECL(reset_pickup);
 
 /* ### pline.c ### */
 
-#ifdef DUMPLOG
+#if defined(DUMPLOG) || defined(DUMPHTML)
 E void FDECL(dumplogmsg, (const char *));
 E void NDECL(dumplogfreemessages);
 #endif
@@ -3453,10 +3453,10 @@ E double FDECL(get_spell_mana_cost, (int));
 E double FDECL(get_spellbook_adjusted_mana_cost, (int));
 E void FDECL(deduct_mana_cost, (double));
 E uchar FDECL(is_obj_component_for, (int, struct obj*));
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
 E void NDECL(dump_spells);
-E void NDECL(sortspells);
 #endif
+E void NDECL(sortspells);
 E void FDECL(print_spell_level_text, (char*, int, BOOLEAN_P, UCHAR_P));
 E void NDECL(reset_spells);
 E long FDECL(get_object_spell_casting_penalty, (struct obj*));
@@ -4128,15 +4128,22 @@ E void FDECL(genl_update_cursor, (int, int, int));
 E int NDECL(genl_ui_has_input);
 E void FDECL(genl_exit_hack, (int));
 
-
 E void FDECL(dump_open_log, (time_t));
 E void NDECL(dump_close_log);
-E void FDECL(dump_redirect, (BOOLEAN_P));
 E void FDECL(dump_forward_putstr, (winid, int, const char*, int));
-#ifdef DUMPLOG
-E char* FDECL(print_dumplog_filename_to_buffer, (char*));
+#if defined (DUMPLOG) || defined (DUMPHTML)
+E void FDECL(dump_redirect, (BOOLEAN_P));
+E void NDECL(dump_start_screendump); /* defined in windows.c */
+E void NDECL(dump_end_screendump);
 E char* FDECL(dump_fmtstr, (const char*, char*));
 E void FDECL(dump_putstr_no_utf8, (winid, int, const char*));
+#ifdef DUMPLOG
+E char* FDECL(print_dumplog_filename_to_buffer, (char*));
+#endif
+#ifdef DUMPHTML
+E char* FDECL(print_dumphtml_filename_to_buffer, (char*));
+E void FDECL(html_dump_glyph, (int, int, int, int, int, unsigned));
+#endif
 #endif
 
 #if defined(ANDROID) && defined(DUMPLOG)

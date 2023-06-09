@@ -8,7 +8,7 @@
 #include "hack.h"
 
 #if defined(TTY_GRAPHICS) || defined(X11_GRAPHICS) || defined(GEM_GRAPHICS) \
-    || defined(MSWIN_GRAPHICS) || defined(NUKLEAR_GRAPHICS) || defined(DLL_GRAPHICS) || defined(LIB_GRAPHICS)  || defined(ANDROID_GRAPHICS) || defined(DUMPLOG) || defined(CURSES_GRAPHICS)
+    || defined(MSWIN_GRAPHICS) || defined(NUKLEAR_GRAPHICS) || defined(DLL_GRAPHICS) || defined(LIB_GRAPHICS)  || defined(ANDROID_GRAPHICS) || defined(DUMPLOG) || defined(DUMPHTML) || defined(CURSES_GRAPHICS)
 #define TEXT_TOMBSTONE
 #endif
 #if defined(mac) || defined(__BEOS__) || defined(WIN32_GRAPHICS)
@@ -143,7 +143,7 @@ time_t when;
     Sprintf(buf, "%4ld", year);
     center(YEAR_LINE, buf);
 
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
     if (tmpwin == 0)
         dump_forward_putstr(0, 0, "Game over:", TRUE);
     else
@@ -154,7 +154,7 @@ time_t when;
         putstr(tmpwin, 0, *dp);
 
     putstr(tmpwin, 0, "");
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
     if (tmpwin != 0)
 #endif
         putstr(tmpwin, 0, "");

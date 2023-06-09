@@ -705,7 +705,7 @@ unsigned long ynflags UNUSED;
     memset(toplineattrs, attr, len);
     memset(toplinecolors, color, len);
     toplineattrs[len] = toplinecolors[len] = 0;
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
     dumplogmsg(toplines);
 #endif
     ttyDisplay->inread--;
@@ -908,7 +908,7 @@ boolean restoring_msghist;
 {
     static boolean initd = FALSE;
     int idx;
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
     extern unsigned saved_pline_index; /* pline.c */
 #endif
 
@@ -921,7 +921,7 @@ boolean restoring_msghist;
            restored ones are being put into place */
         msghistory_snapshot(TRUE);
         initd = TRUE;
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
         /* this suffices; there's no need to scrub saved_pline[] pointers */
         saved_pline_index = 0;
 #endif
@@ -947,7 +947,7 @@ boolean restoring_msghist;
         //memset(toplineattrs, attr, len_attrs);
         //memset(toplinecolors, color, len_colors);
         //toplineattrs[len_attrs] = toplinecolors[len_colors] = 0;
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
         dumplogmsg(toplines);
 #endif
     } 
@@ -964,7 +964,7 @@ boolean restoring_msghist;
             memcpy(toplineattrs, snapshot_mesg_attrs[idx], len_attrs);
             memcpy(toplinecolors, snapshot_mesg_colors[idx], len_colors);
             toplineattrs[len_attrs] = toplinecolors[len_colors] = 0;
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
             dumplogmsg(toplines);
 #endif
         }

@@ -38,7 +38,7 @@ STATIC_DCL char *FDECL(You_buf, (size_t));
 STATIC_DCL void FDECL(execplinehandler, (const char *));
 #endif
 
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
 /* also used in end.c */
 unsigned saved_pline_index = 0; /* slot in saved_plines[] to use next */
 char *saved_plines[DUMPLOG_MSG_COUNT] = { (char *) 0 };
@@ -204,7 +204,7 @@ VA_DECL(const char *, line)
         line = pbuf;
     }
 
-#ifdef DUMPLOG
+#if defined (DUMPLOG) || defined (DUMPHTML)
     /* We hook here early to have options-agnostic output.
      * Unfortunately, that means Norep() isn't honored (general issue) and
      * that short lines aren't combined into one longer one (tty behavior).
