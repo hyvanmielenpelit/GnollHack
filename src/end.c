@@ -786,8 +786,8 @@ time_t when; /* date+time at end of game */
        it's conceivable that the game started with a different
        build date+time or even with an older GnollHack version,
        but we only have access to the one it finished under */
-    putstr(0, 0, getversionstring(pbuf));
-    putstr(0, 0, "");
+    putstr(0, ATR_SUBHEADING, getversionstring(pbuf));
+    putstr(NHW_DUMPTXT, 0, "");
 
     /* game start and end date+time to disambiguate version date+time */
     Strcpy(datetimebuf, yyyymmddhhmmss(ubirthday));
@@ -798,8 +798,8 @@ time_t when; /* date+time at end of game */
     Sprintf(eos(pbuf), ", ended %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s",
             &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
-    putstr(0, 0, pbuf);
-    putstr(0, 0, "");
+    putstr(0, ATR_SUBHEADING, pbuf);
+    putstr(NHW_DUMPTXT, 0, "");
 
     /* character name and basic role info */
     Sprintf(pbuf, "%s, %s %s %s %s", plname,
@@ -807,8 +807,8 @@ time_t when; /* date+time at end of game */
             genders[flags.female].adj,
             urace.adj,
             (flags.female && urole.name.f) ? urole.name.f : urole.name.m);
-    putstr(0, 0, pbuf);
-    putstr(0, 0, "");
+    putstr(0, ATR_SUBHEADING, pbuf);
+    putstr(NHW_DUMPTXT, 0, "");
 
     dump_start_screendump();
     dump_map();
@@ -1810,15 +1810,16 @@ int how;
 
     if (disclose_and_dumplog_ok)
     {
-
+        int dumpwin = endwin;
 #if defined (DUMPLOG) || defined (DUMPHTML)
         /* 'how' reasons beyond genocide shouldn't show tombstone;
            for normal end of game, genocide doesn't either */
+        dumpwin = NHW_DUMPTXT;
         if (how <= GENOCIDED)
         {
             dump_redirect(TRUE);
             if (iflags.in_dumplog)
-                genl_outrip(0, how, endtime);
+                outrip(0, how, endtime);
             dump_redirect(FALSE);
         }
 #endif
@@ -1841,8 +1842,8 @@ int how;
                 ? urole.name.f
                 : urole.name.m)
             : (const char*)(flags.female ? "Demigoddess" : "Demigod"));
-        dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
-        dump_forward_putstr(endwin, 0, "", done_stopprint);
+        dump_forward_putstr(endwin, ATR_HEADING, pbuf, done_stopprint);
+        dump_forward_putstr(dumpwin, 0, "", done_stopprint);
 
         if (how == ESCAPED || how == ASCENDED)
         {
@@ -1897,7 +1898,7 @@ int how;
                     //nowrap_add(u.u_gamescore, mhp);
                     Strcat(eos(pbuf), " and Schroedinger's cat");
                 }
-                dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
+                dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
                 pbuf[0] = '\0';
             }
             else
@@ -1908,7 +1909,7 @@ int how;
                 how == ASCENDED ? "went to your reward"
                 : "escaped from the dungeon",
                 u.u_gamescore, plur(u.u_gamescore));
-            dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
+            dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
 
 #if 0
             if (!done_stopprint)
@@ -1952,7 +1953,7 @@ int how;
                         Sprintf(pbuf, "%8ld worthless piece%s of colored glass,",
                             count, plur(count));
                     }
-                    dump_forward_putstr(endwin, 0, pbuf, 0);
+                    dump_forward_putstr(endwin, ATR_PREFORM, pbuf, 0);
                 }
             }
 #endif
@@ -1982,28 +1983,28 @@ int how;
             }
 
             Sprintf(eos(pbuf), " with %ld point%s,", u.u_gamescore, plur(u.u_gamescore));
-            dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
+            dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
         }
 
         Sprintf(pbuf, "and %ld piece%s of gold, after %ld move%s.", umoney,
             plur(umoney), moves, plur(moves));
-        dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
+        dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
 
         char realtimebuf[BUFSZ] = "";
         print_realtime(realtimebuf, urealtime.realtime);
         Sprintf(pbuf, "You played on %s difficulty in %s mode for %s.", get_game_difficulty_text(context.game_difficulty),
             get_game_mode_text(TRUE), realtimebuf);
-        dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
+        dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
         if (!n_game_recoveries)
             Strcpy(pbuf, "The dungeon never collapsed on you.");
         else
             Sprintf(pbuf, "The dungeon collapsed on you %lu time%s.", n_game_recoveries, plur(n_game_recoveries));
-        dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
+        dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
         Sprintf(pbuf,
             "You were level %d with a maximum of %d hit point%s when you %s.",
             u.ulevel, u.uhpmax, plur(u.uhpmax), ends[how]);
-        dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
-        dump_forward_putstr(endwin, 0, "", done_stopprint);
+        dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
+        dump_forward_putstr(endwin, ATR_PREFORM, "", done_stopprint);
 
         if (!done_stopprint)
             display_nhwindow(endwin, TRUE);
@@ -2528,7 +2529,7 @@ boolean ask, isend;
     }
     else if (dumping)
     {
-        putstr(0, 0, "No creatures were vanquished."); /* not pline() */
+        putstr(0, ATR_HEADING, "No creatures were vanquished."); /* not pline() */
 #endif
     }
 }
@@ -2712,7 +2713,7 @@ boolean ask, isend;
     } 
     else if (dumping) 
     {
-        putstr(0, 0, "No species were genocided or became extinct.");
+        putstr(0, ATR_HEADING, "No species were genocided or became extinct.");
 #endif
     }
 }

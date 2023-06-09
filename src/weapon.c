@@ -4453,10 +4453,10 @@ dump_skills(VOID_ARGS)
         (void)skill_level_name(i, skillmaxbuf, TRUE);
 
         Sprintf(buf, " %-34s %s / %s", skillnamebufC, skilllevelbuf, skillmaxbuf);
-        putstr(0, 0, buf);
+        putstr(0, ATR_PREFORM, buf);
     }
     Sprintf(buf, "You had %d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
-    putstr(0, 0, buf);
+    putstr(0, ATR_PREFORM, buf);
 }
 
 short

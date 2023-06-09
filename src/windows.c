@@ -1896,6 +1896,7 @@ struct extended_menu_info info;
 
     boolean is_heading = !(info.menu_flags & (MENU_FLAGS_IS_GROUP_HEADING)) && ((attr & ATR_SUBHEADING) == ATR_HEADING || (attr & ATR_SUBTITLE) == ATR_TITLE || (info.menu_flags & (MENU_FLAGS_IS_HEADING)));
     boolean is_subheading = (attr & ATR_SUBHEADING) == ATR_SUBHEADING || (attr & ATR_SUBTITLE) == ATR_SUBTITLE || (info.menu_flags & (MENU_FLAGS_IS_GROUP_HEADING));
+    boolean is_bold = (attr & ATR_ATTR_MASK) == ATR_BOLD;
     if (before) { /* before next string is written,
                      close any finished blocks
                      and open a new block if necessary */
@@ -1924,7 +1925,7 @@ struct extended_menu_info info;
             in_list = FALSE;
         }
         fprintf(fp, "%s", is_heading ? HEAD_S :
-            is_subheading ? SUBH_S : "");
+            is_subheading ? SUBH_S : is_bold ? BOLD_S : "");
         return;
     }
     /* after string is written */
@@ -1937,7 +1938,8 @@ struct extended_menu_info info;
         return;
     }
     fprintf(fp, "%s", is_heading ? HEAD_E:
-        is_subheading ? SUBH_E : LINEBREAK);
+        is_subheading ? SUBH_E : is_bold ? BOLD_E : "");
+    fprintf(fp, "%s", !is_heading && !is_subheading ? LINEBREAK : "");
 }
 
 /* Write HTML-escaped char to a file */
@@ -2251,9 +2253,9 @@ dump_headers()
 
     fprintf(dumphtml_file, "<!DOCTYPE html>\n");
     fprintf(dumphtml_file, "<head>\n");
-    fprintf(dumphtml_file, "<title>EvilHack %s (%s)</title>\n", version_string(vers), plname);
+    fprintf(dumphtml_file, "<title>GnollHack %s (%s)</title>\n", version_string(vers), plname);
     fprintf(dumphtml_file, "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />\n");
-    fprintf(dumphtml_file, "<meta name=\"generator\" content=\"EvilHack %s (%s)\" />\n", vers, plname);
+    fprintf(dumphtml_file, "<meta name=\"generator\" content=\"GnollHack %s (%s)\" />\n", vers, plname);
     fprintf(dumphtml_file, "<meta name=\"date\" content=\"%s\" />\n", iso8601);
     fprintf(dumphtml_file, "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n");
     fprintf(dumphtml_file, "<link href=\"https://cdn.jsdelivr.net/gh/maxwell-k/dejavu-sans-mono-web-font@2.37/index.css\" title=\"Default\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />\n");

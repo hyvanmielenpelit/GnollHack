@@ -5461,7 +5461,7 @@ dump_spells()
 {
     if (spellid(0) == NO_SPELL)
     {
-        putstr(0, 0, "You did not know any spells.");
+        putstr(0, ATR_PREFORM, "You did not know any spells.");
     }
     else
     {
@@ -5470,7 +5470,7 @@ dump_spells()
         char spellnamebuf[BUFSZ];
         char castingsbuf[BUFSZ] = "";
         char successbuf[BUFSZ] = "";
-        putstr(0, 0, "Spells in your repertoire:");
+        putstr(0, ATR_HEADING, "Spells in your repertoire:");
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
         {
             int pct_lim = percent_success(i, TRUE);
@@ -5485,7 +5485,7 @@ dump_spells()
             Sprintf(successbuf, "%d%% success", pct_lim);
 
             Sprintf(buf, " %-34s %-13s%s", spellnamebuf, successbuf, castingsbuf);
-            putstr(0, 0, buf);
+            putstr(0, ATR_PREFORM, buf);
         }
     }
 }

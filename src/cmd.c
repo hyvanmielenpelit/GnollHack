@@ -5282,9 +5282,16 @@ int final;
 {
     char buf[BUFSZ];
     int ngenocided;
+    int dumpwin;
 
     /* Create the conduct window */
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SEMI_WIDE_LIST, NO_GLYPH, zerocreatewindowinfo);
+
+#if defined (DUMPLOG) || defined(DUMPHTML)
+    dumpwin = NHW_DUMPTXT;
+#else
+    dumpwin = en_win;
+#endif
 
     if (!u.uachieve.ascended || !u.uachieve.amulet || !u.uachieve.role_achievement)
     {
@@ -5318,7 +5325,7 @@ int final;
     }
 
     int num_achievements = 0;
-    putstr(en_win, ATR_NONE, "");
+    putstr(dumpwin, ATR_NONE, "");
     putstr(en_win, ATR_TITLE, "Achievements:");
     if (!final)
         putstr(en_win, ATR_HALF_SIZE, " ");
@@ -5464,7 +5471,7 @@ int final;
         you_have_not("earned any achievements", "");
     }
 
-    putstr(en_win, ATR_NONE, "");
+    putstr(dumpwin, ATR_NONE, "");
     putstr(en_win, ATR_TITLE, "Voluntary challenges:");
     if(!final)
         putstr(en_win, ATR_HALF_SIZE, " ");
@@ -5564,13 +5571,13 @@ int final;
     {
         char mbuf[BUFSZ];
         long valuableworth = money_cnt(invent) + hidden_gold() + carried_gem_value();
-        putstr(en_win, ATR_NONE, " ");
+        putstr(dumpwin, ATR_NONE, "");
         Sprintf(mbuf, "You have %ld %s worth of %svaluables with you.", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_TOURIST))
     {
-        putstr(en_win, ATR_NONE, " ");
+        putstr(dumpwin, ATR_NONE, "");
         putstr(en_win, ATR_TITLE, "Selfies taken with:");
         if (!final)
             putstr(en_win, ATR_HALF_SIZE, " ");
