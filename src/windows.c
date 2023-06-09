@@ -1948,7 +1948,7 @@ extern const nhsym cp437toUnicode[256]; /* From hacklib.c */
 STATIC_OVL void
 html_dump_char(fp, c)
 FILE* fp;
-nhsym c;
+nhsym c; /* assumed to be either CP437 or Unicode */
 {
     if (!fp) return;
     switch (c) {
@@ -1976,7 +1976,7 @@ nhsym c;
         else
         {
             nhsym ch = c;
-            if (!!SYMHANDLING(H_IBM) && c >= 0 && c < 256)
+            if (!!SYMHANDLING(H_IBM) && c >= 0 && c < 256) /* Convert CP437 to Unicode */
                 ch = cp437toUnicode[c];
             fprintf(fp, "&#%d", (int)ch);
         }

@@ -1639,7 +1639,7 @@ void
 write_nhsym_utf8(buf_ptr, ch, is_CP437)
 char** buf_ptr;
 nhsym ch;
-boolean is_CP437;
+boolean is_CP437; /* if false, then ch is assumed to be unicode */
 {
     if (!buf_ptr)
         return;

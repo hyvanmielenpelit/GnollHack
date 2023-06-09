@@ -2263,21 +2263,26 @@ dump_map()
         for (x = 1; x < COLNO; x++) 
         {
             nhsym ch;
-            int color;
+            int color, sym;
             unsigned long special;
 
             glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow,
                                             default_glyph, subset);
             struct layer_info layers = nul_layerinfo;
             layers.glyph = glyph;
-#ifdef DUMPHTML
-            int sym =
-#else
-            (void)
-#endif
-                mapglyph(layers, &ch, &color, &special, x, y);
 
-            write_nhsym_utf8(&bp, ch, !!SYMHANDLING(H_IBM)); //buf[x - 1] = ch;
+            sym = mapglyph(layers, &ch, &color, &special, x, y);
+            if (SYMHANDLING(H_IBM) || SYMHANDLING(H_UNICODE))
+            {
+                write_nhsym_utf8(&bp, ch, !!SYMHANDLING(H_IBM)); //buf[x - 1] = ch;
+            }
+            else
+            {
+                /* Revert to basic symbols; no better looking processing available */
+                if(sym >= 0 && sym < MAX_CMAPPED_CHARS)
+                    ch = (nhsym)defsyms[sym].sym;
+                write_nhsym_utf8(&bp, ch, FALSE);
+            }
 
 #ifdef DUMPHTML
             /* HTML map prints in a defined rectangle, so
