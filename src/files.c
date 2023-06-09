@@ -5120,14 +5120,14 @@ int final;
         if (!final && !wizard && spoilerevent(llmsg))
             continue;
         if (!eventcnt++)
-            putstr(win, ATR_SUBHEADING, " Turn");
+            putstr(win, ATR_PREFORM, " Turn");
         Sprintf(buf, "%5ld: %s", llmsg->turn, llmsg->text);
-        putstr(win, 0, buf);
+        putstr(win, ATR_PREFORM, buf);
     }
     /* since start of game is logged as a major event, 'eventcnt' should
        never end up as 0; for 'final', end of game is a major event too */
     if (!eventcnt)
-        putstr(win, 0, " none");
+        putstr(win, ATR_PREFORM, " none");
 
     display_nhwindow(win, TRUE);
     destroy_nhwindow(win);

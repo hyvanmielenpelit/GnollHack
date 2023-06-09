@@ -4456,7 +4456,7 @@ dump_skills(VOID_ARGS)
         putstr(0, ATR_PREFORM, buf);
     }
     Sprintf(buf, "You had %d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
-    putstr(0, ATR_PREFORM, buf);
+    putstr(0, ATR_SUBHEADING, buf);
 }
 
 short

@@ -5572,7 +5572,7 @@ int final;
         char mbuf[BUFSZ];
         long valuableworth = money_cnt(invent) + hidden_gold() + carried_gem_value();
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You have %ld %s worth of %svaluables with you.", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        Sprintf(mbuf, "You %s %ld %s worth of %svaluables with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_TOURIST))

@@ -757,7 +757,7 @@ dump_plines()
         strp = &saved_plines[j];
         if (*strp) {
             copynchars(&buf[1], *strp, BUFSZ - 1 - 1);
-            putstr(0, 0, buf);
+            putstr(0, ATR_PREFORM, buf);
 #ifdef FREE_ALL_MEMORY
             free(*strp), *strp = 0;
 #endif
@@ -820,7 +820,7 @@ time_t when; /* date+time at end of game */
     dump_end_screendump();
 
     dump_plines();
-    putstr(0, 0, "");
+    putstr(NHW_DUMPTXT, 0, "");
     putstr(0, ATR_HEADING, "Inventory:");
     (void) display_inventory((char *) 0, TRUE, 0);
     container_contents(invent, TRUE, TRUE, FALSE, 0);

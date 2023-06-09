@@ -5461,7 +5461,7 @@ dump_spells()
 {
     if (spellid(0) == NO_SPELL)
     {
-        putstr(0, ATR_PREFORM, "You did not know any spells.");
+        putstr(0, ATR_HEADING, "You did not know any spells.");
     }
     else
     {
