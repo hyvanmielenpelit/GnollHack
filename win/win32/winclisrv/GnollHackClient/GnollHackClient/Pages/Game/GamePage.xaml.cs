@@ -163,6 +163,10 @@ namespace GnollHackClient.Pages.Game
         private bool _showExtendedStatusBar = false;
         public bool ShowExtendedStatusBar { get { lock (_showExtendedStatusBarLock) { return _showExtendedStatusBar; } } set { lock (_showExtendedStatusBarLock) { _showExtendedStatusBar = value; } } }
 
+        private readonly object _lighterDarkeningLock = new object();
+        private bool _lighterDarkening = false;
+        public bool LighterDarkening { get { lock (_lighterDarkeningLock) { return _lighterDarkening; } } set { lock (_lighterDarkeningLock) { _lighterDarkening = value; } } }
+
         public readonly object RefreshScreenLock = new object();
         private bool _refreshScreen = true;
         public bool RefreshScreen
@@ -444,6 +448,7 @@ namespace GnollHackClient.Pages.Game
             NumDisplayedMessages = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
             NumDisplayedPetRows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
             WalkArrows = Preferences.Get("WalkArrows", true);
+            LighterDarkening = Preferences.Get("LighterDarkening", false);
 
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
@@ -3057,6 +3062,7 @@ namespace GnollHackClient.Pages.Game
                 maincountervalue = _mainCounterValue;
             }
             long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)ClientUtils.GetMainCanvasAnimationFrequency(MapRefreshRate) / 10.0));
+            bool lighter_darkening = LighterDarkening;
 
             using (SKPaint textPaint = new SKPaint())
             {
@@ -4526,7 +4532,8 @@ namespace GnollHackClient.Pages.Game
                                                                     bool unlit = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_APPEARS_UNLIT) != 0);
                                                                     // Get values from XAML controls
                                                                     SKBlendMode blendMode = SKBlendMode.Modulate;
-                                                                    int val = ((uloc ? 85 : unlit ? 35 : 65) * 255) / 100;
+                                                                    int darken_percentage = lighter_darkening ? (uloc ? 90 : unlit ? 65 : 80) : (uloc ? 85 : unlit ? 40 : 65);
+                                                                    int val = (darken_percentage * 255) / 100;
                                                                     SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
 
                                                                     paint.Color = color;

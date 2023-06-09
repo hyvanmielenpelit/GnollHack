@@ -273,6 +273,11 @@ namespace GnollHackClient.Pages.Game
             if (_gamePage != null)
                 _gamePage.ShowExtendedStatusBar = ShowExtendedStatusBarSwitch.IsToggled;
 
+            if (_gamePage != null)
+                _gamePage.LighterDarkening = LighterDarkeningSwitch.IsToggled;
+            Preferences.Set("LighterDarkening", LighterDarkeningSwitch.IsToggled);
+
+
             if (_mainPage != null)
                 _mainPage.UpdateLayout();
 
@@ -290,7 +295,7 @@ namespace GnollHackClient.Pages.Game
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             //bool carousel = false;
-            bool allowbones = true;
+            bool allowbones = true, lighterdarkening = false;
             bool devmode = GHConstants.DefaultDeveloperMode, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting;
@@ -346,6 +351,7 @@ namespace GnollHackClient.Pages.Game
                 simplecmdlayout = Preferences.Get("UseSimpleCmdLayout", true);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
                 petrows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
+                lighterdarkening = Preferences.Get("LighterDarkening", false);
             }
             else
             {
@@ -377,6 +383,7 @@ namespace GnollHackClient.Pages.Game
                 //noclipmode = _gamePage.MapNoClipMode;
                 //altnoclipmode = _gamePage.MapAlternateNoClipMode;
                 //zoomchangecenter = _gamePage.ZoomChangeCenterMode;
+                lighterdarkening = _gamePage.LighterDarkening;
             }
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
@@ -443,6 +450,7 @@ namespace GnollHackClient.Pages.Game
             }
             ForceMaxMessageSwitch.IsToggled = forcemaxmsg;
             ShowExtendedStatusBarSwitch.IsToggled = showexstatus;
+            LighterDarkeningSwitch.IsToggled = lighterdarkening;
 
             _doChangeVolume = !App.IsMuted;
         }
