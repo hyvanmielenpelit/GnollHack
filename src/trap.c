@@ -1025,12 +1025,12 @@ struct trap *trap;
     struct obj *otmp = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
 
     otmp->quan = 1L;
-    otmp->owt = weight(otmp);
     otmp->opoisoned = 0;
     otmp->elemental_enchantment = 0;
     otmp->mythic_prefix = 0;
     otmp->mythic_suffix = 0;
     otmp->ox = trap->tx, otmp->oy = trap->ty;
+    otmp->owt = weight(otmp);
     return otmp;
 }
 

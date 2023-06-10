@@ -367,6 +367,7 @@ boolean mod;
                         uncurse(otmp);
                         otmp->enchantment = (short)abs(otmp->enchantment);
                     }
+                    otmp->owt = weight(otmp);
                 }
                 break;
             }

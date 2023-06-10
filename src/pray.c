@@ -1139,6 +1139,7 @@ gcrownu()
             otmp->enchantment = 1 + rnd(3);
             otmp->mythic_suffix = MYTHIC_SUFFIX_BANISHMENT;
             otmp->oerodeproof = 1;
+            otmp->owt = weight(otmp);
             (void)add_to_container(obj, otmp);
 
             if (!already_learnt_spell_type(SPE_OBLITERATE))

@@ -111,6 +111,7 @@ boolean restore;
                         }
                     }
                     otmp->oartifact = 0;
+                    otmp->owt = weight(otmp);
                     if (has_oname(otmp))
                         free_oname(otmp);
 
@@ -127,7 +128,10 @@ boolean restore;
                     sanitize_name(ONAME(otmp));
                 }
                 if (objects[otmp->otyp].oc_material_init_type == MATINIT_BASE_MATERIAL)
+                {
                     otmp->material = objects[otmp->otyp].oc_material; /* Base material may have been randomized (using the dead character's randomization) */
+                    otmp->owt = weight(otmp);
+                }
             }
         }
         else 
@@ -241,7 +245,6 @@ boolean restore;
                     otmp->quan = (long) otmp->special_quality;
                 otmp->special_quality = 0;
                 otmp->material = objects[otmp->otyp].oc_material;
-                otmp->owt = weight(otmp);
                 curse(otmp);
             }
             else if (otmp->otyp == BELL_OF_OPENING)
@@ -260,6 +263,7 @@ boolean restore;
                 otmp->oartifact = 0;
                 curse(otmp);
             }
+            otmp->owt = weight(otmp);
         }
     }
 }

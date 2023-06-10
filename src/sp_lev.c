@@ -2090,7 +2090,7 @@ create_object(o, croom)
 object *o;
 struct mkroom *croom;
 {
-    struct obj *otmp;
+    struct obj *otmp = 0;
     schar x, y;
     char c;
     boolean named; /* has a name been supplied in level description? */
@@ -2314,6 +2314,9 @@ struct mkroom *croom;
         else
             otmp = mkobj_at(oclass, x, y, !named);
     }
+
+    if (!otmp)
+        return;
 
     /* Set these first, and then everything else that might affect speflags */
     if (o->speflags > 0)
@@ -2587,7 +2590,7 @@ struct mkroom *croom;
             }
         }
     }
-
+    otmp->owt = weight(otmp);
     stackobj(otmp);
 
     if (o->lit) {
