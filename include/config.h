@@ -625,9 +625,7 @@ typedef unsigned char uchar;
 /* Placeholders as above
  * DUMPHTML_FILE is not used if SYSCF is defiined
  */
-
 #endif
-
 #endif /* DUMPHTML */
 
 #define USE_ISAAC64 /* Use cross-plattform, bundled RNG */

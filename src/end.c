@@ -1509,10 +1509,13 @@ int how;
     urealtime.realtime += (long) (endtime - urealtime.start_timing);
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
 
+
+    char postbuf[BUFSZ * 3];
+    Strcpy(postbuf, "");
+
     /* Write forum post and livelog */
     if (how < PANICKED || how == ASCENDED || how == ESCAPED)
     {
-        char postbuf[BUFSZ * 3] = "";
         char basebuf[BUFSZ * 3] = "";
         if (how < PANICKED)
         {
@@ -1530,17 +1533,6 @@ int how;
             Sprintf(postbuf, "%s %s", plname, basebuf);
         }
 
-        IfModeAllowsPostToForum
-        {
-#if defined (DUMPLOG)
-            char dlbuf[BUFSZ * 4];
-            char* dlfilename = print_dumplog_filename_to_buffer(dlbuf);
-            if (dlfilename)
-                issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT, dlfilename);
-#endif
-            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, postbuf);
-
-        }
         livelog_printf(LL_ACHIEVE, "%s", basebuf);
     }
 
@@ -2013,6 +2005,28 @@ int how;
 
         dump_close_log();
     }
+
+    /* Dumplog is closed so can post it now */
+    if (*postbuf)
+    {
+        IfModeAllowsPostToForum
+        {
+    #if defined (DUMPLOG) || defined (DUMPHTML)
+            char dlbuf[BUFSZ * 4];
+            char* dlfilename = print_dumplog_filename_to_buffer(dlbuf);
+            if (dlfilename)
+                issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_TEXT, dlfilename);
+
+    #if defined(DUMPHTML)
+            dlfilename = print_dumphtml_filename_to_buffer(dlbuf);
+            if (dlfilename)
+                issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_HTML, dlfilename);
+    #endif
+    #endif
+            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, postbuf);
+        }
+    }
+
     /* "So when I die, the first thing I will see in Heaven is a
      * score list?" */
     if (have_windows && !iflags.toptenwin)

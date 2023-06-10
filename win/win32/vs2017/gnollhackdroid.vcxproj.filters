@@ -385,6 +385,7 @@
     <ClCompile Include="$(LibShareDir)gnhapi.c">
       <Filter>Android Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(WinShareDir)safeproc.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(IncDir)action.h">

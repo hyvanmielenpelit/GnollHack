@@ -30,6 +30,8 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Runtime.ConstrainedExecution;
 using Xamarin.Forms.PlatformConfiguration.TizenSpecific;
+using System.Net.Mail;
+using System.Security.Cryptography;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -1851,25 +1853,31 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private string _gameStatusPostAttachment = "";
-        private string _diagnosticDataPostAttachment = "";
+        private List<ForumPostAttachment> _forumPostAttachments = new List<ForumPostAttachment>();
 
         private async void PostToForum(bool is_game_status, int status_type, string status_string)
         {
             if (is_game_status ? !App.PostingGameStatus : !App.PostingDiagnosticData)
                 return;
 
-            string description = "attached file";
-            if(is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
+            if (is_game_status && !(App.UseSingleDumpLog && App.UseHTMLDumpLogs) && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_TEXT)
             {
-                _gameStatusPostAttachment = status_string;
-                description = "dumplog";
+                _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type));
+                return;
+            }
+            else if (is_game_status && App.UseHTMLDumpLogs && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_HTML)
+            {
+                _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/html", "HTML dumplog", !is_game_status, status_type));
+                return;
+            }
+            else if (is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
+            {
+                _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "game data", !is_game_status, status_type));
                 return;
             }
             else if(!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT)
             {
-                _diagnosticDataPostAttachment = status_string;
-                description = "diagnostic data";
+                _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "diagnostic data", !is_game_status, status_type));
                 return;
             }
 
@@ -1921,21 +1929,24 @@ namespace GnollHackClient.Pages.Game
                     default:
                         break;
                 }
-
             }
 
-            string attachment = is_game_status ? _gameStatusPostAttachment : _diagnosticDataPostAttachment;
             try
             {
                 using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
                 {
                     string postaddress = is_game_status ? App.GetGameStatusPostAddress() : App.GetDiagnosticDataPostAddress();
                     HttpContent content = null;
-                    if (attachment != "")
+                    if (_forumPostAttachments.Count > 0)
                     {
-                        FileInfo fileinfo = new FileInfo(attachment);
-                        string filename = fileinfo.Name;
-                        DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message, description, filename);
+                        DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message);
+                        foreach (ForumPostAttachment attachment in _forumPostAttachments)
+                        {
+                            FileInfo fileinfo = new FileInfo(attachment.FullPath);
+                            string filename = fileinfo.Name;
+                            if(File.Exists(attachment.FullPath))
+                                post.AddAttachment(attachment.Description, filename);
+                        }
                         string json = JsonConvert.SerializeObject(post);
                         MultipartFormDataContent multicontent = new MultipartFormDataContent("--boundary");
                         StringContent content1 = new StringContent(json, Encoding.UTF8, "application/json");
@@ -1943,14 +1954,28 @@ namespace GnollHackClient.Pages.Game
                         cdhv.Name = "payload_json";
                         content1.Headers.ContentDisposition = cdhv;
                         multicontent.Add(content1);
-                        var stream = new FileStream(attachment, FileMode.Open);
-                        StreamContent content2 = new StreamContent(stream);
-                        ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
-                        cdhv2.Name = "files[0]";
-                        cdhv2.FileName = filename;
-                        content2.Headers.ContentDisposition = cdhv2;
-                        content2.Headers.ContentType = new MediaTypeHeaderValue(is_game_status ? "text/plain" : "application/zip");
-                        multicontent.Add(content2);
+                        int aidx = 0;
+                        foreach (ForumPostAttachment attachment in _forumPostAttachments)
+                        {
+                            bool fileexists = File.Exists(attachment.FullPath);
+                            if(fileexists)
+                            {
+                                FileInfo fileinfo = new FileInfo(attachment.FullPath);
+                                string filename = fileinfo.Name;
+                                var stream = new FileStream(attachment.FullPath, FileMode.Open);
+                                StreamContent content2 = new StreamContent(stream);
+                                //byte[] bytes = new byte[stream.Length];
+                                //int bytesread = await stream.ReadAsync(bytes, 0, bytes.Length);
+                                //ByteArrayContent content2 = new ByteArrayContent(bytes);
+                                ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
+                                cdhv2.Name = "files[" + aidx + "]";
+                                cdhv2.FileName = filename;
+                                content2.Headers.ContentDisposition = cdhv2;
+                                content2.Headers.ContentType = new MediaTypeHeaderValue(attachment.ContentType);
+                                multicontent.Add(content2);
+                                aidx++;
+                            }
+                        }
                         content = multicontent;
                     }
                     else
@@ -1962,7 +1987,7 @@ namespace GnollHackClient.Pages.Game
 
                     using (var cts = new CancellationTokenSource())
                     {
-                        cts.CancelAfter(is_game_status || attachment == "" ? 10000 : 120000);
+                        cts.CancelAfter(is_game_status || _forumPostAttachments.Count == 0 ? 10000 : 120000);
                         string jsonResponse = "";
                         using (HttpResponseMessage response = await client.PostAsync(postaddress, content, cts.Token))
                         {
@@ -1977,8 +2002,8 @@ namespace GnollHackClient.Pages.Game
             {
                 Debug.WriteLine(e.Message);
             }
-            _gameStatusPostAttachment = "";
-            _diagnosticDataPostAttachment = "";
+
+            _forumPostAttachments.Clear();
         }
 
         private void CreateWindowView(int winid)

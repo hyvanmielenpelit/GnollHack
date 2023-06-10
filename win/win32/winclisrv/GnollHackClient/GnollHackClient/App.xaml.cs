@@ -65,6 +65,8 @@ namespace GnollHackClient
             App.PostingGameStatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             App.PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             App.CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
+            App.UseHTMLDumpLogs = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
+            App.UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
 
             App.BackButtonPressed += App.EmptyBackButtonPressed;
         }
@@ -316,6 +318,8 @@ namespace GnollHackClient
         public static bool ClassicMode { get; set; }
         public static bool CasualMode { get; set; }
         public static bool ServerGameAvailable { get; set; }
+        public static bool UseHTMLDumpLogs { get; set; }
+        public static bool UseSingleDumpLog { get; set; }
 
         public static string GHVersionId { get; set; }
         public static string GHVersionString { get; set; }
@@ -553,6 +557,38 @@ namespace GnollHackClient
                     catch (Exception ex)
                     {
                         Debug.WriteLine(ex.Message);
+                    }
+                }
+            }
+        }
+
+        public static void SaveDumplogTypefaces(Assembly assembly)
+        {
+            string targetdir = Path.Combine(App.GHPath, "dumplog");
+            if (!Directory.Exists(targetdir))
+                return;
+
+            string[] fileNames = { "DejaVuSansMono.woff", "DejaVuSansMono-Bold.woff", "DejaVuSansMono-Oblique.woff", "DejaVuSansMono-BoldOblique.woff" };
+            for(int i = 0; i < 4; i++) 
+            { 
+                string filename = fileNames[i];
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets." + filename))
+                {
+                    if (stream != null)
+                    {
+                        try
+                        {
+                            string fulltargetpath = Path.Combine(targetdir, filename);
+                            if (!File.Exists(fulltargetpath))
+                            {
+                                FileStream filestream = new FileStream(fulltargetpath, FileMode.Create);
+                                filestream.CopyTo(stream);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
                     }
                 }
             }

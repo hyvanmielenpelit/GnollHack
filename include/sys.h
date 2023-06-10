@@ -23,6 +23,14 @@ struct sysopt {
 #endif
 #ifdef DUMPHTML
     char* dumphtmlfile; /* where the html dump is saved */
+    char* dumphtmlfontname; /* font name for html dump */
+#ifdef DUMPHTML_WEBFONT_LINK
+    char* dumphtmlfontlink; /* css web link for the font */
+#endif
+    char* dumphtml_css_fontface_normal; /* css @fontface definition for normal font */
+    char* dumphtml_css_fontface_bold; /* css @fontface definition for bold font */
+    char* dumphtml_css_fontface_italic; /* css @fontface definition for italic font */
+    char* dumphtml_css_fontface_bolditalic; /* css @fontface definition for bold italic font */
 #endif
     int env_dbgfl;    /*  1: debugfiles comes from getenv("DEBUGFILES")
                        *     so sysconf's DEBUGFILES shouldn't override it;

@@ -47,7 +47,15 @@ sys_early_init()
 #endif
 #if defined (DUMPHTML)
     sysopt.dumphtmlfile = (char*)0;
+    sysopt.dumphtmlfontname = (char*)0;
+#if defined (DUMPHTML_WEBFONT_LINK)
+    sysopt.dumphtmlfontlink = (char*)0;
 #endif
+#endif
+    sysopt.dumphtml_css_fontface_normal = (char*)0;
+    sysopt.dumphtml_css_fontface_bold = (char*)0;
+    sysopt.dumphtml_css_fontface_italic = (char*)0;
+    sysopt.dumphtml_css_fontface_bolditalic = (char*)0;
     sysopt.env_dbgfl = 0; /* haven't checked getenv("DEBUGFILES") yet */
     sysopt.shellers = (char *) 0;
     sysopt.explorers = (char *) 0;
@@ -124,6 +132,20 @@ sysopt_release()
 #if defined (DUMPHTML)
     if (sysopt.dumphtmlfile)
         free((genericptr_t)sysopt.dumphtmlfile), sysopt.dumphtmlfile = (char*)0;
+    if (sysopt.dumphtmlfontname)
+        free((genericptr_t)sysopt.dumphtmlfontname), sysopt.dumphtmlfontname = (char*)0;
+#if defined (DUMPHTML_WEBFONT_LINK)
+    if (sysopt.dumphtmlfontlink)
+        free((genericptr_t)sysopt.dumphtmlfontlink), sysopt.dumphtmlfontlink = (char*)0;
+#endif
+    if (sysopt.dumphtml_css_fontface_normal)
+        free((genericptr_t)sysopt.dumphtml_css_fontface_normal), sysopt.dumphtml_css_fontface_normal = (char*)0;
+    if (sysopt.dumphtml_css_fontface_bold)
+        free((genericptr_t)sysopt.dumphtml_css_fontface_bold), sysopt.dumphtml_css_fontface_bold = (char*)0;
+    if (sysopt.dumphtml_css_fontface_italic)
+        free((genericptr_t)sysopt.dumphtml_css_fontface_italic), sysopt.dumphtml_css_fontface_italic = (char*)0;
+    if (sysopt.dumphtml_css_fontface_bolditalic)
+        free((genericptr_t)sysopt.dumphtml_css_fontface_bolditalic), sysopt.dumphtml_css_fontface_bolditalic = (char*)0;
 #endif
     if (sysopt.genericusers)
         free((genericptr_t) sysopt.genericusers),

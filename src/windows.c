@@ -1983,6 +1983,19 @@ nhsym c; /* assumed to be either CP437 or Unicode */
     }
 }
 
+#ifndef DUMPHTML_DEFAULT_URL_FONT_NORMAL
+#define DUMPHTML_DEFAULT_URL_FONT_NORMAL "https://fonts.cdnfonts.com/s/108/DejaVuSansMono.woff"
+#endif
+#ifndef DUMPHTML_DEFAULT_URL_FONT_BOLD
+#define DUMPHTML_DEFAULT_URL_FONT_BOLD "https://fonts.cdnfonts.com/s/108/DejaVuSansMono-Bold.woff"
+#endif
+#ifndef DUMPHTML_DEFAULT_URL_FONT_ITALIC
+#define DUMPHTML_DEFAULT_URL_FONT_ITALIC "https://fonts.cdnfonts.com/s/108/DejaVuSansMono-Oblique.woff"
+#endif
+#ifndef DUMPHTML_DEFAULT_URL_FONT_BOLD_ITALIC
+#define DUMPHTML_DEFAULT_URL_FONT_BOLD_ITALIC "https://fonts.cdnfonts.com/s/108/DejaVuSansMono-BoldOblique.woff"
+#endif
+
 STATIC_OVL void
 dump_css()
 {
@@ -1995,47 +2008,67 @@ dump_css()
     css = fopen_datafile(DUMPHTML_CSS_FILE, "r", DATAPREFIX); //"gnhdump.css"
 #endif
     if (!css) {
+        int i;
+
+        const char* default_fontface_strings[4] = {
+        "@font-face { font-family: \"DejaVu Sans Mono\"; font-style: normal; font-weight: normal;  src: local(DejaVu Sans Mono), local(DejaVuSansMono), url(DejaVuSansMono.woff), url(" DUMPHTML_DEFAULT_URL_FONT_NORMAL ") format(\"woff\") }",
+        "@font-face { font-family: \"DejaVu Sans Mono\"; font-style: normal; font-weight: bold; src: local(DejaVu Sans Mono Bold), local(DejaVuSansMono-Bold), url(DejaVuSansMono-Bold.woff), url(" DUMPHTML_DEFAULT_URL_FONT_BOLD ")  format(\"woff\"); }",
+        "@font-face { font-family: \"DejaVu Sans Mono\"; font-style: oblique; font-weight: normal; src: local(DejaVu Sans Mono Oblique), local(DejaVuSansMono-Oblique), url(DejaVuSansMono-Oblique.woff), url(" DUMPHTML_DEFAULT_URL_FONT_ITALIC ")  format(\"woff\"); }",
+        "@font-face { font-family: \"DejaVu Sans Mono\"; font-style: oblique; font-weight: bold; src: local(DejaVu Sans Mono Bold Oblique), local(DejaVuSansMono-BoldOblique), url(DejaVuSansMono-BoldOblique.woff), url(" DUMPHTML_DEFAULT_URL_FONT_BOLD_ITALIC ")  format(\"woff\"); }",
+        };
+
+        const char* sysopt_fontface_strings[4] = {
+            sysopt.dumphtml_css_fontface_normal,
+            sysopt.dumphtml_css_fontface_bold,
+            sysopt.dumphtml_css_fontface_italic,
+            sysopt.dumphtml_css_fontface_bolditalic,
+        };
+
+        for (i = 0; i < 4; i++)
+        {
+            const char* fontfacestring = sysopt_fontface_strings[i] ? sysopt_fontface_strings[i] : default_fontface_strings[i];
+            fprintf(dumphtml_file, "%s\n", fontfacestring);
+        }
+
         const char* css_strings[] = {
-#ifndef DUMPHTML_WEBFONT_LINK
-        "@font-face {",
-        "  font-family: \"DejaVu Sans Mono\";",
-        "  font-style: normal;",
-        "  font-weight: normal;",
-        "  src: local(DejaVu Sans Mono), local(DejaVuSansMono),",
-        "    url(DejaVuSansMono.woff) format(\"woff\");",
-        "}",
-        "@font-face {",
-        "  font-family: \"DejaVu Sans Mono\";",
-        "  font-style: normal;",
-        "  font-weight: bold;",
-        "  src: local(DejaVu Sans Mono Bold), local(DejaVuSansMono-Bold),",
-        "    url(DejaVuSansMono-Bold.woff) format(\"woff\");",
-        "}",
-        "@font-face {",
-        "  font-family: \"DejaVu Sans Mono\";",
-        "  font-style: oblique;",
-        "  font-weight: bold;",
-        "  src: local(DejaVu Sans Mono Bold Oblique), local(DejaVuSansMono-BoldOblique),",
-        "    url(DejaVuSansMono-BoldOblique.woff) format(\"woff\");",
-        "}",
-        "@font-face {",
-        "  font-family: \"DejaVu Sans Mono\";",
-        "  font-style: oblique;",
-        "  font-weight: normal;",
-        "  src: local(DejaVu Sans Mono Oblique), local(DejaVuSansMono-Oblique),",
-        "    url(DejaVuSansMono-Oblique.woff) format(\"woff\");",
-        "}",
-#endif
+        //"@font-face {",
+        //"  font-family: \"DejaVu Sans Mono\";",
+        //"  font-style: normal;",
+        //"  font-weight: normal;",
+        //"  src: local(DejaVu Sans Mono), local(DejaVuSansMono),",
+        //"    url(DejaVuSansMono.woff) format(\"woff\");",
+        //"}",
+        //"@font-face {",
+        //"  font-family: \"DejaVu Sans Mono\";",
+        //"  font-style: normal;",
+        //"  font-weight: bold;",
+        //"  src: local(DejaVu Sans Mono Bold), local(DejaVuSansMono-Bold),",
+        //"    url(DejaVuSansMono-Bold.woff) format(\"woff\");",
+        //"}",
+        //"@font-face {",
+        //"  font-family: \"DejaVu Sans Mono\";",
+        //"  font-style: oblique;",
+        //"  font-weight: bold;",
+        //"  src: local(DejaVu Sans Mono Bold Oblique), local(DejaVuSansMono-BoldOblique),",
+        //"    url(DejaVuSansMono-BoldOblique.woff) format(\"woff\");",
+        //"}",
+        //"@font-face {",
+        //"  font-family: \"DejaVu Sans Mono\";",
+        //"  font-style: oblique;",
+        //"  font-weight: normal;",
+        //"  src: local(DejaVu Sans Mono Oblique), local(DejaVuSansMono-Oblique),",
+        //"    url(DejaVuSansMono-Oblique.woff) format(\"woff\");",
+        //"}",
         "body {",
         "    color: #CCCCCC;",
         "    background-color: #222222;",
-        "    font-family: monospace;",
-        "    font-size: 0.9vw;",
+        "    font-family: %sDejaVu Sans Mono, Consolas, monospace;",
+        "    font-size: min(2vw, 2vh);",
         "}",
         "",
         "pre.nh_screen {",
-        "    font-family: DejaVu Sans Mono, Consolas, Menlo, Courier New, Courier, monospace;",
-        "    font-size: 1.05vw;",
+        "    font-family: %sDejaVu Sans Mono, Consolas, monospace;",
+        "    font-size: min(2.25vw, 2.25vh);",
         "    background-color: black;",
         "    width: fit-content;",
         "}",
@@ -2055,7 +2088,7 @@ dump_css()
         "    background-color: #222222;",
         "    color: #fff;",
         "    text-align: center;",
-        "    font-size: 0.9vw;",
+        "    font-size: min(2vw, 2vh);",
         "    padding: 5px 5px;",
         "    border-radius: 6px;",
         "    position: absolute;",
@@ -2069,14 +2102,14 @@ dump_css()
         "",
         "h2 {",
         "    color: white;",
-        "    font-size: 1.06vw;",
+        "    font-size: min(2.5vw, 2.5vh)vw;",
         "    margin: 0.5ex;",
         "    padding-top: 1.5em;",
         "}",
         "",
         "h3 {",
         "    color: white;",
-        "    font-size: 0.95vw;",
+        "    font-size: min(2.25vw, 2.25vh);",
         "    margin: 1ex 0ex 0.25ex 1.5ex;",
         "}",
         "",
@@ -2123,10 +2156,20 @@ dump_css()
         0
         };
 
-        int i = 0;
+        i = 0;
         while (css_strings[i])
         {
-            fprintf(dumphtml_file, "%s\n", css_strings[i]);
+            if (index(css_strings[i], '%'))
+            {
+                char fontbuf[BUFSZ] = "";
+                char dbuf[BUFSZ];
+                if(sysopt.dumphtmlfontname && *sysopt.dumphtmlfontname)
+                    Sprintf(fontbuf, "%s, ", sysopt.dumphtmlfontname);
+                Sprintf(dbuf, css_strings[i], fontbuf);
+                fprintf(dumphtml_file, "%s\n", dbuf);
+            }
+            else
+                fprintf(dumphtml_file, "%s\n", css_strings[i]);
             i++;
         }
     }
@@ -2326,6 +2369,9 @@ dump_headers()
     if (!dumphtml_file)
         return;
 
+#ifdef DUMPHTML_WEBFONT_LINK
+    const char* fontlink = sysopt.dumphtmlfontlink ? sysopt.dumphtmlfontlink : "https://fonts.cdnfonts.com/css/dejavu-sans-mono";
+#endif
     fprintf(dumphtml_file, "<!DOCTYPE html>\n");
     fprintf(dumphtml_file, "<head>\n");
     fprintf(dumphtml_file, "<title>GnollHack %s (%s)</title>\n", version_string(vers), plname);
@@ -2334,7 +2380,7 @@ dump_headers()
     fprintf(dumphtml_file, "<meta name=\"date\" content=\"%s\" />\n", iso8601);
     fprintf(dumphtml_file, "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n");
 #ifdef DUMPHTML_WEBFONT_LINK
-    fprintf(dumphtml_file, "<link href=\"https://cdn.jsdelivr.net/gh/maxwell-k/dejavu-sans-mono-web-font@2.37/index.css\" title=\"Default\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />\n");
+    fprintf(dumphtml_file, "<link href=\"%s\" title=\"Default\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />\n", fontlink);
 #endif
     fprintf(dumphtml_file, "<style type=\"text/css\">\n");
     dump_css();

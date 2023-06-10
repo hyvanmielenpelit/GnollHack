@@ -1222,6 +1222,8 @@ namespace GnollHackCommon
         GAME_STATUS_ACHIEVEMENT,
         GAME_STATUS_RESULT,
         GAME_STATUS_RESULT_ATTACHMENT,
+        GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_TEXT,
+        GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_HTML,
     }
 
     public enum diagnostic_data_types
@@ -1450,6 +1452,8 @@ namespace GnollHackCommon
         public const bool DefaultHideStatusBar = true;
         public const long StoreReviewRequestNumberOfGames = 4;
         public const long StoreReviewRequestTotalPlayTime = 60 * 60 * 2;
+        public const bool DefaultHTMLDumpLogs = true;
+        public const bool DefaultUseSingleDumpLog = true;
     }
 
 

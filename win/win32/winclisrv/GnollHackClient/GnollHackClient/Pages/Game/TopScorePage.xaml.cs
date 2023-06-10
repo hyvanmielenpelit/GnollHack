@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
@@ -248,6 +248,37 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        public async Task<bool> OpenBrowser(Uri uri)
+        {
+            try
+            {
+                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
+                return false;
+            }
+        }
+        public async Task<bool> OpenFileInLauncher(string fullPath)
+        {
+            try
+            {
+                await Launcher.OpenAsync(new OpenFileRequest
+                {
+                    File = new ReadOnlyFile(fullPath)
+                }); 
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Cannot Open File", "GnollHack cannot open the file at " + fullPath + " in launcher. Error: " + ex.Message, "OK");
+                return false;
+            }
+        }
+
+
         private async void Button_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
@@ -260,24 +291,48 @@ namespace GnollHackClient.Pages.Game
             if(tsi != null)
             {
                 string fulltargetpath = Path.Combine(App.GHPath, "dumplog", tsi.GetDumplogFileName());
+                string fullhtmltargetpath = Path.Combine(App.GHPath, "dumplog", tsi.GetHTMLDumplogFileName());
+                bool dumplogexists = File.Exists(fulltargetpath);
+                bool htmldumplogexists = File.Exists(fullhtmltargetpath);
+
+                bool HTMLDumplogDisplayed = false;
                 try
                 {
-                    if (File.Exists(fulltargetpath))
+                    if(App.UseHTMLDumpLogs && htmldumplogexists)
                     {
-                        var displFilePage = new DisplayFilePage(fulltargetpath, "Dumplog - " + tsi.Name, 0, true);
-                        string errormsg = "";
-                        if (!displFilePage.ReadFile(out errormsg))
+                        bool openhtml = true;
+                        if (dumplogexists && htmldumplogexists && !App.UseSingleDumpLog)
+                            openhtml = await DisplayAlert("Open HTML DumpLog", "There are both text and HTML dumplogs available. Do you want to open the HTML dumplog?", "Yes", "No");
+                        if (openhtml)
+                            HTMLDumplogDisplayed = await OpenFileInLauncher(fullhtmltargetpath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Error Reading HTML Dumplog File", "An error occurred when reading HTML dumplog \'" + fullhtmltargetpath + "\' for " + tsi.Name + ": " + ex.Message, "OK");
+                }
+
+                try
+                {
+                    if (!HTMLDumplogDisplayed)
+                    {
+                        if (dumplogexists)
                         {
-                            await DisplayAlert("Error Reading Dumplog File", errormsg, "OK");
+                            var displFilePage = new DisplayFilePage(fulltargetpath, "Dumplog - " + tsi.Name, 0, true);
+                            string errormsg = "";
+                            if (!displFilePage.ReadFile(out errormsg))
+                            {
+                                await DisplayAlert("Error Reading Dumplog File", errormsg, "OK");
+                            }
+                            else
+                            {
+                                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                            }
                         }
                         else
                         {
-                            await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                            await DisplayAlert("No Dumplog", "Dumplog \'" + fulltargetpath + "\' for " + tsi.Name + " does not exist.", "OK");
                         }
-                    }
-                    else
-                    {
-                        await DisplayAlert("No Dumplog", "Dumplog \'" + fulltargetpath + "\' for " + tsi.Name + " does not exist.", "OK");
                     }
                 }
                 catch (Exception ex)

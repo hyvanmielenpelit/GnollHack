@@ -160,7 +160,7 @@
       <CppLanguageStandard>Default</CppLanguageStandard>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
       <AdditionalIncludeDirectories>$(LibiOSDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_IOS;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_IOS;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalOptions>-lm -lc -static</AdditionalOptions>
@@ -177,7 +177,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(LibiOSDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GNH_MOBILE;GNH_IOS;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GNH_MOBILE;GNH_IOS;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalOptions>-lm -lc -static</AdditionalOptions>

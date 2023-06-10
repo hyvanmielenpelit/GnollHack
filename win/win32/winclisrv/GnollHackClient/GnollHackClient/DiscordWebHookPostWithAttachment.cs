@@ -6,15 +6,20 @@ namespace GnollHackClient
 {
     public class DiscordWebHookPostWithAttachment : DiscordWebHookPost
     {
-        public DiscordWebHookAttachedFile[] attachments = new DiscordWebHookAttachedFile[1];
+        public DiscordWebHookAttachedFile[] attachments = null; // new DiscordWebHookAttachedFile[1];
 
         public DiscordWebHookPostWithAttachment(string message) : base(message) 
         {
             
         }
-        public DiscordWebHookPostWithAttachment(string message, string description, string attachment) : base(message)
+
+        public void AddAttachment(string description, string attachment)
         {
-            attachments[0] = new DiscordWebHookAttachedFile(0, description, attachment);
+            List<DiscordWebHookAttachedFile> templist = new List<DiscordWebHookAttachedFile>();
+            if(attachments != null)
+                templist.AddRange(attachments);
+            templist.Add(new DiscordWebHookAttachedFile(templist.Count, description, attachment));
+            attachments = templist.ToArray(); 
         }
     }
 }

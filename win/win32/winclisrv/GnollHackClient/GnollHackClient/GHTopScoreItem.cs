@@ -177,11 +177,28 @@ namespace GnollHackClient
             }
         }
 
-
+        public string FormattedName
+        {
+            get
+            {
+                string name = Name;
+                if (name == null)
+                    return "";
+                string formatted = name.Replace('\\', '_');
+                formatted = formatted.Replace('/', '_');
+                formatted = formatted.Replace(' ', '_');
+                return formatted;
+            }
+        }
         public string GetDumplogFileName()
         {
             string startdatestring = App.GnollHackService.DumplogDateString(StartTime);
-            return "gnollhack." + Name + "." + startdatestring + ".txt";
+            return "gnollhack." + FormattedName + "." + startdatestring + ".txt";
+        }
+        public string GetHTMLDumplogFileName()
+        {
+            string startdatestring = App.GnollHackService.DumplogDateString(StartTime);
+            return "gnollhack." + FormattedName + "." + startdatestring + ".html";
         }
 
         public bool IsDumplogButtonEnabled
