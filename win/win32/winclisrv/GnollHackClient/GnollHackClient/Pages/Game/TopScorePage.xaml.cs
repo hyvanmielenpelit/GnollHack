@@ -304,7 +304,20 @@ namespace GnollHackClient.Pages.Game
                         if (dumplogexists && htmldumplogexists && !App.UseSingleDumpLog)
                             openhtml = await DisplayAlert("Open HTML DumpLog", "There are both text and HTML dumplogs available. Do you want to open the HTML dumplog?", "Yes", "No");
                         if (openhtml)
-                            HTMLDumplogDisplayed = await OpenFileInLauncher(fullhtmltargetpath);
+                        {
+                            //HTMLDumplogDisplayed = await OpenFileInLauncher(fullhtmltargetpath);
+                            var displFilePage = new DisplayFilePage(fullhtmltargetpath, "Dumplog - " + tsi.Name, 0, true, true);
+                            string errormsg = "";
+                            if (!displFilePage.ReadFile(out errormsg))
+                            {
+                                await DisplayAlert("Error Reading HTML Dumplog File", errormsg, "OK");
+                            }
+                            else
+                            {
+                                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                                HTMLDumplogDisplayed = true;
+                            }
+                        }
                     }
                 }
                 catch (Exception ex)

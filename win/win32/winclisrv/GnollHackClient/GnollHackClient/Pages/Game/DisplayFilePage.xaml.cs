@@ -18,16 +18,22 @@ namespace GnollHackClient.Pages.Game
     {
         private string _fileName;
         private int _fixedWidth;
+        private bool _isHtml;
 
         public DisplayFilePage(string fileName, string header) : this(fileName, header, 0)
         {
         }
 
-        public DisplayFilePage(string fileName, string header, int fixedWidth) : this(fileName, header, fixedWidth, false)
+        public DisplayFilePage(string fileName, string header, int fixedWidth) : this(fileName, header, fixedWidth, false, false)
         {
         }
 
-        public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare)
+        public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare) : this(fileName, header, fixedWidth, displayshare, false)
+        {
+
+        }
+
+        public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare, bool isHtml)
         {
             InitializeComponent();
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
@@ -37,6 +43,12 @@ namespace GnollHackClient.Pages.Game
             HeaderLabel.Text = header;
             BottomLayout.IsVisible = displayshare;
             CloseGrid.IsVisible = !displayshare;
+            _isHtml = isHtml;
+            if(_isHtml)
+            {
+                TextLabel.IsVisible = false;
+                DisplayWebView.IsVisible = true;
+            }
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
@@ -51,30 +63,40 @@ namespace GnollHackClient.Pages.Game
             string res = "";
             try
             {
-                string text = File.ReadAllText(_fileName, Encoding.UTF8);
-                if(_fixedWidth > 0)
+                if (_isHtml)
                 {
-                    int firstLineBreak = text.IndexOf(Environment.NewLine);
-                    int len = 0;
-                    if (firstLineBreak < 0)
-                    {
-                        len = text.Length;
-                        if (len < _fixedWidth)
-                        {
-                            text = text + new string(' ', _fixedWidth - len);
-                        }
-                    }
-                    else
-                    {
-                        len = firstLineBreak;
-                        if (len < _fixedWidth)
-                        {
-                            text = text.Substring(0, firstLineBreak) + new string(' ', _fixedWidth - len) + text.Substring(firstLineBreak);
-                        }
-                    }
-
+                    string text = File.ReadAllText(_fileName, Encoding.UTF8);
+                    var htmlSource = new HtmlWebViewSource();
+                    htmlSource.Html = text;
+                    DisplayWebView.Source = htmlSource;
                 }
-                TextLabel.Text = text;
+                else
+                {
+                    string text = File.ReadAllText(_fileName, Encoding.UTF8);
+                    if (_fixedWidth > 0)
+                    {
+                        int firstLineBreak = text.IndexOf(Environment.NewLine);
+                        int len = 0;
+                        if (firstLineBreak < 0)
+                        {
+                            len = text.Length;
+                            if (len < _fixedWidth)
+                            {
+                                text = text + new string(' ', _fixedWidth - len);
+                            }
+                        }
+                        else
+                        {
+                            len = firstLineBreak;
+                            if (len < _fixedWidth)
+                            {
+                                text = text.Substring(0, firstLineBreak) + new string(' ', _fixedWidth - len) + text.Substring(firstLineBreak);
+                            }
+                        }
+
+                    }
+                    TextLabel.Text = text;
+                }
             }
             catch (Exception e)
             {

@@ -579,10 +579,14 @@ namespace GnollHackClient
                         try
                         {
                             string fulltargetpath = Path.Combine(targetdir, filename);
+                            if (File.Exists(fulltargetpath))
+                                File.Delete(fulltargetpath);
                             if (!File.Exists(fulltargetpath))
                             {
-                                FileStream filestream = new FileStream(fulltargetpath, FileMode.Create);
-                                filestream.CopyTo(stream);
+                                using (FileStream filestream = new FileStream(fulltargetpath, FileMode.Create, FileAccess.Write, FileShare.None))
+                                {
+                                    stream.CopyTo(filestream);
+                                }
                             }
                         }
                         catch (Exception ex)
