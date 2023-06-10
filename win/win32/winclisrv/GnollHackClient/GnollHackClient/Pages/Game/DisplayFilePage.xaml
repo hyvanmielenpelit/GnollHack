@@ -4,7 +4,8 @@
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:gnollhackclient="clr-namespace:GnollHackClient" xmlns:controls="clr-namespace:GnollHackClient.Controls"
              BackgroundColor="Black"
-             x:Class="GnollHackClient.Pages.Game.DisplayFilePage">
+             x:Class="GnollHackClient.Pages.Game.DisplayFilePage"
+             Appearing="ContentPage_Appearing">
     <ContentPage.Content>
         <Grid>
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
@@ -25,7 +26,7 @@
                         FontFamily="DejaVuSansMono" FontSize="13" IsReadOnly="true" >
                 </gnollhackclient:GHEditor>-->
                 <!--IsVisible="false"-->
-                <gnollhackclient:CustomLabel Grid.Row="1" x:Name="TextLabel" VerticalTextAlignment="Start" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                <gnollhackclient:CustomLabel Grid.Row="1" x:Name="TextLabel" IsVisible="False" VerticalTextAlignment="Start" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
                         FontFamily="DejaVuSansMono" FontSize="13" IsScrollable="True" />
                 <!--<ScrollView x:Name="TextScrollView" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                     <Label x:Name="TextLabel" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"

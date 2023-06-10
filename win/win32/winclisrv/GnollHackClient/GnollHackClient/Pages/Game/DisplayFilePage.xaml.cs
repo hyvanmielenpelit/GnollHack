@@ -44,11 +44,6 @@ namespace GnollHackClient.Pages.Game
             BottomLayout.IsVisible = displayshare;
             CloseGrid.IsVisible = !displayshare;
             _isHtml = isHtml;
-            if(_isHtml)
-            {
-                TextLabel.IsVisible = false;
-                DisplayWebView.IsVisible = true;
-            }
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
@@ -70,6 +65,8 @@ namespace GnollHackClient.Pages.Game
                     htmlSource.Html = text;
                     htmlSource.BaseUrl = App.PlatformService.GetBaseUrl();
                     DisplayWebView.Source = htmlSource;
+                    DisplayWebView.Opacity = 0;
+                    DisplayWebView.IsVisible = true;
                 }
                 else
                 {
@@ -97,6 +94,7 @@ namespace GnollHackClient.Pages.Game
 
                     }
                     TextLabel.Text = text;
+                    TextLabel.IsVisible = true;
                 }
             }
             catch (Exception e)
@@ -121,7 +119,7 @@ namespace GnollHackClient.Pages.Game
                 margins = TextLabel.Margin;
                 Thickness safearea = new Thickness();
                 bool usingsafe = On<Xamarin.Forms.PlatformConfiguration.iOS>().UsingSafeArea();
-                if(usingsafe)
+                if (usingsafe)
                 {
                     safearea = On<Xamarin.Forms.PlatformConfiguration.iOS>().SafeAreaInsets();
                 }
@@ -137,7 +135,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     TextLabel.FontSize = testsize;
                     double textwidth = TextLabel.MeasureWidth(new string('A', _fixedWidth));
-                    if(textwidth > 0)
+                    if (textwidth > 0)
                         newsize = testsize * target_width / textwidth;
                 }
                 TextLabel.FontSize = newsize;
@@ -166,5 +164,19 @@ namespace GnollHackClient.Pages.Game
             }
             ShareButton.IsEnabled = true;
         }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            if (App.IsiOS && _isHtml)
+            {
+                Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
+                {
+                    Animation displayFileAnimation = new Animation(v => DisplayWebView.Opacity = (double)v, 0.0, 1.0);
+                        displayFileAnimation.Commit(MainGrid, "DisplayFileShowAnimation", length: 256,
+                    rate: 16, repeat: () => false);
+                    return false;
+                });
+            }
+        }
     }
-}
+ }
