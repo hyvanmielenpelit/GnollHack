@@ -430,7 +430,8 @@ unsigned long mkflags;
     ttmp->vl = zero_vl;
     ttmp->launch.x = ttmp->launch.y = -1; /* force error if used before set */
     ttmp->dst.dnum = ttmp->dst.dlevel = -1;
-    ttmp->madeby_u = 0;
+    ttmp->madeby_u = (mkflags & MKTRAPFLAG_MADE_BY_U) != 0;
+    ttmp->madeby_mon = (mkflags & MKTRAPFLAG_MADE_BY_MON) != 0;
     ttmp->once = 0;
     ttmp->tseen = (trap_type_definitions[typ].tdflags & TRAPDEF_FLAGS_VISIBLE_AT_START);
     ttmp->ttyp = typ;
@@ -2168,6 +2169,7 @@ struct trap *trap;
             trap->tflags = 0;
             trap->activation_count = 0;
             trap->madeby_u = FALSE; /* resulting pit isn't yours */
+            trap->madeby_mon = FALSE; /* resulting pit isn't mons */
             seetrap(trap);          /* and it isn't concealed */
         }
     }
@@ -2731,7 +2733,7 @@ register struct monst *mtmp;
         register int tt = trap->ttyp;
         boolean in_sight, tear_web, see_it, can_see_trap,
             inescapable = force_mintrap || ((tt == HOLE || tt == PIT)
-                                            && Sokoban && !trap->madeby_u);
+                                            && Sokoban && !trap->madeby_u && !trap->madeby_mon);
         const char *fallverb;
 
         can_see_trap = cansee(trap->tx, trap->ty);
@@ -7511,11 +7513,11 @@ maybe_finish_sokoban()
     struct trap *t;
 
     if (Sokoban && !in_mklev) {
-        /* scan all remaining traps, ignoring any created by the hero;
+        /* scan all remaining traps, ignoring any created by the hero (and by monsters);
            if this level has no more pits or holes, the current sokoban
            puzzle has been solved */
         for (t = ftrap; t; t = t->ntrap) {
-            if (t->madeby_u)
+            if (t->madeby_u || t->madeby_mon)
                 continue;
             if (t->ttyp == PIT || t->ttyp == HOLE)
                 break;

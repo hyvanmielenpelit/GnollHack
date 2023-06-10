@@ -709,6 +709,7 @@ int ttyp;
     struct monst *mtmp = m_at(x, y); /* may be madeby */
     boolean madeby_u = (madeby == BY_YOU);
     boolean madeby_obj = (madeby == BY_OBJECT);
+    boolean madeby_mon = madeby && !madeby_u && !madeby_obj;
     boolean at_u = (x == u.ux) && (y == u.uy);
     boolean wont_fall = Levitation || Flying;
 
@@ -753,11 +754,10 @@ int ttyp;
         Strcpy(surface_type, surface(x, y));
     shopdoor = IS_DOOR(lev->typ) && *in_rooms(x, y, SHOPBASE);
     oldobjs = level.objects[x][y];
-    ttmp = maketrap(x, y, ttyp, NON_PM, MKTRAP_NO_FLAGS);
+    ttmp = maketrap(x, y, ttyp, NON_PM, (madeby_u ? MKTRAPFLAG_MADE_BY_U : 0UL) | (madeby_mon ? MKTRAPFLAG_MADE_BY_MON : 0UL));
     if (!ttmp)
         return;
     newobjs = level.objects[x][y];
-    ttmp->madeby_u = madeby_u;
     ttmp->tseen = 0;
     if (cansee(x, y))
         seetrap(ttmp);

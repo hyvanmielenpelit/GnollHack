@@ -56,6 +56,7 @@ struct trap {
                               when you untrap a monster.  It would be too
                               easy to make a monster peaceful if you could
                               set a trap for it and then untrap it. */
+    Bitfield(madeby_mon, 1); /* To differentiate for originally generated traps, especially in Sokoban */
     union vlaunchinfo vl;
 #define launch_otyp vl.v_launch_otyp
 #define launch2 vl.v_launch2
@@ -148,7 +149,9 @@ extern struct trap_type_definition trap_type_definitions[TRAPNUM];
 #define is_hole(ttyp)  ((ttyp) == HOLE || (ttyp) == TRAPDOOR)
 
 #define MKTRAP_NO_FLAGS                    0x00000000UL
-#define MKTRAPFLAG_GARDEN_GNOME_ITEMS    0x00000001UL
+#define MKTRAPFLAG_GARDEN_GNOME_ITEMS      0x00000001UL
+#define MKTRAPFLAG_MADE_BY_U               0x00000002UL
+#define MKTRAPFLAG_MADE_BY_MON             0x00000004UL
 
 
 #endif /* TRAP_H */

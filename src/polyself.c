@@ -1728,9 +1728,8 @@ dospinweb()
              (levl[u.ux][u.uy].typ == STAIRS) ? "stairs" : "ladder");
         return 1;
     }
-    ttmp = maketrap(u.ux, u.uy, WEB, NON_PM, MKTRAP_NO_FLAGS);
+    ttmp = maketrap(u.ux, u.uy, WEB, NON_PM, MKTRAPFLAG_MADE_BY_U);
     if (ttmp) {
-        ttmp->madeby_u = 1;
         feeltrap(ttmp);
     }
     return 1;

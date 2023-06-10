@@ -4467,9 +4467,8 @@ set_trap()
         return 1; /* still busy */
 
     ttyp = (otmp->otyp == LAND_MINE) ? LANDMINE : BEAR_TRAP;
-    ttmp = maketrap(u.ux, u.uy, ttyp, NON_PM, MKTRAP_NO_FLAGS);
+    ttmp = maketrap(u.ux, u.uy, ttyp, NON_PM, MKTRAPFLAG_MADE_BY_U);
     if (ttmp) {
-        ttmp->madeby_u = 1;
         feeltrap(ttmp);
         if (*in_rooms(u.ux, u.uy, SHOPBASE)) {
             add_damage(u.ux, u.uy, 0L); /* schedule removal */

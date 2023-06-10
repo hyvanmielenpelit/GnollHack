@@ -579,6 +579,7 @@ make_bones:
     }
     for (ttmp = ftrap; ttmp; ttmp = ttmp->ntrap) {
         ttmp->madeby_u = 0;
+        //ttmp->madeby_mon = 0; //Keep madeby_mon flags to indicate that the traps are not original (mostly relevant in Sokoban)
         ttmp->tseen = (ttmp->ttyp == HOLE);
     }
     resetobjs(fobj, FALSE);
