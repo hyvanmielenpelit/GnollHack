@@ -118,6 +118,10 @@
     <BundleResource Include="banks\Master.strings.bank" />
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
+    <BundleResource Include="Resources\DejaVuSansMono-Bold.woff" />
+    <BundleResource Include="Resources\DejaVuSansMono-BoldOblique.woff" />
+    <BundleResource Include="Resources\DejaVuSansMono-Oblique.woff" />
+    <BundleResource Include="Resources\DejaVuSansMono.woff" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -207,12 +211,6 @@
       <Project>{5A266A7A-92C8-4E71-88AE-74AC420F9F18}</Project>
       <Name>GnollHackClient</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\mainmenulandscape.mp4" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\mainmenuportrait.mp4" />
   </ItemGroup>
   <ItemGroup>
     <NativeReference Include="Native References/libfmodstudio_iphoneos.a">

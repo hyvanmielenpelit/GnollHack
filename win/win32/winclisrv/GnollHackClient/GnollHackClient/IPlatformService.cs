@@ -20,6 +20,7 @@ namespace GnollHackClient
         float GetCurrentAnimatorDurationScale();
         void OverrideAnimatorDuration();
         void RevertAnimatorDuration(bool isfinal);
+        string GetBaseUrl();
 
         //void SaveFileToDownloads(byte[] data, string name);
     }

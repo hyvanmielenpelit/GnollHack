@@ -332,7 +332,6 @@ namespace GnollHackClient
             App.FMODVersionString = fmodverstr;
             App.SkiaVersionString = skiaverstr;
             App.SkiaSharpVersionString = skiasharpverstr;
-            App.SaveDumplogTypefaces(assembly);
 
             VersionLabel.Text = verid;
             GnollHackLabel.Text = "GnollHack";

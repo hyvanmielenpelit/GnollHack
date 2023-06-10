@@ -148,6 +148,10 @@
     <AndroidAsset Include="banks\Intro.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
     <AndroidAsset Include="banks\Master.strings.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
     <AndroidNativeLibrary Include="libs\arm64-v8a\libc++_shared.so" />
+    <AndroidAsset Include="Assets\DejaVuSansMono-Bold.woff" />
+    <AndroidAsset Include="Assets\DejaVuSansMono-BoldOblique.woff" />
+    <AndroidAsset Include="Assets\DejaVuSansMono-Oblique.woff" />
+    <AndroidAsset Include="Assets\DejaVuSansMono.woff" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />

@@ -38,13 +38,9 @@
     <None Remove="Assets\button_selected.png" />
     <None Remove="Assets\consola.ttf" />
     <None Remove="Assets\DejaVuSansMono-Bold.ttf" />
-    <None Remove="Assets\DejaVuSansMono-Bold.woff" />
     <None Remove="Assets\DejaVuSansMono-BoldOblique.ttf" />
-    <None Remove="Assets\DejaVuSansMono-BoldOblique.woff" />
     <None Remove="Assets\DejaVuSansMono-Oblique.ttf" />
-    <None Remove="Assets\DejaVuSansMono-Oblique.woff" />
     <None Remove="Assets\DejaVuSansMono.ttf" />
-    <None Remove="Assets\DejaVuSansMono.woff" />
     <None Remove="Assets\dgn_entrance.jpg" />
     <None Remove="Assets\diablo_h.ttf" />
     <None Remove="Assets\endor.ttf" />
@@ -262,13 +258,9 @@
     <EmbeddedResource Include="Assets\button_normal.png" />
     <EmbeddedResource Include="Assets\button_selected.png" />
     <EmbeddedResource Include="Assets\DejaVuSansMono-Bold.ttf" />
-    <EmbeddedResource Include="Assets\DejaVuSansMono-Bold.woff" />
     <EmbeddedResource Include="Assets\DejaVuSansMono-BoldOblique.ttf" />
-    <EmbeddedResource Include="Assets\DejaVuSansMono-BoldOblique.woff" />
     <EmbeddedResource Include="Assets\DejaVuSansMono-Oblique.ttf" />
-    <EmbeddedResource Include="Assets\DejaVuSansMono-Oblique.woff" />
     <EmbeddedResource Include="Assets\DejaVuSansMono.ttf" />
-    <EmbeddedResource Include="Assets\DejaVuSansMono.woff" />
     <EmbeddedResource Include="Assets\dgn_entrance.jpg" />
     <EmbeddedResource Include="Assets\diablo_h.ttf" />
     <EmbeddedResource Include="Assets\endr.ttf" />

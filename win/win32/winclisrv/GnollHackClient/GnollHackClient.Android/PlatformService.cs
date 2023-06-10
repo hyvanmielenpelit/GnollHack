@@ -213,5 +213,10 @@ namespace GnollHackClient.Droid
                 _originalAnimationDurationScale = 1.0f;
             }
         }
+
+        public string GetBaseUrl()
+        {
+            return "file:///android_asset/";
+        }
     }
 }

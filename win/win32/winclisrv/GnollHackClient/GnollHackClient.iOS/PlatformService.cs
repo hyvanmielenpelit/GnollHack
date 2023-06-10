@@ -135,5 +135,10 @@ namespace GnollHackClient.iOS
         {
 
         }
+
+        public string GetBaseUrl()
+        {
+            return NSBundle.MainBundle.BundlePath;
+        }
     }
 }

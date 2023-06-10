@@ -68,6 +68,7 @@ namespace GnollHackClient.Pages.Game
                     string text = File.ReadAllText(_fileName, Encoding.UTF8);
                     var htmlSource = new HtmlWebViewSource();
                     htmlSource.Html = text;
+                    htmlSource.BaseUrl = App.PlatformService.GetBaseUrl();
                     DisplayWebView.Source = htmlSource;
                 }
                 else

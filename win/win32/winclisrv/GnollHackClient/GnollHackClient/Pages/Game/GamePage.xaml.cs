@@ -1860,7 +1860,7 @@ namespace GnollHackClient.Pages.Game
             if (is_game_status ? !App.PostingGameStatus : !App.PostingDiagnosticData)
                 return;
 
-            if (is_game_status && !(App.UseSingleDumpLog && App.UseHTMLDumpLogs) && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_TEXT)
+            if (is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_TEXT)
             {
                 _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type));
                 return;

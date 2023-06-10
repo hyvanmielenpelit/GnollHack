@@ -562,41 +562,41 @@ namespace GnollHackClient
             }
         }
 
-        public static void SaveDumplogTypefaces(Assembly assembly)
-        {
-            string targetdir = Path.Combine(App.GHPath, "dumplog");
-            if (!Directory.Exists(targetdir))
-                return;
+        //public static void SaveDumplogTypefaces(Assembly assembly)
+        //{
+        //    string targetdir = Path.Combine(App.GHPath, "dumplog");
+        //    if (!Directory.Exists(targetdir))
+        //        return;
 
-            string[] fileNames = { "DejaVuSansMono.woff", "DejaVuSansMono-Bold.woff", "DejaVuSansMono-Oblique.woff", "DejaVuSansMono-BoldOblique.woff" };
-            for(int i = 0; i < 4; i++) 
-            { 
-                string filename = fileNames[i];
-                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets." + filename))
-                {
-                    if (stream != null)
-                    {
-                        try
-                        {
-                            string fulltargetpath = Path.Combine(targetdir, filename);
-                            if (File.Exists(fulltargetpath))
-                                File.Delete(fulltargetpath);
-                            if (!File.Exists(fulltargetpath))
-                            {
-                                using (FileStream filestream = new FileStream(fulltargetpath, FileMode.Create, FileAccess.Write, FileShare.None))
-                                {
-                                    stream.CopyTo(filestream);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine(ex.Message);
-                        }
-                    }
-                }
-            }
-        }
+        //    string[] fileNames = { "DejaVuSansMono.woff", "DejaVuSansMono-Bold.woff", "DejaVuSansMono-Oblique.woff", "DejaVuSansMono-BoldOblique.woff" };
+        //    for(int i = 0; i < 4; i++) 
+        //    { 
+        //        string filename = fileNames[i];
+        //        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets." + filename))
+        //        {
+        //            if (stream != null)
+        //            {
+        //                try
+        //                {
+        //                    string fulltargetpath = Path.Combine(targetdir, filename);
+        //                    if (File.Exists(fulltargetpath))
+        //                        File.Delete(fulltargetpath);
+        //                    if (!File.Exists(fulltargetpath))
+        //                    {
+        //                        using (FileStream filestream = new FileStream(fulltargetpath, FileMode.Create, FileAccess.Write, FileShare.None))
+        //                        {
+        //                            stream.CopyTo(filestream);
+        //                        }
+        //                    }
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    Debug.WriteLine(ex.Message);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         public static SKBitmap MenuBackgroundBitmap { get; set; }
         public static SKBitmap OldPaperBackgroundBitmap { get; set; }
