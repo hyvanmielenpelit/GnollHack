@@ -1741,6 +1741,8 @@ long flag;
             return uarmf;
         case W_ARMU:
             return uarmu;
+        case W_SADDLE: /* might be used to check if you are polymorphed into a horse wearing a saddle */
+            return (struct obj*)0; //usaddle;
         default:
             impossible("bad flag in which_armor");
             return 0;

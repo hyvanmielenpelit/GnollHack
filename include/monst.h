@@ -115,7 +115,7 @@ struct monst {
 
     schar mtame;                /* level of tameness, implies peaceful */
 
-    unsigned short mprops[LAST_PROP + 1]; /* simplified props structure for monsters, taking 1/6 u.uprops memory space but doing about the same thing anyway --JG */
+    unsigned short mprops[MAX_PROPS]; /* simplified props structure for monsters, taking 1/6 u.uprops memory space but doing about the same thing anyway --JG */
 
 #define M_TIMEOUT                0x3fff    /* timeout mask for temporary property */
 #define M_INTRINSIC_ACQUIRED     0x4000    /* permanent intrisic acquired e.g. by eating monster corpses */

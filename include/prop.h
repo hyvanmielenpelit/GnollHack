@@ -229,17 +229,17 @@ struct prop {
 #define W_WEAPON (W_WIELDED_WEAPON | W_SWAP_WEAPON | W_QUIVER)
 
 /* Amulets, rings, tools, and other items */
-#define W_AMUL  0x00010000L    /* Amulet */
-#define W_RINGL 0x00020000L    /* Left ring */
-#define W_RINGR 0x00040000L    /* Right ring */
+#define W_AMUL  0x00010000L      /* Amulet */
+#define W_RINGL 0x00020000L      /* Left ring */
+#define W_RINGR 0x00040000L      /* Right ring */
 #define W_RING (W_RINGL | W_RINGR)
-#define W_BLINDFOLD 0x00080000L   /* Eyewear */
+#define W_BLINDFOLD 0x00080000L  /* Eyewear */
 
     /* historical note: originally in slash'em, 'worn' saddle stayed in
        hero's inventory; in GnollHack, it's kept in the steed's inventory */
-#define W_SADDLE 0x00100000L /* KMH -- For riding monsters */
-#define W_BALL   0x00200000L   /* Punishment ball */
-#define W_CHAIN  0x00400000L  /* Punishment chain */
+#define W_SADDLE 0x00100000L     /* KMH -- For riding monsters */
+#define W_BALL   0x00200000L     /* Punishment ball */
+#define W_CHAIN  0x00400000L     /* Punishment chain */
 
     /* new accessories*/
 #define W_MISC  0x00800000L      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
