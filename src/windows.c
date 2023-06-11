@@ -2010,6 +2010,7 @@ dump_css()
     if (!css) {
         int i;
 
+#ifndef DUMPHTML_WEBFONT_LINK
         const char* default_fontface_strings[4] = {
             "@font-face { font-family: \"DejaVu Sans Mono\"; font-style: normal; font-weight: normal;  src: local(DejaVu Sans Mono), local(DejaVuSansMono), url(DejaVuSansMono.woff), url(" DUMPHTML_DEFAULT_URL_FONT_NORMAL ")  format(\"woff\") }",
             "@font-face { font-family: \"DejaVu Sans Mono\"; font-style: normal; font-weight: bold; src: local(DejaVu Sans Mono Bold), local(DejaVuSansMono-Bold), url(DejaVuSansMono-Bold.woff), url(" DUMPHTML_DEFAULT_URL_FONT_BOLD ")  format(\"woff\"); }",
@@ -2029,6 +2030,7 @@ dump_css()
             const char* fontfacestring = sysopt_fontface_strings[i] ? sysopt_fontface_strings[i] : default_fontface_strings[i];
             fprintf(dumphtml_file, "%s\n", fontfacestring);
         }
+#endif
 
         const char* css_strings[] = {
         "body {",
