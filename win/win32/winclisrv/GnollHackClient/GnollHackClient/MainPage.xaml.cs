@@ -363,12 +363,14 @@ namespace GnollHackClient
 
             if (!App.IsiOS)
             {
+                /* Download or copy files to a subdirectory */
                 await TryGetFilesFromResources();
                 await DownloadAndCheckFiles();
             }
             else
             {
-                AddLoadableSoundBanks();
+                /* Access banks directly from an assets directory or the like */
+                AddLoadableSoundBanksFromAssets();
             }
 
             if (App.LoadBanks)
@@ -399,27 +401,16 @@ namespace GnollHackClient
             }
         }
 
-        private void AddLoadableSoundBanks()
+        private void AddLoadableSoundBanksFromAssets()
         {
             string ghdir = App.GHPath;
             foreach (SecretsFile sf in App.CurrentSecrets.files)
             {
                 if (sf.type == "sound_bank")
                 {
-                    string sdir;
-                    bool isResource = false;
-                    if (App.IsiOS)
-                    {
-                        sdir = Path.Combine(App.PlatformService.GetAssetsPath(), sf.source_directory);
-                        isResource = true;
-                    }
-                    else
-                    {
-                        sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory);
-                    }
-
+                    string sdir = Path.Combine(App.PlatformService.GetAssetsPath(), sf.source_directory);
                     string sfile = Path.Combine(sdir, sf.name);
-                    App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, isResource);
+                    App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, true);
                 }
             }
         }
