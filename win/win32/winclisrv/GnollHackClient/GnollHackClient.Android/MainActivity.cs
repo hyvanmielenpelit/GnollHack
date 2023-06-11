@@ -57,11 +57,18 @@ namespace GnollHackClient.Droid
 
             Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            Org.Fmod.FMOD.Init(this);
 
             MainActivity.StaticAssets = this.Assets;
             CurrentMainActivity = this;
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
             LoadApplication(new App());
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            Org.Fmod.FMOD.Close();
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

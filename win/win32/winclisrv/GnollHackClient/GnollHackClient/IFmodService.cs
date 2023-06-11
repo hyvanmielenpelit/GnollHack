@@ -9,7 +9,7 @@ namespace GnollHackClient
         void InitializeFmod();
         void ReleaseAllSoundInstances();
         void ClearLoadableSoundBanks();
-        void AddLoadableSoundBank(string fullFilePath, int subType, bool isResource);
+        void AddLoadableSoundBank(string fullFilePath, int subType, bool isResource, bool readToMemory);
         void LoadBanks(int subType);
         void UnloadBanks(int subType);
         void LoadIntroSoundBank();

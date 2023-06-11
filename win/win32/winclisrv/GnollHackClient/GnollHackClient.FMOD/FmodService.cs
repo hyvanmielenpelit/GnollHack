@@ -17,6 +17,8 @@ using AVFoundation;
 [assembly: Dependency(typeof(GnollHackClient.iOS.FmodService))]
 namespace GnollHackClient.iOS
 #elif __ANDROID__
+using Android.Content.Res;
+using Java.Util.Zip;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -66,11 +68,15 @@ namespace GnollHackClient.Unknown
         public readonly string FullPathName;
         public readonly int SubType;
         public readonly bool IsResource;
-        public LoadableBank(string path, int subType, bool isResource)
+        public readonly bool ReadToMemory;
+        public readonly byte[] ByteBuffer;
+        public LoadableBank(string path, int subType, bool isResource, bool readToMemory, byte[] byteBuffer)
         {
             FullPathName = path;
             SubType = subType;
             IsResource = isResource;
+            ReadToMemory = readToMemory;
+            ByteBuffer = byteBuffer;
         }
     }
 
@@ -186,13 +192,26 @@ namespace GnollHackClient.Unknown
             {
                 if(loadableBank.SubType == subType)
                 {
-                    string bank_path = loadableBank.FullPathName;
-                    if (loadableBank.IsResource || File.Exists(bank_path))
+                    if(loadableBank.ReadToMemory)
                     {
-                        Bank tmpbank = new Bank();
-                        res = _system.loadBankFile(bank_path, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
-                        if(res == RESULT.OK)
-                            _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
+                        if(loadableBank.ByteBuffer != null)
+                        {
+                            Bank tmpbank = new Bank();
+                            res = _system.loadBankMemory(loadableBank.ByteBuffer, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
+                            if (res == RESULT.OK)
+                                _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
+                        }
+                    }
+                    else
+                    {
+                        string bank_path = loadableBank.FullPathName;
+                        if (loadableBank.IsResource || File.Exists(bank_path))
+                        {
+                            Bank tmpbank = new Bank();
+                            res = _system.loadBankFile(bank_path, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
+                            if (res == RESULT.OK)
+                                _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
+                        }
                     }
                 }
             }
@@ -204,9 +223,47 @@ namespace GnollHackClient.Unknown
         {
             _loadableSoundBanks.Clear();
         }
-        public void AddLoadableSoundBank(string fullfilepath, int subType, bool isResource)
+
+
+        public void AddLoadableSoundBank(string fullfilepath, int subType, bool isResource, bool readToMemory)
         {
-            _loadableSoundBanks.Add(new LoadableBank(fullfilepath, subType, isResource));
+            byte[] data = null;
+            if (readToMemory)
+            {
+                int maxsize = 1024 * 1024 * 1024;
+                try
+                {
+                    if (isResource)
+                    {
+#if __IOS__
+                        using (BinaryReader br = new BinaryReader(File.OpenRead(fullfilepath)))
+#elif __ANDROID__
+                        AssetManager assets = MainActivity.StaticAssets;
+                        using (BinaryReader br = new BinaryReader(assets.Open(fullfilepath)))
+#else
+                        using (BinaryReader br = new BinaryReader(File.OpenRead(fullfilepath)))
+#endif                
+                        {
+                            data = br.ReadBytes(maxsize);
+                        }
+                    }
+                    else
+                    {
+                        if (File.Exists(fullfilepath))
+                        {
+                            using (BinaryReader br = new BinaryReader(File.OpenRead(fullfilepath)))
+                            {
+                                data = br.ReadBytes(maxsize);
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    
+                }
+            }
+            _loadableSoundBanks.Add(new LoadableBank(fullfilepath, subType, isResource, readToMemory, data));
         }
 
         public void LoadIntroSoundBank()

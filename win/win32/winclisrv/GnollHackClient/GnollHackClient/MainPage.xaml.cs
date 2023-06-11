@@ -371,6 +371,7 @@ namespace GnollHackClient
             {
                 /* Access banks directly from an assets directory or the like */
                 AddLoadableSoundBanksFromAssets();
+                DeleteBanksFromDisk();
             }
 
             if (App.LoadBanks)
@@ -403,18 +404,70 @@ namespace GnollHackClient
 
         private void AddLoadableSoundBanksFromAssets()
         {
-            string ghdir = App.GHPath;
             foreach (SecretsFile sf in App.CurrentSecrets.files)
             {
                 if (sf.type == "sound_bank")
                 {
                     string sdir = Path.Combine(App.PlatformService.GetAssetsPath(), sf.source_directory);
                     string sfile = Path.Combine(sdir, sf.name);
-                    App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, true);
+
+                    //string rfile = Path.Combine(sf.source_directory, sf.name);
+                    //if (readtomemoryfromresources)
+                    //    App.FmodService.AddLoadableSoundBank(rfile, sf.subtype_id, true, true);
+                    //else
+
+                    App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, true, false);
                 }
             }
         }
 
+        private void DeleteBanksFromDisk()
+        {
+            string ghdir = App.GHPath;
+            List<string> target_directories = new List<string>();
+            foreach (SecretsFile sf in App.CurrentSecrets.files)
+            {
+                if (sf.type == "sound_bank")
+                {
+                    try
+                    {
+                        string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory); ;
+                        string sfile = Path.Combine(sdir, sf.name);
+                        if (File.Exists(sfile))
+                            File.Delete(sfile);
+
+                        bool containsstring = false;
+                        for(int i = 0; i < target_directories.Count; i++)
+                            if (target_directories[i] == sdir)
+                            {
+                                containsstring = true;
+                                break;
+                            }
+
+                        if(!containsstring)
+                            target_directories.Add(sdir);
+                    }
+                    catch (Exception ex) 
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+            }
+            foreach(string dir in target_directories)
+            {
+                try
+                {
+                    if (Directory.Exists(dir))
+                    {
+                        Directory.Delete(dir, true);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+        }
 
         private object _abortLock = new object();
         private bool _abortDisplayed = false;
@@ -945,7 +998,7 @@ namespace GnollHackClient
                 {
                     string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory); ;
                     string sfile = Path.Combine(sdir, sf.name);
-                    App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, false);
+                    App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, false, false);
                 }
 
                 if (sf == App.CurrentSecrets.files.Last<SecretsFile>())

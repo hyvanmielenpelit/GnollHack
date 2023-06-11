@@ -221,14 +221,8 @@ namespace GnollHackClient.Droid
         }
         public string GetAssetsPath()
         {
+            
             return "file:///android_asset/";
-        }
-        public string GetAssetLocation(string str1, string str2)
-        {
-            var context = Android.App.Application.Context;
-            var manager = AssetPackManagerFactory.GetInstance(context);
-            AssetLocation loc = manager.GetAssetLocation(str1, str2);
-            return loc.ToString();
         }
     }
 }
