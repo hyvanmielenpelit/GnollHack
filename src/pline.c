@@ -816,7 +816,7 @@ VA_DECL(const char *, s)
         panic("%s", pbuf);
         return;
     }
-    pline("%s", VA_PASS1(pbuf));
+    pline_ex(ATR_NONE, CLR_MSG_ERROR, "impossible: %s", VA_PASS1(pbuf));
     if (issue_gui_command)
         issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_IMPOSSIBLE, pbuf);
 
@@ -824,7 +824,7 @@ VA_DECL(const char *, s)
     Strcpy(pbuf, "Program in disorder!");
     if (program_state.something_worth_saving)
         Strcat(pbuf, "  (Saving and reloading may fix this problem.)");
-    pline("%s", VA_PASS1(pbuf));
+    pline_ex(ATR_NONE, CLR_MSG_ERROR, "%s", VA_PASS1(pbuf));
 
     program_state.in_impossible = 0;
     VA_END();
