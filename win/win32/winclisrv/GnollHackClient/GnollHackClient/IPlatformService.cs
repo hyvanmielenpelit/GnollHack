@@ -21,6 +21,7 @@ namespace GnollHackClient
         void OverrideAnimatorDuration();
         void RevertAnimatorDuration(bool isfinal);
         string GetBaseUrl();
+        string GetAssetsPath();
 
         //void SaveFileToDownloads(byte[] data, string name);
     }

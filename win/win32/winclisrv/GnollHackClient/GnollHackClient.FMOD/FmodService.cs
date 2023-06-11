@@ -65,10 +65,12 @@ namespace GnollHackClient.Unknown
     {
         public readonly string FullPathName;
         public readonly int SubType;
-        public LoadableBank(string path, int subType)
+        public readonly bool IsResource;
+        public LoadableBank(string path, int subType, bool isResource)
         {
             FullPathName = path;
             SubType = subType;
+            IsResource = isResource;
         }
     }
 
@@ -185,11 +187,12 @@ namespace GnollHackClient.Unknown
                 if(loadableBank.SubType == subType)
                 {
                     string bank_path = loadableBank.FullPathName;
-                    if (File.Exists(bank_path))
+                    if (loadableBank.IsResource || File.Exists(bank_path))
                     {
                         Bank tmpbank = new Bank();
                         res = _system.loadBankFile(bank_path, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
-                        _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
+                        if(res == RESULT.OK)
+                            _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
                     }
                 }
             }
@@ -201,9 +204,9 @@ namespace GnollHackClient.Unknown
         {
             _loadableSoundBanks.Clear();
         }
-        public void AddLoadableSoundBank(string fullfilepath, int subType)
+        public void AddLoadableSoundBank(string fullfilepath, int subType, bool isResource)
         {
-            _loadableSoundBanks.Add(new LoadableBank(fullfilepath, subType));
+            _loadableSoundBanks.Add(new LoadableBank(fullfilepath, subType, isResource));
         }
 
         public void LoadIntroSoundBank()

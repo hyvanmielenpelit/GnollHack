@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using GnollHackClient;
 using Android;
 using Java.IO;
+using Com.Google.Android.Play.Core.Assetpacks;
 
 [assembly: Dependency(typeof(GnollHackClient.Droid.PlatformService))]
 namespace GnollHackClient.Droid
@@ -217,6 +218,17 @@ namespace GnollHackClient.Droid
         public string GetBaseUrl()
         {
             return "file:///android_asset/";
+        }
+        public string GetAssetsPath()
+        {
+            return "file:///android_asset/";
+        }
+        public string GetAssetLocation(string str1, string str2)
+        {
+            var context = Android.App.Application.Context;
+            var manager = AssetPackManagerFactory.GetInstance(context);
+            AssetLocation loc = manager.GetAssetLocation(str1, str2);
+            return loc.ToString();
         }
     }
 }

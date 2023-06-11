@@ -140,5 +140,9 @@ namespace GnollHackClient.iOS
         {
             return NSBundle.MainBundle.BundlePath;
         }
+        public string GetAssetsPath()
+        {
+            return NSBundle.MainBundle.BundlePath;
+        }
     }
 }

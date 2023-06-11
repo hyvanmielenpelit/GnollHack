@@ -361,8 +361,15 @@ namespace GnollHackClient
                 Debug.WriteLine(ex.Message);
             }
 
-            await TryGetFilesFromResources();
-            await DownloadAndCheckFiles();
+            if (!App.IsiOS)
+            {
+                await TryGetFilesFromResources();
+                await DownloadAndCheckFiles();
+            }
+            else
+            {
+                AddLoadableSoundBanks();
+            }
 
             if (App.LoadBanks)
             {
@@ -389,6 +396,31 @@ namespace GnollHackClient
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+            }
+        }
+
+        private void AddLoadableSoundBanks()
+        {
+            string ghdir = App.GHPath;
+            foreach (SecretsFile sf in App.CurrentSecrets.files)
+            {
+                if (sf.type == "sound_bank")
+                {
+                    string sdir;
+                    bool isResource = false;
+                    if (App.IsiOS)
+                    {
+                        sdir = Path.Combine(App.PlatformService.GetAssetsPath(), sf.source_directory);
+                        isResource = true;
+                    }
+                    else
+                    {
+                        sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory);
+                    }
+
+                    string sfile = Path.Combine(sdir, sf.name);
+                    App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, isResource);
+                }
             }
         }
 
@@ -920,9 +952,9 @@ namespace GnollHackClient
 
                 if (sf.type == "sound_bank")
                 {
-                    string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory);
+                    string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory); ;
                     string sfile = Path.Combine(sdir, sf.name);
-                    App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id);
+                    App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, false);
                 }
 
                 if (sf == App.CurrentSecrets.files.Last<SecretsFile>())
