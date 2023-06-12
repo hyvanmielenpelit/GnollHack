@@ -227,6 +227,8 @@ namespace GnollHackClient.Pages.Game
             App.UseSingleDumpLog = SingleDumpLogSwitch.IsToggled;
             Preferences.Set("UseSingleDumpLog", SingleDumpLogSwitch.IsToggled);
 
+            App.ReadStreamingBankToMemory = StreamingBankToMemorySwitch.IsToggled;
+            Preferences.Set("ReadStreamingBankToMemory", StreamingBankToMemorySwitch.IsToggled);
             /*
             if(!App.IsiOS)
             {
@@ -302,7 +304,7 @@ namespace GnollHackClient.Pages.Game
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             //bool carousel = false;
-            bool allowbones = true, lighterdarkening = false, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog;
+            bool allowbones = true, lighterdarkening = false, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbank = false;
             bool devmode = GHConstants.DefaultDeveloperMode, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting;
@@ -323,6 +325,7 @@ namespace GnollHackClient.Pages.Game
             bank = Preferences.Get("LoadSoundBanks", true);
             html = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             singledumplog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
+            streamingbank = Preferences.Get("ReadStreamingBankToMemory", App.RecommendedReadStreamingBankToMemory);
             postgamestatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             postdiagnostics = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             customlink = Preferences.Get("CustomGameStatusLink", "");
@@ -421,6 +424,7 @@ namespace GnollHackClient.Pages.Game
             SoundBankSwitch.IsToggled = bank;
             HTMLDumpLogSwitch.IsToggled = html;
             SingleDumpLogSwitch.IsToggled = singledumplog;
+            StreamingBankToMemorySwitch.IsToggled = streamingbank;
             BonesSwitch.IsToggled = allowbones;
             PostGameStatusSwitch.IsToggled = postgamestatus;
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;

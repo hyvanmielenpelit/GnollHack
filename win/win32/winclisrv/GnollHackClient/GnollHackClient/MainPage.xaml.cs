@@ -361,19 +361,12 @@ namespace GnollHackClient
                 Debug.WriteLine(ex.Message);
             }
 
-            if (!App.IsiOS)
-            {
-                /* Download or copy files to a subdirectory */
-                await TryGetFilesFromResources();
-                await DownloadAndCheckFiles();
-            }
-            else
-            {
-                /* Access banks directly from an assets directory or the like */
-                AddLoadableSoundBanksFromAssets();
-                DeleteBanksFromDisk();
-            }
-
+            App.FmodService.ClearLoadableSoundBanks();
+            await TryGetFilesFromResources();
+            await DownloadAndCheckFiles();
+            AddLoadableSoundBanksFromAssets();
+            DeleteBanksFromDisk();
+ 
             if (App.LoadBanks)
             {
                 await TryLoadBanks(0);
@@ -411,23 +404,28 @@ namespace GnollHackClient
                     string sdir = Path.Combine(App.PlatformService.GetAssetsPath(), sf.source_directory);
                     string sfile = Path.Combine(sdir, sf.name);
 
-                    //string rfile = Path.Combine(sf.source_directory, sf.name);
-                    //if (readtomemoryfromresources)
-                    //    App.FmodService.AddLoadableSoundBank(rfile, sf.subtype_id, true, true);
-                    //else
-
-                    App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, true, false);
+                    string rfile = Path.Combine(sf.source_directory, sf.name);
+                    if (IsReadToMemoryBank(sf))
+                        App.FmodService.AddLoadableSoundBank(rfile, sf.subtype_id, true, true);
+                    else
+                        App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, true, false);
                 }
             }
+        }
+
+        private bool IsReadToMemoryBank(SecretsFile sf)
+        {
+            return sf.subtype_id == 2 && App.IsAndroid && App.ReadStreamingBankToMemory;
         }
 
         private void DeleteBanksFromDisk()
         {
             string ghdir = App.GHPath;
-            List<string> target_directories = new List<string>();
+
+            //List<string> target_directories = new List<string>();
             foreach (SecretsFile sf in App.CurrentSecrets.files)
             {
-                if (sf.type == "sound_bank")
+                if (!IsSecretsFileSavedToDisk(sf))
                 {
                     try
                     {
@@ -436,16 +434,16 @@ namespace GnollHackClient
                         if (File.Exists(sfile))
                             File.Delete(sfile);
 
-                        bool containsstring = false;
-                        for(int i = 0; i < target_directories.Count; i++)
-                            if (target_directories[i] == sdir)
-                            {
-                                containsstring = true;
-                                break;
-                            }
+                        //bool containsstring = false;
+                        //for(int i = 0; i < target_directories.Count; i++)
+                        //    if (target_directories[i] == sdir)
+                        //    {
+                        //        containsstring = true;
+                        //        break;
+                        //    }
 
-                        if(!containsstring)
-                            target_directories.Add(sdir);
+                        //if(!containsstring)
+                        //    target_directories.Add(sdir);
                     }
                     catch (Exception ex) 
                     {
@@ -453,20 +451,43 @@ namespace GnollHackClient
                     }
                 }
             }
-            foreach(string dir in target_directories)
+            foreach (SecretsDirectory sd in App.CurrentSecrets.directories)
             {
-                try
+                if (string.IsNullOrWhiteSpace(sd.name))
+                    continue;
+
+                if (CountSecretsFilesSavedToDirectory(App.CurrentSecrets, sd) > 0)
+                    continue;
+
+                string sdir = Path.Combine(ghdir, sd.name);
+
+                /* Make the relevant directory */
+                if (Directory.Exists(sdir))
                 {
-                    if (Directory.Exists(dir))
+                    try
                     {
-                        Directory.Delete(dir, true);
+                        Directory.Delete(sdir);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
             }
+            //foreach (string dir in target_directories)
+            //{
+            //    try
+            //    {
+            //        if (Directory.Exists(dir))
+            //        {
+            //            Directory.Delete(dir, true);
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Debug.WriteLine(ex.Message);
+            //    }
+            //}
         }
 
         private object _abortLock = new object();
@@ -953,6 +974,9 @@ namespace GnollHackClient
                 if (string.IsNullOrWhiteSpace(sd.name))
                     continue;
 
+                int numfiles = CountSecretsFilesSavedToDirectory(App.CurrentSecrets, sd);
+                if (numfiles == 0)
+                    continue;
                 string sdir = Path.Combine(ghdir, sd.name);
 
                 /* Make the relevant directory */
@@ -963,7 +987,6 @@ namespace GnollHackClient
             }
 
             App.DebugWriteProfilingStopwatchTimeAndStart("Start Acquiring Banks");
-            App.FmodService.ClearLoadableSoundBanks();
             SecretsFile prev_sf = null;
             _downloadResultConcurrentDictionary.Clear();
             foreach (SecretsFile sf in App.CurrentSecrets.files)
@@ -971,6 +994,9 @@ namespace GnollHackClient
                 Task<downloaded_file_check_results> dltask = null;
                 Task restask = null;
                 Task checktask = null;
+
+                if (!IsSecretsFileSavedToDisk(sf))
+                    continue;
 
                 // sf.source == "url" is deprecated
                 dltask = DownloadFileFromWebServer(assembly, sf, ghdir);
@@ -1007,6 +1033,27 @@ namespace GnollHackClient
                 }
                 prev_sf = sf;
             }
+        }
+
+        private bool IsSecretsFileSavedToDisk(SecretsFile sf)
+        {
+            if (sf == null) return false;
+            if (App.IsiOS) return false;
+            if(App.IsAndroid && IsReadToMemoryBank(sf)) return false;
+
+            return true;
+        }
+
+        private int CountSecretsFilesSavedToDirectory(Secrets secrets, SecretsDirectory sd)
+        {
+            if(secrets == null) return 0;
+            if (sd == null) return 0;
+            int cnt = 0;
+            foreach(SecretsFile sf in App.CurrentSecrets.files)
+            {
+                if(sf.target_directory == sd.name && IsSecretsFileSavedToDisk(sf)) cnt++;
+            }
+            return cnt;
         }
 
         private async Task CheckSecretsFile(SecretsFile sf)

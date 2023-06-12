@@ -468,6 +468,16 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
+                                    <Label Text="Streaming Bank to Memory"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="StreamingBankToMemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
                                     <Label Text="Allow Ghost Levels"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"

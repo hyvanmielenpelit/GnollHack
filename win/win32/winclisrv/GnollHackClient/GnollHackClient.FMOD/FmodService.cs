@@ -230,37 +230,82 @@ namespace GnollHackClient.Unknown
             byte[] data = null;
             if (readToMemory)
             {
-                int maxsize = 1024 * 1024 * 1024;
                 try
                 {
                     if (isResource)
                     {
 #if __IOS__
-                        using (BinaryReader br = new BinaryReader(File.OpenRead(fullfilepath)))
+                        using(FileStream fs = File.OpenRead(fullfilepath))
 #elif __ANDROID__
                         AssetManager assets = MainActivity.StaticAssets;
-                        using (BinaryReader br = new BinaryReader(assets.Open(fullfilepath)))
+                        using (Stream fs = assets.Open(fullfilepath))
 #else
-                        using (BinaryReader br = new BinaryReader(File.OpenRead(fullfilepath)))
-#endif                
+                        using(FileStream fs = File.OpenRead(fullfilepath))
+#endif
                         {
-                            data = br.ReadBytes(maxsize);
+                            using (var ms = new MemoryStream())
+                            {
+                                try
+                                {
+                                    fs.CopyTo(ms);
+                                    data = ms.ToArray();
+                                }
+                                catch (Exception ex)
+                                {
+                                    string msg = ex.Message;
+                                }
+                            }
+                            //using (BinaryReader br = new BinaryReader(fs))
+                            //{
+                            //    int mb = 0;
+                            //    bool endreached = false;
+                            //    while(!endreached)
+                            //    {
+                            //        try
+                            //        {
+                            //            byte[] data2 = br.ReadBytes(1024 * 1024);
+                            //            if (data2 == null || data2.Length == 0)
+                            //                break;
+                            //            mb++;
+                            //        }
+                            //        catch(Exception ex)
+                            //        {
+                            //            string str = ex.Message;
+                            //            endreached = true;
+                            //        }
+                            //    }
+                            //    int length = (mb + 1) * 1024 * 1024;
+
+                            //    fs.Seek(0, SeekOrigin.Begin);
+                            //    try
+                            //    {
+                            //        data = br.ReadBytes(length);
+                            //    }
+                            //    catch (Exception ex) 
+                            //    {
+                            //        string msg = ex.Message;
+                            //    }
+                            //}
                         }
                     }
                     else
                     {
                         if (File.Exists(fullfilepath))
                         {
-                            using (BinaryReader br = new BinaryReader(File.OpenRead(fullfilepath)))
+                            using (FileStream fs = File.OpenRead(fullfilepath))
                             {
-                                data = br.ReadBytes(maxsize);
+                                using (BinaryReader br = new BinaryReader(fs))
+                                {
+                                    long length = fs.Length;
+                                    data = br.ReadBytes((int)length);
+                                }
                             }
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    
+                    string msg = ex.Message;
                 }
             }
             _loadableSoundBanks.Add(new LoadableBank(fullfilepath, subType, isResource, readToMemory, data));
