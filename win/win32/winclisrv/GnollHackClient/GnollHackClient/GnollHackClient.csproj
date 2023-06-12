@@ -67,6 +67,8 @@
     <None Remove="Assets\main-menu-ranger.jpg" />
     <None Remove="Assets\Master.bank" />
     <None Remove="Assets\Master.strings.bank" />
+    <None Remove="Assets\Music.bank" />
+    <None Remove="Assets\Preliminary.bank" />
     <None Remove="Assets\shxi.ttf" />
     <None Remove="Assets\splash-snapshot.jpg" />
     <None Remove="Assets\test.wav" />

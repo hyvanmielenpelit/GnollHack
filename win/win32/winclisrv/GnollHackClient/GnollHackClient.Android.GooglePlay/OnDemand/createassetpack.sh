@@ -1,12 +1,12 @@
 #!/bin/bash
 
 #Arguments
-#1st argument = (REQUIRED) asset pack name, such as assets.zip
+#1st argument = (REQUIRED) asset pack name, such as installtimeassetpack.zip
 #2nd argument = (REQUIRED) Custom package name, such as com.soundmindentertainment.gnollhack
 #3rd argument = (OPTIONAL) Android package format file, such as androidpackageformat.txt
 #4th argument = (OPTIONAL) Output directory, such as /mnt/c/outputdir
 
-ASSETPACKNAME="assets.zip"
+ASSETPACKNAME="ondemandassetpack.zip"
 if [ $# -gt 0 ]; then
   echo "Using asset pack name $1."
   ASSETPACKNAME=$1

@@ -318,6 +318,8 @@
     <None Include="$(WinWin32Dir)Master.strings.bank" />
     <None Include="$(WinWin32Dir)Auxiliary.bank" />
     <None Include="$(WinWin32Dir)Intro.bank" />
+    <None Include="$(WinWin32Dir)Music.bank" />
+    <None Include="$(WinWin32Dir)Preliminary.bank" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="BeforeRebuild">

@@ -116,6 +116,8 @@
     <BundleResource Include="banks\Intro.bank" />
     <BundleResource Include="banks\Master.bank" />
     <BundleResource Include="banks\Master.strings.bank" />
+    <BundleResource Include="banks\Music.bank" />
+    <BundleResource Include="banks\Preliminary.bank" />
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
     <BundleResource Include="Resources\DejaVuSansMono-Bold.woff" />

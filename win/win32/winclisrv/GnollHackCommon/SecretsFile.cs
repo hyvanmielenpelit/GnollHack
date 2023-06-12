@@ -17,6 +17,8 @@ namespace GnollHackCommon
         public int length;
         public string sha256;
         public string target_directory;
+        public int android_on_demand;
+        public int android_streaming_asset;
         public int flags;
 
         public SecretsFile()

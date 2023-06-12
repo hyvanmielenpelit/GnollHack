@@ -429,6 +429,10 @@ IDR_RCDATA_AUXILIARY    RCDATA                  "Auxiliary.bank"
 
 IDR_RCDATA_INTRO        RCDATA                  "Intro.bank"
 
+IDR_RCDATA_MUSIC        RCDATA                  "Music.bank"
+
+IDR_RCDATA_PRELIMINARY  RCDATA                  "Preliminary.bank"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

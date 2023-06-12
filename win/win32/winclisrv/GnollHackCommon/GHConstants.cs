@@ -1394,7 +1394,7 @@ namespace GnollHackCommon
         public const int AllMessageRows = 250;
         public const int DefaultPetRows = 2;
         public const int IntroGHSound = 1;
-        public const string IntroEventPath = "event:/Music/Start/Splash";
+        public const string IntroEventPath = "event:/Music/Main Screen/Splash";
         public const int IntroBankId = 0;
         public const int ButtonClickGHSound = 28;
         public const string ButtonClickEventPath = "event:/UI/Button Down";

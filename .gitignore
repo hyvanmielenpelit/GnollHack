@@ -55,7 +55,7 @@ win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/symbols
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/license
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/nhdat
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/defaults.gnh
-win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/assetpacks/assets.zip
+win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/assetpacks/*.zip
 libgnollhackios.a
 win/win32/winclisrv/GnollHackClient/GnollHackClient.iOS/gnh/credits
 win/win32/winclisrv/GnollHackClient/GnollHackClient.iOS/gnh/xcredits

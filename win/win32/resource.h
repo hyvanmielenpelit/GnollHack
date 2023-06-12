@@ -38,6 +38,8 @@
 #define IDR_RCDATA_AUXILIARY            181
 #define IDR_RCDATA3                     182
 #define IDR_RCDATA_INTRO                182
+#define IDR_RCDATA_MUSIC                183
+#define IDR_RCDATA_PRELIMINARY          184
 #define IDC_TEXT_VIEW                   1000
 #define IDC_TEXT_CONTROL                1000
 #define IDC_CMD_MOVE_NW                 1001
@@ -206,7 +208,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        183
+#define _APS_NEXT_RESOURCE_VALUE        185
 #define _APS_NEXT_COMMAND_VALUE         32853
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110

@@ -364,6 +364,7 @@ namespace GnollHackClient
             App.FmodService.ClearLoadableSoundBanks();
             await TryGetFilesFromResources();
             await DownloadAndCheckFiles();
+            DownloadOnDemandFiles();
             AddLoadableSoundBanksFromAssets();
             DeleteBanksFromDisk();
  
@@ -395,11 +396,22 @@ namespace GnollHackClient
             }
         }
 
+        private void DownloadOnDemandFiles()
+        {
+            foreach (SecretsFile sf in App.CurrentSecrets.files)
+            {
+                if(IsSecretsFileAndroidOnDemand(sf))
+                {
+
+                }
+            }
+        }
+
         private void AddLoadableSoundBanksFromAssets()
         {
             foreach (SecretsFile sf in App.CurrentSecrets.files)
             {
-                if (sf.type == "sound_bank")
+                if (sf.type == "sound_bank" && !IsSecretsFileAndroidOnDemand(sf))
                 {
                     string sdir = Path.Combine(App.PlatformService.GetAssetsPath(), sf.source_directory);
                     string sfile = Path.Combine(sdir, sf.name);
@@ -415,14 +427,13 @@ namespace GnollHackClient
 
         private bool IsReadToMemoryBank(SecretsFile sf)
         {
-            return sf.subtype_id == 2 && App.IsAndroid && App.ReadStreamingBankToMemory;
+            return sf.android_streaming_asset != 0 && sf.android_on_demand == 0 && App.IsAndroid && App.ReadStreamingBankToMemory;
         }
-
+        
         private void DeleteBanksFromDisk()
         {
             string ghdir = App.GHPath;
 
-            //List<string> target_directories = new List<string>();
             foreach (SecretsFile sf in App.CurrentSecrets.files)
             {
                 if (!IsSecretsFileSavedToDisk(sf))
@@ -433,17 +444,6 @@ namespace GnollHackClient
                         string sfile = Path.Combine(sdir, sf.name);
                         if (File.Exists(sfile))
                             File.Delete(sfile);
-
-                        //bool containsstring = false;
-                        //for(int i = 0; i < target_directories.Count; i++)
-                        //    if (target_directories[i] == sdir)
-                        //    {
-                        //        containsstring = true;
-                        //        break;
-                        //    }
-
-                        //if(!containsstring)
-                        //    target_directories.Add(sdir);
                     }
                     catch (Exception ex) 
                     {
@@ -461,7 +461,6 @@ namespace GnollHackClient
 
                 string sdir = Path.Combine(ghdir, sd.name);
 
-                /* Make the relevant directory */
                 if (Directory.Exists(sdir))
                 {
                     try
@@ -1039,9 +1038,26 @@ namespace GnollHackClient
         {
             if (sf == null) return false;
             if (App.IsiOS) return false;
-            if(App.IsAndroid && IsReadToMemoryBank(sf)) return false;
-
+            if (App.IsAndroid)
+            {
+                if (IsReadToMemoryBank(sf)) return false;
+#if !DEBUG
+                if (IsSecretsFileAndroidOnDemand(sf)) return false;
+#endif
+                return sf.android_streaming_asset != 0;
+            }
             return true;
+        }
+
+        private bool IsSecretsFileAndroidOnDemand(SecretsFile sf)
+        {
+            if (sf == null) return false;
+            if (App.IsiOS) return false;
+#if DEBUG
+            return false;
+#else
+            return App.IsAndroid && sf.android_on_demand != 0;
+#endif
         }
 
         private int CountSecretsFilesSavedToDirectory(Secrets secrets, SecretsDirectory sd)

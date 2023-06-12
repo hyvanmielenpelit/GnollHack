@@ -323,7 +323,7 @@ namespace GnollHackClient.Unknown
 
         public void PlayTestSound()
         {
-            string eventPath = "event:/Music/Start/Splash";
+            string eventPath = "event:/Music/Main Screen/Splash";
             EventDescription eventDescription;
             RESULT res = _system.getEvent(eventPath, out eventDescription);
             EventInstance testEventInstance;

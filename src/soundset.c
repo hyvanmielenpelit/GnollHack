@@ -17,7 +17,7 @@ STATIC_DCL void FDECL(set_hearing_array, (int, int, double, int));
 NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_NONE, "", 0.0f },
 
-    { SOUND_BANK_MASTER, "event:/Music/Start/Splash", 0.5f},
+    { SOUND_BANK_MASTER, "event:/Music/Main Screen/Splash", 0.5f},
     { SOUND_BANK_MASTER, "event:/Music/Start/Player Selection", 0.3f},
     { SOUND_BANK_MASTER, "event:/Music/Start/Intro", BACKGROUND_MUSIC_VOLUME * 1.5f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Normal-1", BACKGROUND_MUSIC_VOLUME},
@@ -339,7 +339,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Generic Physical Activate", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Generic Magical Activate", 1.0f },
     { SOUND_BANK_MASTER, "event:/Ambience/Effect/Rolling Boulder", 1.0f },
-    { SOUND_BANK_MASTER, "event:/UI/Knapsack Full", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Error/Knapsack Full", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Environment/Fall into Water", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Pet in Way", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Pet Does Not Move", 1.0f },
