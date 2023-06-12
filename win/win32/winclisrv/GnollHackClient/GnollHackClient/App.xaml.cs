@@ -326,7 +326,7 @@ namespace GnollHackClient
             get 
             {
                 if(App.PlatformService == null) return false;
-                return App.PlatformService.GetDeviceMemoryInBytes() > 3500UL * 1024UL * 1024UL;
+                return false; // App.PlatformService.GetDeviceMemoryInBytes() > 3500UL * 1024UL * 1024UL;
             } 
         }
 
