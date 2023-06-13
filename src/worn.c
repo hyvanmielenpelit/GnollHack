@@ -1744,7 +1744,7 @@ long flag;
         case W_SADDLE: /* might be used to check if you are polymorphed into a horse wearing a saddle */
             return (struct obj*)0; //usaddle;
         default:
-            impossible("bad flag in which_armor");
+            //impossible("bad flag in which_armor");
             return 0;
         }
     } else {
