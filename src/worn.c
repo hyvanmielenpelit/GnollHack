@@ -1741,8 +1741,10 @@ long flag;
             return uarmf;
         case W_ARMU:
             return uarmu;
+        case W_SADDLE:
+            return 0; //usaddle
         default:
-            impossible("bad flag in which_armor");
+            //impossible("bad flag in which_armor");
             return 0;
         }
     } else {
