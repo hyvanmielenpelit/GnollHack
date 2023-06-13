@@ -144,5 +144,15 @@ namespace GnollHackClient.iOS
         {
             return NSBundle.MainBundle.BundlePath;
         }
+
+        public string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath)
+        {
+            return null;
+        }
+
+        public int FetchOnDemandPack(string pack)
+        {
+            return -2; /* No need to load */
+        }
     }
 }

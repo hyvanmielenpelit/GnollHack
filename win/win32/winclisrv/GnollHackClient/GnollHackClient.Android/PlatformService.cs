@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 using GnollHackClient;
 using Android;
 using Java.IO;
-using Com.Google.Android.Play.Core.Assetpacks;
+using System.IO;
 
 [assembly: Dependency(typeof(GnollHackClient.Droid.PlatformService))]
 namespace GnollHackClient.Droid
@@ -223,6 +223,49 @@ namespace GnollHackClient.Droid
         {
             
             return "file:///android_asset/";
+        }
+
+        public string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath)
+        {
+            if (MainActivity.CurrentMainActivity == null || MainActivity.CurrentMainActivity.AssetPackManager == null)
+                return null;
+
+            var assetPackPath = MainActivity.CurrentMainActivity.AssetPackManager.GetPackLocation(assetPack);
+            string assetsFolderPath = assetPackPath?.AssetsPath() ?? null;
+            if (assetsFolderPath == null)
+            {
+                // asset pack is not ready
+                return null;
+            }
+
+            string assetPath = Path.Combine(assetsFolderPath, relativeAssetPath);
+            return assetPath;
+        }
+
+        public int FetchOnDemandPack(string pack)
+        {
+            if (MainActivity.CurrentMainActivity == null || MainActivity.CurrentMainActivity.AssetPackManager == null)
+                return 2; /* No asset pack manager */
+
+            var location = MainActivity.CurrentMainActivity.AssetPackManager.GetPackLocation(pack);
+            if (location == null)
+            {
+                // TODO Figure out how to use the GetPackStates.
+                try
+                {
+                    var states = MainActivity.CurrentMainActivity.AssetPackManager.GetPackStates(new string[] { pack });
+                    // TODO add OnComplete Listeners to the Task returned by Fetch.
+                    MainActivity.CurrentMainActivity.AssetPackManager.Fetch(new string[] { pack });
+                    return 0;  /* Success */
+                }
+                catch(Exception ex)
+                {
+                    string msg = ex.Message;
+                    return 1;  /* Exception occurred */
+                }
+            }
+            else
+                return -1; /* Already loaded */
         }
     }
 }

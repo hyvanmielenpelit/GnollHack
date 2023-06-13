@@ -23,6 +23,9 @@ namespace GnollHackClient
         string GetBaseUrl();
         string GetAssetsPath();
 
+        string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath);
+        int FetchOnDemandPack(string pack);
+
         //void SaveFileToDownloads(byte[] data, string name);
     }
 }

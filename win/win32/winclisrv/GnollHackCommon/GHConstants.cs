@@ -1454,6 +1454,8 @@ namespace GnollHackCommon
         public const long StoreReviewRequestTotalPlayTime = 60 * 60 * 2;
         public const bool DefaultHTMLDumpLogs = true;
         public const bool DefaultUseSingleDumpLog = true;
+        public const string InstallTimePackName = "installtimepack";
+        public const string OnDemandPackName = "ondemandpack";
     }
 
 

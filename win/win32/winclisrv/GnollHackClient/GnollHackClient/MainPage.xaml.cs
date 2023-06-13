@@ -398,29 +398,42 @@ namespace GnollHackClient
 
         private void DownloadOnDemandFiles()
         {
-            foreach (SecretsFile sf in App.CurrentSecrets.files)
+#if !DEBUG
+            if(App.IsAndroid)
             {
-                if(IsSecretsFileAndroidOnDemand(sf))
+                int res = App.PlatformService.FetchOnDemandPack(GHConstants.OnDemandPackName);
+                switch (res)
                 {
-
+                    default:
+                        break;
                 }
             }
+#endif
         }
 
         private void AddLoadableSoundBanksFromAssets()
         {
             foreach (SecretsFile sf in App.CurrentSecrets.files)
             {
-                if (sf.type == "sound_bank" && !IsSecretsFileAndroidOnDemand(sf))
+                if (sf.type == "sound_bank")
                 {
-                    string sdir = Path.Combine(App.PlatformService.GetAssetsPath(), sf.source_directory);
-                    string sfile = Path.Combine(sdir, sf.name);
-
-                    string rfile = Path.Combine(sf.source_directory, sf.name);
-                    if (IsReadToMemoryBank(sf))
-                        App.FmodService.AddLoadableSoundBank(rfile, sf.subtype_id, true, true);
+                    if (IsSecretsFileAndroidOnDemand(sf))
+                    {
+                        string rfile = Path.Combine(sf.source_directory, sf.name);
+                        string afile = App.PlatformService.GetAbsoluteOnDemandAssetPath(GHConstants.OnDemandPackName, rfile);
+                        App.FmodService.AddLoadableSoundBank(afile, sf.subtype_id, false, false);
+                    }
                     else
-                        App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, true, false);
+                    {
+                        string sdir = Path.Combine(App.PlatformService.GetAssetsPath(), sf.source_directory);
+                        string sfile = Path.Combine(sdir, sf.name);
+
+                        string rfile = Path.Combine(sf.source_directory, sf.name);
+                        if (IsReadToMemoryBank(sf))
+                            App.FmodService.AddLoadableSoundBank(rfile, sf.subtype_id, true, true);
+                        else
+                            App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, true, false);
+                    }
                 }
             }
         }
@@ -907,6 +920,9 @@ namespace GnollHackClient
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             foreach (SecretsFile f in App.CurrentSecrets.files)
             {
+                if (!IsSecretsFileSavedToDisk(f))
+                    continue;
+
                 try
                 {
                     string sdir = string.IsNullOrWhiteSpace(f.target_directory) ? ghdir : Path.Combine(ghdir, f.target_directory);
@@ -1041,9 +1057,7 @@ namespace GnollHackClient
             if (App.IsAndroid)
             {
                 if (IsReadToMemoryBank(sf)) return false;
-#if !DEBUG
                 if (IsSecretsFileAndroidOnDemand(sf)) return false;
-#endif
                 return sf.android_streaming_asset != 0;
             }
             return true;
