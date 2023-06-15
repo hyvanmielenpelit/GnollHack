@@ -179,9 +179,6 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Plugin.StoreReview">
-      <Version>5.0.1</Version>
-    </PackageReference>
     <PackageReference Include="SkiaSharp.Views.Forms">
       <Version>2.80.3</Version>
     </PackageReference>

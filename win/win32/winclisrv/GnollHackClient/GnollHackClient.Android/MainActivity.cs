@@ -10,8 +10,8 @@ using Xamarin.Forms;
 using Xamarin.Essentials;
 using System.IO;
 using Android.Content;
-using Com.Google.Android.Play.Core.Assetpacks;
-using Com.Google.Android.Play.Core.Assetpacks.Model;
+using Xamarin.Google.Android.Play.Core.AssetPacks;
+using Xamarin.Google.Android.Play.Core.AssetPacks.Model;
 
 namespace GnollHackClient.Droid
 {
@@ -25,7 +25,7 @@ namespace GnollHackClient.Droid
         const int REQUEST_USER_CONFIRM_INSTALL_CODE = 101;
 
         public IAssetPackManager AssetPackManager { get; private set; }
-        //public AssetPackStateUpdateListenerWrapper listener { get; private set; }
+        public AssetPackStateUpdateListenerWrapper listener { get; private set; }
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -73,8 +73,8 @@ namespace GnollHackClient.Droid
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
 
             AssetPackManager = AssetPackManagerFactory.GetInstance(this);
-            //listener = new AssetPackStateUpdateListenerWrapper();
-            //listener.StateUpdate += Listener_StateUpdate;
+            listener = new AssetPackStateUpdateListenerWrapper();
+            listener.StateUpdate += Listener_StateUpdate;
             LoadApplication(new App());
         }
 
@@ -150,13 +150,13 @@ namespace GnollHackClient.Droid
         protected override void OnResume()
         {
             // regsiter our Listener Wrapper with the SplitInstallManager so we get feedback.
-            //AssetPackManager.RegisterListener(listener.Listener);
+            AssetPackManager.RegisterListener(listener.Listener);
             base.OnResume();
         }
 
         protected override void OnPause()
         {
-            //AssetPackManager.UnregisterListener(listener.Listener);
+            AssetPackManager.UnregisterListener(listener.Listener);
             base.OnPause();
         }
 

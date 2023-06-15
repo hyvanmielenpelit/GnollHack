@@ -29,7 +29,7 @@ using Xamarin.Essentials;
 using System.Collections;
 using System.Collections.Concurrent;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
-using Plugin.StoreReview;
+//using Plugin.StoreReview;
 
 namespace GnollHackClient
 {
@@ -689,7 +689,7 @@ namespace GnollHackClient
                 if (!ReviewRequested && NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime)
                 {
                     Preferences.Set("StoreReviewRequested", true);
-                    await CrossStoreReview.Current.RequestReview(false);
+                    //await CrossStoreReview.Current.RequestReview(false);
                 }
                 CloseApp();
             }

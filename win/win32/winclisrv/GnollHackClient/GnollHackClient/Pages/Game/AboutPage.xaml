@@ -34,15 +34,10 @@
                                 <controls:CustomImageButton x:Name="btnVersion" Text="Version" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
-                            <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnRateApp" Text="Give App Rating" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnRateApp_Clicked" />
-                                </Grid>-->
+                            <!--<ViewCell>
                                 <controls:CustomImageButton x:Name="btnRateApp" Text="Give App Rating" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnRateApp_Clicked" UseVaryingBackgroundImages ="False" />
-                            </ViewCell>
+                            </ViewCell>-->
                             <ViewCell>
                                 <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
