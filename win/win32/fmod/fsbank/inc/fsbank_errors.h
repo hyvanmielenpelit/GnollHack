@@ -1,5 +1,3 @@
-﻿/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
-
 #ifndef _FSBANK_ERRORS_H
 #define _FSBANK_ERRORS_H
 

@@ -1,5 +1,3 @@
-﻿/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
-
 #ifndef _FSBANK_H
 #define _FSBANK_H
 
@@ -72,10 +70,8 @@ typedef enum FSBANK_RESULT
 typedef enum FSBANK_FORMAT
 {
     FSBANK_FORMAT_PCM,
-    FSBANK_FORMAT_PCM_BIGENDIAN,
     FSBANK_FORMAT_XMA,
-    FSBANK_FORMAT_AT9_PSVITA,
-    FSBANK_FORMAT_AT9_PS4,
+    FSBANK_FORMAT_AT9,
     FSBANK_FORMAT_VORBIS,
     FSBANK_FORMAT_FADPCM,
     FSBANK_FORMAT_OPUS,
