@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GnollHackCommon;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -22,9 +23,12 @@ namespace GnollHackClient
         void RevertAnimatorDuration(bool isfinal);
         string GetBaseUrl();
         string GetAssetsPath();
-
+        string GetAbsoluteOnDemandAssetPath(string assetPack);
         string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath);
         int FetchOnDemandPack(string pack);
+        event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
+
+        void InitOnDemandPackStatusNotificationEventHandler();
 
         //void SaveFileToDownloads(byte[] data, string name);
     }

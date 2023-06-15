@@ -39,6 +39,7 @@ namespace GnollHackClient
             InitializeComponent();
             VersionTracking.Track();
             App.GetDependencyServices();
+            App.PlatformService.InitOnDemandPackStatusNotificationEventHandler();
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             App.InitBaseTypefaces(assembly);
@@ -183,6 +184,18 @@ namespace GnollHackClient
                 {
                     App.CurrentClientGame.GamePage.StopWaitAndResumeSavedGame();
                 }
+            }
+        }
+
+        public static bool DownloadOnDemandPackage 
+        {
+            get 
+            {
+#if DEBUG
+                return false;
+#else
+                return false;
+#endif
             }
         }
 

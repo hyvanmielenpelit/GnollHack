@@ -14,6 +14,8 @@ using GnollHackClient;
 using Android;
 using Java.IO;
 using System.IO;
+using GnollHackCommon;
+using Xamarin.Google.Android.Play.Core.AssetPacks;
 
 [assembly: Dependency(typeof(GnollHackClient.Droid.PlatformService))]
 namespace GnollHackClient.Droid
@@ -221,8 +223,17 @@ namespace GnollHackClient.Droid
         }
         public string GetAssetsPath()
         {
-            
+
             return "file:///android_asset/";
+        }
+
+        public string GetAbsoluteOnDemandAssetPath(string assetPack)
+        {
+            if (MainActivity.CurrentMainActivity == null || MainActivity.CurrentMainActivity.AssetPackManager == null)
+                return null;
+
+            var assetPackPath = MainActivity.CurrentMainActivity.AssetPackManager.GetPackLocation(assetPack);
+            return assetPackPath?.AssetsPath() ?? null;
         }
 
         public string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath)
@@ -230,8 +241,7 @@ namespace GnollHackClient.Droid
             if (MainActivity.CurrentMainActivity == null || MainActivity.CurrentMainActivity.AssetPackManager == null)
                 return null;
 
-            var assetPackPath = MainActivity.CurrentMainActivity.AssetPackManager.GetPackLocation(assetPack);
-            string assetsFolderPath = assetPackPath?.AssetsPath() ?? null;
+            string assetsFolderPath = GetAbsoluteOnDemandAssetPath(assetPack);
             if (assetsFolderPath == null)
             {
                 // asset pack is not ready
@@ -258,7 +268,7 @@ namespace GnollHackClient.Droid
                     MainActivity.CurrentMainActivity.AssetPackManager.Fetch(new string[] { pack });
                     return 0;  /* Success */
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     string msg = ex.Message;
                     return 1;  /* Exception occurred */
@@ -266,6 +276,18 @@ namespace GnollHackClient.Droid
             }
             else
                 return -1; /* Already loaded */
+        }
+
+        public event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
+
+        public void InitOnDemandPackStatusNotificationEventHandler()
+        {
+            MainActivity.CurrentMainActivity.OnDemandPackStatus += OnDemandPackStatusNotified;
+        }
+
+        private void OnDemandPackStatusNotified(object sender, AssetPackStatusEventArgs e)
+        {
+            OnDemandPackStatusNotification?.Invoke(this, e);
         }
     }
 }

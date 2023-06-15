@@ -12,6 +12,7 @@ using System.IO;
 using Android.Content;
 using Xamarin.Google.Android.Play.Core.AssetPacks;
 using Xamarin.Google.Android.Play.Core.AssetPacks.Model;
+using GnollHackCommon;
 
 namespace GnollHackClient.Droid
 {
@@ -92,51 +93,47 @@ namespace GnollHackClient.Droid
             return assetPath;
         }
 
-        private void Listener_StateUpdate(object sender, EventArgs e)
+        public event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatus;
+
+        private void Listener_StateUpdate(object sender, AssetPackStateUpdateListenerWrapper.AssetPackStateEventArgs e)
         {
-            //var status = e.State.Status();
-            int i = 0;
-            switch (i)
+            var status = e.State.Status();
+            switch (status)
             {
                 case AssetPackStatus.Pending:
+                    OnDemandPackStatus?.Invoke(null, new AssetPackStatusEventArgs(status));
                     break;
                 case AssetPackStatus.Downloading:
-                    //long downloaded = e.State.BytesDownloaded();
-                    //long totalSize = e.State.TotalBytesToDownload();
-                    //double percent = 100.0 * downloaded / totalSize;
-                    //Android.Util.Log.Info("DynamicAssetsExample", $"Dowloading {percent}");
+                    long downloaded = e.State.BytesDownloaded();
+                    long totalSize = e.State.TotalBytesToDownload();
+                    OnDemandPackStatus?.Invoke(null, new AssetPackStatusEventArgs(status, downloaded, totalSize));
                     break;
 
                 case AssetPackStatus.Transferring:
-                    // 100% downloaded and assets are being transferred.
-                    // Notify user to wait until transfer is complete.
+                    OnDemandPackStatus?.Invoke(null, new AssetPackStatusEventArgs(status));
                     break;
 
                 case AssetPackStatus.Completed:
-                    // Asset pack is ready to use.
-                    //string path = GetAbsoluteOnDemandPackAssetPath("assetsfeature", "Foo.txt");
-                    //if (path != null)
-                    //{
-                    //    Android.Util.Log.Info("DynamicAssetsExample", $"Reading {path}");
-                    //    Android.Util.Log.Info("DynamicAssetsExample", File.ReadAllText(path));
-                    //}
+                    AssetPackLocation assetPackPath = AssetPackManager.GetPackLocation(GHConstants.OnDemandPackName);
+                    string assetsFolderPath = assetPackPath?.AssetsPath() ?? null;
+                    OnDemandPackStatus?.Invoke(null, new AssetPackStatusEventArgs(status, assetsFolderPath));
                     break;
 
                 case AssetPackStatus.Failed:
-                    // Request failed. Notify user.
+                    OnDemandPackStatus?.Invoke(null, new AssetPackStatusEventArgs(status));
                     break;
 
                 case AssetPackStatus.Canceled:
-                    // Request canceled. Notify user.
+                    OnDemandPackStatus?.Invoke(null, new AssetPackStatusEventArgs(status));
                     break;
 
                 case AssetPackStatus.WaitingForWifi:
-                    // wait for wifi
+                    OnDemandPackStatus?.Invoke(null, new AssetPackStatusEventArgs(status));
                     AssetPackManager.ShowCellularDataConfirmation(this);
                     break;
 
                 case AssetPackStatus.NotInstalled:
-                    // Asset pack is not downloaded yet.
+                    OnDemandPackStatus?.Invoke(null, new AssetPackStatusEventArgs(status));
                     break;
             }
         }

@@ -361,6 +361,7 @@ namespace GnollHackClient
                 Debug.WriteLine(ex.Message);
             }
 
+            App.PlatformService.OnDemandPackStatusNotification += OnDemandPackEventHandler;
             App.FmodService.ClearLoadableSoundBanks();
             await TryGetFilesFromResources();
             await DownloadAndCheckFiles();
@@ -396,19 +397,49 @@ namespace GnollHackClient
             }
         }
 
+        private void OnDemandPackEventHandler(object sender, AssetPackStatusEventArgs e)
+        {
+            int status = e.Status;
+            switch (status)
+            {
+                case GHAssetPackStatus.Pending:
+                    DownloadLabel.Text = "On-demand pack is pending";
+                    break;
+                case GHAssetPackStatus.Downloading:
+                    DownloadLabel.Text = "On-demand pack is downloading: " + e.DownloadedBytes + " / " + e.TotalBytes + " (" + Math.Round(e.PercentDownloaded, 1) + ")";
+                    break;
+                case GHAssetPackStatus.Transferring:
+                    DownloadLabel.Text = "On-demand pack is transferring";
+                    break;
+                case GHAssetPackStatus.Completed:
+                    DownloadLabel.Text = "On-demand pack has completed download: " + e.CompletedAssetPackPath;
+                    break;
+                case GHAssetPackStatus.Failed:
+                    DownloadLabel.Text = "On-demand pack download failed";
+                    break;
+                case GHAssetPackStatus.Canceled:
+                    DownloadLabel.Text = "On-demand pack download was cancelled";
+                    break;
+                case GHAssetPackStatus.WaitingForWifi:
+                    DownloadLabel.Text = "On-demand pack download is waiting for wifi";
+                    break;
+                case GHAssetPackStatus.NotInstalled:
+                    DownloadLabel.Text = "On-demand pack is not installed";
+                    break;
+            }
+        }
+
         private void DownloadOnDemandFiles()
         {
-#if !DEBUG
-            if(App.IsAndroid)
+            if(App.IsAndroid && App.DownloadOnDemandPackage)
             {
-                int res = App.PlatformService.FetchOnDemandPack(GHConstants.OnDemandPackName);
-                switch (res)
+                DownloadLabel.Text = "";
+                string path = App.PlatformService.GetAbsoluteOnDemandAssetPath(GHConstants.OnDemandPackName);
+                if(path == null) 
                 {
-                    default:
-                        break;
+                    int res = App.PlatformService.FetchOnDemandPack(GHConstants.OnDemandPackName);
                 }
             }
-#endif
         }
 
         private void AddLoadableSoundBanksFromAssets()

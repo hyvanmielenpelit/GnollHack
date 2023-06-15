@@ -9,6 +9,7 @@ using GnollHackClient;
 using Foundation;
 using UIKit;
 using Xamarin.Forms.PlatformConfiguration;
+using GnollHackCommon;
 
 [assembly: Dependency(typeof(GnollHackClient.iOS.PlatformService))]
 namespace GnollHackClient.iOS
@@ -145,6 +146,11 @@ namespace GnollHackClient.iOS
             return NSBundle.MainBundle.BundlePath;
         }
 
+        public string GetAbsoluteOnDemandAssetPath(string assetPack)
+        {
+            return null;
+        }
+
         public string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath)
         {
             return null;
@@ -154,5 +160,13 @@ namespace GnollHackClient.iOS
         {
             return -2; /* No need to load */
         }
+
+        public event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
+
+        public void InitOnDemandPackStatusNotificationEventHandler()
+        {
+
+        }
+
     }
 }
