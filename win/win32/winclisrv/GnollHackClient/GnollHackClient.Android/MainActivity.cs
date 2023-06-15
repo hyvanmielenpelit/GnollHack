@@ -13,7 +13,6 @@ using Android.Content;
 using Com.Google.Android.Play.Core.Assetpacks;
 using Com.Google.Android.Play.Core.Assetpacks.Model;
 
-
 namespace GnollHackClient.Droid
 {
     [Activity(Label = "GnollHack", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize )]
@@ -26,7 +25,7 @@ namespace GnollHackClient.Droid
         const int REQUEST_USER_CONFIRM_INSTALL_CODE = 101;
 
         public IAssetPackManager AssetPackManager { get; private set; }
-        //public AssetPackStateUpdateListenerWrapper listener;
+        //public AssetPackStateUpdateListenerWrapper listener { get; private set; }
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -73,7 +72,7 @@ namespace GnollHackClient.Droid
             CurrentMainActivity = this;
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
 
-            AssetPackManager =AssetPackManagerFactory.GetInstance(this);
+            AssetPackManager = AssetPackManagerFactory.GetInstance(this);
             //listener = new AssetPackStateUpdateListenerWrapper();
             //listener.StateUpdate += Listener_StateUpdate;
             LoadApplication(new App());

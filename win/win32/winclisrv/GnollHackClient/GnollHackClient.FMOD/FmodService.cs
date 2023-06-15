@@ -375,12 +375,14 @@ namespace GnollHackClient.Unknown
             RESULT res = _system.update();
         }
 
-        public static RESULT GNHImmediateEventCallback(EVENT_CALLBACK_TYPE type, EventInstance _event, IntPtr parameters)
+        public static RESULT GNHImmediateEventCallback(EVENT_CALLBACK_TYPE type, IntPtr _event, IntPtr parameters)
         {
             FmodService service = _latestService;
 
             if (service == null)
                 return RESULT.ERR_UNSUPPORTED;
+
+            EventInstance instance = new FMOD.Studio.EventInstance(_event);
 
             if (type == EVENT_CALLBACK_TYPE.STOPPED || type == EVENT_CALLBACK_TYPE.START_FAILED)
             {
@@ -389,7 +391,7 @@ namespace GnollHackClient.Unknown
                     if (i >= service.immediateInstances.Count)
                         break;
 
-                    if (service.immediateInstances[i].instance.handle == _event.handle)
+                    if (service.immediateInstances[i].instance.handle == instance.handle)
                     {
                         service.immediateInstances[i].stopped = true;
                         return RESULT.OK;
@@ -400,7 +402,7 @@ namespace GnollHackClient.Unknown
                     if (i >= service.longImmediateInstances.Count)
                         break;
 
-                    if (service.longImmediateInstances[i].instance.handle == _event.handle)
+                    if (service.longImmediateInstances[i].instance.handle == instance.handle)
                     {
                         service.longImmediateInstances[i].stopped = true;
                         return RESULT.OK;
@@ -410,11 +412,13 @@ namespace GnollHackClient.Unknown
             return RESULT.OK;
         }
 
-        public static RESULT GNHDialogueEventCallback(EVENT_CALLBACK_TYPE type, EventInstance _event, IntPtr parameters)
+        //private RESULT GNHDialogueEventCallback(EVENT_CALLBACK_TYPE type, IntPtr _event, IntPtr parameters)
+
+        public static RESULT GNHDialogueEventCallback(EVENT_CALLBACK_TYPE type, IntPtr _event, IntPtr parameters)
         {
             RESULT result;
             FmodService service = _latestService;
-
+            EventInstance instance = new FMOD.Studio.EventInstance(_event);
             if (service == null)
                 return RESULT.ERR_UNSUPPORTED;
 
@@ -425,7 +429,7 @@ namespace GnollHackClient.Unknown
                     if (i >= service.immediateInstances.Count)
                         break;
 
-                    if (service.immediateInstances[i].instance.handle == _event.handle)
+                    if (service.immediateInstances[i].instance.handle == instance.handle)
                     {
                         service.immediateInstances[i].stopped = true;
                         if (service.immediateInstances[i].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
@@ -454,7 +458,7 @@ namespace GnollHackClient.Unknown
                     if (i >= service.longImmediateInstances.Count)
                         break;
 
-                    if (service.longImmediateInstances[i].instance.handle == _event.handle)
+                    if (service.longImmediateInstances[i].instance.handle == instance.handle)
                     {
                         service.longImmediateInstances[i].stopped = true;
                         if (service.longImmediateInstances[i].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
