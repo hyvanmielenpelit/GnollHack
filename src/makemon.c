@@ -1952,10 +1952,6 @@ register struct monst *mtmp;
         if (ptr == &mons[PM_ICE_DEVIL] && !rn2(4)) {
             (void)mongets(mtmp, SPEAR);
         }
-        else if (ptr == &mons[PM_ASMODEUS]) {
-            (void)mongets(mtmp, WAN_COLD);
-            (void)mongets(mtmp, WAN_FIRE);
-        }
         else if (ptr == &mons[PM_YACC])
         {
             /* Yacc is normally using an artifact ring as the nose ring */
@@ -1975,7 +1971,6 @@ register struct monst *mtmp;
                 conflict_ok = FALSE;
             if (exist_artifact(RIN_SUPREME_POWER, artiname(ART_RULING_RING_OF_YENDOR)))
                 true_ring_ok = FALSE;
-
 
             if (three_wishes_ok)
             {
@@ -2008,7 +2003,16 @@ register struct monst *mtmp;
 
             if (otmp)
                 (void)mpickobj(mtmp, otmp);
-        }       
+        }
+        else if ((is_lord(mtmp->data) || is_prince(mtmp->data)) && !rn2(3))
+        {
+            if (has_neck(mtmp->data) && !nohands(mtmp->data))
+                (void)mongets(mtmp, !rn2(2) ? AMULET_OF_REFLECTION : BRACERS_OF_REFLECTION);
+            else if(has_neck(mtmp->data))
+                (void)mongets(mtmp, AMULET_OF_REFLECTION);
+            else if(!nohands(mtmp->data))
+                (void)mongets(mtmp, BRACERS_OF_REFLECTION);
+        }
         break;
     case S_ORC:
         if (!rn2(2))
