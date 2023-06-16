@@ -375,7 +375,7 @@ namespace GnollHackClient
 
             App.PlatformService.OnDemandPackStatusNotification += OnDemandPackEventHandler;
             StartFetchOnDemandFiles();
-            SetSoundBanksUpForLoading();
+            App.SetSoundBanksUpForLoading();
  
             if (App.LoadBanks)
             {
@@ -403,16 +403,6 @@ namespace GnollHackClient
             {
                 Debug.WriteLine(ex.Message);
             }
-        }
-
-        public void SetSoundBanksUpForLoading()
-        {
-            App.FmodService.ClearLoadableSoundBanks();
-            //await TryGetFilesFromResources();
-            //await DownloadAndCheckFiles();
-            //await TryInitializeSecrets();
-            AddLoadableSoundBanks();
-            DeleteBanksFromDisk();
         }
 
         private void OnDemandPackEventHandler(object sender, AssetPackStatusEventArgs e)
@@ -460,98 +450,6 @@ namespace GnollHackClient
             }
         }
 
-        private void AddLoadableSoundBanks()
-        {
-            foreach (SecretsFile sf in App.CurrentSecrets.files)
-            {
-                if (sf.type == "sound_bank")
-                {
-                    if (App.IsSecretsFileAndroidOnDemand(sf)) //In asset pack directory
-                    {
-                        string rfile = Path.Combine(sf.source_directory, sf.name);
-                        string afile = App.PlatformService.GetAbsoluteOnDemandAssetPath(GHConstants.OnDemandPackName, rfile);
-                        App.FmodService.AddLoadableSoundBank(afile, sf.subtype_id, false, false);
-                    }
-                    else if (App.IsSecretsFileSavedToDisk(sf)) //In gnollhack directory's bank subdirectory
-                    {
-                        string ghdir = App.GnollHackService.GetGnollHackPath();
-                        string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory); ;
-                        string sfile = Path.Combine(sdir, sf.name);
-                        App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, false, false);
-                    }
-                    else //In assets directory
-                    {
-                        string sdir = Path.Combine(App.PlatformService.GetAssetsPath(), sf.source_directory);
-                        string sfile = Path.Combine(sdir, sf.name);
-
-                        string rfile = Path.Combine(sf.source_directory, sf.name);
-                        if (App.IsReadToMemoryBank(sf))  //Read to memory first and use from there
-                            App.FmodService.AddLoadableSoundBank(rfile, sf.subtype_id, true, true);
-                        else 
-                            App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, true, false);
-                    }
-                }
-            }
-        }
-
-        private void DeleteBanksFromDisk()
-        {
-            string ghdir = App.GHPath;
-
-            foreach (SecretsFile sf in App.CurrentSecrets.files)
-            {
-                if (!App.IsSecretsFileSavedToDisk(sf))
-                {
-                    try
-                    {
-                        string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory); ;
-                        string sfile = Path.Combine(sdir, sf.name);
-                        if (File.Exists(sfile))
-                            File.Delete(sfile);
-                    }
-                    catch (Exception ex) 
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            foreach (SecretsDirectory sd in App.CurrentSecrets.directories)
-            {
-                if (string.IsNullOrWhiteSpace(sd.name))
-                    continue;
-
-                if (App.CountSecretsFilesSavedToDirectory(App.CurrentSecrets, sd) > 0)
-                    continue;
-
-                string sdir = Path.Combine(ghdir, sd.name);
-
-                if (Directory.Exists(sdir))
-                {
-                    try
-                    {
-                        Directory.Delete(sdir);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            //foreach (string dir in target_directories)
-            //{
-            //    try
-            //    {
-            //        if (Directory.Exists(dir))
-            //        {
-            //            Directory.Delete(dir, true);
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Debug.WriteLine(ex.Message);
-            //    }
-            //}
-        }
 
         //private object _abortLock = new object();
         //private bool _abortDisplayed = false;
@@ -1047,7 +945,7 @@ namespace GnollHackClient
         //        /* Make the relevant directory */
         //        if (!Directory.Exists(sdir))
         //        {
-        //            Directory.CreateDirectory(sdir);
+        //            App.CheckCreateDirectory(sdir);
         //        }
         //    }
 

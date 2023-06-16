@@ -275,8 +275,15 @@ namespace GnollHackClient.Pages.Game
 
             if (setupfiles)
             {
-                await _mainPage.TryInitializeSecrets();
-                _mainPage.SetSoundBanksUpForLoading();
+                try
+                {
+                    App.GnollHackService.InitializeSecrets(App.CurrentSecrets);
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Secrets Initialization Failed", "Initializing secrets failed: " + ex.Message, "OK");
+                }
+                App.SetSoundBanksUpForLoading();
             }
 
             if (loadbanks)

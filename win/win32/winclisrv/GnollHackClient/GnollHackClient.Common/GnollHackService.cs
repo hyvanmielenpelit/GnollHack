@@ -436,7 +436,7 @@ namespace GnollHackClient.Unknown
                 string library = Path.Combine(documents, "..", "Library");
                 string path = Path.Combine(library, "GnollHackData");
                 if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
+                    App.CheckCreateDirectory(path);
                 return path;
             }
             catch
@@ -565,7 +565,7 @@ namespace GnollHackClient.Unknown
                 string fulldirepath = Path.Combine(filesdir, sdir.name);
                 if (!Directory.Exists(fulldirepath))
                 {
-                    Directory.CreateDirectory(fulldirepath);
+                    App.CheckCreateDirectory(fulldirepath);
                 }
                 else
                 {
