@@ -69,6 +69,7 @@ namespace GnollHackClient
             App.UseHTMLDumpLogs = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             App.UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
             App.ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", App.RecommendedReadStreamingBankToMemory);
+            App.CopyStreamingBankToDisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
 
             App.BackButtonPressed += App.EmptyBackButtonPressed;
         }
@@ -342,6 +343,7 @@ namespace GnollHackClient
                 return false; // App.PlatformService.GetDeviceMemoryInBytes() > 3500UL * 1024UL * 1024UL;
             } 
         }
+        public static bool CopyStreamingBankToDisk { get; set; }
 
         public static string GHVersionId { get; set; }
         public static string GHVersionString { get; set; }

@@ -150,6 +150,10 @@ namespace GnollHackClient.Pages.Game
                 _gamePage.WalkArrows = WalkArrowSwitch.IsToggled;
             Preferences.Set("WalkArrows", WalkArrowSwitch.IsToggled);
 
+            if (_gamePage != null)
+                _gamePage.DrawWallEnds = WallEndSwitch.IsToggled;
+            Preferences.Set("DrawWallEnds", WallEndSwitch.IsToggled);
+
             //if (_gamePage != null)
             //    _gamePage.MapNoClipMode = !YesClipAlternateSwitch.IsToggled;
             //Preferences.Set("MapNoClipMode", !YesClipNormalSwitch.IsToggled);
@@ -229,6 +233,9 @@ namespace GnollHackClient.Pages.Game
 
             App.ReadStreamingBankToMemory = StreamingBankToMemorySwitch.IsToggled;
             Preferences.Set("ReadStreamingBankToMemory", StreamingBankToMemorySwitch.IsToggled);
+
+            App.CopyStreamingBankToDisk = StreamingBankToDiskSwitch.IsToggled;
+            Preferences.Set("CopyStreamingBankToDisk", StreamingBankToDiskSwitch.IsToggled);
             /*
             if(!App.IsiOS)
             {
@@ -304,7 +311,7 @@ namespace GnollHackClient.Pages.Game
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             //bool carousel = false;
-            bool allowbones = true, lighterdarkening = false, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbank = false;
+            bool allowbones = true, lighterdarkening = false, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = false;
             bool devmode = GHConstants.DefaultDeveloperMode, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting;
@@ -325,7 +332,8 @@ namespace GnollHackClient.Pages.Game
             bank = Preferences.Get("LoadSoundBanks", true);
             html = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             singledumplog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
-            streamingbank = Preferences.Get("ReadStreamingBankToMemory", App.RecommendedReadStreamingBankToMemory);
+            streamingbanktomemory = Preferences.Get("ReadStreamingBankToMemory", App.RecommendedReadStreamingBankToMemory);
+            streamingbanktodisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
             postgamestatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             postdiagnostics = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             customlink = Preferences.Get("CustomGameStatusLink", "");
@@ -364,6 +372,7 @@ namespace GnollHackClient.Pages.Game
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
                 petrows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
                 lighterdarkening = Preferences.Get("LighterDarkening", false);
+                wallends = Preferences.Get("DrawWallEnds", false);
             }
             else
             {
@@ -396,6 +405,7 @@ namespace GnollHackClient.Pages.Game
                 //altnoclipmode = _gamePage.MapAlternateNoClipMode;
                 //zoomchangecenter = _gamePage.ZoomChangeCenterMode;
                 lighterdarkening = _gamePage.LighterDarkening;
+                wallends = _gamePage.DrawWallEnds;
             }
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
@@ -424,7 +434,8 @@ namespace GnollHackClient.Pages.Game
             SoundBankSwitch.IsToggled = bank;
             HTMLDumpLogSwitch.IsToggled = html;
             SingleDumpLogSwitch.IsToggled = singledumplog;
-            StreamingBankToMemorySwitch.IsToggled = streamingbank;
+            StreamingBankToMemorySwitch.IsToggled = streamingbanktomemory;
+            StreamingBankToDiskSwitch.IsToggled = streamingbanktodisk;
             BonesSwitch.IsToggled = allowbones;
             PostGameStatusSwitch.IsToggled = postgamestatus;
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
@@ -466,6 +477,7 @@ namespace GnollHackClient.Pages.Game
             ForceMaxMessageSwitch.IsToggled = forcemaxmsg;
             ShowExtendedStatusBarSwitch.IsToggled = showexstatus;
             LighterDarkeningSwitch.IsToggled = lighterdarkening;
+            WallEndSwitch.IsToggled = wallends;
 
             _doChangeVolume = !App.IsMuted;
         }

@@ -334,6 +334,7 @@ namespace GnollHackClient
 
             if (ReferenceGamePage != null && abs_glyph > 0 && CanvasWidth > 0 && CanvasHeight > 0 && abs_glyph < App.Glyph2Tile.Length)
             {
+                bool drawwallends = ReferenceGamePage.DrawWallEnds;
                 byte glyphflags = App.GlyphTileFlags[abs_glyph];
                 bool tileflag_halfsize = (glyphflags & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
                 bool tileflag_fullsizeditem = (glyphflags & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
@@ -411,7 +412,7 @@ namespace GnollHackClient
                             (int)layer_types.LAYER_OBJECT, 0, 0,
                             tileflag_halfsize, false, tileflag_fullsizeditem,
                             0, 0, tileWidth, tileHeight,
-                            1, scale, xpadding, ypadding, scaled_tile_height, true);
+                            1, scale, xpadding, ypadding, scaled_tile_height, true, drawwallends);
                     }
                     else
                     {
@@ -448,7 +449,7 @@ namespace GnollHackClient
                                 (int)layer_types.LAYER_OBJECT, 0, 0,
                                 tileflag_halfsize, false, true,
                                 0, 0, tileWidth, tileHeight,
-                                1, scale, 0, 0, tileHeight, true);
+                                1, scale, 0, 0, tileHeight, true, drawwallends);
 
                         }
 
@@ -517,7 +518,7 @@ namespace GnollHackClient
                                         (int)layer_types.LAYER_OBJECT, 0, 0,
                                         tileflag_halfsize, false, true,
                                         0, 0, tileWidth, tileHeight,
-                                        1, scale, 0, 0, tileHeight, true);
+                                        1, scale, 0, 0, tileHeight, true, drawwallends);
                                 }
                             }
                         }

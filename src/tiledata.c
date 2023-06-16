@@ -1922,12 +1922,17 @@ uchar* tilemapflags;
 
     const char* spellskill_subtile_names[2] = { "active" , "inactive" };
     set_name = "spell-tile";
-    for (i = 0; i < MAXSPELL; i++)
+    for (i = 0; i < MAXSPELL + 2; i++)
     {
         if (process_style == 0)
         {
             char namebuf[BUFSZ] = "";
-            strcpy(namebuf, OBJ_NAME(objects[FIRST_SPELL + i]));
+            if(i < MAXSPELL)
+                Strcpy(namebuf, OBJ_NAME(objects[FIRST_SPELL + i]));
+            else if (i == MAXSPELL)
+                Strcpy(namebuf, "view-spell");
+            else if (i == MAXSPELL + 1)
+                Strcpy(namebuf, "mix-spell");
             replace_char(namebuf, ' ', '-');
             Sprintf(buf, "%s,%s,%s,%d,%d,%d", tile_section_name, set_name, namebuf, 2, 64, 48);
             for (j = 0; j < 2; j++)

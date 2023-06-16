@@ -1255,9 +1255,26 @@ int* spell_no;
     }
     else
     {
+        int splcnt = 0;
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
         {
             add_alt_spell_cast_menu_item(tmpwin, i, splaction);
+            splcnt++;
+        }
+        if (splcnt > 0)
+        {
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
+                "", MENU_UNSELECTED);
+            any.a_int = -1;
+            int glyph = MAXSPELL + GLYPH_SPELL_TILE_OFF;
+            struct extended_menu_info info = zeroextendedmenuinfo;
+            info.menu_flags |= MENU_FLAGS_ACTIVE;
+            add_extended_menu(tmpwin, glyph, &any, '?', 0, ATR_NONE, NO_COLOR,
+                "View Spells", MENU_UNSELECTED, info);
+            any.a_int = -2;
+            glyph = MAXSPELL + 1 + GLYPH_SPELL_TILE_OFF;
+            add_extended_menu(tmpwin, glyph, &any, '!', 0, ATR_NONE, NO_COLOR,
+                "Mix Spells", MENU_UNSELECTED, info);
         }
     }
 
@@ -1307,6 +1324,21 @@ int* spell_no;
 
     if (n > 0) 
     {
+        if (selected[0].item.a_int <= 0)
+        {
+            int res = selected[0].item.a_int;
+            free((genericptr_t)selected);
+            switch (res)
+            {
+            case -1:
+                return dospellview();
+            case -2:
+                return domix();
+            default:
+                return 0;
+            }
+        }
+
         *spell_no = selected[0].item.a_int - 1;
         /* menu selection for `PICK_ONE' does not
            de-select any preselected entry */

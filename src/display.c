@@ -3434,7 +3434,7 @@ int cursor_on_u;
                         break;
                     }
 
-                    if (isok(rx, ry))
+                    if (isok(rx, ry) && cansee(rx, ry))
                     {
                         gptr_adj = &gbuf[ry][rx];
                         for (layer_idx = 0; layer_idx < MAX_LAYERS; layer_idx++)

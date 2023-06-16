@@ -169,6 +169,11 @@ namespace GnollHackClient.Pages.Game
         private bool _lighterDarkening = false;
         public bool LighterDarkening { get { lock (_lighterDarkeningLock) { return _lighterDarkening; } } set { lock (_lighterDarkeningLock) { _lighterDarkening = value; } } }
 
+        private readonly object _drawWallEndsLock = new object();
+        private bool _drawWallEnds = false;
+        public bool DrawWallEnds { get { lock (_drawWallEndsLock) { return _drawWallEnds; } } set { lock (_drawWallEndsLock) { _drawWallEnds = value; } } }
+
+
         public readonly object RefreshScreenLock = new object();
         private bool _refreshScreen = true;
         public bool RefreshScreen
@@ -451,6 +456,7 @@ namespace GnollHackClient.Pages.Game
             NumDisplayedPetRows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
             WalkArrows = Preferences.Get("WalkArrows", true);
             LighterDarkening = Preferences.Get("LighterDarkening", false);
+            DrawWallEnds = Preferences.Get("DrawWallEnds", false);
 
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
@@ -3069,6 +3075,7 @@ namespace GnollHackClient.Pages.Game
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = canvasView.CanvasSize.Width;
             float canvasheight = canvasView.CanvasSize.Height;
+            bool drawwallends = DrawWallEnds;
 
             canvas.Clear(SKColors.Black);
 
@@ -4523,7 +4530,7 @@ namespace GnollHackClient.Pages.Game
                                                                                     tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
                                                                                     tx, ty, width, height,
                                                                                     scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
-                                                                                    false);
+                                                                                    false, drawwallends);
 
                                                                             }
                                                                         }
@@ -7139,7 +7146,7 @@ namespace GnollHackClient.Pages.Game
             bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem,
             float tx, float ty, float width, float height,
             float scale, float targetscale, float scaled_x_padding, float scaled_y_padding, float scaled_tile_height,
-            bool is_inventory)
+            bool is_inventory, bool drawwallends)
         {
             /******************/
             /* AUTODRAW START */
@@ -7149,8 +7156,8 @@ namespace GnollHackClient.Pages.Game
                 float opaqueness = 1;
                 int sheet_idx = 0;
 
-                if (false && App._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
-                { /* Deactivated for the time being */
+                if (drawwallends && App._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
+                {
                     for (byte dir = 0; dir < 4; dir++)
                     {
                         byte dir_bit = (byte)(1 << dir);

@@ -471,7 +471,7 @@ namespace GnollHackClient
 
         private bool IsReadToMemoryBank(SecretsFile sf)
         {
-            return sf.android_streaming_asset != 0 && sf.android_on_demand == 0 && App.IsAndroid && App.ReadStreamingBankToMemory;
+            return sf.streaming_asset != 0 && sf.on_demand == 0 && App.IsAndroid && App.ReadStreamingBankToMemory;
         }
         
         private void DeleteBanksFromDisk()
@@ -1089,7 +1089,7 @@ namespace GnollHackClient
             {
                 if (IsReadToMemoryBank(sf)) return false;
                 if (IsSecretsFileAndroidOnDemand(sf)) return false;
-                return sf.android_streaming_asset != 0;
+                return sf.streaming_asset != 0 && App.CopyStreamingBankToDisk;
             }
             return true;
         }
@@ -1101,7 +1101,7 @@ namespace GnollHackClient
 #if DEBUG
             return false;
 #else
-            return App.IsAndroid && sf.android_on_demand != 0;
+            return (App.IsAndroid && (sf.on_demand & 1) != 0) || (App.IsiOS && (sf.on_demand & 2) != 0);
 #endif
         }
 

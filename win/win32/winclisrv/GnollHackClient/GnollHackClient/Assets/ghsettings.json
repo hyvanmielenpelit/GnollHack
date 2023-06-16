@@ -15,8 +15,8 @@
       "length": 97667168,
       "sha256": "1fbd21e6cb0ed65fd2d8a94a4218370ffdec3b5c68b67a92af79592dd440773b",
       "target_directory": "bank",
-      "android_on_demand": 0,
-      "android_streaming_asset": 0,
+      "on_demand": 0,
+      "streaming_asset": 0,
       "flags": 0
     },
     {
@@ -31,8 +31,8 @@
       "length": 102066,
       "sha256": "7cf7fb55b1aa3f6e3d332a29f33f5594e0d80a0596f22b1f1069ec807f20d65b",
       "target_directory": "bank",
-      "android_on_demand": 0,
-      "android_streaming_asset": 0,
+      "on_demand": 0,
+      "streaming_asset": 0,
       "flags": 0
     },
     {
@@ -47,8 +47,8 @@
       "length": 348195136,
       "sha256": "3c798ebea9eb0da58216826e7dbbff8639db1b9737066c4c4cdbf8cb61765668",
       "target_directory": "bank",
-      "android_on_demand": 0,
-      "android_streaming_asset": 0,
+      "on_demand": 0,
+      "streaming_asset": 1,
       "flags": 0
     },
     {
@@ -63,8 +63,8 @@
       "length": 10318400,
       "sha256": "fcd6e8cf37cbdbd795af142b513439e13001ecc679376366149bb31e15d38623",
       "target_directory": "bank",
-      "android_on_demand": 0,
-      "android_streaming_asset": 0,
+      "on_demand": 0,
+      "streaming_asset": 1,
       "flags": 0
     },
     {
@@ -79,8 +79,8 @@
       "length": 65522176,
       "sha256": "b9a638463b5cbafeaf9a47d4cf5f0960d793c093c9b0e8d3ea464a22ab245848",
       "target_directory": "bank",
-      "android_on_demand": 0,
-      "android_streaming_asset": 0,
+      "on_demand": 0,
+      "streaming_asset": 1,
       "flags": 0
     },
     {
@@ -95,8 +95,8 @@
       "length": 3011424,
       "sha256": "4665430422e8d63efb6f6aa0b4bcd5dea8c7042d51f3be9e6599b922828c7d44",
       "target_directory": "bank",
-      "android_on_demand": 0,
-      "android_streaming_asset": 0,
+      "on_demand": 0,
+      "streaming_asset": 1,
       "flags": 0
     }
   ],

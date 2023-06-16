@@ -1456,6 +1456,7 @@ namespace GnollHackCommon
         public const bool DefaultUseSingleDumpLog = true;
         public const string InstallTimePackName = "installtimepack";
         public const string OnDemandPackName = "ondemandpack";
+        public const bool DefaultCopyStreamingBankToDisk = false;        
     }
 
 
