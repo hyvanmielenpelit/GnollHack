@@ -356,7 +356,7 @@ struct materialcomponentlist matlists[] =
     {SPE_BLESS,
         "Opal, holy symbol",
         STRANGE_OBJECT,
-        2,
+        3,
         {
             {
                 {OPAL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2936,7 +2936,7 @@ struct materialcomponentlist matlists[] =
     { SPE_CURSE,
     "Obsidian, holy symbol",
     STRANGE_OBJECT,
-    3,
+    4,
         {
             {
                 {OBSIDIAN, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
