@@ -3473,6 +3473,16 @@ int cursor_on_u;
             {
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_APPEARS_UNLIT);
             }
+
+            //boolean nwead = NO_WALL_END_AUTODRAW(x, y);
+            //boolean cur = (gbuf[y][x].layers.layer_flags & LFLAGS_NO_WALL_END_AUTODRAW) != 0;
+            //if (nwead != cur)
+            //{
+            //    if (nwead)
+            //        add_glyph_buffer_layer_flags(x, y, LFLAGS_NO_WALL_END_AUTODRAW);
+            //    else
+            //        remove_glyph_buffer_layer_flags(x, y, LFLAGS_NO_WALL_END_AUTODRAW);
+            //}
         }
     }
 
@@ -3497,7 +3507,7 @@ int cursor_on_u;
         {
             if (isok(x, y))
             {
-                boolean nwead = NO_WALL_END_AUTODRAW(x, y);
+                boolean nwead = no_wall_end_autodraw(x, y);
                 boolean cur = (gbuf[y][x].layers.layer_flags & LFLAGS_NO_WALL_END_AUTODRAW) != 0;
                 if (nwead != cur)
                 {
@@ -3505,6 +3515,10 @@ int cursor_on_u;
                     gbuf[y][x].layers.layer_flags &= ~LFLAGS_NO_WALL_END_AUTODRAW;
                     if (nwead)
                         gbuf[y][x].layers.layer_flags |= LFLAGS_NO_WALL_END_AUTODRAW;
+                    if (gbuf_start[y] > x)
+                        gbuf_start[y] = x;
+                    if (gbuf_stop[y] < x)
+                        gbuf_stop[y] = x;
                 }
             }
         }
@@ -4545,13 +4559,13 @@ xchar x, y;
 STATIC_DCL const char *FDECL(type_to_name, (int));
 STATIC_DCL void FDECL(error4, (int, int, int, int, int, int));
 
-STATIC_VAR int bad_count[MAX_TYPE]; /* count of positions flagged as bad */
+STATIC_VAR int bad_count[MAX_LEVTYPE]; /* count of positions flagged as bad */
 
 STATIC_DCL const char *
 type_to_name(type)
 int type;
 {
-    return (type < 0 || type >= MAX_TYPE) ? "unknown" : location_type_definitions[type].name;
+    return (type < 0 || type >= MAX_LEVTYPE) ? "unknown" : location_type_definitions[type].name;
 }
 
 STATIC_DCL void
@@ -4724,7 +4738,7 @@ set_wall_state()
     struct rm *lev;
 
 #ifdef WA_VERBOSE
-    for (x = 0; x < MAX_TYPE; x++)
+    for (x = 0; x < MAX_LEVTYPE; x++)
         bad_count[x] = 0;
 #endif
 
@@ -4783,7 +4797,7 @@ set_wall_state()
 
 #ifdef WA_VERBOSE
     /* check if any bad positions found */
-    for (x = y = 0; x < MAX_TYPE; x++)
+    for (x = y = 0; x < MAX_LEVTYPE; x++)
         if (bad_count[x]) {
             if (y == 0) {
                 y = 1; /* only print once */

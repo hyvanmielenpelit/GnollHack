@@ -3058,7 +3058,7 @@ yyreduce:
     {
 		      int filling = (int) (yyvsp[(5) - (5)].terr).ter;
 
-		      if (filling == INVALID_TYPE || filling >= MAX_TYPE)
+		      if (filling == INVALID_LEVTYPE || filling >= MAX_LEVTYPE)
 			  lc_error("INIT_MAP: Invalid fill char type.");
 		      add_opvars(splev, "iiiiiiiio",
 				 VA_PASS9(LVLINIT_SOLIDFILL, filling,
@@ -3076,7 +3076,7 @@ yyreduce:
     {
 		      int filling = (int) what_map_char((char) (yyvsp[(5) - (5)].i));
 
-		      if (filling == INVALID_TYPE || filling >= MAX_TYPE)
+		      if (filling == INVALID_LEVTYPE || filling >= MAX_LEVTYPE)
 			  lc_error("INIT_MAP: Invalid fill char type.");
                       add_opvars(splev, "iiiiiiiio",
 				 VA_PASS9(LVLINIT_MAZEGRID, filling, 0,0,
@@ -3110,14 +3110,14 @@ yyreduce:
                           walled = (int) (yyvsp[(15) - (16)].i),
                           filling = (int) (yyvsp[(16) - (16)].i);
 
-		      if (fg == INVALID_TYPE || fg >= MAX_TYPE)
+		      if (fg == INVALID_LEVTYPE || fg >= MAX_LEVTYPE)
 			  lc_error("INIT_MAP: Invalid foreground type.");
-		      if (bg == INVALID_TYPE || bg >= MAX_TYPE)
+		      if (bg == INVALID_LEVTYPE || bg >= MAX_LEVTYPE)
 			  lc_error("INIT_MAP: Invalid background type.");
 		      if (joined && fg != CORR && fg != ROOM && fg != GRASS && fg != GROUND && fg != AIR && fg != CLOUD)
 			  lc_error("INIT_MAP: Invalid foreground type for joined map.");
 
-		      if (filling == INVALID_TYPE)
+		      if (filling == INVALID_LEVTYPE)
 			  lc_error("INIT_MAP: Invalid fill char type.");
 
 		      add_opvars(splev, "iiiiiiiio",
@@ -6731,7 +6731,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2823 "lev_comp.y"
     {
-		      if (what_map_char((char) (yyvsp[(1) - (1)].i)) != INVALID_TYPE)
+		      if (what_map_char((char) (yyvsp[(1) - (1)].i)) != INVALID_LEVTYPE)
 			  (yyval.i) = SP_MAPCHAR_PACK(what_map_char((char) (yyvsp[(1) - (1)].i)), -2);
 		      else {
 			  lc_error("Unknown map char type '%c'!", (yyvsp[(1) - (1)].i));
@@ -6745,7 +6745,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2832 "lev_comp.y"
     {
-		      if (what_map_char((char) (yyvsp[(2) - (5)].i)) != INVALID_TYPE)
+		      if (what_map_char((char) (yyvsp[(2) - (5)].i)) != INVALID_LEVTYPE)
 			  (yyval.i) = SP_MAPCHAR_PACK(what_map_char((char) (yyvsp[(2) - (5)].i)), (yyvsp[(4) - (5)].i));
 		      else {
 			  lc_error("Unknown map char type '%c'!", (yyvsp[(2) - (5)].i));

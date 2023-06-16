@@ -740,6 +740,7 @@ static const char empty_string[] = "";
 #define ITEM_PICKUP_DROP_DELAY 75 /* in milliseconds */
 
 #define NO_WALL_END_AUTODRAW(x,y) (!isok(x, y) || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored) || (IS_DOORJOIN(levl[x][y].typ) && !IS_TREE(levl[x][y].typ)) || levl[x][y].typ == DOOR || levl[x][y].typ == UNDEFINED_LOCATION /*|| (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0 */)
+//#define NO_WALL_END_AUTODRAW(x,y) no_wall_end_autodraw(x, y)
 
 /* Saved initial object data in o_init.c */
 extern struct objdescr saved_obj_descr[NUM_OBJECTS];

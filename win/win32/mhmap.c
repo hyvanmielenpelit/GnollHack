@@ -2499,8 +2499,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         default:
                                             break;
                                         }
-
-                                        if (NO_WALL_END_AUTODRAW(rx, ry))
+                                        if ((data->map[rx][ry].layer_flags & LFLAGS_NO_WALL_END_AUTODRAW) != 0) //data->map[rx][ry].layer_flags & LFLAGS_NO_WALL_END_AUTODRAW) //NO_WALL_END_AUTODRAW(rx, ry))
                                         {
                                             /* No action */
                                         }
@@ -2515,10 +2514,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 int at_y = TILEBMP_Y(atile);
 
                                                 RECT source_rt = { 0 };
+                                                boolean nad = (data->map[corner_x[corner]][corner_y[corner]].layer_flags & LFLAGS_NO_WALL_END_AUTODRAW) != 0;
                                                 switch (dir)
                                                 {
                                                 case 0: /* left */
-                                                    if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                    if (nad)
                                                     {
                                                         source_glyph = autodraws[autodraw].source_glyph2; /* S_vwall */
                                                         atile = glyph2tile[source_glyph];
@@ -2540,7 +2540,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     }
                                                     break;
                                                 case 1: /* right */
-                                                    if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                    if (nad)
                                                     {
                                                         source_glyph = autodraws[autodraw].source_glyph2; /* S_vwall */
                                                         atile = glyph2tile[source_glyph];
@@ -2562,7 +2562,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     }
                                                     break;
                                                 case 2: /* up */
-                                                    if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                    if (nad)
                                                     {
                                                         source_glyph = autodraws[autodraw].source_glyph3; /* S_hwall */
                                                         atile = glyph2tile[source_glyph];
@@ -2584,7 +2584,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     source_rt.bottom = source_rt.top + 12;
                                                     break;
                                                 case 3: /* down */
-                                                    if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                    if (nad)
                                                     {
                                                         source_glyph = autodraws[autodraw].source_glyph3; /* S_hwall */
                                                         atile = glyph2tile[source_glyph];
@@ -5417,6 +5417,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
 
     InvalidateRect(data->hWnd, &rt, FALSE);
 
+#if 0
     for (int dir = 0; dir < 4; dir++)
     {
         int rx = 0;
@@ -5447,7 +5448,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
         default:
             break;
         }
-        if (isok(rx, ry))
+        if (isok(rx, ry) && cansee(rx, ry))
         {
             for (int i = 0; i < 2; i++)
             {
@@ -5471,6 +5472,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
             }
         }
     }
+#endif
 
     if (glyph_is_zap(data->map[x][y].layer_glyphs[LAYER_ZAP]))
     {

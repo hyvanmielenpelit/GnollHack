@@ -75,7 +75,7 @@ E void reduce_counters(int);
 E void reduce_counters_intervals(int);
 E void NDECL(stop_animations);
 E boolean FDECL(glyph_is_specific_cmap_or_its_variation, (int, int));
-
+E boolean FDECL(no_wall_end_autodraw, (int, int));
 
 /* ### apply.c ### */
 

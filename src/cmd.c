@@ -2560,7 +2560,7 @@ wiz_save_quest_texts(VOID_ARGS) /* Save a csv file for monsters */
 
 /* temporary? hack, since level type codes aren't the same as screen
    symbols and only the latter have easily accessible descriptions */
-STATIC_VAR const char *levltyp[MAX_TYPE + 2] = {
+STATIC_VAR const char *levltyp[MAX_LEVTYPE + 2] = {
     "stone", 
     "vertical wall", 
     "horizontal wall", 

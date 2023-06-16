@@ -1187,7 +1187,7 @@ char c;
 
     SpinCursor(3);
     val = what_map_char(c);
-    if (val == INVALID_TYPE) {
+    if (val == INVALID_LEVTYPE) {
         val = ERR;
         yywarning("Invalid fill character in MAZE declaration");
     }
@@ -1386,9 +1386,9 @@ char c;
     case 'F':
         return (IRONBARS); /* Fe = iron */
     case 'x':
-        return (MAX_TYPE); /* "see-through" */
+        return (MAX_LEVTYPE); /* "see-through" */
     }
-    return (INVALID_TYPE);
+    return (INVALID_LEVTYPE);
 }
 
 void
@@ -1478,7 +1478,7 @@ sp_lev *sp;
         }
         for (i = 0; i < len; i++)
             if ((tmpmap[max_hig][i] = what_map_char(map[i]))
-                == INVALID_TYPE)
+                == INVALID_LEVTYPE)
             {
                 lc_warning(
                 "Invalid character '%ld' @ (%ld, %ld) - replacing with stone",

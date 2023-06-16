@@ -346,7 +346,7 @@ lev_init	: LEV_INIT_ID ':' SOLID_FILL_ID ',' terrain_type
 		  {
 		      int filling = (int) $5.ter;
 
-		      if (filling == INVALID_TYPE || filling >= MAX_TYPE)
+		      if (filling == INVALID_LEVTYPE || filling >= MAX_LEVTYPE)
 			  lc_error("INIT_MAP: Invalid fill char type.");
 		      add_opvars(splev, "iiiiiiiio",
 				 VA_PASS9(LVLINIT_SOLIDFILL, filling,
@@ -359,7 +359,7 @@ lev_init	: LEV_INIT_ID ':' SOLID_FILL_ID ',' terrain_type
 		  {
 		      int filling = (int) what_map_char((char) $5);
 
-		      if (filling == INVALID_TYPE || filling >= MAX_TYPE)
+		      if (filling == INVALID_LEVTYPE || filling >= MAX_LEVTYPE)
 			  lc_error("INIT_MAP: Invalid fill char type.");
                       add_opvars(splev, "iiiiiiiio",
 				 VA_PASS9(LVLINIT_MAZEGRID, filling, 0,0,
@@ -383,14 +383,14 @@ lev_init	: LEV_INIT_ID ':' SOLID_FILL_ID ',' terrain_type
                           walled = (int) $15,
                           filling = (int) $16;
 
-		      if (fg == INVALID_TYPE || fg >= MAX_TYPE)
+		      if (fg == INVALID_LEVTYPE || fg >= MAX_LEVTYPE)
 			  lc_error("INIT_MAP: Invalid foreground type.");
-		      if (bg == INVALID_TYPE || bg >= MAX_TYPE)
+		      if (bg == INVALID_LEVTYPE || bg >= MAX_LEVTYPE)
 			  lc_error("INIT_MAP: Invalid background type.");
 		      if (joined && fg != CORR && fg != ROOM && fg != GRASS && fg != GROUND && fg != AIR && fg != CLOUD)
 			  lc_error("INIT_MAP: Invalid foreground type for joined map.");
 
-		      if (filling == INVALID_TYPE)
+		      if (filling == INVALID_LEVTYPE)
 			  lc_error("INIT_MAP: Invalid fill char type.");
 
 		      add_opvars(splev, "iiiiiiiio",
@@ -2821,7 +2821,7 @@ mapchar_or_var	: mapchar
 
 mapchar		: CHAR
 		  {
-		      if (what_map_char((char) $1) != INVALID_TYPE)
+		      if (what_map_char((char) $1) != INVALID_LEVTYPE)
 			  $$ = SP_MAPCHAR_PACK(what_map_char((char) $1), -2);
 		      else {
 			  lc_error("Unknown map char type '%c'!", $1);
@@ -2830,7 +2830,7 @@ mapchar		: CHAR
 		  }
 		| '(' CHAR ',' light_state ')'
 		  {
-		      if (what_map_char((char) $2) != INVALID_TYPE)
+		      if (what_map_char((char) $2) != INVALID_LEVTYPE)
 			  $$ = SP_MAPCHAR_PACK(what_map_char((char) $2), $4);
 		      else {
 			  lc_error("Unknown map char type '%c'!", $2);

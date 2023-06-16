@@ -4686,6 +4686,31 @@ int glyph, s_idx;
     return FALSE;
 }
 
+boolean
+no_wall_end_autodraw(x, y)
+int x, y;
+{
+    if(!isok(x, y))
+        return TRUE;
+    
+    if(glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored))
+        return TRUE;
+        
+    if(cansee(x, y))
+        return (IS_DOORJOIN(levl[x][y].typ) && !IS_TREE(levl[x][y].typ)) || levl[x][y].typ == DOOR || levl[x][y].typ == UNDEFINED_LOCATION; /*|| (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0 */
+    else
+    {
+        int relevant_glyph = levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] != NO_GLYPH ? levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] : levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR];
+        int cmaptyp = generic_glyph_to_cmap(relevant_glyph);
+        if (cmaptyp == S_unexplored)
+            return TRUE;
+        else
+        {
+            int levtyp = defsyms[cmaptyp].implied_levtyp;
+            return (IS_DOORJOIN(levtyp) && !IS_TREE(levtyp)) || levtyp == DOOR || levtyp == UNDEFINED_LOCATION;
+        }
+    }
+}
 
 /* animation.c */
 

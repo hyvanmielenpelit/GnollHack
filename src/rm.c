@@ -4,7 +4,7 @@
 
 #include "hack.h"
 
-NEARDATA const struct location_type_definition location_type_definitions[MAX_TYPE] = {
+NEARDATA const struct location_type_definition location_type_definitions[MAX_LEVTYPE] = {
     {"STONE",           S_stone,    CORR,   MAT_MINERAL, LOCATION_SOUNDSET_STONE},
     {"VWALL",           S_vwall,    CORR,   MAT_MINERAL, LOCATION_SOUNDSET_STONE},
     {"HWALL",           S_hwall,    CORR,   MAT_MINERAL, LOCATION_SOUNDSET_STONE},
@@ -457,7 +457,7 @@ get_location_type_material(typ, subtyp)
 int typ, subtyp;
 {
     if (subtyp <= 0)
-        return typ >= 0 && typ < MAX_TYPE ? location_type_definitions[typ].material : MAT_NONE;
+        return typ >= 0 && typ < MAX_LEVTYPE ? location_type_definitions[typ].material : MAT_NONE;
 
     enum obj_material_types material = location_type_definitions[typ].material;
 
