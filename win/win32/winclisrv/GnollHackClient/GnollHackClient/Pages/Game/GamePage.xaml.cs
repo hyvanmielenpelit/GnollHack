@@ -507,7 +507,7 @@ namespace GnollHackClient.Pages.Game
 
             var tasks = new List<Task>();
             _gnollHackService = DependencyService.Get<IGnollHackService>();
-            _gnollHackService.InitializeGnollHack(null);
+            _gnollHackService.InitializeGnollHack();
 
             if (!App.StartGameDataSet)
             {

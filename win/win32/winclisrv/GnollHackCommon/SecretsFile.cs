@@ -13,9 +13,7 @@ namespace GnollHackCommon
         public string description;
         public string version;
         public string source_directory;
-        public string source_url;
         public int length;
-        public string sha256;
         public string target_directory;
         public int on_demand;
         public int streaming_asset;

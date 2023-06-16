@@ -34,7 +34,7 @@ namespace GnollHackClient.Pages.Game
             if (answer)
             {
                 App.GnollHackService.ClearCoreFiles();
-                App.GnollHackService.InitializeGnollHack(null);
+                App.GnollHackService.InitializeGnollHack();
                 btnDeleteFiles.Text = "Done";
                 btnDeleteFiles.TextColor = Color.Red;
             }

@@ -9,7 +9,8 @@ namespace GnollHackClient
     {
         void LoadLibrary();
         void UnloadLibrary();
-        void InitializeGnollHack(Secrets secrets);
+        void InitializeGnollHack();
+        void InitializeSecrets(Secrets secrets);
         string GetGnollHackPath();
         void ClearFiles();
         void ClearCoreFiles();

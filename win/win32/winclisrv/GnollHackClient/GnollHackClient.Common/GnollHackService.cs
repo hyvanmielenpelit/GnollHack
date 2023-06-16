@@ -452,7 +452,7 @@ namespace GnollHackClient.Unknown
         private string[] _txtfileslist = { "credits", "xcredits", "license", "logfile", "perm", "record", "recover", "symbols", "sysconf", "xlogfile", "defaults.gnh" };
         private string[] _binfileslist = { "nhdat" };
 
-        public void InitializeGnollHack(Secrets secrets)
+        public void InitializeGnollHack()
         {
             /* Unpack GnollHack files */
             /* Add a check whether to unpack if there are existing files or not */
@@ -549,46 +549,137 @@ namespace GnollHackClient.Unknown
                     sw.Write(data);
                 }
             }
+        }
 
-            if(secrets != null)
+        public void InitializeSecrets(Secrets secrets)
+        {
+            if (secrets == null)
+                return;
+
+            string filesdir = GetGnollHackPath();
+#if __ANDROID__
+            AssetManager assets = MainActivity.StaticAssets;
+#endif
+            foreach (SecretsDirectory sdir in secrets.directories)
             {
-                foreach (SecretsDirectory sdir in secrets.directories)
+                string fulldirepath = Path.Combine(filesdir, sdir.name);
+                if (!Directory.Exists(fulldirepath))
                 {
-                    string fulldirepath = Path.Combine(filesdir, sdir.name);
-                    if (!Directory.Exists(fulldirepath))
-                    {
-                        Directory.CreateDirectory(fulldirepath);
-                    }
+                    Directory.CreateDirectory(fulldirepath);
                 }
-                //int packfilemaxsize = 512 * 1024 * 1024;
-                foreach (SecretsFile sfile in secrets.files)
+                else
                 {
-                    string assetfile = sfile.name;
-                    string sfiledir = sfile.source_directory;
+                    int res = Chmod(fulldirepath, (uint)ChmodPermissions.S_IALL);
+                }
+            }
+            //int packfilemaxsize = 512 * 1024 * 1024;
+            foreach (SecretsFile sfile in secrets.files)
+            {
+                string assetfile = sfile.name;
+                string sfiledir = sfile.source_directory;
 
 #if __IOS__
-                    string extension = Path.GetExtension(assetfile);
-                    if (extension != null && extension.Length > 0)
-                        extension = extension.Substring(1); /* Remove . from the start */
-                    string fname = Path.GetFileNameWithoutExtension(assetfile);
-                    string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, sfiledir);
+                string extension = Path.GetExtension(assetfile);
+                if (extension != null && extension.Length > 0)
+                    extension = extension.Substring(1); /* Remove . from the start */
+                string fname = Path.GetFileNameWithoutExtension(assetfile);
+                string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, sfiledir);
 #elif __ANDROID__
-                    string fullsourcepath = Path.Combine(sfiledir, assetfile);
+                string fullsourcepath = Path.Combine(sfiledir, assetfile);
 #else
-                    string fullsourcepath = Path.Combine(sfiledir, assetfile);
+                string fullsourcepath = Path.Combine(sfiledir, assetfile);
 #endif                
 
-                    try
+                try
+                {
+                    string fulltargetpath = Path.Combine(filesdir, sfile.target_directory, assetfile);
+                    if (File.Exists(fulltargetpath))
                     {
-                        string fulltargetpath = Path.Combine(filesdir, sfile.target_directory, assetfile);
-                        if (File.Exists(fulltargetpath))
-                        {
-                            FileInfo curfile = new FileInfo(fulltargetpath);
-                            long curlength = curfile.Length;
-                            string curfileversion = Preferences.Get("Verify_" + sfile.id + "_Version", "");
-                            DateTime moddate = Preferences.Get("Verify_" + sfile.id + "_LastWriteTime", DateTime.MinValue);
+                        FileInfo curfile = new FileInfo(fulltargetpath);
+                        long curlength = curfile.Length;
+                        string curfileversion = Preferences.Get("Verify_" + sfile.id + "_Version", "");
+                        DateTime moddate = Preferences.Get("Verify_" + sfile.id + "_LastWriteTime", DateTime.MinValue);
 
-                            if (curlength != sfile.length || curfileversion != sfile.version || moddate != curfile.LastWriteTimeUtc)
+                        if (curlength != sfile.length || curfileversion != sfile.version || moddate != curfile.LastWriteTimeUtc)
+                        {
+                            File.Delete(fulltargetpath);
+                            if (Preferences.ContainsKey("Verify_" + sfile.id + "_Version"))
+                                Preferences.Remove("Verify_" + sfile.id + "_Version");
+                            if (Preferences.ContainsKey("Verify_" + sfile.id + "_LastWriteTime"))
+                                Preferences.Remove("Verify_" + sfile.id + "_LastWriteTime");
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (!App.IsSecretsFileSavedToDisk(sfile))
+                        continue;
+#if __ANDROID__
+                    using (Stream s = assets.Open(fullsourcepath))
+#elif __IOS__
+                    using (Stream s = File.OpenRead(fullsourcepath))
+#else
+                    using (Stream s = File.OpenRead(fullsourcepath))
+#endif
+                    {
+                        if (s == null)
+                            continue;
+
+                        //bool createtemp = false;
+                        //long existinglength = 0;
+                        //if (File.Exists(fulltargetpath))
+                        //{
+                        //    createtemp = true;
+                        //    FileInfo file = new FileInfo(fulltargetpath);
+                        //    existinglength = file.Length;
+                        //}
+                        //if (createtemp)
+                        //{
+                        //    string temptargetpath = fulltargetpath + "temp";
+                        //    if (File.Exists(temptargetpath))
+                        //    {
+                        //        File.Delete(temptargetpath);
+                        //    }
+                        //    using (FileStream fs = new FileStream(temptargetpath, FileMode.Create))
+                        //    {
+                        //        s.CopyTo(fs);
+                        //    }
+                        //    FileInfo tempfile = new FileInfo(temptargetpath);
+                        //    long templength = tempfile.Length;
+
+                        //    if (templength == existinglength)
+                        //    {
+                        //        File.Delete(temptargetpath);
+                        //    }
+                        //    else
+                        //    {
+                        //        File.Delete(fulltargetpath);
+                        //        tempfile.MoveTo(fulltargetpath);
+                        //        if (tempfile.Exists && templength == sfile.length)
+                        //        {
+                        //            Preferences.Set("Verify_" + sfile.id + "_Version", sfile.version);
+                        //            Preferences.Set("Verify_" + sfile.id + "_LastWriteTime", tempfile.LastWriteTimeUtc);
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        using (FileStream fs = new FileStream(fulltargetpath, FileMode.Create))
+                        {
+                            s.CopyTo(fs);
+                        }
+                        FileInfo curfile = new FileInfo(fulltargetpath);
+                        if (curfile.Exists)
+                        {
+                            long curlength = curfile.Length;
+                            if (curlength == sfile.length)
+                            {
+                                Preferences.Set("Verify_" + sfile.id + "_Version", sfile.version);
+                                Preferences.Set("Verify_" + sfile.id + "_LastWriteTime", curfile.LastWriteTimeUtc);
+                            }
+                            else
                             {
                                 File.Delete(fulltargetpath);
                                 if (Preferences.ContainsKey("Verify_" + sfile.id + "_Version"))
@@ -596,109 +687,33 @@ namespace GnollHackClient.Unknown
                                 if (Preferences.ContainsKey("Verify_" + sfile.id + "_LastWriteTime"))
                                     Preferences.Remove("Verify_" + sfile.id + "_LastWriteTime");
                             }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-#if __ANDROID__
-                        using (Stream s = assets.Open(fullsourcepath))
-#elif __IOS__
-                        using (Stream s = File.OpenRead(fullsourcepath))
-#else
-                        using (Stream s = File.OpenRead(fullsourcepath))
-#endif
-                        {
-                            if (s == null)
-                                continue;
-
-                            //bool createtemp = false;
-                            //long existinglength = 0;
-                            //if (File.Exists(fulltargetpath))
-                            //{
-                            //    createtemp = true;
-                            //    FileInfo file = new FileInfo(fulltargetpath);
-                            //    existinglength = file.Length;
                             //}
-                            //if (createtemp)
-                            //{
-                            //    string temptargetpath = fulltargetpath + "temp";
-                            //    if (File.Exists(temptargetpath))
-                            //    {
-                            //        File.Delete(temptargetpath);
-                            //    }
-                            //    using (FileStream fs = new FileStream(temptargetpath, FileMode.Create))
-                            //    {
-                            //        s.CopyTo(fs);
-                            //    }
-                            //    FileInfo tempfile = new FileInfo(temptargetpath);
-                            //    long templength = tempfile.Length;
-
-                            //    if (templength == existinglength)
-                            //    {
-                            //        File.Delete(temptargetpath);
-                            //    }
-                            //    else
-                            //    {
-                            //        File.Delete(fulltargetpath);
-                            //        tempfile.MoveTo(fulltargetpath);
-                            //        if (tempfile.Exists && templength == sfile.length)
-                            //        {
-                            //            Preferences.Set("Verify_" + sfile.id + "_Version", sfile.version);
-                            //            Preferences.Set("Verify_" + sfile.id + "_LastWriteTime", tempfile.LastWriteTimeUtc);
-                            //        }
-                            //    }
-                            //}
-                            //else
-                            //{
-                            using (FileStream fs = new FileStream(fulltargetpath, FileMode.Create))
-                            {
-                                s.CopyTo(fs);
-                            }
-                            FileInfo curfile = new FileInfo(fulltargetpath);
-                            if (curfile.Exists)
-                            {
-                                long curlength = curfile.Length;
-                                if (curlength == sfile.length)
-                                {
-                                    Preferences.Set("Verify_" + sfile.id + "_Version", sfile.version);
-                                    Preferences.Set("Verify_" + sfile.id + "_LastWriteTime", curfile.LastWriteTimeUtc);
-                                }
-                                else
-                                {
-                                    File.Delete(fulltargetpath);
-                                    if (Preferences.ContainsKey("Verify_" + sfile.id + "_Version"))
-                                        Preferences.Remove("Verify_" + sfile.id + "_Version");
-                                    if (Preferences.ContainsKey("Verify_" + sfile.id + "_LastWriteTime"))
-                                        Preferences.Remove("Verify_" + sfile.id + "_LastWriteTime");
-                                }
-                                //}
-                            }
                         }
-                        //using (BinaryReader br = new BinaryReader(assets.Open(fullsourcepath)))
-                        //{
-                        //    data = br.ReadBytes(packfilemaxsize);
-                        //}
-
-                        //string fulltargetpath = Path.Combine(filesdir, "bank", assetfile);
-                        //if (File.Exists(fulltargetpath))
-                        //{
-                        //    /* Should check whether the current one is an up-to-date version; assume for now that it is not */
-                        //    File.Delete(fulltargetpath);
-                        //    //continue;
-                        //}
-
-                        //using (BinaryWriter sw = new BinaryWriter(File.Open(fulltargetpath, FileMode.Create)))
-                        //{
-                        //    sw.Write(data);
-                        //}
                     }
-                    catch
-                    {
-                        /* Likely asset at fullsourcepath did not exist */
-                    }
+                    //using (BinaryReader br = new BinaryReader(assets.Open(fullsourcepath)))
+                    //{
+                    //    data = br.ReadBytes(packfilemaxsize);
+                    //}
+
+                    //string fulltargetpath = Path.Combine(filesdir, "bank", assetfile);
+                    //if (File.Exists(fulltargetpath))
+                    //{
+                    //    /* Should check whether the current one is an up-to-date version; assume for now that it is not */
+                    //    File.Delete(fulltargetpath);
+                    //    //continue;
+                    //}
+
+                    //using (BinaryWriter sw = new BinaryWriter(File.Open(fulltargetpath, FileMode.Create)))
+                    //{
+                    //    sw.Write(data);
+                    //}
                 }
-            }
+                catch (Exception ex)
+                {
+                    string str1 = ex.Message;
+                    /* Likely asset at fullsourcepath did not exist */
+                }
+            }            
         }
 
         public void GetGlyphArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size)

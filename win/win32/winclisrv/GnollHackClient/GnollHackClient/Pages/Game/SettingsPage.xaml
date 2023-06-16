@@ -614,6 +614,10 @@
                     </Frame>
                 </Grid>
             </Grid>
+            <AbsoluteLayout x:Name="WaitLayout" IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000">
+                <Label Text="Please Wait..." x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="30" TextColor="White"
+                                       VerticalTextAlignment="Center" HorizontalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All" />
+            </AbsoluteLayout>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

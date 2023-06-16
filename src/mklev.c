@@ -2511,6 +2511,35 @@ int subtyp;
         if (!isok(x - 1, y) || levl[x - 1][y].typ < DOOR)
             levl[x][y].facing_right = TRUE;
     }
+
+    int i;
+    for (i = 0; i < 4; i++)
+    {
+        int t_x = x;
+        int t_y = y;
+        switch (i)
+        {
+        case 0:
+            t_x = x - 1;
+            break;
+        case 1:
+            t_x = x + 1;
+            break;
+        case 2:
+            t_y = y - 1;
+            break;
+        case 3:
+            t_y = y + 1;
+            break;
+        }
+        if (isok(t_x, t_y) && (levl[t_x][t_y].decoration_typ == DECORATION_FIREPLACE || levl[t_x][t_y].decoration_typ == DECORATION_ANOTHER_FIREPLACE))
+        {
+            levl[t_x][t_y].decoration_typ = 0;
+            levl[t_x][t_y].decoration_subtyp = 0;
+            levl[t_x][t_y].decoration_dir = 0;
+            levl[t_x][t_y].decoration_flags = 0;
+        }
+    }
 }
 
 STATIC_OVL void

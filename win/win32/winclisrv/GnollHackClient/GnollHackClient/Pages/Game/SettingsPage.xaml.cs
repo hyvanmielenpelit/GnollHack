@@ -50,7 +50,7 @@ namespace GnollHackClient.Pages.Game
             ClassicStatusBarSwitch_Toggled(null, new ToggledEventArgs(ClassicStatusBarSwitch.IsToggled));
         }
 
-        private void ContentPage_Disappearing(object sender, EventArgs e)
+        private async void ContentPage_Disappearing(object sender, EventArgs e)
         {
             App.BackButtonPressed -= BackButtonPressed;
             _doChangeVolume = false;
@@ -221,7 +221,12 @@ namespace GnollHackClient.Pages.Game
                 Preferences.Set("NumDisplayedPetRows", res);
             }
 
-            bool oldvalue = App.LoadBanks;
+            bool unloadbanks = false;
+            bool loadbanks = false;
+            bool setupfiles = false;
+
+            GetBankLoadingVariables(out unloadbanks, out setupfiles, out loadbanks);
+
             App.LoadBanks = SoundBankSwitch.IsToggled;
             Preferences.Set("LoadSoundBanks", SoundBankSwitch.IsToggled);
 
@@ -253,36 +258,41 @@ namespace GnollHackClient.Pages.Game
             */
             if (App.UsesCarousel && _mainPage != null)
                 _mainPage.PlayCarouselView();
-            if (oldvalue != App.LoadBanks)
-            {
-                if (App.LoadBanks)
-                {
-                    try
-                    {
-                        App.FmodService.LoadBanks(0);
-                        App.FmodService.LoadBanks(2);
-                        if (_gamePage == null)
-                        {
-                            App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
-                        }
-                    }
-                    catch
-                    {
 
+            if (unloadbanks)
+            {
+                try
+                {
+                    App.FmodService.ReleaseAllSoundInstances();
+                    App.FmodService.UnloadBanks(0);
+                    App.FmodService.UnloadBanks(2);
+                }
+                catch
+                {
+
+                }
+            }
+
+            if (setupfiles)
+            {
+                await _mainPage.TryInitializeSecrets();
+                _mainPage.SetSoundBanksUpForLoading();
+            }
+
+            if (loadbanks)
+            {
+                try
+                {
+                    App.FmodService.LoadBanks(0);
+                    App.FmodService.LoadBanks(2);
+                    if (_gamePage == null)
+                    {
+                        App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
                     }
                 }
-                else
+                catch
                 {
-                    try
-                    {
-                        App.FmodService.ReleaseAllSoundInstances();
-                        App.FmodService.UnloadBanks(0);
-                        App.FmodService.UnloadBanks(2);
-                    }
-                    catch
-                    {
 
-                    }
                 }
             }
 
@@ -540,10 +550,52 @@ namespace GnollHackClient.Pages.Game
             _doChangeVolume = !App.IsMuted;
         }
 
+        private async Task MaybeShowPleaseWait()
+        {
+            bool _unloadBanks = false;
+            bool _loadBanks = false;
+            bool _setupFiles = false;
+
+            GetBankLoadingVariables(out _unloadBanks, out _setupFiles, out _loadBanks);
+
+            if (_unloadBanks || _setupFiles || _loadBanks)
+            {
+                WaitLayout.IsVisible = true;
+                ForceLayout();
+                await Task.Delay(50);
+            }
+        }
+
+        private void GetBankLoadingVariables(out bool unloadBanks, out bool setupFiles, out bool loadBanks)
+        {
+            unloadBanks = false;
+            setupFiles = false;
+            loadBanks = false;
+
+            if (SoundBankSwitch.IsToggled != App.LoadBanks)
+            {
+                if (App.LoadBanks)
+                    loadBanks = true;
+                else
+                    loadBanks = false;
+            }
+
+            bool readmem_oldvalue = Preferences.Get("ReadStreamingBankToMemory", false);
+            bool copydisk_oldvalue = Preferences.Get("CopyStreamingBankToDisk", false);
+
+            if (StreamingBankToMemorySwitch.IsToggled != readmem_oldvalue || StreamingBankToDiskSwitch.IsToggled != copydisk_oldvalue)
+            {
+                unloadBanks = true;
+                setupFiles = true;
+                loadBanks = true;
+            }
+        }
+
         private async void Button_Clicked(object sender, EventArgs e)
         {
             CloseButton.IsEnabled = false;
             App.PlayButtonClickedSound();
+            await MaybeShowPleaseWait();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -625,6 +677,7 @@ namespace GnollHackClient.Pages.Game
             if (!_backPressed)
             {
                 _backPressed = true;
+                MaybeShowPleaseWait();
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
             return false;

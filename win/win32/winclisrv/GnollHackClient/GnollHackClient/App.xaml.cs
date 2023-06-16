@@ -1704,6 +1704,46 @@ namespace GnollHackClient
             }
         }
 
+        public static bool IsReadToMemoryBank(SecretsFile sf)
+        {
+            return sf.streaming_asset != 0 && sf.on_demand == 0 && IsAndroid && ReadStreamingBankToMemory;
+        }
+
+        public static bool IsSecretsFileSavedToDisk(SecretsFile sf)
+        {
+            if (sf == null) return false;
+            if (IsiOS) return false;
+            if (IsAndroid)
+            {
+                if (IsReadToMemoryBank(sf)) return false;
+                if (IsSecretsFileAndroidOnDemand(sf)) return false;
+                return sf.streaming_asset != 0 && CopyStreamingBankToDisk;
+            }
+            return true;
+        }
+
+        public static bool IsSecretsFileAndroidOnDemand(SecretsFile sf)
+        {
+            if (sf == null) return false;
+            if (IsiOS) return false;
+#if DEBUG
+            return false;
+#else
+            return (IsAndroid && (sf.on_demand & 1) != 0) || (IsiOS && (sf.on_demand & 2) != 0);
+#endif
+        }
+
+        public static int CountSecretsFilesSavedToDirectory(Secrets secrets, SecretsDirectory sd)
+        {
+            if (secrets == null) return 0;
+            if (sd == null) return 0;
+            int cnt = 0;
+            foreach (SecretsFile sf in App.CurrentSecrets.files)
+            {
+                if (sf.target_directory == sd.name && IsSecretsFileSavedToDisk(sf)) cnt++;
+            }
+            return cnt;
+        }
     }
 
     class SecretsFileSizeComparer : IComparer<SecretsFile>
