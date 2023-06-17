@@ -431,7 +431,7 @@ int poison_strength;   /* d6 per level damage*/
         boolean plural = (reason[strlen(reason) - 1] == 's') ? 1 : 0;
 
         /* avoid "The" Orcus's sting was poisoned... */
-        pline("%s%s %s poisoned!",
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s poisoned!",
               isupper((uchar) *reason) ? "" : "The ", reason,
               plural ? "were" : "was");
     }
@@ -440,7 +440,7 @@ int poison_strength;   /* d6 per level damage*/
     {
         if (!strcmp(reason, "blast"))
             u_shieldeff();
-        pline_The("poison doesn't seem to affect you.");
+        pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "poison doesn't seem to affect you.");
         return;
     }
 
