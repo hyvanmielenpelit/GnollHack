@@ -4112,7 +4112,7 @@ register struct obj* obj;
         int ac_with_5_chance = diff_to_5_from_ac0 / 5;
 
         powercnt++;
-#if defined(GNH_MOBILE)
+#if defined(GNH_MOBILE) || defined (WIN32)
         Sprintf(buf, " %2d - You have ", powercnt);
         putstr_ex(datawin, ATR_INDENT_AT_DASH, buf, 1, NO_COLOR);
         putstr_ex(datawin, ATR_INDENT_AT_DASH, "50%", 1, CLR_BROWN);

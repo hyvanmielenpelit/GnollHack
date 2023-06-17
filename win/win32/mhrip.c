@@ -294,7 +294,8 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             break;
 
         _tcscat(data->window_text, NH_A2W(msgbuf, wbuf, BUFSZ));
-        _tcscat(data->window_text, TEXT("\r\n"));
+        if (!msg_data->append)
+            _tcscat(data->window_text, TEXT("\r\n"));
         break;
     }
     case MSNH_MSG_DIED: {

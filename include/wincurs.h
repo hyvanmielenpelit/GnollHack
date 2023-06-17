@@ -155,8 +155,8 @@ extern boolean curses_window_exists(winid wid);
 extern int curses_get_window_orientation(winid wid);
 extern void curses_get_window_xy(winid wid, int *x, int *y);
 extern void curses_puts(winid wid, int attr, const char *text);
-extern void curses_puts_ex(winid wid, int attr, int color, const char* text);
-extern void curses_puts_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color);
+extern void curses_puts_ex(winid wid, int attr, int color, const char* text, int app);
+extern void curses_puts_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app);
 extern void curses_clear_nhwin(winid wid);
 extern void curses_alert_win_border(winid wid, boolean onoff);
 extern void curses_alert_main_borders(boolean onoff);
@@ -203,7 +203,7 @@ extern void curses_create_nhmenu(winid wid);
 extern void curses_add_nhmenu_item(winid wid, int glyph,
                                    const ANY_P *identifier, CHAR_P accelerator,
                                    CHAR_P group_accel, int attr, int color,
-                                   const char *str, const char* attrs, const char* colors, BOOLEAN_P presel);
+                                   const char *str, const char* attrs, const char* colors, BOOLEAN_P presel, int app);
 extern void curs_menu_set_bottom_heavy(winid);
 extern void curses_finalize_nhmenu(winid wid, const char *prompt, const char* subtitle);
 extern int curses_display_nhmenu(winid wid, int how, MENU_ITEM_P **_selected);

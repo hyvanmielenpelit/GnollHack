@@ -43,7 +43,7 @@ typedef struct mswin_menu_item {
     boolean is_animated;
 } NHMenuItem, *PNHMenuItem;
 
-typedef struct mswin_GnollHack_menu_window {
+typedef struct mswin_gnollhack_menu_window {
     int type; /* MENU_TYPE_TEXT or MENU_TYPE_MENU */
     int how;  /* for menus: PICK_NONE, PICK_ONE, PICK_ANY */
 
@@ -61,6 +61,8 @@ typedef struct mswin_GnollHack_menu_window {
 
         struct menu_text {
             TCHAR *text;
+            char* attrs;
+            char* colors;
             SIZE text_box_size;
         } text;
     };
@@ -529,6 +531,10 @@ MenuWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (data->type == MENU_TYPE_TEXT) {
                 if (data->text.text)
                     free(data->text.text);
+                if (data->text.attrs)
+                    free(data->text.attrs);
+                if (data->text.colors)
+                    free(data->text.colors);
             }
             free(data);
             SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)0);
@@ -570,23 +576,52 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
         if (data->type != MENU_TYPE_TEXT)
             SetMenuType(hWnd, MENU_TYPE_TEXT);
+        size_t oldsize = 0;
+        size_t newsize = strlen(msg_data->text);
 
         if (!data->text.text) {
-            text_size = strlen(msg_data->text) + 4;
+            text_size = strlen(msg_data->text) + 1 + (msg_data->append ? 0 : 2);
             data->text.text =
                 (TCHAR *) malloc(text_size * sizeof(data->text.text[0]));
-            if (!data->text.text)
+            data->text.attrs =
+                (char*)malloc(text_size * sizeof(char));
+            data->text.colors =
+                (char*)malloc(text_size * sizeof(char));
+            if (!data->text.text || !data->text.attrs || !data->text.colors)
+            {
+                if (data->text.text) free((genericptr_t)data->text.text);
+                if (data->text.attrs) free((genericptr_t)data->text.attrs);
+                if (data->text.colors) free((genericptr_t)data->text.colors);
                 return;
+            }
             ZeroMemory(data->text.text,
                        text_size * sizeof(data->text.text[0]));
+            ZeroMemory(data->text.attrs,
+                text_size * sizeof(char));
+            memset((genericptr_t)data->text.colors, NO_COLOR,
+                text_size * sizeof(char));
         } else {
-            text_size = _tcslen(data->text.text) + strlen(msg_data->text) + 4;
+            oldsize = _tcslen(data->text.text);
+            text_size = _tcslen(data->text.text) + strlen(msg_data->text) + 1 + (msg_data->append ? 0 : 2);
             TCHAR* temptxt_ptr = (TCHAR *) realloc(
-                data->text.text, text_size * sizeof(data->text.text[0]));
-            if (!temptxt_ptr)
+                (genericptr_t)data->text.text, text_size * sizeof(data->text.text[0]));
+            char* tempattr_ptr = (char*)realloc(
+                (genericptr_t)data->text.attrs, text_size * sizeof(char));
+            char* tempcolor_ptr = (char*)realloc(
+                (genericptr_t)data->text.colors, text_size * sizeof(char));
+            if (!temptxt_ptr || !tempattr_ptr || !tempcolor_ptr)
+            {
+                if (temptxt_ptr) free((genericptr_t)temptxt_ptr);
+                if (tempattr_ptr) free((genericptr_t)tempattr_ptr);
+                if (tempcolor_ptr) free((genericptr_t)tempcolor_ptr);
                 return;
+            }
             else
+            {
                 data->text.text = temptxt_ptr;
+                data->text.attrs = tempattr_ptr;
+                data->text.colors = tempcolor_ptr;
+            }
         }
         if (!data->text.text)
             break;
@@ -595,7 +630,22 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
 
         _tcscat(data->text.text, NH_A2W(msgbuf /*msg_data->text*/, wbuf, BUFSZ));
-        _tcscat(data->text.text, TEXT("\r\n"));
+        if(msg_data->attrs)
+            memcpy(&data->text.attrs[oldsize], msg_data->attrs, newsize);
+        else
+            memset(&data->text.attrs[oldsize], msg_data->attr, newsize);
+
+        if (msg_data->colors)
+            memcpy(&data->text.colors[oldsize], msg_data->colors, newsize);
+        else
+            memset(&data->text.colors[oldsize], msg_data->color, newsize);
+
+        if (!msg_data->append)
+        {
+            _tcscat(data->text.text, TEXT("\r\n"));
+            memset(&data->text.attrs[oldsize + newsize], 0, 2);
+            memset(&data->text.colors[oldsize + newsize], NO_COLOR, 2);
+        }
 
         text_view = GetDlgItem(hWnd, IDC_MENU_TEXT);
         if (!text_view)
@@ -609,13 +659,48 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         hdc = GetDC(text_view);
         cached_font * font = mswin_get_font(NHW_MENU, ATR_NONE, hdc, FALSE);
         saveFont = SelectObject(hdc, font->hFont);
+        COLORREF NewBg, OldBg;
+        NewBg = menu_bg_brush ? menu_bg_color : (COLORREF)GetSysColor(DEFAULT_COLOR_BG_MENU);
+        OldBg = SetBkColor(hdc, NewBg);
         SetRect(&text_rt, 0, 0, 0, 0);
-        DrawTextA(hdc, msgbuf, strlen(msgbuf), &text_rt,
-                 DT_CALCRECT | DT_TOP | DT_LEFT | DT_NOPREFIX
-                     | DT_SINGLELINE);
-        data->text.text_box_size.cx =
-            max(text_rt.right - text_rt.left, data->text.text_box_size.cx);
-        data->text.text_box_size.cy += text_rt.bottom - text_rt.top;
+        if (msg_data->colors)
+        {
+            LONG cx = 0;
+            LONG cy = 0;
+            int mlen = (int)strlen(msgbuf);
+            int i;
+            COLORREF OldFg = SetTextColor(hdc, menu_fg_brush ? menu_fg_color : (COLORREF)GetSysColor(DEFAULT_COLOR_FG_MENU));
+            for (i = 0; i < mlen; i++)
+            {
+                if (i == 0 ? msg_data->colors[i] != NO_COLOR : msg_data->colors[i] != msg_data->colors[i - 1])
+                {
+                    SetTextColor(hdc, msg_data->colors[i] == NO_COLOR ? (menu_fg_brush ? menu_fg_color : (COLORREF)GetSysColor(DEFAULT_COLOR_FG_MENU)) : nhcolor_to_RGB(msg_data->colors[i]));
+                }
+
+                DrawText(hdc, NH_A2W(&msgbuf[i], wbuf, BUFSZ), 1, &text_rt,
+                    DT_CALCRECT | DT_TOP | DT_LEFT | DT_NOPREFIX
+                    | DT_SINGLELINE);
+
+                cx += text_rt.right - text_rt.left;
+                cy = max(cy, text_rt.bottom - text_rt.top);
+            }
+            data->text.text_box_size.cx = max(cx, data->text.text_box_size.cx);
+            data->text.text_box_size.cy += cy;
+            SetTextColor(hdc, OldFg);
+        }
+        else
+        {
+            COLORREF clr = msg_data->color == NO_COLOR ? (menu_fg_brush ? menu_fg_color : (COLORREF)GetSysColor(DEFAULT_COLOR_FG_MENU)) : nhcolor_to_RGB(msg_data->color);
+            COLORREF OldFg = SetTextColor(hdc, clr);
+            DrawText(hdc, NH_A2W(msgbuf, wbuf, BUFSZ), strlen(msgbuf), &text_rt,
+                DT_CALCRECT | DT_TOP | DT_LEFT | DT_NOPREFIX
+                | DT_SINGLELINE);
+            data->text.text_box_size.cx =
+                max(text_rt.right - text_rt.left, data->text.text_box_size.cx);
+            data->text.text_box_size.cy += text_rt.bottom - text_rt.top;
+            SetTextColor(hdc, OldFg);
+        }
+        SetBkColor(hdc, OldBg);
         SelectObject(hdc, saveFont);
         ReleaseDC(text_view, hdc);
     } break;
@@ -2123,6 +2208,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
         TCHAR wbuf[BUFSZ];
         if (p != NULL)
             *p = '\0'; /* for time being, view tab field as zstring */
+
         DrawText(lpdis->hDC, NH_A2W(p1, wbuf, BUFSZ), strlen(p1), &drawRect,
                  DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 

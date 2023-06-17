@@ -2945,16 +2945,22 @@ const char *str, *attrs, *colors;
         /* always grows one at a time, but alloc 12 at a time */
         if (cw->cury >= cw->rows) {
             char **tmp, ** tmp2, ** tmp3;
-
+            long oldrows = cw->rows;
             cw->rows += 12;
             tmp = (char **) alloc(sizeof(char *) * (size_t)cw->rows);
             tmp2 = (char**) alloc(sizeof(char *) * (size_t)cw->rows);
             tmp3 = (char**) alloc(sizeof(char *) * (size_t)cw->rows);
-            for (i = 0; i < cw->maxrow; i++)
+            for (i = 0; i < oldrows; i++)
             {
                 tmp[i] = cw->data[i];
                 tmp2[i] = cw->datcolors[i];
                 tmp3[i] = cw->datattrs[i];
+            }
+            for (i = oldrows; i < cw->rows; i++)
+            {
+                tmp[i] = 0;
+                tmp2[i] = 0;
+                tmp3[i] = 0;
             }
             if (cw->data)
                 free((genericptr_t) cw->data);
@@ -2965,43 +2971,60 @@ const char *str, *attrs, *colors;
             cw->data = tmp;
             cw->datcolors = tmp2;
             cw->datattrs = tmp3;
-
-            for (i = cw->maxrow; i < cw->rows; i++)
-            {
-                cw->data[i] = 0;
-                cw->datcolors[i] = 0;
-                cw->datattrs[i] = 0;
-            }
         }
+
+        size_t appoffset = 0;
         if (cw->data[cw->cury])
-            free((genericptr_t) cw->data[cw->cury]);
-        if (cw->datattrs[cw->cury])
-            free((genericptr_t)cw->datattrs[cw->cury]);
-        if (cw->datcolors[cw->cury])
-            free((genericptr_t)cw->datcolors[cw->cury]);
-        n0 = (long) strlen(str) + 1L;
-        ob = cw->data[cw->cury] = (char *) alloc((size_t)n0 + 1);
-        cw->datattrs[cw->cury] = (char*)alloc((size_t)n0 + 1);
-        cw->datcolors[cw->cury] = (char*)alloc((size_t)n0 + 1);
-        *ob++ = (char) (used_attr + 1); /* avoid nuls, for convenience */
+        {
+            size_t e0 = (long)strlen(cw->data[cw->cury] + 1);
+            n0 = (long)strlen(str) + e0 + 1L;
+            ob = cw->data[cw->cury] = (char*)realloc(cw->data[cw->cury], (size_t)n0 + 1);
+            cw->datattrs[cw->cury] = (char*)realloc(cw->datattrs[cw->cury], (size_t)n0 + 1);
+            cw->datcolors[cw->cury] = (char*)realloc(cw->datcolors[cw->cury], (size_t)n0 + 1);
+            *ob++ = (char)(used_attr + 1); /* avoid nuls, for convenience */
+            ob += e0;
+            appoffset = e0;
+        }
+        else
+        {
+            if (cw->data[cw->cury])
+                free((genericptr_t)cw->data[cw->cury]);
+            if (cw->datattrs[cw->cury])
+                free((genericptr_t)cw->datattrs[cw->cury]);
+            if (cw->datcolors[cw->cury])
+                free((genericptr_t)cw->datcolors[cw->cury]);
+            n0 = (long)strlen(str) + 1L;
+            ob = cw->data[cw->cury] = (char*)alloc((size_t)n0 + 1);
+            cw->datattrs[cw->cury] = (char*)alloc((size_t)n0 + 1);
+            cw->datcolors[cw->cury] = (char*)alloc((size_t)n0 + 1);
+            *ob++ = (char)(used_attr + 1); /* avoid nuls, for convenience */
+        }
         Strcpy(ob, str);
         size_t len = strlen(ob);
         if(attrs)
-            memcpy(cw->datattrs[cw->cury], attrs, len);
+            memcpy(&cw->datattrs[cw->cury][appoffset], attrs, len);
         else
-            memset(cw->datattrs[cw->cury], attr, len);
+            memset(&cw->datattrs[cw->cury][appoffset], attr, len);
         if (colors)
-            memcpy(cw->datcolors[cw->cury], colors, len);
+            memcpy(&cw->datcolors[cw->cury][appoffset], colors, len);
         else
-            memset(cw->datcolors[cw->cury], color, len);
-        cw->datattrs[cw->cury][len] = 0;
-        cw->datcolors[cw->cury][len] = 0;
+            memset(&cw->datcolors[cw->cury][appoffset], color, len);
+        cw->datattrs[cw->cury][appoffset + len] = 0;
+        cw->datcolors[cw->cury][appoffset + len] = 0;
 
         if (n0 > cw->maxcol)
             cw->maxcol = n0;
-        if (++cw->cury > cw->maxrow)
+
+        if (!app)
+        {
+            cw->curx = 0;
+            cw->cury++;
+        }
+
+        if (cw->cury > cw->maxrow)
             cw->maxrow = cw->cury;
-        if (n0 > CO) {
+        if (n0 > CO && cw->cury > 0) 
+        {
             /* attempt to break the line */
             for (i = CO - 1; i && str[i] != ' ' && str[i] != '\n';)
                 i--;

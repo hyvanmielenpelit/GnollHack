@@ -36,8 +36,8 @@ namespace GnollHackClient.Pages.Game
             _optionsViewCell = OptionsViewCell;
             if (!App.DeveloperMode)
             {
-                BaseSection.Remove(GCViewCell);
-                BaseSection.Remove(OptionsViewCell);
+                InfoSection.Remove(GCViewCell);
+                InfoSection.Remove(OptionsViewCell);
             }
         }
 
@@ -102,14 +102,14 @@ namespace GnollHackClient.Pages.Game
         public void UpdateLayout()
         {
             MainLayout.IsEnabled = true;
-            if (App.DeveloperMode && !BaseSection.Contains(_optionsViewCell))
-                BaseSection.Insert(2, _optionsViewCell);
-            if (!App.DeveloperMode && BaseSection.Contains(_optionsViewCell))
-                BaseSection.Remove(_optionsViewCell);
-            if (App.DeveloperMode && !BaseSection.Contains(GCViewCell))
-                BaseSection.Insert(4, GCViewCell);
-            if (!App.DeveloperMode && BaseSection.Contains(GCViewCell))
-                BaseSection.Remove(GCViewCell);
+            if (App.DeveloperMode && !InfoSection.Contains(_optionsViewCell))
+                InfoSection.Insert(2, _optionsViewCell);
+            if (!App.DeveloperMode && InfoSection.Contains(_optionsViewCell))
+                InfoSection.Remove(_optionsViewCell);
+            if (App.DeveloperMode && !InfoSection.Contains(GCViewCell))
+                InfoSection.Insert(4, GCViewCell);
+            if (!App.DeveloperMode && InfoSection.Contains(GCViewCell))
+                InfoSection.Remove(GCViewCell);
         }
 
         private bool _backPressed = false;

@@ -68,6 +68,7 @@ typedef struct nhmi {
     boolean has_attrs;
     boolean has_colors;
     BOOLEAN_P presel;           /* Whether menu item should be preselected */
+    int append;
     boolean selected;           /* Whether item is currently selected */
     int page_num;               /* Display page number for entry */
     int line_num;               /* Line number on page where entry begins */
@@ -606,7 +607,7 @@ curs_new_menu_item(winid wid, const char *str, const char* attrs, const char* co
 void
 curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
                        CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-                       const char *str, const char* attrs, const char* colors, BOOLEAN_P presel)
+                       const char *str, const char* attrs, const char* colors, BOOLEAN_P presel, int app)
 {
     nhmenu_item *new_item, *current_items, *menu_item_ptr;
     nhmenu *current_menu = get_menu(wid);
@@ -622,7 +623,61 @@ curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
         return;
     }
 
-    new_item = curs_new_menu_item(wid, str, attrs, colors, attr, color);
+    current_items = current_menu->entries;
+
+    nhmenu_item* append_item = NULL;
+    if (current_items != NULL) 
+    {
+        menu_item_ptr = current_items;
+        while (menu_item_ptr->next_item != NULL) {
+            menu_item_ptr = menu_item_ptr->next_item;
+        }
+        
+        if (menu_item_ptr->append)
+            append_item = menu_item_ptr;
+    }
+
+    if (append_item == NULL)
+    {
+        new_item = curs_new_menu_item(wid, str, attrs, colors, attr, color);
+    }
+    else
+    {
+        new_item = menu_item_ptr;
+        size_t oldlen = strlen(menu_item_ptr->str);
+        size_t newlen = strlen(str);
+
+        new_str = curses_copy_of(str);
+        new_attrs = curses_cpystr(str, attrs, attr);
+        new_colors = curses_cpystr(str, colors, color);
+
+        char* combined_str = (char*)alloc(oldlen + newlen + 1);
+        char* combined_attrs = (char*)alloc(oldlen + newlen + 1);
+        char* combined_colors = (char*)alloc(oldlen + newlen + 1);
+
+        strcpy(combined_str, menu_item_ptr->str);
+        strcat(combined_str, str);
+        memcpy((genericptr_t)combined_attrs, menu_item_ptr->attrs, oldlen);
+        memcpy((genericptr_t)&combined_attrs[oldlen], new_attrs, newlen);
+        combined_attrs[oldlen + newlen] = 0;
+        memcpy((genericptr_t)combined_colors, menu_item_ptr->colors, oldlen);
+        memcpy((genericptr_t)&combined_colors[oldlen], new_colors, newlen);
+        combined_colors[oldlen + newlen] = 0;
+
+        free((genericptr_t)menu_item_ptr->str);
+        free((genericptr_t)menu_item_ptr->attrs);
+        free((genericptr_t)menu_item_ptr->colors);
+        free((genericptr_t)new_str);
+        free((genericptr_t)new_attrs);
+        free((genericptr_t)new_colors);
+
+        menu_item_ptr->str = combined_str;
+        menu_item_ptr->attrs = combined_attrs;
+        menu_item_ptr->colors = combined_colors;
+
+        curses_rtrim(combined_str);
+    }
+
     new_item->glyph = glyph;
     new_item->identifier = *identifier;
     new_item->accelerator = accelerator;
@@ -630,14 +685,15 @@ curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
     new_item->attr = curses_attr;
     new_item->color = color;
     new_item->presel = presel;
+    new_item->append = app;
 
-    current_items = current_menu->entries;
     menu_item_ptr = current_items;
 
     if (current_items == NULL) {
         new_item->prev_item = NULL;
         current_menu->entries = new_item;
-    } else {
+    }
+    else {
         while (menu_item_ptr->next_item != NULL) {
             menu_item_ptr = menu_item_ptr->next_item;
         }

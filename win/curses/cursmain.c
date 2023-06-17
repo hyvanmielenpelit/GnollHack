@@ -436,7 +436,7 @@ putstr(window, attr, str)
                    by calling more() or displaying both on the same line.
 */
 void
-curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int color)
+curses_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 {
     if (!text)
         return;
@@ -452,12 +452,12 @@ curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int colo
     else 
     {
         /* We need to convert NetHack attributes to curses attributes */
-        curses_puts_ex(wid, attr, color, text);
+        curses_puts_ex(wid, attr, color, text, app);
     }
 }
 
 void
-curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app UNUSED)
+curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app)
 {
     if (!text)
         return;
@@ -473,7 +473,7 @@ curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* co
     else 
     {
         /* We need to convert NetHack attributes to curses attributes */
-        curses_puts_ex2(wid, text, attrs, colors, attr, color);
+        curses_puts_ex2(wid, text, attrs, colors, attr, color, app);
     }
 }
 
@@ -552,7 +552,7 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
     }
 
     curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
-        attr, color, str, (char*)0, (char*)0, presel);
+        attr, color, str, (char*)0, (char*)0, presel, 0);
 }
 
 void
@@ -588,7 +588,7 @@ curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
     }
 
     curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
-        attr, color, str, info.attrs, info.colors, presel);
+        attr, color, str, info.attrs, info.colors, presel, 0);
 }
 
 

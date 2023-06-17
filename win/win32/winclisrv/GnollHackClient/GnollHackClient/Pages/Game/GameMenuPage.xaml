@@ -19,14 +19,23 @@
                 <TableView x:Name="GameTableView" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
                            Intent="Menu">
                     <TableRoot>
-                        <TableSection x:Name="BaseSection">
+                        <TableSection x:Name="SaveLoadQuitSection">
                             <ViewCell>
-                                <Grid WidthRequest="320" HorizontalOptions="Center" >
+                                <Grid WidthRequest="320" HorizontalOptions="Center">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnBackToGame" WidthRequest="320" FontFamily="Diablo" Text="Back to Game" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnBackToGame_Clicked" />
+                                    <Button x:Name="btnSave" WidthRequest="320" FontFamily="Diablo" Text="Save &amp; Exit Game" BackgroundColor="Transparent" TextColor="#FFDDFFDD"
+                                    HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnSave_Clicked" />
                                 </Grid>
                             </ViewCell>
+                            <ViewCell>
+                                <Grid WidthRequest="320" HorizontalOptions="Center">
+                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                                    <Button x:Name="btnQuit" WidthRequest="320" FontFamily="Diablo" Text="Quit Without Saving" BackgroundColor="Transparent" TextColor="#FFFFBBBB"
+                                    HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnQuit_Clicked" />
+                                </Grid>
+                            </ViewCell>
+                        </TableSection>
+                        <TableSection x:Name="InfoSection">
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
@@ -62,18 +71,13 @@
                                     HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnVersion_Clicked" />
                                 </Grid>
                             </ViewCell>
+                        </TableSection>
+                        <TableSection x:Name="ReturnSection">
                             <ViewCell>
-                                <Grid WidthRequest="320" HorizontalOptions="Center">
+                                <Grid WidthRequest="320" HorizontalOptions="Center" >
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnSave" WidthRequest="320" FontFamily="Diablo" Text="Save &amp; Exit Game" BackgroundColor="Transparent" TextColor="White"
-                                    HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnSave_Clicked" />
-                                </Grid>
-                            </ViewCell>
-                            <ViewCell>
-                                <Grid WidthRequest="320" HorizontalOptions="Center">
-                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnQuit" WidthRequest="320" FontFamily="Diablo" Text="Quit Without Saving" BackgroundColor="Transparent" TextColor="White"
-                                    HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnQuit_Clicked" />
+                                    <Button x:Name="btnBackToGame" WidthRequest="320" FontFamily="Diablo" Text="Return to Game" BackgroundColor="Transparent" TextColor="#FFDDDDFF"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnBackToGame_Clicked" />
                                 </Grid>
                             </ViewCell>
                         </TableSection>
