@@ -146,10 +146,14 @@ boolean display_hit_tile;
             }
             if (pfmt)
             {
-                if(use_mhis)
-                    pline_ex(ATR_NONE, clr, pfmt, Monst_name, Monst_his, damage);
+                if (use_mhis)
+                {
+                    pline_multi_ex(ATR_NONE, clr, no_multiattrs, multicolor_red3, pfmt, Monst_name, Monst_his, damage);
+                }
                 else
-                    pline_ex(ATR_NONE, clr, pfmt, Monst_name, damage);
+                {
+                    pline_multi_ex(ATR_NONE, clr, no_multiattrs, multicolor_red2, pfmt, Monst_name, damage);
+                }
             }
         }
         if (display_hit_tile)
@@ -1859,7 +1863,7 @@ register struct obj* omonwep;
                     play_sfx_sound(SFX_ACQUIRE_GRAB);
                     u.ustuck = mtmp;
                     if (damagedealt > 0)
-                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s grabs you%s! You sustain %d damage.", Monnam(mtmp), (hug_throttles(mtmp->data) && has_neck(youmonst.data)) ? " by the throat" : "", damagedealt);
+                        pline_multi_ex(ATR_NONE, CLR_MSG_WARNING, no_multiattrs, multicolor_red3, "%s grabs you%s! You sustain %d damage.", Monnam(mtmp), (hug_throttles(mtmp->data) && has_neck(youmonst.data)) ? " by the throat" : "", damagedealt);
                     else
                         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s grabs you%s!", Monnam(mtmp), (hug_throttles(mtmp->data) && has_neck(youmonst.data)) ? " by the throat" : "");
 
@@ -1889,7 +1893,8 @@ register struct obj* omonwep;
                 exercise(A_STR, FALSE);
                 if (damagedealt > 0)
                 {
-                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are being %s%s You sustain %d damage.",
+                    int multicolors[3] = { CLR_BRIGHT_MAGENTA, CLR_BRIGHT_MAGENTA, CLR_ORANGE };
+                    You_multi_ex(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolors, "are being %s%s You sustain %d damage.",
                         hug_throttles(mtmp->data) ? "choked" : "crushed",
                         is_constrictor(mtmp->data) ? " to death!" : ".",
                         damagedealt);
@@ -1899,14 +1904,16 @@ register struct obj* omonwep;
                 }
                 else if (is_constrictor(mtmp->data))
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is %s you to death!", Monnam(mtmp), hug_throttles(mtmp->data) ? "choked" : "constricting");
+                    int multicolors[3] = { NO_COLOR, CLR_BRIGHT_MAGENTA, CLR_BRIGHT_MAGENTA };
+                    pline_multi_ex(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolors, "%s is %s you %s!", Monnam(mtmp), hug_throttles(mtmp->data) ? "choked" : "constricting" , "to death");
                     display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                     if (Breathless)
                         pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
                 }
                 else
                 {
-                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are being %s%s.", hug_throttles(mtmp->data)
+                    int multicolors[2] = { CLR_BRIGHT_MAGENTA, NO_COLOR };
+                    You_multi_ex(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolors, "are being %s%s.", hug_throttles(mtmp->data)
                         ? "choked"
                         : "crushed", damage == 0 ? ", but sustain no damage" : "");
                     display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
@@ -1980,7 +1987,7 @@ register struct obj* omonwep;
                 if (!hittxt)
                     hitmsg(mtmp, mattk, damagedealt, TRUE);
                 else if (displaysustain && damagedealt > 0)
-                    You("sustain %d damage.", damagedealt);
+                    You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "sustain %d damage.", damagedealt);
 
                 if(damagedealt > 0)
                     display_u_being_hit(isdisintegrated ? HIT_DISINTEGRATED : HIT_GENERAL, damagedealt, 0UL);
@@ -2075,7 +2082,9 @@ register struct obj* omonwep;
         //if (uncancelled) 
         {
             play_sfx_sound(SFX_MONSTER_ON_FIRE);
-            if (completelyburns(youmonst.data)) 
+            int multiattrs[2] = { 0 };
+            int multicolors[2] = { HI_FIRE, CLR_RED };
+            if (completelyburns(youmonst.data))
             { /* paper or straw golem */
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "go up in flames!");
                 /* KMH -- this is okay with unchanging */
@@ -2084,12 +2093,13 @@ register struct obj* omonwep;
             } 
             else if (Fire_immunity || damage == 0) 
             {
-                pline("You are %s, but the fire doesn't feel hot!", on_fire(youmonst.data, mattk));
+                pline_multi_ex(ATR_NONE, NO_COLOR, multiattrs, multicolors, "You are %s, but the fire doesn't feel hot!", on_fire(youmonst.data, mattk));
                 damage = 0;
             }
             else
-                pline("You're %s! You sustain %d damage.", on_fire(youmonst.data, mattk), damage == 0 ? 0 : damagedealt);
-
+            {
+                pline_multi_ex(ATR_NONE, NO_COLOR, multiattrs, multicolors, "You're %s! You sustain %d damage.", on_fire(youmonst.data, mattk), damage == 0 ? 0 : damagedealt);
+            }
             display_u_being_hit(HIT_ON_FIRE, damagedealt, 0UL);
 
             if ((int) mtmp->m_lev > rn2(20))
@@ -2109,15 +2119,18 @@ register struct obj* omonwep;
         //if (uncancelled) 
         {
             play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
+            int multiattrs[2] = { 0 };
+            int multicolors[2] = { HI_ICE, CLR_RED };
             if (Cold_immunity || damage == 0)
             {
                 play_sfx_sound(SFX_GENERAL_UNHARMED);
-                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "You're covered in frost, but the frost doesn't feel cold!");
+                pline_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, multiattrs, multicolors, "You're covered in %s, but the frost doesn't feel cold!", "frost");
                 damage = 0;
             }
             else
-                pline("You're covered in frost! You sustain %d damage.", damage == 0 ? 0 : damagedealt);
-
+            {
+                pline_multi_ex(ATR_NONE, NO_COLOR, multiattrs, multicolors, "You're covered in %s! You sustain %d damage.", "frost", damage == 0 ? 0 : damagedealt);
+            }
             display_u_being_hit(HIT_FROZEN, damagedealt, 0UL);
 
             if ((int)mtmp->m_lev > rn2(20))
@@ -2143,7 +2156,9 @@ register struct obj* omonwep;
                 damage = 0;
             }
             else
-                You("get zapped for %d damage!", damagedealt);
+            {
+                You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "get zapped for %d damage!", damagedealt);
+            }
 
             display_u_being_hit(HIT_ELECTROCUTED, damagedealt, 0UL);
 
@@ -2333,12 +2348,12 @@ register struct obj* omonwep;
             {
                 if (rn2(2) && (uarmf->otyp == LOW_BOOTS || uarmf->otyp == SHOES)) 
                 {
-                    pline("%s pricks the exposed part of your %s %s for %d damage!",
+                    pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red4, "%s pricks the exposed part of your %s %s for %d damage!",
                           Monst_name, sidestr, leg, damagedealt);
                 }
                 else if (!rn2(5))
                 {
-                    pline("%s pricks through your %s boot for %d damage!", Monst_name,
+                    pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red3, "%s pricks through your %s boot for %d damage!", Monst_name,
                           sidestr, damagedealt);
                 }
                 else
@@ -2350,7 +2365,9 @@ register struct obj* omonwep;
                 }
             } 
             else
-                pline("%s pricks your %s %s for %d damage!", Monst_name, sidestr, leg, damagedealt);
+            {
+                pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red4, "%s pricks your %s %s for %d damage!", Monst_name, sidestr, leg, damagedealt);
+            }
 
             set_wounded_legs(side, rnd(60 - ACURR(A_DEX)));
             display_u_being_hit(HIT_CRITICAL, damagedealt, 0UL);
@@ -2419,7 +2436,7 @@ register struct obj* omonwep;
                 {
                     if (damagedealt > 0)
                     {
-                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s swings itself around you. You sustain %d damage!", Monnam(mtmp), damagedealt);
+                        pline_multi_ex(ATR_NONE, CLR_MSG_WARNING, no_multiattrs, multicolor_red2, "%s swings itself around you. You sustain %d damage!", Monnam(mtmp), damagedealt);
                         display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                     }
                     else
@@ -2481,7 +2498,7 @@ register struct obj* omonwep;
                 {
                     if (damagedealt > 0)
                     {
-                        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are being crushed! You sustain %d damage.", damagedealt);
+                        You_multi_ex(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_orange1, "are being crushed! You sustain %d damage.", damagedealt);
                         display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                     }
                     else
@@ -4097,7 +4114,7 @@ enum hit_tile_types hit_tile;
 
     if (verbose && damagedealt > 0)
     {
-        You("sustain %d damage!", damagedealt);
+        You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "sustain %d damage!", damagedealt);
         display_u_being_hit(hit_tile, damagedealt, 0UL);
     }
     if (Upolyd) {
@@ -4790,7 +4807,7 @@ assess_dmg:
 
     if (canseemon(mtmp) && damagedealt > 0)
     {
-        pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
+        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange2, "%s sustains %d damage!", Monnam(mtmp), damagedealt);
         display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL, FALSE);
     }
 

@@ -1713,13 +1713,13 @@ boolean* obj_destroyed;
         if (Role_if(PM_SAMURAI))
         {
             play_sfx_sound(SFX_CAITIFF);
-            You("dishonorably use a poisoned weapon!");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "dishonorably use a poisoned weapon!");
             adjalign(-sgn(u.ualign.type));
         }
         else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10)
         {
             play_sfx_sound(SFX_CAITIFF);
-            You_feel("like an evil coward for using a poisoned weapon.");
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like an evil coward for using a poisoned weapon.");
             adjalign(-1);
         }
         if (obj && !rn2(nopoison)) 
@@ -1820,13 +1820,13 @@ boolean* obj_destroyed;
             if (Role_if(PM_SAMURAI))
             {
                 play_sfx_sound(SFX_CAITIFF);
-                You("dishonorably use a weapon imbued with death magic!");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "dishonorably use a weapon imbued with death magic!");
                 adjalign(-sgn(u.ualign.type));
             }
             else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) 
             {
                 play_sfx_sound(SFX_CAITIFF);
-                You_feel("like an evil coward for using a weapon imbued with death magic.");
+                You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like an evil coward for using a weapon imbued with death magic.");
                 adjalign(-1);
             }
         }
@@ -1845,7 +1845,7 @@ boolean* obj_destroyed;
                 {
                     const char* what = *unconventional ? unconventional : "attack";
 
-                    Your("%s %s harmlessly through %s.", what,
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s harmlessly through %s.", what,
                         vtense(what, "pass"), mon_nam(mon));
                     hittxt = TRUE;
                 }
@@ -1864,7 +1864,7 @@ boolean* obj_destroyed;
         You("joust %s%s", mon_nam(mon), canseemon(mon) ? exclam((int)ceil(damage)) : ".");
         if (jousting < 0) 
         {
-            pline("%s shatters on impact!", Yname2(obj));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s shatters on impact!", Yname2(obj));
             /* (must be either primary or secondary weapon to get here) */
             //u.twoweap = FALSE; /* untwoweapon() is too verbose here */
             if (obj == uwep)
@@ -1895,7 +1895,7 @@ boolean* obj_destroyed;
             && !thick_skinned(mdat)) 
         {
             if (canspotmon(mon))
-                pline("%s %s from your powerful strike!", Monnam(mon),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s from your powerful strike!", Monnam(mon),
                     makeplural(stagger(mon->data, "stagger")));
             /* avoid migrating a dead monster */
             if (mon->mhp >(int)ceil(damage)) 
@@ -1993,7 +1993,7 @@ boolean* obj_destroyed;
             withwhat[0] = '\0';
             if (u.twoweap && flags.verbose)
                 Sprintf(withwhat, " with %s", yname(obj));
-            pline("%s divides as you hit it%s!", Monnam(mon), withwhat);
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s divides as you hit it%s!", Monnam(mon), withwhat);
             hittxt = TRUE;
             mintrap(mclone);
         }
@@ -2013,33 +2013,45 @@ boolean* obj_destroyed;
         {
 
             if (!flags.verbose)
-                You("%s%s it for %d damage%s%s", striketext, critical_text, damagedealt, frombehindtext, strikemark);
+            {
+                int multicolors[5] = { NO_COLOR, CLR_ORANGE, CLR_ORANGE, NO_COLOR, NO_COLOR };
+                You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "%s%s it for %d damage%s%s", striketext, critical_text, damagedealt, frombehindtext, strikemark);
+            }
             else
-                You("%s %s%s for %d damage%s%s", 
-                (obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
+            {
+                int multicolors[6] = { NO_COLOR, NO_COLOR, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE, NO_COLOR };
+                You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "%s %s%s for %d damage%s%s",
+                    (obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
                     ? "bash" : Role_if(PM_BARBARIAN) ? "smite" : striketext,
                     mon_nam(mon), critical_text, damagedealt, frombehindtext,
                     canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
+            }
 
             display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
         }
         else 
         {
             if (!flags.verbose)
-                You("%s it%s%s%s", striketext, critical_text, frombehindtext, strikemark);
+            {
+                int multicolors[4] = { NO_COLOR, CLR_ORANGE, CLR_ORANGE, NO_COLOR };
+                You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "%s it%s%s%s", striketext, critical_text, frombehindtext, strikemark);
+            }
             else
-                You("%s %s%s%s",
-                (obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
+            {
+                int multicolors[4] = { NO_COLOR, NO_COLOR, CLR_ORANGE, NO_COLOR };
+                You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "%s %s%s%s",
+                    (obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
                     ? "bash" : Role_if(PM_BARBARIAN) ? "smite" : striketext,
                     mon_nam(mon), critical_text,
                     canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
+            }
 
             display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
         }
     }
     else if (hittxt && displaysustain && damagedealt > 0)
     {
-        pline("%s sustains %d damage.", Monnam(mon), damagedealt);
+        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange2, "%s sustains %d damage!", Monnam(mon), damagedealt);
         display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
     }
 
@@ -2077,7 +2089,7 @@ boolean* obj_destroyed;
         /* note: s_suffix returns a modifiable buffer */
         if (!is_incorporeal(mdat) && !amorphous(mdat))
             whom = strcat(s_suffix(whom), " flesh");
-        pline(fmt, whom);
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, fmt, whom);
     }
     if (lightobj)
     {
@@ -2103,7 +2115,7 @@ boolean* obj_destroyed;
         /* note: s_suffix returns a modifiable buffer */
         if (!is_incorporeal(mdat) && !amorphous(mdat))
             whom = strcat(s_suffix(whom), " flesh");
-        pline(fmt, whom);
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, fmt, whom);
     }
 
     boolean uses_spell_flags = obj ? object_uses_spellbook_wand_flags_and_properties(obj) : FALSE;
@@ -2159,7 +2171,7 @@ boolean* obj_destroyed;
             char* whom = mon_nam(mon);
             if (canspotmon(mon))
             {
-                pline("%s deeply into %s!", Yobjnam2(obj, "cut"), whom);
+                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s deeply into %s!", Yobjnam2(obj, "cut"), whom);
             }
         }
     }
@@ -2218,7 +2230,7 @@ boolean* obj_destroyed;
                 char* whom = mon_nam(mon);
                 if (canspotmon(mon))
                 {
-                    pline("%s the life energy from %s to you!", Yobjnam2(obj, "leech"), whom);
+                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s the life energy from %s to you!", Yobjnam2(obj, "leech"), whom);
                 }
             }
         }
@@ -2242,7 +2254,7 @@ boolean* obj_destroyed;
         else
             Sprintf(dcbuf, "One of %s shatters from the blow!", yname(obj));
 
-        pline1(dcbuf);
+        pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf);
         if (obj->oclass == GEM_CLASS)
         {
             if (obj->dknown && !objects[obj->otyp].oc_name_known
@@ -3262,10 +3274,12 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         {
             if (hit_tile == HIT_GENERAL)
                 hit_tile = HIT_CRITICAL;
-            Your("critical strike inflicts %d damage!", damagedealt);
+            Your_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange1, "critical strike inflicts %d damage!", damagedealt);
         }
         else
-            You("inflict %d damage.", damagedealt);
+        {
+            You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange1, "inflict %d damage.", damagedealt);
+        }
         display_m_being_hit(mdef, hit_tile, damagedealt, 0UL, FALSE);
     }
     return 1;
@@ -3520,7 +3534,7 @@ register struct attack *mattk;
                 /* eating a Rider or its corpse is fatal */
                 if (is_rider(pd)) 
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Unfortunately, digesting any of it is fatal.");
+                    pline_ex1(ATR_NONE, CLR_MSG_NEGATIVE, "Unfortunately, digesting any of it is fatal.");
                     end_engulf();
                     Sprintf(killer.name, "unwisely tried to eat %s",
                         mon_monster_name(mdef));

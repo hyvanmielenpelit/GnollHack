@@ -516,7 +516,7 @@ int poison_strength;   /* d6 per level damage*/
         int damage_dealt = hp_before - hp_after;
         if (damage_dealt > 0)
         {
-            You("sustain %d damage!", damage_dealt);
+            You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "sustain %d damage!", damage_dealt);
             display_u_being_hit(HIT_POISONED, damage_dealt, 0UL);
         }
     }

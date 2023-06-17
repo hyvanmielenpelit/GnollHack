@@ -2205,7 +2205,7 @@ register struct obj* omonwep;
 
         if (!hittxtalreadydisplayed && damagedealt > 0)
         {
-            pline("%s sustains %d damage!", Monnam(mdef), damagedealt);
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange2, "%s sustains %d damage!", Monnam(mdef), damagedealt);
         }
     }
 
@@ -2678,7 +2678,7 @@ assess_dmg:
 
         if (canseemon(magr) && damagedealt > 0)
         {
-            pline("%s sustains %d damage!", Monnam(magr), damagedealt);
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange2, "%s sustains %d damage!", Monnam(magr), damagedealt);
             display_m_being_hit(magr, hit_tile, damagedealt, 0UL, FALSE);
         }
 

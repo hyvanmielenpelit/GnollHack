@@ -600,7 +600,9 @@ int expltype;
                         int hp_after = mtmp->mhp;
                         int damage_dealt = hp_before - hp_after;
                         if (damage_dealt > 0 && canseemon(mtmp))
-                            pline("%s sustains %d damage!", Monnam(mtmp), damage_dealt);
+                        {
+                            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange2, "%s sustains %d damage!", Monnam(mtmp), damage_dealt);
+                        }
 
                         //mtmp->mhp -= mdam;
                         //mtmp->mhp -= (idamres + idamnonres);
@@ -714,7 +716,9 @@ int expltype;
                 int hp_after = Upolyd ? u.mh : u.uhp;
                 int damage_dealt = hp_before - hp_after;
                 if (damage_dealt > 0)
-                    You("sustain %d damage!", damage_dealt);
+                {
+                    You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "sustain %d damage!", damage_dealt);
+                }
             }
         }
 

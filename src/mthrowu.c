@@ -127,9 +127,15 @@ const char *name; /* if null, then format `*objp' */
                 int damagedealt = (int)damage + ((damage - (double)((int)damage) - ((double)(Upolyd ? u.mh_fraction : u.uhp_fraction) / 10000)) > 0 ? 1 : 0);
 
                 if (Blind || !flags.verbose)
-                    You("are hit for %d damage%s", damagedealt, exclam(damagedealt));
+                {
+                    int multicolors[2] = { CLR_RED, NO_COLOR };
+                    You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "are hit for %d damage%s", damagedealt, exclam(damagedealt));
+                }
                 else
-                    You("are hit by %s for %d damage%s", onm, damagedealt, exclam(damagedealt));
+                {
+                    int multicolors[3] = { NO_COLOR, CLR_RED, NO_COLOR };
+                    You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "are hit by %s for %d damage%s", onm, damagedealt, exclam(damagedealt));
+                }
 
                 display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
             }

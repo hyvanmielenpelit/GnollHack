@@ -197,7 +197,7 @@ boolean clumsy;
 
     if (dmg > 0)
     {
-        You("%s%skick %s for %d damage.", effbuf, kickstylebuf, mon_nam(mon), dmg);
+        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange4, "You %s%skick %s for %d damage.", effbuf, kickstylebuf, mon_nam(mon), dmg);
     }
     else
     {

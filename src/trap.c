@@ -4118,8 +4118,11 @@ int dice; /* of d6 */
         losehp(damage, tower_of_flame, KILLED_BY_AN); /* fire damage */
         int hp_after = Upolyd ? u.mh : u.uhp;
         int damage_done = hp_before - hp_after;
-        if(damage_done > 0)
-            You("sustain %d damage%s", damage_done, exclam(damage_done));
+        if (damage_done > 0)
+        {
+            int multicolors[2] = { CLR_RED, NO_COLOR };
+            You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "sustain %d damage%s", damage_done, exclam(damage_done));
+        }
     }
 
     burn_away_slime();
@@ -7264,7 +7267,10 @@ boolean nocorpse;
         int hp_after = mon->mhp;
         int damage_done = hp_before - hp_after;
         if (damage_done > 0 && canseemon(mon))
-            pline("%s sustains %d damage%s", Monnam(mon), damage_done, exclam(damage_done));
+        {
+            int multicolors[3] = { NO_COLOR, CLR_ORANGE, NO_COLOR };
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "%s sustains %d damage%s", Monnam(mon), damage_done, exclam(damage_done));
+        }
 
         if (DEADMONSTER(mon)) 
         {

@@ -1289,7 +1289,7 @@ cure_petrification_here:
             int damagedealt = hp_before - hp_after;
             if (damagedealt > 0)
             {
-                pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
+                pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange2, "%s sustains %d damage!", Monnam(mtmp), damagedealt);
                 display_m_being_hit(mtmp, HIT_GENERAL, damagedealt, 0UL, FALSE);
             }
             if (DEADMONSTER(mtmp))
@@ -7719,13 +7719,19 @@ boolean show_hit_tile_always;
 {
     if ((!cansee(bhitpos.x, bhitpos.y) && !canspotmon(mtmp)
          && !(u.uswallow && mtmp == u.ustuck)) || !flags.verbose)
-        if(damage >  0)
-            pline("%s %s it%s for %d damage%s", The(str), vtense(str, "hit"), adjective, damage, force);
+        if (damage > 0)
+        {
+            int multicolors[5] = { NO_COLOR, NO_COLOR, NO_COLOR, CLR_ORANGE, NO_COLOR };
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "%s %s it%s for %d damage%s", The(str), vtense(str, "hit"), adjective, damage, force);
+        }
         else
             pline("%s %s it%s%s", The(str), vtense(str, "hit"), adjective, force);
     else
         if (damage > 0)
-            pline("%s %s %s%s for %d damage%s", The(str), vtense(str, "hit"), mon_nam(mtmp), adjective, damage, force);
+        {
+            int multicolors[6] = { NO_COLOR, NO_COLOR, NO_COLOR, NO_COLOR, CLR_ORANGE, NO_COLOR };
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "%s %s %s%s for %d damage%s", The(str), vtense(str, "hit"), mon_nam(mtmp), adjective, damage, force);
+        }
         else
             pline("%s %s %s%s%s", The(str), vtense(str, "hit"), mon_nam(mtmp), adjective, force);
 
@@ -8985,7 +8991,7 @@ const char *fltxt;
         int damagedealt = hpbefore - hpafter;
         if (damagedealt > 0)
         {
-            You("sustain %d damage!", damagedealt);
+            You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "sustain %d damage!", damagedealt);
             display_u_being_hit(hit_tile, damagedealt, 0UL);
         }
     }
@@ -11196,7 +11202,7 @@ int dmg, adtyp, tell;
             int damagedealt = hp_before - hp_after;
             if (tell && damagedealt > 0 && polyd_same && !(tell == TELL_LETHAL_STYLE && !resisted))
             {//Lethal damage not shown, resisted though yes
-                You("sustain %d damage!", damagedealt);
+                You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "sustain %d damage!", damagedealt);
                 display_u_being_hit(hit_tile, damagedealt, 0UL);
             }
         }
@@ -11209,7 +11215,7 @@ int dmg, adtyp, tell;
             int damagedealt = hp_before - hp_after;
             if (tell && damagedealt > 0 && !(tell == TELL_LETHAL_STYLE && !resisted))
             {//Lethal damage not shown, resisted though yes
-                pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
+                pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange2, "%s sustains %d damage!", Monnam(mtmp), damagedealt);
                 display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL, FALSE);
             }
 
@@ -11252,7 +11258,7 @@ int dmg, adtyp, tell;
             int damagedealt = hp_before - hp_after;
             if (tell == TELL && damagedealt > 0 && polyd_same)
             {//Lethal damage not shown
-                You("sustain %d damage!", damagedealt);
+                You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "sustain %d damage!", damagedealt);
                 display_u_being_hit(hit_tile, damagedealt, 0UL);
             }
         }
@@ -11265,7 +11271,7 @@ int dmg, adtyp, tell;
             int damagedealt = hp_before - hp_after;
             if (tell == TELL && damagedealt > 0)
             {//Lethal damage not shown
-                pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
+                pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange2, "%s sustains %d damage!", Monnam(mtmp), damagedealt);
                 display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL, FALSE);
             }
 

@@ -272,9 +272,12 @@ register int exper, gamescore;
         if (flags.showexp)
             context.botl = TRUE;
         
-        if(flags.tellexp && newexp - oldexp == added_experience)
-            You("gain %ld experience point%s.", added_experience, added_experience == 1 ? "" : "s");
-
+        if (flags.tellexp && newexp - oldexp == added_experience)
+        {
+            int multiattrs[2] = { 0 };
+            int multicolors[2] = { CLR_BRIGHT_GREEN, NO_COLOR };
+            pline_multi_ex(ATR_NONE, NO_COLOR, multiattrs, multicolors, "You gain %ld experience point%s.", added_experience, added_experience == 1 ? "" : "s");
+        }
     }
     /* newrexp will always differ from oldrexp unless they're LONG_MAX */
     if (newscore != oldscore) {

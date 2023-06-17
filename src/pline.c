@@ -29,6 +29,9 @@ STATIC_VAR const char* pline_prefix_text = 0;
 STATIC_VAR int pline_separator_attr = 0;
 STATIC_VAR int pline_separator_color = NO_COLOR;
 STATIC_VAR const char* pline_separator_text = 0;
+STATIC_VAR int* pline_multiattrs = 0;
+STATIC_VAR int* pline_multicolors = 0;
+
 STATIC_VAR char prevmsg[BUFSZ];
 
 STATIC_DCL void FDECL(putmesg, (const char *));
@@ -174,6 +177,10 @@ VA_DECL(const char *, line)
     int ln;
     int msgtyp;
     boolean no_repeat;
+    char combined_line[BIGBUFSZ], attrs[BIGBUFSZ], colors[BIGBUFSZ];
+    combined_line[0] = 0;
+    attrs[0] = 0;
+    colors[0] = 0;
     /* Do NOT use VA_START and VA_END in here... see above */
 
     if (!line || !*line)
@@ -185,10 +192,127 @@ VA_DECL(const char *, line)
     if (program_state.wizkit_wishing)
         return;
 
-    if (index(line, '%')) {
-        Vsprintf(pbuf, line, VA_ARGS);
-        line = pbuf;
+    boolean domulti = FALSE;
+    if (index(line, '%'))
+    {
+        if (pline_multiattrs && pline_multicolors)
+        {
+            domulti = TRUE;
+            const char* echars = "cdieEfgGosuxXpn%";
+            const char* sp = line;
+            const char* p, * ep;
+            char cbuf[BIGBUFSZ];
+            char sbuf[BIGBUFSZ];
+            int pos = 0;
+            int idx = -1;
+            do
+            {
+                p = index(sp, '%');
+                if (!p)
+                {
+                    p = ep = eos((char*)sp);
+                }
+                else
+                {
+                    ep = p + 1;
+                    idx++;
+                }
+
+                char typechar = '\0';
+                char* cptr;
+                while (*ep)
+                {
+                    cptr = index(echars, *ep);
+                    if (!cptr)
+                        ep++;
+                    else
+                    {
+                        typechar = *cptr;
+                        break;
+                    }
+                }
+                int len1 = (int)(p - sp);
+                int len2 = (int)(ep - p + 1);
+                if (len1 < 0)
+                    len1 = 0;
+                if (len2 < 0)
+                    len2 = 0;
+
+                if (len1 > 0)
+                {
+                    strncpy(cbuf, sp, len1);
+                    cbuf[len1] = 0;
+                    Strcat(combined_line, cbuf);
+                    memset(&attrs[pos], pline_attr, (size_t)len1);
+                    memset(&colors[pos], pline_color, (size_t)len1);
+                    pos += len1;
+                }
+
+                if (len2 > 0)
+                {
+                    strncpy(sbuf, p, len2);
+                    sbuf[len2] = 0;
+                    switch (typechar)
+                    {
+                    case 'c':
+                        Sprintf(cbuf, sbuf, va_arg(the_args, CHAR_P));
+                        break;
+                    case 'f':
+                        Sprintf(cbuf, sbuf, va_arg(the_args, double));
+                        break;
+                    default:
+                    case 'i':
+                    case 'd':
+                        if (ep > p && *(ep - 1) == 'h')
+                            Sprintf(cbuf, sbuf, va_arg(the_args, SHORT_P));
+                        else if (ep > p && *(ep - 1) == 'l')
+                            Sprintf(cbuf, sbuf, va_arg(the_args, long));
+                        else
+                            Sprintf(cbuf, sbuf, va_arg(the_args, int));
+                        break;
+                    case 's':
+                        Sprintf(cbuf, sbuf, va_arg(the_args, const char*));
+                        break;
+                    case 'p':
+                        Sprintf(cbuf, sbuf, va_arg(the_args, void*));
+                        break;
+                    case 'x':
+                    case 'X':
+                    case 'u':
+                        if(ep > p && *(ep - 1) == 'h')
+                            Sprintf(cbuf, sbuf, va_arg(the_args, UNSIGNED_SHORT_P));
+                        else if (ep > p && *(ep - 1) == 'l')
+                            Sprintf(cbuf, sbuf, va_arg(the_args, unsigned long));
+                        else
+                            Sprintf(cbuf, sbuf, va_arg(the_args, unsigned int));
+                        break;
+                    case '%':
+                        strncpy(cbuf, sbuf, len2 - 1);
+                        cbuf[len2 - 1] = 0;
+                        break;
+                        break;
+                    }
+                    size_t clen = strlen(cbuf);
+                    Strcat(combined_line, cbuf);
+                    memset(&attrs[pos], idx >= 0 && pline_multiattrs[idx] != ATR_NONE ? pline_multiattrs[idx] : pline_attr, clen);
+                    memset(&colors[pos], idx >= 0 && pline_multicolors[idx] != NO_COLOR ? pline_multicolors[idx] : pline_color, clen);
+                    pos += clen;
+                }
+
+                sp = ep + 1;
+            } while (p && *p);
+
+            combined_line[pos] = 0;
+            attrs[pos] = 0;
+            colors[pos] = 0;
+        }
+        else
+        {
+            Vsprintf(pbuf, line, VA_ARGS);
+            line = pbuf;
+        }
     }
+
     if ((ln = (int) strlen(line)) > BUFSZ - 1) {
         if (line != pbuf)                          /* no '%' was present */
             (void) strncpy(pbuf, line, BUFSZ - 1); /* caveat: unterminated */
@@ -247,9 +371,12 @@ VA_DECL(const char *, line)
     if (u.ux && !program_state.in_bones && iflags.window_inited)
         flush_screen(!flags.show_cursor_on_u); // show_cursor_on_u actually indicates that there is a getpos going on, in which case the cursor should not be returned to the player
 
-    if (pline_prefix_text || pline_separator_text)
+    if (domulti)
     {
-        char combined_line[BIGBUFSZ], attrs[BIGBUFSZ], colors[BIGBUFSZ];
+        putmesg_ex2(combined_line, attrs, colors);
+    }
+    else if (pline_prefix_text || pline_separator_text)
+    {
         Sprintf(combined_line, "%s%s%s", pline_prefix_text ? pline_prefix_text : "", pline_separator_text ? pline_separator_text : "", line);
         size_t line_len = strlen(line);
         size_t prefix_len = pline_prefix_text ? strlen(pline_prefix_text) : 0;
@@ -379,6 +506,24 @@ VA_DECL3(int, attr, int, color, const char*, line)
     return;
 }
 
+void pline_multi_ex
+VA_DECL5(int, attr, int, color, int*, multiattrs, int*, multicolors, const char*, line)
+{
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_multiattrs = multiattrs;
+    pline_multicolors = multicolors;
+    pline_attr = attr;
+    pline_color = color;
+    vpline(line, VA_ARGS);
+    pline_multiattrs = 0;
+    pline_multicolors = 0;
+    pline_attr = ATR_NONE;
+    pline_color = NO_COLOR;
+    VA_END();
+    return;
+}
+
 
 /*VARARGS1*/
 void You_ex
@@ -396,6 +541,25 @@ VA_DECL3(int, attr, int, color, const char*, line)
     VA_END();
 }
 
+void You_multi_ex
+VA_DECL5(int, attr, int, color, int*, multiattrs, int*, multicolors, const char*, line)
+{
+    char* tmp;
+
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    pline_multiattrs = multiattrs;
+    pline_multicolors = multicolors;
+    vpline(YouMessage(tmp, "You ", line), VA_ARGS);
+    pline_multiattrs = 0;
+    pline_multicolors = 0;
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    VA_END();
+}
+
 /*VARARGS1*/
 void Your_ex
 VA_DECL3(int, attr, int, color, const char*, line)
@@ -407,6 +571,26 @@ VA_DECL3(int, attr, int, color, const char*, line)
     pline_attr = attr;
     pline_color = color;
     vpline(YouMessage(tmp, "Your ", line), VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    VA_END();
+}
+
+/*VARARGS1*/
+void Your_multi_ex
+VA_DECL5(int, attr, int, color, int*, multiattrs, int*, multicolors, const char*, line)
+{
+    char* tmp;
+
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    pline_multiattrs = multiattrs;
+    pline_multicolors = multicolors;
+    vpline(YouMessage(tmp, "Your ", line), VA_ARGS);
+    pline_multiattrs = 0;
+    pline_multicolors = 0;
     pline_attr = 0;
     pline_color = NO_COLOR;
     VA_END();

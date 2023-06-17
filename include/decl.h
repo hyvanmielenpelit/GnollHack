@@ -523,6 +523,16 @@ E NEARDATA winid WIN_MAP, WIN_INVEN, WIN_HERE;
 
 #define pline_ex1_popup(a, b, cstr, title, dopop) pline_ex1(a, b, cstr); if (dopop) display_popup_text(cstr, title, POPUP_TEXT_GENERAL, a, b, NO_GLYPH, 0)
 
+E int no_multiattrs[32];
+E int multicolor_red1[1];
+E int multicolor_red2[2];
+E int multicolor_red3[3];
+E int multicolor_red4[4];
+E int multicolor_orange1[1];
+E int multicolor_orange2[2];
+E int multicolor_orange3[3];
+E int multicolor_orange4[4];
+
 E char toplines[TBUFSZ];
 E char toplineattrs[TBUFSZ];
 E char toplinecolors[TBUFSZ];
