@@ -1908,7 +1908,7 @@ dogaze()
                             deduct_monster_hp(mtmp, adjust_damage(dmg, &youmonst, mtmp, adtyp, ADFLAGS_NONE));
                         int hp_after = mtmp->mhp;
                         int damage_dealt = hp_before - hp_after;
-                        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange1, "%s sustains %d damage!", Monnam(mtmp), damage_dealt);
+                        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange2, "%s sustains %d damage!", Monnam(mtmp), damage_dealt);
                         display_m_being_hit(mtmp, HIT_ON_FIRE, damage_dealt, 0UL, FALSE);
 
                         if (DEADMONSTER(mtmp))
