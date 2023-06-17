@@ -640,6 +640,13 @@ curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
     if (append_item == NULL)
     {
         new_item = curs_new_menu_item(wid, str, attrs, colors, attr, color);
+        new_item->glyph = glyph;
+        new_item->identifier = *identifier;
+        new_item->accelerator = accelerator;
+        new_item->group_accel = group_accel;
+        new_item->attr = curses_attr;
+        new_item->color = color;
+        new_item->presel = presel;
     }
     else
     {
@@ -675,17 +682,8 @@ curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
         menu_item_ptr->str = combined_str;
         menu_item_ptr->attrs = combined_attrs;
         menu_item_ptr->colors = combined_colors;
-
-        curses_rtrim(combined_str);
     }
 
-    new_item->glyph = glyph;
-    new_item->identifier = *identifier;
-    new_item->accelerator = accelerator;
-    new_item->group_accel = group_accel;
-    new_item->attr = curses_attr;
-    new_item->color = color;
-    new_item->presel = presel;
     new_item->append = app;
 
     if (append_item == NULL)
