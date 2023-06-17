@@ -10990,8 +10990,8 @@ struct monst* mtmp;
 
         play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
         Sprintf(learnbuf, i > 0 ? "You add \'%s\' to your repertoire." : "You learn \'%s\'.", splname);
-        int multicolors[1] = { CLR_BRIGHT_GREEN };
-        You_multi_ex(ATR_NONE, CLR_MSG_POSITIVE, no_multiattrs, multicolors, i > 0 ? "add \'%s\' to your repertoire." : "learn \'%s\'.", splname);
+        int multicolors[1] = { CLR_MSG_SPELL };
+        You_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, i > 0 ? "add \'%s\' to your repertoire." : "learn \'%s\'.", splname);
         display_popup_text(learnbuf, "New Spell Learnt", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_POSITIVE, NO_GLYPH, POPUP_FLAGS_NONE);
     }
 

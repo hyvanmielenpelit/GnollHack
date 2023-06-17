@@ -538,7 +538,8 @@ learn(VOID_ARGS)
         else
         { /* spellknow(i) <= SPELL_IS_KEEN/10 */
             play_sfx_sound(SFX_SPELL_KEENER);
-            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "knowledge of \'%s\' is %s.", splname, spellknow(i) ? "keener" : "restored");
+            int multicolors[2] = { CLR_MSG_SPELL, NO_COLOR };
+            Your_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, "knowledge of \'%s\' is %s.", splname, spellknow(i) ? "keener" : "restored");
             incr_spell_nknow(i, 1);
             book->spestudied++;
             exercise(A_WIS, TRUE); /* extra study */
@@ -593,8 +594,8 @@ learn(VOID_ARGS)
             sortspells();
 
             play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
-            int multicolors[1] = { CLR_BRIGHT_GREEN };
-            You_multi_ex(ATR_NONE, CLR_MSG_POSITIVE, no_multiattrs, multicolors, i > 0 ? "add \'%s\' to your repertoire." : "learn \'%s\'.", splname);
+            int multicolors[1] = { CLR_MSG_SPELL };
+            You_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, i > 0 ? "add \'%s\' to your repertoire." : "learn \'%s\'.", splname);
             learnsuccess = TRUE;
         }
         makeknown((int) booktype);
@@ -602,7 +603,7 @@ learn(VOID_ARGS)
 
     if (addedamount > 0)
     {
-        int multicolors[3] = { CLR_BRIGHT_CYAN, NO_COLOR, CLR_BRIGHT_GREEN };
+        int multicolors[3] = { CLR_BRIGHT_CYAN, NO_COLOR, CLR_MSG_SPELL };
         if (addedamount == 1)
             You_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, "now have %s %scasting of \'%s\' prepared.", "one", !initialamount ? "" : "more ", splname);
         else
@@ -755,7 +756,8 @@ register struct obj *spellbook;
                 }
                 else
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_HINT, "This spellbook contains \"%s\".", namebuf);
+                    int multicolors[1] = { CLR_MSG_SPELL };
+                    pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, "This spellbook contains \"%s\".", namebuf);
                     makeknown(spellbook->otyp);
                     takeround = 1;
                     Sprintf(buf, "\"%s\" is %s. Continue?", Namebuf2, an(lvlbuf));
@@ -2904,6 +2906,7 @@ struct monst* targetmonst;
     case SPE_MASS_CONFLICT:
     case SPE_GLOBE_OF_INVULNERABILITY:
     case SPE_DIVINE_INTERVENTION:
+    {
         //play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
         play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
@@ -2922,10 +2925,12 @@ struct monst* targetmonst;
         default:
             break;
         }
-        You_ex(ATR_NONE, CLR_MSG_SPELL, "successfully cast \"%s\".", spellname(spell));
+        int multicolors[1] = { CLR_MSG_HINT };
+        You_multi_ex(ATR_NONE, CLR_MSG_SPELL, no_multiattrs, multicolors, "successfully cast \"%s\".", spellname(spell));
         addspellintrinsictimeout(otyp);
         special_effect_wait_until_end(0);
         break;
+    }
     case SPE_JUMPING:
         //play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
@@ -5268,10 +5273,11 @@ int spell;
         spellamount(spell) += addedamount;
         play_sfx_sound(SFX_MIXING_SUCCESS);
         You_ex(ATR_NONE, CLR_MSG_SUCCESS, "successfully prepared the material components.");
+        int multicolors[2] = { CLR_MSG_HINT, CLR_MSG_SPELL };
         if (addedamount == 1)
-            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have one more casting of \"%s\" prepared.", spellname);
+            You_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, "now have %s more casting of \'%s\' prepared.", "one", spellname);
         else
-            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have %d more castings of \"%s\" prepared.", addedamount, spellname);
+            You_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, "now have %d more castings of \'%s\' prepared.", addedamount, spellname);
 
 #if 0
         /* gain skill for successful preparation */
