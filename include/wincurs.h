@@ -154,7 +154,7 @@ extern boolean curses_window_has_border(winid wid);
 extern boolean curses_window_exists(winid wid);
 extern int curses_get_window_orientation(winid wid);
 extern void curses_get_window_xy(winid wid, int *x, int *y);
-extern void curses_puts(winid wid, int attr, const char *text);
+extern void curses_puts(winid wid, int attr, const char *text, int app);
 extern void curses_puts_ex(winid wid, int attr, int color, const char* text, int app);
 extern void curses_puts_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app);
 extern void curses_clear_nhwin(winid wid);

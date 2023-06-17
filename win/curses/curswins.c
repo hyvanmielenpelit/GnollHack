@@ -481,9 +481,9 @@ curses_get_window_orientation(winid wid)
    and text attributes */
 
 void
-curses_puts(winid wid, int attr, const char* text)
+curses_puts(winid wid, int attr, const char* text, int app)
 {
-    curses_puts_ex(wid, attr, NO_COLOR, text);
+    curses_puts_ex(wid, attr, NO_COLOR, text, app);
 }
 
 void
