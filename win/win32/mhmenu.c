@@ -514,8 +514,8 @@ MenuWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 ? text_bg_brush
                 : SYSCLR_TO_BRUSH(DEFAULT_COLOR_BG_TEXT));
         }
+        return FALSE;
     }
-                          return FALSE;
 
     case WM_CTLCOLORDLG:
         return (INT_PTR)(text_bg_brush
@@ -552,7 +552,6 @@ MenuWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 ListView_RedrawItems(GetMenuControl(hWnd), i, i);
         }
         break;
-
 
     }
     return FALSE;
@@ -653,53 +652,18 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             panic("cannot get text view window");
             return;
         }
+        SetWindowText(text_view, data->text.text);
 
         /* calculate dimensions of the added line of text */
         hdc = GetDC(text_view);
         cached_font * font = mswin_get_font(NHW_MENU, ATR_NONE, hdc, FALSE);
         saveFont = SelectObject(hdc, font->hFont);
-        COLORREF NewBg, OldBg;
-        NewBg = menu_bg_brush ? menu_bg_color : (COLORREF)GetSysColor(DEFAULT_COLOR_BG_MENU);
-        OldBg = SetBkColor(hdc, NewBg);
-        SetRect(&text_rt, 0, 0, 0, 0);
-        if (msg_data->colors)
-        {
-            LONG cx = 0;
-            LONG cy = 0;
-            int mlen = (int)strlen(msgbuf);
-            int i;
-            COLORREF OldFg = SetTextColor(hdc, menu_fg_brush ? menu_fg_color : (COLORREF)GetSysColor(DEFAULT_COLOR_FG_MENU));
-            for (i = 0; i < mlen; i++)
-            {
-                if (i == 0 ? msg_data->colors[i] != NO_COLOR : msg_data->colors[i] != msg_data->colors[i - 1])
-                {
-                    SetTextColor(hdc, msg_data->colors[i] == NO_COLOR ? (menu_fg_brush ? menu_fg_color : (COLORREF)GetSysColor(DEFAULT_COLOR_FG_MENU)) : nhcolor_to_RGB(msg_data->colors[i]));
-                }
-
-                DrawText(hdc, NH_A2W(&msgbuf[i], wbuf, BUFSZ), 1, &text_rt,
-                    DT_CALCRECT | DT_TOP | DT_LEFT | DT_NOPREFIX
-                    | DT_SINGLELINE);
-
-                cx += text_rt.right - text_rt.left;
-                cy = max(cy, text_rt.bottom - text_rt.top);
-            }
-            data->text.text_box_size.cx = max(cx, data->text.text_box_size.cx);
-            data->text.text_box_size.cy += cy;
-            SetTextColor(hdc, OldFg);
-        }
-        else
-        {
-            COLORREF clr = msg_data->color == NO_COLOR ? (menu_fg_brush ? menu_fg_color : (COLORREF)GetSysColor(DEFAULT_COLOR_FG_MENU)) : nhcolor_to_RGB(msg_data->color);
-            COLORREF OldFg = SetTextColor(hdc, clr);
-            DrawText(hdc, NH_A2W(msgbuf, wbuf, BUFSZ), strlen(msgbuf), &text_rt,
+        DrawText(hdc, NH_A2W(msgbuf, wbuf, BUFSZ), strlen(msgbuf), &text_rt,
                 DT_CALCRECT | DT_TOP | DT_LEFT | DT_NOPREFIX
                 | DT_SINGLELINE);
-            data->text.text_box_size.cx =
-                max(text_rt.right - text_rt.left, data->text.text_box_size.cx);
-            data->text.text_box_size.cy += text_rt.bottom - text_rt.top;
-            SetTextColor(hdc, OldFg);
-        }
-        SetBkColor(hdc, OldBg);
+        data->text.text_box_size.cx =
+            max(text_rt.right - text_rt.left, data->text.text_box_size.cx);
+        data->text.text_box_size.cy += text_rt.bottom - text_rt.top;
         SelectObject(hdc, saveFont);
         ReleaseDC(text_view, hdc);
     } break;
