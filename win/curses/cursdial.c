@@ -646,6 +646,7 @@ curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
         new_item = menu_item_ptr;
         size_t oldlen = strlen(menu_item_ptr->str);
         size_t newlen = strlen(str);
+        char* new_str, * new_attrs, * new_colors;
 
         new_str = curses_copy_of(str);
         new_attrs = curses_cpystr(str, attrs, attr);
