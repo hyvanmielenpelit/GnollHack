@@ -653,7 +653,6 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             panic("cannot get text view window");
             return;
         }
-        SetWindowText(text_view, data->text.text);
 
         /* calculate dimensions of the added line of text */
         hdc = GetDC(text_view);

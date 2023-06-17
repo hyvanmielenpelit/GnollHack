@@ -688,18 +688,21 @@ curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
     new_item->presel = presel;
     new_item->append = app;
 
-    menu_item_ptr = current_items;
+    if (append_item == NULL)
+    {
+        menu_item_ptr = current_items;
 
-    if (current_items == NULL) {
-        new_item->prev_item = NULL;
-        current_menu->entries = new_item;
-    }
-    else {
-        while (menu_item_ptr->next_item != NULL) {
-            menu_item_ptr = menu_item_ptr->next_item;
+        if (current_items == NULL) {
+            new_item->prev_item = NULL;
+            current_menu->entries = new_item;
         }
-        new_item->prev_item = menu_item_ptr;
-        menu_item_ptr->next_item = new_item;
+        else {
+            while (menu_item_ptr->next_item != NULL) {
+                menu_item_ptr = menu_item_ptr->next_item;
+            }
+            new_item->prev_item = menu_item_ptr;
+            menu_item_ptr->next_item = new_item;
+        }
     }
 }
 
