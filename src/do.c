@@ -4112,7 +4112,7 @@ register struct obj* obj;
         int ac_with_5_chance = diff_to_5_from_ac0 / 5;
 
         powercnt++;
-#if defined(GNH_MOBILE) || defined (WIN32)
+//#if defined(GNH_MOBILE) || defined (WIN32)
         Sprintf(buf, " %2d - You have ", powercnt);
         putstr_ex(datawin, ATR_INDENT_AT_DASH, buf, 1, NO_COLOR);
         putstr_ex(datawin, ATR_INDENT_AT_DASH, "50%", 1, CLR_BROWN);
@@ -4124,10 +4124,10 @@ register struct obj* obj;
         putstr_ex(datawin, ATR_INDENT_AT_DASH, " AC ", 1, NO_COLOR);
         Sprintf(buf, "%d", ac_with_5_chance);
         putstr_ex(datawin, ATR_INDENT_AT_DASH, buf, 0, CLR_RED);
-#else
-        Sprintf(buf, " %2d - You have 50%% chance to hit AC %d and 5%% AC %d", powercnt, ac_with_50_chance, ac_with_5_chance);
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
-#endif
+//#else
+//        Sprintf(buf, " %2d - You have 50%% chance to hit AC %d and 5%% AC %d", powercnt, ac_with_50_chance, ac_with_5_chance);
+//        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+//#endif
 
         struct multishot_result msres = get_multishot_stats(&youmonst, obj, uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj, (is_ammo(obj) || throwing_weapon(obj)));
         double average_multi_shot_times = msres.average;
