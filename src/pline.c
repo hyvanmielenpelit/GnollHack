@@ -305,6 +305,7 @@ VA_DECL(const char *, line)
             combined_line[pos] = 0;
             attrs[pos] = 0;
             colors[pos] = 0;
+            line = combined_line;
         }
         else
         {
