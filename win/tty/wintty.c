@@ -1643,15 +1643,29 @@ boolean free_data;
         if (cw == wins[WIN_MESSAGE] && cw->rows > cw->maxrow)
             cw->maxrow = cw->rows; /* topl data */
         for (i = 0; i < cw->maxrow; i++)
+        {
             if (cw->data[i]) {
-                free((genericptr_t) cw->data[i]);
-                cw->data[i] = (char *) 0;
+                free((genericptr_t)cw->data[i]);
+                cw->data[i] = (char*)0;
                 if (cw->datlen)
                     cw->datlen[i] = 0;
             }
+            if (cw->datattrs[i]) {
+                free((genericptr_t)cw->datattrs[i]);
+                cw->datattrs[i] = (char*)0;
+            }
+            if (cw->datcolors[i]) {
+                free((genericptr_t)cw->datcolors[i]);
+                cw->datcolors[i] = (char*)0;
+            }
+        }
         if (free_data) {
             free((genericptr_t) cw->data);
             cw->data = (char **) 0;
+            free((genericptr_t)cw->datattrs);
+            cw->datattrs = (char**)0;
+            free((genericptr_t)cw->datcolors);
+            cw->datcolors = (char**)0;
             if (cw->datlen)
                 free((genericptr_t) cw->datlen);
             cw->datlen = (short *) 0;
