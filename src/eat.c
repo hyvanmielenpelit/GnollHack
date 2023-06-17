@@ -2197,7 +2197,6 @@ struct obj *otmp;
 
     if (mnum != PM_ACID_BLOB && !stoneable && !slimeable && rotted > 5L)
     {
-        play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
         boolean cannibal = maybe_cannibal(mnum, FALSE);
 
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ulch - that %s was tainted%s!",
@@ -2245,7 +2244,6 @@ struct obj *otmp;
         }
         else
         {
-            play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             long sick_time;
 
             sick_time = (long)rn1(10, 10);
@@ -3670,19 +3668,18 @@ doeat()
     int identifycolor = CLR_MSG_ATTENTION;
     if (is_obj_rotting_corpse(otmp))
     {
+        play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
         int tmp = eatcorpse(otmp);
 
         if (tmp == 2)
         {
             /* used up */
-            play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             context.victual.piece = (struct obj *) 0;
             context.victual.o_id = 0;
             return 1;
         }
         else if (tmp)
         {
-            play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             dont_start = TRUE;
         }
         /* if not used up, eatcorpse sets up reqtime and may modify oeaten */
