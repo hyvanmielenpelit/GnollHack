@@ -456,7 +456,7 @@ namespace GnollHackClient.Pages.Game
             NumDisplayedPetRows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
             WalkArrows = Preferences.Get("WalkArrows", true);
             LighterDarkening = Preferences.Get("LighterDarkening", false);
-            DrawWallEnds = Preferences.Get("DrawWallEnds", false);
+            DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
 
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);

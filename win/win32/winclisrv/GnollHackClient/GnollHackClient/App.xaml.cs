@@ -68,7 +68,7 @@ namespace GnollHackClient
             App.CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
             App.UseHTMLDumpLogs = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             App.UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
-            App.ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", App.RecommendedReadStreamingBankToMemory);
+            App.ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", GHConstants.DefaultReadStreamingBankToMemory);
             App.CopyStreamingBankToDisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
 
             App.BackButtonPressed += App.EmptyBackButtonPressed;
@@ -336,13 +336,6 @@ namespace GnollHackClient
         public static bool UseHTMLDumpLogs { get; set; }
         public static bool UseSingleDumpLog { get; set; }
         public static bool ReadStreamingBankToMemory { get; set; }
-        public static bool RecommendedReadStreamingBankToMemory { 
-            get 
-            {
-                if(App.PlatformService == null) return false;
-                return false; // App.PlatformService.GetDeviceMemoryInBytes() > 3500UL * 1024UL * 1024UL;
-            } 
-        }
         public static bool CopyStreamingBankToDisk { get; set; }
 
         public static string GHVersionId { get; set; }
