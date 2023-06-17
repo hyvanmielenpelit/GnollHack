@@ -2082,8 +2082,6 @@ register struct obj* omonwep;
         //if (uncancelled) 
         {
             play_sfx_sound(SFX_MONSTER_ON_FIRE);
-            int multiattrs[2] = { 0 };
-            int multicolors[2] = { HI_FIRE, CLR_RED };
             if (completelyburns(youmonst.data))
             { /* paper or straw golem */
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "go up in flames!");
@@ -2093,12 +2091,14 @@ register struct obj* omonwep;
             } 
             else if (Fire_immunity || damage == 0) 
             {
-                pline_multi_ex(ATR_NONE, NO_COLOR, multiattrs, multicolors, "You are %s, but the fire doesn't feel hot!", on_fire(youmonst.data, mattk));
+                int multicolors[2] = { HI_FIRE, HI_FIRE };
+                pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "%s%s, but the fire doesn't feel hot!", "You are ", on_fire(youmonst.data, mattk));
                 damage = 0;
             }
             else
             {
-                pline_multi_ex(ATR_NONE, NO_COLOR, multiattrs, multicolors, "You're %s! You sustain %d damage.", on_fire(youmonst.data, mattk), damage == 0 ? 0 : damagedealt);
+                pline_ex(ATR_NONE, HI_FIRE, "You're %s!", on_fire(youmonst.data, mattk));
+                pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "You sustain %d damage.", damage == 0 ? 0 : damagedealt);
             }
             display_u_being_hit(HIT_ON_FIRE, damagedealt, 0UL);
 
@@ -2119,17 +2119,17 @@ register struct obj* omonwep;
         //if (uncancelled) 
         {
             play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
-            int multiattrs[2] = { 0 };
-            int multicolors[2] = { HI_ICE, CLR_RED };
             if (Cold_immunity || damage == 0)
             {
+                int multicolors[1] = { HI_ICE };
                 play_sfx_sound(SFX_GENERAL_UNHARMED);
-                pline_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, multiattrs, multicolors, "You're covered in %s, but the frost doesn't feel cold!", "frost");
+                pline_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, "%s, but the frost doesn't feel cold!", "You're covered in frost");
                 damage = 0;
             }
             else
             {
-                pline_multi_ex(ATR_NONE, NO_COLOR, multiattrs, multicolors, "You're covered in %s! You sustain %d damage.", "frost", damage == 0 ? 0 : damagedealt);
+                pline_ex(ATR_NONE, HI_ICE, "You're covered in frost!");
+                pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "You sustain %d damage.", damage == 0 ? 0 : damagedealt);
             }
             display_u_being_hit(HIT_FROZEN, damagedealt, 0UL);
 
@@ -2151,13 +2151,14 @@ register struct obj* omonwep;
             if (Shock_immunity || damage == 0)
             {
                 play_sfx_sound(SFX_GENERAL_UNHARMED);
-                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "get zapped, but the zap doesn't shock you!");
+                int multicolors[1] = { HI_ZAP };
+                pline_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, "%s, but the zap doesn't shock you!", "You get zapped");
                 //pline_The("zap doesn't shock you!");
                 damage = 0;
             }
             else
             {
-                You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "get zapped for %d damage!", damagedealt);
+                You_multi_ex(ATR_NONE, HI_ZAP, no_multiattrs, multicolor_red1, "get zapped for %d damage!", damagedealt);
             }
 
             display_u_being_hit(HIT_ELECTROCUTED, damagedealt, 0UL);
@@ -2848,7 +2849,7 @@ register struct obj* omonwep;
             else
             {
                 hitmsg(mtmp, mattk, damagedealt, TRUE);
-                pline("You're covered in %s!  It burns!", hliquid("acid"));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "You're covered in %s!  It burns!", hliquid("acid"));
                 exercise(A_STR, FALSE);
             }
         }

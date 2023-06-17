@@ -2837,12 +2837,12 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 #endif
         hit_tile = HIT_ON_FIRE;
         if (!Blind)
-            pline("%s is %s!", Monnam(mdef), on_fire(pd, mattk));
+            pline_ex(ATR_NONE, HI_FIRE, "%s is %s!", Monnam(mdef), on_fire(pd, mattk));
         if (completelyburns(pd)) { /* paper golem or straw golem */
             if (!Blind)
-                pline("%s burns completely!", Monnam(mdef));
+                pline_ex(ATR_NONE, HI_FIRE, "%s burns completely!", Monnam(mdef));
             else
-                You("smell burning%s.",
+                You_ex(ATR_NONE, HI_FIRE, "smell burning%s.",
                     (pd == &mons[PM_PAPER_GOLEM]) ? " paper"
                       : (pd == &mons[PM_STRAW_GOLEM]) ? " straw" : " material");
             xkilled(mdef, XKILL_NOMSG | XKILL_NOCORPSE);
@@ -2877,7 +2877,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 #endif
         hit_tile = HIT_FROZEN;
         if (!Blind)
-            pline("%s is covered in frost!", Monnam(mdef));
+            pline_ex(ATR_NONE, HI_ICE, "%s is covered in frost!", Monnam(mdef));
 
         if (is_mon_immune_to_cold(mdef)) 
         {
@@ -2901,7 +2901,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 
         hit_tile = HIT_ELECTROCUTED;
         if (!Blind)
-            pline("%s is zapped!", Monnam(mdef));
+            pline_ex(ATR_NONE, HI_ZAP, "%s is zapped!", Monnam(mdef));
 
         damage += adjust_damage(destroy_mitem(mdef, WAND_CLASS, AD_ELEC), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
         

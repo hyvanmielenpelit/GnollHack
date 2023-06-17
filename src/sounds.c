@@ -10926,7 +10926,7 @@ struct monst* mtmp;
     char learnbuf[BUFSZ] = "";
 
     char splname[BUFSZ];
-    Sprintf(splname, "\"%s\"", OBJ_NAME(objects[booktype]));
+    Sprintf(splname, "%s", OBJ_NAME(objects[booktype]));
 
     for (i = 0; i < MAXSPELL; i++)
         if (spellid(i) == booktype || spellid(i) == NO_SPELL)
@@ -10953,9 +10953,9 @@ struct monst* mtmp;
         { /* spellknow(i) <= SPELL_IS_KEEN/10 */
             incr_spell_nknow(i, 1);
             play_sfx_sound(SFX_SPELL_KEENER);
-            Sprintf(learnbuf, "Your knowledge of %s is %s.", OBJ_NAME(objects[booktype]),
-                spellknow(i) ? "keener" : "restored");
-            pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, learnbuf);
+            Sprintf(learnbuf, "Your knowledge of \'%s\' is %s.", splname, spellknow(i) ? "keener" : "restored");
+            int multicolors[2] = { CLR_BRIGHT_GREEN, NO_COLOR };
+            Your_multi_ex(ATR_NONE, CLR_MSG_POSITIVE, no_multiattrs, multicolors, "knowledge of \'%s\' is %s.", splname, spellknow(i) ? "keener" : "restored");
             display_popup_text(learnbuf, "Knowledge Keener", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_POSITIVE, NO_GLYPH, POPUP_FLAGS_NONE);
 
             if (spl_book[i].sp_matcomp > 0)
@@ -10989,17 +10989,23 @@ struct monst* mtmp;
         sortspells();
 
         play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
-        Sprintf(learnbuf, i > 0 ? "You add %s to your repertoire." : "You learn %s.", splname);
-        pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, learnbuf);
+        Sprintf(learnbuf, i > 0 ? "You add \'%s\' to your repertoire." : "You learn \'%s\'.", splname);
+        int multicolors[1] = { CLR_BRIGHT_GREEN };
+        You_multi_ex(ATR_NONE, CLR_MSG_POSITIVE, no_multiattrs, multicolors, i > 0 ? "add \'%s\' to your repertoire." : "learn \'%s\'.", splname);
         display_popup_text(learnbuf, "New Spell Learnt", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_POSITIVE, NO_GLYPH, POPUP_FLAGS_NONE);
     }
 
     if (addedamount > 0)
     {
+        int multicolors[3] = { CLR_BRIGHT_CYAN, NO_COLOR, CLR_BRIGHT_GREEN };
         if (addedamount == 1)
-            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have one %scasting of %s prepared.", !initialamount ? "" : "more ", splname);
+        {
+            You_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, "now have %s %scasting of \'%s\' prepared.", "one", !initialamount ? "" : "more ", splname);
+        }
         else
-            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have %d %scastings of %s prepared.", addedamount, !initialamount ? "" : "more ", splname);
+        {
+            You_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, "now have %d %scastings of \'%s\' prepared.", addedamount, !initialamount ? "" : "more ", splname);
+        }
     }
 
     return 1;

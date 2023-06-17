@@ -409,7 +409,7 @@ boolean foundyou;
 
     switch (mattk->adtyp) {
     case AD_FIRE:
-        pline("You're enveloped in flames.");
+        pline_ex(ATR_NONE, HI_FIRE, "You're enveloped in flames.");
         if (iflags.using_gui_sounds)
         {
             delay_output_milliseconds(200);
@@ -424,7 +424,7 @@ boolean foundyou;
         burn_away_slime();
         break;
     case AD_COLD:
-        pline("You're covered in frost.");
+        pline_ex(ATR_NONE, HI_ICE, "You're covered in frost.");
         if (iflags.using_gui_sounds)
         {
             delay_output_milliseconds(200);
@@ -438,7 +438,7 @@ boolean foundyou;
         }
         break;
     case AD_MAGM:
-        You_ex(ATR_NONE, CLR_MSG_SPELL, "are hit by a shower of missiles!");
+        You_ex(ATR_NONE, HI_ZAP, "are hit by a shower of missiles!");
         if (iflags.using_gui_sounds)
         {
             delay_output_milliseconds(200);
@@ -1329,8 +1329,11 @@ register struct attack *mattk;
         if (adtyp && adtyp <= AD_STON)
         { /* no cf unsigned >0 */
             if (canseemon(mtmp))
-                pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s casts \'%s\' at you!", Monnam(mtmp),
-                      flash_types[ad_to_typ(adtyp)]);
+            {
+                int multicolors[2] = { NO_COLOR, CLR_BRIGHT_CYAN };
+                pline_multi_ex(ATR_NONE, CLR_MSG_SPELL, no_multiattrs, multicolors, "%s casts \'%s\' at you!", Monnam(mtmp),
+                    flash_types[ad_to_typ(adtyp)]);
+            }
             buzz(-ad_to_typ(adtyp), (struct obj*)0, mtmp, damn, damd, damp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby));
             *appr_spec_ptr = (is_ultimate ? d(2, 8) + 100 : d(2, 4) + 10);
         }

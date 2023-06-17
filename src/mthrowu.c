@@ -1360,8 +1360,11 @@ struct attack* mattk;
             if ((adtyp >= AD_MAGM) && (adtyp <= AD_STON))
             {
                 if (canseemon(mtmp))
-                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s casts \'%s\' at %s!", Monnam(mtmp),
+                {
+                    int multicolors[3] = { NO_COLOR, CLR_BRIGHT_CYAN, NO_COLOR };
+                    pline_multi_ex(ATR_NONE, CLR_MSG_SPELL, no_multiattrs, multicolors, "%s casts \'%s\' at %s!", Monnam(mtmp),
                         flash_types[ad_to_typ(adtyp)], mon_nam(mtarg));
+                }
 
                 dobuzz((int)(-ad_to_typ(adtyp)), (struct obj*)0, mtmp, damn, damd, damp,
                     mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), FALSE);

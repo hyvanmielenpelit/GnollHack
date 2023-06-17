@@ -3612,50 +3612,49 @@ register struct obj *atmp;
         if (donning(otmp))
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-        Your("%s crumbles and turns to dust!", cloak_simple_name(uarmc));
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", cloak_simple_name(uarmc));
         (void) Cloak_off();
         useup(otmp);
     } else if (DESTROY_ARM(uarmo)) {
         if (donning(otmp))
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-        Your("%s crumbles and turns to dust!", robe_simple_name(uarmc));
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", robe_simple_name(uarmc));
         (void)Robe_off();
         useup(otmp);
     } else if (DESTROY_ARM(uarm)) {
         if (donning(otmp))
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-        Your("armor turns to dust and falls to the %s!", surface(u.ux, u.uy));
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "armor turns to dust and falls to the %s!", surface(u.ux, u.uy));
         (void) Armor_gone();
         useup(otmp);
     } else if (DESTROY_ARM(uarmu)) {
         if (donning(otmp))
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-        Your("shirt crumbles into tiny threads and falls apart!");
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "shirt crumbles into tiny threads and falls apart!");
         (void) Shirt_off();
         useup(otmp);
     } else if (DESTROY_ARM(uarmh)) {
         if (donning(otmp))
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-        Your("%s turns to dust and is blown away!", helm_simple_name(uarmh));
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s turns to dust and is blown away!", helm_simple_name(uarmh));
         (void) Helmet_off();
         useup(otmp);
     } else if (DESTROY_ARM(uarmb)) {
         if (donning(otmp))
             cancel_don();
         play_sfx_sound(SFX_ITEM_VANISHES);
-        Your("bracers vanish!");
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers vanish!");
         (void)Bracers_off();
         useup(otmp);
-        selftouch("You");
     } else if (DESTROY_ARM(uarmg)) {
         if (donning(otmp))
             cancel_don();
         play_sfx_sound(SFX_ITEM_VANISHES);
-        Your("gloves vanish!");
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "gloves vanish!");
         (void) Gloves_off();
         useup(otmp);
         selftouch("You");
@@ -3663,7 +3662,7 @@ register struct obj *atmp;
         if (donning(otmp))
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-        Your("boots disintegrate!");
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots disintegrate!");
         (void) Boots_off();
         useup(otmp);
     }
@@ -3671,7 +3670,7 @@ register struct obj *atmp;
         if (donning(otmp))
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-        Your("shield crumbles away!");
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "shield crumbles away!");
         (void) Shield_off();
         useup(otmp);
     } else {

@@ -1455,7 +1455,7 @@ register struct obj* omonwep;
         hit_tile = HIT_ON_FIRE;
         play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mdef->mx, mdef->my);
         if (vis && canseemon(mdef))
-            pline("%s is %s!", Monnam(mdef), on_fire(pd, mattk));
+            pline_ex(ATR_NONE, HI_FIRE, "%s is %s!", Monnam(mdef), on_fire(pd, mattk));
         if (completelyburns(pd)) { /* paper golem or straw golem */
             if (vis && canseemon(mdef))
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s burns completely!", Monnam(mdef));
@@ -1493,7 +1493,7 @@ register struct obj* omonwep;
         hit_tile = HIT_FROZEN;
         play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mdef->mx, mdef->my);
         if (vis && canseemon(mdef))
-            pline("%s is covered in frost!", Monnam(mdef));
+            pline_ex(ATR_NONE, HI_ICE, "%s is covered in frost!", Monnam(mdef));
         if (is_mon_immune_to_cold(mdef))
         {
             if (vis && canseemon(mdef))
@@ -1519,7 +1519,7 @@ register struct obj* omonwep;
         hit_tile = HIT_ELECTROCUTED;
         play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mdef->mx, mdef->my);
         if (vis && canseemon(mdef))
-            pline("%s gets zapped!", Monnam(mdef));
+            pline_ex(ATR_NONE, HI_ZAP, "%s gets zapped!", Monnam(mdef));
         
         damage += adjust_damage(destroy_mitem(mdef, WAND_CLASS, AD_ELEC), magr, mdef, AD_COLD, ADFLAGS_NONE);
         

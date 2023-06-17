@@ -505,13 +505,11 @@ learn(VOID_ARGS)
     /* SUCCESS */
     exercise(A_WIS, TRUE); /* you're studying. */
 
-    Sprintf(splname,
-            objects[booktype].oc_name_known ? "\"%s\"" : "the \"%s\" spell",
-            OBJ_NAME(objects[booktype]));
+    Sprintf(splname, "%s", OBJ_NAME(objects[booktype]));
     for (i = 0; i < MAXSPELL; i++)
         if (spellid(i) == booktype || spellid(i) == NO_SPELL)
             break;
-
+    
     int initialamount = i < MAXSPELL ? spl_book[i].sp_amount : 0;
     int addedamount = 0;
 
@@ -540,8 +538,7 @@ learn(VOID_ARGS)
         else
         { /* spellknow(i) <= SPELL_IS_KEEN/10 */
             play_sfx_sound(SFX_SPELL_KEENER);
-            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "knowledge of %s is %s.", splname,
-                 spellknow(i) ? "keener" : "restored");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "knowledge of \'%s\' is %s.", splname, spellknow(i) ? "keener" : "restored");
             incr_spell_nknow(i, 1);
             book->spestudied++;
             exercise(A_WIS, TRUE); /* extra study */
@@ -596,7 +593,8 @@ learn(VOID_ARGS)
             sortspells();
 
             play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
-            You_ex(ATR_NONE, CLR_MSG_POSITIVE, i > 0 ? "add %s to your repertoire." : "learn %s.", splname);
+            int multicolors[1] = { CLR_BRIGHT_GREEN };
+            You_multi_ex(ATR_NONE, CLR_MSG_POSITIVE, no_multiattrs, multicolors, i > 0 ? "add \'%s\' to your repertoire." : "learn \'%s\'.", splname);
             learnsuccess = TRUE;
         }
         makeknown((int) booktype);
@@ -604,10 +602,11 @@ learn(VOID_ARGS)
 
     if (addedamount > 0)
     {
+        int multicolors[3] = { CLR_BRIGHT_CYAN, NO_COLOR, CLR_BRIGHT_GREEN };
         if (addedamount == 1)
-            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have one %scasting of %s prepared.", !initialamount ? "" : "more ", splname);
+            You_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, "now have %s %scasting of \'%s\' prepared.", "one", !initialamount ? "" : "more ", splname);
         else
-            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have %d %scastings of %s prepared.", addedamount, !initialamount ? "" : "more ", splname);
+            You_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, "now have %d %scastings of \'%s\' prepared.", addedamount, !initialamount ? "" : "more ", splname);
     }
 
     if (book->cursed) 
@@ -4629,8 +4628,8 @@ int spell;
     else if (answerchar == '\0' || answerchar == '-')
     {
         spellhotkey(spell) = 0;
-        Sprintf(buf, "Hotkey for \'%s\' cleared.", spellname(spell));
-        pline1(buf);
+        int multicolors[1] = { CLR_MSG_HINT };
+        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, buf, "Hotkey for \'%s\' cleared.", spellname(spell));
     }
     else if (answerchar >= '0' && answerchar <= '9')
     {
@@ -4654,8 +4653,8 @@ int spell;
         }
 
         spellhotkey(spell) = selected_hotkey;
-        Sprintf(buf, "Hotkey for \'%s\' set to \'%c\'.", spellname(spell), answerchar);
-        pline1(buf);
+        int multicolors[2] = { CLR_MSG_HINT, CLR_MSG_HINT };
+        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, buf, "Hotkey for \'%s\' set to \'%c\'.", spellname(spell), answerchar);
     }
     else
         pline("Illegal hotkey.");
@@ -4689,8 +4688,8 @@ int spell;
         }
         sortspells();
         char buf[BUFSZ] = "";
-        Sprintf(buf, "You removed \'%s\' from your memory permanently.", spellnamebuf);
-        pline1(buf);
+        int multicolors[1] = { CLR_MSG_HINT };
+        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, buf, "You removed \'%s\' from your memory permanently.", spellnamebuf);
     }
 
     return 0;

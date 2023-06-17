@@ -1459,13 +1459,15 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     if (artifact_attack_type(AD_FIRE, otmp)) 
     {
         if (realizes_damage)
-            pline_The_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s %s %s%c", artifact_hit_desc,
-                      !spec_dbon_applies
-                          ? "hits"
-                          : (is_watery(mdef->data))
-                                ? "vaporizes part of"
-                                : "burns",
-                      hittee, !spec_dbon_applies ? '.' : '!');
+        {
+            pline_The_ex(ATR_NONE, HI_FIRE, "%s %s %s%c", artifact_hit_desc,
+                !spec_dbon_applies
+                ? "hits"
+                : (is_watery(mdef->data))
+                ? "vaporizes part of"
+                : "burns",
+                hittee, !spec_dbon_applies ? '.' : '!');
+        }
         if (!rn2(4))
             (void) destroy_mitem(mdef, POTION_CLASS, AD_FIRE);
         if (!rn2(4))
@@ -1479,7 +1481,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     if (artifact_attack_type(AD_COLD, otmp)) 
     {
         if (realizes_damage)
-            pline_The_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s %s %s%c", artifact_hit_desc,
+            pline_The_ex(ATR_NONE, HI_ICE, "%s %s %s%c", artifact_hit_desc,
                       !spec_dbon_applies ? "hits" : "freezes", hittee,
                       !spec_dbon_applies ? '.' : '!');
         if (!rn2(4))
@@ -1492,7 +1494,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             play_sfx_sound_at_location(SFX_LIGHTNING_STRIKES, mdef->mx, mdef->my);
 
         if (realizes_damage)
-            pline_The_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s hits%s %s%c", artifact_hit_desc,
+            pline_The_ex(ATR_NONE, HI_SHOCK, "%s hits%s %s%c", artifact_hit_desc,
                       !spec_dbon_applies ? "" : "!  Lightning strikes",
                       hittee, !spec_dbon_applies ? '.' : '!');
 
@@ -1508,7 +1510,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     if (artifact_attack_type(AD_MAGM, otmp))
     {
         if (realizes_damage)
-            pline_The_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s hits%s %s%c", artifact_hit_desc,
+            pline_The_ex(ATR_NONE, HI_ZAP, "%s hits%s %s%c", artifact_hit_desc,
                       !spec_dbon_applies
                           ? ""
                           : "!  A hail of magic missiles strikes",
@@ -1834,7 +1836,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
     if (!(youdefend ? Fire_immunity : is_mon_immune_to_fire(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_FIRE || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_FIRE)))
     {
         if (realizes_damage)
-            pline_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s %s %s%c",
+            pline_ex(ATR_NONE, HI_FIRE, "%s %s %s%c",
                 The(xname(otmp)),
                 (is_watery(mdef->data))
                 ? "vaporizes part of"
@@ -1852,7 +1854,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
     if (!(youdefend ? Cold_immunity : is_mon_immune_to_cold(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_COLD || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_COLD)))
     {
         if (realizes_damage)
-            pline_ex(ATR_NONE, youdefend ? CLR_MSG_WARNING : CLR_MSG_MYSTICAL, "%s %s %s%c", The(xname(otmp)),
+            pline_ex(ATR_NONE, HI_ICE, "%s %s %s%c", The(xname(otmp)),
                 "freezes", hittee,
                 '!');
         if (!rn2(4))
@@ -1861,7 +1863,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
     if (!(youdefend ? Shock_immunity : is_mon_immune_to_elec(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_ELEC || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_ELEC)))
     {
         if (realizes_damage)
-            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "The electrical energies of %s jolt %s%c", the(xname(otmp)),
+            pline_ex(ATR_NONE, HI_SHOCK, "The electrical energies of %s jolt %s%c", the(xname(otmp)),
                 hittee, '!');
         wake_nearto(mdef->mx, mdef->my, 4 * 4);
         if (!rn2(5))
@@ -1873,7 +1875,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
     if (!check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL) && (objects[otmp->otyp].oc_damagetype == AD_MAGM || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_MAGM)))
     {
         if (realizes_damage)
-            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A hail of magic missiles strikes from %s hits %s!", the(xname(otmp)), hittee);
+            pline_ex(ATR_NONE, HI_ZAP, "A hail of magic missiles strikes from %s hits %s!", the(xname(otmp)), hittee);
     }
 
     if ((objects[otmp->otyp].oc_damagetype == AD_STUN || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_STUN)) && dieroll <= MB_MAX_DIEROLL)

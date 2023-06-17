@@ -3880,7 +3880,7 @@ struct obj* obj;
                 else if (otmp->oclass == FOOD_CLASS)
                 {
                     wandknown = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s %s covered in frost, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
+                    pline_ex(ATR_NONE, HI_ICE, "%s %s covered in frost, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
                 }
                 else
                 {
