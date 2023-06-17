@@ -65,8 +65,6 @@ typedef struct nhmi {
     const char *str;            /* Text of menu item */
     const char* attrs;          /* Text attributes of menu item */
     const char* colors;         /* Text colors of menu item */
-    boolean has_attrs;
-    boolean has_colors;
     BOOLEAN_P presel;           /* Whether menu item should be preselected */
     int append;
     boolean selected;           /* Whether item is currently selected */
@@ -592,8 +590,6 @@ curs_new_menu_item(winid wid, const char *str, const char* attrs, const char* co
     new_item->str = new_str;
     new_item->attrs = new_attrs;
     new_item->colors = new_colors;
-    new_item->has_attrs = attrs != 0;
-    new_item->has_colors = colors != 0;
     new_item->presel = FALSE;
     new_item->selected = FALSE;
     new_item->page_num = 0;
@@ -1265,7 +1261,7 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
             menu_color = get_menu_coloring(menu_item_ptr->str, &mcolor, &mattr);
         }
 
-        if ((menu_item_ptr->has_attrs || menu_item_ptr->has_colors) && !menu_color)
+        if ((menu_item_ptr->attrs && menu_item_ptr->colors) && !menu_color)
         {
             size_t len = strlen(menu_item_ptr->str);
             num_lines = curses_num_lines(menu_item_ptr->str, entry_cols);
