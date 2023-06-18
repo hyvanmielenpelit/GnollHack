@@ -1137,4 +1137,26 @@ VA_DECL(const char *, str)
 #endif
 }
 
+void
+reset_pline(VOID_ARGS)
+{
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    pline_flags = 0;
+    pline_prefix_attr = 0;
+    pline_prefix_color = NO_COLOR;
+    pline_prefix_text = 0;
+    pline_separator_attr = 0;
+    pline_separator_color = NO_COLOR;
+    pline_separator_text = 0;
+    pline_multiattrs = 0;
+    pline_multicolors = 0;
+
+    prevmsg[0] = 0;
+
+#if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
+    use_pline_handler = TRUE;
+#endif
+}
+
 /*pline.c*/

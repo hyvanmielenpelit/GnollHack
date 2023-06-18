@@ -3251,6 +3251,7 @@ reset_remaining_static_variables()
     reset_mon();
     reset_mthrowu();
     reset_pickup();
+    reset_pline();
     reset_polyself();
     reset_potion();
     reset_read();
