@@ -1097,7 +1097,7 @@ register struct obj* obj;
 
     if (is_obj_candelabrum(obj))
     {
-        int max_candles = objects[otyp].oc_special_quality;
+        int max_candles = (int)objects[otyp].oc_special_quality;
         Sprintf(buf, "Attachable items:       Up to %d candle%s", max_candles, plur(max_candles));        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
@@ -2409,19 +2409,19 @@ register struct obj* obj;
 
     if (stats_known && objects[otyp].oc_item_cooldown > 0)
     {
-        Sprintf(buf, "Cooldown time:          %d rounds", objects[otyp].oc_item_cooldown);
+        Sprintf(buf, "Cooldown time:          %d rounds", (int)objects[otyp].oc_item_cooldown);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
         if (obj->cooldownleft > 0)
         {
-            Sprintf(buf, "Cooldown left:          %d rounds", obj->cooldownleft);
+            Sprintf(buf, "Cooldown left:          %d rounds", (int)obj->cooldownleft);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
     }
 
     if (stats_known && obj->repowerleft > 0)
     {
-        Sprintf(buf, "Repowering time left:   %d rounds", obj->repowerleft);
+        Sprintf(buf, "Repowering time left:   %d rounds", (int)obj->repowerleft);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
@@ -2433,7 +2433,7 @@ register struct obj* obj;
 
     if (stats_known && obj->invokeleft > 0)
     {
-        Sprintf(buf, "Invoke time left:       %d rounds", obj->invokeleft);
+        Sprintf(buf, "Invoke time left:       %d rounds", (int)obj->invokeleft);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 

@@ -524,7 +524,8 @@ get_objclassdata(struct obj* otmp)
 
     otypdata.tile_height = get_obj_height(otmp);
     otypdata.special_quality = objects[otmp->otyp].oc_special_quality;
-    
+    otypdata.max_charges = get_obj_max_charge(otmp);
+
     otypdata.lamplit = otmp->lamplit;
     otypdata.poisoned = otmp->opoisoned;
     otypdata.eroded = otmp->oeroded;

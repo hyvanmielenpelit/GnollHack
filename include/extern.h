@@ -1910,12 +1910,12 @@ E struct obj *FDECL(mk_tt_object, (int, int, int));
 E struct obj *FDECL(mk_named_object,
                     (int, struct permonst *, int, int, const char *));
 E struct obj *FDECL(rnd_treefruit_at, (int, int));
-E int FDECL(get_multigen_quan, (int));
-E int FDECL(get_init_charge, (int));
-E int FDECL(get_obj_init_charge, (struct obj*));
-E int FDECL(get_max_charge, (int));
+E long FDECL(get_multigen_quan, (UCHAR_P));
+E short FDECL(get_init_charge, (UCHAR_P));
+E short FDECL(get_obj_init_charge, (struct obj*));
+E short FDECL(get_max_charge, (UCHAR_P));
 E const char* FDECL(get_recharge_text, (enum recharging_types));
-E int FDECL(get_obj_max_charge, (struct obj*));
+E short FDECL(get_obj_max_charge, (struct obj*));
 E int FDECL(get_init_enchantment, (int));
 E int FDECL(get_obj_init_enchantment, (struct obj*));
 E int FDECL(get_max_enchantment, (int));

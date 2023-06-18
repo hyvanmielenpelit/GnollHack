@@ -818,8 +818,8 @@ struct objclass {
     int oc_dir_subtype;               /* spells: ID for type of ray or immediate effect, weapons: damage type */
 
     int oc_material_components;       /* spells: ID for material component list for a spell or to make the item (if recipe is known), other items: ID of components produced when breaking */
-    int oc_item_cooldown;             /* cooldown before the item can be used / applied / zapped / read etc. again */
-    int oc_special_quality;           /* special quality, e.g. maximum number of candles in the candelabrum */
+    short oc_item_cooldown;             /* cooldown before the item can be used / applied / zapped / read etc. again */
+    short oc_special_quality;         /* special quality, e.g. maximum number of candles in the candelabrum */
 
     unsigned long oc_flags;         /* E.g. if indestructible or disintegration resistant */
     unsigned long oc_flags2;        /* More flags */
@@ -832,7 +832,7 @@ struct objclass {
     unsigned long oc_target_permissions;  /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
     int oc_critical_strike_percentage;    /* percentage to be used with A1_CRITICAL_STRIKE; can be used for other purposes for a S1_ flag, too */
 #define oc_effect_probability oc_critical_strike_percentage /* comestibles: probability of edible effect taking place */
-    int oc_multigen_type;                 /* class number multi multigen_type */
+    uchar oc_multigen_type;                 /* class number multi multigen_type */
     enum object_soundset_types oc_soundset;
 
 /* oc_dir_subtypes for spells */

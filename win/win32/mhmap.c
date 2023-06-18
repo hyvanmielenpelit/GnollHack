@@ -3098,7 +3098,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int src_lit_y = 0;
                                 int cnt = 0;
 
-                                for (int cidx = 0; cidx < (otmp_round ? min(objects[otmp_round->otyp].oc_special_quality, otmp_round->special_quality) : data->map[i][j].missile_special_quality); cidx++)
+                                for (int cidx = 0; cidx < (int)(otmp_round ? min(objects[otmp_round->otyp].oc_special_quality, otmp_round->special_quality) : data->map[i][j].missile_special_quality); cidx++)
                                 {
                                     int src_x = 0, src_y = 0;
                                     int dest_x = 0, dest_y = 0;

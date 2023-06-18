@@ -32,6 +32,8 @@ using System.Runtime.ConstrainedExecution;
 using Xamarin.Forms.PlatformConfiguration.TizenSpecific;
 using System.Net.Mail;
 using System.Security.Cryptography;
+using static Xamarin.Forms.Internals.GIFBitmap;
+using FFImageLoading.Work;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -2147,7 +2149,7 @@ namespace GnollHackClient.Pages.Game
 
         private GlyphImageSource _menuGlyphImageSource = new GlyphImageSource();
 
-        public ImageSource MenuGlyphImage
+        public Xamarin.Forms.ImageSource MenuGlyphImage
         {
             get
             {
@@ -2973,6 +2975,7 @@ namespace GnollHackClient.Pages.Game
         //private object _canvasPageLock = new object();
         //private canvas_page_types _canvasPage = 0;
         private GlyphImageSource _paintGlyphImageSource = new GlyphImageSource();
+        private SKBitmap _paintBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -7155,6 +7158,19 @@ namespace GnollHackClient.Pages.Game
             {
                 float opaqueness = 1;
                 int sheet_idx = 0;
+                float extra_y_padding = 0;
+                if (!is_inventory)
+                {
+                    if (tileflag_normalobjmissile)
+                    {
+                        if (!tileflag_fullsizeditem)
+                            extra_y_padding += (height - scaled_tile_height) / 2;
+                    }
+                    else if (tileflag_halfsize)
+                    {
+                        extra_y_padding += height / 2;
+                    }
+                }
 
                 if (drawwallends && App._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
                 {
@@ -7593,19 +7609,7 @@ namespace GnollHackClient.Pages.Game
                 }
                 else if (App._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CANDELABRUM_CANDLES && (otmp_round != null || layer_idx == (int)layer_types.LAYER_MISSILE))
                 {
-                    float y_start = scaled_y_padding;
-                    if (!is_inventory)
-                    {
-                        if (tileflag_normalobjmissile)
-                        {
-                            if (!tileflag_fullsizeditem)
-                                y_start += (height - scaled_tile_height) / 2;
-                        }
-                        else if (tileflag_halfsize)
-                        {
-                            y_start += height / 2;
-                        }
-                    }
+                    float y_start = scaled_y_padding + extra_y_padding;
                     float x_start = scaled_x_padding;
                     int x_padding = 13;
                     int item_width = 6;
@@ -7618,7 +7622,7 @@ namespace GnollHackClient.Pages.Game
                     short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
                     bool missile_lamplit = (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_LIT) != 0;
 
-                    for (int cidx = 0; cidx < Math.Min((short)7, otmp_round != null  ? otmp_round.ObjData.special_quality : missile_special_quality); cidx++)
+                    for (int cidx = 0; cidx < Math.Min((short)7, otmp_round != null ? otmp_round.ObjData.special_quality : missile_special_quality); cidx++)
                     {
                         int src_x = 0, src_y = 0;
                         float dest_x = 0, dest_y = 0;
@@ -7752,198 +7756,422 @@ namespace GnollHackClient.Pages.Game
                         cnt++;
                     }
                 }
-
-                /*
-                 * AUTODRAW END
-                 */
-
-                /* Item property marks */
-                if (((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT) && otmp_round != null &&
-                    (otmp_round.Poisoned || otmp_round.ElementalEnchantment > 0 || otmp_round.MythicPrefix > 0 || otmp_round.MythicSuffix > 0 || otmp_round.Eroded != 0 || otmp_round.Eroded2 != 0 || otmp_round.Exceptionality > 0))
-                    ||
-                    ((layer_idx == (int)layer_types.LAYER_MISSILE) &&
-                        (_mapData[mapx, mapy].Layers.missile_poisoned != 0 || _mapData[mapx, mapy].Layers.missile_elemental_enchantment > 0
-                            || _mapData[mapx, mapy].Layers.missile_eroded != 0 || _mapData[mapx, mapy].Layers.missile_eroded2 != 0 ||
-                            _mapData[mapx, mapy].Layers.missile_exceptionality > 0 || _mapData[mapx, mapy].Layers.missile_mythic_prefix > 0 || _mapData[mapx, mapy].Layers.missile_mythic_suffix > 0))
-                    )
+                else if (App._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_JAR_CONTENTS && otmp_round != null)
                 {
-                    float y_start = scaled_y_padding;
-                    if (!is_inventory)
+                    short max_charge = otmp_round.OtypData.max_charges;
+                    double fill_percentage = (max_charge > 0 ? (double)otmp_round.ObjData.charges / (double)max_charge : 0.0);
+                    if (fill_percentage > 0.0)
                     {
-                        if (tileflag_halfsize)
-                        {
-                            y_start += height / 2;
-                        }
-                        else
-                        {
-                            if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
-                                y_start += height / 4;
-                            else
-                                y_start += 0;
-                        }
-                    }
-                    float x_start = scaled_x_padding;
-                    int mark_width = 8;
-                    int marks_per_row = GHConstants.TileWidth / mark_width;
-                    int mark_height = 24;
-                    int src_x = 0;
-                    int src_y = 0;
-                    int cnt = 0;
-                    bool poisoned = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_poisoned != 0 : otmp_round.Poisoned);
-                    byte elemental_enchantment = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_elemental_enchantment : otmp_round.ElementalEnchantment);
-                    byte exceptionality = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_exceptionality : otmp_round.Exceptionality);
-                    byte mythic_prefix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_prefix : otmp_round.MythicPrefix);
-                    byte mythic_suffix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_suffix : otmp_round.MythicSuffix);
-                    byte eroded = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded : otmp_round.Eroded);
-                    byte eroded2 = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded2 : otmp_round.Eroded2);
-                    bool corrodeable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_CORRODEABLE) != 0 : otmp_round.OtypData.corrodeable != 0);
-                    bool rottable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_ROTTABLE) != 0 : otmp_round.OtypData.rottable != 0);
-                    bool flammable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_FLAMMABLE) != 0 : otmp_round.OtypData.flammable != 0);
-                    bool rustprone = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_RUSTPRONE) != 0 : otmp_round.OtypData.rustprone != 0);
-                    bool poisonable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_POISONABLE) != 0 : otmp_round.OtypData.poisonable != 0);
-                    float dest_x = 0, dest_y = 0;
+                        float jar_width = GHConstants.TileWidth;
+                        float jar_height = GHConstants.TileHeight / 2;
 
-                    for (item_property_mark_types ipm_idx = 0; ipm_idx < item_property_mark_types.MAX_ITEM_PROPERTY_MARKS; ipm_idx++)
-                    {
-                        if (cnt >= 8)
-                            break;
+                        //int jar_pitch = 4 * jar_width;
+                        //int jar_idx;
+                        //for (int x = 0; x < jar_width; x++)
+                        //{
+                        //    for (int y = 0; y < jar_height; y++)
+                        //    {
+                        //        jar_idx = y * jar_pitch;
+                        //        jar_idx += x * 4;
+                        //        /* Draw background */
+                        //    }
+                        //}
 
-                        src_x = ((int)ipm_idx % marks_per_row) * mark_width;
-                        src_y = ((int)ipm_idx / marks_per_row) * mark_height;
-                        dest_x = 0;
-                        dest_y = 0;
+                        /* First, background */
+                        float dest_x, dest_y;
+                        dest_x = tx + scaled_x_padding;
+                        dest_y = ty + scaled_y_padding + extra_y_padding;
 
-                        switch (ipm_idx)
-                        {
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_POISONED:
-                                if (!(poisoned && poisonable))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_DEATH_MAGICAL:
-                                if (elemental_enchantment != (byte)elemental_enchantment_types.DEATH_ENCHANTMENT)
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_FLAMING:
-                                if (elemental_enchantment != (byte)elemental_enchantment_types.FIRE_ENCHANTMENT)
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_FREEZING:
-                                if (elemental_enchantment != (byte)elemental_enchantment_types.COLD_ENCHANTMENT)
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_ELECTRIFIED:
-                                if (elemental_enchantment != (byte)elemental_enchantment_types.LIGHTNING_ENCHANTMENT)
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_EXCEPTIONAL:
-                                if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_EXCEPTIONAL)
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_ELITE:
-                                if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_ELITE)
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_CELESTIAL:
-                                if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_CELESTIAL)
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_PRIMORDIAL:
-                                if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_PRIMORDIAL)
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_INFERNAL:
-                                if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_INFERNAL)
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_MYTHIC:
-                                if ((mythic_prefix == 0 && mythic_suffix == 0) || (mythic_prefix > 0 && mythic_suffix > 0))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_LEGENDARY:
-                                if (mythic_prefix == 0 || mythic_suffix == 0)
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_CORRODED:
-                                if (!(eroded2 == 1 && corrodeable))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_ROTTED:
-                                if (!(eroded2 == 1 && rottable))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_BURNT:
-                                if (!(eroded == 1 && flammable))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_RUSTY:
-                                if (!(eroded == 1 && rustprone))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_CORRODED:
-                                if (!(eroded2 == 2 && corrodeable))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_ROTTED:
-                                if (!(eroded2 == 2 && rottable))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_BURNT:
-                                if (!(eroded == 2 && flammable))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_RUSTY:
-                                if (!(eroded == 2 && rustprone))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_CORRODED:
-                                if (!(eroded2 == 3 && corrodeable))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_ROTTED:
-                                if (!(eroded2 == 3 && rottable))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_BURNT:
-                                if (!(eroded == 3 && flammable))
-                                    continue;
-                                break;
-                            case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_RUSTY:
-                                if (!(eroded == 3 && rustprone))
-                                    continue;
-                                break;
-                            case item_property_mark_types.MAX_ITEM_PROPERTY_MARKS:
-                            default:
-                                continue;
-                        }
-
-                        int item_xpos = ((int)GHConstants.TileWidth) / 2 - mark_width + (cnt % 2 != 0 ? 1 : -1) * ((cnt + 1) / 2) * mark_width;
-
-                        dest_y = y_start + scaled_tile_height / 2 - (targetscale * scale * (float)(mark_height / 2));
-                        dest_x = x_start + (targetscale * scale * (float)item_xpos);
-
-                        int source_glyph = (int)game_ui_tile_types.ITEM_PROPERTY_MARKS + App.UITileOff;
+                        int source_glyph = App._autodraws[autodraw].source_glyph;
                         int atile = App.Glyph2Tile[source_glyph];
                         int a_sheet_idx = App.TileSheetIdx(atile);
                         int at_x = App.TileSheetX(atile);
                         int at_y = App.TileSheetY(atile);
 
-                        SKRect source_rt = new SKRect();
-                        source_rt.Left = at_x + src_x;
-                        source_rt.Right = source_rt.Left + mark_width;
-                        source_rt.Top = at_y + src_y;
-                        source_rt.Bottom = source_rt.Top + mark_height;
+                        int source_glyph2 = App._autodraws[autodraw].source_glyph2;
+                        int atile2 = App.Glyph2Tile[source_glyph2];
+                        int a2_sheet_idx = App.TileSheetIdx(atile);
+                        int a2t_x = App.TileSheetX(atile2);
+                        int a2t_y = App.TileSheetY(atile2);
 
+                        SKRect source_rt = new SKRect();
                         SKRect target_rt = new SKRect();
 
-                        target_rt.Left = tx + dest_x;
-                        target_rt.Right = target_rt.Left + targetscale * scale * source_rt.Width;
-                        target_rt.Top = ty + dest_y;
-                        target_rt.Bottom = target_rt.Top + targetscale * scale * source_rt.Height;
+                        source_rt.Left = at_x;
+                        source_rt.Right = source_rt.Left + jar_width;
+                        source_rt.Top = at_y;
+                        source_rt.Bottom = source_rt.Top + jar_height;
 
-                        canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt);
+                        target_rt.Left = 0;
+                        target_rt.Right = jar_width * scale * targetscale;
+                        target_rt.Top = 0;
+                        target_rt.Bottom = jar_height * scale * targetscale;
 
-                        cnt++;
+                        using (new SKAutoCanvasRestore(canvas, true))
+                        {
+                            canvas.Translate(dest_x, dest_y);
+                            paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                            canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                        }
+
+
+                        /* Second, contents */
+                        double semi_transparency;
+                        source_rt.Left = at_x;
+                        source_rt.Right = source_rt.Left + GHConstants.TileWidth;
+                        source_rt.Top = at_y + GHConstants.TileHeight / 2;
+                        source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
+                        float source_width = source_rt.Right - source_rt.Left;
+                        float source_height = source_rt.Bottom - source_rt.Top;
+
+                        target_rt.Left = 0;
+                        target_rt.Right = source_width;
+                        target_rt.Top = 0;
+                        target_rt.Bottom = source_height;
+
+                        /* Color */
+                        ulong draw_color = App._autodraws[autodraw].parameter1;
+                        byte blue = (byte)(draw_color & 0xFFUL);
+                        byte green = (byte)((draw_color & 0xFF00UL) >> 8);
+                        byte red = (byte)((draw_color & 0xFF0000UL) >> 16);
+
+                        /* Draw to _paintBitmap */
+                        semi_transparency = 0.0;
+                        SKBlendMode oldbm = paint.BlendMode;
+                        using (SKCanvas _paintCanvas = new SKCanvas(_paintBitmap))
+                        {
+                            _paintCanvas.Clear(SKColors.Transparent);
+                            paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                            _paintCanvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                            paint.BlendMode = SKBlendMode.Modulate;
+                            paint.Color = new SKColor(red, green, blue);
+                            _paintCanvas.DrawRect(target_rt, paint);
+                        }
+                        paint.BlendMode = oldbm;
+                        paint.Color = SKColors.Black;
+
+                        /* Bottom contents */
+                        int bottom_x = 21;
+                        int bottom_y = 38;
+                        int bottom_width = 21;
+                        int bottom_height = 10;
+
+                        int bottom_tx = 21;
+                        int bottom_ty = 35;
+
+                        source_rt.Left = bottom_x;
+                        source_rt.Right = source_rt.Left + bottom_width;
+                        source_rt.Top = bottom_y;
+                        source_rt.Bottom = source_rt.Top + bottom_height;
+
+                        target_rt.Left = bottom_tx * scale * targetscale;
+                        target_rt.Right = (bottom_tx + bottom_width) * scale * targetscale;
+                        target_rt.Top = bottom_ty * scale * targetscale;
+                        target_rt.Bottom = (bottom_ty + bottom_height) * scale * targetscale;
+
+                        semi_transparency = 0.0;
+                        paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                        using (new SKAutoCanvasRestore(canvas, true))
+                        {
+                            canvas.Translate(dest_x, dest_y);
+                            canvas.DrawBitmap(_paintBitmap, source_rt, target_rt, paint);
+                        }
+
+                        /* Middle contents */
+                        int full_y = 11;
+                        int empty_y = 35;
+                        int fill_pixel_top = (int)((double)(empty_y - full_y) * (1.0 - fill_percentage)) + full_y;
+                        int fill_pixels = empty_y - fill_pixel_top;
+                        if (fill_pixels > 0)
+                        {
+                            int middle_x = 21;
+                            int middle_y = 15;
+                            int middle_width = 21;
+                            int middle_height = 17;
+
+                            int middle_tx = 21;
+                            int middle_ty = fill_pixel_top + 4;
+                            int middle_twidth = middle_width;
+                            int middle_theight = fill_pixels + 1;
+
+                            source_rt.Left = middle_x;
+                            source_rt.Right = source_rt.Left + middle_width;
+                            source_rt.Top = middle_y;
+                            source_rt.Bottom = source_rt.Top + middle_height;
+
+                            target_rt.Left = middle_tx * scale * targetscale;
+                            target_rt.Right = (middle_tx + middle_twidth) * scale * targetscale;
+                            target_rt.Top = middle_ty * scale * targetscale;
+                            target_rt.Bottom = (middle_ty + middle_theight) * scale * targetscale;
+
+                            semi_transparency = 0.2;
+                            paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                            using (new SKAutoCanvasRestore(canvas, true))
+                            {
+                                canvas.Translate(dest_x, dest_y);
+                                canvas.DrawBitmap(_paintBitmap, source_rt, target_rt, paint);
+                            }
+
+                            /* Top contents */
+                            int top_x = 21;
+                            int top_y = 0;
+                            int top_width = 21;
+                            int top_height = 8;
+
+                            int top_tx = 21;
+                            int top_ty = fill_pixel_top;
+
+                            source_rt.Left = top_x;
+                            source_rt.Right = source_rt.Left + top_width;
+                            source_rt.Top = top_y;
+                            source_rt.Bottom = source_rt.Top + top_height;
+
+                            target_rt.Left = top_tx * scale * targetscale;
+                            target_rt.Right = (top_tx + top_width) * scale * targetscale;
+                            target_rt.Top = top_ty * scale * targetscale;
+                            target_rt.Bottom = (top_ty + top_height) * scale * targetscale;
+
+                            semi_transparency = 0.0;
+                            paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                            using (new SKAutoCanvasRestore(canvas, true))
+                            {
+                                canvas.Translate(dest_x, dest_y);
+                                canvas.DrawBitmap(_paintBitmap, source_rt, target_rt, paint);
+                            }
+                        }
+
+                        /* Third, transparent foreground */
+                        source_rt.Left = a2t_x;
+                        source_rt.Right = source_rt.Left + GHConstants.TileWidth;
+                        source_rt.Top = a2t_y;
+                        source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
+
+                        target_rt.Left = 0;
+                        target_rt.Right = GHConstants.TileWidth * scale * targetscale;
+                        target_rt.Top = 0;
+                        target_rt.Bottom = GHConstants.TileHeight / 2 * scale * targetscale;
+
+                        /* Draw */
+                        semi_transparency = 0.70;
+                        paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                        using (new SKAutoCanvasRestore(canvas, true))
+                        {
+                            canvas.Translate(dest_x, dest_y);
+                            canvas.DrawBitmap(TileMap[a2_sheet_idx], source_rt, target_rt, paint);
+                        }
+
+                        /* Fourth, opaque foreground */
+                        source_rt.Left = a2t_x;
+                        source_rt.Right = source_rt.Left + GHConstants.TileWidth;
+                        source_rt.Top = a2t_y + GHConstants.TileHeight / 2;
+                        source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
+
+                        target_rt.Left = 0;
+                        target_rt.Right = jar_width * scale * targetscale;
+                        target_rt.Top = 0;
+                        target_rt.Bottom = jar_height * scale * targetscale;
+
+                        paint.Color = SKColors.Black;
+                        using (new SKAutoCanvasRestore(canvas, true))
+                        {
+                            canvas.Translate(dest_x, dest_y);
+                            canvas.DrawBitmap(TileMap[a2_sheet_idx], source_rt, target_rt, paint);
+                        }
                     }
+                    paint.Color = SKColors.Black;
+                }
+
+                /*
+                * AUTODRAW END
+                */
+            }
+
+            /* Item property marks */
+            if (((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT) && otmp_round != null &&
+            (otmp_round.Poisoned || otmp_round.ElementalEnchantment > 0 || otmp_round.MythicPrefix > 0 || otmp_round.MythicSuffix > 0 || otmp_round.Eroded != 0 || otmp_round.Eroded2 != 0 || otmp_round.Exceptionality > 0))
+            ||
+            ((layer_idx == (int)layer_types.LAYER_MISSILE) &&
+                (_mapData[mapx, mapy].Layers.missile_poisoned != 0 || _mapData[mapx, mapy].Layers.missile_elemental_enchantment > 0
+                    || _mapData[mapx, mapy].Layers.missile_eroded != 0 || _mapData[mapx, mapy].Layers.missile_eroded2 != 0 ||
+                    _mapData[mapx, mapy].Layers.missile_exceptionality > 0 || _mapData[mapx, mapy].Layers.missile_mythic_prefix > 0 || _mapData[mapx, mapy].Layers.missile_mythic_suffix > 0))
+            )
+            {
+                float y_start = scaled_y_padding;
+                if (!is_inventory)
+                {
+                    if (tileflag_halfsize)
+                    {
+                        y_start += height / 2;
+                    }
+                    else
+                    {
+                        if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                            y_start += height / 4;
+                        else
+                            y_start += 0;
+                    }
+                }
+                float x_start = scaled_x_padding;
+                int mark_width = 8;
+                int marks_per_row = GHConstants.TileWidth / mark_width;
+                int mark_height = 24;
+                int src_x = 0;
+                int src_y = 0;
+                int cnt = 0;
+                bool poisoned = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_poisoned != 0 : otmp_round.Poisoned);
+                byte elemental_enchantment = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_elemental_enchantment : otmp_round.ElementalEnchantment);
+                byte exceptionality = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_exceptionality : otmp_round.Exceptionality);
+                byte mythic_prefix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_prefix : otmp_round.MythicPrefix);
+                byte mythic_suffix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_suffix : otmp_round.MythicSuffix);
+                byte eroded = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded : otmp_round.Eroded);
+                byte eroded2 = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded2 : otmp_round.Eroded2);
+                bool corrodeable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_CORRODEABLE) != 0 : otmp_round.OtypData.corrodeable != 0);
+                bool rottable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_ROTTABLE) != 0 : otmp_round.OtypData.rottable != 0);
+                bool flammable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_FLAMMABLE) != 0 : otmp_round.OtypData.flammable != 0);
+                bool rustprone = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_RUSTPRONE) != 0 : otmp_round.OtypData.rustprone != 0);
+                bool poisonable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_POISONABLE) != 0 : otmp_round.OtypData.poisonable != 0);
+                float dest_x = 0, dest_y = 0;
+
+                for (item_property_mark_types ipm_idx = 0; ipm_idx < item_property_mark_types.MAX_ITEM_PROPERTY_MARKS; ipm_idx++)
+                {
+                    if (cnt >= 8)
+                        break;
+
+                    src_x = ((int)ipm_idx % marks_per_row) * mark_width;
+                    src_y = ((int)ipm_idx / marks_per_row) * mark_height;
+                    dest_x = 0;
+                    dest_y = 0;
+
+                    switch (ipm_idx)
+                    {
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_POISONED:
+                            if (!(poisoned && poisonable))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_DEATH_MAGICAL:
+                            if (elemental_enchantment != (byte)elemental_enchantment_types.DEATH_ENCHANTMENT)
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_FLAMING:
+                            if (elemental_enchantment != (byte)elemental_enchantment_types.FIRE_ENCHANTMENT)
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_FREEZING:
+                            if (elemental_enchantment != (byte)elemental_enchantment_types.COLD_ENCHANTMENT)
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_ELECTRIFIED:
+                            if (elemental_enchantment != (byte)elemental_enchantment_types.LIGHTNING_ENCHANTMENT)
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_EXCEPTIONAL:
+                            if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_EXCEPTIONAL)
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_ELITE:
+                            if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_ELITE)
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_CELESTIAL:
+                            if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_CELESTIAL)
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_PRIMORDIAL:
+                            if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_PRIMORDIAL)
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_INFERNAL:
+                            if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_INFERNAL)
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_MYTHIC:
+                            if ((mythic_prefix == 0 && mythic_suffix == 0) || (mythic_prefix > 0 && mythic_suffix > 0))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_LEGENDARY:
+                            if (mythic_prefix == 0 || mythic_suffix == 0)
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_CORRODED:
+                            if (!(eroded2 == 1 && corrodeable))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_ROTTED:
+                            if (!(eroded2 == 1 && rottable))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_BURNT:
+                            if (!(eroded == 1 && flammable))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_RUSTY:
+                            if (!(eroded == 1 && rustprone))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_CORRODED:
+                            if (!(eroded2 == 2 && corrodeable))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_ROTTED:
+                            if (!(eroded2 == 2 && rottable))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_BURNT:
+                            if (!(eroded == 2 && flammable))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_RUSTY:
+                            if (!(eroded == 2 && rustprone))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_CORRODED:
+                            if (!(eroded2 == 3 && corrodeable))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_ROTTED:
+                            if (!(eroded2 == 3 && rottable))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_BURNT:
+                            if (!(eroded == 3 && flammable))
+                                continue;
+                            break;
+                        case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_RUSTY:
+                            if (!(eroded == 3 && rustprone))
+                                continue;
+                            break;
+                        case item_property_mark_types.MAX_ITEM_PROPERTY_MARKS:
+                        default:
+                            continue;
+                    }
+
+                    int item_xpos = ((int)GHConstants.TileWidth) / 2 - mark_width + (cnt % 2 != 0 ? 1 : -1) * ((cnt + 1) / 2) * mark_width;
+
+                    dest_y = y_start + scaled_tile_height / 2 - (targetscale * scale * (float)(mark_height / 2));
+                    dest_x = x_start + (targetscale * scale * (float)item_xpos);
+
+                    int source_glyph = (int)game_ui_tile_types.ITEM_PROPERTY_MARKS + App.UITileOff;
+                    int atile = App.Glyph2Tile[source_glyph];
+                    int a_sheet_idx = App.TileSheetIdx(atile);
+                    int at_x = App.TileSheetX(atile);
+                    int at_y = App.TileSheetY(atile);
+
+                    SKRect source_rt = new SKRect();
+                    source_rt.Left = at_x + src_x;
+                    source_rt.Right = source_rt.Left + mark_width;
+                    source_rt.Top = at_y + src_y;
+                    source_rt.Bottom = source_rt.Top + mark_height;
+
+                    SKRect target_rt = new SKRect();
+
+                    target_rt.Left = tx + dest_x;
+                    target_rt.Right = target_rt.Left + targetscale * scale * source_rt.Width;
+                    target_rt.Top = ty + dest_y;
+                    target_rt.Bottom = target_rt.Top + targetscale * scale * source_rt.Height;
+
+                    canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt);
+
+                    cnt++;
                 }
             }
         }
@@ -10902,7 +11130,7 @@ namespace GnollHackClient.Pages.Game
 
         private GlyphImageSource _textGlyphImageSource = new GlyphImageSource();
 
-        public ImageSource TextGlyphImage
+        public Xamarin.Forms.ImageSource TextGlyphImage
         {
             get
             {

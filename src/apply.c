@@ -1942,7 +1942,7 @@ register struct obj *obj;
 
 
     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
-    int max_candles = objects[obj->otyp].oc_special_quality;
+    short max_candles = objects[obj->otyp].oc_special_quality;
     
     if (obj->special_quality < max_candles) 
     {
@@ -2184,7 +2184,7 @@ struct obj **optr;
         return 1;
     }
 
-    long max_candles = objects[otmp->otyp].oc_special_quality;
+    long max_candles = (long)objects[otmp->otyp].oc_special_quality;
     if (otmp->special_quality >= max_candles)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);

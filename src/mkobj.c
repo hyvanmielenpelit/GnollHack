@@ -1680,7 +1680,7 @@ unsigned long mkflags;
                 blessorcurse(otmp, 5);
                 break;
             case LARGE_FIVE_BRANCHED_CANDELABRUM:
-                otmp->special_quality = !rn2(3) ? 0 : !rn2(2) ? objects[otmp->otyp].oc_special_quality : rnd(objects[otmp->otyp].oc_special_quality);
+                otmp->special_quality = !rn2(3) ? 0 : !rn2(2) ? objects[otmp->otyp].oc_special_quality : (short)rnd((int)objects[otmp->otyp].oc_special_quality);
                 otmp->lamplit = 0;
                 if (otmp->special_quality > 0)
                 {
@@ -2215,42 +2215,43 @@ unsigned long mkflags;
 }
 
 
-int
+short
 get_obj_init_charge(otmp)
 struct obj* otmp;
 {
     if (!otmp)
         return 0;
 
-    int init_charge = get_init_charge(objects[otmp->otyp].oc_charged);
+    short init_charge = get_init_charge(objects[otmp->otyp].oc_charged);
 
     /* Possible extra modifications here */
 
     return init_charge;
 }
 
-int
+short
 get_obj_max_charge(otmp)
 struct obj* otmp;
 {
     if (!otmp)
         return 0;
 
-    int init_charge = get_max_charge(objects[otmp->otyp].oc_charged);
+    short max_charge = get_max_charge(objects[otmp->otyp].oc_charged);
 
     /* Possible extra modifications here */
 
-    return init_charge;
+    return max_charge;
 }
 
-int
+short
 get_init_charge(charge_init_index)
-int charge_init_index;
+uchar charge_init_index;
 {
-    int charge = 1;
+    short charge = 0;
 
     switch (charge_init_index)
     {
+    default:
     case CHARGED_NOT_CHARGED:
         charge = 0;
         break;
@@ -2359,14 +2360,15 @@ int charge_init_index;
 }
 
 
-int
+short
 get_max_charge(charge_init_index)
-int charge_init_index;
+uchar charge_init_index;
 {
-    int charge = 1;
+    short charge = 0;
 
     switch (charge_init_index)
     {
+    default:
     case CHARGED_NOT_CHARGED:
         charge = 0;
         break;
@@ -2723,9 +2725,9 @@ int spe_type_index;
     return maxspe;
 }
 
-int 
+long 
 get_multigen_quan(multigen_index)
-int multigen_index;
+uchar multigen_index;
 {
     int quan = 1;
 
@@ -2833,7 +2835,7 @@ int multigen_index;
     default:
         break;
     }
-    return quan;
+    return (long)quan;
 }
 /*
  * Several areas of the code made direct reassignments

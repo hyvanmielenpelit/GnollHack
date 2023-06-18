@@ -1519,7 +1519,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     int src_lit_y = 0;
                     int cnt = 0;
 
-                    for (int cidx = 0; cidx < min(objects[item->object_data.otyp].oc_special_quality, item->object_data.special_quality); cidx++)
+                    for (int cidx = 0; cidx < (int)min(objects[item->object_data.otyp].oc_special_quality, item->object_data.special_quality); cidx++)
                     {
                         int src_x = 0, src_y = 0;
                         int dest_x = 0, dest_y = 0;

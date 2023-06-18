@@ -985,7 +985,8 @@ namespace GnollHackCommon
     public struct objclassdata
     {
         public int tile_height;
-        public int special_quality;
+        public short special_quality;
+        public short max_charges;
 
         public byte lamplit;
         public byte poisoned;
