@@ -194,7 +194,6 @@ VA_DECL(const char *, line)
         return;
 
     const char* used_line = line;
-    const char* original_line = used_line;
     boolean domulti = FALSE;
     if (index(used_line, '%'))
     {
@@ -317,12 +316,13 @@ VA_DECL(const char *, line)
         }
     }
 
-    original_line = used_line;
+    const char* original_line = used_line;
     Sprintf(combined_line, "%s%s%s", pline_prefix_text ? pline_prefix_text : "", pline_separator_text ? pline_separator_text : "", original_line);
-
-    if ((ln = (int)strlen(combined_line)) > BIGBUFSZ - 1) {
-        if (original_line != line)                          /* no '%' was present */
-            (void)strncpy(pbuf, combined_line, BIGBUFSZ - 1); /* caveat: unterminated */
+    boolean truncated = FALSE;
+    if ((ln = (int)strlen(combined_line)) > BIGBUFSZ - 1) 
+    {
+        //if (original_line != line)                          /* no '%' was present */
+        (void)strncpy(pbuf, combined_line, BIGBUFSZ - 1); /* caveat: unterminated */
         /* truncate, preserving the final 3 characters:
            "___ extremely long text" -> "___ extremely l...ext"
            (this may be suboptimal if overflow is less than 3) */
@@ -332,6 +332,7 @@ VA_DECL(const char *, line)
         pbuf[BIGBUFSZ - 1 - 2] = combined_line[ln - 2];
         pbuf[BIGBUFSZ - 1 - 1] = combined_line[ln - 1];
         pbuf[BIGBUFSZ - 1] = '\0';
+        truncated = TRUE;
         used_line = pbuf;
     }
     else
@@ -390,16 +391,23 @@ VA_DECL(const char *, line)
         size_t line_len = strlen(original_line);
         size_t prefix_len = pline_prefix_text ? strlen(pline_prefix_text) : 0;
         size_t separator_len = pline_separator_text ? strlen(pline_separator_text) : 0;
+        if (truncated)
+        {
+            size_t used_len = strlen(used_line);
+            int truncatedlen = (int)used_len - (int)prefix_len - (int)separator_len;
+            line_len = truncatedlen >= 0 ? (size_t)truncatedlen : 0UL;
+        }
+        
         if (domulti && (prefix_len > 0 || separator_len > 0))
         {
-            size_t offset = prefix_len + separator_len;
+            int offset = (int)prefix_len + (int)separator_len;
             int j;
-            for (j = (int)line_len - 1; j >= 0; j--)
+            for (j = (int)line_len; j >= 0; j--) //also copy ending zero
             {
-                attrs[j + (int)offset] = attrs[j];
-                colors[j + (int)offset] = colors[j];
+                attrs[j + offset] = attrs[j];
+                colors[j + offset] = colors[j];
             }
-            for (j = 0; j < (int)offset; j++)
+            for (j = 0; j < offset; j++)
             {
                 attrs[j] = 0;
                 colors[j] = 0;
@@ -563,7 +571,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     pline_attr = attr;
     pline_color = color;
     vpline(YouMessage(tmp, "You ", line), VA_ARGS);
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
 }
@@ -582,7 +590,7 @@ VA_DECL5(int, attr, int, color, int*, multiattrs, int*, multicolors, const char*
     vpline(YouMessage(tmp, "You ", line), VA_ARGS);
     pline_multiattrs = 0;
     pline_multicolors = 0;
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
 }
@@ -598,7 +606,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     pline_attr = attr;
     pline_color = color;
     vpline(YouMessage(tmp, "Your ", line), VA_ARGS);
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
 }
@@ -618,7 +626,7 @@ VA_DECL5(int, attr, int, color, int*, multiattrs, int*, multicolors, const char*
     vpline(YouMessage(tmp, "Your ", line), VA_ARGS);
     pline_multiattrs = 0;
     pline_multicolors = 0;
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
 }
@@ -638,7 +646,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     else
         YouPrefix(tmp, "You feel ", line);
     vpline(strcat(tmp, line), VA_ARGS);
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
 }
@@ -654,7 +662,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     pline_attr = attr;
     pline_color = color;
     vpline(YouMessage(tmp, "You can't ", line), VA_ARGS);
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
 }
@@ -670,7 +678,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     pline_attr = attr;
     pline_color = color;
     vpline(YouMessage(tmp, "The ", line), VA_ARGS);
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
 }
@@ -686,7 +694,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     pline_attr = attr;
     pline_color = color;
     vpline(YouMessage(tmp, "There ", line), VA_ARGS);
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
 }
@@ -710,7 +718,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     else
         YouPrefix(tmp, "You hear ", line);
     vpline(strcat(tmp, line), VA_ARGS);
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
 }
@@ -732,7 +740,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     else
         YouPrefix(tmp, "You see ", line);
     vpline(strcat(tmp, line), VA_ARGS);
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
 }
@@ -752,7 +760,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     Strcat(tmp, line);
     Strcat(tmp, "\"");
     vpline(tmp, VA_ARGS);
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     VA_END();
 }
@@ -781,7 +789,7 @@ VA_DECL3(int, attr, int, color, const char*, line)
     pline_color = color;
     pline_flags = PLINE_NOREPEAT;
     vpline(line, VA_ARGS);
-    pline_attr = 0;
+    pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     pline_flags = 0;
     VA_END();
