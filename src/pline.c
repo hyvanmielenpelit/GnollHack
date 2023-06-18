@@ -177,7 +177,8 @@ VA_DECL(const char *, line)
     int ln;
     int msgtyp;
     boolean no_repeat;
-    char combined_line[BIGBUFSZ], attrs[BIGBUFSZ], colors[BIGBUFSZ];
+    char multi_line[BIGBUFSZ], combined_line[BIGBUFSZ], attrs[BIGBUFSZ], colors[BIGBUFSZ];
+    multi_line[0] = 0;
     combined_line[0] = 0;
     attrs[0] = 0;
     colors[0] = 0;
@@ -192,14 +193,16 @@ VA_DECL(const char *, line)
     if (program_state.wizkit_wishing)
         return;
 
+    const char* used_line = line;
+    const char* original_line = used_line;
     boolean domulti = FALSE;
-    if (index(line, '%'))
+    if (index(used_line, '%'))
     {
         if (pline_multiattrs && pline_multicolors)
         {
             domulti = TRUE;
             const char* echars = "cdieEfgGosuxXpn%";
-            const char* sp = line;
+            const char* sp = used_line;
             const char* p, * ep;
             char cbuf[BIGBUFSZ];
             char sbuf[BIGBUFSZ];
@@ -242,7 +245,7 @@ VA_DECL(const char *, line)
                 {
                     strncpy(cbuf, sp, len1);
                     cbuf[len1] = 0;
-                    Strcat(combined_line, cbuf);
+                    Strcat(multi_line, cbuf);
                     memset(&attrs[pos], pline_attr, (size_t)len1);
                     memset(&colors[pos], pline_color, (size_t)len1);
                     pos += len1;
@@ -293,7 +296,7 @@ VA_DECL(const char *, line)
                         break;
                     }
                     size_t clen = strlen(cbuf);
-                    Strcat(combined_line, cbuf);
+                    Strcat(multi_line, cbuf);
                     memset(&attrs[pos], idx >= 0 && pline_multiattrs[idx] != ATR_NONE ? pline_multiattrs[idx] : pline_attr, clen);
                     memset(&colors[pos], idx >= 0 && pline_multicolors[idx] != NO_COLOR ? pline_multicolors[idx] : pline_color, clen);
                     pos += clen;
@@ -302,32 +305,37 @@ VA_DECL(const char *, line)
                 sp = ep + 1;
             } while (p && *p);
 
-            combined_line[pos] = 0;
+            multi_line[pos] = 0;
             attrs[pos] = 0;
             colors[pos] = 0;
-            line = combined_line;
+            used_line = multi_line;
         }
         else
         {
-            Vsprintf(pbuf, line, VA_ARGS);
-            line = pbuf;
+            Vsprintf(pbuf, used_line, VA_ARGS);
+            used_line = pbuf;
         }
     }
 
-    if ((ln = (int) strlen(line)) > BUFSZ - 1) {
-        if (line != pbuf)                          /* no '%' was present */
-            (void) strncpy(pbuf, line, BUFSZ - 1); /* caveat: unterminated */
+    original_line = used_line;
+    Sprintf(combined_line, "%s%s%s", pline_prefix_text ? pline_prefix_text : "", pline_separator_text ? pline_separator_text : "", original_line);
+
+    if ((ln = (int)strlen(combined_line)) > BIGBUFSZ - 1) {
+        if (original_line != line)                          /* no '%' was present */
+            (void)strncpy(pbuf, combined_line, BIGBUFSZ - 1); /* caveat: unterminated */
         /* truncate, preserving the final 3 characters:
            "___ extremely long text" -> "___ extremely l...ext"
            (this may be suboptimal if overflow is less than 3) */
-        (void) strncpy(pbuf + BUFSZ - 1 - 6, "...", 3);
+        (void)strncpy(pbuf + BIGBUFSZ - 1 - 6, "...", 3);
         /* avoid strncpy; buffers could overlap if excess is small */
-        pbuf[BUFSZ - 1 - 3] = line[ln - 3];
-        pbuf[BUFSZ - 1 - 2] = line[ln - 2];
-        pbuf[BUFSZ - 1 - 1] = line[ln - 1];
-        pbuf[BUFSZ - 1] = '\0';
-        line = pbuf;
+        pbuf[BIGBUFSZ - 1 - 3] = combined_line[ln - 3];
+        pbuf[BIGBUFSZ - 1 - 2] = combined_line[ln - 2];
+        pbuf[BIGBUFSZ - 1 - 1] = combined_line[ln - 1];
+        pbuf[BIGBUFSZ - 1] = '\0';
+        used_line = pbuf;
     }
+    else
+        used_line = combined_line;
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
     /* We hook here early to have options-agnostic output.
@@ -335,14 +343,14 @@ VA_DECL(const char *, line)
      * that short lines aren't combined into one longer one (tty behavior).
      */
     if ((pline_flags & SUPPRESS_HISTORY) == 0)
-        dumplogmsg(line);
+        dumplogmsg(used_line);
 #endif
     /* use raw_print() if we're called too early (or perhaps too late
        during shutdown) or if we're being called recursively (probably
        via debugpline() in the interface code) */
     if (in_pline++ || !iflags.window_inited) {
         /* [we should probably be using raw_printf("\n%s", line) here] */
-        raw_print(line);
+        raw_print(used_line);
         iflags.last_msg = PLNMSG_UNKNOWN;
         goto pline_done;
     }
@@ -350,10 +358,10 @@ VA_DECL(const char *, line)
     msgtyp = MSGTYP_NORMAL;
     no_repeat = (pline_flags & PLINE_NOREPEAT) ? TRUE : FALSE;
     if ((pline_flags & OVERRIDE_MSGTYPE) == 0) {
-        msgtyp = msgtype_type(line, no_repeat);
+        msgtyp = msgtype_type(used_line, no_repeat);
         if ((pline_flags & URGENT_MESSAGE) == 0
             && (msgtyp == MSGTYP_NOSHOW
-                || (msgtyp == MSGTYP_NOREP && !strcmp(line, prevmsg))))
+                || (msgtyp == MSGTYP_NOREP && !strcmp(used_line, prevmsg))))
             /* FIXME: we need a way to tell our caller that this message
              * was suppressed so that caller doesn't set iflags.last_msg
              * for something that hasn't been shown, otherwise a subsequent
@@ -372,16 +380,32 @@ VA_DECL(const char *, line)
     if (u.ux && !program_state.in_bones && iflags.window_inited)
         flush_screen(!flags.show_cursor_on_u); // show_cursor_on_u actually indicates that there is a getpos going on, in which case the cursor should not be returned to the player
 
-    if (domulti)
+    //if (domulti)
+    //{
+    //    putmesg_ex2(multi_line, attrs, colors);
+    //}
+    //else 
+    if (pline_prefix_text || pline_separator_text || domulti)
     {
-        putmesg_ex2(combined_line, attrs, colors);
-    }
-    else if (pline_prefix_text || pline_separator_text)
-    {
-        Sprintf(combined_line, "%s%s%s", pline_prefix_text ? pline_prefix_text : "", pline_separator_text ? pline_separator_text : "", line);
-        size_t line_len = strlen(line);
+        size_t line_len = strlen(original_line);
         size_t prefix_len = pline_prefix_text ? strlen(pline_prefix_text) : 0;
         size_t separator_len = pline_separator_text ? strlen(pline_separator_text) : 0;
+        if (domulti && (prefix_len > 0 || separator_len > 0))
+        {
+            size_t offset = prefix_len + separator_len;
+            int j;
+            for (j = line_len - 1; j > 0; j--)
+            {
+                attrs[j + offset] = attrs[j];
+                colors[j + offset] = colors[j];
+            }
+            for (j = 0; j < offset; j++)
+            {
+                attrs[j] = 0;
+                colors[j] = 0;
+            }
+        }
+
         char* attr_p = attrs;
         char* color_p = colors;
         if (prefix_len > 0)
@@ -398,25 +422,27 @@ VA_DECL(const char *, line)
             memset(color_p, pline_separator_color, separator_len);
             color_p += separator_len;
         }
-        memset(attr_p, pline_attr, line_len);
-        attr_p += line_len;
-        *attr_p = 0;
-        memset(color_p, pline_color, line_len);
-        color_p += line_len;
-        *color_p = 0;
-
+        if (!domulti)
+        {
+            memset(attr_p, pline_attr, line_len);
+            attr_p += line_len;
+            *attr_p = 0;
+            memset(color_p, pline_color, line_len);
+            color_p += line_len;
+            *color_p = 0;
+        }
         putmesg_ex2(combined_line, attrs, colors);
     }
     else
-        putmesg(line);
+        putmesg(used_line);
 
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
-    execplinehandler(line);
+    execplinehandler(used_line);
 #endif
 
     /* this gets cleared after every pline message */
     iflags.last_msg = PLNMSG_UNKNOWN;
-    (void) strncpy(prevmsg, line, BUFSZ), prevmsg[BUFSZ - 1] = '\0';
+    (void) strncpy(prevmsg, used_line, BUFSZ), prevmsg[BUFSZ - 1] = '\0';
     if (msgtyp == MSGTYP_STOP && iflags.window_inited)
         display_nhwindow(WIN_MESSAGE, TRUE); /* --more-- */
 
