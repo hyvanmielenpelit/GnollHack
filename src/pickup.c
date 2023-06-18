@@ -2043,7 +2043,7 @@ struct obj* cobj;
             if (iflags.using_gui_sounds)
                 delay_output_milliseconds(300);
             play_sfx_sound(SFX_SURPRISE_ATTACK);
-            pline("Disturbed, %s %srises from the %s!", a_monnam(mtmp), lid_opened ? "opens the lid and " : "", cxname(cobj));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Disturbed, %s %srises from the %s!", a_monnam(mtmp), lid_opened ? "opens the lid and " : "", cxname(cobj));
             flush_screen(1);
             if (iflags.using_gui_sounds)
                 delay_output_milliseconds(300);

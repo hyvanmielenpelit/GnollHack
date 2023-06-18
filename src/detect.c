@@ -1450,7 +1450,7 @@ struct obj **optr;
             if (!rn2(100)) /* make them nervous */
             {
                 play_sfx_sound(SFX_SURPRISE_ATTACK);
-                You_see("the Wizard of Yendor gazing out at you.");
+                You_see_ex(ATR_NONE, CLR_MSG_WARNING, "the Wizard of Yendor gazing out at you.");
             }
             else
             {

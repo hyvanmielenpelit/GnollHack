@@ -1641,8 +1641,14 @@ register struct monst* origmonst;
             } 
             else if (rnd(20) < 10 + u.uac)
             {
-                pline_The("wand hits you!");
-                losehp(adjust_damage(d(2, 12), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE), "wand", KILLED_BY_AN);
+                double damage = adjust_damage(d(2, 12), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE);
+                int damagedealt = calculate_damage_dealt_to_player(damage);
+                if (damagedealt > 0)
+                    pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "The wand hits you for %d damage!", damagedealt);
+                else
+                    pline_The("The wand hits you!");
+
+                losehp(damage, "wand", KILLED_BY_AN);
             }
             else
                 pline_The("wand misses you.");

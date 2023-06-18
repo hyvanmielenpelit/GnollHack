@@ -4607,7 +4607,7 @@ struct monst *mtmp;
     { 
         update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
         play_sfx_sound(SFX_STUMBLE_ON_MIMIC);
-        pline(fmt, what);
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, fmt, what);
     }
 
     wakeup(mtmp, FALSE); /* clears mimicking */
@@ -4936,12 +4936,63 @@ schar difficulty_level;
 
 }
 
+int
+calculate_damage_dealt_to_player(hp_d)
+double hp_d;
+{
+    int integer_hp = (int)hp_d;
+    double fracionalpart_hp_d = hp_d - (double)integer_hp;
+    int fractional_hp = (int)(10000 * fracionalpart_hp_d);
+
+    int target_integer_part = 0;
+    int target_fractional_part = 0;
+    int target_max = 0;
+
+    if (Upolyd)
+    {
+        target_integer_part = u.mh;
+        target_fractional_part = u.mh_fraction;
+        target_max = u.mhmax;
+    }
+    else
+    {
+        target_integer_part = u.uhp;
+        target_fractional_part = u.uhp_fraction;
+        target_max = u.uhpmax;
+    }
+
+    int hp_before = target_integer_part;
+    target_integer_part -= integer_hp;
+    target_fractional_part -= fractional_hp;
+
+    if (target_fractional_part < 0)
+    {
+        int multiple = (abs(target_fractional_part) / 10000) + 1;
+        target_integer_part -= multiple;
+        target_fractional_part += multiple * 10000;
+    }
+    else if (target_fractional_part >= 10000)
+    {
+        int multiple = target_fractional_part / 10000;
+        target_integer_part += multiple;
+        target_fractional_part -= multiple * 10000;
+    }
+
+    if (target_integer_part >= target_max)
+    {
+        target_integer_part = target_max;
+        target_fractional_part = 0;
+    }
+
+    int hp_after = target_integer_part;
+    int damage_dealt = hp_before - hp_after;
+    return max(0, damage_dealt);
+}
 
 int
 deduct_player_hp(hp_d)
 double hp_d;
 {
-
     int integer_hp = (int)hp_d;
     double fracionalpart_hp_d = hp_d - (double)integer_hp;
     int fractional_hp = (int)(10000 * fracionalpart_hp_d);

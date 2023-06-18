@@ -1145,7 +1145,7 @@ coord *cc;
             if (!Blind)
             {
                 play_sfx_sound(SFX_SURPRISE_ATTACK);
-                pline(Hallucination ? "Dude!  The living dead!"
+                pline_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_WARNING, Hallucination ? "Dude!  The living dead!"
                     : "The grave's owner is very upset!");
             }
             (void)makemon(mkclass(S_LESSER_UNDEAD, 0), dig_x, dig_y, NO_MM_FLAGS);
@@ -1154,7 +1154,7 @@ coord *cc;
             if (!Blind)
             {
                 play_sfx_sound(SFX_SURPRISE_ATTACK);
-                pline(Hallucination ? "I want my mummy!"
+                pline_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_WARNING, Hallucination ? "I want my mummy!"
                     : "You've disturbed a tomb!");
             }
             otmp = mksobj_at_with_flags(SARCOPHAGUS, dig_x, dig_y, FALSE, FALSE, 0, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_OPEN_COFFIN);

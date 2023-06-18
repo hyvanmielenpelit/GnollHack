@@ -3713,6 +3713,7 @@ E void FDECL(stumble_onto_mimic, (struct monst *));
 E int FDECL(flash_hits_mon, (struct monst *, struct obj *));
 E void FDECL(light_hits_gremlin, (struct monst *, int));
 E double FDECL(adjust_damage, (int, struct monst*, struct monst*, SHORT_P, unsigned long));
+E int FDECL(calculate_damage_dealt_to_player, (double));
 E int FDECL(deduct_player_hp, (double));
 E int FDECL(deduct_monster_hp, (struct monst*, double));
 E void FDECL(get_game_difficulty_multipliers, (double*, double*));
