@@ -394,12 +394,12 @@ VA_DECL(const char *, line)
         {
             size_t offset = prefix_len + separator_len;
             int j;
-            for (j = line_len - 1; j >= 0; j--)
+            for (j = (int)line_len - 1; j >= 0; j--)
             {
-                attrs[j + offset] = attrs[j];
-                colors[j + offset] = colors[j];
+                attrs[j + (int)offset] = attrs[j];
+                colors[j + (int)offset] = colors[j];
             }
-            for (j = 0; j < offset; j++)
+            for (j = 0; j < (int)offset; j++)
             {
                 attrs[j] = 0;
                 colors[j] = 0;
