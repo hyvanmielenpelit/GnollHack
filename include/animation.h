@@ -126,6 +126,8 @@ struct autodraw_definition {
     int source_glyph3;
     int source_glyph4;
     unsigned long parameter1;
+    unsigned long parameter2;
+    unsigned long parameter3;
     /* and other useful stuff if need be */
 };
 

@@ -7,7 +7,7 @@
 
 NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
 {
-    {"", 0, 0, 0, 0, 0, 0, 0UL},
+    {"", 0, 0, 0, 0, 0, 0, 0UL, 0UL, 0UL},
     {
         "dungeon-normal-wall-autodraw-all",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
@@ -16,7 +16,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + GLYPH_CMAP_OFF,
         S_hwall + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-normal-wall-autodraw-left-right",
@@ -26,7 +26,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + GLYPH_CMAP_OFF,
         S_hwall + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-normal-wall-autodraw-up-down",
@@ -36,7 +36,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + GLYPH_CMAP_OFF,
         S_hwall + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-normal-wall-autodraw-up-down-left",
@@ -46,7 +46,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + GLYPH_CMAP_OFF,
         S_hwall + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-normal-wall-autodraw-up-down-right",
@@ -56,7 +56,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + GLYPH_CMAP_OFF,
         S_hwall + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-normal-wall-autodraw-up-left-right",
@@ -66,7 +66,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + GLYPH_CMAP_OFF,
         S_hwall + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-normal-wall-autodraw-down-left-right",
@@ -76,7 +76,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + GLYPH_CMAP_OFF,
         S_hwall + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-normal-wall-autodraw-down-down-right",
@@ -86,7 +86,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + GLYPH_CMAP_OFF,
         S_hwall + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-normal-wall-autodraw-down-down-left",
@@ -96,7 +96,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + GLYPH_CMAP_OFF,
         S_hwall + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-normal-wall-autodraw-down-up-right",
@@ -106,7 +106,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + GLYPH_CMAP_OFF,
         S_hwall + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-normal-wall-autodraw-down-up-left",
@@ -116,7 +116,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + GLYPH_CMAP_OFF,
         S_hwall + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
 
     {
@@ -127,7 +127,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gnomish-mines-wall-autodraw-left-right",
@@ -137,7 +137,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gnomish-mines-wall-autodraw-up-down",
@@ -147,7 +147,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gnomish-mines-wall-autodraw-up-down-left",
@@ -157,7 +157,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gnomish-mines-wall-autodraw-up-down-right",
@@ -167,7 +167,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gnomish-mines-wall-autodraw-up-left-right",
@@ -177,7 +177,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gnomish-mines-wall-autodraw-down-left-right",
@@ -187,7 +187,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gnomish-mines-wall-autodraw-down-down-right",
@@ -197,7 +197,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gnomish-mines-wall-autodraw-down-down-left",
@@ -207,7 +207,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gnomish-mines-wall-autodraw-down-up-right",
@@ -217,7 +217,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gnomish-mines-wall-autodraw-down-up-left",
@@ -227,7 +227,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
 
     {
@@ -238,7 +238,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-wall-autodraw-left-right",
@@ -248,7 +248,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-wall-autodraw-up-down",
@@ -258,7 +258,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-wall-autodraw-up-down-left",
@@ -268,7 +268,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-wall-autodraw-up-down-right",
@@ -278,7 +278,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-wall-autodraw-up-left-right",
@@ -288,7 +288,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-wall-autodraw-down-left-right",
@@ -298,7 +298,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-wall-autodraw-down-down-right",
@@ -308,7 +308,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-wall-autodraw-down-down-left",
@@ -318,7 +318,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-wall-autodraw-down-up-right",
@@ -328,7 +328,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-wall-autodraw-down-up-left",
@@ -338,7 +338,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
 
     {
@@ -349,7 +349,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-undead-wall-autodraw-left-right",
@@ -359,7 +359,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-undead-wall-autodraw-up-down",
@@ -369,7 +369,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-undead-wall-autodraw-up-down-left",
@@ -379,7 +379,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-undead-wall-autodraw-up-down-right",
@@ -389,7 +389,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-undead-wall-autodraw-up-left-right",
@@ -399,7 +399,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-undead-wall-autodraw-down-left-right",
@@ -409,7 +409,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-undead-wall-autodraw-down-down-right",
@@ -419,7 +419,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-undead-wall-autodraw-down-down-left",
@@ -429,7 +429,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-undead-wall-autodraw-down-up-right",
@@ -439,7 +439,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "dungeon-undead-wall-autodraw-down-up-left",
@@ -449,7 +449,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
 
     {
@@ -460,7 +460,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-cavernous-wall-autodraw-left-right",
@@ -470,7 +470,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-cavernous-wall-autodraw-up-down",
@@ -480,7 +480,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-cavernous-wall-autodraw-up-down-left",
@@ -490,7 +490,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-cavernous-wall-autodraw-up-down-right",
@@ -500,7 +500,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-cavernous-wall-autodraw-up-left-right",
@@ -510,7 +510,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-cavernous-wall-autodraw-down-left-right",
@@ -520,7 +520,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-cavernous-wall-autodraw-down-down-right",
@@ -530,7 +530,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-cavernous-wall-autodraw-down-down-left",
@@ -540,7 +540,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-cavernous-wall-autodraw-down-up-right",
@@ -550,7 +550,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "gehennom-cavernous-wall-autodraw-down-up-left",
@@ -560,7 +560,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         S_vwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GEHENNOM_CAVERNOUS * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
 
 
@@ -572,7 +572,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "weapon-rack-autodraw",
@@ -582,7 +582,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "candelabrum-autodraw",
@@ -592,7 +592,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "candelabrum-animation-1-autodraw",
@@ -602,7 +602,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "large-five-branched-candelabrum-autodraw",
@@ -612,7 +612,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "large-five-branched-candelabrum-animation-1-autodraw",
@@ -622,7 +622,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "large-five-branched-candelabrum-animation-2-autodraw",
@@ -632,7 +632,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "large-five-branched-candelabrum-animation-3-autodraw",
@@ -642,7 +642,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "large-five-branched-candelabrum-animation-4-autodraw",
@@ -652,7 +652,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "large-five-branched-candelabrum-animation-5-autodraw",
@@ -662,7 +662,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "jar-yellow-autodraw",
@@ -672,7 +672,9 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0xFFFFFF00UL
+        0xFFFFFF00UL,
+        0xFFCCAA00UL,
+        0UL
     },
     {
         "jar-purple-autodraw",
@@ -682,7 +684,9 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0xFF800080UL
+        0xFF800080UL,
+        0xFFCC00AAUL,
+        0UL
     },
     {
         "jar-white-autodraw",
@@ -692,7 +696,9 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0xFFFFFFFFUL
+        0xFFFFFFFFUL,
+        0xFFDDCC22UL,
+        0UL
     },
     {
         "jar-violet-autodraw",
@@ -702,7 +708,9 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0xFFEE82EEUL
+        0xFFEE82EEUL,
+        0xFF8877EEUL,
+        0UL
     },
     {
         "jar-crimson-autodraw",
@@ -712,7 +720,9 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0xFFDC143CUL
+        0xFFDC143CUL,
+        0xFFBB1122UL,
+        0UL
     },
     {
         "figurine-autodraw",
@@ -722,7 +732,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "chain-autodraw",
@@ -732,7 +742,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         IRON_CHAIN + GLYPH_OBJ_OFF, /* Backup data for unimplemented autodraw to avoid invisible chain */
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "ball-autodraw",
@@ -742,7 +752,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         HEAVY_IRON_BALL + GLYPH_OBJ_OFF, /* Backup data for unimplemented autodraw */
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "chain-autodraw-up",
@@ -752,7 +762,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "chain-autodraw-right",
@@ -762,7 +772,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "chain-autodraw-down",
@@ -772,7 +782,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "chain-autodraw-left",
@@ -782,7 +792,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "long-worm-autodraw-head",
@@ -792,7 +802,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         WORM_TILE_WORM_SEGMENT_GOING_UP + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
         WORM_TILE_WORM_SEGMENT_BOTTOM + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
         WORM_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "long-worm-autodraw-tail",
@@ -802,7 +812,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         WORM_TILE_WORM_SEGMENT_GOING_UP + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
         WORM_TILE_WORM_SEGMENT_BOTTOM + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
         WORM_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "elder-long-worm-autodraw-head",
@@ -812,7 +822,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         WORM_TILE_WORM_SEGMENT_GOING_UP + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
         WORM_TILE_WORM_SEGMENT_BOTTOM + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
         WORM_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "elder-long-worm-autodraw-tail",
@@ -822,7 +832,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         WORM_TILE_WORM_SEGMENT_GOING_UP + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
         WORM_TILE_WORM_SEGMENT_BOTTOM + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
         WORM_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
-        0UL
+        0UL, 0UL, 0UL
     },
     {
         "coffin-autodraw",
@@ -832,7 +842,7 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0UL
+        0UL, 0UL, 0UL
     },
 
 };

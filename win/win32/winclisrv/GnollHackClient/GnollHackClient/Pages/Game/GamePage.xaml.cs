@@ -7977,12 +7977,16 @@ namespace GnollHackClient.Pages.Game
 
                         /* Draw to _paintBitmap */
                         oldbm = paint.BlendMode;
-                        paint.Color = SKColors.Black;
+                        draw_color = App._autodraws[autodraw].parameter2;
+                        blue = (byte)(draw_color & 0xFFUL);
+                        green = (byte)((draw_color & 0xFF00UL) >> 8);
+                        red = (byte)((draw_color & 0xFF0000UL) >> 16);
+                        SKColor capcolor = new SKColor(red, green, blue);
                         using (SKCanvas _paintCanvas = new SKCanvas(_paintBitmap))
                         {
                             _paintCanvas.Clear(SKColors.Transparent);
                             _paintCanvas.DrawBitmap(TileMap[a2_sheet_idx], source_rt, target_rt, paint);
-                            paint.Color = fillcolor;
+                            paint.Color = capcolor;
                             paint.BlendMode = SKBlendMode.Modulate;
                             _paintCanvas.DrawRect(target_rt, paint);
                         }

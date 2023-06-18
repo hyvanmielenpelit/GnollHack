@@ -371,6 +371,8 @@ namespace GnollHackCommon
         public int source_glyph3;
         public int source_glyph4;
         public ulong parameter1;
+        public ulong parameter2;
+        public ulong parameter3;
     }
 
     public enum layer_types
