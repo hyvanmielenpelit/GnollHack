@@ -987,6 +987,7 @@ namespace GnollHackCommon
         public int tile_height;
         public short special_quality;
         public short max_charges;
+        public byte nhcolor;
 
         public byte lamplit;
         public byte poisoned;

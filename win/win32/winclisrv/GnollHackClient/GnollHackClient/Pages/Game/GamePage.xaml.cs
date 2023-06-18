@@ -7760,22 +7760,10 @@ namespace GnollHackClient.Pages.Game
                 {
                     short max_charge = otmp_round.OtypData.max_charges;
                     double fill_percentage = (max_charge > 0 ? (double)otmp_round.ObjData.charges / (double)max_charge : 0.0);
-                    if (fill_percentage > 0.0)
+                    if (fill_percentage >= 0.0)
                     {
                         float jar_width = GHConstants.TileWidth;
                         float jar_height = GHConstants.TileHeight / 2;
-
-                        //int jar_pitch = 4 * jar_width;
-                        //int jar_idx;
-                        //for (int x = 0; x < jar_width; x++)
-                        //{
-                        //    for (int y = 0; y < jar_height; y++)
-                        //    {
-                        //        jar_idx = y * jar_pitch;
-                        //        jar_idx += x * 4;
-                        //        /* Draw background */
-                        //    }
-                        //}
 
                         /* First, background */
                         float dest_x, dest_y;
@@ -7790,7 +7778,7 @@ namespace GnollHackClient.Pages.Game
 
                         int source_glyph2 = App._autodraws[autodraw].source_glyph2;
                         int atile2 = App.Glyph2Tile[source_glyph2];
-                        int a2_sheet_idx = App.TileSheetIdx(atile);
+                        int a2_sheet_idx = App.TileSheetIdx(atile2);
                         int a2t_x = App.TileSheetX(atile2);
                         int a2t_y = App.TileSheetY(atile2);
 
@@ -7814,122 +7802,63 @@ namespace GnollHackClient.Pages.Game
                             canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
                         }
 
-
-                        /* Second, contents */
-                        double semi_transparency;
-                        source_rt.Left = at_x;
-                        source_rt.Right = source_rt.Left + GHConstants.TileWidth;
-                        source_rt.Top = at_y + GHConstants.TileHeight / 2;
-                        source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
-                        float source_width = source_rt.Right - source_rt.Left;
-                        float source_height = source_rt.Bottom - source_rt.Top;
-
-                        target_rt.Left = 0;
-                        target_rt.Right = source_width;
-                        target_rt.Top = 0;
-                        target_rt.Bottom = source_height;
-
                         /* Color */
                         ulong draw_color = App._autodraws[autodraw].parameter1;
                         byte blue = (byte)(draw_color & 0xFFUL);
                         byte green = (byte)((draw_color & 0xFF00UL) >> 8);
                         byte red = (byte)((draw_color & 0xFF0000UL) >> 16);
+                        SKColor fillcolor = new SKColor(red, green, blue);
 
-                        /* Draw to _paintBitmap */
-                        semi_transparency = 0.0;
-                        SKBlendMode oldbm = paint.BlendMode;
-                        using (SKCanvas _paintCanvas = new SKCanvas(_paintBitmap))
+                        double semi_transparency;
+                        SKBlendMode oldbm;
+                        if (fill_percentage > 0.0)
                         {
-                            _paintCanvas.Clear(SKColors.Transparent);
-                            paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
-                            _paintCanvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
-                            paint.BlendMode = SKBlendMode.Modulate;
-                            paint.Color = new SKColor(red, green, blue);
-                            _paintCanvas.DrawRect(target_rt, paint);
-                        }
-                        paint.BlendMode = oldbm;
-                        paint.Color = SKColors.Black;
+                            /* Second, contents */
+                            source_rt.Left = at_x;
+                            source_rt.Right = source_rt.Left + GHConstants.TileWidth;
+                            source_rt.Top = at_y + GHConstants.TileHeight / 2;
+                            source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
+                            float source_width = source_rt.Right - source_rt.Left;
+                            float source_height = source_rt.Bottom - source_rt.Top;
 
-                        /* Bottom contents */
-                        int bottom_x = 21;
-                        int bottom_y = 38;
-                        int bottom_width = 21;
-                        int bottom_height = 10;
+                            target_rt.Left = 0;
+                            target_rt.Right = source_width;
+                            target_rt.Top = 0;
+                            target_rt.Bottom = source_height;
 
-                        int bottom_tx = 21;
-                        int bottom_ty = 35;
-
-                        source_rt.Left = bottom_x;
-                        source_rt.Right = source_rt.Left + bottom_width;
-                        source_rt.Top = bottom_y;
-                        source_rt.Bottom = source_rt.Top + bottom_height;
-
-                        target_rt.Left = bottom_tx * scale * targetscale;
-                        target_rt.Right = (bottom_tx + bottom_width) * scale * targetscale;
-                        target_rt.Top = bottom_ty * scale * targetscale;
-                        target_rt.Bottom = (bottom_ty + bottom_height) * scale * targetscale;
-
-                        semi_transparency = 0.0;
-                        paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
-                        using (new SKAutoCanvasRestore(canvas, true))
-                        {
-                            canvas.Translate(dest_x, dest_y);
-                            canvas.DrawBitmap(_paintBitmap, source_rt, target_rt, paint);
-                        }
-
-                        /* Middle contents */
-                        int full_y = 11;
-                        int empty_y = 35;
-                        int fill_pixel_top = (int)((double)(empty_y - full_y) * (1.0 - fill_percentage)) + full_y;
-                        int fill_pixels = empty_y - fill_pixel_top;
-                        if (fill_pixels > 0)
-                        {
-                            int middle_x = 21;
-                            int middle_y = 15;
-                            int middle_width = 21;
-                            int middle_height = 17;
-
-                            int middle_tx = 21;
-                            int middle_ty = fill_pixel_top + 4;
-                            int middle_twidth = middle_width;
-                            int middle_theight = fill_pixels + 1;
-
-                            source_rt.Left = middle_x;
-                            source_rt.Right = source_rt.Left + middle_width;
-                            source_rt.Top = middle_y;
-                            source_rt.Bottom = source_rt.Top + middle_height;
-
-                            target_rt.Left = middle_tx * scale * targetscale;
-                            target_rt.Right = (middle_tx + middle_twidth) * scale * targetscale;
-                            target_rt.Top = middle_ty * scale * targetscale;
-                            target_rt.Bottom = (middle_ty + middle_theight) * scale * targetscale;
-
-                            semi_transparency = 0.2;
-                            paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
-                            using (new SKAutoCanvasRestore(canvas, true))
+                            /* Draw to _paintBitmap */
+                            semi_transparency = 0.0;
+                            oldbm = paint.BlendMode;
+                            using (SKCanvas _paintCanvas = new SKCanvas(_paintBitmap))
                             {
-                                canvas.Translate(dest_x, dest_y);
-                                canvas.DrawBitmap(_paintBitmap, source_rt, target_rt, paint);
+                                _paintCanvas.Clear(SKColors.Transparent);
+                                paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                                _paintCanvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                                paint.BlendMode = SKBlendMode.Modulate;
+                                paint.Color = fillcolor;
+                                _paintCanvas.DrawRect(target_rt, paint);
                             }
+                            paint.BlendMode = oldbm;
+                            paint.Color = SKColors.Black;
 
-                            /* Top contents */
-                            int top_x = 21;
-                            int top_y = 0;
-                            int top_width = 21;
-                            int top_height = 8;
+                            /* Bottom contents */
+                            int bottom_x = 20; // 21;
+                            int bottom_y = 40; // 38;
+                            int bottom_width = 23; // 21;
+                            int bottom_height = 7; // 10;
 
-                            int top_tx = 21;
-                            int top_ty = fill_pixel_top;
+                            int bottom_tx = 20; // 21;
+                            int bottom_ty = 38; // 35;
 
-                            source_rt.Left = top_x;
-                            source_rt.Right = source_rt.Left + top_width;
-                            source_rt.Top = top_y;
-                            source_rt.Bottom = source_rt.Top + top_height;
+                            source_rt.Left = bottom_x;
+                            source_rt.Right = source_rt.Left + bottom_width;
+                            source_rt.Top = bottom_y;
+                            source_rt.Bottom = source_rt.Top + bottom_height;
 
-                            target_rt.Left = top_tx * scale * targetscale;
-                            target_rt.Right = (top_tx + top_width) * scale * targetscale;
-                            target_rt.Top = top_ty * scale * targetscale;
-                            target_rt.Bottom = (top_ty + top_height) * scale * targetscale;
+                            target_rt.Left = bottom_tx * scale * targetscale;
+                            target_rt.Right = (bottom_tx + bottom_width) * scale * targetscale;
+                            target_rt.Top = bottom_ty * scale * targetscale;
+                            target_rt.Bottom = (bottom_ty + bottom_height) * scale * targetscale;
 
                             semi_transparency = 0.0;
                             paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
@@ -7937,6 +7866,79 @@ namespace GnollHackClient.Pages.Game
                             {
                                 canvas.Translate(dest_x, dest_y);
                                 canvas.DrawBitmap(_paintBitmap, source_rt, target_rt, paint);
+                            }
+
+                            /* Middle contents */
+                            int full_y = 17; // 11;
+                            int empty_y = 38; // 35;
+                            int fill_pixel_top = (int)((double)(empty_y - full_y) * (1.0 - fill_percentage)) + full_y;
+                            int fill_pixels = empty_y - fill_pixel_top;
+                            if (fill_pixels > 0)
+                            {
+                                int middle_x = 18; // 21;
+                                int middle_y = 14; // 15;
+                                int middle_width = 27; //  21;
+                                int middle_height = 22; // 17;
+
+                                int middle_tx = 18; // 21;
+                                int middle_ty = fill_pixel_top + 4;
+                                int middle_twidth = middle_width;
+                                int middle_theight = fill_pixels + 1;
+
+                                source_rt.Left = middle_x;
+                                source_rt.Right = source_rt.Left + middle_width;
+                                source_rt.Top = middle_y;
+                                source_rt.Bottom = source_rt.Top + middle_height;
+
+                                target_rt.Left = middle_tx * scale * targetscale;
+                                target_rt.Right = (middle_tx + middle_twidth) * scale * targetscale;
+                                target_rt.Top = middle_ty * scale * targetscale;
+                                target_rt.Bottom = (middle_ty + middle_theight) * scale * targetscale;
+
+                                semi_transparency = 0.2;
+                                paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                                using (new SKAutoCanvasRestore(canvas, true))
+                                {
+                                    canvas.Translate(dest_x, dest_y);
+                                    canvas.DrawBitmap(_paintBitmap, source_rt, target_rt, paint);
+                                }
+
+                                /* Top contents */
+                                int top_x = 17; // 21;
+                                int top_y = 3; // 0;
+                                int top_width = 27; // 21;
+                                int top_height = 8; // 8;
+
+                                float top_tx_full = 17; // 21;
+                                float top_tx_empty = bottom_tx; // 21;
+                                float top_tx = top_tx_empty + (float)(top_tx_full - top_tx_empty) * (float)fill_percentage;
+
+                                float top_twidth_full = top_width;
+                                float top_twidth_empty = bottom_width; ;
+                                float top_twidth = top_twidth_empty + (float)(top_twidth_full - top_twidth_empty) * (float)fill_percentage;
+
+                                float top_ty = fill_pixel_top;
+                                float top_theight_full = top_height;
+                                float top_theight_empty = bottom_height;
+                                float top_theight = top_theight_empty + (float)(top_theight_full - top_theight_empty) * (float)fill_percentage;
+
+                                source_rt.Left = top_x;
+                                source_rt.Right = source_rt.Left + top_width;
+                                source_rt.Top = top_y;
+                                source_rt.Bottom = source_rt.Top + top_height;
+
+                                target_rt.Left = top_tx * scale * targetscale;
+                                target_rt.Right = (top_tx + top_twidth) * scale * targetscale;
+                                target_rt.Top = top_ty * scale * targetscale;
+                                target_rt.Bottom = (top_ty + top_theight) * scale * targetscale;
+
+                                semi_transparency = 0.0;
+                                paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                                using (new SKAutoCanvasRestore(canvas, true))
+                                {
+                                    canvas.Translate(dest_x, dest_y);
+                                    canvas.DrawBitmap(_paintBitmap, source_rt, target_rt, paint);
+                                }
                             }
                         }
 
@@ -7961,9 +7963,35 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         /* Fourth, opaque foreground */
+                        paint.Color = SKColors.Black;
+
                         source_rt.Left = a2t_x;
                         source_rt.Right = source_rt.Left + GHConstants.TileWidth;
                         source_rt.Top = a2t_y + GHConstants.TileHeight / 2;
+                        source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
+
+                        target_rt.Left = 0;
+                        target_rt.Right = jar_width;
+                        target_rt.Top = 0;
+                        target_rt.Bottom = jar_height;
+
+                        /* Draw to _paintBitmap */
+                        oldbm = paint.BlendMode;
+                        paint.Color = SKColors.Black;
+                        using (SKCanvas _paintCanvas = new SKCanvas(_paintBitmap))
+                        {
+                            _paintCanvas.Clear(SKColors.Transparent);
+                            _paintCanvas.DrawBitmap(TileMap[a2_sheet_idx], source_rt, target_rt, paint);
+                            paint.Color = fillcolor;
+                            paint.BlendMode = SKBlendMode.Modulate;
+                            _paintCanvas.DrawRect(target_rt, paint);
+                        }
+                        paint.BlendMode = oldbm;
+                        paint.Color = SKColors.Black;
+
+                        source_rt.Left = 0;
+                        source_rt.Right = source_rt.Left + GHConstants.TileWidth;
+                        source_rt.Top = 0;
                         source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
 
                         target_rt.Left = 0;
@@ -7971,11 +7999,10 @@ namespace GnollHackClient.Pages.Game
                         target_rt.Top = 0;
                         target_rt.Bottom = jar_height * scale * targetscale;
 
-                        paint.Color = SKColors.Black;
                         using (new SKAutoCanvasRestore(canvas, true))
                         {
                             canvas.Translate(dest_x, dest_y);
-                            canvas.DrawBitmap(TileMap[a2_sheet_idx], source_rt, target_rt, paint);
+                            canvas.DrawBitmap(_paintBitmap, source_rt, target_rt, paint);
                         }
                     }
                     paint.Color = SKColors.Black;

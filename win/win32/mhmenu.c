@@ -1588,7 +1588,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         cnt++;
                     }
                 }
-                else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_JAR_CONTENTS && item->object_data.otyp > STRANGE_OBJECT)
+                else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_JAR_CONTENTS && item->object_data.otyp > STRANGE_OBJECT && 0)
                 {
                     int max_charge = get_obj_max_charge(&item->object_data);
                     double fill_percentage = (max_charge > 0 ? (double)item->object_data.charges / (double)max_charge : 0.0);

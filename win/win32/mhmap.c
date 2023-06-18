@@ -3182,12 +3182,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     cnt++;
                                 }
                             }
-                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_JAR_CONTENTS && otmp_round)
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_JAR_CONTENTS && otmp_round && 0)
                             {
                                 int max_charge = get_obj_max_charge(otmp_round);
                                 double fill_percentage = (max_charge > 0 ? (double)otmp_round->charges / (double)max_charge : 0.0);
 
-                                if (fill_percentage > 0.0)
+                                if (fill_percentage >= 0.0)
                                 {
                                     HDC hDCjar = CreateCompatibleDC(data->tileDC[0]);
 
@@ -3237,7 +3237,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     int source_glyph2 = autodraws[autodraw].source_glyph2;
                                     int atile2 = glyph2tile[source_glyph2];
-                                    int a2_sheet_idx = TILE_SHEET_IDX(atile);
+                                    int a2_sheet_idx = TILE_SHEET_IDX(atile2);
                                     int a2t_x = TILEBMP_X(atile2);
                                     int a2t_y = TILEBMP_Y(atile2);
 

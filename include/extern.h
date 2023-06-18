@@ -3192,6 +3192,7 @@ E boolean FDECL(saleable, (struct monst *, struct obj *));
 E int FDECL(get_shop_item, (int));
 E char *FDECL(Shknam, (struct monst *));
 E char *FDECL(shkname, (struct monst *));
+E char* FDECL(true_shkname, (struct monst*));
 E boolean FDECL(shkname_is_pname, (struct monst *));
 E boolean FDECL(is_izchak, (struct monst *, BOOLEAN_P));
 E const char* FDECL(shoptypename, (int));

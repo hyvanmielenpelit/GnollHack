@@ -502,7 +502,7 @@ int how;
         if (has_mname(mtmp))
             Sprintf(eos(buf), " of %s", MNAME(mtmp));
     } else if (mtmp->isshk) {
-        const char *shknm = shkname(mtmp),
+        const char *shknm = true_shkname(mtmp), //True shopkeeper name, not hallucinated
                    *honorific = shkname_is_pname(mtmp) ? ""
                                    : mtmp->female ? "Ms. " : "Mr. ";
 

@@ -16,6 +16,7 @@ STATIC_DCL void FDECL(mkshobj_at, (const struct shclass *, int, int,
                                    UCHAR_P, BOOLEAN_P));
 STATIC_DCL void FDECL(nameshk, (struct monst *, const char *const *));
 STATIC_DCL int FDECL(shkinit, (const struct shclass *, struct mkroom *));
+STATIC_DCL char* FDECL(shkname_core, (struct monst*, BOOLEAN_P));
 
 /*
  *  Name prefix codes:
@@ -1112,9 +1113,24 @@ struct monst *mtmp;
 /* shopkeeper's name, without any visibility constraint; if hallucinating,
    will yield some other shopkeeper's name (not necessarily one residing
    in the current game's dungeon, or who keeps same type of shop) */
-char *
+char*
 shkname(mtmp)
+struct monst* mtmp;
+{
+    return shkname_core(mtmp, FALSE);
+}
+
+char*
+true_shkname(mtmp)
+struct monst* mtmp;
+{
+    return shkname_core(mtmp, TRUE);
+}
+
+STATIC_OVL char *
+shkname_core(mtmp, istrue)
 struct monst *mtmp;
+boolean istrue;
 {
     static char nam[BUFSZ] = "shopkeeper";
 
@@ -1135,7 +1151,7 @@ struct monst *mtmp;
     } else {
         const char *shknm = ESHK(mtmp)->shknam;
 
-        if (Hallucination && !program_state.gameover) {
+        if (Hallucination && !program_state.gameover && !istrue) {
             const char *const *nlp;
             int num;
 
@@ -1174,6 +1190,9 @@ boolean
 shkname_is_pname(mtmp)
 struct monst *mtmp;
 {
+    if (!mtmp || !has_eshk(mtmp))
+        return FALSE;
+
     const char *shknm = ESHK(mtmp)->shknam;
 
     return (boolean) (*shknm == '-' || *shknm == '+' || *shknm == '=');
