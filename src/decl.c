@@ -392,6 +392,7 @@ const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS] = {
     { "rottweiler",             (char*)0, "Rottweiler", (char*)0, (char*)0, 0UL },
     { "dachshund",              (char*)0, "Dachshund", (char*)0, (char*)0, 0UL },
     { "beagle",                 (char*)0, "Beagle", (char*)0, (char*)0, 0UL },
+    { "st. bernard",            (char*)0, "St. Bernard", (char*)0, (char*)0, 0UL },
 };
 
 const struct breed_definition cat_breed_definitions[NUM_CAT_BREEDS] = {
