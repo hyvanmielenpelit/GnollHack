@@ -1784,7 +1784,7 @@ unsigned short trflags;
             special_effect_wait_until_action(0);
             deltrap(trap);
             newsym(u.ux, u.uy); /* update position */
-            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are caught in a magical explosion!");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "are caught in a magical explosion!");
             losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "magical explosion", KILLED_BY_AN);
             Your("body absorbs some of the magical energy!");
             u.ubaseenmax += 2;
@@ -3316,7 +3316,7 @@ register struct monst *mtmp;
                 else if (in_sight) 
                 {
                     play_sfx_sound_at_location(SFX_CAUGHT_IN_WEB, mtmp->mx, mtmp->my);
-                    pline("%s is caught in %s spider web.", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is caught in %s spider web.", Monnam(mtmp),
                           a_your[trap->madeby_u]);
                     seetrap(trap);
                 }

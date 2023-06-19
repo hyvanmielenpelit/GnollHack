@@ -1461,7 +1461,7 @@ dokick() {
             {
                 play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 cvt_sdoor_to_door(x, y); /* ->typ = DOOR */
-                pline("Crash!  %s a secret door!",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Crash!  %s a secret door!",
                       /* don't "kick open" when it's locked
                          unless it also happens to be trapped */
                       ((maploc->doormask & (D_LOCKED | D_TRAPPED)) & D_MASK) == D_LOCKED
@@ -1504,7 +1504,7 @@ dokick() {
             if (!Levitation && rn2(30) < avrg_attrib)
             {
                 play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
-                pline("Crash!  You kick open a secret passage!");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Crash!  You kick open a secret passage!");
                 exercise(A_DEX, TRUE);
                 create_basic_floor_location(x, y, levl[x][y].floortyp ? levl[x][y].floortyp : CORR, 0, 0, FALSE);
                 feel_newsym(x, y); /* we know it's gone */
@@ -1529,9 +1529,9 @@ dokick() {
                 (void) mkgold((long) rnd(200), x, y);
                 play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 if (Blind)
-                    pline("CRASH!  You destroy it.");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "CRASH!  You destroy it.");
                 else {
-                    pline("CRASH!  You destroy the throne.");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "CRASH!  You destroy the throne.");
                     newsym(x, y);
                 }
                 exercise(A_DEX, TRUE);
@@ -1549,9 +1549,9 @@ dokick() {
 
                 play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 if (Blind)
-                    You("kick %s loose!", something);
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "kick %s loose!", something);
                 else {
-                    You("kick loose some ornamental coins and gems!");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "kick loose some ornamental coins and gems!");
                     newsym(x, y);
                 }
                 /* prevent endless milking */
@@ -1633,9 +1633,9 @@ dokick() {
             (void) mksobj_at(ROCK, x, y, TRUE, FALSE);
             del_engr_at(x, y);
             if (Blind)
-                pline("Crack!  %s broke!", Something);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Crack!  %s broke!", Something);
             else {
-                pline_The("headstone topples over and breaks!");
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "headstone topples over and breaks!");
                 newsym(x, y);
             }
             update_u_action_revert(ACTION_TILE_NO_ACTION);
@@ -1656,7 +1656,7 @@ dokick() {
             if (rn2(3)) 
             {
                 if (/*!rn2(6)*/ (levl[x][y].flags & TREE_HAS_BEE_HIVE) && !(mvitals[PM_KILLER_BEE].mvflags & MV_GONE))
-                    You_hear("a low buzzing."); /* a warning */
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a low buzzing."); /* a warning */
                 goto ouch;
             }
 
@@ -1676,9 +1676,9 @@ dokick() {
                         short frtype = treefruit->otyp;
 
                         if (is_plural(treefruit))
-                            pline("Some %s fall from the tree!", xname(treefruit));
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Some %s fall from the tree!", xname(treefruit));
                         else
-                            pline("%s falls from the tree!", An(xname(treefruit)));
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s falls from the tree!", An(xname(treefruit)));
 
                         nfall = scatter(x, y, 2, MAY_HIT | ADD_CAUGHT_IN_LEAVES_FLAG, treefruit);
                         if (nfall != nfruit)
@@ -1691,7 +1691,7 @@ dokick() {
                             caughtfruit.quan = nfruit - nfall;
                             //treefruit = mksobj(frtype, TRUE, FALSE, FALSE);
                             //treefruit->quan = nfruit - nfall;
-                            pline("%ld %s got caught in the branches.",
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%ld %s got caught in the branches.",
                                 nfruit - nfall, xname(&caughtfruit));
                             //dealloc_obj(treefruit);
                         }
@@ -1709,7 +1709,7 @@ dokick() {
                     pseudo.otyp = tree_subtype_definitions[maploc->subtyp].fruit_type;
                     pseudo.oclass = objects[pseudo.otyp].oc_class;
                     pseudo.quan = 2; /* Plural */
-                    pline("The tree seems to be low on %s!", xname(&pseudo));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The tree seems to be low on %s!", xname(&pseudo));
                     return 1;
                 }
             } 
@@ -1728,9 +1728,9 @@ dokick() {
                         made++;
                 }
                 if (made)
-                    pline("You've attracted the tree's former occupants!");
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "You've attracted the tree's former occupants!");
                 else
-                    You("smell stale honey.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "smell stale honey.");
                 maploc->looted |= TREE_SWARM;
                 update_u_action_revert(ACTION_TILE_NO_ACTION);
                 return 1;
@@ -1762,9 +1762,9 @@ dokick() {
             } else if (!(maploc->looted & S_LPUDDING) && !rn2(3)
                        && !(mvitals[PM_BLACK_PUDDING].mvflags & MV_GONE)) {
                 if (Blind)
-                    You_hear("a gushing sound.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a gushing sound.");
                 else
-                    pline("A %s ooze gushes up from the drain!",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A %s ooze gushes up from the drain!",
                           hcolor(NH_BLACK));
                 (void) makemon(&mons[PM_BLACK_PUDDING], x, y, NO_MM_FLAGS);
                 exercise(A_DEX, TRUE);
@@ -1783,12 +1783,12 @@ dokick() {
                 update_u_action_revert(ACTION_TILE_NO_ACTION);
                 return 1;
             } else if (!rn2(3)) {
-                pline("Flupp!  %s.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Flupp!  %s.",
                       (Blind ? "You hear a sloshing sound"
                              : "Muddy waste pops up from the drain"));
                 if (!(maploc->looted & S_LRING)) { /* once per sink */
                     if (!Blind)
-                        You_see("a ring shining in its midst.");
+                        You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "a ring shining in its midst.");
                     (void) mkobj_at(RING_CLASS, x, y, TRUE);
                     newsym(x, y);
                     exercise(A_DEX, TRUE);
@@ -1846,7 +1846,7 @@ dokick() {
                 feel_location(x, y);
         } else {
             play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
-            pline("Dumb move!  You strain a muscle.");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Dumb move!  You strain a muscle.");
             exercise(A_STR, FALSE);
             set_wounded_legs(RIGHT_SIDE, 5 + rnd(5));
         }
@@ -1894,7 +1894,7 @@ dokick() {
         {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
-            pline("As you kick the %s, it shatters to pieces!", get_door_name_at(x, y));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As you kick the %s, it shatters to pieces!", get_door_name_at(x, y));
             exercise(A_STR, TRUE);
             maploc->doormask &= ~D_MASK;
             maploc->doormask |= D_NODOOR;
@@ -1908,7 +1908,7 @@ dokick() {
         {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
-            pline("As you kick the %s, it crashes open!", get_door_name_at(x, y));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As you kick the %s, it crashes open!", get_door_name_at(x, y));
             exercise(A_STR, TRUE);
             maploc->doormask &= ~D_MASK;
             maploc->doormask |= D_BROKEN;

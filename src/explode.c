@@ -535,7 +535,7 @@ int expltype;
                 {
                     if (mtmp->m_ap_type)
                         seemimic(mtmp);
-                    pline("%s is caught in the %s!", Monnam(mtmp), str);
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is caught in the %s!", Monnam(mtmp), str);
                 }
 
                 idamres += adjust_damage(destroy_mitem(mtmp, SCROLL_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
@@ -672,7 +672,7 @@ int expltype;
 
                 str = hallu_buf;
             }
-            You("are caught in the %s!", str);
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "are caught in the %s!", str);
             iflags.last_msg = PLNMSG_CAUGHT_IN_EXPLOSION;
         }
         /* do property damage first, in case we end up leaving bones */
