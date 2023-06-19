@@ -674,19 +674,19 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0xFFFFFF00UL,
         0xFFCCAA00UL,
-        0UL
+        1UL
     },
     {
         "jar-purple-autodraw",
         AUTODRAW_DRAW_JAR_CONTENTS,
         0,
-        JAR_GRAPHICS + GLYPH_UI_TILE_OFF,
+        JAR3_GRAPHICS + GLYPH_UI_TILE_OFF,
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
         0xFF800080UL,
         0xFFCC00AAUL,
-        0UL
+        1UL
     },
     {
         "jar-white-autodraw",
@@ -698,25 +698,25 @@ NEARDATA const struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0xFFFFFFFFUL,
         0xFFDDCC22UL,
-        0UL
+        1UL
     },
     {
         "jar-violet-autodraw",
         AUTODRAW_DRAW_JAR_CONTENTS,
         0,
-        JAR_GRAPHICS + GLYPH_UI_TILE_OFF,
+        JAR3_GRAPHICS + GLYPH_UI_TILE_OFF,
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
         0xFFEE82EEUL,
         0xFF8877EEUL,
-        0UL
+        1UL
     },
     {
         "jar-crimson-autodraw",
         AUTODRAW_DRAW_JAR_CONTENTS,
         0,
-        JAR_GRAPHICS + GLYPH_UI_TILE_OFF,
+        JAR2_GRAPHICS + GLYPH_UI_TILE_OFF,
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,

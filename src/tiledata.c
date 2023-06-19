@@ -40,6 +40,8 @@ NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = 
     {"item-property-marks",     NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, min(min(MAX_UI_TILE_8_x_24_COMPONENTS, MAX_UI_TILE_COMPONENTS), MAX_ITEM_PROPERTY_MARKS), 8, 24, {"poisoned", "death-magical", "flaming", "freezing",  "electrified", "exceptional",  "elite", "celestial", "primordial", "infernal", "mythic", "legendary", "corroded", "rotted", "burnt", "rusty",  "very-corroded", "very-rotted", "very-burnt", "very-rusty", "thoroughly-corroded", "thoroughly-rotted", "thoroughly-burnt", "thoroughly-rusty",  "", "", "", "",  "", "", "", "" } },
     {"jar-graphics",            NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 2, 64, 48, {"background", "contents", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"jar-foreground",          NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 2, 64, 48, {"transparent", "opaque", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"jar2-graphics",           NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 2, 64, 48, {"background", "contents", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"jar3-graphics",           NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 2, 64, 48, {"background", "contents", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
 };
 
 boolean

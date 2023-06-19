@@ -7834,9 +7834,12 @@ namespace GnollHackClient.Pages.Game
                                 _paintCanvas.Clear(SKColors.Transparent);
                                 paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
                                 _paintCanvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
-                                paint.BlendMode = SKBlendMode.Modulate;
-                                paint.Color = fillcolor;
-                                _paintCanvas.DrawRect(target_rt, paint);
+                                if ((App._autodraws[autodraw].parameter3 & 1) != 0)
+                                {
+                                    paint.BlendMode = SKBlendMode.Modulate;
+                                    paint.Color = fillcolor;
+                                    _paintCanvas.DrawRect(target_rt, paint);
+                                }
                             }
                             paint.BlendMode = oldbm;
                             paint.Color = SKColors.Black;
@@ -7876,7 +7879,7 @@ namespace GnollHackClient.Pages.Game
                             if (fill_pixels > 0)
                             {
                                 int middle_x = 18; // 21;
-                                int middle_y = 14; // 15;
+                                int middle_y = 15; // 15;
                                 int middle_width = 27; //  21;
                                 int middle_height = 22; // 17;
 
@@ -7904,8 +7907,8 @@ namespace GnollHackClient.Pages.Game
                                 }
 
                                 /* Top contents */
-                                int top_x = 17; // 21;
-                                int top_y = 3; // 0;
+                                int top_x = 18; // 21;
+                                int top_y = 4; // 0;
                                 int top_width = 27; // 21;
                                 int top_height = 8; // 8;
 

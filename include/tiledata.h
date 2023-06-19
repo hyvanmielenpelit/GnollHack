@@ -76,6 +76,8 @@ enum game_ui_tile_types
     ITEM_PROPERTY_MARKS,
     JAR_GRAPHICS,
     JAR_FOREGROUND,
+    JAR2_GRAPHICS,
+    JAR3_GRAPHICS,
     MAX_UI_TILES
 };
 
