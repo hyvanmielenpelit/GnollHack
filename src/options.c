@@ -2173,7 +2173,6 @@ int style;
 {
     switch (style)
     {
-    case GHMENU_STYLE_GENERAL:
     case GHMENU_STYLE_INVENTORY:
     case GHMENU_STYLE_PERMANENT_INVENTORY:
     case GHMENU_STYLE_OTHERS_INVENTORY:
@@ -2182,6 +2181,7 @@ int style;
     case GHMENU_STYLE_SKILLS:
     case GHMENU_STYLE_SPELLS:
         return TRUE;
+    case GHMENU_STYLE_GENERAL:
     case GHMENU_STYLE_PICK_CATEGORY_LIST:
     case GHMENU_STYLE_ITEM_COMMAND:
     case GHMENU_STYLE_CHAT:
