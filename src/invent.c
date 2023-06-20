@@ -4015,11 +4015,80 @@ const char *prefix;
 struct obj *obj;
 long quan;
 {
+    //if (!prefix)
+    //    prefix = "";
+    //pline("%s%s%s", prefix, *prefix ? " " : "",
+    //      xprname(obj, (char *) 0, obj_to_let(obj), TRUE, 0L, quan));
+    prinv_ex(prefix, obj, quan, ATR_NONE, CLR_MSG_HINT, ATR_NONE, NO_COLOR, TRUE);
+}
+
+void
+prinv_ex(prefix, obj, quan, prefix_attr, prefix_color, attr, color, apply_menucolor)
+const char* prefix;
+struct obj* obj;
+long quan;
+int prefix_attr, prefix_color, attr, color;
+boolean apply_menucolor;
+{
     if (!prefix)
         prefix = "";
-    pline("%s%s%s", prefix, *prefix ? " " : "",
-          xprname(obj, (char *) 0, obj_to_let(obj), TRUE, 0L, quan));
+    //char* text = xprname(obj, (char*)0, obj_to_let(obj), TRUE, 0L, quan);
+    char let = obj_to_let(obj);
+    long cost = 0;
+    boolean dot = TRUE;
+#ifdef LINT /* handle static char li[BUFSZ]; */
+    char li[BUFSZ];
+    char li2[BUFSZ];
+#else
+    static char li[BUFSZ];
+    static char li2[BUFSZ];
+#endif
+    boolean use_invlet = (flags.invlet_constant
+        && let != CONTAINED_SYM && let != HANDS_SYM);
+    long savequan = 0;
+
+    if (quan && obj) {
+        savequan = obj->quan;
+        obj->quan = quan;
+    }
+
+
+    /*
+     * If let is:
+     *  -  Then obj == null and 'txt' refers to hands or fingers.
+     *  *  Then obj == null and we are printing a total amount.
+     *  >  Then the object is contained and doesn't have an inventory letter.
+     */
+
+    if (cost != 0 || let == '*') 
+    {
+        /* if dot is true, we're doing Iu, otherwise Ix */
+        Sprintf(li, "%s%c - ", *prefix ? " " : "",
+            (dot && use_invlet ? obj->invlet : let));
+        Sprintf(li2,
+            (iflags.menu_tab_sep ? "%s\t%6ld %s"
+                : "%-45s %6ld %s"),
+            doname(obj), cost, currency(cost));
+    }
+    else 
+    {
+        /* ordinary inventory display or pickup message */
+        Sprintf(li,
+            "%s%c - ", *prefix ? " " : "", (use_invlet ? obj->invlet : let));
+        Sprintf(li2,
+            "%s%s", doname(obj), (dot ? "." : ""));
+    }
+    if (savequan)
+        obj->quan = savequan;
+
+    if (iflags.use_menu_color && apply_menucolor && color == NO_COLOR && !get_menu_coloring(li2, &color, &attr))
+    {
+        //Colro has been set
+    }
+
+    custompline_ex_prefix(prefix_attr, prefix_color, prefix, ATR_NONE, NO_COLOR, li, attr, color, 0UL, "%s", li2);
 }
+
 
 char *
 xprname(obj, txt, let, dot, cost, quan)
@@ -6033,8 +6102,17 @@ boolean picked_some, explicit_cmd;
                     totalweight += objects[LUCKSTONE].oc_weight;
                 else
                     totalweight += otmp->owt;
-                Sprintf(buf2, "%2d - %s", count, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known))); //Looking at what is on the ground
-                putstr(tmpwin, ATR_INDENT_AT_DASH, buf2);
+
+                Sprintf(buf, "%s", (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known))); //Looking at what is on the ground
+                Sprintf(buf2, "%2d - %s", count, ""); //Looking at what is on the ground
+                int attr = ATR_NONE;
+                int color = NO_COLOR;
+                if (iflags.use_menu_color && get_menu_coloring(buf, &color, &attr))
+                {
+                    //Nothing
+                }
+                putstr_ex(tmpwin, ATR_INDENT_AT_DASH, buf2, 1, NO_COLOR);
+                putstr_ex(tmpwin, ATR_INDENT_AT_DASH | attr, buf, 0, color);
             }
 
             if (flags.show_weight_summary)
@@ -6071,7 +6149,7 @@ print_things_here_to_window(VOID_ARGS)
     if (tmpwin == WIN_ERR)
         return;
 
-    int attr = 0;
+    int attr = ATR_NONE;
     int textcolor = CLR_MSG_ATTENTION;
 
     struct obj* otmp;
@@ -6213,7 +6291,11 @@ print_things_here_to_window(VOID_ARGS)
             putstr_ex(tmpwin, 0, buf2, 1, color);
             putstr_ex(tmpwin, attr, "' ", 1, textcolor);
             Sprintf(buf2, "%s", (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
-            putstr_ex(tmpwin, attr, buf2, 0, textcolor);
+            int mcolor = NO_COLOR, mattr = ATR_NONE;
+            if (iflags.use_menu_color && get_menu_coloring(buf2, &mattr, &mcolor))
+                putstr_ex(tmpwin, mattr, buf2, 0, mcolor);
+            else
+                putstr_ex(tmpwin, attr, buf2, 0, textcolor);
             
             //Sprintf(buf2, "'%c' %s", sym, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
             //putstr_ex(tmpwin, attr, buf2, 0, textcolor);

@@ -1481,6 +1481,7 @@ E int FDECL(count_unidentified, (struct obj *, boolean(*)(OBJ_P), BOOLEAN_P));
 E int FDECL(identify_pack, (int, BOOLEAN_P));
 E void NDECL(learn_unseen_invent);
 E void FDECL(prinv, (const char *, struct obj *, long));
+E void FDECL(prinv_ex, (const char*, struct obj*, long, int, int, int, int, BOOLEAN_P));
 E char *FDECL(xprname,
               (struct obj *, const char *, CHAR_P, BOOLEAN_P, long, long));
 E int NDECL(ddoinv);
