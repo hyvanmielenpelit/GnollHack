@@ -2491,6 +2491,7 @@ E boolean FDECL(get_menu_coloring, (const char *, int *, int *));
 E int FDECL(get_menu_coloring_index, (const char*));
 E boolean FDECL(free_menu_coloring_str, (const char*));
 E void NDECL(free_menu_coloring);
+E boolean FDECL(menu_style_allows_menu_coloring, (int));
 E boolean FDECL(msgtype_parse_add, (char *));
 E int FDECL(msgtype_type, (const char *, BOOLEAN_P));
 E void FDECL(hide_unhide_msgtypes, (BOOLEAN_P, int));

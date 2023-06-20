@@ -1138,10 +1138,12 @@ dll_display_file(const char *filename, BOOLEAN_P must_exist)
    putstr() to the window.  Only windows of type NHW_MENU may
    be used for menus.
 */
+static int last_menu_style = 0;
 void
 dll_start_menu_ex(winid wid, int style)
 {
     dll_logDebug("dll_start_menu_ex(%d)\n", wid);
+    last_menu_style = style;
     dll_callbacks.callback_start_menu_ex((int)wid, style);
 #if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
@@ -1154,7 +1156,7 @@ dll_start_menu_ex(winid wid, int style)
 
         if (GetNHApp()->windowlist[wid].win != NULL) {
             SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
-                        (WPARAM) MSNH_MSG_STARTMENU, (LPARAM) NULL);
+                        (WPARAM) MSNH_MSG_STARTMENU, (LPARAM) style);
         }
     }
 #endif
@@ -1202,7 +1204,8 @@ dll_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
              presel);
      
 #ifdef TEXTCOLOR
-    get_menu_coloring(str, &color, &attr);
+    if (iflags.use_menu_color && menu_style_allows_menu_coloring(last_menu_style))
+        get_menu_coloring(str, &color, &attr);
 #endif
 
     struct objclassdata ocdata = get_objclassdata(info.object);

@@ -199,7 +199,7 @@ extern void curses_line_input_dialog(int style UNUSED, int attr, int color, cons
 extern int curses_character_input_dialog(int attr, int color, const char *prompt,
                                          const char *choices, CHAR_P def);
 extern int curses_ext_cmd(void);
-extern void curses_create_nhmenu(winid wid);
+extern void curses_create_nhmenu(winid wid, int menu_style);
 extern void curses_add_nhmenu_item(winid wid, int glyph,
                                    const ANY_P *identifier, CHAR_P accelerator,
                                    CHAR_P group_accel, int attr, int color,

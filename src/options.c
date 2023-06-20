@@ -2167,6 +2167,50 @@ count_menucolors(VOID_ARGS)
     return count;
 }
 
+boolean
+menu_style_allows_menu_coloring(style)
+int style;
+{
+    switch (style)
+    {
+    case GHMENU_STYLE_GENERAL:
+    case GHMENU_STYLE_INVENTORY:
+    case GHMENU_STYLE_PERMANENT_INVENTORY:
+    case GHMENU_STYLE_OTHERS_INVENTORY:
+    case GHMENU_STYLE_PICK_ITEM_LIST:
+    case GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+    case GHMENU_STYLE_SKILLS:
+    case GHMENU_STYLE_SPELLS:
+        return TRUE;
+    case GHMENU_STYLE_PICK_CATEGORY_LIST:
+    case GHMENU_STYLE_ITEM_COMMAND:
+    case GHMENU_STYLE_CHAT:
+    case GHMENU_STYLE_CHOOSE_SIMPLE:
+    case GHMENU_STYLE_CHOOSE_COMMAND:
+    case GHMENU_STYLE_CHOOSE_SAVED_GAME:
+    case GHMENU_STYLE_CHOOSE_PLAYER:
+    case GHMENU_STYLE_CHOOSE_DIFFICULTY:
+    case GHMENU_STYLE_CHARACTER:
+    case GHMENU_STYLE_ATTRIBUTES:
+    case GHMENU_STYLE_SKILLS_ALTERNATE:
+    case GHMENU_STYLE_SPELLS_ALTERNATE:
+    case GHMENU_STYLE_DUNGEON_OVERVIEW:
+    case GHMENU_STYLE_OPTIONS:
+    case GHMENU_STYLE_HELP:
+    case GHMENU_STYLE_SKILL_COMMAND:
+    case GHMENU_STYLE_SPELL_COMMAND:
+    case GHMENU_STYLE_GENERAL_COMMAND:
+    case GHMENU_STYLE_MONSTER_ABILITY:
+    case GHMENU_STYLE_DELETE_SAVED_GAME:
+    case GHMENU_STYLE_START_GAME_MENU:
+    case GHMENU_STYLE_PREVIOUS_MESSAGES:
+    case GHMENU_STYLE_VIEW_FILE:
+        return FALSE;
+    default:
+        return TRUE;
+    }
+}
+
 STATIC_OVL boolean
 parse_role_opts(negated, fullname, opts, opp)
 boolean negated;

@@ -1507,11 +1507,11 @@ char* outbuf3;
 char* outbuf4;
 char* outbuf5;
 {
-    strcpy(outbuf, "");
-    strcpy(outbuf2, "");
-    strcpy(outbuf3, "");
-    strcpy(outbuf4, "");
-    strcpy(outbuf5, "");
+    Strcpy(outbuf, "");
+    Strcpy(outbuf2, "");
+    Strcpy(outbuf3, "");
+    Strcpy(outbuf4, "");
+    Strcpy(outbuf5, "");
 
     char* outbufs[5] = { outbuf, outbuf2, outbuf3, outbuf4, outbuf5 };
     boolean first = TRUE;
@@ -1525,9 +1525,9 @@ char* outbuf5;
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
-        char* targetbuf = outbufs[line_idx-1];
+        char* targetbuf = outbufs[line_idx - 1];
         char tempbuf[BUFSIZ];
-        strcpy(tempbuf, "");
+        Strcpy(tempbuf, "");
 
         if (!DEADMONSTER(mtmp) && is_tame(mtmp))
         {
@@ -1543,7 +1543,7 @@ char* outbuf5;
             {
                 if (strcmp(targetbuf, ""))
                 {
-                    strcat(targetbuf, "  ");
+                    Strcat(targetbuf, "  ");
                     first_in_line = FALSE;
                 }
             }
@@ -1556,25 +1556,25 @@ char* outbuf5;
             if (has_umname(mtmp))
             {
                 char umnbuf[BUFSIZ];
-                strcpy(umnbuf, UMNAME(mtmp));
+                Strcpy(umnbuf, UMNAME(mtmp));
                 umnbuf[16] = '\0'; /* Limit the length of the name */
-                strcat(tempbuf, umnbuf);
+                Strcat(tempbuf, umnbuf);
             }
             else if (has_mname(mtmp) && mtmp->u_know_mname)
             {
                 char mnbuf[BUFSIZ];
-                strcpy(mnbuf, MNAME(mtmp));
+                Strcpy(mnbuf, MNAME(mtmp));
                 mnbuf[16] = '\0'; /* Limit the length of the name */
-                strcat(tempbuf, mnbuf);
+                Strcat(tempbuf, mnbuf);
             }
             else
             {
                 char buf[BUFSZ];
-                strcpy(buf, mon_monster_name(mtmp));
+                Strcpy(buf, mon_monster_name(mtmp));
                 *buf = highc(*buf);
-                strcat(tempbuf, buf);
+                Strcat(tempbuf, buf);
             }
-            strcat(tempbuf, ": HP:");
+            Strcat(tempbuf, ": HP:");
             Sprintf(eos(tempbuf), "%d(%d)", mtmp->mhp, mtmp->mhpmax);
 
 #define changepartyline() \
@@ -1587,66 +1587,66 @@ char* outbuf5;
 
             if (flags.partydetails)
             {
-                strcat(tempbuf, " AC:");
+                Strcat(tempbuf, " AC:");
                 Sprintf(eos(tempbuf), "%d", find_mac(mtmp));
 
                 int mc = magic_negation(mtmp);
                 int mcpct = magic_negation_percentage(mc);
-                strcat(tempbuf, " MC:");
+                Strcat(tempbuf, " MC:");
                 Sprintf(eos(tempbuf), "%d/%d%%", mc, mcpct);
             }
 
             if (has_edog(mtmp))
             {
                 if (EDOG(mtmp)->hungrytime + 500 <= monstermoves)
-                    strcat(tempbuf, " Weak");
+                    Strcat(tempbuf, " Weak");
                 else if (EDOG(mtmp)->hungrytime <= monstermoves)
-                    strcat(tempbuf, " Hungry");
+                    Strcat(tempbuf, " Hungry");
             }
 //            changepartyline();
 //            strcat(targetbuf, tempbuf);
 
             if (is_sick(mtmp))
-                strcat(tempbuf, " TermIll");
+                Strcat(tempbuf, " TermIll");
 
             if (is_food_poisoned(mtmp))
-                strcat(tempbuf, " FoodPois");
+                Strcat(tempbuf, " FoodPois");
 
             if (is_mummy_rotted(mtmp))
-                strcat(tempbuf, " Rot");
+                Strcat(tempbuf, " Rot");
 
             if (is_were(mtmp->data))
-                strcat(tempbuf, " Lyca");
+                Strcat(tempbuf, " Lyca");
 
             if (is_stoning(mtmp))
-                strcat(tempbuf, " Stoned");
+                Strcat(tempbuf, " Stoned");
 
             if (is_turning_into_slime(mtmp))
-                strcat(tempbuf, " Slime");
+                Strcat(tempbuf, " Slime");
 
             if (is_hallucinating(mtmp))
-                strcat(tempbuf, " Hallu");
+                Strcat(tempbuf, " Hallu");
 
             if(is_stunned(mtmp))
-                strcat(tempbuf, " Stun");
+                Strcat(tempbuf, " Stun");
 
             if (is_blinded(mtmp))
-                strcat(tempbuf, " Blind");
+                Strcat(tempbuf, " Blind");
 
             if (is_confused(mtmp))
-                strcat(tempbuf, " Conf");
+                Strcat(tempbuf, " Conf");
 
             if (is_sleeping(mtmp))
-                strcat(tempbuf, " Sleep");
+                Strcat(tempbuf, " Sleep");
 
             if (is_paralyzed(mtmp))
-                strcat(tempbuf, " Paral");
+                Strcat(tempbuf, " Paral");
 
             if (any_spec_used(mtmp))
-                strcat(tempbuf, " Cooldown");
+                Strcat(tempbuf, " Cooldown");
 
             changepartyline();
-            strcat(targetbuf, tempbuf);
+            Strcat(targetbuf, tempbuf);
 
             if (!flags.partymultiline && line_idx == maxlines && strlen(outbuf) >= MAXVALWIDTH)
                 break;

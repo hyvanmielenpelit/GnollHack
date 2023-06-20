@@ -778,7 +778,7 @@ curses_character_dialog(const char **choices, const char *prompt)
     winid wid = curses_get_wid(NHW_MENU);
 
     identifier.a_void = 0;
-    curses_start_menu_ex(wid, 0);
+    curses_start_menu_ex(wid, GHMENU_STYLE_CHARACTER);
 
     for (count = 0; choices[count]; count++) {
         curletter = tolower(choices[count][0]);

@@ -37,6 +37,7 @@ typedef struct mswin_menu_item {
 typedef struct mswin_nethack_menu_window {
     int type; /* MENU_TYPE_TEXT or MENU_TYPE_MENU */
     int how;  /* for menus: PICK_NONE, PICK_ONE, PICK_ANY */
+    int style;
 
     union {
         struct menu_list {
@@ -557,6 +558,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         if (data->menu.items)
             free(data->menu.items);
         data->how = PICK_NONE;
+        data->style = (int)lParam;
         data->menu.items = NULL;
         data->menu.size = 0;
         data->menu.allocated = 0;

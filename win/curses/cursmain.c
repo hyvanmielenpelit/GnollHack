@@ -492,12 +492,12 @@ curses_display_file(const char *filename, BOOLEAN_P must_exist)
    be used for menus.
 */
 void
-curses_start_menu_ex(winid wid, int style UNUSED)
+curses_start_menu_ex(winid wid, int style)
 {
     if (inv_update)
         return;
 
-    curses_create_nhmenu(wid);
+    curses_create_nhmenu(wid, style);
 }
 
 /*

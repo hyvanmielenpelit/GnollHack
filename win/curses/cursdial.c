@@ -78,6 +78,7 @@ typedef struct nhmi {
 
 typedef struct nhm {
     winid wid;                  /* NetHack window id */
+    int style;
     const char *prompt;         /* Menu prompt text */
     nhmenu_item *entries;       /* Menu entries */
     int num_entries;            /* Number of menu entries */
@@ -505,7 +506,7 @@ curses_ext_cmd()
 /* Initialize a menu from given NetHack winid */
 
 void
-curses_create_nhmenu(winid wid)
+curses_create_nhmenu(winid wid, int menu_style)
 {
     nhmenu *new_menu = NULL;
     nhmenu *menuptr = nhmenus;
@@ -537,6 +538,7 @@ curses_create_nhmenu(winid wid)
             free((genericptr_t) new_menu->prompt);
             new_menu->prompt = NULL;
         }
+        new_menu->style = menu_style;
         new_menu->num_pages = 0;
         new_menu->height = 0;
         new_menu->width = 0;
@@ -547,6 +549,7 @@ curses_create_nhmenu(winid wid)
 
     new_menu = (nhmenu *) alloc((signed) sizeof (nhmenu));
     new_menu->wid = wid;
+    new_menu->style = menu_style;
     new_menu->prompt = NULL;
     new_menu->entries = NULL;
     new_menu->num_pages = 0;
@@ -1256,7 +1259,7 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
             start_col += 2;
         }
 #endif
-        if (iflags.use_menu_color)
+        if (iflags.use_menu_color && menu_style_allows_menu_coloring(menu->style))
         {
             menu_color = get_menu_coloring(menu_item_ptr->str, &mcolor, &mattr);
         }

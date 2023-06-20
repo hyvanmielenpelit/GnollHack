@@ -1025,7 +1025,7 @@ mswin_start_menu_ex(winid wid, int style)
 
         if (GetNHApp()->windowlist[wid].win != NULL) {
             SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
-                        (WPARAM) MSNH_MSG_STARTMENU, (LPARAM) NULL);
+                        (WPARAM) MSNH_MSG_STARTMENU, (LPARAM) style);
         }
     }
 }

@@ -34,6 +34,8 @@ struct WinDesc {
     int flags;           /* window flags */
     xchar type;          /* type of window */
     boolean active;      /* true if window is active */
+    int window_style;
+    int menu_style;
     short offx, offy;    /* offset from topleft of display */
     long rows, cols;     /* dimensions */
     long curx, cury;     /* current cursor position */

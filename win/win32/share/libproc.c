@@ -338,8 +338,10 @@ void lib_display_file(const char* filename, BOOLEAN_P must_exist)
 
 }
 
+static int last_menu_style = 0;
 void lib_start_menu_ex(winid wid, int style)
 {
+    last_menu_style = style;
     lib_callbacks.callback_start_menu_ex(wid, style);
 }
 
@@ -354,7 +356,8 @@ void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     if (str)
         write_text2buf_utf8(buf, UTF8BUFSZ, str);
 #ifdef TEXTCOLOR
-    get_menu_coloring(str, &color, &attr);
+    if(iflags.use_menu_color && menu_style_allows_menu_coloring(last_menu_style))
+        get_menu_coloring(str, &color, &attr);
 #endif
     lib_callbacks.callback_add_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, color, str ? buf : 0, presel);
 }
@@ -371,7 +374,8 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
         write_text2buf_utf8(buf, UTF8BUFSZ, str);
 
 #ifdef TEXTCOLOR
-    get_menu_coloring(str, &color, &attr);
+    if (iflags.use_menu_color && menu_style_allows_menu_coloring(last_menu_style))
+        get_menu_coloring(str, &color, &attr);
 #endif
     if (info.object)
         set_obj_glyph(info.object);

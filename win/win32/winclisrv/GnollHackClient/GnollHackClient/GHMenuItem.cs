@@ -119,6 +119,8 @@ namespace GnollHackClient
                 switch (_menuInfo.Style)
                 {
                     case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                    case ghmenu_styles.GHMENU_STYLE_PREVIOUS_MESSAGES:
+                    case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                     case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
@@ -291,6 +293,8 @@ namespace GnollHackClient
                     switch (_menuInfo.Style)
                     {
                         case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                        case ghmenu_styles.GHMENU_STYLE_PREVIOUS_MESSAGES:
+                        case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                         case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
@@ -360,6 +364,8 @@ namespace GnollHackClient
                     switch (_menuInfo.Style)
                     {
                         case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                        case ghmenu_styles.GHMENU_STYLE_PREVIOUS_MESSAGES:
+                        case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                         case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
@@ -442,6 +448,8 @@ namespace GnollHackClient
                 switch (_menuInfo.Style)
                 {
                     case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                    case ghmenu_styles.GHMENU_STYLE_PREVIOUS_MESSAGES:
+                    case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                         break;

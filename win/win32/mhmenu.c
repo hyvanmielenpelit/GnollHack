@@ -46,6 +46,7 @@ typedef struct mswin_menu_item {
 typedef struct mswin_gnollhack_menu_window {
     int type; /* MENU_TYPE_TEXT or MENU_TYPE_MENU */
     int how;  /* for menus: PICK_NONE, PICK_ONE, PICK_ANY */
+    int style;
 
     union {
         struct menu_list {
@@ -676,6 +677,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         if (data->menu.items)
             free(data->menu.items);
         data->how = PICK_NONE;
+        data->style = (int)lParam;
         data->menu.items = NULL;
         data->menu.size = 0;
         data->menu.allocated = 0;
@@ -1249,7 +1251,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             buf[0] = item->accelerator;
             buf[1] = '\x0';
 
-            if (iflags.use_menu_color) {
+            if (iflags.use_menu_color && menu_style_allows_menu_coloring(data->style)) {
                 (void)get_menu_coloring(item->str, &color, &attr);
             }
 

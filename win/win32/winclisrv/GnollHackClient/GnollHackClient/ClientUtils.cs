@@ -247,6 +247,8 @@ namespace GnollHackClient
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                case ghmenu_styles.GHMENU_STYLE_PREVIOUS_MESSAGES:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
@@ -317,6 +319,8 @@ namespace GnollHackClient
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                case ghmenu_styles.GHMENU_STYLE_PREVIOUS_MESSAGES:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
@@ -381,6 +385,8 @@ namespace GnollHackClient
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                case ghmenu_styles.GHMENU_STYLE_PREVIOUS_MESSAGES:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
@@ -485,6 +491,8 @@ namespace GnollHackClient
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                case ghmenu_styles.GHMENU_STYLE_PREVIOUS_MESSAGES:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
@@ -546,6 +554,8 @@ namespace GnollHackClient
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                case ghmenu_styles.GHMENU_STYLE_PREVIOUS_MESSAGES:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:

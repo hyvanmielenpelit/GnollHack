@@ -1491,7 +1491,7 @@ const char *str;
 
 winid
 tty_create_nhwindow_ex(type, style, glyph, info)
-int type, style UNUSED, glyph UNUSED;
+int type, style, glyph UNUSED;
 struct extended_create_window_info info UNUSED;
 {
     struct WinDesc *newwin;
@@ -1505,6 +1505,8 @@ struct extended_create_window_info info UNUSED;
     newwin->type = type;
     newwin->flags = 0;
     newwin->active = FALSE;
+    newwin->window_style = style;
+    newwin->menu_style = 0;
     newwin->curx = newwin->cury = 0;
     newwin->morestr = 0;
     newwin->mlist = (tty_menu_item *) 0;
@@ -2033,7 +2035,7 @@ struct WinDesc *cw;
                     (void) putchar(' ');
                     ++ttyDisplay->curx;
 
-                    if (!iflags.use_menu_color
+                    if (!iflags.use_menu_color || !menu_style_allows_menu_coloring(cw->menu_style)
                         || !get_menu_coloring(curr->str, &color, &attr))
                     {
                         attr = curr->attr;
@@ -3151,9 +3153,12 @@ boolean complain;
 void
 tty_start_menu_ex(window, style)
 winid window;
-int style UNUSED;
+int style;
 {
     tty_clear_nhwindow(window);
+    struct WinDesc* cw = 0;
+    if (window != WIN_ERR && (cw = wins[window]) != (struct WinDesc*)0)
+        cw->menu_style = style;
     return;
 }
 
