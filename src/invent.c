@@ -6292,7 +6292,7 @@ print_things_here_to_window(VOID_ARGS)
             putstr_ex(tmpwin, attr, "' ", 1, textcolor);
             Sprintf(buf2, "%s", (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
             int mcolor = NO_COLOR, mattr = ATR_NONE;
-            if (iflags.use_menu_color && get_menu_coloring(buf2, &mattr, &mcolor))
+            if (iflags.use_menu_color && get_menu_coloring(buf2, &mcolor, &mattr))
                 putstr_ex(tmpwin, mattr, buf2, 0, mcolor);
             else
                 putstr_ex(tmpwin, attr, buf2, 0, textcolor);
