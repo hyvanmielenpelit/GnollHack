@@ -706,7 +706,7 @@ unsigned long ynflags UNUSED;
     memset(toplinecolors, color, len);
     toplineattrs[len] = toplinecolors[len] = 0;
 #if defined (DUMPLOG) || defined (DUMPHTML)
-    dumplogmsg(toplines);
+    dumplogmsg(toplines, toplineattrs, toplinecolors, attr, color);
 #endif
     ttyDisplay->inread--;
     ttyDisplay->toplin = 2;
@@ -948,7 +948,7 @@ boolean restoring_msghist;
         //memset(toplinecolors, color, len_colors);
         //toplineattrs[len_attrs] = toplinecolors[len_colors] = 0;
 #if defined (DUMPLOG) || defined (DUMPHTML)
-        dumplogmsg(toplines);
+        dumplogmsg(toplines, toplineattrs, toplinecolors, ATR_NONE, NO_COLOR);
 #endif
     } 
     else if (snapshot_mesgs) 
@@ -965,7 +965,7 @@ boolean restoring_msghist;
             memcpy(toplinecolors, snapshot_mesg_colors[idx], len_colors);
             toplineattrs[len_attrs] = toplinecolors[len_colors] = 0;
 #if defined (DUMPLOG) || defined (DUMPHTML)
-            dumplogmsg(toplines);
+            dumplogmsg(toplines, toplineattrs, toplinecolors, ATR_NONE, NO_COLOR);
 #endif
         }
         /* now release the snapshot */

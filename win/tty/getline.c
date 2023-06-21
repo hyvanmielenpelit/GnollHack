@@ -261,7 +261,7 @@ getlin_hook_proc hook;
 #if defined (DUMPLOG) || defined (DUMPHTML)
     } else {
         /* needed because we've bypassed pline() */
-        dumplogmsg(toplines);
+        dumplogmsg(toplines, (char*)0, (char*)0, attr, color);
 #endif
     }
 

@@ -99,8 +99,8 @@ STATIC_DCL void NDECL(html_init_sym);
 STATIC_DCL void NDECL(dump_css);
 STATIC_DCL void FDECL(dump_outrip, (winid, int, time_t));
 STATIC_DCL void FDECL(html_dump_str, (FILE*, const char*));
-STATIC_DCL void FDECL(html_dump_line, (FILE*, winid, int, const char*));
-STATIC_DCL void FDECL(html_write_tags, (FILE*, winid, int, BOOLEAN_P, struct extended_menu_info)); /* Tags before/after string */
+STATIC_DCL void FDECL(html_dump_line, (FILE*, winid, const char*, const char*, int, int, int, const char*));
+STATIC_DCL void FDECL(html_write_tags, (FILE*, winid, int, int, int, BOOLEAN_P, struct extended_menu_info)); /* Tags before/after string */
 #endif
 #ifdef DUMPLOG
 STATIC_VAR FILE* dumplog_file;
@@ -1615,7 +1615,7 @@ const char *str;
         if (win == NHW_STATUS)
             html_dump_str(dumphtml_file, str);
         else
-            html_dump_line(dumphtml_file, win, attr, str);
+            html_dump_line(dumphtml_file, win, 0, 0, attr, color, app, str);
     }
 #endif
 }
@@ -1627,7 +1627,22 @@ winid win;
 int attr, color, app;
 const char* str, *attrs, *colors;
 {
-    dump_putstr_ex(win, attrs ? attrs[0] : attr, str, app, colors ? colors[0] : color);
+    char buf[UTF8BUFSZ * 2] = "";
+    if (str)
+        write_text2buf_utf8(buf, sizeof(buf), str);
+
+#ifdef DUMPLOG
+    if (dumplog_file)
+        fprintf(dumplog_file, "%s\n", buf);
+#endif
+#ifdef DUMPHTML
+    if (dumphtml_file && win != NHW_DUMPTXT) {
+        if (win == NHW_STATUS)
+            html_dump_str(dumphtml_file, str);
+        else
+            html_dump_line(dumphtml_file, win, attrs, colors, attr, color, app, str);
+    }
+#endif
 }
 
 /*ARGSUSED*/
@@ -1736,7 +1751,7 @@ struct extended_menu_info info UNUSED;
         /* Don't use NHW_MENU for inv items as this makes bullet points */
         if (!attr && glyph != NO_GLYPH)
             win = (winid)0;
-        html_write_tags(dumphtml_file, win, attr, TRUE, info);
+        html_write_tags(dumphtml_file, win, attr, color, 0, TRUE, info);
         if (iflags.use_menu_color && get_menu_coloring(str, &htmlcolor, &attr)) {
             iscolor = TRUE;
         }
@@ -1754,7 +1769,7 @@ struct extended_menu_info info UNUSED;
         }
         html_dump_str(dumphtml_file, str);
         fprintf(dumphtml_file, "%s", iscolor ? "</span>" : "");
-        html_write_tags(dumphtml_file, win, attr, FALSE, info);
+        html_write_tags(dumphtml_file, win, attr, color, 0, FALSE, info);
     }
 #endif
 }
@@ -1789,7 +1804,7 @@ const char *str, *str2;
 #endif
 #ifdef DUMPHTML
     if (dumphtml_file)
-        html_dump_line(dumphtml_file, 0, 0, str || str2 ? buf : "");
+        html_dump_line(dumphtml_file, 0, 0, 0, 0, 0, 0, str || str2 ? buf : "");
 #endif
 }
 
@@ -1883,10 +1898,10 @@ boolean onoff_flag;
    keep consecutive preformatted strings in a single block.  */
 STATIC_OVL
 void
-html_write_tags(fp, win, attr, before, info)
+html_write_tags(fp, win, attr, color, app, before, info)
 FILE* fp;
 winid win;
-int attr;
+int attr, color UNUSED, app;
 boolean before; /* Tags before/after string */
 struct extended_menu_info info; 
 {
@@ -1924,13 +1939,14 @@ struct extended_menu_info info;
             fprintf(fp, "%s\n", LIST_E);
             in_list = FALSE;
         }
-        fprintf(fp, "%s", is_heading ? HEAD_S :
+                fprintf(fp, "%s", is_heading ? HEAD_S :
             is_subheading ? SUBH_S : is_bold ? BOLD_S : "");
         return;
     }
     /* after string is written */
     if (in_preform) {
-        fprintf(fp, LINEBREAK); /* preform still gets <br /> at end of line */
+        if(!app)
+            fprintf(fp, LINEBREAK); /* preform still gets <br /> at end of line */
         return; /* don't write </pre> until we get the next thing */
     }
     if (in_list) {
@@ -1939,7 +1955,9 @@ struct extended_menu_info info;
     }
     fprintf(fp, "%s", is_heading ? HEAD_E:
         is_subheading ? SUBH_E : is_bold ? BOLD_E : "");
-    fprintf(fp, "%s", !is_heading && !is_subheading ? LINEBREAK : "");
+
+    if(!app)
+        fprintf(fp, "%s", !is_heading && !is_subheading ? LINEBREAK : "");
 }
 
 extern const nhsym cp437toUnicode[256]; /* From hacklib.c */
@@ -2163,7 +2181,7 @@ int how;
 time_t when;
 {
     if (dumphtml_file) {
-        html_write_tags(dumphtml_file, 0, 0, TRUE, zeroextendedmenuinfo); /* </ul>, </pre> if needed */
+        html_write_tags(dumphtml_file, 0, 0, 0, 0, TRUE, zeroextendedmenuinfo); /* </ul>, </pre> if needed */
         fprintf(dumphtml_file, "%s\n", PREF_S);
     }
     genl_outrip(win, how, when);
@@ -2185,20 +2203,23 @@ const char* str;
 }
 
 STATIC_OVL void
-html_dump_line(fp, win, attr, str)
+html_dump_line(fp, win, attrs, colors, attr, color, app, str)
 FILE* fp;
 winid win;
-int attr;
-const char* str;
+int attr, color, app;
+const char* str, *attrs, *colors;
 {
     if (strlen(str) == 0 || !strcmp(str, " ")) {
         /* if it's a blank line, just print a blank line */
         fprintf(fp, "%s\n", LINEBREAK);
         return;
     }
-    html_write_tags(fp, win, attr, TRUE, zeroextendedmenuinfo);
+
+    dump_set_color_attr(colors ? colors[0] : color, ATR_NONE, TRUE);
+    html_write_tags(fp, win, attr, color, app, TRUE, zeroextendedmenuinfo);
     html_dump_str(fp, str);
-    html_write_tags(fp, win, attr, FALSE, zeroextendedmenuinfo);
+    html_write_tags(fp, win, attr, color, app, FALSE, zeroextendedmenuinfo);
+    dump_set_color_attr(colors ? colors[0] : color, ATR_NONE, FALSE);
 }
 
 /** HTML Map **/
@@ -2368,7 +2389,7 @@ dump_footers()
 {
 #ifdef DUMPHTML
     if (dumphtml_file) {
-        html_write_tags(dumphtml_file, 0, 0, TRUE, zeroextendedmenuinfo); /* close </ul> and </pre> if open */
+        html_write_tags(dumphtml_file, 0, 0, 0, 0, TRUE, zeroextendedmenuinfo); /* close </ul> and </pre> if open */
         fprintf(dumphtml_file, "</body>\n</html>\n");
     }
 #endif

@@ -1626,7 +1626,7 @@ coord *click_cc;
                 (void) decode_mixed(dmpbuf, out_str);
                 if (dmpbuf[0] < ' ' || dmpbuf[0] >= 127) /* ASCII isprint() */
                     dmpbuf[0] = ' ';
-                dumplogmsg(dmpbuf);
+                dumplogmsg(dmpbuf, (char*)0, (char*)0, ATR_NONE, NO_COLOR);
             }
 #endif
 

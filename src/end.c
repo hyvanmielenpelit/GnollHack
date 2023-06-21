@@ -748,6 +748,8 @@ dump_plines()
     int i, j;
     char buf[BUFSZ], **strp;
     extern char *saved_plines[];
+    extern char* saved_pline_attrs[];
+    extern char* saved_pline_colors[];
     extern unsigned saved_pline_index;
 
     Strcpy(buf, " "); /* one space for indentation */
@@ -757,9 +759,11 @@ dump_plines()
         strp = &saved_plines[j];
         if (*strp) {
             copynchars(&buf[1], *strp, BUFSZ - 1 - 1);
-            putstr(0, ATR_PREFORM, buf);
+            putstr_ex2(0, buf, saved_pline_attrs[j], saved_pline_colors[j], ATR_PREFORM, NO_COLOR, 0);
 #ifdef FREE_ALL_MEMORY
             free(*strp), *strp = 0;
+            free((genericptr_t)saved_pline_attrs[j]), saved_pline_attrs[j] = 0;
+            free((genericptr_t)saved_pline_colors[j]), saved_pline_colors[j] = 0;
 #endif
         }
     }

@@ -2616,7 +2616,7 @@ E void NDECL(reset_pickup);
 /* ### pline.c ### */
 
 #if defined(DUMPLOG) || defined(DUMPHTML)
-E void FDECL(dumplogmsg, (const char *));
+E void FDECL(dumplogmsg, (const char *, const char*, const char*, int, int));
 E void NDECL(dumplogfreemessages);
 #endif
 E void VDECL(pline, (const char *, ...)) PRINTF_F(1, 2);

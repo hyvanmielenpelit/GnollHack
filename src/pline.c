@@ -45,11 +45,14 @@ STATIC_DCL void FDECL(execplinehandler, (const char *));
 /* also used in end.c */
 unsigned saved_pline_index = 0; /* slot in saved_plines[] to use next */
 char *saved_plines[DUMPLOG_MSG_COUNT] = { (char *) 0 };
+char* saved_pline_attrs[DUMPLOG_MSG_COUNT] = { (char*)0 };
+char* saved_pline_colors[DUMPLOG_MSG_COUNT] = { (char*)0 };
 
 /* keep the most recent DUMPLOG_MSG_COUNT messages */
 void
-dumplogmsg(line)
-const char *line;
+dumplogmsg(line, attrs, colors, attr, color)
+const char *line, *attrs, *colors;
+int attr, color;
 {
     /*
      * TODO:
@@ -60,15 +63,42 @@ const char *line;
      */
     unsigned indx = saved_pline_index; /* next slot to use */
     char *oldest = saved_plines[indx]; /* current content of that slot */
+    char* oldest_attrs = saved_pline_attrs[indx]; /* current attrs of that slot */
+    char* oldest_colors = saved_pline_colors[indx]; /* current attrs of that slot */
 
-    if (oldest && strlen(oldest) >= strlen(line)) {
+    int len = strlen(line);
+    if (oldest && strlen(oldest) >= len) {
         /* this buffer will gradually shrink until the 'else' is needed;
            there's no pressing need to track allocation size instead */
         Strcpy(oldest, line);
+        if (attrs)
+        {
+            memcpy(oldest_attrs, attrs, len + 1);
+            memcpy(oldest_colors, colors, len + 1);
+        }
+        else
+        {
+            memset(oldest_attrs, attr, len);
+            memset(oldest_colors, color, len);
+            oldest_attrs[len] = 0;
+            oldest_colors[len] = 0;
+        }
     } else {
         if (oldest)
-            free((genericptr_t) oldest);
+        {
+            free((genericptr_t)oldest);
+            free((genericptr_t)oldest_attrs);
+            free((genericptr_t)oldest_colors);
+        }
         saved_plines[indx] = dupstr(line);
+        if(attrs)
+            saved_pline_attrs[indx] = cpystr(line, attrs);
+        else
+            saved_pline_attrs[indx] = setstr(line, (char)attr);
+        if (colors)
+            saved_pline_colors[indx] = cpystr(line, colors);
+        else
+            saved_pline_colors[indx] = setstr(line, (char)color);
     }
     saved_pline_index = (indx + 1) % DUMPLOG_MSG_COUNT;
 }
@@ -82,8 +112,14 @@ dumplogfreemessages()
     unsigned indx;
 
     for (indx = 0; indx < DUMPLOG_MSG_COUNT; ++indx)
+    {
         if (saved_plines[indx])
-            free((genericptr_t) saved_plines[indx]), saved_plines[indx] = 0;
+            free((genericptr_t)saved_plines[indx]), saved_plines[indx] = 0;
+        if (saved_pline_attrs[indx])
+            free((genericptr_t)saved_pline_attrs[indx]), saved_pline_attrs[indx] = 0;
+        if (saved_pline_colors[indx])
+            free((genericptr_t)saved_pline_colors[indx]), saved_pline_colors[indx] = 0;
+    }
     saved_pline_index = 0;
 }
 #endif
@@ -338,14 +374,6 @@ VA_DECL(const char *, line)
     else
         used_line = combined_line;
 
-#if defined (DUMPLOG) || defined (DUMPHTML)
-    /* We hook here early to have options-agnostic output.
-     * Unfortunately, that means Norep() isn't honored (general issue) and
-     * that short lines aren't combined into one longer one (tty behavior).
-     */
-    if ((pline_flags & SUPPRESS_HISTORY) == 0)
-        dumplogmsg(used_line);
-#endif
     /* use raw_print() if we're called too early (or perhaps too late
        during shutdown) or if we're being called recursively (probably
        via debugpline() in the interface code) */
@@ -381,12 +409,13 @@ VA_DECL(const char *, line)
     if (u.ux && !program_state.in_bones && iflags.window_inited)
         flush_screen(!flags.show_cursor_on_u); // show_cursor_on_u actually indicates that there is a getpos going on, in which case the cursor should not be returned to the player
 
+    boolean usemulti = pline_prefix_text || pline_separator_text || domulti;
     //if (domulti)
     //{
     //    putmesg_ex2(multi_line, attrs, colors);
     //}
     //else 
-    if (pline_prefix_text || pline_separator_text || domulti)
+    if (usemulti)
     {
         size_t line_len = strlen(original_line);
         size_t prefix_len = pline_prefix_text ? strlen(pline_prefix_text) : 0;
@@ -443,6 +472,15 @@ VA_DECL(const char *, line)
     }
     else
         putmesg(used_line);
+
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    /* We hook here early to have options-agnostic output.
+     * Unfortunately, that means Norep() isn't honored (general issue) and
+     * that short lines aren't combined into one longer one (tty behavior).
+     */
+    if ((pline_flags & SUPPRESS_HISTORY) == 0)
+        dumplogmsg(used_line, usemulti ? attrs : 0, usemulti ? colors : 0, pline_attr, pline_color);
+#endif
 
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
     execplinehandler(used_line);

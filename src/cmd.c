@@ -8814,7 +8814,7 @@ unsigned long ynflags; /* 1 means use upper side for half-sized tile */
            version in there now (without response choices or default) */
         Sprintf(dumplog_buf, "%s ", query);
         (void) key2txt((uchar) res, eos(dumplog_buf));
-        dumplogmsg(dumplog_buf);
+        dumplogmsg(dumplog_buf, (char*)0, (char*)0, attr, color);
     }
 #endif
     return res;
