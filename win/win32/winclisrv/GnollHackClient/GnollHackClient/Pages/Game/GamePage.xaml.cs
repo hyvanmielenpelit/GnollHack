@@ -1620,6 +1620,7 @@ namespace GnollHackClient.Pages.Game
                 data.style == (int)popup_text_types.POPUP_TEXT_NO_MONSTERS_IN_LIST)
             {
                 PopupTitleLabel.TextColor = _titleGoldColor;
+                PopupLabel.TextColor = ClientUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, false);
                 PopupGrid.BackgroundColor = Color.Transparent;
                 PopupFrame.BackgroundColor = _popupDarkerTransparentBlackColor;
                 if (data.glyph != 0 && data.glyph != App.NoGlyph)
@@ -1630,13 +1631,23 @@ namespace GnollHackClient.Pages.Game
             else if (data.style == (int)popup_text_types.POPUP_TEXT_REVIVAL)
             {
                 PopupTitleLabel.TextColor = _titleGoldColor;
+                PopupLabel.TextColor = ClientUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, false);
                 PopupGrid.BackgroundColor = _popupTransparentBlackColor;
                 PopupFrame.BackgroundColor = _popupTransparentBlackColor;
                 PopupTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
             }
             else
             {
-                PopupTitleLabel.TextColor = ClientUtils.NHColor2XColor(data.color, data.attr, false, true);
+                if ((data.tflags & 2) != 0)
+                {
+                    PopupTitleLabel.TextColor = ClientUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                    PopupLabel.TextColor = ClientUtils.NHColor2XColor(data.color, data.attr, false, false);
+                }
+                else
+                {
+                    PopupTitleLabel.TextColor = ClientUtils.NHColor2XColor(data.color, data.attr, false, true);
+                    PopupLabel.TextColor = ClientUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, false);
+                }
                 PopupGrid.BackgroundColor = _popupTransparentBlackColor;
                 PopupFrame.BackgroundColor = _popupTransparentBlackColor;
                 PopupTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
@@ -1646,7 +1657,7 @@ namespace GnollHackClient.Pages.Game
             if (data.glyph != 0 && data.glyph != App.NoGlyph)
             {
                 _popupImageSource.ReferenceGamePage = this;
-                _popupImageSource.UseUpperSide = (data.tflags & 1) != 0;
+                _popupImageSource.UseUpperSide = (data.tflags & 4) != 0;
                 _popupImageSource.Glyph = data.glyph;
                 _popupImageSource.AutoSize = true;
                 PopupImage.Source = _popupImageSource;

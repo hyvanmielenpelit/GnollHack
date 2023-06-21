@@ -743,6 +743,8 @@ enum getline_types {
 
 #define POPUP_FLAGS_NONE        0x00000000UL
 #define POPUP_FLAGS_ADD_QUOTES  0x00000001UL
+#define POPUP_FLAGS_COLOR_TEXT  0x00000002UL
+#define POPUP_FLAGS_UPPER_SIDE  0x00000004UL
 
 #define PICKLOCK_LEARNED_SOMETHING (-1) /* time passes */
 #define PICKLOCK_DID_NOTHING 0          /* no time passes */

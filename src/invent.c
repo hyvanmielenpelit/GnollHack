@@ -3825,7 +3825,13 @@ struct obj *otmp;
 {
     fully_identify_obj(otmp);
     prinv((char *) 0, otmp, 0L);
-    display_popup_text(xprname(otmp, (char*)0, obj_to_let(otmp), TRUE, 0L, 0UL), "Item Identified", POPUP_TEXT_IDENTIFY, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_NONE);
+    char* text = xprname(otmp, (char*)0, obj_to_let(otmp), TRUE, 0L, 0UL);
+    int color = NO_COLOR, attr = ATR_NONE;
+    if(iflags.use_menu_color)
+        (void)get_menu_coloring(text, &color, &attr);
+    //int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
+    //int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
+    display_popup_text(text, "Item Identified", POPUP_TEXT_IDENTIFY, attr, color, NO_GLYPH, POPUP_FLAGS_COLOR_TEXT);
 
     return 1;
 }

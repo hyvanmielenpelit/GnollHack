@@ -308,9 +308,11 @@ namespace GnollHackClient
             {
                 GHWindow ghwin = _ghWindows[winHandle];
                 if (ghwin != null)
+                {
+                    if (ghwin.WindowType == GHWinType.Map)
+                        MapWindowId = 0;
                     ghwin.Destroy();
-                if (ghwin.WindowType == GHWinType.Map)
-                    MapWindowId = 0;
+                }
                 _ghWindows[winHandle] = null;
             }
         }
