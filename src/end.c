@@ -823,8 +823,25 @@ time_t when; /* date+time at end of game */
     dump_map();
     putstr(NHW_DUMPTXT, 0, do_statusline1());
     putstr(NHW_DUMPTXT, 0, do_statusline2());
-    if(iflags.wc2_statuslines > 2)
+    if (iflags.wc2_statuslines > 2)
+    {
         putstr(NHW_DUMPTXT, 0, do_statusline3());
+    }
+    if (iflags.wc2_statuslines > 3)
+    {
+        char partybuf[BUFSIZ];
+        char partybuf2[BUFSIZ];
+        char partybuf3[BUFSIZ];
+        char partybuf4[BUFSIZ];
+        char partybuf5[BUFSIZ];
+        compose_partystatline(partybuf, partybuf2, partybuf3, partybuf4, partybuf5);
+        char* partylines[5] = { partybuf, partybuf2, partybuf3, partybuf4, partybuf5 };
+        int i;
+        for (i = 0; i < iflags.wc2_statuslines - 3 && i < 5; i++)
+        {
+            putstr(NHW_DUMPTXT, 0, partylines[i]);
+        }
+    }
     status_initialize(TRUE);
     bot();
     dump_end_screendump();

@@ -66,7 +66,6 @@ const struct condition_t condition_definitions[NUM_BL_CONDITIONS] = {
 STATIC_OVL NEARDATA size_t mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
 STATIC_DCL void NDECL(bot_via_windowport);
 STATIC_DCL void NDECL(stat_update_time);
-STATIC_DCL void FDECL(compose_partystatline, (char*, char*, char*, char*, char*));
 STATIC_DCL char* FDECL(conditionbitmask2str, (unsigned long));
 STATIC_DCL char* FDECL(format_duration_with_units, (long));
 
@@ -1526,7 +1525,6 @@ boolean loc_is_you;
     }
 }
 
-STATIC_OVL
 void
 compose_partystatline(outbuf, outbuf2, outbuf3, outbuf4, outbuf5)
 char* outbuf;

@@ -300,6 +300,8 @@ E void NDECL(status_reassess);
 E char* NDECL(botl_realtime);
 E long NDECL(get_current_game_duration);
 E size_t FDECL(print_conditions, (char*));
+E void FDECL(compose_partystatline, (char*, char*, char*, char*, char*));
+
 
 /* ### cmd.c ### */
 
