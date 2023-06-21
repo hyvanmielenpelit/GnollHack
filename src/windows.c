@@ -100,7 +100,7 @@ STATIC_DCL void FDECL(dump_set_color_attr, (int, int, BOOLEAN_P));
 STATIC_DCL void NDECL(html_init_sym);
 STATIC_DCL void NDECL(dump_css);
 STATIC_DCL void FDECL(dump_outrip, (winid, int, time_t));
-STATIC_DCL void FDECL(html_dump_str, (FILE*, const char*, const char*, const char*, int, int, int));
+STATIC_DCL void FDECL(html_dump_str, (FILE*, const char*, const char*, const char*, int, int));
 STATIC_DCL void FDECL(html_dump_line, (FILE*, winid, const char*, const char*, int, int, int, const char*));
 STATIC_DCL void FDECL(html_write_tags, (FILE*, winid, int, int, int, BOOLEAN_P, struct extended_menu_info)); /* Tags before/after string */
 #endif
@@ -1926,7 +1926,7 @@ const char *str;
 #ifdef DUMPHTML
     if (dumphtml_file && win != NHW_DUMPTXT) {
         if (win == NHW_STATUS)
-            html_dump_str(dumphtml_file, str, 0, 0, attr, color, app);
+            html_dump_str(dumphtml_file, str, 0, 0, attr, color);
         else
             html_dump_line(dumphtml_file, win, 0, 0, attr, color, app, str);
     }
@@ -1951,7 +1951,7 @@ const char* str, *attrs, *colors;
 #ifdef DUMPHTML
     if (dumphtml_file && win != NHW_DUMPTXT) {
         if (win == NHW_STATUS)
-            html_dump_str(dumphtml_file, str, attrs, colors, attr, color, app);
+            html_dump_str(dumphtml_file, str, attrs, colors, attr, color);
         else
             html_dump_line(dumphtml_file, win, attrs, colors, attr, color, app, str);
     }
@@ -2080,7 +2080,7 @@ struct extended_menu_info info UNUSED;
         if (glyph != NO_GLYPH) {
             fprintf(dumphtml_file, "<span class=\"nh_item_letter\">%c</span> - ", ch);
         }
-        html_dump_str(dumphtml_file, str, 0, 0, ATR_NONE, NO_COLOR, 1);
+        html_dump_str(dumphtml_file, str, 0, 0, ATR_NONE, NO_COLOR);
         fprintf(dumphtml_file, "%s", iscolor ? "</span>" : "");
         html_write_tags(dumphtml_file, win, attr, color, 0, FALSE, info);
     }
@@ -2518,10 +2518,10 @@ time_t when;
 
 /* Write HTML-escaped string to a file */
 STATIC_OVL void
-html_dump_str(fp, str, attrs, colors, attr, color, app)
+html_dump_str(fp, str, attrs, colors, attr, color)
 FILE* fp;
 const char* str, *attrs, *colors;
-int attr, color, app;
+int attr, color;
 {
     if (!fp) return;
 
@@ -2569,7 +2569,7 @@ const char* str, *attrs, *colors;
     }
 
     html_write_tags(fp, win, attr, color, app, TRUE, zeroextendedmenuinfo);
-    html_dump_str(fp, str, attrs, colors, attr, color, app);
+    html_dump_str(fp, str, attrs, colors, attr, color);
     html_write_tags(fp, win, attr, color, app, FALSE, zeroextendedmenuinfo);
 }
 

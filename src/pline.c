@@ -66,7 +66,7 @@ int attr, color;
     char* oldest_attrs = saved_pline_attrs[indx]; /* current attrs of that slot */
     char* oldest_colors = saved_pline_colors[indx]; /* current attrs of that slot */
 
-    int len = strlen(line);
+    size_t len = strlen(line);
     if (oldest && strlen(oldest) >= len) {
         /* this buffer will gradually shrink until the 'else' is needed;
            there's no pressing need to track allocation size instead */
