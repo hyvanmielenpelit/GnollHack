@@ -65,7 +65,8 @@ namespace GnollHackClient.Pages.Game
                     htmlSource.Html = text;
                     htmlSource.BaseUrl = App.PlatformService.GetBaseUrl();
                     DisplayWebView.Source = htmlSource;
-                    DisplayWebView.Opacity = 0;
+                    if(App.IsiOS)
+                        DisplayWebView.Opacity = 0;
                     DisplayWebView.IsVisible = true;
                 }
                 else
