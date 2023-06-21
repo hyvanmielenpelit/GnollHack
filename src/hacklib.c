@@ -1727,4 +1727,60 @@ const char* str;
     (void)open_special_view(info);
 }
 
+int
+hl_attridx_to_attrmask(idx)
+int idx;
+{
+    switch (idx)
+    {
+    case HL_ATTCLR_DIM:     return (1 << ATR_DIM);
+    case HL_ATTCLR_BLINK:    return (1 << ATR_BLINK);
+    case HL_ATTCLR_ULINE:   return (1 << ATR_ULINE);
+    case HL_ATTCLR_INVERSE:    return (1 << ATR_INVERSE);
+    case HL_ATTCLR_BOLD:    return (1 << ATR_BOLD);
+    }
+    return 0;
+}
+
+int 
+hl_attrmask_to_attridx(mask)
+int mask;
+{
+    int attr = 0;
+    if (mask & HL_DIM) attr |= (1 << ATR_DIM);
+    if (mask & HL_BLINK) attr |= (1 << ATR_BLINK);
+    if (mask & HL_ULINE) attr |= (1 << ATR_ULINE);
+    if (mask & HL_INVERSE) attr |= (1 << ATR_INVERSE);
+    if (mask & HL_BOLD) attr |= (1 << ATR_BOLD);
+    return attr;
+}
+
+int
+hl_attrmask_to_atr(mask)
+int mask;
+{
+    if (mask & HL_BOLD) return ATR_BOLD;
+    if (mask & HL_DIM) return ATR_DIM;
+    if (mask & HL_BLINK) return ATR_BLINK;
+    if (mask & HL_ULINE) return ATR_ULINE;
+    if (mask & HL_INVERSE) return ATR_INVERSE;
+    return 0;
+}
+
+int
+hl_attridx_to_atr(idx)
+int idx;
+{
+    switch (idx)
+    {
+    case HL_ATTCLR_DIM:     return ATR_DIM;
+    case HL_ATTCLR_BLINK:    return ATR_BLINK;
+    case HL_ATTCLR_ULINE:   return ATR_ULINE;
+    case HL_ATTCLR_INVERSE:    return ATR_INVERSE;
+    case HL_ATTCLR_BOLD:    return ATR_BOLD;
+    }
+    return 0;
+}
+
+
 /*hacklib.c*/

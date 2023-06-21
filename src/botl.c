@@ -35,6 +35,34 @@ const enum statusfields* fieldorders_2statuslines[MAX_STATUS_LINES + 1] = { fiel
 const enum statusfields* fieldorders[MAX_STATUS_LINES + 1] = { fieldorder1, fieldorder2, fieldorder3, fieldorder4, fieldorder5, fieldorder6, fieldorder7, fieldorder8, NULL };
 const enum statusfields* fieldorders_alt[MAX_STATUS_LINES + 1] = { fieldorder1_alt, fieldorder2_alt, fieldorder3_alt, fieldorder4, fieldorder5, fieldorder6, fieldorder7, fieldorder8, NULL };
 
+
+const struct condition_t condition_definitions[NUM_BL_CONDITIONS] = {
+    /* The sequence order of these matters */
+    { BL_MASK_GRAB,     { "Grab",     "Grb",   "Gr"  } },
+    { BL_MASK_STONE,    { "Stone",    "Ston",  "Sto" } },
+    { BL_MASK_SLIME,    { "Slime",    "Slim",  "Slm" } },
+    { BL_MASK_STRNGL,   { "Strngl",   "Stngl", "Str" } },
+    { BL_MASK_SUFFOC,   { "Suffoc",   "Suff",  "Suf" } },
+    { BL_MASK_FOODPOIS, { "FoodPois", "Fpois", "Poi" } },
+    { BL_MASK_TERMILL,  { "TermIll" , "Ill",   "Ill" } },
+    { BL_MASK_BLIND,    { "Blind",    "Blnd",  "Bl"  } },
+    { BL_MASK_DEAF,     { "Deaf",     "Def",   "Df"  } },
+    { BL_MASK_STUN,     { "Stun",     "Stun",  "St"  } },
+    { BL_MASK_CONF,     { "Conf",     "Cnf",   "Cf"  } },
+    { BL_MASK_HALLU,    { "Hallu",    "Hal",   "Hl"  } },
+    { BL_MASK_LEV,      { "Lev",      "Lev",   "Lv"  } },
+    { BL_MASK_FLY,      { "Fly",      "Fly",   "Fl"  } },
+    { BL_MASK_RIDE,     { "Ride",     "Rid",   "Rd"  } },
+    { BL_MASK_SLOWED,   { "Slow",     "Slo",   "Sl"  } },
+    { BL_MASK_PARALYZED,{ "Paral",    "Par",   "Pa"  } },
+    { BL_MASK_FEARFUL,  { "Fear",     "Fea",   "Fe"  } },
+    { BL_MASK_SLEEPING, { "Sleep",    "Slp",   "Sl"  } },
+    { BL_MASK_CANCELLED,{ "Cancl",    "Cnl",   "Cl"  } },
+    { BL_MASK_SILENCED, { "Silent",   "Sil",   "Si"  } },
+    { BL_MASK_ROT,      { "Rot",      "Rot",   "Rt"  } },
+    { BL_MASK_LYCANTHROPY,{ "Lyca",   "Lyc",   "Ly"  } },
+};
+
 STATIC_OVL NEARDATA size_t mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
 STATIC_DCL void NDECL(bot_via_windowport);
 STATIC_DCL void NDECL(stat_update_time);
@@ -1768,7 +1796,7 @@ boolean *valsetlist;
 
         if (anytype != ANY_MASK32) {
 #ifdef STATUS_HILITES
-            if (chg || chgmax || *curr->val) {
+             if (chg || chgmax || *curr->val) {
                 curr->hilite_rule = get_hilite(idx, fld,
                                                (genericptr_t) &curr->a,
                                                chg, pc, &color);
@@ -1893,8 +1921,11 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
                    : initblstats[i].fldfmt;
         status_enablefield(fld, fieldname, fieldfmt, fldenabl);
     }
+
     update_all = TRUE;
 }
+
+STATIC_VAR boolean initalready = FALSE;
 
 void
 status_finish(VOID_ARGS)
@@ -1927,6 +1958,8 @@ status_finish(VOID_ARGS)
             }
 #endif /* STATUS_HILITES */
         }
+        blinit = FALSE;
+        initalready = FALSE;
     }
 }
 
@@ -1938,8 +1971,6 @@ status_reassess(VOID_ARGS)
         status_initialize(REASSESS_ONLY);
 #endif
 }
-
-STATIC_VAR boolean initalready = FALSE;
 
 STATIC_OVL void
 init_blstats()
@@ -4777,6 +4808,32 @@ shlmenu_redo:
     return TRUE;
 }
 
+STATIC_VAR struct hilite_s* saved_hilites[MAXBLSTATS] = { 0 };
+
+void
+botl_save_hilites(VOID_ARGS)
+{
+    int i;
+    for (i = 0; i < MAXBLSTATS; i++)
+    {
+        saved_hilites[i] = blstats[0][i].thresholds;
+        blstats[0][i].thresholds = blstats[1][i].thresholds = 0;
+        blstats[0][i].hilite_rule = blstats[1][i].hilite_rule = 0;
+    }
+}
+
+void
+botl_restore_hilites(VOID_ARGS)
+{
+    int i;
+    for (i = 0; i < MAXBLSTATS; i++)
+    {
+        blstats[0][i].thresholds = blstats[1][i].thresholds = saved_hilites[i];
+        saved_hilites[i] = 0;
+    }
+}
+
 #endif /* STATUS_HILITES */
+
 
 /*botl.c*/

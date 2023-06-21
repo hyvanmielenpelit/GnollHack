@@ -4090,35 +4090,7 @@ static unsigned long *tty_colormasks;
 static long tty_condition_bits;
 static struct tty_status_fields tty_status[2][MAXBLSTATS]; /* 2: NOW,BEFORE */
 static int hpbar_percent, hpbar_color;
-static struct condition_t {
-    long mask;
-    const char *text[3]; /* 3: potential display vals, progressively shorter */
-} conditions[NUM_BL_CONDITIONS] = {
-    /* The sequence order of these matters */
-    { BL_MASK_GRAB,     { "Grab",     "Grb",   "Gr"  } },
-    { BL_MASK_STONE,    { "Stone",    "Ston",  "Sto" } },
-    { BL_MASK_SLIME,    { "Slime",    "Slim",  "Slm" } },
-    { BL_MASK_STRNGL,   { "Strngl",   "Stngl", "Str" } },
-    { BL_MASK_SUFFOC,   { "Suffoc",   "Suff",  "Suf" } },
-    { BL_MASK_FOODPOIS, { "FoodPois", "Fpois", "Poi" } },
-    { BL_MASK_TERMILL,  { "TermIll" , "Ill",   "Ill" } },
-    { BL_MASK_BLIND,    { "Blind",    "Blnd",  "Bl"  } },
-    { BL_MASK_DEAF,     { "Deaf",     "Def",   "Df"  } },
-    { BL_MASK_STUN,     { "Stun",     "Stun",  "St"  } },
-    { BL_MASK_CONF,     { "Conf",     "Cnf",   "Cf"  } },
-    { BL_MASK_HALLU,    { "Hallu",    "Hal",   "Hl"  } },
-    { BL_MASK_LEV,      { "Lev",      "Lev",   "Lv"  } },
-    { BL_MASK_FLY,      { "Fly",      "Fly",   "Fl"  } },
-    { BL_MASK_RIDE,     { "Ride",     "Rid",   "Rd"  } },
-    { BL_MASK_SLOWED,   { "Slow",     "Slo",   "Sl"  } },
-    { BL_MASK_PARALYZED,{ "Paral",    "Par",   "Pa"  } },
-    { BL_MASK_FEARFUL,  { "Fear",     "Fea",   "Fe"  } },
-    { BL_MASK_SLEEPING, { "Sleep",    "Slp",   "Sl"  } },
-    { BL_MASK_CANCELLED,{ "Cancl",    "Cnl",   "Cl"  } },
-    { BL_MASK_SILENCED, { "Silent",   "Sil",   "Si"  } },
-    { BL_MASK_ROT,      { "Rot",      "Rot",   "Rt"  } },
-    { BL_MASK_LYCANTHROPY,{ "Lyca",   "Lyc",   "Ly"  } },
-};
+
 static const char *encvals[3][6] = {
     { "", "Burdened", "Stressed", "Strained", "Overtaxed", "Overloaded" },
     { "", "Burden",   "Stress",   "Strain",   "Overtax",   "Overload"   },
@@ -4612,10 +4584,10 @@ condition_size()
 
     lth = 0;
     if (tty_condition_bits) {
-        for (c = 0; c < SIZE(conditions); ++c) {
-            mask = conditions[c].mask;
+        for (c = 0; c < SIZE(condition_definitions); ++c) {
+            mask = condition_definitions[c].mask;
             if ((tty_condition_bits & mask) == mask)
-                lth += 1 + (int) strlen(conditions[c].text[cond_shrinklvl]);
+                lth += 1 + (int) strlen(condition_definitions[c].text[cond_shrinklvl]);
         }
     }
     tty_status[NOW][BL_CONDITION].lth = lth;
@@ -4845,8 +4817,8 @@ render_status(VOID_ARGS)
 #endif
 
                     bits = tty_condition_bits;
-                    for (c = 0; c < SIZE(conditions); ++c) {
-                        mask = conditions[c].mask;
+                    for (c = 0; c < SIZE(condition_definitions); ++c) {
+                        mask = condition_definitions[c].mask;
                         if (bits & mask) {
                             const char *condtext;
 
@@ -4863,7 +4835,7 @@ render_status(VOID_ARGS)
                                 if (coloridx != NO_COLOR)
                                     term_start_color(coloridx);
                             }
-                            condtext = conditions[c].text[cond_shrinklvl];
+                            condtext = condition_definitions[c].text[cond_shrinklvl];
                             if (x >= cw->cols && !truncation_expected) {
                                 impossible(
                                    "Unexpected condition placement overflow");

@@ -288,6 +288,8 @@ E void FDECL(status_notify_windowport, (BOOLEAN_P));
 E void NDECL(clear_status_hilites);
 E int NDECL(count_status_hilites);
 E boolean NDECL(status_hilite_menu);
+E void NDECL(botl_save_hilites);
+E void NDECL(botl_restore_hilites);
 #endif
 E const char* FDECL(get_condition_name, (unsigned long));
 E unsigned long NDECL(get_u_condition_bits);
@@ -1419,6 +1421,10 @@ E void FDECL(write_nhsym_utf8, (char**, nhsym, BOOLEAN_P));
 E void FDECL(write_text2buf_utf8, (char*, size_t, const char*));
 E void FDECL(write_CP437_to_buf_unicode, (char*, size_t, const char*));
 E void FDECL(write_gui_debuglog, (const char*));
+E int FDECL(hl_attridx_to_attrmask, (int));
+E int FDECL(hl_attrmask_to_attridx, (int));
+E int FDECL(hl_attridx_to_atr, (int));
+E int FDECL(hl_attrmask_to_atr, (int));
 
 /* ### invent.c ### */
 

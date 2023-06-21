@@ -1013,30 +1013,6 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
     mi_ptr->monster_flags = 0UL;
 }
 
-int hl_attridx_to_attrmask(int idx)
-{
-    switch (idx)
-    {
-    case HL_ATTCLR_DIM:     return (1 << ATR_DIM);
-    case HL_ATTCLR_BLINK:    return (1 << ATR_BLINK);
-    case HL_ATTCLR_ULINE:   return (1 << ATR_ULINE);
-    case HL_ATTCLR_INVERSE:    return (1 << ATR_INVERSE);
-    case HL_ATTCLR_BOLD:    return (1 << ATR_BOLD);
-    }
-    return 0;
-}
-
-int hl_attrmask_to_attrmask(int mask)
-{
-    int attr = 0;
-    if (mask & HL_DIM) attr |= (1 << ATR_DIM);
-    if (mask & HL_BLINK) attr |= (1 << ATR_BLINK);
-    if (mask & HL_ULINE) attr |= (1 << ATR_ULINE);
-    if (mask & HL_INVERSE) attr |= (1 << ATR_INVERSE);
-    if (mask & HL_BOLD) attr |= (1 << ATR_BOLD);
-    return attr;
-}
-
 void lib_set_health_color(int nhcolor)
 {
     //Callback set health color    
@@ -1082,7 +1058,7 @@ void lib_print_conditions(const char** names)
             int attr = get_condition_attr(cond_mask);
             //debuglog("cond '%s' active. col=%s attr=%x", name, colname(color), attr);
             lib_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
-            lib_putstr_ex(WIN_STATUS, attr, name, 0, color);
+            lib_putstr_ex(WIN_STATUS, hl_attrmask_to_atr(attr), name, 0, color);
         }
     }
 }
@@ -1180,7 +1156,7 @@ void print_status_field(int idx, boolean first_field)
                 color = status_colors[BL_ENE] & 0xFF;
             }
         }
-        lib_putstr_ex(WIN_STATUS, hl_attrmask_to_attrmask(attr), val, 0, color);
+        lib_putstr_ex(WIN_STATUS, hl_attrmask_to_atr(attr), val, 0, color);
         //    debuglog("field %d: %s color %s", idx+1, val, colname(color));
     }
 }

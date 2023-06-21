@@ -110,6 +110,12 @@ enum bl_conditions {
 #define BL_MASK_BITS            NUM_BL_CONDITIONS /* number of mask bits that can be set */
 /* clang-format on */
 
+struct condition_t {
+    long mask;
+    const char* text[3]; /* 3: potential display vals, progressively shorter */
+};
+extern const struct condition_t condition_definitions[NUM_BL_CONDITIONS];
+
 #define VIA_WINDOWPORT() \
     ((windowprocs.wincap2 & (WC2_HILITE_STATUS | WC2_FLUSH_STATUS)) != 0)
 

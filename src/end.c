@@ -746,20 +746,25 @@ STATIC_OVL void
 dump_plines()
 {
     int i, j;
-    char buf[BUFSZ], **strp;
+    char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ], ** strp;
     extern char *saved_plines[];
     extern char* saved_pline_attrs[];
     extern char* saved_pline_colors[];
     extern unsigned saved_pline_index;
 
     Strcpy(buf, " "); /* one space for indentation */
+    *buf2 = ATR_NONE;
+    *buf3 = NO_COLOR;
     putstr(0, ATR_HEADING, "Latest messages:");
     for (i = 0, j = (int) saved_pline_index; i < DUMPLOG_MSG_COUNT;
          ++i, j = (j + 1) % DUMPLOG_MSG_COUNT) {
         strp = &saved_plines[j];
         if (*strp) {
             copynchars(&buf[1], *strp, BUFSZ - 1 - 1);
-            putstr_ex2(0, buf, saved_pline_attrs[j], saved_pline_colors[j], ATR_PREFORM, NO_COLOR, 0);
+            size_t len = strlen(&buf[1]);
+            memcpy(&buf2[1], saved_pline_attrs[j], min(BUFSZ - 1, len));
+            memcpy(&buf3[1], saved_pline_colors[j], min(BUFSZ - 1, len));
+            putstr_ex2(0, buf, buf2, buf3, ATR_PREFORM, NO_COLOR, 0);
 #ifdef FREE_ALL_MEMORY
             free(*strp), *strp = 0;
             free((genericptr_t)saved_pline_attrs[j]), saved_pline_attrs[j] = 0;
@@ -816,12 +821,14 @@ time_t when; /* date+time at end of game */
 
     dump_start_screendump();
     dump_map();
-    putstr(0, 0, do_statusline1());
-    putstr(0, 0, do_statusline2());
+    putstr(NHW_DUMPTXT, 0, do_statusline1());
+    putstr(NHW_DUMPTXT, 0, do_statusline2());
     if(iflags.wc2_statuslines > 2)
-        putstr(0, 0, do_statusline3());
-    putstr(0, 0, "");
+        putstr(NHW_DUMPTXT, 0, do_statusline3());
+    status_initialize(TRUE);
+    bot();
     dump_end_screendump();
+    putstr(NHW_DUMPTXT, 0, "");
 
     dump_plines();
     putstr(NHW_DUMPTXT, 0, "");

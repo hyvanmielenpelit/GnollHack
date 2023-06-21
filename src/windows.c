@@ -93,6 +93,8 @@ STATIC_DCL void FDECL(dump_putstr_ex, (winid, int, const char *, int, int));
 STATIC_DCL void FDECL(dump_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 STATIC_DCL void NDECL(dump_headers);
 STATIC_DCL void NDECL(dump_footers);
+STATIC_DCL void FDECL(dump_status_update, (int, genericptr_t, int, int, int, unsigned long*));
+STATIC_DCL void NDECL(dump_render_status);
 #ifdef DUMPHTML
 STATIC_DCL void FDECL(dump_set_color_attr, (int, int, BOOLEAN_P));
 STATIC_DCL void NDECL(html_init_sym);
@@ -1193,7 +1195,7 @@ int reassessment;
 }
 
 void
-genl_status_finish()
+genl_status_finish(VOID_ARGS)
 {
     /* tear down routine */
     int i;
@@ -1591,6 +1593,317 @@ char *buf;
     return buf;
 }
 
+struct dump_status_fields {
+    int idx;
+    int color;
+    int attr;
+};
+
+static const enum statusfields** fieldorder;
+static unsigned long* dump_colormasks;
+static long dump_condition_bits;
+static struct dump_status_fields dump_status[MAXBLSTATS];
+static int hpbar_percent, hpbar_color;
+
+/* condcolor and condattr are needed to render the HTML status bar.
+   These static routines exist verbatim in at least two other window
+   ports. They should be promoted to the core (maybe botl.c).
+   Please delete this comment after the above suggestion has been enacted
+   or ignored.
+ */
+
+static int
+condcolor(bm, bmarray)
+long bm;
+unsigned long* bmarray;
+{
+#if defined(STATUS_HILITES) && defined(TEXTCOLOR)
+    int i;
+
+    if (bm && bmarray)
+        for (i = 0; i < CLR_MAX; ++i) {
+            if ((bmarray[i] & bm) != 0)
+                return i;
+        }
+#endif
+    return NO_COLOR;
+}
+
+STATIC_OVL int
+condattr(bm, bmarray)
+long bm;
+unsigned long* bmarray;
+{
+    int attr = 0;
+#ifdef STATUS_HILITES
+    int i;
+
+    if (bm && bmarray) {
+        for (i = HL_ATTCLR_DIM; i < BL_ATTCLR_MAX; ++i) {
+            if ((bmarray[i] & bm) != 0) {
+                switch (i) {
+                case HL_ATTCLR_DIM:
+                    attr |= HL_DIM;
+                    break;
+                case HL_ATTCLR_BLINK:
+                    attr |= HL_BLINK;
+                    break;
+                case HL_ATTCLR_ULINE:
+                    attr |= HL_ULINE;
+                    break;
+                case HL_ATTCLR_INVERSE:
+                    attr |= HL_INVERSE;
+                    break;
+                case HL_ATTCLR_BOLD:
+                    attr |= HL_BOLD;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+    }
+#endif /* STATUS_HILITES */
+    return attr;
+}
+
+
+
+STATIC_OVL void
+dump_render_status(VOID_ARGS)
+{
+    long mask, bits;
+    int i, idx, c, row, num_rows, coloridx = 0, attrmask = 0;
+    char* text;
+
+    num_rows = iflags.wc2_statuslines < 3 ? 2 : iflags.wc2_statuslines > 8 ? 8 : iflags.wc2_statuslines;
+    for (row = 0; row < num_rows; ++row) {
+        if (fieldorder[row] == NULL)
+            break;
+
+        int pad = COLNO + 1;
+        if (dumphtml_file)
+            fprintf(dumphtml_file, "<span class=\"nh_screen\">  "); /* 2 space left margin */
+        for (i = 0; (idx = fieldorder[row][i]) != BL_FLUSH; ++i) {
+            boolean hitpointbar = (idx == BL_TITLE
+                && iflags.wc2_hitpointbar);
+
+            if (!status_activefields[idx])
+                continue;
+            text = status_vals[idx]; /* always "" for BL_CONDITION */
+
+            if (idx == BL_CONDITION) {
+                /* | Condition Codes | */
+                bits = dump_condition_bits;
+                for (c = 0; c < SIZE(condition_definitions) && bits != 0L; ++c) {
+                    mask = condition_definitions[c].mask;
+                    if (bits & mask) {
+                        putstr(NHW_STATUS, 0, " ");
+                        pad--;
+#ifdef STATUS_HILITES
+                        if (iflags.hilite_delta) {
+                            attrmask = condattr(mask, dump_colormasks);
+                            coloridx = condcolor(mask, dump_colormasks);
+                            dump_set_color_attr(coloridx, attrmask, TRUE);
+                        }
+#endif
+                        putstr(NHW_STATUS, 0, condition_definitions[c].text[0]);
+                        pad -= strlen(condition_definitions[c].text[0]);
+#ifdef STATUS_HILITES
+                        if (iflags.hilite_delta) {
+                            dump_set_color_attr(coloridx, attrmask, FALSE);
+                        }
+#endif
+                        bits &= ~mask;
+                    }
+                }
+            }
+            else if (hitpointbar) {
+                /* | Title with Hitpoint Bar | */
+                /* hitpointbar using hp percent calculation */
+                int bar_len, bar_pos = 0;
+                char bar[MAXCO], * bar2 = (char*)0, savedch = '\0';
+                boolean twoparts = (hpbar_percent < 100);
+
+                /* force exactly 30 characters, padded with spaces
+                   if shorter or truncated if longer */
+                if (strlen(text) != 30) {
+                    Sprintf(bar, "%-30.30s", text);
+                    Strcpy(status_vals[BL_TITLE], bar);
+                }
+                else
+                    Strcpy(bar, text);
+                bar_len = (int)strlen(bar); /* always 30 */
+                /* when at full HP, the whole title will be highlighted;
+                   when injured or dead, there will be a second portion
+                   which is not highlighted */
+                if (twoparts) {
+                    /* figure out where to separate the two parts */
+                    bar_pos = (bar_len * hpbar_percent) / 100;
+                    if (bar_pos < 1 && hpbar_percent > 0)
+                        bar_pos = 1;
+                    if (bar_pos >= bar_len && hpbar_percent < 100)
+                        bar_pos = bar_len - 1;
+                    bar2 = &bar[bar_pos];
+                    savedch = *bar2;
+                    *bar2 = '\0';
+                }
+                putstr(NHW_STATUS, 0, "[");
+                if (*bar) { /* always True, unless twoparts+dead (0 HP) */
+                    dump_set_color_attr(hpbar_color, HL_INVERSE, TRUE);
+                    putstr_ex(NHW_STATUS, ATR_NONE, bar, 0, NO_COLOR);
+                    dump_set_color_attr(hpbar_color, HL_INVERSE, FALSE);
+                }
+                if (twoparts) { /* no highlighting for second part */
+                    *bar2 = savedch;
+                    putstr(NHW_STATUS, 0, bar2);
+                }
+                putstr(NHW_STATUS, 0, "]");
+                pad -= (bar_len + 2);
+            }
+            else {
+                /* | Everything else not in a special case above | */
+#ifdef STATUS_HILITES
+                if (iflags.hilite_delta) {
+                    while (*text == ' ') {
+                        putstr(NHW_STATUS, 0, " ");
+                        text++;
+                        pad--;
+                    }
+                    if (*text == '/' && idx == BL_EXP) {
+                        putstr(NHW_STATUS, 0, "/");
+                        text++;
+                        pad--;
+                    }
+                    attrmask = dump_status[idx].attr;
+                    coloridx = dump_status[idx].color;
+                    dump_set_color_attr(coloridx, attrmask, TRUE);
+                }
+#endif
+                putstr(NHW_STATUS, 0, text);
+                pad -= strlen(text);
+#ifdef STATUS_HILITES
+                if (iflags.hilite_delta) {
+                    dump_set_color_attr(coloridx, attrmask, FALSE);
+                }
+#endif
+            }
+        }
+        if (dumphtml_file)
+            fprintf(dumphtml_file, "%*s</span>\n", pad, " ");
+    }
+    return;
+}
+
+
+STATIC_OVL void
+dump_status_update(fldidx, ptr, chg, percent, color, colormasks)
+int fldidx, chg UNUSED, percent, color;
+genericptr_t ptr;
+unsigned long* colormasks;
+{
+    int attrmask;
+    long* condptr = (long*)ptr;
+    char* text = (char*)ptr;
+    char* lastchar, * p;
+    char goldbuf[40] = "";
+    const char* fmt;
+
+    static boolean inited = FALSE;
+
+    if (!inited) {
+        int i;
+        fieldorder = iflags.wc2_statuslines < 3 ? fieldorders_2statuslines : flags.fullstatuslineorder ? fieldorders_alt : fieldorders;
+        for (i = 0; i < MAXBLSTATS; ++i) {
+            dump_status[i].idx = BL_FLUSH;
+            dump_status[i].color = NO_COLOR;
+            dump_status[i].attr = ATR_NONE;
+        }
+        dump_condition_bits = 0L;
+        hpbar_percent = 0, hpbar_color = NO_COLOR;
+        inited = TRUE;
+    }
+
+    if ((fldidx < BL_RESET) || (fldidx >= MAXBLSTATS))
+        return;
+
+    if ((fldidx >= 0 && fldidx < MAXBLSTATS) && !status_activefields[fldidx])
+        return;
+
+    switch (fldidx) {
+    case BL_RESET:
+    case BL_FLUSH:
+        dump_render_status();
+        return;
+    case BL_CONDITION:
+        dump_status[fldidx].idx = fldidx;
+        dump_condition_bits = *condptr;
+        dump_colormasks = colormasks;
+        break;
+    case BL_GOLD:
+        text = decode_mixed(goldbuf, text);
+        /*FALLTHRU*/
+    default:
+        attrmask = (color >> 8) & 0x00FF;
+#ifndef TEXTCOLOR
+        color = NO_COLOR;
+#endif
+        fmt = status_fieldfmt[fldidx];
+        if (!fmt)
+            fmt = "%s";
+        /* should be checking for first enabled field here rather than
+           just first field, but 'fieldorder' doesn't start any rows
+           with fields which can be disabled so [any_row][0] suffices */
+        if (*fmt == ' ' && ((fieldorder[0] != NULL && fldidx == fieldorder[0][0])
+            || (fieldorder[1] != NULL && fldidx == fieldorder[1][0])
+            || (fieldorder[2] != NULL && fldidx == fieldorder[2][0])
+            || (fieldorder[3] != NULL && fldidx == fieldorder[3][0])
+            || (fieldorder[4] != NULL && fldidx == fieldorder[4][0])
+            || (fieldorder[5] != NULL && fldidx == fieldorder[5][0])
+            || (fieldorder[6] != NULL && fldidx == fieldorder[6][0])
+            || (fieldorder[7] != NULL && fldidx == fieldorder[7][0])
+            ))
+            ++fmt; /* skip leading space for first field on line */
+        Sprintf(status_vals[fldidx], fmt, text);
+        dump_status[fldidx].idx = fldidx;
+        dump_status[fldidx].color = (color & 0x00FF);
+        dump_status[fldidx].attr = attrmask;
+        break;
+    }
+
+    /* default processing above was required before these */
+    switch (fldidx) {
+    case BL_HP:
+    case BL_HPMAX:
+        if (iflags.wc2_hitpointbar) {
+            /* Special additional processing for hitpointbar */
+            hpbar_percent = percent;
+            if (fldidx == BL_HP)
+            {
+                hpbar_color = (color & 0x00FF);
+                dump_status[BL_TITLE].color = hpbar_color;
+            }
+        }
+        break;
+    case BL_LEVELDESC:
+    case BL_2WEP:
+    case BL_SKILL:
+    case BL_CAP:
+    case BL_HUNGER:
+        /* The core sends trailing blanks for some fields.
+           Let's suppress the trailing blanks */
+        p = status_vals[fldidx];
+        for (lastchar = eos(p); lastchar > p && *--lastchar == ' '; ) {
+            *lastchar = '\0';
+        }
+        break;
+    }
+    /* 3.6.2 we only render on BL_FLUSH (or BL_RESET) */
+    return;
+}
+
+
+
 /*ARGSUSED*/
 STATIC_OVL void
 dump_putstr_ex(win, attr, str, app, color)
@@ -1832,6 +2145,10 @@ boolean onoff_flag;
     {
         if (onoff_flag) 
         {
+#ifdef STATUS_HILITES
+            botl_save_hilites();
+#endif
+            status_finish(); // 
             windowprocs.win_create_nhwindow_ex = dump_create_nhwindow_ex;
             windowprocs.win_clear_nhwindow = dump_clear_nhwindow;
             windowprocs.win_display_nhwindow = dump_display_nhwindow;
@@ -1846,6 +2163,14 @@ boolean onoff_flag;
 #ifdef DUMPHTML
             windowprocs.win_outrip = dump_outrip;
 #endif
+            windowprocs.win_status_init = genl_status_init;
+            windowprocs.win_status_finish = genl_status_finish;
+            windowprocs.win_status_update = dump_status_update;
+            windowprocs.win_status_enablefield = genl_status_enablefield;
+            status_initialize(FALSE);
+#ifdef STATUS_HILITES
+            botl_restore_hilites();
+#endif
         } else {
             windowprocs = dumplog_windowprocs_backup;
         }
@@ -1854,6 +2179,7 @@ boolean onoff_flag;
         iflags.in_dumplog = FALSE;
     }
 }
+
 
 
 #ifdef DUMPHTML
@@ -2222,8 +2548,11 @@ int attr, color;
                 dump_set_color_attr(curcolor, ATR_NONE, TRUE);
         }
         html_dump_char(fp, (nhsym)*p);
+        prevattr = curattr;
+        prevcolor = curcolor;
     }
-    dump_set_color_attr(curcolor, curattr, FALSE);
+    if(curcolor != NO_COLOR || curattr != ATR_NONE)
+        dump_set_color_attr(curcolor, curattr, FALSE);
 }
 
 STATIC_OVL void
