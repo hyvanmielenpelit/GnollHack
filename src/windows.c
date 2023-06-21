@@ -100,7 +100,7 @@ STATIC_DCL void FDECL(dump_set_color_attr, (int, int, BOOLEAN_P));
 STATIC_DCL void NDECL(html_init_sym);
 STATIC_DCL void NDECL(dump_css);
 STATIC_DCL void FDECL(dump_outrip, (winid, int, time_t));
-STATIC_DCL void FDECL(html_dump_str, (FILE*, const char*, const char*, const char*, int, int));
+STATIC_DCL void FDECL(html_dump_str, (FILE*, const char*, const char*, const char*, int, int, int));
 STATIC_DCL void FDECL(html_dump_line, (FILE*, winid, const char*, const char*, int, int, int, const char*));
 STATIC_DCL void FDECL(html_write_tags, (FILE*, winid, int, int, int, BOOLEAN_P, struct extended_menu_info)); /* Tags before/after string */
 #endif
@@ -1698,7 +1698,7 @@ dump_render_status(VOID_ARGS)
                 for (c = 0; c < SIZE(condition_definitions) && bits != 0L; ++c) {
                     mask = condition_definitions[c].mask;
                     if (bits & mask) {
-                        putstr(NHW_STATUS, 0, " ");
+                        putstr_ex(NHW_STATUS, 0, " ", 1, NO_COLOR);
                         pad--;
 #ifdef STATUS_HILITES
                         if (iflags.hilite_delta) {
@@ -1707,7 +1707,7 @@ dump_render_status(VOID_ARGS)
                             dump_set_color_attr(coloridx, attrmask, TRUE);
                         }
 #endif
-                        putstr(NHW_STATUS, 0, condition_definitions[c].text[0]);
+                        putstr_ex(NHW_STATUS, 0, condition_definitions[c].text[0], 1, NO_COLOR);
                         pad -= strlen(condition_definitions[c].text[0]);
 #ifdef STATUS_HILITES
                         if (iflags.hilite_delta) {
@@ -1748,7 +1748,7 @@ dump_render_status(VOID_ARGS)
                     savedch = *bar2;
                     *bar2 = '\0';
                 }
-                putstr(NHW_STATUS, 0, "[");
+                putstr_ex(NHW_STATUS, 0, "[", 1, NO_COLOR);
                 if (*bar) { /* always True, unless twoparts+dead (0 HP) */
                     dump_set_color_attr(hpbar_color, HL_INVERSE, TRUE);
                     putstr_ex(NHW_STATUS, ATR_NONE, bar, 0, NO_COLOR);
@@ -1756,9 +1756,9 @@ dump_render_status(VOID_ARGS)
                 }
                 if (twoparts) { /* no highlighting for second part */
                     *bar2 = savedch;
-                    putstr(NHW_STATUS, 0, bar2);
+                    putstr_ex(NHW_STATUS, 0, bar2, 1, NO_COLOR);
                 }
-                putstr(NHW_STATUS, 0, "]");
+                putstr_ex(NHW_STATUS, 0, "]", 1, NO_COLOR);
                 pad -= (bar_len + 2);
             }
             else {
@@ -1780,7 +1780,7 @@ dump_render_status(VOID_ARGS)
                     dump_set_color_attr(coloridx, attrmask, TRUE);
                 }
 #endif
-                putstr(NHW_STATUS, 0, text);
+                putstr_ex(NHW_STATUS, 0, text, 1, NO_COLOR);
                 pad -= strlen(text);
 #ifdef STATUS_HILITES
                 if (iflags.hilite_delta) {
@@ -1920,13 +1920,13 @@ const char *str;
         write_text2buf_utf8(buf, sizeof(buf), str);
 
 #ifdef DUMPLOG
-    if (dumplog_file)
-        fprintf(dumplog_file, "%s\n", buf);
+    if (dumplog_file && win != NHW_STATUS)
+        fprintf(dumplog_file, "%s%s", buf, app ? "" : "\n");
 #endif
 #ifdef DUMPHTML
     if (dumphtml_file && win != NHW_DUMPTXT) {
         if (win == NHW_STATUS)
-            html_dump_str(dumphtml_file, str, 0, 0, attr, color);
+            html_dump_str(dumphtml_file, str, 0, 0, attr, color, app);
         else
             html_dump_line(dumphtml_file, win, 0, 0, attr, color, app, str);
     }
@@ -1945,13 +1945,13 @@ const char* str, *attrs, *colors;
         write_text2buf_utf8(buf, sizeof(buf), str);
 
 #ifdef DUMPLOG
-    if (dumplog_file)
-        fprintf(dumplog_file, "%s\n", buf);
+    if (dumplog_file && win != NHW_STATUS)
+        fprintf(dumplog_file, "%s%s", buf, app ? "" : "\n");
 #endif
 #ifdef DUMPHTML
     if (dumphtml_file && win != NHW_DUMPTXT) {
         if (win == NHW_STATUS)
-            html_dump_str(dumphtml_file, str, attrs, colors, attr, color);
+            html_dump_str(dumphtml_file, str, attrs, colors, attr, color, app);
         else
             html_dump_line(dumphtml_file, win, attrs, colors, attr, color, app, str);
     }
@@ -2080,7 +2080,7 @@ struct extended_menu_info info UNUSED;
         if (glyph != NO_GLYPH) {
             fprintf(dumphtml_file, "<span class=\"nh_item_letter\">%c</span> - ", ch);
         }
-        html_dump_str(dumphtml_file, str, 0, 0, ATR_NONE, NO_COLOR);
+        html_dump_str(dumphtml_file, str, 0, 0, ATR_NONE, NO_COLOR, 1);
         fprintf(dumphtml_file, "%s", iscolor ? "</span>" : "");
         html_write_tags(dumphtml_file, win, attr, color, 0, FALSE, info);
     }
@@ -2518,10 +2518,10 @@ time_t when;
 
 /* Write HTML-escaped string to a file */
 STATIC_OVL void
-html_dump_str(fp, str, attrs, colors, attr, color)
+html_dump_str(fp, str, attrs, colors, attr, color, app)
 FILE* fp;
 const char* str, *attrs, *colors;
-int attr, color;
+int attr, color, app;
 {
     if (!fp) return;
 
@@ -2562,14 +2562,14 @@ winid win;
 int attr, color, app;
 const char* str, *attrs, *colors;
 {
-    if (strlen(str) == 0 || !strcmp(str, " ")) {
+    if ((strlen(str) == 0 || !strcmp(str, " ")) && !app) {
         /* if it's a blank line, just print a blank line */
         fprintf(fp, "%s\n", LINEBREAK);
         return;
     }
 
     html_write_tags(fp, win, attr, color, app, TRUE, zeroextendedmenuinfo);
-    html_dump_str(fp, str, attrs, colors, attr, color);
+    html_dump_str(fp, str, attrs, colors, attr, color, app);
     html_write_tags(fp, win, attr, color, app, FALSE, zeroextendedmenuinfo);
 }
 
