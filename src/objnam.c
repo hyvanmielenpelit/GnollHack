@@ -3836,10 +3836,11 @@ char oclass;
  * return null.
  */
 struct obj *
-readobjnam(bp, no_wish, is_wiz_wish)
+readobjnam(bp, no_wish, is_wiz_wish, removed_from_game_ptr)
 register char *bp;
 struct obj *no_wish;
 boolean is_wiz_wish;
+boolean* removed_from_game_ptr;
 {
     register char *p;
     register int i;
@@ -3880,6 +3881,10 @@ boolean is_wiz_wish;
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
         locked = unlocked = open = broken = key_special_quality = key_otyp = is_switchable = 0;
+
+    if (removed_from_game_ptr)
+        *removed_from_game_ptr = FALSE;
+
     tvariety = RANDOM_TIN;
     mntmp = NON_PM;
 #define CONTAINER_UNDEFINED 0
@@ -5045,7 +5050,7 @@ retry:
 
     /* handle some objects that are only allowed in wizard mode */
     if (typ && (!wiz_wishing || (wiz_wishing && (
-           typ == AMULET_OF_YENDOR 
+        typ == AMULET_OF_YENDOR
         || typ == CANDELABRUM_OF_INVOCATION
         || typ == BELL_OF_OPENING
         || typ == SPE_BOOK_OF_THE_DEAD
@@ -5078,14 +5083,18 @@ retry:
         default:
             /* catch any other non-wishable objects (venom) */
             if (is_otyp_nowish(typ) && !isartifact)
-                return (struct obj *) 0;
+            {
+                if (is_otyp_removed_from_the_game(typ) && removed_from_game_ptr)
+                    *removed_from_game_ptr = TRUE;
+                return (struct obj*)0;
+            }
 
             if (isartifact && (artilist[get_artifact_id(typ, name)].aflags & AF_NO_WISH))
-                return (struct obj*) 0;
+                return (struct obj*)0;
             break;
         }
     }
-
+    
     /*
      * Create the object, then fine-tune it.
      */

@@ -618,6 +618,7 @@ enum elemental_enchantments {
 #define is_otyp_unique(otyp) (objects[otyp].oc_unique || (objects[otyp].oc_flags3 & O3_UNIQUE))
 #define is_otyp_nowish(otyp) (objects[otyp].oc_nowish || (objects[otyp].oc_flags3 & O3_NO_WISH))
 #define is_otyp_unburiable(otyp) ((objects[otyp].oc_flags3 & O3_UNBURIABLE))
+#define is_otyp_removed_from_the_game(otyp) ((objects[otyp].oc_flags5 & O5_REMOVED_FROM_GAME) != 0)
 
 #define is_obj_unique(obj) is_otyp_unique((obj)->otyp)
 #define is_obj_nowish(obj) is_otyp_nowish((obj)->otyp)

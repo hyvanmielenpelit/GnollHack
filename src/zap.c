@@ -11388,13 +11388,14 @@ retry:
      *  value to remain distinct.
      */
     Strcpy(bufcpy, buf);
-    otmp = readobjnam(buf, &nothing, is_wiz_wish);
+    boolean isremovedfromgame = FALSE;;
+    otmp = readobjnam(buf, &nothing, is_wiz_wish, &isremovedfromgame);
     if (!otmp) {
-        pline("Nothing fitting that description exists in the game.");
+        pline(isremovedfromgame ? "The requested object has been removed from the game." : "Nothing fitting that description exists in the game.");
         if (++tries < MAXWISHTRY)
             goto retry;
         pline1(thats_enough_tries);
-        otmp = readobjnam((char *) 0, (struct obj *) 0, is_wiz_wish);
+        otmp = readobjnam((char *) 0, (struct obj *) 0, is_wiz_wish, (boolean*)0);
         if (!otmp)
             return; /* for safety; should never happen */
     } else if (otmp == &nothing) {

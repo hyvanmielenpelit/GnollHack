@@ -1082,6 +1082,7 @@ struct objclass {
 #define O5_MATERIAL_NAME_3RD_WORD_AN   0x20000000UL
 #define O5_MATERIAL_NAME_4TH_WORD_AN   (O5_MATERIAL_NAME_2ND_WORD_AN | O5_MATERIAL_NAME_3RD_WORD_AN)
 #define O5_NO_MATERIAL_NAME            0x40000000UL
+#define O5_REMOVED_FROM_GAME           0x80000000UL /* Inform the player explicitly that the item has been removed from game (e.g., by using no wish and no generation flags) */
 
 #define O6_NONE                        0x00000000UL
 
