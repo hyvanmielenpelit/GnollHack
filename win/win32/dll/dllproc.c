@@ -1045,13 +1045,13 @@ dll_putstr(winid wid, int attr, const char *text)
 {
     dll_logDebug("dll_putstr(%d, %d, %s)\n", wid, attr, text);
 
-    dll_putstr_ex(wid, attr, text, 0, NO_COLOR);
+    dll_putstr_ex(wid, text, attr, NO_COLOR, 0);
 }
 
 void
-dll_putstr_ex(winid wid, int attr, const char *text, int app, int color)
+dll_putstr_ex(winid wid, const char *text, int attr, int color, int app)
 {
-    dll_callbacks.callback_putstr_ex((int)wid, attr, text, app, color);
+    dll_callbacks.callback_putstr_ex((int)wid, text, attr, color, app);
 
 #if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
@@ -1622,161 +1622,6 @@ dll_yn_function_ex(int style, int attr, int color, int glyph, const char* title,
     char defs[2] = { 0, 0 };
     defs[0] = def;
     return dll_callbacks.callback_yn_function_ex(style, attr, color, glyph, title, question, choices, defs, resp_desc, introline, ynflags);
-
-#if 0
-    char ch;
-    char yn_esc_map = '\033';
-    char message[BUFSZ + QBUFSZ];
-    char res_ch[2];
-    int createcaret;
-    boolean digit_ok, allow_num;
-
-    dll_logDebug("dll_yn_function_ex(%s, %s, %d)\n", question, choices, def);
-
-    if (WIN_MESSAGE == WIN_ERR && choices == ynchars) {
-        char *text =
-            realloc(strdup(GetNHApp()->saved_text),
-                    strlen(question) + strlen(GetNHApp()->saved_text) + 1);
-        DWORD box_result;
-        strcat(text, question);
-        box_result =
-            GNHMessageBox(GNH_W2A(text, message, sizeof(message)),
-                         MB_ICONQUESTION | MB_YESNOCANCEL
-                             | ((def == 'y') ? MB_DEFBUTTON1
-                                             : (def == 'n') ? MB_DEFBUTTON2
-                                                            : MB_DEFBUTTON3));
-        free(text);
-        GetNHApp()->saved_text = strdup("");
-        return box_result == IDYES ? 'y' : box_result == IDNO ? 'n' : '\033';
-    }
-
-    if (choices) {
-        char *cb, choicebuf[QBUFSZ];
-
-        allow_num = (index(choices, '#') != 0);
-
-        Strcpy(choicebuf, choices);
-        if ((cb = index(choicebuf, '\033')) != 0) {
-            /* anything beyond <esc> is hidden */
-            *cb = '\0';
-        }
-        (void) strncpy(message, question, QBUFSZ - 1);
-        message[QBUFSZ - 1] = '\0';
-        sprintf(eos(message), " [%s]", choicebuf);
-        if (def)
-            sprintf(eos(message), " (%c)", def);
-        Strcat(message, " ");
-        /* escape maps to 'q' or 'n' or default, in that order */
-        yn_esc_map =
-            (index(choices, 'q') ? 'q' : (index(choices, 'n') ? 'n' : def));
-    } else {
-        Strcpy(message, question);
-        Strcat(message, " ");
-    }
-
-    createcaret = 1;
-    SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
-                (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
-
-    dll_clear_nhwindow(WIN_MESSAGE);
-    dll_putstr(WIN_MESSAGE, ATR_BOLD, message);
-
-    /* Only here if main window is not present */
-    ch = 0;
-    do {
-        ShowCaret(dll_hwnd_from_winid(WIN_MESSAGE));
-        ch = dll_nhgetch();
-        HideCaret(dll_hwnd_from_winid(WIN_MESSAGE));
-        if (choices)
-            ch = lowc(ch);
-        else
-            break; /* If choices is NULL, all possible inputs are accepted and
-                      returned. */
-
-        digit_ok = allow_num && digit(ch);
-        if (ch == '\033') {
-            if (index(choices, 'q'))
-                ch = 'q';
-            else if (index(choices, 'n'))
-                ch = 'n';
-            else
-                ch = def;
-            break;
-        } else if (index(quitchars, ch)) {
-            ch = def;
-            break;
-        } else if (!index(choices, ch) && !digit_ok) {
-            dll_nhbell();
-            ch = (char) 0;
-            /* and try again... */
-        } else if (ch == '#' || digit_ok) {
-            char z, digit_string[2];
-            int n_len = 0;
-            long value = 0;
-            dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, ("#"), 1, NO_COLOR);
-            n_len++;
-            digit_string[1] = '\0';
-            if (ch != '#') {
-                digit_string[0] = ch;
-                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1, NO_COLOR);
-                n_len++;
-                value = ch - '0';
-                ch = '#';
-            }
-            do { /* loop until we get a non-digit */
-                z = lowc(readchar());
-                if (digit(z)) {
-                    value = (10 * value) + (z - '0');
-                    if (value < 0)
-                        break; /* overflow: try again */
-                    digit_string[0] = z;
-                    dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1, NO_COLOR);
-                    n_len++;
-                } else if (z == 'y' || index(quitchars, z)) {
-                    if (z == '\033')
-                        value = -1; /* abort */
-                    z = '\n';       /* break */
-                } else if (z == '\b') {
-                    if (n_len <= 1) {
-                        value = -1;
-                        break;
-                    } else {
-                        value /= 10;
-                        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string,
-                                        -1, NO_COLOR);
-                        n_len--;
-                    }
-                } else {
-                    value = -1; /* abort */
-                    dll_nhbell();
-                    break;
-                }
-            } while (z != '\n');
-            if (value > 0)
-                yn_number = value;
-            else if (value == 0)
-                ch = 'n'; /* 0 => "no" */
-            else {        /* remove number from top line, then try again */
-                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, -n_len, NO_COLOR);
-                n_len = 0;
-                ch = (char) 0;
-            }
-        }
-    } while (!ch);
-
-    createcaret = 0;
-    SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
-                (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
-
-    /* display selection in the message window */
-    if (isprint((uchar) ch) && ch != '#') {
-        res_ch[0] = ch;
-        res_ch[1] = '\x0';
-        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1, NO_COLOR);
-    }
-
-    return ch;
-#endif
 }
 
 /*
@@ -1800,69 +1645,6 @@ dll_getlin_ex(int style, int attr, int color, const char *question, char *input,
         copyUTF8toCP437(input, BUFSZ, utf8buf, sizeof(utf8buf));
         input[BUFSZ - 1] = '\0';
     }
-
-#if 0
-    if (!iflags.wc_popup_dialog) {
-        char c;
-        int len;
-        int done;
-        int createcaret;
-
-        createcaret = 1;
-        SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
-                    (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
-
-        /* dll_clear_nhwindow(WIN_MESSAGE); */
-        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, question, 0, NO_COLOR);
-        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, " ", 1, NO_COLOR, NO_COLOR);
-#ifdef EDIT_GETLIN
-        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0, NO_COLOR);
-        len = strlen(input);
-#else
-        input[0] = '\0';
-        len = 0;
-#endif
-        ShowCaret(dll_hwnd_from_winid(WIN_MESSAGE));
-        done = FALSE;
-        while (!done) {
-            c = dll_nhgetch();
-            switch (c) {
-            case VK_ESCAPE:
-                strcpy(input, "\033");
-                done = TRUE;
-                break;
-            case '\n':
-            case '\r':
-            case -115:
-                done = TRUE;
-                break;
-            default:
-                if (input[0])
-                    dll_putstr_ex(WIN_MESSAGE, ATR_NONE, input, -len, NO_COLOR);
-                if (c == VK_BACK) {
-                    if (len > 0)
-                        len--;
-                    input[len] = '\0';
-                } else if (len>=(BUFSZ-1)) {
-                    PlaySound((LPCSTR)SND_ALIAS_SYSTEMEXCLAMATION, NULL, SND_ALIAS_ID|SND_ASYNC);
-                } else {
-                    input[len++] = c;
-                    input[len] = '\0';
-                }
-                dll_putstr_ex(WIN_MESSAGE, ATR_NONE, input, 1, NO_COLOR);
-                break;
-            }
-        }
-        HideCaret(dll_hwnd_from_winid(WIN_MESSAGE));
-        createcaret = 0;
-        SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
-                    (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
-    } else {
-        if (mswin_getlin_window(GETLINE_GENERAL, question, input, BUFSZ) == IDCANCEL) {
-            strcpy(input, "\033");
-        }
-    }
-#endif
 }
 
 /*
@@ -1876,90 +1658,6 @@ dll_get_ext_cmd()
 {
     dll_logDebug("dll_get_ext_cmd()\n");
     return dll_callbacks.callback_get_ext_cmd();
-
-#if 0
-    int ret;
-    if (!iflags.wc_popup_dialog) {
-        char c;
-        char cmd[BUFSZ];
-        int i, len;
-        int createcaret;
-
-        createcaret = 1;
-        SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
-                    (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
-
-        cmd[0] = '\0';
-        i = -2;
-        dll_clear_nhwindow(WIN_MESSAGE);
-        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, "#", 0, NO_COLOR);
-        len = 0;
-        ShowCaret(dll_hwnd_from_winid(WIN_MESSAGE));
-        while (i == -2) {
-            int oindex, com_index;
-            c = dll_nhgetch();
-            switch (c) {
-            case VK_ESCAPE:
-                i = -1;
-                break;
-            case '\n':
-            case '\r':
-            case -115:
-                for (i = 0; extcmdlist[i].ef_txt != (char *) 0; i++)
-                    if (!strcmpi(cmd, extcmdlist[i].ef_txt))
-                        break;
-
-                if (extcmdlist[i].ef_txt == (char *) 0) {
-                    pline("%s: unknown extended command.", cmd);
-                    i = -1;
-                }
-                break;
-            default:
-                if (cmd[0])
-                    dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd,
-                                    -(int) strlen(cmd), NO_COLOR);
-                if (c == VK_BACK) {
-                    if (len > 0)
-                        len--;
-                    cmd[len] = '\0';
-                } else {
-                    cmd[len++] = c;
-                    cmd[len] = '\0';
-                    /* Find a command with this prefix in extcmdlist */
-                    com_index = -1;
-                    for (oindex = 0; extcmdlist[oindex].ef_txt != (char *) 0;
-                         oindex++) {
-                        if ((extcmdlist[oindex].flags & AUTOCOMPLETE)
-                            && !(!wizard && (extcmdlist[oindex].flags & WIZMODECMD))
-                            && !(!wizard && !discover && !CasualMode && (extcmdlist[oindex].flags & CASUALMODECMD))
-                            && !strncmpi(cmd, extcmdlist[oindex].ef_txt, len)) {
-                            if (com_index == -1) /* no matches yet */
-                                com_index = oindex;
-                            else
-                                com_index =
-                                    -2; /* two matches, don't complete */
-                        }
-                    }
-                    if (com_index >= 0) {
-                        Strcpy(cmd, extcmdlist[com_index].ef_txt);
-                    }
-                }
-                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd, 1, NO_COLOR);
-                break;
-            }
-        }
-        HideCaret(dll_hwnd_from_winid(WIN_MESSAGE));
-        createcaret = 0;
-        SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
-                    (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
-        return i;
-    } else {
-        if (mswin_ext_cmd_window(&ret) == IDCANCEL)
-            return -1;
-        else
-            return ret;
-    }
-#endif
 }
 
 /*
@@ -2262,21 +1960,6 @@ void
 dll_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring)
 {
     dll_callbacks.callback_putmsghistory(msg, attrs, colors, restoring);
-#if 0
-    BOOL save_sound_opt;
-
-    UNREFERENCED_PARAMETER(restoring);
-
-    if (!msg)
-        return; /* end of message history restore */
-    save_sound_opt = GetNHApp()->bNoSounds;
-    GetNHApp()->bNoSounds =
-        TRUE; /* disable sounds while restoring message history */
-    dll_putstr_ex(WIN_MESSAGE, ATR_NONE, msg, 0, NO_COLOR);
-    clear_nhwindow(WIN_MESSAGE); /* it is in fact end-of-turn indication so
-                                    each message will print on the new line */
-    GetNHApp()->bNoSounds = save_sound_opt; /* restore sounds option */
-#endif
 }
 
 /* clean up and quit */

@@ -4114,16 +4114,16 @@ register struct obj* obj;
         powercnt++;
 //#if defined(GNH_MOBILE) || defined (WIN32)
         Sprintf(buf, " %2d - You have ", powercnt);
-        putstr_ex(datawin, ATR_INDENT_AT_DASH, buf, 1, NO_COLOR);
-        putstr_ex(datawin, ATR_INDENT_AT_DASH, "50%", 1, CLR_BROWN);
-        putstr_ex(datawin, ATR_INDENT_AT_DASH, " chance to hit AC ", 1, NO_COLOR);
+        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+        putstr_ex(datawin, "50%", ATR_INDENT_AT_DASH, CLR_BROWN, 1);
+        putstr_ex(datawin, " chance to hit AC ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
         Sprintf(buf, "%d", ac_with_50_chance);
-        putstr_ex(datawin, ATR_INDENT_AT_DASH, buf, 1, CLR_BROWN);
-        putstr_ex(datawin, ATR_INDENT_AT_DASH, " and ", 1, NO_COLOR);
-        putstr_ex(datawin, ATR_INDENT_AT_DASH, "5%", 1, CLR_RED);
-        putstr_ex(datawin, ATR_INDENT_AT_DASH, " AC ", 1, NO_COLOR);
+        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, CLR_BROWN, 1);
+        putstr_ex(datawin, " and ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
+        putstr_ex(datawin, "5%", ATR_INDENT_AT_DASH, CLR_RED, 1);
+        putstr_ex(datawin, " AC ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
         Sprintf(buf, "%d", ac_with_5_chance);
-        putstr_ex(datawin, ATR_INDENT_AT_DASH, buf, 0, CLR_RED);
+        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, CLR_RED, 0);
 //#else
 //        Sprintf(buf, " %2d - You have 50%% chance to hit AC %d and 5%% AC %d", powercnt, ac_with_50_chance, ac_with_5_chance);
 //        putstr(datawin, ATR_INDENT_AT_DASH, buf);

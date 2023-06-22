@@ -89,7 +89,7 @@ STATIC_DCL void FDECL(dump_add_extended_menu, (winid, int, const ANY_P*, CHAR_P,
     CHAR_P, int, int, const char*, BOOLEAN_P, struct extended_menu_info));
 STATIC_DCL void FDECL(dump_end_menu_ex, (winid, const char *, const char*));
 STATIC_DCL int FDECL(dump_select_menu, (winid, int, MENU_ITEM_P **));
-STATIC_DCL void FDECL(dump_putstr_ex, (winid, int, const char *, int, int));
+STATIC_DCL void FDECL(dump_putstr_ex, (winid, const char *, int, int, int));
 STATIC_DCL void FDECL(dump_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 STATIC_DCL void NDECL(dump_headers);
 STATIC_DCL void NDECL(dump_footers);
@@ -755,7 +755,7 @@ STATIC_DCL void FDECL(hup_add_menu, (winid, int, const anything *, CHAR_P, CHAR_
 STATIC_DCL void FDECL(hup_add_extended_menu, (winid, int, const anything*, CHAR_P, CHAR_P,
     int, int, const char*, BOOLEAN_P, struct extended_menu_info));
 STATIC_DCL void FDECL(hup_end_menu_ex, (winid, const char *, const char*));
-STATIC_DCL void FDECL(hup_putstr_ex, (winid, int, const char *, int, int));
+STATIC_DCL void FDECL(hup_putstr_ex, (winid, const char *, int, int, int));
 STATIC_DCL void FDECL(hup_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 STATIC_DCL void FDECL(hup_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
 STATIC_DCL void FDECL(hup_issue_gui_command, (int, int, const char*));
@@ -996,7 +996,7 @@ const char *subtitle UNUSED;
 
 /*ARGSUSED*/
 STATIC_OVL void
-hup_putstr_ex(window, attr, text, app, color)
+hup_putstr_ex(window, text, attr, color, app)
 winid window UNUSED;
 int attr UNUSED, app UNUSED, color UNUSED;
 const char *text UNUSED;
@@ -1698,7 +1698,7 @@ dump_render_status(VOID_ARGS)
                 for (c = 0; c < SIZE(condition_definitions) && bits != 0L; ++c) {
                     mask = condition_definitions[c].mask;
                     if (bits & mask) {
-                        putstr_ex(NHW_STATUS, 0, " ", 1, NO_COLOR);
+                        putstr_ex(NHW_STATUS, " ", ATR_NONE, NO_COLOR, 1);
                         pad--;
 #ifdef STATUS_HILITES
                         if (iflags.hilite_delta) {
@@ -1707,7 +1707,7 @@ dump_render_status(VOID_ARGS)
                             dump_set_color_attr(coloridx, attrmask, TRUE);
                         }
 #endif
-                        putstr_ex(NHW_STATUS, 0, condition_definitions[c].text[0], 1, NO_COLOR);
+                        putstr_ex(NHW_STATUS, condition_definitions[c].text[0], ATR_NONE, NO_COLOR, 1);
                         pad -= strlen(condition_definitions[c].text[0]);
 #ifdef STATUS_HILITES
                         if (iflags.hilite_delta) {
@@ -1748,17 +1748,17 @@ dump_render_status(VOID_ARGS)
                     savedch = *bar2;
                     *bar2 = '\0';
                 }
-                putstr_ex(NHW_STATUS, 0, "[", 1, NO_COLOR);
+                putstr_ex(NHW_STATUS,  "[", ATR_NONE, NO_COLOR, 1);
                 if (*bar) { /* always True, unless twoparts+dead (0 HP) */
                     dump_set_color_attr(hpbar_color, HL_INVERSE, TRUE);
-                    putstr_ex(NHW_STATUS, ATR_NONE, bar, 0, NO_COLOR);
+                    putstr_ex(NHW_STATUS, bar, ATR_NONE, NO_COLOR, 0);
                     dump_set_color_attr(hpbar_color, HL_INVERSE, FALSE);
                 }
                 if (twoparts) { /* no highlighting for second part */
                     *bar2 = savedch;
-                    putstr_ex(NHW_STATUS, 0, bar2, 1, NO_COLOR);
+                    putstr_ex(NHW_STATUS, bar2, ATR_NONE, NO_COLOR, 1);
                 }
-                putstr_ex(NHW_STATUS, 0, "]", 1, NO_COLOR);
+                putstr_ex(NHW_STATUS, "]", ATR_NONE, NO_COLOR, 1);
                 pad -= (bar_len + 2);
             }
             else {
@@ -1780,7 +1780,7 @@ dump_render_status(VOID_ARGS)
                     dump_set_color_attr(coloridx, attrmask, TRUE);
                 }
 #endif
-                putstr_ex(NHW_STATUS, 0, text, 1, NO_COLOR);
+                putstr_ex(NHW_STATUS, text, ATR_NONE, NO_COLOR, 1);
                 pad -= strlen(text);
 #ifdef STATUS_HILITES
                 if (iflags.hilite_delta) {
@@ -1906,7 +1906,7 @@ unsigned long* colormasks;
 
 /*ARGSUSED*/
 STATIC_OVL void
-dump_putstr_ex(win, attr, str, app, color)
+dump_putstr_ex(win, str, attr, color, app)
 #ifdef DUMPHTML
 winid win;
 #else
@@ -2830,7 +2830,7 @@ const char* str;
 int no_forward;
 {
 #if defined(DUMPLOG) || defined (DUMPHTML)
-    dump_putstr_ex(win, attr, str, 0, NO_COLOR);
+    dump_putstr_ex(win, str, attr, NO_COLOR, 0);
 #endif
     if (!no_forward)
         putstr(win, attr, str);

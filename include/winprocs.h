@@ -33,9 +33,9 @@ struct window_procs {
     void FDECL((*win_display_nhwindow), (winid, BOOLEAN_P));
     void FDECL((*win_destroy_nhwindow), (winid));
     void FDECL((*win_curs), (winid, int, int));
-    void FDECL((*win_putstr_ex), (winid, int, const char *, int, int));
+    void FDECL((*win_putstr_ex), (winid, const char *, int, int, int));
     void FDECL((*win_putstr_ex2), (winid, const char*, const char*, const char*, int, int, int));
-    void FDECL((*win_putmixed_ex), (winid, int, const char *, int, int));
+    void FDECL((*win_putmixed_ex), (winid, const char *, int, int, int));
     void FDECL((*win_display_file), (const char *, BOOLEAN_P));
     void FDECL((*win_start_menu_ex), (winid, int));
     void FDECL((*win_add_menu), (winid, int, const ANY_P *, CHAR_P, CHAR_P,
@@ -146,9 +146,9 @@ extern
 #define curs (*windowprocs.win_curs)
 #define putstr_ex (*windowprocs.win_putstr_ex)
 #define putstr_ex2 (*windowprocs.win_putstr_ex2)
-#define putstr(x, y, z) putstr_ex(x, y, z, 0, NO_COLOR)
+#define putstr(x, y, z) putstr_ex(x, z, y, NO_COLOR, 0)
 #define putmixed_ex (*windowprocs.win_putmixed_ex)
-#define putmixed(x, y, z) putmixed_ex(x, y, z, 0, NO_COLOR)
+#define putmixed(x, y, z) putmixed_ex(x, z, y, NO_COLOR, 0)
 #define display_file (*windowprocs.win_display_file)
 #define start_menu_ex (*windowprocs.win_start_menu_ex)
 #define start_menu(x) start_menu_ex(x, 0)
@@ -415,9 +415,9 @@ struct chain_procs {
     void FDECL((*win_display_nhwindow), (CARGS, winid, BOOLEAN_P));
     void FDECL((*win_destroy_nhwindow), (CARGS, winid));
     void FDECL((*win_curs), (CARGS, winid, int, int));
-    void FDECL((*win_putstr_ex), (CARGS, winid, int, const char *, int, int));
+    void FDECL((*win_putstr_ex), (CARGS, winid, const char *, int, int, int));
     void FDECL((*win_putstr_ex2), (CARGS, winid, const char*, const char*, const char*, int, int, int));
-    void FDECL((*win_putmixed_ex), (CARGS, winid, int, const char *, int, int));
+    void FDECL((*win_putmixed_ex), (CARGS, winid, const char *, int, int, int));
     void FDECL((*win_display_file), (CARGS, const char *, BOOLEAN_P));
     void FDECL((*win_start_menu_ex), (CARGS, winid, int));
     void FDECL((*win_add_menu), (CARGS, winid, int, const ANY_P *, CHAR_P,
@@ -521,9 +521,9 @@ extern void FDECL(safe_clear_nhwindow, (winid));
 extern void FDECL(safe_display_nhwindow, (winid, BOOLEAN_P));
 extern void FDECL(safe_destroy_nhwindow, (winid));
 extern void FDECL(safe_curs, (winid, int, int));
-extern void FDECL(safe_putstr_ex, (winid, int, const char *, int, int));
+extern void FDECL(safe_putstr_ex, (winid, const char *, int, int, int));
 extern void FDECL(safe_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
-extern void FDECL(safe_putmixed_ex, (winid, int, const char *, int, int));
+extern void FDECL(safe_putmixed_ex, (winid, const char *, int, int, int));
 extern void FDECL(safe_display_file, (const char *, BOOLEAN_P));
 extern void FDECL(safe_start_menu_ex, (winid, int));
 extern void FDECL(safe_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P,

@@ -655,7 +655,7 @@ namespace GnollHackClient
                 queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, sendlist));
             }
         }
-        public void ClientCallback_PutStrEx(int win_id, int attributes, string str, int append, int color)
+        public void ClientCallback_PutStrEx(int win_id, string str, int attributes, int color, int append)
         {
             if (win_id < 0)
                 return;

@@ -934,11 +934,11 @@ mswin_putstr(winid wid, int attr, const char *text)
 {
     logDebug("mswin_putstr(%d, %d, %s)\n", wid, attr, text);
 
-    mswin_putstr_ex(wid, attr, text, 0, NO_COLOR);
+    mswin_putstr_ex(wid, text, attr, NO_COLOR, 0);
 }
 
 void
-mswin_putstr_ex(winid wid, int attr, const char *text, int app, int color)
+mswin_putstr_ex(winid wid, const char *text, int attr, int color, int app)
 {
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
@@ -961,9 +961,9 @@ mswin_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 }
 
 void
-mswin_putstr_ex2(winid wid, const char* text, const char* text, const char* text, int attr, int color, int app)
+mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app)
 {
-    mswin_putstr_ex(wid, attrs ? attrs[0] : attr, text, app, colors ? colors[0] : color);
+    mswin_putstr_ex(wid, text, attrs ? attrs[0] : attr, colors ? colors[0] : color, app);
 }
 
 /* Display the file named str.  Complain about missing files
@@ -1449,7 +1449,7 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
     }
 #endif /* defined(WIN_CE_SMARTPHONE) */
 
-    mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, message, 0, color);
+    mswin_putstr_ex(WIN_MESSAGE, message, ATR_BOLD | attr, color, 0);
 
     /* Only here if main window is not present */
     while (result < 0) {
@@ -1474,7 +1474,7 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
     if (isprint(ch)) {
         res_ch[0] = ch;
         res_ch[1] = '\x0';
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1, NO_COLOR);
+        mswin_putstr_ex(WIN_MESSAGE, res_ch, ATR_BOLD, NO_COLOR, 1);
     }
 
     /* prevent "--more--" prompt from appearing when several

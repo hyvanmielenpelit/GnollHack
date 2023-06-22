@@ -152,12 +152,12 @@ int y;
 }
 
 void
-chainin_putstr_ex(window, attr, str, app, color)
+chainin_putstr_ex(window, str, attr color, app,)
 winid window;
 int attr, app, color;
 const char *str;
 {
-    (*cibase->nprocs->win_putstr_ex)(cibase->ndata, window, attr, str, app, color);
+    (*cibase->nprocs->win_putstr_ex)(cibase->ndata, window, str, attr, color, app);
 }
 
 void
@@ -170,12 +170,12 @@ const char* str, *attrs, *colors;
 }
 
 void
-chainin_putmixed_ex(window, attr, str, app, color)
+chainin_putmixed_ex(window, str, attr, color, app)
 winid window;
 int attr, app, color;
 const char *str;
 {
-    (*cibase->nprocs->win_putmixed_ex)(cibase->ndata, window, attr, str, app, color);
+    (*cibase->nprocs->win_putmixed_ex)(cibase->ndata, window, str, attr, color), app;
 }
 
 void

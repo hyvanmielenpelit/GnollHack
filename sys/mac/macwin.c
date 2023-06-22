@@ -1005,7 +1005,7 @@ enter_topl_mode(int attr, int color, char *query)
     if (in_topl_mode())
         return;
 
-    putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, query, 0, color);
+    putstr_ex(WIN_MESSAGE, query, ATR_BOLD | attr, color, 0);
 
     topl_query_len = strlen(query);
     (*top_line)->selStart = topl_query_len;
@@ -1817,7 +1817,7 @@ mac_exit_nhwindows(const char *s)
  * Don't forget to decrease in_putstr before returning...
  */
 void
-mac_putstr_ex(winid win, int attr, const char *str, int app, int color)
+mac_putstr_ex(winid win,const char *str, int attr, int color, int app)
 {
     long len, slen;
     NhWindow *aWin = &theWindows[win];
@@ -1927,7 +1927,7 @@ mac_putstr_ex(winid win, int attr, const char *str, int app, int color)
 void
 mac_putstr_ex2(winid win, const char* str, const char* attrs, const char* colors, int attr, int color, int app)
 {
-    mac_putstr_ex(win, attrs ? attrs[0] : attr, str, app, colors ? colors[0] : color);
+    mac_putstr_ex(win, str, attrs ? attrs[0] : attr, colors ? colors[0] : color, app);
 }
 
 void

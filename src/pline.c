@@ -146,7 +146,7 @@ const char *line;
     attr |= pline_attr;
     color = pline_color;
 
-    putstr_ex(WIN_MESSAGE, attr, line, 0, color);
+    putstr_ex(WIN_MESSAGE, line, attr, color, 0);
 }
 
 STATIC_OVL void

@@ -22,9 +22,9 @@ static void FDECL(and_display_nhwindow, (winid, BOOLEAN_P));
 static void FDECL(and_dismiss_nhwindow, (winid));
 static void FDECL(and_destroy_nhwindow, (winid));
 static void FDECL(and_curs, (winid,int,int));
-static void FDECL(and_putstr_ex, (winid, int, const char *, int, int));
+static void FDECL(and_putstr_ex, (winid, const char *, int, int, int));
 static void FDECL(and_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
-static void FDECL(and_putmixed_ex, (winid, int, const char *, int, int));
+static void FDECL(and_putmixed_ex, (winid, const char *, int, int, int));
 static void FDECL(and_display_file, (const char *, BOOLEAN_P));
 static void FDECL(and_start_menu_ex, (winid, int));
 static void FDECL(and_add_menu, (winid,int,const ANY_P *, CHAR_P,CHAR_P,int,const char *, BOOLEAN_P));
@@ -777,7 +777,7 @@ term_end_color()
 //		   then the second.  In the tty port, pline() achieves this
 //		   by calling more() or displaying both on the same line.
 //____________________________________________________________________________________
-void and_putstr_ex(winid wid, int attr, const char *str, int append, int nhcolor)
+void and_putstr_ex(winid wid, const char *str, int attr, int nhcolor, int append)
 {
 	if(!str || !*str)
 		return;
@@ -788,7 +788,7 @@ void and_putstr_ex(winid wid, int attr, const char *str, int append, int nhcolor
 
 void and_putstr_ex2(winid wid, const char* str, const char* attrs, const char* colors, int attr, int color, int append)
 {
-	and_putstr_ex(wid, attrs ? attrs[0] : attr, str, append, colors ? colors[0] : color);
+	and_putstr_ex(wid, str, attrs ? attrs[0] : attr, colors ? colors[0] : color, append);
 }
 
 void and_putstr(winid wid, int attr, const char *str)
@@ -1027,8 +1027,8 @@ void print_conditions(const char** names)
 			int color = get_condition_color(cond_mask);
 			int attr = get_condition_attr(cond_mask);
 			//debuglog("cond '%s' active. col=%s attr=%x", name, colname(color), attr);
-			and_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
-			and_putstr_ex(WIN_STATUS, attr, name, 0, color);
+			and_putstr_ex(WIN_STATUS, " ", ATR_NONE, CLR_WHITE, 0);
+			and_putstr_ex(WIN_STATUS, name, attr, color, 0);
 		}
 	}
 }
@@ -1049,13 +1049,13 @@ void print_status_field(int idx, boolean first_field)
 	{
 		/* leveldesc has no leading space, so if we've moved
 		   it past the first position, provide one */
-		and_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+		and_putstr_ex(WIN_STATUS, " ", ATR_NONE, CLR_WHITE, 0);
 	}
 
 	// Don't want coloring on leading spaces (ATR_INVERSE would show), so print those first
 	while(*val == ' ')
 	{
-		and_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+		and_putstr_ex(WIN_STATUS, " ", ATR_NONE, CLR_WHITE, 0);
 		val++;
 	}
 
@@ -1089,7 +1089,7 @@ void print_status_field(int idx, boolean first_field)
 				color = status_colors[BL_ENE] & 0xFF;
 			}
 		}
-		and_putstr_ex(WIN_STATUS, hl_attrmask_to_attrmask(attr), val, 0, color);
+		and_putstr_ex(WIN_STATUS, val, hl_attrmask_to_attrmask(attr), color, 0);
 	//	debuglog("field %d: %s color %s", idx+1, val, colname(color));
 	}
 }
@@ -1123,13 +1123,13 @@ void and_status_flush()
 }
 
 //____________________________________________________________________________________
-void and_putmixed_ex(window, attr, str, app, color)
+void and_putmixed_ex(window, str, attr, color, app)
 winid window;
 int attr, app, color;
 const char *str;
 {
 	//debuglog("put mixed: %s", str);
-	genl_putmixed_ex(window, attr, str, app, color);
+	genl_putmixed_ex(window, str, attr, color, app);
 }
 
 //____________________________________________________________________________________
@@ -1746,13 +1746,13 @@ char and_yn_function_ex(int style, int attr, int color, int glyph, const char* t
 			char z, digit_string[2];
 			int n_len = 0;
 			long value = 0;
-			and_putstr_ex(WIN_MESSAGE, 1<<ATR_BOLD, "#", 1, CLR_WHITE);
+			and_putstr_ex(WIN_MESSAGE, "#", 1 << ATR_BOLD, CLR_WHITE, 1);
 			n_len++;
 			digit_string[1] = '\0';
 			if(ch != '#')
 			{
 				digit_string[0] = ch;
-				and_putstr_ex(WIN_MESSAGE, 1<<ATR_BOLD, digit_string, 1, CLR_WHITE);
+				and_putstr_ex(WIN_MESSAGE, digit_string, 1 << ATR_BOLD, CLR_WHITE, 1);
 				n_len++;
 				value = ch - '0';
 				ch = '#';
@@ -1766,7 +1766,7 @@ char and_yn_function_ex(int style, int attr, int color, int glyph, const char* t
 					if(value < 0)
 						break; /* overflow: try again */
 					digit_string[0] = z;
-					and_putstr_ex(WIN_MESSAGE, 1<<ATR_BOLD, digit_string, 0, CLR_WHITE);
+					and_putstr_ex(WIN_MESSAGE, digit_string, 1 << ATR_BOLD, CLR_WHITE, 0);
 					n_len++;
 				}
 				else if(z == 'y' || index(quitchars, z))
@@ -1785,7 +1785,7 @@ char and_yn_function_ex(int style, int attr, int color, int glyph, const char* t
 					else
 					{
 						value /= 10;
-						and_putstr_ex(WIN_MESSAGE, 1<<ATR_BOLD, digit_string, -2, CLR_WHITE);
+						and_putstr_ex(WIN_MESSAGE, digit_string, 1 << ATR_BOLD, CLR_WHITE, -2);
 						n_len--;
 					}
 				}
@@ -1803,7 +1803,7 @@ char and_yn_function_ex(int style, int attr, int color, int glyph, const char* t
 				ch = 'n'; /* 0 => "no" */
 			else
 			{ /* remove number from top line, then try again */
-				and_putstr_ex(WIN_MESSAGE, 1<<ATR_BOLD, digit_string, -n_len-1, CLR_WHITE);
+				and_putstr_ex(WIN_MESSAGE, digit_string, 1 << ATR_BOLD, CLR_WHITE, -n_len-1);
 				n_len = 0;
 				ch = (char)0;
 			}
@@ -1818,7 +1818,7 @@ char and_yn_function_ex(int style, int attr, int color, int glyph, const char* t
 		{
 			res_ch[0] = ch;
 			res_ch[1] = '\x0';
-			and_putstr_ex(WIN_MESSAGE, 1<<ATR_BOLD, res_ch, 1, CLR_WHITE);
+			and_putstr_ex(WIN_MESSAGE, res_ch, 1 << ATR_BOLD, CLR_WHITE, 1);
 		}
 	}
 	else
@@ -2095,9 +2095,9 @@ void get_ext_cmd_auto(const char *query, register char *bufp)
 			bufp[++n] = 0;
 		}
 		complete = complete_ext_cmd(bufp);
-		and_putstr_ex(WIN_MESSAGE, 0, bufp, -nl-1, CLR_WHITE);
+		and_putstr_ex(WIN_MESSAGE, bufp, ATR_NONE, CLR_WHITE, -nl-1);
 		if(complete) {
-			and_putstr_ex(WIN_MESSAGE, 1<<ATR_INVERSE, complete + n, 1, CLR_WHITE);
+			and_putstr_ex(WIN_MESSAGE, complete + n, 1 << ATR_INVERSE, CLR_WHITE, 1);
 		}
 		nl = complete ? strlen(complete) : n;
 	}

@@ -19,7 +19,7 @@ char *basename(char *str);
 char *dirname(char *str);
 
 /* winstr.c */
-void amii_putstr_ex(winid window, int attr, const char *str, int app, int color);
+void amii_putstr_ex(winid window, const char *str, int attr, int color, int app);
 void amii_putstr_ex2(winid window, const char* str, const char* attrs, const char* colors, int attr, int color, int app);
 void outmore(struct amii_WinDesc *cw);
 void outsubstr(struct amii_WinDesc *cw, char *str, int len, int fudge);

@@ -52,7 +52,7 @@ void dll_display_nhwindow(winid wid, BOOLEAN_P block);
 void dll_destroy_nhwindow(winid wid);
 void dll_curs(winid wid, int x, int y);
 void dll_putstr(winid wid, int attr, const char *text);
-void dll_putstr_ex(winid wid, int attr, const char *text, int, int);
+void dll_putstr_ex(winid wid, const char *text, int attr, int color, int app);
 void dll_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app);
 void dll_display_file(const char *filename, BOOLEAN_P must_exist);
 void dll_start_menu_ex(winid wid, int style);

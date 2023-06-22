@@ -181,7 +181,7 @@ int y;
 }
 
 void
-chainout_putstr_ex(vp, window, attr, str, app, color)
+chainout_putstr_ex(vp, window, str, attr, color, app)
 void *vp;
 winid window;
 int attr, app, color;
@@ -189,7 +189,7 @@ const char *str;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_putstr_ex)(window, attr, str, app, color);
+    (*tdp->nprocs->win_putstr_ex)(window, str, attr, color, app);
 }
 
 
@@ -206,7 +206,7 @@ const char* str, *attrs, *colors;
 }
 
 void
-chainout_putmixed_ex(vp, window, attr, str, app, color)
+chainout_putmixed_ex(vp, window, str, attr, color, app)
 void *vp;
 winid window;
 int attr, app, color;
@@ -214,7 +214,7 @@ const char *str;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_putmixed_ex)(window, attr, str, app, color);
+    (*tdp->nprocs->win_putmixed_ex)(window, str, attr, color, app);
 }
 
 void

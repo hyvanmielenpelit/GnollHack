@@ -2798,7 +2798,7 @@ const char *str;
 }
 
 void
-tty_putstr_ex(window, attr, str, app, color)
+tty_putstr_ex(window, str, attr, color, app)
 winid window;
 int attr, app, color;
 const char* str;

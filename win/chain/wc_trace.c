@@ -295,7 +295,7 @@ int y;
 }
 
 void
-trace_putstr_ex(vp, window, attr, str, app, color)
+trace_putstr_ex(vp, window, str, attr, color, app)
 void *vp;
 winid window;
 int attr, app, color;
@@ -312,7 +312,7 @@ const char *str;
     }
 
     PRE;
-    (*tdp->nprocs->win_putstr_ex)(tdp->ndata, window, attr, str, app, color);
+    (*tdp->nprocs->win_putstr_ex)(tdp->ndata, window, str, attr, color, app);
     POST;
 }
 
@@ -340,7 +340,7 @@ const char* str, *attrs, *colors;
 }
 
 void
-trace_putmixed_ex(vp, window, attr, str, app, color)
+trace_putmixed_ex(vp, window, str, attr, color, app)
 void *vp;
 winid window;
 int attr, app, color;
@@ -357,7 +357,7 @@ const char *str;
     }
 
     PRE;
-    (*tdp->nprocs->win_putmixed_ex)(tdp->ndata, window, attr, str, app, color);
+    (*tdp->nprocs->win_putmixed_ex)(tdp->ndata, window, str, attr, color, app);
     POST;
 }
 

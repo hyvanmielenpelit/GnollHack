@@ -11,7 +11,7 @@
 /* Put a string into the indicated window using the indicated attribute */
 
 void
-amii_putstr_ex(window, attr, str, app, color)
+amii_putstr_ex(window, str, attr, color, app)
 winid window;
 int attr app, color;
 const char *str;
@@ -288,7 +288,7 @@ winid window;
 int attr, color, app;
 const char* str, attrs, colors;
 {
-    amii_putstr_ex(window, attrs ? attrs[0] : attr, str, app, colors ? colors[0] : color);
+    amii_putstr_ex(window, str, attrs ? attrs[0] : attr, colors ? colors[0] : color, app);
 }
 
 void

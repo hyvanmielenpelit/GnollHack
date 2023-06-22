@@ -269,8 +269,8 @@
 #define tty_display_nhwindow(x, y) tty_display_nhwindow_(x, y)
 #define tty_destroy_nhwindow(x) tty_destroy_nhwindow_(x)
 #define tty_curs(x, y, z) tty_curs_(x, y, z)
-#define tty_putstr_ex(x, y, z, i, j) tty_putstr_(x, y, z)
-#define tty_putstr(x, y, z) tty_putstr_ex(x, y, z, 0, NO_COLOR)
+#define tty_putstr_ex(x, y, z, i, j) tty_putstr_ex_(x, y, z, i, j)
+#define tty_putstr(x, y, z) tty_putstr_ex(x, z, y, NO_COLOR, 0)
 #define tty_display_file(x, y) tty_display_file_(x, y)
 #define tty_start_menu_ex(x, y) tty_start_menu_ex_(x, y)
 #define tty_add_menu(a, b, c, d, e, f, g, h, i) \

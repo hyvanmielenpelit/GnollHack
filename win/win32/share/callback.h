@@ -50,7 +50,7 @@ typedef void(__callconv* VoidIntIntBooleanCallback)(int, int, BOOLEAN_P);
 typedef void(__callconv* VoidIntIntIntCallback)(int, int, int);
 typedef void(__callconv* VoidIntBooleanCallback)(int, UCHAR_P);
 typedef void(__callconv* VoidIntIntConstCharCallback)(int, int, const char*);
-typedef void(__callconv* PutStrExColorCallback)(int, int, const char*, int, int);
+typedef void(__callconv* PutStrExColorCallback)(int, const char*, int, int, int);
 typedef void(__callconv* PutStrEx2ColorCallback)(int, const char*, const char*, const char*, int, int, int);
 typedef void(__callconv* VoidConstCharIntCallback)(const char*, int);
 typedef void(__callconv* VoidConstCharBooleanCallback)(const char*, BOOLEAN_P);

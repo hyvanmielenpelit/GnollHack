@@ -436,7 +436,7 @@ putstr(window, attr, str)
                    by calling more() or displaying both on the same line.
 */
 void
-curses_putstr_ex(winid wid, int attr, const char *text, int app, int color)
+curses_putstr_ex(winid wid, const char *text, int attr, int color, int app)
 {
     if (!text)
         return;

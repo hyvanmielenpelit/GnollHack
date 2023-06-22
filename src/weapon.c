@@ -2483,13 +2483,13 @@ int skill_id;
 
             const char* lvlname = skill_level_name_core(lvl);
             Sprintf(buf, " %2d - %s", lvlcnt, lvlname);
-            putstr_ex(win, ATR_SUBHEADING, buf, 0 , color);
+            putstr_ex(win, buf, ATR_SUBHEADING, color, 0);
 
             if (lvl > P_SKILL_LEVEL(skill_id))
             {
                 int slots = slots_required_core(skill_id, lvl - 1);
                 Sprintf(buf, "    * %d skill slot%s to advance", slots, plur(slots));
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
 
                 if (!P_NONTRAINABLE(skill_id))
                 {
@@ -2634,92 +2634,92 @@ int skill_id;
             if (strcmp(digbuf, ""))
             {
                 Sprintf(buf, "    * %s speed increased by %s", skill_id == P_AXE ? "Chopping" : "Digging", digbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(acbuf, ""))
             {
                 Sprintf(buf, "    * Armor class bonus %s", acbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(mcbuf, ""))
             {
                 Sprintf(buf, "    * Magic cancellation bonus %s", mcbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(hbuf, ""))
             {
                 Sprintf(buf, "    * To-hit bonus %s%s", hbuf, skill_id == P_RIDING ? " when riding" : "");
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(dbuf, ""))
             {
                 Sprintf(buf, "    * Damage bonus %s%s", dbuf, skill_id == P_RIDING ? " when riding" : "");
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(mbuf, ""))
             {
                 Sprintf(buf, "    * Multistrike chance %s", mbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(cbuf, ""))
             {
                 Sprintf(buf, "    * Critical strike chance %s", cbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(succbuf, ""))
             {
                 Sprintf(buf, "    * Spell success bonus %s", succbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(lvlsuccbuf, ""))
             {
                 Sprintf(buf, "    * Spell success per level %s", lvlsuccbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(discbuf, ""))
             {
                 Sprintf(buf, "    * Spell cost discount %s", discbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(savingbuf, ""))
             {
                 Sprintf(buf, "    * Saving throw modifier %s", savingbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(arrowbuf, ""))
             {
                 Sprintf(buf, "    * Arrow trap untrap chance %s", arrowbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(magicbuf, ""))
             {
                 Sprintf(buf, "    * Magic trap untrap chance %s", magicbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(limitbuf, ""))
             {
                 Sprintf(buf, "    * Weapon skill limit %s", limitbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(whipbuf, ""))
             {
                 Sprintf(buf, "    * Weapon disarm bonus %s", whipbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(joustbuf, ""))
             {
                 Sprintf(buf, "    * Jousting success bonus %s", joustbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(saddlebuf, ""))
             {
                 Sprintf(buf, "    * Saddling success bonus %s", saddlebuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(mountbuf, ""))
             {
                 Sprintf(buf, "    * Mount success bonus %s", mountbuf);
-                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
         }
     }

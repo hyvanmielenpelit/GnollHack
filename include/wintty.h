@@ -198,9 +198,9 @@ E void FDECL(tty_display_nhwindow, (winid, BOOLEAN_P));
 E void FDECL(tty_dismiss_nhwindow, (winid));
 E void FDECL(tty_destroy_nhwindow, (winid));
 E void FDECL(tty_curs, (winid, int, int));
-E void FDECL(tty_putstr_ex, (winid, int, const char *, int, int));
+E void FDECL(tty_putstr_ex, (winid, const char *, int, int, int));
 E void FDECL(tty_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
-#define tty_putstr(x, y, z) tty_putstr_ex(x, y, z, 0, NO_COLOR);
+#define tty_putstr(x, y, z) tty_putstr_ex(x, z, y, NO_COLOR, 0);
 E void FDECL(tty_display_file, (const char *, BOOLEAN_P));
 E void FDECL(tty_start_menu_ex, (winid, int));
 E void FDECL(tty_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P, int, int,

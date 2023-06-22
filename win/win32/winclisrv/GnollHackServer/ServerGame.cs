@@ -519,7 +519,7 @@ namespace GnollHackServer
         {
 
         }
-        protected void GameCallback_PutStrExColor(int value1, int value2, string value3, int value4, int value5)
+        protected void GameCallback_PutStrExColor(int value1, string value2, int value3, int value4, int value5)
         {
 
         }

@@ -50,7 +50,7 @@ public:
 	static void qt_destroy_nhwindow(winid wid);
 	static void qt_curs(winid wid, int x, int y);
 	static void qt_putstr(winid wid, int attr, const char *text);
-	static void qt_putstr_ex(winid wid, int attr, const char* text, int app, int color);
+	static void qt_putstr_ex(winid wid, const char* text, int attr, int color, int app);
 	static void qt_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app);
 	static void qt_putstr(winid wid, int attr, const std::string& text);
 	static void qt_putstr(winid wid, int attr, const QString& text);

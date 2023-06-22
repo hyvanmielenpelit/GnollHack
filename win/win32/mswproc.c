@@ -1139,11 +1139,11 @@ mswin_putstr(winid wid, int attr, const char *text)
 {
     logDebug("mswin_putstr(%d, %d, %s)\n", wid, attr, text);
 
-    mswin_putstr_ex(wid, attr, text, 0, NO_COLOR);
+    mswin_putstr_ex(wid, text, attr, NO_COLOR, 0);
 }
 
 void
-mswin_putstr_ex(winid wid, int attr, const char *text, int app, int color)
+mswin_putstr_ex(winid wid, const char *text, int attr, int color, int app)
 {
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
@@ -1182,7 +1182,6 @@ mswin_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 void
 mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app)
 {
-    //mswin_putstr_ex(wid, attrs ? attrs[0] : ATR_NONE, text, app, colors ? colors[0]: NO_COLOR);
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
             && GetNHApp()->windowlist[wid].type == NHW_MENU) {
@@ -1770,7 +1769,7 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
                 (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
     mswin_clear_nhwindow(WIN_MESSAGE);
-    mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, message, 0, color);
+    mswin_putstr_ex(WIN_MESSAGE, message, ATR_BOLD | attr, color, 0);
 
     /* Only here if main window is not present */
     ch = 0;
@@ -1804,12 +1803,12 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
             char z, digit_string[2];
             int n_len = 0;
             long value = 0;
-            mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, ("#"), 1, NO_COLOR);
+            mswin_putstr_ex(WIN_MESSAGE, ("#"), ATR_BOLD, NO_COLOR, 1);
             n_len++;
             digit_string[1] = '\0';
             if (ch != '#') {
                 digit_string[0] = ch;
-                mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1, NO_COLOR);
+                mswin_putstr_ex(WIN_MESSAGE, digit_string, ATR_BOLD, NO_COLOR, 1);
                 n_len++;
                 value = ch - '0';
                 ch = '#';
@@ -1821,7 +1820,7 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
                     if (value < 0)
                         break; /* overflow: try again */
                     digit_string[0] = z;
-                    mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1, NO_COLOR);
+                    mswin_putstr_ex(WIN_MESSAGE, digit_string, ATR_BOLD, NO_COLOR, 1);
                     n_len++;
                 } else if (z == 'y' || index(quitchars, z)) {
                     if (z == '\033')
@@ -1833,8 +1832,7 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
                         break;
                     } else {
                         value /= 10;
-                        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string,
-                                        -1, NO_COLOR);
+                        mswin_putstr_ex(WIN_MESSAGE, digit_string, ATR_BOLD, NO_COLOR, -1);
                         n_len--;
                     }
                 } else {
@@ -1848,7 +1846,7 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
             else if (value == 0)
                 ch = 'n'; /* 0 => "no" */
             else {        /* remove number from top line, then try again */
-                mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, -n_len, NO_COLOR);
+                mswin_putstr_ex(WIN_MESSAGE,digit_string, ATR_BOLD, NO_COLOR, -n_len);
                 n_len = 0;
                 ch = (char) 0;
             }
@@ -1863,7 +1861,7 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
     if (isprint((uchar) ch) && ch != '#') {
         res_ch[0] = ch;
         res_ch[1] = '\x0';
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1, NO_COLOR);
+        mswin_putstr_ex(WIN_MESSAGE, res_ch, ATR_BOLD, NO_COLOR, 1);
     }
 
     return ch;
@@ -1903,10 +1901,10 @@ mswin_getlin_ex(int style, int attr, int color, const char *question, char *inpu
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
         /* mswin_clear_nhwindow(WIN_MESSAGE); */
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, promptbuf, 0, color);
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, " ", 1, color);
+        mswin_putstr_ex(WIN_MESSAGE, promptbuf, ATR_BOLD | attr, color, 0);
+        mswin_putstr_ex(WIN_MESSAGE, " ", ATR_BOLD | attr, color, 1);
 #ifdef EDIT_GETLIN
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0, NO_COLOR);
+        mswin_putstr_ex(WIN_MESSAGE, input, ATR_BOLD, NO_COLOR, 0);
         len = strlen(input);
 #else
         input[0] = '\0';
@@ -1928,7 +1926,7 @@ mswin_getlin_ex(int style, int attr, int color, const char *question, char *inpu
                 break;
             default:
                 if (input[0])
-                    mswin_putstr_ex(WIN_MESSAGE, ATR_NONE, input, -len, NO_COLOR);
+                    mswin_putstr_ex(WIN_MESSAGE, input, ATR_NONE, NO_COLOR, -len);
                 if (c == VK_BACK) {
                     if (len > 0)
                         len--;
@@ -1939,7 +1937,7 @@ mswin_getlin_ex(int style, int attr, int color, const char *question, char *inpu
                     input[len++] = c;
                     input[len] = '\0';
                 }
-                mswin_putstr_ex(WIN_MESSAGE, ATR_NONE, input, 1, NO_COLOR);
+                mswin_putstr_ex(WIN_MESSAGE, input, ATR_NONE, NO_COLOR, 1);
                 break;
             }
         }
@@ -1979,7 +1977,7 @@ mswin_get_ext_cmd()
         cmd[0] = '\0';
         i = -2;
         mswin_clear_nhwindow(WIN_MESSAGE);
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, "#", 0, NO_COLOR);
+        mswin_putstr_ex(WIN_MESSAGE, "#", ATR_BOLD, NO_COLOR, 0);
         len = 0;
         ShowCaret(mswin_hwnd_from_winid(WIN_MESSAGE));
         while (i == -2) {
@@ -2003,8 +2001,7 @@ mswin_get_ext_cmd()
                 break;
             default:
                 if (cmd[0])
-                    mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd,
-                                    -(int) strlen(cmd), NO_COLOR);
+                    mswin_putstr_ex(WIN_MESSAGE, cmd, ATR_BOLD, NO_COLOR, -(int) strlen(cmd));
                 if (c == VK_BACK) {
                     if (len > 0)
                         len--;
@@ -2031,7 +2028,7 @@ mswin_get_ext_cmd()
                         Strcpy(cmd, extcmdlist[com_index].ef_txt);
                     }
                 }
-                mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd, 1, NO_COLOR);
+                mswin_putstr_ex(WIN_MESSAGE, cmd, ATR_BOLD, NO_COLOR, 1);
                 break;
             }
         }

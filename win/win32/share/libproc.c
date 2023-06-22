@@ -280,12 +280,12 @@ void lib_curs(winid wid, int x, int y)
 }
 
 /* text is supposed to be in CP437; if text is UTF8 encoding, call callback_putstr_ex directly */
-void lib_putstr_ex(winid wid, int attr, const char* text, int append, int color)
+void lib_putstr_ex(winid wid, const char* text, int attr, int color, int append)
 {
     char buf[UTF8BUFSZ] = "";
     if (text)
         write_text2buf_utf8(buf, UTF8BUFSZ, text);
-    lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, append, color);
+    lib_callbacks.callback_putstr_ex(wid, text ? buf : 0, attr, color, append);
 }
 
 void lib_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int append)
@@ -328,7 +328,7 @@ void lib_display_file(const char* filename, BOOLEAN_P must_exist)
                 line[len - 1] = '\x0';
 
             /* The files are already in UTF8 encoding, so do not convert again by using lib_putstr_ex */
-            lib_callbacks.callback_putstr_ex(textwin, ATR_NONE, line, 0, NO_COLOR);
+            lib_callbacks.callback_putstr_ex(textwin, line, ATR_NONE, NO_COLOR, 0);
         }
         (void)dlb_fclose(f);
 
@@ -1057,8 +1057,8 @@ void lib_print_conditions(const char** names)
             int color = get_condition_color(cond_mask);
             int attr = get_condition_attr(cond_mask);
             //debuglog("cond '%s' active. col=%s attr=%x", name, colname(color), attr);
-            lib_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
-            lib_putstr_ex(WIN_STATUS, hl_attrmask_to_atr(attr), name, 0, color);
+            lib_putstr_ex(WIN_STATUS, " ", ATR_NONE, CLR_WHITE, 0);
+            lib_putstr_ex(WIN_STATUS, name, hl_attrmask_to_atr(attr), color, 0);
         }
     }
 }
@@ -1084,16 +1084,8 @@ void print_status_field(int idx, boolean first_field)
     {
         /* game mode has no leading space, so if we've moved
            it past the first position, provide one */
-        lib_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+        lib_putstr_ex(WIN_STATUS, " ", ATR_NONE, CLR_WHITE, 0);
     }
-#if 0
-    else if (idx == BL_LEVELDESC && !first_field)
-    {
-        /* leveldesc has no leading space, so if we've moved
-           it past the first position, provide one */
-        lib_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
-    }
-#endif
     else if (iflags.wc2_statuslines >= 3)
     {
         /* looks like first field */
@@ -1122,7 +1114,7 @@ void print_status_field(int idx, boolean first_field)
     // Don't want coloring on leading spaces (ATR_INVERSE would show), so print those first
     while (*val == ' ')
     {
-        lib_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+        lib_putstr_ex(WIN_STATUS, " ", ATR_NONE, CLR_WHITE, 0);
         val++;
     }
 
@@ -1156,7 +1148,7 @@ void print_status_field(int idx, boolean first_field)
                 color = status_colors[BL_ENE] & 0xFF;
             }
         }
-        lib_putstr_ex(WIN_STATUS, hl_attrmask_to_atr(attr), val, 0, color);
+        lib_putstr_ex(WIN_STATUS, val, hl_attrmask_to_atr(attr), color, 0);
         //    debuglog("field %d: %s color %s", idx+1, val, colname(color));
     }
 }

@@ -6117,8 +6117,8 @@ boolean picked_some, explicit_cmd;
                 {
                     //Nothing
                 }
-                putstr_ex(tmpwin, ATR_INDENT_AT_DASH, buf2, 1, NO_COLOR);
-                putstr_ex(tmpwin, ATR_INDENT_AT_DASH | attr, buf, 0, color);
+                putstr_ex(tmpwin, buf2, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                putstr_ex(tmpwin, buf, ATR_INDENT_AT_DASH | attr, color, 0);
             }
 
             if (flags.show_weight_summary)
@@ -6185,12 +6185,12 @@ print_things_here_to_window(VOID_ARGS)
         return;
     else if (displ_style == 2)
     {
-        putstr_ex(tmpwin, attr, Blind ? "[You feel there are many objects here.]" : "[There are many objects here.]", 0, textcolor);
+        putstr_ex(tmpwin, Blind ? "[You feel there are many objects here.]" : "[There are many objects here.]", attr, textcolor, 0);
     }
     else
     {
         Sprintf(buf, "%s that %s here:", "Things", Blind ? "you feel" : "are");
-        putstr_ex(tmpwin, attr, buf, 0, textcolor);
+        putstr_ex(tmpwin, buf, attr, textcolor, 0);
 
         if (dfeature)
         {
@@ -6214,15 +6214,12 @@ print_things_here_to_window(VOID_ARGS)
             }
 
             
-            putstr_ex(tmpwin, attr, "'", 1, textcolor);
+            putstr_ex(tmpwin, "'", attr, textcolor, 1);
             Sprintf(fbuf, "%c", sym);
-            putstr_ex(tmpwin, 0, fbuf, 1, color);
-            putstr_ex(tmpwin, attr, "' ", 1, textcolor);
+            putstr_ex(tmpwin, fbuf, ATR_NONE, color, 1);
+            putstr_ex(tmpwin, "' ", attr, textcolor, 1);
             Sprintf(fbuf, "%s", an(dfbuf));
-            putstr_ex(tmpwin, attr, fbuf, 0, textcolor);
-            
-            //Sprintf(fbuf, "'%c' %s", sym, an(dfbuf));
-            //putstr_ex(tmpwin, attr, fbuf, 0, textcolor);
+            putstr_ex(tmpwin, fbuf, attr, textcolor, 0);
         }
 
         if (ep && ep->engr_txt[0] && !Blind)
@@ -6230,46 +6227,46 @@ print_things_here_to_window(VOID_ARGS)
             switch (ep->engr_type) {
             case DUST:
                 Sprintf(ebuf, "Writing in the %s:", is_ice(u.ux, u.uy) ? "frost" : "dust");
-                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                putstr_ex(tmpwin, ebuf, attr, textcolor, 1);
                break;
             case ENGRAVE:
             case ENGR_HEADSTONE:
                 Sprintf(ebuf, "Engraving on the %s:", surface(u.ux, u.uy));
-                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                putstr_ex(tmpwin, ebuf, attr, textcolor, 1);
                 break;
             case ENGR_SIGNPOST:
                 Strcpy(ebuf, "Writing on the signpost:");
-                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                putstr_ex(tmpwin, ebuf, attr, textcolor, 1);
                 break;
             case BURN:
                 Strcpy(ebuf, "Writing ");
-                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                putstr_ex(tmpwin, ebuf, attr, textcolor, 1);
                 Sprintf(ebuf, "%s", is_ice(u.ux, u.uy) ? "melted" : "burned");
-                putstr_ex(tmpwin, attr, ebuf, 1, is_ice(u.ux, u.uy) ? CLR_CYAN : CLR_ORANGE);
+                putstr_ex(tmpwin, ebuf, attr, is_ice(u.ux, u.uy) ? CLR_CYAN : CLR_ORANGE, 1);
                 Sprintf(ebuf, " on the %s:", surface(u.ux, u.uy));
-                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                putstr_ex(tmpwin, ebuf, attr, textcolor, 1);
                 break;
             case MARK:
                 Sprintf(ebuf, "Graffiti on the %s:", surface(u.ux, u.uy));
-                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                putstr_ex(tmpwin, ebuf, attr, textcolor, 1);
                 break;
             case ENGR_BLOOD:
                 Strcpy(ebuf, "Message scrawled in ");
-                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                putstr_ex(tmpwin, ebuf, attr, textcolor, 1);
                 Strcpy(ebuf, "blood");
-                putstr_ex(tmpwin, attr, ebuf, 1, CLR_RED);
+                putstr_ex(tmpwin, ebuf, attr, CLR_RED, 1);
                 Strcpy(ebuf, ":");
-                putstr_ex(tmpwin, attr, ebuf, 1, textcolor);
+                putstr_ex(tmpwin, ebuf, attr, textcolor, 1);
                 break;
             default:
                 Strcpy(ebuf, "Message written in a very strange way:");
-                putstr_ex(tmpwin, attr, ebuf, 1, CLR_MSG_FAIL);
+                putstr_ex(tmpwin, ebuf, attr, CLR_MSG_FAIL, 1);
                 break;
             }
             strncpy(buf, ep->engr_txt, BUFSZ - 5);
             buf[BUFSZ - 5] = 0;
             Sprintf(ebuf, " \"%s\".", buf);
-            putstr_ex(tmpwin, attr, ebuf, 0, CLR_MSG_TEXT);
+            putstr_ex(tmpwin, ebuf, attr, CLR_MSG_TEXT, 0);
         }
 
         for (; otmp; otmp = otmp->nexthere) 
@@ -6292,19 +6289,17 @@ print_things_here_to_window(VOID_ARGS)
                 sym = (char)ch;
             }
             
-            putstr_ex(tmpwin, attr, "'", 1, textcolor);
+            putstr_ex(tmpwin, "'", attr, textcolor, 1);
             Sprintf(buf2, "%c", sym);
-            putstr_ex(tmpwin, 0, buf2, 1, color);
-            putstr_ex(tmpwin, attr, "' ", 1, textcolor);
+            putstr_ex(tmpwin, buf2, ATR_NONE, color, 1);
+            putstr_ex(tmpwin, "' ", attr, textcolor, 1);
             Sprintf(buf2, "%s", (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
             int mcolor = NO_COLOR, mattr = ATR_NONE;
             if (iflags.use_menu_color && get_menu_coloring(buf2, &mcolor, &mattr))
-                putstr_ex(tmpwin, mattr, buf2, 0, mcolor);
+                putstr_ex(tmpwin, buf2, mattr, mcolor, 0);
             else
-                putstr_ex(tmpwin, attr, buf2, 0, textcolor);
-            
-            //Sprintf(buf2, "'%c' %s", sym, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
-            //putstr_ex(tmpwin, attr, buf2, 0, textcolor);
+                putstr_ex(tmpwin, buf2, attr, textcolor, 0);
+           
         }
     }
 }

@@ -373,7 +373,7 @@ void gnhapi_raw_print(const char* text)
     }
 }
 
-void gnhapi_putstr_ex(winid wid, int attr, const char* text, int append, int color)
+void gnhapi_putstr_ex(winid wid, const char* text, int attr, int color, int append)
 {
     gnhapi_raw_print(text);
 }

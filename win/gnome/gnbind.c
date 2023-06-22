@@ -595,11 +595,11 @@ Attributes
 void
 gnome_putstr(winid wid, int attr, const char* text)
 {
-    gnome_putstr_ex(wid, attr, text, app, color);
+    gnome_putstr_ex(wid, text, attr, color, app);
 }
 
 void
-gnome_putstr_ex(winid wid, int attr, const char *text, int app, int color)
+gnome_putstr_ex(winid wid, const char *text, int attr, int color, int app)
 {
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (gnome_windowlist[wid].win != NULL)) {
@@ -611,7 +611,7 @@ gnome_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 void
 gnome_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app)
 {
-    gnome_putstr_ex(wid, attrs ? attrs[0] : attr, text, app, colors ? colors[0] : color);
+    gnome_putstr_ex(wid, text, attrs ? attrs[0] : attr, colors ? colors[0] : color, app);
 }
 
 /* Display the file named str.  Complain about missing files

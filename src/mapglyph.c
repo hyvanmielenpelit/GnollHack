@@ -684,7 +684,7 @@ const char *str;
  */
 
 void
-genl_putmixed_ex(window, attr, str, app, color)
+genl_putmixed_ex(window,  str, attr, color, app)
 winid window;
 int attr, app, color;
 const char *str;
@@ -692,7 +692,7 @@ const char *str;
     char buf[BUFSZ];
 
     /* now send it to the normal putstr */
-    putstr_ex(window, attr, decode_mixed(buf, str), app, color);
+    putstr_ex(window, decode_mixed(buf, str), attr, color, app);
 }
 
 int
