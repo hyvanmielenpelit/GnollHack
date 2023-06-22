@@ -1016,10 +1016,37 @@ struct obj *otmp;
                the spell or with a unihorn; this is better than full healing
                in that it can restore all of them, not just half, and a
                blessed potion restores them all at once */
-            if (otmp->otyp == POT_RESTORE_ABILITY && u.ulevel < u.ulevelmax) {
-                do {
-                    pluslvl(FALSE);
-                } while (u.ulevel < u.ulevelmax && otmp->blessed);
+            if (otmp->otyp == POT_RESTORE_ABILITY)
+            {
+                if (u.ulevel < u.ulevelmax) {
+                    do {
+                        pluslvl(FALSE);
+                    } while (u.ulevel < u.ulevelmax && otmp->blessed);
+                }
+                if (u.ubasehpdrain < 0) {
+                    if (otmp->blessed)
+                        u.ubasehpdrain = 0;
+                    else
+                        u.ubasehpdrain += min(4, -u.ubasehpdrain);
+                    updatemaxhp();
+                    context.botl = context.botlx = 1;
+                }
+                if (u.basemhdrain < 0) {
+                    if (otmp->blessed)
+                        u.basemhdrain = 0;
+                    else
+                        u.basemhdrain += min(4, -u.basemhdrain);
+                    updatemaxhp();
+                    context.botl = context.botlx = 1;
+                }
+                if (u.ubaseendrain < 0) {
+                    if (otmp->blessed)
+                        u.ubaseendrain = 0;
+                    else
+                        u.ubaseendrain += min(4, -u.ubaseendrain);
+                    updatemaxen();
+                    context.botl = context.botlx = 1;
+                }
             }
             special_effect_wait_until_end(0);
         }
