@@ -5348,7 +5348,7 @@ struct monst* mtmp;
                         boolean abort_pickup = FALSE;
                         if (*u.ushops || otmp->unpaid)
                         {
-                            check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE);
+                            check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE, FALSE);
                             if (costly_spot(mtmp->mx, mtmp->my))
                             {
                                 struct monst* shkp = shop_keeper(inside_shop(mtmp->mx, mtmp->my));
@@ -5870,7 +5870,7 @@ struct monst* mtmp;
                         && (releasesuccess = release_item_from_hero_inventory(otmp)))
                     {
                         if (*u.ushops || otmp->unpaid)
-                            check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE);
+                            check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE, FALSE);
                         (void)mpickobj(mtmp, otmp);
                         if (tasty == 1)
                             res |= use_defensive(mtmp);
@@ -9306,7 +9306,7 @@ boolean auto_yes;
                 You("sold %s for %ld gold piece%s to %s.", doname(obj), offer, plur(offer), noittame_mon_nam(mtmp));
 
                 if (*u.ushops || obj->unpaid)
-                    check_shop_obj(obj, mtmp->mx, mtmp->my, FALSE);
+                    check_shop_obj(obj, mtmp->mx, mtmp->my, FALSE, FALSE);
 
                 (void)mpickobj(mtmp, obj);
                 money2u(mtmp, offer);

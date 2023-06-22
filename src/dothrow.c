@@ -1145,10 +1145,11 @@ int dx, dy, range;
 }
 
 void
-check_shop_obj(obj, x, y, broken)
+check_shop_obj(obj, x, y, broken, sellitem)
 struct obj *obj;
 xchar x, y;
 boolean broken;
+boolean sellitem;
 {
     boolean costly_xy;
     struct monst *shkp = shop_keeper(*u.ushops);
@@ -1173,7 +1174,12 @@ boolean broken;
             if (is_unpaid(obj))
                 subfrombill(obj, shkp);
             else if (x != shkp->mx || y != shkp->my)
-                sellobj(obj, x, y);
+            {
+                if (sellitem)
+                    sellobj(obj, x, y);
+                else
+                    obj->no_charge = 1;
+            }
         }
     }
 }
@@ -1745,7 +1751,9 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             if (cansee(bhitpos.x, bhitpos.y))
                 pline("%s snatches up %s.", Monnam(mon), the(xname(obj)));
             if (*u.ushops || obj->unpaid)
-                check_shop_obj(obj, bhitpos.x, bhitpos.y, FALSE);
+                check_shop_obj(obj, bhitpos.x, bhitpos.y, FALSE, TRUE);
+            else if (costly_spot(bhitpos.x, bhitpos.y))
+                obj->no_charge = 1;
             (void) mpickobj(mon, obj); /* may merge and free obj */
             thrownobj = (struct obj *) 0;
             return;
@@ -1772,7 +1780,9 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         /* charge for items thrown out of shop;
            shk takes possession for items thrown into one */
         if ((*u.ushops || obj->unpaid) && obj != uball)
-            check_shop_obj(obj, bhitpos.x, bhitpos.y, FALSE);
+            check_shop_obj(obj, bhitpos.x, bhitpos.y, FALSE, FALSE);
+        else if (costly_spot(bhitpos.x, bhitpos.y))
+            obj->no_charge = 1;
 
         stackobj(obj);
         if (obj == uball)
@@ -2026,7 +2036,7 @@ uchar* hitres_ptr;
             {
                 /* angry leader caught it and isn't returning it */
                 if (*u.ushops || obj->unpaid) /* not very likely... */
-                    check_shop_obj(obj, mon->mx, mon->my, FALSE);
+                    check_shop_obj(obj, mon->mx, mon->my, FALSE, FALSE);
                 (void) mpickobj(mon, obj);
             }
             return 1; /* caller doesn't need to place it */
@@ -2147,7 +2157,7 @@ uchar* hitres_ptr;
                 if (broken) 
                 {
                     if (*u.ushops || obj->unpaid)
-                        check_shop_obj(obj, bhitpos.x, bhitpos.y, TRUE);
+                        check_shop_obj(obj, bhitpos.x, bhitpos.y, TRUE, FALSE);
                     obfree(obj, (struct obj *) 0);
                     return 1;
                 }
@@ -2344,7 +2354,7 @@ register struct obj *obj;
     }
     Strcat(buf, acceptgift);
     if (*u.ushops || obj->unpaid)
-        check_shop_obj(obj, mon->mx, mon->my, TRUE);
+        check_shop_obj(obj, mon->mx, mon->my, TRUE, FALSE);
     (void) mpickobj(mon, obj); /* may merge and free obj */
     ret = 1;
 
@@ -2516,7 +2526,7 @@ boolean from_invent;
     if (hero_caused) {
         if (from_invent || obj->unpaid) {
             if (*u.ushops || obj->unpaid)
-                check_shop_obj(obj, x, y, TRUE);
+                check_shop_obj(obj, x, y, TRUE, FALSE);
         } else if (!obj->no_charge && costly_spot(x, y)) {
             /* it is assumed that the obj is a floor-object */
             char *o_shop = in_rooms(x, y, SHOPBASE);

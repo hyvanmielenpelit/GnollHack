@@ -896,7 +896,7 @@ E boolean FDECL(hurtle_jump, (genericptr_t, int, int));
 E boolean FDECL(hurtle_step, (genericptr_t, int, int));
 
 E struct multishot_result FDECL(get_multishot_stats, (struct monst*, struct obj*, struct obj*, BOOLEAN_P));
-E void FDECL(check_shop_obj, (struct obj*, XCHAR_P, XCHAR_P, BOOLEAN_P));
+E void FDECL(check_shop_obj, (struct obj*, XCHAR_P, XCHAR_P, BOOLEAN_P, BOOLEAN_P));
 E void NDECL(reset_throw);
 
 /* ### do_wear.c ### */

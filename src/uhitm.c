@@ -2393,7 +2393,7 @@ boolean* obj_destroyed;
     {
         *obj_destroyed = TRUE;
         if (*u.ushops || obj->unpaid)
-            check_shop_obj(obj, mx, my, TRUE);
+            check_shop_obj(obj, mx, my, TRUE, FALSE);
 
         if (obj->where == OBJ_INVENT)
         {

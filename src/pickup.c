@@ -2095,6 +2095,15 @@ boolean* got_something_ptr;
                 {
                     begin_burn(newobj, FALSE);
                 }
+                if (costly_spot(u.ux, u.uy))
+                {
+                    char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+                    struct monst* shkp = shop_keeper(*o_shop);
+                    if (shkp && inhishop(shkp))
+                    {
+                        add_one_tobill(newobj, FALSE, shkp);
+                    }
+                }
                 play_simple_object_sound(newobj, OBJECT_SOUND_TYPE_PICK_UP);
                 obj_extract_self(newobj);
                 newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
