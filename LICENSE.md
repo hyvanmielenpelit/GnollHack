@@ -4,8 +4,8 @@ GnollHack is subject to NetHack General Public License. In this license, GnollHa
 
 
 ## NetHack General Public License
-\(Copyright 1989 M. Stephenson\)
-\(Based on the BISON general public license, copyright 1988 Richard M. Stallman\)
+\(Copyright 1989 M. Stephenson\)  
+\(Based on the BISON general public license, copyright 1988 Richard M. Stallman\)  
 
 Everyone is permitted to copy and distribute verbatim copies of this license, but changing it is not allowed.  You can also use this wording to make the terms for other programs.
 
