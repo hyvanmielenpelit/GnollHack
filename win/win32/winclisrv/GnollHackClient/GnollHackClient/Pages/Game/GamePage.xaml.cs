@@ -153,11 +153,6 @@ namespace GnollHackClient.Pages.Game
         private bool _isSizeAllocatedProcessed = false;
         public bool IsSizeAllocatedProcessed { get { lock (_isSizeAllocatedProcessedLock) { return _isSizeAllocatedProcessed; } } set { lock (_isSizeAllocatedProcessedLock) { _isSizeAllocatedProcessed = value; } } }
 
-        private readonly object _accurateLayerDrawingLock = new object();
-        private bool _accurateLayerDrawing = false;
-        public bool AccurateLayerDrawing { get { lock (_accurateLayerDrawingLock) { return _accurateLayerDrawing; } } set { lock (_accurateLayerDrawingLock) { _accurateLayerDrawing = value; } } }
-
-
         private readonly object _forceAsciiLock = new object();
         private bool _forceAscii = false;
         public bool ForceAscii { get { lock (_forceAsciiLock) { return _forceAscii; } } set { lock (_forceAsciiLock) { _forceAscii = value; } } }
@@ -180,6 +175,9 @@ namespace GnollHackClient.Pages.Game
         private bool _drawWallEnds = false;
         public bool DrawWallEnds { get { lock (_drawWallEndsLock) { return _drawWallEnds; } } set { lock (_drawWallEndsLock) { _drawWallEnds = value; } } }
 
+        private readonly object _accurateLayerDrawingLock = new object();
+        private bool _accurateLayerDrawing = false;
+        public bool AccurateLayerDrawing { get { lock (_accurateLayerDrawingLock) { return _accurateLayerDrawing; } } set { lock (_accurateLayerDrawingLock) { _accurateLayerDrawing = value; } } }
 
         public readonly object RefreshScreenLock = new object();
         private bool _refreshScreen = true;
@@ -462,8 +460,9 @@ namespace GnollHackClient.Pages.Game
             NumDisplayedMessages = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
             NumDisplayedPetRows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
             WalkArrows = Preferences.Get("WalkArrows", true);
-            LighterDarkening = Preferences.Get("LighterDarkening", false);
+            LighterDarkening = Preferences.Get("LighterDarkening", GHConstants.DefaultLighterDarkening);
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
+            AccurateLayerDrawing = Preferences.Get("AccurateLayerDrawing", GHConstants.DefaultAccurateLayerDrawing);
 
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
@@ -3670,7 +3669,7 @@ namespace GnollHackClient.Pages.Game
                 false, drawwallends);
         }
 
-        private int GetSubLayerCount(int mapx, int mapy, int layer_idx)
+        private int GetSubLayerCount(int mapx, int mapy, int layer_idx, out bool is_source_dir)
         {
             int sub_layer_cnt = 1;
             switch (layer_idx)
@@ -3682,6 +3681,7 @@ namespace GnollHackClient.Pages.Game
                         sub_layer_cnt = _objectData[mapx, mapy].FloorObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].FloorObjectList.Count);
                     else
                         sub_layer_cnt = 1; /* As a backup, show layer glyph (probably often NoGlyph) */
+                    is_source_dir = false;
                     break;
                 case (int)layer_types.LAYER_COVER_OBJECT:
                     if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
@@ -3690,15 +3690,22 @@ namespace GnollHackClient.Pages.Game
                         sub_layer_cnt = _objectData[mapx, mapy].CoverFloorObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].CoverFloorObjectList.Count);
                     else
                         sub_layer_cnt = 1; /* As a backup, show layer glyph (probably often NoGlyph) */
+                    is_source_dir = false;
                     break;
                 case (int)layer_types.LAYER_MONSTER:
                     sub_layer_cnt = GHConstants.NUM_WORM_SOURCE_DIRS + 1;
+                    is_source_dir = true;
                     break;
                 case (int)layer_types.LAYER_CHAIN:
                     sub_layer_cnt = GHConstants.NUM_CHAIN_SOURCE_DIRS + 1;
+                    is_source_dir = true;
                     break;
                 case (int)layer_types.LAYER_ZAP:
                     sub_layer_cnt = GHConstants.NUM_ZAP_SOURCE_DIRS + 1;
+                    is_source_dir = true;
+                    break;
+                default:
+                    is_source_dir = false;
                     break;
             }
             return sub_layer_cnt;
@@ -3719,6 +3726,9 @@ namespace GnollHackClient.Pages.Game
 
         private bool GetEnlargementTile(int enlargement, int enlarg_idx, bool hflip_glyph, bool vflip_glyph, int main_tile_idx, int anim_frame_idx, ref int ntile, ref int autodraw, ref int dx, ref int dy)
         {
+            if (enlargement == 0 && enlarg_idx >= 0)
+                return false;
+
             int position_index = -1;
             int orig_position_index = -1;
             if (enlargement > 0)
@@ -3838,11 +3848,172 @@ namespace GnollHackClient.Pages.Game
             return true;
         }
 
+        private bool GetEnlargementTileB(int enlargement, int enlarg_idx, bool hflip_glyph, bool vflip_glyph, int main_tile_idx, int anim_frame_idx, ref int ntile, ref int autodraw, ref int dx, ref int dy)
+        {
+            if (enlargement == 0 && enlarg_idx >= 0)
+                return false;
+
+            int position_index = -1;
+            if (enlargement > 0)
+            {
+                /* Set position_index */
+                switch(enlarg_idx)
+                {
+                    default:
+                    case -1:
+                        if (vflip_glyph)
+                            position_index = 1;
+                        else
+                            position_index = -1;
+                        break;
+                    case 0:
+                        if (vflip_glyph)
+                            position_index = hflip_glyph ? 4 : 3;
+                        else
+                            position_index = hflip_glyph ? 2 : 0;
+                        break;
+                    case 1:
+                        if (vflip_glyph)
+                            position_index = -1;
+                        else
+                            position_index = 1;
+                        break;
+                    case 2:
+                        if (vflip_glyph)
+                            position_index = hflip_glyph ? 3 : 4;
+                        else
+                            position_index = hflip_glyph ? 0 : 2;
+
+                        break;
+                    case 3:
+                        if (vflip_glyph)
+                            position_index = hflip_glyph ? 2 : 0;
+                        else
+                            position_index = hflip_glyph ? 4 : 3;
+                        break;
+                    case 4:
+                        if (vflip_glyph)
+                            position_index = hflip_glyph ? 0 : 2;
+                        else
+                            position_index = hflip_glyph ? 3 : 4;
+                        break;
+                }
+            }
+
+            if (enlargement > 0 && position_index >= 0)
+            {
+                int enl_tile_idx = App._enlargementDefs[enlargement].position2tile[position_index];
+                if (enl_tile_idx >= 0)
+                {
+                    int addedindex = 0;
+                    if (App._enlargementDefs[enlargement].number_of_animation_frames > 0)
+                    {
+                        if (main_tile_idx == -1
+                            && anim_frame_idx >= 0
+                            && anim_frame_idx < App._enlargementDefs[enlargement].number_of_animation_frames
+                            )
+                        {
+                            addedindex = anim_frame_idx * App._enlargementDefs[enlargement].number_of_enlargement_tiles;
+                        }
+                        else if (main_tile_idx == 0
+                            && anim_frame_idx > 0
+                            && anim_frame_idx <= App._enlargementDefs[enlargement].number_of_animation_frames)
+                        {
+                            addedindex = (anim_frame_idx - 1) * App._enlargementDefs[enlargement].number_of_enlargement_tiles;
+                        }
+                        else if (main_tile_idx == App._enlargementDefs[enlargement].number_of_animation_frames
+                            && anim_frame_idx >= 0
+                            && anim_frame_idx < App._enlargementDefs[enlargement].number_of_animation_frames
+                            )
+                        {
+                            addedindex = anim_frame_idx * App._enlargementDefs[enlargement].number_of_enlargement_tiles;
+                        }
+                    }
+                    int enl_glyph = enl_tile_idx + addedindex + App.EnlargementOffsets[enlargement] + App.EnlargementOff;
+                    ntile = App.Glyph2Tile[enl_glyph]; /* replace */
+                    autodraw = App.Tile2Autodraw[ntile];
+                }
+                else
+                    return false;
+            }
+
+            switch (enlarg_idx)
+            {
+                case 0:
+                    dx = -1;
+                    dy = -1;
+                    break;
+                case 1:
+                    dx = 0;
+                    dy = -1;
+                    break;
+                case 2:
+                    dx = 1;
+                    dy = -1;
+                    break;
+                case 3:
+                    dx = -1;
+                    dy = 0;
+                    break;
+                case 4:
+                    dx = 1;
+                    dy = 0;
+                    break;
+            }
+            return true;
+        }
+
         private bool GetLayerGlyph(int mapx, int mapy, int layer_idx, int sub_layer_idx, int source_dir_idx,
             ref int signed_glyph, ref int adj_x, ref int adj_y, ref bool manual_hflip, ref bool manual_vflip,
             ref ObjectDataItem otmp_round, ref short obj_height, ref sbyte object_origin_x, ref sbyte object_origin_y)
         {
-            if (source_dir_idx > 0)
+            if (layer_idx == (int)layer_types.LAYER_OBJECT)
+            {
+                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
+                {
+                    otmp_round = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx];
+                    signed_glyph = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.oy0;
+                }
+                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
+                {
+                    otmp_round = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx];
+                    signed_glyph = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.oy0;
+                }
+                else
+                {
+                    signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? App.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
+                }
+            }
+            else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
+            {
+                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
+                {
+                    otmp_round = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx];
+                    signed_glyph = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.oy0;
+                }
+                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
+                {
+                    otmp_round = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx];
+                    signed_glyph = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.oy0;
+                }
+                else
+                {
+                    signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? App.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
+                }
+            }
+            else if (source_dir_idx > 0)
             {
                 switch ((source_dir_idx - 1) % GHConstants.NUM_ZAP_SOURCE_BASE_DIRS + 1)
                 {
@@ -4022,52 +4193,6 @@ namespace GnollHackClient.Pages.Game
                                 signed_glyph = App.NoGlyph;
                             break;
                         }
-                }
-            }
-            else if (layer_idx == (int)layer_types.LAYER_OBJECT)
-            {
-                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
-                {
-                    otmp_round = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx];
-                    signed_glyph = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
-                    obj_height = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].TileHeight;
-                    object_origin_x = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.ox0;
-                    object_origin_y = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.oy0;
-                }
-                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
-                {
-                    otmp_round = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx];
-                    signed_glyph = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.gui_glyph;
-                    obj_height = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].TileHeight;
-                    object_origin_x = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.ox0;
-                    object_origin_y = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.oy0;
-                }
-                else
-                {
-                    signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? App.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
-                }
-            }
-            else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
-            {
-                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
-                {
-                    otmp_round = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx];
-                    signed_glyph = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
-                    obj_height = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].TileHeight;
-                    object_origin_x = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.ox0;
-                    object_origin_y = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.oy0;
-                }
-                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
-                {
-                    otmp_round = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx];
-                    signed_glyph = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.gui_glyph;
-                    obj_height = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].TileHeight;
-                    object_origin_x = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.ox0;
-                    object_origin_y = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.oy0;
-                }
-                else
-                {
-                    signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? App.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
                 }
             }
             else
@@ -4444,26 +4569,10 @@ namespace GnollHackClient.Pages.Game
                                                         {
                                                             if (_mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_gui_glyphs == null)
                                                                 continue;
-
-                                                            bool loc_is_you = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
-                                                            bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
-                                                            bool canspotself = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
-                                                            sbyte monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
-                                                            sbyte feature_doodad_height = _mapData[mapx, mapy].Layers.special_feature_doodad_layer_height;
-                                                            short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
-                                                            float scaled_y_height_change = 0;
-                                                            sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
-                                                            sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
-                                                            long glyphprintmaincountervalue = _mapData[mapx, mapy].GlyphPrintMainCounterValue;
-                                                            float base_move_offset_x = 0, base_move_offset_y = 0;
-                                                            int movediffx = (int)monster_origin_x - mapx;
-                                                            int movediffy = (int)monster_origin_y - mapy;
-                                                            long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
-
                                                             int draw_cnt = _draw_order.Count;
-                                                            bool draw_straight_to_map = true;
                                                             for (int draw_idx = 0; draw_idx < draw_cnt; draw_idx++)
                                                             {
+                                                                int enl_idx = _draw_order[draw_idx].enlargement_position;
                                                                 int layer_idx = _draw_order[draw_idx].layer;
                                                                 bool is_monster_or_shadow_layer = (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS);
                                                                 bool is_monster_like_layer = (is_monster_or_shadow_layer || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT);
@@ -4473,91 +4582,136 @@ namespace GnollHackClient.Pages.Game
                                                                 if (layer_idx == (int)layer_types.MAX_LAYERS && (draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == App.NoGlyph))
                                                                     continue;
 
-                                                                if (GHUtils.isok(monster_origin_x, monster_origin_y)
-                                                                    && (movediffx != 0 || movediffy != 0)
-                                                                    && maincounterdiff >= 0 && maincounterdiff < moveIntervals)
+                                                                int source_x = mapx, source_y = mapy;
+                                                                switch(enl_idx)
                                                                 {
-                                                                    base_move_offset_x = width * (float)movediffx * (float)(moveIntervals - maincounterdiff) / (float)moveIntervals;
-                                                                    base_move_offset_y = height * (float)movediffy * (float)(moveIntervals - maincounterdiff) / (float)moveIntervals;
+                                                                    default:
+                                                                    case -1:
+                                                                        break;
+                                                                    case 0:
+                                                                        source_x = mapx + 1;
+                                                                        source_y = mapy + 1;
+                                                                        break;
+                                                                    case 1:
+                                                                        source_y = mapy + 1;
+                                                                        break;
+                                                                    case 2:
+                                                                        source_x = mapx - 1;
+                                                                        source_y = mapy + 1;
+                                                                        break;
+                                                                    case 3:
+                                                                        source_x = mapx + 1;
+                                                                        break;
+                                                                    case 4:
+                                                                        source_x = mapx - 1;
+                                                                        break;
                                                                 }
+                                                                if (!GHUtils.isok(source_x, source_y))
+                                                                    continue;
+
+                                                                if (enl_idx >= 0 && !_mapData[source_x, source_y].HasEnlargementOrAnimationOrSpecialHeight)
+                                                                    continue;
+
+                                                                bool loc_is_you = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
+                                                                bool showing_detection = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
+                                                                bool canspotself = (_mapData[source_x, source_y].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
+                                                                sbyte monster_height = _mapData[source_x, source_y].Layers.special_monster_layer_height;
+                                                                sbyte feature_doodad_height = _mapData[source_x, source_y].Layers.special_feature_doodad_layer_height;
+                                                                short missile_special_quality = _mapData[source_x, source_y].Layers.missile_special_quality;
+                                                                sbyte monster_origin_x = _mapData[source_x, source_y].Layers.monster_origin_x;
+                                                                sbyte monster_origin_y = _mapData[source_x, source_y].Layers.monster_origin_y;
+                                                                long glyphprintmaincountervalue = _mapData[source_x, source_y].GlyphPrintMainCounterValue;
+                                                                int movediffx = (int)monster_origin_x - source_x;
+                                                                int movediffy = (int)monster_origin_y - source_y;
+                                                                long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
+                                                                long glyphobjectprintmaincountervalue = _mapData[source_x, source_y].GlyphObjectPrintMainCounterValue;
+                                                                long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
+                                                                short missile_height = _mapData[source_x, source_y].Layers.missile_height;
+                                                                bool obj_in_pit = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
+
+                                                                float base_move_offset_x = 0, base_move_offset_y = 0;
+                                                                GetBaseMoveOffsets(source_x, source_y, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
 
                                                                 if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
                                                                 {
                                                                     PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself);
                                                                 }
-                                                                else if (layer_idx == (int)layer_types.MAX_LAYERS)
-                                                                {
-
-                                                                }
                                                                 else
                                                                 {
-                                                                    //Draw layers in the right order from main tile and from the neighboring tiles
-                                                                    //source_x, source_y tile drawing to target_x = mapx, target_y = mapy
-                                                                    //select source_x, source_y, layer_idx based on draw_idx.
-                                                                    //check whether has enlargements or animations, if not, skip, if yes, check for enlargements
-                                                                    int source_x, source_y;
-                                                                    int enl_pos = _draw_order[draw_idx].enlargement_position;
-                                                                    switch(enl_pos)
+                                                                    lock (_objectDataLock)
                                                                     {
-                                                                        case 3: // Left side enl tile from the right
-                                                                            source_x = mapx + 1;
-                                                                            source_y = mapy;
-                                                                            break;
-                                                                        case 4: // Right side enl tile from the left
-                                                                            source_x = mapx - 1;
-                                                                            source_y = mapy;
-                                                                            break;
-                                                                        case 0:
-                                                                            source_x = mapx + 1;
-                                                                            source_y = mapy + 1;
-                                                                            break;
-                                                                        case 1:
-                                                                            source_x = mapx;
-                                                                            source_y = mapy + 1;
-                                                                            break;
-                                                                        case 2:
-                                                                            source_x = mapx - 1;
-                                                                            source_y = mapy + 1;
-                                                                            break;
-                                                                        case -1:
-                                                                        default:
-                                                                            source_x = mapx;
-                                                                            source_y = mapy;
-                                                                            break;
-                                                                    }
-                                                                    int signed_glyph = _mapData[source_x, source_y].Layers.layer_gui_glyphs[layer_idx];
-                                                                    int abs_glyph = Math.Abs(signed_glyph);
-                                                                    int enl_signed_glyph = signed_glyph;
-                                                                    int enl_abs_glyph = abs_glyph;
-                                                                    int tile = App.Glyph2Tile[abs_glyph];
-                                                                    if (enl_pos > -1)
-                                                                    {
-                                                                        int enlargement = App.Tile2Enlargement[tile];
-                                                                        if (enlargement == 0)
-                                                                            continue;
-                                                                        int enlpostile = App.Enlargements[enlargement].position2tile[enl_pos];
-                                                                        if (enlpostile >= 0)
+                                                                        bool is_source_dir;
+                                                                        int sub_layer_cnt = GetSubLayerCount(source_x, source_y, layer_idx, out is_source_dir);
+                                                                        for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
                                                                         {
-                                                                            enl_abs_glyph = enlpostile + App.EnlargementOffsets[enlargement] + App.EnlargementOff;
+                                                                            int signed_glyph = App.NoGlyph; //Default
+                                                                            short obj_height = _mapData[source_x, source_y].Layers.object_height; //Default
+                                                                            sbyte object_origin_x = 0; //Default
+                                                                            sbyte object_origin_y = 0; //Default
+                                                                            ObjectDataItem otmp_round = null;
+
+                                                                            int source_dir_main_idx = sub_layer_idx;
+                                                                            int source_dir_idx = is_source_dir ? GetSourceDirIndex(layer_idx, source_dir_main_idx) : 0;
+
+                                                                            bool manual_hflip = false;
+                                                                            bool manual_vflip = false;
+                                                                            int adj_x = source_x;
+                                                                            int adj_y = source_y;
+
+                                                                            if (!GetLayerGlyph(source_x, source_y, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
+                                                                                ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
+                                                                                ref object_origin_x, ref object_origin_y))
+                                                                                continue;
+
+                                                                            int glyph = Math.Abs(signed_glyph);
+                                                                            if (glyph == 0 || glyph >= App.Glyph2Tile.Length)
+                                                                                continue;
+
+                                                                            float object_move_offset_x = 0, object_move_offset_y = 0;
+                                                                            GetObjectMoveOffsets(source_x, source_y, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, ref object_move_offset_x, ref object_move_offset_y);
+
+                                                                            bool vflip_glyph = false;
+                                                                            bool hflip_glyph = false;
+                                                                            GetFlips(signed_glyph, manual_hflip, manual_vflip, ref hflip_glyph, ref vflip_glyph);
+
+                                                                            /* Tile flags */
+                                                                            bool tileflag_halfsize = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
+                                                                            bool tileflag_floortile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
+                                                                            bool tileflag_normalobjmissile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0 && layer_idx == (int)layer_types.LAYER_MISSILE;
+                                                                            bool tileflag_fullsizeditem = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
+                                                                            bool tileflag_height_is_clipping = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING) != 0;
+
+                                                                            /* All items are big when showing detection */
+                                                                            CheckShowingDetection(showing_detection, ref obj_height, ref tileflag_floortile, ref tileflag_height_is_clipping);
+
+                                                                            /*Determine y move for tiles */
+                                                                            float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize);
+
+                                                                            int ntile = App.Glyph2Tile[glyph];
+                                                                            int autodraw = App.Tile2Autodraw[ntile];
+
+                                                                            /* Determine animation tile here */
+                                                                            int anim_frame_idx = 0, main_tile_idx = 0;
+                                                                            ntile = GetTileFromAnimation(ntile, glyph, source_x, source_y, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
+
+                                                                            /* Draw enlargement tiles */
+                                                                            int enlargement = App.Tile2Enlargement[ntile];
+                                                                            int dx = 0, dy = 0;
+                                                                            if (!GetEnlargementTileB(enlargement, enl_idx, hflip_glyph, vflip_glyph, main_tile_idx, anim_frame_idx, ref ntile, ref autodraw, ref dx, ref dy))
+                                                                                continue;
+
+                                                                            int draw_map_x = source_x + dx + (adj_x - source_x);
+                                                                            int draw_map_y = source_y + dy + (adj_y - source_y);
+
+                                                                            PaintMapTile(canvas, textPaint, paint, layer_idx, source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                                tx, ty, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
+                                                                                scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
+                                                                                monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
+                                                                                loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
+                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
+                                                                                ref draw_shadow);
                                                                         }
-                                                                        enl_signed_glyph = Math.Sign(signed_glyph) * enl_abs_glyph;
-                                                                        enl_abs_glyph = Math.Abs(enl_signed_glyph);
                                                                     }
-                                                                    int enl_tile = App.Glyph2Tile[enl_abs_glyph];
-                                                                    int enl_animation = App.Tile2Animation[enl_tile];
-
-                                                                    //Check animation
-
-                                                                    int sheet_idx = App.TileSheetIdx(enl_tile);
-                                                                    int tile_x = App.TileSheetX(enl_tile);
-                                                                    int tile_y = App.TileSheetY(enl_tile);
-                                                                    float move_offset_x = base_move_offset_x;
-                                                                    float move_offset_y = base_move_offset_y;
-
-                                                                    tx = (offsetX + usedOffsetX + move_offset_x + width * (float)mapx);
-                                                                    ty = (offsetY + usedOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
-
-                                                                    //Draw the tile with draw_map_x = mapx, draw_map_y = mapy
                                                                 }
                                                             }
                                                         }
@@ -4610,7 +4764,8 @@ namespace GnollHackClient.Pages.Game
                                                             {
                                                                 lock (_objectDataLock)
                                                                 {
-                                                                    int sub_layer_cnt = GetSubLayerCount(mapx, mapy, layer_idx);
+                                                                    bool is_source_dir;
+                                                                    int sub_layer_cnt = GetSubLayerCount(mapx, mapy, layer_idx, out is_source_dir);
                                                                     for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
                                                                     {
                                                                         int signed_glyph = App.NoGlyph; //Default
@@ -4620,7 +4775,7 @@ namespace GnollHackClient.Pages.Game
                                                                         ObjectDataItem otmp_round = null;
 
                                                                         int source_dir_main_idx = sub_layer_idx; 
-                                                                        int source_dir_idx = GetSourceDirIndex(layer_idx, source_dir_main_idx);
+                                                                        int source_dir_idx = is_source_dir ? GetSourceDirIndex(layer_idx, source_dir_main_idx) : 0;
 
                                                                         bool manual_hflip = false;
                                                                         bool manual_vflip = false;
@@ -9323,6 +9478,23 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        bool DetermineHasEnlargementOrAnimationOrSpecialHeight(LayerInfo layers)
+        {
+            int gui_glyph, ntile;
+            for (int i = 0; i < (int)layer_types.MAX_LAYERS; i++)
+            {
+                if (layers.special_monster_layer_height != 0 || layers.special_feature_doodad_layer_height != 0)
+                    return true;
+                gui_glyph = Math.Abs(layers.layer_gui_glyphs[i]);
+                if(gui_glyph != App.NoGlyph)
+                {
+                    ntile = App.Glyph2Tile[gui_glyph];
+                    if (App.Tile2Enlargement[ntile] > 0 || App.Tile2Animation[ntile] > 0)
+                        return true;
+                }
+            }
+            return false;
+        }
 
         public void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special, LayerInfo layers)
         {
@@ -9382,6 +9554,7 @@ namespace GnollHackClient.Pages.Game
                 _mapData[x, y].Layers = layers;
 
                 _mapData[x, y].NeedsUpdate = true;
+                _mapData[x, y].HasEnlargementOrAnimationOrSpecialHeight = AccurateLayerDrawing ? DetermineHasEnlargementOrAnimationOrSpecialHeight(layers) : false;
             }
         }
         public void SetMapCursor(int x, int y)

@@ -1465,6 +1465,8 @@ namespace GnollHackCommon
         public const bool DefaultReadStreamingBankToMemory = false;
         public const bool DefaultCopyStreamingBankToDisk = false;
         public const bool DefaultDrawWallEnds = false;
+        public const bool DefaultLighterDarkening = false;
+        public const bool DefaultAccurateLayerDrawing = false;
     }
 
 
