@@ -34,6 +34,7 @@ using System.Net.Mail;
 using System.Security.Cryptography;
 using static Xamarin.Forms.Internals.GIFBitmap;
 using FFImageLoading.Work;
+using static Xamarin.Essentials.Permissions;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -3430,6 +3431,255 @@ namespace GnollHackClient.Pages.Game
         }
 
 
+        private void PaintMapTile(SKCanvas canvas, SKPaint textPaint, SKPaint paint, int layer_idx, int mapx, int mapy, int draw_map_x, int draw_map_y, int dx, int dy, int ntile, float width, float height, 
+            float tx, float ty, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float object_move_offset_x, float object_move_offset_y,
+            float scaled_y_height_change, float pit_border,
+            float targetscale, long generalcountervalue, float usedFontSize, int monster_height, 
+            bool is_monster_like_layer, bool is_object_like_layer, bool obj_in_pit, int obj_height, bool is_missile_layer, int missile_height,
+            bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
+            bool hflip_glyph, bool vflip_glyph,
+            ObjectDataItem otmp_round, int autodraw, bool drawwallends,
+            ref short[,] draw_shadow)
+        {
+            if (!GHUtils.isok(draw_map_x, draw_map_y))
+                return;
+
+            int darken_dx = dx;
+            int darken_dy = 0;
+            //int darken_x = mapx + darken_dx;
+            //int darken_y = mapy + darken_dy;
+            //bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+            //if (_mapData[mapx, mapy].Layers.layer_gui_glyphs != null
+            //    && (_mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
+            //        || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
+            //   )
+            //    darken = false;
+
+            if (dx != 0 || dy != 0)
+            {
+                draw_shadow[draw_map_x, draw_map_y] |= 1;
+            }
+
+            int sheet_idx = App.TileSheetIdx(ntile);
+            int tile_x = App.TileSheetX(ntile);
+            int tile_y = App.TileSheetY(ntile);
+
+            SKRect sourcerect;
+            float scaled_tile_width = width;
+            float scaled_tile_height = tileflag_halfsize || (tileflag_normalobjmissile && !tileflag_fullsizeditem) ? height / 2 : height;
+            float scaled_x_padding = 0;
+            float scaled_y_padding = 0;
+            int source_y_added = 0;
+            int source_height_deducted = 0;
+            int source_height = tileflag_halfsize ? GHConstants.TileHeight / 2 : GHConstants.TileHeight;
+
+            float scale = 1.0f;
+            if (tileflag_halfsize && !tileflag_normalobjmissile)
+            {
+                if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
+                {
+                    if (obj_in_pit)
+                        scale *= GHConstants.OBJECT_PIT_SCALING_FACTOR;
+                }
+
+                if (monster_height < 0 && is_monster_like_layer)
+                {
+                    scale *= Math.Min(1.0f, Math.Max(0.1f, 1.0f - (1.0f - (float)GHConstants.OBJECT_PIT_SCALING_FACTOR) * (float)monster_height / (float)GHConstants.SPECIAL_HEIGHT_IN_PIT));
+                }
+
+                if (tileflag_floortile || tileflag_height_is_clipping)
+                {
+                    if (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
+                    {
+                        source_y_added = tileflag_floortile ? 0 : GHConstants.TileHeight / 2;
+                        if (obj_height > 0 && obj_height < 48)
+                        {
+                            source_y_added += (GHConstants.TileHeight / 2 - obj_height) / 2;
+                            source_height_deducted = GHConstants.TileHeight / 2 - obj_height;
+                            source_height = GHConstants.TileHeight / 2 - source_height_deducted;
+                            scaled_tile_width = scale * width;
+                            scaled_x_padding = (width - scaled_tile_width) / 2;
+                            scaled_tile_height = scale * (float)source_height * height / (float)GHConstants.TileHeight;
+                            scaled_y_padding = Math.Max(0, scale * (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
+                        }
+                    }
+                    sourcerect = new SKRect(tile_x, tile_y + source_y_added, tile_x + GHConstants.TileWidth, tile_y + source_y_added + source_height);
+                }
+                else
+                {
+                    if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
+                    {
+                        if (obj_height > 0 && obj_height < 48)
+                            scale *= ((float)obj_height) / 48.0f;
+                    }
+                    scaled_tile_width = scale * width;
+                    scaled_tile_height = scale * height / 2;
+                    scaled_x_padding = (width - scaled_tile_width) / 2;
+                    scaled_y_padding = Math.Max(0, height / 2 - scaled_tile_height - pit_border);
+                    sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                }
+            }
+            else
+            {
+                if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                {
+                    if (tileflag_floortile)
+                    {
+                        sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
+                    }
+                    else if (tileflag_height_is_clipping)
+                    {
+                        sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                    }
+                    else
+                    {
+                        if (missile_height > 0 && missile_height < 48)
+                        {
+                            scale = ((float)missile_height) / 48.0f;
+                        }
+                        scaled_tile_width = scale * width;
+                        scaled_tile_height = scale * height / 2;
+                        scaled_x_padding = (width - scaled_tile_width) / 2;
+                        scaled_y_padding = (height / 2 - scaled_tile_height) / 2;
+
+                        sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                    }
+                }
+                else
+                {
+                    if (monster_height < 0 && dy == 0 && is_monster_like_layer)
+                    {
+                        sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight + monster_height);
+                        source_height_deducted = -monster_height;
+                        source_height = GHConstants.TileHeight - source_height_deducted;
+                        scaled_tile_height = (float)source_height * height / (float)GHConstants.TileHeight;
+                    }
+                    else
+                    {
+                        sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                        if (is_missile_layer && !tileflag_floortile && !tileflag_height_is_clipping)
+                        {
+                            if (missile_height > 0 && missile_height < 48)
+                            {
+                                scale = ((float)missile_height) / 48.0f;
+                            }
+                            scaled_tile_width = scale * width;
+                            scaled_tile_height = scale * height;
+                            scaled_x_padding = (width - scaled_tile_width) / 2;
+                            scaled_y_padding = (height - scaled_tile_height) / 2;
+                        }
+                    }
+                }
+            }
+
+            float move_offset_x = 0, move_offset_y = 0;
+            float opaqueness = 1.0f;
+            if (is_monster_like_layer)
+            {
+                move_offset_x = base_move_offset_x;
+                move_offset_y = base_move_offset_y;
+                if (layer_idx == (int)layer_types.MAX_LAYERS)
+                {
+                    opaqueness = (draw_shadow[mapx, mapy] & 2) != 0 && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f : 0.5f;
+                }
+                else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
+                {
+                    draw_shadow[mapx, mapy] |= 2;
+                    return; /* Draw only the transparent shadow in the max_layers shadow layer; otherwise, if drawn twice, the result will be nontransparent */
+                }
+            }
+            else if (is_object_like_layer && otmp_round != null)
+            {
+                move_offset_x = object_move_offset_x;
+                move_offset_y = object_move_offset_y;
+            }
+            else if (layer_idx == (int)layer_types.LAYER_COVER_TRAP)
+            {
+                opaqueness = 0.5f;
+            }
+
+            tx = (offsetX + usedOffsetX + move_offset_x + width * (float)draw_map_x);
+            ty = (offsetY + usedOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
+
+            using (new SKAutoCanvasRestore(canvas, true))
+            {
+                canvas.Translate(tx + (hflip_glyph ? width : 0), ty + (vflip_glyph ? height : 0));
+                canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
+                SKRect targetrect;
+                if (tileflag_halfsize && !tileflag_normalobjmissile)
+                {
+                    targetrect = new SKRect(scaled_x_padding, height / 2 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 2 + scaled_y_padding + scaled_tile_height);
+                }
+                else
+                {
+                    if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                        targetrect = new SKRect(scaled_x_padding, height / 4 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 4 + scaled_y_padding + scaled_tile_height);
+                    else
+                        targetrect = new SKRect(scaled_x_padding, scaled_y_padding, scaled_x_padding + scaled_tile_width, scaled_y_padding + scaled_tile_height);
+                }
+
+                if (is_monster_like_layer && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
+                {
+                    IntPtr tempptraddr = _tempBitmap.GetPixels();
+                    IntPtr tileptraddr = TileMap[sheet_idx].GetPixels();
+                    double mid_x = (double)GHConstants.TileWidth / 2.0 - 0.5;
+                    double mid_y = (double)GHConstants.TileHeight / 2.0 - 0.5;
+                    double r = 0, semi_transparency = 0;
+                    byte radial_opacity = 0x00;
+                    //double r_constant_adjustement = Math.Sin((double)maincountervalue / (3.0 * 2.0 * Math.PI));
+                    //double r_constant = 0.0375 + r_constant_adjustement * 0.015;
+                    int bytesperpixel = TileMap[sheet_idx].BytesPerPixel;
+                    int copywidth = Math.Min((int)sourcerect.Width, _tempBitmap.Width);
+                    int copyheight = Math.Min((int)sourcerect.Height, _tempBitmap.Height);
+                    int tilemapwidth = TileMap[sheet_idx].Width;
+                    unsafe
+                    {
+                        byte* tempptr = (byte*)tempptraddr.ToPointer();
+                        byte* tileptr = (byte*)tileptraddr.ToPointer();
+                        tileptr += ((int)sourcerect.Left + (int)sourcerect.Top * tilemapwidth) * bytesperpixel;
+
+                        for (int row = 0; row < copyheight; row++)
+                        {
+                            for (int col = 0; col < copywidth; col++)
+                            {
+                                r = Math.Sqrt(Math.Pow((double)col - mid_x, 2.0) + Math.Pow((double)row - mid_y, 2.0));
+                                semi_transparency = r * 0.0375; //r_constant
+                                if (semi_transparency > 0.98)
+                                    semi_transparency = 0.98;
+
+                                *tempptr++ = *tileptr;       // red
+                                tileptr++;
+                                *tempptr++ = *tileptr;       // green
+                                tileptr++;
+                                *tempptr++ = *tileptr;       // blue
+                                tileptr++;
+                                radial_opacity = (byte)((double)0xFF * (1.0 - semi_transparency) * ((double)(*tileptr) / (double)0xFF));
+                                *tempptr++ = radial_opacity; // alpha
+                                tileptr++;
+                            }
+                            tileptr += (tilemapwidth - copywidth) * bytesperpixel;
+                        }
+                    }
+                    SKRect tempsourcerect = new SKRect(0, 0, copywidth, copyheight);
+
+                    if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0)
+                        paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                    canvas.DrawBitmap(_tempBitmap, tempsourcerect, targetrect, paint);
+                }
+                else
+                {
+                    paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                    canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
+                }
+            }
+
+            DrawAutoDraw(autodraw, canvas, paint, otmp_round,
+                layer_idx, mapx, mapy,
+                tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
+                tx, ty, width, height,
+                scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
+                false, drawwallends);
+        }
 
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
@@ -3703,12 +3953,79 @@ namespace GnollHackClient.Pages.Game
                                                                 {
                                                                     PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself);
                                                                 }
+                                                                else if (layer_idx == (int)layer_types.MAX_LAYERS)
+                                                                {
+
+                                                                }
                                                                 else
                                                                 {
                                                                     //Draw layers in the right order from main tile and from the neighboring tiles
                                                                     //source_x, source_y tile drawing to target_x = mapx, target_y = mapy
                                                                     //select source_x, source_y, layer_idx based on draw_idx.
                                                                     //check whether has enlargements or animations, if not, skip, if yes, check for enlargements
+                                                                    int source_x, source_y;
+                                                                    int enl_pos = _draw_order[draw_idx].enlargement_position;
+                                                                    switch(enl_pos)
+                                                                    {
+                                                                        case 3: // Left side enl tile from the right
+                                                                            source_x = mapx + 1;
+                                                                            source_y = mapy;
+                                                                            break;
+                                                                        case 4: // Right side enl tile from the left
+                                                                            source_x = mapx - 1;
+                                                                            source_y = mapy;
+                                                                            break;
+                                                                        case 0:
+                                                                            source_x = mapx + 1;
+                                                                            source_y = mapy + 1;
+                                                                            break;
+                                                                        case 1:
+                                                                            source_x = mapx;
+                                                                            source_y = mapy + 1;
+                                                                            break;
+                                                                        case 2:
+                                                                            source_x = mapx - 1;
+                                                                            source_y = mapy + 1;
+                                                                            break;
+                                                                        case -1:
+                                                                        default:
+                                                                            source_x = mapx;
+                                                                            source_y = mapy;
+                                                                            break;
+                                                                    }
+                                                                    int signed_glyph = _mapData[source_x, source_y].Layers.layer_gui_glyphs[layer_idx];
+                                                                    int abs_glyph = Math.Abs(signed_glyph);
+                                                                    int enl_signed_glyph = signed_glyph;
+                                                                    int enl_abs_glyph = abs_glyph;
+                                                                    int tile = App.Glyph2Tile[abs_glyph];
+                                                                    if (enl_pos > -1)
+                                                                    {
+                                                                        int enlargement = App.Tile2Enlargement[tile];
+                                                                        if (enlargement == 0)
+                                                                            continue;
+                                                                        int enlpostile = App.Enlargements[enlargement].position2tile[enl_pos];
+                                                                        if (enlpostile >= 0)
+                                                                        {
+                                                                            enl_abs_glyph = enlpostile + App.EnlargementOffsets[enlargement] + App.EnlargementOff;
+                                                                        }
+                                                                        enl_signed_glyph = Math.Sign(signed_glyph) * enl_abs_glyph;
+                                                                        enl_abs_glyph = Math.Abs(enl_signed_glyph);
+                                                                    }
+                                                                    int enl_tile = App.Glyph2Tile[enl_abs_glyph];
+                                                                    int enl_animation = App.Tile2Animation[enl_tile];
+
+                                                                    //Check animation
+
+                                                                    int sheet_idx = App.TileSheetIdx(enl_tile);
+                                                                    int tile_x = App.TileSheetX(enl_tile);
+                                                                    int tile_y = App.TileSheetY(enl_tile);
+                                                                    float move_offset_x = base_move_offset_x;
+                                                                    float move_offset_y = base_move_offset_y;
+
+                                                                    tx = (offsetX + usedOffsetX + move_offset_x + width * (float)mapx);
+                                                                    ty = (offsetY + usedOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+
+                                                                    //Draw the tile with draw_map_x = mapx, draw_map_y = mapy
                                                                 }
                                                             }
                                                         }
@@ -4289,7 +4606,7 @@ namespace GnollHackClient.Pages.Game
                                                                                 }
 
                                                                                 int dx = 0, dy = 0;
-                                                                                int darken_dx = 0, darken_dy = 0;
+                                                                                //int darken_dx = 0, darken_dy = 0;
                                                                                 switch (position_index)
                                                                                 {
                                                                                     case 0:
@@ -4316,244 +4633,253 @@ namespace GnollHackClient.Pages.Game
 
                                                                                 int draw_map_x = mapx + dx + (adj_x - mapx);
                                                                                 int draw_map_y = mapy + dy + (adj_y - mapy);
-                                                                                if (!GHUtils.isok(draw_map_x, draw_map_y))
-                                                                                    continue;
 
-                                                                                darken_dx = dx;
-                                                                                darken_dy = 0;
-                                                                                //int darken_x = mapx + darken_dx;
-                                                                                //int darken_y = mapy + darken_dy;
-                                                                                //bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
-                                                                                //if (_mapData[mapx, mapy].Layers.layer_gui_glyphs != null
-                                                                                //    && (_mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
-                                                                                //        || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
-                                                                                //   )
-                                                                                //    darken = false;
+                                                                                PaintMapTile(canvas, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                                    tx,ty,offsetX,offsetY,usedOffsetX,usedOffsetY,base_move_offset_x,base_move_offset_y,object_move_offset_x, object_move_offset_y,
+                                                                                    scaled_y_height_change, pit_border, targetscale, generalcountervalue,usedFontSize,
+                                                                                    monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
+                                                                                    loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile,tileflag_height_is_clipping,
+                                                                                    hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
+                                                                                    ref draw_shadow);
 
-                                                                                if (dx != 0 || dy != 0)
-                                                                                {
-                                                                                    draw_shadow[draw_map_x, draw_map_y] |= 1;
-                                                                                }
+                                                                                //if (!GHUtils.isok(draw_map_x, draw_map_y))
+                                                                                //    continue;
 
-                                                                                int sheet_idx = App.TileSheetIdx(ntile);
-                                                                                int tile_x = App.TileSheetX(ntile);
-                                                                                int tile_y = App.TileSheetY(ntile);
+                                                                                //darken_dx = dx;
+                                                                                //darken_dy = 0;
+                                                                                ////int darken_x = mapx + darken_dx;
+                                                                                ////int darken_y = mapy + darken_dy;
+                                                                                ////bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+                                                                                ////if (_mapData[mapx, mapy].Layers.layer_gui_glyphs != null
+                                                                                ////    && (_mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
+                                                                                ////        || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
+                                                                                ////   )
+                                                                                ////    darken = false;
 
-                                                                                SKRect sourcerect;
-                                                                                float scaled_tile_width = width;
-                                                                                float scaled_tile_height = tileflag_halfsize || (tileflag_normalobjmissile && !tileflag_fullsizeditem) ? height / 2 : height;
-                                                                                float scaled_x_padding = 0;
-                                                                                float scaled_y_padding = 0;
-                                                                                int source_y_added = 0;
-                                                                                int source_height_deducted = 0;
-                                                                                int source_height = tileflag_halfsize ? GHConstants.TileHeight / 2 : GHConstants.TileHeight;
+                                                                                //if (dx != 0 || dy != 0)
+                                                                                //{
+                                                                                //    draw_shadow[draw_map_x, draw_map_y] |= 1;
+                                                                                //}
 
-                                                                                float scale = 1.0f;
-                                                                                if (tileflag_halfsize && !tileflag_normalobjmissile)
-                                                                                {
-                                                                                    if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
-                                                                                    {
-                                                                                        if (obj_in_pit)
-                                                                                            scale *= GHConstants.OBJECT_PIT_SCALING_FACTOR;
-                                                                                    }
+                                                                                //int sheet_idx = App.TileSheetIdx(ntile);
+                                                                                //int tile_x = App.TileSheetX(ntile);
+                                                                                //int tile_y = App.TileSheetY(ntile);
 
-                                                                                    if (monster_height < 0 && is_monster_like_layer)
-                                                                                    {
-                                                                                        scale *= Math.Min(1.0f, Math.Max(0.1f, 1.0f - (1.0f - (float)GHConstants.OBJECT_PIT_SCALING_FACTOR) * (float)monster_height / (float)GHConstants.SPECIAL_HEIGHT_IN_PIT));
-                                                                                    }
+                                                                                //SKRect sourcerect;
+                                                                                //float scaled_tile_width = width;
+                                                                                //float scaled_tile_height = tileflag_halfsize || (tileflag_normalobjmissile && !tileflag_fullsizeditem) ? height / 2 : height;
+                                                                                //float scaled_x_padding = 0;
+                                                                                //float scaled_y_padding = 0;
+                                                                                //int source_y_added = 0;
+                                                                                //int source_height_deducted = 0;
+                                                                                //int source_height = tileflag_halfsize ? GHConstants.TileHeight / 2 : GHConstants.TileHeight;
 
-                                                                                    if (tileflag_floortile || tileflag_height_is_clipping)
-                                                                                    {
-                                                                                        if (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
-                                                                                        {
-                                                                                            source_y_added = tileflag_floortile ? 0 : GHConstants.TileHeight / 2;
-                                                                                            if (obj_height > 0 && obj_height < 48)
-                                                                                            {
-                                                                                                source_y_added += (GHConstants.TileHeight / 2 - obj_height) / 2;
-                                                                                                source_height_deducted = GHConstants.TileHeight / 2 - obj_height;
-                                                                                                source_height = GHConstants.TileHeight / 2 - source_height_deducted;
-                                                                                                scaled_tile_width = scale * width;
-                                                                                                scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                                                                scaled_tile_height = scale * (float)source_height * height / (float)GHConstants.TileHeight;
-                                                                                                scaled_y_padding = Math.Max(0, scale * (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
-                                                                                            }
-                                                                                        }
-                                                                                        sourcerect = new SKRect(tile_x, tile_y + source_y_added, tile_x + GHConstants.TileWidth, tile_y + source_y_added + source_height);
-                                                                                    }
-                                                                                    else
-                                                                                    {
-                                                                                        if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
-                                                                                        {
-                                                                                            if (obj_height > 0 && obj_height < 48)
-                                                                                                scale *= ((float)obj_height) / 48.0f;
-                                                                                        }
-                                                                                        scaled_tile_width = scale * width;
-                                                                                        scaled_tile_height = scale * height / 2;
-                                                                                        scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                                                        scaled_y_padding = Math.Max(0, height / 2 - scaled_tile_height - pit_border);
-                                                                                        sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                                                    }
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
-                                                                                    {
-                                                                                        if (tileflag_floortile)
-                                                                                        {
-                                                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
-                                                                                        }
-                                                                                        else if (tileflag_height_is_clipping)
-                                                                                        {
-                                                                                            sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                                                        }
-                                                                                        else
-                                                                                        {
-                                                                                            if (missile_height > 0 && missile_height < 48)
-                                                                                            {
-                                                                                                scale = ((float)missile_height) / 48.0f;
-                                                                                            }
-                                                                                            scaled_tile_width = scale * width;
-                                                                                            scaled_tile_height = scale * height / 2;
-                                                                                            scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                                                            scaled_y_padding = (height / 2 - scaled_tile_height) / 2;
+                                                                                //float scale = 1.0f;
+                                                                                //if (tileflag_halfsize && !tileflag_normalobjmissile)
+                                                                                //{
+                                                                                //    if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
+                                                                                //    {
+                                                                                //        if (obj_in_pit)
+                                                                                //            scale *= GHConstants.OBJECT_PIT_SCALING_FACTOR;
+                                                                                //    }
 
-                                                                                            sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                                                        }
-                                                                                    }
-                                                                                    else
-                                                                                    {
-                                                                                        if (monster_height < 0 && dy == 0 && is_monster_like_layer)
-                                                                                        {
-                                                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight + monster_height);
-                                                                                            source_height_deducted = -monster_height;
-                                                                                            source_height = GHConstants.TileHeight - source_height_deducted;
-                                                                                            scaled_tile_height = (float)source_height * height / (float)GHConstants.TileHeight;
-                                                                                        }
-                                                                                        else
-                                                                                        {
-                                                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                                                            if (is_missile_layer && !tileflag_floortile && !tileflag_height_is_clipping)
-                                                                                            {
-                                                                                                if (missile_height > 0 && missile_height < 48)
-                                                                                                {
-                                                                                                    scale = ((float)missile_height) / 48.0f;
-                                                                                                }
-                                                                                                scaled_tile_width = scale * width;
-                                                                                                scaled_tile_height = scale * height;
-                                                                                                scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                                                                scaled_y_padding = (height - scaled_tile_height) / 2;
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
+                                                                                //    if (monster_height < 0 && is_monster_like_layer)
+                                                                                //    {
+                                                                                //        scale *= Math.Min(1.0f, Math.Max(0.1f, 1.0f - (1.0f - (float)GHConstants.OBJECT_PIT_SCALING_FACTOR) * (float)monster_height / (float)GHConstants.SPECIAL_HEIGHT_IN_PIT));
+                                                                                //    }
 
-                                                                                float move_offset_x = 0, move_offset_y = 0;
-                                                                                float opaqueness = 1.0f;
-                                                                                if (is_monster_like_layer)
-                                                                                {
-                                                                                    move_offset_x = base_move_offset_x;
-                                                                                    move_offset_y = base_move_offset_y;
-                                                                                    if (layer_idx == (int)layer_types.MAX_LAYERS)
-                                                                                    {
-                                                                                        opaqueness = (draw_shadow[mapx, mapy] & 2) != 0 && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f : 0.5f;
-                                                                                    }
-                                                                                    else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
-                                                                                    {
-                                                                                        draw_shadow[mapx, mapy] |= 2;
-                                                                                        continue; /* Draw only the transparent shadow in the max_layers shadow layer; otherwise, if drawn twice, the result will be nontransparent */
-                                                                                    }
-                                                                                }
-                                                                                else if (is_object_like_layer && otmp_round != null)
-                                                                                {
-                                                                                    move_offset_x = object_move_offset_x;
-                                                                                    move_offset_y = object_move_offset_y;
-                                                                                }
-                                                                                else if (layer_idx == (int)layer_types.LAYER_COVER_TRAP)
-                                                                                {
-                                                                                    opaqueness = 0.5f;
-                                                                                }
+                                                                                //    if (tileflag_floortile || tileflag_height_is_clipping)
+                                                                                //    {
+                                                                                //        if (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
+                                                                                //        {
+                                                                                //            source_y_added = tileflag_floortile ? 0 : GHConstants.TileHeight / 2;
+                                                                                //            if (obj_height > 0 && obj_height < 48)
+                                                                                //            {
+                                                                                //                source_y_added += (GHConstants.TileHeight / 2 - obj_height) / 2;
+                                                                                //                source_height_deducted = GHConstants.TileHeight / 2 - obj_height;
+                                                                                //                source_height = GHConstants.TileHeight / 2 - source_height_deducted;
+                                                                                //                scaled_tile_width = scale * width;
+                                                                                //                scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                                                //                scaled_tile_height = scale * (float)source_height * height / (float)GHConstants.TileHeight;
+                                                                                //                scaled_y_padding = Math.Max(0, scale * (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
+                                                                                //            }
+                                                                                //        }
+                                                                                //        sourcerect = new SKRect(tile_x, tile_y + source_y_added, tile_x + GHConstants.TileWidth, tile_y + source_y_added + source_height);
+                                                                                //    }
+                                                                                //    else
+                                                                                //    {
+                                                                                //        if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
+                                                                                //        {
+                                                                                //            if (obj_height > 0 && obj_height < 48)
+                                                                                //                scale *= ((float)obj_height) / 48.0f;
+                                                                                //        }
+                                                                                //        scaled_tile_width = scale * width;
+                                                                                //        scaled_tile_height = scale * height / 2;
+                                                                                //        scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                                                //        scaled_y_padding = Math.Max(0, height / 2 - scaled_tile_height - pit_border);
+                                                                                //        sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                                                //    }
+                                                                                //}
+                                                                                //else
+                                                                                //{
+                                                                                //    if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                                                                                //    {
+                                                                                //        if (tileflag_floortile)
+                                                                                //        {
+                                                                                //            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
+                                                                                //        }
+                                                                                //        else if (tileflag_height_is_clipping)
+                                                                                //        {
+                                                                                //            sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                                                //        }
+                                                                                //        else
+                                                                                //        {
+                                                                                //            if (missile_height > 0 && missile_height < 48)
+                                                                                //            {
+                                                                                //                scale = ((float)missile_height) / 48.0f;
+                                                                                //            }
+                                                                                //            scaled_tile_width = scale * width;
+                                                                                //            scaled_tile_height = scale * height / 2;
+                                                                                //            scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                                                //            scaled_y_padding = (height / 2 - scaled_tile_height) / 2;
 
-                                                                                tx = (offsetX + usedOffsetX + move_offset_x + width * (float)draw_map_x);
-                                                                                ty = (offsetY + usedOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
+                                                                                //            sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                                                //        }
+                                                                                //    }
+                                                                                //    else
+                                                                                //    {
+                                                                                //        if (monster_height < 0 && dy == 0 && is_monster_like_layer)
+                                                                                //        {
+                                                                                //            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight + monster_height);
+                                                                                //            source_height_deducted = -monster_height;
+                                                                                //            source_height = GHConstants.TileHeight - source_height_deducted;
+                                                                                //            scaled_tile_height = (float)source_height * height / (float)GHConstants.TileHeight;
+                                                                                //        }
+                                                                                //        else
+                                                                                //        {
+                                                                                //            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                                                //            if (is_missile_layer && !tileflag_floortile && !tileflag_height_is_clipping)
+                                                                                //            {
+                                                                                //                if (missile_height > 0 && missile_height < 48)
+                                                                                //                {
+                                                                                //                    scale = ((float)missile_height) / 48.0f;
+                                                                                //                }
+                                                                                //                scaled_tile_width = scale * width;
+                                                                                //                scaled_tile_height = scale * height;
+                                                                                //                scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                                                //                scaled_y_padding = (height - scaled_tile_height) / 2;
+                                                                                //            }
+                                                                                //        }
+                                                                                //    }
+                                                                                //}
 
-                                                                                using (new SKAutoCanvasRestore(canvas, true))
-                                                                                {
-                                                                                    canvas.Translate(tx + (hflip_glyph ? width : 0), ty + (vflip_glyph ? height : 0));
-                                                                                    canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
-                                                                                    SKRect targetrect;
-                                                                                    if (tileflag_halfsize && !tileflag_normalobjmissile)
-                                                                                    {
-                                                                                        targetrect = new SKRect(scaled_x_padding, height / 2 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 2 + scaled_y_padding + scaled_tile_height);
-                                                                                    }
-                                                                                    else
-                                                                                    {
-                                                                                        if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
-                                                                                            targetrect = new SKRect(scaled_x_padding, height / 4 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 4 + scaled_y_padding + scaled_tile_height);
-                                                                                        else
-                                                                                            targetrect = new SKRect(scaled_x_padding, scaled_y_padding, scaled_x_padding + scaled_tile_width, scaled_y_padding + scaled_tile_height);
-                                                                                    }
+                                                                                //float move_offset_x = 0, move_offset_y = 0;
+                                                                                //float opaqueness = 1.0f;
+                                                                                //if (is_monster_like_layer)
+                                                                                //{
+                                                                                //    move_offset_x = base_move_offset_x;
+                                                                                //    move_offset_y = base_move_offset_y;
+                                                                                //    if (layer_idx == (int)layer_types.MAX_LAYERS)
+                                                                                //    {
+                                                                                //        opaqueness = (draw_shadow[mapx, mapy] & 2) != 0 && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f : 0.5f;
+                                                                                //    }
+                                                                                //    else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
+                                                                                //    {
+                                                                                //        draw_shadow[mapx, mapy] |= 2;
+                                                                                //        continue; /* Draw only the transparent shadow in the max_layers shadow layer; otherwise, if drawn twice, the result will be nontransparent */
+                                                                                //    }
+                                                                                //}
+                                                                                //else if (is_object_like_layer && otmp_round != null)
+                                                                                //{
+                                                                                //    move_offset_x = object_move_offset_x;
+                                                                                //    move_offset_y = object_move_offset_y;
+                                                                                //}
+                                                                                //else if (layer_idx == (int)layer_types.LAYER_COVER_TRAP)
+                                                                                //{
+                                                                                //    opaqueness = 0.5f;
+                                                                                //}
 
-                                                                                    if (is_monster_like_layer && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
-                                                                                    {
-                                                                                        IntPtr tempptraddr = _tempBitmap.GetPixels();
-                                                                                        IntPtr tileptraddr = TileMap[sheet_idx].GetPixels();
-                                                                                        double mid_x = (double)GHConstants.TileWidth / 2.0 - 0.5;
-                                                                                        double mid_y = (double)GHConstants.TileHeight / 2.0 - 0.5;
-                                                                                        double r = 0, semi_transparency = 0;
-                                                                                        byte radial_opacity = 0x00;
-                                                                                        //double r_constant_adjustement = Math.Sin((double)maincountervalue / (3.0 * 2.0 * Math.PI));
-                                                                                        //double r_constant = 0.0375 + r_constant_adjustement * 0.015;
-                                                                                        int bytesperpixel = TileMap[sheet_idx].BytesPerPixel;
-                                                                                        int copywidth = Math.Min((int)sourcerect.Width, _tempBitmap.Width);
-                                                                                        int copyheight = Math.Min((int)sourcerect.Height, _tempBitmap.Height);
-                                                                                        int tilemapwidth = TileMap[sheet_idx].Width;
-                                                                                        unsafe
-                                                                                        {
-                                                                                            byte* tempptr = (byte*)tempptraddr.ToPointer();
-                                                                                            byte* tileptr = (byte*)tileptraddr.ToPointer();
-                                                                                            tileptr += ((int)sourcerect.Left + (int)sourcerect.Top * tilemapwidth) * bytesperpixel;
+                                                                                //tx = (offsetX + usedOffsetX + move_offset_x + width * (float)draw_map_x);
+                                                                                //ty = (offsetY + usedOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
 
-                                                                                            for (int row = 0; row < copyheight; row++)
-                                                                                            {
-                                                                                                for (int col = 0; col < copywidth; col++)
-                                                                                                {
-                                                                                                    r = Math.Sqrt(Math.Pow((double)col - mid_x, 2.0) + Math.Pow((double)row - mid_y, 2.0));
-                                                                                                    semi_transparency = r * 0.0375; //r_constant
-                                                                                                    if (semi_transparency > 0.98)
-                                                                                                        semi_transparency = 0.98;
+                                                                                //using (new SKAutoCanvasRestore(canvas, true))
+                                                                                //{
+                                                                                //    canvas.Translate(tx + (hflip_glyph ? width : 0), ty + (vflip_glyph ? height : 0));
+                                                                                //    canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
+                                                                                //    SKRect targetrect;
+                                                                                //    if (tileflag_halfsize && !tileflag_normalobjmissile)
+                                                                                //    {
+                                                                                //        targetrect = new SKRect(scaled_x_padding, height / 2 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 2 + scaled_y_padding + scaled_tile_height);
+                                                                                //    }
+                                                                                //    else
+                                                                                //    {
+                                                                                //        if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                                                                                //            targetrect = new SKRect(scaled_x_padding, height / 4 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 4 + scaled_y_padding + scaled_tile_height);
+                                                                                //        else
+                                                                                //            targetrect = new SKRect(scaled_x_padding, scaled_y_padding, scaled_x_padding + scaled_tile_width, scaled_y_padding + scaled_tile_height);
+                                                                                //    }
 
-                                                                                                    *tempptr++ = *tileptr;       // red
-                                                                                                    tileptr++;
-                                                                                                    *tempptr++ = *tileptr;       // green
-                                                                                                    tileptr++;
-                                                                                                    *tempptr++ = *tileptr;       // blue
-                                                                                                    tileptr++;
-                                                                                                    radial_opacity = (byte)((double)0xFF * (1.0 - semi_transparency) * ((double)(*tileptr) / (double)0xFF));
-                                                                                                    *tempptr++ = radial_opacity; // alpha
-                                                                                                    tileptr++;
-                                                                                                }
-                                                                                                tileptr += (tilemapwidth - copywidth) * bytesperpixel;
-                                                                                            }
-                                                                                        }
-                                                                                        SKRect tempsourcerect = new SKRect(0, 0, copywidth, copyheight);
+                                                                                //    if (is_monster_like_layer && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
+                                                                                //    {
+                                                                                //        IntPtr tempptraddr = _tempBitmap.GetPixels();
+                                                                                //        IntPtr tileptraddr = TileMap[sheet_idx].GetPixels();
+                                                                                //        double mid_x = (double)GHConstants.TileWidth / 2.0 - 0.5;
+                                                                                //        double mid_y = (double)GHConstants.TileHeight / 2.0 - 0.5;
+                                                                                //        double r = 0, semi_transparency = 0;
+                                                                                //        byte radial_opacity = 0x00;
+                                                                                //        //double r_constant_adjustement = Math.Sin((double)maincountervalue / (3.0 * 2.0 * Math.PI));
+                                                                                //        //double r_constant = 0.0375 + r_constant_adjustement * 0.015;
+                                                                                //        int bytesperpixel = TileMap[sheet_idx].BytesPerPixel;
+                                                                                //        int copywidth = Math.Min((int)sourcerect.Width, _tempBitmap.Width);
+                                                                                //        int copyheight = Math.Min((int)sourcerect.Height, _tempBitmap.Height);
+                                                                                //        int tilemapwidth = TileMap[sheet_idx].Width;
+                                                                                //        unsafe
+                                                                                //        {
+                                                                                //            byte* tempptr = (byte*)tempptraddr.ToPointer();
+                                                                                //            byte* tileptr = (byte*)tileptraddr.ToPointer();
+                                                                                //            tileptr += ((int)sourcerect.Left + (int)sourcerect.Top * tilemapwidth) * bytesperpixel;
 
-                                                                                        if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0)
-                                                                                            paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                                                                        canvas.DrawBitmap(_tempBitmap, tempsourcerect, targetrect, paint);
-                                                                                    }
-                                                                                    else
-                                                                                    {
-                                                                                        paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                                                                        canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
-                                                                                    }
-                                                                                }
+                                                                                //            for (int row = 0; row < copyheight; row++)
+                                                                                //            {
+                                                                                //                for (int col = 0; col < copywidth; col++)
+                                                                                //                {
+                                                                                //                    r = Math.Sqrt(Math.Pow((double)col - mid_x, 2.0) + Math.Pow((double)row - mid_y, 2.0));
+                                                                                //                    semi_transparency = r * 0.0375; //r_constant
+                                                                                //                    if (semi_transparency > 0.98)
+                                                                                //                        semi_transparency = 0.98;
 
-                                                                                DrawAutoDraw(autodraw, canvas, paint, otmp_round,
-                                                                                    layer_idx, mapx, mapy,
-                                                                                    tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
-                                                                                    tx, ty, width, height,
-                                                                                    scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
-                                                                                    false, drawwallends);
+                                                                                //                    *tempptr++ = *tileptr;       // red
+                                                                                //                    tileptr++;
+                                                                                //                    *tempptr++ = *tileptr;       // green
+                                                                                //                    tileptr++;
+                                                                                //                    *tempptr++ = *tileptr;       // blue
+                                                                                //                    tileptr++;
+                                                                                //                    radial_opacity = (byte)((double)0xFF * (1.0 - semi_transparency) * ((double)(*tileptr) / (double)0xFF));
+                                                                                //                    *tempptr++ = radial_opacity; // alpha
+                                                                                //                    tileptr++;
+                                                                                //                }
+                                                                                //                tileptr += (tilemapwidth - copywidth) * bytesperpixel;
+                                                                                //            }
+                                                                                //        }
+                                                                                //        SKRect tempsourcerect = new SKRect(0, 0, copywidth, copyheight);
+
+                                                                                //        if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0)
+                                                                                //            paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                                                                                //        canvas.DrawBitmap(_tempBitmap, tempsourcerect, targetrect, paint);
+                                                                                //    }
+                                                                                //    else
+                                                                                //    {
+                                                                                //        paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                                                                                //        canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
+                                                                                //    }
+                                                                                //}
+
+                                                                                //DrawAutoDraw(autodraw, canvas, paint, otmp_round,
+                                                                                //    layer_idx, mapx, mapy,
+                                                                                //    tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
+                                                                                //    tx, ty, width, height,
+                                                                                //    scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
+                                                                                //    false, drawwallends);
 
                                                                             }
                                                                         }
