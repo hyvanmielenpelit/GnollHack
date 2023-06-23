@@ -3836,6 +3836,292 @@ namespace GnollHackClient.Pages.Game
             return true;
         }
 
+        private bool GetLayerGlyph(int mapx, int mapy, int layer_idx, int sub_layer_idx, int source_dir_idx,
+            ref int signed_glyph, ref int adj_x, ref int adj_y, ref bool manual_hflip, ref bool manual_vflip,
+            ref ObjectDataItem otmp_round, ref short obj_height, ref sbyte object_origin_x, ref sbyte object_origin_y)
+        {
+            if (source_dir_idx > 0)
+            {
+                switch ((source_dir_idx - 1) % GHConstants.NUM_ZAP_SOURCE_BASE_DIRS + 1)
+                {
+                    case 1:
+                        adj_x = mapx + 1;
+                        adj_y = mapy + 1;
+                        break;
+                    case 2:
+                        adj_x = mapx;
+                        adj_y = mapy + 1;
+                        break;
+                    case 3:
+                        adj_x = mapx - 1;
+                        adj_y = mapy + 1;
+                        break;
+                    case 4:
+                        adj_x = mapx - 1;
+                        adj_y = mapy;
+                        break;
+                    case 5:
+                        adj_x = mapx - 1;
+                        adj_y = mapy - 1;
+                        break;
+                    case 6:
+                        adj_x = mapx;
+                        adj_y = mapy - 1;
+                        break;
+                    case 7:
+                        adj_x = mapx + 1;
+                        adj_y = mapy - 1;
+                        break;
+                    case 8:
+                        adj_x = mapx + 1;
+                        adj_y = mapy;
+                        break;
+                    default:
+                        break;
+
+                }
+
+                switch (layer_idx)
+                {
+                    case (int)layer_types.LAYER_ZAP:
+                        {
+                            int adjacent_zap_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_ZAP];
+                            ulong adjacent_layer_flags = (ulong)_mapData[mapx, mapy].Layers.layer_flags;
+
+                            if (adjacent_zap_glyph == App.NoGlyph) // || !glyph_is_zap(adjacent_zap_glyph))
+                                signed_glyph = App.NoGlyph;
+                            else
+                                signed_glyph = _gnollHackService.ZapGlyphToCornerGlyph(adjacent_zap_glyph, adjacent_layer_flags, source_dir_idx);
+                            break;
+                        }
+                    case (int)layer_types.LAYER_MONSTER:
+                        {
+                            /* Worm */
+                            uint worm_id_stored = _mapData[mapx, mapy].Layers.m_id;
+                            if (worm_id_stored == 0)
+                                return false;
+
+                            bool is_long_worm_with_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_WITH_TAIL) != 0;
+                            bool is_long_worm_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_TAIL) != 0;
+                            bool is_adj_worm_tail = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_TAIL) != 0;
+                            bool is_adj_worm_seen = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0;
+                            bool worm = !is_adj_worm_tail ? false : is_adj_worm_seen ? (worm_id_stored > 0 ? true : false) : true;
+                            signed_glyph = App.NoGlyph;
+
+                            if (worm && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0
+                                && ((
+                                _mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0
+                                || is_adj_worm_seen || (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0))
+                            {
+                                if (is_long_worm_with_tail && !is_adj_worm_tail)
+                                {
+                                    signed_glyph = App.NoGlyph;
+                                }
+                                else if (is_long_worm_tail || (is_long_worm_with_tail && is_adj_worm_tail))
+                                {
+                                    int signed_main_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
+                                    int main_glyph = Math.Abs(signed_main_glyph);
+                                    int tile_animation_index = _gnollHackService.GetTileAnimationIndexFromGlyph(main_glyph);
+                                    int main_tile = App.Glyph2Tile[main_glyph];
+                                    int wormautodraw = App.Tile2Autodraw[main_tile];
+                                    int base_source_glyph = App.NoGlyph;
+                                    if (wormautodraw > 0)
+                                    {
+                                        base_source_glyph = App._autodraws[wormautodraw].source_glyph4;
+                                    }
+
+                                    int wdir = _mapData[mapx, mapy].Layers.wsegdir;
+                                    int tilenum = -1;
+                                    if (wdir % 2 == 1)
+                                    {
+                                        switch (source_dir_idx)
+                                        {
+                                            case 2:
+                                                if (wdir == 7)
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_LEFT;
+                                                    tilenum = 1; //GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                    manual_vflip = true;
+                                                }
+                                                else if (wdir == 5)
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                    tilenum = 3; // GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                    manual_hflip = false;
+                                                    manual_vflip = false;
+                                                }
+                                                break;
+                                            case 4:
+                                                if (wdir == 1)
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                    tilenum = 0;  //GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                    manual_hflip = false;
+                                                    manual_vflip = false;
+                                                }
+                                                else if (wdir == 7)
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_DOWN_LEFT;
+                                                    tilenum = 0; // GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                    manual_hflip = false;
+                                                    manual_vflip = true;
+                                                }
+                                                break;
+                                            case 6:
+                                                if (wdir == 1)
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                    tilenum = 1; // GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                    manual_hflip = false;
+                                                    manual_vflip = false;
+                                                }
+                                                else if (wdir == 3)
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_RIGHT;
+                                                    tilenum = 3; // GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                    manual_hflip = false;
+                                                    manual_vflip = true;
+                                                }
+                                                break;
+                                            case 8:
+                                                if (wdir == 3)
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_UP_RIGHT;
+                                                    tilenum = 2; // GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                    manual_hflip = false;
+                                                    manual_vflip = true;
+                                                }
+                                                else if (wdir == 5)
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                    tilenum = 2; // GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                    manual_hflip = false;
+                                                    manual_vflip = false;
+                                                }
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        if (tilenum > -1)
+                                            signed_glyph = tilenum + base_source_glyph;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    case (int)layer_types.LAYER_CHAIN:
+                        {
+                            /* Chain */
+                            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_CHAIN) != 0)
+                            {
+                                signed_glyph = (source_dir_idx / 2 - 1) + (int)general_tile_types.GENERAL_TILE_CHAIN_IS_UP + App.GeneralTileOff;
+                            }
+                            else
+                                signed_glyph = App.NoGlyph;
+                            break;
+                        }
+                }
+            }
+            else if (layer_idx == (int)layer_types.LAYER_OBJECT)
+            {
+                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
+                {
+                    otmp_round = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx];
+                    signed_glyph = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.oy0;
+                }
+                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
+                {
+                    otmp_round = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx];
+                    signed_glyph = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.oy0;
+                }
+                else
+                {
+                    signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? App.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
+                }
+            }
+            else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
+            {
+                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
+                {
+                    otmp_round = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx];
+                    signed_glyph = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.oy0;
+                }
+                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
+                {
+                    otmp_round = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx];
+                    signed_glyph = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.oy0;
+                }
+                else
+                {
+                    signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? App.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
+                }
+            }
+            else
+            {
+                int used_layer_idx = layer_idx;
+                if (layer_idx == (int)layer_types.MAX_LAYERS)
+                    used_layer_idx = (int)layer_types.LAYER_MONSTER;
+                signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? App.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[used_layer_idx];
+            }
+
+            if (signed_glyph == App.NoGlyph)
+                return false;
+
+            return true;
+        }
+
+        float GetScaledYHeightChange(int layer_idx, int sub_layer_idx, int sub_layer_cnt, float height, int monster_height, int feature_doodad_height, float targetscale, bool is_monster_like_layer, bool tileflag_halfsize)
+        {
+            float scaled_y_height_change = 0;
+            if ((!tileflag_halfsize || monster_height > 0) && is_monster_like_layer)
+            {
+                scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
+                if (monster_height < 0)
+                    scaled_y_height_change -= GHConstants.PIT_BOTTOM_BORDER * targetscale;
+            }
+            else if (tileflag_halfsize && (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
+                scaled_y_height_change = (float)(-(sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT) * targetscale;
+            else if (feature_doodad_height != 0 && layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD)
+            {
+                scaled_y_height_change = (float)-feature_doodad_height * height / (float)GHConstants.TileHeight;
+            }
+            return scaled_y_height_change;
+        }
+
+        void GetFlips(int signed_glyph, bool manual_hflip, bool manual_vflip, ref bool hflip_glyph, ref bool vflip_glyph)
+        {
+            int glyph = Math.Abs(signed_glyph);
+            /* Tile flips */
+            bool tileflag_hflip = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_HORIZONTALLY) != 0;
+            bool tileflag_vflip = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_VERTICALLY) != 0;
+
+            /* Base flips */
+            bool hflip = (signed_glyph < 0);
+
+            /* Final glyph flips */
+            if ((hflip != tileflag_hflip) != manual_hflip) /* XOR */
+                hflip_glyph = true;
+            else
+                hflip_glyph = false;
+
+            if (tileflag_vflip != manual_vflip) /* XOR */
+                vflip_glyph = true;
+            else
+                vflip_glyph = false;
+        }
+
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
             if (!MainGrid.IsVisible)
@@ -4212,7 +4498,6 @@ namespace GnollHackClient.Pages.Game
                                                             sbyte monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
                                                             sbyte feature_doodad_height = _mapData[mapx, mapy].Layers.special_feature_doodad_layer_height;
                                                             short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
-                                                            float scaled_y_height_change = 0;
                                                             sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
                                                             sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
                                                             long glyphprintmaincountervalue = _mapData[mapx, mapy].GlyphPrintMainCounterValue;
@@ -4265,243 +4550,10 @@ namespace GnollHackClient.Pages.Game
                                                                         bool manual_vflip = false;
                                                                         int adj_x = mapx;
                                                                         int adj_y = mapy;
-                                                                        if (source_dir_idx > 0)
-                                                                        {
-                                                                            switch ((source_dir_idx - 1) % GHConstants.NUM_ZAP_SOURCE_BASE_DIRS + 1)
-                                                                            {
-                                                                                case 1:
-                                                                                    adj_x = mapx + 1;
-                                                                                    adj_y = mapy + 1;
-                                                                                    break;
-                                                                                case 2:
-                                                                                    adj_x = mapx;
-                                                                                    adj_y = mapy + 1;
-                                                                                    break;
-                                                                                case 3:
-                                                                                    adj_x = mapx - 1;
-                                                                                    adj_y = mapy + 1;
-                                                                                    break;
-                                                                                case 4:
-                                                                                    adj_x = mapx - 1;
-                                                                                    adj_y = mapy;
-                                                                                    break;
-                                                                                case 5:
-                                                                                    adj_x = mapx - 1;
-                                                                                    adj_y = mapy - 1;
-                                                                                    break;
-                                                                                case 6:
-                                                                                    adj_x = mapx;
-                                                                                    adj_y = mapy - 1;
-                                                                                    break;
-                                                                                case 7:
-                                                                                    adj_x = mapx + 1;
-                                                                                    adj_y = mapy - 1;
-                                                                                    break;
-                                                                                case 8:
-                                                                                    adj_x = mapx + 1;
-                                                                                    adj_y = mapy;
-                                                                                    break;
-                                                                                default:
-                                                                                    break;
 
-                                                                            }
-
-                                                                            switch(layer_idx)
-                                                                            {
-                                                                                case (int)layer_types.LAYER_ZAP:
-                                                                                {
-                                                                                    int adjacent_zap_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_ZAP];
-                                                                                    ulong adjacent_layer_flags = (ulong)_mapData[mapx, mapy].Layers.layer_flags;
-
-                                                                                    if (adjacent_zap_glyph == App.NoGlyph) // || !glyph_is_zap(adjacent_zap_glyph))
-                                                                                        signed_glyph = App.NoGlyph;
-                                                                                    else
-                                                                                        signed_glyph = _gnollHackService.ZapGlyphToCornerGlyph(adjacent_zap_glyph, adjacent_layer_flags, source_dir_idx);
-                                                                                        break;
-                                                                                }
-                                                                                case (int)layer_types.LAYER_MONSTER:
-                                                                                {
-                                                                                    /* Worm */
-                                                                                    uint worm_id_stored = _mapData[mapx, mapy].Layers.m_id;
-                                                                                    if (worm_id_stored == 0)
-                                                                                        continue;
-
-                                                                                    bool is_long_worm_with_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_WITH_TAIL) != 0;
-                                                                                    bool is_long_worm_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_TAIL) != 0;
-                                                                                    bool is_adj_worm_tail = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_TAIL) != 0;
-                                                                                    bool is_adj_worm_seen = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0;
-                                                                                    bool worm = !is_adj_worm_tail ? false : is_adj_worm_seen ? (worm_id_stored > 0 ? true : false) : true;
-                                                                                    signed_glyph = App.NoGlyph;
-
-                                                                                    if (worm && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0
-                                                                                        && ((
-                                                                                        _mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0
-                                                                                        || is_adj_worm_seen || (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0))
-                                                                                    {
-                                                                                        if (is_long_worm_with_tail && !is_adj_worm_tail)
-                                                                                        {
-                                                                                            signed_glyph = App.NoGlyph;
-                                                                                        }
-                                                                                        else if (is_long_worm_tail || (is_long_worm_with_tail && is_adj_worm_tail))
-                                                                                        {
-                                                                                            int signed_main_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
-                                                                                            int main_glyph = Math.Abs(signed_main_glyph);
-                                                                                            int tile_animation_index = _gnollHackService.GetTileAnimationIndexFromGlyph(main_glyph);
-                                                                                            int main_tile = App.Glyph2Tile[main_glyph];
-                                                                                            int wormautodraw = App.Tile2Autodraw[main_tile];
-                                                                                            int base_source_glyph = App.NoGlyph;
-                                                                                            if (wormautodraw > 0)
-                                                                                            {
-                                                                                                base_source_glyph = App._autodraws[wormautodraw].source_glyph4;
-                                                                                            }
-
-                                                                                            int wdir = _mapData[mapx, mapy].Layers.wsegdir;
-                                                                                            int tilenum = -1;
-                                                                                            if (wdir % 2 == 1)
-                                                                                            {
-                                                                                                switch (source_dir_idx)
-                                                                                                {
-                                                                                                    case 2:
-                                                                                                        if (wdir == 7)
-                                                                                                        {
-                                                                                                            //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_LEFT;
-                                                                                                            tilenum = 1; //GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
-                                                                                                            manual_vflip = true;
-                                                                                                        }
-                                                                                                        else if (wdir == 5)
-                                                                                                        {
-                                                                                                            //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
-                                                                                                            tilenum = 3; // GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
-                                                                                                            manual_hflip = false;
-                                                                                                            manual_vflip = false;
-                                                                                                        }
-                                                                                                        break;
-                                                                                                    case 4:
-                                                                                                        if (wdir == 1)
-                                                                                                        {
-                                                                                                            //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
-                                                                                                            tilenum = 0;  //GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
-                                                                                                            manual_hflip = false;
-                                                                                                            manual_vflip = false;
-                                                                                                        }
-                                                                                                        else if (wdir == 7)
-                                                                                                        {
-                                                                                                            //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_DOWN_LEFT;
-                                                                                                            tilenum = 0; // GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
-                                                                                                            manual_hflip = false;
-                                                                                                            manual_vflip = true;
-                                                                                                        }
-                                                                                                        break;
-                                                                                                    case 6:
-                                                                                                        if (wdir == 1)
-                                                                                                        {
-                                                                                                            //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
-                                                                                                            tilenum = 1; // GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
-                                                                                                            manual_hflip = false;
-                                                                                                            manual_vflip = false;
-                                                                                                        }
-                                                                                                        else if (wdir == 3)
-                                                                                                        {
-                                                                                                            //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_RIGHT;
-                                                                                                            tilenum = 3; // GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
-                                                                                                            manual_hflip = false;
-                                                                                                            manual_vflip = true;
-                                                                                                        }
-                                                                                                        break;
-                                                                                                    case 8:
-                                                                                                        if (wdir == 3)
-                                                                                                        {
-                                                                                                            //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_UP_RIGHT;
-                                                                                                            tilenum = 2; // GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
-                                                                                                            manual_hflip = false;
-                                                                                                            manual_vflip = true;
-                                                                                                        }
-                                                                                                        else if (wdir == 5)
-                                                                                                        {
-                                                                                                            //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
-                                                                                                            tilenum = 2; // GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
-                                                                                                            manual_hflip = false;
-                                                                                                            manual_vflip = false;
-                                                                                                        }
-                                                                                                        break;
-                                                                                                    default:
-                                                                                                        break;
-                                                                                                }
-                                                                                                if (tilenum > -1)
-                                                                                                    signed_glyph = tilenum + base_source_glyph;
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                        break;
-                                                                                }
-                                                                                case (int)layer_types.LAYER_CHAIN:
-                                                                                {
-                                                                                    /* Chain */
-                                                                                    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_CHAIN) != 0)
-                                                                                    {
-                                                                                        signed_glyph = (source_dir_idx / 2 - 1) + (int)general_tile_types.GENERAL_TILE_CHAIN_IS_UP + App.GeneralTileOff;
-                                                                                    }
-                                                                                    else
-                                                                                        signed_glyph = App.NoGlyph;
-                                                                                    break;
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                        else if (layer_idx == (int)layer_types.LAYER_OBJECT)
-                                                                        {
-                                                                            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
-                                                                            {
-                                                                                otmp_round = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx];
-                                                                                signed_glyph = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
-                                                                                obj_height = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].TileHeight;
-                                                                                object_origin_x = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.ox0;
-                                                                                object_origin_y = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.oy0;
-                                                                            }
-                                                                            else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
-                                                                            {
-                                                                                otmp_round = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx];
-                                                                                signed_glyph = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.gui_glyph;
-                                                                                obj_height = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].TileHeight;
-                                                                                object_origin_x = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.ox0;
-                                                                                object_origin_y = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.oy0;
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? App.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
-                                                                            }
-                                                                        }
-                                                                        else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
-                                                                        {
-                                                                            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
-                                                                            {
-                                                                                otmp_round = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx];
-                                                                                signed_glyph = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
-                                                                                obj_height = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].TileHeight;
-                                                                                object_origin_x = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.ox0;
-                                                                                object_origin_y = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.oy0;
-                                                                            }
-                                                                            else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
-                                                                            {
-                                                                                otmp_round = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx];
-                                                                                signed_glyph = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.gui_glyph;
-                                                                                obj_height = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].TileHeight;
-                                                                                object_origin_x = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.ox0;
-                                                                                object_origin_y = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.oy0;
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? App.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
-                                                                            }
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            int used_layer_idx = layer_idx;
-                                                                            if (layer_idx == (int)layer_types.MAX_LAYERS)
-                                                                                used_layer_idx = (int)layer_types.LAYER_MONSTER;
-                                                                            signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? App.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[used_layer_idx];
-                                                                        }
-
-                                                                        if (signed_glyph == App.NoGlyph)
+                                                                        if (!GetLayerGlyph(mapx, mapy, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
+                                                                            ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
+                                                                            ref object_origin_x, ref object_origin_y))
                                                                             continue;
 
                                                                         int glyph = Math.Abs(signed_glyph);
@@ -4520,31 +4572,17 @@ namespace GnollHackClient.Pages.Game
                                                                             object_move_offset_y = height * (float)objectmovediffy * (float)(moveIntervals - objectcounterdiff) / (float)moveIntervals;
                                                                         }
 
-                                                                        /* Tile flips */
-                                                                        bool tileflag_hflip = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_HORIZONTALLY) != 0;
-                                                                        bool tileflag_vflip = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_VERTICALLY) != 0;
+                                                                        bool vflip_glyph = false;
+                                                                        bool hflip_glyph = false;
+                                                                        GetFlips(signed_glyph, manual_hflip, manual_vflip, ref hflip_glyph, ref vflip_glyph);
+
+                                                                        /* Tile flags */
                                                                         bool tileflag_halfsize = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
                                                                         bool tileflag_floortile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
                                                                         bool tileflag_normalobjmissile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0 && layer_idx == (int)layer_types.LAYER_MISSILE;
                                                                         bool tileflag_fullsizeditem = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
                                                                         bool tileflag_height_is_clipping = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING) != 0;
-
-                                                                        /* Base flips */
-                                                                        bool hflip = (signed_glyph < 0);
-
-                                                                        /* Final glyph flips */
-                                                                        bool vflip_glyph = false;
-                                                                        bool hflip_glyph = false;
-                                                                        if ((hflip != tileflag_hflip) != manual_hflip) /* XOR */
-                                                                            hflip_glyph = true;
-                                                                        else
-                                                                            hflip_glyph = false;
-
-                                                                        if (tileflag_vflip != manual_vflip) /* XOR */
-                                                                            vflip_glyph = true;
-                                                                        else
-                                                                            vflip_glyph = false;
-
+                                                                        
                                                                         /* All items are big when showing detection */
                                                                         if (showing_detection)
                                                                         {
@@ -4553,18 +4591,7 @@ namespace GnollHackClient.Pages.Game
                                                                             tileflag_height_is_clipping = false;
                                                                         }
 
-                                                                        if ((!tileflag_halfsize || monster_height > 0) && is_monster_like_layer)
-                                                                        {
-                                                                            scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
-                                                                            if (monster_height < 0)
-                                                                                scaled_y_height_change -= GHConstants.PIT_BOTTOM_BORDER * targetscale;
-                                                                        }
-                                                                        else if (tileflag_halfsize && (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
-                                                                            scaled_y_height_change = (float)(-(sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT) * targetscale;
-                                                                        else if (feature_doodad_height != 0 && layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD)
-                                                                        {
-                                                                            scaled_y_height_change = (float)-feature_doodad_height * height / (float)GHConstants.TileHeight;
-                                                                        }
+                                                                        float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize);
 
                                                                         int ntile = App.Glyph2Tile[glyph];
                                                                         int animation = App.Tile2Animation[ntile];
