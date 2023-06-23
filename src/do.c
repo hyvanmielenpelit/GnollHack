@@ -52,7 +52,7 @@ docharacterstatistics()
     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
 
     winid datawin = WIN_ERR;
-    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon_with_flags(&youmonst, WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS));
+    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_SCREEN, gui_glyph, extended_create_window_info_from_mon_with_flags(&youmonst, WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS));
 
     char buf[BUFSZ];
     char buf2[BUFSZ];
@@ -753,7 +753,7 @@ register struct obj* obj;
     int glyph = obj_to_glyph(obj, rn2_on_display_rng);
     int gui_glyph = maybe_get_replaced_glyph(glyph, obj->ox, obj->oy, data_to_replacement_info(glyph, LAYER_OBJECT, obj, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
 
-    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_DESCRIPTION_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_obj(obj));
+    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_DESCRIPTION_SCREEN, gui_glyph, extended_create_window_info_from_obj(obj));
 
     boolean stats_known = object_stats_known(obj);
     int otyp = obj->otyp;
@@ -4296,7 +4296,7 @@ register struct monst* mon;
     int glyph = any_mon_to_glyph(mon, rn2_on_display_rng);
     int gui_glyph = maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL, 0UL, MAT_NONE, 0));
 
-    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon_with_flags(mon, WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS));
+    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN, gui_glyph, extended_create_window_info_from_mon_with_flags(mon, WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS));
 
     //int mnum = mon->mnum;
     struct permonst* ptr = mon->data;

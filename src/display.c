@@ -310,6 +310,8 @@ register int show;
         int feature_doodad_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_FEATURE_DOODAD];
         int cover_feature_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_COVER_FEATURE];
 
+        int special_feature_doodad_layer_height_before = gbuf[y][x].layers.special_feature_doodad_layer_height;
+
         //unsigned long flags_before = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_CARPET] = new_carpet_glyph;
@@ -333,7 +335,8 @@ register int show;
             || cover_feature_glyph_before != new_cover_feature_glyph
             || floor_gui_glyph_before != new_floor_gui_glyph || carpet_gui_glyph_before != new_carpet_gui_glyph || floor_doodad_gui_glyph_before != new_floor_doodad_gui_glyph
             || feature_gui_glyph_before != new_feature_gui_glyph || feature_doodad_gui_glyph_before != new_feature_doodad_gui_glyph
-            || cover_feature_gui_glyph_before != new_cover_feature_gui_glyph)
+            || cover_feature_gui_glyph_before != new_cover_feature_gui_glyph
+            || special_feature_doodad_layer_height_before != new_feature_doodad_height)
         {
             gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
@@ -2331,6 +2334,9 @@ docrt()
                 show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
                 add_glyph_buffer_layer_flags(x, y, lev->hero_memory_layers.layer_flags);
+                set_glyph_buffer_feature_doodad_height(x, y, lev->hero_memory_layers.special_feature_doodad_layer_height);
+                set_glyph_buffer_object_height(x, y, lev->hero_memory_layers.object_height);
+                set_glyph_buffer_oid(x, y, lev->hero_memory_layers.o_id);
                 enum layer_types layer_idx;
                 for (layer_idx = LAYER_FLOOR; layer_idx <= LAYER_GENERAL_UI; layer_idx++)
                     show_gui_glyph_on_layer(x, y, lev->hero_memory_layers.layer_glyphs[layer_idx], lev->hero_memory_layers.layer_gui_glyphs[layer_idx], layer_idx);
@@ -5353,7 +5359,7 @@ struct monst* mtmp;
     int glyph = any_seen_mon_to_glyph(mtmp, rn2_on_display_rng);
     int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, MAT_NONE, 0));
 
-    return iflags.using_gui_tiles ? gui_glyph : glyph;
+    return gui_glyph;
 }
 
 const char*

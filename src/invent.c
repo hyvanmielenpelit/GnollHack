@@ -4245,7 +4245,7 @@ long pickcnt;
     int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_COMMAND_MENU, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_obj(otmp));
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_COMMAND_MENU, gui_glyph, extended_create_window_info_from_obj(otmp));
     start_menu_ex(win, GHMENU_STYLE_ITEM_COMMAND);
 
 #define NUM_CMD_SECTIONS 3
@@ -4762,7 +4762,7 @@ nextclass:
 
             int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
             int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
-            add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, ilet,
+            add_extended_menu(win, gui_glyph, &any, ilet,
                 applied_class_accelerator,
                      ATR_NONE, NO_COLOR, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
         }
@@ -5166,7 +5166,7 @@ char avoidlet;
                     any.a_char = ilet;
                     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
                     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
-                    add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph,
+                    add_extended_menu(win, gui_glyph,
                              &any, ilet, 0, ATR_NONE, NO_COLOR,
                              (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE) : doname_with_weight_first(otmp, TRUE)), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
                 }

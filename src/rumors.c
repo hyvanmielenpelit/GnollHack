@@ -498,7 +498,7 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
 
         int glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
         int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, MAT_NONE, 0));
-        tmpwin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_SPEAKER, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(mtmp));
+        tmpwin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_SPEAKER, gui_glyph, extended_create_window_info_from_mon(mtmp));
         //tmpwin = create_nhwindow(NHW_TEXT);
         if (oraclesstyle == 1)
             putstr(tmpwin, 0,

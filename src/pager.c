@@ -1034,7 +1034,7 @@ struct permonst **for_supplement;
 
     if (iflags.using_gui_tiles)
     {
-        strcpy(prefix, "");
+        Strcpy(prefix, "");
     }
     else
     {

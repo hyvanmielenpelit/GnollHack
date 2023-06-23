@@ -6368,7 +6368,7 @@ struct monst* mtmp;
 
                 int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
                 int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
-                add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, & any, 
+                add_extended_menu(win, gui_glyph, & any, 
                     0, 0, ATR_NONE, NO_COLOR,
                     itembuf, MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
 
@@ -10846,7 +10846,7 @@ int* spell_otyps;
         int glyph = obj_to_glyph(&pseudo, rn2_on_display_rng);
         int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_OBJECT, &pseudo, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
 
-        add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
+        add_menu(win, gui_glyph, &any,
             let, 0, ATR_NONE, NO_COLOR,
             spellbuf, MENU_UNSELECTED);
 

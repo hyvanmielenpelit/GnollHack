@@ -779,7 +779,7 @@ doability(VOID_ARGS)
     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(&youmonst));
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, gui_glyph, extended_create_window_info_from_mon(&youmonst));
     start_menu_ex(win, GHMENU_STYLE_CHARACTER);
 
     /* CHARACTER ABILITY INFORMATION */
@@ -836,7 +836,7 @@ doability(VOID_ARGS)
         glyph = flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum);
         gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
 
-        add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
+        add_menu(win, gui_glyph, &any,
             0, 0, ATR_NONE, NO_COLOR,
             available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1034,7 +1034,7 @@ doability(VOID_ARGS)
                 glyph = abs(any_mon_to_glyph(mtmp, rn2_on_display_rng));
                 gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, MAT_NONE, 0));
 
-                add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
+                add_menu(win, gui_glyph, &any,
                     0, 0, ATR_NONE, NO_COLOR,
                     available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1090,7 +1090,7 @@ domonsterability(VOID_ARGS)
     gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
 
     struct extended_create_window_info createinfo = extended_create_window_info_from_mon(&youmonst);
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_COMMAND_MENU, iflags.using_gui_tiles ? gui_glyph : glyph, createinfo);
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_COMMAND_MENU, gui_glyph, createinfo);
     start_menu_ex(win, GHMENU_STYLE_MONSTER_ABILITY);
     print_monster_abilities(win, &abilitynum, FALSE);
     end_menu(win, "Monster Abilities");
@@ -1422,7 +1422,7 @@ boolean ischaractermenu;
         any = zeroany;
         glyph = abs(any_mon_to_glyph(u.usteed, rn2_on_display_rng));
         gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, u.usteed, 0UL, 0UL, MAT_NONE, 0));
-        add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
+        add_extended_menu(win, gui_glyph, &any,
             0, 0, iflags.menu_headings, NO_COLOR,
             ischaractermenu ? "Use Your Steed's Abilities            " : "Your Steed's Abilities", MENU_UNSELECTED, menu_heading_info());
 
@@ -3118,7 +3118,7 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
     int glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Upolyd ? u.mfemale : flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
 
-    en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(&youmonst));
+    en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN, gui_glyph, extended_create_window_info_from_mon(&youmonst));
     en_via_menu = !final;
     if (en_via_menu)
         start_menu_ex(en_win, GHMENU_STYLE_ATTRIBUTES);
@@ -9377,7 +9377,7 @@ enum create_context_menu_types menu_type;
 
         if (otmp)
         {
-            add_context_menu(',', cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, iflags.using_gui_tiles ? otmp->gui_glyph : otmp->glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
+            add_context_menu(',', cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
             struct obj* otmp_here;
             boolean eat_added = FALSE;
             boolean loot_added = FALSE;
@@ -9385,13 +9385,13 @@ enum create_context_menu_types menu_type;
             {
                 if (!eat_added && is_edible(otmp_here))
                 {
-                    add_context_menu('e', cmd_from_func(doeat), CONTEXT_MENU_STYLE_GENERAL, iflags.using_gui_tiles ? otmp_here->gui_glyph : otmp_here->glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
+                    add_context_menu('e', cmd_from_func(doeat), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
                     eat_added = TRUE;
                 }
 
                 if (!loot_added && Is_container(otmp_here))
                 {
-                    add_context_menu('l', cmd_from_func(doloot), CONTEXT_MENU_STYLE_GENERAL, iflags.using_gui_tiles ? otmp_here->gui_glyph : otmp_here->glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
+                    add_context_menu('l', cmd_from_func(doloot), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
                     loot_added = TRUE;
                 }
             }
@@ -9410,7 +9410,7 @@ enum create_context_menu_types menu_type;
         {
             struct obj* lpobj;
             if ((lpobj = o_on(context.last_picked_obj_oid, invent)) != 0)
-                add_context_menu(M('<'), cmd_from_func(dolastpickeditem), CONTEXT_MENU_STYLE_GENERAL, lpobj ? (iflags.using_gui_tiles ? lpobj->gui_glyph : lpobj->glyph) : 0, "Last Item", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
+                add_context_menu(M('<'), cmd_from_func(dolastpickeditem), CONTEXT_MENU_STYLE_GENERAL, lpobj ? lpobj->gui_glyph : 0, "Last Item", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
         }
         break;
     }
