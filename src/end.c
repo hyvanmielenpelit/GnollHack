@@ -3022,7 +3022,7 @@ get_current_game_score()
         + 10 * (ngenocided == 0)
         );
 
-    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 5000L + Small_Achievements_Score * 5000L + Achievements_Score * 10000L + Conduct_Score * 5000L 
+    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 1000L + Small_Achievements_Score * 5000L + Achievements_Score * 10000L + Conduct_Score * 5000L 
         + Rogue_Loot_Score + Tourist_Selfie_Score;
 
     double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));

@@ -1,11 +1,11 @@
 # GnollHack General Public License
 
-GnollHack is subject to NetHack General Public License. In this license, GnollHack and NetHack are used interchangeably for all purposes.
+GnollHack is subject to NetHack General Public License. In this license, GnollHack and NetHack are used interchangeably for all purposes. 
 
+**(*Copyright 1989 M. Stephenson*)**  
+**(*Based on the BISON general public license, copyright 1988 Richard M. Stallman*)**  
 
-## NetHack General Public License
-\(Copyright 1989 M. Stephenson\)  
-\(Based on the BISON general public license, copyright 1988 Richard M. Stallman\)  
+# NetHack General Public License
 
 Everyone is permitted to copy and distribute verbatim copies of this license, but changing it is not allowed.  You can also use this wording to make the terms for other programs.
 
@@ -20,7 +20,7 @@ Also, for our own protection, we must make certain that everyone finds out that 
 Therefore we (Mike Stephenson and other holders of NetHack copyrights) make the following terms which say what you must do to be allowed to distribute or change NetHack.
 
 
-**Copying Policies**
+## Copying Policies
 
 1. You may copy and distribute verbatim copies of NetHack source code as you receive it, in any medium, provided that you keep intact the notices on all files that refer to copyrights, to this License Agreement, and to the absence of any warranty; and give any other recipients of the NetHack program a copy of this License Agreement along with the program.
 
