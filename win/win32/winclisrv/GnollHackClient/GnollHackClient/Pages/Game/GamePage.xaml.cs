@@ -4892,15 +4892,6 @@ namespace GnollHackClient.Pages.Game
 
                                                                                 int draw_map_x = mapx + dx + (adj_x - mapx);
                                                                                 int draw_map_y = mapy + dy + (adj_y - mapy);
-                                                                                float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
-
-                                                                                PaintMapTile(canvas, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
-                                                                                    offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
-                                                                                    scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
-                                                                                    monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
-                                                                                    loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                    hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
-                                                                                    ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY);
 
                                                                                 if (enlargement > 0 && enl_idx >= 0 && enl_idx <= 2)
                                                                                 {
@@ -4911,6 +4902,17 @@ namespace GnollHackClient.Pages.Game
                                                                                         loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                         hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
                                                                                         ref draw_shadow, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
+                                                                                    PaintMapTile(canvas, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                                        offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
+                                                                                        scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
+                                                                                        monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
+                                                                                        loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
+                                                                                        hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
+                                                                                        ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY);
                                                                                 }
                                                                             }
                                                                         }
