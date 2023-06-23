@@ -3444,17 +3444,6 @@ namespace GnollHackClient.Pages.Game
             if (!GHUtils.isok(draw_map_x, draw_map_y))
                 return;
 
-            int darken_dx = dx;
-            int darken_dy = 0;
-            //int darken_x = mapx + darken_dx;
-            //int darken_y = mapy + darken_dy;
-            //bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
-            //if (_mapData[mapx, mapy].Layers.layer_gui_glyphs != null
-            //    && (_mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
-            //        || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
-            //   )
-            //    darken = false;
-
             if (dx != 0 || dy != 0)
             {
                 draw_shadow[draw_map_x, draw_map_y] |= 1;
@@ -4695,7 +4684,6 @@ namespace GnollHackClient.Pages.Game
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile,tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
                                                                                 ref draw_shadow);
-
                                                                         }
                                                                     }
                                                                 }
@@ -4704,7 +4692,6 @@ namespace GnollHackClient.Pages.Game
                                                     }
 
                                                     /* Darkening at the end of layers */
-                                                    //if (_draw_order[draw_idx].darken) 
                                                     if (layer_idx == (int)layer_types.LAYER_OBJECT)
                                                     {
                                                         for (int mapx = startX; mapx <= endX; mapx++)
@@ -4744,7 +4731,6 @@ namespace GnollHackClient.Pages.Game
                                                         }
                                                     }
                                                 }
-
                                             }
                                         }
                                     }
