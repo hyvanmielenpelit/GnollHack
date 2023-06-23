@@ -3715,6 +3715,19 @@ namespace GnollHackClient.Pages.Game
             return sub_layer_cnt;
         }
 
+        int GetSourceDirIndex(int layer_idx, int source_dir_main_idx)
+        {
+            int source_dir_idx = source_dir_main_idx;
+            switch (layer_idx)
+            {
+                case (int)layer_types.LAYER_CHAIN:
+                case (int)layer_types.LAYER_MONSTER:
+                    source_dir_idx = source_dir_main_idx * 2;
+                    break;
+            }
+            return source_dir_idx;
+        }
+
         private bool GetEnlargementTile(int enlargement, int enlarg_idx, bool hflip_glyph, bool vflip_glyph, int main_tile_idx, int anim_frame_idx, ref int ntile, ref int autodraw, ref int dx, ref int dy)
         {
             int position_index = -1;
@@ -4122,6 +4135,96 @@ namespace GnollHackClient.Pages.Game
                 vflip_glyph = false;
         }
 
+        void CheckShowingDetection(bool showing_detection, ref short obj_height, ref bool tileflag_floortile, ref bool tileflag_height_is_clipping)
+        {
+            if (showing_detection)
+            {
+                obj_height = 0;
+                tileflag_floortile = false;
+                tileflag_height_is_clipping = false;
+            }
+        }
+
+        void GetBaseMoveOffsets(int mapx, int mapy, sbyte monster_origin_x, sbyte monster_origin_y, float width, float height, long maincounterdiff, long moveIntervals, ref float base_move_offset_x, ref float base_move_offset_y)
+        {
+            int movediffx = (int)monster_origin_x - mapx;
+            int movediffy = (int)monster_origin_y - mapy;
+            if (GHUtils.isok(monster_origin_x, monster_origin_y)
+                && (movediffx != 0 || movediffy != 0)
+                && maincounterdiff >= 0 && maincounterdiff < moveIntervals)
+            {
+                base_move_offset_x = width * (float)movediffx * (float)(moveIntervals - maincounterdiff) / (float)moveIntervals;
+                base_move_offset_y = height * (float)movediffy * (float)(moveIntervals - maincounterdiff) / (float)moveIntervals;
+            }
+
+        }
+
+        void GetObjectMoveOffsets(int mapx, int mapy, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, ref float object_move_offset_x, ref float object_move_offset_y)
+        {
+            int objectmovediffx = (int)object_origin_x - mapx;
+            int objectmovediffy = (int)object_origin_y - mapy;
+
+            if (GHUtils.isok(object_origin_x, object_origin_y)
+                && (objectmovediffx != 0 || objectmovediffy != 0)
+                && objectcounterdiff >= 0 && objectcounterdiff < moveIntervals)
+            {
+                object_move_offset_x = width * (float)objectmovediffx * (float)(moveIntervals - objectcounterdiff) / (float)moveIntervals;
+                object_move_offset_y = height * (float)objectmovediffy * (float)(moveIntervals - objectcounterdiff) / (float)moveIntervals;
+            }
+        }
+
+        int GetTileFromAnimation(int ntile, int glyph, int mapx, int mapy, int layer_idx, long generalcountervalue, bool is_monster_or_shadow_layer,
+            ref int anim_frame_idx, ref int main_tile_idx, ref int autodraw)
+        {
+            sbyte mapAnimated = 0;
+            int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
+            bool is_dropping_piercer = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_DROPPING_PIERCER) != 0;
+            lock (AnimationTimerLock)
+            {
+                if (AnimationTimers.u_action_animation_counter_on && is_monster_or_shadow_layer && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
+                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && is_monster_or_shadow_layer) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
+                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                else if (_gnollHackService.GlyphIsExplosion(glyph))
+                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                else if (_gnollHackService.GlyphIsZap(glyph))
+                {
+                    for (int zap_anim_idx = 0; zap_anim_idx < GHConstants.MaxPlayedZapAnimations; zap_anim_idx++)
+                    {
+                        if (AnimationTimers.zap_animation_counter_on[zap_anim_idx]
+                            && mapx == AnimationTimers.zap_animation_x[zap_anim_idx]
+                            && mapy == AnimationTimers.zap_animation_y[zap_anim_idx])
+                        {
+                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.zap_animation_counter[zap_anim_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    /* Check for special effect animations */
+                    bool spef_found = false;
+                    for (int spef_idx = 0; spef_idx < GHConstants.MaxPlayedSpecialEffects; spef_idx++)
+                    {
+                        if (AnimationTimers.special_effect_animation_counter_on[spef_idx]
+                            && layer_idx == (int)AnimationTimers.spef_action_animation_layer[spef_idx]
+                            && mapx == AnimationTimers.spef_action_animation_x[spef_idx]
+                            && mapy == AnimationTimers.spef_action_animation_y[spef_idx])
+                        {
+                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.special_effect_animation_counter[spef_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                            spef_found = true;
+                            break;
+                        }
+                    }
+
+                    /* Otherwise, normal animation check */
+                    if (!spef_found)
+                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                }
+            }
+            return ntile;
+        }
+
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
             if (!MainGrid.IsVisible)
@@ -4501,22 +4604,14 @@ namespace GnollHackClient.Pages.Game
                                                             sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
                                                             sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
                                                             long glyphprintmaincountervalue = _mapData[mapx, mapy].GlyphPrintMainCounterValue;
-                                                            float base_move_offset_x = 0, base_move_offset_y = 0;
-                                                            int movediffx = (int)monster_origin_x - mapx;
-                                                            int movediffy = (int)monster_origin_y - mapy;
                                                             long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
                                                             long glyphobjectprintmaincountervalue = _mapData[mapx, mapy].GlyphObjectPrintMainCounterValue;
                                                             long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
                                                             short missile_height = _mapData[mapx, mapy].Layers.missile_height;
                                                             bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
 
-                                                            if (GHUtils.isok(monster_origin_x, monster_origin_y)
-                                                                && (movediffx != 0 || movediffy != 0)
-                                                                && maincounterdiff >= 0 && maincounterdiff < moveIntervals)
-                                                            {
-                                                                base_move_offset_x = width * (float)movediffx * (float)(moveIntervals - maincounterdiff) / (float)moveIntervals;
-                                                                base_move_offset_y = height * (float)movediffy * (float)(moveIntervals - maincounterdiff) / (float)moveIntervals;
-                                                            }
+                                                            float base_move_offset_x = 0, base_move_offset_y = 0;
+                                                            GetBaseMoveOffsets(mapx, mapy, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
 
                                                             if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
                                                             {
@@ -4535,16 +4630,8 @@ namespace GnollHackClient.Pages.Game
                                                                         sbyte object_origin_y = 0; //Default
                                                                         ObjectDataItem otmp_round = null;
 
-                                                                        int source_main_dir_num = sub_layer_cnt; // 1;
                                                                         int source_dir_main_idx = sub_layer_idx; 
-                                                                        int source_dir_idx = source_dir_main_idx;
-                                                                        switch (layer_idx)
-                                                                        {
-                                                                            case (int)layer_types.LAYER_CHAIN:
-                                                                            case (int)layer_types.LAYER_MONSTER:
-                                                                                source_dir_idx = source_dir_main_idx * 2;
-                                                                                break;
-                                                                        }
+                                                                        int source_dir_idx = GetSourceDirIndex(layer_idx, source_dir_main_idx);
 
                                                                         bool manual_hflip = false;
                                                                         bool manual_vflip = false;
@@ -4561,16 +4648,7 @@ namespace GnollHackClient.Pages.Game
                                                                             continue;
 
                                                                         float object_move_offset_x = 0, object_move_offset_y = 0;
-                                                                        int objectmovediffx = (int)object_origin_x - mapx;
-                                                                        int objectmovediffy = (int)object_origin_y - mapy;
-
-                                                                        if (GHUtils.isok(object_origin_x, object_origin_y)
-                                                                            && (objectmovediffx != 0 || objectmovediffy != 0)
-                                                                            && objectcounterdiff >= 0 && objectcounterdiff < moveIntervals)
-                                                                        {
-                                                                            object_move_offset_x = width * (float)objectmovediffx * (float)(moveIntervals - objectcounterdiff) / (float)moveIntervals;
-                                                                            object_move_offset_y = height * (float)objectmovediffy * (float)(moveIntervals - objectcounterdiff) / (float)moveIntervals;
-                                                                        }
+                                                                        GetObjectMoveOffsets(mapx, mapy, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, ref object_move_offset_x, ref object_move_offset_y);
 
                                                                         bool vflip_glyph = false;
                                                                         bool hflip_glyph = false;
@@ -4582,73 +4660,22 @@ namespace GnollHackClient.Pages.Game
                                                                         bool tileflag_normalobjmissile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0 && layer_idx == (int)layer_types.LAYER_MISSILE;
                                                                         bool tileflag_fullsizeditem = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
                                                                         bool tileflag_height_is_clipping = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING) != 0;
-                                                                        
-                                                                        /* All items are big when showing detection */
-                                                                        if (showing_detection)
-                                                                        {
-                                                                            obj_height = 0;
-                                                                            tileflag_floortile = false;
-                                                                            tileflag_height_is_clipping = false;
-                                                                        }
 
+                                                                        /* All items are big when showing detection */
+                                                                        CheckShowingDetection(showing_detection, ref obj_height, ref tileflag_floortile, ref tileflag_height_is_clipping);
+
+                                                                        /*Determine y move for tiles */
                                                                         float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize);
 
                                                                         int ntile = App.Glyph2Tile[glyph];
-                                                                        int animation = App.Tile2Animation[ntile];
                                                                         int autodraw = App.Tile2Autodraw[ntile];
-                                                                        int anim_frame_idx = 0, main_tile_idx = 0;
-                                                                        sbyte mapAnimated = 0;
-                                                                        int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
-                                                                        bool is_dropping_piercer = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_DROPPING_PIERCER) != 0;
 
                                                                         /* Determine animation tile here */
-                                                                        lock (AnimationTimerLock)
-                                                                        {
-                                                                            if (AnimationTimers.u_action_animation_counter_on && is_monster_or_shadow_layer && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
-                                                                                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                                                                            else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && is_monster_or_shadow_layer) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
-                                                                                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                                                                            else if (_gnollHackService.GlyphIsExplosion(glyph))
-                                                                                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                                                                            else if (_gnollHackService.GlyphIsZap(glyph))
-                                                                            {
-                                                                                for (int zap_anim_idx = 0; zap_anim_idx < GHConstants.MaxPlayedZapAnimations; zap_anim_idx++)
-                                                                                {
-                                                                                    if (AnimationTimers.zap_animation_counter_on[zap_anim_idx]
-                                                                                        && mapx == AnimationTimers.zap_animation_x[zap_anim_idx]
-                                                                                        && mapy == AnimationTimers.zap_animation_y[zap_anim_idx])
-                                                                                    {
-                                                                                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.zap_animation_counter[zap_anim_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                                                                                        break;
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                /* Check for special effect animations */
-                                                                                bool spef_found = false;
-                                                                                for (int spef_idx = 0; spef_idx < GHConstants.MaxPlayedSpecialEffects; spef_idx++)
-                                                                                {
-                                                                                    if (AnimationTimers.special_effect_animation_counter_on[spef_idx]
-                                                                                        && layer_idx == (int)AnimationTimers.spef_action_animation_layer[spef_idx]
-                                                                                        && mapx == AnimationTimers.spef_action_animation_x[spef_idx]
-                                                                                        && mapy == AnimationTimers.spef_action_animation_y[spef_idx])
-                                                                                    {
-                                                                                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.special_effect_animation_counter[spef_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                                                                                        spef_found = true;
-                                                                                        break;
-                                                                                    }
-                                                                                }
+                                                                        int anim_frame_idx = 0, main_tile_idx = 0;
+                                                                        ntile = GetTileFromAnimation(ntile, glyph, mapx, mapy, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
 
-                                                                                /* Otherwise, normal animation check */
-                                                                                if (!spef_found)
-                                                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                                                                            }
-                                                                        }
-
+                                                                        /* Draw enlargement tiles */
                                                                         int enlargement = App.Tile2Enlargement[ntile];
-                                                                        //int enl_idx = _draw_order[draw_idx].enlargement_position;
-
                                                                         for (int enl_idx = -1; enl_idx < 5; enl_idx++)
                                                                         {
                                                                             if (enlargement == 0 && enl_idx >= 0)
