@@ -177,7 +177,7 @@ namespace GnollHackClient.Pages.Game
 
         private readonly object _accurateLayerDrawingLock = new object();
         private bool _accurateLayerDrawing = false;
-        public bool AccurateLayerDrawing { get { lock (_accurateLayerDrawingLock) { return _accurateLayerDrawing; } } set { lock (_accurateLayerDrawingLock) { _accurateLayerDrawing = value; } } }
+        public bool AlternativeLayerDrawing { get { lock (_accurateLayerDrawingLock) { return _accurateLayerDrawing; } } set { lock (_accurateLayerDrawingLock) { _accurateLayerDrawing = value; } } }
 
         public readonly object RefreshScreenLock = new object();
         private bool _refreshScreen = true;
@@ -462,7 +462,7 @@ namespace GnollHackClient.Pages.Game
             WalkArrows = Preferences.Get("WalkArrows", true);
             LighterDarkening = Preferences.Get("LighterDarkening", GHConstants.DefaultLighterDarkening);
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
-            AccurateLayerDrawing = Preferences.Get("AccurateLayerDrawing", GHConstants.DefaultAccurateLayerDrawing);
+            AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
 
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
@@ -3431,21 +3431,25 @@ namespace GnollHackClient.Pages.Game
 
 
         private void PaintMapTile(SKCanvas canvas, SKPaint textPaint, SKPaint paint, int layer_idx, int mapx, int mapy, int draw_map_x, int draw_map_y, int dx, int dy, int ntile, float width, float height, 
-            float tx, float ty, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float object_move_offset_x, float object_move_offset_y,
+            float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float object_move_offset_x, float object_move_offset_y,
             float scaled_y_height_change, float pit_border,
             float targetscale, long generalcountervalue, float usedFontSize, int monster_height, 
             bool is_monster_like_layer, bool is_object_like_layer, bool obj_in_pit, int obj_height, bool is_missile_layer, int missile_height,
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
             ObjectDataItem otmp_round, int autodraw, bool drawwallends,
-            ref short[,] draw_shadow)
+            ref short[,] draw_shadow, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY)
         {
             if (!GHUtils.isok(draw_map_x, draw_map_y))
                 return;
 
-            if (dx != 0 || dy != 0)
+            float tx = 0, ty = 0;
+            if(draw_shadow != null)
             {
-                draw_shadow[draw_map_x, draw_map_y] |= 1;
+                if (dx != 0 || dy != 0)
+                {
+                    draw_shadow[draw_map_x, draw_map_y] |= 1;
+                }
             }
 
             int sheet_idx = App.TileSheetIdx(ntile);
@@ -3659,6 +3663,22 @@ namespace GnollHackClient.Pages.Game
                     paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
                     canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
                 }
+
+                float target_x = tx + (hflip_glyph ? width : 0);
+                float target_y = ty + (vflip_glyph ? height : 0);
+                float target_left = hflip_glyph ? target_x - (targetrect.Right - targetrect.Left) : target_x;
+                float target_right = hflip_glyph ? target_x : target_x + (targetrect.Right - targetrect.Left);
+                float target_top = vflip_glyph ? target_y - (targetrect.Bottom - targetrect.Top) : target_y;
+                float target_bottom = vflip_glyph ? target_y : target_y + (targetrect.Bottom - targetrect.Top);
+
+                if (target_left < minDrawX)
+                    minDrawX = target_left;
+                if (target_right > maxDrawX)
+                    maxDrawX = target_right;
+                if (target_top < minDrawY)
+                    minDrawY = target_top;
+                if (target_bottom > maxDrawY)
+                    maxDrawY = target_bottom;
             }
 
             DrawAutoDraw(autodraw, canvas, paint, otmp_round,
@@ -3722,6 +3742,33 @@ namespace GnollHackClient.Pages.Game
                     break;
             }
             return source_dir_idx;
+        }
+
+        int GetUsedEnlargementIndex(int enlarg_idx)
+        {
+            int used_enl_idx = -1;
+            switch(enlarg_idx)
+            {
+                default:
+                case -1:
+                    break;
+                case 0:
+                    used_enl_idx = 4;
+                    break;
+                case 1:
+                    used_enl_idx = 3;
+                    break;
+                case 2:
+                    used_enl_idx = 2;
+                    break;
+                case 3:
+                    used_enl_idx = 1;
+                    break;
+                case 4:
+                    used_enl_idx = 0;
+                    break;
+            }
+            return used_enl_idx;
         }
 
         private bool GetEnlargementTile(int enlargement, int enlarg_idx, bool hflip_glyph, bool vflip_glyph, int main_tile_idx, int anim_frame_idx, ref int ntile, ref int autodraw, ref int dx, ref int dy)
@@ -4339,6 +4386,8 @@ namespace GnollHackClient.Pages.Game
             return ntile;
         }
 
+        private SKBitmap _enlargementBitmap = null;
+
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
             if (!MainGrid.IsVisible)
@@ -4352,9 +4401,11 @@ namespace GnollHackClient.Pages.Game
             bool drawwallends = DrawWallEnds;
 
             canvas.Clear(SKColors.Black);
-
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
+
+            if (_enlargementBitmap == null || _enlargementBitmap.Width != (int)canvaswidth || _enlargementBitmap.Height != (int)canvasheight)
+                _enlargementBitmap = new SKBitmap(Math.Max(1, (int)canvaswidth), Math.Max(1, (int)canvasheight));
 
             double canvas_scale = GetCanvasScale();
             float inverse_canvas_scale = canvas_scale == 0 ? 0.0f : 1.0f / (float)canvas_scale;
@@ -4559,7 +4610,7 @@ namespace GnollHackClient.Pages.Game
                                             startY = Math.Max(startY, (int)(Math.Sign(altStartY) * Math.Floor(Math.Abs(altStartY))));
                                             endY = Math.Min(endY, (int)Math.Ceiling(altEndY));
 
-                                            if (AccurateLayerDrawing)
+                                            if (AlternativeLayerDrawing)
                                             {
                                                 lock (_drawOrderLock)
                                                 {
@@ -4630,7 +4681,7 @@ namespace GnollHackClient.Pages.Game
                                                                 bool obj_in_pit = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
 
                                                                 float base_move_offset_x = 0, base_move_offset_y = 0;
-                                                                GetBaseMoveOffsets(source_x, source_y, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
+                                                                //GetBaseMoveOffsets(source_x, source_y, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
 
                                                                 if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
                                                                 {
@@ -4668,7 +4719,7 @@ namespace GnollHackClient.Pages.Game
                                                                                 continue;
 
                                                                             float object_move_offset_x = 0, object_move_offset_y = 0;
-                                                                            GetObjectMoveOffsets(source_x, source_y, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, ref object_move_offset_x, ref object_move_offset_y);
+                                                                            //GetObjectMoveOffsets(source_x, source_y, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, ref object_move_offset_x, ref object_move_offset_y);
 
                                                                             bool vflip_glyph = false;
                                                                             bool hflip_glyph = false;
@@ -4703,13 +4754,15 @@ namespace GnollHackClient.Pages.Game
                                                                             int draw_map_x = source_x + dx + (adj_x - source_x);
                                                                             int draw_map_y = source_y + dy + (adj_y - source_y);
 
+                                                                            float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
+
                                                                             PaintMapTile(canvas, textPaint, paint, layer_idx, source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
-                                                                                tx, ty, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
+                                                                                offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                                 scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
-                                                                                ref draw_shadow);
+                                                                                ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY);
                                                                         }
                                                                     }
                                                                 }
@@ -4720,169 +4773,204 @@ namespace GnollHackClient.Pages.Game
                                             }
                                             else
                                             {
-                                                for (int layer_idx = 0; layer_idx < (int)layer_types.MAX_LAYERS + 2; layer_idx++)
+                                                using (SKCanvas enlCanvas = new SKCanvas(_enlargementBitmap))
                                                 {
-                                                    bool is_monster_or_shadow_layer = (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS);
-                                                    bool is_monster_like_layer = (is_monster_or_shadow_layer || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT);
-                                                    bool is_object_like_layer = (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT);
-                                                    bool is_missile_layer = (layer_idx == (int)layer_types.LAYER_MISSILE);
-                                                    for (int mapy = startY; mapy <= endY; mapy++)
+                                                    enlCanvas.Clear(SKColors.Transparent);
+                                                    float _enlBmpMinX, _enlBmpMinY, _enlBmpMaxX, _enlBmpMaxY;
+                                                    _enlBmpMaxX = _enlBmpMaxY = 0;
+                                                    _enlBmpMinX = (float)_enlargementBitmap.Width;
+                                                    _enlBmpMinY = (float)_enlargementBitmap.Height;
+
+                                                    for (int layer_idx = 0; layer_idx < (int)layer_types.MAX_LAYERS + 2; layer_idx++)
                                                     {
-                                                        for (int mapx = startX; mapx <= endX; mapx++)
+                                                        bool is_monster_or_shadow_layer = (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS);
+                                                        bool is_monster_like_layer = (is_monster_or_shadow_layer || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT);
+                                                        bool is_object_like_layer = (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT);
+                                                        bool is_missile_layer = (layer_idx == (int)layer_types.LAYER_MISSILE);
+                                                        for (int mapy = startY; mapy <= endY; mapy++)
                                                         {
-                                                            if (_mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_gui_glyphs == null)
-                                                                continue;
-
-                                                            if (layer_idx == (int)layer_types.MAX_LAYERS
-                                                                && (draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == App.NoGlyph)
-                                                                )
-                                                                continue;
-
-                                                            bool loc_is_you = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
-                                                            bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
-                                                            bool canspotself = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
-                                                            sbyte monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
-                                                            sbyte feature_doodad_height = _mapData[mapx, mapy].Layers.special_feature_doodad_layer_height;
-                                                            short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
-                                                            sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
-                                                            sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
-                                                            long glyphprintmaincountervalue = _mapData[mapx, mapy].GlyphPrintMainCounterValue;
-                                                            long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
-                                                            long glyphobjectprintmaincountervalue = _mapData[mapx, mapy].GlyphObjectPrintMainCounterValue;
-                                                            long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
-                                                            short missile_height = _mapData[mapx, mapy].Layers.missile_height;
-                                                            bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
-
-                                                            float base_move_offset_x = 0, base_move_offset_y = 0;
-                                                            GetBaseMoveOffsets(mapx, mapy, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
-
-                                                            if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
+                                                            for (int mapx = startX; mapx <= endX; mapx++)
                                                             {
-                                                                PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself);
-                                                            }
-                                                            else
-                                                            {
-                                                                lock (_objectDataLock)
+                                                                if (_mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_gui_glyphs == null)
+                                                                    continue;
+
+                                                                if (layer_idx == (int)layer_types.MAX_LAYERS
+                                                                    && (draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == App.NoGlyph)
+                                                                    )
+                                                                    continue;
+
+                                                                bool loc_is_you = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
+                                                                bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
+                                                                bool canspotself = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
+                                                                sbyte monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
+                                                                sbyte feature_doodad_height = _mapData[mapx, mapy].Layers.special_feature_doodad_layer_height;
+                                                                short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
+                                                                sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
+                                                                sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
+                                                                long glyphprintmaincountervalue = _mapData[mapx, mapy].GlyphPrintMainCounterValue;
+                                                                long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
+                                                                long glyphobjectprintmaincountervalue = _mapData[mapx, mapy].GlyphObjectPrintMainCounterValue;
+                                                                long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
+                                                                short missile_height = _mapData[mapx, mapy].Layers.missile_height;
+                                                                bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
+
+                                                                float base_move_offset_x = 0, base_move_offset_y = 0;
+                                                                GetBaseMoveOffsets(mapx, mapy, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
+
+                                                                if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
                                                                 {
-                                                                    bool is_source_dir;
-                                                                    int sub_layer_cnt = GetSubLayerCount(mapx, mapy, layer_idx, out is_source_dir);
-                                                                    for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
+                                                                    PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself);
+                                                                }
+                                                                else
+                                                                {
+                                                                    lock (_objectDataLock)
                                                                     {
-                                                                        int signed_glyph = App.NoGlyph; //Default
-                                                                        short obj_height = _mapData[mapx, mapy].Layers.object_height; //Default
-                                                                        sbyte object_origin_x = 0; //Default
-                                                                        sbyte object_origin_y = 0; //Default
-                                                                        ObjectDataItem otmp_round = null;
-
-                                                                        int source_dir_main_idx = sub_layer_idx; 
-                                                                        int source_dir_idx = is_source_dir ? GetSourceDirIndex(layer_idx, source_dir_main_idx) : 0;
-
-                                                                        bool manual_hflip = false;
-                                                                        bool manual_vflip = false;
-                                                                        int adj_x = mapx;
-                                                                        int adj_y = mapy;
-
-                                                                        if (!GetLayerGlyph(mapx, mapy, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
-                                                                            ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
-                                                                            ref object_origin_x, ref object_origin_y))
-                                                                            continue;
-
-                                                                        int glyph = Math.Abs(signed_glyph);
-                                                                        if (glyph == 0 || glyph >= App.Glyph2Tile.Length)
-                                                                            continue;
-
-                                                                        float object_move_offset_x = 0, object_move_offset_y = 0;
-                                                                        GetObjectMoveOffsets(mapx, mapy, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, ref object_move_offset_x, ref object_move_offset_y);
-
-                                                                        bool vflip_glyph = false;
-                                                                        bool hflip_glyph = false;
-                                                                        GetFlips(signed_glyph, manual_hflip, manual_vflip, ref hflip_glyph, ref vflip_glyph);
-
-                                                                        /* Tile flags */
-                                                                        bool tileflag_halfsize = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
-                                                                        bool tileflag_floortile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
-                                                                        bool tileflag_normalobjmissile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0 && layer_idx == (int)layer_types.LAYER_MISSILE;
-                                                                        bool tileflag_fullsizeditem = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
-                                                                        bool tileflag_height_is_clipping = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING) != 0;
-
-                                                                        /* All items are big when showing detection */
-                                                                        CheckShowingDetection(showing_detection, ref obj_height, ref tileflag_floortile, ref tileflag_height_is_clipping);
-
-                                                                        /*Determine y move for tiles */
-                                                                        float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize);
-
-                                                                        int ntile = App.Glyph2Tile[glyph];
-                                                                        int autodraw = App.Tile2Autodraw[ntile];
-
-                                                                        /* Determine animation tile here */
-                                                                        int anim_frame_idx = 0, main_tile_idx = 0;
-                                                                        ntile = GetTileFromAnimation(ntile, glyph, mapx, mapy, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
-
-                                                                        /* Draw enlargement tiles */
-                                                                        int enlargement = App.Tile2Enlargement[ntile];
-                                                                        for (int enl_idx = -1; enl_idx < 5; enl_idx++)
+                                                                        bool is_source_dir;
+                                                                        int sub_layer_cnt = GetSubLayerCount(mapx, mapy, layer_idx, out is_source_dir);
+                                                                        for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
                                                                         {
-                                                                            if (enlargement == 0 && enl_idx >= 0)
-                                                                                break;
+                                                                            int signed_glyph = App.NoGlyph; //Default
+                                                                            short obj_height = _mapData[mapx, mapy].Layers.object_height; //Default
+                                                                            sbyte object_origin_x = 0; //Default
+                                                                            sbyte object_origin_y = 0; //Default
+                                                                            ObjectDataItem otmp_round = null;
 
-                                                                            int dx = 0, dy = 0;
-                                                                            if (!GetEnlargementTile(enlargement, enl_idx, hflip_glyph, vflip_glyph, main_tile_idx, anim_frame_idx, ref ntile, ref autodraw, ref dx, ref dy))
+                                                                            int source_dir_main_idx = sub_layer_idx;
+                                                                            int source_dir_idx = is_source_dir ? GetSourceDirIndex(layer_idx, source_dir_main_idx) : 0;
+
+                                                                            bool manual_hflip = false;
+                                                                            bool manual_vflip = false;
+                                                                            int adj_x = mapx;
+                                                                            int adj_y = mapy;
+
+                                                                            if (!GetLayerGlyph(mapx, mapy, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
+                                                                                ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
+                                                                                ref object_origin_x, ref object_origin_y))
                                                                                 continue;
 
-                                                                            int draw_map_x = mapx + dx + (adj_x - mapx);
-                                                                            int draw_map_y = mapy + dy + (adj_y - mapy);
+                                                                            int glyph = Math.Abs(signed_glyph);
+                                                                            if (glyph == 0 || glyph >= App.Glyph2Tile.Length)
+                                                                                continue;
 
-                                                                            PaintMapTile(canvas, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
-                                                                                tx,ty,offsetX,offsetY,usedOffsetX,usedOffsetY,base_move_offset_x,base_move_offset_y,object_move_offset_x, object_move_offset_y,
-                                                                                scaled_y_height_change, pit_border, targetscale, generalcountervalue,usedFontSize,
-                                                                                monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
-                                                                                loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile,tileflag_height_is_clipping,
-                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
-                                                                                ref draw_shadow);
+                                                                            float object_move_offset_x = 0, object_move_offset_y = 0;
+                                                                            GetObjectMoveOffsets(mapx, mapy, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, ref object_move_offset_x, ref object_move_offset_y);
+
+                                                                            bool vflip_glyph = false;
+                                                                            bool hflip_glyph = false;
+                                                                            GetFlips(signed_glyph, manual_hflip, manual_vflip, ref hflip_glyph, ref vflip_glyph);
+
+                                                                            /* Tile flags */
+                                                                            bool tileflag_halfsize = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
+                                                                            bool tileflag_floortile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
+                                                                            bool tileflag_normalobjmissile = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0 && layer_idx == (int)layer_types.LAYER_MISSILE;
+                                                                            bool tileflag_fullsizeditem = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
+                                                                            bool tileflag_height_is_clipping = (App.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING) != 0;
+
+                                                                            /* All items are big when showing detection */
+                                                                            CheckShowingDetection(showing_detection, ref obj_height, ref tileflag_floortile, ref tileflag_height_is_clipping);
+
+                                                                            /*Determine y move for tiles */
+                                                                            float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize);
+
+                                                                            int ntile = App.Glyph2Tile[glyph];
+                                                                            int autodraw = App.Tile2Autodraw[ntile];
+
+                                                                            /* Determine animation tile here */
+                                                                            int anim_frame_idx = 0, main_tile_idx = 0;
+                                                                            ntile = GetTileFromAnimation(ntile, glyph, mapx, mapy, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
+
+                                                                            /* Draw enlargement tiles */
+                                                                            int enlargement = App.Tile2Enlargement[ntile];
+                                                                            for (int order_idx = -1; order_idx < 5; order_idx++)
+                                                                            {
+                                                                                if (enlargement == 0 && order_idx >= 0)
+                                                                                    break;
+                                                                                int enl_idx = GetUsedEnlargementIndex(order_idx);
+                                                                                int dx = 0, dy = 0;
+                                                                                if (!GetEnlargementTileB(enlargement, enl_idx, hflip_glyph, vflip_glyph, main_tile_idx, anim_frame_idx, ref ntile, ref autodraw, ref dx, ref dy))
+                                                                                    continue;
+
+                                                                                int draw_map_x = mapx + dx + (adj_x - mapx);
+                                                                                int draw_map_y = mapy + dy + (adj_y - mapy);
+                                                                                float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
+
+                                                                                PaintMapTile(canvas, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                                    offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
+                                                                                    scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
+                                                                                    monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
+                                                                                    loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
+                                                                                    hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
+                                                                                    ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY);
+
+                                                                                if (enlargement > 0 && enl_idx >= 0 && enl_idx <= 2)
+                                                                                {
+                                                                                    PaintMapTile(enlCanvas, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                                        offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
+                                                                                        scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
+                                                                                        monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
+                                                                                        loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
+                                                                                        hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
+                                                                                        ref draw_shadow, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                                }
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
                                                             }
                                                         }
-                                                    }
 
-                                                    /* Darkening at the end of layers */
-                                                    if (layer_idx == (int)layer_types.LAYER_OBJECT)
-                                                    {
-                                                        for (int mapx = startX; mapx <= endX; mapx++)
+                                                        /* Darkening at the end of layers */
+                                                        switch(layer_idx)
                                                         {
-                                                            for (int mapy = startY; mapy <= endY; mapy++)
+                                                            case (int)layer_types.LAYER_OBJECT:
                                                             {
-                                                                bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
-                                                                bool darken = (!showing_detection && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
-
-                                                                if (_mapData[mapx, mapy].Layers.layer_gui_glyphs != null
-                                                                    && (_mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == App.UnexploredGlyph
-                                                                        || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == App.NoGlyph)
-                                                                    )
-                                                                    darken = false;
-
-                                                                // Draw rectangle with blend mode in bottom half
-                                                                if (darken)
+                                                                for (int mapx = startX; mapx <= endX; mapx++)
                                                                 {
-                                                                    bool uloc = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0);
-                                                                    bool unlit = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_APPEARS_UNLIT) != 0);
-                                                                    // Get values from XAML controls
-                                                                    SKBlendMode blendMode = SKBlendMode.Modulate;
-                                                                    int darken_percentage = lighter_darkening ? (uloc ? 90 : unlit ? 65 : 80) : (uloc ? 85 : unlit ? 40 : 65);
-                                                                    int val = (darken_percentage * 255) / 100;
-                                                                    SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
+                                                                    for (int mapy = startY; mapy <= endY; mapy++)
+                                                                    {
+                                                                        bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
+                                                                        bool darken = (!showing_detection && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
 
-                                                                    paint.Color = color;
-                                                                    SKBlendMode old_bm = paint.BlendMode;
-                                                                    paint.BlendMode = blendMode;
-                                                                    tx = (offsetX + usedOffsetX + width * (float)mapx);
-                                                                    ty = (offsetY + usedOffsetY + _mapFontAscent + height * (float)mapy);
-                                                                    SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
-                                                                    canvas.DrawRect(targetrect, paint);
-                                                                    paint.BlendMode = old_bm;
+                                                                        if (_mapData[mapx, mapy].Layers.layer_gui_glyphs != null
+                                                                            && (_mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == App.UnexploredGlyph
+                                                                                || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == App.NoGlyph)
+                                                                            )
+                                                                            darken = false;
+
+                                                                        // Draw rectangle with blend mode in bottom half
+                                                                        if (darken)
+                                                                        {
+                                                                            bool uloc = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0);
+                                                                            bool unlit = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_APPEARS_UNLIT) != 0);
+                                                                            // Get values from XAML controls
+                                                                            SKBlendMode blendMode = SKBlendMode.Modulate;
+                                                                            int darken_percentage = lighter_darkening ? (uloc ? 90 : unlit ? 65 : 80) : (uloc ? 85 : unlit ? 40 : 65);
+                                                                            int val = (darken_percentage * 255) / 100;
+                                                                            SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
+
+                                                                            paint.Color = color;
+                                                                            SKBlendMode old_bm = paint.BlendMode;
+                                                                            paint.BlendMode = blendMode;
+                                                                            tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                                                            ty = (offsetY + usedOffsetY + _mapFontAscent + height * (float)mapy);
+                                                                            SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                                            canvas.DrawRect(targetrect, paint);
+                                                                            enlCanvas.DrawRect(targetrect, paint);
+                                                                            paint.BlendMode = old_bm;
+                                                                        }
+                                                                    }
                                                                 }
+                                                                break;
                                                             }
+                                                            case (int)layer_types.MAX_LAYERS - 1:
+                                                                paint.Color = SKColors.Black;
+                                                                if (_enlargementBitmap != null && _enlBmpMinX < _enlBmpMaxX && _enlBmpMinY < _enlBmpMaxY)
+                                                                {
+                                                                    SKRect _copyRect = new SKRect(_enlBmpMinX, _enlBmpMinY, _enlBmpMaxX, _enlBmpMaxY);
+                                                                    canvas.DrawBitmap(_enlargementBitmap, _copyRect, _copyRect, paint);
+                                                                }
+                                                                paint.Color = SKColors.Black;
+                                                                break;
                                                         }
                                                     }
                                                 }
@@ -9554,7 +9642,7 @@ namespace GnollHackClient.Pages.Game
                 _mapData[x, y].Layers = layers;
 
                 _mapData[x, y].NeedsUpdate = true;
-                _mapData[x, y].HasEnlargementOrAnimationOrSpecialHeight = AccurateLayerDrawing ? DetermineHasEnlargementOrAnimationOrSpecialHeight(layers) : false;
+                _mapData[x, y].HasEnlargementOrAnimationOrSpecialHeight = AlternativeLayerDrawing ? DetermineHasEnlargementOrAnimationOrSpecialHeight(layers) : false;
             }
         }
         public void SetMapCursor(int x, int y)

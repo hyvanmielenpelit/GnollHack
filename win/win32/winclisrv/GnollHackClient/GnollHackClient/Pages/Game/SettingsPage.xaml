@@ -21,7 +21,7 @@
                 <TableView Grid.Row="1" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" BackgroundColor="Transparent"
                            Intent="Settings" Margin="18,0">
                     <TableRoot>
-                        <TableSection>
+                        <TableSection x:Name="MainSection" >
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Simple Command Layout"
@@ -466,14 +466,15 @@
                                     <Switch x:Name="GPUSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
-                            <ViewCell>
+                            <ViewCell x:Name="AlternativeDrawingViewCell">
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="Accurate Layer Drawing"
+                                    <Label Text="Alternative Layer Drawing"
+                                           x:Name="AlternativeDrawingLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                                    <Switch x:Name="AccurateLayerDrawingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                    <Switch x:Name="AlternativeLayerDrawingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
                             <ViewCell>
