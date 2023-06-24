@@ -1147,6 +1147,7 @@ register struct monst *shkp;
             bp++;
         }
     }
+    refresh_m_tile_gui_info(shkp, TRUE);
     update_game_music();
 }
 
@@ -5042,6 +5043,8 @@ struct monst *shkp;
             Sprintf(ansbuf, "%s talks about the problem of shoplifters.", Shknam(shkp));
             popup_talk_line_noquotes(shkp, ansbuf);
         }
+        else
+            pline("%s does not respond.", Monnam(shkp));
     }
 }
 

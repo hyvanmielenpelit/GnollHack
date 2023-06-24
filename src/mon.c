@@ -29,7 +29,7 @@ STATIC_DCL boolean FDECL(validspecmon, (struct monst *, int));
 STATIC_DCL struct permonst *FDECL(accept_newcham_form, (int));
 STATIC_DCL struct obj *FDECL(make_corpse, (struct monst *, unsigned, BOOLEAN_P));
 STATIC_DCL void FDECL(lifesaved_monster, (struct monst *));
-STATIC_DCL void FDECL(save_traits_mon, (struct monst*));
+STATIC_DCL void FDECL(save_traits_mon, (struct monst*, BOOLEAN_P));
 STATIC_DCL struct monst* FDECL(get_saved_traits_mon, (struct monst*, BOOLEAN_P));
 
 /* note: duplicated in dog.c */
@@ -5362,7 +5362,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
             return 0;
 
         if (!has_mmonst(mtmp))
-            save_traits_mon(mtmp);
+            save_traits_mon(mtmp, FALSE);
     }
     else
     {
@@ -6279,8 +6279,9 @@ struct monst* mon;
 }
 
 STATIC_OVL void
-save_traits_mon(mtmp)
+save_traits_mon(mtmp, save_mextra)
 struct monst* mtmp;
+boolean save_mextra;
 {
     if (mtmp->ispriest)
         forget_temple_entry(mtmp); /* EPRI() */
@@ -6298,6 +6299,8 @@ struct monst* mtmp;
         struct mextra* mextra = mtmp2->mextra;
         *mtmp2 = *mtmp;
         mtmp2->mextra = mextra;
+        if (!save_mextra && mtmp2->mextra)
+            dealloc_mextra(mtmp2);
 
         /* invalidate pointers */
         /* m_id is needed to know if this is a revived quest leader */
@@ -6307,7 +6310,7 @@ struct monst* mtmp;
         mtmp2->minvent = (struct obj*)0;
         mtmp2->mw = (struct obj*)0;
 
-        if (mtmp->mextra)
+        if (save_mextra && mtmp->mextra)
         {
             struct monst* saved_mmonst = MMONST(mtmp);
             MMONST(mtmp) = 0;
@@ -6396,24 +6399,27 @@ boolean polyspot, msg;
             for (i = 0; i < MAX_PROPS; i++)
                 mprops[i] = mtmp->mprops[i];
 
-            struct monst* saved_mmonst = 0;
-            if (mtmp->mextra)
-            {
-                if (has_mmonst(mtmp))
-                {
-                    saved_mmonst = MMONST(mtmp); // Since it is the same as mtraits
-                    MMONST(mtmp) = 0;
-                }
-                dealloc_mextra(mtmp);
-            }
+            //Keeping current mextra rather than copying it from mtraits (the other way commented out below)
+            struct mextra* mextra = mtmp->mextra;
+            //struct monst* saved_mmonst = 0;
+            //if (mtmp->mextra)
+            //{
+            //    if (has_mmonst(mtmp))
+            //    {
+            //        saved_mmonst = MMONST(mtmp); // Since it is the same as mtraits
+            //        MMONST(mtmp) = 0;
+            //    }
+            //    dealloc_mextra(mtmp);
+            //}
 
             *mtmp = *mtraits;
 
             /* Restore pointers */
-            //mtmp->mextra comes from mtraits, except for mtraits->MMONST, which is always zero
             mtmp->nmon = nmon;
             mtmp->data = &mons[mtmp->mnum]; //Just in case
             mtmp->minvent = minvent;
+            mtmp->mextra = mextra;
+
             mtmp->mw = mw;
             mtmp->mx0 = mtmp->mx = mx;
             mtmp->my0 = mtmp->my = my;
@@ -6426,12 +6432,13 @@ boolean polyspot, msg;
             for (i = 0; i < MAX_PROPS; i++)
                 mtmp->mprops[i] = mprops[i];
 
-            if (saved_mmonst) {
-                //No need to delete saved_mmonst->mextra since it is now used as mextra for mtmp
-                if (saved_mmonst->mextra)
-                    saved_mmonst->mextra = 0;
-                free((genericptr_t)saved_mmonst);
-            }
+            //if (saved_mmonst) {
+            //    //No need to delete saved_mmonst->mextra since it is now used as mextra for mtmp
+            //    if (saved_mmonst->mextra)
+            //        saved_mmonst->mextra = 0;
+            //    free((genericptr_t)saved_mmonst);
+            //}
+            free_mmonst(mtmp);
             mtraits = 0;
 
             mtmp->cham = NON_PM;
@@ -6507,7 +6514,7 @@ boolean polyspot, msg;
             }
         }
         else if (!sticks(mdat) && !sticks(youmonst.data))
-            unstuck(mtmp);
+             unstuck(mtmp);
     }
 
 #ifndef DCC30_BUG

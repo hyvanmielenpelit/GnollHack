@@ -1147,6 +1147,11 @@ boolean dopopup, fromchatmenu;
                     play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_YOU_DARE_TO_RETURN_TO_MY_STORE);
                     Sprintf(verbuf, "So, adventurer, you dare to return to my store!");
                 }
+                verbl_msg = verbuf;
+            }
+            else
+            {
+                pline_msg = "does not respond.";
             }
         }
         else
@@ -1161,8 +1166,8 @@ boolean dopopup, fromchatmenu;
                 Sprintf(verbuf, "You rotten thief!");
                 chat_line = 1;
             }
+            verbl_msg = verbuf;
         }
-        verbl_msg = verbuf;
 
 #if 0
         if (!Hallucination || (mtmp->isshk && !rn2(2))) {
