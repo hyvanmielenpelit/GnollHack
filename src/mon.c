@@ -6354,12 +6354,18 @@ boolean copyof;
 }
 
 int
-revert_mon_polymorph(mtmp, polyspot, msg)
+revert_mon_polymorph(mtmp, override_mextra, polyspot, msg)
 struct monst* mtmp;
-boolean polyspot, msg;
+boolean override_mextra, polyspot, msg;
 {
     if (!mtmp)
         return 0;
+
+    short oldmnum = mtmp->mnum;
+    short oldsubtype = mtmp->subtype;
+    unsigned int oldfemale = mtmp->female;
+    unsigned int oldmappearance = mtmp->mappearance;
+    uchar oldmaptype = mtmp->m_ap_type;
 
     struct permonst* olddata = mtmp->data;
     char oldname[BUFSZ] = "", l_oldname[BUFSZ] = "", newname[BUFSZ] = "";
@@ -6417,6 +6423,41 @@ boolean polyspot, msg;
             mtmp->m_ap_type = mtraits->m_ap_type;
             mtmp->female = mtraits->female;
             mtmp->heads_tamed = mtraits->heads_tamed;
+            if (override_mextra)
+            {
+                struct monst* saved_mmonst = 0;
+                // Deallocate existing mtmp->mextra, except for MMONST, which is pointed at by mtraits
+                if (mtmp->mextra)
+                {
+                    if (has_mmonst(mtmp))
+                    {
+                        saved_mmonst = MMONST(mtmp); // Since it is the same as mtraits
+                        MMONST(mtmp) = 0;
+                    }
+                    dealloc_mextra(mtmp);
+                }
+                // mtmp->mextra is now zero
+
+                // Create now a copy of mtraits->mextra to mtmp->mextra
+                if (mtraits->mextra)
+                    copy_mextra(mtmp, mtraits);
+
+                // Deallocate now also MMONST = mtraits
+                if (saved_mmonst) {
+                    if (saved_mmonst->mextra)
+                        dealloc_mextra(saved_mmonst);
+                    free((genericptr_t)saved_mmonst);
+                    saved_mmonst = 0;
+                }
+                mtraits = 0;
+                // Note: mtraits should not have had MMONST, so we do not need to deallocate it
+            }
+            else
+            {
+                // Deallocate MMONST, since mon is now in its original form; keep existing mextra otherwise
+                free_mmonst(mtmp);
+                mtraits = 0;
+            }
 
             //struct monst* nmon = mtmp->nmon;
             //struct obj* minvent = mtmp->minvent;
@@ -6470,14 +6511,15 @@ boolean polyspot, msg;
             //        saved_mmonst->mextra = 0;
             //    free((genericptr_t)saved_mmonst);
             //}
-            free_mmonst(mtmp);
-            mtraits = 0;
+            //free_mmonst(mtmp);
+            //mtraits = 0;
 
             //mtmp->cham = NON_PM;
             //mtmp->cham_subtype = 0;
         }
         else
         {
+            // Should not happen, but if did, use newcham and deallocate MMONST
             free_mmonst(mtmp);
             mtraits = 0;
             return newcham(mtmp, &mons[mtmp->cham], mtmp->cham_subtype, FALSE, canspotmon(mtmp));
@@ -6564,6 +6606,9 @@ boolean polyspot, msg;
     }
 
     newsym(mtmp->mx, mtmp->my);
+
+    if (oldmnum == mtmp->mnum && oldsubtype == mtmp->subtype && oldfemale == mtmp->female && oldmappearance == mtmp->mappearance && oldmaptype == mtmp->m_ap_type) // Is the same
+        return 1;
 
     if (msg) {
         play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);

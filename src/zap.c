@@ -1065,7 +1065,7 @@ struct monst* origmonst;
         if (disguised_mimic)
             seemimic(mtmp);
         if (mtmp->cham && !mtmp->mprops[UNCHANGING])
-            revert_mon_polymorph(mtmp, TRUE, TRUE);
+            revert_mon_polymorph(mtmp, FALSE, TRUE, TRUE);
         if (!has_cancellation_resistance(mtmp))
         {
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
@@ -1081,7 +1081,7 @@ struct monst* origmonst;
         if (disguised_mimic)
             seemimic(mtmp);
         if (mtmp->cham && !mtmp->mprops[UNCHANGING])
-            revert_mon_polymorph(mtmp, TRUE, TRUE);
+            revert_mon_polymorph(mtmp, FALSE, TRUE, TRUE);
         /* Unaffected by cancellation resistance */
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
