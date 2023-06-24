@@ -716,7 +716,7 @@ int *fail_reason;
     {
         /* restore a petrified monster */
         cc.x = x, cc.y = y;
-        mon = montraits(statue, &cc, (cause == ANIMATE_SPELL), -1, 0UL);
+        mon = montraits(statue, &cc, (cause == ANIMATE_SPELL), NON_PM, NON_PM, 0UL);
         if (mon && mon->mtame && !mon->isminion)
             wary_dog(mon, TRUE);
     }

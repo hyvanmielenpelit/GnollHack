@@ -4279,7 +4279,7 @@ E boolean FDECL(get_obj_location, (struct obj *, xchar *, xchar *, int));
 E boolean FDECL(get_mon_location, (struct monst *, xchar *, xchar *, int));
 E boolean FDECL(get_region_location, (struct nhregion*, xchar*, xchar*, int));
 E struct monst *FDECL(get_container_location, (struct obj * obj, int *, int *));
-E struct monst *FDECL(montraits, (struct obj *, coord *, BOOLEAN_P, int, unsigned long));
+E struct monst *FDECL(montraits, (struct obj *, coord *, BOOLEAN_P, int, int, unsigned long));
 E struct monst *FDECL(revive, (struct obj *, BOOLEAN_P, int, BOOLEAN_P));
 E int FDECL(revive_from_inventory, (struct monst *));
 E void FDECL(cancel_item, (struct obj *, BOOLEAN_P));

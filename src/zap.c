@@ -2215,11 +2215,11 @@ int locflags; /* Unused */
 
 /* used by revive() and animate_statue() */
 struct monst *
-montraits(obj, cc, adjacentok, mnum_override, mmflags)
+montraits(obj, cc, adjacentok, mnum_override, mnum_replaceundead, mmflags)
 struct obj *obj;
 coord *cc;
 boolean adjacentok; /* False: at obj's spot only, True: nearby is allowed */
-int mnum_override; /* Use this mnum instead */
+int mnum_override, mnum_replaceundead; /* Use this mnum instead */
 unsigned long mmflags;
 {
     struct monst *mtmp = (struct monst *) 0;
@@ -2231,9 +2231,9 @@ unsigned long mmflags;
     if (mtmp2) 
     {
         /* save_mtraits() validated mtmp2->mnum */
-        if (mnum_override >= LOW_PM || !mtmp2->data)
+        if (mnum_override >= LOW_PM || (mnum_replaceundead >= LOW_PM && is_undead(&mons[mnum_replaceundead])) || !mtmp2->data)
         {
-            int used_mnum = mnum_override >= LOW_PM ? mnum_override : mtmp2->mnum;
+            int used_mnum = mnum_override >= LOW_PM ? mnum_override : (mnum_replaceundead >= LOW_PM && is_undead(&mons[mnum_replaceundead])) ? mnum_replaceundead : mtmp2->mnum;
             mtmp2->mnum = used_mnum;
             mtmp2->subtype = 0;
             mtmp2->data = &mons[used_mnum];
@@ -2391,7 +2391,7 @@ int animateintomon;
 boolean replaceundead;
 {
     struct monst *mtmp = 0;
-    struct permonst *mptr;
+    struct permonst *mptr = 0;
     struct obj *container;
     coord xy;
     xchar x, y;
@@ -2460,7 +2460,7 @@ boolean replaceundead;
     if(animateintomon < 0)
     {
         montype = corpse->corpsenm;
-        if (is_undead(&mons[montype]) && replaceundead)
+        if (montype >= LOW_PM && is_undead(&mons[montype]) && replaceundead)
         {
             /* Human and dwarf corpses etc. but others need to be replaced here are ok */
             if (mons[montype].mlet == S_WRAITH)
@@ -2484,7 +2484,8 @@ boolean replaceundead;
         montype = animateintomon;
     }
 
-    mptr = &mons[montype];
+    if(montype >= LOW_PM)
+        mptr = &mons[montype];
     /* [should probably handle recorporealization first; if corpse and
        ghost are at same location, revived creature shouldn't be bumped
        to an adjacent spot by ghost which joins with it] */
@@ -2507,7 +2508,7 @@ boolean replaceundead;
     {
         /* make a zombie or doppelganger instead */
         /* note: montype has changed; mptr keeps old value for newcham() */
-        mtmp = makemon(&mons[montype], x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
+        mtmp = makemon(montype < LOW_PM ? 0 : &mons[montype], x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
         if (mtmp)
         {
             int subtype = 0;
@@ -2534,7 +2535,7 @@ boolean replaceundead;
     {
         /* use saved traits */
         xy.x = x, xy.y = y;
-        mtmp = montraits(corpse, &xy, FALSE, animateintomon >= 0 || replaceundead ? montype : -1, MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
+        mtmp = montraits(corpse, &xy, FALSE, animateintomon >= 0 ? montype : NON_PM, animateintomon < 0 && replaceundead ? montype : NON_PM, MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
         if (mtmp && mtmp->mtame && !mtmp->isminion && !mtmp->isfaithful)
             wary_dog(mtmp, TRUE);
     }
