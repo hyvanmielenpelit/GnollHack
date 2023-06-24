@@ -1064,6 +1064,8 @@ struct monst* origmonst;
         res = 1;
         if (disguised_mimic)
             seemimic(mtmp);
+        if (mtmp->cham && !mtmp->mprops[UNCHANGING])
+            revert_mon_polymorph(mtmp, TRUE, TRUE);
         if (!has_cancellation_resistance(mtmp))
         {
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
@@ -1078,6 +1080,8 @@ struct monst* origmonst;
         res = 1;
         if (disguised_mimic)
             seemimic(mtmp);
+        if (mtmp->cham && !mtmp->mprops[UNCHANGING])
+            revert_mon_polymorph(mtmp, TRUE, TRUE);
         /* Unaffected by cancellation resistance */
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
@@ -5745,13 +5749,13 @@ dozap()
     if (obj->cooldownleft > 0)
     {
         play_sfx_sound(SFX_NOT_READY_YET);
-        You("cannot zap %s before its cooldown has expired.", the(cxname(obj)));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot zap %s before its cooldown has expired.", the(cxname(obj)));
         return 0;
     }
     else if (Cancelled)
     {
         play_sfx_sound(SFX_CANCELLATION_IN_FORCE);
-        Your("magic is not flowing properly to allow for using a wand.");
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "magic is not flowing properly to allow for using a wand.");
         return 0;
     }
 
@@ -5764,7 +5768,7 @@ dozap()
         pline_ex1(ATR_NONE, CLR_MSG_FAIL, nothing_happens);
 
         //Mark empty query
-        if((obj->speflags & SPEFLAGS_EMPTY_NOTICED) == 0)
+        if((obj->speflags & SPEFLAGS_EMPTY_NOTICED) == 0 && obj->charges >= 0)
         {
             obj->speflags |= SPEFLAGS_EMPTY_NOTICED;
             boolean canstash = can_stash_objs();
@@ -6168,6 +6172,8 @@ boolean ordinary;
     case WAN_DISJUNCTION:
     case SPE_DISJUNCTION:
         damage = 0;
+        if (Upolyd)
+            rehumanize();
         (void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE, duration);
         if (obj->otyp != SPE_DISJUNCTION && obj->otyp != WAN_DISJUNCTION)
         {
@@ -7025,7 +7031,7 @@ int duration;
     if (youdefend) 
     {
         play_sfx_sound(SFX_ACQUIRE_CANCELLATION);
-        You_feel("your magic is not flowing properly.");
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "your magic is not flowing properly.");
 
         /* Remove all buffs */
         boolean was_flying = !!Flying;

@@ -1378,7 +1378,7 @@ int alone;
                 if (uwep->quan != 1L || (u.twoweap && uwep && uarms))
                     which = makeplural(which);
 
-                You("find you must %s %s %s!", what,
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "find you must %s %s %s!", what,
                     the_your[!!strncmp(which, "corpse", 6)], which);
             }
             /* if either uwep or wielded uswapwep is flagged as 'in_use'
@@ -1419,7 +1419,7 @@ rehumanize()
             Strcpy(killer.name, "killed while stuck in creature form");
             done(DIED);
         } else if (uamul && uamul->otyp == AMULET_OF_UNCHANGING) {
-            Your("%s %s!", simpleonames(uamul), otense(uamul, "fail"));
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", simpleonames(uamul), otense(uamul, "fail"));
             uamul->dknown = 1;
             makeknown(AMULET_OF_UNCHANGING);
         }

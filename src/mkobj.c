@@ -3532,8 +3532,9 @@ struct monst *mtmp;
     {
         struct monst *mtmp2 = OMONST(obj);
 
+        struct mextra* mextra = mtmp2->mextra;
         *mtmp2 = *mtmp;
-        mtmp2->mextra = (struct mextra *) 0;
+        mtmp2->mextra = mextra;
 
         /* invalidate pointers */
         /* m_id is needed to know if this is a revived quest leader */
@@ -3541,6 +3542,7 @@ struct monst *mtmp;
         mtmp2->nmon = (struct monst *) 0;
         //mtmp2->data = (struct permonst *) 0; /* This sounds very dangerous to set to zero */
         mtmp2->minvent = (struct obj *) 0;
+        mtmp2->mw = (struct obj*)0;
         if (mtmp->mextra)
             copy_mextra(mtmp2, mtmp);
     }

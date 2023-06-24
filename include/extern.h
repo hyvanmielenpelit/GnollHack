@@ -2072,6 +2072,7 @@ E const char* FDECL(pm_general_name, (struct permonst*, UCHAR_P));
 E boolean FDECL(is_female_corpse_or_statue, (struct obj*));
 E boolean FDECL(is_corpse_or_statue_facing_right, (struct obj*));
 E int FDECL(count_mon_runeswords, (struct monst*));
+E int FDECL(revert_mon_polymorph, (struct monst*, BOOLEAN_P, BOOLEAN_P));
 E void NDECL(reset_mon);
 
 /* ### mondata.c ### */

@@ -919,7 +919,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
             //        has_hallucination(mon) ? "an orange" : "a pile of gold");
             ///* A pile of gold can't ride. */
             ///* ??? what if this was set before? */
-            //newcham(mon, pm, FALSE, FALSE);
+            //newcham(mon, pm, 0, FALSE, FALSE);
             //mon->m_ap_type = M_AP_OBJECT;
             //mon->mappearance = has_hallucination(mon) ? ORANGE : GOLD_PIECE;
             //newsym(mon->mx, mon->my);
@@ -958,7 +958,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         //}
         //else 
         //{
-        //    newcham(mon, (struct permonst*)0, FALSE, TRUE);
+        //    newcham(mon, (struct permonst*)0, 0, FALSE, TRUE);
         //}
         break;
     case PM_DISENCHANTER:
