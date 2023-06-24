@@ -1167,7 +1167,7 @@ d_level target_level;
                            for something like this, but we don't want
                            fumbling or already full pack to interfere */
                         amu = addinv(amu);
-                        prinv("Endgame prerequisite:", amu, 0L);
+                        prinv_ex("Endgame prerequisite:", amu, 0L, ATR_NONE, CLR_MSG_GOD, ATR_NONE, NO_COLOR, TRUE, FALSE);
                     }
                 }
                 force_dest = TRUE;

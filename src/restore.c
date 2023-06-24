@@ -1770,7 +1770,7 @@ struct save_game_data* saved;
 
             Sprintf(savedbuf, "%sGame was saved on %s", prefix, timebuf);
 
-            int glyph = saved[k].gamestats.glyph;
+            //int glyph = saved[k].gamestats.glyph;
             int gui_glyph = saved[k].gamestats.gui_glyph;
             any.a_int = k + 1;
 

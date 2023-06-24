@@ -4025,16 +4025,16 @@ long quan;
     //    prefix = "";
     //pline("%s%s%s", prefix, *prefix ? " " : "",
     //      xprname(obj, (char *) 0, obj_to_let(obj), TRUE, 0L, quan));
-    prinv_ex(prefix, obj, quan, ATR_NONE, CLR_MSG_HINT, ATR_NONE, NO_COLOR, TRUE);
+    prinv_ex(prefix, obj, quan, ATR_NONE, NO_COLOR, ATR_NONE, NO_COLOR, TRUE, FALSE);
 }
 
 void
-prinv_ex(prefix, obj, quan, prefix_attr, prefix_color, attr, color, apply_menucolor)
+prinv_ex(prefix, obj, quan, prefix_attr, prefix_color, attr, color, apply_menucolor, apply_to_separator)
 const char* prefix;
 struct obj* obj;
 long quan;
 int prefix_attr, prefix_color, attr, color;
-boolean apply_menucolor;
+boolean apply_menucolor, apply_to_separator;
 {
     if (!prefix)
         prefix = "";
@@ -4087,12 +4087,13 @@ boolean apply_menucolor;
     if (savequan)
         obj->quan = savequan;
 
-    if (iflags.use_menu_color && apply_menucolor && color == NO_COLOR && !get_menu_coloring(li2, &color, &attr))
+    int mattr = attr, mcolor = color;
+    if (iflags.use_menu_color && apply_menucolor && get_menu_coloring(li2, &mcolor, &mattr))
     {
-        //Colro has been set
+        //Color has been set
     }
 
-    custompline_ex_prefix(prefix_attr, prefix_color, prefix, ATR_NONE, NO_COLOR, li, attr, color, 0UL, "%s", li2);
+    custompline_ex_prefix(prefix_attr, prefix_color, prefix, apply_to_separator ? attr : ATR_NONE, apply_to_separator ? color : NO_COLOR, li, mattr, mcolor, 0UL, "%s", li2);
 }
 
 

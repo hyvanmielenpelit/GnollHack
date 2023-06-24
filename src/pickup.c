@@ -1695,8 +1695,7 @@ boolean telekinesis; /* not picking it up directly by hand */
     nearload = near_capacity();
 
     /* Display message regarding a new item in inventory */
-    prinv(nearload == SLT_ENCUMBER ? moderateloadmsg : (char *) 0, obj,
-          count);
+    prinv(nearload == SLT_ENCUMBER ? moderateloadmsg : (char*)0, obj, count);
     mrg_to_wielded = FALSE;
     return 1;
 }
