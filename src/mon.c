@@ -6386,21 +6386,53 @@ boolean polyspot, msg;
             if (M_AP_TYPE(mtmp) && !is_mimic(&mons[mtraits->mnum]))
                 seemimic(mtmp); /* revert to normal monster */
 
-            struct monst* nmon = mtmp->nmon;
-            struct obj* minvent = mtmp->minvent;
-            struct obj* mw = mtmp->mw;
-            xchar mx = mtmp->mx, my = mtmp->my;
-            int meating = mtmp->meating;
-            long mtrapseen = mtmp->mtrapseen;
-            long worn_item_flags = mtmp->worn_item_flags;
-            xchar weapon_strategy = mtmp->weapon_strategy;
-            short mprops[MAX_PROPS] = { 0 };
-            int i;
-            for (i = 0; i < MAX_PROPS; i++)
-                mprops[i] = mtmp->mprops[i];
+            //Copy data one by one rather than using *mtmp = *mtraits. About half of the data needs to be compied and half not.
+            mtmp->data = &mons[mtraits->mnum];
+            mtmp->mnum = mtraits->mnum;
+            mtmp->subtype = mtraits->subtype;
+            mtmp->cham = NON_PM;
+            mtmp->cham_subtype = 0;
+            mtmp->movement = 0;
+            mtmp->m_lev = mtraits->m_lev;
+            mtmp->acurr = mtraits->acurr; 
+            mtmp->abonus = mtraits->abonus;
+            mtmp->afixmin = mtraits->afixmin;
+            mtmp->afixmax = mtraits->afixmax;
+            mtmp->amin = mtraits->amin;
+            mtmp->amax = mtraits->amax;
+            mtmp->atemp = mtraits->atemp;
+            mtmp->atime = mtraits->atime;
+            mtmp->mhp = mtraits->mhp;
+            mtmp->mbasehpmax = mtraits->mbasehpmax;
+            mtmp->mhpmax = mtraits->mhpmax;
+            mtmp->mbasehpdrain = mtraits->mbasehpdrain;
+            mtmp->mhp_fraction = mtraits->mhp_fraction;
+            mtmp->men = mtraits->men;
+            mtmp->mbaseenmax = mtraits->mbaseenmax;
+            mtmp->menmax = mtraits->menmax;
+            mtmp->mbaseendrain = mtraits->mbaseendrain;
+            mtmp->men_fraction = mtraits->men_fraction;
+            mtmp->heads_left = mtraits->heads_left;
+            mtmp->mappearance = mtraits->mappearance;
+            mtmp->m_ap_type = mtraits->m_ap_type;
+            mtmp->female = mtraits->female;
+            mtmp->heads_tamed = mtraits->heads_tamed;
+
+            //struct monst* nmon = mtmp->nmon;
+            //struct obj* minvent = mtmp->minvent;
+            //struct obj* mw = mtmp->mw;
+            //xchar mx = mtmp->mx, my = mtmp->my;
+            //int meating = mtmp->meating;
+            //long mtrapseen = mtmp->mtrapseen;
+            //long worn_item_flags = mtmp->worn_item_flags;
+            //xchar weapon_strategy = mtmp->weapon_strategy;
+            //short mprops[MAX_PROPS] = { 0 };
+            //int i;
+            //for (i = 0; i < MAX_PROPS; i++)
+            //    mprops[i] = mtmp->mprops[i];
 
             //Keeping current mextra rather than copying it from mtraits (the other way commented out below)
-            struct mextra* mextra = mtmp->mextra;
+            //struct mextra* mextra = mtmp->mextra;
             //struct monst* saved_mmonst = 0;
             //if (mtmp->mextra)
             //{
@@ -6412,25 +6444,25 @@ boolean polyspot, msg;
             //    dealloc_mextra(mtmp);
             //}
 
-            *mtmp = *mtraits;
+            //*mtmp = *mtraits;
 
-            /* Restore pointers */
-            mtmp->nmon = nmon;
-            mtmp->data = &mons[mtmp->mnum]; //Just in case
-            mtmp->minvent = minvent;
-            mtmp->mextra = mextra;
+            ///* Restore pointers */
+            //mtmp->nmon = nmon;
+            //mtmp->data = &mons[mtmp->mnum]; //Just in case
+            //mtmp->minvent = minvent;
+            //mtmp->mextra = mextra;
 
-            mtmp->mw = mw;
-            mtmp->mx0 = mtmp->mx = mx;
-            mtmp->my0 = mtmp->my = my;
-            mtmp->movement = 0;
-            mtmp->meating = meating;
-            mtmp->mtrapseen = mtrapseen;
-            mtmp->worn_item_flags = worn_item_flags;
-            mtmp->weapon_strategy = weapon_strategy;
+            //mtmp->mw = mw;
+            //mtmp->mx0 = mtmp->mx = mx;
+            //mtmp->my0 = mtmp->my = my;
+            //mtmp->movement = 0;
+            //mtmp->meating = meating;
+            //mtmp->mtrapseen = mtrapseen;
+            //mtmp->worn_item_flags = worn_item_flags;
+            //mtmp->weapon_strategy = weapon_strategy;
 
-            for (i = 0; i < MAX_PROPS; i++)
-                mtmp->mprops[i] = mprops[i];
+            //for (i = 0; i < MAX_PROPS; i++)
+            //    mtmp->mprops[i] = mprops[i];
 
             //if (saved_mmonst) {
             //    //No need to delete saved_mmonst->mextra since it is now used as mextra for mtmp
@@ -6441,8 +6473,8 @@ boolean polyspot, msg;
             free_mmonst(mtmp);
             mtraits = 0;
 
-            mtmp->cham = NON_PM;
-            mtmp->cham_subtype = 0;
+            //mtmp->cham = NON_PM;
+            //mtmp->cham_subtype = 0;
         }
         else
         {
