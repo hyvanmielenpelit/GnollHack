@@ -4141,7 +4141,7 @@ namespace GnollHackClient.Pages.Game
                                 {
                                     int signed_main_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
                                     int main_glyph = Math.Abs(signed_main_glyph);
-                                    int tile_animation_index = _gnollHackService.GetTileAnimationIndexFromGlyph(main_glyph);
+                                    //int tile_animation_index = _gnollHackService.GetTileAnimationIndexFromGlyph(main_glyph);
                                     int main_tile = App.Glyph2Tile[main_glyph];
                                     int wormautodraw = App.Tile2Autodraw[main_tile];
                                     int base_source_glyph = App.NoGlyph;
