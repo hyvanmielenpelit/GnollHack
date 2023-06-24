@@ -6359,7 +6359,6 @@ boolean polyspot, msg;
         return 0;
 
     struct permonst* olddata = mtmp->data;
-    int oldmnum = mtmp->mnum;
     char oldname[BUFSZ] = "", l_oldname[BUFSZ] = "", newname[BUFSZ] = "";
     if (msg)
     {
