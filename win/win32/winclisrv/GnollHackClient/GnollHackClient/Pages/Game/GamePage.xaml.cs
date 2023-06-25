@@ -399,11 +399,17 @@ namespace GnollHackClient.Pages.Game
         public float MapFontAlternateSize { get { lock (_mapFontSizeLock) { return _mapFontAlternateSize; } } set { lock (_mapFontSizeLock) { _mapFontAlternateSize = value; } } }
         public float MapFontMiniRelativeSize { get { lock (_mapFontSizeLock) { return _mapFontMiniRelativeSize; } } set { lock (_mapFontSizeLock) { _mapFontMiniRelativeSize = value; } } }
 
+        private readonly object _tileWidthLock = new object();
         private float _tileWidth;
+        private float UsedTileWidth { get { lock (_tileWidthLock) { return _tileWidth; } } set { lock (_tileWidthLock) { _tileWidth = value; } } }
+        private readonly object _tileHeightLock = new object();
         private float _tileHeight;
+        private float UsedTileHeight { get { lock (_tileHeightLock) { return _tileHeight; } } set { lock (_tileHeightLock) { _tileHeight = value; } } }
         private float _mapWidth;
         private float _mapHeight;
+        private readonly object _mapFontAscentLock = new object();
         private float _mapFontAscent;
+        private float UsedMapFontAscent { get { lock (_mapFontAscentLock) { return _mapFontAscent; } } set { lock (_mapFontAscentLock) { _mapFontAscent = value; } } }
         public readonly object AnimationTimerLock = new object();
         public GHAnimationTimerList AnimationTimers = new GHAnimationTimerList();
         public SKBitmap[] TileMap { get { return App._tileMap; } }
@@ -3086,6 +3092,7 @@ namespace GnollHackClient.Pages.Game
         private void PaintMapUIElements(SKCanvas canvas, SKPaint textPaint, SKPaint paint, SKPathEffect pathEffect, int mapx, int mapy, float width, float height, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float targetscale, long generalcountervalue, float usedFontSize, int monster_height, bool loc_is_you, bool canspotself)
         {
             float scaled_y_height_change = 0;
+            float mapFontAscent = UsedMapFontAscent;
             float tx = 0, ty = 0;
                 if (monster_height > 0)
                     scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
@@ -3094,7 +3101,7 @@ namespace GnollHackClient.Pages.Game
             if (MapGrid)
             {
                 tx = (offsetX + usedOffsetX + width * (float)mapx);
-                ty = (offsetY + usedOffsetY + _mapFontAscent + height * (float)mapy);
+                ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
 
                 textPaint.Style = SKPaintStyle.Stroke;
                 textPaint.StrokeWidth = 2.0f;
@@ -3131,7 +3138,7 @@ namespace GnollHackClient.Pages.Game
                 int tile_y = App.TileSheetY(ctile);
 
                 tx = (offsetX + usedOffsetX + (loc_is_you ? base_move_offset_x : 0) + width * (float)mapx);
-                ty = (offsetY + usedOffsetY + (loc_is_you ? base_move_offset_y : 0) + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+                ty = (offsetY + usedOffsetY + (loc_is_you ? base_move_offset_y : 0) + scaled_y_height_change + mapFontAscent + height * (float)mapy);
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                 canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
@@ -3140,7 +3147,7 @@ namespace GnollHackClient.Pages.Game
 
             /* General tx, ty for all others, except cursors */
             tx = (offsetX + usedOffsetX + base_move_offset_x + width * (float)mapx);
-            ty = (offsetY + usedOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+            ty = (offsetY + usedOffsetY + base_move_offset_y + scaled_y_height_change + mapFontAscent + height * (float)mapy);
 
             if (HitPointBars)
             {
@@ -3464,6 +3471,7 @@ namespace GnollHackClient.Pages.Game
             int source_y_added = 0;
             int source_height_deducted = 0;
             int source_height = tileflag_halfsize ? GHConstants.TileHeight / 2 : GHConstants.TileHeight;
+            float mapFontAscent = UsedMapFontAscent;
 
             float scale = 1.0f;
             if (tileflag_halfsize && !tileflag_normalobjmissile)
@@ -3591,7 +3599,7 @@ namespace GnollHackClient.Pages.Game
             }
 
             tx = (offsetX + usedOffsetX + move_offset_x + width * (float)draw_map_x);
-            ty = (offsetY + usedOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
+            ty = (offsetY + usedOffsetY + move_offset_y + scaled_y_height_change + mapFontAscent + height * (float)draw_map_y);
 
             using (new SKAutoCanvasRestore(canvas, true))
             {
@@ -4386,6 +4394,40 @@ namespace GnollHackClient.Pages.Game
             return ntile;
         }
 
+        private void GetMapOffsets(float canvaswidth, float canvasheight, float mapwidth, float mapheight, float width, float height, out float offsetX, out float offsetY, out float usedOffsetX, out float usedOffsetY)
+        {
+            offsetX = (canvaswidth - mapwidth) / 2;
+            offsetY = (canvasheight - mapheight) / 2;
+            lock (_mapOffsetLock)
+            {
+                usedOffsetX = _mapOffsetX;
+                usedOffsetY = _mapOffsetY;
+            }
+
+            if (ZoomMiniMode)
+            {
+                offsetX -= usedOffsetX;
+                offsetY -= usedOffsetY;
+                lock (_mapOffsetLock)
+                {
+                    usedOffsetX += _mapMiniOffsetX;
+                    usedOffsetY += _mapMiniOffsetY;
+                }
+            }
+            else
+            {
+                lock (ClipLock)
+                {
+                    if (ClipX > 0 && (mapwidth > canvaswidth || mapheight > canvasheight))
+                    {
+                        offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * width;
+                        offsetY -= (ClipY - GHConstants.MapRows / 2) * height;
+                    }
+                }
+            }
+        }
+
+
         private SKBitmap _enlargementBitmap = null;
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
@@ -4465,11 +4507,12 @@ namespace GnollHackClient.Pages.Game
                 float mapwidth = width * (GHConstants.MapCols - 1);
                 float mapheight = height * (GHConstants.MapRows);
 
-                _tileWidth = width;
-                _tileHeight = height;
+                UsedTileWidth = width;
+                UsedTileHeight = height;
                 _mapWidth = mapwidth;
                 _mapHeight = mapheight;
-                _mapFontAscent = textPaint.FontMetrics.Ascent;
+                float mapFontAscent = textPaint.FontMetrics.Ascent;
+                UsedMapFontAscent = mapFontAscent;
                 float targetscale = height / (float)GHConstants.TileHeight;
 
                 int startX = 1;
@@ -4477,38 +4520,11 @@ namespace GnollHackClient.Pages.Game
                 int startY = 0;
                 int endY = GHConstants.MapRows - 1;
 
-                float offsetX = (canvaswidth - mapwidth) / 2;
-                float offsetY = (canvasheight - mapheight) / 2;
-
-                float usedOffsetX = 0;
-                float usedOffsetY = 0;
-                lock (_mapOffsetLock)
-                {
-                    usedOffsetX = _mapOffsetX;
-                    usedOffsetY = _mapOffsetY;
-                }
-
-                if (ZoomMiniMode)
-                {
-                    offsetX -= usedOffsetX;
-                    offsetY -= usedOffsetY;
-                    lock (_mapOffsetLock)
-                    {
-                        usedOffsetX += _mapMiniOffsetX;
-                        usedOffsetY += _mapMiniOffsetY;
-                    }
-                }
-                else
-                {
-                    lock (ClipLock)
-                    {
-                        if (ClipX > 0 && (mapwidth > canvaswidth || mapheight > canvasheight))
-                        {
-                            offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * width;
-                            offsetY -= (ClipY - GHConstants.MapRows / 2) * height;
-                        }
-                    }
-                }
+                float offsetX;
+                float offsetY;
+                float usedOffsetX;
+                float usedOffsetY;
+                GetMapOffsets(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY);
 
                 float tx = 0, ty = 0;
                 float startx = 0, starty = 0;
@@ -4536,7 +4552,7 @@ namespace GnollHackClient.Pages.Game
                                 float sourceheight = (float)(GHConstants.MapRows * GHConstants.TileHeight);
                                 SKRect sourcerect = new SKRect(0, 0, sourcewidth, sourceheight);
                                 tx = offsetX + usedOffsetX;
-                                ty = offsetY + usedOffsetY + _mapFontAscent;
+                                ty = offsetY + usedOffsetY + mapFontAscent;
                                 SKRect targetrect = new SKRect(tx, ty, tx + sourcewidth * width / (float)GHConstants.TileWidth, ty + sourceheight * height / GHConstants.TileHeight);
                                 canvas.DrawBitmap(_mapBitmap, sourcerect, targetrect);
                             }
@@ -4954,7 +4970,7 @@ namespace GnollHackClient.Pages.Game
                                                                             SKBlendMode old_bm = paint.BlendMode;
                                                                             paint.BlendMode = blendMode;
                                                                             tx = (offsetX + usedOffsetX + width * (float)mapx);
-                                                                            ty = (offsetY + usedOffsetY + _mapFontAscent + height * (float)mapy);
+                                                                            ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
                                                                             SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                                                                             canvas.DrawRect(targetrect, paint);
                                                                             enlCanvas.DrawRect(targetrect, paint);
@@ -5224,7 +5240,7 @@ namespace GnollHackClient.Pages.Game
                                 p = eff.GetPosition(maincountervalue);
                                 effcolor = eff.GetColor(maincountervalue);
                                 tx = offsetX + usedOffsetX + width * p.X;
-                                ty = offsetY + usedOffsetY + height * p.Y + _mapFontAscent;
+                                ty = offsetY + usedOffsetY + height * p.Y + mapFontAscent;
                                 textPaint.Color = effcolor;
                                 switch (eff.Style)
                                 {
@@ -9235,6 +9251,8 @@ namespace GnollHackClient.Pages.Game
                                                     newfontsize = GHConstants.MinimumMapFontSize;
                                             }
 
+                                            float newratio = newfontsize / Math.Max(1, curfontsize);
+                                            float mapFontAscent = UsedMapFontAscent;
                                             if (ZoomMiniMode)
                                                 MapFontMiniRelativeSize = newfontsize;
                                             else if (ZoomAlternateMode)
@@ -9242,7 +9260,6 @@ namespace GnollHackClient.Pages.Game
                                             else
                                                 MapFontSize = newfontsize;
 
-                                            float newratio = newfontsize / Math.Max(1, curfontsize);
                                             lock (_mapOffsetLock)
                                             {
                                                 if (ZoomMiniMode)
@@ -9260,8 +9277,29 @@ namespace GnollHackClient.Pages.Game
                                                 }
                                                 else
                                                 {
-                                                    _mapOffsetX *= newratio;
-                                                    _mapOffsetY *= newratio;
+                                                    float width = UsedTileWidth;
+                                                    float height = UsedTileHeight;
+                                                    float mapwidth = width * (GHConstants.MapCols - 1);
+                                                    float mapheight = height * (GHConstants.MapRows);
+                                                    float canvaswidth = canvasView.CanvasSize.Width;
+                                                    float canvasheight = canvasView.CanvasSize.Height;
+                                                    float offsetX, offsetY, usedOffsetX, usedOffsetY;
+                                                    GetMapOffsets(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY);
+                                                    float totalOffsetX = offsetX + usedOffsetX;
+                                                    float totalOffsetY = offsetY + usedOffsetY + mapFontAscent;
+                                                    SKPoint oldLoc = new SKPoint((prevloc.X + otherloc.X) / 2, (prevloc.Y + otherloc.Y) / 2);
+                                                    SKPoint newLoc = new SKPoint((curloc.X + otherloc.X) / 2, (curloc.Y + otherloc.Y) / 2);
+                                                    float newTotalOffsetX = newLoc.X - (oldLoc.X - totalOffsetX) * newratio;
+                                                    float newTotalOffsetY = newLoc.Y - (oldLoc.Y - totalOffsetY) * newratio;
+                                                    float newWidth = width * newratio;
+                                                    float newHeight = height * newratio;
+                                                    float newMapwidth = newWidth * (GHConstants.MapCols - 1);
+                                                    float newMapheight = newHeight * (GHConstants.MapRows);
+                                                    float newMapFontAscent = mapFontAscent * newratio;
+                                                    float newOffsetX, newOffsetY, newUsedOffsetX, newUsedOffsetY;
+                                                    GetMapOffsets(canvaswidth, canvasheight, newMapwidth, newMapheight, newWidth, newHeight, out newOffsetX, out newOffsetY, out newUsedOffsetX, out newUsedOffsetY);
+                                                    _mapOffsetX = newTotalOffsetX - newOffsetX;
+                                                    _mapOffsetY = newTotalOffsetY - newOffsetY - newMapFontAscent;
                                                     if (_mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * _mapWidth)
                                                     {
                                                         _mapOffsetX = 10 * _mapWidth * Math.Sign(_mapOffsetX);
@@ -9485,8 +9523,8 @@ namespace GnollHackClient.Pages.Game
                 {
                     if (ClipX > 0 && (_mapWidth > canvaswidth || _mapHeight > canvasheight))
                     {
-                        offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * _tileWidth;
-                        offsetY -= (ClipY - GHConstants.MapRows / 2) * _tileHeight;
+                        offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * UsedTileWidth;
+                        offsetY -= (ClipY - GHConstants.MapRows / 2) * UsedTileHeight;
                     }
                 }
             }
@@ -9494,13 +9532,13 @@ namespace GnollHackClient.Pages.Game
             lock (_mapOffsetLock)
             {
                 offsetX += _mapOffsetX;
-                offsetY += _mapOffsetY + _mapFontAscent;
+                offsetY += _mapOffsetY + UsedMapFontAscent;
             }
 
-            if (_tileWidth > 0)
-                x = (int)((e.Location.X - offsetX) / _tileWidth);
-            if (_tileHeight > 0)
-                y = (int)((e.Location.Y - offsetY) / _tileHeight);
+            if (UsedTileWidth > 0)
+                x = (int)((e.Location.X - offsetX) / UsedTileWidth);
+            if (UsedTileHeight > 0)
+                y = (int)((e.Location.Y - offsetY) / UsedTileHeight);
 
             if (!_showDirections && !_showNumberPad && !(MapWalkMode && WalkArrows))
             {
@@ -9763,8 +9801,8 @@ namespace GnollHackClient.Pages.Game
                     _targetClipOn = true;
                     lock (_mapOffsetLock)
                     {
-                        _originMapOffsetWithNewClipX = _mapOffsetX + (float)(x - ClipX) * _tileWidth;
-                        _originMapOffsetWithNewClipY = _mapOffsetY + (float)(y - ClipY) * _tileHeight;
+                        _originMapOffsetWithNewClipX = _mapOffsetX + (float)(x - ClipX) * UsedTileWidth;
+                        _originMapOffsetWithNewClipY = _mapOffsetY + (float)(y - ClipY) * UsedTileHeight;
                     }
                     _targetClipStartCounterValue = curtimervalue;
                     _targetClipPanTime = pantime; // GHConstants.DefaultPanTime;
