@@ -1023,6 +1023,7 @@ int how;
     }
 
     nomovemsg = "You survived that attempt on your life.";
+    nomovemsg_color = CLR_MSG_SUCCESS;
     context.move = 0;
     if (multi > 0)
         multi = 0;

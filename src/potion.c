@@ -2677,7 +2677,7 @@ const char* introline;
             if (!has_innate_breathless(youmonst.data))
             {
                 Strcpy(dcbuf, "Ulch!  That potion smells terrible!");
-                pline1(dcbuf);
+                pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf);
             }
             else if (haseyes(youmonst.data)) {
                 const char *eyes = body_part(EYE);
@@ -2685,7 +2685,7 @@ const char* introline;
                 if (eyecount(youmonst.data) != 1)
                     eyes = makeplural(eyes);
                 Sprintf(dcbuf, "Your %s %s!", eyes, vtense(eyes, "sting"));
-                pline1(dcbuf);
+                pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf);
             }
             break;
         } 
@@ -2745,7 +2745,7 @@ const char* introline;
         if (!has_innate_breathless(youmonst.data))
         {
             Strcpy(dcbuf, "Ulch!  That potion smells contaminated!");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf);
         }
         break;
     case POT_POISON:
@@ -2771,14 +2771,14 @@ const char* introline;
         break;
     case POT_HALLUCINATION:
         Strcpy(dcbuf, "You have a momentary vision.");
-        pline1(dcbuf);
+        pline_ex1(ATR_NONE, CLR_MSG_HALLUCINATED, dcbuf);
         break;
     case POT_ELVEN_HERBAL_BREW:
         if (!Confusion)
         {
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             Strcpy(dcbuf, "You feel somewhat dizzy.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf);
         }
         make_confused(itimeout_incr(HConfusion, duration), FALSE);
         break;
@@ -2786,14 +2786,14 @@ const char* introline;
         if (!has_innate_breathless(youmonst.data))
         {
             Strcpy(dcbuf, "Ooph!  That potion smells like urine!");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         }
         break;
     case POT_DWARVEN_MUSHROOM_BREW:
         if (!has_innate_breathless(youmonst.data))
         {
             Strcpy(dcbuf, "That smells like finely brewed non-alcoholic beverage!");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         }
         break;
     case POT_CONFUSION:
@@ -2801,7 +2801,7 @@ const char* introline;
         {
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             Strcpy(dcbuf, "You feel somewhat dizzy.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf);
         }
         make_confused(itimeout_incr(HConfusion, duration), FALSE);
         break;
@@ -2811,7 +2811,7 @@ const char* introline;
             Sprintf(dcbuf, "For an instant you %s!",
                 See_invisible ? "could see right through yourself"
                 : "couldn't see yourself");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         }
         break;
     case POT_PARALYSIS:
@@ -2820,7 +2820,7 @@ const char* introline;
         {
             play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
             Sprintf(dcbuf, "%s seems to be holding you.", Something);
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf);
             incr_itimeout(&HParalyzed, duration);
             refresh_u_tile_gui_info(TRUE);
             context.botl = context.botlx = 1;
@@ -2829,13 +2829,14 @@ const char* introline;
             nomul(-d(3 - 1 * bcsign(obj), 4)); // rnd(5));
             multi_reason = "frozen by a potion";
             nomovemsg = You_can_move_again;
+            nomovemsg_color = CLR_MSG_SUCCESS;
             exercise(A_DEX, FALSE);
 #endif
         }
         else
         {
             Strcpy(dcbuf, "You stiffen momentarily.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         }
         break;
     case POT_SLEEPING:
@@ -2843,14 +2844,14 @@ const char* introline;
         if (!Free_action && !Sleep_resistance) {
             play_sfx_sound(SFX_ACQUIRE_SLEEP);
             Strcpy(dcbuf, "You feel rather tired.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf);
             fall_asleep(-duration, FALSE);
             standard_hint("You should acquire sleep resistance as early as possible. Keep pets around to protect you while sleeping.", &u.uhint.paralyzed_by_thrown_potion);
         }
         else
         {
             Strcpy(dcbuf, "You yawn.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         }
         break;
     case POT_SPEED:
@@ -2859,7 +2860,7 @@ const char* introline;
         if (obj->otyp == POT_LIGHTNING_SPEED ? !Lightning_fast : obj->otyp == POT_LIGHTNING_SPEED ? !Lightning_fast && !Super_fast : !Lightning_fast && !Super_fast && !Ultra_fast)
         {
             Strcpy(dcbuf, "Your knees seem more flexible now.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, dcbuf);
         }
         play_sfx_sound(SFX_ACQUIRE_HASTE);
         incr_itimeout(obj->otyp == POT_LIGHTNING_SPEED ? &HLightning_fast : obj->otyp == POT_GREATER_SPEED ? &HSuper_fast : &HUltra_fast, duration);
@@ -2870,7 +2871,7 @@ const char* introline;
         if (!Antimagic)
         {
             Strcpy(dcbuf, "You feel a bit more protected now.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, dcbuf);
         }
         incr_itimeout(&HAntimagic, duration);
         refresh_u_tile_gui_info(TRUE);
@@ -2880,7 +2881,7 @@ const char* introline;
         if (!Titan_strength)
         {
             Strcpy(dcbuf, "You feel a bit stronger than before.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, dcbuf);
         }
         incr_itimeout(&HTitan_strength, duration);
         refresh_u_tile_gui_info(TRUE);
@@ -2890,7 +2891,7 @@ const char* introline;
         if (!Fire_immunity)
         {
             Strcpy(dcbuf, "You feel a bit more fire-protected now.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, dcbuf);
         }
         incr_itimeout(&HFire_immunity, duration);
         refresh_u_tile_gui_info(TRUE);
@@ -2900,7 +2901,7 @@ const char* introline;
         if (!Cold_immunity)
         {
             Strcpy(dcbuf, "You feel a bit more cold-protected now.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, dcbuf);
         }
         incr_itimeout(&HCold_immunity, duration);
         refresh_u_tile_gui_info(TRUE);
@@ -2910,7 +2911,7 @@ const char* introline;
         if (!Shock_immunity)
         {
             Strcpy(dcbuf, "You feel a bit more electricity-protected now.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, dcbuf);
         }
         incr_itimeout(&HShock_immunity, duration);
         refresh_u_tile_gui_info(TRUE);
@@ -2921,7 +2922,7 @@ const char* introline;
         if (obj->otyp == POT_SUPER_HEROISM ? !Super_heroism : !Super_heroism && !Heroism)
         {
             Strcpy(dcbuf, "You feel a bit more heroic.");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, dcbuf);
         }
         incr_itimeout(obj->otyp == POT_SUPER_HEROISM ? &HSuper_heroism : &HHeroism, duration);
         refresh_u_tile_gui_info(TRUE);
@@ -2933,8 +2934,8 @@ const char* introline;
         if (obj->otyp == POT_GREATER_REGENERATION ? !Divine_regeneration :
             obj->otyp == POT_REGENERATION ? !Divine_regeneration && !Rapidest_regeneration : !Super_heroism && !Heroism)
         {
-            Strcpy(dcbuf, "You feel a bit more heroic.");
-            pline1(dcbuf);
+            Strcpy(dcbuf, "You feel a bit more regenerative.");
+            pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, dcbuf);
         }
         incr_itimeout(obj->otyp == POT_SUPER_HEROISM ? &HSuper_heroism : &HHeroism, duration);
         refresh_u_tile_gui_info(TRUE);

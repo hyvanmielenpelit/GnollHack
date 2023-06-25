@@ -241,6 +241,8 @@ reset_global_variables(VOID_ARGS)
     yn_number = 0;
     done_money = 0;
     nomovemsg = 0;
+    nomovemsg_attr = ATR_NONE;
+    nomovemsg_color = NO_COLOR;
     tbx = tby = 0;
     defer_see_monsters = FALSE;
     in_mklev = FALSE;

@@ -9260,34 +9260,12 @@ namespace GnollHackClient.Pages.Game
                                             else
                                                 MapFontSize = newfontsize;
 
-                                            float width = UsedTileWidth;
-                                            float height = UsedTileHeight;
-                                            float mapwidth = width * (GHConstants.MapCols - 1);
-                                            float mapheight = height * (GHConstants.MapRows);
-                                            float canvaswidth = canvasView.CanvasSize.Width;
-                                            float canvasheight = canvasView.CanvasSize.Height;
-                                            float offsetX, offsetY, usedOffsetX, usedOffsetY;
-                                            GetMapOffsets(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY);
-                                            float totalOffsetX = offsetX + usedOffsetX;
-                                            float totalOffsetY = offsetY + usedOffsetY + mapFontAscent;
-                                            SKPoint oldLoc = new SKPoint((prevloc.X + otherloc.X) / 2, (prevloc.Y + otherloc.Y) / 2);
-                                            SKPoint newLoc = new SKPoint((curloc.X + otherloc.X) / 2, (curloc.Y + otherloc.Y) / 2);
-                                            float newTotalOffsetX = newLoc.X - (oldLoc.X - totalOffsetX) * newratio;
-                                            float newTotalOffsetY = newLoc.Y - (oldLoc.Y - totalOffsetY) * newratio;
-                                            float newWidth = width * newratio;
-                                            float newHeight = height * newratio;
-                                            float newMapwidth = newWidth * (GHConstants.MapCols - 1);
-                                            float newMapheight = newHeight * (GHConstants.MapRows);
-                                            float newMapFontAscent = mapFontAscent * newratio;
-                                            float newOffsetX, newOffsetY, newUsedOffsetX, newUsedOffsetY;
-                                            GetMapOffsets(canvaswidth, canvasheight, newMapwidth, newMapheight, newWidth, newHeight, out newOffsetX, out newOffsetY, out newUsedOffsetX, out newUsedOffsetY);
-
                                             if (ZoomMiniMode)
                                             {
                                                 lock (_mapOffsetLock)
                                                 {
-                                                    _mapMiniOffsetX = newTotalOffsetX - newOffsetX;
-                                                    _mapMiniOffsetY = newTotalOffsetY - newOffsetY - newMapFontAscent;
+                                                    _mapMiniOffsetX *= newratio;
+                                                    _mapMiniOffsetY *= newratio;
                                                     if (_mapWidth > 0 && Math.Abs(_mapMiniOffsetX) > 1 * _mapWidth)
                                                     {
                                                         _mapMiniOffsetX = 1 * _mapWidth * Math.Sign(_mapMiniOffsetX);
@@ -9300,6 +9278,28 @@ namespace GnollHackClient.Pages.Game
                                             }
                                             else
                                             {
+                                                float width = UsedTileWidth;
+                                                float height = UsedTileHeight;
+                                                float mapwidth = width * (GHConstants.MapCols - 1);
+                                                float mapheight = height * (GHConstants.MapRows);
+                                                float canvaswidth = canvasView.CanvasSize.Width;
+                                                float canvasheight = canvasView.CanvasSize.Height;
+                                                float offsetX, offsetY, usedOffsetX, usedOffsetY;
+                                                GetMapOffsets(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY);
+                                                float totalOffsetX = offsetX + usedOffsetX;
+                                                float totalOffsetY = offsetY + usedOffsetY + mapFontAscent;
+                                                SKPoint oldLoc = new SKPoint((prevloc.X + otherloc.X) / 2, (prevloc.Y + otherloc.Y) / 2);
+                                                SKPoint newLoc = new SKPoint((curloc.X + otherloc.X) / 2, (curloc.Y + otherloc.Y) / 2);
+                                                float newTotalOffsetX = newLoc.X - (oldLoc.X - totalOffsetX) * newratio;
+                                                float newTotalOffsetY = newLoc.Y - (oldLoc.Y - totalOffsetY) * newratio;
+                                                float newWidth = width * newratio;
+                                                float newHeight = height * newratio;
+                                                float newMapwidth = newWidth * (GHConstants.MapCols - 1);
+                                                float newMapheight = newHeight * (GHConstants.MapRows);
+                                                float newMapFontAscent = mapFontAscent * newratio;
+                                                float newOffsetX, newOffsetY, newUsedOffsetX, newUsedOffsetY;
+                                                GetMapOffsets(canvaswidth, canvasheight, newMapwidth, newMapheight, newWidth, newHeight, out newOffsetX, out newOffsetY, out newUsedOffsetX, out newUsedOffsetY);
+
                                                 lock (_mapOffsetLock)
                                                 {
                                                     _mapOffsetX = newTotalOffsetX - newOffsetX;

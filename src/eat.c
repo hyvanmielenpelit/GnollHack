@@ -2145,6 +2145,7 @@ struct obj *obj;
         nomul(-duration);
         multi_reason = "unconscious from rotten food";
         nomovemsg = "You are conscious again.";
+        nomovemsg_color = CLR_MSG_ATTENTION;
         afternmv = Hear_again;
         return 1;
     }
@@ -4235,6 +4236,7 @@ boolean incr;
                 nomul(-duration);
                 multi_reason = "fainted from lack of food";
                 nomovemsg = "You regain consciousness.";
+                nomovemsg_color = CLR_MSG_ATTENTION;
                 afternmv = unfaint;
                 newhs = FAINTED;
                 if (!Levitation)
@@ -4484,6 +4486,7 @@ vomit() /* A good idea from David Neves */
         nomul(-2);
         multi_reason = "vomiting";
         nomovemsg = You_can_move_again;
+        nomovemsg_color = CLR_MSG_SUCCESS;
     }
 }
 

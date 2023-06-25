@@ -3385,6 +3385,7 @@ doturn()
     nomul(-(5 - ((u.ulevel - 1) / 6))); /* -5 .. -1 */
     multi_reason = "trying to turn the monsters";
     nomovemsg = You_can_move_again;
+    nomovemsg_color = CLR_MSG_SUCCESS;
     return 1;
 }
 

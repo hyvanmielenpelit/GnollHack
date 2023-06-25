@@ -3639,10 +3639,15 @@ const char *msg_override;
     if (msg_override)
         nomovemsg = msg_override;
     else if (!nomovemsg)
+    {
         nomovemsg = You_can_move_again;
+        nomovemsg_color = CLR_MSG_SUCCESS;
+    }
     if (*nomovemsg)
-        pline("%s", nomovemsg);
+        pline_ex(nomovemsg_attr, nomovemsg_color, "%s", nomovemsg);
     nomovemsg = 0;
+    nomovemsg_attr = ATR_NONE;
+    nomovemsg_color = NO_COLOR;
     u.usleep = 0;
     multi_reason = NULL;
     if (afternmv) {

@@ -909,6 +909,7 @@ int roomno;
             nomul(-3);
             multi_reason = "being terrified of a ghost";
             nomovemsg = "You regain your composure.";
+            nomovemsg_color = CLR_MSG_SUCCESS;
         }
     }
 }

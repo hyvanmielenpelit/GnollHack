@@ -6940,6 +6940,7 @@ boolean disarm;
                 exercise(A_DEX, FALSE);
 #endif
                 nomovemsg = You_can_move_again;
+                nomovemsg_color = CLR_MSG_SUCCESS;
             }
             else
             {

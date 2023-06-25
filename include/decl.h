@@ -325,6 +325,8 @@ E enum object_soundset_types occsoundset; /* defined when occupation != NULL */
 E enum object_occupation_types occtyp; /* defined when occupation != NULL */
 
 E const char *nomovemsg;
+E int nomovemsg_attr;
+E int nomovemsg_color;
 E char lock[];
 
 E const schar xdir[], ydir[], zdir[];
