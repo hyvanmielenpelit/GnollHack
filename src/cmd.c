@@ -326,7 +326,7 @@ STATIC_VAR char pushq[BSIZE], saveq[BSIZE];
 STATIC_VAR NEARDATA int phead, ptail, shead, stail;
 
 STATIC_OVL char
-popch()
+popch(VOID_ARGS)
 {
     /* If occupied, return '\0', letting tgetch know a character should
      * be read from the keyboard.  If the character read is not the
@@ -342,7 +342,7 @@ popch()
 }
 
 char
-pgetchar() /* courtesy of aeb@cwi.nl */
+pgetchar(VOID_ARGS) /* courtesy of aeb@cwi.nl */
 {
     register int ch;
 
@@ -5973,7 +5973,7 @@ const char *command;
 
 /* initialize all keyboard commands */
 void
-commands_init()
+commands_init(VOID_ARGS)
 {
     struct ext_func_tab *extcmd;
 
@@ -6539,7 +6539,7 @@ size_t *total_size;
  * Display memory usage of all monsters and objects on the level.
  */
 STATIC_OVL int
-wiz_show_stats()
+wiz_show_stats(VOID_ARGS)
 {
     char buf[BUFSZ];
     winid win;
@@ -6622,7 +6622,7 @@ wiz_show_stats()
 }
 
 void
-sanity_check()
+sanity_check(VOID_ARGS)
 {
     obj_sanity_check();
     timer_sanity_check();
@@ -7020,7 +7020,7 @@ boolean initial;
 }
 
 void
-update_bindings_list()
+update_bindings_list(VOID_ARGS)
 {
     struct ext_func_tab* efp;
     for (efp = extcmdlist; efp->ef_txt; efp++) 
@@ -7068,7 +7068,7 @@ int NDECL((*cmd_func));
 }
 
 char
-randomkey()
+randomkey(VOID_ARGS)
 {
     static int i = 0;
     char c;
@@ -7518,7 +7518,7 @@ char sym;
 
 /* grid bug handling which used to be in movecmd() */
 int
-dxdy_moveok()
+dxdy_moveok(VOID_ARGS)
 {
     if (u.dx && u.dy && NODIAG(u.umonnum))
         u.dx = u.dy = 0;
@@ -7860,7 +7860,7 @@ const char *msg;
 }
 
 void
-confdir()
+confdir(VOID_ARGS)
 {
     register int x = NODIAG(u.umonnum) ? 2 * rn2(4) : rn2(8);
 
@@ -8481,7 +8481,7 @@ boolean historical; /* whether to include in message history: True => yes */
 
 
 STATIC_OVL char *
-parse()
+parse(VOID_ARGS)
 {
 #ifdef LINT /* static char in_line[COLNO]; */
     char in_line[COLNO];
@@ -8606,7 +8606,7 @@ int sig_unused UNUSED;
 }
 
 void
-end_of_input()
+end_of_input(VOID_ARGS)
 {
 #ifdef NOSAVEONHANGUP
 #ifdef INSURANCE
@@ -8633,7 +8633,7 @@ end_of_input()
 #endif /* HANGUPHANDLING */
 
 char
-readchar()
+readchar(VOID_ARGS)
 {
     register int sym;
     int x = u.ux, y = u.uy, mod = 0;
@@ -9329,7 +9329,7 @@ enum create_context_menu_types menu_type;
                     if (!(x == u.ux && y == u.uy) && isok(x, y))
                     {
                         mtmp = m_at(x, y);
-                        if (mtmp)
+                        if (mtmp && !DEADMONSTER(mtmp))
                         {
                             if (monster_invokes_context_chat(mtmp))
                             {
@@ -9418,7 +9418,7 @@ enum create_context_menu_types menu_type;
 }
 
 int
-domarkautostash()
+domarkautostash(VOID_ARGS)
 {
     struct obj* obj = getobj(getobj_mark_autostashs, "mark as auto-stash", 0, "");
     if (!obj)
@@ -9445,7 +9445,7 @@ domarkautostash()
 }
 
 int
-dounmarkautostash()
+dounmarkautostash(VOID_ARGS)
 {
     struct obj* obj = getobj(getobj_unmark_autostashs, "unmark as auto-stash", 0, "");
     if (!obj)
@@ -9507,7 +9507,7 @@ int x1, y1, x2, y2;
 
 /* #chronicle command */
 int
-do_gamelog(void)
+do_gamelog(VOID_ARGS)
 {
     if (gamelog) {
         show_gamelog(ENL_GAMEINPROGRESS);

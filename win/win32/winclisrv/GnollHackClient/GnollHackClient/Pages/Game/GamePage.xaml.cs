@@ -9241,6 +9241,37 @@ namespace GnollHackClient.Pages.Game
                                                 MapFontAlternateSize = newfontsize;
                                             else
                                                 MapFontSize = newfontsize;
+
+                                            float newratio = newfontsize / Math.Max(1, curfontsize);
+                                            lock (_mapOffsetLock)
+                                            {
+                                                if (ZoomMiniMode)
+                                                {
+                                                    _mapMiniOffsetX *= newratio;
+                                                    _mapMiniOffsetY *= newratio;
+                                                    if (_mapWidth > 0 && Math.Abs(_mapMiniOffsetX) > 1 * _mapWidth)
+                                                    {
+                                                        _mapMiniOffsetX = 1 * _mapWidth * Math.Sign(_mapMiniOffsetX);
+                                                    }
+                                                    if (_mapHeight > 0 && Math.Abs(_mapMiniOffsetY) > 1 * _mapHeight)
+                                                    {
+                                                        _mapMiniOffsetY = 1 * _mapHeight * Math.Sign(_mapMiniOffsetY);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    _mapOffsetX *= newratio;
+                                                    _mapOffsetY *= newratio;
+                                                    if (_mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * _mapWidth)
+                                                    {
+                                                        _mapOffsetX = 10 * _mapWidth * Math.Sign(_mapOffsetX);
+                                                    }
+                                                    if (_mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * _mapHeight)
+                                                    {
+                                                        _mapOffsetY = 10 * _mapHeight * Math.Sign(_mapOffsetY);
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
 

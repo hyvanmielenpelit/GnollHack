@@ -165,7 +165,7 @@ struct monst *mtmp;
 }
 
 int
-doride()
+doride(VOID_ARGS)
 {
     if (u.usteed) 
     {
@@ -187,7 +187,7 @@ doride()
 }
 
 int
-doridenearby()
+doridenearby(VOID_ARGS)
 {
     if (u.usteed)
     {
@@ -207,7 +207,7 @@ doridenearby()
                     if (!(x == u.ux && y == u.uy) && isok(x, y))
                     {
                         mtmp = m_at(x, y);
-                        if (mtmp && is_tame(mtmp) && is_steed(mtmp->data) && canspotmon(mtmp) && which_armor(mtmp, W_SADDLE))
+                        if (mtmp && !DEADMONSTER(mtmp) && is_tame(mtmp) && is_steed(mtmp->data) && canspotmon(mtmp) && which_armor(mtmp, W_SADDLE))
                         {
                             steedmtmp = mtmp;
                             numsteeds++;

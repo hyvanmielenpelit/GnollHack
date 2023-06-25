@@ -6392,7 +6392,7 @@ boolean override_mextra, polyspot, msg;
             if (M_AP_TYPE(mtmp) && !is_mimic(&mons[mtraits->mnum]))
                 seemimic(mtmp); /* revert to normal monster */
 
-            //Copy data one by one rather than using *mtmp = *mtraits. About half of the data needs to be compied and half not.
+            //Copy data one by one rather than using *mtmp = *mtraits. About half of the data needs to be copied and half not.
             mtmp->data = &mons[mtraits->mnum];
             mtmp->mnum = mtraits->mnum;
             mtmp->subtype = mtraits->subtype;

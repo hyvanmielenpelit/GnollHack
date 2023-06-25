@@ -240,7 +240,7 @@ int rmtyp;
 }
 
 void
-dosounds()
+dosounds(VOID_ARGS)
 {
     register struct mkroom *sroom;
     register int hallu, vx, vy;
@@ -2017,7 +2017,7 @@ doyell()
 
 /* #chat command */
 int
-dotalk()
+dotalk(VOID_ARGS)
 {
     int result;
 
@@ -2026,7 +2026,7 @@ dotalk()
 }
 
 int
-dotalksteed()
+dotalksteed(VOID_ARGS)
 {
     if (!u.usteed)
         return 0;
@@ -2035,7 +2035,7 @@ dotalksteed()
 }
 
 int
-dotalknearby()
+dotalknearby(VOID_ARGS)
 {
     int x, y;
     int nummonfound = 0;
@@ -2049,7 +2049,7 @@ dotalknearby()
                 if (!(x == u.ux && y == u.uy) && isok(x, y))
                 {
                     mtmp = m_at(x, y);
-                    if (mtmp && monster_invokes_context_chat(mtmp))
+                    if (mtmp && !DEADMONSTER(mtmp) && monster_invokes_context_chat(mtmp))
                     {
                         nummonfound++;
                         selected_mtmp = mtmp;
@@ -2067,7 +2067,7 @@ dotalknearby()
 }
 
 STATIC_OVL boolean
-speak_check()
+speak_check(VOID_ARGS)
 {
     if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
     {
@@ -2103,7 +2103,7 @@ speak_check()
 }
 
 STATIC_OVL boolean
-yell_check()
+yell_check(VOID_ARGS)
 {
     if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
     {
@@ -2169,7 +2169,7 @@ const char* nomoodstr;
 }
 
 void
-genl_chat_message()
+genl_chat_message(VOID_ARGS)
 {
     while (1)
     {
@@ -2183,7 +2183,7 @@ genl_chat_message()
 }
 
 STATIC_OVL int
-dochat()
+dochat(VOID_ARGS)
 {
     struct monst* mtmp;
     int tx, ty;
