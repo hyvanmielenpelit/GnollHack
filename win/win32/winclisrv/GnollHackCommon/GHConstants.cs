@@ -1464,7 +1464,7 @@ namespace GnollHackCommon
         public const string OnDemandPackName = "ondemandpack";
         public const bool DefaultReadStreamingBankToMemory = false;
         public const bool DefaultCopyStreamingBankToDisk = false;
-        public const bool DefaultDrawWallEnds = false;
+        public const bool DefaultDrawWallEnds = true;
         public const bool DefaultLighterDarkening = true;
         public const bool DefaultAlternativeLayerDrawing = false;
     }

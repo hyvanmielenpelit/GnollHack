@@ -34,16 +34,6 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="Lighter Unlit Areas"
-                                           FontFamily="Underwood" TextColor="Black"
-                                           FontSize="15"
-                                           VerticalOptions="Center" 
-                                           HorizontalOptions="Start" />
-                                    <Switch x:Name="LighterDarkeningSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                                </StackLayout>
-                            </ViewCell>
-                            <ViewCell>
-                                <StackLayout Orientation="Horizontal">
                                     <Label Text="Graphics"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -348,6 +338,16 @@
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
                                     <Switch x:Name="WalkArrowSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Lighter Unlit Areas"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="LighterDarkeningSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
                             <ViewCell>

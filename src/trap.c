@@ -5036,11 +5036,11 @@ int n;
     if (!u.uenmax)
     {
         /* energy is completely gone */
-        You_feel("momentarily lethargic.");
+        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "momentarily lethargic.");
     } 
     else if (n == -1)
     {
-        You_feel("your magical energy drain away!");
+        You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "your magical energy drain away!");
         u.uen = 0;
         context.botl = 1;
     }
@@ -5050,7 +5050,7 @@ int n;
         //if (n > u.uenmax || n > u.ulevel)
         //    n = rnd(n);
 
-        You_feel("your magical energy drain away%c", (n > u.uen) ? '!' : '.');
+        You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "your magical energy drain away%c", (n > u.uen) ? '!' : '.');
         u.uen -= n;
         if (u.uen < 0) {
             /*
