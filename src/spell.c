@@ -757,10 +757,10 @@ register struct obj *spellbook;
                 else
                 {
                     int multicolors[1] = { CLR_MSG_SPELL };
-                    pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, "This spellbook contains \"%s\".", namebuf);
+                    pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, "This spellbook contains \'%s\'.", namebuf);
                     makeknown(spellbook->otyp);
                     takeround = 1;
-                    Sprintf(buf, "\"%s\" is %s. Continue?", Namebuf2, an(lvlbuf));
+                    Sprintf(buf, "\'%s\' is %s. Continue?", Namebuf2, an(lvlbuf));
                 }
             }
             else
@@ -2926,7 +2926,7 @@ struct monst* targetmonst;
             break;
         }
         int multicolors[1] = { CLR_MSG_HINT };
-        You_multi_ex(ATR_NONE, CLR_MSG_SPELL, no_multiattrs, multicolors, "successfully cast \"%s\".", spellname(spell));
+        You_multi_ex(ATR_NONE, CLR_MSG_SPELL, no_multiattrs, multicolors, "successfully cast \'%s\'.", spellname(spell));
         addspellintrinsictimeout(otyp);
         special_effect_wait_until_end(0);
         break;
@@ -5045,7 +5045,7 @@ int spell;
         Sprintf(buf, "You need %s%s. ",
             buf3, ((mc->flags & MATCOMP_NOT_SPENT) ? " as a catalyst" : " as a component"));
 
-        Sprintf(buf5, "prepare \"%s\" with", spellname);
+        Sprintf(buf5, "prepare \'%s\' with", spellname);
 
         char allclassletters[MAX_MATCOMP_ALTERNATIVES + 1];
 
