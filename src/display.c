@@ -5247,7 +5247,7 @@ get_current_cmap_type_index()
         return level.flags.tileset;
     else if (dungeons[u.uz.dnum].flags.has_tileset)
         return dungeons[u.uz.dnum].flags.tileset;
-    else if (In_mines(&u.uz) || Is_quantum_level(&u.uz))
+    else if (In_mines(&u.uz) || Is_quantum_tunnel_level(&u.uz))
         return CMAP_GNOMISH_MINES;
     else if (Is_valley(&u.uz) || Is_orcus_level(&u.uz) || Is_sanctum(&u.uz) || In_V_tower(&u.uz))
         return CMAP_UNDEAD;

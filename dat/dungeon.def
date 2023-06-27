@@ -90,11 +90,12 @@ CHAINBRANCH:	"The Large Circular Dungeon" "minetn" + (1, 2) portal
 #
 #	The Large Circular Dungeon
 #
-DUNGEON:	"The Large Circular Dungeon" "C" (1, 0)
+DUNGEON:	"The Large Circular Dungeon" "C" (2, 0)
 TILESET:    gnomish_mines_tileset
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
-LEVEL:		"Quantum Tunnel" "quantum1" "none" @ (-1, 0)
+LEVEL:		"Quantum Tunnel" "quantum1" "none" @ (1, 0)
+LEVEL:		"Quantum Core" "quantum2" "none" @ (2, 0)
 
 #
 #	The Questdungeon

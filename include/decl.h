@@ -90,7 +90,8 @@ E struct dgn_topology { /* special dungeon levels for speed */
     xchar d_modron_dnum;
     d_level d_bovine_level;
     xchar d_bovine_dnum;
-    d_level d_quantum_level;
+    d_level d_quantum_tunnel_level;
+    d_level d_quantum_core_level;
     xchar d_large_circular_dgn_dnum;
     d_level d_minetown_level;
     d_level d_mineend_level;
@@ -141,7 +142,8 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define modron_dnum             (dungeon_topology.d_modron_dnum)
 #define bovine_level            (dungeon_topology.d_bovine_level)
 #define bovine_dnum             (dungeon_topology.d_bovine_dnum)
-#define quantum_level           (dungeon_topology.d_quantum_level)
+#define quantum_tunnel_level    (dungeon_topology.d_quantum_tunnel_level)
+#define quantum_core_level      (dungeon_topology.d_quantum_core_level)
 #define treasure_island_level   (dungeon_topology.d_treasure_island)
 #define large_circular_dgn_dnum (dungeon_topology.d_large_circular_dgn_dnum)
 #define minetown_level          (dungeon_topology.d_minetown_level)

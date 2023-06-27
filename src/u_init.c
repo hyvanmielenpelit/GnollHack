@@ -1487,7 +1487,7 @@ add_school_specific_spellbooks(VOID_ARGS)
                 }
 
                 obj = addinv(obj);
-                if (OBJ_DESCR(objects[otyp]) && obj->known)
+                if (OBJ_DESCR(objects[otyp]))
                     discover_object(otyp, TRUE, FALSE);
 
                 initialspell(obj);
@@ -1983,7 +1983,7 @@ register const struct trobj * trop;
             obj = addinv(obj);
 
             /* Make the type known if necessary */
-            if (OBJ_DESCR(objects[otyp]) && obj->known)
+            if (OBJ_DESCR(objects[otyp]))
                 discover_object(otyp, TRUE, FALSE);
             if (otyp == OIL_LAMP)
                 discover_object(POT_OIL, TRUE, FALSE);

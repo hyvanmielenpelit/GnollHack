@@ -516,7 +516,7 @@ DATHELP = \
 
 SPEC_LEVS = \
  dispater.lev baalz.lev    bigrm-1.lev \
- bigrm-2.lev  bigrm-3.lev  bigrm-4.lev castle.lev  bovine1.lev  quantum1.lev  fakewiz1.lev fakewiz2.lev \
+ bigrm-2.lev  bigrm-3.lev  bigrm-4.lev castle.lev  bovine1.lev  quantum1.lev  quantum2.lev  fakewiz1.lev fakewiz2.lev \
  jubilex.lev  knox.lev     medusa-1.lev medusa-2.lev minend-1.lev minend-2.lev \
  minend-3.lev minefill.lev minetn-1.lev minetn-2.lev minetn-3.lev minetn-4.lev \
  minetn-5.lev minetn-6.lev minetn-7.lev minotaur.lev modron1.lev modron2.lev modron3.lev modron4.lev modron5.lev oracle.lev   orcus.lev    sanctum.lev \

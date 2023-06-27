@@ -340,6 +340,27 @@ level_def	: LEVEL_ID ':' STRING
 		      max_y_map = ROWNO;
 		      $$ = $3;
 		  }
+		| MAZE_ID ':' STRING ',' CHAR ',' light_state
+		  {
+              int lit = (int) $7;
+		      start_level_def(&splev, $3);
+		      if ($5 == -1) {
+			  add_opvars(splev, "iiiiiiiio",
+				     VA_PASS9(LVLINIT_MAZEGRID, HWALL, 0, lit,
+					      0,0,0,0, SPO_INITLEVEL));
+		      } else {
+			  int bg = (int)what_map_char((char) $5);
+
+			  add_opvars(splev, "iiiiiiiio",
+				     VA_PASS9(LVLINIT_SOLIDFILL, bg, 0, lit,
+					      0,0,0,0, SPO_INITLEVEL));
+		      }
+		      add_opvars(splev, "io",
+				 VA_PASS2(MAZELEVEL, SPO_LEVEL_FLAGS));
+		      max_x_map = COLNO-1;
+		      max_y_map = ROWNO;
+		      $$ = $3;
+		  }
 		;
 
 lev_init	: LEV_INIT_ID ':' SOLID_FILL_ID ',' terrain_type
@@ -1683,6 +1704,12 @@ monster_info	: string_expr
 		  {
 		      add_opvars(splev, "ii",
 				 VA_PASS2((int) $3, SP_M_V_SEENTRAPS));
+		      $$ = 0x00008000;
+		  }
+		| SEENTRAPS_ID
+		  {
+		      add_opvars(splev, "ii",
+				 VA_PASS2(0xFFFFFFFFL, SP_M_V_SEENTRAPS));
 		      $$ = 0x00008000;
 		  }
 		| WAITFORU_ID

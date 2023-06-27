@@ -3116,8 +3116,8 @@ aligntyp alignment;
 
     if (in_mklev) 
     {
-        if ((/* is_ndemon(ptr) ||*/ mndx == PM_WUMPUS
-             || is_long_worm_with_tail(&mons[mndx]) || mndx == PM_GIANT_EEL)
+        if ((/* is_ndemon(ptr) ||mndx == PM_WUMPUS ||  */ 
+             is_long_worm_with_tail(&mons[mndx]) || mndx == PM_GIANT_EEL)
             && !u.uhave.amulet && rn2(5))
             mtmp->msleeping = TRUE;
     } 
@@ -3237,7 +3237,7 @@ aligntyp alignment;
     }
 
     /* Add acceleration to lights in Quantum Tunnel */
-    if (Is_quantum_level(&u.uz) && mons[mtmp->mnum].mlet == S_LIGHT)
+    if (Is_quantum_tunnel_level(&u.uz) && mons[mtmp->mnum].mlet == S_LIGHT)
     {
         mtmp->mprops[!rn2(3) ? LIGHTNING_FAST : !rn2(2) ? SUPER_FAST : ULTRA_FAST] |= 500 + d(5, 100);
     }

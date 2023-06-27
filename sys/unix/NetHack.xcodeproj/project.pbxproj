@@ -1529,6 +1529,7 @@
 				"$(NH_DAT_DIR)/bogusmon",
 				"$(NH_DAT_DIR)/bovine1.lev",
 				"$(NH_DAT_DIR)/quantum1.lev",
+				"$(NH_DAT_DIR)/quantum2.lev",
 				"$(NH_DAT_DIR)/treasure1.lev",
 				"$(NH_DAT_DIR)/castle.lev",
 				"$(NH_DAT_DIR)/cmdhelp",

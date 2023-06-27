@@ -72,6 +72,7 @@
     <Levfiles Include = "bigrm-10.lev"/>
     <Levfiles Include = "bovine1.lev"/>
     <Levfiles Include = "quantum1.lev"/>
+    <Levfiles Include = "quantum2.lev"/>
     <Levfiles Include = "castle.lev"/>
     <Levfiles Include = "air.lev"/>
     <Levfiles Include = "astral.lev"/>

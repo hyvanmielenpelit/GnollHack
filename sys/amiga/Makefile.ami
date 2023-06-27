@@ -495,7 +495,7 @@ TILEFILES= \
 INSTDUNGEONFILES1= \
 	$(SLIB)air.lev		$(SLIB)dispater.lev	$(SLIB)astral.lev \
 	$(SLIB)baalz.lev	$(SLIB)bigrm-1.lev	$(SLIB)bigrm-2.lev \
-	$(SLIB)bigrm-3.lev	$(SLIB)bigrm-4.lev	$(SLIB)bigrm-5.lev	$(SLIB)bovine1.lev $(SLIB)quantum1.lev \
+	$(SLIB)bigrm-3.lev	$(SLIB)bigrm-4.lev	$(SLIB)bigrm-5.lev	$(SLIB)bovine1.lev $(SLIB)quantum1.lev $(SLIB)quantum2.lev \
 	$(SLIB)castle.lev	$(SLIB)dungeon		$(SLIB)earth.lev \
 	$(SLIB)fakewiz1.lev	$(SLIB)fakewiz2.lev	$(SLIB)fire.lev \
 	$(SLIB)jubilex.lev	$(SLIB)knox.lev		$(SLIB)medusa-1.lev \
@@ -1085,9 +1085,11 @@ $(SLIB)bovine1.lev:	$(DAT)bovine.des $(SBIN)lev_comp
 #SFD_INSTEAD $(SBIN)lev_comp $(DAT)bovine.des
 #none
 
-QUANTUM1= $(SLIB)quantum1.lev
+QUANTUM1= $(SLIB)quantum1.lev $(SLIB)quantum2.lev
 
 $(SLIB)quantum1.lev:	$(DAT)quantum.des $(SBIN)lev_comp
+$(SLIB)quantum2.lev:	$(DAT)quantum.des $(SBIN)lev_comp
+
 #SFD_INSTEAD $(SBIN)lev_comp $(DAT)quantum.des
 #none
 

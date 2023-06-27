@@ -7,7 +7,7 @@
 
 
 # 
-# "Quantum Experiments"
+# "Quantum Tunnel"
 #
 MAZE: "quantum1", ' '
 FLAGS:fountain_on_ground,tree_on_ground,hardfloor
@@ -16,25 +16,25 @@ GEOMETRY:center,center
 #         1         2         3         4         5         6         7   
 #12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
-                                                                           
-                          :::::::::::::::::::::::::                        
-                 :::::::::::::::::::::::::::::::::::::::::::               
-           :::::::::::::::|-----------S-----------|:::::::::::::::        
-         ::::::::|--------|          |:|          |--------|::::::::       
-        :::|-----|                   |:|                   |-----|:::      
-       :::|-                       ---+---                       -|:::     
-      :::|-                        |.....|                        -|:::    
-      ::|--------------------------|.....|--------------------------|::    
-      ::S::::::::::::::::::::::::::+.....+::::::::::::::::::::::::::S::    
-      ::|--------------------------|.....|--------------------------|::    
-      :::|-                        |.....|                        -|:::    
-       :::|-                       ---+---                       -|:::     
-        :::|-----|                   |:|                   |-----|:::      
-         ::::::::|--------|          |:|          |--------|::::::::        
-           :::::::::::::::|-----------S-----------|:::::::::::::::         
-                 :::::::::::::::::::::::::::::::::::::::::::               
-                          :::::::::::::::::::::::::                        
-                                                                           
+                         ---------------------------                       
+                ----------:::::::::::::::::::::::::----------              
+          -------:::::::::::::::::::::::::::::::::::::::::::-------        
+        ---:::::::::::::::|-----------S-----------|:::::::::::::::---     
+       --::::::::|--------|          |:|          |--------|::::::::--     
+      --:::|-----|                   |:|                   |-----|:::--    
+     --:::|-                       ---+---                       -|:::--   
+     |:::|-                        |.....|                        -|:::|   
+     |::|--------------------------|.....|--------------------------|::|   
+     |::S::::::::::::::::::::::::::+.....+::::::::::::::::::::::::::S::|   
+     |::|--------------------------|.....|--------------------------|::|   
+     |:::|-                        |.....|                        -|:::|   
+     --:::|-                       ---+---                       -|:::--   
+      --:::|-----|                   |:|                   |-----|:::--    
+       --::::::::|--------|          |:|          |--------|::::::::--      
+        ---:::::::::::::::|-----------S-----------|:::::::::::::::---      
+          -------:::::::::::::::::::::::::::::::::::::::::::-------        
+                ----------:::::::::::::::::::::::::----------              
+                         ---------------------------                       
 ENDMAP
 
 MONSTER_GENERATION: 78, ('Q', "quantum mechanic") 
@@ -42,7 +42,7 @@ MONSTER_GENERATION: 15, ('y', "yellow light")
 MONSTER_GENERATION: 5, ('y', "black light") 
 MONSTER_GENERATION: 2, ('Q', "elder quantum mechanic") 
 
-## Portal arrival point; just about anywhere on the right hand side of the map
+## Portal arrival point; just about anywhere on the top side of the map
 BRANCH:(42,00,74,06),(0,0,0,0)
 TELEPORT_REGION:(42,00,74,06),(0,0,0,0)
 TELEPORT_REGION:(09,04,67,14),(0,0,0,0),notele
@@ -65,11 +65,7 @@ BRAZIER:(39,09)
 BRAZIER:(38,08)
 BRAZIER:(38,10)
 
-MONSTER: ('q',"wumpus"),(38,09),hostile,asleep
-CONTAINER:('(',"chest"),not_trapped,no_pickup,locked,(38,09) {
-    OBJECT:('/',"disintegration")
-}
-
+STAIR:(38,09),down
 MONSTER: ('Q',"elder quantum mechanic"),(39,09),hostile,waitforu
 {
   OBJECT:('+',"sphere of annihilation")
@@ -94,5 +90,145 @@ MONSTER: ('y',"yellow light"),random,hostile
 MONSTER: ('y',"black light"),random,hostile
 MONSTER: ('y',"black light"),random,hostile
 MONSTER: ('y',"black light"),random,hostile
+
+
+# 
+# "Quantum Core"
+#
+MAZE: "quantum2", ' ', unlit
+FLAGS:fountain_on_ground,tree_on_ground,hardfloor
+TILESET:reinforced_tileset
+NAMING:"An ominous dungeon core", name_revealed_on_arrival
+GEOMETRY:center,center
+#         1         2         3         4         5         6         7   
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
+MAP
+                                    -----                                  
+                             --------...--------                           
+                           ---.....S.....S.....---                         
+                           |...|---|.....|---|...|                         
+        --------           |.|-|   |.....|   |-|.|           --------      
+       --......--          |.|     --...--     |.|          --......--     
+      --........--        --S--     --S--     --S--        --........--    
+      |..........|       --...--   --...--   --...--       |..........|    
+      |..........--------|.....----|.....|---|.....|--------..........|    
+      |..........+.......S.....S...S.....S...S.....S.......+..........|    
+      |..........--------|.....|---|.....|---|.....|--------..........|    
+      |..........|       --...--   --...--   --...--       |..........|    
+      --........--        --S--     --S--     --S--        --........--    
+       --......--          |.|     --...--     |.|          --......--     
+        --------           |.|-|   |.....|   |-|.|           --------      
+                           |...|---|.....|---|...|                         
+                           ---.....S.....S.....---                         
+                             --------...--------                           
+                                    -----                                  
+ENDMAP
+
+MONSTER_GENERATION: 50, ('q', "wumpus") 
+MONSTER_GENERATION: 25, ('v', "energy vortex") 
+MONSTER_GENERATION: 10, ('Q', "quantum mechanic") 
+MONSTER_GENERATION: 2, ('y', "yellow light") 
+MONSTER_GENERATION: 2, ('y', "black light") 
+MONSTER_GENERATION: 10, ('Q', "elder quantum mechanic") 
+MONSTER_GENERATION: 1, ('h', "tentacled one") 
+
+# Non diggable walls
+NON_DIGGABLE:(00,00,74,18)
+TELEPORT_REGION:(36,08,40,10),(0,0,0,0)
+TELEPORT_REGION:(06,04,70,14),(18,04,58,14),notele
+CARPET:(07,07,16,11),carpet_red
+CARPET:(60,07,69,11),carpet_red
+
+STAIR:(38,09),up
+MONSTER: ('q',"wumpus"),(38,07),hostile
+MONSTER: ('q',"wumpus"),(38,11),hostile
+
+DOOR:locked,(17,09),subtype:door_reinforced
+DOOR:locked,(59,09),subtype:door_reinforced
+
+$chest_place = { (38,01), (38,17) }
+SHUFFLE: $chest_place
+MONSTER: ('q',"wumpus"),$chest_place[0],hostile,maxhp
+MONSTER: ('q',"wumpus"),$chest_place[1],hostile,maxhp
+CONTAINER:('(',"chest"),not_trapped,no_pickup,locked,$chest_place[0] {
+    OBJECT:('/',"teleportation")
+    OBJECT:('(',"skeleton key")
+}
+CONTAINER:('(',"chest"),not_trapped,no_pickup,locked,$chest_place[1] {
+    OBJECT:('/',"cancellation")
+}
+
+MONSTER: ('q',"wumpus"),(36,02),hostile
+MONSTER: ('q',"wumpus"),(40,02),hostile
+MONSTER: ('q',"wumpus"),(36,16),hostile
+MONSTER: ('q',"wumpus"),(40,16),hostile
+
+MONSTER: ('v',"energy vortex"),(28,09),hostile,seen_traps
+MONSTER: ('q',"wumpus"),(28,08),hostile
+MONSTER: ('q',"wumpus"),(28,10),hostile
+MONSTER: ('q',"wumpus"),(27,09),hostile
+MONSTER: ('q',"wumpus"),(29,09),hostile
+
+MONSTER: ('v',"energy vortex"),(48,09),hostile,seen_traps
+MONSTER: ('q',"wumpus"),(48,08),hostile
+MONSTER: ('q',"wumpus"),(48,10),hostile
+MONSTER: ('q',"wumpus"),(47,09),hostile
+MONSTER: ('q',"wumpus"),(49,09),hostile
+
+$place = { (09,09), (67,09) }
+SHUFFLE: $place
+
+MONSTER: ('h',"tentacled one"),$place[0],hostile,seen_traps
+CONTAINER:('(',"chest"),not_trapped,no_pickup,locked,$place[0] {
+    OBJECT:('/',"disintegration")
+}
+MONSTER: ('q',"wumpus"),(10,08),hostile
+MONSTER: ('q',"wumpus"),(10,10),hostile
+
+IF[95%]{
+  MONSTER: ('h',"tentacled one"),$place[1],hostile,seen_traps
+  CONTAINER:('(',"chest"),not_trapped,no_pickup,locked,$place[1] {
+      OBJECT:('+',"black blade of disaster")
+  }
+}
+ELSE {
+  MONSTER: ('h',"elder tentacled one"),$place[1],hostile,seen_traps
+  CONTAINER:('(',"chest"),not_trapped,no_pickup,locked,$place[1] {
+      OBJECT:('+',"wish")
+  }
+  OBJECT:('%',"corpse"),(36,08),montype:('Q',"quantum mechanic")
+  ENGRAVING:(36,08),engrave,"It was an elder"
+}
+MONSTER: ('q',"wumpus"),(66,08),hostile
+MONSTER: ('q',"wumpus"),(66,10),hostile
+
+OBJECT:('(',"bookshelf"),(10,05)
+OBJECT:('(',"bookshelf"),(13,05)
+OBJECT:('(',"bookshelf"),(63,05)
+OBJECT:('(',"bookshelf"),(66,05)
+
+MONSTER: ('Q',"quantum mechanic"),random,hostile
+MONSTER: ('Q',"quantum mechanic"),random,hostile
+MONSTER: ('Q',"elder quantum mechanic"),random,hostile
+MONSTER: ('Q',"elder quantum mechanic"),random,hostile
+MONSTER: ('v',"energy vortex"),random,hostile,seen_traps
+MONSTER: ('v',"energy vortex"),random,hostile,seen_traps
+
+TRAP:"magic", (38,03)
+TRAP:"magic", (38,15)
+TRAP:"magic", (26,08)
+TRAP:"magic", (26,09)
+TRAP:"magic", (26,10)
+TRAP:"magic", (50,08)
+TRAP:"magic", (50,09)
+TRAP:"magic", (50,10)
+TRAP:"magic", random
+TRAP:"magic", random
+TRAP:"anti magic", random
+TRAP:"anti magic", random
+TRAP:"teleport", random
+TRAP:"teleport", random
+TRAP:"teleport", random
+TRAP:"teleport", random
 
 # end quantum.des
