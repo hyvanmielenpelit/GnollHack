@@ -197,7 +197,7 @@ ELSE {
       OBJECT:('+',"wish")
   }
   OBJECT:('%',"corpse"),(36,08),montype:('Q',"quantum mechanic")
-  ENGRAVING:(36,08),engrave,"It was an elder"
+  ENGRAVING:(36,08),engrave,"It was an elder!"
 }
 MONSTER: ('q',"wumpus"),(66,08),hostile
 MONSTER: ('q',"wumpus"),(66,10),hostile
