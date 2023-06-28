@@ -4984,6 +4984,7 @@ STATIC_OVL int
 domaterialcomponentsmenu(spell)
 int spell;
 {
+    int i;
     int j;
 
     //This might happen with amnesia etc., the spells no longer "age"
@@ -5033,7 +5034,7 @@ int spell;
     int matcnt = 0;
     int difmatcnt = 0;
 
-    //Check the material components here
+    /* Check the material components here */
     for(j = 0; matlists[spellmatcomp(spell)].matcomp[j].amount != 0; j++)
     {
         matcnt++;
@@ -5129,6 +5130,28 @@ int spell;
 
     }
 
+    /* Check that the same object has not been selected more than one time */
+    boolean same_found = FALSE;
+    for (j = 0; j < matcnt; j++)
+    {
+        for (i = j + 1; i < matcnt; i++)
+        {
+            if (selcomps[i] == selcomps[j])
+            {
+                same_found = TRUE;
+                break;
+            }
+        }
+    }
+
+    if (same_found)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_cant_ex1(ATR_NONE, CLR_MSG_FAIL, "use the same material component more than once.");
+        return 0;
+    }
+
+    /* Determine the amount to be mixed */
     boolean failure = !result || ((Confusion || Stunned) && spellev(spell) > 1 && rn2(spellev(spell)));
     int spells_gained_per_mixing = matlists[spellmatcomp(spell)].spellsgained;
     int selected_multiplier = 1;
@@ -5173,7 +5196,7 @@ int spell;
         }
     }
 
-    //Now go through the selected material components
+    /* Now go through the selected material components */
     for (j = 0; j < matcnt; j++)
     {
         struct obj* otmp = selcomps[j];
@@ -5209,9 +5232,9 @@ int spell;
                 || oresist_fire(otmp)
                 || is_obj_indestructible(otmp)
                 || Is_container(otmp)
-                || objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED
-                || objects[otmp->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED
-                || otmp->owornmask & ~W_WEAPON
+                || (objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)
+                || (objects[otmp->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
+                || (otmp->owornmask & ~W_WEAPON)
                 || (otmp->oclass == WEAPON_CLASS && (otmp->owornmask & W_WEAPON)))
                 usecomps = FALSE;
         }
@@ -5220,21 +5243,24 @@ int spell;
         if (usecomps /*!(mc->flags & MATCOMP_NOT_SPENT) && !obj_resists(otmp,0,100) && otmp->oclass == objects[mc->objectid[0]].oc_class */)
         {
             int used_amount = (failure ? 1 : selected_multiplier) * mc->amount;
+            long curquan = otmp->quan;
             if(otmp->quan >= used_amount)
             {
-                int i;
                 for (i = 0; i < used_amount; i++)
                     useup(otmp);
+
+                //Note: otmp cannot appear twice in the selcomps list due to the same_found check, so we are good to continue
             }
             else
             {
                 impossible("There should always be enough material components at this stage");
                 useupall(otmp);
+                failure = TRUE;
             }
         }
     }
 
-    //And now the result
+    /* And now the result */
     if (failure)
     {
         //Explosion
