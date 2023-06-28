@@ -765,7 +765,7 @@ register struct obj *spellbook;
             }
             else
             {
-                Sprintf(buf, "\"%s\" is %s. Continue?", Namebuf2, an(lvlbuf));
+                Sprintf(buf, "\'%s\' is %s. Continue?", Namebuf2, an(lvlbuf));
             }
         }
         else if (hallucinated)
