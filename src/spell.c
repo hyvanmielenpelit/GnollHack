@@ -5243,7 +5243,6 @@ int spell;
         if (usecomps /*!(mc->flags & MATCOMP_NOT_SPENT) && !obj_resists(otmp,0,100) && otmp->oclass == objects[mc->objectid[0]].oc_class */)
         {
             int used_amount = (failure ? 1 : selected_multiplier) * mc->amount;
-            long curquan = otmp->quan;
             if(otmp->quan >= used_amount)
             {
                 for (i = 0; i < used_amount; i++)

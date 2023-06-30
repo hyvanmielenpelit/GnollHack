@@ -657,7 +657,7 @@ namespace GnollHackClient
         }
         public void ClientCallback_PutStrEx(int win_id, string str, int attributes, int color, int append)
         {
-            if (win_id < 0)
+            if (win_id < 0 || win_id >= GHConstants.MaxGHWindows || _ghWindows[win_id] == null )
                 return;
 
             if (_ghWindows[win_id].WindowPrintStyle == GHWindowPrintLocations.RawPrint)

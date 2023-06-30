@@ -5288,7 +5288,10 @@ int final;
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SEMI_WIDE_LIST, NO_GLYPH, zerocreatewindowinfo);
 
 #if defined (DUMPLOG) || defined(DUMPHTML)
-    dumpwin = NHW_DUMPTXT;
+    if(iflags.in_dumplog)
+        dumpwin = NHW_DUMPTXT;
+    else
+        dumpwin = en_win;
 #else
     dumpwin = en_win;
 #endif
