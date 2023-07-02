@@ -1869,7 +1869,7 @@ int spell, booktype;
     if (objects[booktype].oc_spell_range > 0)
     {
         Sprintf(buf, "Range:            %ld'", objects[booktype].oc_spell_range * 5L);        
-        putstr(datawin, 0, buf);
+        putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
     /* Radius */
@@ -5695,7 +5695,11 @@ write_spells()
     const char* spelldir = "spells_for_wiki";
     struct stat st = { 0 };
     if (stat(spelldir, &st) == -1) {
+#ifdef WIN32
+        (void)mkdir(spelldir);
+#else
         (void)mkdir(spelldir, 0700);
+#endif
     }
     char fq_save[BUFSIZ];
     char name[BUFSIZ];
