@@ -684,6 +684,9 @@ E void NDECL(death_hint);
 E void NDECL(check_mobbed_hint);
 E void FDECL(item_destruction_hint, (int, BOOLEAN_P));
 E void NDECL(heal_ailments_upon_revival);
+#if !defined (GNH_MOBILE) && defined (DEBUG)
+E void NDECL(write_spells);
+#endif
 
 /* ### do_name.c ### */
 
@@ -3478,9 +3481,7 @@ E void NDECL(sortspells);
 E void FDECL(print_spell_level_text, (char*, int, BOOLEAN_P, UCHAR_P, BOOLEAN_P));
 E void NDECL(reset_spells);
 E long FDECL(get_object_spell_casting_penalty, (struct obj*));
-#if !defined (GNH_MOBILE) && defined (DEBUG)
-E void NDECL(write_spells);
-#endif
+E const char* FDECL(spelltypemnemonic, (int));
 
 
 /* ### steal.c ### */
