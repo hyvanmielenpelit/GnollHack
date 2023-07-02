@@ -5602,19 +5602,27 @@ winid window UNUSED;
 int attr, app, color UNUSED;
 const char* str;
 {
-    if (!str)
+    if (!str || !*str)
         return;
+
     char buf[BUFSIZ];
     *buf = 0;
+    boolean removetrailingcolon = FALSE;
     if ((attr & (ATR_SUBTITLE)) == ATR_SUBTITLE || (attr & (ATR_HEADING)) != 0)
+    {
         Strcat(buf, "## ");
-    else if((attr & (ATR_TITLE)) == ATR_TITLE)
-        Strcat(buf, "# ");
+        removetrailingcolon = TRUE;
+    }
+    else if ((attr & (ATR_TITLE)) == ATR_TITLE)
+        return; // Strcat(buf, "# "); // No need to print the title twice
     
     if ((attr & (ATR_INDENT_AT_COLON)) != 0)
         Strcat(buf, "- **");
 
     Strcat(buf, str);
+    int slen = (int)strlen(buf);
+    if (removetrailingcolon && slen > 0 && buf[slen - 1] == ':')
+        buf[slen - 1] = 0;
 
     if ((attr & (ATR_INDENT_AT_COLON)) != 0)
     {
@@ -5631,6 +5639,23 @@ const char* str;
             Strcat(buf, buf2);
         }
     }
+    else if ((attr & (ATR_INDENT_AT_DASH)) != 0)
+    {
+        char* p = strchr(buf, '-');
+        if (p)
+        {
+            char buf2[BUFSIZ];
+            char* p2 = p + 1;
+            while (*p2 && *p2 == ' ')
+                p2++;
+
+            Strcpy(buf2, p2);
+            Strcpy(p - 1, ". ");
+            Strcat(buf, buf2);
+        }
+    }
+
+    mungspaces(buf);
 
     if(!app)
         Strcat(buf, "\n");
