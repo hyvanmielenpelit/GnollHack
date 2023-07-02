@@ -2105,7 +2105,7 @@ wiz_map_levltyp(VOID_ARGS)
     return;
 }
 
-#ifndef GNH_MOBILE
+#if !defined(GNH_MOBILE) && defined(DEBUG)
 /* Save monster list */
 STATIC_PTR int
 wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
@@ -2556,7 +2556,7 @@ wiz_save_quest_texts(VOID_ARGS) /* Save a csv file for monsters */
 
     return 0;
 }
-#endif /* ifndef GNH_MOBILE */
+#endif /* !GNH_MOBILE && DEBUG */
 
 /* temporary? hack, since level type codes aren't the same as screen
    symbols and only the latter have easily accessible descriptions */

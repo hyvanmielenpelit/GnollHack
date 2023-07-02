@@ -1572,6 +1572,7 @@ int selected_encounter, x, y, max_attk_monsters;
 }
 
 
+#if !defined(GNH_MOBILE) && defined(DEBUG)
 /* Save encounter list */
 int
 wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
@@ -1660,6 +1661,6 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
 
     return 0;
 }
-
+#endif
 
 /*encounter.c*/

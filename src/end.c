@@ -880,29 +880,23 @@ time_t when; /* date+time at end of game */
 int
 wiz_dumplog(VOID_ARGS)
 {
-#if defined (DUMPLOG)
+#if defined (DUMPLOG) || defined (DUMPHTML)
     if (wizard) {
         time_t dumptime = getnow();
         char buf[BUFSZ] = "";
-        char fbuf[BUFSZ] = "";
-        char* fname;
-#ifdef SYSCF
-        if (!sysopt.dumplogfile)
-        {
-            pline1("No dumplog file specified in sysconf. Aborting.");
-            return 0;
-        }
-        fname = dump_fmtstr(sysopt.dumplogfile, fbuf);
-        if(fname)
-            strcpy(buf, fname);
-#else
-#ifdef DUMPLOG_FILE
-        fname = dump_fmtstr(DUMPLOG_FILE, fbuf);
-        if(fname)
-            strcpy(buf, fname);
+        char htmlbuf[BUFSZ] = "";
+        char* dumplogfilename = 0;
+        char* htmldumplogfilename = 0;
+#if defined (DUMPLOG)
+        dumplogfilename = print_dumplog_filename_to_buffer(buf);
 #endif
+#if defined (DUMPHTML)
+        htmldumplogfilename = print_dumphtml_filename_to_buffer(htmlbuf);
 #endif
-        pline("Writing dumplog to %s...", buf);
+        if(dumplogfilename)
+            pline("Writing dumplog to %s...", dumplogfilename);
+        if (htmldumplogfilename)
+            pline("Writing HTML dumplog to %s...", htmldumplogfilename);
         dump_open_log(dumptime);
         dump_everything(ASCENDED, dumptime);
         dump_close_log();

@@ -1044,8 +1044,9 @@ E boolean FDECL(intrinsic_possible, (int, struct permonst*));
 E void NDECL(encounter_init);
 E void FDECL(randomize_encounter, (int, int));
 E void FDECL(create_encounter, (int, int, int, int));
+#if !defined(GNH_MOBILE) && defined(DEBUG)
 E int NDECL(wiz_save_encounters);
-
+#endif
 
 /* ### end.c ### */
 
