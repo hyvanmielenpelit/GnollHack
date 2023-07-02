@@ -64,7 +64,9 @@ STATIC_DCL boolean FDECL(is_acceptable_component_object_type, (struct materialco
 STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (struct materialcomponent*, int));
 STATIC_DCL uchar FDECL(is_obj_acceptable_component, (struct materialcomponent*, struct obj* otmp, BOOLEAN_P));
 STATIC_DCL int FDECL(count_matcomp_alternatives, (struct materialcomponent*));
-STATIC_DCL struct extended_create_window_info FDECL(extended_create_window_info_from_spell, (int, BOOLEAN_P));
+STATIC_DCL struct extended_create_window_info FDECL(extended_create_window_info_for_spell, (BOOLEAN_P));
+STATIC_DCL const char* FDECL(get_spell_attribute_description, (int));
+STATIC_DCL const char* FDECL(get_targeting_description, (unsigned int));
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
 STATIC_VAR const char explodes[] = "radiates explosive energy";
@@ -85,8 +87,7 @@ NEARDATA const char* spl_sortchoices[NUM_SPELL_SORTBY] = {
 NEARDATA short spl_orderindx[MAXSPELL] = { 0 }; /* array of spl_book[] indices */
 
 STATIC_OVL struct extended_create_window_info
-extended_create_window_info_from_spell(spell_id, active)
-int spell_id UNUSED;
+extended_create_window_info_for_spell(active)
 boolean active;
 {
     struct extended_create_window_info info = { 0 };
@@ -644,10 +645,10 @@ check_added_to_your_bill_here:
 }
 
 void
-print_spell_level_text(buf, booktype, includeschool, capitalize_style)
+print_spell_level_text(buf, booktype, includeschool, capitalize_style, include_level)
 char* buf;
 int booktype;
-boolean includeschool;
+boolean includeschool, include_level;
 uchar capitalize_style;
 {
     if (!buf)
@@ -672,9 +673,9 @@ uchar capitalize_style;
         else if (objects[booktype].oc_spell_level == 0)
             Sprintf(lvlbuf, "major cantrip");
         else if (objects[booktype].oc_spell_level > 0)
-            Sprintf(lvlbuf, "%ld", objects[booktype].oc_spell_level);
+            Sprintf(lvlbuf, "%s%ld", include_level ? "level " : "", objects[booktype].oc_spell_level);
         else
-            Strcpy(lvlbuf, "inappropriate level");
+            Sprintf(lvlbuf, "inappropriate%s", include_level ? " level" : "");
     }
     switch(capitalize_style)
     {
@@ -739,7 +740,7 @@ register struct obj *spellbook;
         strcpy(Namebuf2, OBJ_NAME(objects[booktype]));
         *Namebuf2 = highc(*Namebuf2);
 
-        print_spell_level_text(lvlbuf, booktype, TRUE, FALSE);
+        print_spell_level_text(lvlbuf, booktype, TRUE, FALSE, FALSE);
 
         if (!confused && !hallucinated)
         {
@@ -1675,6 +1676,87 @@ int otyp;
         return "unknown type";
 }
 
+STATIC_OVL const char*
+get_spell_attribute_description(attrno)
+int attrno;
+{
+    if (attrno >= 0)
+    {
+        switch (attrno)
+        {
+        case A_STR:
+            return "Strength";
+        case A_DEX:
+            return "Dexterity";
+        case A_CON:
+            return "Constitution";
+        case A_INT:
+            return "Intelligence";
+        case A_WIS:
+            return "Wisdom";
+        case A_CHA:
+            return "Charisma";
+            break;
+        case A_MAX_INT_WIS:
+            return "Higher of intelligence and wisdom";
+        case A_MAX_INT_CHA:
+            return "Higher of intelligence and charisma";
+        case A_MAX_WIS_CHA:
+            return "Higher of wisdom and charisma";
+        case A_MAX_INT_WIS_CHA:
+            return "Higher of intelligence, wisdom, and charisma";
+        case A_AVG_INT_WIS:
+            return "Average of intelligence and wisdom";
+        case A_AVG_INT_CHA:
+            return "Average of intelligence and charisma";
+        case A_AVG_WIS_CHA:
+            return "Average of wisdom and charisma";
+        case A_AVG_INT_WIS_CHA:
+            return "Average of intelligence, wisdom, and charisma";
+        default:
+            return "Not applicable";
+        }
+    }
+    return "None";
+}
+
+STATIC_OVL const char*
+get_targeting_description(skill)
+unsigned int skill;
+{
+    if (skill > 0)
+    {
+        switch (skill)
+        {
+        case NODIR:
+            return "None";
+        case IMMEDIATE:
+            return "One target in selected direction";
+        case RAY:
+            if (skill & S1_SPELL_EXPLOSION_EFFECT)                  // TODO: S1_SPELL_EXPLOSION_EFFECT necessary? Bitwise and?
+                return "Ray that explodes on hit";
+            else
+                return "Ray in selected direction";
+        case TARGETED:
+            return "Target selected on screen";
+        case TOUCH:
+            return "Touch";
+        case IMMEDIATE_MULTIPLE_TARGETS:
+            return "Multiple targets in selected direction";
+        case IMMEDIATE_ONE_TO_THREE_TARGETS:
+            return "1/2/3 targets in selected direction depending on blessedness";
+        case IMMEDIATE_ONE_TO_SEVEN_TARGETS:
+            return "1/4/7 targets in selected direction depending on blessedness";
+        case IMMEDIATE_TWO_TO_SIX_TARGETS:
+            return "2/4/6 targets in selected direction depending on blessedness";
+        default:
+            return "Targeting not applicable";
+        }
+    }
+    else
+        return "No targeting";
+}
+
 int
 spelldescription(spell)
 int spell;
@@ -1687,22 +1769,29 @@ int spell;
         return 0;
     }
 
-    winid datawin = WIN_ERR;
-    int glyph = spell_to_glyph(spell);
-    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SPELL_DESCRIPTION_SCREEN, glyph, extended_create_window_info_from_spell(spell, TRUE));
-
     int booktype = spellid(spell);
+    return spelldescription_core(spell, booktype);
+}
+
+int
+spelldescription_core(spell, booktype)
+int spell, booktype;
+{
     char buf[BUFSZ];
     char buf2[BUFSZ];
     char buf3[BUFSZ];
 
+    winid datawin = WIN_ERR;
+    int glyph = booktype + FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
+    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SPELL_DESCRIPTION_SCREEN, glyph, extended_create_window_info_for_spell(TRUE));
+
     /* Name */
-    Strcpy(buf, spellname(spell));
+    Strcpy(buf, OBJ_NAME(objects[booktype]));
     *buf = highc(*buf);    
     putstr(datawin, ATR_TITLE, buf);
 
     /* Level & category*/
-    print_spell_level_text(buf, booktype, TRUE, TRUE);    
+    print_spell_level_text(buf, booktype, TRUE, TRUE, FALSE);    
     putstr(datawin, ATR_SUBTITLE, buf);
 
     /* One empty line here */
@@ -1713,67 +1802,22 @@ int spell;
     if (objects[booktype].oc_spell_attribute >= 0)
     {
         char statbuf[BUFSZ];
-        switch (objects[booktype].oc_spell_attribute)
-        {
-        case A_STR:
-            Strcpy(statbuf, "Strength");
-            break;
-        case A_DEX:
-            Strcpy(statbuf, "Dexterity");
-            break;
-        case A_CON:
-            Strcpy(statbuf, "Constitution");
-            break;
-        case A_INT:
-            Strcpy(statbuf, "Intelligence");
-            break;
-        case A_WIS:
-            Strcpy(statbuf, "Wisdom");
-            break;
-        case A_CHA:
-            Strcpy(statbuf, "Charisma");
-            break;
-        case A_MAX_INT_WIS:
-            Strcpy(statbuf, "Higher of intelligence and wisdom");
-            break;
-        case A_MAX_INT_CHA:
-            Strcpy(statbuf, "Higher of intelligence and charisma");
-            break;
-        case A_MAX_WIS_CHA:
-            Strcpy(statbuf, "Higher of wisdom and charisma");
-            break;
-        case A_MAX_INT_WIS_CHA:
-            Strcpy(statbuf, "Higher of intelligence, wisdom, and charisma");
-            break;
-        case A_AVG_INT_WIS:
-            Strcpy(statbuf, "Average of intelligence and wisdom");
-            break;
-        case A_AVG_INT_CHA:
-            Strcpy(statbuf, "Average of intelligence and charisma");
-            break;
-        case A_AVG_WIS_CHA:
-            Strcpy(statbuf, "Average of wisdom and charisma");
-            break;
-        case A_AVG_INT_WIS_CHA:
-            Strcpy(statbuf, "Average of intelligence, wisdom, and charisma");
-            break;
-        default:
-            Strcpy(statbuf, "Not applicable");
-            break;
-        }
-
+        Strcpy(statbuf, get_spell_attribute_description(objects[booktype].oc_spell_attribute));
         Sprintf(buf, "Attributes:       %s", statbuf);        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    /* Success percentage */
-    int successpct = percent_success(spell, TRUE);
-    int successpct_unlimited = percent_success(spell, FALSE);
-    Strcpy(buf2, "");
-    if(successpct_unlimited < 0 || successpct_unlimited > 100)
-        Sprintf(buf2, " (base %d%%)", successpct_unlimited);
-    Sprintf(buf, "Success chance:   %d%%%s", successpct, buf2);
-    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+    if (spell >= 0)
+    {
+        /* Success percentage */
+        int successpct = percent_success(spell, TRUE);
+        int successpct_unlimited = percent_success(spell, FALSE);
+        Strcpy(buf2, "");
+        if (successpct_unlimited < 0 || successpct_unlimited > 100)
+            Sprintf(buf2, " (base %d%%)", successpct_unlimited);
+        Sprintf(buf, "Success chance:   %d%%%s", successpct, buf2);
+        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+    }
 
     /* Mana cost*/
     double manacost = get_spellbook_adjusted_mana_cost(booktype);
@@ -1814,42 +1858,7 @@ int spell;
     /* DirType */
     if (objects[booktype].oc_dir > 0)
     {
-        Strcpy(buf2, "");
-        switch (objects[booktype].oc_dir)
-        {
-        case NODIR:
-            Strcpy(buf2, "None");
-            break;
-        case IMMEDIATE:
-            Strcpy(buf2, "One target in selected direction");
-            break;
-        case RAY:
-            if(objects[booktype].oc_spell_flags & S1_SPELL_EXPLOSION_EFFECT)
-                Strcpy(buf2, "Ray that explodes on hit");
-            else
-                Strcpy(buf2, "Ray in selected direction");
-            break;
-        case TARGETED:
-            Strcpy(buf2, "Target selected on screen");
-            break;
-        case TOUCH:
-            Strcpy(buf2, "Touch");
-            break;
-        case IMMEDIATE_MULTIPLE_TARGETS:
-            Strcpy(buf2, "Multiple targets in selected direction");
-            break;
-        case IMMEDIATE_ONE_TO_THREE_TARGETS:
-            Strcpy(buf2, "1/2/3 targets in selected direction depending on blessedness");
-            break;
-        case IMMEDIATE_ONE_TO_SEVEN_TARGETS:
-            Strcpy(buf2, "1/4/7 targets in selected direction depending on blessedness");
-            break;
-        case IMMEDIATE_TWO_TO_SIX_TARGETS:
-            Strcpy(buf2, "2/4/6 targets in selected direction depending on blessedness");
-            break;
-        default:
-            break;
-        }
+        Strcpy(buf2, get_targeting_description(objects[booktype].oc_dir));
         Sprintf(buf, "Targeting:        %s", buf2);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
@@ -5550,6 +5559,268 @@ dump_spells()
             putstr(0, ATR_PREFORM, buf);
         }
     }
+}
+#endif
+
+#if !defined (GNH_MOBILE) && defined (DEBUG)
+STATIC_DCL winid FDECL(write_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
+STATIC_DCL void FDECL(write_display_nhwindow, (winid, BOOLEAN_P));
+STATIC_DCL void FDECL(write_destroy_nhwindow, (winid));
+STATIC_DCL void FDECL(write_putstr_ex, (winid, const char*, int, int, int));
+STATIC_PTR int FDECL(CFDECLSPEC spell_wiki_cmp, (const genericptr, const genericptr));
+
+STATIC_VAR int write_fd = -1;
+
+winid
+write_create_nhwindow_ex(type, style, glyph, info)
+int type UNUSED, style UNUSED, glyph UNUSED;
+struct extended_create_window_info info UNUSED;
+{
+    return 0;
+}
+
+void
+write_display_nhwindow(window, blocking)
+winid window UNUSED;
+boolean blocking UNUSED; /* with ttys, all windows are blocking */
+{
+    return;
+}
+
+void
+write_destroy_nhwindow(window)
+winid window UNUSED;
+{
+    return;
+}
+   
+void
+write_putstr_ex(window, str, attr, color, app)
+winid window;
+int attr, app, color;
+const char* str;
+{
+    if (!str)
+        return;
+    char buf[BUFSIZ];
+    *buf = 0;
+    if ((attr & (ATR_SUBTITLE)) == ATR_SUBTITLE || (attr & (ATR_HEADING)) != 0)
+        Strcat(buf, "## ");
+    else if((attr & (ATR_TITLE)) == ATR_TITLE)
+        Strcat(buf, "# ");
+    
+    if ((attr & (ATR_INDENT_AT_COLON)) != 0)
+        Strcat(buf, "- **");
+
+    Strcat(buf, str);
+
+    if ((attr & (ATR_INDENT_AT_COLON)) != 0)
+    {
+        char* p = strchr(buf, ':');
+        if (p)
+        {
+            char buf2[BUFSIZ];
+            char* p2 = p + 1;
+            while (*p2 && *p2 == ' ')
+                p2++;
+
+            Strcpy(buf2, p2);
+            Strcpy(p + 1, "** ");
+            Strcat(buf, buf2);
+        }
+    }
+
+    if(!app)
+        Strcat(buf, "\n");
+
+    (void)write(write_fd, buf, strlen(buf));
+}
+
+STATIC_OVL int CFDECLSPEC
+spell_wiki_cmp(p, q)
+const genericptr p;
+const genericptr q;
+{
+    if (!p || !q)
+        return 0;
+
+    short idx1 = *(short*)p;
+    short idx2 = *(short*)q;
+
+    const char* name1 = OBJ_NAME(objects[idx1]);
+    const char* name2 = OBJ_NAME(objects[idx2]);
+
+    schar skl1 = objects[idx1].oc_skill;
+    schar skl2 = objects[idx2].oc_skill;
+
+    const char* skl_name1 = spelltypemnemonic(skl1);
+    const char* skl_name2 = spelltypemnemonic(skl2);
+
+    long lvl1 = objects[idx1].oc_spell_level;
+    long lvl2 = objects[idx2].oc_spell_level;
+
+    int skill_res = 0;
+    if (skl_name1 && skl_name2)
+        skill_res = strcmpi(skl_name1, skl_name2);
+    else if (skl_name1)
+        return 1;
+    else
+        return -1;
+
+    if (!skill_res && lvl1 != lvl2)
+    {
+        return (int)(lvl1 - lvl2);
+    }
+
+    if (!skill_res && (name1 || name2))
+    {
+        if (name1 && name2)
+            skill_res = strcmpi(name1, name2);
+        else if (name1)
+            return 1;
+        else
+            return -1;
+    }
+
+    return skill_res;
+}
+
+void
+write_spells()
+{
+    pline("Starting writing spells...");
+
+    const char* spelldir = "spells_for_wiki";
+    (void)mkdir(spelldir);                 // TODO: Is it needed to have something checking if the folder exists?
+    char fq_save[BUFSIZ];
+    char name[BUFSIZ];
+
+    saved_windowprocs = windowprocs;
+    windowprocs.win_putstr_ex = write_putstr_ex;
+    windowprocs.win_create_nhwindow_ex = write_create_nhwindow_ex;
+    windowprocs.win_display_nhwindow = write_display_nhwindow;
+    windowprocs.win_destroy_nhwindow = write_destroy_nhwindow;
+
+    int i, j;
+    for (i = FIRST_SPELL; i < SPE_BLANK_PAPER; i++)
+    {
+        name[0] = '\0';
+        (void)Strcpy(name, OBJ_NAME(objects[i]));
+        for (j = 0; j < strlen(name); j++) {
+
+            if (name[j] == ' ')
+                name[j] = '-';
+        }
+
+        *name = highc(*name);
+
+        fq_save[0] = '\0';
+        (void)Strcat(fq_save, spelldir);
+        (void)Strcat(fq_save, "/");
+        (void)Strcat(fq_save, name);
+        (void)Strcat(fq_save, ".md");
+
+        (void)remove(fq_save);
+
+#ifdef MAC
+        write_fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        write_fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        if (write_fd < 0)
+            continue;
+
+        spelldescription_core(-1, i);
+
+        (void)close(write_fd);
+    }
+    windowprocs = saved_windowprocs;
+
+    short spell_indices[SPE_BLANK_PAPER - FIRST_SPELL] = { 0 };
+    for (i = FIRST_SPELL; i < SPE_BLANK_PAPER; i++)
+        spell_indices[i - FIRST_SPELL] = (short)(i);
+
+    qsort(spell_indices, SPE_BLANK_PAPER - FIRST_SPELL, sizeof(short), spell_wiki_cmp);
+
+    schar skill_idx = P_NONE;
+    schar prev_skill_idx = P_NONE;
+    int spell_level = -3;
+    int prev_spell_level = -3;
+    int spl_idx = 0;
+    for (i = 0; i < SPE_BLANK_PAPER - FIRST_SPELL; i++)
+    {
+        spl_idx = spell_indices[i];
+        skill_idx = objects[spl_idx].oc_skill;
+        spell_level = (int)objects[spl_idx].oc_spell_level;
+        if (prev_skill_idx != skill_idx)
+        {
+            if(prev_skill_idx != P_NONE && write_fd >= 0)
+                (void)close(write_fd);
+
+            name[0] = '\0';
+            (void)Strcpy(name, spelltypemnemonic(skill_idx));
+            Strcat(name, " spells");
+            for (j = 0; j < strlen(name); j++) {
+
+                if (name[j] == ' ')
+                    name[j] = '-';
+            }
+
+            *name = highc(*name);
+
+            fq_save[0] = '\0';
+            (void)Strcat(fq_save, spelldir);
+            (void)Strcat(fq_save, "/");
+            (void)Strcat(fq_save, name);
+            (void)Strcat(fq_save, ".md");
+
+            (void)remove(fq_save);
+
+#ifdef MAC
+            write_fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+            write_fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+            if (write_fd < 0)
+                continue;
+
+            char buf[BUFSIZ];
+            char buf2[BUFSIZ];
+            Strcpy(buf2, spelltypemnemonic(skill_idx));
+            *buf2 = highc(*buf2);
+            Strcpy(buf, "# ");
+            Strcat(buf, buf2);
+            Strcat(buf, " Spells\n");
+            (void)write(write_fd, buf, strlen(buf));
+        }
+
+        if (prev_spell_level != spell_level)
+        {
+            char buf[BUFSIZ];
+            char buf2[BUFSIZ];
+            print_spell_level_text(buf2, spl_idx, FALSE, 2, TRUE);
+            Strcpy(buf, "## ");
+            Strcat(buf, buf2);
+            Strcat(buf, "\n");
+            (void)write(write_fd, buf, strlen(buf));
+        }
+
+        char buf[BUFSIZ];
+        char buf2[BUFSIZ];
+        Strcpy(buf2, OBJ_NAME(objects[spl_idx]));
+        *buf2 = highc(*buf2);
+        Strcpy(buf, "- [[");
+        Strcat(buf, buf2);
+        Strcat(buf, "]]\n");
+        (void)write(write_fd, buf, strlen(buf));
+
+        prev_skill_idx = skill_idx;
+        prev_spell_level = spell_level;
+    }
+    if (write_fd >= 0)
+        (void)close(write_fd);
+
+    pline("Done!");
 }
 #endif
 

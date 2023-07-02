@@ -117,6 +117,7 @@ volatile
 #endif
 
 NEARDATA struct window_procs windowprocs;
+NEARDATA struct window_procs saved_windowprocs = { 0 };
 
 #ifdef WINCHAIN
 #define CHAINR(x) , x

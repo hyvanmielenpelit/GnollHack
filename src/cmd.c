@@ -2556,6 +2556,21 @@ wiz_save_quest_texts(VOID_ARGS) /* Save a csv file for monsters */
 
     return 0;
 }
+
+/* Save spells int .md files */
+STATIC_PTR int
+wiz_save_spells(VOID_ARGS) /* Save a csv file for monsters */
+{
+    if (wizard)
+    {
+        write_spells();
+    }
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_quest_texts)));
+
+    return 0;
+}
+
 #endif /* !GNH_MOBILE && DEBUG */
 
 /* temporary? hack, since level type codes aren't the same as screen
@@ -5883,6 +5898,8 @@ struct ext_func_tab extcmdlist[] = {
             wiz_save_glyph2tiles, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsavequesttexts", "save quest texts into a file",
             wiz_save_quest_texts, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizsavespells", "save spells into .md files",
+            wiz_save_spells, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
     { '\0', "wizcrown", "make the god crown you",
             wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },

@@ -909,7 +909,7 @@ register struct obj* obj;
     }
     if (stats_known && obj->oclass == SPBOOK_CLASS && !(objects[otyp].oc_flags & O1_NON_SPELL_SPELLBOOK))
     {
-        print_spell_level_text(buf2, otyp, TRUE, TRUE);
+        print_spell_level_text(buf2, otyp, TRUE, TRUE, FALSE);
         Sprintf(eos(buf), " - %s", buf2);
     }
 
@@ -1125,7 +1125,7 @@ register struct obj* obj;
 
     if (stats_known && obj->oclass == SPBOOK_CLASS && !(objects[otyp].oc_flags & O1_NON_SPELL_SPELLBOOK))
     {
-        print_spell_level_text(buf2, otyp, FALSE, TRUE);
+        print_spell_level_text(buf2, otyp, FALSE, TRUE, FALSE);
         Sprintf(buf, "Level:                  %s", buf2);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }

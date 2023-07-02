@@ -3446,6 +3446,7 @@ E int NDECL(dospellview);
 E int FDECL(spell_skilltype, (int));
 E int FDECL(spelleffects, (int, BOOLEAN_P, struct monst*));
 E int FDECL(spelldescription, (int));
+E int FDECL(spelldescription_core, (int, int));
 E const char* FDECL(get_obj_saving_throw_description, (struct obj*));
 E const char* FDECL(get_otyp_saving_throw_description, (int));
 E int FDECL(setspellhotkey, (int));
@@ -3474,9 +3475,13 @@ E uchar FDECL(is_obj_component_for, (int, struct obj*));
 E void NDECL(dump_spells);
 #endif
 E void NDECL(sortspells);
-E void FDECL(print_spell_level_text, (char*, int, BOOLEAN_P, UCHAR_P));
+E void FDECL(print_spell_level_text, (char*, int, BOOLEAN_P, UCHAR_P, BOOLEAN_P));
 E void NDECL(reset_spells);
 E long FDECL(get_object_spell_casting_penalty, (struct obj*));
+#if !defined (GNH_MOBILE) && defined (DEBUG)
+E void NDECL(write_spells);
+#endif
+
 
 /* ### steal.c ### */
 
