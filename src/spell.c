@@ -6,6 +6,8 @@
 
 #include "hack.h"
 #include <math.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 /* spellmenu arguments; 0 thru n-1 used as spl_book[] index when swapping */
 #define SPELLMENU_DETAILS (-4)
@@ -5596,8 +5598,8 @@ winid window UNUSED;
    
 void
 write_putstr_ex(window, str, attr, color, app)
-winid window;
-int attr, app, color;
+winid window UNUSED;
+int attr, app, color UNUSED;
 const char* str;
 {
     if (!str)
@@ -5691,7 +5693,10 @@ write_spells()
     pline("Starting writing spells...");
 
     const char* spelldir = "spells_for_wiki";
-    (void)mkdir(spelldir);                 // TODO: Is it needed to have something checking if the folder exists?
+    struct stat st = { 0 };
+    if (stat(spelldir, &st) == -1) {
+        (void)mkdir(spelldir, 0700);
+    }
     char fq_save[BUFSIZ];
     char name[BUFSIZ];
 
@@ -5706,7 +5711,8 @@ write_spells()
     {
         name[0] = '\0';
         (void)Strcpy(name, OBJ_NAME(objects[i]));
-        for (j = 0; j < strlen(name); j++) {
+        int len = (int)strlen(name);
+        for (j = 0; j < len; j++) {
 
             if (name[j] == ' ')
                 name[j] = '-';
@@ -5760,7 +5766,8 @@ write_spells()
             name[0] = '\0';
             (void)Strcpy(name, spelltypemnemonic(skill_idx));
             Strcat(name, " spells");
-            for (j = 0; j < strlen(name); j++) {
+            int len = (int)strlen(name);
+            for (j = 0; j < len; j++) {
 
                 if (name[j] == ' ')
                     name[j] = '-';
