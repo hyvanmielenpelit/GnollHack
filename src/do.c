@@ -8615,39 +8615,77 @@ write_monsters()
 #endif
     if (write_fd >= 0)
     {
-        short m_idx;
-        for (i = 0; i < NUM_MONSTERS - LOW_PM; i++)
+        char buf[BUFSIZ];
+        for (i = 0; i < 26; i++)
         {
-            m_idx = monster_indices[i];
+            Sprintf(buf, "- [[Monsters starting with %c]]\n", (char)('A' + i));
+            (void)write(write_fd, buf, strlen(buf));
+        }
+        (void)close(write_fd);
+        write_fd = -1;
+    }
 
-            if (i <= 0 || lowc(*mons[m_idx].mname) != lowc(*mons[monster_indices[i - 1]].mname))
+    short m_idx;
+    for (i = 0; i < NUM_MONSTERS - LOW_PM; i++)
+    {
+        m_idx = monster_indices[i];
+
+        if (i <= 0 || lowc(*mons[m_idx].mname) != lowc(*mons[monster_indices[i - 1]].mname))
+        {
+            if (i > 0 && write_fd >= 0)
             {
-                char buf[BUFSIZ];
-                char buf2[BUFSIZ];
-                strncpy(buf2, mons[m_idx].mname, 1);
-                buf2[1] = 0;
-                *buf2 = highc(*buf2);
-                Strcpy(buf, "## ");
-                Strcat(buf, buf2);
-                Strcat(buf, "\n");
-                (void)write(write_fd, buf, strlen(buf));
+                (void)close(write_fd);
+                write_fd = -1;
             }
+
+            name[0] = '\0';
+            Sprintf(name, "Monsters-starting-with-%c", highc(*mons[m_idx].mname));
+            fq_save[0] = '\0';
+            Strcat(fq_save, monsterdir);
+            Strcat(fq_save, "/");
+            Strcat(fq_save, name);
+            Strcat(fq_save, ".md");
+
+            (void)remove(fq_save);
+
+#ifdef MAC
+            write_fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+            write_fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+            if (write_fd < 0)
+                continue;
 
             char buf[BUFSIZ];
             char buf2[BUFSIZ];
-            Strcpy(buf2, mons[m_idx].mname);
+            strncpy(buf2, mons[m_idx].mname, 1);
+            buf2[1] = 0;
             *buf2 = highc(*buf2);
-            Strcpy(buf, "- [[");
+            Strcpy(buf, "## ");
             Strcat(buf, buf2);
-            Strcat(buf, "]]\n");
+            Strcat(buf, "\n");
             (void)write(write_fd, buf, strlen(buf));
         }
-        if (write_fd >= 0)
-        {
-            (void)close(write_fd);
-            write_fd = -1;
-        }
+
+        if (write_fd < 0)
+            continue;
+
+        char buf[BUFSIZ];
+        char buf2[BUFSIZ];
+        Strcpy(buf2, mons[m_idx].mname);
+        *buf2 = highc(*buf2);
+        Strcpy(buf, "- [[");
+        (void)Strcat(buf, buf2);
+        Strcat(buf, "]]\n");
+
+        (void)write(write_fd, buf, strlen(buf));
     }
+    if (write_fd >= 0)
+    {
+        (void)close(write_fd);
+        write_fd = -1;
+    }
+    
 
     pline("Done!");
 }
