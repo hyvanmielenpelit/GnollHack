@@ -21,7 +21,7 @@ STATIC_PTR int NDECL(wipeoff);
 STATIC_DCL int FDECL(menu_drop, (int));
 STATIC_DCL int NDECL(currentlevel_rewrite);
 STATIC_DCL void NDECL(final_level);
-STATIC_DCL void FDECL(print_corpse_properties, (winid, int, BOOLEAN_P));
+STATIC_DCL void FDECL(print_corpse_properties, (winid, int));
 /* STATIC_DCL boolean FDECL(badspot, (XCHAR_P,XCHAR_P)); */
 
 extern int n_dgns; /* number of dungeons, from dungeon.c */
@@ -511,10 +511,9 @@ boolean unit_fixed_width;
 }
 
 STATIC_OVL
-void print_corpse_properties(datawin, mnum, isprobing)
+void print_corpse_properties(datawin, mnum)
 winid datawin;
 int mnum;
-boolean isprobing UNUSED;
 {
     struct permonst* ptr = &mons[mnum];
     char buf[BUFSZ];
@@ -3428,7 +3427,7 @@ register struct obj* obj;
                 Sprintf(buf, "Corpse properties:");
                 putstr(datawin, ATR_HEADING, buf);
 
-                print_corpse_properties(datawin, obj->corpsenm, FALSE);
+                print_corpse_properties(datawin, obj->corpsenm);
             }
             else if ((context.game_difficulty <= 0 || flags.force_hint) && flags.max_hint_difficulty >= MIN_DIFFICULTY_LEVEL) /* Shows up on expert, too, just in case, since this is GnollHack-specific */
             {
@@ -8550,6 +8549,7 @@ write_monsters()
     }
     char fq_save[BUFSIZ];
     char name[BUFSIZ];
+    char buf[BUFSIZ];
 
     saved_windowprocs = windowprocs;
     windowprocs.win_putstr_ex = write_putstr_ex;
@@ -8589,6 +8589,10 @@ write_monsters()
 
         monsterdescription_core((struct monst*)0, &mons[i]);
 
+        Strcpy(buf, "Corpse properties:");
+        putstr(0, ATR_HEADING, buf);
+        print_corpse_properties(0, i);
+
         (void)close(write_fd);
     }
     windowprocs = saved_windowprocs;
@@ -8615,7 +8619,6 @@ write_monsters()
 #endif
     if (write_fd >= 0)
     {
-        char buf[BUFSIZ];
         for (i = 0; i < 26; i++)
         {
             Sprintf(buf, "- [[Monsters starting with %c]]\n", (char)('A' + i));
