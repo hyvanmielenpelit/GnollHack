@@ -1151,7 +1151,7 @@ unsigned short trflags;
         {
             ; /* nothing */
         } 
-        else if (thitu(8, weapon_total_dmg_value(otmp, &youmonst, (struct monst*)0, 1), &otmp, (const char*)0)) 
+        else if (thitu(8, weapon_total_dmg_value(otmp, &youmonst, (struct monst*)0, 1), &otmp, (const char*)0, (struct monst*)0, (char*)0))
         {
             if (otmp)
                 obfree(otmp, (struct obj *) 0);
@@ -1185,7 +1185,7 @@ unsigned short trflags;
         {
             ; /* nothing */
         } 
-        else if (thitu(7, weapon_total_dmg_value(otmp, &youmonst, (struct monst*)0, 1), &otmp, "little dart")) 
+        else if (thitu(7, weapon_total_dmg_value(otmp, &youmonst, (struct monst*)0, 1), &otmp, "little dart", (struct monst*)0, (char*)0)) 
         {
             if (otmp)
             {
@@ -2374,7 +2374,7 @@ int style;
             if(singleobj)
                 play_immediate_ray_sound_at_location(object_soundsets[objects[singleobj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_MONSTER, bhitpos.x, bhitpos.y);
             if (thitu(10 + singleobj->enchantment, weapon_total_dmg_value(singleobj, &youmonst, (struct monst*)0, 1),
-                      &singleobj, (char *) 0))
+                      &singleobj, (char *) 0, (struct monst*)0, (char*)0))
                 stop_occupation();
         }
         if (style == ROLL) {

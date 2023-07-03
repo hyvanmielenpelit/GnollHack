@@ -1060,6 +1060,7 @@ E int NDECL(done2);
 #ifdef USE_TRAMPOLI
 E void FDECL(done_intr, (int));
 #endif
+E void FDECL(get_killer_name_and_format, (struct monst*, char*, int*));
 E void FDECL(done_in_by, (struct monst *, int));
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */
 E void VDECL(panic, (const char *, ...)) PRINTF_F(1, 2) NORETURN;
@@ -2242,7 +2243,7 @@ E void FDECL(Delay, (int));
 
 /* ### mthrowu.c ### */
 
-E int FDECL(thitu, (int, int, struct obj **, const char *));
+E int FDECL(thitu, (int, int, struct obj **, const char *, struct monst*, const char*));
 E int FDECL(ohitmon, (struct monst *, struct obj *, int, BOOLEAN_P));
 E void FDECL(thrwmu, (struct monst *));
 E int FDECL(spitmu, (struct monst *, struct attack *));

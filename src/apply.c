@@ -4756,7 +4756,7 @@ struct obj *obj;
 
                         hitvalu = 8 + otmp->enchantment;
                         hitu = thitu(hitvalu, weapon_total_dmg_value(otmp, &youmonst, mtmp, 0),
-                                     &otmp, (char *)0);
+                                     &otmp, (char *)0, (struct monst*)0, (char*)0);
                         if (hitu) {
                             pline_The("%s hits you as you try to snatch it!",
                                       the(onambuf));

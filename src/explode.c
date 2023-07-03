@@ -947,7 +947,7 @@ struct obj *obj; /* only scatter this obj        */
                         if (bigmonst(youmonst.data))
                             hitvalu++;
                         hitu = thitu(hitvalu, weapon_total_dmg_value(stmp->obj, &youmonst, (struct monst*)0, 1),
-                                     &stmp->obj, (char *) 0);
+                                     &stmp->obj, (char *) 0, (struct monst*)0, "exploded");
                         if (!stmp->obj)
                             stmp->stopped = TRUE;
                         if (hitu) {

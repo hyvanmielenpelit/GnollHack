@@ -40,10 +40,12 @@ STATIC_VAR int mesg_given; /* for m_throw()/thitu() 'miss' message */
 
 /* hero is hit by something other than a monster */
 int
-thitu(tlev, dam, objp, name)
+thitu(tlev, dam, objp, name, origmonst, verb_in_past_tense)
 int tlev, dam;
 struct obj **objp;
 const char *name; /* if null, then format `*objp' */
+struct monst* origmonst; /* monster who threw the item, if any */
+const char* verb_in_past_tense;
 {
     struct obj *obj = objp ? *objp : 0;
     const char *onm, *knm;
@@ -62,12 +64,29 @@ const char *name; /* if null, then format `*objp' */
         knm = strcpy(knmbuf, killer_xname(obj));
         kprefix = KILLED_BY; /* killer_name supplies "an" if warranted */
     } else {
-        knm = name;
+        //knm = name;
+        knm = strcpy(knmbuf, name);
         /* [perhaps ought to check for plural here to] */
         if (!strncmpi(name, "the ", 4) || !strncmpi(name, "an ", 3)
             || !strncmpi(name, "a ", 2))
             kprefix = KILLED_BY;
     }
+
+    if (origmonst)
+    {
+        if (origmonst == &youmonst)
+        {
+            Sprintf(eos(knmbuf), " %s by %sself", verb_in_past_tense ? verb_in_past_tense : "thrown", uhim());
+        }
+        else
+        {
+            char kname[BUFSZ] = "";
+            int kformat = 0;
+            get_killer_name_and_format(origmonst, kname, &kformat);
+            Sprintf(eos(knmbuf), " %s by %s", verb_in_past_tense ? verb_in_past_tense : "thrown", kformat == KILLED_BY_AN ? an(kname) : kname);
+        }
+    }
+
     onm = (obj && obj_is_pname(obj)) ? the(name)
           : (obj && obj->quan > 1L) ? name
             : an(name);
@@ -878,7 +897,7 @@ struct obj *obj;         /* missile (or stack providing it) */
             /* fall through */
             case CREAM_PIE:
             case BLINDING_VENOM:
-                hitu = thitu(8, 0, &singleobj, (char *) 0);
+                hitu = thitu(8, 0, &singleobj, (char *) 0, mon, singleobj->otyp == BLINDING_VENOM ? "spat" : "thrown");
                 break;
             default:
                 if (is_launcher(singleobj))
@@ -925,11 +944,13 @@ struct obj *obj;         /* missile (or stack providing it) */
                 //All cases get dex ranged to-hit bonus
                 hitv += m_ranged_strdex_to_hit_bonus(mon);
 
+                boolean is_fired = FALSE;
                 //Give bow damage bonuses
                 if(singleobj && is_ammo(singleobj))
                 {
                     if(MON_WEP(mon) && ammo_and_launcher(singleobj, MON_WEP(mon)))
                     {
+                        is_fired = TRUE;
                         //Fitting ammo gets launcher's weapon_to_hit_value and weapon_dmg_value and str damage bonus if bow, fixed for crossbows
                         //LAUNCHER HITVAL
                         hitv += weapon_to_hit_value(MON_WEP(mon), &youmonst, mon, 2); //MON_WEP(mon)->enchantment - greatest_erosion(MON_WEP(mon));
@@ -961,7 +982,7 @@ struct obj *obj;         /* missile (or stack providing it) */
                 dam += mon->mdaminc;
                 if (dam < 1)
                     dam = 1;
-                hitu = thitu(hitv, dam, &singleobj, (char *) 0);
+                hitu = thitu(hitv, dam, &singleobj, (char *) 0, mon, is_fired ? "fired" : "thrown");
             }
 
             if (hitu && singleobj->opoisoned && is_poisonable(singleobj))
@@ -1659,7 +1680,7 @@ struct monst *mtmp;
         if (dam < 1)
             dam = 1;
 
-        (void) thitu(hitv, dam, &otmp, (char *) 0);
+        (void) thitu(hitv, dam, &otmp, (char *) 0, mtmp, "thrust");
 
         update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
         stop_occupation();
