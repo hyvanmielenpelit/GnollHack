@@ -4289,21 +4289,31 @@ int defensetype;
 
 int
 monsterdescription(mon)
-register struct monst* mon;
+struct monst* mon;
 {
     if (!mon)
         return 0;
+    struct permonst* ptr = mon->data;
+    return monsterdescription_core(mon, ptr);
+}
+
+int
+monsterdescription_core(mon, ptr)
+struct monst* mon;
+struct permonst* ptr;
+{
+    if (!ptr)
+        return 0;
 
     winid datawin = WIN_ERR;
-    int glyph = any_mon_to_glyph(mon, rn2_on_display_rng);
-    int gui_glyph = maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL, 0UL, MAT_NONE, 0));
+    int glyph = mon ? any_mon_to_glyph(mon, rn2_on_display_rng) : (int)(ptr - &mons[0]) + GLYPH_MON_OFF;
+    int gui_glyph = mon ? maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL, 0UL, MAT_NONE, 0)) : glyph;
 
     datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN, gui_glyph, extended_create_window_info_from_mon_with_flags(mon, WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS));
 
     //int mnum = mon->mnum;
-    struct permonst* ptr = mon->data;
     boolean is_you = (mon == &youmonst);
-    short cham = mon->cham;
+    short cham = mon ? mon->cham : NON_PM;
 
     char buf[BUFSZ];
     char buf2[BUFSZ];
@@ -4313,8 +4323,8 @@ register struct monst* mon;
     strcpy(buf2, "");
     strcpy(buf3, "");
 
-    const char* monster_name = x_monnam(mon, ARTICLE_NONE, (char*)0, (has_mname(mon)) ? (SUPPRESS_SADDLE | SUPPRESS_IT) : SUPPRESS_IT, FALSE);
-    const char* monster_type_name = mon_monster_name(mon);
+    const char* monster_name = mon ? x_monnam(mon, ARTICLE_NONE, (char*)0, (has_mname(mon)) ? (SUPPRESS_SADDLE | SUPPRESS_IT) : SUPPRESS_IT, FALSE) : ptr->mname;
+    const char* monster_type_name = mon ? mon_monster_name(mon) : ptr->mname;
     boolean contains_type_name = TRUE;
 
     strcpy(buf2, "");
@@ -4329,7 +4339,7 @@ register struct monst* mon;
 
     /* Name */
     Sprintf(buf, "%s%s", 
-        x_monnam(mon, ARTICLE_NONE, (char*)0, (has_mname(mon)) ? (SUPPRESS_SADDLE | SUPPRESS_IT) : SUPPRESS_IT, FALSE),
+        mon ? x_monnam(mon, ARTICLE_NONE, (char*)0, (has_mname(mon)) ? (SUPPRESS_SADDLE | SUPPRESS_IT) : SUPPRESS_IT, FALSE) : ptr->mname,
            !contains_type_name ? buf3 : "");
     *buf = highc(*buf);
     if (ptr->mtitle && strcmp(ptr->mtitle, ""))
@@ -4362,15 +4372,15 @@ register struct monst* mon;
 
     if (cham >= LOW_PM)
     {
-        Strcpy(buf2, mon->female && mons[cham].mfemalename ? mons[cham].mfemalename : mons[cham].mname);
+        Strcpy(buf2, mon && mon->female && mons[cham].mfemalename ? mons[cham].mfemalename : mons[cham].mname);
         *buf2 = highc(*buf2);
         Sprintf(buf, "True form:              %s", buf2);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    int relevant_hp = is_you ? (Upolyd ? u.mh : u.uhp) : mon->mhp;
-    int relevant_hpmax = is_you ? (Upolyd ? u.mhmax : u.uhpmax) : mon->mhpmax;
-    int relevant_level = is_you ? ptr->mlevel : mon->m_lev;
+    int relevant_hp = mon ? (is_you ? (Upolyd ? u.mh : u.uhp) : mon->mhp) : 0;
+    int relevant_hpmax = mon ? (is_you ? (Upolyd ? u.mhmax : u.uhpmax) : mon->mhpmax) : 0;
+    int relevant_level = !mon || is_you ? ptr->mlevel : mon->m_lev;
 
     Strcpy(buf2, "");
     if (relevant_level != ptr->mlevel)
@@ -4378,49 +4388,44 @@ register struct monst* mon;
         Sprintf(buf2, " (base %d)", ptr->mlevel);
     }
 
-    Sprintf(buf, "Hit dice:               %d%s", relevant_level, buf2);
-    
+    Sprintf(buf, "Hit dice:               %d%s", relevant_level, buf2);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-    Sprintf(buf, "Hit points:             %d (%d)", relevant_hp, relevant_hpmax);
-    
+    if (mon)
+    {
+        Sprintf(buf, "Hit points:             %d (%d)", relevant_hp, relevant_hpmax);
+        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+    }
+    Sprintf(buf, "Move:                   %d\"", ptr->mmove);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-    Sprintf(buf, "Move:                   %d\"", ptr->mmove);
-    
-    putstr(datawin, ATR_INDENT_AT_COLON, buf);
-
-    strcpy(buf2, "");
-    int ac = is_you ? u.uac : find_mac(mon);
+    Strcpy(buf2, "");
+    int ac = !mon ? ptr->ac : is_you ? u.uac : find_mac(mon);
     if (ac != ptr->ac)
     {
         Sprintf(buf2, " (base %d)", ptr->ac);
     }
 
-    Sprintf(buf, "Armor class:            %d%s", ac, buf2);
-    
+    Sprintf(buf, "Armor class:            %d%s", ac, buf2);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-    strcpy(buf2, "");
-    int mc = magic_negation(mon);
+    Strcpy(buf2, "");
+    int mc = !mon ? ptr->mc : magic_negation(mon);
     if (mc != ptr->mc)
     {
         Sprintf(buf2, " (base %d)", ptr->mc);
     }
 
-    Sprintf(buf, "Magic cancellation:     %d%s (%d%%)", mc, buf2, magic_negation_percentage(mc));
-    
+    Sprintf(buf, "Magic cancellation:     %d%s (%d%%)", mc, buf2, magic_negation_percentage(mc));    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-    Sprintf(buf, "Magic resistance:       %d%%", ptr->mr);
-    
+    Sprintf(buf, "Magic resistance:       %d%%", ptr->mr);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-    Sprintf(buf, "Alignment:              %s", ptr->maligntyp > 0 ? "Lawful" : ptr->maligntyp < 0 ? "Chaotic" : "Neutral");
-    
+    Sprintf(buf, "Alignment:              %s", ptr->maligntyp > 0 ? "Lawful" : ptr->maligntyp < 0 ? "Chaotic" : "Neutral");  
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-    if (mon->subtype > 0)
+    if (mon && mon->subtype > 0)
     {
         if ((mons[mon->mnum].mflags6 & M6_USES_DOG_SUBTYPES) != 0 && mon->subtype < NUM_DOG_BREEDS)
         {
@@ -4450,32 +4455,29 @@ register struct monst* mon;
         }
     }
 
-    if (!is_neuter(ptr))
+    if (mon && !is_neuter(ptr))
     {
         Sprintf(buf, "Gender:                 %s", mon->female ? "Female" : "Male");
-        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    strcpy(buf2, get_monster_size_text(ptr->msize));
+    Strcpy(buf2, get_monster_size_text(ptr->msize));
     *buf2 = highc(*buf2);
 
-    Sprintf(buf, "Size:                   %s", buf2);
-    
+    Sprintf(buf, "Size:                   %s", buf2);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     int number_of_attacks = 0;
     int i;
     for (i = 0; i < NATTK; i++)
     {
-        if (mon->data->mattk[i].aatyp == 0 && mon->data->mattk[i].adtyp == 0 && mon->data->mattk[i].damd == 0 && mon->data->mattk[i].damn == 0 && mon->data->mattk[i].damp == 0)
+        if (ptr->mattk[i].aatyp == 0 && ptr->mattk[i].adtyp == 0 && ptr->mattk[i].damd == 0 && ptr->mattk[i].damn == 0 && ptr->mattk[i].damp == 0)
             break;
         else
             number_of_attacks++;
     }
 
-    Sprintf(buf, "Number of attacks:      %d", number_of_attacks);
-    
+    Sprintf(buf, "Number of attacks:      %d", number_of_attacks);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     for (i = 0; i < number_of_attacks; i++)
@@ -4487,51 +4489,51 @@ register struct monst* mon;
         char specialbuf1[BUFSZ];
         char specialbuf2[BUFSZ];
 
-        strcpy(attypebuf, get_attack_type_text(mon->data->mattk[i].aatyp));
+        strcpy(attypebuf, get_attack_type_text(ptr->mattk[i].aatyp));
         *attypebuf = highc(*attypebuf);
 
         strcpy(adtypebuf, "");
-        const char* adtxt = get_damage_type_text((short)mon->data->mattk[i].adtyp);
+        const char* adtxt = get_damage_type_text((short)ptr->mattk[i].adtyp);
         if (adtxt && strcmp(adtxt, ""))
         {
             Sprintf(adtypebuf, ", %s", adtxt);
         }
 
         strcpy(damagebuf, "");
-        if ((mon->data->mattk[i].damn > 0 && mon->data->mattk[i].damd > 0) || mon->data->mattk[i].damp != 0)
+        if ((ptr->mattk[i].damn > 0 && ptr->mattk[i].damd > 0) || ptr->mattk[i].damp != 0)
         {
             boolean dpart = FALSE;
             strcpy(damagebuf, " ");
 
-            if ((mon->data->mattk[i].damn > 0 && mon->data->mattk[i].damd > 0))
+            if ((ptr->mattk[i].damn > 0 && ptr->mattk[i].damd > 0))
             {
                 dpart = TRUE;
-                Sprintf(eos(damagebuf), "%dd%d", mon->data->mattk[i].damn, mon->data->mattk[i].damd);
+                Sprintf(eos(damagebuf), "%dd%d", ptr->mattk[i].damn, ptr->mattk[i].damd);
             }
 
-            if (dpart && mon->data->mattk[i].damp > 0)
+            if (dpart && ptr->mattk[i].damp > 0)
                 Strcat(damagebuf, "+");
 
-            if(mon->data->mattk[i].damp != 0)
-                Sprintf(eos(damagebuf), "%d", mon->data->mattk[i].damp);
+            if(ptr->mattk[i].damp != 0)
+                Sprintf(eos(damagebuf), "%d", ptr->mattk[i].damp);
         }
         
-        strcpy(specialbuf, "");
-        strcpy(specialbuf1, "");
-        if (mon->data->mattk[i].aatyp == AT_SMMN && mon->data->mattk[i].mlevel > 0)
+        Strcpy(specialbuf, "");
+        Strcpy(specialbuf1, "");
+        if (ptr->mattk[i].aatyp == AT_SMMN && ptr->mattk[i].mlevel > 0)
         {
-            Sprintf(specialbuf1, "success %d%%", mon->data->mattk[i].mlevel);
+            Sprintf(specialbuf1, "success %d%%", ptr->mattk[i].mlevel);
         }
-        else if (mon->data->mattk[i].aatyp == AT_MAGC && mon->data->mattk[i].mlevel > 0)
+        else if (ptr->mattk[i].aatyp == AT_MAGC && ptr->mattk[i].mlevel > 0)
         {
-            Sprintf(specialbuf1, "as level %d caster", mon->data->mattk[i].mlevel);
+            Sprintf(specialbuf1, "as level %d caster", ptr->mattk[i].mlevel);
         }
         
-        strcpy(specialbuf2, "");
-        if (mon->data->mattk[i].mcadj != 0)
+        Strcpy(specialbuf2, "");
+        if (ptr->mattk[i].mcadj != 0)
         {
-            Sprintf(specialbuf2, "%s%d MC %s", mon->data->mattk[i].mcadj > 0 ? "+" : "", mon->data->mattk[i].mcadj,
-                mon->data->mattk[i].mcadj <= 0 ? "penalty" : "bonus");
+            Sprintf(specialbuf2, "%s%d MC %s", ptr->mattk[i].mcadj > 0 ? "+" : "", ptr->mattk[i].mcadj,
+                ptr->mattk[i].mcadj <= 0 ? "penalty" : "bonus");
         }
 
         if (strcmp(specialbuf1, "") || strcmp(specialbuf2, ""))
@@ -4550,8 +4552,8 @@ register struct monst* mon;
 
     }
 
-    print_monster_statistics(datawin, mon);
-    print_monster_intrinsics(datawin, mon);
+    print_monster_statistics(datawin, mon, ptr);
+    print_monster_intrinsics(datawin, mon, ptr);
     print_monster_status(datawin, mon);
 
     display_nhwindow(datawin, FALSE);
@@ -8219,6 +8221,7 @@ STATIC_DCL void FDECL(write_display_nhwindow, (winid, BOOLEAN_P));
 STATIC_DCL void FDECL(write_destroy_nhwindow, (winid));
 STATIC_DCL void FDECL(write_putstr_ex, (winid, const char*, int, int, int));
 STATIC_PTR int FDECL(CFDECLSPEC spell_wiki_cmp, (const genericptr, const genericptr));
+STATIC_PTR int FDECL(CFDECLSPEC monster_wiki_cmp, (const genericptr, const genericptr));
 
 STATIC_VAR int write_fd = -1;
 
@@ -8439,7 +8442,10 @@ write_spells()
         if (prev_skill_idx != skill_idx)
         {
             if (prev_skill_idx != P_NONE && write_fd >= 0)
+            {
                 (void)close(write_fd);
+                write_fd = -1;
+            }
 
             name[0] = '\0';
             Strcpy(name, spelltypemnemonic(skill_idx));
@@ -8503,7 +8509,145 @@ write_spells()
         prev_spell_level = spell_level;
     }
     if (write_fd >= 0)
+    {
         (void)close(write_fd);
+        write_fd = -1;
+    }
+
+    pline("Done!");
+}
+
+STATIC_OVL int CFDECLSPEC
+monster_wiki_cmp(p, q)
+const genericptr p;
+const genericptr q;
+{
+    if (!p || !q)
+        return 0;
+
+    short idx1 = *(short*)p;
+    short idx2 = *(short*)q;
+
+    const char* name1 = mons[idx1].mname;
+    const char* name2 = mons[idx2].mname;
+
+    return strcmpi(name1, name2);
+}
+
+void
+write_monsters()
+{
+    pline("Starting writing monsters...");
+
+    const char* monsterdir = "monsters_for_wiki";
+    struct stat st = { 0 };
+    if (stat(monsterdir, &st) == -1) {
+#ifdef WIN32
+        (void)mkdir(monsterdir);
+#else
+        (void)mkdir(monsterdir, 0700);
+#endif
+    }
+    char fq_save[BUFSIZ];
+    char name[BUFSIZ];
+
+    saved_windowprocs = windowprocs;
+    windowprocs.win_putstr_ex = write_putstr_ex;
+    windowprocs.win_create_nhwindow_ex = write_create_nhwindow_ex;
+    windowprocs.win_display_nhwindow = write_display_nhwindow;
+    windowprocs.win_destroy_nhwindow = write_destroy_nhwindow;
+
+    int i, j;
+    for (i = LOW_PM; i < NUM_MONSTERS; i++)
+    {
+        name[0] = '\0';
+        (void)Strcpy(name, mons[i].mname);
+        int len = (int)strlen(name);
+        for (j = 0; j < len; j++) {
+
+            if (name[j] == ' ')
+                name[j] = '-';
+        }
+
+        *name = highc(*name);
+
+        fq_save[0] = '\0';
+        (void)Strcat(fq_save, monsterdir);
+        (void)Strcat(fq_save, "/");
+        (void)Strcat(fq_save, name);
+        (void)Strcat(fq_save, ".md");
+
+        (void)remove(fq_save);
+
+#ifdef MAC
+        write_fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        write_fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        if (write_fd < 0)
+            continue;
+
+        monsterdescription_core((struct monst*)0, &mons[i]);
+
+        (void)close(write_fd);
+    }
+    windowprocs = saved_windowprocs;
+
+    short monster_indices[NUM_MONSTERS] = { 0 };
+    for (i = LOW_PM; i < NUM_MONSTERS; i++)
+        monster_indices[i - LOW_PM] = (short)(i);
+
+    qsort(monster_indices, NUM_MONSTERS - LOW_PM, sizeof(short), monster_wiki_cmp);
+
+    name[0] = '\0';
+    fq_save[0] = '\0';
+    Strcat(fq_save, monsterdir);
+    Strcat(fq_save, "/");
+    Strcat(fq_save, "Monsters");
+    Strcat(fq_save, ".md");
+
+    (void)remove(fq_save);
+
+#ifdef MAC
+    write_fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+    write_fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+    if (write_fd >= 0)
+    {
+        short m_idx;
+        for (i = 0; i < NUM_MONSTERS - LOW_PM; i++)
+        {
+            m_idx = monster_indices[i];
+
+            if (i <= 0 || lowc(*mons[m_idx].mname) != lowc(*mons[monster_indices[i - 1]].mname))
+            {
+                char buf[BUFSIZ];
+                char buf2[BUFSIZ];
+                strncpy(buf2, mons[m_idx].mname, 1);
+                buf2[1] = 0;
+                *buf2 = highc(*buf2);
+                Strcpy(buf, "## ");
+                Strcat(buf, buf2);
+                Strcat(buf, "\n");
+                (void)write(write_fd, buf, strlen(buf));
+            }
+
+            char buf[BUFSIZ];
+            char buf2[BUFSIZ];
+            Strcpy(buf2, mons[m_idx].mname);
+            *buf2 = highc(*buf2);
+            Strcpy(buf, "- [[");
+            Strcat(buf, buf2);
+            Strcat(buf, "]]\n");
+            (void)write(write_fd, buf, strlen(buf));
+        }
+        if (write_fd >= 0)
+        {
+            (void)close(write_fd);
+            write_fd = -1;
+        }
+    }
 
     pline("Done!");
 }

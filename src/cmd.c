@@ -2557,16 +2557,30 @@ wiz_save_quest_texts(VOID_ARGS) /* Save a csv file for monsters */
     return 0;
 }
 
-/* Save spells int .md files */
+/* Save spells into .md files */
 STATIC_PTR int
-wiz_save_spells(VOID_ARGS) /* Save a csv file for monsters */
+wiz_save_spells(VOID_ARGS)
 {
     if (wizard)
     {
         write_spells();
     }
     else
-        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_quest_texts)));
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_spells)));
+
+    return 0;
+}
+
+/* Save monsters into .md files */
+STATIC_PTR int
+wiz_save_monsters2(VOID_ARGS)
+{
+    if (wizard)
+    {
+        write_monsters();
+    }
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_monsters2)));
 
     return 0;
 }
@@ -5886,20 +5900,22 @@ struct ext_func_tab extcmdlist[] = {
     { C('f'), "wizmap", "map the level",
             wiz_map, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #if !defined(GNH_MOBILE) && defined(DEBUG)
-    { '\0', "wizsavemon", "save monsters into a file",
+    { '\0', "wizsavemon", "save monsters into a csv file",
             wiz_save_monsters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { '\0', "wizsaveenc", "save encounters into a file",
+    { '\0', "wizsaveenc", "save encounters into a csv file",
             wiz_save_encounters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { '\0', "wizsavetiledata", "save tile data into a file",
+    { '\0', "wizsavetiledata", "save tile data into a csv file",
             wiz_save_tiledata, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizcounttiles", "count the number of tiles",
             wiz_count_tiles, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { '\0', "wizsaveglyph2tiles", "save glyph2tile into a file",
+    { '\0', "wizsaveglyph2tiles", "save glyph2tile into a csv file",
             wiz_save_glyph2tiles, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { '\0', "wizsavequesttexts", "save quest texts into a file",
+    { '\0', "wizsavequesttexts", "save quest texts into a txt file",
             wiz_save_quest_texts, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsavespells", "save spells into .md files",
             wiz_save_spells, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizsavemonsters", "save monsters into .md files",
+            wiz_save_monsters2, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
     { '\0', "wizcrown", "make the god crown you",
             wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },

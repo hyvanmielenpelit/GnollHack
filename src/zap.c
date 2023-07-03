@@ -1597,19 +1597,20 @@ struct monst* mtmp;
 
     datawin = create_nhwindow(NHW_MENU);
 
-    print_monster_intrinsics(datawin, mtmp);
-    print_monster_statistics(datawin, mtmp);
+    print_monster_intrinsics(datawin, mtmp, mtmp->data);
+    print_monster_statistics(datawin, mtmp, mtmp->data);
 
     display_nhwindow(datawin, FALSE);
     destroy_nhwindow(datawin), datawin = WIN_ERR;
 
 }
 
-void print_monster_intrinsics(datawin, mtmp)
+void print_monster_intrinsics(datawin, mtmp, ptr)
 winid datawin;
 struct monst* mtmp;
+struct permonst* ptr;
 {
-    if (!mtmp)
+    if (!ptr)
         return;
 
     if (datawin == WIN_ERR)
@@ -1618,7 +1619,7 @@ struct monst* mtmp;
     boolean is_you = (mtmp == &youmonst);
     char buf[BUFSZ];
 
-    Sprintf(buf, "%s abilities:", is_you ? "Innate" : "Current"); // , s_suffix(noit_Monnam(mtmp)));
+    Sprintf(buf, "%s abilities:", !mtmp || is_you ? "Innate" : "Current"); // , s_suffix(noit_Monnam(mtmp)));
     putstr(datawin, ATR_HEADING, buf);
 
     int abilcnt = 0;
@@ -1635,19 +1636,19 @@ struct monst* mtmp;
         unsigned long ibit = prop_to_innate(i);
         unsigned long ibit2 = prop_to_innate2(i);
 
-        if (mtmp->data->mresists & ibit)
+        if (ptr->mresists & ibit)
             has_innate = TRUE;
 
-        if (mtmp->data->mresists2 & ibit2)
+        if (ptr->mresists2 & ibit2)
             has_innate2 = TRUE;
 
-        if (mtmp->mprops[i] & M_EXTRINSIC)
+        if (mtmp && (mtmp->mprops[i] & M_EXTRINSIC) != 0)
             has_extrinsic = TRUE;
 
-        if (mtmp->mprops[i] & M_INTRINSIC_ACQUIRED)
+        if (mtmp && (mtmp->mprops[i] & M_INTRINSIC_ACQUIRED) != 0)
             has_instrinsic_acquired = TRUE;
         
-        temp_dur = mtmp->mprops[i] & M_TIMEOUT;
+        temp_dur = mtmp  ? (mtmp->mprops[i] & M_TIMEOUT) : 0;
         if (temp_dur)
             has_temporary = TRUE;
 
@@ -1657,8 +1658,8 @@ struct monst* mtmp;
         {
             char endbuf[BUFSZ];
             char endbuf2[BUFSZ];
-            strcpy(endbuf, "");
-            strcpy(endbuf2, "");
+            Strcpy(endbuf, "");
+            Strcpy(endbuf2, "");
 
 #if 0
             if (has_innate || has_innate2)
@@ -1705,21 +1706,18 @@ struct monst* mtmp;
             *namebuf = highc(*namebuf);
 
             abilcnt++;
-            Sprintf(buf, " %2d - %s%s", abilcnt, namebuf, endbuf2);
-            
+            Sprintf(buf, " %2d - %s%s", abilcnt, namebuf, endbuf2);            
             putstr(datawin, ATR_INDENT_AT_DASH, buf);
         }
     }
 
     if (!abilcnt)
     {
-        strcpy(buf, " (None)");
-        
+        strcpy(buf, " (None)");        
         putstr(datawin, 0, buf);
     }
 
-    Sprintf(buf, "Classifications:");// , noit_mon_nam(mtmp));
-    
+    Sprintf(buf, "Classifications:");// , noit_mon_nam(mtmp));    
     putstr(datawin, ATR_HEADING, buf);
 
     abilcnt = 0;
@@ -1733,9 +1731,9 @@ struct monst* mtmp;
                 bit = bit << i;
 
             unsigned long mflags = 
-                j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : j == 3 ? mtmp->data->mflags3 : j == 4 ? mtmp->data->mflags4 : 
-                j == 5 ? mtmp->data->mflags5 : j == 6 ? mtmp->data->mflags6 : j == 7 ? mtmp->data->mflags7 : j == 8 ? mtmp->data->mflags8 : 
-                mtmp->data->mflags1; /* Fall back case*/
+                j == 1 ? ptr->mflags1 : j == 2 ? ptr->mflags2 : j == 3 ? ptr->mflags3 : j == 4 ? ptr->mflags4 :
+                j == 5 ? ptr->mflags5 : j == 6 ? ptr->mflags6 : j == 7 ? ptr->mflags7 : j == 8 ? ptr->mflags8 :
+                ptr->mflags1; /* Fall back case*/
 
             if (mflags & bit)
             {
@@ -1745,8 +1743,7 @@ struct monst* mtmp;
                 {
                     *descbuf = highc(*descbuf);
                     abilcnt++;
-                    Sprintf(buf, " %2d - %s", abilcnt, descbuf);
-                    
+                    Sprintf(buf, " %2d - %s", abilcnt, descbuf);                    
                     putstr(datawin, ATR_INDENT_AT_DASH, buf);
                 }
             }
@@ -1754,10 +1751,10 @@ struct monst* mtmp;
     }
 
     /* Heads */
-    if (!(mtmp->data->heads == 1 && mtmp->heads_left == 1))
+    if (!(ptr->heads == 1 && (!mtmp || mtmp->heads_left == 1)))
     {
         char headbuf[BUFSZ];
-        switch (mtmp->data->heads)
+        switch (ptr->heads)
         {
         case 0:
             strcpy(headbuf, "Headless");
@@ -1772,113 +1769,100 @@ struct monst* mtmp;
             strcpy(headbuf, "Three-headed");
             break;
         default:
-            Sprintf(headbuf, "%d-headed", mtmp->data->heads);
+            Sprintf(headbuf, "%d-headed", ptr->heads);
             break;
         }
 
-        if (mtmp->heads_left != mtmp->data->heads)
+        if (mtmp && mtmp->heads_left != ptr->heads)
             Sprintf(eos(headbuf), " (%d head%s left)", mtmp->heads_left, plur(mtmp->heads_left));
 
         abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, headbuf);
-        
+        Sprintf(buf, " %2d - %s", abilcnt, headbuf);        
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
     }
 
     if (!abilcnt)
     {
-        strcpy(buf, " (None)");
-        
+        strcpy(buf, " (None)");        
         putstr(datawin, 0, buf);
     }
 
 
-    Sprintf(buf, "Notable:");// , noit_mon_nam(mtmp));
-    
+    Sprintf(buf, "Notable:");// , noit_mon_nam(mtmp));    
     putstr(datawin, ATR_HEADING, buf);
 
     abilcnt = 0;
 
-    if (mon_hates_silver(mtmp))
+    if (mtmp ? mon_hates_silver(mtmp) : hates_silver(ptr))
     {
         abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to silver weapons");
-        
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to silver weapons");        
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
     }
 
-    if (mon_hates_blessed(mtmp))
+    if (mtmp ? mon_hates_blessed(mtmp) : hates_blessed(ptr))
     {
         abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to blessed weapons");
-        
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to blessed weapons");        
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
     }
 
-    if (mon_hates_cursed(mtmp))
+    if (mtmp ? mon_hates_cursed(mtmp) : hates_cursed(ptr))
     {
         abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to cursed weapons");
-        
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to cursed weapons");        
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
     }
 
-    if (mon_hates_light(mtmp))
+    if (mtmp ? mon_hates_light(mtmp) : hates_light(ptr))
     {
         abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to lit weapons");
-        
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to lit weapons");        
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
     }
 
     abilcnt++;
-    Sprintf(buf, " %2d - %s", abilcnt, mon_eschews_cursed(mtmp) ? "Eschews cursed items" : "Does not eschew cursed items");
-    
+    Sprintf(buf, " %2d - %s", abilcnt, (mtmp ? mon_eschews_cursed(mtmp) : eschews_cursed(ptr) || hates_cursed(ptr)) ? "Eschews cursed items" : "Does not eschew cursed items");    
     putstr(datawin, ATR_INDENT_AT_DASH, buf);
 
-    if (mon_eschews_silver(mtmp))
+    if (mtmp ? mon_eschews_silver(mtmp) : eschews_silver(ptr))
     {
         abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Eschews silver items");
-        
+        Sprintf(buf, " %2d - %s", abilcnt, "Eschews silver items");        
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
     }
 
-    if (mon_eschews_blessed(mtmp))
+    if (mtmp ? mon_eschews_blessed(mtmp) : eschews_blessed(ptr))
     {
         abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Eschews blessed items");
-        
+        Sprintf(buf, " %2d - %s", abilcnt, "Eschews blessed items");        
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
     }
 
-    if (mon_eschews_light(mtmp))
+    if (mtmp ? mon_eschews_light(mtmp) : hates_light(ptr))
     {
         abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Eschews lit items");
-        
+        Sprintf(buf, " %2d - %s", abilcnt, "Eschews lit items");        
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
     }
 
-    if (is_hell_hound(mtmp->data))
+    if (is_hell_hound(ptr))
     {
         abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Loves cursed food");
-        
+        Sprintf(buf, " %2d - %s", abilcnt, "Loves cursed food");        
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
     }
 
-    if (is_non_eater(mtmp->data))
+    if (is_non_eater(ptr))
     {
         abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Does not eat");
-        
+        Sprintf(buf, " %2d - %s", abilcnt, "Does not eat");        
         putstr(datawin, ATR_INDENT_AT_DASH, buf);
     }
 
 
-    int zombietype = mon_to_zombie(mtmp->mnum);
-    int mummytype = mon_to_mummy(mtmp->mnum);
+    int zombietype = mon_to_zombie((int)(ptr - &mons[0]));
+    int mummytype = mon_to_mummy((int)(ptr - &mons[0]));
 
     if (zombietype > NON_PM || mummytype > NON_PM)
     {
@@ -1892,8 +1876,7 @@ struct monst* mtmp;
 
     if (!abilcnt)
     {
-        strcpy(buf, " (None)");
-        
+        strcpy(buf, " (None)");        
         putstr(datawin, 0, buf);
     }
 
@@ -1994,11 +1977,12 @@ struct monst* mtmp;
     
 }
 
-void print_monster_statistics(datawin, mtmp)
+void print_monster_statistics(datawin, mtmp, ptr)
 winid datawin;
 struct monst* mtmp;
+struct permonst* ptr;
 {
-    if (!mtmp)
+    if (!ptr)
         return;
 
     if (datawin == WIN_ERR)
@@ -2006,13 +1990,13 @@ struct monst* mtmp;
 
     char buf[BUFSZ];
 
-    boolean are_the_same = (
-        mtmp->data->str == M_ACURR(mtmp, A_STR) &&
-        mtmp->data->dex == M_ACURR(mtmp, A_DEX) &&
-        mtmp->data->con == M_ACURR(mtmp, A_CON) &&
-        mtmp->data->intl == M_ACURR(mtmp, A_INT) &&
-        mtmp->data->wis == M_ACURR(mtmp, A_WIS) &&
-        mtmp->data->cha == M_ACURR(mtmp, A_CHA)
+    boolean are_the_same = !mtmp ? TRUE : (
+        ptr->str == M_ACURR(mtmp, A_STR) &&
+        ptr->dex == M_ACURR(mtmp, A_DEX) &&
+        ptr->con == M_ACURR(mtmp, A_CON) &&
+        ptr->intl == M_ACURR(mtmp, A_INT) &&
+        ptr->wis == M_ACURR(mtmp, A_WIS) &&
+        ptr->cha == M_ACURR(mtmp, A_CHA)
         );
 
     if(are_the_same)
@@ -2024,17 +2008,17 @@ struct monst* mtmp;
     putstr(datawin, ATR_HEADING, buf);
 
     Sprintf(buf, " St:%s Dx:%d Co:%d In:%d Wi:%d Ch:%d",
-        get_strength_string(mtmp->data->str),
-        mtmp->data->dex,
-        mtmp->data->con,
-        mtmp->data->intl,
-        mtmp->data->wis,
-        mtmp->data->cha
+        get_strength_string(ptr->str),
+        ptr->dex,
+        ptr->con,
+        ptr->intl,
+        ptr->wis,
+        ptr->cha
     );
     
     putstr(datawin, 0, buf);
 
-    if (!are_the_same)
+    if (!are_the_same && mtmp)
     {
         Sprintf(buf, "Current attribute scores:");
         

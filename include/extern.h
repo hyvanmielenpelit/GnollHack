@@ -651,6 +651,7 @@ E int FDECL(itemdescription, (struct obj*));
 E int FDECL(corpsedescription, (struct obj*));
 E void FDECL(printweight, (char*, int, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(monsterdescription, (struct monst*));
+E int FDECL(monsterdescription_core, (struct monst*, struct permonst*));
 E int NDECL(dotogglehpbars);
 E int NDECL(dotogglegrid);
 E int NDECL(dotogglemonstertargeting);
@@ -686,6 +687,7 @@ E void FDECL(item_destruction_hint, (int, BOOLEAN_P));
 E void NDECL(heal_ailments_upon_revival);
 #if !defined (GNH_MOBILE) && defined (DEBUG)
 E void NDECL(write_spells);
+E void NDECL(write_monsters);
 #endif
 
 /* ### do_name.c ### */
@@ -4278,9 +4280,9 @@ E int FDECL(bhitm, (struct monst*, struct obj*, struct monst*));
 E void FDECL(probe_monster, (struct monst *));
 E int FDECL(probe_object, (struct obj*));
 E void FDECL(display_monster_information, (struct monst*));
-E void FDECL(print_monster_intrinsics, (winid win, struct monst*));
+E void FDECL(print_monster_intrinsics, (winid win, struct monst*, struct permonst*));
 E void FDECL(print_monster_status, (winid win, struct monst*));
-E void FDECL(print_monster_statistics, (winid win, struct monst*));
+E void FDECL(print_monster_statistics, (winid win, struct monst*, struct permonst*));
 E void FDECL(display_monster_inventory, (struct monst*, BOOLEAN_P));
 E boolean FDECL(get_obj_location, (struct obj *, xchar *, xchar *, int));
 E boolean FDECL(get_mon_location, (struct monst *, xchar *, xchar *, int));
