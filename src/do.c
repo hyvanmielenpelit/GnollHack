@@ -8550,6 +8550,7 @@ write_monsters()
     char fq_save[BUFSIZ];
     char name[BUFSIZ];
     char buf[BUFSIZ];
+    char buf2[BUFSIZ];
 
     saved_windowprocs = windowprocs;
     windowprocs.win_putstr_ex = write_putstr_ex;
@@ -8659,8 +8660,6 @@ write_monsters()
             if (write_fd < 0)
                 continue;
 
-            char buf[BUFSIZ];
-            char buf2[BUFSIZ];
             strncpy(buf2, mons[m_idx].mname, 1);
             buf2[1] = 0;
             *buf2 = highc(*buf2);
@@ -8673,8 +8672,6 @@ write_monsters()
         if (write_fd < 0)
             continue;
 
-        char buf[BUFSIZ];
-        char buf2[BUFSIZ];
         Strcpy(buf2, mons[m_idx].mname);
         *buf2 = highc(*buf2);
         Strcpy(buf, "- [[");
