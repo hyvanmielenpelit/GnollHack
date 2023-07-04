@@ -1819,7 +1819,7 @@ int spell, booktype;
     }
 
     /* Mana cost*/
-    double manacost = get_spellbook_adjusted_mana_cost(booktype);
+    double manacost = spell >= 0 ? get_spellbook_adjusted_mana_cost(booktype) : (double)objects[booktype].oc_spell_mana_cost;
     if (manacost > 0)
     {
         double displayed_manacost = ceil(10 * manacost) / 10;
