@@ -8615,7 +8615,7 @@ write_monsters()
 
         Strcpy(buf2, mons[i].mname);
         if (mons[i].mlet == S_HUMAN && !strncmp(mons[i].mname, "were", 4))
-            Strcat(buf2, " (Human form)");
+            Strcat(buf2, " - Human form");
         *buf2 = highc(*buf2);
 
         Sprintf(buf, "![%s](https://github.com/hyvanmielenpelit/GnollHackTileSet/blob/main/Monsters/%s/%s.png)", buf2, name, name);
@@ -8626,6 +8626,8 @@ write_monsters()
             if (mons[i].mfemalename)
             {
                 Strcpy(buf2, mons[i].mfemalename);
+                if (mons[i].mlet == S_HUMAN && !strncmp(mons[i].mname, "were", 4))
+                    Strcat(buf2, " - Human form");
                 *buf2 = highc(*buf2);
             }
             Sprintf(buf, "![%s](https://github.com/hyvanmielenpelit/GnollHackTileSet/blob/main/Monsters/%s/%s_female.png)", buf2, name, name);
