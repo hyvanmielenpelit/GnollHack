@@ -64,7 +64,7 @@ STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (struct materialc
 STATIC_DCL uchar FDECL(is_obj_acceptable_component, (struct materialcomponent*, struct obj* otmp, BOOLEAN_P));
 STATIC_DCL int FDECL(count_matcomp_alternatives, (struct materialcomponent*));
 STATIC_DCL struct extended_create_window_info FDECL(extended_create_window_info_for_spell, (BOOLEAN_P));
-STATIC_DCL const char* FDECL(get_spell_attribute_description, (int));
+STATIC_DCL const char* FDECL(get_spell_attribute_description, (long));
 STATIC_DCL const char* FDECL(get_targeting_description, (unsigned int));
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
@@ -1677,7 +1677,7 @@ int otyp;
 
 STATIC_OVL const char*
 get_spell_attribute_description(attrno)
-int attrno;
+long attrno;
 {
     if (attrno >= 0)
     {
@@ -1695,7 +1695,6 @@ int attrno;
             return "Wisdom";
         case A_CHA:
             return "Charisma";
-            break;
         case A_MAX_INT_WIS:
             return "Higher of intelligence and wisdom";
         case A_MAX_INT_CHA:
