@@ -8564,8 +8564,11 @@ write_monsters()
     {
         name[0] = '\0';
         Strcpy(name, mons[i].mname);
+        if (mons[i].mlet == S_HUMAN && !strncmp(mons[i].mname, "were", 4))
+            Strcat(name, " (Human form)");
+
         len = (int)strlen(name);
-        for (j = 0; j < len; j++) 
+        for (j = 0; j < len; j++)
         {
             if (name[j] == ' ')
                 name[j] = '-';
@@ -8597,9 +8600,12 @@ write_monsters()
         Strcpy(buf, "Picture:");
         putstr(0, ATR_HEADING, buf);
 
-        Strcpy(name, mons[i].mname);
+        name[0] = 0;
+        if (mons[i].mlet == S_HUMAN && !strncmp(mons[i].mname, "were", 4))
+            Strcat(name, "human-");
+        Strcat(name, mons[i].mname);
         len = (int)strlen(name);
-        for (j = 0; j < len; j++) 
+        for (j = 0; j < len; j++)
         {
             if (name[j] == ' ')
                 name[j] = '_';
@@ -8608,6 +8614,8 @@ write_monsters()
         }
 
         Strcpy(buf2, mons[i].mname);
+        if (mons[i].mlet == S_HUMAN && !strncmp(mons[i].mname, "were", 4))
+            Strcat(buf2, " (Human form)");
         *buf2 = highc(*buf2);
 
         Sprintf(buf, "![%s](https://github.com/hyvanmielenpelit/GnollHackTileSet/blob/main/Monsters/%s/%s.png)", buf2, name, name);
@@ -8703,6 +8711,8 @@ write_monsters()
             continue;
 
         Strcpy(buf2, mons[m_idx].mname);
+        if (mons[m_idx].mlet == S_HUMAN && !strncmp(mons[m_idx].mname, "were", 4))
+            Strcat(buf2, " (Human form)");
         *buf2 = highc(*buf2);
         Strcpy(buf, "- [[");
         Strcat(buf, buf2);
