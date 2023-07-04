@@ -1881,7 +1881,7 @@ int spell, booktype;
     double baseavg = 0;
     double perlevelavg = 0;
     int used_level = 0;
-    int used_bonuses = 1;
+    int used_bonuses = 0;
 
     if (objects[booktype].oc_spell_dmg_dice > 0 || objects[booktype].oc_spell_dmg_diesize > 0 || objects[booktype].oc_spell_dmg_plus > 0)
     {
@@ -1949,22 +1949,27 @@ int spell, booktype;
             
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-            int max_level = get_maximum_applicable_spell_damage_level(booktype, &youmonst);
-            used_level = min(max_level, u.ulevel);
-            used_bonuses = used_level / (max(1, objects[booktype].oc_spell_per_level_step));
-
-            if(max_level < MAXULEV)
+            if (spell >= 0)
             {
-                int skill_type = objects[booktype].oc_skill;
-                char skillnamebuf[BUFSZ];
-                char skilllevelnamebuf[BUFSZ];
+                int max_level = get_maximum_applicable_spell_damage_level(booktype, &youmonst);
+                used_level = min(max_level, u.ulevel);
+                used_bonuses = used_level / (max(1, objects[booktype].oc_spell_per_level_step));
+                if (max_level < MAXULEV)
+                {
+                    Sprintf(buf, "Level limit:      %d", max_level);
 
-                (void)skill_level_name(skill_type, skilllevelnamebuf, FALSE);
-                Strcpy(skillnamebuf, skill_name(skill_type, TRUE));
-                //*skilllevelnamebuf = lowc(*skilllevelnamebuf);
+                    if (spell >= 0)
+                    {
+                        int skill_type = objects[booktype].oc_skill;
+                        char skillnamebuf[BUFSZ];
+                        char skilllevelnamebuf[BUFSZ];
 
-                Sprintf(buf, "Level limit:      %d (%s at %s)", max_level, skilllevelnamebuf, skillnamebuf);                
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                        (void)skill_level_name(skill_type, skilllevelnamebuf, FALSE);
+                        Strcpy(skillnamebuf, skill_name(skill_type, TRUE));
+                        Sprintf(eos(buf), " (%s at %s)", skilllevelnamebuf, skillnamebuf);
+                    }
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                }
             }
         }
     }
@@ -2103,21 +2108,29 @@ int spell, booktype;
         int baseadj = objects[booktype].oc_spell_saving_throw_adjustment;
         Sprintf(baseadjbuf, "%s%d", baseadj >= 0 ? "+" : "", baseadj);
 
-        int skill_level = P_SKILL_LEVEL(objects[booktype].oc_skill);
-        int skilladj = get_spell_skill_level_saving_throw_adjustment(skill_level);
-        char skill_level_namebuf[BUFSZ] = "";
-        (void)skill_level_name(objects[booktype].oc_skill, skill_level_namebuf, FALSE);
-        *skill_level_namebuf = lowc(*skill_level_namebuf);
+        if (spell >= 0)
+        {
+            int skill_level = P_SKILL_LEVEL(objects[booktype].oc_skill);
+            int skilladj = get_spell_skill_level_saving_throw_adjustment(skill_level);
+            char skill_level_namebuf[BUFSZ] = "";
+            (void)skill_level_name(objects[booktype].oc_skill, skill_level_namebuf, FALSE);
+            *skill_level_namebuf = lowc(*skill_level_namebuf);
 
-        char skilladjbuf[BUFSZ];
-        Sprintf(skilladjbuf, "%s%d", skilladj >= 0 ? "+" : "", skilladj);
+            char skilladjbuf[BUFSZ];
+            Sprintf(skilladjbuf, "%s%d", skilladj >= 0 ? "+" : "", skilladj);
 
-        int totaladj = baseadj + skilladj;
-        char totaladjbuf[BUFSZ];
-        Sprintf(totaladjbuf, "%s%d", totaladj >= 0 ? "+" : "", totaladj);
+            int totaladj = baseadj + skilladj;
+            char totaladjbuf[BUFSZ];
+            Sprintf(totaladjbuf, "%s%d", totaladj >= 0 ? "+" : "", totaladj);
 
-        Sprintf(buf, "Save adjustment:  %s (%s base, %s %s skill)", totaladjbuf, baseadjbuf, skilladjbuf, skill_level_namebuf);        
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            Sprintf(buf, "Save adjustment:  %s (%s base, %s %s skill)", totaladjbuf, baseadjbuf, skilladjbuf, skill_level_namebuf);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+        else
+        {
+            Sprintf(buf, "Save adjustment:  %s", baseadjbuf);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
     }
 
     /* Magic resistance */
