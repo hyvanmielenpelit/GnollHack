@@ -8219,12 +8219,13 @@ STATIC_DCL winid FDECL(write_create_nhwindow_ex, (int, int, int, struct extended
 STATIC_DCL void FDECL(write_display_nhwindow, (winid, BOOLEAN_P));
 STATIC_DCL void FDECL(write_destroy_nhwindow, (winid));
 STATIC_DCL void FDECL(write_putstr_ex, (winid, const char*, int, int, int));
+STATIC_DCL void FDECL(write_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 STATIC_PTR int FDECL(CFDECLSPEC spell_wiki_cmp, (const genericptr, const genericptr));
 STATIC_PTR int FDECL(CFDECLSPEC monster_wiki_cmp, (const genericptr, const genericptr));
 
 STATIC_VAR int write_fd = -1;
 
-winid
+STATIC_OVL winid
 write_create_nhwindow_ex(type, style, glyph, info)
 int type UNUSED, style UNUSED, glyph UNUSED;
 struct extended_create_window_info info UNUSED;
@@ -8232,7 +8233,7 @@ struct extended_create_window_info info UNUSED;
     return 0;
 }
 
-void
+STATIC_OVL void
 write_display_nhwindow(window, blocking)
 winid window UNUSED;
 boolean blocking UNUSED; /* with ttys, all windows are blocking */
@@ -8240,14 +8241,14 @@ boolean blocking UNUSED; /* with ttys, all windows are blocking */
     return;
 }
 
-void
+STATIC_OVL void
 write_destroy_nhwindow(window)
 winid window UNUSED;
 {
     return;
 }
 
-void
+STATIC_OVL void
 write_putstr_ex(window, str, attr, color, app)
 winid window UNUSED;
 int attr, app, color UNUSED;
@@ -8313,6 +8314,15 @@ const char* str;
     }
 
     (void)write(write_fd, buf, strlen(buf));
+}
+
+STATIC_OVL void
+write_putstr_ex2(window, str, attrs, colors, attr, color, app)
+winid window;
+int attr, color, app;
+const char *str, *attrs UNUSED, *colors UNUSED;
+{
+    write_putstr_ex(window, str, attr, color, app);
 }
 
 STATIC_OVL int CFDECLSPEC
@@ -8383,6 +8393,7 @@ write_spells()
 
     struct window_procs saved_windowprocs = windowprocs;
     windowprocs.win_putstr_ex = write_putstr_ex;
+    windowprocs.win_putstr_ex2 = write_putstr_ex2;
     windowprocs.win_create_nhwindow_ex = write_create_nhwindow_ex;
     windowprocs.win_display_nhwindow = write_display_nhwindow;
     windowprocs.win_destroy_nhwindow = write_destroy_nhwindow;
@@ -8555,6 +8566,7 @@ write_monsters()
 
     struct window_procs saved_windowprocs = windowprocs;
     windowprocs.win_putstr_ex = write_putstr_ex;
+    windowprocs.win_putstr_ex2 = write_putstr_ex2;
     windowprocs.win_create_nhwindow_ex = write_create_nhwindow_ex;
     windowprocs.win_display_nhwindow = write_display_nhwindow;
     windowprocs.win_destroy_nhwindow = write_destroy_nhwindow;
