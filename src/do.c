@@ -8558,25 +8558,24 @@ write_monsters()
     windowprocs.win_display_nhwindow = write_display_nhwindow;
     windowprocs.win_destroy_nhwindow = write_destroy_nhwindow;
 
-    int i, j;
+    int i, j, len;
     for (i = LOW_PM; i < NUM_MONSTERS; i++)
     {
         name[0] = '\0';
-        (void)Strcpy(name, mons[i].mname);
-        int len = (int)strlen(name);
+        Strcpy(name, mons[i].mname);
+        len = (int)strlen(name);
         for (j = 0; j < len; j++) {
 
             if (name[j] == ' ')
                 name[j] = '-';
         }
-
         *name = highc(*name);
 
         fq_save[0] = '\0';
-        (void)Strcat(fq_save, monsterdir);
-        (void)Strcat(fq_save, "/");
-        (void)Strcat(fq_save, name);
-        (void)Strcat(fq_save, ".md");
+        Strcat(fq_save, monsterdir);
+        Strcat(fq_save, "/");
+        Strcat(fq_save, name);
+        Strcat(fq_save, ".md");
 
         (void)remove(fq_save);
 
@@ -8593,6 +8592,24 @@ write_monsters()
         Strcpy(buf, "Corpse properties:");
         putstr(0, ATR_HEADING, buf);
         print_corpse_properties(0, i);
+
+        Strcpy(buf, "Picture:");
+        putstr(0, ATR_HEADING, buf);
+
+        Strcpy(name, mons[i].mname);
+        len = (int)strlen(name);
+        for (j = 0; j < len; j++) {
+
+            if (name[j] == ' ')
+                name[j] = '_';
+        }
+        *name = lowc(*name);
+
+        Strcpy(buf2, mons[i].mname);
+        *buf2 = highc(*buf2);
+
+        Sprintf(buf, "![%s](https://github.com/hyvanmielenpelit/GnollHackTileSet/blob/main/Monsters/%s/%s.png)", buf2, name, name);
+        putstr(0, 0, buf);
 
         (void)close(write_fd);
     }
@@ -8660,7 +8677,7 @@ write_monsters()
             if (write_fd < 0)
                 continue;
 
-            strncpy(buf2, mons[m_idx].mname, 1);
+            (void)strncpy(buf2, mons[m_idx].mname, 1);
             buf2[1] = 0;
             *buf2 = highc(*buf2);
             Strcpy(buf, "## ");
@@ -8675,7 +8692,7 @@ write_monsters()
         Strcpy(buf2, mons[m_idx].mname);
         *buf2 = highc(*buf2);
         Strcpy(buf, "- [[");
-        (void)Strcat(buf, buf2);
+        Strcat(buf, buf2);
         Strcat(buf, "]]\n");
 
         (void)write(write_fd, buf, strlen(buf));
