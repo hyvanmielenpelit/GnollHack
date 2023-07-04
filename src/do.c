@@ -8486,14 +8486,14 @@ write_spells()
             if (write_fd < 0)
                 continue;
 
-            char buf[BUFSIZ];
-            char buf2[BUFSIZ];
-            Strcpy(buf2, spelltypemnemonic(skill_idx));
-            *buf2 = highc(*buf2);
-            Strcpy(buf, "# ");
-            Strcat(buf, buf2);
-            Strcat(buf, " Spells\n");
-            (void)write(write_fd, buf, strlen(buf));
+            //char buf[BUFSIZ];
+            //char buf2[BUFSIZ];
+            //Strcpy(buf2, spelltypemnemonic(skill_idx));
+            //*buf2 = highc(*buf2);
+            //Strcpy(buf, "# ");
+            //Strcat(buf, buf2);
+            //Strcat(buf, " Spells\n");
+            //(void)write(write_fd, buf, strlen(buf));
         }
 
         if (prev_spell_level != spell_level)
