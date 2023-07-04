@@ -8380,7 +8380,7 @@ write_spells()
     char fq_save[BUFSIZ];
     char name[BUFSIZ];
 
-    saved_windowprocs = windowprocs;
+    struct window_procs saved_windowprocs = windowprocs;
     windowprocs.win_putstr_ex = write_putstr_ex;
     windowprocs.win_create_nhwindow_ex = write_create_nhwindow_ex;
     windowprocs.win_display_nhwindow = write_display_nhwindow;
@@ -8552,7 +8552,7 @@ write_monsters()
     char buf[BUFSIZ];
     char buf2[BUFSIZ];
 
-    saved_windowprocs = windowprocs;
+    struct window_procs saved_windowprocs = windowprocs;
     windowprocs.win_putstr_ex = write_putstr_ex;
     windowprocs.win_create_nhwindow_ex = write_create_nhwindow_ex;
     windowprocs.win_display_nhwindow = write_display_nhwindow;

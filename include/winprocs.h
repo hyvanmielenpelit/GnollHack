@@ -126,8 +126,6 @@ extern
 #endif
     NEARDATA struct window_procs windowprocs;
 
-extern NEARDATA struct window_procs saved_windowprocs; /* General place to save the current windowprocs; not otherwise used */
-
 /*
  * If you wish to only support one window system and not use procedure
  * pointers, add the appropriate #ifdef below.
