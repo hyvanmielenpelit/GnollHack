@@ -64,8 +64,8 @@ STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (struct materialc
 STATIC_DCL uchar FDECL(is_obj_acceptable_component, (struct materialcomponent*, struct obj* otmp, BOOLEAN_P));
 STATIC_DCL int FDECL(count_matcomp_alternatives, (struct materialcomponent*));
 STATIC_DCL struct extended_create_window_info FDECL(extended_create_window_info_for_spell, (BOOLEAN_P));
-STATIC_DCL const char* FDECL(get_spell_attribute_description, (long));
-STATIC_DCL const char* FDECL(get_targeting_description, (unsigned int));
+STATIC_DCL const char* FDECL(get_spell_attribute_description, (int));
+STATIC_DCL const char* FDECL(get_targeting_description, (int));
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
 STATIC_VAR const char explodes[] = "radiates explosive energy";
@@ -1676,9 +1676,10 @@ int otyp;
 }
 
 STATIC_OVL const char*
-get_spell_attribute_description(attrno)
-long attrno;
+get_spell_attribute_description(booktype)
+int booktype;
 {
+    long attrno = objects[booktype].oc_spell_attribute;
     if (attrno >= 0)
     {
         switch (attrno)
@@ -1719,19 +1720,20 @@ long attrno;
 }
 
 STATIC_OVL const char*
-get_targeting_description(skill)
-unsigned int skill;
+get_targeting_description(booktype)
+int booktype;
 {
-    if (skill > 0)
+    unsigned int dirtype = objects[booktype].oc_dir;
+    if (dirtype > 0)
     {
-        switch (skill)
+        switch (dirtype)
         {
         case NODIR:
             return "None";
         case IMMEDIATE:
             return "One target in selected direction";
         case RAY:
-            if (skill & S1_SPELL_EXPLOSION_EFFECT)                  // TODO: S1_SPELL_EXPLOSION_EFFECT necessary? Bitwise and?
+            if (objects[booktype].oc_aflags & S1_SPELL_EXPLOSION_EFFECT)
                 return "Ray that explodes on hit";
             else
                 return "Ray in selected direction";
@@ -1800,7 +1802,7 @@ int spell, booktype;
     if (objects[booktype].oc_spell_attribute >= 0)
     {
         char statbuf[BUFSZ];
-        Strcpy(statbuf, get_spell_attribute_description(objects[booktype].oc_spell_attribute));
+        Strcpy(statbuf, get_spell_attribute_description(booktype));
         Sprintf(buf, "Attributes:       %s", statbuf);        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
@@ -1856,7 +1858,7 @@ int spell, booktype;
     /* DirType */
     if (objects[booktype].oc_dir > 0)
     {
-        Strcpy(buf2, get_targeting_description(objects[booktype].oc_dir));
+        Strcpy(buf2, get_targeting_description(booktype));
         Sprintf(buf, "Targeting:        %s", buf2);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
