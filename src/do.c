@@ -8306,10 +8306,11 @@ const char* str;
         }
     }
 
-    mungspaces(buf);
-
     if (!app)
+    {
+        mungspaces(buf);
         Strcat(buf, "\n");
+    }
 
     (void)write(write_fd, buf, strlen(buf));
 }
@@ -8564,8 +8565,8 @@ write_monsters()
         name[0] = '\0';
         Strcpy(name, mons[i].mname);
         len = (int)strlen(name);
-        for (j = 0; j < len; j++) {
-
+        for (j = 0; j < len; j++) 
+        {
             if (name[j] == ' ')
                 name[j] = '-';
         }
@@ -8598,18 +8599,30 @@ write_monsters()
 
         Strcpy(name, mons[i].mname);
         len = (int)strlen(name);
-        for (j = 0; j < len; j++) {
-
+        for (j = 0; j < len; j++) 
+        {
             if (name[j] == ' ')
                 name[j] = '_';
+
+            name[j] = lowc(name[j]);
         }
-        *name = lowc(*name);
 
         Strcpy(buf2, mons[i].mname);
         *buf2 = highc(*buf2);
 
         Sprintf(buf, "![%s](https://github.com/hyvanmielenpelit/GnollHackTileSet/blob/main/Monsters/%s/%s.png)", buf2, name, name);
-        putstr(0, 0, buf);
+        if (mons[i].mflags5 & M5_FEMALE_TILE)
+        {
+            putstr_ex(0, buf, ATR_NONE, NO_COLOR, 1);
+            putstr_ex(0, " ", ATR_NONE, NO_COLOR, 1);
+            if (mons[i].mfemalename)
+            {
+                Strcpy(buf2, mons[i].mfemalename);
+                *buf2 = highc(*buf2);
+            }
+            Sprintf(buf, "![%s](https://github.com/hyvanmielenpelit/GnollHackTileSet/blob/main/Monsters/%s/%s_female.png)", buf2, name, name);
+        }
+        putstr_ex(0, buf, ATR_NONE, NO_COLOR, 0);
 
         (void)close(write_fd);
     }
@@ -8702,7 +8715,6 @@ write_monsters()
         (void)close(write_fd);
         write_fd = -1;
     }
-    
 
     pline("Done!");
 }
