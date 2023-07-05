@@ -2418,8 +2418,8 @@ doloot()
                         }
 
                         /* Now generate the menu */
-                        int pick_count = 0;
-                        if ((pick_count = select_menu(win, PICK_ANY, &pick_list)) > 0)
+                        int pick_count = select_menu(win, PICK_ANY, &pick_list);
+                        if (pick_count > 0)
                         {
                             int i;
                             for (i = 0; i < pick_count; i++)
@@ -2433,6 +2433,12 @@ doloot()
                             }
                             free((genericptr_t)pick_list);
                             destroy_nhwindow(win);
+                        }
+                        else
+                        {
+                            pline1(Never_mind);
+                            destroy_nhwindow(win);
+                            return timepassed;
                         }
                     }
 
