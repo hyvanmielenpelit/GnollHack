@@ -362,6 +362,10 @@ curses_display_nhwindow(winid wid, BOOLEAN_P block)
     if (!iflags.window_inited && wid == MAP_WIN) {
         iflags.window_inited = TRUE;
     } else {
+        boolean border = curses_window_has_border(wid);
+        if (border) {
+            box(curses_get_nhwin(wid), 0, 0);
+        }
         /* actually display the window */
         wnoutrefresh(curses_get_nhwin(wid));
         /* flush pending writes from other windows too */
