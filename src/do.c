@@ -6667,14 +6667,14 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     if (Is_minetown_level(&u.uz) && !u.uachieve.entered_mine_town)
     {
         //    achievement_gained("Entered Mine Town");
-        livelog_printf(LL_ACHIEVE, "%s", "entered the Mine Town");
+        livelog_printf(LL_MINORAC, "%s", "reached Mine Town");
         u.uachieve.entered_mine_town = 1;
     }
 
     if (In_sokoban(&u.uz) && u.uachieve.entered_sokoban)
     {
         //    achievement_gained("Entered Sokoban");
-        livelog_printf(LL_ACHIEVE, "%s", "entered the Sokoban");
+        livelog_printf(LL_ACHIEVE, "%s", "entered Sokoban");
         u.uachieve.entered_sokoban = 1;
     }
 

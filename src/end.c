@@ -1637,6 +1637,9 @@ int how;
     urealtime.realtime += (long) (endtime - urealtime.start_timing);
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
 
+    /* Write dumplog */
+    if (disclose_and_dumplog_ok)
+        dump_open_log(endtime);
 
     char postbuf[BUFSZ * 3];
     Strcpy(postbuf, "");
@@ -1649,6 +1652,8 @@ int how;
         {
             char killerbuf[BUFSZ * 2];
             formatkiller(killerbuf, sizeof killerbuf, how, TRUE);
+            if (!*killerbuf)
+                Strcpy(killerbuf, deaths[how]);
             Strcpy(basebuf, killerbuf);
             Sprintf(postbuf, "%s died, %s", plname, basebuf);
         }
@@ -1661,12 +1666,8 @@ int how;
             Sprintf(postbuf, "%s %s", plname, basebuf);
         }
 
-        livelog_printf(LL_ACHIEVE, "%s", basebuf);
+        livelog_printf(LL_DUMP, "%s", basebuf);
     }
-
-    /* Write dumplog */
-    if(disclose_and_dumplog_ok)
-        dump_open_log(endtime);
 
     You("were playing on %s difficulty in %s mode.", get_game_difficulty_text(context.game_difficulty),
         get_game_mode_text(TRUE));

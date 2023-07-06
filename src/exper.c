@@ -442,7 +442,7 @@ boolean incr; /* true iff via incremental experience growth */
                 u.uevent.ranks_attained |= rankbit;
                 const char* ranktxt = rank_of(u.ulevel, Role_switch, flags.female);
                 custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "NEW RANK", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "%s", str_upper_start(ranktxt));
-                livelog_printf(LL_ACHIEVE,
+                livelog_printf(LL_MINORAC,
                     "attained the rank of %s (level %d)",
                     rank_of(u.ulevel, Role_switch, flags.female),
                     u.ulevel);
