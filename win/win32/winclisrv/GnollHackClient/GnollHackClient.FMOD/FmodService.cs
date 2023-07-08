@@ -108,20 +108,24 @@ namespace GnollHackClient.Unknown
             _latestService = this;
         }
 
-        private void LoadNativeLibrary(string libName)
-        {
 #if __ANDROID__
+        private static void LoadNativeLibrary(string libName)
+        {
             Java.Lang.JavaSystem.LoadLibrary(libName);
-#endif
         }
+
+        public static void AndroidInit(Context p0)
+        {
+            LoadNativeLibrary("fmod");
+            LoadNativeLibrary("fmodstudio");
+            Org.Fmod.FMOD.Init(p0);
+        }
+#endif
 
         private bool _initialized = false;
 
         public void InitializeFmod()
         {
-            LoadNativeLibrary("fmod");
-            LoadNativeLibrary("fmodstudio");
-
             RESULT res;
 
             //uint ver;

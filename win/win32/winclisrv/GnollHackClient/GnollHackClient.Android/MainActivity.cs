@@ -13,6 +13,7 @@ using Android.Content;
 using Xamarin.Google.Android.Play.Core.AssetPacks;
 using Xamarin.Google.Android.Play.Core.AssetPacks.Model;
 using GnollHackCommon;
+using static AndroidX.Navigation.Navigator;
 
 namespace GnollHackClient.Droid
 {
@@ -67,7 +68,7 @@ namespace GnollHackClient.Droid
 
             Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            Org.Fmod.FMOD.Init(this);
+            FmodService.AndroidInit(this);
 
             MainActivity.StaticAssets = this.Assets;
             CurrentMainActivity = this;
