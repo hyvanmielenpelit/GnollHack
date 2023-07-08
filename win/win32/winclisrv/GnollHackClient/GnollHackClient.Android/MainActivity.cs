@@ -13,7 +13,6 @@ using Android.Content;
 using Xamarin.Google.Android.Play.Core.AssetPacks;
 using Xamarin.Google.Android.Play.Core.AssetPacks.Model;
 using GnollHackCommon;
-using static AndroidX.Navigation.Navigator;
 
 namespace GnollHackClient.Droid
 {
