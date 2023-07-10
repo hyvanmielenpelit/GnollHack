@@ -3200,22 +3200,36 @@ boolean printdun;
     else
         Sprintf(buf, "%sLevel %d:", TAB, i);
 
+    putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, NO_COLOR, 1);
+
     /* wizmode prints out proto dungeon names for clarity */
     if (wizard) {
         s_level *slev;
 
         if ((slev = Is_special(&mptr->lev)) != 0 && !mptr->flags.special_level_true_nature_known)
-            Sprintf(eos(buf), " [%s]", slev->name);
+        {
+            Sprintf(buf, " [%s]", slev->name);
+            putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_MSG_GOD, 1);
+        }
     }
+
     /* [perhaps print custom annotation on its own line when it's long] */
     if (mptr->custom)
+    {
         Sprintf(eos(buf), " \"%s\"", mptr->custom);
+        putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_MSG_HINT, 1);
+    }
     if (on_level(&u.uz, &mptr->lev))
+    {
         Sprintf(eos(buf), " <- You %s here.",
-                (!final || (final == 1 && how == ASCENDED)) ? "are"
-                  : (final == 1 && how == ESCAPED) ? "left from"
-                    : "were");
-    putstr(win, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, buf);
+            (!final || (final == 1 && how == ASCENDED)) ? "are"
+            : (final == 1 && how == ESCAPED) ? "left from"
+            : "were");
+
+        putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_ORANGE, 1);
+    }
+    putstr(win, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, "");
+    //putstr(win, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, buf);
 
     if (mptr->flags.forgot)
         return;

@@ -436,6 +436,10 @@ struct savefile_info {
 #define majorevent(m) (((m)->flags & LL_majors) != 0)
 #define spoilerevent(m) (((m)->flags & LL_SPOILER) != 0)
 
+#define LL_postables                                                        \
+    (LL_WISH | LL_ACHIEVE | LL_UMONST | LL_DIVINEGIFT | LL_LIFESAVE \
+     | LL_ARTIFACT | LL_GENOCIDE) /* explicitly for forum posting */
+
 
 /* Supply GnollHack_enter macro if not supplied by port */
 #ifndef GnollHack_enter

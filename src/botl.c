@@ -67,7 +67,6 @@ STATIC_OVL NEARDATA size_t mrank_sz = 0; /* loaded by max_rank_sz (from u_init) 
 STATIC_DCL void NDECL(bot_via_windowport);
 STATIC_DCL void NDECL(stat_update_time);
 STATIC_DCL char* FDECL(conditionbitmask2str, (unsigned long));
-STATIC_DCL char* FDECL(format_duration_with_units, (long));
 
 STATIC_VAR struct _status_hilite_line_str* status_hilite_str = 0;
 STATIC_VAR int status_hilite_str_id = 0;
@@ -739,8 +738,8 @@ botl_score()
 }
 
 /* Returns a human readable formatted duration (e.g. 2h:03m:ss). */
-STATIC_OVL
-char* format_duration_with_units(seconds)
+char*
+format_duration_with_units(seconds)
 long seconds;
 {
     static char buf_fmt_duration[BUFSZ];

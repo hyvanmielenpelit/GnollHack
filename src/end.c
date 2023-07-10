@@ -1647,26 +1647,23 @@ int how;
     /* Write forum post and livelog */
     if (how < PANICKED || how == ASCENDED || how == ESCAPED)
     {
-        char basebuf[BUFSZ * 3] = "";
         if (how < PANICKED)
         {
             char killerbuf[BUFSZ * 2];
             formatkiller(killerbuf, sizeof killerbuf, how, TRUE);
             if (!*killerbuf)
                 Strcpy(killerbuf, deaths[how]);
-            Strcpy(basebuf, killerbuf);
-            Sprintf(postbuf, "%s died, %s", plname, basebuf);
+            Strcpy(postbuf, killerbuf);
         }
         else
         {
             if (how == ASCENDED)
-                Strcpy(basebuf, "ascended to demigodhood");
+                Strcpy(postbuf, "ascended to demigodhood");
             else if (how == ESCAPED)
-                Strcpy(basebuf, "escaped the dungeon");
-            Sprintf(postbuf, "%s %s", plname, basebuf);
+                Strcpy(postbuf, "escaped the dungeon");
         }
 
-        livelog_printf(LL_DUMP, "%s", basebuf);
+        livelog_printf(LL_DUMP, "%s", postbuf);
     }
 
     You("were playing on %s difficulty in %s mode.", get_game_difficulty_text(context.game_difficulty),
@@ -2152,7 +2149,17 @@ int how;
                 issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_HTML, dlfilename);
     #endif
     #endif
-            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, postbuf);
+            char totalpostbuf[BUFSZ * 4];
+            char mbuf[BUFSZ] = "";
+            char cbuf[BUFSZ];
+            (void)describe_mode(mbuf);
+            Sprintf(cbuf, "%.3s %.3s %.3s %.3s XL:%d", urole.filecode,
+                urace.filecode, genders[flags.female].filecode,
+                aligns[1 - u.ualign.type].filecode, u.ulevel);
+            long currenttime = get_current_game_duration();
+            char* duration = format_duration_with_units(currenttime);
+            Sprintf(totalpostbuf, "%s (%s), %ld point%s, T:%ld, %s (%s) [%s]", plname, cbuf, u.u_gamescore, plur(u.u_gamescore), moves, postbuf, duration, mbuf);
+            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, totalpostbuf);
         }
     }
 

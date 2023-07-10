@@ -47,7 +47,7 @@ struct q_score {              /* Quest "scorecard" */
 #define MIN_QUEST_LEVEL 14 /* at least this u.ulevel to start */
 /* note: exp.lev. 14 is threshold level for 5th rank (class title, role.c) */
 
-#define ModeAllowsPostToForum (!wizard && !CasualMode && !ModernMode && !discover)
+#define ModeAllowsPostToForum (!wizard && !CasualMode && !discover)
 #if !defined(DEBUG)
 #define IfModeAllowsPostToForum if (ModeAllowsPostToForum)
 #else

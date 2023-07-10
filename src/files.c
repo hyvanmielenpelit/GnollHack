@@ -233,6 +233,7 @@ STATIC_DCL int FDECL(open_levelfile_exclusively, (const char *, int, int));
 #endif
 
 STATIC_DCL void FDECL(livelog_write_string, (unsigned int, const char*));
+STATIC_DCL void FDECL(livelog_post_to_forum, (unsigned int, const char*));
 
 #define INBUF_SIZ 4 * BUFSIZ
 
@@ -5143,6 +5144,33 @@ reset_gamelog(VOID_ARGS)
     }
 }
 
+STATIC_OVL void
+livelog_post_to_forum(ll_type, str)
+unsigned int ll_type;
+const char* str;
+{
+    if (!str)
+        return;
+
+    if (ll_type & LL_postables)
+    {
+        IfModeAllowsPostToForum
+        {
+            char postbuf[BUFSZ * 2];
+            char mbuf[BUFSZ] = "";
+            char cbuf[BUFSZ];
+            (void)describe_mode(mbuf);
+            Sprintf(cbuf, "%.3s %.3s %.3s %.3s XL:%d", urole.filecode,
+                urace.filecode, genders[flags.female].filecode,
+                aligns[1 - u.ualign.type].filecode, u.ulevel);
+            long currenttime = get_current_game_duration();
+            char* duration = format_duration_with_units(currenttime);
+            Sprintf(postbuf, "%s (%s) %s, on T:%ld (%s) [%s]", plname, cbuf, str, moves, duration, mbuf);
+            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_ACHIEVEMENT, postbuf);
+        }
+    }
+}
+
 /* #chronicle details */
 void
 show_gamelog(final)
@@ -5184,8 +5212,9 @@ VA_DECL2(unsigned int, ll_type, const char*, fmt)
     VA_START(fmt);
     VA_INIT(fmt, char*);
     vsnprintf(ll_msgbuf, 512, fmt, VA_ARGS);
-    gamelog_add(ll_type, moves, ll_msgbuf);
+    gamelog_add((long)ll_type, moves, ll_msgbuf);
     livelog_write_string(ll_type, ll_msgbuf);
+    livelog_post_to_forum(ll_type, ll_msgbuf);
     VA_END();
 }
 
