@@ -3399,6 +3399,7 @@ reset_remaining_static_variables()
     reset_teleport();
     reest_track();
     reset_vision();
+    reset_windows();
     reset_urolerace();
     reset_zap();
 }

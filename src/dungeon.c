@@ -3216,17 +3216,17 @@ boolean printdun;
     /* [perhaps print custom annotation on its own line when it's long] */
     if (mptr->custom)
     {
-        Sprintf(eos(buf), " \"%s\"", mptr->custom);
+        Sprintf(buf, " \"%s\"", mptr->custom);
         putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_MSG_HINT, 1);
     }
     if (on_level(&u.uz, &mptr->lev))
     {
-        Sprintf(eos(buf), " <- You %s here.",
+        Sprintf(buf, " <- You %s here.",
             (!final || (final == 1 && how == ASCENDED)) ? "are"
             : (final == 1 && how == ESCAPED) ? "left from"
             : "were");
 
-        putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_ORANGE, 1);
+        putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_RED, 1);
     }
     putstr(win, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, "");
     //putstr(win, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, buf);

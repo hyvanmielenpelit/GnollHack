@@ -4177,6 +4177,8 @@ E void FDECL(html_dump_glyph, (int, int, int, nhsym, int, unsigned long));
 #if defined(ANDROID) && defined(DUMPLOG)
 E void FDECL(and_get_dumplog_dir, (char*));
 #endif
+E void NDECL(reset_windows);
+
 
 /* ### winnt.c ### */
 #ifdef WIN32

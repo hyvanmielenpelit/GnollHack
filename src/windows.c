@@ -2181,6 +2181,7 @@ boolean onoff_flag;
 }
 
 
+STATIC_VAR int prev_app = 0;
 
 #ifdef DUMPHTML
 /****************************/
@@ -2265,8 +2266,10 @@ struct extended_menu_info info;
             fprintf(fp, "%s\n", LIST_E);
             in_list = FALSE;
         }
-                fprintf(fp, "%s", is_heading ? HEAD_S :
-            is_subheading ? SUBH_S : is_bold ? BOLD_S : "");
+
+        if(!prev_app)
+            fprintf(fp, "%s", is_heading ? HEAD_S :
+                is_subheading ? SUBH_S : is_bold ? BOLD_S : "");
         return;
     }
     /* after string is written */
@@ -2279,8 +2282,10 @@ struct extended_menu_info info;
         fprintf(fp, "%s\n", LITM_E); /* </li>, but not </ul> yet */
         return;
     }
-    fprintf(fp, "%s", is_heading ? HEAD_E:
-        is_subheading ? SUBH_E : is_bold ? BOLD_E : "");
+
+    if(!app)
+        fprintf(fp, "%s", is_heading ? HEAD_E:
+            is_subheading ? SUBH_E : is_bold ? BOLD_E : "");
 
     if(!app)
         fprintf(fp, "%s", !is_heading && !is_subheading ? LINEBREAK : "");
@@ -2427,7 +2432,7 @@ dump_css()
         "",
         "h3 {",
         "    color: white;",
-        "    font-size: min(2.2vw, 2.2vh);",
+        "    font-size: min(2.15vw, 2.15vh);",
         "    margin: 1ex 0ex 0.25ex 1.5ex;",
         "}",
         "",
@@ -2562,7 +2567,8 @@ winid win;
 int attr, color, app;
 const char* str, *attrs, *colors;
 {
-    if ((strlen(str) == 0 || !strcmp(str, " ")) && !app) {
+    if ((strlen(str) == 0 || !strcmp(str, " ")) && !app && !prev_app) 
+    {
         /* if it's a blank line, just print a blank line */
         fprintf(fp, "%s\n", LINEBREAK);
         return;
@@ -2571,6 +2577,7 @@ const char* str, *attrs, *colors;
     html_write_tags(fp, win, attr, color, app, TRUE, zeroextendedmenuinfo);
     html_dump_str(fp, str, attrs, colors, attr, color);
     html_write_tags(fp, win, attr, color, app, FALSE, zeroextendedmenuinfo);
+    prev_app = app;
 }
 
 /** HTML Map **/
@@ -2834,6 +2841,12 @@ int no_forward;
 #endif
     if (!no_forward)
         putstr(win, attr, str);
+}
+
+void
+reset_windows(VOID_ARGS)
+{
+    prev_app = 0;
 }
 
 /*windows.c*/
