@@ -9,10 +9,7 @@ using SkiaSharp;
 using SkiaSharp.Views.Forms;
 
 using System.Runtime.InteropServices;
-using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.AspNetCore.Authentication;
 using System.Buffers.Text;
-using System.Text.Encodings.Web;
 using System.Net.Http;
 using System.IO;
 using System.Threading;
@@ -35,9 +32,6 @@ namespace GnollHackClient
 {
     public partial class MainPage : ContentPage
     {
-        private bool _canClickButton = true;
-        private bool _serverButtonClicked = false;
-        private Xamarin.Forms.NavigationPage _loginNavPage = null;
         public bool GameStarted { get; set; }
 
         public MainPage()
@@ -64,7 +58,6 @@ namespace GnollHackClient
 
         private async void localButton_Clicked(object sender, EventArgs e)
         {
-            StartServerGrid.IsEnabled = false;
             StartLocalGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
             StartLocalGameButton.TextColor = Color.Gray;
@@ -87,23 +80,6 @@ namespace GnollHackClient
             gamePage.StartGame();
         }
 
-        private async void serverButton_Clicked(object sender, EventArgs e)
-        {
-            if (_canClickButton == false)
-            {
-                return;
-            }
-
-            App.PlayButtonClickedSound();
-            _serverButtonClicked = true;
-            _canClickButton = false;
-
-            var loginPage = new LoginPage(this);
-            _loginNavPage = new Xamarin.Forms.NavigationPage(loginPage);
-            
-            await Navigation.PushAsync(_loginNavPage);
-        }
-
         private bool _firsttime = true;
         private bool _mainScreenMusicStarted = false;
 
@@ -114,8 +90,6 @@ namespace GnollHackClient
                 wizardModeSwitch.IsToggled = false;
             ResetButton.IsVisible = App.DeveloperMode;
             OptionsButton.IsVisible = App.DeveloperMode;
-            StartServerGrid.IsVisible = App.ServerGameAvailable;
-
             classicModeSwitch.IsToggled = App.ClassicMode;
             casualModeSwitch.IsToggled = App.CasualMode;
 
@@ -181,7 +155,6 @@ namespace GnollHackClient
                     PlayMainScreenVideoAndMusic();
             }
 
-            StartServerGrid.IsEnabled = true;
             UpperButtonGrid.IsEnabled = true;
             LogoGrid.IsEnabled = true;
         }
@@ -610,7 +583,7 @@ namespace GnollHackClient
             //await Task.WhenAll(tasklist2);
         }
 
-        private async void ExitAppButton_Clicked(object sender, EventArgs e)
+        private void ExitAppButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
             App.PlayButtonClickedSound();

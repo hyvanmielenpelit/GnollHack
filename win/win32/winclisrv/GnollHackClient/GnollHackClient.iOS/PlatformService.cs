@@ -165,8 +165,12 @@ namespace GnollHackClient.iOS
 
         public void InitOnDemandPackStatusNotificationEventHandler()
         {
-
+            //Add OnDemandPackStatusNotified to relevant event to iOS somewhere
         }
 
+        private void OnDemandPackStatusNotified(object sender, AssetPackStatusEventArgs e)
+        {
+            OnDemandPackStatusNotification?.Invoke(this, e);
+        }
     }
 }

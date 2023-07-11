@@ -577,9 +577,9 @@ namespace GnollHackClient.Pages.Game
 
         private async Task MaybeShowPleaseWait()
         {
-            bool _unloadBanks = false;
-            bool _loadBanks = false;
-            bool _setupFiles = false;
+            bool _unloadBanks;
+            bool _loadBanks;
+            bool _setupFiles;
 
             GetBankLoadingVariables(out _unloadBanks, out _setupFiles, out _loadBanks);
 
@@ -692,17 +692,13 @@ namespace GnollHackClient.Pages.Game
             CustomLinkButton.IsEnabled = true;
         }
 
-
-
-
-
         private bool _backPressed = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
             if (!_backPressed)
             {
                 _backPressed = true;
-                MaybeShowPleaseWait();
+                await MaybeShowPleaseWait();
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
             return false;

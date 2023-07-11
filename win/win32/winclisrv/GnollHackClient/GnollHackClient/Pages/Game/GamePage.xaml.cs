@@ -1,5 +1,4 @@
 ﻿using GnollHackCommon;
-using Microsoft.AspNetCore.SignalR.Client;
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;
@@ -63,20 +62,6 @@ namespace GnollHackClient.Pages.Game
 
         public List<string> ExtendedCommands { get; set; }
 
-        private bool _connectionAttempted = false;
-        private HubConnection _connection;
-        private string _connection_status = "";
-        //private string Message { get { lock (MessageLock) { return TopLineLabel.Text; } } set { lock (MessageLock) { TopLineLabel.Text = value; } } }
-        //private object MessageLock = new object();
-        //private string _message1 = "";
-
-        private string _message = "";
-        private string _message2 = "";
-        private string _message3 = "";
-        private string _message4 = "";
-        private string _message5 = "";
-        private int _result = 0;
-        //private int _result2 = 0;
         private IGnollHackService _gnollHackService;
         public IGnollHackService GnollHackService { get { return _gnollHackService; } }
         private bool _isFirstAppearance = true;
@@ -634,37 +619,9 @@ namespace GnollHackClient.Pages.Game
 
             await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
 
-            if (App.IsServerGame)
-            {
-                _connectionAttempted = true;
-                _connection_status = "Not connected";
-                _message = "Please wait...";
-
-                if (_connection == null)
-                {
-                    ConnectToServer();
-                }
-                else if (_connection.State != HubConnectionState.Connected)
-                {
-                    await _connection.StopAsync();
-                    ConnectToServer();
-                }
-                else
-                {
-                    _connection_status = "Connected";
-                }
-
-                if (_connection != null)
-                {
-                    LoginToServer();
-                }
-            }
-            else
-            {
-                Thread t = new Thread(new ThreadStart(GNHThreadProc));
-                _gnhthread = t;
-                _gnhthread.Start();
-            }
+            Thread t = new Thread(new ThreadStart(GNHThreadProc));
+            _gnhthread = t;
+            _gnhthread.Start();
 
             _stopWatch.Start();
             //lock (AnimationTimerLock)
@@ -2588,8 +2545,6 @@ namespace GnollHackClient.Pages.Game
 
         private async void ReturnToMainMenu()
         {
-            //if (!App.IsServerGame)
-            //    _mainPage.HideLocalGameButton();
             if(MainPageBackgroundNeedsUpdate)
             {
                 _mainPage.UpdateMainScreenBackgroundStyle();
@@ -2600,10 +2555,6 @@ namespace GnollHackClient.Pages.Game
             if (App.GameMuteMode)
                 App.GameMuteMode = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
-            if (App.IsServerGame)
-            {
-                await App.Current.MainPage.Navigation.PopAsync(); //Login
-            }
         }
 
         private readonly object _menuDrawOnlyLock = new object();
@@ -8783,101 +8734,6 @@ namespace GnollHackClient.Pages.Game
             double scale = GetCanvasScale();
             sb_xheight = scale * (double)statusbarheight;
             return sb_xheight;
-        }
-
-        protected void ConnectToServer()
-        {
-            if (App.AuthenticationCookie == null)
-            {
-                throw new Exception("AuthenticationCookie is null");
-            }
-
-            if (App.SelectedServer == null)
-            {
-                throw new Exception("SelectedServer is null");
-            }
-
-            _connection = new HubConnectionBuilder().WithUrl(App.SelectedServer.Url + "gnollhack", options =>
-            {
-                options.Cookies.Add(App.AuthenticationCookie);
-            }).Build();
-
-            if (_connection != null)
-            {
-                _connection_status = "Connection attempted";
-            }
-            else
-            {
-                _connection_status = "Connection attempt failed";
-            }
-
-            _connection.Closed += async (error) =>
-            {
-                _connection_status = "Connection closed";
-                await Task.Delay(new Random().Next(0, 5) * 1000);
-                await _connection.StartAsync();
-            };
-
-            _connection.On<string, string>("ReceiveMessage", (user, message) =>
-            {
-                _message = message;
-            });
-
-            _connection.On<int>("CalcResult", (result) =>
-            {
-                _result = result;
-            });
-
-            _connection.On<string, string>("LoginMessage", (user, message) =>
-            {
-                _message2 = message;
-            });
-
-            _connection.On<int>("AddNewGameResult", (result) =>
-            {
-                _message3 = "New Game Added: " + result;
-                _clientGame = new ClientGame(this);
-            });
-
-            _connection.On<bool>("GameAliveResult", (result) =>
-            {
-                _message4 = "Game Alive: " + result.ToString();
-            });
-            _connection.On<int, int>("Client_ExitHack", (hash, status) =>
-            {
-                _message5 = "ExitHack: Hash: " + hash + ", Status: " + status;
-            });
-            _connection.On<int>("Client_PlayerSelection", (hash) =>
-            {
-                _message5 = "PlayerSelection: Hash: " + hash;
-            });
-            _connection.On<GHCommandFromServer>("CommandFromServer", (command) =>
-            {
-                _message5 = "CommandFromServer: " + command.CommandName + ", GUID: " + command.Id.ToString();
-            });
-            _connection.On<Guid, int>("ResponseFromClientResult", (guid, result) =>
-            {
-                _message5 = "ResponseFromClientResult: " + result + ", GUID: " + guid;
-            });
-        }
-
-        protected async void LoginToServer()
-        {
-            try
-            {
-                await _connection.StartAsync();
-
-                await _connection.InvokeAsync("SendMessage",
-                    "user", "My message");
-
-                await _connection.InvokeAsync("DoCalc");
-
-                await _connection.InvokeAsync("AddNewServerGame");
-            }
-            catch
-            {
-                //Error
-            }
         }
 
         private Dictionary<long, TouchEntry> TouchDictionary = new Dictionary<long, TouchEntry>();

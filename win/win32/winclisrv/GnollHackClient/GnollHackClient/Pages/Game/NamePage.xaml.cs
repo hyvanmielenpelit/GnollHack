@@ -74,8 +74,6 @@ namespace GnollHackClient.Pages.Game
                 return;
             }
 
-            //_clientGame.CharacterName = eName.Text;
-            App.IsServerGame = false;
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
@@ -137,7 +135,6 @@ namespace GnollHackClient.Pages.Game
             btnCancel.IsEnabled = false;
             App.PlayButtonClickedSound();
 
-            App.IsServerGame = false;
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {

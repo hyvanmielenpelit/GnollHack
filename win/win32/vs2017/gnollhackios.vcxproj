@@ -67,11 +67,13 @@
     <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>XCode_6_1</PlatformToolset>
+    <AdditionalBuildSettings>IPHONEOS_DEPLOYMENT_TARGET=11.0;ALWAYS_SEARCH_USER_PATHS=NO;</AdditionalBuildSettings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>XCode_6_1</PlatformToolset>
+    <AdditionalBuildSettings>IPHONEOS_DEPLOYMENT_TARGET=11.0;ALWAYS_SEARCH_USER_PATHS=NO;</AdditionalBuildSettings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <iOSConfigurationType>StaticLibrary</iOSConfigurationType>

@@ -42,10 +42,12 @@ namespace GnollHackClient.Droid
                 }
                 else
                 {
+#pragma warning disable CS0618 // Type or member is obsolete
                     SystemUiFlags systemUiVisibility = (SystemUiFlags)Window.DecorView.SystemUiVisibility;
                     systemUiVisibility |= SystemUiFlags.HideNavigation;
                     systemUiVisibility |= SystemUiFlags.Immersive;
                     Window.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
+#pragma warning restore CS0618 // Type or member is obsolete
                 }
             });
 
@@ -58,10 +60,12 @@ namespace GnollHackClient.Droid
                 }
                 else
                 {
+#pragma warning disable CS0618 // Type or member is obsolete
                     SystemUiFlags systemUiVisibility = (SystemUiFlags)Window.DecorView.SystemUiVisibility;
                     systemUiVisibility &= ~SystemUiFlags.HideNavigation;
                     systemUiVisibility &= ~SystemUiFlags.Immersive;
                     Window.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
+#pragma warning restore CS0618 // Type or member is obsolete
                 }
             });
 
@@ -164,6 +168,7 @@ namespace GnollHackClient.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
+        [Obsolete("Use GestureNavigation instead")]
         public override async void OnBackPressed()
         {
             if (await App.OnBackButtonPressed())

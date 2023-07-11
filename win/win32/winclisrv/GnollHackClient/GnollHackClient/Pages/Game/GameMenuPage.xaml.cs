@@ -70,10 +70,6 @@ namespace GnollHackClient.Pages.Game
             //App.FmodService.StopTestSound();
             await App.Current.MainPage.Navigation.PopModalAsync(); // Game Menu
             await App.Current.MainPage.Navigation.PopModalAsync(); // Game
-            if (App.IsServerGame)
-            {
-                await App.Current.MainPage.Navigation.PopAsync(); //Login
-            }
         }
 
         private async void btnOptions_Clicked(object sender, EventArgs e)

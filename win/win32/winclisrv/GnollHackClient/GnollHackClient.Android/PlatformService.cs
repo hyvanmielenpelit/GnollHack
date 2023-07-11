@@ -16,6 +16,7 @@ using Java.IO;
 using System.IO;
 using GnollHackCommon;
 using Xamarin.Google.Android.Play.Core.AssetPacks;
+using Android.Content.PM;
 
 [assembly: Dependency(typeof(GnollHackClient.Droid.PlatformService))]
 namespace GnollHackClient.Droid
@@ -25,7 +26,16 @@ namespace GnollHackClient.Droid
         public string GetVersionString()
         {
             var context = Android.App.Application.Context;
-            return context.PackageManager.GetPackageInfo(context.PackageName, 0).VersionName;
+            if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Tiramisu)
+            {
+                return context.PackageManager.GetPackageInfo(context.PackageName, PackageManager.PackageInfoFlags.Of(0L)).VersionName;
+            }
+            else
+            {
+#pragma warning disable CS0618 // Type or member is obsolete
+                return context.PackageManager.GetPackageInfo(context.PackageName, 0).VersionName;
+#pragma warning restore CS0618 // Type or member is obsolete            }
+            }
         }
 
         public ulong GetDeviceMemoryInBytes()

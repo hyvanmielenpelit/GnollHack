@@ -4,8 +4,6 @@ using System.Text;
 
 namespace GnollHackCommon
 {
-
-
     public class AssetPackStatusEventArgs : EventArgs
     {
         public readonly int Status;
@@ -36,7 +34,6 @@ namespace GnollHackCommon
             Status = status;
             CompletedAssetPackPath = completedpath;
         }
-
     }
 
     public class GHAssetPackStatus

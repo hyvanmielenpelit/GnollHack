@@ -175,12 +175,6 @@
                         FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent"  
                         HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
             </Grid>
-            <Grid x:Name="StartServerGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                <!--<Image x:Name="StartServerGameImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>-->
-                <controls:CustomImageButton Text="Online Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" 
-                        FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" 
-                        HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-            </Grid>
         </StackLayout>
         
         <Grid x:Name="PopupGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 

@@ -332,7 +332,6 @@ namespace GnollHackClient
         public static bool FullVersionMode { get; set; }
         public static bool ClassicMode { get; set; }
         public static bool CasualMode { get; set; }
-        public static bool ServerGameAvailable { get; set; }
         public static bool UseHTMLDumpLogs { get; set; }
         public static bool UseSingleDumpLog { get; set; }
         public static bool ReadStreamingBankToMemory { get; set; }
@@ -353,7 +352,6 @@ namespace GnollHackClient
         public static Cookie AuthenticationCookie { get; set; }
         public static Server SelectedServer { get; set; }
         public static string UserName { get; set; }
-        public static bool IsServerGame { get; set; }
         public static bool LoadBanks { get; set; }
 
 
