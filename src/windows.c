@@ -2632,7 +2632,9 @@ int attr, color;
     boolean td_added = FALSE;
     boolean td_changed = FALSE;
     int i = 0;
-    for (; *p; p++, i++)
+    int len = (int)strlen(p);
+    const char* endp = p + len;
+    for (; *p && i < len; p++, i++)
     {
         td_changed = FALSE;
         curattr = attrs ? attrs[i] : attr;
@@ -2640,7 +2642,7 @@ int attr, color;
 
         if (attr & (ATR_TABLE_ROW | ATR_TABLE_HEADER))
         {
-            if ((attr & ATR_INDENT_AT_COLON) ? (*p == ':') : (*p == ' ' && *(p + 1) == ' '))
+            if ((attr & ATR_INDENT_AT_COLON) ? (*p == ':') : (p < endp - 1 && *p == ' ' && *(p + 1) == ' '))
             {
                 if (td_added)
                     td_changed = TRUE;
@@ -2660,13 +2662,16 @@ int attr, color;
 
         if (attr & (ATR_TABLE_ROW | ATR_TABLE_HEADER))
         {
-            if (((attr & ATR_INDENT_AT_COLON) ? (*p == ':') : (*p == ' ' && *(p + 1) == ' ')) || i == 0)
+            if (((attr & ATR_INDENT_AT_COLON) ? (*p == ':') : (p < endp - 1 && *p == ' ' && *(p + 1) == ' ')) || i == 0)
             {
                 if (td_added)
                     fprintf(fp, "%s", (attr & ATR_TABLE_HEADER) ? TH_E : TD_E);
                 fprintf(fp, "%s", (attr & ATR_TABLE_HEADER) ? TH_S : TD_S);
-                p++;
-                i++;
+                if (i > 0)
+                {
+                    p++;
+                    i++;
+                }
                 while (*p == ' ')
                 {
                     p++;
