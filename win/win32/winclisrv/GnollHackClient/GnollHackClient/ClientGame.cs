@@ -424,6 +424,7 @@ namespace GnollHackClient
                 {
                     byte[] utf8text = Encoding.UTF8.GetBytes(CharacterName);
                     Marshal.Copy(utf8text, 0, out_string_ptr, utf8text.Length);
+                    Marshal.WriteByte(out_string_ptr, utf8text.Length, 0);
                     return 1;
                 }
                 else
@@ -944,6 +945,7 @@ namespace GnollHackClient
                 {
                     byte[] utf8text = Encoding.UTF8.GetBytes(text);
                     Marshal.Copy(utf8text, 0, text_ptr, utf8text.Length);
+                    Marshal.WriteByte(text_ptr, utf8text.Length, 0);
                 }
                 if (attributes_ptr != IntPtr.Zero)
                 {
@@ -954,8 +956,9 @@ namespace GnollHackClient
                     else
                     {
                         for (int i = 0; i < msgLength; i++)
-                            Marshal.WriteByte(colors_ptr, i, (byte)_message_history[_msgIndex].Attribute);
+                            Marshal.WriteByte(attributes_ptr, i, (byte)_message_history[_msgIndex].Attribute);
                     }
+                    Marshal.WriteByte(attributes_ptr, msgLength, 0);
                 }
                 if (colors_ptr != IntPtr.Zero)
                 {
@@ -968,6 +971,7 @@ namespace GnollHackClient
                         for(int i = 0; i < msgLength; i++)
                             Marshal.WriteByte(colors_ptr, i, (byte)_message_history[_msgIndex].NHColor);
                     }
+                    Marshal.WriteByte(colors_ptr, msgLength, 0);
                 }
 
                 _msgIndex++;
@@ -1264,6 +1268,7 @@ namespace GnollHackClient
                 if (out_string_ptr != null)
                 {
                     Marshal.Copy(utf8text, 0, out_string_ptr, utf8text.Length);
+                    Marshal.WriteByte(out_string_ptr, utf8text.Length, 0);
                     return 1;
                 }
                 else
