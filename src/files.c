@@ -5180,6 +5180,7 @@ int final;
     winid win;
     char buf[BUFSZ];
     int eventcnt = 0;
+    int eventidx = 0;
 
     win = create_nhwindow(NHW_TEXT);
     Sprintf(buf, "%s events:", final ? "Major" : "Logged");
@@ -5189,15 +5190,23 @@ int final;
             continue;
         if (!final && !wizard && spoilerevent(llmsg))
             continue;
-        if (!eventcnt++)
-            putstr(win, ATR_PREFORM, " Turn");
+
+        eventcnt++;
+    }
+    for (llmsg = gamelog; llmsg; llmsg = llmsg->next) {
+        if (final && !majorevent(llmsg))
+            continue;
+        if (!final && !wizard && spoilerevent(llmsg))
+            continue;
+        if (!eventidx++)
+            putstr(win, ATR_START_TABLE | ATR_TABLE_HEADER, " Turn  ");
         Sprintf(buf, "%5ld: %s", llmsg->turn, llmsg->text);
-        putstr(win, ATR_PREFORM, buf);
+        putstr(win, ATR_INDENT_AT_COLON | ATR_TABLE_ROW | (eventidx == 1 ? ATR_START_TABLE_BODY : 0) | (eventidx == eventcnt ? (ATR_END_TABLE_BODY | ATR_END_TABLE) : 0), buf);
     }
     /* since start of game is logged as a major event, 'eventcnt' should
        never end up as 0; for 'final', end of game is a major event too */
     if (!eventcnt)
-        putstr(win, ATR_PREFORM, " none");
+        putstr(win, ATR_NONE, " none");
 
     display_nhwindow(win, TRUE);
     destroy_nhwindow(win);

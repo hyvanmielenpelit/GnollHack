@@ -35,6 +35,7 @@ namespace GnollHackClient
         private static SKColor GHBrightBlue = new SKColor(180, 200, 255);
         private static SKColor GHCyan = new SKColor(133, 224, 224);
         private static SKColor GHBrightCyan = new SKColor(165, 255, 255);
+        private static SKColor GHBrightCyanReverted = new SKColor(190, 255, 255);
         private static SKColor GHDarkYellow = new SKColor(192, 192, 0);
 
         public static SKColor NHColor2SKColor(int nhclr, int attr)
@@ -141,7 +142,7 @@ namespace GnollHackClient
                     if (isselected)
                         res = revertblackwhite ? SKColors.Cyan : GHCyan;
                     else
-                        res = revertblackwhite ? SKColors.LightCyan : GHBrightCyan;
+                        res = revertblackwhite ? GHBrightCyanReverted : GHBrightCyan;
                     break;
                 case nhcolor.CLR_WHITE:
                     if (isselected)

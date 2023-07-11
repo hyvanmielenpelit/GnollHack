@@ -96,13 +96,14 @@ STATIC_DCL void NDECL(dump_footers);
 STATIC_DCL void FDECL(dump_status_update, (int, genericptr_t, int, int, int, unsigned long*));
 STATIC_DCL void NDECL(dump_render_status);
 #ifdef DUMPHTML
-STATIC_DCL void FDECL(dump_set_color_attr, (int, int, BOOLEAN_P));
+STATIC_DCL void FDECL(dump_set_color_attr, (int, int, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void NDECL(html_init_sym);
 STATIC_DCL void NDECL(dump_css);
 STATIC_DCL void FDECL(dump_outrip, (winid, int, time_t));
+STATIC_DCL void FDECL(html_dump_char, (FILE*, nhsym, BOOLEAN_P));
 STATIC_DCL void FDECL(html_dump_str, (FILE*, const char*, const char*, const char*, int, int));
 STATIC_DCL void FDECL(html_dump_line, (FILE*, winid, const char*, const char*, int, int, int, const char*));
-STATIC_DCL void FDECL(html_write_tags, (FILE*, winid, int, int, int, BOOLEAN_P, struct extended_menu_info)); /* Tags before/after string */
+STATIC_DCL void FDECL(html_write_tags, (FILE*, winid, int, int, int, BOOLEAN_P, struct extended_menu_info, BOOLEAN_P)); /* Tags before/after string */
 #endif
 #ifdef DUMPLOG
 STATIC_VAR FILE* dumplog_file;
@@ -1683,7 +1684,7 @@ dump_render_status(VOID_ARGS)
 
         int pad = COLNO + 1;
         if (dumphtml_file)
-            fprintf(dumphtml_file, "<span class=\"nh_screen\">  "); /* 2 space left margin */
+            fprintf(dumphtml_file, "<div class=\"nh_screen\">  "); /* 2 space left margin */
         for (i = 0; (idx = fieldorder[row][i]) != BL_FLUSH; ++i) {
             boolean hitpointbar = (idx == BL_TITLE
                 && iflags.wc2_hitpointbar);
@@ -1704,14 +1705,14 @@ dump_render_status(VOID_ARGS)
                         if (iflags.hilite_delta) {
                             attrmask = condattr(mask, dump_colormasks);
                             coloridx = condcolor(mask, dump_colormasks);
-                            dump_set_color_attr(coloridx, attrmask, TRUE);
+                            dump_set_color_attr(coloridx, attrmask, TRUE, FALSE);
                         }
 #endif
                         putstr_ex(NHW_STATUS, condition_definitions[c].text[0], ATR_NONE, NO_COLOR, 1);
                         pad -= strlen(condition_definitions[c].text[0]);
 #ifdef STATUS_HILITES
                         if (iflags.hilite_delta) {
-                            dump_set_color_attr(coloridx, attrmask, FALSE);
+                            dump_set_color_attr(coloridx, attrmask, FALSE, FALSE);
                         }
 #endif
                         bits &= ~mask;
@@ -1750,9 +1751,9 @@ dump_render_status(VOID_ARGS)
                 }
                 putstr_ex(NHW_STATUS,  "[", ATR_NONE, NO_COLOR, 1);
                 if (*bar) { /* always True, unless twoparts+dead (0 HP) */
-                    dump_set_color_attr(hpbar_color, HL_INVERSE, TRUE);
+                    dump_set_color_attr(hpbar_color, HL_INVERSE, TRUE, FALSE);
                     putstr_ex(NHW_STATUS, bar, ATR_NONE, NO_COLOR, 0);
-                    dump_set_color_attr(hpbar_color, HL_INVERSE, FALSE);
+                    dump_set_color_attr(hpbar_color, HL_INVERSE, FALSE, FALSE);
                 }
                 if (twoparts) { /* no highlighting for second part */
                     *bar2 = savedch;
@@ -1777,20 +1778,20 @@ dump_render_status(VOID_ARGS)
                     }
                     attrmask = dump_status[idx].attr;
                     coloridx = dump_status[idx].color;
-                    dump_set_color_attr(coloridx, attrmask, TRUE);
+                    dump_set_color_attr(coloridx, attrmask, TRUE, FALSE);
                 }
 #endif
                 putstr_ex(NHW_STATUS, text, ATR_NONE, NO_COLOR, 1);
                 pad -= strlen(text);
 #ifdef STATUS_HILITES
                 if (iflags.hilite_delta) {
-                    dump_set_color_attr(coloridx, attrmask, FALSE);
+                    dump_set_color_attr(coloridx, attrmask, FALSE, FALSE);
                 }
 #endif
             }
         }
         if (dumphtml_file)
-            fprintf(dumphtml_file, "%*s</span>\n", pad, " ");
+            fprintf(dumphtml_file, "%*s</div>\n", pad, " ");
     }
     return;
 }
@@ -2064,7 +2065,11 @@ struct extended_menu_info info UNUSED;
         /* Don't use NHW_MENU for inv items as this makes bullet points */
         if (!attr && glyph != NO_GLYPH)
             win = (winid)0;
-        html_write_tags(dumphtml_file, win, attr, color, 0, TRUE, info);
+        if (glyph != NO_GLYPH)
+            fprintf(dumphtml_file, "%s", "<div class=\"nh_menu_item\">");
+        else
+            fprintf(dumphtml_file, "%s", "<div>");
+        html_write_tags(dumphtml_file, win, attr, color, 0, TRUE, info, FALSE);
         if (iflags.use_menu_color && get_menu_coloring(str, &htmlcolor, &attr)) {
             iscolor = TRUE;
         }
@@ -2078,11 +2083,12 @@ struct extended_menu_info info UNUSED;
             fprintf(dumphtml_file, "<span class=\"nh_color_%d\">", htmlcolor);
 
         if (glyph != NO_GLYPH) {
-            fprintf(dumphtml_file, "<span class=\"nh_item_letter\">%c</span> - ", ch);
+            fprintf(dumphtml_file, "%c - ", ch);
         }
         html_dump_str(dumphtml_file, str, 0, 0, ATR_NONE, NO_COLOR);
         fprintf(dumphtml_file, "%s", iscolor ? "</span>" : "");
-        html_write_tags(dumphtml_file, win, attr, color, 0, FALSE, info);
+        html_write_tags(dumphtml_file, win, attr, color, 0, FALSE, info, FALSE);
+        fprintf(dumphtml_file, "%s\n", "</div>");
     }
 #endif
 }
@@ -2190,15 +2196,29 @@ STATIC_VAR int prev_app = 0;
 
 /* various tags - These were in a 2D array, but this is more readable */
 #define HEAD_S "<h2>"
-#define HEAD_E "</h2>"
+#define HEAD_E "</h2>\n"
 #define SUBH_S "<h3>"
-#define SUBH_E "</h3>"
+#define SUBH_E "</h3>\n"
 #define PREF_S "<pre>"
 #define PREF_E "</pre>"
 #define LIST_S "<ul>"
 #define LIST_E "</ul>"
+#define OLIST_S "<ol>"
+#define OLIST_E "</ol>"
 #define LITM_S "<li>"
 #define LITM_E "</li>"
+#define TABLE_S "<table>"
+#define TABLE_E "</table>"
+#define TABLE_HEADER_S "<theader>"
+#define TABLE_HEADER_E "</theader>"
+#define TABLE_BODY_S "<tbody>"
+#define TABLE_BODY_E "</tbody>"
+#define TR_S "<tr>"
+#define TR_E "</tr>"
+#define TD_S "<td>"
+#define TD_E "</td>"
+#define TH_S "<th>"
+#define TH_E "</th>"
 #define BOLD_S "<b>"
 #define BOLD_E "</b>"
 #define UNDL_S "<u>"
@@ -2207,6 +2227,8 @@ STATIC_VAR int prev_app = 0;
 #define BLNK_S "<i>"
 #define BLNK_E "</i>"
 #define SPAN_E "</span>"
+#define DIV_E "</div>"
+#define SECTION_E "</section>"
 #define LINEBREAK "<br />"
 
 /** HTML putstr() handling **/
@@ -2223,19 +2245,23 @@ STATIC_VAR int prev_app = 0;
    then delimit the item with <li></li>
    for preformatted text, we don't mess with any existing bullet list, but try to
    keep consecutive preformatted strings in a single block.  */
+
+STATIC_VAR uchar in_list = FALSE;
+STATIC_VAR boolean in_preform = FALSE;
+
 STATIC_OVL
 void
-html_write_tags(fp, win, attr, color, app, before, info)
+html_write_tags(fp, win, attr, color, app, before, info, usebr)
 FILE* fp;
 winid win;
 int attr, color UNUSED, app;
-boolean before; /* Tags before/after string */
+boolean before, usebr; /* Tags before/after string */
 struct extended_menu_info info; 
 {
-    static boolean in_list = FALSE;
-    static boolean in_preform = FALSE;
     if (!fp) return;
 
+    uchar was_in_list = in_list;
+    boolean is_table_row = (attr & (ATR_TABLE_ROW | ATR_TABLE_HEADER)) != 0;
     boolean is_heading = !(info.menu_flags & (MENU_FLAGS_IS_GROUP_HEADING)) && ((attr & ATR_SUBHEADING) == ATR_HEADING || (attr & ATR_SUBTITLE) == ATR_TITLE || (info.menu_flags & (MENU_FLAGS_IS_HEADING)));
     boolean is_subheading = (attr & ATR_SUBHEADING) == ATR_SUBHEADING || (attr & ATR_SUBTITLE) == ATR_SUBTITLE || (info.menu_flags & (MENU_FLAGS_IS_GROUP_HEADING));
     boolean is_bold = (attr & ATR_ATTR_MASK) == ATR_BOLD;
@@ -2250,20 +2276,32 @@ struct extended_menu_info info;
             return;
         }
         if (in_preform) {
-            fprintf(fp, PREF_E);
+            fprintf(fp, "%s", PREF_E);
             in_preform = FALSE;
+        }
+        if (attr & ATR_START_TABLE) {
+            fprintf(fp, "%s\n", "<table class=\"nh_table\">");
+        }
+        if (attr & ATR_TABLE_HEADER) {
+            fprintf(fp, "%s", TABLE_HEADER_S);
+        }
+        if (attr & ATR_START_TABLE_BODY) {
+            fprintf(fp, "%s\n", TABLE_BODY_S);
+        }
+        if (attr & ATR_TABLE_ROW) {
+            fprintf(fp, "%s", TR_S);
         }
         if (!(attr & (ATR_SUBHEADING | ATR_SUBTITLE)) && (info.menu_flags & (MENU_FLAGS_IS_HEADING | MENU_FLAGS_IS_GROUP_HEADING)) == 0 && win == NHW_MENU) {
             /* This is a bullet point */
             if (!in_list) {
-                fprintf(fp, "%s\n", LIST_S);
-                in_list = TRUE;
+                fprintf(fp, "%s\n", (attr & ATR_ORDERED_LIST) ? OLIST_S : LIST_S);
+                in_list = (attr & ATR_ORDERED_LIST) ? 2 : TRUE;
             }
             fprintf(fp, LITM_S);
             return;
         }
         if (in_list) {
-            fprintf(fp, "%s\n", LIST_E);
+            fprintf(fp, "%s\n", in_list == 2 ? OLIST_E : LIST_E);
             in_list = FALSE;
         }
 
@@ -2282,22 +2320,35 @@ struct extended_menu_info info;
         fprintf(fp, "%s\n", LITM_E); /* </li>, but not </ul> yet */
         return;
     }
+    if (attr & ATR_TABLE_ROW) {
+        fprintf(fp, "%s\n", TR_E);
+    }
+    if (attr & ATR_END_TABLE_BODY) {
+        fprintf(fp, "%s\n", TABLE_BODY_E);
+    }
+    if (attr & ATR_TABLE_HEADER) {
+        fprintf(fp, "%s\n", TABLE_HEADER_E);
+    }
+    if (attr & ATR_END_TABLE) {
+        fprintf(fp, "%s\n", TABLE_E);
+    }
 
     if(!app)
         fprintf(fp, "%s", is_heading ? HEAD_E:
             is_subheading ? SUBH_E : is_bold ? BOLD_E : "");
 
     if(!app)
-        fprintf(fp, "%s", !is_heading && !is_subheading ? LINEBREAK : "");
+        fprintf(fp, "%s", !is_heading && !is_subheading && usebr && !was_in_list && !is_table_row ? LINEBREAK : "");
 }
 
 extern const nhsym cp437toUnicode[256]; /* From hacklib.c */
 
 /* Write HTML-escaped char to a file */
 STATIC_OVL void
-html_dump_char(fp, c)
+html_dump_char(fp, c, replacespace)
 FILE* fp;
 nhsym c; /* assumed to be either CP437 or Unicode */
+boolean replacespace;
 {
     if (!fp) return;
     switch (c) {
@@ -2319,6 +2370,13 @@ nhsym c; /* assumed to be either CP437 or Unicode */
     case '\n':
         fprintf(fp, "<br />\n");
         break;
+    case ' ':
+        if (replacespace)
+        {
+            fprintf(fp, "&nbsp;");
+            break;
+        }
+        /* FALLTHRU */
     default:
         if(c < 128)
             fprintf(fp, "%c", (char)c);
@@ -2386,18 +2444,30 @@ dump_css()
         "    color: #CCCCCC;",
         "    background-color: #222222;",
         "    font-family: %sDejaVu Sans Mono, Consolas, monospace;",
-        "    font-size: min(2vw, 2vh);",
+        "    font-size: 12px;",
         "}",
         "",
-        "pre.nh_screen {",
+        "section.nh_screen {",
         "    font-family: %sDejaVu Sans Mono, Consolas, monospace;",
-        "    font-size: min(2.25vw, 2.25vh);",
+        "    font-size: 12px;",
         "    background-color: black;",
         "    width: fit-content;",
+        "    white-space: nowrap;",
         "}",
         "",
-        ".nh_item_letter {",
-        "    padding-left: 3ex;",
+        ".nh_menu_item {",
+        "    text-indent: -4ch;",
+        "    padding-left: 7ch;",
+        "}",
+        "",
+        "table.nh_table {",
+        "    border-collapse: collapse;",
+        "    border: none;",
+        "}",
+        "",
+        "table.nh_table td, table.nh_table th {",
+        "    padding: 0px 5px;",
+        "    vertical-align:top;",
         "}",
         "",
         ".tooltip {",
@@ -2407,32 +2477,35 @@ dump_css()
         "",
         /* Tooltip text */
         ".tooltip .tooltiptext {",
-        "    visibility: hidden;",
+        "    display: none;",
         "    background-color: #222222;",
         "    color: #fff;",
         "    text-align: center;",
-        "    font-size: min(2vw, 2vh);",
+        "    font-size: 12px;",
         "    padding: 5px 5px;",
         "    border-radius: 6px;",
         "    position: absolute;",
         "    z-index: 1;",
+        "    white-space: nowrap;",
+        "    top: -10px;",
+        "    left: 10px;",
         "}",
         "",
         /* Show the tooltip text when you mouse over the tooltip container */
         ".tooltip:hover .tooltiptext {",
-        "    visibility: visible;",
+        "    display: inline-block;",
         "}",
         "",
         "h2 {",
         "    color: white;",
-        "    font-size: min(2.4vw, 2.4vh);",
+        "    font-size: 14px;",
         "    margin: 0.5ex;",
         "    padding-top: 1.5em;",
         "}",
         "",
         "h3 {",
         "    color: white;",
-        "    font-size: min(2.15vw, 2.15vh);",
+        "    font-size: 13px;",
         "    margin: 1ex 0ex 0.25ex 1.5ex;",
         "}",
         "",
@@ -2440,7 +2513,7 @@ dump_css()
         "    margin-top: 0px;",
         "}",
         "",
-        "span.nh_screen {",
+        "div.nh_screen {",
         "    background-color: black;",
         "}",
         "",
@@ -2512,7 +2585,7 @@ int how;
 time_t when;
 {
     if (dumphtml_file) {
-        html_write_tags(dumphtml_file, 0, 0, 0, 0, TRUE, zeroextendedmenuinfo); /* </ul>, </pre> if needed */
+        html_write_tags(dumphtml_file, 0, 0, 0, 0, TRUE, zeroextendedmenuinfo, TRUE); /* </ul>, </pre> if needed */
         fprintf(dumphtml_file, "%s\n", PREF_S);
     }
     genl_outrip(win, how, when);
@@ -2528,36 +2601,103 @@ FILE* fp;
 const char* str, *attrs, *colors;
 int attr, color;
 {
-    if (!fp) return;
+    if (!fp || !str) return;
 
-    const char* p;
+    const char* p = str;
     int curcolor = NO_COLOR, curattr = ATR_NONE;
     int prevcolor = NO_COLOR, prevattr = ATR_NONE;
-    int i = 0;
-    for (p = str; *p; p++, i++)
+    if (attr & ATR_ORDERED_LIST)
     {
+        const char* dp = 0;
+        if (attr & ATR_INDENT_AT_DASH)
+            dp = strchr(p, '-');
+
+        if (dp && dp > p)
+        {
+            dp++;
+            while (*dp == ' ')
+                dp++;
+            ptrdiff_t diff = dp - p;
+            if (diff < (ptrdiff_t)strlen(str))
+            {
+                p += diff;
+                if (attrs)
+                    attrs += diff;
+                if (colors)
+                    colors += diff;
+            }
+        }
+    }
+
+    boolean td_added = FALSE;
+    boolean td_changed = FALSE;
+    int i = 0;
+    for (; *p; p++, i++)
+    {
+        td_changed = FALSE;
         curattr = attrs ? attrs[i] : attr;
         curcolor = colors ? colors[i] : color;
-        if (curattr != prevattr)
+
+        if (attr & (ATR_TABLE_ROW | ATR_TABLE_HEADER))
+        {
+            if ((attr & ATR_INDENT_AT_COLON) ? (*p == ':') : (*p == ' ' && *(p + 1) == ' '))
+            {
+                if (td_added)
+                    td_changed = TRUE;
+            }
+        }
+
+        if (curattr != prevattr || td_changed)
         {
             if(prevattr != ATR_NONE)
-                dump_set_color_attr(NO_COLOR, prevattr, FALSE);
-            if (curattr != ATR_NONE)
-                dump_set_color_attr(NO_COLOR, curattr, TRUE);
+                dump_set_color_attr(NO_COLOR, prevattr, FALSE, FALSE);
         }
-        if (curcolor != prevcolor)
+        if (curcolor != prevcolor || td_changed)
         {
             if (prevcolor != NO_COLOR)
-                dump_set_color_attr(prevcolor, ATR_NONE, FALSE);
-            if (curcolor != NO_COLOR)
-                dump_set_color_attr(curcolor, ATR_NONE, TRUE);
+                dump_set_color_attr(prevcolor, ATR_NONE, FALSE, FALSE);
         }
-        html_dump_char(fp, (nhsym)*p);
+
+        if (attr & (ATR_TABLE_ROW | ATR_TABLE_HEADER))
+        {
+            if (((attr & ATR_INDENT_AT_COLON) ? (*p == ':') : (*p == ' ' && *(p + 1) == ' ')) || i == 0)
+            {
+                if (td_added)
+                    fprintf(fp, "%s", (attr & ATR_TABLE_HEADER) ? TH_E : TD_E);
+                fprintf(fp, "%s", (attr & ATR_TABLE_HEADER) ? TH_S : TD_S);
+                p++;
+                i++;
+                while (*p == ' ')
+                {
+                    p++;
+                    i++;
+                }
+                td_added = TRUE;
+            }
+        }
+
+        if (curattr != prevattr || td_changed)
+        {
+            if (curattr != ATR_NONE)
+                dump_set_color_attr(NO_COLOR, curattr, TRUE, FALSE);
+        }
+        if (curcolor != prevcolor || td_changed)
+        {
+            if (curcolor != NO_COLOR)
+                dump_set_color_attr(curcolor, ATR_NONE, TRUE, FALSE);
+        }
+
+        html_dump_char(fp, (nhsym)*p, FALSE);
         prevattr = curattr;
         prevcolor = curcolor;
     }
     if(curcolor != NO_COLOR || curattr != ATR_NONE)
-        dump_set_color_attr(curcolor, curattr, FALSE);
+        dump_set_color_attr(curcolor, curattr, FALSE, FALSE);
+
+    if (td_added)
+    {
+        fprintf(fp, "%s", (attr & ATR_TABLE_HEADER) ? TH_E : TD_E);
+    }
 }
 
 STATIC_OVL void
@@ -2570,13 +2710,14 @@ const char* str, *attrs, *colors;
     if ((strlen(str) == 0 || !strcmp(str, " ")) && !app && !prev_app) 
     {
         /* if it's a blank line, just print a blank line */
-        fprintf(fp, "%s\n", LINEBREAK);
+        if(!in_list)
+            fprintf(fp, "%s\n", LINEBREAK);
         return;
     }
 
-    html_write_tags(fp, win, attr, color, app, TRUE, zeroextendedmenuinfo);
+    html_write_tags(fp, win, attr, color, app, TRUE, zeroextendedmenuinfo, TRUE);
     html_dump_str(fp, str, attrs, colors, attr, color);
-    html_write_tags(fp, win, attr, color, app, FALSE, zeroextendedmenuinfo);
+    html_write_tags(fp, win, attr, color, app, FALSE, zeroextendedmenuinfo, TRUE);
     prev_app = app;
 }
 
@@ -2650,30 +2791,30 @@ unsigned long special;
     if (!dumphtml_file) return;
 
     if (x == 1) /* start row */
-        fprintf(dumphtml_file, "<span class=\"nh_screen\">  "); /* 2 space left margin */
+        fprintf(dumphtml_file, "<div class=\"nh_screen\">  "); /* 2 space left margin */
     cc.x = x;
     cc.y = y;
     desc_found = do_screen_description(cc, TRUE, ch, buf, &firstmatch, (struct permonst**)0);
     if (desc_found)
         fprintf(dumphtml_file, "<div class=\"tooltip\">");
     attr = mg_hl_attr(special);
-    dump_set_color_attr(color, attr, TRUE);
+    dump_set_color_attr(color, attr, TRUE, TRUE);
     if (htmlsym[sym])
         fprintf(dumphtml_file, "&#%d;", htmlsym[sym]);
     else
-        html_dump_char(dumphtml_file, ch);
-    dump_set_color_attr(color, attr, FALSE);
+        html_dump_char(dumphtml_file, ch, TRUE);
+    dump_set_color_attr(color, attr, FALSE, TRUE);
     if (desc_found)
-        fprintf(dumphtml_file, "<span class=\"tooltiptext\">%s</span></div>", firstmatch);
+        fprintf(dumphtml_file, "<div class=\"tooltiptext\">%s</div></div>", firstmatch);
     if (x == COLNO - 1)
-        fprintf(dumphtml_file, "  </span>\n"); /* 2 trailing spaces and newline */
+        fprintf(dumphtml_file, "  </div>\n"); /* 2 trailing spaces and newline */
 }
 
 /* Status and map highlighting */
 STATIC_OVL void
-dump_set_color_attr(coloridx, attrmask, onoff)
+dump_set_color_attr(coloridx, attrmask, onoff, usediv)
 int coloridx, attrmask;
-boolean onoff;
+boolean onoff, usediv;
 {
     if (!dumphtml_file) return;
     if (onoff) {
@@ -2684,15 +2825,15 @@ boolean onoff;
         if (attrmask & HL_BLINK)
             fprintf(dumphtml_file, BLNK_S);
         if (attrmask & HL_INVERSE)
-            fprintf(dumphtml_file, "<span class=\"nh_inv_%d\">", coloridx);
+            fprintf(dumphtml_file, "<%s class=\"nh_inv_%d\">", usediv ? "div" : "span", coloridx);
         else if (coloridx != NO_COLOR)
-            fprintf(dumphtml_file, "<span class=\"nh_color_%d\">", coloridx);
+            fprintf(dumphtml_file, "<%s class=\"nh_color_%d\">", usediv ? "div" : "span", coloridx);
         /* ignore HL_DIM */
     }
     else {
         /* reverse order for nesting */
         if ((attrmask & HL_INVERSE) || coloridx != NO_COLOR)
-            fprintf(dumphtml_file, SPAN_E);
+            fprintf(dumphtml_file, usediv ? DIV_E : SPAN_E);
         if (attrmask & HL_BLINK)
             fprintf(dumphtml_file, BLNK_E);
         if (attrmask & HL_ULINE)
@@ -2747,7 +2888,7 @@ dump_footers()
 {
 #ifdef DUMPHTML
     if (dumphtml_file) {
-        html_write_tags(dumphtml_file, 0, 0, 0, 0, TRUE, zeroextendedmenuinfo); /* close </ul> and </pre> if open */
+        html_write_tags(dumphtml_file, 0, 0, 0, 0, TRUE, zeroextendedmenuinfo, TRUE); /* close </ul> and </pre> if open */
         fprintf(dumphtml_file, "</body>\n</html>\n");
     }
 #endif
@@ -2761,7 +2902,9 @@ dump_start_screendump()
 #ifdef DUMPHTML
     if (!dumphtml_file) return;
     html_init_sym();
-    fprintf(dumphtml_file, "<pre class=\"nh_screen\">\n");
+    
+    fprintf(dumphtml_file, "<div style=\"overflow-x:auto;\">\n");
+    fprintf(dumphtml_file, "<section class=\"nh_screen\">\n");
 #endif
 }
 
@@ -2770,7 +2913,10 @@ dump_end_screendump()
 {
 #ifdef DUMPHTML
     if (dumphtml_file)
-        fprintf(dumphtml_file, "%s\n", PREF_E);
+    {
+        fprintf(dumphtml_file, "%s\n", SECTION_E);
+        fprintf(dumphtml_file, "%s\n", DIV_E);
+    }
 #endif
 }
 
@@ -2847,6 +2993,8 @@ void
 reset_windows(VOID_ARGS)
 {
     prev_app = 0;
+    in_list = 0;
+    in_preform = 0;
 }
 
 /*windows.c*/

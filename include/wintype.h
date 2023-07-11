@@ -135,6 +135,13 @@ typedef struct mi {
 #define ATR_HALF_SIZE       0x00080000
 #define ATR_ALT_COLORS      0x00100000
 #define ATR_PREFORM         0x00200000
+#define ATR_ORDERED_LIST    0x00400000
+#define ATR_START_TABLE     0x00800000
+#define ATR_END_TABLE       0x01000000
+#define ATR_TABLE_ROW       0x02000000
+#define ATR_TABLE_HEADER    0x04000000
+#define ATR_START_TABLE_BODY 0x08000000
+#define ATR_END_TABLE_BODY  0x10000000
 #define ATR_LINE_MSG_MASK   0xFFFFFFF0
 
 /* nh_poskey() modifier types */

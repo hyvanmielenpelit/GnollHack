@@ -4442,18 +4442,30 @@ dump_skills(VOID_ARGS)
     char skilllevelbuf[BUFSZ];
     char skillmaxbuf[BUFSZ];
     putstr(0, ATR_HEADING, "Final Skills:");
+
+    int skill_cnt = 0;
     for (i = 1; i < P_NUM_SKILLS; i++)
     {
         if (P_RESTRICTED(i))
             continue;
 
+        skill_cnt++;
+    }
+
+    int skill_idx = 0;
+    for (i = 1; i < P_NUM_SKILLS; i++)
+    {
+        if (P_RESTRICTED(i))
+            continue;
+
+        skill_idx++;
         Sprintf(skillnamebufC, "%s", P_NAME(i));
         *skillnamebufC = highc(*skillnamebufC);
         (void)skill_level_name(i, skilllevelbuf, FALSE);
         (void)skill_level_name(i, skillmaxbuf, TRUE);
 
-        Sprintf(buf, " %-34s %s / %s", skillnamebufC, skilllevelbuf, skillmaxbuf);
-        putstr(0, ATR_PREFORM, buf);
+        Sprintf(buf, "  %-34s  %s / %s", skillnamebufC, skilllevelbuf, skillmaxbuf);
+        putstr(0, ATR_TABLE_ROW | (i == 1 ? ATR_START_TABLE : 0) | (skill_idx == skill_cnt ? ATR_END_TABLE : 0), buf);
     }
     Sprintf(buf, "You had %d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
     putstr(0, ATR_SUBHEADING, buf);

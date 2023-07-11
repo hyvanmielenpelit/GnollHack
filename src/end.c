@@ -869,7 +869,7 @@ dump_plines()
             size_t len = strlen(&buf[1]);
             memcpy(&buf2[1], saved_pline_attrs[j], min(BUFSZ - 1, len));
             memcpy(&buf3[1], saved_pline_colors[j], min(BUFSZ - 1, len));
-            putstr_ex2(0, buf, buf2, buf3, ATR_PREFORM, NO_COLOR, 0);
+            putstr_ex2(0, buf, buf2, buf3, ATR_NONE, NO_COLOR, 0);
 #ifdef FREE_ALL_MEMORY
             free(*strp), *strp = 0;
             free((genericptr_t)saved_pline_attrs[j]), saved_pline_attrs[j] = 0;
@@ -2016,7 +2016,7 @@ int how;
                     //nowrap_add(u.u_gamescore, mhp);
                     Strcat(eos(pbuf), " and Schroedinger's cat");
                 }
-                dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
+                dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
                 pbuf[0] = '\0';
             }
             else
@@ -2027,7 +2027,7 @@ int how;
                 how == ASCENDED ? "went to your reward"
                 : "escaped from the dungeon",
                 u.u_gamescore, plur(u.u_gamescore));
-            dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
+            dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
 
 #if 0
             if (!done_stopprint)
@@ -2071,7 +2071,7 @@ int how;
                         Sprintf(pbuf, "%8ld worthless piece%s of colored glass,",
                             count, plur(count));
                     }
-                    dump_forward_putstr(endwin, ATR_PREFORM, pbuf, 0);
+                    dump_forward_putstr(endwin, ATR_NONE, pbuf, 0);
                 }
             }
 #endif
@@ -2101,28 +2101,28 @@ int how;
             }
 
             Sprintf(eos(pbuf), " with %ld point%s,", u.u_gamescore, plur(u.u_gamescore));
-            dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
+            dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
         }
 
         Sprintf(pbuf, "and %ld piece%s of gold, after %ld move%s.", umoney,
             plur(umoney), moves, plur(moves));
-        dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
+        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
 
         char realtimebuf[BUFSZ] = "";
         print_realtime(realtimebuf, urealtime.realtime);
         Sprintf(pbuf, "You played on %s difficulty in %s mode for %s.", get_game_difficulty_text(context.game_difficulty),
             get_game_mode_text(TRUE), realtimebuf);
-        dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
+        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
         if (!n_game_recoveries)
             Strcpy(pbuf, "The dungeon never collapsed on you.");
         else
             Sprintf(pbuf, "The dungeon collapsed on you %lu time%s.", n_game_recoveries, plur(n_game_recoveries));
-        dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
+        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
         Sprintf(pbuf,
             "You were level %d with a maximum of %d hit point%s when you %s.",
             u.ulevel, u.uhpmax, plur(u.uhpmax), ends[how]);
-        dump_forward_putstr(endwin, ATR_PREFORM, pbuf, done_stopprint);
-        dump_forward_putstr(endwin, ATR_PREFORM, "", done_stopprint);
+        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
+        dump_forward_putstr(endwin, ATR_NONE, "", done_stopprint);
 
         if (!done_stopprint)
             display_nhwindow(endwin, TRUE);
@@ -2264,7 +2264,7 @@ int show_weights;
     
                         Sprintf(&buf[2], "%2d - %s", count, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(obj, loadstonecorrectly) : doname_with_price_and_weight_first(obj, loadstonecorrectly)) : doname_with_price(obj));
                         //Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
-                        putstr(tmpwin, ATR_INDENT_AT_DASH, buf);
+                        putstr(tmpwin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                     }
                     if (flags.show_weight_summary)
                     {

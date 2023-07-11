@@ -1707,7 +1707,7 @@ struct permonst* ptr;
 
             abilcnt++;
             Sprintf(buf, " %2d - %s%s", abilcnt, namebuf, endbuf2);            
-            putstr(datawin, ATR_INDENT_AT_DASH, buf);
+            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
         }
     }
 
@@ -1744,7 +1744,7 @@ struct permonst* ptr;
                     *descbuf = highc(*descbuf);
                     abilcnt++;
                     Sprintf(buf, " %2d - %s", abilcnt, descbuf);                    
-                    putstr(datawin, ATR_INDENT_AT_DASH, buf);
+                    putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                 }
             }
         }
@@ -1778,7 +1778,7 @@ struct permonst* ptr;
 
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, headbuf);        
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
     if (!abilcnt)
@@ -1797,67 +1797,67 @@ struct permonst* ptr;
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to silver weapons");        
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
     if (mtmp ? mon_hates_blessed(mtmp) : hates_blessed(ptr))
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to blessed weapons");        
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
     if (mtmp ? mon_hates_cursed(mtmp) : hates_cursed(ptr))
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to cursed weapons");        
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
     if (mtmp ? mon_hates_light(mtmp) : hates_light(ptr))
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to lit weapons");        
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
     abilcnt++;
     Sprintf(buf, " %2d - %s", abilcnt, (mtmp ? mon_eschews_cursed(mtmp) : eschews_cursed(ptr) || hates_cursed(ptr)) ? "Eschews cursed items" : "Does not eschew cursed items");    
-    putstr(datawin, ATR_INDENT_AT_DASH, buf);
+    putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
 
     if (mtmp ? mon_eschews_silver(mtmp) : eschews_silver(ptr))
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Eschews silver items");        
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
     if (mtmp ? mon_eschews_blessed(mtmp) : eschews_blessed(ptr))
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Eschews blessed items");        
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
     if (mtmp ? mon_eschews_light(mtmp) : hates_light(ptr))
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Eschews lit items");        
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
     if (is_hell_hound(ptr))
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Loves cursed food");        
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
     if (is_non_eater(ptr))
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Does not eat");        
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
 
@@ -1871,7 +1871,7 @@ struct permonst* ptr;
             zombietype > NON_PM && mummytype > NON_PM ? "Zombifiable and mummifiable corpse" : 
             zombietype > NON_PM ? "Zombifiable corpse" : "Mummifiable corpse");
         
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
     if (!abilcnt)
@@ -1922,7 +1922,7 @@ struct monst* mtmp;
                     *sbuf = 0;
 
                 Sprintf(buf, " %2d - %s%s", condition_count, statusname, sbuf);
-                putstr(datawin, ATR_INDENT_AT_DASH, buf);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
         }
     }
@@ -1942,7 +1942,7 @@ struct monst* mtmp;
                 else
                     *sbuf = 0;
                 Sprintf(buf, " %2d - %s%s", condition_count, condition_names[cond], sbuf);
-                putstr(datawin, ATR_INDENT_AT_DASH, buf);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
         }
     }
@@ -1967,7 +1967,7 @@ struct monst* mtmp;
         Strcpy(pbuf, get_property_name(propidx));
         *pbuf = highc(*pbuf);
         Sprintf(buf, " %2d - %s%s", condition_count, pbuf, sbuf);
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
     if (!condition_count)

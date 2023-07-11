@@ -2202,7 +2202,7 @@ int spell, booktype;
             Sprintf(buf, " %2d - %s%s", (j + 1), domatcompname(&matlists[objects[booktype].oc_material_components].matcomp[j]),
                 ((matlists[objects[booktype].oc_material_components].matcomp[j].flags & MATCOMP_NOT_SPENT) ? " as a catalyst": ""));
             
-            putstr(datawin, ATR_INDENT_AT_DASH, buf);
+            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
         }
     }
 
@@ -2217,7 +2217,7 @@ int spell, booktype;
         {
             double avg = baseavg + perlevelavg * ((double)used_bonuses);
             Sprintf(buf, "  %d - Average damage is %.1f", cnt, avg);            
-            putstr(datawin, ATR_INDENT_AT_DASH, buf);
+            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             cnt++;
         }
     }
@@ -5555,6 +5555,10 @@ dump_spells()
         char castingsbuf[BUFSZ] = "";
         char successbuf[BUFSZ] = "";
         putstr(0, ATR_HEADING, "Spells in your repertoire:");
+        int spell_cnt = 0;
+        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+            spell_cnt++;
+
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
         {
             int pct_lim = percent_success(i, TRUE);
@@ -5568,8 +5572,8 @@ dump_spells()
             *spellnamebuf = highc(*spellnamebuf);
             Sprintf(successbuf, "%d%% success", pct_lim);
 
-            Sprintf(buf, " %-34s %-13s%s", spellnamebuf, successbuf, castingsbuf);
-            putstr(0, ATR_PREFORM, buf);
+            Sprintf(buf, "  %-34s  %-13s%s", spellnamebuf, successbuf, castingsbuf);
+            putstr(0, ATR_TABLE_ROW | (i == 0 ? ATR_START_TABLE : 0) | (i == spell_cnt - 1 ? ATR_END_TABLE : 0), buf);
         }
     }
 }

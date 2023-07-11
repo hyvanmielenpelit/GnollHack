@@ -4132,7 +4132,7 @@ struct obj* obj;
         if (artilist[sorted_citems[i]].aflags & AF_NO_WISH)
             nowishcnt++;
         Sprintf(buf, "%3d - %s%s", i + 1, objbuf, (artilist[sorted_citems[i]].aflags & AF_NO_WISH) ? "*" : "");
-        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
     if (nowishcnt > 0)
     {
