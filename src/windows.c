@@ -2617,8 +2617,8 @@ int attr, color;
             dp++;
             while (*dp == ' ')
                 dp++;
-            ptrdiff_t diff = dp - p;
-            if (diff < (ptrdiff_t)strlen(str))
+            int diff = (int)(dp - p);
+            if (diff < (int)strlen(str))
             {
                 p += diff;
                 if (attrs)
