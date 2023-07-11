@@ -2681,6 +2681,9 @@ int attr, color;
             }
         }
 
+        if (!*p)
+            break;
+
         if (curattr != prevattr || td_changed)
         {
             if (curattr != ATR_NONE)
