@@ -2023,7 +2023,7 @@ int how;
             {
                 Strcat(pbuf, " ");
             }
-            Sprintf(eos(pbuf), "%s with %ld point%s,",
+            Sprintf(eos(pbuf), "%s with %ld point%s, ",
                 how == ASCENDED ? "went to your reward"
                 : "escaped from the dungeon",
                 u.u_gamescore, plur(u.u_gamescore));
@@ -2068,7 +2068,7 @@ int how;
                     }
                     else
                     {
-                        Sprintf(pbuf, "%8ld worthless piece%s of colored glass,",
+                        Sprintf(pbuf, "%8ld worthless piece%s of colored glass, ",
                             count, plur(count));
                     }
                     dump_forward_putstr(endwin, ATR_NONE, pbuf, 0);
@@ -2100,7 +2100,7 @@ int how;
                         In_quest(&u.uz) ? dunlev(&u.uz) : depth(&u.uz));
             }
 
-            Sprintf(eos(pbuf), " with %ld point%s,", u.u_gamescore, plur(u.u_gamescore));
+            Sprintf(eos(pbuf), " with %ld point%s, ", u.u_gamescore, plur(u.u_gamescore));
             dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 1);
         }
 
