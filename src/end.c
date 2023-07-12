@@ -1960,8 +1960,8 @@ int how;
                 ? urole.name.f
                 : urole.name.m)
             : (const char*)(flags.female ? "Demigoddess" : "Demigod"));
-        dump_forward_putstr(endwin, ATR_HEADING, pbuf, done_stopprint);
-        dump_forward_putstr(dumpwin, 0, "", done_stopprint);
+        dump_forward_putstr(endwin, ATR_HEADING, pbuf, done_stopprint, 0);
+        dump_forward_putstr(dumpwin, 0, "", done_stopprint, 0);
 
         if (how == ESCAPED || how == ASCENDED)
         {
@@ -2016,7 +2016,7 @@ int how;
                     //nowrap_add(u.u_gamescore, mhp);
                     Strcat(eos(pbuf), " and Schroedinger's cat");
                 }
-                dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
+                dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 1);
                 pbuf[0] = '\0';
             }
             else
@@ -2027,7 +2027,7 @@ int how;
                 how == ASCENDED ? "went to your reward"
                 : "escaped from the dungeon",
                 u.u_gamescore, plur(u.u_gamescore));
-            dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
+            dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 1);
 
 #if 0
             if (!done_stopprint)
@@ -2101,28 +2101,28 @@ int how;
             }
 
             Sprintf(eos(pbuf), " with %ld point%s,", u.u_gamescore, plur(u.u_gamescore));
-            dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
+            dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 1);
         }
 
         Sprintf(pbuf, "and %ld piece%s of gold, after %ld move%s.", umoney,
             plur(umoney), moves, plur(moves));
-        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
+        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 0);
 
         char realtimebuf[BUFSZ] = "";
         print_realtime(realtimebuf, urealtime.realtime);
         Sprintf(pbuf, "You played on %s difficulty in %s mode for %s.", get_game_difficulty_text(context.game_difficulty),
             get_game_mode_text(TRUE), realtimebuf);
-        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
+        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 0);
         if (!n_game_recoveries)
             Strcpy(pbuf, "The dungeon never collapsed on you.");
         else
             Sprintf(pbuf, "The dungeon collapsed on you %lu time%s.", n_game_recoveries, plur(n_game_recoveries));
-        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
+        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 0);
         Sprintf(pbuf,
             "You were level %d with a maximum of %d hit point%s when you %s.",
             u.ulevel, u.uhpmax, plur(u.uhpmax), ends[how]);
-        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint);
-        dump_forward_putstr(endwin, ATR_NONE, "", done_stopprint);
+        dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 0);
+        dump_forward_putstr(endwin, ATR_NONE, "", done_stopprint, 0);
 
         if (!done_stopprint)
             display_nhwindow(endwin, TRUE);
@@ -2204,22 +2204,26 @@ int show_weights;
 
     if (show_weights == 1) // Inventory
         loadstonecorrectly = TRUE;
-    else if (show_weights == 2) { // Pick up
+    else if (show_weights == 2) 
+    { // Pick up
         loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
     }
     else if (show_weights == 3) // Drop
         loadstonecorrectly = TRUE;
 
-
-
-    for (box = list; box; box = box->nobj) {
-        if (Is_container(box) || box->otyp == STATUE) {
+    for (box = list; box; box = box->nobj) 
+    {
+        if (Is_container(box) || box->otyp == STATUE) 
+        {
             box->cknown = 1; /* we're looking at the contents now */
             if (identified)
                 box->lknown = 1;
-            if (Is_noncontainer(box) /*->otyp == BAG_OF_TRICKS*/) {
+            if (Is_noncontainer(box) /*->otyp == BAG_OF_TRICKS*/) 
+            {
                 continue; /* wrong type of container */
-            } else if (box->cobj) {
+            } 
+            else if (box->cobj) 
+            {
                 winid tmpwin = create_nhwindow(NHW_MENU);
                 Loot *sortedcobj, *srtc;
                 unsigned sortflags;
@@ -2238,7 +2242,8 @@ int show_weights;
                 if (!dumping)
                     putstr(tmpwin, ATR_HALF_SIZE, " ");
                 buf[0] = buf[1] = ' '; /* two leading spaces */
-                if (box->cobj && !cat) {
+                if (box->cobj && !cat) 
+                {
                     sortflags = (((flags.sortloot == 'l'
                                    || flags.sortloot == 'f')
                                      ? SORTLOOT_LOOT : 0)
@@ -2246,8 +2251,10 @@ int show_weights;
                     sortedcobj = sortloot(&box->cobj, sortflags, FALSE,
                                           (boolean FDECL((*), (OBJ_P))) 0);
                     totalweight = 0;
-                    for (srtc = sortedcobj; ((obj = srtc->obj) != 0); ++srtc) {
-                        if (identified) {
+                    for (srtc = sortedcobj; ((obj = srtc->obj) != 0); ++srtc) 
+                    {
+                        if (identified) 
+                        {
                             discover_object(obj->otyp, TRUE, FALSE);
                             obj->known = obj->bknown = obj->dknown
                                 = obj->rknown = obj->nknown = obj->aknown = obj->mknown = 1;
@@ -2274,18 +2281,22 @@ int show_weights;
                     }
 
                     unsortloot(&sortedcobj);
-                } else if (cat) {
+                } 
+                else if (cat) 
+                {
                     Strcpy(&buf[2], "Schroedinger's cat!");
                     putstr(tmpwin, 0, buf);
                 }
                 if (dumping)
-                    putstr(0, 0, "");
+                    putstr(0, ATR_HALF_SIZE, " ");
                 display_nhwindow(tmpwin, TRUE);
                 destroy_nhwindow(tmpwin);
                 if (all_containers)
                     container_contents(box->cobj, identified, TRUE,
                                        reportempty, show_weights);
-            } else if (reportempty) {
+            } 
+            else if (reportempty) 
+            {
                 pline("%s is empty.", upstart(thesimpleoname(box)));
                 display_nhwindow(WIN_MESSAGE, FALSE);
             }

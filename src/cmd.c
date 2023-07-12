@@ -3235,7 +3235,7 @@ int final;
     role_titl = (innategend && urole.name.f) ? urole.name.f : urole.name.m;
     rank_titl = rank_of(u.ulevel, Role_switch, innategend);
 #ifndef GNH_MOBILE
-    enlght_out("", ATR_NONE); /* separator after title */
+    enlght_out(" ", ATR_HALF_SIZE); /* separator after title */
 #endif
     enlght_out("Background:", ATR_SUBHEADING);
 

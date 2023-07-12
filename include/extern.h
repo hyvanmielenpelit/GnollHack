@@ -4158,7 +4158,7 @@ E void FDECL(genl_exit_hack, (int));
 
 E void FDECL(dump_open_log, (time_t));
 E void NDECL(dump_close_log);
-E void FDECL(dump_forward_putstr, (winid, int, const char*, int));
+E void FDECL(dump_forward_putstr, (winid, int, const char*, int, int));
 #if defined (DUMPLOG) || defined (DUMPHTML)
 E void FDECL(dump_redirect, (BOOLEAN_P));
 E void NDECL(dump_start_screendump); /* defined in windows.c */

@@ -145,7 +145,7 @@ time_t when;
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
     if (tmpwin == 0)
-        dump_forward_putstr(0, ATR_HEADING, "Game over:", TRUE);
+        dump_forward_putstr(0, ATR_HEADING, "Game over:", TRUE, 0);
     else
 #endif
         putstr(tmpwin, 0, "");

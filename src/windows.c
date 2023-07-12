@@ -2046,6 +2046,9 @@ const char* str;
 boolean preselected UNUSED;
 struct extended_menu_info info UNUSED;
 {
+    if (!str || ((!*str || !strcmp(str, " ")) && (attr & ATR_HALF_SIZE)))
+        return;
+
     char buf[UTF8BUFSZ * 2] = "";
     if (str)
         write_text2buf_utf8(buf, sizeof(buf), str);
@@ -2097,34 +2100,41 @@ struct extended_menu_info info UNUSED;
 STATIC_OVL void
 dump_end_menu_ex(win, str, str2)
 winid win UNUSED;
-const char *str, *str2;
+const char *str UNUSED, *str2 UNUSED;
 {
-    char buf[UTF8BUFSZ * 4 + 3] = "";
-    char buf1[UTF8BUFSZ * 2] = "";
-    char buf2[UTF8BUFSZ * 2] = "";
-    const char* txt = 0;
-    txt = (str && str2) ? " - " : "";
-
-    if (str)
-        write_text2buf_utf8(buf1, sizeof(buf1), str);
-    if (str2)
-        write_text2buf_utf8(buf2, sizeof(buf2), str2);
-
-    Sprintf(buf, "%s%s%s", buf1, txt, buf2);
-
 #ifdef DUMPLOG
     if (dumplog_file) 
     {
-        if (str || str2)
-            fprintf(dumplog_file, "%s\n", buf);
-        else
-            fputs("\n", dumplog_file);
+        fputs("\n", dumplog_file);
     }
 #endif
-#ifdef DUMPHTML
-    if (dumphtml_file)
-        html_dump_line(dumphtml_file, 0, 0, 0, 0, 0, 0, str || str2 ? buf : "");
-#endif
+
+//    char buf[UTF8BUFSZ * 4 + 3] = "";
+//    char buf1[UTF8BUFSZ * 2] = "";
+//    char buf2[UTF8BUFSZ * 2] = "";
+//    const char* txt = 0;
+//    txt = (str && str2) ? " - " : "";
+//
+//    if (str)
+//        write_text2buf_utf8(buf1, sizeof(buf1), str);
+//    if (str2)
+//        write_text2buf_utf8(buf2, sizeof(buf2), str2);
+//
+//    Sprintf(buf, "%s%s%s", buf1, txt, buf2);
+//
+//#ifdef DUMPLOG
+//    if (dumplog_file) 
+//    {
+//        if (str || str2)
+//            fprintf(dumplog_file, "%s\n", buf);
+//        else
+//            fputs("\n", dumplog_file);
+//    }
+//#endif
+//#ifdef DUMPHTML
+//    if (dumphtml_file && (str || str2))
+//        html_dump_line(dumphtml_file, 0, 0, 0, 0, 0, 0, buf);
+//#endif
 }
 
 STATIC_OVL int
@@ -2319,7 +2329,7 @@ struct extended_menu_info info;
     /* after string is written */
     if (in_preform) {
         if(!app)
-            fprintf(fp, LINEBREAK); /* preform still gets <br /> at end of line */
+            fprintf(fp, "%s\n", LINEBREAK); /* preform still gets <br /> at end of line */
         return; /* don't write </pre> until we get the next thing */
     }
     if (in_list && !app) {
@@ -2346,7 +2356,8 @@ struct extended_menu_info info;
             fprintf(fp, "%s\n", is_heading ? HEAD_E : is_subheading ? SUBH_E : "");
         if(is_paragraph)
             fprintf(fp, "%s\n", PARAGRAPH_E);
-        fprintf(fp, "%s", !is_paragraph && !is_heading && !is_subheading && usebr && !was_in_list && !is_table_row ? LINEBREAK : "");
+        if(!is_paragraph && !is_heading && !is_subheading && usebr && !was_in_list && !is_table_row)
+            fprintf(fp, "%s\n", LINEBREAK);
     }
 }
 
@@ -2569,7 +2580,8 @@ dump_css()
         "",
         ".tombstone-wrapper {",
         "    padding-top: 20px;",
-        //"    text-align:center;",
+        "    max-width: 480px;",
+        "    text-align:center;",
         "}",
         "",
         ".tombstone {"
@@ -2728,8 +2740,6 @@ time_t when;
     if (dumphtml_file) 
     {
         html_write_tags(dumphtml_file, 0, 0, 0, 0, TRUE, zeroextendedmenuinfo, TRUE); /* </ul>, </pre> if needed */
-        //fprintf(dumphtml_file, "<div style=\"overflow-x:auto;\">\n");
-        //fprintf(dumphtml_file, "%s\n", PREF_S);
         fprintf(dumphtml_file, "<div class=\"tombstone-wrapper\">\n");
         fprintf(dumphtml_file, "<div class=\"tombstone\">\n");
         fprintf(dumphtml_file, "<div class=\"ts_row ts_rip\">REST<br />IN<br />PEACE</div><br/>\n");
@@ -2748,11 +2758,6 @@ time_t when;
         fprintf(dumphtml_file, "%s\n", DIV_E);
     }
     genl_outrip(NHW_DUMPTXT, how, when);
-    if (dumphtml_file)
-    {
-        //fprintf(dumphtml_file, "%s\n", PREF_E);
-        //fprintf(dumphtml_file, "%s\n", DIV_E);
-    }
 }
 
 /* Write HTML-escaped string to a file */
@@ -2879,7 +2884,7 @@ const char* str, *attrs, *colors;
     if ((strlen(str) == 0 || !strcmp(str, " ")) && !app && !prev_app) 
     {
         /* if it's a blank line, just print a blank line */
-        if(!in_list)
+        if(!in_list && !(attr & ATR_HALF_SIZE))
             fprintf(fp, "%s\n", LINEBREAK);
         return;
     }
@@ -3145,14 +3150,14 @@ dump_close_log(VOID_ARGS)
 }
 
 void
-dump_forward_putstr(win, attr, str, no_forward)
+dump_forward_putstr(win, attr, str, no_forward, app)
 winid win;
 int attr;
 const char* str;
-int no_forward;
+int no_forward, app;
 {
 #if defined(DUMPLOG) || defined (DUMPHTML)
-    dump_putstr_ex(win, str, attr, NO_COLOR, 0);
+    dump_putstr_ex(win == NHW_DUMPTXT || win == NHW_DUMPHTML ? win : 0, str, attr, NO_COLOR, app);
 #endif
     if (!no_forward)
         putstr(win, attr, str);
