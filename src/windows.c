@@ -2584,14 +2584,18 @@ winid win;
 int how;
 time_t when;
 {
-    if (dumphtml_file) {
+    if (dumphtml_file) 
+    {
         html_write_tags(dumphtml_file, 0, 0, 0, 0, TRUE, zeroextendedmenuinfo, TRUE); /* </ul>, </pre> if needed */
+        fprintf(dumphtml_file, "<div style=\"overflow-x:auto;\">\n");
         fprintf(dumphtml_file, "%s\n", PREF_S);
     }
     genl_outrip(win, how, when);
     if (dumphtml_file)
+    {
         fprintf(dumphtml_file, "%s\n", PREF_E);
-
+        fprintf(dumphtml_file, "%s\n", DIV_E);
+    }
 }
 
 /* Write HTML-escaped string to a file */

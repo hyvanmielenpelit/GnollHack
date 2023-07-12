@@ -3156,15 +3156,19 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
     *tmpbuf = highc(*tmpbuf); /* same adjustment as bottom line */
     /* as in background_enlightenment, when poly'd we need to use the saved
        gender in u.mfemale rather than the current you-as-monster gender */
-#ifndef GNH_MOBILE
-    Sprintf(buf, "%s the %s's attributes:", tmpbuf,
-            ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
-                ? urole.name.f
-                : urole.name.m);
-
-    /* title */
-    enlght_out(buf, ATR_HEADING); /* "Conan the Archaeologist's attributes:" */
+#ifdef GNH_MOBILE
+    if (final)
 #endif
+    {
+        Sprintf(buf, "%s the %s's attributes:", tmpbuf,
+            ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
+            ? urole.name.f
+            : urole.name.m);
+
+        /* title */
+        enlght_out(buf, ATR_HEADING); /* "Conan the Archaeologist's attributes:" */
+    }
+
     /* background and characteristics; ^X or end-of-game disclosure */
     if (mode & BASICENLIGHTENMENT) {
         /* role, race, alignment, deities, dungeon level, time, experience */
