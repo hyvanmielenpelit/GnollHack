@@ -2196,9 +2196,9 @@ STATIC_VAR int prev_app = 0;
 
 /* various tags - These were in a 2D array, but this is more readable */
 #define HEAD_S "<h2>"
-#define HEAD_E "</h2>\n"
+#define HEAD_E "</h2>"
 #define SUBH_S "<h3>"
-#define SUBH_E "</h3>\n"
+#define SUBH_E "</h3>"
 #define PREF_S "<pre>"
 #define PREF_E "</pre>"
 #define LIST_S "<ul>"
@@ -2223,6 +2223,8 @@ STATIC_VAR int prev_app = 0;
 #define BOLD_E "</b>"
 #define UNDL_S "<u>"
 #define UNDL_E "</u>"
+#define PARAGRAPH_S "<p class=\"nh_paragraph_line\">"
+#define PARAGRAPH_E "</p>"
 /* Blinking text on webpages is gross (and tedious), replace with italics */
 #define BLNK_S "<i>"
 #define BLNK_E "</i>"
@@ -2265,6 +2267,7 @@ struct extended_menu_info info;
     boolean is_heading = !(info.menu_flags & (MENU_FLAGS_IS_GROUP_HEADING)) && ((attr & ATR_SUBHEADING) == ATR_HEADING || (attr & ATR_SUBTITLE) == ATR_TITLE || (info.menu_flags & (MENU_FLAGS_IS_HEADING)));
     boolean is_subheading = (attr & ATR_SUBHEADING) == ATR_SUBHEADING || (attr & ATR_SUBTITLE) == ATR_SUBTITLE || (info.menu_flags & (MENU_FLAGS_IS_GROUP_HEADING));
     boolean is_bold = (attr & ATR_ATTR_MASK) == ATR_BOLD;
+    boolean is_paragraph = (attr & ATR_PARAGRAPH_LINE) != 0;
     if (before) { /* before next string is written,
                      close any finished blocks
                      and open a new block if necessary */
@@ -2291,7 +2294,7 @@ struct extended_menu_info info;
         if (attr & ATR_TABLE_ROW) {
             fprintf(fp, "%s", TR_S);
         }
-        if (!(attr & (ATR_SUBHEADING | ATR_SUBTITLE)) && (info.menu_flags & (MENU_FLAGS_IS_HEADING | MENU_FLAGS_IS_GROUP_HEADING)) == 0 && win == NHW_MENU && !prev_app) {
+        if (!(attr & (ATR_SUBHEADING | ATR_SUBTITLE | ATR_PARAGRAPH_LINE)) && (info.menu_flags & (MENU_FLAGS_IS_HEADING | MENU_FLAGS_IS_GROUP_HEADING)) == 0 && win == NHW_MENU && !prev_app) {
             /* This is a bullet point */
             if (!in_list) {
                 fprintf(fp, "%s\n", (attr & ATR_ORDERED_LIST) ? OLIST_S : LIST_S);
@@ -2300,14 +2303,17 @@ struct extended_menu_info info;
             fprintf(fp, LITM_S);
             return;
         }
-        if (in_list && !prev_app) {
-            fprintf(fp, "%s\n", in_list == 2 ? OLIST_E : LIST_E);
-            in_list = FALSE;
-        }
 
-        if(!prev_app)
-            fprintf(fp, "%s", is_heading ? HEAD_S :
-                is_subheading ? SUBH_S : is_bold ? BOLD_S : "");
+        if (!prev_app)
+        {
+            if (in_list) {
+                fprintf(fp, "%s\n", in_list == 2 ? OLIST_E : LIST_E);
+                in_list = FALSE;
+            }
+            fprintf(fp, "%s", is_paragraph ? PARAGRAPH_S : "");
+            fprintf(fp, "%s", is_heading ? HEAD_S : is_subheading ? SUBH_S : "");
+            fprintf(fp, "%s", is_bold ? BOLD_S : "");
+        }
         return;
     }
     /* after string is written */
@@ -2333,12 +2339,15 @@ struct extended_menu_info info;
         fprintf(fp, "%s\n", TABLE_E);
     }
 
-    if(!app)
-        fprintf(fp, "%s", is_heading ? HEAD_E:
-            is_subheading ? SUBH_E : is_bold ? BOLD_E : "");
-
-    if(!app)
-        fprintf(fp, "%s", !is_heading && !is_subheading && usebr && !was_in_list && !is_table_row ? LINEBREAK : "");
+    if (!app)
+    {
+        fprintf(fp, "%s", is_bold ? BOLD_E : "");
+        if (is_heading || is_subheading)
+            fprintf(fp, "%s\n", is_heading ? HEAD_E : is_subheading ? SUBH_E : "");
+        if(is_paragraph)
+            fprintf(fp, "%s\n", PARAGRAPH_E);
+        fprintf(fp, "%s", !is_paragraph && !is_heading && !is_subheading && usebr && !was_in_list && !is_table_row ? LINEBREAK : "");
+    }
 }
 
 extern const nhsym cp437toUnicode[256]; /* From hacklib.c */
@@ -2471,6 +2480,10 @@ dump_css()
         "table.nh_table td, table.nh_table th {",
         "    padding: 0px 5px;",
         "    vertical-align:top;",
+        "}",
+        "",
+        "p.nh_paragraph_line {",
+        "    padding: 1px 0px 0px 5px;",
         "}",
         "",
         ".tooltip {",

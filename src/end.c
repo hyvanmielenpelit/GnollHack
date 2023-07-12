@@ -2586,7 +2586,7 @@ boolean ask, isend;
             klwin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_NARROW_LIST, NO_GLYPH, zerocreatewindowinfo);
             putstr(klwin, ATR_TITLE, "Vanquished creatures:");
             if (!dumping)
-                putstr(klwin, 0, "");
+                putstr(klwin, ATR_NONE, "");
 
             qsort((genericptr_t) mindx, ntypes, sizeof *mindx, vanqsort_cmp);
             for (ni = 0; ni < ntypes; ni++) 
@@ -2600,7 +2600,7 @@ boolean ask, isend;
                 if (class_header && mlet != prev_mlet) 
                 {
                     Strcpy(buf, def_monsyms[(int) mlet].name);
-                    putstr(klwin, ask ? 0 : iflags.menu_headings,
+                    putstr(klwin, ask ? ATR_NONE : iflags.menu_headings,
                            upstart(buf));
                     prev_mlet = mlet;
                 }
@@ -2630,7 +2630,7 @@ boolean ask, isend;
                 {
                     if (uniq_header && was_uniq)
                     {
-                        putstr(klwin, 0, "");
+                        putstr(klwin, ATR_NONE, "");
                         was_uniq = FALSE;
                     }
                     /* trolls or undead might have come back,
@@ -2651,18 +2651,18 @@ boolean ask, isend;
                 if (class_header)
                     ++pfx;
                 Sprintf(buftoo, "%*s%s", pfx, "", buf);
-                putstr(klwin, 0, buftoo);
+                putstr(klwin, ATR_NONE, buftoo);
             }
             /*
              * if (Hallucination)
-             *     putstr(klwin, 0, "and a partridge in a pear tree");
+             *     putstr(klwin, ATR_NONE, "and a partridge in a pear tree");
              */
             if (ntypes > 1) 
             {
                 if (!dumping)
-                    putstr(klwin, 0, "");
+                    putstr(klwin, ATR_NONE, "");
                 Sprintf(buf, "%ld creatures vanquished.", total_killed);
-                putstr(klwin, 0, buf);
+                putstr(klwin, ATR_PARAGRAPH_LINE, buf);
             }
             display_nhwindow(klwin, TRUE);
             destroy_nhwindow(klwin);
@@ -2809,7 +2809,7 @@ boolean ask, isend;
                 (nextinct && ngenocided) ? " or extinct" : "");
             putstr(klwin, ATR_TITLE, buf);
             if (!dumping)
-                putstr(klwin, 0, "");
+                putstr(klwin, ATR_NONE, "");
 
             for (i = LOW_PM; i < NUM_MONSTERS; i++) 
             {
@@ -2830,7 +2830,7 @@ boolean ask, isend;
                     if ((mvitals[i].mvflags & MV_GONE) == MV_EXTINCT)
                         Strcat(buf, " (extinct)");
 
-                    putstr(klwin, 0, buf);
+                    putstr(klwin, ATR_NONE, buf);
                 }
             }
 
@@ -2840,13 +2840,13 @@ boolean ask, isend;
             if (ngenocided > 0) 
             {
                 Sprintf(buf, "%d species genocided.", ngenocided);
-                putstr(klwin, 0, buf);
+                putstr(klwin, ATR_PARAGRAPH_LINE, buf);
             }
 
             if (nextinct > 0) 
             {
                 Sprintf(buf, "%d species extinct.", nextinct);
-                putstr(klwin, 0, buf);
+                putstr(klwin, ATR_PARAGRAPH_LINE, buf);
             }
 
             display_nhwindow(klwin, TRUE);

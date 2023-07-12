@@ -4468,7 +4468,7 @@ dump_skills(VOID_ARGS)
         putstr(0, ATR_TABLE_ROW | (skill_idx == 1 ? ATR_START_TABLE : 0) | (skill_idx == skill_cnt ? ATR_END_TABLE : 0), buf);
     }
     Sprintf(buf, "You had %d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
-    putstr(0, ATR_SUBHEADING, buf);
+    putstr(0, ATR_PARAGRAPH_LINE, buf);
 }
 
 short
