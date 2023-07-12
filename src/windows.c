@@ -2291,7 +2291,7 @@ struct extended_menu_info info;
         if (attr & ATR_TABLE_ROW) {
             fprintf(fp, "%s", TR_S);
         }
-        if (!(attr & (ATR_SUBHEADING | ATR_SUBTITLE)) && (info.menu_flags & (MENU_FLAGS_IS_HEADING | MENU_FLAGS_IS_GROUP_HEADING)) == 0 && win == NHW_MENU) {
+        if (!(attr & (ATR_SUBHEADING | ATR_SUBTITLE)) && (info.menu_flags & (MENU_FLAGS_IS_HEADING | MENU_FLAGS_IS_GROUP_HEADING)) == 0 && win == NHW_MENU && !prev_app) {
             /* This is a bullet point */
             if (!in_list) {
                 fprintf(fp, "%s\n", (attr & ATR_ORDERED_LIST) ? OLIST_S : LIST_S);
@@ -2300,7 +2300,7 @@ struct extended_menu_info info;
             fprintf(fp, LITM_S);
             return;
         }
-        if (in_list) {
+        if (in_list && !prev_app) {
             fprintf(fp, "%s\n", in_list == 2 ? OLIST_E : LIST_E);
             in_list = FALSE;
         }
@@ -2316,7 +2316,7 @@ struct extended_menu_info info;
             fprintf(fp, LINEBREAK); /* preform still gets <br /> at end of line */
         return; /* don't write </pre> until we get the next thing */
     }
-    if (in_list) {
+    if (in_list && !app) {
         fprintf(fp, "%s\n", LITM_E); /* </li>, but not </ul> yet */
         return;
     }
@@ -2597,6 +2597,11 @@ dump_css()
         "    width:180px;",
         "    height:60px;",
         "}",
+        "",
+        ".ts_year {",
+        "    padding:15px;",
+        "    display:inline-block;",
+        "}",
         0
         };
 
@@ -2703,7 +2708,7 @@ dump_css()
 
 STATIC_OVL void
 dump_outrip(win, how, when)
-winid win;
+winid win UNUSED;
 int how;
 time_t when;
 {
@@ -2725,7 +2730,7 @@ time_t when;
         html_dump_str(dumphtml_file, kbuf, 0, 0, ATR_NONE, NO_COLOR);
         fprintf(dumphtml_file, "</div><br />\n");
         long year = yyyymmdd(when) / 10000L;
-        fprintf(dumphtml_file, "<div class=\"ts_row\" style=\"padding:15px;display:inline-block;\">%4ld</div>\n", year);
+        fprintf(dumphtml_file, "<div class=\"ts_row ts_year\">%4ld</div>\n", year);
         fprintf(dumphtml_file, "%s\n", DIV_E);
         fprintf(dumphtml_file, "%s\n", DIV_E);
     }

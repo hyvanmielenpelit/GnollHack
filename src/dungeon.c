@@ -3378,9 +3378,11 @@ boolean printdun;
         for (bp = mptr->final_resting_place; bp; bp = bp->next)
             if (bp->bonesknown || wizard || final)
                 ++kncnt;
+        
+        int totalkncnt = kncnt;
         if (kncnt) {
             Sprintf(buf, "%s%s", PREFIX, "Final resting place for");
-            putstr(win, ATR_INDENT_AT_SPACE, buf);
+            putstr_ex(win, buf, ATR_INDENT_AT_SPACE, NO_COLOR, final && totalkncnt == 1);
             if (died_here) {
                 /* disclosure occurs before bones creation, so listing dead
                    hero here doesn't give away whether bones are produced */
@@ -3390,15 +3392,15 @@ boolean printdun;
                 (void) strsubst(tmpbuf, " herself", " yourself");
                 (void) strsubst(tmpbuf, " his ", " your ");
                 (void) strsubst(tmpbuf, " her ", " your ");
-                Sprintf(buf, "%s%syou, %s%c", PREFIX, TAB, tmpbuf,
+                Sprintf(buf, "%s%syou, %s%c", final && totalkncnt == 1 ? " " : PREFIX, final && totalkncnt == 1 ? "" : TAB, tmpbuf,
                         --kncnt ? ',' : '.');
-                putstr(win, ATR_INDENT_AT_SPACE, buf);
+                putstr_ex(win, buf, ATR_INDENT_AT_SPACE, NO_COLOR, final && totalkncnt == 1 && kncnt);
             }
             for (bp = mptr->final_resting_place; bp; bp = bp->next) {
                 if (bp->bonesknown || wizard || final) {
-                    Sprintf(buf, "%s%s%s, %s%c", PREFIX, TAB, bp->who,
+                    Sprintf(buf, "%s%s%s, %s%c", final && totalkncnt == 1 ? " " : PREFIX, final && totalkncnt == 1 ? "" : TAB, bp->who,
                             bp->how, --kncnt ? ',' : '.');
-                    putstr(win, ATR_INDENT_AT_SPACE, buf);
+                    putstr_ex(win, buf, ATR_INDENT_AT_SPACE, NO_COLOR, final && totalkncnt == 1 && kncnt);
                 }
             }
         }
