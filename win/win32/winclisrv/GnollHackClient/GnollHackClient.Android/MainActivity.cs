@@ -26,7 +26,7 @@ namespace GnollHackClient.Droid
         const int REQUEST_USER_CONFIRM_INSTALL_CODE = 101;
 
         public IAssetPackManager AssetPackManager { get; private set; }
-        public AssetPackStateUpdateListenerWrapper listener { get; private set; }
+        public AssetPackStateUpdateListenerWrapper AssetPackListener { get; private set; }
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -78,8 +78,8 @@ namespace GnollHackClient.Droid
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
 
             AssetPackManager = AssetPackManagerFactory.GetInstance(this);
-            listener = new AssetPackStateUpdateListenerWrapper();
-            listener.StateUpdate += Listener_StateUpdate;
+            AssetPackListener = new AssetPackStateUpdateListenerWrapper();
+            //AssetPackListener.StateUpdate += Listener_StateUpdate;
             LoadApplication(new App());
         }
 
@@ -151,13 +151,13 @@ namespace GnollHackClient.Droid
         protected override void OnResume()
         {
             // regsiter our Listener Wrapper with the SplitInstallManager so we get feedback.
-            AssetPackManager.RegisterListener(listener.Listener);
+            //AssetPackManager.RegisterListener(AssetPackListener.Listener);
             base.OnResume();
         }
 
         protected override void OnPause()
         {
-            AssetPackManager.UnregisterListener(listener.Listener);
+            //AssetPackManager.UnregisterListener(AssetPackListener.Listener);
             base.OnPause();
         }
 
