@@ -94,10 +94,10 @@
       <Version>2.80.3</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.CommunityToolkit">
-      <Version>2.0.1</Version>
+      <Version>2.0.6</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.CommunityToolkit.Markup">
-      <Version>2.0.1</Version>
+      <Version>2.0.6</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.FFImageLoading">
       <Version>2.4.11.982</Version>
@@ -109,7 +109,7 @@
       <Version>2.4.11.982</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2578" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.7.5" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.7" />
     <PackageReference Include="Xamarin.Google.Android.Play.Core">
       <Version>1.10.3.5</Version>
     </PackageReference>

@@ -13,6 +13,7 @@ using Android.Content;
 using Xamarin.Google.Android.Play.Core.AssetPacks;
 using Xamarin.Google.Android.Play.Core.AssetPacks.Model;
 using GnollHackCommon;
+using Android.Text.Method;
 
 namespace GnollHackClient.Droid
 {
@@ -79,13 +80,21 @@ namespace GnollHackClient.Droid
 
             AssetPackManager = AssetPackManagerFactory.GetInstance(this);
             AssetPackListener = new AssetPackStateUpdateListenerWrapper();
-            //AssetPackListener.StateUpdate += Listener_StateUpdate;
+            try
+            {
+                if(AssetPackListener != null)
+                    AssetPackListener.StateUpdate += Listener_StateUpdate;
+            }
+            catch (Exception ex)
+            {
+                Android.Util.Log.Error("GnollHack Exception", ex.Message);
+            }
             LoadApplication(new App());
         }
 
         private string GetAbsoluteOnDemandPackAssetPath(string assetPack, string relativeAssetPath)
         {
-            AssetPackLocation assetPackPath = AssetPackManager.GetPackLocation(assetPack);
+            AssetPackLocation assetPackPath = AssetPackManager?.GetPackLocation(assetPack);
             string assetsFolderPath = assetPackPath?.AssetsPath() ?? null;
             if (assetsFolderPath == null)
             {
@@ -118,7 +127,7 @@ namespace GnollHackClient.Droid
                     break;
 
                 case AssetPackStatus.Completed:
-                    AssetPackLocation assetPackPath = AssetPackManager.GetPackLocation(GHConstants.OnDemandPackName);
+                    AssetPackLocation assetPackPath = AssetPackManager?.GetPackLocation(GHConstants.OnDemandPackName);
                     string assetsFolderPath = assetPackPath?.AssetsPath() ?? null;
                     OnDemandPackStatus?.Invoke(null, new AssetPackStatusEventArgs(status, assetsFolderPath));
                     break;
@@ -133,7 +142,7 @@ namespace GnollHackClient.Droid
 
                 case AssetPackStatus.WaitingForWifi:
                     OnDemandPackStatus?.Invoke(null, new AssetPackStatusEventArgs(status));
-                    AssetPackManager.ShowCellularDataConfirmation(this);
+                    AssetPackManager?.ShowCellularDataConfirmation(this);
                     break;
 
                 case AssetPackStatus.NotInstalled:
@@ -150,14 +159,29 @@ namespace GnollHackClient.Droid
 
         protected override void OnResume()
         {
-            // regsiter our Listener Wrapper with the SplitInstallManager so we get feedback.
-            //AssetPackManager.RegisterListener(AssetPackListener.Listener);
+            try
+            {
+                if (AssetPackListener?.Listener != null)
+                    AssetPackManager?.RegisterListener(AssetPackListener.Listener);
+            }
+            catch (Exception ex)
+            {
+                Android.Util.Log.Error("GnollHack Exception", ex.Message);
+            }
             base.OnResume();
         }
 
         protected override void OnPause()
         {
-            //AssetPackManager.UnregisterListener(AssetPackListener.Listener);
+            try
+            {
+                if(AssetPackListener?.Listener != null)
+                    AssetPackManager?.UnregisterListener(AssetPackListener.Listener);
+            }
+            catch (Exception ex)
+            {
+                Android.Util.Log.Error("GnollHack Exception", ex.Message);
+            }
             base.OnPause();
         }
 
