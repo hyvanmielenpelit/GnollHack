@@ -1,0 +1,15 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="dirs.props"/>
+  <Import Project="files.props"/>
+  <!-- TODO not copying record-->
+  <Target Name="Build"
+    Inputs="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp"
+    Outputs="$(GnollHackDllOutputDir)defaults.gnh;$(GnollHackDllOutputDir)Guidebook.txt;$(GnollHackDllOutputDir)license;$(GnollHackDllOutputDir)credits;$(GnollHackDllOutputDir)sysconf;$(GnollHackDllOutputDir)symbols;$(GnollHackDllOutputDir)record;$(GnollHackDllOutputDir)opthelp">
+
+    <Copy SourceFiles="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(GnollHackDllOutputDir)"/>
+    <Copy SourceFiles="$(BinDir)nhdat;$(BinDir)nh340key.dll;$(BinDir)nhdefkey.dll;$(BinDir)nhraykey.dll;$(BinDir)recover.exe" DestinationFolder="$(GnollHackDllOutputDir)"/>
+  </Target>
+  <Target Name="Clean">
+    <Delete Files="$(GnollHackDllOutputDir)defaults.gnh;$(GnollHackDllOutputDir)Guidebook.txt;$(GnollHackDllOutputDir)license;$(GnollHackDllOutputDir)credits;$(GnollHackDllOutputDir)sysconf;$(GnollHackDllOutputDir)nethack.txt;$(GnollHackDllOutputDir)symbols;$(GnollHackDllOutputDir)record;$(GnollHackDllOutputDir)opthelp"/>
+  </Target>
+</Project>

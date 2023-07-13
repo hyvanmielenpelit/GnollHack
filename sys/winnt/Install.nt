@@ -49,7 +49,7 @@ version.  You can use one of the following build environments:
                                  |    |    |      |
                              share  winnt tty   win32
                                                   |
-                                                vs2017
+                                                vs
 
  
 /--------------------------------------------------------\
@@ -64,9 +64,9 @@ solution file within the IDE, build the solution and  run the version
 of NetHack you wish to run.
 
 The Visual Studio 2017 NetHack solution file can be found here:
-    win\win32\vs2017\NetHack.sln
+    win\win32\vs\NetHack.sln
 
-You can use that same win\win32\vs2017\NetHack.sln with Visual Studio 2019,
+You can use that same win\win32\vs\NetHack.sln with Visual Studio 2019,
 but you may have to retarget the projects:
     Windows SDK Version: 10.0.17763.0  [ There have been some reports of 
                                          difficulties if you instead choose 
@@ -89,7 +89,7 @@ You can also build all the projects for all platforms and configurations
 using a "build.bat" batch file found in the same directory as the solution.
 
 Open a developer command prompt for the version of Visual Studio you are
-using.  Change to the directory win\win32\vs2017 and run "build.bat".
+using.  Change to the directory win\win32\vs and run "build.bat".
 
  * Optional curses window-port support *
 

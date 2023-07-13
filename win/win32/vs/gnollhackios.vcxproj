@@ -35,61 +35,55 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{51daf34f-b699-442d-a9ba-4a3b2800a09a}</ProjectGuid>
-    <Keyword>Android</Keyword>
-    <RootNamespace>gnollhackdroid</RootNamespace>
+    <ProjectGuid>{f6e7efa6-0470-47c8-a6b0-5de72bac7291}</ProjectGuid>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <Keyword>iOS</Keyword>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
-    <ApplicationType>Android</ApplicationType>
-    <ApplicationTypeRevision>3.0</ApplicationTypeRevision>
+    <ApplicationType>iOS</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>Clang_5_0</PlatformToolset>
-    <UseOfStl>c++_shared</UseOfStl>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>Clang_5_0</PlatformToolset>
-    <UseOfStl>c++_shared</UseOfStl>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>Clang_5_0</PlatformToolset>
-    <UseOfStl>c++_shared</UseOfStl>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>Clang_5_0</PlatformToolset>
-    <UseOfStl>c++_shared</UseOfStl>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>Clang_5_0</PlatformToolset>
-    <UseOfStl>c++_shared</UseOfStl>
+    <PlatformToolset>XCode_6_1</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>Clang_5_0</PlatformToolset>
-    <UseOfStl>c++_shared</UseOfStl>
+    <PlatformToolset>XCode_6_1</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>Clang_5_0</PlatformToolset>
-    <UseOfStl>c++_shared</UseOfStl>
+    <PlatformToolset>XCode_6_1</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>Clang_5_0</PlatformToolset>
-    <UseOfStl>c++_shared</UseOfStl>
+    <PlatformToolset>XCode_6_1</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>XCode_6_1</PlatformToolset>
+    <AdditionalBuildSettings>IPHONEOS_DEPLOYMENT_TARGET=11.0;ALWAYS_SEARCH_USER_PATHS=NO;</AdditionalBuildSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>XCode_6_1</PlatformToolset>
+    <AdditionalBuildSettings>IPHONEOS_DEPLOYMENT_TARGET=11.0;ALWAYS_SEARCH_USER_PATHS=NO;</AdditionalBuildSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>XCode_6_1</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>XCode_6_1</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="dirs.props" />
@@ -99,144 +93,145 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
+    <IncludePath>$(LibiOSDir);$(IncDir);$(LibShareDir)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CppLanguageStandard>Default</CppLanguageStandard>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
-      <AdditionalOptions>-target x86_64-none-android</AdditionalOptions>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <AdditionalIncludeDirectories>$(LibiOSDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_IOS;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -static</AdditionalOptions>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(StlIncludeDirectories);$(Sysroot)\usr\include;$(Sysroot)\usr\include\$(AndroidHeaderTriple);$(VS_NdkRoot)\sources\android\support\include;$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CppLanguageStandard>Default</CppLanguageStandard>
+      <AdditionalIncludeDirectories>$(LibiOSDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GNH_MOBILE;GNH_IOS;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -static</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CppLanguageStandard>Default</CppLanguageStandard>
-      <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
-      <AdditionalOptions>-target i386-none-android</AdditionalOptions>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
     </ClCompile>
-    <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
-    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(StlIncludeDirectories);$(Sysroot)\usr\include;$(Sysroot)\usr\include\$(AndroidHeaderTriple);$(VS_NdkRoot)\sources\android\support\include;$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CppLanguageStandard>Default</CppLanguageStandard>
     </ClCompile>
-    <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CppLanguageStandard>Default</CppLanguageStandard>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>-target arm64v8a-none-eabi</AdditionalOptions>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <AdditionalIncludeDirectories>$(LibiOSDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_IOS;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -static</AdditionalOptions>
     </Link>
+    <PostBuildEvent>
+      <Command>..\xam\GnollHackClient\gnollhackios\download-Debug-ARM64.bat</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>if not exist "c:\mac-out" mkdir "c:\mac-out"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(StlIncludeDirectories);$(Sysroot)\usr\include;$(Sysroot)\usr\include\$(AndroidHeaderTriple);$(VS_NdkRoot)\sources\android\support\include;$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CppLanguageStandard>Default</CppLanguageStandard>
-      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(LibiOSDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GNH_MOBILE;GNH_IOS;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -static</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\copy-assetpack.bat</Command>
+      <Command>..\xam\GnollHackClient\gnollhackios\download-Release-ARM64.bat</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>if not exist "c:\mac-out" mkdir "c:\mac-out"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CppLanguageStandard>Default</CppLanguageStandard>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>-target armv7a-none-eabi</AdditionalOptions>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
     </ClCompile>
-    <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
-    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(StlIncludeDirectories);$(Sysroot)\usr\include;$(Sysroot)\usr\include\$(AndroidHeaderTriple);$(VS_NdkRoot)\sources\android\support\include;$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|iPhone'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CppLanguageStandard>Default</CppLanguageStandard>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <AdditionalIncludeDirectories>$(LibiOSDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_IOS;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -static</AdditionalOptions>
     </Link>
-    <PostBuildEvent>
-      <Command>..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\copy-assetpack.bat</Command>
-    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|iPhone'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(LibiOSDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GNH_MOBILE;GNH_IOS;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>-lm -lc -static</AdditionalOptions>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)allmain.c" />
@@ -272,8 +267,8 @@
     <ClCompile Include="$(SrcDir)exper.c" />
     <ClCompile Include="$(SrcDir)explode.c" />
     <ClCompile Include="$(SrcDir)extralev.c" />
-    <ClCompile Include="$(SrcDir)files.c" />
     <ClCompile Include="$(SrcDir)fountain.c" />
+    <ClCompile Include="$(SrcDir)files.c" />
     <ClCompile Include="$(SrcDir)hack.c" />
     <ClCompile Include="$(SrcDir)hacklib.c" />
     <ClCompile Include="$(SrcDir)invent.c" />
@@ -362,12 +357,13 @@
     <ClCompile Include="$(SysShareDir)posixregex.c" />
     <ClCompile Include="$(SysShareDir)unixtty.c" />
     <ClCompile Include="$(WinShareDir)safeproc.c" />
+    <ClCompile Include="$(LibShareDir)libproc.c" />
+    <ClCompile Include="$(LibShareDir)callback.c" />
     <ClCompile Include="$(LibShareDir)gnhapi.c" />
     <ClCompile Include="$(LibShareDir)gnhmain.c" />
     <ClCompile Include="$(LibShareDir)gnhunix.c" />
-    <ClCompile Include="$(LibShareDir)libproc.c" />
-    <ClCompile Include="$(LibShareDir)callback.c" />
-    <ClCompile Include="$(LibDroidDir)gnollhackdroid.c" />
+    <ClCompile Include="$(LibiOSDir)gnollhackios.c" />
+    <SourcesToCopyRemotely Include="@(ClCompile)" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(IncDir)action.h" />
@@ -455,14 +451,20 @@
     <ClInclude Include="$(LibShareDir)callback.h" />
     <ClInclude Include="$(LibShareDir)gnhapi.h" />
     <ClInclude Include="$(LibShareDir)libproc.h" />
-    <ClInclude Include="$(LibDroidDir)droidconf.h" />
-    <ClInclude Include="$(LibDroidDir)gnollhackdroid.h" />
-    <ClInclude Include="$(LibDroidDir)pch.h" />
-    <ClInclude Include="$(LibDroidDir)date_unix.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(SrcDir)Makefile.gcc" />
+    <ClInclude Include="$(LibiOSDir)iosconf.h" />
+    <ClInclude Include="$(LibiOSDir)date_unix.h" />
+    <ClInclude Include="$(LibiOSDir)gnollhackios.h" />
+    <SourcesToCopyRemotely Include="@(ClInclude)" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
+  <Target Name="AfterBuild">
+    <MSBuild Projects="aftergnollhackios.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>
+  <Target Name="AfterClean">
+    <MSBuild Projects="aftergnollhackios.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+  </Target>
+  <Target Name="AfterRebuild">
+    <MSBuild Projects="aftergnollhackios.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>
 </Project>

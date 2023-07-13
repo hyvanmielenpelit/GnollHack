@@ -181,7 +181,7 @@
     <Folder Include="Resources\raw\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\vs2017\gnollhackdroid.vcxproj">
+    <ProjectReference Include="..\..\..\vs\gnollhackdroid.vcxproj">
       <Project>{51daf34f-b699-442d-a9ba-4a3b2800a09a}</Project>
       <Name>gnollhackdroid</Name>
       <TargetPlatformIdentifier>Android</TargetPlatformIdentifier>

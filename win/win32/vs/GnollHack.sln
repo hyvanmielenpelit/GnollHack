@@ -68,32 +68,32 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhackwin", "gnollhackwi
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945} = {BA3DD34C-04B7-40D0-B373-9329AA9E8945}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackCommon", "..\winclisrv\GnollHackCommon\GnollHackCommon.csproj", "{40516BC7-AC45-4F0C-9754-6C6A381302AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackCommon", "..\xam\GnollHackCommon\GnollHackCommon.csproj", "{40516BC7-AC45-4F0C-9754-6C6A381302AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.UWP", "..\winclisrv\GnollHackClient\GnollHackClient.UWP\GnollHackClient.UWP.csproj", "{FC538EE2-A6CA-4443-96C3-88441272B242}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.UWP", "..\xam\GnollHackClient\GnollHackClient.UWP\GnollHackClient.UWP.csproj", "{FC538EE2-A6CA-4443-96C3-88441272B242}"
 	ProjectSection(ProjectDependencies) = postProject
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1} = {6FF04CCD-3E5A-423E-B6B8-637C42A007C1}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.Android", "..\winclisrv\GnollHackClient\GnollHackClient.Android\GnollHackClient.Android.csproj", "{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.Android", "..\xam\GnollHackClient\GnollHackClient.Android\GnollHackClient.Android.csproj", "{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}"
 	ProjectSection(ProjectDependencies) = postProject
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A} = {51DAF34F-B699-442D-A9BA-4A3B2800A09A}
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1} = {6FF04CCD-3E5A-423E-B6B8-637C42A007C1}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.iOS", "..\winclisrv\GnollHackClient\GnollHackClient.iOS\GnollHackClient.iOS.csproj", "{0BBCFE15-9A3B-4175-A543-24B39C812D9E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.iOS", "..\xam\GnollHackClient\GnollHackClient.iOS\GnollHackClient.iOS.csproj", "{0BBCFE15-9A3B-4175-A543-24B39C812D9E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1} = {6FF04CCD-3E5A-423E-B6B8-637C42A007C1}
 		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291} = {F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackClient", "..\winclisrv\GnollHackClient\GnollHackClient\GnollHackClient.csproj", "{514A3E21-9E1F-4F19-B8C3-77898D1326F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackClient", "..\xam\GnollHackClient\GnollHackClient\GnollHackClient.csproj", "{514A3E21-9E1F-4F19-B8C3-77898D1326F6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{40516BC7-AC45-4F0C-9754-6C6A381302AB} = {40516BC7-AC45-4F0C-9754-6C6A381302AB}
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1} = {6FF04CCD-3E5A-423E-B6B8-637C42A007C1}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.Android.Bindings", "..\winclisrv\GnollHackClient\GnollHackClient.Android.Bindings\GnollHackClient.Android.Bindings.csproj", "{6603A81B-B0D4-4119-B731-77C579AC7C86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.Android.Bindings", "..\xam\GnollHackClient\GnollHackClient.Android.Bindings\GnollHackClient.Android.Bindings.csproj", "{6603A81B-B0D4-4119-B731-77C579AC7C86}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhackdroid", "gnollhackdroid.vcxproj", "{51DAF34F-B699-442D-A9BA-4A3B2800A09A}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -126,7 +126,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dlbdroid", "dlbdroid.vcxpro
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0} = {F8445183-52F2-45A0-BB4F-B433F3B721F0}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceFileTimeStamper", "..\util\SourceFileTimeStamper\SourceFileTimeStamper.csproj", "{3469E673-1318-4731-9168-23F32D98FB3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceFileTimeStamper", "..\xam\SourceFileTimeStamper\SourceFileTimeStamper.csproj", "{3469E673-1318-4731-9168-23F32D98FB3E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhackios", "gnollhackios.vcxproj", "{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}"
 	ProjectSection(ProjectDependencies) = postProject

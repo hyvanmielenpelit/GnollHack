@@ -374,7 +374,7 @@ resource.h             rip.uu                 splash.uu
 tiles-mingw32.mak      tiles.mak              winMS.h
 winhack.c              winhack.rc
 
-win/win32/vs2017:
+win/win32/vs:
 (files for Visual Studio 2017 Community Edition builds)
 GnollHack.sln       GnollHack.vcxproj   GnollHack.vcxproj
 PDCurses.vcxproj    afterdgncomp.proj   afterdlb.proj
