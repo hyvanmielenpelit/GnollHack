@@ -45,6 +45,7 @@ win/win32/vs2017/*.lev
 win/win32/vs2017/default.nh
 win/win32/vs2017/dumplog
 win/win32/vs2017/dumplog/*.*
+*.vcxproj.FileListAbsolute.txt
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/libs/x86/libgnollhackdroid.so*
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/libs/x86_64/libgnollhackdroid.so*
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/libs/arm64-v8a/libgnollhackdroid.so*
