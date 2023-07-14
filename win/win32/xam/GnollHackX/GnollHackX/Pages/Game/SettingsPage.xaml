@@ -1,0 +1,634 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
+             xmlns:gnollhackclient="clr-namespace:GnollHackX" xmlns:controls="clr-namespace:GnollHackX.Controls"
+             x:Class="GnollHackX.Pages.Game.SettingsPage"
+             BackgroundColor="Black"
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing">
+    <ContentPage.Content>
+        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <Grid BackgroundColor="Transparent" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" x:Name="lblHeader" Text="Settings" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+                HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,0" />
+                <TableView Grid.Row="1" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" BackgroundColor="Transparent"
+                           Intent="Settings" Margin="18,0">
+                    <TableRoot>
+                        <TableSection x:Name="MainSection" >
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Simple Command Layout"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="SimpleCmdLayoutSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Graphics"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Picker x:Name="GraphicsPicker"
+                                            Title="Select a graphics style"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="200"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                        <Picker.ItemsSource>
+                                            <x:Array Type="{x:Type x:String}">
+                                                <x:String>ASCII</x:String>
+                                                <x:String>Tiles</x:String>
+                                            </x:Array>
+                                        </Picker.ItemsSource>
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Cursor Style"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                    <Picker x:Name="CursorPicker"
+                                            Title="Select a cursor style"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            WidthRequest="200"
+                                            BackgroundColor="Transparent"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                        <Picker.ItemsSource>
+                                            <x:Array Type="{x:Type x:String}">
+                                                <x:String>Blinking Underline</x:String>
+                                                <x:String>Green Block</x:String>
+                                            </x:Array>
+                                        </Picker.ItemsSource>
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Map FPS"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                    <Picker x:Name="RefreshRatePicker"
+                                            Title="Select a map refresh rate"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            WidthRequest="200"
+                                            BackgroundColor="Transparent"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Messages"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Picker x:Name="MessageLengthPicker"
+                                            Title="Select the number of messages"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black" 
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="200"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                        <Picker.ItemsSource>
+                                            <x:Array Type="{x:Type x:String}">
+                                                <x:String>1</x:String>
+                                                <x:String>2</x:String>
+                                                <x:String>3</x:String>
+                                                <x:String>4</x:String>
+                                                <x:String>5</x:String>
+                                                <x:String>6</x:String>
+                                                <x:String>7</x:String>
+                                                <x:String>8</x:String>
+                                                <x:String>9</x:String>
+                                                <x:String>10</x:String>
+                                                <x:String>15</x:String>
+                                                <x:String>20</x:String>
+                                                <x:String>30</x:String>
+                                                <x:String>50</x:String>
+                                            </x:Array>
+                                        </Picker.ItemsSource>
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label x:Name="ForceMaxMessageLabel"
+                                           Text=" Show All"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="ForceMaxMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Hide Navigation"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="NavBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Hide Status Bar"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="StatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Silent Mode"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="SilentModeSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SilentModeSwitch_Toggled" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Default Auto-Center"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="YesClipNormalSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Grid"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="GridSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Hit Point Bars"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="HitPointBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Classic Status Bar"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="ClassicStatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center"  
+                                            Toggled="ClassicStatusBarSwitch_Toggled" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label x:Name="ShowExtendedStatusBarLabel"
+                                           Text="Show Status Screen"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="ShowExtendedStatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Show Pets" x:Name="PetsLabel"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="PetSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="PetSwitch_Toggled" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Pet Rows" x:Name="PetRowsLabel"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Picker x:Name="PetRowPicker"
+                                            Title="Select the number of pet rows"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="200"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                        <Picker.ItemsSource>
+                                            <x:Array Type="{x:Type x:String}">
+                                                <x:String>1</x:String>
+                                                <x:String>2</x:String>
+                                                <x:String>3</x:String>
+                                                <x:String>4</x:String>
+                                                <x:String>Maximum</x:String>
+                                            </x:Array>
+                                        </Picker.ItemsSource>
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Orbs" x:Name="OrbsLabel"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="OrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center"
+                                            Toggled="OrbSwitch_Toggled"/>
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Show Max Hit Points" x:Name="MaxHealthInOrbLabel"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="MaxHealthInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Show Max Mana" x:Name="MaxManaInOrbLabel"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="MaxManaInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Player Mark"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="PlayerMarkSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Targeting"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="MonsterTargetingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Walk Arrows"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="WalkArrowSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Lighter Unlit Areas"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="LighterDarkeningSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Draw Wall Ends"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="WallEndSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Master Volume"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="GeneralVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Music Volume"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="MusicVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Ambient Volume"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="AmbientVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Dialogue Volume"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="DialogueVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Effects Volume"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="EffectsVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Interface Volume"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="UIVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Developer Mode"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="DeveloperSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Show Memory"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="MemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Show FPS"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="FPSSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Game GPU Acceleration"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="GPUSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell x:Name="AlternativeDrawingViewCell">
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Alternative Layer Drawing"
+                                           x:Name="AlternativeDrawingLabel"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="AlternativeLayerDrawingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Load Sound Banks"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="SoundBankSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Streaming Bank to Memory"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="StreamingBankToMemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Streaming Bank to Disk"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="StreamingBankToDiskSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Allow Ghost Levels"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="BonesSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Post Game Status"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="PostGameStatusSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="  Webhook Link"
+                                               FontFamily="Underwood" TextColor="Black"
+                                               FontSize="15"
+                                               VerticalOptions="CenterAndExpand" 
+                                               HorizontalOptions="Start" />
+                                    <Label x:Name="CustomLinkLabel"
+                                               Text="Default"
+                                               FontFamily="Underwood" TextColor="Blue"
+                                               FontSize="15"
+                                               VerticalOptions="CenterAndExpand" 
+                                               HorizontalOptions="EndAndExpand" />
+                                    <controls:CustomImageButton x:Name="CustomLinkButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="50" FontFamily="Diablo"
+                                                BackgroundColor="Transparent" TextColor="White"
+                                                Clicked="CustomLinkButton_Clicked"
+                                                VerticalOptions="CenterAndExpand" 
+                                                HorizontalOptions="End" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Post Diagnostic Data"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="PostDiagnosticDataSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Use HTML Dumplogs"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="HTMLDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Use Single Dumplog"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="SingleDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <!--<ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Image Carousel" x:Name="CarouselLabel"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="CarouselSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>-->
+                        </TableSection>
+                    </TableRoot>
+                </TableView>
+                <!--<Grid Grid.Row="2" x:Name="CloseGrid" WidthRequest="250" HeightRequest="60" Margin="0,10,0,10" HorizontalOptions="Center" VerticalOptions="EndAndExpand">
+                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="250" HeightRequest="60" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                    <Button Text="Close" WidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="19" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
+                        Clicked="Button_Clicked" />
+                </Grid>-->
+                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Margin="0,10,0,10" Text="Close" WidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="19" HorizontalOptions="Center" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
+                        Clicked="Button_Clicked" />
+            </Grid>
+            <Grid x:Name="TextGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+                         Padding="10" BackgroundColor="#66000000" IsVisible="False">
+                <Grid WidthRequest="440" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Margin="0,50,0,10" >
+                    <Frame x:Name="TextFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                        <StackLayout x:Name="TextLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                            <Label x:Name="TextCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
+                            <Entry x:Name="TextEntry" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the link here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
+                                       HorizontalTextAlignment="Center" FontSize="20" />
+                            <Grid WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="65" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <controls:CustomImageButton Grid.Column="0" x:Name="TextOkButton" Text="OK" FontSize="19" WidthRequest="160" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="TextOkButton_Clicked" />
+                                <controls:CustomImageButton Grid.Column="1" x:Name="TextCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="TextCancelButton_Clicked" />
+                            </Grid>
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+            </Grid>
+            <AbsoluteLayout x:Name="WaitLayout" IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000">
+                <Label Text="Please Wait..." x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="30" TextColor="White"
+                                       VerticalTextAlignment="Center" HorizontalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All" />
+            </AbsoluteLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
+             xmlns:gnollhackclient="clr-namespace:GnollHackX" xmlns:controls="clr-namespace:GnollHackX.Controls"
+             BackgroundColor="Black"
+             x:Class="GnollHackX.Pages.Game.DisplayFilePage"
+             Appearing="ContentPage_Appearing">
+    <ContentPage.Content>
+        <Grid>
+            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <!--<ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
+                            Source ="resource://GnollHackX.Assets.UI.menubackground.png" />-->
+
+            <Grid x:Name="MainGrid" WidthRequest="900" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label x:Name="HeaderLabel" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
+                <!--<gnollhackclient:GHEditor x:Name="TextEditor" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                        FontFamily="DejaVuSansMono" FontSize="13" IsReadOnly="true" >
+                </gnollhackclient:GHEditor>-->
+                <!--IsVisible="false"-->
+                <gnollhackclient:CustomLabel Grid.Row="1" x:Name="TextLabel" IsVisible="False" VerticalTextAlignment="Start" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                        FontFamily="DejaVuSansMono" FontSize="13" IsScrollable="True" />
+                <!--<ScrollView x:Name="TextScrollView" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
+                    <Label x:Name="TextLabel" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                        FontFamily="DejaVuSansMono" FontSize="13" />
+                </ScrollView>-->
+                <WebView Grid.Row="1" x:Name="DisplayWebView" IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" />
+                <Grid Grid.Row="2" x:Name="CloseGrid" IsVisible="True" BackgroundColor="Transparent" HorizontalOptions="Center" WidthRequest="250" HeightRequest="60">
+                    <ff:CachedImage x:Name="CloseButtonImage" Source="resource://GnollHackX.Assets.button_normal.png" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                    <Button Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                </Grid>
+                <Grid x:Name="BottomLayout" IsVisible="False" Grid.Row="2" HeightRequest="60" HorizontalOptions="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <!--<Grid Grid.Column="0" x:Name="ShareGrid" BackgroundColor="Transparent" HorizontalOptions="End" VerticalOptions="FillAndExpand" WidthRequest="170">
+                        <ff:CachedImage x:Name="ShareButtonImage" Source="resource://GnollHackX.Assets.button_normal.png" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                        <Button Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                    </Grid>-->
+                    <controls:CustomImageButton Grid.Column="0" Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" WidthRequest="170" HorizontalOptions="End" VerticalOptions="FillAndExpand" />
+                    <!--<Grid Grid.Column="1" x:Name="CloseGrid2" BackgroundColor="Transparent" HorizontalOptions="Start" VerticalOptions="FillAndExpand" WidthRequest="170">
+                        <ff:CachedImage x:Name="CloseButtonImage2" Source="resource://GnollHackX.Assets.button_normal.png" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                        <Button Text="Close" x:Name="CloseButton2" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                    </Grid>-->
+                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" WidthRequest="170" HorizontalOptions="Start" VerticalOptions="FillAndExpand" />
+                </Grid>
+            </Grid>
+        </Grid>    
+    </ContentPage.Content>
+</ContentPage>
