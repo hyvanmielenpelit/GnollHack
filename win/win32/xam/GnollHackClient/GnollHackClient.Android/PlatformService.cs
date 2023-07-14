@@ -14,7 +14,6 @@ using GnollHackClient;
 using Android;
 using Java.IO;
 using System.IO;
-using GnollHackCommon;
 using Xamarin.Google.Android.Play.Core.AssetPacks;
 using Android.Content.PM;
 

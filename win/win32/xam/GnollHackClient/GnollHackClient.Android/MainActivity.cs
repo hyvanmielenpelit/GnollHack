@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
@@ -12,8 +11,6 @@ using System.IO;
 using Android.Content;
 using Xamarin.Google.Android.Play.Core.AssetPacks;
 using Xamarin.Google.Android.Play.Core.AssetPacks.Model;
-using GnollHackCommon;
-using Android.Text.Method;
 
 namespace GnollHackClient.Droid
 {

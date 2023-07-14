@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
 using Xamarin.Forms;
-using GnollHackCommon;
-using Xamarin.Essentials;
 
 namespace GnollHackClient
 {

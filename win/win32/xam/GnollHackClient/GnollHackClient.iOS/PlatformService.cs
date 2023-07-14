@@ -9,7 +9,6 @@ using GnollHackClient;
 using Foundation;
 using UIKit;
 using Xamarin.Forms.PlatformConfiguration;
-using GnollHackCommon;
 
 [assembly: Dependency(typeof(GnollHackClient.iOS.PlatformService))]
 namespace GnollHackClient.iOS

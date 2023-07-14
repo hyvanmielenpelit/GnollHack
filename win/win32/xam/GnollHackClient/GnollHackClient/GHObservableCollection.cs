@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Text;
 
-namespace GnollHackCommon
+namespace GnollHackClient
 {
     public sealed class GHObservableCollection<T> : ObservableCollection<T>
     where T : INotifyPropertyChanged

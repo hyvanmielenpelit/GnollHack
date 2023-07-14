@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
-using GnollHackCommon;
 using GnollHackClient.Pages.Game;
 
 namespace GnollHackClient

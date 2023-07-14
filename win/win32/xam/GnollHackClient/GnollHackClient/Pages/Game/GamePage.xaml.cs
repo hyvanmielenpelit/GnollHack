@@ -1,5 +1,4 @@
-﻿using GnollHackCommon;
-using SkiaSharp;
+﻿using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Concurrent;
@@ -11154,7 +11153,7 @@ namespace GnollHackClient.Pages.Game
                         GHMenuItem mi = MenuCanvas.MenuItems[idx];
                         if (mi.Identifier == 0)
                         {
-                            if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.MenuFlags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
+                            if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
                             {
                                 foreach (GHMenuItem o in MenuCanvas.MenuItems)
                                 {

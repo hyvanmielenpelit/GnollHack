@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GnollHackCommon
+namespace GnollHackClient
 {
     public static class ChecksumUtil
     {

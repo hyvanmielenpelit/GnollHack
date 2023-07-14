@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Text;
 
-namespace GnollHackCommon
+namespace GnollHackClient
 {
     public class Secrets
     {

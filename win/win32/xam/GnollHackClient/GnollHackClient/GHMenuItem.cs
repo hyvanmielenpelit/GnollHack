@@ -6,7 +6,6 @@ using Xamarin.Forms;
 using SkiaSharp;
 using System.IO;
 using GnollHackClient.Pages.Game;
-using GnollHackCommon;
 using System.Linq;
 
 namespace GnollHackClient
@@ -236,7 +235,7 @@ namespace GnollHackClient
         public bool Is_Heading { get; set; }
         public char HeadingGroupAccelerator { get; set; }
         public bool HeadingUnselectGroup { get; set; }
-        public ulong MenuFlags { get; set; }
+        public ulong Flags { get; set; }
         public UInt64 Oid { get; set; }
         public UInt64 Mid { get; set; }
 
@@ -644,7 +643,7 @@ namespace GnollHackClient
             get
             {
                 float bottomPadding = 0;
-                if (((ulong)MenuFlags & (ulong)GnollHackCommon.MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
+                if (((ulong)Flags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
                 {
                     bottomPadding = 3;
                 }
@@ -674,7 +673,7 @@ namespace GnollHackClient
             get
             {
                 float topPadding = 0;  
-                if (((ulong) MenuFlags & (ulong)GnollHackCommon.MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
+                if (((ulong)Flags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
                 {
                     topPadding = (float) HeadingTopMargin;
                 }

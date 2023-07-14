@@ -1,5 +1,4 @@
 ﻿using GnollHackClient.Pages.Game;
-using GnollHackCommon;
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;

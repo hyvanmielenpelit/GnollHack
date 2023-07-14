@@ -187,10 +187,6 @@
       <TargetPlatformIdentifier>Android</TargetPlatformIdentifier>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\GnollHackCommon\GnollHackCommon.csproj">
-      <Project>{40516bc7-ac45-4f0c-9754-6c6a381302ab}</Project>
-      <Name>GnollHackCommon</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GnollHackClient.Android.Bindings\GnollHackClient.Android.Bindings.csproj">
       <Project>{6603a81b-b0d4-4119-b731-77c579ac7c86}</Project>
       <Name>GnollHackClient.Android.Bindings</Name>

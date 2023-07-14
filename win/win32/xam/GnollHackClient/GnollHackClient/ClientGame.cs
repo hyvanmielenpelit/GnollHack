@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using GnollHackCommon;
 using System.Threading;
 using GnollHackClient.Pages.Game;
 using Xamarin.Forms;
@@ -443,7 +442,7 @@ namespace GnollHackClient
         {
             Debug.WriteLine("ClientCallback_ExitHack");
             //App.FmodService.StopTestSound();
-            App.FmodService.StopAllSounds((uint)GnollHackCommon.StopSoundFlags.All, 0);
+            App.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
             ConcurrentQueue<GHRequest> queue;
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
@@ -1068,7 +1067,7 @@ namespace GnollHackClient
                     mi.Oid = oid;
                     mi.Mid = mid;
                     mi.HeadingGroupAccelerator = headingaccel;
-                    mi.MenuFlags = menuflags;
+                    mi.Flags = menuflags;
                     _ghWindows[winid].MenuInfo.MenuItems.Add(mi);
                 }
             }

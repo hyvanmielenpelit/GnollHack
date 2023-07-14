@@ -7,7 +7,6 @@ using System.IO;
 using Xamarin.Forms;
 using System.Runtime.InteropServices;
 using GnollHackClient;
-using GnollHackCommon;
 using Xamarin.Essentials;
 
 #if __IOS__

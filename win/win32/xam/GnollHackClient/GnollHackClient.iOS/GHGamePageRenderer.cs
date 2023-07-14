@@ -1,7 +1,6 @@
 ﻿using Foundation;
 using GnollHackClient.iOS;
 using GnollHackClient.Pages.Game;
-using GnollHackCommon;
 using System;
 using System.Collections.Generic;
 using System.Linq;
