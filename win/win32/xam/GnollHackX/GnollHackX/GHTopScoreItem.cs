@@ -1,4 +1,4 @@
-﻿using GnollHackX.Pages.Game;
+﻿using GnollHackX.Pages.MainScreen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

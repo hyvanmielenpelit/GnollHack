@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:gnollhackclient="clr-namespace:GnollHackX" xmlns:controls="clr-namespace:GnollHackX.Controls"
-             x:Class="GnollHackX.Pages.Game.SettingsPage"
+             x:Class="GnollHackX.Pages.MainScreen.SettingsPage"
              BackgroundColor="Black"
              Appearing="ContentPage_Appearing"
              Disappearing="ContentPage_Disappearing">

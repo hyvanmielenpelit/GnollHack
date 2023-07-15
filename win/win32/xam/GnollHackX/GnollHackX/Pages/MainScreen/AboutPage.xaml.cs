@@ -11,7 +11,7 @@ using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using static System.Net.WebRequestMethods;
 
-namespace GnollHackX.Pages.Game
+namespace GnollHackX.Pages.MainScreen
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AboutPage : ContentPage

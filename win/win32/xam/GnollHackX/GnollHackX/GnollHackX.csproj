@@ -484,13 +484,13 @@
     <EmbeddedResource Update="Controls\CustomImageButton.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\AboutPage.xaml">
+    <EmbeddedResource Update="Pages\MainScreen\AboutPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\DisplayFilePage.xaml">
+    <EmbeddedResource Update="Pages\MainScreen\DisplayFilePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\EditorPage.xaml">
+    <EmbeddedResource Update="Pages\MainScreen\EditorPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\Game\GameMenuPage.xaml">
@@ -505,16 +505,16 @@
     <EmbeddedResource Update="Pages\Game\OutRipPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\ResetPage.xaml">
+    <EmbeddedResource Update="Pages\MainScreen\ResetPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\SettingsPage.xaml">
+    <EmbeddedResource Update="Pages\MainScreen\SettingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\TopScorePage.xaml">
+    <EmbeddedResource Update="Pages\MainScreen\TopScorePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\VersionPage.xaml">
+    <EmbeddedResource Update="Pages\MainScreen\VersionPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -534,7 +534,7 @@
     <Compile Update="Controls\CustomImageButton.xaml.cs">
       <DependentUpon>CustomImageButton.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Pages\Game\AboutPage.xaml.cs">
+    <Compile Update="Pages\MainScreen\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>

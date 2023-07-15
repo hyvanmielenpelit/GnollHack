@@ -1,5 +1,4 @@
-﻿using GnollHackX.Data;
-using SkiaSharp;
+﻿using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +14,6 @@ using System.Diagnostics;
 using System.Collections;
 using System.IO.Compression;
 using System.Globalization;
-using GnollHackX.Pages.Game;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
@@ -343,18 +341,7 @@ namespace GnollHackX
         public static string SkiaSharpVersionString { get; set; }
         public static string FMODVersionString { get; set; }
         public static string GHPath { get; set; }
-        //public static readonly string LogFile = "console.log";
-        //public static TextWriter OldOut;
-        //public static TextWriter OldError;
-        //public static StreamWriter LogOut;
-        //public static FileStream LogStream;
-        public static Cookie AuthenticationCookie { get; set; }
-        public static Server SelectedServer { get; set; }
-        public static string UserName { get; set; }
         public static bool LoadBanks { get; set; }
-
-
-        public static NavigationPage MainNavigationPage { get { return (NavigationPage)Current.MainPage; } }
 
         public static event BackButtonHandler BackButtonPressed;
 

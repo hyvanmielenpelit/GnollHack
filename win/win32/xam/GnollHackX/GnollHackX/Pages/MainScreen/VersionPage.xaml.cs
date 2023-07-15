@@ -8,8 +8,9 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
+using GnollHackX.Pages.Game;
 
-namespace GnollHackX.Pages.Game
+namespace GnollHackX.Pages.MainScreen
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class VersionPage : ContentPage

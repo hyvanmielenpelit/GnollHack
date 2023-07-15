@@ -19,12 +19,12 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Headers;
 using GnollHackX.Pages.Game;
+using GnollHackX.Pages.MainScreen;
 using FFImageLoading;
 using Xamarin.Essentials;
 using System.Collections;
 using System.Collections.Concurrent;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
-//using Plugin.StoreReview;
 
 namespace GnollHackX
 {
@@ -38,23 +38,13 @@ namespace GnollHackX
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
         }
 
-        public void HideLocalGameButton()
-        {
-            StartLocalGameButton.IsVisible = false;
-            //StartLocalGameImage.IsVisible = false;
-            StartLocalGameButton.TextColor = Color.Gray;
-            StartLocalGoneLabel.IsVisible = true;
-        }
-
         public void ActivateLocalGameButton()
         {
             StartLocalGrid.IsEnabled = true;
             StartLocalGameButton.TextColor = Color.White;
-            StartLocalGameButton.IsVisible = true;
-            StartLocalGoneLabel.IsVisible = false;
         }
 
-        private async void localButton_Clicked(object sender, EventArgs e)
+        private async void StartLocalGameButton_Clicked(object sender, EventArgs e)
         {
             StartLocalGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
@@ -69,11 +59,6 @@ namespace GnollHackX
             gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
             gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
             gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
-            //gamePage.Disappearing += (sender2, e2) =>
-            //{
-            //    if (App.UsesCarousel)
-            //        carouselView.Play();
-            //};
             await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
             gamePage.StartGame();
         }
@@ -221,18 +206,6 @@ namespace GnollHackX
             }
         }
 
-        //public async Task TryGetFilesFromResources()
-        //{
-        //    try
-        //    {
-        //        GetFilesFromResources();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await DisplayAlert("File Unpacking Failure", "GnollHack failed to unpack core files: " + ex.Message, "OK");
-        //    }
-        //}
-
         public async Task TryClearCoreFiles()
         {
             try
@@ -329,14 +302,6 @@ namespace GnollHackX
 
             try
             {
-                //StartLocalGameImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
-                //StartServerGameImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
-                //clearImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
-                //topScoreImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
-                //optionsImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
-                //settingsImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
-                //creditsImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
-                //exitImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
                 StillImage.Source = ImageSource.FromResource("GnollHackX.Assets.main-menu-portrait-snapshot.jpg", assembly);
             }
             catch (Exception ex)
@@ -420,86 +385,6 @@ namespace GnollHackX
                 }
             }
         }
-
-
-        //private object _abortLock = new object();
-        //private bool _abortDisplayed = false;
-
-        //private async void UpdateDownloadProgress()
-        //{
-        //    bool dl;
-        //    bool ver;
-        //    float percentage;
-        //    long bytesDownloaded;
-        //    long? totalFileSize;
-        //    string fileDescription;
-        //    long desiredFileSize;
-        //    string verifyFileDescription;
-        //    lock (_downloadProgressLock)
-        //    {
-        //        dl = _downloading;
-        //        ver = _verifying;
-        //        percentage = _downloadProgressPercentage;
-        //        bytesDownloaded = _downloadProgressTotalBytesDownloaded;
-        //        totalFileSize = _downloadProgressTotalFileSize;
-        //        fileDescription = _downloadProgressFileDescription;
-        //        desiredFileSize = _downloadProgressDesiredFileSize;
-        //        verifyFileDescription = _verifyingFileDescription;
-        //    }
-
-        //    if (!dl && !ver)
-        //    {
-        //        Device.BeginInvokeOnMainThread(() =>
-        //        {
-        //            DownloadGrid.IsVisible = false;
-        //        });
-        //        return;
-        //    }
-
-        //    Device.BeginInvokeOnMainThread(() =>
-        //    {
-        //        if (dl && ver)
-        //        {
-        //            DownloadTitleLabel.Text = "Downloading; Verifying...";
-        //            DownloadFileNameLabel.Text = fileDescription + "; " + verifyFileDescription;
-        //        }
-        //        else if(dl)
-        //        {
-        //            DownloadTitleLabel.Text = "Downloading...";
-        //            DownloadFileNameLabel.Text = fileDescription;
-        //        }
-        //        else
-        //        {
-        //            DownloadTitleLabel.Text = "Verifying...";
-        //            DownloadFileNameLabel.Text = verifyFileDescription;
-        //        }
-
-        //        if (totalFileSize <= 0 || !dl)
-        //            DownloadBytesLabel.Text = "Please wait...";
-        //        else
-        //            DownloadBytesLabel.Text = string.Format("{0:0.00}", (double)bytesDownloaded / 1000000) + " / " + string.Format("{0:0.00}", (double)totalFileSize / 1000000) + " MB";
-
-        //        DownloadGrid.IsVisible = true;
-        //    });
-        //    await DownloadProgressBar.ProgressTo((float)percentage / 100, 100, Easing.Linear);
-
-        //    if (dl && totalFileSize != null && totalFileSize > 0 && desiredFileSize > 0 && totalFileSize != desiredFileSize && _cancellationTokenSource.Token.CanBeCanceled)
-        //    {
-        //        _cancellationTokenSource.Cancel();
-        //        bool displayAbort = false;
-        //        lock(_abortLock)
-        //        {
-        //            if (!_abortDisplayed)
-        //            {
-        //                _abortDisplayed = true;
-        //                displayAbort = true;
-        //            }
-        //        }
-        //        if(displayAbort)
-        //            await DisplayAlert("Downloadable File Invalid", "The specified download file does not match the required file description for " + fileDescription + ". Aborting.", "OK");
-        //        ;
-        //    }
-        //}
 
         public void PlayMainScreenVideoAndMusic()
         {
@@ -833,410 +718,6 @@ namespace GnollHackX
         {
             carouselView.Play();
         }
-
-        //private void GetFilesFromResources()
-        //{
-        //    string ghdir = App.GnollHackService.GetGnollHackPath();
-        //    Assembly assembly = GetType().GetTypeInfo().Assembly;
-        //    foreach (SecretsFile f in App.CurrentSecrets.files)
-        //    {
-        //        if (!IsSecretsFileSavedToDisk(f))
-        //            continue;
-
-        //        try
-        //        {
-        //            string sdir = string.IsNullOrWhiteSpace(f.target_directory) ? ghdir : Path.Combine(ghdir, f.target_directory);
-        //            string sfile = Path.Combine(sdir, f.name);
-        //            if(File.Exists(sfile))
-        //            {
-        //                FileInfo file = new FileInfo(sfile);
-        //                DateTime moddate = Preferences.Get("Verify_" + f.id + "_LastWriteTime", DateTime.MinValue);
-        //                string version = Preferences.Get("Verify_" + f.id + "_Version", "");
-        //                if (version != f.version || moddate != file.LastWriteTimeUtc || file.Length != f.length)
-        //                {
-        //                    File.Delete(sfile);
-        //                    if (Preferences.ContainsKey("Verify_" + f.id + "_Version"))
-        //                        Preferences.Remove("Verify_" + f.id + "_Version");
-        //                    if (Preferences.ContainsKey("Verify_" + f.id + "_LastWriteTime"))
-        //                        Preferences.Remove("Verify_" + f.id + "_LastWriteTime");
-        //                }
-        //            }
-
-        //            if (!File.Exists(sfile))
-        //            {
-        //                using (Stream stream = assembly.GetManifestResourceStream("GnollHackX.Assets." + f.source_directory + "." + f.name))
-        //                {
-        //                    if(stream != null)
-        //                    {
-        //                        using (var fileStream = File.Create(sfile))
-        //                        {
-        //                            stream.CopyTo(fileStream);
-        //                        }
-        //                        FileInfo newfileinfo = new FileInfo(sfile);
-        //                        Preferences.Set("Verify_" + f.id + "_LastWriteTime", newfileinfo.LastWriteTimeUtc);
-        //                        Preferences.Set("Verify_" + f.id + "_Version", f.version);
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        catch
-        //        {
-        //            //Probably did not exist
-        //        }
-        //    }
-        //}
-
-        //private object _downloadProgressLock = new object();
-        //private float _downloadProgressPercentage = 0.0f;
-        //private long _downloadProgressTotalBytesDownloaded = 0;
-        //private long? _downloadProgressTotalFileSize = 0;
-        //private string _downloadProgressFileDescription = "";
-        //private string _downloadProgressFilePath = "";
-        //private long _downloadProgressDesiredFileSize = 0;
-        //private bool _downloading = false;
-        //private bool _verifying = false;
-        //private string _verifyingFileDescription = "";
-        //private ConcurrentDictionary<SecretsFile, downloaded_file_check_results> _downloadResultConcurrentDictionary = new ConcurrentDictionary<SecretsFile, downloaded_file_check_results>();
-
-        //private async Task DownloadAndCheckFiles()
-        //{
-        //    string ghdir = App.GnollHackService.GetGnollHackPath();
-        //    Assembly assembly = GetType().GetTypeInfo().Assembly;
-
-        //    foreach(SecretsDirectory sd in App.CurrentSecrets.directories)
-        //    {
-        //        if (string.IsNullOrWhiteSpace(sd.name))
-        //            continue;
-
-        //        int numfiles = CountSecretsFilesSavedToDirectory(App.CurrentSecrets, sd);
-        //        if (numfiles == 0)
-        //            continue;
-        //        string sdir = Path.Combine(ghdir, sd.name);
-
-        //        /* Make the relevant directory */
-        //        if (!Directory.Exists(sdir))
-        //        {
-        //            App.CheckCreateDirectory(sdir);
-        //        }
-        //    }
-
-        //    App.DebugWriteProfilingStopwatchTimeAndStart("Start Acquiring Banks");
-        //    SecretsFile prev_sf = null;
-        //    _downloadResultConcurrentDictionary.Clear();
-        //    foreach (SecretsFile sf in App.CurrentSecrets.files)
-        //    {
-        //        Task<downloaded_file_check_results> dltask = null;
-        //        Task restask = null;
-        //        Task checktask = null;
-
-        //        if (!IsSecretsFileSavedToDisk(sf))
-        //            continue;
-
-        //        // sf.source == "url" is deprecated
-        //        dltask = DownloadFileFromWebServer(assembly, sf, ghdir);
-
-        //        if(prev_sf != null)
-        //        {
-        //            downloaded_file_check_results dres = downloaded_file_check_results.OK;
-        //            bool dfound = _downloadResultConcurrentDictionary.TryGetValue(prev_sf, out dres);
-        //            if (dfound && dres == downloaded_file_check_results.Cancelled)
-        //                checktask = DisplayAlert("File Download Cancelled", "Download of " + prev_sf.description + " was cancelled.", "OK");
-        //            else
-        //                checktask = CheckSecretsFile(prev_sf);
-        //        }
-
-        //        List<Task> tasks = new List<Task>();
-        //        if(dltask != null)
-        //            tasks.Add(dltask);
-        //        if (restask != null)
-        //            tasks.Add(restask);
-        //        if (checktask != null)
-        //            tasks.Add(checktask);
-        //        await Task.WhenAll(tasks);
-
-        //        if (sf.type == "sound_bank")
-        //        {
-        //            string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory); ;
-        //            string sfile = Path.Combine(sdir, sf.name);
-        //            App.FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, false, false);
-        //        }
-
-        //        if (sf == App.CurrentSecrets.files.Last<SecretsFile>())
-        //        {
-        //            await CheckSecretsFile(sf);
-        //        }
-        //        prev_sf = sf;
-        //    }
-        //}
-
-        //private async Task CheckSecretsFile(SecretsFile sf)
-        //{
-        //    string ghdir = App.GnollHackService.GetGnollHackPath();
-        //    Assembly assembly = GetType().GetTypeInfo().Assembly;
-        //    downloaded_file_check_results res = await CheckDownloadedFile(assembly, sf, ghdir);
-        //    if (res != downloaded_file_check_results.OK)
-        //    {
-        //        bool diddelete = false;
-        //        if (res == downloaded_file_check_results.VerificationFailed)
-        //        {
-        //            string target_path = Path.Combine(ghdir, sf.target_directory, sf.name);
-        //            if (File.Exists(target_path))
-        //            {
-        //                FileInfo file = new FileInfo(target_path);
-        //                file.Delete();
-        //                diddelete = true;
-        //            }
-        //        }
-        //        await DisplayAlert("File Verification Failure", "File verification of " + sf.description + " failed with error code " + (int)res + "." + (diddelete ? " Deleting the file." : ""), "OK");
-        //    }
-        //}
-
-        //public async Task<downloaded_file_check_results> DownloadFileFromResources(Assembly assembly, SecretsFile f, string ghdir)
-        //{
-        //    if (f == null)
-        //        return downloaded_file_check_results.NoSecretsFile;
-
-        //    downloaded_file_check_results dres = await VerifySecretsFile(assembly, f, ghdir);
-        //    if (dres == downloaded_file_check_results.OK)
-        //    {
-        //        _downloadResultConcurrentDictionary.TryAdd(f, dres);
-        //        return dres;
-        //    }
-
-        //    string sdir = string.IsNullOrWhiteSpace(f.target_directory) ? ghdir : Path.Combine(ghdir, f.target_directory);
-        //    string sfile = Path.Combine(sdir, f.name);
-
-        //    if (!File.Exists(sfile))
-        //    {
-        //        using (Stream stream = assembly.GetManifestResourceStream(f.source_url))
-        //        {
-        //            using (var fileStream = File.Create(sfile))
-        //            {
-        //                stream.CopyTo(fileStream);
-        //            }
-        //        }
-        //        dres = downloaded_file_check_results.OK;
-        //        _downloadResultConcurrentDictionary.TryAdd(f, dres);
-        //        return dres;
-        //    }
-        //    else
-        //    {
-        //        dres = downloaded_file_check_results.FileAlreadyExists;
-        //        _downloadResultConcurrentDictionary.TryAdd(f, dres);
-        //        return dres;
-        //    }
-        //}
-
-        private void CancelDownloadButton_Clicked(object sender, EventArgs e)
-        {
-            //_cancellationTokenSource.Cancel();
-        }
-
-        //private static HttpClient _httpClient = new HttpClient();
-        //CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-
-        //public async Task<downloaded_file_check_results> DownloadFileFromWebServer(Assembly assembly, SecretsFile f, string ghdir)
-        //{
-        //    if (f == null)
-        //        return downloaded_file_check_results.NoSecretsFile;
-
-        //    downloaded_file_check_results dres = await VerifySecretsFile(assembly, f, ghdir);
-        //    if (dres == downloaded_file_check_results.OK)
-        //    {
-        //        _downloadResultConcurrentDictionary.TryAdd(f, dres);
-        //        return dres;
-        //    }
-
-        //    /* Set version to be downloaded, and download */
-        //    Preferences.Set("Verify_" + f.id + "_Version", f.version);
-        //    Device.BeginInvokeOnMainThread(() =>
-        //    {
-        //        DownloadGrid.IsVisible = true;
-        //    });
-
-        //    string url = f.source_url;
-        //    string target_path = Path.Combine(ghdir, f.target_directory, f.name);
-        //    lock (_downloadProgressLock)
-        //    {
-        //        _downloading = false;
-        //        _downloadProgressPercentage = 0.0f;
-        //        _downloadProgressTotalBytesDownloaded = 0;
-        //        _downloadProgressTotalFileSize = 0;
-        //        _downloadProgressFileDescription = f.description;
-        //        _downloadProgressFilePath = target_path;
-        //        _downloadProgressDesiredFileSize = f.length;
-        //    }
-        //    lock (_abortLock)
-        //    {
-        //        _abortDisplayed = false;
-        //    }
-
-        //    App.DebugWriteProfilingStopwatchTimeAndStart("Begin Http Download " + f.name);
-        //    using (var client = new HttpClientDownloadWithProgress(url, target_path, _cancellationTokenSource))
-        //    {
-        //        client.ProgressChanged += (totalFileSize, totalBytesDownloaded, progressPercentage) => {
-        //            lock(_downloadProgressLock)
-        //            {
-        //                _downloadProgressPercentage = (float)progressPercentage;
-        //                _downloadProgressTotalBytesDownloaded = totalBytesDownloaded;
-        //                _downloadProgressTotalFileSize = totalFileSize;
-        //            }
-        //            UpdateDownloadProgress();
-        //        };
-
-        //        try
-        //        {
-        //            lock(_downloadProgressLock)
-        //            {
-        //                _downloading = true;
-        //            }
-        //            await client.StartDownload();
-        //        }
-        //        catch(OperationCanceledException)
-        //        {
-        //            lock (_downloadProgressLock)
-        //            {
-        //                _downloading = false;
-        //            }
-        //            /* Download was cancelled */
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            lock (_downloadProgressLock)
-        //            {
-        //                _downloading = false;
-        //            }
-        //            if (!_cancellationTokenSource.Token.IsCancellationRequested)
-        //                await DisplayAlert("Download Error", "A download error occurred: " + e.Message, "OK");
-        //        }
-        //    }
-
-        //    lock (_downloadProgressLock)
-        //    {
-        //        _downloading = false;
-        //    }
-
-        //    /* Finished download */
-        //    UpdateDownloadProgress();
-
-        //    downloaded_file_check_results res = downloaded_file_check_results.OK;
-        //    if (_cancellationTokenSource.Token.IsCancellationRequested)
-        //    {
-        //        /* Delete cancelled files */
-        //        if (File.Exists(_downloadProgressFilePath))
-        //        {
-        //            FileInfo file = new FileInfo(_downloadProgressFilePath);
-        //            file.Delete();
-        //        }
-        //        res = downloaded_file_check_results.Cancelled;
-        //    }
-
-        //    _cancellationTokenSource.Dispose();
-        //    _cancellationTokenSource = new CancellationTokenSource();
-
-        //    _downloadResultConcurrentDictionary.TryAdd(f, res);
-        //    return res;
-        //}
-
-        //public async Task<downloaded_file_check_results> VerifySecretsFile(Assembly assembly, SecretsFile f, string ghdir)
-        //{
-        //    if (f == null)
-        //        return downloaded_file_check_results.NoSecretsFile;
-
-        //    /* Check if ok */
-        //    string target_path = Path.Combine(ghdir, f.target_directory, f.name);
-        //    bool correctversion = true;
-        //    string curfileversion = Preferences.Get("Verify_" + f.id + "_Version", "");
-        //    if (curfileversion != "" && curfileversion != f.version)
-        //        correctversion = false;
-
-        //    if (File.Exists(target_path))
-        //    {
-        //        downloaded_file_check_results dres = downloaded_file_check_results.FileNotInSecretsList;
-        //        FileInfo file = new FileInfo(target_path);
-        //        if (correctversion)
-        //        {
-        //            dres = await CheckDownloadedFile(assembly, f, ghdir);
-        //            if (dres == downloaded_file_check_results.OK)
-        //                return dres; /* OK, no need to download */
-        //        }
-        //        /* Wrong, delete and download */
-        //        file.Delete();
-        //    }
-        //    return downloaded_file_check_results.FileDoesNotExist;
-        //}
-
-        //public async Task<downloaded_file_check_results> CheckDownloadedFile(Assembly assembly, SecretsFile f, string ghdir)
-        //{
-        //    if (f == null)
-        //        return downloaded_file_check_results.NoSecretsFile;
-
-        //    string target_directory = f.target_directory;
-        //    string target_path = Path.Combine(ghdir, target_directory, f.name);
-
-        //    /* Check if ok */
-        //    if (File.Exists(target_path))
-        //    {
-        //        FileInfo file = new FileInfo(target_path);
-        //        bool isfileok = true;
-        //        if (file.Length != f.length)
-        //            isfileok = false;
-        //        if (isfileok)
-        //        {
-        //            DateTime moddate = Preferences.Get("Verify_" + f.id + "_LastWriteTime", DateTime.MinValue);
-        //            if (moddate != file.LastWriteTimeUtc)
-        //            {
-        //                isfileok = await VerifyDownloadedFile(target_path, f.sha256, f.description);
-        //                if (isfileok)
-        //                    Preferences.Set("Verify_" + f.id + "_LastWriteTime", file.LastWriteTimeUtc);
-        //            }
-        //        }
-
-        //        if (isfileok)
-        //            return downloaded_file_check_results.OK;
-        //        else
-        //            return downloaded_file_check_results.VerificationFailed;
-        //    }
-        //    else
-        //        return downloaded_file_check_results.FileDoesNotExist;
-        //}
-
-        //private object checksumlock = new object();
-        //string _checksum;
-        //public async Task<bool> VerifyDownloadedFile(string target_path, string sha256, string desc)
-        //{
-        //    App.DebugWriteProfilingStopwatchTimeAndStart("Begin Checksum");
-
-        //    lock (_downloadProgressLock)
-        //    {
-        //        _verifying = true;
-        //        _verifyingFileDescription = desc;
-        //    }
-        //    UpdateDownloadProgress();
-
-        //    await Task.Run(() => {
-        //        string checksum = ChecksumUtil.GetChecksum(HashingAlgoTypes.SHA256, target_path);
-        //        lock (checksumlock)
-        //        {
-        //            _checksum = checksum;
-        //        };
-        //    });
-
-        //    lock (_downloadProgressLock)
-        //    {
-        //        _verifying = false;
-        //        _verifyingFileDescription = "";
-        //    }
-        //    UpdateDownloadProgress();
-
-        //    App.DebugWriteProfilingStopwatchTimeAndStart("Finish Checksum");
-        //    string chksum = "";
-        //    lock (checksumlock)
-        //    {
-        //        chksum = _checksum;
-        //    };
-        //    return chksum.ToLower() == sha256.ToLower();
-        //}
 
         private void UpdateMobileVersionLabel()
         {

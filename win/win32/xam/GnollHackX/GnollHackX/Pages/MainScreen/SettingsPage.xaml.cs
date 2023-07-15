@@ -10,8 +10,9 @@ using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using System.Reflection;
 using System.Collections.Concurrent;
+using GnollHackX.Pages.Game;
 
-namespace GnollHackX.Pages.Game
+namespace GnollHackX.Pages.MainScreen
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsPage : ContentPage

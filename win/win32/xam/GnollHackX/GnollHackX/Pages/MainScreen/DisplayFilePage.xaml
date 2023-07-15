@@ -4,7 +4,7 @@
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:gnollhackclient="clr-namespace:GnollHackX" xmlns:controls="clr-namespace:GnollHackX.Controls"
              BackgroundColor="Black"
-             x:Class="GnollHackX.Pages.Game.DisplayFilePage"
+             x:Class="GnollHackX.Pages.MainScreen.DisplayFilePage"
              Appearing="ContentPage_Appearing">
     <ContentPage.Content>
         <Grid>
