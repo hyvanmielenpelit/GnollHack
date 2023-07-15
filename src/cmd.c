@@ -788,7 +788,7 @@ doability(VOID_ARGS)
         0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
         "Character Abilities                   ", MENU_UNSELECTED, menu_heading_info());
 
-    strcpy(available_ability_list[abilitynum].name, "Statistics");
+    Strcpy(available_ability_list[abilitynum].name, "Statistics");
     available_ability_list[abilitynum].function_ptr = &docharacterstatistics;
 
     any = zeroany;
@@ -801,7 +801,7 @@ doability(VOID_ARGS)
     abilitynum++;
 
 
-    strcpy(available_ability_list[abilitynum].name, "Attributes");
+    Strcpy(available_ability_list[abilitynum].name, "Attributes");
     available_ability_list[abilitynum].function_ptr = &doattributes;
 
     any = zeroany;
@@ -813,7 +813,7 @@ doability(VOID_ARGS)
 
     abilitynum++;
 
-    strcpy(available_ability_list[abilitynum].name, "Skills");
+    Strcpy(available_ability_list[abilitynum].name, "Skills");
     available_ability_list[abilitynum].function_ptr = &doskill;
 
     any = zeroany;
@@ -827,7 +827,7 @@ doability(VOID_ARGS)
 
     if (Upolyd)
     {
-        strcpy(available_ability_list[abilitynum].name, "Polymorphed form");
+        Strcpy(available_ability_list[abilitynum].name, "Polymorphed form");
         available_ability_list[abilitynum].function_ptr = &dopolyformstatistics;
         available_ability_list[abilitynum].target_mtmp = 0;
 
@@ -845,7 +845,7 @@ doability(VOID_ARGS)
         /* Monster abilities */
         //print_monster_abilities(win, &abilitynum, TRUE);
 
-        strcpy(available_ability_list[abilitynum].name, "Monster abilities");
+        Strcpy(available_ability_list[abilitynum].name, "Monster abilities");
         available_ability_list[abilitynum].function_ptr = &domonsterability;
         available_ability_list[abilitynum].target_mtmp = 0;
 
@@ -867,7 +867,7 @@ doability(VOID_ARGS)
         "Use Skill-Based Abilities             ", MENU_UNSELECTED, menu_heading_info());
 
     /* Ride */
-    strcpy(available_ability_list[abilitynum].name, "Ride");
+    Strcpy(available_ability_list[abilitynum].name, "Ride");
     available_ability_list[abilitynum].function_ptr = &doride;
     available_ability_list[abilitynum].target_mtmp = 0;
 
@@ -881,7 +881,7 @@ doability(VOID_ARGS)
     abilitynum++;
 
     /* Untrap */
-    strcpy(available_ability_list[abilitynum].name, "Untrap");
+    Strcpy(available_ability_list[abilitynum].name, "Untrap");
     available_ability_list[abilitynum].function_ptr = &dountrap;
     available_ability_list[abilitynum].target_mtmp = 0;
 
@@ -916,7 +916,7 @@ doability(VOID_ARGS)
     abilitynum++;
     */
 
-    strcpy(available_ability_list[abilitynum].name, "Goals and achievements");
+    Strcpy(available_ability_list[abilitynum].name, "Goals and achievements");
     available_ability_list[abilitynum].function_ptr = &doconduct;
 
     any = zeroany;
@@ -928,7 +928,7 @@ doability(VOID_ARGS)
 
     abilitynum++;
 
-    strcpy(available_ability_list[abilitynum].name, "Dungeon overview");
+    Strcpy(available_ability_list[abilitynum].name, "Dungeon overview");
     available_ability_list[abilitynum].function_ptr = &dooverview;
 
     any = zeroany;
@@ -940,7 +940,19 @@ doability(VOID_ARGS)
 
     abilitynum++;
 
-    strcpy(available_ability_list[abilitynum].name, "Killed monsters");
+    Strcpy(available_ability_list[abilitynum].name, "Game events");
+    available_ability_list[abilitynum].function_ptr = &do_gamelog;
+
+    any = zeroany;
+    any.a_int = abilitynum + 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE, NO_COLOR,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+    abilitynum++;
+
+    Strcpy(available_ability_list[abilitynum].name, "Killed monsters");
     available_ability_list[abilitynum].function_ptr = &dokilledmonsters;
 
     any = zeroany;
@@ -952,7 +964,7 @@ doability(VOID_ARGS)
 
     abilitynum++;
 
-    strcpy(available_ability_list[abilitynum].name, "Genocided monsters");
+    Strcpy(available_ability_list[abilitynum].name, "Genocided monsters");
     available_ability_list[abilitynum].function_ptr = &dogenocidedmonsters;
 
     any = zeroany;
@@ -964,7 +976,7 @@ doability(VOID_ARGS)
 
     abilitynum++;
 
-    strcpy(available_ability_list[abilitynum].name, "Discovered items");
+    Strcpy(available_ability_list[abilitynum].name, "Discovered items");
     available_ability_list[abilitynum].function_ptr = &dodiscovered;
 
     any = zeroany;
@@ -1005,14 +1017,14 @@ doability(VOID_ARGS)
                 {
                     char umnbuf[BUFSIZ];
                     Strcpy(umnbuf, UMNAME(mtmp));
-                    umnbuf[16] = '\0'; /* Limit the length of the name */
+                    umnbuf[min(MAXNAMELENGTH, PL_PSIZ) - 1] = '\0'; /* Limit the length of the name */
                     Strcpy(namebuf, umnbuf);
                 }
                 else if (MNAME(mtmp) && mtmp->u_know_mname)
                 {
                     char mnbuf[BUFSIZ];
                     Strcpy(mnbuf, MNAME(mtmp));
-                    mnbuf[16] = '\0'; /* Limit the length of the name */
+                    mnbuf[min(MAXNAMELENGTH, PL_PSIZ) - 1] = '\0'; /* Limit the length of the name */
                     Strcpy(namebuf, mnbuf);
                 }
                 else
@@ -9553,7 +9565,7 @@ do_gamelog(VOID_ARGS)
         show_gamelog(ENL_GAMEINPROGRESS);
     }
     else {
-        pline("No chronicled events.");
+        pline1("No chronicled events.");
     }
     return 0;
 }
