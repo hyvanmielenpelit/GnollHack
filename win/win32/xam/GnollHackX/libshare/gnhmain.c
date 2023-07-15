@@ -372,7 +372,7 @@ sys_random_seed()
 STATIC_OVL void
 make_dumplog_dir(VOID_ARGS)
 {
-#if defined(DUMPLOG) && defined(DUMPLOG_DIR)
+#if (defined(DUMPLOG) || defined(DUMPHTML)) && defined(DUMPLOG_DIR)
     /* Make DUMPLOG_DIR if defined */
     struct stat st = { 0 };
 

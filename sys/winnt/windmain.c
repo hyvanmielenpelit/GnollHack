@@ -277,7 +277,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
      * It seems you really want to play.
      */
 
-#if defined(DUMPLOG) && defined(DUMPLOG_DIR)
+#if (defined(DUMPLOG) || defined(DUMPHTML)) && defined(DUMPLOG_DIR)
      /* Make DUMPLOG_DIR if defined */
     struct stat st = { 0 };
 
