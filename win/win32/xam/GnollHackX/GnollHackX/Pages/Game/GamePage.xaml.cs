@@ -10145,8 +10145,6 @@ namespace GnollHackX.Pages.Game
 
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            //DebugWriteProfilingStopwatchTime("Draw Menu Canvas Start");
-
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
@@ -10472,8 +10470,6 @@ namespace GnollHackX.Pages.Game
                     TotalMenuHeight = y - curmenuoffset;
                 }
             }
-
-            //DebugWriteProfilingStopwatchTime("Draw Menu Canvas End");
         }
 
         private int CountTextSplitRows(string[] textsplit, float x_start, float canvaswidth, float rightmenupadding, SKPaint textPaint, bool usespecialsymbols, out List<float> rowWidths)

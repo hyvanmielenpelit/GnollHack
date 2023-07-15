@@ -1277,25 +1277,27 @@ namespace GnollHackX
         }
 
 
-
-
-
+#if DEBUG
         public static object ProfilingStopwatchLock = new object();
         private static Stopwatch _profilingStopwatch = new Stopwatch();
         public static Stopwatch ProfilingStopwatch { get { return _profilingStopwatch; } }
+#endif
 
         public static void DebugWriteProfilingStopwatchTimeAndStop(string label)
         {
+#if DEBUG
             lock (ProfilingStopwatchLock)
             {
                 ProfilingStopwatch.Stop();
                 TimeSpan elapsed = ProfilingStopwatch.Elapsed;
                 Debug.WriteLine("ProfilingStopwatch: " + label + ": " + elapsed.TotalMilliseconds + " msec");
             }
+#endif
         }
 
         public static void DebugWriteProfilingStopwatchTimeAndStart(string label)
         {
+#if DEBUG
             lock (ProfilingStopwatchLock)
             {
                 ProfilingStopwatch.Stop();
@@ -1303,19 +1305,23 @@ namespace GnollHackX
                 Debug.WriteLine("ProfilingStopwatch: " + label + ": " + elapsed.TotalMilliseconds + " msec");
                 ProfilingStopwatch.Start();
             }
+#endif
         }
 
         public static void DebugWriteRestart(string label)
         {
+#if DEBUG
             lock (ProfilingStopwatchLock)
             {
                 Debug.WriteLine("ProfilingStopwatch: " + label + ": " + "Restart");
                 ProfilingStopwatch.Restart();
             }
+#endif
         }
 
         public static void DebugWriteProfilingStopwatchTimeAndRestart(string label)
         {
+#if DEBUG
             lock (ProfilingStopwatchLock)
             {
                 ProfilingStopwatch.Stop();
@@ -1323,6 +1329,7 @@ namespace GnollHackX
                 Debug.WriteLine("ProfilingStopwatch: " + label + ": " + elapsed.TotalMilliseconds + " msec");
                 ProfilingStopwatch.Restart();
             }
+#endif
         }
 
         public static void PlayButtonClickedSound()
