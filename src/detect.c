@@ -2005,8 +2005,11 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
             fund = -10;
 
         int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, TRUE);
-
-        if (!itemsfound)
+        if (itemsfound)
+        {
+            (void)pickup(1);
+        }
+        else
         {
             if (!aflag && (context.first_time_cmd || !occupation))
             {
@@ -2037,7 +2040,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
                         nomul(0);
                         feel_location(x, y); /* make sure it shows up */
                         play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
-                        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find a hidden door.");
+                        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find a hidden door.");
                     } 
                     else if (levl[x][y].typ == SCORR) 
                     {
@@ -2049,7 +2052,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
                         nomul(0);
                         feel_newsym(x, y); /* make sure it shows up */
                         play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
-                        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find a hidden passage.");
+                        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find a hidden passage.");
                     }
                     else
                     {

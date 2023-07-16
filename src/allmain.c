@@ -321,6 +321,7 @@ boolean resuming;
                         {
                             You("smell something buried underground.");
                             (void)unearth_objs(&youmonst, u.ux, u.uy, TRUE, TRUE);
+                            (void)pickup(1);
                             nomul(0);
                         }
                     }

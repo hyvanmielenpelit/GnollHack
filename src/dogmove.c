@@ -2312,7 +2312,6 @@ newdogpos:
                             pline("%s starts digging the ground.", Monnam(mtmp));
 
                         int itemsfound = unearth_objs(mtmp, nix, niy, canseemon(mtmp), TRUE);
-
                         if (!itemsfound && canseemon(mtmp))
                             pline("%s looks disappointed.", Monnam(mtmp));
                     }

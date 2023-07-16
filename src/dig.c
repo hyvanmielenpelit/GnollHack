@@ -1123,7 +1123,7 @@ coord *cc;
     }
 
     int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, FALSE);
-
+    boolean doautopickup = itemsfound > 0;
     if (!itemsfound)
     {
         switch (rn2(5)) {
@@ -1134,12 +1134,16 @@ coord *cc;
             (void)mksobj_at(BONE, dig_x, dig_y, TRUE, FALSE);
             if (!rn2(2))
                 (void)mksobj_at(HUMAN_SKULL, dig_x, dig_y, TRUE, FALSE);
+            doautopickup = TRUE;
             break;
         case 1:
             play_sfx_sound(SFX_UNEARTHED_OBJECT_FOUND);
             You("unearth a corpse.");
             if ((otmp = mk_tt_object(CORPSE, dig_x, dig_y)) != 0)
+            {
                 otmp->age -= 100; /* this is an *OLD* corpse */
+                doautopickup = TRUE;
+            }
             break;
         case 2:
             if (!Blind)
@@ -1179,6 +1183,8 @@ coord *cc;
     int subtyp = levl[dig_x][dig_y].floorsubtyp ? levl[dig_x][dig_y].floorsubtyp : get_initial_location_subtype(typ);
     int vartyp = levl[dig_x][dig_y].floorvartyp ? levl[dig_x][dig_y].floorvartyp : get_initial_location_vartype(typ, subtyp);
     create_simple_location(dig_x, dig_y, typ, subtyp, vartyp, 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, 0, TRUE);
+    if (doautopickup)
+        (void)pickup(1);
     return;
 }
 
@@ -3053,7 +3059,7 @@ boolean verbose, buriedsearchableonly;
             if (verbose)
             {
                 play_sfx_sound_at_location(SFX_UNEARTHED_OBJECT_FOUND, x, y);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s %s%s.", is_you ? "You" : Monnam(mtmp), is_you ? "find" : "finds", doname(otmp), buriedsearchableonly ? " buried close to the surface of the ground" : "");
+                pline_ex(ATR_NONE, is_you || (mtmp && is_tame(mtmp)) ? CLR_MSG_SUCCESS : CLR_MSG_ATTENTION, "%s %s %s%s.", is_you ? "You" : Monnam(mtmp), is_you ? "find" : "finds", doname(otmp), buriedsearchableonly ? " buried close to the surface of the ground" : "");
             }
             if (bball && otmp == bball
                 && u.utrap && u.utraptype == TT_BURIEDBALL) 
@@ -3365,8 +3371,11 @@ dodig()
     You("dig the ground with %s.", digbuf);
 
     int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, FALSE);
-
-    if (!itemsfound)
+    if (itemsfound)
+    {
+        (void)pickup(1);
+    }
+    else
     {
         pline("However, you do not find anything.");
     }

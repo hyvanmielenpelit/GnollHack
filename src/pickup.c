@@ -2660,7 +2660,6 @@ boolean *prev_loot;
     if (u.uswallow) 
     {
         int count = passed_info ? *passed_info : 0;
-
         timepassed = pickup(count);
     }
     return timepassed;
