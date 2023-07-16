@@ -7,6 +7,7 @@ using SkiaSharp;
 using System.IO;
 using GnollHackX.Pages.Game;
 using System.Linq;
+using Xamarin.Forms.Internals;
 
 namespace GnollHackX
 {
@@ -79,10 +80,11 @@ namespace GnollHackX
             {
                 _text = value;
                 int first_parenthesis_open = -1;
+                bool altdivisors = ((int)Attributes & (int)MenuItemAttributes.AltDivisors) != 0;
                 if (SuffixParseStyle == 0 || (SuffixParseStyle == 2 && ((int)Attributes & (int)MenuItemAttributes.Bold) == 0))
                     first_parenthesis_open = -1;
                 else
-                    first_parenthesis_open = value.IndexOf('(');
+                    first_parenthesis_open = value.IndexOf(altdivisors ? '|' : '(');
 
                 if (first_parenthesis_open <= 0) /* Ignore cases where the entire row is in parentheses */
                     _mainText = value;
@@ -96,8 +98,8 @@ namespace GnollHackX
 
                 if (first_parenthesis_open > 0 && !(_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND))  /* Ignore cases where the entire row is in parentheses */
                 {
-                    _suffixText = ParseSuffixText(value, false);
-                    _suffix2Text = ParseSuffixText(value, true);
+                    _suffixText = ParseSuffixText(value, false, altdivisors);
+                    _suffix2Text = ParseSuffixText(value, true, altdivisors);
                 }
                 else
                 {
@@ -168,7 +170,7 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_OPTIONS:
-                        res = 2;
+                        res = 1; // 2;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_HELP:
                         break;
@@ -183,12 +185,12 @@ namespace GnollHackX
         public bool IsSuffixTextVisible { get { return (SuffixText != null && SuffixText != ""); } }
         public string Suffix2Text { get { return _suffix2Text; } }
         public bool IsSuffix2TextVisible { get { return (Suffix2Text != null && Suffix2Text != ""); } }
-        private string ParseSuffixText(string text, bool issuffix2)
+        private string ParseSuffixText(string text, bool issuffix2, bool altdivisors)
         {
             string str = text;
             string res = "";
-            char startchar = issuffix2 ? '{' : '(';
-            char endchar = issuffix2 ? '}' : ')';
+            char startchar = altdivisors ? (issuffix2 ? '^' : '|') : issuffix2 ? '{' : '(';
+            char endchar = altdivisors ? (issuffix2 ? '^' : '|') : issuffix2 ? '}' : ')';
             while (!string.IsNullOrWhiteSpace(str))
             {
                 int poidx = str.IndexOf(startchar);

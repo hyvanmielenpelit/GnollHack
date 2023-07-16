@@ -85,7 +85,7 @@ namespace GnollHackX
         Inactive =      0x00040000,
         HalfSize =      0x00080000,
         AltColors =     0x00100000,
-        Preform =       0x00200000,
+        AltDivisors =   0x00200000,
         OrderedList =   0x00400000,
         StartTable =    0x00800000,
         EndTable =      0x01000000,

@@ -60,15 +60,16 @@ enum window_option_types {
 
 static struct Bool_Opt {
     const char *name;
+    const char* descr;
     boolean *addr, initvalue;
     int optflags;
 } boolopt[] = {
-    { "acoustics", &flags.acoustics, TRUE, SET_IN_GAME },
+    { "acoustics", "can your character hear anything", &flags.acoustics, TRUE, SET_IN_GAME },
 #if defined(SYSFLAGS) && defined(AMIGA)
     /* Amiga altmeta causes Alt+key to be converted into Meta+key by
        low level GnollHack code; on by default, can be toggled off if
        Alt+key is needed for some ASCII chars on non-ASCII keyboard */
-    { "altmeta", &sysflags.altmeta, TRUE, DISP_IN_GAME },
+    { "altmeta", "treat \"ESC c\" as M-c (Meta+c, 8th bit set)", &sysflags.altmeta, TRUE, DISP_IN_GAME },
 #else
 #ifdef ALTMETA
     /* non-Amiga altmeta causes GnollHack's top level command loop to treat
@@ -77,169 +78,169 @@ static struct Bool_Opt {
        this can potentially make trouble if user types ESC when GnollHack
        is honoring this conversion request (primarily after starting a
        count prefix prior to a command and then deciding to cancel it) */
-    { "altmeta", &iflags.altmeta, FALSE, SET_IN_GAME },
+    { "altmeta", "treat \"ESC c\" as M-c (Meta+c, 8th bit set)", &iflags.altmeta, FALSE, SET_IN_GAME },
 #else
-    { "altmeta", (boolean *) 0, TRUE, DISP_IN_GAME },
+    { "altmeta", "treat \"ESC c\" as M-c (Meta+c, 8th bit set)", (boolean *) 0, TRUE, DISP_IN_GAME },
 #endif
 #endif
-    { "ascii_map", &iflags.wc_ascii_map, !PREFER_TILED, SET_IN_GAME }, /*WC*/
+    { "ascii_map", "show map as text", &iflags.wc_ascii_map, !PREFER_TILED, SET_IN_GAME }, /*WC*/
 #if defined(SYSFLAGS) && defined(MFLOPPY)
-    { "asksavedisk", &sysflags.asksavedisk, FALSE, SET_IN_GAME },
+    { "asksavedisk", "prompt for saving to a disk", &sysflags.asksavedisk, FALSE, SET_IN_GAME},
 #else
-    { "asksavedisk", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "asksavedisk", "prompt for saving to a disk", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "autodescribe", &iflags.autodescribe, TRUE, SET_IN_GAME },
-    { "autodig", &flags.autodig, FALSE, SET_IN_GAME },
+    { "autodescribe", "describe terrain under cursor", &iflags.autodescribe, TRUE, SET_IN_GAME },
+    { "autodig", "dig if moving and wielding a digging tool", &flags.autodig, FALSE, SET_IN_GAME },
 #ifdef ANDROID
-    {"autokick", &flags.autokick, TRUE, SET_IN_GAME},
+    {"autokick", "walking into a door attempts to kick it", &flags.autokick, TRUE, SET_IN_GAME},
 #endif
-    { "autoopen", &flags.autoopen, TRUE, SET_IN_GAME },
-    { "autopickup", &flags.pickup, FALSE, SET_IN_GAME },
-    { "autoquiver", &flags.autoquiver, FALSE, SET_IN_GAME },
-    { "autostatuslines", &iflags.wc2_autostatuslines, FALSE, SET_IN_FILE },
-    { "autounlock", &flags.autounlock, TRUE, SET_IN_GAME },
-    { "baseacasbonus", &flags.baseacasbonus, TRUE, SET_IN_GAME },
+    { "autoopen", "walking into a door attempts to open it", &flags.autoopen, TRUE, SET_IN_GAME },
+    { "autopickup", "automatically pick up objects", &flags.pickup, FALSE, SET_IN_GAME },
+    { "autoquiver", "fill empty quiver automatically when firing", &flags.autoquiver, FALSE, SET_IN_GAME },
+    { "autostatuslines", "adjust the number of status lines automatically", &iflags.wc2_autostatuslines, FALSE, SET_IN_FILE },
+    { "autounlock", "action to take when encountering locked door or chest", &flags.autounlock, TRUE, SET_IN_GAME },
+    { "baseacasbonus", "display base armor class as a bonus rather than a number starting at 10", &flags.baseacasbonus, TRUE, SET_IN_GAME },
 #if defined(MICRO) && !defined(AMIGA)
-    { "BIOS", &iflags.BIOS, FALSE, SET_IN_FILE },
+    { "BIOS", "use IBM ROM BIOS calls", &iflags.BIOS, FALSE, SET_IN_FILE },
 #else
-    { "BIOS", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "BIOS", "use IBM ROM BIOS calls", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "blind", &u.uroleplay.blind, FALSE, DISP_IN_GAME },
-    { "blinking_cursor_on_tiles", &flags.blinking_cursor_on_tiles, FALSE, SET_IN_GAME },
-    { "bones", &flags.bones, TRUE, SET_IN_FILE },
+    { "blind", "your character is permanently blind", &u.uroleplay.blind, FALSE, DISP_IN_GAME },
+    { "blinking_cursor_on_tiles", "display a blinking cursor when using tiles", &flags.blinking_cursor_on_tiles, FALSE, SET_IN_GAME },
+    { "bones", "allow loading bones files", &flags.bones, TRUE, SET_IN_FILE },
 #ifdef INSURANCE
-    { "checkpoint", &flags.ins_chkpt, TRUE, SET_IN_GAME },
+    { "checkpoint", "save game state after each level change", &flags.ins_chkpt, TRUE, SET_IN_GAME },
 #else
-    { "checkpoint", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "checkpoint", "save game state after each level change", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
 #ifdef MFLOPPY
-    { "checkspace", &iflags.checkspace, TRUE, SET_IN_GAME },
+    { "checkspace", "check disk space on a floppy disk", &iflags.checkspace, TRUE, SET_IN_GAME },
 #else
-    { "checkspace", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "checkspace", "check disk space on a floppy disk", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "classic_statue_symbol", &flags.classic_statue_symbol, FALSE, SET_IN_GAME },
-    { "classic_colors", &flags.classic_colors, FALSE, SET_IN_GAME },
-    { "clickfire", &iflags.clickfire, TRUE, SET_IN_GAME },
-    { "clicklook", &iflags.clicklook, TRUE, SET_IN_GAME },
-    { "cmdassist", &iflags.cmdassist, TRUE, SET_IN_GAME },
+    { "classic_statue_symbol", "use classic symbol \'`\' for statues", &flags.classic_statue_symbol, FALSE, SET_IN_GAME},
+    { "classic_colors", "use classic colors for boulders and floor symbols", &flags.classic_colors, FALSE, SET_IN_GAME},
+    { "clickfire", "enable firing via mouse click", &iflags.clickfire, TRUE, SET_IN_GAME},
+    { "clicklook", "enable looking via mouse click", &iflags.clicklook, TRUE, SET_IN_GAME},
+    { "cmdassist", "give help for errors on direction input", &iflags.cmdassist, TRUE, SET_IN_GAME},
 #if defined(MICRO) || defined(WIN32) || defined(ANDROID) ||  defined(GNH_MOBILE) || defined(CURSES_GRAPHICS)
-    { "color", &iflags.wc_color, TRUE, SET_IN_GAME }, /*WC*/
+    { "color", "use color in map", &iflags.wc_color, TRUE, SET_IN_GAME }, /*WC*/
 #else /* systems that support multiple terminals, many monochrome */
-    { "color", &iflags.wc_color, FALSE, SET_IN_GAME }, /*WC*/
+    { "color", "use color in map", &iflags.wc_color, FALSE, SET_IN_GAME }, /*WC*/
 #endif
-    { "confirm", &flags.confirm, TRUE, SET_IN_GAME },
-    { "dark_room", &flags.dark_room, TRUE, SET_IN_GAME },
-    { "detailed_weights", &flags.detailed_weights, FALSE, SET_IN_GAME },
-    { "displace_peaceful", &flags.displace_peaceful, TRUE, SET_IN_GAME },
+    { "confirm", "ask before hitting tame or peaceful monsters", &flags.confirm, TRUE, SET_IN_GAME },
+    { "dark_room", "show floor outside line of sight differently", &flags.dark_room, TRUE, SET_IN_GAME },
+    { "detailed_weights", "show object weights by more accurate units", &flags.detailed_weights, FALSE, SET_IN_GAME },
+    { "displace_peaceful", "walking into a peaceful monster attempts to displace it", &flags.displace_peaceful, TRUE, SET_IN_GAME},
 #ifdef ANDROID
-    {"dumplog", &iflags.dumplog, FALSE, SET_IN_FILE },
+    {"dumplog", "print dumplogs", &iflags.dumplog, FALSE, SET_IN_FILE},
 #endif
-    { "eight_bit_tty", &iflags.wc_eight_bit_input, FALSE, SET_IN_GAME }, /*WC*/
+    { "eight_bit_tty", "send 8-bit characters directly to terminal", &iflags.wc_eight_bit_input, FALSE, SET_IN_GAME }, /*WC*/
 #if defined(UNIX) && !defined(GNH_MOBILE) 
-    { "enablettyarrowkeys", &iflags.enablettyarrowkeys, FALSE, SET_IN_GAME }, 
+    { "enablettyarrowkeys", "enable tty arrow keys", &iflags.enablettyarrowkeys, FALSE, SET_IN_GAME},
 #endif
-    { "exchange_prompt", &flags.exchange_prompt, TRUE, SET_IN_GAME },
+    { "exchange_prompt", "prompt when exchanging a worn object for another", &flags.exchange_prompt, TRUE, SET_IN_GAME},
 #if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS) || defined(X11_GRAPHICS)
-    { "extmenu", &iflags.extmenu, FALSE, SET_IN_GAME },
+    { "extmenu", "use menu for getting extended commands", &iflags.extmenu, FALSE, SET_IN_GAME },
 #elif defined(ANDROID)
-    { "extmenu", &iflags.extmenu, TRUE, SET_IN_GAME },
+    { "extmenu", "use menu for getting extended commands" &iflags.extmenu, TRUE, SET_IN_GAME },
 #else
-    { "extmenu", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "extmenu", "use menu for getting extended commands", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
 #ifdef OPT_DISPMAP
-    { "fast_map", &flags.fast_map, TRUE, SET_IN_GAME },
+    { "fast_map", "use optimized, less flexible map display", &flags.fast_map, TRUE, SET_IN_GAME},
 #else
-    { "fast_map", (boolean *) 0, TRUE, SET_IN_FILE },
+    { "fast_map", "use optimized, less flexible map display", (boolean *) 0, TRUE, SET_IN_FILE },
 #endif
-    { "female", &flags.female, FALSE, DISP_IN_GAME },
-    { "fixinv", &flags.invlet_constant, TRUE, SET_IN_GAME },
+    { "female", "is your character female", &flags.female, FALSE, DISP_IN_GAME},
+    { "fixinv", "inventory items keep their letters", &flags.invlet_constant, TRUE, SET_IN_GAME },
 #if defined(SYSFLAGS) && defined(AMIFLUSH)
-    { "flush", &sysflags.amiflush, FALSE, SET_IN_GAME },
+    { "flush", "use flush on Amiga", &sysflags.amiflush, FALSE, SET_IN_GAME},
 #else
-    { "flush", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "flush", "use flush on Amiga", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
 #ifdef ANDROID
-    { "force_invmenu", &iflags.force_invmenu, TRUE, SET_IN_GAME },
+    { "force_invmenu", "commands asking for inventory item show a menu", &iflags.force_invmenu, TRUE, SET_IN_GAME },
 #else
-    { "force_invmenu", &iflags.force_invmenu, FALSE, SET_IN_GAME },
+    { "force_invmenu", "commands asking for inventory item show a menu", &iflags.force_invmenu, FALSE, SET_IN_GAME },
 #endif
-    { "force_hint", &flags.force_hint, FALSE, SET_IN_GAME },
-    { "fullscreen", &iflags.wc2_fullscreen, FALSE, SET_IN_FILE }, /*WC2*/
-    { "fullstatuslineorder", &flags.fullstatuslineorder, TRUE, SET_IN_GAME },
-    { "goldX", &iflags.goldX, FALSE, SET_IN_GAME },
-    { "guicolor", &iflags.wc2_guicolor, TRUE, SET_IN_GAME}, /*WC2*/
-    { "help", &flags.help, TRUE, SET_IN_GAME },
-    { "herecmd_menu", &iflags.herecmd_menu, FALSE, SET_IN_GAME },
-    { "herewindow", &iflags.wc2_herewindow, TRUE, SET_IN_FILE }, /*WC2*/
-    { "hilite_pet", &iflags.wc_hilite_pet, FALSE, SET_IN_GAME }, /*WC*/
-    { "hilite_pile", &iflags.hilite_pile, FALSE, SET_IN_GAME },
-    { "hitpointbar", &iflags.wc2_hitpointbar, FALSE, SET_IN_GAME }, /*WC2*/
-    { "ibm2utf8", &flags.ibm2utf8, FALSE, SET_IN_GAME },
+    { "force_hint", "force giving hints regardless of other settings", &flags.force_hint, FALSE, SET_IN_GAME },
+    { "fullscreen", "toggle fullscreen", &iflags.wc2_fullscreen, FALSE, SET_IN_FILE }, /*WC2*/
+    { "fullstatuslineorder", "use full status line order", &flags.fullstatuslineorder, TRUE, SET_IN_GAME },
+    { "goldX", "classify gold as unknown or uncursed", &iflags.goldX, FALSE, SET_IN_GAME },
+    { "guicolor",  "use color for UI", &iflags.wc2_guicolor, TRUE, SET_IN_GAME}, /*WC2*/
+    { "help",  "show all available info when using whatis-command", &flags.help, TRUE, SET_IN_GAME },
+    { "herecmd_menu", "show commands available in this location", &iflags.herecmd_menu, FALSE, SET_IN_GAME },
+    { "herewindow", "show here window", &iflags.wc2_herewindow, TRUE, SET_IN_FILE }, /*WC2*/
+    { "hilite_pet", "use highlight for pets", &iflags.wc_hilite_pet, FALSE, SET_IN_GAME }, /*WC*/
+    { "hilite_pile", "highlight piles of items", &iflags.hilite_pile, FALSE, SET_IN_GAME },
+    { "hitpointbar", "show colored bar for hit points", &iflags.wc2_hitpointbar, FALSE, SET_IN_GAME }, /*WC2*/
+    { "ibm2utf8", "convert CP437 symbols to UTF8 format before output", &flags.ibm2utf8, FALSE, SET_IN_GAME },
 #ifndef MAC
-    { "ignintr", &flags.ignintr, FALSE, SET_IN_GAME },
+    { "ignintr", "ignore interrupt signals", &flags.ignintr, FALSE, SET_IN_GAME },
 #else
-    { "ignintr", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "ignintr", "ignore interrupt signals", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "implicit_uncursed", &iflags.implicit_uncursed, TRUE, SET_IN_GAME },
-    { "inventory_obj_cmd", &flags.inventory_obj_cmd, TRUE, SET_IN_GAME },
-    { "inventory_weights_last", &flags.inventory_weights_last, FALSE, SET_IN_GAME },
-    { "knapsack_prompt", &flags.knapsack_prompt, TRUE, SET_IN_GAME },
-    { "large_font", &iflags.obsolete, FALSE, SET_IN_FILE }, /* OBSOLETE */
-    { "legacy", &flags.legacy, TRUE, DISP_IN_GAME },
-    { "lit_corridor", &flags.lit_corridor, FALSE, SET_IN_GAME },
-    { "long_charge_text", &flags.long_charge_text, FALSE, SET_IN_GAME },
-    { "lootabc", &flags.lootabc, FALSE, SET_IN_GAME },
+    { "implicit_uncursed", "omit \"uncursed\" from inventory", &iflags.implicit_uncursed, TRUE, SET_IN_GAME },
+    { "inventory_obj_cmd", "display a command menu upon selecting an object in inventory", &flags.inventory_obj_cmd, TRUE, SET_IN_GAME},
+    { "inventory_weights_last", "display object weights in parentheses after object name", &flags.inventory_weights_last, FALSE, SET_IN_GAME},
+    { "knapsack_prompt", "prompt for an action when knapsack is full", &flags.knapsack_prompt, TRUE, SET_IN_GAME},
+    { "large_font", "obsolete: use large font", &iflags.obsolete, FALSE, SET_IN_FILE}, /* OBSOLETE */
+    { "legacy", "show introductory message", &flags.legacy, TRUE, DISP_IN_GAME },
+    { "lit_corridor", "show dark corridors as lit if in sight", &flags.lit_corridor, FALSE, SET_IN_GAME },
+    { "long_charge_text", "long format for charges and rechargings in inventory", &flags.long_charge_text, FALSE, SET_IN_GAME},
+    { "lootabc", "use a/b/c rather than o/i/c when looting", &flags.lootabc, FALSE, SET_IN_GAME },
 #ifdef MAIL
-    { "mail", &flags.biff, TRUE, SET_IN_GAME },
+    { "mail", "enable the mail daemon", &flags.biff, TRUE, SET_IN_GAME },
 #else
-    { "mail", (boolean *) 0, TRUE, SET_IN_FILE },
+    { "mail", "enable the mail daemon", (boolean *) 0, TRUE, SET_IN_FILE },
 #endif
-    { "mention_walls", &iflags.mention_walls, FALSE, SET_IN_GAME },
+    { "mention_walls", "give feedback when walking into walls", &iflags.mention_walls, FALSE, SET_IN_GAME },
 #if defined(ANDROID) || defined(GNH_MOBILE)
-    { "menucolors", &iflags.use_menu_color, TRUE, SET_IN_GAME },
+    { "menucolors", "use colors in menus", &iflags.use_menu_color, TRUE, SET_IN_GAME },
 #else
-    { "menucolors", &iflags.use_menu_color, FALSE, SET_IN_GAME },
+    { "menucolors", "use colors in menus", &iflags.use_menu_color, FALSE, SET_IN_GAME },
 #endif
     /* for menu debugging only*/
-    { "menu_tab_sep", &iflags.menu_tab_sep, FALSE, SET_IN_WIZGAME },
-    { "menu_objsyms", &iflags.menu_head_objsym, FALSE, SET_IN_GAME },
+    { "menu_tab_sep", "menu formatting", &iflags.menu_tab_sep, FALSE, SET_IN_WIZGAME },
+    { "menu_objsyms", "show object symbols in menus", &iflags.menu_head_objsym, FALSE, SET_IN_GAME },
 #ifdef TTY_GRAPHICS
-    { "menu_overlay", &iflags.menu_overlay, TRUE, SET_IN_GAME },
+    { "menu_overlay", "menus overlay and align to right", &iflags.menu_overlay, TRUE, SET_IN_GAME },
 #else
-    { "menu_overlay", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "menu_overlay", "menus overlay and align to right", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "metric_system", &flags.metric_system, FALSE, SET_IN_GAME },
-    { "monpolycontrol", &iflags.mon_polycontrol, FALSE, SET_IN_WIZGAME },
+    { "metric_system", "use the metric system for weights", &flags.metric_system, FALSE, SET_IN_GAME },
+    { "monpolycontrol", "control monster polymorphs", &iflags.mon_polycontrol, FALSE, SET_IN_WIZGAME },
 #ifdef NEWS
-    { "news", &iflags.news, TRUE, DISP_IN_GAME },
+    { "news", "show any news at game start", &iflags.news, TRUE, DISP_IN_GAME },
 #else
-    { "news", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "news", "show any news at game start", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "nudist", &u.uroleplay.nudist, FALSE, DISP_IN_GAME },
-    { "null", &flags.null, TRUE, SET_IN_GAME },
+    { "nudist", "start your character without armor", &u.uroleplay.nudist, FALSE, DISP_IN_GAME },
+    { "null", "allow nulls to be sent to terminal", &flags.null, TRUE, SET_IN_GAME },
 #if defined(SYSFLAGS) && defined(MAC)
-    { "page_wait", &sysflags.page_wait, TRUE, SET_IN_GAME },
+    { "page_wait", "page wait on Mac", &sysflags.page_wait, TRUE, SET_IN_GAME},
 #else
-    { "page_wait", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "page_wait", "page wait on Mac", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "partylinecolor", &flags.partylinecolor, TRUE, SET_IN_GAME },
-    { "partydetails", &flags.partydetails, FALSE, SET_IN_GAME },
-    { "partymultiline", &flags.partymultiline, FALSE, SET_IN_GAME },
+    { "partylinecolor", "use colors for pet statistics", &flags.partylinecolor, TRUE, SET_IN_GAME },
+    { "partydetails", "give detailed information for each pet", &flags.partydetails, FALSE, SET_IN_GAME },
+    { "partymultiline", "print statistics of each pet on a separate status line", &flags.partymultiline, FALSE, SET_IN_GAME },
     /* 3.6.2: move perm_invent from flags to iflags and out of save file */
-    { "perm_invent", &iflags.perm_invent, FALSE, SET_IN_GAME },
-    { "pickup_thrown", &flags.pickup_thrown, TRUE, SET_IN_GAME },
-    { "popup_dialog", &iflags.wc_popup_dialog, FALSE, SET_IN_GAME },   /*WC*/
-    { "prefer_fast_move", &flags.prefer_fast_move, FALSE, SET_IN_GAME },
-    { "preload_tiles", &iflags.wc_preload_tiles, TRUE, DISP_IN_GAME }, /*WC*/
-    { "pushweapon", &flags.pushweapon, FALSE, SET_IN_GAME },
+    { "perm_invent", "show permanent inventory window", &iflags.perm_invent, FALSE, SET_IN_GAME },
+    { "pickup_thrown", "autopickup thrown items", &flags.pickup_thrown, TRUE, SET_IN_GAME },
+    { "popup_dialog", "use popup dialog", &iflags.wc_popup_dialog, FALSE, SET_IN_GAME},   /*WC*/
+    { "prefer_fast_move", "swap slow move and fast move commands", &flags.prefer_fast_move, FALSE, SET_IN_GAME},
+    { "preload_tiles", "preload tiles", &iflags.wc_preload_tiles, TRUE, DISP_IN_GAME}, /*WC*/
+    { "pushweapon", "previous weapon goes to secondary slot", &flags.pushweapon, FALSE, SET_IN_GAME },
 #if defined(MICRO) && !defined(AMIGA)
-    { "rawio", &iflags.rawio, FALSE, DISP_IN_GAME },
+    { "rawio", "allow use to raw I/O", &iflags.rawio, FALSE, DISP_IN_GAME },
 #else
-    { "rawio", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "rawio", "allow use to raw I/O", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "rest_on_space", &flags.rest_on_space, FALSE, SET_IN_GAME },
+    { "rest_on_space", "space bar is bound to the rest-command", &flags.rest_on_space, FALSE, SET_IN_GAME },
 #ifdef RLECOMP
-    { "rlecomp", &iflags.rlecomp,
+    { "rlecomp", "use rlecomp", &iflags.rlecomp,
 #if defined(COMPRESS) || defined(ZLIB_COMP)
       FALSE,
 #else
@@ -247,70 +248,70 @@ static struct Bool_Opt {
 #endif
       DISP_IN_GAME },
 #endif
-    { "safe_pet", &flags.safe_dog, TRUE, SET_IN_GAME },
-    { "sanity_check", &iflags.sanity_check, FALSE, SET_IN_WIZGAME },
-    { "search_box_traps", &flags.search_box_traps, TRUE, SET_IN_GAME },
-    { "selectsaved", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME }, /*WC*/
-    { "self_click_action", &flags.self_click_action, TRUE, SET_IN_GAME },
-    { "showexp", &flags.showexp, TRUE, SET_IN_GAME },
-    { "showmove", &flags.showmove, TRUE, SET_IN_GAME },
-    { "showrace", &flags.showrace, FALSE, SET_IN_GAME },
-    { "showrealtime", &flags.showrealtime, TRUE, SET_IN_GAME },
-    { "showscore", &flags.showscore, TRUE, SET_IN_GAME },
-    { "show_buff_timer", &flags.show_buff_timer, FALSE, SET_IN_GAME },
-    { "show_decorations", &flags.show_decorations, TRUE, SET_IN_GAME },
-    { "show_grid", &flags.show_grid, FALSE, SET_IN_GAME },
-    { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME },
-    { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
-    { "show_tile_u_hp_bar", &flags.show_tile_u_hp_bar, FALSE, SET_IN_GAME },
-    { "show_weapon_style", &flags.show_weapon_style, TRUE, SET_IN_GAME },
-    { "show_weight_summary", &flags.show_weight_summary, TRUE, SET_IN_GAME },
-    { "silent", &flags.silent, TRUE, SET_IN_GAME },
-    { "skill_table_format", &iflags.skill_table_format, TRUE, SET_IN_GAME },
-    { "softkeyboard", &iflags.wc2_softkeyboard, FALSE, SET_IN_FILE }, /*WC2*/
-    { "sortpack", &flags.sortpack, TRUE, SET_IN_GAME },
-    { "sparkle", &flags.sparkle, TRUE, SET_IN_GAME },
-    { "spell_table_format", &iflags.spell_table_format, TRUE, SET_IN_GAME },
-    { "splash_screen", &iflags.wc_splash_screen, TRUE, DISP_IN_GAME }, /*WC*/
-    { "standout", &flags.standout, FALSE, SET_IN_GAME },
-    { "status_updates", &iflags.status_updates, TRUE, DISP_IN_GAME },
-    { "swap_rhand_only", &flags.swap_rhand_only, FALSE, SET_IN_GAME },
-    { "takeoff_uses_all", &iflags.takeoff_uses_all, TRUE, SET_IN_GAME },
-    { "tellexp", &flags.tellexp, TRUE, SET_IN_GAME },
-    { "tiled_map", &iflags.wc_tiled_map, PREFER_TILED, DISP_IN_GAME }, /*WC*/
-    { "time", &flags.time, FALSE, SET_IN_GAME },
+    { "safe_pet", "prevent you from hitting pets", &flags.safe_dog, TRUE, SET_IN_GAME },
+    { "sanity_check", "perform data sanity checks", &iflags.sanity_check, FALSE, SET_IN_WIZGAME },
+    { "search_box_traps", "search command searches boxes for traps first", &flags.search_box_traps, TRUE, SET_IN_GAME },
+    { "selectsaved", "select a saved game at program start", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME}, /*WC*/
+    { "self_click_action", "clicking the player character executes an action", &flags.self_click_action, TRUE, SET_IN_GAME},
+    { "showexp", "show experience points in status line", &flags.showexp, TRUE, SET_IN_GAME},
+    { "showmove", "show current movement speed in status line", &flags.showmove, TRUE, SET_IN_GAME },
+    { "showrace", "show your character by race rather than role", &flags.showrace, FALSE, SET_IN_GAME },
+    { "showrealtime", "show elapsed wall-clock time in status line", &flags.showrealtime, TRUE, SET_IN_GAME },
+    { "showscore", "show current score in status line", &flags.showscore, TRUE, SET_IN_GAME },
+    { "show_buff_timer", "show buff timer on tiles", &flags.show_buff_timer, FALSE, SET_IN_GAME},
+    { "show_decorations", "show decorations via colors in ASCII mode", &flags.show_decorations, TRUE, SET_IN_GAME },
+    { "show_grid", "show grid between tiles", &flags.show_grid, FALSE, SET_IN_GAME},
+    { "show_tile_mon_hp_bar", "show monster hit points on tiles", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME},
+    { "show_tile_pet_hp_bar", "show pet hit points on tiles", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
+    { "show_tile_u_hp_bar", "show player hit points on tiles", &flags.show_tile_u_hp_bar, FALSE, SET_IN_GAME },
+    { "show_weapon_style", "show used weapon type in status line", &flags.show_weapon_style, TRUE, SET_IN_GAME },
+    { "show_weight_summary", "show total weight at the end of inventory", &flags.show_weight_summary, TRUE, SET_IN_GAME },
+    { "silent", "don't use terminal bell", &flags.silent, TRUE, SET_IN_GAME },
+    { "skill_table_format", "show skills in a table format rather than a list",  &iflags.skill_table_format, TRUE, SET_IN_GAME},
+    { "softkeyboard", "soft keyboard", &iflags.wc2_softkeyboard, FALSE, SET_IN_FILE}, /*WC2*/
+    { "sortpack", "group inventory items by type", &flags.sortpack, TRUE, SET_IN_GAME },
+    { "sparkle", "display sparkly effect when resisting magic", &flags.sparkle, TRUE, SET_IN_GAME },
+    { "spell_table_format", "show spells in a table format rather than a list", &iflags.spell_table_format, TRUE, SET_IN_GAME },
+    { "splash_screen", "show splash screen", &iflags.wc_splash_screen, TRUE, DISP_IN_GAME}, /*WC*/
+    { "standout", "use standout for --more--", &flags.standout, FALSE, SET_IN_GAME },
+    { "status_updates", "allow the status lines to update", &iflags.status_updates, TRUE, DISP_IN_GAME },
+    { "swap_rhand_only", "swap right hand weapon only rather than objects in both hands", &flags.swap_rhand_only, FALSE, SET_IN_GAME},
+    { "takeoff_uses_all", "takeoff command uses takeoffall command rather than normal implementation", &iflags.takeoff_uses_all, TRUE, SET_IN_GAME},
+    { "tellexp", "report experience points gained", &flags.tellexp, TRUE, SET_IN_GAME },
+    { "tiled_map", "tiled map", &iflags.wc_tiled_map, PREFER_TILED, DISP_IN_GAME}, /*WC*/
+    { "time", "display game turns in status line", &flags.time, FALSE, SET_IN_GAME },
 #ifdef TIMED_DELAY
-    { "timed_delay", &flags.nap, TRUE, SET_IN_GAME },
+    { "timed_delay", "use time delay", &flags.nap, TRUE, SET_IN_GAME },
 #else
-    { "timed_delay", (boolean *) 0, FALSE, SET_IN_GAME },
+    { "timed_delay", "use time delay", (boolean *) 0, FALSE, SET_IN_GAME },
 #endif
-    { "tombstone", &flags.tombstone, TRUE, SET_IN_GAME },
-    { "toptenwin", &iflags.toptenwin, FALSE, SET_IN_GAME },
-    { "travel", &flags.travelcmd, TRUE, SET_IN_GAME },
+    { "tombstone", "show tombstone when your character dies", &flags.tombstone, TRUE, SET_IN_GAME },
+    { "toptenwin", "show top scores in window", &iflags.toptenwin, FALSE, SET_IN_GAME },
+    { "travel", "enable traveling via mouse click", &flags.travelcmd, TRUE, SET_IN_GAME },
 #ifdef DEBUG
-    { "travel_debug", &iflags.trav_debug, FALSE, SET_IN_WIZGAME }, /*hack.c*/
+    { "travel_debug", "display debugging graphics for travel algorithm", &iflags.trav_debug, FALSE, SET_IN_WIZGAME}, /*hack.c*/
 #endif
-    { "underline_peaceful", &flags.underline_peaceful, TRUE, SET_IN_GAME },
-    { "use_darkgray", &iflags.wc2_darkgray, TRUE, SET_IN_FILE }, /*WC2*/
+    { "underline_peaceful", "underline peaceful monsters", &flags.underline_peaceful, TRUE, SET_IN_GAME},
+    { "use_darkgray",  "use bold black color instead of blue", &iflags.wc2_darkgray, TRUE, SET_IN_FILE }, /*WC2*/
 #if defined(WIN32) || defined(ANDROID)
-    { "use_inverse", &iflags.wc_inverse, TRUE, SET_IN_GAME }, /*WC*/
+    { "use_inverse",  "display detected monsters in inverse", &iflags.wc_inverse, TRUE, SET_IN_GAME }, /*WC*/
 #else
-    { "use_inverse", &iflags.wc_inverse, FALSE, SET_IN_GAME }, /*WC*/
+    { "use_inverse",  "display detected monsters in inverse", &iflags.wc_inverse, FALSE, SET_IN_GAME }, /*WC*/
 #endif
-    { "verbose", &flags.verbose, TRUE, SET_IN_GAME },
+    { "verbose", "enable longer messages", &flags.verbose, TRUE, SET_IN_GAME },
 #ifdef TTY_TILES_ESCCODES
-    { "vt_tiledata", &iflags.vt_tiledata, FALSE, SET_IN_FILE },
+    { "vt_tiledata", (char*)0, &iflags.vt_tiledata, FALSE, SET_IN_FILE },
 #else
-    { "vt_tiledata", (boolean *) 0, FALSE, SET_IN_FILE },
+    { "vt_tiledata", "use VT codes for tiles", (boolean*)0, FALSE, SET_IN_FILE},
 #endif
-    { "whatis_menu", &iflags.getloc_usemenu, FALSE, SET_IN_GAME },
-    { "whatis_moveskip", &iflags.getloc_moveskip, FALSE, SET_IN_GAME },
-    { "wiz_alwaysenc", &flags.wiz_alwaysenc, FALSE, SET_IN_WIZGAME },
-    { "wiz_mstatusline", &flags.wiz_mstatusline, FALSE, SET_IN_WIZGAME },
-    { "wizweight", &iflags.wizweight, FALSE, SET_IN_WIZGAME },
-    { "wraptext", &iflags.wc2_wraptext, FALSE, SET_IN_GAME }, /*WC2*/
+    { "whatis_menu",  "show menu when getting a map location", &iflags.getloc_usemenu, FALSE, SET_IN_GAME },
+    { "whatis_moveskip", "skip same glyph when getting map location", &iflags.getloc_moveskip, FALSE, SET_IN_GAME },
+    { "wiz_alwaysenc", "always generate an encounter in wizard mode", &flags.wiz_alwaysenc, FALSE, SET_IN_WIZGAME},
+    { "wiz_mstatusline", "enable extended monster status line in wizard mode", &flags.wiz_mstatusline, FALSE, SET_IN_WIZGAME},
+    { "wizweight", "show weights in inventory in wizard mode", &iflags.wizweight, FALSE, SET_IN_WIZGAME},
+    { "wraptext", "wrap text", &iflags.wc2_wraptext, FALSE, SET_IN_GAME}, /*WC2*/
 #ifdef ZEROCOMP
-    { "zerocomp", &iflags.zerocomp,
+    { "zerocomp", "use zerocomp", &iflags.zerocomp,
 #if defined(COMPRESS) || defined(ZLIB_COMP)
       FALSE,
 #else
@@ -318,7 +319,7 @@ static struct Bool_Opt {
 #endif
       DISP_IN_GAME },
 #endif
-    { (char *) 0, (boolean *) 0, FALSE, 0 }
+    { (char *) 0, (char*) 0, (boolean *) 0, FALSE, 0 }
 };
 
 /* compound options, for option_help() and external programs like Amiga
@@ -683,7 +684,7 @@ STATIC_DCL int NDECL(count_menucolors);
 STATIC_DCL boolean FDECL(parse_role_opts, (BOOLEAN_P, const char *,
                                            char *, char **));
 
-STATIC_DCL void FDECL(doset_add_menu, (winid, const char *, int));
+STATIC_DCL void FDECL(doset_add_menu, (winid, const char *, int, int, int));
 STATIC_DCL void FDECL(opts_add_others, (winid, const char *, int,
                                         char *, int));
 STATIC_DCL int FDECL(handle_add_list_remove, (const char *, int));
@@ -5496,32 +5497,58 @@ boolean dolist;
 #define OPTIONS_HEADING "NETHACKOPTIONS"
 #endif
 
+#define MAX_OPT_VALUE_LENGTH 20
+
 static char fmtstr_doset[] = "%s%-15s [%s]   ";
 static char fmtstr_doset_tab[] = "%s\t[%s]";
 static char n_currently_set[] = "(%d currently set)";
 
 /* doset('O' command) menu entries for compound options */
 STATIC_OVL void
-doset_add_menu(win, option, indexoffset)
+doset_add_menu(win, option, idx, indexoffset, notruncate)
 winid win;          /* window to add to */
 const char *option; /* option name */
 int indexoffset;    /* value to add to index in compopt[], or zero
                        if option cannot be changed */
+int idx, notruncate;
 {
     const char *value = "unknown"; /* current value */
-    char buf[BUFSZ], buf2[BUFSZ];
+    char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ];
     anything any;
     int i;
 
+    Strcpy(buf, "");
+    Strcpy(buf2, "");
+    Strcpy(buf3, "");
     any = zeroany;
+    if (idx >= 0)
+        i = idx;
+    else
+    {
+        for (i = 0; compopt[i].name; i++)
+            if (strcmp(option, compopt[i].name) == 0)
+                break;
+    }
+
+    if (i >= SIZE(compopt))
+        return;
+
+    if (compopt[i].descr)
+    {
+        if (!iflags.menu_tab_sep)
+#ifdef GNH_MOBILE
+            Sprintf(eos(buf3), "|%s|", compopt[i].descr);
+#else
+            Sprintf(eos(buf3), "%s", compopt[i].descr);
+#endif
+        else
+            Sprintf(eos(buf3), "\t%s", compopt[i].descr);
+    }
+
     if (indexoffset == 0) {
         any.a_int = 0;
         value = get_compopt_value(option, buf2);
     } else {
-        for (i = 0; compopt[i].name; i++)
-            if (strcmp(option, compopt[i].name) == 0)
-                break;
-
         if (compopt[i].name) {
             any.a_int = i + 1 + indexoffset;
             value = get_compopt_value(option, buf2);
@@ -5533,12 +5560,46 @@ int indexoffset;    /* value to add to index in compopt[], or zero
         }
     }
     /* "    " replaces "a - " -- assumes menus follow that style */
-    if (!iflags.menu_tab_sep)
-        Sprintf(buf, fmtstr_doset, any.a_int ? "" : "    ", option,
-                value);
+
+    char valuebuf[BUFSZ];
+#ifdef GNH_MOBILE
+    Strcpy(valuebuf, value);
+#else
+    if (notruncate && !iflags.menu_tab_sep)
+    {
+        Strcpy(valuebuf, value);
+    }
     else
-        Sprintf(buf, fmtstr_doset_tab, option, value);
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, NO_COLOR, buf, MENU_UNSELECTED);
+    {
+        /* truncate value */
+        strncpy(valuebuf, value, MAX_OPT_VALUE_LENGTH);
+        valuebuf[MAX_OPT_VALUE_LENGTH] = 0;
+        if (strlen(value) > MAX_OPT_VALUE_LENGTH)
+            valuebuf[MAX_OPT_VALUE_LENGTH - 3] = valuebuf[MAX_OPT_VALUE_LENGTH - 2] = valuebuf[MAX_OPT_VALUE_LENGTH - 1] = '.';
+    }
+#endif
+
+    if (!iflags.menu_tab_sep)
+    {
+        char buf4[BUFSZ];
+        Strcpy(buf4, "");
+        char* p = buf4;
+        int j;
+        int len = (int)strlen(valuebuf);
+        for (j = 0; j < MAX_OPT_VALUE_LENGTH - len; j++, p++)
+            *p = ' ';
+        *p = 0;
+        Strcat(buf4, "  ");
+
+        Sprintf(buf, fmtstr_doset, any.a_int ? "" : "    ", option, valuebuf);
+        Strcat(buf, buf4);
+    }
+    else
+    {
+        Sprintf(buf, fmtstr_doset_tab, option, valuebuf);
+    }
+    Strcat(buf, buf3);
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE | ATR_ALT_DIVISORS, NO_COLOR, buf, MENU_UNSELECTED);
 }
 
 STATIC_OVL void
@@ -5562,7 +5623,7 @@ int nset;
                 name, buf2);
     else
         Sprintf(buf, fmtstr_doset_tab, name, buf2);
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, NO_COLOR, buf, MENU_UNSELECTED);
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE | ATR_ALT_DIVISORS, NO_COLOR, buf, MENU_UNSELECTED);
 }
 
 int
@@ -5651,7 +5712,7 @@ doset() /* changing options via menu by Per Liboriussen */
     }
 
     any = zeroany;
-    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_NOTABS, NO_COLOR,
              "Booleans (selecting will toggle value):", MENU_UNSELECTED, menu_heading_info());
     any.a_int = 0;
     /* first list any other non-modifiable booleans, then modifiable ones */
@@ -5671,11 +5732,26 @@ doset() /* changing options via menu by Per Liboriussen */
                 any.a_int = (pass == 0) ? 0 : i + 1;
                 if (!iflags.menu_tab_sep)
                     Sprintf(buf, fmtstr_doset, (pass == 0) ? "    " : "",
-                            name, *bool_p ? "true" : "false");
+                        name, *bool_p ? "true" : "false");
                 else
                     Sprintf(buf, fmtstr_doset_tab,
-                            name, *bool_p ? "true" : "false");
-                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, NO_COLOR, buf,
+                        name, *bool_p ? "true" : "false");
+
+                if (boolopt[i].descr)
+                {
+                    if (!iflags.menu_tab_sep)
+                        Strcat(buf, *bool_p ? "   " : "  ");
+                    if (!iflags.menu_tab_sep)
+#ifdef GNH_MOBILE
+                        Sprintf(eos(buf), "|%s|", boolopt[i].descr);
+#else
+                        Sprintf(eos(buf), "%s", boolopt[i].descr);
+#endif
+                    else
+                        Sprintf(eos(buf), "\t%s", boolopt[i].descr);
+                }
+
+                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE | ATR_ALT_DIVISORS, NO_COLOR, buf,
                          MENU_UNSELECTED);
             }
 
@@ -5683,17 +5759,17 @@ doset() /* changing options via menu by Per Liboriussen */
     indexoffset = boolcount;
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
-    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_NOTABS, NO_COLOR,
              "Compounds (selecting will prompt for new value):",
              MENU_UNSELECTED, menu_heading_info());
 
     /* deliberately put playmode, name, role+race+gender+align first */
-    doset_add_menu(tmpwin, "playmode", 0);
-    doset_add_menu(tmpwin, "name", 0);
-    doset_add_menu(tmpwin, "role", 0);
-    doset_add_menu(tmpwin, "race", 0);
-    doset_add_menu(tmpwin, "gender", 0);
-    doset_add_menu(tmpwin, "align", 0);
+    doset_add_menu(tmpwin, "playmode", -1, 0, 0);
+    doset_add_menu(tmpwin, "name", -1, 0, 0);
+    doset_add_menu(tmpwin, "role", -1, 0, 0);
+    doset_add_menu(tmpwin, "race", -1, 0, 0);
+    doset_add_menu(tmpwin, "gender", -1, 0, 0);
+    doset_add_menu(tmpwin, "align", -1, 0, 0);
 
     for (pass = startpass; pass <= endpass; pass++)
         for (i = 0; (name = compopt[i].name) != 0; i++)
@@ -5706,13 +5782,12 @@ doset() /* changing options via menu by Per Liboriussen */
                     || (is_wc2_option(name) && !wc2_supported(name)))
                     continue;
 
-                doset_add_menu(tmpwin, name,
-                               (pass == DISP_IN_GAME) ? 0 : indexoffset);
+                doset_add_menu(tmpwin, name, i, (pass == DISP_IN_GAME) ? 0 : indexoffset, 0);
             }
 
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
-    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_NOTABS, NO_COLOR,
              "Other settings:", MENU_UNSELECTED, menu_heading_info());
 
     for (i = 0; (name = othropt[i].name) != 0; i++) {
@@ -5726,10 +5801,10 @@ doset() /* changing options via menu by Per Liboriussen */
 #ifdef PREFIXES_IN_USE
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
-    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_NOTABS, NO_COLOR,
              "Variable playground locations:", MENU_UNSELECTED, menu_heading_info());
     for (i = 0; i < PREFIX_COUNT; i++)
-        doset_add_menu(tmpwin, fqn_prefix_names[i], 0);
+        doset_add_menu(tmpwin, fqn_prefix_names[i], -1, 0, 1);
 #endif
     end_menu(tmpwin, "Set what options?");
     
@@ -6798,23 +6873,23 @@ char *buf;
     else if (!strcmp(optname, "animation_interval"))
     {
         if(flags.animation_frame_interval_in_milliseconds > 0)
-            Sprintf(buf, "%d milliseconds", flags.animation_frame_interval_in_milliseconds);
+            Sprintf(buf, "%d ms", flags.animation_frame_interval_in_milliseconds);
         else
-            Sprintf(buf, "%s, %d milliseconds", defopt, ANIMATION_FRAME_INTERVAL);
+            Sprintf(buf, "%s, %d ms", defopt, ANIMATION_FRAME_INTERVAL);
     }
     else if (!strcmp(optname, "move_interval"))
     {
         if (flags.move_interval_in_milliseconds > 0)
-            Sprintf(buf, "%d milliseconds", flags.move_interval_in_milliseconds);
+            Sprintf(buf, "%d ms", flags.move_interval_in_milliseconds);
         else
-            Sprintf(buf, "%s, %d milliseconds", defopt, DEFAULT_MOVE_INTERVAL);
+            Sprintf(buf, "%s, %d ms", defopt, DEFAULT_MOVE_INTERVAL);
     }
     else if (!strcmp(optname, "crawl_interval"))
     {
         if (flags.crawl_interval_in_milliseconds > 0)
-            Sprintf(buf, "%d milliseconds", flags.crawl_interval_in_milliseconds);
+            Sprintf(buf, "%d ms", flags.crawl_interval_in_milliseconds);
         else
-            Sprintf(buf, "%s, %d milliseconds", defopt, DEFAULT_CRAWL_INTERVAL);
+            Sprintf(buf, "%s, %d ms", defopt, DEFAULT_CRAWL_INTERVAL);
     }
     else if (!strcmp(optname, "align"))
         Sprintf(buf, "%s", rolestring(flags.initalign, aligns, adj));

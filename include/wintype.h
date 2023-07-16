@@ -134,7 +134,7 @@ typedef struct mi {
 #define ATR_INACTIVE            0x00040000
 #define ATR_HALF_SIZE           0x00080000
 #define ATR_ALT_COLORS          0x00100000
-#define ATR_PREFORM             0x00200000
+#define ATR_ALT_DIVISORS        0x00200000
 #define ATR_ORDERED_LIST        0x00400000
 #define ATR_START_TABLE         0x00800000
 #define ATR_END_TABLE           0x01000000
@@ -143,7 +143,7 @@ typedef struct mi {
 #define ATR_START_TABLE_BODY    0x08000000
 #define ATR_END_TABLE_BODY      0x10000000
 #define ATR_PARAGRAPH_LINE      0x20000000
-#define ATR_LINE_ATTR_MASK       0x7FFFFFF0 /* because this is signed integer */
+#define ATR_LINE_ATTR_MASK      0x7FFFFFF0 /* because this is signed integer */
 
 /* nh_poskey() modifier types */
 #define CLICK_1 1

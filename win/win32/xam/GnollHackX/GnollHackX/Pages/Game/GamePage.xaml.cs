@@ -10403,7 +10403,7 @@ namespace GnollHackX.Pages.Game
                                     textPaint.TextSize = suffixfontsize;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
-                                    DrawTextSplit(canvas, suffixtextsplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline, MenuCanvas.RevertBlackAndWhite, MenuCanvas.MenuButtonStyle, totalRowWidth, 0, 0, 0, 0);
+                                    DrawTextSplit(canvas, suffixtextsplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline, MenuCanvas.RevertBlackAndWhite, MenuCanvas.MenuButtonStyle, totalRowWidth, 0, 0, 0, 0);
                                     /* Rewind and next line */
                                     x = start_x;
                                     y += textPaint.FontMetrics.Descent + fontspacingpadding;
@@ -10418,7 +10418,7 @@ namespace GnollHackX.Pages.Game
                                     fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
-                                    DrawTextSplit(canvas, suffix2textsplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline, MenuCanvas.RevertBlackAndWhite, MenuCanvas.MenuButtonStyle, totalRowWidth, 0, 0, 0, 0);
+                                    DrawTextSplit(canvas, suffix2textsplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline, MenuCanvas.RevertBlackAndWhite, MenuCanvas.MenuButtonStyle, totalRowWidth, 0, 0, 0, 0);
                                     /* Rewind and next line */
                                     x = start_x;
                                     y += textPaint.FontMetrics.Descent + fontspacingpadding;

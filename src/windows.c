@@ -2259,7 +2259,7 @@ STATIC_VAR int prev_app = 0;
    keep consecutive preformatted strings in a single block.  */
 
 STATIC_VAR uchar in_list = FALSE;
-STATIC_VAR boolean in_preform = FALSE;
+//STATIC_VAR boolean in_preform = FALSE;
 
 STATIC_OVL
 void
@@ -2281,17 +2281,17 @@ struct extended_menu_info info;
     if (before) { /* before next string is written,
                      close any finished blocks
                      and open a new block if necessary */
-        if (attr & ATR_PREFORM) {
-            if (!in_preform) {
-                fprintf(fp, "%s", PREF_S);
-                in_preform = TRUE;
-            }
-            return;
-        }
-        if (in_preform) {
-            fprintf(fp, "%s", PREF_E);
-            in_preform = FALSE;
-        }
+        //if (attr & ATR_PREFORM) {
+        //    if (!in_preform) {
+        //        fprintf(fp, "%s", PREF_S);
+        //        in_preform = TRUE;
+        //    }
+        //    return;
+        //}
+        //if (in_preform) {
+        //    fprintf(fp, "%s", PREF_E);
+        //    in_preform = FALSE;
+        //}
         if (attr & ATR_START_TABLE) {
             fprintf(fp, "%s\n", "<table class=\"nh_table\">");
         }
@@ -2327,11 +2327,11 @@ struct extended_menu_info info;
         return;
     }
     /* after string is written */
-    if (in_preform) {
-        if(!app)
-            fprintf(fp, "%s\n", LINEBREAK); /* preform still gets <br /> at end of line */
-        return; /* don't write </pre> until we get the next thing */
-    }
+    //if (in_preform) {
+    //    if(!app)
+    //        fprintf(fp, "%s\n", LINEBREAK); /* preform still gets <br /> at end of line */
+    //    return; /* don't write </pre> until we get the next thing */
+    //}
     if (in_list && !app) {
         fprintf(fp, "%s\n", LITM_E); /* </li>, but not </ul> yet */
         return;
@@ -3166,7 +3166,7 @@ reset_windows(VOID_ARGS)
 {
     prev_app = 0;
     in_list = 0;
-    in_preform = 0;
+    //in_preform = 0;
 }
 
 /*windows.c*/
