@@ -2849,7 +2849,7 @@ const char *str, *attrs, *colors;
 
         /* in case we ever support display attributes for topline
            messages, clear flag mask leaving only display attr */
-        /*attr &= ~(ATR_LINE_MSG_MASK);*/
+        /*attr &= ~(ATR_LINE_ATTR_MASK);*/
 
         /* really do this later */
 #if defined(USER_SOUNDS) && defined(WIN32CON)

@@ -143,7 +143,7 @@ typedef struct mi {
 #define ATR_START_TABLE_BODY    0x08000000
 #define ATR_END_TABLE_BODY      0x10000000
 #define ATR_PARAGRAPH_LINE      0x20000000
-#define ATR_LINE_MSG_MASK       0xFFFFFFF0
+#define ATR_LINE_ATTR_MASK       0x7FFFFFF0 /* because this is signed integer */
 
 /* nh_poskey() modifier types */
 #define CLICK_1 1
