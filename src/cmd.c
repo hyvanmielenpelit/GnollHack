@@ -8249,7 +8249,7 @@ int x, y, mod;
 
             if (mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp))
             {
-                if (iflags.clickfire && uwep && (is_launcher(uwep) || is_thrown_weapon_only(uwep)) && dist2(u.ux, u.uy, target_x, target_y) > 2)
+                if (iflags.clickfire && ((uwep && is_launcher(uwep)) || (uquiver && throwing_weapon(uquiver))) && dist2(u.ux, u.uy, target_x, target_y) > 2)
                 {
                     if (!x || !y || abs(x) == abs(y)) /* straight line or diagonal */
                     {
@@ -8268,26 +8268,26 @@ int x, y, mod;
                         else if(!path_is_clear)
                         {
                             play_sfx_sound(SFX_GENERAL_CANNOT);
-                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; the path to it is not clear.", is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; the path to it is not clear.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
                             cmd[0] = '\0';
                         }
                         else if (mtmpinway)
                         {
                             play_sfx_sound(SFX_GENERAL_CANNOT);
-                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; %s is in the way.", is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp), mon_nam(mtmpinway));
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; %s is in the way.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp), mon_nam(mtmpinway));
                             cmd[0] = '\0';
                         }
                         else
                         {
                             play_sfx_sound(SFX_GENERAL_CANNOT);
-                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; there is something in the way.", is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; there is something in the way.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
                             cmd[0] = '\0';
                         }
                     }
                     else
                     {
                         play_sfx_sound(SFX_GENERAL_CANNOT);
-                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; it is not lined up.", is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; it is not lined up.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
                         cmd[0] = '\0';
                     }
                 }

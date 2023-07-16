@@ -1604,7 +1604,7 @@ register struct obj* obj;
                 dmg_bonus += (double)objects[uwep->otyp].oc_fixed_damage_bonus;
             else if (is_ammo(obj) && uswapwep && is_launcher(uswapwep) && (objects[uswapwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
                 dmg_bonus += (double)objects[uswapwep->otyp].oc_fixed_damage_bonus;
-            else if(throwing_weapon(obj) || objects[otyp].oc_skill == P_NONE)
+            else if(nonmelee_throwing_weapon(obj) || objects[otyp].oc_skill == P_NONE)
                 dmg_bonus += (double)((int)strength_damage_bonus(ACURR(A_STR)) / 2);
             else
                 dmg_bonus += (double)strength_damage_bonus(ACURR(A_STR));
