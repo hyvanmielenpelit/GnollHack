@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-05-22 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-07-16 */
 
 /* GnollHack 4.0    wintty.h    $NHDT-Date: 1553858470 2019/03/29 11:21:10 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.33 $ */
 /* Copyright (c) David Cohrs, 1991,1992                  */

@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-05-22 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-07-16 */
 
 /* GnollHack 4.0    windmain.c    $NHDT-Date: 1543465755 2018/11/29 04:29:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.101 $ */
 /* Copyright (c) Derek S. Ray, 2015. */

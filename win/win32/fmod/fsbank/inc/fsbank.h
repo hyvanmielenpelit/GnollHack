@@ -1,3 +1,5 @@
+﻿/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-07-16 */
+
 #ifndef _FSBANK_H
 #define _FSBANK_H
 

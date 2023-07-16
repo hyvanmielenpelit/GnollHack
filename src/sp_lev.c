@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-05-22 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-07-16 */
 
 /* GnollHack 4.0    sp_lev.c    $NHDT-Date: 1553787633 2019/03/28 15:40:33 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.111 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */

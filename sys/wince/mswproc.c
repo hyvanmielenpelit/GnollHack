@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-05-22 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-07-16 */
 
 /* GnollHack 4.0	mswproc.c	$NHDT-Date: 1433806606 2015/06/08 23:36:46 $  $NHDT-Branch: master $:$NHDT-Revision: 1.60 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
