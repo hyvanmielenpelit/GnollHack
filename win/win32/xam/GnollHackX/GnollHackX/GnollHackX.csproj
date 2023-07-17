@@ -95,6 +95,7 @@
     <None Remove="Assets\UI\cast.png" />
     <None Remove="Assets\UI\chat.png" />
     <None Remove="Assets\UI\chatsteed.png" />
+    <None Remove="Assets\UI\chronicle.png" />
     <None Remove="Assets\UI\close.png" />
     <None Remove="Assets\UI\commands.png" />
     <None Remove="Assets\UI\conduct.png" />
@@ -131,6 +132,7 @@
     <None Remove="Assets\UI\levelchange.png" />
     <None Remove="Assets\UI\levelport.png" />
     <None Remove="Assets\UI\light.png" />
+    <None Remove="Assets\UI\load.png" />
     <None Remove="Assets\UI\lookfar.png" />
     <None Remove="Assets\UI\lookhere.png" />
     <None Remove="Assets\UI\loot.png" />
@@ -158,10 +160,12 @@
     <None Remove="Assets\UI\read.png" />
     <None Remove="Assets\UI\remove.png" />
     <None Remove="Assets\UI\repeat.png" />
+    <None Remove="Assets\UI\rest.png" />
     <None Remove="Assets\UI\reveal.png" />
     <None Remove="Assets\UI\ride.png" />
     <None Remove="Assets\UI\rightring.png" />
     <None Remove="Assets\UI\rub.png" />
+    <None Remove="Assets\UI\save.png" />
     <None Remove="Assets\UI\scroll.png" />
     <None Remove="Assets\UI\search.png" />
     <None Remove="Assets\UI\search20.png" />
@@ -279,7 +283,11 @@
     <EmbeddedResource Include="Assets\UI\autopickup.png" />
     <EmbeddedResource Include="Assets\UI\background-loading-screen.png" />
     <EmbeddedResource Include="Assets\UI\chatsteed.png" />
+    <EmbeddedResource Include="Assets\UI\chronicle.png" />
     <EmbeddedResource Include="Assets\UI\droptypes.png" />
+    <EmbeddedResource Include="Assets\UI\load.png" />
+    <EmbeddedResource Include="Assets\UI\rest.png" />
+    <EmbeddedResource Include="Assets\UI\save.png" />
     <EmbeddedResource Include="Assets\UI\status-empty-handed.png" />
     <EmbeddedResource Include="Assets\UI\unwield.png" />
     <Page Include="Assets\imrl.otf" />

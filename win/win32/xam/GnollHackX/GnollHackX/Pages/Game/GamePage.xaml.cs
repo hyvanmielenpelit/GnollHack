@@ -2280,7 +2280,7 @@ namespace GnollHackX.Pages.Game
                     break;
                 case 'l':
                     if (desc == "Load")
-                        res = "resource://GnollHackX.Assets.UI.vitruvian-gnoll.png";
+                        res = "resource://GnollHackX.Assets.UI.load.png";
                     else
                         res = "resource://GnollHackX.Assets.UI.leftring.png";
                     break;
@@ -12283,7 +12283,7 @@ namespace GnollHackX.Pages.Game
                                                         GenericButton_Clicked(sender, e, -12);
                                                         GenericButton_Clicked(sender, e, -10);
                                                         GenericButton_Clicked(sender, e, -10);
-                                                        GenericButton_Clicked(sender, e, 's');
+                                                        GenericButton_Clicked(sender, e, '.');
                                                         break;
                                                     case -4:
                                                         GameMenuButton_Clicked(sender, e);
