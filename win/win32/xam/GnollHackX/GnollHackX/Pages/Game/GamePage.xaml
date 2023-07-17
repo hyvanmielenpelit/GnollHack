@@ -386,11 +386,11 @@
                             <Label Text="?" x:Name="YnQuestionLabel" FontFamily="Immortal" FontSize="19" TextColor="White"
                                VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <StackLayout x:Name="YnButtonStack" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" Margin="0,10,0,0" >
-                                <controls:LabeledImageButton x:Name="ZeroButton" ImgSourcePath="resource://GnollHackX.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True"  />
-                                <controls:LabeledImageButton x:Name="FirstButton" ImgSourcePath="resource://GnollHackX.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True"  />
-                                <controls:LabeledImageButton x:Name="SecondButton" ImgSourcePath="resource://GnollHackX.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True" />
-                                <controls:LabeledImageButton x:Name="ThirdButton" ImgSourcePath="resource://GnollHackX.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5"  LargerFont="True" />
-                                <controls:LabeledImageButton x:Name="FourthButton" ImgSourcePath="resource://GnollHackX.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True" />
+                                <controls:LabeledImageButton x:Name="ZeroButton" ImgSourcePath="resource://GnollHackX.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True"  />
+                                <controls:LabeledImageButton x:Name="FirstButton" ImgSourcePath="resource://GnollHackX.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True"  />
+                                <controls:LabeledImageButton x:Name="SecondButton" ImgSourcePath="resource://GnollHackX.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True" />
+                                <controls:LabeledImageButton x:Name="ThirdButton" ImgSourcePath="resource://GnollHackX.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5"  LargerFont="True" />
+                                <controls:LabeledImageButton x:Name="FourthButton" ImgSourcePath="resource://GnollHackX.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True" />
                             </StackLayout>
                         </StackLayout>
                     </Frame>

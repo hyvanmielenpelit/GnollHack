@@ -1386,7 +1386,7 @@ namespace GnollHackX.Pages.Game
                     else if (cmddefchar == RideCmd)
                         icon_string = "GnollHackX.Assets.UI.ride.png";
                     else
-                        icon_string = "GnollHackX.Assets.Icons.missing_icon.png";
+                        icon_string = "GnollHackX.Assets.UI.missing_icon.png";
                     break;
             }
 
@@ -2247,7 +2247,7 @@ namespace GnollHackX.Pages.Game
 
         private string GetYnImgSourcePath(char ch, string desc)
         {
-            string res = "resource://GnollHackX.Assets.Icons.missing_icon.png";
+            string res = "resource://GnollHackX.Assets.UI.missing_icon.png";
             switch (ch)
             {
                 case 'm':

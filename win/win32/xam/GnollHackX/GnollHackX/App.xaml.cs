@@ -1062,7 +1062,7 @@ namespace GnollHackX
 
                 _moreBtnMatrix[3, 0, 4] = new GHCommandButtonItem("Spells", "GnollHackX.Assets.UI.spells.png", (int)'+');
 
-                _moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Help", "GnollHackX.Assets.UI.help.png", (int)'?'); // "Menu", "GnollHackX.Assets.Icons.missing_icon.png", -4);
+                _moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Help", "GnollHackX.Assets.UI.help.png", (int)'?');
                 _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Commands", "GnollHackX.Assets.UI.commands.png", GHUtils.Meta((int)'c'));
                 _moreBtnMatrix[3, 2, 5] = new GHCommandButtonItem("Extended", "GnollHackX.Assets.UI.extended.png", (int)'#');
                 _moreBtnMatrix[3, 3, 5] = new GHCommandButtonItem("Back to Game", "GnollHackX.Assets.UI.more.png", -1);

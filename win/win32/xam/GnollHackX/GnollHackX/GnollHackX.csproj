@@ -50,12 +50,6 @@
     <None Remove="Assets\gnollhack-logo-test-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits.png" />
-    <None Remove="Assets\Icons\missing_icon.png" />
-    <None Remove="Assets\Icons\pickup.png" />
-    <None Remove="Assets\Icons\quaff.png" />
-    <None Remove="Assets\Icons\read.png" />
-    <None Remove="Assets\Icons\skill.png" />
-    <None Remove="Assets\Icons\wait.png" />
     <None Remove="Assets\Immortal-Regular.ttf" />
     <None Remove="Assets\imrl.otf" />
     <None Remove="Assets\Intro.bank" />
@@ -137,6 +131,7 @@
     <None Remove="Assets\UI\lookhere.png" />
     <None Remove="Assets\UI\loot.png" />
     <None Remove="Assets\UI\menubackground.png" />
+    <None Remove="Assets\UI\missing_icon.png" />
     <None Remove="Assets\UI\mix.png" />
     <None Remove="Assets\UI\monster.png" />
     <None Remove="Assets\UI\more.png" />
@@ -275,7 +270,7 @@
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
-    <EmbeddedResource Include="Assets\Icons\missing_icon.png" />
+    <EmbeddedResource Include="Assets\UI\missing_icon.png" />
     <EmbeddedResource Include="Assets\Immortal-Regular.ttf" />
     <EmbeddedResource Include="Assets\main-menu-dwarf.jpg" />
     <EmbeddedResource Include="Assets\main-menu-gnoll.jpg" />
