@@ -516,6 +516,7 @@ E NEARDATA winid WIN_MAP, WIN_INVEN, WIN_HERE;
 #define panic1(cstr) panic("%s", cstr)
 
 #define pline_ex1(a, b, cstr) pline_ex(a, b, "%s", cstr)
+#define pline_The_ex1(a, b, cstr) pline_The_ex(a, b, "%s", cstr)
 #define Your_ex1(a, b, cstr) Your_ex(a, b, "%s", cstr)
 #define You_ex1(a, b, cstr) You_ex(a, b, "%s", cstr)
 #define You_hear_ex1(a, b, cstr) You_hear_ex(a, b, "%s", cstr)

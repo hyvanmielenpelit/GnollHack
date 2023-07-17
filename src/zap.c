@@ -7881,12 +7881,12 @@ boolean stop_at_first_hit_object;
         }
     }
 
-
     if(obj)
         start_ambient_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, bhitpos.x, bhitpos.y);
 
     boolean beam_cleared_off = FALSE;
     boolean drawbridge_hit = FALSE;
+    boolean tree_hit = FALSE;
 
     while (range-- > 0)
     {
@@ -7973,6 +7973,25 @@ boolean stop_at_first_hit_object;
             if (learn_it)
                 learnwand(obj);
 
+        }
+
+        if (weapon == ZAPPED_WAND && !tree_hit && IS_TREE(typ))
+        {
+            boolean learn_it = FALSE;
+            switch (obj->otyp)
+            {
+            case WAN_STRIKING:
+            case SPE_FORCE_BOLT:
+            case SPE_FORCE_STRIKE:
+                zap_try_destroy_tree(x, y);
+                tree_hit = TRUE;
+                learn_it = TRUE;
+                break;
+            default:
+                break;
+            }
+            if (learn_it)
+                learnwand(obj);
         }
 
         mtmp = m_at(bhitpos.x, bhitpos.y);

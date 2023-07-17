@@ -1956,6 +1956,30 @@ boolean unexpected;
     }
 }
 
+void
+zap_try_destroy_tree(x, y)
+int x, y;
+{
+    if (!isok(x, y) || !IS_TREE(levl[x][y].typ))
+        return;
+
+    if (!(levl[x][y].wall_info & W_NONDIGGABLE))
+    {
+        play_simple_location_sound((xchar)x, (xchar)y, LOCATION_SOUND_TYPE_BREAK);
+        uncatch_tree_objects(x, y);
+        create_current_floor_location((xchar)x, (xchar)y, 0, back_to_broken_glyph((xchar)x, (xchar)y), FALSE);
+        unblock_vision_and_hearing_at_point(x, y); /* vision */
+        newsym(x, y);
+        force_redraw_at(x, y);
+        pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION, "tree splinters into pieces!");
+    }
+    else if (!Blind)
+    {
+        play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
+        pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION, "tree shudders but is unharmed.");
+    }
+}
+
 /* digging via wand zap or spell cast */
 void
 zap_dig(origobj)
@@ -2274,20 +2298,7 @@ struct obj* origobj;
             else if (IS_TREE(room->typ)) 
             { /* check trees before stone */
                 play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
-                if (!(room->wall_info & W_NONDIGGABLE))
-                {
-                    play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
-                    uncatch_tree_objects(zx, zy);
-                    create_current_floor_location(zx, zy, 0, back_to_broken_glyph(zx, zy), FALSE);
-                    unblock_vision_and_hearing_at_point(zx, zy); /* vision */
-                    newsym(zx, zy);
-                    force_redraw_at(zx, zy);
-                }
-                else if (!Blind)
-                {
-                    play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
-                    pline_The("tree shudders but is unharmed.");
-                }
+                zap_try_destroy_tree(zx, zy);
                 break;
             }
             else if (room->typ == STONE || room->typ == SCORR)
