@@ -58,7 +58,7 @@ char *argv[];
     register char *dir;
 #endif
     boolean exact_username;
-    boolean resuming = FALSE; /* assume new game */
+    uchar resuming = FALSE; /* assume new game */
     boolean plsel_once = FALSE;
 
     sys_early_init();

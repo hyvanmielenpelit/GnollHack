@@ -17,7 +17,8 @@ using static System.Net.Mime.MediaTypeNames;
 namespace GnollHackX
 {
     public class ClientGame
-    {
+   {
+        public RunGnollHackFlags StartFlags { get; set; }
         private static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> _concurrentRequestDictionary = new ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>>();
         private static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> _concurrentResponseDictionary = new ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>>();
         private int[] _inputBuffer = new int[GHConstants.InputBufferLength];
@@ -441,12 +442,23 @@ namespace GnollHackX
         public void ClientCallback_ExitHack(int status)
         {
             Debug.WriteLine("ClientCallback_ExitHack");
-            //App.FmodService.StopTestSound();
-            App.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            switch (status)
             {
-                queue.Enqueue(new GHRequest(this, GHRequestType.ReturnToMainMenu));
+                case 1: /* Restart in the same game page (after saving) */
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.RestartGame));
+                    }
+                    break;
+                default:
+                case 0:
+                    App.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ReturnToMainMenu));
+                    }
+                    break;
             }
         }
 

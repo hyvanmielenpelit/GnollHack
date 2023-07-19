@@ -76,7 +76,7 @@ int GnollHackMain(int argc, char** argv)
 	boolean exact_username;
 	FILE* fp;
 
-    boolean resuming = FALSE; /* assume new game */
+    uchar resuming = FALSE; /* assume new game */
 
     sys_early_init();
 

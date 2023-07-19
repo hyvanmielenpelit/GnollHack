@@ -94,25 +94,24 @@ dosave()
     else 
     {
         boolean contplay = FALSE;
-        /* Not supported anymore */
-        //if (CasualMode)
-        //{
-        //    clear_nhwindow(WIN_MESSAGE);
-        //    char ans = ynq("Continue playing after saving?");
-        //    switch (ans)
-        //    {
-        //    case 'q':
-        //        clear_nhwindow(WIN_MESSAGE);
-        //        if (multi > 0)
-        //            nomul(0);
-        //        return 0;
-        //    case 'y':
-        //        contplay = TRUE;
-        //        break;
-        //    default:
-        //        break;
-        //    }
-        //}
+        if (CasualMode)
+        {
+            clear_nhwindow(WIN_MESSAGE);
+            char ans = ynq("Continue playing after saving?");
+            switch (ans)
+            {
+            case 'q':
+                clear_nhwindow(WIN_MESSAGE);
+                if (multi > 0)
+                    nomul(0);
+                return 0;
+            case 'y':
+                contplay = TRUE;
+                break;
+            default:
+                break;
+            }
+        }
 
         clear_nhwindow(WIN_MESSAGE);
         pline("Saving...");
@@ -122,16 +121,16 @@ dosave()
         int saveres = dosave0(FALSE);
         if (saveres)
         {
-            //if(contplay)
-            //    display_popup_text("Game was saved successfully.", "Game Saved", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, 0UL);
-            if (!contplay || !load_saved_game(1))
+            if (contplay)
             {
-                u.uhp = -1; /* universal game's over indicator */
-                /* make sure they see the Saving message */
-                display_nhwindow(WIN_MESSAGE, TRUE);
-                exit_nhwindows(contplay ? "Cannot continue the game..." : "Be seeing you...");
-                nh_terminate(EXIT_SUCCESS);
+                exit_hack_code = 1;
+                //    display_popup_text("Game was saved successfully.", "Game Saved", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, 0UL);
             }
+            u.uhp = -1; /* universal game's over indicator */
+            /* make sure they see the Saving message */
+            display_nhwindow(WIN_MESSAGE, TRUE);
+            exit_nhwindows(contplay ? (char*)0 : "Be seeing you...");
+            nh_terminate(EXIT_SUCCESS);
         }
         else
             (void) doredraw();

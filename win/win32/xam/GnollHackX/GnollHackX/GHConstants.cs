@@ -202,13 +202,14 @@ namespace GnollHackX
     [Flags]
     public enum RunGnollHackFlags: ulong
     {
-        None =              0x00000000,
-        SetWinCaps =        0x00000001,
-        WizardMode =        0x00000002,
-        FullVersion =       0x00000004,
-        ModernMode =        0x00000008, /* Upon death, the character teleports back to starting altar */
-        CasualMode =        0x00000010, /* Save games are preserved */
-        DisableBones =      0x00000020, /* Force iflags.bones to off */
+        None =                  0x00000000,
+        SetWinCaps =            0x00000001,
+        WizardMode =            0x00000002,
+        FullVersion =           0x00000004,
+        ModernMode =            0x00000008, /* Upon death, the character teleports back to starting altar */
+        CasualMode =            0x00000010, /* Save games are preserved */
+        DisableBones =          0x00000020, /* Force iflags.bones to off */
+        ForceLastPlayerName =   0x00000040, /* Use LastUsedPlayerName as preset player name */
     }
 
     [Flags]

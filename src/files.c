@@ -1212,20 +1212,9 @@ create_gamestate_levelfile(VOID_ARGS)
 
 int
 load_saved_game(load_type)
-int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after saving quietly
+int load_type; // 0 = at start normally, 1 = load after saving, corresponds to exit_hack_code at start
 {
     reseting = TRUE;
-    if (load_type > 0)
-    {
-        /* Reset game state */
-        dmonsfree();
-        reset_gamestate_ex();
-        reset_item_global_variables();
-
-        /* Functions that would have been run at start */
-        create_gamestate_levelfile();
-    }
-
     int fd = open_and_validate_saved_game();
     if (fd >= 0)
     {
@@ -1258,21 +1247,13 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load after s
 
         reseting = FALSE;
         
-        if (load_type > 0)
+        if (load_type == 1)
             flush_screen(1);
 
         if (load_type == 0)
         {
             encounter_init();
             welcome(FALSE);
-        }
-        else if (load_type == 1)
-        {
-            pline("Save successful. Continuing the game.");
-        }
-
-        if (load_type == 0)
-        {
             check_special_room(FALSE);
             mode_message();
         }

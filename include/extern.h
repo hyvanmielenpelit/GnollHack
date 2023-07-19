@@ -26,7 +26,7 @@ E char *FDECL(fmt_ptr, (const genericptr));
 
 /* ### allmain.c ### */
 
-E void FDECL(moveloop, (BOOLEAN_P));
+E void FDECL(moveloop, (UCHAR_P));
 E void NDECL(stop_occupation);
 E void NDECL(display_gamewindows);
 E void NDECL(newgame);

@@ -42,7 +42,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine,
     TCHAR *p;
     TCHAR wbuf[NHSTR_BUFSIZE];
     char buf[NHSTR_BUFSIZE];
-    boolean resuming;
+    uchar resuming;
 
     sys_early_init();
 
@@ -128,7 +128,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine,
     GetModuleFileName(NULL, wbuf, BUFSZ);
     argv[0] = _strdup(NH_W2A(wbuf, buf, BUFSZ));
 
-    resuming = pcmain(argc, argv);
+    resuming = (uchar)pcmain(argc, argv);
 
     moveloop(resuming);
 

@@ -57,7 +57,7 @@ gnollhack_exit(code)
 int code;
 {
     if (exit_hack)
-        exit_hack(code);
+        exit_hack(exit_hack_code);
 
 #if defined(EXIT_THREAD_ON_EXIT)
     char retbuf[BUFSZ];
@@ -75,7 +75,8 @@ int argc;
 char** argv;
 {
     FILE* fp;
-    boolean resuming = FALSE; /* assume new game */
+    uchar resuming = FALSE; /* assume new game */
+    int exit_hack_code_at_start = exit_hack_code; /* if 1, then the game is restarting after saving; sys_early_init will set to zero */
 
     sys_early_init();
     lib_init_platform();
@@ -144,7 +145,7 @@ char** argv;
 
     issue_simple_gui_command(GUI_CMD_GAME_START);
 
-    if (!load_saved_game(0))
+    if (!load_saved_game(exit_hack_code_at_start))
     {
         player_selection();
         resuming = FALSE;
@@ -157,7 +158,7 @@ char** argv;
     }
     else
     {
-        resuming = TRUE;
+        resuming = exit_hack_code_at_start == 1 ? 2 : TRUE;
     }
 
     if(wizard)

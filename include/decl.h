@@ -210,6 +210,8 @@ E NEARDATA struct sinfo {
     int wizkit_wishing;
 } program_state;
 
+E int exit_hack_code;
+
 E boolean restoring;
 E boolean saving;
 E boolean reseting;

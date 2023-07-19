@@ -220,6 +220,8 @@ reset_global_variables(VOID_ARGS)
     WIN_INVEN = WIN_ERR;
     WIN_HERE = WIN_ERR;
 
+    exit_hack_code = 0;
+
     saving = FALSE;
     check_pointing = FALSE;
     restoring = FALSE;

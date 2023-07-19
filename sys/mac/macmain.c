@@ -39,7 +39,7 @@ main(void)
 {
     register int fd = -1;
     int argc = 1;
-    boolean resuming = FALSE; /* assume new game */
+    uchar resuming = FALSE; /* assume new game */
 
     sys_early_init();
     windowprocs = mac_procs;

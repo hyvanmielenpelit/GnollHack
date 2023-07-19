@@ -55,6 +55,7 @@ namespace GnollHackX
         YnConfirmation,
         PostGameStatus,
         PostDiagnosticData,
+        RestartGame,
     }
 
     public struct AddContextMenuData

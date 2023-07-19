@@ -918,7 +918,8 @@ namespace GnollHackX.Unknown
                 (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0) |
                 (ulong)(clientGame.ModernMode ? RunGnollHackFlags.ModernMode : 0) |
                 (ulong)(clientGame.CasualMode ? RunGnollHackFlags.CasualMode : 0) |
-                (ulong)(allowbones ? 0 : RunGnollHackFlags.DisableBones);
+                (ulong)(allowbones ? 0 : RunGnollHackFlags.DisableBones) |
+                (ulong)clientGame.StartFlags;
             string lastusedplname = Preferences.Get("LastUsedPlayerName", "");
 
             return RunGnollHack(

@@ -335,22 +335,6 @@ LibSaveAndRestoreSavedGame(void)
 #endif
         issue_simple_gui_command(GUI_CMD_WAIT_FOR_RESUME);
         /* Already in the right state */
-#if 0
-        if (dosave0(TRUE))
-        {
-            issue_simple_gui_command(GUI_CMD_WAIT_FOR_RESUME);
-            if (!load_saved_game(2))
-            {
-                u.uhp = -1; /* universal game's over indicator */
-                /* make sure they see the Saving message */
-                display_nhwindow(WIN_MESSAGE, TRUE);
-                exit_nhwindows("Cannot continue the game...");
-                nh_terminate(EXIT_SUCCESS);
-            }
-        }
-        else
-            (void)doredraw();
-#endif
     }
 }
 
@@ -604,6 +588,16 @@ int RunGnollHack(
     {
         char plbuf[PL_NSIZ];
         strncpy(plbuf, preset_player_name, PL_NSIZ - 1);
+        plbuf[PL_NSIZ - 1] = '\0';
+
+        if (*cmdbuf)
+            Strcat(cmdbuf, " ");
+        Sprintf(eos(cmdbuf), "-u %s", plbuf);
+    }
+    else if ((runflags & GHRUNFLAGS_FORCE_LAST_PLAYER_NAME) && recovery_name && strcmp(recovery_name, ""))
+    {
+        char plbuf[PL_NSIZ];
+        strncpy(plbuf, recovery_name, PL_NSIZ - 1);
         plbuf[PL_NSIZ - 1] = '\0';
 
         if (*cmdbuf)

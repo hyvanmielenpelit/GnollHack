@@ -38,7 +38,7 @@ char *argv[];
 #ifdef CHDIR
     register char *dir;
 #endif
-    boolean resuming = FALSE; /* assume new game */
+    uchar resuming = FALSE; /* assume new game */
 
 #ifdef SECURE /* this should be the very first code executed */
     privoff();

@@ -670,11 +670,7 @@ namespace GnollHackX.Pages.Game
 
             Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
             {
-                if (ClientGame != null)
-                    _cursorIsOn = !_cursorIsOn;
-                else
-                    _cursorIsOn = false;
-
+                _cursorIsOn = !_cursorIsOn;
                 if (ShowFPS)
                 {
                     if (!_stopWatch.IsRunning)
@@ -727,6 +723,24 @@ namespace GnollHackX.Pages.Game
             });
 
             await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
+        }
+
+        public async void RestartGame()
+        {
+            _clientGame = null;
+            App.CurrentClientGame = null;
+            _gnhthread = null;
+
+            /* Collect garbage at this point */
+            await Task.Delay(50);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            await Task.Delay(50);
+
+            Thread t = new Thread(new ThreadStart(GNHThreadProcForRestart));
+            _gnhthread = t;
+            _gnhthread.Start();
         }
 
         public void UpdateMainCanvas()
@@ -1676,6 +1690,14 @@ namespace GnollHackX.Pages.Game
             _gnollHackService.StartGnollHack(_clientGame);
         }
 
+        protected void GNHThreadProcForRestart()
+        {
+            _clientGame = new ClientGame(this);
+            _clientGame.StartFlags = RunGnollHackFlags.ForceLastPlayerName;
+            App.CurrentClientGame = _clientGame;
+            _gnollHackService.StartGnollHack(_clientGame);
+        }
+
         private void pollRequestQueue()
         {
             if (_clientGame != null)
@@ -1731,6 +1753,9 @@ namespace GnollHackX.Pages.Game
                                     TextCanvas.AbortAnimation("GeneralAnimationCounter");
                                 _mapUpdateStopWatch.Stop();
                                 ReturnToMainMenu();
+                                break;
+                            case GHRequestType.RestartGame:
+                                RestartGame();
                                 break;
                             case GHRequestType.ShowMenuPage:
                                 ShowMenuCanvas(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow);

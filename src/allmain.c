@@ -31,7 +31,7 @@ static long prev_dgl_extrainfo = 0;
 
 void
 moveloop(resuming)
-boolean resuming;
+uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing after saving (restart) */
 {
 #if defined(MICRO) || defined(WIN32)
     char ch;
@@ -58,23 +58,26 @@ boolean resuming;
     if (resuming && iflags.deferred_X)
         (void) enter_explore_mode();
 
-    /* side-effects from the real world */
-    flags.moonphase = phase_of_the_moon();
-    if (flags.moonphase == FULL_MOON)
+    if (resuming < 2)
     {
-        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are lucky!  Full moon tonight.");
-        change_luck(1, FALSE);
-    }
-    else if (flags.moonphase == NEW_MOON) 
-    {
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "Be careful!  New moon tonight.");
-    }
+        /* side-effects from the real world */
+        flags.moonphase = phase_of_the_moon();
+        if (flags.moonphase == FULL_MOON)
+        {
+            You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are lucky!  Full moon tonight.");
+            change_luck(1, FALSE);
+        }
+        else if (flags.moonphase == NEW_MOON)
+        {
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Be careful!  New moon tonight.");
+        }
 
-    flags.friday13 = friday_13th();
-    if (flags.friday13) 
-    {
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "Watch out!  Bad things can happen on Friday the 13th.");
-        change_luck(-1, FALSE);
+        flags.friday13 = friday_13th();
+        if (flags.friday13)
+        {
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Watch out!  Bad things can happen on Friday the 13th.");
+            change_luck(-1, FALSE);
+        }
     }
 
     if (!resuming)
@@ -86,10 +89,11 @@ boolean resuming;
         (void) pickup(1);      /* autopickup at initial location */
         flags.verbose = oldverbose;
     }
+
     context.botlx = TRUE; /* for STATUS_HILITES */
     update_inventory(); /* for perm_invent */
 
-    if (resuming) 
+    if (resuming == 1) 
     { /* restoring old game */
         read_engr_at(u.ux, u.uy); /* subset of pickup() */
     }

@@ -77,10 +77,10 @@ mingw_main(argc, argv)
 int argc;
 char *argv[];
 {
-    boolean resuming;
+    uchar resuming;
 
     sys_early_init();
-    resuming = pcmain(argc, argv);
+    resuming = (uchar)pcmain(argc, argv);
     moveloop(resuming);
     gnollhack_exit(EXIT_SUCCESS);
     /*NOTREACHED*/

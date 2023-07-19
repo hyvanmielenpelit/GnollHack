@@ -88,7 +88,7 @@ mingw_main(argc, argv)
 int argc;
 char *argv[];
 {
-    boolean resuming = FALSE; /* assume new game */
+    uchar resuming = FALSE; /* assume new game */
     int fd;
     char *windowtype = NULL;
     char *envp = NULL;
