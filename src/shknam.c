@@ -601,6 +601,8 @@ boolean deserted;
                 if (rn2(10) >= depth(&u.uz)) {
                     mtmp->m_ap_type = M_AP_OBJECT;
                     mtmp->mappearance = STRANGE_OBJECT;
+                    if (has_mobj(mtmp))
+                        free_mobj(mtmp);
                 }
                 (void)mongets(mtmp, WAN_IDENTIFY);
             }
@@ -617,6 +619,8 @@ boolean deserted;
                 if (rn2(10) >= depth(&u.uz)) {
                     mtmp->m_ap_type = M_AP_OBJECT;
                     mtmp->mappearance = STRANGE_OBJECT;
+                    if (has_mobj(mtmp))
+                        free_mobj(mtmp);
                 }
                 (void)mongets(mtmp, WAN_TOWN_PORTAL);
             }
@@ -648,6 +652,8 @@ boolean deserted;
         if (rn2(10) >= depth(&u.uz)) {
             mtmp->m_ap_type = M_AP_OBJECT;
             mtmp->mappearance = STRANGE_OBJECT;
+            if (has_mobj(mtmp))
+                free_mobj(mtmp);
         }
     } else if(!deserted || !rn2(2)) {
         atype = get_shop_item((int) (shp - shtypes));

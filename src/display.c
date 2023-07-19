@@ -804,13 +804,20 @@ boolean dropping_piercer;
         case M_AP_OBJECT: {
             /* Make a fake object to send to map_object(). */
             struct obj obj;
-
-            obj = zeroobj;
+            if (has_mobj(mon))
+            {
+                obj = *MOBJ(mon);
+            }
+            else
+            {
+                obj = zeroobj;
+                obj.otyp = mon->mappearance;
+                obj.quan = 1L;
+                /* might be mimicing a corpse or statue */
+                obj.corpsenm = has_mcorpsenm(mon) ? MCORPSENM(mon) : PM_TENGU;
+            }
             obj.ox = x;
             obj.oy = y;
-            obj.otyp = mon->mappearance;
-            /* might be mimicing a corpse or statue */
-            obj.corpsenm = has_mcorpsenm(mon) ? MCORPSENM(mon) : PM_TENGU;
             int glyph = obj_to_glyph(&obj, newsym_rn2);
             int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, &obj, mon, 0UL, 0UL, MAT_NONE, 0));
             obj.glyph = glyph;

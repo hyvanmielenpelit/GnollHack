@@ -2459,6 +2459,8 @@ struct monst *mtmp;
         /* was eating a mimic and now appearance needs resetting */
         mtmp->m_ap_type = 0;
         mtmp->mappearance = 0;
+        if (has_mobj(mtmp))
+            free_mobj(mtmp);
         newsym(mtmp->mx, mtmp->my);
     }
 }
@@ -2499,6 +2501,8 @@ struct monst *mtmp;
 
     mtmp->m_ap_type = qm[idx].m_ap_type;
     mtmp->mappearance = qm[idx].mappearance;
+    if (has_mobj(mtmp))
+        free_mobj(mtmp);
 
     if (spotted || cansee(mtmp->mx, mtmp->my) || canspotmon(mtmp)) {
         /* this isn't quite right; if sensing a monster without being

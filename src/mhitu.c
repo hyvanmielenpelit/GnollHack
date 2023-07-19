@@ -649,6 +649,8 @@ register struct monst *mtmp;
         }
         youmonst.m_ap_type = M_AP_NOTHING;
         youmonst.mappearance = 0;
+        if (has_mobj(&youmonst))
+            free_mobj(&youmonst);
         newsym(u.ux, u.uy);
         return 0;
     }

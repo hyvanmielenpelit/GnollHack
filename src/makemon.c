@@ -27,6 +27,8 @@ STATIC_DCL void FDECL(m_init_background, (struct monst*));
 STATIC_DCL struct obj* FDECL(m_inityour, (struct monst*, struct obj*)); 
 STATIC_DCL boolean FDECL(makemon_rnd_goodpos, (struct monst *,
                                                unsigned long, coord *));
+STATIC_DCL void FDECL(set_mimic_new_mobj, (struct monst*, int));
+STATIC_DCL void FDECL(set_mimic_existing_mobj, (struct monst*, struct obj*));
 
 #if 0
 #define m_initsgrp(mtmp, x, y, mmf) m_initgrp(mtmp, x, y, 3, mmf)
@@ -4465,6 +4467,74 @@ STATIC_VAR const NEARDATA char syms[] = {
     S_MIMIC_DEF,  S_MIMIC_DEF,
 };
 
+STATIC_OVL void
+set_mimic_new_mobj(mtmp, otyp)
+struct monst* mtmp;
+int otyp;
+{
+    if (!mtmp)
+        return;
+
+    mtmp->m_ap_type = M_AP_OBJECT;
+    mtmp->mappearance = otyp;
+    struct obj* otmp = mksobj(otyp, TRUE, FALSE, 0);
+    if (otmp)
+    {
+        if (otyp == GOLD_PIECE)
+            set_random_gold_amount(otmp);
+        if (has_mobj(mtmp))
+            free_mobj(mtmp);
+        if (!has_mobj(mtmp))
+            newmobj(mtmp);
+        if (has_mobj(mtmp))
+        {
+            *MOBJ(mtmp) = *otmp;
+            MOBJ(mtmp)->oextra = 0;
+            MOBJ(mtmp)->nobj = 0;
+            MOBJ(mtmp)->nexthere = 0;
+            MOBJ(mtmp)->cobj = 0;
+            MOBJ(mtmp)->o_id = context.ident++;
+            if (!MOBJ(mtmp)->o_id) /* ident overflowed */
+                MOBJ(mtmp)->o_id = context.ident++;
+            if (otmp->oextra)
+                copy_oextra(MOBJ(mtmp), otmp);
+        }
+        /* make sure container contents are free'ed */
+        obfree(otmp, (struct obj*)0);
+    }
+}
+
+STATIC_OVL void
+set_mimic_existing_mobj(mtmp, otmp)
+struct monst* mtmp;
+struct obj* otmp;
+{
+    if (!mtmp || !otmp)
+        return;
+
+    mtmp->m_ap_type = M_AP_OBJECT;
+    mtmp->mappearance = otmp->otyp;
+    if (has_mobj(mtmp))
+        free_mobj(mtmp);
+    if (!has_mobj(mtmp))
+        newmobj(mtmp);
+    if (has_mobj(mtmp))
+    {
+        *MOBJ(mtmp) = *otmp;
+        MOBJ(mtmp)->oextra = 0;
+        MOBJ(mtmp)->nobj = 0;
+        MOBJ(mtmp)->nexthere = 0;
+        MOBJ(mtmp)->cobj = 0;
+        MOBJ(mtmp)->o_id = context.ident++;
+        if (!MOBJ(mtmp)->o_id) /* ident overflowed */
+            MOBJ(mtmp)->o_id = context.ident++;
+        if (otmp->oextra)
+            copy_oextra(MOBJ(mtmp), otmp);
+        if (MOBJ(mtmp)->otyp == GOLD_PIECE)
+            set_random_gold_amount(MOBJ(mtmp));
+    }
+}
+
 void
 set_mimic_sym(mtmp)
 register struct monst *mtmp;
@@ -4495,6 +4565,7 @@ register struct monst *mtmp;
     if (OBJ_AT(mx, my)) {
         ap_type = M_AP_OBJECT;
         appear = level.objects[mx][my]->otyp;
+        set_mimic_existing_mobj(mtmp, level.objects[mx][my]);
     } else if (IS_DOOR(typ) || IS_WALL(typ) || typ == SDOOR || typ == SCORR) {
         ap_type = M_AP_FURNITURE;
         /*
@@ -4523,6 +4594,7 @@ register struct monst *mtmp;
     } else if (rt == ZOO || rt == VAULT) {
         ap_type = M_AP_OBJECT;
         appear = GOLD_PIECE;
+        set_mimic_new_mobj(mtmp, appear);
     } else if (rt == DELPHI) {
         if (rn2(2)) {
             ap_type = M_AP_OBJECT;
@@ -4547,6 +4619,7 @@ register struct monst *mtmp;
         if (s_sym < 0) {
             ap_type = M_AP_OBJECT;
             appear = -s_sym;
+            set_mimic_new_mobj(mtmp, appear);
         } else {
             if (s_sym == RANDOM_CLASS)
             {
@@ -4572,6 +4645,24 @@ register struct monst *mtmp;
                 Sprintf(debug_buf_2, "set_mimic_sym, s_sym=%d,roll=%d", s_sym, roll);
                 otmp = mkobj((char) s_sym, FALSE, FALSE);
                 appear = otmp->otyp;
+                set_mimic_existing_mobj(mtmp, otmp);
+                if (has_mobj(mtmp))
+                    free_mobj(mtmp);
+                if(!has_mobj(mtmp))
+                    newmobj(mtmp);
+                if (has_mobj(mtmp))
+                {
+                    *MOBJ(mtmp) = *otmp;
+                    MOBJ(mtmp)->oextra = 0;
+                    MOBJ(mtmp)->nobj = 0;
+                    MOBJ(mtmp)->nexthere = 0;
+                    MOBJ(mtmp)->cobj = 0;
+                    MOBJ(mtmp)->o_id = context.ident++;
+                    if (!MOBJ(mtmp)->o_id) /* ident overflowed */
+                        MOBJ(mtmp)->o_id = context.ident++;
+                    if (otmp->oextra)
+                        copy_oextra(MOBJ(mtmp), otmp);
+                }
                 /* make sure container contents are free'ed */
                 obfree(otmp, (struct obj *) 0);
             }
@@ -4582,18 +4673,25 @@ register struct monst *mtmp;
     /* when appearing as an object based on a monster type, pick a shape */
     if (ap_type == M_AP_OBJECT
         && (appear == STATUE || appear == FIGURINE
-            || appear == CORPSE || appear == EGG || appear == TIN)) {
-        int mndx = rndmonnum(),
-            nocorpse_ndx = (mvitals[mndx].mvflags & MV_NOCORPSE) != 0;
+            || appear == CORPSE || appear == EGG || appear == TIN)) 
+    {
+        int mndx;
+        if (has_mobj(mtmp) && MOBJ(mtmp)->otyp == appear)
+            mndx = MOBJ(mtmp)->corpsenm;
+        else
+        {
+            mndx = rndmonnum();
+            int nocorpse_ndx = (mvitals[mndx].mvflags & MV_NOCORPSE) != 0;
 
-        if (appear == CORPSE && nocorpse_ndx)
-            mndx = rn1(PM_WIZARD - PM_ARCHAEOLOGIST + 1, PM_ARCHAEOLOGIST);
-        else if ((appear == EGG && !can_be_hatched(mndx))
-                 || (appear == TIN && nocorpse_ndx))
-            mndx = NON_PM; /* revert to generic egg or empty tin */
-
+            if (appear == CORPSE && nocorpse_ndx)
+                mndx = rn1(PM_WIZARD - PM_ARCHAEOLOGIST + 1, PM_ARCHAEOLOGIST);
+            else if ((appear == EGG && !can_be_hatched(mndx))
+                || (appear == TIN && nocorpse_ndx))
+                mndx = NON_PM; /* revert to generic egg or empty tin */
+        }
         newmcorpsenm(mtmp);
-        MCORPSENM(mtmp) = mndx;
+        if(has_mcorpsenm(mtmp))
+            MCORPSENM(mtmp) = mndx;
     }
 
     if (does_block(mx, my, &levl[mx][my]))

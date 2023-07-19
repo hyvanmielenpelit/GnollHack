@@ -783,13 +783,19 @@ int class;            /* an object class, 0 for all */
         if (is_cursed && M_AP_TYPE(mtmp) == M_AP_OBJECT
             && (!class || class == objects[mtmp->mappearance].oc_class)) {
             struct obj temp;
-
-            temp = zeroobj;
-            temp.otyp = mtmp->mappearance; /* needed for obj_to_glyph() */
-            temp.quan = 1L;
+            if (has_mobj(mtmp))
+            {
+                temp = *MOBJ(mtmp);
+            }
+            else
+            {
+                temp = zeroobj;
+                temp.otyp = mtmp->mappearance; /* needed for obj_to_glyph() */
+                temp.corpsenm = PM_TENGU; /* if mimicing a corpse */
+                temp.quan = 1L;
+            }
             temp.ox = mtmp->mx;
             temp.oy = mtmp->my;
-            temp.corpsenm = PM_TENGU; /* if mimicing a corpse */
             map_object_for_detection(&temp, 1);
         } else if (findgold(mtmp->minvent)
                    && (!class || class == COIN_CLASS)) {

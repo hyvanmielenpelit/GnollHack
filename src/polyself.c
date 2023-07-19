@@ -2149,6 +2149,8 @@ dohide()
         /* should bring up a dialog "what would you like to imitate?" */
         youmonst.m_ap_type = M_AP_OBJECT;
         youmonst.mappearance = STRANGE_OBJECT;
+        if (has_mobj(&youmonst))
+            free_mobj(&youmonst);
     } else
         u.uundetected = 1;
     newsym(u.ux, u.uy);

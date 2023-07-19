@@ -229,6 +229,8 @@ eatmupdate()
         nomovemsg = strcpy(eatmbuf, altmsg);
         /* update current image */
         youmonst.mappearance = altapp;
+        if (has_mobj(&youmonst))
+            free_mobj(&youmonst);
         newsym(u.ux, u.uy);
     }
 }
@@ -1420,6 +1422,8 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
             /* ??? what if this was set before? */
             youmonst.m_ap_type = M_AP_OBJECT;
             youmonst.mappearance = Hallucination ? ORANGE : GOLD_PIECE;
+            if (has_mobj(&youmonst))
+                free_mobj(&youmonst);
             newsym(u.ux, u.uy);
             curs_on_u();
             /* make gold symbol show up now */

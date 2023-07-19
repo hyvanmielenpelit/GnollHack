@@ -3391,6 +3391,27 @@ int x, y;
     return mksobj_at(treefruits[rn2(SIZE(treefruits))], x, y, TRUE, FALSE);
 }
 
+long
+get_random_gold_amount(VOID_ARGS)
+{
+    long mul = rnd(30 / max(12 - depth(&u.uz), 2));
+    long amount = (long)(1 + rnd(level_difficulty() + 2) * mul);
+    return amount;
+}
+
+void
+set_random_gold_amount(otmp)
+struct obj* otmp;
+{
+    if (!otmp || otmp->otyp != GOLD_PIECE)
+        return;
+
+    long amount = get_random_gold_amount();
+    otmp->quan = amount;
+    otmp->owt = weight(otmp);
+}
+
+
 struct obj *
 mkgold(amount, x, y)
 long amount;
@@ -3399,8 +3420,7 @@ int x, y;
     register struct obj *gold = g_at(x, y);
 
     if (amount <= 0L) {
-        long mul = rnd(30 / max(12-depth(&u.uz), 2));
-        amount = (long) (1 + rnd(level_difficulty() + 2) * mul);
+        amount = get_random_gold_amount();
     }
     if (gold) {
         gold->quan += amount;

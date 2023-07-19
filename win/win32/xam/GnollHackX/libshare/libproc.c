@@ -494,8 +494,14 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
                 if (!sensed)
                 {
                     has_obj_mimic = TRUE;
-                    mimic_obj.otyp = mtmp->mappearance;
-                    mimic_obj.corpsenm = has_mcorpsenm(mtmp) ? MCORPSENM(mtmp) : PM_TENGU;
+                    if (has_mobj(mtmp))
+                        mimic_obj = *MOBJ(mtmp);
+                    else
+                    {
+                        mimic_obj.otyp = mtmp->mappearance;
+                        mimic_obj.corpsenm = has_mcorpsenm(mtmp) ? MCORPSENM(mtmp) : PM_TENGU;
+                        mimic_obj.quan = 1L;
+                    }
                     mimic_obj.ox = x;
                     mimic_obj.oy = y;
                     mimic_obj.glyph = obj_to_glyph(&mimic_obj, newsym_rn2);

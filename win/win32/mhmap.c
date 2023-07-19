@@ -1253,9 +1253,17 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 if (!sensed)
                 {
                     has_obj_mimic = TRUE;
-                    mimic_obj.otyp = m_here->mappearance;
-                    mimic_obj.corpsenm = has_mcorpsenm(m_here) ? MCORPSENM(m_here) : PM_TENGU;
+                    if (has_mobj(m_here))
+                        mimic_obj = *MOBJ(m_here);
+                    else
+                    {
+                        mimic_obj.otyp = m_here->mappearance;
+                        mimic_obj.corpsenm = has_mcorpsenm(m_here) ? MCORPSENM(m_here) : PM_TENGU;
+                        mimic_obj.quan = 1L;
+                    }
                     mimic_obj.glyph = obj_to_glyph(&mimic_obj, newsym_rn2);
+                    mimic_obj.gui_glyph = maybe_get_replaced_glyph(mimic_obj.glyph, enl_i, enl_j, data_to_replacement_info(mimic_obj.glyph,
+                        is_obj_drawn_in_front(&mimic_obj) ? LAYER_COVER_OBJECT : LAYER_OBJECT, &mimic_obj, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
                 }
             }
                 

@@ -1918,6 +1918,8 @@ E struct obj* FDECL(mksobj_ex, (int, BOOLEAN_P, BOOLEAN_P, int, struct monst*, U
 E struct obj* FDECL(mksobj_with_flags, (int, BOOLEAN_P, BOOLEAN_P, int, struct monst*, UCHAR_P, long, long, unsigned long));
 E int FDECL(bcsign, (struct obj *));
 E int FDECL(weight, (struct obj *));
+E long NDECL(get_random_gold_amount);
+E void FDECL(set_random_gold_amount, (struct obj*));
 E struct obj *FDECL(mkgold, (long, int, int));
 E struct obj *FDECL(mkcorpstat, (int, struct monst *, struct permonst *, int,
                                  int, unsigned));

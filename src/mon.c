@@ -4694,6 +4694,8 @@ register struct monst *mtmp;
 
     mtmp->m_ap_type = M_AP_NOTHING;
     mtmp->mappearance = 0;
+    if (has_mobj(mtmp))
+        free_mobj(mtmp);
 
     /*
      *  Discovered mimics don't block light.
