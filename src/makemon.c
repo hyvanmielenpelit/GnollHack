@@ -4676,7 +4676,7 @@ register struct monst *mtmp;
             || appear == CORPSE || appear == EGG || appear == TIN)) 
     {
         int mndx;
-        if (has_mobj(mtmp) && MOBJ(mtmp)->otyp == appear)
+        if (has_mobj(mtmp) && MOBJ(mtmp)->otyp == (short)appear)
             mndx = MOBJ(mtmp)->corpsenm;
         else
         {
