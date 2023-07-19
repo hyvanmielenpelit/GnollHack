@@ -1153,10 +1153,38 @@ open_savefile()
 
 /* delete savefile */
 int
-delete_savefile()
+delete_savefile(VOID_ARGS)
 {
     (void) unlink(fqname(SAVEF, SAVEPREFIX, 0));
     return 0; /* for open_and_validate_saved_game() (ex-xxxmain.c) test */
+}
+
+int
+ask_delete_invalid_savefile(filename)
+const char* filename;
+{
+    struct special_view_info info = { 0 };
+    char txtbuf[BUFSZ * 4] = "";
+    info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION;
+    info.title = "Delete Invalid Save File";
+    if(filename)
+        Sprintf(txtbuf, "Save file \"%s\" is invalid. Delete it?", filename);
+    else
+        Strcpy(txtbuf, "The saved game is invalid. Delete it?");
+    info.text = txtbuf;
+    int res = open_special_view(info);
+    if (res == 'y')
+    {
+        if (filename)
+            pline("Deleting an invalid save file \"%s\".", filename);
+        else
+            pline1("Deleting the invalid saved game.");
+        return delete_savefile();
+    }
+    else
+    {
+        return -1;
+    }
 }
 
 /* try to open up a save file and prepare to restore it */
@@ -1180,7 +1208,7 @@ open_and_validate_saved_game()
 
     if (validate(fd, fq_save) != 0) {
         (void) nhclose(fd), fd = -1;
-        (void) delete_savefile();
+        (void) ask_delete_invalid_savefile(fq_save);
     }
     return fd;
 }
@@ -1365,19 +1393,7 @@ struct save_game_stats* stats_ptr;
     //Delete mismatching save files, so they do not hang around for nothing
     if (dodeletefile)
     {
-        //Confirmation
-        struct special_view_info info = { 0 };
-        char txtbuf[BUFSZ * 4] = "";
-        info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION;
-        info.title = "Delete Invalid Save File";
-        Sprintf(txtbuf, "Save file \"%s\" is invalid. Delete it?", filename);
-        info.text = txtbuf;
-        int res = open_special_view(info);
-        if (res == 'y')
-        {
-            pline("Deleting an invalid save file \"%s\".", filename);
-            delete_savefile();
-        }
+        (void)ask_delete_invalid_savefile(filename);
     }
     return result;
 #if 0

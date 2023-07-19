@@ -949,7 +949,7 @@ register int fd;
         display_nhwindow(WIN_MESSAGE, TRUE);
         savelev(-1, 0, FREE_SAVE); /* discard current level */
         (void) nhclose(fd);
-        (void) delete_savefile();
+        (void) ask_delete_invalid_savefile((char*)0);
         restoring = FALSE;
         return 0;
     }
@@ -2126,7 +2126,7 @@ register size_t len;
             pline("Read %d instead of %zu bytes.", rlen, len);
             if (restoring) {
                 (void) nhclose(fd);
-                (void) delete_savefile();
+                (void) ask_delete_invalid_savefile((char*)0);
                 error("Error restoring old game.");
             }
             panic("Error reading level file.");

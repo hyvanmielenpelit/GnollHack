@@ -1193,6 +1193,7 @@ E void NDECL(set_imported_savefile);
 E int NDECL(create_savefile);
 E int NDECL(open_savefile);
 E int NDECL(delete_savefile);
+E int FDECL(ask_delete_invalid_savefile, (const char*));
 E int NDECL(open_and_validate_saved_game);
 E void NDECL(mode_message);
 E void NDECL(create_gamestate_levelfile);
