@@ -1444,7 +1444,7 @@ namespace GnollHackX.Unknown
             uint minorversion = (ver >> 8) & 0xFFU;
             uint patchversion = ver & 0xFFU;
 
-            string str = majorversion + "." + minorversion + "." + patchversion;
+            string str = majorversion.ToString("X") + "." + minorversion.ToString("X") + "." + patchversion.ToString("X");
             return str;
         }
     }
