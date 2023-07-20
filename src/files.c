@@ -1222,18 +1222,16 @@ const char* filename;
         {
             return -3; /* given savefile does not exist, cannot copy it */
         }
-#ifdef WIN32
-        char tobuf[250];
-#else
         char tobuf[4096];
-#endif
         size_t len = strlen(filename);
         if (len > sizeof(tobuf) - 9)
             return -2;
-        strncpy(tobuf, filename, min(sizeof(tobuf), len));
-        tobuf[len] = 0;
-        Strcat(tobuf, BACKUP_EXT TEMP_BACKUP_EXT);
-        if (access(tobuf, F_OK) == 0) 
+        size_t copy_len = min(sizeof(tobuf) - 1, len);
+        strncpy(tobuf, filename, copy_len);
+        tobuf[copy_len] = 0;
+        Strcat(tobuf, BACKUP_EXT);
+        Strcat(tobuf, TEMP_BACKUP_EXT);
+        if (access(tobuf, F_OK) == 0)
         {
             (void)unlink(tobuf);
         }
@@ -1321,7 +1319,8 @@ delete_tmp_backup_savefile(VOID_ARGS)
         const char* fq_save;
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
-        Strcat(bakbuf, BACKUP_EXT TEMP_BACKUP_EXT); //".bup.tmp"
+        Strcat(bakbuf, BACKUP_EXT);
+        Strcat(bakbuf, TEMP_BACKUP_EXT);
         if (access(bakbuf, F_OK) != 0)
             return -2; /* Backup temp file does not exist */
         return unlink(bakbuf);
