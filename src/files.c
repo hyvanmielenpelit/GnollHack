@@ -1174,7 +1174,6 @@ boolean allow_replace_backup;
 {
     struct special_view_info info = { 0 };
     char txtbuf[BUFSZ * 4] = "";
-    boolean has_backup = check_has_backup_savefile();
     int res;
     if (allow_replace_backup && check_has_backup_savefile())
     {
@@ -5750,9 +5749,9 @@ const char* to, *from;
     fd_to = open(to, O_WRONLY | O_BINARY | O_CREAT | O_TRUNC, FCMASK);
 #else
 #ifdef MAC
-    fd = maccreat(to, SAVE_TYPE);
+    fd_to = maccreat(to, SAVE_TYPE);
 #else
-    fd = creat(to, FCMASK);
+    fd_to = creat(to, FCMASK);
 #endif
 #if defined(VMS) && !defined(SECURE)
     /*
