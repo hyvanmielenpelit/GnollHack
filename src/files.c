@@ -1667,6 +1667,38 @@ char* savefilename;
     return TRUE;
 }
 
+int is_backup_savefile_name(savefilename)
+char* savefilename;
+{
+    size_t dlen = strlen(savefilename);
+    char ebuf[BUFSZ] = "";
+    const char* extensions[] = { ".bup", ".bak", ".tmp", ".bup.tmp", ".bak.tmp", 0 };
+    int j;
+    for (j = 0; extensions[j] != 0; j++)
+    {
+        Strcpy(ebuf, extensions[j]);
+        size_t elen = strlen(ebuf);
+        if (dlen <= elen)
+            continue;
+
+        size_t i;
+        boolean docontinue = FALSE;
+        for (i = 0; i < elen; i++)
+            if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
+            {
+                docontinue = TRUE;
+                break;
+            }
+
+        if (docontinue)
+            continue;
+
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
 int filter_running(entry)
 const struct dirent* entry;
 {
@@ -1689,6 +1721,12 @@ int filter_imported_error(entry)
 const struct dirent* entry;
 {
     return is_imported_error_savefile_name((char*)entry->d_name);
+}
+
+int filter_backup(entry)
+const struct dirent* entry;
+{
+    return is_backup_savefile_name((char*)entry->d_name);
 }
 
 char*
@@ -1875,6 +1913,7 @@ get_saved_games()
     int n2 = scandir(".", &namelist2, filter_running, 0);
     if (n1 < 0) n1 = 0;
     if (n2 < 0) n2 = 0;
+
     int i, uid;
     char name[64]; /* more than PL_NSIZ */
     if (n1 > 0 || n2 > 0) {
@@ -1892,6 +1931,9 @@ get_saved_games()
                 {
                     boolean isimportedfile = !!filter_imported(namelist[i]);
                     boolean iserrorfile = filter_error(namelist[i]) || filter_imported_error(namelist[i]);
+                    boolean isbackupfile = !!filter_backup(namelist[i]);
+                    if (isbackupfile)
+                        continue;
                     result[j++] = newsavegamedata(r, filename, gamestats, FALSE, iserrorfile, isimportedfile);
                 }
             }
