@@ -5753,16 +5753,6 @@ const char* to, *from;
 #else
     fd_to = creat(to, FCMASK);
 #endif
-#if defined(VMS) && !defined(SECURE)
-    /*
-       Make sure the save file is owned by the current process.  That's
-       the default for non-privileged users, but for priv'd users the
-       file will be owned by the directory's owner instead of the user.
-    */
-#undef getuid
-    (void) chown(fq_save, getuid(), getgid());
-#define getuid() vms_getuid()
-#endif /* VMS && !SECURE */
 #endif /* MICRO */
 
     if (fd_to < 0)
