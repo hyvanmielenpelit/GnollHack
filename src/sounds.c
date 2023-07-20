@@ -5351,7 +5351,7 @@ struct monst* mtmp;
                         }
 
                         boolean abort_pickup = FALSE;
-                        if (*u.ushops || otmp->unpaid)
+                        if (*u.ushops && otmp->unpaid)
                         {
                             check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE, FALSE);
                             if (costly_spot(mtmp->mx, mtmp->my))
