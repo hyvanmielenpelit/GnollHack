@@ -99,7 +99,7 @@ char *path;
  */
 int
 findfirst(path)
-char *path;
+const char *path;
 {
     if (ffhandle) {
         FindClose(ffhandle);
@@ -123,7 +123,7 @@ foundfile_buffer()
 
 long
 filesize(file)
-char *file;
+const char *file;
 {
     if (findfirst(file)) {
         return ((long) ffd.nFileSizeLow);

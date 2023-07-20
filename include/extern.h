@@ -2219,9 +2219,9 @@ E int FDECL(findfirst_file, (char *));
 E int NDECL(findnext_file);
 E long FDECL(filesize_nh, (char *));
 #else
-E int FDECL(findfirst, (char *));
+E int FDECL(findfirst, (const char *));
 E int NDECL(findnext);
-E long FDECL(filesize, (char *));
+E long FDECL(filesize, (const char *));
 #endif /* MSDOS */
 E char *NDECL(foundfile_buffer);
 #endif /* __GO32__ */

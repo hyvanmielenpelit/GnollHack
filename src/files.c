@@ -310,9 +310,8 @@ int bufsz;
     return callerbuf;
 }
 
-
 int is_imported_error_savefile_name(savefilename)
-char* savefilename;
+const char* savefilename;
 {
     size_t dlen = strlen(savefilename);
     char ebuf[BUFSZ] = "";
@@ -1233,7 +1232,7 @@ const char* filename;
             return -2;
         strncpy(tobuf, filename, min(sizeof(tobuf), len));
         tobuf[len] = 0;
-        Strcat(tobuf, ".bup.tmp");
+        Strcat(tobuf, BACKUP_EXT TEMP_BACKUP_EXT);
         if (access(tobuf, F_OK) == 0) 
         {
             (void)unlink(tobuf);
@@ -1280,7 +1279,7 @@ boolean dodelete_existing;
         const char* fq_save;
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
-        Strcat(bakbuf, ".bup");
+        Strcat(bakbuf, BACKUP_EXT);
         if (access(bakbuf, F_OK) != 0)
             return -2; /* Backup does not exist */
 
@@ -1305,7 +1304,7 @@ delete_backup_savefile(VOID_ARGS)
         const char* fq_save;
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
-        Strcat(bakbuf, ".bup");
+        Strcat(bakbuf, BACKUP_EXT);
         if (access(bakbuf, F_OK) != 0)
             return -2; /* Backup file does not exist */
         return unlink(bakbuf);
@@ -1322,7 +1321,7 @@ delete_tmp_backup_savefile(VOID_ARGS)
         const char* fq_save;
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
-        Strcat(bakbuf, ".bup.tmp");
+        Strcat(bakbuf, BACKUP_EXT TEMP_BACKUP_EXT); //".bup.tmp"
         if (access(bakbuf, F_OK) != 0)
             return -2; /* Backup temp file does not exist */
         return unlink(bakbuf);
@@ -1338,7 +1337,7 @@ boolean check_has_backup_savefile(VOID_ARGS)
         const char* fq_save;
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
-        Strcat(bakbuf, ".bup");
+        Strcat(bakbuf, BACKUP_EXT);
         return (boolean)(access(bakbuf, F_OK) == 0);
     }
     return FALSE;
@@ -1632,7 +1631,7 @@ struct save_game_stats* stats_ptr;
 
 #if defined(ANDROID) || defined(GNH_MOBILE)
 int is_error_savefile_name(savefilename)
-char* savefilename;
+const char* savefilename;
 {
     size_t dlen = strlen(savefilename);
     char ebuf[BUFSZ] = "";
@@ -1650,7 +1649,7 @@ char* savefilename;
 }
 
 int is_imported_savefile_name(savefilename)
-char* savefilename;
+const char* savefilename;
 {
     size_t dlen = strlen(savefilename);
     char ebuf[BUFSZ] = "";
@@ -1668,11 +1667,11 @@ char* savefilename;
 }
 
 int is_backup_savefile_name(savefilename)
-char* savefilename;
+const char* savefilename;
 {
     size_t dlen = strlen(savefilename);
     char ebuf[BUFSZ] = "";
-    const char* extensions[] = { ".bup", ".bak", ".tmp", ".bup.tmp", ".bak.tmp", 0 };
+    const char* extensions[] = { BACKUP_EXT, ALT_BACKUP_EXT, TEMP_BACKUP_EXT, 0 };
     int j;
     for (j = 0; extensions[j] != 0; j++)
     {
@@ -1708,25 +1707,25 @@ const struct dirent* entry;
 int filter_error(entry)
 const struct dirent* entry;
 {
-    return is_error_savefile_name((char *)entry->d_name);
+    return is_error_savefile_name(entry->d_name);
 }
 
 int filter_imported(entry)
 const struct dirent* entry;
 {
-    return is_imported_savefile_name((char*)entry->d_name);
+    return is_imported_savefile_name(entry->d_name);
 }
 
 int filter_imported_error(entry)
 const struct dirent* entry;
 {
-    return is_imported_error_savefile_name((char*)entry->d_name);
+    return is_imported_error_savefile_name(entry->d_name);
 }
 
 int filter_backup(entry)
 const struct dirent* entry;
 {
-    return is_backup_savefile_name((char*)entry->d_name);
+    return is_backup_savefile_name(entry->d_name);
 }
 
 char*
@@ -1802,18 +1801,18 @@ get_saved_games()
         int n2 = 0;
         int n3 = 0;
         foundfile = foundfile_buffer();
-        if (findfirst((char *) fq_save)) {
+        if (findfirst(fq_save)) {
             do {
                 ++n;
             } while (findnext());
         }
 #ifndef MICRO
-        if (findfirst((char*)fq_save_ebuf)) {
+        if (findfirst(fq_save_ebuf)) {
             do {
                 ++n2;
             } while (findnext());
         }
-        if (findfirst((char*)fq_save_ibuf)) {
+        if (findfirst(fq_save_ibuf)) {
             do {
                 ++n3;
             } while (findnext());
@@ -1824,7 +1823,7 @@ get_saved_games()
             (void) memset((genericptr_t) result, 0, ((size_t)n + (size_t)n2 + (size_t)n3 + 1) * sizeof(struct save_game_data));
             if (n > 0)
             {
-                if (findfirst((char*)fq_save)) {
+                if (findfirst(fq_save)) {
                     j = n = 0;
                     do {
                         char* r;
@@ -1837,7 +1836,7 @@ get_saved_games()
             }
             if (n2 > 0)
             {
-                if (findfirst((char*)fq_save_ebuf)) {
+                if (findfirst(fq_save_ebuf)) {
                     n2 = 0;
                     do {
                         char* r;
@@ -1850,7 +1849,7 @@ get_saved_games()
             }
             if (n3 > 0)
             {
-                if (findfirst((char*)fq_save_ibuf)) {
+                if (findfirst(fq_save_ibuf)) {
                     n3 = 0;
                     do {
                         char* r;
