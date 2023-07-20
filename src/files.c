@@ -117,6 +117,14 @@ char lock[PL_NSIZ + 27]; /* long enough for username+-+name+.99 */
 #endif
 #endif
 
+#ifdef WIN32
+#include <io.h>
+#define F_OK 0
+#define access _access
+#else
+#include <unistd.h>
+#endif
+
 char SAVEF[SAVESIZE]; /* holds relative path of save file from playground */
 #ifdef MICRO
 char SAVEP[SAVESIZE]; /* holds path of directory for save file */
@@ -234,6 +242,7 @@ STATIC_DCL int FDECL(open_levelfile_exclusively, (const char *, int, int));
 
 STATIC_DCL void FDECL(livelog_write_string, (unsigned int, const char*));
 STATIC_DCL void FDECL(livelog_post_to_forum, (unsigned int, const char*));
+STATIC_DCL int FDECL(copy_savefile, (const char*, const char*));
 
 #define INBUF_SIZ 4 * BUFSIZ
 
@@ -1156,29 +1165,44 @@ int
 delete_savefile(VOID_ARGS)
 {
     (void) unlink(fqname(SAVEF, SAVEPREFIX, 0));
-    return 0; /* for open_and_validate_saved_game() (ex-xxxmain.c) test */
+    return 0; /* for open_and_validate_saved_game(TRUE, (boolean*)0) (ex-xxxmain.c) test */
 }
 
 int
-ask_delete_invalid_savefile(filename)
-const char* filename;
+ask_delete_invalid_savefile(allow_replace_backup)
+boolean allow_replace_backup;
 {
     struct special_view_info info = { 0 };
     char txtbuf[BUFSZ * 4] = "";
+    boolean has_backup = check_has_backup_savefile();
+    int res;
+    if (allow_replace_backup && check_has_backup_savefile())
+    {
+        info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N;
+        info.title = "Replace Invalid Save File";
+        Sprintf(txtbuf, "Save file \"%s\" is invalid. Replace it with its backup?", SAVEF);
+        info.text = txtbuf;
+        res = open_special_view(info);
+        if (res == 'y')
+        {
+            pline("Replacing an invalid save file \"%s\".", SAVEF);
+            (void)delete_tmp_backup_savefile();
+            if (!restore_backup_savefile(TRUE))
+                return -2;
+            else
+                pline("Replacing \"%s\" failed.", SAVEF);
+        }
+    }
     info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y;
     info.title = "Delete Invalid Save File";
-    if(filename)
-        Sprintf(txtbuf, "Save file \"%s\" is invalid. Delete it?", filename);
-    else
-        Strcpy(txtbuf, "The saved game is invalid. Delete it?");
+    Sprintf(txtbuf, "Save file \"%s\" is invalid. Delete it?", SAVEF);
     info.text = txtbuf;
-    int res = open_special_view(info);
+    res = open_special_view(info);
     if (res == 'y')
     {
-        if (filename)
-            pline("Deleting an invalid save file \"%s\".", filename);
-        else
-            pline1("Deleting the invalid saved game.");
+        pline("Deleting an invalid save file \"%s\".", SAVEF);
+        (void) delete_tmp_backup_savefile();
+        (void) delete_backup_savefile();
         return delete_savefile();
     }
     else
@@ -1187,9 +1211,158 @@ const char* filename;
     }
 }
 
+STATIC_VAR char fq_tmp_backup[4096];
+
+int
+make_tmp_backup_savefile(filename)
+const char* filename;
+{
+    Strcpy(fq_tmp_backup, "");
+    if (sysopt.make_backup_savefiles && filename && *filename)
+    {
+        if (access(filename, F_OK) != 0) 
+        {
+            return -3; /* given savefile does not exist, cannot copy it */
+        }
+#ifdef WIN32
+        char tobuf[250];
+#else
+        char tobuf[4096];
+#endif
+        size_t len = strlen(filename);
+        if (len > sizeof(tobuf) - 9)
+            return -2;
+        strncpy(tobuf, filename, min(sizeof(tobuf), len));
+        tobuf[len] = 0;
+        Strcat(tobuf, ".bup.tmp");
+        if (access(tobuf, F_OK) == 0) 
+        {
+            (void)unlink(tobuf);
+        }
+        int res = copy_savefile(tobuf, filename);
+        if (!res)
+            Strcpy(fq_tmp_backup, tobuf);
+
+        return res;
+    }
+    return -1;
+}
+
+int
+move_tmp_backup_savefile_to_actual_backup_savefile(VOID_ARGS)
+{
+    if (sysopt.make_backup_savefiles && *fq_tmp_backup)
+    {
+        size_t len = strlen(fq_tmp_backup);
+        if (len < 9)
+        {
+            Strcpy(fq_tmp_backup, "");
+            return -2;
+        }
+        char fq_act_backup[4096];
+        Strcpy(fq_act_backup, fq_tmp_backup);
+        fq_act_backup[len - 4] = 0;
+        if (access(fq_act_backup, F_OK) == 0) 
+        {
+            (void)unlink(fq_act_backup);
+        }
+        return rename(fq_tmp_backup, fq_act_backup);
+    }
+    return -1;
+}
+
+int
+restore_backup_savefile(dodelete_existing)
+boolean dodelete_existing;
+{
+    if (sysopt.make_backup_savefiles && *SAVEF)
+    {
+        char bakbuf[4096];
+        const char* fq_save;
+        fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+        Strcpy(bakbuf, fq_save);
+        Strcat(bakbuf, ".bup");
+        if (access(bakbuf, F_OK) != 0)
+            return -2; /* Backup does not exist */
+
+        if (access(fq_save, F_OK) == 0)
+        {
+            if (dodelete_existing)
+                (void)unlink(fq_save);
+            else
+                return -3; /* Save file exists and dodelete_existing is off, aborting restoring backup */
+        }
+        return rename(bakbuf, fq_save);
+    }
+    return -1; /* Making backups is not on */
+}
+
+int
+delete_backup_savefile(VOID_ARGS)
+{
+    if (sysopt.make_backup_savefiles && *SAVEF)
+    {
+        char bakbuf[4096];
+        const char* fq_save;
+        fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+        Strcpy(bakbuf, fq_save);
+        Strcat(bakbuf, ".bup");
+        if (access(bakbuf, F_OK) != 0)
+            return -2; /* Backup file does not exist */
+        return unlink(bakbuf);
+    }
+    return -1; /* Making backups is not on */
+}
+
+int
+delete_tmp_backup_savefile(VOID_ARGS)
+{
+    if (sysopt.make_backup_savefiles && *SAVEF)
+    {
+        char bakbuf[4096];
+        const char* fq_save;
+        fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+        Strcpy(bakbuf, fq_save);
+        Strcat(bakbuf, ".bup.tmp");
+        if (access(bakbuf, F_OK) != 0)
+            return -2; /* Backup temp file does not exist */
+        return unlink(bakbuf);
+    }
+    return -1; /* Making backups is not on */
+}
+
+boolean check_has_backup_savefile(VOID_ARGS)
+{
+    if (sysopt.make_backup_savefiles && *SAVEF)
+    {
+        char bakbuf[4096];
+        const char* fq_save;
+        fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+        Strcpy(bakbuf, fq_save);
+        Strcat(bakbuf, ".bup");
+        return (boolean)(access(bakbuf, F_OK) == 0);
+    }
+    return FALSE;
+}
+
+int
+delete_savefile_if_exists(VOID_ARGS)
+{
+    if (*SAVEF)
+    {
+        const char* fq_save;
+        fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+        if (access(fq_save, F_OK) == 0)
+            return delete_savefile();
+        return -2; /* fq_save does not exist */
+    }
+    return -1; /* SAVEF is empty */
+}
 /* try to open up a save file and prepare to restore it */
 int
-open_and_validate_saved_game()
+open_and_validate_saved_game(allow_replace_backup, is_backup_ptr)
+boolean allow_replace_backup;
+boolean* is_backup_ptr;
 {
     const char *fq_save;
     int fd;
@@ -1201,14 +1374,25 @@ open_and_validate_saved_game()
         return -1;
 #endif /* MFLOPPY */
     fq_save = fqname(SAVEF, SAVEPREFIX, 0);
-
+    (void) make_tmp_backup_savefile(fq_save);
     nh_uncompress(fq_save);
     if ((fd = open_savefile()) < 0)
         return fd;
 
-    if (validate(fd, fq_save) != 0) {
+    if ((validate(fd, fq_save)) != 0) {
         (void) nhclose(fd), fd = -1;
-        (void) ask_delete_invalid_savefile(fq_save);
+        (void) delete_tmp_backup_savefile();
+        if (ask_delete_invalid_savefile(allow_replace_backup) == -2)
+        {
+            if (is_backup_ptr)
+                *is_backup_ptr = TRUE;
+            fd = open_and_validate_saved_game(FALSE, (boolean*)0);
+        }
+    }
+    else
+    {
+        if (is_backup_ptr)
+            *is_backup_ptr = FALSE;
     }
     return fd;
 }
@@ -1243,7 +1427,8 @@ load_saved_game(load_type)
 int load_type; // 0 = at start normally, 1 = load after saving, corresponds to exit_hack_code at start
 {
     reseting = TRUE;
-    int fd = open_and_validate_saved_game();
+    boolean is_backup = FALSE;
+    int fd = open_and_validate_saved_game(TRUE, &is_backup);
     if (fd >= 0)
     {
         /* Since wizard is actually flags.debug, restoring might
@@ -1265,7 +1450,25 @@ int load_type; // 0 = at start normally, 1 = load after saving, corresponds to e
             mark_synch(); /* flush output */
         }
         int loadres = dorecover_saved_game(fd);
-        if (!loadres) //This deletes the save file in normal modes
+        if (!loadres && !is_backup) //This deletes the save file in normal modes
+        {
+            if (!restore_backup_savefile(TRUE))
+            {
+                pline("Restoring save file failed.  Replaced save file with back-up save file.");
+                mark_synch(); /* flush output */
+                fd = open_and_validate_saved_game(FALSE, (boolean*)0);
+                if (fd >= 0)
+                {
+                    if (load_type == 0)
+                    {
+                        pline("Restoring back-up save file...");
+                        mark_synch(); /* flush output */
+                    }
+                    loadres = dorecover_saved_game(fd);
+                }
+            }
+        }
+        if (!loadres)
         {
             reseting = FALSE;
             return 0;
@@ -1393,7 +1596,8 @@ struct save_game_stats* stats_ptr;
     //Delete mismatching save files, so they do not hang around for nothing
     if (dodeletefile)
     {
-        (void)ask_delete_invalid_savefile(filename);
+        (void)delete_tmp_backup_savefile();
+        (void)ask_delete_invalid_savefile(TRUE);
     }
     return result;
 #if 0
@@ -3096,6 +3300,12 @@ char *origbuf;
         n = atoi(bufp);
         sysopt.select_pet_details = n;
     }
+    else if (src == SET_IN_SYS
+        && match_varname(buf, "MAKE_BACKUP_SAVEFILES", 21))
+    {
+            n = atoi(bufp);
+            sysopt.make_backup_savefiles = n;
+    }
     else if (match_varname(buf, "SEDUCE", 6))
     {
         n = !!atoi(bufp); /* XXX this could be tighter */
@@ -4601,7 +4811,7 @@ recover_savefile()
 #ifdef ANDROID
     /* if the new savefile isn't compressed
      * it will be overwritten when the old
-     * savefile is restored in open_and_validate_saved_game()
+     * savefile is restored in open_and_validate_saved_game(TRUE, (boolean*)0)
      */
     nh_compress(fqname(SAVEF, SAVEPREFIX, 0));
 #endif
@@ -5028,6 +5238,7 @@ reset_files(VOID_ARGS)
 #endif
     *config_section_chosen = 0;
     *config_section_current = 0;
+    *fq_tmp_backup = 0;
 }
 
 
@@ -5518,6 +5729,88 @@ delete_whereis()
 }
 #endif /* WHEREIS_FILE */
 
+STATIC_OVL
+int copy_savefile(to, from)
+const char* to, *from;
+{
+    int fd_to, fd_from;
+    char buf[4096];
+    int nread;
+    int saved_errno;
 
+#ifdef MAC
+    fd_from = macopen(from, O_RDONLY | O_BINARY, SAVE_TYPE);
+#else
+    fd_from = open(from, O_RDONLY | O_BINARY, 0);
+#endif
+    if (fd_from < 0)
+        return -1;
+
+#if defined(MICRO) || defined(WIN32)
+    fd_to = open(to, O_WRONLY | O_BINARY | O_CREAT | O_TRUNC, FCMASK);
+#else
+#ifdef MAC
+    fd = maccreat(to, SAVE_TYPE);
+#else
+    fd = creat(to, FCMASK);
+#endif
+#if defined(VMS) && !defined(SECURE)
+    /*
+       Make sure the save file is owned by the current process.  That's
+       the default for non-privileged users, but for priv'd users the
+       file will be owned by the directory's owner instead of the user.
+    */
+#undef getuid
+    (void) chown(fq_save, getuid(), getgid());
+#define getuid() vms_getuid()
+#endif /* VMS && !SECURE */
+#endif /* MICRO */
+
+    if (fd_to < 0)
+        goto out_error;
+
+    while (nread = (int)read(fd_from, buf, (readLenType)(sizeof buf)), nread > 0)
+    {
+        char* out_ptr = buf;
+        int nwritten;
+
+        do {
+            nwritten = (int)write(fd_to, out_ptr, (unsigned)nread);
+
+            if (nwritten >= 0)
+            {
+                nread -= nwritten;
+                out_ptr += nwritten;
+            }
+            else if (errno != EINTR)
+            {
+                goto out_error;
+            }
+        } while (nread > 0);
+    }
+
+    if (nread == 0)
+    {
+        if (close(fd_to) < 0)
+        {
+            fd_to = -1;
+            goto out_error;
+        }
+        (void)close(fd_from);
+
+        /* Success! */
+        return 0;
+    }
+
+out_error:
+    saved_errno = errno;
+
+    (void)close(fd_from);
+    if (fd_to >= 0)
+        (void)close(fd_to);
+
+    errno = saved_errno;
+    return -1;
+}
 
 /*files.c*/

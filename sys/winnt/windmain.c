@@ -89,6 +89,7 @@ int argc;
 char *argv[];
 {
     uchar resuming = FALSE; /* assume new game */
+    boolean is_backup = FALSE;
     int fd;
     char *windowtype = NULL;
     char *envp = NULL;
@@ -380,7 +381,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
      * We'll return here if new game player_selection() renames the hero.
      */
 attempt_restore:
-    if ((fd = open_and_validate_saved_game()) >= 0)
+    if ((fd = open_and_validate_saved_game(TRUE, &is_backup)) >= 0)
     {
 #ifdef NEWS
         if (iflags.news)
@@ -391,7 +392,7 @@ attempt_restore:
 #endif
         pline("Restoring save file...");
         mark_synch(); /* flush output */
-        if (dorecover(fd))
+        if (dorecover(fd, is_backup))
         {
             resuming = TRUE; /* not starting new game */
             boolean savefilekept = FALSE;
@@ -992,6 +993,7 @@ getlock()
             chdirx(orgdir, 0);
 #endif
             raw_print("Couldn't recover old game.");
+            (void)restore_backup_savefile(FALSE);
         }
 #endif /*SELF_RECOVER*/
     else {

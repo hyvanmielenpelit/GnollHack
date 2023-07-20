@@ -148,6 +148,7 @@ boolean quietly;
     xchar ltmp;
     d_level uz_save;
     char whynot[BUFSZ];
+    boolean did_corrupted = FALSE;
 
 #ifdef WHEREIS_FILE
     delete_whereis();
@@ -445,7 +446,7 @@ register int fd, mode;
 }
 
 /* returns 1 if save file exists, otherwise 0 */
-int
+boolean
 check_existing_save_file()
 {
     const char* fq_save;

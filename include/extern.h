@@ -1193,8 +1193,8 @@ E void NDECL(set_imported_savefile);
 E int NDECL(create_savefile);
 E int NDECL(open_savefile);
 E int NDECL(delete_savefile);
-E int FDECL(ask_delete_invalid_savefile, (const char*));
-E int NDECL(open_and_validate_saved_game);
+E int FDECL(ask_delete_invalid_savefile, (BOOLEAN_P));
+E int FDECL(open_and_validate_saved_game, (BOOLEAN_P, boolean*));
 E void NDECL(mode_message);
 E void NDECL(create_gamestate_levelfile);
 E int FDECL(load_saved_game, (int));
@@ -1223,6 +1223,13 @@ E struct save_game_data FDECL(newsavegamedata, (char*, char*, struct save_game_s
 E struct save_game_data *NDECL(get_saved_games);
 E void FDECL(free_saved_games, (struct save_game_data *));
 E boolean NDECL(check_saved_game_exists);
+E int FDECL(make_tmp_backup_savefile, (const char*));
+E int NDECL(move_tmp_backup_savefile_to_actual_backup_savefile);
+E int FDECL(restore_backup_savefile, (BOOLEAN_P));
+E int NDECL(delete_backup_savefile);
+E int NDECL(delete_tmp_backup_savefile);
+E boolean NDECL(check_has_backup_savefile);
+E int NDECL(delete_savefile_if_exists);
 
 #ifdef SELF_RECOVER
 E boolean NDECL(recover_savefile);
@@ -2932,7 +2939,7 @@ E void FDECL(do_light_regions, (char**));
 
 E void FDECL(inven_inuse, (BOOLEAN_P));
 E int FDECL(dorecover_saved_game, (int));
-E int FDECL(dorecover, (int));
+E int FDECL(dorecover, (int, BOOLEAN_P));
 E void FDECL(restcemetery, (int, struct cemetery **));
 E void FDECL(trickery, (char *));
 E void FDECL(getlev, (int, int, XCHAR_P, BOOLEAN_P));
@@ -3094,7 +3101,7 @@ E void NDECL(rumor_check);
 
 E int NDECL(dosave);
 E int FDECL(dosave0, (BOOLEAN_P));
-E int NDECL(check_existing_save_file);
+E boolean NDECL(check_existing_save_file);
 E boolean FDECL(tricked_fileremoved, (int, char *));
 #ifdef INSURANCE
 E void NDECL(savestateinlock);

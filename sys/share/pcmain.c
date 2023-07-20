@@ -102,6 +102,7 @@ char *argv[];
     char failbuf[BUFSZ];
 #endif
     boolean resuming = FALSE; /* assume new game */
+    boolean is_backup = FALSE;
 
 #ifdef _MSC_VER
 # ifdef DEBUG
@@ -470,7 +471,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
  * We'll return here if new game player_selection() renames the hero.
  */
 attempt_restore:
-    if ((fd = open_and_validate_saved_game()) >= 0) {
+    if ((fd = open_and_validate_saved_game(TRUE, is_backup)) >= 0) {
 #ifndef NO_SIGNAL
         (void) signal(SIGINT, (SIG_RET_TYPE) done1);
 #endif
@@ -483,7 +484,7 @@ attempt_restore:
         pline("Restoring save file...");
         mark_synch(); /* flush output */
 
-        if (dorecover(fd)) {
+        if (dorecover(fd, is_backup)) {
             resuming = TRUE; /* not starting new game */
             if (discover)
                 You("are in non-scoring discovery mode.");

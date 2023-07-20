@@ -77,6 +77,7 @@ getlock()
         (void) eraseoldlocks();
         unlock_file(HLOCK);
         error("Couldn't recover old game.");
+        (void)restore_backup_savefile(FALSE);
         return;
     }
 

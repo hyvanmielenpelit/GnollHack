@@ -1307,6 +1307,7 @@ int how;
             killer.name[0] = '\0';
             killer.hint_idx = 0;
         }
+        (void)restore_backup_savefile(TRUE);
         if (wizard) {
             You1("are a very tricky wizard, it seems.");
             killer.format = KILLED_BY_AN; /* reset to 0 */

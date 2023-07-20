@@ -26,6 +26,7 @@ MAIN(int argc, char **argv)
     int fd;
     char *dir;
     uchar resuming = FALSE; /* assume new game */
+    boolean is_backup = FALSE;
 
     sys_early_init();
 
@@ -72,7 +73,7 @@ MAIN(int argc, char **argv)
      * We'll return here if new game player_selection() renames the hero.
      */
 attempt_restore:
-    if ((fd = open_and_validate_saved_game()) >= 0) {
+    if ((fd = open_and_validate_saved_game(TRUE, &is_backup)) >= 0) {
 #ifdef NEWS
         if (iflags.news) {
             display_file(NEWS, FALSE);
@@ -81,7 +82,7 @@ attempt_restore:
 #endif
         pline("Restoring save file...");
         mark_synch(); /* flush output */
-        if (dorecover(fd)) {
+        if (dorecover(fd, is_backup)) {
             resuming = TRUE; /* not starting new game */
             if (discover)
                 You("are in non-scoring discovery mode.");

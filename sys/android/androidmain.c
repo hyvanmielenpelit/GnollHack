@@ -77,6 +77,7 @@ int GnollHackMain(int argc, char** argv)
 	FILE* fp;
 
     uchar resuming = FALSE; /* assume new game */
+	boolean is_backup = FALSE;
 
     sys_early_init();
 
@@ -160,7 +161,7 @@ int GnollHackMain(int argc, char** argv)
 	 */
 	vision_init();
 
-	if((fd = open_and_validate_saved_game()) >= 0)
+	if((fd = open_and_validate_saved_game(TRUE, &is_backup)) >= 0)
 	{
 #ifdef WIZARD
 		/* Since wizard is actually flags.debug, restoring might
@@ -179,7 +180,7 @@ int GnollHackMain(int argc, char** argv)
 #endif
 		pline("Restoring save file...");
 		mark_synch(); /* flush output */
-		if(!dorecover(fd))
+		if(!dorecover(fd, is_backup))
 			goto not_recovered;
 		resuming = TRUE;
 #ifdef WIZARD

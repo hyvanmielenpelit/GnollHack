@@ -59,6 +59,7 @@ char *argv[];
 #endif
     boolean exact_username;
     uchar resuming = FALSE; /* assume new game */
+    boolean is_backup = FALSE;
     boolean plsel_once = FALSE;
 
     sys_early_init();
@@ -285,7 +286,7 @@ attempt_restore:
         program_state.preserve_locks = 0; /* after getlock() */
     }
 
-    if (*plname && (fd = open_and_validate_saved_game()) >= 0) {
+    if (*plname && (fd = open_and_validate_saved_game(TRUE, &is_backup)) >= 0) {
         const char *fq_save = fqname(SAVEF, SAVEPREFIX, 1);
 
         (void) chmod(fq_save, 0); /* disallow parallel restores */
@@ -300,7 +301,7 @@ attempt_restore:
 #endif
         pline("Restoring save file...");
         mark_synch(); /* flush output */
-        if (dorecover(fd)) {
+        if (dorecover(fd, is_backup)) {
             resuming = TRUE; /* not starting new game */
             wd_message();
             if (discover || wizard) {

@@ -902,7 +902,7 @@ xchar ltmp;
             /* Rewind save file and try again */
             (void) lseek(fd, (off_t) 0, 0);
             (void) validate(fd, (char *) 0); /* skip version etc */
-            return dorecover(fd);            /* 0 or 1 */
+            return dorecover(fd, FALSE);            /* 0 or 1 */
         }
 #endif /* ?AMIGA */
         pline("Be seeing you...");
@@ -916,10 +916,26 @@ xchar ltmp;
 }
 
 int
-dorecover(fd)
+dorecover(fd, is_backup)
 register int fd;
+boolean is_backup;
 {
     int loadres = dorecover_saved_game(fd);
+    if (!loadres && !is_backup)
+    {
+        if (!restore_backup_savefile(TRUE))
+        {
+            pline("Restoring save file failed.  Replaced save file with back-up save file.");
+            mark_synch(); /* flush output */
+            fd = open_and_validate_saved_game(FALSE, (boolean*)0);
+            if (fd >= 0)
+            {
+                pline("Restoring back-up save file...");
+                mark_synch(); /* flush output */
+                loadres = dorecover_saved_game(fd);
+            }
+        }
+    }
     if (loadres)
     {
         /* Success! */
@@ -949,7 +965,7 @@ register int fd;
         display_nhwindow(WIN_MESSAGE, TRUE);
         savelev(-1, 0, FREE_SAVE); /* discard current level */
         (void) nhclose(fd);
-        (void) ask_delete_invalid_savefile((char*)0);
+        (void) delete_savefile();
         restoring = FALSE;
         return 0;
     }
@@ -1077,7 +1093,7 @@ register int fd;
     /* Play ambient sounds for the dungeon; check_special_room will play music */
     play_level_ambient_sounds();
     play_environment_ambient_sounds();
-
+    (void)move_tmp_backup_savefile_to_actual_backup_savefile(); /* Restore was successful, update backup savefile */
     return 1;
 }
 
@@ -1200,7 +1216,9 @@ boolean ghostly;
             Sprintf(trickbuf, "This is level %d, not %d!", dlvl, lev);
         if (wizard)
             pline1(trickbuf);
+        nhclose(fd);
         trickery(trickbuf);
+        return;
     }
     restcemetery(fd, &level.bonesinfo);
     rest_levl(fd,
@@ -2126,7 +2144,8 @@ register size_t len;
             pline("Read %d instead of %zu bytes.", rlen, len);
             if (restoring) {
                 (void) nhclose(fd);
-                (void) ask_delete_invalid_savefile((char*)0);
+                (void) delete_tmp_backup_savefile();
+                (void) ask_delete_invalid_savefile(TRUE);
                 error("Error restoring old game.");
             }
             panic("Error reading level file.");
@@ -2134,8 +2153,5 @@ register size_t len;
         }
     }
 }
-
-
-
 
 /*restore.c*/

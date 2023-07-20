@@ -712,6 +712,7 @@ getbones()
         if (!wizard)
             pline("Discarding unuseable bones; no need to panic...");
         ok = FALSE;
+        (void)nhclose(fd);
     } else {
         ok = TRUE;
         if (wizard) {
@@ -740,6 +741,7 @@ getbones()
                 pline1(errbuf);
                 ok = FALSE; /* won't die of trickery */
             }
+            (void)nhclose(fd);
             trickery(errbuf);
         } else {
             register struct monst *mtmp;
@@ -771,8 +773,8 @@ getbones()
             resetobjs(fobj, TRUE);
             resetobjs(level.buriedobjlist, TRUE);
         }
+        (void)nhclose(fd);
     }
-    (void) nhclose(fd);
     sanitize_engravings();
     u.uroleplay.numbones++;
 

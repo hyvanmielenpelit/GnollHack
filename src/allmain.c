@@ -1454,6 +1454,12 @@ newgame()
 #endif
     program_state.something_worth_saving++; /* useful data now exists */
 
+    /* Delete existing save files and backup save files from previous characters of the same name, if any; this may happen if save file has been corrupted */
+    set_savefile_name(TRUE);
+    (void)delete_savefile_if_exists();
+    (void)delete_tmp_backup_savefile();
+    (void)delete_backup_savefile();
+
     /* Change to the main music */
     update_game_music();
     play_level_ambient_sounds();

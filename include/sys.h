@@ -47,6 +47,7 @@ struct sysopt {
     int min_difficulty;
     int max_difficulty;
     int select_pet_details;
+    int make_backup_savefiles;
 
     /* record file */
     int persmax;
