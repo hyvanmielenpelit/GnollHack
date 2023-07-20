@@ -1416,7 +1416,7 @@ create_gamestate_levelfile(VOID_ARGS)
     else
     {
         hackpid = 1;
-        write(fd, (genericptr_t)&hackpid, sizeof(hackpid));
+        (void)write(fd, (genericptr_t)&hackpid, sizeof(hackpid));
         close(fd);
     }
 }
