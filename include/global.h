@@ -46,9 +46,6 @@
 #define BOGUSMONFILE "bogusmon" /* hallucinatory monsters */
 #define TRIBUTEFILE "tribute"   /* 3.6 tribute to Terry Pratchett */
 #define LEV_EXT ".lev"          /* extension for special level files */
-#define BACKUP_EXT ".bup"       /* extension for backup save files */
-#define ALT_BACKUP_EXT ".bak"   /* extension for backup save files (alternative) */
-#define TEMP_BACKUP_EXT ".tmp"  /* extension for temp backup save files */
 
 /* Assorted definitions that may depend on selections in config.h. */
 
