@@ -1243,7 +1243,7 @@ const char* filename;
         if (!res)
             Strcpy(fq_tmp_backup, tobuf);
 
-        return res;
+        return res < 0 ? -4 : res;
     }
     return -1;
 }
@@ -1266,7 +1266,10 @@ move_tmp_backup_savefile_to_actual_backup_savefile(VOID_ARGS)
         {
             (void)unlink(fq_act_backup);
         }
-        return rename(fq_tmp_backup, fq_act_backup);
+        int res = rename(fq_tmp_backup, fq_act_backup);
+        if(!res)
+            Strcpy(fq_tmp_backup, "");
+        return res;
     }
     return -1;
 }
@@ -1292,7 +1295,8 @@ boolean dodelete_existing;
             else
                 return -3; /* Save file exists and dodelete_existing is off, aborting restoring backup */
         }
-        return rename(bakbuf, fq_save);
+        int res = copy_savefile(fq_save, bakbuf);
+        return res < 0 ? -4 : res;
     }
     return -1; /* Making backups is not on */
 }
