@@ -2385,6 +2385,10 @@ dll_open_special_view(struct special_view_info info)
     {
     case SPECIAL_VIEW_CHAT_MESSAGE:
         break;
+    case SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N:
+        return 'n';
+    case SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y:
+        return 'y';
     default:
         break;
     }

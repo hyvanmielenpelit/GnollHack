@@ -1878,7 +1878,8 @@ namespace GnollHackX
                     }
                 case (int)special_view_types.SPECIAL_VIEW_HELP_DIR:
                     break;
-                case (int)special_view_types.SPECIAL_VIEW_GUI_YN_CONFIRMATION:
+                case (int)special_view_types.SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y:
+                case (int)special_view_types.SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N:
                     {
                         ConcurrentQueue<GHRequest> queue;
                         if (ClientGame.RequestDictionary.TryGetValue(this, out queue))

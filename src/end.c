@@ -3467,7 +3467,7 @@ const char* title;
 const char* query;
 {
     struct special_view_info info = { 0 };
-    info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION;
+    info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N;
     info.title = title;
     info.text = query;
     info.attr = ATR_NONE;

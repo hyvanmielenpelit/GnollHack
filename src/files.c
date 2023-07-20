@@ -1165,7 +1165,7 @@ const char* filename;
 {
     struct special_view_info info = { 0 };
     char txtbuf[BUFSZ * 4] = "";
-    info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION;
+    info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y;
     info.title = "Delete Invalid Save File";
     if(filename)
         Sprintf(txtbuf, "Save file \"%s\" is invalid. Delete it?", filename);
