@@ -148,7 +148,6 @@ boolean quietly;
     xchar ltmp;
     d_level uz_save;
     char whynot[BUFSZ];
-    boolean did_corrupted = FALSE;
 
 #ifdef WHEREIS_FILE
     delete_whereis();
