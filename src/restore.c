@@ -1009,12 +1009,15 @@ register int fd;
     if (!WINDOWPORT("X11"))
         putstr(WIN_MAP, 0, "Restoring:");
 #endif
-    restoreprocs.mread_flags = 1; /* return despite error */
     while (1) {
+        restoreprocs.mread_flags = 1; /* return despite error */
         mread(fd, (genericptr_t) &ltmp, sizeof ltmp);
         if (restoreprocs.mread_flags == -1)
             break;
+        restoreprocs.mread_flags = 2; /* return despite error */
         getlev(fd, 0, ltmp, FALSE);
+        if (restoreprocs.mread_flags == -2)
+            break;
 #ifdef MICRO
         curs(WIN_MAP, 1 + dotcnt++, dotrow);
         if (dotcnt >= (COLNO - 1)) {
@@ -1029,8 +1032,10 @@ register int fd;
         rtmp = restlevelfile(fd, ltmp);
         if (rtmp < 2)
             return rtmp; /* dorecover called recursively */
+        if (restoreprocs.mread_flags == -2)
+            break;
     }
-    if (restoreprocs.mread_flags == -1)
+    if (restoreprocs.mread_flags == -2)
     {
         was_corrupted = TRUE;
         if (query_about_corrupted_savefile())
@@ -2154,8 +2159,11 @@ register size_t len;
 
     rlen = (int)read(fd, buf, (readLenType) len);
     if ((readLenType) rlen != (readLenType) len) {
-        if (restoreprocs.mread_flags == 1) { /* means "return anyway" */
+        if (restoreprocs.mread_flags == 1) { /* means "return anyway", no corruption */
             restoreprocs.mread_flags = -1;
+            return;
+        } else if (restoreprocs.mread_flags == 2) { /* means "return anyway", apparent corruption */
+            restoreprocs.mread_flags = -2;
             return;
         } else {
             pline("Read %d instead of %zu bytes.", rlen, len);
