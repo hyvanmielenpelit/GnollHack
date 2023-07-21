@@ -1444,6 +1444,18 @@ boolean* is_backup_ptr;
         return -1;
 #endif /* MFLOPPY */
     fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+#ifdef COMPRESS
+    if (allow_replace_backup)
+    {
+        /* Uncompress might fail due to corruption; if so, restore backup file */
+        if (!restore_backup_savefile(FALSE))
+        {
+            if (is_backup_ptr)
+                *is_backup_ptr = TRUE;
+            allow_replace_backup = FALSE;
+        }
+    }
+#endif
     nh_uncompress(fq_save);
     (void) make_tmp_backup_savefile_from_uncompressed_savefile(fq_save);
     if ((fd = open_savefile()) < 0)
