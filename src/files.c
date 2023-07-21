@@ -1260,7 +1260,14 @@ const char* filename; /* Filename must have already been uncompressed */
         }
         char tobuf[4096];
         size_t len = strlen(filename);
-        if (len > sizeof(tobuf) - 9)
+        char extbuf[BUFSZ];
+        Strcpy(extbuf, "");
+        print_special_savefile_extension(extbuf, BACKUP_EXTENSION);
+        size_t bupextlen = strlen(extbuf);
+        Strcpy(extbuf, "");
+        print_special_savefile_extension(extbuf, TEMP_BACKUP_EXTENSION);
+        size_t tmpextlen = strlen(extbuf);
+        if (len + bupextlen + tmpextlen + 1 > sizeof(tobuf))
             return -2;
         size_t copy_len = min(sizeof(tobuf) - 1, len);
         strncpy(tobuf, filename, copy_len);
