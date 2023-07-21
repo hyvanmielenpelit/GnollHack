@@ -1200,6 +1200,25 @@ boolean allow_replace_backup;
     }
 }
 
+int
+query_about_corrupted_savefile(VOID_ARGS)
+{
+    if (check_has_backup_savefile())
+    {
+        struct special_view_info info = { 0 };
+        char txtbuf[BUFSZ * 4] = "";
+        int res;
+        info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N;
+        info.title = "Corrupted Save File";
+        Sprintf(txtbuf, "Save file \"%s\" is corrupted, but you have a backup save file.  Continue loading the corrupted save file anyway?", SAVEF);
+        info.text = txtbuf;
+        res = open_special_view(info);
+        if (res == 'y')
+            return 1;
+    }
+    return 0;
+}
+
 STATIC_VAR char fq_tmp_backup[4096];
 
 int

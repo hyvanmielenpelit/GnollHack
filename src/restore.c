@@ -956,6 +956,7 @@ register int fd;
     struct obj *otmp;
     struct save_game_stats dummy_stats = { 0 };
     Strcpy(debug_buf_4, "dorecover_saved_game");
+    boolean was_corrupted = FALSE;
 
     restoring = TRUE;
     get_plname_from_file(fd, plname);
@@ -1029,6 +1030,17 @@ register int fd;
         if (rtmp < 2)
             return rtmp; /* dorecover called recursively */
     }
+    if (restoreprocs.mread_flags == -1)
+    {
+        was_corrupted = TRUE;
+        if (query_about_corrupted_savefile())
+        {
+            (void)nhclose(fd);
+            (void)delete_savefile();
+            restoring = FALSE;
+            return 0;
+        }
+    }
     restoreprocs.mread_flags = 0;
 
 #ifdef BSD
@@ -1093,7 +1105,10 @@ register int fd;
     /* Play ambient sounds for the dungeon; check_special_room will play music */
     play_level_ambient_sounds();
     play_environment_ambient_sounds();
-    (void)move_tmp_backup_savefile_to_actual_backup_savefile(); /* Restore was successful, update backup savefile */
+    if (!was_corrupted)
+        (void)move_tmp_backup_savefile_to_actual_backup_savefile(); /* Restore was successful, update backup savefile */
+    else
+        (void)delete_tmp_backup_savefile();
     return 1;
 }
 
