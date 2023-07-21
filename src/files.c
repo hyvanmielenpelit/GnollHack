@@ -1437,6 +1437,8 @@ boolean* is_backup_ptr;
     const char *fq_save;
     int fd;
     boolean backup_replaced = FALSE;
+    if (is_backup_ptr)
+        *is_backup_ptr = FALSE;
 
     reset_restpref();
     set_savefile_name(TRUE);
@@ -1451,8 +1453,6 @@ boolean* is_backup_ptr;
         /* Uncompress might fail due to corruption; if so, restore backup file */
         if (!restore_backup_savefile(FALSE))
         {
-            if (is_backup_ptr)
-                *is_backup_ptr = TRUE;
             allow_replace_backup = FALSE;
             backup_replaced = TRUE;
         }
@@ -1468,17 +1468,12 @@ boolean* is_backup_ptr;
         (void) delete_tmp_backup_savefile();
         if (ask_delete_invalid_savefile("invalid", allow_replace_backup) == -2)
         {
-            if (is_backup_ptr)
-                *is_backup_ptr = TRUE;
             backup_replaced = TRUE;
             fd = open_and_validate_saved_game(FALSE, (boolean*)0);
         }
     }
-    else
-    {
-        if (is_backup_ptr && !backup_replaced)
-            *is_backup_ptr = FALSE;
-    }
+    if (is_backup_ptr)
+        *is_backup_ptr = backup_replaced;
     return fd;
 }
 
