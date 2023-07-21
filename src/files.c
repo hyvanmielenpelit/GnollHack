@@ -1436,6 +1436,7 @@ boolean* is_backup_ptr;
 {
     const char *fq_save;
     int fd;
+    boolean backup_replaced = FALSE;
 
     reset_restpref();
     set_savefile_name(TRUE);
@@ -1453,6 +1454,7 @@ boolean* is_backup_ptr;
             if (is_backup_ptr)
                 *is_backup_ptr = TRUE;
             allow_replace_backup = FALSE;
+            backup_replaced = TRUE;
         }
     }
 #endif
@@ -1468,12 +1470,13 @@ boolean* is_backup_ptr;
         {
             if (is_backup_ptr)
                 *is_backup_ptr = TRUE;
+            backup_replaced = TRUE;
             fd = open_and_validate_saved_game(FALSE, (boolean*)0);
         }
     }
     else
     {
-        if (is_backup_ptr)
+        if (is_backup_ptr && !backup_replaced)
             *is_backup_ptr = FALSE;
     }
     return fd;
