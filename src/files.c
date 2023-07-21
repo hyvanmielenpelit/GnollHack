@@ -1291,14 +1291,22 @@ move_tmp_backup_savefile_to_actual_backup_savefile(VOID_ARGS)
     if (sysopt.make_backup_savefiles && *fq_tmp_backup)
     {
         size_t len = strlen(fq_tmp_backup);
-        if (len < 9)
+        char extbuf[BUFSZ];
+        Strcpy(extbuf, "");
+        print_special_savefile_extension(extbuf, BACKUP_EXTENSION);
+        size_t bupextlen = strlen(extbuf);
+        Strcpy(extbuf, "");
+        print_special_savefile_extension(extbuf, TEMP_BACKUP_EXTENSION);
+        size_t tmpextlen = strlen(extbuf);
+        if (len <= bupextlen + tmpextlen)
         {
             Strcpy(fq_tmp_backup, "");
             return -2;
         }
+
         char fq_act_backup[4096];
         Strcpy(fq_act_backup, fq_tmp_backup);
-        fq_act_backup[len - 4] = 0;
+        fq_act_backup[len - tmpextlen] = 0;
         nh_uncompress(fq_act_backup);
         if (access(fq_act_backup, F_OK) == 0) 
         {
