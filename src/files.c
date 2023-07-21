@@ -1338,8 +1338,7 @@ boolean dodelete_existing;
     if (sysopt.make_backup_savefiles && *SAVEF)
     {
         char bakbuf[4096];
-        const char* fq_save;
-        fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+        const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
         print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
         nh_uncompress(bakbuf);
@@ -1373,9 +1372,7 @@ delete_backup_savefile(VOID_ARGS)
     if (sysopt.make_backup_savefiles && *SAVEF)
     {
         char bakbuf[4096];
-        const char* fq_save;
-        fq_save = fqname(SAVEF, SAVEPREFIX, 0);
-        Strcpy(bakbuf, fq_save);
+        Strcpy(bakbuf, fqname(SAVEF, SAVEPREFIX, 0));
         print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
         nh_uncompress(bakbuf);
         if (access(bakbuf, F_OK) != 0)
@@ -1391,9 +1388,7 @@ delete_tmp_backup_savefile(VOID_ARGS)
     if (sysopt.make_backup_savefiles && *SAVEF)
     {
         char bakbuf[4096];
-        const char* fq_save;
-        fq_save = fqname(SAVEF, SAVEPREFIX, 0);
-        Strcpy(bakbuf, fq_save);
+        Strcpy(bakbuf, fqname(SAVEF, SAVEPREFIX, 0));
         print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
         print_special_savefile_extension(bakbuf, TEMP_BACKUP_EXTENSION);
         nh_uncompress(bakbuf);
@@ -1409,9 +1404,7 @@ boolean check_has_backup_savefile(VOID_ARGS)
     if (sysopt.make_backup_savefiles && *SAVEF)
     {
         char bakbuf[4096];
-        const char* fq_save;
-        fq_save = fqname(SAVEF, SAVEPREFIX, 0);
-        Strcpy(bakbuf, fq_save);
+        Strcpy(bakbuf, fqname(SAVEF, SAVEPREFIX, 0));
         print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
         nh_uncompress(bakbuf);
         boolean res = (boolean)(access(bakbuf, F_OK) == 0);
