@@ -1248,8 +1248,8 @@ query_about_corrupted_savefile(VOID_ARGS)
 STATIC_VAR char fq_tmp_backup[4096];
 
 int
-make_tmp_backup_savefile(filename)
-const char* filename;
+make_tmp_backup_savefile_from_uncompressed_savefile(filename)
+const char* filename; /* Filename must have already been uncompressed */
 {
     Strcpy(fq_tmp_backup, "");
     if (sysopt.make_backup_savefiles && filename && *filename)
@@ -1267,13 +1267,17 @@ const char* filename;
         tobuf[copy_len] = 0;
         print_special_savefile_extension(tobuf, BACKUP_EXTENSION);
         print_special_savefile_extension(tobuf, TEMP_BACKUP_EXTENSION);
+        nh_uncompress(tobuf);
         if (access(tobuf, F_OK) == 0)
         {
             (void)unlink(tobuf);
         }
         int res = copy_savefile(tobuf, filename);
         if (!res)
+        {
+            nh_compress(tobuf);
             Strcpy(fq_tmp_backup, tobuf);
+        }
 
         return res < 0 ? -4 : res;
     }
@@ -1283,6 +1287,7 @@ const char* filename;
 int
 move_tmp_backup_savefile_to_actual_backup_savefile(VOID_ARGS)
 {
+    /* fq_tmp_backup is compressed */
     if (sysopt.make_backup_savefiles && *fq_tmp_backup)
     {
         size_t len = strlen(fq_tmp_backup);
@@ -1294,13 +1299,18 @@ move_tmp_backup_savefile_to_actual_backup_savefile(VOID_ARGS)
         char fq_act_backup[4096];
         Strcpy(fq_act_backup, fq_tmp_backup);
         fq_act_backup[len - 4] = 0;
+        nh_uncompress(fq_act_backup);
         if (access(fq_act_backup, F_OK) == 0) 
         {
             (void)unlink(fq_act_backup);
         }
+        nh_uncompress(fq_tmp_backup); /* Uncompress at original location */
         int res = rename(fq_tmp_backup, fq_act_backup);
-        if(!res)
+        if (!res)
+        {
+            nh_compress(fq_act_backup); /* Finally compress at new location */
             Strcpy(fq_tmp_backup, "");
+        }
         return res;
     }
     return -1;
@@ -1317,17 +1327,26 @@ boolean dodelete_existing;
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
         print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
+        nh_uncompress(bakbuf);
         if (access(bakbuf, F_OK) != 0)
             return -2; /* Backup does not exist */
 
+        nh_uncompress(fq_save);
         if (access(fq_save, F_OK) == 0)
         {
             if (dodelete_existing)
                 (void)unlink(fq_save);
             else
+            {
+                nh_compress(fq_save);
                 return -3; /* Save file exists and dodelete_existing is off, aborting restoring backup */
+            }
         }
         int res = copy_savefile(fq_save, bakbuf);
+        nh_compress(bakbuf);
+        if (!res)
+            nh_compress(fq_save);
+
         return res < 0 ? -4 : res;
     }
     return -1; /* Making backups is not on */
@@ -1343,6 +1362,7 @@ delete_backup_savefile(VOID_ARGS)
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
         print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
+        nh_uncompress(bakbuf);
         if (access(bakbuf, F_OK) != 0)
             return -2; /* Backup file does not exist */
         return unlink(bakbuf);
@@ -1361,6 +1381,7 @@ delete_tmp_backup_savefile(VOID_ARGS)
         Strcpy(bakbuf, fq_save);
         print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
         print_special_savefile_extension(bakbuf, TEMP_BACKUP_EXTENSION);
+        nh_uncompress(bakbuf);
         if (access(bakbuf, F_OK) != 0)
             return -2; /* Backup temp file does not exist */
         return unlink(bakbuf);
@@ -1377,7 +1398,11 @@ boolean check_has_backup_savefile(VOID_ARGS)
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
         print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
-        return (boolean)(access(bakbuf, F_OK) == 0);
+        nh_uncompress(bakbuf);
+        boolean res = (boolean)(access(bakbuf, F_OK) == 0);
+        if(res)
+            nh_compress(bakbuf);
+        return res;
     }
     return FALSE;
 }
@@ -1387,8 +1412,8 @@ delete_savefile_if_exists(VOID_ARGS)
 {
     if (*SAVEF)
     {
-        const char* fq_save;
-        fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+        const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+        nh_uncompress(fq_save);
         if (access(fq_save, F_OK) == 0)
             return delete_savefile();
         return -2; /* fq_save does not exist */
@@ -1411,8 +1436,8 @@ boolean* is_backup_ptr;
         return -1;
 #endif /* MFLOPPY */
     fq_save = fqname(SAVEF, SAVEPREFIX, 0);
-    (void) make_tmp_backup_savefile(fq_save);
     nh_uncompress(fq_save);
+    (void) make_tmp_backup_savefile_from_uncompressed_savefile(fq_save);
     if ((fd = open_savefile()) < 0)
         return fd;
 

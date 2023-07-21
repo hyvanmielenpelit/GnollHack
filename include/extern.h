@@ -1225,7 +1225,7 @@ E struct save_game_data FDECL(newsavegamedata, (char*, char*, struct save_game_s
 E struct save_game_data *NDECL(get_saved_games);
 E void FDECL(free_saved_games, (struct save_game_data *));
 E boolean NDECL(check_saved_game_exists);
-E int FDECL(make_tmp_backup_savefile, (const char*));
+E int FDECL(make_tmp_backup_savefile_from_uncompressed_savefile, (const char*));
 E int NDECL(move_tmp_backup_savefile_to_actual_backup_savefile);
 E int FDECL(restore_backup_savefile, (BOOLEAN_P));
 E int NDECL(delete_backup_savefile);
