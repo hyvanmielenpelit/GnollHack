@@ -1460,13 +1460,13 @@ int load_type; // 0 = at start normally, 1 = load after saving, corresponds to e
             if (iflags.news)
             {
                 display_file(NEWS, FALSE);
-                iflags.news = FALSE; /* in case dorecover() fails */
+                iflags.news = FALSE; /* in case dorestore() fails */
             }
 #endif
             pline("Restoring save file...");
             mark_synch(); /* flush output */
         }
-        int loadres = dorecover_saved_game(fd);
+        int loadres = dorestore0(fd);
         if (!loadres && !is_backup) //This deletes the save file in normal modes
         {
             if (!restore_backup_savefile(TRUE))
@@ -1481,7 +1481,7 @@ int load_type; // 0 = at start normally, 1 = load after saving, corresponds to e
                         pline("Restoring back-up save file...");
                         mark_synch(); /* flush output */
                     }
-                    loadres = dorecover_saved_game(fd);
+                    loadres = dorestore0(fd);
                 }
             }
         }

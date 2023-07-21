@@ -175,12 +175,12 @@ int GnollHackMain(int argc, char** argv)
 		if(iflags.news)
 		{
 			display_file(NEWS, FALSE);
-			iflags.news = FALSE; /* in case dorecover() fails */
+			iflags.news = FALSE; /* in case dorestore() fails */
 		}
 #endif
 		pline("Restoring save file...");
 		mark_synch(); /* flush output */
-		if(!dorecover(fd, is_backup))
+		if(!dorestore(fd, is_backup))
 			goto not_recovered;
 		resuming = TRUE;
 #ifdef WIZARD

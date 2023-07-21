@@ -296,12 +296,12 @@ attempt_restore:
 #ifdef NEWS
         if (iflags.news) {
             display_file(NEWS, FALSE);
-            iflags.news = FALSE; /* in case dorecover() fails */
+            iflags.news = FALSE; /* in case dorestore() fails */
         }
 #endif
         pline("Restoring save file...");
         mark_synch(); /* flush output */
-        if (dorecover(fd, is_backup)) {
+        if (dorestore(fd, is_backup)) {
             resuming = TRUE; /* not starting new game */
             wd_message();
             if (discover || wizard) {

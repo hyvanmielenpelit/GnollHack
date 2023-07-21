@@ -392,7 +392,7 @@ attempt_restore:
 #endif
         pline("Restoring save file...");
         mark_synch(); /* flush output */
-        if (dorecover(fd, is_backup))
+        if (dorestore(fd, is_backup))
         {
             resuming = TRUE; /* not starting new game */
             boolean savefilekept = FALSE;
@@ -413,7 +413,7 @@ attempt_restore:
                 }
             }
 
-            /* This must be added to main if the GnollHack port is using dorecover without load_saved_game */
+            /* This must be added to main if the GnollHack port is using dorestore without load_saved_game */
             reset_save_file_name(savefilekept);
         }
     }

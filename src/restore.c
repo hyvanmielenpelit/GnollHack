@@ -902,7 +902,7 @@ xchar ltmp;
             /* Rewind save file and try again */
             (void) lseek(fd, (off_t) 0, 0);
             (void) validate(fd, (char *) 0); /* skip version etc */
-            return dorecover(fd, FALSE);            /* 0 or 1 */
+            return dorestore(fd, FALSE);            /* 0 or 1 */
         }
 #endif /* ?AMIGA */
         pline("Be seeing you...");
@@ -916,11 +916,11 @@ xchar ltmp;
 }
 
 int
-dorecover(fd, is_backup)
+dorestore(fd, is_backup)
 register int fd;
 boolean is_backup;
 {
-    int loadres = dorecover_saved_game(fd);
+    int loadres = dorestore0(fd);
     if (!loadres && !is_backup)
     {
         if (!restore_backup_savefile(TRUE))
@@ -932,7 +932,7 @@ boolean is_backup;
             {
                 pline("Restoring back-up save file...");
                 mark_synch(); /* flush output */
-                loadres = dorecover_saved_game(fd);
+                loadres = dorestore0(fd);
             }
         }
     }
@@ -947,7 +947,7 @@ boolean is_backup;
 }
 
 int
-dorecover_saved_game(fd)
+dorestore0(fd)
 register int fd;
 {
     unsigned int stuckid = 0, steedid = 0; /* not a register */
@@ -955,7 +955,7 @@ register int fd;
     int rtmp;
     struct obj *otmp;
     struct save_game_stats dummy_stats = { 0 };
-    Strcpy(debug_buf_4, "dorecover_saved_game");
+    Strcpy(debug_buf_4, "dorestore0");
     boolean was_corrupted = FALSE;
 
     restoring = TRUE;
@@ -976,7 +976,7 @@ register int fd;
 #endif
     rtmp = restlevelfile(fd, ledger_no(&u.uz));
     if (rtmp < 2)
-        return rtmp; /* dorecover called recursively */
+        return rtmp; /* dorestore called recursively */
 
     /* these pointers won't be valid while we're processing the
      * other levels, but they'll be reset again by restlevelstate()
@@ -1031,7 +1031,7 @@ register int fd;
 #endif
         rtmp = restlevelfile(fd, ltmp);
         if (rtmp < 2)
-            return rtmp; /* dorecover called recursively */
+            return rtmp; /* dorestore called recursively */
         if (restoreprocs.mread_flags == -2)
             break;
     }

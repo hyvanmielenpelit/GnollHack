@@ -2938,9 +2938,9 @@ E void FDECL(do_light_regions, (char**));
 
 /* ### restore.c ### */
 
+E int FDECL(dorestore, (int, BOOLEAN_P));
+E int FDECL(dorestore0, (int));
 E void FDECL(inven_inuse, (BOOLEAN_P));
-E int FDECL(dorecover_saved_game, (int));
-E int FDECL(dorecover, (int, BOOLEAN_P));
 E void FDECL(restcemetery, (int, struct cemetery **));
 E void FDECL(trickery, (char *));
 E void FDECL(getlev, (int, int, XCHAR_P, BOOLEAN_P));

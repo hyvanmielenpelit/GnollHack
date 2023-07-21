@@ -8393,7 +8393,7 @@ char *op;
 
 /* set up for wizard mode if player or save file has requested to it;
    called from port-specific startup code to handle `GnollHack -D' or
-   OPTIONS=playmode:debug, or from dorecover()'s restgamestate() if
+   OPTIONS=playmode:debug, or from dorestore()'s restgamestate() if
    restoring a game which was saved in wizard mode */
 void
 set_playmode()
