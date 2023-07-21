@@ -2170,7 +2170,7 @@ register size_t len;
             if (restoring) {
                 (void) nhclose(fd);
                 (void) delete_tmp_backup_savefile();
-                (void) ask_delete_invalid_savefile(TRUE);
+                (void) ask_delete_invalid_savefile("corrupted", TRUE);
                 error("Error restoring old game.");
             }
             panic("Error reading level file.");

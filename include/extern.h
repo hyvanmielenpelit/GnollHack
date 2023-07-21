@@ -1193,7 +1193,7 @@ E void NDECL(set_imported_savefile);
 E int NDECL(create_savefile);
 E int NDECL(open_savefile);
 E int NDECL(delete_savefile);
-E int FDECL(ask_delete_invalid_savefile, (BOOLEAN_P));
+E int FDECL(ask_delete_invalid_savefile, (const char*, BOOLEAN_P));
 E int NDECL(query_about_corrupted_savefile);
 E int FDECL(open_and_validate_saved_game, (BOOLEAN_P, boolean*));
 E void NDECL(mode_message);

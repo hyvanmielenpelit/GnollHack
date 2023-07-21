@@ -1159,22 +1159,27 @@ delete_savefile(VOID_ARGS)
 }
 
 int
-ask_delete_invalid_savefile(allow_replace_backup)
+ask_delete_invalid_savefile(adjective, allow_replace_backup)
+const char* adjective;
 boolean allow_replace_backup;
 {
     struct special_view_info info = { 0 };
     char txtbuf[BUFSZ * 4] = "";
+    char titlebuf[BUFSZ * 4] = "";
     int res;
+    if (!adjective)
+        adjective = "invalid";
     if (allow_replace_backup && check_has_backup_savefile())
     {
         info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N;
-        info.title = "Replace Invalid Save File";
-        Sprintf(txtbuf, "Save file \"%s\" is invalid. Replace it with its backup?", SAVEF);
+        Sprintf(titlebuf, "Replace %s Save File", str_upper_start(adjective));
+        info.title = titlebuf;
+        Sprintf(txtbuf, "Save file \"%s\" is %s. Replace it with its backup?", SAVEF, adjective);
         info.text = txtbuf;
         res = open_special_view(info);
         if (res == 'y')
         {
-            pline("Replacing an invalid save file \"%s\".", SAVEF);
+            pline("Replacing %s save file \"%s\".", an(adjective), SAVEF);
             (void)delete_tmp_backup_savefile();
             if (!restore_backup_savefile(TRUE))
                 return -2;
@@ -1183,13 +1188,14 @@ boolean allow_replace_backup;
         }
     }
     info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y;
-    info.title = "Delete Invalid Save File";
-    Sprintf(txtbuf, "Save file \"%s\" is invalid. Delete it?", SAVEF);
+    Sprintf(titlebuf, "Delete %s Save File", str_upper_start(adjective));
+    info.title = titlebuf;
+    Sprintf(txtbuf, "Save file \"%s\" is %s. Delete it?", SAVEF, adjective);
     info.text = txtbuf;
     res = open_special_view(info);
     if (res == 'y')
     {
-        pline("Deleting an invalid save file \"%s\".", SAVEF);
+        pline("Deleting %s save file \"%s\".", an(adjective), SAVEF);
         (void) delete_tmp_backup_savefile();
         (void) delete_backup_savefile();
         return delete_savefile();
@@ -1393,7 +1399,7 @@ boolean* is_backup_ptr;
     if ((validate(fd, fq_save)) != 0) {
         (void) nhclose(fd), fd = -1;
         (void) delete_tmp_backup_savefile();
-        if (ask_delete_invalid_savefile(allow_replace_backup) == -2)
+        if (ask_delete_invalid_savefile("invalid", allow_replace_backup) == -2)
         {
             if (is_backup_ptr)
                 *is_backup_ptr = TRUE;
@@ -1608,7 +1614,7 @@ struct save_game_stats* stats_ptr;
     if (dodeletefile)
     {
         (void)delete_tmp_backup_savefile();
-        (void)ask_delete_invalid_savefile(TRUE);
+        (void)ask_delete_invalid_savefile("invalid", TRUE);
     }
     return result;
 #if 0
