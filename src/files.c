@@ -4808,6 +4808,7 @@ recover_savefile()
         return FALSE;
     }
 
+    /* copy current level */
     if (!copy_bytes(lfd, sfd)) {
         (void) nhclose(gfd);
         (void) nhclose(sfd);
@@ -4818,6 +4819,7 @@ recover_savefile()
     (void) nhclose(lfd);
     processed[savelev] = 1;
 
+    /* copy game state */
     if (!copy_bytes(gfd, sfd)) {
         (void) nhclose(gfd);
         (void) nhclose(sfd);

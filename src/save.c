@@ -320,13 +320,19 @@ boolean quietly;
         (void) nhclose(ofd);
         bwrite(fd, (genericptr_t) &ltmp, sizeof ltmp); /* level number*/
         savelev(fd, ltmp, WRITE_SAVE | FREE_SAVE);     /* actual level*/
-        delete_levelfile(ltmp);
     }
     bclose(fd);
 
     u.uz = uz_save;
 
-    /* get rid of current level --jgm */
+    /* get rid of all the level files after all is done --jgm and JG */
+    for (ltmp = (xchar)1; ltmp <= maxnoofledgers; ltmp++) {
+        if (ltmp == ledger_no(&u.uz))
+            continue;
+        if (!(level_info[ltmp].flags & LFILE_EXISTS))
+            continue;
+        delete_levelfile(ltmp);
+    }
     delete_levelfile(ledger_no(&u.uz));
     delete_levelfile(0);
     nh_compress(fq_save);
@@ -1425,7 +1431,7 @@ int fd;
     gamestats.gender = Upolyd ? u.mfemale : flags.female;
     gamestats.alignment = u.ualign.type;
     gamestats.ulevel = (short)u.ulevel;
-    strcpy(gamestats.dgn_name, dungeons[u.uz.dnum].dname);
+    Strcpy(gamestats.dgn_name, dungeons[u.uz.dnum].dname);
 
     s_level* slev = Is_special(&u.uz);
     mapseen* mptr = 0;
