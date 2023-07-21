@@ -638,6 +638,26 @@ int lev;
     }
 }
 
+
+void
+delete_excess_levelfiles(VOID_ARGS)
+{
+    /* These might happen if a backup save file is restored after crash */
+    xchar ltmp;
+    xchar maxnoofledgers = maxledgerno();
+    for (ltmp = (xchar)1; ltmp <= maxnoofledgers; ltmp++) 
+    {
+        if ((level_info[ltmp].flags & LFILE_EXISTS))
+            continue;
+
+        int lev = (int)ltmp;
+        set_levelfile_name(lock, lev);
+        const char* fq_name = fqname(lock, LEVELPREFIX, 0);
+        if (!access(fq_name, F_OK))
+            (void)unlink(fq_name);
+    }
+}
+
 void
 clearlocks()
 {
@@ -1495,12 +1515,17 @@ int load_type; // 0 = at start normally, 1 = load after saving, corresponds to e
 
         reseting = FALSE;
         
+        /* Success! */
+        delete_excess_levelfiles();
+
         if (load_type == 1)
             flush_screen(1);
 
         if (load_type == 0)
         {
             encounter_init();
+
+            /* Welcome */
             welcome(FALSE);
             check_special_room(FALSE);
             mode_message();

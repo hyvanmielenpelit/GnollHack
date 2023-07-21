@@ -939,6 +939,9 @@ boolean is_backup;
     if (loadres)
     {
         /* Success! */
+        delete_excess_levelfiles();
+
+        /* Welcome */
         welcome(FALSE);
         check_special_room(FALSE);
         return 1;

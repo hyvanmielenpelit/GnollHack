@@ -1173,6 +1173,7 @@ E void FDECL(set_levelfile_name, (char *, int));
 E int FDECL(create_levelfile, (int, char *));
 E int FDECL(open_levelfile, (int, char *));
 E void FDECL(delete_levelfile, (int));
+E void NDECL(delete_excess_levelfiles);
 E void NDECL(clearlocks);
 E int FDECL(create_bonesfile, (d_level *, char **, char *));
 #ifdef MFLOPPY
