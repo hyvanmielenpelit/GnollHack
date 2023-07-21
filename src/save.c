@@ -322,6 +322,7 @@ boolean quietly;
         savelev(fd, ltmp, WRITE_SAVE | FREE_SAVE);     /* actual level*/
     }
     bclose(fd);
+    nh_compress(fq_save);
 
     u.uz = uz_save;
 
@@ -335,7 +336,7 @@ boolean quietly;
     }
     delete_levelfile(ledger_no(&u.uz));
     delete_levelfile(0);
-    nh_compress(fq_save);
+
     /* this should probably come sooner... */
     program_state.something_worth_saving = 0;
     saving = FALSE;
