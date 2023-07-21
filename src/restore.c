@@ -1858,6 +1858,8 @@ struct save_game_data* saved;
             if (ans == 'y')
             {
                 set_savefile_name(TRUE);
+                delete_tmp_backup_savefile();
+                delete_backup_savefile();
                 delete_savefile();
             }
             else

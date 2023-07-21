@@ -117,9 +117,11 @@ char lock[PL_NSIZ + 27]; /* long enough for username+-+name+.99 */
 #endif
 #endif
 
-#define BACKUP_EXTENSION ".bup"       /* extension for backup save files */
-#define ALT_BACKUP_EXTENSION ".bak"   /* extension for backup save files (alternative) */
-#define TEMP_BACKUP_EXTENSION ".tmp"  /* extension for temp backup save files */
+#define ERROR_EXTENSION "e"          /* extension for error save files */
+#define IMPORTED_EXTENSION "i"       /* extension for imported save files */
+#define BACKUP_EXTENSION "bup"       /* extension for backup save files */
+#define ALT_BACKUP_EXTENSION "bak"   /* extension for backup save files (alternative) */
+#define TEMP_BACKUP_EXTENSION "tmp"  /* extension for temp backup save files */
 
 #ifdef WIN32
 #include <io.h>
@@ -1077,29 +1079,14 @@ STATIC_OVL void
 print_error_savefile_extension(printbuf)
 char* printbuf;
 {
-    print_special_savefile_extension(printbuf, "e");
-//#ifdef VMS
-//    {
-//        char* semi_colon = rindex(printbuf, ';');
-//
-//        if (semi_colon)
-//            *semi_colon = '\0';
-//    }
-//    Strcat(printbuf, ".e;1");
-//#else
-//#ifdef MAC
-//    Strcat(printbuf, "-e");
-//#else
-//    Strcat(printbuf, ".e");
-//#endif
-//#endif
+    print_special_savefile_extension(printbuf, ERROR_EXTENSION);
 }
 
 STATIC_OVL void
 print_imported_savefile_extension(printbuf)
 char* printbuf;
 {
-    print_special_savefile_extension(printbuf, "i");
+    print_special_savefile_extension(printbuf, IMPORTED_EXTENSION);
 }
 
 /* change pre-existing savefile name to indicate an error savefile */
@@ -1233,8 +1220,8 @@ const char* filename;
         size_t copy_len = min(sizeof(tobuf) - 1, len);
         strncpy(tobuf, filename, copy_len);
         tobuf[copy_len] = 0;
-        Strcat(tobuf, BACKUP_EXTENSION);
-        Strcat(tobuf, TEMP_BACKUP_EXTENSION);
+        print_special_savefile_extension(tobuf, BACKUP_EXTENSION);
+        print_special_savefile_extension(tobuf, TEMP_BACKUP_EXTENSION);
         if (access(tobuf, F_OK) == 0)
         {
             (void)unlink(tobuf);
@@ -1284,7 +1271,7 @@ boolean dodelete_existing;
         const char* fq_save;
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
-        Strcat(bakbuf, BACKUP_EXTENSION);
+        print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
         if (access(bakbuf, F_OK) != 0)
             return -2; /* Backup does not exist */
 
@@ -1310,7 +1297,7 @@ delete_backup_savefile(VOID_ARGS)
         const char* fq_save;
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
-        Strcat(bakbuf, BACKUP_EXTENSION);
+        print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
         if (access(bakbuf, F_OK) != 0)
             return -2; /* Backup file does not exist */
         return unlink(bakbuf);
@@ -1327,8 +1314,8 @@ delete_tmp_backup_savefile(VOID_ARGS)
         const char* fq_save;
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
-        Strcat(bakbuf, BACKUP_EXTENSION);
-        Strcat(bakbuf, TEMP_BACKUP_EXTENSION);
+        print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
+        print_special_savefile_extension(bakbuf, TEMP_BACKUP_EXTENSION);
         if (access(bakbuf, F_OK) != 0)
             return -2; /* Backup temp file does not exist */
         return unlink(bakbuf);
@@ -1344,7 +1331,7 @@ boolean check_has_backup_savefile(VOID_ARGS)
         const char* fq_save;
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         Strcpy(bakbuf, fq_save);
-        Strcat(bakbuf, BACKUP_EXTENSION);
+        print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
         return (boolean)(access(bakbuf, F_OK) == 0);
     }
     return FALSE;
@@ -1682,7 +1669,7 @@ const char* savefilename;
     int j;
     for (j = 0; extensions[j] != 0; j++)
     {
-        Strcpy(ebuf, extensions[j]);
+        print_special_savefile_extension(ebuf, extensions[j]);
         size_t elen = strlen(ebuf);
         if (dlen <= elen)
             continue;
