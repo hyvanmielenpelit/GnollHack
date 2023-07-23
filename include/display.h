@@ -14,6 +14,7 @@
 #include "layer.h"
 #include "general.h"
 #include "animtotals.h"
+#include "tiledata.h"
 
 /* Flags for newsym */
 #define NEWSYM_FLAGS_NONE                               0x00000000UL

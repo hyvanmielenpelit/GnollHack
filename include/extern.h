@@ -10,6 +10,7 @@
 #include "soundset.h"
 #include "lev.h"
 #include "general.h"
+#include "tiledata.h"
 
 #define E extern
 

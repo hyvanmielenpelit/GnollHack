@@ -64,9 +64,93 @@ struct ui_component_definition {
     const char* component_names[MAX_UI_TILE_COMPONENTS];
 };
 
+/* Game cursor types */
+enum game_cursor_types
+{
+    CURSOR_STYLE_GENERIC_CURSOR = 0,
+    CURSOR_STYLE_LOOK_CURSOR,
+    CURSOR_STYLE_TRAVEL_CURSOR,
+    CURSOR_STYLE_NAME_CURSOR,
+    CURSOR_STYLE_TELEPORT_CURSOR,
+    CURSOR_STYLE_JUMP_CURSOR,
+    CURSOR_STYLE_POLEARM_CURSOR,
+    CURSOR_STYLE_GRAPPLE_CURSOR,
+    CURSOR_STYLE_SPELL_CURSOR,
+    CURSOR_STYLE_PAY_CURSOR,
+    CURSOR_STYLE_INVISIBLE,
+    MAX_CURSORS
+};
+
+struct game_cursor_definition {
+    const char* name;
+    short /*enum replacement_types*/ replacement;
+    short /*enum animation_types*/ animation;
+    short /*enum enlargement_types*/ enlargement;
+};
+
+extern NEARDATA const struct game_cursor_definition game_cursors[MAX_CURSORS];
+
+
+enum hit_tile_types
+{
+    HIT_GENERAL = 0,
+    HIT_POISONED,
+    HIT_DISINTEGRATED,
+    HIT_CRUSHED,
+    HIT_SPLASHED_ACID,
+    HIT_ON_FIRE,
+    HIT_FROZEN,
+    HIT_ELECTROCUTED,
+    HIT_DEATH,
+    HIT_SLEEP,
+    HIT_PETRIFIED,
+    HIT_CRITICAL,
+    HIT_FLASHED_LIGHT,
+    HIT_PARALYZED,
+    HIT_SLIMED,
+    HIT_SICK,
+    HIT_FAMINE,
+    HIT_HEAL,
+    HIT_WERE,
+    HIT_DRAIN_LEVEL,
+    HIT_SLOW,
+    HIT_HALLUCINATED,
+    MAX_HIT_TILES
+};
+
+struct hit_tile_definition {
+    const char* name;
+    short /*enum replacement_types*/ replacement;
+    short /*enum animation_types*/ animation;
+    short /*enum enlargement_types*/ enlargement;
+};
+
+extern NEARDATA const struct hit_tile_definition hit_tile_definitions[MAX_HIT_TILES];
+
+
 struct command_tile_definition {
     const char* name;
 };
+
+enum general_tile_types
+{
+    GENERAL_TILE_DEATH = 0,
+    GENERAL_TILE_CHAIN_IS_UP,
+    GENERAL_TILE_CHAIN_IS_RIGHT,
+    GENERAL_TILE_CHAIN_IS_DOWN,
+    GENERAL_TILE_CHAIN_IS_LEFT,
+    GENERAL_TILE_CHAIN_MAIN,
+    MAX_GENERAL_TILES
+};
+
+struct general_tile_definition {
+    const char* name;
+    short /*enum replacement_types*/ replacement;
+    short /*enum animation_types*/ animation;
+    short /*enum enlargement_types*/ enlargement;
+};
+
+extern NEARDATA const struct general_tile_definition general_tile_definitions[MAX_GENERAL_TILES];
 
 enum game_ui_tile_types
 {
@@ -102,6 +186,15 @@ enum game_command_tile_types
     GENOCIDED_COMMAND_TILE,
     DISCOVERED_COMMAND_TILE,
     MONSTER_COMMAND_TILE,
+    RESERVED_1,
+    RESERVED_2,
+    RESERVED_3,
+    RESERVED_4,
+    RESERVED_5,
+    RESERVED_6,
+    RESERVED_7,
+    RESERVED_8,
+    RESERVED_9,
     MAX_COMMAND_TILES
 };
 

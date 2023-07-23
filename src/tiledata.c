@@ -29,6 +29,61 @@ NEARDATA struct tileset_definition default_tileset_definition =
     3
 };
 
+
+/* Game Cursors */
+NEARDATA const struct game_cursor_definition game_cursors[MAX_CURSORS] =
+{
+    {"generic", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"look", NO_REPLACEMENT, LOOK_CURSOR_ANIMATION, NO_ENLARGEMENT },
+    {"travel", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"name", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"teleport", NO_REPLACEMENT, TELEPORT_CURSOR_ANIMATION, NO_ENLARGEMENT},
+    {"jump", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"polearm", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"grapple", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"spell", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"pay", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"invisible", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+};
+
+/* Hit tile */
+NEARDATA const struct hit_tile_definition hit_tile_definitions[MAX_HIT_TILES] =
+{
+    {"hit", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"poisoned", NO_REPLACEMENT, LOOK_CURSOR_ANIMATION, NO_ENLARGEMENT },
+    {"disintegrated", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"crushed", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"splashed-acid", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"on-fire", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"frozen", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"electrocuted", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"death", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"sleep", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"petrified", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"critical", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"flashed-light", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"paralyzed", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"slimed", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"sick", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"famine", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"heal", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"were", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"drain-level", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"slow", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"hallucinated", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+};
+
+/* General tile */
+NEARDATA const struct general_tile_definition general_tile_definitions[MAX_GENERAL_TILES] =
+{
+    {"death", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"chain-up", CHAIN_UP_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"chain-right", CHAIN_RIGHT_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"chain-down", CHAIN_DOWN_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"chain-left", CHAIN_LEFT_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"chain-main", CHAIN_MAIN_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+};
+
 NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = {
     {"general-ui",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 3, 16, 16, {"checkbox-unchecked", "checkbox-checked", "checkbox-count", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"status",                  NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, MAX_STATUS_MARKS, 16, 16, {"petmark", "peacemark", "detectmark", "pilemark", "satiated", "hungry", "weak", "faint", "burdened",  "stressed", "strained", "overtaxed", "overloaded",  "two-weapon", "skill", "saddled", "low-hp",  "critical-hp", "spec-used", "trapped", "ustuck",  "inventory", "townguard-peaceful", "townguard-hostile", "",  "", "", "", "",  "", "", ""} },
@@ -60,6 +115,15 @@ NEARDATA struct command_tile_definition command_tile_definitions[MAX_COMMAND_TIL
     { "genocided" },
     { "discoveries" },
     { "monster" },
+    { "no-command" },
+    { "no-command" },
+    { "no-command" },
+    { "no-command" },
+    { "no-command" },
+    { "no-command" },
+    { "no-command" },
+    { "no-command" },
+    { "no-command" },
 };
 
 boolean

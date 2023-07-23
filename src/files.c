@@ -1428,6 +1428,7 @@ delete_savefile_if_exists(VOID_ARGS)
     }
     return -1; /* SAVEF is empty */
 }
+
 /* try to open up a save file and prepare to restore it */
 int
 open_and_validate_saved_game(allow_replace_backup, is_backup_ptr)
