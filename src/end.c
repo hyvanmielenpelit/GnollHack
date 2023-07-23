@@ -1447,9 +1447,9 @@ int how;
     if (!survive && how <= GENOCIDED)
     {
         u.utruemortality++;
-        if ((wizard || discover) && !paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidDie, (char*)0, "Die?"))
+        if ((wizard || discover) && !paranoid_query_ex(ATR_NONE, CLR_MSG_GOD, ParanoidDie, (char*)0, "Die?"))
         {
-            pline("OK, so you don't %s.", (how == CHOKING) ? "choke" : "die");
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "OK, so you don't %s.", (how == CHOKING) ? "choke" : "die");
             savelife(how);
             survive = TRUE;
         }
@@ -2689,8 +2689,10 @@ boolean ask, isend;
     else if (defquery == 'a' || defquery == 'b') 
     {
         /* #dovanquished or #killed rather than final disclosure, so pline() is ok */
+        if (!isend)
+            play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
         const char* nomsg = "No creatures have been vanquished.";
-        pline1(nomsg);
+        pline_ex1(ATR_NONE, CLR_MSG_FAIL, nomsg);
         if (!isend)
             display_popup_text(nomsg, "No Vanquished Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_NONE);
 #if defined (DUMPLOG) || defined (DUMPHTML)
@@ -2873,8 +2875,10 @@ boolean ask, isend;
     }
     else if (defquery == 'a')
     {
+        if (!isend)
+            play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
         const char* nomsg = "No species have been genocided or become extinct.";
-        pline1(nomsg); /* Game is still ongoing, so pline is ok */
+        pline_ex1(ATR_NONE, CLR_MSG_FAIL, nomsg); /* Game is still ongoing, so pline is ok */
         if(!isend)
             display_popup_text(nomsg, "No Genocided Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_NONE);
 #if defined (DUMPLOG) || defined (DUMPHTML)
