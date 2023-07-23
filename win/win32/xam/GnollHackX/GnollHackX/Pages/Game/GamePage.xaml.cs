@@ -5651,7 +5651,7 @@ namespace GnollHackX.Pages.Game
 
                             float target_width = 0;
                             float target_height = 0;
-                            if (valtext.StartsWith("W"))
+                            if (valtext.Contains("W"))
                             {
                                 target_width = target_scale * App._statusWizardBitmap.Width;
                                 target_height = target_scale * App._statusWizardBitmap.Height;
@@ -5660,7 +5660,8 @@ namespace GnollHackX.Pages.Game
                                 curx += target_width;
                                 curx += innerspacing;
                             }
-                            else if (valtext.StartsWith("C"))
+
+                            if (valtext.Contains("C"))
                             {
                                 target_width = target_scale * App._statusCasualBitmap.Width;
                                 target_height = target_scale * App._statusCasualBitmap.Height;
@@ -5669,7 +5670,7 @@ namespace GnollHackX.Pages.Game
                                 curx += target_width;
                                 curx += innerspacing;
                             }
-                            else if (valtext.StartsWith("R"))
+                            else if (valtext.Contains("R"))
                             {
                                 target_width = target_scale * App._statusCasualClassicBitmap.Width;
                                 target_height = target_scale * App._statusCasualClassicBitmap.Height;
@@ -5678,7 +5679,7 @@ namespace GnollHackX.Pages.Game
                                 curx += target_width;
                                 curx += innerspacing;
                             }
-                            else if (valtext.StartsWith("M"))
+                            else if (valtext.Contains("M"))
                             {
                                 target_width = target_scale * App._statusModernBitmap.Width;
                                 target_height = target_scale * App._statusModernBitmap.Height;

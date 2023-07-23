@@ -36,6 +36,10 @@ namespace GnollHackX
                     res += "W";
                 else if (Mode == "explore")
                     res += "X";
+                else if (Mode == "casual")
+                    res += "C";
+                else if (Mode == "reloadable")
+                    res += "R";
                 else if (Mode == "modern")
                     res += "M";
 
