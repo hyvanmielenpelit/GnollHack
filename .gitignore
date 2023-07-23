@@ -55,6 +55,7 @@ win/win32/xam/GnollHackX/GnollHackX.Android/gnh/xcredits
 win/win32/xam/GnollHackX/GnollHackX.Android/gnh/symbols
 win/win32/xam/GnollHackX/GnollHackX.Android/gnh/license
 win/win32/xam/GnollHackX/GnollHackX.Android/gnh/nhdat
+win/win32/xam/GnollHackX/GnollHackX.Android/gnh/sysconf
 win/win32/xam/GnollHackX/GnollHackX.Android/gnh/defaults.gnh
 win/win32/xam/GnollHackX/GnollHackX.Android/assetpacks/*.zip
 libgnollhackios.a
@@ -63,6 +64,7 @@ win/win32/xam/GnollHackX/GnollHackX.iOS/gnh/xcredits
 win/win32/xam/GnollHackX/GnollHackX.iOS/gnh/symbols
 win/win32/xam/GnollHackX/GnollHackX.iOS/gnh/license
 win/win32/xam/GnollHackX/GnollHackX.iOS/gnh/nhdat
+win/win32/xam/GnollHackX/GnollHackX.iOS/gnh/sysconf
 win/win32/xam/GnollHackX/GnollHackX.iOS/gnh/defaults.gnh
 dat/dlb.lst
 win/win32/xam/GnollHackX/gnollhackdroid/date*.h
