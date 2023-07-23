@@ -1,6 +1,6 @@
 /* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-07-16 */
 
-/*	SCCS Id: @(#)droidconf.h	3.4	2011/03/31	*/
+/*	SCCS Id: @(#)iosconf.h	3.4	2011/03/31	*/
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1990, 1991, 1992, 1993. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -45,6 +45,8 @@
 #define USER_SOUNDS
 
 #define CHANGE_COLOR
+
+#define CONTINUE_PLAYING_AFTER_SAVING
 
 #endif /* IOSCONF_H */
 #endif /* GNH_IOS */

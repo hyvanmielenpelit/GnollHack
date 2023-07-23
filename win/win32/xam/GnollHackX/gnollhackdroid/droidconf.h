@@ -46,5 +46,7 @@
 
 #define CHANGE_COLOR
 
+#define CONTINUE_PLAYING_AFTER_SAVING
+
 #endif /* DROIDCONF_H */
 #endif /* GNH_ANDROID */

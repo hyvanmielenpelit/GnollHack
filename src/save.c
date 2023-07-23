@@ -94,6 +94,7 @@ dosave()
     else 
     {
         boolean contplay = FALSE;
+#ifdef CONTINUE_PLAYING_AFTER_SAVING
         if (CasualMode)
         {
             clear_nhwindow(WIN_MESSAGE);
@@ -112,7 +113,7 @@ dosave()
                 break;
             }
         }
-
+#endif
         clear_nhwindow(WIN_MESSAGE);
         pline("Saving...");
 #if defined(UNIX) || defined(VMS) || defined(__EMX__)
