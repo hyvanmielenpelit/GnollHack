@@ -192,6 +192,8 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetSkillTileOff();
         [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetCommandTileOff();
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetBuffTileOff();
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetCursorOff();
@@ -747,7 +749,7 @@ namespace GnollHackX.Unknown
             return LibGetNoGlyph();
         }
 
-        public void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int spell_tile, out int skill_tile, out int buff_tile, out int cursor_off)
+        public void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int spell_tile, out int skill_tile, out int command_tile, out int buff_tile, out int cursor_off)
         {
             //a = e =r = gen_tile = hit_tile = ui_tile = spell_tile = skill_tile = buff_tile = cursor_off = 0;
             a = LibGetAnimationOff();
@@ -758,6 +760,7 @@ namespace GnollHackX.Unknown
             ui_tile = LibGetUITileOff();
             spell_tile = LibGetSpellTileOff();
             skill_tile = LibGetSkillTileOff();
+            command_tile = LibGetCommandTileOff();
             buff_tile = LibGetBuffTileOff();
             cursor_off = LibGetCursorOff();
         }

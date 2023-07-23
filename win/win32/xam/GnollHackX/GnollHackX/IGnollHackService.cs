@@ -24,7 +24,7 @@ namespace GnollHackX
         int GetTotalTiles();
         int GetUnexploredGlyph();
         int GetNoGlyph();
-        void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int spell_tile, out int skill_tile, out int buff_tile, out int cursor_off);
+        void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int spell_tile, out int skill_tile, out int command_tile, out int buff_tile, out int cursor_off);
         List<AnimationDefinition> GetAnimationArray();
         List<EnlargementDefinition> GetEnlargementArray();
         List<ReplacementDefinition> GetReplacementArray();

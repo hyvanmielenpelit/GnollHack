@@ -1358,6 +1358,7 @@ E int FDECL(inv_cnt_ex, (BOOLEAN_P, BOOLEAN_P));
 E long FDECL(money_cnt, (struct obj *));
 E struct extended_menu_info FDECL(obj_to_extended_menu_info, (struct obj*));
 E struct extended_menu_info NDECL(menu_heading_info);
+E struct extended_menu_info NDECL(active_menu_info);
 E struct extended_menu_info FDECL(menu_group_heading_info, (CHAR_P));
 E struct extended_menu_info FDECL(menu_special_mark_info, (CHAR_P));
 E const char* FDECL(get_cmap_or_cmap_variation_glyph_explanation, (int));

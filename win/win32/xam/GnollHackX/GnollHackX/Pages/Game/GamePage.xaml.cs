@@ -556,8 +556,8 @@ namespace GnollHackX.Pages.Game
                     App.UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
                     App.NoGlyph = _gnollHackService.GetNoGlyph();
 
-                    int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, buff_tile_off, cursor_off;
-                    _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out buff_tile_off,
+                    int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off;
+                    _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out command_tile_off, out buff_tile_off,
                         out cursor_off);
                     App.AnimationOff = animoff;
                     App.EnlargementOff = enloff;
@@ -567,6 +567,7 @@ namespace GnollHackX.Pages.Game
                     App.UITileOff = ui_tile_off;
                     App.SpellTileOff = spell_tile_off;
                     App.SkillTileOff = skill_tile_off;
+                    App.CommandTileOff = command_tile_off;
                     App.BuffTileOff = buff_tile_off;
                     App.CursorOff = cursor_off;
 

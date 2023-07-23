@@ -153,6 +153,7 @@ extern
 #define start_menu_ex (*windowprocs.win_start_menu_ex)
 #define start_menu(x) start_menu_ex(x, 0)
 #define add_menu (*windowprocs.win_add_menu)
+#define add_active_menu(a, b, c, d, e, f, g, h, i) add_extended_menu(a, b, c, d, e, f, g, h, i, active_menu_info())
 #define add_extended_menu (*windowprocs.win_add_extended_menu)
 #define end_menu_ex (*windowprocs.win_end_menu_ex)
 #define end_menu(a, b) end_menu_ex(a, b, (const char*)0)

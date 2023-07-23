@@ -171,6 +171,11 @@ int LibGetSkillTileOff()
     return GLYPH_SKILL_TILE_OFF;
 }
 
+int LibGetCommandTileOff()
+{
+    return GLYPH_COMMAND_TILE_OFF;
+}
+
 int LibGetBuffTileOff()
 {
     return GLYPH_BUFF_OFF;

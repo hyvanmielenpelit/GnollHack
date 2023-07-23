@@ -3975,6 +3975,14 @@ menu_heading_info()
 }
 
 struct extended_menu_info
+active_menu_info()
+{
+    struct extended_menu_info info = zeroextendedmenuinfo;
+    info.menu_flags = MENU_FLAGS_ACTIVE;
+
+    return info;
+}
+struct extended_menu_info
 menu_group_heading_info(groupaccel)
 char groupaccel;
 {

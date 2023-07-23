@@ -849,6 +849,7 @@ namespace GnollHackX
         public static int UITileOff { get; set; }
         public static int SpellTileOff { get; set; }
         public static int SkillTileOff { get; set; }
+        public static int CommandTileOff { get; set; }
         public static int BuffTileOff { get; set; }
         public static int CursorOff { get; set; }
 

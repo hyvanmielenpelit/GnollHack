@@ -64,6 +64,10 @@ struct ui_component_definition {
     const char* component_names[MAX_UI_TILE_COMPONENTS];
 };
 
+struct command_tile_definition {
+    const char* name;
+};
+
 enum game_ui_tile_types
 {
     GENERAL_UI_ELEMENTS = 0,        /* Check box etc. */
@@ -79,6 +83,26 @@ enum game_ui_tile_types
     JAR2_GRAPHICS,
     JAR3_GRAPHICS,
     MAX_UI_TILES
+};
+
+enum game_command_tile_types
+{
+    NO_COMMAND_TILE,
+    VIEW_SPELLS_COMMAND_TILE,
+    MIX_COMMAND_TILE,
+    YOU_COMMAND_TILE,
+    ATTRIBUTES_COMMAND_TILE,
+    SKILLS_COMMAND_TILE,
+    RIDE_COMMAND_TILE,
+    UNTRAP_COMMAND_TILE,
+    CONDUCT_COMMAND_TILE,
+    OVERVIEW_COMMAND_TILE,
+    CHRONICLE_COMMAND_TILE,
+    KILLED_COMMAND_TILE,
+    GENOCIDED_COMMAND_TILE,
+    DISCOVERED_COMMAND_TILE,
+    MONSTER_COMMAND_TILE,
+    MAX_COMMAND_TILES
 };
 
 enum game_ui_status_mark_types

@@ -4081,6 +4081,13 @@ short animidx;
         /* Currently skill tiles do not have animations */
         //return glyph2tile[i + GLYPH_SKILL_TILE_OFF];
     }
+
+    /* Command tiles */
+    for (i = 0; i < MAX_COMMAND_TILES; i++)
+    {
+        /* Currently command tiles do not have animations */
+        //return glyph2tile[i + GLYPH_COMMAND_TILE_OFF];
+    }
 #endif
 
     /* Replacement */
@@ -4234,6 +4241,13 @@ short enlidx, enl_anim_tile_idx;
     {
         /* Currently skill tiles do not have enlargements */
         //return glyph2tile[i + GLYPH_SKILL_TILE_OFF];
+    }
+
+    /* Command tiles */
+    for (i = 0; i < MAX_COMMAND_TILES; i++)
+    {
+        /* Currently command tiles do not have enlargements */
+        //return glyph2tile[i + GLYPH_COMMAND_TILE_OFF];
     }
 #endif
 
@@ -4453,6 +4467,13 @@ short replacement_idx;
     {
         /* Currently skill tiles do not have replacements */
         //return glyph2tile[i + GLYPH_SKILL_TILE_OFF];
+    }
+
+    /* Command tiles */
+    for (i = 0; i < MAX_COMMAND_TILES; i++)
+    {
+        /* Currently command tiles do not have replacements */
+        //return glyph2tile[i + GLYPH_COMMAND_TILE_OFF];
     }
 #endif
 

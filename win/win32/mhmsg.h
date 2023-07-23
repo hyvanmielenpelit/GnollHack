@@ -66,6 +66,7 @@ typedef struct mswin_nhmsg_add_menu {
     int color;
     const char *str;
     BOOLEAN_P presel;
+    unsigned long miflags;
 } MSNHMsgAddMenu, *PMSNHMsgAddMenu;
 
 typedef struct mswin_nhmsg_cursor {

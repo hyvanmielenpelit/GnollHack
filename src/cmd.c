@@ -794,7 +794,7 @@ doability(VOID_ARGS)
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, NO_GLYPH, &any,
+    add_active_menu(win, YOU_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
         0, 0, ATR_NONE, NO_COLOR,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -807,7 +807,7 @@ doability(VOID_ARGS)
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, NO_GLYPH, &any,
+    add_active_menu(win, ATTRIBUTES_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
         0, 0, ATR_NONE, NO_COLOR,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -819,7 +819,7 @@ doability(VOID_ARGS)
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, NO_GLYPH, &any,
+    add_active_menu(win, SKILLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
         0, 0, ATR_NONE, NO_COLOR,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -852,7 +852,7 @@ doability(VOID_ARGS)
         any = zeroany;
         any.a_int = abilitynum + 1;
 
-        add_menu(win, NO_GLYPH, &any,
+        add_active_menu(win, MONSTER_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
             0, 0, ATR_NONE, NO_COLOR,
             available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -874,7 +874,7 @@ doability(VOID_ARGS)
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, NO_GLYPH, &any,
+    add_active_menu(win, RIDE_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
         0, 0, ATR_NONE, NO_COLOR,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -888,7 +888,7 @@ doability(VOID_ARGS)
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, NO_GLYPH, &any,
+    add_active_menu(win, UNTRAP_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
         0, 0, ATR_NONE, NO_COLOR,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -922,7 +922,7 @@ doability(VOID_ARGS)
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, NO_GLYPH, &any,
+    add_active_menu(win, CONDUCT_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
         0, 0, ATR_NONE, NO_COLOR,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -934,7 +934,7 @@ doability(VOID_ARGS)
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, NO_GLYPH, &any,
+    add_active_menu(win, OVERVIEW_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
         0, 0, ATR_NONE, NO_COLOR,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -946,7 +946,7 @@ doability(VOID_ARGS)
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, NO_GLYPH, &any,
+    add_active_menu(win, CHRONICLE_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
         0, 0, ATR_NONE, NO_COLOR,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -958,7 +958,7 @@ doability(VOID_ARGS)
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, NO_GLYPH, &any,
+    add_active_menu(win, KILLED_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
         0, 0, ATR_NONE, NO_COLOR,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -970,7 +970,7 @@ doability(VOID_ARGS)
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, NO_GLYPH, &any,
+    add_active_menu(win, GENOCIDED_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
         0, 0, ATR_NONE, NO_COLOR,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -982,7 +982,7 @@ doability(VOID_ARGS)
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, NO_GLYPH, &any,
+    add_active_menu(win, DISCOVERED_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
         0, 0, ATR_NONE, NO_COLOR,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -2504,6 +2504,9 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
                 break;
             case GLYPH_SKILL_TILE_OFF:
                 header = "GENERAL_SKILL_TILE_OFF";
+                break;
+            case GLYPH_COMMAND_TILE_OFF:
+                header = "GENERAL_COMMAND_TILE_OFF";
                 break;
             case GLYPH_BUFF_OFF:
                 header = "BUFF_OFF";

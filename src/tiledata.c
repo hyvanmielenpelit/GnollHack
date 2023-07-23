@@ -44,6 +44,24 @@ NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = 
     {"jar3-graphics",           NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 2, 64, 48, {"background", "contents", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
 };
 
+NEARDATA struct command_tile_definition command_tile_definitions[MAX_COMMAND_TILES] = {
+    { "no-command" },
+    { "view-spell" },
+    { "mix-spell" },
+    { "you" },
+    { "attributes" },
+    { "skill" },
+    { "ride" },
+    { "untrap" },
+    { "conduct" },
+    { "overview" },
+    { "chronicle" },
+    { "killed" },
+    { "genocided" },
+    { "discoveries" },
+    { "monster" },
+};
+
 boolean
 has_generic_player_action_tile(action)
 enum action_tile_types action;
@@ -1924,17 +1942,12 @@ uchar* tilemapflags;
 
     const char* spellskill_subtile_names[2] = { "active" , "inactive" };
     set_name = "spell-tile";
-    for (i = 0; i < MAXSPELL + 2; i++)
+    for (i = 0; i < MAXSPELL; i++)
     {
         if (process_style == 0)
         {
             char namebuf[BUFSZ] = "";
-            if(i < MAXSPELL)
-                Strcpy(namebuf, OBJ_NAME(objects[FIRST_SPELL + i]));
-            else if (i == MAXSPELL)
-                Strcpy(namebuf, "view-spell");
-            else if (i == MAXSPELL + 1)
-                Strcpy(namebuf, "mix-spell");
+            Strcpy(namebuf, OBJ_NAME(objects[FIRST_SPELL + i]));
             replace_char(namebuf, ' ', '-');
             Sprintf(buf, "%s,%s,%s,%d,%d,%d", tile_section_name, set_name, namebuf, 2, 64, 48);
             for (j = 0; j < 2; j++)
@@ -1974,6 +1987,31 @@ uchar* tilemapflags;
             glyph_offset = GLYPH_SKILL_TILE_OFF;
             tilemaparray[i + GLYPH_SKILL_TILE_OFF] = tile_count;
             tilemapflags[i + GLYPH_SKILL_TILE_OFF] |= GLYPH_TILE_FLAG_HALF_SIZED_TILE;
+        }
+        tile_count++;
+    }
+
+    set_name = "command-tile";
+    for (i = 0; i < MAX_COMMAND_TILES; i++)
+    {
+        if (process_style == 0)
+        {
+            char namebuf[BUFSZ] = "";
+            Strcpy(namebuf, command_tile_definitions[i].name);
+            replace_char(namebuf, ' ', '-');
+            Sprintf(buf, "%s,%s,%s,%d,%d,%d", tile_section_name, set_name, namebuf, 2, 64, 48);
+            for (j = 0; j < 2; j++)
+            {
+                Sprintf(eos(buf), ",%s", spellskill_subtile_names[j]);
+            }
+            Sprintf(eos(buf), "\n");
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (process_style == 1)
+        {
+            glyph_offset = GLYPH_COMMAND_TILE_OFF;
+            tilemaparray[i + GLYPH_COMMAND_TILE_OFF] = tile_count;
+            tilemapflags[i + GLYPH_COMMAND_TILE_OFF] |= GLYPH_TILE_FLAG_HALF_SIZED_TILE;
         }
         tile_count++;
     }

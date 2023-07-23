@@ -1341,6 +1341,7 @@ mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
         data.color = color;
         data.str = str;
         data.presel = presel;
+        data.miflags = info.menu_flags;
 
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_ADDMENU, (LPARAM) &data);

@@ -1267,15 +1267,13 @@ int* spell_no;
             add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                 "", MENU_UNSELECTED);
             any.a_int = -1;
-            int glyph = MAXSPELL + GLYPH_SPELL_TILE_OFF;
-            struct extended_menu_info info = zeroextendedmenuinfo;
-            info.menu_flags |= MENU_FLAGS_ACTIVE;
-            add_extended_menu(tmpwin, glyph, &any, '?', 0, ATR_NONE, NO_COLOR,
-                "View Spells", MENU_UNSELECTED, info);
+            int glyph = VIEW_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+            add_active_menu(tmpwin, glyph, &any, '?', 0, ATR_NONE, NO_COLOR,
+                "View Spells", MENU_UNSELECTED);
             any.a_int = -2;
-            glyph = MAXSPELL + 1 + GLYPH_SPELL_TILE_OFF;
-            add_extended_menu(tmpwin, glyph, &any, '!', 0, ATR_NONE, NO_COLOR,
-                "Mix Spells", MENU_UNSELECTED, info);
+            glyph = MIX_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+            add_active_menu(tmpwin, glyph, &any, '!', 0, ATR_NONE, NO_COLOR,
+                "Mix Spells", MENU_UNSELECTED);
         }
     }
 
