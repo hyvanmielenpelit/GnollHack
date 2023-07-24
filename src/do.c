@@ -1105,7 +1105,7 @@ int otyp;
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
     }
-    else
+    else if (objects[otyp].oc_material == saved_objects[otyp].oc_material) /* Non-shuffled materials */
     {
         Strcpy(buf2, material_definitions[objects[otyp].oc_material].name);
         *buf2 = highc(*buf2);
