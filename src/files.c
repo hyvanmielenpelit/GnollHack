@@ -1610,19 +1610,23 @@ int load_type; // 0 = at start normally, 1 = load after saving, corresponds to e
         reseting = FALSE;
         
         /* Success! */
+        encounter_init();
         delete_excess_levelfiles();
 
-        if (load_type == 1)
-            flush_screen(1);
-
-        if (load_type == 0)
+        switch (load_type)
         {
-            encounter_init();
-
+        case 0:
             /* Welcome */
             welcome(FALSE);
             check_special_room(FALSE);
             mode_message();
+            break;
+        case 1:
+            flush_screen(1);
+            update_game_music();
+            play_level_ambient_sounds();
+            play_environment_ambient_sounds();
+            break;
         }
 
         boolean savefilekept = FALSE;

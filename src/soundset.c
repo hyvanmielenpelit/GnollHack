@@ -206,6 +206,10 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/NPC/Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/NPC/Secondary", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/NPC/Tertiary", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/NPC/Artificer", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/NPC/Warp Engineer", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/Shop/Izchak", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/Room/Leprechaun Hall", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Disintegrate", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Life Saved", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Healing/Healing", 0.3f },
@@ -19267,7 +19271,10 @@ struct mkroom* room;
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
                     break;
                 case CANDLESHOP:
-                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    if(Is_minetown_level(&u.uz))
+                        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_IZCHAK;
+                    else
+                        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
                     break;
                 default:
                     break;
@@ -19339,7 +19346,11 @@ struct mkroom* room;
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_TERTIARY;
                     break;
                 case NPC_ARTIFICER:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_ARTIFICER;
+                    break;
                 case NPC_WARP_ENGINEER:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_WARP_ENGINEER;
+                    break;
                 case NPC_QUANTUM_MECHANIC:
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_SECONDARY;
                     break;
@@ -19384,7 +19395,11 @@ struct mkroom* room;
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_TERTIARY;
                     break;
                 case NPC_ARTIFICER:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_ARTIFICER;
+                    break;
                 case NPC_WARP_ENGINEER:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_WARP_ENGINEER;
+                    break;
                 case NPC_QUANTUM_MECHANIC:
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_SECONDARY;
                     break;
@@ -19395,6 +19410,7 @@ struct mkroom* room;
             }
             break;
         case LEPREHALL:
+            res = GHSOUND_DUNGEON_NORMAL_MUSIC_LEPRECHAUN_HALL;
             break;
         case COCKNEST:
             break;

@@ -90,11 +90,6 @@ int get_condition_color(int cond_mask);
 /* Function definitions */
 void lib_init_nhwindows(int* argc, char** argv)
 {
-    struct ghsound_music_info mi = { 0 };
-    mi.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
-    mi.volume = 1.0f;
-    play_ghsound_music(mi);
-
     lib_callbacks.callback_init_nhwindows();
     iflags.window_inited = 1;
     iflags.using_gui_sounds = 1;
@@ -132,6 +127,11 @@ void lib_askname(void)
     Strcpy(modedescbuf, get_game_mode_description());
     *modedescbuf = highc(*modedescbuf);
     int res = 0;
+
+    struct ghsound_music_info mi = { 0 };
+    mi.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
+    mi.volume = 1.0f;
+    play_ghsound_music(mi);
 
 #ifdef SELECTSAVED
     if (iflags.wc2_selectsaved && !iflags.renameinprogress)
