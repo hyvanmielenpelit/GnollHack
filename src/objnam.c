@@ -5683,13 +5683,19 @@ struct obj* item;
         return cloak_simple_name(item);
     else if (is_helmet(item))
         return helm_simple_name(item);
-    else if(objects[item->otyp].oc_subtyp >= 0 && objects[item->otyp].oc_subtyp < MAX_ARMOR_TYPES)
-        return armor_type_names[objects[item->otyp].oc_subtyp];
     else
-        return "armor";
-
+        return otyp_armor_class_simple_name(item->otyp);
 }
 
+const char*
+otyp_armor_class_simple_name(otyp)
+int otyp;
+{
+    if (objects[otyp].oc_subtyp >= 0 && objects[otyp].oc_subtyp < MAX_ARMOR_TYPES)
+        return armor_type_names[objects[otyp].oc_subtyp];
+    else
+        return "armor";
+}
 
 /* helm vs hat for messages */
 const char *

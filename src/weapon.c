@@ -136,6 +136,15 @@ int skill_id;
         return P_NAME_PLURAL(absid);
 }
 
+const char*
+otyp_weapon_skill_name(otyp)
+int otyp;
+{
+    schar type = objects[otyp].oc_skill;
+    enum p_skills skill = (enum p_skills)((type < 0) ? -type : type);
+    const char* descr = P_NAME(skill);
+    return descr;
+}
 
 const char*
 weapon_skill_name(obj)

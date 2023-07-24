@@ -1347,7 +1347,7 @@ boolean
 throwing_weapon(obj)
 struct obj *obj;
 {
-    return (boolean) (nonmelee_throwing_weapon(obj) || (objects[obj->otyp].oc_flags & O1_MELEE_AND_THROWN_WEAPON));
+    return (boolean)is_otyp_throwing_weapon(obj->otyp);
 }
 
 /* return true for weapon meant to be only thrown and cannot be used in melee */
@@ -1355,7 +1355,7 @@ boolean
 nonmelee_throwing_weapon(obj)
 struct obj* obj;
 {
-    return (boolean)(is_missile(obj) || (objects[obj->otyp].oc_flags & O1_THROWN_WEAPON_ONLY));
+    return (boolean)is_otyp_nonmelee_throwing_weapon(obj->otyp);
 }
 
 

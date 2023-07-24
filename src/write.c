@@ -13,12 +13,22 @@ STATIC_DCL char *FDECL(new_book_description, (int, char *));
  */
 int
 ink_cost(otmp)
-register struct obj *otmp;
+register struct obj* otmp;
 {
-    if (otmp->oclass == SPBOOK_CLASS)
-        return (10 * ((int)objects[otmp->otyp].oc_spell_level + 2));
+    if (!otmp)
+        return 0;
 
-    switch (otmp->otyp)
+    return otyp_ink_cost(otmp->otyp);
+}
+
+int
+otyp_ink_cost(otyp)
+int otyp;
+{
+    if (objects[otyp].oc_class == SPBOOK_CLASS)
+        return (10 * ((int)objects[otyp].oc_spell_level + 2));
+
+    switch (otyp)
     {
     case SCR_MAIL:
         return 2;

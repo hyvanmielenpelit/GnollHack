@@ -651,6 +651,7 @@ E void FDECL(set_wounded_legs, (long, int));
 E void FDECL(heal_legs, (int));
 E boolean NDECL(floorexamine);
 E int FDECL(itemdescription, (struct obj*));
+E int FDECL(itemdescription_core, (struct obj*, int));
 E int FDECL(corpsedescription, (struct obj*));
 E void FDECL(printweight, (char*, int, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(monsterdescription, (struct monst*));
@@ -691,6 +692,7 @@ E void NDECL(heal_ailments_upon_revival);
 #if !defined (GNH_MOBILE) && defined (DEBUG)
 E void NDECL(write_spells);
 E void NDECL(write_monsters);
+E void NDECL(write_items);
 #endif
 
 /* ### do_name.c ### */
@@ -2464,6 +2466,7 @@ E const char* FDECL(robe_simple_name, (struct obj*));
 E const char* FDECL(miscitem_simple_name, (struct obj*));
 E const char *FDECL(helm_simple_name, (struct obj *));
 E const char* FDECL(armor_class_simple_name, (struct obj*));
+E const char* FDECL(otyp_armor_class_simple_name, (int));
 E const char *FDECL(mimic_obj_name, (struct monst *));
 E char *FDECL(safe_qbuf, (char *, const char *, const char *, struct obj *,
                           char *(*)(OBJ_P), char *(*)(OBJ_P), const char *));
@@ -3990,6 +3993,7 @@ E int FDECL(vms_get_saved_games, (const char *, char ***));
 E int FDECL(practice_needed_to_advance, (int, int));
 E const char *FDECL(weapon_descr, (struct obj *));
 E const char* FDECL(weapon_skill_name, (struct obj*));
+E const char* FDECL(otyp_weapon_skill_name, (int));
 E const char* FDECL(get_skill_name, (int));
 E const char* FDECL(get_skill_plural_name, (int));
 E int FDECL(m_weapon_range, (struct monst*, struct obj*, struct obj*));
@@ -4288,6 +4292,7 @@ E int FDECL(count_unworn_items, (struct obj*));
 
 E int FDECL(dowrite, (struct obj *));
 E int FDECL(ink_cost, (struct obj*));
+E int FDECL(otyp_ink_cost, (int));
 
 /* ### zap.c ### */
 

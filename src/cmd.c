@@ -2609,14 +2609,28 @@ wiz_save_spells(VOID_ARGS)
 
 /* Save monsters into .md files */
 STATIC_PTR int
-wiz_save_monsters2(VOID_ARGS)
+wiz_save_monsters_md(VOID_ARGS)
 {
     if (wizard)
     {
         write_monsters();
     }
     else
-        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_monsters2)));
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_monsters_md)));
+
+    return 0;
+}
+
+/* Save items into .md files */
+STATIC_PTR int
+wiz_save_items_md(VOID_ARGS)
+{
+    if (wizard)
+    {
+        write_items();
+    }
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_items_md)));
 
     return 0;
 }
@@ -5957,7 +5971,9 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "wizsavespells", "save spells into .md files",
             wiz_save_spells, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsavemonsters", "save monsters into .md files",
-            wiz_save_monsters2, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+            wiz_save_monsters_md, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizsaveitems", "save items into .md files",
+            wiz_save_items_md, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
     { '\0', "wizcrown", "make the god crown you",
             wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },

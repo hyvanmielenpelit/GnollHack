@@ -3696,7 +3696,6 @@ register struct obj *obj;
 boolean shk_buying;
 {
     register long tmp = get_object_base_value(obj);
-
     if (obj->oartifact)
     {
         tmp = arti_cost(obj);

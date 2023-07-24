@@ -749,21 +749,31 @@ register struct obj* obj;
     if (!obj || obj == &zeroobj)
         return 0;
 
+    return itemdescription_core(obj, obj->otyp);
+}
+
+int
+itemdescription_core(obj, otyp)
+struct obj* obj;
+int otyp;
+{
+    if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
+        return 0;
+
     winid datawin = WIN_ERR;
-    int glyph = obj_to_glyph(obj, rn2_on_display_rng);
-    int gui_glyph = maybe_get_replaced_glyph(glyph, obj->ox, obj->oy, data_to_replacement_info(glyph, LAYER_OBJECT, obj, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
+    int glyph = obj ? obj_to_glyph(obj, rn2_on_display_rng) : otyp + GLYPH_OBJ_OFF;
+    int gui_glyph = obj ? maybe_get_replaced_glyph(glyph, obj->ox, obj->oy, data_to_replacement_info(glyph, LAYER_OBJECT, obj, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0)) : glyph;
 
     datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_DESCRIPTION_SCREEN, gui_glyph, extended_create_window_info_from_obj(obj));
 
-    boolean stats_known = object_stats_known(obj);
-    int otyp = obj->otyp;
-    if (obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT)
+    boolean stats_known = obj ? object_stats_known(obj) : TRUE;
+    if (obj && obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT)
     {
-        if (!stats_known) //!objects[obj->otyp].oc_name_known)
+        if (!stats_known)
             otyp = artilist[obj->oartifact].maskotyp;
     }
     
-    boolean uses_spell_flags = object_uses_spellbook_wand_flags_and_properties(obj);
+    boolean uses_spell_flags = otyp_uses_spellbook_wand_flags(otyp); // object_uses_spellbook_wand_flags_and_properties(obj);
     boolean has_conferred_powers = FALSE;
     boolean has_extra_damage = FALSE;
     boolean has_slaying = FALSE;
@@ -776,15 +786,17 @@ register struct obj* obj;
     char buf[BUFSZ];
     char buf2[BUFSZ];
     char buf3[BUFSZ];
+    char plusbuf[BUFSZ];
+    char endbuf[BUFSZ];
 
     /* Name */
-    Strcpy(buf, cxname(obj));
+    Strcpy(buf, obj ? cxname(obj) : OBJ_NAME(objects[otyp]));
     *buf = highc(*buf);
     
     putstr(datawin, ATR_TITLE, buf);
 
     /* Type */
-    strcpy_capitalized_for_title(buf3, def_oc_syms[(int)obj->oclass].name);
+    strcpy_capitalized_for_title(buf3, def_oc_syms[(int)objects[otyp].oc_class].name);
     //Sprintf(buf, "Class:                  %s", buf2);
     Sprintf(buf, "%s", makesingular(buf3));
     //
@@ -795,12 +807,12 @@ register struct obj* obj;
     Strcpy(buf3, ""); /* Postfix preceded by : */
     if (objects[otyp].oc_class == WEAPON_CLASS)
     {
-        if (is_ammo(obj))
+        if (is_otyp_ammo(otyp))
         {
             Strcpy(buf2, "Ammunition");
             hidemainclass = TRUE;
         }
-        else if (is_launcher(obj))
+        else if (is_otyp_launcher(otyp))
         {
             Strcpy(buf2, "Ranged");
         }
@@ -820,9 +832,8 @@ register struct obj* obj;
     }
     else if (objects[otyp].oc_class == ARMOR_CLASS)
     {
-        strcpy_capitalized_for_title(buf3, armor_class_simple_name(obj));
-
-        if (is_weapon(obj))
+        strcpy_capitalized_for_title(buf3, obj ? armor_class_simple_name(obj) : otyp_armor_class_simple_name(otyp));
+        if (is_otyp_weapon(otyp))
         {
             Strcat(buf3, ", Melee Weapon");
         }
@@ -841,15 +852,15 @@ register struct obj* obj;
     }
     else if (objects[otyp].oc_class == TOOL_CLASS)
     {
-        if (is_weptool(obj))
+        if (is_otyp_weptool(otyp))
         {
             Strcpy(buf2, "Weapon-like");
         }
-        if (is_candle(obj))
+        if (is_otyp_candle(otyp))
         {
             Strcpy(buf3, "Candle");
         }
-        if (Is_container(obj))
+        if (Is_otyp_container(otyp))
         {
             Strcpy(buf2, "Container");
             hidemainclass = TRUE;
@@ -897,7 +908,7 @@ register struct obj* obj;
     {
         Sprintf(eos(buf), ": %s", buf3);
     }
-    if (obj->aknown && obj->oartifact)
+    if (obj && obj->aknown && obj->oartifact)
     {
         Sprintf(eos(buf), " - Artifact");
         if ((obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS) && artilist[obj->oartifact].maskotyp > STRANGE_OBJECT)
@@ -907,7 +918,7 @@ register struct obj* obj;
             Sprintf(eos(buf), " %s", aobjtypebuf);
         }
     }
-    if (stats_known && obj->oclass == SPBOOK_CLASS && !(objects[otyp].oc_flags & O1_NON_SPELL_SPELLBOOK))
+    if (stats_known && objects[otyp].oc_class == SPBOOK_CLASS && !(objects[otyp].oc_flags & O1_NON_SPELL_SPELLBOOK))
     {
         print_spell_level_text(buf2, otyp, TRUE, TRUE, FALSE);
         Sprintf(eos(buf), " - %s", buf2);
@@ -919,10 +930,10 @@ register struct obj* obj;
     putstr(datawin, 0, buf);
 
     /* Weight */
-    int objweight = obj->owt;
+    int objweight = obj ? obj->owt : objects[otyp].oc_weight;
 
     /* Show loadstone incorrectly if not known and not carried */
-    if(otyp == LOADSTONE && !carried(obj) && !objects[otyp].oc_name_known)
+    if(obj && otyp == LOADSTONE && !carried(obj) && !objects[otyp].oc_name_known)
         objweight = objects[LUCKSTONE].oc_weight;
 
     printweight(buf2, objweight, FALSE, FALSE);
@@ -933,29 +944,31 @@ register struct obj* obj;
     if(stats_known)
     {
         /* Gold value */
-        if(obj->oartifact)
+        if (!obj)
+            Sprintf(buf2, "%ld gold", objects[otyp].oc_cost);
+        else if(obj->oartifact)
             Sprintf(buf2, "%ld gold", artilist[obj->oartifact].cost);
         else
             Sprintf(buf2, "%ld gold", get_object_base_value(obj));
 
-        Sprintf(buf, "Base value:             %s", buf2);        
+        Sprintf(buf, "Base value:             %s", buf2);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
         /* Nutritinal value */
-        if (is_edible(obj))
+        if (obj ? is_edible(obj) : is_otyp_normally_edible(otyp))
         {
-            Sprintf(buf2, "%d rounds", obj->oeaten ? obj->oeaten : obj_nutrition(obj, &youmonst));
+            Sprintf(buf2, "%d rounds", !obj ? objects[otyp].oc_nutrition : obj->oeaten ? obj->oeaten : obj_nutrition(obj, &youmonst));
             Sprintf(buf, "Nutritional value:      %s", buf2);            
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
-        if (otyp == EGG && obj->corpsenm >= LOW_PM && obj->known && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG))
+        if (obj && otyp == EGG && obj->corpsenm >= LOW_PM && obj->known && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG))
         {
             Strcpy(buf2, mons[obj->corpsenm].mname);
             *buf2 = highc(*buf2);
             Sprintf(buf, "Egg type:               %s", buf2);            
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
-        if (stats_known && is_obj_normally_edible(obj))
+        if (stats_known && is_otyp_normally_edible(otyp))
         {
             if (objects[otyp].oc_edible_subtype > EDIBLETYPE_NORMAL)
             {
@@ -1055,61 +1068,77 @@ register struct obj* obj;
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
 
-            int mnum = obj->corpsenm;
-            if (is_obj_rotting_corpse(obj) && mnum > NON_PM && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) !=0)
+            if (obj)
             {
-                long rotted = get_rotted_status(obj);
-                if (rotted > 5L)
+                int mnum = obj->corpsenm;
+                if (is_obj_rotting_corpse(obj) && mnum > NON_PM && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) != 0)
                 {
-                    Strcpy(buf2, "Tainted");
-                }
-                else if (obj->orotten || rotted > 3L)
-                {
-                    Strcpy(buf2, "Rotten");
-                }
-                else
-                {
-                    Strcpy(buf2, "Unrotten");
-                }
+                    long rotted = get_rotted_status(obj);
+                    if (rotted > 5L)
+                    {
+                        Strcpy(buf2, "Tainted");
+                    }
+                    else if (obj->orotten || rotted > 3L)
+                    {
+                        Strcpy(buf2, "Rotten");
+                    }
+                    else
+                    {
+                        Strcpy(buf2, "Unrotten");
+                    }
 
-                Sprintf(buf, "Comestible quality:     %s", buf2);                
-                putstr(datawin, 0, buf);
+                    Sprintf(buf, "Comestible quality:     %s", buf2);
+                    putstr(datawin, 0, buf);
+                }
             }
         }
     }
 
     /* Material */
-    if (obj->dknown)
+    if (obj)
     {
-        Strcpy(buf2, material_definitions[obj->material].name);
+        if (obj->dknown)
+        {
+            Strcpy(buf2, material_definitions[obj->material].name);
+            *buf2 = highc(*buf2);
+            Sprintf(buf, "Material:               %s", buf2);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+    }
+    else
+    {
+        Strcpy(buf2, material_definitions[objects[otyp].oc_material].name);
         *buf2 = highc(*buf2);
-        Sprintf(buf, "Material:               %s", buf2);
+        Sprintf(buf, "Base material:          %s", buf2);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    if (objects[otyp].oc_name_known && obj->oartifact == 0 && !objects[otyp].oc_unique && (objects[otyp].oc_class == SPBOOK_CLASS || objects[obj->otyp].oc_class == SCROLL_CLASS)
+    if (objects[otyp].oc_name_known && (!obj || obj->oartifact == 0) && !objects[otyp].oc_unique && (objects[otyp].oc_class == SPBOOK_CLASS || objects[otyp].oc_class == SCROLL_CLASS)
         && otyp != SCR_BLANK_PAPER && otyp != SPE_BLANK_PAPER && otyp != SCR_SUPREME_DIABOLISM)
     {
-        int ink = ink_cost(obj);
+        int ink = otyp_ink_cost(otyp);
         Sprintf(buf, "Base write cost:        %d charge%s", ink, plur(ink));        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    if (is_obj_candelabrum(obj))
+    if (is_otyp_candelabrum(otyp))
     {
         int max_candles = (int)objects[otyp].oc_special_quality;
         Sprintf(buf, "Attachable items:       Up to %d candle%s", max_candles, plur(max_candles));        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-        int cur_candles = (int)obj->special_quality;
-        Sprintf(buf, "Currently attached:     %d candle%s", cur_candles, plur(cur_candles));        
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        if (obj)
+        {
+            int cur_candles = (int)obj->special_quality;
+            Sprintf(buf, "Currently attached:     %d candle%s", cur_candles, plur(cur_candles));
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
     }
 
     /* Skill */
     if (stats_known && objects[otyp].oc_skill != P_NONE)
     {
-        Strcpy(buf2, weapon_skill_name(obj));
+        Strcpy(buf2, obj ? weapon_skill_name(obj) : otyp_weapon_skill_name(otyp));
         if (objects[otyp].oc_skill < 0 && objects[otyp].oc_skill != -P_THROWN_WEAPON)
         {
             Sprintf(buf, "Ammunition for:         Weapons using %s skill", buf2);
@@ -1118,12 +1147,11 @@ register struct obj* obj;
         {
             *buf2 = highc(*buf2);
             Sprintf(buf, "Skill:                  %s", buf2);
-        }
-        
+        }        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    if (stats_known && obj->oclass == SPBOOK_CLASS && !(objects[otyp].oc_flags & O1_NON_SPELL_SPELLBOOK))
+    if (stats_known && objects[otyp].oc_class == SPBOOK_CLASS && !(objects[otyp].oc_flags & O1_NON_SPELL_SPELLBOOK))
     {
         print_spell_level_text(buf2, otyp, FALSE, TRUE, FALSE);
         Sprintf(buf, "Level:                  %s", buf2);
@@ -1131,17 +1159,14 @@ register struct obj* obj;
     }
 
     boolean weapon_stats_shown = FALSE;
-    if (!uses_spell_flags && objects[otyp].oc_name_known && (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj) || objects[otyp].oc_class == GEM_CLASS) && stats_known)))
+    if (!uses_spell_flags && objects[otyp].oc_name_known && (is_otyp_weapon(otyp) || ((is_otyp_gloves(otyp) || is_otyp_boots(otyp) || objects[otyp].oc_class == GEM_CLASS) && stats_known)))
     {
         weapon_stats_shown = TRUE;
-
-        char plusbuf[BUFSZ];
         boolean maindiceprinted = FALSE;
-
-        if (!is_ammo(obj) && !is_gloves(obj) && !is_boots(obj))
+        if (!is_otyp_ammo(otyp) && !is_otyp_gloves(otyp) && !is_otyp_boots(otyp))
         {
             /* Single or two-handed */
-            if (bimanual(obj))
+            if (is_otyp_bimanual(otyp))
                 Strcpy(buf2, "Two-handed");
             else
                 Strcpy(buf2, "Single-handed");
@@ -1150,39 +1175,45 @@ register struct obj* obj;
             
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-            if (is_appliable_weapon(obj))
+            if (obj ? is_appliable_weapon(obj) : is_otyp_appliable_weapon(otyp))
             {
                 /* Single or two-handed */
-                if (is_appliable_pole_type_weapon(obj))
+                if (obj ? is_appliable_pole_type_weapon(obj) : is_otyp_appliable_pole_type_weapon(otyp))
                 {
-                    int polemin = 1, polemax = 2;
-                    get_pole_type_weapon_min_max_distances(obj, &youmonst, &polemin, &polemax);
-                    Sprintf(buf2, "Yes, for a ranged attack (min: %.0f\', max: %.0f\')", floor(sqrt((double)polemin) * 5), ceil(sqrt((double)polemax) * 5));
+                    if (obj)
+                    {
+                        int polemin = 1, polemax = 2;
+                        get_pole_type_weapon_min_max_distances(obj, &youmonst, &polemin, &polemax);
+                        Sprintf(buf2, "Yes, for a ranged attack (min: %.0f\', max: %.0f\')", floor(sqrt((double)polemin) * 5), ceil(sqrt((double)polemax) * 5));
+                    }
+                    else
+                    {
+                        Strcpy(buf2, "Yes, for a ranged attack");
+                    }
                 }
-                else if (is_pick(obj))
+                else if (obj ? is_pick(obj) : is_otyp_pick(otyp))
                 {
                     Strcpy(buf2, "Yes, for cutting rock");
                 }
-                else if (is_axe(obj))
+                else if (obj ? is_axe(obj) : is_otyp_axe(otyp))
                 {
                     Strcpy(buf2, "Yes, for chopping wood");
                 }
-                else if (is_saw(obj))
+                else if (obj ? is_saw(obj) : is_otyp_saw(otyp))
                 {
                     Strcpy(buf2, "Yes, for cutting wood");
                 }
-                else if (is_whip(obj))
+                else if (obj ? is_whip(obj) : is_otyp_whip(otyp))
                 {
                     Strcpy(buf2, "Yes, for disarming weapons");
                 }
                 else
                     Strcpy(buf2, "Yes");
 
-                Sprintf(buf, "Appliable:              %s", buf2);
-                
+                Sprintf(buf, "Appliable:              %s", buf2);                
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-                if (obj->exceptionality > 0)
+                if (obj && obj->exceptionality > 0)
                 {
                     if (is_pick(obj) || is_axe(obj) || is_saw(obj))
                     {
@@ -1196,12 +1227,23 @@ register struct obj* obj;
                         putstr(datawin, ATR_INDENT_AT_COLON, buf);
                     }
                 }
-                if (material_definitions[obj->material].digging_speed_bonus != 0)
+                if (material_definitions[obj ? obj->material : objects[otyp].oc_material].digging_speed_bonus != 0)
                 {
-                    if (is_pick(obj) || is_axe(obj) || is_saw(obj))
+                    if (obj)
                     {
-                        Sprintf(buf, "Material bonus:         %d%% %s speed", material_definitions[obj->material].digging_speed_bonus, is_axe(obj) ? "chopping" : is_saw(obj) ? "cutting" : "digging");
-                        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                        if (is_pick(obj) || is_axe(obj) || is_saw(obj))
+                        {
+                            Sprintf(buf, "Material bonus:         %d%% %s speed", material_definitions[obj->material].digging_speed_bonus, is_axe(obj) ? "chopping" : is_saw(obj) ? "cutting" : "digging");
+                            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                        }
+                    }
+                    else
+                    {
+                        if (is_otyp_pick(otyp) || is_otyp_axe(otyp) || is_otyp_saw(otyp))
+                        {
+                            Sprintf(buf, "Material bonus:         %d%% %s speed", material_definitions[objects[otyp].oc_material].digging_speed_bonus, is_otyp_axe(otyp) ? "chopping" : is_otyp_saw(otyp) ? "cutting" : "digging");
+                            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                        }
                     }
                 }
             }
@@ -1213,31 +1255,26 @@ register struct obj* obj;
         if (objects[otyp].oc_multishot_style > 0) {
 
             Sprintf(buf, "%s  %s", 
-                is_launcher(obj) ? "Shots per round:      " : 
-                nonmelee_throwing_weapon(obj) ? "Throws per round:     " : "Attacks per round:    ", 
+                is_otyp_launcher(otyp) ? "Shots per round:      " : 
+                is_otyp_nonmelee_throwing_weapon(otyp) ? "Throws per round:     " : "Attacks per round:    ", 
                 multishot_style_names[objects[otyp].oc_multishot_style]);
-            /*
-            if((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL)
-                Sprintf(eos(buf), " (requires expert skill)");
-            else if ((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL)
-                Sprintf(eos(buf), " (requires skilled skill)");
-            else if ((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_BASIC_SKILL)
-                Sprintf(eos(buf), " (requires basic skill)");
-            */
 
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
         /* Ammunition range */
-        if (is_launcher(obj)) {
+        if (is_otyp_launcher(otyp)) {
 
-            baserange = weapon_range((struct obj*)0, obj);
-            Sprintf(buf, "Ammunition range:       %d'", max(1, baserange) * 5);
+            baserange = obj ? weapon_range((struct obj*)0, obj) : objects[otyp].oc_range > 0 ? objects[otyp].oc_range : 0;
+            if(!obj && objects[otyp].oc_range < 0)
+                Strcpy(buf, "Ammunition range:       Based on strength");
+            else 
+                Sprintf(buf, "Ammunition range:       %d'", max(1, baserange) * 5);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
         /* Jousting */
-        if (can_obj_joust(obj)) {
+        if (obj && can_obj_joust(obj)) {
 
             int chance = spear_skill_jousting_bonus(P_SKILL_LEVEL(weapon_skill_type(obj))) + riding_skill_jousting_bonus(P_SKILL_LEVEL(P_RIDING));
             Sprintf(buf, "Jousting:               Yes, at %d%% chance when riding", chance);
@@ -1245,7 +1282,7 @@ register struct obj* obj;
         }
 
         /* Range and throw distance */
-        if (!is_gloves(obj) && !is_boots(obj))
+        if (obj && !is_gloves(obj) && !is_boots(obj))
         {
             int range = 0;
             boolean thrown = TRUE;
@@ -1272,7 +1309,7 @@ register struct obj* obj;
 
         int exceptionality_multiplier = 1;
 
-        if (obj->exceptionality)
+        if (obj && obj->exceptionality)
         {
                 Sprintf(buf, "Weapon quality:         %s", obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional (double base damage)" :
                 obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite (triple base damage)" :
@@ -1287,16 +1324,16 @@ register struct obj* obj;
         }
 
         /* Add mythic base damage now here if mknown */
-        if (has_obj_mythic_triple_base_damage(obj) && obj->mknown)
+        if (obj && has_obj_mythic_triple_base_damage(obj) && obj->mknown)
             exceptionality_multiplier += 2;
 
         boolean printmaindmgtype = FALSE;
         boolean doubledamagetopermittedtargets = FALSE;
 
         /* Damage - Small */
-        short wsdice = get_obj_wsdice(obj);
-        short wsdam = get_obj_wsdam(obj);
-        short wsdmgplus = get_obj_wsdmgplus(obj);
+        short wsdice = obj ? get_obj_wsdice(obj) : objects[otyp].oc_wsdice;
+        short wsdam = obj ? get_obj_wsdam(obj) : objects[otyp].oc_wsdam;
+        short wsdmgplus = obj ? get_obj_wsdmgplus(obj) : objects[otyp].oc_wldmgplus;
         if((wsdice > 0 && wsdam > 0) || wsdmgplus != 0)
         {
             printmaindmgtype = TRUE;
@@ -1320,7 +1357,7 @@ register struct obj* obj;
                 Strcat(buf, plusbuf);
             }
 
-            char endbuf[BUFSZ] = "";
+            Strcpy(endbuf, "");
             double avgdmg = (double)exceptionality_multiplier * ((double)wsdice * (double)(1 + wsdam) / 2.0 + (double)wsdmgplus);
             if (*endbuf)
                 Strcat(endbuf, ", ");
@@ -1361,9 +1398,9 @@ register struct obj* obj;
 
 
         /* Damage - Large */
-        short wldice = get_obj_wldice(obj);
-        short wldam = get_obj_wldam(obj);
-        short wldmgplus = get_obj_wldmgplus(obj);
+        short wldice = obj ? get_obj_wldice(obj) : objects[otyp].oc_wldice;
+        short wldam = obj ? get_obj_wldam(obj) : objects[otyp].oc_wldam;
+        short wldmgplus = obj ? get_obj_wldmgplus(obj) : objects[otyp].oc_wldmgplus;
         if((wldice > 0 && wldam > 0) || wldmgplus != 0)
         {
             printmaindmgtype = TRUE;
@@ -1388,7 +1425,7 @@ register struct obj* obj;
                 Strcat(buf, plusbuf);
             }
 
-            char endbuf[BUFSZ] = "";
+            Strcpy(endbuf, "");
             double avgdmg = (double)exceptionality_multiplier * ((double)wldice * (double)(1 + wldam) / 2.0 + (double)wldmgplus);
             if (*endbuf)
                 Strcat(endbuf, ", ");
@@ -1449,7 +1486,7 @@ register struct obj* obj;
         if (printmaindmgtype && objects[otyp].oc_damagetype != AD_PHYS)
         {
             char dmgttext[BUFSZ] = "";
-            strcpy(dmgttext, get_damage_type_text(objects[otyp].oc_damagetype));
+            Strcpy(dmgttext, get_damage_type_text(objects[otyp].oc_damagetype));
             *dmgttext = highc(*dmgttext);
             if (strcmp(dmgttext, "") != 0)
             {
@@ -1485,7 +1522,7 @@ register struct obj* obj;
                 Strcat(buf, plusbuf);
             }
 
-            char endbuf[BUFSZ] = "";
+            Strcpy(endbuf, "");
             double avgdmg = ((double)objects[otyp].oc_wedice * (double)(1 + objects[otyp].oc_wedam) / 2.0 + (double)objects[otyp].oc_wedmgplus);
             if (*endbuf)
                 Strcat(endbuf, ", ");
@@ -1559,9 +1596,9 @@ register struct obj* obj;
         else
         {
             double simple_dmg = 0;
-            if (obj->oclass == POTION_CLASS)
+            if (objects[otyp].oc_class == POTION_CLASS)
                 simple_dmg += 1;
-            else if (otyp == CORPSE)
+            else if (obj && otyp == CORPSE)
                 simple_dmg += (obj->corpsenm >= LOW_PM ? mons[obj->corpsenm].msize : 0) + 1;
             else
                 simple_dmg += 0;
@@ -1572,7 +1609,7 @@ register struct obj* obj;
         }
 
         /* Damage - Silver*/
-        if (obj->material == MAT_SILVER)
+        if ((obj ? obj->material : objects[otyp].oc_material) == MAT_SILVER)
         {
             Sprintf(buf, "Silver bonus damage:    ");
             maindiceprinted = TRUE;
@@ -1583,7 +1620,7 @@ register struct obj* obj;
         }
 
         /* Fixed damage bonus */
-        if (is_launcher(obj) && (objects[otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)) 
+        if (is_otyp_launcher(otyp) && (objects[otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)) 
         {
 
             Sprintf(buf, "Fixed damage bonus:     %s%d (instead of strength)", 
@@ -1600,11 +1637,11 @@ register struct obj* obj;
         else
         {
             double dmg_bonus = 0;
-            if (is_ammo(obj) && uwep && is_launcher(uwep) && (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
+            if (obj && is_ammo(obj) && uwep && is_launcher(uwep) && (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
                 dmg_bonus += (double)objects[uwep->otyp].oc_fixed_damage_bonus;
-            else if (is_ammo(obj) && uswapwep && is_launcher(uswapwep) && (objects[uswapwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
+            else if (obj && is_ammo(obj) && uswapwep && is_launcher(uswapwep) && (objects[uswapwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
                 dmg_bonus += (double)objects[uswapwep->otyp].oc_fixed_damage_bonus;
-            else if(nonmelee_throwing_weapon(obj) || objects[otyp].oc_skill == P_NONE)
+            else if(is_otyp_nonmelee_throwing_weapon(otyp) || objects[otyp].oc_skill == P_NONE)
                 dmg_bonus += (double)((int)strength_damage_bonus(ACURR(A_STR)) / 2);
             else
                 dmg_bonus += (double)strength_damage_bonus(ACURR(A_STR));
@@ -1634,7 +1671,7 @@ register struct obj* obj;
         wep_multipliable_avg_dmg += str_bonus;
     }
 
-    int mcadj = objects[otyp].oc_mc_adjustment + ((objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT) ? -obj->enchantment : 0);
+    short mcadj = objects[otyp].oc_mc_adjustment + (obj && (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT) ? -obj->enchantment : 0);
     if (objects[otyp].oc_mc_adjustment != 0 || mcadj != 0)
     {
         if (mcadj >= 0)
@@ -1646,63 +1683,65 @@ register struct obj* obj;
     }
 
 
-    boolean affectsac = ((obj->oclass == ARMOR_CLASS && objects[otyp].oc_name_known)
+    boolean affectsac = ((objects[otyp].oc_class == ARMOR_CLASS && objects[otyp].oc_name_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
-            || (has_obj_mythic_defense(obj) && obj->mknown)
-            || (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_armor_class != 0)
+            || (obj && has_obj_mythic_defense(obj) && obj->mknown)
+            || (stats_known && objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_armor_class != 0)
             );
 
-    boolean affectsmc = ((obj->oclass == ARMOR_CLASS && objects[otyp].oc_name_known)
+    boolean affectsmc = ((objects[otyp].oc_class == ARMOR_CLASS && objects[otyp].oc_name_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
-            || (has_obj_mythic_defense(obj) && obj->mknown)
-            || (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_magic_cancellation != 0)
+            || (obj && has_obj_mythic_defense(obj) && obj->mknown)
+            || (stats_known && objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_magic_cancellation != 0)
             );
 
 
-    boolean nonexpeptionalarmor = nonexceptionality_armor(obj);
-
-    if ((((obj->oclass == ARMOR_CLASS && objects[otyp].oc_name_known)
-        || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
-        || (has_obj_mythic_defense(obj) && obj->mknown)) 
-        && obj->exceptionality) || (nonexpeptionalarmor && objects[otyp].oc_name_known))
+    if (obj)
     {
-        const char* excep = nonexpeptionalarmor ? "Cannot have quality" : 
-            obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional" :
-            obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite" :
-            obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial" :
-            obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial" :
-            obj->exceptionality == EXCEPTIONALITY_INFERNAL ? "Infernal" :
-            "Unknown quality";
-
-        Sprintf(buf, "Armor quality:          %s", excep);
-        if (!nonexpeptionalarmor)
+        boolean nonexpeptionalarmor = nonexceptionality_armor(obj);
+        if ((((objects[otyp].oc_class == ARMOR_CLASS && objects[otyp].oc_name_known)
+            || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
+            || (obj && has_obj_mythic_defense(obj) && obj->mknown))
+            && obj->exceptionality) || (nonexpeptionalarmor && objects[otyp].oc_name_known))
         {
-            int acbon = get_obj_exceptionality_ac_bonus(obj);
-            int mcbon = get_obj_exceptionality_mc_bonus(obj);
-            if (acbon > 0 || mcbon > 0)
+            const char* excep = nonexpeptionalarmor ? "Cannot have quality" :
+                obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional" :
+                obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite" :
+                obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial" :
+                obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial" :
+                obj->exceptionality == EXCEPTIONALITY_INFERNAL ? "Infernal" :
+                "Unknown quality";
+
+            Sprintf(buf, "Armor quality:          %s", excep);
+            if (!nonexpeptionalarmor)
             {
-                Strcat(buf, " (");
-                if (acbon > 0)
+                int acbon = get_obj_exceptionality_ac_bonus(obj);
+                int mcbon = get_obj_exceptionality_mc_bonus(obj);
+                if (acbon > 0 || mcbon > 0)
                 {
-                    Sprintf(eos(buf), "-%d AC", acbon);
-                    knownacbonus += acbon;
-                }
-                if (mcbon > 0)
-                {
+                    Strcat(buf, " (");
                     if (acbon > 0)
-                        Strcat(buf, ", ");
-                    Sprintf(eos(buf), "+%d MC", mcbon);
-                    knownmcbonus += mcbon;
+                    {
+                        Sprintf(eos(buf), "-%d AC", acbon);
+                        knownacbonus += acbon;
+                    }
+                    if (mcbon > 0)
+                    {
+                        if (acbon > 0)
+                            Strcat(buf, ", ");
+                        Sprintf(eos(buf), "+%d MC", mcbon);
+                        knownmcbonus += mcbon;
+                    }
+                    Strcat(buf, ")");
                 }
-                Strcat(buf, ")");
             }
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
     if (affectsac)
     {
-        int shownacbonus = -get_object_base_ac(obj);
+        int shownacbonus = obj ? -get_object_base_ac(obj) : -(int)objects[otyp].oc_armor_class;
         if (flags.baseacasbonus)
         {
             Sprintf(buf, "Base armor class bonus: %s%d", shownacbonus >= 0 ? "+" : "", shownacbonus);
@@ -1717,7 +1756,7 @@ register struct obj* obj;
 
     if(affectsmc)
     {
-        int mc = get_object_base_mc(obj);
+        int mc = obj ? get_object_base_mc(obj) : (int)objects[otyp].oc_magic_cancellation;
         Sprintf(buf2, "%s%d", mc >= 0 ? "+" : "", mc);
         Sprintf(buf, "Magic cancellation:     %s", buf2);
         knownmcbonus += mc;
@@ -1726,7 +1765,7 @@ register struct obj* obj;
 
     if (stats_known)
     {
-        if (objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == SCROLL_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_spelltool(obj)))
+        if (objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == SCROLL_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_otyp_spelltool(otyp)))
         {
             boolean use_wand_skill = objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_skill == P_WAND;
             const char *itemname_hc = objects[otyp].oc_class == WAND_CLASS ? "Wand" : objects[otyp].oc_class == SCROLL_CLASS ? "Scroll" : "Item";
@@ -1736,7 +1775,6 @@ register struct obj* obj;
             {
                 double dicemult = use_wand_skill ? get_wand_damage_multiplier(P_SKILL_LEVEL(P_WAND)) : 1.0;
                 boolean maindiceprinted = FALSE;
-                char plusbuf[BUFSZ];
                 if(objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
                     Sprintf(buf, "%s healing amount:  %s", itemname_hc, itempadding);
                 else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_DAMAGE)
@@ -1781,7 +1819,6 @@ register struct obj* obj;
             if (objects[otyp].oc_spell_dur_dice > 0 || objects[otyp].oc_spell_dur_diesize > 0 || objects[otyp].oc_spell_dur_plus != 0)
             {
                 boolean maindiceprinted = FALSE;
-                char plusbuf[BUFSZ];
                 Sprintf(buf, "%s effect duration: %s", itemname_hc, itempadding);
 
                 if (objects[otyp].oc_spell_dur_dice > 0 && objects[otyp].oc_spell_dur_diesize > 0)
@@ -1791,7 +1828,7 @@ register struct obj* obj;
                     Strcat(buf, plusbuf);
                 }
 
-                int applied_plus = objects[otyp].oc_spell_dur_plus + (obj->bknown ? bcsign(obj) * objects[otyp].oc_spell_dur_buc_plus : 0);
+                int applied_plus = objects[otyp].oc_spell_dur_plus + (obj && obj->bknown ? bcsign(obj) * objects[otyp].oc_spell_dur_buc_plus : 0);
                 if (applied_plus != 0)
                 {
                     if (maindiceprinted && applied_plus > 0)
@@ -1806,7 +1843,7 @@ register struct obj* obj;
                 Sprintf(plusbuf, " round%s", (objects[otyp].oc_spell_dur_dice == 0 && objects[otyp].oc_spell_dur_diesize == 0 && applied_plus == 1) ? "" : "s");
                 Strcat(buf, plusbuf);
 
-                if (objects[otyp].oc_spell_dur_buc_plus != 0 && !obj->bknown)
+                if (objects[otyp].oc_spell_dur_buc_plus != 0 && obj && !obj->bknown)
                 {
                     char bucplusbuf[BUFSZ] = "";
                     int bucplus = objects[otyp].oc_spell_dur_buc_plus;
@@ -1871,7 +1908,6 @@ register struct obj* obj;
             if (objects[otyp].oc_potion_normal_dice > 0 || objects[otyp].oc_potion_normal_diesize > 0 || objects[otyp].oc_potion_normal_plus != 0)
             {
                 boolean maindiceprinted = FALSE;
-                char plusbuf[BUFSZ];
                 if(objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
                     Sprintf(buf, "Healing amount:         ");
                 else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_DAMAGE)
@@ -1881,7 +1917,7 @@ register struct obj* obj;
                 else
                     Sprintf(buf, "Effect duration:        ");
 
-                int dice = objects[otyp].oc_potion_normal_dice + (obj->bknown ? (int)objects[otyp].oc_potion_normal_dice_buc_multiplier * bcsign(obj) : 0);
+                int dice = objects[otyp].oc_potion_normal_dice + (obj && obj->bknown ? (int)objects[otyp].oc_potion_normal_dice_buc_multiplier * bcsign(obj) : 0);
                 if (dice > 0 && objects[otyp].oc_potion_normal_diesize > 0)
                 {
                     maindiceprinted = TRUE;
@@ -1889,7 +1925,7 @@ register struct obj* obj;
                     Strcat(buf, plusbuf);
                 }
 
-                int plus = objects[otyp].oc_potion_normal_plus + (obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_normal_buc_multiplier : 0);
+                int plus = objects[otyp].oc_potion_normal_plus + (obj && obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_normal_buc_multiplier : 0);
                 if (plus != 0)
                 {
                     if (maindiceprinted && plus > 0)
@@ -1919,7 +1955,6 @@ register struct obj* obj;
             if (objects[otyp].oc_potion_breathe_dice > 0 || objects[otyp].oc_potion_breathe_diesize > 0 || objects[otyp].oc_potion_breathe_plus != 0)
             {
                 boolean maindiceprinted = FALSE;
-                char plusbuf[BUFSZ];
                 const char* brtype = "duration";
                 const char* brtypepadding = "";
                 if (objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
@@ -1940,7 +1975,7 @@ register struct obj* obj;
 
                 Sprintf(buf, "Breathe %s:       %s", brtype, brtypepadding);
 
-                int dice = objects[otyp].oc_potion_breathe_dice + (obj->bknown ? (int)objects[otyp].oc_potion_breathe_dice_buc_multiplier * bcsign(obj) : 0);
+                int dice = objects[otyp].oc_potion_breathe_dice + (obj && obj->bknown ? (int)objects[otyp].oc_potion_breathe_dice_buc_multiplier * bcsign(obj) : 0);
                 if (dice > 0 && objects[otyp].oc_potion_breathe_diesize > 0)
                 {
                     maindiceprinted = TRUE;
@@ -1948,7 +1983,7 @@ register struct obj* obj;
                     Strcat(buf, plusbuf);
                 }
 
-                int plus = objects[otyp].oc_potion_breathe_plus + (obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_breathe_buc_multiplier : 0);
+                int plus = objects[otyp].oc_potion_breathe_plus + (obj && obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_breathe_buc_multiplier : 0);
                 if (plus != 0)
                 {
                     if (maindiceprinted && plus > 0)
@@ -1977,13 +2012,13 @@ register struct obj* obj;
             }
 
             /* Impact on maximums */
-            int extra_data1 = (int)objects[obj->otyp].oc_potion_extra_data1;
+            int extra_data1 = (int)objects[otyp].oc_potion_extra_data1;
             if (objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
             {
                 if (extra_data1 > 0)
                 {
                     char maxhpbuf[BUFSZ] = "";
-                    if (obj->bknown)
+                    if (obj && obj->bknown)
                     {
                         if (obj->blessed)
                             Sprintf(maxhpbuf, "+%d (if at max health)", extra_data1);
@@ -2002,7 +2037,7 @@ register struct obj* obj;
                 if (extra_data1 > 0)
                 {
                     char maxmanabuf[BUFSZ] = "";
-                    if (obj->bknown)
+                    if (obj && obj->bknown)
                     {
                         if(obj->blessed)
                             Sprintf(maxmanabuf, "+%d (if at max mana)", extra_data1);
@@ -2052,7 +2087,7 @@ register struct obj* obj;
                 boolean cures_confusion_noncursed = (objects[otyp].oc_potion_effect_flags & POTFLAGS_NONCURSED_CURE_CONFUSION) == POTFLAGS_NONCURSED_CURE_CONFUSION;
                 boolean cures_confusion_all = (objects[otyp].oc_potion_effect_flags & POTFLAGS_ALL_CURE_CONFUSION) == POTFLAGS_ALL_CURE_CONFUSION;
 
-                if (obj->bknown)
+                if (obj && obj->bknown)
                 {
                     boolean cures_sick = FALSE;
                     boolean cures_blind = FALSE;
@@ -2120,10 +2155,9 @@ register struct obj* obj;
             if (objects[otyp].oc_potion_nutrition_dice > 0 || objects[otyp].oc_potion_nutrition_diesize > 0 || objects[otyp].oc_potion_nutrition_plus != 0)
             {
                 boolean maindiceprinted = FALSE;
-                char plusbuf[BUFSZ];
                 Sprintf(buf, "Nutrition:              ");
 
-                int dice = objects[otyp].oc_potion_nutrition_dice + (obj->bknown ? (int)objects[otyp].oc_potion_nutrition_dice_buc_multiplier * bcsign(obj) : 0);
+                int dice = objects[otyp].oc_potion_nutrition_dice + (obj && obj->bknown ? (int)objects[otyp].oc_potion_nutrition_dice_buc_multiplier * bcsign(obj) : 0);
                 if (dice > 0 && objects[otyp].oc_potion_nutrition_diesize > 0)
                 {
                     maindiceprinted = TRUE;
@@ -2131,7 +2165,7 @@ register struct obj* obj;
                     Strcat(buf, plusbuf);
                 }
 
-                int plus = objects[otyp].oc_potion_nutrition_plus + (obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_nutrition_buc_multiplier : 0);
+                int plus = objects[otyp].oc_potion_nutrition_plus + (obj && obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_nutrition_buc_multiplier : 0);
                 if (plus != 0)
                 {
                     if (maindiceprinted && plus > 0)
@@ -2168,7 +2202,7 @@ register struct obj* obj;
             }
         }
 
-        long splpenalty = get_object_spell_casting_penalty(obj);
+        long splpenalty = obj ? get_object_spell_casting_penalty(obj) : objects[otyp].oc_spell_casting_penalty;
         if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
             (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || splpenalty != 0))
         {
@@ -2183,26 +2217,23 @@ register struct obj* obj;
 
         if (objects[otyp].oc_charged)
         {
-            if (obj->known)
+            if (obj && obj->known)
             {
                 Sprintf(buf, "Charges left:           %d", obj->charges);
-                
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
             else
             {
-                Sprintf(buf, "Charges:                %s", "Yes");
-                
+                Sprintf(buf, "Charges:                %s", "Yes");                
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
 
-            Sprintf(buf, "Maximum charges:        %d", get_obj_max_charge(obj));
+            Sprintf(buf, "Maximum charges:        %d", get_max_charge(objects[otyp].oc_charged));
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-            if (obj->known)
+            if (obj && obj->known)
             {
                 Sprintf(buf, "Rechargings before:     %d", (int)obj->recharged);
-                
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
 
@@ -2214,7 +2245,7 @@ register struct obj* obj;
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
-        if (objects[otyp].oc_enchantable)
+        if (obj && objects[otyp].oc_enchantable)
         {
             if (obj->known)
             {
@@ -2301,7 +2332,7 @@ register struct obj* obj;
         }
     }
 
-    if ((obj->oeroded || obj->oeroded2 || (obj->rknown && obj->oerodeproof)))
+    if (obj && (obj->oeroded || obj->oeroded2 || (obj->rknown && obj->oerodeproof)))
     {
         char erodebuf[BUFSZ] = "";
         char penaltybuf[BUFSZ] = "";
@@ -2334,73 +2365,75 @@ register struct obj* obj;
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    /* Mythic status */
-    boolean nonmythic = (is_weapon(obj) || is_armor(obj)) && otyp_non_mythic(otyp)
-        && !obj->oartifact && !objects[otyp].oc_unique && !(objects[otyp].oc_flags3 & O3_UNIQUE);
-    if (obj->dknown && objects[otyp].oc_name_known && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
+    if (obj)
     {
-        Sprintf(buf, "Mythic status:          %s", nonmythic ? "Cannot be mythic" : (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
-    }
-    if (obj->bknown)
-    {
-        Sprintf(buf, "Blessing status:        %s", obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
-    }
-    if (obj->opoisoned)
-    {
-        Sprintf(buf, "Poisoned status:        Poisoned (+2d6 poison damage)");
-        wep_avg_dmg += 7.0;
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
-    }
-
-    if (obj->elemental_enchantment)
-    {
-        Sprintf(buf, "Elemental enchantment:  %s", obj->elemental_enchantment == FIRE_ENCHANTMENT ? "Flaming (+4d6 fire damage)" :
-            obj->elemental_enchantment == COLD_ENCHANTMENT ? "Freezing (+12d6 cold damage)" :
-            obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Electrified (+6d6 lightning damage)" :
-            obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Death-magical (kills on hit)" : "Unknown enchantment"
-        );
-
-        wep_all_extra_avg_dmg += obj->elemental_enchantment == FIRE_ENCHANTMENT ? 14.0 :
-            obj->elemental_enchantment == COLD_ENCHANTMENT ? 42.0 :
-            obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? 21.0 :
-            obj->elemental_enchantment == DEATH_ENCHANTMENT ? 0.0 : 0.0;
-
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
-    }
-
-    /* Light sources */
-    if (is_obj_light_source(obj))
-    {
-        Sprintf(buf, "Light radius:           %d'", 5 * obj_light_radius(obj));
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
-
-        if (stats_known)
+        /* Mythic status */
+        boolean nonmythic = (is_weapon(obj) || is_armor(obj)) && otyp_non_mythic(otyp)
+            && !obj->oartifact && !objects[otyp].oc_unique && !(objects[otyp].oc_flags3 & O3_UNIQUE);
+        if (obj->dknown && objects[otyp].oc_name_known && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
         {
-            long maxburn = obj_light_maximum_burn_time(obj);
-            if (obj_burns_infinitely(obj) || maxburn < 0)
+            Sprintf(buf, "Mythic status:          %s", nonmythic ? "Cannot be mythic" : (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+        if (obj->bknown)
+        {
+            Sprintf(buf, "Blessing status:        %s", obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+        if (obj->opoisoned)
+        {
+            Sprintf(buf, "Poisoned status:        Poisoned (+2d6 poison damage)");
+            wep_avg_dmg += 7.0;
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+
+        if (obj->elemental_enchantment)
+        {
+            Sprintf(buf, "Elemental enchantment:  %s", obj->elemental_enchantment == FIRE_ENCHANTMENT ? "Flaming (+4d6 fire damage)" :
+                obj->elemental_enchantment == COLD_ENCHANTMENT ? "Freezing (+12d6 cold damage)" :
+                obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Electrified (+6d6 lightning damage)" :
+                obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Death-magical (kills on hit)" : "Unknown enchantment"
+            );
+
+            wep_all_extra_avg_dmg += obj->elemental_enchantment == FIRE_ENCHANTMENT ? 14.0 :
+                obj->elemental_enchantment == COLD_ENCHANTMENT ? 42.0 :
+                obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? 21.0 :
+                obj->elemental_enchantment == DEATH_ENCHANTMENT ? 0.0 : 0.0;
+
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+
+        /* Light sources */
+        if (is_obj_light_source(obj))
+        {
+            Sprintf(buf, "Light radius:           %d'", 5 * obj_light_radius(obj));
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+
+            if (stats_known)
             {
-                Strcpy(buf, "Burning time left:      Infinite");
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
-                Strcpy(buf, "Maximum burning time:   Infinite");
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
-            }
-            else
-            {
-                long burnleft = obj_light_burn_time_left(obj);
-                Sprintf(buf, "Burning time left:      %ld turn%s", burnleft, plur(burnleft));
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
-                Sprintf(buf, "Maximum burning time:   %ld turn%s", maxburn, plur(maxburn));
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                long maxburn = obj_light_maximum_burn_time(obj);
+                if (obj_burns_infinitely(obj) || maxburn < 0)
+                {
+                    Strcpy(buf, "Burning time left:      Infinite");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    Strcpy(buf, "Maximum burning time:   Infinite");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                }
+                else
+                {
+                    long burnleft = obj_light_burn_time_left(obj);
+                    Sprintf(buf, "Burning time left:      %ld turn%s", burnleft, plur(burnleft));
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    Sprintf(buf, "Maximum burning time:   %ld turn%s", maxburn, plur(maxburn));
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                }
             }
         }
     }
 
-
     /* Identification status */
     boolean notfullyidentified = FALSE;
-    if (obj->dknown)
+    if (obj && obj->dknown)
     {
         notfullyidentified = not_fully_identified(obj);
         Sprintf(buf, "Identification status:  %s", stats_known ? (notfullyidentified ? "Known" : "Fully known") : "Unidentified");
@@ -2412,26 +2445,26 @@ register struct obj* obj;
         Sprintf(buf, "Cooldown time:          %d rounds", (int)objects[otyp].oc_item_cooldown);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-        if (obj->cooldownleft > 0)
+        if (obj && obj->cooldownleft > 0)
         {
             Sprintf(buf, "Cooldown left:          %d rounds", (int)obj->cooldownleft);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
     }
 
-    if (stats_known && obj->repowerleft > 0)
+    if (obj && stats_known && obj->repowerleft > 0)
     {
         Sprintf(buf, "Repowering time left:   %d rounds", (int)obj->repowerleft);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    if (stats_known && obj->invokeon)
+    if (obj && stats_known && obj->invokeon)
     {
         Sprintf(buf, "Invoked ability:        Activated");
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    if (stats_known && obj->invokeleft > 0)
+    if (obj && stats_known && obj->invokeleft > 0)
     {
         Sprintf(buf, "Invoke time left:       %d rounds", (int)obj->invokeleft);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -2443,7 +2476,7 @@ register struct obj* obj;
         if (objects[otyp].oc_oprop > 0
             || objects[otyp].oc_oprop2 > 0
             || objects[otyp].oc_oprop3 > 0
-            || (obj->material != objects[otyp].oc_material 
+            || (obj && obj->material != objects[otyp].oc_material 
                 && ((is_armor(obj) && (material_definitions[obj->material].power_armor[objects[otyp].oc_armor_category] != NO_POWER || material_definitions[obj->material].power2_armor[objects[otyp].oc_armor_category] != NO_POWER))
                     || (is_weapon(obj) && (material_definitions[obj->material].power_weapon != NO_POWER || material_definitions[obj->material].power2_weapon != NO_POWER)))
                )
@@ -2466,13 +2499,13 @@ register struct obj* obj;
             {
                 int prop = 0;
                 if (j == -3)
-                    prop = obj->material != objects[otyp].oc_material && is_weapon(obj) ? material_definitions[obj->material].power_weapon : NO_POWER;
+                    prop = obj && obj->material != objects[otyp].oc_material && is_weapon(obj) ? material_definitions[obj->material].power_weapon : NO_POWER;
                 else if (j == -2)
-                    prop = obj->material != objects[otyp].oc_material && is_weapon(obj) ? material_definitions[obj->material].power2_weapon : NO_POWER;
+                    prop = obj && obj->material != objects[otyp].oc_material && is_weapon(obj) ? material_definitions[obj->material].power2_weapon : NO_POWER;
                 else if (j == -1)
-                    prop = obj->material != objects[otyp].oc_material && is_armor(obj) ? material_definitions[obj->material].power_armor[objects[otyp].oc_armor_category] : NO_POWER;
+                    prop = obj && obj->material != objects[otyp].oc_material && is_armor(obj) ? material_definitions[obj->material].power_armor[objects[otyp].oc_armor_category] : NO_POWER;
                 else if (j == 0)
-                    prop = obj->material != objects[otyp].oc_material && is_armor(obj) ? material_definitions[obj->material].power2_armor[objects[otyp].oc_armor_category] : NO_POWER;
+                    prop = obj && obj->material != objects[otyp].oc_material && is_armor(obj) ? material_definitions[obj->material].power2_armor[objects[otyp].oc_armor_category] : NO_POWER;
                 else if (j == 1)
                     prop = objects[otyp].oc_oprop;
                 else if (j == 2)
@@ -2489,14 +2522,14 @@ register struct obj* obj;
                 char pwbuf[BUFSZ] = "";
                 if (j <= 0)
                 {
-                    Sprintf(eos(pwbuf), " when %s", is_wieldable_weapon(obj) ? "wielded" : "worn");
+                    Sprintf(eos(pwbuf), " when %s", is_otyp_wieldable_weapon(otyp) ? "wielded" : "worn");
                 }
                 else if (j == 1)
                 {
                     if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_wieldable_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_otyp_wieldable_weapon(otyp) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2508,7 +2541,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_wieldable_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_otyp_wieldable_weapon(otyp) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2520,7 +2553,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_wieldable_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_otyp_wieldable_weapon(otyp) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2532,7 +2565,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_HP_BONUS_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_wieldable_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_otyp_wieldable_weapon(otyp) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2546,7 +2579,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_MANA_BONUS_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_wieldable_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_otyp_wieldable_weapon(otyp) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2560,7 +2593,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_wieldable_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_otyp_wieldable_weapon(otyp) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2613,10 +2646,10 @@ register struct obj* obj;
                             Strcpy(buf2, "");
                             int stat = (int)(k == 9 && !(prop & FULL_MC_BONUS) ? /* MC */ objects[otyp].oc_attribute_bonus / 3 : objects[otyp].oc_attribute_bonus);
 
-                            if (obj->cursed && (objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE))
+                            if (obj && obj->cursed && (objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE))
                                 stat = -stat;
 
-                            if (objects[otyp].oc_enchantable && !(prop & IGNORE_ENCHANTMENT))
+                            if (obj && objects[otyp].oc_enchantable && !(prop & IGNORE_ENCHANTMENT))
                             {
                                 if (k == 9 && !(prop & FULL_MC_BONUS)) /* MC*/
                                     stat += obj->enchantment / 3;
@@ -2789,7 +2822,7 @@ register struct obj* obj;
                 if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_WHEN_CARRIED)
                     Sprintf(eos(pwbuf), " when carried");
                 else
-                    Sprintf(eos(pwbuf), " when %s", is_wieldable_weapon(obj) ? "wielded" : "worn");
+                    Sprintf(eos(pwbuf), " when %s", is_otyp_wieldable_weapon(otyp) ? "wielded" : "worn");
 
                 if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_ALL_CHARACTERS)
                     Sprintf(eos(pwbuf), " (applies to all)");
@@ -2808,7 +2841,7 @@ register struct obj* obj;
                 if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_WHEN_CARRIED)
                     Sprintf(eos(pwbuf), " when carried");
                 else
-                    Sprintf(eos(pwbuf), " when %s", is_wieldable_weapon(obj) ? "wielded" : "worn");
+                    Sprintf(eos(pwbuf), " when %s", is_otyp_wieldable_weapon(otyp) ? "wielded" : "worn");
 
                 if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_ALL_CHARACTERS)
                     Sprintf(eos(pwbuf), " (applies to all)");
@@ -3188,9 +3221,9 @@ register struct obj* obj;
         }
 
         /* Mythic power descriptions for the item. */
-        if (stats_known && obj->mknown && (obj->mythic_prefix || obj->mythic_suffix))
+        if (obj && stats_known && obj->mknown && (obj->mythic_prefix || obj->mythic_suffix))
         {
-            char mythicbuf[BUFSIZ] = "";
+            char mythicbuf[BUFSZ] = "";
 
             if (obj->mythic_prefix)
                 Strcpy(mythicbuf, mythic_prefix_qualities[obj->mythic_prefix].name);
@@ -3252,15 +3285,15 @@ register struct obj* obj;
     boolean show_corpse_hint = FALSE;
     if(stats_known)
     {
-        unsigned long ocflags = get_obj_oc_flags(obj);
-        unsigned long ocflags5 = get_obj_oc_flags5(obj);
+        unsigned long ocflags = obj ? get_obj_oc_flags(obj) : objects[otyp].oc_flags;
+        unsigned long ocflags5 = obj ? get_obj_oc_flags5(obj) : objects[otyp].oc_flags5;
         /* Item properties */
         if (ocflags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON
             | O1_SPELLTOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD) 
             || (ocflags5 & (O5_MBAG_DESTROYING_ITEM | O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN))
             || otyp_shines_magical_light(otyp)
             || is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp)
-            || is_death_enchantable(obj) //|| is_otyp_elemental_enchantable(otyp) 
+            || (obj ? is_death_enchantable(obj) : is_otyp_death_enchantable(otyp)) //|| is_otyp_elemental_enchantable(otyp) 
             )
         {
             int powercnt = 0;
@@ -3383,7 +3416,7 @@ register struct obj* obj;
                 Sprintf(buf, " %2d - Consumes nutrition every 20 rounds when worn", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
-            if (is_death_enchantable(obj))
+            if (obj ? is_death_enchantable(obj) : is_otyp_death_enchantable(otyp))
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Death-magically enchantable", powercnt);
@@ -3419,7 +3452,7 @@ register struct obj* obj;
         }
 
         /* Corpse properties */
-        if (is_obj_rotting_corpse(obj) && obj->corpsenm > NON_PM && obj->corpsenm < NUM_MONSTERS)
+        if (obj && is_obj_rotting_corpse(obj) && obj->corpsenm > NON_PM && obj->corpsenm < NUM_MONSTERS)
         {
             if (mvitals[obj->corpsenm].mvflags & MV_KNOWS_CORPSE)
             {
@@ -3436,7 +3469,7 @@ register struct obj* obj;
     }
 
     /* Artifact powers */
-    if (obj->oartifact && stats_known)
+    if (obj && obj->oartifact && stats_known)
     {
         int powercnt = 0;
         Sprintf(buf, "Artifact properties:");
@@ -3473,8 +3506,8 @@ register struct obj* obj;
 
         if (artilist[obj->oartifact].tohit_dice != 0 || artilist[obj->oartifact].tohit_diesize != 0 || artilist[obj->oartifact].tohit_plus != 0)
         {
-            char tohitbuf[BUFSIZ] = "";
-            char plusbuf[BUFSIZ] = "";
+            char tohitbuf[BUFSZ] = "";
+            Strcpy(plusbuf, "");
             if (artilist[obj->oartifact].tohit_plus != 0)
                 Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].tohit_plus >= 0 ? "+" : "", artilist[obj->oartifact].tohit_plus);
 
@@ -3492,8 +3525,8 @@ register struct obj* obj;
 
         if (artilist[obj->oartifact].attk.damn != 0 || artilist[obj->oartifact].attk.damd != 0 || artilist[obj->oartifact].attk.damp != 0)
         {
-            char dmgbuf[BUFSIZ] = "";
-            char plusbuf[BUFSIZ] = "";
+            char dmgbuf[BUFSZ] = "";
+            Strcpy(plusbuf, "");
             if (artilist[obj->oartifact].attk.damp != 0)
                 Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].attk.damp >= 0 ? "+" : "", artilist[obj->oartifact].attk.damp);
 
@@ -3534,8 +3567,8 @@ register struct obj* obj;
 
         if (artilist[obj->oartifact].worn_prop > 0)
         {
-            char defensetext[BUFSZ] = "";
-            strcpy(defensetext, get_property_name(artilist[obj->oartifact].worn_prop));
+            char defensetext[BUFSZ];
+            Strcpy(defensetext, get_property_name(artilist[obj->oartifact].worn_prop));
             *defensetext = highc(*defensetext);
 
             powercnt++;
@@ -3548,7 +3581,7 @@ register struct obj* obj;
         }
         if (artilist[obj->oartifact].carried_prop > 0)
         {
-            char defensetext[BUFSZ] = "";
+            char defensetext[BUFSZ];
             Strcpy(defensetext, get_property_name(artilist[obj->oartifact].carried_prop));
             *defensetext = highc(*defensetext);
 
@@ -3558,8 +3591,8 @@ register struct obj* obj;
         }
         if (artilist[obj->oartifact].inv_prop > 0)
         {
-            char invoketext[BUFSIZ];
-            char repowertext[BUFSIZ];
+            char invoketext[BUFSZ];
+            char repowertext[BUFSZ];
             Strcpy(repowertext, "");
 
             if (artilist[obj->oartifact].inv_prop > LAST_PROP)
@@ -3592,7 +3625,7 @@ register struct obj* obj;
                 }
                 else
                 {
-                    char plusbuf[BUFSIZ] = "";
+                    Strcpy(plusbuf, "");
                     if (artilist[obj->oartifact].inv_duration_plus != 0)
                         Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].inv_duration_plus >= 0 ? "+" : "", artilist[obj->oartifact].inv_duration_plus);
 
@@ -3767,7 +3800,7 @@ register struct obj* obj;
         for (i = 1; i <= 2; i++)
         {
             unsigned long specialeffect = 0;
-            char endbuf[BUFSIZ] = "";
+            Strcpy(endbuf, "");
             if (i == 1)
             {
                 specialeffect = artilist[obj->oartifact].spfx;
@@ -3803,7 +3836,7 @@ register struct obj* obj;
                     if (propname)
                     {
                         char propbuf[BUFSZ];
-                        strcpy(propbuf, propname);
+                        Strcpy(propbuf, propname);
                         *propbuf = highc(*propbuf);
                         powercnt++;
                         Sprintf(buf, " %2d - %s %s", powercnt, propbuf, endbuf);
@@ -3878,7 +3911,7 @@ register struct obj* obj;
 
         if (artilist[obj->oartifact].mtype > 0)
         {
-            char endbuf[BUFSIZ] = "";
+            Strcpy(endbuf, "");
             if ((artilist[obj->oartifact].aflags & AF_DMONS) && artilist[obj->oartifact].mtype < NUM_MONSTERS)
             {
                 Strcpy(endbuf, pm_plural_name(&mons[artilist[obj->oartifact].mtype], 1));
@@ -3947,7 +3980,7 @@ register struct obj* obj;
 
 
     /* Note if used as a component for a spell */
-    if (objects[otyp].oc_name_known)
+    if (obj && objects[otyp].oc_name_known)
     {
         int spellcnt = 0;
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
@@ -3957,8 +3990,7 @@ register struct obj* obj;
         }
         if (spellcnt > 0)
         {
-            Sprintf(buf, "Component for the following spell%s:", plur(spellcnt));
-            
+            Sprintf(buf, "Component for the following spell%s:", plur(spellcnt));            
             putstr(datawin, ATR_HEADING, buf);
             int compcnt = 0;
             const char* splname = 0;
@@ -3981,7 +4013,7 @@ register struct obj* obj;
     }
 
     /* Notable */
-    if (otyp == EGG && obj->corpsenm >= LOW_PM && obj->known && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG) != 0 && (obj->speflags & SPEFLAGS_YOURS) != 0)
+    if (obj && otyp == EGG && obj->corpsenm >= LOW_PM && obj->known && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG) != 0 && (obj->speflags & SPEFLAGS_YOURS) != 0)
     {
         int powercnt = 0;
 
@@ -4000,7 +4032,8 @@ register struct obj* obj;
         Strcpy(buf, "Description:");
         putstr(datawin, ATR_HEADING, buf);
 
-        char descbuf[8 * BUFSZ];
+        size_t desclen = strlen(OBJ_ITEM_DESC(otyp));
+        char* descbuf = (char*)alloc(desclen + 10);
         Strcpy(descbuf, OBJ_ITEM_DESC(otyp));
         char* bp = descbuf;
         char* ebp;
@@ -4012,8 +4045,7 @@ register struct obj* obj;
 
             if (strlen(bp) > 0)
             {
-                Sprintf(buf, "  %s", bp);
-                
+                Sprintf(buf, "  %s", bp);                
                 putstr(datawin, ATR_INDENT_AT_DOUBLE_SPACE, buf);
             }
 
@@ -4022,211 +4054,214 @@ register struct obj* obj;
             else
                 bp = ebp + 1;
         }
+        free((genericptr_t)descbuf);
     }
 
     /* Weapon statistics */
-    struct obj* applicable_launcher = uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj;
-    if ((is_weapon(obj) 
-        || (uwep && obj == uwep) || (uswapwep && obj == uswapwep) 
-        || (u.twoweap && ((uarms && obj == uarms) || (uswapwep2 && obj == uswapwep2)))
-        || weapon_stats_shown
-        )
-        && !is_launcher(obj) && stats_known && obj->known
-        && (!ammo_and_launcher(obj, applicable_launcher) 
-            || (ammo_and_launcher(obj, applicable_launcher) && object_stats_known(applicable_launcher) && applicable_launcher->known))
-        )
+    if (obj)
     {
-        int powercnt = 0;
-
-        if(is_boots(obj))
-            Sprintf(buf, "Statistics in kicking:");
-        else if (is_gloves(obj))
-            Sprintf(buf, "Statistics in bare-handed combat:");
-        else
-            Sprintf(buf, "Weapon statistics:");
-
-        putstr(datawin, ATR_HEADING, buf);
-
-        int attknum = 1, armorpenalty = 0;
-        /* we use youmonst as a proxy */
-        /* You hit if rnd(20) < roll_to_hit */
-        int roll_to_hit = 0;
-        if (throwing_weapon(obj) || is_ammo(obj))
+        struct obj* applicable_launcher = uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj;
+        if ((is_weapon(obj)
+            || (uwep && obj == uwep) || (uswapwep && obj == uswapwep)
+            || (u.twoweap && ((uarms && obj == uarms) || (uswapwep2 && obj == uswapwep2)))
+            || weapon_stats_shown
+            )
+            && !is_launcher(obj) && stats_known && obj->known
+            && (!ammo_and_launcher(obj, applicable_launcher)
+                || (ammo_and_launcher(obj, applicable_launcher) && object_stats_known(applicable_launcher) && applicable_launcher->known))
+            )
         {
-            roll_to_hit = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(&youmonst) + u.ubasehitinc + u.uhitinc
-                + maybe_polyd(youmonst.data->mlevel, u.ulevel);
+            int powercnt = 0;
 
-            roll_to_hit += omon_adj(&youmonst, obj, FALSE);
+            if (is_boots(obj))
+                Sprintf(buf, "Statistics in kicking:");
+            else if (is_gloves(obj))
+                Sprintf(buf, "Statistics in bare-handed combat:");
+            else
+                Sprintf(buf, "Weapon statistics:");
 
-            if (is_ammo(obj))
+            putstr(datawin, ATR_HEADING, buf);
+
+            int attknum = 1, armorpenalty = 0;
+            /* we use youmonst as a proxy */
+            /* You hit if rnd(20) < roll_to_hit */
+            int roll_to_hit = 0;
+            if (throwing_weapon(obj) || is_ammo(obj))
             {
-                if (!ammo_and_launcher(obj, applicable_launcher))
-                {
-                    roll_to_hit -= 4;
-                }
-                else if (applicable_launcher)
-                {
-                    roll_to_hit += weapon_to_hit_value(applicable_launcher, &youmonst, &youmonst, 2);
-                    roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
+                roll_to_hit = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(&youmonst) + u.ubasehitinc + u.uhitinc
+                    + maybe_polyd(youmonst.data->mlevel, u.ulevel);
 
-                    if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI))
-                        && (!Upolyd || your_race(youmonst.data))
-                        && objects[applicable_launcher->otyp].oc_skill == P_BOW)
+                roll_to_hit += omon_adj(&youmonst, obj, FALSE);
+
+                if (is_ammo(obj))
+                {
+                    if (!ammo_and_launcher(obj, applicable_launcher))
                     {
-                        roll_to_hit++;
-                        if (Race_if(PM_ELF) && applicable_launcher->otyp == ELVEN_LONG_BOW)
-                            roll_to_hit++;
-                        else if (Role_if(PM_SAMURAI) && applicable_launcher->otyp == YUMI)
-                            roll_to_hit++;
+                        roll_to_hit -= 4;
                     }
+                    else if (applicable_launcher)
+                    {
+                        roll_to_hit += weapon_to_hit_value(applicable_launcher, &youmonst, &youmonst, 2);
+                        roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
 
-                    roll_to_hit += u.uarcherybonus;
-                    double archery_avg_dmg = (double)u.uarcherybonus;
-                    wep_avg_dmg += archery_avg_dmg;
-                    wep_multipliable_avg_dmg += archery_avg_dmg;
-                    if (wep_avg_dmg < 0)
-                        wep_avg_dmg = 0;
+                        if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI))
+                            && (!Upolyd || your_race(youmonst.data))
+                            && objects[applicable_launcher->otyp].oc_skill == P_BOW)
+                        {
+                            roll_to_hit++;
+                            if (Race_if(PM_ELF) && applicable_launcher->otyp == ELVEN_LONG_BOW)
+                                roll_to_hit++;
+                            else if (Role_if(PM_SAMURAI) && applicable_launcher->otyp == YUMI)
+                                roll_to_hit++;
+                        }
+
+                        roll_to_hit += u.uarcherybonus;
+                        double archery_avg_dmg = (double)u.uarcherybonus;
+                        wep_avg_dmg += archery_avg_dmg;
+                        wep_multipliable_avg_dmg += archery_avg_dmg;
+                        if (wep_avg_dmg < 0)
+                            wep_avg_dmg = 0;
+                    }
+                }
+                else
+                {
+                    if (throwing_weapon(obj)) /* meant to be thrown */
+                        roll_to_hit += 2;
+
+                    roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
                 }
             }
             else
-            { 
-                if (throwing_weapon(obj)) /* meant to be thrown */
-                    roll_to_hit += 2;
+            {
+                roll_to_hit = find_roll_to_hit(&youmonst, AT_WEAP, obj, &attknum, &armorpenalty);
+            }
 
-                roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
+            /* This is not accurate for fired weapons since it does not account for launcher properly; also thrown weapons plusses are a bit inaccurate */
+
+            int youmonstac = find_mac(&youmonst);
+            int chance_to_hit_youmonst = (roll_to_hit - 1) * 5;
+            int chance_to_hit_ac0 = chance_to_hit_youmonst - youmonstac * 5;
+            int diff_to_50_from_ac0 = 50 - chance_to_hit_ac0;
+            int ac_with_50_chance = diff_to_50_from_ac0 / 5;
+            int diff_to_5_from_ac0 = 5 - chance_to_hit_ac0;
+            int ac_with_5_chance = diff_to_5_from_ac0 / 5;
+
+            powercnt++;
+            //#if defined(GNH_MOBILE) || defined (WIN32)
+            Sprintf(buf, " %2d - You have ", powercnt);
+            putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            putstr_ex(datawin, "50%", ATR_INDENT_AT_DASH, CLR_BROWN, 1);
+            putstr_ex(datawin, " chance to hit AC ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            Sprintf(buf, "%d", ac_with_50_chance);
+            putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, CLR_BROWN, 1);
+            putstr_ex(datawin, " and ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            putstr_ex(datawin, "5%", ATR_INDENT_AT_DASH, CLR_RED, 1);
+            putstr_ex(datawin, " AC ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            Sprintf(buf, "%d", ac_with_5_chance);
+            putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, CLR_RED, 0);
+            //#else
+            //        Sprintf(buf, " %2d - You have 50%% chance to hit AC %d and 5%% AC %d", powercnt, ac_with_50_chance, ac_with_5_chance);
+            //        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            //#endif
+
+            struct multishot_result msres = get_multishot_stats(&youmonst, obj, uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj, (is_ammo(obj) || throwing_weapon(obj)));
+            double average_multi_shot_times = msres.average;
+
+            powercnt++;
+            const char* applicable_verb = throwing_weapon(obj) ? "throw" : ammo_and_launcher(obj, applicable_launcher) ? "fire" : "strike";
+            if (average_multi_shot_times == 1.0)
+                Sprintf(buf, " %2d - You %s once per round", powercnt, applicable_verb);
+            else if (average_multi_shot_times == 2.0)
+                Sprintf(buf, " %2d - You %s twice per round", powercnt, applicable_verb);
+            else if (average_multi_shot_times == 3.0)
+                Sprintf(buf, " %2d - You %s three times per round", powercnt, applicable_verb);
+            else
+                Sprintf(buf, " %2d - You %s an average of %.1f time%s per round", powercnt, applicable_verb, average_multi_shot_times, plur(average_multi_shot_times));
+
+            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+
+            double skill_dmg_bonus = (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
+            wep_avg_dmg += skill_dmg_bonus;
+            wep_multipliable_avg_dmg += skill_dmg_bonus;
+            if (wep_avg_dmg < 0)
+                wep_avg_dmg = 0;
+
+            wep_avg_dmg *= average_multi_shot_times;
+            wep_multipliable_avg_dmg *= average_multi_shot_times;
+
+            if (has_slaying)
+                wep_all_extra_avg_dmg += wep_multipliable_avg_dmg * 2;
+
+            powercnt++;
+            Sprintf(buf, " %2d - Your basic average damage is %.1f per round", powercnt, wep_avg_dmg);
+            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+
+            if (wep_all_extra_avg_dmg != 0)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Your average damage with extras is %.1f per round", powercnt, wep_avg_dmg + wep_all_extra_avg_dmg);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
         }
+
+        /* Armor statistics */
+        int totalacbonus = 0;
+        int totalmcbonus = 0;
+        if (notfullyidentified || !stats_known)
+        {
+            totalacbonus = -knownacbonus;
+            totalmcbonus = knownmcbonus;
+        }
         else
         {
-            roll_to_hit = find_roll_to_hit(&youmonst, AT_WEAP, obj, &attknum, &armorpenalty);
+            totalacbonus = -ARM_AC_BONUS(obj, youmonst.data);
+            totalmcbonus = ARM_MC_BONUS(obj, youmonst.data);
         }
-
-        /* This is not accurate for fired weapons since it does not account for launcher properly; also thrown weapons plusses are a bit inaccurate */
-
-        int youmonstac = find_mac(&youmonst);
-        int chance_to_hit_youmonst = (roll_to_hit - 1) * 5;
-        int chance_to_hit_ac0 = chance_to_hit_youmonst - youmonstac * 5;
-        int diff_to_50_from_ac0 = 50 - chance_to_hit_ac0;
-        int ac_with_50_chance = diff_to_50_from_ac0 / 5;
-        int diff_to_5_from_ac0 = 5 - chance_to_hit_ac0;
-        int ac_with_5_chance = diff_to_5_from_ac0 / 5;
-
-        powercnt++;
-//#if defined(GNH_MOBILE) || defined (WIN32)
-        Sprintf(buf, " %2d - You have ", powercnt);
-        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
-        putstr_ex(datawin, "50%", ATR_INDENT_AT_DASH, CLR_BROWN, 1);
-        putstr_ex(datawin, " chance to hit AC ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
-        Sprintf(buf, "%d", ac_with_50_chance);
-        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, CLR_BROWN, 1);
-        putstr_ex(datawin, " and ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
-        putstr_ex(datawin, "5%", ATR_INDENT_AT_DASH, CLR_RED, 1);
-        putstr_ex(datawin, " AC ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
-        Sprintf(buf, "%d", ac_with_5_chance);
-        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, CLR_RED, 0);
-//#else
-//        Sprintf(buf, " %2d - You have 50%% chance to hit AC %d and 5%% AC %d", powercnt, ac_with_50_chance, ac_with_5_chance);
-//        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-//#endif
-
-        struct multishot_result msres = get_multishot_stats(&youmonst, obj, uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj, (is_ammo(obj) || throwing_weapon(obj)));
-        double average_multi_shot_times = msres.average;
-
-        powercnt++;
-        const char* applicable_verb = throwing_weapon(obj) ? "throw" : ammo_and_launcher(obj, applicable_launcher) ? "fire" : "strike";
-        if (average_multi_shot_times == 1.0)
-            Sprintf(buf, " %2d - You %s once per round", powercnt, applicable_verb);
-        else if (average_multi_shot_times == 2.0)
-            Sprintf(buf, " %2d - You %s twice per round", powercnt, applicable_verb);
-        else if (average_multi_shot_times == 3.0)
-            Sprintf(buf, " %2d - You %s three times per round", powercnt, applicable_verb);
-        else
-            Sprintf(buf, " %2d - You %s an average of %.1f time%s per round", powercnt, applicable_verb, average_multi_shot_times, plur(average_multi_shot_times));
-
-        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-
-        double skill_dmg_bonus = (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
-        wep_avg_dmg += skill_dmg_bonus;
-        wep_multipliable_avg_dmg += skill_dmg_bonus;
-        if (wep_avg_dmg < 0)
-            wep_avg_dmg = 0;
-
-        wep_avg_dmg *= average_multi_shot_times;
-        wep_multipliable_avg_dmg *= average_multi_shot_times;
-
-        if (has_slaying)
-            wep_all_extra_avg_dmg += wep_multipliable_avg_dmg * 2;
-
-        powercnt++;
-        Sprintf(buf, " %2d - Your basic average damage is %.1f per round", powercnt, wep_avg_dmg);
-        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-
-        if (wep_all_extra_avg_dmg != 0)
+        if ((stats_known && (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
+            || totalacbonus != 0 || totalmcbonus != 0 || (has_obj_mythic_defense(obj) && obj->mknown))
         {
+            int powercnt = 0;
+            Sprintf(buf, "Armor statistics:");
+            putstr(datawin, ATR_HEADING, buf);
+
+            const char* totalprefix = notfullyidentified ? "Total known" : "Total";
             powercnt++;
-            Sprintf(buf, " %2d - Your average damage with extras is %.1f per round", powercnt, wep_avg_dmg + wep_all_extra_avg_dmg);
+            Sprintf(buf, " %2d - %s AC %s %s%d", powercnt, totalprefix, totalacbonus > 0 ? "penalty" : "bonus", totalacbonus >= 0 ? "+" : "", totalacbonus);
             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            powercnt++;
+            Sprintf(buf, " %2d - %s MC %s %s%d", powercnt, totalprefix, totalmcbonus < 0 ? "penalty" : "bonus", totalmcbonus >= 0 ? "+" : "", totalmcbonus);
+            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+
         }
-    }
 
-    /* Armor statistics */
-    int totalacbonus = 0;
-    int totalmcbonus = 0;
-    if (notfullyidentified || !stats_known)
-    {
-        totalacbonus = -knownacbonus;
-        totalmcbonus = knownmcbonus;
-    }
-    else
-    {
-        totalacbonus = -ARM_AC_BONUS(obj, youmonst.data);
-        totalmcbonus = ARM_MC_BONUS(obj, youmonst.data);
-    }
-    if ((stats_known && (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
-        || totalacbonus != 0 || totalmcbonus != 0 || (has_obj_mythic_defense(obj) && obj->mknown))
-    {
-        int powercnt = 0;
-        Sprintf(buf, "Armor statistics:");
-        putstr(datawin, ATR_HEADING, buf);
-
-        const char* totalprefix = notfullyidentified ? "Total known" : "Total";
-        powercnt++;
-        Sprintf(buf, " %2d - %s AC %s %s%d", powercnt, totalprefix, totalacbonus > 0 ? "penalty" : "bonus", totalacbonus >= 0 ? "+" : "", totalacbonus);
-        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-        powercnt++;
-        Sprintf(buf, " %2d - %s MC %s %s%d", powercnt, totalprefix, totalmcbonus < 0 ? "penalty" : "bonus", totalmcbonus >= 0 ? "+" : "", totalmcbonus);
-        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-
-    }
-
-    /* Hints */
-    boolean show_identify_hint = (flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && obj->dknown && (!stats_known || notfullyidentified);
-    if (show_identify_hint || show_corpse_hint)
-    {
-        int powercnt = 0;
-
-        Sprintf(buf, "Hints:");
-        putstr(datawin, ATR_HEADING, buf);
-
-        if (show_identify_hint)
+        /* Hints */
+        boolean show_identify_hint = (flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && obj->dknown && (!stats_known || notfullyidentified);
+        if (show_identify_hint || show_corpse_hint)
         {
-            powercnt++;
-            if (!stats_known)
-                Sprintf(buf, " %2d - You can identify this item, for example, by using a scroll of identify", powercnt);
-            else
-                Sprintf(buf, " %2d - You can fully learn the statistics by identifying this item (e.g., by using a scroll of identify)", powercnt);
+            int powercnt = 0;
 
-            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-        }
+            Sprintf(buf, "Hints:");
+            putstr(datawin, ATR_HEADING, buf);
 
-        if (show_corpse_hint)
-        {
-            powercnt++;
-            Sprintf(buf, " %2d - You can determine this corpse's properties by using a wand of probing on it", powercnt);
-            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            if (show_identify_hint)
+            {
+                powercnt++;
+                if (!stats_known)
+                    Sprintf(buf, " %2d - You can identify this item, for example, by using a scroll of identify", powercnt);
+                else
+                    Sprintf(buf, " %2d - You can fully learn the statistics by identifying this item (e.g., by using a scroll of identify)", powercnt);
+
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+
+            if (show_corpse_hint)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - You can determine this corpse's properties by using a wand of probing on it", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
         }
     }
-
     display_nhwindow(datawin, FALSE);
     destroy_nhwindow(datawin), datawin = WIN_ERR;
 
@@ -8221,6 +8256,7 @@ STATIC_DCL void FDECL(write_putstr_ex, (winid, const char*, int, int, int));
 STATIC_DCL void FDECL(write_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 STATIC_PTR int FDECL(CFDECLSPEC spell_wiki_cmp, (const genericptr, const genericptr));
 STATIC_PTR int FDECL(CFDECLSPEC monster_wiki_cmp, (const genericptr, const genericptr));
+STATIC_PTR int FDECL(CFDECLSPEC item_wiki_cmp, (const genericptr, const genericptr));
 
 STATIC_VAR int write_fd = -1;
 
@@ -8544,6 +8580,7 @@ const genericptr q;
     return strcmpi(name1, name2);
 }
 
+
 void
 write_monsters()
 {
@@ -8741,6 +8778,228 @@ write_monsters()
 
     pline("Done!");
 }
+
+
+STATIC_OVL int CFDECLSPEC
+item_wiki_cmp(p, q)
+const genericptr p;
+const genericptr q;
+{
+    if (!p || !q)
+        return 0;
+
+    short idx1 = *(short*)p;
+    short idx2 = *(short*)q;
+
+    const char* name1 = OBJ_NAME(objects[idx1]);
+    const char* name2 = OBJ_NAME(objects[idx2]);
+
+    return strcmpi(name1, name2);
+}
+
+void
+write_items()
+{
+    pline("Starting writing items...");
+
+    const char* itemdir = "items_for_wiki";
+    struct stat st = { 0 };
+    if (stat(itemdir, &st) == -1) {
+#ifdef WIN32
+        (void)mkdir(itemdir);
+#else
+        (void)mkdir(itemdir, 0700);
+#endif
+    }
+    char fq_save[BUFSIZ];
+    char name[BUFSIZ];
+    char buf[BUFSIZ];
+    char buf2[BUFSIZ];
+
+    struct window_procs saved_windowprocs = windowprocs;
+    windowprocs.win_putstr_ex = write_putstr_ex;
+    windowprocs.win_putstr_ex2 = write_putstr_ex2;
+    windowprocs.win_create_nhwindow_ex = write_create_nhwindow_ex;
+    windowprocs.win_display_nhwindow = write_display_nhwindow;
+    windowprocs.win_destroy_nhwindow = write_destroy_nhwindow;
+
+    int i, j, len;
+    size_t cnt_objs = 0;
+    for (i = STRANGE_OBJECT + 1; i < NUM_OBJECTS; i++)
+    {
+        if (!OBJ_NAME(objects[i]))
+            continue;
+
+        name[0] = '\0';
+        switch (objects[i].oc_class)
+        {
+            case SPBOOK_CLASS:
+                Strcat(name, "spellbook of ");
+                break;
+            case SCROLL_CLASS:
+                Strcat(name, "scroll of ");
+                break;
+            case WAND_CLASS:
+                Strcat(name, "wand of ");
+                break;
+            case RING_CLASS:
+                Strcat(name, "ring of ");
+                break;
+            case POTION_CLASS:
+                Strcat(name, "potion of ");
+                break;
+        }
+        Strcat(name, OBJ_NAME(objects[i]));
+        len = (int)strlen(name);
+        for (j = 0; j < len; j++)
+        {
+            if (name[j] == ' ')
+                name[j] = '-';
+        }
+        *name = highc(*name);
+
+        fq_save[0] = '\0';
+        Strcat(fq_save, itemdir);
+        Strcat(fq_save, "/");
+        Strcat(fq_save, name);
+        Strcat(fq_save, ".md");
+
+        (void)remove(fq_save);
+
+#ifdef MAC
+        write_fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        write_fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        if (write_fd < 0)
+            continue;
+
+        itemdescription_core((struct obj*)0, i);
+
+        (void)close(write_fd);
+        cnt_objs++;
+    }
+    windowprocs = saved_windowprocs;
+
+    short* item_indices = (short*)alloc(cnt_objs * sizeof(short));
+    memset(item_indices, 0, cnt_objs * sizeof(short));
+    size_t idx_obj = 0;
+    for (i = STRANGE_OBJECT + 1; i < NUM_OBJECTS; i++)
+    {
+        if (!OBJ_NAME(objects[i]))
+            continue;
+
+        item_indices[idx_obj] = (short)(i);
+        idx_obj++;
+    }
+
+    qsort(item_indices, cnt_objs, sizeof(short), item_wiki_cmp);
+
+    name[0] = '\0';
+    fq_save[0] = '\0';
+    Strcat(fq_save, itemdir);
+    Strcat(fq_save, "/");
+    Strcat(fq_save, "Alphabetic-list-of-items");
+    Strcat(fq_save, ".md");
+
+    (void)remove(fq_save);
+
+#ifdef MAC
+    write_fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+    write_fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+    if (write_fd >= 0)
+    {
+        for (i = 0; i < 26; i++)
+        {
+            Sprintf(buf, "- [[Items starting with %c]]\n", (char)('A' + i));
+            (void)write(write_fd, buf, strlen(buf));
+        }
+        (void)close(write_fd);
+        write_fd = -1;
+    }
+
+    short i_idx;
+    for (i = 0; i < NUM_MONSTERS - LOW_PM; i++)
+    {
+        i_idx = item_indices[i];
+
+        if (i <= 0 || lowc(*OBJ_NAME(objects[i_idx])) != lowc(*OBJ_NAME(objects[item_indices[i - 1]])))
+        {
+            if (i > 0 && write_fd >= 0)
+            {
+                (void)close(write_fd);
+                write_fd = -1;
+            }
+
+            name[0] = '\0';
+            Sprintf(name, "Items-starting-with-%c", highc(*OBJ_NAME(objects[i_idx])));
+            fq_save[0] = '\0';
+            Strcat(fq_save, itemdir);
+            Strcat(fq_save, "/");
+            Strcat(fq_save, name);
+            Strcat(fq_save, ".md");
+
+            (void)remove(fq_save);
+
+#ifdef MAC
+            write_fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+            write_fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+            if (write_fd < 0)
+                continue;
+
+            (void)strncpy(buf2, OBJ_NAME(objects[i_idx]), 1);
+            buf2[1] = 0;
+            *buf2 = highc(*buf2);
+            Strcpy(buf, "## ");
+            Strcat(buf, buf2);
+            Strcat(buf, "\n");
+            (void)write(write_fd, buf, strlen(buf));
+        }
+
+        if (write_fd < 0)
+            continue;
+
+        *buf2 = 0;
+        switch (objects[i].oc_class)
+        {
+        case SPBOOK_CLASS:
+            Strcat(buf2, "spellbook of ");
+            break;
+        case SCROLL_CLASS:
+            Strcat(buf2, "scroll of ");
+            break;
+        case WAND_CLASS:
+            Strcat(buf2, "wand of ");
+            break;
+        case RING_CLASS:
+            Strcat(buf2, "ring of ");
+            break;
+        case POTION_CLASS:
+            Strcat(buf2, "potion of ");
+            break;
+        }
+        Strcat(buf2, OBJ_NAME(objects[i_idx]));
+        *buf2 = highc(*buf2);
+        Strcpy(buf, "- [[");
+        Strcat(buf, buf2);
+        Strcat(buf, "]]\n");
+
+        (void)write(write_fd, buf, strlen(buf));
+    }
+    if (write_fd >= 0)
+    {
+        (void)close(write_fd);
+        write_fd = -1;
+    }
+    free((genericptr_t)item_indices);
+    pline("Done!");
+}
+
+
 #endif
 
 

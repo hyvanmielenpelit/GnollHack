@@ -244,8 +244,8 @@ enum elemental_enchantments {
  */
 #define is_otyp_appliable(otyp) ((objects[(otyp)].oc_flags3 & O3_APPLIABLE) != 0)
 #define is_otyp_invokable(otyp) ((objects[(otyp)].oc_flags3 & O3_INVOKABLE) != 0)
-#define is_obj_appliable(otmp) is_otyp_appliable((otmp)->otyp)
-#define is_obj_invokable(otmp) is_otyp_invokable((otmp)->otyp)
+#define is_obj_appliable(o) is_otyp_appliable((o)->otyp)
+#define is_obj_invokable(o) is_otyp_invokable((o)->otyp)
 
 #define is_otyp_indestructible(otyp) ((objects[(otyp)].oc_flags & O1_INDESTRUCTIBLE) != 0)
 #define is_obj_indestructible(o) ((get_obj_oc_flags(o) & O1_INDESTRUCTIBLE) != 0 || ((o)->speflags & SPEFLAGS_INDESTRUCTIBLE) != 0 \
@@ -254,21 +254,27 @@ enum elemental_enchantments {
 #define is_otyp_no_pickup(otyp) ((objects[(otyp)].oc_flags3 & O3_NO_PICKUP) != 0)
 #define is_obj_no_pickup(o) (is_otyp_no_pickup((o)->otyp) || ((o)->speflags & SPEFLAGS_NO_PICKUP) != 0)
 
-#define is_blade(otmp)                           \
-    ((otmp)->oclass == WEAPON_CLASS                \
-     && objects[(otmp)->otyp].oc_skill >= P_DAGGER \
-     && objects[(otmp)->otyp].oc_skill <= P_SWORD)
-#define is_axe(otmp)                                              \
-    ((((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
-     && objects[(otmp)->otyp].oc_skill == P_AXE) || ((otmp)->oartifact && is_artifact_applicable_as_axe(otmp)))
-#define is_pick(otmp)                                             \
-    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
-     && objects[(otmp)->otyp].oc_skill == P_DIGGING)
-#define is_whip(otmp)                                             \
-    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_subtyp == WEP_WHIP)
-#define is_sword(otmp)                                \
-    ((otmp)->oclass == WEAPON_CLASS                     \
-     && objects[(otmp)->otyp].oc_skill == P_SWORD)
+#define is_otyp_blade(otyp) \
+    (objects[otyp].oc_class == WEAPON_CLASS                \
+     && objects[otyp].oc_skill >= P_DAGGER \
+     && objects[otyp].oc_skill <= P_SWORD)
+#define is_blade(o) is_otyp_blade((o)->otyp)
+#define is_otyp_axe(otyp)                                              \
+    (((objects[otyp].oc_class == WEAPON_CLASS || objects[otyp].oc_class == TOOL_CLASS) \
+     && objects[otyp].oc_skill == P_AXE))
+#define is_axe(o) \
+    (is_otyp_axe((o)->otyp) || ((o)->oartifact && is_artifact_applicable_as_axe(o)))
+#define is_otyp_pick(otyp) \
+    ((objects[otyp].oc_class == WEAPON_CLASS || objects[otyp].oc_class == TOOL_CLASS) \
+     && objects[otyp].oc_skill == P_DIGGING)
+#define is_pick(o) is_otyp_pick((o)->otyp)
+#define is_otyp_whip(otyp)                                             \
+    (objects[otyp].oc_class == WEAPON_CLASS && objects[otyp].oc_subtyp == WEP_WHIP)
+#define is_whip(o) is_otyp_whip((o)->otyp) 
+#define is_otyp_sword(otyp) \
+    (objects[otyp].oc_class == WEAPON_CLASS                     \
+     && objects[otyp].oc_skill == P_SWORD)
+#define is_sword(o) is_otyp_sword((o)->otyp)
 #define is_otyp_pole(otyp)                                             \
     (objects[(otyp)].oc_class == WEAPON_CLASS && objects[(otyp)].oc_subtyp == WEP_POLEARM)
 #define is_otyp_spear(otyp) \
@@ -280,46 +286,64 @@ enum elemental_enchantments {
 #define is_lance(o) is_otyp_lance((o)->otyp)
 #define is_otyp_appliable_pole_type_weapon(otyp)   \
     (is_otyp_pole(otyp) || is_otyp_spear(otyp) || is_otyp_lance(otyp))
-#define is_appliable_pole_type_weapon(otmp)   \
-    (is_pole(otmp) || is_spear(otmp) || is_lance(otmp))
-#define is_appliable_weapon(otmp) \
-    ((otmp)->oclass == WEAPON_CLASS && (is_pick(otmp) || is_axe(otmp) || is_appliable_pole_type_weapon(otmp) || is_whip(otmp) || is_obj_appliable(otmp)))
-#define is_launcher(otmp)                                                  \
-    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_skill >= P_BOW \
-     && objects[(otmp)->otyp].oc_skill <= P_CROSSBOW)
-#define is_ammo(otmp)                                            \
-    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == GEM_CLASS) \
-     && objects[(otmp)->otyp].oc_skill >= -P_CROSSBOW              \
-     && objects[(otmp)->otyp].oc_skill <= -P_BOW)
+#define is_appliable_pole_type_weapon(o)   \
+    (is_pole(o) || is_spear(o) || is_lance(o))
+#define is_otyp_appliable_weapon(otyp) \
+    (objects[otyp].oc_class == WEAPON_CLASS && (is_otyp_pick(otyp) || is_otyp_axe(otyp) || is_otyp_appliable_pole_type_weapon(otyp) || is_otyp_whip(otyp) || is_otyp_appliable(otyp)))
+#define is_appliable_weapon(o) \
+    ((o)->oclass == WEAPON_CLASS && (is_pick(o) || is_axe(o) || is_appliable_pole_type_weapon(o) || is_whip(o) || is_obj_appliable(o)))
+#define is_otyp_launcher(otyp)                                                  \
+    (objects[otyp].oc_class == WEAPON_CLASS && objects[otyp].oc_skill >= P_BOW \
+     && objects[otyp].oc_skill <= P_CROSSBOW)
+#define is_launcher(o) is_otyp_launcher((o)->otyp)
+#define is_otyp_ammo(otyp)                                            \
+    ((objects[otyp].oc_class == WEAPON_CLASS || objects[otyp].oc_class == GEM_CLASS) \
+     && objects[otyp].oc_skill >= -P_CROSSBOW              \
+     && objects[otyp].oc_skill <= -P_BOW)
+#define is_ammo(o) is_otyp_ammo((o)->otyp)
+#define are_otyp_matching_launcher(aotyp, lotyp) \
+    (objects[aotyp].oc_skill == -objects[lotyp].oc_skill)
 #define matching_launcher(a, l) \
-    ((l) && objects[(a)->otyp].oc_skill == -objects[(l)->otyp].oc_skill)
-#define ammo_and_launcher(a, l) (is_ammo(a) && matching_launcher(a, l))
-#define is_thrown_weapon_only(o) ((objects[(o)->otyp].oc_flags & O1_THROWN_WEAPON_ONLY) != 0)
-#define is_weptool(o) \
-    ((o)->oclass == TOOL_CLASS && (objects[(o)->otyp].oc_flags4 & O4_WEAPON_TOOL) != 0)
+    ((a) && (l) && are_otyp_matching_launcher((a)->otyp, (l)->otyp))
+#define are_otyp_ammo_and_launcher(aotyp, lotyp) (is_otyp_ammo(aotyp) && are_otyp_matching_launcher(aotyp, lotyp))
+#define ammo_and_launcher(a, l) ((a) && (l) && are_otyp_ammo_and_launcher((a)->otyp, (l)->otyp))
+#define is_otyp_thrown_weapon_only(otyp) ((objects[otyp].oc_flags & O1_THROWN_WEAPON_ONLY) != 0)
+#define is_thrown_weapon_only(o) is_otyp_thrown_weapon_only((o)->otyp)
+#define is_otyp_weptool(otyp) \
+    (objects[otyp].oc_class == TOOL_CLASS && (objects[otyp].oc_flags4 & O4_WEAPON_TOOL) != 0)
+ /* towel is not a weptool:  enchantment isn't an enchantment, cursed towel
+    doesn't weld to hand, and twoweapon won't work with one */
+#define is_weptool(o) is_otyp_weptool((o)->otyp)
         /* towel is not a weptool:  enchantment isn't an enchantment, cursed towel
            doesn't weld to hand, and twoweapon won't work with one */
-#define is_wieldable_weapon(o) \
-    ((o)->oclass == WEAPON_CLASS || is_weptool(o) || (objects[(o)->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED) != 0)
-#define is_weapon(o) \
-    (is_wieldable_weapon(o) || (objects[(o)->otyp].oc_flags5 & O5_IS_WEAPON_WHEN_WORN) != 0)
-#define is_missile(o)                                          \
-    (((o)->oclass == WEAPON_CLASS || is_weptool(o)) && is_thrown_weapon_only(o))
+#define is_otyp_wieldable_weapon(otyp) \
+    (objects[otyp].oc_class == WEAPON_CLASS || is_otyp_weptool(otyp) || (objects[otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED) != 0)
+#define is_wieldable_weapon(o) is_otyp_wieldable_weapon((o)->otyp)
+#define is_otyp_weapon(otyp) \
+    (is_otyp_wieldable_weapon(otyp) || (objects[otyp].oc_flags5 & O5_IS_WEAPON_WHEN_WORN) != 0)
+#define is_weapon(o) is_otyp_weapon((o)->otyp)
+#define is_otyp_missile(otyp) \
+    ((objects[otyp].oc_class == WEAPON_CLASS || is_otyp_weptool(otyp)) && is_otyp_thrown_weapon_only(otyp))
+#define is_missile(o) is_otyp_missile((o)->otyp)
+#define is_otyp_nonmelee_throwing_weapon(otyp) (is_otyp_missile(otyp) || (objects[otyp].oc_flags & O1_THROWN_WEAPON_ONLY))
+#define is_otyp_throwing_weapon(otyp) (is_otyp_nonmelee_throwing_weapon(otyp) || (objects[otyp].oc_flags & O1_MELEE_AND_THROWN_WEAPON))
 
-#define is_armor(o) \
-    ((o)->oclass == ARMOR_CLASS)
-#define is_amulet(o) \
-    ((o)->oclass == AMULET_CLASS)
+#define is_otyp_armor(otyp) (objects[otyp].oc_class == ARMOR_CLASS)
+#define is_armor(o) ((o)->oclass == ARMOR_CLASS)
+#define is_otyp_amulet(otyp) (objects[otyp].oc_class == AMULET_CLASS)
+#define is_amulet(o) ((o)->oclass == AMULET_CLASS)
 #define is_wet_towel(o) ((o)->otyp == TOWEL && (o)->special_quality > 0)
-#define bimanual(otmp)                                            \
-    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
-     && objects[(otmp)->otyp].oc_bimanual)
+#define is_otyp_bimanual(otyp)                                            \
+    ((objects[otyp].oc_class == WEAPON_CLASS || objects[otyp].oc_class == TOOL_CLASS) \
+     && objects[otyp].oc_bimanual)
+#define bimanual(o) is_otyp_bimanual((o)->otyp)
 #define two_handed_bonus_applies(o) ((o) && bimanual(o) && is_weapon(o) && !is_launcher(o))
-#define is_multigen(otmp)                           \
-    (objects[(otmp)->otyp].oc_multigen_type > MULTIGEN_SINGLE)
+#define is_otyp_multigen(otyp)                           \
+    (objects[otyp].oc_multigen_type > MULTIGEN_SINGLE)
+#define is_multigen(o) is_otyp_multigen((o)->otyp)
 
-#define is_poisonable(otmp) \
-    ((is_weapon(otmp) && !is_launcher(otmp) && objects[(otmp)->otyp].oc_dir > WHACK) || (get_obj_oc_flags3(otmp) & O3_POISONABLE) != 0)
+#define is_poisonable(o) \
+    ((is_weapon(o) && !is_launcher(o) && objects[(o)->otyp].oc_dir > WHACK) || (get_obj_oc_flags3(o) & O3_POISONABLE) != 0)
 
 #define is_obj_tethered_weapon(o, wmask)  \
     ((objects[(o)->otyp].oc_flags4 & O4_TETHERED_WEAPON) != 0 && ((wmask) & W_WIELDED_WEAPON) != 0)
@@ -346,6 +370,7 @@ enum elemental_enchantments {
 #define is_obj_material_death_enchantable(o)     \
     (material_definitions[(o)->material].death_enchantable != 0)
 
+#define is_otyp_death_enchantable(otyp)  (is_otyp_elemental_enchantable(otyp) && is_otyp_material_death_enchantable(otyp))
 #define is_death_enchantable(o)  (is_elemental_enchantable(o) && is_obj_material_death_enchantable(o))
 
 #define is_otyp_specially_exceptional(otyp)     \
@@ -354,8 +379,9 @@ enum elemental_enchantments {
 #define is_otyp_non_exceptional(otyp)     \
     ((objects[(otyp)].oc_flags4 & O4_NON_EXCEPTIONAL) != 0)
 
-/* Unusual definition to account for weapons appropriately */
+#define can_otyp_have_exceptionality(otyp)     ((is_otyp_weapon(otyp) || is_otyp_specially_exceptional(otyp)) && !is_otyp_non_exceptional(otyp))
 #define can_have_exceptionality(o)     ((is_weapon(o) || is_otyp_specially_exceptional((o)->otyp)) && !is_otyp_non_exceptional((o)->otyp))
+#define is_otyp_nonexceptionality_armor(otyp) (is_otyp_armor(otyp) && !can_otyp_have_exceptionality(otyp))
 #define nonexceptionality_armor(o)     (is_armor(o) && !can_have_exceptionality(o))
 
 #define otyp_allows_specially_dipping_into(otyp) ((objects[(otyp)].oc_flags4 & O4_ALLOWS_DIPPING_INTO) != 0)
@@ -365,77 +391,86 @@ enum elemental_enchantments {
 #define obj_currently_allows_object_to_be_dipped_into_it(o) \
     (otyp_allows_object_to_be_dipped_into_it((o)->otyp) && (!otyp_expends_charges_when_dipped_into((o)->otyp) || (o)->charges > 0))
 
-#define is_cursed_magic_item(otmp)                                            \
-    ((objects[(otmp)->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM) != 0)
+#define is_cursed_magic_item(o)                                            \
+    ((objects[(o)->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM) != 0)
 
-#define is_obj_generated_cursed(otmp)                                            \
-    ((objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_CURSED) != 0)
+#define is_obj_generated_cursed(o)                                            \
+    ((objects[(o)->otyp].oc_flags2 & O2_GENERATED_CURSED) != 0)
 
-#define is_obj_generated_blessed(otmp)                                            \
-    ((objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_BLESSED) != 0)
+#define is_obj_generated_blessed(o)                                            \
+    ((objects[(o)->otyp].oc_flags2 & O2_GENERATED_BLESSED) != 0)
 
-#define oresist_disintegration(otmp)                                       \
-    ((get_obj_oc_flags(otmp) & O1_DISINTEGRATION_RESISTANT) != 0 || is_obj_indestructible(otmp) \
-     || ((otmp)->otyp == CORPSE && pm_resists_disint(&mons[(otmp)->corpsenm])) \
-     || obj_resists(otmp, 2, 50) \
-     || is_quest_artifact(otmp) )
+#define oresist_disintegration(o)                                       \
+    ((get_obj_oc_flags(o) & O1_DISINTEGRATION_RESISTANT) != 0 || is_obj_indestructible(o) \
+     || ((o)->otyp == CORPSE && pm_resists_disint(&mons[(o)->corpsenm])) \
+     || obj_resists(o, 2, 50) \
+     || is_quest_artifact(o) )
 
-#define oresist_fire(otmp)                                       \
-    ((get_obj_oc_flags(otmp) & O1_FIRE_RESISTANT) != 0 || is_obj_indestructible(otmp) \
-     || ((otmp)->otyp == CORPSE && pm_resists_fire(&mons[(otmp)->corpsenm])) \
-     || obj_resists(otmp, 0, 0) \
-     || is_quest_artifact(otmp) )
+#define oresist_fire(o)                                       \
+    ((get_obj_oc_flags(o) & O1_FIRE_RESISTANT) != 0 || is_obj_indestructible(o) \
+     || ((o)->otyp == CORPSE && pm_resists_fire(&mons[(o)->corpsenm])) \
+     || obj_resists(o, 0, 0) \
+     || is_quest_artifact(o) )
 
-#define oresist_cold(otmp)                                       \
-    ((get_obj_oc_flags(otmp) & O1_COLD_RESISTANT) != 0 || is_obj_indestructible(otmp) \
-     || ((otmp)->otyp == CORPSE && pm_resists_cold(&mons[(otmp)->corpsenm])) \
-     || obj_resists(otmp, 0, 0) \
-     || is_quest_artifact(otmp) )
+#define oresist_cold(o)                                       \
+    ((get_obj_oc_flags(o) & O1_COLD_RESISTANT) != 0 || is_obj_indestructible(o) \
+     || ((o)->otyp == CORPSE && pm_resists_cold(&mons[(o)->corpsenm])) \
+     || obj_resists(o, 0, 0) \
+     || is_quest_artifact(o) )
 
-#define oresist_elec(otmp)                                       \
-    ((get_obj_oc_flags(otmp) & O1_LIGHTNING_RESISTANT) != 0 || is_obj_indestructible(otmp) \
-     || ((otmp)->otyp == CORPSE && pm_resists_elec(&mons[(otmp)->corpsenm])) \
-     || obj_resists(otmp, 0, 0) \
-     || is_quest_artifact(otmp) )
+#define oresist_elec(o)                                       \
+    ((get_obj_oc_flags(o) & O1_LIGHTNING_RESISTANT) != 0 || is_obj_indestructible(o) \
+     || ((o)->otyp == CORPSE && pm_resists_elec(&mons[(o)->corpsenm])) \
+     || obj_resists(o, 0, 0) \
+     || is_quest_artifact(o) )
 
 /* Armor */
-#define is_shield(otmp)          \
-    ((otmp)->oclass == ARMOR_CLASS \
-     && objects[(otmp)->otyp].oc_armor_category == ARM_SHIELD)
-#define is_helmet(otmp) \
-    ((otmp)->oclass == ARMOR_CLASS && objects[(otmp)->otyp].oc_armor_category == ARM_HELM)
-#define is_conical_hat(otmp) \
-    ((otmp)->otyp >= CORNUTHAUM && (otmp)->otyp <= GNOMISH_FELT_HAT)
-#define is_boots(otmp)           \
-    ((otmp)->oclass == ARMOR_CLASS \
-     && objects[(otmp)->otyp].oc_armor_category == ARM_BOOTS)
-#define is_gloves(otmp)          \
-    ((otmp)->oclass == ARMOR_CLASS \
-     && objects[(otmp)->otyp].oc_armor_category == ARM_GLOVES)
-#define is_cloak(otmp)           \
-    ((otmp)->oclass == ARMOR_CLASS \
-     && objects[(otmp)->otyp].oc_armor_category == ARM_CLOAK)
-#define is_shirt(otmp)           \
-    ((otmp)->oclass == ARMOR_CLASS \
-     && objects[(otmp)->otyp].oc_armor_category == ARM_SHIRT)
-#define is_robe(otmp)           \
-    ((otmp)->oclass == ARMOR_CLASS \
-     && objects[(otmp)->otyp].oc_armor_category == ARM_ROBE)
-#define is_bracers(otmp)           \
-    ((otmp)->oclass == ARMOR_CLASS \
-     && objects[(otmp)->otyp].oc_armor_category == ARM_BRACERS)
-#define is_suit(otmp) \
-    ((otmp)->oclass == ARMOR_CLASS && objects[(otmp)->otyp].oc_armor_category == ARM_SUIT)
-#define is_elven_armor(otmp)                                              \
-    ((otmp)->oclass == ARMOR_CLASS && is_elven_obj(otmp))
-#define is_orcish_armor(otmp)                                            \
-    ((otmp)->oclass == ARMOR_CLASS && is_orcish_obj(otmp))
-#define is_dwarvish_armor(otmp)               \
-    ((otmp)->oclass == ARMOR_CLASS && is_dwarvish_obj(otmp))
-#define is_gnollish_armor(otmp) \
-    ((otmp)->oclass == ARMOR_CLASS && is_gnollish_obj(otmp))
-#define is_gnomish_armor(otmp) \
-    ((otmp)->oclass == ARMOR_CLASS && is_gnomish_obj(otmp))
+#define is_otyp_shield(otyp)          \
+    (objects[otyp].oc_class == ARMOR_CLASS \
+     && objects[otyp].oc_armor_category == ARM_SHIELD)
+#define is_shield(o) is_otyp_shield((o)->otyp)
+#define is_otyp_helmet(otyp) \
+    (objects[otyp].oc_class == ARMOR_CLASS && objects[otyp].oc_armor_category == ARM_HELM)
+#define is_helmet(o) is_otyp_helmet((o)->otyp)
+#define is_otyp_boots(otyp)           \
+    (objects[otyp].oc_class == ARMOR_CLASS \
+     && objects[otyp].oc_armor_category == ARM_BOOTS)
+#define is_boots(o) is_otyp_boots((o)->otyp) 
+#define is_otyp_gloves(otyp)          \
+    (objects[otyp].oc_class == ARMOR_CLASS \
+     && objects[otyp].oc_armor_category == ARM_GLOVES)
+#define is_gloves(o) is_otyp_gloves((o)->otyp)
+#define is_otyp_cloak(otyp)           \
+    (objects[otyp].oc_class == ARMOR_CLASS \
+     && objects[otyp].oc_armor_category == ARM_CLOAK)
+#define is_cloak(o) is_otyp_cloak((o)->otyp) 
+#define is_otyp_shirt(otyp)           \
+    (objects[otyp].oc_class == ARMOR_CLASS \
+     && objects[otyp].oc_armor_category == ARM_SHIRT)
+#define is_shirt(o) is_otyp_shirt((o)->otyp)
+#define is_otyp_robe(otyp)           \
+    (objects[otyp].oc_class == ARMOR_CLASS \
+     && objects[otyp].oc_armor_category == ARM_ROBE)
+#define is_robe(o) is_otyp_robe((o)->otyp)
+#define is_otyp_bracers(otyp)           \
+    (objects[otyp].oc_class == ARMOR_CLASS \
+     && objects[otyp].oc_armor_category == ARM_BRACERS)
+#define is_bracers(o) is_otyp_bracers((o)->otyp)
+#define is_otyp_suit(otyp) \
+    (objects[otyp].oc_class == ARMOR_CLASS && objects[otyp].oc_armor_category == ARM_SUIT)
+#define is_suit(o) is_otyp_suit((o)->otyp)
+#define is_elven_armor(o)                                              \
+    ((o)->oclass == ARMOR_CLASS && is_elven_obj(o))
+#define is_orcish_armor(o)                                            \
+    ((o)->oclass == ARMOR_CLASS && is_orcish_obj(o))
+#define is_dwarvish_armor(o)               \
+    ((o)->oclass == ARMOR_CLASS && is_dwarvish_obj(o))
+#define is_gnollish_armor(o) \
+    ((o)->oclass == ARMOR_CLASS && is_gnollish_obj(o))
+#define is_gnomish_armor(o) \
+    ((o)->oclass == ARMOR_CLASS && is_gnomish_obj(o))
+#define is_conical_hat(o) \
+    ((o)->otyp >= CORNUTHAUM && (o)->otyp <= GNOMISH_FELT_HAT)
 
 /* Wielded items */
 #define is_wielded_item(o) (is_wieldable_weapon(o) || is_shield(o))
@@ -546,13 +581,18 @@ enum elemental_enchantments {
     is_otyp_special_praying_item((o)->otyp)
 
 /* Wand-like tools */
-#define is_spelltool(o) \
-    ((objects[(o)->otyp].oc_flags & O1_SPELLTOOL) != 0)
+#define is_otyp_spelltool(otyp) ((objects[otyp].oc_flags & O1_SPELLTOOL) != 0)
+#define is_spelltool(o) is_otyp_spelltool((o)->otyp)
+#define otyp_uses_spellbook_wand_flags(otyp) \
+    ((objects[(otyp)].oc_class == SPBOOK_CLASS) \
+    || objects[(otyp)].oc_class == WAND_CLASS || (objects[(otyp)].oc_class == TOOL_CLASS && is_otyp_spelltool(otyp)) \
+    || objects[(otyp)].oc_class == POTION_CLASS || objects[(otyp)].oc_class == SCROLL_CLASS)
 
 /* Other tools */
-#define is_saw(o)                                              \
-    ((o)->oclass == TOOL_CLASS \
-     && objects[(o)->otyp].oc_subtyp == TOOLTYPE_SAW)
+#define is_otyp_saw(otyp) \
+    (objects[otyp].oc_class == TOOL_CLASS \
+     && objects[otyp].oc_subtyp == TOOLTYPE_SAW)
+#define is_saw(o) is_otyp_saw((o)->otyp) 
 
 #define MAX_OIL_IN_FLASK 400 /* maximum amount of oil in a potion of oil */
 
@@ -645,8 +685,10 @@ enum elemental_enchantments {
 #define is_obj_quaffable(obj)                                 \
     is_otyp_quaffable((obj)->otyp)
 
-#define is_obj_normally_edible(otmp) \
-    ((otmp)->oclass == FOOD_CLASS || ((otmp)->oclass == REAGENT_CLASS && (objects[(otmp)->otyp].oc_flags & O1_EDIBLE_NONFOOD) != 0))
+#define is_otyp_normally_edible(otyp) \
+    (objects[otyp].oc_class == FOOD_CLASS || (objects[otyp].oc_class == REAGENT_CLASS && (objects[otyp].oc_flags & O1_EDIBLE_NONFOOD) != 0))
+#define is_obj_normally_edible(o) is_otyp_normally_edible((o)->otyp)
+    //((otmp)->oclass == FOOD_CLASS || ((otmp)->oclass == REAGENT_CLASS && (objects[(otmp)->otyp].oc_flags & O1_EDIBLE_NONFOOD) != 0))
 
 #define has_otyp_extended_polearm_reach(otyp) \
     ((objects[(otyp)].oc_flags4 & O4_EXTENDED_POLEARM_REACH) != 0)
