@@ -208,6 +208,8 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern ulong LibGetVersionNumber();
         [DllImport(PlatformConstants.dll)]
+        public static extern ulong LibGetVersionCompatibility();
+        [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetPropertyName(int prop_index);
         [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetExtendedCommands();
@@ -865,6 +867,10 @@ namespace GnollHackX.Unknown
         public ulong GetVersionNumber()
         {
             return LibGetVersionNumber();
+        }
+        public ulong GetVersionCompatibility()
+        {
+            return LibGetVersionCompatibility();
         }
         public string GetPropertyName(int prop_index)
         {

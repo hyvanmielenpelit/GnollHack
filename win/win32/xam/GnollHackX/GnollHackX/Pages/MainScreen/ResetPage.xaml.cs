@@ -110,12 +110,10 @@ namespace GnollHackX.Pages.MainScreen
                 bool resetatstart = Preferences.Get("ResetAtStart", true);
                 bool has_resetbanks = Preferences.ContainsKey("ResetExternalFiles");
                 bool resetbanks = Preferences.Get("ResetExternalFiles", false);
-                bool has_fcf = Preferences.ContainsKey("CheckPurchase_FirstConnectFail");
-                DateTime fcf = Preferences.Get("CheckPurchase_FirstConnectFail", DateTime.MinValue);
-                bool has_gsc = Preferences.ContainsKey("CheckPurchase_ConnectFail_GameStartCount");
-                int gsc = Preferences.Get("CheckPurchase_ConnectFail_GameStartCount", 0);
                 bool has_verid = Preferences.ContainsKey("VersionId");
                 string verid = Preferences.Get("VersionId", "");
+                bool has_vernum = Preferences.ContainsKey("VersionNumber");
+                ulong vernum = (ulong)Preferences.Get("VersionNumber", 0L);
 
                 Dictionary<string, string> saveverdict = new Dictionary<string, string>();
                 Dictionary<string, DateTime> savetimedict = new Dictionary<string, DateTime>();
@@ -138,10 +136,6 @@ namespace GnollHackX.Pages.MainScreen
                     Preferences.Set("ResetAtStart", resetatstart);
                 if (has_resetbanks)
                     Preferences.Set("ResetExternalFiles", resetbanks);
-                if (has_fcf)
-                    Preferences.Set("CheckPurchase_FirstConnectFail", fcf);
-                if (has_gsc)
-                    Preferences.Set("CheckPurchase_ConnectFail_GameStartCount", fcf);
 
                 KeyValuePair<string, string>[] arr = saveverdict.ToArray<KeyValuePair<string, string>>();
                 foreach (KeyValuePair<string, string> kvp in arr)
@@ -157,6 +151,8 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 if (has_verid)
                     Preferences.Set("VersionId", verid);
+                if (has_vernum)
+                    Preferences.Set("VersionNumber", (long)vernum);
 
                 btnDeletePreferences.Text = "Done";
                 btnDeletePreferences.TextColor = Color.Red;

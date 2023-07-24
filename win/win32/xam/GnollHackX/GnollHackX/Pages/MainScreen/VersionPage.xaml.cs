@@ -91,31 +91,6 @@ namespace GnollHackX.Pages.MainScreen
             DiskSpaceLabel.Text = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
             TotalPlayTimeLabel.Text = TotalPlayHours + " h " + TotalPlayMinutes + " min " + TotalPlaySeconds + " s";
             CurrentPlayTimeLabel.Text = CurrentPlayHours + " h " + CurrentPlayMinutes + " min " + CurrentPlaySeconds + " s";
-
-            //text += Environment.NewLine + VersionTracking.CurrentVersion;
-            //text += Environment.NewLine + VersionTracking.CurrentBuild;
-            //text += Environment.NewLine + App.FMODVersionString;
-            //text += Environment.NewLine + DeviceInfo.Platform + " " + DeviceInfo.VersionString;
-            //text += Environment.NewLine + manufacturer + " " + DeviceInfo.Model;
-
-            //text += "GnollHack Version: ";
-            //text += Environment.NewLine + Device.RuntimePlatform + " Port Version: ";
-            //text += Environment.NewLine + Device.RuntimePlatform + " Port Build: ";
-            //text += Environment.NewLine + "FMOD Version: ";
-            //text += Environment.NewLine + "Platform: ";
-            //text += Environment.NewLine + "Device: ";
-            //KeyLabel.Text = text;
-
-            //text = "";
-            //text += App.GHVersionString;
-            //text += Environment.NewLine + VersionTracking.CurrentVersion;
-            //text += Environment.NewLine + VersionTracking.CurrentBuild;
-            //text += Environment.NewLine + App.FMODVersionString;
-            //text += Environment.NewLine + DeviceInfo.Platform + " " + DeviceInfo.VersionString;
-            //text += Environment.NewLine + manufacturer + " " + DeviceInfo.Model;
-            //ValueLabel.Text = text;
-
-            //text = Environment.NewLine + "GnollHack Long Version Identifier: " + Environment.NewLine + App.GHVersionId;
             LongTitleLabel.Text = Environment.NewLine + "GnollHack Long Version Identifier:";
             LongLabel.Text = App.GHVersionId;
         }

@@ -319,6 +319,9 @@ int bufsz;
 int is_imported_error_savefile_name(savefilename)
 const char* savefilename;
 {
+    if (!savefilename || !*savefilename)
+        return FALSE;
+
     size_t dlen = strlen(savefilename);
     char ebuf[BUFSZ] = "";
     print_error_savefile_extension(ebuf);
@@ -333,6 +336,40 @@ const char* savefilename;
             return FALSE;
 
     return TRUE;
+}
+
+int is_backup_savefile_name(savefilename)
+const char* savefilename;
+{
+    if (!savefilename || !*savefilename)
+        return FALSE;
+
+    size_t dlen = strlen(savefilename);
+    char ebuf[BUFSZ] = "";
+    const char* extensions[] = { BACKUP_EXTENSION, ALT_BACKUP_EXTENSION, TEMP_BACKUP_EXTENSION, 0 };
+    int j;
+    for (j = 0; extensions[j] != 0; j++)
+    {
+        print_special_savefile_extension(ebuf, extensions[j]);
+        size_t elen = strlen(ebuf);
+        if (dlen <= elen)
+            continue;
+
+        size_t i;
+        boolean docontinue = FALSE;
+        for (i = 0; i < elen; i++)
+            if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
+            {
+                docontinue = TRUE;
+                break;
+            }
+
+        if (docontinue)
+            continue;
+
+        return TRUE;
+    }
+    return FALSE;
 }
 
 /*
@@ -637,7 +674,6 @@ int lev;
         level_info[lev].flags &= ~LFILE_EXISTS;
     }
 }
-
 
 void
 delete_excess_levelfiles(VOID_ARGS)
@@ -1407,10 +1443,24 @@ boolean check_has_backup_savefile(VOID_ARGS)
         Strcpy(bakbuf, fqname(SAVEF, SAVEPREFIX, 0));
         print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
         nh_uncompress(bakbuf);
-        boolean res = (boolean)(access(bakbuf, F_OK) == 0);
-        if(res)
+        int accres = access(bakbuf, F_OK);
+        int valres = -2;
+        if (!accres)
+        {
+            int fd;
+#ifdef MAC
+            fd = macopen(bakbuf, O_RDONLY | O_BINARY, SAVE_TYPE);
+#else
+            fd = open(bakbuf, O_RDONLY | O_BINARY, 0);
+#endif
+            if (fd >= 0)
+            {
+                valres = validate(fd, (char*)0);
+                (void)nhclose(fd), fd = -1;
+            }
             nh_compress(bakbuf);
-        return res;
+        }
+        return (boolean)(!accres && !valres);
     }
     return FALSE;
 }
@@ -1721,6 +1771,9 @@ struct save_game_stats* stats_ptr;
 int is_error_savefile_name(savefilename)
 const char* savefilename;
 {
+    if (!savefilename || !*savefilename)
+        return FALSE;
+
     size_t dlen = strlen(savefilename);
     char ebuf[BUFSZ] = "";
     print_error_savefile_extension(ebuf);
@@ -1739,6 +1792,9 @@ const char* savefilename;
 int is_imported_savefile_name(savefilename)
 const char* savefilename;
 {
+    if (!savefilename || !*savefilename)
+        return FALSE;
+
     size_t dlen = strlen(savefilename);
     char ebuf[BUFSZ] = "";
     print_imported_savefile_extension(ebuf);
@@ -1753,38 +1809,6 @@ const char* savefilename;
 
     return TRUE;
 }
-
-int is_backup_savefile_name(savefilename)
-const char* savefilename;
-{
-    size_t dlen = strlen(savefilename);
-    char ebuf[BUFSZ] = "";
-    const char* extensions[] = { BACKUP_EXTENSION, ALT_BACKUP_EXTENSION, TEMP_BACKUP_EXTENSION, 0 };
-    int j;
-    for (j = 0; extensions[j] != 0; j++)
-    {
-        print_special_savefile_extension(ebuf, extensions[j]);
-        size_t elen = strlen(ebuf);
-        if (dlen <= elen)
-            continue;
-
-        size_t i;
-        boolean docontinue = FALSE;
-        for (i = 0; i < elen; i++)
-            if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
-            {
-                docontinue = TRUE;
-                break;
-            }
-
-        if (docontinue)
-            continue;
-
-        return TRUE;
-    }
-    return FALSE;
-}
-
 
 int filter_running(entry)
 const struct dirent* entry;
@@ -1914,6 +1938,8 @@ get_saved_games()
                 if (findfirst(fq_save)) {
                     j = n = 0;
                     do {
+                        if (is_backup_savefile_name(foundfile))
+                            continue;
                         char* r;
                         r = plname_from_file(foundfile, &gamestats);
                         if (r)
@@ -1979,9 +2005,11 @@ get_saved_games()
                     break;
                 if (sscanf(entry->d_name, "%d%63s", &uid, name) == 2) {
                     if (uid == myuid) {
+                        boolean isbackupfile = !!filter_backup(namelist[i]);
+                        if (isbackupfile)
+                            continue;
                         char filename[BUFSZ];
                         char *r;
-
                         Sprintf(filename, "save/%d%s", uid, name);
                         r = plname_from_file(filename, &gamestats);
                         if (r)
@@ -2010,6 +2038,9 @@ get_saved_games()
     for (i = 0; i < n1; i++) {
         if (sscanf(namelist[i]->d_name, "%d%63s", &uid, name) == 2) {
             if (uid == myuid) {
+                boolean isbackupfile = !!filter_backup(namelist[i]);
+                if (isbackupfile)
+                    continue;
                 char filename[BUFSZ];
                 char* r;
                 Sprintf(filename, "save/%d%s", uid, name);
@@ -2018,9 +2049,6 @@ get_saved_games()
                 {
                     boolean isimportedfile = !!filter_imported(namelist[i]);
                     boolean iserrorfile = filter_error(namelist[i]) || filter_imported_error(namelist[i]);
-                    boolean isbackupfile = !!filter_backup(namelist[i]);
-                    if (isbackupfile)
-                        continue;
                     result[j++] = newsavegamedata(r, filename, gamestats, FALSE, iserrorfile, isimportedfile);
                 }
             }

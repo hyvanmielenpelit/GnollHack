@@ -131,6 +131,11 @@ namespace GnollHackX
                     App.InformAboutGameTermination = false;
                     await DisplayAlert("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user. Your game may have been saved before the termination.", "OK");
                 }
+                if (App.InformAboutIncompatibleSavedGames)
+                {
+                    App.InformAboutIncompatibleSavedGames = false;
+                    await DisplayAlert("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible. If you wish to back up your save files, you can export them using About -> Export Saved Games.", "OK");
+                }
             }
             else if (!GameStarted)
             {
@@ -248,11 +253,13 @@ namespace GnollHackX
             string skiaverstr = "?";
             string skiasharpverstr = "?";
             ulong vernum = 0UL;
+            ulong vercompat = 0UL;
             try
             {
                 verstr = App.GnollHackService.GetVersionString();
                 verid = App.GnollHackService.GetVersionId();
                 vernum = App.GnollHackService.GetVersionNumber();
+                vercompat = App.GnollHackService.GetVersionCompatibility();
                 path = App.GnollHackService.GetGnollHackPath();
                 fmodverstr = App.FmodService.GetVersionString();
                 skiaverstr = SkiaSharpVersion.Native.ToString();
@@ -282,6 +289,7 @@ namespace GnollHackX
             }
             App.GHVersionString = verstr;
             App.GHVersionNumber = vernum;
+            App.GHVersionCompatibility = vercompat;
             App.GHVersionId = verid;
             App.GHPath = path;
             App.FMODVersionString = fmodverstr;
@@ -292,13 +300,20 @@ namespace GnollHackX
             GnollHackLabel.Text = "GnollHack";
 
             string prev_version = Preferences.Get("VersionId", "");
-            if(prev_version != verid)
+            ulong prev_vernum = (ulong)Preferences.Get("VersionNumber", 0L);
+            App.GHPreviousVersionNumber = prev_vernum;
+
+            if (prev_version != verid || prev_vernum != vernum)
             {
                 await TryClearCoreFiles();
                 await TryInitializeGnollHack();
                 await TryInitializeSecrets();
             }
+            if (prev_vernum > 0 && prev_vernum < vercompat)
+                App.CheckForIncompatibleSavedGames();
+
             Preferences.Set("VersionId", verid);
+            Preferences.Set("VersionNumber", (long)vernum);
 
             try
             {

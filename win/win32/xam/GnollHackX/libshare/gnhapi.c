@@ -206,6 +206,11 @@ unsigned long LibGetVersionNumber()
     return VERSION_NUMBER;
 }
 
+unsigned long LibGetVersionCompatibility()
+{
+    return EARLIEST_COMPATIBLE_VERSION_NUMBER;
+}
+
 static const char* extcmdnames[256] = { 0 };
 const char** LibGetExtendedCommands()
 {

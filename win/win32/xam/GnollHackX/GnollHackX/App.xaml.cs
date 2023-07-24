@@ -75,6 +75,7 @@ namespace GnollHackX
         private static ClientGame _currentClientGame = null;
         public static ClientGame CurrentClientGame { get { lock (_currentClientGameLock) { return _currentClientGame; } } set { lock (_currentClientGameLock) { _currentClientGame = value; } } }
         public static bool InformAboutGameTermination = false;
+        public static bool InformAboutIncompatibleSavedGames = false;
 
 
         private static Secrets _currentSecrets = null;
@@ -337,6 +338,8 @@ namespace GnollHackX
         public static string GHVersionId { get; set; }
         public static string GHVersionString { get; set; }
         public static ulong GHVersionNumber { get; set; }
+        public static ulong GHVersionCompatibility { get; set; }
+        public static ulong GHPreviousVersionNumber { get; set; }
         public static string SkiaVersionString { get; set; }
         public static string SkiaSharpVersionString { get; set; }
         public static string FMODVersionString { get; set; }
@@ -1549,13 +1552,21 @@ namespace GnollHackX
             }
         }
 
-        //public const string CultureName = "en-US";
-        //public static CultureInfo Culture = new CultureInfo(CultureName);
+        public static void CheckForIncompatibleSavedGames()
+        {
+            try
+            {
+                string savepath = Path.Combine(App.GHPath, "save");
+                string[] savefiles = Directory.GetFiles(savepath);
+                if (savefiles != null && savefiles.Length > 0)
+                    InformAboutIncompatibleSavedGames = true;
+            }
+            catch
+            {
+                /* Nothing */
+            }
+        }
 
-        //public static string GetCurrentTime()
-        //{
-        //    return DateTime.Now.ToString(Culture);
-        //}
 
         public static SKBitmap GetSpecialSymbol(string str, out SKRect source_rect)
         {
