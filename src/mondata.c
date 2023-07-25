@@ -708,8 +708,7 @@ boolean
 sliparm(ptr)
 register struct permonst *ptr;
 {
-    return (boolean) (is_whirly(ptr) || ptr->msize <= MZ_SMALL
-                      || is_incorporeal(ptr));
+    return (boolean) (is_whirly(ptr) || ptr->msize <= MZ_SMALL);
 }
 
 /* creature will break out of armor */

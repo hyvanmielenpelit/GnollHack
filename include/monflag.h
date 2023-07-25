@@ -250,7 +250,7 @@
 #define M3_SPEAKING                                    0x00020000UL   /* can be spoken to using the chat command */
 #define M3_CHATTY                                      0x00040000UL   /* speaks even if hostile */
 #define M3_CHAT_CAN_JOIN_PARTY                         0x00080000UL   /* can join the player's party */
-/* free bit */
+#define M3_NONBOOT_FEET                                0x00100000UL   /* has feet not fitting boots like hooves; cannot wear boots */
 /* free bit */
 /* free bit */
 /* free bit */

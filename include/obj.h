@@ -655,6 +655,9 @@ enum elemental_enchantments {
     (objects[(o)->otyp].oc_subtyp == MISC_EYEGLASSES || objects[(o)->otyp].oc_subtyp == MISC_EARRINGS || objects[(o)->otyp].oc_subtyp == MISC_PANTS || objects[(o)->otyp].oc_subtyp == MISC_WINGS || objects[(o)->otyp].oc_subtyp == MISC_EXTRA_ARMS)) \
      || is_gloves(o) || is_boots(o) || is_bracers(o))
 
+#define is_belt(o) \
+    ((o)->oclass == MISCELLANEOUS_CLASS && objects[(o)->otyp].oc_subtyp == MISC_BELT)
+
 #define is_otyp_unique(otyp) (objects[otyp].oc_unique || (objects[otyp].oc_flags3 & O3_UNIQUE))
 #define is_otyp_nowish(otyp) (objects[otyp].oc_nowish || (objects[otyp].oc_flags3 & O3_NO_WISH))
 #define is_otyp_unburiable(otyp) ((objects[otyp].oc_flags3 & O3_UNBURIABLE))

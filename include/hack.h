@@ -569,7 +569,8 @@ enum bodypart_types {
     BLOOD     = 15,
     LUNG      = 16,
     NOSE      = 17,
-    STOMACH   = 18
+    STOMACH   = 18,
+    WRIST     = 19
 };
 
 /* indices for some special tin types */

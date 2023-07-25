@@ -12,7 +12,7 @@ STATIC_VAR NEARDATA const char c_armor[] = "armor", c_suit[] = "suit",
                            c_bracers[] = "bracers", c_cloak[] = "cloak",
                            c_gloves[] = "gloves", c_boots[] = "boots",
                            c_shield[] = "shield",
-                           c_weapon[] = "weapon", c_sword[] = "sword",
+                           c_weapon[] = "weapon", c_sword[] = "sword", c_belt[] = "belt",
                            c_axe[] = "axe", c_that_[] = "that";
 
 STATIC_VAR NEARDATA const long takeoff_order[] = {
@@ -1820,6 +1820,8 @@ boolean constructing_letters;
                         ? c_robe
                         : is_suit(otmp)
                             ? c_suit
+                            : is_belt(otmp)
+                                ? c_belt
                             : 0;
     if (which && cantweararm(youmonst.data)
         /* same exception for cloaks as used in m_dowear() */
@@ -1924,11 +1926,11 @@ boolean constructing_letters;
 
             err++;
         } 
-        else if (Upolyd && slithy(youmonst.data)) 
+        else if (Upolyd && (slithy(youmonst.data) || nolimbs(youmonst.data)))
         {
             if (noisy)
             {
-                play_sfx_sound(SFX_GENERAL_CANNOT);
+                play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
                 You_ex(ATR_NONE, CLR_MSG_FAIL, "have no feet..."); /* not body_part(FOOT) */
             }
             err++;
@@ -1939,10 +1941,28 @@ boolean constructing_letters;
                so don't let dowear() put them back on... */
             if (noisy)
             {
-                play_sfx_sound(SFX_GENERAL_CANNOT);
+                play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
                 pline_ex(ATR_NONE, CLR_MSG_FAIL, "You have too many hooves to wear %s.",
                     c_boots); /* makeplural(body_part(FOOT)) yields
                                  "rear hooves" which sounds odd */
+            }
+            err++;
+        }
+        else if (Upolyd && is_whirly(youmonst.data))
+        {
+            if (noisy)
+            {
+                play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "have no solid feet to wear %s.", c_boots);
+            }
+            err++;
+        }
+        else if (Upolyd && !feet_fit_boots(youmonst.data))
+        {
+            if (noisy)
+            {
+                play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "Your %s are not of the shape that allow you to wear %s.", makeplural(body_part(FOOT)), c_boots);
             }
             err++;
         }

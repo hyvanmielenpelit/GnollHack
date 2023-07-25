@@ -135,6 +135,7 @@
 #define knows_traps(ptr) (((ptr)->mflags3 & M3_KNOWS_TRAPS) != 0)
 /* no corpse (ie, blank scrolls) if killed by fire */
 #define completelyburns(ptr) (((ptr)->mflags3 & M3_BURNS_COMPLETELY) != 0)
+#define nonbootfeet(ptr) (((ptr)->mflags3 & M3_NONBOOT_FEET) != 0L)
 
 #define is_brave(ptr) (((ptr)->mflags4 & M4_BRAVE) != 0L)
 #define is_fearless(ptr) (((ptr)->mflags4 & M4_FEARLESS) != 0L)
@@ -223,6 +224,7 @@
     ((is_not_living(ptr) || is_angel(ptr) || is_demon(ptr) || has_mflag_is_non_eater(ptr) || (!carnivorous(ptr) && !herbivorous(ptr) && !metallivorous(ptr) && !lithovore(ptr))) && !is_corpse_eater(ptr))
 
 #define mon_is_literate(m) (is_speaking((m)->data) && !mindless((m)->data) && haseyes((m)->data))
+#define feet_fit_boots(ptr) (!nonbootfeet(ptr) && !is_animal(ptr) && !slithy(ptr) && !nolimbs(ptr) && !is_whirly(ptr))
 
 /* Resistances and properties */
 #define has_innate(ptr, bit) \

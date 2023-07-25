@@ -1146,7 +1146,7 @@ break_armor()
             else
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
-                You_ex(ATR_NONE, CLR_MSG_WARNING, "break out of %s!", yname(otmp));
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "break out of %s!", yname(otmp));
                 exercise(A_STR, FALSE);
                 (void)Armor_gone();
                 useup(otmp);
@@ -1166,7 +1166,7 @@ break_armor()
             else 
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
-                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s tears apart!", cloak_simple_name(otmp));
+                Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s tears apart!", cloak_simple_name(otmp));
                 (void) Cloak_off();
                 useup(otmp);
             }
@@ -1186,7 +1186,7 @@ break_armor()
             else
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
-                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s is torn to pieces!", robe_simple_name(otmp));
+                Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is torn to pieces!", robe_simple_name(otmp));
                 (void)Robe_off();
                 useup(otmp);
             }
@@ -1206,7 +1206,7 @@ break_armor()
             else
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
-                Your_ex(ATR_NONE, CLR_MSG_WARNING, "shirt rips to shreds!");
+                Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "shirt rips to shreds!");
                 (void)Shirt_off();
                 useup(otmp);
             }
@@ -1251,7 +1251,7 @@ break_armor()
     }
 
     //Helmet
-    if (has_horns(youmonst.data) || !has_place_to_put_helmet_on(youmonst.data))
+    if (has_horns(youmonst.data) || !has_place_to_put_helmet_on(youmonst.data) || is_whirly(youmonst.data))
     {
         if ((otmp = uarmh) != 0) 
         {
@@ -1277,7 +1277,7 @@ break_armor()
     }
 
     //Gloves and weapons
-    if (nohands(youmonst.data) || nolimbs(youmonst.data) || verysmall(youmonst.data))
+    if (nohands(youmonst.data) || verysmall(youmonst.data) || is_whirly(youmonst.data))
     {
         if ((otmp = uarmg) != 0) 
         {
@@ -1315,14 +1315,14 @@ break_armor()
     }
 
     //Boots
-    if (nohands(youmonst.data) || nolimbs(youmonst.data) || verysmall(youmonst.data)
-        || slithy(youmonst.data) || youmonst.data->mlet == S_CENTAUR)
+    if (nolimbs(youmonst.data) || verysmall(youmonst.data) || is_whirly(youmonst.data)
+        || slithy(youmonst.data) || !feet_fit_boots(youmonst.data))
     {
         if ((otmp = uarmf) != 0)
         {
             if (donning(otmp))
                 cancel_don();
-            if (is_whirly(youmonst.data))
+            if (is_whirly(youmonst.data) || slithy(youmonst.data))
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots fall away!");
             else
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots %s off your feet!",
@@ -1333,7 +1333,7 @@ break_armor()
     }
 
     //Bracers
-    if (nohands(youmonst.data) || nolimbs(youmonst.data) || verysmall(youmonst.data))
+    if (nohands(youmonst.data) || verysmall(youmonst.data) || is_whirly(youmonst.data))
     {
         if ((otmp = uarmb) != 0) {
             if (donning(otmp))
@@ -1341,13 +1341,109 @@ break_armor()
             if (is_whirly(youmonst.data))
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers fall away!");
             else
-                Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers %s off your arms!",
-                    verysmall(youmonst.data) ? "slide" : "are pushed");
+                Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers %s off your %s!",
+                    verysmall(youmonst.data) ? "slide" : "are pushed", makeplural(body_part(ARM)));
             (void)Bracers_off();
             dropx(otmp);
         }
     }
 
+    /* Miscellaneous magic items */
+    if ((otmp = umisc) != 0 || (otmp = umisc2) != 0 || (otmp = umisc3) != 0 || (otmp = umisc4) != 0 || (otmp = umisc5) != 0) {
+        schar subtyp = objects[otmp->otyp].oc_subtyp;
+        switch (subtyp)
+        {
+        default:
+        case MISC_WINGS:
+        case MISC_MULTIPLE_PERMITTED:
+        case MISC_EXTRA_ARMS:
+        case MISC_BROOCH:
+            if (is_whirly(youmonst.data) || verysmall(youmonst.data))
+            {
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
+                (void)MiscellaneousItem_off(otmp);
+                dropx(otmp);
+            }
+            break;
+        case MISC_PANTS:
+        case MISC_SKIRT:
+            if (is_whirly(youmonst.data) || verysmall(youmonst.data) || nolimbs(youmonst.data) || slithy(youmonst.data))
+            {
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
+                (void)MiscellaneousItem_off(otmp);
+                dropx(otmp);
+            }
+            break;
+        case MISC_WRIST_WATCH:
+        case MISC_BRACELET:
+        case MISC_BRACERS:
+            if (is_whirly(youmonst.data) || verysmall(youmonst.data) || nohands(youmonst.data))
+            {
+                if (is_whirly(youmonst.data) || nohands(youmonst.data))
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
+                else
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
+                        Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", subtyp == MISC_BRACERS ? makeplural(body_part(ARM)) : body_part(ARM));
+                (void)MiscellaneousItem_off(otmp);
+                dropx(otmp);
+            }
+            break;
+        case MISC_BELT:
+            if (breakarm(youmonst.data))
+            {
+                if (otmp->oartifact || is_obj_indestructible(otmp))
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
+                    (void)MiscellaneousItem_off(otmp);
+                    dropx(otmp);
+                }
+                else
+                {
+                    play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Yobjnam2(otmp, "break"));
+                    exercise(A_STR, FALSE);
+                    (void)MiscellaneousItem_off(otmp);
+                    useup(otmp);
+                }
+            }
+            else if (sliparm(youmonst.data))
+            {
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
+                (void)MiscellaneousItem_off(otmp);
+                dropx(otmp);
+            }
+            break;
+        case MISC_NOSERING:
+        case MISC_HEADBAND:
+        case MISC_EYEGLASSES:
+        case MISC_BLINDFOLD:
+        case MISC_MASK:
+            if (is_whirly(youmonst.data) || verysmall(youmonst.data) || !has_head(youmonst.data))
+            {
+                if (is_whirly(youmonst.data) || !has_head(youmonst.data))
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
+                else
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
+                        Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", body_part(subtyp == MISC_NOSERING ? NOSE : HEAD));
+                (void)MiscellaneousItem_off(otmp);
+                dropx(otmp);
+            }
+            break;
+        case MISC_SCARF:
+        case MISC_NECKTIE:
+            if (is_whirly(youmonst.data) || verysmall(youmonst.data) || !has_neck(youmonst.data))
+            {
+                if (is_whirly(youmonst.data) || !has_neck(youmonst.data))
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
+                else
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
+                        Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", body_part(NECK));
+                (void)MiscellaneousItem_off(otmp);
+                dropx(otmp);
+            }
+            break;
+        }
+    }
 }
 
 STATIC_OVL void
@@ -2341,70 +2437,70 @@ int part;
                               "fingertip", "foot", "hand",         "handed",
                               "head",      "leg",  "light headed", "neck",
                               "spine",     "toe",  "hair",         "blood",
-                              "lung",      "nose", "stomach" },
+                              "lung",      "nose", "stomach",      "wrist" },
         *jelly_parts[] = { "pseudopod", "dark spot", "front",
                            "pseudopod extension", "pseudopod extremity",
                            "pseudopod root", "grasp", "grasped",
                            "cerebral area", "lower pseudopod", "viscous",
                            "middle", "surface", "pseudopod extremity",
                            "ripples", "juices", "surface", "sensor",
-                           "stomach" },
+                           "stomach", "pseudopod" },
         *animal_parts[] = { "forelimb",  "eye",           "face",
                             "foreclaw",  "claw tip",      "rear claw",
                             "foreclaw",  "clawed",        "head",
                             "rear limb", "light headed",  "neck",
                             "spine",     "rear claw tip", "fur",
                             "blood",     "lung",          "nose",
-                            "stomach" },
+                            "stomach",   "forelimb" },
         *bird_parts[] = { "wing",     "eye",  "face",         "wing",
                           "wing tip", "foot", "wing",         "winged",
                           "head",     "leg",  "light headed", "neck",
                           "spine",    "toe",  "feathers",     "blood",
-                          "lung",     "bill", "stomach" },
+                          "lung",     "bill", "stomach",      "wing" },
         *horse_parts[] = { "foreleg",  "eye",           "face",
                            "forehoof", "hoof tip",      "rear hoof",
                            "forehoof", "hooved",        "head",
                            "rear leg", "light headed",  "neck",
                            "backbone", "rear hoof tip", "mane",
                            "blood",    "lung",          "nose",
-                           "stomach" },
+                           "stomach",  "forehoof" },
         *sphere_parts[] = { "appendage", "optic nerve", "body", "tentacle",
                             "tentacle tip", "lower appendage", "tentacle",
                             "tentacled", "body", "lower tentacle",
                             "rotational", "equator", "body",
                             "lower tentacle tip", "cilia", "life force",
-                            "retina", "olfactory nerve", "interior" },
+                            "retina", "olfactory nerve", "interior",  "appendage" },
         *fungus_parts[] = { "mycelium", "visual area", "front",
                             "hypha",    "hypha",       "root",
                             "strand",   "stranded",    "cap area",
                             "rhizome",  "sporulated",  "stalk",
                             "root",     "rhizome tip", "spores",
                             "juices",   "gill",        "gill",
-                            "interior" },
+                            "interior", "mycelium" },
         *vortex_parts[] = { "region",        "eye",           "front",
                             "minor current", "minor current", "lower current",
                             "swirl",         "swirled",       "central core",
                             "lower current", "addled",        "center",
                             "currents",      "edge",          "currents",
                             "life force",    "center",        "leading edge",
-                            "interior" },
+                            "interior",      "swirl" },
         *snake_parts[] = { "vestigial limb", "eye", "face", "large scale",
                            "large scale tip", "rear region", "scale gap",
                            "scale gapped", "head", "rear region",
                            "light headed", "neck", "length", "rear scale",
                            "scales", "blood", "lung", "forked tongue",
-                           "stomach" },
+                           "stomach", "vestigial limb" },
         *worm_parts[] = { "anterior segment", "light sensitive cell",
                           "clitellum", "setae", "setae", "posterior segment",
                           "segment", "segmented", "anterior segment",
                           "posterior", "over stretched", "clitellum",
                           "length", "posterior setae", "setae", "blood",
-                          "skin", "prostomium", "stomach" },
+                          "skin", "prostomium", "stomach", "anterior segment" },
         *fish_parts[] = { "fin", "eye", "premaxillary", "pelvic axillary",
                           "pelvic fin", "anal fin", "pectoral fin", "finned",
                           "head", "peduncle", "played out", "gills",
                           "dorsal fin", "caudal fin", "scales", "blood",
-                          "gill", "nostril", "stomach" };
+                          "gill", "nostril", "stomach", "fin" };
     /* claw attacks are overloaded in mons[]; most humanoids with
        such attacks should still reference hands rather than claws */
     static const char not_claws[] = {

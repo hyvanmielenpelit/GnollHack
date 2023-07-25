@@ -1485,10 +1485,18 @@ unsigned doname_flags;
                 strcpy(replacetxt, misc_type_worn_texts[objects[obj->otyp].oc_subtyp]);
 
                 /* special replacement for some types */
-                if(objects[obj->otyp].oc_subtyp == MISC_IOUN_STONE)
+                switch (objects[obj->otyp].oc_subtyp)
+                {
+                case MISC_IOUN_STONE:
                     Sprintf(replacetxt, "orbiting %s", body_part(HEAD));
-                if (objects[obj->otyp].oc_subtyp == MISC_NOSERING)
+                    break;
+                case MISC_NOSERING:
                     Sprintf(replacetxt, "on %s", body_part(NOSE));
+                    break;
+                case MISC_WRIST_WATCH:
+                    Sprintf(replacetxt, "on left %s", body_part(WRIST));
+                    break;
+                }
 
                 Strcat(bp, " (");
                 Strcat(bp, replacetxt);
