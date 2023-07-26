@@ -5222,15 +5222,10 @@ boolean FDECL((*filterfunc), (OBJ_P));
 boolean bynexthere;
 {
     int count = 0;
-
-    while (list) {
+    for (; list; list = (bynexthere ? list->nexthere : list->nobj)) {
         if (filterfunc && !(*filterfunc)(list))
             continue;
         count++;
-        if(bynexthere)
-            list = list->nexthere;
-        else
-            list = list->nobj;
     }
     return count;
 }
