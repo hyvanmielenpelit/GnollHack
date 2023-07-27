@@ -1754,6 +1754,8 @@ E struct monst* FDECL(get_mmonst, (struct monst*, BOOLEAN_P));
 E void FDECL(save_mmonst, (struct monst*, struct monst*));
 E struct obj* FDECL(get_mobj, (struct monst*, BOOLEAN_P));
 E void FDECL(save_mobj, (struct monst*, struct obj*));
+E void FDECL(set_mimic_new_mobj, (struct monst*, int));
+E void FDECL(set_mimic_existing_mobj, (struct monst*, struct obj*));
 
 /* ### mapglyph.c ### */
 

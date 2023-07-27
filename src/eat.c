@@ -1420,10 +1420,9 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
             nomovemsg = eatmbuf;
             afternmv = eatmdone;
             /* ??? what if this was set before? */
-            youmonst.m_ap_type = M_AP_OBJECT;
-            youmonst.mappearance = Hallucination ? ORANGE : GOLD_PIECE;
-            if (has_mobj(&youmonst))
-                free_mobj(&youmonst);
+            //youmonst.m_ap_type = M_AP_OBJECT;
+            //youmonst.mappearance = Hallucination ? ORANGE : GOLD_PIECE;
+            set_mimic_new_mobj(&youmonst, Hallucination ? ORANGE : GOLD_PIECE);
             newsym(u.ux, u.uy);
             curs_on_u();
             /* make gold symbol show up now */

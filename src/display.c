@@ -2864,7 +2864,7 @@ boolean exclude_ascii;
         boolean loc_is_you = (u.ux == x && u.uy == y);
 
         /* Replace */
-        int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, MAT_NONE, 0));
+        int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_MONSTER, mtmp ? (has_mobj(mtmp) ? MOBJ(mtmp) : 0) : 0, mtmp, 0UL, 0UL, MAT_NONE, 0));
 
         if(!exclude_ascii)
             show_glyph_ascii(x, y, glyph);
@@ -2876,7 +2876,7 @@ boolean exclude_ascii;
         clear_monster_layerinfo(&gbuf[y][x].layers);
         gbuf[y][x].layers.monster_origin_x = x0;
         gbuf[y][x].layers.monster_origin_y = y0;
-        gbuf[y][x].layers.m_id = mtmp ? mtmp->m_id : 0;
+        gbuf[y][x].layers.m_id = mtmp && mtmp != &youmonst ? mtmp->m_id : 0;
 
         if (disp_flags & LFLAGS_M_YOU)
         {
@@ -2892,7 +2892,7 @@ boolean exclude_ascii;
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
             }
         }
-        else if (mtmp)
+        else if (mtmp && mtmp != &youmonst)
         {
             struct trap* t = 0;
             if (mtmp->mtrapped && (t = t_at(mtmp->mx, mtmp->my)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
@@ -2926,7 +2926,7 @@ boolean exclude_ascii;
 
             if (loc_is_you)
             {
-                if (mtmp) /* Steed */
+                if (mtmp && mtmp != &youmonst) /* Steed */
                 {
                     if (is_invisible(mtmp) && canspotmon(mtmp))
                         gbuf[y][x].layers.monster_flags |= LMFLAGS_INVISIBLE_TRANSPARENT;
@@ -2939,7 +2939,7 @@ boolean exclude_ascii;
                 if (canspotself())
                     gbuf[y][x].layers.monster_flags |= LMFLAGS_CAN_SPOT_SELF;
             }
-            else if (mtmp)
+            else if (mtmp && mtmp != &youmonst)
             {
                 if (is_invisible(mtmp) && canspotmon(mtmp))
                     gbuf[y][x].layers.monster_flags |= LMFLAGS_INVISIBLE_TRANSPARENT;
@@ -2948,7 +2948,7 @@ boolean exclude_ascii;
             }
         }
        
-        if (mtmp)
+        if (mtmp && mtmp != &youmonst)
         {
             if (is_tame(mtmp) && !Hallucination)
                 extra_flags |= LFLAGS_M_PET;
@@ -5313,7 +5313,7 @@ boolean exclude_ascii;
             /* else U_AP_TYPE == M_AP_MONSTER */
             : any_monnum_to_glyph(flags.female, youmonst.mappearance)
         ),
-        u.usteed, u.ux0, u.uy0,
+        u.usteed ? u.usteed : &youmonst, u.ux0, u.uy0,
         displayed_flags | LFLAGS_M_YOU | (u.usteed && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL),
         hit_tile_id, dmg_received, exclude_ascii);
 

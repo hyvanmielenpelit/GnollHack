@@ -27,8 +27,6 @@ STATIC_DCL void FDECL(m_init_background, (struct monst*));
 STATIC_DCL struct obj* FDECL(m_inityour, (struct monst*, struct obj*)); 
 STATIC_DCL boolean FDECL(makemon_rnd_goodpos, (struct monst *,
                                                unsigned long, coord *));
-STATIC_DCL void FDECL(set_mimic_new_mobj, (struct monst*, int));
-STATIC_DCL void FDECL(set_mimic_existing_mobj, (struct monst*, struct obj*));
 
 #if 0
 #define m_initsgrp(mtmp, x, y, mmf) m_initgrp(mtmp, x, y, 3, mmf)
@@ -4467,7 +4465,7 @@ STATIC_VAR const NEARDATA char syms[] = {
     S_MIMIC_DEF,  S_MIMIC_DEF,
 };
 
-STATIC_OVL void
+void
 set_mimic_new_mobj(mtmp, otyp)
 struct monst* mtmp;
 int otyp;
@@ -4504,7 +4502,7 @@ int otyp;
     }
 }
 
-STATIC_OVL void
+void
 set_mimic_existing_mobj(mtmp, otmp)
 struct monst* mtmp;
 struct obj* otmp;
