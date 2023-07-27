@@ -486,7 +486,7 @@ do_ext_makedefs(int argc, char **argv)
         }
         IS_OPTION("svs") {
             /* short version string for packaging - note no \n */
-            char buf[100];
+            char buf[BUFSZ];
             char delim[10];
 
             argv++; /* not CONSUME */
@@ -1265,7 +1265,7 @@ version_id_string(outbuf, build_date)
 char *outbuf;
 const char *build_date;
 {
-    char subbuf[64], versbuf[64];
+    char subbuf[BUFSZ], versbuf[BUFSZ];
     subbuf[0] = '\0';
 #ifdef PORT_SUB_ID
     subbuf[0] = ' ';
@@ -1282,7 +1282,7 @@ bannerc_string(outbuf, build_date)
 char *outbuf;
 const char *build_date;
 {
-    char subbuf[64], versbuf[64], elbuf[64] = "";
+    char subbuf[BUFSZ], versbuf[BUFSZ], elbuf[BUFSZ] = "";
     subbuf[0] = '\0';
 #ifdef PORT_SUB_ID
     subbuf[0] = ' ';

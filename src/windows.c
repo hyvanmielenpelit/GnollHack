@@ -3028,13 +3028,13 @@ STATIC_OVL void
 dump_headers()
 {
 #ifdef DUMPHTML
-    char vers[16]; /* buffer for short version string */
+    char vers[BUFSZ]; /* buffer for short version string */
 
     /* TODO: make portable routine for getting iso8601 datetime */
     struct tm* t;
-    char iso8601[32];
+    char iso8601[BUFSZ];
     t = localtime(&dumplog_now);
-    strftime(iso8601, 32, "%Y-%m-%dT%H:%M:%S%z", t);
+    strftime(iso8601, BUFSZ, "%Y-%m-%dT%H:%M:%S%z", t);
 
     if (!dumphtml_file)
         return;

@@ -59,6 +59,7 @@ namespace GnollHackX
             App.LoadBanks = Preferences.Get("LoadSoundBanks", true);
             App.InformAboutGameTermination = Preferences.Get("WentToSleepWithGameOn", false);
             Preferences.Set("WentToSleepWithGameOn", false);
+            App.InformAboutCrashReport = !App.InformAboutGameTermination;
             App.UsesCarousel = true; // App.IsiOS || Preferences.Get("UsesCarousel", true);
             App.PostingGameStatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             App.PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
@@ -75,6 +76,7 @@ namespace GnollHackX
         private static ClientGame _currentClientGame = null;
         public static ClientGame CurrentClientGame { get { lock (_currentClientGameLock) { return _currentClientGame; } } set { lock (_currentClientGameLock) { _currentClientGame = value; } } }
         public static bool InformAboutGameTermination = false;
+        public static bool InformAboutCrashReport = false;
         public static bool InformAboutIncompatibleSavedGames = false;
 
 

@@ -12884,31 +12884,34 @@ namespace GnollHackX.Pages.Game
 
         public async void ReportCrashDetected()
         {
-            bool answer = await DisplayAlert("Crash Detected", "A crashed game has been detected. GnollHack will attempt to restore this game. Also, do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further." + (UseMainGLCanvas ? " If the problem persists, try switching Game GPU Acceleration off in Settings." : ""), "Yes", "No");
-            if (answer)
+            if(App.InformAboutCrashReport)
             {
-                await CheckAndRequestWritePermission();
-                await CheckAndRequestReadPermission();
-                string archive_file = "";
-                try
+                bool answer = await DisplayAlert("Crash Detected", "A crashed game has been detected. GnollHack will attempt to restore this game. Also, do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further." + (UseMainGLCanvas ? " If the problem persists, try switching Game GPU Acceleration off in Settings." : ""), "Yes", "No");
+                if (answer)
                 {
-                    archive_file = App.CreateGameZipArchive();
-                }
-                catch (Exception ex)
-                {
-                    await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a crash report archive: " + ex.Message, "OK");
-                    goto finished;
-                }
-                try
-                {
-                    if (archive_file != "")
-                        ShareFile(archive_file, "GnollHack Crash Report");
+                    await CheckAndRequestWritePermission();
+                    await CheckAndRequestReadPermission();
+                    string archive_file = "";
+                    try
+                    {
+                        archive_file = App.CreateGameZipArchive();
+                    }
+                    catch (Exception ex)
+                    {
+                        await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a crash report archive: " + ex.Message, "OK");
+                        goto finished;
+                    }
+                    try
+                    {
+                        if (archive_file != "")
+                            ShareFile(archive_file, "GnollHack Crash Report");
 
-                }
-                catch (Exception ex)
-                {
-                    await DisplayAlert("Share File Failure", "GnollHack failed to share a crash report archive: " + ex.Message, "OK");
-                    goto finished;
+                    }
+                    catch (Exception ex)
+                    {
+                        await DisplayAlert("Share File Failure", "GnollHack failed to share a crash report archive: " + ex.Message, "OK");
+                        goto finished;
+                    }
                 }
             }
 
