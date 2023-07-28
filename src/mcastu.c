@@ -918,14 +918,14 @@ int spellnum;
             {
                 /* unseen caster fails or summons unseen critters,
                    or unconscious hero ("You dream that you hear...") */
-                You_hear("someone summoning %s.", makeplural(what));
+                You_hear_ex(ATR_NONE, CLR_MSG_SPELL, "someone summoning %s.", makeplural(what));
             } 
             else 
             {
                 /* unseen caster summoned seen critter(s) */
                 arg = (newseen == oldseen + 1) ? an(what) : makeplural(what);
                 if (!Deaf)
-                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "someone summoning something, and %s %s.", arg,
+                    You_hear_ex(ATR_NONE, CLR_MSG_SPELL, "someone summoning something, and %s %s.", arg,
                              vtense(arg, "appear"));
                 else
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s.", upstart(arg), vtense(arg, "appear"));
@@ -949,7 +949,7 @@ int spellnum;
         else
             fmt = (summon_quan == 1 ? "%s summons an insect!" : "%s summons insects!");
         if (fmt)
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, fmt, Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, fmt, Monnam(mtmp));
 
         damage = 0;
         break;

@@ -68,7 +68,7 @@ struct monst *mon;
         if (item_prevents_summoning(mon->mnum)) 
         {
             if (canseemon(mon))
-                pline("%s looks puzzled for a moment.", Monnam(mon));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks puzzled for a moment.", Monnam(mon));
             return 0;
         }
 
@@ -224,7 +224,7 @@ int
 yeenaghu_gnoll_summon(summoner)
 struct monst* summoner;
 {
-    pline("%s summons some gnolls!", Monnam(summoner));
+    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s summons some gnolls!", Monnam(summoner));
 
     int dtype = NON_PM, cnt = 0, result = 0, census;
     struct monst* mtmp = (struct monst*) 0;
@@ -303,17 +303,17 @@ struct monst* summoner;
 
     char numberword[BUFSZ] = "Some";
     if(canseemonnumber >= 3)
-        strcpy(numberword, "Several");
+        Strcpy(numberword, "Several");
 
     if (result > 0 && canseemonnumber > 0) {
         if (result == 1 && mtmp)
-            pline("%s appears out of nowhere!", Amonnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s appears out of nowhere!", Amonnam(mtmp));
         else
         {
             if (canseemonnumber == 1 && mtmp2)
-                pline("%s appears out of nowhere!", Amonnam(mtmp2));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s appears out of nowhere!", Amonnam(mtmp2));
             else
-                pline("%s gnolls appear out of nowhere!", numberword);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gnolls appear out of nowhere!", numberword);
         }
     }
 
@@ -329,7 +329,7 @@ int
 yeenaghu_ghoul_summon(summoner)
 struct monst* summoner;
 {
-    pline("%s summons some undead assistance!", Monnam(summoner));
+    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s summons some undead assistance!", Monnam(summoner));
 
     int dtype = NON_PM, cnt = 0, result = 0, census;
     struct monst* mtmp = (struct monst*) 0;
@@ -385,18 +385,18 @@ struct monst* summoner;
 
     char numberword[BUFSZ] = "Some";
     if (canseemonnumber >= 3)
-        strcpy(numberword, "Several");
+        Strcpy(numberword, "Several");
 
     if (result > 0 && canseemonnumber > 0)
     {
         if (result == 1 && mtmp)
-            pline("%s crawls out of nowhere!", Amonnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s crawls out of nowhere!", Amonnam(mtmp));
         else
         {
             if (canseemonnumber == 1 && mtmp2)
-                pline("%s crawls out of nowhere!", Amonnam(mtmp2));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s crawls out of nowhere!", Amonnam(mtmp2));
             else
-                pline("%s %s crawl out of nowhere!", numberword, thoul_cnt > 0 ? (ghast_cnt == 0 && ghoul_cnt == 0 ? "thouls" : "ghoul-like undead") : ghast_cnt == 0 ? "ghouls" : ghoul_cnt == 0 ? "ghasts" : "ghouls and ghasts");
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s crawl out of nowhere!", numberword, thoul_cnt > 0 ? (ghast_cnt == 0 && ghoul_cnt == 0 ? "thouls" : "ghoul-like undead") : ghast_cnt == 0 ? "ghouls" : ghoul_cnt == 0 ? "ghasts" : "ghouls and ghasts");
         }
     }
 
@@ -454,7 +454,7 @@ yacc_bison_summon()
 
     char numberword[BUFSZ] = "Some";
     if (canseemonnumber >= 3)
-        strcpy(numberword, "Several");
+        Strcpy(numberword, "Several");
 
     if (result > 0 && canseemonnumber > 0)
     {
@@ -624,17 +624,17 @@ orcus_undead_summon()
 
     char numberword[BUFSZ] = "Some";
     if (canseemonnumber >= 3)
-        strcpy(numberword, "Several");
+        Strcpy(numberword, "Several");
 
     if (result > 0 && canseemonnumber > 0) {
         if (result == 1 && mtmp)
-            pline("%s appears out of nowhere!", Amonnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s appears out of nowhere!", Amonnam(mtmp));
         else
         {
             if (canseemonnumber == 1 && mtmp2)
-                pline("%s appears out of nowhere!", Amonnam(mtmp2));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s appears out of nowhere!", Amonnam(mtmp2));
             else
-                pline("%s undead appear out of nowhere!", numberword);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s undead appear out of nowhere!", numberword);
         }
     }
 
@@ -717,7 +717,7 @@ boolean talk;
             play_voice_god_simple_line_by_align(alignment, GOD_LINE_THOU_SHALT_PAY_FOR_THINE_INDISCRETION);
             verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou shalt pay for thine indiscretion!");
             if (!Blind)
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears before you.", Amonnam(mon));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s appears before you.", Amonnam(mon));
             mon->mstrategy &= ~STRAT_APPEARMSG;
         }
         mon->mpeaceful = FALSE;

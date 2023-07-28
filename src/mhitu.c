@@ -1055,7 +1055,7 @@ register struct monst *mtmp;
                         int chance = mattk->mlevel;
                         if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
-                            pline("%s gates in some help.", Monnam(mtmp));
+                            pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s gates in some help.", Monnam(mtmp));
                             (void)msummon(mtmp);
                             sum[i] = 1;
                             mtmp->mdemonsummon_used = 30;
@@ -1097,14 +1097,14 @@ register struct monst *mtmp;
                             mtmp->mdemonsummon_used = 30;
                             if (youseeit)
                             {
-                                pline("%s summons help!", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s summons help!", Monnam(mtmp));
                                 if (numhelp > 0) 
                                 {
                                     if (numseen == 0)
-                                        You_feel("hemmed in.");
+                                        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "hemmed in.");
                                 }
                                 else
-                                    pline("But none comes.");
+                                    pline_ex(ATR_NONE, NO_COLOR, "But none comes.");
                             }
                             else
                             {
@@ -1121,7 +1121,7 @@ register struct monst *mtmp;
                                 if (numhelp > 0)
                                 {
                                     if (numseen < 1)
-                                        You_feel("hemmed in.");
+                                        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "hemmed in.");
                                     else 
                                     {
                                         if (numseen == 1)
@@ -1129,7 +1129,7 @@ register struct monst *mtmp;
                                         else
                                             Sprintf(buf, "%s appear",
                                                 makeplural(genericwere));
-                                        pline("%s%s!", upstart(buf), from_nowhere);
+                                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%s!", upstart(buf), from_nowhere);
                                     }
                                 } /* else no help came; but you didn't know it tried */
                             }
@@ -1184,7 +1184,7 @@ register struct monst *mtmp;
                             if (!rn2(2))
                             {
                                 play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_BLOOD_CURDLING_HOWL);
-                                pline("%s lets loose a blood-curdling howl!", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s lets loose a blood-curdling howl!", Monnam(mtmp));
                             }
                             else
                             {
@@ -1204,7 +1204,7 @@ register struct monst *mtmp;
                         int chance = mattk->mlevel;
                         if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
-                            pline("%s summons some bison!", Monnam(mtmp));
+                            pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s summons some bison!", Monnam(mtmp));
                             (void)yacc_bison_summon();
                             sum[i] = 1;
                             mtmp->mspecialsummon_used = 45;
@@ -1212,7 +1212,7 @@ register struct monst *mtmp;
                         else if (canseemon(mtmp))
                         {
                             if (!rn2(2) || is_silenced(mtmp))
-                                pline("%s raises its head in rage!", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s raises its head in rage!", Monnam(mtmp));
                             else if(!Deaf)
                                 pline("%s grunts threateningly!", Monnam(mtmp));
                         }
@@ -1228,7 +1228,7 @@ register struct monst *mtmp;
                         int chance = mattk->mlevel;
                         if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
-                            pline("%s summons some undead!", Monnam(mtmp));
+                            pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s summons some undead!", Monnam(mtmp));
                             (void)orcus_undead_summon();
                             sum[i] = 1;
                             mtmp->mspecialsummon_used = 90;
@@ -1256,7 +1256,7 @@ register struct monst *mtmp;
                         {
                             struct monst* mtmp2 = makemon(&mons[PM_MINOTAUR], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
                             if(mtmp2)
-                                pline("%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
+                                pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
                             sum[i] = 1;
                             mtmp->mspecialsummon_used = 90;
                         }
@@ -1288,7 +1288,7 @@ register struct monst *mtmp;
                             if (!mtmp2)
                                  mtmp2 = makemon(&mons[PM_GOLD_DRAGON], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION);
                             if (mtmp2)
-                                pline("%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
+                                pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
                             sum[i] = 1;
                             mtmp->mspecialsummon_used = 120;
                         }
