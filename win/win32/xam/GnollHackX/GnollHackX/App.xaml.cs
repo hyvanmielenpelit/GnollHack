@@ -341,7 +341,7 @@ namespace GnollHackX
         public static string GHVersionString { get; set; }
         public static ulong GHVersionNumber { get; set; }
         public static ulong GHVersionCompatibility { get; set; }
-        public static string GHVersionCompatibilityString { get { return GHVersionCompatibility == 0 ? "" : VersionNumberToString(GHVersionCompatibility); } }
+        public static string GHVersionCompatibilityString { get { return VersionNumberToString(GHVersionCompatibility); } }
         public static ulong GHPreviousVersionNumber { get; set; }
         public static string SkiaVersionString { get; set; }
         public static string SkiaSharpVersionString { get; set; }
@@ -387,6 +387,9 @@ namespace GnollHackX
 
         public static string VersionNumberToString(ulong vernum)
         {
+            if (vernum == 0UL)
+                return "";
+
             ulong majorver = (vernum >> 24) & 0xFFUL;
             ulong minorver = (vernum >> 16) & 0xFFUL;
             ulong patchver = (vernum >> 8) & 0xFFUL;
