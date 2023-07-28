@@ -1780,7 +1780,7 @@ int spell, booktype;
     char buf3[BUFSZ];
 
     winid datawin = WIN_ERR;
-    int glyph = booktype + FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
+    int glyph = booktype - FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
     datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SPELL_DESCRIPTION_SCREEN, glyph, extended_create_window_info_for_spell(TRUE));
 
     /* Name */
