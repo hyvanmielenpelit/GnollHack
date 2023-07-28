@@ -20,18 +20,18 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Main Screen/Splash", 0.5f},
     { SOUND_BANK_MASTER, "event:/Music/Start/Player Selection", 0.3f},
     { SOUND_BANK_MASTER, "event:/Music/Start/Intro", BACKGROUND_MUSIC_VOLUME * 1.5f},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Normal-1", BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Oracle", BACKGROUND_MUSIC_VOLUME * 4.0f},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Temple", BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Medusa", BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Castle", BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Gnomish-Mines-Normal", BACKGROUND_MUSIC_VOLUME * 2.5f},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Gnomish-Mines-Town", BACKGROUND_MUSIC_VOLUME * 2.5f},
+    { SOUND_BANK_MASTER, "event:/Music/Dungeon/Main-Normal-1", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music/Level/Oracle", BACKGROUND_MUSIC_VOLUME * 4.0f},
+    { SOUND_BANK_MASTER, "event:/Music/Room/Temple", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music/Level/Medusa", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music/Level/Castle", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music/Dungeon/Gnomish-Mines-Normal", BACKGROUND_MUSIC_VOLUME * 2.5f},
+    { SOUND_BANK_MASTER, "event:/Music/Level/Mine-Town", BACKGROUND_MUSIC_VOLUME * 2.5f},
 
-    { SOUND_BANK_MASTER, "event:/Music/Music-Sokoban-Normal", BACKGROUND_MUSIC_VOLUME * 2.5f},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Normal", BACKGROUND_MUSIC_VOLUME * 3.0f},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Valley", BACKGROUND_MUSIC_VOLUME * 2.0f},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Sanctum", BACKGROUND_MUSIC_VOLUME * 2.0f},
+    { SOUND_BANK_MASTER, "event:/Music/Dungeon/Sokoban-Normal", BACKGROUND_MUSIC_VOLUME * 2.5f},
+    { SOUND_BANK_MASTER, "event:/Music/Dungeon/Gehennom-Normal", BACKGROUND_MUSIC_VOLUME * 3.0f},
+    { SOUND_BANK_MASTER, "event:/Music/Level/Valley", BACKGROUND_MUSIC_VOLUME * 2.0f},
+    { SOUND_BANK_MASTER, "event:/Music/Level/Sanctum", BACKGROUND_MUSIC_VOLUME * 2.0f},
     { SOUND_BANK_MASTER, "event:/Music/Finish/Game Over", BACKGROUND_MUSIC_VOLUME * 2.5f},
     { SOUND_BANK_MASTER, "event:/Music/Shop/Normal", BACKGROUND_MUSIC_VOLUME * 2.0f},
     { SOUND_BANK_MASTER, "event:/Music/Shop/Angry", BACKGROUND_MUSIC_VOLUME},
@@ -168,11 +168,11 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Ray/Camera Flash/Camera Flash Ambient", 1.0f },
     { SOUND_BANK_MASTER, "event:/Ray/Camera Flash/Camera Flash Create", 1.0f },
 
-    { SOUND_BANK_MASTER, "event:/Music/Quest-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
-    { SOUND_BANK_MASTER, "event:/Music/Vlad-Tower-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
-    { SOUND_BANK_MASTER, "event:/Music/Modron-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
-    { SOUND_BANK_MASTER, "event:/Music/Bovine-Normal", BACKGROUND_MUSIC_VOLUME * 1.5f },
-    { SOUND_BANK_MASTER, "event:/Music/Large-Circular-Dungeon-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/Dungeon/Quest-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/Dungeon/Vlad-Tower-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/Dungeon/Modron-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/Dungeon/Bovine-Normal", BACKGROUND_MUSIC_VOLUME * 1.5f },
+    { SOUND_BANK_MASTER, "event:/Music/Dungeon/Large-Circular-Dungeon-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/End Game/Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/End Game/Earth", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/End Game/Air", BACKGROUND_MUSIC_VOLUME * 2.0f },
@@ -210,6 +210,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/NPC/Warp Engineer", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/Shop/Izchak", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/Room/Leprechaun Hall", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/Level/Quantum Core", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Disintegrate", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Life Saved", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Healing/Healing", 0.3f },
@@ -19149,24 +19150,28 @@ int dnum;
 {
     enum ghsound_types res = GHSOUND_NONE;
 
-    if (dnum == mines_dnum)
+    if (dnum == main_dungeon_dnum)
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+    else if (dnum == mines_dnum)
         res = GHSOUND_GNOMISH_MINES_MUSIC_NORMAL;
+    else if (dnum == large_circular_dgn_dnum)
+        res = GHSOUND_LARGE_CIRCULAR_DUNGEON_MUSIC_NORMAL;
     else if (dnum == sokoban_dnum)
         res = GHSOUND_SOKOBAN_MUSIC_NORMAL;
     else if (dnum == quest_dnum)
         res = GHSOUND_QUEST_MUSIC_NORMAL;
+    else if (dnum == gehennom_dnum)
+        res = GHSOUND_GEHENNOM_MUSIC_NORMAL;
     else if (dnum == tower_dnum)
         res = GHSOUND_VLAD_TOWER_MUSIC_NORMAL;
     else if (dnum == modron_dnum)
         res = GHSOUND_MODRON_MUSIC_NORMAL;
     else if (dnum == bovine_dnum)
         res = GHSOUND_BOVINE_MUSIC_NORMAL;
-    else if (dnum == large_circular_dgn_dnum)
-        res = GHSOUND_LARGE_CIRCULAR_DUNGEON_MUSIC_NORMAL;
+    else if (dnum == endgame_dnum)
+        res = GHSOUND_ENDGAME_MUSIC_NORMAL;
     else if (Inhell)
         res = GHSOUND_GEHENNOM_MUSIC_NORMAL;
-    else if (In_endgame(&u.uz))
-        res = GHSOUND_ENDGAME_MUSIC_NORMAL;
     else
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
 
@@ -19212,6 +19217,8 @@ struct d_level* dlvl;
         return GHSOUND_ENDGAME_MUSIC_FIRE;
     else if (Is_astralevel(dlvl))
         return GHSOUND_ENDGAME_MUSIC_ASTRAL;
+    else if (Is_quantum_core_level(dlvl))
+        return GHSOUND_DUNGEON_NORMAL_MUSIC_QUANTUM_CORE;
     else
         return get_dungeon_music(dnum);
 }
@@ -19429,8 +19436,8 @@ struct mkroom* room;
 
 
 enum ghsound_types
-    get_level_ambient_sounds(dlvl)
-    struct d_level* dlvl;
+get_level_ambient_sounds(dlvl)
+struct d_level* dlvl;
 {
     if (!dlvl)
         return GHSOUND_NONE;

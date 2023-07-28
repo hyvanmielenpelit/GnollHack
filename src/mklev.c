@@ -2742,8 +2742,8 @@ mkinvokearea()
     register xchar i;
 
     play_sfx_sound(SFX_RUMBLING_EARTH);
-    pline_The("floor shakes violently under you!");
-    pline_The("walls around you begin to bend and crumble!");
+    pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "floor shakes violently under you!");
+    pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "walls around you begin to bend and crumble!");
     display_nhwindow(WIN_MESSAGE, TRUE);
 
     /* any trap hero is stuck in will be going away now */
@@ -2778,7 +2778,7 @@ mkinvokearea()
         adjusted_delay_output();
     }
 
-    You("are standing at the top of a stairwell leading down!");
+    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "are standing at the top of a stairwell leading down!");
     mkstairs(u.ux, u.uy, 0, (struct mkroom *) 0, STAIRCASE_TO_DEEPER); /* down */
     newsym(u.ux, u.uy);
     vision_full_recalc = 1; /* everything changed */
