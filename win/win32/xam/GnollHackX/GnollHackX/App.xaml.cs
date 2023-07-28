@@ -341,6 +341,7 @@ namespace GnollHackX
         public static string GHVersionString { get; set; }
         public static ulong GHVersionNumber { get; set; }
         public static ulong GHVersionCompatibility { get; set; }
+        public static string GHVersionCompatibilityString { get { return GHVersionCompatibility == 0 ? "" : VersionNumberToString(GHVersionCompatibility); } }
         public static ulong GHPreviousVersionNumber { get; set; }
         public static string SkiaVersionString { get; set; }
         public static string SkiaSharpVersionString { get; set; }
@@ -382,6 +383,16 @@ namespace GnollHackX
         public static async Task<bool> EmptyBackButtonPressed(object sender, EventArgs e)
         {
             return await Task.FromResult(false);
+        }
+
+        public static string VersionNumberToString(ulong vernum)
+        {
+            ulong majorver = (vernum >> 24) & 0xFFUL;
+            ulong minorver = (vernum >> 16) & 0xFFUL;
+            ulong patchver = (vernum >> 8) & 0xFFUL;
+            ulong editver = (vernum) & 0xFFUL;
+            string verstr = majorver + "." + minorver + "." + patchver + (editver > 0 ? (" (Build " + editver + ")") : "");
+            return verstr;
         }
 
         public static SKTypeface DiabloTypeface { get; set; }

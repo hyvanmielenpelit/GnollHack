@@ -23,8 +23,7 @@ namespace GnollHackX.Pages.MainScreen
 
             _gamePage = gamePage;
 
-            //string platver = App.PlatformService.GetVersionString();
-            //string text = "";
+            string compatstr = App.GHVersionCompatibilityString;
             string manufacturer = DeviceInfo.Manufacturer;
             if(manufacturer.Length > 0)
                 manufacturer = manufacturer.Substring(0,1).ToUpper() + manufacturer.Substring(1);
@@ -83,6 +82,7 @@ namespace GnollHackX.Pages.MainScreen
             GnollHackVersionLabel.Text = App.GHVersionString;
             PortVersionLabel.Text = VersionTracking.CurrentVersion;
             PortBuildLabel.Text = VersionTracking.CurrentBuild;
+            GnollHackCompatibilityLabel.Text = compatstr == "" ? "" : "From " + compatstr;
             FMODVersionLabel.Text = App.FMODVersionString;
             SkiaVersionLabel.Text = App.SkiaVersionString + " (# " + App.SkiaSharpVersionString + ")";
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
