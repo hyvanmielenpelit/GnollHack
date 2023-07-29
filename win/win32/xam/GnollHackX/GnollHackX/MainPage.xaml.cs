@@ -518,7 +518,7 @@ namespace GnollHackX
         private void CloseApp()
         {
             App.PlatformService.CloseApplication();
-            Thread.Sleep(50);
+            Thread.Sleep(75);
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 

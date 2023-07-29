@@ -454,7 +454,23 @@ namespace GnollHackX.Pages.MainScreen
             GPUSwitch.IsToggled = gpu;
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
             NavBarSwitch.IsToggled = navbar;
+            if(!App.IsAndroid)
+            {
+                NavBarSwitch.IsEnabled = false;
+                NavBarLabel.IsEnabled = false;
+                NavBarLabel.TextColor = Color.Gray;
+                if (MainSection.Contains(NavBarViewCell))
+                    MainSection.Remove(NavBarViewCell);
+            }
             StatusBarSwitch.IsToggled = statusbar;
+            if (!App.IsiOS)
+            {
+                StatusBarSwitch.IsEnabled = false;
+                StatusBarLabel.IsEnabled = false;
+                StatusBarLabel.TextColor = Color.Gray;
+                if (MainSection.Contains(StatusBarViewCell))
+                    MainSection.Remove(StatusBarViewCell);
+            }
             DeveloperSwitch.IsToggled = devmode;
             SoundBankSwitch.IsToggled = bank;
             HTMLDumpLogSwitch.IsToggled = html;
@@ -573,6 +589,18 @@ namespace GnollHackX.Pages.MainScreen
         {
             App.SilentMode = SilentModeSwitch.IsToggled;
             _doChangeVolume = !App.IsMuted;
+        }
+
+        private void StreamingBankToMemorySwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if(e.Value && StreamingBankToDiskSwitch.IsToggled)
+                StreamingBankToDiskSwitch.IsToggled = false;
+        }
+
+        private void StreamingBankToDiskSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (e.Value && StreamingBankToMemorySwitch.IsToggled)
+                StreamingBankToMemorySwitch.IsToggled = false;
         }
 
         private async Task MaybeShowPleaseWait()

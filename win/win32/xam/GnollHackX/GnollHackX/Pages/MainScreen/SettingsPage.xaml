@@ -157,9 +157,10 @@
                                     <Switch x:Name="ForceMaxMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
-                            <ViewCell>
+                            <ViewCell x:Name="NavBarViewCell">
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Hide Navigation"
+                                           x:Name="NavBarLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
@@ -167,9 +168,10 @@
                                     <Switch x:Name="NavBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
-                            <ViewCell>
+                            <ViewCell x:Name="StatusBarViewCell">
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Hide Status Bar"
+                                           x:Name="StatusBarLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
@@ -489,22 +491,22 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="Streaming Bank to Memory"
+                                    <Label Text="Streaming Banks to Memory"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                                    <Switch x:Name="StreamingBankToMemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                    <Switch x:Name="StreamingBankToMemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="StreamingBankToMemorySwitch_Toggled" />
                                 </StackLayout>
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="Streaming Bank to Disk"
+                                    <Label Text="Streaming Banks to Disk"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                                    <Switch x:Name="StreamingBankToDiskSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                    <Switch x:Name="StreamingBankToDiskSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="StreamingBankToDiskSwitch_Toggled" />
                                 </StackLayout>
                             </ViewCell>
                             <ViewCell>

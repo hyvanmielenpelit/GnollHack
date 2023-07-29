@@ -473,7 +473,7 @@ struct obj *otmp UNUSED;
         "**FR33 P0T10N 0F FULL H34L1NG**",
         "Please return to sender (Asmodeus)",
      "Buy a potion of gain level for only $19.99!  Guaranteed to be blessed!",
-        "Invitation: Visit the GnollHack web site at http://www.GnollHack.org!"
+        "Invitation: Visit the GnollHack web site at http://www.gnollhack.com!"
     };
 
     /* XXX replace with more general substitution code and add local
