@@ -85,13 +85,20 @@ dosave()
     if (iflags.debug_fuzzer)
         return 0;
     clear_nhwindow(WIN_MESSAGE);
-    if (yn_query("Really save?") == 'n')
+    boolean confirm_save = TRUE;
+
+#ifdef CONTINUE_PLAYING_AFTER_SAVING
+    if (CasualMode) 
+        confirm_save = FALSE; // 'q' in "Continue playing after saving?" cancels save instead
+#endif
+
+    if (confirm_save && yn_query("Really save?") == 'n')
     {
         clear_nhwindow(WIN_MESSAGE);
         if (multi > 0)
             nomul(0);
     } 
-    else 
+    else
     {
         boolean contplay = FALSE;
 #ifdef CONTINUE_PLAYING_AFTER_SAVING
