@@ -114,7 +114,7 @@ namespace GnollHackX.iOS
 
         }
 
-        public async System.Threading.Tasks.Task RequestAppReview()
+        public async System.Threading.Tasks.Task RequestAppReview(ContentPage page)
         {
             try
             {
@@ -129,7 +129,9 @@ namespace GnollHackX.iOS
                         {
                             UIWindowScene windowscene = window.WindowScene;
                             if (windowscene != null)
+                            {
                                 SKStoreReviewController.RequestReview(window.WindowScene);
+                            }
                         }
                     }
                     else
@@ -141,6 +143,7 @@ namespace GnollHackX.iOS
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
+                //await page.DisplayAlert("App Review Exception", "Exception occurred in App Review: " + ex.Message, "OK");
             }
             await System.Threading.Tasks.Task.Delay(50);
         }

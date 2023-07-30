@@ -147,7 +147,7 @@ namespace GnollHackX
                     if (!ReviewRequested && ((NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime) || App.DeveloperMode))
                     {
                         Preferences.Set("StoreReviewRequested", true);
-                        await App.PlatformService?.RequestAppReview();
+                        await App.PlatformService?.RequestAppReview(this);
                     }
                 }
             }

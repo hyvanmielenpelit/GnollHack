@@ -23,6 +23,7 @@ using Xamarin.Google.Android.Play.Core.Review.Model;
 using Xamarin.Google.Android.Play.Core.Tasks;
 using System.Threading;
 using Xamarin.Google.Android.Play.Core.Review.Testing;
+using Android.Util;
 
 [assembly: Dependency(typeof(GnollHackX.Droid.PlatformService))]
 namespace GnollHackX.Droid
@@ -213,10 +214,14 @@ namespace GnollHackX.Droid
         IReviewManager _manager;
         TaskCompletionSource<bool> _tcs;
         TaskCompletionSource<bool> _tcs2 = null;
+        public List<string> Log = new List<string>();
         public TaskCompletionSource<bool> Tcs2 { get { return _tcs2; } set { _tcs2 = value; } }
 
-        public async System.Threading.Tasks.Task RequestAppReview()
+        public async System.Threading.Tasks.Task RequestAppReview(ContentPage page)
         {
+            Log.Clear();
+            Log.Add("Starting App Review");
+
             _tcs?.TrySetCanceled();
             _tcs = new TaskCompletionSource<bool>();
             _manager = ReviewManagerFactory.Create(MainActivity.CurrentMainActivity);
@@ -224,11 +229,23 @@ namespace GnollHackX.Droid
             var request = _manager.RequestReviewFlow();
             var listener = new StoreReviewTaskCompleteListener(_manager, _tcs, this, false);
             request.AddOnCompleteListener(listener);
+
+            Log.Add("Awaiting");
             await _tcs.Task;
-            if(_tcs2 != null)
-                await _tcs2.Task;
+            //if(_tcs2 != null)
+            //    await _tcs2.Task;
             _manager.Dispose();
             request.Dispose();
+            Log.Add("Done");
+
+            string logs = "";
+            foreach (var log in Log)
+            {
+                if (logs != "")
+                    logs += ". ";
+                logs += log;
+            }
+            //await page.DisplayAlert("App Review Log", logs, "OK");
         }
 
         public string GetBaseUrl()
@@ -321,13 +338,13 @@ namespace GnollHackX.Droid
             _isLaunchReviewFlow = isLaunchReviewFlow;
         }
 
-
         Xamarin.Google.Android.Play.Core.Tasks.Task launchTask;
 
         public void OnComplete(Xamarin.Google.Android.Play.Core.Tasks.Task task)
         {
             if (_isLaunchReviewFlow)
             {
+                _ps.Log.Add("OnComplete / _isLaunchReviewFlow / isSuccessful: " + task.IsSuccessful.ToString());
                 if (!task.IsSuccessful)
                 {
                     _ps.Tcs2 = null;
@@ -337,6 +354,7 @@ namespace GnollHackX.Droid
             }
             else
             {
+                _ps.Log.Add("OnComplete / normal / isSuccessful: " + task.IsSuccessful.ToString());
                 if (task.IsSuccessful)
                 {
                     //Launch review flow
@@ -350,11 +368,13 @@ namespace GnollHackX.Droid
                         launchTask = _manager.LaunchReviewFlow(MainActivity.CurrentMainActivity, reviewInfo);
                         launchTask.AddOnCompleteListener(new StoreReviewTaskCompleteListener(_manager, _ps.Tcs2, _ps, true));
                         _tcs?.TrySetResult(task.IsSuccessful);
+                        _ps.Log.Add("OnComplete / normal / Finished");
                     }
                     catch (Exception ex)
                     {
                         _tcs?.TrySetResult(false);
                         System.Diagnostics.Debug.WriteLine(ex.Message);
+                        _ps.Log.Add("OnComplete: Exception: " + ex.Message);
                     }
                 }
                 else

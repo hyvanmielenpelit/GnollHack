@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Xamarin.Forms;
 
 namespace GnollHackX
 {
@@ -24,7 +25,7 @@ namespace GnollHackX
         string GetAssetsPath();
         string GetAbsoluteOnDemandAssetPath(string assetPack);
         string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath);
-        System.Threading.Tasks.Task RequestAppReview();
+        System.Threading.Tasks.Task RequestAppReview(ContentPage page);
         int FetchOnDemandPack(string pack);
         event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
 
