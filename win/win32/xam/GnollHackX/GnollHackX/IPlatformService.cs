@@ -24,6 +24,7 @@ namespace GnollHackX
         string GetAssetsPath();
         string GetAbsoluteOnDemandAssetPath(string assetPack);
         string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath);
+        void RequestAppReview();
         int FetchOnDemandPack(string pack);
         event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
 

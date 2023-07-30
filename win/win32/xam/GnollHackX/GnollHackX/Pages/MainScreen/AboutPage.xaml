@@ -26,145 +26,62 @@
                     <TableRoot>
                         <TableSection x:Name="BaseSection">
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnVersion" Text="Version" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnVersion_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnVersion" Text="Version" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
-                            <!--<ViewCell>
-                                <controls:CustomImageButton x:Name="btnRateApp" Text="Give App Rating" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnRateApp_Clicked" UseVaryingBackgroundImages ="False" />
-                            </ViewCell>-->
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnCreditsW" Text="Credits" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCreditsW_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnCreditsW" Text="Credits" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCreditsW_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnCreditsX" Text="Cross-Platform" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCreditsX_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnCreditsX" Text="Cross-Platform" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCreditsX_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnLicense" Text="License" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnLicense_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnLicense" Text="License" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnLicense_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnGitHub" Text="Source Code" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnGitHub_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnGitHub" Text="Source Code" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnGitHub_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
-                            <!--
                             <ViewCell>
-                                <Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnSourceCode" Text="Source Code" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnSourceCode_Clicked" />
-                                </Grid>
-                            </ViewCell>
-                            -->
-                            <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnWiki" Text="Wiki" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnWiki_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnWiki" Text="Wiki" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnWiki_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnWebPage" Text="www.gnollhack.com" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnWebPage_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnWebPage" Text="www.gnollhack.com" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnWebPage_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnSponsor" Text="Sponsor" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnSponsor_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnSponsor" Text="Sponsor" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnSponsor_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                         </TableSection>
                         <TableSection x:Name="ShareSection">
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnImportSavedGames" Text="Import Saved Games" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnImportSavedGames_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnImportSavedGames" Text="Import Saved Games" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnImportSavedGames_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnSavedGames" Text="Export Saved Games" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnSavedGames_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnSavedGames" Text="Export Saved Games" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnSavedGames_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnDumplogs" Text="Dumplogs" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnDumplogs_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnDumplogs" Text="Dumplogs" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnDumplogs_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnCrashReport" Text="Crash Report" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCrashReport_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnCrashReport" Text="Crash Report" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCrashReport_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
-                                <!--<Grid WidthRequest="320" HorizontalOptions="Center">
-                                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnViewPanicLog" WidthRequest="320" FontFamily="Diablo" Text="View Panic Log" BackgroundColor="Transparent" TextColor="White"
-                                    HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnViewPanicLog_Clicked" />
-                                </Grid>-->
                                 <controls:CustomImageButton x:Name="btnViewPanicLog" WidthRequest="320" FontFamily="Diablo" Text="View Panic Log" BackgroundColor="Transparent" TextColor="White"
                                     HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnViewPanicLog_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                         </TableSection>
                     </TableRoot>
                 </TableView>
-                <!--<Grid Grid.Row="2" x:Name="CloseGrid" WidthRequest="320" HeightRequest="60" Margin="0,10,0,10" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand">
-                    <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="320" HeightRequest="60" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                    <Button Text="Back to Main Screen" WidthRequest="320" HeightRequest="60" FontFamily="Diablo" FontSize="17" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
-                        Clicked="Button_Clicked" />
-                </Grid>-->
                 <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Back to Main Screen" Margin="0,10,0,10" WidthRequest="320" HeightRequest="60" FontFamily="Diablo" FontSize="17" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
             </Grid>

@@ -16,6 +16,12 @@ using Java.IO;
 using System.IO;
 using Xamarin.Google.Android.Play.Core.AssetPacks;
 using Android.Content.PM;
+using System.Runtime.Remoting.Contexts;
+using Xamarin.Google.Android.Play.Core.Review;
+using System.Threading.Tasks;
+using Xamarin.Google.Android.Play.Core.Review.Model;
+using Xamarin.Google.Android.Play.Core.Tasks;
+using System.Threading;
 
 [assembly: Dependency(typeof(GnollHackX.Droid.PlatformService))]
 namespace GnollHackX.Droid
@@ -226,6 +232,44 @@ namespace GnollHackX.Droid
             }
         }
 
+        public void RequestAppReview()
+        {
+            //IReviewManager manager = ReviewManagerFactory.Create(MainActivity.CurrentMainActivity);
+            //if(manager != null)
+            //{
+            //    try
+            //    {
+            //        var request = manager.RequestReviewFlow();
+            //        Java.Lang.Object result = null;
+            //        if (request != null)
+            //        {
+            //            var task = ToAwaitableTask(request);
+            //            if(task != null)
+            //                result = await task;
+            //        }
+            //        if(result != null)
+            //        {
+            //            ReviewInfo info = (ReviewInfo)result;
+            //            var flow = manager.LaunchReviewFlow(MainActivity.CurrentMainActivity, info);
+            //            Java.Lang.Object flowresult = null;
+            //            var flowtask = ToAwaitableTask(flow);
+            //            if(flowtask != null)
+            //                flowresult = await flowtask;
+            //            if(flowresult != null)
+            //            {
+            //                string msg = "";
+            //                //Continue
+            //            }
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        string msg = ex.Message;
+            //        //Debuglog
+            //    }
+            //}
+        }
+
         public string GetBaseUrl()
         {
             return "file:///android_asset/";
@@ -298,5 +342,42 @@ namespace GnollHackX.Droid
         {
             OnDemandPackStatusNotification?.Invoke(this, e);
         }
+
+        //private static Task<Java.Lang.Object> ToAwaitableTask(Xamarin.Google.Android.Play.Core.Tasks.Task task)
+        //{
+        //    var taskCompletionSource = new TaskCompletionSource<Java.Lang.Object>();
+        //    var taskCompleteListener = new TaskCompleteListener(taskCompletionSource);
+        //    task.AddOnCompleteListener(taskCompleteListener);
+        //    return taskCompletionSource.Task;
+        //}
     }
+
+
+    //public class TaskCompleteListener : Java.Lang.Object, IOnCompleteListener
+    //{
+    //    private readonly TaskCompletionSource<Java.Lang.Object> _taskCompletionSource;
+
+    //    public TaskCompleteListener(TaskCompletionSource<Java.Lang.Object> tcs) 
+    //    {
+    //        _taskCompletionSource = tcs;
+    //    }
+
+    //    public void OnComplete(Xamarin.Google.Android.Play.Core.Tasks.Task task)
+    //    {
+    //        var isCompleted = task.IsSuccessful && task.IsComplete;
+    //        if (task.IsSuccessful)
+    //        {
+    //            if(task.IsComplete)
+    //                _taskCompletionSource.SetResult(task.GetResult(MainActivity.CurrentMainActivity.Class));
+    //            else
+    //                _taskCompletionSource.SetCanceled();
+    //        }
+    //        else
+    //        {
+    //            _taskCompletionSource.SetException(task.Exception);
+    //        }
+    //    }
+    //}
+
+
 }

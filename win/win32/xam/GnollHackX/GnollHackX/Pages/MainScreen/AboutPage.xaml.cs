@@ -111,19 +111,6 @@ namespace GnollHackX.Pages.MainScreen
             AboutTableView.IsEnabled = true;
         }
 
-        //private async void btnRateApp_Clicked(object sender, EventArgs e)
-        //{
-        //    AboutTableView.IsEnabled = false;
-        //    App.PlayButtonClickedSound();
-        //    //btnRateApp.TextColor = Color.Gray;
-        //    //btnRateApp.Text = "Connecting...";
-        //    //await CrossStoreReview.Current.RequestReview(false);
-        //    //await Task.Delay(100);
-        //    //btnRateApp.Text = "Give App Rating";
-        //    //btnRateApp.TextColor = Color.White;
-        //    AboutTableView.IsEnabled = true;
-        //}
-
         private async void btnSponsor_Clicked(object sender, EventArgs e)
         {
             AboutTableView.IsEnabled = false;

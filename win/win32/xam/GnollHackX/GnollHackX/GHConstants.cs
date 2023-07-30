@@ -1469,8 +1469,8 @@ namespace GnollHackX
         public const bool DefaultZoomChangeCenterMode = false;
         public const bool DefaultHideNavigation = true;
         public const bool DefaultHideStatusBar = true;
-        public const long StoreReviewRequestNumberOfGames = 4;
-        public const long StoreReviewRequestTotalPlayTime = 60 * 60 * 2;
+        public const long StoreReviewRequestNumberOfGames = 0; //4;
+        public const long StoreReviewRequestTotalPlayTime = 0; //60 * 60 * 2;
         public const bool DefaultHTMLDumpLogs = true;
         public const bool DefaultUseSingleDumpLog = true;
         public const string InstallTimePackName = "installtimepack";

@@ -508,8 +508,8 @@ namespace GnollHackX
                 long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
                 if (!ReviewRequested && NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime)
                 {
+                    App.PlatformService?.RequestAppReview();
                     Preferences.Set("StoreReviewRequested", true);
-                    //await CrossStoreReview.Current.RequestReview(false);
                 }
                 CloseApp();
             }

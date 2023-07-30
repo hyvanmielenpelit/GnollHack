@@ -9,6 +9,7 @@ using GnollHackX;
 using Foundation;
 using UIKit;
 using Xamarin.Forms.PlatformConfiguration;
+using StoreKit;
 
 [assembly: Dependency(typeof(GnollHackX.iOS.PlatformService))]
 namespace GnollHackX.iOS
@@ -134,6 +135,32 @@ namespace GnollHackX.iOS
         public void RevertAnimatorDuration(bool isfinal)
         {
 
+        }
+
+        public void RequestAppReview()
+        {
+            try
+            {
+                var myv = UIDevice.CurrentDevice.CheckSystemVersion(14, 0);
+                if (myv)
+                {
+                    UIWindow window = UIApplication.SharedApplication.Delegate.GetWindow();
+                    if (window != null)
+                    {
+                        UIWindowScene windowscene = window.WindowScene;
+                        if (windowscene != null)
+                            SKStoreReviewController.RequestReview(window.WindowScene);
+                    }
+                }
+                else
+                {
+                    SKStoreReviewController.RequestReview();
+                }
+            }
+            catch
+            {
+                //Error
+            }
         }
 
         public string GetBaseUrl()
