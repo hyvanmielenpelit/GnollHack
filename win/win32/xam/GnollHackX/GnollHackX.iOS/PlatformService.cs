@@ -78,29 +78,6 @@ namespace GnollHackX.iOS
             return UIApplication.SharedApplication.StatusBarHidden;
         }
 
-        //public void SaveFileToDownloads(byte[] data, string name)
-        //{
-        //if (MainActivity.CurrentMainActivity?.CheckSelfPermission(Manifest.Permission.WriteExternalStorage) != Android.Content.PM.Permission.Granted)
-        //{
-        //    MainActivity.CurrentMainActivity?.RequestPermissions(new string[] { Manifest.Permission.WriteExternalStorage }, 0);
-        //}
-
-        //if (MainActivity.CurrentMainActivity?.CheckSelfPermission(Manifest.Permission.WriteExternalStorage) == Android.Content.PM.Permission.Granted)
-        //{
-        //    string path = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
-        //    string filePath = System.IO.Path.Combine(path, name);
-
-        //    if (System.IO.File.Exists(filePath))
-        //    {
-        //        System.IO.FileInfo file = new System.IO.FileInfo(filePath);
-        //        file.Delete();
-        //    }
-        //    FileOutputStream fileOutputStream = new FileOutputStream(new Java.IO.File(filePath));
-        //    fileOutputStream.Write(data);
-        //    fileOutputStream.Close();
-        //}
-        //}
-
         public float GetAnimatorDurationScaleSetting()
         {
             return 1.0f;
@@ -137,30 +114,35 @@ namespace GnollHackX.iOS
 
         }
 
-        public void RequestAppReview()
+        public async System.Threading.Tasks.Task RequestAppReview()
         {
             try
             {
-                var myv = UIDevice.CurrentDevice.CheckSystemVersion(14, 0);
-                if (myv)
+                bool IsiOS10_3 = UIDevice.CurrentDevice.CheckSystemVersion(10, 3);
+                bool IsiOS14_0 = UIDevice.CurrentDevice.CheckSystemVersion(14, 0);
+                if (IsiOS10_3)
                 {
-                    UIWindow window = UIApplication.SharedApplication.Delegate.GetWindow();
-                    if (window != null)
+                    if (IsiOS14_0)
                     {
-                        UIWindowScene windowscene = window.WindowScene;
-                        if (windowscene != null)
-                            SKStoreReviewController.RequestReview(window.WindowScene);
+                        UIWindow window = UIApplication.SharedApplication?.Delegate?.GetWindow();
+                        if (window != null)
+                        {
+                            UIWindowScene windowscene = window.WindowScene;
+                            if (windowscene != null)
+                                SKStoreReviewController.RequestReview(window.WindowScene);
+                        }
+                    }
+                    else
+                    {
+                        SKStoreReviewController.RequestReview();
                     }
                 }
-                else
-                {
-                    SKStoreReviewController.RequestReview();
-                }
             }
-            catch
+            catch (Exception ex)
             {
-                //Error
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
+            await System.Threading.Tasks.Task.Delay(50);
         }
 
         public string GetBaseUrl()

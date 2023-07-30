@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Xamarin.Google.Android.Play.Core.Review.Model;
 using Xamarin.Google.Android.Play.Core.Tasks;
 using System.Threading;
+using Xamarin.Google.Android.Play.Core.Review.Testing;
 
 [assembly: Dependency(typeof(GnollHackX.Droid.PlatformService))]
 namespace GnollHackX.Droid
@@ -93,7 +94,6 @@ namespace GnollHackX.Droid
             }
         }
 
-
         public void CloseApplication()
         {
             RevertAnimatorDuration(true);
@@ -109,29 +109,6 @@ namespace GnollHackX.Droid
         {
             return true;
         }
-
-        //public void SaveFileToDownloads(byte[] data, string name)
-        //{
-        //    if (MainActivity.CurrentMainActivity?.CheckSelfPermission(Manifest.Permission.WriteExternalStorage) != Android.Content.PM.Permission.Granted)
-        //    {
-        //        MainActivity.CurrentMainActivity?.RequestPermissions(new string[] { Manifest.Permission.WriteExternalStorage }, 0);
-        //    }
-
-        //    if (MainActivity.CurrentMainActivity?.CheckSelfPermission(Manifest.Permission.WriteExternalStorage) == Android.Content.PM.Permission.Granted)
-        //    {
-        //        string path = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
-        //        string filePath = System.IO.Path.Combine(path, name);
-
-        //        if (System.IO.File.Exists(filePath))
-        //        {
-        //            System.IO.FileInfo file = new System.IO.FileInfo(filePath);
-        //            file.Delete();
-        //        }
-        //        FileOutputStream fileOutputStream = new FileOutputStream(new Java.IO.File(filePath));
-        //        fileOutputStream.Write(data);
-        //        fileOutputStream.Close();
-        //    }
-        //}
 
         public float GetAnimatorDurationScaleSetting()
         {
@@ -176,9 +153,9 @@ namespace GnollHackX.Droid
 
                 scale = JNIEnv.CallStaticFloatMethod(classForName, methodId);
             }
-            catch //(Exception ex)
+            catch (Exception ex)
             {
-                // Log Android Error or try / catch should be moved to the calling function
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
             return scale;
         }
@@ -205,9 +182,9 @@ namespace GnollHackX.Droid
 
                 JNIEnv.CallStaticVoidMethod(classForName, methodId, new JValue(1f));
             }
-            catch //(Exception ex)
+            catch (Exception ex)
             {
-                // Log Android Error or try / catch should be moved to the calling function
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
         public void RevertAnimatorDuration(bool isfinal)
@@ -222,9 +199,9 @@ namespace GnollHackX.Droid
                     float usedValue = !isfinal && _originalAnimationDurationScale == 0.0f ? 0.1f : _originalAnimationDurationScale; //Make sure that the value is not set to zero upon sleep just in case, since that seems to create problems
                     JNIEnv.CallStaticVoidMethod(classForName, methodId, new JValue(usedValue));
                 }
-                catch //(Exception ex)
+                catch (Exception ex)
                 {
-                    // Log Android Error or try / catch should be moved to the calling function
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
                 }
 
                 _originalSet = false;
@@ -232,42 +209,26 @@ namespace GnollHackX.Droid
             }
         }
 
-        public void RequestAppReview()
+
+        IReviewManager _manager;
+        TaskCompletionSource<bool> _tcs;
+        TaskCompletionSource<bool> _tcs2 = null;
+        public TaskCompletionSource<bool> Tcs2 { get { return _tcs2; } set { _tcs2 = value; } }
+
+        public async System.Threading.Tasks.Task RequestAppReview()
         {
-            //IReviewManager manager = ReviewManagerFactory.Create(MainActivity.CurrentMainActivity);
-            //if(manager != null)
-            //{
-            //    try
-            //    {
-            //        var request = manager.RequestReviewFlow();
-            //        Java.Lang.Object result = null;
-            //        if (request != null)
-            //        {
-            //            var task = ToAwaitableTask(request);
-            //            if(task != null)
-            //                result = await task;
-            //        }
-            //        if(result != null)
-            //        {
-            //            ReviewInfo info = (ReviewInfo)result;
-            //            var flow = manager.LaunchReviewFlow(MainActivity.CurrentMainActivity, info);
-            //            Java.Lang.Object flowresult = null;
-            //            var flowtask = ToAwaitableTask(flow);
-            //            if(flowtask != null)
-            //                flowresult = await flowtask;
-            //            if(flowresult != null)
-            //            {
-            //                string msg = "";
-            //                //Continue
-            //            }
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        string msg = ex.Message;
-            //        //Debuglog
-            //    }
-            //}
+            _tcs?.TrySetCanceled();
+            _tcs = new TaskCompletionSource<bool>();
+            _manager = ReviewManagerFactory.Create(MainActivity.CurrentMainActivity);
+
+            var request = _manager.RequestReviewFlow();
+            var listener = new StoreReviewTaskCompleteListener(_manager, _tcs, this, false);
+            request.AddOnCompleteListener(listener);
+            await _tcs.Task;
+            if(_tcs2 != null)
+                await _tcs2.Task;
+            _manager.Dispose();
+            request.Dispose();
         }
 
         public string GetBaseUrl()
@@ -323,7 +284,7 @@ namespace GnollHackX.Droid
                 }
                 catch (Exception ex)
                 {
-                    string msg = ex.Message;
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
                     return 1;  /* Exception occurred */
                 }
             }
@@ -342,42 +303,60 @@ namespace GnollHackX.Droid
         {
             OnDemandPackStatusNotification?.Invoke(this, e);
         }
-
-        //private static Task<Java.Lang.Object> ToAwaitableTask(Xamarin.Google.Android.Play.Core.Tasks.Task task)
-        //{
-        //    var taskCompletionSource = new TaskCompletionSource<Java.Lang.Object>();
-        //    var taskCompleteListener = new TaskCompleteListener(taskCompletionSource);
-        //    task.AddOnCompleteListener(taskCompleteListener);
-        //    return taskCompletionSource.Task;
-        //}
     }
 
 
-    //public class TaskCompleteListener : Java.Lang.Object, IOnCompleteListener
-    //{
-    //    private readonly TaskCompletionSource<Java.Lang.Object> _taskCompletionSource;
+    public class StoreReviewTaskCompleteListener : Java.Lang.Object, IOnCompleteListener
+    {
+        IReviewManager _manager;
+        TaskCompletionSource<bool> _tcs;
+        PlatformService _ps;
+        bool _isLaunchReviewFlow = false;
 
-    //    public TaskCompleteListener(TaskCompletionSource<Java.Lang.Object> tcs) 
-    //    {
-    //        _taskCompletionSource = tcs;
-    //    }
-
-    //    public void OnComplete(Xamarin.Google.Android.Play.Core.Tasks.Task task)
-    //    {
-    //        var isCompleted = task.IsSuccessful && task.IsComplete;
-    //        if (task.IsSuccessful)
-    //        {
-    //            if(task.IsComplete)
-    //                _taskCompletionSource.SetResult(task.GetResult(MainActivity.CurrentMainActivity.Class));
-    //            else
-    //                _taskCompletionSource.SetCanceled();
-    //        }
-    //        else
-    //        {
-    //            _taskCompletionSource.SetException(task.Exception);
-    //        }
-    //    }
-    //}
+        public StoreReviewTaskCompleteListener(IReviewManager manager, TaskCompletionSource<bool> tcs, PlatformService ps, bool isLaunchReviewFlow)
+        {
+            _manager = manager;
+            _tcs = tcs;
+            _ps = ps;
+            _isLaunchReviewFlow = isLaunchReviewFlow;
+        }
 
 
+        Xamarin.Google.Android.Play.Core.Tasks.Task launchTask;
+
+        public void OnComplete(Xamarin.Google.Android.Play.Core.Tasks.Task task)
+        {
+            if (_isLaunchReviewFlow)
+            {
+                if (!task.IsSuccessful)
+                {
+                    _ps.Tcs2 = null;
+                }
+                launchTask?.Dispose();
+            }
+            else
+            {
+                if (task.IsSuccessful)
+                {
+                    //Launch review flow
+                    try
+                    {
+                        if (_ps.Tcs2 != null)
+                            _ps.Tcs2.TrySetCanceled();
+                        else
+                            _ps.Tcs2 = new TaskCompletionSource<bool>();
+                        var reviewInfo = (ReviewInfo)task.GetResult(Java.Lang.Class.FromType(typeof(ReviewInfo)));
+                        launchTask = _manager.LaunchReviewFlow(MainActivity.CurrentMainActivity, reviewInfo);
+                        launchTask.AddOnCompleteListener(new StoreReviewTaskCompleteListener(_manager, _ps.Tcs2, _ps, true));
+                    }
+                    catch (Exception ex)
+                    {
+                        _tcs.TrySetResult(false);
+                        System.Diagnostics.Debug.WriteLine(ex.Message);
+                    }
+                }
+            }
+            _tcs?.TrySetResult(task.IsSuccessful);
+        }
+    }
 }

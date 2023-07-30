@@ -126,15 +126,29 @@ namespace GnollHackX
                 StartLogoImage.IsVisible = false;
                 FmodLogoImage.IsVisible = false;
 
+                bool previousInformationShown = false;
                 if (App.InformAboutGameTermination)
                 {
                     App.InformAboutGameTermination = false;
                     await DisplayAlert("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user. Your game may have been saved before the termination.", "OK");
+                    previousInformationShown = true;
                 }
                 if (App.InformAboutIncompatibleSavedGames)
                 {
                     App.InformAboutIncompatibleSavedGames = false;
                     await DisplayAlert("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible. If you wish to back up your save files, you can export them using About -> Export Saved Games.", "OK");
+                    previousInformationShown = true;
+                }
+                if (!previousInformationShown)
+                {
+                    bool ReviewRequested = Preferences.Get("StoreReviewRequested", false);
+                    long NumberOfGames = Preferences.Get("NumberOfGames", 0L);
+                    long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
+                    if (!ReviewRequested && ((NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime) || App.DeveloperMode))
+                    {
+                        Preferences.Set("StoreReviewRequested", true);
+                        await App.PlatformService?.RequestAppReview();
+                    }
                 }
             }
             else if (!GameStarted)
@@ -503,14 +517,6 @@ namespace GnollHackX
             }
             else
             {
-                bool ReviewRequested = Preferences.Get("StoreReviewRequested", false);
-                long NumberOfGames = Preferences.Get("NumberOfGames", 0L);
-                long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
-                if (!ReviewRequested && NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime)
-                {
-                    App.PlatformService?.RequestAppReview();
-                    Preferences.Set("StoreReviewRequested", true);
-                }
                 CloseApp();
             }
         }
