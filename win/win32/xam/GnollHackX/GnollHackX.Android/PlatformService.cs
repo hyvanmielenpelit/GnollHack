@@ -332,6 +332,7 @@ namespace GnollHackX.Droid
                 {
                     _ps.Tcs2 = null;
                 }
+                _tcs?.TrySetResult(task.IsSuccessful);
                 launchTask?.Dispose();
             }
             else
@@ -348,15 +349,19 @@ namespace GnollHackX.Droid
                         var reviewInfo = (ReviewInfo)task.GetResult(Java.Lang.Class.FromType(typeof(ReviewInfo)));
                         launchTask = _manager.LaunchReviewFlow(MainActivity.CurrentMainActivity, reviewInfo);
                         launchTask.AddOnCompleteListener(new StoreReviewTaskCompleteListener(_manager, _ps.Tcs2, _ps, true));
+                        _tcs?.TrySetResult(task.IsSuccessful);
                     }
                     catch (Exception ex)
                     {
-                        _tcs.TrySetResult(false);
+                        _tcs?.TrySetResult(false);
                         System.Diagnostics.Debug.WriteLine(ex.Message);
                     }
                 }
+                else
+                {
+                    _tcs?.TrySetResult(task.IsSuccessful);
+                }
             }
-            _tcs?.TrySetResult(task.IsSuccessful);
         }
     }
 }
