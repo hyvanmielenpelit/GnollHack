@@ -510,21 +510,76 @@ makedog()
         char ans;
         int petnum = pet_type(FALSE, TRUE);
         if (petnum == NON_PM)
-            ans = yn_query("Do you want to select the type and name for your pet?");
+            ans = yn_query("Do you want to select the type for your pet?");
         else
         {
+            boolean autoyes = FALSE;
+            boolean prenamed = !!(
+                petnum == PM_LITTLE_DOG ? *dogname : 
+                petnum == PM_KITTEN ? *catname : 
+                petnum == PM_PONY ? *horsename : 
+                petnum == PM_RAM ? *ramname : 
+                petnum == PM_DIREWOLF_CUB ? *wolfname : 
+                petnum == PM_SMALL_LUGGAGE ? *luggagename : 
+                FALSE);
+
+            boolean haschosengender = !!(
+                petnum == PM_LITTLE_DOG ? doggender :
+                petnum == PM_KITTEN ? catgender :
+                petnum == PM_PONY ? horsegender :
+                petnum == PM_RAM ? ramgender :
+                petnum == PM_DIREWOLF_CUB ? wolfgender :
+                FALSE);
+
+            boolean haschosenbreed = !!(
+                petnum == PM_LITTLE_DOG ? dogbreed :
+                petnum == PM_KITTEN ? catbreed :
+                FALSE);
+
             char qbuf[QBUFSZ] = "";
             if ((mons[petnum].mflags2 & (M2_MALE | M2_FEMALE | M2_NEUTER)) == 0)
             {
                 if ((mons[petnum].mflags6 & (M6_USES_DOG_SUBTYPES | M6_USES_CAT_SUBTYPES)) != 0)
-                    Sprintf(qbuf, "Do you want to select the gender, breed, and name for your %s?", mons[petnum].mname);
+                {
+                    if (prenamed && haschosengender && haschosenbreed)
+                        autoyes = TRUE;
+                    else
+                    {
+                        Sprintf(qbuf, "Do you want to select the %s for your %s?", 
+                            prenamed && haschosengender ? "breed" :
+                            prenamed && haschosenbreed ? "gender" :
+                            haschosengender && haschosenbreed ? "name" :
+                            prenamed ? "gender and breed" :
+                            haschosengender ? "breed and name" :
+                            haschosenbreed ? "gender and name" :
+                            "gender, breed, and name",
+                            mons[petnum].mname);
+                    }
+                }
                 else
-                    Sprintf(qbuf, "Do you want to select the gender and name for your %s?", mons[petnum].mname);
+                {
+                    if (prenamed && haschosengender)
+                        autoyes = TRUE;
+                    else
+                    {
+                        Sprintf(qbuf, "Do you want to select the %s for your %s?", 
+                            prenamed ? "gender" : haschosengender ? "name" : "gender and name",
+                            mons[petnum].mname);
+                    }
+                }
             }
             else
-                Sprintf(qbuf, "Do you want to name your %s?", mons[petnum].mname);
+            {
+                if (prenamed)
+                    autoyes = TRUE;
+                else
+                    Sprintf(qbuf, "Do you want to name your %s?", mons[petnum].mname);
+            }
             
-            ans = yn_query(qbuf);
+            if (autoyes)
+                ans = 'y';
+            else
+                ans = yn_query(qbuf);
         }
 
         if (ans == 'y')
