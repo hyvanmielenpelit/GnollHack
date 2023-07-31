@@ -1727,7 +1727,7 @@ unsigned long mkflags;
                     {
                         if (!rn2(2))
                             cnm = NON_PM;
-                        else if (Inhell && !context.amonket_generated && rn2(100) < leveldiff * 2 - 23)
+                        else if (Inhell && !context.amonket_generated && (Is_sanctum(&u.uz) || rn2(100) < leveldiff * 2 - 23))
                         {
                             context.amonket_generated = TRUE;
                             cnm = PM_AMONKET;
