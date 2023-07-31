@@ -175,6 +175,8 @@ namespace GnollHackX.Pages.MainScreen
 
             App.DeveloperMode = DeveloperSwitch.IsToggled;
             Preferences.Set("DeveloperMode", App.DeveloperMode);
+            App.DebugLogMessages = LogMessageSwitch.IsToggled;
+            Preferences.Set("DebugLogMessages", App.DebugLogMessages);
 
             Preferences.Set("DefaultMapNoClipMode", !YesClipNormalSwitch.IsToggled);
 
@@ -335,7 +337,7 @@ namespace GnollHackX.Pages.MainScreen
             bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             //bool carousel = false;
             bool allowbones = true, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
-            bool devmode = GHConstants.DefaultDeveloperMode, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting;
             //bool altnoclipmode = GHConstants.DefaultMapAlternateNoClipMode, zoomchangecenter = GHConstants.DefaultZoomChangeCenterMode;
@@ -352,6 +354,7 @@ namespace GnollHackX.Pages.MainScreen
             navbar = App.HideAndroidNavigationBar;
             statusbar = App.HideiOSStatusBar;
             devmode = App.DeveloperMode;
+            logmessages = App.DebugLogMessages;
             bank = Preferences.Get("LoadSoundBanks", true);
             html = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             singledumplog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
@@ -472,6 +475,13 @@ namespace GnollHackX.Pages.MainScreen
                     MainSection.Remove(StatusBarViewCell);
             }
             DeveloperSwitch.IsToggled = devmode;
+            LogMessageSwitch.IsToggled = logmessages;
+            if(!devmode)
+            {
+                LogMessageSwitch.IsEnabled = false;
+                LogMessageLabel.IsEnabled = false;
+                LogMessageLabel.TextColor = Color.Gray;
+            }
             SoundBankSwitch.IsToggled = bank;
             HTMLDumpLogSwitch.IsToggled = html;
             SingleDumpLogSwitch.IsToggled = singledumplog;
@@ -602,6 +612,24 @@ namespace GnollHackX.Pages.MainScreen
             if (e.Value && StreamingBankToMemorySwitch.IsToggled)
                 StreamingBankToMemorySwitch.IsToggled = false;
         }
+
+        private void DeveloperSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (e.Value)
+            {
+                LogMessageSwitch.IsEnabled = true;
+                LogMessageLabel.IsEnabled = true;
+                LogMessageLabel.TextColor = Color.Black;
+            }
+            else
+            {
+                LogMessageSwitch.IsEnabled = false;
+                LogMessageSwitch.IsToggled = false;
+                LogMessageLabel.IsEnabled = false;
+                LogMessageLabel.TextColor = Color.Gray;
+            }
+        }
+
 
         private async Task MaybeShowPleaseWait()
         {

@@ -435,7 +435,18 @@
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                                    <Switch x:Name="DeveloperSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                    <Switch x:Name="DeveloperSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="DeveloperSwitch_Toggled" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Debug Log Messages"
+                                           x:Name="LogMessageLabel"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="LogMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
                             <ViewCell>

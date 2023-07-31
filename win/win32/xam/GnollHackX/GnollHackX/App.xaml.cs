@@ -53,6 +53,7 @@ namespace GnollHackX
             App.HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             App.HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             App.DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
+            App.DebugLogMessages = Preferences.Get("DebugLogMessages", GHConstants.DefaultLogMessages);
             App.FullVersionMode = true; // Preferences.Get("FullVersion", true);
             App.ClassicMode = Preferences.Get("ClassicMode", false);
             App.CasualMode = Preferences.Get("CasualMode", false);
@@ -329,6 +330,7 @@ namespace GnollHackX
         }
 
         public static bool DeveloperMode { get; set; }
+        public static bool DebugLogMessages { get; set; }
         public static bool FullVersionMode { get; set; }
         public static bool ClassicMode { get; set; }
         public static bool CasualMode { get; set; }

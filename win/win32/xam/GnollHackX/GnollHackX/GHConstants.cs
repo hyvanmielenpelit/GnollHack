@@ -1425,9 +1425,11 @@ namespace GnollHackX
         public const float MenuSelectVolume = 0.15f;
 #if DEBUG
         public const bool DefaultDeveloperMode = true;
+        public const bool DefaultLogMessages = true;
         public const bool DefaultPosting = true;
 #else
         public const bool DefaultDeveloperMode = false;
+        public const bool DefaultLogMessages = false;
         public const bool DefaultPosting = false;
 #endif
         public const int NUM_ZAP_SOURCE_BASE_DIRS = 8;

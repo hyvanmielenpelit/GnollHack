@@ -214,13 +214,17 @@ namespace GnollHackX.Droid
         IReviewManager _manager;
         TaskCompletionSource<bool> _tcs;
         TaskCompletionSource<bool> _tcs2 = null;
+        public readonly object LogLock = new object();
         public List<string> Log = new List<string>();
         public TaskCompletionSource<bool> Tcs2 { get { return _tcs2; } set { _tcs2 = value; } }
 
         public async System.Threading.Tasks.Task RequestAppReview(ContentPage page)
         {
-            Log.Clear();
-            Log.Add("Starting App Review");
+            lock(LogLock)
+            {
+                Log.Clear();
+                Log.Add("Starting App Review");
+            }
 
             _tcs?.TrySetCanceled();
             _tcs = new TaskCompletionSource<bool>();
@@ -230,22 +234,33 @@ namespace GnollHackX.Droid
             var listener = new StoreReviewTaskCompleteListener(_manager, _tcs, this, false);
             request.AddOnCompleteListener(listener);
 
-            Log.Add("Awaiting");
+            lock (LogLock)
+            {
+                Log.Add("Awaiting");
+            }
             await _tcs.Task;
-            //if(_tcs2 != null)
-            //    await _tcs2.Task;
+            if (_tcs2 != null)
+                await _tcs2.Task;
             _manager.Dispose();
             request.Dispose();
-            Log.Add("Done");
+            lock (LogLock)
+            {
+                Log.Add("Done");
+            }
 
             string logs = "";
-            foreach (var log in Log)
+            lock (LogLock)
             {
-                if (logs != "")
-                    logs += ". ";
-                logs += log;
+                foreach (var log in Log)
+                {
+                    if (logs != "")
+                        logs += ". ";
+                    logs += log;
+                }
+                Log.Clear();
             }
-            //await page.DisplayAlert("App Review Log", logs, "OK");
+            if (App.DebugLogMessages)
+                await page.DisplayAlert("App Review Log", logs, "OK");
         }
 
         public string GetBaseUrl()
@@ -344,7 +359,11 @@ namespace GnollHackX.Droid
         {
             if (_isLaunchReviewFlow)
             {
-                _ps.Log.Add("OnComplete / _isLaunchReviewFlow / isSuccessful: " + task.IsSuccessful.ToString());
+
+                lock (_ps.LogLock)
+                {
+                    _ps.Log.Add("OnComplete / _isLaunchReviewFlow / isSuccessful: " + task.IsSuccessful.ToString());
+                }
                 if (!task.IsSuccessful)
                 {
                     _ps.Tcs2 = null;
@@ -354,7 +373,10 @@ namespace GnollHackX.Droid
             }
             else
             {
-                _ps.Log.Add("OnComplete / normal / isSuccessful: " + task.IsSuccessful.ToString());
+                lock (_ps.LogLock)
+                {
+                    _ps.Log.Add("OnComplete / normal / isSuccessful: " + task.IsSuccessful.ToString());
+                }
                 if (task.IsSuccessful)
                 {
                     //Launch review flow
@@ -367,19 +389,27 @@ namespace GnollHackX.Droid
                         var reviewInfo = (ReviewInfo)task.GetResult(Java.Lang.Class.FromType(typeof(ReviewInfo)));
                         launchTask = _manager.LaunchReviewFlow(MainActivity.CurrentMainActivity, reviewInfo);
                         launchTask.AddOnCompleteListener(new StoreReviewTaskCompleteListener(_manager, _ps.Tcs2, _ps, true));
-                        _tcs?.TrySetResult(task.IsSuccessful);
-                        _ps.Log.Add("OnComplete / normal / Finished");
+                        _tcs?.TrySetResult(true);
+                        lock (_ps.LogLock)
+                        {
+                            _ps.Log.Add("OnComplete / normal / Finished");
+                        }
                     }
                     catch (Exception ex)
                     {
+                        _ps.Tcs2 = null;
                         _tcs?.TrySetResult(false);
                         System.Diagnostics.Debug.WriteLine(ex.Message);
-                        _ps.Log.Add("OnComplete: Exception: " + ex.Message);
+                        lock (_ps.LogLock)
+                        {
+                            _ps.Log.Add("OnComplete: Exception: " + ex.Message);
+                        }
                     }
                 }
                 else
                 {
-                    _tcs?.TrySetResult(task.IsSuccessful);
+                    _ps.Tcs2 = null;
+                    _tcs?.TrySetResult(false);
                 }
             }
         }
