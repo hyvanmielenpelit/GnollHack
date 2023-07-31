@@ -483,8 +483,14 @@ namespace GnollHackX.Pages.MainScreen
                 LogMessageLabel.TextColor = Color.Gray;
             }
             SoundBankSwitch.IsToggled = bank;
-            HTMLDumpLogSwitch.IsToggled = html;
             SingleDumpLogSwitch.IsToggled = singledumplog;
+            HTMLDumpLogSwitch.IsToggled = html;
+            if(!singledumplog)
+            {
+                HTMLDumpLogSwitch.IsEnabled = false;
+                HTMLDumpLogLabel.IsEnabled = false;
+                HTMLDumpLogLabel.TextColor = Color.Gray;
+            }
             StreamingBankToMemorySwitch.IsToggled = streamingbanktomemory;
             StreamingBankToDiskSwitch.IsToggled = streamingbanktodisk;
             BonesSwitch.IsToggled = allowbones;
@@ -630,6 +636,21 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
+        private void SingleDumpLogSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (e.Value)
+            {
+                HTMLDumpLogSwitch.IsEnabled = true;
+                HTMLDumpLogLabel.IsEnabled = true;
+                HTMLDumpLogLabel.TextColor = Color.Black;
+            }
+            else
+            {
+                HTMLDumpLogSwitch.IsEnabled = false;
+                HTMLDumpLogLabel.IsEnabled = false;
+                HTMLDumpLogLabel.TextColor = Color.Gray;
+            }
+        }
 
         private async Task MaybeShowPleaseWait()
         {

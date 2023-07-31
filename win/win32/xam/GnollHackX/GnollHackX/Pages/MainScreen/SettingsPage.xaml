@@ -34,6 +34,16 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
+                                    <Label Text="GPU Acceleration"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="GPUSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
                                     <Label Text="Graphics"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -469,16 +479,6 @@
                                     <Switch x:Name="FPSSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
-                            <ViewCell>
-                                <StackLayout Orientation="Horizontal">
-                                    <Label Text="Game GPU Acceleration"
-                                           FontFamily="Underwood" TextColor="Black"
-                                           FontSize="15"
-                                           VerticalOptions="Center" 
-                                           HorizontalOptions="Start" />
-                                    <Switch x:Name="GPUSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                                </StackLayout>
-                            </ViewCell>
                             <ViewCell x:Name="AlternativeDrawingViewCell">
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Alternative Layer Drawing"
@@ -572,22 +572,23 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="Use HTML Dumplogs"
-                                           FontFamily="Underwood" TextColor="Black"
-                                           FontSize="15"
-                                           VerticalOptions="Center" 
-                                           HorizontalOptions="Start" />
-                                    <Switch x:Name="HTMLDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                                </StackLayout>
-                            </ViewCell>
-                            <ViewCell>
-                                <StackLayout Orientation="Horizontal">
                                     <Label Text="Use Single Dumplog"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                                    <Switch x:Name="SingleDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                    <Switch x:Name="SingleDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SingleDumpLogSwitch_Toggled" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Use HTML Dumplog"
+                                           x:Name="HTMLDumpLogLabel"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="HTMLDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
                             <!--<ViewCell>

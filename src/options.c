@@ -98,7 +98,7 @@ static struct Bool_Opt {
     { "autopickup", "automatically pick up objects", &flags.pickup, FALSE, SET_IN_GAME },
     { "autoquiver", "fill empty quiver automatically when firing", &flags.autoquiver, FALSE, SET_IN_GAME },
     { "autostatuslines", "adjust the number of status lines automatically", &iflags.wc2_autostatuslines, FALSE, SET_IN_FILE },
-    { "autounlock", "action to take when encountering locked door or chest", &flags.autounlock, TRUE, SET_IN_GAME },
+    { "autounlock", "automatically unlock a locked door or chest", &flags.autounlock, TRUE, SET_IN_GAME },
     { "baseacasbonus", "display base armor class as a bonus rather than a number starting at 10", &flags.baseacasbonus, TRUE, SET_IN_GAME },
 #if defined(MICRO) && !defined(AMIGA)
     { "BIOS", "use IBM ROM BIOS calls", &iflags.BIOS, FALSE, SET_IN_FILE },
@@ -130,7 +130,7 @@ static struct Bool_Opt {
 #endif
     { "confirm", "ask before hitting tame or peaceful monsters", &flags.confirm, TRUE, SET_IN_GAME },
     { "dark_room", "show floor outside line of sight differently", &flags.dark_room, TRUE, SET_IN_GAME },
-    { "detailed_weights", "show object weights by more accurate units", &flags.detailed_weights, FALSE, SET_IN_GAME },
+    { "detailed_weights", "show object weights using more accurate units", &flags.detailed_weights, FALSE, SET_IN_GAME },
     { "displace_peaceful", "walking into a peaceful monster attempts to displace it", &flags.displace_peaceful, TRUE, SET_IN_GAME},
 #ifdef ANDROID
     {"dumplog", "print dumplogs", &iflags.dumplog, FALSE, SET_IN_FILE},
@@ -223,14 +223,14 @@ static struct Bool_Opt {
 #else
     { "page_wait", "page wait on Mac", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "partylinecolor", "use colors for pet statistics", &flags.partylinecolor, TRUE, SET_IN_GAME },
     { "partydetails", "give detailed information for each pet", &flags.partydetails, FALSE, SET_IN_GAME },
+    { "partylinecolor", "use colors for pet statistics", &flags.partylinecolor, TRUE, SET_IN_GAME },
     { "partymultiline", "print statistics of each pet on a separate status line", &flags.partymultiline, FALSE, SET_IN_GAME },
     /* 3.6.2: move perm_invent from flags to iflags and out of save file */
     { "perm_invent", "show permanent inventory window", &iflags.perm_invent, FALSE, SET_IN_GAME },
     { "pickup_thrown", "autopickup thrown items", &flags.pickup_thrown, TRUE, SET_IN_GAME },
     { "popup_dialog", "use popup dialog", &iflags.wc_popup_dialog, FALSE, SET_IN_GAME},   /*WC*/
-    { "prefer_fast_move", "swap slow move and fast move commands", &flags.prefer_fast_move, FALSE, SET_IN_GAME},
+    { "prefer_fast_move", "swap slow move and fast move commands' key bindings", &flags.prefer_fast_move, FALSE, SET_IN_GAME},
     { "preload_tiles", "preload tiles", &iflags.wc_preload_tiles, TRUE, DISP_IN_GAME}, /*WC*/
     { "pushweapon", "previous weapon goes to secondary slot", &flags.pushweapon, FALSE, SET_IN_GAME },
 #if defined(MICRO) && !defined(AMIGA)
@@ -552,7 +552,7 @@ static struct Comp_Opt {
     { "windowchain", "window processor to use", WINTYPELEN, SET_IN_SYS },
 #endif
     { "wolfgender", "the gender of your (first) direwolf (e.g., wolfgender:female)", 7, DISP_IN_GAME },
-    { "wolfname", "the name of your (first) wolf (e.g., wolfname:Shadow)",
+    { "wolfname", "the name of your (first) direwolf (e.g., wolfname:Shadow)",
         PL_PSIZ, DISP_IN_GAME },
 #ifdef BACKWARD_COMPAT
     { "DECgraphics", "load DECGraphics display symbols", 70, SET_IN_FILE },
@@ -2435,6 +2435,7 @@ boolean tinitial, tfrom_file;
                     preferred_pet = 'c';
                     break;
                 case 'h': /* horse */
+                case 'r': /* ram */
                 case 'q': /* quadruped */
                     /* avoids giving "unrecognized type of pet" but
                        pet_type(dog.c) won't actually honor this */
