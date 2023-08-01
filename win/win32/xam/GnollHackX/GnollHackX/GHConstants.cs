@@ -1450,6 +1450,9 @@ namespace GnollHackX
         public const string GnollHackWebPage = "https://gnollhack.com";
         public const string GnollHackWikiPage = "https://github.com/hyvanmielenpelit/GnollHack/wiki";
         public const string GnollHackSponsorPage = "https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english";
+        public const string GnollHackGeneralDowngradePage = "https://github.com/hyvanmielenpelit/GnollHack/wiki#download";
+        public const string GnollHackAndroidDowngradePage = "https://github.com/hyvanmielenpelit/GnollHack/wiki/Android-Releases";
+        public const string GnollHackiOSDowngradePage = "https://github.com/hyvanmielenpelit/GnollHack/wiki/iOS-Releases";
         public const string GHSettingsResourcePath = "GnollHackX.Assets.ghsettings.json";
         public const int MaxRefreshRate = 120;
         public const int PollingFrequency = 60;

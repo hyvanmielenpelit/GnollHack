@@ -136,7 +136,7 @@ namespace GnollHackX
                 if (App.InformAboutIncompatibleSavedGames)
                 {
                     App.InformAboutIncompatibleSavedGames = false;
-                    await DisplayAlert("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible. If you wish to back up your save files, you can export them using About -> Export Saved Games.", "OK");
+                    await DisplayAlert("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible. To downgrade back to the earlier version, back up first your save files using About -> Export Saved Games and then follow the instructions at About -> Downgrade.", "OK");
                     previousInformationShown = true;
                 }
                 if (!previousInformationShown)

@@ -111,6 +111,14 @@ namespace GnollHackX.Pages.MainScreen
             AboutTableView.IsEnabled = true;
         }
 
+        private async void btnDowngrade_Clicked(object sender, EventArgs e)
+        {
+            AboutTableView.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            await OpenBrowser(new Uri(App.IsAndroid ? GHConstants.GnollHackAndroidDowngradePage : App.IsiOS ? GHConstants.GnollHackiOSDowngradePage :  GHConstants.GnollHackGeneralDowngradePage));
+            AboutTableView.IsEnabled = true;
+        }
+
         private async void btnSponsor_Clicked(object sender, EventArgs e)
         {
             AboutTableView.IsEnabled = false;

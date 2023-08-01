@@ -24,11 +24,17 @@
                 <TableView Grid.Row="1" x:Name="AboutTableView" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
                            Intent="Menu">
                     <TableRoot>
-                        <TableSection x:Name="BaseSection">
+                        <TableSection x:Name="VersionSection">
                             <ViewCell>
                                 <controls:CustomImageButton x:Name="btnVersion" Text="Version" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
+                            <ViewCell>
+                                <controls:CustomImageButton x:Name="btnDowngrade" Text="Downgrade" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnDowngrade_Clicked" UseVaryingBackgroundImages ="False" />
+                            </ViewCell>
+                        </TableSection>
+                        <TableSection x:Name="BaseSection">
                             <ViewCell>
                                 <controls:CustomImageButton x:Name="btnCreditsW" Text="Credits" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCreditsW_Clicked" UseVaryingBackgroundImages ="False" />
