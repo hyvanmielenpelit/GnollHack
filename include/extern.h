@@ -905,7 +905,7 @@ E boolean FDECL(walk_path, (coord *, coord *,
 E boolean FDECL(hurtle_jump, (genericptr_t, int, int));
 E boolean FDECL(hurtle_step, (genericptr_t, int, int));
 
-E struct multishot_result FDECL(get_multishot_stats, (struct monst*, struct obj*, struct obj*, BOOLEAN_P));
+E struct multishot_result FDECL(get_multishot_stats, (struct monst*, struct obj*, struct obj*, UCHAR_P));
 E void FDECL(check_shop_obj, (struct obj*, XCHAR_P, XCHAR_P, BOOLEAN_P, BOOLEAN_P));
 E void NDECL(reset_throw);
 

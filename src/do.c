@@ -4060,14 +4060,14 @@ int otyp;
     /* Weapon statistics */
     if (obj)
     {
-        struct obj* applicable_launcher = uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj;
+        struct obj* applicable_launcher = is_launcher(obj) ? obj : uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj;
         if ((is_weapon(obj)
             || (uwep && obj == uwep) || (uswapwep && obj == uswapwep)
             || (u.twoweap && ((uarms && obj == uarms) || (uswapwep2 && obj == uswapwep2)))
             || weapon_stats_shown
             )
-            && !is_launcher(obj) && stats_known && obj->known
-            && (!ammo_and_launcher(obj, applicable_launcher)
+            && /* !is_launcher(obj) && */ stats_known && obj->known
+            && (obj == applicable_launcher || !ammo_and_launcher(obj, applicable_launcher)
                 || (ammo_and_launcher(obj, applicable_launcher) && object_stats_known(applicable_launcher) && applicable_launcher->known))
             )
         {
@@ -4082,93 +4082,96 @@ int otyp;
 
             putstr(datawin, ATR_HEADING, buf);
 
-            int attknum = 1, armorpenalty = 0;
-            /* we use youmonst as a proxy */
-            /* You hit if rnd(20) < roll_to_hit */
-            int roll_to_hit = 0;
-            if (throwing_weapon(obj) || is_ammo(obj))
+            if (!is_launcher(obj))
             {
-                roll_to_hit = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(&youmonst) + u.ubasehitinc + u.uhitinc
-                    + maybe_polyd(youmonst.data->mlevel, u.ulevel);
-
-                roll_to_hit += omon_adj(&youmonst, obj, FALSE);
-
-                if (is_ammo(obj))
+                /* we use youmonst as a proxy */
+                /* You hit if rnd(20) < roll_to_hit */
+                int attknum = 1, armorpenalty = 0;
+                int roll_to_hit = 0;
+                if (throwing_weapon(obj) || is_ammo(obj))
                 {
-                    if (!ammo_and_launcher(obj, applicable_launcher))
-                    {
-                        roll_to_hit -= 4;
-                    }
-                    else if (applicable_launcher)
-                    {
-                        roll_to_hit += weapon_to_hit_value(applicable_launcher, &youmonst, &youmonst, 2);
-                        roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
+                    roll_to_hit = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(&youmonst) + u.ubasehitinc + u.uhitinc
+                        + maybe_polyd(youmonst.data->mlevel, u.ulevel);
 
-                        if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI))
-                            && (!Upolyd || your_race(youmonst.data))
-                            && objects[applicable_launcher->otyp].oc_skill == P_BOW)
+                    roll_to_hit += omon_adj(&youmonst, obj, FALSE);
+
+                    if (is_ammo(obj))
+                    {
+                        if (!ammo_and_launcher(obj, applicable_launcher))
                         {
-                            roll_to_hit++;
-                            if (Race_if(PM_ELF) && applicable_launcher->otyp == ELVEN_LONG_BOW)
-                                roll_to_hit++;
-                            else if (Role_if(PM_SAMURAI) && applicable_launcher->otyp == YUMI)
-                                roll_to_hit++;
+                            roll_to_hit -= 4;
                         }
+                        else if (applicable_launcher)
+                        {
+                            roll_to_hit += weapon_to_hit_value(applicable_launcher, &youmonst, &youmonst, 2);
+                            roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
 
-                        roll_to_hit += u.uarcherybonus;
-                        double archery_avg_dmg = (double)u.uarcherybonus;
-                        wep_avg_dmg += archery_avg_dmg;
-                        wep_multipliable_avg_dmg += archery_avg_dmg;
-                        if (wep_avg_dmg < 0)
-                            wep_avg_dmg = 0;
+                            if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI))
+                                && (!Upolyd || your_race(youmonst.data))
+                                && objects[applicable_launcher->otyp].oc_skill == P_BOW)
+                            {
+                                roll_to_hit++;
+                                if (Race_if(PM_ELF) && applicable_launcher->otyp == ELVEN_LONG_BOW)
+                                    roll_to_hit++;
+                                else if (Role_if(PM_SAMURAI) && applicable_launcher->otyp == YUMI)
+                                    roll_to_hit++;
+                            }
+
+                            roll_to_hit += u.uarcherybonus;
+                            double archery_avg_dmg = (double)u.uarcherybonus;
+                            wep_avg_dmg += archery_avg_dmg;
+                            wep_multipliable_avg_dmg += archery_avg_dmg;
+                            if (wep_avg_dmg < 0)
+                                wep_avg_dmg = 0;
+                        }
+                    }
+                    else
+                    {
+                        if (throwing_weapon(obj)) /* meant to be thrown */
+                            roll_to_hit += 2;
+
+                        roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
                     }
                 }
                 else
                 {
-                    if (throwing_weapon(obj)) /* meant to be thrown */
-                        roll_to_hit += 2;
-
-                    roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
+                    roll_to_hit = find_roll_to_hit(&youmonst, AT_WEAP, obj, &attknum, &armorpenalty);
                 }
+
+                /* This is not accurate for fired weapons since it does not account for launcher properly; also thrown weapons plusses are a bit inaccurate */
+
+                int youmonstac = find_mac(&youmonst);
+                int chance_to_hit_youmonst = (roll_to_hit - 1) * 5;
+                int chance_to_hit_ac0 = chance_to_hit_youmonst - youmonstac * 5;
+                int diff_to_50_from_ac0 = 50 - chance_to_hit_ac0;
+                int ac_with_50_chance = diff_to_50_from_ac0 / 5;
+                int diff_to_5_from_ac0 = 5 - chance_to_hit_ac0;
+                int ac_with_5_chance = diff_to_5_from_ac0 / 5;
+
+                powercnt++;
+                //#if defined(GNH_MOBILE) || defined (WIN32)
+                Sprintf(buf, " %2d - You have ", powercnt);
+                putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                putstr_ex(datawin, "50%", ATR_INDENT_AT_DASH, CLR_BROWN, 1);
+                putstr_ex(datawin, " chance to hit AC ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                Sprintf(buf, "%d", ac_with_50_chance);
+                putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, CLR_BROWN, 1);
+                putstr_ex(datawin, " and ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                putstr_ex(datawin, "5%", ATR_INDENT_AT_DASH, CLR_RED, 1);
+                putstr_ex(datawin, " AC ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                Sprintf(buf, "%d", ac_with_5_chance);
+                putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, CLR_RED, 0);
+                //#else
+                //        Sprintf(buf, " %2d - You have 50%% chance to hit AC %d and 5%% AC %d", powercnt, ac_with_50_chance, ac_with_5_chance);
+                //        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+                //#endif
             }
-            else
-            {
-                roll_to_hit = find_roll_to_hit(&youmonst, AT_WEAP, obj, &attknum, &armorpenalty);
-            }
 
-            /* This is not accurate for fired weapons since it does not account for launcher properly; also thrown weapons plusses are a bit inaccurate */
-
-            int youmonstac = find_mac(&youmonst);
-            int chance_to_hit_youmonst = (roll_to_hit - 1) * 5;
-            int chance_to_hit_ac0 = chance_to_hit_youmonst - youmonstac * 5;
-            int diff_to_50_from_ac0 = 50 - chance_to_hit_ac0;
-            int ac_with_50_chance = diff_to_50_from_ac0 / 5;
-            int diff_to_5_from_ac0 = 5 - chance_to_hit_ac0;
-            int ac_with_5_chance = diff_to_5_from_ac0 / 5;
-
-            powercnt++;
-            //#if defined(GNH_MOBILE) || defined (WIN32)
-            Sprintf(buf, " %2d - You have ", powercnt);
-            putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
-            putstr_ex(datawin, "50%", ATR_INDENT_AT_DASH, CLR_BROWN, 1);
-            putstr_ex(datawin, " chance to hit AC ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
-            Sprintf(buf, "%d", ac_with_50_chance);
-            putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, CLR_BROWN, 1);
-            putstr_ex(datawin, " and ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
-            putstr_ex(datawin, "5%", ATR_INDENT_AT_DASH, CLR_RED, 1);
-            putstr_ex(datawin, " AC ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
-            Sprintf(buf, "%d", ac_with_5_chance);
-            putstr_ex(datawin, buf, ATR_INDENT_AT_DASH, CLR_RED, 0);
-            //#else
-            //        Sprintf(buf, " %2d - You have 50%% chance to hit AC %d and 5%% AC %d", powercnt, ac_with_50_chance, ac_with_5_chance);
-            //        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            //#endif
-
-            struct multishot_result msres = get_multishot_stats(&youmonst, obj, uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj, (is_ammo(obj) || throwing_weapon(obj)));
+            struct multishot_result msres = get_multishot_stats(&youmonst, obj, is_launcher(obj) ? obj : uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj, is_launcher(obj) ? 2 : (is_ammo(obj) || throwing_weapon(obj)));
             double average_multi_shot_times = msres.average;
 
             powercnt++;
-            const char* applicable_verb = throwing_weapon(obj) ? "throw" : ammo_and_launcher(obj, applicable_launcher) ? "fire" : "strike";
+            const char* applicable_verb = throwing_weapon(obj) ? "throw" : is_launcher(obj) || ammo_and_launcher(obj, applicable_launcher) ? "fire" : "strike";
             if (average_multi_shot_times == 1.0)
                 Sprintf(buf, " %2d - You %s once per round", powercnt, applicable_verb);
             else if (average_multi_shot_times == 2.0)
@@ -4201,6 +4204,21 @@ int otyp;
                 powercnt++;
                 Sprintf(buf, " %2d - Your average damage with extras is %.1f per round", powercnt, wep_avg_dmg + wep_all_extra_avg_dmg);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+
+            if (is_launcher(obj) && ammo_and_launcher(uquiver, obj))
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - %s will cause further damage", powercnt, uquiver ? Yname2(uquiver) : "Your ammo");
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+
+            }
+            else if (is_ammo(obj) && ammo_and_launcher(obj, uwep))
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - %s will cause further damage", powercnt, uwep ? Yname2(uwep) : "Your launcher");
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+
             }
         }
 

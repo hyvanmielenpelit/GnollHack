@@ -184,7 +184,7 @@ get_multishot_stats(magr, otmp, weapon, thrown)
 struct monst* magr;
 struct obj* otmp;
 struct obj* weapon;
-boolean thrown;
+uchar thrown; /* 1 = obj is thrown, 2 = obj is launcher */
 {
     struct multishot_result res = { 1, 1, 1.0 };
     if (!magr)
@@ -235,6 +235,7 @@ boolean thrown;
     }
 
     boolean isammo = is_ammo(otmp);
+    boolean islauncher = is_launcher(otmp);
     boolean matching = FALSE;
     int skilllevel = 0;
     int used_multishotstyle = 0; 
@@ -272,9 +273,9 @@ boolean thrown;
 
 
     /* Choose multishot style */
-    if (matching && thrown)
+    if ((matching && thrown == 1) || (islauncher && thrown == 2))
         used_multishotstyle = 1; /* Launcher */
-    else if(!matching && thrown)
+    else if(!matching && thrown == 1)
         used_multishotstyle = 2; /* Thrown */
     else
         used_multishotstyle = 3; /* Melee */
