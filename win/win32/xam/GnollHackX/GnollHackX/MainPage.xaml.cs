@@ -82,6 +82,7 @@ namespace GnollHackX
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             UpdateLayout();
+            bool gridsEnabled = false;
             if (_firsttime)
             {
                 App.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
@@ -144,9 +145,16 @@ namespace GnollHackX
                     bool ReviewRequested = Preferences.Get("StoreReviewRequested", false);
                     long NumberOfGames = Preferences.Get("NumberOfGames", 0L);
                     long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
+
                     if (!ReviewRequested && ((NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime) || App.DeveloperMode))
                     {
                         Preferences.Set("StoreReviewRequested", true);
+
+                        /* Insurance on not disabling the grids if RequestAppReview hangs */
+                        UpperButtonGrid.IsEnabled = true;
+                        LogoGrid.IsEnabled = true;
+                        gridsEnabled = true;
+
                         await App.PlatformService?.RequestAppReview(this);
                     }
                 }
@@ -157,8 +165,11 @@ namespace GnollHackX
                     PlayMainScreenVideoAndMusic();
             }
 
-            UpperButtonGrid.IsEnabled = true;
-            LogoGrid.IsEnabled = true;
+            if (!gridsEnabled)
+            {
+                UpperButtonGrid.IsEnabled = true;
+                LogoGrid.IsEnabled = true;
+            }
         }
         public async Task InitializeServices()
         {
