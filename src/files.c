@@ -1306,7 +1306,7 @@ const char* filename; /* Filename must have already been uncompressed */
         if (len + bupextlen + tmpextlen + 1 > sizeof(tobuf))
             return -2;
         size_t copy_len = min(sizeof(tobuf) - 1, len);
-        strncpy(tobuf, filename, copy_len);
+        Strncpy(tobuf, filename, copy_len);
         tobuf[copy_len] = 0;
         print_special_savefile_extension(tobuf, BACKUP_EXTENSION);
         print_special_savefile_extension(tobuf, TEMP_BACKUP_EXTENSION);
@@ -2145,7 +2145,7 @@ boolean uncomp;
     boolean istty = WINDOWPORT("tty");
 #endif
 
-    strncpy(cfn, filename, MAX_FILE_NAME_BUFFER_SIZE - 5);
+    Strncpy(cfn, filename, MAX_FILE_NAME_BUFFER_SIZE - 5);
     cfn[MAX_FILE_NAME_BUFFER_SIZE - 5] = 0;
 #ifdef COMPRESS_EXTENSION
     Strcat(cfn, COMPRESS_EXTENSION);
@@ -2773,7 +2773,7 @@ STATIC_OVL void
 set_configfile_name(fname)
 const char *fname;
 {
-    (void) strncpy(configfile, fname, sizeof configfile - 1);
+    Strncpy(configfile, fname, sizeof configfile - 1);
     configfile[sizeof configfile - 1] = '\0';
 }
 
@@ -3139,7 +3139,7 @@ char *origbuf;
 
     while (*origbuf == ' ' || *origbuf == '\t') /* skip leading whitespace */
         ++origbuf;                   /* (caller probably already did this) */
-    (void)strncpy(buf, origbuf, sizeof buf - 1);
+    Strncpy(buf, origbuf, sizeof buf - 1);
     buf[sizeof buf - 1] = '\0'; /* strncpy not guaranteed to NULL terminate */
 
     /* convert any tab to space, condense consecutive spaces into one,
@@ -3235,7 +3235,7 @@ char *origbuf;
     } 
     else if (match_varname(buf, "HACKDIR", 4)) 
     {
-        (void) strncpy(hackdir, bufp, PATHLEN - 1);
+        Strncpy(hackdir, bufp, PATHLEN - 1);
 #ifdef MFLOPPY
     }
     else if (match_varname(buf, "RAMDISK", 3)) 
@@ -3282,7 +3282,7 @@ char *origbuf;
             saveprompt = sysflags.asksavedisk;
 #endif
 
-        (void) strncpy(SAVEP, bufp, SAVESIZE - 1);
+        Strncpy(SAVEP, bufp, SAVESIZE - 1);
         append_slash(SAVEP);
 #endif /* MICRO */
 #endif /*NOCWD_ASSUMPTIONS*/
@@ -3290,7 +3290,7 @@ char *origbuf;
     }
     else if (match_varname(buf, "NAME", 4))
     {
-        (void) strncpy(plname, bufp, PL_NSIZ - 1);
+        Strncpy(plname, bufp, PL_NSIZ - 1);
     }
     else if (match_varname(buf, "ROLE", 4)
                || match_varname(buf, "CHARACTER", 4)) 
@@ -3300,11 +3300,11 @@ char *origbuf;
     }
     else if (match_varname(buf, "DOGNAME", 3)) 
     {
-        (void) strncpy(dogname, bufp, PL_PSIZ - 1);
+        Strncpy(dogname, bufp, PL_PSIZ - 1);
     }
     else if (match_varname(buf, "CATNAME", 3)) 
     {
-        (void) strncpy(catname, bufp, PL_PSIZ - 1);
+        Strncpy(catname, bufp, PL_PSIZ - 1);
 
 #ifdef SYSCF
     }
@@ -3646,7 +3646,7 @@ char *origbuf;
     }
     else if (match_varname(buf, "WIZKIT", 6)) 
     {
-        (void) strncpy(wizkit, bufp, WIZKIT_MAX - 1);
+        Strncpy(wizkit, bufp, WIZKIT_MAX - 1);
 #ifdef AMIGA
     } 
     else if (match_varname(buf, "FONT", 4))
@@ -3662,7 +3662,7 @@ char *origbuf;
     }
     else if (match_varname(buf, "PATH", 4))
     {
-        (void) strncpy(PATH, bufp, PATHLEN - 1);
+        Strncpy(PATH, bufp, PATHLEN - 1);
     }
     else if (match_varname(buf, "DEPTH", 5)) 
     {
@@ -3886,7 +3886,7 @@ boolean secure;
     tmp->secure = secure;
     tmp->origline[0] = '\0';
     if (sourcename && sourcename[0]) {
-        (void) strncpy(tmp->source, sourcename, sizeof (tmp->source) - 1);
+        Strncpy(tmp->source, sourcename, sizeof (tmp->source) - 1);
         tmp->source[sizeof (tmp->source) - 1] = '\0';
     } else
         tmp->source[0] = '\0';
@@ -3911,7 +3911,7 @@ const char *line;
     ced->origline_shown = FALSE;
     if (line && line[0])
     {
-        (void) strncpy(ced->origline, line, sizeof (ced->origline) - 1);
+        Strncpy(ced->origline, line, sizeof (ced->origline) - 1);
         ced->origline[sizeof (ced->origline) - 1] = '\0';
     } 
     else
@@ -4006,7 +4006,7 @@ fopen_wizkit_file()
 
     envp = nh_getenv("WIZKIT");
     if (envp && *envp)
-        (void) strncpy(wizkit, envp, WIZKIT_MAX - 1);
+        Strncpy(wizkit, envp, WIZKIT_MAX - 1);
     if (!wizkit[0])
         return (FILE *) 0;
 
@@ -4633,7 +4633,7 @@ const char *dir UNUSED_if_not_OS2_CODEVIEW;
 #ifdef OS2_CODEVIEW /* explicit path on opening for OS/2 */
     /* how does this work when there isn't an explicit path or fopenp
      * for later access to the file via fopen_datafile? ? */
-    (void) strncpy(tmp, dir, PATHLEN - 1);
+    Strncpy(tmp, dir, PATHLEN - 1);
     tmp[PATHLEN - 1] = '\0';
     if ((strlen(tmp) + 1 + strlen(RECORD)) < (PATHLEN - 1)) {
         append_slash(tmp);
@@ -5430,7 +5430,7 @@ const char* buffer;
             char tmpbuf[1024 + 1];
             char msgbuf[512 + 1];
             char* c1 = msgbuf;
-            strncpy(msgbuf, buffer, 512);
+            Strncpy(msgbuf, buffer, 512);
             msgbuf[512] = '\0';
             while (*c1 != '\0') {
                 if (*c1 == LLOG_SEP) *c1 = '_';
@@ -5812,14 +5812,14 @@ set_whereisfile()
         char* new_whereis_fn = (char*)alloc((unsigned)(new_whereis_len + 1));
         char* q = new_whereis_fn;
 
-        strncpy(q, whereis_file, p - whereis_file);
+        Strncpy(q, whereis_file, p - whereis_file);
         q += p - whereis_file;
-        strncpy(q, plname, strlen(plname) + 1);
+        Strncpy(q, plname, strlen(plname) + 1);
         regularize(q);
         q[strlen(plname)] = '\0';
         q += strlen(q);
         p += 2;   /* skip "%n" */
-        strncpy(q, p, strlen(p));
+        Strncpy(q, p, strlen(p));
         new_whereis_fn[new_whereis_len] = '\0';
         Sprintf(whereis_file, "%s", new_whereis_fn);
         free(new_whereis_fn); /* clean up the pointer */

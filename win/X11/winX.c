@@ -353,7 +353,7 @@ struct xwindow *wp;
 
             if (value.size >= sizeof tmpbuf)
                 value.size = sizeof tmpbuf - 1;
-            (void) strncpy(tmpbuf, (char *) value.addr, (int) value.size);
+            Strncpy(tmpbuf, (char *) value.addr, (int) value.size);
             tmpbuf[value.size] = '\0';
             /* tmpbuf now contains the color name from the named resource */
 
@@ -955,7 +955,7 @@ const char *str;
 
     switch (wp->type) {
     case NHW_MESSAGE:
-        (void) strncpy(toplines, str, TBUFSZ); /* for Norep(). */
+        Strncpy(toplines, str, TBUFSZ); /* for Norep(). */
         toplines[TBUFSZ - 1] = 0;
         append_message(wp, str);
         break;
@@ -1800,7 +1800,7 @@ XtPointer call_data;
     if (len >= sizeof plname - 1)
         len = sizeof plname - 1;
 
-    (void) strncpy(plname, s, len);
+    Strncpy(plname, s, len);
     plname[len] = '\0';
     XtFree(s);
 
@@ -1878,7 +1878,7 @@ XtPointer call_data;
     if (len >= BUFSZ)
         len = BUFSZ - 1;
 
-    (void) strncpy(getline_input, s, len);
+    Strncpy(getline_input, s, len);
     getline_input[len] = '\0';
     XtFree(s);
 
@@ -2224,7 +2224,7 @@ unsigned long ynflags;
         /* ques [choices] (def) */
         if ((int) (1 + strlen(ques) + 2 + strlen(choicebuf) + 4) >= BUFSZ)
             panic("X11_yn_function:  question too long");
-        (void) strncpy(buf, ques, QBUFSZ - 1);
+        Strncpy(buf, ques, QBUFSZ - 1);
         buf[QBUFSZ - 1] = '\0';
         Sprintf(eos(buf), " [%s]", choicebuf);
         if (def)

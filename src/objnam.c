@@ -117,7 +117,7 @@ register const char *pref;
         return s;
     }
     s -= i;
-    (void) strncpy(s, pref, i); /* do not copy trailing 0 */
+    Strncpy(s, pref, i); /* do not copy trailing 0 */
     return s;
 }
 
@@ -520,7 +520,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             int len = (int)(p - actualn);
             if (len > 0 && (int)strlen(actualn) > len)
             {
-                strncpy(actualn_startbuf, actualn, (size_t)len);
+                Strncpy(actualn_startbuf, actualn, (size_t)len);
                 actualn_startbuf[len + 1] = '\0';
                 actualn += len;
             }
@@ -555,7 +555,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             int len = (int)(p - dn);
             if (len > 0 && (int)strlen(dn) > len)
             {
-                strncpy(dn_startbuf, dn, (size_t)len);
+                Strncpy(dn_startbuf, dn, (size_t)len);
                 dn_startbuf[len + 1] = '\0';
                 dn += len;
             }
@@ -2393,7 +2393,7 @@ size_t lenlimit;
     /* shorten called string to fairly small amount */
     save_uname = objects[obj->otyp].oc_uname;
     if (save_uname && strlen(save_uname) >= sizeof unamebuf) {
-        (void) strncpy(unamebuf, save_uname, sizeof unamebuf - 4);
+        Strncpy(unamebuf, save_uname, sizeof unamebuf - 4);
         Strcpy(unamebuf + sizeof unamebuf - 4, "...");
         objects[obj->otyp].oc_uname = unamebuf;
         releaseobuf(outbuf);
@@ -2406,7 +2406,7 @@ size_t lenlimit;
     /* shorten named string to fairly small amount */
     save_oname = has_oname(obj) ? ONAME(obj) : 0;
     if (save_oname && strlen(save_oname) >= sizeof onamebuf) {
-        (void) strncpy(onamebuf, save_oname, sizeof onamebuf - 4);
+        Strncpy(onamebuf, save_oname, sizeof onamebuf - 4);
         Strcpy(onamebuf + sizeof onamebuf - 4, "...");
         ONAME(obj) = onamebuf;
         releaseobuf(outbuf);
@@ -3553,7 +3553,7 @@ boolean retry_inverted; /* optional extra "of" handling */
         /* catch "{potion(s),ring} of {gain,restore,sustain} abilities" */
         if ((p = strstri(u_str, "abilities")) != 0
             && !*(p + sizeof "abilities" - 1)) {
-            (void) strncpy(buf, u_str, (size_t) (p - u_str));
+            Strncpy(buf, u_str, (size_t) (p - u_str));
             Strcpy(buf + (p - u_str), "ability");
             return fuzzymatch(buf, o_str, " -", TRUE);
         }
@@ -5033,7 +5033,7 @@ retry:
                         int len = (int)(spacep - originalbuf);
                         if (len > 0 && (int)bplen > len)
                         {
-                            strncpy(startbuf, mbp, (size_t)len);
+                            Strncpy(startbuf, mbp, (size_t)len);
                             startbuf[len + 1] = '\0';
                             mbp += len;
                         }
@@ -5785,7 +5785,7 @@ const char *lastR;
     else if (qprefix) 
     {
         /* put prefix into the buffer */
-        (void) strncpy(qbuf, qprefix, lenlimit);
+        Strncpy(qbuf, qprefix, lenlimit);
         qbuf[lenlimit] = '\0';
     }
     else 
@@ -5802,12 +5802,12 @@ const char *lastR;
         /* too long; skip formatting, last resort output is truncated */
         if (len < lenlimit) 
         {
-            (void) strncpy(&qbuf[len], lastR, lenlimit - len);
+            Strncpy(&qbuf[len], lastR, lenlimit - len);
             qbuf[lenlimit] = '\0';
             len = strlen(qbuf);
             if (qsuffix && len < lenlimit)
             {
-                (void) strncpy(&qbuf[len], qsuffix, lenlimit - len);
+                Strncpy(&qbuf[len], qsuffix, lenlimit - len);
                 qbuf[lenlimit] = '\0';
                 /* len = (unsigned) strlen(qbuf); */
             }

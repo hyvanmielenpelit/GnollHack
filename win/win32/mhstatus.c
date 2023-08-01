@@ -191,7 +191,7 @@ StatusWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PMSNHMsgPutstr msg_data = (PMSNHMsgPutstr) lParam;
             char msgbuf[BUFSIZ] = "";
             write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
-            strncpy(data->window_text[data->index], msgbuf,
+            (void)strncpy(data->window_text[data->index], msgbuf,
                     MAXWINDOWTEXT);
             data->index = (data->index + 1) % NHSW_LINES;
             InvalidateRect(hWnd, NULL, TRUE);

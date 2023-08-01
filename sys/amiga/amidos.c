@@ -141,7 +141,7 @@ char *path;
     {
         register char *colon;
 
-        strncpy(fileName, path, sizeof(fileName) - 1);
+        Strncpy(fileName, path, sizeof(fileName) - 1);
         fileName[31] = 0;
         if (colon = index(fileName, ':'))
             colon[1] = '\0';
@@ -320,7 +320,7 @@ saveDiskPrompt(start)
          */
         for (bp = buf; *bp; bp++) {
             if (!isspace(*bp)) {
-                strncpy(SAVEF, bp, PATHLEN);
+                Strncpy(SAVEF, bp, PATHLEN);
                 break;
             }
         }

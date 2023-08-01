@@ -3827,16 +3827,16 @@ int *spell_no;
                 Sprintf(fmt, "%%-%ds  %%c  %%s", namelength);
             }
             else {
-                strcpy(fmt, "%s\t%c\t%s");
+                Strcpy(fmt, "%s\t%c\t%s");
             }
 
             Sprintf(fullname, "%s", spellname(splnum));
 
             //Spell name
             if (strlen(fullname) > (size_t)(namelength))
-                strncpy(shortenedname, fullname, (size_t)(namelength));
+                Strncpy(shortenedname, fullname, (size_t)(namelength));
             else
-                strcpy(shortenedname, fullname);
+                Strcpy(shortenedname, fullname);
 
 
             //Shorten description, if needed
@@ -3845,17 +3845,17 @@ int *spell_no;
 
             if(OBJ_ITEM_DESC(spellid(splnum)))
             {
-                strcpy(fulldesc, OBJ_ITEM_DESC(spellid(splnum)));
+                Strcpy(fulldesc, OBJ_ITEM_DESC(spellid(splnum)));
 
                 if (strlen(fulldesc) > 57)
-                    strncpy(shorteneddesc, fulldesc, 57);
+                    Strncpy(shorteneddesc, fulldesc, 57);
                 else
-                    strcpy(shorteneddesc, fulldesc);
+                    Strcpy(shorteneddesc, fulldesc);
 
-                strcpy(descbuf, shorteneddesc);
+                Strcpy(descbuf, shorteneddesc);
             }
             else
-                strcpy(descbuf, nodesc);
+                Strcpy(descbuf, nodesc);
 
             char hotkeychar = ' ';
             if (spellhotkey(i) == 10)
@@ -4084,9 +4084,9 @@ boolean usehotkey;
     else
     {
         if (spellknow(splnum) <= 0)
-            strcpy(fmt, "%s\t%s");
+            Strcpy(fmt, "%s\t%s");
         else
-            strcpy(fmt, "%s\t%s\t%s\t%s");
+            Strcpy(fmt, "%s\t%s\t%s\t%s");
         //        fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
     }
 
@@ -4095,20 +4095,20 @@ boolean usehotkey;
     char fullname[BUFSZ];
     char addsbuf[BUFSZ];
 
-    strcpy(fullname, spellname(splnum));
+    Strcpy(fullname, spellname(splnum));
 
     if (strlen(fullname) > (size_t)namelength)
-        strncpy(shortenedname, fullname, namelength);
+        Strncpy(shortenedname, fullname, namelength);
     else
-        strcpy(shortenedname, fullname);
+        Strcpy(shortenedname, fullname);
 
     //Print spell level
     if (spellev(splnum) < -1)
-        strcpy(levelbuf, " *");
+        Strcpy(levelbuf, " *");
     else if (spellev(splnum) == -1)
-        strcpy(levelbuf, " c");
+        Strcpy(levelbuf, " c");
     else if (spellev(splnum) == 0)
-        strcpy(levelbuf, " C");
+        Strcpy(levelbuf, " C");
     else
         Sprintf(levelbuf, "%2d", spellev(splnum));
 
@@ -4116,35 +4116,35 @@ boolean usehotkey;
     if (spellamount(splnum) >= 0)
         Sprintf(availablebuf, "%d", spellamount(splnum));
     else
-        strcpy(availablebuf, "Inf.");
+        Strcpy(availablebuf, "Inf.");
 
     //Print spells gained
     if (spellmatcomp(splnum) > 0)
         Sprintf(addsbuf, "%d", matlists[spellmatcomp(splnum)].spellsgained);
     else
-        strcpy(addsbuf, "N/A");
+        Strcpy(addsbuf, "N/A");
 
     //Shorten matcomp description, if needed
     char shortenedmatcompdesc[BUFSZ];
     char fullmatcompdesc[BUFSZ];
 
-    strcpy(shortenedmatcompdesc, "");
-    strcpy(fullmatcompdesc, "");
+    Strcpy(shortenedmatcompdesc, "");
+    Strcpy(fullmatcompdesc, "");
 
-    strcpy(fullmatcompdesc, matlists[spellmatcomp(splnum)].description_short);
+    Strcpy(fullmatcompdesc, matlists[spellmatcomp(splnum)].description_short);
 
     if (strlen(fullmatcompdesc) > 39)
     {
-        strncpy(shortenedmatcompdesc, fullmatcompdesc, 39);
+        Strncpy(shortenedmatcompdesc, fullmatcompdesc, 39);
         shortenedmatcompdesc[39] = '\0';
     }
     else
-        strcpy(shortenedmatcompdesc, fullmatcompdesc);
+        Strcpy(shortenedmatcompdesc, fullmatcompdesc);
 
     if (spellmatcomp(splnum))
-        strcpy(matcompbuf, shortenedmatcompdesc);
+        Strcpy(matcompbuf, shortenedmatcompdesc);
     else
-        strcpy(matcompbuf, "(Not required)");
+        Strcpy(matcompbuf, "(Not required)");
 
     //Finally print everything to buf
     if (spellknow(splnum) <= 0)
@@ -4234,12 +4234,12 @@ int splaction;
         Sprintf(descbuf, " (%s)", OBJ_ITEM_DESC(spellid(splnum)));
     }
     else
-        strcpy(descbuf, "");
+        Strcpy(descbuf, "");
 
     if (spellamount(splnum) >= 0)
         Sprintf(availablebuf, "%d", spellamount(splnum));
     else
-        strcpy(availablebuf, "Inf.");
+        Strcpy(availablebuf, "Inf.");
 
     double spellmanacost = get_spell_mana_cost(splnum);
     double displayed_manacost = ceil(10 * spellmanacost) / 10;
@@ -4305,21 +4305,21 @@ int splaction;
     if (spellamount(splnum) >= 0)
         Sprintf(availablebuf, "%d", spellamount(splnum));
     else
-        strcpy(availablebuf, "Inf.");
+        Strcpy(availablebuf, "Inf.");
 
     //Print spells gained
     if (spellmatcomp(splnum) > 0)
         Sprintf(addsbuf, "%d", matlists[spellmatcomp(splnum)].spellsgained);
     else
-        strcpy(addsbuf, "N/A");
+        Strcpy(addsbuf, "N/A");
 
     char fullmatcompdesc[BUFSZ];
-    strcpy(fullmatcompdesc, matlists[spellmatcomp(splnum)].description_short);
+    Strcpy(fullmatcompdesc, matlists[spellmatcomp(splnum)].description_short);
 
     if (spellmatcomp(splnum))
-        strcpy(matcompbuf, fullmatcompdesc);
+        Strcpy(matcompbuf, fullmatcompdesc);
     else
-        strcpy(matcompbuf, "No components");
+        Strcpy(matcompbuf, "No components");
 
     boolean inactive = FALSE;
     struct extended_menu_info info = zeroextendedmenuinfo;
@@ -4378,9 +4378,9 @@ boolean usehotkey;
             Sprintf(fmt, "%%-%ds\t%%s\t%%-13s\t%%4.*f\t%%s\t%%3d%%%%\t%%4d\t%%4s", namelength);
 #if 0
         if (spellknow(splnum) <= 0)
-            strcpy(fmt, "%s\t%s");
+            Strcpy(fmt, "%s\t%s");
         else
-            strcpy(fmt, "%s\t%s\t%s\t%.*f\t%-d%%\t%-d\t%s");
+            Strcpy(fmt, "%s\t%s\t%s\t%.*f\t%-d%%\t%-d\t%s");
         //        fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
 #endif
     }
@@ -4390,77 +4390,77 @@ boolean usehotkey;
 
     //Spell name
     if (strlen(fullname) > (size_t)(spellcooldownleft(splnum) > 0 ? namelength - 1 : namelength))
-        strncpy(shortenedname, fullname, (size_t)(spellcooldownleft(splnum) > 0 ? namelength - 1 : namelength));
+        Strncpy(shortenedname, fullname, (size_t)(spellcooldownleft(splnum) > 0 ? namelength - 1 : namelength));
     else
-        strcpy(shortenedname, fullname);
+        Strcpy(shortenedname, fullname);
 
     if (spellcooldownleft(splnum) > 0)
         Strcat(shortenedname, "]");
 
     //Spell level
     if (spellev(splnum) < -1)
-        strcpy(levelbuf, " *");
+        Strcpy(levelbuf, " *");
     else if (spellev(splnum) == -1)
-        strcpy(levelbuf, " c");
+        Strcpy(levelbuf, " c");
     else if (spellev(splnum) == 0)
-        strcpy(levelbuf, " C");
+        Strcpy(levelbuf, " C");
     else
         Sprintf(levelbuf, "%2d", spellev(splnum));
 
-    strcpy(categorybuf, spelltypemnemonic(spell_skilltype(spellid(splnum))));
+    Strcpy(categorybuf, spelltypemnemonic(spell_skilltype(spellid(splnum))));
 
 
     if (spellamount(splnum) >= 0)
         Sprintf(availablebuf, "%d", spellamount(splnum));
     else
-        strcpy(availablebuf, "Inf.");
+        Strcpy(availablebuf, "Inf.");
 
     switch (objects[spellid(splnum)].oc_spell_attribute)
     {
     case A_STR:
-        strcpy(statbuf, "Str");
+        Strcpy(statbuf, "Str");
         break;
     case A_DEX:
-        strcpy(statbuf, "Dex");
+        Strcpy(statbuf, "Dex");
         break;
     case A_CON:
-        strcpy(statbuf, "Con");
+        Strcpy(statbuf, "Con");
         break;
     case A_INT:
-        strcpy(statbuf, "Int");
+        Strcpy(statbuf, "Int");
         break;
     case A_WIS:
-        strcpy(statbuf, "Wis");
+        Strcpy(statbuf, "Wis");
         break;
     case A_CHA:
-        strcpy(statbuf, "Cha");
+        Strcpy(statbuf, "Cha");
         break;
     case A_MAX_INT_WIS:
-        strcpy(statbuf, "I/W");
+        Strcpy(statbuf, "I/W");
         break;
     case A_MAX_INT_CHA:
-        strcpy(statbuf, "I/C");
+        Strcpy(statbuf, "I/C");
         break;
     case A_MAX_WIS_CHA:
-        strcpy(statbuf, "W/C");
+        Strcpy(statbuf, "W/C");
         break;
     case A_MAX_INT_WIS_CHA:
-        strcpy(statbuf, "Any");
+        Strcpy(statbuf, "Any");
         break;
     case A_AVG_INT_WIS:
-        strcpy(statbuf, "I+W");
+        Strcpy(statbuf, "I+W");
         break;
     case A_AVG_INT_CHA:
-        strcpy(statbuf, "I+C");
+        Strcpy(statbuf, "I+C");
         break;
     case A_AVG_WIS_CHA:
-        strcpy(statbuf, "W+C");
+        Strcpy(statbuf, "W+C");
         break;
     case A_AVG_INT_WIS_CHA:
-        strcpy(statbuf, "All");
+        Strcpy(statbuf, "All");
         break;
     default:
-        strcpy(statbuf, "N/A");
+        Strcpy(statbuf, "N/A");
         break;
     }
 

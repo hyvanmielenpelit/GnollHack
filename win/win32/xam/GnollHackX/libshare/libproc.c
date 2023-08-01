@@ -163,7 +163,7 @@ void lib_askname(void)
                             if (ansbuf[i] > 127 || ansbuf[i] < 0)
                                 ansbuf[i] = '_';
 
-                        strncpy(plname, ansbuf, PL_NSIZ - 1);
+                        Strncpy(plname, ansbuf, PL_NSIZ - 1);
                         plname[PL_NSIZ - 1] = '\0';
                         if (check_saved_game_exists())
                         {
@@ -223,7 +223,7 @@ void lib_askname(void)
             if (ansbuf[i] > 127 || ansbuf[i] < 0)
                 ansbuf[i] = '_';
 
-        strncpy(plname, ansbuf, PL_NSIZ - 1);
+        Strncpy(plname, ansbuf, PL_NSIZ - 1);
         plname[PL_NSIZ - 1] = '\0';
     }
 }
@@ -687,7 +687,7 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
     {
         char msgbuf[BUFSZ] = "";
         copyUTF8toCP437(msgbuf, sizeof(msgbuf), utf8buf, sizeof(utf8buf));
-        strncpy(input, msgbuf, BUFSZ - 1);
+        Strncpy(input, msgbuf, BUFSZ - 1);
         input[BUFSZ - 1] = '\0';
     }
 }
@@ -1005,7 +1005,7 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
         strcat(tempbuf, buf);
     }
     write_text2buf_utf8(mi_ptr->name, sizeof(mi_ptr->name), tempbuf);
-    //strncpy(mi_ptr->name, tempbuf, BUFSZ - 1);
+    //Strncpy(mi_ptr->name, tempbuf, BUFSZ - 1);
     mi_ptr->name[sizeof(mi_ptr->name) - 1] = '\0';
 
     mi_ptr->m_id = mtmp->m_id;

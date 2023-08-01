@@ -499,7 +499,7 @@ Gem_player_selection()
 void
 Gem_askname()
 {
-    strncpy(plname, mar_ask_name(), PL_NSIZ);
+    (void)strncpy(plname, mar_ask_name(), PL_NSIZ);
 }
 
 void

@@ -1097,7 +1097,7 @@ gnome_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
             /* anything beyond <esc> is hidden */
             *cb = '\0';
         }
-        (void) strncpy(message, question, QBUFSZ - 1);
+        Strncpy(message, question, QBUFSZ - 1);
         message[QBUFSZ - 1] = '\0';
         sprintf(eos(message), " [%s]", choicebuf);
         if (def)

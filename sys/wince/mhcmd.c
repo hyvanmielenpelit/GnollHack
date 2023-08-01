@@ -1233,7 +1233,7 @@ nhcmdlayout_create(const char *name, int rows, int columns)
     ZeroMemory(p, i);
     p->rows = rows;
     p->columns = columns;
-    strncpy(p->name, name, sizeof(p->name) - 1);
+    (void)strncpy(p->name, name, sizeof(p->name) - 1);
     for (i = 0; i < rows * columns; i++) {
         p->cells[i].cmd_code = -1;
         p->cells[i].image = -NH_CMDPAD_FONT_NORMAL;
@@ -1426,7 +1426,7 @@ NHSPhoneSetKeypadFromString(const char *str)
     ZeroMemory(buf, sizeof(buf));
     if (sscanf(str, "%s or %s", buf[1], buf[0]) != 2) {
         ZeroMemory(buf, sizeof(buf));
-        strncpy(buf[0], str, sizeof(buf[0]) - 1);
+        (void)strncpy(buf[0], str, sizeof(buf[0]) - 1);
     }
 
     lcount = 10; /* create new layout on the first iteration */

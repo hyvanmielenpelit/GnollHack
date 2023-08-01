@@ -843,7 +843,7 @@ char *supplemental_name;
        (note: strncpy() only terminates output string if the specified
        count is bigger than the length of the substring being copied) */
     if (!strncmp(dbase_str, "moist towel", 11))
-        (void) strncpy(dbase_str += 2, "wet", 3); /* skip "mo" replace "ist" */
+        Strncpy(dbase_str += 2, "wet", 3); /* skip "mo" replace "ist" */
 
     /* Make sure the name is non-empty. */
     if (*dbase_str) {
@@ -2146,16 +2146,16 @@ char *cbuf;
             if (index(buf, '\t'))
                 (void) tabexpand(buf);
             if (meta && ctrl && buf[4] == ' ') {
-                (void) strncpy(buf, "M-^?    ", 8);
+                Strncpy(buf, "M-^?    ", 8);
                 buf[3] = q;
             } else if (meta && buf[3] == ' ') {
-                (void) strncpy(buf, "M-?     ", 8);
+                Strncpy(buf, "M-?     ", 8);
                 buf[2] = q;
             } else if (ctrl && buf[2] == ' ') {
-                (void) strncpy(buf, "^?      ", 8);
+                Strncpy(buf, "^?      ", 8);
                 buf[1] = q;
             } else if (buf[1] == ' ') {
-                (void) strncpy(buf, "?       ", 8);
+                Strncpy(buf, "?       ", 8);
                 buf[0] = q;
             }
             (void) dlb_fclose(fp);

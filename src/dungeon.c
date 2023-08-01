@@ -2214,7 +2214,7 @@ donamelevel()
     nbuf[0] = '\0';
 #ifdef EDIT_GETLIN
     if (mptr->custom) {
-        (void) strncpy(nbuf, mptr->custom, BUFSZ);
+        Strncpy(nbuf, mptr->custom, BUFSZ);
         nbuf[BUFSZ - 1] = '\0';
     }
 #else

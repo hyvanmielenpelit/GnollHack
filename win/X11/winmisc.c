@@ -364,7 +364,7 @@ plsel_dialog_acceptvalues()
     XtSetArg(args[0], nhStr(XtNstring), &s);
     XtGetValues(plsel_name_input, args, ONE);
 
-    (void) strncpy(plname, (char *) s, sizeof plname - 1);
+    Strncpy(plname, (char *) s, sizeof plname - 1);
     plname[sizeof plname - 1] = '\0';
     (void) mungspaces(plname);
     if (strlen(plname) < 1)
@@ -1576,7 +1576,7 @@ X11_player_selection()
 #else
             char *defplname = (char *)0;
 #endif
-            (void) strncpy(plname, defplname ? defplname : "Mumbles",
+            Strncpy(plname, defplname ? defplname : "Mumbles",
                            sizeof plname - 1);
             plname[sizeof plname - 1] = '\0';
             iflags.renameinprogress = TRUE;

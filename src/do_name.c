@@ -1821,7 +1821,7 @@ const char* introline;
     /* if there's an existing name, make it be the default answer */
     if (*str1)
     {
-        strncpy(buf, *str1, BUFSZ - 1);
+        Strncpy(buf, *str1, BUFSZ - 1);
         buf[BUFSZ - 1] = '\0';
     }
 #endif

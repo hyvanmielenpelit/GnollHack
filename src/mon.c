@@ -6191,7 +6191,7 @@ uchar style; /* 0 = dwarf lords and dwarf ladies, 1 = dwarf lords and ladies,
             if (len >= flen)
                 break;
 
-            strncpy(buf, malename, len);
+            Strncpy(buf, malename, len);
             buf[len] = 0;
             if (!strncmp(femalename, buf, len))
             {

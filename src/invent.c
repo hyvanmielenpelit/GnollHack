@@ -2523,7 +2523,7 @@ boolean (*validitemfunc)(struct obj*);
         size_t leftnum = 3;
         if (l >= leftnum)
         {
-            strncpy(leftbuf, word, leftnum);
+            Strncpy(leftbuf, word, leftnum);
             leftbuf[leftnum] = '\0';
         }
         else
@@ -2532,7 +2532,7 @@ boolean (*validitemfunc)(struct obj*);
         size_t rightnum = 4;
         if (l >= rightnum)
         {
-            strncpy(rightbuf, word + l - rightnum, rightnum);
+            Strncpy(rightbuf, word + l - rightnum, rightnum);
             rightbuf[rightnum] = '\0';
         }
         else
@@ -3020,7 +3020,7 @@ struct obj* otmp_only;
         size_t leftnum = 3;
         if (l >= leftnum)
         {
-            strncpy(leftbuf, word, leftnum);
+            Strncpy(leftbuf, word, leftnum);
             leftbuf[leftnum] = '\0';
         }
         else
@@ -3029,7 +3029,7 @@ struct obj* otmp_only;
         size_t rightnum = 4;
         if (l >= rightnum)
         {
-            strncpy(rightbuf, word + l - rightnum, rightnum);
+            Strncpy(rightbuf, word + l - rightnum, rightnum);
             rightbuf[rightnum] = '\0';
         }
         else
@@ -6259,7 +6259,7 @@ print_things_here_to_window(VOID_ARGS)
                 putstr_ex(tmpwin, ebuf, attr, CLR_MSG_FAIL, 1);
                 break;
             }
-            strncpy(buf, ep->engr_txt, BUFSZ - 5);
+            Strncpy(buf, ep->engr_txt, BUFSZ - 5);
             buf[BUFSZ - 5] = 0;
             Sprintf(ebuf, " \"%s\".", buf);
             putstr_ex(tmpwin, ebuf, attr, CLR_MSG_TEXT, 0);

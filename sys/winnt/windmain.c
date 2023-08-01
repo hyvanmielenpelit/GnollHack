@@ -181,7 +181,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
         int fd;
         boolean have_syscf = FALSE;
 
-        (void) strncpy(hackdir, dir, PATHLEN - 1);
+        Strncpy(hackdir, dir, PATHLEN - 1);
         hackdir[PATHLEN - 1] = '\0';
         fqn_prefix[0] = (char *) alloc(strlen(hackdir) + 2);
         Strcpy(fqn_prefix[0], hackdir);
@@ -562,11 +562,11 @@ char *argv[];
 #endif
         case 'u':
             if (argv[0][2])
-                (void) strncpy(plname, argv[0] + 2, sizeof(plname) - 1);
+                Strncpy(plname, argv[0] + 2, sizeof(plname) - 1);
             else if (argc > 1) {
                 argc--;
                 argv++;
-                (void) strncpy(plname, argv[0], sizeof(plname) - 1);
+                Strncpy(plname, argv[0], sizeof(plname) - 1);
             } else
                 raw_print("Player name expected after -u");
             break;

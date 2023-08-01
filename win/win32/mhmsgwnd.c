@@ -432,7 +432,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 /* append new text to the end of the array */
                 data->window_text[MSG_LINES - 1].attr = msg_data->attr;
                 data->window_text[MSG_LINES - 1].color = msg_data->color;
-                strncpy(data->window_text[MSG_LINES - 1].text, msgbuf, MAXWINDOWTEXT);
+                (void)strncpy(data->window_text[MSG_LINES - 1].text, msgbuf, MAXWINDOWTEXT);
 
                 used_length = max(0, min(text_length, MAXWINDOWTEXT));
                 last_point = min(used_length, MAXWINDOWTEXT);
@@ -503,7 +503,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         for (i = 0; i < MSG_LINES; i++)
             if (*data->window_text[i].text) 
             {
-                strncpy(&msg_data->buffer[buflen], data->window_text[i].text, msg_data->max_size - buflen);
+                (void)strncpy(&msg_data->buffer[buflen], data->window_text[i].text, msg_data->max_size - buflen);
                 memcpy(&msg_data->attrs[buflen], data->window_text[i].attrs, msg_data->max_size - buflen);
                 memcpy(&msg_data->colors[buflen], data->window_text[i].colors, msg_data->max_size - buflen);
 
@@ -511,7 +511,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 if (buflen >= msg_data->max_size)
                     break;
 
-                strncpy(&msg_data->buffer[buflen], "\r\n", msg_data->max_size - buflen);
+                (void)strncpy(&msg_data->buffer[buflen], "\r\n", msg_data->max_size - buflen);
                 memset(&msg_data->attrs[buflen], ATR_NONE, msg_data->max_size - buflen);
                 memset(&msg_data->colors[buflen], NO_COLOR, msg_data->max_size - buflen);
 

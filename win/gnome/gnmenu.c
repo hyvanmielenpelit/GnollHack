@@ -441,7 +441,7 @@ ghack_menu_window_add_menu(GtkWidget *menuWin, gpointer menu_item,
             newItem.accelerator[0] = 0;
             /* only copy 1 char, since accel keys are by definition 1 char */
             if (accelBuf[0]) {
-                strncpy(newItem.accelerator, accelBuf, 1);
+                (void)strncpy(newItem.accelerator, accelBuf, 1);
             }
             newItem.accelerator[1] = 0;
 

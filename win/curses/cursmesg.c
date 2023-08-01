@@ -644,7 +644,7 @@ curses_message_win_getline(int attr, int color, const char *prompt, char *answer
         case '\r':
         case '\n':
             free(linestarts);
-            (void) strncpy(answer, p_answer, buffer);
+            Strncpy(answer, p_answer, buffer);
             answer[buffer - 1] = '\0';
             Strcpy(toplines, tmpbuf);
             mesg_add_line(tmpbuf);

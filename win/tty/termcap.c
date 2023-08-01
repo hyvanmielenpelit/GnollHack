@@ -188,7 +188,7 @@ int *wid, *hgt;
         flags.null = FALSE; /* this should be a termcap flag */
     if (tgetent(tptr, term) < 1) {
         char buf[BUFSZ];
-        (void) strncpy(buf, term,
+        Strncpy(buf, term,
                        (BUFSZ - 1) - (sizeof("Unknown terminal type: .  ")));
         buf[BUFSZ - 1] = '\0';
         error("Unknown terminal type: %s.", term);

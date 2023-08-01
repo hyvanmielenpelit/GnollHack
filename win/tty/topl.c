@@ -394,7 +394,7 @@ int attr, color;
         }
     }
     remember_topl();
-    (void) strncpy(toplines, bp, TBUFSZ);
+    Strncpy(toplines, bp, TBUFSZ);
     toplines[TBUFSZ - 1] = 0;
     len = strlen(toplines);
     if (attrs)
@@ -576,7 +576,7 @@ unsigned long ynflags UNUSED;
         /* any acceptable responses that follow <esc> aren't displayed */
         if ((rb = index(respbuf, '\033')) != 0)
             *rb = '\0';
-        (void) strncpy(prompt, query, QBUFSZ - 1);
+        Strncpy(prompt, query, QBUFSZ - 1);
         prompt[QBUFSZ - 1] = '\0';
         Sprintf(eos(prompt), " [%s]", respbuf);
         if (def)

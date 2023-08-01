@@ -143,7 +143,7 @@ makesound(char *actualn, char *melody, int vol)
      * Convert type to file name - if there's nothing to play we
      * shouldn't be here in the first place.
      */
-    strncpy(name, actualn, sizeof(name));
+    Strncpy(name, actualn, sizeof(name));
     for (t = strchr(name, ' '); t; t = strchr(name, ' '))
         *t = '_';
     if ((stream = dlb_fopen(name, "r")) == NULL) {

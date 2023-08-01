@@ -1661,7 +1661,7 @@ int size;
     int osize = TextsFont13.ta_YSize;
     static char nname[100];
 
-    strncpy(nname, name, sizeof(nname) - 1);
+    (void)strncpy(nname, name, sizeof(nname) - 1);
     nname[sizeof(nname) - 1] = 0;
 
     TextsFont13.ta_Name = nname;

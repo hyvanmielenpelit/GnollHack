@@ -226,12 +226,12 @@ char *argv[];
             if(!*plname)
             {
                 if(argv[0][2])
-                    (void)strncpy(plname, argv[0] + 2, sizeof(plname) - 1);
+                    Strncpy(plname, argv[0] + 2, sizeof(plname) - 1);
                 else if(argc > 1)
                 {
                     argc--;
                     argv++;
-                    (void)strncpy(plname, argv[0], sizeof(plname) - 1);
+                    Strncpy(plname, argv[0], sizeof(plname) - 1);
                 }
                 else
                     raw_print("Player name expected after -u");
@@ -298,7 +298,7 @@ whoami()
     if(*plname)
         return FALSE;
     if((s = getlogin()))
-        (void)strncpy(plname, s, sizeof(plname) - 1);
+        Strncpy(plname, s, sizeof(plname) - 1);
     return TRUE;
 }
 #endif

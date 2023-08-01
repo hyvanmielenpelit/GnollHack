@@ -646,7 +646,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             char buf[QBUFSZ * 2 + 3] = "";
             Sprintf(buf, "%s%s%s", msg_data->text ? msg_data->text : "", msg_data->text && msg_data->subtitle && strcmp(msg_data->text, "") && strcmp(msg_data->subtitle, "") ? " - " : "", msg_data->subtitle ? msg_data->subtitle : "");
 
-            strncpy(data->menu.prompt, buf,
+            (void)strncpy(data->menu.prompt, buf,
                     sizeof(data->menu.prompt) - 1);
         } else {
             ZeroMemory(data->menu.prompt, sizeof(data->menu.prompt));
@@ -1604,7 +1604,7 @@ parse_menu_str(char *dest, const char *src, size_t size)
     if (!dest || size == 0)
         return NULL;
 
-    strncpy(dest, src, size);
+    (void)strncpy(dest, src, size);
     dest[size - 1] = '\x0';
 
     /* replace "[ ]*\[" with "\t\[" */

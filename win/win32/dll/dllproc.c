@@ -766,7 +766,7 @@ dll_askname(void)
             if (ansbuf[i] > 127 || ansbuf[i] < 0)
                 ansbuf[i] = '_';
 
-        strncpy(plname, ansbuf, PL_NSIZ - 1);
+        Strncpy(plname, ansbuf, PL_NSIZ - 1);
         plname[PL_NSIZ - 1] = '\0';
     }
 }
@@ -2299,10 +2299,10 @@ dll_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, un
             buf[0] = ochar;
             p = strchr(text, ':');
             if (p) {
-                strncpy(buf + 1, p, sizeof(buf) - 2);
+                Strncpy(buf + 1, p, sizeof(buf) - 2);
             } else {
                 buf[1] = ':';
-                strncpy(buf + 2, text, sizeof(buf) - 3);
+                Strncpy(buf + 2, text, sizeof(buf) - 3);
             }
             buf[sizeof buf - 1] = '\0';
             Sprintf(status_field->string,
@@ -2631,7 +2631,7 @@ char* dll_getcwd(char* dest_buf, int size_in_bytes)
    if (length >= size_in_bytes)
        return 0;
 
-   strncpy(dest_buf, cwd, size_in_bytes - 1);
+   Strncpy(dest_buf, cwd, size_in_bytes - 1);
    dest_buf[size_in_bytes - 1] = '\0';
 
    return dest_buf;

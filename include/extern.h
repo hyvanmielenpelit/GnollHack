@@ -412,9 +412,9 @@ E int FDECL(is_drawbridge_wall, (int, int));
 E boolean FDECL(is_db_wall, (int, int));
 E boolean FDECL(find_drawbridge, (int *, int *));
 E boolean FDECL(create_drawbridge, (int, int, int, BOOLEAN_P));
-E void FDECL(open_drawbridge, (int, int));
-E void FDECL(maybe_close_drawbridge, (int, int));
-E void FDECL(close_drawbridge, (int, int));
+E void FDECL(open_drawbridge, (int, int, BOOLEAN_P));
+E void FDECL(maybe_close_drawbridge, (int, int, BOOLEAN_P));
+E void FDECL(close_drawbridge, (int, int, BOOLEAN_P));
 E void FDECL(destroy_drawbridge, (int, int, BOOLEAN_P));
 E void NDECL(reset_drawbridge);
 

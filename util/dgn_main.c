@@ -109,7 +109,7 @@ char **argv;
 #ifdef VMS /* avoid possible interaction with logical name */
             len++; /* retain "." as trailing punctuation */
 #endif
-            (void) strncpy(basename, infile, (size_t)len);
+            Strncpy(basename, infile, (size_t)len);
             basename[len] = '\0';
 #endif
 

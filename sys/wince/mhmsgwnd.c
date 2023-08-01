@@ -226,7 +226,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
             /* append new text to the end of the array */
             data->window_text[MSG_LINES - 1].attr = msg_data->attr;
-            strncpy(data->window_text[MSG_LINES - 1].text, msg_data->text,
+            (void)strncpy(data->window_text[MSG_LINES - 1].text, msg_data->text,
                     MAXWINDOWTEXT);
         }
 
@@ -251,7 +251,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             memmove(&data->window_text[0], &data->window_text[1],
                     (MSG_LINES - 1) * sizeof(data->window_text[0]));
             data->window_text[MSG_LINES - 1].attr = ATR_NONE;
-            strncpy(data->window_text[MSG_LINES - 1].text, "--More--",
+            (void)strncpy(data->window_text[MSG_LINES - 1].text, "--More--",
                     MAXWINDOWTEXT);
 
             /* update window content */
@@ -296,7 +296,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 #endif
             /* remove "--More--" from the message window text */
             data->window_text[MSG_LINES - 1].attr = ATR_NONE;
-            strncpy(data->window_text[MSG_LINES - 1].text, " ",
+            (void)strncpy(data->window_text[MSG_LINES - 1].text, " ",
                     MAXWINDOWTEXT);
         }
 

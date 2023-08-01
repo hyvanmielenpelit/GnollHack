@@ -727,7 +727,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
         char msgbuf[NHMENU_STR_SIZE] = "";
         write_CP437_to_buf_unicode(msgbuf, NHMENU_STR_SIZE, msg_data->str);
-        strncpy(data->menu.items[new_item].str, msgbuf,
+        (void)strncpy(data->menu.items[new_item].str, msgbuf,
                 NHMENU_STR_SIZE);
 
     /* prevent & being interpreted as a mnemonic start */
@@ -799,7 +799,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             char buf[QBUFSZ * 2 + 3] = "";
             Sprintf(buf, "%s%s%s", msg_data->text ? msg_data->text : "", msg_data->text && msg_data->subtitle && strcmp(msg_data->text, "") && strcmp(msg_data->subtitle, "") ? " - " : "", msg_data->subtitle ? msg_data->subtitle : "");
 
-            strncpy(data->menu.prompt, buf,
+            (void)strncpy(data->menu.prompt, buf,
                     sizeof(data->menu.prompt) - 1);
 
             HDC hDC = GetDC(hWnd);

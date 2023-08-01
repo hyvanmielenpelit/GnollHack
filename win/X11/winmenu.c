@@ -685,7 +685,7 @@ boolean preselected;
             len = BUFSZ - 1;
         }
         Sprintf(buf, "%c %c ", ch ? ch : ' ', preselected ? '+' : '-');
-        (void) strncpy(buf + 4, str, len);
+        Strncpy(buf + 4, str, len);
         buf[4 + len] = '\0';
         item->str = copy_of(buf);
     } else {

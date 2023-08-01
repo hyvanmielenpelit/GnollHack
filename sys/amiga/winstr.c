@@ -78,7 +78,7 @@ const char *str;
 
         while (isspace(*str))
             str++;
-        strncpy(toplines, str, TBUFSZ);
+        (void)strncpy(toplines, str, TBUFSZ);
         toplines[TBUFSZ - 1] = 0;
 
         /* For initial message to be visible, we need to explicitly position
@@ -197,7 +197,7 @@ const char *str;
         if (cw->cols > strlen(str))
             TextSpaces(w->RPort, cw->cols - strlen(str));
 
-        (void) strncpy(cw->data[cw->cury], str, cw->cols);
+        Strncpy(cw->data[cw->cury], str, cw->cols);
         cw->data[cw->cury][cw->cols - 1] = '\0'; /* null terminate */
         cw->cury = (cw->cury + 1) % 2;
         cw->curx = 0;

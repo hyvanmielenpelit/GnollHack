@@ -275,11 +275,11 @@ char *buf;        /* input: filtered broadcast text */
     /* newmail() and readmail() used to assume that nam and cmd are
        concatenated but that is no longer the case */
     if (nam && nam != nam_buf) {
-        (void) strncpy(nam_buf, nam, sizeof nam_buf - 1);
+        Strncpy(nam_buf, nam, sizeof nam_buf - 1);
         nam_buf[sizeof nam_buf - 1] = '\0';
     }
     if (cmd && cmd != cmd_buf) {
-        (void) strncpy(cmd_buf, cmd, sizeof cmd_buf - 1);
+        Strncpy(cmd_buf, cmd, sizeof cmd_buf - 1);
         cmd_buf[sizeof cmd_buf - 1] = '\0';
     }
 #endif /* SHELL */

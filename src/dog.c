@@ -686,7 +686,7 @@ makedog()
         {
             /* strip leading and trailing spaces */
             (void)mungspaces(buf);
-            strncpy(givennamebuf, buf, PL_PSIZ - 1);
+            Strncpy(givennamebuf, buf, PL_PSIZ - 1);
             givennamebuf[PL_PSIZ - 1] = 0;
             petname = givennamebuf;
         }

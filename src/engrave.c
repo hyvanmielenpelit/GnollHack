@@ -398,7 +398,7 @@ int x, y;
             char *et;
             unsigned maxelen = BUFSZ - sizeof("You feel the words: \"\". ");
             if (strlen(ep->engr_txt) > maxelen) {
-                (void) strncpy(buf, ep->engr_txt, (int) maxelen);
+                Strncpy(buf, ep->engr_txt, (int) maxelen);
                 buf[maxelen] = '\0';
                 et = buf;
             } else
@@ -997,7 +997,7 @@ doengrave()
         make_engr_at(u.ux, u.uy, buf, moves, type, ENGR_FLAGS_NONE);
         if (!Blind)
         {
-            pline_The("%s now reads: \"%s\".", type == ENGR_SIGNPOST ? "sign" : "engraving", buf);
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_text2, "%s now reads: \"%s\".", type == ENGR_SIGNPOST ? "sign" : "engraving", buf);
         }
         ptext = FALSE;
     }
@@ -1220,7 +1220,7 @@ doengrave()
         if (otmp->otyp == MAGIC_MARKER) {
             maxelen = otmp->charges * 2; /* one charge / 2 letters */
             if (len > maxelen) {
-                Your("marker dries out.");
+                Your_ex(ATR_NONE, CLR_MSG_FAIL, "marker dries out.");
                 otmp->charges = 0;
                 multi = -(maxelen / 10);
             } else if (len > 1)
@@ -1247,7 +1247,7 @@ doengrave()
             *sp = '\0';
             if (multi)
                 nomovemsg = "You cannot write any more.";
-            You("are only able to write \"%s\".", ebuf);
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_text1, "You are only able to write \"%s\".", ebuf);
         }
     }
 

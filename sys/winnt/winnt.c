@@ -315,7 +315,7 @@ genericptr_t ptr2;
             if (!strncmpi(datadir, "C:\\WINDOWS\\TEMP", 15)
                 || strstri(datadir, "TEMP")
                 || (tempdir && strstri(datadir, tempdir))) {
-                (void) strncpy(
+                Strncpy(
                     interjection_buf[INTERJECT_PANIC],
                     "\nOne common cause of this error is attempting to "
                     "execute\n"

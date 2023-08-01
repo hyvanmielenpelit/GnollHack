@@ -86,7 +86,7 @@ char *argv[];
                         (arg0_len - mac_tmp_len) + strlen(mac_exe) + 5;
                     if (mac_lhs_len > mac_tmp_len - 1)
                         mac_tmp = realloc(mac_tmp, mac_lhs_len);
-                    strncpy(mac_tmp, argv[0], mac_lhs_len);
+                    Strncpy(mac_tmp, argv[0], mac_lhs_len);
                     mac_tmp[mac_lhs_len] = '\0';
                     chdir(mac_tmp);
                 }
@@ -408,11 +408,11 @@ char *argv[];
 #endif
         case 'u':
             if (argv[0][2]) {
-                (void) strncpy(plname, argv[0] + 2, sizeof plname - 1);
+                Strncpy(plname, argv[0] + 2, sizeof plname - 1);
             } else if (argc > 1) {
                 argc--;
                 argv++;
-                (void) strncpy(plname, argv[0], sizeof plname - 1);
+                Strncpy(plname, argv[0], sizeof plname - 1);
             } else {
                 raw_print("Player name expected after -u");
             }
@@ -570,7 +570,7 @@ whoami()
             s = getlogin();
 
         if (s && *s) {
-            (void) strncpy(plname, s, sizeof plname - 1);
+            Strncpy(plname, s, sizeof plname - 1);
             if (index(plname, '-'))
                 return TRUE;
         }

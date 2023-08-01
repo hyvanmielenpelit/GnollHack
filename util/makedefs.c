@@ -2570,7 +2570,7 @@ char *code;
         return FALSE;
     }
 
-    strncpy(&qt_hdr.id[qt_hdr.n_hdr][0], code, LEN_HDR);
+    (void)strncpy(&qt_hdr.id[qt_hdr.n_hdr][0], code, LEN_HDR);
     msg_hdr[qt_hdr.n_hdr].n_msg = 0;
     qt_hdr.offset[qt_hdr.n_hdr++] = 0L;
     return TRUE;
@@ -2871,7 +2871,7 @@ static char *limit(name, pref) /* limit a name to 40 characters length */
 char *name;
 int pref;
 {
-    (void) strncpy(temp, name, pref ? 36 : 40);
+    Strncpy(temp, name, pref ? 36 : 40);
     temp[pref ? 36 : 40] = 0;
     return temp;
 }
@@ -3116,7 +3116,7 @@ const char *str;
 
     if (!str)
         return (char *) 0;
-    (void) strncpy(buf, str, 127);
+    Strncpy(buf, str, 127);
     return buf;
 }
 

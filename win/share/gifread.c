@@ -213,7 +213,7 @@ FILE *fd;
         exit(EXIT_FAILURE);
     }
 
-    (void) strncpy(version, (char *) buf + 3, 3);
+    Strncpy(version, (char *) buf + 3, 3);
     version[3] = '\0';
 
     if ((strcmp(version, "87a") != 0) && (strcmp(version, "89a") != 0)) {

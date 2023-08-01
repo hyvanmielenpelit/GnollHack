@@ -624,7 +624,7 @@ struct entity *etmp;
     if (automiss(etmp) && e_survives_at(etmp, oldx, oldy)) 
     {
         if (e_inview && (at_portcullis || IS_DRAWBRIDGE(crm->typ)))
-            pline_The("%s passes through %s!",
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s passes through %s!",
                       at_portcullis ? "portcullis" : "drawbridge",
                       e_nam(etmp));
         if (is_u(etmp))
@@ -636,7 +636,7 @@ struct entity *etmp;
     {
         if (at_portcullis) 
         {
-            pline_The("portcullis misses %s!", e_nam(etmp));
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "portcullis misses %s!", e_nam(etmp));
         } 
         else 
         {
@@ -665,7 +665,7 @@ struct entity *etmp;
                 Strcpy(killer.name,
                        "crushed to death underneath a drawbridge");
             }
-            pline("%s crushed underneath the drawbridge.",
+            pline_ex(ATR_NONE, is_u(etmp) ? CLR_MSG_NEGATIVE : CLR_MSG_WARNING, "%s crushed underneath the drawbridge.",
                   E_phrase(etmp, "are"));             /* no jump */
             e_died(etmp,
                    XKILL_NOCORPSE | (e_inview ? XKILL_GIVEMSG : XKILL_NOMSG),
@@ -687,10 +687,10 @@ struct entity *etmp;
             else 
             {
                 if (e_inview)
-                    pline("%s crushed by the falling portcullis!",
+                    pline_ex(ATR_NONE, is_u(etmp) ? CLR_MSG_NEGATIVE : CLR_MSG_WARNING, "%s crushed by the falling portcullis!",
                           E_phrase(etmp, "are"));
                 else if (!Deaf)
-                    You_hear("a crushing sound.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a crushing sound.");
 
                 e_died(etmp,
                        XKILL_NOCORPSE | (e_inview ? XKILL_GIVEMSG
@@ -792,14 +792,14 @@ struct entity *etmp;
         {
             if (is_u(etmp)) 
             {
-                You("tumble towards the closed portcullis!");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "tumble towards the closed portcullis!");
                 if (automiss(etmp))
-                    You("pass through it!");
+                    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "pass through it!");
                 else
-                    pline_The("drawbridge closes in...");
+                    pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "drawbridge closes in...");
             } 
             else
-                pline("%s behind the drawbridge.",
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s behind the drawbridge.",
                       E_phrase(etmp, "disappear"));
         }
         if (!e_survives_at(etmp, etmp->ex, etmp->ey)) 
@@ -816,12 +816,12 @@ struct entity *etmp;
         debugpline1("%s on drawbridge square", E_phrase(etmp, "are"));
         if (is_pool(etmp->ex, etmp->ey) && !e_inview)
             if (!Deaf)
-                You_hear("a splash.");
+                You_hear_ex(ATR_NONE, is_u(etmp) ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "a splash.");
         if (e_survives_at(etmp, etmp->ex, etmp->ey))
         {
             if (e_inview && !is_flyer(etmp->edata)
                 && !is_floater(etmp->edata))
-                pline("%s from the bridge.", E_phrase(etmp, "fall"));
+                pline_ex(ATR_NONE, is_u(etmp) ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "%s from the bridge.", E_phrase(etmp, "fall"));
             return;
         }
         debugpline1("%s cannot survive on the drawbridge square",
@@ -833,10 +833,10 @@ struct entity *etmp;
                 boolean lava = is_lava(etmp->ex, etmp->ey);
 
                 if (Hallucination)
-                    pline("%s the %s and disappears.",
+                    pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "%s the %s and disappears.",
                           E_phrase(etmp, "drink"), lava ? "lava" : "moat");
                 else
-                    pline("%s into the %s.", E_phrase(etmp, "fall"),
+                    pline_ex(ATR_NONE, is_u(etmp) ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "%s into the %s.", E_phrase(etmp, "fall"),
                           lava ? hliquid("lava") : "moat");
             }
 
@@ -855,8 +855,9 @@ struct entity *etmp;
 #define nokiller() (killer.name[0] = '\0', killer.format = 0)
 
 void
-maybe_close_drawbridge(x, y)
+maybe_close_drawbridge(x, y, by_u_intentionally)
 int x, y;
+boolean by_u_intentionally;
 {
     register struct rm* lev1;
     int x2, y2;
@@ -875,7 +876,7 @@ int x, y;
         {
             play_sfx_sound_at_location(SFX_DRAWBRIDGE_STARTS_TO_RISE, x2, y2);
             if(cansee(x, y) || cansee(x2, y2))
-                pline("The drawbridge starts to rise, but the weight of %s keeps it down.",
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "The drawbridge starts to rise, but the weight of %s keeps it down.",
                     canseemon(mtmp) ? mon_nam(mtmp) : "something");
             return;
         }
@@ -885,7 +886,7 @@ int x, y;
         if (!Flying && !Levitation && !is_incorporeal(youmonst.data) && !passes_walls(youmonst.data) && youmonst.data->cwt >= WT_ELF)
         {
             play_sfx_sound_at_location(SFX_DRAWBRIDGE_STARTS_TO_RISE, x2, y2);
-            pline("The drawbridge starts to rise, but your weight keeps it down.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "The drawbridge starts to rise, but your weight keeps it down.");
             return;
         }
     }
@@ -898,7 +899,7 @@ int x, y;
         {
             play_sfx_sound_at_location(SFX_DRAWBRIDGE_GETS_BLOCKED, x2, y2);
             if (cansee(x, y) || cansee(x2, y2))
-                pline("The drawbridge starts to close, but it gets blocked by %s and falls back down.",
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "The drawbridge starts to close, but it gets blocked by %s and falls back down.",
                 canseemon(mtmp) ? mon_nam(mtmp) : "something");
             return;
         }
@@ -908,12 +909,12 @@ int x, y;
         if (!is_incorporeal(youmonst.data) && !passes_walls(youmonst.data) && youmonst.data->msize >= MZ_MEDIUM)
         {
             play_sfx_sound_at_location(SFX_DRAWBRIDGE_GETS_BLOCKED, x2, y2);
-            pline("The drawbridge starts to close, but it gets blocked by you and falls back down.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "The drawbridge starts to close, but it gets blocked by you and falls back down.");
             return;
         }
     }
 
-    close_drawbridge(x, y);
+    close_drawbridge(x, y, by_u_intentionally);
 }
 
 
@@ -921,8 +922,9 @@ int x, y;
  * Close the drawbridge located at x,y
  */
 void
-close_drawbridge(x, y)
+close_drawbridge(x, y, by_u_intentionally)
 int x, y;
+boolean by_u_intentionally;
 {
     register struct rm *lev1, *lev2;
     struct trap *t;
@@ -936,13 +938,13 @@ int x, y;
     get_wall_for_db(&x2, &y2);
     play_sfx_sound_at_location(SFX_CLOSE_DRAWBRIDGE, x2, y2);
     if (cansee(x, y) || cansee(x2, y2))
-        You_see("a drawbridge %s up!",
+        You_see_ex(ATR_NONE, by_u_intentionally ? CLR_MSG_SUCCESS : CLR_MSG_ATTENTION, "a drawbridge %s up!",
                 (((u.ux == x || u.uy == y) && !Underwater)
                  || distu(x2, y2) < distu(x, y))
                     ? "coming"
                     : "going");
     else /* "5 gears turn" for castle drawbridge tune */
-        You_hear("chains rattling and gears turning.");
+        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "chains rattling and gears turning.");
 
     full_location_transform(x, y, DRAWBRIDGE_UP, lev1->subtyp, lev1->vartyp, lev1->flags, 0, 0, 0, 0, 0, 0, 0, 0, lev1->floortyp, lev1->floorsubtyp, lev1->floorvartyp, lev1->facing_right, lev1->horizontal, 0, 0, FALSE);
 
@@ -987,8 +989,9 @@ int x, y;
  * Open the drawbridge located at x,y
  */
 void
-open_drawbridge(x, y)
+open_drawbridge(x, y, by_u_intentionally)
 int x, y;
+boolean by_u_intentionally;
 {
     register struct rm *lev1, *lev2;
     struct trap *t;
@@ -1002,10 +1005,10 @@ int x, y;
     get_wall_for_db(&x2, &y2);
 
     if (cansee(x, y) || cansee(x2, y2))
-        You_see("a drawbridge %s down!",
+        You_see_ex(ATR_NONE, by_u_intentionally ? CLR_MSG_SUCCESS : CLR_MSG_ATTENTION, "a drawbridge %s down!",
                 (distu(x2, y2) < distu(x, y)) ? "going" : "coming");
     else /* "5 gears turn" for castle drawbridge tune */
-        You_hear("gears turning and chains rattling.");
+        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "gears turning and chains rattling.");
 
     full_location_transform(x, y, DRAWBRIDGE_DOWN, lev1->subtyp, lev1->vartyp, lev1->flags, 0, 0, 0, 0, 0, 0, 0, 0, lev1->floortyp, lev1->floorsubtyp, lev1->floorvartyp, lev1->facing_right, lev1->horizontal, 0, 0, FALSE);
     lev2 = &levl[x2][y2];

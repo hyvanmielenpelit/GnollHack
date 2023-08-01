@@ -2021,7 +2021,7 @@ char *tmpstr; /* never Null but could be empty */
     char str[BUFSIZ];
 
     //Sprintf(str, "%s", tmpstr);
-    (void)strncpy(str, tmpstr, (sizeof str) - 1);
+    Strncpy(str, tmpstr, (sizeof str) - 1);
     str[(sizeof str) - 1] = '\0';
 
     if ((cs = index(str, '=')) == 0) {
@@ -3452,7 +3452,7 @@ boolean tinitial, tfrom_file;
         } else if ((op = string_for_opt(opts, TRUE)) != 0) {
             char *pp, buf[BUFSZ];
 
-            strncpy(buf, op, sizeof buf - 1);
+            Strncpy(buf, op, sizeof buf - 1);
             buf[sizeof buf - 1] = '\0';
             op = mungspaces(buf);
             for (;;) {
@@ -5573,7 +5573,7 @@ int idx, notruncate;
     else
     {
         /* truncate value */
-        strncpy(valuebuf, value, MAX_OPT_VALUE_LENGTH);
+        Strncpy(valuebuf, value, MAX_OPT_VALUE_LENGTH);
         valuebuf[MAX_OPT_VALUE_LENGTH] = 0;
         if (strlen(value) > MAX_OPT_VALUE_LENGTH)
             valuebuf[MAX_OPT_VALUE_LENGTH - 3] = valuebuf[MAX_OPT_VALUE_LENGTH - 2] = valuebuf[MAX_OPT_VALUE_LENGTH - 1] = '.';
@@ -7671,7 +7671,7 @@ const char *strval; /* up to 4*BUFSZ-1 long; only first few chars matter */
             char *p;
 
             /* +1: skip opening single quote */
-            (void) strncpy(tmp, strval + 1, sizeof tmp - 1);
+            Strncpy(tmp, strval + 1, sizeof tmp - 1);
             tmp[sizeof tmp - 1] = '\0';
             if ((p = rindex(tmp, '\'')) != 0) {
                 *p = '\0';
@@ -7679,7 +7679,7 @@ const char *strval; /* up to 4*BUFSZ-1 long; only first few chars matter */
             } /* else buf[0] stays '\0' */
         }
     } else { /* not lone char nor single quote */
-        (void) strncpy(tmp, strval, sizeof tmp - 1);
+        Strncpy(tmp, strval, sizeof tmp - 1);
         tmp[sizeof tmp - 1] = '\0';
         escapes_ex(tmp, buf, TRUE);
     }

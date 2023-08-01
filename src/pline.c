@@ -278,7 +278,7 @@ VA_DECL(const char *, line)
 
                 if (len1 > 0)
                 {
-                    strncpy(cbuf, sp, len1);
+                    Strncpy(cbuf, sp, len1);
                     cbuf[len1] = 0;
                     Strcat(multi_line, cbuf);
                     memset(&attrs[pos], pline_attr, (size_t)len1);
@@ -288,7 +288,7 @@ VA_DECL(const char *, line)
 
                 if (len2 > 0)
                 {
-                    strncpy(sbuf, p, len2);
+                    Strncpy(sbuf, p, len2);
                     sbuf[len2] = 0;
                     switch (typechar)
                     {
@@ -325,7 +325,7 @@ VA_DECL(const char *, line)
                             Sprintf(cbuf, sbuf, va_arg(the_args, unsigned int));
                         break;
                     case '%':
-                        strncpy(cbuf, sbuf, len2 - 1);
+                        Strncpy(cbuf, sbuf, len2 - 1);
                         cbuf[len2 - 1] = 0;
                         break;
                         break;
@@ -358,11 +358,11 @@ VA_DECL(const char *, line)
     if ((ln = (int)strlen(combined_line)) > BIGBUFSZ - 1) 
     {
         //if (original_line != line)                          /* no '%' was present */
-        (void)strncpy(pbuf, combined_line, BIGBUFSZ - 1); /* caveat: unterminated */
+        Strncpy(pbuf, combined_line, BIGBUFSZ - 1); /* caveat: unterminated */
         /* truncate, preserving the final 3 characters:
            "___ extremely long text" -> "___ extremely l...ext"
            (this may be suboptimal if overflow is less than 3) */
-        (void)strncpy(pbuf + BIGBUFSZ - 1 - 6, "...", 3);
+        Strncpy(pbuf + BIGBUFSZ - 1 - 6, "...", 3);
         /* avoid strncpy; buffers could overlap if excess is small */
         pbuf[BIGBUFSZ - 1 - 3] = combined_line[ln - 3];
         pbuf[BIGBUFSZ - 1 - 2] = combined_line[ln - 2];
@@ -488,7 +488,7 @@ VA_DECL(const char *, line)
 
     /* this gets cleared after every pline message */
     iflags.last_msg = PLNMSG_UNKNOWN;
-    (void) strncpy(prevmsg, used_line, BUFSZ), prevmsg[BUFSZ - 1] = '\0';
+    Strncpy(prevmsg, used_line, BUFSZ), prevmsg[BUFSZ - 1] = '\0';
     if (msgtyp == MSGTYP_STOP && iflags.window_inited)
         display_nhwindow(WIN_MESSAGE, TRUE); /* --more-- */
 

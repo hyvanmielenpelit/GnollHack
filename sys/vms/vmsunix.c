@@ -261,7 +261,7 @@ const char *string;
     p = strchr(string, '=');
     if (p > string && p < string + sizeof name
         && strlen(p + 1) < sizeof value) {
-        (void) strncpy(name, string, p - string), name[p - string] = '\0';
+        Strncpy(name, string, p - string), name[p - string] = '\0';
         (void) strcpy(value, p + 1);
         return vms_define(name, value, ENV_USR);
     } else

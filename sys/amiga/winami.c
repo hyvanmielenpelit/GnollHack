@@ -454,7 +454,7 @@ amii_askname()
         amii_getlin_ex(GETLINE_ASK_NAME, ATR_NONE, NO_COLOR, "Who are you?", plnametmp, 0, 0, 0));
     } while (strlen(plnametmp) == 0);
 
-    strncpy(plname, plnametmp, PL_NSIZ - 1); /* Avoid overflowing plname[] */
+    (void)strncpy(plname, plnametmp, PL_NSIZ - 1); /* Avoid overflowing plname[] */
     plname[PL_NSIZ - 1] = 0;
 
     if (*plname == '\33') {
@@ -1039,7 +1039,7 @@ char def;
         /* any acceptable responses that follow <esc> aren't displayed */
         if ((rb = index(respbuf, '\033')) != 0)
             *rb = '\0';
-        (void) strncpy(prompt, query, QBUFSZ - 1);
+        Strncpy(prompt, query, QBUFSZ - 1);
         prompt[QBUFSZ - 1] = '\0';
         Sprintf(eos(prompt), " [%s]", respbuf);
         if (def)

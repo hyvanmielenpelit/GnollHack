@@ -1171,7 +1171,7 @@ NetHackQtPlayerSelector::NetHackQtPlayerSelector(NetHackQtKeyBuffer& ks) :
 
 void NetHackQtPlayerSelector::selectName(const QString& n)
 {
-    strncpy(plname,n.latin1(),sizeof(plname)-1);
+    (void)strncpy(plname,n.latin1(),sizeof(plname)-1);
 }
 
 void NetHackQtPlayerSelector::selectRole()
@@ -4984,7 +4984,7 @@ char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph,
 		// anything beyond <esc> is hidden
 		*cb = '\0';
 	    }
-	    (void)strncpy(message, question, QBUFSZ-1);
+	    Strncpy(message, question, QBUFSZ-1);
 	    message[QBUFSZ-1] = '\0';
 	    Sprintf(eos(message), " [%s]", choicebuf);
 	    if (def) Sprintf(eos(message), " (%c)", def);

@@ -8766,7 +8766,7 @@ write_monsters()
             if (write_fd < 0)
                 continue;
 
-            (void)strncpy(buf2, mons[m_idx].mname, 1);
+            Strncpy(buf2, mons[m_idx].mname, 1);
             buf2[1] = 0;
             *buf2 = highc(*buf2);
             Strcpy(buf, "## ");
@@ -8969,7 +8969,7 @@ write_items()
             if (write_fd < 0)
                 continue;
 
-            (void)strncpy(buf2, OBJ_NAME(objects[i_idx]), 1);
+            Strncpy(buf2, OBJ_NAME(objects[i_idx]), 1);
             buf2[1] = 0;
             *buf2 = highc(*buf2);
             Strcpy(buf, "## ");

@@ -554,7 +554,8 @@ int multicolor_orange1[1] = { CLR_ORANGE };
 int multicolor_orange2[2] = { NO_COLOR, CLR_ORANGE };
 int multicolor_orange3[3] = { NO_COLOR, NO_COLOR, CLR_ORANGE };
 int multicolor_orange4[4] = { NO_COLOR, NO_COLOR, NO_COLOR, CLR_ORANGE };
-
+int multicolor_text1[1] = { CLR_MSG_TEXT };
+int multicolor_text2[2] = { NO_COLOR, CLR_MSG_TEXT };
 
 NEARDATA const char* Moloch = "Moloch";
 /* for rejecting attempts to use wizard mode commands */

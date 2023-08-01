@@ -1634,10 +1634,10 @@ activate_take_off(VOID_ARGS)
 
         /* default activity for armor and/or accessories,
            possibly combined with weapons */
-        (void)strncpy(context.takeoff.disrobing, "disrobing", CONTEXTVERBSZ);
+        Strncpy(context.takeoff.disrobing, "disrobing", CONTEXTVERBSZ);
         /* specific activity when handling weapons only */
         if (!(context.takeoff.mask & ~W_WEAPON))
-            (void)strncpy(context.takeoff.disrobing, "disarming",
+            Strncpy(context.takeoff.disrobing, "disarming",
                 CONTEXTVERBSZ);
         (void)take_off();
     }
@@ -1738,10 +1738,10 @@ long mask;
     if (context.takeoff.mask && context.wear.mask) {
         /* default activity for armor and/or accessories,
            possibly combined with weapons */
-        (void)strncpy(context.takeoff.disrobing, "adjusting your equipment", CONTEXTVERBSZ);
+        Strncpy(context.takeoff.disrobing, "adjusting your equipment", CONTEXTVERBSZ);
         /* specific activity when handling weapons only */
         if (!(context.takeoff.mask & ~W_WEAPON))
-            (void)strncpy(context.takeoff.disrobing, "rearming",
+            Strncpy(context.takeoff.disrobing, "rearming",
                 CONTEXTVERBSZ);
         (void)take_off();
     }

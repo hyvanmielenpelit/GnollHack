@@ -193,8 +193,8 @@ char *argv[];
     tibheader.compiler = OTHER_COMP;
 #endif
 
-    strncpy(tibheader.ident, "NetHack 3.6 MSDOS Port binary tile file", 80);
-    strncpy(tibheader.timestamp, asctime(newtime), 24);
+    Strncpy(tibheader.ident, "NetHack 3.6 MSDOS Port binary tile file", 80);
+    Strncpy(tibheader.timestamp, asctime(newtime), 24);
     tibheader.timestamp[25] = '\0';
     tibheader.tilecount = tilecount;
     tibheader.numcolors = num_colors;

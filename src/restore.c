@@ -1801,7 +1801,7 @@ struct save_game_data* saved;
             char* timestr = ctime(&saved[k].gamestats.time_stamp);
             if (timestr && *timestr)
             {
-                strncpy(timebuf, timestr, strlen(timestr) - 1);
+                Strncpy(timebuf, timestr, strlen(timestr) - 1);
                 timebuf[strlen(timestr) - 1] = 0;
             }
             else

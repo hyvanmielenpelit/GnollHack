@@ -118,7 +118,7 @@ FILE *orig_yyin = NULL;
 		  savetoken(yytext);
 		  BEGIN(INITIAL);
 		  yylval.map = (char *) alloc(map_cnt + 1);
-		  (void) strncpy(yylval.map, map, map_cnt);
+		  Strncpy(yylval.map, map, map_cnt);
 		  yylval.map[map_cnt] = 0;
 		  map_cnt = 0;
 		  return MAP_ID;
@@ -129,7 +129,7 @@ FILE *orig_yyin = NULL;
 		  /* convert \r\n to \n */
 		  if (len >= 2 && yytext[len - 2] == '\r')
 		      len -= 1;
-		  (void) strncpy(map + map_cnt, yytext, len);
+		  Strncpy(map + map_cnt, yytext, len);
 		  map_cnt += len;
 		  map[map_cnt - 1] = '\n';
 		  map[map_cnt] = '\0';

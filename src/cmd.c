@@ -1035,7 +1035,7 @@ doability(VOID_ARGS)
                     char buf[BUFSZ];
                     Strcpy(buf, mon_monster_name(mtmp));
                     *buf = highc(*buf);
-                    strncpy(namebuf, buf, MAXNAMELENGTH - 1);
+                    Strncpy(namebuf, buf, MAXNAMELENGTH - 1);
                     namebuf[MAXNAMELENGTH - 1] = '\0';
                 }
 
@@ -8896,7 +8896,7 @@ unsigned long ynflags; /* 1 means use upper side for half-sized tile */
     if (strlen(query) >= QBUFSZ) {
         /* caller shouldn't have passed anything this long */
         paniclog("Query truncated: ", query);
-        (void) strncpy(qbuf, query, QBUFSZ - 1 - 3);
+        Strncpy(qbuf, query, QBUFSZ - 1 - 3);
         Strcpy(&qbuf[QBUFSZ - 1 - 3], "...");
         query = qbuf;
     }

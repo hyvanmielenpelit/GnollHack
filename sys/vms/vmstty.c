@@ -300,7 +300,7 @@ register int c;
      * previous read, particularly if user holds down the arrow keys...
      */
     if (inc > 0)
-        strncpy(seq_buf, inp, inc);
+        (void)strncpy(seq_buf, inp, inc);
     if (inc < (int) (sizeof seq_buf) - 1) {
         sts = sys$qiow(0, tt_chan, QIO_FUNC | IO$M_TIMED, &iosb,
                        (void (*) ()) 0, 0, seq_buf + inc,
@@ -349,7 +349,7 @@ register int c;
             }
         }
         if (cnt > 0)
-            strncpy((inp = inputbuf), p, (inc = cnt));
+            (void)strncpy((inp = inputbuf), p, (inc = cnt));
         else
             inc = 0, inp = 0;
     }

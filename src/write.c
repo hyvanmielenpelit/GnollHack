@@ -178,7 +178,7 @@ register struct obj *pen;
         nm += 3;
 
     if ((bp = strstri(nm, " armour")) != 0) {
-        (void) strncpy(bp, " armor ", 7); /* won't add '\0' */
+        Strncpy(bp, " armor ", 7); /* won't add '\0' */
         (void) mungspaces(bp + 1);        /* remove the extra space */
     }
 
@@ -341,8 +341,7 @@ found:
                 wipeout_text(namebuf, (6 + MAXULEV - u.ulevel) / 6, 0);
             } else
                 Sprintf(namebuf, "%s was here!", plname);
-            int multicolors[1] = { CLR_MSG_HINT };
-            You_multi_ex(ATR_NONE, CLR_MSG_FAIL, no_multiattrs, multicolors, "write \"%s\" and the scroll disappears.", namebuf);
+            You_multi_ex(ATR_NONE, CLR_MSG_FAIL, no_multiattrs, multicolor_text1, "write \"%s\" and the scroll disappears.", namebuf);
             useup(paper);
         }
         obfree(new_obj, (struct obj *) 0);

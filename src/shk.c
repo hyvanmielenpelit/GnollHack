@@ -583,7 +583,7 @@ char *enterstring;
         /* You seem to be new here */
         eshkp->visitct = 0;
         eshkp->following = 0;
-        (void) strncpy(eshkp->customer, plname, PL_NSIZ);
+        Strncpy(eshkp->customer, plname, PL_NSIZ);
         pacify_shk(shkp);
     }
 
@@ -1267,7 +1267,7 @@ register struct monst *shkp;
         return;
 
     rile_shk(shkp);
-    (void) strncpy(ESHK(shkp)->customer, plname, PL_NSIZ);
+    Strncpy(ESHK(shkp)->customer, plname, PL_NSIZ);
     ESHK(shkp)->following = 1;
 }
 
@@ -4564,7 +4564,7 @@ boolean cant_mollify;
     y = appear_here->place.y;
 
     /* not the best introduction to the shk... */
-    (void) strncpy(ESHK(shkp)->customer, plname, PL_NSIZ);
+    Strncpy(ESHK(shkp)->customer, plname, PL_NSIZ);
 
     /* if the shk is already on the war path, be sure it's all out */
     if (ANGRY(shkp) || ESHK(shkp)->following)

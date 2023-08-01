@@ -3258,7 +3258,7 @@ boolean from_configfile;
 
         if (hilite.behavior == BL_TH_TEXTMATCH && txt) 
         {
-            (void) strncpy(hilite.textmatch, txt, sizeof hilite.textmatch);
+            Strncpy(hilite.textmatch, txt, sizeof hilite.textmatch);
             hilite.textmatch[sizeof hilite.textmatch - 1] = '\0';
             (void) trimspaces(hilite.textmatch);
         }
@@ -4204,7 +4204,7 @@ choose_value:
             *inp = '\0'; /* strip '%' [this accepts trailing junk!] */
         } else if (*inp) {
             /* some random characters */
-            pline("\"%s\" is not a recognized number.", inp);
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_text1, "\"%s\" is not a recognized number.", inp);
             goto choose_value;
         }
         if (!gotnum) {

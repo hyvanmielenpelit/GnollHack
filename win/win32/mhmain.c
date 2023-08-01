@@ -1042,7 +1042,7 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         p_copy = (char *) GlobalLock(hglbCopy);
         if (p_copy)
         {
-            strncpy(p_copy, p, len);
+            (void)strncpy(p_copy, p, len);
             p_copy[len] = 0; // null character
         }
         GlobalUnlock(hglbCopy);

@@ -7211,7 +7211,7 @@ struct obj *obj; /* wand or spell */
     case SPE_KNOCK:
         /* up or down, but at closed portcullis only */
         if (is_db_wall(x, y) && find_drawbridge(&xx, &yy)) {
-            open_drawbridge(xx, yy);
+            open_drawbridge(xx, yy, TRUE);
             disclose = TRUE;
         } else if (u.dz > 0 && (x == xdnstair && y == ydnstair)
                    /* can't use the stairs down to quest level 2 until
@@ -7242,7 +7242,7 @@ struct obj *obj; /* wand or spell */
             && find_drawbridge(&xx, &yy)) 
         {
             if (!striking)
-                maybe_close_drawbridge(xx, yy);
+                maybe_close_drawbridge(xx, yy, TRUE);
             else
                 destroy_drawbridge(xx, yy, FALSE);
             disclose = TRUE;
@@ -7946,7 +7946,7 @@ boolean stop_at_first_hit_object;
                 {
                     if (cansee(x, y) || cansee(bhitpos.x, bhitpos.y))
                         learn_it = TRUE;
-                    open_drawbridge(x, y);
+                    open_drawbridge(x, y, TRUE);
                     drawbridge_hit = TRUE;
                 }
                 break;
@@ -7955,7 +7955,7 @@ boolean stop_at_first_hit_object;
                 if ((cansee(x, y) || cansee(bhitpos.x, bhitpos.y))
                     && levl[x][y].typ == DRAWBRIDGE_DOWN)
                     learn_it = TRUE;
-                maybe_close_drawbridge(x, y);
+                maybe_close_drawbridge(x, y, TRUE);
                 drawbridge_hit = TRUE;
                 break;
             case WAN_STRIKING:

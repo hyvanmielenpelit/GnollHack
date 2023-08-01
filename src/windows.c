@@ -512,7 +512,7 @@ const char *s;
 #define WINDOW_TYPE_MAXLEN 50
     if (strlen(s) >= WINDOW_TYPE_MAXLEN) {
         tmps = (char*)alloc(WINDOW_TYPE_MAXLEN);
-        (void)strncpy(tmps, s, WINDOW_TYPE_MAXLEN - 1);
+        Strncpy(tmps, s, WINDOW_TYPE_MAXLEN - 1);
         tmps[WINDOW_TYPE_MAXLEN - 1] = '\0';
         s = tmps;
     }

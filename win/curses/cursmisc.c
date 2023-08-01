@@ -353,7 +353,7 @@ curses_num_lines(const char *str, int width)
     char substr[BUFSZ];
     char tmpstr[BUFSZ];
 
-    strncpy(substr, str, BUFSZ-1);
+    (void)strncpy(substr, str, BUFSZ-1);
     substr[BUFSZ-1] = '\0';
 
     while (strlen(substr) > (size_t) width) {
@@ -405,7 +405,7 @@ curses_break_str(const char *str, int width, int line_num)
 
     if (strsize > (BUFSZ * 2) - 1) {
         paniclog("curses", "curses_break_str() string too long.");
-        strncpy(substr, str, (BUFSZ * 2) - 2);
+        (void)strncpy(substr, str, (BUFSZ * 2) - 2);
         substr[(BUFSZ * 2) - 1] = '\0';
     } else
         strcpy(substr, str);
@@ -477,7 +477,7 @@ curses_str_remainder(const char *str, int width, int line_num)
 
     if (strsize > (BUFSZ * 2) - 1) {
         paniclog("curses", "curses_str_remainder() string too long.");
-        strncpy(substr, str, (BUFSZ * 2) - 2);
+        (void)strncpy(substr, str, (BUFSZ * 2) - 2);
         substr[(BUFSZ * 2) - 1] = '\0';
     } else
         strcpy(substr, str);

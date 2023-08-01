@@ -2894,7 +2894,7 @@ const char *str, *attrs, *colors;
                 ob++;
         }
 
-        (void) strncpy(&cw->data[cw->cury][j], str, cw->cols - j - 1);
+        Strncpy(&cw->data[cw->cury][j], str, cw->cols - j - 1);
         cw->data[cw->cury][cw->cols - 1] = '\0'; /* null terminate */
         cw->cury = (cw->cury + 1) % cw->maxrow;
         cw->curx = 0;
@@ -3222,7 +3222,7 @@ struct extended_menu_info info UNUSED;
             len = BUFSZ - 1;
         }
         Sprintf(buf, "%c - ", ch ? ch : '?');
-        (void)strncpy(buf + 4, str, len);
+        Strncpy(buf + 4, str, len);
         buf[4 + len] = '\0';
         newstr = buf;
     }

@@ -539,6 +539,8 @@ E int multicolor_orange1[1];
 E int multicolor_orange2[2];
 E int multicolor_orange3[3];
 E int multicolor_orange4[4];
+E int multicolor_text1[1];
+E int multicolor_text2[2];
 
 E char toplines[TBUFSZ];
 E char toplineattrs[TBUFSZ];

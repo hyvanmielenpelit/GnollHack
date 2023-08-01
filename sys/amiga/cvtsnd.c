@@ -74,7 +74,7 @@ main(int ac, char **av)
     iff.volume = 0x10000;
     memcpy(iff.NAME, "NAME", 4);
     iff.nlen = 64;
-    strncpy(iff.name, aiff.name, 62);
+    (void)strncpy(iff.name, aiff.name, 62);
     iff.name[aiff.namelen] = 0;
     memcpy(iff.BODY, "BODY", 4);
     iff.blen = aiff.sndlen;

@@ -1751,7 +1751,7 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
             /* anything beyond <esc> is hidden */
             *cb = '\0';
         }
-        (void) strncpy(message, question, QBUFSZ - 1);
+        Strncpy(message, question, QBUFSZ - 1);
         message[QBUFSZ - 1] = '\0';
         sprintf(eos(message), " [%s]", choicebuf);
         if (def)
@@ -3587,10 +3587,10 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
             buf[0] = ochar;
             p = strchr(text, ':');
             if (p) {
-                strncpy(buf + 1, p, sizeof(buf) - 2);
+                (void)strncpy(buf + 1, p, sizeof(buf) - 2);
             } else {
                 buf[1] = ':';
-                strncpy(buf + 2, text, sizeof(buf) - 3);
+                (void)strncpy(buf + 2, text, sizeof(buf) - 3);
             }
             buf[sizeof buf - 1] = '\0';
             Sprintf(status_field->string,

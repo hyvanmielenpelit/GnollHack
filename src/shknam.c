@@ -739,7 +739,7 @@ const char *const *nlp;
                 break; /* new name */
         }
     }
-    (void) strncpy(ESHK(shk)->shknam, shname, PL_NSIZ);
+    Strncpy(ESHK(shk)->shknam, shname, PL_NSIZ);
     ESHK(shk)->shknam[PL_NSIZ - 1] = 0;
 }
 

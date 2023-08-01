@@ -597,7 +597,7 @@ int RunGnollHack(
     else if (preset_player_name && strcmp(preset_player_name, ""))
     {
         char plbuf[PL_NSIZ];
-        strncpy(plbuf, preset_player_name, PL_NSIZ - 1);
+        Strncpy(plbuf, preset_player_name, PL_NSIZ - 1);
         plbuf[PL_NSIZ - 1] = '\0';
 
         if (*cmdbuf)
@@ -607,7 +607,7 @@ int RunGnollHack(
     else if ((runflags & GHRUNFLAGS_FORCE_LAST_PLAYER_NAME) && recovery_name && strcmp(recovery_name, ""))
     {
         char plbuf[PL_NSIZ];
-        strncpy(plbuf, recovery_name, PL_NSIZ - 1);
+        Strncpy(plbuf, recovery_name, PL_NSIZ - 1);
         plbuf[PL_NSIZ - 1] = '\0';
 
         if (*cmdbuf)
@@ -639,7 +639,7 @@ int RunGnollHack(
     /* Set directly, as other parts of GnollHack do not purposedly set this */
     if (recovery_name && strcmp(recovery_name, ""))
     {
-        strncpy(recovery_plname, recovery_name, PL_NSIZ - 1);
+        Strncpy(recovery_plname, recovery_name, PL_NSIZ - 1);
         recovery_plname[PL_NSIZ - 1] = '\0';
     }
 

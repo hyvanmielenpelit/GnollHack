@@ -1547,7 +1547,7 @@ mar_putstr_text_ex(winid window, int attr, const char *str, int app, int color)
     ptr = text_lines[Anz_text_lines] =
         (char *) m_alloc(breite * sizeof(char) + 2);
     *ptr = (char) (attr + 1); /* avoid 0 */
-    strncpy(ptr + 1, str, breite);
+    (void)strncpy(ptr + 1, str, breite);
     ptr[breite + 1] = 0;
     Anz_text_lines++;
     zeilen_frei--;
@@ -1671,12 +1671,12 @@ const char *str;
         if (pos <= 0)
             pos = msg_width; /* Mar -- Oops, what a word :-) */
         message_age[msg_max] = TRUE;
-        strncpy(message_line[msg_max], toplines, pos);
+        (void)strncpy(message_line[msg_max], toplines, pos);
         message_line[msg_max][pos] = 0;
         rest = strcpy(buf, toplines + pos);
     } else {
         message_age[msg_max] = TRUE;
-        strncpy(message_line[msg_max], toplines, msg_width);
+        (void)strncpy(message_line[msg_max], toplines, msg_width);
         rest = 0;
     }
 
@@ -3060,7 +3060,7 @@ char *input;
         *input = '\033';
         input[1] = 0;
     } else
-        strncpy(input, ob_get_text(z_ob, LGREPLY, 0), length);
+        (void)strncpy(input, ob_get_text(z_ob, LGREPLY, 0), length);
 }
 
 /************************* ask_direction *******************************/

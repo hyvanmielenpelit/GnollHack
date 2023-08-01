@@ -234,7 +234,7 @@ const char *which;
     p += 3;
     if ((n = (size_t)(q - p)) >= sizeof numbuf)
         return -1;
-    (void) strncpy(numbuf, p, n);
+    Strncpy(numbuf, p, n);
     numbuf[n] = '\0';
     return atoi(numbuf);
 }

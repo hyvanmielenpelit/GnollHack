@@ -893,9 +893,9 @@ struct obj *instr;
                                 u.uevent.uheard_tune =
                                     2; /* tune now fully known */
                                 if (levl[x][y].typ == DRAWBRIDGE_DOWN)
-                                    maybe_close_drawbridge(x, y);
+                                    maybe_close_drawbridge(x, y, TRUE);
                                 else
-                                    open_drawbridge(x, y);
+                                    open_drawbridge(x, y, TRUE);
 
                                 if (!u.uachieve.learned_castle_tune)
                                 {
@@ -968,16 +968,23 @@ struct obj *instr;
                     if (tumblers)
                     {
                         if (gears)
-                            You_hear_ex(ATR_NONE, CLR_MSG_HINT, "%d tumbler%s click and %d gear%s turn.",
+                        {
+                            int multicolors[4] = {CLR_BRIGHT_MAGENTA, NO_COLOR, CLR_BRIGHT_MAGENTA, NO_COLOR};
+                            pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, "You hear %d tumbler%s click and %d gear%s turn.",
                                 tumblers, plur(tumblers), gears,
                                 plur(gears));
+                        }
                         else
-                            You_hear_ex(ATR_NONE, CLR_MSG_HINT, "%d tumbler%s click.", tumblers,
+                        {
+                            int multicolors[2] = { CLR_BRIGHT_MAGENTA, NO_COLOR };
+                            pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, "You hear %d tumbler%s click.", tumblers,
                                 plur(tumblers));
+                        }
                     }
                     else if (gears)
                     {
-                        You_hear_ex(ATR_NONE, CLR_MSG_HINT, "%d gear%s turn.", gears, plur(gears));
+                        int multicolors[2] = { CLR_BRIGHT_MAGENTA, NO_COLOR };
+                        pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, "You hear %d gear%s turn.", gears, plur(gears));
                         /* could only get `gears == 5' by playing five
                            correct notes followed by excess; otherwise,
                            tune would have matched above */

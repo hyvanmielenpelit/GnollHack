@@ -299,7 +299,7 @@ int start;
          */
         for (bp = buf; *bp; bp++)
             if (!isspace((uchar) *bp)) {
-                strncpy(SAVEF, bp, PATHLEN);
+                (void)strncpy(SAVEF, bp, PATHLEN);
                 break;
             }
     }
@@ -440,7 +440,7 @@ const char *name, *mode;
 
     /* Try the default directory first.  Then look along PATH.
      */
-    (void) strncpy(buf, name, BUFSIZ - 1);
+    Strncpy(buf, name, BUFSIZ - 1);
     buf[BUFSIZ - 1] = '\0';
     if ((fp = fopen(buf, mode)))
         return fp;
@@ -457,7 +457,7 @@ const char *name, *mode;
                 *bp++ = '\\';
                 ccnt++;
             }
-            (void) strncpy(bp, name, (BUFSIZ - ccnt) - 2);
+            Strncpy(bp, name, (BUFSIZ - ccnt) - 2);
             bp[BUFSIZ - ccnt - 1] = '\0';
             if ((fp = fopen(buf, mode)))
                 return fp;
@@ -466,7 +466,7 @@ const char *name, *mode;
         }
     }
 #ifdef OS2_CODEVIEW /* one more try for hackdir */
-    (void) strncpy(buf, hackdir, BUFSZ);
+    Strncpy(buf, hackdir, BUFSZ);
     buf[BUFSZ - 1] = '\0';
     if ((strlen(name) + 1 + strlen(buf)) < BUFSZ - 1) {
         append_slash(buf);

@@ -1236,7 +1236,7 @@ curs_HPbar(char *text, /* pre-padded with trailing spaces if short */
         bar_len = 30;
     if (bar_len > (k = (int) strlen(text))) /* 26 for vertical status */
         bar_len = k;
-    (void) strncpy(bar, text, bar_len);
+    Strncpy(bar, text, bar_len);
     bar[bar_len] = '\0';
 
     bar_pos = (bar_len * hpbar_percent) / 100;
