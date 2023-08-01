@@ -11,7 +11,7 @@
 /*
  * PATCHLEVEL is updated for each release.
  */
-#define PATCHLEVEL 2
+#define PATCHLEVEL 3
 /*
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.
@@ -19,7 +19,7 @@
  * EDITLEVEL is also used to indicate the pre-alpha / alpha / beta version if PRE_RELEASE compiler preprocessor option is on.
  * Change EDITLEVEL when the changes to the game are save-file-breaking.
  */
-#define EDITLEVEL 10
+#define EDITLEVEL 0
 
 /*
  * HOTFIXLEVEL indicates the hot fix number. 
