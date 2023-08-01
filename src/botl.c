@@ -630,7 +630,9 @@ int
 xlev_to_rank(xlev)
 int xlev;
 {
-    return (xlev <= RANK_MIN_THRESHOLD) ? 0 : (xlev <= MAXULEV) ? ((xlev + RANK_ADD_CONSTANT) / RANK_LEVEL_INCREMENT) : NUM_RANKS - 1;
+    int limited_xlev = (xlev <= MAXULEV) ? xlev : MAXULEV;
+    int raw_rank = (limited_xlev <= RANK_MIN_THRESHOLD) ? 0 : ((limited_xlev + RANK_ADD_CONSTANT) / RANK_LEVEL_INCREMENT);
+    return min(max(0, raw_rank), NUM_RANKS - 1);
 }
 
 #if 0 /* not currently needed */
@@ -693,7 +695,7 @@ size_t* title_length;
 
     /* Loop through each of the roles */
     for (i = 0; roles[i].name.m; i++)
-        for (j = 0; j < 9; j++) {
+        for (j = 0; j < NUM_RANKS; j++) {
             if (roles[i].rank[j].m
                 && !strcmpi(str, roles[i].rank[j].m)) //, strlen(roles[i].rank[j].m)
             {
@@ -721,7 +723,7 @@ max_rank_sz()
 {
     register int i;
     size_t r, maxr = 0;
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < NUM_RANKS; i++) {
         if (urole.rank[i].m && (r = strlen(urole.rank[i].m)) > maxr)
             maxr = r;
         if (urole.rank[i].f && (r = strlen(urole.rank[i].f)) > maxr)
@@ -4404,11 +4406,11 @@ choose_value:
             Strcpy(hilite.textmatch, twoweaptxt[rv]);
         } 
         else if (fld == BL_TITLE) {
-            const char *rolelist[3 * 9 + 1];
+            const char *rolelist[3 * NUM_RANKS + 1];
             char mbuf[MAXVALWIDTH], fbuf[MAXVALWIDTH], obuf[MAXVALWIDTH];
             int i, j, rv;
 
-            for (i = j = 0; i < 9; i++) {
+            for (i = j = 0; i < NUM_RANKS; i++) {
                 Sprintf(mbuf, "\"%s\"", urole.rank[i].m);
                 if (urole.rank[i].f) {
                     Sprintf(fbuf, "\"%s\"", urole.rank[i].f);
