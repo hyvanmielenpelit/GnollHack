@@ -114,7 +114,7 @@ namespace GnollHackX.iOS
 
         }
 
-        public async System.Threading.Tasks.Task RequestAppReview(ContentPage page)
+        public async void RequestAppReview(ContentPage page)
         {
             try
             {
