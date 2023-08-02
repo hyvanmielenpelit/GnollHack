@@ -133,6 +133,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhackios", "gnollhackio
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0} = {F8445183-52F2-45A0-BB4F-B433F3B721F0}
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackM", "..\csharp\GnollHackM\GnollHackM.csproj", "{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Android+Windows = Debug|Android+Windows
@@ -812,6 +814,50 @@ Global
 		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Win32.ActiveCfg = Release|x86
 		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Win32.Build.0 = Release|x86
 		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|x64.ActiveCfg = Release|ARM64
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|Android+Windows.ActiveCfg = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|Android+Windows.Build.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|Android+Windows.Deploy.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|ARM.Build.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|ARM.Deploy.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|ARM64.Deploy.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|iPhone.Deploy.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|iPhoneSimulator.Deploy.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|Win32.Build.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|Win32.Deploy.0 = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|Android+Windows.ActiveCfg = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|Android+Windows.Build.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|Android+Windows.Deploy.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|ARM.ActiveCfg = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|ARM.Build.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|ARM.Deploy.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|ARM64.Build.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|ARM64.Deploy.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|iPhone.Build.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|iPhone.Deploy.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|iPhoneSimulator.Deploy.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|Win32.ActiveCfg = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|Win32.Build.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|Win32.Deploy.0 = Release|Any CPU
+		{243AAE02-8D2C-4A1B-A33B-3A6C5A47A1DA}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
