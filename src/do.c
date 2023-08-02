@@ -774,6 +774,7 @@ int otyp;
     }
     
     boolean uses_spell_flags = otyp_uses_spellbook_wand_flags(otyp); // object_uses_spellbook_wand_flags_and_properties(obj);
+    boolean name_known = (!obj || objects[otyp].oc_name_known);
     boolean has_conferred_powers = FALSE;
     boolean has_extra_damage = FALSE;
     boolean has_slaying = FALSE;
@@ -1113,7 +1114,7 @@ int otyp;
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    if (objects[otyp].oc_name_known && (!obj || obj->oartifact == 0) && !objects[otyp].oc_unique && (objects[otyp].oc_class == SPBOOK_CLASS || objects[otyp].oc_class == SCROLL_CLASS)
+    if (name_known && (!obj || obj->oartifact == 0) && !objects[otyp].oc_unique && (objects[otyp].oc_class == SPBOOK_CLASS || objects[otyp].oc_class == SCROLL_CLASS)
         && otyp != SCR_BLANK_PAPER && otyp != SPE_BLANK_PAPER && otyp != SCR_SUPREME_DIABOLISM)
     {
         int ink = otyp_ink_cost(otyp);
@@ -1159,7 +1160,7 @@ int otyp;
     }
 
     boolean weapon_stats_shown = FALSE;
-    if (!uses_spell_flags && objects[otyp].oc_name_known && (is_otyp_weapon(otyp) || ((is_otyp_gloves(otyp) || is_otyp_boots(otyp) || objects[otyp].oc_class == GEM_CLASS) && stats_known)))
+    if (!uses_spell_flags && name_known && (is_otyp_weapon(otyp) || ((is_otyp_gloves(otyp) || is_otyp_boots(otyp) || objects[otyp].oc_class == GEM_CLASS) && stats_known)))
     {
         weapon_stats_shown = TRUE;
         boolean maindiceprinted = FALSE;
@@ -1683,13 +1684,13 @@ int otyp;
     }
 
 
-    boolean affectsac = ((objects[otyp].oc_class == ARMOR_CLASS && objects[otyp].oc_name_known)
+    boolean affectsac = ((objects[otyp].oc_class == ARMOR_CLASS && name_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
             || (obj && has_obj_mythic_defense(obj) && obj->mknown)
             || (stats_known && objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_armor_class != 0)
             );
 
-    boolean affectsmc = ((objects[otyp].oc_class == ARMOR_CLASS && objects[otyp].oc_name_known)
+    boolean affectsmc = ((objects[otyp].oc_class == ARMOR_CLASS && name_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
             || (obj && has_obj_mythic_defense(obj) && obj->mknown)
             || (stats_known && objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_magic_cancellation != 0)
@@ -1699,10 +1700,10 @@ int otyp;
     if (obj)
     {
         boolean nonexpeptionalarmor = nonexceptionality_armor(obj);
-        if ((((objects[otyp].oc_class == ARMOR_CLASS && objects[otyp].oc_name_known)
+        if ((((objects[otyp].oc_class == ARMOR_CLASS && name_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
             || (obj && has_obj_mythic_defense(obj) && obj->mknown))
-            && obj->exceptionality) || (nonexpeptionalarmor && objects[otyp].oc_name_known))
+            && obj->exceptionality) || (nonexpeptionalarmor && name_known))
         {
             const char* excep = nonexpeptionalarmor ? "Cannot have quality" :
                 obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional" :
@@ -2370,7 +2371,7 @@ int otyp;
         /* Mythic status */
         boolean nonmythic = (is_weapon(obj) || is_armor(obj)) && otyp_non_mythic(otyp)
             && !obj->oartifact && !objects[otyp].oc_unique && !(objects[otyp].oc_flags3 & O3_UNIQUE);
-        if (obj->dknown && objects[otyp].oc_name_known && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
+        if (obj->dknown && name_known && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
         {
             Sprintf(buf, "Mythic status:          %s", nonmythic ? "Cannot be mythic" : (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
