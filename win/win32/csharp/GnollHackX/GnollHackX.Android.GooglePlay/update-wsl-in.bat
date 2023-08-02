@@ -20,18 +20,18 @@ if not exist c:\wsl-in\assetpack2\Assets\banks mkdir c:\wsl-in\assetpack2\Assets
 del /Q c:\wsl-in\assetpack2\Assets\banks\*.*
 if not exist c:\wsl-in\assetpack2\aapt2output mkdir c:\wsl-in\assetpack2\aapt2output
 echo Copying banks to c:\wsl-in\assetpack2\Assets\banks
-copy ..\xam\GnollHackX\GnollHackX.Android.GooglePlay\OnDemand\AboutAssetPack.txt c:\wsl-in\assetpack2\Assets
+copy ..\csharp\GnollHackX\GnollHackX.Android.GooglePlay\OnDemand\AboutAssetPack.txt c:\wsl-in\assetpack2\Assets
 
-if not exist ..\xam\GnollHackX\GnollHackX.Android\banks mkdir ..\xam\GnollHackX\GnollHackX.Android\banks
-if not exist ..\xam\GnollHackX\GnollHackX.iOS\banks mkdir ..\xam\GnollHackX\GnollHackX.iOS\banks
-del /Q ..\xam\GnollHackX\GnollHackX.Android\banks\*.*
-del /Q ..\xam\GnollHackX\GnollHackX.iOS\banks\*.*
+if not exist ..\csharp\GnollHackX\GnollHackX.Android\banks mkdir ..\csharp\GnollHackX\GnollHackX.Android\banks
+if not exist ..\csharp\GnollHackX\GnollHackX.iOS\banks mkdir ..\csharp\GnollHackX\GnollHackX.iOS\banks
+del /Q ..\csharp\GnollHackX\GnollHackX.Android\banks\*.*
+del /Q ..\csharp\GnollHackX\GnollHackX.iOS\banks\*.*
 echo Copying banks to Android banks
-copy ..\bank\Mobile\*.* ..\xam\GnollHackX\GnollHackX.Android\banks
+copy ..\bank\Mobile\*.* ..\csharp\GnollHackX\GnollHackX.Android\banks
 echo Copying banks to iOS banks
-copy ..\bank\Mobile\*.* ..\xam\GnollHackX\GnollHackX.iOS\banks
+copy ..\bank\Mobile\*.* ..\csharp\GnollHackX\GnollHackX.iOS\banks
 
 echo Copying aapt2 to wsl-in\assetpack
-copy ..\xam\GnollHackX\GnollHackX.Android.GooglePlay\aapt2 c:\wsl-in\assetpack
+copy ..\csharp\GnollHackX\GnollHackX.Android.GooglePlay\aapt2 c:\wsl-in\assetpack
 echo Copying aapt2 to wsl-in\assetpack2
-copy ..\xam\GnollHackX\GnollHackX.Android.GooglePlay\aapt2 c:\wsl-in\assetpack2
+copy ..\csharp\GnollHackX\GnollHackX.Android.GooglePlay\aapt2 c:\wsl-in\assetpack2
