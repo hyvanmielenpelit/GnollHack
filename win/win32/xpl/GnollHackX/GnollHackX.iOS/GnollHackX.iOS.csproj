@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0BBCFE15-9A3B-4175-A543-24B39C812D9E}</ProjectGuid>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TemplateGuid>{6143fdea-f3c2-4a09-aafa-6e230626515e}</TemplateGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>GnollHackX.iOS</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <AssemblyName>GnollHackX.iOS</AssemblyName>
+    <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
+    <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
+    <ProvisioningType>manual</ProvisioningType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG;UNITY_IPHONE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchLink>None</MtouchLink>
+    <MtouchDebug>true</MtouchDebug>
+    <CodesignKey>Apple Development: Janne Gustafsson (8775PY8K73)</CodesignKey>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <DefineConstants>UNITY_IPHONE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG;UNITY_IPHONE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchArch>ARM64</MtouchArch>
+    <CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
+    <MtouchDebug>true</MtouchDebug>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchLink>None</MtouchLink>
+    <MtouchInterpreter>-all</MtouchInterpreter>
+    <MtouchExtraArgs>
+    </MtouchExtraArgs>
+    <MtouchSdkVersion>
+    </MtouchSdkVersion>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFastDev>false</MtouchFastDev>
+    <CodesignProvision>Apple Dev Development 2023</CodesignProvision>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <DefineConstants>UNITY_IPHONE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchArch>ARM64</MtouchArch>
+    <CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchInterpreter>-all</MtouchInterpreter>
+    <MtouchExtraArgs>
+    </MtouchExtraArgs>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchNoSymbolStrip>false</MtouchNoSymbolStrip>
+    <MtouchFastDev>false</MtouchFastDev>
+    <CodesignProvision>Apple Dev Distribution 2023</CodesignProvision>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
+    <AppExtensionDebugBundleId />
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Include="..\GnollHackX.FMOD\FmodService.cs" />
+    <Compile Include="..\GnollHackX.FMOD\fmod.cs" />
+    <Compile Include="..\GnollHackX.FMOD\fmod_dsp.cs" />
+    <Compile Include="..\GnollHackX.FMOD\fmod_errors.cs" />
+    <Compile Include="..\GnollHackX.FMOD\fmod_studio.cs" />
+    <Compile Include="..\GnollHackX.Common\GnollHackService.cs" />
+    <Compile Include="GHEditorRenderer.cs" />
+    <Compile Include="GHGamePageRenderer.cs" />
+    <Compile Include="GHMainPageRenderer.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <None Include="Entitlements.plist" />
+    <BundleResource Include="gnh\credits" />
+    <BundleResource Include="gnh\defaults.gnh" />
+    <BundleResource Include="gnh\license" />
+    <BundleResource Include="gnh\logfile" />
+    <BundleResource Include="gnh\nhdat" />
+    <BundleResource Include="gnh\perm" />
+    <BundleResource Include="gnh\record" />
+    <BundleResource Include="gnh\recover" />
+    <BundleResource Include="gnh\symbols" />
+    <BundleResource Include="gnh\sysconf" />
+    <BundleResource Include="gnh\xcredits" />
+    <BundleResource Include="gnh\xlogfile" />
+    <None Include="Info.plist" />
+    <Compile Include="PlatformService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <BundleResource Include="banks\Auxiliary.bank" />
+    <BundleResource Include="banks\Intro.bank" />
+    <BundleResource Include="banks\Master.bank" />
+    <BundleResource Include="banks\Master.strings.bank" />
+    <BundleResource Include="banks\Music.bank" />
+    <BundleResource Include="banks\Preliminary.bank" />
+    <ITunesArtwork Include="iTunesArtwork" />
+    <ITunesArtwork Include="iTunesArtwork%402x" />
+    <BundleResource Include="Resources\DejaVuSansMono-Bold.woff" />
+    <BundleResource Include="Resources\DejaVuSansMono-BoldOblique.woff" />
+    <BundleResource Include="Resources\DejaVuSansMono-Oblique.woff" />
+    <BundleResource Include="Resources\DejaVuSansMono.woff" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-1024.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-180.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-167.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-152.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-120.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-87.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-80.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-76.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-60.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-58.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-40.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-29.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\gnollhack-icon-v2-20.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp.Views.Forms">
+      <Version>2.80.3</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.CommunityToolkit">
+      <Version>2.0.6</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.CommunityToolkit.Markup">
+      <Version>2.0.6</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.FFImageLoading">
+      <Version>2.4.11.982</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.FFImageLoading.Forms">
+      <Version>2.4.11.982</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.FFImageLoading.Transformations">
+      <Version>2.4.11.982</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2578" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.7" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\GnollHackX\GnollHackX.csproj">
+      <Project>{5A266A7A-92C8-4E71-88AE-74AC420F9F18}</Project>
+      <Name>GnollHackX</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <NativeReference Include="Native References/libfmodstudio_iphoneos.a">
+      <Kind>Static</Kind>
+      <Frameworks>AudioToolbox CoreAudio</Frameworks>
+      <ForceLoad>True</ForceLoad>
+    </NativeReference>
+    <NativeReference Include="Native References/libfmod_iphoneos.a">
+      <Kind>Static</Kind>
+      <Frameworks>AudioToolbox CoreAudio</Frameworks>
+      <ForceLoad>True</ForceLoad>
+    </NativeReference>
+    <NativeReference Include="Native References/libgnollhackios.a">
+      <Kind>Static</Kind>
+      <ForceLoad>True</ForceLoad>
+      <IsCxx>True</IsCxx>
+    </NativeReference>
+  </ItemGroup>
+</Project>

@@ -204,7 +204,7 @@
       <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>..\csharp\GnollHackX\GnollHackX.Android.GooglePlay\copy-assetpack.bat</Command>
+      <Command>..\xpl\GnollHackX\GnollHackX.Android.GooglePlay\copy-assetpack.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -235,7 +235,7 @@
       <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>..\csharp\GnollHackX\GnollHackX.Android.GooglePlay\copy-assetpack.bat</Command>
+      <Command>..\xpl\GnollHackX\GnollHackX.Android.GooglePlay\copy-assetpack.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

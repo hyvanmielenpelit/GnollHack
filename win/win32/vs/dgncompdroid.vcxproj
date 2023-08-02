@@ -142,7 +142,7 @@
     <ClInclude Include="$(IncDir)you.h" />
     <ClInclude Include="$(IncDir)youprop.h" />
     <ClInclude Include="..\..\..\include\unixconf.h" />
-    <ClInclude Include="..\csharp\gnollhackdroid\droidconf.h" />
+    <ClInclude Include="..\xpl\gnollhackdroid\droidconf.h" />
     <SourcesToCopyRemotely Include="@(ClInclude)" />
     <SourcesToCopyRemotely Include="$(IncDir)*.h" />
   </ItemGroup>

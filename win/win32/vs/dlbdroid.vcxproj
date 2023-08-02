@@ -87,10 +87,10 @@
       <OutputFile>$(TargetPath)</OutputFile>
     </Link>
     <RemotePostBuildEvent>
-      <Command>cd ../../../dat;mkdir -p /mnt/c/wsl-out;mkdir -p /mnt/c/wsl-out/bin;../tools/dlbdroid.out cf nhdat help hh cmdhelp keyhelp history opthelp wizhelp dungeon tribute dispater.lev baalz.lev bigrm-*.lev bovine?.lev quantum?.lev castle.lev fakewiz?.lev jubilex.lev knox.lev medusa-?.lev minend-?.lev minefill.lev minetn-?.lev minotaur.lev modron?.lev oracle.lev orcus.lev sanctum.lev soko?-?.lev tarrasque.lev tower?.lev treasure1.lev valley.lev wizard?.lev yeenaghu.lev mainfill.lev hellfill.lev astral.lev air.lev earth.lev fire.lev water.lev ???-goal.lev ???-fil?.lev ???-loca.lev ???-strt.lev bogusmon data engrave epitaph oracles options quest.dat rumors;mkdir -p /mnt/c/wsl-out/include;mkdir -p /mnt/c/wsl-out/dat;mkdir -p /mnt/c/wsl-out/rc;cp ../include/*.h /mnt/c/wsl-out/include/;cp ../dat/* /mnt/c/wsl-out/dat/;cp nhdat /mnt/c/wsl-out/bin/;cp ../win/win32/csharp/libshare/defaults.gnh /mnt/c/wsl-out/rc/;cp ../win/win32/csharp/GnollHackX/libshare/sysconf /mnt/c/wsl-out/rc/</Command>
+      <Command>cd ../../../dat;mkdir -p /mnt/c/wsl-out;mkdir -p /mnt/c/wsl-out/bin;../tools/dlbdroid.out cf nhdat help hh cmdhelp keyhelp history opthelp wizhelp dungeon tribute dispater.lev baalz.lev bigrm-*.lev bovine?.lev quantum?.lev castle.lev fakewiz?.lev jubilex.lev knox.lev medusa-?.lev minend-?.lev minefill.lev minetn-?.lev minotaur.lev modron?.lev oracle.lev orcus.lev sanctum.lev soko?-?.lev tarrasque.lev tower?.lev treasure1.lev valley.lev wizard?.lev yeenaghu.lev mainfill.lev hellfill.lev astral.lev air.lev earth.lev fire.lev water.lev ???-goal.lev ???-fil?.lev ???-loca.lev ???-strt.lev bogusmon data engrave epitaph oracles options quest.dat rumors;mkdir -p /mnt/c/wsl-out/include;mkdir -p /mnt/c/wsl-out/dat;mkdir -p /mnt/c/wsl-out/rc;cp ../include/*.h /mnt/c/wsl-out/include/;cp ../dat/* /mnt/c/wsl-out/dat/;cp nhdat /mnt/c/wsl-out/bin/;cp ../win/win32/xpl/libshare/defaults.gnh /mnt/c/wsl-out/rc/;cp ../win/win32/xpl/libshare/sysconf /mnt/c/wsl-out/rc/</Command>
     </RemotePostBuildEvent>
     <PreBuildEvent>
-      <Command>..\csharp\GnollHackX\GnollHackX.Android.GooglePlay\update-wsl-in.bat</Command>
+      <Command>..\xpl\GnollHackX\GnollHackX.Android.GooglePlay\update-wsl-in.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

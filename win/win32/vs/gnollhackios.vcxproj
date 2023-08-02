@@ -168,7 +168,7 @@
       <AdditionalOptions>-lm -lc -static</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>..\csharp\gnollhackios\download-Debug-ARM64.bat</Command>
+      <Command>..\xpl\gnollhackios\download-Debug-ARM64.bat</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>if not exist "c:\mac-out" mkdir "c:\mac-out"</Command>
@@ -185,7 +185,7 @@
       <AdditionalOptions>-lm -lc -static</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>..\csharp\gnollhackios\download-Release-ARM64.bat</Command>
+      <Command>..\xpl\gnollhackios\download-Release-ARM64.bat</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>if not exist "c:\mac-out" mkdir "c:\mac-out"</Command>

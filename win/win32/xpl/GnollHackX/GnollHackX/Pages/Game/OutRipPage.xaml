@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             x:Class="GnollHackX.Pages.Game.OutRipPage"
+             BackgroundColor="Black"
+             Disappearing="ContentPage_Disappearing">
+    <ContentPage.Content>
+        <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black" >
+            <Grid HorizontalOptions="Center" VerticalOptions="Center" 
+                  AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </Grid.GestureRecognizers>
+                <ff:CachedImage HeightRequest="350" WidthRequest="350" Source="resource://GnollHackX.Assets.tombstone.png"/>
+                <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Margin="20,0,0,0" WidthRequest="180" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height ="Auto"/>
+                        <RowDefinition Height ="Auto"/>
+                        <RowDefinition Height ="Auto"/>
+                        <RowDefinition Height ="Auto"/>
+                        <RowDefinition Height ="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Text="R.I.P." TextColor="#555555" FontFamily="Diablo" FontSize="36" HorizontalTextAlignment="Center"/>
+                    <ff:CachedImage x:Name="PlayerImage"  Grid.Row="1" HeightRequest="96" WidthRequest="64"
+                                    IsVisible="{Binding IsGlyphVisible}" Source="{Binding GlyphImage}" 
+                                    HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Row="2" x:Name="NameLabel" WidthRequest="180" Text="" TextColor="#555555" FontFamily="Underwood" FontSize="16" HorizontalTextAlignment="Center" />
+                    <Label Grid.Row="3" x:Name="PointsLabel" WidthRequest="180" Text="" TextColor="#555555" FontFamily="Underwood" FontSize="14" HorizontalTextAlignment="Center" />
+                    <Label Grid.Row="4" x:Name="KillerLabel" WidthRequest="180" Text="" TextColor="#555555" FontFamily="Underwood" FontSize="14" HorizontalTextAlignment="Center" />
+                </Grid>
+            </Grid>
+        </AbsoluteLayout>
+    </ContentPage.Content>
+</ContentPage>

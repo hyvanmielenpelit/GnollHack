@@ -1,7 +1,0 @@
-GnollHack User Interface Button Icons
-Copyright (c) Janne Gustafsson, 2021-2022
-
-GNOLLHACK USER INTERFACE ICON GENERAL PUBLIC LICENSE
-("License Agreement")
-
-GnollHack User Interface Button Icons ("Icons") are licensed by the copyright owner ("Licensor") at no charge for use in any program or product that is licensed under the NetHack General Public License ("NGPL"). The recipient of the license ("Licensee") is free to copy, modify, distribute, and publish the Icons as part of such a program or product for any purpose (including commercial purposes), as long as the program or product is licensed under the NGPL. The Licensee may sublicense the the Icons to any third party under the terms identical to this License Agreement, provided that the Licensee gives the recipients also this License Agreement. The Licensee cannot sublicense the Icons on any other terms. There is no warranty or fitness of the Icons for any particular purpose. Attribution is desirable but optional.
