@@ -1253,7 +1253,7 @@ int otyp;
         int baserange = 0;
 
         /* Ammunition range */
-        if (objects[otyp].oc_multishot_style > 0) {
+        if (objects[otyp].oc_multishot_style > 0 || is_otyp_launcher(otyp) || is_otyp_nonmelee_throwing_weapon(otyp)) {
 
             Sprintf(buf, "%s  %s", 
                 is_otyp_launcher(otyp) ? "Shots per round:      " : 
@@ -1275,11 +1275,19 @@ int otyp;
         }
 
         /* Jousting */
-        if (obj && can_obj_joust(obj)) {
-
-            int chance = spear_skill_jousting_bonus(P_SKILL_LEVEL(weapon_skill_type(obj))) + riding_skill_jousting_bonus(P_SKILL_LEVEL(P_RIDING));
-            Sprintf(buf, "Jousting:               Yes, at %d%% chance when riding", chance);
-            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        if (can_otyp_joust(otyp))
+        {
+            if (obj) 
+            {
+                int chance = spear_skill_jousting_bonus(P_SKILL_LEVEL(weapon_skill_type(obj))) + riding_skill_jousting_bonus(P_SKILL_LEVEL(P_RIDING));
+                Sprintf(buf, "Jousting:               Yes, at %d%% chance when riding", chance);
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+            else
+            {
+                Strcpy(buf, "Jousting:               Yes");
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
         }
 
         /* Range and throw distance */
@@ -1635,12 +1643,12 @@ int otyp;
             if (wep_avg_dmg < 0)
                 wep_avg_dmg = 0;
         }
-        else
+        else if (obj)
         {
             double dmg_bonus = 0;
-            if (obj && is_ammo(obj) && uwep && is_launcher(uwep) && (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
+            if (is_ammo(obj) && uwep && is_launcher(uwep) && (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
                 dmg_bonus += (double)objects[uwep->otyp].oc_fixed_damage_bonus;
-            else if (obj && is_ammo(obj) && uswapwep && is_launcher(uswapwep) && (objects[uswapwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
+            else if (is_ammo(obj) && uswapwep && is_launcher(uswapwep) && (objects[uswapwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
                 dmg_bonus += (double)objects[uswapwep->otyp].oc_fixed_damage_bonus;
             else if(is_otyp_nonmelee_throwing_weapon(otyp) || objects[otyp].oc_skill == P_NONE)
                 dmg_bonus += (double)((int)strength_damage_bonus(ACURR(A_STR)) / 2);
@@ -1736,6 +1744,15 @@ int otyp;
                     Strcat(buf, ")");
                 }
             }
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+    }
+    else
+    {
+        boolean nonexpeptionalarmor = is_otyp_nonexceptionality_armor(otyp);
+        if (nonexpeptionalarmor)
+        {
+            Sprintf(buf, "Armor quality:          %s", "Cannot have quality");
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
     }
@@ -2246,9 +2263,9 @@ int otyp;
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
-        if (obj && objects[otyp].oc_enchantable)
+        if (objects[otyp].oc_enchantable)
         {
-            if (obj->known)
+            if (obj && obj->known)
             {
                 Strcpy(buf, "");
 
@@ -2327,7 +2344,7 @@ int otyp;
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
 
-            int max_ench = get_obj_max_enchantment(obj);
+            int max_ench = obj ? get_obj_max_enchantment(obj) : get_max_enchantment(objects[otyp].oc_enchantable);
             Sprintf(buf, "Safe enchantable level: %s%d or below", max_ench >= 0 ? "+" : "", max_ench);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
@@ -2366,9 +2383,9 @@ int otyp;
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
+    /* Mythic status */
     if (obj)
     {
-        /* Mythic status */
         boolean nonmythic = (is_weapon(obj) || is_armor(obj)) && otyp_non_mythic(otyp)
             && !obj->oartifact && !objects[otyp].oc_unique && !(objects[otyp].oc_flags3 & O3_UNIQUE);
         if (obj->dknown && name_known && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
@@ -2429,6 +2446,15 @@ int otyp;
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 }
             }
+        }
+    }
+    else
+    {
+        boolean nonmythic = (is_otyp_weapon(otyp) || is_otyp_armor(otyp)) && otyp_non_mythic(otyp) && !objects[otyp].oc_unique && !(objects[otyp].oc_flags3 & O3_UNIQUE);
+        if (nonmythic)
+        {
+            Sprintf(buf, "Mythic status:          %s", "Cannot be mythic");
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
     }
 
@@ -4014,18 +4040,28 @@ int otyp;
     }
 
     /* Notable */
-    if (obj && otyp == EGG && obj->corpsenm >= LOW_PM && obj->known && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG) != 0 && (obj->speflags & SPEFLAGS_YOURS) != 0)
+    boolean note_your_egg = obj && otyp == EGG && obj->corpsenm >= LOW_PM && obj->known && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG) != 0 && (obj->speflags & SPEFLAGS_YOURS) != 0;
+    boolean note_launcher_str_bonus = is_otyp_launcher(otyp) && !(objects[otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH);
+    if (note_your_egg || note_launcher_str_bonus)
     {
         int powercnt = 0;
 
         Sprintf(buf, "Notable:");
         putstr(datawin, ATR_HEADING, buf);
 
-        powercnt++;
-        Sprintf(buf, " %2d - %s", powercnt, "Laid by you");
-        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+        if (note_your_egg)
+        {
+            powercnt++;
+            Sprintf(buf, " %2d - %s", powercnt, "Laid by you");
+            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+        }
+        if (note_launcher_str_bonus)
+        {
+            powercnt++;
+            Sprintf(buf, " %2d - %s", powercnt, "Adds the user's strength bonus to damage.");
+            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+        }
     }
-
 
     /* Description */
     if (stats_known && OBJ_ITEM_DESC(otyp) /* && !(obj->oartifact && obj->nknown) */)
