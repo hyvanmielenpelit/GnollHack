@@ -57,7 +57,6 @@
     <None Remove="Assets\Lato-Regular.ttf" />
     <None Remove="Assets\main-menu-dwarf.jpg" />
     <None Remove="Assets\main-menu-gnoll.jpg" />
-    <None Remove="Assets\main-menu-portrait-snapshot.jpg" />
     <None Remove="Assets\main-menu-ranger.jpg" />
     <None Remove="Assets\Master.bank" />
     <None Remove="Assets\Master.strings.bank" />
@@ -288,7 +287,6 @@
     <Page Include="Assets\imrl.otf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />
-    <EmbeddedResource Include="Assets\main-menu-portrait-snapshot.jpg" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
     <EmbeddedResource Include="Assets\tombstone.png" />
     <EmbeddedResource Include="Assets\UI\abilities.png" />
@@ -465,8 +463,6 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.3" />
-    <PackageReference Include="Xamarin.CommunityToolkit" Version="2.0.6" />
-    <PackageReference Include="Xamarin.CommunityToolkit.Markup" Version="2.0.6" />
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.4.11.982" />

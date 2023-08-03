@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              xmlns:local="clr-namespace:GnollHackX" 
-             xmlns:xct="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit" 
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:controls="clr-namespace:GnollHackX.Controls"
              x:Class="GnollHackX.MainPage"
              NavigationPage.HasNavigationBar="false"
@@ -22,17 +20,6 @@
                HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" Aspect="AspectFit"/>
-
-        <ff:CachedImage x:Name="StillImage" Opacity="1" IsVisible="false"
-               HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-               AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
-               AbsoluteLayout.LayoutFlags="All" Aspect="AspectFill"/>
-
-        <!--<xct:MediaElement x:Name="videoView" IsVisible="false" IsLooping="true" Aspect="AspectFill" ShowsPlaybackControls="False"
-                                HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-                                AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0" AbsoluteLayout.LayoutFlags="All" 
-                                Source="ms-appx:///mainmenuportrait.mp4"
-                                />-->
 
         <local:ImageCarousel x:Name="carouselView" IsVisible="false"
                HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"

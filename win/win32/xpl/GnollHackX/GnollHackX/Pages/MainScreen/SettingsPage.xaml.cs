@@ -243,22 +243,8 @@ namespace GnollHackX.Pages.MainScreen
 
             App.CopyStreamingBankToDisk = StreamingBankToDiskSwitch.IsToggled;
             Preferences.Set("CopyStreamingBankToDisk", StreamingBankToDiskSwitch.IsToggled);
-            /*
-            if(!App.IsiOS)
-            {
-                bool oldCarousel = App.UsesCarousel;
-                App.UsesCarousel = CarouselSwitch.IsToggled;
-                Preferences.Set("UsesCarousel", CarouselSwitch.IsToggled);
-                if(oldCarousel != App.UsesCarousel)
-                {
-                    if (_mainPage != null)
-                        _mainPage.UpdateMainScreenBackgroundStyle();
-                    else if (_gamePage != null)
-                        _gamePage.MainPageBackgroundNeedsUpdate = true;
-                }
-            }
-            */
-            if (App.UsesCarousel && _mainPage != null)
+
+            if (_mainPage != null)
                 _mainPage.PlayCarouselView();
 
             if (unloadbanks)
@@ -335,7 +321,6 @@ namespace GnollHackX.Pages.MainScreen
         {
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
-            //bool carousel = false;
             bool allowbones = true, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
@@ -364,7 +349,6 @@ namespace GnollHackX.Pages.MainScreen
             postdiagnostics = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             customlink = Preferences.Get("CustomGameStatusLink", "");
             allowbones = Preferences.Get("AllowBones", true);
-            //carousel = Preferences.Get("UsesCarousel", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             if (_gamePage == null)
             {

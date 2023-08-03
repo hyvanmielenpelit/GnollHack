@@ -34,7 +34,6 @@ namespace GnollHackX
 
         CarouselBitmap[] _caruselBitmaps = new CarouselBitmap[]
         {
-            //new CarouselBitmap("GnollHackX.Assets.main-menu-portrait-snapshot.jpg", TextAlignment.Center, TextAlignment.Center),
             new CarouselBitmap("GnollHackX.Assets.main-menu-ranger.jpg", TextAlignment.Center, TextAlignment.Center),
             new CarouselBitmap("GnollHackX.Assets.main-menu-dwarf.jpg", TextAlignment.Center, TextAlignment.Center),
             new CarouselBitmap("GnollHackX.Assets.main-menu-gnoll.jpg", TextAlignment.Center, TextAlignment.Center),
