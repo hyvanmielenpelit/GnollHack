@@ -769,325 +769,332 @@ int
 doability(VOID_ARGS)
 {
     int i;
+    int res = 0;
 
-    menu_item* pick_list = (menu_item*)0;
-    winid win;
-    anything any;
-    int abilitynum = 0;
-    int glyph = 0;
-    glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Upolyd ? u.mfemale : flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
-    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
-
-    any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, gui_glyph, extended_create_window_info_from_mon(&youmonst));
-    start_menu_ex(win, GHMENU_STYLE_CHARACTER);
-
-    /* CHARACTER ABILITY INFORMATION */
-    any = zeroany;
-    add_extended_menu(win, NO_GLYPH, &any,
-        0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
-        "Character Abilities                   ", MENU_UNSELECTED, menu_heading_info());
-
-    Strcpy(available_ability_list[abilitynum].name, "Statistics");
-    available_ability_list[abilitynum].function_ptr = &docharacterstatistics;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    add_active_menu(win, YOU_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED);
-
-    abilitynum++;
-
-
-    Strcpy(available_ability_list[abilitynum].name, "Attributes");
-    available_ability_list[abilitynum].function_ptr = &doattributes;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    add_active_menu(win, ATTRIBUTES_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED);
-
-    abilitynum++;
-
-    Strcpy(available_ability_list[abilitynum].name, "Skills");
-    available_ability_list[abilitynum].function_ptr = &doskill;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    add_active_menu(win, SKILLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED);
-
-    abilitynum++;
-
-    if (Upolyd)
+    do
     {
-        Strcpy(available_ability_list[abilitynum].name, "Polymorphed form");
-        available_ability_list[abilitynum].function_ptr = &dopolyformstatistics;
-        available_ability_list[abilitynum].target_mtmp = 0;
+        menu_item* pick_list = (menu_item*)0;
+        winid win;
+        anything any;
+        int abilitynum = 0;
+        int glyph = 0;
+        glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Upolyd ? u.mfemale : flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
+        int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
+
+        any = zeroany;
+        win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, gui_glyph, extended_create_window_info_from_mon(&youmonst));
+        start_menu_ex(win, GHMENU_STYLE_CHARACTER);
+
+        /* CHARACTER ABILITY INFORMATION */
+        any = zeroany;
+        add_extended_menu(win, NO_GLYPH, &any,
+            0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
+            "Character Abilities                   ", MENU_UNSELECTED, menu_heading_info());
+
+        Strcpy(available_ability_list[abilitynum].name, "Statistics");
+        available_ability_list[abilitynum].function_ptr = &docharacterstatistics;
 
         any = zeroany;
         any.a_int = abilitynum + 1;
-        glyph = flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum);
-        gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
 
-        add_menu(win, gui_glyph, &any,
+        add_active_menu(win, YOU_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
             0, 0, ATR_NONE, NO_COLOR,
             available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
         abilitynum++;
 
-        /* Monster abilities */
-        Strcpy(available_ability_list[abilitynum].name, "Monster abilities");
-        available_ability_list[abilitynum].function_ptr = &domonsterability;
+
+        Strcpy(available_ability_list[abilitynum].name, "Attributes");
+        available_ability_list[abilitynum].function_ptr = &doattributes;
+
+        any = zeroany;
+        any.a_int = abilitynum + 1;
+
+        add_active_menu(win, ATTRIBUTES_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+            0, 0, ATR_NONE, NO_COLOR,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+        abilitynum++;
+
+        Strcpy(available_ability_list[abilitynum].name, "Skills");
+        available_ability_list[abilitynum].function_ptr = &doskill;
+
+        any = zeroany;
+        any.a_int = abilitynum + 1;
+
+        add_active_menu(win, SKILLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+            0, 0, ATR_NONE, NO_COLOR,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+        abilitynum++;
+
+        if (Upolyd)
+        {
+            Strcpy(available_ability_list[abilitynum].name, "Polymorphed form");
+            available_ability_list[abilitynum].function_ptr = &dopolyformstatistics;
+            available_ability_list[abilitynum].target_mtmp = 0;
+
+            any = zeroany;
+            any.a_int = abilitynum + 1;
+            glyph = flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum);
+            gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
+
+            add_menu(win, gui_glyph, &any,
+                0, 0, ATR_NONE, NO_COLOR,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+            abilitynum++;
+
+#ifndef GNH_MOBILE
+            /* Monster abilities */
+            Strcpy(available_ability_list[abilitynum].name, "Monster abilities");
+            available_ability_list[abilitynum].function_ptr = &domonsterability;
+            available_ability_list[abilitynum].target_mtmp = 0;
+
+            any = zeroany;
+            any.a_int = abilitynum + 1;
+
+            int monabilitynum = print_monster_abilities(WIN_ERR);
+            add_extended_menu(win, MONSTER_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+                0, 0, ATR_NONE, NO_COLOR,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED, monabilitynum > 0 ? active_menu_info() : zeroextendedmenuinfo);
+
+            abilitynum++;
+#endif
+        }
+
+#ifndef GNH_MOBILE
+        /* SKILL-BASED ABILITIES */
+        any = zeroany;
+        add_extended_menu(win, NO_GLYPH, &any,
+            0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
+            "Use Skill-Based Abilities             ", MENU_UNSELECTED, menu_heading_info());
+
+        /* Ride */
+        Strcpy(available_ability_list[abilitynum].name, "Ride");
+        available_ability_list[abilitynum].function_ptr = &doride;
         available_ability_list[abilitynum].target_mtmp = 0;
 
         any = zeroany;
         any.a_int = abilitynum + 1;
 
-        int monabilitynum = print_monster_abilities(WIN_ERR);
-        add_extended_menu(win, MONSTER_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+        add_extended_menu(win, RIDE_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
             0, 0, ATR_NONE, NO_COLOR,
-            available_ability_list[abilitynum].name, MENU_UNSELECTED, monabilitynum > 0 ? active_menu_info() : zeroextendedmenuinfo);
+            available_ability_list[abilitynum].name, MENU_UNSELECTED, !P_RESTRICTED(P_RIDING) ? active_menu_info() : zeroextendedmenuinfo);
 
         abilitynum++;
-    }
 
-#ifndef GNH_MOBILE
-    /* SKILL-BASED ABILITIES */
-    any = zeroany;
-    add_extended_menu(win, NO_GLYPH, &any,
-        0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
-        "Use Skill-Based Abilities             ", MENU_UNSELECTED, menu_heading_info());
+        /* Untrap */
+        Strcpy(available_ability_list[abilitynum].name, "Untrap");
+        available_ability_list[abilitynum].function_ptr = &dountrap;
+        available_ability_list[abilitynum].target_mtmp = 0;
 
-    /* Ride */
-    Strcpy(available_ability_list[abilitynum].name, "Ride");
-    available_ability_list[abilitynum].function_ptr = &doride;
-    available_ability_list[abilitynum].target_mtmp = 0;
+        any = zeroany;
+        any.a_int = abilitynum + 1;
 
-    any = zeroany;
-    any.a_int = abilitynum + 1;
+        add_extended_menu(win, UNTRAP_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+            0, 0, ATR_NONE, NO_COLOR,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED, !P_RESTRICTED(P_DISARM_TRAP) ? active_menu_info() : zeroextendedmenuinfo);
 
-    add_extended_menu(win, RIDE_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED, !P_RESTRICTED(P_RIDING) ? active_menu_info() : zeroextendedmenuinfo);
-
-    abilitynum++;
-
-    /* Untrap */
-    Strcpy(available_ability_list[abilitynum].name, "Untrap");
-    available_ability_list[abilitynum].function_ptr = &dountrap;
-    available_ability_list[abilitynum].target_mtmp = 0;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    add_extended_menu(win, UNTRAP_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED, !P_RESTRICTED(P_DISARM_TRAP) ? active_menu_info() : zeroextendedmenuinfo);
-
-    abilitynum++;
+        abilitynum++;
 
 #endif
 
-    /* Game Status */
-    any = zeroany;
-    add_extended_menu(win, NO_GLYPH, &any,
-        0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
-        "Game Status                           ", MENU_UNSELECTED, menu_heading_info());
-
-    /*
-    strcpy(available_ability_list[abilitynum].name, "Quests");
-    available_ability_list[abilitynum].function_ptr = &doquests;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED);
-
-    abilitynum++;
-    */
-
-    Strcpy(available_ability_list[abilitynum].name, "Goals and achievements");
-    available_ability_list[abilitynum].function_ptr = &doconduct;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    add_active_menu(win, CONDUCT_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED);
-
-    abilitynum++;
-
-    Strcpy(available_ability_list[abilitynum].name, "Dungeon overview");
-    available_ability_list[abilitynum].function_ptr = &dooverview;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    add_active_menu(win, OVERVIEW_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED);
-
-    abilitynum++;
-
-    Strcpy(available_ability_list[abilitynum].name, "Game events");
-    available_ability_list[abilitynum].function_ptr = &do_gamelog;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    add_active_menu(win, CHRONICLE_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED);
-
-    abilitynum++;
-
-    Strcpy(available_ability_list[abilitynum].name, "Killed monsters");
-    available_ability_list[abilitynum].function_ptr = &dokilledmonsters;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    int nkilled = 0;
-    for (i = LOW_PM; i < NUM_MONSTERS; i++)
-        nkilled += (int)mvitals[i].died;
-
-    add_extended_menu(win, KILLED_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED, nkilled ? active_menu_info() : zeroextendedmenuinfo);
-
-    abilitynum++;
-
-    Strcpy(available_ability_list[abilitynum].name, "Genocided monsters");
-    available_ability_list[abilitynum].function_ptr = &dogenocidedmonsters;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    add_extended_menu(win, GENOCIDED_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED, num_genocides() ? active_menu_info() : zeroextendedmenuinfo);
-
-    abilitynum++;
-
-    Strcpy(available_ability_list[abilitynum].name, "Discovered items");
-    available_ability_list[abilitynum].function_ptr = &dodiscovered;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    add_active_menu(win, DISCOVERED_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED);
-
-    abilitynum++;
-
-
-
-    /* Your pets' statistics */
-    int petcount = 0;
-    struct monst* mtmp;
-    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
-    {
-        if (!DEADMONSTER(mtmp) && is_tame(mtmp))
-        {
-            petcount++;
-        }
-    }
-
-    if (petcount > 0)
-    {
+        /* Game Status */
         any = zeroany;
         add_extended_menu(win, NO_GLYPH, &any,
             0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
-            "Companion Statistics                ", MENU_UNSELECTED, menu_heading_info());
+            "Game Status                           ", MENU_UNSELECTED, menu_heading_info());
 
+        /*
+        strcpy(available_ability_list[abilitynum].name, "Quests");
+        available_ability_list[abilitynum].function_ptr = &doquests;
+
+        any = zeroany;
+        any.a_int = abilitynum + 1;
+
+        add_menu(win, NO_GLYPH, &any,
+            0, 0, ATR_NONE, NO_COLOR,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+        abilitynum++;
+        */
+
+        Strcpy(available_ability_list[abilitynum].name, "Goals and achievements");
+        available_ability_list[abilitynum].function_ptr = &doconduct;
+
+        any = zeroany;
+        any.a_int = abilitynum + 1;
+
+        add_active_menu(win, CONDUCT_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+            0, 0, ATR_NONE, NO_COLOR,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+        abilitynum++;
+
+        Strcpy(available_ability_list[abilitynum].name, "Dungeon overview");
+        available_ability_list[abilitynum].function_ptr = &dooverview;
+
+        any = zeroany;
+        any.a_int = abilitynum + 1;
+
+        add_active_menu(win, OVERVIEW_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+            0, 0, ATR_NONE, NO_COLOR,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+        abilitynum++;
+
+        Strcpy(available_ability_list[abilitynum].name, "Game events");
+        available_ability_list[abilitynum].function_ptr = &do_gamelog;
+
+        any = zeroany;
+        any.a_int = abilitynum + 1;
+
+        add_active_menu(win, CHRONICLE_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+            0, 0, ATR_NONE, NO_COLOR,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+        abilitynum++;
+
+        Strcpy(available_ability_list[abilitynum].name, "Killed monsters");
+        available_ability_list[abilitynum].function_ptr = &dokilledmonsters;
+
+        any = zeroany;
+        any.a_int = abilitynum + 1;
+
+        int nkilled = 0;
+        for (i = LOW_PM; i < NUM_MONSTERS; i++)
+            nkilled += (int)mvitals[i].died;
+
+        add_extended_menu(win, KILLED_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+            0, 0, ATR_NONE, NO_COLOR,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED, nkilled ? active_menu_info() : zeroextendedmenuinfo);
+
+        abilitynum++;
+
+        Strcpy(available_ability_list[abilitynum].name, "Genocided monsters");
+        available_ability_list[abilitynum].function_ptr = &dogenocidedmonsters;
+
+        any = zeroany;
+        any.a_int = abilitynum + 1;
+
+        add_extended_menu(win, GENOCIDED_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+            0, 0, ATR_NONE, NO_COLOR,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED, num_genocides() ? active_menu_info() : zeroextendedmenuinfo);
+
+        abilitynum++;
+
+        Strcpy(available_ability_list[abilitynum].name, "Discovered items");
+        available_ability_list[abilitynum].function_ptr = &dodiscovered;
+
+        any = zeroany;
+        any.a_int = abilitynum + 1;
+
+        add_active_menu(win, DISCOVERED_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+            0, 0, ATR_NONE, NO_COLOR,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+        abilitynum++;
+
+
+
+        /* Your pets' statistics */
+        int petcount = 0;
+        struct monst* mtmp;
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {
             if (!DEADMONSTER(mtmp) && is_tame(mtmp))
             {
-                char namebuf[MAXNAMELENGTH];
-                if (UMNAME(mtmp))
-                {
-                    char umnbuf[BUFSIZ];
-                    Strcpy(umnbuf, UMNAME(mtmp));
-                    umnbuf[min(MAXNAMELENGTH, PL_PSIZ) - 1] = '\0'; /* Limit the length of the name */
-                    Strcpy(namebuf, umnbuf);
-                }
-                else if (MNAME(mtmp) && mtmp->u_know_mname)
-                {
-                    char mnbuf[BUFSIZ];
-                    Strcpy(mnbuf, MNAME(mtmp));
-                    mnbuf[min(MAXNAMELENGTH, PL_PSIZ) - 1] = '\0'; /* Limit the length of the name */
-                    Strcpy(namebuf, mnbuf);
-                }
-                else
-                {
-                    char buf[BUFSZ];
-                    Strcpy(buf, mon_monster_name(mtmp));
-                    *buf = highc(*buf);
-                    Strncpy(namebuf, buf, MAXNAMELENGTH - 1);
-                    namebuf[MAXNAMELENGTH - 1] = '\0';
-                }
-
-                Sprintf(available_ability_list[abilitynum].name, "%s", namebuf);
-                available_ability_list[abilitynum].function_mtmp_ptr = &doviewpetstatistics;
-                available_ability_list[abilitynum].target_mtmp = mtmp;
-
-                any = zeroany;
-                any.a_int = abilitynum + 1;
-
-                glyph = abs(any_mon_to_glyph(mtmp, rn2_on_display_rng));
-                gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, MAT_NONE, 0));
-
-                add_menu(win, gui_glyph, &any,
-                    0, 0, ATR_NONE, NO_COLOR,
-                    available_ability_list[abilitynum].name, MENU_UNSELECTED);
-
-                abilitynum++;
-
-                if (abilitynum >= MAXABILITYNUM)
-                    break;
+                petcount++;
             }
         }
-    }
 
-    end_menu(win, "Character and Game Status");
+        if (petcount > 0)
+        {
+            any = zeroany;
+            add_extended_menu(win, NO_GLYPH, &any,
+                0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
+                "Companion Statistics                ", MENU_UNSELECTED, menu_heading_info());
+
+            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+            {
+                if (!DEADMONSTER(mtmp) && is_tame(mtmp))
+                {
+                    char namebuf[MAXNAMELENGTH];
+                    if (UMNAME(mtmp))
+                    {
+                        char umnbuf[BUFSIZ];
+                        Strcpy(umnbuf, UMNAME(mtmp));
+                        umnbuf[min(MAXNAMELENGTH, PL_PSIZ) - 1] = '\0'; /* Limit the length of the name */
+                        Strcpy(namebuf, umnbuf);
+                    }
+                    else if (MNAME(mtmp) && mtmp->u_know_mname)
+                    {
+                        char mnbuf[BUFSIZ];
+                        Strcpy(mnbuf, MNAME(mtmp));
+                        mnbuf[min(MAXNAMELENGTH, PL_PSIZ) - 1] = '\0'; /* Limit the length of the name */
+                        Strcpy(namebuf, mnbuf);
+                    }
+                    else
+                    {
+                        char buf[BUFSZ];
+                        Strcpy(buf, mon_monster_name(mtmp));
+                        *buf = highc(*buf);
+                        Strncpy(namebuf, buf, MAXNAMELENGTH - 1);
+                        namebuf[MAXNAMELENGTH - 1] = '\0';
+                    }
+
+                    Sprintf(available_ability_list[abilitynum].name, "%s", namebuf);
+                    available_ability_list[abilitynum].function_mtmp_ptr = &doviewpetstatistics;
+                    available_ability_list[abilitynum].target_mtmp = mtmp;
+
+                    any = zeroany;
+                    any.a_int = abilitynum + 1;
+
+                    glyph = abs(any_mon_to_glyph(mtmp, rn2_on_display_rng));
+                    gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, MAT_NONE, 0));
+
+                    add_menu(win, gui_glyph, &any,
+                        0, 0, ATR_NONE, NO_COLOR,
+                        available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+                    abilitynum++;
+
+                    if (abilitynum >= MAXABILITYNUM)
+                        break;
+                }
+            }
+        }
+
+        end_menu(win, "Character and Game Status");
 
 
-    if (abilitynum <= 0)
-    {
-        You("don't have any special abilities.");
+        if (abilitynum <= 0)
+        {
+            You("don't have any special abilities.");
+            destroy_nhwindow(win);
+            return 0;
+        }
+
+        i = '\0';
+        if (select_menu(win, PICK_ONE, &pick_list) > 0)
+        {
+            i = pick_list->item.a_int;
+            free((genericptr_t)pick_list);
+        }
         destroy_nhwindow(win);
-        return 0;
-    }
 
-    i = '\0';
-    if (select_menu(win, PICK_ONE, &pick_list) > 0) 
-    {
-        i = pick_list->item.a_int;
-        free((genericptr_t)pick_list);
-    }
-    destroy_nhwindow(win);
+        if (i == '\0' || i > abilitynum || i < 1)
+            return 0;
 
-    if (i == '\0' || i > abilitynum || i < 1)
-        return 0;
-
-    int res = 0;
-    int j = i - 1;
-    if (available_ability_list[j].function_mtmp_ptr && available_ability_list[j].target_mtmp)
-        res = (available_ability_list[j].function_mtmp_ptr)(available_ability_list[j].target_mtmp);
-    else if (available_ability_list[j].function_ptr)
-        res = (available_ability_list[j].function_ptr)();
+        int j = i - 1;
+        if (available_ability_list[j].function_mtmp_ptr && available_ability_list[j].target_mtmp)
+            res = (available_ability_list[j].function_mtmp_ptr)(available_ability_list[j].target_mtmp);
+        else if (available_ability_list[j].function_ptr)
+            res = (available_ability_list[j].function_ptr)();
+        else
+            return 0;
+    } while (!res);
 
     return res;
 }
