@@ -1885,7 +1885,7 @@ struct obj *otmp;
         updatemaxen();
         int mana_after = u.uen;
         int mana_gain = mana_after - mana_before;
-        if (mana_gain > 0)
+        if (mana_gain > 0 && isok(u.ux, u.uy))
         {
             char fbuf[BUFSZ];
             Sprintf(fbuf, "+%d", mana_gain);
@@ -2000,7 +2000,7 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
         updatemaxhp();
         int max_hp_after = (Upolyd ? u.mhmax : u.uhpmax);
         int max_hp_gain = max_hp_after - max_hp_before;
-        if (max_hp_gain > 0)
+        if (max_hp_gain > 0 && isok(u.ux, u.uy))
         {
             char fbuf[BUFSZ];
             Sprintf(fbuf, "+%d max HP", max_hp_gain);

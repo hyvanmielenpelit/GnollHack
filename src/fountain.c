@@ -320,13 +320,13 @@ drinkfountain()
         int mana_gain = mana_after - mana_before;
         int max_mana_after = u.uenmax;
         int max_mana_gain = max_mana_after - max_mana_before;
-        if (max_mana_gain > 0)
+        if (max_mana_gain > 0 && isok(u.ux, u.uy))
         {
             char fbuf[BUFSZ];
             Sprintf(fbuf, "+%d max mana", max_mana_gain);
             display_floating_text(u.ux, u.uy, fbuf, FLOATING_TEXT_ATTRIBUTE_GAIN, ATR_NONE, NO_COLOR, 0UL);
         }
-        if (mana_gain > 0)
+        if (mana_gain > 0 && isok(u.ux, u.uy))
         {
             char fbuf[BUFSZ];
             Sprintf(fbuf, "+%d", mana_gain);

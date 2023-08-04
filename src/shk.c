@@ -109,10 +109,12 @@ long amount;
     freeinv(ygold);
     add_to_minv(mon, ygold);
 
-    char ftbuf[BUFSZ];
-    Sprintf(ftbuf, "-%ld gold", amount);
-    display_floating_text(u.ux, u.uy, ftbuf, FLOATING_TEXT_GOLD_REDUCED, ATR_NONE, NO_COLOR, 0UL);
-
+    if (isok(u.ux, u.uy))
+    {
+        char ftbuf[BUFSZ];
+        Sprintf(ftbuf, "-%ld gold", amount);
+        display_floating_text(u.ux, u.uy, ftbuf, FLOATING_TEXT_GOLD_REDUCED, ATR_NONE, NO_COLOR, 0UL);
+    }
     context.botl = 1;
     return amount;
 }

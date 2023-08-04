@@ -2698,7 +2698,7 @@ struct obj *obj;
                 u.uen += epboost;
                 int mana_after = u.uen;
                 int mana_gain = mana_after - mana_before;
-                if (mana_gain > 0)
+                if (mana_gain > 0 && isok(u.ux, u.uy))
                 {
                     char fbuf[BUFSZ];
                     Sprintf(fbuf, "+%d", mana_gain);

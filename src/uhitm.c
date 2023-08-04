@@ -5041,7 +5041,7 @@ double hp_d;
     int hp_after = *target_integer_part_ptr;
     int damage_dealt = hp_before - hp_after;
 
-    if (damage_dealt != 0)
+    if (damage_dealt != 0 && isok(u.ux, u.uy))
     {
         char buf[BUFSZ];
         if(damage_dealt > 0)
@@ -5125,7 +5125,7 @@ double hp_d;
     if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
         context.botl = 1;
 
-    if (canspotmon(mtmp) && damage_dealt != 0)
+    if (canspotmon(mtmp) && damage_dealt != 0 && isok(mtmp->mx, mtmp->my))
     {
         char buf[BUFSZ];
         if(damage_dealt > 0)

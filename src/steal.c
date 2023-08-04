@@ -150,9 +150,12 @@ register struct monst *mtmp;
         freeinv(ygold);
         add_to_minv(mtmp, ygold);
 
-        char ftbuf[BUFSZ];
-        Sprintf(ftbuf, "-%ld gold", tmp);
-        display_floating_text(u.ux, u.uy, ftbuf, FLOATING_TEXT_GOLD_REDUCED, ATR_NONE, NO_COLOR, 0UL);
+        if (isok(u.ux, u.uy))
+        {
+            char ftbuf[BUFSZ];
+            Sprintf(ftbuf, "-%ld gold", tmp);
+            display_floating_text(u.ux, u.uy, ftbuf, FLOATING_TEXT_GOLD_REDUCED, ATR_NONE, NO_COLOR, 0UL);
+        }
 
         play_sfx_sound(SFX_STEAL_GOLD);
         Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "purse feels lighter.");

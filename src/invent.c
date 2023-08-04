@@ -1692,7 +1692,7 @@ struct obj *obj;
     {
         if (obj->oclass == COIN_CLASS)
         {
-            if (quan > 0)
+            if (quan > 0 && isok(u.ux, u.uy))
             {
                 char cbuf[BUFSZ];
                 Sprintf(cbuf, "+%ld %s", quan, "gold" /*currency(quan)*/);

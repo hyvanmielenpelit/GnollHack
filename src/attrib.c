@@ -223,7 +223,7 @@ int msgflg; /* positive => no message, zero => message, and */
         You_feel_ex(ATR_NONE, (incr > 0) ? CLR_MSG_POSITIVE : (incr < 0) ? CLR_MSG_NEGATIVE : NO_COLOR, "%s%s!", (incr > 1 || incr < -1) ? "very " : "", attrstr);
         
         int change = ACURR(ndx) - old_acurr;
-        if (change != 0)
+        if (change != 0 && isok(u.ux, u.uy))
         {
             char ftbuf[BUFSZ];
             Sprintf(ftbuf, "%s%d %s", change >= 0 ? "+" : "", change, attrname[ndx]);
@@ -303,7 +303,7 @@ boolean verbose;
     if (verbose && canspotmon(mon))
     {
         int change = M_ACURR(mon, ndx) - old_acurr;
-        if (change != 0)
+        if (change != 0 && isok(mon->mx, mon->my))
         {
             char ftbuf[BUFSZ];
             Sprintf(ftbuf, "%s%d %s", change >= 0 ? "+" : "", change, attrname[ndx]);

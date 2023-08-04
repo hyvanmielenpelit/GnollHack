@@ -5066,13 +5066,12 @@ int n;
 
     int mana_after = u.uen;
     int mana_loss = mana_before - mana_after;
-    if (mana_loss > 0)
+    if (mana_loss > 0 && isok(u.ux, u.uy))
     {
         char fbuf[BUFSZ];
         Sprintf(fbuf, "%d", -mana_loss);
         display_floating_text(u.ux, u.uy, fbuf, FLOATING_TEXT_MANA_LOSS, ATR_NONE, NO_COLOR, 0UL);
     }
-
 }
 
 /* disarm a trap */
