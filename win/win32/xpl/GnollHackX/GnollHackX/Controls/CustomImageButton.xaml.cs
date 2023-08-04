@@ -110,7 +110,7 @@ namespace GnollHackX.Controls
         public new bool IsEnabled
         {
             get { return (bool)GetValue(CustomImageButton.IsEnabledProperty); }
-            set { SetValue(CustomImageButton.IsEnabledProperty, value); customButton.IsEnabled = value; if (UseVaryingTextColors) { customButton.TextColor = !value ? DisabledTextColor : _isPressed ? SelectedTextColor : NormalTextColor; } customCanvasView.InvalidateSurface(); }
+            set { SetValue(CustomImageButton.IsEnabledProperty, value); customGrid.IsEnabled = value; if (UseVaryingTextColors) { customButton.TextColor = !value ? DisabledTextColor : _isPressed ? SelectedTextColor : NormalTextColor; } customCanvasView.InvalidateSurface(); }
         }
         public bool UseVaryingTextColors
         {
