@@ -59,4 +59,5 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 	</ItemGroup>
 
+	<Import Project=".maui\build.targets" Condition="Exists('.maui\build.targets')" />
 </Project>
