@@ -6064,7 +6064,7 @@ struct obj* corpse;
             if (corpse->speflags & SPEFLAGS_FEMALE)
                 isfemale = TRUE;
             if (corpse->speflags & SPEFLAGS_MALE)
-                ismale = FALSE;
+                ismale = TRUE;
 
             return pm_monster_name(mptr, ismale && isfemale ? 2 : isfemale ? TRUE : FALSE);
         }
