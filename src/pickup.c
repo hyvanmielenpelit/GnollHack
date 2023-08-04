@@ -2772,20 +2772,33 @@ boolean dobot;
     else if (obj == uball || obj == uchain) 
     {
         play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-        You_ex(ATR_NONE, CLR_MSG_FAIL, "must be kidding.");
+        if(dobot)
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "must be kidding.");
+        else
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "put %s into %s.", thecxname(obj), thecxname(current_container));
         goto default_incontainer_end_here;
     }
     else if (obj == current_container)
     {
         play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-        pline_ex(ATR_NONE, CLR_MSG_FAIL, "That would be an interesting topological exercise.");
+        if (dobot)
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "That would be an interesting topological exercise.");
+        else
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Putting %s into itself would be an interesting topological exercise.", thecxname(obj));
         goto default_incontainer_end_here;
     }
     else if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        Norep_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s %s you are wearing.",
+        if (dobot)
+            Norep_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s %s you are wearing.",
               Icebox ? "refrigerate" : "stash", something);
+        else
+        {
+            const char* onam = thecxname(obj);
+            boolean useplural = (obj->quan > 1L || strstri(onam, " pair of ") != 0);
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s, you are wearing %s.", Icebox ? "refrigerate" : "stash", onam, useplural ? "them" : "it");
+        }
         goto default_incontainer_end_here;
     }
     else if ((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) 
@@ -2796,7 +2809,7 @@ boolean dobot;
             obj->bknown = TRUE;
             update_inventory();
         }
-        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "The %s won't leave your person.", dobot && is_graystone(obj) ? (obj->quan == 1 ? "stone" : "stones") : cxname(obj));
         goto default_incontainer_end_here;
     }
     else if (
@@ -4069,10 +4082,7 @@ struct obj* other_container UNUSED;
                 otmp2 = otmp->nobj;
                 res = out_container_and_drop_nobot(otmp);
                 if (res < 0)
-                {
-                    bot();
                     break;
-                }
                 n_looted += res;
             }
             bot();
@@ -4084,10 +4094,7 @@ struct obj* other_container UNUSED;
                 otmp2 = otmp->nexthere;
                 res = pickup_and_in_container(otmp);
                 if (res < 0)
-                {
-                    bot();
                     break;
-                }
                 n_looted += res;
             }
             bot();

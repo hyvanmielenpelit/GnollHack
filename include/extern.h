@@ -2432,6 +2432,7 @@ E boolean FDECL(not_fully_identified, (struct obj *));
 E char *FDECL(corpse_xname, (struct obj *, const char *, unsigned));
 E char *FDECL(cxname, (struct obj *));
 E char* FDECL(acxname, (struct obj*));
+E char* FDECL(thecxname, (struct obj*));
 E char *FDECL(cxname_singular, (struct obj *));
 E char *FDECL(killer_xname, (struct obj *));
 E char* FDECL(killer_xname_flags, (struct obj*, unsigned));
