@@ -2087,7 +2087,7 @@ E void FDECL(m_detach, (struct monst*, struct permonst*, BOOLEAN_P));
 E int NDECL(randomtruegem);
 E int FDECL(random_reagent_otyp, (BOOLEAN_P, BOOLEAN_P, int));
 E int FDECL(randomore, (BOOLEAN_P));
-E const char* FDECL(pm_monster_name, (struct permonst*, BOOLEAN_P));
+E const char* FDECL(pm_monster_name, (struct permonst*, UCHAR_P));
 E const char* FDECL(mon_monster_name, (struct monst*));
 E const char* FDECL(corpse_monster_name, (struct obj*));
 E const char* FDECL(pm_female_name, (struct permonst*));

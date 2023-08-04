@@ -6015,12 +6015,14 @@ struct permonst *mdat;
 
 const char* pm_monster_name(ptr, isfemale)
 struct permonst* ptr;
-boolean isfemale;
+uchar isfemale; /* 1 = female, 2 = neuter, transgender or the like */
 {
     if (!ptr)
         return "";
 
-    if (isfemale && ptr->mfemalename && strcmp(ptr->mfemalename, ""))
+    if (isfemale == 2 && ptr->mcommonname && strcmp(ptr->mcommonname, ""))
+        return ptr->mcommonname;
+    else if (isfemale == 1 && ptr->mfemalename && strcmp(ptr->mfemalename, ""))
         return ptr->mfemalename;
     else
         return ptr->mname;
@@ -6057,13 +6059,14 @@ struct obj* corpse;
         {
             struct permonst* mptr = &mons[cnm];
             boolean isfemale = is_female(mptr);
+            boolean ismale = is_male(mptr);
 
             if (corpse->speflags & SPEFLAGS_FEMALE)
                 isfemale = TRUE;
-            else if (corpse->speflags & SPEFLAGS_MALE)
-                isfemale = FALSE;
+            if (corpse->speflags & SPEFLAGS_MALE)
+                ismale = FALSE;
 
-            return pm_monster_name(mptr, isfemale);
+            return pm_monster_name(mptr, ismale && isfemale ? 2 : isfemale ? TRUE : FALSE);
         }
         else
             return "unspecified monster";
@@ -6221,10 +6224,10 @@ struct obj* corpse;
     }
     else
     {
+        if (corpse->speflags & SPEFLAGS_MALE)
+            return FALSE;
         if (corpse->speflags & SPEFLAGS_FEMALE)
             return TRUE;
-        else if (corpse->speflags & SPEFLAGS_MALE)
-            return FALSE;
 
         int cnm = corpse->corpsenm;
         if (cnm >= LOW_PM)
