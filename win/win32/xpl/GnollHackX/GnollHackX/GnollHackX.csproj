@@ -46,6 +46,7 @@
     <None Remove="Assets\endor.ttf" />
     <None Remove="Assets\endr.ttf" />
     <None Remove="Assets\FMOD-Logo-192-White.png" />
+    <None Remove="Assets\ghsecrets.json" />
     <None Remove="Assets\ghsettings.json" />
     <None Remove="Assets\gnollhack-logo-test-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
@@ -265,6 +266,7 @@
     <EmbeddedResource Include="Assets\diablo_h.ttf" />
     <EmbeddedResource Include="Assets\endr.ttf" />
     <EmbeddedResource Include="Assets\FMOD-Logo-192-White.png" />
+    <EmbeddedResource Include="Assets\ghsecrets.json" />
     <EmbeddedResource Include="Assets\ghsettings.json" />
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />

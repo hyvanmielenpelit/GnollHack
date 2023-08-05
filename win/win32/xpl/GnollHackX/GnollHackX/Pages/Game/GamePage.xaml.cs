@@ -1944,69 +1944,72 @@ namespace GnollHackX.Pages.Game
 
             try
             {
-                using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
+                string postaddress = is_game_status ? App.GetGameStatusPostAddress() : App.GetDiagnosticDataPostAddress();
+                if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
                 {
-                    string postaddress = is_game_status ? App.GetGameStatusPostAddress() : App.GetDiagnosticDataPostAddress();
-                    HttpContent content = null;
-                    if (_forumPostAttachments.Count > 0)
+                    using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
                     {
-                        DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message);
-                        foreach (ForumPostAttachment attachment in _forumPostAttachments)
+                        HttpContent content = null;
+                        if (_forumPostAttachments.Count > 0)
                         {
-                            FileInfo fileinfo = new FileInfo(attachment.FullPath);
-                            string filename = fileinfo.Name;
-                            if(File.Exists(attachment.FullPath))
-                                post.AddAttachment(attachment.Description, filename);
-                        }
-                        string json = JsonConvert.SerializeObject(post);
-                        MultipartFormDataContent multicontent = new MultipartFormDataContent("--boundary");
-                        StringContent content1 = new StringContent(json, Encoding.UTF8, "application/json");
-                        ContentDispositionHeaderValue cdhv = new ContentDispositionHeaderValue("form-data");
-                        cdhv.Name = "payload_json";
-                        content1.Headers.ContentDisposition = cdhv;
-                        multicontent.Add(content1);
-                        int aidx = 0;
-                        foreach (ForumPostAttachment attachment in _forumPostAttachments)
-                        {
-                            bool fileexists = File.Exists(attachment.FullPath);
-                            if(fileexists)
+                            DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message);
+                            foreach (ForumPostAttachment attachment in _forumPostAttachments)
                             {
                                 FileInfo fileinfo = new FileInfo(attachment.FullPath);
                                 string filename = fileinfo.Name;
-                                var stream = new FileStream(attachment.FullPath, FileMode.Open);
-                                StreamContent content2 = new StreamContent(stream);
-                                //byte[] bytes = new byte[stream.Length];
-                                //int bytesread = await stream.ReadAsync(bytes, 0, bytes.Length);
-                                //ByteArrayContent content2 = new ByteArrayContent(bytes);
-                                ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
-                                cdhv2.Name = "files[" + aidx + "]";
-                                cdhv2.FileName = filename;
-                                content2.Headers.ContentDisposition = cdhv2;
-                                content2.Headers.ContentType = new MediaTypeHeaderValue(attachment.ContentType);
-                                multicontent.Add(content2);
-                                aidx++;
+                                if (File.Exists(attachment.FullPath))
+                                    post.AddAttachment(attachment.Description, filename);
+                            }
+                            string json = JsonConvert.SerializeObject(post);
+                            MultipartFormDataContent multicontent = new MultipartFormDataContent("--boundary");
+                            StringContent content1 = new StringContent(json, Encoding.UTF8, "application/json");
+                            ContentDispositionHeaderValue cdhv = new ContentDispositionHeaderValue("form-data");
+                            cdhv.Name = "payload_json";
+                            content1.Headers.ContentDisposition = cdhv;
+                            multicontent.Add(content1);
+                            int aidx = 0;
+                            foreach (ForumPostAttachment attachment in _forumPostAttachments)
+                            {
+                                bool fileexists = File.Exists(attachment.FullPath);
+                                if (fileexists)
+                                {
+                                    FileInfo fileinfo = new FileInfo(attachment.FullPath);
+                                    string filename = fileinfo.Name;
+                                    var stream = new FileStream(attachment.FullPath, FileMode.Open);
+                                    StreamContent content2 = new StreamContent(stream);
+                                    //byte[] bytes = new byte[stream.Length];
+                                    //int bytesread = await stream.ReadAsync(bytes, 0, bytes.Length);
+                                    //ByteArrayContent content2 = new ByteArrayContent(bytes);
+                                    ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
+                                    cdhv2.Name = "files[" + aidx + "]";
+                                    cdhv2.FileName = filename;
+                                    content2.Headers.ContentDisposition = cdhv2;
+                                    content2.Headers.ContentType = new MediaTypeHeaderValue(attachment.ContentType);
+                                    multicontent.Add(content2);
+                                    aidx++;
+                                }
+                            }
+                            content = multicontent;
+                        }
+                        else
+                        {
+                            DiscordWebHookPost post = new DiscordWebHookPost(message);
+                            string json = JsonConvert.SerializeObject(post);
+                            content = new StringContent(json, Encoding.UTF8, "application/json");
+                        }
+
+                        using (var cts = new CancellationTokenSource())
+                        {
+                            cts.CancelAfter(is_game_status || _forumPostAttachments.Count == 0 ? 10000 : 120000);
+                            string jsonResponse = "";
+                            using (HttpResponseMessage response = await client.PostAsync(postaddress, content, cts.Token))
+                            {
+                                jsonResponse = await response.Content.ReadAsStringAsync();
+                                Debug.WriteLine(jsonResponse);
                             }
                         }
-                        content = multicontent;
+                        content.Dispose();
                     }
-                    else
-                    {
-                        DiscordWebHookPost post = new DiscordWebHookPost(message);
-                        string json = JsonConvert.SerializeObject(post);
-                        content = new StringContent(json, Encoding.UTF8, "application/json");
-                    }
-
-                    using (var cts = new CancellationTokenSource())
-                    {
-                        cts.CancelAfter(is_game_status || _forumPostAttachments.Count == 0 ? 10000 : 120000);
-                        string jsonResponse = "";
-                        using (HttpResponseMessage response = await client.PostAsync(postaddress, content, cts.Token))
-                        {
-                            jsonResponse = await response.Content.ReadAsStringAsync();
-                            Debug.WriteLine(jsonResponse);
-                        }
-                    }
-                    content.Dispose();
                 }
             }
             catch (Exception e)

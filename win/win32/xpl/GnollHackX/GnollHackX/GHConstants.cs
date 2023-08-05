@@ -1460,6 +1460,7 @@ namespace GnollHackX
         public const string GnollHackAndroidDowngradePage = "https://github.com/hyvanmielenpelit/GnollHack/wiki/Android-Releases";
         public const string GnollHackiOSDowngradePage = "https://github.com/hyvanmielenpelit/GnollHack/wiki/iOS-Releases";
         public const string GHSettingsResourcePath = "GnollHackX.Assets.ghsettings.json";
+        public const string GHSecretsResourcePath = "GnollHackX.Assets.ghsecrets.json";
         public const int MaxRefreshRate = 120;
         public const int PollingFrequency = 60;
         public const int PollingInterval = 15;

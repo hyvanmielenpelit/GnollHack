@@ -184,11 +184,18 @@ namespace GnollHackX
             {
                 App.ReadSecrets();
                 Array.Sort<SecretsFile>(App.CurrentSecrets.files, new SecretsFileSizeComparer());
-
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Reading Secrets File Failed", "GnollHack failed to read secrets file: " + ex.Message, "OK");
+            }
+            try
+            {
+                App.ReadUserSecrets();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Reading User Secrets File Failed", "GnollHack failed to read user secrets file: " + ex.Message, "OK");
             }
         }
 

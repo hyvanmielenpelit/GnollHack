@@ -79,7 +79,6 @@ namespace GnollHackX
         public static bool InformAboutCrashReport = false;
         public static bool InformAboutIncompatibleSavedGames = false;
 
-
         private static Secrets _currentSecrets = null;
         public static Secrets CurrentSecrets 
         { 
@@ -110,7 +109,35 @@ namespace GnollHackX
             CurrentSecrets = JsonConvert.DeserializeObject<Secrets>(json);
         }
 
+        private static UserSecrets _currentUserSecrets = null;
+        public static UserSecrets CurrentUserSecrets
+        {
+            get
+            { return _currentUserSecrets; }
+            set
+            { _currentUserSecrets = value; }
+        }
+        public static void ReadUserSecrets()
+        {
+            Assembly assembly = typeof(App).GetTypeInfo().Assembly;
+            string json = "";
+            using (Stream stream = assembly.GetManifestResourceStream(GHConstants.GHSecretsResourcePath))
+            {
+                if (stream != null)
+                {
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        json = sr.ReadToEnd();
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
 
+            CurrentUserSecrets = JsonConvert.DeserializeObject<UserSecrets>(json);
+        }
 
         private static readonly object _aggregateSessionPlayTimeLock = new object();
         private static long _aggregateSessionPlayTime = 0L;
@@ -1685,15 +1712,15 @@ namespace GnollHackX
             else
             { 
 #if DEBUG
-                return CurrentSecrets.DefaultDiagnosticDataPostAddress;
+                return CurrentUserSecrets.DefaultDiagnosticDataPostAddress;
 #else
-                return CurrentSecrets.DefaultGamePostAddress;
+                return CurrentUserSecrets.DefaultGamePostAddress;
 #endif
             }
         }
         public static string GetDiagnosticDataPostAddress()
         {
-            return CurrentSecrets.DefaultDiagnosticDataPostAddress;
+            return CurrentUserSecrets.DefaultDiagnosticDataPostAddress;
         }
         public static bool IsValidHttpsURL(string uriString)
         {
