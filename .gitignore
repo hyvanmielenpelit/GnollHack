@@ -41,7 +41,6 @@ include/animoff.h
 include/animtotals.h
 win/win32/gnollhack_64x96_transparent_32bits*.png
 win/win32/xpl/GnollHackX/GnollHackX/Assets/gnollhack_64x96_transparent_32bits*.png
-win/win32/xpl/GnollHackX/GnollHackX/Assets/ghsecrets.json
 win/win32/vs/*.lev
 win/win32/vs/default.nh
 win/win32/vs/dumplog
