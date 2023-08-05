@@ -213,6 +213,28 @@ namespace GnollHackX
             return Convert.ToBase64String(array);
         }
 
+        public static string StrToKey(string str)
+        {
+            string key = "";
+            int cnt = 0;
+            for(int i = 0; i < str.Length && cnt < 32; i += 2, cnt++)
+            {
+                if (i >= str.Length)
+                    break;
+
+                key += str.Substring(i, 1);
+            }
+            if (key.Length < 32)
+            {
+                int missingLength = 32 - key.Length;
+                for(int i = 0; i < missingLength; i++)
+                {
+                    key = key + (char)(i + 32);
+                }
+            }
+            return key;
+        }
+
         public static string DecryptString(string key, string cipherText)
         {
             if (key == null || cipherText == null || key == "" || cipherText == "") return "";

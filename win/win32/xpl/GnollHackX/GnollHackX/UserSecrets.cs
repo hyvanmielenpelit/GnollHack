@@ -19,7 +19,7 @@ namespace GnollHackX
         {
             get
             {
-                return GHUtils.DecryptString(GetType()?.GetTypeInfo()?.Assembly?.FullName, EncodedDefaultGamePostAddress);
+                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultGamePostAddress);
             }
         }
 
@@ -27,7 +27,7 @@ namespace GnollHackX
         {
             get
             {
-                return GHUtils.DecryptString(GetType()?.GetTypeInfo()?.Assembly?.FullName, EncodedDefaultDiagnosticDataPostAddress);
+                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultDiagnosticDataPostAddress);
             }
         }
     }
