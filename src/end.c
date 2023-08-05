@@ -934,11 +934,11 @@ time_t when; /* date+time at end of game */
     }
     if (iflags.wc2_statuslines > 3)
     {
-        char partybuf[BUFSIZ];
-        char partybuf2[BUFSIZ];
-        char partybuf3[BUFSIZ];
-        char partybuf4[BUFSIZ];
-        char partybuf5[BUFSIZ];
+        char partybuf[BUFSZ * 2];
+        char partybuf2[BUFSZ * 2];
+        char partybuf3[BUFSZ * 2];
+        char partybuf4[BUFSZ * 2];
+        char partybuf5[BUFSZ * 2];
         compose_partystatline(partybuf, partybuf2, partybuf3, partybuf4, partybuf5);
         char* partylines[5] = { partybuf, partybuf2, partybuf3, partybuf4, partybuf5 };
         int i;

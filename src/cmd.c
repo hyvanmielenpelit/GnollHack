@@ -165,6 +165,7 @@ STATIC_PTR int NDECL(wiz_where);
 STATIC_PTR int NDECL(wiz_detect);
 #if defined(DEBUG)
 STATIC_PTR int NDECL(wiz_panic);
+STATIC_PTR int NDECL(wiz_debug);
 #endif
 STATIC_PTR int NDECL(wiz_polyself);
 STATIC_PTR int NDECL(wiz_level_tele);
@@ -1851,13 +1852,54 @@ wiz_level_change(VOID_ARGS)
 STATIC_PTR int
 wiz_panic(VOID_ARGS)
 {
-    if (iflags.debug_fuzzer) {
-        u.uhp = u.uhpmax = 1000;
-        u.uen = u.uenmax = 1000;
-        return 0;
+    if (wizard)
+    {
+        if (iflags.debug_fuzzer) {
+            u.uhp = u.uhpmax = 1000;
+            u.uen = u.uenmax = 1000;
+            return 0;
+        }
+        if (yn_query("Do you want to call panic() and end your game?") == 'y')
+            panic("Crash test.");
     }
-    if (yn_query("Do you want to call panic() and end your game?") == 'y')
-        panic("Crash test.");
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_panic)));
+    return 0;
+}
+
+STATIC_PTR int
+wiz_debug(VOID_ARGS)
+{
+    if (wizard)
+    {
+        int wiz_debug_cmd_idx = 0;
+        switch (wiz_debug_cmd_idx)
+        {
+        case 0:
+        {
+            struct obj* otmp;
+            struct monst* mtmp;
+            int cnt = 0;
+            for (otmp = fobj; otmp; otmp = otmp->nobj)
+            {
+                if (has_omonst(otmp)
+                    && (mtmp = get_mtraits(otmp, FALSE)) != 0
+                    && is_tame(mtmp))
+                {
+                    pline("obj found: %s at (%d,%d)", cxname(otmp), otmp->ox, otmp->oy);
+                    cnt++;
+                }
+            }
+            pline("%d obj%s found. u at (%d,%d)", cnt, plur(cnt), u.ux, u.uy);
+            break;
+        }
+        default:
+            pline1(Never_mind);
+            break;
+        }
+    }
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_debug)));
     return 0;
 }
 #endif
@@ -1866,7 +1908,10 @@ wiz_panic(VOID_ARGS)
 STATIC_PTR int
 wiz_polyself(VOID_ARGS)
 {
-    polyself(1);
+    if (wizard)
+        polyself(1);
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_polyself)));
     return 0;
 }
 
@@ -5941,6 +5986,8 @@ struct ext_func_tab extcmdlist[] = {
 #ifdef DEBUG
     { '\0', "wizbury", "bury objs under and around you",
             wiz_debug_cmd_bury, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizdebug", "choose and execute a debug command",
+            wiz_debug, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
     { C('e'), "wizdetect", "reveal hidden things within a small radius",
             wiz_detect, IFBURIED | AUTOCOMPLETE | WIZMODECMD },

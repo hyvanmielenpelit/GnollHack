@@ -1192,11 +1192,11 @@ bot_via_windowport()
     valset[BL_CONDITION] = TRUE;
 
     /* Partyline */
-    char partybuf[BUFSIZ];
-    char partybuf2[BUFSIZ];
-    char partybuf3[BUFSIZ];
-    char partybuf4[BUFSIZ];
-    char partybuf5[BUFSIZ];
+    char partybuf[BUFSZ + MAXVALWIDTH];
+    char partybuf2[BUFSZ + MAXVALWIDTH];
+    char partybuf3[BUFSZ + MAXVALWIDTH];
+    char partybuf4[BUFSZ + MAXVALWIDTH];
+    char partybuf5[BUFSZ + MAXVALWIDTH];
     compose_partystatline(partybuf, partybuf2, partybuf3, partybuf4, partybuf5);
     blstats[idx][BL_PARTYSTATS].a.a_int = strcmp(partybuf, "") ? 1 : 0;
     blstats[idx][BL_PARTYSTATS2].a.a_int = strcmp(partybuf2, "") ? 1 : 0;
@@ -1553,7 +1553,7 @@ char* outbuf5;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
         char* targetbuf = outbufs[line_idx - 1];
-        char tempbuf[BUFSIZ];
+        char tempbuf[BUFSZ + MAXVALWIDTH];
         Strcpy(tempbuf, "");
 
         if (!DEADMONSTER(mtmp) && is_tame(mtmp))
@@ -1582,21 +1582,21 @@ char* outbuf5;
 
             if (has_umname(mtmp))
             {
-                char umnbuf[BUFSIZ];
+                char umnbuf[PL_PSIZ + BUFSZ];
                 Strcpy(umnbuf, UMNAME(mtmp));
                 umnbuf[16] = '\0'; /* Limit the length of the name */
                 Strcat(tempbuf, umnbuf);
             }
             else if (has_mname(mtmp) && mtmp->u_know_mname)
             {
-                char mnbuf[BUFSIZ];
+                char mnbuf[PL_PSIZ + BUFSZ];
                 Strcpy(mnbuf, MNAME(mtmp));
                 mnbuf[16] = '\0'; /* Limit the length of the name */
                 Strcat(tempbuf, mnbuf);
             }
             else
             {
-                char buf[BUFSZ];
+                char buf[PL_PSIZ + BUFSZ];
                 Strcpy(buf, mon_monster_name(mtmp));
                 *buf = highc(*buf);
                 Strcat(tempbuf, buf);
@@ -1605,7 +1605,7 @@ char* outbuf5;
             Sprintf(eos(tempbuf), "%d(%d)", mtmp->mhp, mtmp->mhpmax);
 
 #define changepartyline() \
-            if (!flags.partymultiline && line_idx < maxlines && !first_in_line && strlen(tempbuf) + strlen(targetbuf) >= MAXVALWIDTH) \
+            if (!flags.partymultiline && line_idx < maxlines && !first_in_line && strlen(tempbuf) + strlen(targetbuf) >= MAXVALWIDTH - 1) \
             { \
                 line_idx++;\
                 targetbuf = outbufs[line_idx - 1]; \
@@ -1630,8 +1630,6 @@ char* outbuf5;
                 else if (EDOG(mtmp)->hungrytime <= monstermoves)
                     Strcat(tempbuf, " Hungry");
             }
-//            changepartyline();
-//            strcat(targetbuf, tempbuf);
 
             if (is_sick(mtmp))
                 Strcat(tempbuf, " TermIll");
@@ -1675,11 +1673,11 @@ char* outbuf5;
             changepartyline();
             Strcat(targetbuf, tempbuf);
 
-            if (!flags.partymultiline && line_idx == maxlines && strlen(outbuf) >= MAXVALWIDTH)
+            if (!flags.partymultiline && line_idx == maxlines && strlen(outbuf) >= MAXVALWIDTH - 1)
                 break;
         }
     }
-    outbuf[MAXVALWIDTH] = '\0';
+    outbuf[MAXVALWIDTH - 1] = '\0';
 }
 
 /* update just the status lines' 'time' field */
