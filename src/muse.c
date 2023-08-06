@@ -2848,7 +2848,7 @@ struct monst *mtmp;
         mzapmsg(mtmp, otmp, FALSE);
         otmp->charges--;
         if (!vismon && !Deaf)
-            You_hear("something making a wish!");
+            You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "something making a wish!");
         if (oseen)
             makeknown(WAN_WISHING);
         mmake_wish(mtmp);
@@ -3886,26 +3886,35 @@ struct monst* mon;
     switch (rnd(18)) {
     case 1:
         otmp = mksobj(POT_GAIN_LEVEL, FALSE, FALSE, 2);
-        bless(otmp);
-        otmp->quan = rnd(3);
-        otmp->owt = weight(otmp);
+        if (otmp)
+        {
+            bless(otmp);
+            otmp->quan = rnd(3);
+            otmp->owt = weight(otmp);
+        }
         break;
     case 2:
         otmp = mksobj(WAN_CREATE_MONSTER, TRUE, FALSE, 2);
         break;
     case 3:
         otmp = mksobj(AMULET_OF_LIFE_SAVING, FALSE, FALSE, 2);
-        bless(otmp);
-        otmp->oerodeproof = 1;
-        wearable = TRUE;
+        if (otmp)
+        {
+            bless(otmp);
+            otmp->oerodeproof = 1;
+            wearable = TRUE;
+        }
         break;
     case 4:
         if (!mon->mprops[DISPLACED] && !cantweararm(mon->data)) {
             otmp = mksobj(CLOAK_OF_DISPLACEMENT, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->oerodeproof = 1;
-            otmp->enchantment = rn2(3) + 1;
-            wearable = TRUE;
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->oerodeproof = 1;
+                otmp->enchantment = rn2(3) + 1;
+                wearable = TRUE;
+            }
         }
         else {
             otmp = mksobj(WAN_DIGGING, TRUE, FALSE, 2);
@@ -3914,14 +3923,18 @@ struct monst* mon;
     case 5:
         if (!nohands(mon->data)) {
             otmp = mksobj(GAUNTLETS_OF_DEXTERITY, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->oerodeproof = 1;
-            otmp->enchantment = rn2(3) + 1;
-            wearable = TRUE;
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->oerodeproof = 1;
+                otmp->enchantment = rn2(3) + 1;
+                wearable = TRUE;
+            }
         }
         else {
             otmp = mksobj(POT_FULL_HEALING, FALSE, FALSE, 2);
-            bless(otmp);
+            if(otmp)
+                bless(otmp);
         }
         break;
     case 6:
@@ -3929,13 +3942,19 @@ struct monst* mon;
             if (!cantweararm(mon->data))
             {
                 otmp = mksobj(CLOAK_OF_MAGIC_RESISTANCE, FALSE, FALSE, 2);
-                otmp->oerodeproof = 1;
-                otmp->enchantment = rn2(3) + 1;
+                if (otmp)
+                {
+                    otmp->oerodeproof = 1;
+                    otmp->enchantment = rn2(3) + 1;
+                }
             }
             else
                 otmp = mksobj(IOUN_STONE_OF_MAGIC_RESISTANCE, FALSE, FALSE, 2);
-            bless(otmp);
-            wearable = TRUE;
+            if (otmp)
+            {
+                bless(otmp);
+                wearable = TRUE;
+            }
         }
         else {
             otmp = mksobj(WAN_CREATE_MONSTER, TRUE, FALSE, 2);
@@ -3944,36 +3963,49 @@ struct monst* mon;
     case 7:
         if (!cantweararm(mon->data)) {
             otmp = mksobj(PLATE_MAIL, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->material = MAT_CRYSTAL;
-            otmp->oerodeproof = 1;
-            otmp->enchantment = rn2(3) + 1;
-            otmp->owt = weight(otmp);
-            wearable = TRUE;
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->material = MAT_CRYSTAL;
+                otmp->oerodeproof = 1;
+                otmp->enchantment = rn2(3) + 1;
+                otmp->owt = weight(otmp);
+                wearable = TRUE;
+            }
         }
         else {
             otmp = mksobj(BAG_OF_HOLDING, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->oerodeproof = 1;
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->oerodeproof = 1;
+            }
         }
         break;
     case 8:
         otmp = mksobj(POT_PARALYSIS, FALSE, FALSE, 2);
-        bless(otmp);
-        otmp->quan = rnd(3);
-        otmp->owt = weight(otmp);        
+        if (otmp)
+        {
+            bless(otmp);
+            otmp->quan = rnd(3);
+            otmp->owt = weight(otmp);
+        }
         break;
     case 9:
         if (!mon->mprops[WATER_WALKING] && !sliparm(mon->data)) {
             otmp = mksobj(WATER_WALKING_BOOTS, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->oerodeproof = 1;
-            otmp->enchantment = rn2(3) + 1;
-            wearable = TRUE;
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->oerodeproof = 1;
+                otmp->enchantment = rn2(3) + 1;
+                wearable = TRUE;
+            }
         }
         else {
             otmp = mksobj(RIN_SLOW_DIGESTION, FALSE, FALSE, 2);
-            bless(otmp);
+            if(otmp)
+                bless(otmp);
         }
         break;
     case 10:
@@ -3981,86 +4013,117 @@ struct monst* mon;
             if (humanoid(mon->data))
             {
                 otmp = mksobj(SHIELD_OF_REFLECTION, FALSE, FALSE, 2);
-                otmp->oerodeproof = 1;
-                otmp->enchantment = rn2(3) + 1;
+                if (otmp)
+                {
+                    otmp->oerodeproof = 1;
+                    otmp->enchantment = rn2(3) + 1;
+                }
             }
             else
                 otmp = mksobj(AMULET_OF_REFLECTION, FALSE, FALSE, 2);
-            bless(otmp);
-            wearable = TRUE;
+            if (otmp)
+            {
+                bless(otmp);
+                wearable = TRUE;
+            }
         }
         else {
             otmp = mksobj(POT_EXTRA_HEALING, FALSE, FALSE, 2);
-            bless(otmp);
+            if(otmp)
+                bless(otmp);
         }
         break;
     case 11:
         if (!nohands(mon->data) && !strongmonst(mon->data)) {
             otmp = mksobj(GAUNTLETS_OF_OGRE_POWER, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->oerodeproof = 1;
-            otmp->enchantment = rn2(3) + 1;
-            wearable = TRUE;
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->oerodeproof = 1;
+                otmp->enchantment = rn2(3) + 1;
+                wearable = TRUE;
+            }
         }
         else {
             otmp = mksobj(POT_GAIN_LEVEL, FALSE, FALSE, 2);
-            curse(otmp);
+            if(otmp)
+                curse(otmp);
         }
         break;
     case 12:
         if (!is_fast(mon) && !is_very_fast(mon) && !is_ultra_fast(mon) && !is_super_fast(mon) && !is_lightning_fast(mon) && feet_fit_boots(mon->data)) {
             otmp = mksobj(SPEED_BOOTS, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->oerodeproof = 1;
-            otmp->enchantment = rn2(3) + 1;
-            wearable = TRUE;
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->oerodeproof = 1;
+                otmp->enchantment = rn2(3) + 1;
+                wearable = TRUE;
+            }
         }
         else {
             otmp = mksobj(POT_FULL_HEALING, FALSE, FALSE, 2);
-            bless(otmp);
+            if(otmp)
+                bless(otmp);
         }
         break;
     case 13:
         if (!has_telepathy(mon)
             && !sliparm(mon->data) && !has_horns(mon->data) && has_head(mon->data)) {
             otmp = mksobj(HELM_OF_TELEPATHY, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->oerodeproof = 1;
-            otmp->enchantment = rn2(3) + 1;
-            wearable = TRUE;
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->oerodeproof = 1;
+                otmp->enchantment = rn2(3) + 1;
+                wearable = TRUE;
+            }
         }
         else {
             otmp = mksobj(POT_EXTRA_HEALING, FALSE, FALSE, 2);
-            bless(otmp);
+            if(otmp)
+                bless(otmp);
         }
         break;
     case 14:
         if (!sliparm(mon->data) && !has_horns(mon->data) && has_head(mon->data)) {
             otmp = mksobj(HELM_OF_BRILLIANCE, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->oerodeproof = 1;
-            otmp->enchantment = rn2(3) + 1;
-            wearable = TRUE;
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->oerodeproof = 1;
+                otmp->enchantment = rn2(3) + 1;
+                wearable = TRUE;
+            }
         }
         else {
-            otmp = mksobj(UNICORN_HORN, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->oerodeproof = 1;
-            otmp->enchantment = rn2(3) + 1;
+            otmp = mksobj(UNICORN_HORN, TRUE, FALSE, 2);
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->oerodeproof = 1;
+                otmp->enchantment = rn2(3) + 1;
+            }
         }
         break;
     case 15:
         if (!cantweararm(mon->data)) {
             otmp = mksobj(CLOAK_OF_PROTECTION, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->oerodeproof = 1;
-            otmp->enchantment = rn2(3) + 1;
-            wearable = TRUE;
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->oerodeproof = 1;
+                otmp->enchantment = rn2(3) + 1;
+                wearable = TRUE;
+            }
         }
         else {
             otmp = mksobj(RIN_PROTECTION, FALSE, FALSE, 2);
-            bless(otmp);
-            otmp->enchantment = rn2(3) + 1;
+            if (otmp)
+            {
+                bless(otmp);
+                otmp->enchantment = rn2(3) + 1;
+            }
         }
         break;
     case 16: /* Monsters can wish for certain artifacts */
@@ -4092,13 +4155,17 @@ struct monst* mon;
         break;
     case 18:
         otmp = mksobj(EGG, FALSE, FALSE, 2);
-        otmp->corpsenm = PM_COCKATRICE;
-        otmp->quan = rnd(3);
-        otmp->owt = weight(otmp);
+        if (otmp)
+        {
+            otmp->corpsenm = PM_COCKATRICE;
+            otmp->quan = rnd(3);
+            otmp->owt = weight(otmp);
+        }
         break;
     default:
         otmp = mksobj(POT_GAIN_LEVEL, FALSE, FALSE, 2);
-        curse(otmp);
+        if(otmp)
+            curse(otmp);
     }
 
     if (otmp == NULL) {
