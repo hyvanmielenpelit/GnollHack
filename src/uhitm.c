@@ -991,7 +991,7 @@ boolean* obj_destroyed;
             damage = 0;
         else
         {
-            boolean martial_arts_applies = martial_bonus() && !(uarmg && is_metallic(uarmg));
+            boolean martial_arts_applies = martial_bonus(); // && !(uarmg&& is_metallic(uarmg));
             int tmp = 0;
             if (martial_arts_applies)
             {
@@ -1635,7 +1635,7 @@ boolean* obj_destroyed;
                 damage += 0;
             else if (!obj || obj == uarmg)
             {
-                if(!martial_bonus() || (uarmg && is_metallic(uarmg)))
+                if(!martial_bonus()) // || (uarmg && is_metallic(uarmg))
                     damage += adjust_damage(u_str_dmg_bonus() / 2, &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
                 else if(adjusted_skill_level(P_MARTIAL_ARTS) >= P_BASIC)
                     damage += adjust_damage(u_str_dmg_bonus(), &youmonst, mon, AD_PHYS, ADFLAGS_NONE);

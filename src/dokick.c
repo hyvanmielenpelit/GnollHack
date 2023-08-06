@@ -8,7 +8,7 @@
 
 #define is_bigfoot(x) ((x) == &mons[PM_SASQUATCH])
 #define martial()                                 \
-    ((martial_bonus() && (Magical_kicking || !(uarmf && is_metallic(uarmf)))) || is_bigfoot(youmonst.data) \
+    ((martial_bonus()/* && (Magical_kicking || !(uarmf && is_metallic(uarmf))) */) || is_bigfoot(youmonst.data) \
      || Magical_kicking)
 
 STATIC_VAR NEARDATA struct rm* maploc;
@@ -40,7 +40,7 @@ boolean clumsy;
     int dmg = 0; // (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 15;
     int specialdmg;
     boolean trapkilled = FALSE;
-    boolean martial_arts_applies = martial_bonus() && (Magical_kicking || !(uarmf && is_metallic(uarmf)));
+    boolean martial_arts_applies = martial(); // && (Magical_kicking || !(uarmf && is_metallic(uarmf)));
     boolean jumpkicking = !!Jumping;
     boolean effortlessly = FALSE;
 

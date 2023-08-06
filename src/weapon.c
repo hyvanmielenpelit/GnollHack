@@ -3574,7 +3574,7 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
     boolean apply_two_weapon_bonus = apply_extra_bonuses && (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));
     boolean apply_two_handed_weapon_bonus = apply_extra_bonuses && weapon && bimanual(weapon) && is_weapon(weapon) && !is_launcher(weapon);
     boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
-    boolean apply_martial_arts_bonus = ((!weapon && (!uarmg || (uarmg && !is_metallic(uarmg)))) || (Is_worn_gauntlets && !is_metallic(weapon)));
+    boolean apply_martial_arts_bonus = ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/));
     int wep_type = weapon_skill_type(weapon);
     int type = use_this_skill ? use_this_skill : wep_type;
     
@@ -3733,7 +3733,7 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
     boolean apply_two_weapon_bonus = apply_extra_bonuses && (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));
     boolean apply_two_handed_weapon_bonus = apply_extra_bonuses && weapon && bimanual(weapon) && is_weapon(weapon) && !is_launcher(weapon);
     boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
-    boolean apply_martial_arts_bonus = ((!weapon && (!uarmg || (uarmg && !is_metallic(uarmg)))) || (Is_worn_gauntlets && !is_metallic(weapon)));
+    boolean apply_martial_arts_bonus = ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/));
     int wep_type = weapon_skill_type(weapon);
     int type = use_this_skill > P_NONE ? use_this_skill : wep_type;
 
