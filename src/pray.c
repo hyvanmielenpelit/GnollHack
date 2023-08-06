@@ -2439,7 +2439,7 @@ dosacrifice()
         } 
         else if (has_omonst(otmp)
                    && (mtmp = get_mtraits(otmp, FALSE)) != 0
-                   && is_tame(mtmp)) 
+                   && is_tame(mtmp) && !(is_undead(mtmp->data) && mtmp->mrevived > 0))
         {
                 /* mtmp is a temporary pointer to a tame monster's attributes,
                  * not a real monster */
