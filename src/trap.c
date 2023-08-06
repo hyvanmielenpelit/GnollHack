@@ -467,7 +467,6 @@ unsigned long mkflags;
         struct obj *otmp, *statue;
         struct permonst *mptr;
         int trycount = 10;
-        boolean has_hat = FALSE;
         int mnum = NON_PM;
 
         if(permonstid <= NON_PM)
@@ -485,27 +484,19 @@ unsigned long mkflags;
             mnum = permonstid;
             mptr = &mons[mnum];
         }
-        mtmp = makemon(mptr, 0, 0, MM_NOCOUNTBIRTH);
+        mtmp = makemon(mptr, 0, 0, MM_NOCOUNTBIRTH | MM_NO_MONSTER_INVENTORY);
         if (!mtmp)
             break; /* should never happen */
 
         statue = mkcorpstat(STATUE, mtmp, mptr, x, y, CORPSTAT_NONE);
-
-        while (mtmp->minvent)
-        {
-            otmp = mtmp->minvent;
-            otmp->owornmask = 0;
-            obj_extract_self(otmp);
-            (void) add_to_container(statue, otmp);
-            if (is_helmet(otmp))
-                has_hat = TRUE;
-        }
-        if (!has_hat && (mkflags & MKTRAPFLAG_GARDEN_GNOME_ITEMS))
+        /* Note if the statue would have items from mtmp, all light sources and sound sources would need to be switched off first */
+        if (mkflags & MKTRAPFLAG_GARDEN_GNOME_ITEMS)
         {
             if(!rn2(2))
             {
                 otmp = mksobj((!rn2(20) ? (!rn2(2) ? CORNUTHAUM : DUNCE_CAP) : GNOMISH_FELT_HAT), TRUE, FALSE, FALSE);
-                (void)add_to_container(statue, otmp);
+                if(otmp)
+                    (void)add_to_container(statue, otmp);
             }
         }
         statue->owt = weight(statue);

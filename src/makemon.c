@@ -3226,7 +3226,6 @@ aligntyp alignment;
             struct obj *otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
             put_saddle_on_mon(otmp, mtmp);
         }
-
     }
     else
     {

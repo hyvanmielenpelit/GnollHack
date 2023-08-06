@@ -3745,6 +3745,8 @@ struct monst *mdef;
             } else {
                 if (obj->lamplit)
                     end_burn(obj, TRUE);
+                if (obj->makingsound)
+                    end_sound(obj, TRUE);
                 obj->nobj = oldminvent;
                 oldminvent = obj;
             }

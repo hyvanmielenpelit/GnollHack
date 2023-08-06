@@ -2310,7 +2310,6 @@ boolean already_lit;
     }
     else
     {
-
         switch (obj->otyp) {
         case MAGIC_LAMP:
             //obj->lamplit = 1;

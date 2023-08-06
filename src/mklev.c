@@ -1385,7 +1385,7 @@ makelevel()
         if (res)
             room_threshold++;
 
-        if (u_depth >= 2 && nroom >= room_threshold && u_depth < depth(&medusa_level) && !rn2(6))
+        if (u_depth >= 2 && nroom >= room_threshold && u_depth < depth(&medusa_level) /*  && !rn2(6) */)
         {
             (void)make_room(GARDEN);
             room_threshold++;
