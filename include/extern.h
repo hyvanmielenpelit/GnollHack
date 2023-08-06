@@ -2314,6 +2314,7 @@ E void FDECL(mcurestun, (struct monst*, BOOLEAN_P));
 E void FDECL(mcureconfusion, (struct monst*, BOOLEAN_P));
 E boolean FDECL(munstone, (struct monst *, BOOLEAN_P));
 E boolean FDECL(munslime, (struct monst *, BOOLEAN_P));
+E void FDECL(mmake_wish, (struct monst*));
 
 /* ### music.c ### */
 

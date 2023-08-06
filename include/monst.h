@@ -8,17 +8,9 @@
 #ifndef MONST_H
 #define MONST_H
 
-#ifndef MEXTRA_H
 #include "mextra.h"
-#endif
-
-#ifndef PROP_H
 #include "prop.h"
-#endif
-
-#ifndef ATTRIB_H
 #include "attrib.h"
-#endif
 
 /* The weapon_strategy flag is used two ways:
  * 1) When calling mon_wield_item, is 2-6 depending on what is desired.
@@ -292,5 +284,7 @@ struct monst {
                                   || (mon)->mappearance == S_vcdoor))
 #define is_obj_mappear(mon,otyp) (M_AP_TYPE(mon) == M_AP_OBJECT \
                                   && (mon)->mappearance == (otyp))
+
+#define check_wearable_items_next_turn(mon) (mon)->worn_item_flags |= I_SPECIAL
 
 #endif /* MONST_H */
