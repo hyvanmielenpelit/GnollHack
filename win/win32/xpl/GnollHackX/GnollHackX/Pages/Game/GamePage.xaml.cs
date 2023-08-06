@@ -5898,6 +5898,8 @@ namespace GnollHackX.Pages.Game
                                 float print_width = 0;
                                 if (_drawWeaponStyleAsGlyphs)
                                 {
+                                    SKTypeface savedtypeface = textPaint.Typeface;
+                                    float savedfontsize = textPaint.TextSize;
                                     lock (_weaponStyleObjDataItemLock)
                                     {
                                         /* Right-hand weapon */
@@ -6145,6 +6147,8 @@ namespace GnollHackX.Pages.Game
                                             }
                                         }
                                     }
+                                    textPaint.TextSize = savedfontsize;
+                                    textPaint.Typeface = savedtypeface;
                                 }
                                 else
                                 {
