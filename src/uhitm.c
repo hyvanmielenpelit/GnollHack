@@ -2682,7 +2682,7 @@ struct attack *mattk;
 
             /* give monster a chance to wear other equipment on its next
                move instead of waiting until it picks something up */
-            mdef->worn_item_flags |= I_SPECIAL;
+            check_mon_wearable_items_next_turn(mdef);
 
             if (otmp == stealoid) /* special message for final item */
                 pline("%s finishes taking off %s suit.", Monnam(mdef),

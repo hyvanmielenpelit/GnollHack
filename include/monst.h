@@ -285,6 +285,6 @@ struct monst {
 #define is_obj_mappear(mon,otyp) (M_AP_TYPE(mon) == M_AP_OBJECT \
                                   && (mon)->mappearance == (otyp))
 
-#define check_wearable_items_next_turn(mon) (mon)->worn_item_flags |= I_SPECIAL
+#define check_mon_wearable_items_next_turn(mon) (mon)->worn_item_flags |= I_SPECIAL
 
 #endif /* MONST_H */

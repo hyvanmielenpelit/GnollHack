@@ -3208,7 +3208,7 @@ struct monst *mtmp;
         }
         m_useup(mtmp, lifesave);
         /* equip replacement amulet, if any, on next move */
-        check_wearable_items_next_turn(mtmp);
+        check_mon_wearable_items_next_turn(mtmp);
 
         surviver = !(mvitals[mtmp->mnum].mvflags & MV_GENOCIDED);
         mtmp->mcanmove = 1;

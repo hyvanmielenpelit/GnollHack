@@ -1913,7 +1913,7 @@ register struct obj* omonwep;
                 update_all_mon_statistics(mdef, FALSE);
                 /* give monster a chance to wear other equipment on its next
                    move instead of waiting until it picks something up */
-                mdef->worn_item_flags |= I_SPECIAL;
+                check_mon_wearable_items_next_turn(mdef);
             }
             /* add_to_minv() might free otmp [if it merges] */
             if (vis)

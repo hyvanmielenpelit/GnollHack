@@ -4188,7 +4188,7 @@ struct monst* mon;
         otmp = NULL;
 
     if (wearable)
-        check_wearable_items_next_turn(mon);
+        check_mon_wearable_items_next_turn(mon);
 }
 
 /*muse.c*/
