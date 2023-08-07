@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-08-07 */
 
 /* GnollHack 4.0	pcsys.c	$NHDT-Date: 1524689500 2018/04/25 20:51:40 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.31 $ */
 /*      Copyright (c) 2012 by Michael Allison              */

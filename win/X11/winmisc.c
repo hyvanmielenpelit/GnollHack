@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-08-07 */
 
 /* GnollHack 4.0	winmisc.c	$NHDT-Date: 1554135506 2019/04/01 16:18:26 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.44 $ */
 /* Copyright (c) Dean Luick, 1992                                 */

@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-08-07 */
 
 /* GnollHack 4.0	tile2bin.c	$NHDT-Date: 1457207041 2016/03/05 19:44:01 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.9 $ */
 /*   Copyright (c) NetHack PC Development Team 1993, 1994, 1995     */
