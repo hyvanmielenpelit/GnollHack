@@ -15,7 +15,6 @@ using Xamarin.Essentials;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.IO;
-using FFImageLoading.Forms;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using GnollHackX.Controls;
@@ -1634,7 +1633,7 @@ namespace GnollHackX.Pages.Game
                 _popupImageSource.UseUpperSide = (data.tflags & 4) != 0;
                 _popupImageSource.Glyph = data.glyph;
                 _popupImageSource.AutoSize = true;
-                PopupImage.Source = _popupImageSource;
+                PopupImage.ActiveGlyphImageSource = _popupImageSource;
                 PopupImage.IsVisible = true;
             }
             else
@@ -2211,7 +2210,7 @@ namespace GnollHackX.Pages.Game
                 _ynImageSource.UseUpperSide = (ynflags & 1) != 0;
                 _ynImageSource.Glyph = glyph;
                 _ynImageSource.AutoSize = true;
-                YnImage.Source = _ynImageSource;
+                YnImage.ActiveGlyphImageSource = _ynImageSource;
                 YnImage.IsVisible = true;
             }
             else
@@ -10012,8 +10011,6 @@ namespace GnollHackX.Pages.Game
                 }
             }
         }
-        private EmbeddedResourceImageSource travelmode_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackX.Assets.UI.stone-travel-on.png"));
-        private EmbeddedResourceImageSource travelmode_off_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackX.Assets.UI.stone-travel-off.png"));
         private void ToggleTravelModeButton_Clicked(object sender, EventArgs e)
         {
             App.PlayMenuSelectSound();
@@ -10021,16 +10018,12 @@ namespace GnollHackX.Pages.Game
             if (MapTravelMode)
             {
                 ToggleTravelModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-travel-on.png";
-                //ToggleModeImg.Source = travelmode_on_source;
             }
             else
             {
                 ToggleTravelModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-travel-off.png";
-                //ToggleModeImg.Source = travelmode_off_source;
             }
         }
-        private EmbeddedResourceImageSource lookmode_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackX.Assets.UI.stone-look-on.png"));
-        private EmbeddedResourceImageSource lookmode_off_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackX.Assets.UI.stone-look-off.png"));
         private void LookModeButton_Clicked(object sender, EventArgs e)
         {
             App.PlayMenuSelectSound();
@@ -10039,18 +10032,14 @@ namespace GnollHackX.Pages.Game
             {
                 LookModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-look-on.png";
                 SimpleLookModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-look-on.png";
-                //LookModeImg.Source = lookmode_on_source;
             }
             else
             {
                 LookModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-look-off.png";
                 SimpleLookModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-look-off.png";
-                //LookModeImg.Source = lookmode_off_source;
             }
         }
 
-        private EmbeddedResourceImageSource minimap_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackX.Assets.UI.stone-minimap-on.png"));
-        private EmbeddedResourceImageSource minimap_off_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackX.Assets.UI.stone-minimap-off.png"));
         private void ToggleZoomMiniButton_Clicked(object sender, EventArgs e)
         {
             App.PlayMenuSelectSound();
@@ -10059,15 +10048,11 @@ namespace GnollHackX.Pages.Game
             {
                 ToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-minimap-on.png";
                 SimpleToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-minimap-on.png";
-                //ToggleZoomMiniImg.Source = minimap_on_source;
-                //ToggleZoomMiniButton.BackgroundColor = Color.Green;
             }
             else
             {
                 ToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-minimap-off.png";
                 SimpleToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-minimap-off.png";
-                //ToggleZoomMiniImg.Source = minimap_off_source;
-                //ToggleZoomMiniButton.BackgroundColor = Color.DarkBlue;
                 if (sender != null && GHUtils.isok(_ux, _uy) && !MapNoClipMode)
                 {
                     SetTargetClip(_ux, _uy, true);
@@ -10075,8 +10060,6 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private EmbeddedResourceImageSource altmap_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackX.Assets.UI.stone-altmap-on.png"));
-        private EmbeddedResourceImageSource altmap_off_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackX.Assets.UI.stone-altmap-off.png"));
         private void ToggleZoomAlternateButton_Clicked(object sender, EventArgs e)
         {
             App.PlayMenuSelectSound();
@@ -10084,8 +10067,6 @@ namespace GnollHackX.Pages.Game
             if (ZoomAlternateMode)
             {
                 ToggleZoomAlternateButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-altmap-on.png";
-                //ToggleZoomAlternateImg.Source = altmap_on_source;
-                //ToggleZoomAlternateButton.BackgroundColor = Color.Green;
                 lock(_mapOffsetLock)
                 {
                     if(MapFontSize > 0)
@@ -10094,17 +10075,10 @@ namespace GnollHackX.Pages.Game
                         _mapOffsetY = _mapOffsetY * MapFontAlternateSize / MapFontSize;
                     }
                 }
-
-                //if (ZoomChangeCenterMode && !MapAlternateNoClipMode && MapNoClipMode && GHUtils.isok(_ux, _uy))
-                //{
-                //    SetTargetClip(_ux, _uy, true);
-                //}
             }
             else
             {
                 ToggleZoomAlternateButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-altmap-off.png";
-                //ToggleZoomAlternateImg.Source = altmap_off_source;
-                //ToggleZoomAlternateButton.BackgroundColor = Color.DarkBlue;
                 lock (_mapOffsetLock)
                 {
                     if (MapFontAlternateSize > 0)
@@ -10118,11 +10092,6 @@ namespace GnollHackX.Pages.Game
                 {
                     SetTargetClip(_ux, _uy, true);
                 }
-
-                //if (ZoomChangeCenterMode && !MapNoClipMode && MapAlternateNoClipMode && GHUtils.isok(_ux, _uy))
-                //{
-                //    SetTargetClip(_ux, _uy, true);
-                //}
             }
 
         }

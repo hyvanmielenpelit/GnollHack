@@ -394,7 +394,13 @@ namespace GnollHackX
                         SKRect targetrect;
                         if (tileflag_halfsize)
                         {
-                            targetrect = new SKRect(0, 0, CanvasWidth, CanvasHeight);
+                            //targetrect = new SKRect(0, 0, CanvasWidth, CanvasHeight);
+                            float halfsizeheight = Width / (float)GHConstants.TileWidth * (float)GHConstants.TileHeight / 2;
+                            float halfsizevpadding = Math.Max(0, CanvasHeight - halfsizeheight) / 2;
+                            targetrect = new SKRect(0, halfsizevpadding, Width, halfsizevpadding + halfsizeheight);
+                            ypadding = halfsizevpadding;
+                            tileHeight = halfsizeheight;
+                            scale = tileWidth / GHConstants.TileWidth;
                         }
                         else
                         {

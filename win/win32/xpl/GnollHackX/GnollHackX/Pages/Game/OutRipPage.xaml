@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:gnh="clr-namespace:GnollHackX" 
              x:Class="GnollHackX.Pages.Game.OutRipPage"
              BackgroundColor="Black"
@@ -23,8 +22,8 @@
                         <RowDefinition Height ="Auto"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Text="R.I.P." TextColor="#555555" FontFamily="Diablo" FontSize="36" HorizontalTextAlignment="Center"/>
-                    <ff:CachedImage x:Name="PlayerImage"  Grid.Row="1" HeightRequest="96" WidthRequest="64"
-                                    IsVisible="{Binding IsGlyphVisible}" Source="{Binding GlyphImage}" 
+                    <gnh:GHCachedImage x:Name="PlayerImage"  Grid.Row="1" HeightRequest="96" WidthRequest="64"
+                                    IsVisible="{Binding IsGlyphVisible}" ActiveGlyphImageSource="{Binding GlyphImage}" 
                                     HorizontalOptions="Center" VerticalOptions="Center" />
                     <Label Grid.Row="2" x:Name="NameLabel" WidthRequest="180" Text="" TextColor="#555555" FontFamily="Underwood" FontSize="16" HorizontalTextAlignment="Center" />
                     <Label Grid.Row="3" x:Name="PointsLabel" WidthRequest="180" Text="" TextColor="#555555" FontFamily="Underwood" FontSize="14" HorizontalTextAlignment="Center" />

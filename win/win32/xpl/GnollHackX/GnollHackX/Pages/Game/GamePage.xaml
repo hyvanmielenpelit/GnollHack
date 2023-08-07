@@ -5,7 +5,6 @@
              Appearing="ContentPage_Appearing" Disappearing="ContentPage_Disappearing"
              xmlns:local="clr-namespace:GnollHackX.Pages.Game" 
              xmlns:gnh="clr-namespace:GnollHackX" 
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:controls="clr-namespace:GnollHackX.Controls"
              BackgroundColor="Black"
              >
@@ -321,7 +320,7 @@
                           HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
                             <StackLayout x:Name="YnTitleLayout" Orientation="Horizontal"
                                      HorizontalOptions="CenterAndExpand" VerticalOptions="Center">
-                                <ff:CachedImage x:Name="YnImage" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Center"
+                                <gnh:GHCachedImage x:Name="YnImage" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Center"
                                                 Margin="0,0,5,0" WidthRequest="32" HeightRequest="48"/>
                                 <Label Text="?" x:Name="YnTitleLabel" FontFamily="Immortal" FontSize="22" TextColor="White"
                                    VerticalTextAlignment="Center" HorizontalOptions="Center"  />
@@ -347,7 +346,7 @@
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <StackLayout x:Name="PopupTitleLayout" Orientation="Horizontal"
                                      HorizontalOptions="CenterAndExpand" VerticalOptions="Center">
-                                <ff:CachedImage x:Name="PopupImage" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Center"
+                                <gnh:GHCachedImage x:Name="PopupImage" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Center"
                                                 Margin="0,0,5,0" WidthRequest="32" HeightRequest="48"/>
                                 <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center"  />
@@ -374,7 +373,7 @@
                                           AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
             <Grid x:Name="LoadingGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
                 <gnh:GHCachedImage Source="resource://GnollHackX.Assets.dgn_entrance.jpg" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
-                                Aspect="AspectFill" />
+                                Aspect="AspectFill" CacheImage="False" />
                 <StackLayout HeightRequest="150" WidthRequest="250" HorizontalOptions="Center" VerticalOptions="Center">
                     <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"
                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" 

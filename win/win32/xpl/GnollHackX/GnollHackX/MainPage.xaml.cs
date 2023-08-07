@@ -24,7 +24,6 @@ using Xamarin.Essentials;
 using System.Collections;
 using System.Collections.Concurrent;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
-using FFImageLoading.Forms;
 
 namespace GnollHackX
 {

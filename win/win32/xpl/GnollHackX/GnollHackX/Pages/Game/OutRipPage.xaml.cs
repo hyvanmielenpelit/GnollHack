@@ -43,7 +43,7 @@ namespace GnollHackX.Pages.Game
 
         private GlyphImageSource _glyphImageSource = new GlyphImageSource();
 
-        public ImageSource GlyphImage
+        public GlyphImageSource GlyphImage
         {
             get
             {

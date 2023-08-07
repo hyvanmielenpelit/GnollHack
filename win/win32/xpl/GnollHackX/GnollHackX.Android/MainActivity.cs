@@ -73,7 +73,7 @@ namespace GnollHackX.Droid
 
             MainActivity.StaticAssets = this.Assets;
             CurrentMainActivity = this;
-            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
+            //FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
 
             AssetPackManager = AssetPackManagerFactory.GetInstance(this);
             AssetPackListener = new AssetPackStateUpdateListenerWrapper();

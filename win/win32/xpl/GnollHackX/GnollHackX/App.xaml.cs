@@ -1764,7 +1764,7 @@ namespace GnollHackX
             }
         }
 
-        public static SKBitmap GetCachedImageSourceBitmap(string sourcePath)
+        public static SKBitmap GetCachedImageSourceBitmap(string sourcePath, bool addToCache)
         {
             if (sourcePath == null || sourcePath == "")
                 return null;
@@ -1780,7 +1780,7 @@ namespace GnollHackX
                         using (Stream stream = assembly.GetManifestResourceStream(imagePath))
                         {
                             SKBitmap newBitmap = SKBitmap.Decode(stream);
-                            if (newBitmap != null)
+                            if (newBitmap != null && addToCache)
                                 _cachedBitmaps.Add(sourcePath, newBitmap);
                         }
                     }

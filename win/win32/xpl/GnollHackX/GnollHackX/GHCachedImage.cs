@@ -26,6 +26,8 @@ namespace GnollHackX
             PaintSurface += CustomCanvasView_PaintSurface;
         }
 
+        public bool CacheImage { get; set; } = true;
+
         public static readonly BindableProperty SourceProperty = BindableProperty.Create(nameof(Source), typeof(string), typeof(GHCachedImage), null, propertyChanged: OnSourceChanged);
         public string Source
         {
@@ -41,7 +43,7 @@ namespace GnollHackX
                 lock (img._sourceBitmapLock)
                 {
                     if (sourcePath != null && sourcePath != "")
-                        img._sourceBitmap = App.GetCachedImageSourceBitmap(sourcePath);
+                        img._sourceBitmap = App.GetCachedImageSourceBitmap(sourcePath, img.CacheImage);
                     else
                         img._sourceBitmap = null;
                 }
@@ -53,7 +55,7 @@ namespace GnollHackX
         public GlyphImageSource ActiveGlyphImageSource
         {
             get => (GlyphImageSource)GetValue(ActiveGlyphImageSourceProperty);
-            set => SetValue(ActiveGlyphImageSourceProperty, value);
+            set { SetValue(ActiveGlyphImageSourceProperty, value); InvalidateSurface(); }
         }
         private static void OnImageSourceChanged(BindableObject bindable, object oldValue, object newValue)
         {
