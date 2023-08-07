@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:gnollhackclient="clr-namespace:GnollHackX" xmlns:controls="clr-namespace:GnollHackX.Controls"
              Appearing="ContentPage_Appearing"
              Disappearing="ContentPage_Disappearing"
@@ -10,10 +9,6 @@
     <ContentPage.Content>
         <Grid>
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <!--<ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
-                            Source ="resource://GnollHackX.Assets.UI.menubackground.png" />-->
-            <!--<gnollhackclient:BackgroundView x:Name="BackgroundCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />-->
-
             <StackLayout Padding="10">
                 <Label x:Name="WhatNameLabel" Text="What is your name?" FontFamily="Diablo" FontSize="19" Margin="0,10,0,30" TextColor="Black" HorizontalTextAlignment="Center"
                     HorizontalOptions="CenterAndExpand" />
@@ -31,18 +26,8 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <!--<Grid Grid.Column="0" WidthRequest="215" HeightRequest="60" HorizontalOptions="End">
-                        <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="215"  HeightRequest="60"  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                        <Button x:Name="btnOK" Text="OK" WidthRequest="215" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
-                        Clicked="btnOK_Clicked" />
-                    </Grid>-->
                     <controls:CustomImageButton Grid.Column="0" x:Name="btnOK" Text="OK" WidthRequest="215" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="End" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="btnOK_Clicked" />
-                    <!--<Grid Grid.Column="1" WidthRequest="215" HeightRequest="60" HorizontalOptions="Start">
-                        <ff:CachedImage Source="resource://GnollHackX.Assets.button_normal.png" WidthRequest="215"  HeightRequest="60"  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                        <Button x:Name="btnCancel" Text="Cancel" WidthRequest="215" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
-                        Clicked="btnCancel_Clicked" />
-                    </Grid>-->
                     <controls:CustomImageButton Grid.Column="1" x:Name="btnCancel" Text="Cancel" WidthRequest="215" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Start" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="btnCancel_Clicked" />
                 </Grid>

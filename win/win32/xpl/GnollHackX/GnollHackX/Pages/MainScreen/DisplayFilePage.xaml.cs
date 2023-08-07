@@ -42,13 +42,13 @@ namespace GnollHackX.Pages.MainScreen
             _fixedWidth = fixedWidth;
             HeaderLabel.Text = header;
             BottomLayout.IsVisible = displayshare;
-            CloseGrid.IsVisible = !displayshare;
+            CloseButton.IsVisible = !displayshare;
             _isHtml = isHtml;
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            CloseGrid.IsEnabled = false;
+            CloseButton.IsEnabled = false;
             App.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
@@ -143,7 +143,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 BottomLayout.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
-                CloseGrid.Margin = BottomLayout.Margin;
+                CloseButton.Margin = BottomLayout.Margin;
             }
         }
 

@@ -59,6 +59,34 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-preview.6.23329.7" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="SkiaSharp" Version="2.88.4-preview.89" />
+		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.4-preview.89" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.4-preview.89" />
+		<PackageReference Include="SkiaSharp.Views" Version="2.88.4-preview.89" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.4-preview.89" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="2.88.4-preview.89" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+	  <PackageReference Include="SkiaSharp.NativeAssets.Android">
+	    <Version>2.88.4-preview.89</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
+	  <PackageReference Include="SkiaSharp.NativeAssets.iOS">
+	    <Version>2.88.4-preview.89</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-maccatalyst'">
+	  <PackageReference Include="SkiaSharp.NativeAssets.iOS">
+	    <Version>2.88.4-preview.89</Version>
+	  </PackageReference>
+	  <PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst">
+	    <Version>2.88.4-preview.89</Version>
+	  </PackageReference>
 	</ItemGroup>
 
 	<!-- Build Properties must be defined within these property groups to ensure successful publishing
@@ -72,5 +100,5 @@
 		<UseHardenedRuntime>true</UseHardenedRuntime>
 	</PropertyGroup>
 
-	<Import Project=".maui\build.targets" Condition="Exists('.maui\build.targets')" />
+	<!--<Import Project=".maui\build.targets" Condition="Exists('.maui\build.targets')" />-->
 </Project>

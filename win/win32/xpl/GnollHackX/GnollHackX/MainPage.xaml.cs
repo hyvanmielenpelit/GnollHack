@@ -20,7 +20,6 @@ using System.Net;
 using System.Net.Http.Headers;
 using GnollHackX.Pages.Game;
 using GnollHackX.Pages.MainScreen;
-using FFImageLoading;
 using Xamarin.Essentials;
 using System.Collections;
 using System.Collections.Concurrent;

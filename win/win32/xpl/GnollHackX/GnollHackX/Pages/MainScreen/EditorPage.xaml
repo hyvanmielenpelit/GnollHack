@@ -1,16 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:gnollhackclient="clr-namespace:GnollHackX" xmlns:controls="clr-namespace:GnollHackX.Controls"
              BackgroundColor="Black"
              x:Class="GnollHackX.Pages.MainScreen.EditorPage">
     <ContentPage.Content>
         <Grid>
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <!--<ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
-                            Source ="resource://GnollHackX.Assets.UI.menubackground.png" />-->
-
             <Grid WidthRequest="1024" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
