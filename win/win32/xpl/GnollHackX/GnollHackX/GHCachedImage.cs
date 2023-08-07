@@ -49,6 +49,28 @@ namespace GnollHackX
             }
         }
 
+        public static readonly BindableProperty ActiveGlyphImageSourceProperty = BindableProperty.Create(nameof(ActiveGlyphImageSource), typeof(GlyphImageSource), typeof(GHCachedImage), null, propertyChanged: OnImageSourceChanged);
+        public GlyphImageSource ActiveGlyphImageSource
+        {
+            get => (GlyphImageSource)GetValue(ActiveGlyphImageSourceProperty);
+            set => SetValue(ActiveGlyphImageSourceProperty, value);
+        }
+        private static void OnImageSourceChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            GHCachedImage img = bindable as GHCachedImage;
+            if (img != null)
+            {
+                ImageSource oldImgSource = oldValue as GlyphImageSource;
+                ImageSource newImgSource = newValue as GlyphImageSource;
+                if(oldImgSource != newImgSource)
+                {
+                    if (newImgSource != null)
+                        img.Source = null;
+                    img.InvalidateSurface();
+                }
+            }
+        }
+
         //private GHAspect _aspect = GHAspect.AspectFit;
         //public GHAspect Aspect
         //{
@@ -99,7 +121,6 @@ namespace GnollHackX
 
         private void CustomCanvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
             canvas.Clear();
@@ -108,47 +129,56 @@ namespace GnollHackX
             if (canvaswidth <= 0 || canvasheight <= 0)
                 return;
 
-            SKBitmap targetBitmap = null;
-            lock (_sourceBitmapLock)
+            if(ActiveGlyphImageSource != null)
             {
-                targetBitmap = _sourceBitmap;
+                ActiveGlyphImageSource.Width = (int)canvaswidth;
+                ActiveGlyphImageSource.Height = (int)canvasheight;
+                ActiveGlyphImageSource.DrawOnCanvas(canvas);
             }
-            if (targetBitmap == null)
-                return;
-            
-            SKRect sourcerect = new SKRect(0, 0, targetBitmap.Width, targetBitmap.Height);
-            if (targetBitmap.Width <= 0 || targetBitmap.Height <= 0)
-                return;
+            else
+            {
+                SKBitmap targetBitmap = null;
+                lock (_sourceBitmapLock)
+                {
+                    targetBitmap = _sourceBitmap;
+                }
+                if (targetBitmap == null)
+                    return;
 
-            SKRect targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
-            bool widthsmaller = canvaswidth < canvasheight;
-            float sourceWHRatio = (float)targetBitmap.Width / (float)targetBitmap.Height;
-            switch (Aspect)
-            {
-                case GHAspect.AspectFit:
-                    {
-                        float width = widthsmaller ? canvaswidth : canvasheight * sourceWHRatio;
-                        float height = widthsmaller ? canvaswidth / sourceWHRatio : canvasheight;
-                        float hpadding = (width - canvaswidth) / 2;
-                        float vpadding = (height - canvasheight) / 2;
-                        targetrect = new SKRect(-hpadding, -vpadding, -hpadding + width, -vpadding + height);
+                SKRect sourcerect = new SKRect(0, 0, targetBitmap.Width, targetBitmap.Height);
+                if (targetBitmap.Width <= 0 || targetBitmap.Height <= 0)
+                    return;
+
+                SKRect targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
+                bool widthsmaller = canvaswidth < canvasheight;
+                float sourceWHRatio = (float)targetBitmap.Width / (float)targetBitmap.Height;
+                switch (Aspect)
+                {
+                    case GHAspect.AspectFit:
+                        {
+                            float width = widthsmaller ? canvaswidth : canvasheight * sourceWHRatio;
+                            float height = widthsmaller ? canvaswidth / sourceWHRatio : canvasheight;
+                            float hpadding = (width - canvaswidth) / 2;
+                            float vpadding = (height - canvasheight) / 2;
+                            targetrect = new SKRect(-hpadding, -vpadding, -hpadding + width, -vpadding + height);
+                            break;
+                        }
+                    case GHAspect.AspectFill:
+                        {
+                            float width = widthsmaller ? canvasheight * sourceWHRatio : canvaswidth;
+                            float height = widthsmaller ? canvasheight : canvaswidth / sourceWHRatio;
+                            float hpadding = (width - canvaswidth) / 2;
+                            float vpadding = (height - canvasheight) / 2;
+                            targetrect = new SKRect(-hpadding, -vpadding, -hpadding + width, -vpadding + height);
+                            break;
+                        }
+                    default:
+                    case GHAspect.Fill:
+                        targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
                         break;
-                    }
-                case GHAspect.AspectFill:
-                    {
-                        float width = widthsmaller ? canvasheight * sourceWHRatio : canvaswidth;
-                        float height = widthsmaller ? canvasheight : canvaswidth / sourceWHRatio;
-                        float hpadding = (width - canvaswidth) / 2;
-                        float vpadding = (height - canvasheight) / 2;
-                        targetrect = new SKRect(-hpadding, -vpadding, -hpadding + width, -vpadding + height);
-                        break;
-                    }
-                default:
-                case GHAspect.Fill:
-                    targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
-                    break;
+                }
+                canvas.DrawBitmap(targetBitmap, sourcerect, targetrect);
             }
-            canvas.DrawBitmap(targetBitmap, sourcerect, targetrect);
         }
     }
 }

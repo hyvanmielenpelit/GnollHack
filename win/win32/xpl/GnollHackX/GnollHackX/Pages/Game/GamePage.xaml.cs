@@ -2085,7 +2085,7 @@ namespace GnollHackX.Pages.Game
             _textGlyphImageSource.Glyph = window.Glyph;
             _textGlyphImageSource.UseUpperSide = window.UseUpperSide;
 
-            TextWindowGlyphImage.Source = TextGlyphImage;
+            TextWindowGlyphImage.ActiveGlyphImageSource = TextGlyphImage;
             TextWindowGlyphImage.IsVisible = IsTextGlyphVisible;
 
             List<GHPutStrItem> items = null;
@@ -2148,7 +2148,7 @@ namespace GnollHackX.Pages.Game
 
         private GlyphImageSource _menuGlyphImageSource = new GlyphImageSource();
 
-        public Xamarin.Forms.ImageSource MenuGlyphImage
+        public GlyphImageSource MenuGlyphImage
         {
             get
             {
@@ -2676,7 +2676,7 @@ namespace GnollHackX.Pages.Game
             _menuGlyphImageSource.Glyph = ghwindow.Glyph;
             _menuGlyphImageSource.UseUpperSide = ghwindow.UseUpperSide;
 
-            MenuWindowGlyphImage.Source = MenuGlyphImage;
+            MenuWindowGlyphImage.ActiveGlyphImageSource = MenuGlyphImage;
             MenuWindowGlyphImage.IsVisible = IsMenuGlyphVisible;
 
             /* Update canvas */
@@ -11524,7 +11524,7 @@ namespace GnollHackX.Pages.Game
 
         private GlyphImageSource _textGlyphImageSource = new GlyphImageSource();
 
-        public Xamarin.Forms.ImageSource TextGlyphImage
+        public GlyphImageSource TextGlyphImage
         {
             get
             {
