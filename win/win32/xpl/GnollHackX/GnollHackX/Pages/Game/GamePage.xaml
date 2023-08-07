@@ -3,9 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GnollHackX.Pages.Game.GamePage"
              Appearing="ContentPage_Appearing" Disappearing="ContentPage_Disappearing"
-             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms" 
              xmlns:local="clr-namespace:GnollHackX.Pages.Game" 
-             xmlns:gnollhackclient="clr-namespace:GnollHackX" 
+             xmlns:gnh="clr-namespace:GnollHackX" 
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:controls="clr-namespace:GnollHackX.Controls"
              BackgroundColor="Black"
@@ -179,22 +178,22 @@
                 </Grid>
             </Grid>
             <Grid x:Name="MenuGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
-                <gnollhackclient:BackgroundView x:Name="MenuBackground" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+                <gnh:BackgroundView x:Name="MenuBackground" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <StackLayout x:Name="MenuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
-                    <gnollhackclient:CustomLabel x:Name="MenuHeaderLabel"
+                    <gnh:CustomLabel x:Name="MenuHeaderLabel"
                        TextColor="Black" FontAttributes="Bold" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
-                        <gnollhackclient:CustomLabel.GestureRecognizers>
+                        <gnh:CustomLabel.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
-                        </gnollhackclient:CustomLabel.GestureRecognizers>
-                    </gnollhackclient:CustomLabel>
-                    <gnollhackclient:CustomLabel x:Name="MenuSubtitleLabel" UseSpecialSymbols="False"
+                        </gnh:CustomLabel.GestureRecognizers>
+                    </gnh:CustomLabel>
+                    <gnh:CustomLabel x:Name="MenuSubtitleLabel" UseSpecialSymbols="False"
                        TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
-                        <gnollhackclient:CustomLabel.GestureRecognizers>
+                        <gnh:CustomLabel.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
-                        </gnollhackclient:CustomLabel.GestureRecognizers>
-                    </gnollhackclient:CustomLabel>
+                        </gnh:CustomLabel.GestureRecognizers>
+                    </gnh:CustomLabel>
                     <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                         <ff:CachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15,15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
                         <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
@@ -271,7 +270,7 @@
                 </Grid>
             </Grid>
             <Grid x:Name="TextGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
-                <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Small" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+                <gnh:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Small" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <Grid x:Name="TextStack" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <ff:CachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
                     <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="False" CanvasType="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
@@ -374,7 +373,7 @@
                                           AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
                                           AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
             <Grid x:Name="LoadingGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
-                <ff:CachedImage Source="resource://GnollHackX.Assets.dgn_entrance.jpg" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+                <gnh:GHCachedImage Source="resource://GnollHackX.Assets.dgn_entrance.jpg" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                                 Aspect="AspectFill" />
                 <StackLayout HeightRequest="150" WidthRequest="250" HorizontalOptions="Center" VerticalOptions="Center">
                     <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"

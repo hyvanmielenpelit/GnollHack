@@ -1,21 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
-             xmlns:controls="clr-namespace:GnollHackX.Controls"
+             xmlns:gnh="clr-namespace:GnollHackX"
              x:Name="this"
              x:Class="GnollHackX.Controls.SimpleImageButton">
-    <ContentView.Resources>
-        <ResourceDictionary>
-            <controls:FFImageSourceConverter x:Key="imageSource" />
-        </ResourceDictionary>
-    </ContentView.Resources>
-    
     <ContentView.Content>
         <Grid x:Name="ViewGrid" BindingContext="{x:Reference this}" WidthRequest="{Binding GridWidth, FallbackValue='45'}" HeightRequest="{Binding GridHeight, FallbackValue='45'}" >
-            <ff:CachedImage x:Name="ViewImage" Source="{Binding ImgSourcePath, Converter={StaticResource imageSource}}"
+            <gnh:GHCachedImage x:Name="ViewImage" Source="{Binding ImgSourcePath }"
                             BackgroundColor="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" InputTransparent="True" />
-           <Button x:Name="ViewButton" Text="" 
+            <Button x:Name="ViewButton" Text="" 
                              BackgroundColor="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
         </Grid>
     </ContentView.Content>

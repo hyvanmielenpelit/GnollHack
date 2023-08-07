@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:GnollHackX" 
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:controls="clr-namespace:GnollHackX.Controls"
+             xmlns:controls="clr-namespace:GnollHackX.Controls" 
              x:Class="GnollHackX.MainPage"
              NavigationPage.HasNavigationBar="false"
              BackgroundColor="Black"
@@ -11,12 +11,12 @@
     <AbsoluteLayout VerticalOptions="FillAndExpand"
                     HorizontalOptions="FillAndExpand" BackgroundColor="Black">
 
-        <ff:CachedImage x:Name="FmodLogoImage" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"
+        <local:GHCachedImage x:Name="FmodLogoImage" Source="resource://GnollHackX.Assets.FMOD-Logo-192-White.png" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"
                HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
                AbsoluteLayout.LayoutBounds="20, 20, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" Aspect="AspectFit"/>
 
-        <ff:CachedImage x:Name="StartLogoImage" Opacity="0" IsVisible="true" HeightRequest="300" WidthRequest="300"
+        <local:GHCachedImage x:Name="StartLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" Opacity="0" IsVisible="true" HeightRequest="300" WidthRequest="300"
                HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" Aspect="AspectFit"/>
@@ -29,7 +29,7 @@
         <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="60, 35, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" >
             <StackLayout>
-                <ff:CachedImage Grid.Row="0" x:Name="MainLogoImage" HeightRequest="100" WidthRequest="100" Aspect="AspectFill"
+                <local:GHCachedImage Grid.Row="0" x:Name="MainLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" HeightRequest="100" WidthRequest="100" Aspect="AspectFill"
                    HorizontalOptions="Center" VerticalOptions="End"/>
                 <Label x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
                    TextColor="White"

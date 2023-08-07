@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:gnh="clr-namespace:GnollHackX" 
              x:Class="GnollHackX.Pages.Game.OutRipPage"
              BackgroundColor="Black"
              Disappearing="ContentPage_Disappearing">
@@ -12,7 +13,7 @@
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                 </Grid.GestureRecognizers>
-                <ff:CachedImage HeightRequest="350" WidthRequest="350" Source="resource://GnollHackX.Assets.tombstone.png"/>
+                <gnh:GHCachedImage HeightRequest="350" WidthRequest="350" Source="resource://GnollHackX.Assets.tombstone.png" />
                 <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Margin="20,0,0,0" WidthRequest="180" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height ="Auto"/>

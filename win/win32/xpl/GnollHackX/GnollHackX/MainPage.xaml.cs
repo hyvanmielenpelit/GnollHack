@@ -24,6 +24,7 @@ using Xamarin.Essentials;
 using System.Collections;
 using System.Collections.Concurrent;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using FFImageLoading.Forms;
 
 namespace GnollHackX
 {
@@ -84,10 +85,10 @@ namespace GnollHackX
             {
                 App.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 _firsttime = false;
-                Assembly thisassembly = GetType().GetTypeInfo().Assembly;
-                FmodLogoImage.Source = ImageSource.FromResource("GnollHackX.Assets.FMOD-Logo-192-White.png", thisassembly);
-                StartLogoImage.Source = ImageSource.FromResource("GnollHackX.Assets.gnollhack-logo-test-2.png", thisassembly);
-                MainLogoImage.Source = ImageSource.FromResource("GnollHackX.Assets.gnollhack-logo-test-2.png", thisassembly);
+                //Assembly thisassembly = GetType().GetTypeInfo().Assembly;
+                //FmodLogoImage.Source = "resource://GnollHackX.Assets.FMOD-Logo-192-White.png"; // ImageSource.FromResource("GnollHackX.Assets.FMOD-Logo-192-White.png", thisassembly);
+                //StartLogoImage.Source = "resource://GnollHackX.Assets.gnollhack-logo-test-2.png"; //  ImageSource.FromResource("GnollHackX.Assets.gnollhack-logo-test-2.png", thisassembly);
+                //MainLogoImage.Source = "resource://GnollHackX.Assets.gnollhack-logo-test-2.png"; // ImageSource.FromResource("GnollHackX.Assets.gnollhack-logo-test-2.png", thisassembly);
                 if (App.PlatformService != null)
                 {
                     bool removeanimationson = App.PlatformService.IsRemoveAnimationsOn();

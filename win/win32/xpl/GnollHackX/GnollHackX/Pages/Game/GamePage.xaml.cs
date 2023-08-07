@@ -26,13 +26,6 @@ using System.Text.RegularExpressions;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
-using System.Runtime.ConstrainedExecution;
-using Xamarin.Forms.PlatformConfiguration.TizenSpecific;
-using System.Net.Mail;
-using System.Security.Cryptography;
-using static Xamarin.Forms.Internals.GIFBitmap;
-using FFImageLoading.Work;
-using static Xamarin.Essentials.Permissions;
 
 namespace GnollHackX.Pages.Game
 {

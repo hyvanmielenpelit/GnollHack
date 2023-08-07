@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:gnollhackclient="clr-namespace:GnollHackX" xmlns:controls="clr-namespace:GnollHackX.Controls"
+             xmlns:gnh="clr-namespace:GnollHackX" xmlns:controls="clr-namespace:GnollHackX.Controls"
              x:Class="GnollHackX.Pages.MainScreen.SettingsPage"
              BackgroundColor="Black"
              Appearing="ContentPage_Appearing"
              Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <Grid BackgroundColor="Transparent" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

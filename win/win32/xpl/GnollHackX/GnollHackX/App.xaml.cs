@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.IO.Compression;
 using System.Globalization;
+using System.ComponentModel;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
@@ -38,8 +39,10 @@ namespace GnollHackX
             App.GetDependencyServices();
             App.PlatformService.InitOnDemandPackStatusNotificationEventHandler();
 
+            InitBaseTypefaces();
+            InitializeCachedBitmaps();
+
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            App.InitBaseTypefaces(assembly);
             ButtonNormalImageSource = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
             ButtonSelectedImageSource = ImageSource.FromResource("GnollHackX.Assets.button_selected.png", assembly);
             ButtonDisabledImageSource = ImageSource.FromResource("GnollHackX.Assets.button_disabled.png", assembly);
@@ -80,12 +83,12 @@ namespace GnollHackX
         public static bool InformAboutIncompatibleSavedGames = false;
 
         private static Secrets _currentSecrets = null;
-        public static Secrets CurrentSecrets 
-        { 
+        public static Secrets CurrentSecrets
+        {
             get
-            { return _currentSecrets; } 
-            set 
-            { _currentSecrets = value; } 
+            { return _currentSecrets; }
+            set
+            { _currentSecrets = value; }
         }
         public static void ReadSecrets()
         {
@@ -215,9 +218,9 @@ namespace GnollHackX
             }
         }
 
-        public static bool DownloadOnDemandPackage 
+        public static bool DownloadOnDemandPackage
         {
-            get 
+            get
             {
 #if DEBUG
                 return false;
@@ -251,7 +254,7 @@ namespace GnollHackX
         {
             if (newGameMuted || newSilentMode || newSleepMuteMode)
             {
-                if(!oldGameMuted && !oldSilentMode && !oldSleepMuteMode)
+                if (!oldGameMuted && !oldSilentMode && !oldSleepMuteMode)
                     MuteSounds();
             }
             else
@@ -398,7 +401,7 @@ namespace GnollHackX
         public static async Task<bool> OnBackButtonPressed()
         {
             var handler = BackButtonPressed;
-            if(handler != null)
+            if (handler != null)
             {
                 var result = await handler.Invoke(App.Current, new EventArgs());
                 return result;
@@ -450,8 +453,9 @@ namespace GnollHackX
                 return LatoRegular;
         }
 
-        public static void InitBaseTypefaces(Assembly assembly)
+        public static void InitBaseTypefaces()
         {
+            Assembly assembly = typeof(App).GetTypeInfo().Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackX.Assets.diablo_h.ttf"))
             {
                 if (stream != null)
@@ -936,7 +940,7 @@ namespace GnollHackX
                 for (int j = 0; j < GHConstants.MoreButtonsPerRow; j++)
                     for (int k = 0; k < GHConstants.MoreButtonsPerColumn; k++)
                         _moreBtnMatrix[i, j, k] = null;
-            if(useSimple)
+            if (useSimple)
             {
                 _moreBtnMatrix[0, 0, 0] = new GHCommandButtonItem("Wish", "GnollHackX.Assets.UI.wish.png", GHUtils.Ctrl((int)'w'));
                 _moreBtnMatrix[0, 1, 0] = new GHCommandButtonItem("Reveal", "GnollHackX.Assets.UI.reveal.png", GHUtils.Ctrl((int)'f'));
@@ -990,7 +994,7 @@ namespace GnollHackX
                 _moreBtnMatrix[2, 1, 1] = new GHCommandButtonItem("2-Weapon", "GnollHackX.Assets.UI.twoweap.png", GHUtils.Ctrl((int)'x'));
                 _moreBtnMatrix[2, 2, 1] = new GHCommandButtonItem("Examine", "GnollHackX.Assets.UI.examine.png", GHUtils.Meta((int)'x'));
                 _moreBtnMatrix[2, 3, 1] = new GHCommandButtonItem("Engrave", "GnollHackX.Assets.UI.engrave.png", (int)'E');
-                
+
                 _moreBtnMatrix[2, 0, 2] = new GHCommandButtonItem("Ride", "GnollHackX.Assets.UI.ride.png", GHUtils.Meta((int)'R'));
                 _moreBtnMatrix[2, 1, 2] = new GHCommandButtonItem("Untrap", "GnollHackX.Assets.UI.untrap.png", GHUtils.Meta((int)'u'));
                 _moreBtnMatrix[2, 2, 2] = new GHCommandButtonItem("Handedness", "GnollHackX.Assets.UI.handedness.png", GHUtils.Meta((int)'h'));
@@ -1009,7 +1013,7 @@ namespace GnollHackX
                 _moreBtnMatrix[2, 0, 5] = new GHCommandButtonItem("Name", "GnollHackX.Assets.UI.name.png", (int)'N');
                 _moreBtnMatrix[2, 1, 5] = new GHCommandButtonItem("Look Here", "GnollHackX.Assets.UI.lookhere.png", (int)':');
                 _moreBtnMatrix[2, 2, 5] = new GHCommandButtonItem("Extended", "GnollHackX.Assets.UI.extended.png", (int)'#');
-                _moreBtnMatrix[2, 3, 5] = new GHCommandButtonItem("Back to Game", "GnollHackX.Assets.UI.more.png", -1); 
+                _moreBtnMatrix[2, 3, 5] = new GHCommandButtonItem("Back to Game", "GnollHackX.Assets.UI.more.png", -1);
             }
             else
             {
@@ -1382,7 +1386,7 @@ namespace GnollHackX
 
         public static void PlayButtonClickedSound()
         {
-            if(_fmodService != null)
+            if (_fmodService != null)
             {
                 try
                 {
@@ -1569,12 +1573,11 @@ namespace GnollHackX
 
             if (!writesuccessful)
             {
-                
                 try
                 {
                     if (Directory.Exists(targetpath))
                     {
-                        foreach(string subfilename in Directory.GetFiles(targetpath))
+                        foreach (string subfilename in Directory.GetFiles(targetpath))
                         {
                             string subfilepath = Path.Combine(targetpath, subfilename);
                             File.Delete(subfilepath);
@@ -1608,7 +1611,6 @@ namespace GnollHackX
                 /* Nothing */
             }
         }
-
 
         public static SKBitmap GetSpecialSymbol(string str, out SKRect source_rect)
         {
@@ -1691,12 +1693,109 @@ namespace GnollHackX
                 bitmap = _spellTransmutationBitmap;
             }
 
-            if(bitmap != null)
+            if (bitmap != null)
             {
                 source_rect.Right = bitmap.Width;
                 source_rect.Bottom = bitmap.Height;
             }
             return bitmap;
+        }
+
+        static readonly object _cachedBitmapsLock = new object();
+        static readonly Dictionary<string, SKBitmap> _cachedBitmaps = new Dictionary<string, SKBitmap>();
+
+        public static void InitializeCachedBitmaps()
+        {
+            lock (_cachedBitmapsLock)
+            {
+                try
+                {
+                    _cachedBitmaps.Clear();
+                    Assembly assembly = typeof(App).GetTypeInfo().Assembly;
+                    string[] cachedBitmaps = new string[]
+                    {
+                    "GnollHackX.Assets.UI.missing_icon.png",
+                    "GnollHackX.Assets.UI.yes.png",
+                    "GnollHackX.Assets.UI.yestoall.png",
+                    "GnollHackX.Assets.UI.no.png",
+                    "GnollHackX.Assets.UI.cancel.png",
+                    "GnollHackX.Assets.UI.inventory.png",
+                    "GnollHackX.Assets.UI.leftring.png",
+                    "GnollHackX.Assets.UI.rightring.png",
+                    "GnollHackX.Assets.UI.load.png",
+                    "GnollHackX.Assets.UI.name.png",
+                    "GnollHackX.Assets.UI.dropmany.png",
+                    "GnollHackX.Assets.UI.stone-look-off.png",
+                    "GnollHackX.Assets.UI.stone-look-on.png",
+                    "GnollHackX.Assets.UI.stone-autocenter-off.png",
+                    "GnollHackX.Assets.UI.stone-autocenter-on.png",
+                    "GnollHackX.Assets.UI.stone-minimap-off.png",
+                    "GnollHackX.Assets.UI.stone-minimap-on.png",
+                    "GnollHackX.Assets.UI.stone-travel-off.png",
+                    "GnollHackX.Assets.UI.stone-travel-on.png",
+                    "GnollHackX.Assets.UI.stone-altmap-off.png",
+                    "GnollHackX.Assets.UI.stone-altmap-on.png",
+                    "GnollHackX.Assets.UI.tombstone.png",
+                    "GnollHackX.Assets.UI.stairs-down.png",
+                    "GnollHackX.Assets.UI.stairs-up.png",
+                    "GnollHackX.Assets.UI.chat.png",
+                    "GnollHackX.Assets.UI.pickup.png",
+                    "GnollHackX.Assets.UI.eat.png",
+                    "GnollHackX.Assets.UI.pray.png",
+                    "GnollHackX.Assets.UI.offer.png",
+                    "GnollHackX.Assets.UI.loot.png",
+                    "GnollHackX.Assets.UI.lastitem.png",
+                    "GnollHackX.Assets.FMOD-Logo-192-White.png",
+                    "GnollHackX.Assets.gnollhack-logo-test-2.png",
+                    };
+                    foreach (string imagePath in cachedBitmaps)
+                    {
+                        using (Stream stream = assembly.GetManifestResourceStream(imagePath))
+                        {
+                            SKBitmap newBitmap = SKBitmap.Decode(stream);
+                            if (newBitmap != null)
+                                _cachedBitmaps.Add("resource://" + imagePath, newBitmap);
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        public static SKBitmap GetCachedImageSourceBitmap(string sourcePath)
+        {
+            if (sourcePath == null || sourcePath == "")
+                return null;
+
+            lock (_cachedBitmapsLock)
+            {
+                if (!_cachedBitmaps.ContainsKey(sourcePath))
+                {
+                    try
+                    {
+                        string imagePath = sourcePath.Length > 11 && sourcePath.Substring(0, 11) == "resource://" ? sourcePath.Substring(11) : sourcePath;
+                        Assembly assembly = typeof(App).GetTypeInfo().Assembly;
+                        using (Stream stream = assembly.GetManifestResourceStream(imagePath))
+                        {
+                            SKBitmap newBitmap = SKBitmap.Decode(stream);
+                            if (newBitmap != null)
+                                _cachedBitmaps.Add(sourcePath, newBitmap);
+                        }
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                }
+
+                SKBitmap bitmap;
+                if (_cachedBitmaps.TryGetValue(sourcePath, out bitmap))
+                    return bitmap;
+                else
+                    return null;
+            }
         }
 
         public static bool PostingGameStatus { get; set; }
@@ -1707,7 +1806,7 @@ namespace GnollHackX
         {
             if(App.CustomGameStatusLink != null && App.CustomGameStatusLink != "")
             { 
-                return App.CustomGameStatusLink; 
+                return App.CustomGameStatusLink;
             }
             else
             { 
@@ -1791,6 +1890,7 @@ namespace GnollHackX
             AddLoadableSoundBanks();
             DeleteBanksFromDisk();
         }
+
         public static void AddLoadableSoundBanks()
         {
             foreach (SecretsFile sf in App.CurrentSecrets.files)
