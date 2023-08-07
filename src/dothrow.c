@@ -1069,11 +1069,11 @@ boolean verbose;
      * for diagonal movement, give the player a message and return.
      */
     if (Punished && !carried(uball)) {
-        You_feel("a tug from the iron ball.");
+        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a tug from the iron ball.");
         nomul(0);
         return;
     } else if (u.utrap) {
-        You("are anchored by the %s.",
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are anchored by the %s.",
             u.utraptype == TT_WEB
                 ? "web"
                 : u.utraptype == TT_LAVA
@@ -1097,7 +1097,7 @@ boolean verbose;
     multi_reason = "moving through the air";
     nomovemsg = ""; /* it just happens */
     if (verbose)
-        You("%s in the opposite direction.", range > 1 ? "hurtle" : "float");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in the opposite direction.", range > 1 ? "hurtle" : "float");
     /* if we're in the midst of shooting multiple projectiles, stop */
     endmultishot(TRUE);
     sokoban_guilt();
