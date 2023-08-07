@@ -11328,7 +11328,7 @@ namespace GnollHackX.Pages.Game
                 MainGrid.IsVisible = true;
                 if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                     MenuCanvas.AbortAnimation("GeneralAnimationCounter");
-
+                MenuWindowGlyphImage.StopAnimation();
                 //lock (_canvasPageLock)
                 //{
                 //    _canvasPage = canvas_page_types.MainGamePage;
@@ -11376,6 +11376,7 @@ namespace GnollHackX.Pages.Game
                 }
                 TextGrid.IsVisible = false;
                 MainGrid.IsVisible = true;
+                TextWindowGlyphImage.StopAnimation();
                 lock (_textScrollLock)
                 {
                     _textScrollOffset = 0;

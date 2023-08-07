@@ -55,8 +55,9 @@ namespace GnollHackX
         public GlyphImageSource ActiveGlyphImageSource
         {
             get => (GlyphImageSource)GetValue(ActiveGlyphImageSourceProperty);
-            set { SetValue(ActiveGlyphImageSourceProperty, value); InvalidateSurface(); }
+            set { SetValue(ActiveGlyphImageSourceProperty, value); InvalidateSurface(); CheckAnimated(); }
         }
+
         private static void OnImageSourceChanged(BindableObject bindable, object oldValue, object newValue)
         {
             GHCachedImage img = bindable as GHCachedImage;
@@ -69,6 +70,50 @@ namespace GnollHackX
                     if (newImgSource != null)
                         img.Source = null;
                     img.InvalidateSurface();
+                }
+            }
+        }
+
+        public void StopAnimation()
+        {
+            _stopAnimation = true;
+        }
+
+        private bool _stopAnimation = false;
+        private bool _timerOn = false;
+        private void CheckAnimated()
+        {
+            if (ActiveGlyphImageSource != null && App.Glyph2Tile != null && App.Tile2Animation != null)
+            {
+                int glyph = ActiveGlyphImageSource.Glyph;
+                int absglyph = Math.Abs(glyph);
+                int tile = absglyph < App.Glyph2Tile.Length ? App.Glyph2Tile[absglyph] : 0;
+                int anim = tile < App.Tile2Animation.Length ? App.Tile2Animation[tile] : 0;
+                long _refreshFrequency = (long)Math.Min(60, ClientUtils.GetAuxiliaryCanvasAnimationFrequency());
+                if(anim > 0 &&  !_timerOn)
+                {
+                    _stopAnimation = false;
+                    _timerOn = true;
+                    Device.StartTimer(TimeSpan.FromSeconds(1.0 / _refreshFrequency), () =>
+                    {
+                        if (ActiveGlyphImageSource == null ||  App.Glyph2Tile == null || App.Tile2Animation == null || _stopAnimation)
+                        {
+                            _timerOn = false;
+                            return false;
+                        }
+                        glyph = ActiveGlyphImageSource.Glyph;
+                        absglyph = Math.Abs(glyph);
+                        tile = absglyph < App.Glyph2Tile.Length ? App.Glyph2Tile[absglyph] : 0;
+                        anim = tile < App.Tile2Animation.Length ? App.Tile2Animation[tile] : 0;
+                        if(anim > 0)
+                            InvalidateSurface();
+                        _timerOn = anim > 0;
+                        return anim > 0;
+                    });
+                }
+                else if (anim == 0 && _timerOn)
+                {
+                    _stopAnimation = true;
                 }
             }
         }
