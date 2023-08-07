@@ -10,9 +10,9 @@ namespace GnollHackX
 {
     public enum GHAspect
     {
-        AspectFit,
-        AspectFill,
-        Fill
+        AspectFit = 0,
+        AspectFill = 1,
+        Fill = 2
     }
 
     public class GHCachedImage : SKCanvasView
@@ -49,6 +49,20 @@ namespace GnollHackX
             }
         }
 
+        //private GHAspect _aspect = GHAspect.AspectFit;
+        //public GHAspect Aspect
+        //{
+        //    get { return _aspect;  }
+        //    set 
+        //    { 
+        //        if (_aspect != value) 
+        //        { 
+        //            _aspect = value; 
+        //            InvalidateSurface(); 
+        //        } 
+        //    }
+        //}
+
 
         public static readonly BindableProperty AspectProperty = BindableProperty.Create(nameof(Aspect), typeof(GHAspect), typeof(GHCachedImage), GHAspect.AspectFit, propertyChanged: OnAspectChanged);
         public GHAspect Aspect
@@ -61,7 +75,7 @@ namespace GnollHackX
             GHCachedImage img = bindable as GHCachedImage;
             if (img != null)
             {
-                if(oldValue != null && newValue != null)
+                if (oldValue != null && newValue != null)
                 {
                     try
                     {
@@ -112,15 +126,23 @@ namespace GnollHackX
             switch (Aspect)
             {
                 case GHAspect.AspectFit:
-                    targetrect = new SKRect(0, 0, widthsmaller ? canvasheight * sourceWHRatio : canvaswidth, widthsmaller ? canvasheight : canvaswidth / sourceWHRatio);
-                    break;
+                    {
+                        float width = widthsmaller ? canvaswidth : canvasheight * sourceWHRatio;
+                        float height = widthsmaller ? canvaswidth / sourceWHRatio : canvasheight;
+                        float hpadding = (width - canvaswidth) / 2;
+                        float vpadding = (height - canvasheight) / 2;
+                        targetrect = new SKRect(-hpadding, -vpadding, -hpadding + width, -vpadding + height);
+                        break;
+                    }
                 case GHAspect.AspectFill:
-                    float width = widthsmaller ? canvaswidth : canvasheight * sourceWHRatio;
-                    float height = widthsmaller ? canvaswidth / sourceWHRatio : canvasheight;
-                    float hpadding = (width - canvaswidth) / 2;
-                    float vpadding = (height - canvasheight) / 2;
-                    targetrect = new SKRect(-hpadding, -vpadding, -hpadding + width, -vpadding + height);
-                    break;
+                    {
+                        float width = widthsmaller ? canvasheight * sourceWHRatio : canvaswidth;
+                        float height = widthsmaller ? canvasheight : canvaswidth / sourceWHRatio;
+                        float hpadding = (width - canvaswidth) / 2;
+                        float vpadding = (height - canvasheight) / 2;
+                        targetrect = new SKRect(-hpadding, -vpadding, -hpadding + width, -vpadding + height);
+                        break;
+                    }
                 default:
                 case GHAspect.Fill:
                     targetrect = new SKRect(0, 0, canvaswidth, canvasheight);

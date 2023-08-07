@@ -16,10 +16,10 @@
                AbsoluteLayout.LayoutBounds="20, 20, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" Aspect="AspectFit"/>
 
-        <local:GHCachedImage x:Name="StartLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" Opacity="0" IsVisible="true" HeightRequest="300" WidthRequest="300"
+        <local:GHCachedImage x:Name="StartLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" Opacity="0" IsVisible="true" HeightRequest="180" WidthRequest="180"
                HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
-               AbsoluteLayout.LayoutFlags="PositionProportional" Aspect="AspectFit"/>
+               AbsoluteLayout.LayoutFlags="PositionProportional" />
 
         <local:ImageCarousel x:Name="carouselView" IsVisible="false"
                HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
@@ -29,7 +29,7 @@
         <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="60, 35, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" >
             <StackLayout>
-                <local:GHCachedImage Grid.Row="0" x:Name="MainLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" HeightRequest="100" WidthRequest="100" Aspect="AspectFill"
+                <local:GHCachedImage Grid.Row="0" x:Name="MainLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" HeightRequest="100" WidthRequest="100"
                    HorizontalOptions="Center" VerticalOptions="End"/>
                 <Label x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
                    TextColor="White"
