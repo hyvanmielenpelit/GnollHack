@@ -31,7 +31,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
 	  <ProvisioningType>manual</ProvisioningType>
 	  <CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
 	  <CodesignProvision>Apple Dev Development 2023</CodesignProvision>
@@ -55,6 +55,119 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+	  <None Remove="Platforms\Android\libs\arm64-v8a\libc++_shared.so" />
+	  <None Remove="Platforms\Android\libs\arm64-v8a\libfmod.so" />
+	  <None Remove="Platforms\Android\libs\arm64-v8a\libfmodstudio.so" />
+	  <None Remove="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libc++_shared.so" />
+	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmod.so" />
+	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmodstudio.so" />
+	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('-ios'))">
+		<NativeReference Include="Platforms\iOS\Libraries\libfmodstudio_iphoneos.a">
+			<Kind>Static</Kind>
+			<Frameworks>AudioToolbox CoreAudio</Frameworks>
+			<ForceLoad>True</ForceLoad>
+		</NativeReference>
+		<NativeReference Include="Platforms\iOS\Libraries\libfmod_iphoneos.a">
+			<Kind>Static</Kind>
+			<Frameworks>AudioToolbox CoreAudio</Frameworks>
+			<ForceLoad>True</ForceLoad>
+		</NativeReference>
+		<NativeReference Include="Platforms\iOS\Libraries\libgnollhackios.a">
+			<Kind>Static</Kind>
+			<ForceLoad>True</ForceLoad>
+			<IsCxx>True</IsCxx>
+		</NativeReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Remove="Controls\CustomImageButton.xaml" />
+	  <MauiXaml Remove="Controls\LabeledImageButton.xaml" />
+	  <MauiXaml Remove="Controls\SimpleImageButton.xaml" />
+	  <MauiXaml Remove="Controls\SwitchableCanvasView.xaml" />
+	  <MauiXaml Remove="Pages\Game\GameMenuPage.xaml" />
+	  <MauiXaml Remove="Pages\Game\GamePage.xaml" />
+	  <MauiXaml Remove="Pages\Game\NamePage.xaml" />
+	  <MauiXaml Remove="Pages\Game\OutRipPage.xaml" />
+	  <MauiXaml Remove="Pages\MainScreen\AboutPage.xaml" />
+	  <MauiXaml Remove="Pages\MainScreen\DisplayFilePage.xaml" />
+	  <MauiXaml Remove="Pages\MainScreen\EditorPage.xaml" />
+	  <MauiXaml Remove="Pages\MainScreen\ResetPage.xaml" />
+	  <MauiXaml Remove="Pages\MainScreen\SettingsPage.xaml" />
+	  <MauiXaml Remove="Pages\MainScreen\TopScorePage.xaml" />
+	  <MauiXaml Remove="Pages\MainScreen\VersionPage.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Controls\CustomImageButton.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Controls\LabeledImageButton.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Controls\SimpleImageButton.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Controls\SwitchableCanvasView.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\Game\GameMenuPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\Game\GamePage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\Game\NamePage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\Game\OutRipPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\MainScreen\AboutPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\MainScreen\DisplayFilePage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\MainScreen\EditorPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\MainScreen\ResetPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\MainScreen\SettingsPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\MainScreen\TopScorePage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\MainScreen\VersionPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
@@ -68,25 +181,77 @@
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="2.88.4-preview.89" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
 	  <PackageReference Include="SkiaSharp.NativeAssets.Android">
 	    <Version>2.88.4-preview.89</Version>
 	  </PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
+	<ItemGroup Condition="$(TargetFramework.Contains('-ios'))">
 	  <PackageReference Include="SkiaSharp.NativeAssets.iOS">
 	    <Version>2.88.4-preview.89</Version>
 	  </PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-maccatalyst'">
+	<ItemGroup Condition="$(TargetFramework.Contains('-maccatalyst'))">
 	  <PackageReference Include="SkiaSharp.NativeAssets.iOS">
 	    <Version>2.88.4-preview.89</Version>
 	  </PackageReference>
 	  <PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst">
 	    <Version>2.88.4-preview.89</Version>
 	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="FMOD\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Controls\CustomImageButton.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Controls\LabeledImageButton.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Controls\SimpleImageButton.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Controls\SwitchableCanvasView.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\Game\GameMenuPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\Game\GamePage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\Game\NamePage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\Game\OutRipPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\MainScreen\AboutPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\MainScreen\DisplayFilePage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\MainScreen\EditorPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\MainScreen\ResetPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\MainScreen\SettingsPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\MainScreen\TopScorePage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\MainScreen\VersionPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<!-- Build Properties must be defined within these property groups to ensure successful publishing
