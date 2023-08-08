@@ -36,10 +36,6 @@
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnOptions_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
-                                <controls:CustomImageButton x:Name="btnLibrary" Text="Library" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnLibrary_Clicked" UseVaryingBackgroundImages ="False" />
-                            </ViewCell>
-                            <ViewCell>
                                 <controls:CustomImageButton x:Name="btnTips" Text="User Interface Guide" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnTips_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
@@ -50,6 +46,10 @@
                             <ViewCell>
                                 <controls:CustomImageButton x:Name="btnVersion" Text="Version" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="False" />
+                            </ViewCell>
+                            <ViewCell>
+                                <controls:CustomImageButton x:Name="btnLibrary" Text="Library" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnLibrary_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                         </TableSection>
                         <TableSection x:Name="ReturnSection">
