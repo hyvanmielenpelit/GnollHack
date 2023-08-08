@@ -47,10 +47,7 @@ win/win32/vs/default.nh
 win/win32/vs/dumplog
 win/win32/vs/dumplog/*.*
 *.vcxproj.FileListAbsolute.txt
-win/win32/xpl/GnollHackX/GnollHackX.Android/libs/x86/libgnollhackdroid.so*
-win/win32/xpl/GnollHackX/GnollHackX.Android/libs/x86_64/libgnollhackdroid.so*
-win/win32/xpl/GnollHackX/GnollHackX.Android/libs/arm64-v8a/libgnollhackdroid.so*
-win/win32/xpl/GnollHackX/GnollHackX.Android/libs/armeabi-v7a/libgnollhackdroid.so*
+libgnollhackdroid.so*
 win/win32/xpl/GnollHackX/GnollHackX.Android/gnh/credits
 win/win32/xpl/GnollHackX/GnollHackX.Android/gnh/xcredits
 win/win32/xpl/GnollHackX/GnollHackX.Android/gnh/symbols
