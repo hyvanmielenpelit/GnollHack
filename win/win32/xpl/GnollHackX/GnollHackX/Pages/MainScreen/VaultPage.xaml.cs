@@ -71,7 +71,7 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;
-            VaultTableView.IsEnabled = true;
+            VaultLayout.IsEnabled = true;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
@@ -95,7 +95,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnTopScores_Clicked(object sender, EventArgs e)
         {
-            VaultTableView.IsEnabled = false;
+            VaultLayout.IsEnabled = false;
             App.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(App.GHPath, "xlogfile");
             if (File.Exists(fulltargetpath))
@@ -105,13 +105,13 @@ namespace GnollHackX.Pages.MainScreen
                 if (!topScorePage.ReadFile(out errormsg))
                 {
                     await DisplayAlert("Reading Top Scores Failed", "GnollHack failed to read the top scores file: " + errormsg, "OK");
-                    VaultTableView.IsEnabled = true;
+                    VaultLayout.IsEnabled = true;
                 }
                 else
                 {
                     topScorePage.Disappearing += (sender2, e2) =>
                     {
-                        VaultTableView.IsEnabled = true;
+                        VaultLayout.IsEnabled = true;
                     };
                     await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
                 }
@@ -122,21 +122,21 @@ namespace GnollHackX.Pages.MainScreen
                 var topScorePage = new TopScorePage();
                 topScorePage.Disappearing += (sender2, e2) =>
                 {
-                    VaultTableView.IsEnabled = true;
+                    VaultLayout.IsEnabled = true;
                 };
                 await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
             }
-            VaultTableView.IsEnabled = true;
+            VaultLayout.IsEnabled = true;
         }
 
         private async void btnLibrary_Clicked(object sender, EventArgs e)
         {
-            VaultTableView.IsEnabled = false;
+            VaultLayout.IsEnabled = false;
             App.PlayButtonClickedSound();
             var libPage = new LibraryPage();
             libPage.ReadLibrary();
             await App.Current.MainPage.Navigation.PushModalAsync(libPage);
-            VaultTableView.IsEnabled = true;
+            VaultLayout.IsEnabled = true;
 
         }
 
