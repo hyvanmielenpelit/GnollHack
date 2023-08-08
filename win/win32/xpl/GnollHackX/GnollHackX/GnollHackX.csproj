@@ -470,6 +470,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Controls\RowImageButton.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Controls\SimpleImageButton.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

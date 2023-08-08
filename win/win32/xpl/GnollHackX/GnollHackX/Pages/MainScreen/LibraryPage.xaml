@@ -15,9 +15,10 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Library" HorizontalTextAlignment="Center" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="30,10,30,10" />
-                <FlexLayout Grid.Row="1" x:Name="LibraryLayout" Padding="0,2" Direction="Column"
-                                JustifyContent="Start" AlignItems="Start" AlignContent="Start" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                </FlexLayout>
+                <ScrollView Grid.Row="1" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" WidthRequest="400">
+                    <StackLayout x:Name="LibraryLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    </StackLayout>
+                </ScrollView>
                 <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="24" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
             </Grid>

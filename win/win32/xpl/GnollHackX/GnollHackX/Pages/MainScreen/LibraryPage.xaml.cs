@@ -29,10 +29,11 @@ namespace GnollHackX.Pages.MainScreen
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
-        Dictionary<int, StoredManual> manuals = new Dictionary<int, StoredManual>();
+        Dictionary<int, StoredManual> _manuals = new Dictionary<int, StoredManual>();
 
         public void ReadLibrary()
         {
+            _manuals.Clear();
             string datadir = Path.Combine(App.GHPath, GHConstants.UserDataDirectory);
             if (Directory.Exists(datadir))
             {
@@ -62,30 +63,38 @@ namespace GnollHackX.Pages.MainScreen
 
                         }
                         if(sm != null)
-                        {
-                            manuals.Add(sm.Id, sm);
-                            LabeledImageButton lib = new LabeledImageButton();
-                            lib.ImgSourcePath = "resource://GnollHackX.Assets.UI.examine.png";
-                            lib.LargerFont = false;
-                            lib.LblText = sm.Name;
-                            lib.SetSideSize(2000, 2000);
-                            lib.GridMargin = new Thickness(lib.ImgWidth / 15, lib.ImgWidth / 30);
-                            lib.BtnCommand = sm.Id;
-                            lib.BtnClicked += LibraryButton_Clicked;
-                            LibraryLayout.Children.Add(lib);
-                        }
+                            _manuals.Add(sm.Id, sm);
                     }
                 }
+            }
+            
+            List<StoredManual> manuallist = _manuals.Values.ToList();
+            Comparison<StoredManual> comp = new Comparison<StoredManual>((m1, m2) => { return string.Compare(m1.Name, m2.Name); });
+            manuallist.Sort(comp);
+            foreach(StoredManual sm in manuallist)
+            {
+                RowImageButton rib = new RowImageButton();
+                rib.ImgSourcePath = "resource://GnollHackX.Assets.UI.examine.png";
+                rib.LblText = sm.Name;
+                rib.LblFontSize = 17;
+                rib.ImgWidth = 80;
+                rib.ImgHeight = 80;
+                rib.GridWidth = 320;
+                rib.GridHeight = 80;
+                rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
+                rib.BtnCommand = sm.Id;
+                rib.BtnClicked += LibraryButton_Clicked;
+                LibraryLayout.Children.Add(rib);
             }
         }
 
         private async void LibraryButton_Clicked(object sender, EventArgs e)
         {
-            LabeledImageButton ghbutton = sender as LabeledImageButton;
+            RowImageButton ghbutton = sender as RowImageButton;
             if (ghbutton != null)
             {
                 StoredManual sm;
-                if (manuals.TryGetValue(ghbutton.BtnCommand, out sm))
+                if (_manuals.TryGetValue(ghbutton.BtnCommand, out sm))
                 {
                     string errormsg;
                     var dispfilepage = new DisplayFilePage(null, sm.Name, 0, false, false);
@@ -117,4 +126,5 @@ namespace GnollHackX.Pages.MainScreen
         }
 
     }
+
 }
