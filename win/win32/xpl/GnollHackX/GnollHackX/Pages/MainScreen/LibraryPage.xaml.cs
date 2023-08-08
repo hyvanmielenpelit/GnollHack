@@ -81,8 +81,10 @@ namespace GnollHackX.Pages.MainScreen
                     rib.LblFontSize = 17;
                     rib.ImgWidth = 80;
                     rib.ImgHeight = 80;
-                    rib.GridWidth = 320;
+                    rib.GridWidth = 480;
                     rib.GridHeight = 80;
+                    rib.WidthRequest = 480;
+                    rib.HeightRequest = 80;
                     rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
                     rib.BtnCommand = sm.Id;
                     rib.BtnClicked += LibraryButton_Clicked;
