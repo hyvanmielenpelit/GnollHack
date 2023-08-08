@@ -115,6 +115,10 @@ namespace GnollHackX
                 {
                     _stopAnimation = true;
                 }
+            } 
+            else if (_timerOn)
+            {
+                _stopAnimation = true;
             }
         }
 
