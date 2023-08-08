@@ -26,10 +26,6 @@
                                 <controls:CustomImageButton x:Name="btnVersion" Text="Version" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
-                            <ViewCell>
-                                <controls:CustomImageButton x:Name="btnLibrary" Text="Library" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnLibrary_Clicked" UseVaryingBackgroundImages ="False" />
-                            </ViewCell>
                         </TableSection>
                         <TableSection x:Name="InformationSection">
                             <ViewCell>

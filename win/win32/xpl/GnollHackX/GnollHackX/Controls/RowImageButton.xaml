@@ -17,7 +17,6 @@
                 <Label Grid.Column="1" x:Name="ViewLabel" Text="{Binding LblText}" TextColor="Black" FontFamily="Immortal" FontSize="{Binding LblFontSize, FallbackValue='14'}" 
                        BackgroundColor="Transparent" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Start" HorizontalTextAlignment="Start" 
                        InputTransparent="True" />
-
             </Grid>
             <Button x:Name="ViewButton" Text="" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
         </Grid>

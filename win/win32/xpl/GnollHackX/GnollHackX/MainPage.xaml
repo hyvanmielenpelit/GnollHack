@@ -44,11 +44,10 @@
             <Label x:Name="DownloadLabel" TextColor="White" FontSize="6" FontFamily="Lato" />
             <Label x:Name="VersionLabel" TextColor="White" FontSize="6" FontFamily="Lato" />
         </StackLayout>
-        <Label x:Name="ErrorLabel" TextColor="Red" FontSize="Small" FontFamily="Lato" AbsoluteLayout.LayoutBounds="10, 10, AutoSize, AutoSize" />
         <Grid x:Name="UpperButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,10,10,5" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
             <StackLayout>
                 <controls:CustomImageButton Text="Reset" x:Name="ResetButton" Clicked="ClearFilesButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
-                <controls:CustomImageButton Text="Scores" x:Name="TopScoreButton" Clicked="TopScoreButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                <controls:CustomImageButton Text="Vault" x:Name="VaultButton" Clicked="VaultButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
                 <controls:CustomImageButton Text="Options" x:Name="OptionsButton" Clicked="OptionsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
                 <controls:CustomImageButton Text="Settings" x:Name="SettingsButton" Clicked="SettingsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
                 <controls:CustomImageButton Text="About" x:Name="CreditsButton" Clicked="CreditsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />

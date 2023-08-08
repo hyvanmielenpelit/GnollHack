@@ -6,13 +6,13 @@
              x:Class="GnollHackX.Controls.LabeledImageButton">
     <ContentView.Content>
         <Grid x:Name="ViewGrid" BindingContext="{x:Reference this}" Margin="{Binding GridMargin}" WidthRequest="{Binding GridWidth, FallbackValue='50'}" HeightRequest="{Binding GridHeight, FallbackValue='60'}" >
-            <gnh:GHCachedImage x:Name="ViewImage" Source="{Binding ImgSourcePath}"
+            <gnh:GHCachedImage x:Name="ViewImage" BindingContext="{x:Reference this}" Source="{Binding ImgSourcePath}"
                             WidthRequest="{Binding ImgWidth, FallbackValue='50'}" HeightRequest="{Binding ImgHeight, FallbackValue='50'}" 
                             BackgroundColor="Transparent" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" InputTransparent="True" />
-            <Label x:Name="ViewLabel" Text="{Binding LblText}" TextColor="White" FontFamily="Lato-Regular" FontSize="{Binding LblFontSize, FallbackValue='9'}" 
+            <Label x:Name="ViewLabel" BindingContext="{x:Reference this}" Text="{Binding LblText}" TextColor="{Binding LblFontColor}" FontFamily="{Binding LblFontFamily}" FontSize="{Binding LblFontSize, FallbackValue='9'}" 
                    BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" 
                    InputTransparent="True" />
-            <gnh:GHButton x:Name="ViewButton" Text="" 
+            <gnh:GHButton x:Name="ViewButton" BindingContext="{x:Reference this}" Text="" 
                              Letter="{Binding BtnLetter}" ApplyMeta="{Binding BtnMeta}" ApplyCtrl="{Binding BtnCtrl}" RawCommand="{Binding BtnCommand}" 
                              BackgroundColor="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
         </Grid>

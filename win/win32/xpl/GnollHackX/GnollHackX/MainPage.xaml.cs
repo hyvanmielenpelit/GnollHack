@@ -536,24 +536,22 @@ namespace GnollHackX
         {
             UpperButtonGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
-            carouselView.Stop();
             string fulltargetpath = Path.Combine(App.GHPath, "defaults.gnh");
             var editorPage = new EditorPage(fulltargetpath, "Default Options File");
             string errormsg = "";
             if (!editorPage.ReadFile(out errormsg))
             {
-                ErrorLabel.Text = errormsg;
-                carouselView.Play();
+                await DisplayAlert("Reading Options File Failed", "GnollHack failed to read the options file: " + errormsg, "OK");
                 UpperButtonGrid.IsEnabled = true;
             }
             else
             {
-                ErrorLabel.Text = "";
                 editorPage.Disappearing += (sender2, e2) =>
                 {
                     carouselView.Play();
                     UpperButtonGrid.IsEnabled = true;
                 };
+                carouselView.Stop();
                 await App.Current.MainPage.Navigation.PushModalAsync(editorPage);
             }
             UpperButtonGrid.IsEnabled = true;
@@ -603,44 +601,18 @@ namespace GnollHackX
             carouselView.InvalidateSurface();
         }
 
-        private async void TopScoreButton_Clicked(object sender, EventArgs e)
+        private async void VaultButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
             carouselView.Stop();
-            string fulltargetpath = Path.Combine(App.GHPath, "xlogfile");
-            if(File.Exists(fulltargetpath))
+            var vaultPage = new VaultPage();
+            vaultPage.Disappearing += (sender2, e2) =>
             {
-                var topScorePage = new TopScorePage(fulltargetpath);
-                string errormsg = "";
-                if (!topScorePage.ReadFile(out errormsg))
-                {
-                    ErrorLabel.Text = errormsg;
-                    carouselView.Play();
-                    UpperButtonGrid.IsEnabled = true;
-                }
-                else
-                {
-                    ErrorLabel.Text = "";
-                    topScorePage.Disappearing += (sender2, e2) =>
-                    {
-                        carouselView.Play();
-                        UpperButtonGrid.IsEnabled = true;
-                    };
-                    await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
-                }
-            }
-            else
-            {
-                /* No top scores */
-                var topScorePage = new TopScorePage();
-                topScorePage.Disappearing += (sender2, e2) =>
-                {
-                    carouselView.Play();
-                    UpperButtonGrid.IsEnabled = true;
-                };
-                await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
-            }
+                carouselView.Play();
+                UpperButtonGrid.IsEnabled = true;
+            };
+            await App.Current.MainPage.Navigation.PushModalAsync(vaultPage);
             UpperButtonGrid.IsEnabled = true;
         }
 

@@ -167,7 +167,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 try
                 {
-                    string datadir = Path.Combine(App.GHPath, "userdata");
+                    string datadir = Path.Combine(App.GHPath, GHConstants.UserDataDirectory);
                     if (Directory.Exists(datadir))
                         Directory.Delete(datadir, true);
 

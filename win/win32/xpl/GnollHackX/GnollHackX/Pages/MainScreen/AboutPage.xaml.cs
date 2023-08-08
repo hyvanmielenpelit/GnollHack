@@ -380,17 +380,6 @@ namespace GnollHackX.Pages.MainScreen
 
         }
 
-        private async void btnLibrary_Clicked(object sender, EventArgs e)
-        {
-            AboutTableView.IsEnabled = false;
-            App.PlayButtonClickedSound();
-            var libPage = new LibraryPage();
-            libPage.ReadLibrary();
-            await App.Current.MainPage.Navigation.PushModalAsync(libPage);
-            AboutTableView.IsEnabled = true;
-
-        }
-
         private async void btnImportSavedGames_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();

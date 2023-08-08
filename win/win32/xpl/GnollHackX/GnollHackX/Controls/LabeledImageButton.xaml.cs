@@ -15,6 +15,8 @@ namespace GnollHackX.Controls
     {
         public static readonly BindableProperty LblTextProperty = BindableProperty.Create(nameof(LblText), typeof(string), typeof(LabeledImageButton), string.Empty);
         public static readonly BindableProperty LblFontSizeProperty = BindableProperty.Create(nameof(LblFontSize), typeof(double), typeof(LabeledImageButton), 9.0);
+        public static readonly BindableProperty LblFontFamilyProperty = BindableProperty.Create(nameof(LblFontFamily), typeof(string), typeof(LabeledImageButton), "Lato-Regular");
+        public static readonly BindableProperty LblFontColorProperty = BindableProperty.Create(nameof(LblFontColor), typeof(Color), typeof(LabeledImageButton), Color.White);
         public static readonly BindableProperty ImgSourcePathProperty = BindableProperty.Create(nameof(ImgSourcePath), typeof(string), typeof(LabeledImageButton), string.Empty);
         public static readonly BindableProperty GridWidthProperty = BindableProperty.Create(nameof(GridWidth), typeof(double), typeof(LabeledImageButton), 50.0);
         public static readonly BindableProperty GridHeightProperty = BindableProperty.Create(nameof(GridHeight), typeof(double), typeof(LabeledImageButton), 60.0);
@@ -57,6 +59,16 @@ namespace GnollHackX.Controls
         {
             get => (double)GetValue(LabeledImageButton.LblFontSizeProperty);
             set => SetValue(LabeledImageButton.LblFontSizeProperty, value);
+        }
+        public string LblFontFamily
+        {
+            get => (string)GetValue(LabeledImageButton.LblFontFamilyProperty);
+            set => SetValue(LabeledImageButton.LblFontFamilyProperty, value);
+        }
+        public Color LblFontColor
+        {
+            get => (Color)GetValue(LabeledImageButton.LblFontColorProperty);
+            set => SetValue(LabeledImageButton.LblFontColorProperty, value);
         }
 
         public string ImgSourcePath

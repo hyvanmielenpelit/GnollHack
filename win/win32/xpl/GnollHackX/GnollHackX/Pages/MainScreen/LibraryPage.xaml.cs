@@ -69,23 +69,28 @@ namespace GnollHackX.Pages.MainScreen
             }
             
             List<StoredManual> manuallist = _manuals.Values.ToList();
-            Comparison<StoredManual> comp = new Comparison<StoredManual>((m1, m2) => { return string.Compare(m1.Name, m2.Name); });
-            manuallist.Sort(comp);
-            foreach(StoredManual sm in manuallist)
+            if(manuallist.Count > 0)
             {
-                RowImageButton rib = new RowImageButton();
-                rib.ImgSourcePath = "resource://GnollHackX.Assets.UI.examine.png";
-                rib.LblText = sm.Name;
-                rib.LblFontSize = 17;
-                rib.ImgWidth = 80;
-                rib.ImgHeight = 80;
-                rib.GridWidth = 320;
-                rib.GridHeight = 80;
-                rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
-                rib.BtnCommand = sm.Id;
-                rib.BtnClicked += LibraryButton_Clicked;
-                LibraryLayout.Children.Add(rib);
+                Comparison<StoredManual> comp = new Comparison<StoredManual>((m1, m2) => { return string.Compare(m1.Name, m2.Name); });
+                manuallist.Sort(comp);
+                foreach (StoredManual sm in manuallist)
+                {
+                    RowImageButton rib = new RowImageButton();
+                    rib.ImgSourcePath = "resource://GnollHackX.Assets.UI.examine.png";
+                    rib.LblText = sm.Name;
+                    rib.LblFontSize = 17;
+                    rib.ImgWidth = 80;
+                    rib.ImgHeight = 80;
+                    rib.GridWidth = 320;
+                    rib.GridHeight = 80;
+                    rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
+                    rib.BtnCommand = sm.Id;
+                    rib.BtnClicked += LibraryButton_Clicked;
+                    LibraryLayout.Children.Add(rib);
+                }
             }
+            else
+                EmptyLabel.IsVisible = true;
         }
 
         private async void LibraryButton_Clicked(object sender, EventArgs e)
@@ -125,6 +130,25 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
+        private bool _backPressed = false;
+        private async Task<bool> BackButtonPressed(object sender, EventArgs e)
+        {
+            if (!_backPressed)
+            {
+                _backPressed = true;
+                await App.Current.MainPage.Navigation.PopModalAsync();
+            }
+            return false;
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            App.BackButtonPressed += BackButtonPressed;
+        }
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            App.BackButtonPressed -= BackButtonPressed;
+        }
     }
 
 }
