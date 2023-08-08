@@ -21,23 +21,17 @@
                 <TableView Grid.Row="1" x:Name="AboutTableView" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
                            Intent="Menu">
                     <TableRoot>
-                        <TableSection x:Name="VersionSection">
+                        <TableSection x:Name="StartSection">
                             <ViewCell>
                                 <controls:CustomImageButton x:Name="btnVersion" Text="Version" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
-                                <controls:CustomImageButton x:Name="btnDowngrade" Text="Downgrade" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnDowngrade_Clicked" UseVaryingBackgroundImages ="False" />
-                            </ViewCell>
-                        </TableSection>
-                        <TableSection x:Name="LibrarySection">
-                            <ViewCell>
                                 <controls:CustomImageButton x:Name="btnLibrary" Text="Library" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnLibrary_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                         </TableSection>
-                        <TableSection x:Name="BaseSection">
+                        <TableSection x:Name="InformationSection">
                             <ViewCell>
                                 <controls:CustomImageButton x:Name="btnCreditsW" Text="Credits" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCreditsW_Clicked" UseVaryingBackgroundImages ="False" />
@@ -67,7 +61,7 @@
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnSponsor_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                         </TableSection>
-                        <TableSection x:Name="ShareSection">
+                        <TableSection x:Name="TroubleshootSection">
                             <ViewCell>
                                 <controls:CustomImageButton x:Name="btnImportSavedGames" Text="Import Saved Games" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnImportSavedGames_Clicked" UseVaryingBackgroundImages ="False" />
@@ -83,6 +77,10 @@
                             <ViewCell>
                                 <controls:CustomImageButton x:Name="btnCrashReport" Text="Crash Report" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCrashReport_Clicked" UseVaryingBackgroundImages ="False" />
+                            </ViewCell>
+                            <ViewCell>
+                                <controls:CustomImageButton x:Name="btnDowngrade" Text="Downgrade" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnDowngrade_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                             <ViewCell>
                                 <controls:CustomImageButton x:Name="btnViewPanicLog" WidthRequest="320" FontFamily="Diablo" Text="View Panic Log" BackgroundColor="Transparent" TextColor="White"
