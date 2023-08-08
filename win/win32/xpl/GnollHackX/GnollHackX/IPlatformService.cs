@@ -7,11 +7,13 @@ namespace GnollHackX
 {
     public interface IPlatformService
     {
+        void InitializePlatform();
+        void CloseApplication();
+
         string GetVersionString();
         ulong GetDeviceMemoryInBytes();
         ulong GetDeviceFreeDiskSpaceInBytes();
         ulong GetDeviceTotalDiskSpaceInBytes();
-        void CloseApplication();
         void SetStatusBarHidden(bool ishidden);
         bool GetStatusBarHidden();
         float GetAnimatorDurationScaleSetting();
@@ -28,8 +30,6 @@ namespace GnollHackX
         void RequestAppReview(ContentPage page);
         int FetchOnDemandPack(string pack);
         event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
-
-        void InitOnDemandPackStatusNotificationEventHandler();
 
         //void SaveFileToDownloads(byte[] data, string name);
     }

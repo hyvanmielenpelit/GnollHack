@@ -2574,6 +2574,7 @@ namespace GnollHackX.Pages.Game
             _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
             if (App.GameMuteMode)
                 App.GameMuteMode = false;
+            App.CurrentGamePage = null;
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -13035,6 +13036,31 @@ namespace GnollHackX.Pages.Game
                     queue.Enqueue(new GHResponse(_clientGame, GHRequestType.TallyRealTime));
                 }
             }
+        }
+
+        public void Suspend()
+        {
+            if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
+                canvasView.AbortAnimation("GeneralAnimationCounter");
+            if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                CommandCanvas.AbortAnimation("GeneralAnimationCounter");
+            if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                MenuCanvas.AbortAnimation("GeneralAnimationCounter");
+            if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                TextCanvas.AbortAnimation("GeneralAnimationCounter");
+            _mapUpdateStopWatch.Stop();
+        }
+
+        public void Resume()
+        {
+            if (MenuGrid.IsVisible && !MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                StartMenuCanvasAnimation();
+            else if (TextGrid.IsVisible && !TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                StartTextCanvasAnimation();
+            else if (MoreCommandsGrid.IsVisible && !CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                StartCommandCanvasAnimation();
+            else if (!LoadingGrid.IsVisible && MainGrid.IsVisible && !canvasView.AnimationIsRunning("GeneralAnimationCounter"))
+                StartMainCanvasAnimation();
         }
     }
 

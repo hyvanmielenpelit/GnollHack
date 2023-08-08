@@ -15,6 +15,7 @@ using System.Collections;
 using System.IO.Compression;
 using System.Globalization;
 using System.ComponentModel;
+using GnollHackX.Pages.Game;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
@@ -37,7 +38,7 @@ namespace GnollHackX
             InitializeComponent();
             VersionTracking.Track();
             App.GetDependencyServices();
-            App.PlatformService.InitOnDemandPackStatusNotificationEventHandler();
+            App.PlatformService.InitializePlatform();
 
             InitBaseTypefaces();
             InitializeCachedBitmaps();
@@ -48,6 +49,7 @@ namespace GnollHackX
             ButtonDisabledImageSource = ImageSource.FromResource("GnollHackX.Assets.button_disabled.png", assembly);
 
             var mainPage = new MainPage();
+            CurrentMainPage = mainPage;
             var navPage = new NavigationPage(mainPage);
             navPage.BarTextColor = Color.White;
             navPage.BarBackgroundColor = Color.Black;
@@ -74,6 +76,9 @@ namespace GnollHackX
 
             App.BackButtonPressed += App.EmptyBackButtonPressed;
         }
+
+        public static MainPage CurrentMainPage { get; set; }
+        public static GamePage CurrentGamePage { get; set; }
 
         private static readonly object _currentClientGameLock = new object();
         private static ClientGame _currentClientGame = null;
@@ -191,11 +196,22 @@ namespace GnollHackX
 
             App.CancelSaveGame = false;
             App.SleepMuteMode = true;
-            if (App.CurrentClientGame != null && !App.CurrentClientGame.CasualMode)
+            if (App.CurrentMainPage != null)
             {
-                //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
-                Preferences.Set("WentToSleepWithGameOn", true);
-                App.CurrentClientGame.GamePage.SaveGameAndWaitForResume();
+                App.CurrentMainPage.Suspend();
+            }
+            if (App.CurrentGamePage != null)
+            {
+                App.CurrentGamePage.Suspend();
+            }
+            if (App.CurrentClientGame != null)
+            {
+                if (!App.CurrentClientGame.CasualMode)
+                {
+                    //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
+                    Preferences.Set("WentToSleepWithGameOn", true);
+                    App.CurrentClientGame.GamePage.SaveGameAndWaitForResume();
+                }
             }
         }
 
@@ -206,14 +222,25 @@ namespace GnollHackX
 
             App.CancelSaveGame = true;
             App.SleepMuteMode = false;
-            if (App.CurrentClientGame != null && !App.CurrentClientGame.CasualMode)
+            if (App.CurrentMainPage != null)
             {
-                //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
-                bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
-                Preferences.Set("WentToSleepWithGameOn", false);
-                if (wenttosleep && (App.GameSaved || App.SavingGame))
+                App.CurrentMainPage.Resume();
+            }
+            if (App.CurrentGamePage != null)
+            {
+                App.CurrentGamePage.Resume();
+            }
+            if (App.CurrentClientGame != null)
+            {
+                if (!App.CurrentClientGame.CasualMode)
                 {
-                    App.CurrentClientGame.GamePage.StopWaitAndResumeSavedGame();
+                    //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
+                    bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                    Preferences.Set("WentToSleepWithGameOn", false);
+                    if (wenttosleep && (App.GameSaved || App.SavingGame))
+                    {
+                        App.CurrentClientGame.GamePage.StopWaitAndResumeSavedGame();
+                    }
                 }
             }
         }

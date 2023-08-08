@@ -54,6 +54,7 @@ namespace GnollHackX
             Preferences.Set("NumberOfGames", numberofgames + 1L);
 
             var gamePage = new GamePage(this);
+            App.CurrentGamePage = gamePage;
             gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
             gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
             gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
@@ -749,6 +750,19 @@ namespace GnollHackX
         private void PopupLabelTapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             PopupNoAgainCheckBox.IsChecked = !PopupNoAgainCheckBox.IsChecked;
+        }
+
+        public void Suspend()
+        {
+            carouselView.Stop();
+        }
+
+        public void Resume()
+        {
+            if(App.CurrentGamePage == null)
+            {
+                carouselView.Play();
+            }
         }
     }
 

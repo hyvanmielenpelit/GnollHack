@@ -24,6 +24,7 @@ using Xamarin.Google.Android.Play.Core.Tasks;
 using System.Threading;
 using Xamarin.Google.Android.Play.Core.Review.Testing;
 using Android.Util;
+using AndroidX.Core.App;
 
 [assembly: Dependency(typeof(GnollHackX.Droid.PlatformService))]
 namespace GnollHackX.Droid
@@ -98,6 +99,7 @@ namespace GnollHackX.Droid
         public void CloseApplication()
         {
             RevertAnimatorDuration(true);
+            //StopForegroundService();
             MainActivity.CurrentMainActivity.Finish();
         }
 
@@ -326,7 +328,7 @@ namespace GnollHackX.Droid
 
         public event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
 
-        public void InitOnDemandPackStatusNotificationEventHandler()
+        private void InitOnDemandPackStatusNotificationEventHandler()
         {
             MainActivity.CurrentMainActivity.OnDemandPackStatus += OnDemandPackStatusNotified;
         }
@@ -335,8 +337,111 @@ namespace GnollHackX.Droid
         {
             OnDemandPackStatusNotification?.Invoke(this, e);
         }
+
+        private void StartForegroundService()
+        {
+            var intent = new Intent(MainActivity.CurrentMainActivity, typeof(GnhSource));
+
+            if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+            {
+                MainActivity.CurrentMainActivity.StartForegroundService(intent);
+            }
+            else
+            {
+                MainActivity.CurrentMainActivity.StartService(intent);
+            }
+        }
+
+        private void StopForegroundService()
+        {
+            var intent = new Intent(MainActivity.CurrentMainActivity, typeof(App));
+            MainActivity.CurrentMainActivity.StopService(intent);
+        }
+
+        public void InitializePlatform()
+        {
+            InitOnDemandPackStatusNotificationEventHandler();
+            //StartForegroundService();
+        }
     }
 
+    public interface INotification
+    {
+        Notification ReturnNotif();
+    }
+
+    internal class NotificationHelper : INotification
+    {
+        private static string foregroundChannelId = "9001";
+        private static Android.Content.Context context = global::Android.App.Application.Context;
+
+        public Notification ReturnNotif()
+        {
+            // Building intent
+            var intent = new Intent(context, typeof(MainActivity));
+            intent.AddFlags(ActivityFlags.SingleTop);
+            intent.PutExtra("GnollHack", "Foreground");
+
+            var pendingIntent = PendingIntent.GetActivity(context, 0, intent, PendingIntentFlags.UpdateCurrent);
+
+            var notifBuilder = new NotificationCompat.Builder(context, foregroundChannelId)
+                .SetContentTitle("GnollHack")
+                .SetContentText("GnollHack in the Foreground")
+                .SetSmallIcon(Resource.Drawable.notification_icon_background)
+                .SetOngoing(true)
+                .SetContentIntent(pendingIntent);
+
+            // Building channel if API verion is 26 or above
+            if (global::Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                NotificationChannel notificationChannel = new NotificationChannel(foregroundChannelId, "GnollHack", NotificationImportance.High);
+                notificationChannel.Importance = NotificationImportance.High;
+                notificationChannel.EnableLights(true);
+                notificationChannel.EnableVibration(true);
+                notificationChannel.SetShowBadge(true);
+                notificationChannel.SetVibrationPattern(new long[] { 100, 200, 300, 400, 500, 400, 300, 200, 400 });
+
+                var notifManager = context.GetSystemService(Android.Content.Context.NotificationService) as NotificationManager;
+                if (notifManager != null)
+                {
+                    notifBuilder.SetChannelId(foregroundChannelId);
+                    notifManager.CreateNotificationChannel(notificationChannel);
+                }
+            }
+
+            return notifBuilder.Build();
+        }
+    }
+
+    public class GnhSource : Service
+    {
+        public override IBinder OnBind(Intent intent)
+        {
+            return null;
+        }
+
+        public const int ServiceRunningNotifID = 9000;
+
+        public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
+        {
+            Notification notif = DependencyService.Get<INotification>().ReturnNotif();
+            StartForeground(ServiceRunningNotifID, notif);
+
+            //_ = DoLongRunningOperationThings();
+
+            return StartCommandResult.Sticky;
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
+
+        public override bool StopService(Intent name)
+        {
+            return base.StopService(name);
+        }
+    }
 
     public class StoreReviewTaskCompleteListener : Java.Lang.Object, IOnCompleteListener
     {
