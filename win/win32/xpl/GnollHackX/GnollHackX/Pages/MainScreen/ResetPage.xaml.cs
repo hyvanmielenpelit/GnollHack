@@ -159,6 +159,29 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
+        private async void btnDeleteUserData_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+            bool answer = await DisplayAlert("Delete All User Data?", "Are you sure to delete all files in the userdata directory?", "Yes", "No");
+            if (answer)
+            {
+                try
+                {
+                    string datadir = Path.Combine(App.GHPath, "userdata");
+                    if (Directory.Exists(datadir))
+                        Directory.Delete(datadir, true);
+
+                    btnDeleteUserData.Text = "Done";
+                    btnDeleteUserData.TextColor = Color.Red;
+                }
+                catch
+                {
+                    btnDeleteUserData.Text = "Failed";
+                    btnDeleteUserData.TextColor = Color.Red;
+                }
+            }
+        }
+
         private async void Button_Clicked(object sender, EventArgs e)
         {
             CloseButton.IsEnabled = false;

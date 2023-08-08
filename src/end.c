@@ -779,7 +779,7 @@ VA_DECL(const char *, str)
         paniclog("panic", buf);
 #ifdef GNOLLHACK_MAIN_PROGRAM
         if (issue_gui_command)
-            issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_PANIC, buf);
+            issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_PANIC, 0, buf);
         if (open_special_view)
         {
             struct special_view_info info = { 0 };
@@ -2148,12 +2148,12 @@ int how;
             char dlbuf[BUFSZ * 4];
             char* dlfilename = print_dumplog_filename_to_buffer(dlbuf);
             if (dlfilename)
-                issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_TEXT, dlfilename);
+                issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT, GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT, dlfilename);
 
     #if defined(DUMPHTML)
             dlfilename = print_dumphtml_filename_to_buffer(dlbuf);
             if (dlfilename)
-                issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_HTML, dlfilename);
+                issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT, GAME_STATUS_ATTACHMENT_DUMPLOG_HTML, dlfilename);
     #endif
     #endif
             char totalpostbuf[BUFSZ * 4];
@@ -2166,7 +2166,7 @@ int how;
             long currenttime = get_current_game_duration();
             char* duration = format_duration_with_units(currenttime);
             Sprintf(totalpostbuf, "%s (%s), %ld point%s, T:%ld (%s), %s [%s]", plname, cbuf, u.u_gamescore, plur(u.u_gamescore), moves, duration, postbuf, mbuf);
-            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, totalpostbuf);
+            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, how, totalpostbuf);
         }
     }
 

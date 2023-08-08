@@ -896,7 +896,7 @@ gnome_cliparound_proper(winid wid, int x, int y)
 }
 
 void
-gnome_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str)
+gnome_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str)
 {
     return;
 }

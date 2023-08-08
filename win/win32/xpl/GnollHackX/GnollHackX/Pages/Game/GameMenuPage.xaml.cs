@@ -90,6 +90,16 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = true;
         }
 
+        private async void btnLibrary_Clicked(object sender, EventArgs e)
+        {
+            MainLayout.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            var libPage = new LibraryPage();
+            libPage.ReadLibrary();
+            await App.Current.MainPage.Navigation.PushModalAsync(libPage);
+            MainLayout.IsEnabled = true;
+        }
+
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;

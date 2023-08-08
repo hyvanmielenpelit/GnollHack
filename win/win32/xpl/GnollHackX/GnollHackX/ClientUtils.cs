@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 
 namespace GnollHackX
 {
@@ -730,6 +731,31 @@ namespace GnollHackX
         public static Thickness GetHeaderMarginWithBorder(BorderStyles borderstyle, double width, double height)
         {
             return GetHeaderMarginWithBorderWithBottom(borderstyle, width, height, 2.0);
+        }
+
+        public static Thickness GetMiddleElementMarginWithBorder(BorderStyles borderstyle, double width, double height)
+        {
+            switch (borderstyle)
+            {
+                case BorderStyles.None:
+                    break;
+                case BorderStyles.Simple:
+                    {
+                        double bordermarginsmall = GetSmallBorderMargin(width, height);
+                        double bordermarginx = bordermarginsmall + (width / GHConstants.BackgroundBorderDivisor - bordermarginsmall) / 2;
+                        double bordermarginy = bordermarginsmall + (height / GHConstants.BackgroundBorderDivisor - bordermarginsmall) / 2;
+                        double bordermargin = Math.Min(bordermarginx, bordermarginy);
+                        return new Thickness(bordermargin, 0, bordermargin, 0);
+                    }
+                case BorderStyles.Small:
+                    {
+                        double bordermargin = GetSmallBorderMargin(width, height);
+                        return new Thickness(bordermargin, 0, bordermargin, 0);
+                    }
+                case BorderStyles.Custom:
+                    break;
+            }
+            return new Thickness(2.0, 0, 2.0, 0);
         }
 
         public static Thickness GetHeaderMarginWithBorderWithBottom(BorderStyles borderstyle, double width, double height, double bottom)

@@ -621,17 +621,17 @@ char *posbar;
 #endif
 
 void
-trace_issue_gui_command(vp, cmd_id, cmd_param, cmd_str)
+trace_issue_gui_command(vp, cmd_id, cmd_param, cmd_param2, cmd_str)
 void* vp;
-int cmd_id, cmd_param;
+int cmd_id, cmd_param, cmd_param2;
 const char* cmd_str;
 {
     struct trace_data* tdp = vp;
 
-    fprintf(wc_tracelogf, "%sissue_gui_command(%d, %d)\n", INDENT, cmd_id, cmd_param);
+    fprintf(wc_tracelogf, "%sissue_gui_command(%d, %d, %d)\n", INDENT, cmd_id, cmd_param, cmd_param2);
 
     PRE;
-    (*tdp->nprocs->win_issue_gui_command)(tdp->ndata, cmd_id, cmd_param, cmd_str);
+    (*tdp->nprocs->win_issue_gui_command)(tdp->ndata, cmd_id, cmd_param, cmd_param2, cmd_str);
     POST;
 }
 

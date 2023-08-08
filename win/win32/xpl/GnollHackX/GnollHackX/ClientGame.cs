@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using Xamarin.Essentials;
 using System.Drawing;
 using static System.Net.Mime.MediaTypeNames;
+using Newtonsoft.Json;
 
 namespace GnollHackX
 {
@@ -1597,9 +1598,10 @@ namespace GnollHackX
             return 1;
         }
 
-        public void ClientCallback_IssueGuiCommand(int cmd_id, int cmd_param, string cmd_str)
+        public void ClientCallback_IssueGuiCommand(int cmd_id, int cmd_param, int cmd_param2, string cmd_str)
         {
             ConcurrentQueue<GHRequest> queue;
+            string status_str = "";
             switch (cmd_id)
             {
                 case (int)gui_command_types.GUI_CMD_LOAD_GLYPHS:
@@ -1750,7 +1752,6 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_DIAGNOSTIC_DATA:
                 case (int)gui_command_types.GUI_CMD_POST_GAME_STATUS:
-                    string status_str = "";
                     if(cmd_str != null)
                         status_str = cmd_str;
 
@@ -1758,7 +1759,58 @@ namespace GnollHackX
                     {
                         queue.Enqueue(new GHRequest(this,
                             cmd_id == (int)gui_command_types.GUI_CMD_POST_GAME_STATUS ? GHRequestType.PostGameStatus : GHRequestType.PostDiagnosticData, 
-                            cmd_param, status_str));
+                            cmd_param, cmd_param2, status_str));
+                    }
+                    break;
+                case (int)gui_command_types.GUI_CMD_LIBRARY_MANUAL:
+                    if(cmd_param >= 0 && cmd_param < GHConstants.MaxGHWindows)
+                    {
+                        string windowText = "";
+                        lock (_ghWindowsLock)
+                        {
+                            if (_ghWindows[cmd_param] != null)
+                            {
+                                lock(_ghWindows[cmd_param].PutStrsLock)
+                                {
+                                    foreach(GHPutStrItem psi in _ghWindows[cmd_param].PutStrs)
+                                    {
+                                        if(windowText != "")
+                                            windowText += Environment.NewLine;
+                                        windowText += psi.Text;
+                                    }
+                                }
+                            }
+                        }
+                        if(windowText != "" && cmd_str != null && cmd_str != "")
+                        {
+                            string datadir = Path.Combine(App.GHPath, GHConstants.UserDataDirectory);
+                            if(!Directory.Exists(datadir))
+                                App.CheckCreateDirectory(datadir);
+                            if(Directory.Exists(datadir))
+                            {
+                                string filename = GHConstants.ManualFilePrefix + cmd_param2.ToString() + ".json";
+                                string filepath = Path.Combine(datadir, filename);
+                                StoredManual manual = new StoredManual(cmd_str, cmd_param2, windowText);
+                                if (!File.Exists(filepath))
+                                {
+                                    try
+                                    {
+                                        string json = JsonConvert.SerializeObject(manual, Formatting.Indented);
+                                        using (FileStream fs = File.Create(filepath))
+                                        {
+                                            using (StreamWriter sw = new StreamWriter(fs))
+                                            {
+                                                sw.Write(json);
+                                            }
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
                     break;
                 default:

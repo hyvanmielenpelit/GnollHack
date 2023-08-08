@@ -4523,6 +4523,7 @@ struct obj* obj;
 
     Sprintf(buf, "[%s]", manual_names[mnlidx]);
     putstr(datawin, ATR_HEADING, buf);
+    issue_gui_command(GUI_CMD_LIBRARY_MANUAL, datawin, mnlidx, manual_names[mnlidx]);
     display_nhwindow(datawin, TRUE);
     destroy_nhwindow(datawin);
 

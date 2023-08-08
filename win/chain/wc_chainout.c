@@ -372,14 +372,14 @@ char *posbar;
 #endif
 
 void
-chainout_issue_gui_command(vp, cmd_id, cmd_param, cmd_str)
+chainout_issue_gui_command(vp, cmd_id, cmd_param, cmd_param2, cmd_str)
 void* vp;
-int cmd_id, cmd_param;
+int cmd_id, cmd_param, cmd_param2;
 const char* cmd_str;
 {
     struct chainout_data* tdp = vp;
 
-    (*tdp->nprocs->win_issue_gui_command)(cmd_id, cmd_param, cmd_str);
+    (*tdp->nprocs->win_issue_gui_command)(cmd_id, cmd_param, cmd_param2, cmd_str);
 }
 
 void

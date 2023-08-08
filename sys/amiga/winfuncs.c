@@ -1940,8 +1940,8 @@ port_help()
  */
 
 void
-amii_issue_gui_command(cmd_id, cmd_param, cmd_str)
-int cmd_id, cmd_param;
+amii_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
+int cmd_id, cmd_param, cmd_param2;
 const char* cmd_str;
 {
     return;

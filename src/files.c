@@ -5536,7 +5536,7 @@ const char* str;
             long currenttime = get_current_game_duration();
             char* duration = format_duration_with_units(currenttime);
             Sprintf(postbuf, "%s (%s) %s, on T:%ld (%s) [%s]", plname, cbuf, str, moves, duration, mbuf);
-            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_ACHIEVEMENT, postbuf);
+            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_ACHIEVEMENT, (int)ll_type, postbuf);
         }
     }
 }

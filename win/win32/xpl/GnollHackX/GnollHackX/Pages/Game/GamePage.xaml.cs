@@ -1848,7 +1848,7 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.PostDiagnosticData:
                             case GHRequestType.PostGameStatus:
-                                PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestString);
+                                PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString);
                                 break;
                         }
                     }
@@ -1858,24 +1858,25 @@ namespace GnollHackX.Pages.Game
 
         private List<ForumPostAttachment> _forumPostAttachments = new List<ForumPostAttachment>();
 
-        private async void PostToForum(bool is_game_status, int status_type, string status_string)
+        private async void PostToForum(bool is_game_status, int status_type, int status_datatype, string status_string)
         {
             if (is_game_status ? !App.PostingGameStatus : !App.PostingDiagnosticData)
                 return;
 
-            if (is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_TEXT)
+            if (is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
             {
-                _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type));
-                return;
-            }
-            else if (is_game_status && App.UseHTMLDumpLogs && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_HTML)
-            {
-                _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/html", "HTML dumplog", !is_game_status, status_type));
-                return;
-            }
-            else if (is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
-            {
-                _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "game data", !is_game_status, status_type));
+                switch(status_datatype)
+                {
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "game data", !is_game_status, status_type));
+                        break;
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type));
+                        break;
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/html", "HTML dumplog", !is_game_status, status_type));
+                        break;
+                }
                 return;
             }
             else if(!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT)
@@ -10123,7 +10124,6 @@ namespace GnollHackX.Pages.Game
             App.DebugWriteRestart("GHButton_Clicked");
             LabeledImageButton ghbutton = (LabeledImageButton)sender;
             GenericButton_Clicked(sender, e, (int)ghbutton.GHCommand);
-
         }
 
 

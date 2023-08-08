@@ -76,7 +76,7 @@ void gnome_cliparound(int x, int y, BOOLEAN_P force);
 */
 void gnome_cliparound_proper(winid wid, int x, int y);
 void gnome_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph);
-void gnome_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str);
+void gnome_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str);
 void gnome_raw_print(const char *str);
 void gnome_raw_print_bold(const char *str);
 int gnome_nhgetch(void);

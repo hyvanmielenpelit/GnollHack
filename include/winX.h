@@ -432,7 +432,7 @@ E void NDECL(X11_wait_synch);
 E void FDECL(X11_cliparound, (int, int, BOOLEAN_P));
 #endif
 E void FDECL(X11_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
-E void FDECL(X11_issue_gui_command, (int, int, const char*));
+E void FDECL(X11_issue_gui_command, (int, int, int, const char*));
 E void FDECL(X11_raw_print, (const char *));
 E void FDECL(X11_raw_print_bold, (const char *));
 E int NDECL(X11_nhgetch);

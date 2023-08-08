@@ -33,6 +33,10 @@ namespace GnollHackX.Pages.MainScreen
 
         }
 
+        public string OverridingText { get; set; } = null;
+        public bool UseFixedFontSize { get; set; }
+        public double FontSize { get; set; } = 13.0;
+
         public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare, bool isHtml)
         {
             InitializeComponent();
@@ -60,7 +64,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 if (_isHtml)
                 {
-                    string text = File.ReadAllText(_fileName, Encoding.UTF8);
+                    string text = OverridingText != null ? OverridingText : File.ReadAllText(_fileName, Encoding.UTF8);
                     var htmlSource = new HtmlWebViewSource();
                     htmlSource.Html = text;
                     htmlSource.BaseUrl = App.PlatformService.GetBaseUrl();
@@ -71,7 +75,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 else
                 {
-                    string text = File.ReadAllText(_fileName, Encoding.UTF8);
+                    string text = OverridingText != null ? OverridingText : File.ReadAllText(_fileName, Encoding.UTF8);
                     if (_fixedWidth > 0)
                     {
                         int firstLineBreak = text.IndexOf(Environment.NewLine);
@@ -118,29 +122,38 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageHeight = height;
                 Thickness margins = new Thickness();
                 margins = TextLabel.Margin;
-                Thickness safearea = new Thickness();
-                bool usingsafe = On<Xamarin.Forms.PlatformConfiguration.iOS>().UsingSafeArea();
-                if (usingsafe)
-                {
-                    safearea = On<Xamarin.Forms.PlatformConfiguration.iOS>().SafeAreaInsets();
-                }
-                Thickness usedpadding = usingsafe ? safearea : MainGrid.Padding;
-                double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
-                MainGrid.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
-                double limited_width = Math.Min(Math.Min(width, MainGrid.WidthRequest), DeviceDisplay.MainDisplayInfo.Width);
-                double target_width = limited_width - MainGrid.Margin.Left - MainGrid.Margin.Right
-                    - usedpadding.Left - usedpadding.Right - margins.Left - margins.Right;
-                double testsize = 12.5;
-                double newsize = testsize * target_width / 640;
-                if (_fixedWidth > 0)
-                {
-                    TextLabel.FontSize = testsize;
-                    double textwidth = TextLabel.MeasureWidth(new string('A', _fixedWidth));
-                    if (textwidth > 0)
-                        newsize = testsize * target_width / textwidth;
-                }
-                TextLabel.FontSize = newsize;
 
+                if (UseFixedFontSize)
+                {
+                    TextLabel.FontSize = FontSize;
+                    TextLabel.Margin = ClientUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
+                }
+                else
+                {
+                    Thickness safearea = new Thickness();
+                    bool usingsafe = On<Xamarin.Forms.PlatformConfiguration.iOS>().UsingSafeArea();
+                    if (usingsafe)
+                    {
+                        safearea = On<Xamarin.Forms.PlatformConfiguration.iOS>().SafeAreaInsets();
+                    }
+                    Thickness usedpadding = usingsafe ? safearea : MainGrid.Padding;
+                    double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
+                    MainGrid.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
+                    double limited_width = Math.Min(Math.Min(width, MainGrid.WidthRequest), DeviceDisplay.MainDisplayInfo.Width);
+                    double target_width = limited_width - MainGrid.Margin.Left - MainGrid.Margin.Right
+                        - usedpadding.Left - usedpadding.Right - margins.Left - margins.Right;
+                    double testsize = 12.5;
+                    double newsize = testsize * target_width / 640;
+                    if (_fixedWidth > 0)
+                    {
+                        TextLabel.FontSize = testsize;
+                        double textwidth = TextLabel.MeasureWidth(new string('A', _fixedWidth));
+                        if (textwidth > 0)
+                            newsize = testsize * target_width / textwidth;
+                    }
+                    TextLabel.FontSize = newsize;
+                    TextLabel.Margin = new Thickness();
+                }
                 HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 BottomLayout.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = BottomLayout.Margin;

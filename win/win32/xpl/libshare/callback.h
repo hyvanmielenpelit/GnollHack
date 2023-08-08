@@ -95,7 +95,7 @@ typedef VoidVoidCallback WaitSynchCallback;
 typedef VoidIntIntBooleanCallback ClipAroundCallback;
 typedef VoidCharCallback UpdatePositionBarCallback;
 typedef void(__callconv* PrintGlyphCallback)(int, int, int, int, int, long, int, unsigned long, struct layer_info*);
-typedef void(__callconv* IssueGuiCommandCallback)(int, int, const char*);
+typedef void(__callconv* IssueGuiCommandCallback)(int, int, int, const char*);
 typedef VoidConstCharCallback RawPrintCallback;
 typedef VoidConstCharCallback RawPrintBoldCallback;
 typedef IntVoidCallback GetChCallback;

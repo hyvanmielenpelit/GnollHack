@@ -153,7 +153,7 @@ curses_init_nhwindows(int *argcp UNUSED,
 #ifdef PDCURSES
     char window_title[BUFSZ];
 #endif
-    curses_issue_gui_command(1, 0, 0);
+    curses_issue_gui_command(1, 0, 0, 0);
 #ifdef XCURSES
     base_term = Xinitscr(*argcp, argv);
 #else
@@ -710,7 +710,7 @@ curses_cliparound(int x, int y, BOOLEAN_P force UNUSED)
 }
 
 void
-curses_issue_gui_command(int cmd_id, int cmd_param UNUSED, const char* cmd_str UNUSED)
+curses_issue_gui_command(int cmd_id, int cmd_param UNUSED, int cmd_param2 UNUSED, const char* cmd_str UNUSED)
 {
     if (cmd_id == 1)
     {

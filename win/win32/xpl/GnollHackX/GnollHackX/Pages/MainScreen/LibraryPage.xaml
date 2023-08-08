@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:controls="clr-namespace:GnollHackX.Controls" 
+             xmlns:gnh="clr-namespace:GnollHackX"
+             x:Class="GnollHackX.Pages.MainScreen.LibraryPage">
+    <ContentPage.Content>
+        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <Grid BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" x:Name="lblHeader" Text="Library" HorizontalTextAlignment="Center" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+                    HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="30,10,30,10" />
+                <FlexLayout Grid.Row="1" x:Name="LibraryLayout" Padding="0,2" Direction="Column"
+                                JustifyContent="Start" AlignItems="Start" AlignContent="Start" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                </FlexLayout>
+                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="24" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
+                        Clicked="Button_Clicked" />
+            </Grid>
+        </Grid>    </ContentPage.Content>
+</ContentPage>

@@ -2942,8 +2942,8 @@ int x, y;
 }
 
 void
-mar_issue_gui_command(cmd_id, cmd_param, cmd_str)
-int cmd_id, cmd_param;
+mar_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
+int cmd_id, cmd_param, cmd_param2;
 const char* cmd_str;
 {
     return;

@@ -31,6 +31,12 @@
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnDowngrade_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
                         </TableSection>
+                        <TableSection x:Name="LibrarySection">
+                            <ViewCell>
+                                <controls:CustomImageButton x:Name="btnLibrary" Text="Library" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnLibrary_Clicked" UseVaryingBackgroundImages ="False" />
+                            </ViewCell>
+                        </TableSection>
                         <TableSection x:Name="BaseSection">
                             <ViewCell>
                                 <controls:CustomImageButton x:Name="btnCreditsW" Text="Credits" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"

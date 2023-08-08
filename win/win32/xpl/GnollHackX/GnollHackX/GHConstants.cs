@@ -1235,6 +1235,7 @@ namespace GnollHackX
         GUI_CMD_REPORT_PLAY_TIME,
         GUI_CMD_POST_GAME_STATUS,
         GUI_CMD_POST_DIAGNOSTIC_DATA,
+        GUI_CMD_LIBRARY_MANUAL,
         GUI_CMD_GAME_START,
         GUI_CMD_GAME_ENDED,
     }
@@ -1246,8 +1247,13 @@ namespace GnollHackX
         GAME_STATUS_ACHIEVEMENT,
         GAME_STATUS_RESULT,
         GAME_STATUS_RESULT_ATTACHMENT,
-        GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_TEXT,
-        GAME_STATUS_RESULT_ATTACHMENT_DUMPLOG_HTML,
+    }
+
+    public enum game_status_data_types
+    {
+        GAME_STATUS_ATTACHMENT_GENERIC = 0,
+        GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT,
+        GAME_STATUS_ATTACHMENT_DUMPLOG_HTML,
     }
 
     public enum diagnostic_data_types
@@ -1492,6 +1498,8 @@ namespace GnollHackX
         public const bool DefaultUseSingleDumpLog = true;
         public const string InstallTimePackName = "installtimepack";
         public const string OnDemandPackName = "ondemandpack";
+        public const string UserDataDirectory = "usrdata";
+        public const string ManualFilePrefix = "manual_id_";    
         public const bool DefaultReadStreamingBankToMemory = false;
         public const bool DefaultCopyStreamingBankToDisk = false;
         public const bool DefaultDrawWallEnds = true;

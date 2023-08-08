@@ -47,6 +47,10 @@
                                 <controls:CustomImageButton x:Name="btnDeletePreferences" WidthRequest="320" FontFamily="Diablo" Text="Delete Preferences" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeletePreferences_Clicked" UseVaryingBackgroundImages ="False" />
                             </ViewCell>
+                            <ViewCell>
+                                <controls:CustomImageButton x:Name="btnDeleteUserData" WidthRequest="320" FontFamily="Diablo" Text="Delete User Data" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" Clicked="btnDeleteUserData_Clicked" UseVaryingBackgroundImages ="False" />
+                            </ViewCell>
                             <ViewCell x:Name="DownloadTestFilesViewCell">
                                 <controls:CustomImageButton x:Name="btnDownloadTestFiles" WidthRequest="320" FontFamily="Diablo" Text="Delete Test Files" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDownloadTestFiles_Clicked" UseVaryingBackgroundImages ="False" />

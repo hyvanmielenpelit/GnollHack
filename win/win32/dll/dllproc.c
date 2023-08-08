@@ -1370,7 +1370,7 @@ dll_cliparound(int x, int y, BOOLEAN_P force)
 }
 
 void
-dll_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str)
+dll_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str)
 {
     return;
 }

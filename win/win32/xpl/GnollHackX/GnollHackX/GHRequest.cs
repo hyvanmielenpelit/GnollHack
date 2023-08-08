@@ -182,6 +182,15 @@ namespace GnollHackX
             RequestString = requeststring;
         }
 
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, int requestint2, string requeststring)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            RequestInt = requestint;
+            RequestInt2 = requestint2;
+            RequestString = requeststring;
+        }
+
         public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, string requeststring, string requeststring2)
         {
             RequestingClientGame = clientgame;

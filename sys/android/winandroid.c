@@ -42,7 +42,7 @@ static void FDECL(and_cliparound, (int, int, BOOLEAN_P));
 static void FDECL(and_update_positionbar, (char *));
 #endif
 static void FDECL(and_print_glyph, (winid,XCHAR_P,XCHAR_P,struct layer_info));
-static void FDECL(and_issue_gui_command, (int, int, const char*));
+static void FDECL(and_issue_gui_command, (int, int, int, const char*));
 static void FDECL(and_raw_print, (const char *));
 static void FDECL(and_raw_print_bold, (const char *));
 static int NDECL(and_nhgetch);
@@ -1422,7 +1422,7 @@ void and_update_positionbar(char *features)
 //		   port wants (symbol, font, color, attributes, ...there's
 //		   a 1-1 map between glyphs and distinct things on the map).
 
-void and_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str)
+void and_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str)
 {
 	return;
 }

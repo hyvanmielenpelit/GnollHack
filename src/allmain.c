@@ -1532,7 +1532,7 @@ boolean new_game; /* false => restoring an old game */
 #ifdef DEBUG
         IfModeAllowsPostToForum
         {
-            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_START, postbuf);
+            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_START, 0, postbuf);
         }
 #endif
         livelog_printf(LL_DUMP, "%s", postbuf);

@@ -220,7 +220,7 @@ E void FDECL(tty_cliparound, (int, int, BOOLEAN_P));
 E void FDECL(tty_update_positionbar, (char *));
 #endif
 E void FDECL(tty_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
-E void FDECL(tty_issue_gui_command, (int, int, const char*));
+E void FDECL(tty_issue_gui_command, (int, int, int, const char*));
 E void FDECL(tty_raw_print, (const char *));
 E void FDECL(tty_raw_print_bold, (const char *));
 E int NDECL(tty_nhgetch);

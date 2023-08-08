@@ -434,7 +434,7 @@ char **argv UNUSED;
 {
     int wid, hgt, i;
 
-    tty_issue_gui_command(1, 0, 0);
+    tty_issue_gui_command(1, 0, 0, 0);
 
     /* options aren't processed yet so wc2_statuslines might be 0;
        make sure that it has a reasonable value during tty setup */
@@ -3711,8 +3711,8 @@ boolean force UNUSED;
 #endif /* CLIPPING */
 
 void
-tty_issue_gui_command(cmd_id, cmd_param, cmd_str)
-int cmd_id, cmd_param UNUSED;
+tty_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
+int cmd_id, cmd_param UNUSED, cmd_param2 UNUSED;
 const char* cmd_str UNUSED;
 {
     if (use_utf8_encoding())

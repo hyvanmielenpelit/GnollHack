@@ -1075,7 +1075,7 @@ VA_DECL(const char *, s)
     }
     pline_ex(ATR_NONE, CLR_MSG_ERROR, "impossible: %s", VA_PASS1(pbuf));
     if (issue_gui_command)
-        issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_IMPOSSIBLE, pbuf);
+        issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_IMPOSSIBLE, 0, pbuf);
 
     /* reuse pbuf[] */
     Strcpy(pbuf, "Program in disorder!");

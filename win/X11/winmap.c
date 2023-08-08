@@ -72,8 +72,9 @@ static void FDECL(display_cursor, (struct xwindow *));
 /* Global functions ======================================================= */
 
 void
-X11_issue_gui_command(cmd_id, cmd_param)
-int cmd_id, cmd_param;
+X11_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
+int cmd_id, cmd_param, cmd_param2;
+const char* cmd_str;
 {
     return;
 }

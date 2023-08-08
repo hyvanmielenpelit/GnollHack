@@ -37,7 +37,7 @@ void lib_mark_synch(void);
 void lib_wait_synch(void);
 void lib_cliparound(int x, int y, BOOLEAN_P force);
 void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
-void lib_issue_gui_command(int cmd_id, int cmd_param, const char* cmd_str);
+void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str);
 void lib_raw_print(const char* str);
 void lib_raw_print_bold(const char* str);
 int lib_nhgetch(void);
