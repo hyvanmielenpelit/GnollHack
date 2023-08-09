@@ -197,13 +197,9 @@ namespace GnollHackX
             App.CancelSaveGame = false;
             App.SleepMuteMode = true;
             if (App.CurrentMainPage != null)
-            {
                 App.CurrentMainPage.Suspend();
-            }
             if (App.CurrentGamePage != null)
-            {
                 App.CurrentGamePage.Suspend();
-            }
             if (App.CurrentClientGame != null)
             {
                 if (!App.CurrentClientGame.CasualMode)
@@ -223,13 +219,9 @@ namespace GnollHackX
             App.CancelSaveGame = true;
             App.SleepMuteMode = false;
             if (App.CurrentMainPage != null)
-            {
                 App.CurrentMainPage.Resume();
-            }
             if (App.CurrentGamePage != null)
-            {
                 App.CurrentGamePage.Resume();
-            }
             if (App.CurrentClientGame != null)
             {
                 if (!App.CurrentClientGame.CasualMode)

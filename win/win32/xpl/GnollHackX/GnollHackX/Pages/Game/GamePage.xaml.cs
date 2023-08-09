@@ -13046,17 +13046,27 @@ namespace GnollHackX.Pages.Game
                 CommandCanvas.AbortAnimation("GeneralAnimationCounter");
             if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 MenuCanvas.AbortAnimation("GeneralAnimationCounter");
+            MenuWindowGlyphImage.StopAnimation();
             if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 TextCanvas.AbortAnimation("GeneralAnimationCounter");
+            TextWindowGlyphImage.StopAnimation();
             _mapUpdateStopWatch.Stop();
         }
 
         public void Resume()
         {
-            if (MenuGrid.IsVisible && !MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                StartMenuCanvasAnimation();
-            else if (TextGrid.IsVisible && !TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                StartTextCanvasAnimation();
+            if (MenuGrid.IsVisible)
+            {
+                if (!MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                    StartMenuCanvasAnimation();
+                MenuWindowGlyphImage.CheckStartAnimation();
+            }
+            else if (TextGrid.IsVisible)
+            {
+                if (!TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                    StartTextCanvasAnimation();
+                TextWindowGlyphImage.CheckStartAnimation();
+            }
             else if (MoreCommandsGrid.IsVisible && !CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 StartCommandCanvasAnimation();
             else if (!LoadingGrid.IsVisible && MainGrid.IsVisible && !canvasView.AnimationIsRunning("GeneralAnimationCounter"))

@@ -55,7 +55,7 @@ namespace GnollHackX
         public GlyphImageSource ActiveGlyphImageSource
         {
             get => (GlyphImageSource)GetValue(ActiveGlyphImageSourceProperty);
-            set { SetValue(ActiveGlyphImageSourceProperty, value); InvalidateSurface(); CheckAnimated(); }
+            set { SetValue(ActiveGlyphImageSourceProperty, value); InvalidateSurface(); CheckStartAnimation(); }
         }
 
         private static void OnImageSourceChanged(BindableObject bindable, object oldValue, object newValue)
@@ -81,7 +81,7 @@ namespace GnollHackX
 
         private bool _stopAnimation = false;
         private bool _timerOn = false;
-        private void CheckAnimated()
+        public void CheckStartAnimation()
         {
             if (ActiveGlyphImageSource != null && App.Glyph2Tile != null && App.Tile2Animation != null)
             {
