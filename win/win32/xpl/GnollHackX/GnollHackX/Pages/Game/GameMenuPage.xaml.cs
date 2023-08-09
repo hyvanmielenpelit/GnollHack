@@ -16,8 +16,8 @@ namespace GnollHackX.Pages.Game
     public partial class GameMenuPage : ContentPage
     {
         public GamePage _gamePage;
-        private int _gcViewCellIndex = 1;
-        private int _optionsViewCellIndex = 2;
+        private int _optionsViewCellIndex = 1;
+        private int _gcViewCellIndex = 2;
 
         public GameMenuPage(GamePage gamePage)
         {
@@ -109,12 +109,12 @@ namespace GnollHackX.Pages.Game
         public void UpdateLayout()
         {
             MainLayout.IsEnabled = true;
-            if (App.DeveloperMode && !InfoSection.Contains(OptionsViewCell) && _gcViewCellIndex >= 0)
-                InfoSection.Insert(_gcViewCellIndex, OptionsViewCell);
+            if (App.DeveloperMode && !InfoSection.Contains(OptionsViewCell) && _optionsViewCellIndex >= 0)
+                InfoSection.Insert(_optionsViewCellIndex, OptionsViewCell);
             if (!App.DeveloperMode && InfoSection.Contains(OptionsViewCell))
                 InfoSection.Remove(OptionsViewCell);
-            if (App.DeveloperMode && !InfoSection.Contains(GCViewCell) && _optionsViewCellIndex >= 0)
-                InfoSection.Insert(_optionsViewCellIndex, GCViewCell);
+            if (App.DeveloperMode && !InfoSection.Contains(GCViewCell) && _gcViewCellIndex >= 0)
+                InfoSection.Insert(_gcViewCellIndex, GCViewCell);
             if (!App.DeveloperMode && InfoSection.Contains(GCViewCell))
                 InfoSection.Remove(GCViewCell);
         }
