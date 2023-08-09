@@ -22,7 +22,7 @@
                 HorizontalOptions="Center" />
 
             <Label
-                Text="Welcome to GnollHack -NET MAUI"
+                Text="Welcome to .NET Multi-platform App UI"
                 SemanticProperties.HeadingLevel="Level2"
                 SemanticProperties.Description="Welcome to dot net Multi platform App U I"
                 FontSize="18"

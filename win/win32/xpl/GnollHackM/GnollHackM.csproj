@@ -5,7 +5,6 @@
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
-
 		<OutputType>Exe</OutputType>
 		<RootNamespace>GnollHackM</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -16,8 +15,8 @@
 		<ApplicationTitle>GnollHack</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.soundmindgames.GnollHack</ApplicationId>
-		<ApplicationIdGuid>509b7876-07f2-4b03-bfcf-581e334f2fef</ApplicationIdGuid>
+		<ApplicationId>com.soundmindgames.GnollHackM</ApplicationId>
+		<ApplicationIdGuid>77f64670-4eb4-432e-aa6a-b02d3d035d80</ApplicationIdGuid>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -32,9 +31,9 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
-	  <ProvisioningType>manual</ProvisioningType>
-	  <CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
-	  <CodesignProvision>Apple Dev Development 2023</CodesignProvision>
+		<ProvisioningType>manual</ProvisioningType>
+		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
+		<CodesignProvision>Apple Dev Development 2023</CodesignProvision>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -56,22 +55,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
-	<!-- Build Properties must be defined within these property groups to ensure successful publishing
-       to the Mac App Store. See: https://aka.ms/maui-publish-app-store#define-build-properties-in-your-project-file -->
-	<PropertyGroup Condition="$(TargetFramework.Contains('-maccatalyst')) and '$(Configuration)' == 'Debug'">
-		<CodesignEntitlements>Platforms/MacCatalyst/Entitlements.Debug.plist</CodesignEntitlements>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="$(TargetFramework.Contains('-maccatalyst')) and '$(Configuration)' == 'Release'">
-		<CodesignEntitlements>Platforms/MacCatalyst/Entitlements.Release.plist</CodesignEntitlements>
-		<UseHardenedRuntime>true</UseHardenedRuntime>
-	</PropertyGroup>
-
-	<!--<Import Project=".maui\build.targets" Condition="Exists('.maui\build.targets')" />-->
 </Project>

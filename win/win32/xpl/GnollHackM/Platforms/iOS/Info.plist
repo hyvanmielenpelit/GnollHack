@@ -28,11 +28,5 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.soundmindgames.GnollHack</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
-	<key>MinimumOSVersion</key>
-	<string>16.1</string>
 </dict>
 </plist>
