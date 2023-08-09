@@ -15,7 +15,7 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Reset Menu" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,30" />
-                <TableView Grid.Row="1" x:Name="GameTableView" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
+                <TableView Grid.Row="1" x:Name="ResetTableView" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
                            Intent="Menu">
                     <TableRoot>
                         <TableSection x:Name="BaseSection">

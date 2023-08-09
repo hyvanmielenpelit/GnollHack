@@ -25,7 +25,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnCreditsX_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
-            AboutTableView.IsEnabled = false;
+            AboutScrollView.IsEnabled = false;
             string fulltargetpath = Path.Combine(App.GHPath, "xcredits");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Cross-Platform Credits", 80);
             string errormsg = "";
@@ -37,13 +37,13 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
-            AboutTableView.IsEnabled = true;
+            AboutScrollView.IsEnabled = true;
         }
 
         private async void btnCreditsW_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
-            AboutTableView.IsEnabled = false;
+            AboutScrollView.IsEnabled = false;
             string fulltargetpath = Path.Combine(App.GHPath, "credits");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Credits", 77);
             string errormsg = "";
@@ -55,13 +55,13 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
-            AboutTableView.IsEnabled = true;
+            AboutScrollView.IsEnabled = true;
         }
 
         private async void btnLicense_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
-            AboutTableView.IsEnabled = false;
+            AboutScrollView.IsEnabled = false;
             string fulltargetpath = Path.Combine(App.GHPath, "license");
             var displFilePage = new DisplayFilePage(fulltargetpath, "License", 78);
             string errormsg = "";
@@ -73,14 +73,14 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
-            AboutTableView.IsEnabled = true;
+            AboutScrollView.IsEnabled = true;
         }
         private async void btnGitHub_Clicked(object sender, EventArgs e)
         {
-            AboutTableView.IsEnabled = false;
+            AboutScrollView.IsEnabled = false;
             App.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackGitHubPage));
-            AboutTableView.IsEnabled = true;
+            AboutScrollView.IsEnabled = true;
         }
 
         public async Task OpenBrowser(Uri uri)
@@ -97,39 +97,39 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnWebPage_Clicked(object sender, EventArgs e)
         {
-            AboutTableView.IsEnabled = false;
+            AboutScrollView.IsEnabled = false;
             App.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackWebPage));
-            AboutTableView.IsEnabled = true;
+            AboutScrollView.IsEnabled = true;
         }
 
         private async void btnWiki_Clicked(object sender, EventArgs e)
         {
-            AboutTableView.IsEnabled = false;
+            AboutScrollView.IsEnabled = false;
             App.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackWikiPage));
-            AboutTableView.IsEnabled = true;
+            AboutScrollView.IsEnabled = true;
         }
 
         private async void btnDowngrade_Clicked(object sender, EventArgs e)
         {
-            AboutTableView.IsEnabled = false;
+            AboutScrollView.IsEnabled = false;
             App.PlayButtonClickedSound();
             await OpenBrowser(new Uri(App.IsAndroid ? GHConstants.GnollHackAndroidDowngradePage : App.IsiOS ? GHConstants.GnollHackiOSDowngradePage :  GHConstants.GnollHackGeneralDowngradePage));
-            AboutTableView.IsEnabled = true;
+            AboutScrollView.IsEnabled = true;
         }
 
         private async void btnSponsor_Clicked(object sender, EventArgs e)
         {
-            AboutTableView.IsEnabled = false;
+            AboutScrollView.IsEnabled = false;
             App.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackSponsorPage));
-            AboutTableView.IsEnabled = true;
+            AboutScrollView.IsEnabled = true;
         }
 
         //private async void btnSourceCode_Clicked(object sender, EventArgs e)
         //{
-        //    AboutTableView.IsEnabled = false;
+        //    AboutScrollView.IsEnabled = false;
         //    App.PlayButtonClickedSound();
         //    SecretsFile sourcesf = null;
         //    foreach (SecretsFile f in App.CurrentSecrets.files)
@@ -177,7 +177,7 @@ namespace GnollHackX.Pages.MainScreen
         //        return;
         //    }
         //    await DisplayAlert("Source Files in Downloads", "Source files have been successfully saved to the Downloads folder in a zip format. The file is named \'" + sourcesf.name + "\'.", "OK");
-        //    AboutTableView.IsEnabled = true;
+        //    AboutScrollView.IsEnabled = true;
         //}
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -201,7 +201,7 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;
-            AboutTableView.IsEnabled = true;
+            AboutScrollView.IsEnabled = true;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
@@ -334,7 +334,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnViewPanicLog_Clicked(object sender, EventArgs e)
         {
-            AboutTableView.IsEnabled = false;
+            AboutScrollView.IsEnabled = false;
             App.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(App.GHPath, "paniclog");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Panic Log");
@@ -351,7 +351,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
-            AboutTableView.IsEnabled = true;
+            AboutScrollView.IsEnabled = true;
         }
 
 
@@ -372,11 +372,11 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnVersion_Clicked(object sender, EventArgs e)
         {
-            AboutTableView.IsEnabled = false;
+            AboutScrollView.IsEnabled = false;
             App.PlayButtonClickedSound();
             var verPage = new VersionPage(null);
             await App.Current.MainPage.Navigation.PushModalAsync(verPage);
-            AboutTableView.IsEnabled = true;
+            AboutScrollView.IsEnabled = true;
 
         }
 

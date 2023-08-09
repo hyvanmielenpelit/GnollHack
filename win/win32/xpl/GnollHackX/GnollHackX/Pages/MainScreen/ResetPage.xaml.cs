@@ -203,7 +203,7 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;
-            GameTableView.IsEnabled = true;
+            ResetTableView.IsEnabled = true;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
@@ -230,7 +230,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDownloadTestFiles_Clicked(object sender, EventArgs e)
         {
-            GameTableView.IsEnabled = false;
+            ResetTableView.IsEnabled = false;
             App.PlayButtonClickedSound();
 
             string url = "https://download.gnollhack.com/test-files/test-files2.zip";
@@ -293,7 +293,7 @@ namespace GnollHackX.Pages.MainScreen
                     btnDownloadTestFiles.Text = "Done";
                     btnDownloadTestFiles.TextColor = Color.Red;
                 }
-                GameTableView.IsEnabled = true;
+                ResetTableView.IsEnabled = true;
             }
 
         }
@@ -350,7 +350,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnImportTestFiles_Clicked(object sender, EventArgs e)
         {
-            GameTableView.IsEnabled = false;
+            ResetTableView.IsEnabled = false;
 
             App.PlayButtonClickedSound();
             await CheckAndRequestWritePermission();
@@ -481,7 +481,7 @@ namespace GnollHackX.Pages.MainScreen
                 await DisplayAlert("Error", "An error occurred while trying to import files: " + ex.Message, "OK");
             }
 
-            GameTableView.IsEnabled = true;
+            ResetTableView.IsEnabled = true;
         }
     }
 }
