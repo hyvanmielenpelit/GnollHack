@@ -1823,16 +1823,16 @@ int skill_level;
         percentage = 10;
         break;
     case P_SKILLED:
-        percentage = 25;
+        percentage = 20;
         break;
     case P_EXPERT:
-        percentage = 45;
+        percentage = 30;
         break;
     case P_MASTER:
-        percentage = 70;
+        percentage = 40;
         break;
     case P_GRAND_MASTER:
-        percentage = 100;
+        percentage = 50;
         break;
     default:
         break;
@@ -4208,10 +4208,10 @@ int use_this_level;
             res = 20;
             break;
         case P_MASTER:
-            res = 40;
+            res = 35;
             break;
         case P_GRAND_MASTER:
-            res = 70;
+            res = 50;
             break;
         default:
             break;
@@ -4226,13 +4226,13 @@ int use_this_level;
             res = get_skill_critical_strike_chance(P_BARE_HANDED_COMBAT, nextlevel, limit_by_twoweap, use_this_level, use_adjusted_sklvl);
             break;
         case P_BASIC:
-            res = 75;
+            res = 60;
             break;
         case P_SKILLED:
-            res = 80;
+            res = 70;
             break;
         case P_EXPERT:
-            res = 85;
+            res = 80;
             break;
         case P_MASTER:
             res = 90;
@@ -4261,10 +4261,10 @@ int use_this_level;
             res = 20;
             break;
         case P_MASTER:
-            res = 40;
+            res = 35;
             break;
         case P_GRAND_MASTER:
-            res = 70;
+            res = 50;
             break;
         default:
             break;
