@@ -97,9 +97,8 @@ namespace GnollHackX
                 if (manufacturer != null && model != null && model.Length >= 7 && 
                     manufacturer.ToLower() == "google" && model.Substring(0, 6).ToLower() == "pixel ")
                 {
-                    int pixelver = 0;
-                    int endlen = model.Length - 6;
-                    string endstr = model.Substring(model.Length - endlen);
+                    int pixelver;
+                    string endstr = model.Substring(6);
                     int cnt = 0;
                     foreach (char c in endstr)
                     {
