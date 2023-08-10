@@ -87,6 +87,32 @@ namespace GnollHackX
         public static bool InformAboutCrashReport = false;
         public static bool InformAboutIncompatibleSavedGames = false;
 
+        public static bool IsGPUDefault
+        {
+            get
+            {
+                string manufacturer = DeviceInfo.Manufacturer;
+                string model = DeviceInfo.Model;
+                bool isGooglePixel6orGreater = false;
+                if (manufacturer != null && model != null && model.Length >= 7 && 
+                    manufacturer.ToLower() == "google" && model.Substring(0, 6).ToLower() == "pixel ")
+                {
+                    int pixelver = 0;
+                    int endlen = model.Length - 6;
+                    string endstr = model.Substring(model.Length - endlen);
+                    int cnt = 0;
+                    foreach (char c in endstr)
+                    {
+                        if (c < '0' || c > '9')
+                            break;
+                        cnt++;
+                    }
+                    isGooglePixel6orGreater = cnt > 0 && int.TryParse(endstr.Substring(0, cnt), out pixelver) && pixelver >= 6;
+                }
+                return isGooglePixel6orGreater ? false : GHConstants.IsGPUDefault;
+            }
+        }
+
         private static Secrets _currentSecrets = null;
         public static Secrets CurrentSecrets
         {

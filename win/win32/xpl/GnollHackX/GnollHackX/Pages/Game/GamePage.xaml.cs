@@ -429,7 +429,7 @@ namespace GnollHackX.Pages.Game
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
             MapRefreshRate = (MapRefreshRateStyle)Preferences.Get("MapRefreshRate", (int)ClientUtils.GetDefaultMapFPS());
             ShowFPS = Preferences.Get("ShowFPS", false);
-            UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHConstants.IsGPUDefault);
+            UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", App.IsGPUDefault);
             UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", true);
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
             MapGrid = Preferences.Get("MapGrid", false);

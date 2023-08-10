@@ -320,7 +320,7 @@ namespace GnollHackX.Pages.MainScreen
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool mem = false, fps = false, gpu = App.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
@@ -377,7 +377,7 @@ namespace GnollHackX.Pages.MainScreen
                 walkarrows = Preferences.Get("WalkArrows", true);
                 mem = Preferences.Get("ShowMemoryUsage", false);
                 fps = Preferences.Get("ShowFPS", false);
-                gpu = Preferences.Get("UseMainGLCanvas", GHConstants.IsGPUDefault);
+                gpu = Preferences.Get("UseMainGLCanvas", App.IsGPUDefault);
                 simplecmdlayout = Preferences.Get("UseSimpleCmdLayout", true);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
                 petrows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
