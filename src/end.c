@@ -2002,27 +2002,38 @@ int how;
 #endif
 
             viz_array[0][0] |= IN_SIGHT; /* need visibility for naming */
+
+            mtmp = mydogs;
+            int petcount = 0;
+            while (mtmp)
+            {
+                petcount++;
+                mtmp = mtmp->nmon;
+            }
+            if (Schroedingers_cat)
+                petcount++;
+
             mtmp = mydogs;
             Strcpy(pbuf, "You");
             if (mtmp || Schroedingers_cat)
             {
+                int petindex = 0;
                 while (mtmp)
                 {
-                    Sprintf(eos(pbuf), " and %s", mon_nam(mtmp));
-                    //if (is_tame(mtmp))
-                    //    nowrap_add(u.u_gamescore, mtmp->mhp);
+                    Sprintf(eos(pbuf), "%s %s",
+                        petcount == 1 ? " and" : petindex < petcount - 1 ? "," : ", and",
+                       mon_nam(mtmp));
                     mtmp = mtmp->nmon;
+                    petindex++;
                 }
 
                 /* [it might be more robust to create a housecat and add it to
                    mydogs; it doesn't have to be placed on the map for that] */
                 if (Schroedingers_cat)
                 {
-                    //int mhp, m_lev = adj_lev(&mons[PM_HOUSECAT]);
-                    //mhp = d(m_lev, 8);
-                    //nowrap_add(u.u_gamescore, mhp);
-                    Strcat(eos(pbuf), " and Schroedinger's cat");
+                    Sprintf(eos(pbuf), "%s Schroedinger's cat", petcount == 1 ? " and" : ", and");
                 }
+                Strcat(pbuf, " ");
                 dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 1);
                 pbuf[0] = '\0';
             }
