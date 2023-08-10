@@ -3574,7 +3574,7 @@ int otyp;
 
             double art_avg_dmg = 0;
             if (artilist[obj->oartifact].attk.damn < 0)
-                art_avg_dmg *= (1.0 - ((double)artilist[obj->oartifact].attk.damn) / 20.0);
+                art_avg_dmg += wep_avg_dmg * (-((double)artilist[obj->oartifact].attk.damn) / 20.0);
             else
                 art_avg_dmg += (double)artilist[obj->oartifact].attk.damn * (1.0 + (double)artilist[obj->oartifact].attk.damd) / 2.0 + (double)artilist[obj->oartifact].attk.damp;
 
