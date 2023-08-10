@@ -21,8 +21,8 @@ namespace GnollHackX.Pages.MainScreen
             InitializeComponent();
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #if !DEBUG
-            BaseSection.Remove(DownloadTestFilesViewCell);
-            BaseSection.Remove(ImportTestFilesViewCell);
+            btnDownloadTestFiles.IsVisible = false;
+            btnImportTestFiles.IsVisible = false;
 #endif
         }
 
@@ -42,6 +42,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDeleteSavedGames_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
+            ResetGrid.IsEnabled = false;
             bool answer = await DisplayAlert("Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
             if (answer)
             {
@@ -49,11 +50,13 @@ namespace GnollHackX.Pages.MainScreen
                 btnDeleteSavedGames.Text = "Done";
                 btnDeleteSavedGames.TextColor = Color.Red;
             }
+            ResetGrid.IsEnabled = true;
         }
 
         private async void btnDeleteDumplogs_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
+            ResetGrid.IsEnabled = false;
             bool answer = await DisplayAlert("Delete Top Scores?", "Are you sure to delete all top scores and associated dumplogs?", "Yes", "No");
             if (answer)
             {
@@ -62,11 +65,13 @@ namespace GnollHackX.Pages.MainScreen
                 btnDeleteDumplogs.Text = "Done";
                 btnDeleteDumplogs.TextColor = Color.Red;
             }
+            ResetGrid.IsEnabled = true;
         }
 
         private async void btnDeleteBones_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
+            ResetGrid.IsEnabled = false;
             bool answer = await DisplayAlert("Delete Bones Files?", "Are you sure to delete all bones files?", "Yes", "No");
             if (answer)
             {
@@ -74,11 +79,13 @@ namespace GnollHackX.Pages.MainScreen
                 btnDeleteBones.Text = "Done";
                 btnDeleteBones.TextColor = Color.Red;
             }
+            ResetGrid.IsEnabled = true;
         }
 
         private async void btnDeleteAllMainFiles_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
+            ResetGrid.IsEnabled = false;
             bool answer = await DisplayAlert("Delete All Main Files?", "Are you sure to delete all files in the main directory?", "Yes", "No");
             if (answer)
             {
@@ -86,11 +93,13 @@ namespace GnollHackX.Pages.MainScreen
                 btnDeleteAllMainFiles.Text = "Done";
                 btnDeleteAllMainFiles.TextColor = Color.Red;
             }
+            ResetGrid.IsEnabled = true;
         }
 
         private async void btnDeleteDownloads_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
+            ResetGrid.IsEnabled = false;
             bool answer = await DisplayAlert("Delete Downloaded Files?", "Are you sure to delete all downloaded files on restart?", "Yes", "No");
             if (answer)
             {
@@ -98,11 +107,13 @@ namespace GnollHackX.Pages.MainScreen
                 btnDeleteDownloads.Text = "Deletion on restart";
                 btnDeleteDownloads.TextColor = Color.Red;
             }
+            ResetGrid.IsEnabled = true;
         }
 
         private async void btnDeletePreferences_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
+            ResetGrid.IsEnabled = false;
             bool answer = await DisplayAlert("Delete App Preferences?", "Are you sure to delete all app preference settings?", "Yes", "No");
             if (answer)
             {
@@ -157,11 +168,13 @@ namespace GnollHackX.Pages.MainScreen
                 btnDeletePreferences.Text = "Done";
                 btnDeletePreferences.TextColor = Color.Red;
             }
+            ResetGrid.IsEnabled = true;
         }
 
         private async void btnDeleteUserData_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
+            ResetGrid.IsEnabled = false;
             bool answer = await DisplayAlert("Delete All User Data?", "Are you sure to delete all files in the userdata directory?", "Yes", "No");
             if (answer)
             {
@@ -180,6 +193,7 @@ namespace GnollHackX.Pages.MainScreen
                     btnDeleteUserData.TextColor = Color.Red;
                 }
             }
+            ResetGrid.IsEnabled = true;
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -203,7 +217,7 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;
-            ResetTableView.IsEnabled = true;
+            ResetGrid.IsEnabled = true;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
@@ -230,7 +244,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDownloadTestFiles_Clicked(object sender, EventArgs e)
         {
-            ResetTableView.IsEnabled = false;
+            ResetGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
 
             string url = "https://download.gnollhack.com/test-files/test-files2.zip";
@@ -293,9 +307,8 @@ namespace GnollHackX.Pages.MainScreen
                     btnDownloadTestFiles.Text = "Done";
                     btnDownloadTestFiles.TextColor = Color.Red;
                 }
-                ResetTableView.IsEnabled = true;
             }
-
+            ResetGrid.IsEnabled = true;
         }
 
         public async Task<PermissionStatus> CheckAndRequestWritePermission()
@@ -350,7 +363,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnImportTestFiles_Clicked(object sender, EventArgs e)
         {
-            ResetTableView.IsEnabled = false;
+            ResetGrid.IsEnabled = false;
 
             App.PlayButtonClickedSound();
             await CheckAndRequestWritePermission();
@@ -480,8 +493,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await DisplayAlert("Error", "An error occurred while trying to import files: " + ex.Message, "OK");
             }
-
-            ResetTableView.IsEnabled = true;
+            ResetGrid.IsEnabled = true;
         }
     }
 }

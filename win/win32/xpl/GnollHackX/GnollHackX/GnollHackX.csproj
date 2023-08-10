@@ -32,7 +32,6 @@
   <ItemGroup>
     <None Remove="Assets\archristy.ttf" />
     <None Remove="Assets\Auxiliary.bank" />
-    <None Remove="Assets\buttons.png" />
     <None Remove="Assets\button_disabled.png" />
     <None Remove="Assets\button_normal.png" />
     <None Remove="Assets\button_selected.png" />
@@ -254,7 +253,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\archristy.ttf" />
-    <EmbeddedResource Include="Assets\buttons.png" />
     <EmbeddedResource Include="Assets\button_disabled.png" />
     <EmbeddedResource Include="Assets\button_normal.png" />
     <EmbeddedResource Include="Assets\button_selected.png" />
@@ -286,7 +284,6 @@
     <EmbeddedResource Include="Assets\UI\save.png" />
     <EmbeddedResource Include="Assets\UI\status-empty-handed.png" />
     <EmbeddedResource Include="Assets\UI\unwield.png" />
-    <Page Include="Assets\imrl.otf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
@@ -528,10 +525,6 @@
 
   <ItemGroup>
     <Folder Include="Views\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Assets\endor.ttf" />
   </ItemGroup>
 
   <ItemGroup>
