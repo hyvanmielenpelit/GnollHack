@@ -131,6 +131,7 @@ namespace GnollHackX.Pages.Game
             if(!_backPressed)
             {
                 _backPressed = true;
+                MainLayout.IsEnabled = false;
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
             return false;

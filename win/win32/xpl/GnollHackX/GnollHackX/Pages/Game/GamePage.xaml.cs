@@ -2878,7 +2878,7 @@ namespace GnollHackX.Pages.Game
 
             return false;
         }
-        public async void ShowGameMenu(object sender, EventArgs e)
+        public async Task ShowGameMenu(object sender, EventArgs e)
         {
             var menu = new GameMenuPage(this);
             TallyRealTime();
@@ -10098,13 +10098,13 @@ namespace GnollHackX.Pages.Game
 
         }
 
-        private void GameMenuButton_Clicked(object sender, EventArgs e)
+        private async void GameMenuButton_Clicked(object sender, EventArgs e)
         {
             GameMenuButton.IsEnabled = false;
             SimpleGameMenuButton.IsEnabled = false;
             App.PlayButtonClickedSound();
             TouchDictionary.Clear();
-            ShowGameMenu(sender, e);
+            await ShowGameMenu(sender, e);
             GameMenuButton.IsEnabled = true;
             SimpleGameMenuButton.IsEnabled = true;
         }

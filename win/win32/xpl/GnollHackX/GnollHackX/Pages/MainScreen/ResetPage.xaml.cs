@@ -28,6 +28,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteFiles_Clicked(object sender, EventArgs e)
         {
+            ResetGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete GnollHack Core Files?", "Are you sure to delete GnollHack core files?", "Yes", "No");
             if (answer)
@@ -37,12 +38,13 @@ namespace GnollHackX.Pages.MainScreen
                 btnDeleteFiles.Text = "Done";
                 btnDeleteFiles.TextColor = Color.Red;
             }
+            ResetGrid.IsEnabled = true;
         }
 
         private async void btnDeleteSavedGames_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
             ResetGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
             if (answer)
             {
@@ -55,8 +57,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteDumplogs_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
             ResetGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete Top Scores?", "Are you sure to delete all top scores and associated dumplogs?", "Yes", "No");
             if (answer)
             {
@@ -70,8 +72,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteBones_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
             ResetGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete Bones Files?", "Are you sure to delete all bones files?", "Yes", "No");
             if (answer)
             {
@@ -84,8 +86,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteAllMainFiles_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
             ResetGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete All Main Files?", "Are you sure to delete all files in the main directory?", "Yes", "No");
             if (answer)
             {
@@ -98,8 +100,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteDownloads_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
             ResetGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete Downloaded Files?", "Are you sure to delete all downloaded files on restart?", "Yes", "No");
             if (answer)
             {
@@ -112,8 +114,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeletePreferences_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
             ResetGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete App Preferences?", "Are you sure to delete all app preference settings?", "Yes", "No");
             if (answer)
             {
@@ -173,8 +175,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteUserData_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
             ResetGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete All User Data?", "Are you sure to delete all files in the userdata directory?", "Yes", "No");
             if (answer)
             {
@@ -198,7 +200,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            CloseButton.IsEnabled = false;
+            ResetGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
@@ -209,6 +211,7 @@ namespace GnollHackX.Pages.MainScreen
             if (!_backPressed)
             {
                 _backPressed = true;
+                ResetGrid.IsEnabled = false;
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
             return false;

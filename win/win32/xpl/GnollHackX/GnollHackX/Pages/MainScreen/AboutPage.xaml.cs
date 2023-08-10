@@ -24,8 +24,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnCreditsX_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
             AboutGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(App.GHPath, "xcredits");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Cross-Platform Credits", 80);
             string errormsg = "";
@@ -42,8 +42,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnCreditsW_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
             AboutGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(App.GHPath, "credits");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Credits", 77);
             string errormsg = "";
@@ -60,8 +60,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnLicense_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
             AboutGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(App.GHPath, "license");
             var displFilePage = new DisplayFilePage(fulltargetpath, "License", 78);
             string errormsg = "";
@@ -182,7 +182,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            CloseButton.IsEnabled = false;
+            AboutGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
@@ -193,6 +193,7 @@ namespace GnollHackX.Pages.MainScreen
             if (!_backPressed)
             {
                 _backPressed = true;
+                AboutGrid.IsEnabled = false;
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
             return false;
@@ -210,6 +211,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnCrashReport_Clicked(object sender, EventArgs e)
         {
+            AboutGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Send Crash Report?", "This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
             if (answer)
@@ -224,6 +226,7 @@ namespace GnollHackX.Pages.MainScreen
                 catch(Exception ex)
                 {
                     await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a crash report archive: " + ex.Message, "OK");
+                    AboutGrid.IsEnabled = true;
                     return;
                 }
                 try
@@ -235,9 +238,11 @@ namespace GnollHackX.Pages.MainScreen
                 catch (Exception ex)
                 {
                     await DisplayAlert("Share File Failure", "GnollHack failed to share a crash report archive: " + ex.Message, "OK");
+                    AboutGrid.IsEnabled = true;
                     return;
                 }
             }
+            AboutGrid.IsEnabled = true;
         }
 
 
@@ -307,6 +312,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDumplogs_Clicked(object sender, EventArgs e)
         {
+            AboutGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
             await CheckAndRequestWritePermission();
             await CheckAndRequestReadPermission();
@@ -318,6 +324,7 @@ namespace GnollHackX.Pages.MainScreen
             catch (Exception ex)
             {
                 await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a dumplog archive: " + ex.Message, "OK");
+                AboutGrid.IsEnabled = true;
                 return;
             }
             try
@@ -328,8 +335,10 @@ namespace GnollHackX.Pages.MainScreen
             catch (Exception ex)
             {
                 await DisplayAlert("Share File Failure", "GnollHack failed to share a dumplog archive: " + ex.Message, "OK");
+                AboutGrid.IsEnabled = true;
                 return;
             }
+            AboutGrid.IsEnabled = true;
         }
 
         private async void btnViewPanicLog_Clicked(object sender, EventArgs e)
@@ -382,6 +391,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnImportSavedGames_Clicked(object sender, EventArgs e)
         {
+            AboutGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
             await CheckAndRequestWritePermission();
             await CheckAndRequestReadPermission();
@@ -490,10 +500,12 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await DisplayAlert("Error", "An error occurred while trying to import a saved game: " + ex.Message, "OK");
             }
+            AboutGrid.IsEnabled = true;
         }
 
         private async void btnSavedGames_Clicked(object sender, EventArgs e)
         {
+            AboutGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
             await CheckAndRequestWritePermission();
             await CheckAndRequestReadPermission();
@@ -505,6 +517,7 @@ namespace GnollHackX.Pages.MainScreen
             catch (Exception ex)
             {
                 await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a saved games archive: " + ex.Message, "OK");
+                AboutGrid.IsEnabled = true;
                 return;
             }
             try
@@ -515,8 +528,10 @@ namespace GnollHackX.Pages.MainScreen
             catch (Exception ex)
             {
                 await DisplayAlert("Share File Failure", "GnollHack failed to share a saved games archive: " + ex.Message, "OK");
+                AboutGrid.IsEnabled = true;
                 return;
             }
+            AboutGrid.IsEnabled = true;
         }
     }
 }
