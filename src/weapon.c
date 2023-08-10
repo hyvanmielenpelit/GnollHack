@@ -3647,19 +3647,19 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
             bonus += 0;
             break;
         case P_BASIC:
-            bonus += 3;
+            bonus += 2;
             break;
         case P_SKILLED:
-            bonus += 6;
+            bonus += 4;
             break;
         case P_EXPERT:
-            bonus += 9;
+            bonus += 6;
             break;
         case P_MASTER:
-            bonus += 12;
+            bonus += 8;
             break;
         case P_GRAND_MASTER:
-            bonus += 15;
+            bonus += 10;
             break;
         }
     }
@@ -3773,22 +3773,22 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
         /* fall through */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus += -3;
+            bonus += -2;
             break;
         case P_BASIC:
             bonus += 0;
             break;
         case P_SKILLED:
-            bonus += 3;
+            bonus += 2;
             break;
         case P_EXPERT:
-            bonus += 6;
+            bonus += 4;
             break;
         case P_MASTER:
-            bonus += 9;
+            bonus += 6;
             break;
         case P_GRAND_MASTER:
-            bonus += 12;
+            bonus += 8;
             break;
         }
     } 
@@ -3805,19 +3805,19 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
             bonus += 0;
             break;
         case P_BASIC:
-            bonus += 4;
+            bonus += 1;
             break;
         case P_SKILLED:
-            bonus += 8;
+            bonus += 2;
             break;
         case P_EXPERT:
-            bonus += 12;
+            bonus += 3;
             break;
         case P_MASTER:
-            bonus += 16;
+            bonus += 4;
             break;
         case P_GRAND_MASTER:
-            bonus += 20;
+            bonus += 5;
             break;
         }
     }
@@ -3994,19 +3994,19 @@ int skill_level;
     case P_UNSKILLED:
         break;
     case P_BASIC:
-        bonus += 3;
+        bonus += 2;
         break;
     case P_SKILLED:
-        bonus += 6;
+        bonus += 4;
         break;
     case P_EXPERT:
-        bonus += 9;
+        bonus += 6;
         break;
     case P_MASTER:
-        bonus += 12;
+        bonus += 8;
         break;
     case P_GRAND_MASTER:
-        bonus += 15;
+        bonus += 10;
         break;
     }
     return bonus;
