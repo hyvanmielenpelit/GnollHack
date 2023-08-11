@@ -775,6 +775,7 @@ int otyp;
     
     boolean uses_spell_flags = otyp_uses_spellbook_wand_flags(otyp); // object_uses_spellbook_wand_flags_and_properties(obj);
     boolean name_known = (!obj || objects[otyp].oc_name_known);
+    boolean desc_known = (!obj || obj->dknown);
     boolean has_conferred_powers = FALSE;
     boolean has_extra_damage = FALSE;
     boolean has_slaying = FALSE;
@@ -1137,7 +1138,7 @@ int otyp;
     }
 
     /* Skill */
-    if (stats_known && objects[otyp].oc_skill != P_NONE)
+    if (objects[otyp].oc_skill != P_NONE)
     {
         Strcpy(buf2, obj ? weapon_skill_name(obj) : otyp_weapon_skill_name(otyp));
         if (objects[otyp].oc_skill < 0 && objects[otyp].oc_skill != -P_THROWN_WEAPON)
@@ -1187,7 +1188,7 @@ int otyp;
     }
 
     boolean weapon_stats_shown = FALSE;
-    if (!uses_spell_flags && name_known && (is_otyp_weapon(otyp) || ((is_otyp_gloves(otyp) || is_otyp_boots(otyp) || objects[otyp].oc_class == GEM_CLASS) && stats_known)))
+    if (!uses_spell_flags && desc_known &&(is_otyp_weapon(otyp) || ((is_otyp_gloves(otyp) || is_otyp_boots(otyp) || objects[otyp].oc_class == GEM_CLASS))))
     {
         weapon_stats_shown = TRUE;
         boolean maindiceprinted = FALSE;
@@ -1208,7 +1209,7 @@ int otyp;
                 /* Single or two-handed */
                 if (obj ? is_appliable_pole_type_weapon(obj) : is_otyp_appliable_pole_type_weapon(otyp))
                 {
-                    if (obj)
+                    if (obj && name_known && stats_known)
                     {
                         int polemin = 1, polemax = 2;
                         get_pole_type_weapon_min_max_distances(obj, &youmonst, &polemin, &polemax);
@@ -1241,7 +1242,7 @@ int otyp;
                 Sprintf(buf, "Appliable:              %s", buf2);                
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-                if (obj && obj->exceptionality > 0)
+                if (obj && obj->exceptionality > 0 && name_known && stats_known)
                 {
                     if (is_pick(obj) || is_axe(obj) || is_saw(obj))
                     {
@@ -1339,7 +1340,6 @@ int otyp;
                 Sprintf(buf, "Range when fired:       %s'", buf2);
             
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
-
         }
 
 
@@ -1658,7 +1658,6 @@ int otyp;
         /* Fixed damage bonus */
         if (is_otyp_launcher(otyp) && (objects[otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)) 
         {
-
             Sprintf(buf, "Fixed damage bonus:     %s%d (instead of strength)", 
                 objects[otyp].oc_fixed_damage_bonus >= 0 ? "+" : "", objects[otyp].oc_fixed_damage_bonus);
             
