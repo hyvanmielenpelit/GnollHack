@@ -1817,30 +1817,33 @@ namespace GnollHackX
 
             lock (_cachedBitmapsLock)
             {
-                if (!_cachedBitmaps.ContainsKey(sourcePath))
+                try
                 {
-                    try
+                    SKBitmap bitmap;
+                    if (!_cachedBitmaps.TryGetValue(sourcePath, out bitmap))
                     {
                         string imagePath = sourcePath.Length > 11 && sourcePath.Substring(0, 11) == "resource://" ? sourcePath.Substring(11) : sourcePath;
                         Assembly assembly = typeof(App).GetTypeInfo().Assembly;
                         using (Stream stream = assembly.GetManifestResourceStream(imagePath))
                         {
                             SKBitmap newBitmap = SKBitmap.Decode(stream);
-                            if (newBitmap != null && addToCache)
-                                _cachedBitmaps.Add(sourcePath, newBitmap);
+                            if (newBitmap != null)
+                            {
+                                 if(addToCache)
+                                    _cachedBitmaps.Add(sourcePath, newBitmap);
+                                 
+                                 return newBitmap;
+                            }
                         }
                     }
-                    catch
-                    {
-                        return null;
-                    }
+                    else
+                        return bitmap;
                 }
+                catch
+                {
 
-                SKBitmap bitmap;
-                if (_cachedBitmaps.TryGetValue(sourcePath, out bitmap))
-                    return bitmap;
-                else
-                    return null;
+                }
+                return null;
             }
         }
 
