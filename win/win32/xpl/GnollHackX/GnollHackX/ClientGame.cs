@@ -1636,9 +1636,7 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_COLLECT_GARBAGE:
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
-                    GC.Collect();
+                    App.CollectGarbage();
                     break;
                 case (int)gui_command_types.GUI_CMD_FADE_FROM_BLACK:
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))

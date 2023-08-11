@@ -726,9 +726,7 @@ namespace GnollHackX.Pages.Game
 
             /* Collect garbage at this point */
             await Task.Delay(50);
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            App.CollectGarbage();
             await Task.Delay(50);
 
             Thread t = new Thread(new ThreadStart(GNHThreadProcForRestart));

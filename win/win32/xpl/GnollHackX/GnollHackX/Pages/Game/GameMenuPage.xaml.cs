@@ -150,11 +150,7 @@ namespace GnollHackX.Pages.Game
             btnGC.TextColor = Color.Yellow;
 
             App.DebugWriteRestart("Garbage Collection Start");
-            
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-
+            App.CollectGarbage();
             App.DebugWriteProfilingStopwatchTimeAndStop("Garbage Collection End");
 
             btnGC.Text = "Done";

@@ -195,6 +195,13 @@ namespace GnollHackX
         private static bool _gameSaved = false;
         public static bool GameSaved { get { lock (_gameSavedLock) { return _gameSaved; } } set { lock (_gameSavedLock) { _gameSaved = value; } } }
 
+        public static void CollectGarbage()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
         protected override void OnStart()
         {
             if (PlatformService != null)
@@ -227,13 +234,11 @@ namespace GnollHackX
                 App.CurrentGamePage.Suspend();
             if (App.CurrentClientGame != null)
             {
-                if (!App.CurrentClientGame.CasualMode)
-                {
-                    //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
-                    Preferences.Set("WentToSleepWithGameOn", true);
-                    App.CurrentClientGame.GamePage.SaveGameAndWaitForResume();
-                }
+                //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
+                Preferences.Set("WentToSleepWithGameOn", true);
+                App.CurrentClientGame.GamePage.SaveGameAndWaitForResume();
             }
+            CollectGarbage();
         }
 
         protected override void OnResume()
@@ -249,15 +254,12 @@ namespace GnollHackX
                 App.CurrentGamePage.Resume();
             if (App.CurrentClientGame != null)
             {
-                if (!App.CurrentClientGame.CasualMode)
+                //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
+                bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                Preferences.Set("WentToSleepWithGameOn", false);
+                if (wenttosleep && (App.GameSaved || App.SavingGame))
                 {
-                    //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
-                    bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
-                    Preferences.Set("WentToSleepWithGameOn", false);
-                    if (wenttosleep && (App.GameSaved || App.SavingGame))
-                    {
-                        App.CurrentClientGame.GamePage.StopWaitAndResumeSavedGame();
-                    }
+                    App.CurrentClientGame.GamePage.StopWaitAndResumeSavedGame();
                 }
             }
         }
