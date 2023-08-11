@@ -8,5 +8,6 @@
   </Target>
   <Target Name="Clean">
     <Delete Files="$(WinWin32Dir)Master.bank;$(WinWin32Dir)Master.strings.bank;$(WinWin32Dir)Auxiliary.bank;$(WinWin32Dir)Intro.bank;$(WinWin32Dir)Preliminary.bank;$(WinWin32Dir)Music.bank"/>
+	<Message Text="Deleted sound banks from $(WinWin32Dir)" Importance="High" />
   </Target>
 </Project>

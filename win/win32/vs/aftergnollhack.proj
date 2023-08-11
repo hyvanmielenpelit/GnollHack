@@ -13,6 +13,7 @@
 	<Message Text="Copied FMOD files from $(WinFmodDir) to $(BinDir) using platform $(Platform)" Importance="High" />
   </Target>
   <Target Name="Clean">
-	  <Delete Files="$(BinDir)defaults.gnh;$(BinDir)Guidebook.txt;$(BinDir)license;$(BinDir)credits;$(BinDir)sysconf;$(BinDir)nethack.txt;$(BinDir)symbols;$(BinDir)record;$(BinDir)opthelp"/>
+	<Delete Files="$(BinDir)defaults.gnh;$(BinDir)Guidebook.txt;$(BinDir)license;$(BinDir)credits;$(BinDir)sysconf;$(BinDir)nethack.txt;$(BinDir)symbols;$(BinDir)record;$(BinDir)opthelp"/>
+	<Message Text="Deleted GnollHack files from $(BinDir)" Importance="High" />
   </Target>
 </Project>

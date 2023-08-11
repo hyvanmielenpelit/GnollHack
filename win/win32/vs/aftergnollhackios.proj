@@ -12,5 +12,7 @@
   </Target>
   <Target Name="Clean">
     <Delete Files="$(MacOutDir)libgnollhackios.a"/>
+    <Delete Files="$(iOSNativeReferencesDir)libgnollhackios.a"/>
+	<Message Text="Deleted libgnollhackios.a from $(iOSNativeReferencesDir) and $(MacOutDir)" Importance="High" />
   </Target>
 </Project>

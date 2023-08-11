@@ -34,6 +34,7 @@
     <Delete Files="$(AndroidGnhDir)symbols"/>
     <Delete Files="$(AndroidGnhDir)defaults.gnh"/>
 	<Delete Files="$(AndroidGnhDir)sysconf"/>
+	<Message Text="Deleted gnh files from $(AndroidGnhDir)" Importance="High" />
     <Delete Files="$(LibiOSDir)date.h"/>
     <Delete Files="$(iOSGnhDir)nhdat"/>
     <Delete Files="$(iOSGnhDir)credits"/>
@@ -42,5 +43,6 @@
     <Delete Files="$(iOSGnhDir)symbols"/>
     <Delete Files="$(iOSGnhDir)defaults.gnh"/>
 	<Delete Files="$(iOSGnhDir)sysconf"/>
+	<Message Text="Deleted gnh files from $(iOSGnhDir)" Importance="High" />
   </Target>
 </Project>

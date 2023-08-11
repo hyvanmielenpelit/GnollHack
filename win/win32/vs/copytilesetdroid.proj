@@ -8,5 +8,6 @@
   </Target>
   <Target Name="Clean">
     <Delete Files="$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits.png;$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>
+	<Message Text="Deleted tilesets from $(ClientCommonAssetsDir)" Importance="High" />
   </Target>
 </Project>

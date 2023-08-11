@@ -12,5 +12,6 @@
   </Target>
   <Target Name="Clean">
     <Delete Files="$(GnollHackDllOutputDir)defaults.gnh;$(GnollHackDllOutputDir)Guidebook.txt;$(GnollHackDllOutputDir)license;$(GnollHackDllOutputDir)credits;$(GnollHackDllOutputDir)sysconf;$(GnollHackDllOutputDir)nethack.txt;$(GnollHackDllOutputDir)symbols;$(GnollHackDllOutputDir)record;$(GnollHackDllOutputDir)opthelp"/>
+	<Message Text="Deleted GnollHack files from $(GnollHackDllOutputDir)" Importance="High" />
   </Target>
 </Project>
