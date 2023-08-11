@@ -1148,6 +1148,28 @@ int otyp;
         {
             *buf2 = highc(*buf2);
             Sprintf(buf, "Skill:                  %s", buf2);
+            if (obj)
+            {
+                if (objects[otyp].oc_skill == P_SHIELD && is_shield(obj))
+                {
+                    int shieldacbonus = shield_skill_ac_bonus(P_SKILL_LEVEL(P_SHIELD));
+                    int shieldmcbonus = shield_skill_mc_bonus(P_SKILL_LEVEL(P_SHIELD));
+                    Sprintf(eos(buf), " (%s%d to AC and %s%d to MC)",
+                        shieldacbonus <= 0 ? "+" : "",
+                        -shieldacbonus,
+                        shieldmcbonus >= 0 ? "+" : "",
+                        shieldmcbonus);
+                }
+                else if (objects[otyp].oc_skill >= P_FIRST_WEAPON && objects[otyp].oc_skill <= P_LAST_WEAPON && is_weapon(obj))
+                {
+                    int skilltohitbonus = weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, FALSE, 0, FALSE);
+                    int skilldmgbonus = weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, FALSE, 0, FALSE);
+                    if (skilltohitbonus == skilldmgbonus)
+                        Sprintf(eos(buf), " (%s%d to hit and damage)", skilltohitbonus >= 0 ? "+" : "", skilltohitbonus);
+                    else
+                        Sprintf(eos(buf), " (%s%d to hit and %s%d to damage)", skilltohitbonus >= 0 ? "+" : "", skilltohitbonus, skilldmgbonus >= 0 ? "+" : "", skilldmgbonus);
+                }
+            }
         }        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
@@ -4274,7 +4296,7 @@ int otyp;
         }
         if (is_shield(obj))
         {
-            totalacbonus += shield_skill_ac_bonus(P_SKILL_LEVEL(P_SHIELD));
+            totalacbonus -= shield_skill_ac_bonus(P_SKILL_LEVEL(P_SHIELD));
             totalmcbonus += shield_skill_mc_bonus(P_SKILL_LEVEL(P_SHIELD));
         }
         if ((stats_known && (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
