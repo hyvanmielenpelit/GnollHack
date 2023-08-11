@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" InitialTargets="InitialBuild" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|ARM">
       <Configuration>Debug</Configuration>
@@ -78,7 +78,8 @@
   <Import Project="dirs.props" />
   <Import Project="files.props" />
   <Target Name="Sub">
-    <XmlPeek NameSpaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003%27/&gt;" XmlInputPath="..\xpl\GnollHackX\GnollHackX.Android\GnollHackX.Android.csproj" Query="(/msb:Project/msb:PropertyGroup[contains(@Condition, '$(Configuration)')]/msb:AndroidPackageFormat/text())[1]">
+	  <Message Text="Start executing target Sub in makedefsdroid.vcxproj" Importance="High" />
+	  <XmlPeek NameSpaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003%27/&gt;" XmlInputPath="..\xpl\GnollHackX\GnollHackX.Android\GnollHackX.Android.csproj" Query="(/msb:Project/msb:PropertyGroup[contains(@Condition, '$(Configuration)')]/msb:AndroidPackageFormat/text())[1]">
       <Output TaskParameter="Result" ItemName="ItemValue" />
     </XmlPeek>
     <Message Text="Using AndroidPackageFormat @(ItemValue)." Importance="high" />
@@ -167,4 +168,8 @@
     <GnhDataFiles Include="$(GooglePlayOnDemandDir)AndroidManifest.xml" />
     <DataFilesToCopyRemotely Include="@(GnhDataFiles)" />
   </ItemGroup>
+  <Target Name="InitialBuild">
+	  <Message Text="Start executing copytilesetdroid.proj using initial build" Importance="High" />
+	  <MSBuild Projects="copytilesetdroid.proj" Targets="Build" />
+  </Target>
 </Project>

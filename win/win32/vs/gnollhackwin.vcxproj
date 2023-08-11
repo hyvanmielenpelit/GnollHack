@@ -388,15 +388,21 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <Target Name="AfterBuild">
-    <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
-    <MSBuild Projects="aftergnollhackdll.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start building aftergnollhack.proj" Importance="High" />
+	  <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start building aftergnollhackdll.proj" Importance="High" />
+	  <MSBuild Projects="aftergnollhackdll.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterClean">
-    <MSBuild Projects="aftergnollhack.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
-    <MSBuild Projects="aftergnollhackdll.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start cleaning aftergnollhack.proj" Importance="High" />
+	  <MSBuild Projects="aftergnollhack.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start cleaning aftergnollhackdll.proj" Importance="High" />
+	  <MSBuild Projects="aftergnollhackdll.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
   </Target>
-  <Target Name="AfterRebuild">
-    <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
-    <MSBuild Projects="aftergnollhackdll.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
-  </Target>
+  <!--<Target Name="AfterRebuild">
+	  <Message Text="Start rebuilding aftergnollhack.proj" Importance="High" />
+	  <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start rebuilding aftergnollhackdll.proj" Importance="High" />
+	  <MSBuild Projects="aftergnollhackdll.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>-->
 </Project>

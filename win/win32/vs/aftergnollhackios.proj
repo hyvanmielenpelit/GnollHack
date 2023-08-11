@@ -2,10 +2,13 @@
   <Import Project="dirs.props"/>
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
-  <Target Name="Build"
+	<!--
     Inputs="$(MacOutDir)libgnollhackios.a"
-    Outputs="$(iOSNativeReferencesDir)libgnollhackios.a">
-    <Copy SourceFiles="$(MacOutDir)libgnollhackios.a" DestinationFolder="$(iOSNativeReferencesDir)"/>
+    Outputs="$(iOSNativeReferencesDir)libgnollhackios.a" 
+	-->
+  <Target Name="Build">
+    <Copy SkipUnchangedFiles="False" SourceFiles="$(MacOutDir)libgnollhackios.a" DestinationFolder="$(iOSNativeReferencesDir)"/>
+	<Message Text="Copied libgnollhackios.a from $(MacOutDir) to $(iOSNativeReferencesDir)" Importance="High" />
   </Target>
   <Target Name="Clean">
     <Delete Files="$(MacOutDir)libgnollhackios.a"/>

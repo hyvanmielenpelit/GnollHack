@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" InitialTargets="InitialBuild" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="config.props" />
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CEC5D360-8804-454F-8591-002184C23499}</ProjectGuid>
@@ -322,13 +322,16 @@
     <None Include="$(WinWin32Dir)Preliminary.bank" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <Target Name="BeforeRebuild">
-    <MSBuild Projects="beforegnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  <Target Name="InitialBuild">
+	  <Message Text="Start building beforegnollhack.proj using initial build" Importance="High" />
+	  <MSBuild Projects="beforegnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterBuild">
-    <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start building aftergnollhack.proj" Importance="High" />
+	  <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterClean">
-    <MSBuild Projects="aftergnollhack.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start cleaning aftergnollhack.proj" Importance="High" />
+	  <MSBuild Projects="aftergnollhack.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
   </Target>
 </Project>

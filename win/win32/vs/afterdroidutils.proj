@@ -13,6 +13,7 @@
     <Copy SourceFiles="$(WslOutDir)dat\symbols" DestinationFolder="$(AndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)rc\defaults.gnh" DestinationFolder="$(AndroidGnhDir)"/>
 	<Copy SourceFiles="$(WslOutDir)rc\sysconf" DestinationFolder="$(AndroidGnhDir)"/>
+	<Message Text="Copied gnh files from $(WslOutDir) to $(AndroidGnhDir)" Importance="High" />
 
 	<Copy SourceFiles="$(WslOutDir)include\date_unix.h" DestinationFolder="$(LibiOSDir)"/>
     <Copy SourceFiles="$(WslOutDir)bin\nhdat" DestinationFolder="$(iOSGnhDir)"/>
@@ -22,6 +23,7 @@
     <Copy SourceFiles="$(WslOutDir)dat\symbols" DestinationFolder="$(iOSGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)rc\defaults.gnh" DestinationFolder="$(iOSGnhDir)"/>
 	<Copy SourceFiles="$(WslOutDir)rc\sysconf" DestinationFolder="$(iOSGnhDir)"/>
+	<Message Text="Copied gnh files from $(WslOutDir) to $(iOSGnhDir)" Importance="High" />
   </Target>
   <Target Name="Clean">
     <Delete Files="$(LibDroidDir)date.h"/>

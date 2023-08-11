@@ -86,13 +86,16 @@
     <Copy SourceFiles="$(SysShareDir)lev_lex.c" DestinationFiles="$(UtilDir)lev_lex.c" />
   </Target>
   <Target Name="AfterBuild">
-    <MSBuild Projects="afterlevcomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start building afterlevcomp.proj" Importance="High" />
+	  <MSBuild Projects="afterlevcomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterClean">
-    <MSBuild Projects="afterlevcomp.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start cleaning afterlevcomp.proj" Importance="High" />
+	  <MSBuild Projects="afterlevcomp.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
     <Delete Files="$(UtilDir)lev_yacc.c;$(IncDir)lev_comp.h;$(UtilDir)lev_lex.c" />
   </Target>
-  <Target Name="AfterRebuild">
-    <MSBuild Projects="afterlevcomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
-  </Target>
+  <!--<Target Name="AfterRebuild">
+	  <Message Text="Start rebuilding afterlevcomp.proj" Importance="High" />
+	  <MSBuild Projects="afterlevcomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>-->
 </Project>

@@ -4,6 +4,7 @@
   <!-- TODO not copying record-->
   <Target Name="Build">
     <Copy SkipUnchangedFiles="false" SourceFiles="$(BankDesktopDir)Master.bank;$(BankDesktopDir)Master.strings.bank;$(BankDesktopDir)Auxiliary.bank;$(BankDesktopDir)Intro.bank;$(BankDesktopDir)Preliminary.bank;$(BankDesktopDir)Music.bank" DestinationFolder="$(WinWin32Dir)"/>
+	<Message Text="Copied sound banks from $(BankDesktopDir) to $(WinWin32Dir)" Importance="High" />
   </Target>
   <Target Name="Clean">
     <Delete Files="$(WinWin32Dir)Master.bank;$(WinWin32Dir)Master.strings.bank;$(WinWin32Dir)Auxiliary.bank;$(WinWin32Dir)Intro.bank;$(WinWin32Dir)Preliminary.bank;$(WinWin32Dir)Music.bank"/>

@@ -1926,9 +1926,21 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
+                string portver = VersionTracking.CurrentVersion;
+                DevicePlatform platform = DeviceInfo.Platform;
+                string platstr = platform != null ? platform.ToString() : "";
+                if (platstr == null)
+                    platstr = "";
+                string platid;
+                if (platstr.Length > 0)
+                    platid = platstr.Substring(0, 1).ToLower();
+                else
+                    platid = "";
+
                 switch (status_type)
                 {
                     default:
+                        message = message + " [" + portver + platid + "]";
                         break;
                 }
             }

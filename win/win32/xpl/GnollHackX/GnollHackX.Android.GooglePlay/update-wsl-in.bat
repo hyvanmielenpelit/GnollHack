@@ -1,3 +1,5 @@
+echo Start executing update-wsl-in.bat
+
 if not exist c:\wsl-in mkdir c:\wsl-in
 if not exist c:\wsl-in\assetpack mkdir c:\wsl-in\assetpack
 if not exist c:\wsl-in\assetpack\Assets mkdir c:\wsl-in\assetpack\Assets

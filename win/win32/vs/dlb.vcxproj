@@ -41,12 +41,15 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
-    <MSBuild Projects="afterdlb.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start building afterdlb.proj" Importance="High" />
+	  <MSBuild Projects="afterdlb.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterClean">
-    <MSBuild Projects="afterdlb.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start cleaning afterdlb.proj" Importance="High" />
+	  <MSBuild Projects="afterdlb.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
   </Target>
-  <Target Name="AfterRebuild">
-    <MSBuild Projects="afterdlb.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
-  </Target>
+  <!--<Target Name="AfterRebuild">
+	  <Message Text="Start rebuilding afterdlb.proj" Importance="High" />
+	  <MSBuild Projects="afterdlb.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>-->
 </Project>

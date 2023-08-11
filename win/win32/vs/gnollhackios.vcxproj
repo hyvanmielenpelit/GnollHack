@@ -459,12 +459,15 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <Target Name="AfterBuild">
+	<Message Text="Start building aftergnollhackios.proj" Importance="High" />
     <MSBuild Projects="aftergnollhackios.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterClean">
-    <MSBuild Projects="aftergnollhackios.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start cleaning aftergnollhackios.proj" Importance="High" />
+	  <MSBuild Projects="aftergnollhackios.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
   </Target>
-  <Target Name="AfterRebuild">
-    <MSBuild Projects="aftergnollhackios.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
-  </Target>
+  <!--<Target Name="AfterRebuild">
+	  <Message Text="Start rebuilding aftergnollhackios.proj" Importance="High" />
+	  <MSBuild Projects="aftergnollhackios.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>-->
 </Project>

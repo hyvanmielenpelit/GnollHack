@@ -8,6 +8,7 @@
 
     <Copy SourceFiles="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(GnollHackDllOutputDir)"/>
     <Copy SourceFiles="$(BinDir)nhdat;$(BinDir)nh340key.dll;$(BinDir)nhdefkey.dll;$(BinDir)nhraykey.dll;$(BinDir)recover.exe" DestinationFolder="$(GnollHackDllOutputDir)"/>
+	<Message Text="Copied GnollHack files from $(BinDir) to $(GnollHackDllOutputDir)" Importance="High" />
   </Target>
   <Target Name="Clean">
     <Delete Files="$(GnollHackDllOutputDir)defaults.gnh;$(GnollHackDllOutputDir)Guidebook.txt;$(GnollHackDllOutputDir)license;$(GnollHackDllOutputDir)credits;$(GnollHackDllOutputDir)sysconf;$(GnollHackDllOutputDir)nethack.txt;$(GnollHackDllOutputDir)symbols;$(GnollHackDllOutputDir)record;$(GnollHackDllOutputDir)opthelp"/>

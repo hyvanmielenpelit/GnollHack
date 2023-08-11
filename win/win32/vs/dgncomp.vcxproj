@@ -123,13 +123,16 @@
     <Copy SourceFiles="$(SysShareDir)dgn_lex.c" DestinationFiles="$(UtilDir)dgn_lex.c" />
   </Target>
   <Target Name="AfterBuild">
-    <MSBuild Projects="afterdgncomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start building afterdgncomp.proj" Importance="High" />
+	  <MSBuild Projects="afterdgncomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterClean">
-    <MSBuild Projects="afterdgncomp.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+	  <Message Text="Start cleaning afterdgncomp.proj" Importance="High" />
+	  <MSBuild Projects="afterdgncomp.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
     <Delete Files="$(UtilDir)dgn_yacc.c;$(IncDir)dgn_comp.h;$(UtilDir)dgn_lex.c" />
   </Target>
-  <Target Name="AfterRebuild">
-    <MSBuild Projects="afterdgncomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
-  </Target>
+  <!--<Target Name="AfterRebuild">
+	  <Message Text="Start rebuilding afterdgncomp.proj" Importance="High" />
+	  <MSBuild Projects="afterdgncomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>-->
 </Project>

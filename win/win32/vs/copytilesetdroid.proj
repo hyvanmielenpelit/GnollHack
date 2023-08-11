@@ -4,6 +4,7 @@
   <!-- TODO not copying record-->
   <Target Name="Build">
     <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(ClientCommonAssetsDir)"/>
+	<Message Text="Copied tilesets from $(WinWin32Dir) to $(ClientCommonAssetsDir)" Importance="High" />
   </Target>
   <Target Name="Clean">
     <Delete Files="$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits.png;$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>
