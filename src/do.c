@@ -4094,9 +4094,9 @@ int otyp;
         free((genericptr_t)descbuf);
     }
 
-    /* Weapon statistics */
     if (obj)
     {
+        /* Weapon statistics */
         struct obj* applicable_launcher = is_launcher(obj) ? obj : uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj;
         if ((is_weapon(obj)
             || (uwep && obj == uwep) || (uswapwep && obj == uswapwep)
@@ -4272,6 +4272,11 @@ int otyp;
             totalacbonus = -ARM_AC_BONUS(obj, youmonst.data);
             totalmcbonus = ARM_MC_BONUS(obj, youmonst.data);
         }
+        if (is_shield(obj))
+        {
+            totalacbonus += shield_skill_ac_bonus(P_SKILL_LEVEL(P_SHIELD));
+            totalmcbonus += shield_skill_mc_bonus(P_SKILL_LEVEL(P_SHIELD));
+        }
         if ((stats_known && (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
             || totalacbonus != 0 || totalmcbonus != 0 || (has_obj_mythic_defense(obj) && obj->mknown))
         {
@@ -4286,7 +4291,6 @@ int otyp;
             powercnt++;
             Sprintf(buf, " %2d - %s MC %s %s%d", powercnt, totalprefix, totalmcbonus < 0 ? "penalty" : "bonus", totalmcbonus >= 0 ? "+" : "", totalmcbonus);
             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-
         }
 
         /* Hints */
