@@ -33,7 +33,7 @@
 	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
 		<ProvisioningType>manual</ProvisioningType>
 		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
-		<CodesignProvision>Apple Dev Development 2023</CodesignProvision>
+		<CodesignProvision>Apple Dev M Development 2023</CodesignProvision>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -53,6 +53,45 @@
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Platforms\Android\libs\arm64-v8a\libc++_shared.so" />
+	  <None Remove="Platforms\Android\libs\arm64-v8a\libfmod.so" />
+	  <None Remove="Platforms\Android\libs\arm64-v8a\libfmodstudio.so" />
+	  <None Remove="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-android'">
+	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmod.so" />
+  	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmodstudio.so" />
+	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
+	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libc++_shared.so" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
+		<NativeReference Include="Platforms\iOS\libs\libfmodstudio_iphoneos.a">
+			<Kind>Static</Kind>
+			<Frameworks>AudioToolbox CoreAudio</Frameworks>
+			<ForceLoad>True</ForceLoad>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</NativeReference>
+		<NativeReference Include="Platforms\iOS\libs\libfmod_iphoneos.a">
+			<Kind>Static</Kind>
+			<Frameworks>AudioToolbox CoreAudio</Frameworks>
+			<ForceLoad>True</ForceLoad>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</NativeReference>
+		<NativeReference Include="Platforms\iOS\libs\libgnollhackios.a">
+			<Kind>Static</Kind>
+			<ForceLoad>True</ForceLoad>
+			<IsCxx>True</IsCxx>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</NativeReference>
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
+		<DefineConstants>UNITY_IPHONE</DefineConstants>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />

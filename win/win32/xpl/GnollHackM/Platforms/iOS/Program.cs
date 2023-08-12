@@ -1,15 +1,37 @@
 ﻿using ObjCRuntime;
+using System.Runtime.InteropServices;
 using UIKit;
 
 namespace GnollHackM;
 
+public class PlatformConstants
+{
+#if __IOS__
+    public const string dll = "__Internal";
+    public const string library = "gnollhackios";
+#elif __ANDROID__
+        public const string dll = @"libgnollhackdroid.so";
+        public const string library = "gnollhackdroid";
+#else
+        public const string dll     = @"libgnollhackunknown.so";
+        public const string library = "gnollhackunknown";
+#endif
+}
+
+
 public class Program
 {
-	// This is the main entry point of the application.
-	static void Main(string[] args)
+    [DllImport(PlatformConstants.dll)]
+    public static extern int LibTest();
+
+    // This is the main entry point of the application.
+    static void Main(string[] args)
 	{
-		// if you want to use a different Application Delegate class from "AppDelegate"
-		// you can specify it here.
-		UIApplication.Main(args, null, typeof(AppDelegate));
+        // if you want to use a different Application Delegate class from "AppDelegate"
+        // you can specify it here.
+        int res = LibTest();
+        System.Diagnostics.Debug.WriteLine(res);
+
+        UIApplication.Main(args, null, typeof(AppDelegate));
 	}
 }
