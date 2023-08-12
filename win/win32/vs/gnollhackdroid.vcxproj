@@ -465,4 +465,12 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
+  <Target Name="AfterBuild">
+	<Message Text="Start building aftergnollhackdroid.proj" Importance="High" />
+    <MSBuild Projects="aftergnollhackdroid.proj" Targets="Build" Properties="Configuration=$(Configuration);TargetArchAbi=$(TargetArchAbi)" />
+  </Target>
+  <Target Name="AfterClean">
+	  <Message Text="Start cleaning aftergnollhackdroid.proj" Importance="High" />
+	  <MSBuild Projects="aftergnollhackdroid.proj" Targets="Clean" Properties="Configuration=$(Configuration);TargetArchAbi=$(TargetArchAbi)" />
+  </Target>
 </Project>

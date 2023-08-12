@@ -1,0 +1,91 @@
+{
+  "directories": [
+    { "name": "bank" }
+  ],
+  "files": [
+    {
+      "id": "MasterBank",
+      "name": "Master.bank",
+      "type": "sound_bank",
+      "subtype_id": 0,
+      "description": "Master Sound Files",
+      "version": "59",
+      "source_directory": "banks",
+      "length": 97668064,
+      "target_directory": "bank",
+      "on_demand": 0,
+      "streaming_asset": 0,
+      "flags": 0
+    },
+    {
+      "id": "MasterStringsBank",
+      "name": "Master.strings.bank",
+      "type": "sound_bank",
+      "subtype_id": 0,
+      "description": "Master Strings Bank",
+      "version": "59",
+      "source_directory": "banks",
+      "length": 102310,
+      "target_directory": "bank",
+      "on_demand": 0,
+      "streaming_asset": 0,
+      "flags": 0
+    },
+    {
+      "id": "AuxBank",
+      "name": "Auxiliary.bank",
+      "type": "sound_bank",
+      "subtype_id": 2,
+      "description": "Dialogue Sound Files",
+      "version": "59",
+      "source_directory": "banks",
+      "length": 349751264,
+      "target_directory": "bank",
+      "on_demand": 0,
+      "streaming_asset": 1,
+      "flags": 0
+    },
+    {
+      "id": "IntroBank",
+      "name": "Intro.bank",
+      "type": "sound_bank",
+      "subtype_id": 1,
+      "description": "Introduction Sound Files",
+      "version": "59",
+      "source_directory": "banks",
+      "length": 10318400,
+      "target_directory": "bank",
+      "on_demand": 0,
+      "streaming_asset": 1,
+      "flags": 0
+    },
+    {
+      "id": "MusicBank",
+      "name": "Music.bank",
+      "type": "sound_bank",
+      "subtype_id": 2,
+      "description": "Music Sound Files",
+      "version": "59",
+      "source_directory": "banks",
+      "length": 87091360,
+      "target_directory": "bank",
+      "on_demand": 0,
+      "streaming_asset": 1,
+      "flags": 0
+    },
+    {
+      "id": "PreliminaryBank",
+      "name": "Preliminary.bank",
+      "type": "sound_bank",
+      "subtype_id": 0,
+      "description": "Main Menu Screen Sound Files",
+      "version": "59",
+      "source_directory": "banks",
+      "length": 3011424,
+      "target_directory": "bank",
+      "on_demand": 0,
+      "streaming_asset": 1,
+      "flags": 0
+    }
+  ]
+}

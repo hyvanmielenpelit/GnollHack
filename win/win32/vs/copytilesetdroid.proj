@@ -3,11 +3,15 @@
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
   <Target Name="Build">
-    <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(ClientCommonAssetsDir)"/>
-	<Message Text="Copied tilesets from $(WinWin32Dir) to $(ClientCommonAssetsDir)" Importance="High" />
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(XamarinAssetsDir)"/>
+	<Message Text="Copied tilesets from $(WinWin32Dir) to $(XamarinAssetsDir)" Importance="High" />
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(MauiAssetsDir)"/>
+	<Message Text="Copied tilesets from $(WinWin32Dir) to $(MauiAssetsDir)" Importance="High" />
   </Target>
   <Target Name="Clean">
-    <Delete Files="$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits.png;$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>
-	<Message Text="Deleted tilesets from $(ClientCommonAssetsDir)" Importance="High" />
+    <Delete Files="$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>
+	<Message Text="Deleted tilesets from $(XamarinAssetsDir)" Importance="High" />
+    <Delete Files="$(MauiAssetsDir)gnollhack_64x96_transparent_32bits.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>
+	<Message Text="Deleted tilesets from $(MauiAssetsDir)" Importance="High" />
   </Target>
 </Project>

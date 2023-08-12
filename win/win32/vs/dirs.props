@@ -32,9 +32,14 @@
     <DllDir>$(RootDir)win\win32\dll\</DllDir>
     <AndroidLibsDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android\libs\</AndroidLibsDir>
     <iOSNativeReferencesDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.iOS\Native References\</iOSNativeReferencesDir>
-    <ClientCommonAssetsDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Assets\</ClientCommonAssetsDir>
+    <MauiAndroidLibsDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Android\libs\</MauiAndroidLibsDir>
+    <MauiiOSNativeReferencesDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\iOS\libs\</MauiiOSNativeReferencesDir>
+    <XamarinAssetsDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Assets\</XamarinAssetsDir>
+    <MauiAssetsDir>$(RootDir)win\win32\xpl\GnollHackM\Assets\</MauiAssetsDir>
     <AndroidGnhDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android\gnh\</AndroidGnhDir>
     <iOSGnhDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.iOS\gnh\</iOSGnhDir>
+    <MauiAndroidGnhDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Android\gnh\</MauiAndroidGnhDir>
+    <MauiiOSGnhDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\iOS\gnh\</MauiiOSGnhDir>
     <BankDesktopDir>$(WinWin32Dir)bank\Desktop\</BankDesktopDir>
     <BankMobileDir>$(WinWin32Dir)bank\Mobile\</BankMobileDir>
     <OutDir>$(ToolsDir)</OutDir>

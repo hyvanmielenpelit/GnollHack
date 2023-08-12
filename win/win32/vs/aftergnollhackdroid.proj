@@ -1,0 +1,13 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="dirs.props"/>
+  <Import Project="files.props"/>
+  <!-- TODO not copying record-->
+  <Target Name="Build">
+    <Copy SkipUnchangedFiles="False" SourceFiles="$(AndroidLibsDir)$(TargetArchAbi)\libgnollhackdroid.so" DestinationFolder="$(MauiAndroidLibsDir)$(TargetArchAbi)\"/>
+	<Message Text="Copied libgnollhackdroid.so from $(AndroidLibsDir)$(TargetArchAbi)\ to $(MauiAndroidLibsDir)$(TargetArchAbi)\" Importance="High" />
+  </Target>
+  <Target Name="Clean">
+    <Delete Files="$(MauiAndroidLibsDir)$(TargetArchAbi)\libgnollhackdroid.so"/>
+	<Message Text="Deleted libgnollhackdroid.so from $(MauiAndroidLibsDir)$(TargetArchAbi)\" Importance="High" />
+  </Target>
+</Project>
