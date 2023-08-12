@@ -4920,9 +4920,9 @@ namespace GnollHackX.Pages.Game
                                                             }
                                                         }
 
-                                                        /* Darkening at the end of layers */
                                                         switch(layer_idx)
                                                         {
+                                                            /* Darkening at the end of layers */
                                                             case (int)layer_types.LAYER_OBJECT:
                                                             {
                                                                 for (int mapx = startX; mapx <= endX; mapx++)
@@ -4963,7 +4963,8 @@ namespace GnollHackX.Pages.Game
                                                                 }
                                                                 break;
                                                             }
-                                                            case (int)layer_types.MAX_LAYERS - 1:
+                                                            /* Enlargement bitmaps */
+                                                            case (int)layer_types.MAX_LAYERS:
                                                                 paint.Color = SKColors.Black;
                                                                 if (_enlargementBitmap != null && _enlBmpMinX < _enlBmpMaxX && _enlBmpMinY < _enlBmpMaxY)
                                                                 {
