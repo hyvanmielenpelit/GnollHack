@@ -355,9 +355,9 @@ struct obj *obj;
 }
 
 /* list of valid menu classes for query_objlist() and allow_category callback
-   (with room for all object classes, 'u'npaid, BUCX, and terminator) */
-STATIC_VAR char valid_menu_classes[MAX_OBJECT_CLASSES + 1 + 4 + 1];
-STATIC_VAR boolean class_filter, bucx_filter, shop_filter, unidentified_filter;
+   (with room for all object classes, 'u'npaid, IK, BUCX, and terminator) */
+STATIC_VAR char valid_menu_classes[MAX_OBJECT_CLASSES + 3 + 4 + 1];
+STATIC_VAR boolean class_filter, bucx_filter, shop_filter, unidentified_filter, unknown_filter;
 
 /* check valid_menu_classes[] for an entry; also used by askchain() */
 boolean
@@ -375,7 +375,7 @@ int c;
 
     if (c == 0) { /* reset */
         vmc_count = 0;
-        class_filter = bucx_filter = shop_filter = unidentified_filter = FALSE;
+        class_filter = bucx_filter = shop_filter = unidentified_filter = unknown_filter = FALSE;
     } else if (!menu_class_present(c)) {
         valid_menu_classes[vmc_count++] = (char) c;
         /* categorize the new class */
@@ -388,6 +388,9 @@ int c;
             break;
         case 'I':
             unidentified_filter = TRUE;
+            break;
+        case 'K':
+            unknown_filter = TRUE;
             break;
         case 'u':
             shop_filter = TRUE;
@@ -435,7 +438,8 @@ struct obj *obj;
                     : bucx_filter
                        ? (index(valid_menu_classes, iflags.goldX ? 'X' : 'U')
                           ? TRUE : FALSE)
-                       : unidentified_filter ? FALSE :
+                       : unidentified_filter ? FALSE
+                       : unknown_filter ? FALSE :
                           TRUE; /* catchall: no filters specified, so accept */
 
     if (Role_if(PM_PRIEST))
@@ -468,6 +472,8 @@ struct obj *obj;
         return FALSE;
     /* reject fully identified objects */
     if (unidentified_filter && !not_fully_identified(obj))
+        return FALSE;
+    if (unknown_filter && !is_obj_unknown(obj))
         return FALSE;
     /* check for particular bless/curse state */
     if (bucx_filter) {
@@ -1141,7 +1147,7 @@ int how;               /* type of query */
     boolean FDECL((*ofilter), (OBJ_P)) = (boolean FDECL((*), (OBJ_P))) 0;
     boolean do_unpaid = FALSE;
     boolean do_blessed = FALSE, do_cursed = FALSE, do_uncursed = FALSE,
-            do_buc_unknown = FALSE, do_unidentified = FALSE;
+            do_buc_unknown = FALSE, do_unidentified = FALSE, do_unknown = FALSE;
     int num_buc_types = 0;
     *pick_list = (menu_item *) 0;
     if (!olist)
@@ -1162,6 +1168,10 @@ int how;               /* type of query */
     if ((qflags & UNIDENTIFIED_TYPES) && (unidentified_count = count_unidentified(olist, ofilter, (qflags & BY_NEXTHERE) != 0)) > 0) {
         do_unidentified = TRUE;
     }
+    int unknown_count = 0;
+    if ((qflags & UNKNOWN_TYPES) && (unknown_count = count_unknown(olist, ofilter, (qflags & BY_NEXTHERE) != 0)) > 0) {
+        do_unknown = TRUE;
+    }
     if ((qflags & BUC_BLESSED) && count_buc(olist, BUC_BLESSED, ofilter, (qflags & BY_NEXTHERE) != 0)) {
         do_blessed = TRUE;
         num_buc_types++;
@@ -1181,7 +1191,7 @@ int how;               /* type of query */
 
     ccount = count_categories(olist, qflags);
     /* no point in actually showing a menu for a single category */
-    if ((objcnt == 1 || (ccount == 1 && (!do_unidentified || unidentified_count == objcnt) && (!do_unpaid || unpaid_count == objcnt) && num_buc_types <= 1)) && !(qflags & BILLED_TYPES))
+    if ((objcnt == 1 || (ccount == 1 && (!do_unidentified || unidentified_count == objcnt) && (!do_unknown || unknown_count == objcnt) && (!do_unpaid || unpaid_count == objcnt) && num_buc_types <= 1)) && !(qflags & BILLED_TYPES))
     {
         for (curr = olist; curr; curr = FOLLOW(curr, qflags)) {
             if (ofilter && !(*ofilter)(curr))
@@ -1252,7 +1262,7 @@ int how;               /* type of query */
         }
     } while (*pack);
 
-    if (do_unpaid || do_unidentified || (qflags & BILLED_TYPES) || do_blessed || do_cursed
+    if (do_unpaid || do_unidentified || do_unknown || (qflags & BILLED_TYPES) || do_blessed || do_cursed
         || do_uncursed || do_buc_unknown) {
         any = zeroany;
         add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR, "", MENU_UNSELECTED);
@@ -1280,6 +1290,14 @@ int how;               /* type of query */
         any.a_int = 'I';
         add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
             "Unidentified items", MENU_UNSELECTED);
+    }
+
+    if (do_unknown) {
+        invlet = 'K';
+        any = zeroany;
+        any.a_int = 'K';
+        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
+            "Unknown items", MENU_UNSELECTED);
     }
 
     /* items with b/u/c/unknown if there are any;
@@ -3989,7 +4007,7 @@ struct obj* other_container UNUSED;
     {
         all_categories = FALSE;
         Sprintf(buf, "%s what type of objects?", action);
-        mflags = (ALL_TYPES | UNPAID_TYPES | BUCX_TYPES | UNIDENTIFIED_TYPES | CHOOSE_ALL);
+        mflags = (ALL_TYPES | UNPAID_TYPES | BUCX_TYPES | UNIDENTIFIED_TYPES | UNKNOWN_TYPES | CHOOSE_ALL);
         if (command_id == 5)
             mflags |= BY_NEXTHERE;
         n = query_category(buf, command_id == 1 ? invent : command_id == 5 ? level.objects[u.ux][u.uy] : current_container->cobj,
@@ -4722,5 +4740,6 @@ reset_pickup(VOID_ARGS)
     current_container = 0;
     move_target_container = 0;
     abort_looting = FALSE;
+    class_filter = bucx_filter = shop_filter = unidentified_filter = unknown_filter = FALSE;
 }
 /*pickup.c*/

@@ -2143,6 +2143,15 @@ struct obj *otmp;
                           || is_flammable(otmp));
 }
 
+boolean
+is_obj_unknown(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return FALSE;
+    return !objects[otmp->otyp].oc_name_known || (otmp->oartifact && otmp->nknown && !otmp->aknown);
+}
+
 /* format a corpse name (xname() omits monster type; doname() calls us);
    eatcorpse() also uses us for death reason when eating tainted glob */
 char *

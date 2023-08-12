@@ -1509,6 +1509,7 @@ E int FDECL(askchain, (struct obj **, const char *, int, int (*)(OBJ_P),
 E void FDECL(fully_identify_obj, (struct obj *));
 E int FDECL(identify, (struct obj *));
 E int FDECL(count_unidentified, (struct obj *, boolean(*)(OBJ_P), BOOLEAN_P));
+E int FDECL(count_unknown, (struct obj*, boolean(*)(OBJ_P), BOOLEAN_P));
 E int FDECL(identify_pack, (int, BOOLEAN_P));
 E void NDECL(learn_unseen_invent);
 E void FDECL(prinv, (const char *, struct obj *, long));
@@ -2430,6 +2431,7 @@ E char* FDECL(doname_with_weight_last, (struct obj*, BOOLEAN_P));
 E char* FDECL(doname_with_price_and_weight_first, (struct obj*, BOOLEAN_P));
 E char* FDECL(doname_with_price_and_weight_last, (struct obj*, BOOLEAN_P));
 E boolean FDECL(not_fully_identified, (struct obj *));
+E boolean FDECL(is_obj_unknown, (struct obj*));
 E char *FDECL(corpse_xname, (struct obj *, const char *, unsigned));
 E char *FDECL(cxname, (struct obj *));
 E char* FDECL(acxname, (struct obj*));

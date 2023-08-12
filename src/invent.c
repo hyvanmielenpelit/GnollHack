@@ -41,6 +41,7 @@ STATIC_DCL char FDECL(display_used_invlets, (CHAR_P));
 STATIC_DCL boolean FDECL(this_type_only, (struct obj *));
 STATIC_DCL void NDECL(dounpaid);
 STATIC_DCL void NDECL(dounidentified);
+STATIC_DCL void NDECL(dounknown);
 STATIC_DCL struct obj *FDECL(find_unpaid, (struct obj *, struct obj **));
 STATIC_DCL int FDECL(menu_identify, (int));
 STATIC_DCL boolean FDECL(tool_in_use, (struct obj *));
@@ -3912,6 +3913,28 @@ boolean bynexthere;
     return unid_cnt;
 }
 
+/* count the items whose name is not known */
+int
+count_unknown(objchn, filterfunc, bynexthere)
+struct obj* objchn;
+boolean FDECL((*filterfunc), (OBJ_P));
+boolean bynexthere;
+{
+    int unid_cnt = 0;
+    struct obj* obj;
+
+    for (obj = objchn; obj; obj = (bynexthere ? obj->nexthere : obj->nobj))
+    {
+        if (filterfunc && !(*filterfunc)(obj))
+            continue;
+
+        if (is_obj_unknown(obj))
+            ++unid_cnt;
+    }
+    return unid_cnt;
+}
+
+
 /* dialog with user to identify a given number of items; 0 means all */
 /* returns the number of items identified */
 int
@@ -5491,6 +5514,51 @@ dounidentified()
     destroy_nhwindow(win);
 }
 
+STATIC_OVL void
+dounknown()
+{
+    winid win;
+    struct obj* otmp;
+    register char ilet;
+    char* invlet = flags.inv_order;
+    int classcount, count;
+
+    count = count_unknown(invent, 0, FALSE);
+    if (!count)
+    {
+        win = create_nhwindow(NHW_MENU);
+        putstr(win, 0, "You have no unknown items.");
+        display_nhwindow(win, FALSE);
+        destroy_nhwindow(win);
+        return;
+    }
+
+    win = create_nhwindow(NHW_MENU);
+    if (!flags.invlet_constant)
+        reassign();
+
+    do {
+        classcount = 0;
+        for (otmp = invent; otmp; otmp = otmp->nobj) {
+            ilet = otmp->invlet;
+            if (is_obj_unknown(otmp)) {
+                if (!flags.sortpack || otmp->oclass == *invlet) {
+                    if (flags.sortpack && !classcount) {
+                        putstr(win, 0, let_to_name(*invlet, 2, FALSE));
+                        classcount++;
+                    }
+
+                    putstr(win, 0, xprname(otmp, distant_name(otmp, doname),
+                        ilet, TRUE, 0L, 0L));
+                }
+            }
+        }
+    } while (flags.sortpack && (*++invlet));
+
+    display_nhwindow(win, FALSE);
+    destroy_nhwindow(win);
+}
+
 /* query objlist callback: return TRUE if obj type matches "this_type" */
 static int this_type;
 
@@ -5533,7 +5601,7 @@ dotypeinv()
     char c = '\0';
     int n, i = 0;
     char *extra_types, types[BUFSZ];
-    int class_count, oclass, unpaid_count, unidentified_count, itemcount;
+    int class_count, oclass, unpaid_count, unidentified_count, unknown_count, itemcount;
     int bcnt, ccnt, ucnt, xcnt, ocnt, tcnt;
     boolean billx = *u.ushops && doinvbill(0);
     menu_item *pick_list;
@@ -5546,6 +5614,7 @@ dotypeinv()
     }
     unpaid_count = count_unpaid(invent, 0, FALSE);
     unidentified_count = count_unidentified(invent, 0, FALSE);
+    unknown_count = count_unknown(invent, 0, FALSE);
     tally_BUCX(invent, FALSE, &bcnt, &ucnt, &ccnt, &xcnt, &ocnt, &tcnt);
 
     if (flags.menu_style != MENU_TRADITIONAL) {
@@ -5557,6 +5626,8 @@ dotypeinv()
                 i |= UNPAID_TYPES;
             if (unidentified_count)
                 i |= UNIDENTIFIED_TYPES;
+            if (unknown_count)
+                i |= UNKNOWN_TYPES;
             if (billx)
                 i |= BILLED_TYPES;
             if (bcnt)
@@ -5581,7 +5652,7 @@ dotypeinv()
         class_count = collect_obj_classes(types, invent, FALSE,
                                           (boolean FDECL((*), (OBJ_P))) 0,
                                           &itemcount);
-        if (unpaid_count || billx || unidentified_count || (bcnt + ccnt + ucnt + xcnt) != 0)
+        if (unpaid_count || billx || unidentified_count || unknown_count || (bcnt + ccnt + ucnt + xcnt) != 0)
             types[class_count++] = ' ';
         if (unpaid_count)
             types[class_count++] = 'u';
@@ -5589,6 +5660,8 @@ dotypeinv()
             types[class_count++] = 'x';
         if (unidentified_count)
             types[class_count++] = 'I';
+        if (unknown_count)
+            types[class_count++] = 'K';
         if (bcnt)
             types[class_count++] = 'B';
         if (ucnt)
@@ -5607,6 +5680,8 @@ dotypeinv()
             *extra_types++ = 'x';
         if (!unidentified_count)
             *extra_types++ = 'I';
+        if (!unknown_count)
+            *extra_types++ = 'K';
         if (!bcnt)
             *extra_types++ = 'B';
         if (!ucnt)
@@ -5637,6 +5712,8 @@ dotypeinv()
                 c = 'x';
             else if (unidentified_count)
                 c = 'I';
+            else if (unknown_count)
+                c = 'K';
             else
                 c = types[0];
         }
@@ -5661,6 +5738,13 @@ dotypeinv()
             dounidentified();
         else
             You1("are not carrying any unidentified objects.");
+        return 0;
+    }
+    if (c == 'K') {
+        if (unknown_count)
+            dounknown();
+        else
+            You1("are not carrying any unknown objects.");
         return 0;
     }
     if (traditional) {

@@ -3578,7 +3578,7 @@ int retry;
         all_worn_categories = FALSE;
         n = query_category("What type of things do you want to take off?",
                            invent, (WORN_TYPES | ALL_TYPES
-                                    | UNPAID_TYPES | UNIDENTIFIED_TYPES | BUCX_TYPES),
+                                    | UNPAID_TYPES | UNIDENTIFIED_TYPES | UNKNOWN_TYPES | BUCX_TYPES),
                            &pick_list, PICK_ANY);
         if (!n)
             return 0;

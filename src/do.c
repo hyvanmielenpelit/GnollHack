@@ -5772,7 +5772,7 @@ int retry;
     {
         all_categories = FALSE;
         n = query_category("Drop what type of items?", invent,
-                           UNPAID_TYPES | UNIDENTIFIED_TYPES | ALL_TYPES | CHOOSE_ALL | BUC_BLESSED
+                           UNPAID_TYPES | UNIDENTIFIED_TYPES | UNKNOWN_TYPES | ALL_TYPES | CHOOSE_ALL | BUC_BLESSED
                                | BUC_CURSED | BUC_UNCURSED | BUC_UNKNOWN,
                            &pick_list, PICK_ANY);
         if (!n)
