@@ -1695,7 +1695,7 @@ makelevel()
                     x = somex(croom);
                     y = somey(croom);
                 } while (levl[x][y].typ != ROOM && !rn2(40));
-                if (!(IS_POOL(levl[x][y].typ) || IS_FURNITURE(levl[x][y].typ)) && levl[x][y].carpet_typ == 0)
+                if (!(IS_POOL(levl[x][y].typ) || IS_FURNITURE(levl[x][y].typ) || t_at(x, y) != 0) && levl[x][y].carpet_typ == 0)
                     make_engr_at(x, y, mesg, 0L, MARK, ENGR_FLAGS_NONE);
             }
         }
