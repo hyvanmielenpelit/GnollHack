@@ -1,4 +1,5 @@
 ﻿using SkiaSharp;
+using GnollHackX;
 
 namespace GnollHackM;
 
@@ -10,6 +11,8 @@ public partial class MainPage : ContentPage
 	{
 		InitializeComponent();
         canvasView.InvalidateSurface();
+        count = GHConstants.AllMessageRows;
+        count = 0;
 	}
 
 	private void OnCounterClicked(object sender, EventArgs e)

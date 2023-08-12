@@ -55,6 +55,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Include="..\GnollHackX\GnollHackX\GHConstants.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Assets\archristy.ttf" />
 	  <None Remove="Assets\button_disabled.png" />
 	  <None Remove="Assets\button_normal.png" />
