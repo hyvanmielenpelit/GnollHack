@@ -101,7 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GHGamePageRenderer.cs" />
-    <Compile Include="PlatformService.cs" />
+    <Compile Include="PlatformServiceAndroid.cs" />
     <Compile Include="..\GnollHackX.FMOD\FmodService.cs" />
     <Compile Include="..\GnollHackX.FMOD\fmod.cs" />
     <Compile Include="..\GnollHackX.FMOD\fmod_dsp.cs" />

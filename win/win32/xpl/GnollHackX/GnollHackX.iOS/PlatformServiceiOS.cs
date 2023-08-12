@@ -2,17 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if GNH_MAUI
+#else
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
+#endif
 using System.Runtime.InteropServices;
 using GnollHackX;
 
 using Foundation;
 using UIKit;
-using Xamarin.Forms.PlatformConfiguration;
 using StoreKit;
 
+#if GNH_MAUI
+namespace GnollHackM
+#else
 [assembly: Dependency(typeof(GnollHackX.iOS.PlatformService))]
 namespace GnollHackX.iOS
+#endif
 {
     public class PlatformService : IPlatformService
     {

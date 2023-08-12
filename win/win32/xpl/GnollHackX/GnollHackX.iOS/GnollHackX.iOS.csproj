@@ -110,7 +110,7 @@
     <BundleResource Include="gnh\xcredits" />
     <BundleResource Include="gnh\xlogfile" />
     <None Include="Info.plist" />
-    <Compile Include="PlatformService.cs" />
+    <Compile Include="PlatformServiceiOS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <BundleResource Include="banks\Auxiliary.bank" />
     <BundleResource Include="banks\Intro.bank" />

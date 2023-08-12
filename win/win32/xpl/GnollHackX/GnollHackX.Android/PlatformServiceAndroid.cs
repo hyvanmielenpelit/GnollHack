@@ -8,26 +8,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xamarin.Forms;
 using System.Runtime.InteropServices;
 using GnollHackX;
 using Android;
 using Java.IO;
 using System.IO;
+#if GNH_MAUI
+#else
+using Xamarin.Forms;
 using Xamarin.Google.Android.Play.Core.AssetPacks;
-using Android.Content.PM;
 using System.Runtime.Remoting.Contexts;
 using Xamarin.Google.Android.Play.Core.Review;
-using System.Threading.Tasks;
 using Xamarin.Google.Android.Play.Core.Review.Model;
 using Xamarin.Google.Android.Play.Core.Tasks;
-using System.Threading;
 using Xamarin.Google.Android.Play.Core.Review.Testing;
+#endif
+using System.Threading.Tasks;
+using System.Threading;
 using Android.Util;
 using AndroidX.Core.App;
+using Android.Content.PM;
 
+#if GNH_MAUI
+namespace GnollHackM
+#else
 [assembly: Dependency(typeof(GnollHackX.Droid.PlatformService))]
 namespace GnollHackX.Droid
+#endif
 {
     public class PlatformService : IPlatformService
     {
@@ -212,7 +219,12 @@ namespace GnollHackX.Droid
             }
         }
 
-
+#if GNH_MAUI
+        public async void RequestAppReview(ContentPage page)
+        {
+            await Task.Delay(50);
+        }
+#else
         IReviewManager _manager;
         TaskCompletionSource<bool> _tcs;
         TaskCompletionSource<bool> _tcs2 = null;
@@ -264,6 +276,7 @@ namespace GnollHackX.Droid
             if (App.DebugLogMessages)
                 await page.DisplayAlert("App Review Log", logs, "OK");
         }
+#endif
 
         public string GetBaseUrl()
         {
@@ -277,15 +290,22 @@ namespace GnollHackX.Droid
 
         public string GetAbsoluteOnDemandAssetPath(string assetPack)
         {
+#if GNH_MAUI
+            return null;
+#else
             if (MainActivity.CurrentMainActivity == null || MainActivity.CurrentMainActivity.AssetPackManager == null)
                 return null;
 
             var assetPackPath = MainActivity.CurrentMainActivity.AssetPackManager.GetPackLocation(assetPack);
             return assetPackPath?.AssetsPath() ?? null;
+#endif
         }
 
         public string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath)
         {
+#if GNH_MAUI
+            return null;
+#else
             if (MainActivity.CurrentMainActivity == null || MainActivity.CurrentMainActivity.AssetPackManager == null)
                 return null;
 
@@ -298,10 +318,14 @@ namespace GnollHackX.Droid
 
             string assetPath = Path.Combine(assetsFolderPath, relativeAssetPath);
             return assetPath;
+#endif
         }
 
         public int FetchOnDemandPack(string pack)
         {
+#if GNH_MAUI
+            return 0;
+#else
             if (MainActivity.CurrentMainActivity == null || MainActivity.CurrentMainActivity.AssetPackManager == null)
                 return 2; /* No asset pack manager */
 
@@ -324,13 +348,17 @@ namespace GnollHackX.Droid
             }
             else
                 return -1; /* Already loaded */
+#endif
         }
 
         public event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
 
         private void InitOnDemandPackStatusNotificationEventHandler()
         {
+#if GNH_MAUI
+#else
             MainActivity.CurrentMainActivity.OnDemandPackStatus += OnDemandPackStatusNotified;
+#endif
         }
 
         private void OnDemandPackStatusNotified(object sender, AssetPackStatusEventArgs e)
@@ -443,6 +471,8 @@ namespace GnollHackX.Droid
         }
     }
 
+#if GNH_MAUI
+#else
     public class StoreReviewTaskCompleteListener : Java.Lang.Object, IOnCompleteListener
     {
         IReviewManager _manager;
@@ -519,4 +549,5 @@ namespace GnollHackX.Droid
             }
         }
     }
+#endif
 }

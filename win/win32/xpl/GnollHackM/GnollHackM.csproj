@@ -333,6 +333,7 @@
       <AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
       <AndroidAppBundleModules Include="Platforms\Android\assetpacks\ondemandassetpack.zip" />
 	  <AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" />
+	  <Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
 	</ItemGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
@@ -372,6 +373,7 @@
 		<BundleResource Include="Platforms\iOS\banks\Master.strings.bank" />
 		<BundleResource Include="Platforms\iOS\banks\Music.bank" />
 		<BundleResource Include="Platforms\iOS\banks\Preliminary.bank" />
+		<Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
 	</ItemGroup>
 
 	<PropertyGroup>
