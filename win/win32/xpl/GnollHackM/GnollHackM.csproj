@@ -63,6 +63,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHColors.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHConstants.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHDelegates.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />		
@@ -75,7 +76,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHStatusField.cs" />		
 		<Compile Include="..\GnollHackX\GnollHackX\GHUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHWindow.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\GlyphImageSource.cs" />		
+		<Compile Include="..\GnollHackX\GnollHackX\GlyphImageSource.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IPlatformService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
@@ -85,6 +87,11 @@
 		<Compile Include="..\GnollHackX\GnollHackX\SecretsFile.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\StoredManual.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\UserSecrets.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_studio.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_errors.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_dsp.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX.FMOD\FMODService.cs" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -305,8 +312,29 @@
   	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmodstudio.so" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libc++_shared.so" />
+      <EmbeddedJar Include="Platforms\Android\jars\fmod.jar" />
+      <AndroidAsset Include="Platforms\Android\gnh\credits" />
+      <AndroidAsset Include="Platforms\Android\gnh\license" />
+      <AndroidAsset Include="Platforms\Android\gnh\logfile" />
+      <AndroidAsset Include="Platforms\Android\gnh\nhdat" />
+      <AndroidAsset Include="Platforms\Android\gnh\record" />
+      <AndroidAsset Include="Platforms\Android\gnh\symbols" />
+      <AndroidAsset Include="Platforms\Android\gnh\sysconf" />
+      <AndroidAsset Include="Platforms\Android\gnh\perm" />
+      <AndroidAsset Include="Platforms\Android\gnh\recover" />
+      <AndroidAsset Include="Platforms\Android\gnh\xlogfile" />
+      <AndroidAsset Include="Platforms\Android\gnh\defaults.gnh" />
+      <AndroidAsset Include="Platforms\Android\gnh\xcredits" />
+      <AndroidAsset Include="Platforms\Android\banks\Master.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Auxiliary.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Intro.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Master.strings.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Music.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAppBundleModules Include="Platforms\Android\assetpacks\ondemandassetpack.zip" />
+	  <AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" />
 	</ItemGroup>
-
+	
 	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
 		<NativeReference Include="Platforms\iOS\libs\libfmodstudio_iphoneos.a">
 			<Kind>Static</Kind>
@@ -326,6 +354,24 @@
 			<IsCxx>True</IsCxx>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</NativeReference>
+		<BundleResource Include="Platforms\iOS\gnh\credits" />
+		<BundleResource Include="Platforms\iOS\gnh\defaults.gnh" />
+		<BundleResource Include="Platforms\iOS\gnh\license" />
+		<BundleResource Include="Platforms\iOS\gnh\logfile" />
+		<BundleResource Include="Platforms\iOS\gnh\nhdat" />
+		<BundleResource Include="Platforms\iOS\gnh\perm" />
+		<BundleResource Include="Platforms\iOS\gnh\record" />
+		<BundleResource Include="Platforms\iOS\gnh\recover" />
+		<BundleResource Include="Platforms\iOS\gnh\symbols" />
+		<BundleResource Include="Platforms\iOS\gnh\sysconf" />
+		<BundleResource Include="Platforms\iOS\gnh\xcredits" />
+		<BundleResource Include="Platforms\iOS\gnh\xlogfile" />
+		<BundleResource Include="Platforms\iOS\banks\Auxiliary.bank" />
+		<BundleResource Include="Platforms\iOS\banks\Intro.bank" />
+		<BundleResource Include="Platforms\iOS\banks\Master.bank" />
+		<BundleResource Include="Platforms\iOS\banks\Master.strings.bank" />
+		<BundleResource Include="Platforms\iOS\banks\Music.bank" />
+		<BundleResource Include="Platforms\iOS\banks\Preliminary.bank" />
 	</ItemGroup>
 
 	<PropertyGroup>

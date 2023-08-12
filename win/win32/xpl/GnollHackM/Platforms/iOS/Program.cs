@@ -4,21 +4,6 @@ using UIKit;
 
 namespace GnollHackM;
 
-public class PlatformConstants
-{
-#if __IOS__
-    public const string dll = "__Internal";
-    public const string library = "gnollhackios";
-#elif __ANDROID__
-        public const string dll = @"libgnollhackdroid.so";
-        public const string library = "gnollhackdroid";
-#else
-        public const string dll     = @"libgnollhackunknown.so";
-        public const string library = "gnollhackunknown";
-#endif
-}
-
-
 public class Program
 {
     [DllImport(PlatformConstants.dll)]

@@ -6,15 +6,24 @@ using FMOD;
 using FMOD.Studio;
 using System.Reflection;
 using System.IO;
+#if GNH_MAUI
+using GnollHackX;
+using GnollHackM;
+#else
 using Xamarin.Forms;
+#endif
 using System.Threading.Tasks;
 
 #if __IOS__
 using Foundation;
 using AVFoundation;
 
+#if GNH_MAUI
+namespace GnollHackM
+#else
 [assembly: Dependency(typeof(GnollHackX.iOS.FmodService))]
 namespace GnollHackX.iOS
+#endif
 #elif __ANDROID__
 using Android.Content.Res;
 using Java.Util.Zip;
@@ -25,11 +34,19 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
+#if GNH_MAUI
+namespace GnollHackM
+#else
 [assembly: Dependency(typeof(GnollHackX.Droid.FmodService))]
 namespace GnollHackX.Droid
+#endif
+#else
+#if GNH_MAUI
+namespace GnollHackM
 #else
 [assembly: Dependency(typeof(GnollHackX.Unknown.FmodService))]
 namespace GnollHackX.Unknown
+#endif
 #endif
 {
     public class GHSoundInstance
@@ -107,7 +124,7 @@ namespace GnollHackX.Unknown
             _latestService = this;
         }
 
-#if __ANDROID__
+#if __ANDROID__ || ANDROID
         private static void LoadNativeLibrary(string libName)
         {
             Java.Lang.JavaSystem.LoadLibrary(libName);
@@ -152,7 +169,7 @@ namespace GnollHackX.Unknown
             if (res != RESULT.OK)
                 return;
 
-#if __IOS__
+#if __IOS__ || IOS
             AVAudioSession si = AVAudioSession.SharedInstance();
             if(si != null)
                 si.SetCategory(AVAudioSessionCategory.Ambient);
@@ -237,13 +254,13 @@ namespace GnollHackX.Unknown
                 {
                     if (isResource)
                     {
-#if __IOS__
+#if __IOS__ || IOS
                         using(FileStream fs = File.OpenRead(fullfilepath))
-#elif __ANDROID__
+#elif __ANDROID__ || ANDROID
                         AssetManager assets = MainActivity.StaticAssets;
                         using (Stream fs = assets.Open(fullfilepath))
 #else
-                        using(FileStream fs = File.OpenRead(fullfilepath))
+                        using (FileStream fs = File.OpenRead(fullfilepath))
 #endif
                         {
                             using (var ms = new MemoryStream())

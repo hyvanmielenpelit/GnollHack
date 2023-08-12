@@ -4,18 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.IO;
+#if GNH_MAUI
+using GnollHackM;
+#else
 using Xamarin.Forms;
+using Xamarin.Essentials;
+#endif
 using System.Runtime.InteropServices;
 using GnollHackX;
-using Xamarin.Essentials;
 
 #if __IOS__
 using Foundation;
 using UIKit;
 
+#if GNH_MAUI
+namespace GnollHackM
+#else
 [assembly: Dependency(typeof(GnollHackX.iOS.GnollHackService))]
 namespace GnollHackX.iOS
-#elif __ANDROID__
+#endif
+#elif __ANDROID__                   
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -24,11 +32,19 @@ using Android.Views;
 using Android.Widget;
 using Android.Content.Res;
 
+#if GNH_MAUI
+namespace GnollHackM
+#else
 [assembly: Dependency(typeof(GnollHackX.Droid.GnollHackService))]
 namespace GnollHackX.Droid
+#endif
+#else
+#if GNH_MAUI
+namespace GnollHackM
 #else
 [assembly: Dependency(typeof(GnollHackX.Unknown.GnollHackService))]
 namespace GnollHackX.Unknown
+#endif
 #endif
 {
     public class PlatformConstants
@@ -532,9 +548,9 @@ namespace GnollHackX.Unknown
                 string fullsourcepath = Path.Combine(assetsourcedir, binfile);
                 using (BinaryReader br = new BinaryReader(assets.Open(fullsourcepath)))
 #else
-                string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+                string fullsourcepath = Path.Combine(assetsourcedir, binfile);
                 using (BinaryReader br = new BinaryReader(File.OpenRead(fullsourcepath)))
-#endif                
+#endif
                 {
                     data = br.ReadBytes(maxsize);
                 }
@@ -591,7 +607,7 @@ namespace GnollHackX.Unknown
                 string fullsourcepath = Path.Combine(sfiledir, assetfile);
 #else
                 string fullsourcepath = Path.Combine(sfiledir, assetfile);
-#endif                
+#endif
 
                 try
                 {
