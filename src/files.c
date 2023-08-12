@@ -338,6 +338,28 @@ const char* savefilename;
     return TRUE;
 }
 
+int is_imported_backup_savefile_name(savefilename)
+const char* savefilename;
+{
+    if (!savefilename || !*savefilename)
+        return FALSE;
+
+    size_t dlen = strlen(savefilename);
+    char ebuf[BUFSZ] = "";
+    print_special_savefile_extension(ebuf, BACKUP_EXTENSION);
+    print_imported_savefile_extension(ebuf);
+    size_t elen = strlen(ebuf);
+    if (dlen <= elen)
+        return FALSE;
+
+    size_t i;
+    for (i = 0; i < elen; i++)
+        if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
+            return FALSE;
+
+    return TRUE;
+}
+
 int is_backup_savefile_name(savefilename)
 const char* savefilename;
 {
@@ -1288,7 +1310,7 @@ make_tmp_backup_savefile_from_uncompressed_savefile(filename)
 const char* filename; /* Filename must have already been uncompressed */
 {
     Strcpy(fq_tmp_backup, "");
-    if (sysopt.make_backup_savefiles && filename && *filename)
+    if (sysopt.make_backup_savefiles && filename && *filename && !plname_from_imported_savefile) /* Imported save file comes with its own backup */
     {
         if (access(filename, F_OK) != 0) 
         {
@@ -1668,6 +1690,7 @@ boolean savefilekept;
 {
     if (plname_from_error_savefile || plname_from_imported_savefile)
     {
+        boolean was_from_imported_savefile = plname_from_imported_savefile;
         if (plname_from_imported_savefile)
         {
             flags.non_scoring = TRUE;
@@ -1681,6 +1704,22 @@ boolean savefilekept;
         {
             (void)remove(SAVEF); //If it happens to exist
             (void)rename(oldsavef, SAVEF);
+        }
+        if (was_from_imported_savefile)
+        {
+            /* If an imported backup savefile exists, rename it too */
+            char backupfilename[BUFSZ];
+            Strcpy(backupfilename, SAVEF);
+            print_special_savefile_extension(backupfilename, BACKUP_EXTENSION);
+            print_special_savefile_extension(backupfilename, IMPORTED_EXTENSION);
+            char nonimportedbackupfilename[BUFSZ];
+            Strcpy(nonimportedbackupfilename, SAVEF);
+            print_special_savefile_extension(nonimportedbackupfilename, BACKUP_EXTENSION);
+            if (access(backupfilename, F_OK) == 0)
+            {
+                (void)remove(nonimportedbackupfilename); //If it happens to exist
+                (void)rename(backupfilename, nonimportedbackupfilename);
+            }
         }
     }
 }
@@ -1844,6 +1883,13 @@ const struct dirent* entry;
     return is_backup_savefile_name(entry->d_name);
 }
 
+int filter_imported_backup(entry)
+const struct dirent* entry;
+{
+    return is_imported_backup_savefile_name(entry->d_name);
+}
+
+
 char*
 plname_from_running(filename, stats_ptr)
 const char* filename;
@@ -1944,6 +1990,8 @@ get_saved_games()
                     do {
                         if (is_backup_savefile_name(foundfile))
                             continue;
+                        if (is_imported_backup_savefile_name(foundfile))
+                            continue;
                         char* r;
                         r = plname_from_file(foundfile, &gamestats);
                         if (r)
@@ -1957,6 +2005,8 @@ get_saved_games()
                 if (findfirst(fq_save_ebuf)) {
                     n2 = 0;
                     do {
+                        if (is_imported_backup_savefile_name(foundfile))
+                            continue;
                         char* r;
                         r = plname_from_file(foundfile, &gamestats);
                         if (r)
@@ -2043,7 +2093,8 @@ get_saved_games()
         if (sscanf(namelist[i]->d_name, "%d%63s", &uid, name) == 2) {
             if (uid == myuid) {
                 boolean isbackupfile = !!filter_backup(namelist[i]);
-                if (isbackupfile)
+                boolean isimportedbackupfile = !!filter_imported_backup(namelist[i]);
+                if (isbackupfile || isimportedbackupfile)
                     continue;
                 char filename[BUFSZ];
                 char* r;

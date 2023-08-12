@@ -203,7 +203,7 @@ struct materialcomponentlist matlists[] =
     { SPE_DETECT_BLESSEDNESS,
         "Piece of green glass",
         STRANGE_OBJECT,
-        5,
+        2,
         {
             {
                 {WORTHLESS_PIECE_OF_GREEN_GLASS, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
