@@ -1,4 +1,8 @@
-﻿using GnollHackX.Pages.Game;
+﻿#if GNH_MAUI
+using GnollHackM;
+#else
+using GnollHackX.Pages.Game;
+#endif
 using SkiaSharp;
 using System;
 using System.Collections.Concurrent;

@@ -5,9 +5,14 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls;
+#else
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+using GnollHackX.Pages.Game;
+#endif
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -15,7 +20,6 @@ using System.Collections;
 using System.IO.Compression;
 using System.Globalization;
 using System.ComponentModel;
-using GnollHackX.Pages.Game;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
@@ -27,7 +31,11 @@ using GnollHackX.Pages.Game;
 [assembly: ExportFont("DejaVuSansMono.ttf", Alias = "DejaVuSansMono")]
 [assembly: ExportFont("DejaVuSansMono-Bold.ttf", Alias = "DejaVuSansMono-Bold")]
 [assembly: ExportFont("archristy.ttf", Alias = "ARChristy")]
+#if GNH_MAUI
+namespace GnollHackM
+#else
 namespace GnollHackX
+#endif
 {
     public delegate Task<bool> BackButtonHandler(object sender, EventArgs e);
 
@@ -36,6 +44,9 @@ namespace GnollHackX
         public App()
         {
             InitializeComponent();
+#if GNH_MAUI
+   		    MainPage = new AppShell();
+#endif
             VersionTracking.Track();
             App.GetDependencyServices();
             App.PlatformService.InitializePlatform();
@@ -51,8 +62,8 @@ namespace GnollHackX
             var mainPage = new MainPage();
             CurrentMainPage = mainPage;
             var navPage = new NavigationPage(mainPage);
-            navPage.BarTextColor = Color.White;
-            navPage.BarBackgroundColor = Color.Black;
+            navPage.BarTextColor = GHColors.White;
+            navPage.BarBackgroundColor = GHColors.Black;
             MainPage = navPage;
 
             App.HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);

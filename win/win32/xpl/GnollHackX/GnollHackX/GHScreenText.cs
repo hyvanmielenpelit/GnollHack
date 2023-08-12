@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+#if GNH_MAUI
+using GnollHackM;
+#else
 using GnollHackX.Pages.Game;
+#endif
 using SkiaSharp;
 
 namespace GnollHackX

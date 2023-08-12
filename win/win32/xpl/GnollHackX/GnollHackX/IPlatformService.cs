@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+#if GNH_MAUI
+#else
 using Xamarin.Forms;
+#endif
 
 namespace GnollHackX
 {

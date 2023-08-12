@@ -5,9 +5,13 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+#if GNH_MAUI
+using GnollHackM;
+#else
 using GnollHackX.Pages.Game;
-using SkiaSharp;
 using Xamarin.Forms;
+#endif
+using SkiaSharp;
 
 namespace GnollHackX
 {
@@ -144,12 +148,15 @@ namespace GnollHackX
 
         public Task<Stream> GetStreamAsync(CancellationToken userToken = new CancellationToken())
         {
+#if GNH_MAUI
+            return null;
+#else
             base.OnLoadingStarted();
             userToken.Register(CancellationTokenSource.Cancel);
             var result = Draw();
             OnLoadingCompleted(CancellationTokenSource.IsCancellationRequested);
             return Task.FromResult(result);
-
+#endif
         }
 
         public SKRect MeasureBitmapCroppingRect(SKBitmap bitmap)

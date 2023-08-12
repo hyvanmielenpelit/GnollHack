@@ -1525,5 +1525,12 @@ namespace GnollHackX
         TipCanvas,
     }
 
+    public enum BorderStyles
+    {
+        None = 0,
+        Simple,
+        Small,
+        Custom
+    }
 
 }

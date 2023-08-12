@@ -55,9 +55,38 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Include="..\GnollHackX\GnollHackX\App.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\ClientGame.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\ClientUtils.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\EventArgs.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHColors.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHConstants.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />		
+		<Compile Include="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHResponse.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHRequest.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHScreenText.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHStatusField.cs" />		
+		<Compile Include="..\GnollHackX\GnollHackX\GHUtils.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHWindow.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GlyphImageSource.cs" />		
+		<Compile Include="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\IPlatformService.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />		
+		<Compile Include="..\GnollHackX\GnollHackX\Secrets.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\SecretsFile.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\StoredManual.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\UserSecrets.cs" />
 	</ItemGroup>
-
+	
 	<ItemGroup>
 	  <None Remove="Assets\archristy.ttf" />
 	  <None Remove="Assets\button_disabled.png" />
@@ -521,6 +550,18 @@
 		<PackageReference Include="SkiaSharp" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="2.88.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="GamePage.xaml.cs">
+	    <DependentUpon>GamePage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="GamePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>

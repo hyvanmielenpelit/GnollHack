@@ -1,9 +1,13 @@
-﻿using GnollHackX.Pages.Game;
+﻿#if GNH_MAUI
+using GnollHackM;
+#else
+using Xamarin.Forms;
+using GnollHackX.Pages.Game;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xamarin.Forms;
 
 namespace GnollHackX
 {
@@ -45,7 +49,7 @@ namespace GnollHackX
             _gamePage = gamePage;
             _window = window;
         }
-        public GHPutStrItem(Pages.Game.GamePage gamePage, GHWindow window, string str, List<int> attrlist, List<int> colorlist)
+        public GHPutStrItem(GamePage gamePage, GHWindow window, string str, List<int> attrlist, List<int> colorlist)
         {
             InstructionList = ConvertListFromArrays(attrlist, colorlist);
             Text = str;

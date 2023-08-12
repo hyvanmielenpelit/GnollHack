@@ -4,13 +4,17 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
+#if GNH_MAUI
+using GnollHackM;
+#else
 using GnollHackX.Pages.Game;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Xamarin.Essentials;
+#endif
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
-using Xamarin.Essentials;
 using System.Drawing;
 using static System.Net.Mime.MediaTypeNames;
 using Newtonsoft.Json;

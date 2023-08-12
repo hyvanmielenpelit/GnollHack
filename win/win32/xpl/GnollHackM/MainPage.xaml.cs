@@ -46,5 +46,15 @@ public partial class MainPage : ContentPage
             canvas.DrawText(str, xText, yText, textPaint);
         }      
     }
+
+    public void Suspend()
+    {
+
+    }
+
+    public void Resume()
+    {
+
+    }
 }
 

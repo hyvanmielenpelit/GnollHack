@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
+#if GNH_MAUI
+using GnollHackM;
+using Microsoft.Maui.Controls;
+#else
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
+#endif
 
 namespace GnollHackX
 {
@@ -157,68 +162,61 @@ namespace GnollHackX
             return res;
         }
 
-        private static Color XRed = new Color((double)0xFF / 255.0, 32.0 / 255.0, 32.0 / 255.0);
-        private static Color XGreen = new Color(0, (double)0xFF / 255, 0);
-        private static Color XBlue = new Color(112.0 / 255.0, 112.0 / 255.0, (double)0xFF / 255.0);
-        private static Color XBrown = new Color(210.0 / 255.0, 128.0 / 255.0, 32.0 / 255.0);
-        private static Color XBrightBlue = new Color(180.0 / 255.0, 200.0 / 255.0, (double)0xFF / 255.0);
-        private static Color XBrightCyan = new Color(165.0 / 255.0, 255.0 / 255.0, (double)0xFF / 255.0);
-        private static Color XTitleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
         public static Color NHColor2XColor(int nhclr, int attr, bool revertblackandwhite, bool istitle)
         {
-            Color res = istitle ? XTitleGoldColor : revertblackandwhite ? Color.Black : Color.White;
+            Color res = istitle ? GHColors.TitleGoldColor : revertblackandwhite ? GHColors.Black : GHColors.White;
             bool usealtcolors = (attr & (int)MenuItemAttributes.AltColors) != 0;
             switch ((nhcolor)nhclr)
             {
                 case nhcolor.CLR_BLACK:
-                    res = revertblackandwhite ? Color.White : Color.DarkGray;
+                    res = revertblackandwhite ? GHColors.White : GHColors.DarkGray;
                     break;
                 case nhcolor.CLR_RED:
-                    res = revertblackandwhite ? Color.Red : XRed;
+                    res = revertblackandwhite ? GHColors.Red : GHColors.BrighterRed;
                     break;
                 case nhcolor.CLR_GREEN:
-                    res = revertblackandwhite ? Color.Green : XGreen;
+                    res = revertblackandwhite ? GHColors.Green : GHColors.BrighterGreen;
                     break;
                 case nhcolor.CLR_BROWN:
                     if (usealtcolors)
-                        res = XTitleGoldColor;
+                        res = GHColors.TitleGoldColor;
                     else
-                        res = revertblackandwhite ? Color.Brown : XBrown;
+                        res = revertblackandwhite ? GHColors.Brown : GHColors.BrighterBrown;
                     break;
                 case nhcolor.CLR_BLUE:
-                    res = revertblackandwhite ? Color.Blue : XBlue;
+                    res = revertblackandwhite ? GHColors.Blue : GHColors.BrighterBlue;
                     break;
                 case nhcolor.CLR_MAGENTA:
-                    res = Color.Magenta;
+                    res = GHColors.Magenta;
                     break;
                 case nhcolor.CLR_CYAN:
-                    res = Color.Cyan;
+                    res = GHColors.Cyan;
                     break;
                 case nhcolor.CLR_GRAY:
-                    res = Color.LightGray;
+                    res = GHColors.LightGray;
                     break;
                 case nhcolor.NO_COLOR:
                     break;
                 case nhcolor.CLR_ORANGE:
-                    res = Color.Orange;
+                    res = GHColors.Orange;
                     break;
                 case nhcolor.CLR_BRIGHT_GREEN:
-                    res = Color.LightGreen;
+                    res = GHColors.LightGreen;
                     break;
                 case nhcolor.CLR_YELLOW:
-                    res = Color.Yellow;
+                    res = GHColors.Yellow;
                     break;
                 case nhcolor.CLR_BRIGHT_BLUE:
-                    res = revertblackandwhite ? Color.LightBlue : XBrightBlue;
+                    res = revertblackandwhite ? GHColors.LightBlue : GHColors.BrightBlue;
                     break;
                 case nhcolor.CLR_BRIGHT_MAGENTA:
-                    res = Color.LightPink;
+                    res = GHColors.LightPink;
                     break;
                 case nhcolor.CLR_BRIGHT_CYAN:
-                    res = revertblackandwhite ? Color.LightCyan : XBrightCyan;
+                    res = revertblackandwhite ? GHColors.LightCyan : GHColors.BrightCyan;
                     break;
                 case nhcolor.CLR_WHITE:
-                    res = revertblackandwhite ? Color.Black : Color.White;
+                    res = revertblackandwhite ? GHColors.Black : GHColors.White;
                     break;
                 case nhcolor.CLR_MAX:
                     break;
@@ -230,13 +228,19 @@ namespace GnollHackX
         public static Color NHColor2GrayedXColor(int color, int attr, bool revertblackandwhite, bool istitle)
         {
             Color basecolor = NHColor2XColor(color, attr, revertblackandwhite, istitle);
-            Color bgcolor = revertblackandwhite ? Color.White : Color.Black;
+            Color bgcolor = revertblackandwhite ? GHColors.White : GHColors.Black;
             Color grayedcolor;
+#if GNH_MAUI
+            if (color == (int)nhcolor.NO_COLOR || color == (revertblackandwhite ? (int)nhcolor.CLR_BLACK : (int)nhcolor.CLR_WHITE))
+                grayedcolor = new Color((basecolor.Red + bgcolor.Red) / 2, (basecolor.Green + bgcolor.Green) / 2, (basecolor.Blue + bgcolor.Blue) / 2, basecolor.Alpha);
+            else /* Special colors are brighter */
+                grayedcolor = new Color((basecolor.Red * 2 + bgcolor.Red) / 3, (basecolor.Green * 2 + bgcolor.Green) / 3, (basecolor.Blue * 2 + bgcolor.Blue) / 3, basecolor.Alpha);
+#else
             if (color == (int)nhcolor.NO_COLOR || color == (revertblackandwhite ? (int)nhcolor.CLR_BLACK : (int)nhcolor.CLR_WHITE))
                 grayedcolor = new Color((basecolor.R + bgcolor.R) / 2, (basecolor.G + bgcolor.G) / 2, (basecolor.B + bgcolor.B) / 2, basecolor.A);
             else /* Special colors are brighter */
                 grayedcolor = new Color((basecolor.R * 2 + bgcolor.R) / 3, (basecolor.G * 2 + bgcolor.G) / 3, (basecolor.B * 2 + bgcolor.B) / 3, basecolor.A);
-
+#endif
             return grayedcolor;
         }
 
@@ -446,11 +450,11 @@ namespace GnollHackX
 
         public static Color MenuHeaderTextColor(ghmenu_styles style)
         {
-            Color res = Color.Black;
+            Color res = GHColors.Black;
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
-                    res = Color.Beige;
+                    res = GHColors.Beige;
                     break;
                 default:
                     break;
@@ -474,7 +478,7 @@ namespace GnollHackX
 
         public static Color MenuHeaderOutlineColor(ghmenu_styles style)
         {
-            Color res = Color.Black;
+            Color res = GHColors.Black;
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:

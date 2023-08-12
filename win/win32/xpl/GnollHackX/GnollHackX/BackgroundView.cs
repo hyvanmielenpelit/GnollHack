@@ -20,13 +20,6 @@ namespace GnollHackX
         SmallDarkMenu,
         Custom
     }
-    public enum BorderStyles
-    {
-        None = 0,
-        Simple,
-        Small,
-        Custom
-    }
     class BackgroundView : SKCanvasView
     {
         public BackgroundView() : base()

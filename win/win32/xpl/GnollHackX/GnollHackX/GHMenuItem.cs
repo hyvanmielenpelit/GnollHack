@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+#if GNH_MAUI
+using GnollHackM;
+#else
 using Xamarin.Forms;
+using GnollHackX.Pages.Game;
+using Xamarin.Forms.Internals;
+#endif
 using SkiaSharp;
 using System.IO;
-using GnollHackX.Pages.Game;
 using System.Linq;
-using Xamarin.Forms.Internals;
 
 namespace GnollHackX
 {
@@ -600,7 +604,7 @@ namespace GnollHackX
             _glyphImageSource.UseUpperSide = false;
             _glyphImageSource.Width = GHConstants.TileWidth;
             _glyphImageSource.Height = GHConstants.TileHeight / 2;
-            EntryTextColor = Color.White;
+            EntryTextColor = GHColors.White;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
