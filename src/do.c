@@ -1158,7 +1158,12 @@ int otyp;
                 {
                     int shieldacbonus = shield_skill_ac_bonus(P_SKILL_LEVEL(P_SHIELD));
                     int shieldmcbonus = shield_skill_mc_bonus(P_SKILL_LEVEL(P_SHIELD));
-                    Sprintf(buf, "Skill bonuses:          %s%d to AC and %s%d to MC",
+                    if (-shieldacbonus == shieldmcbonus)
+                        Sprintf(buf, "Skill bonuses:          %s%d to AC and MC",
+                            shieldmcbonus >= 0 ? "+" : "",
+                            shieldmcbonus);
+                    else
+                        Sprintf(buf, "Skill bonuses:          %s%d to AC and %s%d to MC",
                         shieldacbonus <= 0 ? "+" : "",
                         -shieldacbonus,
                         shieldmcbonus >= 0 ? "+" : "",
@@ -1174,7 +1179,7 @@ int otyp;
                         Sprintf(buf, "%s          %s%d to hit and damage", bonusesprinted ? "              " : "Skill bonuses:", skilltohitbonus >= 0 ? "+" : "", skilltohitbonus);
                     else
                         Sprintf(buf, "%s          %s%d to hit and %s%d to damage", bonusesprinted ? "              " : "Skill bonuses:", skilltohitbonus >= 0 ? "+" : "", skilltohitbonus, skilldmgbonus >= 0 ? "+" : "", skilldmgbonus);
-                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                    putstr(datawin, bonusesprinted ? ATR_INDENT_AT_DOUBLE_SPACE : ATR_INDENT_AT_COLON, buf);
                 }
             }
         }        
@@ -2332,12 +2337,15 @@ int otyp;
 
                 if (display_ac && display_mc)
                 {
-                    Sprintf(eos(bonusbuf), "%s%d to AC and %s%d to MC",
-                        obj->enchantment <= 0 ? "+" : "",
-                        -obj->enchantment,
-                        obj->enchantment / 3 >= 0 ? "+" : "",
-                        obj->enchantment / 3
-                    );
+                    if(obj->enchantment == 0)
+                        Strcat(bonusbuf, "+0 to AC and MC");
+                    else
+                        Sprintf(eos(bonusbuf), "%s%d to AC and %s%d to MC",
+                            obj->enchantment <= 0 ? "+" : "",
+                            -obj->enchantment,
+                            obj->enchantment / 3 >= 0 ? "+" : "",
+                            obj->enchantment / 3
+                        );
                     knownacbonus += obj->enchantment;
                     knownmcbonus += obj->enchantment / 3;
                 }
