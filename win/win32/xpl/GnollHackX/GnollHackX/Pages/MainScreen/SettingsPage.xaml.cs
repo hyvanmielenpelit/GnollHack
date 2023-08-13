@@ -35,13 +35,13 @@ namespace GnollHackX.Pages.MainScreen
             list.Add("20 fps");
             list.Add("30 fps");
             list.Add("40 fps");
-            if (App.DisplayRefreshRate >= 60.0f)
+            if (GHApp.DisplayRefreshRate >= 60.0f)
                 list.Add("60 fps");
-            if (App.DisplayRefreshRate >= 80.0f)
+            if (GHApp.DisplayRefreshRate >= 80.0f)
                 list.Add("80 fps");
-            if (App.DisplayRefreshRate >= 90.0f)
+            if (GHApp.DisplayRefreshRate >= 90.0f)
                 list.Add("90 fps");
-            if (App.DisplayRefreshRate >= 120.0f)
+            if (GHApp.DisplayRefreshRate >= 120.0f)
                 list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;
 
@@ -52,7 +52,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed -= BackButtonPressed;
+            GHApp.BackButtonPressed -= BackButtonPressed;
             _doChangeVolume = false;
 
             if (CursorPicker.SelectedIndex > -1)
@@ -90,12 +90,12 @@ namespace GnollHackX.Pages.MainScreen
 
             Preferences.Set("AllowBones", BonesSwitch.IsToggled);
 
-            App.PostingGameStatus = PostGameStatusSwitch.IsToggled;
+            GHApp.PostingGameStatus = PostGameStatusSwitch.IsToggled;
             Preferences.Set("PostingGameStatus", PostGameStatusSwitch.IsToggled);
-            App.PostingDiagnosticData = PostDiagnosticDataSwitch.IsToggled;
+            GHApp.PostingDiagnosticData = PostDiagnosticDataSwitch.IsToggled;
             Preferences.Set("PostingDiagnosticData", PostDiagnosticDataSwitch.IsToggled);
 
-            App.CustomGameStatusLink = _customGameStatusLink;
+            GHApp.CustomGameStatusLink = _customGameStatusLink;
             Preferences.Set("CustomGameStatusLink", _customGameStatusLink);
 
             if (_gamePage != null)
@@ -104,7 +104,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     _gamePage.UseSimpleCmdLayout = SimpleCmdLayoutSwitch.IsToggled;
                     Assembly assembly = GetType().GetTypeInfo().Assembly;
-                    App.InitializeMoreCommandButtons(assembly, _gamePage.UseSimpleCmdLayout);
+                    GHApp.InitializeMoreCommandButtons(assembly, _gamePage.UseSimpleCmdLayout);
                     _gamePage.MoreCmdPage = 1;
                 }
             }
@@ -167,21 +167,21 @@ namespace GnollHackX.Pages.MainScreen
             //Preferences.Set("ZoomChangeCenterMode", ZoomChangeCenterSwitch.IsToggled);
 
 
-            App.HideAndroidNavigationBar = NavBarSwitch.IsToggled;
-            Preferences.Set("HideAndroidNavigationBar", App.HideAndroidNavigationBar);
+            GHApp.HideAndroidNavigationBar = NavBarSwitch.IsToggled;
+            Preferences.Set("HideAndroidNavigationBar", GHApp.HideAndroidNavigationBar);
 
-            App.HideiOSStatusBar = StatusBarSwitch.IsToggled;
-            Preferences.Set("HideiOSStatusBar", App.HideiOSStatusBar);
+            GHApp.HideiOSStatusBar = StatusBarSwitch.IsToggled;
+            Preferences.Set("HideiOSStatusBar", GHApp.HideiOSStatusBar);
 
-            App.DeveloperMode = DeveloperSwitch.IsToggled;
-            Preferences.Set("DeveloperMode", App.DeveloperMode);
-            App.DebugLogMessages = LogMessageSwitch.IsToggled;
-            Preferences.Set("DebugLogMessages", App.DebugLogMessages);
+            GHApp.DeveloperMode = DeveloperSwitch.IsToggled;
+            Preferences.Set("DeveloperMode", GHApp.DeveloperMode);
+            GHApp.DebugLogMessages = LogMessageSwitch.IsToggled;
+            Preferences.Set("DebugLogMessages", GHApp.DebugLogMessages);
 
             Preferences.Set("DefaultMapNoClipMode", !YesClipNormalSwitch.IsToggled);
 
-            App.SilentMode = SilentModeSwitch.IsToggled;
-            Preferences.Set("SilentMode", App.SilentMode);
+            GHApp.SilentMode = SilentModeSwitch.IsToggled;
+            Preferences.Set("SilentMode", GHApp.SilentMode);
 
             Preferences.Set("GeneralVolume", (float)GeneralVolumeSlider.Value);
             Preferences.Set("MusicVolume", (float)MusicVolumeSlider.Value);
@@ -190,8 +190,8 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("EffectsVolume", (float)EffectsVolumeSlider.Value);
             Preferences.Set("UIVolume", (float)UIVolumeSlider.Value);
 
-            if(!App.IsMuted)
-                App.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
+            if(!GHApp.IsMuted)
+                GHApp.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
 
             int res = GHConstants.DefaultMessageRows, tryres = 0;
             string str = MessageLengthPicker.SelectedItem == null ? res.ToString() : MessageLengthPicker.SelectedItem.ToString();
@@ -229,19 +229,19 @@ namespace GnollHackX.Pages.MainScreen
 
             GetBankLoadingVariables(out unloadbanks, out setupfiles, out loadbanks);
 
-            App.LoadBanks = SoundBankSwitch.IsToggled;
+            GHApp.LoadBanks = SoundBankSwitch.IsToggled;
             Preferences.Set("LoadSoundBanks", SoundBankSwitch.IsToggled);
 
-            App.UseHTMLDumpLogs = HTMLDumpLogSwitch.IsToggled;
+            GHApp.UseHTMLDumpLogs = HTMLDumpLogSwitch.IsToggled;
             Preferences.Set("UseHTMLDumpLogs", HTMLDumpLogSwitch.IsToggled);
 
-            App.UseSingleDumpLog = SingleDumpLogSwitch.IsToggled;
+            GHApp.UseSingleDumpLog = SingleDumpLogSwitch.IsToggled;
             Preferences.Set("UseSingleDumpLog", SingleDumpLogSwitch.IsToggled);
 
-            App.ReadStreamingBankToMemory = StreamingBankToMemorySwitch.IsToggled;
+            GHApp.ReadStreamingBankToMemory = StreamingBankToMemorySwitch.IsToggled;
             Preferences.Set("ReadStreamingBankToMemory", StreamingBankToMemorySwitch.IsToggled);
 
-            App.CopyStreamingBankToDisk = StreamingBankToDiskSwitch.IsToggled;
+            GHApp.CopyStreamingBankToDisk = StreamingBankToDiskSwitch.IsToggled;
             Preferences.Set("CopyStreamingBankToDisk", StreamingBankToDiskSwitch.IsToggled);
 
             if (_mainPage != null)
@@ -251,9 +251,9 @@ namespace GnollHackX.Pages.MainScreen
             {
                 try
                 {
-                    App.FmodService.ReleaseAllSoundInstances();
-                    App.FmodService.UnloadBanks(0);
-                    App.FmodService.UnloadBanks(2);
+                    GHApp.FmodService.ReleaseAllSoundInstances();
+                    GHApp.FmodService.UnloadBanks(0);
+                    GHApp.FmodService.UnloadBanks(2);
                 }
                 catch
                 {
@@ -265,24 +265,24 @@ namespace GnollHackX.Pages.MainScreen
             {
                 try
                 {
-                    App.GnollHackService.InitializeSecrets(App.CurrentSecrets);
+                    GHApp.GnollHackService.InitializeSecrets(GHApp.CurrentSecrets);
                 }
                 catch (Exception ex)
                 {
                     await DisplayAlert("Secrets Initialization Failed", "Initializing secrets failed: " + ex.Message, "OK");
                 }
-                App.SetSoundBanksUpForLoading();
+                GHApp.SetSoundBanksUpForLoading();
             }
 
             if (loadbanks)
             {
                 try
                 {
-                    App.FmodService.LoadBanks(0);
-                    App.FmodService.LoadBanks(2);
+                    GHApp.FmodService.LoadBanks(0);
+                    GHApp.FmodService.LoadBanks(2);
                     if (_gamePage == null)
                     {
-                        App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                        GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
                     }
                 }
                 catch
@@ -314,13 +314,13 @@ namespace GnollHackX.Pages.MainScreen
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed += BackButtonPressed;
+            GHApp.BackButtonPressed += BackButtonPressed;
         }
 
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, gpu = App.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool mem = false, fps = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
@@ -336,10 +336,10 @@ namespace GnollHackX.Pages.MainScreen
             dialogueVolume = Preferences.Get("DialogueVolume", GHConstants.DefaultDialogueVolume);
             effectsVolume = Preferences.Get("EffectsVolume", GHConstants.DefaultEffectsVolume);
             UIVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
-            navbar = App.HideAndroidNavigationBar;
-            statusbar = App.HideiOSStatusBar;
-            devmode = App.DeveloperMode;
-            logmessages = App.DebugLogMessages;
+            navbar = GHApp.HideAndroidNavigationBar;
+            statusbar = GHApp.HideiOSStatusBar;
+            devmode = GHApp.DeveloperMode;
+            logmessages = GHApp.DebugLogMessages;
             bank = Preferences.Get("LoadSoundBanks", true);
             html = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             singledumplog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
@@ -377,7 +377,7 @@ namespace GnollHackX.Pages.MainScreen
                 walkarrows = Preferences.Get("WalkArrows", true);
                 mem = Preferences.Get("ShowMemoryUsage", false);
                 fps = Preferences.Get("ShowFPS", false);
-                gpu = Preferences.Get("UseMainGLCanvas", App.IsGPUDefault);
+                gpu = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault);
                 simplecmdlayout = Preferences.Get("UseSimpleCmdLayout", true);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
                 petrows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
@@ -441,7 +441,7 @@ namespace GnollHackX.Pages.MainScreen
             GPUSwitch.IsToggled = gpu;
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
             NavBarSwitch.IsToggled = navbar;
-            if(!App.IsAndroid)
+            if(!GHApp.IsAndroid)
             {
                 NavBarSwitch.IsEnabled = false;
                 NavBarLabel.IsEnabled = false;
@@ -450,7 +450,7 @@ namespace GnollHackX.Pages.MainScreen
                     MainSection.Remove(NavBarViewCell);
             }
             StatusBarSwitch.IsToggled = statusbar;
-            if (!App.IsiOS)
+            if (!GHApp.IsiOS)
             {
                 StatusBarSwitch.IsEnabled = false;
                 StatusBarLabel.IsEnabled = false;
@@ -484,8 +484,8 @@ namespace GnollHackX.Pages.MainScreen
             CustomLinkLabel.Text = customlink == "" ? "Default" : "Custom";
             CustomLinkButton.Text = customlink == "" ? "Add" : "Edit";
             //CarouselSwitch.IsToggled = carousel;
-            //CarouselSwitch.IsEnabled = !App.IsiOS;
-            //CarouselLabel.TextColor = !App.IsiOS ? Color.Black : Color.Gray;
+            //CarouselSwitch.IsEnabled = !GHApp.IsiOS;
+            //CarouselLabel.TextColor = !GHApp.IsiOS ? Color.Black : Color.Gray;
             GeneralVolumeSlider.Value = (double)generalVolume;
             MusicVolumeSlider.Value = (double)musicVolume;
             AmbientVolumeSlider.Value = (double)ambientVolume;
@@ -530,7 +530,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
             WallEndSwitch.IsToggled = wallends;
 
-            _doChangeVolume = !App.IsMuted;
+            _doChangeVolume = !GHApp.IsMuted;
         }
 
         private void ClassicStatusBarSwitch_Toggled(object sender, ToggledEventArgs e)
@@ -587,8 +587,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private void SilentModeSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            App.SilentMode = SilentModeSwitch.IsToggled;
-            _doChangeVolume = !App.IsMuted;
+            GHApp.SilentMode = SilentModeSwitch.IsToggled;
+            _doChangeVolume = !GHApp.IsMuted;
         }
 
         private void StreamingBankToMemorySwitch_Toggled(object sender, ToggledEventArgs e)
@@ -658,9 +658,9 @@ namespace GnollHackX.Pages.MainScreen
             setupFiles = false;
             loadBanks = false;
 
-            if (SoundBankSwitch.IsToggled != App.LoadBanks)
+            if (SoundBankSwitch.IsToggled != GHApp.LoadBanks)
             {
-                if (App.LoadBanks)
+                if (GHApp.LoadBanks)
                     loadBanks = true;
                 else
                     loadBanks = false;
@@ -680,7 +680,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void Button_Clicked(object sender, EventArgs e)
         {
             CloseButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await MaybeShowPleaseWait();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
@@ -691,7 +691,7 @@ namespace GnollHackX.Pages.MainScreen
         private void CustomLinkButton_Clicked(object sender, EventArgs e)
         {
             CustomLinkButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             TextCaption.Text = "Enter Custom Webhook Link:";
             TextEntry.Text = _customGameStatusLink;
             TextOkButton.IsEnabled = true;
@@ -703,7 +703,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             TextOkButton.IsEnabled = false;
             TextCancelButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
 
             string res = TextEntry.Text;
             if (string.IsNullOrWhiteSpace(TextEntry.Text))
@@ -715,7 +715,7 @@ namespace GnollHackX.Pages.MainScreen
                 res.Trim();
             }
 
-            if(res != "" && !App.IsValidHttpsURL(res))
+            if(res != "" && !GHApp.IsValidHttpsURL(res))
             {
                 TextFrame.BorderColor = Color.Red;
                 TextEntry.Focus();
@@ -744,7 +744,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             TextOkButton.IsEnabled = false;
             TextCancelButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
 
             TextGrid.IsVisible = false;
             TextEntry.Text = "";
@@ -768,7 +768,7 @@ namespace GnollHackX.Pages.MainScreen
         private void VolumeSlider_ValueChanged(object sender, ValueChangedEventArgs e)
         {
             if(_doChangeVolume)
-                App.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
+                GHApp.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
         }
 
         private double _currentPageWidth = 0;

@@ -25,8 +25,8 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnCreditsX_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
-            string fulltargetpath = Path.Combine(App.GHPath, "xcredits");
+            GHApp.PlayButtonClickedSound();
+            string fulltargetpath = Path.Combine(GHApp.GHPath, "xcredits");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Cross-Platform Credits", 80);
             string errormsg = "";
             if (!displFilePage.ReadFile(out errormsg))
@@ -43,8 +43,8 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnCreditsW_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
-            string fulltargetpath = Path.Combine(App.GHPath, "credits");
+            GHApp.PlayButtonClickedSound();
+            string fulltargetpath = Path.Combine(GHApp.GHPath, "credits");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Credits", 77);
             string errormsg = "";
             if (!displFilePage.ReadFile(out errormsg))
@@ -61,8 +61,8 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnLicense_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
-            string fulltargetpath = Path.Combine(App.GHPath, "license");
+            GHApp.PlayButtonClickedSound();
+            string fulltargetpath = Path.Combine(GHApp.GHPath, "license");
             var displFilePage = new DisplayFilePage(fulltargetpath, "License", 78);
             string errormsg = "";
             if (!displFilePage.ReadFile(out errormsg))
@@ -78,7 +78,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnGitHub_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackGitHubPage));
             AboutGrid.IsEnabled = true;
         }
@@ -98,7 +98,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnWebPage_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackWebPage));
             AboutGrid.IsEnabled = true;
         }
@@ -106,7 +106,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnWiki_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackWikiPage));
             AboutGrid.IsEnabled = true;
         }
@@ -114,15 +114,15 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDowngrade_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
-            await OpenBrowser(new Uri(App.IsAndroid ? GHConstants.GnollHackAndroidDowngradePage : App.IsiOS ? GHConstants.GnollHackiOSDowngradePage :  GHConstants.GnollHackGeneralDowngradePage));
+            GHApp.PlayButtonClickedSound();
+            await OpenBrowser(new Uri(GHApp.IsAndroid ? GHConstants.GnollHackAndroidDowngradePage : GHApp.IsiOS ? GHConstants.GnollHackiOSDowngradePage :  GHConstants.GnollHackGeneralDowngradePage));
             AboutGrid.IsEnabled = true;
         }
 
         private async void btnSponsor_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await OpenBrowser(new Uri(GHConstants.GnollHackSponsorPage));
             AboutGrid.IsEnabled = true;
         }
@@ -130,9 +130,9 @@ namespace GnollHackX.Pages.MainScreen
         //private async void btnSourceCode_Clicked(object sender, EventArgs e)
         //{
         //    AboutGrid.IsEnabled = false;
-        //    App.PlayButtonClickedSound();
+        //    GHApp.PlayButtonClickedSound();
         //    SecretsFile sourcesf = null;
-        //    foreach (SecretsFile f in App.CurrentSecrets.files)
+        //    foreach (SecretsFile f in GHApp.CurrentSecrets.files)
         //    {
         //        if(f.type == "source_zip")
         //        {
@@ -147,7 +147,7 @@ namespace GnollHackX.Pages.MainScreen
         //        return;
         //    }
 
-        //    string ghdir = App.GnollHackService.GetGnollHackPath();
+        //    string ghdir = GHApp.GnollHackService.GetGnollHackPath();
         //    string targetpath = Path.Combine(ghdir, sourcesf.target_directory, sourcesf.name);
 
         //    if(!File.Exists(targetpath))
@@ -169,7 +169,7 @@ namespace GnollHackX.Pages.MainScreen
 
         //    try
         //    {
-        //        App.PlatformService.SaveFileToDownloads(data, sourcesf.name);
+        //        GHApp.PlatformService.SaveFileToDownloads(data, sourcesf.name);
         //    }
         //    catch (Exception ex)
         //    {
@@ -183,7 +183,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void Button_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -201,18 +201,18 @@ namespace GnollHackX.Pages.MainScreen
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed += BackButtonPressed;
+            GHApp.BackButtonPressed += BackButtonPressed;
             AboutGrid.IsEnabled = true;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed -= BackButtonPressed;
+            GHApp.BackButtonPressed -= BackButtonPressed;
         }
 
         private async void btnCrashReport_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Send Crash Report?", "This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
             if (answer)
             {
@@ -221,7 +221,7 @@ namespace GnollHackX.Pages.MainScreen
                 string archive_file = "";
                 try
                 {
-                    archive_file = App.CreateGameZipArchive();
+                    archive_file = GHApp.CreateGameZipArchive();
                 }
                 catch(Exception ex)
                 {
@@ -313,13 +313,13 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDumplogs_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await CheckAndRequestWritePermission();
             await CheckAndRequestReadPermission();
             string archive_file = "";
             try
             {
-                archive_file = App.CreateDumplogZipArchive();
+                archive_file = GHApp.CreateDumplogZipArchive();
             }
             catch (Exception ex)
             {
@@ -344,8 +344,8 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnViewPanicLog_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
-            string fulltargetpath = Path.Combine(App.GHPath, "paniclog");
+            GHApp.PlayButtonClickedSound();
+            string fulltargetpath = Path.Combine(GHApp.GHPath, "paniclog");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Panic Log");
             string errormsg = "";
             if (!System.IO.File.Exists(fulltargetpath))
@@ -382,7 +382,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnVersion_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             var verPage = new VersionPage(null);
             await App.Current.MainPage.Navigation.PushModalAsync(verPage);
             AboutGrid.IsEnabled = true;
@@ -392,7 +392,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnImportSavedGames_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await CheckAndRequestWritePermission();
             await CheckAndRequestReadPermission();
             try
@@ -405,21 +405,21 @@ namespace GnollHackX.Pages.MainScreen
                     {
                         if (s != null)
                         {
-                            string gnhpath = App.GHPath;
+                            string gnhpath = GHApp.GHPath;
                             if (file.FileName.EndsWith("zip", StringComparison.OrdinalIgnoreCase))
                             {
                                 string savedirpath = Path.Combine(gnhpath, "save");
-                                App.CheckCreateDirectory(savedirpath);
+                                GHApp.CheckCreateDirectory(savedirpath);
 
                                 string tempdirpath = Path.Combine(gnhpath, "save", "temp");
                                 if (Directory.Exists(tempdirpath))
                                     Directory.Delete(tempdirpath, true);
-                                App.CheckCreateDirectory(tempdirpath);
+                                GHApp.CheckCreateDirectory(tempdirpath);
     
                                 string temp2dirpath = Path.Combine(gnhpath, "save", "zip");
                                 if (Directory.Exists(temp2dirpath))
                                     Directory.Delete(temp2dirpath, true);
-                                App.CheckCreateDirectory(temp2dirpath);
+                                GHApp.CheckCreateDirectory(temp2dirpath);
 
                                 string ziptargetfilename = file.FileName;
                                 string fulltargetpath = Path.Combine(tempdirpath, ziptargetfilename);
@@ -444,7 +444,7 @@ namespace GnollHackX.Pages.MainScreen
                                         if(System.IO.File.Exists(filestr))
                                         {
                                             string out_str = "";
-                                            if(App.GnollHackService.ValidateSaveFile(filestr, out out_str))
+                                            if(GHApp.GnollHackService.ValidateSaveFile(filestr, out out_str))
                                             {
                                                 FileInfo fileInfo = new FileInfo(filestr);
                                                 string finalname = Path.Combine(savedirpath, fileInfo.Name + ".i");
@@ -472,11 +472,11 @@ namespace GnollHackX.Pages.MainScreen
                             else
                             {
                                 string out_str = "";
-                                if (App.GnollHackService.ValidateSaveFile(file.FullPath, out out_str))
+                                if (GHApp.GnollHackService.ValidateSaveFile(file.FullPath, out out_str))
                                 {
                                     string targetfilename = file.FileName + ".i";
                                     string savedirpath = Path.Combine(gnhpath, "save");
-                                    App.CheckCreateDirectory(savedirpath);
+                                    GHApp.CheckCreateDirectory(savedirpath);
 
                                     string fulltargetpath = Path.Combine(savedirpath, targetfilename);
                                     if (System.IO.File.Exists(fulltargetpath))
@@ -506,13 +506,13 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnSavedGames_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await CheckAndRequestWritePermission();
             await CheckAndRequestReadPermission();
             string archive_file = "";
             try
             {
-                archive_file = App.CreateSavedGamesZipArchive();
+                archive_file = GHApp.CreateSavedGamesZipArchive();
             }
             catch (Exception ex)
             {

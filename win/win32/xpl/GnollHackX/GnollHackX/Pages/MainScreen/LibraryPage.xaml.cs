@@ -25,7 +25,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void Button_Clicked(object sender, EventArgs e)
         {
             CloseButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -34,7 +34,7 @@ namespace GnollHackX.Pages.MainScreen
         public void ReadLibrary()
         {
             _manuals.Clear();
-            string datadir = Path.Combine(App.GHPath, GHConstants.UserDataDirectory);
+            string datadir = Path.Combine(GHApp.GHPath, GHConstants.UserDataDirectory);
             if (Directory.Exists(datadir))
             {
                 string[] files = Directory.GetFiles(datadir);
@@ -145,11 +145,11 @@ namespace GnollHackX.Pages.MainScreen
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed += BackButtonPressed;
+            GHApp.BackButtonPressed += BackButtonPressed;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed -= BackButtonPressed;
+            GHApp.BackButtonPressed -= BackButtonPressed;
         }
     }
 

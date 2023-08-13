@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 #if GNH_MAUI
+using GnollHackX;
 using GnollHackM;
 #else
 using GnollHackX.Pages.Game;
@@ -29,7 +30,7 @@ namespace GnollHackX
         public int CanvasHeight { get { return _canvasHeight == 0 ? Height :_canvasHeight; } set { _canvasHeight = value; } }
         public int CanvasXStart { get; set; }
 
-        public override bool IsEmpty => (ReferenceGamePage == null || Glyph == 0 || Glyph >= App.Glyph2Tile.Length);
+        public override bool IsEmpty => (ReferenceGamePage == null || Glyph == 0 || Glyph >= GHApp.Glyph2Tile.Length);
 
         protected override void OnPropertyChanged(string propertyName)
         {
@@ -257,7 +258,7 @@ namespace GnollHackX
             int signed_glyph = Glyph;
             int abs_glyph = Math.Abs(signed_glyph);
 
-            if (ReferenceGamePage == null || abs_glyph <= 0 || abs_glyph >= App.Glyph2Tile.Length)
+            if (ReferenceGamePage == null || abs_glyph <= 0 || abs_glyph >= GHApp.Glyph2Tile.Length)
             {
                 if (AutoSize)
                 {
@@ -274,7 +275,7 @@ namespace GnollHackX
                 return resulttmp;
             }
 
-            App.DebugWriteProfilingStopwatchTimeAndStart("GlyphSource Start");
+            GHApp.DebugWriteProfilingStopwatchTimeAndStart("GlyphSource Start");
 
             DoAutoSize();
 
@@ -287,7 +288,7 @@ namespace GnollHackX
             var skImage = SKImage.FromBitmap(bitmap);            
             var result = skImage.Encode(SKEncodedImageFormat.Png, 100).AsStream();
 
-            App.DebugWriteProfilingStopwatchTimeAndStop("GlyphSource Stop");
+            GHApp.DebugWriteProfilingStopwatchTimeAndStop("GlyphSource Stop");
 
             return result;
         }
@@ -299,7 +300,7 @@ namespace GnollHackX
                 int abs_glyph = Math.Abs(signed_glyph);
 
                 CanvasXStart = 0;
-                bool tileflag_halfsize = (App.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
+                bool tileflag_halfsize = (GHApp.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
                 if (tileflag_halfsize)
                 {
                     CanvasWidth = Width = GHConstants.TileWidth;
@@ -307,8 +308,8 @@ namespace GnollHackX
                 }
                 else
                 {
-                    int ntile = App.Glyph2Tile[abs_glyph];
-                    int enlargement = App.Tile2Enlargement[ntile];
+                    int ntile = GHApp.Glyph2Tile[abs_glyph];
+                    int enlargement = GHApp.Tile2Enlargement[ntile];
 
                     if (enlargement == 0)
                     {
@@ -317,9 +318,9 @@ namespace GnollHackX
                     }
                     else
                     {
-                        CanvasWidth = GHConstants.TileWidth * App.Enlargements[enlargement].width_in_tiles;
-                        Height = CanvasHeight = GHConstants.TileHeight * App.Enlargements[enlargement].height_in_tiles;
-                        if(CanvasWidth == 3 * GHConstants.TileWidth && (App.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_TWO_WIDE_CENTERED) != 0)
+                        CanvasWidth = GHConstants.TileWidth * GHApp.Enlargements[enlargement].width_in_tiles;
+                        Height = CanvasHeight = GHConstants.TileHeight * GHApp.Enlargements[enlargement].height_in_tiles;
+                        if(CanvasWidth == 3 * GHConstants.TileWidth && (GHApp.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_TWO_WIDE_CENTERED) != 0)
                         {
                             CanvasXStart = GHConstants.TileWidth / 2;
                             Width = 2 * GHConstants.TileWidth;
@@ -338,14 +339,14 @@ namespace GnollHackX
             int signed_glyph = Glyph;
             int abs_glyph = Math.Abs(signed_glyph);
 
-            if (ReferenceGamePage != null && abs_glyph > 0 && CanvasWidth > 0 && CanvasHeight > 0 && abs_glyph < App.Glyph2Tile.Length)
+            if (ReferenceGamePage != null && abs_glyph > 0 && CanvasWidth > 0 && CanvasHeight > 0 && abs_glyph < GHApp.Glyph2Tile.Length)
             {
                 bool drawwallends = ReferenceGamePage.DrawWallEnds;
-                byte glyphflags = App.GlyphTileFlags[abs_glyph];
+                byte glyphflags = GHApp.GlyphTileFlags[abs_glyph];
                 bool tileflag_halfsize = (glyphflags & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
                 bool tileflag_fullsizeditem = (glyphflags & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
-                int ntile = App.Glyph2Tile[abs_glyph];
-                int autodraw = App.Tile2Autodraw[ntile];
+                int ntile = GHApp.Glyph2Tile[abs_glyph];
+                int autodraw = GHApp.Tile2Autodraw[ntile];
                 int anim_frame_idx = 0, main_tile_idx = 0;
                 sbyte mapAnimated = 0;
                 long counter_value = 0;
@@ -356,10 +357,10 @@ namespace GnollHackX
                 }
                 ntile = ReferenceGamePage.GnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, counter_value, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
 
-                int enlargement_idx = App.Tile2Enlargement[ntile];
-                int sheet_idx = App.TileSheetIdx(ntile);
-                int tile_x = App.TileSheetX(ntile);
-                int tile_y = App.TileSheetY(ntile);
+                int enlargement_idx = GHApp.Tile2Enlargement[ntile];
+                int sheet_idx = GHApp.TileSheetIdx(ntile);
+                int tile_x = GHApp.TileSheetX(ntile);
+                int tile_y = GHApp.TileSheetY(ntile);
 
                 using (SKPaint paint = new SKPaint())
                 {
@@ -429,10 +430,10 @@ namespace GnollHackX
                     else
                     {
                         bool flip_tile = (signed_glyph < 0);
-                        sbyte enl_height = App.Enlargements[enlargement_idx].height_in_tiles;
-                        sbyte enl_width = App.Enlargements[enlargement_idx].width_in_tiles;
-                        sbyte enl_x = (sbyte)(enl_width == 1 ? 0 : enl_width == 3 ? 1 : App.Enlargements[enlargement_idx].main_tile_x_coordinate);
-                        sbyte flipped_enl_x = (sbyte)(enl_width == 1 ? 0 : enl_width == 3 ? 1 : 1 - App.Enlargements[enlargement_idx].main_tile_x_coordinate);
+                        sbyte enl_height = GHApp.Enlargements[enlargement_idx].height_in_tiles;
+                        sbyte enl_width = GHApp.Enlargements[enlargement_idx].width_in_tiles;
+                        sbyte enl_x = (sbyte)(enl_width == 1 ? 0 : enl_width == 3 ? 1 : GHApp.Enlargements[enlargement_idx].main_tile_x_coordinate);
+                        sbyte flipped_enl_x = (sbyte)(enl_width == 1 ? 0 : enl_width == 3 ? 1 : 1 - GHApp.Enlargements[enlargement_idx].main_tile_x_coordinate);
 
                         int width = GHConstants.TileWidth * enl_width;
                         int height = GHConstants.TileHeight * enl_height;
@@ -477,17 +478,17 @@ namespace GnollHackX
                             if (enl_width == 2 && enl_x == 1 && (idx == 2 || idx == 4))
                                 continue;
 
-                            int enltile = (int)App.Enlargements[enlargement_idx].position2tile[idx];
+                            int enltile = (int)GHApp.Enlargements[enlargement_idx].position2tile[idx];
                             if (enltile >= 0)
                             {
-                                int glyph = enltile + App.EnlargementOffsets[enlargement_idx] /* enlargements[enlargement_idx].glyph_offset */ + App.EnlargementOff;
-                                int etile = App.Glyph2Tile[glyph];
-                                int e_sheet_idx = App.TileSheetIdx(etile);
-                                int etile_x = App.TileSheetX(etile);
-                                int etile_y = App.TileSheetY(etile);
+                                int glyph = enltile + GHApp.EnlargementOffsets[enlargement_idx] /* enlargements[enlargement_idx].glyph_offset */ + GHApp.EnlargementOff;
+                                int etile = GHApp.Glyph2Tile[glyph];
+                                int e_sheet_idx = GHApp.TileSheetIdx(etile);
+                                int etile_x = GHApp.TileSheetX(etile);
+                                int etile_y = GHApp.TileSheetY(etile);
                                 float target_x = 0;
                                 float target_y = 0;
-                                autodraw = App.Tile2Autodraw[etile];
+                                autodraw = GHApp.Tile2Autodraw[etile];
 
                                 if (enl_height == 2)
                                 {

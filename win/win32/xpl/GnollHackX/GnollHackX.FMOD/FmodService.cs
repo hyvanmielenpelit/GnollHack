@@ -179,7 +179,7 @@ namespace GnollHackX.Unknown
 
         private bool FMODup()
         {
-            return _initialized && App.LoadBanks;
+            return _initialized && GHApp.LoadBanks;
         }
 
         public void UnloadBanks(int subType)

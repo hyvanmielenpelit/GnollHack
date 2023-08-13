@@ -1,5 +1,6 @@
 ﻿#if GNH_MAUI
 using GnollHackM;
+using GnollHackX;
 #else
 using GnollHackX.Pages.Game;
 #endif
@@ -215,7 +216,7 @@ namespace GnollHackX
         private SKColor TransparentBlack = new SKColor(0, 0, 0, 128);
         public void Create()
         {
-            Typeface = App.LatoRegular;
+            Typeface = GHApp.LatoRegular;
             TextColor = SKColors.White;
             TextSize = 14.0f;
             BackgroundColor = SKColors.Transparent;
@@ -225,14 +226,14 @@ namespace GnollHackX
                     break;
                 case GHWinType.Message:
                     TextSize = TextSize * 32.0f / 42f;
-                    Typeface = App.DejaVuSansMonoTypeface;
+                    Typeface = GHApp.DejaVuSansMonoTypeface;
                     StrokeWidth = TextSize / 4.0f;
                     AutoPlacement = true;
                     break;
                 case GHWinType.Status:
                     //BackgroundColor = TransparentBlack;
                     TextSize = TextSize * 30.0f / 42.0f;
-                    Typeface = App.LatoRegular;
+                    Typeface = GHApp.LatoRegular;
                     StrokeWidth = TextSize / 4.0f;
                     HasShadow = true;
                     Left = 0;
@@ -240,19 +241,19 @@ namespace GnollHackX
                     break;
                 case GHWinType.Map:
                     TextSize = TextSize * 30.0f / 42.0f;
-                    Typeface = App.LatoRegular;
+                    Typeface = GHApp.LatoRegular;
                     Left = 0;
                     Top = 120;
                     break;
                 case GHWinType.Menu:
-                    Typeface = App.UnderwoodTypeface;
+                    Typeface = GHApp.UnderwoodTypeface;
                     TextSize = TextSize * 42.0f / 42.0f;
                     Left = 0;
                     Top = 150;
                     CenterHorizontally = true;
                     break;
                 case GHWinType.Text:
-                    Typeface = App.EndorTypeface;
+                    Typeface = GHApp.EndorTypeface;
                     TextSize = TextSize * 42.0f / 42.0f;
                     Left = 0;
                     Top = 150;
@@ -262,7 +263,7 @@ namespace GnollHackX
                     break;
                 case GHWinType.Here:
                     TextSize = TextSize * 32.0f / 42.0f;
-                    Typeface = App.DejaVuSansMonoTypeface;
+                    Typeface = GHApp.DejaVuSansMonoTypeface;
                     StrokeWidth = TextSize / 4.0f;
                     AutoPlacement = true;
                     break;

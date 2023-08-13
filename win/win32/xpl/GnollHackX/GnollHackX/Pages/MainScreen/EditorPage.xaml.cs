@@ -54,7 +54,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void OKButton_Clicked(object sender, EventArgs e)
         {
             OKButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             if (_textChanged)
             {
                 bool answer = await DisplayAlert("Save Changes?", "Are you sure to save changes to the options file?", "Yes", "No");
@@ -88,7 +88,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void CancelButton_Clicked(object sender, EventArgs e)
         {
             CancelButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             if (_textChanged)
             {
                 bool answer = await DisplayAlert("Close without Saving?", "Are you sure to close without saving changes?", "Yes", "No");
@@ -112,12 +112,12 @@ namespace GnollHackX.Pages.MainScreen
         private async void ResetButton_Clicked(object sender, EventArgs e)
         {
             ResetButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Reset Options File?", "Are you sure to reset the options file?", "Yes", "No");
             if(answer)
             {
                 ErrorLabel.Text = "";
-                App.GnollHackService.ResetDefaultsFile();
+                GHApp.GnollHackService.ResetDefaultsFile();
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
             else

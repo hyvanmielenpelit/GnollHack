@@ -192,7 +192,7 @@ namespace GnollHackX.Droid
         [Obsolete("Use GestureNavigation instead")]
         public override async void OnBackPressed()
         {
-            if (await App.OnBackButtonPressed())
+            if (await GHApp.OnBackButtonPressed())
             {
                 base.OnBackPressed();
             }

@@ -180,16 +180,16 @@ namespace GnollHackX
         }
         public SKTypeface GetTextTypeface(long counter_value)
         {
-            return App.ImmortalTypeface;
+            return GHApp.ImmortalTypeface;
         }
 
         public SKTypeface GetSuperTextTypeface(long counter_value)
         {
-            return App.ImmortalTypeface;
+            return GHApp.ImmortalTypeface;
         }
         public SKTypeface GetSubTextTypeface(long counter_value)
         {
-            return App.ImmortalTypeface;
+            return GHApp.ImmortalTypeface;
         }
 
         public static SKColor TransparentGold = new SKColor(255, 255, 0xD7, 180);

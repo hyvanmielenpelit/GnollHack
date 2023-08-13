@@ -110,7 +110,7 @@ namespace GnollHackX
         }
         public SKTypeface GetTypeface(long counter_value)
         {
-            return App.ImmortalTypeface;
+            return GHApp.ImmortalTypeface;
         }
         public SKColor GetBaseColor(long counter_value)
         {

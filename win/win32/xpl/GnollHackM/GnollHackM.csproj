@@ -55,11 +55,51 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!--<Compile Include="..\GnollHackX\GnollHackX\App.xaml.cs" />-->
+		<None Remove="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\ClientGame.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\ClientUtils.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\EventArgs.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHApp.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHColors.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHConstants.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHDelegates.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHResponse.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHRequest.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHScreenText.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHStatusField.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHUtils.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHWindow.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GlyphImageSource.cs" />
+		<None Remove="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\IPlatformService.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\IFMODService.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Secrets.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\SecretsFile.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\StoredManual.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\UserSecrets.cs" />
+		<None Remove="..\GnollHackX\GnollHackX.FMOD\fmod.cs" />
+		<None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_studio.cs" />
+		<None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_errors.cs" />
+		<None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_dsp.cs" />
+		<None Remove="..\GnollHackX\GnollHackX.FMOD\FMODService.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ClientGame.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ClientUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\EventArgs.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHApp.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHColors.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHConstants.cs" />

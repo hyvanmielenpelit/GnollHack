@@ -45,7 +45,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
             CloseButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -68,7 +68,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
 
                 /* Sort top scores */
-                var q = from s in newTopScores orderby s.Score descending /* where (App.DeveloperMode || s.Mode == "normal") */ select s;
+                var q = from s in newTopScores orderby s.Score descending /* where (GHApp.DeveloperMode || s.Mode == "normal") */ select s;
                 List<GHTopScoreItem> sortedList = q.ToList();
                 _topScores = new ObservableCollection<GHTopScoreItem>();
                 foreach (GHTopScoreItem sorteditem in sortedList)
@@ -281,7 +281,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
 
             Label btn = sender as Label;
             GHTopScoreItem tsi = null;
@@ -290,18 +290,18 @@ namespace GnollHackX.Pages.MainScreen
 
             if(tsi != null)
             {
-                string fulltargetpath = Path.Combine(App.GHPath, "dumplog", tsi.GetDumplogFileName());
-                string fullhtmltargetpath = Path.Combine(App.GHPath, "dumplog", tsi.GetHTMLDumplogFileName());
+                string fulltargetpath = Path.Combine(GHApp.GHPath, "dumplog", tsi.GetDumplogFileName());
+                string fullhtmltargetpath = Path.Combine(GHApp.GHPath, "dumplog", tsi.GetHTMLDumplogFileName());
                 bool dumplogexists = File.Exists(fulltargetpath);
                 bool htmldumplogexists = File.Exists(fullhtmltargetpath);
 
                 bool HTMLDumplogDisplayed = false;
                 try
                 {
-                    if(App.UseHTMLDumpLogs && htmldumplogexists)
+                    if(GHApp.UseHTMLDumpLogs && htmldumplogexists)
                     {
                         bool openhtml = true;
-                        if (dumplogexists && htmldumplogexists && !App.UseSingleDumpLog)
+                        if (dumplogexists && htmldumplogexists && !GHApp.UseSingleDumpLog)
                             openhtml = await DisplayAlert("Open HTML DumpLog", "There are both text and HTML dumplogs available. Do you want to open the HTML dumplog?", "Yes", "No");
                         if (openhtml)
                         {

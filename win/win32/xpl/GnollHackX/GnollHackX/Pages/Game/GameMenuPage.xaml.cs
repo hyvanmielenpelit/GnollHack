@@ -32,13 +32,13 @@ namespace GnollHackX.Pages.Game
                 btnQuit.Text = "Quit Game";
             }
 
-            btnGC.IsVisible = App.DeveloperMode;
-            btnOptions.IsVisible = App.DeveloperMode;
+            btnGC.IsVisible = GHApp.DeveloperMode;
+            btnOptions.IsVisible = GHApp.DeveloperMode;
 
             //_gcViewCellIndex = InfoSection.IndexOf(GCViewCell);
             //_optionsViewCellIndex = InfoSection.IndexOf(OptionsViewCell);
 
-            //if (!App.DeveloperMode)
+            //if (!GHApp.DeveloperMode)
             //{
             //    InfoSection.Remove(GCViewCell);
             //    InfoSection.Remove(OptionsViewCell);
@@ -48,7 +48,7 @@ namespace GnollHackX.Pages.Game
         private async void btnSave_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('s'));
         }
@@ -56,7 +56,7 @@ namespace GnollHackX.Pages.Game
         private async void btnQuit_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('q'));
         }
@@ -64,14 +64,14 @@ namespace GnollHackX.Pages.Game
         private async void btnBackToGame_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
         private async void DoQuit()
         {
             MainLayout.IsEnabled = false;
-            //App.FmodService.StopTestSound();
+            //GHApp.FmodService.StopTestSound();
             await App.Current.MainPage.Navigation.PopModalAsync(); // Game Menu
             await App.Current.MainPage.Navigation.PopModalAsync(); // Game
         }
@@ -79,8 +79,8 @@ namespace GnollHackX.Pages.Game
         private async void btnOptions_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
-            App.PlayButtonClickedSound();
-            App.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
+            GHApp.PlayButtonClickedSound();
+            GHApp.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
             _gamePage.GenericButton_Clicked(sender, e, 'O');
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
@@ -88,7 +88,7 @@ namespace GnollHackX.Pages.Game
         private async void btnSettings_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             var settingsPage = new SettingsPage(this, null);
             await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
             MainLayout.IsEnabled = true;
@@ -97,7 +97,7 @@ namespace GnollHackX.Pages.Game
         private async void btnLibrary_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             var libPage = new LibraryPage();
             libPage.ReadLibrary();
             await App.Current.MainPage.Navigation.PushModalAsync(libPage);
@@ -106,22 +106,22 @@ namespace GnollHackX.Pages.Game
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed += BackButtonPressed;
+            GHApp.BackButtonPressed += BackButtonPressed;
         }
 
         public void UpdateLayout()
         {
             MainLayout.IsEnabled = true;
-            btnGC.IsVisible = App.DeveloperMode;
-            btnOptions.IsVisible = App.DeveloperMode;
+            btnGC.IsVisible = GHApp.DeveloperMode;
+            btnOptions.IsVisible = GHApp.DeveloperMode;
 
-            //if (App.DeveloperMode && !InfoSection.Contains(OptionsViewCell) && _optionsViewCellIndex >= 0)
+            //if (GHApp.DeveloperMode && !InfoSection.Contains(OptionsViewCell) && _optionsViewCellIndex >= 0)
             //    InfoSection.Insert(_optionsViewCellIndex, OptionsViewCell);
-            //if (!App.DeveloperMode && InfoSection.Contains(OptionsViewCell))
+            //if (!GHApp.DeveloperMode && InfoSection.Contains(OptionsViewCell))
             //    InfoSection.Remove(OptionsViewCell);
-            //if (App.DeveloperMode && !InfoSection.Contains(GCViewCell) && _gcViewCellIndex >= 0)
+            //if (GHApp.DeveloperMode && !InfoSection.Contains(GCViewCell) && _gcViewCellIndex >= 0)
             //    InfoSection.Insert(_gcViewCellIndex, GCViewCell);
-            //if (!App.DeveloperMode && InfoSection.Contains(GCViewCell))
+            //if (!GHApp.DeveloperMode && InfoSection.Contains(GCViewCell))
             //    InfoSection.Remove(GCViewCell);
         }
 
@@ -139,19 +139,19 @@ namespace GnollHackX.Pages.Game
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed -= BackButtonPressed;
+            GHApp.BackButtonPressed -= BackButtonPressed;
         }
 
         private void btnGC_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             btnGC.Text = "Collecting...";
             btnGC.TextColor = Color.Yellow;
 
-            App.DebugWriteRestart("Garbage Collection Start");
-            App.CollectGarbage();
-            App.DebugWriteProfilingStopwatchTimeAndStop("Garbage Collection End");
+            GHApp.DebugWriteRestart("Garbage Collection Start");
+            GHApp.CollectGarbage();
+            GHApp.DebugWriteProfilingStopwatchTimeAndStop("Garbage Collection End");
 
             btnGC.Text = "Done";
             btnGC.TextColor = Color.Red;
@@ -161,7 +161,7 @@ namespace GnollHackX.Pages.Game
         private async void btnTips_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             if(_gamePage.ShownTip == -1)
                 _gamePage.ShowGUITips(false);
             await App.Current.MainPage.Navigation.PopModalAsync();
@@ -184,7 +184,7 @@ namespace GnollHackX.Pages.Game
         private async void btnVersion_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             var verPage = new VersionPage(_gamePage);
             await App.Current.MainPage.Navigation.PushModalAsync(verPage);
             MainLayout.IsEnabled = true;

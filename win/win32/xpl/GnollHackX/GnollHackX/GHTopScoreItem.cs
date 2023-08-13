@@ -196,12 +196,12 @@ namespace GnollHackX
         }
         public string GetDumplogFileName()
         {
-            string startdatestring = App.GnollHackService.DumplogDateString(StartTime);
+            string startdatestring = GHApp.GnollHackService.DumplogDateString(StartTime);
             return "gnollhack." + FormattedName + "." + startdatestring + ".txt";
         }
         public string GetHTMLDumplogFileName()
         {
-            string startdatestring = App.GnollHackService.DumplogDateString(StartTime);
+            string startdatestring = GHApp.GnollHackService.DumplogDateString(StartTime);
             return "gnollhack." + FormattedName + "." + startdatestring + ".html";
         }
 
@@ -210,7 +210,7 @@ namespace GnollHackX
             get
             {
                 //string filename = GetDumplogFileName();
-                //string fulltargetpath = Path.Combine(App.GHPath, "dumplog", filename);
+                //string fulltargetpath = Path.Combine(GHApp.GHPath, "dumplog", filename);
                 //bool res = File.Exists(fulltargetpath);
                 //return res;
                 return true;

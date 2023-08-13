@@ -53,7 +53,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
             CloseButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -67,9 +67,9 @@ namespace GnollHackX.Pages.MainScreen
                     string text = OverridingText != null ? OverridingText : File.ReadAllText(_fileName, Encoding.UTF8);
                     var htmlSource = new HtmlWebViewSource();
                     htmlSource.Html = text;
-                    htmlSource.BaseUrl = App.PlatformService.GetBaseUrl();
+                    htmlSource.BaseUrl = GHApp.PlatformService.GetBaseUrl();
                     DisplayWebView.Source = htmlSource;
-                    if(App.IsiOS)
+                    if(GHApp.IsiOS)
                         DisplayWebView.Opacity = 0;
                     DisplayWebView.IsVisible = true;
                 }
@@ -163,7 +163,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void ShareButton_Clicked(object sender, EventArgs e)
         {
             ShareButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             try
             {
                 await Share.RequestAsync(new ShareFileRequest
@@ -181,7 +181,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
-            if (App.IsiOS && _isHtml)
+            if (GHApp.IsiOS && _isHtml)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
                 {

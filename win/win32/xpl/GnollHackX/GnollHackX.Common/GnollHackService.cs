@@ -455,7 +455,7 @@ namespace GnollHackX.Unknown
                 string library = Path.Combine(documents, "..", "Library");
                 string path = Path.Combine(library, "GnollHackData");
                 if (!Directory.Exists(path))
-                    App.CheckCreateDirectory(path);
+                    GHApp.CheckCreateDirectory(path);
                 return path;
             }
             catch
@@ -491,7 +491,7 @@ namespace GnollHackX.Unknown
             foreach (string ghdir in ghdirlist)
             {
                 string fulldirepath = Path.Combine(filesdir, ghdir);
-                App.CheckCreateDirectory(fulldirepath);
+                GHApp.CheckCreateDirectory(fulldirepath);
             }
 
             /* Copy missing files from resources */
@@ -584,7 +584,7 @@ namespace GnollHackX.Unknown
                 string fulldirepath = Path.Combine(filesdir, sdir.name);
                 if (!Directory.Exists(fulldirepath))
                 {
-                    App.CheckCreateDirectory(fulldirepath);
+                    GHApp.CheckCreateDirectory(fulldirepath);
                 }
                 else
                 {
@@ -640,7 +640,7 @@ namespace GnollHackX.Unknown
                         }
                     }
 
-                    if (!App.IsSecretsFileSavedToDisk(sfile))
+                    if (!GHApp.IsSecretsFileSavedToDisk(sfile))
                         continue;
 #if __ANDROID__
                     using (Stream s = assets.Open(fullsourcepath))
@@ -947,7 +947,7 @@ namespace GnollHackX.Unknown
             string filesdir = GetGnollHackPath();
             bool allowbones = Preferences.Get("AllowBones", true);
             ulong runflags = (ulong)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
-                (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0) |
+                (ulong)(GHApp.FullVersionMode ? RunGnollHackFlags.FullVersion : 0) |
                 (ulong)(clientGame.ModernMode ? RunGnollHackFlags.ModernMode : 0) |
                 (ulong)(clientGame.CasualMode ? RunGnollHackFlags.CasualMode : 0) |
                 (ulong)(allowbones ? 0 : RunGnollHackFlags.DisableBones) |

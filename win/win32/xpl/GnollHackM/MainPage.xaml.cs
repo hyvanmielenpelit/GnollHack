@@ -10,7 +10,7 @@ public partial class MainPage : ContentPage
 	public MainPage()
 	{
 		InitializeComponent();
-        App.CurrentMainPage = this;
+        GHApp.CurrentMainPage = this;
 
         canvasView.InvalidateSurface();
         count = GHConstants.AllMessageRows;
@@ -48,7 +48,7 @@ public partial class MainPage : ContentPage
             canvas.DrawText(str, xText, yText, textPaint);
             xText = 0;
             yText += textPaint.FontSpacing;
-            str = App.GnollHackService.GetVersionId();
+            str = GHApp.GnollHackService.GetVersionId();
             canvas.DrawText(str, xText, yText, textPaint);
         }
     }
@@ -65,40 +65,40 @@ public partial class MainPage : ContentPage
 
     private void ContentPage_Appearing(object sender, EventArgs e)
     {
-        //App.ForceCopyAllBanksToDisk = true;
-        string gnhpath = App.GnollHackService.GetGnollHackPath();
+        //GHApp.ForceCopyAllBanksToDisk = true;
+        string gnhpath = GHApp.GnollHackService.GetGnollHackPath();
         string bankpath = Path.Combine(gnhpath, "bank");
         if(Directory.Exists(bankpath))
             Directory.Delete(bankpath, true);
-        App.CopyStreamingBankToDisk = true;
-        App.ReadSecrets();
-        App.GnollHackService.InitializeSecrets(App.CurrentSecrets);
+        GHApp.CopyStreamingBankToDisk = true;
+        GHApp.ReadSecrets();
+        GHApp.GnollHackService.InitializeSecrets(GHApp.CurrentSecrets);
 
-        App.FmodService.InitializeFmod();
-        //App.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Master.strings.bank"), 0, false, false);
-        //App.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Master.bank"), 0, false, false);
-        //App.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Preliminary.bank"), 0, false, false);
-        //App.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Music.bank"), 0, false, false);
+        GHApp.FmodService.InitializeFmod();
+        //GHApp.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Master.strings.bank"), 0, false, false);
+        //GHApp.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Master.bank"), 0, false, false);
+        //GHApp.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Preliminary.bank"), 0, false, false);
+        //GHApp.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Music.bank"), 0, false, false);
 #if ANDROID
-        App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Preliminary.bank", 0, true, false);
-        App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Master.bank", 0, true, false);
-        App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Master.strings.bank", 0, true, false);
-        App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Music.bank", 0, true, false);
+        GHApp.FmodService.AddLoadableSoundBank(GHApp.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Preliminary.bank", 0, true, false);
+        GHApp.FmodService.AddLoadableSoundBank(GHApp.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Master.bank", 0, true, false);
+        GHApp.FmodService.AddLoadableSoundBank(GHApp.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Master.strings.bank", 0, true, false);
+        GHApp.FmodService.AddLoadableSoundBank(GHApp.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Music.bank", 0, true, false);
 #elif IOS
-        string path = Path.Combine(App.PlatformService.GetAssetsPath(), "Platforms", "iOS", "banks");
-        App.FmodService.AddLoadableSoundBank(Path.Combine(path, "Preliminary.bank"), 0, true, false);
-        App.FmodService.AddLoadableSoundBank(Path.Combine(path, "Master.bank"), 0, true, false);
-        App.FmodService.AddLoadableSoundBank(Path.Combine(path, "Master.strings.bank"), 0, true, false);
-        App.FmodService.AddLoadableSoundBank(Path.Combine(path, "Music.bank"), 0, true, false);
+        string path = Path.Combine(GHApp.PlatformService.GetAssetsPath(), "Platforms", "iOS", "banks");
+        GHApp.FmodService.AddLoadableSoundBank(Path.Combine(path, "Preliminary.bank"), 0, true, false);
+        GHApp.FmodService.AddLoadableSoundBank(Path.Combine(path, "Master.bank"), 0, true, false);
+        GHApp.FmodService.AddLoadableSoundBank(Path.Combine(path, "Master.strings.bank"), 0, true, false);
+        GHApp.FmodService.AddLoadableSoundBank(Path.Combine(path, "Music.bank"), 0, true, false);
 #endif
-        App.FmodService.LoadBanks(0);
-        App.FmodService.PlayTestSound();
-        App.PlayButtonClickedSound();
+        GHApp.FmodService.LoadBanks(0);
+        GHApp.FmodService.PlayTestSound();
+        GHApp.PlayButtonClickedSound();
     }
 
     private void ContentPage_Disappearing(object sender, EventArgs e)
     {
-        App.FmodService.StopTestSound();
+        GHApp.FmodService.StopTestSound();
     }
 }
 

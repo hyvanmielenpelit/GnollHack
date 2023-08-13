@@ -23,16 +23,16 @@ namespace GnollHackX.Pages.MainScreen
 
             _gamePage = gamePage;
 
-            string compatstr = App.GHVersionCompatibilityString;
+            string compatstr = GHApp.GHVersionCompatibilityString;
             string manufacturer = DeviceInfo.Manufacturer;
             if(manufacturer.Length > 0)
                 manufacturer = manufacturer.Substring(0,1).ToUpper() + manufacturer.Substring(1);
 
-            ulong TotalMemInBytes = App.PlatformService.GetDeviceMemoryInBytes();
+            ulong TotalMemInBytes = GHApp.PlatformService.GetDeviceMemoryInBytes();
             ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
-            ulong FreeDiskSpaceInBytes = App.PlatformService.GetDeviceFreeDiskSpaceInBytes();
+            ulong FreeDiskSpaceInBytes = GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes();
             ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
-            ulong TotalDiskSpaceInBytes = App.PlatformService.GetDeviceTotalDiskSpaceInBytes();
+            ulong TotalDiskSpaceInBytes = GHApp.PlatformService.GetDeviceTotalDiskSpaceInBytes();
             ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
 
             long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
@@ -40,7 +40,7 @@ namespace GnollHackX.Pages.MainScreen
             long TotalPlayMinutes = (TotalPlayTime % 3600) / 60;
             long TotalPlaySeconds = TotalPlayTime - TotalPlayHours * 3600 - TotalPlayMinutes * 60;
 
-            long CurrentPlayTime = App.AggregateSessionPlayTime;
+            long CurrentPlayTime = GHApp.AggregateSessionPlayTime;
             long CurrentPlayHours = CurrentPlayTime / 3600;
             long CurrentPlayMinutes = (CurrentPlayTime % 3600) / 60;
             long CurrentPlaySeconds = CurrentPlayTime - CurrentPlayHours * 3600 - CurrentPlayMinutes * 60;
@@ -79,12 +79,12 @@ namespace GnollHackX.Pages.MainScreen
             PortVersionTitleLabel.Text = Device.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = Device.RuntimePlatform + " Port Build:";
 
-            GnollHackVersionLabel.Text = App.GHVersionString;
+            GnollHackVersionLabel.Text = GHApp.GHVersionString;
             PortVersionLabel.Text = VersionTracking.CurrentVersion;
             PortBuildLabel.Text = VersionTracking.CurrentBuild;
             GnollHackCompatibilityLabel.Text = compatstr == "" ? "" : "From " + compatstr;
-            FMODVersionLabel.Text = App.FMODVersionString;
-            SkiaVersionLabel.Text = App.SkiaVersionString + " (# " + App.SkiaSharpVersionString + ")";
+            FMODVersionLabel.Text = GHApp.FMODVersionString;
+            SkiaVersionLabel.Text = GHApp.SkiaVersionString + " (# " + GHApp.SkiaSharpVersionString + ")";
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
             TotalMemoryLabel.Text = TotalMemInMB + " MB";
@@ -92,13 +92,13 @@ namespace GnollHackX.Pages.MainScreen
             TotalPlayTimeLabel.Text = TotalPlayHours + " h " + TotalPlayMinutes + " min " + TotalPlaySeconds + " s";
             CurrentPlayTimeLabel.Text = CurrentPlayHours + " h " + CurrentPlayMinutes + " min " + CurrentPlaySeconds + " s";
             LongTitleLabel.Text = Environment.NewLine + "GnollHack Long Version Identifier:";
-            LongLabel.Text = App.GHVersionId;
+            LongLabel.Text = GHApp.GHVersionId;
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
             CloseButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 

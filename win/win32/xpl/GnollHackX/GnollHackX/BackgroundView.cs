@@ -73,16 +73,16 @@ namespace GnollHackX
             switch (BackgroundBitmap)
             {
                 case BackgroundBitmaps.OldPaper:
-                    bmp = App.OldPaperBackgroundBitmap;
+                    bmp = GHApp.OldPaperBackgroundBitmap;
                     break;
                 case BackgroundBitmaps.LoadingScreen:
-                    bmp = App.LoadingScreenBackgroundBitmap;
+                    bmp = GHApp.LoadingScreenBackgroundBitmap;
                     break;
                 case BackgroundBitmaps.SmallDarkMenu:
-                    bmp = App.MenuBackgroundBitmap;
+                    bmp = GHApp.MenuBackgroundBitmap;
                     break;
                 case BackgroundBitmaps.Custom:
-                    bmp = CustomBackgroundBitmap != null ? CustomBackgroundBitmap : App.OldPaperBackgroundBitmap;
+                    bmp = CustomBackgroundBitmap != null ? CustomBackgroundBitmap : GHApp.OldPaperBackgroundBitmap;
                     break;
             }
 
@@ -94,14 +94,14 @@ namespace GnollHackX
                 case BorderStyles.None:
                     break;
                 case BorderStyles.Simple:
-                    bordertl = App.SimpleFrameTopLeftCornerBitmap; ;
-                    borderhorizontal = App.SimpleFrameTopHorizontalBitmap;
-                    bordervertical = App.SimpleFrameLeftVerticalBitmap; ;
+                    bordertl = GHApp.SimpleFrameTopLeftCornerBitmap; ;
+                    borderhorizontal = GHApp.SimpleFrameTopHorizontalBitmap;
+                    bordervertical = GHApp.SimpleFrameLeftVerticalBitmap; ;
                     break;
                 case BorderStyles.Small:
-                    bordertl = App.SimpleFrameSmallTopLeftCornerBitmap; ;
-                    borderhorizontal = App.SimpleFrameTopHorizontalBitmap;
-                    bordervertical = App.SimpleFrameLeftVerticalBitmap; ;
+                    bordertl = GHApp.SimpleFrameSmallTopLeftCornerBitmap; ;
+                    borderhorizontal = GHApp.SimpleFrameTopHorizontalBitmap;
+                    bordervertical = GHApp.SimpleFrameLeftVerticalBitmap; ;
                     break;
                 case BorderStyles.Custom:
                     bordertl = CustomBorderTopLeftCorner;

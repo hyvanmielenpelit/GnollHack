@@ -2,10 +2,10 @@
   <!--
   This example converts the constants Fragment_id, Fragment_name,
   and Fragment_tag from android.support.v4.app.FragmentActivity.FragmentTag
-  to an enum called Android.Support.V4.App.FragmentTagType with values
+  to an enum called Android.Support.V4.GHApp.FragmentTagType with values
   Id, Name, and Tag.
   
-  <mapping jni-class="android/support/v4/app/FragmentActivity$FragmentTag" clr-enum-type="Android.Support.V4.App.FragmentTagType">
+  <mapping jni-class="android/support/v4/app/FragmentActivity$FragmentTag" clr-enum-type="Android.Support.V4.GHApp.FragmentTagType">
     <field jni-name="Fragment_name" clr-name="Name" value="0" />
     <field jni-name="Fragment_id" clr-name="Id" value="1" />
     <field jni-name="Fragment_tag" clr-name="Tag" value="2" />

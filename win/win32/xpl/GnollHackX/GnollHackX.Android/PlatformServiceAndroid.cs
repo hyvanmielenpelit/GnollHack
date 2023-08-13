@@ -273,7 +273,7 @@ namespace GnollHackX.Droid
                 }
                 Log.Clear();
             }
-            if (App.DebugLogMessages)
+            if (GHApp.DebugLogMessages)
                 await page.DisplayAlert("App Review Log", logs, "OK");
         }
 #endif

@@ -46,7 +46,7 @@ namespace GnollHackX
         private async void StartLocalGameButton_Clicked(object sender, EventArgs e)
         {
             StartLocalGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             StartLocalGameButton.TextColor = Color.Gray;
             carouselView.Stop();
 
@@ -54,7 +54,7 @@ namespace GnollHackX
             Preferences.Set("NumberOfGames", numberofgames + 1L);
 
             var gamePage = new GamePage(this);
-            App.CurrentGamePage = gamePage;
+            GHApp.CurrentGamePage = gamePage;
             gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
             gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
             gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
@@ -67,13 +67,13 @@ namespace GnollHackX
 
         public void UpdateLayout()
         {
-            wizardModeGrid.IsVisible = App.DeveloperMode;
-            if (!App.DeveloperMode)
+            wizardModeGrid.IsVisible = GHApp.DeveloperMode;
+            if (!GHApp.DeveloperMode)
                 wizardModeSwitch.IsToggled = false;
-            ResetButton.IsVisible = App.DeveloperMode;
-            OptionsButton.IsVisible = App.DeveloperMode;
-            classicModeSwitch.IsToggled = App.ClassicMode;
-            casualModeSwitch.IsToggled = App.CasualMode;
+            ResetButton.IsVisible = GHApp.DeveloperMode;
+            OptionsButton.IsVisible = GHApp.DeveloperMode;
+            classicModeSwitch.IsToggled = GHApp.ClassicMode;
+            casualModeSwitch.IsToggled = GHApp.CasualMode;
 
             UpdateMobileVersionLabel();
         }
@@ -83,15 +83,15 @@ namespace GnollHackX
             UpdateLayout();
             if (_firsttime)
             {
-                App.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
+                GHApp.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 _firsttime = false;
                 //Assembly thisassembly = GetType().GetTypeInfo().Assembly;
                 //FmodLogoImage.Source = "resource://GnollHackX.Assets.FMOD-Logo-192-White.png"; // ImageSource.FromResource("GnollHackX.Assets.FMOD-Logo-192-White.png", thisassembly);
                 //StartLogoImage.Source = "resource://GnollHackX.Assets.gnollhack-logo-test-2.png"; //  ImageSource.FromResource("GnollHackX.Assets.gnollhack-logo-test-2.png", thisassembly);
                 //MainLogoImage.Source = "resource://GnollHackX.Assets.gnollhack-logo-test-2.png"; // ImageSource.FromResource("GnollHackX.Assets.gnollhack-logo-test-2.png", thisassembly);
-                if (App.PlatformService != null)
+                if (GHApp.PlatformService != null)
                 {
-                    bool removeanimationson = App.PlatformService.IsRemoveAnimationsOn();
+                    bool removeanimationson = GHApp.PlatformService.IsRemoveAnimationsOn();
                     if(removeanimationson)
                     {
                         await DisplayAlert("Invalid Animator Duration Scale",
@@ -100,8 +100,8 @@ namespace GnollHackX
                     }
                     else
                     {
-                        float scalesetting = App.PlatformService.GetAnimatorDurationScaleSetting();
-                        float scalecurrent = App.PlatformService.GetCurrentAnimatorDurationScale();
+                        float scalesetting = GHApp.PlatformService.GetAnimatorDurationScaleSetting();
+                        float scalecurrent = GHApp.PlatformService.GetCurrentAnimatorDurationScale();
                         if (scalecurrent == 0.0f)
                         {
                             if (scalesetting == 0.0f)
@@ -126,15 +126,15 @@ namespace GnollHackX
                 FmodLogoImage.IsVisible = false;
 
                 bool previousInformationShown = false;
-                if (App.InformAboutGameTermination)
+                if (GHApp.InformAboutGameTermination)
                 {
-                    App.InformAboutGameTermination = false;
+                    GHApp.InformAboutGameTermination = false;
                     await DisplayAlert("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user. Your game may have been saved before the termination.", "OK");
                     previousInformationShown = true;
                 }
-                if (App.InformAboutIncompatibleSavedGames)
+                if (GHApp.InformAboutIncompatibleSavedGames)
                 {
-                    App.InformAboutIncompatibleSavedGames = false;
+                    GHApp.InformAboutIncompatibleSavedGames = false;
                     await DisplayAlert("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible. To downgrade back to the earlier version, back up first your save files using About -> Export Saved Games and then follow the instructions at About -> Downgrade.", "OK");
                     previousInformationShown = true;
                 }
@@ -144,12 +144,12 @@ namespace GnollHackX
                     long NumberOfGames = Preferences.Get("NumberOfGames", 0L);
                     long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
 
-                    if (!ReviewRequested && ((NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime) || App.DeveloperMode))
+                    if (!ReviewRequested && ((NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime) || GHApp.DeveloperMode))
                     {
                         Preferences.Set("StoreReviewRequested", true);
                         UpperButtonGrid.IsEnabled = true; /* Just in case of a hangup */
                         LogoGrid.IsEnabled = true; /* Just in case of a hangup */
-                        App.PlatformService?.RequestAppReview(this); /* Platform implementation is async, so this should return immediately */
+                        GHApp.PlatformService?.RequestAppReview(this); /* Platform implementation is async, so this should return immediately */
                     }
                 }
             }
@@ -167,11 +167,11 @@ namespace GnollHackX
             bool resetFiles = Preferences.Get("ResetAtStart", true);
             if (resetFiles)
             {
-                App.GnollHackService.ClearFiles();
+                GHApp.GnollHackService.ClearFiles();
                 Preferences.Set("ResetAtStart", false);
                 Preferences.Set("ResetExternalFiles", true);
             }
-            App.ResetAcquiredFiles();
+            GHApp.ResetAcquiredFiles();
 
             await TryInitializeGnollHack();
             await TryInitializeSecrets();
@@ -182,8 +182,8 @@ namespace GnollHackX
         {
             try
             {
-                App.ReadSecrets();
-                Array.Sort<SecretsFile>(App.CurrentSecrets.files, new SecretsFileSizeComparer());
+                GHApp.ReadSecrets();
+                Array.Sort<SecretsFile>(GHApp.CurrentSecrets.files, new SecretsFileSizeComparer());
             }
             catch (Exception ex)
             {
@@ -191,7 +191,7 @@ namespace GnollHackX
             }
             try
             {
-                App.ReadUserSecrets();
+                GHApp.ReadUserSecrets();
             }
             catch (Exception ex)
             {
@@ -203,7 +203,7 @@ namespace GnollHackX
         {
             try
             {
-                App.GnollHackService.InitializeGnollHack();
+                GHApp.GnollHackService.InitializeGnollHack();
             }
             catch (Exception ex)
             {
@@ -214,7 +214,7 @@ namespace GnollHackX
         {
             try
             {
-                App.GnollHackService.InitializeSecrets(App.CurrentSecrets);
+                GHApp.GnollHackService.InitializeSecrets(GHApp.CurrentSecrets);
             }
             catch (Exception ex)
             {
@@ -226,7 +226,7 @@ namespace GnollHackX
         {
             try
             {
-                App.FmodService.InitializeFmod();
+                GHApp.FmodService.InitializeFmod();
             }
             catch (Exception ex)
             {
@@ -238,7 +238,7 @@ namespace GnollHackX
         {
             try
             {
-                App.GnollHackService.ClearCoreFiles();
+                GHApp.GnollHackService.ClearCoreFiles();
             }
             catch (Exception ex)
             {
@@ -250,7 +250,7 @@ namespace GnollHackX
         {
             try
             {
-                App.FmodService.LoadBanks(subType);
+                GHApp.FmodService.LoadBanks(subType);
             }
             catch (Exception ex)
             {
@@ -264,9 +264,9 @@ namespace GnollHackX
             await InitializeServices();
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            App.InitAdditionalTypefaces(assembly);
-            App.InitSymbolBitmaps(assembly);
-            App.InitGameBitmaps(assembly);
+            GHApp.InitAdditionalTypefaces(assembly);
+            GHApp.InitSymbolBitmaps(assembly);
+            GHApp.InitGameBitmaps(assembly);
             carouselView.Init();
 
             string verstr = "?";
@@ -279,12 +279,12 @@ namespace GnollHackX
             ulong vercompat = 0UL;
             try
             {
-                verstr = App.GnollHackService.GetVersionString();
-                verid = App.GnollHackService.GetVersionId();
-                vernum = App.GnollHackService.GetVersionNumber();
-                vercompat = App.GnollHackService.GetVersionCompatibility();
-                path = App.GnollHackService.GetGnollHackPath();
-                fmodverstr = App.FmodService.GetVersionString();
+                verstr = GHApp.GnollHackService.GetVersionString();
+                verid = GHApp.GnollHackService.GetVersionId();
+                vernum = GHApp.GnollHackService.GetVersionNumber();
+                vercompat = GHApp.GnollHackService.GetVersionCompatibility();
+                path = GHApp.GnollHackService.GetGnollHackPath();
+                fmodverstr = GHApp.FmodService.GetVersionString();
                 skiaverstr = SkiaSharpVersion.Native.ToString();
                 Assembly skiaSharpAssem = typeof(SkiaSharpVersion).Assembly;
                 AssemblyName skiaSharpAssemName = skiaSharpAssem.GetName();
@@ -310,21 +310,21 @@ namespace GnollHackX
             {
                 Debug.WriteLine(ex.Message);
             }
-            App.GHVersionString = verstr;
-            App.GHVersionNumber = vernum;
-            App.GHVersionCompatibility = vercompat;
-            App.GHVersionId = verid;
-            App.GHPath = path;
-            App.FMODVersionString = fmodverstr;
-            App.SkiaVersionString = skiaverstr;
-            App.SkiaSharpVersionString = skiasharpverstr;
+            GHApp.GHVersionString = verstr;
+            GHApp.GHVersionNumber = vernum;
+            GHApp.GHVersionCompatibility = vercompat;
+            GHApp.GHVersionId = verid;
+            GHApp.GHPath = path;
+            GHApp.FMODVersionString = fmodverstr;
+            GHApp.SkiaVersionString = skiaverstr;
+            GHApp.SkiaSharpVersionString = skiasharpverstr;
 
             VersionLabel.Text = verid;
             GnollHackLabel.Text = "GnollHack";
 
             string prev_version = Preferences.Get("VersionId", "");
             ulong prev_vernum = (ulong)Preferences.Get("VersionNumber", 0L);
-            App.GHPreviousVersionNumber = prev_vernum;
+            GHApp.GHPreviousVersionNumber = prev_vernum;
 
             if (prev_version != verid || prev_vernum != vernum)
             {
@@ -333,16 +333,16 @@ namespace GnollHackX
                 await TryInitializeSecrets();
             }
             if (prev_vernum > 0 && prev_vernum < vercompat)
-                App.CheckForIncompatibleSavedGames();
+                GHApp.CheckForIncompatibleSavedGames();
 
             Preferences.Set("VersionId", verid);
             Preferences.Set("VersionNumber", (long)vernum);
 
-            App.PlatformService.OnDemandPackStatusNotification += OnDemandPackEventHandler;
+            GHApp.PlatformService.OnDemandPackStatusNotification += OnDemandPackEventHandler;
             StartFetchOnDemandFiles();
-            App.SetSoundBanksUpForLoading();
+            GHApp.SetSoundBanksUpForLoading();
  
-            if (App.LoadBanks)
+            if (GHApp.LoadBanks)
             {
                 await TryLoadBanks(0);
                 await TryLoadBanks(2);
@@ -357,12 +357,12 @@ namespace GnollHackX
             UIVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
             try
             {
-                App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
-                if (App.LoadBanks)
-                    App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                GHApp.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
+                if (GHApp.LoadBanks)
+                    GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
 
                 /* Check silent mode; this also mutes everything if need be */
-                App.SilentMode = Preferences.Get("SilentMode", false);
+                GHApp.SilentMode = Preferences.Get("SilentMode", false);
             }
             catch (Exception ex)
             {
@@ -404,13 +404,13 @@ namespace GnollHackX
 
         private void StartFetchOnDemandFiles()
         {
-            if(App.IsAndroid && App.DownloadOnDemandPackage)
+            if(GHApp.IsAndroid && GHApp.DownloadOnDemandPackage)
             {
                 DownloadLabel.Text = "";
-                string path = App.PlatformService.GetAbsoluteOnDemandAssetPath(GHConstants.OnDemandPackName);
+                string path = GHApp.PlatformService.GetAbsoluteOnDemandAssetPath(GHConstants.OnDemandPackName);
                 if(path == null) 
                 {
-                    int res = App.PlatformService.FetchOnDemandPack(GHConstants.OnDemandPackName);
+                    int res = GHApp.PlatformService.FetchOnDemandPack(GHConstants.OnDemandPackName);
                 }
             }
         }
@@ -422,7 +422,7 @@ namespace GnollHackX
 
             try
             {
-                App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
                 _mainScreenMusicStarted = true;
             }
             catch(Exception ex)
@@ -473,7 +473,7 @@ namespace GnollHackX
         private void ExitAppButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             bool hideautoupdatealert = Preferences.Get("HideAutoUpdateAlert", false);
             bool isfromgoogleplay = true;
             if(!hideautoupdatealert)
@@ -482,9 +482,9 @@ namespace GnollHackX
                 PopupCheckBoxLayout.IsVisible = true;
                 PopupTitleLabel.TextColor = Color.Red;
                 PopupTitleLabel.Text = "Auto-Update Warning";
-                if (App.IsAndroid && isfromgoogleplay)
+                if (GHApp.IsAndroid && isfromgoogleplay)
                     PopupLabel.Text = "Updating GnollHack may cause your saved games to become invalid. We recommend that you turn off Auto-Update from Google Play Store for GnollHack and manually apply updates when you have no saved games.";
-                else if (App.IsiOS)
+                else if (GHApp.IsiOS)
                     PopupLabel.Text = "Updating GnollHack may cause your saved games to become invalid. We recommend that you disable automatic updates by toggling off App Updates under App Store section in the Settings app, and manually apply updates when you have no saved games.";
                 else
                     PopupLabel.Text = "Updating GnollHack may cause your saved games to become invalid. We recommend that you disable automatic updates in your device settings and manually apply updates when you have no saved games.";
@@ -498,7 +498,7 @@ namespace GnollHackX
 
         private void CloseApp()
         {
-            App.PlatformService.CloseApplication();
+            GHApp.PlatformService.CloseApplication();
             Thread.Sleep(75);
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
@@ -506,7 +506,7 @@ namespace GnollHackX
         private async void ClearFilesButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             carouselView.Stop();
             var resetPage = new ResetPage();
             resetPage.Disappearing += (sender2, e2) =>
@@ -521,7 +521,7 @@ namespace GnollHackX
         private async void SettingsButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             carouselView.Stop();
             var settingsPage = new SettingsPage(null, this);
             settingsPage.Disappearing += (sender2, e2) =>
@@ -535,8 +535,8 @@ namespace GnollHackX
         private async void OptionsButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
-            string fulltargetpath = Path.Combine(App.GHPath, "defaults.gnh");
+            GHApp.PlayButtonClickedSound();
+            string fulltargetpath = Path.Combine(GHApp.GHPath, "defaults.gnh");
             var editorPage = new EditorPage(fulltargetpath, "Default Options File");
             string errormsg = "";
             if (!editorPage.ReadFile(out errormsg))
@@ -560,7 +560,7 @@ namespace GnollHackX
         private async void CreditsButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             carouselView.Stop();
             var aboutPage = new AboutPage();
             aboutPage.Disappearing += (sender2, e2) =>
@@ -604,7 +604,7 @@ namespace GnollHackX
         private async void VaultButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             carouselView.Stop();
             var vaultPage = new VaultPage();
             vaultPage.Disappearing += (sender2, e2) =>
@@ -628,8 +628,8 @@ namespace GnollHackX
 
         private void ClassicModeSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            App.ClassicMode = classicModeSwitch.IsToggled;
-            Preferences.Set("ClassicMode", App.ClassicMode);
+            GHApp.ClassicMode = classicModeSwitch.IsToggled;
+            Preferences.Set("ClassicMode", GHApp.ClassicMode);
             if(classicModeSwitch.IsToggled)
             {
 
@@ -642,8 +642,8 @@ namespace GnollHackX
 
         private void CasualModeSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            App.CasualMode = casualModeSwitch.IsToggled;
-            Preferences.Set("CasualMode", App.CasualMode);
+            GHApp.CasualMode = casualModeSwitch.IsToggled;
+            Preferences.Set("CasualMode", GHApp.CasualMode);
             if (casualModeSwitch.IsToggled)
             {
                 //wizardModeSwitch.IsToggled = false;
@@ -731,7 +731,7 @@ namespace GnollHackX
 
         public void Resume()
         {
-            if(App.CurrentGamePage == null)
+            if(GHApp.CurrentGamePage == null)
             {
                 carouselView.Play();
             }

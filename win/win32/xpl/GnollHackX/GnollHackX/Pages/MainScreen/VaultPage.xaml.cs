@@ -53,7 +53,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void Button_Clicked(object sender, EventArgs e)
         {
             CloseButton.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -70,12 +70,12 @@ namespace GnollHackX.Pages.MainScreen
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed += BackButtonPressed;
+            GHApp.BackButtonPressed += BackButtonPressed;
             VaultLayout.IsEnabled = true;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed -= BackButtonPressed;
+            GHApp.BackButtonPressed -= BackButtonPressed;
         }
 
         private double _currentPageWidth = 0;
@@ -96,8 +96,8 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnTopScores_Clicked(object sender, EventArgs e)
         {
             VaultLayout.IsEnabled = false;
-            App.PlayButtonClickedSound();
-            string fulltargetpath = Path.Combine(App.GHPath, "xlogfile");
+            GHApp.PlayButtonClickedSound();
+            string fulltargetpath = Path.Combine(GHApp.GHPath, "xlogfile");
             if (File.Exists(fulltargetpath))
             {
                 var topScorePage = new TopScorePage(fulltargetpath);
@@ -132,7 +132,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnLibrary_Clicked(object sender, EventArgs e)
         {
             VaultLayout.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             var libPage = new LibraryPage();
             libPage.ReadLibrary();
             await App.Current.MainPage.Navigation.PushModalAsync(libPage);

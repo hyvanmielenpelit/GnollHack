@@ -773,7 +773,7 @@ namespace GnollHackX
                         double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
                         double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
                         double bordermargin = Math.Min(bordermarginx, bordermarginy);
-                        return new Thickness(bordermargin, Math.Min((double)App.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor), bordermargin, bottom);
+                        return new Thickness(bordermargin, Math.Min((double)GHApp.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor), bordermargin, bottom);
                     }
                 case BorderStyles.Small:
                     {
@@ -802,7 +802,7 @@ namespace GnollHackX
                         double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
                         double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
                         double bordermargin = Math.Min(bordermarginx, bordermarginy);
-                        return new Thickness(bordermargin, top, bordermargin, Math.Min((double)App.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor));
+                        return new Thickness(bordermargin, top, bordermargin, Math.Min((double)GHApp.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor));
                     }
                 case BorderStyles.Small:
                     {
@@ -833,36 +833,36 @@ namespace GnollHackX
             double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
             double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
             double bordermargin = Math.Min(bordermarginx, bordermarginy);
-            SKBitmap cornerbitmap = borderstyle == BorderStyles.Simple ? App.SimpleFrameTopLeftCornerBitmap : borderstyle == BorderStyles.Small ? App.SimpleFrameSmallTopLeftCornerBitmap : App.SimpleFrameTopLeftCornerBitmap;
+            SKBitmap cornerbitmap = borderstyle == BorderStyles.Simple ? GHApp.SimpleFrameTopLeftCornerBitmap : borderstyle == BorderStyles.Small ? GHApp.SimpleFrameSmallTopLeftCornerBitmap : GHApp.SimpleFrameTopLeftCornerBitmap;
             double scale = Math.Max(0.1, Math.Min(1.0, bordermargin / (double)cornerbitmap.Height));
             return scale;
         }
         public static double GetBorderWidth(BorderStyles borderstyle, double width, double height)
         {
             double scale = GetBorderScale(borderstyle, width, height);
-            return App.SimpleFrameTopHorizontalBitmap.Height * scale;
+            return GHApp.SimpleFrameTopHorizontalBitmap.Height * scale;
         }
         public static double GetBorderHeight(BorderStyles borderstyle, double width, double height)
         {
             double scale = GetBorderScale(borderstyle, width, height);
-            return App.SimpleFrameLeftVerticalBitmap.Width * scale;
+            return GHApp.SimpleFrameLeftVerticalBitmap.Width * scale;
         }
 
         public static uint GetMainCanvasAnimationInterval(MapRefreshRateStyle mapRefreshRate)
         {
-            if (App.DisplayRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
+            if (GHApp.DisplayRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
                 return 8;
-            else if (App.DisplayRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
+            else if (GHApp.DisplayRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
                 return 11;
-            else if (App.DisplayRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
+            else if (GHApp.DisplayRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
                 return 13;
-            else if (App.DisplayRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
+            else if (GHApp.DisplayRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
                 return 16;
-            else if (App.DisplayRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
+            else if (GHApp.DisplayRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
                 return 25;
-            else if (App.DisplayRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
+            else if (GHApp.DisplayRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
                 return 33;
-            else if (App.DisplayRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
+            else if (GHApp.DisplayRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
                 return 50;
             else
                 return 100;
@@ -871,19 +871,19 @@ namespace GnollHackX
         }
         public static int GetMainCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRate)
         {
-            if (App.DisplayRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
+            if (GHApp.DisplayRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
                 return 120;
-            else if (App.DisplayRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
+            else if (GHApp.DisplayRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
                 return 90;
-            else if (App.DisplayRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
+            else if (GHApp.DisplayRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
                 return 80;
-            else if (App.DisplayRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
+            else if (GHApp.DisplayRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
                 return 60;
-            else if (App.DisplayRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
+            else if (GHApp.DisplayRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
                 return 40;
-            else if (App.DisplayRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
+            else if (GHApp.DisplayRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
                 return 30;
-            else if (App.DisplayRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
+            else if (GHApp.DisplayRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
                 return 20;
             else
                 return 40;
@@ -891,9 +891,9 @@ namespace GnollHackX
 
         public static MapRefreshRateStyle GetDefaultMapFPS()
         {
-            if (App.DisplayRefreshRate >= 60f)
+            if (GHApp.DisplayRefreshRate >= 60f)
                 return MapRefreshRateStyle.MapFPS60;
-            else if (App.DisplayRefreshRate >= 40f)
+            else if (GHApp.DisplayRefreshRate >= 40f)
                 return MapRefreshRateStyle.MapFPS40;
             else
                 return MapRefreshRateStyle.MapFPS30;
@@ -901,18 +901,18 @@ namespace GnollHackX
 
         public static uint GetAuxiliaryCanvasAnimationInterval()
         {
-            if (App.DisplayRefreshRate >= 120.0f)
+            if (GHApp.DisplayRefreshRate >= 120.0f)
                 return 8;
-            else if (App.DisplayRefreshRate >= 90.0f)
+            else if (GHApp.DisplayRefreshRate >= 90.0f)
                 return 11;
             else
                 return 16;
         }
         public static int GetAuxiliaryCanvasAnimationFrequency()
         {
-            if (App.DisplayRefreshRate >= 120.0f)
+            if (GHApp.DisplayRefreshRate >= 120.0f)
                 return 120;
-            else if (App.DisplayRefreshRate >= 90.0f)
+            else if (GHApp.DisplayRefreshRate >= 90.0f)
                 return 90;
             else
                 return 60;

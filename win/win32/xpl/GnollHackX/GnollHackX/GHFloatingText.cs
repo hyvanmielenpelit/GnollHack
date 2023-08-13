@@ -112,7 +112,7 @@ namespace GnollHackX
         }
         public SKTypeface GetTypeface(long counter_value)
         {
-            return App.LatoBold;
+            return GHApp.LatoBold;
         }
         public SKColor GetBaseColor(long counter_value)
         {

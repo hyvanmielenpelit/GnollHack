@@ -187,7 +187,7 @@ namespace GnollHackX
         {
             using (SKPaint textPaint = new SKPaint())
             {
-                float scale = App.DisplayScale;
+                float scale = GHApp.DisplayScale;
                 textPaint.TextSize = (float)FontSize * scale;
                 textPaint.Typeface = GetFontTypeface();
                 lock (_textRowLock)
@@ -224,7 +224,7 @@ namespace GnollHackX
 
             SKBitmap symbolbitmap;
             SKRect source_rect = new SKRect();
-            if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart, out source_rect)) != null)
+            if (UseSpecialSymbols && (symbolbitmap = GHApp.GetSpecialSymbol(textPart, out source_rect)) != null)
             {
                 float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
                 float bmpwidth = bmpheight * source_rect.Width / Math.Max(1f, source_rect.Height);
@@ -345,7 +345,7 @@ namespace GnollHackX
             List<float> rowWidths = new List<float>();
             using (SKPaint textPaint = new SKPaint())
             {
-                float scale = App.DisplayScale;
+                float scale = GHApp.DisplayScale;
                 textPaint.TextSize = (float)FontSize * scale;
                 textPaint.Typeface = GetFontTypeface();
                 if (OutlineWidth > 0)
@@ -372,7 +372,7 @@ namespace GnollHackX
                     {
                         SKBitmap symbolbitmap;
                         SKRect source_rect = new SKRect();
-                        if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart, out source_rect)) != null)
+                        if (UseSpecialSymbols && (symbolbitmap = GHApp.GetSpecialSymbol(textPart, out source_rect)) != null)
                         {
                             float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
                             float bmpwidth = bmpheight * source_rect.Width / Math.Max(1f, source_rect.Height);
@@ -411,7 +411,7 @@ namespace GnollHackX
             }
             else
             {
-                float scale = App.DisplayScale;
+                float scale = GHApp.DisplayScale;
                 float scaledwidthconstraint = scale * (float)(WidthRequest > 0 ? Math.Min(adjWidthConstraint, WidthRequest) : adjWidthConstraint);
 
                 TextAreaSize textAreaSize = CalculateTextAreaSize(scaledwidthconstraint);
@@ -444,7 +444,7 @@ namespace GnollHackX
 
         private SKTypeface GetFontTypeface()
         {
-            SKTypeface tf = App.DiabloTypeface;
+            SKTypeface tf = GHApp.DiabloTypeface;
             CustomLabelFonts clf;
             bool success = _fontDictionary.TryGetValue(FontFamily, out clf);
             if (!success)
@@ -454,34 +454,34 @@ namespace GnollHackX
             {
                 default:
                 case CustomLabelFonts.Diablo:
-                    tf = App.DiabloTypeface;
+                    tf = GHApp.DiabloTypeface;
                     break;
                 case CustomLabelFonts.Immortal:
-                    tf = App.ImmortalTypeface;
+                    tf = GHApp.ImmortalTypeface;
                     break;
                 case CustomLabelFonts.Endor:
-                    tf = App.EndorTypeface;
+                    tf = GHApp.EndorTypeface;
                     break;
                 case CustomLabelFonts.Xizor:
-                    tf = App.XizorTypeface;
+                    tf = GHApp.XizorTypeface;
                     break;
                 case CustomLabelFonts.Underwood:
-                    tf = App.UnderwoodTypeface;
+                    tf = GHApp.UnderwoodTypeface;
                     break;
                 case CustomLabelFonts.DejaVuSansMono:
-                    tf = FontAttributes == FontAttributes.Bold ? App.DejaVuSansMonoBoldTypeface : App.DejaVuSansMonoTypeface;
+                    tf = FontAttributes == FontAttributes.Bold ? GHApp.DejaVuSansMonoBoldTypeface : GHApp.DejaVuSansMonoTypeface;
                     break;
                 case CustomLabelFonts.DejaVuSansMonoBold:
-                    tf = App.DejaVuSansMonoBoldTypeface;
+                    tf = GHApp.DejaVuSansMonoBoldTypeface;
                     break;
                 case CustomLabelFonts.LatoRegular:
-                    tf = FontAttributes == FontAttributes.Bold ? App.LatoBold : App.LatoRegular;
+                    tf = FontAttributes == FontAttributes.Bold ? GHApp.LatoBold : GHApp.LatoRegular;
                     break;
                 case CustomLabelFonts.LatoBold:
-                    tf = App.LatoBold;
+                    tf = GHApp.LatoBold;
                     break;
                 case CustomLabelFonts.ARChristy:
-                    tf = App.ARChristyTypeface;
+                    tf = GHApp.ARChristyTypeface;
                     break;
             }
             return tf;
@@ -498,7 +498,7 @@ namespace GnollHackX
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = this.CanvasSize.Width;
             float canvasheight = this.CanvasSize.Height;
-            float scale = App.DisplayScale;
+            float scale = GHApp.DisplayScale;
             float scale2 = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
             float usedTextOffset = 0;
 
@@ -576,7 +576,7 @@ namespace GnollHackX
                             {
                                 SKBitmap symbolbitmap;
                                 SKRect source_rect = new SKRect();
-                                if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart, out source_rect)) != null)
+                                if (UseSpecialSymbols && (symbolbitmap = GHApp.GetSpecialSymbol(textPart, out source_rect)) != null)
                                 {
                                     float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
                                     float bmpwidth = bmpheight * source_rect.Width / Math.Max(1f, source_rect.Height);
@@ -621,7 +621,7 @@ namespace GnollHackX
 
         public double MeasureWidth(string str)
         {
-            float scale = App.DisplayScale;
+            float scale = GHApp.DisplayScale;
             if (scale == 0)
                 return 0;
             float skwidth = 0;

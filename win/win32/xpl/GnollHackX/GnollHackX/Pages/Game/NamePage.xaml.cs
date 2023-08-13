@@ -54,7 +54,7 @@ namespace GnollHackX.Pages.Game
         {
             btnOK.IsEnabled = false;
             btnCancel.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             if (string.IsNullOrWhiteSpace(eName.Text))
             {
                 lblError.TextColor = Color.Red;
@@ -105,13 +105,13 @@ namespace GnollHackX.Pages.Game
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed += BackButtonPressed;
+            GHApp.BackButtonPressed += BackButtonPressed;
 
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed -= BackButtonPressed;
+            GHApp.BackButtonPressed -= BackButtonPressed;
 
         }
 
@@ -133,7 +133,7 @@ namespace GnollHackX.Pages.Game
         {
             btnOK.IsEnabled = false;
             btnCancel.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
 
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))

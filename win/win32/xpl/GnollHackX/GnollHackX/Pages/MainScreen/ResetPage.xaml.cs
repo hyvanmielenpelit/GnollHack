@@ -29,12 +29,12 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDeleteFiles_Clicked(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete GnollHack Core Files?", "Are you sure to delete GnollHack core files?", "Yes", "No");
             if (answer)
             {
-                App.GnollHackService.ClearCoreFiles();
-                App.GnollHackService.InitializeGnollHack();
+                GHApp.GnollHackService.ClearCoreFiles();
+                GHApp.GnollHackService.InitializeGnollHack();
                 btnDeleteFiles.Text = "Done";
                 btnDeleteFiles.TextColor = Color.Red;
             }
@@ -44,11 +44,11 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDeleteSavedGames_Clicked(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
             if (answer)
             {
-                App.GnollHackService.ClearSavedGames();
+                GHApp.GnollHackService.ClearSavedGames();
                 btnDeleteSavedGames.Text = "Done";
                 btnDeleteSavedGames.TextColor = Color.Red;
             }
@@ -58,12 +58,12 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDeleteDumplogs_Clicked(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete Top Scores?", "Are you sure to delete all top scores and associated dumplogs?", "Yes", "No");
             if (answer)
             {
-                App.GnollHackService.ClearTopScores();
-                App.GnollHackService.ClearDumplogs();
+                GHApp.GnollHackService.ClearTopScores();
+                GHApp.GnollHackService.ClearDumplogs();
                 btnDeleteDumplogs.Text = "Done";
                 btnDeleteDumplogs.TextColor = Color.Red;
             }
@@ -73,11 +73,11 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDeleteBones_Clicked(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete Bones Files?", "Are you sure to delete all bones files?", "Yes", "No");
             if (answer)
             {
-                App.GnollHackService.ClearBones();
+                GHApp.GnollHackService.ClearBones();
                 btnDeleteBones.Text = "Done";
                 btnDeleteBones.TextColor = Color.Red;
             }
@@ -87,11 +87,11 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDeleteAllMainFiles_Clicked(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete All Main Files?", "Are you sure to delete all files in the main directory?", "Yes", "No");
             if (answer)
             {
-                App.GnollHackService.ClearAllFilesInMainDirectory();
+                GHApp.GnollHackService.ClearAllFilesInMainDirectory();
                 btnDeleteAllMainFiles.Text = "Done";
                 btnDeleteAllMainFiles.TextColor = Color.Red;
             }
@@ -101,7 +101,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDeleteDownloads_Clicked(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete Downloaded Files?", "Are you sure to delete all downloaded files on restart?", "Yes", "No");
             if (answer)
             {
@@ -115,7 +115,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDeletePreferences_Clicked(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete App Preferences?", "Are you sure to delete all app preference settings?", "Yes", "No");
             if (answer)
             {
@@ -130,7 +130,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 Dictionary<string, string> saveverdict = new Dictionary<string, string>();
                 Dictionary<string, DateTime> savetimedict = new Dictionary<string, DateTime>();
-                foreach (SecretsFile sf in App.CurrentSecrets.files)
+                foreach (SecretsFile sf in GHApp.CurrentSecrets.files)
                 {
                     bool has_vbv = Preferences.ContainsKey("Verify_" + sf.id + "_Version");
                     string vbv = Preferences.Get("Verify_" + sf.id + "_Version", "");
@@ -144,7 +144,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 Preferences.Clear();
 
-                Preferences.Set("FullVersion", App.FullVersionMode);
+                Preferences.Set("FullVersion", GHApp.FullVersionMode);
                 if (has_resetatstart)
                     Preferences.Set("ResetAtStart", resetatstart);
                 if (has_resetbanks)
@@ -176,13 +176,13 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDeleteUserData_Clicked(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Delete All User Data?", "Are you sure to delete all files in the userdata directory?", "Yes", "No");
             if (answer)
             {
                 try
                 {
-                    string datadir = Path.Combine(App.GHPath, GHConstants.UserDataDirectory);
+                    string datadir = Path.Combine(GHApp.GHPath, GHConstants.UserDataDirectory);
                     if (Directory.Exists(datadir))
                         Directory.Delete(datadir, true);
 
@@ -201,7 +201,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void Button_Clicked(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -219,12 +219,12 @@ namespace GnollHackX.Pages.MainScreen
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed += BackButtonPressed;
+            GHApp.BackButtonPressed += BackButtonPressed;
             ResetGrid.IsEnabled = true;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            App.BackButtonPressed -= BackButtonPressed;
+            GHApp.BackButtonPressed -= BackButtonPressed;
         }
 
         private double _currentPageWidth = 0;
@@ -248,10 +248,10 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnDownloadTestFiles_Clicked(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
 
             string url = "https://download.gnollhack.com/test-files/test-files2.zip";
-            string target_path = App.GHPath;
+            string target_path = GHApp.GHPath;
             string target_file = Path.Combine(target_path, "test-files2.zip");
             bool trouble = false;
             bool cancelled = false;
@@ -368,7 +368,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             ResetGrid.IsEnabled = false;
 
-            App.PlayButtonClickedSound();
+            GHApp.PlayButtonClickedSound();
             await CheckAndRequestWritePermission();
             await CheckAndRequestReadPermission();
             try
@@ -381,18 +381,18 @@ namespace GnollHackX.Pages.MainScreen
                     {
                         if (s != null)
                         {
-                            string gnhpath = App.GHPath;
+                            string gnhpath = GHApp.GHPath;
                             if (file.FileName.EndsWith("zip", StringComparison.OrdinalIgnoreCase))
                             {
                                 string tempdirpath = Path.Combine(gnhpath, "temp");
                                 if (Directory.Exists(tempdirpath))
                                     Directory.Delete(tempdirpath, true);
-                                App.CheckCreateDirectory(tempdirpath);
+                                GHApp.CheckCreateDirectory(tempdirpath);
 
                                 string temp2dirpath = Path.Combine(gnhpath, "zip");
                                 if (Directory.Exists(temp2dirpath))
                                     Directory.Delete(temp2dirpath, true);
-                                App.CheckCreateDirectory(temp2dirpath);
+                                GHApp.CheckCreateDirectory(temp2dirpath);
 
                                 string ziptargetfilename = file.FileName;
                                 string fulltargetpath = Path.Combine(tempdirpath, ziptargetfilename);
@@ -434,7 +434,7 @@ namespace GnollHackX.Pages.MainScreen
                                             string targetdirname = dirInfo.Name;
                                             string targetdirpath = Path.Combine(gnhpath, targetdirname);
                                             if (!Directory.Exists(targetdirpath))
-                                                App.CheckCreateDirectory(targetdirpath);
+                                                GHApp.CheckCreateDirectory(targetdirpath);
                                             string sourcedirpath = Path.Combine(temp2dirpath, targetdirname);
                                             if (sourcedirpath == targetdirpath)
                                                 continue;
@@ -468,11 +468,11 @@ namespace GnollHackX.Pages.MainScreen
                             else
                             {
                                 string out_str = "";
-                                if (App.GnollHackService.ValidateSaveFile(file.FullPath, out out_str))
+                                if (GHApp.GnollHackService.ValidateSaveFile(file.FullPath, out out_str))
                                 {
                                     string targetfilename = file.FileName + ".i";
                                     string savedirpath = Path.Combine(gnhpath, "save");
-                                    App.CheckCreateDirectory(savedirpath);
+                                    GHApp.CheckCreateDirectory(savedirpath);
 
                                     string fulltargetpath = Path.Combine(savedirpath, targetfilename);
                                     if (System.IO.File.Exists(fulltargetpath))
