@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿#if !GNH_MAUI
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 #if GNH_MAUI
 using GnollHackX;
+using GnollHackM;
 using Microsoft.Maui.Controls;
 #else
 using Xamarin.Essentials;
@@ -44,9 +46,6 @@ namespace GnollHackX
         public App()
         {
             InitializeComponent();
-#if GNH_MAUI
-   		    MainPage = new AppShell();
-#endif
             VersionTracking.Track();
             App.GetDependencyServices();
             App.PlatformService.InitializePlatform();
@@ -59,13 +58,16 @@ namespace GnollHackX
             ButtonSelectedImageSource = ImageSource.FromResource("GnollHackX.Assets.button_selected.png", assembly);
             ButtonDisabledImageSource = ImageSource.FromResource("GnollHackX.Assets.button_disabled.png", assembly);
 
+#if GNH_MAUI
+            MainPage = new AppShell();
+#else
             var mainPage = new MainPage();
             CurrentMainPage = mainPage;
             var navPage = new NavigationPage(mainPage);
             navPage.BarTextColor = GHColors.White;
             navPage.BarBackgroundColor = GHColors.Black;
             MainPage = navPage;
-
+#endif
             App.HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             App.HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             App.DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
@@ -357,11 +359,20 @@ namespace GnollHackX
 
         public static void GetDependencyServices()
         {
+#if GNH_MAUI
+            _mainGnollHackService = new GnollHackService();
+#else
             _mainGnollHackService = DependencyService.Get<IGnollHackService>();
+#endif
             _mainGnollHackService.LoadLibrary();
             _mainGnollHackService.Test();
+#if GNH_MAUI
+            _fmodService = new FmodService();
+            _platformService = new PlatformService();
+#else
             _fmodService = DependencyService.Get<IFmodService>();
             _platformService = DependencyService.Get<IPlatformService>();
+#endif
         }
 
         public static void ResetAcquiredFiles()
@@ -424,6 +435,7 @@ namespace GnollHackX
         public static bool UseSingleDumpLog { get; set; }
         public static bool ReadStreamingBankToMemory { get; set; }
         public static bool CopyStreamingBankToDisk { get; set; }
+        public static bool ForceCopyAllBanksToDisk { get; set; }
 
         public static string GHVersionId { get; set; }
         public static string GHVersionString { get; set; }
@@ -1911,6 +1923,7 @@ namespace GnollHackX
         public static bool IsSecretsFileSavedToDisk(SecretsFile sf)
         {
             if (sf == null) return false;
+            if (ForceCopyAllBanksToDisk) return true;
             if (IsiOS) return false;
             if (IsAndroid)
             {
@@ -2059,3 +2072,4 @@ namespace GnollHackX
     }
 
 }
+#endif

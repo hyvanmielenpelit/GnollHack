@@ -124,7 +124,7 @@ namespace GnollHackX.Unknown
             _latestService = this;
         }
 
-#if __ANDROID__ || ANDROID
+#if __ANDROID__
         private static void LoadNativeLibrary(string libName)
         {
             Java.Lang.JavaSystem.LoadLibrary(libName);
@@ -169,7 +169,7 @@ namespace GnollHackX.Unknown
             if (res != RESULT.OK)
                 return;
 
-#if __IOS__ || IOS
+#if __IOS__ 
             AVAudioSession si = AVAudioSession.SharedInstance();
             if(si != null)
                 si.SetCategory(AVAudioSessionCategory.Ambient);
@@ -254,9 +254,9 @@ namespace GnollHackX.Unknown
                 {
                     if (isResource)
                     {
-#if __IOS__ || IOS
+#if __IOS__
                         using(FileStream fs = File.OpenRead(fullfilepath))
-#elif __ANDROID__ || ANDROID
+#elif __ANDROID__
                         AssetManager assets = MainActivity.StaticAssets;
                         using (Stream fs = assets.Open(fullfilepath))
 #else

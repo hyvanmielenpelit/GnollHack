@@ -10,6 +10,8 @@ public partial class MainPage : ContentPage
 	public MainPage()
 	{
 		InitializeComponent();
+        App.CurrentMainPage = this;
+
         canvasView.InvalidateSurface();
         count = GHConstants.AllMessageRows;
         count = 0;
@@ -44,7 +46,11 @@ public partial class MainPage : ContentPage
             textPaint.TextSize = 26;
             textPaint.Color = SKColors.Red;
             canvas.DrawText(str, xText, yText, textPaint);
-        }      
+            xText = 0;
+            yText += textPaint.FontSpacing;
+            str = App.GnollHackService.GetVersionId();
+            canvas.DrawText(str, xText, yText, textPaint);
+        }
     }
 
     public void Suspend()
@@ -55,6 +61,31 @@ public partial class MainPage : ContentPage
     public void Resume()
     {
 
+    }
+
+    private async void ContentPage_Appearing(object sender, EventArgs e)
+    {
+        App.ForceCopyAllBanksToDisk = true;
+        App.ReadSecrets();
+        await App.GnollHackService.InitializeSecrets(App.CurrentSecrets);
+        string gnhpath = App.GnollHackService.GetGnollHackPath();
+        App.FmodService.InitializeFmod();
+        App.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Master.strings.bank"), 0, false, false);
+        App.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Master.bank"), 0, false, false);
+        App.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Preliminary.bank"), 0, false, false);
+        App.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Music.bank"), 0, false, false);
+        //App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Preliminary.bank", 0, true, false);
+        //App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Master.bank", 0, true, false);
+        //App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Master.strings.bank", 0, true, false);
+        //App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Music.bank", 0, true, false);
+        App.FmodService.LoadBanks(0);
+        App.FmodService.PlayTestSound();
+        App.PlayButtonClickedSound();
+    }
+
+    private void ContentPage_Disappearing(object sender, EventArgs e)
+    {
+        App.FmodService.StopTestSound();
     }
 }
 

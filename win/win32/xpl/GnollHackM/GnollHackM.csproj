@@ -55,7 +55,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\GnollHackX\GnollHackX\App.xaml.cs" />
+		<!--<Compile Include="..\GnollHackX\GnollHackX\App.xaml.cs" />-->
 		<Compile Include="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ClientGame.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ClientUtils.cs" />
@@ -301,6 +301,7 @@
 	  <None Remove="Assets\UI\you.png" />
 	  <None Remove="Assets\UI\zap.png" />
 	  <None Remove="Assets\uwch.ttf" />
+	  <None Remove="Platforms\Android\jars\fmod.jar" />
 	  <None Remove="Platforms\Android\libs\arm64-v8a\libc++_shared.so" />
 	  <None Remove="Platforms\Android\libs\arm64-v8a\libfmod.so" />
 	  <None Remove="Platforms\Android\libs\arm64-v8a\libfmodstudio.so" />
@@ -308,11 +309,12 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-android'">
+      <EmbeddedJar Include="Platforms\Android\jars\fmod.jar" />
+	  <AndroidLibrary Include="Platforms\Android\jars\fmod.jar" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmod.so" />
   	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmodstudio.so" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libc++_shared.so" />
-      <EmbeddedJar Include="Platforms\Android\jars\fmod.jar" />
       <AndroidAsset Include="Platforms\Android\gnh\credits" />
       <AndroidAsset Include="Platforms\Android\gnh\license" />
       <AndroidAsset Include="Platforms\Android\gnh\logfile" />
@@ -335,8 +337,8 @@
 	  <AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" />
 	  <Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
 	</ItemGroup>
-	
-	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-ios' or '$(TargetFramework)'=='net7.0-maccatalyst'">
 		<NativeReference Include="Platforms\iOS\libs\libfmodstudio_iphoneos.a">
 			<Kind>Static</Kind>
 			<Frameworks>AudioToolbox CoreAudio</Frameworks>

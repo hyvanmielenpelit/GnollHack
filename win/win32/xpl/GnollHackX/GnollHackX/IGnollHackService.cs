@@ -9,7 +9,11 @@ namespace GnollHackX
         void LoadLibrary();
         void UnloadLibrary();
         void InitializeGnollHack();
+#if GNH_MAUI
+        Task InitializeSecrets(Secrets secrets);
+#else
         void InitializeSecrets(Secrets secrets);
+#endif
         string GetGnollHackPath();
         void ClearFiles();
         void ClearCoreFiles();
