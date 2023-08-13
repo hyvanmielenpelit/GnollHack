@@ -26,7 +26,7 @@ public class MainApplication : MauiApplication
         MainActivity.StaticAssets = Assets;
         StaticAssets = Assets;
         MainActivity.CurrentMainActivity = Platform.CurrentActivity;
-        FmodService.AndroidInit(Platform.CurrentActivity);
+        FmodService.AndroidInit(this);
     }
 
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();

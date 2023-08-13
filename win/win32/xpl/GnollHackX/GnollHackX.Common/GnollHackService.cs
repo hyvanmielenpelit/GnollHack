@@ -570,13 +570,7 @@ namespace GnollHackX.Unknown
             }
         }
 
-        public
-#if GNH_MAUI
-        async Task
-#else
-        void
-#endif
-        InitializeSecrets(Secrets secrets)
+        public void InitializeSecrets(Secrets secrets)
         {
             if (secrets == null)
                 return;
@@ -604,13 +598,13 @@ namespace GnollHackX.Unknown
                 string sfiledir = sfile.source_directory;
 #if GNH_MAUI
 #if __IOS__
-                string fullsourcepath = Path.Combine("Platforms", "iOS", sfiledir, assetfile);
+                sfiledir = Path.Combine("Platforms", "iOS", sfiledir);
 #elif __ANDROID__
-                string fullsourcepath = Path.Combine("Platforms", "Android", sfiledir, assetfile);
+                sfiledir = Path.Combine("Platforms", "Android", sfiledir);
 #else
-                string fullsourcepath = Path.Combine("Platforms", "Unknown", sfiledir, assetfile);
+                sfiledir = Path.Combine("Platforms", "Unknown", sfiledir);
 #endif
-#else
+#endif
 #if __IOS__
                 string extension = Path.GetExtension(assetfile);
                 if (extension != null && extension.Length > 0)
@@ -621,7 +615,6 @@ namespace GnollHackX.Unknown
                 string fullsourcepath = Path.Combine(sfiledir, assetfile);
 #else
                 string fullsourcepath = Path.Combine(sfiledir, assetfile);
-#endif
 #endif
                 try
                 {
@@ -649,16 +642,12 @@ namespace GnollHackX.Unknown
 
                     if (!App.IsSecretsFileSavedToDisk(sfile))
                         continue;
-#if GNH_MAUI
-                    using (Stream s = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath))
-#else
 #if __ANDROID__
                     using (Stream s = assets.Open(fullsourcepath))
 #elif __IOS__
                     using (Stream s = File.OpenRead(fullsourcepath))
 #else
                     using (Stream s = File.OpenRead(fullsourcepath))
-#endif
 #endif
                     {
                         if (s == null)
