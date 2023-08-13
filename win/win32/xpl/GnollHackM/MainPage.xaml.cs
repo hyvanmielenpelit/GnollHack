@@ -79,10 +79,18 @@ public partial class MainPage : ContentPage
         //App.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Master.bank"), 0, false, false);
         //App.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Preliminary.bank"), 0, false, false);
         //App.FmodService.AddLoadableSoundBank(Path.Combine(gnhpath, "bank", "Music.bank"), 0, false, false);
+#if ANDROID
         App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Preliminary.bank", 0, true, false);
         App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Master.bank", 0, true, false);
         App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Master.strings.bank", 0, true, false);
         App.FmodService.AddLoadableSoundBank(App.PlatformService.GetAssetsPath() + "Platforms/Android/banks/Music.bank", 0, true, false);
+#elif IOS
+        string path = Path.Combine(App.PlatformService.GetAssetsPath(), "Platforms", "iOS", "banks");
+        App.FmodService.AddLoadableSoundBank(Path.Combine(path, "Preliminary.bank"), 0, true, false);
+        App.FmodService.AddLoadableSoundBank(Path.Combine(path, "Master.bank"), 0, true, false);
+        App.FmodService.AddLoadableSoundBank(Path.Combine(path, "Master.strings.bank"), 0, true, false);
+        App.FmodService.AddLoadableSoundBank(Path.Combine(path, "Music.bank"), 0, true, false);
+#endif
         App.FmodService.LoadBanks(0);
         App.FmodService.PlayTestSound();
         App.PlayButtonClickedSound();
