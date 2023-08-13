@@ -42,6 +42,10 @@
     <MauiiOSGnhDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\iOS\gnh\</MauiiOSGnhDir>
     <BankDesktopDir>$(WinWin32Dir)bank\Desktop\</BankDesktopDir>
     <BankMobileDir>$(WinWin32Dir)bank\Mobile\</BankMobileDir>
+    <XamarinMainDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\</XamarinMainDir>
+    <XamarinGamePagesDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Pages\Game\</XamarinGamePagesDir>
+    <XamarinStartScreenDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Pages\MainScreen\</XamarinStartScreenDir>
+    <MauiMainDir>$(RootDir)win\win32\xpl\GnollHackM\</MauiMainDir>
     <OutDir>$(ToolsDir)</OutDir>
     <WslInDir>C:\wsl-in\</WslInDir>
     <WslOutDir>C:\wsl-out\</WslOutDir>

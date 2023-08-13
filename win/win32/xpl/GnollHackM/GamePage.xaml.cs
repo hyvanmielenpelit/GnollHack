@@ -135,4 +135,13 @@ public partial class GamePage : ContentPage
 
     }
 
+    private void ContentPage_Appearing(object sender, EventArgs e)
+    {
+
     }
+
+    private void ContentPage_Disappearing(object sender, EventArgs e)
+    {
+
+    }
+}
