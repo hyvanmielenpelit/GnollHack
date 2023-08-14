@@ -740,11 +740,9 @@ register struct monst *mtmp;
             || (skipnonmagc && mattk->aatyp != AT_MAGC && mattk->aatyp != AT_SMMN))
             continue;
 
-        if (mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT)
+        if ((mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT) && !(mattk->aflags & ATTKFLAGS_SAME_HEAD))
             bite_butt_count++;
-        if (mtmp->data->heads > 1 && mtmp->heads_left < bite_butt_count)
-            continue;
-        if (mtmp->data->heads > 1 && mtmp->heads_tamed < bite_butt_count)
+        if (mtmp->data->heads > 1 && mtmp->heads_left < bite_butt_count + mtmp->heads_tamed)
             continue;
 
         switch (mattk->aatyp) {

@@ -3750,7 +3750,7 @@ register struct monst *mon;
             ++multi_claw;
     }
     multi_claw = (multi_claw > 1); /* switch from count to yes/no */
-    int bite_butt_count = 0;
+    unsigned int bite_butt_count = 0;
 
     play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_START_ATTACK);
 
@@ -3759,9 +3759,9 @@ register struct monst *mon;
         /* sum[i] = 0; -- now done above */
         mattk = getmattk(&youmonst, mon, i, sum, &alt_attk);
 
-        if (mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT)
+        if ((mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT) && !(mattk->aflags & ATTKFLAGS_SAME_HEAD))
             bite_butt_count++;
-        if (youmonst.data->heads > 1 && youmonst.heads_left < bite_butt_count)
+        if (youmonst.data->heads > 1 && youmonst.heads_left < bite_butt_count + youmonst.heads_tamed)
             continue;
 
 

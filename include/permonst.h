@@ -35,8 +35,7 @@ struct attack {
 };
 
 #define ATTKFLAG_MUST_SEE_TARGET    0x00000001UL
-#define ATTKFLAG_CERBERUS_BITE      0x00000002UL
-
+#define ATTKFLAGS_SAME_HEAD         0x00000002UL /* Does not count towards bite_butt_count */
 struct action_info
 {
     short actions[MAX_ACTION_TILES];

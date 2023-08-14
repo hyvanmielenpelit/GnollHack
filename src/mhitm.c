@@ -396,7 +396,7 @@ register struct monst *magr, *mdef;
     int weaponattackcount = 0;
 
     int tmp2 = tmp;
-    int bite_butt_count = 0;
+    unsigned int bite_butt_count = 0;
     boolean first_attack = TRUE;
     enum action_tile_types action = 0;
 
@@ -407,9 +407,9 @@ register struct monst *magr, *mdef;
         res[i] = MM_MISS;
         mattk = getmattk(magr, mdef, i, res, &alt_attk);
 
-        if (mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT)
+        if ((mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT) && !(mattk->aflags & ATTKFLAGS_SAME_HEAD))
             bite_butt_count++;
-        if (magr->data->heads > 1 && magr->heads_left < bite_butt_count)
+        if (magr->data->heads > 1 && magr->heads_left < bite_butt_count + magr->heads_tamed)
             continue;
 
         otmp = (struct obj *) 0;

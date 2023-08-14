@@ -528,8 +528,8 @@ NEARDATA struct permonst mons[] = {
 
     ENLARGED_MON("Cerberus", "Guardian of the Gates of Gehennom", "legendary three-headed hell hound", None, None,
         S_DOG, LVL(30, 21, -2, 18, 20, -17), (G_NOGEN | G_UNIQ | G_HELL),
-        A(ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, ATTKFLAG_CERBERUS_BITE, 0), ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, ATTKFLAG_CERBERUS_BITE, 0),
-          ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, ATTKFLAG_CERBERUS_BITE, 0), ATTK(AT_BREA, AD_FIRE, 12, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        A(ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, 0UL, 0),
+          ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BREA, AD_FIRE, 12, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1200, 450, MS_BARK, MZ_HUGE, 3, 0, MAT_FLESH), 
         STATS(STR19(24), 18, 25, 18, 15, 3),
         MR_POISON | MR_SLEEP | MR_CHARM | MR_FIRE | MR_REGENERATION | MR_SEE_INVISIBLE,
@@ -2245,7 +2245,7 @@ NEARDATA struct permonst mons[] = {
         always sticks with emin) */
     ENLARGED_MON("couatl", None, "flying poisonous angelic serpent with constriction attack", None, None, S_ANGEL, LVL(8, 10, 5, 11, 30, 7),
         (G_NOHELL | G_SGROUP | G_NOCORPSE | 1),
-        A(ATTK(AT_BITE, AD_DRST, 2, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 1, 3, 0, 0, 0, 0, 0UL, 0),
+        A(ATTK(AT_BITE, AD_DRST, 2, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 1, 3, 0, 0, 0, 0, ATTKFLAGS_SAME_HEAD, 0),
             ATTK(AT_HUGS, AD_WRAP, 2, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(900, 400, MS_HISS, MZ_LARGE, 1, 0, MAT_FLESH), STATS(STR18(100), 17, 15, 18, 19, 20),
         MR_POISON | MR_MAGIC_MISSILE | MR_CHARM,
@@ -2356,7 +2356,7 @@ NEARDATA struct permonst mons[] = {
         M4_BIRD, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
         5, CLR_BLACK, MONSTER_SOUNDSET_RAVEN, MONSTER_SOUNDSET_RAVEN, NO_SOUNDSET_SUBTYPE),
     MON("vampire bat", None, "fast blood-sucking flying mammal with poisonous bite", None, None, S_BAT, LVL(5, 20, 6, 4, 0, 0), (G_GENO | 2),
-        A(ATTK(AT_BITE, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_DRST, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
+        A(ATTK(AT_BITE, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_DRST, 0, 0, 0, 0, 0, 0, ATTKFLAGS_SAME_HEAD, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(30, 20, MS_SQEEK, MZ_SMALL, 1, 0, MAT_FLESH), STATS(9, 18, 15, 9, 9, 12), 
         MR_SLEEP | MR_POISON | MR_REGENERATION, 
@@ -3296,7 +3296,7 @@ struct permonst _mons2[] = {
     /* the illustration from _Through_the_Looking_Glass_
        depicts hands as well as wings */
     ENLARGED_MON("jabberwock", None, "powerful flying beast", None, None, S_JABBERWOCK, LVL(15, 12, -2, 5, 50, 0), (G_GENO | 1),
-        A(ATTK(AT_BITE, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0),
+        A(ATTK(AT_BITE, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 2, 10, 0, 0, 0, 0, ATTKFLAGS_SAME_HEAD, 0),
           ATTK(AT_CLAW, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1300, 600, MS_BURBLE, MZ_LARGE, 1, 0, MAT_FLESH), STATS(STR19(24), 15, 21, 6, 9, 3), 
@@ -3876,7 +3876,7 @@ struct permonst _mons2[] = {
         M4_NONE, M5_HALF_SIZED_MONSTER_TILE, M6_NONE, M7_NONE, M8_NONE,
         4, CLR_RED, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC, NO_SOUNDSET_SUBTYPE),
     MON("pit viper", None, "strong poisonous snake", None, None, S_SNAKE, LVL(6, 15, 2, 0, 0, 0), (G_GENO | 1),
-        A(ATTK(AT_BITE, AD_DRST, 1, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_DRST, 1, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
+        A(ATTK(AT_BITE, AD_DRST, 1, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_DRST, 1, 4, 0, 0, 0, 0, ATTKFLAGS_SAME_HEAD, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(100, 60, MS_HISS, MZ_MEDIUM, 1, 0, MAT_FLESH), STATS(9, 12, 9, 2, 2, 1), 
         MR_POISON, 
@@ -5481,7 +5481,7 @@ struct permonst _mons2[] = {
         None, None, S_DEMON, LVL(45, 24, -9, 21, 75, -15), //ENDMARKER FOR DEMON LORDS
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 4, 10, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BUTT, AD_PHYS, 3, 8, 0, 0, 0, 0, 0UL, 0),
-            ATTK(AT_BITE, AD_PHYS, 1, 4, 1, 0, 0, 0, 0UL, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 0, 10, 0, 0UL, 0), ATTK(AT_SMMN, AD_MINO, 0, 0, 0, 0, 30, 0, 0UL, 0),
+            ATTK(AT_BITE, AD_PHYS, 1, 4, 1, 0, 0, 0, ATTKFLAGS_SAME_HEAD, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 0, 10, 0, 0UL, 0), ATTK(AT_SMMN, AD_MINO, 0, 0, 0, 0, 30, 0, 0UL, 0),
             NO_ATTK, NO_ATTK),
         SIZ(2200, 1000, MS_SILENT, MZ_HUGE, 1, 0, MAT_FLESH), STATS(STR19(24), 16, 21, 18, 13, 15),
         MR_POISON | MR_FIRE | MR_SEE_INVISIBLE | MR_STUN,
