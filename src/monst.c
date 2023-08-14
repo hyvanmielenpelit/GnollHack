@@ -528,8 +528,8 @@ NEARDATA struct permonst mons[] = {
 
     ENLARGED_MON("Cerberus", "Guardian of the Gates of Gehennom", "legendary three-headed hell hound", None, None,
         S_DOG, LVL(30, 21, -2, 18, 20, -17), (G_NOGEN | G_UNIQ | G_HELL),
-        A(ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, 0UL, 0),
-          ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BREA, AD_FIRE, 12, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        A(ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, ATTKFLAG_CERBERUS_BITE, 0), ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, ATTKFLAG_CERBERUS_BITE, 0),
+          ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0, 0, 0, ATTKFLAG_CERBERUS_BITE, 0), ATTK(AT_BREA, AD_FIRE, 12, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1200, 450, MS_BARK, MZ_HUGE, 3, 0, MAT_FLESH), 
         STATS(STR19(24), 18, 25, 18, 15, 3),
         MR_POISON | MR_SLEEP | MR_CHARM | MR_FIRE | MR_REGENERATION | MR_SEE_INVISIBLE,

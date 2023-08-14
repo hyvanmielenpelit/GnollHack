@@ -744,6 +744,8 @@ register struct monst *mtmp;
             bite_butt_count++;
         if (mtmp->data->heads > 1 && mtmp->heads_left < bite_butt_count)
             continue;
+        if (mtmp->data->heads > 1 && mtmp->heads_tamed < bite_butt_count)
+            continue;
 
         switch (mattk->aatyp) {
         case AT_CLAW: /* "hand to hand" attacks */

@@ -34,7 +34,8 @@ struct attack {
     uchar action_tile; /* Action tile used for the attack */
 };
 
-#define ATTKFLAG_MUST_SEE_TARGET 0x00000001
+#define ATTKFLAG_MUST_SEE_TARGET    0x00000001UL
+#define ATTKFLAG_CERBERUS_BITE      0x00000002UL
 
 struct action_info
 {

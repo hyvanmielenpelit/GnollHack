@@ -1757,25 +1757,36 @@ struct permonst* ptr;
         switch (ptr->heads)
         {
         case 0:
-            strcpy(headbuf, "Headless");
+            Strcpy(headbuf, "Headless");
             break;
         case 1:
-            strcpy(headbuf, "Single-headed");
+            Strcpy(headbuf, "Single-headed");
             break;
         case 2:
-            strcpy(headbuf, "Two-headed");
+            Strcpy(headbuf, "Two-headed");
             break;
         case 3:
-            strcpy(headbuf, "Three-headed");
+            Strcpy(headbuf, "Three-headed");
             break;
         default:
             Sprintf(headbuf, "%d-headed", ptr->heads);
             break;
         }
 
-        if (mtmp && mtmp->heads_left != ptr->heads)
-            Sprintf(eos(headbuf), " (%d head%s left)", mtmp->heads_left, plur(mtmp->heads_left));
-
+        if (mtmp && (mtmp->heads_left != ptr->heads || mtmp->heads_tamed > 0))
+        {
+            Strcat(headbuf, " (");
+            if(mtmp->heads_left != ptr->heads)
+                Sprintf(eos(headbuf), "%d head%s left", mtmp->heads_left, plur(mtmp->heads_left));
+            if (mtmp->heads_tamed > 0)
+            {
+                if (mtmp->heads_left != ptr->heads)
+                    Sprintf(eos(headbuf), ", %d tamed", mtmp->heads_tamed);
+                else
+                    Sprintf(eos(headbuf), "%d head%s tamed", mtmp->heads_tamed, plur(mtmp->heads_tamed));
+            }
+            Strcat(headbuf, ")");
+        }
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, headbuf);        
         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);

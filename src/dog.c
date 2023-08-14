@@ -1750,8 +1750,9 @@ boolean thrown;
 
     boolean was_tame = is_tame(mtmp);
     boolean has_edog = has_edog(mtmp);
+    boolean is_cerberus = mtmp->data == &mons[PM_CERBERUS];
 
-    if (!charm_type)
+    if (!charm_type && !is_cerberus)
     {
         /* worst case, at least it'll be peaceful. */
         mtmp->mpeaceful = 1;
@@ -1794,11 +1795,11 @@ boolean thrown;
                         (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM
                          && mons[obj->corpsenm].msize > mtmp->data->msize);
 
-                    pline("%s catches %s%s", Monnam(mtmp), the(xname(obj)),
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s catches %s%s", Monnam(mtmp), the(xname(obj)),
                           !big_corpse ? "." : ", or vice versa!");
                 }
                 else if (cansee(mtmp->mx, mtmp->my))
-                    pline("%s.", Tobjnam(obj, "stop"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s.", Tobjnam(obj, "stop"));
             }
             /* dog_eat expects a floor object */
             place_object(obj, mtmp->mx, mtmp->my);
@@ -1813,7 +1814,7 @@ boolean thrown;
             return FALSE;
     }
 
-    if ((mtmp->mtame) ||  (!forcetaming && (mtmp->data->geno & G_UNIQ) && mtmp->data->mlet != S_DOG) /* Unique monsters cannot be tamed, except Cerberos -- JG */
+    if ((mtmp->mtame) ||  (!forcetaming && (mtmp->data->geno & G_UNIQ) && !is_cerberus) /* Unique monsters cannot be tamed, except Cerberus -- JG */
         /* monsters with conflicting structures cannot be tamed */
         || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc /* shopkeepers, guards, and priests cannot be forced to be tame for now -- JG */
         || (!forcetaming && 
@@ -1830,56 +1831,76 @@ boolean thrown;
     if (mtmp->m_id == quest_status.leader_m_id)
         return FALSE;
 
+    boolean skip_taming = FALSE;
     /* add the pet extension */
-    if (obj && mtmp->data == &mons[PM_CERBERUS] && mtmp->heads_tamed < mtmp->heads_left)
+    if (obj && is_cerberus && mtmp->heads_tamed < mtmp->heads_left)
     {
         mtmp->heads_tamed++;
+        if (mtmp->heads_tamed < mtmp->heads_left)
+        {
+            skip_taming = TRUE;
+        }
+        else
+        {
+            /* worst case, at least it'll be peaceful. */
+            mtmp->mpeaceful = 1;
+            set_mhostility(mtmp);
+            newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+        }
     }
-    else if(!has_edog)
-    {
-        newedog(mtmp);
-        initedog(mtmp, !charm_type);
-    }
-    else if (!charm_type)
-    {
-        mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
-        mtmp->mpeaceful = 1;
 
-    }
+    if (!skip_taming)
+    {
+        if (!has_edog)
+        {
+            newedog(mtmp);
+            initedog(mtmp, !charm_type);
+        }
+        else if (!charm_type)
+        {
+            mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
+            mtmp->mpeaceful = 1;
+        }
 
-    if (charm_type == 1)
-    {
-        (void)set_mon_property_b(mtmp, CHARMED, !duration ? -1 : duration, verbose);
-    }
-    else if (charm_type == 2)
-    {
-        (void)set_mon_property_b(mtmp, UNDEAD_CONTROL, !duration ? -1 : duration, verbose);
-    }
-    else if(is_tame(mtmp) && !was_tame)
-    {
-        newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+        if (charm_type == 1)
+        {
+            (void)set_mon_property_b(mtmp, CHARMED, !duration ? -1 : duration, verbose);
+        }
+        else if (charm_type == 2)
+        {
+            (void)set_mon_property_b(mtmp, UNDEAD_CONTROL, !duration ? -1 : duration, verbose);
+        }
+        else if (is_tame(mtmp) && !was_tame)
+        {
+            newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+        }
     }
 
     if (obj) 
     { /* thrown food */
         int headnum = (int)min(mtmp->heads_left, mtmp->heads_tamed);
-        if (mtmp->data == &mons[PM_CERBERUS] && (headnum > 0 && headnum <= 3))
+        if (is_cerberus && headnum > 0 && headnum <= mtmp->heads_left)
         {
-            const char* headstr[3] = { "first", "second", "third" };
-            pline("%s %s head %s %s and seems to appreciate it a lot.", s_suffix(Monnam(mtmp)), headstr[headnum - 1],
+            const char* headstr[4] = { "first", "second", "third", "ancillary" };
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s %s head %s %s and seems to appreciate it a lot.",
+                s_suffix(Monnam(mtmp)), headstr[min(3, headnum - 1)],
                 thrown ? "catches" : "takes", yname(obj));
+            if(headnum < mtmp->heads_left)
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "However, %d other head%s still remain %s.", mtmp->heads_left - headnum, plur(mtmp->heads_left - headnum), is_peaceful(mtmp) ? "untamed" : "hostile");
+            place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
+            /* devour the food (might grow into larger, genocided monster) */
+            useupf(obj, 1L);
         }
         else if (!thrown)
         {
-            pline("%s takes %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s takes %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
+            /* defer eating until the edog extension has been set up */
+            place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
+            /* devour the food (might grow into larger, genocided monster) */
+            if (dog_eat(mtmp, obj, mtmp->mx, mtmp->my, TRUE) == 2)
+                return TRUE; /* oops, it died... */
+            /* `obj' is now obsolete */
         }
-
-        /* defer eating until the edog extension has been set up */
-        place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
-        /* devour the food (might grow into larger, genocided monster) */
-        if (dog_eat(mtmp, obj, mtmp->mx, mtmp->my, TRUE) == 2)
-            return TRUE; /* oops, it died... */
-        /* `obj' is now obsolete */
     }
 
     newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);

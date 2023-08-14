@@ -363,15 +363,15 @@ boolean devour;
             //    pline("%s digs in.", noit_Monnam(mtmp));
             //else
             {
-                pline("%s %s %s.", noit_Monnam(mtmp),
+                pline_ex(ATR_NONE, devour ? CLR_MSG_ATTENTION : NO_COLOR, "%s %s %s.", noit_Monnam(mtmp),
                     devour ? "devours" : "eats", distant_name(obj, doname));
 
                 if (catavenged)
-                    You_feel("Schroedinger's cat has been avenged.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "Schroedinger's cat has been avenged.");
             }
         } 
         else if (seeobj)
-            pline("It %s %s.", devour ? "devours" : "eats",
+            pline_ex(ATR_NONE, devour ? CLR_MSG_ATTENTION : NO_COLOR, "It %s %s.", devour ? "devours" : "eats",
                   distant_name(obj, doname));
     }
 
@@ -401,7 +401,7 @@ boolean devour;
         increase_mon_property(mtmp, STUNNED, 5 + rnd(10));
         if (canseemon(mtmp) && flags.verbose) 
         {
-            pline("%s spits %s out in disgust!", Monnam(mtmp),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s spits %s out in disgust!", Monnam(mtmp),
                   distant_name(obj, doname));
         }
     } 
@@ -427,7 +427,7 @@ boolean devour;
             /* edible item owned by shop has been thrown or kicked
                by hero and caught by tame or food-tameable monst */
             oprice = unpaid_cost(obj, TRUE);
-            pline("That %s will cost you %ld %s.", objnambuf, oprice,
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "That %s will cost you %ld %s.", objnambuf, oprice,
                   currency(oprice));
             /* delobj->obfree will handle actual shop billing update */
         }
@@ -455,7 +455,7 @@ boolean devour;
         {
             (void)set_mon_property_b(mtmp, STONED, 0, canseemon(mtmp));
             if (canseemon(mtmp))
-                pline("%s looks limber!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s looks limber!", Monnam(mtmp));
         }
 
         increase_mon_property(mtmp, STONE_RESISTANCE, 13);
