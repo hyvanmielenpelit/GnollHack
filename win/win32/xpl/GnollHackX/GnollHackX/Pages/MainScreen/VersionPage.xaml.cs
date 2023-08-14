@@ -4,6 +4,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+
+namespace GnollHackM
+#else
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
@@ -11,6 +18,7 @@ using Xamarin.Forms.Xaml;
 using GnollHackX.Pages.Game;
 
 namespace GnollHackX.Pages.MainScreen
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class VersionPage : ContentPage
@@ -19,14 +27,18 @@ namespace GnollHackX.Pages.MainScreen
         public VersionPage(GamePage gamePage)
         {
             InitializeComponent();
+#if GNH_MAUI
+        On<iOS>().SetUseSafeArea(false);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
 
             _gamePage = gamePage;
 
             string compatstr = GHApp.GHVersionCompatibilityString;
             string manufacturer = DeviceInfo.Manufacturer;
-            if(manufacturer.Length > 0)
-                manufacturer = manufacturer.Substring(0,1).ToUpper() + manufacturer.Substring(1);
+            if (manufacturer.Length > 0)
+                manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
 
             ulong TotalMemInBytes = GHApp.PlatformService.GetDeviceMemoryInBytes();
             ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
@@ -120,9 +132,9 @@ namespace GnollHackX.Pages.MainScreen
                     - MainGrid.Padding.Left - MainGrid.Padding.Right - margins.Left - margins.Right);
                 double newsize = 15 * target_width / 400;
 
-                foreach(View v in VersionInfoGrid.Children)
+                foreach (View v in VersionInfoGrid.Children)
                 {
-                    if(v is Label)
+                    if (v is Label)
                     {
                         ((Label)v).FontSize = newsize;
                     }

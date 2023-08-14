@@ -4,13 +4,20 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
+namespace GnollHackM
+#else
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using GnollHackX.Pages.MainScreen;
 
 namespace GnollHackX.Pages.Game
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GameMenuPage : ContentPage
@@ -22,7 +29,11 @@ namespace GnollHackX.Pages.Game
         public GameMenuPage(GamePage gamePage)
         {
             InitializeComponent();
+#if GNH_MAUI
+            On<iOS>().SetUseSafeArea(false);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
 
             _gamePage = gamePage;
 
@@ -147,14 +158,14 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             btnGC.Text = "Collecting...";
-            btnGC.TextColor = Color.Yellow;
+            btnGC.TextColor = GHColors.Yellow;
 
             GHApp.DebugWriteRestart("Garbage Collection Start");
             GHApp.CollectGarbage();
             GHApp.DebugWriteProfilingStopwatchTimeAndStop("Garbage Collection End");
 
             btnGC.Text = "Done";
-            btnGC.TextColor = Color.Red;
+            btnGC.TextColor = GHColors.Red;
             MainLayout.IsEnabled = true;
         }
 

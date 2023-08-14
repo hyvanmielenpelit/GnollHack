@@ -4,9 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 using SkiaSharp;
-using SkiaSharp.Views.Forms;
 
 using System.Runtime.InteropServices;
 using System.Buffers.Text;
@@ -18,14 +16,25 @@ using System.Reflection;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Collections;
+using System.Collections.Concurrent;
+
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+
+namespace GnollHackM
+#else
+using Xamarin.Forms;
+using SkiaSharp.Views.Forms;
 using GnollHackX.Pages.Game;
 using GnollHackX.Pages.MainScreen;
 using Xamarin.Essentials;
-using System.Collections;
-using System.Collections.Concurrent;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackX
+#endif
 {
     public partial class MainPage : ContentPage
     {
@@ -34,20 +43,24 @@ namespace GnollHackX
         public MainPage()
         {
             InitializeComponent();
+#if GNH_MAUI
+            On<iOS>().SetUseSafeArea(true);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
         }
 
         public void ActivateLocalGameButton()
         {
             StartLocalGrid.IsEnabled = true;
-            StartLocalGameButton.TextColor = Color.White;
+            StartLocalGameButton.TextColor = GHColors.White;
         }
 
         private async void StartLocalGameButton_Clicked(object sender, EventArgs e)
         {
             StartLocalGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            StartLocalGameButton.TextColor = Color.Gray;
+            StartLocalGameButton.TextColor = GHColors.Gray;
             carouselView.Stop();
 
             long numberofgames = Preferences.Get("NumberOfGames", 0L);
@@ -480,7 +493,7 @@ namespace GnollHackX
             {
                 _popupStyle = popup_style.DisableAutoUpdate;
                 PopupCheckBoxLayout.IsVisible = true;
-                PopupTitleLabel.TextColor = Color.Red;
+                PopupTitleLabel.TextColor = GHColors.Red;
                 PopupTitleLabel.Text = "Auto-Update Warning";
                 if (GHApp.IsAndroid && isfromgoogleplay)
                     PopupLabel.Text = "Updating GnollHack may cause your saved games to become invalid. We recommend that you turn off Auto-Update from Google Play Store for GnollHack and manually apply updates when you have no saved games.";
@@ -700,7 +713,7 @@ namespace GnollHackX
         {
             _popupStyle = popup_style.GeneralDialog;
             PopupCheckBoxLayout.IsVisible = false;
-            PopupTitleLabel.TextColor = Color.LightBlue;
+            PopupTitleLabel.TextColor = GHColors.LightBlue;
             PopupTitleLabel.Text = "Wizard Mode";
             PopupLabel.Text = "Wizard Mode is a debug mode that makes you immortal and enables you to issue special wizard mode commands.";
             PopupGrid.IsVisible = true;

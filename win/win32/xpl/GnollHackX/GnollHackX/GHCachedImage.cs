@@ -1,12 +1,22 @@
-﻿using GnollHackX.Controls;
-using SkiaSharp;
+﻿using SkiaSharp;
+#if GNH_MAUI
+using SkiaSharp.Views.Maui;
+using SkiaSharp.Views.Maui.Controls;
+using GnollHackX;
+#else
 using SkiaSharp.Views.Forms;
+using Xamarin.Forms;
+using GnollHackX.Controls;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Xamarin.Forms;
 
+#if GNH_MAUI
+namespace GnollHackM
+#else
 namespace GnollHackX
+#endif
 {
     public enum GHAspect
     {

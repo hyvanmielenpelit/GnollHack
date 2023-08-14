@@ -6,12 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+
+namespace GnollHackM
+#else
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
 namespace GnollHackX.Pages.MainScreen
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ResetPage : ContentPage
@@ -19,7 +27,11 @@ namespace GnollHackX.Pages.MainScreen
         public ResetPage()
         {
             InitializeComponent();
+#if GNH_MAUI
+            On<iOS>().SetUseSafeArea(true);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
 #if !DEBUG
             btnDownloadTestFiles.IsVisible = false;
             btnImportTestFiles.IsVisible = false;
@@ -36,7 +48,7 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.GnollHackService.ClearCoreFiles();
                 GHApp.GnollHackService.InitializeGnollHack();
                 btnDeleteFiles.Text = "Done";
-                btnDeleteFiles.TextColor = Color.Red;
+                btnDeleteFiles.TextColor = GHColors.Red;
             }
             ResetGrid.IsEnabled = true;
         }
@@ -50,7 +62,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 GHApp.GnollHackService.ClearSavedGames();
                 btnDeleteSavedGames.Text = "Done";
-                btnDeleteSavedGames.TextColor = Color.Red;
+                btnDeleteSavedGames.TextColor = GHColors.Red;
             }
             ResetGrid.IsEnabled = true;
         }
@@ -65,7 +77,7 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.GnollHackService.ClearTopScores();
                 GHApp.GnollHackService.ClearDumplogs();
                 btnDeleteDumplogs.Text = "Done";
-                btnDeleteDumplogs.TextColor = Color.Red;
+                btnDeleteDumplogs.TextColor = GHColors.Red;
             }
             ResetGrid.IsEnabled = true;
         }
@@ -79,7 +91,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 GHApp.GnollHackService.ClearBones();
                 btnDeleteBones.Text = "Done";
-                btnDeleteBones.TextColor = Color.Red;
+                btnDeleteBones.TextColor = GHColors.Red;
             }
             ResetGrid.IsEnabled = true;
         }
@@ -93,7 +105,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 GHApp.GnollHackService.ClearAllFilesInMainDirectory();
                 btnDeleteAllMainFiles.Text = "Done";
-                btnDeleteAllMainFiles.TextColor = Color.Red;
+                btnDeleteAllMainFiles.TextColor = GHColors.Red;
             }
             ResetGrid.IsEnabled = true;
         }
@@ -107,7 +119,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 Preferences.Set("ResetExternalFiles", true);
                 btnDeleteDownloads.Text = "Deletion on restart";
-                btnDeleteDownloads.TextColor = Color.Red;
+                btnDeleteDownloads.TextColor = GHColors.Red;
             }
             ResetGrid.IsEnabled = true;
         }
@@ -168,7 +180,7 @@ namespace GnollHackX.Pages.MainScreen
                     Preferences.Set("VersionNumber", (long)vernum);
 
                 btnDeletePreferences.Text = "Done";
-                btnDeletePreferences.TextColor = Color.Red;
+                btnDeletePreferences.TextColor = GHColors.Red;
             }
             ResetGrid.IsEnabled = true;
         }
@@ -187,12 +199,12 @@ namespace GnollHackX.Pages.MainScreen
                         Directory.Delete(datadir, true);
 
                     btnDeleteUserData.Text = "Done";
-                    btnDeleteUserData.TextColor = Color.Red;
+                    btnDeleteUserData.TextColor = GHColors.Red;
                 }
                 catch
                 {
                     btnDeleteUserData.Text = "Failed";
-                    btnDeleteUserData.TextColor = Color.Red;
+                    btnDeleteUserData.TextColor = GHColors.Red;
                 }
             }
             ResetGrid.IsEnabled = true;
@@ -298,17 +310,17 @@ namespace GnollHackX.Pages.MainScreen
                 if (trouble)
                 {
                     btnDownloadTestFiles.Text = "Error";
-                    btnDownloadTestFiles.TextColor = Color.Red;
+                    btnDownloadTestFiles.TextColor = GHColors.Red;
                 }
                 else if (cancelled)
                 {
                     btnDownloadTestFiles.Text = "Cancelled";
-                    btnDownloadTestFiles.TextColor = Color.Red;
+                    btnDownloadTestFiles.TextColor = GHColors.Red;
                 }
                 else
                 {
                     btnDownloadTestFiles.Text = "Done";
-                    btnDownloadTestFiles.TextColor = Color.Red;
+                    btnDownloadTestFiles.TextColor = GHColors.Red;
                 }
             }
             ResetGrid.IsEnabled = true;

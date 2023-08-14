@@ -4,10 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#if GNH_MAUI
+namespace GnollHackM
+#else
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace GnollHackX.Controls
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SimpleImageButton : ContentView

@@ -3,17 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using System.Collections.Concurrent;
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
+namespace GnollHackM
+#else
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
-using System.Reflection;
-using System.Collections.Concurrent;
 using GnollHackX.Pages.Game;
 
 namespace GnollHackX.Pages.MainScreen
+#endif
 {
+
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsPage : ContentPage
     {
@@ -24,9 +32,13 @@ namespace GnollHackX.Pages.MainScreen
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
         {
             InitializeComponent();
+#if GNH_MAUI
+        On<iOS>().SetUseSafeArea(true);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
             _gameMenuPage = gameMenuPage;
-            if(_gameMenuPage != null)
+            if (_gameMenuPage != null)
                 _gamePage = _gameMenuPage._gamePage;
             else
                 _gamePage = null;
@@ -69,7 +81,7 @@ namespace GnollHackX.Pages.MainScreen
                 Preferences.Set("GraphicsStyle", GraphicsPicker.SelectedIndex);
             }
 
-            if(RefreshRatePicker.SelectedIndex > -1)
+            if (RefreshRatePicker.SelectedIndex > -1)
             {
                 if (_gamePage != null)
                     _gamePage.MapRefreshRate = (MapRefreshRateStyle)RefreshRatePicker.SelectedIndex;
@@ -100,7 +112,7 @@ namespace GnollHackX.Pages.MainScreen
 
             if (_gamePage != null)
             {
-                if(_gamePage.UseSimpleCmdLayout != SimpleCmdLayoutSwitch.IsToggled)
+                if (_gamePage.UseSimpleCmdLayout != SimpleCmdLayoutSwitch.IsToggled)
                 {
                     _gamePage.UseSimpleCmdLayout = SimpleCmdLayoutSwitch.IsToggled;
                     Assembly assembly = GetType().GetTypeInfo().Assembly;
@@ -190,7 +202,7 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("EffectsVolume", (float)EffectsVolumeSlider.Value);
             Preferences.Set("UIVolume", (float)UIVolumeSlider.Value);
 
-            if(!GHApp.IsMuted)
+            if (!GHApp.IsMuted)
                 GHApp.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
 
             int res = GHConstants.DefaultMessageRows, tryres = 0;
@@ -298,7 +310,7 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.LighterDarkening = LighterDarkeningSwitch.IsToggled;
             Preferences.Set("LighterDarkening", LighterDarkeningSwitch.IsToggled);
 
-            if(MainSection.Contains(AlternativeDrawingViewCell))
+            if (MainSection.Contains(AlternativeDrawingViewCell))
             {
                 if (_gamePage != null)
                     _gamePage.AlternativeLayerDrawing = AlternativeLayerDrawingSwitch.IsToggled;
@@ -362,10 +374,10 @@ namespace GnollHackX.Pages.MainScreen
 
                 forcemaxmsg = false; /* Always starts as false */
                 ForceMaxMessageSwitch.IsEnabled = false;
-                ForceMaxMessageLabel.TextColor = Color.Gray;
+                ForceMaxMessageLabel.TextColor = GHColors.Gray;
                 showexstatus = false; /* Always starts as false */
                 ShowExtendedStatusBarSwitch.IsEnabled = false;
-                ShowExtendedStatusBarLabel.TextColor = Color.Gray;
+                ShowExtendedStatusBarLabel.TextColor = GHColors.Gray;
                 hpbars = Preferences.Get("HitPointBars", false);
                 nhstatusbarclassic = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
                 pets = Preferences.Get("ShowPets", true);
@@ -393,10 +405,10 @@ namespace GnollHackX.Pages.MainScreen
                 mapgrid = _gamePage.MapGrid;
                 forcemaxmsg = _gamePage.ForceAllMessages;
                 ForceMaxMessageSwitch.IsEnabled = true;
-                ForceMaxMessageLabel.TextColor = Color.Black;
+                ForceMaxMessageLabel.TextColor = GHColors.Black;
                 showexstatus = _gamePage.ShowExtendedStatusBar;
                 ShowExtendedStatusBarSwitch.IsEnabled = true;
-                ShowExtendedStatusBarLabel.TextColor = Color.Black;
+                ShowExtendedStatusBarLabel.TextColor = GHColors.Black;
                 nhstatusbarclassic = _gamePage.ClassicStatusBar;
                 hpbars = _gamePage.HitPointBars;
                 pets = _gamePage.ShowPets;
@@ -441,11 +453,11 @@ namespace GnollHackX.Pages.MainScreen
             GPUSwitch.IsToggled = gpu;
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
             NavBarSwitch.IsToggled = navbar;
-            if(!GHApp.IsAndroid)
+            if (!GHApp.IsAndroid)
             {
                 NavBarSwitch.IsEnabled = false;
                 NavBarLabel.IsEnabled = false;
-                NavBarLabel.TextColor = Color.Gray;
+                NavBarLabel.TextColor = GHColors.Gray;
                 if (MainSection.Contains(NavBarViewCell))
                     MainSection.Remove(NavBarViewCell);
             }
@@ -454,26 +466,26 @@ namespace GnollHackX.Pages.MainScreen
             {
                 StatusBarSwitch.IsEnabled = false;
                 StatusBarLabel.IsEnabled = false;
-                StatusBarLabel.TextColor = Color.Gray;
+                StatusBarLabel.TextColor = GHColors.Gray;
                 if (MainSection.Contains(StatusBarViewCell))
                     MainSection.Remove(StatusBarViewCell);
             }
             DeveloperSwitch.IsToggled = devmode;
             LogMessageSwitch.IsToggled = logmessages;
-            if(!devmode)
+            if (!devmode)
             {
                 LogMessageSwitch.IsEnabled = false;
                 LogMessageLabel.IsEnabled = false;
-                LogMessageLabel.TextColor = Color.Gray;
+                LogMessageLabel.TextColor = GHColors.Gray;
             }
             SoundBankSwitch.IsToggled = bank;
             SingleDumpLogSwitch.IsToggled = singledumplog;
             HTMLDumpLogSwitch.IsToggled = html;
-            if(!singledumplog)
+            if (!singledumplog)
             {
                 HTMLDumpLogSwitch.IsEnabled = false;
                 HTMLDumpLogLabel.IsEnabled = false;
-                HTMLDumpLogLabel.TextColor = Color.Gray;
+                HTMLDumpLogLabel.TextColor = GHColors.Gray;
             }
             StreamingBankToMemorySwitch.IsToggled = streamingbanktomemory;
             StreamingBankToDiskSwitch.IsToggled = streamingbanktodisk;
@@ -520,13 +532,13 @@ namespace GnollHackX.Pages.MainScreen
             LighterDarkeningSwitch.IsToggled = lighterdarkening;
             AlternativeLayerDrawingSwitch.IsToggled = accuratedrawing;
 #if !DEBUG
-            if(!AlternativeLayerDrawingSwitch.IsToggled)
-            {
-                AlternativeLayerDrawingSwitch.IsEnabled = false;
-                AlternativeDrawingLabel.TextColor = Color.Gray;
-                if (MainSection.Contains(AlternativeDrawingViewCell))
-                    MainSection.Remove(AlternativeDrawingViewCell);    
-            }
+        if(!AlternativeLayerDrawingSwitch.IsToggled)
+        {
+            AlternativeLayerDrawingSwitch.IsEnabled = false;
+            AlternativeDrawingLabel.TextColor = Color.Gray;
+            if (MainSection.Contains(AlternativeDrawingViewCell))
+                MainSection.Remove(AlternativeDrawingViewCell);    
+        }
 #endif
             WallEndSwitch.IsToggled = wallends;
 
@@ -538,16 +550,16 @@ namespace GnollHackX.Pages.MainScreen
             if (ClassicStatusBarSwitch.IsToggled)
             {
                 OrbSwitch.IsEnabled = true;
-                OrbsLabel.TextColor = Color.Black;
+                OrbsLabel.TextColor = GHColors.Black;
                 PetSwitch.IsEnabled = false;
-                PetsLabel.TextColor = Color.Gray;
+                PetsLabel.TextColor = GHColors.Gray;
             }
             else
             {
                 OrbSwitch.IsEnabled = false;
-                OrbsLabel.TextColor = Color.Gray;
+                OrbsLabel.TextColor = GHColors.Gray;
                 PetSwitch.IsEnabled = true;
-                PetsLabel.TextColor = Color.Black;
+                PetsLabel.TextColor = GHColors.Black;
             }
             OrbSwitch_Toggled(sender, new ToggledEventArgs(OrbSwitch.IsToggled));
             PetSwitch_Toggled(sender, new ToggledEventArgs(PetSwitch.IsToggled));
@@ -558,16 +570,16 @@ namespace GnollHackX.Pages.MainScreen
             if (!ClassicStatusBarSwitch.IsToggled || OrbSwitch.IsToggled)
             {
                 MaxHealthInOrbSwitch.IsEnabled = true;
-                MaxHealthInOrbLabel.TextColor = Color.Black;
+                MaxHealthInOrbLabel.TextColor = GHColors.Black;
                 MaxManaInOrbSwitch.IsEnabled = true;
-                MaxManaInOrbLabel.TextColor = Color.Black;
+                MaxManaInOrbLabel.TextColor = GHColors.Black;
             }
             else
             {
                 MaxHealthInOrbSwitch.IsEnabled = false;
-                MaxHealthInOrbLabel.TextColor = Color.Gray;
+                MaxHealthInOrbLabel.TextColor = GHColors.Gray;
                 MaxManaInOrbSwitch.IsEnabled = false;
-                MaxManaInOrbLabel.TextColor = Color.Gray;
+                MaxManaInOrbLabel.TextColor = GHColors.Gray;
             }
         }
 
@@ -576,12 +588,12 @@ namespace GnollHackX.Pages.MainScreen
             if (!ClassicStatusBarSwitch.IsToggled && PetSwitch.IsToggled)
             {
                 PetRowPicker.IsEnabled = true;
-                PetRowsLabel.TextColor = Color.Black;
+                PetRowsLabel.TextColor = GHColors.Black;
             }
             else
             {
                 PetRowPicker.IsEnabled = false;
-                PetRowsLabel.TextColor = Color.Gray;
+                PetRowsLabel.TextColor = GHColors.Gray;
             }
         }
 
@@ -593,7 +605,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private void StreamingBankToMemorySwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            if(e.Value && StreamingBankToDiskSwitch.IsToggled)
+            if (e.Value && StreamingBankToDiskSwitch.IsToggled)
                 StreamingBankToDiskSwitch.IsToggled = false;
         }
 
@@ -609,14 +621,14 @@ namespace GnollHackX.Pages.MainScreen
             {
                 LogMessageSwitch.IsEnabled = true;
                 LogMessageLabel.IsEnabled = true;
-                LogMessageLabel.TextColor = Color.Black;
+                LogMessageLabel.TextColor = GHColors.Black;
             }
             else
             {
                 LogMessageSwitch.IsEnabled = false;
                 LogMessageSwitch.IsToggled = false;
                 LogMessageLabel.IsEnabled = false;
-                LogMessageLabel.TextColor = Color.Gray;
+                LogMessageLabel.TextColor = GHColors.Gray;
             }
         }
 
@@ -626,13 +638,13 @@ namespace GnollHackX.Pages.MainScreen
             {
                 HTMLDumpLogSwitch.IsEnabled = true;
                 HTMLDumpLogLabel.IsEnabled = true;
-                HTMLDumpLogLabel.TextColor = Color.Black;
+                HTMLDumpLogLabel.TextColor = GHColors.Black;
             }
             else
             {
                 HTMLDumpLogSwitch.IsEnabled = false;
                 HTMLDumpLogLabel.IsEnabled = false;
-                HTMLDumpLogLabel.TextColor = Color.Gray;
+                HTMLDumpLogLabel.TextColor = GHColors.Gray;
             }
         }
 
@@ -715,9 +727,9 @@ namespace GnollHackX.Pages.MainScreen
                 res.Trim();
             }
 
-            if(res != "" && !GHApp.IsValidHttpsURL(res))
+            if (res != "" && !GHApp.IsValidHttpsURL(res))
             {
-                TextFrame.BorderColor = Color.Red;
+                TextFrame.BorderColor = GHColors.Red;
                 TextEntry.Focus();
                 TextOkButton.IsEnabled = true;
                 TextCancelButton.IsEnabled = true;
@@ -725,7 +737,7 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             _customGameStatusLink = res;
-            if(res == "")
+            if (res == "")
                 CustomLinkLabel.Text = "Default";
             else
                 CustomLinkLabel.Text = "Custom";
@@ -735,7 +747,7 @@ namespace GnollHackX.Pages.MainScreen
             TextGrid.IsVisible = false;
             TextEntry.Text = "";
             TextCaption.Text = "";
-            TextFrame.BorderColor = Color.Black;
+            TextFrame.BorderColor = GHColors.Black;
             CustomLinkButton.IsEnabled = true;
         }
 
@@ -749,7 +761,7 @@ namespace GnollHackX.Pages.MainScreen
             TextGrid.IsVisible = false;
             TextEntry.Text = "";
             TextCaption.Text = "";
-            TextFrame.BorderColor = Color.Black;
+            TextFrame.BorderColor = GHColors.Black;
             CustomLinkButton.IsEnabled = true;
         }
 
@@ -767,7 +779,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private void VolumeSlider_ValueChanged(object sender, ValueChangedEventArgs e)
         {
-            if(_doChangeVolume)
+            if (_doChangeVolume)
                 GHApp.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
         }
 

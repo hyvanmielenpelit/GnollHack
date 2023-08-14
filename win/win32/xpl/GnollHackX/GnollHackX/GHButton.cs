@@ -1,9 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+#if GNH_MAUI
+using GnollHackX;
+#else
 using Xamarin.Forms;
+#endif
 
+#if GNH_MAUI
+namespace GnollHackM
+#else
 namespace GnollHackX
+#endif
 {
     public class GHButton : Button
     {

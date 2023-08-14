@@ -6,12 +6,20 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+
+namespace GnollHackM
+#else
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
 namespace GnollHackX.Pages.MainScreen
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TopScorePage : ContentPage
@@ -22,7 +30,11 @@ namespace GnollHackX.Pages.MainScreen
         public TopScorePage(string fileName)
         {
             InitializeComponent();
+#if GNH_MAUI
+            On<iOS>().SetUseSafeArea(true);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
             _fileName = fileName;
             //Assembly assembly = GetType().GetTypeInfo().Assembly;
             //CloseButtonImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
@@ -33,7 +45,11 @@ namespace GnollHackX.Pages.MainScreen
         public TopScorePage()
         {
             InitializeComponent();
+#if GNH_MAUI
+            On<iOS>().SetUseSafeArea(true);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
             _fileName = "";
             NoScoresLabel.IsVisible = true;
             ScoresView.IsVisible = false;

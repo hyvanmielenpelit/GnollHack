@@ -171,15 +171,155 @@
   <Target Name="InitialBuild">
 	  <Message Text="Start executing copytilesetdroid.proj using initial build" Importance="High" />
 	  <MSBuild Projects="copytilesetdroid.proj" Targets="Build" />
-	  <!-- <Message Text="Start creating Maui pages from Xamarin pages" Importance="High" />
+	  <Message Text="Start creating Maui pages from Xamarin pages" Importance="High" />
       <PropertyGroup>
-          <InputFile>$(XamarinGamePagesDir)GamePage.xaml</InputFile>
-          <OutputFile>$(MauiMainDir)GamePage.xaml</OutputFile>
+          <InputFile>$(XamarinControlsDir)CustomImageButton.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)CustomImageButton.xaml</OutputFile>
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
-          Encoding="Unicode"/> -->
+          Encoding="UTF-8"/>
+	  <!-- <Copy SourceFiles="$(InputFile).cs" DestinationFolder="$(MauiMainDir)"/> -->
+	  <PropertyGroup>
+          <InputFile>$(XamarinControlsDir)LabeledImageButton.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)LabeledImageButton.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+	  <!-- <Copy SourceFiles="$(InputFile).cs" DestinationFolder="$(MauiMainDir)"/> -->
+	  <PropertyGroup>
+          <InputFile>$(XamarinControlsDir)RowImageButton.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)RowImageButton.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+	  <!-- <Copy SourceFiles="$(InputFile).cs" DestinationFolder="$(MauiMainDir)"/> -->
+	  <PropertyGroup>
+          <InputFile>$(XamarinControlsDir)SimpleImageButton.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)SimpleImageButton.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+	  <!-- <Copy SourceFiles="$(InputFile).cs" DestinationFolder="$(MauiMainDir)"/> -->
+   	  <PropertyGroup>
+          <InputFile>$(XamarinControlsDir)SwitchableCanvasView.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)SwitchableCanvasView.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+	  <!-- <Copy SourceFiles="$(InputFile).cs" DestinationFolder="$(MauiMainDir)"/> -->
+   	  <PropertyGroup>
+          <InputFile>$(XamarinMainDir)MainPage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)MainPage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinStartScreenDir)VaultPage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)VaultPage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinStartScreenDir)SettingsPage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)SettingsPage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinStartScreenDir)ResetPage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)ResetPage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinStartScreenDir)AboutPage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)AboutPage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinStartScreenDir)DisplayFilePage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)DisplayFilePage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinStartScreenDir)EditorPage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)EditorPage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinStartScreenDir)TopScorePage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)TopScorePage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinStartScreenDir)LibraryPage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)LibraryPage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinStartScreenDir)VersionPage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)VersionPage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinGamePagesDir)GameMenuPage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)GameMenuPage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
   </Target>
 </Project>

@@ -5,13 +5,21 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+
+namespace GnollHackM
+#else
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
-using static System.Net.WebRequestMethods;
 
 namespace GnollHackX.Pages.MainScreen
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AboutPage : ContentPage
@@ -19,7 +27,11 @@ namespace GnollHackX.Pages.MainScreen
         public AboutPage()
         {
             InitializeComponent();
+#if GNH_MAUI
+            On<iOS>().SetUseSafeArea(true);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
         }
 
         private async void btnCreditsX_Clicked(object sender, EventArgs e)

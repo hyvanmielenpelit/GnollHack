@@ -1,9 +1,13 @@
-﻿using GnollHackX.Pages.MainScreen;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
+#if GNH_MAUI
+using GnollHackM;
+#else
+using GnollHackX.Pages.MainScreen;
+#endif
 
 namespace GnollHackX
 {

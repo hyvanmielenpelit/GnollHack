@@ -107,7 +107,11 @@ namespace GnollHackX.Droid
         {
             RevertAnimatorDuration(true);
             //StopForegroundService();
+#if GNH_MAUI
+            Platform.CurrentActivity.Finish();
+#else
             MainActivity.CurrentMainActivity.Finish();
+#endif
         }
 
         public void SetStatusBarHidden(bool ishidden)

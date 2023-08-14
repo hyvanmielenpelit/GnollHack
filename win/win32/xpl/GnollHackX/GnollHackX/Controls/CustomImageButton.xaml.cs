@@ -1,15 +1,25 @@
 ﻿using SkiaSharp;
+#if GNH_MAUI
+using Microsoft.Maui.Controls;
+using SkiaSharp.Views.Maui;
+using SkiaSharp.Views.Maui.Controls;
+using GnollHackX;
+#else
 using SkiaSharp.Views.Forms;
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-
+#if GNH_MAUI
+namespace GnollHackM
+#else
 namespace GnollHackX.Controls
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CustomImageButton : ContentView
@@ -50,9 +60,9 @@ namespace GnollHackX.Controls
         public event EventHandler Clicked;
 
         public static readonly BindableProperty ButtonRelativeWidthProperty = BindableProperty.Create(nameof(ButtonRelativeWidthProperty), typeof(double), typeof(CustomImageButton), 10.0 / 12.0);
-        public static readonly BindableProperty NormalTextColorProperty = BindableProperty.Create(nameof(NormalTextColorProperty), typeof(Color), typeof(CustomImageButton), Color.White);
-        public static readonly BindableProperty SelectedTextColorProperty = BindableProperty.Create(nameof(SelectedTextColorProperty), typeof(Color), typeof(CustomImageButton), Color.White);
-        public static readonly BindableProperty DisabledTextColorProperty = BindableProperty.Create(nameof(DisabledTextColorProperty), typeof(Color), typeof(CustomImageButton), Color.Gray);
+        public static readonly BindableProperty NormalTextColorProperty = BindableProperty.Create(nameof(NormalTextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.White);
+        public static readonly BindableProperty SelectedTextColorProperty = BindableProperty.Create(nameof(SelectedTextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.White);
+        public static readonly BindableProperty DisabledTextColorProperty = BindableProperty.Create(nameof(DisabledTextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.Gray);
         public static readonly BindableProperty UseVaryingTextColorsProperty = BindableProperty.Create(nameof(UseVaryingTextColorsProperty), typeof(bool), typeof(CustomImageButton), false);
         public static readonly BindableProperty UseVaryingBackgroundImagesProperty = BindableProperty.Create(nameof(UseVaryingBackgroundImages), typeof(bool), typeof(CustomImageButton), true);
 

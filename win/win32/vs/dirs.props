@@ -45,6 +45,7 @@
     <XamarinMainDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\</XamarinMainDir>
     <XamarinGamePagesDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Pages\Game\</XamarinGamePagesDir>
     <XamarinStartScreenDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Pages\MainScreen\</XamarinStartScreenDir>
+    <XamarinControlsDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Controls\</XamarinControlsDir>
     <MauiMainDir>$(RootDir)win\win32\xpl\GnollHackM\</MauiMainDir>
     <OutDir>$(ToolsDir)</OutDir>
     <WslInDir>C:\wsl-in\</WslInDir>

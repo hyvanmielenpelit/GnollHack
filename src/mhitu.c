@@ -726,7 +726,7 @@ register struct monst *mtmp;
 
     int tmp2 = tmp;
     int weaponattackcount = 0;
-    int bite_butt_count = 0;
+    unsigned int bite_butt_count = 0;
 
     boolean first_attack = TRUE;
 

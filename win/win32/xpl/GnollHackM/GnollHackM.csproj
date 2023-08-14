@@ -55,15 +55,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Remove="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\BackgroundView.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ClientGame.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ClientUtils.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\CustomLabel.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\EventArgs.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\HttpClientDownloadWithProgress.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHApp.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHButton.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHCachedImage.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHColors.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHConstants.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHDelegates.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHEditor.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />
@@ -81,6 +87,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\IPlatformService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\IFMODService.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Secrets.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
@@ -92,18 +99,40 @@
 		<None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_errors.cs" />
 		<None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_dsp.cs" />
 		<None Remove="..\GnollHackX\GnollHackX.FMOD\FMODService.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Controls\CustomImageButton.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Controls\LabeledImageButton.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Controls\RowImageButton.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Controls\SimpleImageButton.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Controls\SwitchableCanvasView.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\AboutPage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\ResetPage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\SettingsPage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\EditorPage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\BackgroundView.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ClientGame.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ClientUtils.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\CustomLabel.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\EventArgs.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\HttpClientDownloadWithProgress.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHApp.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHButton.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHCachedImage.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHColors.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHConstants.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHDelegates.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHEditor.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />		
@@ -113,7 +142,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHResponse.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHRequest.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHScreenText.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\GHStatusField.cs" />		
+		<Compile Include="..\GnollHackX\GnollHackX\GHStatusField.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHTopScoreItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHWindow.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GlyphImageSource.cs" />
@@ -121,6 +151,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IPlatformService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />		
 		<Compile Include="..\GnollHackX\GnollHackX\Secrets.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
@@ -132,6 +163,22 @@
 		<Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_errors.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_dsp.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.FMOD\FMODService.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Controls\CustomImageButton.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Controls\LabeledImageButton.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Controls\RowImageButton.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Controls\SimpleImageButton.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Controls\SwitchableCanvasView.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\AboutPage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\ResetPage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\SettingsPage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\EditorPage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
 	</ItemGroup>
 	
 	<ItemGroup>

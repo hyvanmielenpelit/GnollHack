@@ -1,5 +1,16 @@
 ﻿#if !GNH_MAUI
 using Xamarin.Forms;
+
+[assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
+[assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
+[assembly: ExportFont("Immortal-Regular.ttf", Alias = "Immortal")]
+[assembly: ExportFont("endr.ttf", Alias = "Endor")]
+[assembly: ExportFont("shxi.ttf", Alias = "Xizor")]
+[assembly: ExportFont("Lato-Regular.ttf", Alias = "Lato-Regular")]
+[assembly: ExportFont("Lato-Bold.ttf", Alias = "Lato-Bold")]
+[assembly: ExportFont("DejaVuSansMono.ttf", Alias = "DejaVuSansMono")]
+[assembly: ExportFont("DejaVuSansMono-Bold.ttf", Alias = "DejaVuSansMono-Bold")]
+[assembly: ExportFont("archristy.ttf", Alias = "ARChristy")]
 namespace GnollHackX
 {
     public partial class App : Application

@@ -6,12 +6,20 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+
+namespace GnollHackM
+#else
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
 namespace GnollHackX.Pages.MainScreen
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DisplayFilePage : ContentPage
@@ -40,7 +48,11 @@ namespace GnollHackX.Pages.MainScreen
         public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare, bool isHtml)
         {
             InitializeComponent();
+#if GNH_MAUI
+            On<iOS>().SetUseSafeArea(true);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
 
             _fileName = fileName;
             _fixedWidth = fixedWidth;
@@ -131,10 +143,18 @@ namespace GnollHackX.Pages.MainScreen
                 else
                 {
                     Thickness safearea = new Thickness();
+#if GNH_MAUI
+                    bool usingsafe = On<iOS>().UsingSafeArea();
+#else
                     bool usingsafe = On<Xamarin.Forms.PlatformConfiguration.iOS>().UsingSafeArea();
+#endif
                     if (usingsafe)
                     {
+#if GNH_MAUI
+                        safearea = On<iOS>().SafeAreaInsets();
+#else
                         safearea = On<Xamarin.Forms.PlatformConfiguration.iOS>().SafeAreaInsets();
+#endif
                     }
                     Thickness usedpadding = usingsafe ? safearea : MainGrid.Padding;
                     double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);

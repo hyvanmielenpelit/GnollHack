@@ -4,11 +4,16 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+#if GNH_MAUI
+using GnollHackX;
 
+namespace GnollHackM
+#else
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace GnollHackX.Controls
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LabeledImageButton : ContentView
@@ -16,7 +21,7 @@ namespace GnollHackX.Controls
         public static readonly BindableProperty LblTextProperty = BindableProperty.Create(nameof(LblText), typeof(string), typeof(LabeledImageButton), string.Empty);
         public static readonly BindableProperty LblFontSizeProperty = BindableProperty.Create(nameof(LblFontSize), typeof(double), typeof(LabeledImageButton), 9.0);
         public static readonly BindableProperty LblFontFamilyProperty = BindableProperty.Create(nameof(LblFontFamily), typeof(string), typeof(LabeledImageButton), "Lato-Regular");
-        public static readonly BindableProperty LblFontColorProperty = BindableProperty.Create(nameof(LblFontColor), typeof(Color), typeof(LabeledImageButton), Color.White);
+        public static readonly BindableProperty LblFontColorProperty = BindableProperty.Create(nameof(LblFontColor), typeof(Color), typeof(LabeledImageButton), GHColors.White);
         public static readonly BindableProperty ImgSourcePathProperty = BindableProperty.Create(nameof(ImgSourcePath), typeof(string), typeof(LabeledImageButton), string.Empty);
         public static readonly BindableProperty GridWidthProperty = BindableProperty.Create(nameof(GridWidth), typeof(double), typeof(LabeledImageButton), 50.0);
         public static readonly BindableProperty GridHeightProperty = BindableProperty.Create(nameof(GridHeight), typeof(double), typeof(LabeledImageButton), 60.0);

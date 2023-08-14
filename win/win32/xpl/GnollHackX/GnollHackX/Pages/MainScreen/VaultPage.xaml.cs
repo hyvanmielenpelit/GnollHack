@@ -1,17 +1,25 @@
-﻿using GnollHackX.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+
+namespace GnollHackM
+#else
+using GnollHackX.Controls;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
 namespace GnollHackX.Pages.MainScreen
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class VaultPage : ContentPage
@@ -19,13 +27,17 @@ namespace GnollHackX.Pages.MainScreen
         public VaultPage()
         {
             InitializeComponent();
+#if GNH_MAUI
+            On<iOS>().SetUseSafeArea(true);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
 
             LabeledImageButton rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://GnollHackX.Assets.UI.conduct.png";
             rib.LblText = "Top Scores";
             rib.LblFontSize = 20;
-            rib.LblFontColor = Color.Black;
+            rib.LblFontColor = GHColors.Black;
             rib.LblFontFamily = "Immortal";
             rib.ImgWidth = 120;
             rib.ImgHeight = 120;
@@ -39,7 +51,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.ImgSourcePath = "resource://GnollHackX.Assets.UI.examine.png";
             rib.LblText = "Library";
             rib.LblFontSize = 20;
-            rib.LblFontColor = Color.Black;
+            rib.LblFontColor = GHColors.Black;
             rib.LblFontFamily = "Immortal";
             rib.ImgWidth = 120;
             rib.ImgHeight = 120;

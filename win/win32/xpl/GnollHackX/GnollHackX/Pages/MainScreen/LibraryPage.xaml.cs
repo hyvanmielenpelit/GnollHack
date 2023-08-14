@@ -1,5 +1,4 @@
-﻿using GnollHackX.Controls;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,19 +6,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+
+namespace GnollHackM
+#else
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
+using GnollHackX.Controls;
 
 namespace GnollHackX.Pages.MainScreen
+#endif
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class LibraryPage : ContentPage
 	{
 		public LibraryPage ()
 		{
 			InitializeComponent ();
+#if GNH_MAUI
+            On<iOS>().SetUseSafeArea(false);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
         }
 
         private async void Button_Clicked(object sender, EventArgs e)

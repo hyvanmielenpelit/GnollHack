@@ -1,6 +1,4 @@
-﻿using GnollHackX.Pages.Game;
-using SkiaSharp;
-using SkiaSharp.Views.Forms;
+﻿using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,10 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#if GNH_MAUI
+using SkiaSharp.Views.Maui;
+using SkiaSharp.Views.Maui.Controls;
+using GnollHackX;
+namespace GnollHackM
+#else
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using GnollHackX.Pages.Game;
+using SkiaSharp.Views.Forms;
 
 namespace GnollHackX.Controls
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SwitchableCanvasView : ContentView

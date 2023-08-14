@@ -497,6 +497,15 @@ namespace GnollHackX.Unknown
             /* Copy missing files from resources */
             string content;
             string assetsourcedir = "gnh";
+#if GNH_MAUI
+#if __ANDROID__
+            assetsourcedir = Path.Combine("Platforms", "Android", assetsourcedir);
+#elif __IOS__
+            assetsourcedir = Path.Combine("Platforms", "iOS", assetsourcedir);
+#else                
+            assetsourcedir = Path.Combine("Platforms", "Unknown", assetsourcedir);
+#endif
+#endif
 #if __ANDROID__
             AssetManager assets = MainActivity.StaticAssets;
 #endif

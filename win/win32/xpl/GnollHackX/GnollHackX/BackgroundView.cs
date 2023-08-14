@@ -1,11 +1,19 @@
 ﻿using SkiaSharp;
-using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Generic;
 using System.Text;
+#if GNH_MAUI
+using SkiaSharp.Views.Maui;
+using SkiaSharp.Views.Maui.Controls;
+using GnollHackX;
+
+namespace GnollHackM
+#else
+using SkiaSharp.Views.Forms;
 using Xamarin.Forms;
 
 namespace GnollHackX
+#endif
 {
     public enum BackgroundStyles
     {

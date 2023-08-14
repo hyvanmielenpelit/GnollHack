@@ -1,13 +1,21 @@
 ﻿using SkiaSharp;
-using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+#if GNH_MAUI
+using GnollHackX;
+using SkiaSharp.Views.Maui;
+using SkiaSharp.Views.Maui.Controls;
+
+namespace GnollHackM
+#else
+using SkiaSharp.Views.Forms;
 using Xamarin.Forms;
 
 namespace GnollHackX
+#endif
 {
     public struct CarouselBitmap
     {
@@ -34,9 +42,9 @@ namespace GnollHackX
 
         CarouselBitmap[] _caruselBitmaps = new CarouselBitmap[]
         {
-            new CarouselBitmap("GnollHackX.Assets.main-menu-ranger.jpg", TextAlignment.Center, TextAlignment.Center),
-            new CarouselBitmap("GnollHackX.Assets.main-menu-dwarf.jpg", TextAlignment.Center, TextAlignment.Center),
-            new CarouselBitmap("GnollHackX.Assets.main-menu-gnoll.jpg", TextAlignment.Center, TextAlignment.Center),
+            new CarouselBitmap(GHApp.AppResourceName + ".Assets.main-menu-ranger.jpg", TextAlignment.Center, TextAlignment.Center),
+            new CarouselBitmap(GHApp.AppResourceName + ".Assets.main-menu-dwarf.jpg", TextAlignment.Center, TextAlignment.Center),
+            new CarouselBitmap(GHApp.AppResourceName + ".Assets.main-menu-gnoll.jpg", TextAlignment.Center, TextAlignment.Center),
         };
 
         private bool _inited = false;

@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gnollhackclient="clr-namespace:GnollHackM" 
+             xmlns:controls="clr-namespace:GnollHackM"
+             BackgroundColor="Black"
+             x:Class="GnollHackM.VersionPage">
+    <ContentPage.Content>
+        <Grid>
+            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <Grid x:Name="MainGrid" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label x:Name="HeaderLabel" Text="Version" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
+                <ScrollView x:Name="TextScrollView" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
+                    <StackLayout>
+                        <Grid x:Name="VersionInfoGrid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" x:Name="GameDurationRowDefinition" />
+                                <RowDefinition Height="Auto" x:Name="SessionPlayTimeRowDefinition" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Row="0" Text="GnollHack Version:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="1" x:Name="PortVersionTitleLabel" Text="Mobile Port Version:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="2" x:Name="PortBuildTitleLabel" Text="Mobile Port Version:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="3" Text="Skia Version:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="4" Text="FMOD Version:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="5" Text="Saved games valid:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="6" Text="Platform:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="7" Text="Device:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="8" Text="Total Memory:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="9" Text="Disk Space:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="10" Text="Total Play Time:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="11" Text="Current Play Time:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="12" Text="Session Play Time:" x:Name="SessionTitleLabel" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="13" Text="Game Duration:" x:Name="GameDurationTitleLabel" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+
+                            <Label Grid.Row="0" Grid.Column="1" x:Name="GnollHackVersionLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="1" Grid.Column="1" x:Name="PortVersionLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="2" Grid.Column="1" x:Name="PortBuildLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="3" Grid.Column="1" x:Name="SkiaVersionLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="4" Grid.Column="1" x:Name="FMODVersionLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="5" Grid.Column="1" x:Name="GnollHackCompatibilityLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="6" Grid.Column="1" x:Name="PlatformLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="7" Grid.Column="1" x:Name="DeviceLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="8" Grid.Column="1" x:Name="TotalMemoryLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="9" Grid.Column="1" x:Name="DiskSpaceLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="10" Grid.Column="1" x:Name="TotalPlayTimeLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="11" Grid.Column="1" x:Name="CurrentPlayTimeLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="12" Grid.Column="1" x:Name="SessionTimeLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="13" Grid.Column="1" x:Name="GameDurationLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                        </Grid>
+                        <Grid x:Name="LongVersionGrid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="0" x:Name="LongTitleLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                                FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="1" x:Name="LongLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                                FontFamily="DejaVuSansMono" FontSize="13" />
+                        </Grid>
+                    </StackLayout>
+                </ScrollView>
+                <controls:CustomImageButton Grid.Row="2" Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Center" WidthRequest="250" HeightRequest="60" />
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

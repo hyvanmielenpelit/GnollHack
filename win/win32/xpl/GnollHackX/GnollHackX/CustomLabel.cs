@@ -1,12 +1,21 @@
 ﻿using SkiaSharp;
-using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Generic;
 using System.Text;
+
+#if GNH_MAUI
+using GnollHackX;
+using SkiaSharp.Views.Maui;
+using SkiaSharp.Views.Maui.Controls;
+
+namespace GnollHackM
+#else
+using SkiaSharp.Views.Forms;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace GnollHackX
+#endif
 {
     public enum CustomLabelFonts
     {
@@ -95,7 +104,7 @@ namespace GnollHackX
         }
 
         public static readonly BindableProperty TextColorProperty = BindableProperty.Create(
-            "TextColor", typeof(Color), typeof(CustomLabel), Color.White);
+            "TextColor", typeof(Color), typeof(CustomLabel), GHColors.White);
 
         public Color TextColor
         {
@@ -104,7 +113,7 @@ namespace GnollHackX
         }
 
         public static readonly BindableProperty OutlineColorProperty = BindableProperty.Create(
-            "OutlineColor", typeof(Color), typeof(CustomLabel), Color.Black);
+            "OutlineColor", typeof(Color), typeof(CustomLabel), GHColors.Black);
 
         public Color OutlineColor
         {
@@ -595,13 +604,21 @@ namespace GnollHackX
                                     {
                                         textPaint.Style = SKPaintStyle.Stroke;
                                         textPaint.StrokeWidth = (float)OutlineWidth * scale;
+#if GNH_MAUI
+                                        SKColor outlinecolor = new SKColor((byte)(255 * OutlineColor.Red), (byte)(255 * OutlineColor.Green), (byte)(255 * OutlineColor.Blue), (byte)(255 * OutlineColor.Alpha));
+#else
                                         SKColor outlinecolor = new SKColor((byte)(255 * OutlineColor.R), (byte)(255 * OutlineColor.G), (byte)(255 * OutlineColor.B), (byte)(255 * OutlineColor.A));
+#endif
                                         textPaint.Color = outlinecolor;
                                         canvas.DrawText(printedString, x, y, textPaint);
                                     }
 
                                     textPaint.Style = SKPaintStyle.Fill;
+#if GNH_MAUI
+                                    SKColor fillcolor = new SKColor((byte)(255 * TextColor.Red), (byte)(255 * TextColor.Green), (byte)(255 * TextColor.Blue), (byte)(255 * TextColor.Alpha));
+#else
                                     SKColor fillcolor = new SKColor((byte)(255 * TextColor.R), (byte)(255 * TextColor.G), (byte)(255 * TextColor.B), (byte)(255 * TextColor.A));
+#endif
                                     textPaint.Color = fillcolor;
                                     canvas.DrawText(printedString, x, y, textPaint);
                                     x += textPaint.MeasureText(printedString);
