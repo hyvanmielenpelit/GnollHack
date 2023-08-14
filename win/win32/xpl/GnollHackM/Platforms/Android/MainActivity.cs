@@ -16,4 +16,12 @@ public class MainActivity : MauiAppCompatActivity
 
     public static AssetManager StaticAssets;
 
+    protected override void OnCreate(Bundle savedInstanceState)
+    {
+        base.OnCreate(savedInstanceState);
+        Platform.Init(this, savedInstanceState);
+
+        this.Window.AddFlags(WindowManagerFlags.Fullscreen);
+    }
+
 }

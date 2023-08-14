@@ -22,7 +22,6 @@ public class MainApplication : MauiApplication
         Java.Lang.JavaSystem.LoadLibrary(PlatformConstants.library);
         int res = LibTest();
         System.Diagnostics.Debug.WriteLine(res);
-        Platform.Init(this);
         MainActivity.StaticAssets = Assets;
         StaticAssets = Assets;
         MainActivity.CurrentMainActivity = Platform.CurrentActivity;

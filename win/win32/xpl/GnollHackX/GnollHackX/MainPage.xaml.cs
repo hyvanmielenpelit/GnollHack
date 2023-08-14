@@ -45,6 +45,7 @@ namespace GnollHackX
             InitializeComponent();
 #if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
+            Shell.SetNavBarIsVisible(this, false);
 #else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #endif
