@@ -112,7 +112,7 @@ namespace GnollHackX
         {
             Assembly assembly = typeof(App).GetTypeInfo().Assembly;
             string json = "";
-            using (Stream stream = assembly.GetManifestResourceStream(GHConstants.GHSettingsResourcePath))
+            using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + GHConstants.GHSettingsResourcePath))
             {
                 if (stream != null)
                 {
@@ -142,7 +142,7 @@ namespace GnollHackX
         {
             Assembly assembly = typeof(App).GetTypeInfo().Assembly;
             string json = "";
-            using (Stream stream = assembly.GetManifestResourceStream(GHConstants.GHSecretsResourcePath))
+            using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + GHConstants.GHSecretsResourcePath))
             {
                 if (stream != null)
                 {
@@ -1861,9 +1861,11 @@ namespace GnollHackX
                         using (Stream stream = assembly.GetManifestResourceStream(imagePath))
                         {
                             SKBitmap newBitmap = SKBitmap.Decode(stream);
-                            newBitmap.SetImmutable();
                             if (newBitmap != null)
+                            {
+                                newBitmap.SetImmutable();
                                 _cachedBitmaps.Add("resource://" + imagePath, newBitmap);
+                            }
                         }
                     }
                 }
@@ -1890,9 +1892,9 @@ namespace GnollHackX
                         using (Stream stream = assembly.GetManifestResourceStream(imagePath))
                         {
                             SKBitmap newBitmap = SKBitmap.Decode(stream);
-                            newBitmap.SetImmutable();
                             if (newBitmap != null)
                             {
+                                newBitmap.SetImmutable();
                                 if (addToCache)
                                     _cachedBitmaps.Add(sourcePath, newBitmap);
 
