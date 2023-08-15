@@ -292,17 +292,18 @@ int x, y;
 {
     char *name, monnambuf[BUFSZ], headbuf[BUFSZ], tmpbuf[BUFSZ];
     boolean accurate = !Hallucination;
+    boolean show_monster_type = accurate && (mtmp->isshk || has_umname(mtmp) || (has_mname(mtmp) && mtmp->u_know_mname)) && !is_mname_proper_name(mtmp->data);
 
     name = (mtmp->data == &mons[PM_COYOTE] && accurate)
               ? coyotename(mtmp, monnambuf)
               : distant_monnam(mtmp, ARTICLE_NONE, monnambuf);
 
-    strcpy(headbuf, "");
+    Strcpy(headbuf, "");
 
     if ((mtmp->data->heads > 3 && !(mtmp->data->geno & G_UNIQ) && !is_mname_proper_name(mtmp->data)) || (mtmp->data->heads > 1 && mtmp->heads_left != mtmp->data->heads))
         Sprintf(headbuf, "%d-headed ", mtmp->heads_left);
 
-    strcpy(tmpbuf, "");
+    Strcpy(tmpbuf, "");
     Sprintf(tmpbuf, "%s%s%s",
         (is_tame(mtmp) && accurate)
         ? (call_mon_tame(mtmp) ? "tame " : "allied ")
@@ -316,8 +317,10 @@ int x, y;
             (mtmp->mx != x || mtmp->my != y)
                 ? "tail of "
                 : "",
-        (mtmp->mx != x || mtmp->my != y) && !(mtmp->isshk && accurate) ? an(tmpbuf) : tmpbuf);
+        (mtmp->mx != x || mtmp->my != y) && !((mtmp->isshk || has_umname(mtmp) || (has_mname(mtmp) && mtmp->u_know_mname) || (is_mplayer(mtmp->data) && strstri(name, " the ") != 0) || is_mname_proper_name(mtmp->data)) && accurate) ? an(tmpbuf) : tmpbuf);
 
+    if (show_monster_type)
+        Sprintf(eos(buf), ", %s", an(pm_monster_name(mtmp->data, mtmp->female)));
 
     if (u.ustuck == mtmp) {
         if (u.uswallow || iflags.save_uswallow) /* monster detection */
@@ -536,6 +539,8 @@ char *buf, *monbuf;
             else
                 look_at_monster(buf, monbuf, mtmp, x, y);
             pm = mtmp->data;
+            if(has_umname(mtmp) || (has_mname(mtmp) && mtmp->u_know_mname))
+                noarticle = TRUE;
         }
         else if (Hallucination)
         {
@@ -711,7 +716,7 @@ char *buf, *monbuf;
     }
 
     char exbuf[BUFSIZ];
-    strcpy(exbuf, buf);
+    Strcpy(exbuf, buf);
     int article = strstri(exbuf, " of a room")? 2 :
         (!noarticle && pm && (pm->geno & G_UNIQ)) ? (is_mname_proper_name(pm) ? 0 : 2) : /* for unique monsters have no article if the name is a proper name, otherwise they have the */
         !(noarticle == TRUE
@@ -1393,11 +1398,11 @@ struct permonst **for_supplement;
             if (*(*firstmatch))
             {
                 char mdescbuf[BUFSZ];
-                strcpy(mdescbuf, "");
+                Strcpy(mdescbuf, "");
                 if (!Hallucination && pm && pm->mdescription && strcmp(pm->mdescription, ""))
                 {
                     char mdescbuf2[BUFSZ];
-                    strcpy(mdescbuf2, pm->mdescription);
+                    Strcpy(mdescbuf2, pm->mdescription);
                     //*mdescbuf2 = lowc(*mdescbuf2);
                     Sprintf(mdescbuf, ", %s", mdescbuf2);
                 }
@@ -1405,7 +1410,7 @@ struct permonst **for_supplement;
                 if (iflags.using_gui_tiles)
                 {
                     Sprintf(temp_buf, "%s%s", *firstmatch, mdescbuf);
-                    (void)strcpy(out_str, temp_buf);
+                    Strcpy(out_str, temp_buf);
                 }
                 else
                 {
@@ -1537,7 +1542,7 @@ coord *click_cc;
             *out_str = '\0';
             for (invobj = invent; invobj; invobj = invobj->nobj)
                 if (invobj->invlet == invlet) {
-                    strcpy(out_str, singular(invobj, xname));
+                    Strcpy(out_str, singular(invobj, xname));
                     break;
                 }
             if (*out_str)

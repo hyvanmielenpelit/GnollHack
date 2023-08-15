@@ -1042,10 +1042,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     }
     else if (has_uoname(obj))
     {
-        if(obj->otyp == CORPSE)
-            Strcat(buf, " known as "); /* corpses are not labeled */
-        else
-            Strcat(buf, " labeled ");
+        Strcat(buf, " labeled ");
         Strcat(buf, UONAME(obj));
     }
     if (!strncmpi(buf, "the ", 4))
@@ -1066,7 +1063,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         }
         else if (has_umname(OMONST(obj)))
         {
-            Strcat(buf, " called ");
+            Strcat(buf, " nicknamed ");
             Strcat(buf, UMNAME(OMONST(obj)));
         }
     }

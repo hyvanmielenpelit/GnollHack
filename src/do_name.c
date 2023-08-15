@@ -2106,6 +2106,12 @@ boolean called;
         Strcat(buf, rname);
         name_at_start = bogon_is_pname(rnamecode);
     }
+    else if (do_name && has_umname(mtmp))
+    {
+        char* umname = UMNAME(mtmp);
+        Strcat(buf, umname);
+        name_at_start = TRUE;
+    }
     else if (do_name && has_mname(mtmp) && mtmp->u_know_mname)
     {
         char *name = MNAME(mtmp);
@@ -2132,7 +2138,7 @@ boolean called;
         else 
         {
             char tmpbuf[BUFSIZ];
-            strcpy(tmpbuf, buf);
+            Strcpy(tmpbuf, buf);
             boolean npc_with_name_only = has_enpc(mtmp) && mtmp->isnpc && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_DISPLAY_NAME_ONLY) != 0;
             if (!is_tame(mtmp) && !npc_with_name_only)
             {
@@ -2160,13 +2166,6 @@ boolean called;
     {
         Strcat(buf, pm_name);
         name_at_start = (boolean) is_mname_proper_name(mdat);
-    }
-
-    /* Append umname if has one -- called is now obsolete */
-    if (!(has_mname(mtmp) && mtmp->u_know_mname) &&/*called &&*/ has_umname(mtmp))
-    {
-        char* umname = UMNAME(mtmp);
-        Sprintf(eos(buf), " known as %s", umname);
     }
 
     /* Write article or your in start */
