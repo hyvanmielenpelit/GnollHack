@@ -408,6 +408,7 @@ namespace GnollHackX
                             targetrect = new SKRect(0, halfsizevpadding, Width, halfsizevpadding + halfsizeheight);
                             ypadding = halfsizevpadding;
                             tileHeight = halfsizeheight;
+                            scaled_tile_height = halfsizeheight;
                             scale = tileWidth / GHConstants.TileWidth;
                         }
                         else
@@ -417,6 +418,7 @@ namespace GnollHackX
                             targetrect = new SKRect(fullsizepadding - CanvasXStart, 0, fullsizepadding + fullsizewidth - CanvasXStart, Height);
                             xpadding = fullsizepadding;
                             tileWidth = fullsizewidth;
+                            scaled_tile_height = Height;
                             scale = tileWidth / GHConstants.TileWidth;
                         }
 
