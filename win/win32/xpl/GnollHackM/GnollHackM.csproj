@@ -396,7 +396,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-android'">
-      <EmbeddedJar Include="Platforms\Android\jars\fmod.jar" />
+      <!--<EmbeddedJar Include="Platforms\Android\jars\fmod.jar" />-->
 	  <AndroidLibrary Include="Platforms\Android\jars\fmod.jar" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmod.so" />
   	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmodstudio.so" />
