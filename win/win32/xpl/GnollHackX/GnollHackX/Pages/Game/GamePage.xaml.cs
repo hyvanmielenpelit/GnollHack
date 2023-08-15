@@ -521,6 +521,7 @@ namespace GnollHackX.Pages.Game
                     using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits.png"))
                     {
                         GHApp._tileMap[0] = SKBitmap.Decode(stream);
+                        GHApp._tileMap[0].SetImmutable();
                     }
                 }));
                 await Task.WhenAll(tasks);
@@ -532,6 +533,7 @@ namespace GnollHackX.Pages.Game
                     using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits-2.png"))
                     {
                         GHApp._tileMap[1] = SKBitmap.Decode(stream);
+                        GHApp._tileMap[1].SetImmutable();
                     }
                 }));
                 await Task.WhenAll(tasks);
@@ -543,6 +545,7 @@ namespace GnollHackX.Pages.Game
                     using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack-logo-test-2.png"))
                     {
                         GHApp._logoBitmap = SKBitmap.Decode(stream);
+                        GHApp._logoBitmap.SetImmutable();
                     }
                 }));
                 await Task.WhenAll(tasks);
@@ -554,6 +557,7 @@ namespace GnollHackX.Pages.Game
                     using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.skill.png"))
                     {
                         GHApp._skillBitmap = SKBitmap.Decode(stream);
+                        GHApp._skillBitmap.SetImmutable();
                     }
 
                     GHApp.InitializeArrowButtons(assembly);
