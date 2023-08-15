@@ -36,8 +36,6 @@ namespace GnollHackX.Pages.MainScreen
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #endif
             _fileName = fileName;
-            //Assembly assembly = GetType().GetTypeInfo().Assembly;
-            //CloseButtonImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
             ScoresView.BindingContext = this;
             MainGrid.BindingContext = this;
         }
@@ -53,8 +51,6 @@ namespace GnollHackX.Pages.MainScreen
             _fileName = "";
             NoScoresLabel.IsVisible = true;
             ScoresView.IsVisible = false;
-            //Assembly assembly = GetType().GetTypeInfo().Assembly;
-            //CloseButtonImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
             ScoresView.BindingContext = this;
         }
 

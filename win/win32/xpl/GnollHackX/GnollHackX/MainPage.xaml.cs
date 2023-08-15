@@ -99,10 +99,6 @@ namespace GnollHackX
             {
                 GHApp.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 _firsttime = false;
-                //Assembly thisassembly = GetType().GetTypeInfo().Assembly;
-                //FmodLogoImage.Source = "resource://GnollHackX.Assets.FMOD-Logo-192-White.png"; // ImageSource.FromResource("GnollHackX.Assets.FMOD-Logo-192-White.png", thisassembly);
-                //StartLogoImage.Source = "resource://GnollHackX.Assets.gnollhack-logo-test-2.png"; //  ImageSource.FromResource("GnollHackX.Assets.gnollhack-logo-test-2.png", thisassembly);
-                //MainLogoImage.Source = "resource://GnollHackX.Assets.gnollhack-logo-test-2.png"; // ImageSource.FromResource("GnollHackX.Assets.gnollhack-logo-test-2.png", thisassembly);
                 if (GHApp.PlatformService != null)
                 {
                     bool removeanimationson = GHApp.PlatformService.IsRemoveAnimationsOn();

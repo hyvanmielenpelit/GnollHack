@@ -76,6 +76,9 @@ namespace GnollHackX
         {
             get
             {
+#if GNH_MAUI
+                return false;
+#endif
                 string manufacturer = DeviceInfo.Manufacturer;
                 string model = DeviceInfo.Model;
                 bool isGooglePixel6orGreater = false;

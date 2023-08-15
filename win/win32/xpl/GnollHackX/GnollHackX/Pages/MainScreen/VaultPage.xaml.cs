@@ -34,7 +34,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 
             LabeledImageButton rib = new LabeledImageButton();
-            rib.ImgSourcePath = "resource://GnollHackX.Assets.UI.conduct.png";
+            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.conduct.png";
             rib.LblText = "Top Scores";
             rib.LblFontSize = 20;
             rib.LblFontColor = GHColors.Black;
@@ -48,7 +48,7 @@ namespace GnollHackX.Pages.MainScreen
             VaultLayout.Children.Add(rib);
 
             rib = new LabeledImageButton();
-            rib.ImgSourcePath = "resource://GnollHackX.Assets.UI.examine.png";
+            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.examine.png";
             rib.LblText = "Library";
             rib.LblFontSize = 20;
             rib.LblFontColor = GHColors.Black;

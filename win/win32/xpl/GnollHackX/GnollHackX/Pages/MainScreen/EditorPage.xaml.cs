@@ -36,9 +36,6 @@ namespace GnollHackX.Pages.MainScreen
             _fileName = fileName;
             HeaderLabel.Text = header;
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            //OKButtonImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
-            //CancelButtonImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
-            //ResetButtonImage.Source = ImageSource.FromResource("GnollHackX.Assets.button_normal.png", assembly);
         }
 
         public bool ReadFile(out string errorMessage)

@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
+#if GNH_MAUI
+using GnollHackM;
+#else
 using GnollHackX.Pages.Game;
-
+#endif
 namespace GnollHackX
 {
     public class GHFloatingText

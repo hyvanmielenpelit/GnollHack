@@ -1,5 +1,4 @@
 ﻿using SkiaSharp;
-using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -8,25 +7,36 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using Xamarin.Essentials;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
-using GnollHackX.Controls;
 using System.Runtime.CompilerServices;
-using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
-using Xamarin.Forms.PlatformConfiguration;
 using System.Text.RegularExpressions;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using SkiaSharp.Views.Maui;
+using SkiaSharp.Views.Maui.Controls;
+
+namespace GnollHackM
+#else
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+using Xamarin.Essentials;
+using GnollHackX.Controls;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using Xamarin.Forms.PlatformConfiguration;
+using SkiaSharp.Views.Forms;
+
 namespace GnollHackX.Pages.Game
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GamePage : ContentPage
@@ -422,7 +432,12 @@ namespace GnollHackX.Pages.Game
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
+            //On<iOS>().SetUseSafeArea(true);
+#if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
+#else
+            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
             _mainPage = mainPage;
 
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
@@ -494,7 +509,7 @@ namespace GnollHackX.Pages.Game
             LoadingProgressBar.Progress = 0.0;
 
             var tasks = new List<Task>();
-            _gnollHackService = DependencyService.Get<IGnollHackService>();
+            _gnollHackService = GHApp.GnollHackService;
             _gnollHackService.InitializeGnollHack();
 
             if (!GHApp.StartGameDataSet)
@@ -503,7 +518,7 @@ namespace GnollHackX.Pages.Game
                 tasks.Add(LoadingProgressBar.ProgressTo(0.3, 600, Easing.Linear));
                 tasks.Add(Task.Run(() =>
                 {
-                    using (Stream stream = assembly.GetManifestResourceStream("GnollHackX.Assets.gnollhack_64x96_transparent_32bits.png"))
+                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits.png"))
                     {
                         GHApp._tileMap[0] = SKBitmap.Decode(stream);
                     }
@@ -514,7 +529,7 @@ namespace GnollHackX.Pages.Game
                 tasks.Add(LoadingProgressBar.ProgressTo(0.4, 100, Easing.Linear));
                 tasks.Add(Task.Run(() =>
                 {
-                    using (Stream stream = assembly.GetManifestResourceStream("GnollHackX.Assets.gnollhack_64x96_transparent_32bits-2.png"))
+                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits-2.png"))
                     {
                         GHApp._tileMap[1] = SKBitmap.Decode(stream);
                     }
@@ -525,7 +540,7 @@ namespace GnollHackX.Pages.Game
                 tasks.Add(LoadingProgressBar.ProgressTo(0.5, 100, Easing.Linear));
                 tasks.Add(Task.Run(() =>
                 {
-                    using (Stream stream = assembly.GetManifestResourceStream("GnollHackX.Assets.gnollhack-logo-test-2.png"))
+                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack-logo-test-2.png"))
                     {
                         GHApp._logoBitmap = SKBitmap.Decode(stream);
                     }
@@ -536,7 +551,7 @@ namespace GnollHackX.Pages.Game
                 tasks.Add(LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear));
                 tasks.Add(Task.Run(() =>
                 {
-                    using (Stream stream = assembly.GetManifestResourceStream("GnollHackX.Assets.UI.skill.png"))
+                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.skill.png"))
                     {
                         GHApp._skillBitmap = SKBitmap.Decode(stream);
                     }
@@ -1267,10 +1282,10 @@ namespace GnollHackX.Pages.Game
                     switch (data.style)
                     {
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Next interesting / monster */
-                            icon_string = "GnollHackX.Assets.UI.next.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.next.png";
                             break;
                         default:
-                            icon_string = "GnollHackX.Assets.UI.next.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.next.png";
                             break;
                     }
                     break;
@@ -1279,40 +1294,40 @@ namespace GnollHackX.Pages.Game
                     switch (data.style)
                     {
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Previous interesting / monster */
-                            icon_string = "GnollHackX.Assets.UI.previous.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.previous.png";
                             break;
                         default:
-                            icon_string = "GnollHackX.Assets.UI.previous.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.previous.png";
                             break;
                     }
                     break;
                 case 'e':
-                    icon_string = "GnollHackX.Assets.UI.eat.png";
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.eat.png";
                     break;
                 case 'l':
-                    icon_string = "GnollHackX.Assets.UI.loot.png";
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.loot.png";
                     break;
                 case 'p':
-                    icon_string = "GnollHackX.Assets.UI.pay.png";
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.pay.png";
                     break;
                 case ',':
-                    icon_string = "GnollHackX.Assets.UI.pickup.png";
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.pickup.png";
                     break;
                 case '<':
                     switch (data.style)
                     {
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Upwards */
-                            icon_string = "GnollHackX.Assets.UI.target-upwards.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.target-upwards.png";
                             break;
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS:
-                            icon_string = "GnollHackX.Assets.UI.stairs-up.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-up.png";
                             break;
                         default:
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
                             if (data.target_text != null && data.target_text == "Pit")
-                                icon_string = "GnollHackX.Assets.UI.arrow_up.png";
+                                icon_string = GHApp.AppResourceName + ".Assets.UI.arrow_up.png";
                             else
-                                icon_string = "GnollHackX.Assets.UI.stairs-up.png";
+                                icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-up.png";
                             break;
                     }
                     break;
@@ -1320,41 +1335,41 @@ namespace GnollHackX.Pages.Game
                     switch (data.style)
                     {
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Downwards */
-                            icon_string = "GnollHackX.Assets.UI.target-downwards.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.target-downwards.png";
                             break;
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS:
-                            icon_string = "GnollHackX.Assets.UI.stairs-down.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-down.png";
                             break;
                         default:
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
                             if(data.target_text != null && data.target_text == "Pit")
-                                icon_string = "GnollHackX.Assets.UI.arrow_down.png";
+                                icon_string = GHApp.AppResourceName + ".Assets.UI.arrow_down.png";
                             else
-                                icon_string = "GnollHackX.Assets.UI.stairs-down.png";
+                                icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-down.png";
                             break;
                     }
                     break;
                 case ':':
-                    icon_string = "GnollHackX.Assets.UI.lookhere.png";
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.lookhere.png";
                     break;
                 case 'q':
-                    icon_string = "GnollHackX.Assets.UI.quaff.png";
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.quaff.png";
                     break;
                 case 'r':
-                    icon_string = "GnollHackX.Assets.UI.read.png";
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.read.png";
                     break;
                 case '.':
                     switch(data.style)
                     {
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Pick position in getpos */
-                            icon_string = "GnollHackX.Assets.UI.select.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.select.png";
                             break;
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Self in getdir */
-                            icon_string = "GnollHackX.Assets.UI.target-self.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.target-self.png";
                             break;
                         default:
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
-                            icon_string = "GnollHackX.Assets.UI.wait.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.wait.png";
                             break;
                     }
                     break;
@@ -1362,36 +1377,36 @@ namespace GnollHackX.Pages.Game
                     switch (data.style)
                     {
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_CLOSE_DISPLAY:
-                            icon_string = "GnollHackX.Assets.UI.exit-to-map.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.exit-to-map.png";
                             break;
                         default:
-                            icon_string = "GnollHackX.Assets.UI.no.png";
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.no.png";
                             break;
                     }
                     break;
                 case 'C':
                     if(data.cmd_text == "Steed")
-                        icon_string = "GnollHackX.Assets.UI.chatsteed.png";
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.chatsteed.png";
                     else
-                        icon_string = "GnollHackX.Assets.UI.chat.png";
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.chat.png";
                     break;
                 default:
                     if (cmddefchar == LastPickedCmd)
-                        icon_string = "GnollHackX.Assets.UI.lastitem.png";
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.lastitem.png";
                     else if (cmddefchar == OfferCmd)
-                        icon_string = "GnollHackX.Assets.UI.offer.png";
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.offer.png";
                     else if (cmddefchar == PrayCmd)
-                        icon_string = "GnollHackX.Assets.UI.pray.png";
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.pray.png";
                     else if (cmddefchar == DipCmd)
-                        icon_string = "GnollHackX.Assets.UI.dip.png";
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.dip.png";
                     else if (cmddefchar == DigCmd)
-                        icon_string = "GnollHackX.Assets.UI.dig.png";
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.dig.png";
                     else if (cmddefchar == SitCmd)
-                        icon_string = "GnollHackX.Assets.UI.sit.png";
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.sit.png";
                     else if (cmddefchar == RideCmd)
-                        icon_string = "GnollHackX.Assets.UI.ride.png";
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.ride.png";
                     else
-                        icon_string = "GnollHackX.Assets.UI.missing_icon.png";
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.missing_icon.png";
                     break;
             }
 
@@ -1572,10 +1587,15 @@ namespace GnollHackX.Pages.Game
         }
 
 
+#if GNH_MAUI
+        private Color _titleGoldColor = new Color((float)0xD4 / 255, (float)0xA0 / 255, (float)0x17 / 255);
+        private Color _popupTransparentBlackColor = new Color(0, 0, 0, (float)0x66 / 255);
+        private Color _popupDarkerTransparentBlackColor = new Color(0, 0, 0, (float)0xAA / 255);
+#else
         private Color _titleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
         private Color _popupTransparentBlackColor = new Color(0, 0, 0, (double)0x66 / 255);
         private Color _popupDarkerTransparentBlackColor = new Color(0, 0, 0, (double)0xAA / 255);
-
+#endif
         private GlyphImageSource _popupImageSource = new GlyphImageSource();
         public void DisplayPopupText(DisplayScreenTextData data)
         {
@@ -1592,7 +1612,7 @@ namespace GnollHackX.Pages.Game
             {
                 PopupTitleLabel.TextColor = _titleGoldColor;
                 PopupLabel.TextColor = ClientUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, false);
-                PopupGrid.BackgroundColor = Color.Transparent;
+                PopupGrid.BackgroundColor = GHColors.Transparent;
                 PopupFrame.BackgroundColor = _popupDarkerTransparentBlackColor;
                 if (data.glyph != 0 && data.glyph != GHApp.NoGlyph)
                     PopupTitleLayout.HorizontalOptions = LayoutOptions.StartAndExpand;
@@ -1644,10 +1664,15 @@ namespace GnollHackX.Pages.Game
         private void ContextButton_Clicked(object sender, EventArgs e)
         {
             int idx = 0;
+#if GNH_MAUI
+            idx = ContextLayout.Children.IndexOf((Microsoft.Maui.Controls.View)sender);
+            if (idx < 0)
+                idx = ContextLayout.Children.IndexOf((Microsoft.Maui.Controls.View)((Microsoft.Maui.Controls.View)sender).Parent);
+#else
             idx = ContextLayout.Children.IndexOf((Xamarin.Forms.View)sender);
             if (idx < 0)
                 idx = ContextLayout.Children.IndexOf((Xamarin.Forms.View)((Xamarin.Forms.View)sender).Parent);
-
+#endif
             if (idx >= 0 && idx < _contextMenuData.Count)
             {
                 int resp = _contextMenuData[idx].cmd_cur_char;
@@ -2135,7 +2160,9 @@ namespace GnollHackX.Pages.Game
                     {
                         MenuGrid.IsVisible = false;
                     }
+#if !GNH_MAUI
                     TextStack.ForceLayout();
+#endif
                     return false;
                 });
             }
@@ -2195,13 +2222,13 @@ namespace GnollHackX.Pages.Game
             {
                 YnTitleLabel.IsVisible = false;
                 YnTitleLabel.Text = "";
-                YnTitleLabel.TextColor = Color.White;
+                YnTitleLabel.TextColor = GHColors.White;
             }
             else
             {
                 YnTitleLabel.Text = title;
                 YnTitleLabel.IsVisible = true;
-                YnQuestionLabel.TextColor = Color.White;
+                YnQuestionLabel.TextColor = GHColors.White;
                 if (style == (int)yn_function_styles.YN_STYLE_MONSTER_QUESTION)
                 {
                     YnTitleLabel.TextColor = _titleGoldColor;
@@ -2279,42 +2306,42 @@ namespace GnollHackX.Pages.Game
 
         private string GetYnImgSourcePath(char ch, string desc)
         {
-            string res = "resource://GnollHackX.Assets.UI.missing_icon.png";
+            string res = "resource://" + GHApp.AppResourceName + ".Assets.UI.missing_icon.png";
             switch (ch)
             {
                 case 'm':
-                    res = "resource://GnollHackX.Assets.UI.name.png";
+                    res = "resource://" + GHApp.AppResourceName + ".Assets.UI.name.png";
                     break;
                 case 's':
                 case 'i':
-                    res = "resource://GnollHackX.Assets.UI.inventory.png";
+                    res = "resource://" + GHApp.AppResourceName + ".Assets.UI.inventory.png";
                     break;
                 case 'd':
                     if (desc != null && desc.Length >= 4 && desc.Substring(0, 4) == "Drop")
-                        res = "resource://GnollHackX.Assets.UI.dropmany.png";
+                        res = "resource://" + GHApp.AppResourceName + ".Assets.UI.dropmany.png";
                     else if (desc == "Disarm")
-                        res = "resource://GnollHackX.Assets.UI.yes.png";
+                        res = "resource://" + GHApp.AppResourceName + ".Assets.UI.yes.png";
                     break;
                 case 'y':
-                    res = "resource://GnollHackX.Assets.UI.yes.png";
+                    res = "resource://" + GHApp.AppResourceName + ".Assets.UI.yes.png";
                     break;
                 case 'n':
-                    res = "resource://GnollHackX.Assets.UI.no.png";
+                    res = "resource://" + GHApp.AppResourceName + ".Assets.UI.no.png";
                     break;
                 case 'q':
-                    res = "resource://GnollHackX.Assets.UI.cancel.png";
+                    res = "resource://" + GHApp.AppResourceName + ".Assets.UI.cancel.png";
                     break;
                 case 'a':
-                    res = "resource://GnollHackX.Assets.UI.yestoall.png";
+                    res = "resource://" + GHApp.AppResourceName + ".Assets.UI.yestoall.png";
                     break;
                 case 'r':
-                    res = "resource://GnollHackX.Assets.UI.rightring.png";
+                    res = "resource://" + GHApp.AppResourceName + ".Assets.UI.rightring.png";
                     break;
                 case 'l':
                     if (desc == "Load")
-                        res = "resource://GnollHackX.Assets.UI.load.png";
+                        res = "resource://" + GHApp.AppResourceName + ".Assets.UI.load.png";
                     else
-                        res = "resource://GnollHackX.Assets.UI.leftring.png";
+                        res = "resource://" + GHApp.AppResourceName + ".Assets.UI.leftring.png";
                     break;
                 default:
                     break;
@@ -2369,7 +2396,7 @@ namespace GnollHackX.Pages.Game
         private Regex _getLineRegex = null;
         private void GetLine(string query, string placeholder, string linesuffix, string introline, int style, int attr, int color)
         {
-            GetLineFrame.BorderColor = Color.Black;
+            GetLineFrame.BorderColor = GHColors.Black;
             GetLineOkButton.IsEnabled = true;
             GetLineCancelButton.IsEnabled = true;
             GetLineQuestionMarkButton.IsEnabled = true;
@@ -2500,14 +2527,14 @@ namespace GnollHackX.Pages.Game
 
             if(_getLineRegex != null && !_getLineRegex.IsMatch(res))
             {
-                GetLineFrame.BorderColor = Color.Red;
+                GetLineFrame.BorderColor = GHColors.Red;
                 GetLineEntryText.Focus();
                 GetLineOkButton.IsEnabled = true;
                 GetLineCancelButton.IsEnabled = true;
                 GetLineQuestionMarkButton.IsEnabled = true;
                 return;
             }
-            GetLineFrame.BorderColor = Color.Black;
+            GetLineFrame.BorderColor = GHColors.Black;
 
             /* Style-dependent behavior */
             switch (_getLineStyle)
@@ -2785,7 +2812,9 @@ namespace GnollHackX.Pages.Game
                     {
                         TextGrid.IsVisible = false;
                     }
+#if !GNH_MAUI
                     MenuStack.ForceLayout();
+#endif
                     return false;
                 });
             }
@@ -10011,13 +10040,13 @@ namespace GnollHackX.Pages.Game
             MapNoClipMode = !MapNoClipMode;
             if (MapNoClipMode)
             {
-                ToggleAutoCenterModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-autocenter-off.png";
-                SimpleToggleAutoCenterModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-autocenter-off.png";
+                ToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-off.png";
+                SimpleToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-off.png";
             }
             else
             {
-                ToggleAutoCenterModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-autocenter-on.png";
-                SimpleToggleAutoCenterModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-autocenter-on.png";
+                ToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-on.png";
+                SimpleToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-on.png";
                 if (sender != null && GHUtils.isok(_ux, _uy))
                 {
                     SetTargetClip(_ux, _uy, false);
@@ -10030,11 +10059,11 @@ namespace GnollHackX.Pages.Game
             MapTravelMode = !MapTravelMode;
             if (MapTravelMode)
             {
-                ToggleTravelModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-travel-on.png";
+                ToggleTravelModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-travel-on.png";
             }
             else
             {
-                ToggleTravelModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-travel-off.png";
+                ToggleTravelModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-travel-off.png";
             }
         }
         private void LookModeButton_Clicked(object sender, EventArgs e)
@@ -10043,13 +10072,13 @@ namespace GnollHackX.Pages.Game
             MapLookMode = !MapLookMode;
             if (MapLookMode)
             {
-                LookModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-look-on.png";
-                SimpleLookModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-look-on.png";
+                LookModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-look-on.png";
+                SimpleLookModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-look-on.png";
             }
             else
             {
-                LookModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-look-off.png";
-                SimpleLookModeButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-look-off.png";
+                LookModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-look-off.png";
+                SimpleLookModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-look-off.png";
             }
         }
 
@@ -10059,13 +10088,13 @@ namespace GnollHackX.Pages.Game
             ZoomMiniMode = !ZoomMiniMode;
             if (ZoomMiniMode)
             {
-                ToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-minimap-on.png";
-                SimpleToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-minimap-on.png";
+                ToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-on.png";
+                SimpleToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-on.png";
             }
             else
             {
-                ToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-minimap-off.png";
-                SimpleToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-minimap-off.png";
+                ToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-off.png";
+                SimpleToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-off.png";
                 if (sender != null && GHUtils.isok(_ux, _uy) && !MapNoClipMode)
                 {
                     SetTargetClip(_ux, _uy, true);
@@ -10079,7 +10108,7 @@ namespace GnollHackX.Pages.Game
             ZoomAlternateMode = !ZoomAlternateMode;
             if (ZoomAlternateMode)
             {
-                ToggleZoomAlternateButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-altmap-on.png";
+                ToggleZoomAlternateButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-altmap-on.png";
                 lock(_mapOffsetLock)
                 {
                     if(MapFontSize > 0)
@@ -10091,7 +10120,7 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                ToggleZoomAlternateButton.ImgSourcePath = "resource://GnollHackX.Assets.UI.stone-altmap-off.png";
+                ToggleZoomAlternateButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-altmap-off.png";
                 lock (_mapOffsetLock)
                 {
                     if (MapFontAlternateSize > 0)
@@ -11452,7 +11481,7 @@ namespace GnollHackX.Pages.Game
                     }
                     else
                     {
-                        MenuCountEntry.TextColor = Color.Red;
+                        MenuCountEntry.TextColor = GHColors.Red;
                         MenuCountEntry.Focus();
                         return;
                     }
@@ -11481,7 +11510,7 @@ namespace GnollHackX.Pages.Game
         {
             if (_countMenuItem != null)
             {
-                MenuCountEntry.TextColor = Color.White;
+                MenuCountEntry.TextColor = GHColors.White;
             }
         }
 
@@ -11494,11 +11523,11 @@ namespace GnollHackX.Pages.Game
                 bool res = int.TryParse(str, out value);
                 if (res)
                 {
-                    MenuCountEntry.TextColor = Color.Green;
+                    MenuCountEntry.TextColor = GHColors.Green;
                 }
                 else
                 {
-                    MenuCountEntry.TextColor = Color.Red;
+                    MenuCountEntry.TextColor = GHColors.Red;
                 }
             }
         }
@@ -12636,7 +12665,11 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+#if GNH_MAUI
+        public SKRect GetViewScreenRect(Microsoft.Maui.Controls.VisualElement view)
+#else
         public SKRect GetViewScreenRect(Xamarin.Forms.VisualElement view)
+#endif
         {
             float canvaswidth = canvasView.CanvasSize.Width;
             float canvasheight = canvasView.CanvasSize.Height;
@@ -12646,8 +12679,11 @@ namespace GnollHackX.Pages.Game
             // Get the view's parent (if it has one...)
             if (view.Parent.GetType() != typeof(App))
             {
+#if GNH_MAUI
+                Microsoft.Maui.Controls.VisualElement parent = (Microsoft.Maui.Controls.VisualElement)view.Parent;
+#else
                 Xamarin.Forms.VisualElement parent = (Xamarin.Forms.VisualElement)view.Parent;
-
+#endif
                 // Loop through all parents
                 while (parent != null)
                 {
@@ -12655,10 +12691,17 @@ namespace GnollHackX.Pages.Game
                     screenCoordinateY += parent.Y;
 
                     // If the parent of this parent isn't the app itself, get the parent's parent.
+#if GNH_MAUI
+                    if (parent.Parent.GetType() == typeof(Microsoft.Maui.Controls.Window))
+                        parent = null;
+                    else
+                        parent = (Microsoft.Maui.Controls.VisualElement)parent.Parent;
+#else
                     if (parent.Parent.GetType() == typeof(App))
                         parent = null;
                     else
                         parent = (Xamarin.Forms.VisualElement)parent.Parent;
+#endif
                 }
             }
             float relX = (float)(screenCoordinateX / canvasView.Width) * canvaswidth;
@@ -12670,7 +12713,13 @@ namespace GnollHackX.Pages.Game
             return res;
         }
 
-        public void PaintTipButton(SKCanvas canvas, SKPaint textPaint, Xamarin.Forms.VisualElement view, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety)
+        public void PaintTipButton(SKCanvas canvas, SKPaint textPaint,
+#if GNH_MAUI
+            Microsoft.Maui.Controls.VisualElement view,
+#else
+            Xamarin.Forms.VisualElement view, 
+#endif
+            string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety)
         {
             SKRect viewrect = GetViewScreenRect(view);
             SKRect tiprect = GetViewScreenRect(TipView);
@@ -13092,20 +13141,20 @@ namespace GnollHackX.Pages.Game
 
             if ((bool)value == true)
             {
-                return Color.White;
+                return GHColors.White;
             }
 
-            return Color.DarkGray;
+            return GHColors.DarkGray;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if ((bool)value == true)
             {
-                return Color.White;
+                return GHColors.White;
             }
 
-            return Color.DarkGray;
+            return GHColors.DarkGray;
         }
     }
 

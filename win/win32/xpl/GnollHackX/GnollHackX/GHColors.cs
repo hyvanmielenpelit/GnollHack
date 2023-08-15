@@ -30,6 +30,7 @@ namespace GnollHackX
         public static Color LightCyan = Colors.LightCyan;
         public static Color Beige = Colors.Beige;
         public static Color Gray = Colors.Gray;
+        public static Color Transparent = Colors.Transparent;
 
         public static Color BrighterRed = new Color((float)0xFF / 255, 32.0f / 255, 32.0f / 255);
         public static Color BrighterGreen = new Color(0, (float)0xFF / 255, 0);
@@ -57,6 +58,7 @@ namespace GnollHackX
         public static Color LightCyan = Color.LightCyan;
         public static Color Beige = Color.Beige;
         public static Color Gray = Color.Gray;
+        public static Color Transparent = Color.Transparent;
 
         public static Color BrighterRed = new Color((double)0xFF / 255.0, 32.0 / 255.0, 32.0 / 255.0);
         public static Color BrighterGreen = new Color(0, (double)0xFF / 255, 0);

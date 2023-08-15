@@ -36,6 +36,10 @@
 		<CodesignProvision>Apple Dev M Development 2023</CodesignProvision>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -59,7 +63,11 @@
 		<None Remove="..\GnollHackX\GnollHackX\ClientGame.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ClientUtils.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\CustomLabel.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPostWithAttachment.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\EventArgs.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\ForumPostAttachment.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\HttpClientDownloadWithProgress.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHApp.cs" />
@@ -70,10 +78,16 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHConstants.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHDelegates.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHEditor.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHFloatingText.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHConditionText.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHGUIEffect.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHNumberPickItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHPetDataItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHResponse.cs" />
@@ -88,6 +102,8 @@
 		<None Remove="..\GnollHackX\GnollHackX\IPlatformService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\IFMODService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\MapData.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\ObjectData.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Secrets.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
@@ -122,7 +138,11 @@
 		<Compile Include="..\GnollHackX\GnollHackX\ClientGame.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ClientUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\CustomLabel.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPostWithAttachment.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\EventArgs.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\ForumPostAttachment.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\HttpClientDownloadWithProgress.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHApp.cs" />
@@ -133,10 +153,16 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHConstants.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHDelegates.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHEditor.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHFloatingText.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHConditionText.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHGUIEffect.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHNumberPickItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />		
 		<Compile Include="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHPetDataItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHResponse.cs" />
@@ -152,7 +178,9 @@
 		<Compile Include="..\GnollHackX\GnollHackX\IPlatformService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />		
+		<Compile Include="..\GnollHackX\GnollHackX\MapData.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\ObjectData.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Secrets.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\SecretsFile.cs" />
@@ -178,6 +206,9 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\EditorPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GamePage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\NamePage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\OutRipPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
 	</ItemGroup>
 	

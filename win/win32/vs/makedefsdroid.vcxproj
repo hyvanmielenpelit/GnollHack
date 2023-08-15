@@ -218,7 +218,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('SKGLView','SKCanvasView').Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
 	  <!-- <Copy SourceFiles="$(InputFile).cs" DestinationFolder="$(MauiMainDir)"/> -->
@@ -315,6 +315,33 @@
    	  <PropertyGroup>
           <InputFile>$(XamarinGamePagesDir)GameMenuPage.xaml</InputFile>
           <OutputFile>$(MauiMainDir)GameMenuPage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinGamePagesDir)GamePage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)GamePage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinGamePagesDir)NamePage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)NamePage.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+   	  <PropertyGroup>
+          <InputFile>$(XamarinGamePagesDir)OutRipPage.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)OutRipPage.xaml</OutputFile>
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"

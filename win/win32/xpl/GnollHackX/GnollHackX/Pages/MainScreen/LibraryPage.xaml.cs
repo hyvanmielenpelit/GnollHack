@@ -88,7 +88,7 @@ namespace GnollHackX.Pages.MainScreen
                 foreach (StoredManual sm in manuallist)
                 {
                     RowImageButton rib = new RowImageButton();
-                    rib.ImgSourcePath = "resource://GnollHackX.Assets.UI.examine.png";
+                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.examine.png";
                     rib.LblText = sm.Name;
                     rib.LblFontSize = 17;
                     rib.ImgWidth = 80;

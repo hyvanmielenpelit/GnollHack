@@ -5,12 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+#if GNH_MAUI
+using GnollHackX;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
+namespace GnollHackM
+#else
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
 namespace GnollHackX.Pages.Game
+#endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NamePage : ContentPage
@@ -22,7 +29,11 @@ namespace GnollHackX.Pages.Game
         public NamePage(GamePage gamepage, string modeName, string modeDescription)
         {
             InitializeComponent();
+#if GNH_MAUI
+            On<iOS>().SetUseSafeArea(true);
+#else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#endif
             ValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
             _clientGame = gamepage.ClientGame;
             _gamePage = gamepage;
@@ -57,7 +68,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             if (string.IsNullOrWhiteSpace(eName.Text))
             {
-                lblError.TextColor = Color.Red;
+                lblError.TextColor = GHColors.Red;
                 lblError.Text = "Please enter a name.";
                 btnOK.IsEnabled = true;
                 btnCancel.IsEnabled = true;
@@ -67,7 +78,7 @@ namespace GnollHackX.Pages.Game
             string usedName = eName.Text.Trim();
             if (!ValidationExpression.IsMatch(usedName))
             {
-                lblError.TextColor = Color.Red;
+                lblError.TextColor = GHColors.Red;
                 lblError.Text = "Name is invalid.";
                 btnOK.IsEnabled = true;
                 btnCancel.IsEnabled = true;
