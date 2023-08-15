@@ -3761,7 +3761,7 @@ register struct monst *mon;
 
         if ((mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT) && !(mattk->aflags & ATTKFLAGS_SAME_HEAD))
             bite_butt_count++;
-        if (youmonst.data->heads > 1 && youmonst.heads_left < bite_butt_count + youmonst.heads_tamed)
+        if (youmonst.data->heads > 1 && youmonst.heads_left < bite_butt_count)
             continue;
 
 

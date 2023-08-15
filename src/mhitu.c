@@ -742,7 +742,7 @@ register struct monst *mtmp;
 
         if ((mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT) && !(mattk->aflags & ATTKFLAGS_SAME_HEAD))
             bite_butt_count++;
-        if (mtmp->data->heads > 1 && mtmp->heads_left < bite_butt_count + mtmp->heads_tamed)
+        if (mtmp->data->heads > 1 && mtmp->heads_left < bite_butt_count + (!is_peaceful(mtmp) ? mtmp->heads_tamed : 0))
             continue;
 
         switch (mattk->aatyp) {
