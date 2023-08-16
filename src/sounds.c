@@ -5661,7 +5661,7 @@ struct monst* mtmp;
         any = zeroany;
         any.a_int = 4;
         Sprintf(nbuf, "Ask %s to bless %s item", mon_nam(priest), s_suffix(mon_nam(mtmp)));
-        add_menu(win, mon_to_glyph(priest, rn2_on_display_rng), &any, 0, 0, ATR_NONE, NO_COLOR, nbuf, MENU_UNSELECTED);
+        add_menu(win, any_mon_to_glyph(priest, rn2_on_display_rng), &any, 0, 0, ATR_NONE, NO_COLOR, nbuf, MENU_UNSELECTED);
         cnt++;
     }
 
@@ -11074,7 +11074,7 @@ struct monst* mtmp;
                 Strcpy(nbuf, Monnam(nearbymon[i]));
             else
                 continue;
-            add_menu(win, isyou ? u_to_glyph() : mon_to_glyph(nearbymon[i], rn2_on_display_rng), &any, 0, 0, ATR_NONE, NO_COLOR, nbuf, MENU_UNSELECTED);
+            add_menu(win, any_mon_to_glyph(nearbymon[i], rn2_on_display_rng), &any, 0, 0, ATR_NONE, NO_COLOR, nbuf, MENU_UNSELECTED);
         }
 
         /* Finish the menu */
