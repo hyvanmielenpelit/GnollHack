@@ -61,6 +61,7 @@ namespace GnollHackX
                     if (stream != null)
                     {
                         SKBitmap res = SKBitmap.Decode(stream);
+                        res.SetImmutable();
                         _caruselBitmaps[i].Bitmap = res;
                     }
                 }
