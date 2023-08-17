@@ -11574,7 +11574,7 @@ int spl_otyp;
     struct monst* mon = (struct monst*) 0;
     int monindex = 0;
     
-    monindex = ndemon(A_NONE, TRUE);
+    monindex = ndemon(A_NONE, TRUE, TRUE);
     
     if(monindex >= LOW_PM)
         mon = makemon(&mons[monindex], u.ux, u.uy, MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
@@ -11586,8 +11586,11 @@ int spl_otyp;
         mon->disregards_own_health = FALSE;
         mon->hasbloodlust = TRUE;
         (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
-        mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
-        begin_summontimer(mon);
+        if ((objects[spl_otyp].oc_spell_dur_dice > 0 && objects[spl_otyp].oc_spell_dur_diesize > 0) || objects[spl_otyp].oc_spell_dur_plus > 0)
+        {
+            mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
+            begin_summontimer(mon);
+        }
         //play_sfx_sound_at_location(SFX_SUMMON_DEMON, mon->mx, mon->my);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears before you in a puff of smoke!", Amonnam(mon));
     }

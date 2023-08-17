@@ -395,6 +395,8 @@ extern short tile2enlargement[MAX_TILES];
 
 #define NO_MKCLASS_FLAGS                0x00000000UL /* use this rather than plain 0 */
 #define MKCLASS_FLAGS_IGNORE_DIFFICULTY 0x00000001UL /* ignore difficulty restrictions */
+#define MKCLASS_FLAGS_SUMMON            0x00000002UL /* is a summoning for mk_gen_ok */
+#define MKCLASS_FLAGS_POLYMORPH         0x00000004UL /* is a polymorph for mk_gen_ok */
 
 #define GOODPOS_IGNOREYOU               0x80000000UL
 

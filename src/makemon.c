@@ -17,7 +17,7 @@
 
 STATIC_DCL boolean FDECL(ungeneratable_monster_type, (int));
 STATIC_DCL int FDECL(align_shift, (struct permonst *));
-STATIC_DCL boolean FDECL(mk_gen_ok, (int, UCHAR_P, unsigned long, BOOLEAN_P));
+STATIC_DCL boolean FDECL(mk_gen_ok, (int, UCHAR_P, unsigned long, BOOLEAN_P, BOOLEAN_P));
 #if 0
 STATIC_DCL void FDECL(m_initgrp, (struct monst *, int, int, int, int));
 #endif
@@ -3389,7 +3389,7 @@ STATIC_OVL boolean
 ungeneratable_monster_type(mndx)
 int mndx;
 {
-    return !mk_gen_ok(mndx, MV_GONE, (G_NOGEN | G_UNIQ), FALSE);
+    return !mk_gen_ok(mndx, MV_GONE, (G_NOGEN | G_UNIQ), FALSE, FALSE);
 
     //if (mons[mndx].geno & (G_NOGEN | G_UNIQ))
     //    return TRUE;
@@ -3678,11 +3678,11 @@ int mndx; /* particular species that can no longer be created */
 
 /* decide whether it's ok to generate a candidate monster by mkclass() */
 STATIC_OVL boolean
-mk_gen_ok(mndx, mvflagsmask, genomask, ispoly)
+mk_gen_ok(mndx, mvflagsmask, genomask, ispoly, issummon)
 int mndx;
 uchar mvflagsmask;
 unsigned long genomask;
-boolean ispoly;
+boolean ispoly, issummon;
 {
     struct permonst *ptr = &mons[mndx];
 
@@ -3697,26 +3697,27 @@ boolean ispoly;
     {
         if (is_placeholder(ptr))
             return FALSE;
-        if ((mons[mndx].geno & G_STRAYED) && u.ualign.type == u.ualignbase[A_ORIGINAL]) /* Does not appear if you are on the right path */
-            return FALSE;
-        if ((ptr->geno & G_MODRON) && (ptr->geno & G_NOGEN) && u.uz.dnum != modron_dnum)
-            return FALSE;
-        if ((ptr->geno & G_YACC) && (ptr->geno & G_NOGEN) && u.uz.dnum != bovine_dnum)
-            return FALSE;
-        if ((ptr->geno & G_MODRON) && u.uz.dnum == modron_dnum) /* Overrides G_NOGEN */
-            return TRUE;
-        if ((ptr->geno & G_YACC) && u.uz.dnum == bovine_dnum) /* Overrides G_NOGEN */
-            return TRUE;
-        if ((ptr->geno & G_NOMINES) && In_mines(&u.uz))
-            return FALSE;
-        if ((ptr->geno & G_NOHELL) && Inhell)
-            return FALSE;
-        if ((ptr->geno & G_HELL) && !Inhell)
-            return FALSE;
-        if (In_endgame(&u.uz) && !Is_astralevel(&u.uz) && wrong_elem_type(ptr))
-            return FALSE;
-        //if (Inhell && (ptr->maligntyp <= A_NEUTRAL))
-        //    return FALSE;
+        if (!issummon)
+        {
+            if ((mons[mndx].geno & G_STRAYED) && u.ualign.type == u.ualignbase[A_ORIGINAL]) /* Does not appear if you are on the right path */
+                return FALSE;
+            if ((ptr->geno & G_MODRON) && (ptr->geno & G_NOGEN) && u.uz.dnum != modron_dnum)
+                return FALSE;
+            if ((ptr->geno & G_YACC) && (ptr->geno & G_NOGEN) && u.uz.dnum != bovine_dnum)
+                return FALSE;
+            if ((ptr->geno & G_MODRON) && u.uz.dnum == modron_dnum) /* Overrides G_NOGEN */
+                return TRUE;
+            if ((ptr->geno & G_YACC) && u.uz.dnum == bovine_dnum) /* Overrides G_NOGEN */
+                return TRUE;
+            if ((ptr->geno & G_NOMINES) && In_mines(&u.uz))
+                return FALSE;
+            if ((ptr->geno & G_NOHELL) && Inhell)
+                return FALSE;
+            if ((ptr->geno & G_HELL) && !Inhell)
+                return FALSE;
+            if (In_endgame(&u.uz) && !Is_astralevel(&u.uz) && wrong_elem_type(ptr))
+                return FALSE;
+        }
     }
 
     /* Note that G_MODRON and G_YACC override G_NOGEN */
@@ -3764,6 +3765,8 @@ unsigned long mflags;
     register int first = 0, last = 0, num = 0;
     int k, nums[SPECIAL_PM + 1]; /* +1: insurance for final return value */
     int minmlev = 0, maxmlev = 0, mask = (G_NOGEN | G_UNIQ) & ~spc;
+    boolean issummon = (mflags & MKCLASS_FLAGS_SUMMON) != 0;
+    boolean ispoly = (mflags & MKCLASS_FLAGS_POLYMORPH) != 0;
 
     if (mclass < 1 || mclass >= MAX_MONSTER_CLASSES) {
         impossible("mkclass called with bad class!");
@@ -3815,7 +3818,7 @@ unsigned long mflags;
     {
         if (atyp != A_NONE && sgn(mons[last].maligntyp) != sgn(atyp))
             continue;
-        if (mk_gen_ok(last, MV_GONE, mask, FALSE))
+        if (mk_gen_ok(last, MV_GONE, mask, ispoly, issummon))
         {
             /* consider it; don't reject a toostrong() monster if we
                don't have anything yet (num==0) or if it is the same
@@ -3878,13 +3881,13 @@ int mclass;
         return NON_PM;
 
     for (last = first; last < SPECIAL_PM && mons[last].mlet == mclass; last++)
-        if (mk_gen_ok(last, MV_GENOCIDED, (G_NOGEN | G_UNIQ), TRUE))
+        if (mk_gen_ok(last, MV_GENOCIDED, (G_NOGEN | G_UNIQ), TRUE, FALSE))
             num += (int)(mons[last].geno & G_FREQ);
     if (!num)
         return NON_PM;
 
     for (num = rnd(num); num > 0; first++)
-        if (mk_gen_ok(first, MV_GENOCIDED, (G_NOGEN | G_UNIQ), TRUE))
+        if (mk_gen_ok(first, MV_GENOCIDED, (G_NOGEN | G_UNIQ), TRUE, FALSE))
             num -= (int)(mons[first].geno & G_FREQ);
     first--; /* correct an off-by-one error */
 

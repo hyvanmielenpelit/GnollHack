@@ -1824,11 +1824,11 @@ E int NDECL(orcus_undead_summon);
 E void FDECL(summon_minion, (ALIGNTYP_P, BOOLEAN_P));
 E int FDECL(demon_talk, (struct monst *, boolean*));
 E long FDECL(bribe, (struct monst *));
-E int FDECL(dprince, (ALIGNTYP_P, BOOLEAN_P));
-E int FDECL(dlord, (ALIGNTYP_P, BOOLEAN_P));
-E int FDECL(llord, (BOOLEAN_P));
-E int FDECL(ndemon, (ALIGNTYP_P, BOOLEAN_P));
-E int FDECL(lminion, (BOOLEAN_P));
+E int FDECL(dprince, (ALIGNTYP_P, BOOLEAN_P, BOOLEAN_P));
+E int FDECL(dlord, (ALIGNTYP_P, BOOLEAN_P, BOOLEAN_P));
+E int FDECL(llord, (BOOLEAN_P, BOOLEAN_P));
+E int FDECL(ndemon, (ALIGNTYP_P, BOOLEAN_P, BOOLEAN_P));
+E int FDECL(lminion, (BOOLEAN_P, BOOLEAN_P));
 E void FDECL(lose_guardian_angel, (struct monst *));
 E void FDECL(gain_guardian_angel, (BOOLEAN_P));
 
