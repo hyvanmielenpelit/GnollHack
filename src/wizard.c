@@ -559,7 +559,7 @@ int summoner_level;
 
     do
     {
-        for(int tryct = 0; tryct < 50 && (res == NON_PM || (res >= NON_PM && mons[res].difficulty > (9 * summoner_level + 1) / 10)); tryct++)
+        for(int tryct = 0; tryct < 50 && (res == NON_PM || (res >= LOW_PM && (mons[res].difficulty > (9 * summoner_level + 1) / 10) || (mvitals[res].mvflags & MV_GONE) != 0)); tryct++)
         {
             res = nasties[rn2(SIZE(nasties))];
         }
@@ -567,7 +567,6 @@ int summoner_level;
         if(res == NON_PM)
         {
             struct permonst* pm = rndmonst();
-
             if(pm)
                 res = monsndx(pm);
         }
@@ -575,9 +574,22 @@ int summoner_level;
     } while ((!Is_really_rogue_level(&u.uz) && res == NON_PM && roguetrycnt <= 5)
         || (Is_really_rogue_level(&u.uz) && (res == NON_PM || !('A' <= mons[res].mlet && mons[res].mlet <= 'Z')) && roguetrycnt <= 5));
 
-    /* Finally, if nothing, just pick something from the nasties list */
+    /* Finally, if nothing, just pick a demon */
+    int i;
     if (res == NON_PM)
-        res = nasties[rn2(SIZE(nasties))];
+    {
+        for (i = PM_BALOR; i > PM_VROCK; i--)
+        {
+            if (!(mvitals[i].mvflags & MV_GONE))
+            {
+                res = i;
+                break;
+            }
+        }
+    }
+
+    if (res == NON_PM)
+        res = PM_VROCK;
 
     return res;
 }

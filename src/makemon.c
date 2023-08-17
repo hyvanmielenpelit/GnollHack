@@ -3462,24 +3462,24 @@ int level_limit;
     if (u.uz.dnum == quest_dnum && rn2(7) && (ptr = qt_montype()) != 0)
         return ptr;
 
-    if (u.uz.dnum == modron_dnum && (ptr = mkclass(S_MODRON, 0)) != (struct permonst*)0)
+    if (u.uz.dnum == modron_dnum && (ptr = mkclass(S_MODRON, 0)) != 0)
         return ptr;
 
     if (u.uz.dnum == bovine_dnum)
     {
         ptr = (struct permonst*)0;
-        if(!(mons[PM_HELL_BOVINE].geno & MV_GONE))
+        if(!(mvitals[PM_HELL_BOVINE].mvflags & MV_GONE))
             ptr = &mons[PM_HELL_BOVINE];
         
-        if (!(mons[PM_MINOTAUR].geno & MV_GONE) && (!ptr || !rn2(2)))
+        if (!(mvitals[PM_MINOTAUR].mvflags & MV_GONE) && (!ptr || !rn2(2)))
             ptr = &mons[PM_MINOTAUR];
 
-        if (!(mons[PM_BISON].geno & MV_GONE) && (!ptr || !rn2(6)))
+        if (!(mvitals[PM_BISON].mvflags & MV_GONE) && (!ptr || !rn2(6)))
             ptr = &mons[PM_BISON];
 
-        return ptr;
+        if(ptr)
+            return ptr;
     }
-
 
     /* Normal case */
     if (rndmonst_state.choice_count < 0) 
@@ -3563,7 +3563,7 @@ int level_limit;
         if ((ct -= (int) rndmonst_state.mchoices[mndx]) <= 0)
             break;
 
-    if (mndx == SPECIAL_PM || ungeneratable_monster_type(mndx) || mndx < LOW_PM || mndx >= NUM_MONSTERS) 
+    if (mndx < LOW_PM || mndx >= SPECIAL_PM || ungeneratable_monster_type(mndx))
     { /* shouldn't happen */
         impossible("rndmonst: bad `mndx' [#%d]", mndx);
         return (struct permonst *) 0;
@@ -3678,15 +3678,15 @@ int mndx; /* particular species that can no longer be created */
 
 /* decide whether it's ok to generate a candidate monster by mkclass() */
 STATIC_OVL boolean
-mk_gen_ok(mndx, mvflagsmask, genomask, ispoly, issummon)
+mk_gen_ok(mndx, excluded_mvflags, genomask, ispoly, issummon)
 int mndx;
-uchar mvflagsmask;
+uchar excluded_mvflags;
 unsigned long genomask;
 boolean ispoly, issummon;
 {
     struct permonst *ptr = &mons[mndx];
 
-    if (mvitals[mndx].mvflags & mvflagsmask)
+    if (mvitals[mndx].mvflags & excluded_mvflags)
         return FALSE;
     if (ispoly)
     {

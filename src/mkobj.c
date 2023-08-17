@@ -720,7 +720,9 @@ rndmonnum()
 {
     register struct permonst *ptr;
     register int i;
-    unsigned short excludeflags;
+    unsigned long excludeflags;
+    unsigned long requiredflags;
+    int trycnt = 0;
 
     /* Plan A: get a level-appropriate common monster */
     ptr = rndmonst();
@@ -729,12 +731,25 @@ rndmonnum()
 
     /* Plan B: get any common monster */
     excludeflags = G_UNIQ | G_NOGEN | (Inhell ? G_NOHELL : G_HELL) | (In_mines(&u.uz) ? G_NOMINES : 0);
+    requiredflags = In_modron_level(&u.uz) ? G_MODRON : In_bovine_level(&u.uz) ? G_YACC : 0UL;
     do {
-        i = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
+        if(trycnt < 10 && In_modron_level(&u.uz))
+            i = rn1(PM_MODRON_PENTADRONE - PM_MODRON_MONODRONE + 1, PM_MODRON_MONODRONE);
+        else if (trycnt < 10 && In_bovine_level(&u.uz))
+            i = !rn2(3) ? PM_HELL_BOVINE : !rn2(2) ? PM_MINOTAUR : PM_BISON;
+        else
+            i = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
         ptr = &mons[i];
-    } while ((ptr->geno & excludeflags &&
-        !((In_modron_level(&u.uz) && (ptr->geno & G_MODRON)) || (In_bovine_level(&u.uz)  && (ptr->geno & G_YACC)))
-        ) != 0);
+        trycnt++;
+        if (trycnt == 25)
+        {
+            excludeflags = G_UNIQ | G_NOGEN;
+            requiredflags = 0UL;
+        }
+    } while (trycnt < 50 &&
+        (ptr->geno & excludeflags) != 0UL &&
+        (requiredflags != 0UL && (ptr->geno & requiredflags) == 0UL)
+        );
 
     return i;
 }
