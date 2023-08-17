@@ -88,11 +88,13 @@ struct monst *mon;
     {
         mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
 
-        dtype = (!rn2(80)) ? PM_YEENAGHU : (!rn2(40)) ? monsndx(ptr) : (!rn2(4)) ? ndemon(atyp) : PM_FLIND;
+        dtype = (!rn2(80)) ? PM_YEENAGHU : (!rn2(40)) ? monsndx(ptr) : (!rn2(4)) ? ndemon(atyp, FALSE) : PM_FLIND;
         if (dtype == PM_YEENAGHU && (mvitals[PM_YEENAGHU].mvflags & MV_GONE))
             dtype = monsndx(ptr);
         if (dtype == PM_FLIND && (mvitals[PM_FLIND].mvflags & MV_GONE))
-            dtype = ndemon(atyp);
+            dtype = ndemon(atyp, FALSE);
+        if (dtype == NON_PM)
+            return 0;
         cnt = 1;
     }
     else if (ptr == &mons[PM_YACC])
@@ -106,30 +108,38 @@ struct monst *mon;
     {
         mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
         
-        dtype = (!rn2(20)) ? dlord(atyp) : ndemon(atyp); //(!rn2(50)) ? dprince(atyp) : 
+        dtype = (!rn2(20)) ? dlord(atyp, FALSE) : ndemon(atyp, FALSE); //(!rn2(50)) ? dprince(atyp) : 
+        if (dtype == NON_PM)
+            return 0;
         cnt = (!rn2(3) && is_ndemon(&mons[dtype])) ? rnd(2) + 1 : 1;
     }
     else if (is_dlord(ptr))
     {
         mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
         
-        dtype = (!rn2(80)) ? dprince(atyp) : (!rn2(40)) ? dlord(atyp)
-                                                        : ndemon(atyp);
+        dtype = (!rn2(80)) ? dprince(atyp, FALSE) : (!rn2(40)) ? dlord(atyp, FALSE)
+                                                        : ndemon(atyp, FALSE);
+        if (dtype == NON_PM)
+            return 0;
         cnt = (!rn2(4) && is_ndemon(&mons[dtype])) ? 2 : 1;
     } 
     else if (is_ndemon(ptr)) 
     {
         mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
-        dtype = (!rn2(80)) ? dlord(atyp) : (!rn2(6)) ? ndemon(atyp)
+        dtype = (!rn2(80)) ? dlord(atyp, FALSE) : (!rn2(6)) ? ndemon(atyp, FALSE)
                                                      : monsndx(ptr);
+        if (dtype == NON_PM)
+            return 0;
         cnt = 1;
     }
     else if (mon && is_lminion(mon))
     {
         mmanimtype = MM_LAWFUL_SUMMON_ANIMATION;
         dtype = (is_lord(ptr) && !rn2(40))
-                    ? llord()
-                    : (is_lord(ptr) || !rn2(6)) ? lminion() : mon->mnum;
+                    ? llord(FALSE)
+                    : (is_lord(ptr) || !rn2(6)) ? lminion(FALSE) : mon->mnum;
+        if (dtype == NON_PM)
+            return 0;
         cnt = (!rn2(4) && !is_lord(&mons[dtype])) ? 2 : 1;
     }
     else if (ptr == &mons[PM_ANGEL])
@@ -145,7 +155,7 @@ struct monst *mon;
                 break;
             case A_CHAOTIC:
             case A_NONE:
-                dtype = ndemon(atyp);
+                dtype = ndemon(atyp, FALSE);
                 break;
             }
         }
@@ -153,6 +163,8 @@ struct monst *mon;
         {
             dtype = PM_ANGEL;
         }
+        if (dtype == NON_PM)
+            return 0;
         cnt = (!rn2(4) && !is_lord(&mons[dtype])) ? 2 : 1;
     }
 
@@ -168,7 +180,7 @@ struct monst *mon;
      */
     if (mvitals[dtype].mvflags & MV_GONE)
     {
-        dtype = ndemon(atyp);
+        dtype = ndemon(atyp, FALSE);
         if (dtype == NON_PM)
             return 0;
     }
@@ -659,7 +671,7 @@ boolean talk;
     switch ((int) alignment)
     {
     case A_LAWFUL:
-        mnum = lminion();
+        mnum = lminion(TRUE);
         break;
     case A_NEUTRAL:
     {
@@ -669,11 +681,11 @@ boolean talk;
     }
     case A_CHAOTIC:
     case A_NONE:
-        mnum = ndemon(alignment);
+        mnum = ndemon(alignment, TRUE);
         break;
     default:
         impossible("unaligned player?");
-        mnum = ndemon(A_NONE);
+        mnum = ndemon(A_NONE, TRUE);
         break;
     }
 
@@ -956,8 +968,9 @@ struct monst *mtmp;
 }
 
 int
-dprince(atyp)
+dprince(atyp, ignore_difficulty)
 aligntyp atyp;
+boolean ignore_difficulty;
 {
     int tryct, pm;
 
@@ -967,12 +980,13 @@ aligntyp atyp;
             && (atyp == A_NONE || sgn(mons[pm].maligntyp) == sgn(atyp)))
             return pm;
     }
-    return dlord(atyp); /* approximate */
+    return dlord(atyp, ignore_difficulty); /* approximate */
 }
 
 int
-dlord(atyp)
+dlord(atyp, ignore_difficulty)
 aligntyp atyp;
+boolean ignore_difficulty;
 {
     int tryct, pm;
 
@@ -982,27 +996,29 @@ aligntyp atyp;
             && (atyp == A_NONE || sgn(mons[pm].maligntyp) == sgn(atyp)))
             return pm;
     }
-    return ndemon(atyp); /* approximate */
+    return ndemon(atyp, ignore_difficulty); /* approximate */
 }
 
 /* create lawful (good) lord */
 int
-llord()
+llord(ignore_difficulty)
+boolean ignore_difficulty;
 {
     if (!(mvitals[PM_ARCHON].mvflags & MV_GONE))
         return PM_ARCHON;
 
-    return lminion(); /* approximate */
+    return lminion(ignore_difficulty); /* approximate */
 }
 
 int
-lminion()
+lminion(ignore_difficulty)
+boolean ignore_difficulty;
 {
     int tryct;
     struct permonst *ptr;
 
     for (tryct = 0; tryct < 20; tryct++) {
-        ptr = mkclass(S_ANGEL, 0);
+        ptr = mkclass_core(S_ANGEL, 0, A_NONE, 0, ignore_difficulty ? MKCLASS_FLAGS_IGNORE_DIFFICULTY : 0UL);
         if (ptr && !is_lord(ptr))
             return monsndx(ptr);
     }
@@ -1011,8 +1027,9 @@ lminion()
 }
 
 int
-ndemon(atyp)
+ndemon(atyp, ignore_difficulty)
 aligntyp atyp; /* A_NONE is used for 'any alignment' */
+boolean ignore_difficulty;
 {
     struct permonst *ptr;
 
@@ -1030,7 +1047,7 @@ aligntyp atyp; /* A_NONE is used for 'any alignment' */
     if (atyp == A_NEUTRAL)
         return NON_PM;
 #endif
-    ptr = mkclass_aligned(S_DEMON, 0, atyp);
+    ptr = mkclass_aligned(S_DEMON, 0, atyp, ignore_difficulty ? MKCLASS_FLAGS_IGNORE_DIFFICULTY : 0UL);
     return (ptr && is_ndemon(ptr)) ? monsndx(ptr) : NON_PM;
 }
 

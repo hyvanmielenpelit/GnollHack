@@ -3744,12 +3744,13 @@ int spc;
 
 /* mkclass() with alignment restrictions; used by ndemon() */
 struct permonst*
-mkclass_aligned(mclass, spc, atyp)
+mkclass_aligned(mclass, spc, atyp, mflags)
 char mclass;
 int spc;
 aligntyp atyp;
+unsigned long mflags;
 {
-    return mkclass_core(mclass, spc, atyp, 0, MKCLASS_FLAGS_IGNORE_DIFFICULTY);
+    return mkclass_core(mclass, spc, atyp, 0, mflags);
 }
 
 struct permonst *

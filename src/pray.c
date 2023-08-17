@@ -2370,7 +2370,7 @@ dosacrifice()
 
                 if (!dmon)
                 {
-                    mndx = dlord(altaralign);
+                    mndx = dlord(altaralign, TRUE);
                     if(mndx >= LOW_PM && mndx < NUM_MONSTERS)
                         dmon = makemon(&mons[mndx], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
                 }

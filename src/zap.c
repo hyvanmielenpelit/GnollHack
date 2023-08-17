@@ -11574,7 +11574,7 @@ int spl_otyp;
     struct monst* mon = (struct monst*) 0;
     int monindex = 0;
     
-    monindex = ndemon(A_NONE);
+    monindex = ndemon(A_NONE, TRUE);
     
     if(monindex >= LOW_PM)
         mon = makemon(&mons[monindex], u.ux, u.uy, MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);

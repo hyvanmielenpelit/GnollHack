@@ -1240,7 +1240,7 @@ morguemon()
                 return &mons[PM_SPECTRE];
             else
             {
-                int ndemon_res = ndemon(A_NONE);
+                int ndemon_res = ndemon(A_NONE, FALSE);
                 if (ndemon_res != NON_PM)
                     return &mons[ndemon_res];
                 /* else do what? As is, it will drop to ghost/wraith/zombie */

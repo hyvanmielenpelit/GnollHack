@@ -2569,7 +2569,7 @@ demonpet()
     struct permonst *pm;
     struct monst *dtmp;
 
-    i = !rn2(6) ? ndemon(u.ualign.type) : NON_PM;
+    i = !rn2(6) ? ndemon(u.ualign.type, FALSE) : NON_PM;
     pm = i != NON_PM ? &mons[i] : youmonst.data;
     if ((dtmp = makemon(pm, u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0)
     {
