@@ -3855,13 +3855,16 @@ unsigned long mflags;
         if ((num -= nums[first]) <= 0)
             break;
 
-    if (first < LOW_PM || first >= NUM_MONSTERS)
+    if (first < LOW_PM || first >= SPECIAL_PM)
     {
         impossible("mkclass: bad `first' [#%d]", first);
         return (struct permonst*)0;
     }
 
-    return nums[first] ? &mons[first] : (struct permonst *) 0;
+    if (nums[first])
+        return &mons[first];
+    else
+        return (struct permonst*)0;
 }
 
 /* like mkclass(), but excludes difficulty considerations; used when
