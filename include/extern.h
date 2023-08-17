@@ -1717,7 +1717,7 @@ E void FDECL(reset_rndmonst, (int));
 E void FDECL(get_generated_monster_minmax_levels, (int, int*, int*, int));
 E struct permonst *FDECL(mkclass, (CHAR_P, int));
 E struct permonst *FDECL(mkclass_aligned, (CHAR_P, int, ALIGNTYP_P));
-E struct permonst* FDECL(mkclass_core, (CHAR_P, int, ALIGNTYP_P, int));
+E struct permonst* FDECL(mkclass_core, (CHAR_P, int, ALIGNTYP_P, int, unsigned long));
 E int FDECL(mkclass_poly, (int));
 E int FDECL(adj_lev, (struct permonst *, int));
 E struct permonst *FDECL(grow_up, (struct monst *, struct monst *));

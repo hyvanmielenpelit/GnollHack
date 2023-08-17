@@ -3739,7 +3739,7 @@ mkclass(mclass, spc)
 char mclass;
 int spc;
 {
-    return mkclass_core(mclass, spc, A_NONE, 0);
+    return mkclass_core(mclass, spc, A_NONE, 0, 0UL);
 }
 
 /* mkclass() with alignment restrictions; used by ndemon() */
@@ -3749,15 +3749,16 @@ char mclass;
 int spc;
 aligntyp atyp;
 {
-    return mkclass_core(mclass, spc, atyp, 0);
+    return mkclass_core(mclass, spc, atyp, 0, MKCLASS_FLAGS_IGNORE_DIFFICULTY);
 }
 
 struct permonst *
-mkclass_core(mclass, spc, atyp, difficulty_adj)
+mkclass_core(mclass, spc, atyp, difficulty_adj, mflags)
 char mclass;
 int spc;
 aligntyp atyp;
 int difficulty_adj;
+unsigned long mflags;
 {
     register int first = 0, last = 0, num = 0;
     int k, nums[SPECIAL_PM + 1]; /* +1: insurance for final return value */
@@ -3785,10 +3786,10 @@ int difficulty_adj;
         for (int firstindex = LOW_PM; firstindex < SPECIAL_PM; firstindex++)
             if (mons[firstindex].mlet == mclass)
             {
-                if(first == 0)
+                if(first == NON_PM)
                     first = firstindex;
 
-                if(!tooweak(firstindex,minmlev))
+                if((mflags & MKCLASS_FLAGS_IGNORE_DIFFICULTY) != 0 || !tooweak(firstindex,minmlev))
                 {
                     first = firstindex;
                     foundfirst = TRUE;
@@ -3802,7 +3803,7 @@ int difficulty_adj;
 
     if (first == NON_PM) //SPECIAL_PM)
     {
-        impossible("mkclass found no class %d monsters", mclass);
+        //impossible("mkclass found no class %d monsters", mclass);
         return (struct permonst *) 0;
     }
 
@@ -3820,10 +3821,12 @@ int difficulty_adj;
                (or lower) difficulty as preceding candidate (non-zero
                'num' implies last > first so mons[last-1] is safe);
                sometimes accept it even if high difficulty */
-            if (num && toostrong(last, maxmlev)
-                && mons[last].difficulty > mons[last - 1].difficulty)
+            if (num && toostrong(last, maxmlev) && (mflags & MKCLASS_FLAGS_IGNORE_DIFFICULTY) == 0
+                && last > first && mons[last].difficulty > mons[last - 1].difficulty)
                 break;
-            if ((k = (int)(mons[last].geno & G_FREQ)) > 0)
+
+            k = (int)(mons[last].geno & G_FREQ);
+            if (k > 0)
             {
                 /* skew towards lower value monsters at lower exp. levels
                    (this used to be done in the next loop, but that didn't

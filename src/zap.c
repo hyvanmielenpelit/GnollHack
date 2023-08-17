@@ -11576,7 +11576,7 @@ int spl_otyp;
     
     monindex = ndemon(A_NONE);
     
-    if(monindex)
+    if(monindex >= LOW_PM)
         mon = makemon(&mons[monindex], u.ux, u.uy, MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
 
     if (mon)
@@ -11591,6 +11591,8 @@ int spl_otyp;
         //play_sfx_sound_at_location(SFX_SUMMON_DEMON, mon->mx, mon->my);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears before you in a puff of smoke!", Amonnam(mon));
     }
+    else
+        pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "However, nothing seems to happen.");
 
 }
 
