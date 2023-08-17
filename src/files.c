@@ -481,7 +481,7 @@ int buffnum UNUSED_if_not_PREFIXES_IN_USE;
         return basenam; /* XXX */
     }
     Strcpy(fqn_filename_buffer[buffnum], fqn_prefix[whichprefix]);
-    strcat(fqn_filename_buffer[buffnum], basenam);
+    Strcat(fqn_filename_buffer[buffnum], basenam);
 
     return fqn_filename_buffer[buffnum];
 #endif
@@ -1457,6 +1457,22 @@ delete_tmp_backup_savefile(VOID_ARGS)
     return -1; /* Making backups is not on */
 }
 
+int
+delete_error_savefile(VOID_ARGS)
+{
+    if (*SAVEF)
+    {
+        char bakbuf[4096];
+        Strcpy(bakbuf, fqname(SAVEF, SAVEPREFIX, 0));
+        print_special_savefile_extension(bakbuf, ERROR_EXTENSION);
+        nh_uncompress(bakbuf);
+        if (access(bakbuf, F_OK) != 0)
+            return -2; /* Error file does not exist */
+        return unlink(bakbuf);
+    }
+    return -1;
+}
+
 boolean check_has_backup_savefile(VOID_ARGS)
 {
     if (sysopt.make_backup_savefiles && *SAVEF)
@@ -1520,7 +1536,9 @@ boolean* is_backup_ptr;
         return -1;
 #endif /* MFLOPPY */
     fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+
 #ifdef COMPRESS
+    /* Handle corrupted compressed file */
     if (allow_replace_backup)
     {
         /* Uncompress might fail due to corruption; if so, restore backup file */
@@ -1532,6 +1550,38 @@ boolean* is_backup_ptr;
     }
 #endif
     nh_uncompress(fq_save);
+
+    /* Handle error and backup save files in the case of a missing fq_save (which normally does not happen if you select your character from the load saved game menu) */
+    char fbuf[4096];
+    if (access(fq_save, F_OK) != 0) /* cannot access */
+    {
+        boolean filerenamed = FALSE;
+        if (sysopt.allow_loading_error_savefiles)
+        {
+            Strcpy(fbuf, fq_save);
+            print_error_savefile_extension(fbuf);
+            nh_uncompress(fbuf);
+            if (access(fbuf, F_OK) == 0)
+            {
+                (void)rename(fbuf, fq_save);
+                filerenamed = TRUE;
+            }
+        }
+        
+        if (!filerenamed && allow_replace_backup && !backup_replaced)
+        {
+            Strcpy(fbuf, fq_save);
+            print_special_savefile_extension(fbuf, BACKUP_EXTENSION);
+            nh_uncompress(fbuf);
+            if (access(fbuf, F_OK) == 0)
+            {
+                (void)rename(fbuf, fq_save);
+                if (is_backup_ptr)
+                    *is_backup_ptr = TRUE;
+            }
+        }
+    }
+
     (void) make_tmp_backup_savefile_from_uncompressed_savefile(fq_save);
     if ((fd = open_savefile()) < 0)
         return fd;
@@ -1702,8 +1752,13 @@ boolean savefilekept;
         set_savefile_name(TRUE);
         if (savefilekept && strcmp(SAVEF, oldsavef))
         {
-            (void)remove(SAVEF); //If it happens to exist
-            (void)rename(oldsavef, SAVEF);
+            const char* fq_save_old = fqname(oldsavef, SAVEPREFIX, 0);
+            const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+            nh_uncompress(fq_save_old);
+            nh_uncompress(fq_save); //If it happens to exist
+            (void)remove(fq_save); //If it happens to exist
+            (void)rename(fq_save_old, fq_save);
+            nh_compress(fq_save);
         }
         if (was_from_imported_savefile)
         {
@@ -1712,13 +1767,18 @@ boolean savefilekept;
             Strcpy(backupfilename, SAVEF);
             print_special_savefile_extension(backupfilename, BACKUP_EXTENSION);
             print_special_savefile_extension(backupfilename, IMPORTED_EXTENSION);
-            char nonimportedbackupfilename[BUFSZ];
-            Strcpy(nonimportedbackupfilename, SAVEF);
-            print_special_savefile_extension(nonimportedbackupfilename, BACKUP_EXTENSION);
-            if (access(backupfilename, F_OK) == 0)
+            const char* fq_save_backup = fqname(backupfilename, SAVEPREFIX, 0);
+            nh_uncompress(fq_save_backup);
+            if (access(fq_save_backup, F_OK) == 0)
             {
-                (void)remove(nonimportedbackupfilename); //If it happens to exist
-                (void)rename(backupfilename, nonimportedbackupfilename);
+                char nonimportedbackupfilename[BUFSZ];
+                Strcpy(nonimportedbackupfilename, SAVEF);
+                print_special_savefile_extension(nonimportedbackupfilename, BACKUP_EXTENSION);
+                const char* fq_save_nonimportedbackup = fqname(nonimportedbackupfilename, SAVEPREFIX, 0);
+                nh_uncompress(fq_save_nonimportedbackup); //If it happens to exist
+                (void)remove(fq_save_nonimportedbackup); //If it happens to exist
+                (void)rename(fq_save_backup, fq_save_nonimportedbackup);
+                nh_compress(fq_save_nonimportedbackup);
             }
         }
     }
@@ -3517,6 +3577,12 @@ char *origbuf;
             n = atoi(bufp);
             sysopt.make_backup_savefiles = n;
     }
+    else if (src == SET_IN_SYS
+        && match_varname(buf, "ALLOW_LOADING_ERROR_SAVEFILES", 29))
+        {
+            n = atoi(bufp);
+            sysopt.allow_loading_error_savefiles = n;
+            }
     else if (match_varname(buf, "SEDUCE", 6))
     {
         n = !!atoi(bufp); /* XXX this could be tighter */

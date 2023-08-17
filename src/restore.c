@@ -1883,6 +1883,7 @@ struct save_game_data* saved;
                 set_savefile_name(TRUE);
                 delete_tmp_backup_savefile();
                 delete_backup_savefile();
+                delete_error_savefile();
                 delete_savefile();
             }
             else

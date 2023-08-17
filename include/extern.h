@@ -1235,6 +1235,7 @@ E int NDECL(delete_backup_savefile);
 E int NDECL(delete_tmp_backup_savefile);
 E boolean NDECL(check_has_backup_savefile);
 E int NDECL(delete_savefile_if_exists);
+E int NDECL(delete_error_savefile);
 
 #ifdef SELF_RECOVER
 E boolean NDECL(recover_savefile);

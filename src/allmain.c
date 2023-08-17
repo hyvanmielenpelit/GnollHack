@@ -1459,6 +1459,7 @@ newgame()
     (void)delete_savefile_if_exists();
     (void)delete_tmp_backup_savefile();
     (void)delete_backup_savefile();
+    (void)delete_error_savefile();
     delete_excess_levelfiles();
 
     /* Change to the main music */

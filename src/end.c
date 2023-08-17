@@ -1625,6 +1625,7 @@ int how;
     {
         delete_tmp_backup_savefile();
         delete_backup_savefile();
+        delete_error_savefile(); /* Normal end from a loaded game, so do´not leave any error save files behind, either */
     }
 
     /* might have been killed while using a disposable item, so make sure

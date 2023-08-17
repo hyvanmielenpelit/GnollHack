@@ -5386,6 +5386,7 @@ dodeletesavedgame(VOID_ARGS)
             {
                 delete_tmp_backup_savefile();
                 delete_backup_savefile();
+                delete_error_savefile();
                 delete_savefile();
                 pline1("Save file has been deleted.");
             }

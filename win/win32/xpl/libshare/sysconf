@@ -129,10 +129,9 @@ PANICTRACE_LIBC=2
 # environment or via ~/.gnollhackrc run-time configuration file.
 #OPTIONS=!autopickup,fruit:tomato,symset:DECgraphics
 
-# Ask for pet details at start
+# # Further GnollHack-specific options
 SELECT_PET_DETAILS=1
-
-# Make a backup of the save file when it has been successfully restored
 MAKE_BACKUP_SAVEFILES=1
+ALLOW_LOADING_ERROR_SAVEFILES=1
 
 #eof
