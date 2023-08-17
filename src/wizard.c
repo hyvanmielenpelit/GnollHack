@@ -556,10 +556,10 @@ int summoner_level;
 {
     int res = NON_PM;
     int roguetrycnt = 0;
-
+    int tryct;
     do
     {
-        for(int tryct = 0; tryct < 50 && (res == NON_PM || (res >= LOW_PM && (mons[res].difficulty > (9 * summoner_level + 1) / 10) || (mvitals[res].mvflags & MV_GONE) != 0)); tryct++)
+        for(tryct = 0; tryct < 50 && (res == NON_PM || (res >= LOW_PM && ((mons[res].difficulty > (9 * summoner_level + 1) / 10) || (mvitals[res].mvflags & MV_GONE) != 0))); tryct++)
         {
             res = nasties[rn2(SIZE(nasties))];
         }
