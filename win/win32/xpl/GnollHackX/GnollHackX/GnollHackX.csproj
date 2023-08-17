@@ -15,6 +15,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <!--<PropertyGroup>
+	<DefineConstants>$(DefineConstants);GNH_MAP_PROFILING</DefineConstants>
+  </PropertyGroup>-->
+
   <ItemGroup>
     <Compile Remove="Pages\Game\CommandCanvasPage.xaml.cs" />
     <Compile Remove="Pages\Game\CommandPage.xaml.cs" />

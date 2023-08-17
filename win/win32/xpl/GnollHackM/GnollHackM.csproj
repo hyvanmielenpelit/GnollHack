@@ -497,7 +497,7 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<DefineConstants>GNH_MAUI</DefineConstants>
+		<DefineConstants>$(DefineConstants);GNH_MAUI</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
 		<DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
