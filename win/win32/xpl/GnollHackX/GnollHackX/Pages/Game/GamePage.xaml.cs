@@ -4549,7 +4549,7 @@ namespace GnollHackX.Pages.Game
 
 #if GNH_MAP_PROFILING
             _totalFrames++;
-            if (_totalFrames < 0)
+            if (_totalFrames <= 0)
                 _totalFrames = 1;
 #endif
             if (_enlargementBitmap == null || _enlargementBitmap.Width != (int)canvaswidth || _enlargementBitmap.Height != (int)canvasheight)
@@ -5248,15 +5248,9 @@ namespace GnollHackX.Pages.Game
                                     textPaint.Color = strokecolor;
                                     canvas.DrawText(str, tx, ty, textPaint);
                                 }
-#if GNH_MAP_PROFILING
-                                StopProfiling(GHProfilingStyle.Text);
-#endif
 
                                 textPaint.Style = SKPaintStyle.Fill;
                                 textPaint.Color = fillcolor;
-#if GNH_MAP_PROFILING
-                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
                                 canvas.DrawText(str, tx, ty, textPaint);
 #if GNH_MAP_PROFILING
                                 StopProfiling(GHProfilingStyle.Text);
@@ -6506,6 +6500,9 @@ namespace GnollHackX.Pages.Game
                                                     target_height = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Height;
                                                 }
                                                 statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING
+                                                StartProfiling(GHProfilingStyle.Bitmap);
+#endif
                                                 canvas.DrawBitmap(GHApp._statusEmptyHandedBitmap, emptyHandedSource, statusDest, textPaint);
 #if GNH_MAP_PROFILING
                                                 StopProfiling(GHProfilingStyle.Bitmap);
