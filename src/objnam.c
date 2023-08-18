@@ -3765,6 +3765,7 @@ STATIC_VAR const struct alt_spellings {
     { "galadhrim boots", GALADHRIM_BOOTS },
     { "bag of gluttony", BAG_OF_THE_GLUTTON },
     { "uruk-hai shield", GREAT_ORCISH_SHIELD },
+    { "heavy repeating crossbow", REPEATING_HEAVY_CROSSBOW },
     { (const char *) 0, 0 },
 };
 
