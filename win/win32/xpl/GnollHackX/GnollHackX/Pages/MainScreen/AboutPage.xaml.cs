@@ -139,59 +139,6 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = true;
         }
 
-        //private async void btnSourceCode_Clicked(object sender, EventArgs e)
-        //{
-        //    AboutGrid.IsEnabled = false;
-        //    GHApp.PlayButtonClickedSound();
-        //    SecretsFile sourcesf = null;
-        //    foreach (SecretsFile f in GHApp.CurrentSecrets.files)
-        //    {
-        //        if(f.type == "source_zip")
-        //        {
-        //            sourcesf = f;
-        //            break;
-        //        }
-        //    }
-
-        //    if(sourcesf == null)
-        //    {
-        //        await DisplayAlert("Source File Location Not Found", "GnollHack was unable to find instructions to locate the source files archive.", "OK");
-        //        return;
-        //    }
-
-        //    string ghdir = GHApp.GnollHackService.GetGnollHackPath();
-        //    string targetpath = Path.Combine(ghdir, sourcesf.target_directory, sourcesf.name);
-
-        //    if(!File.Exists(targetpath))
-        //    {
-        //        await DisplayAlert("Source Files Not Found", "The source files archive was not found.", "OK");
-        //        return;
-        //    }
-
-        //    byte[] data;
-        //    try
-        //    {
-        //        data = File.ReadAllBytes(targetpath);
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        await DisplayAlert("Error Occurred", "An error occurred while reading source files: " + ex.Message, "OK");
-        //        return;
-        //    }
-
-        //    try
-        //    {
-        //        GHApp.PlatformService.SaveFileToDownloads(data, sourcesf.name);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await DisplayAlert("Error Occurred", "An error occurred while saving source files to downloads folder: " + ex.Message, "OK");
-        //        return;
-        //    }
-        //    await DisplayAlert("Source Files in Downloads", "Source files have been successfully saved to the Downloads folder in a zip format. The file is named \'" + sourcesf.name + "\'.", "OK");
-        //    AboutGrid.IsEnabled = true;
-        //}
-
         private async void Button_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
@@ -228,106 +175,17 @@ namespace GnollHackX.Pages.MainScreen
             bool answer = await DisplayAlert("Send Crash Report?", "This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
             if (answer)
             {
-                await CheckAndRequestWritePermission();
-                await CheckAndRequestReadPermission();
-                string archive_file = "";
-                try
-                {
-                    archive_file = GHApp.CreateGameZipArchive();
-                }
-                catch(Exception ex)
-                {
-                    await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a crash report archive: " + ex.Message, "OK");
-                    AboutGrid.IsEnabled = true;
-                    return;
-                }
-                try
-                {
-                    if (archive_file != "")
-                        ShareFile(archive_file, "GnollHack Crash Report");
-
-                }
-                catch (Exception ex)
-                {
-                    await DisplayAlert("Share File Failure", "GnollHack failed to share a crash report archive: " + ex.Message, "OK");
-                    AboutGrid.IsEnabled = true;
-                    return;
-                }
+                await GHApp.CreateCrashReport(this);
             }
             AboutGrid.IsEnabled = true;
-        }
-
-
-        private async void ShareFile(string filename, string title)
-        {
-            if(!System.IO.File.Exists(filename))
-            {
-                await DisplayAlert("File Sharing Failure", "GnollHack cannot find file \'" + filename + "\'" , "OK");
-                return;
-            }
-            await Share.RequestAsync(new ShareFileRequest
-            {
-                Title = title,
-                File = new ShareFile(filename)
-            });
-        }
-
-        public async Task<PermissionStatus> CheckAndRequestWritePermission()
-        {
-            var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
-
-            if (status == PermissionStatus.Granted)
-                return status;
-
-            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
-            {
-                // Prompt the user to turn on in settings
-                // On iOS once a permission has been denied it may not be requested again from the application
-                await DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file. Please turn it on in Settings.", "OK");
-                return status;
-            }
-
-            if (Permissions.ShouldShowRationale<Permissions.StorageWrite>())
-            {
-                await DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file.", "OK");
-            }
-
-            status = await Permissions.RequestAsync<Permissions.StorageWrite>();
-
-            return status;
-        }
-
-        public async Task<PermissionStatus> CheckAndRequestReadPermission()
-        {
-            var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
-
-            if (status == PermissionStatus.Granted)
-                return status;
-
-            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
-            {
-                // Prompt the user to turn on in settings
-                // On iOS once a permission has been denied it may not be requested again from the application
-                await DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file. Please turn it on in Settings.", "OK");
-                return status;
-            }
-
-            if (Permissions.ShouldShowRationale<Permissions.StorageRead>())
-            {
-                await DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file.", "OK");
-            }
-
-            status = await Permissions.RequestAsync<Permissions.StorageRead>();
-
-            return status;
         }
 
         private async void btnDumplogs_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await CheckAndRequestWritePermission();
-            await CheckAndRequestReadPermission();
+            await GHApp.CheckAndRequestWritePermission(this);
+            await GHApp.CheckAndRequestReadPermission(this);
             string archive_file = "";
             try
             {
@@ -342,7 +200,7 @@ namespace GnollHackX.Pages.MainScreen
             try
             {
                 if (archive_file != "")
-                    ShareFile(archive_file, "GnollHack Dumplogs");
+                    await GHApp.ShareFile(this, archive_file, "GnollHack Dumplogs");
             }
             catch (Exception ex)
             {
@@ -405,8 +263,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await CheckAndRequestWritePermission();
-            await CheckAndRequestReadPermission();
+            await GHApp.CheckAndRequestWritePermission(this);
+            await GHApp.CheckAndRequestReadPermission(this);
             try
             {
                 FileResult file = await FilePicker.PickAsync();
@@ -519,8 +377,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await CheckAndRequestWritePermission();
-            await CheckAndRequestReadPermission();
+            await GHApp.CheckAndRequestWritePermission(this);
+            await GHApp.CheckAndRequestReadPermission(this);
             string archive_file = "";
             try
             {
@@ -535,7 +393,7 @@ namespace GnollHackX.Pages.MainScreen
             try
             {
                 if (archive_file != "")
-                    ShareFile(archive_file, "GnollHack Saved Games");
+                    await GHApp.ShareFile(this, archive_file, "GnollHack Saved Games");
             }
             catch (Exception ex)
             {

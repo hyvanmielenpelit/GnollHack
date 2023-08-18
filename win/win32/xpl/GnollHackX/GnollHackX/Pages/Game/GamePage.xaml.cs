@@ -13354,7 +13354,14 @@ namespace GnollHackX.Pages.Game
 
         public async void ReportPanic(string text)
         {
-            await DisplayAlert("Panic", text != null ? text : "GnollHack has panicked. See the Panic Log.", "OK");
+            //await DisplayAlert("Panic", text != null ? text : "GnollHack has panicked. See the Panic Log.", "OK");
+            bool answer = await DisplayAlert("Panic", (text != null ? text : "GnollHack has panicked. See the Panic Log.") + 
+                " Do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further.", 
+                "Yes", "No");
+            if (answer)
+            {
+                await GHApp.CreateCrashReport(this);
+            }
 
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
@@ -13393,100 +13400,15 @@ namespace GnollHackX.Pages.Game
                 bool answer = await DisplayAlert("Crash Detected", "A crashed game has been detected. GnollHack will attempt to restore this game. Also, do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further." + (UseMainGLCanvas ? " If the problem persists, try switching GPU Acceleration off in Settings." : ""), "Yes", "No");
                 if (answer)
                 {
-                    await CheckAndRequestWritePermission();
-                    await CheckAndRequestReadPermission();
-                    string archive_file = "";
-                    try
-                    {
-                        archive_file = GHApp.CreateGameZipArchive();
-                    }
-                    catch (Exception ex)
-                    {
-                        await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a crash report archive: " + ex.Message, "OK");
-                        goto finished;
-                    }
-                    try
-                    {
-                        if (archive_file != "")
-                            ShareFile(archive_file, "GnollHack Crash Report");
-
-                    }
-                    catch (Exception ex)
-                    {
-                        await DisplayAlert("Share File Failure", "GnollHack failed to share a crash report archive: " + ex.Message, "OK");
-                        goto finished;
-                    }
+                    await GHApp.CreateCrashReport(this);
                 }
             }
 
-        finished:
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.CrashReport));
             }
-        }
-
-        private async void ShareFile(string filename, string title)
-        {
-            if (!File.Exists(filename))
-            {
-                await DisplayAlert("File Sharing Failure", "GnollHack cannot find file \'" + filename + "\'", "OK");
-                return;
-            }
-            await Share.RequestAsync(new ShareFileRequest
-            {
-                Title = title,
-                File = new ShareFile(filename)
-            });
-        }
-        public async Task<PermissionStatus> CheckAndRequestWritePermission()
-        {
-            var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
-
-            if (status == PermissionStatus.Granted)
-                return status;
-
-            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
-            {
-                // Prompt the user to turn on in settings
-                // On iOS once a permission has been denied it may not be requested again from the application
-                await DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file. Please turn it on in Settings.", "OK");
-                return status;
-            }
-
-            if (Permissions.ShouldShowRationale<Permissions.StorageWrite>())
-            {
-                await DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file.", "OK");
-            }
-
-            status = await Permissions.RequestAsync<Permissions.StorageWrite>();
-
-            return status;
-        }
-        public async Task<PermissionStatus> CheckAndRequestReadPermission()
-        {
-            var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
-
-            if (status == PermissionStatus.Granted)
-                return status;
-
-            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
-            {
-                // Prompt the user to turn on in settings
-                // On iOS once a permission has been denied it may not be requested again from the application
-                await DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file. Please turn it on in Settings.", "OK");
-                return status;
-            }
-
-            if (Permissions.ShouldShowRationale<Permissions.StorageRead>())
-            {
-                await DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file.", "OK");
-            }
-
-            status = await Permissions.RequestAsync<Permissions.StorageRead>();
-
-            return status;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

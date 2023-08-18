@@ -2187,7 +2187,8 @@ int how;
         exit_nhwindows((char*)0), have_windows = FALSE;
 
     //Should exclude games from imported files?
-    if(((!discover && !CasualMode) || (CasualMode && how == ASCENDED)) && (!wizard || special_yn_query("Write Top Scores", "Write a top score entry?") == 'y'))
+    if(((!discover && !CasualMode) || (CasualMode && how == ASCENDED)) && !program_state.panicking &&
+        (!wizard || special_yn_query("Write Top Scores", "Write a top score entry?") == 'y'))
         topten(how, endtime);
 
     if (CasualMode && how == ASCENDED && has_existing_save_file)

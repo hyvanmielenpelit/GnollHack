@@ -2103,6 +2103,98 @@ namespace GnollHackX
             //    }
             //}
         }
+
+        public static async Task<bool> ShareFile(Page page, string filename, string title)
+        {
+            if (!File.Exists(filename))
+            {
+                await page.DisplayAlert("File Sharing Failure", "GnollHack cannot find file \'" + filename + "\'", "OK");
+                return false;
+            }
+            await Share.RequestAsync(new ShareFileRequest
+            {
+                Title = title,
+                File = new ShareFile(filename)
+            });
+            return true;
+        }
+
+        public static async Task<PermissionStatus> CheckAndRequestWritePermission(Page page)
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                // Prompt the user to turn on in settings
+                // On iOS once a permission has been denied it may not be requested again from the application
+                await page.DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file. Please turn it on in Settings.", "OK");
+                return status;
+            }
+
+            if (Permissions.ShouldShowRationale<Permissions.StorageWrite>())
+            {
+                await page.DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file.", "OK");
+            }
+
+            status = await Permissions.RequestAsync<Permissions.StorageWrite>();
+
+            return status;
+        }
+        public static async Task<PermissionStatus> CheckAndRequestReadPermission(Page page)
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                // Prompt the user to turn on in settings
+                // On iOS once a permission has been denied it may not be requested again from the application
+                await page.DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file. Please turn it on in Settings.", "OK");
+                return status;
+            }
+
+            if (Permissions.ShouldShowRationale<Permissions.StorageRead>())
+            {
+                await page.DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file.", "OK");
+            }
+
+            status = await Permissions.RequestAsync<Permissions.StorageRead>();
+
+            return status;
+        }
+
+        public static async Task<bool> CreateCrashReport(Page page)
+        {
+            await CheckAndRequestWritePermission(page);
+            await CheckAndRequestReadPermission(page);
+            string archive_file = "";
+            try
+            {
+                archive_file = GHApp.CreateGameZipArchive();
+            }
+            catch (Exception ex)
+            {
+                await page.DisplayAlert("Archive Creation Failure", "GnollHack failed to create a crash report archive: " + ex.Message, "OK");
+                return false;
+            }
+            try
+            {
+                if (archive_file != "")
+                    return await ShareFile(page, archive_file, "GnollHack Crash Report");
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                await page.DisplayAlert("Share File Failure", "GnollHack failed to share a crash report archive: " + ex.Message, "OK");
+                return false;
+            }
+        }
     }
 
     class SecretsFileSizeComparer : IComparer<SecretsFile>
