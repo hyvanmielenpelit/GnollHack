@@ -346,7 +346,7 @@ docharacterstatistics()
                     abil_count++;
 
                     char dbuf2[BUFSIZ] = "";
-                    strcpy(dbuf2, get_property_name(intrinsic_ability[table_index].propid));
+                    Strcpy(dbuf2, get_property_name(intrinsic_ability[table_index].propid));
                     *dbuf2 = highc(*dbuf2);
 
                     Sprintf(buf, " Level %2d - %s", intrinsic_ability[table_index].ulevel, dbuf2);
@@ -883,15 +883,15 @@ int otyp;
         /*
         if (is_graystone(obj))
         {
-            strcpy(buf3, "Gray stone");
+            Strcpy(buf3, "Gray stone");
         }
         if (is_rock(obj))
         {
-            strcpy(buf3, "Rock");
+            Strcpy(buf3, "Rock");
         }
         if (is_ore(obj))
         {
-            strcpy(buf3, "Ore");
+            Strcpy(buf3, "Ore");
         }
         */
     }
@@ -899,7 +899,7 @@ int otyp;
     if (strcmp(buf2, "") != 0)
     {
         char buf4[BUFSIZ] = "";
-        strcpy(buf4, buf);
+        Strcpy(buf4, buf);
         //Sprintf(buf, "Category:               %s", buf2);
         if (hidemainclass)
             Sprintf(buf, "%s", buf2);
@@ -2287,7 +2287,7 @@ int otyp;
             }
 
             char rechargebuf[BUFSZ];
-            strcpy(rechargebuf, get_recharge_text(objects[otyp].oc_recharging));
+            Strcpy(rechargebuf, get_recharge_text(objects[otyp].oc_recharging));
             *rechargebuf = highc(*rechargebuf);
 
             Sprintf(buf, "Recharging type:        %s", rechargebuf);
@@ -3234,7 +3234,7 @@ int otyp;
                             if (flagname && strcmp(flagname, ""))
                             {
                                 char flagbuf[BUFSZ];
-                                strcpy(flagbuf, flagname);
+                                Strcpy(flagbuf, flagname);
                                 *flagbuf = highc(*flagbuf);
                                 powercnt++;
                                 Sprintf(buf, " %2d - %s", powercnt, flagbuf);
@@ -4444,28 +4444,36 @@ struct permonst* ptr;
     char buf[BUFSZ];
     char buf2[BUFSZ];
     char buf3[BUFSZ];
+    char buf4[BUFSZ];
 
-    strcpy(buf, "");
-    strcpy(buf2, "");
-    strcpy(buf3, "");
+    Strcpy(buf, "");
+    Strcpy(buf2, "");
+    Strcpy(buf3, "");
 
     const char* monster_name = mon ? x_monnam(mon, ARTICLE_NONE, (char*)0, (has_mname(mon)) ? (SUPPRESS_SADDLE | SUPPRESS_IT) : SUPPRESS_IT, FALSE) : ptr->mname;
     const char* monster_type_name = mon ? mon_monster_name(mon) : ptr->mname;
     boolean contains_type_name = TRUE;
 
-    strcpy(buf2, "");
-    strcpy(buf3, "");
+    Strcpy(buf2, "");
+    Strcpy(buf3, "");
     if (strcmp(monster_name, monster_type_name) && !strstr(monster_name, monster_type_name))
     {
         contains_type_name = FALSE;
-        strcpy(buf2, monster_type_name);
+        Strcpy(buf2, monster_type_name);
         *buf2 = highc(*buf2);
         Sprintf(buf3, " - %s", buf2);
     }
 
+    Strcpy(buf4, "");
+    if (mon && has_umname(mon) && has_mname(mon) && mon->u_know_mname && !strcmp(monster_name, UMNAME(mon)) && strcmp(UMNAME(mon), MNAME(mon)))
+    {
+        Sprintf(buf4, " a.k.a. %s", MNAME(mon));
+    }
+
     /* Name */
-    Sprintf(buf, "%s%s", 
+    Sprintf(buf, "%s%s%s", 
         mon ? x_monnam(mon, ARTICLE_NONE, (char*)0, (has_mname(mon)) ? (SUPPRESS_SADDLE | SUPPRESS_IT) : SUPPRESS_IT, FALSE) : ptr->mname,
+           buf4,
            !contains_type_name ? buf3 : "");
     *buf = highc(*buf);
     if (ptr->mtitle && strcmp(ptr->mtitle, ""))
@@ -4615,21 +4623,21 @@ struct permonst* ptr;
         char specialbuf1[BUFSZ];
         char specialbuf2[BUFSZ];
 
-        strcpy(attypebuf, get_attack_type_text(ptr->mattk[i].aatyp));
+        Strcpy(attypebuf, get_attack_type_text(ptr->mattk[i].aatyp));
         *attypebuf = highc(*attypebuf);
 
-        strcpy(adtypebuf, "");
+        Strcpy(adtypebuf, "");
         const char* adtxt = get_damage_type_text((short)ptr->mattk[i].adtyp);
         if (adtxt && strcmp(adtxt, ""))
         {
             Sprintf(adtypebuf, ", %s", adtxt);
         }
 
-        strcpy(damagebuf, "");
+        Strcpy(damagebuf, "");
         if ((ptr->mattk[i].damn > 0 && ptr->mattk[i].damd > 0) || ptr->mattk[i].damp != 0)
         {
             boolean dpart = FALSE;
-            strcpy(damagebuf, " ");
+            Strcpy(damagebuf, " ");
 
             if ((ptr->mattk[i].damn > 0 && ptr->mattk[i].damd > 0))
             {
@@ -7014,7 +7022,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         if(!In_endgame(&u.uz) && (curdepth != (int)u.uz.dlevel || special_lvl))
             Sprintf(lvlbuf2, "Dungeon Level %d", curdepth);
         else
-            strcpy(lvlbuf2, "");
+            Strcpy(lvlbuf2, "");
 
         display_screen_text(lvlbuf, dngbuf, lvlbuf2, SCREEN_TEXT_ENTER_DUNGEON_LEVEL, 0, 0, 0UL);
     }

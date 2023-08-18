@@ -1435,14 +1435,14 @@ do_mname()
         if (has_umname(mtmp))
             free_umname(mtmp);
     }
-    else if (has_mname(mtmp))
-    {
-        if(!mtmp->u_know_mname)
-            (void)u_name_monst(mtmp, buf);
-        else
-            pline("%s will not accept the name %s.", upstart(monnambuf), buf);
-    }
-    else
+    //else if (has_mname(mtmp))
+    //{
+    //    if(!mtmp->u_know_mname || !*buf)
+    //        (void)u_name_monst(mtmp, buf);
+    //    else
+    //        pline("%s will not accept the name %s.", upstart(monnambuf), buf);
+    //}
+    else /* Nickname */
     {
         (void)u_name_monst(mtmp, buf);
     }
