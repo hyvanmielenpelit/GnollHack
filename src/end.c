@@ -2175,8 +2175,7 @@ int how;
             Sprintf(cbuf, "%.3s %.3s %.3s %.3s XL:%d", urole.filecode,
                 urace.filecode, genders[flags.female].filecode,
                 aligns[1 - u.ualign.type].filecode, u.ulevel);
-            long currenttime = get_current_game_duration();
-            char* duration = format_duration_with_units(currenttime);
+            char* duration = format_duration_with_units(urealtime.realtime);
             Sprintf(totalpostbuf, "%s (%s), %ld point%s, T:%ld (%s), %s [%s]", plname, cbuf, u.u_gamescore, plur(u.u_gamescore), moves, duration, postbuf, mbuf);
             issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, how, totalpostbuf);
         }
