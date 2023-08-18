@@ -1645,6 +1645,8 @@ int how;
     urealtime.realtime += (long) (endtime - urealtime.start_timing);
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
 
+    fixup_death(how); /* actually, fixup multi_reason */
+
     /* Write dumplog */
     if (disclose_and_dumplog_ok)
         dump_open_log(endtime);
@@ -1734,8 +1736,6 @@ int how;
 
     if (how == ESCAPED || how == PANICKED)
         killer.format = NO_KILLER_PREFIX;
-
-    fixup_death(how); /* actually, fixup multi_reason */
 
     if (how != PANICKED) 
     {
