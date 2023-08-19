@@ -313,7 +313,6 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
                     {
                         int buriedsearchablefound = FALSE;
                         struct obj* otmp2;
-                        struct obj* otmp;
                         for (otmp = level.buriedobjlist; otmp; otmp = otmp2)
                         {
                             otmp2 = otmp->nobj;
