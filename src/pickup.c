@@ -4627,7 +4627,7 @@ struct obj *box; /* or bag */
                     pline("%s%c", doname(otmp), nobj ? ',' : '.');
                     iflags.last_msg = PLNMSG_OBJNAM_ONLY;
                 }
-                dropy(otmp);
+                dropyf(otmp);
                 if (iflags.last_msg != PLNMSG_OBJNAM_ONLY)
                     terse = FALSE; /* terse formatting has been interrupted */
             }

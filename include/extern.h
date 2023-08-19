@@ -628,6 +628,7 @@ E boolean FDECL(canletgo, (struct obj *, const char *));
 E int FDECL(drop, (struct obj*));
 E void FDECL(dropx, (struct obj *));
 E void FDECL(dropy, (struct obj *));
+E void FDECL(dropyf, (struct obj*));
 E void FDECL(dropz, (struct obj *, BOOLEAN_P));
 E void FDECL(obj_no_longer_held, (struct obj *));
 E int NDECL(doddrop);

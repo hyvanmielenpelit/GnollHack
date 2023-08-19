@@ -2075,7 +2075,7 @@ struct obj **optr;
             {
                 pline("Oops! %s from your %s.", Tobjnam(lightedcandle, "slip"), body_part(HAND));
                 sellobj_state(SELL_DONTSELL);
-                dropy(lightedcandle);
+                dropyf(lightedcandle);
                 sellobj_state(SELL_NORMAL);
             }
             else
@@ -2319,7 +2319,7 @@ struct obj** optr;
         {
             pline("Oops! %s from your %s.", Tobjnam(lightedcandle, "slip"), body_part(HAND));
             sellobj_state(SELL_DONTSELL);
-            dropy(lightedcandle);
+            dropyf(lightedcandle);
             sellobj_state(SELL_NORMAL);
         }
         else
@@ -4175,7 +4175,7 @@ uchar enchantmenttype;
         freeinv(otmp);
         if (inv_cnt(FALSE) >= 52) {
             sellobj_state(SELL_DONTSELL);
-            dropy(otmp);
+            dropyf(otmp);
             sellobj_state(SELL_NORMAL);
         }
         else {

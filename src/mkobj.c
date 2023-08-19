@@ -1125,6 +1125,7 @@ register struct obj* otmp;
     if (has_omid(dummy))
         free_omid(dummy); /* only one association with m_id*/
     dummy->owornmask = 0L; /* dummy object is not worn */
+    dummy->speflags &= ~SPEFLAGS_FOUND_THIS_TURN;
 
     /* Add to memoryobjs chain */
     add_to_memoryobjs(dummy);
@@ -4322,7 +4323,7 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
                 else
                     pline("%s %s to the %s.", Doname2(obj),
                           otense(obj, "drop"), surface(u.ux, u.uy));
-                dropy(obj);
+                dropyf(obj);
             }
         }
         iflags.suppress_price--;

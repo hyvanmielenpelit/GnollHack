@@ -5518,6 +5518,15 @@ struct obj *obj;
     dropz(obj, FALSE);
 }
 
+/* dropyf - put dropped object at destination; called from lots of places */
+void
+dropyf(obj)
+struct obj* obj;
+{
+    obj->speflags |= SPEFLAGS_FOUND_THIS_TURN;
+    dropz(obj, FALSE);
+}
+
 /* dropz - really put dropped object at its destination... */
 void
 dropz(obj, with_impact)

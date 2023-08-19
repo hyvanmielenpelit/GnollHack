@@ -436,7 +436,7 @@ struct obj *otmp;
         freeinv(otmp);
         if (inv_cnt(FALSE) >= 52) {
             sellobj_state(SELL_DONTSELL);
-            dropy(otmp);
+            dropyf(otmp);
             sellobj_state(SELL_NORMAL);
         } else {
             otmp->nomerge = 1; /* used to prevent merge */
@@ -3509,7 +3509,7 @@ doeat()
                 if (otmp->owornmask)
                     remove_worn_item(otmp, FALSE);
                 freeinv(otmp);
-                dropy(otmp);
+                dropyf(otmp);
             }
             stackobj(otmp);
         }

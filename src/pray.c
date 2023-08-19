@@ -997,7 +997,7 @@ gcrownu()
         obj = oname(obj, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
         obj->enchantment = 1;
         at_your_feet("A pair of gauntlets");
-        dropy(obj);
+        dropyf(obj);
         u.ugifts++;
         obj->aknown = obj->nknown = 1;
         if (obj && obj->oartifact == ART_GAUNTLETS_OF_YIN_AND_YANG)
@@ -1112,7 +1112,7 @@ gcrownu()
         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
             "was bestowed with %s", an(actualoname(obj)));
         at_your_feet("A golden chest");
-        dropy(obj);
+        dropyf(obj);
         u.ugifts++;
     }
     else if (Role_if(PM_PRIEST))
@@ -1314,7 +1314,7 @@ gcrownu()
         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
             "was bestowed with %s", an(actualoname(obj)));
         at_your_feet("A golden chest");
-        dropy(obj);
+        dropyf(obj);
         u.ugifts++;
     }
     else
@@ -1338,7 +1338,7 @@ gcrownu()
             livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                 "was bestowed with %s", an(actualoname(obj)));
             at_your_feet("A spellbook");
-            dropy(obj);
+            dropyf(obj);
             u.ugifts++;
             /* when getting a new book for known spell, enhance
                currently wielded weapon rather than the book */
@@ -1367,7 +1367,7 @@ gcrownu()
                 obj = oname(obj, artiname(ART_RHONGOMYNIAD));
                 obj->enchantment = 1;
                 at_your_feet("A lance");
-                dropy(obj);
+                dropyf(obj);
                 u.ugifts++;
                 if (obj->oartifact == ART_RHONGOMYNIAD)
                 {
@@ -1384,7 +1384,7 @@ gcrownu()
                 obj = mksobj(GRAIL_OF_HEALING, FALSE, FALSE, FALSE);
                 obj = oname(obj, artiname(ART_HOLY_GRAIL));
                 at_your_feet("A grail");
-                dropy(obj);
+                dropyf(obj);
                 u.ugifts++;
                 if (obj->oartifact == ART_HOLY_GRAIL)
                 {
@@ -1414,7 +1414,7 @@ gcrownu()
                 obj = oname(obj, artiname(ART_KATANA_OF_MASAMUNE));
                 obj->enchantment = 1;
                 at_your_feet("A katana");
-                dropy(obj);
+                dropyf(obj);
                 u.ugifts++;
                 if (obj->oartifact == ART_KATANA_OF_MASAMUNE)
                 {
@@ -1463,7 +1463,7 @@ gcrownu()
                 obj = mksobj(SWORD_OF_HOLY_VENGEANCE, FALSE, FALSE, FALSE);
                 obj->enchantment = 1 + rnd(3);
                 at_your_feet("A sword");
-                dropy(obj);
+                dropyf(obj);
                 u.ugifts++;
                 obj->aknown = obj->nknown = TRUE;
                 livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
@@ -1496,7 +1496,7 @@ gcrownu()
                 obj = mksobj(GRAIL_OF_HEALING, FALSE, FALSE, FALSE);
                 obj = oname(obj, artiname(ART_HOLY_GRAIL));
                 at_your_feet("A grail");
-                dropy(obj);
+                dropyf(obj);
                 u.ugifts++;
                 if (obj->oartifact == ART_HOLY_GRAIL)
                 {
@@ -1525,7 +1525,7 @@ gcrownu()
                 obj = oname(obj, artiname(ART_VORPAL_BLADE));
                 obj->enchantment = 1;
                 at_your_feet("A sword");
-                dropy(obj);
+                dropyf(obj);
                 u.ugifts++;
                 obj->aknown = obj->nknown = TRUE;
                 if (obj->oartifact == ART_VORPAL_BLADE)
@@ -1579,7 +1579,7 @@ gcrownu()
                 obj = oname(obj, artiname(chaotic_crowning_gift_oartifact));
                 obj->enchantment = 1;
                 at_your_feet(An(swordbuf));
-                dropy(obj);
+                dropyf(obj);
                 u.ugifts++;
                 obj->aknown = obj->nknown = TRUE;
                 if (obj->oartifact == chaotic_crowning_gift_oartifact)
@@ -2889,9 +2889,8 @@ dosacrifice()
                         uncurse(otmp);
                     if(erosion_matters(otmp))
                         otmp->oerodeproof = TRUE;
-                    otmp->speflags |= SPEFLAGS_FOUND_THIS_TURN;
                     at_your_feet("An object");
-                    dropy(otmp);
+                    dropyf(otmp);
                     if (is_launcher(otmp))
                     {
                         struct obj* otmp2 = (struct obj*)0;
@@ -2909,8 +2908,7 @@ dosacrifice()
                             bless(otmp2);
                             otmp2->enchantment = rn2(4);
                             otmp2->owt = weight(otmp2);
-                            otmp2->speflags |= SPEFLAGS_FOUND_THIS_TURN;
-                            dropy(otmp2);
+                            dropyf(otmp2);
                         }
                     }
                     play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_USE_MY_GIFT_WISELY);

@@ -2952,7 +2952,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                 play_ui_sound(UI_SOUND_KNAPSACK_FULL);
                 You_ex(ATR_NONE, CLR_MSG_SUCCESS, "grab %s's gold, but find no room in your knapsack.",
                     mon_nam(mdef));
-                dropy(mongold);
+                dropyf(mongold);
             }
         }
         exercise(A_DEX, TRUE);

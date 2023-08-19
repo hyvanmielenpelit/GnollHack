@@ -489,14 +489,14 @@ dig(VOID_ARGS)
                 uncatch_tree_objects(dpx, dpy);
 
                 /* Wood */
-                struct obj* otmp_wood = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
+                struct obj* otmp_wood = mksobj_found_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
                 otmp_wood->quan = d(1, 3);
                 otmp_wood->owt = weight(otmp_wood);
 
                 /* Possibly some fruits */
                 if (lev->special_quality > 0 && tree_subtype_definitions[lev->subtyp].fruit_type > STRANGE_OBJECT)
                 {
-                    struct obj* otmp = mksobj_at(tree_subtype_definitions[lev->subtyp].fruit_type, dpx, dpy, TRUE, FALSE); //rnd_treefruit_at(dpx, dpy);
+                    struct obj* otmp = mksobj_found_at(tree_subtype_definitions[lev->subtyp].fruit_type, dpx, dpy, TRUE, FALSE); //rnd_treefruit_at(dpx, dpy);
                     otmp->quan = lev->special_quality;
                     otmp->owt = weight(otmp);
                     lev->special_quality = 0;
@@ -1130,10 +1130,10 @@ coord *cc;
         case 0:
             play_sfx_sound(SFX_UNEARTHED_OBJECT_FOUND);
             You("unearth some bones.");
-            (void)mksobj_at(BONE, dig_x, dig_y, TRUE, FALSE);
-            (void)mksobj_at(BONE, dig_x, dig_y, TRUE, FALSE);
+            (void)mksobj_found_at(BONE, dig_x, dig_y, TRUE, FALSE);
+            (void)mksobj_found_at(BONE, dig_x, dig_y, TRUE, FALSE);
             if (!rn2(2))
-                (void)mksobj_at(HUMAN_SKULL, dig_x, dig_y, TRUE, FALSE);
+                (void)mksobj_found_at(HUMAN_SKULL, dig_x, dig_y, TRUE, FALSE);
             doautopickup = TRUE;
             break;
         case 1:
@@ -1142,6 +1142,7 @@ coord *cc;
             if ((otmp = mk_tt_object(CORPSE, dig_x, dig_y)) != 0)
             {
                 otmp->age -= 100; /* this is an *OLD* corpse */
+                otmp->speflags |= SPEFLAGS_FOUND_THIS_TURN;
                 doautopickup = TRUE;
             }
             break;
