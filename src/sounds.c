@@ -7250,24 +7250,24 @@ struct monst* mtmp;
 
     u.uconduct.gnostic++;
 
+    char talkbuf[BUFSZ];
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_IS_LIKE);
-    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Very well, then. Let's see what your fortune is like.");
+    popup_talk_line(mtmp, "Very well, then. Let's see what your fortune is like.");
 
     if (can_pray(FALSE))
     {
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_CAN_SAFELY_PRAY);
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "First, I see that you can safely pray.");
-
+        popup_talk_line(mtmp, "First, I see that you can safely pray.");
     }
     else
     {
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_CANNOT_SAFELY_PRAY);
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "First, you should know that you cannot safely pray.");
-
+        popup_talk_line(mtmp, "First, you should know that you cannot safely pray.");
         if (u.ugangr)
         {
             play_monster_special_dialogue_line(mtmp, u.ugangr > 6 ? PRIEST_SPECIAL_DIALOGUE_GOD_EXTREMELY_ANGRY : u.ugangr > 3 ? PRIEST_SPECIAL_DIALOGUE_GOD_VERY_ANGRY : PRIEST_SPECIAL_DIALOGUE_GOD_ANGRY );
-            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "I see that %s is %sangry with you.", iflags.using_gui_sounds ? "your god" : u_gname(), u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
+            Sprintf(talkbuf, "I see that %s is %sangry with you.", iflags.using_gui_sounds ? "your god" : u_gname(), u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
+            popup_talk_line(mtmp, talkbuf);
         }
 
         if (u.uprayer_timeout > 0)
@@ -7275,15 +7275,20 @@ struct monst* mtmp;
             if (iflags.using_gui_sounds)
             {
                 play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_PRAYER_CONDUCT_NUMBER);
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "For your prayer conduct, a number appears before me. (The number appears to be %d.)", u.uprayer_timeout / 10 + 1);
+                Sprintf(talkbuf, "For your prayer conduct, a number appears before me. (The number appears to be %d.)", u.uprayer_timeout / 10 + 1);
+                popup_talk_line(mtmp, talkbuf);
             }
             else
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "For your prayer conduct, the number %d appears before me.", u.uprayer_timeout / 10 + 1);
+            {
+                Sprintf(talkbuf, "For your prayer conduct, the number %d appears before me.", u.uprayer_timeout / 10 + 1);
+                popup_talk_line(mtmp, talkbuf);
+            }
 
             if (u.uprayer_timeout > 300)
             {
                 play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_GOD_TIRED_OF_WHINING);
-                verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "I can see that %s is quite tired of your constant whining.", iflags.using_gui_sounds ? "your god" : u_gname());
+                Sprintf(talkbuf, "I can see that %s is quite tired of your constant whining.", iflags.using_gui_sounds ? "your god" : u_gname());
+                popup_talk_line(mtmp, talkbuf);
             }
 
             if(u.uprayer_timeout >= 50)
@@ -7291,10 +7296,11 @@ struct monst* mtmp;
             else
                 play_monster_special_dialogue_line(mtmp, u.uprayer_timeout < 50 ? PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LITTLE_LONGER : u.uprayer_timeout > 200 ? PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LONG_TIME : PRIEST_SPECIAL_DIALOGUE_MUST_WAIT);
 
-            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Thus, %s wait %sbefore bothering %s again.",
+            Sprintf(talkbuf, "Thus, %s wait %sbefore bothering %s again.",
                 u.uprayer_timeout >= 50 ? "it would be wise to" : "you must",
                 u.uprayer_timeout < 50 ? "a little longer " : u.uprayer_timeout > 200 ? "a long time " : "",
                 iflags.using_gui_sounds ? "your god" : u_gname());
+            popup_talk_line(mtmp, talkbuf);
         }
     }
 
@@ -7310,8 +7316,9 @@ struct monst* mtmp;
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_NUMBER);
         play_monster_special_dialogue_line(mtmp, abs(Luck) >= 10 ? PRIEST_SPECIAL_DIALOGUE_EXTREMELY_UNLUCKY_NUMBER : abs(Luck) >= 5 ? PRIEST_SPECIAL_DIALOGUE_VERY_UNLUCKY_NUMBER : PRIEST_SPECIAL_DIALOGUE_UNLUCKY_NUMBER);
 
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "For your fortune, I see a number%s. That is not good, for it is %s unlucky number.%s",
+        Sprintf(talkbuf, "For your fortune, I see a number%s. That is not good, for it is %s unlucky number.%s",
             buf1, abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "an", buf2);
+        popup_talk_line(mtmp, talkbuf);
     }
     else if (Luck > 0)
     {
@@ -7319,23 +7326,21 @@ struct monst* mtmp;
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_NUMBER);
         play_monster_special_dialogue_line(mtmp, abs(Luck) >= 10 ? PRIEST_SPECIAL_DIALOGUE_EXTREMELY_LUCKY_NUMBER : abs(Luck) >= 5 ? PRIEST_SPECIAL_DIALOGUE_VERY_LUCKY_NUMBER : PRIEST_SPECIAL_DIALOGUE_LUCKY_NUMBER);
 
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "For your fortune, I see a number%s. That is good, for it is %s lucky number.%s",
+        Sprintf(talkbuf, "For your fortune, I see a number%s. That is good, for it is %s lucky number.%s",
             buf1, abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "an", buf2);
+        popup_talk_line(mtmp, talkbuf);
     }
     else
     {
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_NEUTRAL);
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "For your fortune, my vision is neutral.");
+        popup_talk_line(mtmp, "For your fortune, my vision is neutral.");
     }
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANK_YOU_FOR_YOUR_INTEREST);
-    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "That's all for now. Thank you for your interest in divine matters.");
+    popup_talk_line(mtmp, "That's all for now. Thank you for your interest in divine matters.");
 
     return 1;
 }
-
-
-
 
 STATIC_OVL int
 do_chat_shk_payitems(mtmp)
