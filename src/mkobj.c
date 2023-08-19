@@ -258,6 +258,14 @@ boolean init, artif;
     return mksobj_at_with_flags(otyp, x, y, init, artif, 0, (struct monst*)0, MAT_NONE, 0L, 0L, 0UL);
 }
 
+struct obj *
+mksobj_found_at(otyp, x, y, init, artif)
+int otyp, x, y;
+boolean init, artif;
+{
+    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FOUND_THIS_TURN);
+}
+
 struct obj*
 mksobj_at_with_flags(otyp, x, y, init, artif, mkobj_type, mowner, material, param, param2, mkflags)
 int otyp, x, y, mkobj_type;
@@ -1436,6 +1444,7 @@ unsigned long mkflags;
     boolean forcebasematerial = (mkflags & MKOBJ_FLAGS_FORCE_BASE_MATERIAL) != 0 || mkobj_type == 2;
     boolean param_is_spquality = (mkflags & MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY) != 0;
     boolean param_is_mnum = (mkflags & MKOBJ_FLAGS_PARAM_IS_MNUM) != 0;
+    boolean foundthisturn = (mkflags & MKOBJ_FLAGS_FOUND_THIS_TURN) != 0;
     unsigned long excludedtitles = 0UL, excludedtitles2 = 0UL;
     if (mkflags & MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS)
     {
@@ -1488,6 +1497,9 @@ unsigned long mkflags;
 
     if ((objects[otmp->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && (mkflags & MKOBJ_FLAGS_OPEN_COFFIN))
         otmp->speflags |= SPEFLAGS_LID_OPENED;
+
+    if(foundthisturn)
+        otmp->speflags |= SPEFLAGS_FOUND_THIS_TURN;
 
     int leveldiff = level_difficulty();
     /* Change type before init if need be*/

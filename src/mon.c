@@ -344,18 +344,18 @@ boolean createcorpse;
         case PM_SKELETON_KING:
             if (!rn2(2))
             {
-                obj = mksobj_at(BONE, x, y, TRUE, FALSE);
+                obj = mksobj_found_at(BONE, x, y, TRUE, FALSE);
                 obj->quan = rnd(2 + (mndx == PM_SKELETON_LORD ? 1 : 0));
                 obj->owt = weight(obj);
             }
             if (!rn2(2))
-                obj = mksobj_at(HUMAN_SKULL, x, y, TRUE, FALSE);
+                obj = mksobj_found_at(HUMAN_SKULL, x, y, TRUE, FALSE);
             break;
         case PM_ETTIN_SKELETON:
         case PM_GIANT_SKELETON:
             if (!rn2(2))
             {
-                obj = mksobj_at(BONE, x, y, TRUE, FALSE);
+                obj = mksobj_found_at(BONE, x, y, TRUE, FALSE);
                 obj->quan = rnd(3);
                 obj->owt = weight(obj);
             }
@@ -383,7 +383,7 @@ boolean createcorpse;
             ashquan++;
             if ((!mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
             {
-                obj = mksobj_at(PINCH_OF_SULFUROUS_ASH, x, y, TRUE, FALSE);
+                obj = mksobj_found_at(PINCH_OF_SULFUROUS_ASH, x, y, TRUE, FALSE);
                 if (ashquan > 1)
                     obj->quan = rnd(ashquan);
                 else
@@ -451,7 +451,7 @@ boolean createcorpse;
 
             if (oneinchance > 0 && basemonsterindex > 0 && (oneinchance == 1 || !rn2(oneinchance))) {
                 num = GRAY_DRAGON_SCALES + mndx - basemonsterindex;
-                obj = mksobj_at(num, x, y, FALSE, FALSE);
+                obj = mksobj_found_at(num, x, y, FALSE, FALSE);
                 obj->enchantment = 0;
                 obj->cursed = obj->blessed = FALSE;
             }
@@ -468,7 +468,7 @@ boolean createcorpse;
         }
         else if(!istame && !isquestmonster)
         {
-            obj = mksobj_at(UNICORN_HORN, x, y, TRUE, FALSE);
+            obj = mksobj_found_at(UNICORN_HORN, x, y, TRUE, FALSE);
             if (obj && mtmp->mrevived)
                 obj->degraded_horn = 1;
         }
@@ -476,7 +476,7 @@ boolean createcorpse;
     case PM_LONG_WORM:
     case PM_ELDER_LONG_WORM:
         if(!istame && !isquestmonster)
-            (void)mksobj_at(WORM_TOOTH, x, y, TRUE, FALSE);
+            (void)mksobj_found_at(WORM_TOOTH, x, y, TRUE, FALSE);
         goto default_1;
     case PM_CAVE_SPIDER:
     case PM_GIANT_SPIDER:
@@ -485,7 +485,7 @@ boolean createcorpse;
         {
             if (mndx != PM_CAVE_SPIDER || !rn2(2))
             {
-                obj = mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
+                obj = mksobj_found_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
                 obj->quan = (mndx == PM_PHASE_SPIDER ? rnd(3) : mndx == PM_GIANT_SPIDER ? rnd(2) : 1);
                 obj->owt = weight(obj);
             }
@@ -506,7 +506,7 @@ boolean createcorpse;
         {
             if ((!mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
             {
-                obj = mksobj_at(FEATHER, x, y, TRUE, FALSE);
+                obj = mksobj_found_at(FEATHER, x, y, TRUE, FALSE);
                 switch (mndx)
                 {
                 case PM_GARGANTUAN_COCKATRICE:
@@ -550,7 +550,7 @@ boolean createcorpse;
     case PM_HELL_BAT:
         if (!istame && !isquestmonster && (mndx == PM_BAT ? !rn2(3) : mndx == PM_GIANT_BAT ? !rn2(2) : 1))
         {
-            obj = mksobj_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
+            obj = mksobj_found_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
             obj->quan = (mndx == PM_HELL_BAT ? rnd(2) : mndx == PM_VAMPIRE_BAT ? 1 : mndx == PM_GIANT_BAT ? 1 : 1);
             obj->owt = weight(obj);
         }
@@ -574,7 +574,7 @@ boolean createcorpse;
         sporequan++;
         if (!istame && !isquestmonster && !mtmp->mcloned && (!rn2(2) || mndx == PM_MUCILAGINOUS_CUBE))
         {
-            obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
+            obj = mksobj_found_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
             obj->quan = sporequan > 1 ? rnd(sporequan) : 1;
             obj->owt = weight(obj);
         }
@@ -619,7 +619,7 @@ boolean createcorpse;
         {
             if (!rn2(2))
             {
-                obj = mksobj_at(NUGGET_OF_IRON_ORE, x, y, FALSE, FALSE);
+                obj = mksobj_found_at(NUGGET_OF_IRON_ORE, x, y, FALSE, FALSE);
                 obj->quan = (long)(rnd(2));
                 obj->owt = weight(obj);
             }
@@ -640,7 +640,7 @@ boolean createcorpse;
                 default:
                     break;
                 }
-                obj = mksobj_at_with_flags(objid, x, y, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
+                obj = mksobj_at_with_flags(objid, x, y, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL | SPEFLAGS_FOUND_THIS_TURN);
             }
         }
         free_mname(mtmp);
@@ -654,7 +654,7 @@ boolean createcorpse;
             {
                 num = d(1, 6);
                 while (num--)
-                    obj = mksobj_at((LAST_GEM + rnd(9)), x, y, TRUE, FALSE);
+                    obj = mksobj_found_at((LAST_GEM + rnd(9)), x, y, TRUE, FALSE);
             }
         }
         free_mname(mtmp);
@@ -665,7 +665,7 @@ boolean createcorpse;
         {
             if (!rn2(2))
             {
-                obj = mksobj_at(BONE, x, y, FALSE, FALSE);
+                obj = mksobj_found_at(BONE, x, y, FALSE, FALSE);
                 obj->quan = (long)(rnd(4));
                 obj->owt = weight(obj);
             }
@@ -678,7 +678,7 @@ boolean createcorpse;
         {
             if (!rn2(2))
             {
-                obj = mksobj_at(NUGGET_OF_SILVER_ORE, x, y, FALSE, FALSE);
+                obj = mksobj_found_at(NUGGET_OF_SILVER_ORE, x, y, FALSE, FALSE);
                 obj->quan = (long)(rnd(2));
                 obj->owt = weight(obj);
             }
@@ -691,7 +691,7 @@ boolean createcorpse;
         {
             if (!rn2(2))
             {
-                obj = mksobj_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
+                obj = mksobj_found_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
                 obj->quan = (long)(d(2, 6));
                 obj->owt = weight(obj);
             }
@@ -709,7 +709,7 @@ boolean createcorpse;
         {
             if (!rn2(2))
             {
-                obj = mksobj_at(STONE_PEBBLE, x, y, FALSE, FALSE);
+                obj = mksobj_found_at(STONE_PEBBLE, x, y, FALSE, FALSE);
                 obj->quan = (long)(rnd(5));
                 obj->owt = weight(obj);
             }
@@ -722,7 +722,7 @@ boolean createcorpse;
         {
             if (!rn2(2))
             {
-                obj = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
+                obj = mksobj_found_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
                 obj->quan = (long)(rnd(2));
                 obj->owt = weight(obj);
             }
@@ -766,7 +766,7 @@ boolean createcorpse;
                     default:
                         break;
                     }
-                    obj = mksobj_at(objid, x, y, TRUE, FALSE);
+                    obj = mksobj_found_at(objid, x, y, TRUE, FALSE);
                 }
             }
         }
@@ -795,7 +795,7 @@ boolean createcorpse;
             {
                 num = rnd(2);
                 while (num--)
-                    obj = mksobj_at(SCR_BLANK_PAPER, x, y, TRUE, FALSE);
+                    obj = mksobj_found_at(SCR_BLANK_PAPER, x, y, TRUE, FALSE);
             }
         }
         free_mname(mtmp);
@@ -809,7 +809,7 @@ boolean createcorpse;
                 num = rnd(3);
                 while (num--)
                 {
-                    obj = mksobj_at(randomtruegem(), x, y, TRUE, FALSE);
+                    obj = mksobj_found_at(randomtruegem(), x, y, TRUE, FALSE);
                 }
             }
         }
@@ -820,7 +820,7 @@ boolean createcorpse;
     case PM_ELDER_TREANT:
         if (!istame && !isquestmonster)
         {
-            obj = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
+            obj = mksobj_found_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
             if (obj)
             {
                 obj->quan = rnd(mndx == PM_ELDER_TREANT ? 4 : 2);
@@ -837,13 +837,13 @@ boolean createcorpse;
            /* first, make some powder */
         if (!istame && !isquestmonster && !mtmp->mcloned && !rn2(2))
         {
-            obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
+            obj = mksobj_found_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
             obj->quan = 1;
             obj->owt = weight(obj);
         }
 
         /* then, the glob */
-        obj = mksobj_at(GLOB_OF_BLACK_PUDDING - (PM_BLACK_PUDDING - mndx),
+        obj = mksobj_found_at(GLOB_OF_BLACK_PUDDING - (PM_BLACK_PUDDING - mndx),
             x, y, TRUE, FALSE);
 
         while (obj && (otmp = obj_nexto(obj)) != (struct obj*) 0) {
@@ -856,7 +856,7 @@ boolean createcorpse;
     case PM_TARRASQUE:
         if (!exist_artifact(DAGGER, artiname(ART_TOOTH_OF_TARRASQUE)))
         {
-            obj = mksobj_at(DAGGER, x, y, FALSE, FALSE);
+            obj = mksobj_found_at(DAGGER, x, y, FALSE, FALSE);
             if (obj)
             {
                 obj->quan = 1;

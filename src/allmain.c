@@ -39,6 +39,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
 #endif
     int moveamt = 0, wtcap = 0, change = 0;
     boolean monscanmove = FALSE;
+    struct obj* otmp;
 
     /* Note:  these initializers don't do anything except guarantee that
             we're linked properly.
@@ -190,7 +191,8 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
                     moves++;
                     context.hungry_message_displayed = FALSE;
                     context.mon_talking = FALSE;
-
+                    for (otmp = fobj; otmp; otmp = otmp->nobj) /* Clear out finds from last turn */
+                        otmp->speflags &= ~SPEFLAGS_FOUND_THIS_TURN;
                     /********************************/
                     /* once-per-turn things go here */
                     /********************************/

@@ -4117,7 +4117,7 @@ namespace GnollHackX.Pages.Game
 
         private bool GetLayerGlyph(int mapx, int mapy, int layer_idx, int sub_layer_idx, int source_dir_idx,
             ref int signed_glyph, ref int adj_x, ref int adj_y, ref bool manual_hflip, ref bool manual_vflip,
-            ref ObjectDataItem otmp_round, ref short obj_height, ref sbyte object_origin_x, ref sbyte object_origin_y)
+            ref ObjectDataItem otmp_round, ref short obj_height, ref sbyte object_origin_x, ref sbyte object_origin_y, ref bool foundthisturn)
         {
             if (layer_idx == (int)layer_types.LAYER_OBJECT)
             {
@@ -4128,6 +4128,7 @@ namespace GnollHackX.Pages.Game
                     obj_height = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].TileHeight;
                     object_origin_x = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.ox0;
                     object_origin_y = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.oy0;
+                    foundthisturn = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].FoundThisTurn;
                 }
                 else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                 {
@@ -4136,6 +4137,7 @@ namespace GnollHackX.Pages.Game
                     obj_height = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].TileHeight;
                     object_origin_x = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.ox0;
                     object_origin_y = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.oy0;
+                    foundthisturn = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].FoundThisTurn;
                 }
                 else
                 {
@@ -4425,7 +4427,9 @@ namespace GnollHackX.Pages.Game
 
         }
 
-        void GetObjectMoveOffsets(int mapx, int mapy, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, ref float object_move_offset_x, ref float object_move_offset_y)
+        private float[] _foundAnimation = { 10f, 20f, 30f, 40f, 45f, 50f, 55f, 57.5f, 60f, 57.5f, 55f, 50f, 45f, 40f, 30f, 20f, 10f, 0f };
+
+        void GetObjectMoveOffsets(int mapx, int mapy, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, long generalcounterdiff, bool foundthisturn, int sub_layer_idx, float targetscale, ref float object_move_offset_x, ref float object_move_offset_y)
         {
             int objectmovediffx = (int)object_origin_x - mapx;
             int objectmovediffy = (int)object_origin_y - mapy;
@@ -4436,6 +4440,12 @@ namespace GnollHackX.Pages.Game
             {
                 object_move_offset_x = width * (float)objectmovediffx * (float)(moveIntervals - objectcounterdiff) / (float)moveIntervals;
                 object_move_offset_y = height * (float)objectmovediffy * (float)(moveIntervals - objectcounterdiff) / (float)moveIntervals;
+            }
+            if(foundthisturn)
+            {
+                long usedcounterdiff = generalcounterdiff - 3L * sub_layer_idx;
+                if (usedcounterdiff >= 0 && usedcounterdiff < _foundAnimation.Length)
+                    object_move_offset_y -= _foundAnimation[usedcounterdiff] * targetscale;
             }
         }
 
@@ -4799,6 +4809,8 @@ namespace GnollHackX.Pages.Game
                                                                 long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
                                                                 long glyphobjectprintmaincountervalue = _mapData[source_x, source_y].GlyphObjectPrintMainCounterValue;
                                                                 long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
+                                                                long glyphgeneralprintmaincountervalue = _mapData[source_x, source_y].GlyphGeneralPrintMainCounterValue;
+                                                                long generalcounterdiff = maincountervalue - glyphgeneralprintmaincountervalue;
                                                                 short missile_height = _mapData[source_x, source_y].Layers.missile_height;
                                                                 bool obj_in_pit = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
 
@@ -4830,10 +4842,11 @@ namespace GnollHackX.Pages.Game
                                                                             bool manual_vflip = false;
                                                                             int adj_x = source_x;
                                                                             int adj_y = source_y;
+                                                                            bool foundthisturn = false;
 
                                                                             if (!GetLayerGlyph(source_x, source_y, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
                                                                                 ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
-                                                                                ref object_origin_x, ref object_origin_y))
+                                                                                ref object_origin_x, ref object_origin_y, ref foundthisturn))
                                                                                 continue;
 
                                                                             int glyph = Math.Abs(signed_glyph);
@@ -4933,6 +4946,8 @@ namespace GnollHackX.Pages.Game
                                                                 long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
                                                                 long glyphobjectprintmaincountervalue = _mapData[mapx, mapy].GlyphObjectPrintMainCounterValue;
                                                                 long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
+                                                                long glyphgeneralprintmaincountervalue = _mapData[mapx, mapy].GlyphGeneralPrintMainCounterValue;
+                                                                long generalcounterdiff = maincountervalue - glyphgeneralprintmaincountervalue;
                                                                 short missile_height = _mapData[mapx, mapy].Layers.missile_height;
                                                                 bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
 
@@ -4964,10 +4979,11 @@ namespace GnollHackX.Pages.Game
                                                                             bool manual_vflip = false;
                                                                             int adj_x = mapx;
                                                                             int adj_y = mapy;
+                                                                            bool foundthisturn = false;
 
                                                                             if (!GetLayerGlyph(mapx, mapy, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
                                                                                 ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
-                                                                                ref object_origin_x, ref object_origin_y))
+                                                                                ref object_origin_x, ref object_origin_y, ref foundthisturn))
                                                                                 continue;
 
                                                                             int glyph = Math.Abs(signed_glyph);
@@ -4975,7 +4991,7 @@ namespace GnollHackX.Pages.Game
                                                                                 continue;
 
                                                                             float object_move_offset_x = 0, object_move_offset_y = 0;
-                                                                            GetObjectMoveOffsets(mapx, mapy, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, ref object_move_offset_x, ref object_move_offset_y);
+                                                                            GetObjectMoveOffsets(mapx, mapy, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, generalcounterdiff, foundthisturn, sub_layer_idx, targetscale, ref object_move_offset_x, ref object_move_offset_y);
 
                                                                             bool vflip_glyph = false;
                                                                             bool hflip_glyph = false;
@@ -10075,7 +10091,7 @@ namespace GnollHackX.Pages.Game
                 }
                 if (layers.o_id != 0 && layers.o_id != _mapData[x, y].Layers.o_id)
                 {
-                    /* Update counter value only if the monster just moved here, not, e.g. if it changes action in the same square,
+                    /* Update counter value only if the object just moved here, not, e.g. if it changes action in the same square,
                      * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
                      */
                     lock (AnimationTimerLock)
@@ -10086,6 +10102,11 @@ namespace GnollHackX.Pages.Game
                     {
                         _mapData[x, y].GlyphObjectPrintMainCounterValue = _mainCounterValue;
                     }
+                }
+                /* General counter that gets always set */
+                lock (_mainCounterLock)
+                {
+                    _mapData[x, y].GlyphGeneralPrintMainCounterValue = _mainCounterValue;
                 }
                 _mapData[x, y].Glyph = glyph;
                 _mapData[x, y].BkGlyph = bkglyph;
@@ -10134,6 +10155,7 @@ namespace GnollHackX.Pages.Game
                         _mapData[x, y].GlyphPrintMainCounterValue = 0;
                         _mapData[x, y].GlyphObjectPrintAnimationCounterValue = 0;
                         _mapData[x, y].GlyphObjectPrintMainCounterValue = 0;
+                        _mapData[x, y].GlyphGeneralPrintMainCounterValue = 0;
 
                         _mapData[x, y].Layers = new LayerInfo();
                         _mapData[x, y].Layers.layer_glyphs = new int[(int)layer_types.MAX_LAYERS];
@@ -10227,6 +10249,7 @@ namespace GnollHackX.Pages.Game
             bool is_uquiver = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UQUIVER) != 0UL;
             bool is_equipped = is_uwep | is_uwep2 | is_uquiver;
             bool hallucinated = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_HALLUCINATION) != 0UL;
+            bool foundthisturn = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_FOUND_THIS_TURN) != 0UL;
 
             if (is_equipped)
             {
@@ -10252,7 +10275,7 @@ namespace GnollHackX.Pages.Game
                             _weaponStyleObjDataItem[idx] = null;
                             break;
                         case 2: /* Add item */
-                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon);
+                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon, foundthisturn);
                             break;
                         case 3: /* Add container item to previous item */
                             _weaponStyleObjDataItem[idx].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
@@ -10296,7 +10319,7 @@ namespace GnollHackX.Pages.Game
 
                                     ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
                                 }
-                                ObjectList.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
+                                ObjectList.Add(new ObjectDataItem(otmp, otypdata, hallucinated, foundthisturn));
                                 break;
                             case 3: /* Add container item to previous item */
                                 if (ObjectList == null || ObjectList.Count == 0)

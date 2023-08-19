@@ -2003,6 +2003,7 @@ register struct obj *obj;
     }
 
     obj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES;
+    obj->speflags &= ~SPEFLAGS_FOUND_THIS_TURN;
 
     obj_extract_self(obj);
     otx = obj->ox;

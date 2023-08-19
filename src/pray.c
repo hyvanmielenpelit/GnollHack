@@ -2889,6 +2889,7 @@ dosacrifice()
                         uncurse(otmp);
                     if(erosion_matters(otmp))
                         otmp->oerodeproof = TRUE;
+                    otmp->speflags |= SPEFLAGS_FOUND_THIS_TURN;
                     at_your_feet("An object");
                     dropy(otmp);
                     if (is_launcher(otmp))
@@ -2908,6 +2909,7 @@ dosacrifice()
                             bless(otmp2);
                             otmp2->enchantment = rn2(4);
                             otmp2->owt = weight(otmp2);
+                            otmp2->speflags |= SPEFLAGS_FOUND_THIS_TURN;
                             dropy(otmp2);
                         }
                     }

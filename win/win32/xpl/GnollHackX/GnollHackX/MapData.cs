@@ -17,6 +17,7 @@ namespace GnollHackX
         public long GlyphPrintMainCounterValue { get; set; }
         public long GlyphObjectPrintAnimationCounterValue { get; set; }
         public long GlyphObjectPrintMainCounterValue { get; set; }
+        public long GlyphGeneralPrintMainCounterValue { get; set; }
         public bool NeedsUpdate { get; set; }
         public bool MapAnimated { get; set; }
         public bool RedrawTile { get; set; }

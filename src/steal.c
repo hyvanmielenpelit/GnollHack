@@ -541,6 +541,9 @@ register struct obj *otmp;
         thrownobj = 0;
     else if (otmp == kickedobj)
         kickedobj = 0;
+
+    otmp->speflags &= ~SPEFLAGS_FOUND_THIS_TURN;
+
     /* don't want hidden light source inside the monster; assumes that
        engulfers won't have external inventories; whirly monsters cause
        the light to be extinguished rather than letting it shine thru */
@@ -760,6 +763,7 @@ boolean verbosely;
 
     if (!flooreffects(obj, omx, omy, "fall")) 
     {
+        obj->speflags |= SPEFLAGS_FOUND_THIS_TURN;
         place_object(obj, omx, omy);
         stackobj(obj);
     }

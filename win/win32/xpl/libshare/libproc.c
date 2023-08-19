@@ -541,7 +541,8 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
                 oflags |= OBJDATA_FLAGS_UCHAIN;
             if (uball && otmp == uball)
                 oflags |= OBJDATA_FLAGS_UBALL;
-
+            if (is_obj_found_this_turn(otmp))
+                oflags |= OBJDATA_FLAGS_FOUND_THIS_TURN;
             set_obj_glyph(otmp);
 
             struct objclassdata ocdata = get_objclassdata(otmp);

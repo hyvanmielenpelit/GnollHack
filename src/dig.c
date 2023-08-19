@@ -3083,6 +3083,7 @@ boolean verbose, buriedsearchableonly;
                 if (otmp->timed)
                     (void) stop_timer(ROT_ORGANIC, obj_to_any(otmp));
 
+                otmp->speflags |= SPEFLAGS_FOUND_THIS_TURN;
                 place_object(otmp, x, y);
                 stackobj(otmp);
             }

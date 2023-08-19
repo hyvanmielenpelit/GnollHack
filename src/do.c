@@ -5506,6 +5506,7 @@ register struct obj *obj;
         if (IS_ALTAR(levl[u.ux][u.uy].typ))
             doaltarobj(obj); /* set bknown */
     }
+    obj->speflags |= SPEFLAGS_FOUND_THIS_TURN;
     dropy(obj);
 }
 
