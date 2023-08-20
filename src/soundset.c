@@ -16028,7 +16028,12 @@ update_game_music()
     musicinfo.volume = 1.0f;
     musicinfo.ghsound = GHSOUND_NONE;
 
-    if (context.game_started == FALSE)
+    boolean gamestarted;
+    lock_thread_lock();
+    gamestarted = context.game_started;
+    unlock_thread_lock();
+
+    if (!gamestarted)
     {
         musicinfo.ghsound = GHSOUND_MUSIC_INTRO;
     }
@@ -16060,8 +16065,12 @@ play_level_ambient_sounds()
     struct ghsound_level_ambient_info lainfo = { 0 };
     lainfo.volume = 1.0f;
     lainfo.ghsound = GHSOUND_NONE;
+    boolean gamestarted;
+    lock_thread_lock();
+    gamestarted = context.game_started;
+    unlock_thread_lock();
 
-    if (context.game_started == FALSE || program_state.gameover > 0)
+    if (!gamestarted || program_state.gameover > 0)
     {
         lainfo.ghsound = GHSOUND_NONE;
     }
@@ -16093,8 +16102,12 @@ play_environment_ambient_sounds()
     struct ghsound_environment_ambient_info eainfo = { 0 };
     eainfo.volume = 1.0f;
     eainfo.ghsound = GHSOUND_NONE;
+    boolean gamestarted;
+    lock_thread_lock();
+    gamestarted = context.game_started;
+    unlock_thread_lock();
 
-    if (context.game_started == FALSE || program_state.gameover > 0)
+    if (!gamestarted || program_state.gameover > 0)
     {
         eainfo.ghsound = GHSOUND_NONE;
     }

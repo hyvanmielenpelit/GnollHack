@@ -4239,9 +4239,12 @@ boolean wep_was_destroyed;
     damage += adjust_damage(basedmg, mon, &youmonst, ptr->mattk[i].adtyp, ADFLAGS_NONE);
 
     enum action_tile_types action_before = mon->action;
-    update_m_action(mon, ptr->mattk[i].action_tile ? ptr->mattk[i].action_tile : ACTION_TILE_PASSIVE_DEFENSE);
-    play_monster_simple_weapon_sound(mon, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-    m_wait_until_action();
+    if (malive)
+    {
+        update_m_action(mon, ptr->mattk[i].action_tile ? ptr->mattk[i].action_tile : ACTION_TILE_PASSIVE_DEFENSE);
+        play_monster_simple_weapon_sound(mon, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+        m_wait_until_action();
+    }
 
     /*  These affect you even if they just died.
      */
@@ -4310,7 +4313,8 @@ boolean wep_was_destroyed;
                          && polymon(PM_STONE_GOLEM))) {
                     display_u_being_hit(HIT_PETRIFIED, 0, 0UL);
                     done_in_by(mon, STONING); /* "You turn to stone..." */
-                    update_m_action_core(mon, action_before, 0, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+                    if(malive)
+                        update_m_action_core(mon, action_before, 0, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
                     return 2;
                 }
             }
@@ -4487,7 +4491,8 @@ boolean wep_was_destroyed;
             break;
         }
     }
-    update_m_action_core(mon, action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+    if(malive)
+        update_m_action_core(mon, action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
     return (malive | mhit);
 }
 

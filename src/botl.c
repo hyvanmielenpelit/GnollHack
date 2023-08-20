@@ -768,7 +768,11 @@ long seconds;
 long
 get_current_game_duration(VOID_ARGS)
 {
-    return !context.game_started ? 0 : iflags.in_dumplog ? urealtime.realtime : urealtime.realtime + ((long)getnow() - (long)urealtime.start_timing);
+    long res = 0L;
+    lock_thread_lock();
+    res = !context.game_started ? 0 : iflags.in_dumplog ? urealtime.realtime : urealtime.realtime + ((long)getnow() - (long)urealtime.start_timing);
+    unlock_thread_lock();
+    return res;
 }
 
 char*

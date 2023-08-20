@@ -19,7 +19,7 @@ STATIC_DCL void NDECL(do_positionbar);
 #endif
 STATIC_DCL void NDECL(regenerate_hp);
 STATIC_DCL void NDECL(regenerate_mana);
-STATIC_DCL void FDECL(interrupt_multi, (const char *));
+STATIC_DCL void FDECL(interrupt_multi, (const char *, int, int));
 STATIC_DCL void FDECL(debug_fields, (const char *));
 STATIC_DCL void NDECL(create_monster_or_encounter);
 STATIC_DCL int NDECL(select_rwraith);
@@ -858,7 +858,7 @@ regenerate_hp()
             if (u.mh != mh_before)
                 force_redraw_at(u.ux, u.uy);
             if (u.mh == relevant_hpmax)
-                interrupt_multi("You are in full health.");
+                interrupt_multi("You are in full health.", ATR_NONE, CLR_MSG_SUCCESS);
         }
     }
     else
@@ -884,7 +884,7 @@ regenerate_hp()
             if (u.uhp != uhp_before)
                 force_redraw_at(u.ux, u.uy);
             if (u.uhp == relevant_hpmax)
-                interrupt_multi("You are in full health.");
+                interrupt_multi("You are in full health.", ATR_NONE, CLR_MSG_SUCCESS);
         }
     }
 
@@ -1017,7 +1017,7 @@ regenerate_hp()
     }
 
     if (reached_full)
-        interrupt_multi("You are in full health.");
+        interrupt_multi("You are in full health.", ATR_NONE, CLR_MSG_SUCCESS);
 #endif
 }
 
@@ -1063,7 +1063,7 @@ regenerate_mana()
         }
         context.botl = TRUE;
         if (u.uen == u.uenmax)
-            interrupt_multi("You feel full of energy.");
+            interrupt_multi("You feel full of energy.", ATR_NONE, CLR_MSG_SUCCESS);
     }
 
 }
@@ -1456,9 +1456,11 @@ newgame()
     }
 
     /* Game is starting now */
+    lock_thread_lock();
     context.game_started = TRUE;
     urealtime.realtime = 0L;
     urealtime.start_timing = getnow();
+    unlock_thread_lock();
 
 #ifdef INSURANCE
     save_currentstate();
@@ -1608,13 +1610,14 @@ do_positionbar()
 #endif
 
 STATIC_DCL void
-interrupt_multi(msg)
+interrupt_multi(msg, attr, color)
 const char *msg;
+int attr, color;
 {
     if (multi > 0 && !context.travel && !context.run) {
         nomul(0);
         if (flags.verbose && msg)
-            Norep("%s", msg);
+            Norep_ex(attr, color, "%s", msg);
     }
 }
 

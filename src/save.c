@@ -390,6 +390,7 @@ register int fd, mode;
 #ifdef MFLOPPY
     count_only = (mode & COUNT_SAVE);
 #endif
+    lock_thread_lock();
     uid = (unsigned long) getuid();
     bwrite(fd, (genericptr_t) &uid, sizeof uid);
     bwrite(fd, (genericptr_t) &context, sizeof(struct context_info));
@@ -405,6 +406,8 @@ register int fd, mode;
     bwrite(fd, yyyymmddhhmmss(ubirthday), 14);
     bwrite(fd, (genericptr_t) &urealtime.realtime, sizeof urealtime.realtime);
     bwrite(fd, yyyymmddhhmmss(urealtime.start_timing), 14);  /** Why? **/
+    unlock_thread_lock();
+
     save_killers(fd, mode);
 
     /* must come before migrating_objs and migrating_mons are freed */
@@ -456,7 +459,9 @@ register int fd, mode;
 
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
     /* this is the value to use for the next update of urealtime.realtime */
+    lock_thread_lock();
     urealtime.start_timing = urealtime.finish_time;
+    unlock_thread_lock();
 }
 
 /* returns 1 if save file exists, otherwise 0 */

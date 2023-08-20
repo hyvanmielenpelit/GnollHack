@@ -892,7 +892,9 @@ u_init()
     (void) memset((genericptr_t) &u, 0, sizeof(u));
     u.ustuck = (struct monst *) 0;
     (void) memset((genericptr_t) &ubirthday, 0, sizeof(ubirthday));
+    lock_thread_lock();
     (void) memset((genericptr_t) &urealtime, 0, sizeof(urealtime));
+    unlock_thread_lock();
 
     u.uroleplay = tmpuroleplay; /* restore options set via rcfile */
 

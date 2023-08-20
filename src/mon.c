@@ -837,7 +837,7 @@ boolean createcorpse;
            /* first, make some powder */
         if (!istame && !isquestmonster && !mtmp->mcloned && !rn2(2))
         {
-            obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
+            obj = mksobj_found_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
             obj->quan = 1;
             obj->owt = weight(obj);
         }

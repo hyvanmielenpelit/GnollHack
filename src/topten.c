@@ -483,9 +483,11 @@ int how;
             encodeconduct(), XLOG_SEP, moves, XLOG_SEP, encodeachieve());
     Fprintf(rfile, "%cachieveX=%s", XLOG_SEP, encode_extended_achievements());
     Fprintf(rfile, "%cconductX=%s", XLOG_SEP, encode_extended_conducts());
+    lock_thread_lock();
     Fprintf(rfile, "%crealtime=%ld%cstarttime=%ld%cendtime=%ld", XLOG_SEP,
             (long) urealtime.realtime, XLOG_SEP,
             (long) ubirthday, XLOG_SEP, (long) urealtime.finish_time);
+    unlock_thread_lock();
     Fprintf(rfile, "%cgender0=%s%calign0=%s", XLOG_SEP,
             genders[flags.initgend].filecode, XLOG_SEP,
             aligns[1 - u.ualignbase[A_ORIGINAL]].filecode);

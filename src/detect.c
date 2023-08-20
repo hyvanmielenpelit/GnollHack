@@ -1546,9 +1546,12 @@ do_mapping()
 
     unconstrained = unconstrain_map();
     for (zx = 1; zx < COLNO; zx++)
+    {
+        for (zy = 0; zy < ROWNO; zy++)
+            show_map_spot(zx, zy);
         for (zy = ROWNO - 1; zy >= 0; zy--)
             show_map_spot(zx, zy);
-
+    }
     if (!level.flags.hero_memory || unconstrained) {
         flush_screen(1);                 /* flush temp screen */
         /* browse_map() instead of display_nhwindow(WIN_MAP, TRUE) */

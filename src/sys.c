@@ -206,7 +206,9 @@ reset_global_variables(VOID_ARGS)
     memset((genericptr_t)&flags, 0, sizeof(flags)); // Just in case
     memset((genericptr_t)&youmonst, 0, sizeof(youmonst));
     memset((genericptr_t)&bhitpos, 0, sizeof(bhitpos));
+    lock_thread_lock();
     memset((genericptr_t)&urealtime, 0, sizeof(urealtime));
+    unlock_thread_lock();
     memset((genericptr_t)&hearing_array, 0, sizeof(hearing_array));
     memset((genericptr_t)&fqn_prefix, 0, sizeof(fqn_prefix));
     memset((genericptr_t)&level, 0, sizeof(level));

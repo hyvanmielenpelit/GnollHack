@@ -598,8 +598,11 @@ void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char
     }
     case GUI_CMD_REPORT_PLAY_TIME:
     {
+        lock_thread_lock();
         long timePassed = (long)(urealtime.finish_time - urealtime.start_timing);
-        lib_callbacks.callback_report_play_time(timePassed, urealtime.realtime);
+        long realtime = urealtime.realtime;
+        unlock_thread_lock();
+        lib_callbacks.callback_report_play_time(timePassed, realtime);
         break;
     }
     case GUI_CMD_GAME_START:
