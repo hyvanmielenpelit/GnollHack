@@ -5042,7 +5042,7 @@ namespace GnollHackX.Pages.Game
                                                                                 int draw_map_x = mapx + dx + (adj_x - mapx);
                                                                                 int draw_map_y = mapy + dy + (adj_y - mapy);
 
-                                                                                if (enlargement > 0 && enl_idx >= 0 && enl_idx <= 2)
+                                                                                if ((enlargement > 0 && enl_idx >= 0 && enl_idx <= 2) || layer_idx == (int)layer_types.MAX_LAYERS)
                                                                                 {
                                                                                     PaintMapTile(enlCanvas, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                                         offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
