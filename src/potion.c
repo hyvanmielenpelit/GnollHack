@@ -1930,7 +1930,7 @@ struct obj *otmp;
         } else {
             int dmg;
 
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "This burns%s!",
+            pline_ex(ATR_NONE, otmp->blessed ? CLR_MSG_WARNING : CLR_MSG_NEGATIVE, "This burns%s!",
                   otmp->blessed ? " a little" : otmp->cursed ? " a lot"
                                                              : " like acid");
             dmg = duration;
@@ -2271,7 +2271,7 @@ int how;
         if (!cansee(tx, ty)) 
         {
             play_simple_object_sound_at_location(obj, tx, ty, OBJECT_SOUND_TYPE_BREAK);
-            pline("Crash!");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Crash!");
         }
         else
         {
@@ -2295,7 +2295,7 @@ int how;
                 Strcpy(buf, mnam);
             }
             play_simple_object_sound_at_location(obj, tx, ty, OBJECT_SOUND_TYPE_BREAK);
-            pline_The("%s crashes on %s and breaks into shards.", botlnam,
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s crashes on %s and breaks into shards.", botlnam,
                       buf);
         }
         if (rn2(5) && mon->mhp > 1 && !hit_saddle)
@@ -2304,7 +2304,7 @@ int how;
 
     /* oil doesn't instantly evaporate; Neither does a saddle hit */
     if (obj->otyp != POT_OIL && !hit_saddle && cansee(tx, ty))
-        pline("%s.", Tobjnam(obj, "evaporate"));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s.", Tobjnam(obj, "evaporate"));
 
     if (isyou) 
     {
@@ -2316,7 +2316,7 @@ int how;
             break;
         case POT_POLYMORPH:
             Sprintf(dcbuf, "You feel a little %s.", Hallucination ? "normal" : "strange");
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_MYSTICAL, dcbuf);
             if (!Unchanging && !Antimagic)
                 polyself(0);
             break;
@@ -2328,7 +2328,7 @@ int how;
                 Sprintf(dcbuf, "This burns%s!",
                       obj->blessed ? " a little"
                                    : obj->cursed ? " a lot" : "");
-                pline1(dcbuf);
+                pline_ex1(ATR_NONE, obj->blessed ? CLR_MSG_WARNING : CLR_MSG_NEGATIVE, dcbuf);
                 dmg = duration;
                 losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_ACID, FALSE), "potion of acid", KILLED_BY_AN);
             }
@@ -2358,7 +2358,7 @@ int how;
         if (useeit && !affected)
         {
             Sprintf(dcbuf, "%s %s wet.", buf, aobjnam(saddle, "get"));
-            pline1(dcbuf);
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         }
     } 
     else 
@@ -2391,7 +2391,7 @@ int how;
                 if (canseemon(mon))
                 {
                     Sprintf(dcbuf, "%s looks sound and hale again.", Monnam(mon));
-                    pline1(dcbuf);
+                    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
                 }
             }
             if (cureblind)
@@ -2408,7 +2408,7 @@ int how;
                 || resists_sickness(mon))
             {
                 if (canseemon(mon))
-                    pline("%s looks unharmed.", Monnam(mon));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks unharmed.", Monnam(mon));
                 break;
             }
 
@@ -2420,14 +2420,14 @@ int how;
             else
             {
                 if (canseemon(mon))
-                    pline("%s looks unharmed.", Monnam(mon));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks unharmed.", Monnam(mon));
             }
             break;
         case POT_POISON:
             if (resists_poison(mon))
             {
                 if (canseemon(mon))
-                    pline("%s looks unharmed.", Monnam(mon));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks unharmed.", Monnam(mon));
                 break;
             }
 
@@ -2444,7 +2444,7 @@ do_illness: /* Pestilence's potion of healing effect */
             if (canseemon(mon))
             {
                 Sprintf(dcbuf, "%s looks rather ill.", Monnam(mon));
-                pline1(dcbuf);
+                pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
             }
             break;
         case POT_CONFUSION:
@@ -2454,12 +2454,12 @@ do_illness: /* Pestilence's potion of healing effect */
             if (canseemon(mon) && !is_incorporeal(mon->data))
             {
                 Sprintf(dcbuf, "%s looks concerened of %s body odor.", Monnam(mon), mhis(mon));
-                pline1(dcbuf);
+                pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
             }
             break;
         case POT_DWARVEN_MUSHROOM_BREW:
             if (canseemon(mon))
-                pline("%s looks unharmed.", Monnam(mon));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks unharmed.", Monnam(mon));
             break;
         case POT_ELVEN_HERBAL_BREW:
             if (!check_ability_resistance_success(mon, A_CON, objects[obj->otyp].oc_mc_adjustment))
@@ -2480,7 +2480,7 @@ do_illness: /* Pestilence's potion of healing effect */
             if (sleep_monst(mon, obj, (struct monst*)0, duration, 0, FALSE)) 
             {
                 Sprintf(dcbuf, "%s falls asleep.", Monnam(mon));
-                pline1(dcbuf);
+                pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
                 slept_monst(mon);
             }
             break;
@@ -2528,7 +2528,7 @@ do_illness: /* Pestilence's potion of healing effect */
                 {
                     Sprintf(dcbuf, "%s %s in pain!", Monnam(mon),
                           is_silent(mon->data) ? "writhes" : "shrieks");
-                    pline1(dcbuf);
+                    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
                     if (!is_silent(mon->data))
                         wake_nearto(tx, ty, mon->data->mlevel * 10);
                     deduct_monster_hp(mon, adjust_damage(duration, &youmonst, mon, AD_CLRC, ADFLAGS_NONE));
@@ -2544,7 +2544,7 @@ do_illness: /* Pestilence's potion of healing effect */
                     if (canseemon(mon))
                     {
                         Sprintf(dcbuf, "%s looks healthier.", Monnam(mon));
-                        pline1(dcbuf);
+                        pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
                     }
                     deduct_monster_hp(mon, adjust_damage(-duration, &youmonst, mon, AD_CLRC, ADFLAGS_NONE));
                     if (is_were(mon->data) && is_human(mon->data)
@@ -2562,7 +2562,7 @@ do_illness: /* Pestilence's potion of healing effect */
                 if (canseemon(mon))
                 {
                     Sprintf(dcbuf, "%s rusts.", Monnam(mon));
-                    pline1(dcbuf);
+                    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
                 }
                 deduct_monster_hp(mon, adjust_damage(duration / 2, &youmonst, mon, AD_PHYS, ADFLAGS_NONE));
                 /* should only be by you */
@@ -2578,7 +2578,7 @@ do_illness: /* Pestilence's potion of healing effect */
             if (!is_mon_immune_to_acid(mon) && !check_ability_resistance_success(mon, A_DEX, objects[obj->otyp].oc_mc_adjustment)) {
                 Sprintf(dcbuf, "%s %s in pain!", Monnam(mon),
                       is_silent(mon->data) ? "writhes" : "shrieks");
-                pline1(dcbuf);
+                pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
                 if (!is_silent(mon->data))
                     wake_nearto(tx, ty, mon->data->mlevel * 10);
                 deduct_monster_hp(mon, adjust_damage(d(obj->cursed ? 4 : 3, obj->blessed ? 6 : 8), &youmonst, mon, AD_ACID, ADFLAGS_NONE));
