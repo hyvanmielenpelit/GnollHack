@@ -4101,6 +4101,7 @@ struct obj* obj;
                 if (otmp->otyp == LEASH && otmp->leashmon)
                     o_unleash(otmp);
                 freeinv(otmp);
+                obj_clear_found(otmp);
                 place_object(otmp, u.ux, u.uy);
                 char tbuf[BUFSIZ];
                 strcpy(tbuf, Tobjnam(otmp, "vanish"));

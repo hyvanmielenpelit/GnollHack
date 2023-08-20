@@ -1636,7 +1636,7 @@ struct obj *obj;
     obj->was_thrown = 0;       /* not meaningful for invent */
     obj->speflags &= ~SPEFLAGS_GRABBED_FROM_YOU; /* You got it back! */
     obj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES; /* Obviously not caught anymore! */
-    obj->speflags &= ~SPEFLAGS_FOUND_THIS_TURN; /* Not relevant in inventory */
+    obj_clear_found(obj); /* Not relevant in inventory */
 
     addinv_core1(obj);
 

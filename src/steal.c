@@ -542,7 +542,7 @@ register struct obj *otmp;
     else if (otmp == kickedobj)
         kickedobj = 0;
 
-    otmp->speflags &= ~SPEFLAGS_FOUND_THIS_TURN;
+    obj_clear_found(otmp);
 
     /* don't want hidden light source inside the monster; assumes that
        engulfers won't have external inventories; whirly monsters cause
@@ -721,10 +721,10 @@ int ochance, achance; /* percent chance for ordinary item, artifact */
 
 /* drop one object taken from a (possibly dead) monster's inventory */
 void
-mdrop_obj(mon, obj, verbosely)
+mdrop_obj(mon, obj, verbosely, set_found)
 struct monst *mon;
 struct obj *obj;
-boolean verbosely;
+boolean verbosely, set_found;
 {
     int omx = mon->mx, omy = mon->my;
     boolean update_mon = FALSE;
@@ -763,7 +763,8 @@ boolean verbosely;
 
     if (!flooreffects(obj, omx, omy, "fall")) 
     {
-        obj->speflags |= SPEFLAGS_FOUND_THIS_TURN;
+        if (set_found)
+            obj_set_found(obj);
         place_object(obj, omx, omy);
         stackobj(obj);
     }
@@ -798,7 +799,7 @@ struct monst *mon;
             obj_extract_self(obj);
             if (mon->mx) 
             {
-                mdrop_obj(mon, obj, FALSE);
+                mdrop_obj(mon, obj, FALSE, FALSE);
             }
             else 
             { /* migrating monster not on map */
@@ -897,7 +898,7 @@ boolean is_mon_dead;
             obfree(otmp, (struct obj*) 0); //Delete the item
         }
         else
-            mdrop_obj(mtmp, otmp, is_pet && flags.verbose);
+            mdrop_obj(mtmp, otmp, is_pet && flags.verbose, TRUE);
     }
 
     if (show && cansee(omx, omy))
@@ -916,7 +917,7 @@ struct monst* mtmp;
     while ((otmp = droppables(mtmp)) != 0)
     {
         obj_extract_self(otmp);
-        mdrop_obj(mtmp, otmp, flags.verbose);
+        mdrop_obj(mtmp, otmp, flags.verbose, FALSE);
     }
 
     if (cansee(omx, omy))

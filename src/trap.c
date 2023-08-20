@@ -5304,11 +5304,11 @@ int skill_level;
 
 /* Replace trap with object(s).  Helge Hafting */
 void
-cnv_trap_obj(otyp, cnt, ttmp, bury_it)
+cnv_trap_obj(otyp, cnt, ttmp, bury_it, set_found)
 int otyp;
 int cnt;
 struct trap *ttmp;
-boolean bury_it;
+boolean bury_it, set_found;
 {
     struct obj *otmp = mksobj(otyp, TRUE, FALSE, FALSE);
 
@@ -5317,6 +5317,8 @@ boolean bury_it;
     /* Only dart traps are capable of being poisonous */
     if (otyp != DART)
         otmp->opoisoned = 0;
+    if(set_found)
+        obj_set_found(otmp);
     place_object(otmp, ttmp->tx, ttmp->ty);
 
     if (bury_it)
@@ -5557,7 +5559,7 @@ struct trap *ttmp;
         if (ttmp->ttyp == BEAR_TRAP)
         {
             You_ex(ATR_NONE, CLR_MSG_SUCCESS, "disarm %s bear trap.", the_your[ttmp->madeby_u ? 1 : 0]);
-            cnv_trap_obj(BEARTRAP, 1, ttmp, FALSE);
+            cnv_trap_obj(BEARTRAP, 1, ttmp, FALSE, FALSE);
         }
         else /* if (ttmp->ttyp == WEB) */
         {
@@ -5684,7 +5686,7 @@ struct trap* ttmp;
     }
 
     if (genotyp > STRANGE_OBJECT)
-        cnv_trap_obj(genotyp, 1, ttmp, FALSE);
+        cnv_trap_obj(genotyp, 1, ttmp, FALSE, TRUE);
     else
     {
         deltrap(ttmp);
@@ -5724,7 +5726,7 @@ struct trap *ttmp;
 
     play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
     You_ex(ATR_NONE, CLR_MSG_SUCCESS, "disarm %s land mine.", the_your[ttmp->madeby_u]);
-    cnv_trap_obj(LAND_MINE, 1, ttmp, FALSE);
+    cnv_trap_obj(LAND_MINE, 1, ttmp, FALSE, FALSE);
 
     /* gain skill for untrap */
     use_skill(P_DISARM_TRAP, madebyu ? 0 : 14);
@@ -5814,7 +5816,7 @@ int otyp;
         skill_level == P_SKILLED ? rn2(6) : rn2(12));
 
     if (getitem)
-        cnv_trap_obj(otyp, 50 - rnl(50), ttmp, FALSE);
+        cnv_trap_obj(otyp, 50 - rnl(50), ttmp, FALSE, TRUE);
     else
     {
         deltrap(ttmp);

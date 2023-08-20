@@ -5520,7 +5520,7 @@ register struct obj* obj;
     if (obj->oclass == COIN_CLASS)
         context.botl = 1;
     freeinv(obj);
-    obj->speflags |= SPEFLAGS_FOUND_THIS_TURN;
+    obj_set_found(obj);
     if (!u.uswallow) {
         if (ship_object(obj, u.ux, u.uy, FALSE))
             return;
@@ -5543,7 +5543,7 @@ void
 dropyf(obj)
 struct obj* obj;
 {
-    obj->speflags |= SPEFLAGS_FOUND_THIS_TURN;
+    obj_set_found(obj);
     dropz(obj, FALSE);
 }
 

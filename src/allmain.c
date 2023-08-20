@@ -369,10 +369,6 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
                     else if (u.uburied)
                         under_ground(0);
 
-                    /* Clear out finds from last turn */
-                    for (otmp = fobj; otmp; otmp = otmp->nobj)
-                        otmp->speflags &= ~SPEFLAGS_FOUND_THIS_TURN;
-
                     /* when immobile, count is in turns */
                     if (multi < 0 && !Sleeping && !Paralyzed_or_immobile) /* Let Sleeping and Paralyzed expire first, and then multi */
                     {
@@ -464,7 +460,8 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
         }
 
         reset_monster_origin_coordinates(&youmonst);
-        reset_object_origin_coordinates(fobj);
+        reset_all_object_origin_coordinates();
+        reset_found_this_turn();
 
         context.move = 1;
 
@@ -624,6 +621,16 @@ struct obj* obj;
     obj->oy0 = obj->oy;
 
     reset_object_origin_coordinates(obj->cobj);
+}
+
+void
+reset_all_object_origin_coordinates()
+{
+    struct obj* obj;
+    for (obj = fobj; obj; obj = obj->nobj)
+    {
+        reset_object_origin_coordinates(obj);
+    }
 }
 
 void

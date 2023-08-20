@@ -1125,7 +1125,7 @@ register struct obj* otmp;
     if (has_omid(dummy))
         free_omid(dummy); /* only one association with m_id*/
     dummy->owornmask = 0L; /* dummy object is not worn */
-    dummy->speflags &= ~SPEFLAGS_FOUND_THIS_TURN;
+    obj_clear_found(dummy);
 
     /* Add to memoryobjs chain */
     add_to_memoryobjs(dummy);
@@ -1500,7 +1500,7 @@ unsigned long mkflags;
         otmp->speflags |= SPEFLAGS_LID_OPENED;
 
     if(foundthisturn)
-        otmp->speflags |= SPEFLAGS_FOUND_THIS_TURN;
+        obj_set_found(otmp);
 
     int leveldiff = level_difficulty();
     /* Change type before init if need be*/

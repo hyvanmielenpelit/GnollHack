@@ -1074,7 +1074,7 @@ coord *cc;
             int otyp = (ttmp->ttyp == LANDMINE) ? LAND_MINE : BEARTRAP;
 
             /* convert trap into buried object (deletes trap) */
-            cnv_trap_obj(otyp, 1, ttmp, TRUE);
+            cnv_trap_obj(otyp, 1, ttmp, TRUE, FALSE);
         }
 
         /* finally we get to make a hole */
@@ -1142,7 +1142,7 @@ coord *cc;
             if ((otmp = mk_tt_object(CORPSE, dig_x, dig_y)) != 0)
             {
                 otmp->age -= 100; /* this is an *OLD* corpse */
-                otmp->speflags |= SPEFLAGS_FOUND_THIS_TURN;
+                obj_set_found(otmp);
                 doautopickup = TRUE;
             }
             break;
@@ -3084,7 +3084,7 @@ boolean verbose, buriedsearchableonly;
                 if (otmp->timed)
                     (void) stop_timer(ROT_ORGANIC, obj_to_any(otmp));
 
-                otmp->speflags |= SPEFLAGS_FOUND_THIS_TURN;
+                obj_set_found(otmp);
                 place_object(otmp, x, y);
                 stackobj(otmp);
             }

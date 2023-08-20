@@ -640,7 +640,7 @@ boolean createcorpse;
                 default:
                     break;
                 }
-                obj = mksobj_at_with_flags(objid, x, y, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL | SPEFLAGS_FOUND_THIS_TURN);
+                obj = mksobj_at_with_flags(objid, x, y, TRUE, FALSE, 0, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL | MKOBJ_FLAGS_FOUND_THIS_TURN);
             }
         }
         free_mname(mtmp);

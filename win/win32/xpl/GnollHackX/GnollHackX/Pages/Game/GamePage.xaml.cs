@@ -4427,10 +4427,11 @@ namespace GnollHackX.Pages.Game
 
         }
 
-        //private float[] _foundAnimation = { 10f, 20f, 30f, 40f, 45f, 50f, 55f, 57.5f, 60f, 57.5f, 55f, 50f, 45f, 40f, 30f, 20f, 10f, 0f };
-        private float[] _foundAnimation = { 10f, 20f, 30f, 40f, 50f, 60f, 70f, 80f, 88f, 96f, 102f, 108f, 114f, 118f, 120f, 118f, 114f, 108f, 102f, 96f, 88f, 80f, 70f, 60f, 50f, 40f, 30f, 20f, 10f, 0f };
+        //private float[] _foundAnimationNormal = { 10f, 20f, 30f, 40f, 45f, 50f, 55f, 57.5f, 60f, 57.5f, 55f, 50f, 45f, 40f, 30f, 20f, 10f, 0f };
+        //private float[] _foundAnimationHigh = { 10f, 20f, 30f, 40f, 50f, 60f, 70f, 80f, 88f, 96f, 102f, 108f, 114f, 118f, 120f, 118f, 114f, 108f, 102f, 96f, 88f, 80f, 70f, 60f, 50f, 40f, 30f, 20f, 10f, 0f };
+        private float[] _foundAnimationFactor = { 0.10f, 0.20f, 0.30f, 0.40f, 0.50f, 0.60f, 0.70f, 0.80f, 0.88f, 0.94f, 0.98f, 1.0f, 0.98f, 0.94f, 0.88f, 0.80f, 0.70f, 0.60f, 0.50f, 0.40f, 0.30f, 0.20f, 0.10f, 0f };
 
-        void GetObjectMoveOffsets(int mapx, int mapy, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, long generalcounterdiff, bool foundthisturn, int sub_layer_idx, float targetscale, ref float object_move_offset_x, ref float object_move_offset_y)
+        void GetObjectMoveOffsets(int mapx, int mapy, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, long generalcounterdiff, bool foundthisturn, int sub_layer_idx, int sub_layer_cnt, float targetscale, bool loc_is_you, float obj_height, ref float object_move_offset_x, ref float object_move_offset_y)
         {
             int objectmovediffx = (int)object_origin_x - mapx;
             int objectmovediffy = (int)object_origin_y - mapy;
@@ -4445,8 +4446,12 @@ namespace GnollHackX.Pages.Game
             if(foundthisturn)
             {
                 long usedcounterdiff = generalcounterdiff - 3L * sub_layer_idx;
-                if (usedcounterdiff >= 0 && usedcounterdiff < _foundAnimation.Length)
-                    object_move_offset_y -= _foundAnimation[usedcounterdiff] * targetscale;
+                float usedobjheight = obj_height == 0 ? GHConstants.TileHeight / 2 : obj_height;
+                float highestpoint = GHConstants.TileHeight - usedobjheight - (sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT;
+                if(loc_is_you)
+                    highestpoint *= 1.3f; /* Make sure the animation goes above the character's head */
+                if (usedcounterdiff >= 0 && usedcounterdiff < _foundAnimationFactor.Length)
+                    object_move_offset_y -= highestpoint * _foundAnimationFactor[usedcounterdiff] * targetscale;
             }
         }
 
@@ -4992,7 +4997,8 @@ namespace GnollHackX.Pages.Game
                                                                                 continue;
 
                                                                             float object_move_offset_x = 0, object_move_offset_y = 0;
-                                                                            GetObjectMoveOffsets(mapx, mapy, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, generalcounterdiff, foundthisturn, sub_layer_idx, targetscale, ref object_move_offset_x, ref object_move_offset_y);
+                                                                            GetObjectMoveOffsets(mapx, mapy, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, generalcounterdiff, 
+                                                                                foundthisturn, sub_layer_idx, sub_layer_cnt, targetscale, loc_is_you, obj_height, ref object_move_offset_x, ref object_move_offset_y);
 
                                                                             bool vflip_glyph = false;
                                                                             bool hflip_glyph = false;

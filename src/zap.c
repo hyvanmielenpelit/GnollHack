@@ -1175,7 +1175,7 @@ struct monst* origmonst;
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s falls off.", buf);
             }
             obj_extract_self(obj);
-            mdrop_obj(mtmp, obj, FALSE);
+            mdrop_obj(mtmp, obj, FALSE, TRUE);
         }
         break;
     case JAR_OF_MEDICINAL_SALVE:
@@ -10532,6 +10532,7 @@ boolean verbose;
     if (obj->where == OBJ_FLOOR) 
     {
         obj_extract_self(obj); /* move rocks back on top */
+        obj_set_found(obj);
         place_object(obj, obj->ox, obj->oy);
         if (!does_block(obj->ox, obj->oy, &levl[obj->ox][obj->oy]))
             unblock_vision_and_hearing_at_point(obj->ox, obj->oy);
@@ -10556,6 +10557,7 @@ register struct obj* obj;
     /* drop any objects contained inside the statue */
     while ((item = obj->cobj) != 0) {
         obj_extract_self(item);
+        obj_set_found(item);
         place_object(item, obj->ox, obj->oy);
     }
     if (by_you && Role_if(PM_ARCHAEOLOGIST) && (obj->speflags & SPEFLAGS_STATUE_HISTORIC))

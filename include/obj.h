@@ -203,6 +203,8 @@ enum elemental_enchantments {
 #define ELEMENTAL_ENCHANTMENT_BAG_WEAR_OFF_ONE_PER_CHANCE 3
 
 #define newobj() (struct obj *) alloc(sizeof(struct obj))
+#define obj_set_found(o) ((o)->speflags |= SPEFLAGS_FOUND_THIS_TURN)
+#define obj_clear_found(o) ((o)->speflags &= ~SPEFLAGS_FOUND_THIS_TURN)
 
 /* property blocking */
 /* This only allows for one blocking item per property */

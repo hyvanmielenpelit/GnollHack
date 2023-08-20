@@ -9328,6 +9328,15 @@ dolight(VOID_ARGS)
 }
 
 void
+reset_found_this_turn(VOID_ARGS)
+{
+    /* Clear out finds from last turn */
+    struct obj* otmp;
+    for (otmp = fobj; otmp; otmp = otmp->nobj)
+        obj_clear_found(otmp);
+}
+
+void
 create_context_menu(menu_type)
 enum create_context_menu_types menu_type;
 {
