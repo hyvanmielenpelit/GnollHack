@@ -3529,7 +3529,7 @@ namespace GnollHackX.Pages.Game
             bool is_monster_like_layer, bool is_object_like_layer, bool obj_in_pit, int obj_height, bool is_missile_layer, int missile_height,
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
-            ObjectDataItem otmp_round, int autodraw, bool drawwallends,
+            ObjectDataItem otmp_round, int autodraw, bool drawwallends, long generalcounterdiff,
             ref short[,] draw_shadow, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY)
         {
             if (!GHUtils.isok(draw_map_x, draw_map_y))
@@ -3671,6 +3671,12 @@ namespace GnollHackX.Pages.Game
                 {
                     draw_shadow[mapx, mapy] |= 2;
                     return; /* Draw only the transparent shadow in the max_layers shadow layer; otherwise, if drawn twice, the result will be nontransparent */
+                }
+
+                /* Death transparency */
+                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0)
+                {
+                    opaqueness = opaqueness * ((float)(20L - Math.Min(20L, generalcounterdiff))) / 20;
                 }
             }
             else if (is_object_like_layer && otmp_round != null)
@@ -4900,7 +4906,7 @@ namespace GnollHackX.Pages.Game
                                                                                 scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
+                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, generalcounterdiff,
                                                                                 ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY);
                                                                         }
                                                                     }
@@ -5043,7 +5049,7 @@ namespace GnollHackX.Pages.Game
                                                                                         scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                         monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                         loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                        hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
+                                                                                        hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, generalcounterdiff,
                                                                                         ref draw_shadow, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                                 }
                                                                                 else
@@ -5054,7 +5060,7 @@ namespace GnollHackX.Pages.Game
                                                                                         scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                         monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                         loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                        hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends,
+                                                                                        hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, generalcounterdiff,
                                                                                         ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY);
                                                                                 }
                                                                             }
