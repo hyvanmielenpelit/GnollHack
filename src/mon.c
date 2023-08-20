@@ -837,13 +837,13 @@ boolean createcorpse;
            /* first, make some powder */
         if (!istame && !isquestmonster && !mtmp->mcloned && !rn2(2))
         {
-            obj = mksobj_found_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
+            obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
             obj->quan = 1;
             obj->owt = weight(obj);
         }
 
         /* then, the glob */
-        obj = mksobj_found_at(GLOB_OF_BLACK_PUDDING - (PM_BLACK_PUDDING - mndx),
+        obj = mksobj_at(GLOB_OF_BLACK_PUDDING - (PM_BLACK_PUDDING - mndx),
             x, y, TRUE, FALSE);
 
         while (obj && (otmp = obj_nexto(obj)) != (struct obj*) 0) {
