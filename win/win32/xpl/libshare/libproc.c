@@ -652,6 +652,8 @@ int lib_doprev_message(void)
 
 char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags)
 {
+    reset_found_this_turn(); /* Otherwise, after user input, the animation might play again upon flush_screen */
+
     char buf[UTF8QBUFSZ] = "", tbuf[UTF8QBUFSZ] = "", ibuf[UTF8IBUFSZ] = "";
     if(question)
         write_text2buf_utf8(buf, UTF8QBUFSZ, question);
@@ -667,6 +669,8 @@ char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* t
 
 void lib_getlin_ex(int style, int attr, int color, const char* question, char* input, const char* placeholder, const char* linesuffix, const char* introline)
 {
+    reset_found_this_turn(); /* Otherwise, after user input, the animation might play again upon flush_screen */
+
     char buf[UTF8QBUFSZ] = "";
     char phbuf[UTF8BUFSZ] = "";
     char dvbuf[UTF8BUFSZ] = "";

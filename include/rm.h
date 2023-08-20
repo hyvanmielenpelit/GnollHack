@@ -1506,7 +1506,7 @@ extern dlevel_t level; /* structure describing the current level */
 #define defsym_to_trap(d) ((d) -S_arrow_trap + 1)
 
 #define OBJ_AT(x, y) (level.objects[x][y] != (struct obj *) 0)
-#define o_at(x, y) (OBJ_AT(x, y) ? level.objects[x][y] : (struct obj *) 0)
+#define o_at(x, y) (level.objects[x][y])
  
  /*
  * Macros for encapsulation of level.monsters references.

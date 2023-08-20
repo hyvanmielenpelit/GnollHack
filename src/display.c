@@ -1807,7 +1807,7 @@ short missile_special_quality;
                 show_glyph_on_layer_and_ascii(px, py, tether_glyph(px, py), LAYER_MISSILE);
                 if (obj)
                     show_missile_info(px, py, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
-
+                clear_found_this_turn_at(px, py);
             }
             /* save pos for later use or erasure */
             context.tether_x = x;
@@ -1820,6 +1820,7 @@ short missile_special_quality;
                 newsym(tglyph->saved[0].x, tglyph->saved[0].y);
                 force_redraw_at(tglyph->saved[0].x, tglyph->saved[0].y);
                 tglyph->sidx = 0; /* display is presently up to date */
+                clear_found_this_turn_at(tglyph->saved[0].x, tglyph->saved[0].y);
             }
             if (!cansee(x, y) && tglyph->style != DISP_ALWAYS)
             {
@@ -1837,6 +1838,7 @@ short missile_special_quality;
         if (obj)
             show_missile_info(x, y, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
 
+        clear_found_this_turn_at(x, y);
         flush_screen(1);                 /* make sure it shows up */
         break;
     } /* end case */

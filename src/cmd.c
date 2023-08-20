@@ -9337,6 +9337,20 @@ reset_found_this_turn(VOID_ARGS)
 }
 
 void
+clear_found_this_turn_at(x, y)
+int x, y;
+{
+    if (!isok(x, y))
+        return;
+
+    /* Clear out finds from last turn */
+    struct obj* otmp;
+    for (otmp = o_at(x, y); otmp; otmp = otmp->nexthere)
+        obj_clear_found(otmp);
+}
+
+
+void
 create_context_menu(menu_type)
 enum create_context_menu_types menu_type;
 {

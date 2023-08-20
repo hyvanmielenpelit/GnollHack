@@ -396,6 +396,7 @@ E void FDECL(zoomtoscale, (double));
 E void NDECL(update_bindings_list);
 E void FDECL(create_context_menu, (enum create_context_menu_types));
 E void NDECL(reset_found_this_turn);
+E void FDECL(clear_found_this_turn_at, (int, int));
 E int NDECL(doviewpet);
 E int NDECL(domarkautostash);
 E int NDECL(dounmarkautostash);
