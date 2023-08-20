@@ -1851,7 +1851,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
         pline(drop_fmt, drop_arg);
     obj->nomerge = 0;
     if (can_reach_floor(TRUE)) {
-        dropx(obj);
+        dropxf(obj);
     } else {
         freeinv(obj);
         hitfloor(obj, FALSE);

@@ -2068,7 +2068,7 @@ struct obj *otmp;
                 otmp = splitobj(otmp, 1L);
             }
             if (carried(otmp))
-                dropx(otmp);
+                dropxf(otmp);
             else
                 stackobj(otmp);
             return;

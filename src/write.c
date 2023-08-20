@@ -128,7 +128,7 @@ register struct obj *pen;
     } else if (Glib) {
         pline("%s from your %s.", Tobjnam(pen, "slip"),
               makeplural(body_part(FINGER)));
-        dropx(pen);
+        dropxf(pen);
         return 1;
     }
 

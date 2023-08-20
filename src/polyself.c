@@ -1141,7 +1141,7 @@ break_armor()
                 /* Luckily, you do not die, just the armor pops off, so having an indestructible armor is not life-threatening --JG */
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
                 (void)Armor_off();
-                dropx(otmp);
+                dropxf(otmp);
             }
             else
             {
@@ -1161,7 +1161,7 @@ break_armor()
             {
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", cloak_simple_name(otmp));
                 (void) Cloak_off();
-                dropx(otmp);
+                dropxf(otmp);
             } 
             else 
             {
@@ -1181,7 +1181,7 @@ break_armor()
                 /* Not sure how this happens but at least it is not life-threatening */
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", robe_simple_name(otmp));
                 (void)Robe_off();
-                dropx(otmp);
+                dropxf(otmp);
             }
             else
             {
@@ -1201,7 +1201,7 @@ break_armor()
                 /* Not sure how this happens but at least it is not life-threatening */
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "shirt falls off!");
                 (void)Shirt_off();
-                dropx(otmp);
+                dropxf(otmp);
             }
             else
             {
@@ -1220,7 +1220,7 @@ break_armor()
                 cancel_don();
             Your_ex(ATR_NONE, CLR_MSG_WARNING, "armor falls around you!");
             (void) Armor_gone();
-            dropx(otmp);
+            dropxf(otmp);
         }
         if ((otmp = uarmo) != 0)
         {
@@ -1229,7 +1229,7 @@ break_armor()
             else
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "shrink out of your %s!", robe_simple_name(otmp));
             (void)Robe_off();
-            dropx(otmp);
+            dropxf(otmp);
         }
         if ((otmp = uarmc) != 0) {
             if (is_whirly(youmonst.data))
@@ -1237,7 +1237,7 @@ break_armor()
             else
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "shrink out of your %s!", cloak_simple_name(otmp));
             (void) Cloak_off();
-            dropx(otmp);
+            dropxf(otmp);
         }
         if ((otmp = uarmu) != 0) 
         {
@@ -1246,7 +1246,7 @@ break_armor()
             else
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "become much too small for your shirt!");
             setworn((struct obj *) 0, otmp->owornmask & W_ARMU);
-            dropx(otmp);
+            dropxf(otmp);
         }
     }
 
@@ -1271,7 +1271,7 @@ break_armor()
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls to the %s!", helm_simple_name(otmp),
                      surface(u.ux, u.uy));
                 (void) Helmet_off();
-                dropx(otmp);
+                dropxf(otmp);
             }
         }
     }
@@ -1287,7 +1287,7 @@ break_armor()
             You_ex(ATR_NONE, CLR_MSG_WARNING, "drop your gloves%s!", uwep ? " and weapon" : "");
             drop_weapon(0);
             (void) Gloves_off();
-            dropx(otmp);
+            dropxf(otmp);
         }
         if ((otmp = uarms) != 0)
         {
@@ -1301,7 +1301,7 @@ break_armor()
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "can no longer hold your %s!", cxname(otmp));
                 remove_worn_item(otmp, FALSE);
             }
-            dropx(otmp);
+            dropxf(otmp);
         }
         if ((otmp = uarmh) != 0) 
         {
@@ -1310,7 +1310,7 @@ break_armor()
             Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls to the %s!", helm_simple_name(otmp),
                  surface(u.ux, u.uy));
             (void) Helmet_off();
-            dropx(otmp);
+            dropxf(otmp);
         }
     }
 
@@ -1328,7 +1328,7 @@ break_armor()
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots %s off your feet!",
                      verysmall(youmonst.data) ? "slide" : "are pushed");
             (void) Boots_off();
-            dropx(otmp);
+            dropxf(otmp);
         }
     }
 
@@ -1344,7 +1344,7 @@ break_armor()
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers %s off your %s!",
                     verysmall(youmonst.data) ? "slide" : "are pushed", makeplural(body_part(ARM)));
             (void)Bracers_off();
-            dropx(otmp);
+            dropxf(otmp);
         }
     }
 
@@ -1362,7 +1362,7 @@ break_armor()
             {
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
                 (void)MiscellaneousItem_off(otmp);
-                dropx(otmp);
+                dropxf(otmp);
             }
             break;
         case MISC_PANTS:
@@ -1371,7 +1371,7 @@ break_armor()
             {
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
                 (void)MiscellaneousItem_off(otmp);
-                dropx(otmp);
+                dropxf(otmp);
             }
             break;
         case MISC_WRIST_WATCH:
@@ -1385,7 +1385,7 @@ break_armor()
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
                         Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", subtyp == MISC_BRACERS ? makeplural(body_part(ARM)) : body_part(ARM));
                 (void)MiscellaneousItem_off(otmp);
-                dropx(otmp);
+                dropxf(otmp);
             }
             break;
         case MISC_BELT:
@@ -1395,7 +1395,7 @@ break_armor()
                 {
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
                     (void)MiscellaneousItem_off(otmp);
-                    dropx(otmp);
+                    dropxf(otmp);
                 }
                 else
                 {
@@ -1410,7 +1410,7 @@ break_armor()
             {
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
                 (void)MiscellaneousItem_off(otmp);
-                dropx(otmp);
+                dropxf(otmp);
             }
             break;
         case MISC_NOSERING:
@@ -1426,7 +1426,7 @@ break_armor()
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
                         Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", body_part(subtyp == MISC_NOSERING ? NOSE : HEAD));
                 (void)MiscellaneousItem_off(otmp);
-                dropx(otmp);
+                dropxf(otmp);
             }
             break;
         case MISC_SCARF:
@@ -1439,7 +1439,7 @@ break_armor()
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
                         Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", body_part(NECK));
                 (void)MiscellaneousItem_off(otmp);
-                dropx(otmp);
+                dropxf(otmp);
             }
             break;
         }
@@ -1486,14 +1486,14 @@ int alone;
                 if (otmp && otmp->in_use)
                     updateinv = FALSE;
                 else if (candropwep2)
-                    dropx(otmp);
+                    dropxf(otmp);
             }
             otmp = uwep;
             uwepgone();
             if (otmp->in_use)
                 updateinv = FALSE;
             else if (candropwep)
-                dropx(otmp);
+                dropxf(otmp);
 
             if (updateinv)
                 update_inventory();

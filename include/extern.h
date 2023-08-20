@@ -627,6 +627,7 @@ E void FDECL(doaltarobj, (struct obj *));
 E boolean FDECL(canletgo, (struct obj *, const char *));
 E int FDECL(drop, (struct obj*));
 E void FDECL(dropx, (struct obj *));
+E void FDECL(dropxf, (struct obj*));
 E void FDECL(dropy, (struct obj *));
 E void FDECL(dropyf, (struct obj*));
 E void FDECL(dropz, (struct obj *, BOOLEAN_P));

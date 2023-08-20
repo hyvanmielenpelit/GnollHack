@@ -5188,7 +5188,7 @@ register struct obj *obj;
         pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "ring is regurgitated!");
  giveback:
         obj->in_use = FALSE;
-        dropx(obj);
+        dropxf(obj);
         trycall(obj);
         return;
     case RIN_LEVITATION:
@@ -5350,7 +5350,7 @@ register struct obj *obj;
     if (!rn2(20) && !nosink) {
         pline_The("sink backs up, leaving %s.", doname(obj));
         obj->in_use = FALSE;
-        dropx(obj);
+        dropxf(obj);
     } else if (!rn2(5)) {
         freeinv(obj);
         obj->in_use = FALSE;
@@ -5506,7 +5506,27 @@ register struct obj *obj;
         if (IS_ALTAR(levl[u.ux][u.uy].typ))
             doaltarobj(obj); /* set bknown */
     }
+    dropy(obj);
+}
+
+/* dropxf - take dropped item out of inventory;
+   called in several places - may produce output
+   (eg ship_object() and dropy() -> sellobj() both produce output) */
+void
+dropxf(obj)
+register struct obj* obj;
+{
+    /* Ensure update when we drop gold objects */
+    if (obj->oclass == COIN_CLASS)
+        context.botl = 1;
+    freeinv(obj);
     obj->speflags |= SPEFLAGS_FOUND_THIS_TURN;
+    if (!u.uswallow) {
+        if (ship_object(obj, u.ux, u.uy, FALSE))
+            return;
+        if (IS_ALTAR(levl[u.ux][u.uy].typ))
+            doaltarobj(obj); /* set bknown */
+    }
     dropy(obj);
 }
 

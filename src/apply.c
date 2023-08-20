@@ -440,7 +440,7 @@ struct obj *obj;
                     struct obj *saved_ublindf = ublindf;
                     You("push your %s off.", what);
                     Blindf_off(ublindf);
-                    dropx(saved_ublindf);
+                    dropxf(saved_ublindf);
                 }
             }
             if (is_wet_towel(obj))
@@ -3706,7 +3706,7 @@ struct obj *obj;
     if (Glib) {
         pline("%s from your %s.", Tobjnam(obj, "slip"),
               makeplural(body_part(FINGER)));
-        dropx(obj);
+        dropxf(obj);
         return;
     }
 
@@ -3718,7 +3718,7 @@ struct obj *obj;
 
             pline("%s from your %s.", Tobjnam(obj, "slip"),
                   makeplural(body_part(FINGER)));
-            dropx(obj);
+            dropxf(obj);
             return;
         }
 
@@ -3786,7 +3786,7 @@ struct obj* obj;
     {
         pline("%s from your %s.", Tobjnam(obj, "slip"),
             makeplural(body_part(FINGER)));
-        dropx(obj);
+        dropxf(obj);
         return 0;
     }
 
@@ -4432,7 +4432,7 @@ struct obj *otmp;
                     You("drop %s!",
                         the(defsyms[trap_to_defsym(what_trap(ttyp, rn2))]
                                 .explanation));
-                    dropx(otmp);
+                    dropxf(otmp);
                     return;
                 }
             }
@@ -4596,7 +4596,7 @@ struct obj *obj;
 
     } else if ((Fumbling || Glib) && !rn2(5)) {
         pline_The("bullwhip slips out of your %s.", body_part(HAND));
-        dropx(obj);
+        dropxf(obj);
 
     } else if (u.utrap && u.utraptype == TT_PIT) {
         /*
