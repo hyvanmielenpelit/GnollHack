@@ -4447,9 +4447,7 @@ namespace GnollHackX.Pages.Game
             {
                 long usedcounterdiff = generalcounterdiff - 3L * sub_layer_idx;
                 float usedobjheight = obj_height == 0 ? GHConstants.TileHeight / 2 : obj_height;
-                float highestpoint = GHConstants.TileHeight - usedobjheight - (sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT;
-                if(loc_is_you)
-                    highestpoint *= 1.3f; /* Make sure the animation goes above the character's head */
+                float highestpoint = (loc_is_you ? 1.5f : 1.0f) * GHConstants.TileHeight - usedobjheight - (sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT;
                 if (usedcounterdiff >= 0 && usedcounterdiff < _foundAnimationFactor.Length)
                     object_move_offset_y -= highestpoint * _foundAnimationFactor[usedcounterdiff] * targetscale;
             }
