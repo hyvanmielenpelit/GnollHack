@@ -4427,7 +4427,8 @@ namespace GnollHackX.Pages.Game
 
         }
 
-        private float[] _foundAnimation = { 10f, 20f, 30f, 40f, 45f, 50f, 55f, 57.5f, 60f, 57.5f, 55f, 50f, 45f, 40f, 30f, 20f, 10f, 0f };
+        //private float[] _foundAnimation = { 10f, 20f, 30f, 40f, 45f, 50f, 55f, 57.5f, 60f, 57.5f, 55f, 50f, 45f, 40f, 30f, 20f, 10f, 0f };
+        private float[] _foundAnimation = { 10f, 20f, 30f, 40f, 50f, 60f, 70f, 80f, 88f, 96f, 102f, 108f, 114f, 118f, 120f, 118f, 114f, 108f, 102f, 96f, 88f, 80f, 70f, 60f, 50f, 40f, 30f, 20f, 10f, 0f };
 
         void GetObjectMoveOffsets(int mapx, int mapy, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, long generalcounterdiff, bool foundthisturn, int sub_layer_idx, float targetscale, ref float object_move_offset_x, ref float object_move_offset_y)
         {

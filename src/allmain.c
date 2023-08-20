@@ -191,8 +191,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
                     moves++;
                     context.hungry_message_displayed = FALSE;
                     context.mon_talking = FALSE;
-                    for (otmp = fobj; otmp; otmp = otmp->nobj) /* Clear out finds from last turn */
-                        otmp->speflags &= ~SPEFLAGS_FOUND_THIS_TURN;
+
                     /********************************/
                     /* once-per-turn things go here */
                     /********************************/
@@ -369,6 +368,10 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
                     /* vision while buried done here */
                     else if (u.uburied)
                         under_ground(0);
+
+                    /* Clear out finds from last turn */
+                    for (otmp = fobj; otmp; otmp = otmp->nobj)
+                        otmp->speflags &= ~SPEFLAGS_FOUND_THIS_TURN;
 
                     /* when immobile, count is in turns */
                     if (multi < 0 && !Sleeping && !Paralyzed_or_immobile) /* Let Sleeping and Paralyzed expire first, and then multi */
