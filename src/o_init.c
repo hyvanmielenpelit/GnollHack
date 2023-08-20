@@ -1624,7 +1624,6 @@ struct obj* obj;
         return 0;
 
     int res = 0;
-
     if (obj->exceptionality > 0 && (is_armor(obj) || (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)))
     {
         int multiplier = is_suit(obj) ? 4 : has_obj_mythic_defense(obj) ? 3 : is_shield(obj) ? 3 : 2;
@@ -1644,8 +1643,7 @@ struct obj* obj;
     if (!obj)
         return 0;
 
-    int res = get_obj_exceptionality_ac_bonus(obj);;
-
+    int res = get_obj_exceptionality_ac_bonus(obj);
     if (obj->material != objects[obj->otyp].oc_material && is_armor(obj))
     {
         res += material_definitions[obj->material].acbonus_armor[objects[obj->otyp].oc_armor_category];
@@ -1671,8 +1669,7 @@ struct obj* obj;
     if (!obj)
         return 0;
 
-    int res = get_obj_exceptionality_mc_bonus(obj);;
-
+    int res = get_obj_exceptionality_mc_bonus(obj);
     if (obj->material != objects[obj->otyp].oc_material && is_armor(obj))
     {
         res += material_definitions[obj->material].mcbonus_armor[objects[obj->otyp].oc_armor_category];

@@ -1535,6 +1535,7 @@ struct monst *mon;
         {
             /* MC always from worn */
             int basemc = get_object_base_mc(o);
+            basemc += get_obj_exceptionality_mc_bonus(o);
             if (objects[o->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC)
                 item_mc_bonus += basemc;
             else
