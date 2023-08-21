@@ -70,7 +70,7 @@ namespace GnollHackX
             _inited = true; 
         }
 
-        public readonly long _refreshFrequency = (long)Math.Min(60, ClientUtils.GetAuxiliaryCanvasAnimationFrequency());
+        public readonly long _refreshFrequency = (long)Math.Min(60, UIUtils.GetAuxiliaryCanvasAnimationFrequency());
         public const long _slideDurationInMilliseconds = 15000;
         public const long _transitionDurationInMilliseconds = 3000;
 

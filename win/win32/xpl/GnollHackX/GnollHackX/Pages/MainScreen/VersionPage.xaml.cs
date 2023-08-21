@@ -57,15 +57,15 @@ namespace GnollHackX.Pages.MainScreen
             long CurrentPlayMinutes = (CurrentPlayTime % 3600) / 60;
             long CurrentPlaySeconds = CurrentPlayTime - CurrentPlayHours * 3600 - CurrentPlayMinutes * 60;
 
-            if (_gamePage != null && _gamePage.ClientGame != null)
+            if (_gamePage != null && _gamePage.CurrentGame != null)
             {
-                long GameDurationTime = _gamePage.ClientGame.GamePlayTime;
+                long GameDurationTime = _gamePage.CurrentGame.GamePlayTime;
                 long GameDurationHours = GameDurationTime / 3600;
                 long GameDurationMinutes = (GameDurationTime % 3600) / 60;
                 long GameDurationSeconds = GameDurationTime - GameDurationHours * 3600 - GameDurationMinutes * 60;
                 GameDurationLabel.Text = GameDurationHours + " h " + GameDurationMinutes + " min " + GameDurationSeconds + " s";
 
-                long SessionPlayTime = _gamePage.ClientGame.SessionPlayTime;
+                long SessionPlayTime = _gamePage.CurrentGame.SessionPlayTime;
                 long SessionPlayHours = SessionPlayTime / 3600;
                 long SessionPlayMinutes = (SessionPlayTime % 3600) / 60;
                 long SessionPlaySeconds = SessionPlayTime - SessionPlayHours * 3600 - SessionPlayMinutes * 60;
@@ -126,7 +126,7 @@ namespace GnollHackX.Pages.MainScreen
                 Thickness margins = new Thickness();
                 margins = LongLabel.Margin;
 
-                double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
+                double bordermargin = UIUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
                 MainGrid.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
                 double target_width = (Math.Min(width, MainGrid.WidthRequest) - MainGrid.Margin.Left - MainGrid.Margin.Right
                     - MainGrid.Padding.Left - MainGrid.Padding.Right - margins.Left - margins.Right);
@@ -144,8 +144,8 @@ namespace GnollHackX.Pages.MainScreen
                 LongTitleLabel.FontSize = newsize;
                 LongLabel.FontSize = newsize;
 
-                HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
-                CloseButton.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }
         }
 

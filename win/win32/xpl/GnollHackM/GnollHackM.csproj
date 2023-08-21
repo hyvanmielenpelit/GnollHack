@@ -60,8 +60,8 @@
 
 	<ItemGroup>
 		<None Remove="..\GnollHackX\GnollHackX\BackgroundView.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\ClientGame.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\ClientUtils.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHGame.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\UIUtils.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\CustomLabel.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
@@ -135,8 +135,8 @@
 
 	<ItemGroup>
 		<Compile Include="..\GnollHackX\GnollHackX\BackgroundView.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\ClientGame.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\ClientUtils.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHGame.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\UIUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\CustomLabel.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />

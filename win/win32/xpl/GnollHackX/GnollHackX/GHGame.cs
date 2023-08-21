@@ -21,11 +21,11 @@ using Newtonsoft.Json;
 
 namespace GnollHackX
 {
-    public class ClientGame
+    public class GHGame
    {
         public RunGnollHackFlags StartFlags { get; set; }
-        private static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> _concurrentRequestDictionary = new ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>>();
-        private static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> _concurrentResponseDictionary = new ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>>();
+        private static ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>> _concurrentRequestDictionary = new ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>>();
+        private static ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>> _concurrentResponseDictionary = new ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>>();
         private int[] _inputBuffer = new int[GHConstants.InputBufferLength];
         private int _inputBufferLocation = -1;
         private string _getLineString = null;
@@ -57,8 +57,8 @@ namespace GnollHackX
         public int StatusWindowId { get; set; }
         private List<GHMsgHistoryItem> _message_history = new List<GHMsgHistoryItem>();
 
-        public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
-        public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
+        public static ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
+        public static ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
         public string CharacterName {
             get { lock (_characterNameLock) { return _characterName; } } 
             set { lock (_characterNameLock) { _characterName = value; } }
@@ -67,19 +67,19 @@ namespace GnollHackX
         public bool CasualMode { get { return _gamePage.EnableCasualMode; } }
         public bool ModernMode { get { return _gamePage.EnableModernMode; } }
 
-        public ClientGame(GamePage gamePage)
+        public GHGame(GamePage gamePage)
         {
-            ClientGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
-            ClientGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
+            GHGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
+            GHGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
             _gamePage = gamePage;
         }
 
-        ~ClientGame()
+        ~GHGame()
         {
             ConcurrentQueue<GHRequest> requestqueue;
             ConcurrentQueue<GHResponse> responsequeue;
-            ClientGame.RequestDictionary.TryRemove(this, out requestqueue);
-            ClientGame.ResponseDictionary.TryRemove(this, out responsequeue);
+            GHGame.RequestDictionary.TryRemove(this, out requestqueue);
+            GHGame.ResponseDictionary.TryRemove(this, out responsequeue);
         }
 
         private void pollResponseQueue()
@@ -104,7 +104,7 @@ namespace GnollHackX
 
             ConcurrentQueue<GHResponse> queue;
             GHResponse response;
-            if(ClientGame.ResponseDictionary.TryGetValue(this, out queue))
+            if(GHGame.ResponseDictionary.TryGetValue(this, out queue))
             {
                 while (queue.TryDequeue(out response))
                 {
@@ -266,7 +266,7 @@ namespace GnollHackX
             }
 
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.HideLoadingScreen));
             }
@@ -416,7 +416,7 @@ namespace GnollHackX
             ConcurrentQueue<GHRequest> queue;
             _characternameSet = false;
             CharacterName = "";
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.AskName, modeName, modeDescription));
                 while (!_characternameSet)
@@ -451,7 +451,7 @@ namespace GnollHackX
             switch (status)
             {
                 case 1: /* Restart in the same game page (after saving) */
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.RestartGame));
                     }
@@ -459,7 +459,7 @@ namespace GnollHackX
                 default:
                 case 0:
                     GHApp.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.ReturnToMainMenu));
                     }
@@ -472,7 +472,7 @@ namespace GnollHackX
             Debug.WriteLine("ClientCallback_nhgetch");
 
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.GetChar));
                 while (_inputBufferLocation < 0)
@@ -506,7 +506,7 @@ namespace GnollHackX
             mod = 0;
 
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.PosKey));
                 while (_inputBufferLocation < 0)
@@ -547,7 +547,7 @@ namespace GnollHackX
             ConcurrentQueue<GHRequest> queue;
             if (responses == null || responses == "")
             {
-                if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                 {
                     if((ynflags & 1UL) != 0)
                         queue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections)); //TODO: Show keyboard
@@ -555,7 +555,7 @@ namespace GnollHackX
                         queue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections));
                 }
                 int res = ClientCallback_nhgetch(); /* Get direction / letter */
-                if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                 {
                     if ((ynflags & 1UL) != 0)
                         queue.Enqueue(new GHRequest(this, GHRequestType.HideDirections)); //TODO: Hide keyboard
@@ -566,7 +566,7 @@ namespace GnollHackX
             }
             else
             {
-                if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                 {
                     queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, glyph, title, question, responses, descriptions, introline, ynflags));
                 }
@@ -588,7 +588,7 @@ namespace GnollHackX
 
                     if (responses.Contains(res))
                     {
-                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
                             queue.Enqueue(new GHRequest(this, GHRequestType.HideYnResponses));
                         }
@@ -599,7 +599,7 @@ namespace GnollHackX
                     cnt++;
                 }
             }
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.HideYnResponses));
             }
@@ -642,7 +642,7 @@ namespace GnollHackX
             if (sendlist.Count > 0)
                 sendlist[sendlist.Count - 1].IsLast = true;
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, sendlist));
             }
@@ -667,7 +667,7 @@ namespace GnollHackX
             if (sendlist.Count > 0)
                 sendlist[sendlist.Count - 1].IsLast = true;
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, sendlist));
             }
@@ -830,7 +830,7 @@ namespace GnollHackX
                             rtype = GHRequestType.HideSkillButton;
 
                         ConcurrentQueue<GHRequest> queue;
-                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
                             queue.Enqueue(new GHRequest(this, rtype));
                         }
@@ -842,7 +842,7 @@ namespace GnollHackX
                         if(cng != 0 && text != null && text != "")
                         {
                             ConcurrentQueue<GHRequest> queue;
-                            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                             {
                                 DisplayConditionTextData data = new DisplayConditionTextData();
                                 data.text = text.Trim();
@@ -859,7 +859,7 @@ namespace GnollHackX
                         if (cng != 0 && condbits != 0)
                         {
                             ConcurrentQueue<GHRequest> queue;
-                            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                             {
                                 int arraysize = (int)bl_conditions.NUM_BL_CONDITIONS; // (int)nhcolor.CLR_MAX + 5;
                                 short[] condcolors = new short[arraysize];
@@ -895,7 +895,7 @@ namespace GnollHackX
                                         }
 
                                         DisplayConditionTextData data = new DisplayConditionTextData();
-                                        data.text = ClientGame.cond_names_long[i];
+                                        data.text = GHGame.cond_names_long[i];
                                         data.style = 0;
                                         data.attr = 0;
                                         data.color = condcolor;
@@ -1120,7 +1120,7 @@ namespace GnollHackX
                     _ghWindows[winid].SelectedMenuItems = null;
                     _ghWindows[winid].WasCancelled = false;
 
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.ShowMenuPage, _ghWindows[winid], _ghWindows[winid].MenuInfo));
                         enqueued = true;
@@ -1270,7 +1270,7 @@ namespace GnollHackX
                 query = "";
 
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 _getLineString = null;
                 queue.Enqueue(new GHRequest(this, GHRequestType.GetLine, query, placeholder, linesuffix, introline, style, attr, color));
@@ -1301,7 +1301,7 @@ namespace GnollHackX
         public void ClientCallback_ClearContextMenu()
         {
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.ClearContextMenu));
             }
@@ -1310,7 +1310,7 @@ namespace GnollHackX
         public void ClientCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int style, int glyph, string cmd_text, string target_text, int attr, int color)
         {
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 AddContextMenuData data = new AddContextMenuData();
                 data.cmd_def_char = cmd_def_char;
@@ -1378,7 +1378,7 @@ namespace GnollHackX
         public void ClientCallback_DisplayFloatingText(int x, int y, string text, int style, int attr, int color, ulong tflags)
         {
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 DisplayFloatingTextData floatingTextData = new DisplayFloatingTextData();
                 floatingTextData.x = x;
@@ -1396,7 +1396,7 @@ namespace GnollHackX
         {
             _screenTextSet = false;
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 if((tflags & 2UL) != 0)
                 {
@@ -1455,7 +1455,7 @@ namespace GnollHackX
         public void ClientCallback_DisplayPopupText(string text, string title, int style, int attr, int color, int glyph, ulong tflags)
         {
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 DisplayScreenTextData data = new DisplayScreenTextData();
                 data.text = text;
@@ -1470,7 +1470,7 @@ namespace GnollHackX
             }
 
             int val = ClientCallback_nhgetch();
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.HidePopupText));
             }
@@ -1479,7 +1479,7 @@ namespace GnollHackX
         public void ClientCallback_DisplayGUIEffect(int x, int y, int style, ulong tflags)
         {
             ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 DisplayGUIEffectData effectData = new DisplayGUIEffectData();
                 effectData.x = x;
@@ -1633,7 +1633,7 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_FADE_TO_BLACK:
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.FadeToBlack, 200));
                         Thread.Sleep(325);
@@ -1643,7 +1643,7 @@ namespace GnollHackX
                     GHApp.CollectGarbage();
                     break;
                 case (int)gui_command_types.GUI_CMD_FADE_FROM_BLACK:
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, 200));
                     }
@@ -1694,25 +1694,25 @@ namespace GnollHackX
                     _gamePage.ClearPetData();
                     break;
                 case (int)gui_command_types.GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE:
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.SaveAndDisableTravelMode));
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_RESTORE_TRAVEL_MODE:
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.RestoreTravelMode));
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE_ON_LEVEL:
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.SaveAndDisableTravelModeOnLevel));
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_RESTORE_TRAVEL_MODE_ON_LEVEL:
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.RestoreTravelModeOnLevel));
                     }
@@ -1728,7 +1728,7 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_MESSAGE_HISTORY:
                     _message_history.Clear();
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, new List<GHMsgHistoryItem>()));
                     }
@@ -1757,7 +1757,7 @@ namespace GnollHackX
                     if(cmd_str != null)
                         status_str = cmd_str;
 
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this,
                             cmd_id == (int)gui_command_types.GUI_CMD_POST_GAME_STATUS ? GHRequestType.PostGameStatus : GHRequestType.PostDiagnosticData, 
@@ -1827,7 +1827,7 @@ namespace GnollHackX
             {
                 if (_ghWindows[winid] != null)
                 {
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.ShowOutRipPage, _ghWindows[winid], new GHOutRipInfo(plname, points, killer, time)));
                     }
@@ -1840,7 +1840,7 @@ namespace GnollHackX
         public int ClientCallback_UIHasInput()
         {
             ConcurrentQueue<GHResponse> queue;
-            if (ClientGame.ResponseDictionary.TryGetValue(this, out queue))
+            if (GHGame.ResponseDictionary.TryGetValue(this, out queue))
             {
                 return queue.Count;
             }
@@ -1868,7 +1868,7 @@ namespace GnollHackX
                             break;
 
                         ConcurrentQueue<GHRequest> queue;
-                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
                             _guiTipsFinished = false;
                             queue.Enqueue(new GHRequest(this, GHRequestType.ShowGUITips));
@@ -1883,7 +1883,7 @@ namespace GnollHackX
                 case (int)special_view_types.SPECIAL_VIEW_CRASH_DETECTED:
                     {
                         ConcurrentQueue<GHRequest> queue;
-                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
                             _crashReportFinished = false;
                             queue.Enqueue(new GHRequest(this, GHRequestType.CrashReport));
@@ -1898,7 +1898,7 @@ namespace GnollHackX
                 case (int)special_view_types.SPECIAL_VIEW_PANIC:
                     {
                         ConcurrentQueue<GHRequest> queue;
-                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
                             _panicFinished = false;
                             queue.Enqueue(new GHRequest(this, GHRequestType.Panic, text));
@@ -1917,7 +1917,7 @@ namespace GnollHackX
                 case (int)special_view_types.SPECIAL_VIEW_MESSAGE:
                     {
                         ConcurrentQueue<GHRequest> queue;
-                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
                             _messageFinished = false;
                             queue.Enqueue(new GHRequest(this, GHRequestType.Message, text));
@@ -1936,7 +1936,7 @@ namespace GnollHackX
                 case (int)special_view_types.SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N:
                     {
                         ConcurrentQueue<GHRequest> queue;
-                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
                             _ynConfirmationFinished = false;
                             queue.Enqueue(new GHRequest(this, GHRequestType.YnConfirmation, title, text, "Yes", "No"));

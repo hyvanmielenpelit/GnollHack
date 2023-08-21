@@ -99,7 +99,7 @@ namespace GnollHackX
                 int absglyph = Math.Abs(glyph);
                 int tile = absglyph < GHApp.Glyph2Tile.Length ? GHApp.Glyph2Tile[absglyph] : 0;
                 int anim = tile < GHApp.Tile2Animation.Length ? GHApp.Tile2Animation[tile] : 0;
-                long _refreshFrequency = (long)Math.Min(60, ClientUtils.GetAuxiliaryCanvasAnimationFrequency());
+                long _refreshFrequency = (long)Math.Min(60, UIUtils.GetAuxiliaryCanvasAnimationFrequency());
                 if(anim > 0 &&  !_timerOn)
                 {
                     _stopAnimation = false;

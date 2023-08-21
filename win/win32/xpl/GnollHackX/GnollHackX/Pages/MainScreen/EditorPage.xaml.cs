@@ -152,9 +152,9 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
-                CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
-                double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                CloseGrid.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
+                double bordermargin = UIUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
                 TextEditor.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
             }
         }

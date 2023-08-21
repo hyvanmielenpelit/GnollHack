@@ -951,7 +951,7 @@ namespace GnollHackX.Unknown
             return res != 0;
         }
 
-        public int StartGnollHack(ClientGame clientGame)
+        public int StartGnollHack(GHGame clientGame)
         {
             string filesdir = GetGnollHackPath();
             bool allowbones = Preferences.Get("AllowBones", true);

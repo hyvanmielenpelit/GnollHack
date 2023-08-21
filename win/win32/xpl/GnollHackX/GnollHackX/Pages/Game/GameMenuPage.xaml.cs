@@ -188,7 +188,7 @@ namespace GnollHackX.Pages.Game
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                lblHeader.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
             }
         }
 

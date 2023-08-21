@@ -24,7 +24,7 @@ namespace GnollHackX
             _data = data;
             _created_at_count = created_at_count;
             _gamePage = gamePage;
-            _animationFrequency = Math.Max(1, ClientUtils.GetMainCanvasAnimationFrequency(_gamePage.MapRefreshRate));
+            _animationFrequency = Math.Max(1, UIUtils.GetMainCanvasAnimationFrequency(_gamePage.MapRefreshRate));
         }
 
         public float GetFinishTime()
@@ -201,7 +201,7 @@ namespace GnollHackX
             switch(_data.style)
             {
                 case (int)screen_text_types.SCREEN_TEXT_GENERAL:
-                    return ClientUtils.NHColor2SKColor(_data.color, _data.attr);
+                    return UIUtils.NHColor2SKColor(_data.color, _data.attr);
                 case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
                     return TransparentGold;
                 case (int)screen_text_types.SCREEN_TEXT_GAIN_LEVEL:

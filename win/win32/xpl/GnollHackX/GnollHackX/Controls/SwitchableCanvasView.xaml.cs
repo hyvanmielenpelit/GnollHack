@@ -154,8 +154,8 @@ namespace GnollHackX.Controls
             {
                 _tickCounter++;
                 _tickCounter = _tickCounter % GHConstants.MaxRefreshRate;
-                int auxRefreshRate = ClientUtils.GetAuxiliaryCanvasAnimationFrequency();
-                int mainfps = ClientUtils.GetMainCanvasAnimationFrequency(_gamePage.MapRefreshRate);
+                int auxRefreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency();
+                int mainfps = UIUtils.GetMainCanvasAnimationFrequency(_gamePage.MapRefreshRate);
                 int divisor = Math.Max(1, (int)Math.Round((double)auxRefreshRate / (double)mainfps, 0));
                 switch (CanvasType)
                 {

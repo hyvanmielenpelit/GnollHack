@@ -49,7 +49,7 @@ namespace GnollHackX
         void SetPetMID(uint m_id);
         int Chmod(string filename, uint mode);
 
-        int StartGnollHack(ClientGame clientGame);
+        int StartGnollHack(GHGame clientGame);
 
         void SaveAndRestoreSavedGame();
         void TallyRealTime();

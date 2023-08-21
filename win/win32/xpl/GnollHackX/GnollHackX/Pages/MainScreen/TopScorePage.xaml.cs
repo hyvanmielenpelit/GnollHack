@@ -125,9 +125,9 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
-                CloseButton.Margin = ClientUtils.GetFooterMarginWithBorderWithTop(bkgView.BorderStyle, width, height, 20.0);
-                double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                CloseButton.Margin = UIUtils.GetFooterMarginWithBorderWithTop(bkgView.BorderStyle, width, height, 20.0);
+                double bordermargin = UIUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
                 ScoresView.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
 
                 if (ScoresView.ItemsSource != null)

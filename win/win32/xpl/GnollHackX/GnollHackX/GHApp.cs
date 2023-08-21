@@ -66,8 +66,8 @@ namespace GnollHackX
         public static GamePage CurrentGamePage { get; set; }
 
         private static readonly object _currentClientGameLock = new object();
-        private static ClientGame _currentClientGame = null;
-        public static ClientGame CurrentClientGame { get { lock (_currentClientGameLock) { return _currentClientGame; } } set { lock (_currentClientGameLock) { _currentClientGame = value; } } }
+        private static GHGame _currentClientGame = null;
+        public static GHGame CurrentClientGame { get { lock (_currentClientGameLock) { return _currentClientGame; } } set { lock (_currentClientGameLock) { _currentClientGame = value; } } }
         public static bool InformAboutGameTermination = false;
         public static bool InformAboutCrashReport = false;
         public static bool InformAboutIncompatibleSavedGames = false;

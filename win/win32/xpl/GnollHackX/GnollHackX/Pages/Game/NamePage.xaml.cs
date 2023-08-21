@@ -23,7 +23,7 @@ namespace GnollHackX.Pages.Game
     public partial class NamePage : ContentPage
     {
         public Regex ValidationExpression { get; set; }
-        private ClientGame _clientGame;
+        private GHGame _currentGame;
         private GamePage _gamePage;
 
         public NamePage(GamePage gamepage, string modeName, string modeDescription)
@@ -35,7 +35,7 @@ namespace GnollHackX.Pages.Game
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #endif
             ValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
-            _clientGame = gamepage.ClientGame;
+            _currentGame = gamepage.CurrentGame;
             _gamePage = gamepage;
             if (!string.IsNullOrWhiteSpace(modeName))
             {
@@ -86,9 +86,9 @@ namespace GnollHackX.Pages.Game
             }
 
             ConcurrentQueue<GHResponse> queue;
-            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, usedName));
+                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, usedName));
                 await _gamePage.Navigation.PopModalAsync();
             }
             btnOK.IsEnabled = true;
@@ -136,7 +136,7 @@ namespace GnollHackX.Pages.Game
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                WhatNameLabel.Margin = ClientUtils.GetHeaderMarginWithBorderWithBottom(bkgView.BorderStyle, width, height, 30.0);
+                WhatNameLabel.Margin = UIUtils.GetHeaderMarginWithBorderWithBottom(bkgView.BorderStyle, width, height, 30.0);
             }
         }
 
@@ -147,9 +147,9 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
 
             ConcurrentQueue<GHResponse> queue;
-            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, ""));
+                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, ""));
                 await _gamePage.Navigation.PopModalAsync();
             }
             btnOK.IsEnabled = true;

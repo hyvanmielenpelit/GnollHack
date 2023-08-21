@@ -120,7 +120,7 @@ namespace GnollHackX
 
     public class GHRequest
     {
-        public ClientGame RequestingClientGame { get; }
+        public GHGame RequestingClientGame { get; }
         public GHRequestType RequestType { get; set; }
         public GHWindow RequestingGHWindow { get; set; }
         public GHMenuInfo RequestMenuInfo { get; set; }
@@ -155,18 +155,18 @@ namespace GnollHackX
 
         }
 
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, int requestint)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             RequestInt = requestint;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, int requestint2)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, int requestint, int requestint2)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
@@ -174,7 +174,7 @@ namespace GnollHackX
             RequestInt2 = requestint2;
         }
 
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, string requeststring)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, int requestint, string requeststring)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
@@ -182,7 +182,7 @@ namespace GnollHackX
             RequestString = requeststring;
         }
 
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, int requestint2, string requeststring)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, int requestint, int requestint2, string requeststring)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
@@ -191,7 +191,7 @@ namespace GnollHackX
             RequestString = requeststring;
         }
 
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, string requeststring, string requeststring2)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, int requestint, string requeststring, string requeststring2)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
@@ -200,41 +200,41 @@ namespace GnollHackX
             RequestString2 = requeststring2;
         }
 
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, List<GHPutStrItem> strs)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, int requestint, List<GHPutStrItem> strs)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             RequestInt = requestint;
             RequestPutStrItems = strs;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, GHWindow requestingGHWindow, GHMenuInfo menuinfo)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, GHWindow requestingGHWindow, GHMenuInfo menuinfo)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             RequestingGHWindow = requestingGHWindow;
             RequestMenuInfo = menuinfo;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, GHWindow requestingGHWindow, GHOutRipInfo outripinfo)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, GHWindow requestingGHWindow, GHOutRipInfo outripinfo)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             RequestingGHWindow = requestingGHWindow;
             RequestOutRipInfo = outripinfo;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, string requeststring)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             RequestString = requeststring;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, string requeststring2)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, string requeststring, string requeststring2)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             RequestString = requeststring;
             RequestString2 = requeststring2;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string titlestring, string requeststring, string acceptstring, string cancelstring)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, string titlestring, string requeststring, string acceptstring, string cancelstring)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
@@ -243,7 +243,7 @@ namespace GnollHackX
             RequestString2 = acceptstring;
             DefValueString = cancelstring;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, int requestint, int requestint2)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, string requeststring, int requestint, int requestint2)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
@@ -251,7 +251,7 @@ namespace GnollHackX
             RequestInt = requestint;
             RequestInt2 = requestint2;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, int style, int attr, int color)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, string requeststring, int style, int attr, int color)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
@@ -260,7 +260,7 @@ namespace GnollHackX
             RequestAttr = attr;
             RequestNhColor = color;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, string placeholderstring, string defvaluestring, string introlinestring, int style, int attr, int color)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, string requeststring, string placeholderstring, string defvaluestring, string introlinestring, int style, int attr, int color)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
@@ -273,20 +273,20 @@ namespace GnollHackX
             RequestNhColor = color;
         }
 
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, uint attributes)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, string requeststring, uint attributes)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             RequestString = requeststring;
             RequestStringAttributes = attributes;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, List<GHMsgHistoryItem> msgHistory)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, List<GHMsgHistoryItem> msgHistory)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             MessageHistory = msgHistory;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int style, int attr, int color, int glyph, string titlestring, string requeststring, string responses, string descriptions, string introline, ulong ynflags)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, int style, int attr, int color, int glyph, string titlestring, string requeststring, string responses, string descriptions, string introline, ulong ynflags)
         {
             RequestingClientGame = clientgame;
             RequestInt = style;
@@ -301,37 +301,37 @@ namespace GnollHackX
             IntroLineString = introline;
             RequestFlags = ynflags;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, AddContextMenuData data)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, AddContextMenuData data)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             ContextMenuData = data;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, DisplayFloatingTextData data)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, DisplayFloatingTextData data)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             FloatingTextData = data;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, DisplayScreenTextData data)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, DisplayScreenTextData data)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             ScreenTextData = data;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, DisplayConditionTextData data)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, DisplayConditionTextData data)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             ConditionTextData = data;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, DisplayScreenFilterData data)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, DisplayScreenFilterData data)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             ScreenFilterData = data;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, DisplayGUIEffectData data)
+        public GHRequest(GHGame clientgame, GHRequestType requesttype, DisplayGUIEffectData data)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;

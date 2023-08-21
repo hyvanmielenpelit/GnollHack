@@ -21,7 +21,7 @@ namespace GnollHackX
             _data = data;
             _created_at_count = created_at_count;
             _gamePage = gamePage;
-            _animationFrequency = Math.Max(1, ClientUtils.GetMainCanvasAnimationFrequency(_gamePage.MapRefreshRate));
+            _animationFrequency = Math.Max(1, UIUtils.GetMainCanvasAnimationFrequency(_gamePage.MapRefreshRate));
         }
 
         public int X { get { return _data.x; } }
@@ -122,7 +122,7 @@ namespace GnollHackX
             switch(_data.style)
             {
                 case 0:
-                    return ClientUtils.NHColor2SKColor(_data.color, _data.attr);
+                    return UIUtils.NHColor2SKColor(_data.color, _data.attr);
                 case 1:
                     return SKColors.Green;
                 case 2:

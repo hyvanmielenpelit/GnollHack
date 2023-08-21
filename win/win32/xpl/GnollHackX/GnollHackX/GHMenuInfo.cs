@@ -34,7 +34,7 @@ namespace GnollHackX
         {
             get
             {
-                return ClientUtils.StyleClosesMenuUponDestroy(Style);
+                return UIUtils.StyleClosesMenuUponDestroy(Style);
             }
         }
 

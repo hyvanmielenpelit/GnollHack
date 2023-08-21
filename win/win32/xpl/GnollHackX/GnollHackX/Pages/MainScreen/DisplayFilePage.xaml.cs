@@ -138,7 +138,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (UseFixedFontSize)
                 {
                     TextLabel.FontSize = FontSize;
-                    TextLabel.Margin = ClientUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
+                    TextLabel.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
                 }
                 else
                 {
@@ -157,7 +157,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
                     }
                     Thickness usedpadding = usingsafe ? safearea : MainGrid.Padding;
-                    double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
+                    double bordermargin = UIUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
                     MainGrid.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
                     double limited_width = Math.Min(Math.Min(width, MainGrid.WidthRequest), DeviceDisplay.MainDisplayInfo.Width);
                     double target_width = limited_width - MainGrid.Margin.Left - MainGrid.Margin.Right
@@ -174,8 +174,8 @@ namespace GnollHackX.Pages.MainScreen
                     TextLabel.FontSize = newsize;
                     TextLabel.Margin = new Thickness();
                 }
-                HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
-                BottomLayout.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                BottomLayout.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = BottomLayout.Margin;
             }
         }

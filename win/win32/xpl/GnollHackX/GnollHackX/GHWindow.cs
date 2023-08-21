@@ -54,7 +54,7 @@ namespace GnollHackX
         private ObjectDataItem _objdata = null;
         public ObjectDataItem ObjData { get { return _objdata; } set { _objdata = value; } }
         private GamePage _gamePage;
-        private ClientGame _clientGame;
+        private GHGame _currentGame;
         private int _winId;
         private bool _useUpperSide;
         private bool _useSpecialSymbols;
@@ -209,7 +209,7 @@ namespace GnollHackX
             _useSpecialSymbols = useSpecialSymbols;
             ObjData = objdata;
             _gamePage = gamePage;
-            _clientGame = gamePage.ClientGame;
+            _currentGame = gamePage.CurrentGame;
             _winId = winid;
         }
 
@@ -286,9 +286,9 @@ namespace GnollHackX
             if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
             {
                 ConcurrentQueue<GHRequest> queue;
-                if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
+                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
                 {
-                    queue.Enqueue(new GHRequest(_clientGame, GHRequestType.CreateWindowView, _winId));
+                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.CreateWindowView, _winId));
                 }
             }
         }
@@ -299,12 +299,12 @@ namespace GnollHackX
             if (_winType == GHWinType.Menu)
             {
                 ConcurrentQueue<GHRequest> queue;
-                if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
+                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
                 {
-                    queue.Enqueue(new GHRequest(_clientGame, GHRequestType.DestroyWindowView, _winId));
+                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.DestroyWindowView, _winId));
                     if (MenuInfo != null && MenuInfo.MenuCloseUponDestroy)
                     {
-                        queue.Enqueue(new GHRequest(_clientGame, GHRequestType.HideMenuPage, _winId));
+                        queue.Enqueue(new GHRequest(_currentGame, GHRequestType.HideMenuPage, _winId));
                     }
                 }
             }
@@ -323,7 +323,7 @@ namespace GnollHackX
                 PutStrs.Clear();
             }
 
-            lock(_clientGame.WindowsLock)
+            lock(_currentGame.WindowsLock)
             {
                 _height = 0;
                 _width = 0;
@@ -337,9 +337,9 @@ namespace GnollHackX
             if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
             {
                 ConcurrentQueue<GHRequest> queue;
-                if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
+                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
                 {
-                    queue.Enqueue(new GHRequest(_clientGame, GHRequestType.ClearWindowView, _winId));
+                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.ClearWindowView, _winId));
                 }
             }
         }
@@ -349,14 +349,14 @@ namespace GnollHackX
             if(_winType == GHWinType.Menu || _winType == GHWinType.Text)
             {
                 ConcurrentQueue<GHRequest> queue;
-                if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
+                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
                 {
                     List<GHPutStrItem> clonestrs = new List<GHPutStrItem>();
                     lock (PutStrsLock)
                     {
                         clonestrs.AddRange(PutStrs);
                     }
-                    queue.Enqueue(new GHRequest(_clientGame, GHRequestType.DisplayWindowView, _winId, clonestrs));
+                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.DisplayWindowView, _winId, clonestrs));
                 }
             }
         }
