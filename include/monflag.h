@@ -340,7 +340,7 @@
 #define M5_SEMI_TRANSPARENT         0x10000000UL   /* Tile drawn with some transparency (default: 50% constant) */
 #define M5_RADIAL_TRANSPARENCY      0x20000000UL   /* Tile drawn with radial transparency (0% at center and 96% at radius of 32 and 96% thereafter) */
 #define M5_GLASS_TRANSPARENT        0x40000000UL   /* Tile drawn with 35% transparency */
-/* Free bit */
+#define M5_FADES_UPON_DEATH         0x80000000UL   /* Tile fades upon death */
 
 #define M6_NONE                     0x00000000UL
 #define M6_NON_EATER                0x00000001UL   /* Living beings like elementals */

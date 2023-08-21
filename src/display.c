@@ -2947,6 +2947,8 @@ boolean exclude_ascii;
                     gbuf[y][x].layers.monster_flags |= LMFLAGS_INVISIBLE_TRANSPARENT;
                 if (is_boss_monster(mtmp->data) && !is_peaceful(mtmp))
                     gbuf[y][x].layers.monster_flags |= LMFLAGS_BOSS_MONSTER_FIGHT;
+                if (mon_fades_upon_death(mtmp))
+                    gbuf[y][x].layers.monster_flags |= LMFLAGS_FADES_UPON_DEATH;
             }
         }
        
