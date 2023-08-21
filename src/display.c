@@ -749,7 +749,7 @@ boolean dropping_piercer;
         return;
 
     boolean mon_mimic = (M_AP_TYPE(mon) != M_AP_NOTHING);
-    int sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mon)));
+    boolean sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mon)));
     /*
      * We must do the mimic check first.  If the mimic is mimicing something,
      * and the location is in sight, we have to change the hero's memory

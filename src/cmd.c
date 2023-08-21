@@ -8344,7 +8344,15 @@ int x, y, mod;
                 mtmp = m_at(target_x, target_y);
             }
 
-            if (mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp))
+            boolean mon_mimic = FALSE;
+            boolean sensed = FALSE;
+            if (mtmp)
+            {
+                mon_mimic = (M_AP_TYPE(mtmp) != M_AP_NOTHING);
+                sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mtmp)));
+            }
+
+            if (mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp) && (!mon_mimic || sensed))
             {
                 if (iflags.clickfire && ((uwep && is_launcher(uwep)) || (uquiver && throwing_weapon(uquiver))) && dist2(u.ux, u.uy, target_x, target_y) > 2)
                 {
