@@ -633,21 +633,43 @@ dounwield()
     }
 
     otmp = getobj(unwield_objs, "unwield", 0, "");
-    if (!otmp || !(otmp->owornmask & W_WIELDED_WEAPON))
+    if (!otmp || !(otmp->owornmask & W_WEAPON))
         return 0;
 
     long mask = 0L;
+    
     if (otmp == uwep)
         mask = W_WEP;
     else if (otmp == uwep2)
         mask = W_WEP2;
+    else if (otmp == uswapwep)
+        mask = W_SWAPWEP;
+    else if (otmp == uswapwep2)
+        mask = W_SWAPWEP2;
+    else if (otmp == uquiver)
+        mask = W_QUIVER;
     else
         return 0;
 
-    int result;
+    int result = 0;
     if (mask == W_WEP2 && otmp == uarms && is_shield(otmp))
     {
         result = armor_or_accessory_off(otmp);
+    }
+    else if (mask == W_SWAPWEP)
+    {
+        uswapwepgone();
+        result = 1;
+    }
+    else if (mask == W_SWAPWEP2)
+    {
+        uswapwep2gone();
+        result = 1;
+    }
+    else if (mask == W_QUIVER)
+    {
+        uqwepgone();
+        result = 1;
     }
     else
     {
@@ -661,7 +683,14 @@ dounwield()
         result = ready_weapon((struct obj*)0, mask);
     }
 
-    boolean unwield_succeeded = mask == W_WEP ? (uwep == (struct obj*)0) : (uwep2 == (struct obj*)0);
+    boolean unwield_succeeded = 
+        mask == W_WEP ? (uwep == (struct obj*)0) : 
+        mask == W_WEP2 ? (uwep2 == (struct obj*)0) :
+        mask == W_SWAPWEP ? (uswapwep == (struct obj*)0) :
+        mask == W_SWAPWEP2 ? (uswapwep2 == (struct obj*)0) :
+        mask == W_QUIVER ? (uquiver == (struct obj*)0) :
+        FALSE;
+
     if (unwield_succeeded) //Note: shield unwearing may take longer
     {
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_UNWIELD);
@@ -948,9 +977,14 @@ doswapweapon()
             weldmsg(uwep);
             return 0;
         }
-        if (uarms && uarms->cursed && (uswapwep2 || (uswapwep && bimanual(uswapwep)))) 
+        if (uarms && uarms->cursed && !cursed_items_are_positive(youmonst.data) /*&& (uswapwep2 || (uswapwep && bimanual(uswapwep))) */ )
         {
             weldmsg(uarms);
+            if (!flags.swap_rhand_only && yn_query("Do you want to swap weapons only in your right hand?") == 'y')
+            {
+                (void)doswaphandedness();
+                return doswapweapon_right_or_both();
+            }
             return 0;
         }
         if (!uwep && !uswapwep && !uarms && !uswapwep2)
