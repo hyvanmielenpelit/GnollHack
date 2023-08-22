@@ -73,7 +73,7 @@ namespace GnollHackX
         public int Glyph { get { return _glyph; } }
         public bool UseUpperSide { get { return _useUpperSide; } }
         public bool UseSpecialSymbols { get { return _useSpecialSymbols; } }
-        public GamePage ClientGamePage { get { return _gamePage; } }
+        public GamePage ActiveGamePage { get { return _gamePage; } }
         public bool AutoPlacement { get; set; }
         public bool AutoCarriageReturn
         {
@@ -314,7 +314,7 @@ namespace GnollHackX
             switch(WindowType)
             {
                 case GHWinType.Map:
-                    ClientGamePage.ClearMap();
+                    ActiveGamePage.ClearMap();
                     break;
             }
 
@@ -365,11 +365,11 @@ namespace GnollHackX
             CursX = x;
             CursY = y;
             if(WindowType == GHWinType.Map)
-                ClientGamePage.SetMapCursor(x, y);
+                ActiveGamePage.SetMapCursor(x, y);
         }
         public void PrintGlyph(int x, int y, int glyph, int bkglyph, int symbol, int color, uint special, LayerInfo layers)
         {
-            ClientGamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, color, special, layers);
+            ActiveGamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, color, special, layers);
         }
 
         public void PutStrEx(int attributes, string str, int append, int color)

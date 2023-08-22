@@ -740,7 +740,7 @@ namespace GnollHackX.Pages.Game
         public async void RestartGame()
         {
             _currentGame = null;
-            GHApp.CurrentClientGame = null;
+            GHApp.CurrentGHGame = null;
             _gnhthread = null;
 
             /* Collect garbage at this point */
@@ -1706,7 +1706,7 @@ namespace GnollHackX.Pages.Game
         protected void GNHThreadProc()
         {
             _currentGame = new GHGame(this);
-            GHApp.CurrentClientGame = _currentGame;
+            GHApp.CurrentGHGame = _currentGame;
             _gnollHackService.StartGnollHack(_currentGame);
         }
 
@@ -1714,7 +1714,7 @@ namespace GnollHackX.Pages.Game
         {
             _currentGame = new GHGame(this);
             _currentGame.StartFlags = RunGnollHackFlags.ForceLastPlayerName;
-            GHApp.CurrentClientGame = _currentGame;
+            GHApp.CurrentGHGame = _currentGame;
             _gnollHackService.StartGnollHack(_currentGame);
         }
 
@@ -1761,7 +1761,7 @@ namespace GnollHackX.Pages.Game
                                 IsGameOn = false;
                                 ClearMap();
                                 _currentGame = null;
-                                GHApp.CurrentClientGame = null;
+                                GHApp.CurrentGHGame = null;
                                 _mainPage.GameStarted = false;
                                 if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                                     canvasView.AbortAnimation("GeneralAnimationCounter");

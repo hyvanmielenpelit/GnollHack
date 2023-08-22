@@ -40,7 +40,7 @@ namespace GnollHackX
         private string _characterName = "";
         private object _characterNameLock = new object();
         private readonly GamePage _gamePage;
-        public GamePage GamePage { get { return _gamePage; } }
+        public GamePage ActiveGamePage { get { return _gamePage; } }
 
         private bool _touchLocSet = false;
         private int _touchLocX;

@@ -12,7 +12,7 @@ namespace GnollHackX
         public uint ResponseUIntValue { get; set; }
         public bool ResponseBoolValue { get; set; }
         public List<GHMenuItem> SelectedMenuItems { get; set; }
-        public GHGame RequestingClientGame { get; }
+        public GHGame RequestingGame { get; }
         public GHWindow RequestingGHWindow { get; }
         public int X { get; set; }
         public int Y { get; set; }
@@ -22,47 +22,47 @@ namespace GnollHackX
 
         }
 
-        public GHResponse(GHGame clientgame, GHRequestType requesttype)
+        public GHResponse(GHGame ghGame, GHRequestType requesttype)
         {
-            RequestingClientGame = clientgame;
+            RequestingGame = ghGame;
             RequestType = requesttype;
         }
 
-        public GHResponse(GHGame clientgame, GHRequestType requesttype, string responsestringvalue)
+        public GHResponse(GHGame ghGame, GHRequestType requesttype, string responsestringvalue)
         {
-            RequestingClientGame = clientgame;
+            RequestingGame = ghGame;
             RequestType = requesttype;
             ResponseStringValue = responsestringvalue;
         }
-        public GHResponse(GHGame clientgame, GHRequestType requesttype, int responseintvalue)
+        public GHResponse(GHGame ghGame, GHRequestType requesttype, int responseintvalue)
         {
-            RequestingClientGame = clientgame;
+            RequestingGame = ghGame;
             RequestType = requesttype;
             ResponseIntValue = responseintvalue;
         }
-        public GHResponse(GHGame clientgame, GHRequestType requesttype, uint responseuintvalue)
+        public GHResponse(GHGame ghGame, GHRequestType requesttype, uint responseuintvalue)
         {
-            RequestingClientGame = clientgame;
+            RequestingGame = ghGame;
             RequestType = requesttype;
             ResponseUIntValue = responseuintvalue;
         }
-        public GHResponse(GHGame clientgame, GHRequestType requesttype, bool responseboolvalue)
+        public GHResponse(GHGame ghGame, GHRequestType requesttype, bool responseboolvalue)
         {
-            RequestingClientGame = clientgame;
+            RequestingGame = ghGame;
             RequestType = requesttype;
             ResponseBoolValue = responseboolvalue;
         }
-        public GHResponse(GHGame clientgame, GHRequestType requesttype, GHWindow window, List<GHMenuItem> responselist, bool wasCancelled)
+        public GHResponse(GHGame ghGame, GHRequestType requesttype, GHWindow window, List<GHMenuItem> responselist, bool wasCancelled)
         {
-            RequestingClientGame = clientgame;
+            RequestingGame = ghGame;
             RequestType = requesttype;
             RequestingGHWindow = window;
             SelectedMenuItems = responselist;
             ResponseBoolValue = wasCancelled;
         }
-        public GHResponse(GHGame clientgame, GHRequestType requesttype, int x, int y, int mod)
+        public GHResponse(GHGame ghGame, GHRequestType requesttype, int x, int y, int mod)
         {
-            RequestingClientGame = clientgame;
+            RequestingGame = ghGame;
             RequestType = requesttype;
             X = x;
             Y = y;

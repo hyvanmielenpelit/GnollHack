@@ -65,9 +65,9 @@ namespace GnollHackX
         public static MainPage CurrentMainPage { get; set; }
         public static GamePage CurrentGamePage { get; set; }
 
-        private static readonly object _currentClientGameLock = new object();
-        private static GHGame _currentClientGame = null;
-        public static GHGame CurrentClientGame { get { lock (_currentClientGameLock) { return _currentClientGame; } } set { lock (_currentClientGameLock) { _currentClientGame = value; } } }
+        private static readonly object _currentGHGameLock = new object();
+        private static GHGame _currentGHGame = null;
+        public static GHGame CurrentGHGame { get { lock (_currentGHGameLock) { return _currentGHGame; } } set { lock (_currentGHGameLock) { _currentGHGame = value; } } }
         public static bool InformAboutGameTermination = false;
         public static bool InformAboutCrashReport = false;
         public static bool InformAboutIncompatibleSavedGames = false;
@@ -197,14 +197,14 @@ namespace GnollHackX
 
             CancelSaveGame = true;
             SleepMuteMode = false;
-            if (CurrentClientGame != null && !CurrentClientGame.CasualMode)
+            if (CurrentGHGame != null && !CurrentGHGame.CasualMode)
             {
                 //Detect background app killing OS, check if last exit is through going to sleep, and notify player that the app probably had been terminated by OS but game has been saved
                 bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
                 Preferences.Set("WentToSleepWithGameOn", false);
                 if (wenttosleep && (GameSaved || SavingGame))
                 {
-                    CurrentClientGame.GamePage.StopWaitAndResumeSavedGame();
+                    CurrentGHGame.ActiveGamePage.StopWaitAndResumeSavedGame();
                 }
             }
         }
@@ -220,11 +220,11 @@ namespace GnollHackX
                 CurrentMainPage.Suspend();
             if (CurrentGamePage != null)
                 CurrentGamePage.Suspend();
-            if (CurrentClientGame != null)
+            if (CurrentGHGame != null)
             {
                 //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                 Preferences.Set("WentToSleepWithGameOn", true);
-                CurrentClientGame.GamePage.SaveGameAndWaitForResume();
+                CurrentGHGame.ActiveGamePage.SaveGameAndWaitForResume();
             }
             CollectGarbage();
         }
@@ -240,14 +240,14 @@ namespace GnollHackX
                 CurrentMainPage.Resume();
             if (CurrentGamePage != null)
                 CurrentGamePage.Resume();
-            if (CurrentClientGame != null)
+            if (CurrentGHGame != null)
             {
                 //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
                 bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
                 Preferences.Set("WentToSleepWithGameOn", false);
                 if (wenttosleep && (GameSaved || SavingGame))
                 {
-                    CurrentClientGame.GamePage.StopWaitAndResumeSavedGame();
+                    CurrentGHGame.ActiveGamePage.StopWaitAndResumeSavedGame();
                 }
             }
         }
