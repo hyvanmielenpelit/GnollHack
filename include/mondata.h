@@ -186,7 +186,7 @@
 #define is_radially_transparent(ptr) (((ptr)->mflags5 & M5_RADIAL_TRANSPARENCY) != 0)
 #define is_glass_transparent(ptr) (((ptr)->mflags5 & M5_GLASS_TRANSPARENT) != 0)
 #define fades_upon_death(ptr) (((ptr)->mflags5 & M5_FADES_UPON_DEATH) != 0L)
-#define mon_fades_upon_death(m) (((m)->data->mflags5 & M5_FADES_UPON_DEATH) != 0L)
+#define mon_fades_upon_death(m) fades_upon_death((m)->data)
 
 #define has_mflag_is_non_eater(ptr) (((ptr)->mflags6 & M6_NON_EATER) != 0L)
 #define is_corpse_eater(ptr) (((ptr)->mflags6 & M6_CORPSE_EATER) != 0L)

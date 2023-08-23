@@ -283,6 +283,8 @@ namespace GnollHackX
         LMFLAGS_LONG_WORM_TAIL =        0x00000100UL,
         LMFLAGS_BOSS_MONSTER_FIGHT =    0x00000200UL,
         LMFLAGS_FADES_UPON_DEATH =      0x00000400UL,
+        LMFLAGS_FLYING =                0x00000800UL,
+        LMFLAGS_LEVITATING =            0x00001000UL,
     }
 
     [Flags]

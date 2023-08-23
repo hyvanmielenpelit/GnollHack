@@ -135,6 +135,81 @@ namespace GnollHackX.Pages.Game
             "Hostile townguard",
         };
 
+        private SKPoint[] _hoverAnimation = new SKPoint[] 
+        { 
+            new SKPoint(1f, 2f),
+            new SKPoint(1.5f, 1.75f),
+            new SKPoint(2f, 1.5f),
+            new SKPoint(2.5f, 1.25f),
+            new SKPoint(3f, 1f),
+            new SKPoint(3.5f, 0.75f),
+            new SKPoint(4f, 0.5f),
+            new SKPoint(4.25f, 0.25f),
+            new SKPoint(4.5f, 0f),
+            new SKPoint(4.25f, 0.25f),
+            new SKPoint(4f, 0.5f),
+            new SKPoint(3.5f, 0.75f),
+            new SKPoint(3f, 1f),
+            new SKPoint(2.5f, 1.25f),
+            new SKPoint(2f, 1.5f),
+            new SKPoint(1.5f, 1.75f),
+            new SKPoint(1f, 2f),
+            new SKPoint(0.5f, 2.25f),
+            new SKPoint(0f, 2.5f),
+            new SKPoint(-0.5f, 2.25f),
+            new SKPoint(-1f, 2f),
+            new SKPoint(-1.5f, 1.75f),
+            new SKPoint(-2f, 1.5f),
+            new SKPoint(-2.5f, 1.25f),
+            new SKPoint(-3f, 1f),
+            new SKPoint(-3.5f, 0.75f),
+            new SKPoint(-4f, 0.5f),
+            new SKPoint(-4.25f, 0.25f),
+            new SKPoint(-4.5f, 0f),
+            new SKPoint(-4.25f, 0.25f),
+            new SKPoint(-4f, 0.5f),
+            new SKPoint(-3.5f, 0.75f),
+            new SKPoint(-3f, 1f),
+            new SKPoint(-2.5f, 1.25f),
+            new SKPoint(-2f, 1.5f),
+            new SKPoint(-1.5f, 1.75f),
+            new SKPoint(-1f, 2f),
+            new SKPoint(-0.5f, 2.25f),
+            new SKPoint(0f, 2.5f),
+        };
+
+        private SKPoint[] _flyingAnimation = new SKPoint[]
+        {
+            new SKPoint(0f, 0f),
+            new SKPoint(0f, 0.1f),
+            new SKPoint(0f, 0.25f),
+            new SKPoint(0f, 0.5f),
+            new SKPoint(0f, 1f),
+            new SKPoint(0f, 1.5f),
+            new SKPoint(0f, 2f),
+            new SKPoint(0f, 2.5f),
+            new SKPoint(0f, 3f),
+            new SKPoint(0f, 3.5f),
+            new SKPoint(0f, 4f),
+            new SKPoint(0f, 4.5f),
+            new SKPoint(0f, 4.75f),
+            new SKPoint(0f, 4.9f),
+            new SKPoint(0f, 5f),
+            new SKPoint(0f, 4.9f),
+            new SKPoint(0f, 4.75f),
+            new SKPoint(0f, 4.5f),
+            new SKPoint(0f, 4f),
+            new SKPoint(0f, 3.5f),
+            new SKPoint(0f, 3f),
+            new SKPoint(0f, 2.5f),
+            new SKPoint(0f, 2f),
+            new SKPoint(0f, 1.5f),
+            new SKPoint(0f, 1f),
+            new SKPoint(0f, 0.5f),
+            new SKPoint(0f, 0.25f),
+            new SKPoint(0f, 0.1f),
+        };
+
         private readonly object _isSizeAllocatedProcessedLock = new object();
         private bool _isSizeAllocatedProcessed = false;
         public bool IsSizeAllocatedProcessed { get { lock (_isSizeAllocatedProcessedLock) { return _isSizeAllocatedProcessed; } } set { lock (_isSizeAllocatedProcessedLock) { _isSizeAllocatedProcessed = value; } } }
@@ -3678,6 +3753,23 @@ namespace GnollHackX.Pages.Game
                     && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) != 0)
                 {
                     opaqueness = opaqueness * ((float)(20L - Math.Min(20L, generalcounterdiff))) / 20;
+                }
+
+                /* Hovering effect */
+                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) == 0)
+                {
+                    if((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LEVITATING) != 0)
+                    {
+                        long animationframe = generalcountervalue % _hoverAnimation.Length;
+                        move_offset_x += _hoverAnimation[animationframe].X * scale * targetscale;
+                        move_offset_y += (-2.5f + _hoverAnimation[animationframe].Y) * scale * targetscale;
+                    }
+                    else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FLYING) != 0)
+                    {
+                        long animationframe = generalcountervalue % _flyingAnimation.Length;
+                        move_offset_x += _flyingAnimation[animationframe].X * scale * targetscale;
+                        move_offset_y += (-5f + _flyingAnimation[animationframe].Y) * scale * targetscale;
+                    }
                 }
             }
             else if (is_object_like_layer && otmp_round != null)
@@ -10162,6 +10254,10 @@ namespace GnollHackX.Pages.Game
                     }
                 }
                 /* General counter that gets always set */
+                lock (AnimationTimerLock)
+                {
+                    _mapData[x, y].GlyphGeneralPrintAnimationCounterValue = AnimationTimers.general_animation_counter;
+                }
                 lock (_mainCounterLock)
                 {
                     _mapData[x, y].GlyphGeneralPrintMainCounterValue = _mainCounterValue;

@@ -2926,6 +2926,15 @@ boolean exclude_ascii;
             if (is_long_worm_tail(used_mtmp->data))
                 gbuf[y][x].layers.monster_flags |= LMFLAGS_LONG_WORM_TAIL;
 
+            if (mon_fades_upon_death(used_mtmp))
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_FADES_UPON_DEATH;
+
+            if (is_flying(used_mtmp))
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_FLYING;
+
+            if (is_levitating(used_mtmp))
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_LEVITATING;
+
             if (loc_is_you)
             {
                 if (mtmp && mtmp != &youmonst) /* Steed */
@@ -2937,6 +2946,10 @@ boolean exclude_ascii;
                 {
                     if (Invis)
                         gbuf[y][x].layers.monster_flags |= LMFLAGS_INVISIBLE_TRANSPARENT;
+                    if (Flying)
+                        gbuf[y][x].layers.monster_flags |= LMFLAGS_FLYING;
+                    if (Levitation)
+                        gbuf[y][x].layers.monster_flags |= LMFLAGS_LEVITATING;
                 }
                 if (canspotself())
                     gbuf[y][x].layers.monster_flags |= LMFLAGS_CAN_SPOT_SELF;
@@ -2947,8 +2960,6 @@ boolean exclude_ascii;
                     gbuf[y][x].layers.monster_flags |= LMFLAGS_INVISIBLE_TRANSPARENT;
                 if (is_boss_monster(mtmp->data) && !is_peaceful(mtmp))
                     gbuf[y][x].layers.monster_flags |= LMFLAGS_BOSS_MONSTER_FIGHT;
-                if (mon_fades_upon_death(mtmp))
-                    gbuf[y][x].layers.monster_flags |= LMFLAGS_FADES_UPON_DEATH;
             }
         }
        
