@@ -1019,6 +1019,7 @@ struct obj *otmp;
         obj->nexthere = otmp;
         extract_nobj(obj, &memoryobjs);
         extract_nexthere(obj, &level.locations[obj->ox][obj->oy].hero_memory_layers.memory_objchn);
+        update_last_memoryobj();
         obj->lamplit = 0;
         obj->makingsound = 0;
         break;
@@ -1216,8 +1217,20 @@ struct obj* obj;
     if (obj->timed)
         obj_stop_timers(obj);
 
-    obj->nobj = memoryobjs;
-    memoryobjs = obj;
+    /* These need to be added to the end of the chain */
+    if (!lastmemoryobj) /* Should mean that memoryobjs = 0 */
+    {
+        obj->nobj = memoryobjs; /* Just in case that an object is not lost */
+        memoryobjs = obj;
+    }
+    else
+    {
+        lastmemoryobj->nobj = obj;
+        lastmemoryobj = obj;
+        obj->nobj = 0;
+    }
+    //obj->nobj = memoryobjs;
+    //memoryobjs = obj;
     obj->where = OBJ_HEROMEMORY;
 }
 
@@ -1233,7 +1246,8 @@ clear_memoryobjs()
         //}
         obfree(obj, (struct obj*)0);
     }
-
+    memoryobjs = 0;
+    lastmemoryobj = 0;
 }
 
 void
@@ -3777,9 +3791,11 @@ int x, y;
 
     otmp->where = OBJ_HEROMEMORY;
 
-    /* add to floor chain */
+    /* add to memory chain */
+    if (!memoryobjs)
+        lastmemoryobj = otmp;
     otmp->nobj = memoryobjs;
-    memoryobjs = otmp;
+    memoryobjs = otmp; /* Last object stays the same */
 
     /* If there is a memory object, then it must be flagged as shown */
     if (!level.locations[x][y].hero_memory_layers.memory_objchn)
@@ -3800,10 +3816,24 @@ register struct obj* otmp;
     }
     extract_nexthere(otmp, &level.locations[x][y].hero_memory_layers.memory_objchn);
     extract_nobj(otmp, &memoryobjs);
+    update_last_memoryobj();
     otmp->lamplit = 0;
     otmp->makingsound = 0;
 }
 
+void
+update_last_memoryobj(VOID_ARGS)
+{
+    if (!memoryobjs)
+    {
+        lastmemoryobj = 0;
+        return;
+    }
+    struct obj* otmp;
+    for (otmp = memoryobjs; otmp->nobj; otmp = otmp->nobj)
+        ;
+    lastmemoryobj = otmp;
+}
 
 #define ROT_ICE_ADJUSTMENT 2 /* rotting on ice takes 2 times as long */
 

@@ -1977,6 +1977,7 @@ E void FDECL(place_object, (struct obj *, int, int));
 E void FDECL(remove_object, (struct obj *));
 E void FDECL(place_memory_object, (struct obj*, int, int));
 E void FDECL(remove_memory_object, (struct obj*));
+E void NDECL(update_last_memoryobj);
 E void FDECL(discard_minvent, (struct monst *));
 E void FDECL(obj_extract_self, (struct obj *));
 E void FDECL(extract_nobj, (struct obj *, struct obj **));

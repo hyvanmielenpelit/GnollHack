@@ -693,6 +693,7 @@ skip_lots:
         level.buriedobjlist = 0;
         billobjs = 0;
         memoryobjs = 0;
+        lastmemoryobj = 0;
         /* level.bonesinfo = 0; -- handled by savecemetery() */
     }
     save_engravings(fd, mode);
@@ -1671,6 +1672,8 @@ freedynamicdata(VOID_ARGS)
     freeobjchn(level.buriedobjlist);
     freeobjchn(billobjs);
     freeobjchn(memoryobjs);
+    memoryobjs = 0;
+    lastmemoryobj = 0;
     free_engravings();
     freedamage();
 

@@ -145,12 +145,14 @@ find_memory_obj()
         memoryobjstmp = otmp;
     }
     /* memoryobjs should now be empty */
+    lastmemoryobj = 0;
 
     /* Set level.locations[x][y].hero_memory_layers.memory_objchn (as well as reversing the chain back again) */
     while ((otmp = memoryobjstmp) != 0) {
         memoryobjstmp = otmp->nobj;
         place_memory_object(otmp, otmp->ox, otmp->oy);
     }
+    update_last_memoryobj();
 }
 
 /* Things that were marked "in_use" when the game was saved (ex. via the

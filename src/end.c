@@ -3309,6 +3309,7 @@ reset_lev(VOID_ARGS)
     level.buriedobjlist = 0;
     billobjs = 0;
     memoryobjs = 0;
+    lastmemoryobj = 0;
 
     /* level.bonesinfo = 0; -- handled by savecemetery() */
     reset_engravings();
