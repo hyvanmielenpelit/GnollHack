@@ -1723,13 +1723,13 @@ int otyp;
     }
 
 
-    boolean affectsac = ((objects[otyp].oc_class == ARMOR_CLASS && name_known)
+    boolean affectsac = ((objects[otyp].oc_class == ARMOR_CLASS && desc_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
             || (obj && has_obj_mythic_defense(obj) && obj->mknown)
             || (stats_known && objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_armor_class != 0)
             );
 
-    boolean affectsmc = ((objects[otyp].oc_class == ARMOR_CLASS && name_known)
+    boolean affectsmc = ((objects[otyp].oc_class == ARMOR_CLASS && desc_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
             || (obj && has_obj_mythic_defense(obj) && obj->mknown)
             || (stats_known && objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_magic_cancellation != 0)
