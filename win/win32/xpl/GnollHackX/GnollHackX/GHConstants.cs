@@ -1018,6 +1018,11 @@ namespace GnollHackX
         public byte flammable;
         public byte rustprone;
         public byte poisonable;
+
+        public byte is_uchain;
+        public byte is_uball;
+        public sbyte obj_loc_x;
+        public sbyte obj_loc_y;
     }
 
     public enum obj_class_types

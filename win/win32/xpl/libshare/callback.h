@@ -38,6 +38,11 @@ struct objclassdata
     uchar flammable;
     uchar rustprone;
     uchar poisonable;
+
+    uchar is_uchain;
+    uchar is_uball;
+    xchar obj_loc_x;
+    xchar obj_loc_y;
 };
 
  /* General callback types */

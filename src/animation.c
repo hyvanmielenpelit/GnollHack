@@ -1856,6 +1856,26 @@ enum autodraw_types* autodraw_ptr;
             }
             break;
         }
+        case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_UBALL:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (otmp == uball)
+            {
+                if (replacements[replacement_idx].number_of_tiles < 1)
+                    return ntile;
+
+                /* Return the first tile with index 0 */
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
+                return glyph2tile[0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
         case REPLACEMENT_ACTION_AUTODRAW_AND_LONG_WORM:
         {
             if (!mtmp)
@@ -2925,7 +2945,6 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_UCHAIN:
         {
-#if 0 /* Temporarily disabled */
             if (!otmp)
                 return glyph;
 
@@ -2934,7 +2953,18 @@ struct replacement_info info;
                 /* Return the first tile with index 0 */
                 return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             }
-#endif
+            break;
+        }
+        case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_UBALL:
+        {
+            if (!otmp)
+                return glyph;
+
+            if (otmp == uball)
+            {
+                /* Return the first tile with index 0 */
+                return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
             break;
         }
         case REPLACEMENT_ACTION_AUTODRAW_AND_LONG_WORM:

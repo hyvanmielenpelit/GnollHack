@@ -538,5 +538,16 @@ get_objclassdata(struct obj* otmp)
     otypdata.rustprone = is_rustprone(otmp);
     otypdata.poisonable = is_poisonable(otmp);
 
+    if (otmp == uchain || otmp == uball)
+    {
+        otypdata.is_uchain = otmp == uchain;
+        otypdata.is_uball = otmp == uball;
+
+        xchar ox = 0, oy = 0;
+        (void)get_obj_location(otmp, &ox, &oy, BURIED_TOO);
+        otypdata.obj_loc_x = ox;
+        otypdata.obj_loc_y = oy;
+    }
+
     return otypdata;
 }
