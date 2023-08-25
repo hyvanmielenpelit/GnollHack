@@ -7305,6 +7305,11 @@ register char *cmd;
         context.nopick = 0;
         cmd = parse();
     }
+
+    reset_monster_origin_coordinates(&youmonst);
+    reset_all_object_origin_coordinates();
+    reset_found_this_turn();
+
     if (*cmd == Cmd.spkeys[NHKF_ESC]) {
 #ifdef ANDROID
         quit_possible();

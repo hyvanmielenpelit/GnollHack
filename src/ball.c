@@ -263,6 +263,11 @@ move_bc(before, control, ballx, bally, chainx, chainy)
 int before, control;
 xchar ballx, bally, chainx, chainy; /* only matter !before */
 {
+    if (!uchain || !uball)
+        return;
+
+    xchar oldchainx = uchain->ox, oldchainy = uchain->oy;
+    xchar oldballx = uball->ox, oldbally = uball->oy;
     if (Blind)
     {
         /*
@@ -408,6 +413,13 @@ xchar ballx, bally, chainx, chainy; /* only matter !before */
                 newsym(ballx, bally);
         }
     }
+    if (!before)
+    {
+        uchain->ox0 = oldchainx;
+        uchain->oy0 = oldchainy;
+        uball->ox0 = oldballx;
+        uball->oy0 = oldbally;
+    }
 }
 
 /* return TRUE if the caller needs to place the ball and chain down again
@@ -433,6 +445,9 @@ xchar *ballx, *bally, *chainx, *chainy;
 boolean *cause_delay;
 boolean allow_drag;
 {
+    if (!uball || !uchain)
+        return FALSE;
+
     struct trap *t = (struct trap *) 0;
     boolean already_in_rock;
 

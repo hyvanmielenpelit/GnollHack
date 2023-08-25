@@ -4536,7 +4536,7 @@ namespace GnollHackX.Pages.Game
             return true;
         }
 
-        float GetScaledYHeightChange(int layer_idx, int sub_layer_idx, int sub_layer_cnt, float height, int monster_height, int feature_doodad_height, float targetscale, bool is_monster_like_layer, bool tileflag_halfsize)
+        float GetScaledYHeightChange(int layer_idx, int sub_layer_idx, int sub_layer_cnt, float height, int monster_height, int feature_doodad_height, float targetscale, bool is_monster_like_layer, bool tileflag_halfsize, ObjectDataItem otmp_round)
         {
             float scaled_y_height_change = 0;
             if ((!tileflag_halfsize || monster_height > 0) && is_monster_like_layer)
@@ -4546,7 +4546,12 @@ namespace GnollHackX.Pages.Game
                     scaled_y_height_change -= GHConstants.PIT_BOTTOM_BORDER * targetscale;
             }
             else if (tileflag_halfsize && (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
-                scaled_y_height_change = (float)(-(sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT) * targetscale;
+            {
+                if(otmp_round != null && (otmp_round.OtypData.is_uball != 0 || otmp_round.OtypData.is_uchain != 0))
+                    scaled_y_height_change = 0;
+                else
+                    scaled_y_height_change = (float)(-(sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT) * targetscale;
+            }
             else if (feature_doodad_height != 0 && layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD)
             {
                 scaled_y_height_change = (float)-feature_doodad_height * height / (float)GHConstants.TileHeight;
@@ -4604,19 +4609,25 @@ namespace GnollHackX.Pages.Game
         //private float[] _foundAnimationHigh = { 10f, 20f, 30f, 40f, 50f, 60f, 70f, 80f, 88f, 96f, 102f, 108f, 114f, 118f, 120f, 118f, 114f, 108f, 102f, 96f, 88f, 80f, 70f, 60f, 50f, 40f, 30f, 20f, 10f, 0f };
         private float[] _foundAnimationFactor = { 0.10f, 0.20f, 0.30f, 0.40f, 0.50f, 0.60f, 0.70f, 0.80f, 0.88f, 0.94f, 0.98f, 1.0f, 0.98f, 0.94f, 0.88f, 0.80f, 0.70f, 0.60f, 0.50f, 0.40f, 0.30f, 0.20f, 0.10f, 0f };
 
-        void GetObjectMoveOffsets(int mapx, int mapy, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, long generalcounterdiff, bool foundthisturn, int sub_layer_idx, int sub_layer_cnt, float targetscale, bool loc_is_you, float obj_height, ref float object_move_offset_x, ref float object_move_offset_y)
+        void GetObjectMoveOffsets(int mapx, int mapy, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, long generalcounterdiff, bool foundthisturn, int sub_layer_idx, int sub_layer_cnt, float targetscale, bool loc_is_you, float obj_height, ObjectDataItem otmp_round, ref float object_move_offset_x, ref float object_move_offset_y)
         {
-            int objectmovediffx = (int)object_origin_x - mapx;
-            int objectmovediffy = (int)object_origin_y - mapy;
-
-            if (GHUtils.isok(object_origin_x, object_origin_y)
-                && (objectmovediffx != 0 || objectmovediffy != 0)
-                && objectcounterdiff >= 0 && objectcounterdiff < moveIntervals)
+            if(GHUtils.isok(object_origin_x, object_origin_y))
             {
-                object_move_offset_x = width * (float)objectmovediffx * (float)(moveIntervals - objectcounterdiff) / (float)moveIntervals;
-                object_move_offset_y = height * (float)objectmovediffy * (float)(moveIntervals - objectcounterdiff) / (float)moveIntervals;
+                int objectmovediffx = (int)object_origin_x - mapx;
+                int objectmovediffy = (int)object_origin_y - mapy;
+
+                if (objectmovediffx != 0 || objectmovediffy != 0)
+                {
+                    bool use_objcounter = otmp_round == null || (otmp_round.ObjData.o_id > 0 && otmp_round.ObjData.o_id == _mapData[mapx, mapy].Layers.o_id);
+                    long usedcounterdiff = use_objcounter ? objectcounterdiff : generalcounterdiff;
+                    if (usedcounterdiff >= 0 && usedcounterdiff < moveIntervals)
+                    {
+                        object_move_offset_x = width * (float)objectmovediffx * (float)(moveIntervals - usedcounterdiff) / (float)moveIntervals;
+                        object_move_offset_y = height * (float)objectmovediffy * (float)(moveIntervals - usedcounterdiff) / (float)moveIntervals;
+                    }
+                }
             }
-            if(foundthisturn)
+            if (foundthisturn)
             {
                 long usedcounterdiff = generalcounterdiff - 3L * sub_layer_idx;
                 float usedobjheight = obj_height == 0 ? GHConstants.TileHeight / 2 : obj_height;
@@ -5048,7 +5059,7 @@ namespace GnollHackX.Pages.Game
                                                                             CheckShowingDetection(showing_detection, ref obj_height, ref tileflag_floortile, ref tileflag_height_is_clipping);
 
                                                                             /*Determine y move for tiles */
-                                                                            float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize);
+                                                                            float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize, otmp_round);
 
                                                                             int ntile = GHApp.Glyph2Tile[glyph];
                                                                             int autodraw = GHApp.Tile2Autodraw[ntile];
@@ -5169,7 +5180,7 @@ namespace GnollHackX.Pages.Game
 
                                                                             float object_move_offset_x = 0, object_move_offset_y = 0;
                                                                             GetObjectMoveOffsets(mapx, mapy, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, generalcounterdiff, 
-                                                                                foundthisturn, sub_layer_idx, sub_layer_cnt, targetscale, loc_is_you, obj_height, ref object_move_offset_x, ref object_move_offset_y);
+                                                                                foundthisturn, sub_layer_idx, sub_layer_cnt, targetscale, loc_is_you, obj_height, otmp_round, ref object_move_offset_x, ref object_move_offset_y);
 
                                                                             bool vflip_glyph = false;
                                                                             bool hflip_glyph = false;
@@ -5186,7 +5197,7 @@ namespace GnollHackX.Pages.Game
                                                                             CheckShowingDetection(showing_detection, ref obj_height, ref tileflag_floortile, ref tileflag_height_is_clipping);
 
                                                                             /*Determine y move for tiles */
-                                                                            float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize);
+                                                                            float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize, otmp_round);
 
                                                                             int ntile = GHApp.Glyph2Tile[glyph];
                                                                             int autodraw = GHApp.Tile2Autodraw[ntile];

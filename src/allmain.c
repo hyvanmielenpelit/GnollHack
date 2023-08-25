@@ -459,10 +459,6 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
             curs_on_u();
         }
 
-        reset_monster_origin_coordinates(&youmonst);
-        reset_all_object_origin_coordinates();
-        reset_found_this_turn();
-
         context.move = 1;
 
         if (multi >= 0 && occupation && !Sleeping && !Paralyzed_or_immobile) /* No occupation when sleeping or paralyzed */

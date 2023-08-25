@@ -2240,8 +2240,10 @@ domove_core()
 
     /* Move ball and chain.  */
     if (Punished)
+    {
         if (!drag_ball(x, y, &bc_control, &ballx, &bally, &chainx, &chainy, &cause_delay, TRUE))
             return;
+    }
 
     /* Check regions entering/leaving */
     if (!in_out_region(x, y))
@@ -2440,7 +2442,9 @@ domove_core()
     }
 
     if (Punished) /* put back ball and chain */
+    {
         move_bc(0, bc_control, ballx, bally, chainx, chainy);
+    }
 
     if (u.umoved)
         spoteffects(TRUE);
