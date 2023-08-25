@@ -8433,7 +8433,7 @@ namespace GnollHackX.Pages.Game
                 }
                 else if (
                     ((GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CHAIN || GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_BALL) 
-                      && (otmp_round != null && (otmp_round.OtypData.is_uchain != 0 || otmp_round.OtypData.is_uball != 0)) /* Currently a small kludge to ensure that the autodraw applies only to uchain and uball */
+                      && (otmp_round == null || otmp_round.OtypData.is_uchain != 0 || otmp_round.OtypData.is_uball != 0) /* Currently a small kludge to ensure that the autodraw applies only to uchain and uball */
                     )
                     || autodraw_u_punished)
                 {
@@ -8469,15 +8469,15 @@ namespace GnollHackX.Pages.Game
                                 bool vflip_link = false;
                                 int link_source_width = 16;
                                 int link_source_height = 16;
-                                double link_diff_x = relevant_dx != 0 && relevant_dy != 0 ? 5.35 : 10.0;
-                                double link_diff_y = relevant_dx != 0 && relevant_dy != 0 ? link_diff_x * 1.5 : 10.0;
+                                float link_diff_x = relevant_dx != 0 && relevant_dy != 0 ? 5.35f : 10.0f;
+                                float link_diff_y = relevant_dx != 0 && relevant_dy != 0 ? link_diff_x * 1.5f : 10.0f;
                                 int mid_x = GHConstants.TileWidth / 2;
                                 int mid_y = GHConstants.TileHeight / 2;
                                 int dist_x = relevant_dx > 0 ? GHConstants.TileWidth - mid_x : mid_x;
                                 int dist_y = relevant_dy > 0 ? GHConstants.TileHeight - mid_y : mid_y;
-                                int links = (int)(relevant_dx != 0 && relevant_dy == 0 && false ? (double)(dist_x - link_source_width / 2) / (double)link_diff_x :
-                                    relevant_dx == 0 && relevant_dy != 0 && false ? (double)(dist_y - link_source_height / 2) / (double)link_diff_y :
-                                    2 + 1 + (int)Math.Min((double)(dist_y - link_source_height / 2) / (double)link_diff_y, (double)(dist_x - link_source_width / 2) / (double)link_diff_x)
+                                int links = (int)(relevant_dx != 0 && relevant_dy == 0 && false ? (float)(dist_x - link_source_width / 2) / link_diff_x :
+                                    relevant_dx == 0 && relevant_dy != 0 && false ? (float)(dist_y - link_source_height / 2) / link_diff_y :
+                                    2 + 1 + (int)Math.Min((float)(dist_y - link_source_height / 2) / link_diff_y, (float)(dist_x - link_source_width / 2) / link_diff_x)
                                     );
 
                                 if (!is_chain && !autodraw_u_punished && n == 0 && links > 1)
@@ -8499,23 +8499,23 @@ namespace GnollHackX.Pages.Game
                                             int source_height = link_source_height;
                                             int within_tile_source_x = relevant_dx != 0 && relevant_dy != 0 ? 32 : relevant_dy != 0 ? 16 : 0;
                                             int within_tile_source_y = 23 + ((m % 2) == 1 ? link_source_height : 0);
-                                            float target_left_added = width / 2 - (float)((double)source_width * adscale / 2.0) + (float)(((float)relevant_dx * link_diff_x * (float)m) * adscale);
-                                            float target_top_added = height / 2 - (float)((double)source_height * adscale / 2.0) + (float)(((float)relevant_dy * link_diff_y * (float)m) * adscale);
+                                            float target_left_added = width / 2 - ((float)source_width * adscale / 2.0f) + (((float)relevant_dx * link_diff_x * (float)m) * adscale);
+                                            float target_top_added = height / 2 - ((float)source_height * adscale / 2.0f) + (((float)relevant_dy * link_diff_y * (float)m) * adscale);
                                             if (target_left_added < 0)
                                             {
                                                 /* Cut off from left ==> Move source x right and reduce width to fix, flipped: just reduce width */
                                                 if (!used_hflip_link)
-                                                    within_tile_source_x += (int)((double)-target_left_added / adscale);
+                                                    within_tile_source_x += (int)((float)-target_left_added / adscale);
 
-                                                source_width -= (int)((double)-target_left_added / adscale);
+                                                source_width -= (int)(-target_left_added / adscale);
                                                 if (source_width <= 0)
                                                     continue;
                                                 target_left_added = 0;
                                             }
                                             if (target_top_added < 0)
                                             {
-                                                within_tile_source_y += (int)((double)-target_top_added / adscale);
-                                                source_height -= (int)((double)-target_top_added / adscale);
+                                                within_tile_source_y += (int)((float)-target_top_added / adscale);
+                                                source_height -= (int)((float)-target_top_added / adscale);
                                                 if (source_height <= 0)
                                                     continue;
                                                 target_top_added = 0;
