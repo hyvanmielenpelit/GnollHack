@@ -4846,10 +4846,10 @@ struct monst* mtmp;
         {
             char kbuf[BUFSZ];
             if (poly_when_stoned(youmonst.data))
-                You("touch %s %s without wearing gloves.", s_suffix(mon_nam(mtmp)), body_part(HAND));
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "touch %s %s without wearing gloves.", s_suffix(mon_nam(mtmp)), body_part(HAND));
             else
             {
-                pline("Touching %s %s without wearing gloves is a fatal mistake...", s_suffix(mon_nam(mtmp)), body_part(HAND));
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Touching %s %s without wearing gloves is a fatal mistake...", s_suffix(mon_nam(mtmp)), body_part(HAND));
                 Sprintf(kbuf, "touching %s %s without gloves", s_suffix(mon_nam(mtmp)), body_part(HAND));
             }
             killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE;
@@ -4934,10 +4934,10 @@ struct monst* mtmp;
     {
         char kbuf[BUFSZ];
         if (poly_when_stoned(youmonst.data))
-            You("touch %s without wearing gloves.", mon_nam(mtmp));
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "touch %s without wearing gloves.", mon_nam(mtmp));
         else 
         {
-            pline("Touching %s without wearing gloves is a fatal mistake...", mon_nam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Touching %s without wearing gloves is a fatal mistake...", mon_nam(mtmp));
             Sprintf(kbuf, "trying to pet %s without gloves", mon_nam(mtmp));
         }
         killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE;

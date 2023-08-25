@@ -3163,10 +3163,10 @@ struct obj *obj;
         char kbuf[BUFSZ];
 
         if (poly_when_stoned(youmonst.data))
-            You("tin %s without wearing gloves.",
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "tin %s without wearing gloves.",
                 an(corpse_monster_name(corpse)));
         else {
-            pline("Tinning %s without wearing gloves is a fatal mistake...",
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Tinning %s without wearing gloves is a fatal mistake...",
                   an(corpse_monster_name(corpse)));
             Sprintf(kbuf, "trying to tin %s without gloves",
                     an(corpse_monster_name(corpse)));
@@ -4710,7 +4710,7 @@ struct obj *obj;
 
                         Sprintf(kbuf, "%s corpse",
                             an(corpse_monster_name(otmp)));
-                        pline("Snatching %s is a fatal mistake.", kbuf);
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Snatching %s is a fatal mistake.", kbuf);
                         killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
                         instapetrify(kbuf);
                     }
@@ -4778,7 +4778,7 @@ struct obj *obj;
 
                         Sprintf(kbuf, "%s corpse",
                                 an(corpse_monster_name(otmp)));
-                        pline("Snatching %s is a fatal mistake.", kbuf);
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Snatching %s is a fatal mistake.", kbuf);
                         killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
                         instapetrify(kbuf);
                     }

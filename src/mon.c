@@ -1377,7 +1377,7 @@ update_monster_timeouts()
                             if (!resists_ston(mtmp))
                             {
                                 minstapetrify(mtmp, mtmp->delayed_killer_by_you);
-                                if (Punished)
+                                if (Punished && uchain && uchain->where == OBJ_FREE) /* You were engulfed and then the monster got petrified */
                                     placebc();
                                 if (mtmp == u.ustuck)
                                     u.ustuck = 0;
@@ -3834,7 +3834,7 @@ struct monst *mtmp;
             u.uy = mtmp->my;
             u.uswallow = 0;
             u.uswldtim = 0;
-            if (Punished && uchain->where != OBJ_FLOOR)
+            if (Punished && uchain && uchain->where == OBJ_FREE)
                 placebc();
             vision_full_recalc = 1;
             docrt();

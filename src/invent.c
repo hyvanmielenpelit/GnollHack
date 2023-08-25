@@ -6126,7 +6126,7 @@ boolean picked_some, explicit_cmd;
                   picked_some ? " more" : "");
         for (; otmp; otmp = otmp->nexthere)
             if (otmp->otyp == CORPSE && will_feel_cockatrice(otmp, FALSE)) {
-                pline("%s %s%s.",
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s%s.",
                       (obj_cnt > 1)
                           ? "Including"
                           : (otmp->quan > 1L)
@@ -6139,7 +6139,6 @@ boolean picked_some, explicit_cmd;
                 feel_cockatrice(otmp, FALSE);
                 break;
             }
-
     } 
     else if (!otmp->nexthere) 
     {
@@ -6435,10 +6434,10 @@ boolean force_touch;
         Strcpy(kbuf, corpse_xname(otmp, (const char *) 0, CXN_PFX_THE));
 
         if (poly_when_stoned(youmonst.data))
-            You("touched %s with your bare %s.", kbuf,
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "touched %s with your bare %s.", kbuf,
                 makeplural(body_part(HAND)));
         else
-            pline("Touching %s is a fatal mistake...", kbuf);
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Touching %s is a fatal mistake...", kbuf);
         /* normalize body shape here; hand, not body_part(HAND) */
         Sprintf(kbuf, "touching %s bare-handed", killer_xname(otmp));
         /* will call polymon() for the poly_when_stoned() case */
