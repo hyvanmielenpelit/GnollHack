@@ -3330,6 +3330,31 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
+            /* Chain lock mark */
+            if (loc_is_you && _uBall != null && _uChain != null)
+            {
+                int mglyph = (int)game_ui_tile_types.ITEM_AUTODRAW_GRAPHICS + GHApp.UITileOff;
+                int mtile = GHApp.Glyph2Tile[mglyph];
+                int m_sheet_idx = GHApp.TileSheetIdx(mtile);
+                int source_x = GHApp.TileSheetX(mtile) + 0;
+                int source_y = GHApp.TileSheetY(mtile) + 64;
+                int source_width = 32;
+                int source_height = 32;
+                float target_x = tx + 2.0f * targetscale;
+                float target_y = ty + height - (float)(source_height + 2) * targetscale;
+                float target_width = (float)source_width * targetscale;
+                float target_height = (float)source_height * targetscale;
+                SKRect sourcerect = new SKRect(source_x, source_y, source_x + source_width, source_y + source_height);
+                SKRect targetrect = new SKRect(target_x, target_y, target_x + target_width, target_y + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                canvas.DrawBitmap(TileMap[m_sheet_idx], sourcerect, targetrect);
+#if GNH_MAP_PROFILING && DEBUG
+                StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+            }
+
             bool draw_character = false;
             /* Player mark */
             if (PlayerMark && loc_is_you)
@@ -3933,12 +3958,13 @@ namespace GnollHackX.Pages.Game
                 //        maxDrawY = target_bottom;
             }
 
+            bool is_main_tile = mapx == draw_map_x && mapy == draw_map_y;
             DrawAutoDraw(autodraw, canvas, paint, otmp_round,
                 layer_idx, mapx, mapy,
                 tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
                 tx, ty, width, height,
                 scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
-                false, drawwallends);
+                false, drawwallends, is_main_tile);
         }
 
         private int GetSubLayerCount(int mapx, int mapy, int layer_idx, out bool is_source_dir)
@@ -8185,7 +8211,7 @@ namespace GnollHackX.Pages.Game
             bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem,
             float tx, float ty, float width, float height,
             float scale, float targetscale, float scaled_x_padding, float scaled_y_padding, float scaled_tile_height,
-            bool is_inventory, bool drawwallends)
+            bool is_inventory, bool drawwallends, bool is_main_tile)
         {
             /******************/
             /* AUTODRAW START */
@@ -8215,7 +8241,7 @@ namespace GnollHackX.Pages.Game
                     u_x = _ux;
                     u_y = _uy;
                 }
-                bool autodraw_u_punished = (layer_idx == (int)layer_types.LAYER_LEASH && mapx == u_x && mapy == u_y && _uBall != null && _uChain != null);
+                bool autodraw_u_punished = (layer_idx == (int)layer_types.LAYER_MONSTER && is_main_tile && mapx == u_x && mapy == u_y && _uBall != null && _uChain != null);
                 if (drawwallends && GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
                 {
                     for (byte dir = 0; dir < 4; dir++)
@@ -8394,11 +8420,13 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                 }
-                else if ((GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CHAIN 
-                    || GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_BALL)
+                else if (
+                    ((GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CHAIN || GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_BALL) 
+                      && (otmp_round != null && (otmp_round.OtypData.is_uchain != 0 || otmp_round.OtypData.is_uball != 0)) /* Currently a small kludge to ensure that the autodraw applies only to uchain and uball */
+                    )
                     || autodraw_u_punished)
                 {
-                    if (otmp_round != null && _uChain != null && _uBall != null && (otmp_round.OtypData.is_uchain != 0 || otmp_round.OtypData.is_uball != 0) && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
+                    if (_uChain != null && _uBall != null && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                     {
                         int chain_x = _uChain.OtypData.obj_loc_x;
                         int chain_y = _uChain.OtypData.obj_loc_y;
