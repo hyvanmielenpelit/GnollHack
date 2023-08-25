@@ -48,9 +48,9 @@ struct q_score {              /* Quest "scorecard" */
 /* note: exp.lev. 14 is threshold level for 5th rank (class title, role.c) */
 
 #define ModeAllowsPostToForum (!wizard && !CasualMode && !discover)
-#if !defined(DEBUG)
+//#if !defined(DEBUG)
 #define IfModeAllowsPostToForum if (ModeAllowsPostToForum)
-#else
-#define IfModeAllowsPostToForum 
-#endif
+//#else
+//#define IfModeAllowsPostToForum 
+//#endif
 #endif /* QUEST_H */

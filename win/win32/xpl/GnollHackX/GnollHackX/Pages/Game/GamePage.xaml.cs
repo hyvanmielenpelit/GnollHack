@@ -13519,21 +13519,10 @@ namespace GnollHackX.Pages.Game
             textPaint.TextAlign = SKTextAlign.Left;
         }
 
-        public enum UIShieldStyles
-        {
-            AC = 0,
-            MC,
-            Move,
-            Weapon,
-            DungeonLevel,
-            XPLevel
-        }
-
         public async void ReportPanic(string text)
         {
-            //await DisplayAlert("Panic", text != null ? text : "GnollHack has panicked. See the Panic Log.", "OK");
             bool answer = await DisplayAlert("Panic", (text != null ? text : "GnollHack has panicked. See the Panic Log.") + 
-                " Do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further.", 
+                "\nDo you want to send a crash report to help the developer fix the cause? This will create a zip archive of the files in your game directory and ask it to be shared further.", 
                 "Yes", "No");
             if (answer)
             {
