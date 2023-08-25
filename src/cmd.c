@@ -9555,10 +9555,18 @@ enum create_context_menu_types menu_type;
             add_context_menu('C', cmd_from_func(dotalksteed), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(u.usteed, rn2_on_display_rng), "Steed", Monnam(u.usteed), 0, NO_COLOR);
         }
 
-        if (otmp)
+        struct obj* otmp_here;
+        boolean showpickup = FALSE;
+        for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
+            if (otmp_here != uchain)
+            {
+                showpickup = TRUE;
+                break;
+            }
+
+        if (showpickup)
         {
             add_context_menu(',', cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
-            struct obj* otmp_here;
             boolean eat_added = FALSE;
             boolean loot_added = FALSE;
             for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
