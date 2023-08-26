@@ -5012,13 +5012,13 @@ namespace GnollHackX.Pages.Game
                                                                 float base_move_offset_x = 0, base_move_offset_y = 0;
                                                                 //GetBaseMoveOffsets(source_x, source_y, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
 
-                                                                if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
+                                                                lock (_objectDataLock)
                                                                 {
-                                                                    PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself);
-                                                                }
-                                                                else
-                                                                {
-                                                                    lock (_objectDataLock)
+                                                                    if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
+                                                                    {
+                                                                        PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself);
+                                                                    }
+                                                                    else
                                                                     {
                                                                         bool is_source_dir;
                                                                         int sub_layer_cnt = GetSubLayerCount(source_x, source_y, layer_idx, out is_source_dir);
@@ -5149,13 +5149,13 @@ namespace GnollHackX.Pages.Game
                                                                 float base_move_offset_x = 0, base_move_offset_y = 0;
                                                                 GetBaseMoveOffsets(mapx, mapy, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
 
-                                                                if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
+                                                                lock (_objectDataLock)
                                                                 {
-                                                                    PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself);
-                                                                }
-                                                                else
-                                                                {
-                                                                    lock (_objectDataLock)
+                                                                    if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
+                                                                    {
+                                                                        PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself);
+                                                                    }
+                                                                    else
                                                                     {
                                                                         bool is_source_dir;
                                                                         int sub_layer_cnt = GetSubLayerCount(mapx, mapy, layer_idx, out is_source_dir);
