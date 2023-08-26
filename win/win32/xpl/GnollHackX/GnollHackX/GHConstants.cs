@@ -1415,7 +1415,7 @@ namespace GnollHackX
         //public const int DefaultPanTime = 5;
         public const int PIT_BOTTOM_BORDER = 2;
         public const int SPECIAL_HEIGHT_IN_PIT = -32;
-        public const int SPECIAL_HEIGHT_LEVITATION = 32;
+        public const int SPECIAL_HEIGHT_LEVITATION = 16;
         public const float OBJECT_PIT_SCALING_FACTOR = 0.75f;
         //public const long MoveIntervals = 3;
         public const int NUM_BUFF_BIT_ULONGS = 8;

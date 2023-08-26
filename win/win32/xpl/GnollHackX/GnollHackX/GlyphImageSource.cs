@@ -427,7 +427,7 @@ namespace GnollHackX
                             (int)layer_types.LAYER_OBJECT, 0, 0,
                             tileflag_halfsize, false, tileflag_fullsizeditem,
                             0, 0, tileWidth, tileHeight,
-                            1, scale, xpadding, ypadding, scaled_tile_height, true, drawwallends, true);
+                            1, scale, xpadding, ypadding, scaled_tile_height, true, drawwallends);
                     }
                     else
                     {
@@ -464,7 +464,7 @@ namespace GnollHackX
                                 (int)layer_types.LAYER_OBJECT, 0, 0,
                                 tileflag_halfsize, false, true,
                                 0, 0, tileWidth, tileHeight,
-                                1, scale, 0, 0, tileHeight, true, drawwallends, true);
+                                1, scale, 0, 0, tileHeight, true, drawwallends);
 
                         }
 
@@ -533,7 +533,7 @@ namespace GnollHackX
                                         (int)layer_types.LAYER_OBJECT, 0, 0,
                                         tileflag_halfsize, false, true,
                                         0, 0, tileWidth, tileHeight,
-                                        1, scale, 0, 0, tileHeight, true, drawwallends, false);
+                                        1, scale, 0, 0, tileHeight, true, drawwallends);
                                 }
                             }
                         }

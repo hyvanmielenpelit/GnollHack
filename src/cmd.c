@@ -7292,7 +7292,6 @@ register char *cmd;
     update_here_window();
     issue_simple_gui_command(GUI_CMD_CLEAR_PET_DATA);
 
-    //reset_all_monster_origin_coordinates();
     check_gui_special_effect();
     check_mobbed_hint();
 
@@ -7307,6 +7306,7 @@ register char *cmd;
     }
 
     reset_monster_origin_coordinates(&youmonst);
+    reset_all_monster_origin_coordinates();
     reset_all_object_origin_coordinates();
     reset_found_this_turn();
 

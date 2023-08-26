@@ -3238,8 +3238,8 @@ namespace GnollHackX.Pages.Game
             float scaled_y_height_change = 0;
             float mapFontAscent = UsedMapFontAscent;
             float tx = 0, ty = 0;
-                if (monster_height > 0)
-                    scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
+            if (monster_height > 0)
+                scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
 
             /* Grid */
             if (MapGrid)
@@ -3258,6 +3258,14 @@ namespace GnollHackX.Pages.Game
                 canvas.DrawLine(p1, p2, textPaint);
                 textPaint.PathEffect = null;
                 textPaint.Style = SKPaintStyle.Fill;
+            }
+
+            /* Chain */
+            if(loc_is_you && _uBall != null && _uChain != null)
+            {
+                tx = (offsetX + usedOffsetX + base_move_offset_x + width * (float)mapx);
+                ty = (offsetY + usedOffsetY + base_move_offset_y + mapFontAscent + height * (float)mapy); /* No scaled_y_height_change */
+                DrawChain(canvas, paint, mapx, mapy, 0, true, width, height, ty, tx, 1.0f, targetscale);
             }
 
             /* Cursor */
@@ -3958,13 +3966,12 @@ namespace GnollHackX.Pages.Game
                 //        maxDrawY = target_bottom;
             }
 
-            bool is_main_tile = mapx == draw_map_x && mapy == draw_map_y;
             DrawAutoDraw(autodraw, canvas, paint, otmp_round,
                 layer_idx, mapx, mapy,
                 tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
                 tx, ty, width, height,
                 scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
-                false, drawwallends, is_main_tile);
+                false, drawwallends);
         }
 
         private int GetSubLayerCount(int mapx, int mapy, int layer_idx, out bool is_source_dir)
@@ -8222,7 +8229,7 @@ namespace GnollHackX.Pages.Game
             bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem,
             float tx, float ty, float width, float height,
             float scale, float targetscale, float scaled_x_padding, float scaled_y_padding, float scaled_tile_height,
-            bool is_inventory, bool drawwallends, bool is_main_tile)
+            bool is_inventory, bool drawwallends)
         {
             /******************/
             /* AUTODRAW START */
@@ -8245,14 +8252,6 @@ namespace GnollHackX.Pages.Game
                     }
                 }
 
-                int u_x;
-                int u_y;
-                lock (_uLock)
-                {
-                    u_x = _ux;
-                    u_y = _uy;
-                }
-                bool autodraw_u_punished = (layer_idx == (int)layer_types.LAYER_MONSTER && is_main_tile && mapx == u_x && mapy == u_y && _uBall != null && _uChain != null);
                 if (drawwallends && GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
                 {
                     for (byte dir = 0; dir < 4; dir++)
@@ -8435,250 +8434,9 @@ namespace GnollHackX.Pages.Game
                     ((GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CHAIN || GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_BALL) 
                       && (otmp_round == null || otmp_round.OtypData.is_uchain != 0 || otmp_round.OtypData.is_uball != 0) /* Currently a small kludge to ensure that the autodraw applies only to uchain and uball */
                     )
-                    || autodraw_u_punished)
+                    /*|| autodraw_u_punished*/)
                 {
-                    if (_uChain != null && _uBall != null && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
-                    {
-                        int chain_x = _uChain.OtypData.obj_loc_x;
-                        int chain_y = _uChain.OtypData.obj_loc_y;
-                        int ball_x = _uBall.OtypData.obj_loc_x;
-                        int ball_y = _uBall.OtypData.obj_loc_y;
-                        if (GHUtils.isok(u_x, u_y) && GHUtils.isok(chain_x, chain_y) && GHUtils.isok(ball_x, ball_y))
-                        {
-                            bool is_chain = (GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CHAIN);
-                            int chain_u_dx = (int)(u_x - chain_x);
-                            int chain_u_dy = (int)(u_y - chain_y);
-                            int chain_ball_dx = (int)(ball_x - chain_x);
-                            int chain_ball_dy = (int)(ball_y - chain_y);
-                            int u_ball_dx = (int)(u_x - chain_x);
-                            int u_ball_dy = (int)(u_y - chain_y);
-
-                            int source_glyph = autodraw_u_punished || autodraw == 0 ? (int)game_ui_tile_types.ITEM_AUTODRAW_GRAPHICS + GHApp.UITileOff : GHApp._autodraws[autodraw].source_glyph;
-                            int dir_idx = GHApp._autodraws[autodraw].flags;
-                            int atile = GHApp.Glyph2Tile[source_glyph];
-                            int a_sheet_idx = GHApp.TileSheetIdx(atile);
-                            int at_x = GHApp.TileSheetX(atile);
-                            int at_y = GHApp.TileSheetY(atile);
-                            float adscale = scale * targetscale;
-
-                            for (int n = 0; n < 2; n++)
-                            {
-                                int relevant_dx = autodraw_u_punished ? Math.Sign(n == 0 ? -chain_u_dx : 0) : is_chain ? Math.Sign(n == 0 ? chain_u_dx : chain_ball_dx) : Math.Sign(n == 0 ? 0 : -chain_ball_dx);
-                                int relevant_dy = autodraw_u_punished ? Math.Sign(n == 0 ? -chain_u_dy : 0) : is_chain ? Math.Sign(n == 0 ? chain_u_dy : chain_ball_dy) : Math.Sign(n == 0 ? 1 : -chain_ball_dy);
-                                bool hflip_link = !((relevant_dx > 0) != (relevant_dy > 0));
-                                bool vflip_link = false;
-                                int link_source_width = 16;
-                                int link_source_height = 16;
-                                float link_diff_x = relevant_dx != 0 && relevant_dy != 0 ? 5.35f : 10.0f;
-                                float link_diff_y = relevant_dx != 0 && relevant_dy != 0 ? link_diff_x * 1.5f : 10.0f;
-                                int mid_x = GHConstants.TileWidth / 2;
-                                int mid_y = GHConstants.TileHeight / 2;
-                                int dist_x = relevant_dx > 0 ? GHConstants.TileWidth - mid_x : mid_x;
-                                int dist_y = relevant_dy > 0 ? GHConstants.TileHeight - mid_y : mid_y;
-                                int links = (int)(relevant_dx != 0 && relevant_dy == 0 && false ? (float)(dist_x - link_source_width / 2) / link_diff_x :
-                                    relevant_dx == 0 && relevant_dy != 0 && false ? (float)(dist_y - link_source_height / 2) / link_diff_y :
-                                    2 + 1 + (int)Math.Min((float)(dist_y - link_source_height / 2) / link_diff_y, (float)(dist_x - link_source_width / 2) / link_diff_x)
-                                    );
-
-                                if (!is_chain && !autodraw_u_punished && n == 0 && links > 1)
-                                    links = 1;
-                                else if (autodraw_u_punished && n == 1 && links > 1)
-                                    links = 1;
-
-                                if (dir_idx == 0)
-                                {
-                                    if (relevant_dx != 0 || relevant_dy != 0)
-                                    {
-                                        for (int m = 0; m < links; m++)
-                                        {
-                                            bool used_hflip_link = hflip_link;
-                                            if (m >= links && (relevant_dx < 0 || relevant_dy < 0))
-                                                used_hflip_link = !((-relevant_dx > 0) != (-relevant_dy > 0));
-
-                                            int source_width = link_source_width;
-                                            int source_height = link_source_height;
-                                            int within_tile_source_x = relevant_dx != 0 && relevant_dy != 0 ? 32 : relevant_dy != 0 ? 16 : 0;
-                                            int within_tile_source_y = 23 + ((m % 2) == 1 ? link_source_height : 0);
-                                            float target_left_added = width / 2 - ((float)source_width * adscale / 2.0f) + (((float)relevant_dx * link_diff_x * (float)m) * adscale);
-                                            float target_top_added = height / 2 - ((float)source_height * adscale / 2.0f) + (((float)relevant_dy * link_diff_y * (float)m) * adscale);
-                                            if (target_left_added < 0)
-                                            {
-                                                /* Cut off from left ==> Move source x right and reduce width to fix, flipped: just reduce width */
-                                                if (!used_hflip_link)
-                                                    within_tile_source_x += (int)((float)-target_left_added / adscale);
-
-                                                source_width -= (int)(-target_left_added / adscale);
-                                                if (source_width <= 0)
-                                                    continue;
-                                                target_left_added = 0;
-                                            }
-                                            if (target_top_added < 0)
-                                            {
-                                                within_tile_source_y += (int)((float)-target_top_added / adscale);
-                                                source_height -= (int)((float)-target_top_added / adscale);
-                                                if (source_height <= 0)
-                                                    continue;
-                                                target_top_added = 0;
-                                            }
-                                            float target_x = tx + target_left_added;
-                                            float target_y = ty + target_top_added;
-                                            float target_width = ((float)source_width * adscale);
-                                            float target_height = ((float)source_height * adscale);
-                                            if (target_x + target_width > tx + width)
-                                            {
-                                                /* Cut off from right ==>Just reduce width to fix, flipped: Move source x right and reduce width to fix */
-                                                int source_diff = (int)((target_x + target_width - (tx + width)) / adscale);
-                                                if (used_hflip_link)
-                                                    within_tile_source_x += source_diff;
-
-                                                source_width -= source_diff;
-                                                if (source_width <= 0)
-                                                    continue;
-                                                target_width -= (target_x + target_width - (tx + width));
-                                            }
-                                            if (target_y + target_height > (ty + height))
-                                            {
-                                                int source_diff = (int)((target_y + target_height - (ty + height)) / adscale);
-                                                source_height -= source_diff;
-                                                if (source_height <= 0)
-                                                    continue;
-                                                target_height -= (target_y + target_height - (ty + height));
-                                            }
-
-                                            int source_x = at_x + within_tile_source_x;
-                                            int source_y = at_y + within_tile_source_y;
-                                            SKRect sourcerect = new SKRect(source_x, source_y, source_x + source_width, source_y + source_height);
-                                            SKRect targetrect = new SKRect(0, 0, target_width, target_height);
-                                            using (SKAutoCanvasRestore autorestore = new SKAutoCanvasRestore(canvas))
-                                            {
-                                                canvas.Translate(target_x + (hflip_link ? target_width : 0), target_y + (vflip_link ? target_height : 0));
-                                                canvas.Scale(hflip_link ? -1 : 1, vflip_link ? -1 : 1, 0, 0);
-                                                canvas.DrawBitmap(TileMap[a_sheet_idx], sourcerect, targetrect, paint);
-                                            }
-                                            //(*GetNHApp()->lpfnTransparentBlt)(
-                                            //    data->backBufferDC, target_x, target_y,
-                                            //    target_width, target_height, data->tileDC[a_sheet_idx], source_x + (used_hflip_link ? source_width - 1 : 0),
-                                            //    source_y + (vflip_link ? source_height - 1 : 0), (used_hflip_link ? -1 : 1) * source_width,
-                                            //    (vflip_link ? -1 : 1) * source_height, TILE_BK_COLOR);
-                                        }
-                                    }
-                                }
-                                else if (dir_idx > 0)
-                                {
-                                    if (relevant_dx != 0 && relevant_dy != 0)
-                                    {
-                                        int added_source_x = 0, added_source_y = 0;
-                                        float added_target_x = 0, added_target_y = 0;
-                                        bool draw_link = false;
-
-                                        if (relevant_dx < 0 && relevant_dy < 0)
-                                        {
-                                            if (dir_idx == 2)
-                                            {
-                                                added_source_x = 8;
-                                                added_source_y = 8;
-                                                added_target_x = GHConstants.TileWidth - 8;
-                                                added_target_y = 0;
-                                                draw_link = true;
-                                            }
-                                            else if (dir_idx == 3)
-                                            {
-                                                added_source_x = 0;
-                                                added_source_y = 0;
-                                                added_target_x = 0;
-                                                added_target_y = GHConstants.TileHeight - 8;
-                                                draw_link = true;
-                                            }
-                                        }
-                                        else if (relevant_dx > 0 && relevant_dy < 0)
-                                        {
-                                            if (dir_idx == 4)
-                                            {
-                                                added_source_x = 8;
-                                                added_source_y = 8;
-                                                added_target_x = 0;
-                                                added_target_y = 0;
-                                                draw_link = true;
-                                            }
-                                            else if (dir_idx == 3)
-                                            {
-                                                added_source_x = 0;
-                                                added_source_y = 0;
-                                                added_target_x = GHConstants.TileWidth - 8;
-                                                added_target_y = GHConstants.TileHeight - 8;
-                                                draw_link = true;
-                                            }
-                                        }
-                                        else if (relevant_dx < 0 && relevant_dy > 0)
-                                        {
-                                            if (dir_idx == 2)
-                                            {
-                                                added_source_x = 0;
-                                                added_source_y = 0;
-                                                added_target_x = GHConstants.TileWidth - 8;
-                                                added_target_y = GHConstants.TileHeight - 8;
-                                                draw_link = true;
-                                            }
-                                            else if (dir_idx == 1)
-                                            {
-                                                added_source_x = 8;
-                                                added_source_y = 8;
-                                                added_target_x = 0;
-                                                added_target_y = 0;
-                                                draw_link = true;
-                                            }
-                                        }
-                                        else if (relevant_dx > 0 && relevant_dy > 0)
-                                        {
-                                            if (dir_idx == 4)
-                                            {
-                                                added_source_x = 0;
-                                                added_source_y = 0;
-                                                added_target_x = 0;
-                                                added_target_y = GHConstants.TileHeight - 8;
-                                                draw_link = true;
-                                            }
-                                            else if (dir_idx == 1)
-                                            {
-                                                added_source_x = 8;
-                                                added_source_y = 8;
-                                                added_target_x = GHConstants.TileWidth - 8;
-                                                added_target_y = 0;
-                                                draw_link = true;
-                                            }
-                                        }
-                                        if (draw_link)
-                                        {
-                                            int source_width = 8;
-                                            int source_height = 8;
-                                            int within_tile_source_x = 32 + added_source_x;
-                                            int within_tile_source_y = 23 + ((links + 1 % 2) == 1 ? link_source_height : 0) + added_source_y;
-                                            float target_x = tx + ((float)(added_target_x) * adscale);
-                                            float target_y = ty + ((float)(added_target_y) * adscale);
-                                            float target_width = ((float)source_width * adscale);
-                                            float target_height = ((float)source_height * adscale);
-                                            int source_x = at_x + within_tile_source_x;
-                                            int source_y = at_y + within_tile_source_y;
-
-                                            SKRect sourcerect = new SKRect(source_x, source_y, source_x + source_width, source_y + source_height);
-                                            SKRect targetrect = new SKRect(0, 0, target_width, target_height);
-                                            using (SKAutoCanvasRestore autorestore = new SKAutoCanvasRestore(canvas))
-                                            {
-                                                canvas.Translate(target_x + (hflip_link ? target_width : 0), target_y + (vflip_link ? target_height : 0));
-                                                canvas.Scale(hflip_link ? -1 : 1, vflip_link ? -1 : 1, 0, 0);
-                                                canvas.DrawBitmap(TileMap[a_sheet_idx], sourcerect, targetrect, paint);
-                                            }
-                                            //(*GetNHApp()->lpfnTransparentBlt)(
-                                            //    data->backBufferDC, target_x, target_y,
-                                            //    target_width, target_height, data->tileDC[a_sheet_idx], source_x + (hflip_link ? source_width - 1 : 0),
-                                            //    source_y + (vflip_link ? source_height - 1 : 0), (hflip_link ? -1 : 1) * source_width,
-                                            //    (vflip_link ? -1 : 1) * source_height, TILE_BK_COLOR);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    DrawChain(canvas, paint, mapx, mapy, autodraw, false, width, height, ty, tx, scale, targetscale);
                 }
                 else if (GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
                 {
@@ -9552,6 +9310,248 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private void DrawChain(SKCanvas canvas, SKPaint paint, int mapx, int mapy, int autodraw, bool autodraw_u_punished, float width, float height, float ty, float tx, float scale, float targetscale)
+        {
+            int u_x;
+            int u_y;
+            lock (_uLock)
+            {
+                u_x = _ux;
+                u_y = _uy;
+            }
+            if (_uChain != null && _uBall != null && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
+            {
+                int chain_x = _uChain.OtypData.obj_loc_x;
+                int chain_y = _uChain.OtypData.obj_loc_y;
+                int ball_x = _uBall.OtypData.obj_loc_x;
+                int ball_y = _uBall.OtypData.obj_loc_y;
+                if (GHUtils.isok(u_x, u_y) && GHUtils.isok(chain_x, chain_y) && GHUtils.isok(ball_x, ball_y))
+                {
+                    bool is_chain = (GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CHAIN);
+                    int chain_u_dx = (int)(u_x - chain_x);
+                    int chain_u_dy = (int)(u_y - chain_y);
+                    int chain_ball_dx = (int)(ball_x - chain_x);
+                    int chain_ball_dy = (int)(ball_y - chain_y);
+                    int u_ball_dx = (int)(u_x - chain_x);
+                    int u_ball_dy = (int)(u_y - chain_y);
+
+                    int source_glyph = autodraw_u_punished || autodraw == 0 ? (int)game_ui_tile_types.ITEM_AUTODRAW_GRAPHICS + GHApp.UITileOff : GHApp._autodraws[autodraw].source_glyph;
+                    int dir_idx = GHApp._autodraws[autodraw].flags;
+                    int atile = GHApp.Glyph2Tile[source_glyph];
+                    int a_sheet_idx = GHApp.TileSheetIdx(atile);
+                    int at_x = GHApp.TileSheetX(atile);
+                    int at_y = GHApp.TileSheetY(atile);
+                    float adscale = scale * targetscale;
+
+                    for (int n = 0; n < 2; n++)
+                    {
+                        int relevant_dx = autodraw_u_punished ? Math.Sign(n == 0 ? -chain_u_dx : 0) : is_chain ? Math.Sign(n == 0 ? chain_u_dx : chain_ball_dx) : Math.Sign(n == 0 ? 0 : -chain_ball_dx);
+                        int relevant_dy = autodraw_u_punished ? Math.Sign(n == 0 ? -chain_u_dy : 0) : is_chain ? Math.Sign(n == 0 ? chain_u_dy : chain_ball_dy) : Math.Sign(n == 0 ? 1 : -chain_ball_dy);
+                        bool hflip_link = !((relevant_dx > 0) != (relevant_dy > 0));
+                        bool vflip_link = false;
+                        int link_source_width = 16;
+                        int link_source_height = 16;
+                        float link_diff_x = relevant_dx != 0 && relevant_dy != 0 ? 5.35f : 10.0f;
+                        float link_diff_y = relevant_dx != 0 && relevant_dy != 0 ? link_diff_x * 1.5f : 10.0f;
+                        int mid_x = GHConstants.TileWidth / 2;
+                        int mid_y = GHConstants.TileHeight / 2;
+                        int dist_x = relevant_dx > 0 ? GHConstants.TileWidth - mid_x : mid_x;
+                        int dist_y = relevant_dy > 0 ? GHConstants.TileHeight - mid_y : mid_y;
+                        int links = (int)(relevant_dx != 0 && relevant_dy == 0 && false ? (float)(dist_x - link_source_width / 2) / link_diff_x :
+                            relevant_dx == 0 && relevant_dy != 0 && false ? (float)(dist_y - link_source_height / 2) / link_diff_y :
+                            2 + 1 + (int)Math.Min((float)(dist_y - link_source_height / 2) / link_diff_y, (float)(dist_x - link_source_width / 2) / link_diff_x)
+                            );
+
+                        if (!is_chain && !autodraw_u_punished && n == 0 && links > 1)
+                            links = 1;
+                        else if (autodraw_u_punished && n == 1 && links > 1)
+                            links = 1;
+
+                        if (dir_idx == 0)
+                        {
+                            if (relevant_dx != 0 || relevant_dy != 0)
+                            {
+                                for (int m = 0; m < links; m++)
+                                {
+                                    bool used_hflip_link = hflip_link;
+                                    if (m >= links && (relevant_dx < 0 || relevant_dy < 0))
+                                        used_hflip_link = !((-relevant_dx > 0) != (-relevant_dy > 0));
+
+                                    int source_width = link_source_width;
+                                    int source_height = link_source_height;
+                                    int within_tile_source_x = relevant_dx != 0 && relevant_dy != 0 ? 32 : relevant_dy != 0 ? 16 : 0;
+                                    int within_tile_source_y = 23 + ((m % 2) == 1 ? link_source_height : 0);
+                                    float target_left_added = width / 2 - ((float)source_width * adscale / 2.0f) + (((float)relevant_dx * link_diff_x * (float)m) * adscale);
+                                    float target_top_added = height / 2 - ((float)source_height * adscale / 2.0f) + (((float)relevant_dy * link_diff_y * (float)m) * adscale);
+                                    if (target_left_added < 0)
+                                    {
+                                        /* Cut off from left ==> Move source x right and reduce width to fix, flipped: just reduce width */
+                                        if (!used_hflip_link)
+                                            within_tile_source_x += (int)((float)-target_left_added / adscale);
+
+                                        source_width -= (int)(-target_left_added / adscale);
+                                        if (source_width <= 0)
+                                            continue;
+                                        target_left_added = 0;
+                                    }
+                                    if (target_top_added < 0)
+                                    {
+                                        within_tile_source_y += (int)((float)-target_top_added / adscale);
+                                        source_height -= (int)((float)-target_top_added / adscale);
+                                        if (source_height <= 0)
+                                            continue;
+                                        target_top_added = 0;
+                                    }
+                                    float target_x = tx + target_left_added;
+                                    float target_y = ty + target_top_added;
+                                    float target_width = ((float)source_width * adscale);
+                                    float target_height = ((float)source_height * adscale);
+                                    if (target_x + target_width > tx + width)
+                                    {
+                                        /* Cut off from right ==>Just reduce width to fix, flipped: Move source x right and reduce width to fix */
+                                        int source_diff = (int)((target_x + target_width - (tx + width)) / adscale);
+                                        if (used_hflip_link)
+                                            within_tile_source_x += source_diff;
+
+                                        source_width -= source_diff;
+                                        if (source_width <= 0)
+                                            continue;
+                                        target_width -= (target_x + target_width - (tx + width));
+                                    }
+                                    if (target_y + target_height > (ty + height))
+                                    {
+                                        int source_diff = (int)((target_y + target_height - (ty + height)) / adscale);
+                                        source_height -= source_diff;
+                                        if (source_height <= 0)
+                                            continue;
+                                        target_height -= (target_y + target_height - (ty + height));
+                                    }
+
+                                    int source_x = at_x + within_tile_source_x;
+                                    int source_y = at_y + within_tile_source_y;
+                                    SKRect sourcerect = new SKRect(source_x, source_y, source_x + source_width, source_y + source_height);
+                                    SKRect targetrect = new SKRect(0, 0, target_width, target_height);
+                                    using (SKAutoCanvasRestore autorestore = new SKAutoCanvasRestore(canvas))
+                                    {
+                                        canvas.Translate(target_x + (hflip_link ? target_width : 0), target_y + (vflip_link ? target_height : 0));
+                                        canvas.Scale(hflip_link ? -1 : 1, vflip_link ? -1 : 1, 0, 0);
+                                        canvas.DrawBitmap(TileMap[a_sheet_idx], sourcerect, targetrect, paint);
+                                    }
+                                }
+                            }
+                        }
+                        else if (dir_idx > 0)
+                        {
+                            if (relevant_dx != 0 && relevant_dy != 0)
+                            {
+                                int added_source_x = 0, added_source_y = 0;
+                                float added_target_x = 0, added_target_y = 0;
+                                bool draw_link = false;
+
+                                if (relevant_dx < 0 && relevant_dy < 0)
+                                {
+                                    if (dir_idx == 2)
+                                    {
+                                        added_source_x = 8;
+                                        added_source_y = 8;
+                                        added_target_x = GHConstants.TileWidth - 8;
+                                        added_target_y = 0;
+                                        draw_link = true;
+                                    }
+                                    else if (dir_idx == 3)
+                                    {
+                                        added_source_x = 0;
+                                        added_source_y = 0;
+                                        added_target_x = 0;
+                                        added_target_y = GHConstants.TileHeight - 8;
+                                        draw_link = true;
+                                    }
+                                }
+                                else if (relevant_dx > 0 && relevant_dy < 0)
+                                {
+                                    if (dir_idx == 4)
+                                    {
+                                        added_source_x = 8;
+                                        added_source_y = 8;
+                                        added_target_x = 0;
+                                        added_target_y = 0;
+                                        draw_link = true;
+                                    }
+                                    else if (dir_idx == 3)
+                                    {
+                                        added_source_x = 0;
+                                        added_source_y = 0;
+                                        added_target_x = GHConstants.TileWidth - 8;
+                                        added_target_y = GHConstants.TileHeight - 8;
+                                        draw_link = true;
+                                    }
+                                }
+                                else if (relevant_dx < 0 && relevant_dy > 0)
+                                {
+                                    if (dir_idx == 2)
+                                    {
+                                        added_source_x = 0;
+                                        added_source_y = 0;
+                                        added_target_x = GHConstants.TileWidth - 8;
+                                        added_target_y = GHConstants.TileHeight - 8;
+                                        draw_link = true;
+                                    }
+                                    else if (dir_idx == 1)
+                                    {
+                                        added_source_x = 8;
+                                        added_source_y = 8;
+                                        added_target_x = 0;
+                                        added_target_y = 0;
+                                        draw_link = true;
+                                    }
+                                }
+                                else if (relevant_dx > 0 && relevant_dy > 0)
+                                {
+                                    if (dir_idx == 4)
+                                    {
+                                        added_source_x = 0;
+                                        added_source_y = 0;
+                                        added_target_x = 0;
+                                        added_target_y = GHConstants.TileHeight - 8;
+                                        draw_link = true;
+                                    }
+                                    else if (dir_idx == 1)
+                                    {
+                                        added_source_x = 8;
+                                        added_source_y = 8;
+                                        added_target_x = GHConstants.TileWidth - 8;
+                                        added_target_y = 0;
+                                        draw_link = true;
+                                    }
+                                }
+                                if (draw_link)
+                                {
+                                    int source_width = 8;
+                                    int source_height = 8;
+                                    int within_tile_source_x = 32 + added_source_x;
+                                    int within_tile_source_y = 23 + ((links + 1 % 2) == 1 ? link_source_height : 0) + added_source_y;
+                                    float target_x = tx + ((float)(added_target_x) * adscale);
+                                    float target_y = ty + ((float)(added_target_y) * adscale);
+                                    float target_width = ((float)source_width * adscale);
+                                    float target_height = ((float)source_height * adscale);
+                                    int source_x = at_x + within_tile_source_x;
+                                    int source_y = at_y + within_tile_source_y;
+
+                                    SKRect sourcerect = new SKRect(source_x, source_y, source_x + source_width, source_y + source_height);
+                                    SKRect targetrect = new SKRect(0, 0, target_width, target_height);
+                                    using (SKAutoCanvasRestore autorestore = new SKAutoCanvasRestore(canvas))
+                                    {
+                                        canvas.Translate(target_x + (hflip_link ? target_width : 0), target_y + (vflip_link ? target_height : 0));
+                                        canvas.Scale(hflip_link ? -1 : 1, vflip_link ? -1 : 1, 0, 0);
+                                        canvas.DrawBitmap(TileMap[a_sheet_idx], sourcerect, targetrect, paint);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         public double CurrentPageWidth { get { return _currentPageWidth; } }
         public double CurrentPageHeight { get { return _currentPageHeight; } }
