@@ -1739,7 +1739,7 @@ int otyp;
     if (obj)
     {
         boolean nonexpeptionalarmor = nonexceptionality_armor(obj);
-        if ((((objects[otyp].oc_class == ARMOR_CLASS && name_known)
+        if ((((objects[otyp].oc_class == ARMOR_CLASS && desc_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
             || (obj && has_obj_mythic_defense(obj) && obj->mknown))
             && obj->exceptionality) || (nonexpeptionalarmor && name_known))
