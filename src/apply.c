@@ -6508,7 +6508,7 @@ struct obj* obj;
     if (is_pool(x, y) ^ !!u.uinwater) 
     {
         /* objects normally can't be removed from water by kicking */
-        play_sfx_sound(SFX_SPLASH_HIT);
+        play_sfx_sound_at_location(SFX_SPLASH_HIT, x, y);
         You("splash some %s around.", hliquid("water"));
         return 1;
     }
@@ -6571,7 +6571,7 @@ struct obj* obj;
             if (Levitation)
                 goto dumb;
             You("swing at %s.", (Blind ? something : "the fountain"));
-            play_sfx_sound(SFX_SPLASH_HIT);
+            play_sfx_sound_at_location(SFX_SPLASH_HIT, x, y);
             pline("%s wet.", Yobjnam2(obj, "get"));
             return 1;
         }

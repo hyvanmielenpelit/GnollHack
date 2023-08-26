@@ -611,7 +611,7 @@ boolean td; /* td == TRUE : trap door or hole */
         impact_drop((struct obj *) 0, u.ux, u.uy, 0);
         if (!td) {
             display_nhwindow(WIN_MESSAGE, FALSE);
-            pline_The("opening under you closes up.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "opening under you closes up.");
         }
         return;
     }

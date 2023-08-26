@@ -19,7 +19,7 @@ boolean showmsg;
 {
     if (carried(uball)) {
         if (showmsg)
-            pline("Startled, you drop the iron ball.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Startled, you drop the iron ball.");
         if (uwep == uball)
             setuwep((struct obj *) 0, W_WEP);
         if (uarms == uball)
@@ -49,13 +49,13 @@ ballfall()
     if (gets_hit) {
         int dmg = rn1(7, 25);
 
-        pline_The("iron ball falls on your %s.", body_part(HEAD));
+        pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "iron ball falls on your %s.", body_part(HEAD));
         if (uarmh) {
             if (is_metallic(uarmh)) {
-                pline("Fortunately, you are wearing a hard helmet.");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Fortunately, you are wearing a hard helmet.");
                 dmg = 3;
             } else if (flags.verbose)
-                pline("%s does not protect you.", Yname2(uarmh));
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s does not protect you.", Yname2(uarmh));
         }
         losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "crunched in the head by an iron ball",
                NO_KILLER_PREFIX);
@@ -360,7 +360,6 @@ xchar ballx, bally, chainx, chainy; /* only matter !before */
 
             u.bc_order = bc_order(); /* reset the order */
         }
-
     } 
     else 
     {
@@ -415,6 +414,14 @@ xchar ballx, bally, chainx, chainy; /* only matter !before */
     }
     if (!before)
     {
+        if (!Deaf)
+        {
+            if (!carried(uball) && is_pool_or_lava(ballx, bally) && !is_pool_or_lava(oldballx, oldbally))
+                play_object_floor_sound_at_location(uball, OBJECT_SOUND_TYPE_DROP, ballx, bally, Underwater);
+            else if (is_pool_or_lava(chainx, chainy) && !is_pool_or_lava(oldchainx, oldchainy))
+                play_object_floor_sound_at_location(uchain, OBJECT_SOUND_TYPE_DROP, chainx, chainy, Underwater);
+        }
+
         uchain->ox0 = oldchainx;
         uchain->oy0 = oldchainy;
         uball->ox0 = oldballx;
@@ -657,13 +664,13 @@ boolean allow_drag;
         || ((t = t_at(uchain->ox, uchain->oy))
             && (is_pit(t->ttyp) || is_hole(t->ttyp)))) {
         if (Levitation) {
-            You_feel("a tug from the iron ball.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a tug from the iron ball.");
             if (t)
                 t->tseen = 1;
         } else {
             struct monst *victim;
 
-            You("are jerked back by the iron ball!");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "are jerked back by the iron ball!");
             if ((victim = m_at(uchain->ox, uchain->oy)) != 0) {
                 int tmp;
                 int dieroll = rnd(20);
@@ -771,22 +778,22 @@ xchar x, y;
             && u.utraptype != TT_INFLOOR && u.utraptype != TT_BURIEDBALL) {
             switch (u.utraptype) {
             case TT_PIT:
-                pline(pullmsg, "pit");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, pullmsg, "pit");
                 break;
             case TT_WEB:
-                pline(pullmsg, "web");
-                pline_The("web is destroyed!");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, pullmsg, "web");
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "web is destroyed!");
                 deltrap(t_at(u.ux, u.uy));
                 break;
             case TT_LAVA:
-                pline(pullmsg, hliquid("lava"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, pullmsg, hliquid("lava"));
                 break;
             case TT_BEARTRAP:
                 side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
-                pline(pullmsg, "bear trap");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, pullmsg, "bear trap");
                 set_wounded_legs(side, rn1(1000, 500));
                 if (!u.usteed) {
-                    Your("%s %s is severely damaged.",
+                    Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s is severely damaged.",
                          (side == LEFT_SIDE) ? "left" : "right",
                          body_part(LEG));
                     losehp(adjust_damage(2, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
@@ -845,7 +852,7 @@ litter()
         nextobj = otmp->nobj;
         if ((otmp != uball) && (rnd(capacity) <= (int) otmp->owt)) {
             if (canletgo(otmp, "")) {
-                You("drop %s and %s %s down the stairs with you.",
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "drop %s and %s %s down the stairs with you.",
                     yname(otmp), (otmp->quan == 1L) ? "it" : "they",
                     otense(otmp, "fall"));
                 dropx(otmp);
@@ -872,28 +879,28 @@ drag_down()
     forward = carried(uball) && (uwep == uball || !uwep || !rn2(3));
 
     if (carried(uball))
-        You("lose your grip on the iron ball.");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "lose your grip on the iron ball.");
 
     cls();  /* previous level is still displayed although you
                went down the stairs. Avoids bug C343-20 */
 
     if (forward) {
         if (rn2(6)) {
-            pline_The("iron ball drags you downstairs!");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "iron ball drags you downstairs!");
             losehp(adjust_damage(rnd(6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                    "dragged downstairs by an iron ball", NO_KILLER_PREFIX);
             litter();
         }
     } else {
         if (rn2(2)) {
-            pline_The("iron ball smacks into you!");
+            pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "iron ball smacks into you!");
             losehp(adjust_damage(rnd(20), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "iron ball collision",
                    KILLED_BY_AN);
             exercise(A_STR, FALSE);
             dragchance -= 2;
         }
         if ((int) dragchance >= rnd(6)) {
-            pline_The("iron ball drags you downstairs!");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "iron ball drags you downstairs!");
             losehp(adjust_damage(rnd(3), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                    "dragged downstairs by an iron ball", NO_KILLER_PREFIX);
             exercise(A_STR, FALSE);

@@ -211,22 +211,22 @@ int x, y;
         if (x == xdnladder || x == xupladder)
         {
             if (verbose)
-                pline_The("ladder resists your effort.");
+                pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "ladder resists your effort.");
         } 
         else if (verbose)
-            pline_The("stairs are too hard to %s.", verb);
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "stairs are too hard to %s.", verb);
         return FALSE;
     } 
     else if (IS_THRONE(levl[x][y].typ) && madeby != BY_OBJECT) 
     {
         if (verbose)
-            pline_The("throne is too hard to break apart.");
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "throne is too hard to break apart.");
         return FALSE;
     }
     else if (IS_ANVIL(levl[x][y].typ)) 
     {
         if (verbose)
-            pline_The("anvil is too hard to break apart.");
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "anvil is too hard to break apart.");
         return FALSE;
     }
     else if (IS_ALTAR(levl[x][y].typ)
@@ -234,19 +234,22 @@ int x, y;
                    || Is_sanctum(&u.uz))) 
     {
         if (verbose)
-            pline_The("altar is too hard to break apart.");
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "altar is too hard to break apart.");
         return FALSE;
     }
     else if (Is_airlevel(&u.uz)) 
     {
         if (verbose)
-            You("cannot %s thin air.", verb);
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot %s thin air.", verb);
         return FALSE;
     } 
     else if (Is_waterlevel(&u.uz)) 
     {
         if (verbose)
-            pline_The("%s splashes and subsides.", hliquid("water"));
+        {
+            play_sfx_sound_at_location(SFX_SPLASH_HIT, x, y);
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "%s splashes and subsides.", hliquid("water"));
+        }
         return FALSE;
     } 
     else if ((IS_ROCK(levl[x][y].typ) && levl[x][y].typ != SDOOR
@@ -828,7 +831,7 @@ int ttyp;
 
             /* check for leashed pet that can't fall right now */
             if (!u.ustuck && !wont_fall && !next_to_u()) {
-                You("are jerked back by your pet!");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are jerked back by your pet!");
                 wont_fall = TRUE;
             }
 
@@ -964,7 +967,7 @@ coord *cc;
         pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "%s %shere is too hard to dig in.", surface(dig_x, dig_y),
                   (dig_x != u.ux || dig_y != u.uy) ? "t" : "");
     } else if (is_pool_or_lava(dig_x, dig_y)) {
-        play_sfx_sound(SFX_SPLASH_HIT);
+        play_sfx_sound_at_location(SFX_SPLASH_HIT, dig_x, dig_y);
         pline_The("%s sloshes furiously for a moment, then subsides.",
                   hliquid(is_lava(dig_x, dig_y) ? "lava" : "water"));
         wake_nearby(); /* splashing */
