@@ -9357,13 +9357,12 @@ namespace GnollHackX.Pages.Game
                         int mid_y = GHConstants.TileHeight / 2;
                         int dist_x = relevant_dx > 0 ? GHConstants.TileWidth - mid_x : mid_x;
                         int dist_y = relevant_dy > 0 ? GHConstants.TileHeight - mid_y : mid_y;
-                        int links = (int)(relevant_dx != 0 && relevant_dy == 0 && false ? (float)(dist_x - link_source_width / 2) / link_diff_x :
-                            relevant_dx == 0 && relevant_dy != 0 && false ? (float)(dist_y - link_source_height / 2) / link_diff_y :
-                            2 + 1 + (int)Math.Min((float)(dist_y - link_source_height / 2) / link_diff_y, (float)(dist_x - link_source_width / 2) / link_diff_x)
-                            );
+                        int ball_scale_additional_dist_y = (int)((float)(GHConstants.TileHeight / 2) * (1.0f - scale));
+                        int ball_additional_scale_links = (int)Math.Ceiling((float)ball_scale_additional_dist_y / (float)(link_source_height / 2));
+                        int links = 2 + 1 + ball_additional_scale_links + (int)Math.Min((float)(dist_y - link_source_height / 2) / link_diff_y, (float)(dist_x - link_source_width / 2) / link_diff_x);
 
                         if (!is_chain && !autodraw_u_punished && n == 0 && links > 1)
-                            links = 1;
+                            links = 1 + ball_additional_scale_links;
                         else if (autodraw_u_punished && n == 1 && links > 1)
                             links = 1;
 
@@ -10743,21 +10742,16 @@ namespace GnollHackX.Pages.Game
                     {
                         bool is_memoryobj = (where == (int)obj_where_types.OBJ_HEROMEMORY);
                         bool is_drawn_in_front = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_DRAWN_IN_FRONT) != 0UL;
-                        List<ObjectDataItem> ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
-
+                        List<ObjectDataItem> objectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
+                        ObjectDataItem newItem;
                         switch (cmdtype)
                         {
                             case 1: /* Clear */
-                                if (ObjectList != null)
-                                    ObjectList.Clear();
-                                if(!is_memoryobj && !is_drawn_in_front)
-                                {
-                                    _uChain = null;
-                                    _uBall = null;
-                                }
+                                if (objectList != null)
+                                    objectList.Clear();
                                 break;
                             case 2: /* Add item */
-                                if (ObjectList == null)
+                                if (objectList == null)
                                 {
                                     if (is_memoryobj)
                                     {
@@ -10774,24 +10768,31 @@ namespace GnollHackX.Pages.Game
                                             _objectData[x, y].FloorObjectList = new List<ObjectDataItem>();
                                     }
 
-                                    ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
+                                    objectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
                                 }
-                                ObjectDataItem newItem = new ObjectDataItem(otmp, otypdata, hallucinated, foundthisturn);
-                                ObjectList.Add(newItem);
-                                if (!is_memoryobj && !is_drawn_in_front)
+                                newItem = new ObjectDataItem(otmp, otypdata, hallucinated, foundthisturn);
+                                objectList.Add(newItem);
+                                break;
+                            case 3: /* Add container item to previous item */
+                                if (objectList == null || objectList.Count == 0)
+                                    break;
+                                if (objectList[objectList.Count - 1].ContainedObjs == null)
+                                    objectList[objectList.Count - 1].ContainedObjs = new List<ObjectDataItem>();
+                                objectList[objectList.Count - 1].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
+                                break;
+                            case 4: /* Clear uchain and uball */
+                                _uChain = null;
+                                _uBall = null;
+                                break;
+                            case 5: /* Add uchain or uball */
+                                if (!is_memoryobj && (isuchain || isuball))
                                 {
-                                    if(isuchain)
+                                    newItem = new ObjectDataItem(otmp, otypdata, hallucinated, foundthisturn);
+                                    if (isuchain)
                                         _uChain = newItem;
                                     if (isuball)
                                         _uBall = newItem;
                                 }
-                                break;
-                            case 3: /* Add container item to previous item */
-                                if (ObjectList == null || ObjectList.Count == 0)
-                                    break;
-                                if (ObjectList[ObjectList.Count - 1].ContainedObjs == null)
-                                    ObjectList[ObjectList.Count - 1].ContainedObjs = new List<ObjectDataItem>();
-                                ObjectList[ObjectList.Count - 1].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
                                 break;
                         }
                     }

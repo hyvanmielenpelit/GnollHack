@@ -582,6 +582,33 @@ void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char
 
     switch (cmd_id)
     {
+    case GUI_CMD_START_FLUSH:
+    {
+        lib_callbacks.callback_send_object_data(0, 0, 0, 4, 0, 0, 0UL); /* Clear out uchain and uball */
+        if (uchain)
+        {
+            unsigned long oflags = 0UL;
+            if (Hallucination)
+                oflags |= OBJDATA_FLAGS_HALLUCINATION;
+            oflags |= OBJDATA_FLAGS_UCHAIN;
+            set_obj_glyph(uchain);
+
+            struct objclassdata ocdata = get_objclassdata(uchain);
+            lib_callbacks.callback_send_object_data(uchain->ox, uchain->oy, uchain, 5, uchain->where, &ocdata, oflags);
+        }
+        if (uball)
+        {
+            unsigned long oflags = 0UL;
+            if (Hallucination)
+                oflags |= OBJDATA_FLAGS_HALLUCINATION;
+            oflags |= OBJDATA_FLAGS_UBALL;
+            set_obj_glyph(uball);
+
+            struct objclassdata ocdata = get_objclassdata(uball);
+            lib_callbacks.callback_send_object_data(uball->ox, uchain->oy, uball, 5, uball->where, &ocdata, oflags);
+        }
+        break;
+    }
     case GUI_CMD_CLEAR_PET_DATA:
     {
         struct monst_info mi = { 0 };
