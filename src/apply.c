@@ -4035,8 +4035,10 @@ struct obj* obj;
                     if (!Blind)
                     {
                         suggestnamingwand = TRUE;
-                        pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s a strange %s, but %s intact.",
-                            Tobjnam(otmp, "glow"), hcolor_multi_buf1(NH_BLACK), otense(otmp, "remain"));
+                        const char* hclr = hcolor_multi_buf2(NH_BLACK);
+                        multicolor_buffer[1] = multicolor_buffer[3] = multicolor_buffer[2];
+                        pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s a %s%s%s, but %s intact.",
+                            Tobjnam(otmp, "glow"), "strange ", hclr, " light", otense(otmp, "remain"));
                     }
                     break;
                 }
@@ -4058,8 +4060,10 @@ struct obj* obj;
                     if (!Blind)
                     {
                         suggestnamingwand = TRUE;
-                        pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s a strange %s, but %s intact.",
-                            Tobjnam(otmp, "glow"), otense(otmp, "remain"), hcolor_multi_buf2(NH_PURPLE));
+                        const char* hclr = hcolor_multi_buf2(NH_PURPLE);
+                        multicolor_buffer[1] = multicolor_buffer[3] = multicolor_buffer[2];
+                        pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s a %s%s%s, but %s intact.",
+                            Tobjnam(otmp, "glow"), "strange ", hclr, " light", otense(otmp, "remain"));
                     }
                     break;
                 }

@@ -10646,8 +10646,12 @@ boolean forcedestroy;
         {
             skip++;
             if (!Blind)
-                pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s glows a strange %s, but remains intact.",
-                      The(xname(obj)), hcolor_multi_buf1(NH_DARK_RED));
+            {
+                const char* hclr = hcolor_multi_buf2(NH_DARK_RED);
+                multicolor_buffer[1] = multicolor_buffer[3] = multicolor_buffer[2];
+                pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s glows a %s%s%s, but remains intact.",
+                    The(xname(obj)), "strange ", hclr, " light");
+            }
         }
         else if (oresist_fire(obj) || is_obj_protected_by_property(obj, &youmonst, dmgtyp))
             skip++;
@@ -10930,8 +10934,12 @@ int osym, dmgtyp;
             {
                 skip++;
                 if (vis)
-                    pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s glows a strange %s, but remains intact.",
-                          The(distant_name(obj, xname)), hcolor_multi_buf1(NH_DARK_RED));
+                {
+                    const char* hclr = hcolor_multi_buf2(NH_DARK_RED);
+                    multicolor_buffer[1] = multicolor_buffer[3] = multicolor_buffer[2];
+                    pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s glows a %s%s%s, but remains intact.",
+                        The(distant_name(obj, xname)), "strange ", hclr, " light");
+                }
             }
             if (oresist_fire(obj) || is_obj_protected_by_property(obj, mtmp, dmgtyp))
             {

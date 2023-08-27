@@ -2561,7 +2561,7 @@ color_name_to_nhcolor(colorpref)
 const char* colorpref;
 {
     int nhcolor;
-    if (!*colorpref || colorpref == c_color_names.c_colorless)
+    if (!colorpref || !*colorpref || colorpref == c_color_names.c_colorless)
         nhcolor = NO_COLOR;
     else if (colorpref == c_color_names.c_black)
         nhcolor = CLR_BLACK;
@@ -2589,6 +2589,8 @@ const char* colorpref;
         nhcolor = CLR_BROWN;
     else if (colorpref == c_color_names.c_gray)
         nhcolor = CLR_GRAY;
+    else if (colorpref == c_color_names.c_dark_red)
+        nhcolor = CLR_RED;
     else
     {
         nhcolor = clrnameptr2color(colorpref);
