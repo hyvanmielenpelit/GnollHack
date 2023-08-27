@@ -3701,8 +3701,11 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         return FALSE;
     
     if (vis)
-        pline("%s starts turning %s.", Monnam(mon),
-              green_mon(mon) ? "into ooze" : hcolor(NH_GREEN));
+    {
+        (void)get_colorless_multicolor_buffer();
+        pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s starts turning %s.", Monnam(mon),
+            green_mon(mon) ? "into ooze" : hcolor_multi_buf1(NH_GREEN));
+    }
     /* -4 => sliming, causes quiet loss of enhanced speed */
     (void)increase_mon_property_verbosely(mon, SLIMED, 10);
 

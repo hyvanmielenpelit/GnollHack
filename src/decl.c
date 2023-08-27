@@ -422,7 +422,8 @@ NEARDATA long domove_succeeded = 0L;
 
 NEARDATA struct c_color_names c_color_names = {
     "black",  "amber", "golden", "light blue", "red",   "green",
-    "silver", "blue",  "purple", "white",      "orange"
+    "silver", "blue",  "purple", "white", "orange", 
+    "brown", "gray", "dark red", "colorless"
 };
 
 struct menucoloring *menu_colorings = NULL;
@@ -546,17 +547,18 @@ const char *ARGV0;
 unsigned nhUse_dummy = 0;
 unsigned long file_end_marker = 0xF23EE6D8;
 
-int no_multiattrs[32] = { 0 };
-int multicolor_red1[1] = { CLR_RED };
-int multicolor_red2[2] = { NO_COLOR, CLR_RED };
-int multicolor_red3[3] = { NO_COLOR, NO_COLOR, CLR_RED };
-int multicolor_red4[4] = { NO_COLOR, NO_COLOR, NO_COLOR, CLR_RED };
-int multicolor_orange1[1] = { CLR_ORANGE };
-int multicolor_orange2[2] = { NO_COLOR, CLR_ORANGE };
-int multicolor_orange3[3] = { NO_COLOR, NO_COLOR, CLR_ORANGE };
-int multicolor_orange4[4] = { NO_COLOR, NO_COLOR, NO_COLOR, CLR_ORANGE };
-int multicolor_text1[1] = { CLR_MSG_TEXT };
-int multicolor_text2[2] = { NO_COLOR, CLR_MSG_TEXT };
+const int no_multiattrs[32] = { 0 };
+const int multicolor_red1[1] = { CLR_RED };
+const int multicolor_red2[2] = { NO_COLOR, CLR_RED };
+const int multicolor_red3[3] = { NO_COLOR, NO_COLOR, CLR_RED };
+const int multicolor_red4[4] = { NO_COLOR, NO_COLOR, NO_COLOR, CLR_RED };
+const int multicolor_orange1[1] = { CLR_ORANGE };
+const int multicolor_orange2[2] = { NO_COLOR, CLR_ORANGE };
+const int multicolor_orange3[3] = { NO_COLOR, NO_COLOR, CLR_ORANGE };
+const int multicolor_orange4[4] = { NO_COLOR, NO_COLOR, NO_COLOR, CLR_ORANGE };
+const int multicolor_text1[1] = { CLR_MSG_TEXT };
+const int multicolor_text2[2] = { NO_COLOR, CLR_MSG_TEXT };
+int multicolor_buffer[32] = { NO_COLOR };
 
 NEARDATA const char* Moloch = "Moloch";
 /* for rejecting attempts to use wizard mode commands */

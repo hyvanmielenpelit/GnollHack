@@ -4459,7 +4459,7 @@ boolean via_attack;
         && (onscary(u.ux, u.uy, mtmp) || is_peaceful(mtmp))) 
     {
         Elbereth_Hypocrite = TRUE;
-        You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "like a hypocrite.");
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like a hypocrite.");
         /* AIS: Yes, I know alignment penalties and bonuses aren't balanced
            at the moment. This is about correct relative to other "small"
            penalties; it should be fairly large, as attacking while standing
@@ -4471,7 +4471,7 @@ boolean via_attack;
         adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
 
         if (!Blind)
-            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "The engraving beneath you fades.");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "The engraving beneath you fades.");
         del_engr_at(u.ux, u.uy);
     }
 
@@ -4482,12 +4482,12 @@ boolean via_attack;
         && (onscary(u.ux, u.uy, mtmp) || is_peaceful(mtmp)))
     {
         if(Elbereth_Hypocrite)
-            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "even more like a hypocrite.");
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "even more like a hypocrite.");
         else
-            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "like a hypocrite.");
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like a hypocrite.");
 
         if (!Blind)
-            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s at your %s.", Tobjnam(scroll, "glow"), NH_BLACK, makeplural(body_part(FOOT)));
+            pline_multi_ex(ATR_NONE, CLR_MSG_WARNING, no_multiattrs, multicolor_buffer, "%s %s at your %s.", Tobjnam(scroll, "glow"), hcolor_multi_buf1(NH_BLACK), makeplural(body_part(FOOT)));
 
         curse(scroll);
     }

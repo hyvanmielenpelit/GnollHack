@@ -2456,7 +2456,8 @@ roguename()
                   : "Glenn Wichman";
 }
 
-STATIC_VAR NEARDATA const char *const hcolors[] = {
+#define NUM_HCOLORS 34
+STATIC_VAR NEARDATA const char *const hcolors[NUM_HCOLORS] = {
     "ultraviolet", "infrared", "bluish-orange", "reddish-green", "dark white",
     "light black", "sky blue-pink", "salty", "sweet", "sour", "bitter",
     "striped", "spiral", "swirly", "plaid", "checkered", "argyle", "paisley",
@@ -2466,13 +2467,133 @@ STATIC_VAR NEARDATA const char *const hcolors[] = {
     "octarine", /* Discworld: the Colour of Magic */
 };
 
+STATIC_VAR NEARDATA uchar const hcolors2nhcolor[NUM_HCOLORS] = {
+    CLR_MAGENTA, CLR_RED, CLR_ORANGE, CLR_GREEN, CLR_GRAY,
+    CLR_GRAY, CLR_BRIGHT_MAGENTA, CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX,
+    CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX,
+    CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX,
+    CLR_MAX, CLR_RED, CLR_RED, CLR_MAX, CLR_MAX, CLR_BRIGHT_GREEN,
+    CLR_ORANGE, CLR_MAX, CLR_RED, CLR_BRIGHT_MAGENTA,
+    CLR_MAX, /* Discworld: the Colour of Magic */
+};
+
 const char *
 hcolor(colorpref)
 const char *colorpref;
 {
-    return (Hallucination || !colorpref)
-        ? hcolors[rn2_on_display_rng(SIZE(hcolors))]
-        : colorpref;
+    return hcolor_multi(colorpref, (int*)0, 0);
+    //return (Hallucination || !colorpref)
+    //    ? hcolors[rn2_on_display_rng(NUM_HCOLORS)]
+    //    : colorpref;
+}
+
+const char*
+hcolor_multi_buf0(colorpref)
+const char* colorpref;
+{
+    return hcolor_multi(colorpref, get_colorless_multicolor_buffer(), 0);
+}
+
+const char*
+hcolor_multi_buf1(colorpref)
+const char* colorpref;
+{
+    return hcolor_multi(colorpref, get_colorless_multicolor_buffer(), 1);
+}
+
+const char*
+hcolor_multi_buf2(colorpref)
+const char* colorpref;
+{
+    return hcolor_multi(colorpref, get_colorless_multicolor_buffer(), 2);
+}
+
+const char*
+hcolor_multi_buf3(colorpref)
+const char* colorpref;
+{
+    return hcolor_multi(colorpref, get_colorless_multicolor_buffer(), 3);
+}
+
+const char*
+hcolor_multi_buf4(colorpref)
+const char* colorpref;
+{
+    return hcolor_multi(colorpref, get_colorless_multicolor_buffer(), 4);
+}
+
+const char*
+hcolor_multi(colorpref, multicolors_buf, multicolor_idx)
+const char* colorpref;
+int* multicolors_buf;
+int multicolor_idx;
+{
+    if (colorpref && !*colorpref)
+    {
+        return colorpref;
+    }
+    else if (Hallucination || !colorpref)
+    {
+        int random_color = rn2_on_display_rng(NUM_HCOLORS);
+        if (multicolors_buf)
+        {
+            int nhcolor = (int)hcolors2nhcolor[random_color];
+            if (nhcolor == CLR_MAX)
+            {
+                nhcolor = rn2(CLR_MAX - 1); /* All colors are equally likely, and NO_COLOR implies CLR_WHITE */
+                if (nhcolor == NO_COLOR)
+                    nhcolor = CLR_WHITE;
+            }
+            multicolors_buf[multicolor_idx] = nhcolor;
+        }
+        return hcolors[random_color] ? hcolors[random_color] : "colorless";
+    }
+    else
+    {
+        if (multicolors_buf)
+            multicolors_buf[multicolor_idx] = color_name_to_nhcolor(colorpref);
+        return colorpref;
+    }
+}
+
+int
+color_name_to_nhcolor(colorpref)
+const char* colorpref;
+{
+    int nhcolor;
+    if (!*colorpref || colorpref == c_color_names.c_colorless)
+        nhcolor = NO_COLOR;
+    else if (colorpref == c_color_names.c_black)
+        nhcolor = CLR_BLACK;
+    else if (colorpref == c_color_names.c_amber)
+        nhcolor = CLR_ORANGE;
+    else if (colorpref == c_color_names.c_golden)
+        nhcolor = HI_GOLD;
+    else if (colorpref == c_color_names.c_light_blue)
+        nhcolor = CLR_BRIGHT_BLUE;
+    else if (colorpref == c_color_names.c_red)
+        nhcolor = CLR_RED;
+    else if (colorpref == c_color_names.c_green)
+        nhcolor = CLR_GREEN;
+    else if (colorpref == c_color_names.c_silver)
+        nhcolor = HI_SILVER;
+    else if (colorpref == c_color_names.c_blue)
+        nhcolor = CLR_BLUE;
+    else if (colorpref == c_color_names.c_purple)
+        nhcolor = CLR_MAGENTA;
+    else if (colorpref == c_color_names.c_white)
+        nhcolor = CLR_WHITE;
+    else if (colorpref == c_color_names.c_orange)
+        nhcolor = CLR_ORANGE;
+    else if (colorpref == c_color_names.c_brown)
+        nhcolor = CLR_BROWN;
+    else if (colorpref == c_color_names.c_gray)
+        nhcolor = CLR_GRAY;
+    else
+    {
+        nhcolor = clrnameptr2color(colorpref);
+    }
+    return nhcolor;
 }
 
 /* return a random real color unless hallucinating */

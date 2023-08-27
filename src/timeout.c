@@ -394,7 +394,7 @@ choke_dialogue()
             const char *str = choke_texts[SIZE(choke_texts) - i];
 
             if (index(str, '%'))
-                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, str, hcolor(NH_BLUE));
+                pline_multi_ex(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, str, hcolor_multi_buf0(NH_BLUE));
             else
                 pline_ex1(ATR_NONE, CLR_MSG_NEGATIVE, str);
         }
@@ -464,7 +464,7 @@ slime_dialogue()
         if (index(buf, '%')) {
             if (i == 4L) {  /* "you are turning green" */
                 if (!Blind) /* [what if you're already green?] */
-                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, buf, hcolor(NH_GREEN));
+                    pline_multi_ex(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, buf, hcolor_multi_buf0(NH_GREEN));
             } else
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, buf,
                       an(Hallucination ? rndmonnam(NULL) : "green slime"));

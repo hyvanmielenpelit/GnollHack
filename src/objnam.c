@@ -1926,23 +1926,23 @@ weapon_here:
     {
         char colorbuf[OBUFSZ] = "red";
         if (obj->oartifact)
-            strcpy(colorbuf, glow_color(obj->oartifact));
+            Strcpy(colorbuf, glow_color(obj->oartifact));
 
-        if (!obj->oartifact || strcmp(colorbuf, "no color") == 0)
+        if (!obj->oartifact || strcmp(colorbuf, "no color") == 0 || strcmp(colorbuf, "colorless") == 0)
         {
             if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLACK)
-                strcpy(colorbuf, "black");
+                Strcpy(colorbuf, "black");
             else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_WHITE)
-                strcpy(colorbuf, "white");
+                Strcpy(colorbuf, "white");
             else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLUE)
-                strcpy(colorbuf, "blue");
+                Strcpy(colorbuf, "blue");
             else
-                strcpy(colorbuf, "red");
+                Strcpy(colorbuf, "red");
         }
         if (!Blind)
             Sprintf(eos(bp), " (%s %s)",
                 glow_verb(obj->detectioncount, TRUE),
-                colorbuf);
+                hcolor(colorbuf));
     }
 
     /* Mark if glowing when detected something */
@@ -2539,6 +2539,29 @@ An(str)
 const char *str;
 {
     char *tmp = an(str);
+
+    *tmp = highc(*tmp);
+    return tmp;
+}
+
+char*
+an_prefix(str)
+const char* str;
+{
+    char* buf = nextobuf();
+
+    if (!str || !*str) {
+        impossible("Alphabet soup: 'an(%s)'.", str ? "\"\"" : "<null>");
+        return strcpy(buf, "an []");
+    }
+    return just_an(buf, str);
+}
+
+char*
+An_prefix(str)
+const char* str;
+{
+    char* tmp = an_prefix(str);
 
     *tmp = highc(*tmp);
     return tmp;

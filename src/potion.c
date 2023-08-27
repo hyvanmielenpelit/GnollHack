@@ -2064,7 +2064,8 @@ boolean dopopup;
     else
         Strcpy(buf, txt);
 
-    pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, buf, "Strange Feeling", dopopup);
+    if(*buf)
+        pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, buf, "Strange Feeling", dopopup);
 
     if (!obj) /* e.g., crystal ball finds no traps */
         return;
@@ -2107,7 +2108,7 @@ boolean useeit;
 const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
 {
     void FDECL((*func), (OBJ_P)) = 0;
-    const char *glowcolor = 0;
+    const char *glowcolortext = 0;
 #define COST_alter (-2)
 #define COST_none (-1)
     int costchange = COST_none;
@@ -2123,16 +2124,16 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
         if (targobj->cursed) 
         {
             func = uncurse;
-            textcolor = CLR_MSG_POSITIVE;
-            glowcolor = NH_AMBER;
+            textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE;
+            glowcolortext = NH_AMBER;
             costchange = COST_UNCURS;
             sfxsound = SFX_UNCURSE_ITEM_SUCCESS;
         } 
         else if (!targobj->blessed)
         {
             func = bless;
-            textcolor = CLR_MSG_POSITIVE;
-            glowcolor = NH_LIGHT_BLUE;
+            textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE;
+            glowcolortext = NH_LIGHT_BLUE;
             costchange = COST_alter;
             altfmt = TRUE; /* "with a <color> aura" */
             sfxsound = SFX_BLESS_ITEM_SUCCESS;
@@ -2143,16 +2144,16 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
         if (targobj->blessed)
         {
             func = unbless;
-            textcolor = CLR_MSG_WARNING;
-            glowcolor = "brown";
+            textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_WARNING;
+            glowcolortext = NH_BROWN;
             costchange = COST_UNBLSS;
             sfxsound = SFX_UNBLESS_ITEM_SUCCESS;
         } 
         else if (!targobj->cursed) 
         {
             func = curse;
-            textcolor = CLR_MSG_NEGATIVE;
-            glowcolor = NH_BLACK;
+            textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_NEGATIVE;
+            glowcolortext = NH_BLACK;
             costchange = COST_alter;
             altfmt = TRUE;
             sfxsound = SFX_CURSE_ITEM_SUCCESS;
@@ -2179,12 +2180,13 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
             if(sfxsound > 0)
                 play_sfx_sound(sfxsound);
 
-            glowcolor = hcolor(glowcolor);
-
             if (altfmt)
-                pline_ex(ATR_NONE, textcolor, "%s with %s aura.", objphrase, an(glowcolor));
+            {
+                const char* hclr = hcolor_multi_buf2(glowcolortext);
+                pline_multi_ex(ATR_NONE, textcolor, no_multiattrs, multicolor_buffer, "%s with %s%s aura.", objphrase, an_prefix(hclr), hclr);
+            }
             else
-                pline_ex(ATR_NONE, textcolor, "%s %s.", objphrase, glowcolor);
+                pline_multi_ex(ATR_NONE, textcolor, no_multiattrs, multicolor_buffer, "%s %s.", objphrase, hcolor_multi_buf1(glowcolortext));
 
             iflags.last_msg = PLNMSG_OBJ_GLOWS;
             targobj->bknown = !Hallucination;
@@ -3956,9 +3958,9 @@ dodip()
     if (potion->otyp == POT_ACID && obj->otyp == CORPSE
         && (obj->corpsenm == PM_LICHEN || obj->corpsenm == PM_WHITE_LICHEN || obj->corpsenm == PM_BLACK_LICHEN) && !Blind) 
     {
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s %s around the edges.", The(cxname(obj)),
+        pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s %s %s around the edges.", The(cxname(obj)),
               otense(obj, "turn"),
-              potion->odiluted ? hcolor(NH_ORANGE) : hcolor(NH_RED));
+              hcolor_multi_buf2(potion->odiluted ? NH_ORANGE : NH_RED));
         potion->in_use = FALSE; /* didn't go poof */
         return 1;
     }

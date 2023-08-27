@@ -1575,6 +1575,19 @@ int clr;
     return (char *) 0;
 }
 
+/* Note: compares only the const pointers, not the actual strings */
+int
+clrnameptr2color(clrnameptr)
+const char* clrnameptr;
+{
+    int i;
+
+    for (i = 0; i < SIZE(colornames); i++)
+        if (colornames[i].name && colornames[i].name == clrnameptr)
+            return colornames[i].color;
+    return NO_COLOR;
+}
+
 int
 match_str2clr(str)
 char *str;

@@ -1278,7 +1278,7 @@ struct obj **optr;
         if (!obj->charges)
         {
             play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
-            pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "All you see is funky %s haze.", hcolor((char *) 0));
+            pline_multi_ex(ATR_NONE, CLR_MSG_HALLUCINATED, no_multiattrs, multicolor_buffer, "All you see is funky %s haze.", hcolor_multi_buf0((char *) 0));
         } 
         else 
         {
@@ -1293,8 +1293,8 @@ struct obj **optr;
                       poly_gender() == 1 ? "babe" : "dude");
                 break;
             case 3:
-                pline_The_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "crystal pulses with sinister %s light!",
-                          hcolor((char *) 0));
+                pline_The_multi_ex(ATR_NONE, CLR_MSG_HALLUCINATED, no_multiattrs, multicolor_buffer, "crystal pulses with sinister %s light!",
+                          hcolor_multi_buf0((char *) 0));
                 break;
             case 4:
                 You_see_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "goldfish swimming above fluorescent rocks.");

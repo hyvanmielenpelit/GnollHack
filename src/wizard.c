@@ -865,7 +865,7 @@ intervene()
         break;
     case 2:
         if (!Blind)
-            You_ex(ATR_NONE, CLR_MSG_WARNING, "notice a %s glow surrounding you.", hcolor(NH_BLACK));
+            You_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_WARNING, no_multiattrs, multicolor_buffer, "notice a %s glow surrounding you.", hcolor_multi_buf0(NH_BLACK));
         rndcurse();
         break;
     case 3:

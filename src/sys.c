@@ -286,6 +286,7 @@ reset_global_variables(VOID_ARGS)
     toplineattrs[sizeof(toplineattrs) - 1] = toplinecolors[sizeof(toplinecolors) - 1] = 0;
     upstairs_room = dnstairs_room = sstairs_room = 0;
 
+    (void)get_colorless_multicolor_buffer();
     reset_item_global_variables();
 
     /* This needs to be setup already here early due to tiledata processing */

@@ -4635,12 +4635,12 @@ struct monst *mon;
         if (Blind)
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stop tingling.", hands);
         else
-            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stop glowing %s.", hands, hcolor(NH_RED));
+            Your_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s stop glowing %s.", hands, hcolor_multi_buf1(NH_RED));
     } else {
         if (Blind)
             pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "tingling in your %s lessens.", hands);
         else
-            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s no longer glow so brightly %s.", hands, hcolor(NH_RED));
+            Your_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s no longer glow so brightly %s.", hands, hcolor_multi_buf1(NH_RED));
     }
     u.umconf--;
 }

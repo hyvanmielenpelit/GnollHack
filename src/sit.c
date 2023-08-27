@@ -522,8 +522,8 @@ rndcurse()
             curse(otmp);
         }
         if (!Blind) {
-            pline_ex(ATR_NONE, otmp->cursed ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, "%s %s.", Yobjnam2(otmp, "glow"),
-                  hcolor(otmp->cursed ? NH_BLACK : (const char *) "brown"));
+            pline_multi_ex(ATR_NONE, otmp->cursed ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s %s.", Yobjnam2(otmp, "glow"),
+                  hcolor_multi_buf1(otmp->cursed ? NH_BLACK : NH_BROWN));
             otmp->bknown = TRUE;
         }
     }

@@ -1051,7 +1051,7 @@ register struct obj *obj;
             {
                 curse(obj);
                 if (!Blind)
-                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s %s for a moment.", Tobjnam(obj, "glow"), hcolor(NH_BLACK));
+                    pline_multi_ex(ATR_NONE, CLR_MSG_SPELL, no_multiattrs, multicolor_buffer, "%s %s for a moment.", Tobjnam(obj, "glow"), hcolor_multi_buf1(NH_BLACK));
                 else
                 {
                     identified = FALSE;

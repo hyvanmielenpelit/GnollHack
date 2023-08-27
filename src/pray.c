@@ -591,9 +591,9 @@ int trouble;
             return;
         }
         if (!Blind || (otmp == ublindf && Blind_because_of_blindfold_only)) {
-            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s %s.",
+            pline_multi_ex(ATR_NONE, CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, "%s %s.",
                   what ? what : (const char *) Yobjnam2(otmp, "softly glow"),
-                  hcolor(NH_AMBER));
+                  hcolor_multi_buf1(NH_AMBER));
             iflags.last_msg = PLNMSG_OBJ_GLOWS;
             otmp->bknown = !Hallucination;
         }
@@ -665,7 +665,7 @@ int trouble;
         play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
         otmp = which_armor(u.usteed, W_SADDLE);
         if (!Blind) {
-            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s %s.", Yobjnam2(otmp, "softly glow"), hcolor(NH_AMBER));
+            pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, "%s %s.", Yobjnam2(otmp, "softly glow"), hcolor_multi_buf1(NH_AMBER));
             otmp->bknown = TRUE;
         }
         uncurse(otmp);
@@ -845,7 +845,7 @@ aligntyp resp_god;
     case 5:
         gods_angry(resp_god);
         if (!Blind && !Antimagic)
-            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s glow surrounds you.", An(hcolor(NH_BLACK)));
+            pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "%s glow surrounds you.", An(hcolor_multi_buf0(NH_BLACK)));
         rndcurse();
         break;
     case 9:
@@ -1690,8 +1690,12 @@ aligntyp g_align;
             if (is_obj_special_praying_item(otmp) && !otmp->blessed)
             {
                 play_sfx_sound(SFX_AURA_GLOW);
-                if(!Blind)
-                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s with %s aura.", Yobjnam2(otmp, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
+                if (!Blind)
+                {
+                    const char* hclr = hcolor_multi_buf2(NH_LIGHT_BLUE);
+                    pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, 
+                        "%s with %s%s aura.", Yobjnam2(otmp, "softly glow"), an_prefix(hclr), hclr);
+                }
                 bless(otmp);
                 otmp->bknown = 1;
                 update_inventory();
@@ -1799,11 +1803,11 @@ aligntyp g_align;
                 {
                     if (!Blind)
                     {
-                        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s %s%s.", Yobjnam2(uwep, "softly glow"), hcolor(NH_AMBER), repair_buf);
+                        pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, "%s %s%s.", Yobjnam2(uwep, "softly glow"), hcolor_multi_buf1(NH_AMBER), repair_buf);
                         iflags.last_msg = PLNMSG_OBJ_GLOWS;
                     }
                     else
-                        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "the power of %s over %s.", u_gname(), yname(uwep));
+                        You_feel_ex(ATR_NONE,  Hallucination ? CLR_MSG_HALLUCINATED :CLR_MSG_POSITIVE, "the power of %s over %s.", u_gname(), yname(uwep));
                     uncurse(uwep);
                     uwep->bknown = TRUE;
                     *repair_buf = '\0';
@@ -1812,7 +1816,9 @@ aligntyp g_align;
                 {
                     if (!Blind)
                     {
-                        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s with %s aura%s.", Yobjnam2(uwep, "softly glow"), an(hcolor(NH_LIGHT_BLUE)), repair_buf);
+                        const char* hclr = hcolor_multi_buf2(NH_LIGHT_BLUE);
+                        pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, 
+                            "%s with %s%s aura%s.", Yobjnam2(uwep, "softly glow"), an_prefix(hclr), hclr, repair_buf);
                         iflags.last_msg = PLNMSG_OBJ_GLOWS;
                     }
                     else
@@ -1868,7 +1874,11 @@ aligntyp g_align;
         case 2:
             play_sfx_sound(SFX_PRAY_HEALING);
             if (!Blind)
-                You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are surrounded by %s glow.", an(hcolor(NH_GOLDEN)));
+            {
+                const char* hclr = hcolor_multi_buf1(NH_GOLDEN);
+                You_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, 
+                    "are surrounded by %s%s glow.", an_prefix(hclr), hclr);
+            }
             /* if any levels have been lost (and not yet regained),
                treat this effect like blessed full healing */
             if (u.ulevel < u.ulevelmax) 
@@ -1915,7 +1925,11 @@ aligntyp g_align;
             if (Blind)
                 You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "the power of %s.", u_gname());
             else
-                You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are surrounded by %s aura.", an(hcolor(NH_LIGHT_BLUE)));
+            {
+                const char* hclr = hcolor_multi_buf1(NH_LIGHT_BLUE);
+                You_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, 
+                    "are surrounded by %s%s aura.", an_prefix(hclr), hclr);
+            }
             for (otmp = invent; otmp; otmp = otmp->nobj) 
             {
                 if (otmp->cursed
@@ -1924,8 +1938,8 @@ aligntyp g_align;
                 {
                     if (!Blind) 
                     {
-                        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s %s.", Yobjnam2(otmp, "softly glow"),
-                              hcolor(NH_AMBER));
+                        pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, "%s %s.", Yobjnam2(otmp, "softly glow"),
+                              hcolor_multi_buf1(NH_AMBER));
                         iflags.last_msg = PLNMSG_OBJ_GLOWS;
                         otmp->bknown = TRUE;
                         ++any;
@@ -2078,11 +2092,11 @@ boolean bless_water;
         play_sfx_sound(bless_water ? SFX_PRAY_BLESS_WATER : SFX_PRAY_CURSE_WATER);
 
         if (!Blind)
-            pline_ex(ATR_NONE, bless_water ? CLR_MSG_POSITIVE : NO_COLOR, "%s potion%s on the altar glow%s %s for a moment.",
+            pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : bless_water ? CLR_MSG_POSITIVE : NO_COLOR, no_multiattrs, multicolor_buffer, "%s potion%s on the altar glow%s %s for a moment.",
               ((other && changed > 1L) ? "Some of the"
                                        : (other ? "One of the" : "The")),
               ((other || changed > 1L) ? "s" : ""), (changed > 1L ? "" : "s"),
-              (bless_water ? hcolor(NH_LIGHT_BLUE) : hcolor(NH_BLACK)));
+              (hcolor_multi_buf3(bless_water ? NH_LIGHT_BLUE : NH_BLACK)));
     }
     return (boolean) (changed > 0L);
 }
@@ -2150,12 +2164,13 @@ boolean bless_stuff;
         play_sfx_sound(bless_stuff ? SFX_PRAY_BLESS_WATER : SFX_PRAY_CURSE_WATER);
 
         if(!Blind)
-            pline_ex(ATR_NONE, bless_stuff ? CLR_MSG_POSITIVE : NO_COLOR, "%s %s%s on the altar glow%s %s for a moment.",
+            pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : bless_stuff ? CLR_MSG_POSITIVE : NO_COLOR, no_multiattrs, multicolor_buffer,
+                "%s %s%s on the altar glow%s %s for a moment.",
                 ((other && changed > 1L) ? "Some of the"
                     : (other ? "One of the" : "The")),
                 use_items || !strcmp(buf, "") ? "religious item" : buf,
                 ((other || changed > 1L) ? "s" : ""), (changed > 1L ? "" : "s"),
-                (bless_stuff ? hcolor(NH_LIGHT_BLUE) : hcolor(NH_BLACK)));
+                (hcolor_multi_buf4(bless_stuff ? NH_LIGHT_BLUE : NH_BLACK)));
 
         update_inventory();
     }
@@ -2730,12 +2745,12 @@ dosacrifice()
                     levl[u.ux][u.uy].subtyp = ALTAR_SUBTYPE_NORMAL; /* In the case it is Moloch's altar or a high altar */
                     newsym(u.ux, u.uy);
                     if (!Blind)
-                        pline_The_ex(ATR_NONE, CLR_MSG_POSITIVE, "altar glows %s.",
-                                  hcolor((u.ualign.type == A_LAWFUL)
+                        pline_The_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, "altar glows %s.",
+                                  hcolor_multi_buf0((u.ualign.type == A_LAWFUL)
                                             ? NH_WHITE
                                             : u.ualign.type
                                                ? NH_BLACK
-                                               : (const char *) "gray"));
+                                               : NH_GRAY));
 
                     if (rnl(u.ulevel) > 6 && u.ualign.record > 0
                         && rnd(u.ualign.record) > (3 * ALIGNLIM) / 4)
@@ -2970,8 +2985,12 @@ dosacrifice()
                 if (is_obj_special_praying_item(otmp2) && !otmp2->blessed)
                 {
                     play_sfx_sound(SFX_AURA_GLOW);
-                    if(!Blind)
-                        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s with %s aura.", Yobjnam2(otmp2, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
+                    if (!Blind)
+                    {
+                        const char* hclr = hcolor_multi_buf2(NH_LIGHT_BLUE);
+                        pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, 
+                            "%s with %s%s aura.", Yobjnam2(otmp2, "softly glow"), an_prefix(hclr), hclr);
+                    }
                     bless(otmp2);
                     otmp2->bknown = 1;
                     update_inventory();

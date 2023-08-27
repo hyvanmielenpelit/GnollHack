@@ -1920,7 +1920,7 @@ const char *mesg;
         }
         else 
         {
-            strcpy(containsbuf, "It contains spinach.");
+            Strcpy(containsbuf, "It contains spinach.");
             tin->dknown = tin->known = 1;
         }
 

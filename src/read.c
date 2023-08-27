@@ -605,8 +605,8 @@ register int pline_attr, pline_color;
 const char* title;
 boolean dopopup;
 {
-    char effbuf[BUFSZ];
     play_sfx_sound(SFX_AURA_GLOW);
+    char effbuf[BUFSZ];
     Sprintf(effbuf, "%s briefly.", Yobjnam2(otmp, Blind ? "vibrate" : "glow"));
     pline_ex1_popup(pline_attr, pline_color, effbuf, title ? title : Blind ? "Brief Vibration" : "Magical Glow", dopopup);
 }
@@ -619,11 +619,9 @@ register int pline_attr, pline_color;
 const char* title;
 boolean dopopup;
 {
-    char effbuf[BUFSZ];
     play_sfx_sound(SFX_AURA_GLOW);
-    Sprintf(effbuf, "%s%s%s for a moment.", Yobjnam2(otmp, Blind ? "vibrate" : "glow"),
-          Blind ? "" : " ", Blind ? "" : hcolor(color));
-    pline_ex1_popup(pline_attr, pline_color, effbuf, title ? title : Blind ? "Magical Vibration" : "Magical Glow", dopopup);
+    pline_multi_ex_popup(pline_attr, pline_color, no_multiattrs, multicolor_buffer, title ? title : Blind ? "Magical Vibration" : "Magical Glow", dopopup, 
+        "%s%s%s for a moment.", Yobjnam2(otmp, Blind ? "vibrate" : "glow"), Blind ? "" : " ", hcolor_multi_buf2(Blind ? "" : color));
 }
 
 /* Is the object chargeable?  For purposes of inventory display; it is
@@ -1821,12 +1819,12 @@ struct monst* targetmonst;
                 if (!confused && !scursed && otyp == SCR_PROTECT_ARMOR)
                     known = TRUE;
 
-                Sprintf(effbuf, "%s covered by a %s %s %s!", Yobjnam2(otmp, "are"),
+                pline_multi_ex_popup(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, known || otmp->oclass == SPBOOK_CLASS ? "Protect Armor" : "Magical Effect", is_serviced_spell,
+                    "%s covered by a %s %s %s!", Yobjnam2(otmp, "are"),
                     scursed ? "mottled" : "shimmering",
-                    hcolor(scursed ? NH_BLACK : NH_GOLDEN),
+                    hcolor_multi_buf2(scursed ? NH_BLACK : NH_GOLDEN),
                     scursed ? "glow"
                     : (is_shield(otmp) ? "layer" : "shield"));
-                pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, known || otmp->oclass == SPBOOK_CLASS ? "Protect Armor" : "Magical Effect", is_serviced_spell);
             }
             if (new_erodeproof && (otmp->oeroded || otmp->oeroded2)) {
                 otmp->oeroded = otmp->oeroded2 = 0;
@@ -1865,13 +1863,13 @@ struct monst* targetmonst;
                 play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, u.ux, u.uy, 0, FALSE);
                 play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
                 special_effect_wait_until_action(0);
-                Sprintf(effbuf, "%s violently %s%s%s for a while, then suddenly %s out a puff of%s smoke.", Yname2(otmp),
+                pline_multi_ex_popup(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, Blind ? "Puff of Smoke" : "Puff of Blue Smoke", is_serviced_spell,
+                    "%s violently %s%s%s for a while, then suddenly %s out a puff of%s smoke.", Yname2(otmp),
                     otense(otmp, Blind ? "vibrate" : "glow"),
                     (!Blind && !same_color) ? " " : "",
-                    (Blind || same_color) ? "" : hcolor(scursed ? NH_BLACK
+                    hcolor_multi_buf3((Blind || same_color) ? "" : scursed ? NH_BLACK
                         : NH_SILVER),
                     otense(otmp, "give"), Blind ? "" : " blue");
-                pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, effbuf, Blind ? "Puff of Smoke" : "Puff of Blue Smoke", is_serviced_spell);
                 otmp->enchantment = 0;
                 otmp->speflags |= SPEFLAGS_GIVEN_OUT_BLUE_SMOKE;
                 update_inventory();
@@ -1882,13 +1880,13 @@ struct monst* targetmonst;
             {
                 play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
                 otmp->in_use = TRUE;
-                Sprintf(effbuf, "%s violently %s%s%s for a while, then %s.", Yname2(otmp),
+                pline_multi_ex_popup(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "Evaporation", is_serviced_spell,
+                    "%s violently %s%s%s for a while, then %s.", Yname2(otmp),
                     otense(otmp, Blind ? "vibrate" : "glow"),
                     (!Blind && !same_color) ? " " : "",
-                    (Blind || same_color) ? "" : hcolor(scursed ? NH_BLACK
+                    hcolor_multi_buf3((Blind || same_color) ? "" : scursed ? NH_BLACK
                         : NH_SILVER),
                     otense(otmp, "evaporate"));
-                pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, effbuf, "Evaporation", is_serviced_spell);
                 remove_worn_item(otmp, FALSE);
                 useup(otmp);
                 break;
@@ -1919,16 +1917,15 @@ struct monst* targetmonst;
 
         special_effect_wait_until_action(0);
 
-        Sprintf(effbuf, "%s %s%s%s%s for a %s.", Yname2(otmp),
+        pline_multi_ex_popup(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : scursed ? CLR_MSG_NEGATIVE : s == 0 ? CLR_MSG_WARNING : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer,
+            known || otmp->oclass == SPBOOK_CLASS ? "Enchant Armor" : Blind ? "Magical Vibration" : "Magical Glow", 
+            is_serviced_spell,
+            "%s %s%s%s%s for a %s.", Yname2(otmp),
             s == 0 ? "violently " : "",
             otense(otmp, Blind ? "vibrate" : "glow"),
             (!Blind && !same_color) ? " " : "",
-            (Blind || same_color)
-            ? "" : hcolor(scursed ? NH_BLACK : NH_SILVER),
-            (s * s > 1) ? "while" : "moment");
-        pline_ex1_popup(ATR_NONE, scursed ? CLR_MSG_NEGATIVE : s == 0 ? CLR_MSG_WARNING : CLR_MSG_POSITIVE, effbuf,
-            known || otmp->oclass == SPBOOK_CLASS ? "Enchant Armor" : Blind ? "Magical Vibration" : "Magical Glow", 
-            is_serviced_spell);
+            hcolor_multi_buf4((Blind || same_color) ? "" : scursed ? NH_BLACK : NH_SILVER),
+            (s* s > 1) ? "while" : "moment");
 
         /* [this cost handling will need updating if shop pricing is
            ever changed to care about curse/bless status of armor] */
@@ -2049,9 +2046,11 @@ struct monst* targetmonst;
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                 special_effect_wait_until_action(0);
-                Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s begin to %s%s.", makeplural(body_part(HAND)),
+                Your_multi_ex(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer,
+                    "%s begin to %s%s.", 
+                    makeplural(body_part(HAND)),
                     Blind ? "tingle" : "glow ",
-                    Blind ? "" : hcolor(NH_PURPLE));
+                    hcolor_multi_buf2(Blind ? "" : NH_PURPLE));
                 make_confused(itimeout_incr(HConfusion, duration), FALSE);
                 special_effect_wait_until_end(0);
             }
@@ -2059,8 +2058,9 @@ struct monst* targetmonst;
             {
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 special_effect_wait_until_action(0);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A %s%s surrounds your %s.",
-                    Blind ? "" : hcolor(NH_RED),
+                pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, 
+                    "A %s%s surrounds your %s.",
+                    hcolor_multi_buf0(Blind ? "" : NH_RED),
                     Blind ? "faint buzz" : " glow", body_part(HEAD));
                 make_confused(0L, TRUE);
                 special_effect_wait_until_end(0);
@@ -2072,9 +2072,10 @@ struct monst* targetmonst;
             {
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 special_effect_wait_until_action(0);
-                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%s %s%s.", makeplural(body_part(HAND)),
-                    Blind ? "" : " begin to glow",
-                    Blind ? (const char*) "tingle" : hcolor(NH_RED),
+                Your_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s%s %s%s.", 
+                    makeplural(body_part(HAND)),
+                    Blind ? hcolor_multi_buf1("") : " begin to glow",
+                    Blind ? (const char*) "tingle" : hcolor_multi_buf2(NH_RED),
                     u.umconf ? " even more" : "");
                 u.umconf++;
                 special_effect_wait_until_end(0);
@@ -2087,9 +2088,9 @@ struct monst* targetmonst;
                     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s tingle %s sharply.", makeplural(body_part(HAND)),
                         u.umconf ? "even more" : "very");
                 else
-                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s glow a%s brilliant %s.",
+                    Your_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s glow a%s brilliant %s.",
                         makeplural(body_part(HAND)),
-                        u.umconf ? "n even more" : "", hcolor(NH_RED));
+                        u.umconf ? "n even more" : "", hcolor_multi_buf2(NH_RED));
                 /* after a while, repeated uses become less effective */
                 if (u.umconf >= 40)
                     u.umconf++;
@@ -2270,11 +2271,11 @@ struct monst* targetmonst;
                 if (!confused && !scursed && otyp == SCR_PROTECT_WEAPON)
                     known = TRUE;
 
-                Sprintf(effbuf, "%s covered by a %s %s %s!", Yobjnam2(otmp, "are"),
+                pline_multi_ex_popup(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, known || otmp->oclass == SPBOOK_CLASS ? "Protect Weapon" : "Magical Effect", is_serviced_spell,
+                    "%s covered by a %s %s %s!", Yobjnam2(otmp, "are"),
                     scursed ? "mottled" : "shimmering",
-                    hcolor(scursed ? NH_PURPLE : NH_GOLDEN),
+                    hcolor_multi_buf2(scursed ? NH_PURPLE : NH_GOLDEN),
                     scursed ? "glow" : "shield");
-                pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, known || otmp->oclass == SPBOOK_CLASS ? "Protect Weapon" : "Magical Effect", is_serviced_spell);
             }
 
             if (new_erodeproof && (otmp->oeroded || otmp->oeroded2)) 
@@ -2698,8 +2699,11 @@ struct monst* targetmonst;
 
                 if (otmp->blessed || otmp->cursed) 
                 {
-                    There_ex(ATR_NONE, otmp->blessed ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "is %s flash as you cast the spell on %s.",
-                        an(hcolor(otmp->blessed ? NH_AMBER : NH_BLACK)), the(cxname(otmp)));
+                    const char* hclr = hcolor_multi_buf1(otmp->blessed ? NH_AMBER : NH_BLACK);
+                    multicolor_buffer[2] = multicolor_buffer[1];
+                    There_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : otmp->blessed ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer,
+                        "is %s%s%s as you cast the spell on %s.",
+                        an_prefix(hclr), hclr, " flash", the(cxname(otmp)));
                     otmp->bknown = 1;
                     update_inventory();
                 }
@@ -4522,7 +4526,7 @@ boolean confused; /* Is caster confused */
                 if (otmp->cursed)
                 {
                     func = uncurse;
-                    textcolor = CLR_MSG_POSITIVE;
+                    textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE;
                     glowcolor = NH_AMBER;
                     costchange = COST_UNCURS;
                     soundid = SFX_UNCURSE_ITEM_SUCCESS;
@@ -4530,7 +4534,7 @@ boolean confused; /* Is caster confused */
                 else if (!otmp->blessed)
                 {
                     func = bless;
-                    textcolor = CLR_MSG_POSITIVE;
+                    textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE;
                     glowcolor = NH_LIGHT_BLUE;
                     costchange = COST_alter;
                     altfmt = TRUE; /* "with a <color> aura" */
@@ -4542,15 +4546,15 @@ boolean confused; /* Is caster confused */
                 if (otmp->blessed)
                 {
                     func = unbless;
-                    textcolor = CLR_MSG_WARNING;
-                    glowcolor = "brown";
+                    textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_WARNING;
+                    glowcolor = NH_BROWN;
                     costchange = COST_UNBLSS;
                     soundid = SFX_UNBLESS_ITEM_SUCCESS;
                 }
                 else if (!otmp->cursed)
                 {
                     func = curse;
-                    textcolor = CLR_MSG_NEGATIVE;
+                    textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_NEGATIVE;
                     glowcolor = NH_BLACK;
                     costchange = COST_alter;
                     altfmt = TRUE;
@@ -4568,12 +4572,16 @@ boolean confused; /* Is caster confused */
                    this used to set obj->bknown even when not seeing
                    the effect; now hero has to see the glow, and bknown
                    is cleared instead of set if perception is distorted */
-                glowcolor = hcolor(glowcolor);
                 if (altfmt)
-                    Sprintf(effbuf, "%s with %s aura.", isyou ? Yobjnam2(otmp, "glow") : Tobjnam(otmp, "glow"), an(glowcolor));
+                {
+                    const char* hclr = hcolor_multi_buf2(glowcolor);
+                    pline_multi_ex_popup(ATR_NONE, textcolor, no_multiattrs, multicolor_buffer, otyp == SPE_BLESS ? "Bless" : "Curse", is_serviced_spell,
+                        "%s with %s%s aura.", isyou ? Yobjnam2(otmp, "glow") : Tobjnam(otmp, "glow"), an_prefix(hclr), hclr);
+                }
                 else
-                    Sprintf(effbuf, "%s %s.", isyou ? Yobjnam2(otmp, "glow") : Tobjnam(otmp, "glow"), glowcolor);
-                pline_ex1_popup(ATR_NONE, textcolor, effbuf, otyp == SPE_BLESS ? "Bless" : "Curse", is_serviced_spell);
+                    pline_multi_ex_popup(ATR_NONE, textcolor, no_multiattrs, multicolor_buffer, otyp == SPE_BLESS ? "Bless" : "Curse", is_serviced_spell,
+                        "%s %s.", isyou ? Yobjnam2(otmp, "glow") : Tobjnam(otmp, "glow"), hcolor_multi_buf1(glowcolor));
+                
                 iflags.last_msg = PLNMSG_OBJ_GLOWS;
                 otmp->bknown = !Hallucination;
                 /* potions of water are the only shop goods whose price depends

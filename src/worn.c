@@ -267,8 +267,8 @@ boolean verbose_and_update_stats;
             if (Blind)
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s for a moment.", Tobjnam(obj, "vibrate"));
             else
-                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s for a moment.", Tobjnam(obj, "glow"),
-                    hcolor(NH_BLACK));
+                pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "%s %s for a moment.", Tobjnam(obj, "glow"),
+                    hcolor_multi_buf1(NH_BLACK));
         }
     }
 
@@ -1690,9 +1690,9 @@ outer_break:
             pline("%s%s puts on %s.", Monnam(mon), buf,
                   distant_name(best, doname));
             if (autocurse)
-                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s %s %s for a moment.", s_suffix(Monnam(mon)),
+                pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "%s %s %s %s for a moment.", s_suffix(Monnam(mon)),
                       simpleonames(best), otense(best, "glow"),
-                      hcolor(NH_BLACK));
+                      hcolor_multi_buf2(NH_BLACK));
         } /* can see it */
     }
 

@@ -447,7 +447,8 @@ E NEARDATA long domove_succeeded;
 E NEARDATA struct c_color_names {
     const char *const c_black, *const c_amber, *const c_golden,
         *const c_light_blue, *const c_red, *const c_green, *const c_silver,
-        *const c_blue, *const c_purple, *const c_white, *const c_orange;
+        *const c_blue, *const c_purple, *const c_white, *const c_orange, 
+        *const c_brown, *const c_gray, *const c_dark_red, *const c_colorless;
 } c_color_names;
 #define NH_BLACK c_color_names.c_black
 #define NH_AMBER c_color_names.c_amber
@@ -460,6 +461,11 @@ E NEARDATA struct c_color_names {
 #define NH_PURPLE c_color_names.c_purple
 #define NH_WHITE c_color_names.c_white
 #define NH_ORANGE c_color_names.c_orange
+#define NH_BROWN c_color_names.c_brown
+#define NH_GRAY c_color_names.c_gray
+#define NH_DARK_RED c_color_names.c_dark_red
+#define NH_COLORLESS c_color_names.c_colorless
+
 
 /* The names of the colors used for gems, etc. */
 E const char *c_obj_colors[];
@@ -531,17 +537,18 @@ E NEARDATA winid WIN_MAP, WIN_INVEN, WIN_HERE;
 
 #define pline_ex1_popup(a, b, cstr, title, dopop) pline_ex1(a, b, cstr); if (dopop) display_popup_text(cstr, title, POPUP_TEXT_GENERAL, a, b, NO_GLYPH, 0)
 
-E int no_multiattrs[32];
-E int multicolor_red1[1];
-E int multicolor_red2[2];
-E int multicolor_red3[3];
-E int multicolor_red4[4];
-E int multicolor_orange1[1];
-E int multicolor_orange2[2];
-E int multicolor_orange3[3];
-E int multicolor_orange4[4];
-E int multicolor_text1[1];
-E int multicolor_text2[2];
+E const int no_multiattrs[32];
+E const int multicolor_red1[1];
+E const int multicolor_red2[2];
+E const int multicolor_red3[3];
+E const int multicolor_red4[4];
+E const int multicolor_orange1[1];
+E const int multicolor_orange2[2];
+E const int multicolor_orange3[3];
+E const int multicolor_orange4[4];
+E const int multicolor_text1[1];
+E const int multicolor_text2[2];
+E int multicolor_buffer[32];
 
 E char toplines[TBUFSZ];
 E char toplineattrs[TBUFSZ];

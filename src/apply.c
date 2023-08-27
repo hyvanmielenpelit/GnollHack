@@ -1334,7 +1334,7 @@ struct obj *obj;
                 make_confused(itimeout_incr(HConfusion, d(3, 4)), FALSE);
             } 
             else if (Hallucination)
-                You(look_str, hcolor((char *) 0));
+                You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, look_str, hcolor_multi_buf0((char *) 0));
             else if (Sick)
                 You(look_str, "peaked");
             else if (FoodPoisoned)
@@ -4035,8 +4035,8 @@ struct obj* obj;
                     if (!Blind)
                     {
                         suggestnamingwand = TRUE;
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s a strange %s, but %s intact.",
-                            Tobjnam(otmp, "glow"), hcolor("black"), otense(otmp, "remain"));
+                        pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s a strange %s, but %s intact.",
+                            Tobjnam(otmp, "glow"), hcolor_multi_buf1(NH_BLACK), otense(otmp, "remain"));
                     }
                     break;
                 }
@@ -4058,8 +4058,8 @@ struct obj* obj;
                     if (!Blind)
                     {
                         suggestnamingwand = TRUE;
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s a strange %s, but %s intact.",
-                            Tobjnam(otmp, "glow"), otense(otmp, "remain"), hcolor("purple"));
+                        pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s a strange %s, but %s intact.",
+                            Tobjnam(otmp, "glow"), otense(otmp, "remain"), hcolor_multi_buf2(NH_PURPLE));
                     }
                     break;
                 }
@@ -5912,7 +5912,7 @@ doapply()
                     play_sfx_sound(SFX_AURA_GLOW);
                     if (!Blind)
                     {
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s.", Yobjnam2(obj, "glow"), hcolor("brown"));
+                        pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s %s.", Yobjnam2(obj, "glow"), hcolor_multi_buf1(NH_BROWN));
                         obj->bknown = 1;
                     }
                     unbless(obj);

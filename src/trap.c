@@ -7380,8 +7380,8 @@ lava_effects()
             if (obj->otyp == SPE_BOOK_OF_THE_DEAD && !Blind) 
             {
                 if (usurvive)
-                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s glows a strange %s, but remains intact.",
-                          The(xname(obj)), hcolor("dark red"));
+                    pline_multi_ex(ATR_NONE, CLR_MSG_WARNING, no_multiattrs, multicolor_buffer, "%s glows a strange %s, but remains intact.",
+                          The(xname(obj)), hcolor_multi_buf1(NH_DARK_RED));
             }
             else if (obj->oartifact == ART_RULING_RING_OF_YENDOR)
             {
