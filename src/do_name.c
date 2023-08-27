@@ -2563,35 +2563,35 @@ color_name_to_nhcolor(colorpref)
 const char* colorpref;
 {
     int nhcolor;
-    if (!colorpref || !*colorpref || colorpref == c_color_names.c_colorless)
+    if (!colorpref || !*colorpref || colorpref == NH_COLORLESS)
         nhcolor = NO_COLOR;
-    else if (colorpref == c_color_names.c_black)
+    else if (colorpref == NH_BLACK)
         nhcolor = CLR_BLACK;
-    else if (colorpref == c_color_names.c_amber)
-        nhcolor = CLR_ORANGE;
-    else if (colorpref == c_color_names.c_golden)
+    else if (colorpref == NH_AMBER)
+        nhcolor = CLR_YELLOW;
+    else if (colorpref == NH_GOLDEN)
         nhcolor = HI_GOLD;
-    else if (colorpref == c_color_names.c_light_blue)
+    else if (colorpref == NH_LIGHT_BLUE)
         nhcolor = CLR_BRIGHT_BLUE;
-    else if (colorpref == c_color_names.c_red)
+    else if (colorpref == NH_RED)
         nhcolor = CLR_RED;
-    else if (colorpref == c_color_names.c_green)
+    else if (colorpref == NH_GREEN)
         nhcolor = CLR_GREEN;
-    else if (colorpref == c_color_names.c_silver)
+    else if (colorpref == NH_SILVER)
         nhcolor = HI_SILVER;
-    else if (colorpref == c_color_names.c_blue)
+    else if (colorpref == NH_BLUE)
         nhcolor = CLR_BLUE;
-    else if (colorpref == c_color_names.c_purple)
+    else if (colorpref == NH_PURPLE)
         nhcolor = CLR_MAGENTA;
-    else if (colorpref == c_color_names.c_white)
+    else if (colorpref == NH_WHITE)
         nhcolor = CLR_WHITE;
-    else if (colorpref == c_color_names.c_orange)
+    else if (colorpref == NH_ORANGE)
         nhcolor = CLR_ORANGE;
-    else if (colorpref == c_color_names.c_brown)
+    else if (colorpref == NH_BROWN)
         nhcolor = CLR_BROWN;
-    else if (colorpref == c_color_names.c_gray)
+    else if (colorpref == NH_GRAY)
         nhcolor = CLR_GRAY;
-    else if (colorpref == c_color_names.c_dark_red)
+    else if (colorpref == NH_DARK_RED)
         nhcolor = CLR_RED;
     else
     {

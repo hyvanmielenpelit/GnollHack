@@ -2273,9 +2273,8 @@ newdogpos:
                                    ? vobj_at(nix, niy) : 0;
 #endif
                 const char *what = cursedobj[chi] ? distant_name(cursedobj[chi], doname) : something;
-
                 play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WARN_CURSED);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s reluctantly over %s.", noit_Monnam(mtmp),
+                pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, what != something ? multicolor_orange3 : get_colorless_multicolor_buffer(), "%s %s reluctantly over %s.", noit_Monnam(mtmp),
                       vtense((char *) 0, locomotion(mtmp->data, "step")), what);
             }
             for (j = MTSZ - 1; j > 0; j--)
