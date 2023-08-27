@@ -285,6 +285,7 @@ namespace GnollHackX
         LMFLAGS_FADES_UPON_DEATH =      0x00000400UL,
         LMFLAGS_FLYING =                0x00000800UL,
         LMFLAGS_LEVITATING =            0x00001000UL,
+        LMFLAGS_BLOBBY_ANIMATION =      0x00002000UL,
     }
 
     [Flags]

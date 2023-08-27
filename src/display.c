@@ -2935,6 +2935,9 @@ boolean exclude_ascii;
             if (is_levitating(used_mtmp))
                 gbuf[y][x].layers.monster_flags |= LMFLAGS_LEVITATING;
 
+            if (has_blobby_animation(used_mtmp->data) && !Hallucination)
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_BLOBBY_ANIMATION;
+
             if (loc_is_you)
             {
                 if (mtmp && mtmp != &youmonst) /* Steed */

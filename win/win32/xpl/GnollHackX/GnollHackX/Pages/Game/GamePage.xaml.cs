@@ -210,6 +210,45 @@ namespace GnollHackX.Pages.Game
             new SKPoint(0f, 0.1f),
         };
 
+        private SKPoint[] _blobAnimation = new SKPoint[]
+        {
+            new SKPoint(1.00f, 0.99f),
+            new SKPoint(0.9975f, 0.991f),
+            new SKPoint(0.995f, 0.992f),
+            new SKPoint(0.99f, 0.993f),
+            new SKPoint(0.985f, 0.994f),
+            new SKPoint(0.98f, 0.995f),
+            new SKPoint(0.975f, 0.996f),
+            new SKPoint(0.97f, 0.997f),
+            new SKPoint(0.965f, 0.998f),
+            new SKPoint(0.96f, 0.9985f),
+            new SKPoint(0.955f, 0.999f),
+            new SKPoint(0.9525f, 0.9995f),
+            new SKPoint(0.95125f, 0.99975f),
+            new SKPoint(0.95f, 1.00f),
+            new SKPoint(0.95125f, 0.99975f),
+            new SKPoint(0.9525f, 0.9995f),
+            new SKPoint(0.955f, 0.999f),
+            new SKPoint(0.96f, 0.9985f),
+            new SKPoint(0.965f, 0.998f),
+            new SKPoint(0.97f, 0.997f),
+            new SKPoint(0.975f, 0.996f),
+            new SKPoint(0.98f, 0.995f),
+            new SKPoint(0.985f, 0.994f),
+            new SKPoint(0.99f, 0.993f),
+            new SKPoint(0.995f, 0.992f),
+            new SKPoint(0.9975f, 0.991f),
+            new SKPoint(1.00f, 0.99f),
+            new SKPoint(1.00f, 0.99f),
+            new SKPoint(1.00f, 0.99f),
+            new SKPoint(1.00f, 0.99f),
+            new SKPoint(1.00f, 0.99f),
+            new SKPoint(1.00f, 0.99f),
+            new SKPoint(1.00f, 0.99f),
+            new SKPoint(1.00f, 0.99f),
+            new SKPoint(1.00f, 0.99f),
+        };
+
         private readonly object _isSizeAllocatedProcessedLock = new object();
         private bool _isSizeAllocatedProcessed = false;
         public bool IsSizeAllocatedProcessed { get { lock (_isSizeAllocatedProcessedLock) { return _isSizeAllocatedProcessed; } } set { lock (_isSizeAllocatedProcessedLock) { _isSizeAllocatedProcessed = value; } } }
@@ -3817,46 +3856,60 @@ namespace GnollHackX.Pages.Game
                 opaqueness = 0.5f;
             }
 
-            float dscale = 1.0f;
+            float dscalex = 1.0f;
+            float dscaley = 1.0f;
             float correction_x = 0f;
             float correction_y = 0f;
-            if (is_monster_like_layer
-                && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0
-                && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
+            if (is_monster_like_layer)
             {
-                if (enlargement > 0)
+                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0
+                && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
                 {
-                    int enlarea = GHApp._enlargementDefs[enlargement].width_in_tiles * GHApp._enlargementDefs[enlargement].height_in_tiles;
-                    int maxenltiles = Math.Max(GHApp._enlargementDefs[enlargement].width_in_tiles, GHApp._enlargementDefs[enlargement].height_in_tiles);
-                    long param = Math.Max(1L, enlarea > 0 ? 180L / enlarea : 60L);
-                    long param2 = (param * (maxenltiles - 1)) / maxenltiles;
-                    dscale = ((float)(param - Math.Min(param2 - 1, generalcounterdiff))) / (float)param;
+                    if (enlargement > 0)
+                    {
+                        int enlarea = GHApp._enlargementDefs[enlargement].width_in_tiles * GHApp._enlargementDefs[enlargement].height_in_tiles;
+                        int maxenltiles = Math.Max(GHApp._enlargementDefs[enlargement].width_in_tiles, GHApp._enlargementDefs[enlargement].height_in_tiles);
+                        long param = Math.Max(1L, enlarea > 0 ? 180L / enlarea : 60L);
+                        long param2 = (param * (maxenltiles - 1)) / maxenltiles;
+                        dscalex = dscaley = ((float)(param - Math.Min(param2 - 1, generalcounterdiff))) / (float)param;
+                    }
+                    else
+                        dscalex = dscaley = ((float)(90 - Math.Min(44L, generalcounterdiff))) / 90;
                 }
-                else
-                    dscale = ((float)(90 - Math.Min(44L, generalcounterdiff))) / 90;
 
-                correction_x = width * (mapx - draw_map_x) + width * dscale * (draw_map_x - mapx);
-                correction_y = height * (mapy - draw_map_y) + height * dscale * (draw_map_y - mapy);
+                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) == 0
+                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BLOBBY_ANIMATION) != 0)
+                {
+                    long animationframe = generalcountervalue % _blobAnimation.Length;
+                    dscalex *= _blobAnimation[animationframe].X;
+                    dscaley *= _blobAnimation[animationframe].Y;
+                }
+
+                correction_x = width * (mapx - draw_map_x) + width * dscalex * (draw_map_x - mapx) + width * (1.0f - dscalex) / 2;
+                correction_y = height * (mapy - draw_map_y) + height * dscaley * (draw_map_y - mapy) + height * (1.0f - dscaley);
             }
 
             tx = (offsetX + usedOffsetX + move_offset_x + width * (float)draw_map_x + correction_x);
             ty = (offsetY + usedOffsetY + move_offset_y + scaled_y_height_change + mapFontAscent + height * (float)draw_map_y + correction_y);
-            float dx2 = dx * (hflip_glyph ? -1 : 1) * width * dscale;
-            float dy2 = dy * (vflip_glyph ? -1 : 1) * height * dscale;
+            float dx2 = dx * (hflip_glyph ? -1 : 1) * width * dscalex;
+            float dy2 = dy * (vflip_glyph ? -1 : 1) * height * dscaley;
             using (new SKAutoCanvasRestore(canvas, true))
             {
-                canvas.Translate(tx + (hflip_glyph ? width * dscale : 0), ty + (vflip_glyph ? height * dscale : 0));
+                canvas.Translate(tx + (hflip_glyph ? width * dscalex : 0), ty + (vflip_glyph ? height * dscaley : 0));
                 canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
-                /* Death rotation */
-                if (is_monster_like_layer
-                    && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0
-                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
+                if (is_monster_like_layer)
                 {
-                    float rotateheight = 0.5f * height * dscale; //((float)(enlargement > 0 ? GHApp._enlargementDefs[enlargement].height_in_tiles - 1 : 0) * -0.5f + 0.75f)
-                    canvas.Translate(-dx2 + 0.5f * width * dscale, -dy2 + rotateheight);
-                    canvas.RotateDegrees(generalcounterdiff * 15);
-                    canvas.Translate(dx2 - 0.5f * width * dscale, dy2 - rotateheight);
-                    canvas.Scale(dscale, dscale, 0, 0);
+                    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0
+                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
+                    {
+                        /* Death rotation */
+                        float rotateheight = 0.5f * height * dscaley; //((float)(enlargement > 0 ? GHApp._enlargementDefs[enlargement].height_in_tiles - 1 : 0) * -0.5f + 0.75f)
+                        canvas.Translate(-dx2 + 0.5f * width * dscalex, -dy2 + rotateheight);
+                        canvas.RotateDegrees(generalcounterdiff * 15);
+                        canvas.Translate(dx2 - 0.5f * width * dscalex, dy2 - rotateheight);
+                    }
+                    if(dscalex != 1.0f || dscaley != 1.0f)
+                        canvas.Scale(dscalex, dscaley, 0, 0);
                 }
                 SKRect updateRect = new SKRect();
                 SKRect targetrect;
