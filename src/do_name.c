@@ -1807,6 +1807,8 @@ const char* introline;
     if (!obj->dknown)
         return; /* probably blind */
 
+    flush_screen(1); /* Make sure that the screen shows the effect, if any, before query */
+
     if (obj->oclass == POTION_CLASS && (obj->speflags & SPEFLAGS_FROM_SINK))
         /* kludge, meaning it's sink water */
         Sprintf(qbuf, "Call a stream of %s fluid:",

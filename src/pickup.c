@@ -411,6 +411,15 @@ struct obj *obj;
     return (boolean) (obj != uchain);
 }
 
+/* query_objlist callback: return TRUE if not a coin */
+boolean
+allow_all_but_coins(obj)
+struct obj* obj;
+{
+    return (boolean)(obj->oclass != COIN_CLASS);
+}
+
+
 /* query_objlist callback: return TRUE */
 /*ARGUSED*/
 boolean

@@ -2632,6 +2632,7 @@ E boolean FDECL(rider_corpse_revival, (struct obj *, BOOLEAN_P));
 E boolean FDECL(menu_class_present, (int));
 E void FDECL(add_valid_menu_class, (int));
 E boolean FDECL(allow_all, (struct obj *));
+E boolean FDECL(allow_all_but_coins, (struct obj*));
 E boolean FDECL(allow_category, (struct obj *));
 E boolean FDECL(is_potion_of_water, (struct obj*));
 E boolean FDECL(is_scroll_of_remove_curse, (struct obj*));

@@ -5908,7 +5908,10 @@ namespace GnollHackX.Pages.Game
                                                             string wrappedLine = msgHistoryItem.WrappedTextRows[lineidx];
                                                             int window_row_idx = j + lineidx - msgHistoryItem.WrappedTextRows.Count + 1;
                                                             if (window_row_idx < 0)
+                                                            {
+                                                                char_idx += wrappedLine.Length;
                                                                 continue;
+                                                            }
                                                             tx = winRect.Left + _currentGame.Windows[i].Padding.Left;
                                                             ty = winRect.Top + _currentGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
                                                             if (ForceAllMessages)
@@ -5916,11 +5919,17 @@ namespace GnollHackX.Pages.Game
                                                                 ty += _messageScrollOffset;
                                                             }
                                                             if (ty + textPaint.FontMetrics.Descent < 0)
+                                                            {
+                                                                char_idx += wrappedLine.Length;
                                                                 continue;
+                                                            }
                                                             if (ty - textPaint.FontMetrics.Ascent > canvasheight)
+                                                            {
+                                                                char_idx += wrappedLine.Length;
                                                                 continue;
+                                                            }
 
-                                                            if(use_one_color)
+                                                            if (use_one_color)
                                                             {
 #if GNH_MAP_PROFILING && DEBUG
                                                                 StartProfiling(GHProfilingStyle.Text);
@@ -5944,7 +5953,6 @@ namespace GnollHackX.Pages.Game
                                                             else
                                                             {
                                                                 int charidx_start = 0;
-
                                                                 while (char_idx < msgHistoryItem.Text.Length && charidx_start < wrappedLine.Length)
                                                                 {
                                                                     int charidx_len = 0;
