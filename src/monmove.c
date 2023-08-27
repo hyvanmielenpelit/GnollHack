@@ -337,8 +337,10 @@ struct monst *mtmp;
     if (x == 0 && y == 0)
         return TRUE;
 
-    /* should this still be true for defiled/molochian altars? */
-    if (IS_ALTAR(levl[x][y].typ)
+    if(!isok(x, y))
+        return FALSE;
+
+    if (IS_ALTAR(levl[x][y].typ) && levl[x][y].subtyp != ALTAR_SUBTYPE_MOLOCH
         && (mtmp->data->mlet == S_VAMPIRE || is_vampshifter(mtmp)))
         return TRUE;
 
