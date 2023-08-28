@@ -1522,7 +1522,7 @@ lib_ui_has_input(VOID_ARGS)
 /* Helper functions */
 void lib_bail(const char* mesg)
 {
-    nh_bail(EXIT_SUCCESS, mesg, FALSE);
+    nh_bail(EXIT_SUCCESS, mesg, TRUE);
 }
 
 void lib_init_platform(VOID_ARGS)
