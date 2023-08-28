@@ -710,8 +710,7 @@ boolean nxcor;
     dest.x = tx;
     dest.y = ty;
 
-    if (!dig_corridor(&org, &dest, nxcor, level.flags.arboreal || level.flags.swampy ? GRASS : CORR,
-                      STONE))
+    if (!dig_corridor(&org, &dest, nxcor, level.flags.arboreal || level.flags.swampy ? GRASS : CORR, STONE))
         return;
 
     /* we succeeded in digging the corridor */
@@ -1475,12 +1474,17 @@ makelevel()
                 }
             }
         }
-        /* put traps and mimics inside */
-        x = 8 - (level_dif / 6);
-        if (x <= 1)
-            x = 2;
-        while (!rn2(x) && !startingroom)
-            (void)mktrap(0, 0, croom, (coord *) 0);
+
+        if (context.game_difficulty >= 0 || u_depth > 1) /* If difficulty is less than expert, no traps on the first level */
+        {
+            /* put traps and mimics inside */
+            x = 8 - (level_dif / 6);
+            if (x <= 1)
+                x = 2;
+            while (!rn2(x) && !startingroom)
+                (void)mktrap(0, 0, croom, (coord*)0);
+        }
+
         if (!rn2(3))
             (void) mkgold(0L, somex(croom), somey(croom));
         if (Is_really_rogue_level(&u.uz))
