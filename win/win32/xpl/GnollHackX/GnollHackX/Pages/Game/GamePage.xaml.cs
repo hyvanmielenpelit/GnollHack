@@ -13050,7 +13050,6 @@ namespace GnollHackX.Pages.Game
                 int curpage = MoreCmdPage;
                 int pagemin = cmdOffsetX > 0 ? Math.Max(EnableWizardMode ? 0 : 1, curpage - 1) : curpage;
                 int pagemax = cmdOffsetX < 0 ? Math.Min(CurrentMoreButtonPageMaxNumber - 1, curpage + 1) : curpage;
-                SKRect screenRect = new SKRect(0, 0, canvaswidth, canvasheight);
 
                 float smalldotheight = Math.Min(canvaswidth, canvasheight) / 120 * scale;
                 float largedotheight = smalldotheight * 2;
@@ -13113,27 +13112,30 @@ namespace GnollHackX.Pages.Game
                     float btnImgWidth = Math.Min(btnImgRawWidth, btnImgRawHeight);
                     float btnImgHeight = btnImgWidth;
 
-                    for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
+                    lock (GHApp._moreBtnLock)
                     {
-                        int pos_j = 0;
-                        for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
+                        for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
                         {
-                            if (GHApp._moreBtnMatrix[page, i, j] != null && GHApp._moreBtnBitmaps[page, i, j] != null)
+                            int pos_j = 0;
+                            for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
                             {
-                                SKRect targetrect = new SKRect();
-                                int x = isLandscape ? pos_j : i;
-                                int y = isLandscape ? i : pos_j;
-                                targetrect.Left = btnOffsetX + x * btnAreaWidth + Math.Max(0, (btnAreaWidth - btnImgWidth) / 2);
-                                targetrect.Top = btnMatrixStart + y * btnAreaHeight + Math.Max(0, (btnAreaHeight - btnImgHeight - textPaint.FontSpacing) / 2);
-                                targetrect.Right = targetrect.Left + btnImgWidth;
-                                targetrect.Bottom = targetrect.Top + btnImgHeight;
-                                float text_x = (targetrect.Left + targetrect.Right) / 2;
-                                float text_y = targetrect.Bottom - textPaint.FontMetrics.Ascent;
+                                if (GHApp._moreBtnMatrix[page, i, j] != null && GHApp._moreBtnBitmaps[page, i, j] != null)
+                                {
+                                    SKRect targetrect = new SKRect();
+                                    int x = isLandscape ? pos_j : i;
+                                    int y = isLandscape ? i : pos_j;
+                                    targetrect.Left = btnOffsetX + x * btnAreaWidth + Math.Max(0, (btnAreaWidth - btnImgWidth) / 2);
+                                    targetrect.Top = btnMatrixStart + y * btnAreaHeight + Math.Max(0, (btnAreaHeight - btnImgHeight - textPaint.FontSpacing) / 2);
+                                    targetrect.Right = targetrect.Left + btnImgWidth;
+                                    targetrect.Bottom = targetrect.Top + btnImgHeight;
+                                    float text_x = (targetrect.Left + targetrect.Right) / 2;
+                                    float text_y = targetrect.Bottom - textPaint.FontMetrics.Ascent;
 
-                                canvas.DrawBitmap(GHApp._moreBtnBitmaps[page, i, j], targetrect);
-                                canvas.DrawText(GHApp._moreBtnMatrix[page, i, j].Text, text_x, text_y, textPaint);
+                                    canvas.DrawBitmap(GHApp._moreBtnBitmaps[page, i, j], targetrect);
+                                    canvas.DrawText(GHApp._moreBtnMatrix[page, i, j].Text, text_x, text_y, textPaint);
+                                }
+                                pos_j++;
                             }
-                            pos_j++;
                         }
                     }
                 }
@@ -13155,7 +13157,6 @@ namespace GnollHackX.Pages.Game
                     xText = canvaswidth - textWidth - 5;
                     canvas.DrawText(str, xText, yText, textPaint);
                 }
-
             }
             lock (_commandFPSCounterLock)
             {
@@ -13298,14 +13299,21 @@ namespace GnollHackX.Pages.Game
                                             j = btnY;
                                         }
 
-                                        GHCommandButtonItem cbi = GHApp._moreBtnMatrix[MoreCmdPage, i, j];
+                                        GHCommandButtonItem cbi = null;
+                                        int cbi_cmd = 0;
+                                        lock (_moreCmdLock)
+                                        {
+                                            cbi = GHApp._moreBtnMatrix[MoreCmdPage, i, j];
+                                            if (cbi != null)
+                                                cbi_cmd = cbi.Command;
+                                        }
                                         if (cbi != null)
                                         {
-                                            if (cbi.Command >= 0)
-                                                GenericButton_Clicked(CommandCanvas, e, cbi.Command);
+                                            if (cbi_cmd >= 0)
+                                                GenericButton_Clicked(CommandCanvas, e, cbi_cmd);
                                             else
                                             {
-                                                switch (cbi.Command)
+                                                switch (cbi_cmd)
                                                 {
                                                     case -2:
                                                         GenericButton_Clicked(sender, e, 'n');

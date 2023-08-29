@@ -990,9 +990,10 @@ namespace GnollHackX
         public static List<ReplacementDefinition> Replacements { get { return _replacementDefs; } }
         public static List<AutoDrawDefinition> Autodraws { get { return _autodraws; } }
 
+        public static readonly object _moreBtnLock = new object();
         public static GHCommandButtonItem[,,] _moreBtnMatrix = new GHCommandButtonItem[GHConstants.MoreButtonPages, GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
         public static SKBitmap[,,] _moreBtnBitmaps = new SKBitmap[GHConstants.MoreButtonPages, GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
-        public static string[] _moreButtonPageTitle = new string[GHConstants.MoreButtonPages] { "Wizard Mode Commands", "Common Commands", "Additional Commands", "Context and More Commands" };
+        public static readonly string[] _moreButtonPageTitle = new string[GHConstants.MoreButtonPages] { "Wizard Mode Commands", "Common Commands", "Additional Commands", "Context and More Commands" };
 
         public static int TileSheetIdx(int ntile)
         {
@@ -1010,202 +1011,205 @@ namespace GnollHackX
 
         public static void InitializeMoreCommandButtons(Assembly assembly, bool useSimple)
         {
-            for (int i = 0; i < GHConstants.MoreButtonPages; i++)
-                for (int j = 0; j < GHConstants.MoreButtonsPerRow; j++)
-                    for (int k = 0; k < GHConstants.MoreButtonsPerColumn; k++)
-                        _moreBtnMatrix[i, j, k] = null;
-            if (useSimple)
+            lock (_moreBtnLock)
             {
-                _moreBtnMatrix[0, 0, 0] = new GHCommandButtonItem("Wish", AppResourceName + ".Assets.UI.wish.png", GHUtils.Ctrl((int)'w'));
-                _moreBtnMatrix[0, 1, 0] = new GHCommandButtonItem("Reveal", AppResourceName + ".Assets.UI.reveal.png", GHUtils.Ctrl((int)'f'));
-                _moreBtnMatrix[0, 2, 0] = new GHCommandButtonItem("Genesis", AppResourceName + ".Assets.UI.genesis.png", GHUtils.Meta((int)'m'));
-                _moreBtnMatrix[0, 3, 0] = new GHCommandButtonItem("Levelport", AppResourceName + ".Assets.UI.levelport.png", GHUtils.Ctrl((int)'v'));
-
-                _moreBtnMatrix[0, 0, 1] = new GHCommandButtonItem("Identify", AppResourceName + ".Assets.UI.identify.png", GHUtils.Ctrl((int)'i'));
-                _moreBtnMatrix[0, 1, 1] = new GHCommandButtonItem("Teleport", AppResourceName + ".Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
-                _moreBtnMatrix[0, 2, 1] = new GHCommandButtonItem("Level Change", AppResourceName + ".Assets.UI.levelchange.png", GHUtils.Meta(0));
-                _moreBtnMatrix[0, 3, 1] = new GHCommandButtonItem("Polymorph Self", AppResourceName + ".Assets.UI.polymorph.png", GHUtils.Meta(1));
-
-                _moreBtnMatrix[0, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
-                _moreBtnMatrix[0, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
-
-                _moreBtnMatrix[1, 0, 0] = new GHCommandButtonItem("You", AppResourceName + ".Assets.UI.you.png", (int)'}');
-                _moreBtnMatrix[1, 1, 0] = new GHCommandButtonItem("Skills", AppResourceName + ".Assets.UI.skill.png", (int)'S');
-                _moreBtnMatrix[1, 2, 0] = new GHCommandButtonItem("Overview", AppResourceName + ".Assets.UI.overview.png", GHUtils.Ctrl((int)'o'));
-                _moreBtnMatrix[1, 3, 0] = new GHCommandButtonItem("Goals", AppResourceName + ".Assets.UI.conduct.png", GHUtils.Meta(3));
-
-                _moreBtnMatrix[1, 0, 1] = new GHCommandButtonItem("Wait", AppResourceName + ".Assets.UI.wait.png", (int)'.');
-                _moreBtnMatrix[1, 1, 1] = new GHCommandButtonItem("Wield", AppResourceName + ".Assets.UI.wield.png", (int)'w');
-                _moreBtnMatrix[1, 2, 1] = new GHCommandButtonItem("Drop Items", AppResourceName + ".Assets.UI.dropmany.png", (int)'%');
-                _moreBtnMatrix[1, 3, 1] = new GHCommandButtonItem("Drop Types", AppResourceName + ".Assets.UI.droptypes.png", (int)'D');
-
-                _moreBtnMatrix[1, 0, 2] = new GHCommandButtonItem("Throw", AppResourceName + ".Assets.UI.throw.png", (int)'t');
-                _moreBtnMatrix[1, 1, 2] = new GHCommandButtonItem("Fire", AppResourceName + ".Assets.UI.fire.png", (int)'f');
-                _moreBtnMatrix[1, 2, 2] = new GHCommandButtonItem("Chat", AppResourceName + ".Assets.UI.chat.png", (int)'C');
-                _moreBtnMatrix[1, 3, 2] = new GHCommandButtonItem("Zap", AppResourceName + ".Assets.UI.zap.png", (int)'z');
-
-                _moreBtnMatrix[1, 0, 3] = new GHCommandButtonItem("Eat", AppResourceName + ".Assets.UI.eat.png", (int)'e');
-                _moreBtnMatrix[1, 1, 3] = new GHCommandButtonItem("Drink", AppResourceName + ".Assets.UI.quaff.png", (int)'q');
-                _moreBtnMatrix[1, 2, 3] = new GHCommandButtonItem("Read", AppResourceName + ".Assets.UI.read.png", (int)'r');
-                _moreBtnMatrix[1, 3, 3] = new GHCommandButtonItem("Apply", AppResourceName + ".Assets.UI.apply.png", (int)'a');
-
-                _moreBtnMatrix[1, 0, 4] = new GHCommandButtonItem("View Spell", AppResourceName + ".Assets.UI.viewspell.png", GHUtils.Meta((int)'z'));
-                _moreBtnMatrix[1, 1, 4] = new GHCommandButtonItem("Mix", AppResourceName + ".Assets.UI.mix.png", (int)'X');
-                _moreBtnMatrix[1, 2, 4] = new GHCommandButtonItem("Yell", AppResourceName + ".Assets.UI.yell.png", GHUtils.Ctrl((int)'y'));
-                _moreBtnMatrix[1, 3, 4] = new GHCommandButtonItem("Pray", AppResourceName + ".Assets.UI.pray.png", GHUtils.Meta((int)'p'));
-
-                _moreBtnMatrix[1, 0, 5] = new GHCommandButtonItem("Count", AppResourceName + ".Assets.UI.count.png", -5);
-                _moreBtnMatrix[1, 1, 5] = new GHCommandButtonItem("Search 20", AppResourceName + ".Assets.UI.search20.png", -2);
-                _moreBtnMatrix[1, 2, 5] = new GHCommandButtonItem("Rest", AppResourceName + ".Assets.UI.rest.png", -3);
-                _moreBtnMatrix[1, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
-
-                _moreBtnMatrix[2, 0, 0] = new GHCommandButtonItem("Attributes", AppResourceName + ".Assets.UI.attributes.png", GHUtils.Meta(2));
-                _moreBtnMatrix[2, 1, 0] = new GHCommandButtonItem("Discoveries", AppResourceName + ".Assets.UI.discoveries.png", (int)'\\');
-                _moreBtnMatrix[2, 2, 0] = new GHCommandButtonItem("Killed", AppResourceName + ".Assets.UI.killed.png", GHUtils.Meta((int)'k'));
-                _moreBtnMatrix[2, 3, 0] = new GHCommandButtonItem("Genocided", AppResourceName + ".Assets.UI.genocided.png", GHUtils.Meta((int)'g'));
-
-                _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("Travel", AppResourceName + ".Assets.UI.travel.png", (int)'_');
-                _moreBtnMatrix[2, 1, 1] = new GHCommandButtonItem("2-Weapon", AppResourceName + ".Assets.UI.twoweap.png", GHUtils.Ctrl((int)'x'));
-                _moreBtnMatrix[2, 2, 1] = new GHCommandButtonItem("Examine", AppResourceName + ".Assets.UI.examine.png", GHUtils.Meta((int)'x'));
-                _moreBtnMatrix[2, 3, 1] = new GHCommandButtonItem("Engrave", AppResourceName + ".Assets.UI.engrave.png", (int)'E');
-
-                _moreBtnMatrix[2, 0, 2] = new GHCommandButtonItem("Ride", AppResourceName + ".Assets.UI.ride.png", GHUtils.Meta((int)'R'));
-                _moreBtnMatrix[2, 1, 2] = new GHCommandButtonItem("Untrap", AppResourceName + ".Assets.UI.untrap.png", GHUtils.Meta((int)'u'));
-                _moreBtnMatrix[2, 2, 2] = new GHCommandButtonItem("Handedness", AppResourceName + ".Assets.UI.handedness.png", GHUtils.Meta((int)'h'));
-                _moreBtnMatrix[2, 3, 2] = new GHCommandButtonItem("Unwield", AppResourceName + ".Assets.UI.unwield.png", GHUtils.Meta(5));
-
-                _moreBtnMatrix[2, 0, 3] = new GHCommandButtonItem("Light", AppResourceName + ".Assets.UI.light.png", GHUtils.Ctrl((int)'l'));
-                _moreBtnMatrix[2, 1, 3] = new GHCommandButtonItem("Loot", AppResourceName + ".Assets.UI.loot.png", (int)'l');
-                _moreBtnMatrix[2, 2, 3] = new GHCommandButtonItem("Open", AppResourceName + ".Assets.UI.open.png", (int)'o');
-                _moreBtnMatrix[2, 3, 3] = new GHCommandButtonItem("Close", AppResourceName + ".Assets.UI.close.png", (int)'c');
-
-                _moreBtnMatrix[2, 0, 4] = new GHCommandButtonItem("Teleport", AppResourceName + ".Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
-                _moreBtnMatrix[2, 1, 4] = new GHCommandButtonItem("Monster", AppResourceName + ".Assets.UI.monster.png", GHUtils.Meta(4));
-                _moreBtnMatrix[2, 2, 4] = new GHCommandButtonItem("Jump", AppResourceName + ".Assets.UI.jump.png", (int)'j');
-                _moreBtnMatrix[2, 3, 4] = new GHCommandButtonItem("Dig", AppResourceName + ".Assets.UI.dig.png", GHUtils.Ctrl((int)'g'));
-
-                _moreBtnMatrix[2, 0, 5] = new GHCommandButtonItem("Name", AppResourceName + ".Assets.UI.name.png", (int)'N');
-                _moreBtnMatrix[2, 1, 5] = new GHCommandButtonItem("Look Here", AppResourceName + ".Assets.UI.lookhere.png", (int)':');
-                _moreBtnMatrix[2, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
-                _moreBtnMatrix[2, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
-            }
-            else
-            {
-                _moreBtnMatrix[0, 0, 0] = new GHCommandButtonItem("Wish", AppResourceName + ".Assets.UI.wish.png", GHUtils.Ctrl((int)'w'));
-                _moreBtnMatrix[0, 1, 0] = new GHCommandButtonItem("Reveal", AppResourceName + ".Assets.UI.reveal.png", GHUtils.Ctrl((int)'f'));
-                _moreBtnMatrix[0, 2, 0] = new GHCommandButtonItem("Genesis", AppResourceName + ".Assets.UI.genesis.png", GHUtils.Meta((int)'m'));
-                _moreBtnMatrix[0, 3, 0] = new GHCommandButtonItem("Levelport", AppResourceName + ".Assets.UI.levelport.png", GHUtils.Ctrl((int)'v'));
-
-                _moreBtnMatrix[0, 0, 1] = new GHCommandButtonItem("Identify", AppResourceName + ".Assets.UI.identify.png", GHUtils.Ctrl((int)'i'));
-                _moreBtnMatrix[0, 1, 1] = new GHCommandButtonItem("Teleport", AppResourceName + ".Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
-                _moreBtnMatrix[0, 2, 1] = new GHCommandButtonItem("Level Change", AppResourceName + ".Assets.UI.levelchange.png", GHUtils.Meta(0));
-                _moreBtnMatrix[0, 3, 1] = new GHCommandButtonItem("Polymorph Self", AppResourceName + ".Assets.UI.polymorph.png", GHUtils.Meta(1));
-
-                _moreBtnMatrix[0, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
-                _moreBtnMatrix[0, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
-
-                _moreBtnMatrix[1, 0, 0] = new GHCommandButtonItem("You", AppResourceName + ".Assets.UI.you.png", (int)'}');
-                _moreBtnMatrix[1, 1, 0] = new GHCommandButtonItem("Skills", AppResourceName + ".Assets.UI.skill.png", (int)'S');
-                _moreBtnMatrix[1, 2, 0] = new GHCommandButtonItem("Overview", AppResourceName + ".Assets.UI.overview.png", GHUtils.Ctrl((int)'o'));
-                _moreBtnMatrix[1, 3, 0] = new GHCommandButtonItem("Goals", AppResourceName + ".Assets.UI.conduct.png", GHUtils.Meta(3));
-
-                _moreBtnMatrix[1, 0, 1] = new GHCommandButtonItem("View Spell", AppResourceName + ".Assets.UI.viewspell.png", GHUtils.Meta((int)'z'));
-                _moreBtnMatrix[1, 1, 1] = new GHCommandButtonItem("Mix", AppResourceName + ".Assets.UI.mix.png", (int)'X');
-                _moreBtnMatrix[1, 2, 1] = new GHCommandButtonItem("Travel", AppResourceName + ".Assets.UI.travel.png", (int)'_');
-                _moreBtnMatrix[1, 3, 1] = new GHCommandButtonItem("2-Weapon", AppResourceName + ".Assets.UI.twoweap.png", GHUtils.Ctrl((int)'x'));
-
-                _moreBtnMatrix[1, 0, 2] = new GHCommandButtonItem("Examine", AppResourceName + ".Assets.UI.examine.png", GHUtils.Meta((int)'x'));
-                _moreBtnMatrix[1, 1, 2] = new GHCommandButtonItem("Engrave", AppResourceName + ".Assets.UI.engrave.png", (int)'E');
-                _moreBtnMatrix[1, 2, 2] = new GHCommandButtonItem("Ride", AppResourceName + ".Assets.UI.ride.png", GHUtils.Meta((int)'R'));
-                _moreBtnMatrix[1, 3, 2] = new GHCommandButtonItem("Wield", AppResourceName + ".Assets.UI.wield.png", (int)'w');
-
-                _moreBtnMatrix[1, 0, 3] = new GHCommandButtonItem("Eat", AppResourceName + ".Assets.UI.eat.png", (int)'e');
-                _moreBtnMatrix[1, 1, 3] = new GHCommandButtonItem("Drink", AppResourceName + ".Assets.UI.quaff.png", (int)'q');
-                _moreBtnMatrix[1, 2, 3] = new GHCommandButtonItem("Read", AppResourceName + ".Assets.UI.read.png", (int)'r');
-                _moreBtnMatrix[1, 3, 3] = new GHCommandButtonItem("Drop Types", AppResourceName + ".Assets.UI.droptypes.png", (int)'D');
-
-                _moreBtnMatrix[1, 0, 4] = new GHCommandButtonItem("Untrap", AppResourceName + ".Assets.UI.untrap.png", GHUtils.Meta((int)'u'));
-                _moreBtnMatrix[1, 1, 4] = new GHCommandButtonItem("Handedness", AppResourceName + ".Assets.UI.handedness.png", GHUtils.Meta((int)'h'));
-                _moreBtnMatrix[1, 2, 4] = new GHCommandButtonItem("Yell", AppResourceName + ".Assets.UI.yell.png", GHUtils.Ctrl((int)'y'));
-                _moreBtnMatrix[1, 3, 4] = new GHCommandButtonItem("Pray", AppResourceName + ".Assets.UI.pray.png", GHUtils.Meta((int)'p'));
-
-                _moreBtnMatrix[1, 0, 5] = new GHCommandButtonItem("Count", AppResourceName + ".Assets.UI.count.png", -5);
-                _moreBtnMatrix[1, 1, 5] = new GHCommandButtonItem("Search 20", AppResourceName + ".Assets.UI.search20.png", -2);
-                _moreBtnMatrix[1, 2, 5] = new GHCommandButtonItem("Rest", AppResourceName + ".Assets.UI.rest.png", -3);
-                _moreBtnMatrix[1, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
-
-                _moreBtnMatrix[2, 0, 0] = new GHCommandButtonItem("Attributes", AppResourceName + ".Assets.UI.attributes.png", GHUtils.Meta(2));
-                _moreBtnMatrix[2, 1, 0] = new GHCommandButtonItem("Discoveries", AppResourceName + ".Assets.UI.discoveries.png", (int)'\\');
-                _moreBtnMatrix[2, 2, 0] = new GHCommandButtonItem("Killed", AppResourceName + ".Assets.UI.killed.png", GHUtils.Meta((int)'k'));
-                _moreBtnMatrix[2, 3, 0] = new GHCommandButtonItem("Genocided", AppResourceName + ".Assets.UI.genocided.png", GHUtils.Meta((int)'g'));
-
-                _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("Wear", AppResourceName + ".Assets.UI.wear.png", (int)'W');
-                _moreBtnMatrix[2, 1, 1] = new GHCommandButtonItem("Put On", AppResourceName + ".Assets.UI.puton.png", (int)'P');
-                _moreBtnMatrix[2, 2, 1] = new GHCommandButtonItem("Quiver", AppResourceName + ".Assets.UI.quiver.png", (int)'Q');
-                _moreBtnMatrix[2, 3, 1] = new GHCommandButtonItem("Chronicle", AppResourceName + ".Assets.UI.chronicle.png", GHUtils.Meta(13));
-
-                _moreBtnMatrix[2, 0, 2] = new GHCommandButtonItem("Take Off", AppResourceName + ".Assets.UI.takeoff.png", (int)'T');
-                _moreBtnMatrix[2, 1, 2] = new GHCommandButtonItem("Remove", AppResourceName + ".Assets.UI.remove.png", (int)'R');
-                _moreBtnMatrix[2, 2, 2] = new GHCommandButtonItem("Take Off Many", AppResourceName + ".Assets.UI.takeoffmany.png", GHUtils.Meta((int)'t'));
-                _moreBtnMatrix[2, 3, 2] = new GHCommandButtonItem("Unwield", AppResourceName + ".Assets.UI.unwield.png", GHUtils.Meta(5));
-
-                _moreBtnMatrix[2, 0, 3] = new GHCommandButtonItem("Dig", AppResourceName + ".Assets.UI.dig.png", GHUtils.Ctrl((int)'g'));
-                _moreBtnMatrix[2, 1, 3] = new GHCommandButtonItem("Light", AppResourceName + ".Assets.UI.light.png", GHUtils.Ctrl((int)'l'));
-                _moreBtnMatrix[2, 2, 3] = new GHCommandButtonItem("Jump", AppResourceName + ".Assets.UI.jump.png", (int)'j');
-                _moreBtnMatrix[2, 3, 3] = new GHCommandButtonItem("Fight", AppResourceName + ".Assets.UI.fight.png", (int)'F');
-
-                _moreBtnMatrix[2, 0, 4] = new GHCommandButtonItem("Tip", AppResourceName + ".Assets.UI.tip.png", GHUtils.Meta((int)'T'));
-                _moreBtnMatrix[2, 1, 4] = new GHCommandButtonItem("Invoke", AppResourceName + ".Assets.UI.invoke.png", GHUtils.Meta((int)'i'));
-                _moreBtnMatrix[2, 2, 4] = new GHCommandButtonItem("Rub", AppResourceName + ".Assets.UI.rub.png", GHUtils.Meta((int)'r'));
-                _moreBtnMatrix[2, 3, 4] = new GHCommandButtonItem("Wipe", AppResourceName + ".Assets.UI.wipe.png", GHUtils.Meta((int)'w'));
-
-                _moreBtnMatrix[2, 0, 5] = new GHCommandButtonItem("Name", AppResourceName + ".Assets.UI.name.png", (int)'N');
-                _moreBtnMatrix[2, 1, 5] = new GHCommandButtonItem("What Is", AppResourceName + ".Assets.UI.whatis.png", (int)'/');
-                _moreBtnMatrix[2, 2, 5] = new GHCommandButtonItem("Look Far", AppResourceName + ".Assets.UI.lookfar.png", (int)';');
-                _moreBtnMatrix[2, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
-
-                _moreBtnMatrix[3, 0, 0] = new GHCommandButtonItem("Look Here", AppResourceName + ".Assets.UI.lookhere.png", (int)':');
-                _moreBtnMatrix[3, 1, 0] = new GHCommandButtonItem("Pick Up", AppResourceName + ".Assets.UI.pickup.png", (int)',');
-                _moreBtnMatrix[3, 2, 0] = new GHCommandButtonItem("Sit", AppResourceName + ".Assets.UI.sit.png", GHUtils.Ctrl((int)'s'));
-                _moreBtnMatrix[3, 3, 0] = new GHCommandButtonItem("Pay", AppResourceName + ".Assets.UI.pay.png", (int)'p');
-
-                _moreBtnMatrix[3, 0, 1] = new GHCommandButtonItem("Loot", AppResourceName + ".Assets.UI.loot.png", (int)'l');
-                _moreBtnMatrix[3, 1, 1] = new GHCommandButtonItem("Dip", AppResourceName + ".Assets.UI.dip.png", GHUtils.Meta((int)'d'));
-                _moreBtnMatrix[3, 2, 1] = new GHCommandButtonItem("Offer", AppResourceName + ".Assets.UI.offer.png", GHUtils.Meta((int)'o'));
-                _moreBtnMatrix[3, 3, 1] = new GHCommandButtonItem("Autopickup", AppResourceName + ".Assets.UI.autopickup.png", (int)'@');
-
-                _moreBtnMatrix[3, 0, 2] = new GHCommandButtonItem("Go Down", AppResourceName + ".Assets.UI.stairs-down.png", (int)'>');
-                _moreBtnMatrix[3, 1, 2] = new GHCommandButtonItem("Go Up", AppResourceName + ".Assets.UI.stairs-up.png", (int)'<');
-                _moreBtnMatrix[3, 2, 2] = new GHCommandButtonItem("Open", AppResourceName + ".Assets.UI.open.png", (int)'o');
-                _moreBtnMatrix[3, 3, 2] = new GHCommandButtonItem("Close", AppResourceName + ".Assets.UI.close.png", (int)'c');
-
-                _moreBtnMatrix[3, 0, 3] = new GHCommandButtonItem("Break", AppResourceName + ".Assets.UI.break.png", GHUtils.Ctrl((int)'b'));
-                _moreBtnMatrix[3, 1, 3] = new GHCommandButtonItem("Force Lock", AppResourceName + ".Assets.UI.forcelock.png", GHUtils.Meta((int)'f'));
-                _moreBtnMatrix[3, 2, 3] = new GHCommandButtonItem("Teleport", AppResourceName + ".Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
-                _moreBtnMatrix[3, 3, 3] = new GHCommandButtonItem("Monster", AppResourceName + ".Assets.UI.monster.png", GHUtils.Meta(4));
-
-                _moreBtnMatrix[3, 0, 4] = new GHCommandButtonItem("Spells", AppResourceName + ".Assets.UI.spells.png", (int)'+');
-
-                _moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Help", AppResourceName + ".Assets.UI.help.png", (int)'?');
-                _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Commands", AppResourceName + ".Assets.UI.commands.png", GHUtils.Meta((int)'c'));
-                _moreBtnMatrix[3, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
-                _moreBtnMatrix[3, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
-            }
-
-            for (int k = 0; k < GHConstants.MoreButtonPages; k++)
-            {
-                for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
+                for (int i = 0; i < GHConstants.MoreButtonPages; i++)
+                    for (int j = 0; j < GHConstants.MoreButtonsPerRow; j++)
+                        for (int k = 0; k < GHConstants.MoreButtonsPerColumn; k++)
+                            _moreBtnMatrix[i, j, k] = null;
+                if (useSimple)
                 {
-                    for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
+                    _moreBtnMatrix[0, 0, 0] = new GHCommandButtonItem("Wish", AppResourceName + ".Assets.UI.wish.png", GHUtils.Ctrl((int)'w'));
+                    _moreBtnMatrix[0, 1, 0] = new GHCommandButtonItem("Reveal", AppResourceName + ".Assets.UI.reveal.png", GHUtils.Ctrl((int)'f'));
+                    _moreBtnMatrix[0, 2, 0] = new GHCommandButtonItem("Genesis", AppResourceName + ".Assets.UI.genesis.png", GHUtils.Meta((int)'m'));
+                    _moreBtnMatrix[0, 3, 0] = new GHCommandButtonItem("Levelport", AppResourceName + ".Assets.UI.levelport.png", GHUtils.Ctrl((int)'v'));
+
+                    _moreBtnMatrix[0, 0, 1] = new GHCommandButtonItem("Identify", AppResourceName + ".Assets.UI.identify.png", GHUtils.Ctrl((int)'i'));
+                    _moreBtnMatrix[0, 1, 1] = new GHCommandButtonItem("Teleport", AppResourceName + ".Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
+                    _moreBtnMatrix[0, 2, 1] = new GHCommandButtonItem("Level Change", AppResourceName + ".Assets.UI.levelchange.png", GHUtils.Meta(0));
+                    _moreBtnMatrix[0, 3, 1] = new GHCommandButtonItem("Polymorph Self", AppResourceName + ".Assets.UI.polymorph.png", GHUtils.Meta(1));
+
+                    _moreBtnMatrix[0, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
+                    _moreBtnMatrix[0, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
+
+                    _moreBtnMatrix[1, 0, 0] = new GHCommandButtonItem("You", AppResourceName + ".Assets.UI.you.png", (int)'}');
+                    _moreBtnMatrix[1, 1, 0] = new GHCommandButtonItem("Skills", AppResourceName + ".Assets.UI.skill.png", (int)'S');
+                    _moreBtnMatrix[1, 2, 0] = new GHCommandButtonItem("Overview", AppResourceName + ".Assets.UI.overview.png", GHUtils.Ctrl((int)'o'));
+                    _moreBtnMatrix[1, 3, 0] = new GHCommandButtonItem("Goals", AppResourceName + ".Assets.UI.conduct.png", GHUtils.Meta(3));
+
+                    _moreBtnMatrix[1, 0, 1] = new GHCommandButtonItem("Wait", AppResourceName + ".Assets.UI.wait.png", (int)'.');
+                    _moreBtnMatrix[1, 1, 1] = new GHCommandButtonItem("Wield", AppResourceName + ".Assets.UI.wield.png", (int)'w');
+                    _moreBtnMatrix[1, 2, 1] = new GHCommandButtonItem("Drop Items", AppResourceName + ".Assets.UI.dropmany.png", (int)'%');
+                    _moreBtnMatrix[1, 3, 1] = new GHCommandButtonItem("Drop Types", AppResourceName + ".Assets.UI.droptypes.png", (int)'D');
+
+                    _moreBtnMatrix[1, 0, 2] = new GHCommandButtonItem("Throw", AppResourceName + ".Assets.UI.throw.png", (int)'t');
+                    _moreBtnMatrix[1, 1, 2] = new GHCommandButtonItem("Fire", AppResourceName + ".Assets.UI.fire.png", (int)'f');
+                    _moreBtnMatrix[1, 2, 2] = new GHCommandButtonItem("Chat", AppResourceName + ".Assets.UI.chat.png", (int)'C');
+                    _moreBtnMatrix[1, 3, 2] = new GHCommandButtonItem("Zap", AppResourceName + ".Assets.UI.zap.png", (int)'z');
+
+                    _moreBtnMatrix[1, 0, 3] = new GHCommandButtonItem("Eat", AppResourceName + ".Assets.UI.eat.png", (int)'e');
+                    _moreBtnMatrix[1, 1, 3] = new GHCommandButtonItem("Drink", AppResourceName + ".Assets.UI.quaff.png", (int)'q');
+                    _moreBtnMatrix[1, 2, 3] = new GHCommandButtonItem("Read", AppResourceName + ".Assets.UI.read.png", (int)'r');
+                    _moreBtnMatrix[1, 3, 3] = new GHCommandButtonItem("Apply", AppResourceName + ".Assets.UI.apply.png", (int)'a');
+
+                    _moreBtnMatrix[1, 0, 4] = new GHCommandButtonItem("View Spell", AppResourceName + ".Assets.UI.viewspell.png", GHUtils.Meta((int)'z'));
+                    _moreBtnMatrix[1, 1, 4] = new GHCommandButtonItem("Mix", AppResourceName + ".Assets.UI.mix.png", (int)'X');
+                    _moreBtnMatrix[1, 2, 4] = new GHCommandButtonItem("Yell", AppResourceName + ".Assets.UI.yell.png", GHUtils.Ctrl((int)'y'));
+                    _moreBtnMatrix[1, 3, 4] = new GHCommandButtonItem("Pray", AppResourceName + ".Assets.UI.pray.png", GHUtils.Meta((int)'p'));
+
+                    _moreBtnMatrix[1, 0, 5] = new GHCommandButtonItem("Count", AppResourceName + ".Assets.UI.count.png", -5);
+                    _moreBtnMatrix[1, 1, 5] = new GHCommandButtonItem("Search 20", AppResourceName + ".Assets.UI.search20.png", -2);
+                    _moreBtnMatrix[1, 2, 5] = new GHCommandButtonItem("Rest", AppResourceName + ".Assets.UI.rest.png", -3);
+                    _moreBtnMatrix[1, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
+
+                    _moreBtnMatrix[2, 0, 0] = new GHCommandButtonItem("Attributes", AppResourceName + ".Assets.UI.attributes.png", GHUtils.Meta(2));
+                    _moreBtnMatrix[2, 1, 0] = new GHCommandButtonItem("Discoveries", AppResourceName + ".Assets.UI.discoveries.png", (int)'\\');
+                    _moreBtnMatrix[2, 2, 0] = new GHCommandButtonItem("Killed", AppResourceName + ".Assets.UI.killed.png", GHUtils.Meta((int)'k'));
+                    _moreBtnMatrix[2, 3, 0] = new GHCommandButtonItem("Genocided", AppResourceName + ".Assets.UI.genocided.png", GHUtils.Meta((int)'g'));
+
+                    _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("Travel", AppResourceName + ".Assets.UI.travel.png", (int)'_');
+                    _moreBtnMatrix[2, 1, 1] = new GHCommandButtonItem("2-Weapon", AppResourceName + ".Assets.UI.twoweap.png", GHUtils.Ctrl((int)'x'));
+                    _moreBtnMatrix[2, 2, 1] = new GHCommandButtonItem("Examine", AppResourceName + ".Assets.UI.examine.png", GHUtils.Meta((int)'x'));
+                    _moreBtnMatrix[2, 3, 1] = new GHCommandButtonItem("Engrave", AppResourceName + ".Assets.UI.engrave.png", (int)'E');
+
+                    _moreBtnMatrix[2, 0, 2] = new GHCommandButtonItem("Ride", AppResourceName + ".Assets.UI.ride.png", GHUtils.Meta((int)'R'));
+                    _moreBtnMatrix[2, 1, 2] = new GHCommandButtonItem("Untrap", AppResourceName + ".Assets.UI.untrap.png", GHUtils.Meta((int)'u'));
+                    _moreBtnMatrix[2, 2, 2] = new GHCommandButtonItem("Handedness", AppResourceName + ".Assets.UI.handedness.png", GHUtils.Meta((int)'h'));
+                    _moreBtnMatrix[2, 3, 2] = new GHCommandButtonItem("Unwield", AppResourceName + ".Assets.UI.unwield.png", GHUtils.Meta(5));
+
+                    _moreBtnMatrix[2, 0, 3] = new GHCommandButtonItem("Light", AppResourceName + ".Assets.UI.light.png", GHUtils.Ctrl((int)'l'));
+                    _moreBtnMatrix[2, 1, 3] = new GHCommandButtonItem("Loot", AppResourceName + ".Assets.UI.loot.png", (int)'l');
+                    _moreBtnMatrix[2, 2, 3] = new GHCommandButtonItem("Open", AppResourceName + ".Assets.UI.open.png", (int)'o');
+                    _moreBtnMatrix[2, 3, 3] = new GHCommandButtonItem("Close", AppResourceName + ".Assets.UI.close.png", (int)'c');
+
+                    _moreBtnMatrix[2, 0, 4] = new GHCommandButtonItem("Teleport", AppResourceName + ".Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
+                    _moreBtnMatrix[2, 1, 4] = new GHCommandButtonItem("Monster", AppResourceName + ".Assets.UI.monster.png", GHUtils.Meta(4));
+                    _moreBtnMatrix[2, 2, 4] = new GHCommandButtonItem("Jump", AppResourceName + ".Assets.UI.jump.png", (int)'j');
+                    _moreBtnMatrix[2, 3, 4] = new GHCommandButtonItem("Dig", AppResourceName + ".Assets.UI.dig.png", GHUtils.Ctrl((int)'g'));
+
+                    _moreBtnMatrix[2, 0, 5] = new GHCommandButtonItem("Name", AppResourceName + ".Assets.UI.name.png", (int)'N');
+                    _moreBtnMatrix[2, 1, 5] = new GHCommandButtonItem("Look Here", AppResourceName + ".Assets.UI.lookhere.png", (int)':');
+                    _moreBtnMatrix[2, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
+                    _moreBtnMatrix[2, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
+                }
+                else
+                {
+                    _moreBtnMatrix[0, 0, 0] = new GHCommandButtonItem("Wish", AppResourceName + ".Assets.UI.wish.png", GHUtils.Ctrl((int)'w'));
+                    _moreBtnMatrix[0, 1, 0] = new GHCommandButtonItem("Reveal", AppResourceName + ".Assets.UI.reveal.png", GHUtils.Ctrl((int)'f'));
+                    _moreBtnMatrix[0, 2, 0] = new GHCommandButtonItem("Genesis", AppResourceName + ".Assets.UI.genesis.png", GHUtils.Meta((int)'m'));
+                    _moreBtnMatrix[0, 3, 0] = new GHCommandButtonItem("Levelport", AppResourceName + ".Assets.UI.levelport.png", GHUtils.Ctrl((int)'v'));
+
+                    _moreBtnMatrix[0, 0, 1] = new GHCommandButtonItem("Identify", AppResourceName + ".Assets.UI.identify.png", GHUtils.Ctrl((int)'i'));
+                    _moreBtnMatrix[0, 1, 1] = new GHCommandButtonItem("Teleport", AppResourceName + ".Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
+                    _moreBtnMatrix[0, 2, 1] = new GHCommandButtonItem("Level Change", AppResourceName + ".Assets.UI.levelchange.png", GHUtils.Meta(0));
+                    _moreBtnMatrix[0, 3, 1] = new GHCommandButtonItem("Polymorph Self", AppResourceName + ".Assets.UI.polymorph.png", GHUtils.Meta(1));
+
+                    _moreBtnMatrix[0, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
+                    _moreBtnMatrix[0, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
+
+                    _moreBtnMatrix[1, 0, 0] = new GHCommandButtonItem("You", AppResourceName + ".Assets.UI.you.png", (int)'}');
+                    _moreBtnMatrix[1, 1, 0] = new GHCommandButtonItem("Skills", AppResourceName + ".Assets.UI.skill.png", (int)'S');
+                    _moreBtnMatrix[1, 2, 0] = new GHCommandButtonItem("Overview", AppResourceName + ".Assets.UI.overview.png", GHUtils.Ctrl((int)'o'));
+                    _moreBtnMatrix[1, 3, 0] = new GHCommandButtonItem("Goals", AppResourceName + ".Assets.UI.conduct.png", GHUtils.Meta(3));
+
+                    _moreBtnMatrix[1, 0, 1] = new GHCommandButtonItem("View Spell", AppResourceName + ".Assets.UI.viewspell.png", GHUtils.Meta((int)'z'));
+                    _moreBtnMatrix[1, 1, 1] = new GHCommandButtonItem("Mix", AppResourceName + ".Assets.UI.mix.png", (int)'X');
+                    _moreBtnMatrix[1, 2, 1] = new GHCommandButtonItem("Travel", AppResourceName + ".Assets.UI.travel.png", (int)'_');
+                    _moreBtnMatrix[1, 3, 1] = new GHCommandButtonItem("2-Weapon", AppResourceName + ".Assets.UI.twoweap.png", GHUtils.Ctrl((int)'x'));
+
+                    _moreBtnMatrix[1, 0, 2] = new GHCommandButtonItem("Examine", AppResourceName + ".Assets.UI.examine.png", GHUtils.Meta((int)'x'));
+                    _moreBtnMatrix[1, 1, 2] = new GHCommandButtonItem("Engrave", AppResourceName + ".Assets.UI.engrave.png", (int)'E');
+                    _moreBtnMatrix[1, 2, 2] = new GHCommandButtonItem("Ride", AppResourceName + ".Assets.UI.ride.png", GHUtils.Meta((int)'R'));
+                    _moreBtnMatrix[1, 3, 2] = new GHCommandButtonItem("Wield", AppResourceName + ".Assets.UI.wield.png", (int)'w');
+
+                    _moreBtnMatrix[1, 0, 3] = new GHCommandButtonItem("Eat", AppResourceName + ".Assets.UI.eat.png", (int)'e');
+                    _moreBtnMatrix[1, 1, 3] = new GHCommandButtonItem("Drink", AppResourceName + ".Assets.UI.quaff.png", (int)'q');
+                    _moreBtnMatrix[1, 2, 3] = new GHCommandButtonItem("Read", AppResourceName + ".Assets.UI.read.png", (int)'r');
+                    _moreBtnMatrix[1, 3, 3] = new GHCommandButtonItem("Drop Types", AppResourceName + ".Assets.UI.droptypes.png", (int)'D');
+
+                    _moreBtnMatrix[1, 0, 4] = new GHCommandButtonItem("Untrap", AppResourceName + ".Assets.UI.untrap.png", GHUtils.Meta((int)'u'));
+                    _moreBtnMatrix[1, 1, 4] = new GHCommandButtonItem("Handedness", AppResourceName + ".Assets.UI.handedness.png", GHUtils.Meta((int)'h'));
+                    _moreBtnMatrix[1, 2, 4] = new GHCommandButtonItem("Yell", AppResourceName + ".Assets.UI.yell.png", GHUtils.Ctrl((int)'y'));
+                    _moreBtnMatrix[1, 3, 4] = new GHCommandButtonItem("Pray", AppResourceName + ".Assets.UI.pray.png", GHUtils.Meta((int)'p'));
+
+                    _moreBtnMatrix[1, 0, 5] = new GHCommandButtonItem("Count", AppResourceName + ".Assets.UI.count.png", -5);
+                    _moreBtnMatrix[1, 1, 5] = new GHCommandButtonItem("Search 20", AppResourceName + ".Assets.UI.search20.png", -2);
+                    _moreBtnMatrix[1, 2, 5] = new GHCommandButtonItem("Rest", AppResourceName + ".Assets.UI.rest.png", -3);
+                    _moreBtnMatrix[1, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
+
+                    _moreBtnMatrix[2, 0, 0] = new GHCommandButtonItem("Attributes", AppResourceName + ".Assets.UI.attributes.png", GHUtils.Meta(2));
+                    _moreBtnMatrix[2, 1, 0] = new GHCommandButtonItem("Discoveries", AppResourceName + ".Assets.UI.discoveries.png", (int)'\\');
+                    _moreBtnMatrix[2, 2, 0] = new GHCommandButtonItem("Killed", AppResourceName + ".Assets.UI.killed.png", GHUtils.Meta((int)'k'));
+                    _moreBtnMatrix[2, 3, 0] = new GHCommandButtonItem("Genocided", AppResourceName + ".Assets.UI.genocided.png", GHUtils.Meta((int)'g'));
+
+                    _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("Wear", AppResourceName + ".Assets.UI.wear.png", (int)'W');
+                    _moreBtnMatrix[2, 1, 1] = new GHCommandButtonItem("Put On", AppResourceName + ".Assets.UI.puton.png", (int)'P');
+                    _moreBtnMatrix[2, 2, 1] = new GHCommandButtonItem("Quiver", AppResourceName + ".Assets.UI.quiver.png", (int)'Q');
+                    _moreBtnMatrix[2, 3, 1] = new GHCommandButtonItem("Chronicle", AppResourceName + ".Assets.UI.chronicle.png", GHUtils.Meta(13));
+
+                    _moreBtnMatrix[2, 0, 2] = new GHCommandButtonItem("Take Off", AppResourceName + ".Assets.UI.takeoff.png", (int)'T');
+                    _moreBtnMatrix[2, 1, 2] = new GHCommandButtonItem("Remove", AppResourceName + ".Assets.UI.remove.png", (int)'R');
+                    _moreBtnMatrix[2, 2, 2] = new GHCommandButtonItem("Take Off Many", AppResourceName + ".Assets.UI.takeoffmany.png", GHUtils.Meta((int)'t'));
+                    _moreBtnMatrix[2, 3, 2] = new GHCommandButtonItem("Unwield", AppResourceName + ".Assets.UI.unwield.png", GHUtils.Meta(5));
+
+                    _moreBtnMatrix[2, 0, 3] = new GHCommandButtonItem("Dig", AppResourceName + ".Assets.UI.dig.png", GHUtils.Ctrl((int)'g'));
+                    _moreBtnMatrix[2, 1, 3] = new GHCommandButtonItem("Light", AppResourceName + ".Assets.UI.light.png", GHUtils.Ctrl((int)'l'));
+                    _moreBtnMatrix[2, 2, 3] = new GHCommandButtonItem("Jump", AppResourceName + ".Assets.UI.jump.png", (int)'j');
+                    _moreBtnMatrix[2, 3, 3] = new GHCommandButtonItem("Fight", AppResourceName + ".Assets.UI.fight.png", (int)'F');
+
+                    _moreBtnMatrix[2, 0, 4] = new GHCommandButtonItem("Tip", AppResourceName + ".Assets.UI.tip.png", GHUtils.Meta((int)'T'));
+                    _moreBtnMatrix[2, 1, 4] = new GHCommandButtonItem("Invoke", AppResourceName + ".Assets.UI.invoke.png", GHUtils.Meta((int)'i'));
+                    _moreBtnMatrix[2, 2, 4] = new GHCommandButtonItem("Rub", AppResourceName + ".Assets.UI.rub.png", GHUtils.Meta((int)'r'));
+                    _moreBtnMatrix[2, 3, 4] = new GHCommandButtonItem("Wipe", AppResourceName + ".Assets.UI.wipe.png", GHUtils.Meta((int)'w'));
+
+                    _moreBtnMatrix[2, 0, 5] = new GHCommandButtonItem("Name", AppResourceName + ".Assets.UI.name.png", (int)'N');
+                    _moreBtnMatrix[2, 1, 5] = new GHCommandButtonItem("What Is", AppResourceName + ".Assets.UI.whatis.png", (int)'/');
+                    _moreBtnMatrix[2, 2, 5] = new GHCommandButtonItem("Look Far", AppResourceName + ".Assets.UI.lookfar.png", (int)';');
+                    _moreBtnMatrix[2, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
+
+                    _moreBtnMatrix[3, 0, 0] = new GHCommandButtonItem("Look Here", AppResourceName + ".Assets.UI.lookhere.png", (int)':');
+                    _moreBtnMatrix[3, 1, 0] = new GHCommandButtonItem("Pick Up", AppResourceName + ".Assets.UI.pickup.png", (int)',');
+                    _moreBtnMatrix[3, 2, 0] = new GHCommandButtonItem("Sit", AppResourceName + ".Assets.UI.sit.png", GHUtils.Ctrl((int)'s'));
+                    _moreBtnMatrix[3, 3, 0] = new GHCommandButtonItem("Pay", AppResourceName + ".Assets.UI.pay.png", (int)'p');
+
+                    _moreBtnMatrix[3, 0, 1] = new GHCommandButtonItem("Loot", AppResourceName + ".Assets.UI.loot.png", (int)'l');
+                    _moreBtnMatrix[3, 1, 1] = new GHCommandButtonItem("Dip", AppResourceName + ".Assets.UI.dip.png", GHUtils.Meta((int)'d'));
+                    _moreBtnMatrix[3, 2, 1] = new GHCommandButtonItem("Offer", AppResourceName + ".Assets.UI.offer.png", GHUtils.Meta((int)'o'));
+                    _moreBtnMatrix[3, 3, 1] = new GHCommandButtonItem("Autopickup", AppResourceName + ".Assets.UI.autopickup.png", (int)'@');
+
+                    _moreBtnMatrix[3, 0, 2] = new GHCommandButtonItem("Go Down", AppResourceName + ".Assets.UI.stairs-down.png", (int)'>');
+                    _moreBtnMatrix[3, 1, 2] = new GHCommandButtonItem("Go Up", AppResourceName + ".Assets.UI.stairs-up.png", (int)'<');
+                    _moreBtnMatrix[3, 2, 2] = new GHCommandButtonItem("Open", AppResourceName + ".Assets.UI.open.png", (int)'o');
+                    _moreBtnMatrix[3, 3, 2] = new GHCommandButtonItem("Close", AppResourceName + ".Assets.UI.close.png", (int)'c');
+
+                    _moreBtnMatrix[3, 0, 3] = new GHCommandButtonItem("Break", AppResourceName + ".Assets.UI.break.png", GHUtils.Ctrl((int)'b'));
+                    _moreBtnMatrix[3, 1, 3] = new GHCommandButtonItem("Force Lock", AppResourceName + ".Assets.UI.forcelock.png", GHUtils.Meta((int)'f'));
+                    _moreBtnMatrix[3, 2, 3] = new GHCommandButtonItem("Teleport", AppResourceName + ".Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
+                    _moreBtnMatrix[3, 3, 3] = new GHCommandButtonItem("Monster", AppResourceName + ".Assets.UI.monster.png", GHUtils.Meta(4));
+
+                    _moreBtnMatrix[3, 0, 4] = new GHCommandButtonItem("Spells", AppResourceName + ".Assets.UI.spells.png", (int)'+');
+
+                    _moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Help", AppResourceName + ".Assets.UI.help.png", (int)'?');
+                    _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Commands", AppResourceName + ".Assets.UI.commands.png", GHUtils.Meta((int)'c'));
+                    _moreBtnMatrix[3, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
+                    _moreBtnMatrix[3, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -1);
+                }
+
+                for (int k = 0; k < GHConstants.MoreButtonPages; k++)
+                {
+                    for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
                     {
-                        if (_moreBtnMatrix[k, i, j] != null && !string.IsNullOrEmpty(_moreBtnMatrix[k, i, j].ImageSourcePath))
+                        for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
                         {
-                            using (Stream stream = assembly.GetManifestResourceStream(_moreBtnMatrix[k, i, j].ImageSourcePath))
+                            if (_moreBtnMatrix[k, i, j] != null && !string.IsNullOrEmpty(_moreBtnMatrix[k, i, j].ImageSourcePath))
                             {
-                                if (stream != null)
+                                using (Stream stream = assembly.GetManifestResourceStream(_moreBtnMatrix[k, i, j].ImageSourcePath))
                                 {
-                                    _moreBtnBitmaps[k, i, j] = SKBitmap.Decode(stream);
-                                    _moreBtnBitmaps[k, i, j].SetImmutable(); ;
+                                    if (stream != null)
+                                    {
+                                        _moreBtnBitmaps[k, i, j] = SKBitmap.Decode(stream);
+                                        _moreBtnBitmaps[k, i, j].SetImmutable(); ;
+                                    }
                                 }
                             }
                         }
