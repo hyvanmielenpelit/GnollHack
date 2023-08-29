@@ -4155,7 +4155,7 @@ struct permonst _mons2[] = {
         M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_BLOODLUST | M4_PRINCE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
         30, HI_LORD, MONSTER_SOUNDSET_UNDEAD_DEMON_MALE, MONSTER_SOUNDSET_UNDEAD_DEMON_FEMALE, SOUNDSET_SUBTYPE_VAMPIRE),
-    ENLARGED_MON("Vlad the Impaler", "Lord of the Vampires", "powerful spell-casting human undead with life-draining attack", None, None, S_VAMPIRE, LVL(45, 20, -9, 23, 80, -11),
+    ENLARGED_MON("Vlad the Impaler", "Lord of the Vampires", "powerful spell-casting human undead with life-draining attack", None, None, S_VAMPIRE, LVL(45, 21, -9, 23, 80, -11),
         (G_NOGEN | G_NOCORPSE | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_BITE, AD_DRLI, 1, 12, 0, -14, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),

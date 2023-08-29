@@ -1653,7 +1653,6 @@ register struct monst *mtmp;
                 (void)mpickobj(mtmp, otmp);
             }
             (void) mongets(mtmp, POT_FULL_HEALING);
-            (void) mongets(mtmp, POT_SPEED);
             (void) mongets(mtmp, AMULET_OF_REFLECTION);
         }
         break;
