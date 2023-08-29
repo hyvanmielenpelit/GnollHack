@@ -4264,7 +4264,7 @@ int otyp;
             wep_multipliable_avg_dmg *= average_multi_shot_times;
 
             if (has_slaying)
-                wep_all_extra_avg_dmg += wep_multipliable_avg_dmg * 2;
+                wep_all_extra_avg_dmg += wep_multipliable_avg_dmg * 1;
 
             powercnt++;
             Sprintf(buf, " %2d - Your basic average damage is %.1f per round", powercnt, wep_avg_dmg);

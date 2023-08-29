@@ -1645,7 +1645,7 @@ register struct monst *mtmp;
         }
         else if (ptr == &mons[PM_VLAD_THE_IMPALER])
         {
-            otmp = mksobj_with_flags(SPEAR, TRUE, FALSE, 0, mtmp, MAT_NONE, EXCEPTIONALITY_INFERNAL, 0L, MKOBJ_FLAGS_FORCE_LEGENDARY | MKOBJ_FLAGS_PARAM_IS_EXCEPTIONALITY);
+            otmp = mksobj_with_flags(SPEAR, TRUE, FALSE, 0, mtmp, MAT_NONE, EXCEPTIONALITY_INFERNAL, 0L, MKOBJ_FLAGS_PARAM_IS_EXCEPTIONALITY);
             if (otmp)
             {
                 otmp->enchantment = 4 + rn2(4);
