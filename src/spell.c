@@ -4798,7 +4798,7 @@ boolean limited;
 
     /* Calculate success chance */
     chance = -130;
-    chance += -60 * (spellev(spell) + 0);
+    chance += -50 * (spellev(spell) + 0);
 
     skill = P_SKILL_LEVEL(spell_skilltype(spellid(spell)));
 
