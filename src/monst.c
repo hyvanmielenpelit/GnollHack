@@ -5055,7 +5055,7 @@ struct permonst _mons2[] = {
         M4_NONE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
         21, CLR_YELLOW, MONSTER_SOUNDSET_HUMAN_WEREWOLF_MALE, MONSTER_SOUNDSET_HUMAN_WEREWOLF_FEMALE, NO_SOUNDSET_SUBTYPE),
     /* high priests always have epri and always have ispriest set */
-    GENERAL_MON("high priest", None, "powerful clerical human spellcaster", "high priestess", "high priest",S_HUMAN, LVL(25, 18, 7, 10, 70, 0), (G_NOGEN | G_UNIQ),
+    GENERAL_MON("high priest", None, "powerful clerical human spellcaster", "high priestess", "high priest",S_HUMAN, LVL(50, 18, 7, 10, 70, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10, 0, 0, 0, 0, 0UL, 0), ATTK(AT_KICK, AD_PHYS, 3, 8, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_MAGC, AD_CLRC, 3, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_CLRC, 3, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
