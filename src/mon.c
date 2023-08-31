@@ -3675,6 +3675,9 @@ struct monst *mdef;
        his temporary corridor to/from the vault has been removed */
     if (mdef->isgd && !grddead(mdef))
         return;
+    if(mdef->iswiz)
+        context.no_of_wizards--;
+
     /* hero is thrown from his steed when it disappears */
     if (mdef == u.usteed)
         dismount_steed(DISMOUNT_GENERIC);

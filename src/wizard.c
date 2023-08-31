@@ -792,7 +792,7 @@ resurrect()
     if (!context.no_of_wizards) {
         /* make a new Wizard */
         verb = "kill";
-        mtmp = makemon(&mons[PM_WIZARD_OF_YENDOR], u.ux, u.uy, MM_NOWAIT | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+        mtmp = makemon2(&mons[PM_WIZARD_OF_YENDOR], u.ux, u.uy, MM_NOWAIT | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END | MM_NOCOUNTBIRTH, MM2_REVIVING);
         /* affects experience; he's not coming back from a corpse
            but is subject to repeated killing like a revived corpse */
         if (mtmp) mtmp->mrevived = 1;
