@@ -6940,7 +6940,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         else if (newdungeon && u.uhave.amulet)
             resurrect(); /* force confrontation with Wizard */
 
-#ifdef GNH_MOBILE
+#if FALSE
         if (Is_waterlevel(&u.uz))
         {
             issue_simple_gui_command(GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE_ON_LEVEL);
