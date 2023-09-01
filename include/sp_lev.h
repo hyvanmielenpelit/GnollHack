@@ -642,6 +642,17 @@ struct lc_breakdef {
     int break_depth;
 };
 
+struct lev_msg {
+    struct lev_msg* next;
+    char* message;
+    int attr;
+    int color;
+    int sound_type;
+    int sound_id;
+    int sound_param;
+    unsigned long msgflags;
+};
+
 enum object_special_create_types {
     OBJECT_SPECIAL_CREATE_TYPE_RANDOM = -1,
     OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_WEAPON = -2,

@@ -246,9 +246,7 @@ STATIC_VAR aligntyp ralign[3] = { AM_CHAOTIC, AM_NEUTRAL, AM_LAWFUL };
 STATIC_VAR NEARDATA xchar xstart, ystart;
 STATIC_VAR NEARDATA char xsize, ysize;
 
-char *lev_message = 0;
-int lev_message_color = NO_COLOR;
-int lev_message_attr = ATR_NONE;
+struct lev_msg *lev_message = 0;
 
 lev_region *lregions = 0;
 int num_lregions = 0;
@@ -3843,39 +3841,76 @@ spo_message(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_message";
-    struct opvar *op, *mtyp_opvar;
-    char *msg, *levmsg;
-    size_t old_n, n;
+    struct opvar *op, *mcolor_opvar, *mattr_opvar, *soundtyp_opvar, *soundid_opvar, *soundparam_opvar, *msgflags_opvar;
+    char* msg; // , * levmsg;
+    size_t n; //old_n, 
+    struct lev_msg* levmsg;
+    struct lev_msg zeromsg = { 0 };
 
-    if (!OV_pop_i(mtyp_opvar) || !OV_pop_s(op))
+    if (!OV_pop_i(mattr_opvar) || !OV_pop_i(mcolor_opvar) || !OV_pop_i(soundtyp_opvar) || !OV_pop_i(soundid_opvar)
+        || !OV_pop_i(soundparam_opvar) || !OV_pop_i(msgflags_opvar) || !OV_pop_s(op))
         return;
     msg = OV_s(op);
     if (!msg)
         return;
 
-    int mtyp = (int)OV_i(mtyp_opvar);
-
-    old_n = lev_message ? (strlen(lev_message) + 1) : 0;
     n = strlen(msg);
+    int mattr = (int)OV_i(mattr_opvar);
+    int mcolor = (int)OV_i(mcolor_opvar);
+    int soundtyp = (int)OV_i(soundtyp_opvar);
+    int soundid = (int)OV_i(soundid_opvar);
+    int soundparam = (int)OV_i(soundparam_opvar);
+    int msgflags = (int)OV_i(msgflags_opvar);
 
-    levmsg = (char *) alloc(old_n + n + 1);
+    levmsg = (struct lev_msg*)alloc(sizeof(struct lev_msg));
+    if (levmsg)
+    {
+        *levmsg = zeromsg;
+        levmsg->color = mcolor;
+        levmsg->attr = mattr;
+        levmsg->sound_type = soundtyp;
+        levmsg->sound_id = soundid;
+        levmsg->sound_param = soundparam;
+        levmsg->msgflags = msgflags;
+        levmsg->message = (char*)alloc(n + 1);
+        Strcpy(levmsg->message, msg);
+        if(!lev_message)
+            lev_message = levmsg;
+        else
+        {
+            struct lev_msg* lm;
+            for (lm = lev_message; lm->next; lm = lm->next)
+                ;
+            lm->next = levmsg;
+        }
+    }
+    
+    //old_n = lev_message ? (strlen(lev_message) + 1) : 0;
+    //n = strlen(msg);
 
-    if (old_n)
-        levmsg[old_n - 1] = '\n';
-    
-    if (lev_message)
-        (void) memcpy((genericptr_t) levmsg, (genericptr_t) lev_message, old_n - 1);
-    
-    (void) memcpy((genericptr_t) &levmsg[old_n], msg, n);
-    levmsg[old_n + n] = '\0';
-    Free(lev_message);
-    
-    lev_message = levmsg;
-    lev_message_color = mtyp;
-    lev_message_attr = ATR_NONE;
+    //levmsg = (char *) alloc(old_n + n + 1);
+
+    //if (old_n)
+    //    levmsg[old_n - 1] = '\n';
+    //
+    //if (lev_message)
+    //    (void) memcpy((genericptr_t) levmsg, (genericptr_t) lev_message, old_n - 1);
+    //
+    //(void) memcpy((genericptr_t) &levmsg[old_n], msg, n);
+    //levmsg[old_n + n] = '\0';
+    //Free(lev_message);
+    //
+    //lev_message = levmsg;
+    //lev_message_color = mtyp;
+    //lev_message_attr = ATR_NONE;
     
     opvar_free(op);
-    opvar_free(mtyp_opvar);
+    opvar_free(mcolor_opvar);
+    opvar_free(mattr_opvar);
+    opvar_free(soundtyp_opvar);
+    opvar_free(soundid_opvar);
+    opvar_free(soundparam_opvar);
+    opvar_free(msgflags_opvar);
 }
 
 STATIC_VAR const monster emptymons; /* Initialized to zero automatically */

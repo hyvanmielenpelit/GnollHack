@@ -14,9 +14,12 @@
 MAZE:"earth",' '
 FLAGS: noteleport,hardfloor,shortsighted
 TILESET: gnomish_mines_tileset
-MESSAGE: "Well done, mortal!", message_god
-MESSAGE: "But now thou must face the final Test...", message_god
-MESSAGE: "Prove thyself worthy or perish!", message_god
+# MESSAGE: "Well done, mortal!", message_clr_god
+# MESSAGE: "But now thou must face the final Test...", message_clr_god
+# MESSAGE: "Prove thyself worthy or perish!", message_clr_god
+MESSAGE: "Well done, mortal!", message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_well_done, 0, 0
+MESSAGE: "But now thou must face the final Test...", message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_final_test, 0, 0
+MESSAGE: "Prove thyself worthy or perish!", message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_prove_thyself, 0, 0
 
 GEOMETRY:center,center
 # The player lands, upon arrival, in the
@@ -152,8 +155,8 @@ MAZE:"air",' '
 FLAGS: noteleport,hardfloor,shortsighted
 # The following messages are somewhat obtuse, to make then
 # equally meaningful if the player can see or not.
-MESSAGE: "What a strange feeling!", message_hint
-MESSAGE: "You notice that there is no gravity here.", message_hint
+MESSAGE: "What a strange feeling!", message_clr_hint
+MESSAGE: "You notice that there is no gravity here.", message_clr_hint
 GEOMETRY:center,center
 # The player lands, upon arrival, in the
 # lower-left area.  The location of the
@@ -408,7 +411,7 @@ MONSTER_GENERATION: 10, ('H',"fire giant"), ('v',"fire vortex"), (':',"salamande
 
 MAZE:"water",' '
 FLAGS: noteleport,hardfloor,shortsighted
-MESSAGE: "You find yourself suspended in an air bubble surrounded by water.", message_hint
+MESSAGE: "You find yourself suspended in an air bubble surrounded by water.", message_clr_hint
 GEOMETRY:center,center
 # The player lands upon arrival to an air bubble
 # within the leftmost third of the level.  The
@@ -508,9 +511,9 @@ MONSTER_GENERATION: 30, ('E',"water elemental"), ('E',"elder water elemental"), 
 MAZE:"astral",' '
 FLAGS: noteleport,hardfloor,nommap,shortsighted,solidify
 TILESET: astral_tileset
-MESSAGE: "You arrive on the Astral Plane!", message_hint
-MESSAGE: "Here the High Temple of %d is located.", message_hint
-MESSAGE: "You sense alarm, hostility, and excitement in the air!", message_hint
+MESSAGE: "You arrive on the Astral Plane!", message_clr_hint
+MESSAGE: "Here the High Temple of %d is located.", message_clr_hint
+MESSAGE: "You sense alarm, hostility, and excitement in the air!", message_clr_hint
 GEOMETRY:center,center
 MAP
                               ---------------                              

@@ -6,6 +6,7 @@
 
 #include "hack.h"
 #include "dlb.h"
+#include "sp_lev.h"
 
 /*  quest-specific pager routines. */
 
@@ -18,9 +19,7 @@
 #endif
 
 /* from sp_lev.c, for deliver_splev_message() */
-extern char *lev_message;
-extern int lev_message_color;
-extern int lev_message_attr;
+extern struct lev_msg *lev_message;
 
 STATIC_DCL void NDECL(dump_qtlist);
 STATIC_DCL void FDECL(Fread, (genericptr_t, long, long, dlb *));
@@ -785,29 +784,45 @@ void
 deliver_splev_message()
 {
     char *str, *nl, in_line[BUFSZ], out_line[BUFSZ];
+    struct lev_msg* lm, *nextlm;
 
     /* there's no provision for delivering via window instead of pline */
-    if (lev_message) {
+    for (lm = lev_message; lm; lm = nextlm)
+    {
+        nextlm = lm->next;
+
+        /* Play sound if any */
+        switch (lm->sound_type)
+        {
+        case 1:
+            play_voice_god_simple_line_by_align(u.ualign.type, lm->sound_id);
+            break;
+        case 2:
+            play_sfx_sound(lm->sound_id);
+            break;
+        default:
+            break;
+        }
+
         /* lev_message can span multiple lines using embedded newline chars;
            any segments too long to fit within in_line[] will be truncated */
-        for (str = lev_message; *str; str = nl + 1) {
+        for (str = lm->message; *str; str = nl + 1) 
+        {
             /* copying will stop at newline if one is present */
             copynchars(in_line, str, (int) (sizeof in_line) - 1);
 
             /* convert_line() expects encrypted input */
             (void) xcrypt(in_line, in_line);
             convert_line(in_line, out_line);
-            pline_ex(lev_message_attr, lev_message_color, "%s", out_line);
+            pline_ex(lm->attr, lm->color, "%s", out_line);
 
             if ((nl = index(str, '\n')) == 0)
                 break; /* done if no newline */
         }
-
-        free((genericptr_t) lev_message);
-        lev_message = 0;
-        lev_message_color = NO_COLOR;
-        lev_message_attr = ATR_NONE;
+        free((genericptr_t)lm->message);
+        free((genericptr_t)lm);
     }
+    lev_message = 0;
 }
 
 
