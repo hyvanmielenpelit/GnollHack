@@ -46,11 +46,35 @@ BRAZIER: (04,07)
 BRAZIER: (10,07)
 BRAZIER: (04,11)
 BRAZIER: (10,11)
+BRAZIER: (26,11)
+BRAZIER: (01,11)
+BRAZIER: (01,01)
+BRAZIER: (07,01)
 IF[50%] {
   DECORATION:(16,03),decoration_painting,painting_wizard_blue,direction_top
 } ELSE {
   DECORATION:(16,03),decoration_painting,painting_wizard_red,direction_top
 }
+CARPET:(04,07,10,11),carpet_blue
+CARPET:(22,01,26,02),carpet_red
+CARPET:(25,04,26,09),carpet_red
+CARPET:(22,04,23,09),carpet_red
+CARPET:(04,04,07,05),carpet_red
+CARPET:(09,01,10,05),carpet_red
+OBJECT: ('`', "statue"), (07,09), no_pickup
+OBJECT: ('`', "statue"), (01,03), no_pickup
+OBJECT: ('`', "statue"), (01,05), no_pickup
+OBJECT: ('`', "statue"), (01,07), no_pickup
+OBJECT: ('`', "statue"), (01,09), no_pickup
+DECORATION:(03,00),decoration_painting,painting_wizard_blue,direction_top
+DECORATION:(05,00),decoration_painting,painting_wizard_red,direction_top
+DECORATION:(05,06),decoration_banner,banner_red,direction_top
+DECORATION:(07,06),decoration_banner,banner_red,direction_top
+DECORATION:(09,06),decoration_banner,banner_red,direction_top
+DECORATION:(05,12),decoration_banner,banner_red,direction_bottom
+DECORATION:(07,12),decoration_banner,banner_red,direction_bottom
+DECORATION:(09,12),decoration_banner,banner_red,direction_bottom
+
 # Non diggable walls
 # Walls inside the moat stay diggable
 NON_DIGGABLE:(00,00,11,12)
@@ -147,6 +171,24 @@ MAZEWALK:(28,05),east
 LADDER:(12,01),up
 LADDER:(14,11),down
 SIGNPOST: (16,11), signpost_normal,"Rare Monsters on This Level. Thieves Watch Out!"
+CARPET:(19,03,26,04),carpet_red
+CARPET:(19,06,23,07),carpet_red
+CARPET:(01,08,07,09),carpet_red
+CARPET:(04,05,07,06),carpet_red
+BRAZIER:(14,01)
+BRAZIER:(12,11)
+BRAZIER:(26,01)
+BRAZIER:(01,06)
+BRAZIER:(01,01)
+BRAZIER:(05,01)
+BRAZIER:(05,03)
+BRAZIER:(01,11)
+BRAZIER:(21,09)
+BRAZIER:(21,11)
+BRAZIER:(26,11)
+BRAZIER:(26,06)
+BRAZIER:(26,09)
+
 # Non diggable walls everywhere
 NON_DIGGABLE:(00,00,27,12)
 #
@@ -206,7 +248,7 @@ SPECIAL_REGION:(01,01,27,11),region_special_level_seen
 PORTAL:(25,11,25,11),(0,0,0,0),"fakewiz1"
 MAZEWALK:(28,09),east
 SIGNPOST: (23,08), signpost_normal,"Keep Out, and Don't Come Back! -Wizard of Yendor"
-SIGNPOST: (03,10), signpost_normal,"Don't Feed the Kraken!"
+SIGNPOST: (07,10), signpost_normal,"Don't Feed the Kraken!"
 REGION:(07,03,15,11),unlit,"morgue",unfilled
 REGION:(17,06,18,11),unlit,"beehive"
 # make the entry chamber a real room; it affects monster arrival;
@@ -216,6 +258,32 @@ REGION:(20,06,26,11),unlit,"ordinary",unfilled {
 }
 DOOR:closed,(18,05)
 LADDER:(11,07),up
+
+CARPET:(20,06,26,11),carpet_blue
+CARPET:(17,03,26,04),carpet_red
+CARPET:(01,09,05,11),carpet_blue
+BRAZIER:(01,01)
+BRAZIER:(04,01)
+BRAZIER:(01,11)
+BRAZIER:(26,01)
+BRAZIER:(04,07)
+BRAZIER:(01,09)
+BRAZIER:(05,09)
+BRAZIER:(05,11)
+OBJECT: ('`', "statue"), (20,06), no_pickup
+OBJECT: ('`', "statue"), (20,11), no_pickup
+OBJECT: ('`', "statue"), (26,06), no_pickup
+OBJECT: ('`', "statue"), (26,11), no_pickup
+OBJECT: ('`', "statue"), (17,03), no_pickup
+OBJECT: ('`', "statue"), (26,03), no_pickup
+OBJECT: ('`', "statue"), (01,03), no_pickup
+OBJECT: ('`', "statue"), (01,05), no_pickup
+OBJECT: ('`', "statue"), (01,07), no_pickup
+OBJECT: ('`', "statue"), (05,03), no_pickup
+OBJECT: ('`', "statue"), (05,05), no_pickup
+OBJECT: ('`', "statue"), (05,07), no_pickup
+OBJECT: ('`', "statue"), (03,10), no_pickup
+
 IF[50%] {
   IF[50%] {
     DECORATION:(11,05),decoration_painting,painting_wizard_blue,direction_top

@@ -5448,11 +5448,11 @@ register struct obj *obj;
             {
                 if (context.town_portal_return_level_set && !(obj->cursed && !rn2(3)))
                 {
-                    level_tele(0, 2, context.town_portal_return_level);
+                    level_tele(0, 2, context.town_portal_return_level, context.town_portal_return_flags);
                 }
                 else
                 {
-                    level_tele(0, 0, zerodlevel);
+                    level_tele(0, 0, zerodlevel, 0);
                 }
             }
             else
@@ -5499,16 +5499,16 @@ register struct obj *obj;
                 {
                     int selidx = selected->item.a_int;
                     if (selidx > 0 && selidx <= NUM_WAYPOINTS)
-                        level_tele(0, 2, *waypointlist[selidx - 1]);
+                        level_tele(0, 2, *waypointlist[selidx - 1], 0);
                     else if (selidx > NUM_WAYPOINTS)
                     {
                         if (context.town_portal_return_level_set && !(obj->cursed && !rn2(3)))
                         {
-                            level_tele(0, 2, context.town_portal_return_level);
+                            level_tele(0, 2, context.town_portal_return_level, context.town_portal_return_flags);
                         }
                         else
                         {
-                            level_tele(0, 0, zerodlevel);
+                            level_tele(0, 0, zerodlevel, 0);
                         }
                     }
                     free((genericptr_t)selected);
@@ -5525,16 +5525,17 @@ register struct obj *obj;
         {
             if(obj->cursed && !rn2(3))
             {
-                level_tele(0, 0, zerodlevel);
+                level_tele(0, 0, zerodlevel, 0);
             }
             else
             {
                 context.town_portal_return_level = u.uz;
                 context.town_portal_return_level_set = TRUE;
+                context.town_portal_return_flags = In_W_tower(u.ux, u.uy, &u.uz);
 
                 if (wpcnt <= 1)
                 {
-                    level_tele(0, 2, last_wp ? *last_wp : minetown_level);
+                    level_tele(0, 2, last_wp ? *last_wp : minetown_level, 0);
                 }
                 else
                 {
@@ -5576,7 +5577,7 @@ register struct obj *obj;
                     {
                         int selidx = selected->item.a_int;
                         if(selidx > 0)
-                            level_tele(0, 2, *waypointlist[selidx - 1]);
+                            level_tele(0, 2, *waypointlist[selidx - 1], 0);
                         free((genericptr_t)selected);
                     }
                     else
@@ -5624,10 +5625,10 @@ register struct obj *obj;
         controlled_teleportation();
         break;
     case SPE_LEVEL_TELEPORT:
-        level_tele(2, FALSE, zerodlevel);
+        level_tele(2, FALSE, zerodlevel, 0);
         break;
     case SPE_CONTROLLED_LEVEL_TELEPORT:
-        level_tele(2, TRUE, zerodlevel);
+        level_tele(2, TRUE, zerodlevel, 0);
         break;
     case SPE_PORTAL:
         create_portal();

@@ -1248,14 +1248,14 @@ boolean at_stairs;
 {
     if (at_stairs && u.ux == sstairs.sx && u.uy == sstairs.sy) {
         /* Taking a down dungeon branch. */
-        goto_level(&sstairs.tolev, at_stairs, FALSE, FALSE);
+        goto_level(&sstairs.tolev, at_stairs, FALSE, FALSE, FALSE);
     } else {
         /* Going down a stairs or jump in a trap door. */
         d_level newlevel;
 
         newlevel.dnum = u.uz.dnum;
         newlevel.dlevel = u.uz.dlevel + 1;
-        goto_level(&newlevel, at_stairs, !at_stairs, FALSE);
+        goto_level(&newlevel, at_stairs, !at_stairs, FALSE, FALSE);
     }
 }
 
@@ -1271,13 +1271,13 @@ boolean at_stairs;
         if (!u.uz.dnum && u.uz.dlevel == 1 && !u.uhave.amulet)
             done(ESCAPED);
         else
-            goto_level(&sstairs.tolev, at_stairs, FALSE, FALSE);
+            goto_level(&sstairs.tolev, at_stairs, FALSE, FALSE, FALSE);
     } else {
         /* Going up a stairs or rising through the ceiling. */
         d_level newlevel;
         newlevel.dnum = u.uz.dnum;
         newlevel.dlevel = u.uz.dlevel - 1;
-        goto_level(&newlevel, at_stairs, FALSE, FALSE);
+        goto_level(&newlevel, at_stairs, FALSE, FALSE, FALSE);
     }
 }
 
@@ -1653,7 +1653,7 @@ boolean at_stairs, falling;
     d_level lev;
 
     find_hell(&lev);
-    goto_level(&lev, at_stairs, falling, FALSE);
+    goto_level(&lev, at_stairs, falling, FALSE, FALSE);
 }
 
 /* equivalent to dest = source */

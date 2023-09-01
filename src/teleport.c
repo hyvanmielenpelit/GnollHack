@@ -1080,10 +1080,11 @@ boolean break_the_rules; /* True: wizard mode ^T */
 }
 
 void
-level_tele(teletype, controltype, target_level)
+level_tele(teletype, controltype, target_level, tele_flags)
 int teletype; /* 0 = scroll or other involuntary, 1 = wizard mode command, 2 = spell */
 int controltype; /* 0 = uncontrolled, 1 = controlled, 2 = town portal / other using target_level */
 d_level target_level;
+uchar tele_flags; /* 1 = teleport inside Wizard's Tower  */
 {
     register int newlev;
     d_level newlevel;
@@ -1271,7 +1272,7 @@ random_levtport:
         newlevel.dnum = u.uz.dnum;
         newlevel.dlevel = llimit + newlev;
         level_teleport_effect_out(u.ux, u.uy);
-        schedule_goto(&newlevel, FALSE, FALSE, TRUE, 0, (char *) 0, (char *) 0);
+        schedule_goto(&newlevel, FALSE, FALSE, TRUE, FALSE, 0, (char *) 0, (char *) 0);
         if(isok(u.ux, u.uy))
             newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
         return;
@@ -1390,7 +1391,7 @@ random_levtport:
         }
     }
 
-    schedule_goto(&newlevel, FALSE, FALSE, TRUE, 0, (char *) 0, (char *) 0);
+    schedule_goto(&newlevel, FALSE, FALSE, TRUE, !!(tele_flags & 1), 0, (char*)0, (char*)0);
     /* in case player just read a scroll and is about to be asked to
        call it something, we can't defer until the end of the turn */
     if (u.utotype && !context.mon_moving)
@@ -1441,7 +1442,7 @@ register struct trap *ttmp;
 
     level_teleport_effect_out(u.ux, u.uy);
 
-    schedule_goto(&target_level, FALSE, FALSE, TRUE, portal_flags,
+    schedule_goto(&target_level, FALSE, FALSE, TRUE, FALSE, portal_flags,
                   "You feel dizzy for a moment, but the sensation passes.",
                   (char *) 0);
 }
@@ -1531,7 +1532,7 @@ unsigned trflags;
         You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are momentarily disoriented.");
     deltrap(trap);
     newsym(u.ux, u.uy); /* get rid of trap symbol */
-    level_tele(0, FALSE, zerodlevel);
+    level_tele(0, FALSE, zerodlevel, 0);
 }
 
 /* check whether monster can arrive at location <x,y> via Tport (or fall) */

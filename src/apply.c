@@ -63,7 +63,7 @@ struct obj* obj;
     }
 
     consume_obj_charge(obj, TRUE);
-    level_tele(0, FALSE, zerodlevel);
+    level_tele(0, FALSE, zerodlevel, 0);
     makeknown(obj->otyp);
     return 1;
 }

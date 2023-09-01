@@ -1475,7 +1475,7 @@ int how;
                 if (on_level(&u.uz, &dl))
                     teleinstead = TRUE;
                 else
-                    schedule_goto(&dl, 2, FALSE, FALSE, 0, (char*)0, (char*)0);
+                    schedule_goto(&dl, 2, FALSE, FALSE, FALSE, 0, (char*)0, (char*)0);
             }
             else
             {

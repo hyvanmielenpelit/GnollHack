@@ -950,7 +950,6 @@ place_main_monst_here:
                 else if(!rn2(level_difficulty() >= 12 ? 4 : 5))
                     (void)mkobj_at(!rn2(4) ? SPBOOK_CLASS : SCROLL_CLASS, sx, sy, FALSE);
                 break;
-
             case BARRACKS:
                 if (!rn2(20)) /* the payroll and some loot */
                     (void) mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,

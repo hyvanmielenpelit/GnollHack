@@ -2733,7 +2733,7 @@ struct obj *obj;
             break;
         }
         case ARTINVOKE_LEVEL_TELEPORT:
-            level_tele(2, FALSE, zerodlevel);
+            level_tele(2, FALSE, zerodlevel, 0);
             break;
         case ARTINVOKE_CREATE_PORTAL:
         {
@@ -3186,7 +3186,7 @@ create_portal()
             You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "are surrounded by a shimmering sphere!");
         else
             You_feel_ex(ATR_NONE, CLR_MSG_MYSTICAL, "weightless for a moment.");
-        goto_level(&newlev, FALSE, FALSE, FALSE);
+        goto_level(&newlev, FALSE, FALSE, FALSE, FALSE);
     }
 
     return 1;

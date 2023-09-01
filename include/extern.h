@@ -643,8 +643,8 @@ E int NDECL(doup);
 E void NDECL(save_currentstate);
 #endif
 E void FDECL(u_collide_m, (struct monst *));
-E void FDECL(goto_level, (d_level *, UCHAR_P, BOOLEAN_P, XCHAR_P));
-E void FDECL(schedule_goto, (d_level *, UCHAR_P, BOOLEAN_P, BOOLEAN_P, long,
+E void FDECL(goto_level, (d_level *, UCHAR_P, BOOLEAN_P, BOOLEAN_P, XCHAR_P));
+E void FDECL(schedule_goto, (d_level *, UCHAR_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, long,
                              const char *, const char *));
 E void NDECL(deferred_goto);
 E boolean FDECL(revive_corpse, (struct obj *));
@@ -3588,7 +3588,7 @@ E boolean FDECL(scrolltele, (struct obj *, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(modronportaltele, (struct trap*, struct monst*));
 E int NDECL(dotelecmd);
 E int FDECL(dotele, (BOOLEAN_P));
-E void FDECL(level_tele, (int, int, d_level));
+E void FDECL(level_tele, (int, int, d_level, UCHAR_P));
 E void FDECL(domagicportal, (struct trap *));
 E void FDECL(level_teleport_effect_out, (int, int));
 E void FDECL(level_teleport_effect_in, (int, int));

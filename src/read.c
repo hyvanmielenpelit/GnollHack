@@ -2601,7 +2601,7 @@ struct monst* targetmonst;
         break;
     case SCR_TELEPORTATION:
         if (confused || scursed) {
-            level_tele(0, FALSE, zerodlevel);
+            level_tele(0, FALSE, zerodlevel, 0);
         } else {
             known = scrolltele(sobj, FALSE, FALSE);
         }

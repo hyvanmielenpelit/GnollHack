@@ -863,7 +863,7 @@ int ttyp;
                  */
                 newlevel.dnum = u.uz.dnum;
                 newlevel.dlevel = u.uz.dlevel + 1;
-                goto_level(&newlevel, FALSE, TRUE, FALSE);
+                goto_level(&newlevel, FALSE, TRUE, FALSE, FALSE);
                 /* messages for arriving in special rooms */
                 spoteffects(FALSE);
             }

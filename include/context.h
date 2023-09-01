@@ -251,13 +251,13 @@ struct context_info
     uchar dlords_summoned_via_altar;
     boolean skip_botl;
     boolean amonket_generated;
+    uchar town_portal_return_flags;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
     boolean reserved_bool3;
     boolean reserved_bool4;
 
     /* Emergency reserved variables to make non-save-game-breaking changes */
-    char reserved_char1;
     char reserved_char2;
     short reserved_short1;
     short reserved_short2;

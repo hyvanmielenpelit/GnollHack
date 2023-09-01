@@ -203,7 +203,7 @@ boolean seal;
     dest = (br->end1.dnum == u.uz.dnum) ? &br->end2 : &br->end1;
     portal_flag = u.uevent.qexpelled ? 0 /* returned via artifact? */
                                      : !seal ? 1 : -1;
-    schedule_goto(dest, FALSE, FALSE, TRUE, portal_flag, (char *) 0, (char *) 0);
+    schedule_goto(dest, FALSE, FALSE, TRUE, FALSE, portal_flag, (char *) 0, (char *) 0);
     if (seal) { /* remove the portal to the quest - sealing it off */
         int reexpelled = u.uevent.qexpelled;
 

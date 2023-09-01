@@ -6288,10 +6288,10 @@ struct monst *mtmp;
 }
 
 void
-goto_level(newlevel, at_location, falling, portal)
+goto_level(newlevel, at_location, falling, inside_tower, portal)
 d_level *newlevel;
-boolean at_location; /* 1 = at stairs, 2 = at altar */
-boolean falling;
+uchar at_location; /* 1 = at stairs, 2 = at altar */
+boolean falling, inside_tower;
 xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = Modron portal up (find portal down), 4 = Modron portal (random destination) */
 {
     int fd, l_idx;
@@ -6299,7 +6299,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     boolean cant_go_back, great_effort,
             up = (depth(newlevel) < depth(&u.uz)),
             newdungeon = (u.uz.dnum != newlevel->dnum),
-            was_in_W_tower = In_W_tower(u.ux, u.uy, &u.uz),
+            was_in_W_tower = In_W_tower(u.ux, u.uy, &u.uz) || inside_tower,
             familiar = FALSE,
             isnew = FALSE; /* made a new level? */
     struct monst *mtmp;
@@ -7109,10 +7109,10 @@ STATIC_VAR char *dfr_pre_msg = 0,  /* pline() before level change */
 
 /* change levels at the end of this turn, after monsters finish moving */
 void
-schedule_goto(tolev, at_location, falling, teleport, portal_flag, pre_msg, post_msg)
+schedule_goto(tolev, at_location, falling, teleport, inside_tower, portal_flag, pre_msg, post_msg)
 d_level *tolev;
 uchar at_location; /* 1 = at stairs, 2 = at altar */
-boolean falling, teleport;
+boolean falling, teleport, inside_tower;
 long portal_flag;
 const char *pre_msg, *post_msg;
 {
@@ -7144,6 +7144,9 @@ const char *pre_msg, *post_msg;
     if (teleport)
         typmask |= 0x0100; /* flag for teleport in effect on new level */
 
+    if (inside_tower)
+        typmask |= 0x0400; /* flag for going inside rather than outside Wizard's tower */
+
     u.utotype = typmask;
     /* destination level */
     assign_level(&u.utolev, tolev);
@@ -7167,7 +7170,7 @@ deferred_goto()
         if (dfr_pre_msg)
             pline1(dfr_pre_msg);
         xchar portal_flag = (typmask & 4) ? 1 : (typmask & 8) ? 2 : (typmask & 16) ? 3 : (typmask & 32) ? 4 : 0;
-        goto_level(&dest, (!!(typmask & 1)) | (2 * !!(typmask & 0x0200)), !!(typmask & 2), portal_flag);
+        goto_level(&dest, (!!(typmask & 1)) | (2 * !!(typmask & 0x0200)), !!(typmask & 2), !!(typmask & 0x0400), portal_flag);
         if (typmask & 0x0080) { /* remove portal */
             struct trap *t = t_at(u.ux, u.uy);
 
