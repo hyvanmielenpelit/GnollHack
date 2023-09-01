@@ -74,6 +74,8 @@ STAIR:levregion(01,00,05,20),(0,0,62,16),up
 SPECIAL_TILESET:fillrect(63,00,71,07),undead_tileset
 SPECIAL_TILESET:fillrect(65,08,71,08),undead_tileset
 SPECIAL_TILESET:fillrect(63,09,71,16),undead_tileset
+CARPET:(27,05,37,11),carpet_red
+
 # Stairs to Gehennom
 IF[50%] {
     BRANCH:(70,01,70,01),(0,0,0,0)

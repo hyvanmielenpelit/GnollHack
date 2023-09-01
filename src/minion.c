@@ -361,7 +361,7 @@ struct monst* summoner;
     context.makemon_spef_idx = 0;
     while (cnt > 0)
     {
-        dtype = !rn2(8) ? PM_THOUL : !rn2(2) ? PM_GHOUL : PM_GHAST;
+        dtype = (rn2(5) && !(mvitals[PM_THOUL].mvflags & MV_GONE)) ? PM_THOUL : (rn2(4) && !(mvitals[PM_GHAST].mvflags & MV_GONE)) ? PM_GHAST : PM_GHOUL;
 
         if (mvitals[dtype].mvflags & MV_GONE)
         {

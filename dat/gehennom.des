@@ -1005,13 +1005,14 @@ GEOMETRY:center,center
 MAP
 ---------------------
 |...|...|...|...|...|
-|...S...+...+...S...|
+|...S...+...+...|...|
 |...|...|...|...|...|
----------...---------
+---------...-----S---
 |...................|
-+...................|
++.................\.|
 |...................|
 ----+----...----+----
+|.......|...|.......|
 |.......|...|.......|
 |.......|...|.......|
 ---------------------
@@ -1020,29 +1021,80 @@ STAIR:levregion(01,00,6,20),levregion(6,1,70,16),up
 BRANCH:levregion(01,00,6,20),levregion(6,1,70,16)
 TELEPORT_REGION:levregion(01,00,6,20),levregion(6,1,70,16)
 #
-STAIR:(10,06),down
+STAIR:(14,02),down
 DOOR:closed,(00,06),subtype:door_black_gate
-# One door happens to be unlocked
+# Two doors happen to be unlocked
 DOOR:closed,(04,08),subtype:door_obsidian
 DOOR:closed,(16,08),subtype:door_obsidian
 DOOR:locked,(08,02),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
-DOOR:locked,(12,02),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
+DOOR:closed,(12,02),subtype:door_obsidian
+CARPET:(01,05,19,07),carpet_red
+DECORATION:(02,04),decoration_banner,banner_red,direction_top
+DECORATION:(06,04),decoration_banner,banner_red,direction_top
+DECORATION:(14,04),decoration_banner,banner_red,direction_top
+DECORATION:(18,04),decoration_banner,banner_red,direction_top
+DECORATION:(02,08),decoration_banner,banner_red,direction_bottom
+DECORATION:(06,08),decoration_banner,banner_red,direction_bottom
+DECORATION:(14,08),decoration_banner,banner_red,direction_bottom
+DECORATION:(18,08),decoration_banner,banner_red,direction_bottom
+DECORATION:(10,00),decoration_shield_with_swords,direction_top
+DECORATION:(20,06),decoration_shield_with_swords,direction_right
+DECORATION:(12,10),decoration_fireplace2,direction_left
+DECORATION:(20,10),decoration_fireplace,direction_right
 
 # Non diggable walls
-NON_DIGGABLE:(00,00,20,11)
-SPECIAL_REGION:(00,00,20,11),region_special_level_seen
+NON_DIGGABLE:(00,00,20,12)
+SPECIAL_REGION:(00,00,20,12),region_special_level_seen
 
 MAZEWALK:(00,06),west
 # Entire main area
-REGION:(00,00,20,11),unlit,"ordinary"
+REGION:(00,05,20,07),unlit,"ordinary"
+
 # The fellow in residence
-MONSTER:('&',"Yeenaghu"),(10,06),keep_original_inventory {
+MONSTER:('&',"Yeenaghu"),(18,06),keep_original_inventory,waitforu {
   OBJECT:('(',"ornamental key"),special_quality:6
 }
 
 # Smithy - A flind lord with a backup type being pit fiend
-REGION:(13,09,19,10),unlit,"smithy" montype:"pit fiend"
+REGION:(13,09,19,11),unlit,"smithy" montype:"pit fiend"
 ANVIL:(16,10),montype:"flind lord"
+
+# Court and barracks of flinds and flind lords
+REGION:(01,09,07,11),lit,"barracks"
+
+# Yeenaghu's bodyguards and guard dogs.
+MONSTER:('d',"shoosuva"),(02,05)
+MONSTER:('d',"shoosuva"),(02,07)
+MONSTER:('d',"shoosuva"),(18,05)
+MONSTER:('d',"shoosuva"),(18,07)
+MONSTER:('G',"flind"),(08,05)
+MONSTER:('G',"flind lord"),(08,06)
+MONSTER:('T',"thoul"),(08,07)
+MONSTER:('G',"flind lord"),(09,05)
+MONSTER:('T',"thoul"),(09,06)
+MONSTER:('G',"flind lord"),(09,07)
+MONSTER:('T',"thoul"),(10,05)
+MONSTER:('G',"flind lord"),(10,06)
+MONSTER:('T',"thoul"),(10,07)
+MONSTER:('G',"flind lord"),(11,05)
+MONSTER:('T',"thoul"),(11,06)
+MONSTER:('G',"flind lord"),(11,07)
+MONSTER:('T',"thoul"),(12,05)
+MONSTER:('G',"flind lord"),(12,06)
+MONSTER:('G',"flind"),(12,07)
+
+# Decorations
+BRAZIER:(01,05)
+BRAZIER:(01,07)
+BRAZIER:(10,01)
+BRAZIER:(10,06)
+BRAZIER:(10,11)
+BRAZIER:(19,05)
+BRAZIER:(19,07)
+BRAZIER:(14,09)
+BRAZIER:(18,09)
+BRAZIER:(14,11)
+BRAZIER:(18,11)
 
 # Some treasure
 CONTAINER:('(', "chest"),(02,02), locked, trapped, no_pickup {
@@ -1098,13 +1150,13 @@ MONSTER:('d',"shoosuva"),random
 MONSTER:('d',"shoosuva"),random
 MONSTER:('d',"shoosuva"),random
 MONSTER:('z',"ghoul"),random
-MONSTER:('z',"ghoul"),random
-MONSTER:('z',"ghoul"),random
-MONSTER:('z',"ghoul"),random
 MONSTER:('z',"ghast"),random
 MONSTER:('z',"ghast"),random
 MONSTER:('z',"ghast"),random
 MONSTER:('z',"ghast"),random
+MONSTER:('T',"thoul"),random
+MONSTER:('T',"thoul"),random
+MONSTER:('T',"thoul"),random
 MONSTER:('T',"thoul"),random
 MONSTER:('T',"thoul"),random
 

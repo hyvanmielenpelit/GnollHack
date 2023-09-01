@@ -4299,7 +4299,10 @@ boolean outokay, inokay, alreadyused, more_containers;
     {
         any.a_int = 10; /* 'c' */
         char contbuf[BUFSZ] = "";
-        Sprintf(contbuf, "%s container on the %s", current_container->where == OBJ_FLOOR ? "another" : "a", IS_ALTAR(levl[u.ux][u.uy].typ) ? "altar" : "floor");
+        Sprintf(contbuf, "%s container on the %s", current_container->where == OBJ_FLOOR ? "another" : "a",
+            levl[u.ux][u.uy].typ == GRASS || levl[u.ux][u.uy].floortyp == GRASS ? "ground" : /* move to a container "on the grass" or "on the altar" might sound strange */
+            levl[u.ux][u.uy].typ == GROUND || levl[u.ux][u.uy].floortyp == GROUND ? "ground" :
+            "floor");
         Sprintf(buf, "move %s to %s", something, ((0 && other_containter_count == 1 && last_container) ? thesimpleoname(last_container) : contbuf));
         add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE, NO_COLOR,
             buf, MENU_UNSELECTED);
@@ -4307,7 +4310,10 @@ boolean outokay, inokay, alreadyused, more_containers;
     if (outokay)
     {
         any.a_int = 11; /* 'd' */
-        Sprintf(buf, "take %s out and drop it on the %s", something, IS_ALTAR(levl[u.ux][u.uy].typ) ? "altar" : "floor");
+        Sprintf(buf, "take %s out and drop it on the %s", something, IS_ALTAR(levl[u.ux][u.uy].typ) ? "altar" : 
+            levl[u.ux][u.uy].typ == GRASS || levl[u.ux][u.uy].floortyp == GRASS ? "grass" : 
+            levl[u.ux][u.uy].typ == GROUND || levl[u.ux][u.uy].floortyp == GROUND ? "ground" : 
+            "floor");
         add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE, NO_COLOR,
             buf, MENU_UNSELECTED);
     }

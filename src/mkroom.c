@@ -70,6 +70,7 @@ STATIC_DCL struct permonst *NDECL(morguemon);
 STATIC_DCL struct permonst *FDECL(librarymon, (int));
 STATIC_DCL struct permonst *NDECL(squadmon);
 STATIC_DCL struct permonst* FDECL(armorymon, (BOOLEAN_P));
+STATIC_DCL struct permonst* NDECL(yeenaghumon);
 STATIC_DCL void FDECL(save_room, (int, struct mkroom *));
 STATIC_DCL void FDECL(rest_room, (int, struct mkroom *));
 STATIC_DCL void FDECL(reset_room, (struct mkroom*));
@@ -800,11 +801,11 @@ place_main_monst_here:
             else
             {
                 mon = makemon((type == COURT)
-                           ? courtmon()
+                           ? (Is_yeenaghu_level(&u.uz) ? yeenaghumon() : courtmon())
                            : (type == BARRACKS)
-                              ? squadmon()
+                              ? (Is_yeenaghu_level(&u.uz) ? yeenaghumon() : squadmon())
                            : (type == ARMORY)
-                              ? armorymon(sx == tx && sy == ty ? TRUE : FALSE)
+                              ? (Is_yeenaghu_level(&u.uz) ? yeenaghumon() : armorymon(sx == tx && sy == ty ? TRUE : FALSE))
                               : (type == MORGUE)
                                  ? morguemon()
                               : (type == LIBRARY)
@@ -949,6 +950,7 @@ place_main_monst_here:
                 else if(!rn2(level_difficulty() >= 12 ? 4 : 5))
                     (void)mkobj_at(!rn2(4) ? SPBOOK_CLASS : SCROLL_CLASS, sx, sy, FALSE);
                 break;
+
             case BARRACKS:
                 if (!rn2(20)) /* the payroll and some loot */
                     (void) mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,
@@ -2622,12 +2624,29 @@ STATIC_VAR const struct {
                          { PM_LIEUTENANT, 4 },
                          { PM_CAPTAIN, 1 } };
 
+
+STATIC_OVL struct permonst*
+yeenaghumon()
+{
+    int mndx;
+    if (!(mvitals[PM_FLIND_LORD].mvflags & MV_GONE) && rn2(3))
+        mndx = PM_FLIND_LORD;
+    else if (!(mvitals[PM_FLIND].mvflags & MV_GONE))
+        mndx = PM_FLIND;
+    else
+        mndx = PM_VROCK + rn2(PM_BALOR - PM_VROCK + 1);
+
+    if (!(mvitals[mndx].mvflags & MV_GONE))
+        return &mons[mndx];
+    else
+        return (struct permonst*)0;
+}
+
 /* return soldier types. */
 STATIC_OVL struct permonst *
 squadmon()
 {
     int sel_prob, i, cpro, mndx;
-
     sel_prob = rnd(80 + level_difficulty());
 
     cpro = 0;

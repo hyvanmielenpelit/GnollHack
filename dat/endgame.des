@@ -14,9 +14,6 @@
 MAZE:"earth",' '
 FLAGS: noteleport,hardfloor,shortsighted
 TILESET: gnomish_mines_tileset
-# MESSAGE: "Well done, mortal!", message_clr_god
-# MESSAGE: "But now thou must face the final Test...", message_clr_god
-# MESSAGE: "Prove thyself worthy or perish!", message_clr_god
 MESSAGE: "Well done, mortal!", message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_well_done, 0, 0
 MESSAGE: "But now thou must face the final Test...", message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_final_test, 0, 0
 MESSAGE: "Prove thyself worthy or perish!", message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_prove_thyself, 0, 0
