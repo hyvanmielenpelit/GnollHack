@@ -1059,7 +1059,7 @@ MONSTER:('&',"Yeenaghu"),(18,06),keep_original_inventory,waitforu {
 REGION:(13,09,19,11),unlit,"smithy" montype:"pit fiend"
 ANVIL:(16,10),montype:"flind lord"
 
-# Court and barracks of flinds and flind lords
+# Barracks of flinds and flind lords
 REGION:(01,09,07,11),lit,"barracks"
 
 # Yeenaghu's bodyguards and guard dogs.
