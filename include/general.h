@@ -914,6 +914,18 @@ enum cat_breeds {
 #define ZAP_TEMPLATE_HEIGHT 4
 #define NUM_ZAP_BASE_TILES 18
 
+#define UTOFLAGS_AT_STAIRS          0x0001
+#define UTOFLAGS_FALLING            0x0002
+#define UTOFLAGS_PORTAL_1           0x0004
+#define UTOFLAGS_PORTAL_2           0x0008
+#define UTOFLAGS_PORTAL_3           0x0010
+#define UTOFLAGS_PORTAL_4           0x0020
+#define UTOFLAGS_DEFERRED_GOTO      0x0040
+#define UTOFLAGS_REMOVE_PORTAL      0x0080
+#define UTOFLAGS_TELEPORT_EFFECT    0x0100
+#define UTOFLAGS_AT_ALTAR           0x0200
+#define UTOFLAGS_INSIDE_TOWER       0x0400
+
 
 #endif /* GENERAL_H */
 

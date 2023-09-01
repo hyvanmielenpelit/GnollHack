@@ -6305,7 +6305,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     struct monst *mtmp;
     char whynot[BUFSZ];
     char *annotation;
-    boolean play_arrival_teleport_effect = !!(u.utotype & 0x0100);
+    boolean play_arrival_teleport_effect = !!(u.utotype & UTOFLAGS_TELEPORT_EFFECT);
     d_level fromlevel = u.uz;
 
     if(at_location & 2)
@@ -7116,36 +7116,36 @@ boolean falling, teleport, inside_tower;
 long portal_flag;
 const char *pre_msg, *post_msg;
 {
-    short typmask = 0x0040; /* non-zero triggers `deferred_goto' */
+    short typmask = UTOFLAGS_DEFERRED_GOTO; /* non-zero triggers `deferred_goto' */
 
     /* destination flags (`goto_level' args) */
     if (at_location == 1)
-        typmask |= 0x0001;
+        typmask |= UTOFLAGS_AT_STAIRS;
     else if (at_location == 2)
-        typmask |= 0x0200;
+        typmask |= UTOFLAGS_AT_ALTAR;
 
     if (falling)
-        typmask |= 0x0002;
+        typmask |= UTOFLAGS_FALLING;
     if (portal_flag == 1)
-        typmask |= 0x0004;
+        typmask |= UTOFLAGS_PORTAL_1;
     else if (portal_flag == 2)
-        typmask |= 0x0008;
+        typmask |= UTOFLAGS_PORTAL_2;
     else if (portal_flag == 3)
-        typmask |= 0x0010;
+        typmask |= UTOFLAGS_PORTAL_3;
     else if (portal_flag == 4)
-        typmask |= 0x0020;
+        typmask |= UTOFLAGS_PORTAL_4;
 
     if (portal_flag < 0)
     {
-        typmask |= 0x0004; /* The same otherwise as 1 */
-        typmask |= 0x0080; /* flag for portal removal */
+        typmask |= UTOFLAGS_PORTAL_1; /* The same otherwise as 1 */
+        typmask |= UTOFLAGS_REMOVE_PORTAL; /* flag for portal removal */
     }
 
     if (teleport)
-        typmask |= 0x0100; /* flag for teleport in effect on new level */
+        typmask |= UTOFLAGS_TELEPORT_EFFECT; /* flag for teleport in effect on new level */
 
     if (inside_tower)
-        typmask |= 0x0400; /* flag for going inside rather than outside Wizard's tower */
+        typmask |= UTOFLAGS_INSIDE_TOWER; /* flag for going inside rather than outside Wizard's tower */
 
     u.utotype = typmask;
     /* destination level */
@@ -7169,9 +7169,13 @@ deferred_goto()
         assign_level(&dest, &u.utolev);
         if (dfr_pre_msg)
             pline1(dfr_pre_msg);
-        xchar portal_flag = (typmask & 4) ? 1 : (typmask & 8) ? 2 : (typmask & 16) ? 3 : (typmask & 32) ? 4 : 0;
-        goto_level(&dest, (!!(typmask & 1)) | (2 * !!(typmask & 0x0200)), !!(typmask & 2), !!(typmask & 0x0400), portal_flag);
-        if (typmask & 0x0080) { /* remove portal */
+        xchar portal_flag = (typmask & UTOFLAGS_PORTAL_1) ? 1 : (typmask & UTOFLAGS_PORTAL_2) ? 2 : (typmask & UTOFLAGS_PORTAL_3) ? 3 : (typmask & UTOFLAGS_PORTAL_4) ? 4 : 0;
+        uchar at_location = !!(typmask & UTOFLAGS_AT_STAIRS) | (2 * !!(typmask & UTOFLAGS_AT_ALTAR));
+        boolean falling = !!(typmask & UTOFLAGS_FALLING);
+        boolean inside_tower = !!(typmask & UTOFLAGS_INSIDE_TOWER);
+        goto_level(&dest, at_location, falling, inside_tower, portal_flag);
+        if (typmask & UTOFLAGS_REMOVE_PORTAL) 
+        { /* remove portal */
             struct trap *t = t_at(u.ux, u.uy);
 
             if (t)
