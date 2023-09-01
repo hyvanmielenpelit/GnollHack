@@ -7170,7 +7170,7 @@ deferred_goto()
         if (dfr_pre_msg)
             pline1(dfr_pre_msg);
         xchar portal_flag = (typmask & UTOFLAGS_PORTAL_1) ? 1 : (typmask & UTOFLAGS_PORTAL_2) ? 2 : (typmask & UTOFLAGS_PORTAL_3) ? 3 : (typmask & UTOFLAGS_PORTAL_4) ? 4 : 0;
-        uchar at_location = !!(typmask & UTOFLAGS_AT_STAIRS) | (2 * !!(typmask & UTOFLAGS_AT_ALTAR));
+        uchar at_location = (!!(typmask & UTOFLAGS_AT_STAIRS)) | (2 * (!!(typmask & UTOFLAGS_AT_ALTAR)));
         boolean falling = !!(typmask & UTOFLAGS_FALLING);
         boolean inside_tower = !!(typmask & UTOFLAGS_INSIDE_TOWER);
         goto_level(&dest, at_location, falling, inside_tower, portal_flag);
