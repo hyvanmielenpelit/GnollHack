@@ -1673,10 +1673,10 @@ struct trap *desttrap; /* nonnull if another trap at <x,y> */
  wriggle_free:
             play_sfx_sound(SFX_WRIGGLE_FREE);
             if (u.usteed)
-                pline("%s finally %s free.", upstart(steedname),
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s finally %s free.", upstart(steedname),
                       !anchored ? "lurches" : "wrenches the ball");
             else
-                You("finally %s free.",
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "finally %s free.",
                     !anchored ? "wriggle" : "wrench the ball");
             if (anchored)
                 buried_ball_to_punishment();
