@@ -7174,16 +7174,18 @@ deferred_goto()
         boolean falling = !!(typmask & UTOFLAGS_FALLING);
         boolean inside_tower = !!(typmask & UTOFLAGS_INSIDE_TOWER);
         goto_level(&dest, at_location, falling, inside_tower, portal_flag);
-        if (typmask & UTOFLAGS_REMOVE_PORTAL) 
-        { /* remove portal */
-            struct trap *t = t_at(u.ux, u.uy);
 
+        /* Remove portal */
+        if (typmask & UTOFLAGS_REMOVE_PORTAL) 
+        {
+            struct trap *t = t_at(u.ux, u.uy);
             if (t)
             {
                 deltrap(t);
                 newsym(u.ux, u.uy);
             }
         }
+
         if (dfr_post_msg)
             pline1(dfr_post_msg);
     }
