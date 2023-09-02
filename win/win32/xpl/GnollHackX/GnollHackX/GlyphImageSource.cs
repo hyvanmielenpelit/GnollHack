@@ -380,12 +380,12 @@ namespace GnollHackX
 
                     if (enlargement_idx == 0)
                     {
-                        float scale = CanvasWidth / (float)GHConstants.TileWidth;
-                        float tileWidth = CanvasWidth;
-                        float tileHeight = CanvasHeight;
+                        float scale = (float)CanvasWidth / (float)GHConstants.TileWidth;
+                        float tileWidth = (float)CanvasWidth;
+                        float tileHeight = (float)CanvasHeight;
                         float xpadding = 0;
                         float ypadding = 0;
-                        float scaled_tile_height = CanvasHeight;
+                        float scaled_tile_height = (float)CanvasHeight;
                         SKRect sourcerect;
                         if (tileflag_halfsize)
                         {
@@ -439,17 +439,17 @@ namespace GnollHackX
 
                         int width = GHConstants.TileWidth * enl_width;
                         int height = GHConstants.TileHeight * enl_height;
-                        float relsizex = width / CanvasWidth;
-                        float relsizey = height / CanvasHeight;
+                        float relsizex = (float)width / (float)CanvasWidth;
+                        float relsizey = (float)height / (float)CanvasHeight;
                         float scale = Math.Min(1 / relsizex, 1 / relsizey);
                         float targetimagewidth = scale * width;
                         float targetimageheight = scale * height;
-                        float tileWidth = scale * GHConstants.TileWidth;
-                        float tileHeight = scale * GHConstants.TileHeight;
-                        float xpadding = Math.Max(0, (CanvasWidth - targetimagewidth) / 2);
-                        float ypadding = Math.Max(0, (CanvasHeight - targetimageheight) / 2);
-                        float t_x = xpadding + enl_x * tileWidth - CanvasXStart;
-                        float t_y = ypadding + tileHeight * (enl_height - 1);
+                        float tileWidth = scale * (float)GHConstants.TileWidth;
+                        float tileHeight = scale * (float)GHConstants.TileHeight;
+                        float xpadding = Math.Max(0, ((float)CanvasWidth - targetimagewidth) / 2);
+                        float ypadding = Math.Max(0, ((float)CanvasHeight - targetimageheight) / 2);
+                        float t_x = xpadding + (float)enl_x * tileWidth - (float)CanvasXStart;
+                        float t_y = ypadding + tileHeight * ((float)enl_height - 1);
                         int n_sheet_idx = sheet_idx;
 
                         /* Main tile */
