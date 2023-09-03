@@ -3847,6 +3847,13 @@ namespace GnollHackX.Pages.Game
             {
                 opaqueness = 0.5f;
             }
+            else if (layer_idx == (int)layer_types.LAYER_FEATURE)
+            {
+                if((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerFlags.LFLAGS_C_SDOOR_FOUND_THIS_TURN) != 0)
+                {
+                    opaqueness = opaqueness * ((float)(Math.Min(20L, generalcounterdiff))) / 20;
+                }
+            }
 
             float dscalex = 1.0f;
             float dscaley = 1.0f;
@@ -4588,7 +4595,7 @@ namespace GnollHackX.Pages.Game
             return true;
         }
 
-        float GetScaledYHeightChange(int layer_idx, int sub_layer_idx, int sub_layer_cnt, float height, int monster_height, int feature_doodad_height, float targetscale, bool is_monster_like_layer, bool tileflag_halfsize, ObjectDataItem otmp_round)
+        float GetScaledYHeightChange(int layer_idx, int sub_layer_idx, int sub_layer_cnt, float height, int monster_height, int wall_doodad_height, float targetscale, bool is_monster_like_layer, bool tileflag_halfsize, ObjectDataItem otmp_round)
         {
             float scaled_y_height_change = 0;
             if ((!tileflag_halfsize || monster_height > 0) && is_monster_like_layer)
@@ -4604,9 +4611,9 @@ namespace GnollHackX.Pages.Game
                 else
                     scaled_y_height_change = (float)(-(sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT) * targetscale;
             }
-            else if (feature_doodad_height != 0 && layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD)
+            else if (wall_doodad_height != 0 && layer_idx == (int)layer_types.LAYER_WALL_DOODAD)
             {
-                scaled_y_height_change = (float)-feature_doodad_height * height / (float)GHConstants.TileHeight;
+                scaled_y_height_change = (float)-wall_doodad_height * height / (float)GHConstants.TileHeight;
             }
             return scaled_y_height_change;
         }
@@ -5039,7 +5046,7 @@ namespace GnollHackX.Pages.Game
                                                                 bool showing_detection = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
                                                                 bool canspotself = (_mapData[source_x, source_y].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
                                                                 sbyte monster_height = _mapData[source_x, source_y].Layers.special_monster_layer_height;
-                                                                sbyte feature_doodad_height = _mapData[source_x, source_y].Layers.special_feature_doodad_layer_height;
+                                                                sbyte wall_doodad_height = _mapData[source_x, source_y].Layers.special_wall_doodad_layer_height;
                                                                 short missile_special_quality = _mapData[source_x, source_y].Layers.missile_special_quality;
                                                                 sbyte monster_origin_x = _mapData[source_x, source_y].Layers.monster_origin_x;
                                                                 sbyte monster_origin_y = _mapData[source_x, source_y].Layers.monster_origin_y;
@@ -5111,7 +5118,7 @@ namespace GnollHackX.Pages.Game
                                                                             CheckShowingDetection(showing_detection, ref obj_height, ref tileflag_floortile, ref tileflag_height_is_clipping);
 
                                                                             /*Determine y move for tiles */
-                                                                            float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize, otmp_round);
+                                                                            float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, wall_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize, otmp_round);
 
                                                                             int ntile = GHApp.Glyph2Tile[glyph];
                                                                             int autodraw = GHApp.Tile2Autodraw[ntile];
@@ -5178,7 +5185,7 @@ namespace GnollHackX.Pages.Game
                                                                 bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
                                                                 bool canspotself = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
                                                                 sbyte monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
-                                                                sbyte feature_doodad_height = _mapData[mapx, mapy].Layers.special_feature_doodad_layer_height;
+                                                                sbyte wall_doodad_height = _mapData[mapx, mapy].Layers.special_wall_doodad_layer_height;
                                                                 short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
                                                                 sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
                                                                 sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
@@ -5249,7 +5256,7 @@ namespace GnollHackX.Pages.Game
                                                                             CheckShowingDetection(showing_detection, ref obj_height, ref tileflag_floortile, ref tileflag_height_is_clipping);
 
                                                                             /*Determine y move for tiles */
-                                                                            float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize, otmp_round);
+                                                                            float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, wall_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize, otmp_round);
 
                                                                             int ntile = GHApp.Glyph2Tile[glyph];
                                                                             int autodraw = GHApp.Tile2Autodraw[ntile];
@@ -10538,7 +10545,7 @@ namespace GnollHackX.Pages.Game
             int gui_glyph, ntile;
             for (int i = 0; i < (int)layer_types.MAX_LAYERS; i++)
             {
-                if (layers.special_monster_layer_height != 0 || layers.special_feature_doodad_layer_height != 0)
+                if (layers.special_monster_layer_height != 0 || layers.special_wall_doodad_layer_height != 0)
                     return true;
                 gui_glyph = Math.Abs(layers.layer_gui_glyphs[i]);
                 if(gui_glyph != GHApp.NoGlyph)

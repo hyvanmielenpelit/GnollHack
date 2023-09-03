@@ -134,7 +134,8 @@ STATIC_DCL int FDECL(check_pos, (int, int, int));
 STATIC_DCL int FDECL(get_bk_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_floor_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_floor_doodad_layer_glyph, (XCHAR_P, XCHAR_P));
-STATIC_DCL int FDECL(get_feature_doodad_layer_glyph, (XCHAR_P, XCHAR_P, signed char*));
+STATIC_DCL int FDECL(get_wall_doodad_layer_glyph, (XCHAR_P, XCHAR_P, signed char*));
+STATIC_DCL int FDECL(get_feature_doodad_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_carpet_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(tether_glyph, (int, int));
 
@@ -235,38 +236,62 @@ register int show;
     int new_cover_feature_gui_glyph = NO_GLYPH;
     int new_carpet_glyph = symbol_index <= S_stone ? NO_GLYPH : get_carpet_layer_glyph(x, y);
     int new_carpet_gui_glyph = maybe_get_replaced_glyph(new_carpet_glyph, x, y, data_to_replacement_info(new_carpet_glyph, LAYER_CARPET, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
-    schar new_feature_doodad_height = 0;
-    int new_feature_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_feature_doodad_layer_glyph(x, y, &new_feature_doodad_height);
+    int new_feature_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_feature_doodad_layer_glyph(x, y);
     int new_feature_doodad_gui_glyph = maybe_get_replaced_glyph(new_feature_doodad_glyph, x, y, data_to_replacement_info(new_feature_doodad_glyph, LAYER_FEATURE_DOODAD, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
+
+    schar new_wall_doodad_height = 0;
+    int new_wall_glyph = NO_GLYPH;
+    int new_wall_gui_glyph = NO_GLYPH;
+    int new_wall_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_wall_doodad_layer_glyph(x, y, &new_wall_doodad_height);
+    int new_wall_doodad_gui_glyph = maybe_get_replaced_glyph(new_feature_doodad_glyph, x, y, data_to_replacement_info(new_feature_doodad_glyph, LAYER_WALL_DOODAD, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
+
     unsigned long new_layer_flags = 0UL;
     if (symbol_index > S_stone && levl[x][y].decoration_typ > 0)
         new_layer_flags |= LFLAGS_C_DECORATION;
     if (symbol_index > S_stone && levl[x][y].carpet_typ > 0)
         new_layer_flags |= LFLAGS_C_CARPET;
+    if (symbol_index > S_stone && levl[x][y].typ == DOOR && (levl[x][y].flags & D_FOUND_THIS_TURN) != 0)
+        new_layer_flags |= LFLAGS_C_SDOOR_FOUND_THIS_TURN;
 
     if (defsyms[symbol_index].layer != LAYER_FLOOR)
     {
         new_floor_glyph = get_floor_layer_glyph(x, y);
         new_floor_gui_glyph = maybe_get_replaced_glyph(new_floor_glyph, x, y, data_to_replacement_info(new_floor_glyph, LAYER_FLOOR, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
-        if (defsyms[symbol_index].layer == LAYER_FEATURE)
+        switch (defsyms[symbol_index].layer)
         {
+        case LAYER_WALL:
+            new_wall_glyph = glyph;
+            new_wall_gui_glyph = gui_glyph;
+            new_feature_glyph = NO_GLYPH;
+            new_feature_gui_glyph = NO_GLYPH;
+            new_cover_feature_glyph = NO_GLYPH;
+            new_cover_feature_gui_glyph = NO_GLYPH;
+            break;
+        case LAYER_FEATURE:
+            new_wall_glyph = (new_layer_flags & LFLAGS_C_SDOOR_FOUND_THIS_TURN) ? back_to_glyph_core(x, y, SDOOR) : NO_GLYPH;
+            new_wall_gui_glyph = maybe_get_replaced_glyph(new_wall_glyph, x, y, data_to_replacement_info(new_wall_glyph, LAYER_WALL, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
             new_feature_glyph = glyph;
             new_feature_gui_glyph = gui_glyph;
             new_cover_feature_glyph = NO_GLYPH;
             new_cover_feature_gui_glyph = NO_GLYPH;
-        }
-        else
-        {
+            break;
+        case LAYER_COVER_FEATURE:
+        default:
+            new_wall_glyph = NO_GLYPH;
+            new_wall_gui_glyph = NO_GLYPH;
             new_feature_glyph = NO_GLYPH;
             new_feature_gui_glyph = NO_GLYPH;
             new_cover_feature_glyph = glyph;
             new_cover_feature_gui_glyph = gui_glyph;
+            break;
         }
     }
     else
     {
         new_floor_glyph = glyph;
         new_floor_gui_glyph = gui_glyph;
+        new_wall_glyph = NO_GLYPH;
+        new_wall_gui_glyph = NO_GLYPH;
         new_feature_glyph = NO_GLYPH;
         new_feature_gui_glyph = NO_GLYPH;
         new_cover_feature_glyph = NO_GLYPH;
@@ -279,6 +304,8 @@ register int show;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_CARPET] = new_carpet_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_glyph;
+        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_WALL] = new_wall_glyph;
+        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_WALL_DOODAD] = new_wall_doodad_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_glyph;
@@ -286,12 +313,14 @@ register int show;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_FLOOR] = new_floor_gui_glyph;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_CARPET] = new_carpet_gui_glyph;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_gui_glyph;
+        levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_WALL] = new_wall_gui_glyph;
+        levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_WALL_DOODAD] = new_wall_doodad_gui_glyph;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_FEATURE] = new_feature_gui_glyph;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_gui_glyph;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_gui_glyph;
 
         levl[x][y].hero_memory_layers.layer_flags = new_layer_flags;
-        levl[x][y].hero_memory_layers.special_feature_doodad_layer_height = new_feature_doodad_height;
+        levl[x][y].hero_memory_layers.special_wall_doodad_layer_height = new_wall_doodad_height;
     }
 
     if (show)
@@ -299,6 +328,8 @@ register int show;
         int floor_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR];
         int carpet_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_CARPET];
         int floor_doodad_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR_DOODAD];
+        int wall_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_WALL];
+        int wall_doodad_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_WALL_DOODAD];
         int feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE];
         int feature_doodad_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE_DOODAD];
         int cover_feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_COVER_FEATURE];
@@ -306,16 +337,20 @@ register int show;
         int floor_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_FLOOR];
         int carpet_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_CARPET];
         int floor_doodad_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_FLOOR_DOODAD];
+        int wall_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_WALL];
+        int wall_doodad_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_WALL_DOODAD];
         int feature_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_FEATURE];
         int feature_doodad_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_FEATURE_DOODAD];
         int cover_feature_gui_glyph_before = gbuf[y][x].layers.layer_gui_glyphs[LAYER_COVER_FEATURE];
 
-        int special_feature_doodad_layer_height_before = gbuf[y][x].layers.special_feature_doodad_layer_height;
+        int special_wall_doodad_layer_height_before = gbuf[y][x].layers.special_wall_doodad_layer_height;
 
         //unsigned long flags_before = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_CARPET] = new_carpet_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_glyph;
+        gbuf[y][x].layers.layer_glyphs[LAYER_WALL] = new_wall_glyph;
+        gbuf[y][x].layers.layer_glyphs[LAYER_WALL_DOODAD] = new_wall_doodad_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_glyph;
@@ -323,20 +358,24 @@ register int show;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_FLOOR] = new_floor_gui_glyph;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_CARPET] = new_carpet_gui_glyph;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_gui_glyph;
+        gbuf[y][x].layers.layer_gui_glyphs[LAYER_WALL] = new_wall_gui_glyph;
+        gbuf[y][x].layers.layer_gui_glyphs[LAYER_WALL_DOODAD] = new_wall_doodad_gui_glyph;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_FEATURE] = new_feature_gui_glyph;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_gui_glyph;
         gbuf[y][x].layers.layer_gui_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_gui_glyph;
 
         gbuf[y][x].layers.layer_flags = new_layer_flags;
-        gbuf[y][x].layers.special_feature_doodad_layer_height = new_feature_doodad_height;
+        gbuf[y][x].layers.special_wall_doodad_layer_height = new_wall_doodad_height;
 
         if (floor_glyph_before != new_floor_glyph || carpet_glyph_before != new_carpet_glyph || floor_doodad_glyph_before != new_floor_doodad_glyph
+            || wall_glyph_before != new_wall_glyph || wall_doodad_glyph_before != new_wall_doodad_glyph
             || feature_glyph_before != new_feature_glyph || feature_doodad_glyph_before != new_feature_doodad_glyph
             || cover_feature_glyph_before != new_cover_feature_glyph
             || floor_gui_glyph_before != new_floor_gui_glyph || carpet_gui_glyph_before != new_carpet_gui_glyph || floor_doodad_gui_glyph_before != new_floor_doodad_gui_glyph
+            || wall_gui_glyph_before != new_wall_gui_glyph || wall_doodad_gui_glyph_before != new_wall_doodad_gui_glyph
             || feature_gui_glyph_before != new_feature_gui_glyph || feature_doodad_gui_glyph_before != new_feature_doodad_gui_glyph
             || cover_feature_gui_glyph_before != new_cover_feature_gui_glyph
-            || special_feature_doodad_layer_height_before != new_feature_doodad_height)
+            || special_wall_doodad_layer_height_before != new_wall_doodad_height)
         {
             gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
@@ -1494,7 +1533,7 @@ int hit_tile_id, damage_shown;
             }
             /* Add layer flags and object height from memory */
             add_glyph_buffer_layer_flags(x, y, lev->hero_memory_layers.layer_flags);
-            set_glyph_buffer_feature_doodad_height(x, y, lev->hero_memory_layers.special_feature_doodad_layer_height);
+            set_glyph_buffer_wall_doodad_height(x, y, lev->hero_memory_layers.special_wall_doodad_layer_height);
             set_glyph_buffer_object_height(x, y, lev->hero_memory_layers.object_height);
             set_glyph_buffer_oid(x, y, lev->hero_memory_layers.o_id);
 
@@ -2343,7 +2382,7 @@ docrt()
                 show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
                 add_glyph_buffer_layer_flags(x, y, lev->hero_memory_layers.layer_flags);
-                set_glyph_buffer_feature_doodad_height(x, y, lev->hero_memory_layers.special_feature_doodad_layer_height);
+                set_glyph_buffer_wall_doodad_height(x, y, lev->hero_memory_layers.special_wall_doodad_layer_height);
                 set_glyph_buffer_object_height(x, y, lev->hero_memory_layers.object_height);
                 set_glyph_buffer_oid(x, y, lev->hero_memory_layers.o_id);
                 enum layer_types layer_idx;
@@ -2777,13 +2816,13 @@ short height;
 }
 
 void
-set_glyph_buffer_feature_doodad_height(x, y, height)
+set_glyph_buffer_wall_doodad_height(x, y, height)
 int x, y;
 schar height;
 {
     if (isok(x, y))
     {
-        gbuf[y][x].layers.special_feature_doodad_layer_height = height;
+        gbuf[y][x].layers.special_wall_doodad_layer_height = height;
     }
 }
 
@@ -3600,6 +3639,14 @@ int
 back_to_glyph(x, y)
 xchar x, y;
 {
+    return back_to_glyph_core(x, y, levl[x][y].typ);
+}
+
+int
+back_to_glyph_core(x, y, typ)
+xchar x, y;
+schar typ;
+{
     int idx;
     struct rm *ptr = &(levl[x][y]);
     boolean is_variation = FALSE;
@@ -3607,7 +3654,7 @@ xchar x, y;
     int multiplier = facing_right ? -1 : 1;
     int cmap_type = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
 
-    switch (ptr->typ) {
+    switch (typ) {
     case UNDEFINED_LOCATION:
         idx = level.flags.arboreal ? S_tree : S_unexplored;
         break;
@@ -3617,8 +3664,8 @@ xchar x, y;
     stone_here:
         {
             idx = S_stone;
-            int used_vartyp = (ptr->typ == STONE ? ptr->vartyp : (ptr->vartyp % NUM_NORMAL_STONE_VARTYPES));
-            if ((used_vartyp > 0 || ptr->subtyp > 0) && ptr->typ != SDOOR)
+            int used_vartyp = (typ == STONE ? ptr->vartyp : (ptr->vartyp % NUM_NORMAL_STONE_VARTYPES));
+            if ((used_vartyp > 0 || ptr->subtyp > 0) && typ != SDOOR)
             { /* Walls use also stone subtypes if looked from outside, but they can have a larger subtype than what is possible for walls */
                 is_variation = TRUE;
                 int var_offset = defsyms[idx].variation_offset;
@@ -3676,7 +3723,7 @@ xchar x, y;
 
         hwall_here:
             {
-                if (idx == S_hwall && (ptr->subtyp > 0 || ptr->vartyp > 0) && ptr->typ != SDOOR)
+                if (idx == S_hwall && (ptr->subtyp > 0 || ptr->vartyp > 0) && typ != SDOOR)
                 {
                     is_variation = TRUE;
                     int var_offset = defsyms[idx].variation_offset;
@@ -3913,7 +3960,7 @@ xchar x, y;
         idx = (ptr->horizontal) ? S_hodbridge : S_vodbridge;
         break;
     default:
-        impossible("back_to_glyph:  unknown level type [ = %d ]", ptr->typ);
+        impossible("back_to_glyph:  unknown level type [ = %d ]", typ);
         idx = S_room;
         break;
     }
@@ -4504,6 +4551,9 @@ STATIC_OVL int
 get_floor_doodad_layer_glyph(x, y)
 xchar x, y;
 {
+    if (!isok(x, y))
+        return NO_GLYPH;
+
     if (levl[x][y].floor_doodad)
         return levl[x][y].floor_doodad;
 
@@ -4512,7 +4562,18 @@ xchar x, y;
 
 /* Feature doodad layer glyph  */
 STATIC_OVL int
-get_feature_doodad_layer_glyph(x, y, height_ptr)
+get_feature_doodad_layer_glyph(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return NO_GLYPH;
+
+    return NO_GLYPH;
+}
+
+/* Wall doodad layer glyph  */
+STATIC_OVL int
+get_wall_doodad_layer_glyph(x, y, height_ptr)
 xchar x, y;
 schar* height_ptr;
 {

@@ -1704,6 +1704,8 @@ int x, y;
         if (!(newmask & D_LOCKED))
             newmask |= D_CLOSED;
     }
+    newmask |= D_FOUND_THIS_TURN;
+
     /* Add other flags than door mask */
     newmask |= (lev->doormask & ~D_MASK);
     transform_location_type_and_flags(x, y, DOOR, lev->subtyp, newmask);

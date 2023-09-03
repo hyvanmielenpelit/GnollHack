@@ -252,11 +252,12 @@ namespace GnollHackX
          LFLAGS_O_PILE =            0x00010000UL,
          LFLAGS_O_IN_PIT =          0x00020000UL,
          LFLAGS_O_CHAIN =           0x00040000UL,
-         LFLAGS_O_MASK =            0x000F0000UL,
+         LFLAGS_O_MASK =            0x00070000UL,
+         LFLAGS_T_TRAPPED =         0x00080000UL,
          LFLAGS_ZAP_LEADING_EDGE =  0x00100000UL, /* First (leading) tile in a zap */
          LFLAGS_ZAP_TRAILING_EDGE = 0x00200000UL, /* Last (trailing) tile in a zap */
          LFLAGS_ZAP_MASK = (0x00100000UL | 0x00200000UL),
-         LFLAGS_T_TRAPPED =         0x00400000UL,
+         LFLAGS_C_SDOOR_FOUND_THIS_TURN = 0x00400000UL,
          LFLAGS_C_DECORATION =      0x00800000UL,
          LFLAGS_C_CARPET =          0x01000000UL,
          LFLAGS_SHOWING_MEMORY =    0x02000000UL, /* also implies that you cannot see the location (and hence showing memory) */
@@ -396,6 +397,8 @@ namespace GnollHackX
         LAYER_FLOOR = 0,
         LAYER_CARPET,
         LAYER_FLOOR_DOODAD,   /* Doodads underneath features and traps */
+        LAYER_WALL,
+        LAYER_WALL_DOODAD,
         LAYER_FEATURE,
         LAYER_TRAP,
         LAYER_FEATURE_DOODAD, /* Doodads above features and traps */
@@ -436,7 +439,7 @@ namespace GnollHackX
         public short damage_displayed;
         public short hit_tile;
 
-        public sbyte special_feature_doodad_layer_height;
+        public sbyte special_wall_doodad_layer_height;
         public sbyte special_monster_layer_height;
         public sbyte monster_origin_x;
         public sbyte monster_origin_y;

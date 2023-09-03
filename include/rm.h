@@ -1100,6 +1100,7 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
 #define D_TRAPPED 16
 #define D_SECRET 32 /* only used by sp_lev.c, NOT in rm-struct */
 #define D_PORTCULLIS 64 /* this is an open portcullis, similar to D_NODOOR */
+#define D_FOUND_THIS_TURN 128
 #define D_MASK 0xFF
 
 /*
