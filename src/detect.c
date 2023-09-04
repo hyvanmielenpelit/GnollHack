@@ -29,7 +29,6 @@ STATIC_PTR void FDECL(openone, (int, int, genericptr_t));
 STATIC_DCL int FDECL(mfind0, (struct monst *, BOOLEAN_P));
 STATIC_DCL int FDECL(reveal_terrain_getglyph, (int, int, int,
                                                unsigned, int, int));
-STATIC_DCL void FDECL(cvt_sdoor_to_door_core, (int, int));
 
 /* bring hero out from underwater or underground or being engulfed;
    return True iff any change occurred */
@@ -1692,8 +1691,11 @@ void
 cvt_scorr_to_corr_with_animation(x, y)
 int x, y;
 {
+    if (!isok(x, y))
+        return;
+
     struct layer_info layers = layers_at(x, y);
-    int glyph = layers.layer_glyphs[LAYER_FLOOR];
+    int glyph = layers.layer_gui_glyphs[LAYER_FLOOR];
     create_basic_floor_location(x, y, levl[x][y].floortyp ? levl[x][y].floortyp : CORR, 0, 0, FALSE);
     unblock_vision_and_hearing_at_point(x, y); /* vision */
     feel_newsym(x, y);
@@ -1703,31 +1705,23 @@ int x, y;
 }
 
 
-/* convert a secret door into a normal door */
-void
-cvt_sdoor_to_door(x, y)
-int x, y;
-{
-    cvt_sdoor_to_door_core(x, y);
-}
-
 void
 cvt_sdoor_to_door_with_animation(x, y)
 int x, y;
 {
-    //struct layer_info layers = layers_at(x, y);
-    //int glyph = layers.layer_glyphs[LAYER_FEATURE];
-    //cvt_sdoor_to_door_core(x, y);
-    //flush_screen(1);
+    if (!isok(x, y))
+        return;
+
     play_special_effect_with_details_at(0, x, y, levl[x][y].horizontal ? cmap_to_glyph(S_hcdoor) : cmap_to_glyph(S_vcdoor), LAYER_BACKGROUND_EFFECT, -1, 20, 0, 0, FALSE);
     special_effect_wait_until_action(0);
     special_effect_wait_until_end(0);
-    cvt_sdoor_to_door_core(x, y);
+    cvt_sdoor_to_door(x, y);
     flush_screen(1);
 }
 
-STATIC_OVL void
-cvt_sdoor_to_door_core(x, y)
+/* convert a secret door into a normal door */
+void
+cvt_sdoor_to_door(x, y)
 int x, y;
 {
     struct rm* lev = &levl[x][y];
@@ -2082,24 +2076,26 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
                         if (rn2(7 - fund))
                             continue;
                         play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
+                        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find a hidden door.");
                         cvt_sdoor_to_door_with_animation(x, y); /* .typ = DOOR */
                         exercise(A_WIS, TRUE);
                         nomul(0);
                         feel_location(x, y); /* make sure it shows up */
-                        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find a hidden door.");
+                        flush_screen(1);
                     } 
                     else if (levl[x][y].typ == SCORR) 
                     {
                         if (rn2(7 - fund))
                             continue;
                         play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
+                        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find a hidden passage.");
                         cvt_scorr_to_corr_with_animation(x, y);
                         //levl[x][y].typ = CORR;
                         //unblock_vision_and_hearing_at_point(x, y); /* vision */
                         //feel_newsym(x, y); /* make sure it shows up */
                         exercise(A_WIS, TRUE);
                         nomul(0);
-                        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find a hidden passage.");
+                        flush_screen(1);
                     }
                     else
                     {

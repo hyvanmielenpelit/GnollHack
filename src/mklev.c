@@ -36,6 +36,7 @@ STATIC_DCL void FDECL(finddpos, (coord *, XCHAR_P, XCHAR_P,
                                  XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(mkinvpos, (XCHAR_P, XCHAR_P, int));
 STATIC_DCL void FDECL(mk_knox_portal, (XCHAR_P, XCHAR_P));
+STATIC_DCL void FDECL(clear_nearby_fireplaces, (XCHAR_P, XCHAR_P));
 
 #define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE, ROOM, 0, NON_PM, -1, 0)
 #define init_vault() vault_x = -1
@@ -2065,6 +2066,7 @@ xchar x, y; /* location */
             if (!isok(x - 1, y) || levl[x - 1][y].typ < DOOR)
                 levl[x][y].facing_right = TRUE;
         }
+        clear_nearby_fireplaces(x, y);
     }
     /*
      * Set made_branch to TRUE even if we didn't make a stairwell (i.e.
@@ -2515,12 +2517,18 @@ int subtyp;
         if (!isok(x - 1, y) || levl[x - 1][y].typ < DOOR)
             levl[x][y].facing_right = TRUE;
     }
+    clear_nearby_fireplaces(x, y);
+}
 
+STATIC_OVL void
+clear_nearby_fireplaces(x, y)
+xchar x, y;
+{
     int i;
     for (i = 0; i < 4; i++)
     {
-        int t_x = x;
-        int t_y = y;
+        int t_x = (int)x;
+        int t_y = (int)y;
         switch (i)
         {
         case 0:
