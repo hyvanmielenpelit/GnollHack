@@ -460,7 +460,7 @@ xchar x, y;
                     if (mon->mx != x || mon->my != y)
                     {
                         You("kick %s.", mon_nam(mon));
-                        (void)unmap_invisible(x, y);
+                        (void)unmap_invisible_with_animation(x, y, 0);
                         pline("%s %s, %s evading your %skick.", Monnam(mon),
                             (!level.flags.noteleport && has_teleportation(mon))
                             ? "teleports"
@@ -1427,7 +1427,7 @@ dokick() {
     play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
     u_wait_until_action();
 
-    (void) unmap_invisible(x, y);
+    (void) unmap_invisible_with_animation(x, y, 0);
     if (is_pool(x, y) ^ !!u.uinwater) {
         /* objects normally can't be removed from water by kicking */
         play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 1.0, HMON_MELEE);

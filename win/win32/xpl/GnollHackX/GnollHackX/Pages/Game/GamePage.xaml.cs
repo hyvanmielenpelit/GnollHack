@@ -3858,6 +3858,13 @@ namespace GnollHackX.Pages.Game
                     opaqueness = opaqueness * ((float)(20L - Math.Min(20L, generalcounterdiff))) / 20;
                 }
             }
+            else if (layer_idx == (int)layer_types.LAYER_GENERAL_EFFECT)
+            {
+                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_E_GEN_FADE_OUT) != 0)
+                {
+                    opaqueness = opaqueness * ((float)(20L - Math.Min(20L, generalcounterdiff))) / 20;
+                }
+            }
 
             float dscalex = 1.0f;
             float dscaley = 1.0f;

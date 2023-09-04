@@ -517,6 +517,7 @@ E void FDECL(map_object_no_chain_check_choose_ascii, (struct obj*, int, BOOLEAN_
 E void FDECL(map_object_core, (struct obj*, int, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(map_invisible, (XCHAR_P, XCHAR_P));
 E boolean FDECL(unmap_invisible, (int, int));
+E boolean FDECL(unmap_invisible_with_animation, (int, int, int));
 E void FDECL(unmap_object, (int, int));
 E void FDECL(clear_monster_layerinfo, (struct layer_info*));
 E void FDECL(map_location, (int, int, int));

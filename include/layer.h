@@ -120,12 +120,12 @@ struct simple_layer_info {
 #define LFLAGS_M_MASK                   0x00007FFFUL
 
 /* Objects */
-#define LFLAGS_O_PILE                   0x00008000UL
-#define LFLAGS_O_IN_PIT                 0x00010000UL
-#define LFLAGS_O_CHAIN                  0x00020000UL
-#define LFLAGS_O_MASK                   0x00038000UL
+#define LFLAGS_O_IN_PIT                 0x00008000UL
+#define LFLAGS_O_CHAIN                  0x00010000UL
+#define LFLAGS_O_MASK                   0x00018000UL
 
 /* Effects */
+#define LFLAGS_E_GEN_FADE_OUT           0x00020000UL
 #define LFLAGS_E_BKG_FADE_IN            0x00040000UL
 #define LFLAGS_E_BKG_FADE_OUT           0x00080000UL
 

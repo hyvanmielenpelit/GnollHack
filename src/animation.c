@@ -4489,7 +4489,20 @@ boolean force_visibility;
         show_glyph_on_layer(x, y, glyph, layer);
         if (anim < 0)
         {
-            add_glyph_buffer_layer_flags(x, y, anim == -1 ? LFLAGS_E_BKG_FADE_IN : LFLAGS_E_BKG_FADE_OUT);
+            unsigned long blflag = 0UL;
+            switch (layer)
+            {
+            case LAYER_BACKGROUND_EFFECT:
+                blflag = anim == -1 ? LFLAGS_E_BKG_FADE_IN : LFLAGS_E_BKG_FADE_OUT;
+                break;
+            case LAYER_GENERAL_EFFECT:
+                blflag = anim == -1 ? 0UL : LFLAGS_E_GEN_FADE_OUT;
+                break;
+            default:
+                break;
+
+            }
+            add_glyph_buffer_layer_flags(x, y, blflag);
         }
 
 #ifdef USE_TILES

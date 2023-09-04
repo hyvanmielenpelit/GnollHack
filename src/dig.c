@@ -437,7 +437,9 @@ dig(VOID_ARGS)
         return 0;
     }
 
-    if (context.digging.effort > 100) {
+    if (context.digging.effort > 100) 
+    {
+        boolean done_feelnewsym = FALSE;
         const char *digtxt, *dmgtxt = (const char *) 0;
         struct obj *obj;
         boolean shopedge = *in_rooms(dpx, dpy, SHOPBASE);
@@ -464,8 +466,7 @@ dig(VOID_ARGS)
             }
             digtxt = "The boulder falls apart.";
         } 
-        else if (lev->typ == STONE || lev->typ == SCORR
-                   || IS_TREE(lev->typ)) 
+        else if (lev->typ == STONE || lev->typ == SCORR || IS_TREE(lev->typ)) 
         {
             if (Is_earthlevel(&u.uz))
             {
@@ -488,7 +489,15 @@ dig(VOID_ARGS)
                 play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You cut down the tree.";
                 struct mkroom* r = which_room(dpx, dpy);
+                int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_COVER_FEATURE];
+                short special_quality = lev->special_quality;
+                int fruittype = tree_subtype_definitions[lev->subtyp].fruit_type;
 
+                /* Change the location type */
+                int typ = lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM;
+                int subtyp = lev->floorsubtyp ? lev->floorsubtyp : get_initial_location_subtype(typ);
+                int vartyp = lev->floorvartyp ? lev->floorvartyp : get_initial_location_vartype(typ, subtyp);
+                create_simple_location(dpx, dpy, typ, subtyp, vartyp, 0, back_to_broken_glyph(dpx, dpy), 0, 0, 0, FALSE);
                 uncatch_tree_objects(dpx, dpy);
 
                 /* Wood */
@@ -497,25 +506,35 @@ dig(VOID_ARGS)
                 otmp_wood->owt = weight(otmp_wood);
 
                 /* Possibly some fruits */
-                if (lev->special_quality > 0 && tree_subtype_definitions[lev->subtyp].fruit_type > STRANGE_OBJECT)
+                if (special_quality > 0 && fruittype > STRANGE_OBJECT)
                 {
-                    struct obj* otmp = mksobj_found_at(tree_subtype_definitions[lev->subtyp].fruit_type, dpx, dpy, TRUE, FALSE); //rnd_treefruit_at(dpx, dpy);
-                    otmp->quan = lev->special_quality;
+                    struct obj* otmp = mksobj_found_at(fruittype, dpx, dpy, TRUE, FALSE); //rnd_treefruit_at(dpx, dpy);
+                    otmp->quan = special_quality;
                     otmp->owt = weight(otmp);
                     lev->special_quality = 0;
                 }
-
-                /* Change the location type */
-                int typ = lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM;
-                int subtyp = lev->floorsubtyp ? lev->floorsubtyp : get_initial_location_subtype(typ);
-                int vartyp = lev->floorvartyp ? lev->floorvartyp : get_initial_location_vartype(typ, subtyp);
-                create_simple_location(dpx, dpy, typ, subtyp, vartyp, 0, back_to_broken_glyph(dpx, dpy), 0, 0, 0, FALSE);
+#ifdef GNH_MOBILE
+                feel_newsym(dpx, dpy);
+                done_feelnewsym = TRUE;
+                play_special_effect_with_details_at(0, dpx, dpy, glyph, LAYER_GENERAL_EFFECT, -2, 20, 0, 0, TRUE);
+                special_effect_wait_until_action(0);
+                special_effect_wait_until_end(0);
+                clear_found_this_turn_at(dpx, dpy);
+#endif
             }
             else 
             {
                 play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You succeed in cutting away some rock.";
+                int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_FLOOR];
                 create_basic_floor_location(dpx, dpy, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floortyp : CORR, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floorsubtyp : get_initial_location_subtype(levl[dpx][dpy].floortyp), 0, FALSE);
+#ifdef GNH_MOBILE
+                feel_newsym(dpx, dpy);
+                done_feelnewsym = TRUE;
+                play_special_effect_with_details_at(0, dpx, dpy, glyph, LAYER_BACKGROUND_EFFECT, -2, 20, 0, 0, TRUE);
+                special_effect_wait_until_action(0);
+                special_effect_wait_until_end(0);
+#endif
             }
         }
         else if (IS_WALL(lev->typ)) 
@@ -546,8 +565,15 @@ dig(VOID_ARGS)
                 ltype = DOOR, lflags = D_NODOOR;
             }
             play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
+            int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_FLOOR];
             create_simple_location(dpx, dpy, ltype, lsubtype, lvartype, lflags, back_to_broken_glyph(dpx, dpy), !IS_FLOOR(ltype)? lev->floortyp : 0, !IS_FLOOR(ltype) ? lev->floorsubtyp : 0, !IS_FLOOR(ltype) ? lev->floorvartyp : 0, FALSE);
-
+#ifdef GNH_MOBILE
+            feel_newsym(dpx, dpy);
+            done_feelnewsym = TRUE;
+            play_special_effect_with_details_at(0, dpx, dpy, glyph, LAYER_BACKGROUND_EFFECT, -2, 20, 0, 0, TRUE);
+            special_effect_wait_until_action(0);
+            special_effect_wait_until_end(0);
+#endif
             digtxt = "You make an opening in the wall.";
         } 
         else if (lev->typ == SDOOR) 
@@ -580,7 +606,8 @@ dig(VOID_ARGS)
 
         if (!does_block(dpx, dpy, &levl[dpx][dpy]))
             unblock_vision_and_hearing_at_point(dpx, dpy); /* vision:  can see through */
-        feel_newsym(dpx, dpy);
+        if(!done_feelnewsym)
+            feel_newsym(dpx, dpy);
 
         if (digtxt && !context.digging.quiet)
             pline1(digtxt); /* after newsym */
@@ -3411,6 +3438,7 @@ int x, y;
     for (otmp_caught = level.objects[x][y]; otmp_caught; otmp_caught = otmp_caught->nexthere)
     {
         otmp_caught->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES; /* Not caught anymore */
+        otmp_caught->speflags |= SPEFLAGS_FOUND_THIS_TURN; /* But now found this turn */
     }
 }
 

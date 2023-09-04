@@ -2123,6 +2123,7 @@ domove_core()
                 solid = !accessible(x, y);
         int glyph = glyph_at(x, y); /* might be monster */
         char buf[BUFSZ];
+        boolean was_invis_glyph = glyph_is_invisible(levl[x][y].hero_memory_layers.glyph);
 
         if (!Underwater) 
         {
@@ -2187,6 +2188,14 @@ domove_core()
             Strcpy(buf, "thin air");
         }
 
+#ifdef GNH_MOBILE
+        boolean play_invisble_fade = was_invis_glyph && !glyph_is_invisible(levl[x][y].hero_memory_layers.glyph);
+        if (play_invisble_fade)
+        {
+            play_special_effect_with_details_at(0, x, y, GLYPH_INVISIBLE, LAYER_GENERAL_EFFECT, -2, 0, 0, 20, FALSE);
+        }
+#endif
+
         update_u_action(ACTION_TILE_ATTACK);
         play_monster_simple_weapon_sound(&youmonst, 0, uwep, OBJECT_SOUND_TYPE_SWING_MELEE);
         u_wait_until_action();
@@ -2195,6 +2204,13 @@ domove_core()
             !(boulder || solid) ? "" : !explo ? "harmlessly " : "futilely ",
             explo ? "explode at" : "attack", buf);
 
+#ifdef GNH_MOBILE
+        if (play_invisble_fade)
+        {
+            special_effect_wait_until_action(0);
+            special_effect_wait_until_end(0);
+        }
+#endif
         update_u_action_revert(ACTION_TILE_NO_ACTION);
 
         nomul(0);

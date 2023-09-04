@@ -485,7 +485,7 @@ register struct monst *mtmp;
         goto atk_done;
 
     char qbuf[BUFSIZ];
-    strcpy(qbuf, "");
+    Strcpy(qbuf, "");
     
     if (unweapon1 && unweapon2)
     {
@@ -575,7 +575,9 @@ register struct monst *mtmp;
     if (context.forcefight && !DEADMONSTER(mtmp) && !canspotmon(mtmp)
         && !glyph_is_invisible(levl[u.ux + u.dx][u.uy + u.dy].hero_memory_layers.glyph)
         && !(u.uswallow && mtmp == u.ustuck))
+    {
         map_invisible(u.ux + u.dx, u.uy + u.dy);
+    }
 
     return TRUE;
 }
@@ -773,6 +775,11 @@ struct attack *uattk;
 
         for (strikeindex = 0; strikeindex < multistrike; strikeindex++)
         {
+#ifdef GNH_MOBILE
+            int mx = mon->mx, my = mon->my;
+            boolean was_invis_glyph = isok(mx, my) && glyph_is_invisible(levl[mx][my].hero_memory_layers.glyph);
+#endif
+
             update_u_action(ACTION_TILE_ATTACK);
             play_monster_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
             u_wait_until_action();
@@ -806,7 +813,20 @@ struct attack *uattk;
                 (void)passive(mon, wep, mhit, malive, AT_WEAP, wep_was_destroyed);
             }
 
+#ifdef GNH_MOBILE
+            if (was_invis_glyph && !malive && !glyph_is_invisible(levl[mx][my].hero_memory_layers.glyph))
+            {
+                play_special_effect_with_details_at(0, mx, my, GLYPH_INVISIBLE, LAYER_GENERAL_EFFECT, -2, 0, 0, 20, FALSE);
+            }
+#endif
             update_u_action_revert(ACTION_TILE_NO_ACTION);
+#ifdef GNH_MOBILE
+            if (was_invis_glyph && !malive && !glyph_is_invisible(levl[mx][my].hero_memory_layers.glyph))
+            {
+                special_effect_wait_until_action(0);
+                special_effect_wait_until_end(0);
+            }
+#endif
 
             if (!malive || m_at(x, y) != mon || wep_was_destroyed)
             {
@@ -2729,6 +2749,11 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     boolean incorrect_weapon_use = FALSE;
     enum hit_tile_types hit_tile = HIT_GENERAL;
 
+#ifdef GNH_MOBILE
+    int mx = mdef->mx, my = mdef->my;
+    boolean was_invis_glyph = isok(mx, my) && glyph_is_invisible(levl[mx][my].hero_memory_layers.glyph);
+#endif
+
     /*  First determine the base damage done */
     struct obj* mweapon = omonwep;
     if (mweapon && mattk->aatyp == AT_WEAP)
@@ -3266,6 +3291,14 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         else if (damage > 0)
             killed(mdef);
 
+#ifdef GNH_MOBILE
+        if (was_invis_glyph && !glyph_is_invisible(levl[mx][my].hero_memory_layers.glyph))
+        {
+            play_special_effect_with_details_at(0, mx, my, GLYPH_INVISIBLE, LAYER_GENERAL_EFFECT, -2, 0, 0, 20, FALSE);
+            special_effect_wait_until_action(0);
+            special_effect_wait_until_end(0);
+        }
+#endif
         return 2;
     } 
     else if (flags.verbose && damagedealt > 0)
