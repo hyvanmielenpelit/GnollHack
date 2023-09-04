@@ -1319,11 +1319,6 @@ int hit_tile_id, damage_shown;
     if (cansee(x, y)) 
     {
         boolean old_glyph_is_invisible = glyph_is_invisible(lev->hero_memory_layers.glyph);
-        if(u.uachieve.ascended)
-            add_glyph_buffer_layer_flags(x, y, LFLAGS_ASCENSION_RADIANCE);
-
-        //clear_hero_memory_at(x, y);
-
         /* RECALL FIRST WHETHER THE LOCATION IS LIT OR NOT */
         /*
          * Don't use templit here:  E.g.
@@ -1340,7 +1335,11 @@ int hit_tile_id, damage_shown;
         lev->waslit = (lev->lit != 0); /* remember lit condition */
 
         /* THEN, SHOW THE LOCATION IS AND PUT IT TO MEMORY */
+        /* Note: clears layer flags */
         map_location(x, y, 1);
+
+        if (u.uachieve.ascended)
+            add_glyph_buffer_layer_flags(x, y, LFLAGS_ASCENSION_RADIANCE);
 
         /* Monster layer */
         if (x == u.ux && y == u.uy)

@@ -1600,7 +1600,7 @@ int how;
         clr = CLR_YELLOW;
         break;
     case ASCENDED:
-        endtext = "You have ascended!";
+        endtext = "Ascended!";
         screentextstyle = SCREEN_TEXT_ASCENDED;
         clr = CLR_MAGENTA;
         break;

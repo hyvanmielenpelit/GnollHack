@@ -5255,7 +5255,6 @@ unsigned long additional_newsym_flags;
                     context.u_intervals_to_wait_until_end = 0UL;
                 }
             }
-
         }
         else
         {
@@ -5287,10 +5286,12 @@ update_m_action_revert(mtmp, action)
 struct monst* mtmp;
 enum action_tile_types action;
 {
+    if (!mtmp)
+        return;
     update_m_action_core(mtmp, action, 0, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
     if(mtmp == &youmonst)
         u_wait_until_action();
-    else if(canspotmon(mtmp))
+    else if(action == ACTION_TILE_DEATH ? canspotmon(mtmp) : canseemon(mtmp))
         m_wait_until_action();
 }
 
@@ -5299,10 +5300,12 @@ update_m_action_and_wait(mtmp, action)
 struct monst* mtmp;
 enum action_tile_types action;
 {
+    if (!mtmp)
+        return;
     update_m_action_core(mtmp, action, 2, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
     if (mtmp == &youmonst)
         u_wait_until_action();
-    else if (canseemon(mtmp))
+    else if (action == ACTION_TILE_DEATH ? canspotmon(mtmp) : canseemon(mtmp))
         m_wait_until_action();
 }
 
@@ -5332,7 +5335,7 @@ unsigned long additional_newsym_flags;
     {
         if (context.m_intervals_to_wait_until_end > 0)
         {
-            if(canspotmon(mtmp))
+            if(canseemon(mtmp))
                 delay_output_intervals((int)context.m_intervals_to_wait_until_end);
             context.m_intervals_to_wait_until_end = 0UL;
         }
@@ -5348,7 +5351,7 @@ unsigned long additional_newsym_flags;
 
     mtmp->action = action;
 
-    if (iflags.using_gui_tiles && canseemon(mtmp) && action_before != mtmp->action)
+    if (iflags.using_gui_tiles && (action == ACTION_TILE_DEATH ? canspotmon(mtmp) : canseemon(mtmp)) && action_before != mtmp->action)
     {
         enum animation_types anim = mtmp->data->animation.actions[action];
         if (mtmp->action != ACTION_TILE_NO_ACTION && anim > 0
@@ -5387,7 +5390,7 @@ unsigned long additional_newsym_flags;
         {
             newsym_with_flags(mtmp->mx, mtmp->my, additional_newsym_flags);
             flush_screen(1);
-            if(canseemon(mtmp))
+            if(action == ACTION_TILE_DEATH ? canspotmon(mtmp) : canseemon(mtmp))
             {
                 context.m_intervals_to_wait_until_action = DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS;
                 if (mtmp->action != ACTION_TILE_NO_ACTION)

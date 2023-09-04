@@ -4931,6 +4931,13 @@ namespace GnollHackX.Pages.Game
                         {
                             lock (_mapDataLock)
                             {
+                                int u_x;
+                                int u_y;
+                                lock (_uLock)
+                                {
+                                    u_x = _ux;
+                                    u_y = _uy;
+                                }
                                 if (GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii)
                                 {
                                     for (int mapx = startX; mapx <= endX; mapx++)
@@ -5335,14 +5342,13 @@ namespace GnollHackX.Pages.Game
                                                                             bool uloc = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0);
                                                                             bool unlit = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_APPEARS_UNLIT) != 0);
                                                                             // Get values from XAML controls
-                                                                            SKBlendMode blendMode = SKBlendMode.Modulate;
                                                                             int darken_percentage = lighter_darkening ? (uloc ? 90 : unlit ? 65 : 80) : (uloc ? 85 : unlit ? 40 : 65);
                                                                             int val = (darken_percentage * 255) / 100;
                                                                             SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
 
                                                                             paint.Color = color;
                                                                             SKBlendMode old_bm = paint.BlendMode;
-                                                                            paint.BlendMode = blendMode;
+                                                                            paint.BlendMode = SKBlendMode.Modulate;
                                                                             tx = (offsetX + usedOffsetX + width * (float)mapx);
                                                                             ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
                                                                             SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
@@ -5375,6 +5381,36 @@ namespace GnollHackX.Pages.Game
 #endif
                                                                 }
                                                                 paint.Color = SKColors.Black;
+                                                                for (int mapx = startX; mapx <= endX; mapx++)
+                                                                {
+                                                                    for (int mapy = startY; mapy <= endY; mapy++)
+                                                                    {
+                                                                        bool ascension_radiance = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_ASCENSION_RADIANCE) != 0
+                                                                            && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
+                                                                        if (ascension_radiance)
+                                                                        {
+                                                                            float multiplier = 1.0f - Math.Min(1.0f, 0.3f + (float)Math.Sqrt(Math.Pow(mapx - u_x, 2) + Math.Pow(mapy - u_y, 2)) / 6.0f);
+                                                                            int val = (int)(multiplier * 255);
+                                                                            SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
+
+                                                                            paint.Color = color;
+                                                                            SKBlendMode old_bm = paint.BlendMode;
+                                                                            paint.BlendMode = SKBlendMode.Screen;
+                                                                            tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                                                            ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
+                                                                            SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+#if GNH_MAP_PROFILING && DEBUG
+                                                                            StartProfiling(GHProfilingStyle.Rect);
+#endif
+                                                                            canvas.DrawRect(targetrect, paint);
+                                                                            enlCanvas.DrawRect(targetrect, paint);
+#if GNH_MAP_PROFILING && DEBUG
+                                                                            StopProfiling(GHProfilingStyle.Rect);
+#endif
+                                                                            paint.BlendMode = old_bm;
+                                                                        }
+                                                                    }
+                                                                }
                                                                 break;
                                                         }
                                                     }
