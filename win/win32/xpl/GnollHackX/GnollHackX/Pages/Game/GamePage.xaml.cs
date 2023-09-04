@@ -3847,6 +3847,17 @@ namespace GnollHackX.Pages.Game
             {
                 opaqueness = 0.5f;
             }
+            else if (layer_idx == (int)layer_types.LAYER_BACKGROUND_EFFECT)
+            {
+                if((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_E_BKG_FADE_IN) != 0)
+                {
+                    opaqueness = opaqueness * ((float)(Math.Min(20L, generalcounterdiff))) / 20;
+                }
+                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_E_BKG_FADE_OUT) != 0)
+                {
+                    opaqueness = opaqueness * ((float)(20L - Math.Min(20L, generalcounterdiff))) / 20;
+                }
+            }
 
             float dscalex = 1.0f;
             float dscaley = 1.0f;

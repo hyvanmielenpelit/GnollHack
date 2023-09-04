@@ -4457,25 +4457,48 @@ short replacement_idx;
     return -1;
 }
 
-
 void
 play_special_effect_at(sp_effect, spef_number, x, y, force_visibility)
 enum special_effect_types sp_effect;
 int spef_number, x, y;
 boolean force_visibility;
 {
+    enum layer_types layer = special_effects[sp_effect].layer;
+    short anim = special_effects[sp_effect].animation;
+    int frames_to_sound = special_effects[sp_effect].frames_to_sound;
+    int frames_from_sound_to_action = special_effects[sp_effect].frames_from_sound_to_action;
+    int frames_from_action_to_end = special_effects[sp_effect].frames_from_action_to_end;;
+    play_special_effect_with_details_at(spef_number, x, y, sp_effect + GLYPH_SPECIAL_EFFECT_OFF, layer, anim, frames_to_sound, frames_from_sound_to_action, frames_from_action_to_end, force_visibility);
+}
+
+void
+play_special_effect_with_details_at(spef_number, x, y, glyph, layer, anim, frames_to_sound, frames_from_sound_to_action, frames_from_action_to_end, force_visibility)
+enum layer_types layer;
+short anim; /* -1 = fade glyph in, -2: fade glyph out */
+int glyph, spef_number, frames_to_sound, frames_from_sound_to_action, frames_from_action_to_end, x, y;
+boolean force_visibility;
+{
     if (iflags.using_gui_tiles && isok(x, y) && spef_number >= 0 && spef_number < MAX_PLAYED_SPECIAL_EFFECTS && (force_visibility || cansee(x, y)))
     {
-        enum layer_types layer = special_effects[sp_effect].layer;
         context.spef_action_animation_layer[spef_number] = layer;
         context.spef_action_animation_x[spef_number] = x;
         context.spef_action_animation_y[spef_number] = y;
         context.spef_intervals_to_wait_until_action[spef_number] = 0;
         context.spef_intervals_to_wait_until_end[spef_number] = 0;
         context.force_allow_keyboard_commands = TRUE;
-        show_glyph_on_layer(x, y, sp_effect + GLYPH_SPECIAL_EFFECT_OFF, layer);
+        show_glyph_on_layer(x, y, glyph, layer);
+        if (anim < 0)
+        {
+            add_glyph_buffer_layer_flags(x, y, anim == -1 ? LFLAGS_E_BKG_FADE_IN : LFLAGS_E_BKG_FADE_OUT);
+        }
 
-        enum animation_types anim = special_effects[sp_effect].animation;
+#ifdef USE_TILES
+        if (!anim)
+        {
+            int atile = glyph2tile[abs(glyph)];
+            anim = tile2animation[atile];
+        }
+#endif
         if (anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
         {
             //context.special_effect_animation_counter[spef_number] = 0L;
@@ -4513,12 +4536,11 @@ boolean force_visibility;
         {
             force_redraw_at(x, y);
             flush_screen(1);
-            if(special_effects[sp_effect].frames_to_sound > 0)
-                delay_output_intervals(special_effects[sp_effect].frames_to_sound);
-            context.spef_intervals_to_wait_until_action[spef_number] = special_effects[sp_effect].frames_from_sound_to_action;
-            context.spef_intervals_to_wait_until_end[spef_number] = special_effects[sp_effect].frames_from_action_to_end;
+            if(frames_to_sound > 0)
+                delay_output_intervals(frames_to_sound);
+            context.spef_intervals_to_wait_until_action[spef_number] = frames_from_sound_to_action;
+            context.spef_intervals_to_wait_until_end[spef_number] = frames_from_action_to_end;
         }
-
     }
 }
 

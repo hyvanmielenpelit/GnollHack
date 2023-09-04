@@ -11,6 +11,7 @@
 #include "lev.h"
 #include "general.h"
 #include "tiledata.h"
+#include "layer.h"
 
 #define E extern
 
@@ -69,6 +70,7 @@ E int FDECL(get_animation_base_tile, (SHORT_P));
 E int FDECL(get_enlargement_base_tile, (SHORT_P, SHORT_P));
 E struct replacement_info FDECL(data_to_replacement_info, (int, int, struct obj*, struct monst*, unsigned long, unsigned long, UCHAR_P, SHORT_P));
 E int FDECL(get_animation_frame_with_tile, (int, int));
+E void FDECL(play_special_effect_with_details_at, (int, int, int, int, enum layer_types, SHORT_P, int, int, int, BOOLEAN_P));
 E void FDECL(play_special_effect_at, (enum special_effect_types, int, int, int, BOOLEAN_P));
 E void FDECL(special_effect_wait_until_action, (int));
 E void FDECL(special_effect_wait_until_end, (int));
@@ -441,6 +443,8 @@ E void FDECL(use_crystal_ball, (struct obj **));
 E void NDECL(do_mapping);
 E void FDECL(do_vicinity_map, (struct obj *));
 E void FDECL(cvt_sdoor_to_door, (int, int));
+E void FDECL(cvt_sdoor_to_door_with_animation, (int, int));
+E void FDECL(cvt_scorr_to_corr_with_animation, (int, int));
 #ifdef USE_TRAMPOLI
 E void FDECL(findone, (int, int, genericptr_t));
 E void FDECL(openone, (int, int, genericptr_t));
