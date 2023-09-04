@@ -250,8 +250,6 @@ register int show;
         new_layer_flags |= LFLAGS_C_DECORATION;
     if (symbol_index > S_stone && levl[x][y].carpet_typ > 0)
         new_layer_flags |= LFLAGS_C_CARPET;
-    if (symbol_index > S_stone && levl[x][y].typ == DOOR && (levl[x][y].flags & D_FOUND_THIS_TURN) != 0)
-        new_layer_flags |= LFLAGS_C_SDOOR_FOUND_THIS_TURN;
 
     if (defsyms[symbol_index].layer != LAYER_FLOOR)
     {
@@ -268,8 +266,8 @@ register int show;
             new_cover_feature_gui_glyph = NO_GLYPH;
             break;
         case LAYER_FEATURE:
-            new_wall_glyph = (new_layer_flags & LFLAGS_C_SDOOR_FOUND_THIS_TURN) ? back_to_glyph_core(x, y, SDOOR) : NO_GLYPH;
-            new_wall_gui_glyph = maybe_get_replaced_glyph(new_wall_glyph, x, y, data_to_replacement_info(new_wall_glyph, LAYER_WALL, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
+            new_wall_glyph = NO_GLYPH;
+            new_wall_gui_glyph = NO_GLYPH;
             new_feature_glyph = glyph;
             new_feature_gui_glyph = gui_glyph;
             new_cover_feature_glyph = NO_GLYPH;
@@ -3639,14 +3637,6 @@ int
 back_to_glyph(x, y)
 xchar x, y;
 {
-    return back_to_glyph_core(x, y, levl[x][y].typ);
-}
-
-int
-back_to_glyph_core(x, y, typ)
-xchar x, y;
-schar typ;
-{
     int idx;
     struct rm *ptr = &(levl[x][y]);
     boolean is_variation = FALSE;
@@ -3654,7 +3644,7 @@ schar typ;
     int multiplier = facing_right ? -1 : 1;
     int cmap_type = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
 
-    switch (typ) {
+    switch (ptr->typ) {
     case UNDEFINED_LOCATION:
         idx = level.flags.arboreal ? S_tree : S_unexplored;
         break;
@@ -3664,8 +3654,8 @@ schar typ;
     stone_here:
         {
             idx = S_stone;
-            int used_vartyp = (typ == STONE ? ptr->vartyp : (ptr->vartyp % NUM_NORMAL_STONE_VARTYPES));
-            if ((used_vartyp > 0 || ptr->subtyp > 0) && typ != SDOOR)
+            int used_vartyp = (ptr->typ == STONE ? ptr->vartyp : (ptr->vartyp % NUM_NORMAL_STONE_VARTYPES));
+            if ((used_vartyp > 0 || ptr->subtyp > 0) && ptr->typ != SDOOR)
             { /* Walls use also stone subtypes if looked from outside, but they can have a larger subtype than what is possible for walls */
                 is_variation = TRUE;
                 int var_offset = defsyms[idx].variation_offset;
@@ -3723,7 +3713,7 @@ schar typ;
 
         hwall_here:
             {
-                if (idx == S_hwall && (ptr->subtyp > 0 || ptr->vartyp > 0) && typ != SDOOR)
+                if (idx == S_hwall && (ptr->subtyp > 0 || ptr->vartyp > 0) && ptr->typ != SDOOR)
                 {
                     is_variation = TRUE;
                     int var_offset = defsyms[idx].variation_offset;
@@ -3960,7 +3950,7 @@ schar typ;
         idx = (ptr->horizontal) ? S_hodbridge : S_vodbridge;
         break;
     default:
-        impossible("back_to_glyph:  unknown level type [ = %d ]", typ);
+        impossible("back_to_glyph:  unknown level type [ = %d ]", ptr->typ);
         idx = S_room;
         break;
     }

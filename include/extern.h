@@ -581,7 +581,6 @@ E void NDECL(show_detection_everywhere);
 E void NDECL(show_memory_and_detection_everywhere);
 E void FDECL(flush_screen, (int));
 E int FDECL(back_to_glyph, (XCHAR_P, XCHAR_P));
-E int FDECL(back_to_glyph_core, (XCHAR_P, XCHAR_P, int));
 E int FDECL(back_to_broken_glyph, (XCHAR_P, XCHAR_P));
 E int FDECL(zapdir_to_glyph, (int, int, int));
 E int FDECL(zapbounce_to_glyph, (int, int, int, int, int));

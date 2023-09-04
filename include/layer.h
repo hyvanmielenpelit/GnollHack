@@ -137,7 +137,7 @@ struct simple_layer_info {
 #define LFLAGS_ZAP_MASK                 (LFLAGS_ZAP_LEADING_EDGE | LFLAGS_ZAP_TRAILING_EDGE)
 
 /* Cmap */
-#define LFLAGS_C_SDOOR_FOUND_THIS_TURN  0x00800000UL
+/* free bit */
 #define LFLAGS_C_DECORATION             0x00800000UL
 #define LFLAGS_C_CARPET                 0x01000000UL
 
