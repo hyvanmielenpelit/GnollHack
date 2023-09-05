@@ -1038,7 +1038,7 @@ SetMenuListType(HWND hWnd, int how)
         char msgbuf[BUFSZ] = "";
         write_CP437_to_buf_unicode(msgbuf, BUFSZ, data->menu.items[i].str);
 
-        sprintf(buf, "%c - %s", max(data->menu.items[i].accelerator, ' '),
+        Sprintf(buf, "%c - %s", max(data->menu.items[i].accelerator, ' '),
             msgbuf);
 
         lvitem.mask = LVIF_PARAM | LVIF_STATE | LVIF_TEXT;

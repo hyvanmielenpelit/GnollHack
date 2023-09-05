@@ -512,7 +512,7 @@ size_t slen, dir_size, flen;
     char buf[BUFSIZ];
     int i;
 
-    sprintf(buf, "%3ld %8ld %8ld %8ld %8ld\n",
+    (void) sprintf(buf, "%3ld %8ld %8ld %8ld %8ld\n",
             (long) DLB_VERS,   /* version of dlb file */
             (long) nfiles + 1, /* # of entries (includes directory) */
                                /* string length + room for nulls */
@@ -523,10 +523,10 @@ size_t slen, dir_size, flen;
 
 /* write each file entry */
 #define ENTRY_FORMAT "%c%s %8ld\n"
-    sprintf(buf, ENTRY_FORMAT, ENC_NORMAL, DLB_DIRECTORY, (long) 0);
+    (void) sprintf(buf, ENTRY_FORMAT, ENC_NORMAL, DLB_DIRECTORY, (long) 0);
     Write(out, buf, (long)strlen(buf));
     for (i = 0; i < nfiles; i++) {
-        sprintf(buf, ENTRY_FORMAT, ENC_NORMAL, /* encoding */
+        (void) sprintf(buf, ENTRY_FORMAT, ENC_NORMAL, /* encoding */
                 ld[i].fname,                   /* name */
             (long)(ld[i].foffset + (long)dir_size));     /* offset */
         Write(out, buf, (long)strlen(buf));

@@ -783,7 +783,7 @@ char *buf;
             str[0] = buf[0];
             str[1] = '\0';
         } else {
-            sprintf(str, "0x%02x", buf[0]);
+            (void) sprintf(str, "0x%02x", buf[0]);
         }
         Fprintf(stderr, "unknown control ^%s at line %d.\n", str,
                 grep_lineno);

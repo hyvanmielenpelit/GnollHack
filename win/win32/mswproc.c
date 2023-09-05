@@ -1753,9 +1753,9 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
         }
         Strncpy(message, question, QBUFSZ - 1);
         message[QBUFSZ - 1] = '\0';
-        sprintf(eos(message), " [%s]", choicebuf);
+        Sprintf(eos(message), " [%s]", choicebuf);
         if (def)
-            sprintf(eos(message), " (%c)", def);
+            Sprintf(eos(message), " (%c)", def);
         Strcat(message, " ");
         /* escape maps to 'q' or 'n' or default, in that order */
         yn_esc_map =
@@ -2837,7 +2837,7 @@ mswin_read_reg()
     RGB(0xFF, 0xFF, 0xFF)  /* CLR_WHITE */
     };
 
-    sprintf(keystring, "%s\\%s\\%s\\%s", CATEGORYKEY, COMPANYKEY, PRODUCTKEY,
+    Sprintf(keystring, "%s\\%s\\%s\\%s", CATEGORYKEY, COMPANYKEY, PRODUCTKEY,
             SETTINGSKEY);
 
     /* Set the defaults here. The very first time the app is started, nothing
@@ -2904,7 +2904,7 @@ mswin_read_reg()
     for (i = 0; i < CLR_MAX; i++) {
         COLORREF cl;
         char mapcolorkey[64];
-        sprintf(mapcolorkey, "MapColor%02d", i);
+        Sprintf(mapcolorkey, "MapColor%02d", i);
         if (RegQueryValueEx(key, mapcolorkey, NULL, NULL, (BYTE *)&cl, &size) == ERROR_SUCCESS)
             GetNHApp()->regMapColors[i] = cl;
     }
@@ -2933,7 +2933,7 @@ mswin_write_reg()
         char keystring[MAX_PATH];
         DWORD safe_buf;
 
-        sprintf(keystring, "%s\\%s\\%s\\%s", CATEGORYKEY, COMPANYKEY,
+        Sprintf(keystring, "%s\\%s\\%s\\%s", CATEGORYKEY, COMPANYKEY,
                 PRODUCTKEY, SETTINGSKEY);
 
         if (RegOpenKeyEx(HKEY_CURRENT_USER, keystring, 0, KEY_WRITE, &key)
@@ -2992,7 +2992,7 @@ mswin_write_reg()
         for (i = 0; i < CLR_MAX; i++) {
             COLORREF cl = GetNHApp()->regMapColors[i];
             char mapcolorkey[64];
-            sprintf(mapcolorkey, "MapColor%02d", i);
+            Sprintf(mapcolorkey, "MapColor%02d", i);
             RegSetValueEx(key, mapcolorkey, 0, REG_DWORD, (BYTE *)&cl, sizeof(DWORD));
         }
 
@@ -3008,15 +3008,15 @@ mswin_destroy_reg()
     DWORD nrsubkeys;
 
     /* Delete keys one by one, as NT does not delete trees */
-    sprintf(keystring, "%s\\%s\\%s\\%s", CATEGORYKEY, COMPANYKEY, PRODUCTKEY,
+    Sprintf(keystring, "%s\\%s\\%s\\%s", CATEGORYKEY, COMPANYKEY, PRODUCTKEY,
             SETTINGSKEY);
     RegDeleteKey(HKEY_CURRENT_USER, keystring);
-    sprintf(keystring, "%s\\%s\\%s", CATEGORYKEY, COMPANYKEY, PRODUCTKEY);
+    Sprintf(keystring, "%s\\%s\\%s", CATEGORYKEY, COMPANYKEY, PRODUCTKEY);
     RegDeleteKey(HKEY_CURRENT_USER, keystring);
     /* The company key will also contain information about newer versions
        of GnollHack (e.g. a subkey called GnollHack 4.0), so only delete that
        if it's empty now. */
-    sprintf(keystring, "%s\\%s", CATEGORYKEY, COMPANYKEY);
+    Sprintf(keystring, "%s\\%s", CATEGORYKEY, COMPANYKEY);
     /* If we cannot open it, we probably cannot delete it either... Just
        go on and see what happens. */
     RegOpenKeyEx(HKEY_CURRENT_USER, keystring, 0, KEY_READ, &key);
