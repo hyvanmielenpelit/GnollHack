@@ -439,7 +439,9 @@ dig(VOID_ARGS)
 
     if (context.digging.effort > 100) 
     {
+#ifdef GNH_MOBILE
         boolean done_feelnewsym = FALSE;
+#endif
         const char *digtxt, *dmgtxt = (const char *) 0;
         struct obj *obj;
         boolean shopedge = *in_rooms(dpx, dpy, SHOPBASE);
@@ -489,9 +491,11 @@ dig(VOID_ARGS)
                 play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You cut down the tree.";
                 struct mkroom* r = which_room(dpx, dpy);
-                int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_COVER_FEATURE];
                 short special_quality = lev->special_quality;
                 int fruittype = tree_subtype_definitions[lev->subtyp].fruit_type;
+#ifdef GNH_MOBILE
+                int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_COVER_FEATURE];
+#endif
 
                 /* Change the location type */
                 int typ = lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM;
@@ -526,7 +530,9 @@ dig(VOID_ARGS)
             {
                 play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You succeed in cutting away some rock.";
+#ifdef GNH_MOBILE
                 int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_FLOOR];
+#endif
                 create_basic_floor_location(dpx, dpy, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floortyp : CORR, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floorsubtyp : get_initial_location_subtype(levl[dpx][dpy].floortyp), 0, FALSE);
 #ifdef GNH_MOBILE
                 feel_newsym(dpx, dpy);
@@ -565,7 +571,9 @@ dig(VOID_ARGS)
                 ltype = DOOR, lflags = D_NODOOR;
             }
             play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
+#ifdef GNH_MOBILE
             int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_FLOOR];
+#endif
             create_simple_location(dpx, dpy, ltype, lsubtype, lvartype, lflags, back_to_broken_glyph(dpx, dpy), !IS_FLOOR(ltype)? lev->floortyp : 0, !IS_FLOOR(ltype) ? lev->floorsubtyp : 0, !IS_FLOOR(ltype) ? lev->floorvartyp : 0, FALSE);
 #ifdef GNH_MOBILE
             feel_newsym(dpx, dpy);
@@ -606,7 +614,9 @@ dig(VOID_ARGS)
 
         if (!does_block(dpx, dpy, &levl[dpx][dpy]))
             unblock_vision_and_hearing_at_point(dpx, dpy); /* vision:  can see through */
+#ifdef GNH_MOBILE
         if(!done_feelnewsym)
+#endif
             feel_newsym(dpx, dpy);
 
         if (digtxt && !context.digging.quiet)
@@ -3365,13 +3375,13 @@ dodig()
     enum object_soundset_types oss = 0;
     if (uwep)
     {
-        strcpy(digbuf, yname(uwep));
+        Strcpy(digbuf, yname(uwep));
         oss = objects[uwep->otyp].oc_soundset;
 
     }
     else if (u.twoweap && uarms)
     {
-        strcpy(digbuf, yname(uarms));
+        Strcpy(digbuf, yname(uarms));
         oss = objects[uarms->otyp].oc_soundset;
     }
     else

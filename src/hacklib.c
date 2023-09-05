@@ -286,7 +286,7 @@ const char* source;
     if (!dest_buffer || !source)
         return dest_buffer;
 
-    strcpy(dest_buffer, source);
+    Strcpy(dest_buffer, source);
 
     char* bp;
     for (bp = dest_buffer; *bp; bp++)
@@ -1397,7 +1397,7 @@ size_t bufsize;
     else
         copybuf[sizeof(copybuf) - 1] = '\0';
 
-    strcpy(buf, copybuf);
+    Strcpy(buf, copybuf);
 }
 #endif
 

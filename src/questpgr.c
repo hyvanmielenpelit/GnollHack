@@ -837,7 +837,7 @@ int fd, msgnum;
     char cur_outline[BUFSIZ * 10];
     char prev_outline[BUFSIZ * 10];
     char buf[BUFSIZ];
-    strcpy(prev_outline, "");
+    Strcpy(prev_outline, "");
 
     int rounds = flags.initrole == ROLE_PRIEST ? NUM_ROLES : 1;
     int k;
@@ -874,7 +874,7 @@ int fd, msgnum;
             if (!strcmp(cur_outline, prev_outline))
                 continue;
 
-            strcpy(prev_outline, cur_outline);
+            Strcpy(prev_outline, cur_outline);
 
             Sprintf(buf, "%d. ", msgnum);
             (void)write(fd, buf, strlen(buf));
@@ -959,8 +959,8 @@ int fd;
     int save_pantheon = flags.pantheon;
     boolean common_printed = FALSE;
     char plbuf[PL_NSIZ];
-    strcpy(plbuf, plname);
-    strcpy(plname, "adventurer");
+    Strcpy(plbuf, plname);
+    Strcpy(plname, "adventurer");
     int current_alignbase = u.ualignbase[A_CURRENT];
     int original_alignbase = u.ualignbase[A_ORIGINAL];
     int ualigntype = u.ualign.type;
@@ -1025,7 +1025,7 @@ int fd;
     urole = save_role;
     urace = save_race;
     flags.pantheon = save_pantheon;
-    strcpy(plname, plbuf);
+    Strcpy(plname, plbuf);
     u.ualign.type = ualigntype;
     u.ualignbase[A_CURRENT] = current_alignbase;
     u.ualignbase[A_ORIGINAL] = original_alignbase;

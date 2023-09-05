@@ -153,7 +153,7 @@ check_crash()
 
     /* Use recover_plname instead */
     //if(!wizard)
-    //    strcpy(plname, recovery_plname);
+    //    Strcpy(plname, recovery_plname);
 
 nofilefound:
     unlock_file(HLOCK);

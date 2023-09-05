@@ -1175,7 +1175,7 @@ mswin_putstr_ex(winid wid, const char *text, int attr, int color, int app)
         else
             GetNHApp()->saved_text = tempchar_ptr;
 
-        strcat(GetNHApp()->saved_text, text);
+        Strcat(GetNHApp()->saved_text, text);
     }
 }
 
@@ -1215,7 +1215,7 @@ mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* col
         else
             GetNHApp()->saved_text = tempchar_ptr;
 
-        strcat(GetNHApp()->saved_text, text);
+        Strcat(GetNHApp()->saved_text, text);
     }
 }
 
@@ -1729,7 +1729,7 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
             realloc(strdup(GetNHApp()->saved_text),
                     strlen(question) + strlen(GetNHApp()->saved_text) + 1);
         DWORD box_result;
-        strcat(text, question);
+        Strcat(text, question);
         box_result =
             NHMessageBox(NULL, NH_W2A(text, message, sizeof(message)),
                          MB_ICONQUESTION | MB_YESNOCANCEL
@@ -1917,7 +1917,7 @@ mswin_getlin_ex(int style, int attr, int color, const char *question, char *inpu
             c = (char)mswin_nhgetch();
             switch (c) {
             case VK_ESCAPE:
-                strcpy(input, "\033");
+                Strcpy(input, "\033");
                 done = TRUE;
                 break;
             case '\n':
@@ -1948,7 +1948,7 @@ mswin_getlin_ex(int style, int attr, int color, const char *question, char *inpu
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
     } else {
         if (mswin_getlin_window(style, attr, color, promptbuf, input, BUFSZ) == IDCANCEL) {
-            strcpy(input, "\033");
+            Strcpy(input, "\033");
         }
     }
 }
@@ -4010,7 +4010,7 @@ size_t bufsize;
     else
         copybuf[sizeof(copybuf) - 1] = (char)'\0';
 
-    strcpy(buf, copybuf);
+    Strcpy(buf, copybuf);
 }
 
 

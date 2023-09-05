@@ -2112,7 +2112,7 @@ boolean bless_stuff;
     register long changed = 0;
     boolean other = FALSE, bc_known = !(Blind || Hallucination);
     char buf[BUFSZ];
-    strcpy(buf, "");
+    Strcpy(buf, "");
     boolean use_items = FALSE;
 
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
@@ -2153,7 +2153,7 @@ boolean bless_stuff;
                 other = TRUE;
 
             if (!strcmp(buf, ""))
-                strcpy(buf, cxname_singular(otmp));
+                Strcpy(buf, cxname_singular(otmp));
             else if (strcmp(buf, cxname_singular(otmp)))
                 use_items = TRUE;
         }
@@ -3136,7 +3136,7 @@ dopray()
             if(context.game_difficulty == MIN_DIFFICULTY_LEVEL)
                 Sprintf(qbuf, "Praying can be dangerous unless your %s views you favorably. Are you sure you want to pray?", align_gtitle(u.ualign.type));
             else
-                strcpy(qbuf, "Are you sure you want to pray?");
+                Strcpy(qbuf, "Are you sure you want to pray?");
             if(yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Confirm Prayer", qbuf) != 'y')
                 return 0;
         }

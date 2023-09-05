@@ -1148,7 +1148,7 @@ clear_level_structures()
     level.flags.corrmaze = 0;
     level.flags.mapping_does_not_reveal_special = 0;
     level.flags.no_special_level_naming_checks = 0;
-    strcpy(level.flags.special_description, "");
+    Strcpy(level.flags.special_description, "");
     level.flags.special_naming_reveal_type = SPECIAL_LEVEL_NAMING_REVEALED_NEVER;
     level.flags.special_naming_seen_monster_type = NON_PM;
     level.flags.special_naming_seen_monster_class = 0;

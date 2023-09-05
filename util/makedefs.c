@@ -492,7 +492,7 @@ do_ext_makedefs(int argc, char **argv)
             argv++; /* not CONSUME */
             delim[0] = '\0';
             if (argv[0])
-                strcpy(delim, argv[0]);
+                (void) strcpy(delim, argv[0]);
             Fprintf(stdout, "%s", version_string(buf, delim));
             exit(EXIT_SUCCESS);
         }
@@ -2940,25 +2940,25 @@ do_objs()
             if (!first_gem_found && objects[i].oc_material != MAT_GLASS)
             {
                 first_gem_found = TRUE;
-                strcpy(first_gem_buf, objnam);
+                (void) strcpy(first_gem_buf, objnam);
             }
             if (!last_gem_found && objects[i].oc_material == MAT_GLASS && first_gem_found)
             {
                 last_gem_found = TRUE;
-                strcpy(last_gem_buf, prev_objnam_buf);
+                (void) strcpy(last_gem_buf, prev_objnam_buf);
             }
         }
         if (class != prev_class)
         {
             if (class == AMULET_CLASS)
-                strcpy(first_amulet_buf, objnam);
+                (void) strcpy(first_amulet_buf, objnam);
             if (prev_class == AMULET_CLASS)
-                strcpy(last_amulet_buf, prev_objnam_buf);
+                (void) strcpy(last_amulet_buf, prev_objnam_buf);
 
             if (class == MISCELLANEOUS_CLASS)
-                strcpy(first_misc_buf, objnam);
+                (void) strcpy(first_misc_buf, objnam);
             if (prev_class == MISCELLANEOUS_CLASS)
-                strcpy(last_misc_buf, prev_objnam_buf);
+                (void) strcpy(last_misc_buf, prev_objnam_buf);
 
             if (class == SPBOOK_CLASS)
                 Sprintf(first_spell_buf, "SPE_%s", objnam);
@@ -3015,7 +3015,7 @@ do_objs()
         prefix = 0;
 
         sum += objects[i].oc_prob;
-        strcpy(prev_objnam_buf, objnam);
+        (void) strcpy(prev_objnam_buf, objnam);
     }
 
     /* check last set of probabilities */

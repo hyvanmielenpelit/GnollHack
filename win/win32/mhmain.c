@@ -1448,21 +1448,21 @@ nh_compose_ascii_screenshot()
     FillMemory(text->colors, NO_COLOR, TEXT_BUFFER_SIZE);
     SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                 (WPARAM) MSNH_MSG_GETTEXT, (LPARAM) text);
-    strcpy(retval, text->buffer);
+    Strcpy(retval, text->buffer);
 
     ZeroMemory(text->buffer, TEXT_BUFFER_SIZE);
     FillMemory(text->attrs, ATR_NONE, TEXT_BUFFER_SIZE);
     FillMemory(text->colors, NO_COLOR, TEXT_BUFFER_SIZE);
     SendMessage(mswin_hwnd_from_winid(WIN_MAP), WM_MSNH_COMMAND,
                 (WPARAM) MSNH_MSG_GETTEXT, (LPARAM) text);
-    strcat(retval, text->buffer);
+    Strcat(retval, text->buffer);
 
     ZeroMemory(text->buffer, TEXT_BUFFER_SIZE);
     FillMemory(text->attrs, ATR_NONE, TEXT_BUFFER_SIZE);
     FillMemory(text->colors, NO_COLOR, TEXT_BUFFER_SIZE);
     SendMessage(mswin_hwnd_from_winid(WIN_STATUS), WM_MSNH_COMMAND,
                 (WPARAM) MSNH_MSG_GETTEXT, (LPARAM) text);
-    strcat(retval, text->buffer);
+    Strcat(retval, text->buffer);
 
     free(text);
     return retval;

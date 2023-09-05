@@ -2372,11 +2372,11 @@ char *outbuf;
 
     if (mon->data->msound == MS_LEADER && quest_info(MS_LEADER) == mon->mnum)
     {
-        strcat(outbuf, ", quest leader");
+        Strcat(outbuf, ", quest leader");
     }
     else if (mon->data->msound == MS_NEMESIS && quest_info(MS_NEMESIS) == mon->mnum)
     {
-        strcat(outbuf, ", quest nemesis");
+        Strcat(outbuf, ", quest nemesis");
     }
 
     return outbuf;
@@ -2691,7 +2691,7 @@ char* s;
     static const char* end_previous_novowel[] = { "din", "rin", "in", "lin", "rim", "im", "ri", "as", "dis" };
 
     if (s) {
-        strcpy(s, "");
+        Strcpy(s, "");
         if (!rn2(4))
         {
             /* with middle syllable */
@@ -2729,7 +2729,7 @@ char* s;
         "in", "un", "ellas", "anel", "odel", "uil" };
 
     if (s) {
-        strcpy(s, "");
+        Strcpy(s, "");
         if (rn2(3))
         {
             /* with middle syllable */
@@ -2766,7 +2766,7 @@ char* s;
 
     if (s) 
     {
-        strcpy(s, "");
+        Strcpy(s, "");
         if (!rn2(3))
         {
             /* with middle syllable */
@@ -2805,7 +2805,7 @@ char* s;
 
     if (s)
     {
-        strcpy(s, "");
+        Strcpy(s, "");
         if (rn2(3))
         {
             /* with middle syllable */
@@ -2834,7 +2834,7 @@ char* s;
 
     if (s)
     {
-        strcpy(s, "");
+        Strcpy(s, "");
         Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
             end[rn2(SIZE(end))]);
     }
@@ -2851,7 +2851,7 @@ char* s;
 
     if (s)
     {
-        strcpy(s, "");
+        Strcpy(s, "");
             Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
                 end[rn2(SIZE(end))]);
     }
@@ -2864,7 +2864,7 @@ char* s;
 {
     if (s)
     {
-        strcpy(s, "");
+        Strcpy(s, "");
         char ns[BUFSIZ];
         (void)randomize_gnoll_name(ns);
         Sprintf(s, "yee%s", ns);
@@ -3169,7 +3169,7 @@ char* s;
 
     if (s)
     {
-        strcpy(s, "");
+        Strcpy(s, "");
         Sprintf(s, "%s", names[rn2(SIZE(names))]);
     }
     return s;
@@ -3562,7 +3562,7 @@ char* s;
 
     if (s)
     {
-        strcpy(s, "");
+        Strcpy(s, "");
         Sprintf(s, "%s", names[rn2(SIZE(names))]);
     }
     return s;
@@ -3686,7 +3686,7 @@ char* s;
 
     if (s)
     {
-        strcpy(s, "");
+        Strcpy(s, "");
         Sprintf(s, "%s", names[rn2(SIZE(names))]);
     }
     return s;
@@ -3718,7 +3718,7 @@ char* s;
 
     if (s)
     {
-        strcpy(s, "");
+        Strcpy(s, "");
         Sprintf(s, "%s", names[rn2(SIZE(names))]);
     }
     return s;
@@ -3891,7 +3891,7 @@ char* s;
 
     if (s)
     {
-        strcpy(s, "");
+        Strcpy(s, "");
         Sprintf(s, "%s", names[rn2(SIZE(names))]);
     }
     return s;

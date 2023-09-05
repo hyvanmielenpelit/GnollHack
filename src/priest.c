@@ -1684,7 +1684,7 @@ boolean showheads;
     /* and unlike a normal mon_nam, use "saddled" even if it has a name */
     char adjbuf[BUFSZ], alignbuf[BUFSZ];
     Sprintf(adjbuf, "level %d%s", mtmp->data->difficulty, is_tame(mtmp) ? (call_mon_tame(mtmp) ? " tame" : " allied") : is_peaceful(mtmp) ? " peaceful" : "");
-    strcpy(alignbuf, align_str(alignment));
+    Strcpy(alignbuf, align_str(alignment));
     *alignbuf = highc(*alignbuf);
 
     Strcpy(monnambuf, x_monnam(mtmp, monsternamearticle, adjbuf,

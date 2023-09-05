@@ -175,7 +175,7 @@ struct monst* mon;
                     {
                         if (mon->mnum == PM_PRISONER)
                         {
-                            strcpy(yellbuf, "Please help me, adventurer!");
+                            Strcpy(yellbuf, "Please help me, adventurer!");
                             mon_yells(mon, yellbuf, "yell", "desperately", TRUE, FALSE);
                         }
                         mon_talked = TRUE;
@@ -187,18 +187,18 @@ struct monst* mon;
                         struct obj* otmp;
                         if (cnt == 1 && !iflags.using_gui_sounds && (otmp = get_first_sellable_item(mon)) != 0)
                         {
-                            strcpy(itembuf, otmp->quan == 1 ? acxname(otmp) : cxname(otmp));
-                            strcpy(someitembuf, itembuf);
+                            Strcpy(itembuf, otmp->quan == 1 ? acxname(otmp) : cxname(otmp));
+                            Strcpy(someitembuf, itembuf);
                         }
                         else if (cnt == 1)
                         {
-                            strcpy(itembuf, "item");
-                            strcpy(someitembuf, "an item");
+                            Strcpy(itembuf, "item");
+                            Strcpy(someitembuf, "an item");
                         }
                         else
                         {
-                            strcpy(itembuf, "items");
-                            strcpy(someitembuf, "some items");
+                            Strcpy(itembuf, "items");
+                            Strcpy(someitembuf, "some items");
                         }
 
                         switch (mon->talkstate_item_trading)

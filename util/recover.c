@@ -440,7 +440,7 @@ char *str;
     bsize = EXEPATHBUFSZ;
     tmp = exepathbuf;
 #if !defined(WIN32)
-    strcpy(tmp, str);
+    (void) strcpy(tmp, str);
 #else
 #if defined(WIN_CE)
     {

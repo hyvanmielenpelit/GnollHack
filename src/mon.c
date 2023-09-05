@@ -3900,7 +3900,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 
         char bp[BUFSZ] = ""; 
 
-        strcpy(bp, !(wasinside || canspotmon(mtmp)) ? "it"
+        Strcpy(bp, !(wasinside || canspotmon(mtmp)) ? "it"
             : !is_tame(mtmp) ? mon_nam(mtmp)
             : x_monnam(mtmp, namedpet ? ARTICLE_NONE : ARTICLE_THE,
                 "poor", namedpet ? SUPPRESS_SADDLE : 0, FALSE));
@@ -6203,7 +6203,7 @@ uchar style; /* 0 = dwarf lords and dwarf ladies, 1 = dwarf lords and ladies,
             buf[len] = 0;
             if (!strncmp(femalename, buf, len))
             {
-                strcpy(usedfemalename, femalename + len);
+                Strcpy(usedfemalename, femalename + len);
             }
             searchp = spacep + 1;
         }

@@ -908,7 +908,7 @@ doability(VOID_ARGS)
             "Game Status                           ", MENU_UNSELECTED, menu_heading_info());
 
         /*
-        strcpy(available_ability_list[abilitynum].name, "Quests");
+        Strcpy(available_ability_list[abilitynum].name, "Quests");
         available_ability_list[abilitynum].function_ptr = &doquests;
 
         any = zeroany;
@@ -3409,7 +3409,7 @@ int final;
     if (usenextrow)
     {
         enlght_out(buf, ATR_NONE);
-        strcpy(buf, "");
+        Strcpy(buf, "");
     }
 
     /* show the rest of this game's pantheon (finishes previous sentence)
@@ -3605,7 +3605,7 @@ int final;
     enl_msg("Autopickup ", "is ", "was ", buf, "");
 
     const char* game_dif_text = get_game_difficulty_text(context.game_difficulty);
-    strcpy(buf, game_dif_text);
+    Strcpy(buf, game_dif_text);
     double monster_damage_mult = 1;
     double monster_hp_mult = 1;
     get_game_difficulty_multipliers(&monster_damage_mult, &monster_hp_mult);
@@ -5271,7 +5271,7 @@ int cmdflag;
 
         any.a_nfunc = efp->ef_funct;
 
-        strcpy(cmdbuf, efp->ef_txt);
+        Strcpy(cmdbuf, efp->ef_txt);
         cmdlen = strlen(cmdbuf);
         if (cmdlen < maxcommandlength)
         {
@@ -5283,7 +5283,7 @@ int cmdflag;
         if ((efp->flags & CMD_NOT_AVAILABLE) != 0 || (efp->flags & cmdflag) == 0)
             continue;
 
-        strcpy(descbuf, efp->ef_desc);
+        Strcpy(descbuf, efp->ef_desc);
         *descbuf = highc(*descbuf);
 
 #ifndef GNH_MOBILE
@@ -5304,7 +5304,7 @@ int cmdflag;
             (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
                 (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
         else
-            strcpy(shortcutbuf, "");
+            Strcpy(shortcutbuf, "");
 #endif
         Sprintf(buf, "%s  %s", cmdbuf, descbuf);
 
@@ -9309,9 +9309,9 @@ dolight(VOID_ARGS)
     if (get_location_light_range(cc.x, cc.y) != 0)
     {
         char ebuf[BUFSZ];
-        strcpy(ebuf, "");
+        Strcpy(ebuf, "");
         if(levl[cc.x][cc.y].typ == ALTAR)
-            strcpy(ebuf, "fires on the ");
+            Strcpy(ebuf, "fires on the ");
 
         if (levl[cc.x][cc.y].lamplit == 0)
         {

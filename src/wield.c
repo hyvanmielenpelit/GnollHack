@@ -1557,7 +1557,7 @@ const char *verb; /* "rub",&c */
         else 
         {
             char handbuf[BUFSZ];
-            strcpy(handbuf, "");
+            Strcpy(handbuf, "");
 
             if(u.twoweap)
                 Sprintf(handbuf, " in your %s %s", selected_hand_is_right ? "right" : "left", body_part(HAND));

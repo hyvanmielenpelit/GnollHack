@@ -612,7 +612,7 @@ int x, y;
 
 boolean 
 unmap_invisible_with_animation(x, y, spef_idx)
-int x, y, spef_idx;
+int x, y, spef_idx UNUSED;
 {
 #ifdef GNH_MOBILE
     boolean was_invis_glyph = isok(x, y) && glyph_is_invisible(levl[x][y].hero_memory_layers.glyph);

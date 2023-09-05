@@ -1479,7 +1479,7 @@ unsigned doname_flags;
             else
             {
                 char replacetxt[OBUFSZ] = "";
-                strcpy(replacetxt, misc_type_worn_texts[objects[obj->otyp].oc_subtyp]);
+                Strcpy(replacetxt, misc_type_worn_texts[objects[obj->otyp].oc_subtyp]);
 
                 /* special replacement for some types */
                 switch (objects[obj->otyp].oc_subtyp)
@@ -2743,7 +2743,7 @@ struct obj *obj;
         if (strncmpi(s, "the ", 4))
         {
             char tempbuf[OBUFSZ];
-            strcpy(tempbuf, s);
+            Strcpy(tempbuf, s);
             Sprintf(s, "the %s", tempbuf);
         }
     }
@@ -5930,7 +5930,7 @@ int *otyp_ptr, *sq_ptr;
     {
         char buf[OBUFSZ];
         size_t ln = 0;
-        strcpy(buf, key_special_descriptions[i].description);
+        Strcpy(buf, key_special_descriptions[i].description);
         Strcat(buf, " ");
         ln = strlen(buf);
         if (!strncmpi(inbuf, buf, ln) && strstr(inbuf, OBJ_NAME(objects[key_special_descriptions[i].otyp])) != 0)

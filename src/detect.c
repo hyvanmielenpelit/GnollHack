@@ -1695,7 +1695,9 @@ int x, y;
         return;
 
     struct layer_info layers = layers_at(x, y);
+#ifdef GNH_MOBILE
     int glyph = layers.layer_gui_glyphs[LAYER_FLOOR];
+#endif
     create_basic_floor_location(x, y, levl[x][y].floortyp ? levl[x][y].floortyp : CORR, 0, 0, FALSE);
     unblock_vision_and_hearing_at_point(x, y); /* vision */
     feel_newsym(x, y);

@@ -356,7 +356,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     // @@@ Ok respnses
 
                     /* save original text */
-                    strcpy(tmptext, data->window_text[MSG_LINES - 1].text);
+                    Strcpy(tmptext, data->window_text[MSG_LINES - 1].text);
                     memcpy(tmpattrs, data->window_text[MSG_LINES - 1].attrs, MAXWINDOWTEXT + 1);
                     memcpy(tmpcolors, data->window_text[MSG_LINES - 1].colors, MAXWINDOWTEXT + 1);
 
@@ -399,7 +399,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     }
 
                     /* restore original text */
-                    strcpy(data->window_text[MSG_LINES - 1].text, tmptext);
+                    Strcpy(data->window_text[MSG_LINES - 1].text, tmptext);
                     memcpy(data->window_text[MSG_LINES - 1].attrs, tmpattrs, MAXWINDOWTEXT + 1);
                     memcpy(data->window_text[MSG_LINES - 1].colors, tmpcolors, MAXWINDOWTEXT + 1);
 
@@ -422,7 +422,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 else
                 {
                     /* clear the line instead */
-                    strcpy(data->window_text[MSG_LINES - 1].text, "");
+                    Strcpy(data->window_text[MSG_LINES - 1].text, "");
                     memset(data->window_text[MSG_LINES - 1].attrs, ATR_NONE, MAXWINDOWTEXT);
                     memset(data->window_text[MSG_LINES - 1].colors, NO_COLOR, MAXWINDOWTEXT);
                     data->window_text[MSG_LINES - 1].attrs[MAXWINDOWTEXT] = data->window_text[MSG_LINES - 1].colors[MAXWINDOWTEXT] = 0;
@@ -786,7 +786,7 @@ onPaint(HWND hWnd)
             oldFont = SelectObject(hdc, font->hFont);
 
             /* convert to UNICODE stripping newline */
-            strcpy(tmptext, data->window_text[i].text);
+            Strcpy(tmptext, data->window_text[i].text);
             strip_newline(tmptext);
             NH_A2W(tmptext, wbuf, sizeof(wbuf));
             wbuf[MAXWINDOWTEXT + 1] = '\0';
@@ -1056,11 +1056,11 @@ can_append_text(HWND hWnd, /* int attr, int color, */ const char* text)
         return FALSE;
 
     /* check if the text is going to fit into a single line */
-    strcpy(tmptext, data->window_text[MSG_LINES - 1].text);
-    strcat(tmptext, "  ");
-    strcat(tmptext, text);
+    Strcpy(tmptext, data->window_text[MSG_LINES - 1].text);
+    Strcat(tmptext, "  ");
+    Strcat(tmptext, text);
     strip_newline(tmptext);
-    strcat(tmptext, MORE);
+    Strcat(tmptext, MORE);
 
     hdc = GetDC(hWnd);
     cached_font * font = mswin_get_font(NHW_MESSAGE, data->window_text[MSG_LINES - 1].attr, hdc, FALSE);
@@ -1118,11 +1118,11 @@ more_prompt_check(HWND hWnd)
                         data->window_text[MSG_LINES - i - 1].attr, hdc, FALSE);
         SelectObject(hdc, font->hFont);
 
-        strcpy(tmptext, data->window_text[MSG_LINES - i - 1].text);
+        Strcpy(tmptext, data->window_text[MSG_LINES - i - 1].text);
         strip_newline(tmptext);
 
         if (i == 0)
-            strcat(tmptext, MORE);
+            Strcat(tmptext, MORE);
 
         remaining_height -=
             DrawText(hdc, tmptext, strlen(tmptext), &draw_rt,

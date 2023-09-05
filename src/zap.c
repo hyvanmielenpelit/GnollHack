@@ -1702,7 +1702,7 @@ struct permonst* ptr;
             }
 
             char namebuf[BUFSZ] = "";
-            strcpy(namebuf, get_property_name(i));
+            Strcpy(namebuf, get_property_name(i));
             *namebuf = highc(*namebuf);
 
             abilcnt++;
@@ -1713,7 +1713,7 @@ struct permonst* ptr;
 
     if (!abilcnt)
     {
-        strcpy(buf, " (None)");        
+        Strcpy(buf, " (None)");        
         putstr(datawin, 0, buf);
     }
 
@@ -1738,7 +1738,7 @@ struct permonst* ptr;
             if (mflags & bit)
             {
                 char descbuf[BUFSZ] = "";
-                strcpy(descbuf, get_mflag_description(bit, FALSE, j));
+                Strcpy(descbuf, get_mflag_description(bit, FALSE, j));
                 if (strcmp(descbuf, ""))
                 {
                     *descbuf = highc(*descbuf);
@@ -1794,7 +1794,7 @@ struct permonst* ptr;
 
     if (!abilcnt)
     {
-        strcpy(buf, " (None)");        
+        Strcpy(buf, " (None)");        
         putstr(datawin, 0, buf);
     }
 
@@ -1887,7 +1887,7 @@ struct permonst* ptr;
 
     if (!abilcnt)
     {
-        strcpy(buf, " (None)");        
+        Strcpy(buf, " (None)");        
         putstr(datawin, 0, buf);
     }
 
@@ -4814,23 +4814,23 @@ register struct obj *obj;
         if (archoncount > 0 || angelcount > 0 || aleaxcount > 0)
         {
             if (archoncount == 0)
-                strcpy(archonbuf, "");
+                Strcpy(archonbuf, "");
             else if (archoncount == 1)
-                strcpy(archonbuf, "an Archon");
+                Strcpy(archonbuf, "an Archon");
             else
                 Sprintf(archonbuf, "%d Archons", archoncount);
 
             if (angelcount == 0)
-                strcpy(angelbuf, "");
+                Strcpy(angelbuf, "");
             else if (angelcount == 1)
-                strcpy(angelbuf, "an Angel");
+                Strcpy(angelbuf, "an Angel");
             else
                 Sprintf(angelbuf, "%d Angels", angelcount);
 
             if (aleaxcount == 0)
-                strcpy(aleaxbuf, "");
+                Strcpy(aleaxbuf, "");
             else if (aleaxcount == 1)
-                strcpy(aleaxbuf, "an Aleax");
+                Strcpy(aleaxbuf, "an Aleax");
             else
                 Sprintf(aleaxbuf, "%d Aleaxes", aleaxcount);
 
@@ -8884,7 +8884,7 @@ const char *fltxt;
             (void) destroy_arm(uarmu);
         killer.hint_idx = HINT_KILLED_DISINTEGRATION_RAY;
         killer.format = KILLED_BY_AN;
-        strcpy(killer.name, killername);
+        Strcpy(killer.name, killername);
         /* when killed by disintegration attack, don't leave corpse */
         u.ugrave_arise = (abstyp % 10 == ZT_DISINTEGRATION) ? -3 : NON_PM;
         display_u_being_hit(HIT_DISINTEGRATED, 0, 0UL);

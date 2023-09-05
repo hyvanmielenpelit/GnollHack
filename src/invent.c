@@ -2528,7 +2528,7 @@ boolean (*validitemfunc)(struct obj*);
             leftbuf[leftnum] = '\0';
         }
         else
-            strcpy(leftbuf, "");
+            Strcpy(leftbuf, "");
 
         size_t rightnum = 4;
         if (l >= rightnum)
@@ -2537,15 +2537,15 @@ boolean (*validitemfunc)(struct obj*);
             rightbuf[rightnum] = '\0';
         }
         else
-            strcpy(rightbuf, "");
+            Strcpy(rightbuf, "");
 
         if(!strcmp(leftbuf, "dip") && !strcmp(rightbuf, "into"))
             is_dip_into = TRUE;
     }
     else
     {
-        strcpy(leftbuf, "");
-        strcpy(rightbuf, "");
+        Strcpy(leftbuf, "");
+        Strcpy(rightbuf, "");
         is_dip_into = FALSE;
     }
 
@@ -2766,19 +2766,19 @@ boolean (*validitemfunc)(struct obj*);
             {
                 if (blankscroll && blankbook)
                 {
-                    strcpy(unidbuf, "scrolls or spellbooks");
+                    Strcpy(unidbuf, "scrolls or spellbooks");
                 }
                 else if (blankscroll)
                 {
-                    strcpy(unidbuf, "scrolls");
+                    Strcpy(unidbuf, "scrolls");
                 }
                 else if (blankbook)
                 {
-                    strcpy(unidbuf, "spellbooks");
+                    Strcpy(unidbuf, "spellbooks");
                 }
                 else
                 {
-                    strcpy(unidbuf, "writable items");
+                    Strcpy(unidbuf, "writable items");
                 }
                 Sprintf(endbuf, ", but maybe you have unidentified blank %s with you?", unidbuf);
                 writeendremark = TRUE;
@@ -2841,7 +2841,7 @@ boolean (*validitemfunc)(struct obj*);
             if (!allownone) {
                 char *suf = (char *) 0;
 
-                strcpy(buf, word);
+                Strcpy(buf, word);
                 if ((bp = strstr(buf, " on the ")) != 0) {
                     /* rub on the stone[s] */
                     *bp = '\0';
@@ -3025,7 +3025,7 @@ struct obj* otmp_only;
             leftbuf[leftnum] = '\0';
         }
         else
-            strcpy(leftbuf, "");
+            Strcpy(leftbuf, "");
 
         size_t rightnum = 4;
         if (l >= rightnum)
@@ -3034,7 +3034,7 @@ struct obj* otmp_only;
             rightbuf[rightnum] = '\0';
         }
         else
-            strcpy(rightbuf, "");
+            Strcpy(rightbuf, "");
 
         if (!strcmp(leftbuf, "dip") && !strcmp(rightbuf, "into"))
             is_dip_into = TRUE;
@@ -3042,8 +3042,8 @@ struct obj* otmp_only;
     else
     {
         word = "";
-        strcpy(leftbuf, "");
-        strcpy(rightbuf, "");
+        Strcpy(leftbuf, "");
+        Strcpy(rightbuf, "");
         is_dip_into = FALSE;
     }
 
@@ -4315,16 +4315,16 @@ long pickcnt;
             if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
                 continue;
 
-            strcpy(class_list, "");
+            Strcpy(class_list, "");
             if (extcmdlist[i].getobj_classes)
-                strcpy(class_list, extcmdlist[i].getobj_classes);
+                Strcpy(class_list, extcmdlist[i].getobj_classes);
             else if (!strcmp(extcmdlist[i].getobj_word, "break"))
                 setbreakclasses(class_list);
             else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
                 setapplyclasses(class_list);
             else  if (!strcmp(extcmdlist[i].getobj_word, "ready"))
             {
-                strcpy(class_list, (uslinging()
+                Strcpy(class_list, (uslinging()
                     || (uswapwep
                         && objects[uswapwep->otyp].oc_skill == P_SLING))
                     ? getobj_bullets
@@ -4345,7 +4345,7 @@ long pickcnt;
             continue;
 
         char catbuf[BUFSZ];
-        strcpy(catbuf, "");
+        Strcpy(catbuf, "");
         if (!iflags.menu_tab_sep)
         {
             slen = (int)strlen(headings[j]);
@@ -4367,16 +4367,16 @@ long pickcnt;
             if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
                 continue;
 
-            strcpy(class_list, "");
+            Strcpy(class_list, "");
             if (extcmdlist[i].getobj_classes)
-                strcpy(class_list, extcmdlist[i].getobj_classes);
+                Strcpy(class_list, extcmdlist[i].getobj_classes);
             else if (!strcmp(extcmdlist[i].getobj_word, "break"))
                 setbreakclasses(class_list);
             else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
                 setapplyclasses(class_list);
             else  if (!strcmp(extcmdlist[i].getobj_word, "ready"))
             {
-                strcpy(class_list, (uslinging()
+                Strcpy(class_list, (uslinging()
                     || (uswapwep
                         && objects[uswapwep->otyp].oc_skill == P_SLING))
                     ? getobj_bullets
@@ -4395,9 +4395,9 @@ long pickcnt;
             any = zeroany;
             any.a_int = i + 1;
             if (efp->ef_txt_word)
-                strcpy(cmdbuf, efp->ef_txt_word);
+                Strcpy(cmdbuf, efp->ef_txt_word);
             else
-                strcpy(cmdbuf, efp->ef_txt);
+                Strcpy(cmdbuf, efp->ef_txt);
 
             *cmdbuf = highc(*cmdbuf);
 
@@ -4406,10 +4406,10 @@ long pickcnt;
 
             char tabbuf[BUFSZ];
             if (iflags.menu_tab_sep)
-                strcpy(tabbuf, "\t");
+                Strcpy(tabbuf, "\t");
             else
             {
-                strcpy(tabbuf, "");
+                Strcpy(tabbuf, "");
                 slen = (int)strlen(cmdbuf);
                 int k;
                 for (k = 0; k < longest_len + 2 - slen; k++)
@@ -4421,7 +4421,7 @@ long pickcnt;
                     (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
                     (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
             else
-                strcpy(shortcutbuf, "");
+                Strcpy(shortcutbuf, "");
 
             Sprintf(buf, "%s%s", cmdbuf, shortcutbuf);
 
@@ -4840,9 +4840,9 @@ nextclass:
         printweight(maxbuf, maxwt, FALSE, FALSE);
 
         if(wornonly)
-            strcpy(qbuf, "Worn Items");
+            Strcpy(qbuf, "Worn Items");
         else
-            strcpy(qbuf, "Inventory");
+            Strcpy(qbuf, "Inventory");
 
         Sprintf(subtitlebuf, "%d/52 slots, %s/%s weight", icnt, weightbuf, maxbuf);
         end_menu_ex(win, qbuf, subtitlebuf);
@@ -5828,9 +5828,9 @@ int x, y;
         if (altcmap > -1)
         {
             if(lsubtyp > 0)
-                strcpy(altbuf, defsym_variations[lsubtyp - 1 + defsyms[altcmap].variation_offset].explanation);
+                Strcpy(altbuf, defsym_variations[lsubtyp - 1 + defsyms[altcmap].variation_offset].explanation);
             else
-                strcpy(altbuf, defsyms[altcmap].explanation);
+                Strcpy(altbuf, defsyms[altcmap].explanation);
 
             print_lock_with_buf(eos(altbuf), levl[x][y].key_otyp, levl[x][y].special_quality, is_door_normally_without_lock_at(x, y));
             dfeature = altbuf;
@@ -6028,7 +6028,7 @@ boolean picked_some, explicit_cmd;
     if (!skip_objects && (trap = t_at(u.ux, u.uy)) && trap->tseen)
     {
         char buf[BUFSZ];
-        strcpy(buf, "");
+        Strcpy(buf, "");
         if (trap && trap->ttyp == LEVER && (trap->tflags & TRAPFLAGS_SWITCHABLE_BETWEEN_STATES))
         {
             if ((trap->tflags & TRAPFLAGS_STATE_MASK) > 0UL)
@@ -6075,9 +6075,9 @@ boolean picked_some, explicit_cmd;
     if (IS_BRAZIER(lev->typ))
     {
         if(lev->lamplit)
-            strcpy(dfbuf, "lit ");
+            Strcpy(dfbuf, "lit ");
         else
-            strcpy(dfbuf, "unlit ");
+            Strcpy(dfbuf, "unlit ");
     }
 
     if (dfeature)
@@ -6252,9 +6252,9 @@ print_things_here_to_window(VOID_ARGS)
     if (IS_BRAZIER(lev->typ))
     {
         if (lev->lamplit)
-            strcpy(dfbuf, "lit ");
+            Strcpy(dfbuf, "lit ");
         else
-            strcpy(dfbuf, "unlit ");
+            Strcpy(dfbuf, "unlit ");
     }
 
     char buf[BUFSZ];

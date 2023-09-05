@@ -683,7 +683,7 @@ uchar capitalize_style;
         /*Fall through*/
     default:
     case 0:
-        strcpy(buf, lvlbuf);
+        Strcpy(buf, lvlbuf);
         break;
     case 2:
         strcpy_capitalized_for_title(buf, lvlbuf);
@@ -703,13 +703,13 @@ int booktype;
 
     char lvlbuf[BUFSZ];
     if (objects[booktype].oc_spell_level == -1)
-        strcpy(lvlbuf, "c");
+        Strcpy(lvlbuf, "c");
     else if (objects[booktype].oc_spell_level == 0)
-        strcpy(lvlbuf, "C");
+        Strcpy(lvlbuf, "C");
     else if (objects[booktype].oc_spell_level > 0)
         Sprintf(lvlbuf, "%ld", objects[booktype].oc_spell_level);
     else
-        strcpy(lvlbuf, "*");
+        Strcpy(lvlbuf, "*");
 
     Sprintf(buf, "%s %s", spelltypesymbol(objects[booktype].oc_skill), lvlbuf);
 }
@@ -735,8 +735,8 @@ register struct obj *spellbook;
     if (!(context.spbook.delay && spellbook == context.spbook.book)
         && !(objects[spellbook->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK))
     {
-        strcpy(namebuf, OBJ_NAME(objects[booktype]));
-        strcpy(Namebuf2, OBJ_NAME(objects[booktype]));
+        Strcpy(namebuf, OBJ_NAME(objects[booktype]));
+        Strcpy(Namebuf2, OBJ_NAME(objects[booktype]));
         *Namebuf2 = highc(*Namebuf2);
 
         print_spell_level_text(lvlbuf, booktype, TRUE, FALSE, FALSE);
@@ -1113,7 +1113,7 @@ int spell_list_type;
     char titlebuf[BUFSZ];
     char verbbufC[BUFSZ];
     char verbtitlebufC[BUFSZ];
-    strcpy(verbbufC, verbs[spell_list_type]);
+    Strcpy(verbbufC, verbs[spell_list_type]);
     *verbbufC = highc(*verbbufC);
     strcpy_capitalized_for_title(verbtitlebufC, verbs[spell_list_type]);
     Sprintf(titlebuf, "Choose a Spell to %s", verbtitlebufC);
@@ -2967,7 +2967,7 @@ struct monst* targetmonst;
         const char enchant_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
         struct obj* otmp;
         char buf[BUFSZ] = "";
-        strcpy(buf, otyp == SPE_COLD_ENCHANT_ITEM ? "cold-enchant" :
+        Strcpy(buf, otyp == SPE_COLD_ENCHANT_ITEM ? "cold-enchant" :
             otyp == SPE_FIRE_ENCHANT_ITEM ? "fire-enchant" :
             otyp == SPE_LIGHTNING_ENCHANT_ITEM ? "lightning-enchant" :
             otyp == SPE_DEATH_ENCHANT_ITEM ? "death-enchant" :
@@ -4224,7 +4224,7 @@ int splaction;
     char buf[BUFSIZ], availablebuf[BUFSZ], descbuf[BUFSZ], levelbuf[BUFSZ] = "";
     char fullname[BUFSZ] = "";
     anything any = zeroany;
-    strcpy(fullname, spellname(splnum));
+    Strcpy(fullname, spellname(splnum));
     *fullname = highc(*fullname);
 
     int glyph = spell_to_glyph(splnum);
@@ -4295,7 +4295,7 @@ int splaction;
     anything any = zeroany;
     char fullname[BUFSZ];
     char addsbuf[BUFSZ];
-    strcpy(fullname, spellname(splnum));
+    Strcpy(fullname, spellname(splnum));
     *fullname = highc(*fullname);
 
     int glyph = NO_GLYPH;
@@ -4536,7 +4536,7 @@ dospellmanagemenu()
 
 #if 0
     /* Spell description */
-    strcpy(available_selection_item[selnum].name, "Detailed spell description");
+    Strcpy(available_selection_item[selnum].name, "Detailed spell description");
     available_selection_item[selnum].function_ptr = &spelldescription;
     available_selection_item[selnum].charnum = 'a' + selnum;
 
@@ -4551,7 +4551,7 @@ dospellmanagemenu()
 #endif
 
 #ifndef GNH_MOBILE
-    strcpy(available_selection_item[selnum].name, "Set or clear a hotkey for a spell");
+    Strcpy(available_selection_item[selnum].name, "Set or clear a hotkey for a spell");
     //available_selection_item[selnum].function_ptr = &setspellhotkey;
     available_selection_item[selnum].action = 4;
     available_selection_item[selnum].charnum = 'a' + selnum;
@@ -4567,7 +4567,7 @@ dospellmanagemenu()
 #endif
 
     /* Forget spell */
-    strcpy(available_selection_item[selnum].name, "Forget a spell");
+    Strcpy(available_selection_item[selnum].name, "Forget a spell");
     //available_selection_item[selnum].function_ptr = &forgetspell;
     available_selection_item[selnum].action = 5;
     available_selection_item[selnum].charnum = 'a' + selnum;
@@ -4584,7 +4584,7 @@ dospellmanagemenu()
 
     /* Finalize the menu */
     char qbuf[BUFSZ] = "";
-    strcpy(qbuf, "What do you want to do?");
+    Strcpy(qbuf, "What do you want to do?");
 
     /* Finish the menu */
     end_menu(win, qbuf);
@@ -4693,7 +4693,7 @@ int spell;
 {
     char qbuf[BUFSZ] = "";
     char spellnamebuf[BUFSZ] = "";
-    strcpy(spellnamebuf, spellname(spell));
+    Strcpy(spellnamebuf, spellname(spell));
 
     Sprintf(qbuf, "Are you sure you want to forget \'%s\' permanently?", spellnamebuf);
     if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, (char*)0, qbuf) == 'y')
@@ -5047,8 +5047,8 @@ int spell;
 
     char spellname[BUFSZ] = "";
     char capspellname[BUFSZ] = "";
-    strcpy(spellname, obj_descr[spellid(spell)].oc_name);
-    strcpy(capspellname, spellname);
+    Strcpy(spellname, obj_descr[spellid(spell)].oc_name);
+    Strcpy(capspellname, spellname);
     *capspellname = highc(*capspellname); //Make first letter capital
 
     int matcnt = 0;
@@ -5061,7 +5061,7 @@ int spell;
         struct obj* otmp = (struct obj*)0;
         char buf[BUFSZ], buf3[BUFSZ], buf5[BUFSZ];
         struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
-        strcpy(buf3, domatcompname(mc));
+        Strcpy(buf3, domatcompname(mc));
 
         Sprintf(buf, "You need %s%s. ",
             buf3, ((mc->flags & MATCOMP_NOT_SPENT) ? " as a catalyst" : " as a component"));
@@ -5470,8 +5470,8 @@ struct materialcomponent* mc;
 
     static char buf3[BUFSZ];
     char buf2[BUFSZ], buf4[BUFSZ];
-    strcpy(buf2, "");
-    strcpy(buf4, "");
+    Strcpy(buf2, "");
+    Strcpy(buf4, "");
 
     if (permon && perobj)
     {
@@ -5503,7 +5503,7 @@ struct materialcomponent* mc;
 
     //Indicate how many
     if (mc->amount == 1)
-        strcpy(buf3, an(buf2));
+        Strcpy(buf3, an(buf2));
     else
         Sprintf(buf3, "%d %s", mc->amount, makeplural(buf2));
 

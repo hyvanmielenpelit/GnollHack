@@ -1537,7 +1537,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     {
         if (artifact_has_flag(otmp, AF_BISECT) && dieroll == 1 && (!is_shade(mdef->data) || shade_glare(otmp)) && !(youdefend ? (Bisection_resistance || Invulnerable || is_incorporeal(mdef->data)) : resists_bisection(mdef)))
         {
-            strcpy(wepdesc, The(artifact_hit_desc));
+            Strcpy(wepdesc, The(artifact_hit_desc));
             /* not really beheading, but close */
             if (youattack && u.uswallow && mdef == u.ustuck) 
             {

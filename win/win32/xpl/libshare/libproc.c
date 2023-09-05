@@ -1021,23 +1021,23 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
     if (has_umname(mtmp))
     {
         char umnbuf[BUFSIZ];
-        strcpy(umnbuf, UMNAME(mtmp));
+        Strcpy(umnbuf, UMNAME(mtmp));
         umnbuf[16] = '\0'; /* Limit the length of the name */
-        strcat(tempbuf, umnbuf);
+        Strcat(tempbuf, umnbuf);
     }
     else if (has_mname(mtmp) && mtmp->u_know_mname)
     {
         char mnbuf[BUFSIZ];
-        strcpy(mnbuf, MNAME(mtmp));
+        Strcpy(mnbuf, MNAME(mtmp));
         mnbuf[16] = '\0'; /* Limit the length of the name */
-        strcat(tempbuf, mnbuf);
+        Strcat(tempbuf, mnbuf);
     }
     else
     {
         char buf[BUFSZ];
-        strcpy(buf, mon_monster_name(mtmp));
+        Strcpy(buf, mon_monster_name(mtmp));
         *buf = highc(*buf);
-        strcat(tempbuf, buf);
+        Strcat(tempbuf, buf);
     }
     write_text2buf_utf8(mi_ptr->name, sizeof(mi_ptr->name), tempbuf);
     //Strncpy(mi_ptr->name, tempbuf, BUFSZ - 1);
@@ -1652,7 +1652,7 @@ void debuglog(const char* fmt, ...)
     }
     else
     {
-        strcpy(buf, "(null)");
+        Strcpy(buf, "(null)");
     }
 
     if (lib_callbacks.callback_raw_print)

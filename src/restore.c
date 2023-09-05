@@ -1620,7 +1620,7 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
         strcpy_capitalized_for_title(modebuf, get_game_mode_text(FALSE));
 #ifdef GNH_MOBILE
         char dtmpbuf[BUFSZ];
-        strcpy(dtmpbuf, get_game_mode_description());
+        Strcpy(dtmpbuf, get_game_mode_description());
         *dtmpbuf = highc(*dtmpbuf);
         Sprintf(descbuf, " (%s)", dtmpbuf);
 #endif
@@ -1737,7 +1737,7 @@ struct save_game_data* saved;
             strcpy_capitalized_for_title(racebuf, races[saved[k].gamestats.racenum].adj);
             if (roles[saved[k].gamestats.rolenum].name.f)
             {
-                strcpy(genderwithspacebuf, "");
+                Strcpy(genderwithspacebuf, "");
                 if (saved[k].gamestats.gender)
                 {
                     strcpy_capitalized_for_title(rolebuf, roles[saved[k].gamestats.rolenum].name.f);
@@ -1810,7 +1810,7 @@ struct save_game_data* saved;
             }
             else
             {
-                strcpy(timebuf, "unknown date");
+                Strcpy(timebuf, "unknown date");
             }
 
             Sprintf(savedbuf, "%sGame was saved on %s", prefix, timebuf);

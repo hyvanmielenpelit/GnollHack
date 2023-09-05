@@ -4076,10 +4076,10 @@ struct obj* obj;
                     remove_worn_item(otmp, TRUE);
                     undonned = TRUE;
                 }
-                strcpy(buftext, Yname2(otmp));
-                strcpy(buftext2, otense(otmp, "morph"));
-                strcpy(buftext3, otense(otmp, "undon"));
-                strcat(buftext3, " and ");
+                Strcpy(buftext, Yname2(otmp));
+                Strcpy(buftext2, otense(otmp, "morph"));
+                Strcpy(buftext3, otense(otmp, "undon"));
+                Strcat(buftext3, " and ");
 
                 otmp = poly_obj(otmp, STRANGE_OBJECT);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s%s into %s!", buftext, undonned ? buftext3 : "", buftext2, an(xname(otmp)));
@@ -4109,7 +4109,7 @@ struct obj* obj;
                 obj_clear_found(otmp);
                 place_object(otmp, u.ux, u.uy);
                 char tbuf[BUFSIZ];
-                strcpy(tbuf, Tobjnam(otmp, "vanish"));
+                Strcpy(tbuf, Tobjnam(otmp, "vanish"));
                 boolean stillexists = rloco(otmp);
                 play_sfx_sound(SFX_TELEPORT);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s from your person%s.", tbuf, !stillexists ? "" :
@@ -5711,7 +5711,7 @@ dobreak()
 {
     int res = 1;
     char class_list[MAX_OBJECT_CLASSES + 2];
-    strcpy(class_list, "");
+    Strcpy(class_list, "");
 
     //Cannot break when overloaded?
     if (check_capacity((char*)0))

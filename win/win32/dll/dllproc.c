@@ -1078,7 +1078,7 @@ dll_putstr_ex(winid wid, const char *text, int attr, int color, int app)
         GetNHApp()->saved_text =
             realloc(GetNHApp()->saved_text,
                     strlen(text) + strlen(GetNHApp()->saved_text) + 1);
-        strcat(GetNHApp()->saved_text, text);
+        Strcat(GetNHApp()->saved_text, text);
     }
 #endif
 }

@@ -3687,11 +3687,11 @@ do_class_genocide()
                 any = zeroany; /* zero out all bits */
 
                 char cbuf[BUFSZ];
-                strcpy(cbuf, "");
+                Strcpy(cbuf, "");
                 int k;
                 for (k = 0; k < MAX_MONSTER_CLASSES; k++)
                 {
-                    strcpy(cbuf, def_monsyms[k].name);
+                    Strcpy(cbuf, def_monsyms[k].name);
                     if (strcmp(cbuf, "") && def_monsyms[k].sym != ' ' && def_monsyms[k].sym != DEF_GHOST)
                     {
                         *cbuf = highc(*cbuf);

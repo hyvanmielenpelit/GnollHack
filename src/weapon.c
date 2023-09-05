@@ -2144,7 +2144,7 @@ doskill_core()
                 if (P_RESTRICTED(i))
                     continue;
 
-                strcpy(furtherbuf, "");
+                Strcpy(furtherbuf, "");
                 if (can_advance(i, speedy))
                 {
                     color = CLR_GREEN;
@@ -2168,7 +2168,7 @@ doskill_core()
 
                 (void)skill_level_name(i, skilllevelbuf, FALSE);
                 (void)skill_level_name(i, skillmaxbuf, TRUE);
-                strcpy(skillnamebuf, P_NAME(i));
+                Strcpy(skillnamebuf, P_NAME(i));
                 *skillnamebuf = highc(*skillnamebuf);
 
                 Sprintf(buf, "%s (%s / %s%s)", skillnamebuf, skilllevelbuf, skillmaxbuf, furtherbuf);
@@ -2228,7 +2228,7 @@ boolean speedy;
     char skilllevelbuf[BUFSZ] = "";
     char nextlevelbuf[BUFSZ] = "";
 
-    strcpy(skillnamebuf, P_NAME(skill_id));
+    Strcpy(skillnamebuf, P_NAME(skill_id));
     (void)skill_level_name(skill_id, skilllevelbuf, FALSE);
     (void)skill_level_name(skill_id, nextlevelbuf, 2);
     int skill_slots_needed = slots_required(skill_id);
@@ -2456,11 +2456,11 @@ int skill_id;
         putstr(win, ATR_HALF_SIZE, " ");
         if (skill_id == P_BARE_HANDED_COMBAT && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
         {
-            strcpy(buf, "Levels (bonuses from Martial Arts):");
+            Strcpy(buf, "Levels (bonuses from Martial Arts):");
         }
         else
         {
-            strcpy(buf, "Levels:");
+            Strcpy(buf, "Levels:");
         }
         putstr(win, ATR_HEADING, buf);
 
@@ -3070,13 +3070,13 @@ enhance_weapon_skill()
                 (void)skill_level_name(i, skillmaxbuf, TRUE);
 
                 char skillnamebuf[BUFSZ];
-                strcpy(skillnamebuf, P_NAME(i));
+                Strcpy(skillnamebuf, P_NAME(i));
                 *skillnamebuf = highc(*skillnamebuf);
 
                 int skill_slots_needed = slots_required(i);
                 char skillslotbuf[BUFSZ];
                 if (P_SKILL_LEVEL(i) >= P_MAX_SKILL_LEVEL(i))
-                    strcpy(skillslotbuf, "-");
+                    Strcpy(skillslotbuf, "-");
                 else
                     Sprintf(skillslotbuf, "%d", skill_slots_needed);
 
@@ -4331,7 +4331,7 @@ boolean is_left_arm;
         return;
 
     struct obj* wep = is_left_arm ? uarms : uwep;
-    strcpy(buf, "");
+    Strcpy(buf, "");
     if (!wep)
     {
         const char* unarmedstr = (uarmg ? (is_weapon(uarmg) ? "mg" : "g") : "-");
@@ -4340,37 +4340,37 @@ boolean is_left_arm;
             if (!uwep)
             {
                 if(u.twoweap)
-                    strcpy(buf, unarmedstr);
+                    Strcpy(buf, unarmedstr);
                 else
-                    strcpy(buf, "");
+                    Strcpy(buf, "");
             }
             else if(objects[uwep->otyp].oc_bimanual)
-                strcpy(buf, "");
+                Strcpy(buf, "");
             else if(u.twoweap)
-                strcpy(buf, unarmedstr);
+                Strcpy(buf, unarmedstr);
             else
-                strcpy(buf, "");
+                Strcpy(buf, "");
         }
         else
-            strcpy(buf, unarmedstr);
+            Strcpy(buf, unarmedstr);
     }
     else if (wep->otyp == CORPSE)
     {
-        strcpy(buf, "c");
+        Strcpy(buf, "c");
     }
     else if (wep->oclass == POTION_CLASS)
     {
-        strcpy(buf, "!");
+        Strcpy(buf, "!");
     }
     else if (!is_weapon(wep) && !is_shield(wep) && !is_pick(wep))
     {
-        strcpy(buf, "*");
+        Strcpy(buf, "*");
     }
     else
     {
         if ((is_weapon(wep) || is_pick(wep)) && objects[wep->otyp].oc_bimanual)
         {
-            strcpy(eos(buf), "2h");
+            Strcpy(eos(buf), "2h");
         }
 
         if (is_launcher(wep))
@@ -4378,45 +4378,45 @@ boolean is_left_arm;
             if (uquiver)
             {
                 if (ammo_and_launcher(uquiver, wep))
-                    strcpy(eos(buf), "R");
+                    Strcpy(eos(buf), "R");
                 else
-                    strcpy(eos(buf), "Re");
+                    Strcpy(eos(buf), "Re");
             }
             else
-                strcpy(eos(buf), "R0");
+                Strcpy(eos(buf), "R0");
         }
         else if (is_ammo(wep))
         {
-            strcpy(eos(buf), "A");
+            Strcpy(eos(buf), "A");
         }
         else if (nonmelee_throwing_weapon(wep))
         {
-            strcpy(eos(buf), "T");
+            Strcpy(eos(buf), "T");
         }
         else if (is_appliable_pole_type_weapon(wep))
         {
-            strcpy(eos(buf), "P");
+            Strcpy(eos(buf), "P");
         }
         else if (is_weapon(wep))
         {
-            strcpy(eos(buf), "M");
+            Strcpy(eos(buf), "M");
             if (throwing_weapon(wep))
             {
-                strcpy(eos(buf), "T");
+                Strcpy(eos(buf), "T");
             }
             if (is_pick(wep))
             {
-                strcpy(eos(buf), "D");
+                Strcpy(eos(buf), "D");
             }
         }
         else if (is_pick(wep))
         {
-            strcpy(eos(buf), "D");
+            Strcpy(eos(buf), "D");
         }
 
         if (is_shield(wep))
         {
-            strcpy(eos(buf), "S");
+            Strcpy(eos(buf), "S");
         }
     }
 }

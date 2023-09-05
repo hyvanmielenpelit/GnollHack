@@ -1934,7 +1934,7 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
     {
         play_simple_container_sound(cobj, CONTAINER_SOUND_TYPE_TRY_LOCKED);
         char lbuf[BUFSZ];
-        strcpy(lbuf, "");
+        Strcpy(lbuf, "");
         print_lock_with_buf(lbuf, cobj->keyotyp, cobj->special_quality, FALSE);
 
         if (ccount < 2)

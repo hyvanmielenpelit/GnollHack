@@ -578,7 +578,7 @@ int RunGnollHack(
 {
     char cmdbuf[BUFSZ] = "";
     if(cmdlineargs)
-        strcpy(cmdbuf, cmdlineargs);
+        Strcpy(cmdbuf, cmdlineargs);
 
     /* Set wincaps */
     if(runflags & GHRUNFLAGS_SET_WINCAPS)

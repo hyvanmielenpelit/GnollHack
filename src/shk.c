@@ -5521,7 +5521,7 @@ boolean eating;
         char shopkeeper_name[BUFSZ] = "";
         if (shkp)
         {
-            strcpy(shopkeeper_name, shkname(shkp));
+            Strcpy(shopkeeper_name, shkname(shkp));
             if (!edog->chastised)
             {
                 edog->chastised = 20 + rn2(1000);

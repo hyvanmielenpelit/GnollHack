@@ -1144,7 +1144,7 @@ boolean istrue;
 
     mtmp->isshk = 0; /* don't want mon_nam() calling shkname() */
     if (mtmp->data)
-        strcpy(nam, noit_mon_nam(mtmp));
+        Strcpy(nam, noit_mon_nam(mtmp));
     /* get a modifiable name buffer along with fallback result */
     mtmp->isshk = save_isshk;
 
@@ -1152,7 +1152,7 @@ boolean istrue;
         impossible("shkname: \"%s\" is not a shopkeeper.", nam);
     } else if (!has_eshk(mtmp)) {
         panic("shkname: shopkeeper \"%s\" lacks 'eshk' data.", nam);
-        strcpy(nam, "");
+        Strcpy(nam, "");
         return nam;
     } else {
         const char *shknm = ESHK(mtmp)->shknam;

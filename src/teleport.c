@@ -780,7 +780,7 @@ struct monst* mtmp;
             else
             {
                 char colorbuf[BUFSZ];
-                strcpy(colorbuf, portal_color);
+                Strcpy(colorbuf, portal_color);
                 *colorbuf = lowc(*colorbuf);
 
                 play_sfx_sound_at_location(SFX_MODRON_TELEPORT_SUCCESS, mtmp->mx, mtmp->my);
@@ -1125,9 +1125,9 @@ uchar tele_flags; /* 1 = teleport inside Wizard's Tower  */
             }
             if (++trycnt == 2) {
                 if (wizard)
-                    strcpy(phbuf, "type a number, name, or ? for a menu");
+                    Strcpy(phbuf, "type a number, name, or ? for a menu");
                 else
-                    strcpy(phbuf, "type a number or name");
+                    Strcpy(phbuf, "type a number or name");
             }
             *buf = '\0'; /* EDIT_GETLIN: if we're on second or later pass,
                             the previous input was invalid so don't use it

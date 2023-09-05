@@ -1491,7 +1491,7 @@ int selected_encounter, x, y, max_attk_monsters;
 
                     if(!allused && selectedindex >= 0 && selectedindex < MAX_NAMELIST_NAMES)
                     {
-                        strcpy(buf, namelists[nlid][selectedindex]);
+                        Strcpy(buf, namelists[nlid][selectedindex]);
                         if (!(
                             !namelists[nlid][selectedindex]
                             || strcmp(namelists[nlid][selectedindex], "") == 0))

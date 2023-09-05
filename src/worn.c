@@ -678,10 +678,10 @@ boolean silently;
 
     /* works for fast, very fast, and slowed */
     char savedname[BUFSIZ] = "";
-    strcpy(savedname, mon_nam(mtmp));
+    Strcpy(savedname, mon_nam(mtmp));
 
     char SavedName[BUFSIZ] = "";
-    strcpy(SavedName, Monnam(mtmp));
+    Strcpy(SavedName, Monnam(mtmp));
 
     boolean could_spot_mon = canspotmon(mtmp);
     boolean was_invisible = is_invisible(mtmp);

@@ -312,7 +312,7 @@ do_statusline2()
         print_weapon_style_string(buf1, FALSE);
         print_weapon_style_string(buf2, TRUE);
         if (strcmp(buf2, ""))
-            strcpy(bufplus, "/");
+            Strcpy(bufplus, "/");
         Sprintf(weaponstyle, "W:%s%s%s", buf1, bufplus, buf2);
     }
     else

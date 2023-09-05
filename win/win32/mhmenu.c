@@ -2418,7 +2418,7 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
 
             reset_menu_count(hwndList, data);
             if (mswin_getlin_window(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", buf, BUFSZ) == IDCANCEL) {
-                strcpy(buf, "\033");
+                Strcpy(buf, "\033");
             }
             if (data->is_active)
                 SetFocus(hwndList); // set focus back to the list control

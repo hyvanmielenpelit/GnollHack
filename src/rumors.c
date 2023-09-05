@@ -398,7 +398,7 @@ int mechanism;
     if (use_otmp && otmp)
         strcpy_capitalized_for_title(titlebuf, cxname(otmp));
     else if(title)
-        strcpy(titlebuf, title);
+        Strcpy(titlebuf, title);
 
     pline1(line);
     display_popup_text(line, titlebuf, POPUP_TEXT_MESSAGE, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);

@@ -572,7 +572,7 @@ boolean is_auto;
     if (!pick || !isok(x, y))
         return 0;
 
-    strcpy(kbuf, "");
+    Strcpy(kbuf, "");
     if (is_auto)
         Sprintf(kbuf, " with %s", yname(pick));
 
@@ -1030,7 +1030,7 @@ int x, y;
         const char *mesg;
         boolean locked = FALSE;
         char lbuf[BUFSZ];
-        strcpy(lbuf, "");
+        Strcpy(lbuf, "");
         enum sfx_sound_types sfx = SFX_ILLEGAL;
 
         switch (door->doormask & D_MASK) 

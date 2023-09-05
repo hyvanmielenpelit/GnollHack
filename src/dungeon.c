@@ -3437,7 +3437,7 @@ boolean set_also_true_nature_known;
     if (Is_special(lvl))
     {
         mptr->flags.special_level = 1;
-        strcpy(mptr->flags.special_description, level.flags.special_description);
+        Strcpy(mptr->flags.special_description, level.flags.special_description);
         if (set_also_true_nature_known)
         {
             mptr->flags.special_level_true_nature_known = 1;

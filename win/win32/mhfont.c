@@ -218,7 +218,7 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
     font_table[font_index].hFont = fnt;
     font_table[font_index].supportsUnicode = winos_font_support_cp437(fnt);
     font_table[font_index].size = (float)font_size;
-    strcpy(font_table[font_index].font_name, font_name);
+    Strcpy(font_table[font_index].font_name, font_name);
     font_table[font_index].font_attributes = attr;
 
     HGDIOBJ savedFont = SelectObject(hdc, fnt);

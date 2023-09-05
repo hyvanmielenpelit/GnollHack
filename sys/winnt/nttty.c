@@ -1091,8 +1091,8 @@ boolean
 load_keyboard_handler(const char * inName)
 {
     char path[MAX_ALTKEYHANDLER + 4];
-    strcpy(path, inName);
-    strcat(path, ".dll");
+    (void) strcpy(path, inName);
+    (void) strcat(path, ".dll");
 
     HANDLE hLibrary = LoadLibrary(path);
 
@@ -1138,14 +1138,14 @@ void set_altkeyhandler(const char * inName)
     }
 
     char name[MAX_ALTKEYHANDLER];
-    strcpy(name, inName);
+    (void) strcpy(name, inName);
 
     /* We support caller mistakenly giving name with '.dll' extension */
     char * ext = strchr(name, '.');
     if (ext != NULL) *ext = '\0';
 
     if (load_keyboard_handler(name))
-        strcpy(iflags.altkeyhandler, name);
+        (void) strcpy(iflags.altkeyhandler, name);
     else {
         config_error_add("unable to load altkeyhandler '%s'", name);
         return;

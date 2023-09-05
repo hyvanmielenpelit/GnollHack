@@ -2483,14 +2483,14 @@ long timeout;
         {
             canseeunsummon = TRUE;
             iswielded = FALSE;
-            strcpy(whosebuf, "The ");
+            Strcpy(whosebuf, "The ");
         }
     }
     else if (in_invent) {
         if (obj->owornmask)
             remove_worn_item(obj, TRUE);
 
-        strcpy(whosebuf, "Your ");
+        Strcpy(whosebuf, "Your ");
         canseeunsummon = TRUE;
     }
     else if (obj->where == OBJ_MINVENT && obj->owornmask) {
@@ -2505,8 +2505,8 @@ long timeout;
         if (obj->ocarry && canseemon(obj->ocarry))
         {
             canseeunsummon = TRUE;
-            strcpy(whosebuf, s_suffix(Monnam(obj->ocarry)));
-            strcat(whosebuf, " ");
+            Strcpy(whosebuf, s_suffix(Monnam(obj->ocarry)));
+            Strcat(whosebuf, " ");
             iswielded = FALSE; //Do not show this for monsters
         }
     }

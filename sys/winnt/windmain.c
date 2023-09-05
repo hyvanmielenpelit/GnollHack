@@ -157,7 +157,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
             char *top = (char *)0;
 
             if (strlen(dir) < (_MAX_PATH - 1))
-                strcpy(exepath, dir);
+                (void) strcpy(exepath, dir);
             top = strstr(exepath, "\\build\\.\\Debug");
             if (!top) top = strstr(exepath, "\\build\\.\\Release");
             if (top) 

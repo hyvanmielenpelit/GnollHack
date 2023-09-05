@@ -7090,7 +7090,7 @@ struct sp_coder* coder;
     mnum = (short)SP_MONST_PM(OV_i(montype_opvar));
     mclass = (xchar)SP_MONST_CLASS(OV_i(montype_opvar));
 
-    strcpy(level.flags.special_description, OV_s(name_opvar));
+    Strcpy(level.flags.special_description, OV_s(name_opvar));
 
     int typ;
     typ = (int)OV_i(typ_opvar);

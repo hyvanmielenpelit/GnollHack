@@ -1328,7 +1328,7 @@ choose_game_difficulty()
         int combat_damage_percentage = (int)(m_dmg_mult * m_hp_mult * 100.0);
         
         leveltext = get_game_difficulty_text(i);
-        strcpy(buf, leveltext);
+        Strcpy(buf, leveltext);
         *buf = highc(*buf);
 
         if(iflags.menu_tab_sep)
@@ -1385,7 +1385,7 @@ newgame()
     context.next_attrib_check = 600L; /* arbitrary first setting */
     context.tribute.enabled = TRUE;   /* turn on 3.6 tributes    */
     context.tribute.tributesz = sizeof(struct tribute_info);
-    strcpy(context.used_names, "|");
+    Strcpy(context.used_names, "|");
 
     init_rm();
     init_fountains();

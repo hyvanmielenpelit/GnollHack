@@ -2432,14 +2432,14 @@ char *cfn;
 {
 #ifndef SHORT_FILENAMES
     /* Assume free-form filename with no 8.3 restrictions */
-    strcpy(cfn, filename);
-    strcat(cfn, COMPRESS_EXTENSION);
+    Strcpy(cfn, filename);
+    Strcat(cfn, COMPRESS_EXTENSION);
     return TRUE;
 #else
 #ifdef SAVE_EXTENSION
     char *bp = (char *) 0;
 
-    strcpy(cfn, filename);
+    Strcpy(cfn, filename);
     if ((bp = strstri(cfn, SAVE_EXTENSION))) {
         strsubst(bp, SAVE_EXTENSION, ".saz");
         return TRUE;
@@ -3160,8 +3160,8 @@ char sep;
 STATIC_OVL void
 free_config_sections()
 {
-    strcpy(config_section_chosen, "");
-    strcpy(config_section_current, "");
+    Strcpy(config_section_chosen, "");
+    Strcpy(config_section_current, "");
 #if 0
     if (config_section_chosen) {
         free(config_section_chosen);
@@ -3193,11 +3193,11 @@ char *buf;
 #if 0
         if (strcmp(config_section_current, ""))
         {
-            strcpy(config_section_current, "");
+            Strcpy(config_section_current, "");
             //free(config_section_current);
         }
 #endif
-        strcpy(config_section_current, &buf[1]);
+        Strcpy(config_section_current, &buf[1]);
         //config_section_current = dupstr(&buf[1]);
         send = rindex(config_section_current, ']');
         *send = '\0';
@@ -4271,7 +4271,7 @@ boolean FDECL((*proc), (char *));
     char *ep;
     boolean skip = FALSE, morelines = FALSE;
     char buf[INBUF_SIZ];
-    strcpy(buf, "");
+    Strcpy(buf, "");
     size_t inbufsz = sizeof inbuf;
 
     free_config_sections();
@@ -4328,7 +4328,7 @@ boolean FDECL((*proc), (char *));
                 {
                     rv = FALSE;
                     if (strcmp(buf, ""))
-                        strcpy(buf, "");
+                        Strcpy(buf, "");
                     break;
                 }
 
@@ -4369,7 +4369,7 @@ boolean FDECL((*proc), (char *));
                     {
                         Strcat(strcpy(tmpbuf, buf), " ");
                     }
-                    strcpy(buf, strcat(tmpbuf, ep));
+                    Strcpy(buf, strcat(tmpbuf, ep));
                     //free(tmpbuf);
                     if (strlen(buf) >= sizeof inbuf)
                         buf[sizeof inbuf - 1] = '\0';
@@ -4380,7 +4380,7 @@ boolean FDECL((*proc), (char *));
 
                 if (handle_config_section(buf)) 
                 { //ep
-                    strcpy(buf, "");
+                    Strcpy(buf, "");
                     continue;
                 }
 
@@ -4395,33 +4395,33 @@ boolean FDECL((*proc), (char *));
                         config_error_add(
                                     "Format is CHOOSE=section1,section2,...");
                         rv = FALSE;
-                        strcpy(buf, "");
+                        Strcpy(buf, "");
                         continue;
                     }
                     bufp++;
 
                     if (strcmp(config_section_chosen, ""))
-                        strcpy(config_section_chosen, ""); // free(config_section_chosen), config_section_chosen = 0;
+                        Strcpy(config_section_chosen, ""); // free(config_section_chosen), config_section_chosen = 0;
 
                     section = choose_random_part(bufp, ',');
 
                     if (section)
                     {
-                        strcpy(config_section_chosen, section); // = dupstr(section);
+                        Strcpy(config_section_chosen, section); // = dupstr(section);
                     } 
                     else
                     {
                         config_error_add("No config section to choose");
                         rv = FALSE;
                     }
-                    strcpy(buf, "");
+                    Strcpy(buf, "");
                     continue;
                 }
 
                 if (!proc(buf))
                     rv = FALSE;
 
-                strcpy(buf, "");
+                Strcpy(buf, "");
             }
         }
     }

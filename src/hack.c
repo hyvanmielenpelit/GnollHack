@@ -159,7 +159,7 @@ moverock()
     sx = u.ux + u.dx, sy = u.uy + u.dy; /* boulder starting position */
     while ((otmp = sobj_at(BOULDER, sx, sy)) != 0) 
     {
-        strcpy(pushbuf, "");
+        Strcpy(pushbuf, "");
         pushcolor = NO_COLOR;
 
         /* make sure that this boulder is visible as the top object */
@@ -2123,8 +2123,9 @@ domove_core()
                 solid = !accessible(x, y);
         int glyph = glyph_at(x, y); /* might be monster */
         char buf[BUFSZ];
+#ifdef GNH_MOBILE
         boolean was_invis_glyph = glyph_is_invisible(levl[x][y].hero_memory_layers.glyph);
-
+#endif
         if (!Underwater) 
         {
             boulder = sobj_at(BOULDER, x, y);

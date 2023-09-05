@@ -165,7 +165,7 @@ dupstr(string)
 const char *string;
 {
     char* cptr = (char*)alloc(strlen(string) + 1);
-    strcpy(cptr, string);
+    Strcpy(cptr, string);
     return cptr;
 }
 

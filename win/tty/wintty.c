@@ -4922,7 +4922,7 @@ render_status(VOID_ARGS)
                 else if((idx == BL_PARTYSTATS || idx == BL_PARTYSTATS2 || idx == BL_PARTYSTATS3 || idx == BL_PARTYSTATS4 || idx == BL_PARTYSTATS5) && flags.partylinecolor)
                 {
                      char printbuf[BUFSZ];
-                     strcpy(printbuf, text);
+                     (void) strcpy(printbuf, text);
                      char* bp = 0, *bp2 = 0, *bp3 = 0, *startbp = printbuf;
                      do
                      {
@@ -4935,25 +4935,25 @@ render_status(VOID_ARGS)
                          if (bp && bp2 && bp3)
                          {
                              char restbuf[BUFSZ];
-                             strcpy(restbuf, bp2);
+                             (void) strcpy(restbuf, bp2);
                              restbuf[1] = '\0'; /* Print just one character */
                              *bp2 = '\0';
 
                              *bp3 = '\0';
                              char maxbuf[BUFSZ];
-                             strcpy(maxbuf, bp2 + 1);
+                             (void) strcpy(maxbuf, bp2 + 1);
                              int hpmax = atoi(maxbuf);
                              *bp3 = ')';
 
                              char hpbuf[BUFSZ];
-                             strcpy(hpbuf, bp + 3);
+                             (void) strcpy(hpbuf, bp + 3);
                              char hpbuf2[BUFSZ];
-                             strcpy(hpbuf2, bp);
+                             (void) strcpy(hpbuf2, bp);
                              *bp = '\0';
                              int hp = atoi(hpbuf);
 
                              char startbuf[BUFSZ];
-                             strcpy(startbuf, startbp);
+                             (void) strcpy(startbuf, startbp);
 
                              print_rest_partyline(startbuf, &x, &y);
                              //tty_putstatusfield(startbuf, x, y);

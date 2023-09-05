@@ -230,7 +230,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         write_CP437_to_buf_unicode(msgbuf, sizeof(msgbuf), msg_data->text);
 
         //char nbuf[BUFSIZ];
-        //strcpy(nbuf, msg_data->text);
+        //Strcpy(nbuf, msg_data->text);
         //convertUTF8toTCHAR(nbuf, sizeof(nbuf));
 
         _tcscat(data->window_text, NH_A2W(msgbuf, wbuf, BUFSZ));

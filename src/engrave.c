@@ -22,7 +22,7 @@ char *outbuf;
     if (!rn2(10))
     {
         /* Somebody has tried to protect himself or herself with Elbereth */
-        strcpy(outbuf, Elbereth_word);
+        Strcpy(outbuf, Elbereth_word);
     }
     else
     {

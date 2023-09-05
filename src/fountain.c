@@ -705,9 +705,9 @@ register struct obj *obj;
         {
             int oldotyp = obj->otyp;
             char oldnameturns[BUFSZ];
-            strcpy(oldnameturns, Tobjnam(obj, "turn"));
+            Strcpy(oldnameturns, Tobjnam(obj, "turn"));
             char oldnameare[BUFSZ];
-            strcpy(oldnameare, Tobjnam(obj, "are"));
+            Strcpy(oldnameare, Tobjnam(obj, "are"));
             unsigned int olddiluted = obj->odiluted;
 
             switch (obj->otyp)
@@ -788,9 +788,9 @@ register struct obj *obj;
         {
             int oldotyp = obj->otyp;
             char oldnameturns[BUFSZ];
-            strcpy(oldnameturns, Tobjnam(obj, "turn"));
+            Strcpy(oldnameturns, Tobjnam(obj, "turn"));
             char oldnameare[BUFSZ];
-            strcpy(oldnameare, Tobjnam(obj, "are"));
+            Strcpy(oldnameare, Tobjnam(obj, "are"));
             unsigned int olddiluted = obj->odiluted;
 
             switch (obj->otyp)
@@ -870,9 +870,9 @@ register struct obj *obj;
         {
             int oldotyp = obj->otyp;
             char oldnameturns[BUFSZ];
-            strcpy(oldnameturns, Tobjnam(obj, "turn"));
+            Strcpy(oldnameturns, Tobjnam(obj, "turn"));
             char oldnameare[BUFSZ];
-            strcpy(oldnameare, Tobjnam(obj, "are"));
+            Strcpy(oldnameare, Tobjnam(obj, "are"));
             unsigned int olddiluted = obj->odiluted;
 
             switch (obj->otyp)
@@ -984,9 +984,9 @@ register struct obj *obj;
     {
         int oldotyp = obj->otyp;
         char oldnameturns[BUFSZ];
-        strcpy(oldnameturns, Tobjnam(obj, "turn"));
+        Strcpy(oldnameturns, Tobjnam(obj, "turn"));
         char oldnamestart[BUFSZ];
-        strcpy(oldnamestart, Tobjnam(obj, "start"));
+        Strcpy(oldnamestart, Tobjnam(obj, "start"));
         unsigned int olddiluted = obj->odiluted;
 
         nowaterdamage = TRUE;

@@ -183,7 +183,7 @@ uchar* tilemapflags;
     int fd, i, j, k, l;
     int tile_count = 0;
     char buf[BUFSIZ];
-    strcpy(buf, "");
+    Strcpy(buf, "");
     int glyph_offset = 0;
     int roleidx, raceidx, gender, alignment, glevel;
     int cmap_type_idx;
@@ -2036,7 +2036,7 @@ uchar* tilemapflags;
         if (process_style == 0)
         {
             char namebuf[BUFSZ] = "";
-            strcpy(namebuf, skill_name(i, FALSE));
+            Strcpy(namebuf, skill_name(i, FALSE));
             replace_char(namebuf, ' ', '-');
             Sprintf(buf, "%s,%s,%s,%d,%d,%d", tile_section_name, set_name, namebuf, 2, 64, 48);
             for (j = 0; j < 2; j++)
@@ -2328,7 +2328,7 @@ uchar* tilemapflags;
                 if (process_style == 0)
                 {
                     char tilebuf[BUFSIZ];
-                    strcpy(tilebuf, "");
+                    Strcpy(tilebuf, "");
 //                    if (enl_anim_tile_idx >= 0)
 //                        Sprintf(tilebuf, "_tile-%d", enl_anim_tile_idx);
 

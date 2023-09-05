@@ -99,7 +99,7 @@ char **argv;
 #if defined(MAC) && (defined(THINK_C) || defined(__MWERKS__))
             /* extract basename from path to infile */
             mark = strrchr(infile, ':');
-            strcpy(basename, mark ? mark + 1 : infile);
+            (void)vstrcpy(basename, mark ? mark + 1 : infile);
             mark = strchr(basename, '.');
             if (mark)
                 *mark = '\0';
