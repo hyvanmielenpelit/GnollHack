@@ -8122,6 +8122,7 @@ static const struct wc_Opt wc2_options[] = {
     { "preprocess_replacements", WC2_PREPROCESS_REPLACEMENTS },
     { "special_symbols", WC2_SPECIAL_SYMBOLS },
     { "menu_suffixes", WC2_MENU_SUFFIXES },
+    { "fading_animations", WC2_FADING_ANIMATIONS },
 #endif
     { (char *) 0, 0L }
 };

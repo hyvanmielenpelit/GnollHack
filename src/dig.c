@@ -439,9 +439,7 @@ dig(VOID_ARGS)
 
     if (context.digging.effort > 100) 
     {
-#ifdef GNH_MOBILE
         boolean done_feelnewsym = FALSE;
-#endif
         const char *digtxt, *dmgtxt = (const char *) 0;
         struct obj *obj;
         boolean shopedge = *in_rooms(dpx, dpy, SHOPBASE);
@@ -493,9 +491,7 @@ dig(VOID_ARGS)
                 struct mkroom* r = which_room(dpx, dpy);
                 short special_quality = lev->special_quality;
                 int fruittype = tree_subtype_definitions[lev->subtyp].fruit_type;
-#ifdef GNH_MOBILE
                 int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_COVER_FEATURE];
-#endif
 
                 /* Change the location type */
                 int typ = lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM;
@@ -517,30 +513,30 @@ dig(VOID_ARGS)
                     otmp->owt = weight(otmp);
                     lev->special_quality = 0;
                 }
-#ifdef GNH_MOBILE
-                feel_newsym(dpx, dpy);
-                done_feelnewsym = TRUE;
-                play_special_effect_with_details_at(0, dpx, dpy, glyph, LAYER_GENERAL_EFFECT, -2, 20, 0, 0, TRUE);
-                special_effect_wait_until_action(0);
-                special_effect_wait_until_end(0);
-                clear_found_this_turn_at(dpx, dpy);
-#endif
+                if (windowprocs.wincap2 & WC2_FADING_ANIMATIONS)
+                {
+                    feel_newsym(dpx, dpy);
+                    done_feelnewsym = TRUE;
+                    play_special_effect_with_details_at(0, dpx, dpy, glyph, LAYER_GENERAL_EFFECT, -2, 20, 0, 0, TRUE);
+                    special_effect_wait_until_action(0);
+                    special_effect_wait_until_end(0);
+                    clear_found_this_turn_at(dpx, dpy);
+                }
             }
             else 
             {
                 play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You succeed in cutting away some rock.";
-#ifdef GNH_MOBILE
                 int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_FLOOR];
-#endif
                 create_basic_floor_location(dpx, dpy, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floortyp : CORR, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floorsubtyp : get_initial_location_subtype(levl[dpx][dpy].floortyp), 0, FALSE);
-#ifdef GNH_MOBILE
-                feel_newsym(dpx, dpy);
-                done_feelnewsym = TRUE;
-                play_special_effect_with_details_at(0, dpx, dpy, glyph, LAYER_BACKGROUND_EFFECT, -2, 20, 0, 0, TRUE);
-                special_effect_wait_until_action(0);
-                special_effect_wait_until_end(0);
-#endif
+                if (windowprocs.wincap2 & WC2_FADING_ANIMATIONS)
+                {
+                    feel_newsym(dpx, dpy);
+                    done_feelnewsym = TRUE;
+                    play_special_effect_with_details_at(0, dpx, dpy, glyph, LAYER_BACKGROUND_EFFECT, -2, 20, 0, 0, TRUE);
+                    special_effect_wait_until_action(0);
+                    special_effect_wait_until_end(0);
+                }
             }
         }
         else if (IS_WALL(lev->typ)) 
@@ -571,17 +567,16 @@ dig(VOID_ARGS)
                 ltype = DOOR, lflags = D_NODOOR;
             }
             play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
-#ifdef GNH_MOBILE
             int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_FLOOR];
-#endif
             create_simple_location(dpx, dpy, ltype, lsubtype, lvartype, lflags, back_to_broken_glyph(dpx, dpy), !IS_FLOOR(ltype)? lev->floortyp : 0, !IS_FLOOR(ltype) ? lev->floorsubtyp : 0, !IS_FLOOR(ltype) ? lev->floorvartyp : 0, FALSE);
-#ifdef GNH_MOBILE
-            feel_newsym(dpx, dpy);
-            done_feelnewsym = TRUE;
-            play_special_effect_with_details_at(0, dpx, dpy, glyph, LAYER_BACKGROUND_EFFECT, -2, 20, 0, 0, TRUE);
-            special_effect_wait_until_action(0);
-            special_effect_wait_until_end(0);
-#endif
+            if (windowprocs.wincap2 & WC2_FADING_ANIMATIONS)
+            {
+                feel_newsym(dpx, dpy);
+                done_feelnewsym = TRUE;
+                play_special_effect_with_details_at(0, dpx, dpy, glyph, LAYER_BACKGROUND_EFFECT, -2, 20, 0, 0, TRUE);
+                special_effect_wait_until_action(0);
+                special_effect_wait_until_end(0);
+            }
             digtxt = "You make an opening in the wall.";
         } 
         else if (lev->typ == SDOOR) 
@@ -614,9 +609,7 @@ dig(VOID_ARGS)
 
         if (!does_block(dpx, dpy, &levl[dpx][dpy]))
             unblock_vision_and_hearing_at_point(dpx, dpy); /* vision:  can see through */
-#ifdef GNH_MOBILE
         if(!done_feelnewsym)
-#endif
             feel_newsym(dpx, dpy);
 
         if (digtxt && !context.digging.quiet)

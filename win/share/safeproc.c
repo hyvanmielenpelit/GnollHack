@@ -7,8 +7,6 @@
 #include "hack.h"
 #include <stdio.h>
 
-#ifdef GNH_MOBILE
-#endif
 /*
  * ***********************************************************
  * This is a complete WindowPort implementation that can be

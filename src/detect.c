@@ -1694,20 +1694,18 @@ int x, y;
     if (!isok(x, y))
         return;
 
-#ifdef GNH_MOBILE
     struct layer_info layers = layers_at(x, y);
     int glyph = layers.layer_gui_glyphs[LAYER_FLOOR];
-#endif
     create_basic_floor_location(x, y, levl[x][y].floortyp ? levl[x][y].floortyp : CORR, 0, 0, FALSE);
     unblock_vision_and_hearing_at_point(x, y); /* vision */
     feel_newsym(x, y);
-#ifdef GNH_MOBILE
-    play_special_effect_with_details_at(0, x, y, glyph, LAYER_BACKGROUND_EFFECT, -2, 20, 0, 0, FALSE);
-    special_effect_wait_until_action(0);
-    special_effect_wait_until_end(0);
-#endif
+    if (windowprocs.wincap2 & WC2_FADING_ANIMATIONS)
+    {
+        play_special_effect_with_details_at(0, x, y, glyph, LAYER_BACKGROUND_EFFECT, -2, 20, 0, 0, FALSE);
+        special_effect_wait_until_action(0);
+        special_effect_wait_until_end(0);
+    }
 }
-
 
 void
 cvt_sdoor_to_door_with_animation(x, y)
@@ -1716,11 +1714,12 @@ int x, y;
     if (!isok(x, y))
         return;
 
-#ifdef GNH_MOBILE
-    play_special_effect_with_details_at(0, x, y, levl[x][y].horizontal ? cmap_to_glyph(S_hcdoor) : cmap_to_glyph(S_vcdoor), LAYER_BACKGROUND_EFFECT, -1, 20, 0, 0, FALSE);
-    special_effect_wait_until_action(0);
-    special_effect_wait_until_end(0);
-#endif
+    if (windowprocs.wincap2 & WC2_FADING_ANIMATIONS)
+    {
+        play_special_effect_with_details_at(0, x, y, levl[x][y].horizontal ? cmap_to_glyph(S_hcdoor) : cmap_to_glyph(S_vcdoor), LAYER_BACKGROUND_EFFECT, -1, 20, 0, 0, FALSE);
+        special_effect_wait_until_action(0);
+        special_effect_wait_until_end(0);
+    }
     cvt_sdoor_to_door(x, y);
     flush_screen(1);
 }

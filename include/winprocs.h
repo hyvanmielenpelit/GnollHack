@@ -317,6 +317,7 @@ extern
 #define WC2_PREPROCESS_REPLACEMENTS 0x00400000UL /* 23 graphical user interface that requires preprocessed gui_glyphs; does not do replacements */
 #define WC2_SPECIAL_SYMBOLS         0x00800000UL /* 24 handles special symbols in text of the type &symbol_name; */
 #define WC2_MENU_SUFFIXES           0x01000000UL /* 25 supports placing text in parentheses on a different line in menus */
+#define WC2_FADING_ANIMATIONS       0x02000000UL /* 26 supports fading animations */
 
 /* 8 free bits */
 

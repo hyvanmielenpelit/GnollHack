@@ -614,18 +614,14 @@ boolean
 unmap_invisible_with_animation(x, y, spef_idx)
 int x, y, spef_idx UNUSED;
 {
-#ifdef GNH_MOBILE
     boolean was_invis_glyph = isok(x, y) && glyph_is_invisible(levl[x][y].hero_memory_layers.glyph);
-#endif
     boolean res = unmap_invisible(x, y);
-#ifdef GNH_MOBILE
-    if (was_invis_glyph && !glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))
+    if ((windowprocs.wincap2 & WC2_FADING_ANIMATIONS) != 0 && was_invis_glyph && !glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))
     {
         play_special_effect_with_details_at(spef_idx, x, y, GLYPH_INVISIBLE, LAYER_GENERAL_EFFECT, -2, 20, 0, 0, FALSE);
         special_effect_wait_until_action(spef_idx);
         special_effect_wait_until_end(spef_idx);
     }
-#endif
     return res;
 }
 
