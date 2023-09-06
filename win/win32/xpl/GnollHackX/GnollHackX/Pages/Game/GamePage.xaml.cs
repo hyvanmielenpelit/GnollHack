@@ -3920,22 +3920,6 @@ namespace GnollHackX.Pages.Game
                     TranslateAndScaleCanvas(enlCanvas, tr_x, tr_y, sc_x, sc_y, is_monster_like_layer, _mapData[mapx, mapy].Layers,
                         dx2, dy2, dscalex, dscaley, width, height, generalcounterdiff);
                 }
-                //canvas.Translate(tx + (hflip_glyph ? width * dscalex : 0), ty + (vflip_glyph ? height * dscaley : 0));
-                //canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
-                //if (is_monster_like_layer)
-                //{
-                //    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0
-                //    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
-                //    {
-                //        /* Death rotation */
-                //        float rotateheight = 0.5f * height * dscaley; //((float)(enlargement > 0 ? GHApp._enlargementDefs[enlargement].height_in_tiles - 1 : 0) * -0.5f + 0.75f)
-                //        canvas.Translate(-dx2 + 0.5f * width * dscalex, -dy2 + rotateheight);
-                //        canvas.RotateDegrees(generalcounterdiff * 15);
-                //        canvas.Translate(dx2 - 0.5f * width * dscalex, dy2 - rotateheight);
-                //    }
-                //    if(dscalex != 1.0f || dscaley != 1.0f)
-                //        canvas.Scale(dscalex, dscaley, 0, 0);
-                //}
                 SKRect targetrect;
                 if (tileflag_halfsize && !tileflag_normalobjmissile)
                 {
@@ -3953,59 +3937,8 @@ namespace GnollHackX.Pages.Game
                 SKRect enlUpdateRect = new SKRect();
                 if (is_monster_like_layer && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
                 {
-                    IntPtr tempptraddr = _tempBitmap.GetPixels();
-                    IntPtr tileptraddr = TileMap[sheet_idx].GetPixels();
-                    double mid_x = (double)GHConstants.TileWidth / 2.0 - 0.5;
-                    double mid_y = (double)GHConstants.TileHeight / 2.0 - 0.5;
-                    double r = 0, semi_transparency = 0;
-                    byte radial_opacity = 0x00;
-                    //double r_constant_adjustement = Math.Sin((double)maincountervalue / (3.0 * 2.0 * Math.PI));
-                    //double r_constant = 0.0375 + r_constant_adjustement * 0.015;
-                    int bytesperpixel = TileMap[sheet_idx].BytesPerPixel;
-                    int copywidth = Math.Min((int)sourcerect.Width, _tempBitmap.Width);
-                    int copyheight = Math.Min((int)sourcerect.Height, _tempBitmap.Height);
-                    int tilemapwidth = TileMap[sheet_idx].Width;
-                    unsafe
-                    {
-                        byte* tempptr = (byte*)tempptraddr.ToPointer();
-                        byte* tileptr = (byte*)tileptraddr.ToPointer();
-                        tileptr += ((int)sourcerect.Left + (int)sourcerect.Top * tilemapwidth) * bytesperpixel;
-
-                        for (int row = 0; row < copyheight; row++)
-                        {
-                            for (int col = 0; col < copywidth; col++)
-                            {
-                                r = Math.Sqrt(Math.Pow((double)col - mid_x, 2.0) + Math.Pow((double)row - mid_y, 2.0));
-                                semi_transparency = r * 0.0375; //r_constant
-                                if (semi_transparency > 0.98)
-                                    semi_transparency = 0.98;
-
-                                *tempptr++ = *tileptr;       // red
-                                tileptr++;
-                                *tempptr++ = *tileptr;       // green
-                                tileptr++;
-                                *tempptr++ = *tileptr;       // blue
-                                tileptr++;
-                                radial_opacity = (byte)((double)0xFF * (1.0 - semi_transparency) * ((double)(*tileptr) / (double)0xFF));
-                                *tempptr++ = radial_opacity; // alpha
-                                tileptr++;
-                            }
-                            tileptr += (tilemapwidth - copywidth) * bytesperpixel;
-                        }
-                    }
-                    SKRect tempsourcerect = new SKRect(0, 0, copywidth, copyheight);
-
-                    if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0)
-                        paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-#if GNH_MAP_PROFILING && DEBUG
-                    StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                    DrawSplitBitmap(canvas, enlCanvas, splitY,
-                        _tempBitmap, tempsourcerect, targetrect, paint, ref baseUpdateRect, ref enlUpdateRect);
-                    //canvas.DrawBitmap(_tempBitmap, tempsourcerect, targetrect, paint);
-#if GNH_MAP_PROFILING && DEBUG
-                    StopProfiling(GHProfilingStyle.Bitmap);
-#endif
+                    DrawTileWithRadialTransparency(canvas, enlCanvas, TileMap[sheet_idx], sourcerect, targetrect, _mapData[mapx, mapy].Layers, splitY, opaqueness, paint,
+                        ref baseUpdateRect, ref enlUpdateRect);
                 }
                 else
                 {
@@ -4023,43 +3956,9 @@ namespace GnollHackX.Pages.Game
 
                 SKRect mBaseUpdateRect = canvas.TotalMatrix.MapRect(baseUpdateRect);
                 SKRect mEnlUpdateRect = enlCanvas.TotalMatrix.MapRect(enlUpdateRect);
-
-                if (mBaseUpdateRect.Left < minDrawX)
-                    minDrawX = mBaseUpdateRect.Left;
-                if (mBaseUpdateRect.Right > maxDrawX)
-                    maxDrawX = mBaseUpdateRect.Right;
-                if (mBaseUpdateRect.Top < minDrawY)
-                    minDrawY = mBaseUpdateRect.Top;
-                if (mBaseUpdateRect.Bottom > maxDrawY)
-                    maxDrawY = mBaseUpdateRect.Bottom;
-
+                UpdateDrawBounds(mBaseUpdateRect, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY);
                 if(canvas != enlCanvas)
-                {
-                    if (mEnlUpdateRect.Left < enlMinDrawX)
-                        enlMinDrawX = mEnlUpdateRect.Left;
-                    if (mEnlUpdateRect.Right > enlMaxDrawX)
-                        enlMaxDrawX = mEnlUpdateRect.Right;
-                    if (mEnlUpdateRect.Top < enlMinDrawY)
-                        enlMinDrawY = mEnlUpdateRect.Top;
-                    if (mEnlUpdateRect.Bottom > enlMaxDrawY)
-                        enlMaxDrawY = mEnlUpdateRect.Bottom;
-                }
-
-                //    float target_x = tx + (hflip_glyph ? width : 0);
-                //    float target_y = ty + (vflip_glyph ? height : 0);
-                //    float target_left = hflip_glyph ? target_x - (targetrect.Right - targetrect.Left) : target_x;
-                //    float target_right = hflip_glyph ? target_x : target_x + (targetrect.Right - targetrect.Left);
-                //    float target_top = vflip_glyph ? target_y - (targetrect.Bottom - targetrect.Top) : target_y;
-                //    float target_bottom = vflip_glyph ? target_y : target_y + (targetrect.Bottom - targetrect.Top);
-
-                //    if (target_left < minDrawX)
-                //        minDrawX = target_left;
-                //    if (target_right > maxDrawX)
-                //        maxDrawX = target_right;
-                //    if (target_top < minDrawY)
-                //        minDrawY = target_top;
-                //    if (target_bottom > maxDrawY)
-                //        maxDrawY = target_bottom;
+                    UpdateDrawBounds(mEnlUpdateRect, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
 
                 if (enlRestore != null)
                     enlRestore.Dispose();
@@ -4071,6 +3970,74 @@ namespace GnollHackX.Pages.Game
                 tx, ty, width, height,
                 scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
                 false, drawwallends);
+        }
+
+        public void UpdateDrawBounds(SKRect mUpdateRect, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY)
+        {
+            if (mUpdateRect.Left < minDrawX)
+                minDrawX = mUpdateRect.Left;
+            if (mUpdateRect.Right > maxDrawX)
+                maxDrawX = mUpdateRect.Right;
+            if (mUpdateRect.Top < minDrawY)
+                minDrawY = mUpdateRect.Top;
+            if (mUpdateRect.Bottom > maxDrawY)
+                maxDrawY = mUpdateRect.Bottom;
+        }
+
+        public void DrawTileWithRadialTransparency(SKCanvas canvas, SKCanvas enlCanvas, SKBitmap tileSheet, SKRect sourcerect, SKRect targetrect, LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint,
+            ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
+        {
+            IntPtr tempptraddr = _tempBitmap.GetPixels();
+            IntPtr tileptraddr = tileSheet.GetPixels();
+            double mid_x = (double)GHConstants.TileWidth / 2.0 - 0.5;
+            double mid_y = (double)GHConstants.TileHeight / 2.0 - 0.5;
+            double r = 0, semi_transparency = 0;
+            byte radial_opacity = 0x00;
+            int bytesperpixel = tileSheet.BytesPerPixel;
+            int copywidth = Math.Min((int)sourcerect.Width, _tempBitmap.Width);
+            int copyheight = Math.Min((int)sourcerect.Height, _tempBitmap.Height);
+            int tilemapwidth = tileSheet.Width;
+            unsafe
+            {
+                byte* tempptr = (byte*)tempptraddr.ToPointer();
+                byte* tileptr = (byte*)tileptraddr.ToPointer();
+                tileptr += ((int)sourcerect.Left + (int)sourcerect.Top * tilemapwidth) * bytesperpixel;
+
+                for (int row = 0; row < copyheight; row++)
+                {
+                    for (int col = 0; col < copywidth; col++)
+                    {
+                        r = Math.Sqrt(Math.Pow((double)col - mid_x, 2.0) + Math.Pow((double)row - mid_y, 2.0));
+                        semi_transparency = r * 0.0375; //r_constant
+                        if (semi_transparency > 0.98)
+                            semi_transparency = 0.98;
+
+                        *tempptr++ = *tileptr;       // red
+                        tileptr++;
+                        *tempptr++ = *tileptr;       // green
+                        tileptr++;
+                        *tempptr++ = *tileptr;       // blue
+                        tileptr++;
+                        radial_opacity = (byte)((double)0xFF * (1.0 - semi_transparency) * ((double)(*tileptr) / (double)0xFF));
+                        *tempptr++ = radial_opacity; // alpha
+                        tileptr++;
+                    }
+                    tileptr += (tilemapwidth - copywidth) * bytesperpixel;
+                }
+            }
+            SKRect tempsourcerect = new SKRect(0, 0, copywidth, copyheight);
+
+            if ((layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0)
+                paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+#if GNH_MAP_PROFILING && DEBUG
+            StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+            DrawSplitBitmap(canvas, enlCanvas, destSplitY,
+                _tempBitmap, tempsourcerect, targetrect, paint, ref baseUpdateRect, ref enlUpdateRect);
+            //canvas.DrawBitmap(_tempBitmap, tempsourcerect, targetrect, paint);
+#if GNH_MAP_PROFILING && DEBUG
+            StopProfiling(GHProfilingStyle.Bitmap);
+#endif
         }
 
         public void DrawSplitBitmap(SKCanvas canvas, SKCanvas enlCanvas, float destSplitY, SKBitmap bitmap, SKRect source, SKRect dest, SKPaint paint, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
