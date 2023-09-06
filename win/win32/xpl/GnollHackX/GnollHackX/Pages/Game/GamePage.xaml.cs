@@ -3663,7 +3663,7 @@ namespace GnollHackX.Pages.Game
         }
 
 
-        private void PaintMapTile(SKCanvas canvas, SKPaint textPaint, SKPaint paint, int layer_idx, int mapx, int mapy, int draw_map_x, int draw_map_y, int dx, int dy, int ntile, float width, float height, 
+        private void PaintMapTile(SKCanvas canvas, SKCanvas enlCanvas, SKPaint textPaint, SKPaint paint, int layer_idx, int mapx, int mapy, int draw_map_x, int draw_map_y, int dx, int dy, int ntile, float width, float height, 
             float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float object_move_offset_x, float object_move_offset_y,
             float scaled_y_height_change, float pit_border,
             float targetscale, long generalcountervalue, float usedFontSize, int monster_height, 
@@ -3671,7 +3671,8 @@ namespace GnollHackX.Pages.Game
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
             ObjectDataItem otmp_round, int autodraw, bool drawwallends, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement,
-            ref short[,] draw_shadow, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY)
+            ref short[,] draw_shadow, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
+            ref float enlMinDrawX, ref float enlMaxDrawX, ref float enlMinDrawY, ref float enlMaxDrawY)
         {
             if (!GHUtils.isok(draw_map_x, draw_map_y))
                 return;
@@ -3901,27 +3902,40 @@ namespace GnollHackX.Pages.Game
 
             tx = (offsetX + usedOffsetX + move_offset_x + width * (float)draw_map_x + correction_x);
             ty = (offsetY + usedOffsetY + move_offset_y + scaled_y_height_change + mapFontAscent + height * (float)draw_map_y + correction_y);
+            float splitY = -(move_offset_y + scaled_y_height_change + correction_y);
             float dx2 = dx * (hflip_glyph ? -1 : 1) * width * dscalex;
             float dy2 = dy * (vflip_glyph ? -1 : 1) * height * dscaley;
             using (new SKAutoCanvasRestore(canvas, true))
             {
-                canvas.Translate(tx + (hflip_glyph ? width * dscalex : 0), ty + (vflip_glyph ? height * dscaley : 0));
-                canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
-                if (is_monster_like_layer)
+                float tr_x = tx + (hflip_glyph ? width * dscalex : 0);
+                float tr_y = ty + (vflip_glyph ? height * dscaley : 0);
+                float sc_x = hflip_glyph ? -1 : 1;
+                float sc_y = vflip_glyph ? -1 : 1;
+                TranslateAndScaleCanvas(canvas, tr_x, tr_y, sc_x, sc_y, is_monster_like_layer, _mapData[mapx, mapy].Layers,
+                    dx2, dy2, dscalex, dscaley, width, height, generalcounterdiff);
+                SKAutoCanvasRestore enlRestore = null;
+                if (enlCanvas != canvas)
                 {
-                    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0
-                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
-                    {
-                        /* Death rotation */
-                        float rotateheight = 0.5f * height * dscaley; //((float)(enlargement > 0 ? GHApp._enlargementDefs[enlargement].height_in_tiles - 1 : 0) * -0.5f + 0.75f)
-                        canvas.Translate(-dx2 + 0.5f * width * dscalex, -dy2 + rotateheight);
-                        canvas.RotateDegrees(generalcounterdiff * 15);
-                        canvas.Translate(dx2 - 0.5f * width * dscalex, dy2 - rotateheight);
-                    }
-                    if(dscalex != 1.0f || dscaley != 1.0f)
-                        canvas.Scale(dscalex, dscaley, 0, 0);
+                    enlRestore = new SKAutoCanvasRestore(enlCanvas, true);
+                    TranslateAndScaleCanvas(enlCanvas, tr_x, tr_y, sc_x, sc_y, is_monster_like_layer, _mapData[mapx, mapy].Layers,
+                        dx2, dy2, dscalex, dscaley, width, height, generalcounterdiff);
                 }
-                SKRect updateRect = new SKRect();
+                //canvas.Translate(tx + (hflip_glyph ? width * dscalex : 0), ty + (vflip_glyph ? height * dscaley : 0));
+                //canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
+                //if (is_monster_like_layer)
+                //{
+                //    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0
+                //    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
+                //    {
+                //        /* Death rotation */
+                //        float rotateheight = 0.5f * height * dscaley; //((float)(enlargement > 0 ? GHApp._enlargementDefs[enlargement].height_in_tiles - 1 : 0) * -0.5f + 0.75f)
+                //        canvas.Translate(-dx2 + 0.5f * width * dscalex, -dy2 + rotateheight);
+                //        canvas.RotateDegrees(generalcounterdiff * 15);
+                //        canvas.Translate(dx2 - 0.5f * width * dscalex, dy2 - rotateheight);
+                //    }
+                //    if(dscalex != 1.0f || dscaley != 1.0f)
+                //        canvas.Scale(dscalex, dscaley, 0, 0);
+                //}
                 SKRect targetrect;
                 if (tileflag_halfsize && !tileflag_normalobjmissile)
                 {
@@ -3934,9 +3948,9 @@ namespace GnollHackX.Pages.Game
                     else
                         targetrect = new SKRect(scaled_x_padding, scaled_y_padding, scaled_x_padding + scaled_tile_width, scaled_y_padding + scaled_tile_height);
                 }
-                SKMatrix tm = canvas.TotalMatrix;
-                updateRect = tm.MapRect(targetrect);
 
+                SKRect baseUpdateRect = new SKRect();
+                SKRect enlUpdateRect = new SKRect();
                 if (is_monster_like_layer && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
                 {
                     IntPtr tempptraddr = _tempBitmap.GetPixels();
@@ -3986,7 +4000,9 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                    canvas.DrawBitmap(_tempBitmap, tempsourcerect, targetrect, paint);
+                    DrawSplitBitmap(canvas, enlCanvas, splitY,
+                        _tempBitmap, tempsourcerect, targetrect, paint, ref baseUpdateRect, ref enlUpdateRect);
+                    //canvas.DrawBitmap(_tempBitmap, tempsourcerect, targetrect, paint);
 #if GNH_MAP_PROFILING && DEBUG
                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -3997,20 +4013,37 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                    canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
+                    DrawSplitBitmap(canvas, enlCanvas, splitY,
+                        TileMap[sheet_idx], sourcerect, targetrect, paint, ref baseUpdateRect, ref enlUpdateRect);
+                    //canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
 #if GNH_MAP_PROFILING && DEBUG
                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
                 }
 
-                if (updateRect.Left < minDrawX)
-                    minDrawX = updateRect.Left;
-                if (updateRect.Right > maxDrawX)
-                    maxDrawX = updateRect.Right;
-                if (updateRect.Top < minDrawY)
-                    minDrawY = updateRect.Top;
-                if (updateRect.Bottom > maxDrawY)
-                    maxDrawY = updateRect.Bottom;
+                SKRect mBaseUpdateRect = canvas.TotalMatrix.MapRect(baseUpdateRect);
+                SKRect mEnlUpdateRect = enlCanvas.TotalMatrix.MapRect(enlUpdateRect);
+
+                if (mBaseUpdateRect.Left < minDrawX)
+                    minDrawX = mBaseUpdateRect.Left;
+                if (mBaseUpdateRect.Right > maxDrawX)
+                    maxDrawX = mBaseUpdateRect.Right;
+                if (mBaseUpdateRect.Top < minDrawY)
+                    minDrawY = mBaseUpdateRect.Top;
+                if (mBaseUpdateRect.Bottom > maxDrawY)
+                    maxDrawY = mBaseUpdateRect.Bottom;
+
+                if(canvas != enlCanvas)
+                {
+                    if (mEnlUpdateRect.Left < enlMinDrawX)
+                        enlMinDrawX = mEnlUpdateRect.Left;
+                    if (mEnlUpdateRect.Right > enlMaxDrawX)
+                        enlMaxDrawX = mEnlUpdateRect.Right;
+                    if (mEnlUpdateRect.Top < enlMinDrawY)
+                        enlMinDrawY = mEnlUpdateRect.Top;
+                    if (mEnlUpdateRect.Bottom > enlMaxDrawY)
+                        enlMaxDrawY = mEnlUpdateRect.Bottom;
+                }
 
                 //    float target_x = tx + (hflip_glyph ? width : 0);
                 //    float target_y = ty + (vflip_glyph ? height : 0);
@@ -4027,6 +4060,9 @@ namespace GnollHackX.Pages.Game
                 //        minDrawY = target_top;
                 //    if (target_bottom > maxDrawY)
                 //        maxDrawY = target_bottom;
+
+                if (enlRestore != null)
+                    enlRestore.Dispose();
             }
 
             DrawAutoDraw(autodraw, canvas, paint, otmp_round,
@@ -4037,6 +4073,59 @@ namespace GnollHackX.Pages.Game
                 false, drawwallends);
         }
 
+        public void DrawSplitBitmap(SKCanvas canvas, SKCanvas enlCanvas, float destSplitY, SKBitmap bitmap, SKRect source, SKRect dest, SKPaint paint, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
+        {
+            if (destSplitY <= dest.Top || canvas == enlCanvas)
+            {
+                canvas.DrawBitmap(bitmap, source, dest, paint);
+                baseUpdateRect = dest;
+                enlUpdateRect = new SKRect();
+            }
+            else if (destSplitY >= dest.Bottom)
+            {
+                enlCanvas.DrawBitmap(bitmap, source, dest, paint);
+                baseUpdateRect = new SKRect();
+                enlUpdateRect = dest;
+            }
+            else
+            {
+                float destHeight = dest.Bottom - dest.Top;
+                if (destHeight <= 0)
+                    return;
+                SKRect enlDest = new SKRect(dest.Left, dest.Top, dest.Right, destSplitY);
+                SKRect baseDest = new SKRect(dest.Left, destSplitY, dest.Right, dest.Bottom);
+                float topDestScale = (destSplitY - dest.Top) / destHeight;
+                float sourceSplitY = source.Top + (source.Bottom - source.Top) * topDestScale;
+                SKRect enlSource = new SKRect(source.Left, source.Top, source.Right, sourceSplitY);
+                SKRect baseSource = new SKRect(source.Left, sourceSplitY, source.Right, source.Bottom);
+                canvas.DrawBitmap(bitmap, baseSource, baseDest, paint);
+                enlCanvas.DrawBitmap(bitmap, enlSource, enlDest, paint);
+                baseUpdateRect = baseDest;
+                enlUpdateRect = enlDest;
+            }
+        }
+
+        public void TranslateAndScaleCanvas(SKCanvas canvas, float tr_x, float tr_y, float sc_x, float sc_y, bool is_monster_like_layer, LayerInfo layers,
+                    float dx2, float dy2, float dscalex, float dscaley, float width, float height, long generalcounterdiff)
+        {
+            canvas.Translate(tr_x, tr_y);
+            canvas.Scale(sc_x, sc_y, 0, 0);
+            if (is_monster_like_layer)
+            {
+                if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0
+                && (layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
+                {
+                    /* Death rotation */
+                    float rotateheight = 0.5f * height * dscaley; //((float)(enlargement > 0 ? GHApp._enlargementDefs[enlargement].height_in_tiles - 1 : 0) * -0.5f + 0.75f)
+                    canvas.Translate(-dx2 + 0.5f * width * dscalex, -dy2 + rotateheight);
+                    canvas.RotateDegrees(generalcounterdiff * 15);
+                    canvas.Translate(dx2 - 0.5f * width * dscalex, dy2 - rotateheight);
+                }
+                if (dscalex != 1.0f || dscaley != 1.0f)
+                    canvas.Scale(dscalex, dscaley, 0, 0);
+            }
+        }
+    
         private int GetSubLayerCount(int mapx, int mapy, int layer_idx, out bool is_source_dir)
         {
             int sub_layer_cnt = 1;
@@ -5155,14 +5244,15 @@ namespace GnollHackX.Pages.Game
                                                                             int draw_map_y = source_y + dy + (adj_y - source_y);
 
                                                                             float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
+                                                                            float enlMinDrawX = 0, enlMaxDrawX = 0, enlMinDrawY = 0, enlMaxDrawY = 0;
 
-                                                                            PaintMapTile(canvas, textPaint, paint, layer_idx, source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                            PaintMapTile(canvas, canvas, textPaint, paint, layer_idx, source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                                 offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                                 scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, generalcounterdiff, canvaswidth, canvasheight, enlargement,
-                                                                                ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY);
+                                                                                ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
                                                                         }
                                                                     }
                                                                 }
@@ -5299,24 +5389,24 @@ namespace GnollHackX.Pages.Game
 
                                                                                 if ((enlargement > 0 && enl_idx >= 0 && enl_idx <= 2) || layer_idx == (int)layer_types.MAX_LAYERS)
                                                                                 {
-                                                                                    PaintMapTile(enlCanvas, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                                    PaintMapTile(enlCanvas, enlCanvas, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                                         offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                                         scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                         monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                         loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                         hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, generalcounterdiff, canvaswidth, canvasheight, enlargement,
-                                                                                        ref draw_shadow, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                                        ref draw_shadow, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                                 }
                                                                                 else
                                                                                 {
                                                                                     float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
-                                                                                    PaintMapTile(canvas, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                                    PaintMapTile(canvas, enlCanvas, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                                         offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                                         scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                         monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                         loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                         hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, generalcounterdiff, canvaswidth, canvasheight, enlargement,
-                                                                                        ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY);
+                                                                                        ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                                 }
                                                                             }
                                                                         }
