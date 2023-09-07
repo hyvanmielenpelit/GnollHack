@@ -2199,6 +2199,80 @@ namespace GnollHackX
                 return false;
             }
         }
+
+
+        static float[] _sparkleScale = new float[]
+        {
+            0.01f,
+            0.05f,
+            0.1f,
+            0.2f,
+            0.3f,
+            0.4f,
+            0.5f,
+            0.6f,
+            0.7f,
+            0.8f,
+            0.9f,
+            0.95f,
+            0.99f,
+            1.0f,
+            0.99f,
+            0.95f,
+            0.9f,
+            0.8f,
+            0.7f,
+            0.6f,
+            0.5f,
+            0.4f,
+            0.3f,
+            0.2f,
+            0.1f,
+            0.05f,
+            0.01f,
+            0.0f,
+            0.0f,
+        };
+
+        public static void DrawSparkle(SKCanvas canvas, SKPaint paint, float x, float y, float size, long generalcounterdiff, bool recurring)
+        {
+            if(generalcounterdiff < 0)
+                return;
+
+            if (!recurring && generalcounterdiff >= _sparkleScale.Length)
+                return;
+
+            float scale = size * _sparkleScale[generalcounterdiff % _sparkleScale.Length];
+            if (scale <= 0.0f)
+                return;
+
+            SKColor oldColor = paint.Color;
+            SKPaintStyle oldStyle = paint.Style;
+            using (new SKAutoCanvasRestore(canvas, true)) 
+            {
+                canvas.Translate(x, y);
+                canvas.Scale(scale);
+                canvas.RotateDegrees((float)((generalcounterdiff * 10) % 360));
+                using (SKPath path = new SKPath())
+                {
+                    path.MoveTo(-0.1f, -0.1f);
+                    path.LineTo(0f, -1f);
+                    path.LineTo(0.1f, -0.1f);
+                    path.LineTo(1f, 0f);
+                    path.LineTo(0.1f, 0.1f);
+                    path.LineTo(0f, 1f);
+                    path.LineTo(-0.1f, 0.1f);
+                    path.LineTo(-1f, 0f);
+                    path.LineTo(-0.1f, -0.1f);
+                    path.Close();
+                    paint.Style = SKPaintStyle.Fill;
+                    paint.Color = SKColors.White;
+                    canvas.DrawPath(path, paint);
+                }
+            }
+            paint.Style = oldStyle;
+            paint.Color = oldColor;
+        }
     }
 
     class SecretsFileSizeComparer : IComparer<SecretsFile>
