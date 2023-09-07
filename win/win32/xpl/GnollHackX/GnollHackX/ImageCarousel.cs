@@ -166,7 +166,7 @@ namespace GnollHackX
                                 target_x = (canvaswidth - target_width);
                                 break;
                         }
-                        switch (halign)
+                        switch (valign)
                         {
                             case TextAlignment.Start:
                                 target_y = 0;
@@ -213,7 +213,7 @@ namespace GnollHackX
                                             target_x = (canvaswidth - target_width);
                                             break;
                                     }
-                                    switch (halign)
+                                    switch (valign)
                                     {
                                         case TextAlignment.Start:
                                             target_y = 0;
