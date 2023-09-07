@@ -14178,29 +14178,4 @@ namespace GnollHackX.Pages.Game
                 StartMainCanvasAnimation();
         }
     }
-
-    public class ColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-
-            if ((bool)value == true)
-            {
-                return GHColors.White;
-            }
-
-            return GHColors.DarkGray;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if ((bool)value == true)
-            {
-                return GHColors.White;
-            }
-
-            return GHColors.DarkGray;
-        }
-    }
-
 }
