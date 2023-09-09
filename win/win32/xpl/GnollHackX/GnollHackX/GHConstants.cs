@@ -288,6 +288,8 @@ namespace GnollHackX
         LMFLAGS_FLYING =                0x00000800UL,
         LMFLAGS_LEVITATING =            0x00001000UL,
         LMFLAGS_BLOBBY_ANIMATION =      0x00002000UL,
+        LMFLAGS_SWIM_ANIMATION =        0x00004000UL,
+        LMFLAGS_SHARK_ANIMATION =       0x00008000UL,
     }
 
     [Flags]

@@ -241,6 +241,77 @@ namespace GnollHackX.Pages.Game
             new SKPoint(1.00000f, 0.9800f),
         };
 
+        private SKPoint[] _swimAnimation = new SKPoint[]
+{
+            new SKPoint(0f, -0f),
+            new SKPoint(0f, -0.1f),
+            new SKPoint(0f, -0.2f),
+            new SKPoint(0f, -0.4f),
+            new SKPoint(0f, -0.6f),
+            new SKPoint(0f, -0.8f),
+            new SKPoint(0f, -1f),
+            new SKPoint(0f, -1.2f),
+            new SKPoint(0f, -1.4f),
+            new SKPoint(0f, -1.6f),
+            new SKPoint(0f, -1.8f),
+            new SKPoint(0f, -2f),
+            new SKPoint(0f, -2.2f),
+            new SKPoint(0f, -2.4f),
+            new SKPoint(0f, -2.6f),
+            new SKPoint(0f, -2.8f),
+            new SKPoint(0f, -2.9f),
+            new SKPoint(0f, -3f),
+            new SKPoint(0f, -2.9f),
+            new SKPoint(0f, -2.8f),
+            new SKPoint(0f, -2.6f),
+            new SKPoint(0f, -2.4f),
+            new SKPoint(0f, -2.2f),
+            new SKPoint(0f, -2f),
+            new SKPoint(0f, -1.8f),
+            new SKPoint(0f, -1.6f),
+            new SKPoint(0f, -1.4f),
+            new SKPoint(0f, -1.2f),
+            new SKPoint(0f, -1.0f),
+            new SKPoint(0f, -0.8f),
+            new SKPoint(0f, -0.6f),
+            new SKPoint(0f, -0.4f),
+            new SKPoint(0f, -0.2f),
+            new SKPoint(0f, -0.1f),
+            new SKPoint(0f, 0f),
+        };
+
+        private SKPoint[] _sharkAnimation = new SKPoint[]
+{
+            new SKPoint(0f, 0f),
+            new SKPoint(0f, 0.1f),
+            new SKPoint(0f, 0.25f),
+            new SKPoint(0f, 0.5f),
+            new SKPoint(0f, 1f),
+            new SKPoint(0f, 1.5f),
+            new SKPoint(0f, 2f),
+            new SKPoint(0f, 2.5f),
+            new SKPoint(0f, 3f),
+            new SKPoint(0f, 3.5f),
+            new SKPoint(0f, 4f),
+            new SKPoint(0f, 4.5f),
+            new SKPoint(0f, 4.75f),
+            new SKPoint(0f, 4.9f),
+            new SKPoint(0f, 5f),
+            new SKPoint(0f, 4.9f),
+            new SKPoint(0f, 4.75f),
+            new SKPoint(0f, 4.5f),
+            new SKPoint(0f, 4f),
+            new SKPoint(0f, 3.5f),
+            new SKPoint(0f, 3f),
+            new SKPoint(0f, 2.5f),
+            new SKPoint(0f, 2f),
+            new SKPoint(0f, 1.5f),
+            new SKPoint(0f, 1f),
+            new SKPoint(0f, 0.5f),
+            new SKPoint(0f, 0.25f),
+            new SKPoint(0f, 0.1f),
+        };
+
         private readonly object _isSizeAllocatedProcessedLock = new object();
         private bool _isSizeAllocatedProcessed = false;
         public bool IsSizeAllocatedProcessed { get { lock (_isSizeAllocatedProcessedLock) { return _isSizeAllocatedProcessed; } } set { lock (_isSizeAllocatedProcessedLock) { _isSizeAllocatedProcessed = value; } } }
@@ -3836,6 +3907,24 @@ namespace GnollHackX.Pages.Game
                         long animationframe = generalcountervalue % _flyingAnimation.Length;
                         move_offset_x += _flyingAnimation[animationframe].X * scale * targetscale;
                         move_offset_y += (-5f + _flyingAnimation[animationframe].Y) * scale * targetscale;
+                    }
+                    else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SWIM_ANIMATION) != 0)
+                    {
+                        long animationframe = generalcountervalue % _swimAnimation.Length;
+                        move_offset_x += _swimAnimation[animationframe].X * scale * targetscale;
+                        move_offset_y += _swimAnimation[animationframe].Y * scale * targetscale;
+                    }
+                    else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SHARK_ANIMATION) != 0)
+                    {
+                        long animationframe = generalcountervalue % _sharkAnimation.Length;
+                        float target_y_change = _sharkAnimation[animationframe].Y * scale * targetscale;
+                        move_offset_x += _sharkAnimation[animationframe].X * scale * targetscale;
+                        move_offset_y += target_y_change;
+                        if(mapy == draw_map_y)
+                        {
+                            scaled_y_height_change -= target_y_change;
+                            sourcerect = new SKRect(sourcerect.Left, sourcerect.Top, sourcerect.Right, sourcerect.Bottom - _sharkAnimation[animationframe].Y);
+                        }
                     }
                 }
             }

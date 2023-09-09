@@ -2954,6 +2954,9 @@ boolean exclude_ascii;
             if (is_flying(used_mtmp))
                 gbuf[y][x].layers.monster_flags |= LMFLAGS_FLYING;
 
+            if (has_swimming(used_mtmp) && IS_POOL(levl[x][y].typ) && !has_blobby_animation(used_mtmp->data) && !Hallucination)
+                gbuf[y][x].layers.monster_flags |= (has_shark_animation(used_mtmp->data) ? LMFLAGS_SHARK_ANIMATION : LMFLAGS_SWIM_ANIMATION);
+
             if (is_levitating(used_mtmp))
                 gbuf[y][x].layers.monster_flags |= LMFLAGS_LEVITATING;
 

@@ -201,6 +201,7 @@
 #define revives_upon_meddling(ptr) (((ptr)->mflags6 & M6_REVIVES_UPON_MEDDLING) != 0)
 #define lithovore(ptr) (((ptr)->mflags6 & M6_LITHOVORE) != 0L)
 #define has_blobby_animation(ptr) (((ptr)->mflags6 & M6_BLOB_ANIMATION) != 0L)
+#define has_shark_animation(ptr) (((ptr)->mflags6 & M6_SHARK_ANIMATION) != 0L)
 
 #define is_archaeologist(ptr) (((ptr)->mflags7 & M7_ARCHAEOLOGIST) != 0L)
 #define is_barbarian(ptr) (((ptr)->mflags7 & M7_BARBARIAN) != 0L)
