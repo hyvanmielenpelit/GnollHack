@@ -362,14 +362,12 @@ register int show;
 {
     register int x = trap->tx, y = trap->ty;
     register int glyph = trap_to_glyph(trap, newsym_rn2);
-
-    /* Replace */
-    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_TRAP, (struct obj*)0, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
-
     struct monst* mtmp = m_at(x, y);
     boolean utrapped = (x == u.ux && y == u.uy && u.utrap > 0);
     boolean mtrapped = (mtmp && mtmp->mtrapped);
     boolean trapped_draw_in_front = (trap->ttyp == STATUE_TRAP || ((utrapped || mtrapped) && (trap->ttyp == WEB || trap->ttyp == BEAR_TRAP)));
+    /* Replace */
+    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_TRAP, (struct obj*)0, (struct monst*)0, (utrapped || mtrapped) ? LFLAGS_T_TRAPPED : 0UL, 0UL, MAT_NONE, 0));
 
     if (level.flags.hero_memory)
     {
