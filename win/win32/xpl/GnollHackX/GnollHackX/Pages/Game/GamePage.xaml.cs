@@ -3922,7 +3922,7 @@ namespace GnollHackX.Pages.Game
                         move_offset_y += target_y_change;
                         if(mapy == draw_map_y)
                         {
-                            scaled_y_height_change -= target_y_change;
+                            scaled_tile_height -= target_y_change;
                             sourcerect = new SKRect(sourcerect.Left, sourcerect.Top, sourcerect.Right, sourcerect.Bottom - _sharkAnimation[animationframe].Y);
                         }
                     }
