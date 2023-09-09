@@ -2127,7 +2127,7 @@ struct mkroom *aroom;
         return;
     }
 
-    int normaldoor = (context.game_difficulty < 0 && u.uz.dnum == main_dungeon_dnum && u.uz.dlevel <= 2) ? TRUE : rn2(8);
+    int normaldoor = (context.game_difficulty <= NO_SECRET_DOORS_DIFFICULTY_THRESHOLD && u.uz.dnum == main_dungeon_dnum && u.uz.dlevel <= NO_SECRET_DOORS_DUNGEON_LEVEL_THRESHOLD) ? TRUE : rn2(8);
     dosdoor(x, y, aroom, normaldoor ? DOOR : SDOOR, 0);
 }
 

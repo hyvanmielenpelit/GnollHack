@@ -7020,11 +7020,17 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you feel as if the fabric of reality stretches back and forth a bit, but then the sensation passes.");
         }
 
-        if (context.game_difficulty < 0 && level_difficulty() >= MINIMUM_DGN_LEVEL_POLY_TRAP && !u.uevent.polymorph_trap_warning)
+        if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && level_difficulty() >= MINIMUM_DGN_LEVEL_POLY_TRAP && !u.uevent.polymorph_trap_warning)
         {
             u.uevent.polymorph_trap_warning = 1;
             play_sfx_sound(SFX_WARNING);
             custompline_ex_prefix(ATR_NONE, CLR_MSG_WARNING, "WARNING", ATR_NONE, NO_COLOR, " - ", ATR_NONE, CLR_MSG_WARNING, 0U, "Polymorph traps can be present on dungeon level %d and below.", MINIMUM_DGN_LEVEL_POLY_TRAP);
+        }
+
+        if (!u.uhint.secret_doors_and_corridors && u.uz.dnum == main_dungeon_dnum &&
+            u.uz.dlevel > (context.game_difficulty <= NO_SECRET_DOORS_DIFFICULTY_THRESHOLD ? NO_SECRET_DOORS_DUNGEON_LEVEL_THRESHOLD : 1))
+        {
+            standard_hint("There may be secret doors and corridors. If you are stuck, try searching for hidden passages.", &u.uhint.secret_doors_and_corridors);
         }
     }
 
@@ -8186,7 +8192,7 @@ struct monst* mtmp;
     if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && !u.uhint.brain_got_eaten)
     {
         u.uhint.brain_got_eaten = TRUE;
-        hint_via_pline("To protect yourself agains brain-eating attacks, you can wear a nose-ring of cerebral safeguarding or wear a helmet, which gives you a high chance of blocking the attacks.");
+        hint_via_pline("To protect yourself agains brain-eating attacks, you can wear a nose ring of cerebral safeguarding or wear a helmet, which gives you a high chance of blocking the attacks.");
         if(!Race_if(PM_DWARF) && is_tentacled_one(mtmp->data))
             hint_via_pline("You can also class-genocide all tentacled ones (and all dwarves) by reading a blessed scroll of genocide when you are not a dwarf yourself.");
     }

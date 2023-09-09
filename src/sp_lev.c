@@ -3089,7 +3089,7 @@ schar ftyp, btyp;
         crm = &levl[xx][yy];
         if (crm->typ == btyp) 
         {
-            int normalcorr = (context.game_difficulty < 0 && u.uz.dnum == main_dungeon_dnum && u.uz.dlevel <= 2) ? TRUE : rn2(100);
+            int normalcorr = (context.game_difficulty <= NO_SECRET_DOORS_DIFFICULTY_THRESHOLD && u.uz.dnum == main_dungeon_dnum && u.uz.dlevel <= NO_SECRET_DOORS_DUNGEON_LEVEL_THRESHOLD) ? TRUE : rn2(100);
             if (ftyp != CORR || normalcorr)
             {
                 crm->typ = ftyp;

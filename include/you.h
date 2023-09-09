@@ -263,7 +263,7 @@ struct u_hint {
     boolean pet_got_mummy_rot;
 
     boolean elbereth;
-    boolean reserved2;
+    boolean secret_doors_and_corridors;
     boolean reserved3;
     boolean reserved4;
 };
