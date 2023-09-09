@@ -23,7 +23,7 @@ namespace GnollHackX
         NormalMenu = 0,
     }
 
-    class UIUtils
+    public static class UIUtils
     {
         private static SKColor GHDarkGray = new SKColor(96, 96, 96);
         private static SKColor GHVeryDarkGray = new SKColor(64, 64, 64);

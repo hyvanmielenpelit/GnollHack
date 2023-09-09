@@ -4828,9 +4828,9 @@ boolean tinitial, tfrom_file;
             itmp = atoi(op);
         }
 
-        if (itmp < SORTBY_NONE || itmp >= SORTBY_CURRENT)
+        if (itmp < SORTBY_NONE || itmp > SORTBY_CURRENT)
         {
-            config_error_add("'%s' requires a value between %d and %d", fullname, SORTBY_NONE, SORTBY_CURRENT - 1);
+            config_error_add("'%s' requires a value between %d and %d", fullname, SORTBY_NONE, SORTBY_CURRENT);
             retval = FALSE;
         }
         else

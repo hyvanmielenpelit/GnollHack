@@ -1274,6 +1274,14 @@ int* spell_no;
             glyph = MIX_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
             add_active_menu(tmpwin, glyph, &any, '!', 0, ATR_NONE, NO_COLOR,
                 "Mix Spells", MENU_UNSELECTED);
+            any.a_int = -3;
+            glyph = SORT_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+            add_active_menu(tmpwin, glyph, &any, '<', 0, ATR_NONE, NO_COLOR,
+                "Sort Spells", MENU_UNSELECTED);
+            any.a_int = -4;
+            glyph = REORDER_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+            add_active_menu(tmpwin, glyph, &any, '>', 0, ATR_NONE, NO_COLOR,
+                "Reorder Spells", MENU_UNSELECTED);
         }
     }
 
@@ -1333,6 +1341,10 @@ int* spell_no;
                 return dospellview();
             case -2:
                 return domix();
+            case -3:
+                return dosortspell();
+            case -4:
+                return dovspell();
             default:
                 return 0;
             }
@@ -3712,6 +3724,7 @@ dovspell()
                 spl_book[splnum] = spl_book[othnum];
                 spl_book[othnum] = spl_tmp;
 
+                flags.spellorder = SORTBY_CURRENT; /* sorting needs to be turned off */
                 sortspells();
             }
         }

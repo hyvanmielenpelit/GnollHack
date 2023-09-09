@@ -5479,10 +5479,10 @@ namespace GnollHackX.Pages.Game
                                                                                 GHApp.DrawSparkle(canvas, paint, tx + 0.75f * width, ty + 0.25f * height, 10f * targetscale, generalcountervalue - 20, true);
                                                                                 GHApp.DrawSparkle(canvas, paint, tx + 0.25f * width, ty + 0.75f * height, 10f * targetscale, generalcountervalue - 30, true);
                                                                                 GHApp.DrawSparkle(canvas, paint, tx + 0.75f * width, ty + 0.75f * height, 10f * targetscale, generalcountervalue - 40, true);
-                                                                                GHApp.DrawSparkle(canvas, paint, tx + 0.5f * width, ty, 5f * targetscale, generalcountervalue - 50, true);
-                                                                                GHApp.DrawSparkle(canvas, paint, tx + 0.5f * width, ty + height, 5f * targetscale, generalcountervalue - 60, true);
-                                                                                GHApp.DrawSparkle(canvas, paint, tx, ty + 0.5f * height, 5f * targetscale, generalcountervalue - 70, true);
-                                                                                GHApp.DrawSparkle(canvas, paint, tx + width, ty + 0.5f * height, 5f * targetscale, generalcountervalue - 80, true);
+                                                                                GHApp.DrawSparkle(canvas, paint, tx + 0.5f * width, ty, 7f * targetscale, generalcountervalue - 50, true);
+                                                                                GHApp.DrawSparkle(canvas, paint, tx + 0.5f * width, ty + height, 7f * targetscale, generalcountervalue - 60, true);
+                                                                                GHApp.DrawSparkle(canvas, paint, tx, ty + 0.5f * height, 7f * targetscale, generalcountervalue - 70, true);
+                                                                                GHApp.DrawSparkle(canvas, paint, tx + width, ty + 0.5f * height, 7f * targetscale, generalcountervalue - 80, true);
                                                                             }
                                                                         }
                                                                     }

@@ -2201,37 +2201,37 @@ namespace GnollHackX
         }
 
 
-        static float[] _sparkleScale = new float[]
+        static float[,] _sparkleAnimation = new float[,]
         {
-            0.01f,
-            0.05f,
-            0.1f,
-            0.2f,
-            0.3f,
-            0.4f,
-            0.5f,
-            0.6f,
-            0.7f,
-            0.8f,
-            0.9f,
-            0.95f,
-            0.99f,
-            1.0f,
-            0.99f,
-            0.95f,
-            0.9f,
-            0.8f,
-            0.7f,
-            0.6f,
-            0.5f,
-            0.4f,
-            0.3f,
-            0.2f,
-            0.1f,
-            0.05f,
-            0.01f,
-            0.0f,
-            0.0f,
+            { 0.01f, 0.25f },
+            { 0.05f, 0.3f },
+            { 0.1f, 0.35f },
+            { 0.2f, 0.4f },
+            { 0.3f, 0.45f },
+            { 0.4f, 0.5f },
+            { 0.5f, 0.55f },
+            { 0.6f, 0.6f },
+            { 0.7f, 0.65f },
+            { 0.8f, 0.7f },
+            { 0.9f, 0.75f },
+            { 0.95f, 0.8f },
+            { 0.99f, 0.85f },
+            { 1.0f, 0.9f },
+            { 0.99f, 0.85f },
+            { 0.95f, 0.8f },
+            { 0.9f, 0.75f },
+            { 0.8f, 0.7f },
+            { 0.7f, 0.65f },
+            { 0.6f, 0.6f },
+            { 0.5f, 0.55f },
+            { 0.4f, 0.5f },
+            { 0.3f, 0.45f },
+            { 0.2f, 0.4f },
+            { 0.1f, 0.35f },
+            { 0.05f, 0.3f },
+            { 0.01f, 0.25f },
+            { 0.0f, 0.2f },
+            { 0.0f, 0.2f },
         };
 
         public static void DrawSparkle(SKCanvas canvas, SKPaint paint, float x, float y, float size, long generalcounterdiff, bool recurring)
@@ -2239,10 +2239,11 @@ namespace GnollHackX
             if(generalcounterdiff < 0)
                 return;
 
-            if (!recurring && generalcounterdiff >= _sparkleScale.Length)
+            int numRows = _sparkleAnimation.GetLength(0);
+            if (!recurring && generalcounterdiff >= numRows)
                 return;
 
-            float scale = size * _sparkleScale[generalcounterdiff % _sparkleScale.Length];
+            float scale = size * _sparkleAnimation[generalcounterdiff % numRows, 0];
             if (scale <= 0.0f)
                 return;
 
@@ -2266,7 +2267,7 @@ namespace GnollHackX
                     path.LineTo(-0.1f, -0.1f);
                     path.Close();
                     paint.Style = SKPaintStyle.Fill;
-                    paint.Color = SKColors.White;
+                    paint.Color = SKColors.White.WithAlpha((byte)(255* _sparkleAnimation[generalcounterdiff % numRows, 1]));
                     canvas.DrawPath(path, paint);
                 }
             }

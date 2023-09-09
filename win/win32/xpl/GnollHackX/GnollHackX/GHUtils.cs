@@ -8,7 +8,7 @@ using System.Text;
 
 namespace GnollHackX
 {
-    public class GHUtils
+    public static class GHUtils
     {
         public static int Ctrl(int c)
         {
