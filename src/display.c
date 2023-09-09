@@ -768,8 +768,10 @@ boolean dropping_piercer;
      * so that when the position is out of sight, the hero remembers what
      * the mimic was mimicing.
      */
-    if (mon_mimic && (sightflags == PHYSICALLY_SEEN)) {
-        switch (M_AP_TYPE(mon)) {
+    if (mon_mimic && (sightflags == PHYSICALLY_SEEN)) 
+    {
+        switch (M_AP_TYPE(mon)) 
+        {
         default:
             impossible("display_monster:  bad m_ap_type value [ = %d ]",
                        (int) mon->m_ap_type);
@@ -779,7 +781,8 @@ boolean dropping_piercer;
             clear_monster_layer_memory_at(x, y);
             break;
 
-        case M_AP_FURNITURE: {
+        case M_AP_FURNITURE: 
+        {
             /*
              * This is a poor man's version of map_background().  I can't
              * use map_background() because we are overriding what is in
@@ -803,7 +806,8 @@ boolean dropping_piercer;
                 levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] = glyph; /* Override, as otherwise not very credible */
                 levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_FEATURE] = gui_glyph; /* Override, as otherwise not very credible */
             }
-            if (!sensed) {
+            if (!sensed) 
+            {
                 //show_monster_glyph_with_extra_info(x, y, glyph, (struct monst*)0, LFLAGS_M_MIMIC_FURNITURE, 0, 0);
                 /* override real topology with mimic's fake one */
                 show_glyph_ascii(x, y, glyph);
@@ -813,7 +817,8 @@ boolean dropping_piercer;
             break;
         }
 
-        case M_AP_OBJECT: {
+        case M_AP_OBJECT: 
+        {
             /* Make a fake object to send to map_object(). */
             struct obj obj;
             if (has_mobj(mon))
@@ -875,8 +880,9 @@ boolean dropping_piercer;
     }
 
     /* If mimic is unsuccessfully mimicing something, display the monster. */
-    if (!mon_mimic || sensed) {
-        int num;
+    if (!mon_mimic || sensed) 
+    {
+        int glyph = NO_GLYPH;
 
         /* [ALI] Only use detected glyphs when monster wouldn't be
          * visible by any other means.
@@ -886,34 +892,38 @@ boolean dropping_piercer;
          * If both are being highlighted in the same way, it doesn't
          * matter, but if not, showing them as pets is preferrable.
          */
-        unsigned long extra_flags = 0;
-
+        unsigned long extra_flags = 0UL;
         if (mon->mleashed)
         {
             extra_flags |= LFLAGS_M_TETHERED;
             show_leash_info(x, y, mon->mx, mon->my, u.ux, u.uy);
         }
-        if (is_tame(mon) && !Hallucination) {
+        if (is_tame(mon) && !Hallucination) 
+        {
             if (worm_tail)
-                num = monnum_to_glyph(get_worm_tail_mnum(mon->data));
+                glyph = monnum_to_glyph(get_worm_tail_mnum(mon->data));
             else
-                num = any_mon_to_glyph(mon, rn2_on_display_rng);
+                glyph = any_mon_to_glyph(mon, rn2_on_display_rng);
 
             extra_flags |= LFLAGS_M_PET;
-        } else if (sightflags == DETECTED) {
+        } 
+        else if (sightflags == DETECTED) 
+        {
             if (worm_tail)
-                num = monnum_to_glyph(
+                glyph = monnum_to_glyph(
                              what_mon(get_worm_tail_mnum(mon->data), rn2_on_display_rng));
             else
-                num = any_mon_to_glyph(mon, rn2_on_display_rng);
+                glyph = any_mon_to_glyph(mon, rn2_on_display_rng);
 
             extra_flags |= LFLAGS_M_DETECTED;
-        } else {
+        } 
+        else 
+        {
             if (worm_tail)
-                num = monnum_to_glyph(
+                glyph = monnum_to_glyph(
                              what_mon(get_worm_tail_mnum(mon->data), rn2_on_display_rng));
             else
-                num = any_mon_to_glyph(mon, rn2_on_display_rng);
+                glyph = any_mon_to_glyph(mon, rn2_on_display_rng);
         }
         if (worm_tail)
             extra_flags |= (LFLAGS_M_WORM_TAIL | LFLAGS_M_WORM_SEEN);
@@ -921,11 +931,12 @@ boolean dropping_piercer;
         if (dropping_piercer)
         {
             extra_flags |= LFLAGS_M_DROPPING_PIERCER;
-            show_glyph_on_layer_and_ascii(x, y, num, LAYER_MISSILE);
+            int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_MISSILE, (struct obj*)0, mon, extra_flags, 0UL, MAT_NONE, 0));
+            show_gui_glyph_on_layer_and_ascii(x, y, glyph, gui_glyph, LAYER_MISSILE);
             show_extra_info(x, y, extra_flags, 0, 0);
         }
         else
-            show_monster_glyph_with_extra_info(x, y, num, /*worm_tail ? (struct monst*)0 :*/ mon, extra_flags, 0, 0);
+            show_monster_glyph_with_extra_info(x, y, glyph, /*worm_tail ? (struct monst*)0 :*/ mon, extra_flags, 0, 0);
         clear_monster_layer_memory_at(x, y);
     }
 }
