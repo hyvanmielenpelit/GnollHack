@@ -1264,6 +1264,7 @@ int* spell_no;
         }
         if (splcnt > 0)
         {
+            any.a_int = 0;
             add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                 "", MENU_UNSELECTED);
             any.a_int = -1;
@@ -1295,10 +1296,13 @@ int* spell_no;
         }
         else 
         {
+            any.a_int = 0;
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
+                "", MENU_UNSELECTED);
             /* more than 1 spell, add an extra menu entry */
             any.a_int = SPELLMENU_SORT + 1;
-            add_menu(tmpwin, NO_GLYPH, &any, '+', 0, ATR_NONE, NO_COLOR,
-                "[sort spells]", MENU_UNSELECTED);
+            add_active_menu(tmpwin, SORT_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any, '+', 0, ATR_NONE, NO_COLOR,
+                "Sort Spells", MENU_UNSELECTED);
         }
     }
 
@@ -3979,7 +3983,7 @@ int *spell_no;
         } else {
             /* more than 1 spell, add an extra menu entry */
             any.a_int = SPELLMENU_SORT + 1;
-            add_menu(tmpwin, NO_GLYPH, &any, '+', 0, ATR_NONE, NO_COLOR,
+            add_menu(tmpwin, SORT_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any, '+', 0, ATR_NONE, NO_COLOR,
                      "[sort spells]", MENU_UNSELECTED);
         }
     }
