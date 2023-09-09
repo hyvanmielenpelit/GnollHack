@@ -525,8 +525,8 @@ dig(VOID_ARGS)
             }
             else 
             {
-                play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You succeed in cutting away some rock.";
+                play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_FLOOR];
                 create_basic_floor_location(dpx, dpy, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floortyp : CORR, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floorsubtyp : get_initial_location_subtype(levl[dpx][dpy].floortyp), 0, FALSE);
                 if (windowprocs.wincap2 & WC2_FADING_ANIMATIONS)
@@ -566,8 +566,9 @@ dig(VOID_ARGS)
             {
                 ltype = DOOR, lflags = D_NODOOR;
             }
+            digtxt = "You make an opening in the wall.";
             play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
-            int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_FLOOR];
+            int glyph = layers_at(dpx, dpy).layer_gui_glyphs[lev->typ == STONE ? LAYER_FLOOR : LAYER_FEATURE];
             create_simple_location(dpx, dpy, ltype, lsubtype, lvartype, lflags, back_to_broken_glyph(dpx, dpy), !IS_FLOOR(ltype)? lev->floortyp : 0, !IS_FLOOR(ltype) ? lev->floorsubtyp : 0, !IS_FLOOR(ltype) ? lev->floorvartyp : 0, FALSE);
             if (windowprocs.wincap2 & WC2_FADING_ANIMATIONS)
             {
@@ -577,7 +578,6 @@ dig(VOID_ARGS)
                 special_effect_wait_until_action(0);
                 special_effect_wait_until_end(0);
             }
-            digtxt = "You make an opening in the wall.";
         } 
         else if (lev->typ == SDOOR) 
         {
