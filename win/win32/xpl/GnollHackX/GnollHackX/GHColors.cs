@@ -9,7 +9,7 @@ using Xamarin.Forms;
 
 namespace GnollHackX
 {
-    public class GHColors
+    public static class GHColors
     {
 #if GNH_MAUI
         public static Color White = Colors.White;
@@ -39,6 +39,7 @@ namespace GnollHackX
         public static Color BrightBlue = new Color(180.0f / 255, 200 / 255, (float)0xFF / 255);
         public static Color BrightCyan = new Color(165.0f / 255, 255 / 255, (float)0xFF / 255);
         public static Color TitleGoldColor = new Color((float)0xD4 / 255, (float)0xA0 / 255, (float)0x17 / 255);
+        public static Color DarkGreen = new Color(0, 0.25f, 0);
 #else
         public static Color White = Color.White;
         public static Color Black = Color.Black;
@@ -67,9 +68,7 @@ namespace GnollHackX
         public static Color BrightBlue = new Color(180.0 / 255.0, 200.0 / 255.0, (double)0xFF / 255.0);
         public static Color BrightCyan = new Color(165.0 / 255.0, 255.0 / 255.0, (double)0xFF / 255.0);
         public static Color TitleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
+        public static Color DarkGreen = new Color(0, 0.25, 0);
 #endif
-        public GHColors() 
-        { 
-        }    
     }
 }

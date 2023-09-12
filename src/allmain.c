@@ -1539,7 +1539,7 @@ boolean new_game; /* false => restoring an old game */
         char postbuf[BUFSZ * 2];
         Sprintf(postbuf, "%s the%s %s %s has entered the dungeon on %s difficulty in %s mode", plname, buf, urace.adj,
             (currentgend&& urole.name.f) ? urole.name.f : urole.name.m, get_game_difficulty_text(context.game_difficulty), get_game_mode_text(FALSE));
-#ifdef DEBUG
+#if 0 //ifdef DEBUG
         IfModeAllowsPostToForum
         {
             issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_START, 0, postbuf);

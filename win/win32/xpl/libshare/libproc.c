@@ -192,6 +192,7 @@ void lib_askname(void)
                         }
                         else
                         {
+                            iflags.renameallowed = TRUE;
                             return;
                         }
                     }
@@ -227,6 +228,7 @@ void lib_askname(void)
         Strncpy(plname, ansbuf, PL_NSIZ - 1);
         plname[PL_NSIZ - 1] = '\0';
     }
+    iflags.renameallowed = TRUE;
 }
 
 void lib_get_nh_event(void)

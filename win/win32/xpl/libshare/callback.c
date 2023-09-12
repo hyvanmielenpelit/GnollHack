@@ -89,7 +89,12 @@ common_prompt_for_player_selection()
     winid win;
     anything any;
     menu_item* selected = 0;
+    int irole = flags.initrole, irace = flags.initrace, igend = flags.initgend, ialign = flags.initalign;
+    boolean did_pick_role, did_pick_race, did_pick_gender;
+    boolean picksomething = (flags.initrole == ROLE_NONE || flags.initrace == ROLE_NONE
+        || flags.initgend == ROLE_NONE || flags.initalign == ROLE_NONE);
 
+back_from_role:
     /* prevent an unnecessary prompt */
     rigid_role_checks();
 
@@ -143,6 +148,7 @@ common_prompt_for_player_selection()
         }
     }
 
+back_from_race:
     (void)root_plselection_prompt(plbuf, QBUFSZ - 1, flags.initrole,
         flags.initrace, flags.initgend,
         flags.initalign);
@@ -150,6 +156,7 @@ common_prompt_for_player_selection()
     /* Select a role, if necessary */
     /* we'll try to be compatible with pre-selected race/gender/alignment,
      * but may not succeed */
+    did_pick_role = FALSE, did_pick_race = FALSE, did_pick_gender = FALSE;
     if (flags.initrole < 0)
     {
         char rolenamebuf[QBUFSZ];
@@ -213,35 +220,55 @@ common_prompt_for_player_selection()
                     lastch = thisch;
                 }
             }
+            any.a_int = 0;
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+                MENU_UNSELECTED);
             any.a_int = pick_role(flags.initrace, flags.initgend,
                 flags.initalign, PICK_RANDOM) + 1;
             if (any.a_int == 0) /* must be non-zero */
                 any.a_int = randrole(FALSE) + 1;
             add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                 MENU_UNSELECTED);
-            any.a_int = i + 1; /* must be non-zero */
+            int back_int = i + 2;
+            any.a_int = back_int; /* must be non-zero */
+            add_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
+                MENU_UNSELECTED);
+            int quit_int = i + 1;
+            any.a_int = quit_int; /* must be non-zero */
             add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                 MENU_UNSELECTED);
             Sprintf(pbuf, "Pick a role for your %s", plbuf);
             end_menu(win, pbuf);
             n = select_menu(win, PICK_ONE, &selected);
             destroy_nhwindow(win);
+            did_pick_role = TRUE;
 
             /* Process the choice */
-            if (n != 1 || selected[0].item.a_int == any.a_int)
+            if (n != 1 || selected[0].item.a_int == quit_int)
                 goto give_up; /* Selected quit */
+            else if (selected[0].item.a_int == back_int)
+            {
+                free((genericptr_t)selected), selected = 0;
+                flags.initrole = irole;
+                flags.initrace = irace;
+                flags.initgend = igend;
+                flags.initalign = ialign;
+                goto back_from_role;
+            }
 
             flags.initrole = selected[0].item.a_int - 1;
             free((genericptr_t)selected), selected = 0;
         }
-        (void)root_plselection_prompt(plbuf, QBUFSZ - 1, flags.initrole,
-            flags.initrace, flags.initgend,
-            flags.initalign);
     }
 
     /* Select a race, if necessary */
     /* force compatibility with role, try for compatibility with
      * pre-selected gender/alignment */
+back_from_gender:
+    (void)root_plselection_prompt(plbuf, QBUFSZ - 1, flags.initrole,
+        flags.initrace, flags.initgend,
+        flags.initalign);
+    did_pick_race = FALSE, did_pick_gender = FALSE;
     if (flags.initrace < 0 || !validrace(flags.initrole, flags.initrace))
     {
         /* pre-selected race not valid */
@@ -302,35 +329,59 @@ common_prompt_for_player_selection()
                             ATR_NONE, NO_COLOR, races[i].noun, MENU_UNSELECTED);
                     }
 
+                any.a_int = 0;
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+                    MENU_UNSELECTED);
                 any.a_int = pick_race(flags.initrole, flags.initgend,
                     flags.initalign, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randrace(flags.initrole) + 1;
                 add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                     MENU_UNSELECTED);
-                any.a_int = i + 1; /* must be non-zero */
+                int back_int = i + 2;
+                any.a_int = back_int; /* must be non-zero */
+                add_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
+                    MENU_UNSELECTED);
+                int quit_int = i + 1;
+                any.a_int = quit_int; /* must be non-zero */
                 add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                     MENU_UNSELECTED);
                 Sprintf(pbuf, "Pick the race of your %s", plbuf);
                 end_menu(win, pbuf);
                 n = select_menu(win, PICK_ONE, &selected);
                 destroy_nhwindow(win);
-                if (n != 1 || selected[0].item.a_int == any.a_int)
+                did_pick_race = TRUE;
+
+                if (n != 1 || selected[0].item.a_int == quit_int)
                     goto give_up; /* Selected quit */
+                else if (selected[0].item.a_int == back_int)
+                {
+                    free((genericptr_t)selected), selected = 0;
+                    flags.initrole = irole;
+                    flags.initrace = irace;
+                    flags.initgend = igend;
+                    flags.initalign = ialign;
+                    if (!did_pick_role)
+                        goto back_from_role;
+                    else
+                        goto back_from_race;
+                }
 
                 k = selected[0].item.a_int - 1;
                 free((genericptr_t)selected), selected = 0;
             }
             flags.initrace = k;
         }
-        (void)root_plselection_prompt(plbuf, QBUFSZ - 1, flags.initrole,
-            flags.initrace, flags.initgend,
-            flags.initalign);
     }
 
     /* Select a gender, if necessary */
     /* force compatibility with role/race, try for compatibility with
      * pre-selected alignment */
+back_from_align:
+    (void)root_plselection_prompt(plbuf, QBUFSZ - 1, flags.initrole,
+        flags.initrace, flags.initgend,
+        flags.initalign);
+    did_pick_gender = FALSE;
     if (flags.initgend < 0
         || !validgend(flags.initrole, flags.initrace, flags.initgend))
     {
@@ -395,31 +446,60 @@ common_prompt_for_player_selection()
                             ATR_NONE, NO_COLOR, genders[i].adj, MENU_UNSELECTED);
                     }
 
+                any.a_int = 0;
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+                    MENU_UNSELECTED);
                 any.a_int = pick_gend(flags.initrole, flags.initrace,
                     flags.initalign, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randgend(flags.initrole, flags.initrace) + 1;
                 add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                     MENU_UNSELECTED);
-                any.a_int = i + 1; /* must be non-zero */
+                int back_int = i + 2;
+                any.a_int = back_int; /* must be non-zero */
+                add_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
+                    MENU_UNSELECTED);
+                int quit_int = i + 1;
+                any.a_int = quit_int; /* must be non-zero */
                 add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                     MENU_UNSELECTED);
                 Sprintf(pbuf, "Pick the gender of your %s", plbuf);
                 end_menu(win, pbuf);
                 n = select_menu(win, PICK_ONE, &selected);
                 destroy_nhwindow(win);
-                if (n != 1 || selected[0].item.a_int == any.a_int)
+                did_pick_gender = TRUE;
+                if (n != 1 || selected[0].item.a_int == quit_int)
                     goto give_up; /* Selected quit */
+                else if (selected[0].item.a_int == back_int)
+                {
+                    free((genericptr_t)selected), selected = 0;
+                    flags.initrace = irace;
+                    flags.initgend = igend;
+                    flags.initalign = ialign;
+                    if (!did_pick_race && !did_pick_role)
+                    {
+                        flags.initrole = irole;
+                        goto back_from_role;
+                    }
+                    else if (!did_pick_race)
+                    {
+                        flags.initrole = irole;
+                        goto back_from_race;
+                    }
+                    else
+                        goto back_from_gender;
+                }
 
                 k = selected[0].item.a_int - 1;
                 free((genericptr_t)selected), selected = 0;
             }
             flags.initgend = k;
         }
-        (void)root_plselection_prompt(plbuf, QBUFSZ - 1, flags.initrole,
-            flags.initrace, flags.initgend,
-            flags.initalign);
     }
+
+    (void)root_plselection_prompt(plbuf, QBUFSZ - 1, flags.initrole,
+        flags.initrace, flags.initgend,
+        flags.initalign);
 
     /* Select an alignment, if necessary */
     /* force compatibility with role/race/gender */
@@ -487,26 +567,146 @@ common_prompt_for_player_selection()
                             ATR_NONE, NO_COLOR, aligns[i].adj, MENU_UNSELECTED);
                     }
 
+                any.a_int = 0;
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+                    MENU_UNSELECTED);
                 any.a_int = pick_align(flags.initrole, flags.initrace,
                     flags.initgend, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randalign(flags.initrole, flags.initrace) + 1;
                 add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
                     MENU_UNSELECTED);
-                any.a_int = i + 1; /* must be non-zero */
+                int back_int = i + 2;
+                any.a_int = back_int; /* must be non-zero */
+                add_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
+                    MENU_UNSELECTED);
+                int quit_int = i + 1;
+                any.a_int = quit_int; /* must be non-zero */
                 add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                     MENU_UNSELECTED);
                 Sprintf(pbuf, "Pick the alignment of your %s", plbuf);
                 end_menu(win, pbuf);
                 n = select_menu(win, PICK_ONE, &selected);
                 destroy_nhwindow(win);
-                if (n != 1 || selected[0].item.a_int == any.a_int)
+                if (n != 1 || selected[0].item.a_int == quit_int)
                     goto give_up; /* Selected quit */
+                else if (selected[0].item.a_int == back_int)
+                {
+                    free((genericptr_t)selected), selected = 0;
+                    flags.initgend = igend;
+                    flags.initalign = ialign;
+                    if (!did_pick_role && !did_pick_race && !did_pick_gender)
+                    {
+                        flags.initrole = irole;
+                        flags.initrace = irace;
+                        goto back_from_role;
+                    }
+                    else if (!did_pick_race && !did_pick_gender)
+                    {
+                        flags.initrole = irole;
+                        flags.initrace = irace;
+                        goto back_from_race;
+                    }
+                    else if (!did_pick_gender)
+                    {
+                        flags.initrace = irace;
+                        goto back_from_gender;
+                    }
+                    else
+                        goto back_from_align;
+                }
 
                 k = selected[0].item.a_int - 1;
                 free((genericptr_t)selected), selected = 0;
             }
             flags.initalign = k;
+        }
+    }
+
+    boolean getconfirmation = (picksomething && pick4u != 'a' && !flags.randomall);
+    while (getconfirmation) 
+    {
+        int player_glyph_index = flags.initrole >= 0 && flags.initrace >= 0 && flags.initgend >= 0 && flags.initalign >= 0 ? 
+            player_to_glyph_index(flags.initrole,
+                flags.initrace,
+                flags.initgend,
+                aligns[flags.initalign].value,
+                0) 
+            : NO_GLYPH;
+        int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
+        win = create_nhwindow_ex(NHW_MENU, 0, glyph, zerocreatewindowinfo);
+        start_menu_ex(win, GHMENU_STYLE_ACCEPT_PLAYER);
+        any = zeroany; /* zero out all bits */
+        any.a_int = 1;
+        add_menu(win, NO_GLYPH, &any, 'y', 0, ATR_NONE, NO_COLOR, "Yes; start game",
+            MENU_SELECTED);
+        any.a_int = 2;
+        add_menu(win, NO_GLYPH, &any, 'n', 0, ATR_NONE, NO_COLOR,
+            "No; choose role again", MENU_UNSELECTED);
+        if (iflags.renameallowed) {
+            any.a_int = 3;
+            add_menu(win, NO_GLYPH, &any, 'a', 0, ATR_NONE, NO_COLOR,
+                "Not yet; choose another name", MENU_UNSELECTED);
+        }
+        any.a_int = -1;
+        add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
+            MENU_UNSELECTED);
+
+        if (!roles[flags.initrole].name.f
+            && (roles[flags.initrole].allow & ROLE_GENDMASK)
+            == (ROLE_MALE | ROLE_FEMALE))
+            Sprintf(plbuf, " %s", genders[flags.initgend].adj);
+        else
+            *plbuf = '\0'; /* omit redundant gender */
+        Sprintf(pbuf, "%s, %s%s %s %s", plname, aligns[flags.initalign].adj, plbuf,
+            races[flags.initrace].adj,
+            (flags.initgend == 1 && roles[flags.initrole].name.f) ? roles[flags.initrole].name.f
+            : roles[flags.initrole].name.m);
+
+        end_menu_ex(win, "Accept this character?", pbuf);
+        n = select_menu(win, PICK_ONE, &selected);
+        /* [pick-one menus with a preselected entry behave oddly...] */
+        int choice = (n > 0) ? selected[n - 1].item.a_int : (n == 0) ? 1 : -1;
+        if (selected)
+            free((genericptr_t)selected), selected = 0;
+        destroy_nhwindow(win);
+
+        switch (choice) {
+        default:          /* 'q' or ESC */
+            goto give_up; /* quit */
+            break;
+        case 3: { /* 'a' */
+            /*
+             * TODO: what, if anything, should be done if the name is
+             * changed to or from "wizard" after port-specific startup
+             * code has set flags.debug based on the original name?
+             */
+            int saveROLE, saveRACE, saveGEND, saveALGN;
+
+            iflags.renameinprogress = TRUE;
+            /* plnamesuffix() can change any or all of ROLE, RACE,
+               GEND, ALGN; we'll override that and honor only the name */
+            saveROLE = flags.initrole, saveRACE = flags.initrace, saveGEND = flags.initgend,
+                saveALGN = flags.initalign;
+            *plname = '\0';
+            plnamesuffix(); /* calls askname() when plname[] is empty */
+            flags.initrole = saveROLE, flags.initrace = saveRACE, flags.initgend = saveGEND,
+                flags.initalign = saveALGN;
+            iflags.renameinprogress = FALSE;
+            break; /* getconfirmation is still True */
+        }
+        case 2:    /* 'n' */
+            /* start fresh, but bypass "shall I pick everything for you?"
+               step; any partial role selection via config file, command
+               line, or name suffix is discarded this time */
+            pick4u = 'n';
+            flags.initrole = flags.initrace = flags.initgend = flags.initalign = ROLE_NONE;
+            goto back_from_race;
+            break;
+        case 1: /* 'y' or Space or Return/Enter */
+            /* success; drop out through end of function */
+            getconfirmation = FALSE;
+            break;
         }
     }
     /* Success! */

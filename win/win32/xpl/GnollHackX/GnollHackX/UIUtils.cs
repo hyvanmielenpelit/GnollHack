@@ -12,17 +12,6 @@ using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 
 namespace GnollHackX
 {
-    public enum canvas_page_types
-    {
-        MainGamePage = 0,
-        MenuPage,
-    }
-
-    public enum menu_page_types
-    {
-        NormalMenu = 0,
-    }
-
     public static class UIUtils
     {
         private static SKColor GHDarkGray = new SKColor(96, 96, 96);
@@ -287,6 +276,7 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                     res = 550;
                     break;
+                case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -359,6 +349,7 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                     break;
+                case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -423,6 +414,9 @@ namespace GnollHackX
                     break;
                 case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
+                    res = 24;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                     break;
@@ -528,6 +522,7 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                     break;
+                case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -590,6 +585,9 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                     break;
+                case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
+                    res = 21;
+                    break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -651,6 +649,66 @@ namespace GnollHackX
                     return true;
             }
         }
+
+        public static Color MenuSubtitleTextColor(ghmenu_styles style)
+        {
+            Color res = GHColors.Black;
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
+                    res = GHColors.DarkGreen;
+                    break;
+                default:
+                    break;
+            }
+            return res;
+        }
+
+        public static double MenuSubtitleOutlineWidth(ghmenu_styles style)
+        {
+            double res = 0;
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
+                    break;
+                default:
+                    break;
+            }
+            return res;
+        }
+
+        public static Color MenuSubtitleOutlineColor(ghmenu_styles style)
+        {
+            Color res = GHColors.Black;
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
+                    break;
+                default:
+                    break;
+            }
+            return res;
+        }
+
+        public static Thickness MenuSubtitleMargin(ghmenu_styles style, double width, double height)
+        {
+            Thickness res = GetSmallBorderThickness(width, height, 1.5);
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
+                    res.Left += 1;
+                    res.Right += 1;
+                    res.Top = 10;
+                    res.Bottom = 15;
+                    break;
+                default:
+                    res.Top = 2;
+                    res.Bottom = 6;
+                    break;
+            }
+            return res;
+        }
+
 
         public static bool StyleClosesMenuUponDestroy(ghmenu_styles style)
         {

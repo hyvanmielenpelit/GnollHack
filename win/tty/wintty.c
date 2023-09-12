@@ -1041,6 +1041,7 @@ tty_player_selection()
             plnamesuffix(); /* calls askname() when plname[] is empty */
             ROLE = saveROLE, RACE = saveRACE, GEND = saveGEND,
                 ALGN = saveALGN;
+            iflags.renameinprogress = FALSE;
             break; /* getconfirmation is still True */
         }
         case 2:    /* 'n' */

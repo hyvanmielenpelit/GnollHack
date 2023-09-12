@@ -2876,6 +2876,8 @@ namespace GnollHackX.Pages.Game
             {
                 MenuSubtitleLabel.IsVisible = false;
                 MenuSubtitleLabel.Text = "";
+                MenuSubtitleLabel.OutlineWidth = 0;
+                MenuSubtitleLabel.Margin = new Thickness();
             }
             else
             {
@@ -2886,6 +2888,10 @@ namespace GnollHackX.Pages.Game
                 MenuSubtitleLabel.UseSpecialSymbols = UIUtils.MenuSubtitleUsesSpecialSymbols(menuinfo.Style);
                 MenuSubtitleLabel.WordWrapSeparator = UIUtils.MenuSubtitleWordWrapSeparator(menuinfo.Style);
                 MenuSubtitleLabel.DisplayWrapSeparator = UIUtils.MenuSubtitleDisplayWrapSeparator(menuinfo.Style);
+                MenuSubtitleLabel.TextColor = UIUtils.MenuSubtitleTextColor(menuinfo.Style);
+                MenuSubtitleLabel.OutlineColor = UIUtils.MenuSubtitleOutlineColor(menuinfo.Style);
+                MenuSubtitleLabel.OutlineWidth = UIUtils.MenuSubtitleOutlineWidth(menuinfo.Style);
+                MenuSubtitleLabel.Margin = UIUtils.MenuSubtitleMargin(menuinfo.Style, CurrentPageWidth, CurrentPageHeight);
             }
 
             /* Reset glyph */
@@ -3188,29 +3194,11 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        //private object _canvasPageLock = new object();
-        //private canvas_page_types _canvasPage = 0;
         private GlyphImageSource _paintGlyphImageSource = new GlyphImageSource();
         private SKBitmap _paintBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            //canvas_page_types page = 0;
-            //lock (_canvasPageLock)
-            //{
-            //    page = _canvasPage;
-            //}
-
-            //switch (page)
-            //{
-            //    case canvas_page_types.MainGamePage:
-            //        PaintMainGamePage(sender, e);
-            //        break;
-            //    case canvas_page_types.MenuPage:
-            //        //MenuCanvas_PaintSurface(sender, e);
-            //        break;
-            //}
-
             PaintMainGamePage(sender, e);
 
 
@@ -10017,22 +10005,6 @@ namespace GnollHackX.Pages.Game
         private void canvasView_Touch(object sender, SKTouchEventArgs e)
         {
             canvasView_Touch_MainPage(sender, e);
-
-            //canvas_page_types page = 0;
-            //lock (_canvasPageLock)
-            //{
-            //    page = _canvasPage;
-            //}
-
-            //switch (page)
-            //{
-            //    case canvas_page_types.MainGamePage:
-            //        canvasView_Touch_MainPage(sender, e);
-            //        break;
-            //    case canvas_page_types.MenuPage:
-            //        //MenuCanvas_Touch(sender, e);
-            //        break;
-            //}
         }
 
         private void canvasView_Touch_MainPage(object sender, SKTouchEventArgs e)
@@ -12579,10 +12551,6 @@ namespace GnollHackX.Pages.Game
                 if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                     MenuCanvas.AbortAnimation("GeneralAnimationCounter");
                 MenuWindowGlyphImage.StopAnimation();
-                //lock (_canvasPageLock)
-                //{
-                //    _canvasPage = canvas_page_types.MainGamePage;
-                //}
                 lock (RefreshScreenLock)
                 {
                     RefreshScreen = true;

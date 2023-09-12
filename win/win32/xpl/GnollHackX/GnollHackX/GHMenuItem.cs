@@ -160,6 +160,7 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                         break;
+                    case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -333,6 +334,7 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                             res = "Immortal";
                             break;
+                        case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -402,6 +404,7 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                             break;
+                        case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -497,6 +500,7 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                         res = res * 15.0 / 15.0;
                         break;
+                    case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                         res = res * 18.0 / 15.0;
                         break;
@@ -733,6 +737,7 @@ namespace GnollHackX
                 res = fontspacing;
                 switch (_menuInfo.Style)
                 {
+                    case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                             float altsize = Math.Min((float)GHConstants.TileHeight, (Math.Min(canvaswidth, canvasheight) / 15.25f - bottompadding - toppadding));
                             if(altsize > fontspacing)
