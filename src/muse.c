@@ -1655,7 +1655,19 @@ register struct monst* origmonst;
                 else
                     pline_The("The wand hits you!");
 
-                losehp(damage, "wand", KILLED_BY_AN);
+                char kbuf[BUFSZ * 2], knam[BUFSZ] = "";
+                int kprefix = KILLED_BY;
+                if (origmonst)
+                {
+                    int mkprefix = KILLED_BY_AN;
+                    get_killer_name_and_format(origmonst, knam, &mkprefix);
+                    Sprintf(kbuf, "%s zapped by %s", killer_xname(otmp), mkprefix == KILLED_BY_AN ? an(knam) : knam);
+                }
+                else
+                {
+                    Sprintf(kbuf, "%s", killer_xname(otmp));
+                }
+                losehp(damage, kbuf, kprefix);
             }
             else
                 pline_The("wand misses you.");
