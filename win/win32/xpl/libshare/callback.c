@@ -547,9 +547,36 @@ back_from_align:
         char buf[BUFSZ];
         add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_TITLE, NO_COLOR, "Character Abilities",
             MENU_UNSELECTED);
+
+        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR, "Traits",
+            MENU_UNSELECTED);
+        for (i = 0; i < MAX_TRAIT_DESCRIPTIONS && races[flags.initrace].trait_descriptions[i] != 0 && *(races[flags.initrace].trait_descriptions[i]) != 0; i++)
+        {
+            Sprintf(buf, "%s", races[flags.initrace].trait_descriptions[i]);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+        for (i = 0; i < MAX_TRAIT_DESCRIPTIONS && roles[flags.initrole].trait_descriptions[i] != 0 && *(roles[flags.initrole].trait_descriptions[i]) != 0; i++)
+        {
+            Sprintf(buf, "%s", roles[flags.initrole].trait_descriptions[i]);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DASH, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+        if (aligns[flags.initalign].value == A_LAWFUL || aligns[flags.initalign].value == A_NEUTRAL)
+        {
+            Sprintf(buf, "%s", "Loses telepathy and luck if commits murder");
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+        if (aligns[flags.initalign].value == A_CHAOTIC)
+        {
+            Sprintf(buf, "%s", "Can sacrifice own race");
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+
         add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR, "Ability Scores",
             MENU_UNSELECTED);
-
         char statbuf[BUFSZ], minstr[BUFSZ], maxstr[BUFSZ];
         int sumbaseatrs = 0;
         for (i = A_STR; i < A_MAX; i++)
@@ -651,33 +678,6 @@ back_from_align:
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
             Sprintf(buf, "Per level: %s", get_advancement_description(flags.initrole, flags.initrace, 1, TRUE));
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
-                MENU_UNSELECTED);
-        }
-
-        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR, "Character Traits",
-            MENU_UNSELECTED);
-        for (i = 0; i < MAX_TRAIT_DESCRIPTIONS && races[flags.initrace].trait_descriptions[i] != 0 && *(races[flags.initrace].trait_descriptions[i]) != 0; i++)
-        {
-            Sprintf(buf, "%s", races[flags.initrace].trait_descriptions[i]);
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
-                MENU_UNSELECTED);
-        }
-        for (i = 0; i < MAX_TRAIT_DESCRIPTIONS && roles[flags.initrole].trait_descriptions[i] != 0 && *(roles[flags.initrole].trait_descriptions[i]) != 0; i++)
-        {
-            Sprintf(buf, "%s", roles[flags.initrole].trait_descriptions[i]);
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DASH, NO_COLOR, buf,
-                MENU_UNSELECTED);
-        }
-        if (aligns[flags.initalign].value == A_LAWFUL || aligns[flags.initalign].value == A_NEUTRAL)
-        {
-            Sprintf(buf, "%s", "Loses telepathy and luck if commits murder");
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
-                MENU_UNSELECTED);
-        }
-        if (aligns[flags.initalign].value == A_CHAOTIC)
-        {
-            Sprintf(buf, "%s", "Can sacrifice own race");
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
         }
