@@ -12,8 +12,10 @@
 
 /* #define BETA */  /* development or beta testing [MRS] */
 
+#ifndef GNH_MOBILE /* release version for mobile builds */
 #ifndef DEBUG  /* allow tool chains to define without causing warnings */
 #define DEBUG
+#endif
 #endif
 
 #if 0 /* Toggle memory leak detection on and off */

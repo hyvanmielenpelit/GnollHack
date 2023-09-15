@@ -354,6 +354,22 @@ LibTallyRealTime()
     tally_realtime();
 }
 
+int
+LibGetMaxManuals()
+{
+    return MAX_MANUAL_TYPES;
+}
+
+int
+LibIsDebug()
+{
+#ifdef DEBUG
+    return 1;
+#else
+    return 0;
+#endif
+}
+
 char gnhapi_putstr_buffer[BUFSZ * 4];
 void gnhapi_raw_print(const char* text)
 {

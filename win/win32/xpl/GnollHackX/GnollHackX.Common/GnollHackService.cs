@@ -276,6 +276,10 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibTallyRealTime();
         [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetMaxManuals();
+        [DllImport(PlatformConstants.dll)]
+        public static extern int LibIsDebug();
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibValidateSaveFile(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_buffer);
 
         private void LoadNativeLibrary(string libName)
@@ -941,6 +945,16 @@ namespace GnollHackX.Unknown
         public void TallyRealTime()
         {
             LibTallyRealTime();
+        }
+
+        public int GetMaxManuals()
+        {
+            return LibGetMaxManuals();
+        }
+
+        public bool IsDebug()
+        {
+            return LibIsDebug() != 0;
         }
 
         public bool ValidateSaveFile(string filename, out string res_str)
