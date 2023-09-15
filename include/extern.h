@@ -3121,6 +3121,7 @@ E int FDECL(death_glyph_to_player_mon, (int));
 E int FDECL(passive_defense_glyph_to_player_mon, (int));
 E int FDECL(special_attack2_glyph_to_player_mon, (int));
 E int FDECL(special_attack3_glyph_to_player_mon, (int));
+E const char* FDECL(get_advancement_description, (int, int, int, BOOLEAN_P));
 E void NDECL(save_initial_urolerace_values);
 E void NDECL(reset_urolerace);
 

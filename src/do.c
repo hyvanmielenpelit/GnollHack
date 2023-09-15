@@ -341,7 +341,7 @@ docharacterstatistics()
         {
             while (intrinsic_ability[table_index].ulevel > 0)
             {
-                if (intrinsic_ability[table_index].ulevel > u.ulevel&& intrinsic_ability[table_index].propid > 0)
+                if (intrinsic_ability[table_index].ulevel > u.ulevel && intrinsic_ability[table_index].propid > 0)
                 {
                     abil_count++;
 

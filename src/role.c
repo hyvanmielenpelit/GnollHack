@@ -62,9 +62,9 @@ const struct Role roles[] = {
           | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
       {  7, 10, 10, 13,  7,  7 },
-      { 20, 20, 20, 20, 20, 10 },
+      { 15, 20, 20, 20, 15, 10 },
       /* Init   Lower  Higher */
-      { 11, 0, 0, 8, 1, 0 }, /* Hit points */
+      { 11, 0, 1, 8, 1, 0 }, /* Hit points */
       { 3, 3, 1, 3, 1, 3 }, /* Energy 1d3+1*/
       MAXULEV,
       10,
@@ -142,7 +142,7 @@ const struct Role roles[] = {
       { 16, 7, 7, 15, 16, 6 },
       { 30, 6, 7, 20, 30, 7 },
       /* Init   Lower  Higher */
-      { 17, 0, 0, 12, 3, 0 }, /* Hit points */
+      { 17, 0, 1, 12, 3, 0 }, /* Hit points */
       { 0, 1, 0, 2, 0, 2 }, /* Energy 1d3*/
       MAXULEV,
       10,
@@ -218,9 +218,9 @@ const struct Role roles[] = {
           | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
       { 10, 7,  9,  7,  8, 6 },
-      { 30, 6, 20, 20, 30, 7 },
+      { 30, 5, 15, 15, 30, 5 },
       /* Init   Lower  Higher */
-      { 16, 0, 0, 12, 2, 1 }, /* Hit points */
+      { 16, 0, 1, 12, 3, 1 }, /* Hit points */
       { 1, 5, 1, 2, 1, 2 }, /* Energy 1d3-1*/
       MAXULEV,
       0,
@@ -297,7 +297,7 @@ const struct Role roles[] = {
       {  7,  13, 13, 10, 11, 16 },
       { 15, 20, 20, 15, 25, 5 },
       /* Init   Lower  Higher */
-      { 11, 0, 0, 7, 1, 0 }, /* Hit points */
+      { 11, 0, 1, 7, 1, 0 }, /* Hit points */
       { 6, 2, 2, 3, 2, 3 }, /* Energy 1d4+3*/
       MAXULEV,
       10,
@@ -374,7 +374,7 @@ const struct Role roles[] = {
       { 15,  7, 12,  8, 14, 17 },
       { 30, 5, 15, 20, 25, 5 },
       /* Init   Lower  Higher */
-      { 15, 0, 0, 11, 2, 1 }, /* Hit points */
+      { 15, 0, 1, 11, 3, 1 }, /* Hit points */
       { 2, 3, 1, 2, 1, 2 }, /* Energy 1d3+2*/
       MAXULEV,
       10,
@@ -456,9 +456,9 @@ const struct Role roles[] = {
           | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 10,  7, 10, 10, 10, 10 },
-      { 20, 10, 20, 20, 20, 15 },
+      { 20, 10, 20, 20, 20, 10 },
       /* Init   Lower  Higher */
-      { 12, 0, 0, 8, 1, 1 }, /* Hit points */
+      { 12, 0, 1, 8, 2, 1 }, /* Hit points */
       { 4, 3, 2, 2, 2, 2 }, /* Energy 1d4+2*/
       MAXULEV,
       10,
@@ -536,7 +536,7 @@ const struct Role roles[] = {
       { 7,   7, 13,  7,  7,  7 },
       { 15, 10, 30, 15, 20, 10 },
       /* Init   Lower  Higher */
-      { 12, 0, 0, 7, 1, 0 }, /* Hit points */
+      { 12, 0, 1, 7, 1, 0 }, /* Hit points */
       { 6, 2, 2, 3, 2, 3 },  /* Energy 1d4+4*/
       10,
       0,
@@ -615,7 +615,7 @@ const struct Role roles[] = {
       { 7,   7,  7, 16,  7,  6 },
       { 20, 10, 10, 30, 20, 10 },
       /* Init   Lower  Higher */
-      { 10, 0, 0, 8, 1, 0 }, /* Hit points */
+      { 10, 0, 1, 8, 1, 0 }, /* Hit points */
       { 3, 1, 1, 2, 1, 2 },  /* Energy 1d3*/
       11,
       10,
@@ -705,9 +705,9 @@ const struct Role roles[] = {
           | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
       { 13,  9,  9, 14, 13, 12 },
-      { 30, 10, 10, 30, 20, 10 },
+      { 30, 5, 10, 30, 20, 5 },
       /* Init   Lower  Higher */
-      { 13, 0, 0, 9, 1, 0 }, /* Hit points */
+      { 13, 0, 1, 9, 1, 0 }, /* Hit points */
       { 3, 1, 1, 2, 1, 2 },  /* Energy 1d3*/
       12,
       10,
@@ -784,7 +784,7 @@ const struct Role roles[] = {
       { 10,  8, 7, 10, 17, 6 },
       { 30, 10, 8, 30, 14, 8 },
       /* Init   Lower  Higher */
-      { 13, 0, 0, 9, 1, 1 }, /* Hit points */
+      { 13, 0, 1, 9, 2, 1 }, /* Hit points */
       { 0, 2, 0, 2, 0, 2 }, /* Energy  1d4*/
       MAXULEV,
       10,
@@ -861,7 +861,7 @@ const struct Role roles[] = {
       { 7,  10,  6,  7,  7, 10 },
       { 15, 10, 10, 15, 30, 20 },
       /* Init   Lower  Higher */
-      { 12, 0, 0, 6, 0, 1 }, /* Hit points */
+      { 12, 0, 1, 6, 1, 1 }, /* Hit points */
       { 3, 3, 0, 5, 0, 5 }, /* Energy */
       MAXULEV,
       0,
@@ -938,7 +938,7 @@ const struct Role roles[] = {
       { 10, 7, 7,  7, 10, 7 },
       { 30, 6, 7, 20, 30, 7 },
       /* Init   Lower  Higher */
-      { 14, 0, 0, 10, 2, 0 }, /* Hit points */
+      { 14, 0, 1, 10, 2, 0 }, /* Hit points */
       { 0, 1, 0, 2, 0, 2 },  /* Energy 1d3-1*/
       MAXULEV,
       0,
@@ -1016,7 +1016,7 @@ const struct Role roles[] = {
       {  7, 13,  7,  7,  7,  7 },
       { 10, 30, 10, 20, 20, 10 },
       /* Init   Lower  Higher */
-      { 10, 0, 0, 6, 0, 1 }, /* Hit points */
+      { 10, 0, 1, 6, 1, 1 }, /* Hit points */
       { 8, 2, 3, 3, 3, 3 }, /* Energy 1d6+4*/
       MAXULEV,
       0,
@@ -1149,7 +1149,7 @@ const struct Race races[] = {
         { 3, 3, 3, 3, 3, 3 },
         { STR18(100), 18, 18, 18, 18, 18 },
         /* Init   Lower  Higher */
-        { 2, 0, 0, 2, 1, 0 }, /* Hit points */
+        { 2, 0, 1, 2, 1, 0 }, /* Hit points */
         { 1, 2, 0, 2, 0, 2 }  /* Energy 1d4*/
     },
     {
@@ -1171,7 +1171,7 @@ const struct Race races[] = {
         { 3, 3, 3, 3, 3, 3 },
         { 18, 20, 20, 18, 16, 18 },
         /* Init   Lower  Higher */
-        { 1, 0, 0, 1, 1, 0 }, /* Hit points */
+        { 1, 0, 1, 1, 1, 0 }, /* Hit points */
         { 5, 5, 1, 2, 1, 2 }  /* Energy  1d6*/
     },
     {
@@ -1193,7 +1193,7 @@ const struct Race races[] = {
         { 3, 3, 3, 3, 3, 3 },
         { STR18(100), 16, 16, 20, 20, 16 },
         /* Init   Lower  Higher */
-        { 4, 0, 0, 3, 2, 0 }, /* Hit points */
+        { 4, 0, 1, 3, 2, 0 }, /* Hit points */
         { 0, 0, 0, 0, 0, 0 }  /* Energy 0d1*/
     },
     {
@@ -1215,7 +1215,7 @@ const struct Race races[] = {
         { 3, 3, 3, 3, 3, 3 },
         { STR18(100), 16, 16, 19, 19, 16 },
         /* Init   Lower  Higher */
-        { 3, 0, 0, 3, 1, 0 }, /* Hit points */
+        { 3, 0, 1, 3, 1, 0 }, /* Hit points */
         { 0, 2, 0, 1, 0, 1 }  /* Energy 1d3*/
     },
     {
@@ -1237,7 +1237,7 @@ const struct Race races[] = {
         { 3, 3, 3, 3, 3, 3 },
         { STR18(100), 16, 16, 18, 18, 16 },
         /* Init   Lower  Higher */
-        { 3, 0, 0, 3, 1, 0 }, /* Hit points */
+        { 3, 0, 1, 3, 1, 0 }, /* Hit points */
         { 0, 2, 0, 1, 0, 1 }  /* Energy 1d2*/
     },
             /* Array terminator */
@@ -3022,13 +3022,14 @@ enum action_tile_types action;
 }
 
 unsigned long 
-u_item_use_flags()
+u_item_use_flags(VOID_ARGS)
 {
     return u_action_flags(ACTION_TILE_ITEM_USE);
 }
 
 int
-glyph_to_player_mon(int glyph)
+glyph_to_player_mon(glyph)
+int glyph;
 {
     int offset = glyph - GLYPH_PLAYER_OFF;
 
@@ -3055,82 +3056,142 @@ glyph_to_player_mon(int glyph)
 }
 
 int
-attack_glyph_to_player_mon(int glyph)
+attack_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_ATTACK_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-throw_glyph_to_player_mon(int glyph)
+throw_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_THROW_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-fire_glyph_to_player_mon(int glyph)
+fire_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_FIRE_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-nodir_cast_glyph_to_player_mon(int glyph)
+nodir_cast_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_CAST_NODIR_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-dir_cast_glyph_to_player_mon(int glyph)
+dir_cast_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_CAST_DIR_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-special_attack_glyph_to_player_mon(int glyph)
+special_attack_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_SPECIAL_ATTACK_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-kick_glyph_to_player_mon(int glyph)
+kick_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_KICK_OFF + GLYPH_PLAYER_OFF);
 }
 
-
 int
-item_use_glyph_to_player_mon(int glyph)
+item_use_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_ITEM_USE_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-door_use_glyph_to_player_mon(int glyph)
+door_use_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_DOOR_USE_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-death_glyph_to_player_mon(int glyph)
+death_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_DEATH_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-special_attack3_glyph_to_player_mon(int glyph)
+special_attack3_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_SPECIAL_ATTACK_3_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-passive_defense_glyph_to_player_mon(int glyph)
+passive_defense_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_PASSIVE_DEFENSE_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-special_attack2_glyph_to_player_mon(int glyph)
+special_attack2_glyph_to_player_mon(glyph)
+int glyph;
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_SPECIAL_ATTACK_2_OFF + GLYPH_PLAYER_OFF);
+}
+
+const char*
+get_advancement_description(roleid, raceid, advtype, ismana)
+int roleid, raceid, advtype;
+boolean ismana;
+{
+    if (roleid < 0 || raceid < 0 || roleid >= NUM_ROLES || raceid >= NUM_RACES)
+        return "";
+
+    static char buf[BUFSZ];
+    int fix, rolernd, racernd;
+    const struct RoleAdvance* roleadv_ptr = ismana ? &roles[roleid].enadv : &roles[roleid].hpadv;
+    const struct RoleAdvance* raceadv_ptr = ismana ? &races[raceid].enadv : &races[raceid].hpadv;
+    switch (advtype)
+    {
+    default:
+    case 0:
+        fix = roleadv_ptr->infix + raceadv_ptr->infix;
+        rolernd = roleadv_ptr->inrnd;
+        racernd = raceadv_ptr->inrnd;
+        break;
+    case 1:
+        fix = roleadv_ptr->lofix + raceadv_ptr->lofix;
+        rolernd = roleadv_ptr->lornd;
+        racernd = raceadv_ptr->lornd;
+        break;
+    case 2:
+        fix = roleadv_ptr->hifix + raceadv_ptr->hifix;
+        rolernd = roleadv_ptr->hirnd;
+        racernd = raceadv_ptr->hirnd;
+        break;
+    }
+
+    *buf = 0;
+    if (rolernd > 0 || racernd > 0)
+    {
+        int totalrnd = rolernd + racernd + 1;
+        int mfix = fix - 1;
+        Sprintf(buf, "+1d%d", totalrnd);
+        if (mfix != 0)
+            Sprintf(eos(buf), "%s%d", mfix >= 0 ? "+" : "", mfix);
+    }
+    else
+    {
+        Sprintf(buf, "+%d", fix);
+    }
+    return buf;
 }
 
 NEARDATA struct Role saved_urole;

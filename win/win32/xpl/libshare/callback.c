@@ -5,83 +5,8 @@
 #include "hack.h"
 #include "callback.h"
 
-STATIC_DCL int NDECL(common_prompt_for_player_selection);
-
 int
 common_player_selection()
-{
-#if 0
-    if (iflags.wc_player_selection == VIA_DIALOG)
-    {
-        /* pick player type randomly (use pre-selected
-         * role/race/gender/alignment) */
-        if (flags.randomall)
-        {
-            if (flags.initrole < 0)
-            {
-                flags.initrole = pick_role(flags.initrace, flags.initgend,
-                    flags.initalign, PICK_RANDOM);
-                if (flags.initrole < 0)
-                {
-                    raw_print("Incompatible role!");
-                    flags.initrole = randrole(FALSE);
-                }
-            }
-
-            if (flags.initrace < 0
-                || !validrace(flags.initrole, flags.initrace))
-            {
-                flags.initrace = pick_race(flags.initrole, flags.initgend,
-                    flags.initalign, PICK_RANDOM);
-                if (flags.initrace < 0)
-                {
-                    raw_print("Incompatible race!");
-                    flags.initrace = randrace(flags.initrole);
-                }
-            }
-
-            if (flags.initgend < 0
-                || !validgend(flags.initrole, flags.initrace,
-                    flags.initgend))
-            {
-                flags.initgend = pick_gend(flags.initrole, flags.initrace,
-                    flags.initalign, PICK_RANDOM);
-                if (flags.initgend < 0)
-                {
-                    raw_print("Incompatible gender!");
-                    flags.initgend = randgend(flags.initrole, flags.initrace);
-                }
-            }
-
-            if (flags.initalign < 0
-                || !validalign(flags.initrole, flags.initrace,
-                    flags.initalign))
-            {
-                flags.initalign = pick_align(flags.initrole, flags.initrace,
-                    flags.initgend, PICK_RANDOM);
-                if (flags.initalign < 0)
-                {
-                    raw_print("Incompatible alignment!");
-                    flags.initalign =
-                        randalign(flags.initrole, flags.initrace);
-                }
-            }
-        }
-        else
-        {
-            return 1; /* Do callback */
-        }
-    }
-    else
-#endif
-    { /* iflags.wc_player_selection == VIA_PROMPTS */
-        return common_prompt_for_player_selection();
-    }
-    return 0;
-}
-
-STATIC_OVL int
-common_prompt_for_player_selection()
 {
     int i, k, n;
     char pick4u = 'n', thisch, lastch = 0;
@@ -104,44 +29,17 @@ back_from_role:
             || flags.initgend == ROLE_NONE || flags.initalign == ROLE_NONE)
         )
     {
-        /* int echoline; */
         char* prompt = build_plselection_prompt(
             pbuf, QBUFSZ, flags.initrole, flags.initrace, flags.initgend,
             flags.initalign, FALSE);
-
-        /* tty_putstr(BASE_WINDOW, 0, ""); */
-        /* echoline = wins[BASE_WINDOW]->cury; */
 
         pick4u = ynq2(prompt);
         if (pick4u == 'q')
             pick4u = '\033';
 
-        /* tty_putstr(BASE_WINDOW, 0, prompt); */
-        //do
-        //{
-        //    /* pick4u = lowc(readchar()); */
-        //    if (index(quitchars, pick4u))
-        //        pick4u = 'y';
-        //} while (!index(ynqchars, pick4u));
-
-        if ((int)strlen(prompt) + 1 < CO)
-        {
-            /* Echo choice and move back down line */
-            /* tty_putsym(BASE_WINDOW, (int)strlen(prompt)+1, echoline,
-             * pick4u); */
-             /* tty_putstr(BASE_WINDOW, 0, ""); */
-        }
-        else
-            /* Otherwise it's hard to tell where to echo, and things are
-             * wrapping a bit messily anyway, so (try to) make sure the next
-             * question shows up well and doesn't get wrapped at the
-             * bottom of the window.
-             */
-            /* tty_clear_nhwindow(BASE_WINDOW) */;
-
         if (pick4u != 'y' && pick4u != 'n')
         {
-        give_up: /* Quit */
+give_up: /* Quit */
             if (selected)
                 free((genericptr_t)selected);
             return 2; /* Exit Failure */
@@ -169,14 +67,11 @@ back_from_race:
                 flags.initalign, PICK_RANDOM);
             if (flags.initrole < 0)
             {
-                /* tty_putstr(BASE_WINDOW, 0, "Incompatible role!"); */
                 flags.initrole = randrole(FALSE);
             }
         }
         else
         {
-            /* tty_clear_nhwindow(BASE_WINDOW); */
-            /* tty_putstr(BASE_WINDOW, 0, "Choosing Character's Role"); */
             /* Prompt for a role */
             win = create_nhwindow(NHW_MENU);
             start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
@@ -277,7 +172,6 @@ back_from_gender:
             flags.initrace = pick_race(flags.initrole, flags.initgend,
                 flags.initalign, PICK_RANDOM);
             if (flags.initrace < 0) {
-                /* tty_putstr(BASE_WINDOW, 0, "Incompatible race!"); */
                 flags.initrace = randrace(flags.initrole);
             }
         }
@@ -309,8 +203,6 @@ back_from_gender:
             /* Permit the user to pick, if there is more than one */
             if (n > 1)
             {
-                /* tty_clear_nhwindow(BASE_WINDOW); */
-                /* tty_putstr(BASE_WINDOW, 0, "Choosing Race"); */
                 win = create_nhwindow(NHW_MENU);
                 start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
                 any = zeroany; /* zero out all bits */
@@ -426,8 +318,6 @@ back_from_align:
             /* Permit the user to pick, if there is more than one */
             if (n > 1)
             {
-                /* tty_clear_nhwindow(BASE_WINDOW); */
-                /* tty_putstr(BASE_WINDOW, 0, "Choosing Gender"); */
                 win = create_nhwindow(NHW_MENU);
                 start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
                 any = zeroany; /* zero out all bits */
@@ -547,8 +437,6 @@ back_from_align:
             /* Permit the user to pick, if there is more than one */
             if (n > 1)
             {
-                /* tty_clear_nhwindow(BASE_WINDOW); */
-                /* tty_putstr(BASE_WINDOW, 0, "Choosing Alignment"); */
                 win = create_nhwindow(NHW_MENU);
                 start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
                 any = zeroany; /* zero out all bits */
@@ -652,6 +540,185 @@ back_from_align:
         add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
             MENU_UNSELECTED);
 
+        any.a_int = 0;
+        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+            MENU_UNSELECTED);
+
+        char buf[BUFSZ];
+        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_TITLE, NO_COLOR, "Character Abilities",
+            MENU_UNSELECTED);
+        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR, "Ability Scores",
+            MENU_UNSELECTED);
+
+        char statbuf[BUFSZ], minstr[BUFSZ], maxstr[BUFSZ];
+        int sumbaseatrs = 0;
+        for (i = A_STR; i < A_MAX; i++)
+        {
+            sumbaseatrs += roles[flags.initrole].attrbase[i];
+            switch (i)
+            {
+            case A_STR:
+                Strcpy(statbuf, "Str");
+                break;
+            case A_DEX:
+                Strcpy(statbuf, "Dex");
+                break;
+            case A_CON:
+                Strcpy(statbuf, "Con");
+                break;
+            case A_INT:
+                Strcpy(statbuf, "Int");
+                break;
+            case A_WIS:
+                Strcpy(statbuf, "Wis");
+                break;
+            case A_CHA:
+                Strcpy(statbuf, "Cha");
+                break;
+            default:
+                Strcpy(statbuf, "");
+                break;
+            }
+            if (i == A_STR)
+            {
+                Sprintf(minstr, "%s", get_strength_string(races[flags.initrace].attrmin[i]));
+                Sprintf(maxstr, "%s", get_strength_string(races[flags.initrace].attrmax[i]));
+            }
+            else
+            {
+                Sprintf(minstr, "%d", races[flags.initrace].attrmin[i]);
+                Sprintf(maxstr, "%d", races[flags.initrace].attrmax[i]);
+            }
+            Sprintf(buf, "%s: Base:%2d Dist:%2d%% Min:%s Max:%s",
+                statbuf,
+                roles[flags.initrole].attrbase[i],
+                roles[flags.initrole].attrdist[i],
+                minstr, maxstr);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+        Sprintf(buf, "(%d randomly distributed ability scores)", SUM_INIT_ATTRIBUTES - sumbaseatrs);
+        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+            MENU_UNSELECTED);
+
+        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR, "Hit Point Advancement",
+            MENU_UNSELECTED);
+        if (roles[flags.initrole].xlev < MAXULEV)
+        {
+            Sprintf(buf, "Initial:         %s", get_advancement_description(flags.initrole, flags.initrace, 0, FALSE));
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+            Sprintf(buf, "Threshold level: %d", roles[flags.initrole].xlev);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+            Sprintf(buf, "Below threshold: %s per level", get_advancement_description(flags.initrole, flags.initrace, 1, FALSE));
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+            Sprintf(buf, "After threshold: %s per level", get_advancement_description(flags.initrole, flags.initrace, 2, FALSE));
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+        else
+        {
+            Sprintf(buf, "Initial:   %s", get_advancement_description(flags.initrole, flags.initrace, 0, FALSE));
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+            Sprintf(buf, "Per level: %s", get_advancement_description(flags.initrole, flags.initrace, 1, FALSE));
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+
+        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR, "Mana Advancement",
+            MENU_UNSELECTED);
+        if (roles[flags.initrole].xlev < MAXULEV)
+        {
+            Sprintf(buf, "Initial:         %s", get_advancement_description(flags.initrole, flags.initrace, 0, TRUE));
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+            Sprintf(buf, "Threshold level: %d", roles[flags.initrole].xlev);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+            Sprintf(buf, "Below threshold: %s per level", get_advancement_description(flags.initrole, flags.initrace, 1, TRUE));
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+            Sprintf(buf, "After threshold: %s per level", get_advancement_description(flags.initrole, flags.initrace, 2, TRUE));
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+        else
+        {
+            Sprintf(buf, "Initial:   %s", get_advancement_description(flags.initrole, flags.initrace, 0, TRUE));
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+            Sprintf(buf, "Per level: %s", get_advancement_description(flags.initrole, flags.initrace, 1, TRUE));
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+
+        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR, "Character Traits",
+            MENU_UNSELECTED);
+        for (i = 0; i < MAX_TRAIT_DESCRIPTIONS && races[flags.initrace].trait_descriptions[i] != 0 && *(races[flags.initrace].trait_descriptions[i]) != 0; i++)
+        {
+            Sprintf(buf, "%s", races[flags.initrace].trait_descriptions[i]);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+        for (i = 0; i < MAX_TRAIT_DESCRIPTIONS && roles[flags.initrole].trait_descriptions[i] != 0 && *(roles[flags.initrole].trait_descriptions[i]) != 0; i++)
+        {
+            Sprintf(buf, "%s", roles[flags.initrole].trait_descriptions[i]);
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DASH, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+        if (aligns[flags.initalign].value == A_LAWFUL || aligns[flags.initalign].value == A_NEUTRAL)
+        {
+            Sprintf(buf, "%s", "Loses telepathy and luck if commits murder");
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+        if (aligns[flags.initalign].value == A_CHAOTIC)
+        {
+            Sprintf(buf, "%s", "Can sacrifice own race");
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
+                MENU_UNSELECTED);
+        }
+
+        /* Level-up intrinsics */
+        for (i = 1; i <= 2; i++)
+        {
+            const struct innate* intrinsic_ability = (i == 1 ? race_abil(races[flags.initrace].monsternum) : role_abil(roles[flags.initrole].monsternum));
+            if (intrinsic_ability)
+            {
+                int abil_count = 0;
+                int table_index;
+                for (table_index = 0; intrinsic_ability[table_index].ulevel > 0; table_index++)
+                {
+                    if (intrinsic_ability[table_index].propid > 0)
+                    {
+                        abil_count++;
+                    }
+                }
+                if (abil_count > 0)
+                {
+                    Sprintf(buf, "Abilities from %s:", i == 1 ? "Race" : "Role");
+                    add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR, buf,
+                        MENU_UNSELECTED);
+                    for (table_index = 0;intrinsic_ability[table_index].ulevel > 0; table_index++)
+                    {
+                        if (intrinsic_ability[table_index].propid > 0)
+                        {
+                            char dbuf2[BUFSZ];
+                            Strcpy(dbuf2, get_property_name(intrinsic_ability[table_index].propid));
+                            *dbuf2 = highc(*dbuf2);
+
+                            Sprintf(buf, "Level %2d - %s", intrinsic_ability[table_index].ulevel, dbuf2);
+                            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DASH, NO_COLOR, buf,
+                                MENU_UNSELECTED);
+                        }
+                    }
+                }
+            }
+        }
+
         if (!roles[flags.initrole].name.f
             && (roles[flags.initrole].allow & ROLE_GENDMASK)
             == (ROLE_MALE | ROLE_FEMALE))
@@ -710,8 +777,6 @@ back_from_align:
         }
     }
     /* Success! */
-    /* tty_display_nhwindow(BASE_WINDOW, FALSE); */
-
     return 0;
 }
 

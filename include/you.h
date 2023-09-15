@@ -63,8 +63,6 @@ enum gender_types
     GENDER_NEUTER
 };
 
-
-
 /*** Substructures ***/
 
 struct RoleName {
@@ -623,5 +621,6 @@ struct you {
 }; /* end of `struct you' */
 
 #define Upolyd (u.umonnum != u.umonster)
+#define SUM_INIT_ATTRIBUTES 75
 
 #endif /* YOU_H */

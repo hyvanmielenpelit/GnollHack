@@ -335,6 +335,8 @@ namespace GnollHackX
                             res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
+                            res = "Immortal";
+                            break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -501,6 +503,11 @@ namespace GnollHackX
                         res = res * 15.0 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
+                        if(Identifier != 0)
+                            res = res * 18.0 / 15.0;
+                        else
+                            res = res * 14.0 / 15.0;
+                        break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                         res = res * 18.0 / 15.0;
                         break;
@@ -715,6 +722,7 @@ namespace GnollHackX
                 bool res = true;
                 switch(_menuInfo.Style)
                 {
+                    case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                     case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                         if (Identifier == 0 && HeadingGroupAccelerator == 0)

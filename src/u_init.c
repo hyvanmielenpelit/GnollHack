@@ -956,7 +956,7 @@ u_init()
     adjabil(0, 1);
     u.ulevel = u.ulevelmax = 1;
 
-    init_attr(75); /* init attribute values */
+    init_attr(SUM_INIT_ATTRIBUTES); /* init attribute values */
     max_rank_sz(); /* set max str size for class ranks */
 
     //With level and attributes known, calculate hp and maxhp, en, and maxen
