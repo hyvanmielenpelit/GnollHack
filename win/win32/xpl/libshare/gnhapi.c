@@ -401,7 +401,9 @@ LibValidateSaveFile(const char* filename, char* output_str)
     *gnhapi_putstr_buffer = 0;
 
     struct window_procs oldprocs = windowprocs;
+#ifdef SAFEPROCS
     windowprocs = *get_safe_procs(0);
+#endif
     windowprocs.win_putstr_ex = gnhapi_putstr_ex;
     windowprocs.win_putstr_ex2 = gnhapi_putstr_ex2;
     windowprocs.win_raw_print = gnhapi_raw_print;

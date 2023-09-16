@@ -661,7 +661,7 @@ E void FDECL(set_wounded_legs, (long, int));
 E void FDECL(heal_legs, (int));
 E boolean NDECL(floorexamine);
 E int FDECL(itemdescription, (struct obj*));
-E int FDECL(itemdescription_core, (struct obj*, int));
+E int FDECL(itemdescription_core, (struct obj*, int, struct item_description_stats*));
 E int FDECL(corpsedescription, (struct obj*));
 E void FDECL(printweight, (char*, int, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(monsterdescription, (struct monst*));

@@ -126,8 +126,6 @@ enum worm_tile_types
     MAX_WORM_TILES
 };
 
-
-
 struct replacement_info {
     int signed_glyph;
     int layer;
@@ -137,49 +135,6 @@ struct replacement_info {
     unsigned long missile_flags;
     unsigned char missile_material;
     short missile_special_quality;
-};
-
-struct skill_menu_info
-{
-    char skillname[64];
-    unsigned char skill_id;
-    unsigned char skilltype;
-    unsigned char current_level;
-    unsigned char advance_flags;
-    unsigned char skill_points_needed_to_advance;
-    unsigned char max_level;
-    const char* curlevelname;
-    const char* nextlevelname;
-    const char* maxlevelname;
-    unsigned char bonus1_type;
-    float curbonus1;
-    float nextbonus1;
-    unsigned char bonus2_type;
-    float curbonus2;
-    float nextbonus2;
-    unsigned char bonus3_type;
-    float curbonus3;
-    float nextbonus3;
-    unsigned char bonus4_type;
-    float curbonus4;
-    float nextbonus4;
-};
-
-struct spell_menu_info
-{
-    char spellname[64];
-    char schoolname[64];
-    short spell_id;
-    unsigned char school_id;
-    short level;
-    float mana_cost;
-    char stats[8];
-    short fail_percentage;
-    short cooldown_rounds;
-    short casts;
-    short adds;
-    char description[64];
-    char hotkey;
 };
 
 struct extended_menu_info {
@@ -434,7 +389,6 @@ enum special_view_types
     SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y,
     MAX_SPECIAL_VIEW_TYPES
 };
-
 
 struct special_view_info {
     enum special_view_types viewtype;
@@ -749,7 +703,6 @@ enum game_status_data_types
     GAME_STATUS_ATTACHMENT_DUMPLOG_HTML,
 };
 
-
 enum diagnostic_data_types
 {
     DIAGNOSTIC_DATA_GENERAL = 0,
@@ -757,7 +710,6 @@ enum diagnostic_data_types
     DIAGNOSTIC_DATA_PANIC,
     DIAGNOSTIC_DATA_CRASH_REPORT,
 };
-
 
 enum takeoff_wear_commands {
     TAKEOFF_WEAR_CMD_TAKEOFF = 0,
@@ -864,6 +816,18 @@ struct multishot_result {
     int wielder_attacks; /* Multishot due to the wielder skill */
     int weapon_attacks; /* Multishot due to the weapon */
     double average;
+};
+
+struct item_description_stats {
+    unsigned char stats_set;
+    unsigned char weapon_stats_printed;
+    unsigned char armor_stats_printed;
+    unsigned char wep_ac50pct_set;
+    double avg_damage;
+    double extra_damage;
+    int ac50pct;
+    int ac_bonus;
+    int mc_bonus;
 };
 
 enum dog_breeds {

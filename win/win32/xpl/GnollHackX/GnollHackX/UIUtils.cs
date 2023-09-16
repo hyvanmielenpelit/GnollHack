@@ -20,6 +20,7 @@ namespace GnollHackX
         private static SKColor GHRed = new SKColor(255, 32, 32);
         private static SKColor GHDarkRed = new SKColor(224, 0, 0);
         private static SKColor GHGreen = new SKColor(0, 255, 0);
+        private static SKColor GHRevertedBrightGreen = new SKColor(0, 160, 0);
         private static SKColor GHDarkGreen = new SKColor(0, 192, 0);
         private static SKColor GHBlue = new SKColor(112, 112, 255);
         private static SKColor GHDarkBlue = new SKColor(64, 64, 255);
@@ -109,9 +110,9 @@ namespace GnollHackX
                     break;
                 case nhcolor.CLR_BRIGHT_GREEN:
                     if (isselected)
-                        res = SKColors.Green;
+                        res = revertblackwhite ? SKColors.Green : GHGreen;
                     else
-                        res = SKColors.LightGreen;
+                        res = revertblackwhite ? GHRevertedBrightGreen : SKColors.LightGreen;
                     break;
                 case nhcolor.CLR_YELLOW:
                     if (isselected)
