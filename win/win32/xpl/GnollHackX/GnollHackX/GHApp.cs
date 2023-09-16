@@ -1271,13 +1271,20 @@ namespace GnollHackX
                         {
                             if (_moreBtnMatrix[k, i, j] != null && !string.IsNullOrEmpty(_moreBtnMatrix[k, i, j].ImageSourcePath))
                             {
-                                using (Stream stream = assembly.GetManifestResourceStream(_moreBtnMatrix[k, i, j].ImageSourcePath))
+                                try
                                 {
-                                    if (stream != null)
+                                    using (Stream stream = assembly.GetManifestResourceStream(_moreBtnMatrix[k, i, j].ImageSourcePath))
                                     {
-                                        _moreBtnBitmaps[k, i, j] = SKBitmap.Decode(stream);
-                                        _moreBtnBitmaps[k, i, j].SetImmutable(); ;
+                                        if (stream != null)
+                                        {
+                                            _moreBtnBitmaps[k, i, j] = SKBitmap.Decode(stream);
+                                            _moreBtnBitmaps[k, i, j].SetImmutable(); ;
+                                        }
                                     }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine(ex.Message);
                                 }
                             }
                         }
@@ -1515,9 +1522,12 @@ namespace GnollHackX
             new SelectableShortcutButton("Chat", "Chat", 'C', false, false, 0, AppResourceName + ".Assets.UI.chat.png"),
             new SelectableShortcutButton("Drink Potion", "Drink", 'q', false, false, 0, AppResourceName + ".Assets.UI.quaff.png"),
             new SelectableShortcutButton("Drop Items", "Drop Items", '%', false, false, 0, AppResourceName + ".Assets.UI.dropmany.png"),
-            new SelectableShortcutButton("Drop Item Types", "Drop Types", '%', false, false, 0, AppResourceName + ".Assets.UI.droptypes.png"),
+            new SelectableShortcutButton("Drop Item Types", "Drop Types", 'D', false, false, 0, AppResourceName + ".Assets.UI.droptypes.png"),
             new SelectableShortcutButton("Eat", "Eat", 'e', false, false, 0, AppResourceName + ".Assets.UI.eat.png"),
+            new SelectableShortcutButton("Engrave", "Engrave", 'E', false, false, 0, AppResourceName + ".Assets.UI.engrave.png"),
+            new SelectableShortcutButton("Examine Item", "Examine", 'x', false, true, 0, AppResourceName + ".Assets.UI.examine.png"),
             new SelectableShortcutButton("Fire Weapon", "Fire", 'f', false, false, 0, AppResourceName + ".Assets.UI.fire.png"),
+            new SelectableShortcutButton("Force Fight", "Fight", 'F', false, false, 0, AppResourceName + ".Assets.UI.fight.png"),
             new SelectableShortcutButton("Inventory", "Inventory", 'i', false, false, 0, AppResourceName + ".Assets.UI.inventory.png"),
             new SelectableShortcutButton("Kick", "Kick", 'k', false, false, 0, AppResourceName + ".Assets.UI.kick.png"),
             new SelectableShortcutButton("Read", "Read", 'r', false, false, 0, AppResourceName + ".Assets.UI.read.png"),
@@ -1525,12 +1535,15 @@ namespace GnollHackX
             new SelectableShortcutButton("Rest", "Rest", '\0', false, false, -103, AppResourceName + ".Assets.UI.rest.png"),
             new SelectableShortcutButton("Search", "Search", 's', false, false, 0, AppResourceName + ".Assets.UI.search.png"),
             new SelectableShortcutButton("Search 20 Times", "Search 20", '\0', false, false, -102, AppResourceName + ".Assets.UI.search20.png"),
+            new SelectableShortcutButton("Swap Handedness", "Handedness", 'h', false, true, 0, AppResourceName + ".Assets.UI.handedness.png"),
             new SelectableShortcutButton("Swap Weapon", "Swap", 'x', false, false, 0, AppResourceName + ".Assets.UI.swap.png"),
             new SelectableShortcutButton("Throw", "Throw", 't', false, false, 0, AppResourceName + ".Assets.UI.throw.png"),
             new SelectableShortcutButton("Travel", "Travel", '_', false, false, 0, AppResourceName + ".Assets.UI.travel.png"),
             new SelectableShortcutButton("Two-Weapon Fighting", "2-Weapon", 'x', true, false, 0, AppResourceName + ".Assets.UI.twoweap.png"),
             new SelectableShortcutButton("Untrap", "Untrap", 'u', false, true, 0, AppResourceName + ".Assets.UI.untrap.png"),
+            new SelectableShortcutButton("Unwield Weapon", "Unwield", '\0', false, false, GHUtils.Meta(5), AppResourceName + ".Assets.UI.unwield.png"),
             new SelectableShortcutButton("Wait", "Wait", '.', false, false, 0, AppResourceName + ".Assets.UI.wait.png"),
+            new SelectableShortcutButton("Wield Weapon", "Wield", 'w', false, false, 0, AppResourceName + ".Assets.UI.wield.png"),
             new SelectableShortcutButton("Yell for Companions", "Yell", 'y', false, false, 0, AppResourceName + ".Assets.UI.yell.png"),
             new SelectableShortcutButton("Zap Wand", "Zap", 'z', false, false, 0, AppResourceName + ".Assets.UI.zap.png"),
         };
