@@ -21,7 +21,6 @@ using GnollHackX.Pages.Game;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsPage : ContentPage
     {
@@ -56,6 +55,19 @@ namespace GnollHackX.Pages.MainScreen
             if (GHApp.DisplayRefreshRate >= 120.0f)
                 list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;
+
+            SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            SimpleCommandBarButton2Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            SimpleCommandBarButton3Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            SimpleCommandBarButton4Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            SimpleCommandBarButton5Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            SimpleCommandBarButton6Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            SimpleCommandBarButton1Picker.ItemDisplayBinding = new Binding("Name");
+            SimpleCommandBarButton2Picker.ItemDisplayBinding = new Binding("Name");
+            SimpleCommandBarButton3Picker.ItemDisplayBinding = new Binding("Name");
+            SimpleCommandBarButton4Picker.ItemDisplayBinding = new Binding("Name");
+            SimpleCommandBarButton5Picker.ItemDisplayBinding = new Binding("Name");
+            SimpleCommandBarButton6Picker.ItemDisplayBinding = new Binding("Name");
 
             SetInitialValues();
 
@@ -109,18 +121,6 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.CustomGameStatusLink = _customGameStatusLink;
             Preferences.Set("CustomGameStatusLink", _customGameStatusLink);
-
-            if (_gamePage != null)
-            {
-                if (_gamePage.UseSimpleCmdLayout != SimpleCmdLayoutSwitch.IsToggled)
-                {
-                    _gamePage.UseSimpleCmdLayout = SimpleCmdLayoutSwitch.IsToggled;
-                    Assembly assembly = GetType().GetTypeInfo().Assembly;
-                    GHApp.InitializeMoreCommandButtons(assembly, SimpleCmdLayoutSwitch.IsToggled);
-                    _gamePage.MoreCmdPage = 1;
-                }
-            }
-            Preferences.Set("UseSimpleCmdLayout", SimpleCmdLayoutSwitch.IsToggled);
 
             if (_gamePage != null)
                 _gamePage.MapGrid = GridSwitch.IsToggled;
@@ -191,6 +191,49 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("DebugLogMessages", GHApp.DebugLogMessages);
 
             Preferences.Set("DefaultMapNoClipMode", !YesClipNormalSwitch.IsToggled);
+
+            for(int i = 0; i < 6; i++)
+            {
+#if GNH_MAUI
+                Microsoft.Maui.Controls.Picker[] pickers = new Microsoft.Maui.Controls.Picker[6] 
+#else
+                Xamarin.Forms.Picker[] pickers = new Xamarin.Forms.Picker[6] 
+#endif
+                {
+                    SimpleCommandBarButton1Picker,
+                    SimpleCommandBarButton2Picker,
+                    SimpleCommandBarButton3Picker,
+                    SimpleCommandBarButton4Picker,
+                    SimpleCommandBarButton5Picker,
+                    SimpleCommandBarButton6Picker,
+                };
+#if GNH_MAUI
+                Microsoft.Maui.Controls.Picker targetPicker = pickers[i]; 
+#else
+                Xamarin.Forms.Picker targetPicker = pickers[i];
+#endif
+                string keystr = "SimpleUILayoutCommandButton" + (i + 1);
+                if (targetPicker.SelectedIndex < 0 || targetPicker.SelectedIndex >= GHApp.SelectableShortcutButtons.Count)
+                {
+                    if (Preferences.ContainsKey(keystr))
+                        Preferences.Remove(keystr);
+                }
+                else
+                {
+                    Preferences.Set(keystr, GHApp.SelectableShortcutButtons[targetPicker.SelectedIndex].GetCommand());
+                    if (_gamePage != null)
+                        _gamePage.SetSimpleLayoutCommandButton(i, targetPicker.SelectedIndex);
+                }
+            }
+
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+            GHApp.InitializeMoreCommandButtons(assembly, SimpleCmdLayoutSwitch.IsToggled);
+            if (_gamePage != null)
+            {
+                _gamePage.UseSimpleCmdLayout = SimpleCmdLayoutSwitch.IsToggled;
+                _gamePage.MoreCmdPage = 1;
+            }
+            Preferences.Set("UseSimpleCmdLayout", SimpleCmdLayoutSwitch.IsToggled);
 
             GHApp.SilentMode = SilentModeSwitch.IsToggled;
             Preferences.Set("SilentMode", GHApp.SilentMode);
@@ -340,6 +383,15 @@ namespace GnollHackX.Pages.MainScreen
             //bool altnoclipmode = GHConstants.DefaultMapAlternateNoClipMode, zoomchangecenter = GHConstants.DefaultZoomChangeCenterMode;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
+            int[] cmdidxs = new int[6];
+            for (int i = 0; i < 6; i++)
+            {
+                string keystr = "SimpleUILayoutCommandButton" + (i + 1);
+                int defCmd = GHApp.DefaultShortcutButton(0, i, true).GetCommand();
+                int savedCmd = Preferences.Get(keystr, defCmd);
+                int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
+                cmdidxs[i] = listselidx;
+            }
 
             silentmode = Preferences.Get("SilentMode", false);
             generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
@@ -495,9 +547,26 @@ namespace GnollHackX.Pages.MainScreen
             _customGameStatusLink = customlink;
             CustomLinkLabel.Text = customlink == "" ? "Default" : "Custom";
             CustomLinkButton.Text = customlink == "" ? "Add" : "Edit";
-            //CarouselSwitch.IsToggled = carousel;
-            //CarouselSwitch.IsEnabled = !GHApp.IsiOS;
-            //CarouselLabel.TextColor = !GHApp.IsiOS ? Color.Black : Color.Gray;
+
+            SimpleCommandBarButton1Picker.SelectedIndex = cmdidxs[0];
+            SimpleCommandBarButton2Picker.SelectedIndex = cmdidxs[1];
+            SimpleCommandBarButton3Picker.SelectedIndex = cmdidxs[2];
+            SimpleCommandBarButton4Picker.SelectedIndex = cmdidxs[3];
+            SimpleCommandBarButton5Picker.SelectedIndex = cmdidxs[4];
+            SimpleCommandBarButton6Picker.SelectedIndex = cmdidxs[5];
+            SimpleCommandBarButton1Picker.IsEnabled = simplecmdlayout;
+            SimpleCommandBarButton2Picker.IsEnabled = simplecmdlayout;
+            SimpleCommandBarButton3Picker.IsEnabled = simplecmdlayout;
+            SimpleCommandBarButton4Picker.IsEnabled = simplecmdlayout;
+            SimpleCommandBarButton5Picker.IsEnabled = simplecmdlayout;
+            SimpleCommandBarButton6Picker.IsEnabled = simplecmdlayout;
+            SimpleCommandBarButton1Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton2Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton3Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton4Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton5Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton6Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
+
             GeneralVolumeSlider.Value = (double)generalVolume;
             MusicVolumeSlider.Value = (double)musicVolume;
             AmbientVolumeSlider.Value = (double)ambientVolume;
@@ -796,6 +865,22 @@ namespace GnollHackX.Pages.MainScreen
                 lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }
+        }
+
+        private void SimpleCmdLayoutSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            SimpleCommandBarButton1Picker.IsEnabled = e.Value;
+            SimpleCommandBarButton2Picker.IsEnabled = e.Value;
+            SimpleCommandBarButton3Picker.IsEnabled = e.Value;
+            SimpleCommandBarButton4Picker.IsEnabled = e.Value;
+            SimpleCommandBarButton5Picker.IsEnabled = e.Value;
+            SimpleCommandBarButton6Picker.IsEnabled = e.Value;
+            SimpleCommandBarButton1Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton2Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton3Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton4Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton5Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton6Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
         }
     }
 }

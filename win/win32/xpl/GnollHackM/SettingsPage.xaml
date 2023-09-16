@@ -28,7 +28,7 @@
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                                    <Switch x:Name="SimpleCmdLayoutSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                    <Switch x:Name="SimpleCmdLayoutSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SimpleCmdLayoutSwitch_Toggled" />
                                 </StackLayout>
                             </ViewCell>
                             <ViewCell>
@@ -369,6 +369,132 @@
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
                                     <Switch x:Name="WallEndSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Bar Command 1" x:Name="SimpleCommandBarButton1Label"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Picker x:Name="SimpleCommandBarButton1Picker"
+                                            Title="Select command"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="200"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Bar Command 2" x:Name="SimpleCommandBarButton2Label"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Picker x:Name="SimpleCommandBarButton2Picker"
+                                            Title="Select command"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="200"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Bar Command 3" x:Name="SimpleCommandBarButton3Label"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Picker x:Name="SimpleCommandBarButton3Picker"
+                                            Title="Select command"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="200"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Bar Command 4" x:Name="SimpleCommandBarButton4Label"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Picker x:Name="SimpleCommandBarButton4Picker"
+                                            Title="Select command"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="200"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Bar Command 5" x:Name="SimpleCommandBarButton5Label"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Picker x:Name="SimpleCommandBarButton5Picker"
+                                            Title="Select command"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="200"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Bar Command 6" x:Name="SimpleCommandBarButton6Label"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Picker x:Name="SimpleCommandBarButton6Picker"
+                                            Title="Select command"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="200"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                    </Picker>
                                 </StackLayout>
                             </ViewCell>
                             <ViewCell>

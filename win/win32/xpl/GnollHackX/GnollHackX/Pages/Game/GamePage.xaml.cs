@@ -653,6 +653,16 @@ namespace GnollHackX.Pages.Game
             //MapAlternateNoClipMode = Preferences.Get("MapAlternateNoClipMode", GHConstants.DefaultMapAlternateNoClipMode);
             //ZoomChangeCenterMode = Preferences.Get("ZoomChangeCenterMode", GHConstants.DefaultZoomChangeCenterMode);
 
+            for (int i = 0; i < 6; i++)
+            {
+                string keystr = "SimpleUILayoutCommandButton" + (i + 1);
+                int defCmd = GHApp.DefaultShortcutButton(0, i, true).GetCommand();
+                int savedCmd = Preferences.Get(keystr, defCmd);
+                int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
+                if (listselidx >= 0)
+                    SetSimpleLayoutCommandButton(i, listselidx);
+            }
+
             ToggleTravelModeButton_Clicked(null, null);
             ZoomMiniMode = true;
             ZoomAlternateMode = true;
@@ -11344,7 +11354,32 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.DebugWriteRestart("GHButton_Clicked");
             LabeledImageButton ghbutton = (LabeledImageButton)sender;
-            GenericButton_Clicked(sender, e, (int)ghbutton.GHCommand);
+            switch ((int)ghbutton.GHCommand)
+            {
+                case -102:
+                    GenericButton_Clicked(sender, e, 'n');
+                    GenericButton_Clicked(sender, e, -12);
+                    GenericButton_Clicked(sender, e, -10);
+                    GenericButton_Clicked(sender, e, 's');
+                    break;
+                case -103:
+                    GenericButton_Clicked(sender, e, 'n');
+                    GenericButton_Clicked(sender, e, -12);
+                    GenericButton_Clicked(sender, e, -10);
+                    GenericButton_Clicked(sender, e, -10);
+                    GenericButton_Clicked(sender, e, '.');
+                    break;
+                case -104:
+                    GameMenuButton_Clicked(sender, e);
+                    break;
+                case -105:
+                    GenericButton_Clicked(sender, e, 'n');
+                    DoShowNumberPad();
+                    break;
+                default:
+                    GenericButton_Clicked(sender, e, (int)ghbutton.GHCommand);
+                    break;
+            }
         }
 
 
@@ -13495,23 +13530,23 @@ namespace GnollHackX.Pages.Game
                                             {
                                                 switch (cbi_cmd)
                                                 {
-                                                    case -2:
+                                                    case -102:
                                                         GenericButton_Clicked(sender, e, 'n');
                                                         GenericButton_Clicked(sender, e, -12);
                                                         GenericButton_Clicked(sender, e, -10);
                                                         GenericButton_Clicked(sender, e, 's');
                                                         break;
-                                                    case -3:
+                                                    case -103:
                                                         GenericButton_Clicked(sender, e, 'n');
                                                         GenericButton_Clicked(sender, e, -12);
                                                         GenericButton_Clicked(sender, e, -10);
                                                         GenericButton_Clicked(sender, e, -10);
                                                         GenericButton_Clicked(sender, e, '.');
                                                         break;
-                                                    case -4:
+                                                    case -104:
                                                         GameMenuButton_Clicked(sender, e);
                                                         break;
-                                                    case -5:
+                                                    case -105:
                                                         GenericButton_Clicked(sender, e, 'n');
                                                         DoShowNumberPad();
                                                         break;
@@ -14174,6 +14209,24 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
+        }
+
+        public void SetSimpleLayoutCommandButton(int btnCol, int btnSelectionIndex)
+        {
+            LabeledImageButton[] _simpleButtions = new LabeledImageButton[6] 
+            { lSimpleInventoryButton, lSimpleSearchButton, lSimpleSwapWeaponButton, lSimpleKickButton, lSimpleCastButton, lSimpleRepeatButton };
+            if (btnCol < 0 || btnCol >= _simpleButtions.Length) 
+                return;
+            LabeledImageButton targetButton = _simpleButtions[btnCol];
+            if (btnSelectionIndex < 0 || btnSelectionIndex >= GHApp.SelectableShortcutButtons.Count)
+                return;
+            SelectableShortcutButton sourceButton = GHApp.SelectableShortcutButtons[btnSelectionIndex];
+            targetButton.LblText = sourceButton.Label;
+            targetButton.BtnCommand = sourceButton.RawCommand;
+            targetButton.BtnLetter = sourceButton.Letter;
+            targetButton.BtnCtrl = sourceButton.Ctrl;
+            targetButton.BtnMeta = sourceButton.Meta;
+            targetButton.ImgSourcePath = sourceButton.ImageSourcePath;
         }
 
         public void StopWaitAndResumeSavedGame()
