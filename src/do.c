@@ -4431,7 +4431,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     Sprintf(buf, " %2d - Change in average damage is ", powercnt);
                     putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, NO_COLOR, 1);
                     double dmgdiff = wep_avg_dmg - cwep_stats.avg_damage;
-                    Sprintf(buf, "%.1f", dmgdiff);
+                    Sprintf(buf, "%s%.1f", dmgdiff >= 0 ? "+" : "", dmgdiff);
                     putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, dmgdiff > 0 ? CLR_BRIGHT_GREEN : dmgdiff < 0 ? CLR_RED : NO_COLOR, 0);
                     if (wep_ac50pct_stat_set && cwep_stats.wep_ac50pct_set)
                     {
@@ -4439,7 +4439,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                         Sprintf(buf, " %2d - Change in AC hit at 50%% chance is ", powercnt);
                         putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, NO_COLOR, 1);
                         int ac50pcthitdiff = wep_ac50pct_stat - cwep_stats.ac50pct;
-                        Sprintf(buf, "%d", ac50pcthitdiff);
+                        Sprintf(buf, "%s%d", ac50pcthitdiff >= 0 ? "+" : "", ac50pcthitdiff);
                         putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, ac50pcthitdiff < 0 ? CLR_BRIGHT_GREEN : ac50pcthitdiff > 0 ? CLR_RED : NO_COLOR, 0);
                     }
                 }
@@ -4481,13 +4481,13 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                         Sprintf(buf, " %2d - Change in AC is ", powercnt);
                         putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, NO_COLOR, 1);
                         int acdiff = totalacbonus - armor_stats.ac_bonus;
-                        Sprintf(buf, "%d", acdiff);
+                        Sprintf(buf, "%s%d", acdiff >= 0 ? "+" : "", acdiff);
                         putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, acdiff < 0 ? CLR_BRIGHT_GREEN : acdiff > 0 ? CLR_RED : NO_COLOR, 0);
                         powercnt++;
                         Sprintf(buf, " %2d - Change in MC is ", powercnt);
                         putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, NO_COLOR, 1);
                         int mcdiff = totalmcbonus - armor_stats.mc_bonus;
-                        Sprintf(buf, "%d", mcdiff);
+                        Sprintf(buf, "%s%d", mcdiff >= 0 ? "+" : "", mcdiff);
                         putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, mcdiff > 0 ? CLR_BRIGHT_GREEN : mcdiff < 0 ? CLR_RED : NO_COLOR, 0);
                     }
                 }
