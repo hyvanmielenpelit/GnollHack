@@ -99,10 +99,15 @@ struct simple_layer_info {
     unsigned o_id;  /* this is the o_id of the possibly moving boulder */
 };
 
+/* Location */
+#define LFLAGS_L_LEGAL                  0x00000001UL
+#define LFLAGS_L_ILLEGAL                0x00000002UL
+
 /* Objects */
+#define LFLAGS_O_PILE                   0x00004000UL
 #define LFLAGS_O_IN_PIT                 0x00008000UL
 #define LFLAGS_O_CHAIN                  0x00010000UL
-#define LFLAGS_O_MASK                   0x00018000UL
+#define LFLAGS_O_MASK                   0x0001C000UL
 
 /* Effects */
 #define LFLAGS_E_GEN_FADE_OUT           0x00020000UL

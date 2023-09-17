@@ -25,6 +25,8 @@ STATIC_DCL void FDECL(print_artifact_catalogue, (winid, struct obj*));
 STATIC_DCL int FDECL(CFDECLSPEC citemsortcmp, (const void*, const void*));
 STATIC_DCL int FDECL(CFDECLSPEC artilistsortcmp, (const void*, const void*));
 STATIC_DCL const char* FDECL(gettitle, (short*, const char* const*, int, int, unsigned long, unsigned long));
+STATIC_DCL void NDECL(set_valid_pos_flags);
+STATIC_DCL void NDECL(clear_valid_pos_flags);
 
 extern const char what_is_an_unknown_object[]; /* from pager.c */
 
@@ -45,16 +47,47 @@ nextmbuf()
  * parameter value 0 = initialize, 1 = highlight, 2 = done
  */
 STATIC_DCL void FDECL((*getpos_hilitefunc), (int)) = (void FDECL((*), (int))) 0;
-STATIC_DCL boolean FDECL((*getpos_getvalid), (int, int)) =
-                                           (boolean FDECL((*), (int, int))) 0;
+STATIC_DCL int FDECL((*getpos_getinvalid), (int, int)) =
+                                           (int FDECL((*), (int, int))) 0;
+
+STATIC_OVL void
+set_valid_pos_flags(VOID_ARGS)
+{
+    if (!getpos_getinvalid)
+        return;
+    int x, y;
+    for (x = 1; x < COLNO; x++)
+        for (y = 0; y < ROWNO; y++)
+        {
+            int getinvalidres = getpos_getinvalid(x, y);
+            switch (getinvalidres)
+            {
+            case 0: /* Valid */
+                add_glyph_buffer_layer_flags(x, y, LFLAGS_L_LEGAL, 0UL);
+                break;
+            case 2: /* Too short */
+                add_glyph_buffer_layer_flags(x, y, LFLAGS_L_ILLEGAL, 0UL);
+            }
+        }
+}
+
+STATIC_OVL void
+clear_valid_pos_flags(VOID_ARGS)
+{
+    int x, y;
+    for (x = 1; x < COLNO; x++)
+        for (y = 0; y < ROWNO; y++)
+            remove_glyph_buffer_layer_flags(x, y, LFLAGS_L_LEGAL | LFLAGS_L_ILLEGAL, 0UL);
+}
 
 void
-getpos_sethilite(gp_hilitef, gp_getvalidf)
+getpos_sethilite(gp_hilitef, gp_getinvalidf)
 void FDECL((*gp_hilitef), (int));
-boolean FDECL((*gp_getvalidf), (int, int));
+int FDECL((*gp_getinvalidf), (int, int));
 {
     getpos_hilitefunc = gp_hilitef;
-    getpos_getvalid = gp_getvalidf;
+    getpos_getinvalid = gp_getinvalidf;
+    set_valid_pos_flags();
 }
 
 STATIC_VAR const char *const gloc_descr[NUM_GLOCS][4] = {
@@ -161,7 +194,7 @@ const char *goal;
     if (!iflags.terrainmode) {
         char kbuf[BUFSZ];
 
-        if (getpos_getvalid) {
+        if (getpos_getinvalid) {
             Sprintf(sbuf, "Use '%s' or '%s' to move to valid locations.",
                     visctrl(Cmd.spkeys[NHKF_GETPOS_VALID_NEXT]),
                     visctrl(Cmd.spkeys[NHKF_GETPOS_VALID_PREV]));
@@ -397,8 +430,8 @@ int x, y, gloc;
                     || IS_UNEXPLORED_LOC(x, y + 1)
                     || IS_UNEXPLORED_LOC(x, y - 1)));
     case GLOC_VALID:
-        if (getpos_getvalid)
-            return (*getpos_getvalid)(x,y);
+        if (getpos_getinvalid)
+            return !(*getpos_getinvalid)(x,y);
         /*FALLTHRU*/
     case GLOC_INTERESTING:
         return gather_locs_interesting(x,y, GLOC_DOOR)
@@ -577,7 +610,7 @@ int cx, cy;
         custompline(SUPPRESS_HISTORY | STAY_ON_LINE,
                     "%s%s%s%s%s", firstmatch, *tmpbuf ? " " : "", tmpbuf,
                     (iflags.autodescribe
-                     && getpos_getvalid && !(*getpos_getvalid)(cx, cy))
+                     && getpos_getinvalid && (*getpos_getinvalid)(cx, cy))
                       ? " (illegal)" : "",
                     (iflags.getloc_travelmode && !is_valid_travelpt(cx, cy))
                       ? " (no travel path)" : "");
@@ -1096,7 +1129,7 @@ enum game_cursor_types cursor_style;
         if (garr[i])
             free((genericptr_t) garr[i]);
     getpos_hilitefunc = (void FDECL((*), (int))) 0;
-    getpos_getvalid = (boolean FDECL((*), (int, int))) 0;
+    getpos_getinvalid = (int FDECL((*), (int, int))) 0;
 
     flags.show_cursor_on_u = FALSE;
     flags.force_paint_at_cursor = TRUE;
@@ -1105,6 +1138,8 @@ enum game_cursor_types cursor_style;
     if (cursor_style != CURSOR_STYLE_TELEPORT_CURSOR)
         issue_simple_gui_command(GUI_CMD_RESTORE_TRAVEL_MODE);
     create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
+    clear_valid_pos_flags();
+    flush_screen(0);
 
     return result;
 }

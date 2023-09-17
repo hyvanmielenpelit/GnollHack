@@ -1668,13 +1668,13 @@ int x, y, otyp;
         || distu(x, y) > objects[otyp].oc_spell_range * objects[otyp].oc_spell_range));
 }
 
-boolean
-get_valid_stinking_cloud_pos(x,y)
-int x,y;
+int
+get_invalid_stinking_cloud_pos(x, y)
+int x, y;
 {
-    return (!(!isok(x,y) || !cansee(x, y)
-              || !ACCESSIBLE(levl[x][y].typ)
-              || distu(x, y) >= 32));
+    return !isok(x,y) || !cansee(x, y)
+              || !ACCESSIBLE(levl[x][y].typ) ? 1 :
+              distu(x, y) >= 32 ? 3 : 0;
 }
 
 boolean
@@ -1682,7 +1682,7 @@ is_valid_stinking_cloud_pos(x, y, showmsg)
 int x, y;
 boolean showmsg;
 {
-    if (!get_valid_stinking_cloud_pos(x,y)) {
+    if (get_invalid_stinking_cloud_pos(x,y)) {
         if (showmsg)
             You("smell rotten eggs.");
         return FALSE;
@@ -1704,7 +1704,7 @@ int state;
             for (dy = -dist; dy <= dist; dy++) {
                 x = u.ux + dx;
                 y = u.uy + dy;
-                if (get_valid_stinking_cloud_pos(x,y))
+                if (!get_invalid_stinking_cloud_pos(x,y))
                     tmp_at(x, y);
             }
     } else {
@@ -3078,7 +3078,7 @@ struct monst* targetmonst;
                     pline("This is a scroll of fire!");
                 pline("Where do you want to center the explosion?");
                 getpos_sethilite(display_stinking_cloud_positions,
-                                 get_valid_stinking_cloud_pos);
+                                 get_invalid_stinking_cloud_pos);
                 (void) getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR);
                 if (!is_valid_stinking_cloud_pos(cc.x, cc.y, FALSE)) 
                 {
@@ -3293,7 +3293,7 @@ struct monst* targetmonst;
         cc.x = u.ux;
         cc.y = u.uy;
         getpos_sethilite(display_stinking_cloud_positions,
-                         get_valid_stinking_cloud_pos);
+                         get_invalid_stinking_cloud_pos);
         if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0) 
         {
             if (!is_serviced_spell)

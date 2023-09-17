@@ -233,9 +233,12 @@ namespace GnollHackX
     public enum LayerFlags : ulong
     {
          None =                     0x00000000UL,
+         LFLAGS_L_LEGAL =           0x00000001UL,
+         LFLAGS_L_ILLEGAL =         0x00000002UL,
+         LFLAGS_O_PILE =            0x00004000UL,
          LFLAGS_O_IN_PIT =          0x00008000UL,
          LFLAGS_O_CHAIN =           0x00010000UL,
-         LFLAGS_O_MASK =            0x00018000UL,
+         LFLAGS_O_MASK =            0x0001C000UL,
          LFLAGS_E_GEN_FADE_OUT =    0x00020000UL,
          LFLAGS_E_BKG_FADE_IN =     0x00040000UL,
          LFLAGS_E_BKG_FADE_OUT =    0x00080000UL,

@@ -725,8 +725,8 @@ int x, y, show;
                 show_first_object_layer = FALSE;
         }
     }
-    //if (is_objpile(x, y) && !Hallucination)
-    //    add_glyph_buffer_layer_flags(x, y, LFLAGS_O_PILE);
+    if (is_objpile(x, y) && !Hallucination)
+        add_glyph_buffer_layer_flags(x, y, LFLAGS_O_PILE, 0UL);
 
     remember_topology(x, y);
 
