@@ -51,7 +51,7 @@ int
 docharacterstatistics()
 {
     int glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Upolyd ? u.mfemale : flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
-    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
     winid datawin = WIN_ERR;
     datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_SCREEN, gui_glyph, extended_create_window_info_from_mon_with_flags(&youmonst, WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS));
@@ -773,7 +773,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
     winid datawin = WIN_ERR;
     int glyph = obj ? obj_to_glyph(obj, rn2_on_display_rng) : otyp + GLYPH_OBJ_OFF;
-    int gui_glyph = obj ? maybe_get_replaced_glyph(glyph, obj->ox, obj->oy, data_to_replacement_info(glyph, LAYER_OBJECT, obj, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0)) : glyph;
+    int gui_glyph = obj ? maybe_get_replaced_glyph(glyph, obj->ox, obj->oy, data_to_replacement_info(glyph, LAYER_OBJECT, obj, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0)) : glyph;
 
     datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_DESCRIPTION_SCREEN, gui_glyph, extended_create_window_info_from_obj(obj));
 
@@ -4607,7 +4607,7 @@ struct permonst* ptr;
 
     winid datawin = WIN_ERR;
     int glyph = mon ? any_mon_to_glyph(mon, rn2_on_display_rng) : (int)(ptr - &mons[0]) + GLYPH_MON_OFF;
-    int gui_glyph = mon ? maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL, 0UL, MAT_NONE, 0)) : glyph;
+    int gui_glyph = mon ? maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL, 0UL, 0UL, MAT_NONE, 0)) : glyph;
 
     datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN, gui_glyph, extended_create_window_info_from_mon_with_flags(mon, WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS));
 

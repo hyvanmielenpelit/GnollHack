@@ -3830,8 +3830,6 @@ struct obj *otmp;
     int color = NO_COLOR, attr = ATR_NONE;
     if(iflags.use_menu_color)
         (void)get_menu_coloring(text, &color, &attr);
-    //int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-    //int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
     display_popup_text(text, "Item Identified", POPUP_TEXT_IDENTIFY, attr, color, NO_GLYPH, POPUP_FLAGS_COLOR_TEXT);
 
     return 1;
@@ -4266,7 +4264,7 @@ long pickcnt;
     xchar x = 0, y = 0;
     get_obj_location(otmp, &x, &y, CONTAINED_TOO | BURIED_TOO);
     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_COMMAND_MENU, gui_glyph, extended_create_window_info_from_obj(otmp));
@@ -4785,7 +4783,7 @@ nextclass:
             char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
 
             int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-            int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
+            int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
             add_extended_menu(win, gui_glyph, &any, ilet,
                 applied_class_accelerator,
                      ATR_NONE, NO_COLOR, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
@@ -5189,7 +5187,7 @@ char avoidlet;
                     }
                     any.a_char = ilet;
                     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-                    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
+                    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
                     add_extended_menu(win, gui_glyph,
                              &any, ilet, 0, ATR_NONE, NO_COLOR,
                              (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE) : doname_with_weight_first(otmp, TRUE)), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));

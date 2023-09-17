@@ -475,13 +475,13 @@ boolean use_detection_glyph;
 
     while (curr != wheads[worm->wormno]) {
         num = monnum_to_glyph(what_tail);
-        unsigned long extra_flags = (LFLAGS_M_WORM_SEEN | LFLAGS_M_WORM_TAIL | ((use_detection_glyph ? LFLAGS_M_DETECTED : 0UL) | (is_tame(worm) ? LFLAGS_M_PET : 0UL)));
-        show_monster_glyph_with_extra_info(curr->wx, curr->wy, num, worm, extra_flags, 0, 0);
+        unsigned long extra_mflags = (LMFLAGS_WORM_SEEN | LMFLAGS_WORM_TAIL | ((use_detection_glyph ? LMFLAGS_DETECTED : 0UL) | (is_tame(worm) ? LMFLAGS_PET : 0UL)));
+        show_monster_glyph_with_extra_info(curr->wx, curr->wy, num, worm, 0UL, extra_mflags, 0, 0);
         curr = curr->nseg;
     }
 
     if (wheads[worm->wormno] && isok(wheads[worm->wormno]->wx, wheads[worm->wormno]->wy))
-        add_glyph_buffer_layer_flags(wheads[worm->wormno]->wx, wheads[worm->wormno]->wy, LFLAGS_M_WORM_SEEN);
+        add_glyph_buffer_layer_flags(wheads[worm->wormno]->wx, wheads[worm->wormno]->wy, 0UL, LMFLAGS_WORM_SEEN);
 }
 
 /*

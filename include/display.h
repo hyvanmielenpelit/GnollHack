@@ -966,7 +966,7 @@
      ? (u.usteed->female == TRUE ? female_mon_to_glyph(u.usteed, rn2_on_display_rng) : mon_to_glyph(u.usteed, rn2_on_display_rng))  \
      : (otherwise_self))
 
-#define display_self() display_self_with_extra_info_choose_ascii(0UL, 0, 0, FALSE)
+#define display_self() display_self_with_extra_info_choose_ascii(0UL, 0UL, 0, 0, FALSE)
 
 
 #endif /* DISPLAY_H */

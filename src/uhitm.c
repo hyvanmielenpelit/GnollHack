@@ -5468,54 +5468,44 @@ m_wait_until_end()
 
 
 void
-display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_flags)
+display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_mflags)
 struct monst* mon;
 int x, y;
 enum hit_tile_types hit_symbol_shown;
 int damage_shown;
-unsigned long extra_flags;
+unsigned long extra_mflags;
 {
     if (!iflags.using_gui_tiles || hit_symbol_shown >= MAX_HIT_TILES || hit_symbol_shown < 0)
         return;
 
-    //reset_monster_origin_coordinates(mon);
-
-    //boolean is_you = (x == u.ux && y == u.uy);
-    unsigned long hflags = (LFLAGS_M_BEING_HIT | extra_flags);
-
-    //enum action_tile_types action_before = is_you ? u.action : mon->action;
-    show_extra_info(x, y, hflags, (short)(hit_symbol_shown - HIT_GENERAL), damage_shown);
-    //update_m_action(mon, ACTION_TILE_SPECIAL_ATTACK_3);
+    unsigned long mhflags = (LMFLAGS_BEING_HIT | extra_mflags);
+    show_extra_info(x, y, 0UL, mhflags, (short)(hit_symbol_shown - HIT_GENERAL), damage_shown);
     if(mon == &youmonst)
         u_wait_until_action();
     else
         m_wait_until_action();
-    //newsym_with_extra_info_and_flags(x, y, hflags, damage_shown, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
-    //flush_screen(is_you);
     flush_screen(1);
-    //adjusted_delay_output();
     adjusted_delay_output();
     adjusted_delay_output();
-    //update_m_action_core(mon, action_before, 0);
     newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
     flush_screen(1);
 }
 
 void
-display_u_being_hit(hit_symbol_shown, damage_shown, extra_flags)
+display_u_being_hit(hit_symbol_shown, damage_shown, extra_mflags)
 enum hit_tile_types hit_symbol_shown;
 int damage_shown;
-unsigned long extra_flags;
+unsigned long extra_mflags;
 {
-    display_being_hit(&youmonst, u.ux, u.uy, hit_symbol_shown, damage_shown, extra_flags);
+    display_being_hit(&youmonst, u.ux, u.uy, hit_symbol_shown, damage_shown, extra_mflags);
 }
 
 void
-display_m_being_hit(mon, hit_symbol_shown, damage_shown, extra_flags, use_bhitpos)
+display_m_being_hit(mon, hit_symbol_shown, damage_shown, extra_mflags, use_bhitpos)
 struct monst* mon;
 enum hit_tile_types hit_symbol_shown;
 int damage_shown;
-unsigned long extra_flags;
+unsigned long extra_mflags;
 boolean use_bhitpos;
 {
     if (!mon)
@@ -5524,7 +5514,7 @@ boolean use_bhitpos;
     int x = use_bhitpos ? bhitpos.x : mon->mx;
     int y = use_bhitpos ? bhitpos.y : mon->my;
     if(!(u.uswallow && mon == u.ustuck) && isok(x, y) && cansee(x, y)) // Show hit to invisible, if you can see the location
-        display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_flags);
+        display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_mflags);
 }
 
 /*uhitm.c*/

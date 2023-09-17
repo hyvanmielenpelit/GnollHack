@@ -3370,7 +3370,7 @@ unsigned long mdiedflags;
 
     if (!(mdiedflags & MONDIED_FLAGS_NO_DEATH_ACTION))
     {
-        add_glyph_buffer_layer_flags(mtmp->mx, mtmp->my, LFLAGS_M_KILLED);
+        add_glyph_buffer_layer_flags(mtmp->mx, mtmp->my, 0UL, LMFLAGS_KILLED);
         update_m_action_core(mtmp, ACTION_TILE_DEATH, 4, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
         m_wait_until_action();
     }
@@ -3537,7 +3537,7 @@ unsigned long mdiedflags;
         m_wait_until_end();
     }
 
-    remove_glyph_buffer_layer_flags(mtmp->mx, mtmp->my, LFLAGS_M_KILLED);
+    remove_glyph_buffer_layer_flags(mtmp->mx, mtmp->my, 0UL, LMFLAGS_KILLED);
     mtmp->action = ACTION_TILE_NO_ACTION;
 
     m_detach(mtmp, mptr, TRUE);

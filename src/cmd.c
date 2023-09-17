@@ -780,7 +780,7 @@ doability(VOID_ARGS)
         int abilitynum = 0;
         int glyph = 0;
         glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Upolyd ? u.mfemale : flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
-        int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
+        int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
         any = zeroany;
         win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, gui_glyph, extended_create_window_info_from_mon(&youmonst));
@@ -838,7 +838,7 @@ doability(VOID_ARGS)
             any = zeroany;
             any.a_int = abilitynum + 1;
             glyph = flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum);
-            gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
+            gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
             add_menu(win, gui_glyph, &any,
                 0, 0, ATR_NONE, NO_COLOR,
@@ -1053,7 +1053,7 @@ doability(VOID_ARGS)
                     any.a_int = abilitynum + 1;
 
                     glyph = abs(any_mon_to_glyph(mtmp, rn2_on_display_rng));
-                    gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, MAT_NONE, 0));
+                    gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
                     add_menu(win, gui_glyph, &any,
                         0, 0, ATR_NONE, NO_COLOR,
@@ -1110,7 +1110,7 @@ domonsterability(VOID_ARGS)
     winid win;
     int glyph, gui_glyph;
     glyph = abs(u_to_glyph());
-    gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
+    gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
     struct extended_create_window_info createinfo = extended_create_window_info_from_mon(&youmonst);
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_COMMAND_MENU, gui_glyph, createinfo);
@@ -1459,7 +1459,7 @@ winid win;
     {
         any = zeroany;
         glyph = abs(any_mon_to_glyph(u.usteed, rn2_on_display_rng));
-        gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, u.usteed, 0UL, 0UL, MAT_NONE, 0));
+        gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, u.usteed, 0UL, 0UL, 0UL, MAT_NONE, 0));
         if (win != WIN_ERR)
             add_extended_menu(win, gui_glyph, &any,
             0, 0, iflags.menu_headings, NO_COLOR,
@@ -3247,7 +3247,7 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
 {
     char buf[BUFSZ], tmpbuf[BUFSZ];
     int glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Upolyd ? u.mfemale : flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
-    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, MAT_NONE, 0));
+    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN, gui_glyph, extended_create_window_info_from_mon(&youmonst));
     en_via_menu = !final;

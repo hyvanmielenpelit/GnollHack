@@ -3409,8 +3409,8 @@ namespace GnollHackX.Pages.Game
             if (HitPointBars)
             {
                 /* Draw hit point bars */
-                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_YOU | LayerFlags.LFLAGS_UXUY | LayerFlags.LFLAGS_M_CANSPOTMON)) != 0
-                && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_WORM_TAIL)) == 0
+                if (((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_YOU | LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0 || (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
+                && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_WORM_TAIL)) == 0
                 && _mapData[mapx, mapy].Layers.monster_maxhp > 0)
                 {
                     int hp = _mapData[mapx, mapy].Layers.monster_hp;
@@ -3490,7 +3490,7 @@ namespace GnollHackX.Pages.Game
             }
 
             /* Monster targeting mark */
-            if (MonsterTargeting && !loc_is_you && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_CANSPOTMON)) != 0)
+            if (MonsterTargeting && !loc_is_you && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0)
             {
                 int cglyph = (int)game_ui_tile_types.MAIN_TILE_MARK + GHApp.UITileOff;
                 int ctile = GHApp.Glyph2Tile[cglyph];
@@ -3527,8 +3527,8 @@ namespace GnollHackX.Pages.Game
                 textPaint.TextAlign = SKTextAlign.Left;
             }
 
-            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_YOU | LayerFlags.LFLAGS_UXUY | LayerFlags.LFLAGS_M_CANSPOTMON)) != 0
-                && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_WORM_TAIL)) == 0)
+            if (((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_YOU | LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0 || (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
+                && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_WORM_TAIL)) == 0)
             {
                 /* Draw condition and status marks */
                 float x_scaling_factor = width / (float)(GHConstants.TileWidth);
@@ -3704,7 +3704,7 @@ namespace GnollHackX.Pages.Game
             }
 
             /* Draw death and hit markers */
-            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0)
+            if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0)
             {
                 int mglyph = (int)general_tile_types.GENERAL_TILE_DEATH + GHApp.GeneralTileOff;
                 int mtile = GHApp.Glyph2Tile[mglyph];
@@ -3716,7 +3716,7 @@ namespace GnollHackX.Pages.Game
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                 canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
             }
-            else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_BEING_HIT) != 0)
+            else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BEING_HIT) != 0)
             {
                 short hit_text_num = _mapData[mapx, mapy].Layers.hit_tile;
                 int mglyph = Math.Max(0, Math.Min((int)hit_tile_types.MAX_HIT_TILES - 1, (int)hit_text_num)) + GHApp.HitTileOff;
@@ -3885,14 +3885,14 @@ namespace GnollHackX.Pages.Game
                 }
 
                 /* Death transparency */
-                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0
+                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0
                     && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) != 0)
                 {
                     opaqueness = opaqueness * ((float)(20L - Math.Min(20L, generalcounterdiff))) / 20;
                 }
 
                 /* Hovering effect */
-                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) == 0)
+                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) == 0)
                 {
                     if((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LEVITATING) != 0)
                     {
@@ -3960,7 +3960,7 @@ namespace GnollHackX.Pages.Game
             float correction_y = 0f;
             if (is_monster_like_layer)
             {
-                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0
+                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0
                 && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
                 {
                     if (enlargement > 0)
@@ -3975,7 +3975,7 @@ namespace GnollHackX.Pages.Game
                         dscalex = dscaley = ((float)(90 - Math.Min(44L, generalcounterdiff))) / 90;
                 }
 
-                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) == 0
+                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) == 0
                     && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BLOBBY_ANIMATION) != 0)
                 {
                     long animationframe = generalcountervalue % _blobAnimation.Length;
@@ -4166,7 +4166,7 @@ namespace GnollHackX.Pages.Game
             canvas.Scale(sc_x, sc_y, 0, 0);
             if (is_monster_like_layer)
             {
-                if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0
+                if ((layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0
                 && (layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
                 {
                     /* Death rotation */
@@ -4616,15 +4616,15 @@ namespace GnollHackX.Pages.Game
 
                             bool is_long_worm_with_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_WITH_TAIL) != 0;
                             bool is_long_worm_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_TAIL) != 0;
-                            bool is_adj_worm_tail = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_TAIL) != 0;
-                            bool is_adj_worm_seen = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0;
+                            bool is_adj_worm_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_TAIL) != 0;
+                            bool is_adj_worm_seen = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_SEEN) != 0;
                             bool worm = !is_adj_worm_tail ? false : is_adj_worm_seen ? (worm_id_stored > 0 ? true : false) : true;
                             signed_glyph = GHApp.NoGlyph;
 
-                            if (worm && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0
+                            if (worm && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_SEEN) != 0
                                 && ((
                                 _mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0
-                                || is_adj_worm_seen || (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0))
+                                || is_adj_worm_seen || (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_SEEN) != 0))
                             {
                                 if (is_long_worm_with_tail && !is_adj_worm_tail)
                                 {
@@ -4855,7 +4855,7 @@ namespace GnollHackX.Pages.Game
         {
             sbyte mapAnimated = 0;
             int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
-            bool is_dropping_piercer = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_DROPPING_PIERCER) != 0;
+            bool is_dropping_piercer = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_DROPPING_PIERCER) != 0;
             lock (AnimationTimerLock)
             {
                 if (AnimationTimers.u_action_animation_counter_on && is_monster_or_shadow_layer && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))

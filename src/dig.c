@@ -2197,14 +2197,14 @@ struct obj* origobj;
             if (!use_old)
                 zap_tile_count++;
         }
-        remove_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_TRAILING_EDGE);
+        remove_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_TRAILING_EDGE, 0UL);
         if (!first_tile_found)
         {
-            add_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_TRAILING_EDGE);
+            add_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_TRAILING_EDGE, 0UL);
             first_tile_found = TRUE;
         }
-        remove_glyph_buffer_layer_flags(lzx, lzy, LFLAGS_ZAP_LEADING_EDGE);
-        add_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_LEADING_EDGE);
+        remove_glyph_buffer_layer_flags(lzx, lzy, LFLAGS_ZAP_LEADING_EDGE, 0UL);
+        add_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_LEADING_EDGE, 0UL);
         tmp_at(zx, zy);
         force_redraw_at(zx, zy);
         update_ambient_ray_sound_to_location(OBJECT_RAY_SOUNDSET_DIGBEAM, zx, zy);
@@ -2602,14 +2602,14 @@ struct obj* origobj;
             if (!use_old)
                 zap_tile_count++;
         }
-        remove_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_TRAILING_EDGE);
+        remove_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_TRAILING_EDGE, 0UL);
         if (!first_tile_found)
         {
-            add_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_TRAILING_EDGE);
+            add_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_TRAILING_EDGE, 0UL);
             first_tile_found = TRUE;
         }
-        remove_glyph_buffer_layer_flags(lzx, lzy, LFLAGS_ZAP_LEADING_EDGE);
-        add_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_LEADING_EDGE);
+        remove_glyph_buffer_layer_flags(lzx, lzy, LFLAGS_ZAP_LEADING_EDGE, 0UL);
+        add_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_LEADING_EDGE, 0UL);
         tmp_at(zx, zy);
 
         /* wait a little bit */

@@ -1903,11 +1903,12 @@ struct monst* mtmp;
     xchar sx = mtmp == &youmonst ? u.ux : mtmp->mx;
     xchar sy = mtmp == &youmonst ? u.uy : mtmp->my;
     struct layer_info li = isok(sx, sy) ? layers_at(sx, sy) : zerolayerinfo;
-    unsigned long layerflags = li.layer_flags;
-    boolean loc_is_you = mtmp == &youmonst; // (layerflags& LFLAGS_UXUY) != 0; //So you can separately see your steed stats properly
-    boolean ispeaceful = is_peaceful(mtmp) && !is_tame(mtmp); // (layerflags& LFLAGS_M_PEACEFUL) != 0;
-    boolean ispet = is_tame(mtmp); //  (layerflags& LFLAGS_M_PET) != 0;
-    boolean isdetected = (layerflags & LFLAGS_M_DETECTED) != 0;
+    //unsigned long layerflags = li.layer_flags;
+    unsigned long layermflags = li.monster_flags;
+    boolean loc_is_you = mtmp == &youmonst; // (layerflags & LFLAGS_UXUY) != 0; //So you can separately see your steed stats properly
+    boolean ispeaceful = is_peaceful(mtmp) && !is_tame(mtmp);
+    boolean ispet = is_tame(mtmp);
+    boolean isdetected = (layermflags & LMFLAGS_DETECTED) != 0;
     int condition_count = 0;
 
     char buf[BUFSZ];
@@ -9454,14 +9455,14 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     if(!use_old)
                         zap_tile_count++;
                 }
-                remove_glyph_buffer_layer_flags(sx, sy, LFLAGS_ZAP_TRAILING_EDGE);
+                remove_glyph_buffer_layer_flags(sx, sy, LFLAGS_ZAP_TRAILING_EDGE, 0UL);
                 if (!first_tile_found)
                 {
-                    add_glyph_buffer_layer_flags(sx, sy, LFLAGS_ZAP_TRAILING_EDGE);
+                    add_glyph_buffer_layer_flags(sx, sy, LFLAGS_ZAP_TRAILING_EDGE, 0UL);
                     first_tile_found = TRUE;
                 }
-                remove_glyph_buffer_layer_flags(lsx, lsy, LFLAGS_ZAP_LEADING_EDGE);
-                add_glyph_buffer_layer_flags(sx, sy, LFLAGS_ZAP_LEADING_EDGE);
+                remove_glyph_buffer_layer_flags(lsx, lsy, LFLAGS_ZAP_LEADING_EDGE, 0UL);
+                add_glyph_buffer_layer_flags(sx, sy, LFLAGS_ZAP_LEADING_EDGE, 0UL);
                 tmp_at(sx, sy);
                 force_redraw_at(sx, sy);
                 if (animations[anim].sound_play_frame > 0)

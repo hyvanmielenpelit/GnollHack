@@ -132,6 +132,7 @@ struct replacement_info {
     struct obj* object;
     struct monst* monster;
     unsigned long layer_flags;
+    unsigned long monster_flags;
     unsigned long missile_flags;
     unsigned char missile_material;
     short missile_special_quality;

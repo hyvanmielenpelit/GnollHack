@@ -2952,7 +2952,7 @@ struct monst *mtmp;
 #ifdef CLIPPING
     cliparound(mtmp->mx, mtmp->my, FALSE);
 #endif
-    show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, rn2), mtmp, 0UL, 0, 0);
+    show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, rn2), mtmp, 0UL, 0UL, 0, 0);
     display_self();
     You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "aggravated at %s.", noit_mon_nam(mtmp));
     create_context_menu(CREATE_CONTEXT_MENU_BLOCKING_WINDOW);

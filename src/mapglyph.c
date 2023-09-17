@@ -518,10 +518,10 @@ unsigned long *ospecial;
         offset = (glyph - GLYPH_MON_OFF);
 normal_monster_here:
         {
-            boolean ispet = (layers.layer_flags & LFLAGS_M_PET) != 0;
-            boolean ispeaceful = (layers.layer_flags & LFLAGS_M_PEACEFUL) != 0;
-            boolean isdetected = ((layers.layer_flags & LFLAGS_M_DETECTED) != 0 || (def_monsyms[(int)mons[offset].mlet].sym == ' ' && (layers.layer_flags & LFLAGS_SHOWING_DETECTION) != 0));
-            boolean isridden = (layers.layer_flags & LFLAGS_M_RIDDEN) != 0;
+            boolean ispet = (layers.monster_flags & LMFLAGS_PET) != 0;
+            boolean ispeaceful = (layers.monster_flags & LMFLAGS_PEACEFUL) != 0;
+            boolean isdetected = ((layers.monster_flags & LMFLAGS_DETECTED) != 0 || (def_monsyms[(int)mons[offset].mlet].sym == ' ' && (layers.layer_flags & LFLAGS_SHOWING_DETECTION) != 0));
+            boolean isridden = (layers.monster_flags & LMFLAGS_RIDDEN) != 0;
             boolean issaddled = (layers.status_bits & (1UL << STATUS_MARK_SADDLED)) != 0;
 
             /* set special flags */

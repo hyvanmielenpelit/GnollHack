@@ -511,7 +511,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
                     mimic_obj.oy = y;
                     mimic_obj.glyph = obj_to_glyph(&mimic_obj, newsym_rn2);
                     mimic_obj.gui_glyph = maybe_get_replaced_glyph(mimic_obj.glyph, x, y, data_to_replacement_info(mimic_obj.glyph,
-                        is_obj_drawn_in_front(&mimic_obj) ? LAYER_COVER_OBJECT : LAYER_OBJECT, &mimic_obj, (struct monst*)0, 0UL, 0UL, MAT_NONE, 0));
+                        is_obj_drawn_in_front(&mimic_obj) ? LAYER_COVER_OBJECT : LAYER_OBJECT, &mimic_obj, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
                 }
             }
             if (has_obj_mimic)
@@ -1020,7 +1020,7 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
         return;
 
     mi_ptr->glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
-    mi_ptr->gui_glyph = maybe_get_replaced_glyph(mi_ptr->glyph, mtmp->mx, mtmp->my, data_to_replacement_info(mi_ptr->glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, MAT_NONE, 0));
+    mi_ptr->gui_glyph = maybe_get_replaced_glyph(mi_ptr->glyph, mtmp->mx, mtmp->my, data_to_replacement_info(mi_ptr->glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
     char tempbuf[BUFSIZ] = "";
     if (has_umname(mtmp))
