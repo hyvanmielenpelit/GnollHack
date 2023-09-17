@@ -2059,7 +2059,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
             if (!aflag && (context.first_time_cmd || !occupation))
             {
                 play_simple_player_sound_with_flags(MONSTER_SOUND_TYPE_SEARCH, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING);
-                display_gui_effect(u.ux, u.uy, GUI_EFFECT_SEARCH, 0UL);
+                display_gui_effect(GUI_EFFECT_SEARCH, 0, u.ux, u.uy, 0, 0, 0UL);
                 if (iflags.using_gui_sounds)
                     delay_output_milliseconds(10 * ANIMATION_FRAME_INTERVAL);
             }

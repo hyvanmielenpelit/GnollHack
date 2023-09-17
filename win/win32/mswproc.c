@@ -3928,7 +3928,7 @@ mswin_display_popup_text(const char* text, const char* title, int style, int att
 }
 
 void
-mswin_display_gui_effect(int x, int y, int style, unsigned long tflags)
+mswin_display_gui_effect(int style, int subtype, int x, int y, int x2, int y2, unsigned long tflags)
 {
 
 }

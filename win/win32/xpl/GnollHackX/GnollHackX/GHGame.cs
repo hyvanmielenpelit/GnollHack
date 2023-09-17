@@ -1476,15 +1476,18 @@ namespace GnollHackX
             }
         }
 
-        public void ClientCallback_DisplayGUIEffect(int x, int y, int style, ulong tflags)
+        public void ClientCallback_DisplayGUIEffect(int style, int subtype, int x, int y, int x2, int y2, ulong tflags)
         {
             ConcurrentQueue<GHRequest> queue;
             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 DisplayGUIEffectData effectData = new DisplayGUIEffectData();
+                effectData.style = style;
+                effectData.subtype = subtype;
                 effectData.x = x;
                 effectData.y = y;
-                effectData.style = style;
+                effectData.x2 = x2;
+                effectData.y2 = y2;
                 effectData.tflags = tflags;
                 queue.Enqueue(new GHRequest(this, GHRequestType.DisplayGUIEffect, effectData));
             }

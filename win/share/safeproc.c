@@ -613,7 +613,7 @@ safe_display_popup_text(const char* text UNUSED, const char* title UNUSED, int s
 }
 
 void
-safe_display_gui_effect(int x UNUSED, int y UNUSED, int style UNUSED, unsigned long tflags UNUSED)
+safe_display_gui_effect(int style UNUSED, int subtype UNUSED, int x UNUSED, int y UNUSED, int x2 UNUSED, int y2 UNUSED, unsigned long tflags UNUSED)
 {
     return;
 }

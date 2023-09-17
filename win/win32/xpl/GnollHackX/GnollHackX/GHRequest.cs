@@ -83,9 +83,12 @@ namespace GnollHackX
 
     public struct DisplayGUIEffectData
     {
+        public int style;
+        public int subtype;
         public int x;
         public int y;
-        public int style;
+        public int x2;
+        public int y2;
         public ulong tflags;
     }
 

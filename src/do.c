@@ -7639,7 +7639,7 @@ donull()
 {
     if (context.first_time_cmd || !occupation)
     {
-        display_gui_effect(u.ux, u.uy, GUI_EFFECT_WAIT, 0UL);
+        display_gui_effect(GUI_EFFECT_WAIT, 0, u.ux, u.uy, 0, 0, 0UL);
     }
 
     return 1; /* Do nothing, but let other things happen */

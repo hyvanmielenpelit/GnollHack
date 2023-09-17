@@ -25,10 +25,13 @@ namespace GnollHackX
             _animationFrequency = Math.Max(1, UIUtils.GetMainCanvasAnimationFrequency(_gamePage.MapRefreshRate));
         }
 
+        public int Style { get { return _data.style; } }
+        public int SubType { get { return _data.subtype; } }
         public int X { get { return _data.x; } }
         public int Y { get { return _data.y; } }
+        public int X2 { get { return _data.x2; } }
+        public int Y2 { get { return _data.y2; } }
         public long CreatedAt { get { return _created_at_count; } }
-        public int Style { get { return _data.style; } }
 
         public float GetFinishTime()
         {
