@@ -93,9 +93,11 @@ namespace GnollHackX
             return p;
         }
 
-        private static readonly SKColor GHMetalGray = new SKColor(144, 144, 152);
+        private static readonly SKColor GHLightMetalGray = new SKColor(152, 152, 160);
+        private static readonly SKColor GHMetalGray = new SKColor(128, 128, 134);
         private static readonly SKColor GHDarkMetalGray = new SKColor(64, 64, 72);
-        private static readonly SKColor GHBrown = new SKColor(0x77, 0x5A, 0x2A);
+        private static readonly SKColor GHLightBrown = new SKColor(0x77, 0x5A, 0x2A);
+        private static readonly SKColor GHBrown = new SKColor(0x66, 0x4A, 0x24);
         private static readonly SKColor GHDarkBrown = new SKColor(0x55, 0x3A, 0x1A);
         public SKColor GetBaseColor(long counter_value)
         {
@@ -151,7 +153,33 @@ namespace GnollHackX
         {
             return GetTimedColor(GetBaseOutlineColor(counter_value), counter_value);
         }
-
+        public SKColor GetBaseInnerColor(long counter_value)
+        {
+            switch (_data.style)
+            {
+                case (int)gui_effect_types.GUI_EFFECT_SEARCH:
+                case (int)gui_effect_types.GUI_EFFECT_WAIT:
+                    return SKColors.White;
+                case (int)gui_effect_types.GUI_EFFECT_POLEARM:
+                    switch (_data.subtype)
+                    {
+                        case (int)gui_polearm_types.GUI_POLEARM_THRUSTED:
+                        case (int)gui_polearm_types.GUI_POLEARM_POLEAXE:
+                        case (int)gui_polearm_types.GUI_POLEARM_SPEAR:
+                            return GHLightBrown;
+                        case (int)gui_polearm_types.GUI_POLEARM_LANCE:
+                            return GHLightMetalGray;
+                        default:
+                            return SKColors.Gray;
+                    }
+                default:
+                    return SKColors.Red;
+            }
+        }
+        public SKColor GetInnerColor(long counter_value)
+        {
+            return GetTimedColor(GetBaseInnerColor(counter_value), counter_value);
+        }
         public SKColor GetSecondaryBaseColor(long counter_value)
         {
             switch (_data.style)
@@ -205,6 +233,33 @@ namespace GnollHackX
         public SKColor GetSecondaryOutlineColor(long counter_value)
         {
             return GetTimedColor(GetSecondaryBaseOutlineColor(counter_value), counter_value);
+        }
+        public SKColor GetSecondaryBaseInnerColor(long counter_value)
+        {
+            switch (_data.style)
+            {
+                case (int)gui_effect_types.GUI_EFFECT_SEARCH:
+                case (int)gui_effect_types.GUI_EFFECT_WAIT:
+                    return SKColors.White;
+                case (int)gui_effect_types.GUI_EFFECT_POLEARM:
+                    switch (_data.subtype)
+                    {
+                        case (int)gui_polearm_types.GUI_POLEARM_THRUSTED:
+                        case (int)gui_polearm_types.GUI_POLEARM_POLEAXE:
+                        case (int)gui_polearm_types.GUI_POLEARM_SPEAR:
+                            return GHLightMetalGray;
+                        case (int)gui_polearm_types.GUI_POLEARM_LANCE:
+                            return GHLightBrown;
+                        default:
+                            return SKColors.White;
+                    }
+                default:
+                    return SKColors.Crimson;
+            }
+        }
+        public SKColor GetSecondaryInnerColor(long counter_value)
+        {
+            return GetTimedColor(GetSecondaryBaseInnerColor(counter_value), counter_value);
         }
         public SKColor GetTimedColor(SKColor baseclr, long counter_value)
         {

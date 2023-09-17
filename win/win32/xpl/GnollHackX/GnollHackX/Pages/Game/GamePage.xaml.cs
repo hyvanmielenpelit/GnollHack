@@ -5965,6 +5965,26 @@ namespace GnollHackX.Pages.Game
                                                             path.LineTo(-0.04f * width, -length + 0.4f * width);
                                                             path.LineTo(-0.04f * width, 0f);
                                                             path.Close();
+                                                            textPaint.Color = eff.GetColor(maincountervalue);
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Stroke;
+                                                            textPaint.StrokeWidth = width * 0.02f;
+                                                            textPaint.Color = eff.GetOutlineColor(maincountervalue);
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            using (SKPath path2 = new SKPath())
+                                                            {
+                                                                path2.MoveTo(-0.015f * width, -0.05f * width);
+                                                                path2.LineTo(0.015f * width, -0.05f * width);
+                                                                path2.LineTo(0.015f * width, -length + 0.35f * width);
+                                                                path2.LineTo(-0.015f * width, -length + 0.35f * width);
+                                                                path2.LineTo(-0.015f * width, -0.05f * width);
+                                                                path2.Close();
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                                textPaint.Color = eff.GetInnerColor(maincountervalue);
+                                                                canvas.DrawPath(path2, textPaint);
+                                                            }
                                                             break;
                                                         case (int)gui_polearm_types.GUI_POLEARM_LANCE:
                                                             path.MoveTo(-0.12f * width, -0.36f * width);
@@ -5974,26 +5994,59 @@ namespace GnollHackX.Pages.Game
                                                             path.LineTo(-0.05f * width, -0.52f * width);
                                                             path.LineTo(-0.12f * width, -0.36f * width);
                                                             path.Close();
+                                                            textPaint.Color = eff.GetColor(maincountervalue);
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Stroke;
+                                                            textPaint.StrokeWidth = width * 0.02f;
+                                                            textPaint.Color = eff.GetOutlineColor(maincountervalue);
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            using (SKPath path2 = new SKPath())
+                                                            {
+                                                                path2.MoveTo(-0.08f * width, -0.34f * width);
+                                                                path2.LineTo(0.08f * width, -0.34f * width);
+                                                                path2.LineTo(0.02f * width, -0.50f * width);
+                                                                path2.LineTo(0f, -length + 0.06f * width);
+                                                                path2.LineTo(-0.02f * width, -0.48f * width);
+                                                                path2.LineTo(-0.08f * width, -0.34f * width);
+                                                                path2.Close();
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                                textPaint.Color = eff.GetInnerColor(maincountervalue);
+                                                                canvas.DrawPath(path2, textPaint);
+                                                            }
                                                             break;
                                                         case (int)gui_polearm_types.GUI_POLEARM_THRUSTED:
                                                         case (int)gui_polearm_types.GUI_POLEARM_POLEAXE:
                                                         default:
                                                             path.MoveTo(-0.05f * width, 0f);
                                                             path.LineTo(0.05f * width, 0f);
-                                                            path.LineTo(0.05f * width, -length + 0.4f * width);
-                                                            path.LineTo(-0.05f * width, -length + 0.4f * width);
+                                                            path.LineTo(0.05f * width, -length);
+                                                            path.LineTo(-0.05f * width, -length);
                                                             path.LineTo(-0.05f * width, 0f);
                                                             path.Close();
+                                                            textPaint.Color = eff.GetColor(maincountervalue);
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Stroke;
+                                                            textPaint.StrokeWidth = width * 0.02f;
+                                                            textPaint.Color = eff.GetOutlineColor(maincountervalue);
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            using (SKPath path2 = new SKPath())
+                                                            {
+                                                                path2.MoveTo(-0.02f * width, -0.05f * width);
+                                                                path2.LineTo(0.02f * width, -0.05f * width);
+                                                                path2.LineTo(0.02f * width, -length - 0.05f * width);
+                                                                path2.LineTo(-0.02f * width, -length - 0.05f * width);
+                                                                path2.LineTo(-0.02f * width, -0.05f * width);
+                                                                path2.Close();
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                                textPaint.Color = eff.GetInnerColor(maincountervalue);
+                                                                canvas.DrawPath(path2, textPaint);
+                                                            }
                                                             break;
                                                     }
-                                                    textPaint.Color = eff.GetColor(maincountervalue);
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    canvas.DrawPath(path, textPaint);
-                                                    textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = width * 0.02f;
-                                                    textPaint.Color = eff.GetOutlineColor(maincountervalue);
-                                                    canvas.DrawPath(path, textPaint);
-                                                    textPaint.Style = SKPaintStyle.Fill;
                                                 }
                                                 /* Secondary drawing last */
                                                 using (SKPath path = new SKPath())
@@ -6014,13 +6067,24 @@ namespace GnollHackX.Pages.Game
                                                             textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
                                                             canvas.DrawPath(path, textPaint);
                                                             textPaint.Style = SKPaintStyle.Fill;
+                                                            using (SKPath path2 = new SKPath())
+                                                            {
+                                                                path2.MoveTo(-0.025f * width, -length + 0.35f * width);
+                                                                path2.LineTo(0.025f * width, -length + 0.35f * width);
+                                                                path2.LineTo(0f, -length + 0.05f * width);
+                                                                path2.LineTo(-0.025f * width, -length + 0.35f * width);
+                                                                path2.Close();
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                                textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+                                                                canvas.DrawPath(path2, textPaint);
+                                                            }
                                                             break;
                                                         case (int)gui_polearm_types.GUI_POLEARM_POLEAXE: /* Polearm head */
                                                         case (int)gui_polearm_types.GUI_POLEARM_THRUSTED: /* Polearm head */
-                                                            path.MoveTo(-0.04f * width, -length + 0.4f * width);
-                                                            path.LineTo(0.04f * width, -length + 0.4f * width);
-                                                            path.LineTo(0f, -length);
-                                                            path.LineTo(-0.04f * width, -length + 0.4f * width);
+                                                            path.MoveTo(-0.04f * width, -length);
+                                                            path.LineTo(0.04f * width, -length);
+                                                            path.LineTo(0f, -length - 0.4f * width);
+                                                            path.LineTo(-0.04f * width, -length);
                                                             path.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryColor(maincountervalue);
@@ -6032,14 +6096,25 @@ namespace GnollHackX.Pages.Game
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             using (SKPath path2 = new SKPath())
                                                             {
-                                                                path2.MoveTo(-0.04f * width, -length + 0.5f * width);
-                                                                path2.LineTo(-0.1f * width, -length + 0.5f * width);
-                                                                path2.LineTo(-0.1f * width, -length + 0.85f * width);
-                                                                path2.LineTo(-0.35f * width, -length + 0.45f * width);
-                                                                path2.LineTo(-0.1f * width, -length + 0.05f * width);
-                                                                path2.LineTo(-0.1f * width, -length + 0.4f * width);
-                                                                path2.LineTo(-0.04f * width, -length + 0.4f * width);
-                                                                path2.LineTo(-0.04f * width, -length + 0.5f * width);
+                                                                path2.MoveTo(-0.02f * width, -length - 0.05f * width);
+                                                                path2.LineTo(0.02f * width, -length - 0.05f * width);
+                                                                path2.LineTo(0f, -length - 0.35f * width);
+                                                                path2.LineTo(-0.02f * width, -length -0.05f * width);
+                                                                path2.Close();
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                                textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+                                                                canvas.DrawPath(path2, textPaint);
+                                                            }
+                                                            using (SKPath path2 = new SKPath())
+                                                            {
+                                                                path2.MoveTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.5f * width);
+                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.85f * width);
+                                                                path2.LineTo(-0.35f * width, -length - 0.4f * width + 0.45f * width);
+                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.05f * width);
+                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.4f * width);
+                                                                path2.LineTo(-0.04f * width, -length - 0.4f * width + 0.4f * width);
+                                                                path2.LineTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
                                                                 path2.Close();
                                                                 textPaint.Style = SKPaintStyle.Fill;
                                                                 textPaint.Color = eff.GetSecondaryColor(maincountervalue);
@@ -6052,14 +6127,25 @@ namespace GnollHackX.Pages.Game
                                                             }
                                                             using (SKPath path2 = new SKPath())
                                                             {
-                                                                path2.MoveTo(0.04f * width, -length + 0.5f * width);
-                                                                path2.LineTo(0.1f * width, -length + 0.5f * width);
-                                                                path2.LineTo(0.1f * width, -length + 0.85f * width);
-                                                                path2.LineTo(0.35f * width, -length + 0.45f * width);
-                                                                path2.LineTo(0.1f * width, -length + 0.05f * width);
-                                                                path2.LineTo(0.1f * width, -length + 0.4f * width);
-                                                                path2.LineTo(0.04f * width, -length + 0.4f * width);
-                                                                path2.LineTo(0.04f * width, -length + 0.5f * width);
+                                                                path2.MoveTo(-0.16f * width, -length - 0.4f * width + 0.70f * width);
+                                                                path2.LineTo(-0.29f * width, -length - 0.4f * width + 0.45f * width);
+                                                                path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.20f * width);
+                                                                path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.70f * width);
+                                                                path2.Close();
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                                textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+                                                                canvas.DrawPath(path2, textPaint);
+                                                            }
+                                                            using (SKPath path2 = new SKPath())
+                                                            {
+                                                                path2.MoveTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.5f * width);
+                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.85f * width);
+                                                                path2.LineTo(0.35f * width, -length - 0.4f * width + 0.45f * width);
+                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.05f * width);
+                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.4f * width);
+                                                                path2.LineTo(0.04f * width, -length - 0.4f * width + 0.4f * width);
+                                                                path2.LineTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
                                                                 path2.Close();
                                                                 textPaint.Style = SKPaintStyle.Fill;
                                                                 textPaint.Color = eff.GetSecondaryColor(maincountervalue);
@@ -6069,6 +6155,17 @@ namespace GnollHackX.Pages.Game
                                                                 textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
                                                                 canvas.DrawPath(path2, textPaint);
                                                                 textPaint.Style = SKPaintStyle.Fill;
+                                                            }
+                                                            using (SKPath path2 = new SKPath())
+                                                            {
+                                                                path2.MoveTo(0.16f * width, -length - 0.4f * width + 0.70f * width);
+                                                                path2.LineTo(0.29f * width, -length - 0.4f * width + 0.45f * width);
+                                                                path2.LineTo(0.16f * width, -length - 0.4f * width + 0.20f * width);
+                                                                path2.LineTo(0.16f * width, -length - 0.4f * width + 0.70f * width);
+                                                                path2.Close();
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                                textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+                                                                canvas.DrawPath(path2, textPaint);
                                                             }
                                                             break;
                                                         default:
