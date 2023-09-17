@@ -1653,6 +1653,7 @@ struct monst *mtmp;
 
         update_m_action(mtmp, ACTION_TILE_ATTACK);
         play_monster_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_SWING_MELEE);
+        display_gui_effect(GUI_EFFECT_POLEARM, is_spear(otmp) ? GUI_POLEARM_SPEAR : is_lance(otmp) ? GUI_POLEARM_LANCE : GUI_POLEARM_THRUSTED, mtmp->mx, mtmp->my, u.ux, u.uy, 0UL);
         m_wait_until_action();
 
         if (canseemon(mtmp)) {

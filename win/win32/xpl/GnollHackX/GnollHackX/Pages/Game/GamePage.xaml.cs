@@ -5905,6 +5905,179 @@ namespace GnollHackX.Pages.Game
                                             canvas.DrawBitmap(GHApp._waitBitmap, effRect, textPaint);
                                         }
                                         break;
+                                    case (int)gui_effect_types.GUI_EFFECT_POLEARM:
+                                        {
+                                            using(new SKAutoCanvasRestore(canvas))
+                                            {
+                                                int dx = eff.X2 - eff.X1;
+                                                int dy = eff.Y2 - eff.Y1;
+                                                float length;
+                                                canvas.Translate(tx + width / 2, ty + height / 2);
+                                                if (dx == 0)
+                                                {
+                                                    canvas.RotateDegrees(dy < 0 ? 0f: 180f);
+                                                    length = Math.Abs(dy * height);
+                                                }
+                                                else if (dy == 0)
+                                                {
+                                                    canvas.RotateDegrees(dx < 0 ? -90f : 90f);
+                                                    length = Math.Abs(dx * width);
+                                                }
+                                                else
+                                                {
+                                                    canvas.RotateRadians((float)Math.Atan2(-dx * width, dy * height) + (float)Math.PI);
+                                                    length = (float)Math.Sqrt(Math.Pow(dx * width, 2) + Math.Pow(dy * height, 2));
+                                                }
+                                                /* Secondary drawing first */
+                                                using (SKPath path = new SKPath())
+                                                {
+                                                    switch (eff.SubType)
+                                                    {
+                                                        case (int)gui_polearm_types.GUI_POLEARM_LANCE: /* Handle */
+                                                            path.MoveTo(-0.04f * width, 0f);
+                                                            path.LineTo(0.04f * width, 0f);
+                                                            path.LineTo(0.04f * width, -0.36f * width);
+                                                            path.LineTo(-0.04f * width, -0.36f * width);
+                                                            path.LineTo(-0.04f * width, 0f);
+                                                            path.Close();
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Stroke;
+                                                            textPaint.StrokeWidth = width * 0.02f;
+                                                            textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            break;
+                                                        default:
+                                                            break;
+                                                    }
+                                                }
+                                                /* Primary drawing */
+                                                using (SKPath path = new SKPath())
+                                                {
+                                                    switch(eff.SubType)
+                                                    {
+                                                        case (int)gui_polearm_types.GUI_POLEARM_SPEAR:
+                                                            path.MoveTo(-0.04f * width, 0f);
+                                                            path.LineTo(0.04f * width, 0f);
+                                                            path.LineTo(0.04f * width, -length + 0.4f * width);
+                                                            path.LineTo(-0.04f * width, -length + 0.4f * width);
+                                                            path.LineTo(-0.04f * width, 0f);
+                                                            path.Close();
+                                                            break;
+                                                        case (int)gui_polearm_types.GUI_POLEARM_LANCE:
+                                                            path.MoveTo(-0.12f * width, -0.36f * width);
+                                                            path.LineTo(0.12f * width, -0.36f * width);
+                                                            path.LineTo(0.05f * width, -0.52f * width);
+                                                            path.LineTo(0f, -length);
+                                                            path.LineTo(-0.05f * width, -0.52f * width);
+                                                            path.LineTo(-0.12f * width, -0.36f * width);
+                                                            path.Close();
+                                                            break;
+                                                        case (int)gui_polearm_types.GUI_POLEARM_THRUSTED:
+                                                        case (int)gui_polearm_types.GUI_POLEARM_POLEAXE:
+                                                        default:
+                                                            path.MoveTo(-0.05f * width, 0f);
+                                                            path.LineTo(0.05f * width, 0f);
+                                                            path.LineTo(0.05f * width, -length + 0.4f * width);
+                                                            path.LineTo(-0.05f * width, -length + 0.4f * width);
+                                                            path.LineTo(-0.05f * width, 0f);
+                                                            path.Close();
+                                                            break;
+                                                    }
+                                                    textPaint.Color = eff.GetColor(maincountervalue);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    canvas.DrawPath(path, textPaint);
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = width * 0.02f;
+                                                    textPaint.Color = eff.GetOutlineColor(maincountervalue);
+                                                    canvas.DrawPath(path, textPaint);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                }
+                                                /* Secondary drawing last */
+                                                using (SKPath path = new SKPath())
+                                                {
+                                                    switch (eff.SubType)
+                                                    {
+                                                        case (int)gui_polearm_types.GUI_POLEARM_SPEAR: /* Spearhead */
+                                                            path.MoveTo(-0.06f * width, -length + 0.4f * width);
+                                                            path.LineTo(0.06f * width, -length + 0.4f * width);
+                                                            path.LineTo(0f, -length);
+                                                            path.LineTo(-0.06f * width, -length + 0.4f * width);
+                                                            path.Close();
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Stroke;
+                                                            textPaint.StrokeWidth = width * 0.02f;
+                                                            textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            break;
+                                                        case (int)gui_polearm_types.GUI_POLEARM_POLEAXE: /* Polearm head */
+                                                        case (int)gui_polearm_types.GUI_POLEARM_THRUSTED: /* Polearm head */
+                                                            path.MoveTo(-0.04f * width, -length + 0.4f * width);
+                                                            path.LineTo(0.04f * width, -length + 0.4f * width);
+                                                            path.LineTo(0f, -length);
+                                                            path.LineTo(-0.04f * width, -length + 0.4f * width);
+                                                            path.Close();
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Stroke;
+                                                            textPaint.StrokeWidth = width * 0.02f;
+                                                            textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+                                                            canvas.DrawPath(path, textPaint);
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            using (SKPath path2 = new SKPath())
+                                                            {
+                                                                path2.MoveTo(-0.04f * width, -length + 0.5f * width);
+                                                                path2.LineTo(-0.1f * width, -length + 0.5f * width);
+                                                                path2.LineTo(-0.1f * width, -length + 0.85f * width);
+                                                                path2.LineTo(-0.35f * width, -length + 0.45f * width);
+                                                                path2.LineTo(-0.1f * width, -length + 0.05f * width);
+                                                                path2.LineTo(-0.1f * width, -length + 0.4f * width);
+                                                                path2.LineTo(-0.04f * width, -length + 0.4f * width);
+                                                                path2.LineTo(-0.04f * width, -length + 0.5f * width);
+                                                                path2.Close();
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                                textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+                                                                canvas.DrawPath(path2, textPaint);
+                                                                textPaint.Style = SKPaintStyle.Stroke;
+                                                                textPaint.StrokeWidth = width * 0.03f;
+                                                                textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+                                                                canvas.DrawPath(path2, textPaint);
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                            }
+                                                            using (SKPath path2 = new SKPath())
+                                                            {
+                                                                path2.MoveTo(0.04f * width, -length + 0.5f * width);
+                                                                path2.LineTo(0.1f * width, -length + 0.5f * width);
+                                                                path2.LineTo(0.1f * width, -length + 0.85f * width);
+                                                                path2.LineTo(0.35f * width, -length + 0.45f * width);
+                                                                path2.LineTo(0.1f * width, -length + 0.05f * width);
+                                                                path2.LineTo(0.1f * width, -length + 0.4f * width);
+                                                                path2.LineTo(0.04f * width, -length + 0.4f * width);
+                                                                path2.LineTo(0.04f * width, -length + 0.5f * width);
+                                                                path2.Close();
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                                textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+                                                                canvas.DrawPath(path2, textPaint);
+                                                                textPaint.Style = SKPaintStyle.Stroke;
+                                                                textPaint.StrokeWidth = width * 0.03f;
+                                                                textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+                                                                canvas.DrawPath(path2, textPaint);
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                            }
+                                                            break;
+                                                        default:
+                                                            break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        break;
                                     default:
                                         break;
                                 }

@@ -489,6 +489,14 @@ enum popup_text_types {
 enum gui_effect_types {
     GUI_EFFECT_SEARCH = 0,
     GUI_EFFECT_WAIT,
+    GUI_EFFECT_POLEARM,
+};
+
+enum gui_polearm_types {
+    GUI_POLEARM_SPEAR = 0,
+    GUI_POLEARM_LANCE,
+    GUI_POLEARM_THRUSTED,
+    GUI_POLEARM_POLEAXE,
 };
 
 enum getline_types {

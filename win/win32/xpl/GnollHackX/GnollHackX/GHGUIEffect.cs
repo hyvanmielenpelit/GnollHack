@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Linq;
 #if GNH_MAUI
 using GnollHackM;
 #else
@@ -29,6 +30,8 @@ namespace GnollHackX
         public int SubType { get { return _data.subtype; } }
         public int X { get { return _data.x; } }
         public int Y { get { return _data.y; } }
+        public int X1 { get { return _data.x; } }
+        public int Y1 { get { return _data.y; } }
         public int X2 { get { return _data.x2; } }
         public int Y2 { get { return _data.y2; } }
         public long CreatedAt { get { return _created_at_count; } }
@@ -89,22 +92,120 @@ namespace GnollHackX
             p.Y = _data.y;
             return p;
         }
+
+        private static readonly SKColor GHMetalGray = new SKColor(144, 144, 152);
+        private static readonly SKColor GHDarkMetalGray = new SKColor(64, 64, 72);
+        private static readonly SKColor GHBrown = new SKColor(0x77, 0x5A, 0x2A);
+        private static readonly SKColor GHDarkBrown = new SKColor(0x55, 0x3A, 0x1A);
         public SKColor GetBaseColor(long counter_value)
         {
             switch (_data.style)
             {
-                case 0:
+                case (int)gui_effect_types.GUI_EFFECT_SEARCH:
+                case (int)gui_effect_types.GUI_EFFECT_WAIT:
                     return SKColors.White;
+                case (int)gui_effect_types.GUI_EFFECT_POLEARM:
+                    switch(_data.subtype)
+                    {
+                        case (int)gui_polearm_types.GUI_POLEARM_THRUSTED:
+                        case (int)gui_polearm_types.GUI_POLEARM_POLEAXE:
+                        case (int)gui_polearm_types.GUI_POLEARM_SPEAR:
+                            return GHBrown;
+                        case (int)gui_polearm_types.GUI_POLEARM_LANCE:
+                            return GHMetalGray;
+                        default:
+                            return SKColors.White;
+                    }
                 default:
-                    break;
+                    return SKColors.Red;
             }
-            return SKColors.Red;
         }
         public SKColor GetColor(long counter_value)
         {
             return GetTimedColor(GetBaseColor(counter_value), counter_value);
         }
+        public SKColor GetBaseOutlineColor(long counter_value)
+        {
+            switch (_data.style)
+            {
+                case (int)gui_effect_types.GUI_EFFECT_SEARCH:
+                case (int)gui_effect_types.GUI_EFFECT_WAIT:
+                    return SKColors.White;
+                case (int)gui_effect_types.GUI_EFFECT_POLEARM:
+                    switch (_data.subtype)
+                    {
+                        case (int)gui_polearm_types.GUI_POLEARM_THRUSTED:
+                        case (int)gui_polearm_types.GUI_POLEARM_POLEAXE:
+                        case (int)gui_polearm_types.GUI_POLEARM_SPEAR:
+                            return GHDarkBrown;
+                        case (int)gui_polearm_types.GUI_POLEARM_LANCE:
+                            return GHDarkMetalGray;
+                        default:
+                            return SKColors.Gray;
+                    }
+                default:
+                    return SKColors.Red;
+            }
+        }
+        public SKColor GetOutlineColor(long counter_value)
+        {
+            return GetTimedColor(GetBaseOutlineColor(counter_value), counter_value);
+        }
 
+        public SKColor GetSecondaryBaseColor(long counter_value)
+        {
+            switch (_data.style)
+            {
+                case (int)gui_effect_types.GUI_EFFECT_SEARCH:
+                case (int)gui_effect_types.GUI_EFFECT_WAIT:
+                    return SKColors.White;
+                case (int)gui_effect_types.GUI_EFFECT_POLEARM:
+                    switch (_data.subtype)
+                    {
+                        case (int)gui_polearm_types.GUI_POLEARM_THRUSTED:
+                        case (int)gui_polearm_types.GUI_POLEARM_POLEAXE:
+                        case (int)gui_polearm_types.GUI_POLEARM_SPEAR:
+                            return GHMetalGray;
+                        case (int)gui_polearm_types.GUI_POLEARM_LANCE:
+                            return GHBrown;
+                        default:
+                            return SKColors.White;
+                    }
+                default:
+                    return SKColors.Red;
+            }
+        }
+        public SKColor GetSecondaryColor(long counter_value)
+        {
+            return GetTimedColor(GetSecondaryBaseColor(counter_value), counter_value);
+        }
+        public SKColor GetSecondaryBaseOutlineColor(long counter_value)
+        {
+            switch (_data.style)
+            {
+                case (int)gui_effect_types.GUI_EFFECT_SEARCH:
+                case (int)gui_effect_types.GUI_EFFECT_WAIT:
+                    return SKColors.White;
+                case (int)gui_effect_types.GUI_EFFECT_POLEARM:
+                    switch (_data.subtype)
+                    {
+                        case (int)gui_polearm_types.GUI_POLEARM_THRUSTED:
+                        case (int)gui_polearm_types.GUI_POLEARM_POLEAXE:
+                        case (int)gui_polearm_types.GUI_POLEARM_SPEAR:
+                            return GHDarkMetalGray;
+                        case (int)gui_polearm_types.GUI_POLEARM_LANCE:
+                            return GHDarkBrown;
+                        default:
+                            return SKColors.White;
+                    }
+                default:
+                    return SKColors.Crimson;
+            }
+        }
+        public SKColor GetSecondaryOutlineColor(long counter_value)
+        {
+            return GetTimedColor(GetSecondaryBaseOutlineColor(counter_value), counter_value);
+        }
         public SKColor GetTimedColor(SKColor baseclr, long counter_value)
         {
             float vsecs = GetVSecs(counter_value);

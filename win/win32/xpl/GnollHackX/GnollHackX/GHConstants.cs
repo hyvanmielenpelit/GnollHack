@@ -1296,6 +1296,15 @@ namespace GnollHackX
     {
         GUI_EFFECT_SEARCH = 0,
         GUI_EFFECT_WAIT,
+        GUI_EFFECT_POLEARM,
+    }
+
+    public enum gui_polearm_types
+    {
+        GUI_POLEARM_SPEAR = 0,
+        GUI_POLEARM_LANCE,
+        GUI_POLEARM_THRUSTED,
+        GUI_POLEARM_POLEAXE,
     }
 
     public enum yn_function_styles

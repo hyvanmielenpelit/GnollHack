@@ -566,7 +566,7 @@ namespace GnollHackX.Unknown
                     res = longImmediateInstances[0].instance.setCallback(GNHImmediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
 
                 /* Fallback if queued for too long */
-                if (longImmediateInstances.Count >= GHConstants.MaxLongImmediateSoundInstances && longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].queued && !longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].stopped)
+                if (longImmediateInstances.Count >= GHConstants.MaxLongImmediateSoundInstances && longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1] != null && longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].queued && !longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].stopped)
                 {
                     longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].queued = false;
                     res = longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].instance.start();
@@ -592,7 +592,7 @@ namespace GnollHackX.Unknown
                     res = immediateInstances[0].instance.setCallback(GNHImmediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
 
                 /* Fallback if queued for too long */
-                if (immediateInstances.Count >= GHConstants.MaxNormalImmediateSoundInstances && immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].queued && !immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].stopped)
+                if (immediateInstances.Count >= GHConstants.MaxNormalImmediateSoundInstances && immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1] != null && immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].queued && !immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].stopped)
                 {
                     immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].queued = false;
                     res = immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].instance.start(); ;
@@ -619,12 +619,15 @@ namespace GnollHackX.Unknown
                 if (longImmediateInstances.Count > GHConstants.MaxLongImmediateSoundInstances)
                 {
                     GHSoundInstance ghsi = longImmediateInstances[longImmediateInstances.Count - 1];
-                    if (ghsi.stopped == false)
+                    if(ghsi != null)
                     {
-                        ghsi.stopped = true;
-                        ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                        if (ghsi.stopped == false)
+                        {
+                            ghsi.stopped = true;
+                            ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                        }
+                        ghsi.instance.release();
                     }
-                    ghsi.instance.release();
                     longImmediateInstances.RemoveAt(longImmediateInstances.Count - 1);
                 }
             }
@@ -633,12 +636,15 @@ namespace GnollHackX.Unknown
                 if (immediateInstances.Count > GHConstants.MaxNormalImmediateSoundInstances)
                 {
                     GHSoundInstance ghsi = immediateInstances[immediateInstances.Count - 1];
-                    if (ghsi.stopped == false)
+                    if (ghsi != null)
                     {
-                        ghsi.stopped = true;
-                        ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                        if (ghsi.stopped == false)
+                        {
+                            ghsi.stopped = true;
+                            ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                        }
+                        ghsi.instance.release();
                     }
-                    ghsi.instance.release();
                     immediateInstances.RemoveAt(immediateInstances.Count - 1);
                 }
             }
