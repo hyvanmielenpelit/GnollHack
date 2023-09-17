@@ -93,9 +93,9 @@ namespace GnollHackX
             return p;
         }
 
-        private static readonly SKColor GHLightMetalGray = new SKColor(152, 152, 160);
-        private static readonly SKColor GHMetalGray = new SKColor(128, 128, 134);
-        private static readonly SKColor GHDarkMetalGray = new SKColor(64, 64, 72);
+        private static readonly SKColor GHLightMetalGray = new SKColor(148, 154, 166);
+        private static readonly SKColor GHMetalGray = new SKColor(109, 114, 124);
+        private static readonly SKColor GHDarkMetalGray = new SKColor(56, 60, 68);
         private static readonly SKColor GHLightBrown = new SKColor(0x77, 0x5A, 0x2A);
         private static readonly SKColor GHBrown = new SKColor(0x66, 0x4A, 0x24);
         private static readonly SKColor GHDarkBrown = new SKColor(0x55, 0x3A, 0x1A);
