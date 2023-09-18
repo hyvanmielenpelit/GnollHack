@@ -79,7 +79,7 @@ namespace GnollHackX
             {
 #if GNH_MAUI
                 return false;
-#endif
+#else
                 string manufacturer = DeviceInfo.Manufacturer;
                 string model = DeviceInfo.Model;
                 bool isGooglePixel6orGreater = false;
@@ -98,6 +98,7 @@ namespace GnollHackX
                     isGooglePixel6orGreater = cnt > 0 && int.TryParse(endstr.Substring(0, cnt), out pixelver) && pixelver >= 6;
                 }
                 return isGooglePixel6orGreater ? false : GHConstants.IsGPUDefault;
+#endif
             }
         }
 
@@ -435,10 +436,13 @@ namespace GnollHackX
         public static IPlatformService PlatformService { get { return _platformService; } }
 
         public static readonly float DisplayRefreshRate = Math.Max(30.0f, DeviceDisplay.MainDisplayInfo.RefreshRate);
+#if GNH_MAUI
+        public static readonly bool IsAndroid = (DeviceInfo.Platform == DevicePlatform.Android);
+        public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
+#else
         public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
         public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
-        public static readonly bool IsUWP = (Device.RuntimePlatform == Device.UWP);
-
+#endif
         public static readonly float DisplayScale = DeviceDisplay.MainDisplayInfo.Density <= 0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
         public static readonly float DisplayWidth = (float)DeviceDisplay.MainDisplayInfo.Width * DisplayScale;
         public static readonly float DisplayHeight = (float)DeviceDisplay.MainDisplayInfo.Height * DisplayScale;

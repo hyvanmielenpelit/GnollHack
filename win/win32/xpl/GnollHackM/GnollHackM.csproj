@@ -108,6 +108,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\Secrets.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\SecretsFile.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\SelectableShortcutButton.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\StoredManual.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\UserSecrets.cs" />
 		<None Remove="..\GnollHackX\GnollHackX.FMOD\fmod.cs" />
@@ -184,6 +185,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Secrets.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\SecretsFile.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\SelectableShortcutButton.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\StoredManual.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\UserSecrets.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod.cs" />

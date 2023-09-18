@@ -210,42 +210,42 @@ namespace GnollHackX
                 out anoff_ptr, out anoff_size, out enoff_ptr, out enoff_size, out reoff_ptr, out reoff_size);
             lock (GHApp.Glyph2TileLock)
             {
-                if (gl2ti_ptr != null && gl2ti_size > 0)
+                if (gl2ti_ptr != IntPtr.Zero && gl2ti_size > 0)
                 {
                     GHApp.Glyph2Tile = new int[gl2ti_size];
                     Marshal.Copy(gl2ti_ptr, GHApp.Glyph2Tile, 0, gl2ti_size);
                 }
-                if (gltifl_ptr != null && gltifl_size > 0)
+                if (gltifl_ptr != IntPtr.Zero && gltifl_size > 0)
                 {
                     GHApp.GlyphTileFlags = new byte[gltifl_size];
                     Marshal.Copy(gltifl_ptr, GHApp.GlyphTileFlags, 0, gltifl_size);
                 }
-                if (ti2an_ptr != null && ti2an_size > 0)
+                if (ti2an_ptr != IntPtr.Zero && ti2an_size > 0)
                 {
                     GHApp.Tile2Animation = new short[ti2an_size];
                     Marshal.Copy(ti2an_ptr, GHApp.Tile2Animation, 0, ti2an_size);
                 }
-                if (ti2en_ptr != null && ti2en_size > 0)
+                if (ti2en_ptr != IntPtr.Zero && ti2en_size > 0)
                 {
                     GHApp.Tile2Enlargement = new short[ti2en_size];
                     Marshal.Copy(ti2en_ptr, GHApp.Tile2Enlargement, 0, ti2en_size);
                 }
-                if (ti2ad_ptr != null && ti2ad_size > 0)
+                if (ti2ad_ptr != IntPtr.Zero && ti2ad_size > 0)
                 {
                     GHApp.Tile2Autodraw = new short[ti2ad_size];
                     Marshal.Copy(ti2ad_ptr, GHApp.Tile2Autodraw, 0, ti2ad_size);
                 }
-                if (anoff_ptr != null && anoff_size > 0)
+                if (anoff_ptr != IntPtr.Zero && anoff_size > 0)
                 {
                     GHApp.AnimationOffsets = new int[anoff_size];
                     Marshal.Copy(anoff_ptr, GHApp.AnimationOffsets, 0, anoff_size);
                 }
-                if (enoff_ptr != null && enoff_size > 0)
+                if (enoff_ptr != IntPtr.Zero && enoff_size > 0)
                 {
                     GHApp.EnlargementOffsets = new int[enoff_size];
                     Marshal.Copy(enoff_ptr, GHApp.EnlargementOffsets, 0, enoff_size);
                 }
-                if (reoff_ptr != null && reoff_size > 0)
+                if (reoff_ptr != IntPtr.Zero && reoff_size > 0)
                 {
                     GHApp.ReplacementOffsets = new int[reoff_size];
                     Marshal.Copy(reoff_ptr, GHApp.ReplacementOffsets, 0, reoff_size);
@@ -1281,7 +1281,7 @@ namespace GnollHackX
                 }
 
                 byte[] utf8text = Encoding.UTF8.GetBytes(_getLineString);
-                if (out_string_ptr != null)
+                if (out_string_ptr != IntPtr.Zero)
                 {
                     Marshal.Copy(utf8text, 0, out_string_ptr, utf8text.Length);
                     Marshal.WriteByte(out_string_ptr, utf8text.Length, 0);
@@ -1292,7 +1292,7 @@ namespace GnollHackX
             }
             else
             {
-                if(out_string_ptr != null)
+                if(out_string_ptr != IntPtr.Zero)
                    Marshal.WriteByte(out_string_ptr, 0, 0);
                 return 0;
             }
@@ -1621,13 +1621,13 @@ namespace GnollHackX
                     _gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
                     lock (GHApp.Glyph2TileLock)
                     {
-                        if (gl2ti_ptr != null && gl2ti_size > 0)
+                        if (gl2ti_ptr != IntPtr.Zero && gl2ti_size > 0)
                         {
                             if(GHApp.Glyph2Tile == null || gl2ti_size != GHApp.Glyph2Tile.Length)
                                 GHApp.Glyph2Tile = new int[gl2ti_size];
                             Marshal.Copy(gl2ti_ptr, GHApp.Glyph2Tile, 0, gl2ti_size);
                         }
-                        if (gltifl_ptr != null && gltifl_size > 0)
+                        if (gltifl_ptr != IntPtr.Zero && gltifl_size > 0)
                         {
                             if (GHApp.GlyphTileFlags == null || gltifl_size != GHApp.GlyphTileFlags.Length)
                                 GHApp.GlyphTileFlags = new byte[gltifl_size];
