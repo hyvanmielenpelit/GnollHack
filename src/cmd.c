@@ -1462,7 +1462,7 @@ winid win;
         gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, u.usteed, 0UL, 0UL, 0UL, MAT_NONE, 0));
         if (win != WIN_ERR)
             add_extended_menu(win, gui_glyph, &any,
-            0, 0, iflags.menu_headings, NO_COLOR,
+            0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
             "Your Steed's Abilities", MENU_UNSELECTED, menu_heading_info());
 
         if (can_breathe(u.usteed->data))

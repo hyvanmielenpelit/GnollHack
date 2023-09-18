@@ -2904,18 +2904,6 @@ namespace GnollHackX.Pages.Game
                 MenuSubtitleLabel.Margin = UIUtils.MenuSubtitleMargin(menuinfo.Style, CurrentPageWidth, CurrentPageHeight);
             }
 
-            /* Reset glyph */
-            MenuWindowGlyphImage.Source = null;
-
-            _menuGlyphImageSource.ReferenceGamePage = this;
-            _menuGlyphImageSource.AutoSize = true;
-            _menuGlyphImageSource.ObjData = ghwindow.ObjData;
-            _menuGlyphImageSource.Glyph = ghwindow.Glyph;
-            _menuGlyphImageSource.UseUpperSide = ghwindow.UseUpperSide;
-
-            MenuWindowGlyphImage.ActiveGlyphImageSource = MenuGlyphImage;
-            MenuWindowGlyphImage.IsVisible = IsMenuGlyphVisible;
-
             /* Update canvas */
             MenuCanvas.GHWindow = ghwindow;
             MenuCanvas.MenuStyle = menuinfo.Style;
@@ -2954,6 +2942,18 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.HideMenuLetters = true;
                     MenuCanvas.MenuButtonStyle = true;
                     MenuCanvas.ClickOKOnSelection = true;
+                    MenuCanvas.MenuGlyphAtBottom = false;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
+                    MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
+                    MenuBackground.BorderStyle = BorderStyles.Simple;
+                    MenuCanvas.RevertBlackAndWhite = true;
+                    MenuCanvas.UseTextOutline = false;
+                    MenuCanvas.HideMenuLetters = true;
+                    MenuCanvas.MenuButtonStyle = true;
+                    MenuCanvas.ClickOKOnSelection = true;
+                    MenuCanvas.MenuGlyphAtBottom = true;
                     break;
                 default:
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
@@ -2964,8 +2964,22 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.HideMenuLetters = false;
                     MenuCanvas.MenuButtonStyle = false;
                     MenuCanvas.ClickOKOnSelection = false;
+                    MenuCanvas.MenuGlyphAtBottom = false;
                     break;
             }
+
+            /* Reset glyph */
+            MenuWindowGlyphImage.Source = null;
+
+            _menuGlyphImageSource.ReferenceGamePage = this;
+            _menuGlyphImageSource.AutoSize = true;
+            _menuGlyphImageSource.ObjData = ghwindow.ObjData;
+            _menuGlyphImageSource.Glyph = ghwindow.Glyph;
+            _menuGlyphImageSource.UseUpperSide = ghwindow.UseUpperSide;
+
+            MenuWindowGlyphImage.ActiveGlyphImageSource = MenuGlyphImage;
+            MenuWindowGlyphImage.VerticalOptions = MenuCanvas.MenuGlyphAtBottom ? LayoutOptions.End : LayoutOptions.Start;
+            MenuWindowGlyphImage.IsVisible = IsMenuGlyphVisible;
 
             MenuHeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(MenuBackground.BorderStyle, _currentPageWidth, _currentPageHeight);
             MenuCloseGrid.Margin = UIUtils.GetFooterMarginWithBorder(MenuBackground.BorderStyle, _currentPageWidth, _currentPageHeight);
@@ -11758,7 +11772,7 @@ namespace GnollHackX.Pages.Game
                     curmenuoffset = _menuScrollOffset;
                 }
                 y += curmenuoffset;
-                double menumarginx = 15.0;
+                double menumarginx = MenuCanvas.MenuButtonStyle ? 30.0 : 15.0;
                 double menuwidth = Math.Max(1, Math.Min(MenuCanvas.Width - menumarginx * 2, UIUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle)));
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
@@ -11789,10 +11803,11 @@ namespace GnollHackX.Pages.Game
 
                     lock (_refreshMenuRowCountLock)
                     {
-                        float extra_vertical_padding = MenuCanvas.MenuButtonStyle ? 12 : 0;
                         for (int idx = 0; idx < referenceCanvasView.MenuItems.Count; idx++)
                         {
                             GHMenuItem mi = referenceCanvasView.MenuItems[idx];
+                            bool IsMiButton = mi.IsButton;
+                            float extra_vertical_padding = IsMiButton ? 12f : 0f;
 
                             /* Padding */
                             bottomPadding = (mi.BottomPadding + extra_vertical_padding) * scale;
@@ -11884,7 +11899,7 @@ namespace GnollHackX.Pages.Game
                             {
                                 /* Selection rectangle */
                                 SKRect selectionrect = new SKRect(x, y, x + totalRowWidth, y + totalRowHeight);
-                                if(MenuCanvas.MenuButtonStyle)
+                                if (IsMiButton)
                                 {
                                     canvas.DrawBitmap(isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : GHApp.ButtonNormalBitmap, selectionrect, textPaint);
                                 }
@@ -11950,7 +11965,7 @@ namespace GnollHackX.Pages.Game
                                 }
 
                                 /* Main text */
-                                SKColor maincolor = UIUtils.NHColor2SKColorCore(mi.NHColor, mi.Attributes, MenuCanvas.RevertBlackAndWhite, MenuCanvas.MenuButtonStyle && isselected);
+                                SKColor maincolor = UIUtils.NHColor2SKColorCore(mi.NHColor, mi.Attributes, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton && isselected);
                                 textPaint.Color = maincolor;
 
                                 //int split_idx_on_row = -1;
@@ -11963,7 +11978,7 @@ namespace GnollHackX.Pages.Game
                                 {
                                     indent_start_x += textPaint.MeasureText(indentstr);
                                 }
-                                DrawTextSplit(canvas, maintextsplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline, MenuCanvas.RevertBlackAndWhite, MenuCanvas.MenuButtonStyle, totalRowWidth, 0, 0, 0, 0);
+                                DrawTextSplit(canvas, maintextsplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, 0, 0, 0, 0);
                                 /* Rewind and next line */
                                 x = start_x;
                                 y += textPaint.FontMetrics.Descent + fontspacingpadding;
@@ -11976,7 +11991,7 @@ namespace GnollHackX.Pages.Game
                                     textPaint.TextSize = suffixfontsize;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
-                                    DrawTextSplit(canvas, suffixtextsplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline, MenuCanvas.RevertBlackAndWhite, MenuCanvas.MenuButtonStyle, totalRowWidth, 0, 0, 0, 0);
+                                    DrawTextSplit(canvas, suffixtextsplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, 0, 0, 0, 0);
                                     /* Rewind and next line */
                                     x = start_x;
                                     y += textPaint.FontMetrics.Descent + fontspacingpadding;
@@ -11991,7 +12006,7 @@ namespace GnollHackX.Pages.Game
                                     fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
-                                    DrawTextSplit(canvas, suffix2textsplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline, MenuCanvas.RevertBlackAndWhite, MenuCanvas.MenuButtonStyle, totalRowWidth, 0, 0, 0, 0);
+                                    DrawTextSplit(canvas, suffix2textsplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, 0, 0, 0, 0);
                                     /* Rewind and next line */
                                     x = start_x;
                                     y += textPaint.FontMetrics.Descent + fontspacingpadding;
@@ -12006,7 +12021,7 @@ namespace GnollHackX.Pages.Game
                                 _lastDrawnMenuItemIdx = idx;
 
                                 /* Space between buttons / rows */
-                                if(MenuCanvas.MenuButtonStyle)
+                                if(IsMiButton)
                                 {
                                     y += 12 * scale;
                                 }

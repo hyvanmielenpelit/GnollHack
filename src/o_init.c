@@ -1310,7 +1310,7 @@ rename_disco()
 
             if (oclass != prev_class) {
                 any.a_int = 0;
-                add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+                add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                          let_to_name(oclass, FALSE, FALSE),
                          MENU_UNSELECTED, menu_heading_info());
                 prev_class = oclass;

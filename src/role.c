@@ -3154,7 +3154,7 @@ boolean ismana;
     if (roleid < 0 || raceid < 0 || roleid >= NUM_ROLES || raceid >= NUM_RACES)
         return "";
 
-    static char buf[BUFSZ];
+    char* buf = nextobuf();
     int fix, rolernd, racernd;
     const struct RoleAdvance* roleadv_ptr = ismana ? &roles[roleid].enadv : &roles[roleid].hpadv;
     const struct RoleAdvance* raceadv_ptr = ismana ? &races[raceid].enadv : &races[raceid].hpadv;

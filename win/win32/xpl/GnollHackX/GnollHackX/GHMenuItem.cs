@@ -154,13 +154,13 @@ namespace GnollHackX
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                         break;
+                    case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                     case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                         res = 1;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                         break;
-                    case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -407,6 +407,9 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
+                            if(Identifier != 0)
+                                res = "Immortal";
+                            break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -655,12 +658,24 @@ namespace GnollHackX
         public bool Selected { get; set; }
         public bool Highlighted { get; set; }
 
+        public bool IsButton
+        {
+            get
+            {
+                return (_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_START_GAME_MENU || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER) 
+                    && Identifier != 0;
+            }
+        }
+
         public float BottomPadding
         {
             get
             {
                 float bottomPadding = 0;
-                if (((ulong)Flags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
+                if (!IsButton
+                    && (((ulong)Flags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0 
+                    || (Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Heading)) == (int)MenuItemAttributes.Heading
+                    || (Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Title)) == (int)MenuItemAttributes.Title))
                 {
                     bottomPadding = 3;
                 }
@@ -690,7 +705,10 @@ namespace GnollHackX
             get
             {
                 float topPadding = 0;  
-                if (((ulong)Flags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
+                if (_menuInfo.Style != ghmenu_styles.GHMENU_STYLE_START_GAME_MENU 
+                    && (((ulong)Flags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0
+                    || (Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Heading)) == (int)MenuItemAttributes.Heading
+                    || (Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Title)) == (int)MenuItemAttributes.Title))
                 {
                     topPadding = (float) HeadingTopMargin;
                 }
@@ -745,11 +763,10 @@ namespace GnollHackX
                 res = fontspacing;
                 switch (_menuInfo.Style)
                 {
-                    case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                            float altsize = Math.Min((float)GHConstants.TileHeight, (Math.Min(canvaswidth, canvasheight) / 15.25f - bottompadding - toppadding));
-                            if(altsize > fontspacing)
-                                res = altsize;
+                        float altsize = Math.Min((float)GHConstants.TileHeight, (Math.Min(canvaswidth, canvasheight) / 15.25f - bottompadding - toppadding));
+                        if (altsize > fontspacing)
+                            res = altsize;
                         break;
                     default:
                         break;

@@ -2137,7 +2137,7 @@ doskill_core()
                     }
                     if (skillcount > 0)
                     {
-                        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+                        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                             skill_ranges[pass].name, MENU_UNSELECTED, menu_heading_info());
                     }
                 }
@@ -2948,7 +2948,7 @@ enhance_weapon_skill()
                     to_advance + eventually_advance > 0 ? "Next level" : "");
         }
 
-        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
             headerbuf, MENU_UNSELECTED, menu_heading_info());
         
         for (pass = 0; pass < SIZE(skill_ranges); pass++)
@@ -3005,7 +3005,7 @@ enhance_weapon_skill()
                     */
                     if (skillcount > 0)
                     {
-                        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+                        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                             skill_ranges[pass].name, MENU_UNSELECTED, menu_heading_info());
                         //firstheader = FALSE;
                     }

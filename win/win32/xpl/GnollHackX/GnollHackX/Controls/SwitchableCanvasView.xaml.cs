@@ -130,6 +130,7 @@ namespace GnollHackX.Controls
         public bool HideMenuLetters { get; set; }
         public bool MenuButtonStyle { get; set; }
         public bool ClickOKOnSelection { get; set; }
+        public bool MenuGlyphAtBottom { get; set; }
 
         public CanvasTypes CanvasType { get; set; }
 

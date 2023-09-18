@@ -527,7 +527,7 @@ back_from_align:
         any = zeroany; /* zero out all bits */
         any.a_int = 1;
         add_menu(win, NO_GLYPH, &any, 'y', 0, ATR_NONE, NO_COLOR, "Yes; start game",
-            MENU_SELECTED);
+            MENU_UNSELECTED);
         any.a_int = 2;
         add_menu(win, NO_GLYPH, &any, 'n', 0, ATR_NONE, NO_COLOR,
             "No; choose role again", MENU_UNSELECTED);
@@ -541,7 +541,7 @@ back_from_align:
             MENU_UNSELECTED);
 
         any.a_int = 0;
-        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR, " ",
             MENU_UNSELECTED);
 
         char buf[BUFSZ];
@@ -624,13 +624,16 @@ back_from_align:
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
         }
-        Sprintf(buf, "(%d randomly distributed ability scores)", SUM_INIT_ATTRIBUTES - sumbaseatrs);
+        Sprintf(buf, "(%d randomly distributed scores)", SUM_INIT_ATTRIBUTES - sumbaseatrs);
         add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
             MENU_UNSELECTED);
 
         add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR, "Hit Point Advancement",
             MENU_UNSELECTED);
-        if (roles[flags.initrole].xlev < MAXULEV)
+
+        const char* hp_below_adv_desc = get_advancement_description(flags.initrole, flags.initrace, 1, FALSE);
+        const char* hp_above_adv_desc = get_advancement_description(flags.initrole, flags.initrace, 2, FALSE);
+        if (roles[flags.initrole].xlev < MAXULEV && strcmp(hp_below_adv_desc, hp_above_adv_desc))
         {
             Sprintf(buf, "Initial:         %s", get_advancement_description(flags.initrole, flags.initrace, 0, FALSE));
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
@@ -638,10 +641,10 @@ back_from_align:
             Sprintf(buf, "Threshold level: %d", roles[flags.initrole].xlev);
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
-            Sprintf(buf, "Below threshold: %s per level", get_advancement_description(flags.initrole, flags.initrace, 1, FALSE));
+            Sprintf(buf, "Below threshold: %s per level", hp_below_adv_desc);
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
-            Sprintf(buf, "After threshold: %s per level", get_advancement_description(flags.initrole, flags.initrace, 2, FALSE));
+            Sprintf(buf, "Above threshold: %s per level", hp_above_adv_desc);
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
         }
@@ -650,14 +653,16 @@ back_from_align:
             Sprintf(buf, "Initial:   %s", get_advancement_description(flags.initrole, flags.initrace, 0, FALSE));
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
-            Sprintf(buf, "Per level: %s", get_advancement_description(flags.initrole, flags.initrace, 1, FALSE));
+            Sprintf(buf, "Per level: %s", hp_below_adv_desc);
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
         }
 
         add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR, "Mana Advancement",
             MENU_UNSELECTED);
-        if (roles[flags.initrole].xlev < MAXULEV)
+        const char* mana_below_adv_desc = get_advancement_description(flags.initrole, flags.initrace, 1, TRUE);
+        const char* mana_above_adv_desc = get_advancement_description(flags.initrole, flags.initrace, 2, TRUE);
+        if (roles[flags.initrole].xlev < MAXULEV && strcmp(mana_below_adv_desc, mana_above_adv_desc))
         {
             Sprintf(buf, "Initial:         %s", get_advancement_description(flags.initrole, flags.initrace, 0, TRUE));
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
@@ -665,10 +670,10 @@ back_from_align:
             Sprintf(buf, "Threshold level: %d", roles[flags.initrole].xlev);
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
-            Sprintf(buf, "Below threshold: %s per level", get_advancement_description(flags.initrole, flags.initrace, 1, TRUE));
+            Sprintf(buf, "Below threshold: %s per level", mana_below_adv_desc);
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
-            Sprintf(buf, "After threshold: %s per level", get_advancement_description(flags.initrole, flags.initrace, 2, TRUE));
+            Sprintf(buf, "Above threshold: %s per level", mana_above_adv_desc);
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
         }
@@ -677,7 +682,7 @@ back_from_align:
             Sprintf(buf, "Initial:   %s", get_advancement_description(flags.initrole, flags.initrace, 0, TRUE));
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
-            Sprintf(buf, "Per level: %s", get_advancement_description(flags.initrole, flags.initrace, 1, TRUE));
+            Sprintf(buf, "Per level: %s", mana_below_adv_desc);
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
         }

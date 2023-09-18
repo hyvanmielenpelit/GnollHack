@@ -4357,7 +4357,7 @@ long pickcnt;
 
         any = zeroany;
         add_extended_menu(win, NO_GLYPH, &any,
-            0, 0, iflags.menu_headings, NO_COLOR,
+            0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
             hbuf, MENU_UNSELECTED, menu_heading_info());
 
         for (i = 0; extcmdlist[i].ef_txt; i++)
@@ -4729,7 +4729,7 @@ boolean addinventoryheader, wornonly;
     {
         /* wizard override ID and xtra_choice are mutually exclusive */
         if (flags.sortpack)
-            add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+            add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                      "Miscellaneous", MENU_UNSELECTED, menu_heading_info());
         any.a_char = HANDS_SYM; /* '-' */
         add_menu(win, NO_GLYPH, &any, HANDS_SYM, 0, ATR_NONE, NO_COLOR,
@@ -4802,7 +4802,7 @@ nextclass:
     if (iflags.force_invmenu && lets && want_reply) 
     {
         any = zeroany;
-        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                  "Special", MENU_UNSELECTED, menu_heading_info());
         any.a_char = '*';
         add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR,
@@ -4908,7 +4908,7 @@ int show_weights;
     if (show_weights > 0)
     {
         anything any = zeroany;
-        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+        add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
             "Weight Summary", MENU_UNSELECTED, menu_heading_info());
 
         char wtbuf[BUFSZ];
@@ -5180,7 +5180,7 @@ char avoidlet;
                     if (flags.sortpack && !classcount) {
                         any = zeroany; /* zero */
                         add_extended_menu(win, NO_GLYPH, &any, 0, 0,
-                                 iflags.menu_headings, NO_COLOR,
+                                 iflags.menu_headings | ATR_HEADING, NO_COLOR,
                                  let_to_name(*invlet, FALSE, FALSE),
                                  MENU_UNSELECTED, menu_heading_info());
                         classcount++;
