@@ -579,8 +579,11 @@ back_from_align:
             MENU_UNSELECTED);
         char statbuf[BUFSZ], minstr[BUFSZ], maxstr[BUFSZ];
         int sumbaseatrs = 0;
-        for (i = A_STR; i < A_MAX; i++)
+        int aidx;
+        int aorder[A_MAX] = { A_STR, A_DEX, A_CON, A_INT, A_WIS, A_CHA };
+        for (aidx = 0; aidx < A_MAX; aidx++)
         {
+            i = aorder[aidx];
             sumbaseatrs += roles[flags.initrole].attrbase[i];
             switch (i)
             {
