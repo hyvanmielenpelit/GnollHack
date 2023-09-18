@@ -270,6 +270,7 @@ namespace GnollHackX
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                     break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                     res = 340;
                     break;
@@ -279,8 +280,6 @@ namespace GnollHackX
                     break;
                 case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                    break;
-                case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                     break;

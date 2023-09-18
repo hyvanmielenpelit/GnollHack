@@ -154,6 +154,7 @@ namespace GnollHackX
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                         break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                     case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                     case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                         res = 1;
@@ -163,8 +164,6 @@ namespace GnollHackX
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                         break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
-                        res = 1;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                         res = 1;
@@ -329,6 +328,7 @@ namespace GnollHackX
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                             break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                         case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                         case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
@@ -338,8 +338,6 @@ namespace GnollHackX
                             res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                            break;
-                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                             res = "Immortal";
@@ -406,13 +404,12 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                             break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                         case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                             if(Identifier != 0)
                                 res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                            break;
-                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                             break;
@@ -662,7 +659,7 @@ namespace GnollHackX
         {
             get
             {
-                return (_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_START_GAME_MENU || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER) 
+                return (_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_START_GAME_MENU || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY) 
                     && Identifier != 0;
             }
         }
@@ -687,6 +684,7 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                             bottomPadding = 3;
                             break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                         case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                         default:
                             if (IsSuffixTextVisible && IsSuffix2TextVisible)
@@ -705,7 +703,7 @@ namespace GnollHackX
             get
             {
                 float topPadding = 0;  
-                if (_menuInfo.Style != ghmenu_styles.GHMENU_STYLE_START_GAME_MENU 
+                if (!IsButton
                     && (((ulong)Flags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0
                     || (Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Heading)) == (int)MenuItemAttributes.Heading
                     || (Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Title)) == (int)MenuItemAttributes.Title))
@@ -720,6 +718,7 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                             topPadding = 0;
                             break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                         case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                         default:
                             if (IsSuffixTextVisible && IsSuffix2TextVisible)
@@ -746,6 +745,7 @@ namespace GnollHackX
                         if (Identifier == 0 && HeadingGroupAccelerator == 0)
                             res = false;
                         break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                     case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                     default:
                         break;

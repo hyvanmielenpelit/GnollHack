@@ -2944,6 +2944,7 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.ClickOKOnSelection = true;
                     MenuCanvas.MenuGlyphAtBottom = false;
                     break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                 case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
                     MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
@@ -11987,7 +11988,7 @@ namespace GnollHackX.Pages.Game
                                 /* Suffix text */
                                 if (mi.IsSuffixTextVisible)
                                 {
-                                    textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
+                                    textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite && !IsMiButton ? _suffixTextColorReverted : _suffixTextColor;
                                     textPaint.TextSize = suffixfontsize;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
@@ -12001,7 +12002,7 @@ namespace GnollHackX.Pages.Game
                                 /* Suffix 2 text */
                                 if (mi.IsSuffix2TextVisible)
                                 {
-                                    textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
+                                    textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite && !IsMiButton ? _suffixTextColorReverted : _suffixTextColor;
                                     textPaint.TextSize = suffixfontsize;
                                     fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                                     y += fontspacingpadding;
