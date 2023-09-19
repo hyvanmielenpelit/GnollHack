@@ -1277,14 +1277,15 @@ namespace GnollHackX
                             {
                                 try
                                 {
-                                    using (Stream stream = assembly.GetManifestResourceStream(_moreBtnMatrix[k, i, j].ImageSourcePath))
-                                    {
-                                        if (stream != null)
-                                        {
-                                            _moreBtnBitmaps[k, i, j] = SKBitmap.Decode(stream);
-                                            _moreBtnBitmaps[k, i, j].SetImmutable(); ;
-                                        }
-                                    }
+                                    _moreBtnBitmaps[k, i, j] = GetCachedImageSourceBitmap("resource://" + _moreBtnMatrix[k, i, j].ImageSourcePath, true);
+                                    //using (Stream stream = assembly.GetManifestResourceStream(_moreBtnMatrix[k, i, j].ImageSourcePath))
+                                    //{
+                                    //    if (stream != null)
+                                    //    {
+                                    //        _moreBtnBitmaps[k, i, j] = SKBitmap.Decode(stream);
+                                    //        _moreBtnBitmaps[k, i, j].SetImmutable(); ;
+                                    //    }
+                                    //}
                                 }
                                 catch (Exception ex)
                                 {
@@ -2063,9 +2064,9 @@ namespace GnollHackX
                     else
                         return bitmap;
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    Debug.WriteLine(ex.Message);
                 }
                 return null;
             }
