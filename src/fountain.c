@@ -254,13 +254,11 @@ drinkfountain()
         int added_max = 0;
 
         if ((Upolyd ? u.mhmax == u.mh : u.uhpmax == u.uhp))
-            added_max += d(1, 3);
+            added_max += fountain_blessed ? d(1, 3) : d(1, 2);
 
         if (fountain_blessed)
-        {
             added_hp *= 2;
-            added_max += d(1, 3);
-        }
+
         healup(added_hp, added_max,
             !!fountain_blessed, !fountain_blessed, FALSE, FALSE, FALSE);
 
@@ -286,13 +284,11 @@ drinkfountain()
         int max_mana_before = u.uenmax;
 
         if(u.uen == u.uenmax)
-            added_max_mana += d(1, 3);
+            added_max_mana += fountain_blessed ? d(1, 3) : d(1, 2);
 
         if (fountain_blessed)
-        {
             added_mana *= 2;
-            added_max_mana += d(1, 3);
-        }
+
         if (u.ubaseendrain < 0)
         {
             u.ubaseendrain += added_max_mana;
@@ -332,8 +328,6 @@ drinkfountain()
             Sprintf(fbuf, "+%d", mana_gain);
             display_floating_text(u.ux, u.uy, fbuf, FLOATING_TEXT_MANA_GAIN, ATR_NONE, NO_COLOR, 0UL);
         }
-
-        context.botl = 1;
 
         context.botl = 1;
 
