@@ -3860,7 +3860,7 @@ struct sp_coder *coder;
     int soundtyp = (int)OV_i(soundtyp_opvar);
     int soundid = (int)OV_i(soundid_opvar);
     int soundparam = (int)OV_i(soundparam_opvar);
-    int msgflags = (int)OV_i(msgflags_opvar);
+    unsigned long msgflags = (unsigned long)OV_i(msgflags_opvar);
 
     levmsg = (struct lev_msg*)alloc(sizeof(struct lev_msg));
     if (levmsg)

@@ -1793,7 +1793,7 @@ namespace GnollHackX.Pages.Game
         public void DisplayPopupText(DisplayScreenTextData data)
         {
             PopupTitleLabel.Text = data.subtext;
-            if ((data.tflags & 1UL) != 0)
+            if ((data.tflags & (ulong)popup_text_flags.POPUP_FLAGS_ADD_QUOTES) != 0)
                 PopupLabel.Text = "\"" + data.text + "\"";
             else
                 PopupLabel.Text = data.text;
@@ -1804,7 +1804,10 @@ namespace GnollHackX.Pages.Game
                 data.style == (int)popup_text_types.POPUP_TEXT_NO_MONSTERS_IN_LIST)
             {
                 PopupTitleLabel.TextColor = _titleGoldColor;
-                PopupLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, false);
+                if ((data.tflags & (ulong)popup_text_flags.POPUP_FLAGS_COLOR_TEXT) != 0)
+                    PopupLabel.TextColor = UIUtils.NHColor2XColor(data.color, data.attr, false, false);
+                else
+                    PopupLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, false);
                 PopupGrid.BackgroundColor = GHColors.Transparent;
                 PopupFrame.BackgroundColor = _popupDarkerTransparentBlackColor;
                 if (data.glyph != 0 && data.glyph != GHApp.NoGlyph)
@@ -1815,14 +1818,17 @@ namespace GnollHackX.Pages.Game
             else if (data.style == (int)popup_text_types.POPUP_TEXT_REVIVAL)
             {
                 PopupTitleLabel.TextColor = _titleGoldColor;
-                PopupLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, false);
+                if ((data.tflags & (ulong)popup_text_flags.POPUP_FLAGS_COLOR_TEXT) != 0)
+                    PopupLabel.TextColor = UIUtils.NHColor2XColor(data.color, data.attr, false, false);
+                else
+                    PopupLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, false);
                 PopupGrid.BackgroundColor = _popupTransparentBlackColor;
                 PopupFrame.BackgroundColor = _popupTransparentBlackColor;
                 PopupTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
             }
             else
             {
-                if ((data.tflags & 2) != 0)
+                if ((data.tflags & (ulong)popup_text_flags.POPUP_FLAGS_COLOR_TEXT) != 0)
                 {
                     PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
                     PopupLabel.TextColor = UIUtils.NHColor2XColor(data.color, data.attr, false, false);
@@ -1841,7 +1847,7 @@ namespace GnollHackX.Pages.Game
             if (data.glyph != 0 && data.glyph != GHApp.NoGlyph)
             {
                 _popupImageSource.ReferenceGamePage = this;
-                _popupImageSource.UseUpperSide = (data.tflags & 4) != 0;
+                _popupImageSource.UseUpperSide = (data.tflags & (ulong)popup_text_flags.POPUP_FLAGS_UPPER_SIDE) != 0;
                 _popupImageSource.Glyph = data.glyph;
                 _popupImageSource.AutoSize = true;
                 PopupImage.ActiveGlyphImageSource = _popupImageSource;

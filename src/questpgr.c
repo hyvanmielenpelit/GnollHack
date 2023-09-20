@@ -785,6 +785,8 @@ deliver_splev_message()
 {
     char *str, *nl, in_line[BUFSZ], out_line[BUFSZ];
     struct lev_msg* lm, *nextlm;
+    boolean dopopup = FALSE, isugod = FALSE;
+    char popupbuf[BUFSZ * 4] = "";
 
     /* there's no provision for delivering via window instead of pline */
     for (lm = lev_message; lm; lm = nextlm)
@@ -815,13 +817,25 @@ deliver_splev_message()
             (void) xcrypt(in_line, in_line);
             convert_line(in_line, out_line);
             pline_ex(lm->attr, lm->color, "%s", out_line);
-
+            if (lm->msgflags & 1UL)
+            {
+                if(*popupbuf)
+                    Strcat(popupbuf, " ");
+                Strcat(popupbuf, out_line);
+            }
             if ((nl = index(str, '\n')) == 0)
                 break; /* done if no newline */
         }
+        if (lm->msgflags & 1UL)
+            dopopup = TRUE;
+        if (lm->msgflags & 2UL)
+            isugod = TRUE;
+
         free((genericptr_t)lm->message);
         free((genericptr_t)lm);
     }
+    if (dopopup && *popupbuf)
+        display_popup_text(popupbuf, isugod ? u_gname() : "Message", POPUP_TEXT_MESSAGE, ATR_NONE, isugod ? CLR_MSG_GOD : NO_COLOR, NO_GLYPH, isugod ? POPUP_FLAGS_ADD_QUOTES | POPUP_FLAGS_COLOR_TEXT : POPUP_FLAGS_NONE);
     lev_message = 0;
 }
 

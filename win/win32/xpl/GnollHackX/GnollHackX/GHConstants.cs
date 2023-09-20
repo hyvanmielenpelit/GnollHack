@@ -1294,6 +1294,15 @@ namespace GnollHackX
         POPUP_TEXT_REVIVAL
     }
 
+    [Flags]
+    public enum popup_text_flags : ulong
+    {
+        POPUP_FLAGS_NONE =          0x00000000UL,
+        POPUP_FLAGS_ADD_QUOTES =    0x00000001UL,
+        POPUP_FLAGS_COLOR_TEXT =    0x00000002UL,
+        POPUP_FLAGS_UPPER_SIDE =    0x00000004UL,
+    }
+
     public enum gui_effect_types
     {
         GUI_EFFECT_SEARCH = 0,
