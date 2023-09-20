@@ -1006,8 +1006,14 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
             unsigned long oammoflags = OBJDATA_FLAGS_UQUIVER;
             struct obj* ammo = uquiver;
 
-            if(ammo)
+            if (ammo)
+            {
                 set_obj_glyph(ammo);
+                if (is_ammo(ammo))
+                    oammoflags |= OBJDATA_FLAGS_IS_AMMO;
+                if (throwing_weapon(ammo))
+                    oammoflags |= OBJDATA_FLAGS_THROWING_WEAPON;
+            }
             ocdata = get_objclassdata(ammo);
             lib_callbacks.callback_send_object_data(0, 0, ammo, ammo ? 2 : 1, ammo ? ammo->where : 0, &ocdata, oflags | oammoflags);
         }

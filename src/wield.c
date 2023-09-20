@@ -143,7 +143,7 @@ boolean verbose;
 }
 
 void
-update_unweapon()
+update_unweapon(VOID_ARGS)
 {
     update_hand_unweapon(1);
     update_hand_unweapon(2);
@@ -164,10 +164,7 @@ int hand;
         
     if (wep)
     {
-        *unweapon_ptr = (wep->oclass == WEAPON_CLASS)
-            ? is_launcher(wep) || is_ammo(wep) || is_missile(wep)
-            || (is_appliable_pole_type_weapon(wep) && !is_spear(wep) && !u.usteed)
-            : !is_wieldable_weapon(wep) && !is_wet_towel(wep);
+        *unweapon_ptr = is_unweapon(wep);
     }
     else
     {

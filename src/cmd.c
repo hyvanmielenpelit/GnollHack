@@ -8359,7 +8359,12 @@ int x, y, mod;
 
             if (mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp) && (!mon_mimic || sensed))
             {
-                if (iflags.clickfire && ((uwep && is_launcher(uwep)) || (uquiver && throwing_weapon(uquiver))) && dist2(u.ux, u.uy, target_x, target_y) > 2)
+                boolean has_launcher = (uwep && is_launcher(uwep));
+                boolean has_swapped_launcher_and_ammo = (uswapwep && is_launcher(uswapwep) && ammo_and_launcher(uquiver, uswapwep));
+                boolean has_throwing_weapon_quivered = (uquiver && throwing_weapon(uquiver));
+                boolean cursed_weapon_blocks_swap = (uswapwep && objects[uswapwep->otyp].oc_bimanual) || (uswapwep && uswapwep2 && !flags.swap_rhand_only) ? ((uwep && welded(uwep, &youmonst)) || (uarms && welded(uarms, &youmonst))) : (uwep && welded(uwep, &youmonst));
+                if (iflags.clickfire && dist2(u.ux, u.uy, target_x, target_y) > 2 &&
+                    (has_launcher || (iflags.autoswap_launchers && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap) || has_throwing_weapon_quivered))
                 {
                     if (!x || !y || abs(x) == abs(y)) /* straight line or diagonal */
                     {
@@ -8367,6 +8372,13 @@ int x, y, mod;
                         struct monst* mtmpinway = spotted_linedup_monster_in_way(u.ux, u.uy, target_x, target_y);
                         if (path_is_clear && !mtmpinway)
                         {
+                            if (iflags.autoswap_launchers && !has_launcher && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap)
+                            {
+                                if(uswapwep && objects[uswapwep->otyp].oc_bimanual)
+                                    (void)doswapweapon();
+                                else
+                                    (void)doswapweapon_right_or_both();
+                            }
                             //clickfire_cc.x = target_x;
                             //clickfire_cc.y = target_y;
                             cmd[0] = Cmd.spkeys[NHKF_CLICKFIRE];

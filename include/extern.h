@@ -906,8 +906,6 @@ E void FDECL(endmultishot, (BOOLEAN_P));
 E void FDECL(hitfloor, (struct obj *, BOOLEAN_P));
 E void FDECL(hurtle, (int, int, int, BOOLEAN_P));
 E void FDECL(mhurtle, (struct monst *, int, int, int));
-E boolean FDECL(throwing_weapon, (struct obj *));
-E boolean FDECL(nonmelee_throwing_weapon, (struct obj*));
 E void FDECL(throwit, (struct obj *, long));
 E int FDECL(omon_adj, (struct monst *, struct obj *, BOOLEAN_P));
 E int FDECL(thitmonst, (struct monst *, struct obj *, BOOLEAN_P, uchar *));

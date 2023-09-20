@@ -1343,23 +1343,6 @@ boolean hitsroof;
     return TRUE;
 }
 
-/* return true for weapon meant to be thrown; excludes ammo */
-boolean
-throwing_weapon(obj)
-struct obj *obj;
-{
-    return (boolean)is_otyp_throwing_weapon(obj->otyp);
-}
-
-/* return true for weapon meant to be only thrown and cannot be used in melee */
-boolean
-nonmelee_throwing_weapon(obj)
-struct obj* obj;
-{
-    return (boolean)is_otyp_nonmelee_throwing_weapon(obj->otyp);
-}
-
-
 /* the currently thrown object is returning to you (not for boomerangs) */
 STATIC_OVL void
 sho_obj_return_to_u(obj)

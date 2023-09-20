@@ -462,6 +462,7 @@ struct instance_flags {
     boolean time_botl;       /* context.botl for 'time' (moves) only */
     boolean wizweight;       /* display weight of everything in wizard mode */
     boolean takeoff_uses_all;/* takeoff command is implemented using takeoffall command with a single item */
+    boolean autoswap_launchers; /* will attempt to swap launchers on for ranged attack and off for melee attack */
 
     /* Is the system in demo version */
     boolean demo_version;  /* OBSOLETE */

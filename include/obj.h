@@ -330,6 +330,8 @@ enum elemental_enchantments {
 #define is_missile(o) is_otyp_missile((o)->otyp)
 #define is_otyp_nonmelee_throwing_weapon(otyp) (is_otyp_missile(otyp) || (objects[otyp].oc_flags & O1_THROWN_WEAPON_ONLY))
 #define is_otyp_throwing_weapon(otyp) (is_otyp_nonmelee_throwing_weapon(otyp) || (objects[otyp].oc_flags & O1_MELEE_AND_THROWN_WEAPON))
+#define throwing_weapon(o) is_otyp_throwing_weapon((o)->otyp)
+#define nonmelee_throwing_weapon(o) is_otyp_nonmelee_throwing_weapon((o)->otyp)
 
 #define is_otyp_armor(otyp) (objects[otyp].oc_class == ARMOR_CLASS)
 #define is_armor(o) ((o)->oclass == ARMOR_CLASS)
@@ -351,6 +353,9 @@ enum elemental_enchantments {
 #define is_obj_tethered_weapon(o, wmask)  \
     ((objects[(o)->otyp].oc_flags4 & O4_TETHERED_WEAPON) != 0 && ((wmask) & W_WIELDED_WEAPON) != 0)
 
+#define is_unweapon(o) (((o)->oclass == WEAPON_CLASS) \
+    ? is_launcher(o) || is_ammo(o) || is_missile(o) || (is_appliable_pole_type_weapon(o) && !is_spear(o) && !u.usteed) \
+    : !is_wieldable_weapon(o) && !is_wet_towel(o))
 
 #define uslinging() (uwep && objects[uwep->otyp].oc_skill == P_SLING)
 /* 'is_quest_artifact()' only applies to the current role's artifact */

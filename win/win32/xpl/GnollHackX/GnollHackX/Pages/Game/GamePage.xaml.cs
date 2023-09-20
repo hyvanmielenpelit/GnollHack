@@ -7041,9 +7041,9 @@ namespace GnollHackX.Pages.Game
                                     float savedfontsize = textPaint.TextSize;
                                     lock (_weaponStyleObjDataItemLock)
                                     {
-                                        /* Right-hand weapon */
                                         if (isenabled1 && valtext != "")
                                         {
+                                            /* Right-hand weapon */
                                             if (_weaponStyleObjDataItem[0] != null)
                                             {
                                                 float startpicturex = curx;
@@ -7321,6 +7321,38 @@ namespace GnollHackX.Pages.Game
                                                 curx += innerspacing;
                                             }
                                         }
+
+                                        if (isenabled1 || isenabled2)
+                                        {
+                                            /* Throwing weapons in quiver (which are not ammo by definition) */
+                                            if (_weaponStyleObjDataItem[2] != null && _weaponStyleObjDataItem[2].IsThrowingWeapon)
+                                            {
+                                                textPaint.TextSize = basefontsize;
+                                                string printtext = "/";
+                                                print_width = textPaint.MeasureText(printtext);
+                                                canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                curx += print_width;
+                                                using (new SKAutoCanvasRestore(canvas, true))
+                                                {
+                                                    GlyphImageSource gis = _paintGlyphImageSource;
+                                                    gis.ReferenceGamePage = this;
+                                                    gis.UseUpperSide = false;
+                                                    gis.AutoSize = true;
+                                                    gis.Glyph = Math.Abs(_weaponStyleObjDataItem[2].ObjData.gui_glyph);
+                                                    gis.ObjData = _weaponStyleObjDataItem[2];
+                                                    gis.DoAutoSize();
+                                                    float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
+                                                    float weppicturewidth = wep_scale * gis.Width;
+                                                    float weppictureheight = wep_scale * gis.Height;
+                                                    canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
+                                                    canvas.Scale(wep_scale);
+                                                    gis.DrawOnCanvas(canvas);
+                                                    curx += weppicturewidth;
+                                                    curx += innerspacing;
+                                                }
+                                            }
+                                        }
+
                                     }
                                     textPaint.TextSize = savedfontsize;
                                     textPaint.Typeface = savedtypeface;
@@ -11298,6 +11330,8 @@ namespace GnollHackX.Pages.Game
                 bool wrongammo = is_uwep ? wrongammo1 : is_uwep2 ? wrongammo2 : false;
                 bool notbeingused = is_uwep ? notbeingused1 : is_uwep2 ? notbeingused2 : false;
                 bool notweapon = is_uwep ? notweapon1 : is_uwep2 ? notweapon2 : false;
+                bool isammo = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_IS_AMMO) != 0UL;
+                bool isthrowingweapon = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_THROWING_WEAPON) != 0UL;
 
                 int idx = is_uwep ? 0 : is_uwep2 ? 1 : 2;
                 lock (_weaponStyleObjDataItemLock)
@@ -11308,7 +11342,7 @@ namespace GnollHackX.Pages.Game
                             _weaponStyleObjDataItem[idx] = null;
                             break;
                         case 2: /* Add item */
-                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon, foundthisturn);
+                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon, foundthisturn, isammo, isthrowingweapon);
                             break;
                         case 3: /* Add container item to previous item */
                             _weaponStyleObjDataItem[idx].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));

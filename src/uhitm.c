@@ -484,9 +484,21 @@ register struct monst *mtmp;
         || overexertion())
         goto atk_done;
 
+    if (iflags.autoswap_launchers && unweapon1 && uwep && is_launcher(uwep) && ((uswapwep && !is_unweapon(uswapwep)) || Role_if(PM_MONK)))
+    {
+        boolean cursed_weapon_blocks_swap = (uwep && objects[uwep->otyp].oc_bimanual) || (uwep && uarms && !flags.swap_rhand_only) ? ((uwep && welded(uwep, &youmonst)) || (uarms && welded(uarms, &youmonst))) : (uwep && welded(uwep, &youmonst));
+        if (!cursed_weapon_blocks_swap)
+        {
+            if (uwep && objects[uwep->otyp].oc_bimanual)
+                (void)doswapweapon();
+            else
+                (void)doswapweapon_right_or_both();
+            update_unweapon();
+        }
+    }
+
     char qbuf[BUFSIZ];
     Strcpy(qbuf, "");
-    
     if (unweapon1 && unweapon2)
     {
         if (flags.verbose) 
