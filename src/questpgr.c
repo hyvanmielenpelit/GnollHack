@@ -789,7 +789,6 @@ int msgtyp;
 
     char titlebuf[BUFSZ];
     char levbuf[BUFSZ];
-    s_level* slev;
     int popupstyle;
     boolean addquotes;
     switch (msgtyp)
