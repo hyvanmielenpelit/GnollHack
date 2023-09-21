@@ -788,6 +788,8 @@ int msgtyp;
         return;
 
     char titlebuf[BUFSZ];
+    char levbuf[BUFSZ];
+    s_level* slev;
     int popupstyle;
     boolean addquotes;
     switch (msgtyp)
@@ -802,6 +804,15 @@ int msgtyp;
         Sprintf(titlebuf, "Voice of %s", u_gname());
         popupstyle = POPUP_TEXT_DIALOGUE;
         addquotes = TRUE;
+        break;
+    case SPLEV_MESSAGE_TYPE_PLANE_ARRIVAL:
+        if (In_endgame(&u.uz))
+            (void)endgamelevelname(levbuf, depth(&u.uz));
+        else
+            Sprintf(levbuf, "Level %d", depth(&u.uz));
+        Sprintf(titlebuf, "Arrival on %s", levbuf);
+        popupstyle = POPUP_TEXT_MESSAGE;
+        addquotes = FALSE;
         break;
     }
     display_popup_text(popupbuf, titlebuf, popupstyle, ATR_NONE, NO_COLOR, NO_GLYPH, addquotes ? POPUP_FLAGS_ADD_QUOTES : POPUP_FLAGS_NONE);

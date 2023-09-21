@@ -152,8 +152,8 @@ MAZE:"air",' '
 FLAGS: noteleport,hardfloor,shortsighted
 # The following messages are somewhat obtuse, to make then
 # equally meaningful if the player can see or not.
-MESSAGE: "What a strange feeling!", message_clr_hint
-MESSAGE: "You notice that there is no gravity here.", message_clr_hint
+MESSAGE: "What a strange feeling!", message_type_plane_arrival, message_atr_none, message_clr_hint, 1
+MESSAGE: "You notice that there is no gravity here.", message_type_plane_arrival, message_atr_none, message_clr_hint, 1
 GEOMETRY:center,center
 # The player lands, upon arrival, in the
 # lower-left area.  The location of the
@@ -408,7 +408,7 @@ MONSTER_GENERATION: 10, ('H',"fire giant"), ('v',"fire vortex"), (':',"salamande
 
 MAZE:"water",' '
 FLAGS: noteleport,hardfloor,shortsighted
-MESSAGE: "You find yourself suspended in an air bubble surrounded by water.", message_clr_hint
+MESSAGE: "You find yourself suspended in an air bubble surrounded by water.", message_type_plane_arrival, message_atr_none, message_clr_hint, 1
 GEOMETRY:center,center
 # The player lands upon arrival to an air bubble
 # within the leftmost third of the level.  The
@@ -508,9 +508,9 @@ MONSTER_GENERATION: 30, ('E',"water elemental"), ('E',"elder water elemental"), 
 MAZE:"astral",' '
 FLAGS: noteleport,hardfloor,nommap,shortsighted,solidify
 TILESET: astral_tileset
-MESSAGE: "You arrive on the Astral Plane!", message_clr_hint
-MESSAGE: "Here the High Temple of %d is located.", message_clr_hint
-MESSAGE: "You sense alarm, hostility, and excitement in the air!", message_clr_hint
+MESSAGE: "You arrive on the Astral Plane!", message_type_plane_arrival, message_atr_none, message_clr_hint, 1
+MESSAGE: "Here the High Temple of %d is located.", message_type_plane_arrival, message_atr_none, message_clr_hint, 1
+MESSAGE: "You sense alarm, hostility, and excitement in the air!", message_type_plane_arrival, message_atr_none, message_clr_hint, 1
 GEOMETRY:center,center
 MAP
                               ---------------                              

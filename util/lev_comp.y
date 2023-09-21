@@ -1276,11 +1276,11 @@ if_ending	: stmt_block
 
 message		: MESSAGE_ID ':' string_expr
 		  {
-		      add_opvars(splev, "iiiiiiio", VA_PASS8(0, 0, 0, 0, 0, NO_COLOR, ATR_NONE, SPO_MESSAGE));
+		      add_opvars(splev, "iiiiiiio", VA_PASS8(0, 0, 0, 0, NO_COLOR, ATR_NONE, SPLEV_MESSAGE_TYPE_MESSAGE, SPO_MESSAGE));
 		  }
-		| MESSAGE_ID ':' string_expr ',' MESSAGE_COLOR
+		| MESSAGE_ID ':' string_expr ',' MESSAGE_TYPE ',' MESSAGE_ATTR ',' MESSAGE_COLOR ',' INTEGER
 		  {
-		      add_opvars(splev, "iiiiiiio", VA_PASS8(0, 0, 0, 0, 0, (int)$5, ATR_NONE, SPO_MESSAGE));
+		      add_opvars(splev, "iiiiiiio", VA_PASS8((int)$11, 0, 0, 0, (int)$9, (int)$7, (int)$5, SPO_MESSAGE));
 		  }
 		| MESSAGE_ID ':' string_expr ',' MESSAGE_TYPE ',' MESSAGE_ATTR ',' MESSAGE_COLOR ',' MESSAGE_SOUND_TYPE ',' MESSAGE_SOUND_ID ',' INTEGER ',' INTEGER
 		  {

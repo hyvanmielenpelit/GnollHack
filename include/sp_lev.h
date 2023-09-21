@@ -657,6 +657,7 @@ struct lev_msg {
 enum splev_message_types {
     SPLEV_MESSAGE_TYPE_MESSAGE = 0,
     SPLEV_MESSAGE_TYPE_UGOD,
+    SPLEV_MESSAGE_TYPE_PLANE_ARRIVAL,
 };
 
 enum object_special_create_types {

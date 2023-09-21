@@ -419,6 +419,7 @@ message_clr_success { savetoken(yytext); yylval.i=CLR_MSG_SUCCESS; return MESSAG
 message_clr_fail { savetoken(yytext); yylval.i=CLR_MSG_FAIL; return MESSAGE_COLOR; }
 message_type_message { savetoken(yytext); yylval.i=SPLEV_MESSAGE_TYPE_MESSAGE; return MESSAGE_TYPE; }
 message_type_ugod { savetoken(yytext); yylval.i=SPLEV_MESSAGE_TYPE_UGOD; return MESSAGE_TYPE; }
+message_type_plane_arrival { savetoken(yytext); yylval.i=SPLEV_MESSAGE_TYPE_PLANE_ARRIVAL; return MESSAGE_TYPE; }
 npc_random { savetoken(yytext); yylval.i=MAX_NPC_SUBTYPES; return NPC_TYPE; }
 npc_artificer { savetoken(yytext); yylval.i=NPC_ARTIFICER; return NPC_TYPE; }
 npc_geologist { savetoken(yytext); yylval.i=NPC_GEOLOGIST; return NPC_TYPE; }
