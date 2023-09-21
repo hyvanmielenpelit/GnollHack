@@ -2669,7 +2669,9 @@ struct mkroom* croom;
         lvr->effect_flags = lever->effect_flags;
         lvr->tflags = lever->lever_flags;
 
-        if (lvr->lever_effect == LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE)
+        switch (lvr->lever_effect)
+        {
+        case LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE:
         {
             if (IS_FLOOR((int)lvr->effect_param1))
             {
@@ -2687,8 +2689,9 @@ struct mkroom* croom;
             {
                 lvr->effect_param3 = lever->effect_subtype;
             }
+            break;
         }
-        else if (lvr->lever_effect == LEVER_EFFECT_CREATE_LOCATION_TYPE)
+        case LEVER_EFFECT_CREATE_LOCATION_TYPE:
         {
             if (IS_FLOOR((int)lvr->effect_param1))
             {
@@ -2698,12 +2701,14 @@ struct mkroom* croom;
             {
                 lvr->effect_param2 = lever->effect_subtype;
             }
+            break;
         }
-        else if (lvr->lever_effect == LEVER_EFFECT_CREATE_TRAP)
+        case LEVER_EFFECT_CREATE_TRAP:
         {
             lvr->effect_param4 = lever->effect_subtype;
+            break;
         }
-
+        }
         coord tm2;
         tm2.x = t_x;
         tm2.y = t_y;

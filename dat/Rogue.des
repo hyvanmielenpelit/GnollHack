@@ -330,7 +330,7 @@ MAP
 |.---.---.---.---.-S-..----- |....|.....|....|-....}}}}}}}}....---..S.|--..|
 |...|.......|..........|...---....---...S.....|-...}}}}}}}}...-|.S..|...|..|
 |...|..|....|..........|............|..--..----|-.....}}.....-|..----...-S--
-|...|---....----.......|----- ......|...---|    |-....}}....-|...|..--.--..|
+|...|---....----.......|-----.......|...---|    |-....}}....-|...|..--.--..|
 -----.....---.....--.---....--...--------..|     |-........-|....|.........|
     |.............|..........|.............S...   |S-------|.....|..-----..|
     ----------------------------------------  ......       ----------   ----
@@ -338,8 +338,13 @@ ENDMAP
 # Dungeon Description
 REGION:(00,00,75,20),lit,"ordinary"
 # Stairs
-STAIR:levregion(01,00,15,20),(01,18,04,20),up
+STAIR:levregion(01,03,15,20),(01,18,04,20),up
 # Doors
+# Levers
+LEVER:(24,13),lever_effect_create_location,tertype:'.',target:(23,12),switchable
+LEVER:(03,02),lever_effect_create_location,tertype:'.',target:(24,17),switchable
+LEVER:(55,04),lever_effect_create_location,tertype:'.',target:(65,12),switchable
+LEVER:(58,02),lever_effect_create_location,tertype:'.',target:(44,12),switchable
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,20)
 # One trap to keep the gnomes at bay.
