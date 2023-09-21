@@ -3841,13 +3841,13 @@ spo_message(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_message";
-    struct opvar *op, *mcolor_opvar, *mattr_opvar, *soundtyp_opvar, *soundid_opvar, *soundparam_opvar, *msgflags_opvar;
+    struct opvar *op, * mtype_opvar, * mattr_opvar, *mcolor_opvar, *soundtyp_opvar, *soundid_opvar, *soundparam_opvar, *msgflags_opvar;
     char* msg; // , * levmsg;
     size_t n; //old_n, 
     struct lev_msg* levmsg;
     struct lev_msg zeromsg = { 0 };
 
-    if (!OV_pop_i(mattr_opvar) || !OV_pop_i(mcolor_opvar) || !OV_pop_i(soundtyp_opvar) || !OV_pop_i(soundid_opvar)
+    if (!OV_pop_i(mtype_opvar) || !OV_pop_i(mattr_opvar) || !OV_pop_i(mcolor_opvar) || !OV_pop_i(soundtyp_opvar) || !OV_pop_i(soundid_opvar)
         || !OV_pop_i(soundparam_opvar) || !OV_pop_i(msgflags_opvar) || !OV_pop_s(op))
         return;
     msg = OV_s(op);
@@ -3855,6 +3855,7 @@ struct sp_coder *coder;
         return;
 
     n = strlen(msg);
+    int mtype = (int)OV_i(mtype_opvar);
     int mattr = (int)OV_i(mattr_opvar);
     int mcolor = (int)OV_i(mcolor_opvar);
     int soundtyp = (int)OV_i(soundtyp_opvar);
@@ -3866,8 +3867,9 @@ struct sp_coder *coder;
     if (levmsg)
     {
         *levmsg = zeromsg;
-        levmsg->color = mcolor;
+        levmsg->msg_type = mtype;
         levmsg->attr = mattr;
+        levmsg->color = mcolor;
         levmsg->sound_type = soundtyp;
         levmsg->sound_id = soundid;
         levmsg->sound_param = soundparam;
@@ -3885,28 +3887,10 @@ struct sp_coder *coder;
         }
     }
     
-    //old_n = lev_message ? (strlen(lev_message) + 1) : 0;
-    //n = strlen(msg);
-
-    //levmsg = (char *) alloc(old_n + n + 1);
-
-    //if (old_n)
-    //    levmsg[old_n - 1] = '\n';
-    //
-    //if (lev_message)
-    //    (void) memcpy((genericptr_t) levmsg, (genericptr_t) lev_message, old_n - 1);
-    //
-    //(void) memcpy((genericptr_t) &levmsg[old_n], msg, n);
-    //levmsg[old_n + n] = '\0';
-    //Free(lev_message);
-    //
-    //lev_message = levmsg;
-    //lev_message_color = mtyp;
-    //lev_message_attr = ATR_NONE;
-    
     opvar_free(op);
-    opvar_free(mcolor_opvar);
+    opvar_free(mtype_opvar);
     opvar_free(mattr_opvar);
+    opvar_free(mcolor_opvar);
     opvar_free(soundtyp_opvar);
     opvar_free(soundid_opvar);
     opvar_free(soundparam_opvar);

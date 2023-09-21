@@ -645,12 +645,18 @@ struct lc_breakdef {
 struct lev_msg {
     struct lev_msg* next;
     char* message;
+    int msg_type;
     int attr;
     int color;
     int sound_type;
     int sound_id;
     int sound_param;
     unsigned long msgflags;
+};
+
+enum splev_message_types {
+    SPLEV_MESSAGE_TYPE_MESSAGE = 0,
+    SPLEV_MESSAGE_TYPE_UGOD,
 };
 
 enum object_special_create_types {

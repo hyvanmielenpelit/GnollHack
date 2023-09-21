@@ -38,7 +38,7 @@ STATIC_DCL void FDECL(deliver_by_window, (struct qtmsg *, int, int, int));
 STATIC_DCL void FDECL(deliver_by_file_write, (dlb*, struct qtmsg*, int, int));
 STATIC_DCL void FDECL(file_write_pager, (dlb*, struct qtmsg*, int, int));
 STATIC_DCL boolean FDECL(skip_pager, (BOOLEAN_P));
-
+STATIC_DCL void FDECL(printout_popupbuf, (char*, int));
 
 STATIC_VAR char cvt_buf[64];
 STATIC_VAR struct qtlists qt_list;
@@ -779,19 +779,59 @@ qt_montype()
     return mkclass(urole.enemy2sym, 0);
 }
 
+STATIC_OVL void
+printout_popupbuf(popupbuf, msgtyp)
+char* popupbuf;
+int msgtyp;
+{
+    if (!popupbuf || !*popupbuf)
+        return;
+
+    char titlebuf[BUFSZ];
+    int popupstyle;
+    boolean addquotes;
+    switch (msgtyp)
+    {
+    default:
+    case SPLEV_MESSAGE_TYPE_MESSAGE:
+        Strcpy(titlebuf, "Message");
+        popupstyle = POPUP_TEXT_MESSAGE;
+        addquotes = FALSE;
+        break;
+    case SPLEV_MESSAGE_TYPE_UGOD:
+        Sprintf(titlebuf, "Voice of %s", u_gname());
+        popupstyle = POPUP_TEXT_DIALOGUE;
+        addquotes = TRUE;
+        break;
+    }
+    display_popup_text(popupbuf, titlebuf, popupstyle, ATR_NONE, NO_COLOR, NO_GLYPH, addquotes ? POPUP_FLAGS_ADD_QUOTES : POPUP_FLAGS_NONE);
+    *popupbuf = 0;
+}
+
 /* special levels can include a custom arrival message; display it */
 void
 deliver_splev_message()
 {
     char *str, *nl, in_line[BUFSZ], out_line[BUFSZ];
     struct lev_msg* lm, *nextlm;
-    boolean dopopup = FALSE, isugod = FALSE;
-    char popupbuf[BUFSZ * 4] = "";
+    char popupbuf[BUFSZ * 4];
+    *popupbuf = 0;
 
+    int msgcnt = 0;
+    for (lm = lev_message; lm; lm = lm->next)
+        msgcnt++;
+
+    int prevmsgtyp = -1;
+    int msgidx = 0;
+    int msgtyp = -1;
     /* there's no provision for delivering via window instead of pline */
-    for (lm = lev_message; lm; lm = nextlm)
+    for (lm = lev_message; lm; lm = nextlm, msgidx++, prevmsgtyp = msgtyp)
     {
         nextlm = lm->next;
+        msgtyp = lm->msg_type;
+
+        if (msgtyp != prevmsgtyp && prevmsgtyp >= 0)
+            printout_popupbuf(popupbuf, msgtyp);
 
         /* Play sound if any */
         switch (lm->sound_type)
@@ -817,7 +857,7 @@ deliver_splev_message()
             (void) xcrypt(in_line, in_line);
             convert_line(in_line, out_line);
             pline_ex(lm->attr, lm->color, "%s", out_line);
-            if (lm->msgflags & 1UL)
+            if (lm->msgflags & 1UL) /* Add to popup */
             {
                 if(*popupbuf)
                     Strcat(popupbuf, " ");
@@ -826,16 +866,12 @@ deliver_splev_message()
             if ((nl = index(str, '\n')) == 0)
                 break; /* done if no newline */
         }
-        if (lm->msgflags & 1UL)
-            dopopup = TRUE;
-        if (lm->msgflags & 2UL)
-            isugod = TRUE;
-
         free((genericptr_t)lm->message);
         free((genericptr_t)lm);
+
+        if (msgidx == msgcnt - 1)
+            printout_popupbuf(popupbuf, msgtyp);
     }
-    if (dopopup && *popupbuf)
-        display_popup_text(popupbuf, isugod ? u_gname() : "Message", POPUP_TEXT_MESSAGE, ATR_NONE, isugod ? CLR_MSG_GOD : NO_COLOR, NO_GLYPH, isugod ? POPUP_FLAGS_ADD_QUOTES | POPUP_FLAGS_COLOR_TEXT : POPUP_FLAGS_NONE);
     lev_message = 0;
 }
 

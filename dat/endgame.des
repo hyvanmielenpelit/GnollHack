@@ -14,9 +14,9 @@
 MAZE:"earth",' '
 FLAGS: noteleport,hardfloor,shortsighted
 TILESET: gnomish_mines_tileset
-MESSAGE: "Well done, mortal!", message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_well_done, 0, 3
-MESSAGE: "But now thou must face the final Test...", message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_final_test, 0, 3
-MESSAGE: "Prove thyself worthy or perish!", message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_prove_thyself, 0, 3
+MESSAGE: "Well done, mortal!", message_type_ugod, message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_well_done, 0, 1
+MESSAGE: "But now thou must face the final Test...", message_type_ugod, message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_final_test, 0, 1
+MESSAGE: "Prove thyself worthy or perish!", message_type_ugod, message_atr_none, message_clr_god, message_sound_type_ugod, message_sound_id_ugod_prove_thyself, 0, 1
 
 GEOMETRY:center,center
 # The player lands, upon arrival, in the

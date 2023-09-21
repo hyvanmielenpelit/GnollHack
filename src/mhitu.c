@@ -1160,7 +1160,7 @@ register struct monst *mtmp;
                             else if (!Deaf)
                             {
                                 play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_GROWLS);
-                                pline("%s growls menacingly.", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s growls menacingly.", Monnam(mtmp));
                             }
                         }
                     }
@@ -1241,7 +1241,7 @@ register struct monst *mtmp;
                                 pline("%s laughs at you!", Monnam(mtmp));
                             }
                             else if(canseemon(mtmp) && (m_carrying(mtmp, MACE_OF_THE_UNDERWORLD) || m_carrying(mtmp, WAN_DEATH)))
-                                pline("%s swings his wand menacingly.", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s swings his wand menacingly.", Monnam(mtmp));
                         }
                     }
                 }
@@ -1265,12 +1265,12 @@ register struct monst *mtmp;
                             if (!rn2(2))
                             {
                                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CURSE);
-                                pline("%s curses at you!", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s curses at you!", Monnam(mtmp));
                             }
                             else
                             {
                                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
-                                pline("%s laughs menacingly.", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s laughs menacingly.", Monnam(mtmp));
                             }
                         }
                     }
@@ -1295,9 +1295,9 @@ register struct monst *mtmp;
                         else if (!is_silenced(mtmp) && canseemon(mtmp))
                         {
                             if (!rn2(2))
-                                pline("Fumes raise out of %s nostrils!", s_suffix(mon_nam(mtmp)));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Fumes raise out of %s nostrils!", s_suffix(mon_nam(mtmp)));
                             else
-                                pline("%s bellows menacingly.", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s bellows menacingly.", Monnam(mtmp));
                         }
                     }
                 }

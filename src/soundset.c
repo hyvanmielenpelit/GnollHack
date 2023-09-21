@@ -12942,267 +12942,267 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "desecrate altar",
         {GHSOUND_DESECRATE_ALTAR, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "summon demon",
         {GHSOUND_SUMMON_DEMON, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "sacrifice pet",
         {GHSOUND_SACRIFICE_PET, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "sacrifice coaligned unicorn",
         {GHSOUND_SACRIFICE_COALIGNED_UNICORN, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar add alignment",
         {GHSOUND_ALTAR_ADD_ALIGNMENT, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar thunderclap",
         {GHSOUND_ALTAR_THUNDERCLAP, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar charged air",
         {GHSOUND_ALTAR_CHARGED_AIR, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar accepts sacrifice",
         {GHSOUND_ALTAR_ANGRY_ACCEPTS_SACRIFICE, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar rejects sacrifice",
         {GHSOUND_ALTAR_ANGRY_REJECTS_SACRIFICE, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar power increase",
         {GHSOUND_ALTAR_POWER_INCREASE, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar power decrease",
         {GHSOUND_ALTAR_POWER_DECREASE, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar god mollified",
         {GHSOUND_ALTAR_GOD_MOLLIFIED, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar inadequacy",
         {GHSOUND_ALTAR_INADEQUACY, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar absolved",
         {GHSOUND_ALTAR_ABSOLVED, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar hopeful feeling",
         {GHSOUND_ALTAR_HOPEFUL_FEELING, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar reconciliation",
         {GHSOUND_ALTAR_RECONCILIATION, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar gift",
         {GHSOUND_ALTAR_GIFT, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar four-leaf clover",
         {GHSOUND_ALTAR_FOUR_LEAF_CLOVER, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "aura glow",
         {GHSOUND_AURA_GLOW, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar burst of flame",
         {GHSOUND_ALTAR_BURST_OF_FLAME, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "altar offering vanish",
         {GHSOUND_ALTAR_OFFERING_VANISH, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray fail",
         {GHSOUND_PRAY_FAIL, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray pleased",
         {GHSOUND_PRAY_PLEASED, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray fix all troubles",
         {GHSOUND_PRAY_FIX_ALL_TROUBLES, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray fix one trouble",
         {GHSOUND_PRAY_FIX_ONE_TROUBLE, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray repair",
         {GHSOUND_PRAY_REPAIR, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray healing",
         {GHSOUND_PRAY_HEALING, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray uncurse",
         {GHSOUND_PRAY_UNCURSE, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray gift",
         {GHSOUND_PRAY_GIFT, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray crowning",
         {GHSOUND_PRAY_CROWNING, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray spellbook",
         {GHSOUND_PRAY_SPELLBOOK, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray bless water",
         {GHSOUND_PRAY_BLESS_WATER, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray curse water",
         {GHSOUND_PRAY_CURSE_WATER, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "pray shimmering light",
         {GHSOUND_PRAY_SHIMMERING_LIGHT, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ENCHANT_ITEM_SUCCESS",
         {GHSOUND_ENCHANT_ITEM_SUCCESS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ENCHANT_ITEM_BLESSED_SUCCESS",
         {GHSOUND_ENCHANT_ITEM_BLESSED_SUCCESS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ENCHANT_ITEM_UNCURSE_AND_OTHER",
         {GHSOUND_ENCHANT_ITEM_UNCURSE_AND_OTHER, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ENCHANT_ITEM_NEGATIVE",
         {GHSOUND_ENCHANT_ITEM_NEGATIVE, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ENCHANT_ITEM_VIOLENT_GLOW",
         {GHSOUND_ENCHANT_ITEM_VIOLENT_GLOW, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ENCHANT_ITEM_VIBRATE_WARNING",
         {GHSOUND_ENCHANT_ITEM_VIBRATE_WARNING, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ENCHANT_ITEM_VIBRATE_AND_DESTROY",
         {GHSOUND_ENCHANT_ITEM_VIBRATE_AND_DESTROY, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ENCHANT_ITEM_SPECIAL_SUCCESS",
         {GHSOUND_ENCHANT_ITEM_SPECIAL_SUCCESS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ENCHANT_ITEM_SPECIAL_NEGATIVE",
         {GHSOUND_ENCHANT_ITEM_SPECIAL_NEGATIVE, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ENCHANT_ITEM_GENERAL_FAIL",
         {GHSOUND_ENCHANT_ITEM_GENERAL_FAIL, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_HANDS_ITCH",
         {GHSOUND_HANDS_ITCH, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_PROTECT_ITEM_SUCCESS",
         {GHSOUND_PROTECT_ITEM_SUCCESS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_PROTECT_ITEM_FAIL",
         {GHSOUND_PROTECT_ITEM_FAIL, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_REPAIR_ITEM_SUCCESS",
         {GHSOUND_REPAIR_ITEM_SUCCESS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_REPAIR_ITEM_FAIL",
         {GHSOUND_REPAIR_ITEM_FAIL, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_BLESS_ITEM_SUCCESS",
         {GHSOUND_BLESS_ITEM_SUCCESS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_UNCURSE_ITEM_SUCCESS",
         {GHSOUND_UNCURSE_ITEM_SUCCESS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_CURSE_ITEM_SUCCESS",
         {GHSOUND_CURSE_ITEM_SUCCESS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_UNBLESS_ITEM_SUCCESS",
         {GHSOUND_UNBLESS_ITEM_SUCCESS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_DISINTEGRATE",
