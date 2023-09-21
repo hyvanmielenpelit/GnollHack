@@ -7421,7 +7421,7 @@ namespace GnollHackX.Pages.Game
                                         if (isenabled1 || isenabled2)
                                         {
                                             /* Throwing weapons in quiver (which are not ammo by definition) */
-                                            if (_weaponStyleObjDataItem[2] != null && _weaponStyleObjDataItem[2].IsThrowingWeapon)
+                                            if (_weaponStyleObjDataItem[2] != null && _weaponStyleObjDataItem[2].IsThrowingWeapon && !_weaponStyleObjDataItem[2].IsAmmo)
                                             {
                                                 textPaint.TextSize = basefontsize;
                                                 string printtext = "/";
