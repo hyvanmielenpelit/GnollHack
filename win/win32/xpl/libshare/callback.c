@@ -570,7 +570,7 @@ back_from_align:
         }
         if (aligns[flags.initalign].value == A_CHAOTIC)
         {
-            Sprintf(buf, "%s", "Can sacrifice own race");
+            Sprintf(buf, "%s", "Sacrificing own race is less dangerous");
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
                 MENU_UNSELECTED);
         }

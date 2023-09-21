@@ -229,7 +229,7 @@ docharacterstatistics()
     if (u.ualign.type == A_CHAOTIC)
     {
         trait_count++;
-        Sprintf(buf, " %2d - Can sacrifice own race (Alignment)", trait_count);
+        Sprintf(buf, " %2d - Sacrificing own race is less dangerous (Alignment)", trait_count);
         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 

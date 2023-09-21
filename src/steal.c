@@ -794,7 +794,7 @@ struct monst *mon;
            artifacts and ordinary objects are given 0% resistance chance;
            current role's quest artifact is rescued too--quest artifacts
            for the other roles are not */
-        if (obj_resists(obj, 0, 0) || is_quest_artifact(obj))
+        if (is_obj_unremovable_from_the_game(obj) || is_quest_artifact(obj))
         {
             obj_extract_self(obj);
             if (mon->mx) 

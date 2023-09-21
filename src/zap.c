@@ -3106,12 +3106,8 @@ obj_resists(obj, ochance, achance)
 struct obj *obj;
 int ochance, achance; /* percent chance for ordinary objects, artifacts */
 {
-    if (obj->otyp == AMULET_OF_YENDOR
-        || obj->otyp == SPE_BOOK_OF_THE_DEAD
-        || obj->otyp == CANDELABRUM_OF_INVOCATION
-        || obj->otyp == BELL_OF_OPENING
-        || is_obj_indestructible(obj)
-        || (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && is_rider(&mons[obj->corpsenm])))
+    if (is_obj_unremovable_from_the_game(obj)
+        || is_obj_indestructible(obj))
     {
         return TRUE;
     }

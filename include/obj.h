@@ -253,6 +253,11 @@ enum elemental_enchantments {
 #define is_otyp_indestructible(otyp) ((objects[(otyp)].oc_flags & O1_INDESTRUCTIBLE) != 0)
 #define is_obj_indestructible(o) ((get_obj_oc_flags(o) & O1_INDESTRUCTIBLE) != 0 || ((o)->speflags & SPEFLAGS_INDESTRUCTIBLE) != 0 \
                                   || ((o)->oartifact > 0 && (artilist[(o)->oartifact].aflags2 & AF2_INDESTRUCTIBLE) != 0))
+#define is_obj_unremovable_from_the_game(o) ((o)->otyp == AMULET_OF_YENDOR \
+    || (o)->otyp == SPE_BOOK_OF_THE_DEAD \
+    || (o)->otyp == CANDELABRUM_OF_INVOCATION \
+    || (o)->otyp == BELL_OF_OPENING \
+    || ((o)->otyp == CORPSE && (o)->corpsenm >= LOW_PM && is_rider(&mons[(o)->corpsenm])))
 
 #define is_otyp_no_pickup(otyp) ((objects[(otyp)].oc_flags3 & O3_NO_PICKUP) != 0)
 #define is_obj_no_pickup(o) (is_otyp_no_pickup((o)->otyp) || ((o)->speflags & SPEFLAGS_NO_PICKUP) != 0)
