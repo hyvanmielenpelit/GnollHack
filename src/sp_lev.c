@@ -2669,6 +2669,7 @@ struct mkroom* croom;
         lvr->effect_flags = lever->effect_flags;
         lvr->tflags = lever->lever_flags;
 
+        /* Special adjustments */
         switch (lvr->lever_effect)
         {
         case LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE:
@@ -2708,6 +2709,8 @@ struct mkroom* croom;
             lvr->effect_param4 = lever->effect_subtype;
             break;
         }
+        default:
+            break;
         }
         coord tm2;
         tm2.x = t_x;
