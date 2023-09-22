@@ -9462,6 +9462,10 @@ enum create_context_menu_types menu_type;
         {
             add_context_menu(C('s'), cmd_from_func(dosit), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Sit", "on Throne", 0, NO_COLOR);
         }
+        else if (IS_LEVER(lev->typ))
+        {
+            add_context_menu('a', cmd_from_func(doapply), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Apply", "the Lever", 0, NO_COLOR);
+        }
         else if ((u.ux == xupstair && u.uy == yupstair)
             || (u.ux == sstairs.sx && u.uy == sstairs.sy && sstairs.up)
             || (u.ux == xupladder && u.uy == yupladder))

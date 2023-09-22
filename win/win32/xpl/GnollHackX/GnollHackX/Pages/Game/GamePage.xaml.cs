@@ -1471,6 +1471,19 @@ namespace GnollHackX.Pages.Game
             switch ((char)cmddefchar)
             {
                 case 'a':
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_CLOSE_DISPLAY: /* Next interesting / monster */
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Next interesting / monster */
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Next interesting / monster */
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.next.png";
+                            break;
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL: /* Apply */
+                        default:
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.apply.png";
+                            break;
+                    }
+                    break;
                 case 'm':
                     switch (data.style)
                     {
