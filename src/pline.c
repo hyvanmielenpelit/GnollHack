@@ -624,6 +624,26 @@ VA_DECL7(int, attr, int, color, const int*, multiattrs, const int*, multicolors,
     return;
 }
 
+void pline_multi_ex_flags
+VA_DECL6(int, attr, int, color, const int*, multiattrs, const int*, multicolors, unsigned, pflags, const char*, line)
+{
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_multiattrs = multiattrs;
+    pline_multicolors = multicolors;
+    pline_attr = attr;
+    pline_color = color;
+    pline_flags = pflags;
+    vpline(line, VA_ARGS);
+    pline_multiattrs = 0;
+    pline_multicolors = 0;
+    pline_attr = ATR_NONE;
+    pline_color = NO_COLOR;
+    pline_flags = 0;
+    VA_END();
+    return;
+}
+
 /*VARARGS1*/
 void You_ex
 VA_DECL3(int, attr, int, color, const char*, line)

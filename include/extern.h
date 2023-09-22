@@ -2688,6 +2688,7 @@ E void VDECL(custompline_ex_prefix, (int, int, const char*, int, int, const char
 E void VDECL(pline_ex, (int, int, const char*, ...)) PRINTF_F(3, 4);
 E void VDECL(pline_multi_ex, (int, int, const int*, const int*, const char*, ...)) PRINTF_F(5, 6);
 E void VDECL(pline_multi_ex_popup, (int, int, const int*, const int*, const char*, int, const char*, ...)) PRINTF_F(7, 8);
+E void VDECL(pline_multi_ex_flags, (int, int, const int*, const int*, unsigned, const char*, ...)) PRINTF_F(6, 7);
 E void VDECL(Norep, (const char *, ...)) PRINTF_F(1, 2);
 E void VDECL(Norep_ex, (int, int, const char*, ...)) PRINTF_F(3, 4);
 E void NDECL(free_youbuf);

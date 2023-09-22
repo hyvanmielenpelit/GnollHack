@@ -70,7 +70,8 @@ struct window_procs dll_procs = {
 #ifdef STATUS_HILITES
     WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
 #endif
-    WC2_PREFERRED_SCREEN_SCALE, dll_init_nhwindows, dll_player_selection, dll_askname,
+    0UL, 
+    dll_init_nhwindows, dll_player_selection, dll_askname,
     dll_get_nh_event, dll_exit_nhwindows, dll_suspend_nhwindows,
     dll_resume_nhwindows, dll_create_nhwindow_ex, dll_clear_nhwindow,
     dll_display_nhwindow, dll_destroy_nhwindow, dll_curs, dll_putstr_ex, dll_putstr_ex2,

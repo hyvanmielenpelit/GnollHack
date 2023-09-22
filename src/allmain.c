@@ -1339,15 +1339,16 @@ choose_game_difficulty()
         add_menu(menuwin, NO_GLYPH, &any, diffchar, 0, ATR_NONE, NO_COLOR,
             buf2, MENU_UNSELECTED);
     }
+    if (!(windowprocs.wincap2 & WC2_MENU_SHOWS_OK_CANCEL))
+    {
+        any = zeroany;
+        add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR,
+            " ", MENU_UNSELECTED);
 
-    any = zeroany;
-    add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR,
-        " ", MENU_UNSELECTED);
-
-    any.a_int = QUIT_DUMMY;
-    add_menu(menuwin, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR,
-        "Quit", MENU_UNSELECTED);
-
+        any.a_int = QUIT_DUMMY;
+        add_menu(menuwin, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR,
+            "Quit", MENU_UNSELECTED);
+    }
     end_menu(menuwin, "Pick a level for game difficulty");
     n = select_menu(menuwin, PICK_ONE, &selected);
     destroy_nhwindow(menuwin);
@@ -1367,7 +1368,7 @@ choose_game_difficulty()
         nh_bail(EXIT_SUCCESS, "Until next time, then...", TRUE);
     }
 }
-
+#undef QUIT_DUMMY
 
 void
 newgame()

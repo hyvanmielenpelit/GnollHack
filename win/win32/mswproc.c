@@ -97,7 +97,7 @@ struct window_procs mswin_procs = {
 #ifdef STATUS_HILITES
     WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
 #endif
-    WC2_STATUSLINES | WC2_PREFERRED_SCREEN_SCALE | WC2_PLAY_GHSOUNDS | WC2_VOLUME_CONTROLS, 
+    WC2_STATUSLINES | WC2_PREFERRED_SCREEN_SCALE | WC2_VOLUME_CONTROLS | WC2_ANIMATIONS,
     mswin_init_nhwindows, mswin_player_selection, mswin_askname,
     mswin_get_nh_event, mswin_exit_nhwindows, mswin_suspend_nhwindows,
     mswin_resume_nhwindows, mswin_create_nhwindow_ex, mswin_clear_nhwindow,

@@ -308,18 +308,19 @@ extern
                                                   *    via non-display attribute flag  */
 #define WC2_SUPPRESS_HIST           0x00008000UL /* 16 putstr(WIN_MESSAGE) supports history
                                                   *    suppression via non-disp attr   */
-#define WC2_AUTOSTATUSLINES         0x00010000UL /* 17 automatically adjust number of status lines */
-#define WC2_PREFERRED_SCREEN_SCALE  0x00020000UL /* 18 preferred screen scale */
-#define WC2_HEREWINDOW              0x00040000UL /* 19 show the here window */
+#define WC2_AUTOSTATUSLINES         0x00010000UL /* 17 windowing system can automatically adjust number of status lines */
+#define WC2_PREFERRED_SCREEN_SCALE  0x00020000UL /* 18 preferred screen scale is shown in options */
+#define WC2_HEREWINDOW              0x00040000UL /* 19 supports here window */
 #define WC2_SCREEN_TEXT             0x00080000UL /* 20 windowing system can show screen texts */
-#define WC2_PLAY_GHSOUNDS           0x00100000UL /* 21 windowing system can play ghsounds */
+#define WC2_ANIMATIONS              0x00100000UL /* 21 supports displaying some sort of animations with tiles; animation options are shown in options */
 #define WC2_VOLUME_CONTROLS         0x00200000UL /* 22 volume controls are shown in options */
-#define WC2_PREPROCESS_REPLACEMENTS 0x00400000UL /* 23 graphical user interface that requires preprocessed gui_glyphs; does not do replacements */
+/* free bit */
 #define WC2_SPECIAL_SYMBOLS         0x00800000UL /* 24 handles special symbols in text of the type &symbol_name; */
 #define WC2_MENU_SUFFIXES           0x01000000UL /* 25 supports placing text in parentheses on a different line in menus */
 #define WC2_FADING_ANIMATIONS       0x02000000UL /* 26 supports fading animations */
+#define WC2_MENU_SHOWS_OK_CANCEL    0x04000000UL /* 27 menus always show OK and Cancel buttons (so you can then potentially omit e.g. a quit choice in the menu) */
 
-/* 8 free bits */
+/* 5 free bits */
 
 #define ALIGN_LEFT   1
 #define ALIGN_RIGHT  2

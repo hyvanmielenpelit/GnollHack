@@ -334,7 +334,7 @@ static struct Comp_Opt {
                * a different format */
     int optflags;
 } compopt[] = {
-    { "animation_interval", "animation frame interval in milliseconds", 3, SET_IN_GAME },
+    { "animation_interval", "animation frame interval in milliseconds", 3, SET_IN_GAME },  /*WC2*/
     { "align", "your starting alignment (lawful, neutral, or chaotic)", 8,
       DISP_IN_GAME },
     { "align_message", "message window alignment", 20, DISP_IN_GAME }, /*WC*/
@@ -476,17 +476,17 @@ static struct Comp_Opt {
     { "sortloot", "sort object selection lists by description", 4,
       SET_IN_GAME },
     { "sound_volume_ambient", "ambient volume", 3,
-      SET_IN_GAME },
+      SET_IN_GAME }, /*WC2*/
     { "sound_volume_dialogue", "dialogue volume", 3,
-      SET_IN_GAME },
+      SET_IN_GAME }, /*WC2*/
     { "sound_volume_effects", "sound effect volume", 3,
-      SET_IN_GAME },
+      SET_IN_GAME }, /*WC2*/
     { "sound_volume_general", "general game volume", 3,
-      SET_IN_GAME },
+      SET_IN_GAME }, /*WC2*/
     { "sound_volume_music", "music volume", 3,
-      SET_IN_GAME },
+      SET_IN_GAME }, /*WC2*/
     { "sound_volume_ui", "user interface sound volume", 3,
-      SET_IN_GAME },
+      SET_IN_GAME }, /*WC2*/
     { "spellorder", "default spell sorting", 3,
       SET_IN_GAME },
 #ifdef MSDOS
@@ -8117,15 +8117,13 @@ static const struct wc_Opt wc2_options[] = {
     { "windowborders", WC2_WINDOWBORDERS },
     { "autostatuslines", WC2_AUTOSTATUSLINES },
     { "preferred_screen_scale", WC2_PREFERRED_SCREEN_SCALE },
-#if 0 /* currently non-existent options for WC2 */
-    { "screen_text", WC2_SCREEN_TEXT },
-    { "play_ghsounds", WC2_PLAY_GHSOUNDS },
-    { "volume_controls", WC2_VOLUME_CONTROLS },
-    { "preprocess_replacements", WC2_PREPROCESS_REPLACEMENTS },
-    { "special_symbols", WC2_SPECIAL_SYMBOLS },
-    { "menu_suffixes", WC2_MENU_SUFFIXES },
-    { "fading_animations", WC2_FADING_ANIMATIONS },
-#endif
+    { "sound_volume_ambient", WC2_VOLUME_CONTROLS },
+    { "sound_volume_dialogue", WC2_VOLUME_CONTROLS },
+    { "sound_volume_effects", WC2_VOLUME_CONTROLS },
+    { "sound_volume_general", WC2_VOLUME_CONTROLS },
+    { "sound_volume_music", WC2_VOLUME_CONTROLS },
+    { "sound_volume_ui", WC2_VOLUME_CONTROLS },
+    { "animation_interval", WC2_ANIMATIONS },
     { (char *) 0, 0L }
 };
 

@@ -604,16 +604,19 @@ int cx, cy;
 
     cc.x = cx;
     cc.y = cy;
-    if (do_screen_description(cc, TRUE, sym, tmpbuf, &firstmatch,
-                              (struct permonst **) 0)) {
+    if (do_screen_description(cc, TRUE, sym, tmpbuf, &firstmatch, (struct permonst **) 0)) 
+    {
         (void) coord_desc(cx, cy, tmpbuf, iflags.getpos_coords);
-        custompline(SUPPRESS_HISTORY | STAY_ON_LINE,
-                    "%s%s%s%s%s", firstmatch, *tmpbuf ? " " : "", tmpbuf,
-                    (iflags.autodescribe
-                     && getpos_getinvalid && (*getpos_getinvalid)(cx, cy))
-                      ? " (illegal)" : "",
-                    (iflags.getloc_travelmode && !is_valid_travelpt(cx, cy))
-                      ? " (no travel path)" : "");
+        boolean is_illegal = (iflags.autodescribe && getpos_getinvalid && (*getpos_getinvalid)(cx, cy));
+        boolean has_no_path = (iflags.getloc_travelmode && !is_valid_travelpt(cx, cy));
+        int multicolors[5] = { NO_COLOR, NO_COLOR, NO_COLOR, CLR_RED, CLR_ORANGE };
+        pline_multi_ex_flags(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, SUPPRESS_HISTORY | STAY_ON_LINE,
+                    "%s%s%s%s%s", 
+                    firstmatch,
+                    *tmpbuf ? " " : "", 
+                    tmpbuf,
+                    is_illegal ? " (illegal)" : "",
+                    has_no_path ? " (no travel path)" : "");
         curs(WIN_MAP, cx, cy);
         flush_screen(0);
     }
