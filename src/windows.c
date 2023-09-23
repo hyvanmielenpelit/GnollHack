@@ -3162,7 +3162,7 @@ int no_forward, app;
     dump_putstr_ex(win == NHW_DUMPTXT || win == NHW_DUMPHTML ? win : 0, str, attr, NO_COLOR, app);
 #endif
     if (!no_forward)
-        putstr(win, attr, str);
+        putstr_ex(win, str, attr, NO_COLOR, app);
 }
 
 void
