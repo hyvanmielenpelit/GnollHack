@@ -147,6 +147,7 @@ extern struct trap_type_definition trap_type_definitions[TRAPNUM];
 
 #define is_pit(ttyp) ((ttyp) == PIT || (ttyp) == SPIKED_PIT)
 #define is_hole(ttyp)  ((ttyp) == HOLE || (ttyp) == TRAPDOOR)
+#define is_lever(ttyp)  ((ttyp) == LEVER)
 
 #define MKTRAP_NO_FLAGS                    0x00000000UL
 #define MKTRAPFLAG_GARDEN_GNOME_ITEMS      0x00000001UL

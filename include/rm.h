@@ -859,7 +859,6 @@ extern const struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SU
 #define IS_SIGNPOST(typ) ((typ) == SIGNPOST)
 #define IS_ALTAR(typ) ((typ) == ALTAR)
 #define IS_ANVIL(typ) ((typ) == ANVIL)
-#define IS_LEVER(typ) ((typ) == LEVER)
 #define IS_DRAWBRIDGE(typ) \
     ((typ) == DRAWBRIDGE_UP || (typ) == DRAWBRIDGE_DOWN)
 #define IS_FURNITURE(typ) ((typ) >= STAIRS && (typ) <= ALTAR)
