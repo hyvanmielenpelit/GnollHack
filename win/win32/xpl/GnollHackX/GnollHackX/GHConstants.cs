@@ -1324,6 +1324,7 @@ namespace GnollHackX
         YN_STYLE_ITEM_EXCHANGE,
         YN_STYLE_KNAPSACK_FULL,
         YN_STYLE_MONSTER_QUESTION,
+        YN_STYLE_END,
     }
 
     public enum special_view_types

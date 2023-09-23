@@ -1033,7 +1033,8 @@ boolean taken;
             Strcpy(qbuf, "Do you want your possessions identified?");
 
         ask = should_query_disclose_option('i', &defquery);
-        c = ask ? yn_function(qbuf, ynqchars, defquery, ynq2descs) : defquery;
+        c = ask ? yn_function_end(qbuf, ynqchars, defquery, ynq2descs) : defquery;
+        
         if (c == 'y') {
             /* caller has already ID'd everything */
             (void) display_inventory((char *) 0, TRUE, 0);
@@ -1045,7 +1046,7 @@ boolean taken;
 
     if (!done_stopprint) {
         ask = should_query_disclose_option('a', &defquery);
-        c = ask ? yn_function("Do you want to see your attributes?", ynqchars,
+        c = ask ? yn_function_end("Do you want to see your attributes?", ynqchars,
                               defquery, ynq2descs)
                 : defquery;
         if (c == 'y')
@@ -1068,7 +1069,7 @@ boolean taken;
 
     if (!done_stopprint) {
         ask = should_query_disclose_option('c', &defquery);
-        c = ask ? yn_function("Do you want to see your conduct?", ynqchars,
+        c = ask ? yn_function_end("Do you want to see your conduct?", ynqchars,
                               defquery, ynq2descs)
                 : defquery;
         if (c == 'y')
@@ -1079,7 +1080,7 @@ boolean taken;
 
     if (!done_stopprint) {
         ask = should_query_disclose_option('o', &defquery);
-        c = ask ? yn_function("Do you want to see the dungeon overview?",
+        c = ask ? yn_function_end("Do you want to see the dungeon overview?",
                               ynqchars, defquery, ynq2descs)
                 : defquery;
         if (c == 'y')
@@ -1930,7 +1931,10 @@ int how;
 
         if (!done_stopprint || flags.tombstone)
         {
-            endwin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_OUTRIP, u_to_glyph(), extended_create_window_info_from_mon(&youmonst));
+            struct extended_create_window_info info = extended_create_window_info_from_mon(&youmonst);
+            if(how == ASCENDED)
+                info.create_flags |= WINDOW_CREATE_FLAGS_ASCENDED;
+            endwin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_OUTRIP, u_to_glyph(), info);
         }
         if (how < GENOCIDED && flags.tombstone && endwin != WIN_ERR)
             outrip(endwin, how, endtime);
@@ -2598,8 +2602,7 @@ boolean ask, isend;
         char mlet, prev_mlet = 0; /* used as small integer, not character */
         boolean class_header, uniq_header, was_uniq = FALSE;
 
-        c = ask ? yn_function(
-                            "Do you want an account of creatures vanquished?",
+        c = ask ? yn_function_end("Do you want an account of creatures vanquished?",
                               ynaqchars, defquery, ynaq2descs)
                 : defquery;
         if (c == 'q')
@@ -2832,7 +2835,7 @@ boolean ask, isend;
             (ngenocided) ? " genocided" : "",
             (nextinct && ngenocided) ? " and extinct" : "");
         
-        c = ask ? yn_function(buf, ynqchars, defquery, ynq2descs) : defquery;
+        c = ask ? yn_function_end(buf, ynqchars, defquery, ynq2descs) : defquery;
         
         if (c == 'q')
             done_stopprint++;

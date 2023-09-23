@@ -2419,7 +2419,6 @@ namespace GnollHackX.Pages.Game
 
         }
 
-
         private GlyphImageSource _ynImageSource = new GlyphImageSource();
         private void ShowYnResponses(int style, int attr, int color, int glyph, string title, string question, string responses, string descriptions, string introline, ulong ynflags)
         {
@@ -2441,13 +2440,14 @@ namespace GnollHackX.Pages.Game
                 YnTitleLabel.Text = title;
                 YnTitleLabel.IsVisible = true;
                 YnQuestionLabel.TextColor = GHColors.White;
-                if (style == (int)yn_function_styles.YN_STYLE_MONSTER_QUESTION)
+                switch (style)
                 {
-                    YnTitleLabel.TextColor = _titleGoldColor;
-                }
-                else
-                {
-                    YnTitleLabel.TextColor = UIUtils.NHColor2XColor(color, attr, false, true);
+                    case (int)yn_function_styles.YN_STYLE_MONSTER_QUESTION:
+                        YnTitleLabel.TextColor = _titleGoldColor;
+                        break;
+                    default:
+                        YnTitleLabel.TextColor = UIUtils.NHColor2XColor(color, attr, false, true);
+                        break;
                 }
             }
 
@@ -2513,6 +2513,17 @@ namespace GnollHackX.Pages.Game
                 btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight);
 
             YnButtonStack.HeightRequest = btnList[0].GridHeight;
+            switch(style)
+            {
+                case (int)yn_function_styles.YN_STYLE_END:
+                    YnGrid.BackgroundColor = GHColors.VeryTransparentBlack;
+                    YnFrame.BackgroundColor = GHColors.LessTransparentBlack;
+                    break;
+                default:
+                    YnGrid.BackgroundColor = GHColors.SemiTransparentBlack;
+                    YnFrame.BackgroundColor = GHColors.SemiTransparentBlack;
+                    break;
+            }
             YnGrid.IsVisible = true;
         }
 
@@ -13303,6 +13314,7 @@ namespace GnollHackX.Pages.Game
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
                 float topPadding = 0;
+                bool wrapglyph = TextCanvas.GHWindow != null ? TextCanvas.GHWindow.WrapGlyph : false;
                 float glyphpadding = 0;
                 float glyphystart = scale * (float)Math.Max(0.0, TextWindowGlyphImage.Y - TextCanvas.Y);
                 float glyphyend = scale * (float)Math.Max(0.0, TextWindowGlyphImage.Y + TextWindowGlyphImage.Height - TextCanvas.Y);
@@ -13352,7 +13364,7 @@ namespace GnollHackX.Pages.Game
                             indent_start_x += textPaint.MeasureText(indentstr);
                         }
 
-                        if (TextWindowGlyphImage.IsVisible && putstritem.InstructionList.Count > 0 && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0)
+                        if (TextWindowGlyphImage.IsVisible && (wrapglyph || (putstritem.InstructionList.Count > 0 && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0)))
                             glyphpadding = scale * (float)Math.Max(0.0, TextCanvas.X + TextCanvas.Width - TextWindowGlyphImage.X);
                         else
                             glyphpadding = 0;

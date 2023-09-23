@@ -383,6 +383,7 @@ E char* FDECL(key2txt, (UCHAR_P, char *));
 E char FDECL(yn_function, (const char*, const char*, CHAR_P, const char*));
 E char FDECL(yn_function_ex, (int, int, int, int, const char*, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
 E char FDECL(yn_function_mon, (struct monst*, const char*, const char*, CHAR_P, const char*));
+E char FDECL(yn_function_end, (const char*, const char*, CHAR_P, const char*));
 E char FDECL(yn_query_mon, (struct monst*, const char*));
 E char FDECL(ynq_mon, (struct monst*, const char*));
 E char FDECL(ynaq_mon, (struct monst*, const char*));

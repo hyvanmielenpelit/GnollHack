@@ -5237,8 +5237,8 @@ register struct obj *obj;
 
     if (obj->blessed || obj->cursed) {
         const char* hclr = hcolor_multi_buf1(obj->blessed ? NH_AMBER : NH_BLACK);
-        multicolor_buffer[2] = multicolor_buffer[1];
-        There_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : obj->blessed ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, 
+        //multicolor_buffer[2] = multicolor_buffer[1];
+        There_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : obj->blessed ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, // no_multiattrs, multicolor_buffer, 
             "is %s%s%s as %s %s the altar.",
             an_prefix(hclr), hclr, " flash", doname(obj),
               otense(obj, "hit"));

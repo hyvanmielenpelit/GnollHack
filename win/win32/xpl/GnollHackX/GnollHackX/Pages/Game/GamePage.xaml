@@ -308,7 +308,7 @@
             <Grid x:Name="YnGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="600" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                    <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                    <Frame x:Name="YnFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                         <StackLayout x:Name="YnLayout" Padding="5"
                           HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
                             <StackLayout x:Name="YnTitleLayout" Orientation="Horizontal"

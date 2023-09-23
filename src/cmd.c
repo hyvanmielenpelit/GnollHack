@@ -9003,6 +9003,14 @@ char def;
 }
 
 char
+yn_function_end(query, resp, def, resp_desc)
+const char* query, * resp, * resp_desc;
+char def;
+{
+    return yn_function_ex(YN_STYLE_END, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, query, resp, def, resp_desc, (const char*)0, 0UL);
+}
+
+char
 yn_function_mon(mtmp, query, chars, def, descs)
 struct monst* mtmp;
 const char* query;

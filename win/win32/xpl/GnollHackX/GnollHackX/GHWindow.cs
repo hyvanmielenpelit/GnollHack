@@ -500,5 +500,18 @@ namespace GnollHackX
                 }
             }
         }
+        public bool WrapGlyph
+        {
+            get
+            {
+                switch (_winStyle)
+                {
+                    case ghwindow_styles.GHWINDOW_STYLE_OUTRIP:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
     }
 }
