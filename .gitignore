@@ -94,6 +94,7 @@ win/win32/xpl/GnollHackM/.maui/*.*
 enc_temp_folder
 _Isincrementalbuild
 *.payload.desc
+*.ps1
 
 # User-specific files
 *.suo
