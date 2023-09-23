@@ -554,6 +554,15 @@ namespace GnollHackX
         MAX_GHWINDOW_STYLES
     }
 
+    [Flags]
+    public enum window_create_flags : ulong
+    {
+        WINDOW_CREATE_FLAGS_NONE                    = 0x00000000UL,
+        WINDOW_CREATE_FLAGS_ACTIVE                  = 0x00000001UL,
+        WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS     = 0x00000002UL, //For text window only; use menu flags for menu window
+        WINDOW_CREATE_FLAGS_ASCENDED                = 0x00000004UL
+    }
+
     /* GHMenu styles */
     public enum ghmenu_styles
     {

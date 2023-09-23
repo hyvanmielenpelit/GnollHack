@@ -13297,6 +13297,32 @@ namespace GnollHackX.Pages.Game
 
             using (SKPaint textPaint = new SKPaint())
             {
+                if (TextCanvas.GHWindow != null && TextCanvas.GHWindow.Ascension)
+                {
+                    float ssize = 10 * scale;
+                    float padding = ssize / 2;
+                    float sspacing = ssize * 5;
+                    int wsparkes = Math.Max(1, (int)Math.Ceiling((canvaswidth - 2 * padding) / sspacing));
+                    int hsparkes = Math.Max(1, (int)Math.Ceiling((canvasheight - 2 * padding) / sspacing));
+                    float wspacing = (canvaswidth - 2 * padding) / wsparkes;
+                    float hspacing = (canvasheight - 2 * padding) / hsparkes;
+                    long df = 2;
+                    long counter;
+                    lock (AnimationTimerLock)
+                    {
+                        counter = AnimationTimers.general_animation_counter;
+                    }
+                    long ctr_diff = 0;
+                    for (int i = 0; i <= wsparkes; i++)
+                        UIUtils.DrawSparkle(canvas, textPaint, padding + i * wspacing, padding, ssize, counter - (ctr_diff += df), true);
+                    for (int i = 0; i <= wsparkes; i++)
+                        UIUtils.DrawSparkle(canvas, textPaint, padding + i * wspacing, canvasheight - padding, ssize, counter - (ctr_diff += df), true);
+                    for (int j = 1; j < hsparkes; j++)
+                        UIUtils.DrawSparkle(canvas, textPaint, padding, padding + j * hspacing, ssize, counter - (ctr_diff += df), true);
+                    for (int j = 1; j < hsparkes; j++)
+                        UIUtils.DrawSparkle(canvas, textPaint, canvaswidth - padding, padding + j * hspacing, ssize, counter - (ctr_diff += df), true);
+                }
+
                 textPaint.Typeface = GHApp.UnderwoodTypeface;
                 textPaint.TextSize = 30 * scale;
                 textPaint.Style = SKPaintStyle.Fill;
@@ -13389,53 +13415,6 @@ namespace GnollHackX.Pages.Game
 
                             string[] split = str.Split(' ');
                             DrawTextSplit(canvas, split, null, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, TextCanvas.GHWindow.UseSpecialSymbols, TextCanvas.UseTextOutline, TextCanvas.RevertBlackAndWhite, false, 0, curmenuoffset, glyphystart, glyphyend, glyphpadding);
-
-                            //int idx = 0;
-                            //foreach (string split_str in split)
-                            //{
-                            //    bool nowrap = false;
-                            //    if (string.IsNullOrWhiteSpace(split_str))
-                            //        nowrap = true;
-                            //    string added_str = (idx == split.Length - 1 ? "" : " ");
-                            //    string added_split_str = split_str + added_str;
-                            //    float printlength = textPaint.MeasureText(split_str);
-                            //    float spaceprintlength = (added_str != "") ? textPaint.MeasureText(added_str) : 0.0f;
-                            //    float endposition = x + printlength;
-                            //    float endposition_with_space = x + printlength + spaceprintlength;
-                            //    float usedglyphpadding = 0.0f;
-
-                            //    if (TextWindowGlyphImage.IsVisible
-                            //        && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0
-                            //        && y - curmenuoffset + textPaint.FontMetrics.Ascent <= glyphyend 
-                            //        && y - curmenuoffset + textPaint.FontMetrics.Descent >= glyphystart)
-                            //        usedglyphpadding = glyphpadding;
-
-                            //    bool pastend = endposition > canvaswidth - usedglyphpadding - rightmenupadding - (float)putstritem.RightPaddingWidth * scale;
-                            //    if (pastend && x > start_x && !nowrap)
-                            //    {
-                            //        x = start_x;
-                            //        y += textPaint.FontSpacing;
-                            //        endposition_with_space = x + printlength + spaceprintlength;
-                            //    }
-
-                            //    if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                            //    {
-                            //        if(TextCanvas.UseTextOutline)
-                            //        {
-                            //            textPaint.Style = SKPaintStyle.Stroke;
-                            //            textPaint.StrokeWidth = textPaint.TextSize / 10;
-                            //            SKColor oldcolor = textPaint.Color;
-                            //            textPaint.Color = TextCanvas.RevertBlackAndWhite ? SKColors.White : SKColors.Black;
-                            //            canvas.DrawText(added_split_str, x, y, textPaint);
-                            //            textPaint.Style = SKPaintStyle.Fill;
-                            //            textPaint.Color = oldcolor;
-                            //        }
-                            //        canvas.DrawText(added_split_str, x, y, textPaint);
-                            //    }
-
-                            //    x = endposition_with_space;
-                            //    idx++;
-                            //}
                         }
                         j++;
                         y += textPaint.FontMetrics.Descent + fontspacingpadding;

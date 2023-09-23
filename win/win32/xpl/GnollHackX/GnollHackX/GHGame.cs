@@ -289,8 +289,12 @@ namespace GnollHackX
                 return 0;
 
             int handle = _lastWindowHandle;
-            GHWindow ghwin = new GHWindow((GHWinType)wintype, (ghwindow_styles)style, glyph, (dataflags & 8) != 0, (dataflags & 16) != 0,
-                (dataflags & 1) == 0 ? null : new ObjectDataItem(objdata, otypdata, (dataflags & 4) != 0), _gamePage, handle);
+            GHWindow ghwin = new GHWindow((GHWinType)wintype, (ghwindow_styles)style, glyph, 
+                (dataflags & 8) != 0, 
+                (dataflags & 16) != 0,
+                (dataflags & 32) != 0,
+                (dataflags & 1) == 0 ? null : new ObjectDataItem(objdata, otypdata, (dataflags & 4) != 0), 
+                _gamePage, handle);
 
             lock(_ghWindowsLock)
             {
