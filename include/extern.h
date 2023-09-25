@@ -1535,8 +1535,8 @@ E char *FDECL(xprname,
 E int NDECL(ddoinv);
 E int NDECL(doseeworn);
 E int NDECL(dolastpickeditem);
-E int FDECL(display_item_command_menu_by_invlet, (CHAR_P, long));
-E int FDECL(display_item_command_menu, (struct obj*, long));
+E int FDECL(display_item_command_menu_by_invlet, (CHAR_P, long, boolean*));
+E int FDECL(display_item_command_menu, (struct obj*, long, boolean*));
 E char FDECL(display_inventory, (const char *, BOOLEAN_P, int));
 E char FDECL(display_inventory_with_header, (const char*, BOOLEAN_P, long*, int, BOOLEAN_P));
 E int FDECL(display_binventory, (int, int, BOOLEAN_P));

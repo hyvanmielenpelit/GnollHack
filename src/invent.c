@@ -4177,27 +4177,36 @@ ddoinv()
     //(void) display_inventory((char *) 0, FALSE, 1);
 
     char invlet;
-    long pickcnt = 0;
+    long pickcnt;
+    boolean return_to_inv;
 
-    invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1, FALSE);
-    if (!invlet || invlet == '\033' || invlet == '\0')
-        return 0;
+    do
+    {
+        pickcnt = 0;
+        return_to_inv = FALSE;
+        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1, FALSE);
+        if (!invlet || invlet == '\033' || invlet == '\0')
+            return 0;
 
-    if (flags.inventory_obj_cmd)
-    {
-        return display_item_command_menu_by_invlet(invlet, pickcnt);
-    }
-    else
-    {
-        struct obj* invobj;
-        for (invobj = invent; invobj; invobj = invobj->nobj)
-            if (invobj->invlet == invlet)
-            {
-                (void)itemdescription(invobj);
-                break;
-            }
-        return 0;
-    }
+        if (flags.inventory_obj_cmd)
+        {
+            int res = display_item_command_menu_by_invlet(invlet, pickcnt, &return_to_inv);
+            if (res || !return_to_inv)
+                return res;
+        }
+        else
+        {
+            struct obj* invobj;
+            for (invobj = invent; invobj; invobj = invobj->nobj)
+                if (invobj->invlet == invlet)
+                {
+                    (void)itemdescription(invobj);
+                    return_to_inv = TRUE;
+                    break;
+                }
+        }
+    } while (return_to_inv);
+    return 0;
 }
 
 /* the ']' command */
@@ -4205,34 +4214,44 @@ int
 doseeworn()
 {
     char invlet;
-    long pickcnt = 0;
+    long pickcnt;
+    boolean return_to_inv;
 
-    invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1, TRUE);
-    if (!invlet || invlet == '\033' || invlet == '\0')
-        return 0;
+    do
+    {
+        pickcnt = 0;
+        return_to_inv = FALSE;
+        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1, TRUE);
+        if (!invlet || invlet == '\033' || invlet == '\0')
+            return 0;
 
-    if (flags.inventory_obj_cmd)
-    {
-        return display_item_command_menu_by_invlet(invlet, pickcnt);
-    }
-    else
-    {
-        struct obj* invobj;
-        for (invobj = invent; invobj; invobj = invobj->nobj)
-            if (invobj->invlet == invlet)
-            {
-                (void)itemdescription(invobj);
-                break;
-            }
-        return 0;
-    }
+        if (flags.inventory_obj_cmd)
+        {
+            int res = display_item_command_menu_by_invlet(invlet, pickcnt, &return_to_inv);
+            if (res || !return_to_inv)
+                return res;
+        }
+        else
+        {
+            struct obj* invobj;
+            for (invobj = invent; invobj; invobj = invobj->nobj)
+                if (invobj->invlet == invlet)
+                {
+                    (void)itemdescription(invobj);
+                    return_to_inv = TRUE;
+                    break;
+                }
+        }
+    } while (return_to_inv);
+    return 0;
 }
 
 
 int
-display_item_command_menu_by_invlet(invlet, pickcnt)
+display_item_command_menu_by_invlet(invlet, pickcnt, return_to_inv_ptr)
 char invlet;
 long pickcnt;
+boolean* return_to_inv_ptr;
 {
     struct obj* otmp = 0;
     struct obj* otmp2;
@@ -4243,13 +4262,14 @@ long pickcnt;
     if (!otmp)
         return 0;
     else
-        return display_item_command_menu(otmp, pickcnt);
+        return display_item_command_menu(otmp, pickcnt, return_to_inv_ptr);
 }
 
 int
-display_item_command_menu(otmp, pickcnt)
+display_item_command_menu(otmp, pickcnt, return_to_inv_ptr)
 struct obj* otmp;
 long pickcnt;
+boolean* return_to_inv_ptr; 
 {
     if (!otmp)
         return 0;
@@ -4478,6 +4498,8 @@ long pickcnt;
             savech(invlet);
         }
 
+        if(return_to_inv_ptr)
+            *return_to_inv_ptr = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_INVENTORY) != 0);
         res = (extcmdlist[selected_action].ef_funct)();
         getobj_autoselect_obj = (struct obj*)0;
     }
@@ -4504,7 +4526,7 @@ dolastpickeditem()
     }
     if (selobj)
     {
-        int ret = display_item_command_menu(selobj, -1);
+        int ret = display_item_command_menu(selobj, -1, (boolean*)0);
 //        if (ret)
             context.last_picked_obj_show_duration_left++;
         return ret;
@@ -6747,27 +6769,34 @@ doprinuse()
     {
         //(void)display_inventory(lets, FALSE, 0);
         char invlet;
-        long pickcnt = 0;
-
-        invlet = display_inventory_with_header(lets, TRUE, &pickcnt, 1, FALSE);
-        if (!invlet || invlet == '\033' || invlet == '\0')
-            return 0;
-
-        if (flags.inventory_obj_cmd)
+        long pickcnt;
+        boolean return_to_inv;
+        do
         {
-            return display_item_command_menu_by_invlet(invlet, pickcnt);
-        }
-        else
-        {
-            struct obj* invobj;
-            for (invobj = invent; invobj; invobj = invobj->nobj)
-                if (invobj->invlet == invlet)
-                {
-                    (void)itemdescription(invobj);
-                    break;
-                }
-            return 0;
-        }
+            pickcnt = 0;
+            return_to_inv = FALSE;
+            invlet = display_inventory_with_header(lets, TRUE, &pickcnt, 1, FALSE);
+            if (!invlet || invlet == '\033' || invlet == '\0')
+                return 0;
+
+            if (flags.inventory_obj_cmd)
+            {
+                int res = display_item_command_menu_by_invlet(invlet, pickcnt, & return_to_inv);
+                if (res || !return_to_inv)
+                    return res;
+            }
+            else
+            {
+                struct obj* invobj;
+                for (invobj = invent; invobj; invobj = invobj->nobj)
+                    if (invobj->invlet == invlet)
+                    {
+                        (void)itemdescription(invobj);
+                        return_to_inv = TRUE;
+                        break;
+                    }
+            }
+        } while (return_to_inv);
     }
     return 0;
 }

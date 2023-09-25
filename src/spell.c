@@ -1201,179 +1201,191 @@ int* spell_no;
     anything any;
     const char* nodesc = "(No short description)";
 
-    tmpwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(tmpwin, GHMENU_STYLE_SPELLS_ALTERNATE);
-    any = zeroany; /* zero out all bits */
-
-    if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
+    do
     {
-        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) 
-        {
-            splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
-            int glyph = spell_to_glyph(splnum);
-            char fullname[BUFSZ] = "";
-            Sprintf(fullname, "%s", spellname(splnum));
-            *fullname = highc(*fullname);
+        tmpwin = create_nhwindow(NHW_MENU);
+        start_menu_ex(tmpwin, GHMENU_STYLE_SPELLS_ALTERNATE);
+        any = zeroany; /* zero out all bits */
 
-            if (OBJ_ITEM_DESC(spellid(splnum)))
+        if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
+        {
+            for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
             {
-                Strcpy(descbuf, OBJ_ITEM_DESC(spellid(splnum)));
-            }
-            else
-                Strcpy(descbuf, nodesc);
+                splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
+                int glyph = spell_to_glyph(splnum);
+                char fullname[BUFSZ] = "";
+                Sprintf(fullname, "%s", spellname(splnum));
+                *fullname = highc(*fullname);
 
-            boolean inactive = FALSE;
-            struct extended_menu_info info = zeroextendedmenuinfo;
-            int mcolor = NO_COLOR;
-            info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
-            if (spellknow(splnum) <= 0)
+                if (OBJ_ITEM_DESC(spellid(splnum)))
+                {
+                    Strcpy(descbuf, OBJ_ITEM_DESC(spellid(splnum)));
+                }
+                else
+                    Strcpy(descbuf, nodesc);
+
+                boolean inactive = FALSE;
+                struct extended_menu_info info = zeroextendedmenuinfo;
+                int mcolor = NO_COLOR;
+                info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
+                if (spellknow(splnum) <= 0)
+                {
+                    Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
+                    mcolor = CLR_BLACK;
+                    info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
+                    inactive = TRUE;
+                }
+                else
+                {
+                    Sprintf(buf, "%s (%s)", fullname, descbuf);
+                    mcolor = NO_COLOR;
+                    info.menu_flags |= MENU_FLAGS_ACTIVE;
+                }
+                if (!inactive)
+                    info.menu_flags |= MENU_FLAGS_ACTIVE;
+
+                any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
+                add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, mcolor, buf,
+                    (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED, info);
+            }
+        }
+        else if (splaction == SPELLMENU_PREPARE)
+        {
+            for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
             {
-                Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
-                mcolor = CLR_BLACK;
-                info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
-                inactive = TRUE;
+                add_alt_spell_prepare_menu_item(tmpwin, i, splaction);
             }
-            else
-            {
-                Sprintf(buf, "%s (%s)", fullname, descbuf);
-                mcolor = NO_COLOR;
-                info.menu_flags |= MENU_FLAGS_ACTIVE;
-            }
-            if (!inactive)
-                info.menu_flags |= MENU_FLAGS_ACTIVE;
-
-            any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
-            add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, mcolor, buf,
-                (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED, info);
-        }
-    }
-    else if (splaction == SPELLMENU_PREPARE)
-    {
-        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
-        {
-            add_alt_spell_prepare_menu_item(tmpwin, i, splaction);
-        }
-    }
-    else
-    {
-        int splcnt = 0;
-        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
-        {
-            add_alt_spell_cast_menu_item(tmpwin, i, splaction);
-            splcnt++;
-        }
-        if (splcnt > 0)
-        {
-            any.a_int = 0;
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
-                "", MENU_UNSELECTED);
-            any.a_int = -1;
-            int glyph = VIEW_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
-            add_active_menu(tmpwin, glyph, &any, '?', 0, ATR_NONE, NO_COLOR,
-                "View Spells", MENU_UNSELECTED);
-            any.a_int = -2;
-            glyph = MIX_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
-            add_active_menu(tmpwin, glyph, &any, '!', 0, ATR_NONE, NO_COLOR,
-                "Mix Spells", MENU_UNSELECTED);
-            any.a_int = -3;
-            glyph = SORT_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
-            add_active_menu(tmpwin, glyph, &any, '<', 0, ATR_NONE, NO_COLOR,
-                "Sort Spells", MENU_UNSELECTED);
-            any.a_int = -4;
-            glyph = REORDER_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
-            add_active_menu(tmpwin, glyph, &any, '>', 0, ATR_NONE, NO_COLOR,
-                "Reorder Spells", MENU_UNSELECTED);
-        }
-    }
-
-    how = PICK_ONE;
-    if (splaction == SPELLMENU_REORDER) 
-    {
-        if (spellid(1) == NO_SPELL) 
-        {
-            /* only one spell => nothing to swap with */
-            how = PICK_NONE;
-        }
-        else 
-        {
-            any.a_int = 0;
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
-                "", MENU_UNSELECTED);
-            /* more than 1 spell, add an extra menu entry */
-            any.a_int = SPELLMENU_SORT + 1;
-            add_active_menu(tmpwin, SORT_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any, '+', 0, ATR_NONE, NO_COLOR,
-                "Sort Spells", MENU_UNSELECTED);
-        }
-    }
-
-#ifdef GNH_MOBILE
-    if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && (splaction == SPELLMENU_PREPARE || splaction == SPELLMENU_CAST))
-    {
-        char subbuf[BUFSZ];
-        if (splaction == SPELLMENU_CAST)
-        {
-            Strcpy(subbuf, "&success; Success %, &mana; Mana Cost, &cool; Cooldown, &casts; Casts Left");
         }
         else
         {
-            Strcpy(subbuf, "&casts; Casts Left, &adds; Casts Added");
-        }
-        end_menu_ex(tmpwin, prompt, subbuf);
-
-    }
-    else
-    {
-        end_menu(tmpwin, prompt);
-    }
-#else 
-    end_menu(tmpwin, prompt);
-#endif
-
-    //Show menu
-    n = select_menu(tmpwin, how, &selected);
-    destroy_nhwindow(tmpwin);
-
-    if (n > 0) 
-    {
-        if (selected[0].item.a_int <= 0)
-        {
-            int res = selected[0].item.a_int;
-            free((genericptr_t)selected);
-            switch (res)
+            int splcnt = 0;
+            for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
             {
-            case -1:
-                return dospellview();
-            case -2:
-                return domix();
-            case -3:
-                return dosortspell();
-            case -4:
-                return dovspell();
-            default:
-                return 0;
+                add_alt_spell_cast_menu_item(tmpwin, i, splaction);
+                splcnt++;
+            }
+            if (splcnt > 0)
+            {
+                any.a_int = 0;
+                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
+                    "", MENU_UNSELECTED);
+                any.a_int = -1;
+                int glyph = VIEW_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(tmpwin, glyph, &any, '?', 0, ATR_NONE, NO_COLOR,
+                    "View Spells", MENU_UNSELECTED);
+                any.a_int = -2;
+                glyph = MIX_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(tmpwin, glyph, &any, '!', 0, ATR_NONE, NO_COLOR,
+                    "Mix Spells", MENU_UNSELECTED);
+                any.a_int = -3;
+                glyph = SORT_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(tmpwin, glyph, &any, '<', 0, ATR_NONE, NO_COLOR,
+                    "Sort Spells", MENU_UNSELECTED);
+                any.a_int = -4;
+                glyph = REORDER_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(tmpwin, glyph, &any, '>', 0, ATR_NONE, NO_COLOR,
+                    "Reorder Spells", MENU_UNSELECTED);
             }
         }
 
-        *spell_no = selected[0].item.a_int - 1;
-        /* menu selection for `PICK_ONE' does not
-           de-select any preselected entry */
-        if (n > 1 && *spell_no == splaction)
-            *spell_no = selected[1].item.a_int - 1;
-        free((genericptr_t)selected);
-        /* default selection of preselected spell means that
-           user chose not to swap it with anything */
-        if (*spell_no == splaction)
-            return FALSE;
-        return TRUE;
-    }
-    else if (splaction >= 0) 
-    {
-        /* explicit de-selection of preselected spell means that
-           user is still swapping but not for the current spell */
-        *spell_no = splaction;
-        return TRUE;
-    }
-    return FALSE; 
+        how = PICK_ONE;
+        if (splaction == SPELLMENU_REORDER)
+        {
+            if (spellid(1) == NO_SPELL)
+            {
+                /* only one spell => nothing to swap with */
+                how = PICK_NONE;
+            }
+            else
+            {
+                any.a_int = 0;
+                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
+                    "", MENU_UNSELECTED);
+                /* more than 1 spell, add an extra menu entry */
+                any.a_int = SPELLMENU_SORT + 1;
+                add_active_menu(tmpwin, SORT_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any, '+', 0, ATR_NONE, NO_COLOR,
+                    "Sort Spells", MENU_UNSELECTED);
+            }
+        }
+
+#ifdef GNH_MOBILE
+        if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && (splaction == SPELLMENU_PREPARE || splaction == SPELLMENU_CAST))
+        {
+            char subbuf[BUFSZ];
+            if (splaction == SPELLMENU_CAST)
+            {
+                Strcpy(subbuf, "&success; Success %, &mana; Mana Cost, &cool; Cooldown, &casts; Casts Left");
+            }
+            else
+            {
+                Strcpy(subbuf, "&casts; Casts Left, &adds; Casts Added");
+            }
+            end_menu_ex(tmpwin, prompt, subbuf);
+
+        }
+        else
+        {
+            end_menu(tmpwin, prompt);
+        }
+#else 
+        end_menu(tmpwin, prompt);
+#endif
+
+        //Show menu
+        n = select_menu(tmpwin, how, &selected);
+        destroy_nhwindow(tmpwin);
+
+        if (n > 0)
+        {
+            if (selected[0].item.a_int <= 0)
+            {
+                int res = selected[0].item.a_int;
+                free((genericptr_t)selected);
+                int action_result = 0;
+                switch (res)
+                {
+                case -1:
+                    action_result = dospellview();
+                    break;
+                case -2:
+                    action_result = domix();
+                    break;
+                case -3:
+                    action_result = dosortspell();
+                    break;
+                case -4:
+                    action_result = dovspell();
+                    break;
+                default:
+                    return 0;
+                }
+                if (!action_result)
+                    continue;
+                else
+                    return action_result;
+            }
+
+            *spell_no = selected[0].item.a_int - 1;
+            /* menu selection for `PICK_ONE' does not
+               de-select any preselected entry */
+            if (n > 1 && *spell_no == splaction)
+                *spell_no = selected[1].item.a_int - 1;
+            free((genericptr_t)selected);
+            /* default selection of preselected spell means that
+               user chose not to swap it with anything */
+            if (*spell_no == splaction)
+                return FALSE;
+            return TRUE;
+        }
+        else if (splaction >= 0)
+        {
+            /* explicit de-selection of preselected spell means that
+               user is still swapping but not for the current spell */
+            *spell_no = splaction;
+            return TRUE;
+        }
+        return FALSE;
+    } while (TRUE); /* continue repeats the menu */
 }
 
 

@@ -19,7 +19,8 @@
 #define SINGLE_OBJ_CMD_GENERAL      0x0080 /* Displayed in inventory for single objects under general commands */
 #define SINGLE_OBJ_CMD_SPECIFIC     0x0100 /* Displayed in inventory for single objects under specific commands */
 #define SINGLE_OBJ_CMD_INFO         0x0200 /* Displayed in inventory for single objects under info commands */
-#define CASUALMODECMD       0x0400 /* casual/explore/wizard-mode command */
+#define CASUALMODECMD               0x0400 /* casual/explore/wizard-mode command */
+#define ALLOW_RETURN_TO_INVENTORY   0x0800 /* if invoked from inventory, return to inventory when done */
 
 struct ext_func_tab {
     uchar key;
