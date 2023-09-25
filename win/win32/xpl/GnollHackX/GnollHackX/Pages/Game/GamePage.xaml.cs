@@ -2986,6 +2986,23 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.ClickOKOnSelection = true;
                     MenuCanvas.MenuGlyphAtBottom = true;
                     break;
+                case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
+                    MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
+                    MenuBackground.BorderStyle = BorderStyles.Simple;
+                    MenuCanvas.RevertBlackAndWhite = true;
+                    MenuCanvas.UseTextOutline = false;
+                    MenuCanvas.HideMenuLetters = false;
+                    MenuCanvas.MenuButtonStyle = false;
+                    MenuCanvas.ClickOKOnSelection = menuinfo.SelectionHow == SelectionMode.Single;
+                    MenuCanvas.MenuGlyphAtBottom = false;
+                    break;
                 default:
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
                     MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
@@ -11872,9 +11889,10 @@ namespace GnollHackX.Pages.Game
         }
 
 
-        private SKColor _suffixTextColor = new SKColor(220, 220, 220);
-        private SKColor _suffixTextColorReverted = new SKColor(35, 35, 35);
-        private SKColor _menuHighlightColor = new SKColor(0xFF, 0x88, 0x00, 0x88);
+        private readonly SKColor _suffixTextColor = new SKColor(220, 220, 220);
+        private readonly SKColor _suffixTextColorReverted = new SKColor(35, 35, 35);
+        private readonly SKColor _menuHighlightColor = new SKColor(0xFF, 0x88, 0x00, 0x88);
+        private readonly SKColor _menuHighlight2Color = new SKColor(0xFF, 0xAA, 0x00, 0xAA);
         private int _firstDrawnMenuItemIdx = -1;
         private int _lastDrawnMenuItemIdx = -1;
         private readonly object _totalMenuHeightLock = new object();
@@ -12063,6 +12081,12 @@ namespace GnollHackX.Pages.Game
                                     if (isselected)
                                     {
                                         textPaint.Color = _menuHighlightColor;
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        canvas.DrawRect(selectionrect, textPaint);
+                                    }
+                                    else if (mi.Highlighted)
+                                    {
+                                        textPaint.Color = _menuHighlight2Color;
                                         textPaint.Style = SKPaintStyle.Fill;
                                         canvas.DrawRect(selectionrect, textPaint);
                                     }
@@ -12824,7 +12848,7 @@ namespace GnollHackX.Pages.Game
 
         private void ClearHighlightMenuItems()
         {
-            if (!MenuCanvas.MenuButtonStyle)
+            if (!MenuCanvas.ClickOKOnSelection)
                 return;
             lock (MenuCanvas.MenuItemLock)
             {
@@ -12842,7 +12866,7 @@ namespace GnollHackX.Pages.Game
 
         private void HighlightMenuItems(SKPoint p)
         {
-            if (!MenuCanvas.MenuButtonStyle)
+            if (!MenuCanvas.ClickOKOnSelection)
                 return;
             lock (MenuCanvas.MenuItemLock)
             {

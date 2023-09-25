@@ -133,6 +133,7 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
                     case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                     case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                    case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                     case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
                         res = 1;
                         break;
@@ -171,6 +172,7 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
                     case ghmenu_styles.GHMENU_STYLE_SPELLS:
                     case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                    case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                     case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_OPTIONS:
@@ -304,6 +306,7 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                         case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                         case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                        case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                             break;
@@ -349,6 +352,7 @@ namespace GnollHackX
                             res = "DejaVuSansMono-Bold";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                        case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                             res = "DejaVuSansMono-Bold";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
@@ -377,6 +381,7 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                         case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                         case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                        case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                             break;
@@ -419,6 +424,7 @@ namespace GnollHackX
                             res = "DejaVuSansMono";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                        case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                             res = "DejaVuSansMono";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
@@ -467,6 +473,7 @@ namespace GnollHackX
                         res = res * 17.0 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                    case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                         res = res * 17.5 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
@@ -519,6 +526,7 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                    case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                     case ghmenu_styles.GHMENU_STYLE_SKILLS:
                         res = Math.Min(18, Math.Max(11.75, 11.9 * _gamePage.CurrentPageWidth / 600));
                         break;
@@ -559,6 +567,7 @@ namespace GnollHackX
                         res = 0.8;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                    case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                         res = 0.775;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:

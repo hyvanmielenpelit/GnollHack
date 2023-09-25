@@ -247,6 +247,7 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                 case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                 case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
@@ -290,6 +291,7 @@ namespace GnollHackX
                     res = 1024;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                     res = 1024;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
@@ -319,6 +321,7 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                 case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                     res = "Diablo";
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
@@ -361,6 +364,7 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_SKILLS:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
                     break;
@@ -386,6 +390,7 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                 case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                     break;
@@ -429,6 +434,7 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_SKILLS:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
                     break;
@@ -495,6 +501,7 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                 case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                     break;
@@ -534,6 +541,7 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_SKILLS:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
                     break;
@@ -600,6 +608,8 @@ namespace GnollHackX
                     break;
                 case ghmenu_styles.GHMENU_STYLE_SPELLS:
                 case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                     res = 13.5;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
@@ -619,7 +629,9 @@ namespace GnollHackX
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                 case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                     return true;
                 default:
                     return false;
@@ -631,7 +643,9 @@ namespace GnollHackX
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                 case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                     return ',';
                 default:
                     return ' ';
@@ -643,7 +657,9 @@ namespace GnollHackX
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                 case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                     return false;
                 default:
                     return true;
@@ -708,7 +724,6 @@ namespace GnollHackX
             }
             return res;
         }
-
 
         public static bool StyleClosesMenuUponDestroy(ghmenu_styles style)
         {

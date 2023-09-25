@@ -1204,7 +1204,7 @@ int* spell_no;
     do
     {
         tmpwin = create_nhwindow(NHW_MENU);
-        start_menu_ex(tmpwin, GHMENU_STYLE_SPELLS_ALTERNATE);
+        start_menu_ex(tmpwin, splaction == SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL_ALTERNATE :  GHMENU_STYLE_SPELLS_ALTERNATE);
         any = zeroany; /* zero out all bits */
 
         if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
@@ -1348,8 +1348,7 @@ int* spell_no;
                     action_result = dospellview();
                     break;
                 case -2:
-                    action_result = domix();
-                    break;
+                    return domix(); /* mixing might have failed, so returning to the cast menu may be confusing */
                 case -3:
                     action_result = dosortspell();
                     break;
@@ -3772,7 +3771,7 @@ int *spell_no;
     //}
 
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(tmpwin, GHMENU_STYLE_SPELLS);
+    start_menu_ex(tmpwin, splaction == SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL : GHMENU_STYLE_SPELLS);
     any = zeroany; /* zero out all bits */
 
     int hotkeys[11] = { 0 };
