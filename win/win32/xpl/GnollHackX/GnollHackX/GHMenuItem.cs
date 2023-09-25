@@ -705,8 +705,8 @@ namespace GnollHackX
                 float topPadding = 0;  
                 if (!IsButton
                     && (((ulong)Flags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0
-                    || (Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Heading)) == (int)MenuItemAttributes.Heading
-                    || (Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Title)) == (int)MenuItemAttributes.Title))
+                    || (((Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Heading)) == (int)MenuItemAttributes.Heading
+                    || (Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Title)) == (int)MenuItemAttributes.Title) && Identifier == 0)))
                 {
                     topPadding = (float) HeadingTopMargin;
                 }
