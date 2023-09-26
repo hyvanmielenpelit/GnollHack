@@ -2785,7 +2785,7 @@ SPELLTOOL("horn of chaos", "polished horn", None, None, "When improvised, playin
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 TOOL("horn of plenty",    "twisted horn", None, None, None,
     TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, 
-    CHARGED_BAG_OF_TRICKS, RECHARGING_TOOL_SPECIAL_MAGICAL, 3, 18, 50, 300, 0, 0, 0, 0, 0,
+    CHARGED_1D20_20, RECHARGING_TOOL_SPECIAL_MAGICAL, 3, 18, 50, 300, 0, 0, 0, 0, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),//ENDMARKER FOR HORNS
     /* horn, but not an instrument */
