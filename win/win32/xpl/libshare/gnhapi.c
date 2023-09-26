@@ -491,7 +491,7 @@ int RunGnollHack(
     char* gnhdir,
     char* cmdlineargs,
     char* preset_player_name,
-    char* recovery_name, /* Player name for which recovery is tested first; effectively should be the last used player name */
+    char* last_used_player_name,
     unsigned long runflags,
     unsigned long wincap1,
     unsigned long wincap2,
@@ -622,10 +622,10 @@ int RunGnollHack(
             Strcat(cmdbuf, " ");
         Sprintf(eos(cmdbuf), "-u %s", plbuf);
     }
-    else if ((runflags & GHRUNFLAGS_FORCE_LAST_PLAYER_NAME) && recovery_name && strcmp(recovery_name, ""))
+    else if ((runflags & GHRUNFLAGS_FORCE_LAST_PLAYER_NAME) && last_used_player_name && strcmp(last_used_player_name, ""))
     {
         char plbuf[PL_NSIZ];
-        Strncpy(plbuf, recovery_name, PL_NSIZ - 1);
+        Strncpy(plbuf, last_used_player_name, PL_NSIZ - 1);
         plbuf[PL_NSIZ - 1] = '\0';
 
         if (*cmdbuf)
@@ -655,9 +655,9 @@ int RunGnollHack(
     }
 
     /* Set directly, as other parts of GnollHack do not purposedly set this */
-    if (recovery_name && strcmp(recovery_name, ""))
+    if (last_used_player_name && strcmp(last_used_player_name, ""))
     {
-        Strncpy(recovery_plname, recovery_name, PL_NSIZ - 1);
+        Strncpy(recovery_plname, last_used_player_name, PL_NSIZ - 1);
         recovery_plname[PL_NSIZ - 1] = '\0';
     }
 
