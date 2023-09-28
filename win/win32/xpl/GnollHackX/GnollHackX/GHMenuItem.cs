@@ -165,7 +165,6 @@ namespace GnollHackX
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                         break;
-                        break;
                     case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                         res = 1;
                         break;
