@@ -2691,9 +2691,12 @@ dorub()
     if (!obj || !wield_tool(obj, "rub"))
         return 0;
 
+    if (!uwep)
+        return 0;
+
     You("start rubbing %s.", yname(uwep));
 
-    if (iflags.using_gui_sounds && !Deaf && uwep)
+    if (iflags.using_gui_sounds && !Deaf)
     {
         play_sfx_sound(SFX_RUB);
         delay_output_milliseconds(1500);
