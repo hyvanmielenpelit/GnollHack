@@ -1351,8 +1351,8 @@ unsigned doname_flags;
 
     /* "empty" goes at the beginning, but item count goes at the end */
     if ((obj->oclass == TOOL_CLASS && (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN || objects[obj->otyp].oc_subtyp == TOOLTYPE_GRAIL) && obj->charges == 0 && !known)
-        || (obj->oclass == TOOL_CLASS && (objects[obj->otyp].oc_subtyp == TOOLTYPE_LANTERN || objects[obj->otyp].oc_subtyp == TOOLTYPE_LAMP) && obj->otyp != MAGIC_LAMP && obj->age == 0L && !obj->lamplit)
-        || (obj->otyp == MAGIC_LAMP && obj->special_quality == 0)
+        || (obj->oclass == TOOL_CLASS && (objects[obj->otyp].oc_subtyp == TOOLTYPE_LANTERN || objects[obj->otyp].oc_subtyp == TOOLTYPE_LAMP) && obj->otyp != MAGIC_LAMP && obj->age == 0L && !obj->lamplit && (obj->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0)
+        || (obj->otyp == MAGIC_LAMP && obj->special_quality == 0 && (obj->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0)
         || (cknown
         /* bag of tricks: include "empty" prefix if it's known to
            be empty but its precise number of charges isn't known
@@ -1466,6 +1466,10 @@ unsigned doname_flags;
         else
             Sprintf(eos(bp), " (%d:%d)", (int)obj->recharged, (int)obj->charges);
     }
+
+    long burnleft = 0;
+    boolean burnleftset = FALSE;
+    char burnbuf[BUFSZ] = "";
 
     /* post and prefixes */
     switch (is_weptool(obj) ? WEAPON_CLASS : obj->oclass) {
@@ -1646,23 +1650,43 @@ weapon_here:
             }
             break;
         }
+
+        if (is_obj_light_source(obj) && object_stats_known(obj)
+            && (obj->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0)
+        {
+            long maxburn = obj_light_maximum_burn_time(obj);
+            if (maxburn >= 0 && !obj_burns_infinitely(obj))
+            {
+                burnleft = obj_light_burn_time_left(obj);
+                if(burnleft > 0) /* Hide if empty */
+                    burnleftset = TRUE;
+            }
+        }
+
         if (is_obj_candelabrum(obj)) 
         {
             if (!obj->special_quality)
                 Strcpy(tmpbuf, "no");
             else
                 Sprintf(tmpbuf, "%d", obj->special_quality);
+
             if (lit_in_front)
             {
                 if(obj->lamplit)
                     Strcat(prefix, "lit ");
 
-                Sprintf(eos(bp), " with %s candle%s%s", tmpbuf, plur(obj->special_quality),
-                    " attached");
+                if (burnleftset)
+                    Sprintf(burnbuf, " (%ld turns left)", burnleft);
+                Sprintf(eos(bp), " with %s candle%s%s%s", tmpbuf, plur(obj->special_quality),
+                    " attached", burnbuf);
             }
             else
-                Sprintf(eos(bp), " (%s candle%s%s)", tmpbuf, plur(obj->special_quality),
-                        !obj->lamplit ? " attached" : ", lit");
+            {
+                if (burnleftset)
+                    Sprintf(burnbuf, ", %ld turns left", burnleft);
+                Sprintf(eos(bp), " (%s candle%s%s%s)", tmpbuf, plur(obj->special_quality),
+                    !obj->lamplit ? " attached" : ", lit", burnbuf);
+            }
             break;
         } 
         else if (is_lamp(obj) || is_candle(obj) || is_torch(obj))
@@ -1673,28 +1697,56 @@ weapon_here:
                 || (is_torch(obj) && obj->age < torch_maximum_burn_time(obj))
                 )
                 Strcat(prefix, "partly used ");
+
             if (obj->lamplit)
             {
-                if(lit_in_front)
+                if (lit_in_front)
+                {
                     Strcat(prefix, "lit ");
+                    if (burnleftset)
+                        Sprintf(eos(bp), " (%ld turns left)", burnleft);
+                }
                 else
-                    Strcat(bp, " (lit)");
+                {
+                    if (burnleftset)
+                        Sprintf(burnbuf, ", %ld turns left", burnleft);
+                    Sprintf(eos(bp), " (lit%s)", burnbuf);
+                }
+            }
+            else
+            {
+                if (burnleftset)
+                    Sprintf(eos(bp), " (%ld turns left)", burnleft);
             }
             break;
         }
-//        if (objects[obj->otyp].oc_charged)
-//            goto charges;
+
         break;
     case WAND_CLASS:
- //charges:
         break;
     case POTION_CLASS:
-        if (obj->otyp == POT_OIL && obj->lamplit)
+        if (obj->otyp == POT_OIL)
         {
-            if (lit_in_front)
-                Strcat(prefix, "lit ");
+            if (obj->lamplit)
+            {
+                if (lit_in_front)
+                {
+                    Strcat(prefix, "lit ");
+                    if (burnleftset)
+                        Sprintf(eos(bp), " (%ld turns left)", burnleft);
+                }
+                else
+                {
+                    if (burnleftset)
+                        Sprintf(burnbuf, ", %ld turns left", burnleft);
+                    Sprintf(eos(bp), " (lit%s)", burnbuf);
+                }
+            }
             else
-                Strcat(bp, " (lit)");
+            {
+                if (burnleftset)
+                    Sprintf(eos(bp), " (%ld turns left)", burnleft);
+            }
         }
         break;
     case RING_CLASS:

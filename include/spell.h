@@ -7,6 +7,7 @@
 #ifndef SPELL_H
 #define SPELL_H
 
+#include "general.h"
 #include "onames.h"
 
 #define NO_SPELL 0

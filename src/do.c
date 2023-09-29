@@ -2482,7 +2482,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     Strcpy(buf, "Maximum burning time:   Infinite");
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 }
-                else
+                else if ((obj->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0) /* Need to weigh the item */
                 {
                     long burnleft = obj_light_burn_time_left(obj);
                     Sprintf(buf, "Burning time left:      %ld turn%s", burnleft, plur(burnleft));

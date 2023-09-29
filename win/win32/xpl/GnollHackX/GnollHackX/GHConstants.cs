@@ -1137,7 +1137,8 @@ namespace GnollHackX
         SPEFLAGS_EMPTY_NOTICED                 = 0x08000000UL,
         SPEFLAGS_BEING_BROKEN                  = 0x10000000UL,
         SPEFLAGS_GIVEN_OUT_BLUE_SMOKE          = 0x20000000UL,
-        SPEFLAGS_FOUND_THIS_TURN               = 0x40000000UL
+        SPEFLAGS_FOUND_THIS_TURN               = 0x40000000UL,
+        SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO    = 0x80000000UL
     }
 
     [Flags]

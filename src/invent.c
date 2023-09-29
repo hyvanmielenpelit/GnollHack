@@ -1637,6 +1637,7 @@ struct obj *obj;
     obj->speflags &= ~SPEFLAGS_GRABBED_FROM_YOU; /* You got it back! */
     obj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES; /* Obviously not caught anymore! */
     obj_clear_found(obj); /* Not relevant in inventory */
+    obj->speflags |= SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO; /* Has been owned by the hero */
 
     addinv_core1(obj);
 
