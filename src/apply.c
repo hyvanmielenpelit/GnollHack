@@ -2475,7 +2475,7 @@ struct obj *obj;
 
     /* magic lamps with an enchantment == 0 (wished for) cannot be lit */
     if ((!is_candle_or_torch(obj) && obj->age == 0)
-        || (obj->otyp == MAGIC_LAMP && obj->special_quality  == 0))
+        || (obj->otyp == MAGIC_LAMP && obj->special_quality == 0))
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         if (obj->otyp == BRASS_LANTERN)
