@@ -78,7 +78,7 @@ const struct propname propertynames[] = {
     { POLYMORPH_CONTROL, "controlling polymorphing", "polymorph control" },
     { UNCHANGING, "unchanging", "unchange" },
     { REFLECTING, "reflecting", "reflection" },
-    { FREE_ACTION, "having free action (paralysis resistance)", "free action (paralysis resistance)" },
+    { FREE_ACTION, "resistant to paralysis", "paralysis resistance" },
     { FIXED_ABIL, "having fixed abilities", "fixed abilities" },
     { LIFESAVED, "life will be saved", "life saving" },
     { DEATH_RESISTANCE, "resistant to death", "death resistance" },

@@ -4917,7 +4917,7 @@ int final;
     if (Reflecting)
         you_have("reflection", from_what(REFLECTING));
     if (Free_action)
-        you_have("free action", from_what(FREE_ACTION));
+        you_have("paralysis resistance", from_what(FREE_ACTION));
     if (Fixed_abil)
         you_have("fixed abilities", from_what(FIXED_ABIL));
     if (Lifesaved)
